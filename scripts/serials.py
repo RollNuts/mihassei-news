@@ -194,7 +194,7 @@ def render_completed_reading(series, episode):
 
 def _series_card(series):
     ep = series["episodes"][-1]
-    latest = (f'<span class="serial-latest">{episode_label(series,ep["number"])}：{h(ep["title"])}</span>')
+    latest = (f'<span class="serial-latest">最新公開：{h(ep["title"])}</span>')
     return (f'<article class="serial-card serial-card--{series["kind"]}" {progress_attributes(series)}>'
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
@@ -225,7 +225,7 @@ def render_serials_index(serials, layout):
       <div class="serial-grid serial-grid--archive">''' +
       "".join(_series_card(s) for s in serials) + "</div>"
       '<p class="serials-disclosure">※創作は事実を示しません。市場分析は将来の成果を保証せず、特定銘柄の売買推奨でもありません。</p></div>')
-    return layout("連載一覧", "未発生事件簿の連載推理小説と、未来相場観測室の市場予測・検証を読む。", "/serials/", main, active="serials")
+    return layout("連載一覧", "未発生事件簿の連載推理小説と、未来相場観測室の市場予測・検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
 def render_series_page(series, layout):
@@ -251,7 +251,9 @@ def render_series_page(series, layout):
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
     return layout(series["title"], series["description"], series_url(series), main, active="serials",
-                  serial={"slug": series["slug"], "kind": series["kind"]},
+                  serial={"slug": series["slug"], "kind": series["kind"], "title": series["title"],
+                          "episodes": [{"slug": ep["slug"], "title": ep["title"]}
+                                       for ep in series["episodes"]]},
                   feed_url=serial_feed_url(series))
 
 
@@ -357,6 +359,7 @@ def render_episode_page(series, ep, layout):
             f'</div></div>')
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
+                                                   "title": series["title"], "episode_title": ep["title"],
                                                    "episode": ep["slug"], "published_at": ep["published_at"]},
                   feed_url=serial_feed_url(series))
 

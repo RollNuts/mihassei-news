@@ -187,3 +187,21 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .serial-reading-marker [data-serial-progress-status]{grid-column:1/-1;min-height:18px;font-size:11px;font-weight:750;color:#486b56;margin:0}
 .serial-reading-marker small{grid-column:1/-1;font-size:10px;color:#65746c;line-height:1.85}
 @media(max-width:590px){.serial-reading-marker{grid-template-columns:1fr}.serial-reading-marker button{justify-self:stretch}.serial-progress-inline{gap:2px}}
+
+
+/* Editorial cross-link below fiction article: clearly separate reality from fiction. */
+.article-serial-bridge{display:grid;grid-template-columns:minmax(0,36%) minmax(0,1fr);gap:0;overflow:hidden;margin:32px 0 28px;border:1px solid #c8c6ba;border-top:4px solid #a68b63;background:#f9f7ef;box-shadow:0 8px 25px #222c2310}
+.article-serial-bridge-media{min-width:0;background:#173238}
+.article-serial-bridge-media>a{display:block;height:100%;min-height:225px;overflow:hidden}
+.article-serial-bridge-media img{display:block;width:100%;height:100%;object-fit:cover}
+.article-serial-bridge-copy{padding:clamp(19px,3vw,28px);min-width:0}
+.article-serial-bridge-label{display:block;font-size:10px;font-weight:900;letter-spacing:.11em;color:#886b47}
+.article-serial-bridge-copy h2{font-family:var(--serif);font-size:clamp(19px,2.1vw,23px);line-height:1.5;letter-spacing:-.045em;margin:8px 0 5px}
+.article-serial-bridge-copy h3{font-family:var(--serif);font-size:clamp(21px,2.6vw,28px);line-height:1.5;margin:7px 0}
+.article-serial-bridge-explain{font-size:12px;line-height:1.95;color:#62695f;margin:8px 0 12px}
+.article-serial-bridge-latest{font-size:11px;line-height:1.8;font-weight:700;margin:0 0 17px;color:#58675c}
+.article-serial-bridge-links{display:flex;gap:9px 18px;flex-wrap:wrap;align-items:center}
+.article-serial-bridge-links a{font-size:12px;line-height:1.5;min-height:44px;display:inline-flex;align-items:center;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.article-serial-bridge-links .article-serial-bridge-primary{padding:10px 16px;background:#294f48;color:#fff;text-decoration:none;border-radius:3px}
+.article-serial-bridge-links .article-serial-bridge-primary:hover{background:#426a5c;color:#fff}
+@media(max-width:650px){.article-serial-bridge{grid-template-columns:1fr}.article-serial-bridge-media>a{min-height:0;height:175px}.article-serial-bridge-copy{padding:19px}.article-serial-bridge-copy h2{font-size:21px}}
