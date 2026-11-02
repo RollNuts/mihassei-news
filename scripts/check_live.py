@@ -82,6 +82,24 @@ def check():
             '/articles/'+article["slug"]+'/' not in markup):
             raise RuntimeError("Promotion desk missing published story "+article["slug"])
 
+    # Review data without generating new visits or reactions. HTML must
+    # include only published titles, a bounded payload and noindex metadata.
+    growth, growth_mime=get("/growth-desk/")
+    growth_markup=growth.decode("utf-8")
+    if ("text/html" not in growth_mime or
+        'name="robots" content="noindex,nofollow"' not in growth_markup or
+        'data-growth-stories=' not in growth_markup or
+        'data-growth-articles' not in growth_markup or
+        "集客の実測" not in growth_markup):
+        raise RuntimeError("Noindex free growth desk missing or incomplete")
+    growth_js,js_mime=get("/assets/growth-desk.js")
+    if ("javascript" not in js_mime and "text/plain" not in js_mime):
+        raise RuntimeError("Growth desk JavaScript Content-Type incorrect")
+    if b"/api/engagement?articles=" not in growth_js or b"metric.arrivals.x" not in growth_js:
+        raise RuntimeError("Growth desk is not reading the verified free API")
+    if "https://veripsa.com/growth-desk/" in get("/sitemap.xml")[0].decode("utf-8"):
+        raise RuntimeError("Growth dashboard leaked into public search sitemap")
+
     # This stylesheet is last in the cascade. A successful HTML deploy must
     # not silently leave the refreshed editorial design without its actual CSS.
     if 'href="/assets/editorial-polish.css"' not in body:
@@ -416,6 +434,10 @@ def check():
         type(first_article.get("continuedReaders")) is not int or
         first_article["continuedReaders"]<0):
         raise RuntimeError("Anonymous article-continuation metric not deployed")
+    arrivals=first_article.get("arrivals")
+    if (not isinstance(arrivals,dict) or set(arrivals)!={"x","search"} or
+        any(type(arrivals[k]) is not int or arrivals[k]<0 for k in ("x","search"))):
+        raise RuntimeError("Per-article X/search arrival counters missing or invalid")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
