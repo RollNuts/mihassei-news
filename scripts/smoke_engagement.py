@@ -57,6 +57,31 @@ code,_,data=req("POST","/api/engagement",like)
 check(json.loads(data)["likes"]==m["likes"]+1,"liked +1")
 code,_,data=req("POST","/api/engagement",like)
 check(json.loads(data)["likes"]==m["likes"],"unliked back to baseline")
+# Free local Worker: the same browser can vote only once per story.
+votes=m.get("votes")
+check(isinstance(votes,dict) and all(isinstance(votes.get(k),int) for k in ("plausible","unlikely")),
+      "baseline must expose real prediction counts")
+vote={"action":"vote","article":"apology-before-incident","clientId":client,"choice":"plausible"}
+code,_,data=req("POST","/api/engagement",vote)
+first=json.loads(data)
+check(code==200 and first.get("vote")=="plausible" and first.get("alreadyVoted") is False,
+      "first vote should succeed")
+check(first["votes"]["plausible"]==votes["plausible"]+1,"one genuine plausible prediction")
+code,_,data=req("POST","/api/engagement",vote)
+again=json.loads(data)
+check(again.get("alreadyVoted") is True and again["votes"]["plausible"]==first["votes"]["plausible"],
+      "retry must not create an extra vote")
+vote["choice"]="unlikely"
+code,_,data=req("POST","/api/engagement",vote)
+unchanged=json.loads(data)
+check(unchanged.get("vote")=="plausible" and unchanged["votes"]["unlikely"]==votes["unlikely"],
+      "later choice cannot alter the first immutable vote")
+code,_,data=req("GET","/api/engagement?articles=apology-before-incident")
+published=json.loads(data)["articles"]["apology-before-incident"]
+check(published["votes"]["plausible"]==first["votes"]["plausible"],"GET counts include vote")
+page_code,_,page=req("GET","/articles/apology-before-incident/")
+check(page_code==200 and b'data-future-poll' in page and b'data-poll-choice="plausible"' in page,
+      "article page must include voting controls")
 code,_,body=req("GET","/")
 check(code==200 and b"<!doctype html>" in body,"static site fallback")
-print("PASS: unique browser counts, coarse X attribution, deduplicated article visits, toggled likes, static assets")
+print("PASS: browser dedupe, X attribution, likes, real immutable future votes, static assets")
