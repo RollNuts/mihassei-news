@@ -242,8 +242,11 @@ def image_tag(a, cls, extra=""):
     photo = a.get("photo")
     alt = photo["alt"] if photo else "記事をイメージしたオリジナルイラスト"
     fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo else ""
+    # SVG illustrations are authored at 1200×675 and editorial photography is
+    # cropped to the same 16:9 frame by CSS. Reserve that frame before the image
+    # downloads to prevent text and action buttons shifting on mobile.
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
-            f' {extra}{fallback}>')
+            f' width="1200" height="675" {extra}{fallback}>')
 
 
 def photo_credit(a):
