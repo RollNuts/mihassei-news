@@ -185,9 +185,10 @@ class SiteTests(unittest.TestCase):
         index=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('class="genre-explore"',index)
         self.assertIn('class="genre-links"',index)
-        self.assertIn('href="https://x.com/Veripsa"',index)
+        self.assertIn('https://x.com/intent/tweet?',index)
+        self.assertNotIn('https://x.com/Veripsa',index)
         editorial=(ROOT/"dist/editorial/index.html").read_text(encoding="utf-8")
-        for marker in ("生成AI", "創作", "広告・アフィリエイト", "訂正", "https://x.com/Veripsa"):
+        for marker in ("生成AI", "創作", "広告・アフィリエイト", "訂正", "github.com/RollNuts/mihassei-news/issues"):
             self.assertIn(marker,editorial)
         self.assertIn('href="/editorial/"',index)
         about=(ROOT/"dist/about/index.html").read_text(encoding="utf-8")
@@ -198,7 +199,9 @@ class SiteTests(unittest.TestCase):
             self.assertIn('"@type": "BreadcrumbList"',page)
             self.assertIn('class="reader-next"',page)
             self.assertIn('class="reader-follow"',page)
-            self.assertIn('href="https://x.com/Veripsa"',page)
+            self.assertIn('class="reader-follow-x"',page)
+            self.assertIn("https://x.com/intent/tweet?",page)
+            self.assertNotIn('https://x.com/Veripsa',page)
             self.assertIn('href="/feed.xml"',page)
             match=re.search(r'<a href="(/articles/[^"]+|/archive/)" class="reader-next-title">',page)
             self.assertIsNotNone(match,a["slug"])

@@ -291,6 +291,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
+    # Use a share-intent link without assuming ownership of an X account.
+    site_share = escape("https://x.com/intent/tweet?" + urlencode({
+        "text": "5年後の架空ニュースを真顔で読む、未発生新聞。 #未発生新聞 （創作）",
+        "url": SITE + "/",
+    }))
     og_image = SITE + social_image(article)
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
@@ -382,7 +387,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
-<a href="/editorial/">編集方針</a><a href="/feed.xml">RSS</a><a href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">公式X</a><a href="/privacy/">プライバシー</a></div></div>
+<a href="/editorial/">編集方針</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
@@ -536,9 +541,9 @@ def story(a, articles):
 <div class="article-end"><span class="reporter">未発生新聞</span><a href="/archive/">記事一覧へ ↗</a></div>
 <section class="reader-follow" aria-label="更新を読む">
 <div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
-<p>新作はRSSで確認できます。Xでも未発生新聞をチェック。</p></div>
+<p>新作はRSSで確認できます。気になった記事はXでも紹介できます。</p></div>
 <div class="reader-follow-links">
-<a class="reader-follow-x" href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">公式Xを見る ↗</a>
+<a class="reader-follow-x" href="{escape(share_url(a))}" target="_blank" rel="noopener noreferrer external">この記事をXで紹介 ↗</a>
 <a href="/feed.xml">RSSで購読 ↗</a></div></section>
 </article>
 <section class="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
@@ -599,7 +604,7 @@ def editorial_policy():
 <h2>広告・アフィリエイトについて</h2>
 <p>現在は広告の自動配信を行っていません。将来、広告やアフィリエイトリンクを掲載する場合は、記事内容との区別と広告・PRの表示を行い、読みにくいほど広告を増やす運用は避けます。収益や検索順位を保証するものではありません。</p>
 <h2>運営者・訂正の連絡</h2>
-<p>運営アカウント：<a href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">RollNuts / 0組（@Veripsa）</a>。出典の誤り、権利上の問題、記事の訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>からお知らせください。公開フォームのため個人情報は書かないでください。</p>
+<p>出典の誤り、権利上の問題、記事の訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>からお知らせください。公開フォームのため個人情報は書かないでください。</p>
 <p><a href="/about/" style="text-decoration:underline">未発生新聞について ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
 </div></div>'''
     return layout("編集方針・記事の作り方","未発生新聞の創作ニュース制作、生成AIの利用、出典、広告と訂正に関する編集方針。","/editorial/",content)
