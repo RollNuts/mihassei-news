@@ -45,6 +45,9 @@ export class NewsroomStats extends DurableObject {
           likes:this.count("likes:"+slug),
           readers:this.count("readers:"+slug),
           shareClicks:this.count("shares:"+slug),
+          // An approximate number of browser IDs that opened another story
+          // after visiting this article. Not people, clicks, or a conversion rate.
+          continuedReaders:this.count("continued:"+slug),
           votes:{
             plausible:this.count("predictions:plausible:"+slug),
             unlikely:this.count("predictions:unlikely:"+slug)
@@ -67,6 +70,14 @@ export class NewsroomStats extends DurableObject {
     const article=data.article||"";
     if(article && !validArticle(article))return json({error:"invalid article"},400);
     if(data.action!=="visit" && !article)return json({error:"article required"},400);
+    // Accept only a same-site article slug sent on normal article visits.
+    // The client derives this from document.referrer without transmitting URLs.
+    // Never accept arbitrary text or count a reload as article continuation.
+    if(data.fromArticle!==undefined &&
+       (data.action!=="visit" || !article || !validArticle(data.fromArticle) ||
+        data.fromArticle===article))
+      return json({error:"invalid previous article"},400);
+    const previousArticle=data.action==="visit" ? (data.fromArticle||"") : "";
     const channel=data.action==="visit" ? (data.channel??"") : "";
     if(channel!=="" && !attributionChannels.includes(channel))
       return json({error:"invalid channel"},400);
@@ -77,6 +88,10 @@ export class NewsroomStats extends DurableObject {
       if(data.action==="visit") {
         if(this.insertOnce("site","",visitor))this.increment("visitors",1);
         if(article && this.insertOnce("reader",article,visitor))this.increment("readers:"+article,1);
+        // Count one browser once per source article when it arrives at a
+        // DIFFERENT article. No destination pair or full referrer is stored.
+        if(previousArticle && this.insertOnce("continued",previousArticle,visitor))
+          this.increment("continued:"+previousArticle,1);
         // Record at most one visit per hashed browser *per coarse channel*.
         // No complete referral URLs, full UTM strings, search terms, or IPs are saved.
         if(channel && this.insertOnce("channel",channel,visitor))
@@ -115,8 +130,9 @@ export class NewsroomStats extends DurableObject {
     return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),article,
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
-      shareClicks:article?this.count("shares:"+article):undefined,liked,
-      vote:selectedVote,alreadyVoted,
+      shareClicks:article?this.count("shares:"+article):undefined,
+      continuedReaders:article?this.count("continued:"+article):undefined,
+      liked,vote:selectedVote,alreadyVoted,
       votes:article?{
         plausible:this.count("predictions:plausible:"+article),
         unlikely:this.count("predictions:unlikely:"+article)
