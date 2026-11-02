@@ -117,10 +117,14 @@ class SiteTests(unittest.TestCase):
         published=load()
         self.assertEqual(lead.group(1),published[0]["slug"])
         self.assertEqual(sidebar,[a["slug"] for a in published[1:4]])
-        self.assertEqual(cards,[a["slug"] for a in published[4:13]])
-        shown=[lead.group(1),*sidebar,*cards]
+        from scripts.editorial_starter import starter_picks
+        starters=starter_picks(published,{a["slug"] for a in published[:4]},base=ROOT)
+        picked=[x["article"]["slug"] for x in starters]
+        expected=[a["slug"] for a in published[4:] if a["slug"] not in picked][:9]
+        self.assertEqual(cards,expected)
+        shown=[lead.group(1),*sidebar,*picked,*cards]
         self.assertEqual(len(shown),len(set(shown)))
-        self.assertEqual(len(shown),min(len(published),13))
+        self.assertEqual(len(shown),min(len(published),4+len(picked)+9))
 
     def test_ticker_is_swipeable_on_mobile_and_keyboard_accessible(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
