@@ -5,6 +5,8 @@ on:
     paths:
       - content/articles.json
       - scripts/cache_photos.py
+      - scripts/media_policy.py
+      - content/approved_photos.json
       - .github/workflows/cache-photos.yml
   workflow_dispatch:
 permissions:
