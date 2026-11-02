@@ -141,6 +141,20 @@ class SiteTests(unittest.TestCase):
         self.assertIsNotNone(first)
         self.assertEqual(first.text,"https://veripsa.com/articles/"+expected["slug"]+"/")
 
+    def test_archive_is_searchable_and_incremental_with_no_js_fallback(self):
+        page=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('id="archive-results" class="archive-list"',page)
+        self.assertIn('data-archive-more hidden',page)
+        self.assertIn('data-archive-more-button aria-controls="archive-results"',page)
+        self.assertIn('data-result-count aria-live="polite"',page)
+        # Every published article remains present in initial HTML for users
+        # without JavaScript; JS only hides the older entries visually.
+        for article in self.articles:
+            self.assertIn('href="/articles/'+article["slug"]+'/"',page)
+        javascript=(ROOT/"assets/site.js").read_text(encoding="utf-8")
+        self.assertIn('PAGE_SIZE = 18',javascript)
+        self.assertIn('moreButton?.addEventListener',javascript)
+
     def test_extra_edition_picker_links_to_real_articles(self):
         import re
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
