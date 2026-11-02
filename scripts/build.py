@@ -209,6 +209,17 @@ def issue_share_url(day, items):
     return "https://x.com/intent/tweet?" + urlencode({"text": "\n".join(lines), "url": tagged})
 
 
+def bookmark_button(a):
+    """Opt-in reader bookmark, disabled until the no-cost local script is ready."""
+    return (
+        f'<button type="button" class="bookmark-button"'
+        f' data-bookmark-slug="{escape(a["slug"])}"'
+        f' data-bookmark-title="{escape(a["title"])}"'
+        f' data-bookmark-category="{escape(a["category"])}"'
+        ' disabled aria-pressed="false">☆ あとで読む</button>'
+    )
+
+
 def actions(a, compact=False):
     slug = escape(a["slug"])
     link = article_url(a)
@@ -223,6 +234,7 @@ def actions(a, compact=False):
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
            '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button>')
+        + ('' if compact else bookmark_button(a))
         + '</div>'
     )
 
@@ -309,6 +321,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
         ("/issues/", "発行号", "issues"),
+        ("/saved/", "あとで読む", "saved"),
         ("/serials/", "連載", "serials"),
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
@@ -407,10 +420,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             ],
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
+    robots_tag = '<meta name="robots" content="noindex,follow">' if path == "/saved/" else ""
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+{robots_tag}
 <meta name="theme-color" content="#f9f8f3">
 <meta name="google-adsense-account" content="ca-pub-6754575901141756">
 <meta name="description" content="{escape(desc)}">
@@ -446,6 +461,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <script defer src="/assets/engagement.js"></script>
 <script defer src="/assets/comments.js"></script>
 <script defer src="/assets/comment-activity.js"></script>
+<script defer src="/assets/bookmarks.js"></script>
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
@@ -471,7 +487,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※架空ニュース・推理小説は創作です。市場考察は執筆時点の見解であり、投資助言ではありません。</span></div></div></footer>
@@ -780,6 +796,8 @@ def story(a, articles, issues=None):
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
+<div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
+<p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
 </header>
 <figure class="article-hero-figure">
 {image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
@@ -931,6 +949,8 @@ def privacy():
 <h2>読者コメントについて</h2>
 <p>記事へのコメントはニックネーム（省略可能）と本文、投稿日時を公開します。本文は180文字以内で、URLや個人情報の記載は禁止しています。匿名のブラウザ識別子をハッシュ化して保存し、連続投稿防止・自分の投稿の削除・通報の重複防止に使用します。IPアドレスやメールアドレスをコメントデータベースに保存しません。</p>
 <p>3件の異なるブラウザから通報があると、一時的に非表示になります。運営者は不適切な投稿を非表示・削除することがあります。自分の投稿は同じブラウザから削除できます。履歴を削除すると操作できなくなることがあります。</p>
+<h2>「あとで読む」の保存</h2>
+<p>任意で「あとで読む」を押した記事の識別子・タイトル・ジャンル・保存日時を、その端末のブラウザ内（localStorage）だけに最大100件保存します。保存情報は運営者のサーバーへ送信せず、他の端末とは同期しません。保存記事の一覧から個別に解除・すべて解除できます。ブラウザのサイトデータを消去すると保存情報も消えます。</p>
 <h2>外部サービス</h2>
 <p>サイトの公開・集計にはCloudflareを使用します。記事の一部にはUnsplashで公開された商用利用可能な写真を使用しており、表示時にUnsplashへ通信する場合があります。Xへの共有を選択した場合、Xのページへ移動します。</p>
 <h2>広告について</h2>
@@ -939,6 +959,33 @@ def privacy():
 <p>運営上の問題や権利に関するご連絡は、<a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHubのIssues</a>をご利用ください。公開される場所のため個人情報は投稿しないでください。</p>
 </div></div>'''
     return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
+
+
+def saved_page():
+    """Browser-only reading list; indexable article content is elsewhere."""
+    content = '''<div class="container saved-page">
+<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>
+<span aria-hidden="true"> / </span><span aria-current="page">あとで読む</span></nav>
+<header class="page-intro"><span class="eyebrow">YOUR READING LIST / 保存記事</span>
+<h1>あとで読む</h1>
+<p>気になる未発生ニュースを、このブラウザだけに保存できます。</p></header>
+<section class="saved-intro" aria-label="保存について">
+<div><strong>アカウント・メール登録不要</strong>
+<p>記事の保存先は、この端末のブラウザ内だけ。運営者のサーバーには送信しません。
+ブラウザのデータを消去すると、保存記事も消えます。</p></div>
+<a href="/archive/">新しい記事を探す ↗</a></section>
+<p class="saved-status" data-bookmark-status role="status" aria-live="polite">
+JavaScriptが有効なら、保存した記事をここから開けます。</p>
+<p class="saved-empty" data-saved-empty hidden>まだ保存された記事はありません。
+記事ページの「☆ あとで読む」を押すと、ここに並びます。</p>
+<ol class="saved-list" data-saved-list aria-label="保存した記事一覧"></ol>
+<div class="saved-controls"><button type="button" data-clear-bookmarks hidden>
+保存をすべて解除</button><a href="/archive/">記事一覧を見る ↗</a></div>
+<noscript><p>保存記事の一覧にはJavaScriptが必要です。記事自体は通常どおり読めます。</p></noscript>
+</div>'''
+    return layout("あとで読む",
+                  "未発生新聞で気になった創作ニュースを、この端末のブラウザだけに保存する読書リスト。",
+                  "/saved/", content, active="saved")
 
 
 def image_review_page(articles):
@@ -1093,7 +1140,7 @@ def other_files(articles, issues=None, serials=None):
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n/growth-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n/growth-desk/*\n  X-Robots-Tag: noindex, nofollow\n/saved/*\n  X-Robots-Tag: noindex\n")
 
 
 
@@ -1222,6 +1269,7 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    write("saved/index.html",saved_page())
     # Human visual quality audit stays separate from the public news navigation.
     write("image-review/index.html",image_review_page(articles))
     # Human-operated static promotion helper; no automated X publishing.
