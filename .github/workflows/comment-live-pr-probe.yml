@@ -1,0 +1,43 @@
+name: One-time comment production verification
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check live article form and read-only comments API
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          import time
+          from urllib.request import Request, urlopen
+          base = "https://veripsa.com"
+          def get(path):
+              req = Request(base + path, headers={"User-Agent": "MihasseiSiteHealth/1.0", "Cache-Control": "no-cache"})
+              with urlopen(req, timeout=15) as response:
+                  return response.read().decode("utf-8")
+          for attempt in range(1, 19):
+              try:
+                  home = get("/?probe=comments-"+str(attempt))
+                  match = re.search(r'href="/articles/([a-z0-9-]+)/"', home)
+                  if not match: raise RuntimeError("No article link")
+                  slug = match.group(1)
+                  story = get("/articles/" + slug + "/?probe=comments-"+str(attempt))
+                  if 'data-comments data-article="' + slug + '"' not in story:
+                      raise RuntimeError("Comment form not deployed")
+                  data = json.loads(get("/api/comments?article="+slug+"&probe="+str(attempt)))
+                  if data.get("article") != slug or not isinstance(data.get("comments"), list):
+                      raise RuntimeError("Comments API does not return expected JSON")
+                  print("PASS: comment form and API live for", slug)
+                  break
+              except Exception as exc:
+                  print("Attempt", attempt, ":", str(exc), flush=True)
+                  if attempt == 18: raise SystemExit("Live comments are not ready / check Cloudflare deployment")
+                  time.sleep(15)
+          PY
