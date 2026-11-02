@@ -1,0 +1,69 @@
+name: One-time live editorial image quality check
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify that original covers replace unreviewed photos online
+        run: |
+          python3 - <<'PY'
+          import html
+          import json
+          import time
+          import urllib.request
+          from xml.etree import ElementTree as ET
+          from pathlib import Path
+          from scripts.media_policy import usable_cached_photo
+
+          articles=json.loads(Path("content/articles.json").read_text(encoding="utf-8"))
+          by_slug={item["slug"]:item for item in articles}
+          slugs=["unwanted-call-protection-calls-back",
+                 "ai-chooses-a-managers",
+                 "supporter-guarantor-contract"]
+          def get(url):
+              req=urllib.request.Request("https://veripsa.com"+url,
+                  headers={"User-Agent":"Mihassei-EditorialCover-Audit/1.0",
+                           "Cache-Control":"no-cache"})
+              with urllib.request.urlopen(req,timeout=15) as response:
+                  if response.status!=200:raise ValueError("HTTP "+str(response.status))
+                  return response.read(3_000_000),response.headers.get("Content-Type","")
+
+          for attempt in range(1,19):
+              try:
+                  for slug in slugs:
+                      article=by_slug[slug]
+                      data,mime=get("/articles/"+slug+"/")
+                      markup=html.unescape(data.decode("utf-8"))
+                      if "text/html" not in mime or article["title"] not in markup:
+                          raise ValueError("Article HTML missing: "+slug)
+                      review=usable_cached_photo(article)
+                      if review:
+                          expected="/photos/"+slug+".jpg"
+                          if 'src="'+expected+'"' not in markup:raise ValueError("Approved photo missing "+slug)
+                          if article["photo"]["credit"] not in markup:raise ValueError("Credit missing "+slug)
+                      else:
+                          expected="/images/"+slug+".svg"
+                          if 'src="'+expected+'"' not in markup:raise ValueError("Original cover not deployed "+slug)
+                          if "オリジナル表紙" not in markup:raise ValueError("Fictional-cover disclosure missing "+slug)
+                          svg,kind=get(expected)
+                          root=ET.fromstring(svg)
+                          if root.attrib.get("viewBox")!="0 0 1200 675" or b"MIHASSEI NEWS" not in svg:
+                              raise ValueError("Unexpected cover design "+slug)
+                          if "image/svg+xml" not in kind:raise ValueError("Bad SVG MIME "+slug)
+                          social,ogkind=get("/og/articles/"+slug+".png")
+                          if not social.startswith(bytes((137,80,78,71,13,10,26,10))) or "image/png" not in ogkind:
+                              raise ValueError("Social PNG missing "+slug)
+                      print("VERIFIED",slug,"photo-reviewed" if review else "original story cover",flush=True)
+                  print("PASS: public visual assets use curated photo gate and story-specific original covers",flush=True)
+                  break
+              except Exception as error:
+                  print("Attempt",attempt,str(error),flush=True)
+                  if attempt==18:raise
+                  time.sleep(10)
+          PY
