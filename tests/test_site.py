@@ -23,8 +23,19 @@ class SiteTests(unittest.TestCase):
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
-                  "og/brand.png","404.html","robots.txt"]:
+                  "og/brand.png","404.html","robots.txt","build-revision.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
+
+    def test_static_output_identifies_exact_build_revision(self):
+        import re
+        marker=(ROOT/"dist/build-revision.txt").read_text(encoding="utf-8").strip()
+        self.assertTrue(marker=="unknown" or re.fullmatch(r"[0-9a-f]{40}",marker))
+        git=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,text=True,
+                           capture_output=True,check=False)
+        if git.returncode==0 and re.fullmatch(r"[0-9a-f]{40}",git.stdout.strip()):
+            self.assertEqual(marker,git.stdout.strip())
+        self.assertIn("/build-revision.txt", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
+        self.assertIn("Cache-Control: no-store", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
 
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
