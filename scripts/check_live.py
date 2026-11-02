@@ -20,6 +20,11 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
+if __package__:
+    from .media_policy import usable_cached_photo
+else:
+    from media_policy import usable_cached_photo
+
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
 HEADERS={
@@ -211,27 +216,41 @@ def check():
         for token in ('class="reader-next"', 'class="reader-follow"', '"@type": "BreadcrumbList"'):
             if token not in page:
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
-        photo=item.get("photo")
-        cached=ROOT/"assets"/"photos"/(slug+".jpg")
-        if not cached.is_file():
-            image_url=SITE+"/og/articles/"+slug+".png"
-            if '<meta property="og:image" content="'+image_url+'">' not in page:
-                raise RuntimeError(slug+": article-specific OGP image metadata missing")
+        # Publicly inspect the actual image picked by the review gate.
+        # Merely having a cached stock file must NEVER imply it is suitable.
+        if usable_cached_photo(item,root=ROOT):
+            photo=item["photo"]
+            if photo["source"] not in page or photo["credit"] not in page:
+                raise RuntimeError(slug+": reviewed photo attribution missing")
+            if 'src="/photos/'+slug+'.jpg"' not in page:
+                raise RuntimeError(slug+": expected reviewed photo not displayed")
+            if ('<meta property="og:image" content="'+SITE+'/photos/'+slug+'.jpg">' not in page):
+                raise RuntimeError(slug+": reviewed social photo metadata missing")
+            image,kind=get("/photos/"+slug+".jpg")
+            if image[:3]!=bytes((255,216,255)) or len(image)<16000 or "image/jpeg" not in kind:
+                raise RuntimeError(slug+": reviewed JPEG not accessible")
+            checked_photos+=1
+        else:
+            if 'src="/images/'+slug+'.svg"' not in page:
+                raise RuntimeError(slug+": safe original cover not displayed")
+            if "オリジナル表紙" not in page:
+                raise RuntimeError(slug+": image not clearly marked as a fictional cover")
+            og_url=SITE+"/og/articles/"+slug+".png"
+            if '<meta property="og:image" content="'+og_url+'">' not in page:
+                raise RuntimeError(slug+": original story PNG metadata missing")
             picture,kind=get("/og/articles/"+slug+".png")
             if (not picture.startswith(bytes((137,80,78,71,13,10,26,10)))
                 or "image/png" not in kind or len(picture)<1500):
-                raise RuntimeError(slug+": article-specific social PNG inaccessible")
-        if photo:
-            if photo["source"] not in page or photo["credit"] not in page:
-                raise RuntimeError(slug+": photo attribution missing")
-            cached=ROOT/"assets"/"photos"/(slug+".jpg")
-            if cached.exists():
-                image,mime=get("/photos/"+slug+".jpg")
-                if image[:3]!=b"\xff\xd8\xff" or len(image)<16000 or "image/jpeg" not in mime:
-                    raise RuntimeError(slug+": invalid public photo")
-                checked_photos+=1
-            elif photo["url"] not in page and "/photos/"+slug+".jpg" not in page:
-                raise RuntimeError(slug+": photo URL or fallback missing")
+                raise RuntimeError(slug+": original social PNG unavailable")
+            cover,kind=get("/images/"+slug+".svg")
+            if "image/svg+xml" not in kind:
+                raise RuntimeError(slug+": original SVG has incorrect Content-Type")
+            if b"MIHASSEI NEWS" not in cover or b"EDITORIAL ILLUSTRATION" not in cover:
+                raise RuntimeError(slug+": headline-led safe cover not deployed")
+            try:
+                ET.fromstring(cover)
+            except ET.ParseError:
+                raise RuntimeError(slug+": original cover XML is invalid")
         print("Public article OK:",slug)
 
     category_paths={

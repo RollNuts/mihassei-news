@@ -16,6 +16,11 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+if __package__:
+    from .media_policy import photo_is_approved, usable_cached_photo, jpeg_dimensions
+else:
+    from media_policy import photo_is_approved, usable_cached_photo, jpeg_dimensions
+
 ROOT=Path(__file__).resolve().parents[1]
 MAX_BYTES=3*1024*1024
 OUT=ROOT/"assets/photos"
@@ -29,6 +34,9 @@ def fetch_photo(item):
     photo=item.get("photo")
     if not photo:
         return "not-requested"
+    if not photo_is_approved(item, root=ROOT):
+        # Automatic publication is preserved; missing review uses on-site art.
+        return "not-approved (original editorial cover)"
     url=photo["url"]
     path=urllib.parse.urlsplit(url)
     link=urllib.parse.urlsplit(photo["source"])
@@ -41,7 +49,7 @@ def fetch_photo(item):
     path_url=urllib.parse.urlunsplit(("https",path.netloc,path.path,
                                      urllib.parse.urlencode({"fit":"crop","w":1400,"q":78,"fm":"jpg"}),""))
     filename=OUT/(slug+".jpg")
-    if filename.is_file() and filename.stat().st_size>16000:
+    if usable_cached_photo(item, root=ROOT):
         return "already-cached"
     request=urllib.request.Request(path_url,headers={"User-Agent":USER_AGENT,"Accept":"image/jpeg"})
     with urllib.request.urlopen(request,timeout=18) as response:
@@ -51,6 +59,9 @@ def fetch_photo(item):
         data=response.read(MAX_BYTES+1)
     if not (16000<len(data)<=MAX_BYTES and data[:3]==b"\xff\xd8\xff"):
         raise ValueError("invalid image payload")
+    dimensions=jpeg_dimensions(data)
+    if not dimensions or not (dimensions[0]>=900 and dimensions[1]>=440 and 1.15<=dimensions[0]/dimensions[1]<=2.65):
+        raise ValueError("photo is too small or unsuitable for 16:9 article covers")
     OUT.mkdir(parents=True,exist_ok=True)
     filename.write_bytes(data)
     return f"saved {len(data)} bytes"
