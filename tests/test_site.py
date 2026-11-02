@@ -91,12 +91,16 @@ class SiteTests(unittest.TestCase):
         sidebar=re.findall(r'<h3><a href="/articles/([^/]+)/">',aside)
         section=home.split('<section class="section-block">',1)[1].split('</section>',1)[0]
         cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section)
-        self.assertEqual(lead.group(1),self.articles[0]["slug"])
-        self.assertEqual(sidebar,[a["slug"] for a in self.articles[1:4]])
-        self.assertEqual(cards,[a["slug"] for a in self.articles[4:13]])
+        from scripts.build import load
+        # The JSON file is not necessarily in publication order.
+        # Compare against the same actual-publication sorting used by the builder.
+        published=load()
+        self.assertEqual(lead.group(1),published[0]["slug"])
+        self.assertEqual(sidebar,[a["slug"] for a in published[1:4]])
+        self.assertEqual(cards,[a["slug"] for a in published[4:13]])
         shown=[lead.group(1),*sidebar,*cards]
         self.assertEqual(len(shown),len(set(shown)))
-        self.assertEqual(len(shown),min(len(self.articles),13))
+        self.assertEqual(len(shown),min(len(published),13))
 
     def test_ticker_is_swipeable_on_mobile_and_keyboard_accessible(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
