@@ -159,6 +159,38 @@ def check():
         if url not in siteurls:
             raise RuntimeError("Sitemap missing "+article["slug"])
 
+    # Daily editions must be published from the real article publication day,
+    # not the fictional 2031 dateline. Sample only the newest three issue pages
+    # to keep the free read-only production verification lightweight.
+    issue_days=Counter(
+        (article.get("published_at") or article["source"]["published_at"])[:10]
+        for article in articles
+    )
+    substantial={day: [a for a in articles
+                       if (a.get("published_at") or a["source"]["published_at"])[:10]==day]
+                 for day,count in issue_days.items() if count>=3}
+    index_data, index_mime = get("/issues/")
+    index_markup=index_data.decode("utf-8")
+    if "text/html" not in index_mime or "未発生新聞の発行号" not in index_markup:
+        raise RuntimeError("Issue archive listing is not published")
+    if SITE+"/issues/" not in siteurls:
+        raise RuntimeError("Daily issue index missing from sitemap")
+    for day, items in substantial.items():
+        url=SITE+"/issues/"+day+"/"
+        if url not in siteurls:
+            raise RuntimeError("Daily issue missing from sitemap: "+day)
+        if 'href="/issues/'+day+'/"' not in index_markup:
+            raise RuntimeError("Daily issue not linked from archive: "+day)
+    for day in sorted(substantial,reverse=True)[:3]:
+        page, page_mime=get("/issues/"+day+"/")
+        markup=page.decode("utf-8")
+        if "text/html" not in page_mime or 'datetime="'+day+'"' not in markup:
+            raise RuntimeError("Real publication date missing from issue page: "+day)
+        for article in substantial[day]:
+            if 'href="/articles/'+article["slug"]+'/"' not in markup:
+                raise RuntimeError("Issue missing published article "+article["slug"])
+    print("Public daily editions OK:",len(substantial))
+
     checked_photos=0
     for item in recent:
         slug=item["slug"]
