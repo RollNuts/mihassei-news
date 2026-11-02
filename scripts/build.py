@@ -267,7 +267,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
         ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
+        ("/archive/?category=" + quote("暮らし"), "暮らし", ""),
         ("/archive/?category=" + quote("スポーツ"), "スポーツ", ""),
+        ("/archive/?category=" + quote("エンタメ"), "エンタメ", ""),
         ("/about/", "本紙について", "about"),
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
