@@ -79,6 +79,16 @@ class MarketForecastLedgerTests(unittest.TestCase):
         self.assertNotIn('<img src=x',markup)
         self.assertIn('&lt;img src=x',markup)
 
+    def test_market_serial_hub_and_episode_link_to_public_ledger(self):
+        from scripts.serials import render_series_page, render_episode_page
+        html_only=lambda title,desc,path,main,**kwargs: main
+        hub=render_series_page(self.series,html_only)
+        article=render_episode_page(self.series,self.series["episodes"][0],html_only)
+        self.assertIn('id="forecast-ledger"',hub)
+        self.assertIn("予測は、答え合わせまで残す。",hub)
+        self.assertIn('href="/serials/market-lab/#forecast-ledger"',article)
+        self.assertNotIn("判定済み：的中",hub)
+
     def test_fiction_never_has_market_ledger(self):
         mystery={"slug":"case-files","kind":"fiction","episodes":[]}
         self.assertEqual(prediction_entries(mystery,today=date(2026,11,3)),[])
