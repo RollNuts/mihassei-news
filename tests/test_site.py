@@ -141,6 +141,20 @@ class SiteTests(unittest.TestCase):
         self.assertIsNotNone(first)
         self.assertEqual(first.text,"https://veripsa.com/articles/"+expected["slug"]+"/")
 
+    def test_archive_is_searchable_and_incremental_with_no_js_fallback(self):
+        page=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('id="archive-results" class="archive-list"',page)
+        self.assertIn('data-archive-more hidden',page)
+        self.assertIn('data-archive-more-button aria-controls="archive-results"',page)
+        self.assertIn('data-result-count aria-live="polite"',page)
+        # Every published article remains present in initial HTML for users
+        # without JavaScript; JS only hides the older entries visually.
+        for article in self.articles:
+            self.assertIn('href="/articles/'+article["slug"]+'/"',page)
+        javascript=(ROOT/"assets/site.js").read_text(encoding="utf-8")
+        self.assertIn('PAGE_SIZE = 18',javascript)
+        self.assertIn('moreButton?.addEventListener',javascript)
+
     def test_extra_edition_picker_links_to_real_articles(self):
         import re
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
@@ -149,10 +163,23 @@ class SiteTests(unittest.TestCase):
         match=re.search(r'data-issue-options="([^"]+)"',home)
         self.assertIsNotNone(match)
         choices=json.loads(html.unescape(match.group(1)))
-        self.assertEqual(len(choices),len(self.articles))
-        self.assertEqual({a["slug"] for a in self.articles},
+        latest=sorted(self.articles,key=lambda a:(
+            a.get("published_at") or a["source"]["published_at"],
+            a["source"]["published_at"]
+        ),reverse=True)[:40]
+        self.assertEqual(len(choices),len(latest))
+        self.assertEqual({a["slug"] for a in latest},
                          {item["url"].split("/")[2] for item in choices})
+        self.assertLessEqual(len(choices),40)
         self.assertIn("今日の号外をめくる",home)
+
+        # Do not grow the homepage's embedded interactive JSON indefinitely.
+        from scripts.build import home as render_home
+        synthetic=[{**self.articles[0],"slug":"demo-"+str(i)} for i in range(75)]
+        large_markup=render_home(synthetic)
+        large_options=re.search(r'data-issue-options="([^"]+)"',large_markup)
+        self.assertIsNotNone(large_options)
+        self.assertEqual(len(json.loads(html.unescape(large_options.group(1)))),40)
 
     def test_social_previews_use_first_party_jpeg_or_png(self):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""

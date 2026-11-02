@@ -168,3 +168,12 @@ body{background:var(--paper)}
 .reader-follow-links .reader-follow-x:hover{background:#a72f24}
 @media(max-width:750px){.genre-explore{grid-template-columns:1fr;gap:12px}.reader-follow{flex-direction:column;align-items:flex-start}}
 @media(max-width:600px){.genre-explore{margin-top:28px;padding:17px 0 20px}.genre-links{gap:7px}.genre-links a{font-size:11px;padding:7px 10px}.reader-next{padding:18px 17px}.reader-follow{padding:20px 18px}.reader-follow-links{width:100%}.reader-follow-links a{flex:1;text-align:center}}
+
+
+/* Large archives remain browseable as daily publishing grows. The full article
+   list stays in the HTML so non-JavaScript readers never lose access. */
+.archive-load-more{display:flex;justify-content:center;padding:30px 0 20px}
+.archive-load-more button{border:1px solid var(--ink);background:var(--charcoal);color:#fffdf7;padding:12px 30px;min-height:46px;border-radius:2px;font-size:13px;font-weight:900;letter-spacing:.02em;cursor:pointer}
+.archive-load-more button:hover,.archive-load-more button:focus-visible{background:var(--accent);border-color:var(--accent)}
+.archive-load-more button:focus-visible{outline:3px solid #eebda8;outline-offset:3px}
+@media(max-width:600px){.archive-load-more{padding:20px 0 12px}.archive-load-more button{width:100%}}

@@ -6,6 +6,10 @@
   const decadeSelect = document.querySelector('[data-decade-filter]');
   const count = document.querySelector('[data-result-count]');
   const empty = document.querySelector('[data-no-results]');
+  const morePanel = document.querySelector('[data-archive-more]');
+  const moreButton = document.querySelector('[data-archive-more-button]');
+  const PAGE_SIZE = 18;
+  let visibleLimit = PAGE_SIZE;
   const params = new URLSearchParams(window.location.search);
   let category = params.get('category') || 'すべて';
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
@@ -15,16 +19,25 @@
   function render() {
     const query = normalize(input.value.trim());
     const decade = decadeSelect?.value || 'すべて';
-    let shown = 0;
+    const matching = cards.filter(card =>
+      (category === 'すべて' || card.dataset.category === category) &&
+      (decade === 'すべて' || card.dataset.decade === decade) &&
+      (!query || normalize(card.dataset.search).includes(query))
+    );
+    const matchSet = new Set(matching);
+    const shown = Math.min(matching.length,visibleLimit);
+    let visible = 0;
     for (const card of cards) {
-      const matched = (category === 'すべて' || card.dataset.category === category) &&
-        (decade === 'すべて' || card.dataset.decade === decade) &&
-        (!query || normalize(card.dataset.search).includes(query));
-      card.hidden = !matched;
-      if (matched) shown++;
+      const matches = matchSet.has(card);
+      card.hidden = !matches || visible >= visibleLimit;
+      if (matches) visible++;
     }
-    if (count) count.textContent = shown + '件の記事';
-    if (empty) empty.hidden = shown !== 0;
+    if (count) count.textContent = shown + ' / ' + matching.length + '件の記事を表示';
+    if (empty) empty.hidden = matching.length !== 0;
+    if (morePanel) morePanel.hidden = matching.length <= visibleLimit;
+    if (moreButton) {
+      moreButton.textContent = 'さらに' + Math.min(PAGE_SIZE,Math.max(0,matching.length-visibleLimit)) + '件を見る';
+    }
     tabs.forEach(tab => {
       const active = tab.dataset.categoryFilter === category;
       tab.classList.toggle('active', active);
@@ -35,11 +48,19 @@
     else url.searchParams.set('category', category);
     window.history.replaceState(null, '', url.pathname + url.search);
   }
+  function resetAndRender() {
+    visibleLimit = PAGE_SIZE;
+    render();
+  }
   tabs.forEach(tab => tab.addEventListener('click', () => {
     category = tab.dataset.categoryFilter;
-    render();
+    resetAndRender();
   }));
-  input.addEventListener('input', render);
-  decadeSelect?.addEventListener('change', render);
+  input.addEventListener('input', resetAndRender);
+  decadeSelect?.addEventListener('change', resetAndRender);
+  moreButton?.addEventListener('click', () => {
+    visibleLimit += PAGE_SIZE;
+    render();
+  });
   render();
 })();

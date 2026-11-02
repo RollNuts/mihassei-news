@@ -410,9 +410,11 @@ def home(articles):
     genre_links = "".join(genre_links)
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
+    # A busy newsroom should not ship the entire archive in the homepage HTML.
+    # Keep the interactive edition fresh without letting page weight grow forever.
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
-         for x in articles], ensure_ascii=False, separators=(",", ":")))
+         for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
     content = f'''<div class="container index-main">
 <div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
 <strong>本日の未発生ニュース</strong></div>
@@ -473,8 +475,11 @@ def archive(articles):
 <div class="filters" aria-label="カテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター">{options}</select>
-<output class="result-counter" data-result-count>{len(articles)}件の記事</output></div>
-<div class="archive-list">{''.join(card(a,True) for a in articles)}</div>
+<output class="result-counter" data-result-count aria-live="polite">{len(articles)}件の記事</output></div>
+<div id="archive-results" class="archive-list">{''.join(card(a,True) for a in articles)}</div>
+<div class="archive-load-more" data-archive-more hidden>
+  <button type="button" data-archive-more-button aria-controls="archive-results">さらに記事を見る</button>
+</div>
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 <p class="no-results" data-no-results hidden>一致する記事がありません。</p></div>'''
     return layout("記事一覧","未発生新聞の記事一覧。すべてフィクションです。","/archive/",content,"archive")
