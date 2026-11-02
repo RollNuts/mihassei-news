@@ -43,7 +43,7 @@ function harness(count) {
   const window={location:{href:'https://veripsa.com/archive/'},
     history:{replaceState:(_a,_b,url)=>{lastUrl=url;}}};
   const src=fs.readFileSync(path.join(__dirname,'..','assets','site.js'),'utf8');
-  vm.runInNewContext(src,{document,window,URL,Set,String}, {timeout:1000});
+  vm.runInNewContext(src,{document,window,URL,URLSearchParams,Set,String}, {timeout:1000});
   return {cards,input,decade,counter,empty,morePanel,moreButton,tabs,
     get url(){return lastUrl;},
     get visible(){return cards.filter(card=>!card.hidden).length;}
