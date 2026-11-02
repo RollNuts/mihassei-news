@@ -19,12 +19,14 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .reader_paths import suggested_articles
     from .share_desk import render as render_share_desk
+    from .growth_desk import render as render_growth_desk
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
     from reader_paths import suggested_articles
     from share_desk import render as render_share_desk
+    from growth_desk import render as render_growth_desk
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -891,6 +893,8 @@ def privacy():
 <p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。アクセス計測のために氏名やメールアドレスの登録は求めません。</p>
 <p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
 <p>どこから訪れたかは「X」「検索」「その他の外部サイト」「判別できない流入」の4種類に大まかに分類します。ブラウザ内で分類した種類名だけを送信し、参照元URL全体・検索した言葉・IPアドレスを集計データベースには保存しません。サイト内のページ移動は流入経路に含めず、同じブラウザでも複数経路を利用すれば複数の区分に数えられます。数値は実際の来訪人数やPVではなく、計測開始以降の参考値です。</p>
+<h2>記事別のX・検索流入について</h2>
+<p>「X」「検索」の2区分について、匿名ブラウザの識別子をハッシュ化し、記事ごと・区分ごとに重複を除いて記録することがあります。投稿内容、検索語、SNSアカウント、参照元URL全体、UTMの詳細、IPアドレスはこの集計データベースに保存しません。区分の推定はブラウザ側の参照情報などに依存し、実際の投稿数・クリック数・ページビュー・実人数ではありません。同じブラウザが複数の記事や区分に重複して数えられることがあり、この計測機能を導入する前の過去の流入は復元できません。記事別の公開合計は、検索登録対象外の「集客の実測」ページから確認できます。この分析ページ自体の閲覧はアクセス集計イベントを生成しません。</p>
 <h2>記事から次の記事への移動</h2>
 <p>サイト内の記事から別の記事へ進んだ場合、元の記事を表す短い識別子だけを、通常の閲覧計測と一緒に送信することがあります。サイト内の参照元であることを確認し、参照元URL全体・検索語・クエリ文字列は送信しません。識別子をハッシュ化したブラウザ単位で、元の記事から別の記事へ進んだ経験のあるブラウザを重複排除して集計します。移動先の組み合わせ、クリック履歴、個人の閲覧経路は保存しません。ブラウザが参照元を送らない場合は計測できず、実人数やクリック総数、回遊率とは異なります。</p>
 <h2>5年後の予想投票について</h2>
@@ -1054,7 +1058,7 @@ def other_files(articles, issues=None):
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n/growth-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
 
 
 
@@ -1187,6 +1191,8 @@ def build():
     # Human-operated static promotion helper; no automated X publishing.
     write("share-desk/index.html",render_share_desk(
         articles,social_image,lambda a: usable_cached_photo(a,root=BASE)))
+    # Read-only X/search growth page; no extra tracking events or APIs.
+    write("growth-desk/index.html",render_growth_desk(articles))
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))
