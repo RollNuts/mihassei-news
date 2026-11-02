@@ -19,7 +19,7 @@ class SiteTests(unittest.TestCase):
     def test_core_files(self):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
-                  "sitemap.xml","assets/style.css","assets/site.js",
+                  "sitemap.xml","editorial/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
                   "og/brand.png","404.html","robots.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
@@ -85,6 +85,7 @@ class SiteTests(unittest.TestCase):
             url="https://veripsa.com/articles/"+a["slug"]+"/"
             self.assertIn(url,mapped)
             self.assertEqual(mapped[url][:10],(a.get("modified_at") or a.get("published_at") or a["source"]["published_at"][:10])[:10])
+        self.assertIn("https://veripsa.com/editorial/",mapped)
         economies=[a for a in self.articles if a["category"]=="経済"]
         if len(economies)>=3:
             category=ROOT/"dist/category/economy/index.html"
@@ -163,6 +164,31 @@ class SiteTests(unittest.TestCase):
             asset=ROOT/"dist"/path
             self.assertTrue(asset.is_file(),url)
             self.assertGreater(asset.stat().st_size,1000,url)
+
+    def test_reader_growth_and_editorial_transparency(self):
+        import re
+        index=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('class="genre-explore"',index)
+        self.assertIn('class="genre-links"',index)
+        self.assertIn('href="https://x.com/Veripsa"',index)
+        editorial=(ROOT/"dist/editorial/index.html").read_text(encoding="utf-8")
+        for marker in ("生成AI", "創作", "広告・アフィリエイト", "訂正", "https://x.com/Veripsa"):
+            self.assertIn(marker,editorial)
+        self.assertIn('href="/editorial/"',index)
+        about=(ROOT/"dist/about/index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/editorial/"',about)
+        for a in self.articles:
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('class="breadcrumbs"',page)
+            self.assertIn('"@type": "BreadcrumbList"',page)
+            self.assertIn('class="reader-next"',page)
+            self.assertIn('class="reader-follow"',page)
+            self.assertIn('href="https://x.com/Veripsa"',page)
+            self.assertIn('href="/feed.xml"',page)
+            match=re.search(r'<a href="(/articles/[^"]+|/archive/)" class="reader-next-title">',page)
+            self.assertIsNotNone(match,a["slug"])
+            self.assertNotEqual(match.group(1),"/articles/"+a["slug"]+"/")
+            self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",page)
 
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
