@@ -1,0 +1,39 @@
+name: Daily fictional news
+on:
+  schedule:
+    - cron: '40 13 * * *' # 22:40 Japan Standard Time
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mihassei-daily-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate an original fictional article, only when API key is configured
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-2.5-flash-lite
+        run: python3 scripts/generate.py
+      - name: Validate static site
+        run: python3 -m unittest discover -s tests -v
+      - name: Commit new original content if generated
+        run: |
+          if ! git diff --quiet -- content/articles.json; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add content/articles.json
+            git commit -m 'Publish original fictional news'
+            git push
+          else
+            echo 'No news published today.'
+          fi
