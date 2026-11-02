@@ -1,0 +1,68 @@
+name: One-time verify fresh culture and controversy satire articles
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Check newly published creative news and source/OGP integrity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,time
+          from urllib.request import Request,urlopen
+          BASE="https://veripsa.com"
+          EXPECTED={
+            "press-conference-metaphor-viral": {
+               "headline":"会見の例え話だけバズる",
+               "source":"www.itmedia.co.jp/news/article/2611/02/2000002828/",
+               "motif":"会見"
+            },
+            "idol-ice-kept-in-freezer": {
+               "headline":"推しコラボのアイス、保存用だけ完売",
+               "source":"prtimes.jp/main/html/rd/p/000000097.000086324.html",
+               "motif":"推し"
+            }
+          }
+          def get(path):
+            request=Request(BASE+path,headers={
+              "User-Agent":"MihasseiReadOnlyFreshCultureCheck/1.0",
+              "Cache-Control":"no-cache",
+              "Accept":"text/html,application/xml,image/png,*/*"})
+            with urlopen(request,timeout=20) as resp:
+              if resp.status!=200:raise RuntimeError("status "+str(resp.status)+" "+path)
+              return resp.read(4000000),resp.headers.get("Content-Type","")
+          for attempt in range(1,24):
+            try:
+              sitemap,_=get("/sitemap.xml")
+              site=sitemap.decode("utf-8")
+              for slug,info in EXPECTED.items():
+                text,mime=get("/articles/"+slug+"/")
+                page=text.decode("utf-8")
+                if "text/html" not in mime:raise RuntimeError("HTML MIME "+slug)
+                for token in (info["headline"], info["source"], "創作ニュース", "2031",
+                              'name="twitter:card" content="summary_large_image"'):
+                  if token not in page:raise RuntimeError("Article missing "+slug+": "+token)
+                if BASE+"/articles/"+slug+"/" not in site:
+                  raise RuntimeError("Article missing in sitemap "+slug)
+                raster="/og/articles/"+slug+".png"
+                if raster not in page:raise RuntimeError("Social preview not linked "+slug)
+                picture,kind=get(raster)
+                if "image/png" not in kind or picture[:8]!=bytes((137,80,78,71,13,10,26,10)):
+                  raise RuntimeError("Social preview PNG invalid "+slug)
+                if (int.from_bytes(picture[16:20],"big"),int.from_bytes(picture[20:24],"big")) != (1200,630):
+                  raise RuntimeError("Social preview dimensions invalid "+slug)
+                cover,kind=get("/images/"+slug+".svg")
+                if "svg" not in kind or info["headline"].encode("utf-8")[:12] not in cover:
+                  raise RuntimeError("SVG cover missing original story heading "+slug)
+              print("PASS: two topical fictional articles, citations, sitemap, SVG covers, first-party PNG OGP are live",flush=True)
+              break
+            except Exception as exc:
+              print("Attempt",attempt,"failed:",str(exc),flush=True)
+              if attempt==23:raise
+              time.sleep(10)
+          PY
