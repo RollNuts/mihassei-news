@@ -405,6 +405,15 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 
 def home(articles):
     a = articles[0]
+    # The fictional masthead clock is not a claim that the newsroom posted
+    # today. Use the genuine publication date, never the future dateline.
+    last_published = publication_date(a)
+    last_day = last_published[:10]
+    last_day_count = sum(publication_date(item)[:10] == last_day for item in articles)
+    actual_stamp = datetime.fromisoformat(last_published)
+    last_label = f"{actual_stamp.month}月{actual_stamp.day}日"
+    if "T" in last_published:
+        last_label += f" {actual_stamp.hour:02}:{actual_stamp.minute:02}"
     side = "".join('<article class="brief-card">' + category_meta(x) +
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
@@ -430,15 +439,18 @@ def home(articles):
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
     content = f'''<div class="container index-main">
-<div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
-<strong>本日の未発生ニュース</strong></div>
+<div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
+ data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
+<div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
+<strong data-edition-title>最新の未発生ニュース</strong>
+<span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
 <div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
 <div class="wire-viewport"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
-<div class="overlay"><span class="issue-code">TOP STORY</span><span class="hero-live">● LIVE <span data-future-hms>--:--:--</span></span></div></a>
+<div class="overlay"><span class="issue-code">TOP STORY / 創作</span><span class="hero-live">5年先の時計 <span data-future-hms>--:--:--</span></span></div></a>
 <div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p>
@@ -454,7 +466,7 @@ def home(articles):
     <p>気になる号外を一枚めくってみよう。</p>
   </div>
   <div class="special-edition-machine">
-    <button type="button" class="issue-picker-button" data-pick-issue>今日の号外をめくる <span aria-hidden="true">↗</span></button>
+    <button type="button" class="issue-picker-button" data-pick-issue>号外をめくる <span aria-hidden="true">↗</span></button>
     <div class="issue-picker-result" data-issue-result aria-live="polite">
       <span class="small-label">まだ開封されていません</span>
       <p data-issue-headline>ニュースの続きは、めくってからのお楽しみ。</p>
