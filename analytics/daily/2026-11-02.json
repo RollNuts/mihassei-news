@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-11-02",
+  "measured_at_utc": "2026-11-02T23:25:04+00:00",
+  "unit": "anonymous-browser",
+  "note": "Cumulative distinct browser identifiers, NOT people or PV. Counts are a point-in-time sample, not daily visitor totals.",
+  "continuation_note": "continued_readers is cumulative unique browser IDs that arrived at a DIFFERENT article from this source article via a same-origin referrer path. One per browser and source; referrer-stripping undercounts. This is not an article-to-article click total or a conversion rate.",
+  "per_article_arrival_note": "x_arrivals/search_arrivals are distinct anonymous browser identifiers per specific article and channel, counted only since that metric was enabled. A browser can be in both channels and several articles. They are NOT people, page views, clicks, daily visits or proof of X posts. Older snapshots without these fields must not be backfilled as zeros.",
+  "visitors_cumulative": 172,
+  "articles_published_total": 14,
+  "articles_published_on_date": 10,
+  "published_categories": {
+    "エンタメ": 1,
+    "スポーツ": 1,
+    "技術": 1,
+    "暮らし": 2,
+    "社会": 2,
+    "経済": 3
+  },
+  "recent_articles_sampled": 14,
+  "recent_articles": [
+    {
+      "slug": "press-conference-metaphor-viral",
+      "category": "社会",
+      "published_at": "2026-11-03T08:08:49+09:00",
+      "readers": 0,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "idol-ice-kept-in-freezer",
+      "category": "エンタメ",
+      "published_at": "2026-11-03T08:08:49+09:00",
+      "readers": 0,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "quiet-reply-dating-matches",
+      "category": "暮らし",
+      "published_at": "2026-11-03T07:40:27+09:00",
+      "readers": 0,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "farm-friendship-across-species",
+      "category": "社会",
+      "published_at": "2026-11-03T07:40:27+09:00",
+      "readers": 0,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "unwanted-call-protection-calls-back",
+      "category": "社会",
+      "published_at": "2026-11-02T21:21:04+09:00",
+      "readers": 4,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "local-souvenir-cannot-leave-town",
+      "category": "暮らし",
+      "published_at": "2026-11-02T21:21:04+09:00",
+      "readers": 6,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "supporter-guarantor-contract",
+      "category": "スポーツ",
+      "published_at": "2026-11-02T19:16:37+09:00",
+      "readers": 11,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 1,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "pressure-office-mood-forecast",
+      "category": "暮らし",
+      "published_at": "2026-11-02T19:16:37+09:00",
+      "readers": 9,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "fan-theories-write-final",
+      "category": "エンタメ",
+      "published_at": "2026-11-02T19:16:37+09:00",
+      "readers": 8,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "apology-before-incident",
+      "category": "社会",
+      "published_at": "2026-11-02T17:36:39+09:00",
+      "readers": 12,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "ai-chooses-a-managers",
+      "category": "経済",
+      "published_at": "2026-11-02T17:36:39+09:00",
+      "readers": 10,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "research-completed-opening-day",
+      "category": "経済",
+      "published_at": "2026-11-02T17:36:39+09:00",
+      "readers": 10,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "robot-job-hopping",
+      "category": "経済",
+      "published_at": "2026-11-02T17:36:39+09:00",
+      "readers": 11,
+      "likes": 0,
+      "share_clicks": 1,
+      "continued_readers": 0,
+      "x_arrivals": 1,
+      "search_arrivals": 0
+    },
+    {
+      "slug": "ai-chair-removes-executives",
+      "category": "技術",
+      "published_at": "2026-11-02T17:36:39+09:00",
+      "readers": 8,
+      "likes": 0,
+      "share_clicks": 0,
+      "continued_readers": 0,
+      "x_arrivals": 0,
+      "search_arrivals": 0
+    }
+  ],
+  "channels_cumulative": {
+    "x": 4,
+    "search": 1,
+    "external": 0,
+    "unattributed": 3
+  },
+  "channels_note": "Cumulative browser IDs per observed incoming category since activation. Channels may overlap and are not people or page views. Source attribution is approximate; unattributed is not necessarily direct."
+}
