@@ -1,0 +1,78 @@
+name: One-time verify improved media distribution
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Confirm public review gallery, Media RSS and cache-versioned X preview
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import time
+          from urllib.request import Request,urlopen
+          from xml.etree import ElementTree as ET
+          from urllib.parse import urlsplit
+          SITE="https://veripsa.com"
+          SLUG="unwanted-call-protection-calls-back"
+          IMAGE="/og/articles/"+SLUG+".png?v=20261103-topic2"
+          def get(path):
+              request=Request(SITE+path,headers={
+                  "User-Agent":"Twitterbot/1.0",
+                  "Cache-Control":"no-cache",
+                  "Accept":"text/html,application/xml,image/png,*/*"})
+              with urlopen(request,timeout=17) as r:
+                  if r.status!=200:raise ValueError(path+" HTTP "+str(r.status))
+                  return r.read(3500000),r.headers.get("Content-Type",""),r.headers
+          for attempt in range(1,16):
+              try:
+                  article,typ,_=get("/articles/"+SLUG+"/")
+                  page=article.decode("utf-8")
+                  if 'name="twitter:image" content="'+SITE+IMAGE+'"' not in page:
+                      raise RuntimeError("Versioned social image metadata missing")
+                  image,typ,_=get(IMAGE)
+                  if "image/png" not in typ or not image.startswith(bytes([137,80,78,71,13,10,26,10])):
+                      raise RuntimeError("Social image not PNG")
+                  width=int.from_bytes(image[16:20],"big")
+                  height=int.from_bytes(image[20:24],"big")
+                  if (width,height)!=(1200,630) or len(image)>=200000:
+                      raise RuntimeError("Social preview dimensions or transfer size wrong")
+                  rss,rss_type,_=get("/feed.xml")
+                  if "xml" not in rss_type:
+                      raise RuntimeError("RSS MIME incorrect")
+                  root=ET.fromstring(rss)
+                  ns={"media":"http://search.yahoo.com/mrss/"}
+                  items=root.findall("./channel/item")
+                  if not items:raise RuntimeError("Empty RSS feed")
+                  matched=False
+                  for item in items:
+                      thumbnail=item.find("media:thumbnail",ns)
+                      full=item.find("media:content",ns)
+                      if thumbnail is None or full is None or thumbnail.get("url")!=full.get("url"):
+                          raise RuntimeError("RSS article lacks matched thumbnail and media content")
+                      if not thumbnail.get("url","").startswith(SITE+"/"):
+                          raise RuntimeError("RSS preview must be first-party")
+                      if SLUG in (item.findtext("link") or ""):
+                          if thumbnail.get("url")!=SITE+IMAGE:raise RuntimeError("RSS OGP image differs")
+                          matched=True
+                  if not matched:raise RuntimeError("Probe story absent from feed")
+                  gallery,typ,headers=get("/image-review/")
+                  html=gallery.decode("utf-8")
+                  if "text/html" not in typ or 'name="robots" content="noindex,nofollow"' not in html:
+                      raise RuntimeError("Visual gallery not found or indexable")
+                  if "/images/"+SLUG+".svg" not in html or IMAGE not in html:
+                      raise RuntimeError("Review gallery not showing article and social visuals")
+                  robots=headers.get("X-Robots-Tag","")
+                  if "noindex" not in robots.lower():
+                      raise RuntimeError("Image review X-Robots-Tag response header missing")
+                  print("PASS: public story-aware 1200x630 PNG, versioned Twitter Card, Media RSS and noindex visual review",flush=True)
+                  break
+              except Exception as e:
+                  print("Attempt",attempt,"failed:",str(e),flush=True)
+                  if attempt==15:raise
+                  time.sleep(10)
+          PY
