@@ -11,6 +11,7 @@ import json
 import re
 import unicodedata
 from datetime import datetime, timezone
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,14 @@ FORMAL_ANNOUNCEMENT = re.compile(r"発表|開始|導入|公表|明らかにし�
 MECHANICAL_ENDINGS = re.compile(
     r"担当者|広報|謝罪|却下|不合格|新制度|管理職|手続き|承認|申請|通知"
 )
+# A short burst of similar premises can bore a first-time visitor even when
+# the 20-story average looks diverse. A signal, never an automatic rejection.
+PROCEDURAL_PREMISE = re.compile(
+    r"確認|認証|登録|手続き|申請|判定|承認|規制|拒否|不採用|新制度"
+)
+SHORT_RUN = 6
+PROCEDURAL_RUN_THRESHOLD = 4
+CATEGORY_RUN_THRESHOLD = 5
 
 
 def actual_published(article: dict) -> str:
@@ -104,6 +113,25 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 ))
 
     newest = recent[:CLUSTER_LIMIT]
+    short_run = recent[:SHORT_RUN]
+    if len(short_run) == SHORT_RUN:
+        # A check relevant to the *next* editorial slot. Do not block this one.
+        categories = Counter(a.get("category", "") for a in short_run)
+        dominant, count = categories.most_common(1)[0]
+        if dominant and count >= CATEGORY_RUN_THRESHOLD:
+            warnings.append((
+                "RECENT_CATEGORY_RUN", "-",
+                f"直近{SHORT_RUN}本で{dominant}が{count}本。次枠は異なるジャンル・読者層の題材を先に探す",
+            ))
+        procedural = sum(bool(PROCEDURAL_PREMISE.search(
+            str(a.get("title", "")) + " " + str(a.get("summary", ""))
+        )) for a in short_run)
+        if procedural >= PROCEDURAL_RUN_THRESHOLD:
+            warnings.append((
+                "PROCEDURAL_PREMISE_LOOP", "-",
+                f"直近{SHORT_RUN}本で確認・申請・認証などの逆効果が{procedural}本。"
+                "人間の選択、文化、言葉遊び、意外な成功例など別の仕組みを試す",
+            ))
     if len(newest) >= 6:
         work = [a for a in newest if WORK_AI.search(a.get("title", ""))]
         if len(work) >= max(5, (len(newest) * 3 + 4) // 5):
