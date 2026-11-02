@@ -342,7 +342,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f7f4ec">
+<meta name="theme-color" content="#f9f8f3">
 <meta name="google-adsense-account" content="ca-pub-6754575901141756">
 <meta name="description" content="{escape(desc)}">
 <meta property="og:title" content="{escape(complete)}">
@@ -369,6 +369,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <link rel="stylesheet" href="/assets/newsroom.css">
 <link rel="stylesheet" href="/assets/future-poll.css">
 <link rel="stylesheet" href="/assets/comments.css">
+<link rel="stylesheet" href="/assets/editorial-polish.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
 <script defer src="/assets/comments.js"></script>
@@ -386,7 +387,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div class="mast-kicker">THE UNHAPPENED TIMES</div>
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
 <span class="brand-en">MIHASSEI SHIMBUN</span>
-<p class="mast-sub">まだ起きていないニュースを、どこよりも真面目に。</p>
+<p class="mast-sub">現実の話題から生まれる、5年後の創作ニュース。</p>
 </div></header>
 <div class="container observer-shell">
 <div class="observer-widget" data-observer-widget hidden>
