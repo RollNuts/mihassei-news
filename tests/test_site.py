@@ -251,7 +251,7 @@ class SiteTests(unittest.TestCase):
             path=ROOT/"dist"/"og"/"articles"/(a["slug"]+".png")
             self.assertTrue(path.exists(),a["slug"])
             data=path.read_bytes()
-            self.assertEqual(data[:8],b"\\x89PNG\\r\\n\\x1a\\n")
+            self.assertEqual(data[:8],b"\x89PNG\r\n\x1a\n")
             self.assertEqual(struct.unpack(">II",data[16:24]),(1200,630))
             self.assertGreater(len(data),1500)
             self.assertLess(len(data),200000,"Social card should stay small for free hosting")
