@@ -21,6 +21,7 @@ class SiteTests(unittest.TestCase):
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
                   "sitemap.xml","editorial/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
+                  "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "og/brand.png","404.html","robots.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
 
@@ -67,6 +68,20 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(fiction.year,original.year+5)
             self.assertEqual((fiction.month,fiction.day,fiction.hour,fiction.minute),
                              (original.month,original.day,original.hour,original.minute))
+
+    def test_reader_comments_are_present_and_privacy_is_explained(self):
+        for article in self.articles:
+            page=ROOT/"dist/articles"/article["slug"]/"index.html"
+            text=page.read_text(encoding="utf-8")
+            self.assertIn('data-comments data-article="'+article["slug"]+'"',text)
+            self.assertIn("reader-comments-form",text)
+            self.assertIn("/assets/comments.js",text)
+            self.assertIn("/assets/comments.css",text)
+            self.assertIn('name="body"',text)
+            self.assertIn("問題", (ROOT/"assets/comments.js").read_text(encoding="utf-8"))
+        privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
+        self.assertIn("読者コメントについて",privacy)
+        self.assertIn("投稿日時を公開",privacy)
 
     def test_real_publication_time_is_not_fictional_dateline(self):
         for a in self.articles:
