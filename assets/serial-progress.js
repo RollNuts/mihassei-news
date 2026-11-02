@@ -35,7 +35,9 @@
     try {
       const raw = window.localStorage.getItem(PREFIX + series);
       if (raw === null) return { ok: true, read: [] };
-      const parsed = JSON.parse(raw);
+      let parsed;
+      try { parsed = JSON.parse(raw); }
+      catch (_error) { return { ok: true, read: [] }; }
       if (!Array.isArray(parsed)) return { ok: true, read: [] };
       const read = parsed.filter(validSlug).slice(0, MAX_EPISODES);
       return { ok: true, read: Array.from(new Set(read)) };
