@@ -1,0 +1,58 @@
+name: Public audience API health
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '41 23 * * *' # 08:41 JST; read-only verification
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify production site and read-only engagement API
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python3 - <<'PY'
+          import json, sys, time, urllib.request, urllib.error
+          base = "https://veripsa.com"
+          urls = [
+            ("/", "html"),
+            ("/api/engagement?articles=apology-before-incident", "json"),
+          ]
+          for path, kind in urls:
+              error = None
+              for attempt in range(7):
+                  try:
+                      req = urllib.request.Request(base+path,headers={
+                          "User-Agent":"MihasseiShimbun-HealthCheck/1.0",
+                          "Accept":"application/json,text/html,*/*",
+                          "Cache-Control":"no-cache",
+                      })
+                      with urllib.request.urlopen(req,timeout=13) as r:
+                          code,body,mime = r.status,r.read(200000),r.headers.get("content-type","")
+                      if code != 200: raise RuntimeError("HTTP "+str(code))
+                      if kind=="json":
+                          data = json.loads(body)
+                          if data.get("unit")!="anonymous-browser" or not isinstance(data.get("visitors"),int):
+                              raise RuntimeError("not a valid engagement JSON: "+repr(data)[:300])
+                          details=data.get("articles",{}).get("apology-before-incident",{})
+                          if not isinstance(details.get("likes"),int) or not isinstance(details.get("readers"),int):
+                              raise RuntimeError("article counts are not integers")
+                          print("VERIFIED engagement API: visitors={}, readers={}, likes={} (distinct browsers, not real persons)".format(
+                              data["visitors"],details["readers"],details["likes"]))
+                      elif b"mihassei-news" not in body and "未発生新聞".encode() not in body:
+                          raise RuntimeError("homepage did not return the newspaper")
+                      else:
+                          print("VERIFIED newspaper home: HTTP 200")
+                      break
+                  except Exception as exc:
+                      error=exc
+                      print("Attempt {} for {} failed: {}".format(attempt+1,path,str(exc)[:250]))
+                      time.sleep(5)
+              else:
+                  sys.exit("Public production health check failed for {}: {}".format(path,error))
+          PY
