@@ -296,6 +296,19 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     complete = ("未発生新聞｜5年後の架空ニュース" if path == "/" else
                 title + (" | 未発生新聞" if serial and serial["kind"] == "analysis" else " | 未発生新聞（創作ニュース）"))
     article_time_meta = ""
+    # Never label the genuine, source-backed market column as fictional news.
+    if path == "/serials/":
+        publication_label = "創作と市場分析"
+        mast_subtitle = "架空の推理小説と、公開資料に基づく市場予測。"
+    elif serial is not None and serial["kind"] == "analysis":
+        publication_label = "市場分析"
+        mast_subtitle = "公開資料から考える未来。予測は保証されません。"
+    elif serial is not None and serial["kind"] == "fiction":
+        publication_label = "創作小説"
+        mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
+    else:
+        publication_label = "創作報道"
+        mast_subtitle = "現実の話題から生まれる、5年後の創作ニュース。"
     if kind == "story" and article is not None:
         article_time_meta = (
             f'<meta property="article:published_time" content="{escape(publication_date(article))}">'
@@ -449,7 +462,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 </head><body>
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
-<a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">創作報道</span></a>
+<a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">{escape(publication_label)}</span></a>
 <div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>5年先の現在時刻</span>
 <time data-future-clock aria-label="5年先の架空の現在時刻">--:--:--</time></div>
 </div></div>
@@ -457,7 +470,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <div class="mast-kicker">THE UNHAPPENED TIMES</div>
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
 <span class="brand-en">MIHASSEI SHIMBUN</span>
-<p class="mast-sub">現実の話題から生まれる、5年後の創作ニュース。</p>
+<p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
 <div class="container observer-shell">
 <div class="observer-widget" data-observer-widget hidden>
@@ -553,6 +566,35 @@ def home(articles, serials=None):
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
+    # Three clear entry points for new readers. The series destinations are
+    # published pages only and never imply a future episode already exists.
+    reading_choices = [
+        ("news", "FICTION / 架空ニュース", "5年後の未発生ニュース",
+         "今起きていることの、ちょっとおかしな続き。", "/archive/"),
+    ]
+    for series in serials:
+        if series["kind"] == "fiction":
+            reading_choices.append(("mystery", "MYSTERY / 創作推理小説",
+                                    series["title"], "手掛かりを追って、続きの謎を解く。",
+                                    "/serials/" + series["slug"] + "/"))
+        elif series["kind"] == "analysis":
+            reading_choices.append(("market", "MARKET / 現実の市場分析",
+                                    series["title"], "予測を残し、あとから答え合わせする。",
+                                    "/serials/" + series["slug"] + "/"))
+    reading_links = "".join(
+        f'<a class="reading-way reading-way--{kind}" href="{escape(url)}">'
+        f'<span class="reading-way-eyebrow">{escape(kicker)}</span>'
+        f'<strong>{escape(name)}</strong>'
+        f'<span class="reading-way-summary">{escape(summary)}</span>'
+        '<span class="reading-way-action" aria-hidden="true">読む →</span></a>'
+        for kind, kicker, name, summary, url in reading_choices
+    )
+    reading_section = (
+        '<nav class="reading-ways" aria-label="初めての読者向けの読み物案内">'
+        '<div class="reading-ways-heading"><span class="small-label red">START HERE</span>'
+        '<h2>どんな未来から、読み始める？</h2></div>'
+        '<div class="reading-ways-grid">' + reading_links + '</div></nav>'
+    )
     content = f'''<div class="container index-main">
 <div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
  data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
@@ -574,7 +616,7 @@ def home(articles, serials=None):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
 </section>
-
+{reading_section}
 <section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
