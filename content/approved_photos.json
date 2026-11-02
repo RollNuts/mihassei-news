@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Only explicitly reviewed, accurately attributed, locally cached photos may replace original editorial covers. Unlisted sources automatically use original art without blocking publication.",
+  "approved": {
+    "supporter-guarantor-contract": {
+      "source": "https://unsplash.com/photos/a-baseball-stadium-filled-with-lots-of-people-B4-g8EUJEGE",
+      "reason": "Actual baseball venue visually matches the article's professional baseball theme; labelled as illustrative"
+    },
+    "pressure-office-mood-forecast": {
+      "source": "https://unsplash.com/photos/dramatic-stormy-clouds-with-a-clear-blue-sky-opening-T6vmAJxObeo",
+      "reason": "Weather metaphor for the mock workplace forecast; labelled as illustrative"
+    },
+    "apology-before-incident": {
+      "source": "https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0",
+      "reason": "Server-rack photo conveys the fictional information-security setting without depicting a real incident"
+    },
+    "robot-job-hopping": {
+      "source": "https://unsplash.com/photos/blue-industrial-robot-arm-in-factory-sz1CHL7Pky0",
+      "reason": "Industrial robot clearly corresponds to the fictional factory robot story"
+    }
+  }
+}
