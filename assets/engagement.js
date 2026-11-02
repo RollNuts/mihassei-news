@@ -20,14 +20,35 @@
   });
   const futureClocks = [...document.querySelectorAll("[data-future-clock]")];
   const hmsClocks = [...document.querySelectorAll("[data-future-hms]")];
+  const editionStatus = document.querySelector("[data-edition-status]");
+  const editionTitle = document.querySelector("[data-edition-title]");
+  const editionEyebrow = document.querySelector("[data-edition-eyebrow]");
+  const editionUpdated = document.querySelector("[data-edition-updated]");
+  let lastDisplayedDay = "";
   function updateClock() {
     const f = Object.fromEntries(clockFormat.formatToParts(new Date()).map(x => [x.type,x.value]));
     const hms = f.hour+":"+f.minute+":"+f.second;
     const virtual = String(Number(f.year)+5)+"."+f.month+"."+f.day+" "+hms;
     futureClocks.forEach(x => {x.textContent=virtual; x.setAttribute("datetime",virtual);});
     hmsClocks.forEach(x => x.textContent=hms);
+    // The fictional clock keeps running even between publications. Never call
+    // an old article "today's news" after the Japan calendar day changes.
+    if (editionStatus) {
+      const today = f.year+"-"+f.month+"-"+f.day;
+      if (today !== lastDisplayedDay) {
+        lastDisplayedDay = today;
+        const todayIssued = editionStatus.dataset.lastEdition === today;
+        const latestCount = Math.max(0,Number(editionStatus.dataset.editionCount)||0);
+        const lastLabel = editionStatus.dataset.lastLabel || editionStatus.dataset.lastEdition || "不明";
+        if (editionTitle) editionTitle.textContent = todayIssued ? "本日の未発生ニュース" : "最新の未発生ニュース";
+        if (editionEyebrow) editionEyebrow.textContent = todayIssued ? "TODAY'S HEADLINES" : "LATEST HEADLINES";
+        if (editionUpdated) editionUpdated.textContent = todayIssued ?
+          "本日発行 "+latestCount+"本 ・ 最終発行："+lastLabel+"（現実時間）" :
+          "最終発行："+lastLabel+"（現実時間）";
+      }
+    }
   }
-  if(futureClocks.length || hmsClocks.length){
+  if(futureClocks.length || hmsClocks.length || editionStatus){
     updateClock();
     window.setInterval(updateClock,1000);
   }

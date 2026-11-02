@@ -177,3 +177,16 @@ body{background:var(--paper)}
 .archive-load-more button:hover,.archive-load-more button:focus-visible{background:var(--accent);border-color:var(--accent)}
 .archive-load-more button:focus-visible{outline:3px solid #eebda8;outline-offset:3px}
 @media(max-width:600px){.archive-load-more{padding:20px 0 12px}.archive-load-more button{width:100%}}
+
+
+/* Genuine publication date. The fictional future clock is never a live-news claim. */
+.news-briefing-title{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:baseline;min-width:0}
+.news-briefing-title .edition-updated{flex-basis:100%;font-size:11px;line-height:1.6;font-weight:700;letter-spacing:.015em;color:var(--muted)}
+.news-briefing[data-edition-status]{align-items:center}
+.hero-live{white-space:nowrap}
+@media(max-width:600px){
+  .news-briefing-title{gap:4px 8px}
+  .news-briefing-title .edition-updated{font-size:10px}
+  .hero-live{font-size:10px}
+  .hero-live>span{font-size:12px}
+}
