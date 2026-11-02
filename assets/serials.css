@@ -163,3 +163,27 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .mystery-notebook-status{min-height:20px;font-size:12px;line-height:1.7;font-weight:700;color:#355f57;margin:15px 0 10px}
 .mystery-notebook-privacy{font-size:11px;line-height:1.85;color:#637169;margin:8px 0 0}
 @media(max-width:560px){.mystery-notebook{padding:22px 16px}.mystery-notebook-toolbar{align-items:flex-start}.mystery-notebook-actions{width:100%}.mystery-notebook-actions button{flex:1}}
+
+
+/* Local-only, explicitly marked serial reading progress. */
+.serial-progress-summary,.serial-read-summary{font-size:11px;color:#617369;line-height:1.7;font-weight:700;margin:12px 0 4px}
+.serial-resume{display:inline-block;min-height:40px;margin:7px 0;padding:8px 10px;background:#e0ece4;border:1px solid #9bb4a7;color:#274d3c;font-size:12px;font-weight:900;line-height:1.6}
+.serial-resume:hover{background:#d0e4d8}
+.serial-progress-inline{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding-top:8px}
+.serial-progress-inline .serial-progress-summary{margin-bottom:0}
+.serial-card .serial-resume{margin:9px 0 2px}
+.serial-completed{display:block;font-size:11px;color:#3c6954;font-weight:900;line-height:1.7;margin:4px 0}
+.serial-resume[hidden],.serial-completed[hidden]{display:none!important}
+.serial-episode-read:empty{display:none}
+.serial-episode-read:not(:empty){color:#37785b;font-size:11px;font-weight:900;align-self:flex-start;padding:2px 9px;background:#e0eee3}
+.serial-reading-marker{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 16px;margin:45px 0 28px;padding:23px clamp(16px,3vw,25px);border:1px solid #b2c6b7;border-top:4px solid #6d967b;background:#f0f5ed}
+.serial-reading-marker strong{font-family:var(--serif);font-size:19px}
+.serial-reading-marker p{font-size:12px;color:#53695e;margin:5px 0;line-height:1.75}
+.serial-reading-marker button{min-height:44px;padding:9px 16px;border:1px solid #426c51;background:#426c51;color:white;font-size:12px;font-weight:900;cursor:pointer}
+.serial-reading-marker button:hover{background:#2c583b}
+.serial-reading-marker button[aria-pressed="true"]{background:#e4eee3;border:1px solid #426c51;color:#264b36}
+.serial-reading-marker button:disabled{opacity:.7;cursor:not-allowed}
+.serial-reading-marker button:focus-visible{outline:3px solid #a95037;outline-offset:3px}
+.serial-reading-marker [data-serial-progress-status]{grid-column:1/-1;min-height:18px;font-size:11px;font-weight:750;color:#486b56;margin:0}
+.serial-reading-marker small{grid-column:1/-1;font-size:10px;color:#65746c;line-height:1.85}
+@media(max-width:590px){.serial-reading-marker{grid-template-columns:1fr}.serial-reading-marker button{justify-self:stretch}.serial-progress-inline{gap:2px}}
