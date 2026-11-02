@@ -134,6 +134,8 @@ def actions(a, compact=False):
         '<div class="engagement-actions' + (" compact" if compact else "") + '">'
         + f'<button class="like-control" type="button" data-like-slug="{slug}" aria-pressed="false"'
         + f' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span><span class="like-count" data-like-count="{slug}" hidden></span></button>'
+        + f'<a class="comment-control" href="{escape(link)}#reader-comments" aria-label="この記事のコメント欄へ">'
+        + f'<span aria-hidden="true">💬</span><span>コメント</span><span class="comment-count" data-comment-count="{slug}" hidden></span></a>'
         + f'<a class="share-control" data-share-slug="{slug}" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
@@ -361,6 +363,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
 <script defer src="/assets/comments.js"></script>
+<script defer src="/assets/comment-activity.js"></script>
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
@@ -413,6 +416,9 @@ def home(articles):
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles], ensure_ascii=False, separators=(",", ":")))
+    discussion_options = escape(json.dumps(
+        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
+         for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
     content = f'''<div class="container index-main">
 <div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
 <strong>本日の未発生ニュース</strong></div>
@@ -445,6 +451,13 @@ def home(articles):
       <a data-issue-link href="/archive/" hidden>記事を読む ↗</a>
     </div>
   </div>
+</section>
+<section class="reader-discussions" data-comment-discussions data-comment-discussion-options="{discussion_options}" aria-labelledby="reader-discussions-title">
+<div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなの未来予想</span>
+<h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
+<p data-discussion-intro>記事の最後から、5年後の世界にひとこと。ニックネームで参加できます。</p>
+<a class="reader-discussions-cta" href="{article_url(a)}#reader-comments">新着記事にコメントする ↗</a></div>
+<nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
@@ -546,7 +559,7 @@ def story(a, articles):
 <a class="reader-follow-x" href="{escape(share_url(a))}" target="_blank" rel="noopener noreferrer external">この記事をXで紹介 ↗</a>
 <a href="/feed.xml">RSSで購読 ↗</a></div></section>
 </article>
-<section class="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
+<section class="reader-comments" id="reader-comments" data-comments data-article={escape(a["slug"])}" aria-labelledby="comments-heading">
 <div class="reader-comments-heading">
 <span class="eyebrow">READERS' VOICES / 読者の声</span>
 <h2 id="comments-heading">未来の読者からの声 <small data-comments-count></small></h2>
