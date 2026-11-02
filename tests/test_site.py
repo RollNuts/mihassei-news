@@ -141,7 +141,16 @@ class SiteTests(unittest.TestCase):
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
-        self.assertIn('og/brand.png',home)
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
+        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
+        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
+        self.assertIn('name="twitter:title" content="未発生新聞｜5年後の架空ニュース"',home)
+        self.assertNotIn('未発生新聞 | 未発生新聞',home)
+        for a in self.articles:
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('name="twitter:card" content="summary_large_image"',page)
+            self.assertIn('name="twitter:image" content="https://',page)
+            self.assertNotIn('.svg">',page.split('name="twitter:image" content="',1)[1].split('>',1)[0])
         image=(ROOT/"dist/og/brand.png").read_bytes()
         self.assertEqual(image[:8],b"\x89PNG\r\n\x1a\n")
         ET.parse(ROOT/"dist/sitemap.xml")
