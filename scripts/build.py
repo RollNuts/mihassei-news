@@ -126,7 +126,7 @@ def actions(a, compact=False):
     return (
         '<div class="engagement-actions' + (" compact" if compact else "") + '">'
         + f'<button class="like-control" type="button" data-like-slug="{slug}" aria-pressed="false"'
-        + ' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span><span class="like-count" data-like-count="{slug}" hidden></span></button>'
+        + f' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span><span class="like-count" data-like-count="{slug}" hidden></span></button>'
         + f'<a class="share-control" data-share-slug="{slug}" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'

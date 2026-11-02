@@ -1,5 +1,6 @@
 """Production-ready checks, no external packages or API access."""
 import json
+import html
 import subprocess
 import sys
 import unittest
@@ -50,12 +51,14 @@ class SiteTests(unittest.TestCase):
             self.assertTrue(image.exists(),a["slug"])
             text=page.read_text(encoding="utf-8")
             self.assertIn(a["title"],text)
-            self.assertIn(a["source"]["url"],text)
+            self.assertIn(a["source"]["url"],html.unescape(text))
             self.assertIn(a["source"]["topic"],text)
             self.assertIn("創作ニュース",text)
             self.assertIn("data-article-readers",text)
             self.assertIn("data-like-slug",text)
             self.assertIn("x.com/intent/tweet",text)
+            self.assertIn('data-like-count="'+a["slug"]+'"',text)
+            self.assertNotIn('data-like-count="{slug}"',text)
             self.assertNotIn("Source: Unknown",text)
             original=datetime.fromisoformat(a["source"]["published_at"])
             fiction=datetime.fromisoformat(a["fiction_at"])
