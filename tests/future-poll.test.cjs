@@ -120,6 +120,49 @@ test('existing visit, like and sharing counters remain unchanged',async()=>{
   db.close();
 });
 
+test('X/search entry counts are per-article browser IDs, with strict deduplication',async()=>{
+  const {db,api,get}=fixture();
+  const a=randomUUID(),b=randomUUID(),c=randomUUID();
+  for(let i=0;i<3;i++)assert.equal((await api('visit',a,'story-a',undefined,'x')).status,200);
+  assert.equal((await api('visit',b,'story-a',undefined,'search')).status,200);
+  assert.equal((await api('visit',a,'story-b',undefined,'x')).status,200);
+  // Same browser can re-enter the same article via another source.
+  assert.equal((await api('visit',a,'story-a',undefined,'search')).status,200);
+  // Unknown or internal visits never count as an X/search arrival.
+  assert.equal((await api('visit',c,'story-b',undefined,'external')).status,200);
+  assert.equal((await api('visit',c,'story-a')).status,200);
+  // A landing on the homepage is a sitewide channel, not an article entry.
+  assert.equal((await api('visit',b,'',undefined,'x')).status,200);
+  const res=(await get('story-a,story-b,empty')).result;
+  assert.equal(res.articles['story-a'].arrivals.x,1);
+  assert.equal(res.articles['story-a'].arrivals.search,2);
+  assert.equal(res.articles['story-b'].arrivals.x,1);
+  assert.equal(res.articles['story-b'].arrivals.search,0);
+  assert.equal(res.articles['empty'].arrivals.x,0);
+  assert.equal(res.articles['empty'].arrivals.search,0);
+  assert.equal(res.articles['story-a'].readers,3);
+  assert.equal(res.channels.x,2,'sitewide X count must still dedupe browser IDs');
+  assert.equal(res.channels.search,2,'sitewide search count remains independent');
+  const stored=db.prepare("SELECT kind,article,visitor FROM events WHERE kind LIKE 'arrival:%'").all();
+  assert.equal(stored.length,4);
+  assert.ok(stored.every(x=>['arrival:x','arrival:search'].includes(x.kind)));
+  assert.ok(stored.every(x=>x.article.startsWith('story-')));
+  assert.ok(stored.every(x=>/^[a-f0-9]{64}$/.test(x.visitor)));
+  assert.ok(!stored.some(x=>[a,b,c].includes(x.visitor)));
+  db.close();
+});
+
+test('invalid arrival channel never writes a per-article counter',async()=>{
+  const {db,api,get}=fixture();
+  const id=randomUUID();
+  const bad=await api('visit',id,'story-a',undefined,'x;https://example.org/private');
+  assert.equal(bad.status,400);
+  const summary=(await get('story-a')).result.articles['story-a'];
+  assert.equal(summary.arrivals.x,0);
+  assert.equal(summary.arrivals.search,0);
+  db.close();
+});
+
 test('vote frontend never fakes figures and handles server rejection',()=>{
   const js=fs.readFileSync(path.join(__dirname,'../assets/engagement.js'),'utf8');
   assert.match(js,/selectedPoll=result\.vote/);

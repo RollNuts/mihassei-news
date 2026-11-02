@@ -33,7 +33,8 @@ class DailyMetricsTests(unittest.TestCase):
                 "visitors": 42,
                 "channels": {"x": 4, "search": 7, "external": 1, "unattributed": 12},
                 "articles": {
-                    slug: {"readers": 2, "likes": 1, "shareClicks": 0, "continuedReaders": 1}
+                    slug: {"readers": 2, "likes": 1, "shareClicks": 0, "continuedReaders": 1,
+                           "arrivals": {"x": 1, "search": 2}}
                     for slug in names
                 },
             }).encode())
@@ -47,6 +48,8 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(list(map(len, calls)), [20, 1])
         self.assertEqual(metrics[names[0]]["readers"], 2)
         self.assertEqual(metrics[names[0]]["continued_readers"], 1)
+        self.assertEqual(metrics[names[0]]["x_arrivals"], 1)
+        self.assertEqual(metrics[names[0]]["search_arrivals"], 2)
 
     def test_reject_missing_or_invented_metrics(self):
         def fake_open(req, timeout):
@@ -57,6 +60,30 @@ class DailyMetricsTests(unittest.TestCase):
             }).encode())
         with self.assertRaises(ValueError):
             m.read_public_metrics(["real-story"], opener=fake_open)
+
+    def test_missing_arrival_history_is_omitted_not_made_up(self):
+        def old_worker(request,timeout):
+            return FakeResponse(json.dumps({
+                "unit":"anonymous-browser","visitors":2,
+                "articles":{"story":{"readers":1,"likes":0,"shareClicks":0,
+                                     "continuedReaders":0}}
+            }).encode())
+        _,metrics,_=m.read_public_metrics(["story"],opener=old_worker)
+        self.assertNotIn("x_arrivals",metrics["story"])
+        self.assertNotIn("search_arrivals",metrics["story"])
+
+    def test_reject_corrupted_article_arrivals(self):
+        for bad in ({"x":-1,"search":0},{"x":"many","search":1},
+                    {"x":1},{"x":1,"search":0,"full_referrer":"private"}):
+            def fetch(request,timeout):
+                return FakeResponse(json.dumps({
+                    "unit":"anonymous-browser","visitors":4,
+                    "articles":{"story":{"readers":1,"likes":0,
+                                          "shareClicks":0,"continuedReaders":0,
+                                          "arrivals":bad}}
+                }).encode())
+            with self.assertRaises(ValueError):
+                m.read_public_metrics(["story"],opener=fetch)
 
     def test_reject_unverified_attribution_values(self):
         def bad_source(req, timeout):

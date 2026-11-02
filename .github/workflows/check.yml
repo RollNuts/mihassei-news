@@ -29,6 +29,7 @@ jobs:
           node --check assets/comments.js
           node --check assets/comment-activity.js
           node --check assets/bookmarks.js
+          node --check assets/growth-desk.js
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
