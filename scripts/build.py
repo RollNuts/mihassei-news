@@ -7,6 +7,7 @@ import json
 import re
 import shutil
 import struct
+import subprocess
 import zlib
 from datetime import datetime
 from email.utils import format_datetime
@@ -683,7 +684,7 @@ def other_files(articles):
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n")
 
 
 
@@ -756,6 +757,22 @@ def make_brand_image():
     filename.write_bytes(png)
 
 
+def build_revision():
+    """Expose this exact Git commit so public verification never trusts stale assets."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=BASE, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5,
+            check=False,
+        )
+        sha = result.stdout.strip().lower()
+        if result.returncode == 0 and re.fullmatch(r"[0-9a-f]{40}", sha):
+            return sha
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    return "unknown"
+
+
 def build():
     articles = load()
     if OUT.exists():
@@ -769,6 +786,7 @@ def build():
     photos = BASE / "assets" / "photos"
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
+    write("build-revision.txt", build_revision() + "\n")
     write("index.html",home(articles))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
