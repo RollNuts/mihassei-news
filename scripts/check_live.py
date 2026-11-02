@@ -129,6 +129,15 @@ def check():
             if token not in page:
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         photo=item.get("photo")
+        cached=ROOT/"assets"/"photos"/(slug+".jpg")
+        if not cached.is_file():
+            image_url=SITE+"/og/articles/"+slug+".png"
+            if '<meta property="og:image" content="'+image_url+'">' not in page:
+                raise RuntimeError(slug+": article-specific OGP image metadata missing")
+            picture,kind=get("/og/articles/"+slug+".png")
+            if (not picture.startswith(bytes((137,80,78,71,13,10,26,10)))
+                or "image/png" not in kind or len(picture)<1500):
+                raise RuntimeError(slug+": article-specific social PNG inaccessible")
         if photo:
             if photo["source"] not in page or photo["credit"] not in page:
                 raise RuntimeError(slug+": photo attribution missing")
