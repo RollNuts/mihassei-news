@@ -22,6 +22,7 @@ class SiteTests(unittest.TestCase):
                   "sitemap.xml","editorial/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
+                  "assets/comment-activity.js",
                   "og/brand.png","404.html","robots.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
 
@@ -82,6 +83,24 @@ class SiteTests(unittest.TestCase):
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
         self.assertIn("読者コメントについて",privacy)
         self.assertIn("投稿日時を公開",privacy)
+
+    def test_genuine_reader_participation_discovery(self):
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comment-discussions',home)
+        self.assertIn('data-comment-discussion-options=',home)
+        self.assertIn('data-discussion-list',home)
+        self.assertIn('href="/assets/comment-activity.js"',home.replace('src=', 'href='))
+        self.assertIn("新着記事にコメントする",home)
+        self.assertIn('data-comment-count=',home)
+        for a in self.articles:
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('id="reader-comments"',page)
+            self.assertIn('data-comment-count="'+a["slug"]+'"',page)
+            self.assertIn('href="/articles/'+a["slug"]+'/#reader-comments"',page)
+        self.assertTrue((ROOT/"dist/assets/comment-activity.js").is_file())
+        highlights=(ROOT/"assets/comment-activity.js").read_text(encoding="utf-8")
+        self.assertIn("/api/comments/summary?",highlights)
+        self.assertNotIn(".innerHTML=",highlights)
 
     def test_real_publication_time_is_not_fictional_dateline(self):
         for a in self.articles:
