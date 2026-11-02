@@ -501,9 +501,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (photo["alt"] + "（イメージ写真）" if local_photo and photo else
-              ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
-               ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
-                "未発生新聞（創作ニュース）")))
+              ("連載『" + serial["title"] + "』の編集部制作イラスト" if serial else
+               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
+                ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
+                 "未発生新聞（創作ニュース）"))))
     og_mime = "image/jpeg" if local_photo else "image/png"
     og_size = "" if local_photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
