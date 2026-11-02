@@ -33,7 +33,7 @@ class DailyMetricsTests(unittest.TestCase):
                 "visitors": 42,
                 "channels": {"x": 4, "search": 7, "external": 1, "unattributed": 12},
                 "articles": {
-                    slug: {"readers": 2, "likes": 1, "shareClicks": 0}
+                    slug: {"readers": 2, "likes": 1, "shareClicks": 0, "continuedReaders": 1}
                     for slug in names
                 },
             }).encode())
@@ -46,6 +46,7 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(len(metrics), 21)
         self.assertEqual(list(map(len, calls)), [20, 1])
         self.assertEqual(metrics[names[0]]["readers"], 2)
+        self.assertEqual(metrics[names[0]]["continued_readers"], 1)
 
     def test_reject_missing_or_invented_metrics(self):
         def fake_open(req, timeout):
@@ -63,7 +64,7 @@ class DailyMetricsTests(unittest.TestCase):
                 "unit": "anonymous-browser",
                 "visitors": 10,
                 "channels": {"x": "a lot", "search": 0, "external": 0, "unattributed": 0},
-                "articles": {"a": {"readers": 0, "likes": 0, "shareClicks": 0}},
+                "articles": {"a": {"readers": 0, "likes": 0, "shareClicks": 0, "continuedReaders": 0}},
             }).encode())
         with self.assertRaises(ValueError):
             m.read_public_metrics(["a"], opener=bad_source)
@@ -79,7 +80,7 @@ class DailyMetricsTests(unittest.TestCase):
              "fiction_at": "2031-11-02T19:00:00+09:00",
              "source": {"published_at": "2026-11-02T19:00:00+09:00"}},
         ]
-        counts = {slug: {"readers": 4, "likes": 0, "share_clicks": 1}
+        counts = {slug: {"readers": 4, "likes": 0, "share_clicks": 1, "continued_readers": 2}
                   for slug in ("new-story", "old-story")}
         result = m.build_snapshot(
             articles, datetime.fromisoformat("2026-11-03T01:07:00+09:00"), 15, counts)
@@ -88,6 +89,8 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(result["visitors_cumulative"], 15)
         self.assertEqual(result["unit"], "anonymous-browser")
         self.assertEqual(result["recent_articles_sampled"], 2)
+        self.assertEqual(result["recent_articles"][0]["continued_readers"], 2)
+        self.assertIn("referrer-stripping undercounts", result["continuation_note"])
         self.assertNotIn("channels_cumulative", result)
         with_channels=m.build_snapshot(
             articles,datetime.fromisoformat("2026-11-03T01:07:00+09:00"),15,counts,
@@ -98,3 +101,22 @@ class DailyMetricsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class ContinuationMetricsValidation(unittest.TestCase):
+    def test_invalid_or_absent_continuation_counts_are_not_faked(self):
+        def fake_open(req,timeout):
+            return FakeResponse(json.dumps({
+                "unit":"anonymous-browser", "visitors":2,
+                "articles":{"a":{"readers":2,"likes":0,"shareClicks":0}}
+            }).encode())
+        with self.assertRaises(ValueError):
+            m.read_public_metrics(["a"],opener=fake_open)
+
+        def negative_open(req,timeout):
+            return FakeResponse(json.dumps({
+                "unit":"anonymous-browser", "visitors":2,
+                "articles":{"a":{"readers":2,"likes":0,"shareClicks":0,
+                                 "continuedReaders":-1}}
+            }).encode())
+        with self.assertRaises(ValueError):
+            m.read_public_metrics(["a"],opener=negative_open)
