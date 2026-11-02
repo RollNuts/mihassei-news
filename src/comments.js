@@ -27,6 +27,10 @@ function normalizeInput(data) {
   const body=typeof data.body==='string' ? data.body.replace(/\r\n?/g,'\n').trim() : '';
   if (Array.from(nickname).length>16 || /[<>\u0000-\u001f\u007f]/u.test(nickname) || URL_LIKE.test(nickname)) return null;
   if (Array.from(body).length<2 || Array.from(body).length>180 || /[<>\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(body)) return null;
+  const normalized=(nickname+' '+body).normalize('NFKC');
+  // Reject common contact details before they become publicly visible.
+  // This is not a complete personal-information detector.
+  if (/(?:0[789]0|050)[-ー‐–\s]?\d{4}[-ー‐–\s]?\d{4}/u.test(normalized)) return null;
   if ((body.match(/\n/g)||[]).length>3 || URL_LIKE.test(body) || /(.)\1{12,}/u.test(body)) return null;
   return {nickname:nickname||'匿名の未来人',body};
 }
@@ -79,6 +83,23 @@ export class ReaderComments extends DurableObject {
     const total=this.sql.exec(`SELECT COUNT(*) AS n FROM comments
       WHERE article=? AND status='visible'`,article).one().n;
     return reply({article,total,comments:rows.map(publicComment)});
+  }
+  async getSummary(url) {
+    // Public aggregate only: no visitor IDs, names or raw comment bodies.
+    const raw=(url.searchParams.get('articles')||'').slice(0,1600);
+    const articles=[...new Set(raw.split(',').filter(validSlug).slice(0,20))];
+    const counts={};
+    for(const article of articles)counts[article]=0;
+    if(articles.length){
+      const placeholders=articles.map(()=>'?').join(',');
+      const rows=this.sql.exec(
+        `SELECT article, COUNT(*) AS n FROM comments
+          WHERE status='visible' AND article IN (${placeholders}) GROUP BY article`,
+        ...articles
+      ).toArray();
+      for(const row of rows)counts[row.article]=row.n;
+    }
+    return reply({version:1,counts});
   }
   async getAdmin(req) {
     if(!this.env.COMMENTS_ADMIN_TOKEN)return reply({error:'管理用キーが未設定です'},503);
@@ -181,6 +202,10 @@ export class ReaderComments extends DurableObject {
   }
   async fetch(req) {
     const url=new URL(req.url);
+    if(url.pathname==='/api/comments/summary'){
+      if(req.method!=='GET')return reply({error:'method not allowed'},405);
+      return this.getSummary(url);
+    }
     if(url.pathname==='/api/comments/admin'){
       if(req.method==='GET')return this.getAdmin(req);
       if(req.method==='POST')return this.postAdmin(req);

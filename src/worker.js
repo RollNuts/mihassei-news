@@ -86,7 +86,7 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
-    const isComments=url.pathname==="/api/comments" || url.pathname==="/api/comments/admin";
+    const isComments=["/api/comments","/api/comments/summary","/api/comments/admin"].includes(url.pathname);
     if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
     if(req.method==="POST") {
       if(!req.headers.get("origin") || req.headers.get("origin")!==url.origin)return json({error:"same origin only"},403);
