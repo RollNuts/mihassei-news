@@ -15,6 +15,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests -v
+      - name: Warn about stale news sources and topic concentration (never blocks publishing)
+        run: python3 scripts/audit_editorial.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -29,6 +31,8 @@ jobs:
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
+      - name: Verify Japan-date edition freshness (today vs old issue)
+        run: node --test tests/edition-freshness.test.cjs
       - name: Test coarse privacy-safe attribution without network access
         run: node --test tests/attribution.test.cjs
       - name: Test archive filters and incremental browsing without network access
