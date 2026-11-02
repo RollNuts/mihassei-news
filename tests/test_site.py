@@ -63,6 +63,31 @@ class SiteTests(unittest.TestCase):
             self.assertEqual((fiction.month,fiction.day,fiction.hour,fiction.minute),
                              (original.month,original.day,original.hour,original.minute))
 
+    def test_real_publication_time_is_not_fictional_dateline(self):
+        for a in self.articles:
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            expected=a.get("published_at") or a["source"]["published_at"][:10]
+            self.assertIn('"datePublished": "'+expected+'"',page)
+            self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',page)
+            self.assertIn('"@type": "BlogPosting"',page)
+
+    def test_sitemap_and_category_archives(self):
+        root=ET.parse(ROOT/"dist/sitemap.xml").getroot()
+        ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
+        mapped={n.findtext("s:loc",namespaces=ns):n.findtext("s:lastmod",namespaces=ns)
+                for n in root.findall("s:url",ns)}
+        for a in self.articles:
+            url="https://veripsa.com/articles/"+a["slug"]+"/"
+            self.assertIn(url,mapped)
+            self.assertEqual(mapped[url][:10],(a.get("modified_at") or a.get("published_at") or a["source"]["published_at"][:10])[:10])
+        economies=[a for a in self.articles if a["category"]=="経済"]
+        if len(economies)>=3:
+            category=ROOT/"dist/category/economy/index.html"
+            self.assertTrue(category.exists())
+            for a in economies:
+                self.assertIn(a["title"],category.read_text(encoding="utf-8"))
+            self.assertIn("https://veripsa.com/category/economy/",mapped)
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
