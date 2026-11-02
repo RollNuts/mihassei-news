@@ -19,12 +19,14 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .reader_paths import suggested_articles
     from .share_desk import render as render_share_desk
+    from .growth_desk import render as render_growth_desk
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
     from reader_paths import suggested_articles
     from share_desk import render as render_share_desk
+    from growth_desk import render as render_growth_desk
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -1028,7 +1030,7 @@ def other_files(articles, issues=None):
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n/growth-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
 
 
 
@@ -1161,6 +1163,8 @@ def build():
     # Human-operated static promotion helper; no automated X publishing.
     write("share-desk/index.html",render_share_desk(
         articles,social_image,lambda a: usable_cached_photo(a,root=BASE)))
+    # Same free aggregate API; this noindex desk never submits visit events.
+    write("growth-desk/index.html",render_growth_desk(articles))
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))
