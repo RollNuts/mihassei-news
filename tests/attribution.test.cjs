@@ -7,7 +7,7 @@ const vm=require('node:vm');
 
 const frontend=readFileSync(join(__dirname,'../assets/engagement.js'),'utf8');
 
-async function classifyArrival(href,referrer=''){
+async function visitPayload(href,referrer=''){
   const page=new URL(href);
   const posts=[];
   const context={
@@ -29,6 +29,11 @@ async function classifyArrival(href,referrer=''){
   await new Promise(resolve=>setImmediate(resolve));
   const visit=posts.find(item=>item.action==='visit');
   assert.ok(visit,'every page view posts one visit');
+  return visit;
+}
+
+async function classifyArrival(href,referrer=''){
+  const visit=await visitPayload(href,referrer);
   return visit.channel===undefined?null:visit.channel;
 }
 
@@ -57,4 +62,30 @@ test('unrecognised campaign markers cannot invent categories',async()=>{
   assert.equal(await classifyArrival('https://veripsa.com/?utm_source=unspecified','https://veripsa.com/'), null);
   assert.equal(await classifyArrival('https://veripsa.com/?src=unrelated','https://veripsa.com/'), null);
   assert.equal(await classifyArrival('https://veripsa.com/?src=x-launch-missing-version','https://veripsa.com/'), null);
+});
+
+test('article-to-article navigation uses only same-origin safe source slugs',async()=>{
+  const v=await visitPayload(
+    'https://veripsa.com/articles/target-story/',
+    'https://veripsa.com/articles/original-story/?private=secret#reader-comments'
+  );
+  assert.equal(v.fromArticle,'original-story');
+  assert.equal(v.article,'target-story');
+  assert.equal(v.channel,undefined,'internal movement must not count as a new incoming channel');
+  assert.ok(!JSON.stringify(v).includes('private=secret'));
+  assert.ok(!JSON.stringify(v).includes('reader-comments'));
+});
+
+test('external, same-story and non-article navigation never imply continuation',async()=>{
+  for(const [url,referrer] of [
+    ['https://veripsa.com/articles/target-story/','https://social.example.com/articles/original-story/'],
+    ['https://veripsa.com/articles/target-story/','https://veripsa.com/articles/target-story/'],
+    ['https://veripsa.com/articles/target-story/','https://veripsa.com/archive/'],
+    ['https://veripsa.com/','https://veripsa.com/articles/original-story/'],
+    ['https://veripsa.com/articles/target-story/','https://veripsa.com/articles/malicious--slug/'],
+    ['https://veripsa.com/articles/target-story/','']
+  ]){
+    const v=await visitPayload(url,referrer);
+    assert.equal(v.fromArticle,undefined,referrer+' should not count');
+  }
 });
