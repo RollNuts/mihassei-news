@@ -112,6 +112,35 @@ def check():
         if not svg.startswith(b"<svg") or "svg" not in svg_mime:
             raise RuntimeError("Generated original serial cover unavailable: "+prefix)
         expected_kind="創作ミステリー" if serial["kind"]=="fiction" else "実際の市場に関する考察"
+        feed="/feeds/series-"+serial["slug"]+".xml"
+        if ('href="'+feed+'"' not in serial_index or
+            'href="'+feed+'"' not in series_markup.decode("utf-8")):
+            raise RuntimeError("Serial RSS is not discoverable on the public site: "+feed)
+        rss_bytes,rss_type=get(feed)
+        if "xml" not in rss_type:
+            raise RuntimeError("Serial RSS is not published as XML: "+feed)
+        channel=ET.fromstring(rss_bytes).find("channel")
+        if channel is None or serial["title"] not in (channel.findtext("title") or ""):
+            raise RuntimeError("Serial RSS title missing or incorrect: "+feed)
+        ns_serial={"atom":"http://www.w3.org/2005/Atom",
+                   "media":"http://search.yahoo.com/mrss/"}
+        self_link=channel.find("atom:link",ns_serial)
+        if self_link is None or self_link.get("href")!=SITE+feed:
+            raise RuntimeError("Original serial RSS self URL missing: "+feed)
+        feed_entries=channel.findall("item")
+        expected_episodes=list(reversed(serial["episodes"][-30:]))
+        if len(feed_entries)!=len(expected_episodes):
+            raise RuntimeError("Serial RSS lists incorrect number of released chapters")
+        for feed_item,chapter in zip(feed_entries,expected_episodes):
+            url=SITE+prefix+chapter["slug"]+"/"
+            if feed_item.findtext("link")!=url or feed_item.findtext("guid")!=url:
+                raise RuntimeError("Serial RSS chapter link mismatch: "+url)
+            if feed_item.find("pubDate") is not None:
+                raise RuntimeError("Serial RSS cannot invent unrecorded publication times")
+            thumb=feed_item.find("media:thumbnail",ns_serial)
+            expected_picture=SITE+"/og/serials/"+serial["slug"]+"-"+chapter["slug"]+".png"
+            if thumb is None or thumb.get("url")!=expected_picture:
+                raise RuntimeError("Serial RSS first-party chapter preview missing: "+url)
         for ep in serial["episodes"]:
             path=prefix+ep["slug"]+"/"
             url=SITE+path
@@ -122,7 +151,7 @@ def check():
             for tag in ('<link rel="canonical" href="'+url+'"',
                         'name="twitter:card" content="summary_large_image"',
                         'name="twitter:image" content="'+SITE+'/og/serials/'+serial["slug"]+'-'+ep["slug"]+'.png"',
-                        ep["title"]):
+                        ep["title"], 'href="'+feed+'"'):
                 if tag not in page:
                     raise RuntimeError("Serial live metadata incomplete: "+path+" "+tag)
             if url not in live_sitemap:
