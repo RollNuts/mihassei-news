@@ -891,7 +891,7 @@ def story(a, articles, issues=None, serials=None):
     )
     bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else serials)
     related_section = (
-        '<section class="article-related'><div class="section-head"><h2>さらに読む</h2>'
+        '<section class="article-related"><div class="section-head"><h2>さらに読む</h2>'
         '<a href="/archive/">ほかの記事 ↗</a></div>'
         '<div class="story-grid">' + related + '</div></section>'
     ) if related else ""
