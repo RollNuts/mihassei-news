@@ -57,7 +57,7 @@ jobs:
                       else:
                           if "image/jpeg" not in img_mime or image[:3]!=bytes([255,216,255]):
                               raise RuntimeError("Invalid JPEG for "+slug)
-                  if page.count("投稿文をコピー")!=len(picks):
+                  if page.count('<button type="button" data-copy-post>投稿文をコピー</button>')!=len(picks):
                       raise RuntimeError("Missing copy controls")
                   if page.count("Xで下書きを開く")!=len(picks):
                       raise RuntimeError("Missing manual X draft links")
