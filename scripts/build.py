@@ -367,6 +367,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/article-extra.css">
 <link rel="stylesheet" href="/assets/newsroom.css">
+<link rel="stylesheet" href="/assets/future-poll.css">
 <link rel="stylesheet" href="/assets/comments.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
@@ -552,6 +553,24 @@ def story(a, articles):
 <figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
+<section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
+<div class="future-poll-heading">
+<span class="future-poll-kicker">FUTURE VERDICT / 未来の判定</span>
+<h2 id="future-poll-title">この未来、本当にありそう？</h2>
+<p>記事はフィクション。あなたは5年後に起こりそうだと思う？</p>
+</div>
+<div class="future-poll-choices" role="group" aria-label="未来予想を投票">
+<button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
+<button type="button" data-poll-choice="unlikely" aria-pressed="false"><span aria-hidden="true">✕</span> それはない！</button>
+</div>
+<p class="future-poll-status" data-poll-status role="status">ブラウザ単位で1記事1票。投票後に結果を表示します。</p>
+<div class="future-poll-results" data-poll-results hidden aria-label="未来予想の投票結果">
+<div class="future-poll-result-line"><span>ありそう</span><strong data-poll-plausible-percent>—</strong></div>
+<div class="future-poll-meter"><span data-poll-plausible-bar></span></div>
+<div class="future-poll-result-line"><span>それはない！</span><strong data-poll-unlikely-percent>—</strong></div>
+<div class="future-poll-meter"><span data-poll-unlikely-bar></span></div>
+</div>
+</section>
 <div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
@@ -608,7 +627,7 @@ def about():
 <p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
 <h2>今日も、未発生。</h2>
 <p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
-<p>「未来を見にきた人」と「いいね」は匿名のブラウザ単位の集計です。実際の人数とは一致しない場合があります。</p>
+<p>「未来を見にきた人」「いいね」「未来の予想投票」は匿名のブラウザ単位の参考集計です。実際の人数とは一致しない場合があります。</p>
 <p><a href="/editorial/" style="text-decoration:underline">編集方針と記事の作り方を読む ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
@@ -669,6 +688,8 @@ def privacy():
 <p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。アクセス計測のために氏名やメールアドレスの登録は求めません。</p>
 <p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
 <p>どこから訪れたかは「X」「検索」「その他の外部サイト」「判別できない流入」の4種類に大まかに分類します。ブラウザ内で分類した種類名だけを送信し、参照元URL全体・検索した言葉・IPアドレスを集計データベースには保存しません。サイト内のページ移動は流入経路に含めず、同じブラウザでも複数経路を利用すれば複数の区分に数えられます。数値は実際の来訪人数やPVではなく、計測開始以降の参考値です。</p>
+<h2>5年後の予想投票について</h2>
+<p>記事にある「ありそう／それはない！」は、匿名ブラウザ単位の任意投票です。投票する際はブラウザのランダム識別子をSHA-256でハッシュ化して保存し、各記事で1ブラウザ1票として重複を防ぎます。公開するのは選択肢ごとの合計と割合だけで、個人の回答は公開しません。IPアドレス・メールアドレスを投票データベースに保存しません。別のブラウザやデータ削除後は重複投票が可能なため、実人数や世論調査ではありません。投票後の変更・取り消しはできません。</p>
 <h2>読者コメントについて</h2>
 <p>記事へのコメントはニックネーム（省略可能）と本文、投稿日時を公開します。本文は180文字以内で、URLや個人情報の記載は禁止しています。匿名のブラウザ識別子をハッシュ化して保存し、連続投稿防止・自分の投稿の削除・通報の重複防止に使用します。IPアドレスやメールアドレスをコメントデータベースに保存しません。</p>
 <p>3件の異なるブラウザから通報があると、一時的に非表示になります。運営者は不適切な投稿を非表示・削除することがあります。自分の投稿は同じブラウザから削除できます。履歴を削除すると操作できなくなることがあります。</p>

@@ -105,6 +105,65 @@
   const pending = new Set();
   const buttons = [...document.querySelectorAll("[data-like-slug]")];
   const article = location.pathname.match(/^\/articles\/([a-z0-9-]+)\/?$/)?.[1]||"";
+  // Reader predictions are confirmed by the existing free engagement API.
+  // Never display invented votes and never count failed requests.
+  const poll=document.querySelector("[data-future-poll]");
+  const pollKey="mihassei-future-verdicts-v1";
+  let savedPolls={};
+  try {
+    const value=JSON.parse(localStorage.getItem(pollKey)||"{}");
+    if(value && typeof value==="object" && !Array.isArray(value)){
+      savedPolls=Object.fromEntries(Object.entries(value).filter(([slug,choice])=>
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && ["plausible","unlikely"].includes(choice)
+      ).slice(-250));
+    }
+  }catch(_){}
+  let selectedPoll=poll && savedPolls[article] || "";
+  let pollPending=false,pollError="",pollCounts=null;
+  function savePolls(){
+    if(!article || !selectedPoll)return;
+    savedPolls[article]=selectedPoll;
+    try{localStorage.setItem(pollKey,JSON.stringify(Object.fromEntries(Object.entries(savedPolls).slice(-250))));}
+    catch(_){}
+  }
+  function renderPoll(votes){
+    if(!poll || poll.dataset.pollArticle!==article)return;
+    if(votes && Number.isInteger(votes.plausible) && votes.plausible>=0 &&
+       Number.isInteger(votes.unlikely) && votes.unlikely>=0)pollCounts=votes;
+    const plausible=pollCounts?.plausible||0,unlikely=pollCounts?.unlikely||0;
+    const total=plausible+unlikely;
+    poll.querySelectorAll("[data-poll-choice]").forEach(button=>{
+      const selected=button.dataset.pollChoice===selectedPoll;
+      button.classList.toggle("is-selected",selected);
+      button.setAttribute("aria-pressed",String(selected));
+      button.disabled=Boolean(selectedPoll)||pollPending;
+    });
+    const message=poll.querySelector("[data-poll-status]");
+    if(message){
+      message.classList.toggle("is-error",Boolean(pollError));
+      message.textContent=pollError ||
+        (pollPending?"投票を送信しています…" :
+         selectedPoll?(total>0?"投票済み・実際の予想 "+total+"票（ブラウザ単位）":"投票済み。集計を取得しています。"):
+         total>0?"いままでの予想 "+total+"票。投票すると結果が見られます。":"最初の予想をどうぞ。1ブラウザにつき1票。");
+    }
+    const results=poll.querySelector("[data-poll-results]");
+    if(results){
+      results.hidden=!selectedPoll || total===0;
+      if(total>0 && selectedPoll){
+        const yes=Math.round(plausible/total*100),no=100-yes;
+        const y=poll.querySelector("[data-poll-plausible-percent]");
+        const n=poll.querySelector("[data-poll-unlikely-percent]");
+        const yBar=poll.querySelector("[data-poll-plausible-bar]");
+        const nBar=poll.querySelector("[data-poll-unlikely-bar]");
+        if(y)y.textContent=yes+"%";
+        if(n)n.textContent=no+"%";
+        if(yBar)yBar.style.width=yes+"%";
+        if(nBar)nBar.style.width=no+"%";
+      }
+    }
+  }
+  renderPoll();
+
   const allSlugs=[...new Set(buttons.map(b=>b.dataset.likeSlug).filter(Boolean))].slice(0,20);
   if(article && !allSlugs.includes(article))allSlugs.unshift(article);
 
@@ -145,8 +204,9 @@
   }
   heartView();
 
-  async function apiPost(action,articleSlug=""){
+  async function apiPost(action,articleSlug="",choice=""){
     const payload={action,article:articleSlug,clientId};
+    if(action==="vote")payload.choice=choice;
     if(action==="visit" && visitChannel)payload.channel=visitChannel;
     const response=await fetch("/api/engagement",{
       method:"POST",headers:{"content-type":"application/json"},
@@ -178,6 +238,7 @@
         const count=document.querySelector("[data-article-reader-count]");
         if(wrapper && count){wrapper.hidden=false;count.textContent=Intl.NumberFormat("ja-JP").format(metric.readers);}
       }
+      if(slug===article)renderPoll(metric.votes);
     }
   }
   async function refresh(){
@@ -214,6 +275,27 @@
     } finally {
       pending.delete(slug);
       heartView();
+    }
+  });
+
+  poll?.addEventListener("click",async event=>{
+    const button=event.target.closest("button[data-poll-choice]");
+    if(!button || pollPending || selectedPoll || !article)return;
+    const choice=button.dataset.pollChoice;
+    if(!["plausible","unlikely"].includes(choice))return;
+    pollPending=true;pollError="";renderPoll();
+    try {
+      const result=await apiPost("vote",article,choice);
+      if(!["plausible","unlikely"].includes(result.vote))
+        throw new Error("予想を確認できませんでした");
+      // Server confirms the choice, including idempotent retries.
+      selectedPoll=result.vote;
+      savePolls();
+      renderPoll(result.votes);
+    }catch(_){
+      pollError="投票を保存できませんでした。通信状況を確認して再度お試しください。";
+    }finally{
+      pollPending=false;renderPoll();
     }
   });
 

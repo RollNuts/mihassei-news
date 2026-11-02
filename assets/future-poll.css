@@ -1,0 +1,23 @@
+/* Future verdict: real reader votes, zero paid services or fonts. */
+.future-poll{margin:35px 0 28px;padding:26px 28px 23px;border:1px solid #c9cabf;border-top:3px solid var(--ink);background:#efeee7;color:var(--ink)}
+.future-poll-kicker{display:block;font:900 11px Georgia,serif;letter-spacing:.15em;color:var(--accent)}
+.future-poll-heading h2{font:900 clamp(23px,3.2vw,30px)/1.5 var(--serif);letter-spacing:-.06em;margin:10px 0 4px}
+.future-poll-heading p{color:var(--muted);font:500 12px/1.85 var(--sans);margin:0 0 18px}
+.future-poll-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.future-poll-choices button{background:#fffefa;border:1px solid #a9ada3;border-radius:4px;padding:13px 8px;color:var(--ink);font:900 14px/1.4 var(--sans);cursor:pointer;transition:background .15s,border-color .15s}
+.future-poll-choices button span{font-size:17px;vertical-align:-1px}
+.future-poll-choices button:hover:not(:disabled){background:#fdf5eb;border-color:var(--accent)}
+.future-poll-choices button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.future-poll-choices button.is-selected{border-color:var(--accent);background:#f9e4da;color:#9d3829}
+.future-poll-choices button:disabled{cursor:default;opacity:.72}
+.future-poll-choices button.is-selected:disabled{opacity:1}
+.future-poll-status{color:var(--muted);font:500 11px/1.8 var(--sans);margin:11px 0 0}
+.future-poll-status.is-error{color:#ac3427}
+.future-poll-results{margin-top:20px;border-top:1px solid #caccc2;padding-top:18px}
+.future-poll-result-line{display:flex;align-items:center;justify-content:space-between;gap:15px;color:var(--ink);font:800 12px/1.6 var(--sans);margin-top:9px}
+.future-poll-result-line strong{font:900 16px Georgia,serif;font-variant-numeric:tabular-nums}
+.future-poll-meter{height:8px;border-radius:99px;background:#d1d3c9;overflow:hidden;margin:5px 0 12px}
+.future-poll-meter span{display:block;width:0;height:100%;background:var(--accent);transition:width .25s ease}
+.future-poll-meter:nth-of-type(4) span{background:#5e7770}
+@media(max-width:600px){.future-poll{padding:20px 17px}.future-poll-choices{gap:8px}.future-poll-choices button{font-size:12px;padding:12px 5px}}
+@media(prefers-reduced-motion:reduce){.future-poll-meter span{transition:none}}

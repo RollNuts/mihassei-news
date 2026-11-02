@@ -35,5 +35,7 @@ jobs:
         run: node --test tests/archive-pagination.test.cjs
       - name: Test anonymous comments in SQLite without network access
         run: node --test tests/comments.test.cjs
+      - name: Test future prediction voting with local SQLite (no paid API)
+        run: node --test tests/future-poll.test.cjs
       - name: Verify Cloudflare Worker can be packaged without deploying
         run: npx --yes wrangler@4 deploy --dry-run --outdir /tmp/mihassei-worker

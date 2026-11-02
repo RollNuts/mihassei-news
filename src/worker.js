@@ -41,7 +41,15 @@ export class NewsroomStats extends DurableObject {
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
-        details[slug]={likes:this.count("likes:"+slug),readers:this.count("readers:"+slug),shareClicks:this.count("shares:"+slug)};
+        details[slug]={
+          likes:this.count("likes:"+slug),
+          readers:this.count("readers:"+slug),
+          shareClicks:this.count("shares:"+slug),
+          votes:{
+            plausible:this.count("predictions:plausible:"+slug),
+            unlikely:this.count("predictions:unlikely:"+slug)
+          }
+        };
       }
       const channels={};
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
@@ -53,7 +61,9 @@ export class NewsroomStats extends DurableObject {
     let data;
     try{data=await req.json();}catch(_){return json({error:"invalid payload"},400);}
     if(!data || JSON.stringify(data).length>512 || !idPattern.test(data.clientId||""))return json({error:"invalid client"},400);
-    if(!["visit","like","share"].includes(data.action))return json({error:"invalid action"},400);
+    if(!["visit","like","share","vote"].includes(data.action))return json({error:"invalid action"},400);
+    if(data.action==="vote" && !["plausible","unlikely"].includes(data.choice))
+      return json({error:"invalid prediction choice"},400);
     const article=data.article||"";
     if(article && !validArticle(article))return json({error:"invalid article"},400);
     if(data.action!=="visit" && !article)return json({error:"article required"},400);
@@ -62,7 +72,7 @@ export class NewsroomStats extends DurableObject {
       return json({error:"invalid channel"},400);
     const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(data.clientId));
     const visitor=Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,"0")).join("");
-    let liked=null;
+    let liked=null,selectedVote=null,alreadyVoted=false;
     this.ctx.storage.transactionSync(()=>{
       if(data.action==="visit") {
         if(this.insertOnce("site","",visitor))this.increment("visitors",1);
@@ -85,12 +95,32 @@ export class NewsroomStats extends DurableObject {
       } else if(data.action==="share") {
         // Counts intent-clicks only, not confirmed X publications.
         if(this.insertOnce("share",article,visitor))this.increment("shares:"+article,1);
+      } else if(data.action==="vote") {
+        // Immutable one-vote-per-browser/article: both options are checked
+        // atomically; repeated POSTs never add phantom votes.
+        const previous=this.sql.exec(
+          "SELECT kind FROM events WHERE kind IN (?,?) AND article=? AND visitor=? LIMIT 1",
+          "prediction:plausible","prediction:unlikely",article,visitor
+        ).toArray()[0];
+        if(previous) {
+          selectedVote=previous.kind.slice("prediction:".length);
+          alreadyVoted=true;
+        } else {
+          this.insertOnce("prediction:"+data.choice,article,visitor);
+          this.increment("predictions:"+data.choice+":"+article,1);
+          selectedVote=data.choice;
+        }
       }
     });
     return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),article,
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
-      shareClicks:article?this.count("shares:"+article):undefined,liked});
+      shareClicks:article?this.count("shares:"+article):undefined,liked,
+      vote:selectedVote,alreadyVoted,
+      votes:article?{
+        plausible:this.count("predictions:plausible:"+article),
+        unlikely:this.count("predictions:unlikely:"+article)
+      }:undefined});
   }
 }
 
