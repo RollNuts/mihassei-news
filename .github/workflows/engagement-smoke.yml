@@ -1,0 +1,28 @@
+name: Local engagement smoke test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build static newspaper
+        run: python3 scripts/build.py
+      - name: Run local free Durable Object API tests
+        run: |
+          npx --yes wrangler@4 dev --local --ip 127.0.0.1 --port 8788 > /tmp/mihassei-dev.log 2>&1 &
+          WORKER_PID=$!
+          trap 'kill "$WORKER_PID" 2>/dev/null || true; cat /tmp/mihassei-dev.log' EXIT
+          python3 scripts/smoke_engagement.py http://127.0.0.1:8788
