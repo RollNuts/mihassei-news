@@ -1,0 +1,29 @@
+/* Readers' letters: light editorial styling, no third-party assets. */
+.reader-comments{margin:58px 0 10px;border-top:3px double var(--ink);padding-top:30px}
+.reader-comments-heading .eyebrow{font-size:10px;letter-spacing:.17em}
+.reader-comments-heading h2{font:900 clamp(24px,3vw,32px)/1.45 var(--serif);letter-spacing:-.05em;margin:8px 0}
+.reader-comments-heading h2 small{font:700 13px var(--sans);color:var(--muted);letter-spacing:0}
+.reader-comments-heading p{font-size:12px;line-height:1.9;color:var(--muted);margin:0 0 22px}
+.reader-comments-status{font-size:12px;color:var(--muted);margin:13px 0 16px}
+.reader-comments-status.is-error{color:#a52f25}
+.reader-comment{border-top:1px solid var(--line);padding:17px 0 15px}
+.reader-comment-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.reader-comment-name{font-size:13px;font-weight:900;overflow-wrap:anywhere}
+.reader-comment-date{color:var(--muted);font-size:11px;white-space:nowrap}
+.reader-comment-body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.95;margin:10px 0}
+.reader-comment-actions{text-align:right}
+.reader-comment-actions button{border:0;padding:4px 0;color:var(--muted);font-size:11px;background:transparent;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.reader-comment-actions button:hover{color:var(--accent)}
+.reader-comment-actions button:disabled{opacity:.5;cursor:default}
+.reader-comments-form{background:#efeee7;border:1px solid var(--line);padding:24px;margin-top:25px;display:flex;flex-direction:column;gap:9px}
+.reader-comments-form label{font-size:12px;font-weight:900}
+.reader-comments-form label span{font-weight:400;color:var(--muted)}
+.reader-comments-form input,.reader-comments-form textarea{width:100%;border:1px solid #b9bbb2;background:#fffefa;color:var(--ink);border-radius:3px;padding:12px;box-sizing:border-box;font:14px/1.7 var(--sans)}
+.reader-comments-form textarea{resize:vertical;min-height:100px}
+.reader-comments-form input:focus-visible,.reader-comments-form textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.reader-comments-form .comment-form-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:7px;flex-wrap:wrap}
+.reader-comments-form .comment-form-footer span{font-size:11px;color:var(--muted);line-height:1.7;max-width:38ch}
+.reader-comments-form button[type=submit]{background:var(--accent);color:#fff;border:0;border-radius:3px;font:900 13px var(--sans);padding:12px 21px;cursor:pointer}
+.reader-comments-form button[type=submit]:hover{filter:brightness(.94)}
+.reader-comments-form button[type=submit]:disabled{opacity:.5;cursor:wait}
+@media(max-width:600px){.reader-comments{margin-top:42px}.reader-comments-form{padding:17px}.reader-comments-form button[type=submit]{width:100%}}
