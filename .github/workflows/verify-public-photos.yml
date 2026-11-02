@@ -5,14 +5,36 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  checks: read
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check live stories, image rights and metadata without generating traffic
+      - name: Wait for Cloudflare to build this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in $(seq 1 40); do
+            record="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs" --jq '.check_runs[] | select(.name=="Workers Builds: mihassei-news") | [.status, (.conclusion // "pending"), .details_url] | @tsv' | head -n 1)" || record=""
+            if [[ -n "$record" ]]; then
+              IFS=$'\t' read -r status conclusion link <<< "$record"
+              if [[ "$status" == "completed" ]]; then
+                if [[ "$conclusion" == "success" ]]; then
+                  echo "Confirmed Cloudflare Workers build succeeded for $GITHUB_SHA"
+                  exit 0
+                fi
+                echo "::error::Cloudflare build for $GITHUB_SHA ended with $conclusion; check $link"
+                exit 1
+              fi
+            fi
+            sleep 10
+          done
+          echo "::error::Timed out waiting for Cloudflare build status on $GITHUB_SHA"
+          exit 1
+      - name: Verify the published revision and live stories without generating traffic
         run: python3 scripts/check_live.py
