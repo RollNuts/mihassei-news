@@ -125,6 +125,18 @@ def check():
             if token not in page:
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         photo=item.get("photo")
+        # X cards for new articles without a cached photo should never all
+        # collapse into the same generic brand image.
+        cached=ROOT/"assets"/"photos"/(slug+".jpg")
+        if not cached.exists():
+            og_url=SITE+"/og/articles/"+slug+".png"
+            if '<meta property="og:image" content="'+og_url+'">' not in page:
+                raise RuntimeError(slug+": unique social preview metadata missing")
+            preview,preview_mime=get("/og/articles/"+slug+".png")
+            png_magic=bytes((137,80,78,71,13,10,26,10))
+            if (not preview.startswith(png_magic) or len(preview)<1500 or
+                "image/png" not in preview_mime):
+                raise RuntimeError(slug+": unique social preview is not a valid public PNG")
         if photo:
             if photo["source"] not in page or photo["credit"] not in page:
                 raise RuntimeError(slug+": photo attribution missing")
