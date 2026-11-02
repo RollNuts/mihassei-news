@@ -113,8 +113,10 @@ def load_serials():
         if serial.get("kind") not in ("mystery", "market-fiction"):
             raise ValueError("Unknown editorial series kind: " + slug)
         for field in ("title", "tagline", "description", "disclaimer", "category", "kicker"):
-            if not isinstance(serial.get(field), str) or len(serial[field].strip()) < 8:
-                raise ValueError("Missing series description: " + slug)
+            min_length = 2 if field in ("title", "category") else 8
+            if (not isinstance(serial.get(field),str) or
+                len(serial[field].strip()) < min_length):
+                raise ValueError("Missing series description: " + slug + " field=" + field)
         if serial["kind"] == "market-fiction" and (
             "投資助言" not in serial["disclaimer"] or "売買" not in serial["disclaimer"]
         ):
