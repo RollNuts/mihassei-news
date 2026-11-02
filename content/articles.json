@@ -1,5 +1,95 @@
 [
   {
+    "slug": "supporter-guarantor-contract",
+    "category": "スポーツ",
+    "flash": "速報",
+    "fiction_company": "北辰ホライゾンズ",
+    "art": "cards",
+    "fiction_at": "2031-11-02T17:08:00+09:00",
+    "published_at": "2026-11-02T19:16:37+09:00",
+    "title": "プロ野球、契約延長に「ファン保証人」導入　不振時は応援時間を追加",
+    "summary": "主力選手の契約延長をファンの「応援保証」で後押し。成績が落ちると保証人に球場での声出しを追加で求める仕組みだ。",
+    "paragraphs": [
+      "プロ野球の北辰ホライゾンズは2日、主力選手の契約延長に際し、一定数のファンを「応援保証人」として登録する新制度を始めると発表した。球団は「契約の重みをファンと分かち合う」と説明している。",
+      "保証人は選手が一定の成績を下回ると、翌月のホームゲームで声援を増やす義務を負う。専用アプリが声量と滞在時間を測定し、応援が足りない場合は追加観戦を案内する。仕事で行けない場合は「励ましの録音」の提出も認める。",
+      "発表後、ファンからは「年俸は選手、残業はこっちか」と困惑する声が相次いだ。球団は負担軽減策として応援代行サービスを検討しているが、代行費用は保証人負担となる見込みだ。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "共同通信（熊本日日新聞）",
+      "published_at": "2026-11-02T17:08:00+09:00",
+      "url": "https://kumanichi.com/articles/2053373",
+      "topic": "プロ野球の有力選手が所属球団との複数年契約に合意したと報じられた。"
+    },
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1729534589763-6b2a4287744b?auto=format&fit=crop&w=1400&q=80",
+      "credit": "Tsuyoshi Kozu",
+      "source": "https://unsplash.com/photos/a-baseball-stadium-filled-with-lots-of-people-B4-g8EUJEGE",
+      "alt": "観客席が見える野球場のイメージ",
+      "license": "Unsplash"
+    }
+  },
+  {
+    "slug": "pressure-office-mood-forecast",
+    "category": "暮らし",
+    "flash": "新サービス",
+    "fiction_company": "ホホエミ気象情報",
+    "art": "notice",
+    "fiction_at": "2031-11-02T09:45:00+09:00",
+    "published_at": "2026-11-02T19:16:37+09:00",
+    "title": "気象会社、「上司の機嫌予報」を開始　低気圧の日は重要な相談を翌日に",
+    "summary": "気圧変化に合わせて職場の会話難度を知らせる新サービス。社員には好評だが、予報される側の上司からは反発も。",
+    "paragraphs": [
+      "気象予報会社のホホエミ気象情報は2日、気圧の変動と社内アンケートをもとに、上司の機嫌を3段階で予報するサービス「ご機嫌気圧」を発表した。気圧が大きく変わる日は、重要な稟議や人事相談を翌日に回すよう通知する。",
+      "アプリは朝9時にオフィス内の会話難度を色分けし、上司の座席周辺を黄色、橙色、赤色で表示する。社員からは「相談を延期する理由ができた」と歓迎する声がある一方、管理職側は「天気で人間を判断するな」と反発している。",
+      "試験運用で結果を知らされた部長の一人は「こんな失礼な予報があるか」と激怒した。なお、アプリはその数分前から同部長の周辺に「大荒れ」の表示を出していたという。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日本気象協会（mixiニュース）",
+      "published_at": "2026-11-02T09:45:00+09:00",
+      "url": "https://news.mixi.jp/view_news.pl?from=ranking&id=9012107&media_id=174",
+      "topic": "短い周期で気圧が変化する予報が発表され、日々の体調への影響に注意が促された。"
+    },
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1773928987907-adedf5da2cc7?auto=format&fit=crop&w=1400&q=80",
+      "credit": "Aleksei Agafonov",
+      "source": "https://unsplash.com/photos/dramatic-stormy-clouds-with-a-clear-blue-sky-opening-T6vmAJxObeo",
+      "alt": "暗い雲と青空が混在する空のイメージ",
+      "license": "Unsplash"
+    }
+  },
+  {
+    "slug": "fan-theories-write-final",
+    "category": "エンタメ",
+    "flash": "話題",
+    "fiction_company": "月影映像社",
+    "art": "meeting",
+    "fiction_at": "2031-11-02T07:00:00+09:00",
+    "published_at": "2026-11-02T19:16:37+09:00",
+    "title": "ドラマ最終回、視聴者の考察が脚本を追い越す　制作側「結末を教えて」",
+    "summary": "ドラマの考察が白熱し、ファンが放送前に8通りの結末を完成。制作会社が脚本について相談を持ちかける異例の事態に。",
+    "paragraphs": [
+      "映像制作会社の月影映像社は2日、ドラマ「二重の午後」の最終回について、視聴者の考察投稿が脚本制作を追い越したと明らかにした。制作側がまだ決めていない結末が、ネット上ではすでに8通り完成していたという。",
+      "視聴者は過去の小道具や台詞を細かく検証し、登場人物の動機まで整理。公式にない設定も整合性が高く、制作スタッフは「自分たちのドラマなのに、向こうの方が詳しい」として考察班に協力を打診した。",
+      "制作会社は最も評価が高かった考察案を採用する方針を示したが、ファンからは「予想どおりの結末ではつまらない」と抗議が殺到した。制作側は再び脚本を白紙に戻している。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日刊スポーツ（キングソフト配信）",
+      "published_at": "2026-11-02T07:00:00+09:00",
+      "url": "https://home.kingsoft.jp/amp/news/ent/nikkansports_ent/202611020000003",
+      "topic": "人気テレビドラマの展開を巡るネット上の考察や驚きの反応が報じられた。"
+    },
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1634812930982-b48073422a98?auto=format&fit=crop&w=1400&q=80",
+      "credit": "Aman Upadhyay",
+      "source": "https://unsplash.com/photos/a-man-holding-a-camera-up-to-take-a-picture-uqPBwAACX28",
+      "alt": "映像撮影用のカメラを操作する人のイメージ",
+      "license": "Unsplash"
+    }
+  },
+  {
     "slug": "apology-before-incident",
     "category": "社会",
     "flash": "速報",
