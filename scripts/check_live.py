@@ -12,6 +12,7 @@ import re
 import os
 import sys
 import time
+import subprocess
 import urllib.error
 import urllib.request
 from collections import Counter
@@ -35,6 +36,16 @@ def get(path):
         return response.read(4*1024*1024),response.headers.get("Content-Type","")
 
 def check():
+    # Verify the exact public deployment, not merely an older set of 200 pages.
+    expected=subprocess.run(
+        ["git","rev-parse","HEAD"],cwd=ROOT,text=True,stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,timeout=5,check=False
+    ).stdout.strip().lower()
+    if re.fullmatch(r"[0-9a-f]{40}", expected):
+        marker,_=get("/build-revision.txt?version="+expected[:12])
+        actual=marker.decode("utf-8").strip().lower()
+        if actual!=expected:
+            raise RuntimeError("Cloudflare serving different revision: live="+actual+" expected="+expected)
     articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
     recent=sorted(articles,key=lambda a:a["source"]["published_at"],reverse=True)[:10]
     home,mime=get("/")
