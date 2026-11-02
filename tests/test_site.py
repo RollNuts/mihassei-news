@@ -88,6 +88,34 @@ class SiteTests(unittest.TestCase):
                 self.assertIn(a["title"],category.read_text(encoding="utf-8"))
             self.assertIn("https://veripsa.com/category/economy/",mapped)
 
+    def test_editorial_photos_are_licensed_and_attributed(self):
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn("data-fallback",home)
+        for a in self.articles:
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            if a.get("photo"):
+                photo=a["photo"]
+                self.assertEqual(photo["license"],"Unsplash")
+                self.assertTrue(photo["source"].startswith("https://unsplash.com/photos/"))
+                self.assertIn(photo["credit"],page)
+                self.assertIn(photo["alt"],page)
+                self.assertIn("イメージ写真",page)
+                self.assertIn('data-fallback=',page)
+                self.assertIn(photo["source"],page)
+                self.assertIn('property="og:image"',page)
+                self.assertIn(photo["url"].split("?")[0],page)
+                self.assertIn('"@type": "BlogPosting"',page)
+
+    def test_privacy_page_is_accessible(self):
+        page=ROOT/"dist/privacy/index.html"
+        self.assertTrue(page.exists())
+        content=page.read_text(encoding="utf-8")
+        self.assertIn("アクセスといいね",content)
+        self.assertIn("Cloudflare",content)
+        self.assertIn("Unsplash",content)
+        self.assertIn("/privacy/",(ROOT/"dist/index.html").read_text(encoding="utf-8"))
+        self.assertIn("https://veripsa.com/privacy/",(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8"))
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)

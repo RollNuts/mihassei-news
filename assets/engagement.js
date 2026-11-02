@@ -1,6 +1,19 @@
 (() => {
   "use strict";
 
+  // Unsplash outage or missing cache: restore an original SVG illustration.
+  document.querySelectorAll("img[data-fallback]").forEach(image=>{
+    image.addEventListener("error",()=>{
+      const fallback=image.getAttribute("data-fallback");
+      if(!fallback || image.getAttribute("src")===fallback)return;
+      image.removeAttribute("data-fallback");
+      image.src=fallback;
+      const caption=image.closest("figure")?.querySelector("figcaption");
+      if(caption)caption.textContent="イメージ画像";
+    },{once:true});
+  });
+
+
   // An animated, explicitly fictional clock, shifted five calendar years.
   const clockFormat = new Intl.DateTimeFormat("ja-JP", {
     timeZone:"Asia/Tokyo",year:"numeric",month:"2-digit",day:"2-digit",
