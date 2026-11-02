@@ -24,7 +24,8 @@ class SiteTests(unittest.TestCase):
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
-                  "og/brand.png","404.html","robots.txt","build-revision.txt"]:
+                  "og/brand.png","404.html","robots.txt","build-revision.txt",
+                  "image-review/index.html"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
 
     def test_static_output_identifies_exact_build_revision(self):
@@ -460,6 +461,88 @@ class SiteTests(unittest.TestCase):
         self.assertIsNotNone(large_options)
         self.assertEqual(len(json.loads(html.unescape(large_options.group(1)))),40)
 
+    def test_rss_contains_licensed_first_party_preview_images(self):
+        """Feed clients can find safe image previews with the Media RSS standard."""
+        from scripts.build import social_image
+        from scripts.media_policy import usable_cached_photo
+        namespace={"media":"http://search.yahoo.com/mrss/"}
+        root=ET.parse(ROOT/"dist/feed.xml").getroot()
+        entries=root.findall("./channel/item")
+        self.assertEqual(len(entries),min(30,len(self.articles)))
+        by_url={n.findtext("link"):n for n in entries}
+        for a in self.articles[:30]:
+            url="https://veripsa.com/articles/"+a["slug"]+"/"
+            self.assertIn(url,by_url)
+            item=by_url[url]
+            thumbnail=item.find("media:thumbnail",namespace)
+            full=item.find("media:content",namespace)
+            self.assertIsNotNone(thumbnail,a["slug"])
+            self.assertIsNotNone(full,a["slug"])
+            expected="https://veripsa.com"+social_image(a)
+            self.assertEqual(thumbnail.get("url"),expected)
+            self.assertEqual(full.get("url"),expected)
+            self.assertEqual(full.get("medium"),"image")
+            photo=usable_cached_photo(a,root=ROOT)
+            self.assertEqual(full.get("type"),"image/jpeg" if photo else "image/png")
+            credit=item.find("media:credit",namespace)
+            if photo:
+                self.assertIsNotNone(credit)
+                self.assertEqual(credit.text,a["photo"]["credit"])
+            else:
+                self.assertIsNone(credit)
+                self.assertEqual(thumbnail.get("width"),"1200")
+                self.assertEqual(thumbnail.get("height"),"630")
+            self.assertTrue((ROOT/"dist"/social_image(a).split("?",1)[0].lstrip("/")).is_file())
+
+    def test_visual_review_gallery_is_complete_and_nonindexable(self):
+        from scripts.build import social_image, editorial_image
+        review=(ROOT/"dist/image-review/index.html").read_text(encoding="utf-8")
+        self.assertIn('name="robots" content="noindex,nofollow"',review)
+        self.assertIn('class="review-grid"',review)
+        self.assertIn(str(len(self.articles))+" 本",review)
+        headers=(ROOT/"dist/_headers").read_text(encoding="utf-8")
+        self.assertIn("/image-review/*",headers)
+        self.assertIn("X-Robots-Tag: noindex, nofollow",headers)
+        sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
+        self.assertNotIn("https://veripsa.com/image-review/",sitemap)
+        for a in self.articles:
+            self.assertIn(a["title"],review)
+            self.assertIn('src="'+html.escape(editorial_image(a),quote=True)+'"',review)
+            self.assertIn('src="'+html.escape(social_image(a),quote=True)+'"',review)
+            self.assertIn('href="/articles/'+a["slug"]+'/"',review)
+        self.assertNotIn("noindex,nofollow",(ROOT/"dist/index.html").read_text(encoding="utf-8"))
+
+    def test_social_motif_follows_article_topic_not_arbitrary_art_template(self):
+        import tempfile
+        from scripts.editorial_covers import story_subject
+        from scripts.social_cards import render_social_card, SUBJECT_LABELS
+        article=self.articles[0]
+        changed={**article,"art":"generic"}
+        self.assertEqual(story_subject(article),story_subject(changed))
+        # Strong headline keywords should override misleading old style labels.
+        examples={
+            "迷惑電話はもうかけない":"telephone",
+            "低気圧で上司が休む":"weather",
+            "プロ野球の新制度":"baseball",
+            "地元の土産に規制":"parcel",
+            "ドラマの脚本が追いつかない":"movie",
+            "情報漏洩より先に謝罪":"security",
+            "工場ロボットが退職":"robot"
+        }
+        for title,subject in examples.items():
+            self.assertEqual(story_subject({"title":title,"art":"cards"}),subject)
+            self.assertIn(subject,SUBJECT_LABELS)
+        with tempfile.TemporaryDirectory() as tmp:
+            a={**article,"slug":"social-topic-a","title":"迷惑電話の確認電話","art":"notice"}
+            b={**a,"title":"低気圧で上司の機嫌予報"}
+            img_a=Path(tmp)/"telephone.png"
+            img_b=Path(tmp)/"weather.png"
+            render_social_card(a,img_a)
+            render_social_card(b,img_b)
+            self.assertNotEqual(img_a.read_bytes(),img_b.read_bytes())
+            self.assertLess(img_a.stat().st_size,200000)
+            self.assertLess(img_b.stat().st_size,200000)
+
     def test_social_previews_use_first_party_jpeg_or_png(self):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
@@ -545,7 +628,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('src="/photos/'+slug+'.jpg"',page)
             else:
                 rejected+=1
-                self.assertEqual(social_image(article),"/og/articles/"+slug+".png")
+                self.assertEqual(social_image(article),"/og/articles/"+slug+".png?v=20261103-topic2")
                 self.assertIn('src="/images/'+slug+'.svg"',page)
                 self.assertTrue((ROOT/"dist/og/articles"/(slug+".png")).is_file())
         self.assertGreaterEqual(rejected,1)
@@ -571,14 +654,14 @@ class SiteTests(unittest.TestCase):
             self.assertLess(len(data),200000,"Social card should stay small for free hosting")
             self.assertNotIn(data,images,"Each article should have a unique preview")
             images.add(data)
-            self.assertEqual(social_image(a),"/og/articles/"+a["slug"]+".png")
+            self.assertEqual(social_image(a),"/og/articles/"+a["slug"]+".png?v=20261103-topic2")
             with tempfile.TemporaryDirectory() as directory:
                 rerender=Path(directory)/"check.png"
                 render_social_card(a,rerender)
                 self.assertEqual(data,rerender.read_bytes(),"Cards should render deterministically")
             page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
-            self.assertIn('property="og:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png"',page)
-            self.assertIn('name="twitter:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png"',page)
+            self.assertIn('property="og:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png?v=20261103-topic2"',page)
+            self.assertIn('name="twitter:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png?v=20261103-topic2"',page)
         self.assertEqual(sum(1 for _ in images),len(no_photo))
 
     def test_reader_growth_and_editorial_transparency(self):
