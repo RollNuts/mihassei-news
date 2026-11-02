@@ -91,13 +91,14 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
             item = details.get(slug)
             if not isinstance(item, dict):
                 raise ValueError("Missing article statistics: " + slug)
-            for key in ("readers", "likes", "shareClicks"):
+            for key in ("readers", "likes", "shareClicks", "continuedReaders"):
                 if type(item.get(key)) is not int or item[key] < 0:
                     raise ValueError("Invalid metric " + key + " for " + slug)
             metrics[slug] = {
                 "readers": item["readers"],
                 "likes": item["likes"],
                 "share_clicks": item["shareClicks"],
+                "continued_readers": item["continuedReaders"],
             }
     return visitors, metrics, channels
 
@@ -116,6 +117,12 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "measured_at_utc": now.astimezone(timezone.utc).isoformat(timespec="seconds"),
         "unit": "anonymous-browser",
         "note": "Cumulative distinct browser identifiers, NOT people or PV. Counts are a point-in-time sample, not daily visitor totals.",
+        "continuation_note": (
+            "continued_readers is cumulative unique browser IDs that arrived at a DIFFERENT "
+            "article from this source article via a same-origin referrer path. "
+            "One per browser and source; referrer-stripping undercounts. "
+            "This is not an article-to-article click total or a conversion rate."
+        ),
         "visitors_cumulative": visitors,
         "articles_published_total": len(articles),
         "articles_published_on_date": len(published_on_day),
