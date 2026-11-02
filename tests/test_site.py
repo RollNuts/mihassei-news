@@ -111,32 +111,44 @@ class SiteTests(unittest.TestCase):
         sidebar=re.findall(r'<h3><a href="/articles/([^/]+)/">',aside)
         section=home.split('<section class="section-block">',1)[1].split('</section>',1)[0]
         cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section)
-        from scripts.build import load
-        # The JSON file is not necessarily in publication order.
-        # Compare against the same actual-publication sorting used by the builder.
-        published=load()
-        self.assertEqual(lead.group(1),published[0]["slug"])
-        self.assertEqual(sidebar,[a["slug"] for a in published[1:4]])
+        from scripts.build import load, editorial_lead
         from scripts.editorial_starter import starter_picks
-        starters=starter_picks(published,{a["slug"] for a in published[:4]},base=ROOT)
+        published=load()
+        chosen=editorial_lead(published)
+        remaining=[a for a in published if a["slug"]!=chosen["slug"]]
+        self.assertEqual(lead.group(1),chosen["slug"])
+        self.assertEqual(sidebar,[a["slug"] for a in remaining[:3]])
+        excluded={chosen["slug"],*(a["slug"] for a in remaining[:3])}
+        starters=starter_picks(published,excluded,base=ROOT)
         picked=[x["article"]["slug"] for x in starters]
-        expected=[a["slug"] for a in published[4:] if a["slug"] not in picked][:9]
+        expected=[a["slug"] for a in remaining[3:] if a["slug"] not in picked][:4]
         self.assertEqual(cards,expected)
         shown=[lead.group(1),*sidebar,*picked,*cards]
         self.assertEqual(len(shown),len(set(shown)))
-        self.assertEqual(len(shown),min(len(published),4+len(picked)+9))
+        self.assertEqual(len(shown),min(len(published),4+len(picked)+4))
 
-    def test_ticker_is_swipeable_on_mobile_and_keyboard_accessible(self):
+    def test_homepage_focus_and_secondary_content_is_accessible(self):
+        """No duplicate ticker; optional features remain accessible on demand."""
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
-        self.assertIn('class="wire-viewport" tabindex="0" role="region"',home)
-        self.assertIn("新着ニュースを横にスクロール",home)
-        self.assertIn(".news-wire .wire-track:focus-within",css)
-        self.assertIn(".news-wire .wire-viewport",css)
-        self.assertIn("overflow-x:auto",css)
-        self.assertIn(".news-wire .wire-copy{display:none}",css)
-        self.assertIn("prefers-reduced-motion",css)
+        self.assertNotIn('<div class="news-wire"',home)
+        self.assertIn('<details class="extras-shelf">',home)
+        self.assertIn("発行号・号外・読者参加・RSS",home)
+        self.assertIn('.extras-shelf>summary:focus-visible',css)
+        self.assertTrue(home.index('<section class="genre-explore"') <
+                        home.index('<details class="extras-shelf">'))
         self.assertEqual(css.count("{"),css.count("}"))
+
+    def test_editorial_lead_is_recent_or_falls_back_to_newest(self):
+        from scripts.build import editorial_lead
+        original=next(a for a in self.articles
+                      if a["slug"]=="unwanted-call-protection-calls-back")
+        latest={**self.articles[0],"slug":"synthetic-latest",
+                "published_at":"2026-11-03T12:00:00+09:00"}
+        picked={**original,"published_at":"2026-11-02T12:00:00+09:00"}
+        self.assertEqual(editorial_lead([latest,picked])["slug"],picked["slug"])
+        expired={**original,"published_at":"2026-10-29T12:00:00+09:00"}
+        self.assertEqual(editorial_lead([latest,expired])["slug"],latest["slug"])
 
     def test_mobile_search_and_actions_have_usable_touch_targets(self):
         """Avoid iOS auto-zoom on search inputs without disabling native pinch zoom."""
@@ -458,20 +470,19 @@ class SiteTests(unittest.TestCase):
                     self.assertNotIn(a["photo"]["source"],html)
                     self.assertNotIn(a["photo"]["credit"]+" / Unsplash",html)
 
-    def test_latest_publication_not_source_time_controls_lead(self):
+    def test_newest_publication_controls_feed_while_editor_controls_lead(self):
         import re
+        from scripts.build import load, editorial_lead
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         lead=re.search(r'<h1><a href="/articles/([^/]+)/">',home)
         self.assertIsNotNone(lead)
-        expected=max(self.articles,key=lambda a:(
-            a.get("published_at") or a["source"]["published_at"],
-            a["source"]["published_at"]
-        ))
-        self.assertEqual(lead.group(1),expected["slug"])
+        published=load()
+        newest=published[0]
+        self.assertEqual(lead.group(1),editorial_lead(published)["slug"])
         feed=ET.parse(ROOT/"dist/feed.xml")
         first=feed.find("./channel/item/link")
         self.assertIsNotNone(first)
-        self.assertEqual(first.text,"https://veripsa.com/articles/"+expected["slug"]+"/")
+        self.assertEqual(first.text,"https://veripsa.com/articles/"+newest["slug"]+"/")
 
     def test_archive_is_searchable_and_incremental_with_no_js_fallback(self):
         page=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
