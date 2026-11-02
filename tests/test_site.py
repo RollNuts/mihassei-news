@@ -21,6 +21,7 @@ class SiteTests(unittest.TestCase):
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
                   "sitemap.xml","editorial/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
+                  "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
                   "og/brand.png","404.html","robots.txt","build-revision.txt"]:
@@ -88,6 +89,25 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(fiction.year,original.year+5)
             self.assertEqual((fiction.month,fiction.day,fiction.hour,fiction.minute),
                              (original.month,original.day,original.hour,original.minute))
+
+    def test_future_verdict_poll_is_genuine_and_available_on_all_stories(self):
+        css=(ROOT/"dist/assets/future-poll.css").read_text(encoding="utf-8")
+        script=(ROOT/"dist/assets/engagement.js").read_text(encoding="utf-8")
+        self.assertIn(".future-poll",css)
+        self.assertIn('apiPost("vote"',script)
+        self.assertIn('selectedPoll=result.vote',script)
+        for item in self.articles:
+            page=(ROOT/"dist/articles"/item["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('data-future-poll data-poll-article="'+item["slug"]+'"',page)
+            self.assertIn('data-poll-choice="plausible"',page)
+            self.assertIn('data-poll-choice="unlikely"',page)
+            self.assertIn('data-poll-results hidden',page)
+            self.assertIn('data-poll-status role="status"',page)
+            self.assertIn('href="/assets/future-poll.css"',page)
+            self.assertNotIn("50% / 50%",page)
+        privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
+        self.assertIn("5年後の予想投票について",privacy)
+        self.assertIn("個人の回答は公開しません",privacy)
 
     def test_reader_comments_are_present_and_privacy_is_explained(self):
         for article in self.articles:
