@@ -88,7 +88,12 @@ def load():
                 raise ValueError("Photo requires verified Unsplash license and attribution")
         if len(a["paragraphs"]) < 2 or len(a["paragraphs"]) > 6:
             raise ValueError("Article must contain 2-6 paragraphs")
-    return sorted(articles, key=lambda a: a["source"]["published_at"], reverse=True)
+    # Source timestamps establish fictional dates; actual site publication controls
+    # recency and the home-page lead, so a newly published item never starts buried.
+    return sorted(articles, key=lambda a: (
+        a.get("published_at") or a["source"]["published_at"],
+        a["source"]["published_at"],
+    ), reverse=True)
 
 
 def write(path, text):
