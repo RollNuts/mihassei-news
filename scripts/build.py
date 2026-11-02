@@ -400,6 +400,10 @@ def archive(articles):
 def story(a, articles):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
+    published = actual_publication(a)
+    byline_date = (f'<p class="real-publication-date">本紙掲載日：'
+                   f'<time datetime="{escape(published)}">{escape(published[:10])}</time></p>'
+                   if published else '')
     # Show a small edited set, never pretend these are actually the most-read stories.
     related_list = [x for x in articles if x["slug"] != a["slug"]]
     related_list.sort(key=lambda x: (x["category"] != a["category"], -datetime.fromisoformat(x["source"]["published_at"]).timestamp()))
@@ -424,6 +428,7 @@ def story(a, articles):
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
 <h2>この記事の着想元</h2>
+{byline_date}
 <p>{escape(src["topic"])}</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
