@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - .github/workflows/search-crawler-diagnostic.yml
+  pull_request:
+    paths:
+      - .github/workflows/search-crawler-diagnostic.yml
   # A free, read-only DNS/crawler check twice a day, while Search Console settles.
   schedule:
     - cron: '43 11,23 * * *' # 20:43 and 08:43 JST
@@ -59,5 +62,83 @@ jobs:
           od -An -tx1 -N8 /tmp/x-image
           echo "===== Test complete; genuine Google crawler IP must be checked in Cloudflare Security Events ====="
 
-      - name: Assert X preview metadata and image delivery (read-only)
-        run: python3 scripts/check_share_cards.py
+      - name: Assert crawler metadata, robots and sitemap against live public site
+        run: |
+          python3 - <<'PY'
+          import html
+          import re
+          import urllib.parse
+          import urllib.request
+          import urllib.robotparser
+          from xml.etree import ElementTree as ET
+          
+          site = "https://veripsa.com"
+          def get(path, agent="Mihassei-ReadOnly-CrawlerDiagnostic/1.0"):
+              req = urllib.request.Request(
+                  path if path.startswith("https://") else site + path,
+                  headers={"User-Agent": agent, "Accept": "text/html,image/png,image/jpeg,application/xml,*/*"})
+              with urllib.request.urlopen(req, timeout=18) as res:
+                  if res.status != 200:
+                      raise RuntimeError(f"HTTP {res.status} for {path}")
+                  return res.read(4 * 1024 * 1024), res.headers.get("Content-Type","")
+          
+          page, page_type = get("/", "Twitterbot/1.0")
+          if "text/html" not in page_type:
+              raise RuntimeError("Twitterbot did not get HTML")
+          markup = page.decode("utf-8")
+          def meta(name):
+              found = re.search(
+                  r'<meta\s+(?:property|name)="' + re.escape(name) + r'"\s+content="([^"]+)"',
+                  markup, re.I)
+              if not found:
+                  raise RuntimeError("Missing social metadata: " + name)
+              return html.unescape(found.group(1))
+          
+          if meta("twitter:card") != "summary_large_image":
+              raise RuntimeError("X large preview is not configured")
+          og = meta("og:image")
+          twitter = meta("twitter:image")
+          if og != twitter:
+              raise RuntimeError("X and Open Graph point to different image URLs")
+          image_url = urllib.parse.urlsplit(og)
+          if image_url.scheme != "https" or image_url.netloc != "veripsa.com":
+              raise RuntimeError("Social image is not HTTPS on this domain")
+          if not image_url.path.startswith("/") or image_url.path.lower().endswith(".svg"):
+              raise RuntimeError("Social image is not a supported raster path")
+          image, mime = get(og, "Twitterbot/1.0")
+          if "image/png" in mime:
+              if not image.startswith(bytes((137,80,78,71,13,10,26,10))):
+                  raise RuntimeError("X image PNG signature invalid")
+          elif "image/jpeg" in mime:
+              if not image.startswith(bytes((255,216,255))):
+                  raise RuntimeError("X image JPEG signature invalid")
+          else:
+              raise RuntimeError("Unsupported social image type: " + mime)
+          if len(image) < 1024:
+              raise RuntimeError("X social image is too small")
+          print("Verified first-party X card metadata and raster image:", og, "bytes=",len(image))
+          
+          robots, robots_type = get("/robots.txt")
+          parser = urllib.robotparser.RobotFileParser()
+          parser.parse(robots.decode("utf-8").splitlines())
+          if not parser.can_fetch("Googlebot", site + "/"):
+              raise RuntimeError("robots.txt forbids Googlebot on the homepage")
+          if not parser.can_fetch("Twitterbot", site + "/"):
+              raise RuntimeError("robots.txt forbids Twitterbot on the homepage")
+          if "Sitemap: https://veripsa.com/sitemap.xml" not in robots.decode("utf-8"):
+              raise RuntimeError("robots.txt has no sitemap discovery directive")
+          
+          sitemap,sitemap_type = get("/sitemap.xml")
+          if "xml" not in sitemap_type:
+              raise RuntimeError("Sitemap not served as XML")
+          root=ET.fromstring(sitemap)
+          ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
+          urls=[n.findtext("s:loc",namespaces=ns) for n in root.findall("s:url",ns)]
+          if not urls or not all(u and u.startswith(site+"/") for u in urls):
+              raise RuntimeError("Sitemap URLs invalid")
+          articles=[u for u in urls if "/articles/" in u]
+          if len(articles)<5:
+              raise RuntimeError("Sitemap has fewer than 5 indexed real article URLs; deployment may be stale")
+          print("Verified Googlebot/Twitterbot robots access and sitemap article URLs:",len(articles))
+          print("This cannot confirm requests from genuine Google/X crawler IP ranges.")
+          PY
