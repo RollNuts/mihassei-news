@@ -217,6 +217,7 @@ def layout(title, desc, path, main, active="", kind="website"):
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f7f4ec">
+<meta name="google-adsense-account" content="ca-pub-6754575901141756">
 <meta name="description" content="{escape(desc)}">
 <meta property="og:title" content="{escape(complete)}">
 <meta property="og:description" content="{escape(desc)}">
@@ -484,6 +485,7 @@ def build():
     for f in (BASE/"assets").iterdir():
         if f.is_file():
             shutil.copy2(f, OUT/"assets"/f.name)
+    shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
     write("index.html",home(articles))
     write("about/index.html",about())
     write("archive/index.html",archive(articles))
