@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate read-only public health checker
+        run: python3 -m py_compile scripts/check_live.py
       - name: Validate browser JavaScript
         run: |
           node --check assets/site.js
