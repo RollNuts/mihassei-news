@@ -15,8 +15,12 @@ from pathlib import Path
 
 if __package__:
     from .social_cards import render_social_card
+    from .editorial_covers import render_cover
+    from .media_policy import usable_cached_photo
 else:
     from social_cards import render_social_card
+    from editorial_covers import render_cover
+    from media_policy import usable_cached_photo
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -150,78 +154,8 @@ def actions(a, compact=False):
     )
 
 def cover(a):
-    art = a["art"]
-    bg, tint, bright = "#192b31", "#31565d", "#f56a53"
-    if art == "notice":
-        scene = (
-            '<rect x="300" y="106" width="600" height="438" rx="24" fill="#e8e8df"/>'
-            '<rect x="331" y="143" width="538" height="365" rx="13" fill="#dce4e0"/>'
-            '<circle cx="600" cy="279" r="75" fill="#b43532"/>'
-            '<path d="M600 230v64m0 35v7" stroke="#fff1e9" stroke-width="17" stroke-linecap="round"/>'
-            '<rect x="411" y="402" width="378" height="13" rx="6" fill="#66808a"/>'
-            '<rect x="455" y="436" width="286" height="10" rx="5" fill="#b1c2be"/>'
-        )
-    elif art == "cards":
-        scene = "".join(
-            f'<rect x="{290+i*240}" y="{170+(i%2)*43}" width="190" height="305" rx="16" fill="{["#e1e7df","#c5d5da","#efd9ce"][i]}"/>'
-            f'<circle cx="{385+i*240}" cy="{255+(i%2)*43}" r="40" fill="{["#28444b","#b74e3d","#405e55"][i]}"/>'
-            f'<rect x="{335+i*240}" y="{341+(i%2)*43}" width="100" height="14" rx="7" fill="#77928f"/>'
-            f'<rect x="{315+i*240}" y="{371+(i%2)*43}" width="140" height="12" rx="6" fill="#92aaa7"/>'
-            for i in range(3)
-        )
-        scene += '<path d="M500 318h195" stroke="#f9c4a0" stroke-width="9" stroke-dasharray="14 15"/>'
-    elif art == "tower":
-        scene = (
-            '<rect x="330" y="140" width="235" height="423" fill="#9cb5b5"/>'
-            '<rect x="565" y="86" width="258" height="477" fill="#dce3dc"/>'
-            '<rect x="823" y="225" width="115" height="338" fill="#5d8588"/>'
-            + "".join(f'<path d="M{365+j*41} 150v390" stroke="#436873" stroke-width="8"/>' for j in range(5))
-            + "".join(f'<path d="M585 {142+i*56}h219" stroke="#8bada8" stroke-width="10"/>' for i in range(8))
-            + '<path d="M200 560h800" stroke="#e5d4bb" stroke-width="12"/>'
-            '<circle cx="735" cy="135" r="39" fill="#f56a53" opacity=".9"/>'
-        )
-    elif art == "robot":
-        scene = (
-            '<path d="M0 492h1200v180H0z" fill="#2d4b4d"/>'
-            '<path d="M180 515h850" stroke="#d3ded1" stroke-width="25" stroke-dasharray="48 15"/>'
-            '<rect x="180" y="182" width="175" height="295" rx="24" fill="#d7e3df"/>'
-            '<circle cx="270" cy="244" r="42" fill="#f56a53"/>'
-            '<path d="M335 290L520 255L600 370" fill="none" stroke="#d7e3df" stroke-width="54" stroke-linejoin="round"/>'
-            '<circle cx="520" cy="255" r="37" fill="#f56a53"/>'
-            '<rect x="570" y="354" width="90" height="95" rx="14" fill="#d2dbc9"/>'
-            '<path d="M810 165l-88 158 100 95" stroke="#8ab0ac" fill="none" stroke-width="65" stroke-linejoin="round"/>'
-            '<circle cx="722" cy="323" r="40" fill="#f56a53"/>'
-            '<rect x="808" y="418" width="140" height="82" rx="14" fill="#e7c6b0"/>'
-        )
-    elif art == "meeting":
-        scene = (
-            '<rect x="240" y="128" width="720" height="295" rx="18" fill="#d8e6e2"/>'
-            '<rect x="283" y="165" width="634" height="217" rx="10" fill="#244750"/>'
-            '<circle cx="600" cy="260" r="70" stroke="#ff7762" stroke-width="14" fill="none"/>'
-            '<path d="M568 260l22 22 48-54" stroke="#f6dec8" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-            '<path d="M160 558h880l-102-118H262z" fill="#9bb4ac"/>'
-            '<circle cx="346" cy="470" r="30" fill="#d69b7d"/>'
-            '<circle cx="606" cy="470" r="30" fill="#d69b7d"/>'
-            '<circle cx="855" cy="470" r="30" fill="#d69b7d"/>'
-            '<path d="M295 560v-56q50-56 100 0v56m160 0v-56q50-56 100 0v56m150 0v-56q50-56 100 0v56" fill="#243a3c"/>'
-        )
-    else:
-        scene = (
-            '<circle cx="600" cy="330" r="220" stroke="#f56a53" stroke-width="52" fill="none"/>'
-            '<path d="M400 380h400M420 270h360" stroke="#d4e0d9" stroke-width="22"/>'
-        )
-    guide = "".join(f'<path d="M0 {y}h1200" stroke="#cce7df" stroke-opacity=".06" stroke-width="2"/>' for y in range(0,676,42))
-    return (
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="架空ニュース用に制作したオリジナルイラスト">'
-        '<defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">'
-        f'<stop offset="0" stop-color="{bg}"/><stop offset="1" stop-color="{tint}"/>'
-        '</linearGradient></defs><rect width="1200" height="675" fill="url(#bg)"/>'
-        + guide + '<circle cx="1016" cy="105" r="180" fill="#ffb87c" opacity=".10"/>'
-        + scene +
-        '<rect x="0" y="632" width="1200" height="43" fill="#121f23" opacity=".78"/>'
-        '<text x="35" y="659" font-family="sans-serif" font-size="18" letter-spacing="4" fill="#faf4ed">MIHASSEI SHIMBUN / FICTIONAL ILLUSTRATION</text>'
-        '<circle cx="1120" cy="650" r="11" fill="#f56a53"/></svg>'
-    )
+    """Illustrated editorial cover with an actual story headline and subject motif."""
+    return render_cover(a)
 
 
 def illustration_path(a):
@@ -229,27 +163,27 @@ def illustration_path(a):
 
 
 def editorial_image(a):
-    """Editorial photos are licensed stock photos, never photographs of fictional incidents."""
-    local = BASE / "assets" / "photos" / (a["slug"] + ".jpg")
-    if local.exists():
+    """Use a reviewed local JPEG or the free, headline-led editorial SVG."""
+    if usable_cached_photo(a, root=BASE):
         return "/photos/" + a["slug"] + ".jpg"
-    photo = a.get("photo")
-    return photo["url"] if photo else illustration_path(a)
+    return illustration_path(a)
 
 
 def image_tag(a, cls, extra=""):
+    photo_ok = usable_cached_photo(a, root=BASE)
     url = editorial_image(a)
-    photo = a.get("photo")
-    alt = photo["alt"] if photo else "記事をイメージしたオリジナルイラスト"
-    fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo else ""
+    alt = a["photo"]["alt"] if photo_ok else (
+        "創作ニュース「" + a["title"] + "」の編集部制作表紙")
+    fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo_ok else ""
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
             f' {extra}{fallback}>')
 
 
 def photo_credit(a):
-    p = a.get("photo")
-    if not p:
-        return "記事のイメージ画像（オリジナル制作）"
+    """Attribution follows the asset actually displayed, not stale article metadata."""
+    if not usable_cached_photo(a, root=BASE):
+        return "記事の見出しを使ったオリジナル表紙（創作イラスト）。実際の出来事の写真ではありません。"
+    p = a["photo"]
     return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
             f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>。'
             '記事内の出来事や架空の企業とは関係ありません。')
@@ -277,8 +211,7 @@ def card(a, archive=False):
 def social_image(article):
     """Crawlers receive a first-party PNG/JPEG, never an SVG or an external image."""
     if article is not None:
-        photo = BASE / "assets" / "photos" / (article["slug"] + ".jpg")
-        if photo.is_file():
+        if usable_cached_photo(article, root=BASE):
             return "/photos/" + article["slug"] + ".jpg"
         return "/og/articles/" + article["slug"] + ".png"
     # Use a physically new raster URL: X caches both page cards and image URLs.
@@ -846,8 +779,9 @@ def build_revision():
 def make_article_social_images(articles):
     """Create article-specific, clearly fictional PNGs without external services."""
     for article in articles:
-        # Prefer an already cached and verified photo when one exists.
-        if (BASE / "assets" / "photos" / (article["slug"] + ".jpg")).is_file():
+        # A cached JPEG is not automatically a relevant or trustworthy image.
+        # Only the explicit editorial allowlist skips the original PNG card.
+        if usable_cached_photo(article, root=BASE):
             continue
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"))
 
