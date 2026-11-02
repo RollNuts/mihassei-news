@@ -14,11 +14,11 @@ from email.utils import format_datetime
 from pathlib import Path
 
 if __package__:
-    from .social_cards import render_social_card
+    from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover
     from .media_policy import usable_cached_photo
 else:
-    from social_cards import render_social_card
+    from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover
     from media_policy import usable_cached_photo
 from urllib.parse import quote, urlencode
@@ -165,6 +165,21 @@ def share_url(a):
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
+def issue_share_url(day, items):
+    """Reader-initiated X draft, with the true issue date and fiction disclosure."""
+    stamp = datetime.fromisoformat(day)
+    lines = [
+        f"【未発生新聞 {stamp.month}/{stamp.day}号】",
+        f"{len(items)}本の5年後の創作ニュース。",
+    ]
+    for item in items[:2]:
+        headline = item["title"]
+        lines.append("・" + headline[:27] + ("…" if len(headline) > 27 else ""))
+    lines.append("※フィクション #未発生新聞")
+    tagged = SITE + issue_url(day) + "?utm_source=x&utm_medium=social&utm_campaign=daily_edition"
+    return "https://x.com/intent/tweet?" + urlencode({"text": "\n".join(lines), "url": tagged})
+
+
 def actions(a, compact=False):
     slug = escape(a["slug"])
     link = article_url(a)
@@ -271,16 +286,23 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
         "text": "5年後の架空ニュースを真顔で読む、未発生新聞。 #未発生新聞 （創作）",
         "url": SITE + "/?src=x-launch-20261102-v3",
     }))
-    og_image = SITE + social_image(article)
+    issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
+    og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
+                       if issue_path else social_image(article))
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
-    og_alt = photo["alt"]+"（イメージ写真）" if local_photo and photo else "未発生新聞（創作ニュース）"
+    og_alt = (photo["alt"] + "（イメージ写真）" if local_photo and photo else
+              ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
+               ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
+                "未発生新聞（創作ニュース）")))
     og_mime = "image/jpeg" if local_photo else "image/png"
     og_size = "" if local_photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
-                "@type":"WebSite" if path=="/" else "WebPage",
+                "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
                 "inLanguage":"ja","genre":"風刺・フィクション"}
+    if issue_path:
+        metadata["datePublished"] = issue_path.group(1)
     if kind == "story" and article is not None:
         metadata.update({
             "@type":"BlogPosting",
@@ -397,18 +419,28 @@ def home(articles):
         href = category_url(cat) if cat in featured_categories else "/archive/?category=" + quote(cat)
         genre_links.append(f'<a href="{escape(href)}">{escape(cat)} <span>{count}本</span></a>')
     genre_links = "".join(genre_links)
+    issues_for_home = daily_issues(articles)
     issue_cards = "".join(
         f'<a class="daily-issue-card" href="{issue_url(day)}">'
         f'<time datetime="{day}">{issue_date_label(day)}</time>'
         f'<strong>発行号を読む <span aria-hidden="true">→</span></strong>'
         f'<small>{len(items)}本掲載 · {escape(items[0]["title"])}</small></a>'
-        for day, items in list(daily_issues(articles).items())[:3]
+        for day, items in list(issues_for_home.items())[:3]
     )
+    latest_issue_share = ""
+    if issues_for_home:
+        day, items = next(iter(issues_for_home.items()))
+        latest_issue_share = (
+            f'<a class="daily-issue-share" href="{escape(issue_share_url(day, items))}"'
+            ' target="_blank" rel="noopener noreferrer external">'
+            f'{issue_date_label(day)}号の見出しをXで紹介 ↗</a>'
+        )
     issue_section = (
         '<section class="daily-issues-section" aria-labelledby="daily-issues-heading">'
         '<div class="section-head"><h2 id="daily-issues-heading">日付で紙面をめくる</h2>'
         '<a href="/issues/">発行号をすべて見る ↗</a></div>'
-        '<div class="daily-issues-grid">' + issue_cards + '</div></section>'
+        '<div class="daily-issues-grid">' + issue_cards + '</div>'
+        + latest_issue_share + '</section>'
     ) if issue_cards else ""
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
@@ -574,6 +606,12 @@ def issue_page(day, items, issues):
         f'<p>現実の{issue_date_label(day)}に掲載した、{len(items)}本の創作ニュースです。'
         '記事内の出来事・発言・登場人物はフィクションです。</p>'
         f'<p class="issue-categories">{escape(kinds)}</p></header>'
+        '<aside class="issue-share-panel" aria-label="この号を紹介する">'
+        '<div><span class="eyebrow">SHARE THIS EDITION / 創作新聞</span>'
+        '<p>気になる見出しを、フィクションと明記してXで紹介できます。</p></div>'
+        f'<a class="issue-share-cta" href="{escape(issue_share_url(day, items))}"'
+        ' target="_blank" rel="noopener noreferrer external">𝕏 この号をXで紹介する ↗</a>'
+        '</aside>'
         '<section aria-label="この号の記事一覧"><div class="archive-list">'
         + "".join(card(a) for a in items) +
         '</div></section><nav class="issue-navigation" aria-label="発行号の前後">'
@@ -903,6 +941,12 @@ def build_revision():
     return "unknown"
 
 
+def make_issue_social_images(issues):
+    """First-party PNG covers make daily issue URLs shareable without paid APIs."""
+    for day in issues:
+        render_issue_card(day, OUT / "og" / "issues" / (day + ".png"))
+
+
 def make_article_social_images(articles):
     """Create article-specific, clearly fictional PNGs without external services."""
     for article in articles:
@@ -945,6 +989,7 @@ def build():
         write("images/"+a["slug"]+".svg",cover(a))
     other_files(articles, issues)
     make_brand_image()
+    make_issue_social_images(issues)
     make_article_social_images(articles)
     print(f"Built {len(articles)} fictional articles to {OUT}")
 
