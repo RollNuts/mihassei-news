@@ -80,6 +80,12 @@ def load():
             raise ValueError("Source must use HTTPS")
         if five_years_later(source["published_at"]) != a["fiction_at"]:
             raise ValueError("Fictional datetime must be exactly five years later: " + a["slug"])
+        if a.get("photo"):
+            p = a["photo"]
+            if not p.get("url","").startswith("https://images.unsplash.com/photo-"):
+                raise ValueError("Photo CDN must be Unsplash")
+            if not p.get("source","").startswith("https://unsplash.com/photos/") or not p.get("credit") or p.get("license") != "Unsplash" or not p.get("alt"):
+                raise ValueError("Photo requires verified Unsplash license and attribution")
         if len(a["paragraphs"]) < 2 or len(a["paragraphs"]) > 6:
             raise ValueError("Article must contain 2-6 paragraphs")
     return sorted(articles, key=lambda a: a["source"]["published_at"], reverse=True)
@@ -203,6 +209,36 @@ def cover(a):
     )
 
 
+def illustration_path(a):
+    return "/images/" + a["slug"] + ".svg"
+
+
+def editorial_image(a):
+    """Editorial photos are licensed stock photos, never photographs of fictional incidents."""
+    local = BASE / "assets" / "photos" / (a["slug"] + ".jpg")
+    if local.exists():
+        return "/photos/" + a["slug"] + ".jpg"
+    photo = a.get("photo")
+    return photo["url"] if photo else illustration_path(a)
+
+
+def image_tag(a, cls, extra=""):
+    url = editorial_image(a)
+    photo = a.get("photo")
+    alt = photo["alt"] if photo else "記事をイメージしたオリジナルイラスト"
+    fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo else ""
+    return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
+            f' {extra}{fallback}>')
+
+
+def photo_credit(a):
+    p = a.get("photo")
+    if not p:
+        return "記事のイメージ画像（オリジナル制作）"
+    return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
+            f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>。'
+            '記事内の出来事や架空の企業とは関係ありません。')
+
 def card(a, archive=False):
     attrs = ""
     if archive:
@@ -213,7 +249,7 @@ def card(a, archive=False):
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
-        f'<img class="story-thumb" src="/images/{a["slug"]}.svg" loading="lazy" alt="記事のイメージ画"></a>'
+        + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + '</a>'
         + category_meta(a)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
@@ -236,6 +272,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
+    og_image = editorial_image(article) if article else SITE+"/og/brand.png"
+    if og_image.startswith("/"):
+        og_image=SITE+og_image
+    photo = article.get("photo") if article else None
+    og_alt = photo["alt"]+"（イメージ写真）" if photo else "未発生新聞"
+    og_size = "" if photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else "WebPage",
                 "name":title,"url":SITE+path,"description":desc,
@@ -248,7 +290,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
             "author":{"@type":"Organization","name":"未発生新聞","url":SITE+"/about/"},
             "publisher":{"@type":"Organization","name":"未発生新聞","url":SITE},
             "isAccessibleForFree":True,
-            "image":[SITE+"/images/"+article["slug"]+".svg"],
+            "image":[og_image],
             "articleSection":article["category"]
         })
         if article.get("modified_at"):
@@ -265,9 +307,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <meta property="og:locale" content="ja_JP">
 <meta property="og:type" content="{"article" if kind=="story" else "website"}">
 <meta property="og:url" content="{SITE+path}">
-<meta property="og:image" content="{SITE}/og/brand.png">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="未発生新聞。まだ起きていないことを真面目に報じる。">
+<meta property="og:image" content="{escape(og_image)}">
+{og_size}
+<meta property="og:image:alt" content="{escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="{SITE+path}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -303,7 +345,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
-<a href="/feed.xml">RSS</a></div></div>
+<a href="/feed.xml">RSS</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
@@ -325,8 +367,7 @@ def home(articles):
 <div class="wire-viewport"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
 <article class="lead">
-<a class="lead-media" href="{article_url(a)}"><img src="/images/{a["slug"]}.svg"
- alt="記事のイメージ画" fetchpriority="high">
+<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
 <div class="overlay"><span class="issue-code">TOP STORY</span><span class="hero-live">● LIVE <span data-future-hms>--:--:--</span></span></div></a>
 <div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
@@ -381,7 +422,6 @@ def category_page(category, items):
 
 
 def story(a, articles):
-    image_path = "/images/" + a["slug"] + ".svg"
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
     # Show a small edited set, never pretend these are actually the most-read stories.
@@ -400,8 +440,8 @@ def story(a, articles):
 <div class="story-meta"><span>未発生新聞 編集部</span><span>実際の掲載日 {escape(publication_date(a)[:10])}</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
-<img class="article-visual" src="{image_path}" alt="記事のイメージ画">
-<figcaption>イメージ画像</figcaption></figure>
+{image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
+<figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
@@ -437,9 +477,27 @@ def about():
 </div></div>'''
     return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
 
+def privacy():
+    content='''<div class="container archive-page"><header class="page-intro">
+<span class="eyebrow">PRIVACY</span><h1>プライバシーについて</h1>
+<p>ニュースは架空。数字は実測。</p></header>
+<div class="about-copy">
+<h2>アクセスといいね</h2>
+<p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。個人名やメールアドレスは集めません。</p>
+<p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
+<h2>外部サービス</h2>
+<p>サイトの公開・集計にはCloudflareを使用します。記事の一部にはUnsplashで公開された商用利用可能な写真を使用しており、表示時にUnsplashへ通信する場合があります。Xへの共有を選択した場合、Xのページへ移動します。</p>
+<h2>広告について</h2>
+<p>現在は広告の審査準備中で、広告の自動表示はしていません。将来広告を掲載する際は、使用する事業者とプライバシー情報を更新します。</p>
+<h2>お問い合わせ</h2>
+<p>運営上の問題や権利に関するご連絡は、<a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHubのIssues</a>をご利用ください。公開される場所のため個人情報は投稿しないでください。</p>
+</div></div>'''
+    return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
+
+
 def other_files(articles):
     latest = max((modification_date(a) for a in articles), default=None)
-    routes = [("/", latest), ("/archive/", latest), ("/about/", None)]
+    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/privacy/", None)]
     routes.extend((category_url(category),
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
@@ -554,8 +612,12 @@ def build():
         if f.is_file():
             shutil.copy2(f, OUT/"assets"/f.name)
     shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
+    photos = BASE / "assets" / "photos"
+    if photos.exists():
+        shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("index.html",home(articles))
     write("about/index.html",about())
+    write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     for category, items in curated_categories(articles).items():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",

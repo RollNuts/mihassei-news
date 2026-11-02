@@ -97,3 +97,26 @@ body{background:var(--paper)}
 .article-reader-metric strong{font:900 20px Georgia,serif;color:var(--accent);font-variant-numeric:tabular-nums}
 .article-reader-metric small{font-size:10px;font-weight:400}
 @media(max-width:600px){.observer-shell{margin-top:-8px;margin-bottom:6px}.observer-widget{gap:5px;font-size:10px}.observer-widget strong{font-size:19px}.observer-widget small{font-size:8px}}
+
+
+/* Photojournalism-inspired editorial photography, credited without implying real incidents */
+.story-thumb,.article-visual,.lead-media .hero-image{
+  object-fit:cover;
+  object-position:center;
+  background:#e5e4dc;
+}
+.story-card .story-image-link{position:relative;display:block;overflow:hidden}
+.story-card .story-image-link::after{
+  content:"イメージ";position:absolute;left:9px;bottom:24px;
+  background:#222927c9;color:#fff;font:700 9px var(--sans);
+  padding:3px 7px;letter-spacing:.04em;pointer-events:none;
+}
+.article-hero-figure figcaption{line-height:1.7}
+.article-hero-figure figcaption a{
+  color:inherit;text-decoration:underline;text-underline-offset:2px
+}
+.article-hero-figure figcaption a:hover{color:var(--accent)}
+.source-context .real-publication-date{font-size:11px;color:#69736d}
+@media(max-width:600px){
+  .story-card .story-image-link::after{bottom:25px;font-size:9px}
+}
