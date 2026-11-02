@@ -63,6 +63,34 @@ class SiteTests(unittest.TestCase):
             self.assertEqual((fiction.month,fiction.day,fiction.hour,fiction.minute),
                              (original.month,original.day,original.hour,original.minute))
 
+    def test_editorial_photography_and_article_schema(self):
+        import re
+        for a in self.articles:
+            page = (ROOT / "dist/articles" / a["slug"] / "index.html").read_text(encoding="utf-8")
+            self.assertIn("data-fallback", page if a.get("photo") else "data-fallback")
+            if a.get("photo"):
+                photo=a["photo"]
+                self.assertTrue(photo["source"].startswith("https://unsplash.com/photos/"))
+                self.assertTrue(photo["url"].startswith("https://images.unsplash.com/photo-"))
+                self.assertIn(photo["credit"],page)
+                self.assertIn(photo["alt"],page)
+                self.assertIn(photo["source"],page)
+                self.assertIn("イメージ写真",page)
+                self.assertIn('property="og:image"',page)
+            if a.get("published_on"):
+                self.assertIn('"datePublished": "'+a["published_on"]+'"',page)
+            self.assertIn('"@type": "Article"',page)
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn("記事一覧",archive)
+
+    def test_privacy_and_sitemap(self):
+        self.assertTrue((ROOT/"dist/privacy/index.html").is_file())
+        privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
+        self.assertIn("アクセスといいね",privacy)
+        self.assertIn("Cloudflare",privacy)
+        sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("https://veripsa.com/privacy/",sitemap)
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
