@@ -2,33 +2,43 @@
   "picks": [
     {
       "slug": "unwanted-call-protection-calls-back",
-      "label": "おかしな親切",
-      "hook": "迷惑電話を止めるため、最初にかかってくるのは誰からの電話？"
+      "label": "皮肉な親切",
+      "hook": "迷惑電話を止めるサービスが、いちばん迷惑な電話をかけてきたら。"
     },
     {
       "slug": "fan-theories-write-final",
-      "label": "ネット文化の逆転",
-      "hook": "考察が本編より先に結末を完成させたら、脚本家はどうなる？"
+      "label": "考察しすぎる文化",
+      "hook": "ドラマの結末を視聴者が先に完成。脚本家だけが最終回を知らない。"
     },
     {
-      "slug": "ai-chair-removes-executives",
-      "label": "職場の皮肉",
-      "hook": "会議を短くするAI議長。長話の役員たちは納得できるのか。"
+      "slug": "supporter-guarantor-contract",
+      "label": "スポーツと推し活",
+      "hook": "応援していたつもりが選手の保証人に。成績が落ちるとファンが残業。"
     },
     {
       "slug": "idol-ice-kept-in-freezer",
       "label": "推し活あるある",
-      "hook": "食べるためのアイスより、残しておくアイスが売れる世界。"
+      "hook": "食べてほしいアイスが冷凍庫のコレクションに。メーカーのお願いまで保存される。"
     },
     {
-      "slug": "pressure-office-mood-forecast",
-      "label": "日常のズレ",
-      "hook": "天気のように、上司の機嫌も予報できるようになったら。"
+      "slug": "press-conference-metaphor-viral",
+      "label": "炎上とネット文化",
+      "hook": "会見の説明は誰も見ず、例え話だけがバズる。みんな何の会見か知らない。"
     },
     {
-      "slug": "supporter-guarantor-contract",
-      "label": "応援の重さ",
-      "hook": "応援する人が、選手の成績まで保証する時代。"
+      "slug": "farm-friendship-across-species",
+      "label": "SNSの考察合戦",
+      "hook": "牛とロバが草を食べるだけの動画を、人間だけが深読みして大騒ぎ。"
+    },
+    {
+      "slug": "quiet-reply-dating-matches",
+      "label": "恋愛あるある",
+      "hook": "返信が3日に一度でも続く交際。即レスを求める通知だけが無視される。"
+    },
+    {
+      "slug": "ai-chair-removes-executives",
+      "label": "職場の皮肉",
+      "hook": "会議を短くしたAI議長、長話の役員を追い出して自分が議題に。"
     }
   ]
 }
