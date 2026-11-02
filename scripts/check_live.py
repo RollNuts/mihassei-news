@@ -79,6 +79,15 @@ def check():
         if selector not in design_text:
             raise RuntimeError("Modern editorial design CSS missing: "+selector)
 
+    # Genuine reader discovery is absent for low sample sizes and only
+    # appears when confirmed browser counts arrive from the existing API.
+    for token in ('data-popular-section', 'data-popular-options=', 'data-popular-list',
+                  'readers-choice-title" hidden'):
+        if token not in body:
+            raise RuntimeError("Reader-discovery layout not deployed: "+token)
+    if '実人数・PV・週間ランキングではありません' not in body:
+        raise RuntimeError("Readership ranking must explain its actual counting unit")
+
     # A failed daily schedule must not leave the homepage falsely saying
     # "today's" stories. The page embeds a genuine, JST publication date.
     latest=max(articles,key=lambda a:(
