@@ -267,7 +267,7 @@ def card(a, archive=False):
     )
 
 def layout(title, desc, path, main, active="", kind="website", article=None):
-    complete = title + " | 未発生新聞（創作ニュース）"
+    complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
@@ -281,7 +281,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
-    og_image = editorial_image(article) if article else SITE+"/og/brand.png"
+    # X caches social cards aggressively. Keep a versioned, same-origin PNG for the
+    # home page and as fallback when an article only has an SVG illustration.
+    social_image = SITE + "/og/brand.png?v=20261102-2"
+    candidate = editorial_image(article) if article else social_image
+    og_image = social_image if candidate.endswith(".svg") else candidate
     if og_image.startswith("/"):
         og_image=SITE+og_image
     photo = article.get("photo") if article else None
@@ -317,9 +321,15 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <meta property="og:type" content="{"article" if kind=="story" else "website"}">
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
+<meta property="og:image:secure_url" content="{escape(og_image)}">
 {og_size}
 <meta property="og:image:alt" content="{escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Veripsa">
+<meta name="twitter:title" content="{escape(complete)}">
+<meta name="twitter:description" content="{escape(desc)}">
+<meta name="twitter:image" content="{escape(og_image)}">
+<meta name="twitter:image:alt" content="{escape(og_alt)}">
 <link rel="canonical" href="{SITE+path}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
