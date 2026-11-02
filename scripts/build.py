@@ -155,13 +155,29 @@ def article_url(a):
 
 
 def category_meta(a, compact=False):
-    d = datetime.fromisoformat(a["fiction_at"])
-    label = escape(a.get("flash", "速報"))
+    """Make the real publication timestamp distinct from the fictional dateline.
+
+    Some legacy stories only record a calendar date. Never invent midnight.
+    All article lists are sorted by publication_date(), not by fiction_at.
+    """
+    published = publication_date(a)
+    real = datetime.fromisoformat(published)
+    future = datetime.fromisoformat(a["fiction_at"])
+    real_label = f"公開 {real.year}/{real.month}/{real.day}"
+    if "T" in published:
+        real_label += f" {real.hour:02}:{real.minute:02}"
+    future_label = (
+        f"架空 {future.year}/{future.month}/{future.day}"
+        f" {future.hour:02}:{future.minute:02}"
+    )
     return (
         '<div class="story-meta">'
-        + '<span class="ticker">' + label + "</span>"
+        + '<span class="ticker">' + escape(a.get("flash", "速報")) + "</span>"
         + '<span class="category">' + escape(a["category"]) + "</span>"
-        + f'<time datetime="{escape(a["fiction_at"])}">{d.month}月{d.day}日 {d.hour:02}:{d.minute:02}</time>'
+        + f'<time class="real-published-at" datetime="{escape(published)}"'
+          f' aria-label="実際の掲載日時">{escape(real_label)}</time>'
+        + f'<time class="fiction-dateline" datetime="{escape(a["fiction_at"])}"'
+          f' aria-label="5年後の架空のニュース日時">{escape(future_label)}</time>'
         + "</div>"
     )
 
@@ -276,6 +292,14 @@ def social_image(article):
 
 def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None):
     complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
+    article_time_meta = ""
+    if kind == "story" and article is not None:
+        article_time_meta = (
+            f'<meta property="article:published_time" content="{escape(publication_date(article))}">'
+            + (f'<meta property="article:modified_time" content="{escape(article["modified_at"])}">'
+               if article.get("modified_at") else "")
+            + f'<meta property="article:section" content="{escape(article["category"])}">'
+        )
     nav = [
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
@@ -369,6 +393,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta property="og:site_name" content="未発生新聞">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:type" content="{"article" if kind=="story" else "website"}">
+{article_time_meta}
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
 <meta property="og:image:secure_url" content="{escape(og_image)}">
@@ -509,6 +534,7 @@ def home(articles):
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
+<p class="edition-time-key"><strong>時刻の見方</strong> 「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
 <div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
 <div class="wire-viewport" tabindex="0" role="region" aria-label="新着ニュースを横にスクロール"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
@@ -721,10 +747,10 @@ def story(a, articles, issues=None):
 <header class="article-header">
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a><span aria-hidden="true"> / </span><a href="/archive/">記事一覧</a><span aria-hidden="true"> / </span><span aria-current="page">この記事</span></nav>
 <div class="article-edition"><span>未発生新聞 {escape(a["category"])}部</span><span class="edition-tag">創作ニュース</span></div>
-<div class="article-dateline">{category_meta(a)}<span class="article-year">{escape(a["fiction_at"][:4])}年号</span></div>
+<div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="story-meta"><span>未発生新聞 編集部</span><span>実際の掲載日 {escape(publication_date(a)[:10])}</span><span>読了目安 約{read_minutes}分</span></div>
+<div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
 {image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
