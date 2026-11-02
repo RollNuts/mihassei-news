@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import os
 import sys
 import time
@@ -61,6 +62,29 @@ def check():
     editorial_html = html.unescape(editorial.decode("utf-8"))
     if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
         raise RuntimeError("Editorial transparency page is not yet fully deployed")
+
+    # Check the growth path against the live deployment, not just the local
+    # generator. All archived article links must remain accessible without JS.
+    archive, archive_mime = get("/archive/")
+    archive_html = archive.decode("utf-8")
+    for required in ('id="archive-results"', 'data-archive-more hidden',
+                     'data-archive-more-button aria-controls="archive-results"'):
+        if required not in archive_html:
+            raise RuntimeError("Live archive is missing progressive browsing: "+required)
+    for article in articles:
+        if 'href="/articles/'+article["slug"]+'/"' not in archive_html:
+            raise RuntimeError("Live archive missing article link: "+article["slug"])
+    site_js, _ = get("/assets/site.js")
+    if b"PAGE_SIZE = 18" not in site_js or b"visibleLimit" not in site_js:
+        raise RuntimeError("Live archive pagination script has not deployed")
+    # The random edition is deliberately bounded to avoid an ever-growing
+    # homepage payload as automated publishing accelerates.
+    issue_match = re.search(r'data-issue-options="([^"]+)"', home.decode("utf-8"))
+    if not issue_match:
+        raise RuntimeError("Live edition picker data missing")
+    issue_items = json.loads(html.unescape(issue_match.group(1)))
+    if len(issue_items) != min(len(articles),40):
+        raise RuntimeError("Live edition picker should include latest 40 at most")
 
     sitemap,mime=get("/sitemap.xml")
     root=ET.fromstring(sitemap)
