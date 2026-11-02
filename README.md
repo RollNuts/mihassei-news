@@ -70,3 +70,20 @@ python3 -m unittest discover -s tests -v
 ## ライセンス
 
 記事本文・オリジナル画像の無断転載を許諾するものではありません。外部の素材・写真は同梱しません。
+
+
+## 検索エンジン登録・広告審査
+
+- Google Search Console: https://search.google.com/search-console/ で Domain property \`veripsa.com\` を追加し、Cloudflare DNS に Search Console が提示した TXT 値を登録。所有権確認後、\`https://veripsa.com/sitemap.xml\` を登録。
+- 記事の \`fiction_at\` は読者向けに演出する創作日時。構造化データに記録する \`datePublished\` は、現実に本紙へ公開した \`published_at\`（JST ISO 8601）または古い記事の \`published_on\` であり、架空の未来日付を使わない。
+- AdSense 審査用に \`ads.txt\` と \`google-adsense-account\` メタタグを登録済み。サイト所有権の確認後に、Google AdSense 側から審査申請する。承認される前に広告表示コードを実行しない。
+- AdSense の承認と広告収益は保証されない。著作権・プライバシー・オリジナル性・広告ポリシーを確認し、承認されても読書を妨げる広告大量掲載はしない。
+- \`/privacy/\` を公開し、匿名のブラウザ単位のアクセス測定と、写真表示時の外部通信などを明示している。
+
+## 記事と写真
+
+- \`photo\` フィールドは任意。含む場合は商用利用が可能な実際の Unsplash 作品ページを開いて、撮影者・ダウンロード対象の画像 URL・ライセンスを事前に確認する。
+- \`photo\` の必須キー：\`url\`, \`source\`, \`credit\`, \`alt\`, \`license\`。URL は \`https://images.unsplash.com/photo-...\`、作品ページ \`https://unsplash.com/photos/...\`、ライセンス名は \`Unsplash\`。
+- 写真は記事内の出来事そのものではなくイメージ写真。写真家のクレジットを掲載。ダウンロードできなくてもオリジナルSVGへフォールバック。
+- \`.github/workflows/cache-photos.yml\` が作品の画像を無料のGitHub標準ランナーで \`assets/photos/\` に保存。画像は取得時にJPEGの形式・サイズを検証。GitHubから本番サイトへ自動デプロイ。写真に有料APIや画像生成サーバーは使わない。
+- 新規記事は \`published_at\` に本紙の実際の公開時刻を保存し、\`source.published_at\` に元ソースの発信時刻を保存する。この2つは必ず別々に扱う。
