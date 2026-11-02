@@ -126,6 +126,18 @@
   const pending = new Set();
   const buttons = [...document.querySelectorAll("[data-like-slug]")];
   const article = location.pathname.match(/^\/articles\/([a-z0-9-]+)\/?$/)?.[1]||"";
+
+  // Which story led this browser to read another? Only same-origin article
+  // path slugs are retained; never transmit complete referrer URLs or queries.
+  function precedingArticle(){
+    if(!article)return "";
+    let prior;
+    try{prior=new URL(document.referrer);}catch(_){return "";}
+    if(prior.origin!==location.origin)return "";
+    const match=prior.pathname.match(/^\/articles\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/);
+    return match && match[1]!==article ? match[1] : "";
+  }
+  const fromArticle=precedingArticle();
   // Reader predictions are confirmed by the existing free engagement API.
   // Never display invented votes and never count failed requests.
   const poll=document.querySelector("[data-future-poll]");
@@ -229,6 +241,7 @@
     const payload={action,article:articleSlug,clientId};
     if(action==="vote")payload.choice=choice;
     if(action==="visit" && visitChannel)payload.channel=visitChannel;
+    if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
     const response=await fetch("/api/engagement",{
       method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify(payload),
