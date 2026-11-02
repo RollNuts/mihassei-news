@@ -27,3 +27,20 @@
 .reader-comments-form button[type=submit]:hover{filter:brightness(.94)}
 .reader-comments-form button[type=submit]:disabled{opacity:.5;cursor:wait}
 @media(max-width:600px){.reader-comments{margin-top:42px}.reader-comments-form{padding:17px}.reader-comments-form button[type=submit]{width:100%}}
+
+/* Publicly verified participation metrics, with no synthetic comments. */
+.engagement-actions .comment-control span:first-child{font-size:14px;line-height:1}
+.engagement-actions .comment-count{font-variant-numeric:tabular-nums;font-weight:900;color:var(--accent)}
+#reader-comments{scroll-margin-top:85px}
+.reader-discussions{margin-top:33px;padding:24px 27px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:26px;border:1px solid var(--line);border-left:4px solid var(--accent);background:#f1efe6}
+.reader-discussions-copy{flex:1 1 290px}
+.reader-discussions h2{font-family:var(--serif);font-size:clamp(21px,2.6vw,28px);line-height:1.5;letter-spacing:-.045em;margin:10px 0}
+.reader-discussions p{font-size:12px;line-height:1.95;color:var(--muted);margin:0 0 15px}
+.reader-discussions-cta{display:inline-block;font-size:12px;font-weight:900;border-bottom:2px solid var(--accent);padding-bottom:4px}
+.reader-discussions-cta:hover{color:var(--accent)}
+.reader-discussions-list{flex:1 1 320px;min-width:0;display:grid;gap:8px}
+.reader-discussion-link{display:flex;flex-direction:column;gap:6px;border:1px solid #d0cfc4;background:#fdfcf7;padding:12px 15px;overflow-wrap:anywhere}
+.reader-discussion-link:hover{border-color:var(--accent);color:var(--ink)}
+.reader-discussion-category{font-size:10px;font-weight:900;color:var(--accent)}
+.reader-discussion-link strong{font:900 14px/1.55 var(--serif)}
+@media(max-width:600px){.reader-discussions{padding:20px 18px;gap:18px}.reader-discussions h2{font-size:22px}.reader-discussions-list{flex-basis:100%}}
