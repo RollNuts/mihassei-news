@@ -272,6 +272,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
+    og_image = editorial_image(article) if article else SITE+"/og/brand.png"
+    if og_image.startswith("/"):
+        og_image=SITE+og_image
+    photo = article.get("photo") if article else None
+    og_alt = photo["alt"]+"（イメージ写真）" if photo else "未発生新聞"
+    og_size = "" if photo else '{og_size}'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else "WebPage",
                 "name":title,"url":SITE+path,"description":desc,
@@ -284,7 +290,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
             "author":{"@type":"Organization","name":"未発生新聞","url":SITE+"/about/"},
             "publisher":{"@type":"Organization","name":"未発生新聞","url":SITE},
             "isAccessibleForFree":True,
-            "image":[SITE+"/images/"+article["slug"]+".svg"],
+            "image":[og_image],
             "articleSection":article["category"]
         })
         if article.get("modified_at"):
@@ -301,9 +307,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <meta property="og:locale" content="ja_JP">
 <meta property="og:type" content="{"article" if kind=="story" else "website"}">
 <meta property="og:url" content="{SITE+path}">
-<meta property="og:image" content="{SITE}/og/brand.png">
+<meta property="og:image" content="{escape(og_image)}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="未発生新聞。まだ起きていないことを真面目に報じる。">
+<meta property="og:image:alt" content="{escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="{SITE+path}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -339,7 +345,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
-<a href="/feed.xml">RSS</a></div></div>
+<a href="/feed.xml">RSS</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
@@ -471,9 +477,27 @@ def about():
 </div></div>'''
     return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
 
+def privacy():
+    content='''<div class="container archive-page"><header class="page-intro">
+<span class="eyebrow">PRIVACY</span><h1>プライバシーについて</h1>
+<p>ニュースは架空。数字は実測。</p></header>
+<div class="about-copy">
+<h2>アクセスといいね</h2>
+<p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。個人名やメールアドレスは集めません。</p>
+<p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
+<h2>外部サービス</h2>
+<p>サイトの公開・集計にはCloudflareを使用します。記事の一部にはUnsplashで公開された商用利用可能な写真を使用しており、表示時にUnsplashへ通信する場合があります。Xへの共有を選択した場合、Xのページへ移動します。</p>
+<h2>広告について</h2>
+<p>現在は広告の審査準備中で、広告の自動表示はしていません。将来広告を掲載する際は、使用する事業者とプライバシー情報を更新します。</p>
+<h2>お問い合わせ</h2>
+<p>運営上の問題や権利に関するご連絡は、<a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHubのIssues</a>をご利用ください。公開される場所のため個人情報は投稿しないでください。</p>
+</div></div>'''
+    return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
+
+
 def other_files(articles):
     latest = max((modification_date(a) for a in articles), default=None)
-    routes = [("/", latest), ("/archive/", latest), ("/about/", None)]
+    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/privacy/", None)]
     routes.extend((category_url(category),
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
@@ -593,6 +617,7 @@ def build():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("index.html",home(articles))
     write("about/index.html",about())
+    write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     for category, items in curated_categories(articles).items():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",
