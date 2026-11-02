@@ -63,6 +63,36 @@ class SatireAuditTests(unittest.TestCase):
         flags=analyze([sample(i,title=t) for i,t in enumerate(titles)])
         self.assertIn("WORK_AI_CLUSTER",{x[0] for x in flags})
 
+    def test_six_adjacent_premises_prompt_topic_rotation(self):
+        titles = [
+            "AIが本人確認を始める日", "購入申請が必要な店",
+            "新しい認証制度に失敗", "登録した人だけ拒否できる方法",
+            "猫の休日", "サッカーの遠征",
+        ]
+        articles = [sample(i, title=title) for i, title in enumerate(titles)]
+        for i, article in enumerate(articles):
+            article["category"] = "社会" if i < 5 else "スポーツ"
+        original = copy.deepcopy(articles)
+        flags = analyze(articles)
+        labels = {entry[0] for entry in flags}
+        self.assertIn("RECENT_CATEGORY_RUN", labels)
+        self.assertIn("PROCEDURAL_PREMISE_LOOP", labels)
+        self.assertEqual(articles, original, "Advisory quality checks must never rewrite publications")
+
+    def test_varied_recent_topics_do_not_raise_burst_warnings(self):
+        titles = [
+            "夜の音楽祭", "ゲームの新しい遊び方",
+            "旅先で人気のご当地グッズ", "家族の料理",
+            "趣味の庭づくり", "子どもの遠足",
+        ]
+        categories = ["エンタメ", "技術", "暮らし", "社会", "経済", "スポーツ"]
+        articles = [sample(i, title=title) for i, title in enumerate(titles)]
+        for article, category in zip(articles, categories):
+            article["category"] = category
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertNotIn("RECENT_CATEGORY_RUN", labels)
+        self.assertNotIn("PROCEDURAL_PREMISE_LOOP", labels)
+
     def test_unrelated_jokes_are_not_automatically_dismissed(self):
         self.assertEqual(near_duplicate("電話の着信を止められない",
                                         "映画の感想が明日になる"),0.0)
