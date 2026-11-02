@@ -590,3 +590,36 @@ body{
   .issue-index-entry{flex-direction:column;align-items:flex-start;gap:9px;padding:20px 0}
   .issue-navigation{align-items:flex-start;flex-direction:column}
 }
+
+/* Mobile ergonomics: preserve pinch zoom while preventing iOS focus auto-zoom.
+   Touch controls need enough physical height even in the compact news layout. */
+@media(max-width:660px){
+  .search-input,
+  .decade-select{
+    font-size:16px;
+    min-height:48px;
+  }
+  .search-row{row-gap:12px}
+  .search-input{flex:1 1 210px}
+  .decade-select{flex:0 0 auto}
+  .filter-button,
+  .genre-links a,
+  .engagement-actions a,
+  .engagement-actions button,
+  .engagement-actions.compact a,
+  .engagement-actions.compact button,
+  .reader-follow-links a,
+  .reader-comments-form button[type=submit],
+  .issue-picker-button,
+  .footer-nav a{
+    min-height:44px;
+  }
+  .nav-inner{scroll-snap-type:x proximity;scrollbar-width:thin}
+  .nav-inner a{scroll-snap-align:start}
+  .article-end a{
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+  }
+  .footer-nav a{padding-block:7px}
+}
