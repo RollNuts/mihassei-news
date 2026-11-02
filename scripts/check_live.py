@@ -61,6 +61,19 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # This stylesheet is last in the cascade. A successful HTML deploy must
+    # not silently leave the refreshed editorial design without its actual CSS.
+    if 'href="/assets/editorial-polish.css"' not in body:
+        raise RuntimeError("Modern editorial design stylesheet not linked in homepage")
+    design, design_mime = get("/assets/editorial-polish.css")
+    if "text/css" not in design_mime:
+        raise RuntimeError("Modern editorial design stylesheet served with invalid MIME")
+    design_text = design.decode("utf-8")
+    for selector in (".article-body", ".story-card", ".nav-inner",
+                     "@media(max-width:660px)", "prefers-reduced-motion"):
+        if selector not in design_text:
+            raise RuntimeError("Modern editorial design CSS missing: "+selector)
+
     # A failed daily schedule must not leave the homepage falsely saying
     # "today's" stories. The page embeds a genuine, JST publication date.
     latest=max(articles,key=lambda a:(
