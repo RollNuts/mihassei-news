@@ -55,6 +55,13 @@ def check():
     if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
         raise RuntimeError("X card brand image missing or invalid PNG")
 
+    if 'class="genre-explore"' not in body or 'href="/editorial/"' not in body:
+        raise RuntimeError("Reader discovery or editorial link missing from live homepage")
+    editorial, editorial_mime = get("/editorial/")
+    editorial_html = html.unescape(editorial.decode("utf-8"))
+    if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
+        raise RuntimeError("Editorial transparency page is not yet fully deployed")
+
     sitemap,mime=get("/sitemap.xml")
     root=ET.fromstring(sitemap)
     ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
@@ -79,6 +86,9 @@ def check():
             raise RuntimeError(slug+": real publication timestamp missing")
         if f'"datePublished": "{item["fiction_at"]}"' in page:
             raise RuntimeError(slug+": fictional year leaked into SEO date")
+        for token in ('class="reader-next"', 'class="reader-follow"', '"@type": "BreadcrumbList"'):
+            if token not in page:
+                raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         photo=item.get("photo")
         if photo:
             if photo["source"] not in page or photo["credit"] not in page:
