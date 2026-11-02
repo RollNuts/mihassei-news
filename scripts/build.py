@@ -277,7 +277,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
         og_image=SITE+og_image
     photo = article.get("photo") if article else None
     og_alt = photo["alt"]+"（イメージ写真）" if photo else "未発生新聞"
-    og_size = "" if photo else '{og_size}'
+    og_size = "" if photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else "WebPage",
                 "name":title,"url":SITE+path,"description":desc,
@@ -308,7 +308,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <meta property="og:type" content="{"article" if kind=="story" else "website"}">
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+{og_size}
 <meta property="og:image:alt" content="{escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="{SITE+path}">
