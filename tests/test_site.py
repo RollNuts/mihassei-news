@@ -133,6 +133,27 @@ class SiteTests(unittest.TestCase):
         self.assertIn("prefers-reduced-motion",css)
         self.assertEqual(css.count("{"),css.count("}"))
 
+    def test_mobile_search_and_actions_have_usable_touch_targets(self):
+        """Avoid iOS auto-zoom on search inputs without disabling native pinch zoom."""
+        styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        start=styles.index("Mobile ergonomics: preserve pinch zoom")
+        block=styles[start:]
+        self.assertIn("@media(max-width:660px)",block)
+        for part in (".search-input,", ".decade-select{", "font-size:16px",
+                     "min-height:48px", ".filter-button,", ".genre-links a,",
+                     ".engagement-actions.compact button,", ".footer-nav a",
+                     ".nav-inner{scroll-snap-type:x proximity",
+                     ".article-end a{"):
+            self.assertIn(part,block)
+        self.assertNotIn("user-scalable=no",styles)
+        self.assertNotIn("maximum-scale=1",styles)
+        self.assertEqual(styles.count("{"),styles.count("}"))
+        homepage=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('name="viewport" content="width=device-width,initial-scale=1"',homepage)
+        self.assertIn('class="search-input"',archive)
+        self.assertIn('class="decade-select"',archive)
+
     def test_modern_readable_editorial_layout_without_paid_assets(self):
         """Preserve all pages while improving reading comfort and mobile touch UI."""
         styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
