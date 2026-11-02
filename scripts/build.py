@@ -115,7 +115,9 @@ def category_meta(a, compact=False):
 
 def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share"
-    text = "【未発生新聞】" + a["title"] + "（創作ニュース）"
+    # Small standalone hook for the reader's X draft. Does not post automatically.
+    teaser = a["summary"][:75]
+    text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞 （創作）"
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
@@ -267,7 +269,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
         ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
+        ("/archive/?category=" + quote("暮らし"), "暮らし", ""),
         ("/archive/?category=" + quote("スポーツ"), "スポーツ", ""),
+        ("/archive/?category=" + quote("エンタメ"), "エンタメ", ""),
         ("/about/", "本紙について", "about"),
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
@@ -359,6 +363,9 @@ def home(articles):
     recent = "".join(card(x) for x in articles[1:10])
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
+    issue_options = escape(json.dumps(
+        [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
+         for x in articles], ensure_ascii=False, separators=(",", ":")))
     content = f'''<div class="container index-main">
 <div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
 <strong>本日の未発生ニュース</strong></div>
@@ -375,6 +382,22 @@ def home(articles):
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
+</section>
+
+<section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
+  <div class="special-edition-heading">
+    <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
+    <h2>何が起きるか、まだ分からない。</h2>
+    <p>気になる号外を一枚めくってみよう。</p>
+  </div>
+  <div class="special-edition-machine">
+    <button type="button" class="issue-picker-button" data-pick-issue>今日の号外をめくる <span aria-hidden="true">↗</span></button>
+    <div class="issue-picker-result" data-issue-result aria-live="polite">
+      <span class="small-label">まだ開封されていません</span>
+      <p data-issue-headline>ニュースの続きは、めくってからのお楽しみ。</p>
+      <a data-issue-link href="/archive/" hidden>記事を読む ↗</a>
+    </div>
+  </div>
 </section>
 <section class="section-block"><div class="section-head"><h2>ほかのニュース</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
