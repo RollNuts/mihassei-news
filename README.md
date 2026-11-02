@@ -22,6 +22,8 @@
 - 市場予測は `kind: analysis`。実際の根拠資料 `sources`、強気・中立・弱気 `scenarios`、反証可能な `forecast` と検証日を必須にする。価格や決算を未確認のまま断定しない。未来予測は投資助言・売買推奨ではない。
 - `scripts/serials.py` がPython標準ライブラリだけで連載ページ、オリジナルSVG表紙、1200×630のOGP PNGを生成。独立canonical、Article構造化データ、サイトマップを付与。追加のAPI、外部有料モデル、画像生成課金、DBを利用しない。
 - 続編追加後は `python3 -m unittest discover -s tests -v` を実行し、日付・検証方法・出典を確認する。市場見通しの正確さや広告審査・検索流入は保証されない。
+- **株式予想の答え合わせ**: 市場連載ページには `scripts/forecast_ledger.py` による公開台帳を置く。日付・観測仮説・検証方法・判定状況を各記事から参照でき、読者が過去の予想を一覧できる。期日を過ぎても結果の根拠がなければ「検証期日到来・判定待ち」であり、勝手に的中・外れを付けない。
+- 判定済み扱いにするには `forecast.status: 検証済み` と `forecast.result: {outcome: 的中|外れ|判定不能, verified_on: YYYY-MM-DD, explanation: ..., evidence:[{title:..., url:https://...}]}` を追加し、判定の原資料を記録する。出典なしの判定はビルド時にエラーにする。まだ実績が少ない段階で的中率等を表示しない。
 
 ## 発行状況と元ネタの鮮度
 
