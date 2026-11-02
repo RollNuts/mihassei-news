@@ -43,6 +43,35 @@ def category_url(name):
     return "/category/"+CATEGORY_PATHS[name]+"/"
 
 
+def issue_url(day):
+    """Actual publication date in JST, never the fictional year."""
+    if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
+        raise ValueError("Invalid real issue date")
+    datetime.fromisoformat(day)  # validate month/day before creating a route
+    return "/issues/" + day + "/"
+
+
+def issue_date_label(day):
+    d = datetime.fromisoformat(day)
+    return f"{d.year}年{d.month}月{d.day}日"
+
+
+def daily_issues(articles):
+    """Only substantial daily editions, never thin index pages of 1-2 articles."""
+    groups = {}
+    for article in articles:
+        day = publication_date(article)[:10]
+        if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
+            datetime.fromisoformat(day)
+            groups.setdefault(day, []).append(article)
+    return {
+        day: sorted(groups[day], key=lambda a: (
+            publication_date(a), a["source"]["published_at"]), reverse=True)
+        for day in sorted(groups, reverse=True)
+        if len(groups[day]) >= 3
+    }
+
+
 def escape(value):
     return html.escape(str(value), quote=True)
 
@@ -294,6 +323,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     nav = [
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
+        ("/issues/", "発行号", "issues"),
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
         ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
@@ -402,7 +432,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
@@ -435,6 +465,19 @@ def home(articles):
         href = category_url(cat) if cat in featured_categories else "/archive/?category=" + quote(cat)
         genre_links.append(f'<a href="{escape(href)}">{escape(cat)} <span>{count}本</span></a>')
     genre_links = "".join(genre_links)
+    issue_cards = "".join(
+        f'<a class="daily-issue-card" href="{issue_url(day)}">'
+        f'<time datetime="{day}">{issue_date_label(day)}</time>'
+        f'<strong>発行号を読む <span aria-hidden="true">→</span></strong>'
+        f'<small>{len(items)}本掲載 · {escape(items[0]["title"])}</small></a>'
+        for day, items in list(daily_issues(articles).items())[:3]
+    )
+    issue_section = (
+        '<section class="daily-issues-section" aria-labelledby="daily-issues-heading">'
+        '<div class="section-head"><h2 id="daily-issues-heading">日付で紙面をめくる</h2>'
+        '<a href="/issues/">発行号をすべて見る ↗</a></div>'
+        '<div class="daily-issues-grid">' + issue_cards + '</div></section>'
+    ) if issue_cards else ""
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
     # A busy newsroom should not ship the entire archive in the homepage HTML.
@@ -473,6 +516,7 @@ def home(articles):
 <div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
+{issue_section}
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -511,7 +555,8 @@ def archive(articles):
         f'<option value="{x}">{x}年代</option>' for x in decades)
     content = f'''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>未発生の記事一覧</h1>
-<p>全部作り話です。着想元の現実の記事とは分けてお読みください。</p></header>
+<p>全部作り話です。着想元の現実の記事とは分けてお読みください。</p>
+<p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" aria-label="カテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター">{options}</select>
@@ -540,7 +585,73 @@ def category_page(category, items):
                   category_url(category),content,active="archive")
 
 
-def story(a, articles):
+def issue_index(issues):
+    """Browse substantial editions, grouped by genuine issue publication dates."""
+    links = []
+    for day, items in issues.items():
+        headline = escape(items[0]["title"])
+        kinds = " / ".join(dict.fromkeys(a["category"] for a in items))
+        links.append(
+            '<article class="issue-index-entry">'
+            '<div><span class="eyebrow">DAILY EDITION / 創作新聞</span>'
+            f'<h2><a href="{issue_url(day)}"><time datetime="{day}">{issue_date_label(day)}</time>号</a></h2>'
+            f'<p>{len(items)}本 · {escape(kinds)}</p>'
+            f'<p class="issue-index-headline">最新見出し：{headline}</p></div>'
+            f'<a class="issue-index-open" href="{issue_url(day)}">この号を読む ↗</a>'
+            '</article>'
+        )
+    content = (
+        '<div class="container archive-page issue-page">'
+        '<header class="page-intro"><span class="eyebrow">THE EDITION ARCHIVE</span>'
+        '<h1>未発生新聞の発行号</h1>'
+        '<p>現実に記事を公開した日付ごとに、5年後の架空ニュースをまとめています。'
+        '3本以上の創作ニュースを掲載した日だけをひとつの発行号にしています。</p></header>'
+        '<section class="issue-index-list" aria-label="日付ごとの発行号">'
+        + ("".join(links) if links else '<p>まとまった発行号はまだありません。新着記事をご覧ください。</p>')
+        + '</section><p><a class="read-more" href="/archive/">新着記事をすべて読む</a></p></div>'
+    )
+    return layout("発行号一覧",
+                  "実際の発行日ごとに読む未発生新聞。3本以上の記事がある号をまとめました。すべて創作記事です。",
+                  "/issues/", content, active="issues")
+
+
+def issue_page(day, items, issues):
+    """One crawlable page per substantial day; no need for JavaScript."""
+    days = list(issues)
+    index = days.index(day)
+    neighboring = []
+    if index > 0:
+        later = days[index - 1]
+        neighboring.append(
+            f'<a href="{issue_url(later)}">← 新しい号：{issue_date_label(later)}</a>')
+    if index + 1 < len(days):
+        earlier = days[index + 1]
+        neighboring.append(
+            f'<a href="{issue_url(earlier)}">前の号：{issue_date_label(earlier)} →</a>')
+    nav = "".join(neighboring)
+    kinds = " / ".join(dict.fromkeys(a["category"] for a in items))
+    title = issue_date_label(day) + "発行号"
+    content = (
+        '<div class="container archive-page issue-page">'
+        '<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>'
+        '<span aria-hidden="true"> / </span><a href="/issues/">発行号</a>'
+        f'<span aria-hidden="true"> / </span><span aria-current="page">{title}</span></nav>'
+        '<header class="page-intro">'
+        '<span class="eyebrow">DAILY EDITION / 5年後の架空ニュース</span>'
+        f'<h1><time datetime="{day}">{title}</time></h1>'
+        f'<p>現実の{issue_date_label(day)}に掲載した、{len(items)}本の創作ニュースです。'
+        '記事内の出来事・発言・登場人物はフィクションです。</p>'
+        f'<p class="issue-categories">{escape(kinds)}</p></header>'
+        '<section aria-label="この号の記事一覧"><div class="archive-list">'
+        + "".join(card(a) for a in items) +
+        '</div></section><nav class="issue-navigation" aria-label="発行号の前後">'
+        + nav + '</nav><p><a class="read-more" href="/issues/">発行号一覧へ戻る</a></p></div>'
+    )
+    return layout(title, f"{title}。{len(items)}本の5年後の架空ニュースを掲載。すべてフィクションです。",
+                  issue_url(day), content, active="issues")
+
+
+def story(a, articles, issues=None):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
     # Show a small edited set, never pretend these are actually the most-read stories.
@@ -556,6 +667,13 @@ def story(a, articles):
     next_category = next_story["category"] if next_story else "新着記事"
     text_len = sum(len(p) for p in a["paragraphs"])
     read_minutes = max(1, (text_len + 449) // 450)
+    available_issues = daily_issues(articles) if issues is None else issues
+    issue_day = publication_date(a)[:10]
+    issue_link = (
+        f'<a class="article-issue-link" href="{issue_url(issue_day)}">'
+        f'{issue_date_label(issue_day)}の発行号を読む ↗</a>'
+        if issue_day in available_issues else ""
+    )
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
 <header class="article-header">
@@ -601,7 +719,7 @@ def story(a, articles):
 <span class="reader-next-kicker">NEXT STORY / 続けて読む · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
-<div class="article-end"><span class="reporter">未発生新聞</span><a href="/archive/">記事一覧へ ↗</a></div>
+<div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}<a href="/archive/">記事一覧へ ↗</a></div>
 <section class="reader-follow" aria-label="更新を読む">
 <div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
 <p>新作はRSSで確認できます。気になった記事はXでも紹介できます。</p></div>
@@ -723,9 +841,14 @@ def privacy():
     return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
 
 
-def other_files(articles):
+def other_files(articles, issues=None):
     latest = max((modification_date(a) for a in articles), default=None)
-    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    issues = daily_issues(articles) if issues is None else issues
+    routes = [("/", latest), ("/archive/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    routes.extend(
+        (issue_url(day), max(modification_date(a) for a in items))
+        for day, items in issues.items()
+    )
     routes.extend((category_url(category),
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
@@ -859,6 +982,7 @@ def make_article_social_images(articles):
 
 def build():
     articles = load()
+    issues = daily_issues(articles)
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT/"assets").mkdir(parents=True)
@@ -877,13 +1001,16 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    write("issues/index.html",issue_index(issues))
+    for day, items in issues.items():
+        write("issues/"+day+"/index.html",issue_page(day, items, issues))
     for category, items in curated_categories(articles).items():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",
               category_page(category, items))
     for a in articles:
-        write("articles/"+a["slug"]+"/index.html",story(a,articles))
+        write("articles/"+a["slug"]+"/index.html",story(a,articles,issues))
         write("images/"+a["slug"]+".svg",cover(a))
-    other_files(articles)
+    other_files(articles, issues)
     make_brand_image()
     make_article_social_images(articles)
     print(f"Built {len(articles)} fictional articles to {OUT}")
