@@ -226,7 +226,7 @@ def card(a, archive=False):
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
-        f'{image_tag(a,"story-thumb",extra="loading=\"lazy\" decoding=\"async\"")}</a>'
+        + image_tag(a, "story-thumb", extra='loading="lazy" decoding="async"') + '</a>'
         + category_meta(a)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
