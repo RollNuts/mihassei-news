@@ -13,43 +13,37 @@
 - 記事の自動作成はChatGPTの定期タスクと接続済みGitHubで行う。外部のAI生成APIやAPIキーは使用しない。画像はAPI不要のオリジナルSVG。
 - ソーシャル（Redditなど）の公開RSSも候補。Xや5chの本文・画像の無断スクレイピングはしない。許諾済みの公開リンクを使う場合は `content/source_seeds.json` へURL・日時・要旨を追記する。
 
-## Cloudflare Workers 公開（推奨・現行ダッシュボード）
+## 本番構成
 
-Cloudflareの現在のGit取り込み画面はWorkersを標準表示します。**Pagesへ戻る必要はありません**。
+- 公開URL: https://veripsa.com
+- ホスト: Cloudflare Workers Static Assets + SQLite Durable Object
+- 公開GitHub: https://github.com/RollNuts/mihassei-news
+- Git連携: main にコミット後、Cloudflare が自動デプロイ
+- Build: python3 scripts/build.py
+- Deploy: npx wrangler deploy
+- Wrangler: wrangler.jsonc（/api/* だけ Worker を起動し、静的ファイル配信は無料）
+- AWS / 外部従量課金AI API は利用しない。
 
-1. Workers & Pages → Create → Import Git repository → `RollNuts/mihassei-news`。
-2. Project name: `mihassei-news`。
-3. Build command: `python3 scripts/build.py`。
-4. Deploy command: `npx wrangler deploy`。
-5. Preview command: デフォルトのまま。
-6. 「デプロイ」を押す。`wrangler.jsonc`が`dist/`を静的アセットとして公開します。
+## 読者の反応
 
-この構成は**Cloudflare Workers Static Assets**を利用し、Workersコードを動かさない静的配信のため、リクエストは無料・無制限の対象です。独自ドメインの切り替えは初回デプロイ成功後に実施してください。Squarespace登録ドメインもCloudflareへDNSを接続できますが、既存メール設定やレコードを保全してから切り替えます。
-
-## Cloudflare Pages公開
-
-1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git**。
-2. GitHubの **`RollNuts/mihassei-news`** を選ぶ。既存Veripsa Coreのリポジトリとは連携しない。
-3. Project name: `mihassei-news` 、Production branch: `main`。
-4. Framework preset: **None** / Build command: **`python3 scripts/build.py`** / Output directory: **`dist`**。
-5. 初回デプロイが成功したことを確認してから、Pages → **Custom domains → Set up a domain** に `veripsa.com` を入力する。
-6. Cloudflareの同じアカウントに対象ドメインzoneが存在する必要がある。古いWorkers・Pages・Redirect Rulesなどが稼働中なら競合がないか確認し、旧サービスへの経路を外してから切り替える。**手動DNSだけでCNAMEを作るより、Pages側のカスタムドメイン設定を使用する。**
-
-DNSを変更せずに新サイトを確認する場合は自動発行される `mihassei-news.pages.dev` を使う。公開後は `veripsa.com` の正しいHTMLが返ることを確認する。
-
+- src/worker.js の NewsroomStats は Cloudflare Workers Free の SQLite Durable Object を使用。new_sqlite_classes のマイグレーションで自動作成。
+- ブラウザ内で生成したランダムIDのSHA-256を保存して、サイト初回来訪・記事初回閲覧・いいね・X共有ボタンクリックを集計する。IPや端末指紋はDBに保存しない。
+- GET /api/engagement?articles=slug1,slug2 で人数・記事別リアクションのブラウザ単位の参考値を取得できる。
+- 実人数・PV・実際のX投稿数ではない。API障害時は数字を表示せず静的本文は継続する。
+- Freeプランの上限に達すると追加API処理が失敗する。勝手な有料プラン移行はしない。Workers契約がFreeであることはCloudflare管理画面で要確認。
 ## 自動投稿と無料運用
 
 **追加の従量課金を発生させない運用方針。** 本リポジトリの外部AI生成API接続コードとGeminiを呼び出すGitHub Actionsの定期発行ワークフローは削除済みです。APIキー、課金アカウント、外部有料モデルを登録する必要はありません。
 
-- 記事生成・更新：ChatGPTの「未発生新聞 自動発行」定期タスク（日本時間22:30に設定済み）。契約中のChatGPTプランに含まれる機能の範囲で稼働し、外部の従量課金AI APIは呼ばない。
+- 記事生成・更新：ChatGPTの「未発生新聞 自動発行」定期タスク（日本時間9:30・13:30・18:30・22:30の4枠に設定済み）。契約中のChatGPTプランに含まれる機能の範囲で稼働し、外部の従量課金AI APIは呼ばない。
 - 元ネタ収集：ChatGPTの標準検索を利用。X・掲示板投稿の無断スクレイピング・本文や画像の転載はしない。確認できるURLと投稿日時がある話題だけ採用。
-- 更新先：接続済みGitHubの公開リポジトリ `RollNuts/mihassei-news`、`content/articles.json`。1日最大1本。生成した内容は公開前にJSON妥当性、重複、安全性、フィクション表示、元記事の著作権への配慮を確認。
+- 更新先：接続済みGitHubの公開リポジトリ `RollNuts/mihassei-news`、`content/articles.json`。1枠最大1本（1日最大4本）。生成した内容は公開前にJSON妥当性、重複、安全性、フィクション表示、元記事の著作権への配慮を確認。
 - GitHub Actions：`.github/workflows/check.yml` のテストのみ。**生成AIへのリクエストは行わない。** GitHub Freeの公開リポジトリの標準ホストランナーを使用。
-- 自動サイト更新：Cloudflare Pages FreeにGitHubを接続すると、`main`への反映時にサイトをビルドして配信する。
+- 自動サイト更新：Cloudflare WorkersのGit連携でmainの更新を検知し自動デプロイする。
 - 画像：`scripts/build.py` が記事ごとに独立したSVGイラストを生成する。画像AIのAPI費用なし。
-- 課金防止：Cloudflare Pages Freeを選び、Workers有料機能・R2・KV・D1の有料機能を使わない。外部APIの有料プランに接続しない。制限に達したら投稿を見送る（勝手に有料プランへ移行しない）。
+- 課金防止：Cloudflare Workers Freeを維持し、無料枠超過時は処理を停止する。R2・D1・有料の外部APIを使わない。外部APIの有料プランに接続しない。制限に達したら投稿を見送る（勝手に有料プランへ移行しない）。
 - **既存コストは別**：`veripsa.com`のドメイン更新費と利用中のChatGPTプラン料金はゼロにはならない。新たな月額・従量課金を増やさない方針。
-- CloudflareのGit連携はユーザーのCloudflareアカウント画面で初回設定が必要。設定前は記事をGitHubに追加しても独自ドメインには反映されない。
+- CloudflareのGit連携と独自ドメインは設定済み。デプロイ失敗時はCloudflareのログを確認する。
 - 自動発行は、ChatGPTの定期タスク実行時に必要なWeb検索・GitHub連携が利用できる場合のみ成功する。失敗しても成功を偽装しない。定期タスクの利用枠・サービス条件が変わったときは投稿を止める。
 
 ### 他のAIを使いたくなったら
