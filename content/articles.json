@@ -19,6 +19,14 @@
       "published_at": "2026-11-02T16:38:00+09:00",
       "url": "https://prtimes.jp/main/html/rd/p/000000108.000054524.html",
       "topic": "情報漏洩の発生後に、企業の対応と被害者支援をAIで補助するサービスが発表された。"
+    },
+    "published_on": "2026-11-02",
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?auto=format&fit=crop&w=1400&q=82",
+      "credit": "Kevin Ache",
+      "source": "https://unsplash.com/photos/a-rack-of-servers-in-a-server-room-2JJ3wBHu4_0",
+      "alt": "サーバールームのイメージ",
+      "license": "Unsplash"
     }
   },
   {
@@ -41,6 +49,14 @@
       "published_at": "2026-11-02T14:33:00+09:00",
       "url": "https://prtimes.jp/main/html/rd/p/000000010.000161584.html",
       "topic": "複数の生成AIから依頼内容に合わせて使うAIを自動選択できるサービスが発表された。"
+    },
+    "published_on": "2026-11-02",
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1782406747369-23b07e4e6aa8?auto=format&fit=crop&w=1400&q=82",
+      "credit": "Madeline Liu",
+      "source": "https://unsplash.com/photos/a-modern-empty-office-space-with-desks-computers-and-chairs-BCZNO1oCP64",
+      "alt": "オフィスのイメージ",
+      "license": "Unsplash"
     }
   },
   {
@@ -63,6 +79,14 @@
       "published_at": "2026-11-02T14:05:00+09:00",
       "url": "https://www.reuters.com/jp/economy/HBF5VBFODVIDFDGVIAB7QPJSZQ-2026-11-02/",
       "topic": "大手金融機関が香港にAI研究所を開設する計画を発表した。"
+    },
+    "published_on": "2026-11-02",
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1769002240965-7cc4b129d81a?auto=format&fit=crop&w=1400&q=82",
+      "credit": "Jon Tyson",
+      "source": "https://unsplash.com/photos/an-empty-office-desk-in-front-of-a-window-HsMVmGngmWM",
+      "alt": "研究室内の執務スペースをイメージした写真",
+      "license": "Unsplash"
     }
   },
   {
@@ -85,6 +109,14 @@
       "published_at": "2026-11-02T12:58:00+09:00",
       "url": "https://newsdig.tbs.co.jp/articles/sbc/3055301",
       "topic": "AI・半導体関連の受注などを背景に製造業の求人が堅調との地域ニュースが報じられた。"
+    },
+    "published_on": "2026-11-02",
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1716191299980-a6e8827ba10b?auto=format&fit=crop&w=1400&q=82",
+      "credit": "Homa Appliances",
+      "source": "https://unsplash.com/photos/blue-industrial-robot-arm-in-factory-sz1CHL7Pky0",
+      "alt": "産業用ロボットのイメージ",
+      "license": "Unsplash"
     }
   },
   {
@@ -107,6 +139,14 @@
       "published_at": "2026-11-02T11:00:00+09:00",
       "url": "https://prtimes.jp/main/html/rd/p/000000012.000157146.html",
       "topic": "会議の議題逸脱を検知し、進行中に介入するAIサービスの提供開始が発表された。"
+    },
+    "published_on": "2026-11-02",
+    "photo": {
+      "url": "https://images.unsplash.com/photo-1697059361461-b81d0e98c3af?auto=format&fit=crop&w=1400&q=82",
+      "credit": "Jonathan Wells",
+      "source": "https://unsplash.com/photos/a-conference-room-with-a-projector-screen-and-chairs-Le6lJeyCSrs",
+      "alt": "会議室のイメージ",
+      "license": "Unsplash"
     }
   }
 ]
