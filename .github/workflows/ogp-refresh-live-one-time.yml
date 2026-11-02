@@ -1,0 +1,53 @@
+name: One-time verify X launch card (read only)
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Fetch live X-preview URLs as Twitterbot
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          import time
+          from urllib.request import Request, urlopen
+          BASE = 'https://veripsa.com'
+          PATH = '/og/brand-launch-20261102-v3.png'
+          QUERY = '/?src=x-launch-20261102-v3'
+          def get(path):
+              request=Request(BASE+path,headers={'User-Agent':'Twitterbot/1.0','Cache-Control':'no-cache'})
+              with urlopen(request,timeout=15) as response:
+                  content=response.read()
+                  mime=response.headers.get('content-type','')
+                  assert response.status==200, (path,response.status)
+                  return content,mime
+          for attempt in range(1,13):
+              try:
+                  page,mime=get(QUERY)
+                  text=page.decode('utf-8')
+                  assert 'text/html' in mime
+                  assert 'property="og:image" content="'+BASE+PATH+'"' in text
+                  assert 'name="twitter:image" content="'+BASE+PATH+'"' in text
+                  assert 'name="twitter:card" content="summary_large_image"' in text
+                  assert 'rel="canonical" href="'+BASE+'/"' in text
+                  assert '未発生新聞｜5年後の架空ニュース' in text
+                  image,img_mime=get(PATH)
+                  assert 'image/png' in img_mime
+                  assert image[:8]==bytes([137,80,78,71,13,10,26,10])
+                  assert image[12:16]==b'IHDR'
+                  assert int.from_bytes(image[16:20],'big')==1200
+                  assert int.from_bytes(image[20:24],'big')==630
+                  assert 1000<len(image)<5000000
+                  print('PASS: fresh Twitterbot HTML and',PATH,
+                        'return 200; image',len(image),'bytes, 1200x630')
+                  break
+              except Exception as exc:
+                  print('Attempt',attempt,':',repr(exc),flush=True)
+                  if attempt==12: raise
+                  time.sleep(10)
+          PY
