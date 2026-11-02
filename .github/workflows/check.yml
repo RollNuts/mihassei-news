@@ -25,3 +25,5 @@ jobs:
           node --input-type=module --check < src/worker.js
       - name: Verify Cloudflare Worker can be packaged without deploying
         run: npx --yes wrangler@4 deploy --dry-run --outdir /tmp/mihassei-worker
+      - name: Smoke test real visit and like counters locally
+        run: python3 tests/smoke_worker.py
