@@ -68,6 +68,25 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # A saved reading list is opt-in, browser-local and not a thin SEO archive.
+    # Only GETs: no visits, bookmark writes, analytics POSTs or paid services.
+    saved_html, saved_mime = get("/saved/")
+    saved_markup = saved_html.decode("utf-8")
+    if ("text/html" not in saved_mime or
+        'name="robots" content="noindex,follow"' not in saved_markup or
+        'data-saved-list' not in saved_markup or
+        'data-clear-bookmarks' not in saved_markup or
+        'src="/assets/bookmarks.js"' not in saved_markup):
+        raise RuntimeError("Private browser-only reading list is missing from production")
+    if 'href="/saved/"' not in body:
+        raise RuntimeError("Saved reading list is not discoverable from homepage")
+    bookmark_js, bookmark_mime = get("/assets/bookmarks.js")
+    if ("javascript" not in bookmark_mime and "text/plain" not in bookmark_mime):
+        raise RuntimeError("Bookmark script is missing or served with wrong MIME")
+    if (b"mihassei-saved-stories-v1" not in bookmark_js or
+        b"localStorage.setItem" not in bookmark_js):
+        raise RuntimeError("Bookmark script missing expected device-local functionality")
+
     # Serial long-form reading, links and share cards must ship alongside the news.
     # Static GETs only; do not generate visits, votes or any paid API traffic.
     serials=json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8"))
@@ -78,6 +97,8 @@ def check():
     if "text/html" not in serial_type or "物語を追う。未来を検証する。" not in serial_index:
         raise RuntimeError("Live serial index was not deployed")
     live_sitemap=get("/sitemap.xml")[0].decode("utf-8")
+    if SITE+"/saved/" in live_sitemap:
+        raise RuntimeError("Private saved list should not be indexed")
     if "https://veripsa.com/serials/" not in live_sitemap:
         raise RuntimeError("New serial index missing from sitemap")
     for serial in serials:
