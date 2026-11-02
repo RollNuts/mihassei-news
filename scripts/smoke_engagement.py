@@ -35,16 +35,23 @@ baseline=json.loads(data)
 check(baseline.get("unit")=="anonymous-browser","expected browser-scope counts")
 check(isinstance(baseline.get("visitors"),int),"visitors integer")
 check("apology-before-incident" in baseline.get("articles",{}),"article metrics exist")
+channels=baseline.get("channels",{})
+check(isinstance(channels,dict) and all(k in channels for k in ("x","search","external","unattributed")),
+      "API must expose only coarse attribution categories")
+initial_x=channels["x"]
 v=baseline["visitors"]
 m=baseline["articles"]["apology-before-incident"]
 client=str(uuid.uuid4())
-record={"action":"visit","article":"apology-before-incident","clientId":client}
+record={"action":"visit","article":"apology-before-incident","clientId":client,"channel":"x"}
 for i in range(2):
     code,_,data=req("POST","/api/engagement",record)
     check(code==200,"visit API status")
 counts=json.loads(data)
 check(counts["visitors"]==v+1,"visit must count one browser only")
 check(counts["readers"]==m["readers"]+1,"article reads must dedupe")
+code,_,snapshot=req("GET","/api/engagement?articles=apology-before-incident")
+check(code==200,"updated audience status")
+check(json.loads(snapshot)["channels"]["x"]==initial_x+1,"external X visitors dedupe per browser")
 like={"action":"like","article":"apology-before-incident","clientId":client}
 code,_,data=req("POST","/api/engagement",like)
 check(json.loads(data)["likes"]==m["likes"]+1,"liked +1")
@@ -52,4 +59,4 @@ code,_,data=req("POST","/api/engagement",like)
 check(json.loads(data)["likes"]==m["likes"],"unliked back to baseline")
 code,_,body=req("GET","/")
 check(code==200 and b"<!doctype html>" in body,"static site fallback")
-print("PASS: true unique browser counts, deduplicated article visits, toggled likes, static assets")
+print("PASS: unique browser counts, coarse X attribution, deduplicated article visits, toggled likes, static assets")
