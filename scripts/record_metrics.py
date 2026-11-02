@@ -94,11 +94,24 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
             for key in ("readers", "likes", "shareClicks", "continuedReaders"):
                 if type(item.get(key)) is not int or item[key] < 0:
                     raise ValueError("Invalid metric " + key + " for " + slug)
+            # New per-story attribution only exists after activation.
+            # An older Worker lacking the field must NOT be interpreted as
+            # zero X/search arrivals or used to reconstruct earlier traffic.
+            arrivals = item.get("arrivals")
+            extra = {}
+            if arrivals is not None:
+                if (not isinstance(arrivals, dict) or
+                    set(arrivals) != {"x","search"} or
+                    any(type(arrivals[k]) is not int or arrivals[k] < 0
+                        for k in ("x","search"))):
+                    raise ValueError("Invalid per-article arrivals for " + slug)
+                extra = {"x_arrivals":arrivals["x"],"search_arrivals":arrivals["search"]}
             metrics[slug] = {
                 "readers": item["readers"],
                 "likes": item["likes"],
                 "share_clicks": item["shareClicks"],
                 "continued_readers": item["continuedReaders"],
+                **extra,
             }
     return visitors, metrics, channels
 
@@ -122,6 +135,13 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
             "article from this source article via a same-origin referrer path. "
             "One per browser and source; referrer-stripping undercounts. "
             "This is not an article-to-article click total or a conversion rate."
+        ),
+        "per_article_arrival_note": (
+            "x_arrivals/search_arrivals are distinct anonymous browser identifiers "
+            "per specific article and channel, counted only since that metric was enabled. "
+            "A browser can be in both channels and several articles. "
+            "They are NOT people, page views, clicks, daily visits or proof of X posts. "
+            "Older snapshots without these fields must not be backfilled as zeros."
         ),
         "visitors_cumulative": visitors,
         "articles_published_total": len(articles),
