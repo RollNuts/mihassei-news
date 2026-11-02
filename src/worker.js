@@ -48,6 +48,12 @@ export class NewsroomStats extends DurableObject {
           // An approximate number of browser IDs that opened another story
           // after visiting this article. Not people, clicks, or a conversion rate.
           continuedReaders:this.count("continued:"+slug),
+          // Distinct browser IDs arriving at this specific story from a
+          // coarse X/search category since feature activation, not PV.
+          arrivals:{
+            x:this.count("arrival:x:"+slug),
+            search:this.count("arrival:search:"+slug)
+          },
           votes:{
             plausible:this.count("predictions:plausible:"+slug),
             unlikely:this.count("predictions:unlikely:"+slug)
@@ -96,6 +102,11 @@ export class NewsroomStats extends DurableObject {
         // No complete referral URLs, full UTM strings, search terms, or IPs are saved.
         if(channel && this.insertOnce("channel",channel,visitor))
           this.increment("channel:"+channel,1);
+        // Different arrival sources may overlap for a single browser/article.
+        // Never persist a URL, UTM value, referrer hostname or search query.
+        if(article && (channel==="x" || channel==="search") &&
+           this.insertOnce("arrival:"+channel,article,visitor))
+          this.increment("arrival:"+channel+":"+article,1);
       } else if (data.action==="like") {
         const prior=this.sql.exec("SELECT 1 FROM events WHERE kind=? AND article=? AND visitor=?","like",article,visitor).toArray().length>0;
         if(prior) {
@@ -132,6 +143,10 @@ export class NewsroomStats extends DurableObject {
       likes:article?this.count("likes:"+article):undefined,
       shareClicks:article?this.count("shares:"+article):undefined,
       continuedReaders:article?this.count("continued:"+article):undefined,
+      arrivals:article?{
+        x:this.count("arrival:x:"+article),
+        search:this.count("arrival:search:"+article)
+      }:undefined,
       liked,vote:selectedVote,alreadyVoted,
       votes:article?{
         plausible:this.count("predictions:plausible:"+article),
