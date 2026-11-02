@@ -27,6 +27,14 @@ CATEGORY_EN = {
 # The image motif must be traceable to the actual story subject, NOT to a
 # random seed or whichever reusable rectangle layout happened to be selected.
 SUBJECT_KEYWORDS = (
+    # Specific culture / everyday-life nouns come before generic "phone" or
+    # "fandom" so a dating-app story isn't illustrated as a spam call.
+    ("frozen", ("保存用", "食べる用", "アイスクリーム", "かき氷", "ソフトクリーム", "冷凍庫")),
+    ("livestock", ("牛とロバ", "ウシとロバ", "牧場", "飼育", "乳牛", "農場", "動物の友情")),
+    ("romance", ("恋活", "婚活", "恋愛", "交際", "マッチング", "カップル", "恋人")),
+    ("gaming", ("ゲーム", "RPG", "クエスト", "コントローラー", "eスポーツ", "攻略")),
+    ("school", ("小学校", "中学校", "高校", "教室", "授業", "卒業", "学校")),
+    ("music", ("コンサート", "楽曲", "レコード", "歌手", "アルバム", "オーケストラ")),
     ("telephone", ("迷惑電話", "着信", "電話", "通話", "恋活アプリ", "返信")),
     ("weather", ("天気", "低気圧", "気象", "機嫌予報", "降水")),
     ("baseball", ("野球", "球団", "投手", "ホームラン")),
@@ -47,6 +55,53 @@ ART_FALLBACK = {
 # The icons are deliberately stylized. An illustrative phone, for example,
 # cannot be mistaken for a photo documenting a real phone company or incident.
 ICONS = {
+    # Decorative single-stroke pictograms. No photos, fonts, tracking, or API.
+    "frozen": '''
+      <path d="M92 143l39 96 39-96M100 161h62M112 190h39M122 216h21"/>
+      <path d="M66 139q-12-25 17-39-5-36 31-40 17-49 53-13 33-7 35 32 23 14 9 40q-5 20-31 20z"/>
+      <path d="M127 76v15M73 65l11 9M191 54l-11 14"/>
+      <path d="M211 152v57M198 173h26M201 189l20-14M201 174l19 16"/>
+    ''',
+    "livestock": '''
+      <path d="M20 110L10 69 48 86M110 85l38-19-14 44"/>
+      <path d="M40 104q-11-14-4-34l33 8M117 78l31-17q8 19-4 38"/>
+      <path d="M39 99q26-29 77 0l17 63q-5 51-49 52t-49-53z"/>
+      <circle cx="62" cy="139" r="5"/><circle cx="107" cy="139" r="5"/>
+      <path d="M61 175q21-15 46 0M74 177v12m19-12v12"/>
+      <path d="M156 108l-11-75 31 44M207 100l33-65-4 79"/>
+      <path d="M157 112q29-25 65 0l-9 86q-26 26-49 0z"/>
+      <circle cx="178" cy="145" r="4"/><circle cx="204" cy="145" r="4"/>
+      <path d="M170 177q21 17 40 0"/>
+    ''',
+    "romance": '''
+      <path d="M38 60h128q20 0 20 20v77q0 17-20 17H90l-40 31v-31H38q-17 0-17-18V80q0-20 17-20z"/>
+      <path d="M88 125l-23-22q-16-16 1-26 13-9 22 6 9-15 22-6 17 10 1 26z"/>
+      <path d="M140 193h88q15 0 15-15V105q0-16-15-16h-26"/>
+      <path d="M168 134h45M168 153h29"/>
+      <path d="M88 233h118"/>
+    ''',
+    "gaming": '''
+      <path d="M62 101q-16 0-25 25l-18 73q-6 27 18 33 17 3 41-25l31-24h41l31 24q24 28 41 25 24-6 18-33l-18-73q-9-25-25-25z"/>
+      <path d="M77 120v64M46 151h62"/>
+      <circle cx="169" cy="134" r="10"/><circle cx="201" cy="166" r="10"/>
+      <path d="M112 151h32M118 167h20"/>
+      <path d="M102 69q12-10 27 0M142 64q12-10 27 0"/>
+    ''',
+    "school": '''
+      <rect x="30" y="54" width="204" height="125" rx="7"/>
+      <path d="M45 161h176M58 88h82M58 109h104M58 131h59"/>
+      <path d="M52 208q36-20 76-3v38q-42-18-76 0zM128 205q44-18 80 3v35q-38-18-80 0z"/>
+      <path d="M128 205v39"/>
+      <path d="M185 93l14 18 22-29"/>
+    ''',
+    "music": '''
+      <circle cx="124" cy="131" r="92"/><circle cx="124" cy="131" r="44"/>
+      <circle cx="124" cy="131" r="12"/>
+      <path d="M167 57v120M167 57l58-13v121"/>
+      <path d="M167 177q-28-13-34 11-4 20 17 18 24-5 17-29z"/>
+      <path d="M225 165q-25-12-32 12-4 20 18 17 21-5 14-29z"/>
+      <path d="M68 40l10 21M184 34l-7 21"/>
+    ''',
     "fandom": '''
       <rect x="40" y="73" width="187" height="135" rx="13"/>
       <path d="M59 100h149M67 184h133"/>
