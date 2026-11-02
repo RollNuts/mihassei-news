@@ -222,6 +222,40 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn("https://veripsa.com/issues/"+day+"/",locations,
                              "Two-article days must not create thin indexed editions")
 
+    def test_reader_discovery_does_not_fake_popularity(self):
+        import re
+        from scripts.build import home as generate_home
+        markup=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('class="readers-choice" data-popular-section',markup)
+        self.assertIn('data-popular-list',markup)
+        self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
+        self.assertIn("実人数・PV・週間ランキングではありません",markup)
+        m=re.search(r'data-popular-options="([^"]+)"',markup)
+        self.assertIsNotNone(m)
+        candidates=json.loads(html.unescape(m.group(1)))
+        self.assertEqual([x["slug"] for x in candidates],
+                         [a["slug"] for a in sorted(
+                             self.articles,
+                             key=lambda a:(a.get("published_at") or a["source"]["published_at"],
+                                           a["source"]["published_at"]),
+                             reverse=True)[:20]])
+        self.assertEqual(len(candidates),len(set(x["slug"] for x in candidates)))
+        self.assertLessEqual(len(candidates),20)
+        synthetic=[{**self.articles[0],"slug":"sample-"+str(i)}
+                   for i in range(25)]
+        sample=generate_home(synthetic)
+        raw=re.search(r'data-popular-options="([^"]+)"',sample)
+        self.assertIsNotNone(raw)
+        self.assertEqual(len(json.loads(html.unescape(raw.group(1)))),20)
+        script=(ROOT/"assets/engagement.js").read_text(encoding="utf-8")
+        self.assertIn("const popularCandidates=",script.replace("let popularCandidates=","const popularCandidates="))
+        self.assertIn("readers>=5",script)
+        self.assertIn("ranked.length<2",script)
+        self.assertIn("popularSection.hidden=false",script)
+        self.assertIn("popularList.replaceChildren",script)
+        self.assertIn("showPopular(data.articles||{})",script)
+        self.assertNotIn("innerHTML=",script)
+
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
         self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
