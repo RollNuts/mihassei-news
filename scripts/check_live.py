@@ -215,6 +215,13 @@ def check():
         raise RuntimeError("Coarse traffic attribution API is not deployed")
     if any(type(channel_counts[k]) is not int or channel_counts[k]<0 for k in names):
         raise RuntimeError("Coarse traffic attribution contains invalid counters")
+    # This is an existing GET; the extra field must be present after an API
+    # deployment before daily snapshots start requiring it.
+    first_article=payload.get("articles",{}).get(articles[0]["slug"],{})
+    if (not isinstance(first_article,dict) or
+        type(first_article.get("continuedReaders")) is not int or
+        first_article["continuedReaders"]<0):
+        raise RuntimeError("Anonymous article-continuation metric not deployed")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
