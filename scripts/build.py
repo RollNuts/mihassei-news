@@ -115,6 +115,26 @@ def modification_date(a):
     return a.get("modified_at") or publication_date(a)
 
 
+def editorial_lead(articles):
+    """Choose a recent, editor-reviewed lead; never confuse it with newest publication."""
+    if not articles:
+        return None
+    newest = datetime.fromisoformat(publication_date(articles[0]))
+    picks = []
+    for article in articles:
+        if article.get("editorial_pick") is not True:
+            continue
+        published = datetime.fromisoformat(publication_date(article))
+        hours_old = (newest - published).total_seconds() / 3600
+        if 0 <= hours_old <= 48:
+            picks.append(article)
+    if not picks:
+        return articles[0]
+    return max(picks, key=lambda article: (
+        int(article.get("editorial_priority", 0)), publication_date(article)
+    ))
+
+
 def load():
     articles = json.loads((BASE / "content/articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
@@ -346,12 +366,6 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         ("/issues/", "発行号", "issues"),
         ("/saved/", "あとで読む", "saved"),
         ("/serials/", "連載", "serials"),
-        ("/archive/?category=" + quote("社会"), "社会", ""),
-        ("/archive/?category=" + quote("経済"), "経済", ""),
-        ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
-        ("/archive/?category=" + quote("暮らし"), "暮らし", ""),
-        ("/archive/?category=" + quote("スポーツ"), "スポーツ", ""),
-        ("/archive/?category=" + quote("エンタメ"), "エンタメ", ""),
         ("/about/", "本紙について", "about"),
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
@@ -573,10 +587,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 
 def home(articles, serials=None):
     serials = load_serials(BASE) if serials is None else serials
-    a = articles[0]
-    # The fictional masthead clock is not a claim that the newsroom posted
-    # today. Use the genuine publication date, never the future dateline.
-    last_published = publication_date(a)
+    a = editorial_lead(articles)
+    newest = articles[0]
+    remaining = [item for item in articles if item["slug"] != a["slug"]]
+    # The masthead and feeds always use the actual newest publication,
+    # even while the editor chooses a different, stronger lead story.
+    last_published = publication_date(newest)
     last_day = last_published[:10]
     last_day_count = sum(publication_date(item)[:10] == last_day for item in articles)
     actual_stamp = datetime.fromisoformat(last_published)
@@ -586,10 +602,9 @@ def home(articles, serials=None):
     side = "".join('<article class="brief-card">' + category_meta(x) +
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
-                   for x in articles[1:4])
-    # Lead and the three sidebar headlines are already visible above.
-    # Never repeat them in the new-story grid: show the *next* nine articles.
-    recent = "".join(card(x) for x in articles[4:13])
+                   for x in remaining[:3])
+    # Keep the front page focused: six further stories, no duplicate lead.
+    recent = "".join(card(x) for x in remaining[3:9])
     featured_categories = curated_categories(articles)
     genre_links = []
     for cat in CATEGORIES[1:]:
@@ -622,8 +637,6 @@ def home(articles, serials=None):
         '<div class="daily-issues-grid">' + issue_cards + '</div>'
         + latest_issue_share + '</section>'
     ) if issue_cards else ""
-    line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
-                   f'{escape(x["title"])}</a>' for x in articles[:5])
     # A busy newsroom should not ship the entire archive in the homepage HTML.
     # Keep the interactive edition fresh without letting page weight grow forever.
     issue_options = escape(json.dumps(
@@ -653,7 +666,7 @@ def home(articles, serials=None):
     # published pages only and never imply a future episode already exists.
     reading_choices = [
         ("news", "FICTION / 架空ニュース", "5年後の未発生ニュース",
-         "今起きていることの、ちょっとおかしな続き。", "/archive/"),
+         "現実の話題を5年進めたら？ その矛盾を真顔で伝える。", "/archive/"),
     ]
     for series in serials:
         if series["kind"] == "fiction":
@@ -685,13 +698,11 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
-<p class="edition-time-key"><strong>時刻の見方</strong> 「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
-<div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
-<div class="wire-viewport" tabindex="0" role="region" aria-label="新着ニュースを横にスクロール"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
+<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題が5年後に進んだらどうなる？ 架空の出来事を真顔で報じます。「公開」は実際の掲載日時、「架空」は物語内の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
-<div class="overlay"><span class="issue-code">TOP STORY / 創作</span><span class="hero-live">5年先の時計 <span data-future-hms>--:--:--</span></span></div></a>
+<div class="overlay"><span class="issue-code">EDITOR’S PICK / おすすめ・創作</span><span class="hero-live">5年先の時計 <span data-future-hms>--:--:--</span></span></div></a>
 <div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p>
@@ -709,6 +720,9 @@ def home(articles, serials=None):
 <div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
+<details class="extras-shelf">
+<summary><span class="extras-eyebrow">MORE / 紙面の楽しみ方</span><strong>発行号・号外・読者参加・RSS</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
+<div class="extras-shelf-body">
 {issue_section}
 <section class="free-follow" aria-label="新着記事の購読">
 <div class="free-follow-copy"><span class="small-label red">FOLLOW / FREE RSS</span>
@@ -735,9 +749,10 @@ def home(articles, serials=None):
 <div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなの未来予想</span>
 <h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
 <p data-discussion-intro>記事の最後から、5年後の世界にひとこと。ニックネームで参加できます。</p>
-<a class="reader-discussions-cta" href="{article_url(a)}#reader-comments">新着記事にコメントする ↗</a></div>
+<a class="reader-discussions-cta" href="{article_url(newest)}#reader-comments">新着記事にコメントする ↗</a></div>
 <nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
+</div></details>
 <aside class="banner"><div><div class="small-label red">EDITORIAL</div>
 <h2>今日の常識は、5年後の非常識。</h2>
 <p>ニュースの続きは、たぶん誰も予想していない。</p></div>
