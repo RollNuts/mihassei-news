@@ -159,6 +159,10 @@ def check():
             raise RuntimeError(slug+": real publication timestamp missing")
         if f'"datePublished": "{item["fiction_at"]}"' in page:
             raise RuntimeError(slug+": fictional year leaked into SEO date")
+        for widget in ('data-future-poll data-poll-article="'+slug+'"',
+                       'data-poll-choice="plausible"', 'data-poll-choice="unlikely"'):
+            if widget not in page:
+                raise RuntimeError(slug+": future prediction UI not deployed: "+widget)
         for token in ('class="reader-next"', 'class="reader-follow"', '"@type": "BreadcrumbList"'):
             if token not in page:
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
@@ -211,6 +215,10 @@ def check():
         raise RuntimeError("Coarse traffic attribution API is not deployed")
     if any(type(channel_counts[k]) is not int or channel_counts[k]<0 for k in names):
         raise RuntimeError("Coarse traffic attribution contains invalid counters")
+    votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
+    if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
+                                           for k in ("plausible","unlikely")):
+        raise RuntimeError("Future verdict counters missing or invalid")
     print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; free channel attribution; free hosting.")
 
 def main():
