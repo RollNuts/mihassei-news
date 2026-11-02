@@ -811,8 +811,8 @@ def make_article_social_images(articles):
         def chunk(typ, data):
             return (struct.pack(">I", len(data)) + typ + data
                     + struct.pack(">I", binascii.crc32(typ+data) & 0xffffffff))
-        rows = b"".join(b"\\x00" + raw[y*width*3:(y+1)*width*3] for y in range(height))
-        png = (b"\\x89PNG\\r\\n\\x1a\\n"
+        rows = b"".join(bytes((0,)) + raw[y*width*3:(y+1)*width*3] for y in range(height))
+        png = (bytes((137, 80, 78, 71, 13, 10, 26, 10))
                + chunk(b"IHDR", struct.pack(">2I5B", width, height, 8, 2, 0, 0, 0))
                + chunk(b"IDAT", zlib.compress(rows, 9)) + chunk(b"IEND", b""))
         path = OUT / "og" / "articles" / (article["slug"] + ".png")
