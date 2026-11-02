@@ -266,6 +266,16 @@ def card(a, archive=False):
         + '</div></article>'
     )
 
+def social_image(article):
+    """Crawlers receive a first-party PNG/JPEG, never an SVG or an external image."""
+    if article is not None:
+        photo = BASE / "assets" / "photos" / (article["slug"] + ".jpg")
+        if photo.is_file():
+            return "/photos/" + article["slug"] + ".jpg"
+    # Version is part of the URL to refresh external card caches after brand updates.
+    return "/og/brand.png?v=20261102-2"
+
+
 def layout(title, desc, path, main, active="", kind="website", article=None):
     complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
     nav = [
@@ -281,16 +291,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
-    # X caches social cards aggressively. Keep a versioned, same-origin PNG for the
-    # home page and as fallback when an article only has an SVG illustration.
-    social_image = SITE + "/og/brand.png?v=20261102-2"
-    candidate = editorial_image(article) if article else social_image
-    og_image = social_image if candidate.endswith(".svg") else candidate
-    if og_image.startswith("/"):
-        og_image=SITE+og_image
+    og_image = SITE + social_image(article)
     photo = article.get("photo") if article else None
-    og_alt = photo["alt"]+"（イメージ写真）" if photo else "未発生新聞"
-    og_size = "" if photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+    local_photo = og_image.split("?",1)[0].endswith(".jpg")
+    og_alt = photo["alt"]+"（イメージ写真）" if local_photo and photo else "未発生新聞（創作ニュース）"
+    og_mime = "image/jpeg" if local_photo else "image/png"
+    og_size = "" if local_photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else "WebPage",
                 "name":title,"url":SITE+path,"description":desc,
@@ -322,10 +328,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
 <meta property="og:image:secure_url" content="{escape(og_image)}">
+<meta property="og:image:type" content="{og_mime}">
 {og_size}
 <meta property="og:image:alt" content="{escape(og_alt)}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@Veripsa">
 <meta name="twitter:title" content="{escape(complete)}">
 <meta name="twitter:description" content="{escape(desc)}">
 <meta name="twitter:image" content="{escape(og_image)}">

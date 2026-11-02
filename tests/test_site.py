@@ -138,6 +138,32 @@ class SiteTests(unittest.TestCase):
                          {item["url"].split("/")[2] for item in choices})
         self.assertIn("今日の号外をめくる",home)
 
+    def test_social_previews_use_first_party_jpeg_or_png(self):
+        """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
+        import re
+        from scripts.build import social_image
+        self.assertTrue(social_image({"slug":"nonexistent-story"}).startswith("/og/brand.png"))
+        pages=[ROOT/"dist/index.html"]
+        pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
+        for page in pages:
+            markup=page.read_text(encoding="utf-8")
+            match=re.search(r'<meta property="og:image" content="([^"]+)">',markup)
+            self.assertIsNotNone(match,str(page))
+            url=match.group(1)
+            self.assertTrue(url.startswith("https://veripsa.com/"),url)
+            path=url.removeprefix("https://veripsa.com/").split("?",1)[0]
+            self.assertTrue(path.endswith((".jpg",".png")),url)
+            self.assertIn('name="twitter:card" content="summary_large_image"',markup)
+            self.assertIn('name="twitter:image" content="'+url+'"',markup)
+            self.assertIn('property="og:image:secure_url" content="'+url+'"',markup)
+            self.assertIn('name="twitter:image:alt" content=',markup)
+            mime="image/png" if path.endswith(".png") else "image/jpeg"
+            self.assertIn('property="og:image:type" content="'+mime+'"',markup)
+            self.assertNotIn('name="twitter:site" content="@Veripsa"',markup)
+            asset=ROOT/"dist"/path
+            self.assertTrue(asset.is_file(),url)
+            self.assertGreater(asset.stat().st_size,1000,url)
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
