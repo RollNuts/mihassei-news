@@ -495,6 +495,71 @@ class SiteTests(unittest.TestCase):
         self.assertIsNotNone(large_options)
         self.assertEqual(len(json.loads(html.unescape(large_options.group(1)))),40)
 
+    def test_topic_feeds_have_only_real_matching_stories(self):
+        from email.utils import parsedate_to_datetime
+        from scripts.build import (load, CATEGORIES, CATEGORY_PATHS, SITE,
+                                   category_url, category_feed_url, social_image,
+                                   curated_categories, generate_rss)
+        from scripts.media_policy import usable_cached_photo
+        articles=load()
+        ns={"media":"http://search.yahoo.com/mrss/",
+            "atom":"http://www.w3.org/2005/Atom"}
+        populated=[cat for cat in CATEGORIES[1:]
+                   if any(a["category"]==cat for a in articles)]
+        created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")}
+        expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
+        self.assertEqual(created,expected)
+        homepage=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/archive/#category-feeds"',homepage)
+        self.assertIn('id="category-feeds"',archive)
+        for cat in populated:
+            feed=category_feed_url(cat)
+            self.assertIn('href="'+feed+'" type="application/rss+xml"',archive)
+            channel=ET.parse(ROOT/"dist"/feed.lstrip("/")).getroot().find("channel")
+            self.assertIn(cat,channel.findtext("title"))
+            self.assertIn("フィクション",channel.findtext("description"))
+            self.assertEqual(channel.findtext("language"),"ja")
+            self.assertEqual(channel.find("atom:link",ns).get("href"),SITE+feed)
+            expected_articles=[a for a in articles if a["category"]==cat][:30]
+            entries=channel.findall("item")
+            self.assertEqual(len(entries),len(expected_articles))
+            for item,a in zip(entries,expected_articles):
+                url=SITE+"/articles/"+a["slug"]+"/"
+                self.assertEqual(item.findtext("link"),url)
+                self.assertEqual(item.findtext("guid"),url)
+                self.assertIn("創作",item.findtext("description"))
+                posted=a.get("published_at") or a["source"]["published_at"][:10]
+                if "T" in posted:
+                    self.assertEqual(
+                        parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
+                        datetime.fromisoformat(posted).isoformat())
+                self.assertNotIn(a["fiction_at"][:4],item.findtext("pubDate") or "")
+                thumbnail=item.find("media:thumbnail",ns)
+                image=item.find("media:content",ns)
+                self.assertIsNotNone(thumbnail)
+                self.assertIsNotNone(image)
+                self.assertEqual(thumbnail.get("url"),SITE+social_image(a))
+                self.assertEqual(image.get("url"),SITE+social_image(a))
+                mime="image/jpeg" if usable_cached_photo(a,root=ROOT) else "image/png"
+                self.assertEqual(image.get("type"),mime)
+            if cat in curated_categories(articles):
+                category=(ROOT/"dist"/category_url(cat).lstrip("/")/"index.html")
+                page=category.read_text(encoding="utf-8")
+                self.assertIn('href="'+feed+'" type="application/rss+xml"',page)
+                self.assertIn('title="'+cat+'の未発生ニュース RSS"',page)
+        main=ET.parse(ROOT/"dist/feed.xml").getroot()
+        self.assertEqual(len(main.findall("./channel/item")),min(30,len(articles)))
+        self.assertEqual(main.find("channel").find("atom:link",ns).get("href"),
+                         SITE+"/feed.xml")
+
+    def test_topic_rss_caps_growth_without_extra_api_requests(self):
+        from scripts.build import generate_rss
+        a=self.articles[0]
+        result=generate_rss([a]*65,"test","創作ニュース",
+                            "https://veripsa.com/","/feeds/test.xml")
+        self.assertEqual(len(ET.fromstring(result).findall("./channel/item")),30)
+
     def test_rss_contains_licensed_first_party_preview_images(self):
         """Feed clients can find safe image previews with the Media RSS standard."""
         from scripts.build import social_image

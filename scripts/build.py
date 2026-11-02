@@ -47,6 +47,11 @@ def category_url(name):
     return "/category/"+CATEGORY_PATHS[name]+"/"
 
 
+def category_feed_url(name):
+    """Static per-topic RSS: no dependency on paid APIs or dynamic Workers."""
+    return "/feeds/" + CATEGORY_PATHS[name] + ".xml"
+
+
 def issue_url(day):
     """Actual publication date in JST, never the fictional year."""
     if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
@@ -265,7 +270,7 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None):
     complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
@@ -327,6 +332,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
             ]
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
+    topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
+                 f'href="{escape(feed_url)}">' if feed_url else "")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f9f8f3">
@@ -351,6 +358,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <link rel="canonical" href="{SITE+path}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
+{topic_rss}
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/article-extra.css">
 <link rel="stylesheet" href="/assets/newsroom.css">
@@ -386,7 +394,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/about/">本紙について</a>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
@@ -547,6 +555,13 @@ def archive(articles):
 <div class="archive-load-more" data-archive-more hidden>
   <button type="button" data-archive-more-button aria-controls="archive-results">さらに記事を見る</button>
 </div>
+<section class="category-feed-subscriptions" id="category-feeds" aria-labelledby="category-feeds-title">
+<div><span class="eyebrow">PICK YOUR FUTURE / RSS</span>
+<h2 id="category-feeds-title">好きなジャンルだけ、続けて読む。</h2>
+<p>RSSリーダーに登録すると、選んだ分野の新着記事を受け取れます。無料・登録不要です。</p></div>
+<nav class="category-feed-links" aria-label="ジャンル別RSS">
+{''.join(f'<a href="{category_feed_url(name)}" type="application/rss+xml">{escape(name)}のRSS <span aria-hidden="true">↗</span></a>' for name in CATEGORIES[1:] if any(a["category"]==name for a in articles))}
+</nav></section>
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 <p class="no-results" data-no-results hidden>一致する記事がありません。</p></div>'''
     return layout("記事一覧","未発生新聞の記事一覧。すべてフィクションです。","/archive/",content,"archive")
@@ -558,13 +573,16 @@ def category_page(category, items):
         '<div class="container archive-page">'
         '<header class="page-intro"><span class="eyebrow">CATEGORY / FICTIONAL NEWS</span>'
         f'<h1>{escape(title)}</h1>'
-        f'<p>{escape(category)}をめぐる、まだ起きていない出来事。</p></header>'
+        f'<p>{escape(category)}をめぐる、まだ起きていない出来事。</p>'
+        f'<p class="category-page-feed"><a href="{category_feed_url(category)}" type="application/rss+xml">'
+        f'{escape(category)}の新着をRSSで購読 ↗</a></p></header>'
         '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
         '<p style="margin-top:26px"><a class="read-more" href="/archive/">すべての記事を見る</a></p>'
         '</div>'
     )
     return layout(title,category + "の風刺・フィクション記事。未発生新聞が届ける5年後のニュース。",
-                  category_url(category),content,active="archive")
+                  category_url(category),content,active="archive",
+                  feed_url=category_feed_url(category))
 
 
 def issue_index(issues):
@@ -891,6 +909,49 @@ a{{color:#9c392b;font-weight:750}}a:hover{{color:#d85a48}}
 <div class="review-grid">{''.join(cards)}</div></main></body></html>'''
 
 
+def generate_rss(items, title, description, link, self_url):
+    """One canonical RSS implementation for all posts and genre subscriptions.
+
+    Items must be sorted newest-first by REAL publication time. The fictional
+    2031 dateline is never written into pubDate. All images are first-party.
+    """
+    media_ns = "http://search.yahoo.com/mrss/"
+    atom_ns = "http://www.w3.org/2005/Atom"
+    ET.register_namespace("media", media_ns)
+    ET.register_namespace("atom", atom_ns)
+    rss = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(rss, "channel")
+    for name, value in (("title",title),("description",description),
+                        ("link",link),("language","ja")):
+        ET.SubElement(channel, name).text=value
+    ET.SubElement(channel,f"{{{atom_ns}}}link",{
+        "href": SITE+self_url,"rel":"self","type":"application/rss+xml"
+    })
+    for a in items[:30]:
+        entry=ET.SubElement(channel,"item")
+        fields=[("title",a["title"]+" | 未発生新聞（創作）"),
+                ("link",SITE+article_url(a)),("guid",SITE+article_url(a)),
+                ("description",a["summary"]+" ※創作記事です。")]
+        posted=publication_date(a)
+        if "T" in posted:
+            fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
+        for tag, value in fields:
+            ET.SubElement(entry,tag).text=value
+        image=SITE+social_image(a)
+        approved=usable_cached_photo(a,root=BASE)
+        thumb={"url":image}
+        if not approved:
+            thumb.update({"width":"1200","height":"630"})
+        ET.SubElement(entry,f"{{{media_ns}}}thumbnail",thumb)
+        ET.SubElement(entry,f"{{{media_ns}}}content",{
+            "url":image,"medium":"image",
+            "type":"image/jpeg" if approved else "image/png"
+        })
+        if approved:
+            ET.SubElement(entry,f"{{{media_ns}}}credit",{"role":"photographer"}).text=a["photo"]["credit"]
+    return ET.tostring(rss,encoding="unicode")
+
+
 def other_files(articles, issues=None):
     latest = max((modification_date(a) for a in articles), default=None)
     issues = daily_issues(articles) if issues is None else issues
@@ -911,42 +972,27 @@ def other_files(articles, issues=None):
         if modified:
             ET.SubElement(node, "lastmod").text = modified
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
-    media_ns="http://search.yahoo.com/mrss/"
-    ET.register_namespace("media",media_ns)
-    rss=ET.Element("rss", version="2.0")
-    channel=ET.SubElement(rss,"channel")
-    for name, value in (("title","未発生新聞 | 創作ニュース"),("description","5年後の世界を真顔で報じる創作ニュース。"),("link",SITE),("language","ja")):
-        ET.SubElement(channel,name).text=value
-    for a in articles[:30]:
-        n=ET.SubElement(channel,"item")
-        fields = [("title",a["title"]+" | 未発生新聞（創作）"),
-                  ("link",SITE+article_url(a)),("guid",SITE+article_url(a)),
-                  ("description",a["summary"]+" ※創作記事です。")]
-        posted = publication_date(a)
-        # Older backfilled stories might have only a reliable date, not a timestamp.
-        if "T" in posted:
-            fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
-        for tag, value in fields:
-            ET.SubElement(n,tag).text=value
-        # First-party raster previews let feed readers show a real image for
-        # each article without fetching off-site content or using paid APIs.
-        image=SITE+social_image(a)
-        approved=usable_cached_photo(a,root=BASE)
-        thumb={"url":image}
-        if not approved:
-            thumb.update({"width":"1200","height":"630"})
-        ET.SubElement(n,f"{{{media_ns}}}thumbnail",thumb)
-        ET.SubElement(n,f"{{{media_ns}}}content",{
-            "url":image, "medium":"image",
-            "type":"image/jpeg" if approved else "image/png"
-        })
-        if approved:
-            ET.SubElement(n,f"{{{media_ns}}}credit",{"role":"photographer"}).text=a["photo"]["credit"]
-    write("feed.xml",ET.tostring(rss,encoding="unicode"))
+    write("feed.xml", generate_rss(
+        articles, "未発生新聞 | 創作ニュース",
+        "5年後の世界を真顔で報じる創作ニュース。", SITE, "/feed.xml"
+    ))
+    substantial=curated_categories(articles)
+    for category in CATEGORIES[1:]:
+        category_items=[a for a in articles if a["category"]==category]
+        if not category_items:
+            continue
+        feed=category_feed_url(category)
+        category_link=(category_url(category) if category in substantial else
+                       "/archive/?category="+quote(category))
+        write(feed.lstrip("/"),generate_rss(
+            category_items, f"未発生新聞 | {category}の創作ニュース",
+            f"{category}にまつわる5年後の架空ニュース。フィクションです。",
+            SITE+category_link,feed
+        ))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n")
 
 
 
