@@ -110,6 +110,21 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('data-fallback=',html)
                 self.assertIn("イメージ写真",html)
 
+    def test_latest_publication_not_source_time_controls_lead(self):
+        import re
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        lead=re.search(r'<h1><a href="/articles/([^/]+)/">',home)
+        self.assertIsNotNone(lead)
+        expected=max(self.articles,key=lambda a:(
+            a.get("published_at") or a["source"]["published_at"],
+            a["source"]["published_at"]
+        ))
+        self.assertEqual(lead.group(1),expected["slug"])
+        feed=ET.parse(ROOT/"dist/feed.xml")
+        first=feed.find("./channel/item/link")
+        self.assertIsNotNone(first)
+        self.assertEqual(first.text,"https://veripsa.com/articles/"+expected["slug"]+"/")
+
     def test_extra_edition_picker_links_to_real_articles(self):
         import re
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
