@@ -19,7 +19,7 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
-    from .editorial_starter import starter_picks, render_starter_picks
+    from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
@@ -29,7 +29,7 @@ else:
     from media_policy import usable_cached_photo
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
-    from editorial_starter import starter_picks, render_starter_picks
+    from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
@@ -598,9 +598,9 @@ def home(articles, serials=None):
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
                    for x in remaining[:3])
-    # Curated starters must not repeat the lead or the freshest sidebar.
-    highlighted_slugs = {a["slug"], *(x["slug"] for x in remaining[:3])}
-    starters = starter_picks(articles, highlighted_slugs, base=BASE)
+    # Curated starters must not repeat the editorial lead or the sidebar.
+    # Share this selection with the public read-only checker.
+    starters = homepage_starter_picks(articles, a, base=BASE)
     starter_section = render_starter_picks(starters, image_tag, article_url)
     picked_slugs = {item["article"]["slug"] for item in starters}
     # A compact fresh grid: the full article archive remains accessible.

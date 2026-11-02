@@ -24,12 +24,14 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial
-    from .editorial_starter import starter_picks
+    from .editorial_starter import homepage_starter_picks
+    from .build import editorial_lead
 else:
     from media_policy import usable_cached_photo
     from share_desk import select_candidates
     from serial_discovery import choose_serial
-    from editorial_starter import starter_picks
+    from editorial_starter import homepage_starter_picks
+    from build import editorial_lead
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -77,8 +79,10 @@ def check():
     sorted_articles=sorted(articles,key=lambda x:(
         x.get("published_at") or x["source"]["published_at"],
         x["source"]["published_at"]),reverse=True)
-    starters=starter_picks(
-        sorted_articles,{a["slug"] for a in sorted_articles[:4]},base=ROOT)
+    chosen_lead = editorial_lead(sorted_articles)
+    if not chosen_lead or ('<h1><a href="/articles/'+chosen_lead["slug"]+'/"' not in body):
+        raise RuntimeError("Published front-page lead differs from editorial selection")
+    starters=homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)
     if starters:
         section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
         if not section:

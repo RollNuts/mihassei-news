@@ -53,6 +53,23 @@ def starter_picks(articles, excluded_slugs=(), *, base=None, limit=3):
     return chosen
 
 
+def homepage_starter_picks(articles, lead_article, *, base=None, limit=3):
+    """Use exactly the same occupied slots in build and live verification.
+
+    The most recent stories are not necessarily the front-page lead; the lead
+    may be a different, explicitly editor-picked published story. Exclude
+    that article plus the first three actual sidebar stories before selecting
+    the editorial starter list.
+    """
+    if not articles or not isinstance(lead_article, dict) or not lead_article.get("slug"):
+        return []
+    lead_slug = lead_article["slug"]
+    remaining = [article for article in articles if article.get("slug") != lead_slug]
+    occupied = {lead_slug}
+    occupied.update(article["slug"] for article in remaining[:3])
+    return starter_picks(articles, occupied, base=base, limit=limit)
+
+
 def render_starter_picks(picks, image_tag, article_url):
     """Three distinct editorial choices, rendered as ordinary crawlable links."""
     if not picks:
