@@ -434,6 +434,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     robots_tag = '<meta name="robots" content="noindex,follow">' if path == "/saved/" else ""
+    serial_progress_script = ('<script defer src="/assets/serial-progress.js"></script>'
+                              if path in ('/', '/serials/') or serial is not None else '')
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     return f'''<!doctype html><html lang="ja"><head>
@@ -475,6 +477,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <script defer src="/assets/comments.js"></script>
 <script defer src="/assets/comment-activity.js"></script>
 <script defer src="/assets/bookmarks.js"></script>
+{serial_progress_script}
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
@@ -993,6 +996,8 @@ def privacy():
 <p>3件の異なるブラウザから通報があると、一時的に非表示になります。運営者は不適切な投稿を非表示・削除することがあります。自分の投稿は同じブラウザから削除できます。履歴を削除すると操作できなくなることがあります。</p>
 <h2>推理小説の自分用メモ</h2>
 <p>連載推理小説の各話で「この端末に保存」を押した場合だけ、入力した推理メモをそのブラウザのlocalStorageに保存します。保存する文章は最大800文字で、作品・エピソードごとに分けて記録します。メモ本文をサイトのサーバーへ送信したり、ほかの読者へ公開したりしません。ページを開いただけでは保存せず、各話の「メモを消す」で削除できます。端末やブラウザ間で同期されず、ブラウザのサイトデータを消すと失われます。</p>
+<h2>連載の読了記録</h2>
+<p>連載の各話で「この回を読了にする」を押した場合に限り、作品・エピソードを表す短い識別子をこのブラウザのlocalStorageへ記録します。読了状態はいつでも取り消せます。連載ページではその記録を使って次の未読回へのリンクを表示します。閲覧だけで読了を記録せず、サーバーへ送信しません。別の端末やブラウザには同期せず、サイトデータを消すと記録も消えます。</p>
 <h2>「あとで読む」の保存</h2>
 <p>任意で「あとで読む」を押した記事の識別子・タイトル・ジャンル・保存日時を、その端末のブラウザ内（localStorage）だけに最大100件保存します。保存情報は運営者のサーバーへ送信せず、他の端末とは同期しません。保存記事の一覧から個別に解除・すべて解除できます。ブラウザのサイトデータを消去すると保存情報も消えます。</p>
 <h2>外部サービス</h2>
