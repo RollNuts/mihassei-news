@@ -215,7 +215,7 @@ class SiteTests(unittest.TestCase):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
         from scripts.build import social_image
-        self.assertEqual(social_image(None),"/og/brand.png?v=20261102-2")
+        self.assertEqual(social_image(None),"/og/brand-launch-20261102-v3.png")
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
@@ -236,6 +236,39 @@ class SiteTests(unittest.TestCase):
             asset=ROOT/"dist"/path
             self.assertTrue(asset.is_file(),url)
             self.assertGreater(asset.stat().st_size,1000,url)
+
+    def test_x_launch_uses_fresh_card_image_and_url(self):
+        """Old X cards had a cached missing preview. The new share gets a new URL."""
+        import binascii
+        import struct
+        import zlib
+        old_image=ROOT/"dist/og/brand.png"
+        new_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
+        self.assertTrue(old_image.is_file())
+        self.assertTrue(new_image.is_file())
+        data=new_image.read_bytes()
+        self.assertEqual(data[:8],b"\\x89PNG\\r\\n\\x1a\\n".decode("unicode_escape").encode("latin1"))
+        self.assertLess(len(data),5*1024*1024)
+        offset=8
+        raw_idat=b""
+        size=None
+        while offset < len(data):
+            chunk_len=struct.unpack_from(">I",data,offset)[0]
+            kind=data[offset+4:offset+8]
+            payload=data[offset+8:offset+8+chunk_len]
+            crc=struct.unpack_from(">I",data,offset+8+chunk_len)[0]
+            self.assertEqual(binascii.crc32(kind+payload)&0xffffffff,crc)
+            if kind==b"IHDR":
+                size=struct.unpack(">II",payload[:8])
+            if kind==b"IDAT":
+                raw_idat+=payload
+            offset+=12+chunk_len
+        self.assertEqual(size,(1200,630))
+        self.assertEqual(len(zlib.decompress(raw_idat)),(1200*3+1)*630)
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        # The footer share intent passes a distinct URL, not the cached plain root.
+        self.assertIn("src%3Dx-launch-20261102-v3",home)
 
     def test_reader_growth_and_editorial_transparency(self):
         import re
@@ -284,9 +317,9 @@ class SiteTests(unittest.TestCase):
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
-        self.assertIn('property="og:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
-        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
-        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',home)
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
         self.assertIn('name="twitter:title" content="未発生新聞｜5年後の架空ニュース"',home)
         self.assertNotIn('未発生新聞 | 未発生新聞',home)
         for a in self.articles:
