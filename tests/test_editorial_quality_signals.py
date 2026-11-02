@@ -16,7 +16,15 @@ def sample(i, *, title=None, category="社会", source_url=None, last=None,
            paragraphs=None, minutes_old=None):
     date = NOW - timedelta(minutes=minutes_old if minutes_old is not None else (i+1) * 14)
     source = date - timedelta(minutes=21)
-    finale = last or f"担当者は原因を調べ、最後に手続きの名前だけが残ったことを改めて説明しました。事例{i}"
+    independent_finales = (
+        "夜の駅前では、帰り道に集まった人たちがひそかに明日の天気を予想していたという。",
+        "新しい味の発表会が終わると、店主は試食品よりも空の箱が人気だったことを笑った。",
+        "勝負がついたあとも観客の歌は続き、最後は両方のチームが一緒に歌うことになった。",
+        "展示室の奥にある小さな水槽には、昨日まで見つからなかった新しい生き物がいた。",
+        "市場の店先に並んだ野菜にはそれぞれ名前がつき、買い物客は投票に時間を使った。",
+        "旅館の古い帳簿をめくると、昔から同じ部屋を使っていた旅人の名前が残っていた。",
+    )
+    finale = last if last is not None else independent_finales[i % len(independent_finales)]
     return {
         "slug": f"story-{i}",
         "title": title or f"架空の町で新しい試みが始まり意外な展開になる記事{i}",
