@@ -48,8 +48,8 @@
     const reduced=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false;
     function choose(){
       if(choices.length===1)return 0;
-      const random=Math.floor(Math.random()*(choices.length-1))+1;
-      return (previous+random)%choices.length;
+      if(previous<0)return Math.floor(Math.random()*choices.length);
+      return (previous+1+Math.floor(Math.random()*(choices.length-1)))%choices.length;
     }
     function reveal(index){
       const story=choices[index];
