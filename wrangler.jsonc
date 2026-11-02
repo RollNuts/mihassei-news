@@ -16,6 +16,10 @@
       {
         "name": "NEWSROOM_STATS",
         "class_name": "NewsroomStats"
+      },
+      {
+        "name": "READER_COMMENTS",
+        "class_name": "ReaderComments"
       }
     ]
   },
@@ -24,6 +28,12 @@
       "tag": "v1",
       "new_sqlite_classes": [
         "NewsroomStats"
+      ]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": [
+        "ReaderComments"
       ]
     }
   ]

@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+export { ReaderComments } from "./comments.js";
 
 // True, browser-level counters. No IP logging, cookies, tracking pixels or external APIs.
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -85,16 +86,30 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
-    if(url.pathname!=="/api/engagement")return env.ASSETS.fetch(req);
+    const isComments=url.pathname==="/api/comments" || url.pathname==="/api/comments/admin";
+    if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
     if(req.method==="POST") {
       if(!req.headers.get("origin") || req.headers.get("origin")!==url.origin)return json({error:"same origin only"},403);
       if(!(req.headers.get("content-type")||"").startsWith("application/json"))return json({error:"JSON required"},415);
     }
     try {
+      if(isComments){
+        // Ignore requests to comment on non-existent pages.
+        if(req.method==="POST" && url.pathname==="/api/comments"){
+          const payload=await req.clone().json().catch(()=>null);
+          if(payload?.action==="post" && validArticle(payload.article)){
+            const page=new URL("/articles/"+payload.article+"/",url);
+            const exists=await env.ASSETS.fetch(new Request(page.toString()));
+            if(!exists.ok)return json({error:"記事が見つかりません"},404);
+          }
+        }
+        const comments=env.READER_COMMENTS.get(env.READER_COMMENTS.idFromName("mihassei-comments-main-v1"));
+        return await comments.fetch(req);
+      }
       const stub=env.NEWSROOM_STATS.get(env.NEWSROOM_STATS.idFromName("mihassei-main-v1"));
       return await stub.fetch(req);
     } catch(_) {
-      return json({error:"engagement unavailable"},503);
+      return json({error:isComments?"comments unavailable":"engagement unavailable"},503);
     }
   }
 };
