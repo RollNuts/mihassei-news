@@ -93,6 +93,8 @@ class SiteTests(unittest.TestCase):
             self.assertIn("問題", (ROOT/"assets/comments.js").read_text(encoding="utf-8"))
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
         self.assertIn("読者コメントについて",privacy)
+        self.assertIn("参照元URL全体",privacy)
+        self.assertIn("検索した言葉",privacy)
         self.assertIn("投稿日時を公開",privacy)
 
     def test_genuine_reader_participation_discovery(self):
