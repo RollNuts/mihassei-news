@@ -68,6 +68,52 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # Serial long-form reading, links and share cards must ship alongside the news.
+    # Static GETs only; do not generate visits, votes or any paid API traffic.
+    serials=json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8"))
+    if 'class="serials-feature"' not in body or 'href="/serials/"' not in body:
+        raise RuntimeError("New serials not discoverable on published homepage")
+    serial_hub, serial_type=get("/serials/")
+    serial_index=serial_hub.decode("utf-8")
+    if "text/html" not in serial_type or "物語を追う。未来を検証する。" not in serial_index:
+        raise RuntimeError("Live serial index was not deployed")
+    live_sitemap=get("/sitemap.xml")[0].decode("utf-8")
+    if "https://veripsa.com/serials/" not in live_sitemap:
+        raise RuntimeError("New serial index missing from sitemap")
+    for serial in serials:
+        prefix="/serials/"+serial["slug"]+"/"
+        if 'href="'+prefix+'"' not in serial_index:
+            raise RuntimeError("Serial missing from landing page: "+serial["slug"])
+        series_markup,series_type=get(prefix)
+        if "text/html" not in series_type or serial["title"] not in series_markup.decode("utf-8"):
+            raise RuntimeError("Series detail page missing: "+prefix)
+        svg,svg_mime=get(prefix+"cover.svg")
+        if not svg.startswith(b"<svg") or "svg" not in svg_mime:
+            raise RuntimeError("Generated original serial cover unavailable: "+prefix)
+        expected_kind="創作ミステリー" if serial["kind"]=="fiction" else "実際の市場に関する考察"
+        for ep in serial["episodes"]:
+            path=prefix+ep["slug"]+"/"
+            url=SITE+path
+            article,article_type=get(path)
+            page=article.decode("utf-8")
+            if "text/html" not in article_type or expected_kind not in page:
+                raise RuntimeError("Serial chapter missing or type mislabeled: "+path)
+            for tag in ('<link rel="canonical" href="'+url+'"',
+                        'name="twitter:card" content="summary_large_image"',
+                        'name="twitter:image" content="'+SITE+'/og/serials/'+serial["slug"]+'-'+ep["slug"]+'.png"',
+                        ep["title"]):
+                if tag not in page:
+                    raise RuntimeError("Serial live metadata incomplete: "+path+" "+tag)
+            if url not in live_sitemap:
+                raise RuntimeError("Serial episode missing from sitemap: "+path)
+            png,png_mime=get("/og/serials/"+serial["slug"]+"-"+ep["slug"]+".png")
+            if not png.startswith(b"\x89PNG\r\n\x1a\n") or "image/png" not in png_mime or len(png)<1500:
+                raise RuntimeError("Serial X card not served as a proper PNG: "+path)
+            if serial["kind"]=="fiction" and "すべて創作" not in page:
+                raise RuntimeError("Fiction episode missing disclosure: "+path)
+            if serial["kind"]=="analysis" and ("投資助言" not in page or "参照した公開資料" not in page):
+                raise RuntimeError("Market analysis missing sources/disclosure: "+path)
+
     # Verify the manual promotion desk without creating any X posts.
     desk, desk_mime=get("/share-desk/")
     markup=desk.decode("utf-8")
