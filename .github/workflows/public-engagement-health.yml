@@ -21,6 +21,7 @@ jobs:
           base = "https://veripsa.com"
           urls = [
             ("/", "html"),
+            ("/ads.txt", "ads"),
             ("/api/engagement?articles=apology-before-incident", "json"),
           ]
           for path, kind in urls:
@@ -35,7 +36,12 @@ jobs:
                       with urllib.request.urlopen(req,timeout=13) as r:
                           code,body,mime = r.status,r.read(200000),r.headers.get("content-type","")
                       if code != 200: raise RuntimeError("HTTP "+str(code))
-                      if kind=="json":
+                      if kind=="ads":
+                          expected=b"google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
+                          if body.strip()!=expected:
+                              raise RuntimeError("public ads.txt mismatch: "+repr(body[:100]))
+                          print("VERIFIED public AdSense ads.txt ownership file")
+                      elif kind=="json":
                           data = json.loads(body)
                           if data.get("unit")!="anonymous-browser" or not isinstance(data.get("visitors"),int):
                               raise RuntimeError("not a valid engagement JSON: "+repr(data)[:300])

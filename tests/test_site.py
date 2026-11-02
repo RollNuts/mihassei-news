@@ -23,6 +23,13 @@ class SiteTests(unittest.TestCase):
                   "og/brand.png","404.html","robots.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
 
+    def test_adsense_ownership_without_running_ads(self):
+        line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
+        self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
+        html=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('<meta name="google-adsense-account" content="ca-pub-6754575901141756">',html)
+        self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",html)
+
     def test_site_has_dynamic_clock_with_no_fake_visits(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn("data-future-clock",home)
