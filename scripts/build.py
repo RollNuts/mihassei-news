@@ -19,6 +19,7 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
+    from .editorial_starter import starter_picks, render_starter_picks
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
@@ -28,6 +29,7 @@ else:
     from media_policy import usable_cached_photo
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
+    from editorial_starter import starter_picks, render_starter_picks
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
@@ -587,9 +589,15 @@ def home(articles, serials=None):
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
                    for x in articles[1:4])
-    # Lead and the three sidebar headlines are already visible above.
-    # Never repeat them in the new-story grid: show the *next* nine articles.
-    recent = "".join(card(x) for x in articles[4:13])
+    # Human-selected evergreen starters, deliberately distinct from the lead
+    # and the three sidebar headlines. A broken optional curation file must
+    # never stop daily publishing.
+    starters = starter_picks(articles, {x["slug"] for x in articles[:4]}, base=BASE)
+    starter_section = render_starter_picks(starters, image_tag, article_url)
+    picked_slugs = {item["article"]["slug"] for item in starters}
+    # Don't repeat an editorial starter in the recent news grid either.
+    recent_articles = [x for x in articles[4:] if x["slug"] not in picked_slugs][:9]
+    recent = "".join(card(x) for x in recent_articles)
     featured_categories = curated_categories(articles)
     genre_links = []
     for cat in CATEGORIES[1:]:
@@ -649,35 +657,6 @@ def home(articles, serials=None):
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
-    # Three clear entry points for new readers. The series destinations are
-    # published pages only and never imply a future episode already exists.
-    reading_choices = [
-        ("news", "FICTION / 架空ニュース", "5年後の未発生ニュース",
-         "今起きていることの、ちょっとおかしな続き。", "/archive/"),
-    ]
-    for series in serials:
-        if series["kind"] == "fiction":
-            reading_choices.append(("mystery", "MYSTERY / 創作推理小説",
-                                    series["title"], "手掛かりを追って、続きの謎を解く。",
-                                    "/serials/" + series["slug"] + "/"))
-        elif series["kind"] == "analysis":
-            reading_choices.append(("market", "MARKET / 現実の市場分析",
-                                    series["title"], "予測を残し、あとから答え合わせする。",
-                                    "/serials/" + series["slug"] + "/"))
-    reading_links = "".join(
-        f'<a class="reading-way reading-way--{kind}" href="{escape(url)}">'
-        f'<span class="reading-way-eyebrow">{escape(kicker)}</span>'
-        f'<strong>{escape(name)}</strong>'
-        f'<span class="reading-way-summary">{escape(summary)}</span>'
-        '<span class="reading-way-action" aria-hidden="true">読む →</span></a>'
-        for kind, kicker, name, summary, url in reading_choices
-    )
-    reading_section = (
-        '<nav class="reading-ways" aria-label="初めての読者向けの読み物案内">'
-        '<div class="reading-ways-heading"><span class="small-label red">START HERE</span>'
-        '<h2>どんな未来から、読み始める？</h2></div>'
-        '<div class="reading-ways-grid">' + reading_links + '</div></nav>'
-    )
     content = f'''<div class="container index-main">
 <div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
  data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
@@ -699,7 +678,7 @@ def home(articles, serials=None):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
 </section>
-{reading_section}
+{starter_section}
 <section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
