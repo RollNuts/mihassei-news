@@ -1,0 +1,76 @@
+name: One-time verify public growth desk and article sources
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify real X/search article counters without generating events
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,time
+          from urllib.request import Request,urlopen
+          from scripts.growth_desk import listed_articles
+          from pathlib import Path
+          SITE="https://veripsa.com"
+          articles=json.loads(Path("content/articles.json").read_text(encoding="utf-8"))
+          known=listed_articles(articles)
+          slug="unwanted-call-protection-calls-back"
+          def get(path):
+              req=Request(SITE+path,headers={
+                "User-Agent":"MihasseiReadOnlyGrowthCheck/1.0",
+                "Cache-Control":"no-cache",
+                "Accept":"text/html,text/javascript,application/json,*/*"})
+              with urlopen(req,timeout=17) as res:
+                  if res.status!=200:raise RuntimeError("HTTP "+str(res.status)+" "+path)
+                  return res.read(1000000),res.headers.get("Content-Type",""),res.headers
+          for attempt in range(1,29):
+              try:
+                  page,mime,headers=get("/growth-desk/?verify="+str(attempt))
+                  markup=page.decode("utf-8")
+                  if "text/html" not in mime or "集客の実測" not in markup:
+                      raise RuntimeError("Growth desk HTML unavailable")
+                  if 'name="robots" content="noindex,nofollow"' not in markup:
+                      raise RuntimeError("Dashboard robots meta missing")
+                  if "noindex" not in headers.get("X-Robots-Tag","").lower():
+                      raise RuntimeError("Dashboard X-Robots header missing")
+                  if "data-growth-stories" not in markup or "/assets/growth-desk.js" not in markup:
+                      raise RuntimeError("Dashboard data or script missing")
+                  if known[0]["slug"] not in markup:
+                      raise RuntimeError("Recent published story absent from dashboard")
+                  js,js_mime,_=get("/assets/growth-desk.js")
+                  if b"metric.arrivals.x" not in js or b"metric.arrivals.search" not in js:
+                      raise RuntimeError("Dashboard cannot render per-article X/search counters")
+                  payload,api_type,_=get("/api/engagement?articles="+slug)
+                  if "application/json" not in api_type:
+                      raise RuntimeError("Engagement API not JSON")
+                  result=json.loads(payload)
+                  if result.get("unit")!="anonymous-browser":
+                      raise RuntimeError("Wrong measurement unit")
+                  detail=result.get("articles",{}).get(slug,{})
+                  arrivals=detail.get("arrivals",{})
+                  for field in ("x","search"):
+                      if type(arrivals.get(field)) is not int or arrivals[field]<0:
+                          raise RuntimeError("New article-specific arrivals not deployed: "+field)
+                  if not isinstance(result.get("channels",{}).get("x"),int):
+                      raise RuntimeError("Existing coarse site totals lost")
+                  desk,_,_=get("/share-desk/")
+                  if b'href="/growth-desk/"' not in desk:
+                      raise RuntimeError("X promotion desk does not link to growth review")
+                  sitemap,_,_=get("/sitemap.xml")
+                  if b"https://veripsa.com/growth-desk/" in sitemap:
+                      raise RuntimeError("Growth report mistakenly indexed")
+                  print("PASS: live free growth desk, real article X/search arrival counters, source link, noindex, no POST",flush=True)
+                  print("ACTUAL_ARTICLE_ARRIVALS",json.dumps(arrivals,ensure_ascii=False),flush=True)
+                  break
+              except Exception as error:
+                  print("Attempt",attempt,"failed:",str(error),flush=True)
+                  if attempt==28:raise
+                  time.sleep(10)
+          PY
