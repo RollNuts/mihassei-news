@@ -51,7 +51,7 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
             if selected["kind"] == "analysis":
                 self.assertIn("実際の公開資料", promo)
                 self.assertIn("投資助言・売買推奨でもありません", promo)
-                self.assertIn("創作", promo)
+                self.assertIn("架空の出来事", promo)
                 self.assertNotIn("創作推理小説", promo)
             else:
                 self.assertIn("創作推理小説", promo)
