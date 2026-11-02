@@ -541,7 +541,10 @@ class SiteTests(unittest.TestCase):
             "atom":"http://www.w3.org/2005/Atom"}
         populated=[cat for cat in CATEGORIES[1:]
                    if any(a["category"]==cat for a in articles)]
-        created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")}
+        # Serial-specific subscriptions use the same static feeds directory
+        # and have their own strict contract tests in test_serials.py.
+        created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")
+                 if not p.name.startswith("series-")}
         expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
         self.assertEqual(created,expected)
         homepage=(ROOT/"dist/index.html").read_text(encoding="utf-8")
