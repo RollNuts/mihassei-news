@@ -38,3 +38,5 @@ jobs:
           exit 1
       - name: Verify the published revision and live stories without generating traffic
         run: python3 scripts/check_live.py
+      - name: Verify that Twitterbot can fetch each first-party image card
+        run: python3 scripts/check_share_cards.py

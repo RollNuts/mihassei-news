@@ -180,6 +180,49 @@ body{
   color:#fff;
 }
 
+/* New-reader navigation: find fiction, mystery, or verified market analysis
+   without scrolling through every headline first. No client-side API needed. */
+.reading-ways{
+  margin-top:31px;
+  padding-top:18px;
+  border-top:1px solid #ccd3c9;
+}
+.reading-ways-heading{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 19px;margin-bottom:13px}
+.reading-ways-heading .small-label{font-size:10px}
+.reading-ways-heading h2{font:900 clamp(18px,2.2vw,23px)/1.45 var(--serif);letter-spacing:-.045em;margin:0}
+.reading-ways-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.reading-way{
+  display:flex;flex-direction:column;gap:5px;min-width:0;min-height:145px;
+  border:1px solid #d8ddd5;border-top:3px solid #375143;
+  border-radius:8px;background:#fffefb;padding:13px 15px 12px;
+  color:var(--ink);text-decoration:none;
+  transition:border-color .16s,background .16s,transform .16s;
+}
+.reading-way--mystery{border-top-color:#9b5540}
+.reading-way--market{border-top-color:#617d80}
+.reading-way-eyebrow{font-size:10px;font-weight:850;letter-spacing:.045em;color:#67776a}
+.reading-way strong{font-family:var(--serif);font-size:clamp(16px,1.65vw,20px);letter-spacing:-.04em;line-height:1.45}
+.reading-way-summary{font-size:11px;line-height:1.65;color:#647068}
+.reading-way-action{margin-top:auto;text-align:right;font-size:11px;font-weight:900;color:var(--accent)}
+.reading-way:hover,.reading-way:focus-visible{
+  background:#f8f5ee;border-color:#9cae9c;transform:translateY(-1px);color:var(--ink);
+}
+.reading-ways + .section-block{margin-top:45px}
+@media(max-width:660px){
+  .reading-ways{margin-top:24px;padding-top:14px}
+  .reading-ways-grid{grid-template-columns:1fr;gap:7px}
+  .reading-way{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;
+    gap:2px 12px;min-height:0;padding:10px 13px 11px;
+  }
+  .reading-way-eyebrow{grid-column:1/-1;font-size:9px}
+  .reading-way strong{font-size:16px}
+  .reading-way-summary{grid-column:1;font-size:10.5px}
+  .reading-way-action{grid-column:2;grid-row:2/span 2;align-self:center;white-space:nowrap}
+  .reading-ways + .section-block{margin-top:34px}
+}
+@media(prefers-reduced-motion:reduce){.reading-way{transition:none}}
+
 /* Secondary news remains visible without competing with the hero. */
 .side-brief{
   min-width:0;
