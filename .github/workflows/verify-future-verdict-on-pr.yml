@@ -1,0 +1,47 @@
+name: One-time verify live future voting UI and API
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  live-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify public voting without altering reader totals
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,time
+          from urllib.request import Request,urlopen
+          base="https://veripsa.com"
+          slug="apology-before-incident"
+          def read(path):
+              req=Request(base+path,headers={"User-Agent":"MihasseiShimbun-ReadOnlyPollCheck/1.0","Cache-Control":"no-cache"})
+              with urlopen(req,timeout=12) as r:
+                  return r.status,r.headers.get("content-type",""),r.read(400000)
+          for attempt in range(12):
+              try:
+                  status,mime,page=read("/articles/"+slug+"/?poll-probe=1")
+                  assert status==200 and "text/html" in mime
+                  html=page.decode("utf-8")
+                  for attr in ("data-future-poll", 'data-poll-article="'+slug+'"',
+                               'data-poll-choice="plausible"','data-poll-choice="unlikely"',
+                               "data-poll-results hidden"):
+                      assert attr in html, "missing article widget: "+attr
+                  status,mime,style=read("/assets/future-poll.css")
+                  assert status==200 and b".future-poll" in style
+                  status,mime,data=read("/api/engagement?articles="+slug)
+                  assert status==200 and "application/json" in mime
+                  metric=json.loads(data)["articles"][slug]["votes"]
+                  for key in ("plausible","unlikely"):
+                      assert type(metric[key]) is int and metric[key]>=0, key
+                  print("PASS: Public article poll, CSS, and live browser-level vote counters:",
+                        metric,flush=True)
+                  break
+              except Exception as exc:
+                  print("Attempt",attempt+1,"failed:",repr(exc),flush=True)
+                  if attempt==11:raise
+                  time.sleep(8)
+          PY
