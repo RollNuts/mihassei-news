@@ -73,6 +73,18 @@ class SiteTests(unittest.TestCase):
         self.assertIn('<meta name="google-adsense-account" content="ca-pub-6754575901141756">',html)
         self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",html)
 
+    def test_continuation_metrics_ride_existing_visit_api_only(self):
+        script=(ROOT/"assets/engagement.js").read_text(encoding="utf-8")
+        worker=(ROOT/"src/worker.js").read_text(encoding="utf-8")
+        metrics=(ROOT/"scripts/record_metrics.py").read_text(encoding="utf-8")
+        self.assertIn("function precedingArticle()",script)
+        self.assertIn('if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;',script)
+        self.assertIn('this.insertOnce("continued",previousArticle,visitor)',worker)
+        self.assertIn('continuedReaders:this.count("continued:"+slug)',worker)
+        self.assertIn('"continued_readers": item["continuedReaders"]',metrics)
+        self.assertNotIn("/api/continuation",script,
+                         "A separate endpoint would create unnecessary traffic")
+
     def test_site_has_dynamic_clock_with_no_fake_visits(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn("data-future-clock",home)
@@ -142,6 +154,8 @@ class SiteTests(unittest.TestCase):
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
         self.assertIn("読者コメントについて",privacy)
         self.assertIn("参照元URL全体",privacy)
+        self.assertIn("記事から次の記事への移動",privacy)
+        self.assertIn("移動先の組み合わせ",privacy)
         self.assertIn("検索した言葉",privacy)
         self.assertIn("投稿日時を公開",privacy)
 
