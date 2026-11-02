@@ -19,7 +19,7 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
-    from .editorial_starter import homepage_starter_picks, render_starter_picks
+    from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
@@ -29,7 +29,7 @@ else:
     from media_policy import usable_cached_photo
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
-    from editorial_starter import homepage_starter_picks, render_starter_picks
+    from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
