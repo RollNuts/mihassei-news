@@ -112,15 +112,20 @@ def _kind_label(series):
     return "創作ミステリー" if series["kind"] == "fiction" else "実際の市場に関する考察"
 
 
+def episode_label(series, number):
+    """Market columns are numbered 回, mystery fiction episodes are numbered 話."""
+    return f"第{number}{'話' if series['kind'] == 'fiction' else '回'}"
+
+
 def _series_card(series):
     ep = series["episodes"][-1]
-    latest = (f'<span class="serial-latest">第{ep["number"]}話：{h(ep["title"])}</span>')
+    latest = (f'<span class="serial-latest">{episode_label(series,ep["number"])}：{h(ep["title"])}</span>')
     return (f'<article class="serial-card serial-card--{series["kind"]}">'
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
             f'<p>{h(series["description"])}</p>{latest}'
-            f'<a class="serial-link" href="{episode_url(series, ep)}">第{ep["number"]}話を読む <span aria-hidden="true">→</span></a>'
+            f'<a class="serial-link" href="{episode_url(series, ep)}">{episode_label(series,ep["number"])}を読む <span aria-hidden="true">→</span></a>'
             f'</div></article>')
 
 
@@ -150,7 +155,7 @@ def render_serials_index(serials, layout):
 def render_series_page(series, layout):
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     items = "".join(
-        f'<li><a href="{episode_url(series, ep)}"><span>第{ep["number"]}話 <time datetime="{ep["published_at"]}">{ep["published_at"]}</time></span>'
+        f'<li><a href="{episode_url(series, ep)}"><span>{episode_label(series,ep["number"])} <time datetime="{ep["published_at"]}">{ep["published_at"]}</time></span>'
         f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small></a></li>'
         for ep in episodes
     )
@@ -163,7 +168,7 @@ def render_series_page(series, layout):
             f'<div class="serial-series-media">{_cover_img(series, loading="eager")}</div>'
             f'<div class="serial-series-copy"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h1>{h(series["title"])}</h1><p class="serial-series-subtitle">{h(series["subtitle"])}</p>'
-            f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}話'
+            f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}'
             + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
             f'</span></div></header><p class="serials-disclosure">{state}</p>'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2></div>'
@@ -174,7 +179,8 @@ def render_series_page(series, layout):
 
 def _share_link(series, ep):
     url = "https://veripsa.com" + episode_url(series, ep)
-    subject = f'{ep["title"]}｜未発生新聞'
+    label = "創作推理小説" if series["kind"]=="fiction" else "出典付き市場シナリオ（投資助言ではありません）"
+    subject = f'{ep["title"]}｜未発生新聞 {label}'
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
@@ -225,8 +231,8 @@ def render_episode_page(series, ep, layout):
     main = (f'<div class="container serials-page serial-article serial-article--{series["kind"]}">'
             f'<nav class="serial-breadcrumb" aria-label="現在位置"><a href="/">トップ</a> / '
             f'<a href="/serials/">連載</a> / <a href="{series_url(series)}">{h(series["title"])}</a>'
-            f' / 第{ep["number"]}話</nav>'
-            f'<header class="serial-article-head"><span class="serial-type">{_kind_label(series)} / 第{ep["number"]}話</span>'
+            f' / {episode_label(series,ep["number"])}</nav>'
+            f'<header class="serial-article-head"><span class="serial-type">{_kind_label(series)} / {episode_label(series,ep["number"])}</span>'
             f'<h1>{h(ep["title"])}</h1><p class="serial-article-dek">{h(ep["summary"])}</p>'
             f'<div class="serial-pub"><time datetime="{ep["published_at"]}">公開日 {h(ep["published_at"])}</time>'
             f' · <span>{h(series["title"])}</span></div>'
@@ -289,7 +295,8 @@ def render_social_preview(series, path: Path, episode=None):
     canvas.text("VERIPSA", 113, 102, 10, paper)
     canvas.text("SERIAL", 112, 208, 8, accent)
     canvas.text("FICTION" if fiction else "MARKET", 110, 307, 8, paper)
-    canvas.text("EP 01" if episode else "ALL EPISODES", 110, 419, 5, accent)
+    episode_name = f"EP {episode['number']:02d}" if episode else "ALL EPISODES"
+    canvas.text(episode_name, 110, 419, 5, accent)
     canvas.text("VERIPSA.COM", 105, 575, 5, ink)
     canvas.rect(682, 69, 1138, 545, (37, 61, 69) if fiction else (36, 75, 75))
     if fiction:

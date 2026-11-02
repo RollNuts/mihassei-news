@@ -41,8 +41,48 @@ class SerialTests(unittest.TestCase):
             self.assertIn(s["title"], home)
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
-            self.assertIn("公開済み 1話", series_html)
+            self.assertIn("公開済み 1話" if s["kind"]=="fiction" else "公開済み 1回", series_html)
             self.assertNotIn('href="/serials/'+s["slug"]+'/nonexistent', series_html)
+
+    def test_episode_labels_match_editorial_kind_and_future_artwork(self):
+        from unittest.mock import patch
+        from scripts.serials import episode_label, render_social_preview
+        from pathlib import Path
+
+        mystery=next(x for x in self.data if x["kind"]=="fiction")
+        market=next(x for x in self.data if x["kind"]=="analysis")
+        self.assertEqual(episode_label(mystery,2),"第2話")
+        self.assertEqual(episode_label(market,2),"第2回")
+
+        for serial,expected in ((mystery,"第1話"),(market,"第1回")):
+            html=(ROOT/"dist/serials"/serial["slug"]/serial["episodes"][0]["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn(expected,html)
+            from urllib.parse import urlsplit, parse_qs
+            from scripts.serials import _share_link
+            share=_share_link(serial,serial["episodes"][0])
+            draft=parse_qs(urlsplit(share).query)["text"][0]
+            self.assertIn("市場シナリオ" if serial["kind"]=="analysis" else "創作推理小説", draft)
+
+        class RecordingCanvas:
+            def __init__(self):
+                self.words=[]
+            def rect(self,*args):
+                pass
+            def line(self,*args):
+                pass
+            def circle(self,*args):
+                pass
+            def text(self,value,*args):
+                self.words.append(value)
+            def save(self,*args):
+                pass
+
+        for serial in (mystery,market):
+            canvas=RecordingCanvas()
+            with patch("scripts.serials.Canvas",return_value=canvas):
+                render_social_preview(serial,Path("/tmp/ignored-serial-preview.png"),episode={"number":2})
+            self.assertIn("EP 02",canvas.words)
+            self.assertNotIn("EP 01",canvas.words)
 
     def test_episodes_canonical_dates_schema_and_first_party_images(self):
         images = set()
