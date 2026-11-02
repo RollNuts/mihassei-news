@@ -461,6 +461,13 @@ def home(articles):
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
 </section>
 
+<section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
+<a href="/archive/">記事一覧を見る ↗</a></div>
+<div class="story-grid">{recent}</div></section>
+<section class="genre-explore" aria-label="ジャンル別に記事を探す">
+<div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
+<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
+</section>
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -483,13 +490,6 @@ def home(articles):
 <a class="reader-discussions-cta" href="{article_url(a)}#reader-comments">新着記事にコメントする ↗</a></div>
 <nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
-<section class="genre-explore" aria-label="ジャンル別に記事を探す">
-<div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
-<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
-</section>
-<section class="section-block"><div class="section-head"><h2>ほかのニュース</h2>
-<a href="/archive/">記事一覧を見る ↗</a></div>
-<div class="story-grid">{recent}</div></section>
 <aside class="banner"><div><div class="small-label red">EDITORIAL</div>
 <h2>今日の常識は、5年後の非常識。</h2>
 <p>ニュースの続きは、たぶん誰も予想していない。</p></div>
