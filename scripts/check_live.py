@@ -35,6 +35,13 @@ def get(path):
             raise RuntimeError("HTTP "+str(response.status)+" at "+path)
         return response.read(4*1024*1024),response.headers.get("Content-Type","")
 
+def verify_launch_card(markup: str, image_path: str) -> None:
+    """Read-only check for the launch card; never use an undefined crawl variable."""
+    expected='name="twitter:image" content="'+SITE+image_path+'"'
+    if expected not in markup:
+        raise RuntimeError("Cache-busting X share link is not published")
+
+
 def check():
     # Verify the exact public deployment, not merely an older set of 200 pages.
     expected=subprocess.run(
@@ -66,8 +73,9 @@ def check():
     image, image_mime=get("/og/brand-launch-20261102-v3.png")
     # A clean launch URL forces a new card fetch instead of reusing old cached metadata.
     share,mime=get("/?src=x-launch-20261102-v3")
-    if "text/html" not in mime or 'name="twitter:image" content="https://veripsa.com'+fresh+'"' not in share.decode("utf-8"):
-        raise RuntimeError("Cache-busting X share link is not published")
+    if "text/html" not in mime:
+        raise RuntimeError("Launch X share URL has unexpected Content-Type")
+    verify_launch_card(share.decode("utf-8"), "/og/brand-launch-20261102-v3.png")
     if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
         raise RuntimeError("X card brand image missing or invalid PNG")
 

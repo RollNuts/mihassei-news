@@ -37,6 +37,14 @@ class SiteTests(unittest.TestCase):
         self.assertIn("/build-revision.txt", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
         self.assertIn("Cache-Control: no-store", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
 
+    def test_live_social_card_verification_uses_real_image_path(self):
+        from scripts.build import social_image
+        from scripts.check_live import verify_launch_card
+        root_page=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        verify_launch_card(root_page,social_image(None))
+        with self.assertRaises(RuntimeError):
+            verify_launch_card('<html><head></head></html>',social_image(None))
+
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
         self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
