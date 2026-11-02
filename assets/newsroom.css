@@ -190,3 +190,14 @@ body{background:var(--paper)}
   .hero-live{font-size:10px}
   .hero-live>span{font-size:12px}
 }
+
+
+/* Edition growth loop: accessible daily-issue sharing without third-party scripts. */
+.daily-issue-share{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;color:var(--accent);font-size:12px;font-weight:900;text-decoration:underline;text-underline-offset:4px}
+.daily-issue-share:hover{color:var(--ink)}
+.issue-share-panel{display:flex;align-items:center;justify-content:space-between;gap:22px;margin:20px 0 32px;padding:23px 26px;background:var(--charcoal);color:#fffdf6}
+.issue-share-panel .eyebrow{color:#f8b9a5}
+.issue-share-panel p{font-size:12px;line-height:1.85;color:#e2e9df;margin:5px 0 0;max-width:54ch}
+.issue-share-cta{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;flex:0 0 auto;background:#f6eadd;color:#27382f;font-size:12px;font-weight:900;text-align:center}
+.issue-share-cta:hover,.issue-share-cta:focus-visible{background:#fff;color:#a74435}
+@media(max-width:660px){.issue-share-panel{flex-direction:column;align-items:stretch;padding:19px 18px;gap:15px}.issue-share-cta{width:100%}}

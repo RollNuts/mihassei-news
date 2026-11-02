@@ -318,3 +318,53 @@ def render_social_card(article: dict, output: Path) -> None:
     canvas.rect(755, 519, 1165, 551, (17, 34, 39))
     canvas.text(label, 770, 523, 4, cream)
     canvas.save(output)
+
+def render_issue_card(day: str, output: Path) -> None:
+    """Shareable issue cover with a real publication date, not a fictional timestamp.
+
+    Stable for the whole publishing day, even as more articles join the issue.
+    It uses only the existing first-party pixel canvas: no fonts, HTTP or APIs.
+    """
+    from datetime import date
+    try:
+        if date.fromisoformat(day).isoformat() != day:
+            raise ValueError("Non-canonical issue date")
+    except ValueError as exc:
+        raise ValueError("Invalid issue publication date") from exc
+
+    canvas = Canvas()
+    paper, ink = (248, 245, 234), (22, 38, 42)
+    accent, sage, pale = (190, 61, 47), (115, 144, 132), (218, 223, 208)
+    canvas.rect(0, 0, WIDTH, HEIGHT, paper)
+    canvas.rect(0, 0, WIDTH, 21, accent)
+    canvas.rect(0, 21, WIDTH, 62, ink)
+    canvas.rect(67, 97, 80, 515, accent)
+    canvas.text("MIHASSEI", 109, 108, 9, ink)
+    canvas.text("NEWS", 108, 192, 8, accent)
+    canvas.rect(108, 269, 776, 275, sage)
+    canvas.text(day.replace("-", "."), 106, 302, 12, ink)
+    canvas.text("DAILY EDITION", 109, 425, 6, sage)
+    canvas.text("FICTION", 110, 492, 5, accent)
+
+    # A stylised stack of fictional papers, not a real-world event photograph.
+    canvas.rect(832, 92, 1147, 524, ink)
+    canvas.rect(853, 115, 1125, 497, pale)
+    canvas.rect(876, 141, 1103, 158, accent)
+    canvas.rect(875, 178, 1098, 184, ink)
+    canvas.rect(875, 198, 1066, 204, sage)
+    canvas.rect(876, 230, 1098, 355, paper)
+    seed = hashlib.sha256(day.encode("ascii")).digest()
+    for i in range(5):
+        y = 246 + i * 21
+        span = 92 + seed[i] % 106
+        canvas.rect(894, y, 894 + span, y + 8, sage if i % 2 else ink)
+    canvas.rect(875, 382, 978, 470, accent)
+    canvas.rect(991, 384, 1099, 390, ink)
+    canvas.rect(991, 407, 1082, 413, sage)
+    canvas.rect(991, 430, 1095, 436, sage)
+    canvas.rect(991, 454, 1070, 460, sage)
+    canvas.rect(0, 545, WIDTH, HEIGHT, ink)
+    canvas.rect(0, 545, WIDTH, 549, accent)
+    canvas.text("VERIPSA.COM", 75, 572, 5, paper)
+    canvas.text("5 YEARS LATER", 777, 575, 4, pale)
+    canvas.save(output)
