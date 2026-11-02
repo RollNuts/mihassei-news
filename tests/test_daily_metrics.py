@@ -31,6 +31,7 @@ class DailyMetricsTests(unittest.TestCase):
             return FakeResponse(json.dumps({
                 "unit": "anonymous-browser",
                 "visitors": 42,
+                "channels": {"x": 4, "search": 7, "external": 1, "unattributed": 12},
                 "articles": {
                     slug: {"readers": 2, "likes": 1, "shareClicks": 0}
                     for slug in names
@@ -38,8 +39,10 @@ class DailyMetricsTests(unittest.TestCase):
             }).encode())
 
         names = ["story-" + str(i) for i in range(21)]
-        visitors, metrics = m.read_public_metrics(names, opener=fake_open)
+        visitors, metrics, channels = m.read_public_metrics(names, opener=fake_open)
         self.assertEqual(visitors, 42)
+        self.assertEqual(channels["x"], 4)
+        self.assertEqual(channels["search"], 7)
         self.assertEqual(len(metrics), 21)
         self.assertEqual(list(map(len, calls)), [20, 1])
         self.assertEqual(metrics[names[0]]["readers"], 2)
@@ -53,6 +56,17 @@ class DailyMetricsTests(unittest.TestCase):
             }).encode())
         with self.assertRaises(ValueError):
             m.read_public_metrics(["real-story"], opener=fake_open)
+
+    def test_reject_unverified_attribution_values(self):
+        def bad_source(req, timeout):
+            return FakeResponse(json.dumps({
+                "unit": "anonymous-browser",
+                "visitors": 10,
+                "channels": {"x": "a lot", "search": 0, "external": 0, "unattributed": 0},
+                "articles": {"a": {"readers": 0, "likes": 0, "shareClicks": 0}},
+            }).encode())
+        with self.assertRaises(ValueError):
+            m.read_public_metrics(["a"], opener=bad_source)
 
     def test_snapshot_counts_actual_publications_not_source_dates(self):
         articles = [
@@ -74,6 +88,12 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(result["visitors_cumulative"], 15)
         self.assertEqual(result["unit"], "anonymous-browser")
         self.assertEqual(result["recent_articles_sampled"], 2)
+        self.assertNotIn("channels_cumulative", result)
+        with_channels=m.build_snapshot(
+            articles,datetime.fromisoformat("2026-11-03T01:07:00+09:00"),15,counts,
+            {"x": 2, "search": 3, "external": 1, "unattributed": 4})
+        self.assertEqual(with_channels["channels_cumulative"]["search"], 3)
+        self.assertIn("may overlap", with_channels["channels_note"])
 
 
 if __name__ == "__main__":
