@@ -191,6 +191,52 @@ def check():
         if url not in siteurls:
             raise RuntimeError("Sitemap missing "+article["slug"])
 
+    # Original serials must remain reachable as real long-form content, not
+    # invented empty chapters. No POSTs or tracking events are generated.
+    serials=json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8"))
+    series_index_bytes,series_mime=get("/series/")
+    series_index=series_index_bytes.decode("utf-8")
+    if "text/html" not in series_mime or SITE+"/series/" not in siteurls:
+        raise RuntimeError("Original series index missing from live site or sitemap")
+    if "未発生新聞の連載" not in series_index:
+        raise RuntimeError("Original fiction introduction not deployed")
+    for serial in serials:
+        series_url="/series/"+serial["slug"]+"/"
+        if SITE+series_url not in siteurls or 'href="'+series_url+'"' not in series_index:
+            raise RuntimeError("Serial missing from public discovery: "+serial["slug"])
+        intro,kind=get(series_url)
+        markup=intro.decode("utf-8")
+        if "text/html" not in kind or serial["disclaimer"] not in markup:
+            raise RuntimeError("Serial disclosure missing on "+series_url)
+        social="/og/series/"+serial["slug"]+".png"
+        if 'name="twitter:image" content="'+SITE+social+'"' not in markup:
+            raise RuntimeError("Serial preview missing: "+serial["slug"])
+        picture,picture_type=get(social)
+        if not picture.startswith(bytes((137,80,78,71,13,10,26,10))) or "image/png" not in picture_type:
+            raise RuntimeError("Serial image is not a published PNG: "+serial["slug"])
+        feed="/feeds/series-"+serial["slug"]+".xml"
+        payload,payload_type=get(feed)
+        if "xml" not in payload_type:
+            raise RuntimeError("Serial RSS not published as XML: "+feed)
+        rss=ET.fromstring(payload)
+        feed_items=rss.findall("./channel/item")
+        if len(feed_items)!=min(len(serial["episodes"]),30):
+            raise RuntimeError("Serial RSS item count mismatch: "+feed)
+        for episode in serial["episodes"]:
+            chapter_url=series_url+episode["slug"]+"/"
+            if SITE+chapter_url not in siteurls:
+                raise RuntimeError("Serial chapter missing in sitemap: "+chapter_url)
+        for episode in serial["episodes"][-3:]:
+            chapter_url=series_url+episode["slug"]+"/"
+            page,page_type=get(chapter_url)
+            content=page.decode("utf-8")
+            if ("text/html" not in page_type or
+                episode["title"] not in content or
+                serial["disclaimer"] not in content or
+                'content="'+SITE+social+'"' not in content):
+                raise RuntimeError("Original serial chapter not fully published: "+chapter_url)
+    print("Public original serials OK:",len(serials))
+
     # Daily editions must be published from the real article publication day,
     # not the fictional 2031 dateline. Sample only the newest three issue pages
     # to keep the free read-only production verification lightweight.
