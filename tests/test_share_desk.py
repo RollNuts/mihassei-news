@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import html
 import re
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -26,6 +28,12 @@ def sample(slug, category, day, title=None, summary=None):
 
 
 class ShareDeskTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # CI test discovery can run this file before test_site.py builds dist.
+        subprocess.run([sys.executable,str(ROOT/"scripts/build.py")],
+                       cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+
     def test_newest_publication_day_and_category_diversity(self):
         items = [
             sample("old", "スポーツ", "2026-11-01"),
