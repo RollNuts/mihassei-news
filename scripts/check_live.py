@@ -195,7 +195,7 @@ def check():
             if ('<meta property="og:image" content="'+SITE+'/photos/'+slug+'.jpg">' not in page):
                 raise RuntimeError(slug+": reviewed social photo metadata missing")
             image,kind=get("/photos/"+slug+".jpg")
-            if image[:3]!=b"\\xff\\xd8\\xff" or len(image)<16000 or "image/jpeg" not in kind:
+            if image[:3]!=bytes((255,216,255)) or len(image)<16000 or "image/jpeg" not in kind:
                 raise RuntimeError(slug+": reviewed JPEG not accessible")
             checked_photos+=1
         else:
