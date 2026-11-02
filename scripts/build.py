@@ -12,6 +12,12 @@ import zlib
 from datetime import datetime
 from email.utils import format_datetime
 from pathlib import Path
+
+# Works for both "python scripts/build.py" and "import scripts.build" in tests.
+if __package__:
+    from .social_cards import render_social_card
+else:
+    from social_cards import render_social_card
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -270,12 +276,14 @@ def card(a, archive=False):
     )
 
 def social_image(article):
-    """Crawlers receive a first-party PNG/JPEG, never an SVG or an external image."""
+    """First-party JPEG or unique story PNG, never an SVG or remote image."""
     if article is not None:
         photo = BASE / "assets" / "photos" / (article["slug"] + ".jpg")
         if photo.is_file():
             return "/photos/" + article["slug"] + ".jpg"
-    # Version is part of the URL to refresh external card caches after brand updates.
+        # On every new no-photo article, the build makes this automatically.
+        return "/og/articles/" + article["slug"] + ".png"
+    # Keep the brand image stable for the homepage and site-wide links.
     return "/og/brand.png?v=20261102-2"
 
 
@@ -796,6 +804,10 @@ def build():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",
               category_page(category, items))
     for a in articles:
+        # Fully offline, original PNG for every article missing a cached photo.
+        # OGP and X cards are therefore distinct even during photo-cache lag.
+        if not (BASE / "assets" / "photos" / (a["slug"] + ".jpg")).is_file():
+            render_social_card(a, OUT / "og" / "articles" / (a["slug"] + ".png"))
         write("articles/"+a["slug"]+"/index.html",story(a,articles))
         write("images/"+a["slug"]+".svg",cover(a))
     other_files(articles)
