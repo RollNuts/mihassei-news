@@ -117,7 +117,7 @@ def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share"
     # Small standalone hook for the reader's X draft. Does not post automatically.
     teaser = a["summary"][:75]
-    text = "【未発生新聞】\\n" + a["title"] + "\\n\\n" + teaser + "\\n\\n#未発生新聞 （創作）"
+    text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞 （創作）"
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
