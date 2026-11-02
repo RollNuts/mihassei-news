@@ -701,7 +701,7 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn(image_path,seen)
             seen.add(image_path)
             page=(ROOT/"dist/articles"/article["slug"]/"index.html").read_text(encoding="utf-8")
-            self.assertIn('name="twitter:image" content="https://veripsa.com'+image_path+'"',page)
+            self.assertIn('name="twitter:image" content="https://veripsa.com'+social_image(article)+'"',page)
             img=ROOT/"dist"/image_path.lstrip("/")
             self.assertTrue(img.exists(),image_path)
             self.assertGreater(img.stat().st_size,1000)
