@@ -19,6 +19,7 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
+    from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
 else:
@@ -27,6 +28,7 @@ else:
     from media_policy import usable_cached_photo
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
+    from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
 from urllib.parse import quote, urlencode
@@ -306,9 +308,17 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None):
-    complete = ("未発生新聞｜5年後の架空ニュース" if path == "/" else
-                title + (" | 未発生新聞" if serial and serial["kind"] == "analysis" else " | 未発生新聞（創作ニュース）"))
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None):
+    if path == "/":
+        complete = "未発生新聞｜5年後の架空ニュース"
+    elif path == "/serials/":
+        complete = title + " | 未発生新聞（創作と市場分析の連載）"
+    elif serial is not None and serial["kind"] == "analysis":
+        complete = title + " | 未発生新聞（市場分析）"
+    elif serial is not None and serial["kind"] == "fiction":
+        complete = title + " | 未発生新聞（創作小説）"
+    else:
+        complete = title + " | 未発生新聞（創作ニュース）"
     article_time_meta = ""
     # Never label the genuine, source-backed market column as fictional news.
     if path == "/serials/":
@@ -371,7 +381,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
                 "inLanguage":"ja","genre":"風刺・フィクション"}
+    if path == "/serials/":
+        metadata["@type"] = "CollectionPage"
+        metadata["genre"] = "創作小説・市場分析"
     if serial is not None:
+        metadata["@type"] = "CollectionPage" if not serial.get("episode") else metadata["@type"]
         metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
     if kind == "serial_episode" and serial is not None:
         metadata.update({
@@ -386,6 +400,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "image": [og_image],
             "articleSection": "推理小説" if serial["kind"] == "fiction" else "株式市場予測"
         })
+        if serial.get("title"):
+            metadata["isPartOf"] = {
+                "@type": "CreativeWorkSeries",
+                "name": serial["title"],
+                "url": SITE + "/serials/" + serial["slug"] + "/",
+            }
     if issue_path:
         metadata["datePublished"] = issue_path.group(1)
     if kind == "story" and article is not None:
@@ -402,6 +422,48 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "articleSection":article["category"]
         })
     schemas = [metadata]
+    if path == "/serials/":
+        schemas.append({
+            "@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "トップ", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": "連載一覧", "item": SITE + "/serials/"},
+            ],
+        })
+        if serial_collection:
+            schemas.append({
+                "@context": "https://schema.org", "@type": "ItemList",
+                "numberOfItems": len(serial_collection),
+                "itemListElement": [
+                    {"@type": "ListItem", "position": i + 1, "name": item["title"],
+                     "url": SITE + "/serials/" + item["slug"] + "/"}
+                    for i, item in enumerate(serial_collection)
+                ],
+            })
+    if serial is not None:
+        prefix = SITE + "/serials/" + serial["slug"] + "/"
+        crumbs = [
+            {"@type": "ListItem", "position": 1, "name": "トップ", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "連載一覧", "item": SITE + "/serials/"},
+            {"@type": "ListItem", "position": 3, "name": serial.get("title") or title, "item": prefix},
+        ]
+        if serial.get("episode"):
+            crumbs.append({"@type": "ListItem", "position": 4,
+                           "name": serial.get("episode_title") or title,
+                           "item": SITE + path})
+        schemas.append({"@context": "https://schema.org",
+                        "@type": "BreadcrumbList", "itemListElement": crumbs})
+        if not serial.get("episode") and serial.get("episodes"):
+            chapters = serial["episodes"]
+            schemas.append({
+                "@context": "https://schema.org", "@type": "ItemList",
+                "numberOfItems": len(chapters),
+                "itemListElement": [
+                    {"@type": "ListItem", "position": i + 1, "name": ep["title"],
+                     "url": prefix + ep["slug"] + "/"}
+                    for i, ep in enumerate(chapters)
+                ],
+            })
     if kind == "story" and article is not None:
         schemas.append({
             "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -804,7 +866,7 @@ def issue_page(day, items, issues):
                   issue_url(day), content, active="issues", collection=items)
 
 
-def story(a, articles, issues=None):
+def story(a, articles, issues=None, serials=None):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
     # Strong topic continuity; no duplicate next story in the related cards.
@@ -827,8 +889,9 @@ def story(a, articles, issues=None):
         f'{issue_date_label(issue_day)}の発行号を読む ↗</a>'
         if issue_day in available_issues else ""
     )
+    bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else serials)
     related_section = (
-        '<section class="article-related"><div class="section-head"><h2>さらに読む</h2>'
+        '<section class="article-related'><div class="section-head"><h2>さらに読む</h2>'
         '<a href="/archive/">ほかの記事 ↗</a></div>'
         '<div class="story-grid">' + related + '</div></section>'
     ) if related else ""
@@ -879,6 +942,7 @@ def story(a, articles, issues=None):
 <span class="reader-next-kicker">NEXT STORY / 続けて読む · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
+{bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 <section class="reader-follow" aria-label="更新を読む">
 <div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
@@ -1333,7 +1397,7 @@ def build():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",
               category_page(category, items))
     for a in articles:
-        write("articles/"+a["slug"]+"/index.html",story(a,articles,issues))
+        write("articles/"+a["slug"]+"/index.html",story(a,articles,issues,serials))
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
     other_files(articles, issues, serials)
