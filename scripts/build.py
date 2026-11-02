@@ -17,10 +17,12 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, story_subject
     from .media_policy import usable_cached_photo
+    from .share_desk import render as render_share_desk
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
+    from share_desk import render as render_share_desk
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -901,7 +903,7 @@ figcaption{{font-size:10px;color:#72776e;line-height:1.6;margin-top:6px}}
 a{{color:#9c392b;font-weight:750}}a:hover{{color:#d85a48}}
 @media(max-width:470px){{.review-images{{grid-template-columns:1fr}}}}
 </style></head><body><main>
-<p><a href="/">未発生新聞トップへ戻る</a></p>
+<p><a href="/">未発生新聞トップへ戻る</a> · <a href="/share-desk/">X投稿デスク</a></p>
 <h1>公開画像の検品一覧</h1>
 <p class="note">公開済みの記事 {len(articles)} 本を掲載画像とSNS用画像で並べて確認できます。
 写真が承認済みでも、構図・文字の見やすさ・テーマとの相性は最終的に人が確認してください。
@@ -992,7 +994,7 @@ def other_files(articles, issues=None):
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n")
 
 
 
@@ -1122,6 +1124,9 @@ def build():
     write("archive/index.html",archive(articles))
     # Human visual quality audit stays separate from the public news navigation.
     write("image-review/index.html",image_review_page(articles))
+    # Human-operated static promotion helper; no automated X publishing.
+    write("share-desk/index.html",render_share_desk(
+        articles,social_image,lambda a: usable_cached_photo(a,root=BASE)))
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))
