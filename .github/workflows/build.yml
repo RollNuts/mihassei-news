@@ -1,0 +1,27 @@
+name: Build newspaper
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build static site
+        run: python3 build.py
+      - name: Validate pages
+        run: |
+          test -s dist/index.html
+          test -s dist/archive/index.html
+          test -s dist/about/index.html
+          test -s dist/feed.xml
+          test -s dist/sitemap.xml
+          python3 -m json.tool content/articles.json >/dev/null
+          grep -q 'FICTION' dist/index.html
