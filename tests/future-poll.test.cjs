@@ -37,10 +37,11 @@ function fixture(){
     }
   }};
   const stats=new Stats(ctx,{});
-  const api=async(action,clientId,article='future-story',choice,channel)=>{
+  const api=async(action,clientId,article='future-story',choice,channel,fromArticle)=>{
     const body={action,clientId,article};
     if(choice!==undefined)body.choice=choice;
     if(channel!==undefined)body.channel=channel;
+    if(fromArticle!==undefined)body.fromArticle=fromArticle;
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement',{
       method:'POST',
       headers:{'content-type':'application/json'},
@@ -126,4 +127,42 @@ test('vote frontend never fakes figures and handles server rejection',()=>{
   assert.match(js,/pollError=/);
   assert.match(js,/data-poll-results/);
   assert.doesNotMatch(js,/\.innerHTML\s*=/);
+});
+
+test('article continuation counts source browsers, not clicks, destinations or raw URLs',async()=>{
+  const {db,api,get}=fixture();
+  const a=randomUUID(),b=randomUUID();
+  const first=await api('visit',a,'story-b',undefined,undefined,'story-a');
+  assert.equal(first.status,200);
+  assert.equal((await get('story-a')).result.articles['story-a'].continuedReaders,1);
+  // Same browser navigating into a third article must not inflate source A.
+  assert.equal((await api('visit',a,'story-c',undefined,undefined,'story-a')).status,200);
+  assert.equal((await get('story-a')).result.articles['story-a'].continuedReaders,1);
+  assert.equal((await api('visit',b,'story-c',undefined,undefined,'story-a')).status,200);
+  assert.equal((await get('story-a')).result.articles['story-a'].continuedReaders,2);
+  assert.equal((await api('visit',a,'story-a',undefined,undefined,'story-b')).status,200);
+  assert.equal((await get('story-b')).result.articles['story-b'].continuedReaders,1);
+  assert.equal((await get('story-c')).result.articles['story-c'].continuedReaders,0);
+  assert.equal((await get('story-a')).result.articles['story-a'].readers,1);
+  assert.equal((await get('story-a')).result.visitors,2);
+  const stored=db.prepare("SELECT visitor FROM events WHERE kind='continued' AND article='story-a'").all();
+  assert.equal(stored.length,2);
+  assert.ok(stored.every(x=>/^[a-f0-9]{64}$/.test(x.visitor)));
+  assert.ok(!stored.some(x=>x.visitor===a||x.visitor===b));
+  db.close();
+});
+
+test('untrusted source strings and invalid continuation events cannot write counters',async()=>{
+  const {db,api,get}=fixture();
+  const id=randomUUID();
+  for(const [action,article,fromArticle] of [
+    ['visit','story-b','../story-a'],['visit','story-b','story-b'],
+    ['visit','','story-a'],['visit','story-b','n'.repeat(101)],
+    ['like','story-b','story-a'],['vote','story-b','story-a']
+  ]){
+    const result=await api(action,id,article,action==='vote'?'plausible':undefined,undefined,fromArticle);
+    assert.equal(result.status,400,action+': '+fromArticle);
+  }
+  assert.equal((await get('story-a')).result.articles['story-a'].continuedReaders,0);
+  db.close();
 });
