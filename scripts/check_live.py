@@ -191,6 +191,70 @@ def check():
         if url not in siteurls:
             raise RuntimeError("Sitemap missing "+article["slug"])
 
+    # Two original series have become part of the public newsroom. Confirm
+    # their published story pages, explicit fiction/analysis distinction, RSS,
+    # and self-hosted raster previews without generating visits or events.
+    serials=json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8"))
+    serials_index,serials_mime=get("/serials/")
+    serials_html=serials_index.decode("utf-8")
+    if ("text/html" not in serials_mime or
+        SITE+"/serials/" not in siteurls or
+        "物語を追う。未来を検証する。" not in serials_html):
+        raise RuntimeError("Original serials index missing or not fully published")
+    ns_serial={"media":"http://search.yahoo.com/mrss/",
+               "atom":"http://www.w3.org/2005/Atom"}
+    for serial in serials:
+        path="/serials/"+serial["slug"]+"/"
+        feed="/feeds/series-"+serial["slug"]+".xml"
+        if SITE+path not in siteurls or 'href="'+path+'"' not in serials_html:
+            raise RuntimeError("Original serial not indexed or linked: "+serial["slug"])
+        overview,kind=get(path)
+        summary=overview.decode("utf-8")
+        if ("text/html" not in kind or serial["title"] not in summary or
+            'href="'+feed+'"' not in summary):
+            raise RuntimeError("Serial overview/RSS discovery missing: "+serial["slug"])
+        xml,content_type=get(feed)
+        if "xml" not in content_type:
+            raise RuntimeError("Serial RSS has wrong content type: "+feed)
+        rss=ET.fromstring(xml)
+        channel=rss.find("channel")
+        if channel is None:
+            raise RuntimeError("Serial RSS channel missing: "+feed)
+        self_link=channel.find("atom:link",ns_serial)
+        if self_link is None or self_link.get("href")!=SITE+feed:
+            raise RuntimeError("Serial RSS self URL missing: "+feed)
+        entries=channel.findall("item")
+        if len(entries)!=min(len(serial["episodes"]),30):
+            raise RuntimeError("Serial RSS contains incorrect chapter count: "+feed)
+        recent_serial=serial["episodes"][-30:]
+        for item,chapter in zip(entries,reversed(recent_serial)):
+            url=path+chapter["slug"]+"/"
+            if item.findtext("link")!=SITE+url or SITE+url not in siteurls:
+                raise RuntimeError("Serial RSS/sitemap chapter mismatch: "+url)
+            if item.find("pubDate") is not None:
+                raise RuntimeError("Series RSS must not invent an exact publish time")
+            photo=item.find("media:thumbnail",ns_serial)
+            if photo is None or photo.get("url")!=SITE+"/og/serials/"+serial["slug"]+"-"+chapter["slug"]+".png":
+                raise RuntimeError("Serial RSS image is missing: "+url)
+        for chapter in serial["episodes"][-3:]:
+            chapter_path=path+chapter["slug"]+"/"
+            page,page_mime=get(chapter_path)
+            markup=page.decode("utf-8")
+            preview="/og/serials/"+serial["slug"]+"-"+chapter["slug"]+".png"
+            if ("text/html" not in page_mime or
+                chapter["title"] not in markup or
+                'href="'+feed+'"' not in markup or
+                'name="twitter:image" content="'+SITE+preview+'"' not in markup):
+                raise RuntimeError("Serial chapter or social metadata missing: "+chapter_path)
+            marker=("すべて創作" if serial["kind"]=="fiction" else "投資助言")
+            if marker not in markup:
+                raise RuntimeError("Serial fiction/analysis disclosure missing: "+chapter_path)
+            png,png_mime=get(preview)
+            if (not png.startswith(bytes((137,80,78,71,13,10,26,10))) or
+                "image/png" not in png_mime or len(png)<1500):
+                raise RuntimeError("Serial OGP preview not served as PNG: "+preview)
+    print("Public original serials and RSS OK:",len(serials))
+
     # Daily editions must be published from the real article publication day,
     # not the fictional 2031 dateline. Sample only the newest three issue pages
     # to keep the free read-only production verification lightweight.
