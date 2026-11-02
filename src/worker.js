@@ -2,6 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 export { ReaderComments } from "./comments.js";
 
 // True, browser-level counters. No IP logging, cookies, tracking pixels or external APIs.
+const attributionChannels = ["x","search","external","unattributed"];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 function validArticle(slug) {
@@ -42,7 +43,10 @@ export class NewsroomStats extends DurableObject {
       for (const slug of new Set(articles)) {
         details[slug]={likes:this.count("likes:"+slug),readers:this.count("readers:"+slug),shareClicks:this.count("shares:"+slug)};
       }
-      return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details});
+      const channels={};
+      for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
+      return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
+        channels,channelScope:"distinct-browser-per-observed-channel-since-activation"});
     }
     if(req.method!=="POST")return json({error:"method not allowed"},405);
     if(Number(req.headers.get("content-length")||0)>512)return json({error:"payload too large"},413);
@@ -53,6 +57,9 @@ export class NewsroomStats extends DurableObject {
     const article=data.article||"";
     if(article && !validArticle(article))return json({error:"invalid article"},400);
     if(data.action!=="visit" && !article)return json({error:"article required"},400);
+    const channel=data.action==="visit" ? (data.channel??"") : "";
+    if(channel!=="" && !attributionChannels.includes(channel))
+      return json({error:"invalid channel"},400);
     const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(data.clientId));
     const visitor=Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,"0")).join("");
     let liked=null;
@@ -60,6 +67,10 @@ export class NewsroomStats extends DurableObject {
       if(data.action==="visit") {
         if(this.insertOnce("site","",visitor))this.increment("visitors",1);
         if(article && this.insertOnce("reader",article,visitor))this.increment("readers:"+article,1);
+        // Record at most one visit per hashed browser *per coarse channel*.
+        // No complete referral URLs, full UTM strings, search terms, or IPs are saved.
+        if(channel && this.insertOnce("channel",channel,visitor))
+          this.increment("channel:"+channel,1);
       } else if (data.action==="like") {
         const prior=this.sql.exec("SELECT 1 FROM events WHERE kind=? AND article=? AND visitor=?","like",article,visitor).toArray().length>0;
         if(prior) {

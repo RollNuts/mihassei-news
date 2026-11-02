@@ -108,6 +108,24 @@
   const allSlugs=[...new Set(buttons.map(b=>b.dataset.likeSlug).filter(Boolean))].slice(0,20);
   if(article && !allSlugs.includes(article))allSlugs.unshift(article);
 
+  // Approximate, privacy-minimal traffic sources: never transmit a referrer URL.
+  // Only externally arriving page views get a category; internal navigation is ignored.
+  function arrivalChannel(){
+    const tagged=(new URLSearchParams(location.search).get("utm_source")||"").toLowerCase();
+    if(tagged==="x" || tagged==="twitter")return "x";
+    if(["google","bing","yahoo","duckduckgo","search"].includes(tagged))return "search";
+    let referrer;
+    try{referrer=new URL(document.referrer);}catch(_){return "unattributed";}
+    if(referrer.origin===location.origin)return "";
+    const host=referrer.hostname.toLowerCase();
+    const matches=(domain)=>host===domain || host.endsWith("."+domain);
+    if(["x.com","twitter.com","t.co"].some(matches))return "x";
+    if(["google.com","google.co.jp","bing.com","search.yahoo.co.jp",
+        "duckduckgo.com","search.brave.com","ecosia.org"].some(matches))return "search";
+    return "external";
+  }
+  const visitChannel=arrivalChannel();
+
   function heartView() {
     for(const b of buttons){
       const on=likedSet.has(b.dataset.likeSlug);
@@ -123,9 +141,11 @@
   heartView();
 
   async function apiPost(action,articleSlug=""){
+    const payload={action,article:articleSlug,clientId};
+    if(action==="visit" && visitChannel)payload.channel=visitChannel;
     const response=await fetch("/api/engagement",{
       method:"POST",headers:{"content-type":"application/json"},
-      body:JSON.stringify({action,article:articleSlug,clientId}),
+      body:JSON.stringify(payload),
       cache:"no-store",credentials:"same-origin"
     });
     if(!response.ok)throw new Error("engagement not available");
