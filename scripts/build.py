@@ -80,6 +80,12 @@ def load():
             raise ValueError("Source must use HTTPS")
         if five_years_later(source["published_at"]) != a["fiction_at"]:
             raise ValueError("Fictional datetime must be exactly five years later: " + a["slug"])
+        if a.get("photo"):
+            p = a["photo"]
+            if not p.get("url","").startswith("https://images.unsplash.com/photo-"):
+                raise ValueError("Photo CDN must be Unsplash")
+            if not p.get("source","").startswith("https://unsplash.com/photos/") or not p.get("credit") or p.get("license") != "Unsplash" or not p.get("alt"):
+                raise ValueError("Photo requires verified Unsplash license and attribution")
         if len(a["paragraphs"]) < 2 or len(a["paragraphs"]) > 6:
             raise ValueError("Article must contain 2-6 paragraphs")
     return sorted(articles, key=lambda a: a["source"]["published_at"], reverse=True)
@@ -203,6 +209,36 @@ def cover(a):
     )
 
 
+def illustration_path(a):
+    return "/images/" + a["slug"] + ".svg"
+
+
+def editorial_image(a):
+    """Editorial photos are licensed stock photos, never photographs of fictional incidents."""
+    local = BASE / "assets" / "photos" / (a["slug"] + ".jpg")
+    if local.exists():
+        return "/photos/" + a["slug"] + ".jpg"
+    photo = a.get("photo")
+    return photo["url"] if photo else illustration_path(a)
+
+
+def image_tag(a, cls, extra=""):
+    url = editorial_image(a)
+    photo = a.get("photo")
+    alt = photo["alt"] if photo else "記事をイメージしたオリジナルイラスト"
+    fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo else ""
+    return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
+            f' {extra}{fallback}>')
+
+
+def photo_credit(a):
+    p = a.get("photo")
+    if not p:
+        return "記事のイメージ画像（オリジナル制作）"
+    return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
+            f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>。'
+            '記事内の出来事や架空の企業とは関係ありません。')
+
 def card(a, archive=False):
     attrs = ""
     if archive:
@@ -213,7 +249,7 @@ def card(a, archive=False):
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
-        f'<img class="story-thumb" src="/images/{a["slug"]}.svg" loading="lazy" alt="記事のイメージ画"></a>'
+        + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + '</a>'
         + category_meta(a)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
@@ -325,8 +361,7 @@ def home(articles):
 <div class="wire-viewport"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
 <article class="lead">
-<a class="lead-media" href="{article_url(a)}"><img src="/images/{a["slug"]}.svg"
- alt="記事のイメージ画" fetchpriority="high">
+<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
 <div class="overlay"><span class="issue-code">TOP STORY</span><span class="hero-live">● LIVE <span data-future-hms>--:--:--</span></span></div></a>
 <div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
@@ -381,7 +416,6 @@ def category_page(category, items):
 
 
 def story(a, articles):
-    image_path = "/images/" + a["slug"] + ".svg"
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
     # Show a small edited set, never pretend these are actually the most-read stories.
@@ -400,8 +434,8 @@ def story(a, articles):
 <div class="story-meta"><span>未発生新聞 編集部</span><span>実際の掲載日 {escape(publication_date(a)[:10])}</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
-<img class="article-visual" src="{image_path}" alt="記事のイメージ画">
-<figcaption>イメージ画像</figcaption></figure>
+{image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
+<figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
@@ -554,6 +588,9 @@ def build():
         if f.is_file():
             shutil.copy2(f, OUT/"assets"/f.name)
     shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
+    photos = BASE / "assets" / "photos"
+    if photos.exists():
+        shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("index.html",home(articles))
     write("about/index.html",about())
     write("archive/index.html",archive(articles))
