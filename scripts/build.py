@@ -420,7 +420,9 @@ def home(articles):
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
                    for x in articles[1:4])
-    recent = "".join(card(x) for x in articles[1:10])
+    # Lead and the three sidebar headlines are already visible above.
+    # Never repeat them in the new-story grid: show the *next* nine articles.
+    recent = "".join(card(x) for x in articles[4:13])
     featured_categories = curated_categories(articles)
     genre_links = []
     for cat in CATEGORIES[1:]:
@@ -448,7 +450,7 @@ def home(articles):
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
 <div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
-<div class="wire-viewport"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
+<div class="wire-viewport" tabindex="0" role="region" aria-label="新着ニュースを横にスクロール"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}

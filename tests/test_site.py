@@ -81,6 +81,39 @@ class SiteTests(unittest.TestCase):
         self.assertIn('data-comment-discussions',home)
         self.assertIn('class="story-grid"',home)
 
+    def test_homepage_does_not_repeat_lead_or_sidebar_news(self):
+        """News grid fills with different headlines rather than showing the same story twice."""
+        import re
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        lead=re.search(r'<h1><a href="/articles/([^/]+)/">',home)
+        self.assertIsNotNone(lead)
+        aside=home.split('<aside class="side-brief">',1)[1].split('</aside>',1)[0]
+        sidebar=re.findall(r'<h3><a href="/articles/([^/]+)/">',aside)
+        section=home.split('<section class="section-block">',1)[1].split('</section>',1)[0]
+        cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section)
+        from scripts.build import load
+        # The JSON file is not necessarily in publication order.
+        # Compare against the same actual-publication sorting used by the builder.
+        published=load()
+        self.assertEqual(lead.group(1),published[0]["slug"])
+        self.assertEqual(sidebar,[a["slug"] for a in published[1:4]])
+        self.assertEqual(cards,[a["slug"] for a in published[4:13]])
+        shown=[lead.group(1),*sidebar,*cards]
+        self.assertEqual(len(shown),len(set(shown)))
+        self.assertEqual(len(shown),min(len(published),13))
+
+    def test_ticker_is_swipeable_on_mobile_and_keyboard_accessible(self):
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        self.assertIn('class="wire-viewport" tabindex="0" role="region"',home)
+        self.assertIn("新着ニュースを横にスクロール",home)
+        self.assertIn(".news-wire .wire-track:focus-within",css)
+        self.assertIn(".news-wire .wire-viewport",css)
+        self.assertIn("overflow-x:auto",css)
+        self.assertIn(".news-wire .wire-copy{display:none}",css)
+        self.assertIn("prefers-reduced-motion",css)
+        self.assertEqual(css.count("{"),css.count("}"))
+
     def test_modern_readable_editorial_layout_without_paid_assets(self):
         """Preserve all pages while improving reading comfort and mobile touch UI."""
         styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")

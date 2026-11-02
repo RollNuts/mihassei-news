@@ -528,3 +528,33 @@ body{
   .story-card,.lead-media img,.nav-inner a{transition:none}
   html{scroll-behavior:auto}
 }
+
+/* Accessible headlines: let a keyboard user pause the desktop ticker, and
+   replace the constantly moving banner with swipeable headlines on touch. */
+.news-wire .wire-track:focus-within{animation-play-state:paused}
+.news-wire .wire-viewport:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:-3px;
+}
+@media(max-width:660px){
+  .news-wire .wire-viewport{
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:#a3a9a0 transparent;
+  }
+  .news-wire .wire-track{
+    animation:none;
+    gap:21px;
+    transform:none;
+    padding-inline:8px 18px;
+  }
+  .news-wire .wire-track>a{display:inline-flex;align-items:center;min-height:43px}
+  .news-wire .wire-copy{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .news-wire .wire-viewport{overflow-x:auto;scrollbar-width:thin}
+  .news-wire .wire-track{animation:none;transform:none}
+  .news-wire .wire-copy{display:none}
+}
