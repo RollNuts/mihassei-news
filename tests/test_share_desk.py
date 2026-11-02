@@ -63,7 +63,6 @@ class ShareDeskTests(unittest.TestCase):
         self.assertIn("※創作", details["copy"])
         self.assertIn("#未発生新聞", details["copy"])
         self.assertIn(TRACKING, details["copy"])
-        self.assertIn("2026", details["tagged_url"] if False else "2026")
         self.assertIn("2031年の架空ニュース", details["text"])
         self.assertNotIn("人気第1位", details["copy"])
         params = parse_qs(urlparse(details["intent"]).query)
@@ -80,7 +79,6 @@ class ShareDeskTests(unittest.TestCase):
                         lambda item: False)
         self.assertIn('name="robots" content="noindex,nofollow"', output)
         self.assertIn('href="/og/articles/safe-story.png" download=', output)
-        self.assertIn('class="review-grid"', output) if False else None
         self.assertIn("投稿文をコピー", output)
         self.assertIn("Xで下書きを開く", output)
         self.assertIn("画像を保存・開く", output)
