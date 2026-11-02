@@ -410,9 +410,11 @@ def home(articles):
     genre_links = "".join(genre_links)
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
+    # A busy newsroom should not ship the entire archive in the homepage HTML.
+    # Keep the interactive edition fresh without letting page weight grow forever.
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
-         for x in articles], ensure_ascii=False, separators=(",", ":")))
+         for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
     content = f'''<div class="container index-main">
 <div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
 <strong>本日の未発生ニュース</strong></div>
