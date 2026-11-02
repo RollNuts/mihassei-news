@@ -42,6 +42,19 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # A valid X link card needs HTML metadata AND a publicly served raster
+    # image. The first published social preview may be cached by X.
+    for tag in (
+        'name="twitter:card" content="summary_large_image"',
+        'name="twitter:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',
+        'property="og:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',
+    ):
+        if tag not in body:
+            raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
+    image, image_mime=get("/og/brand.png?v=20261102-2")
+    if not image.startswith(b"\\x89PNG\\r\\n\\x1a\\n") or "image/png" not in image_mime or len(image) < 1024:
+        raise RuntimeError("X card brand image missing or invalid PNG")
+
     sitemap,mime=get("/sitemap.xml")
     root=ET.fromstring(sitemap)
     ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
