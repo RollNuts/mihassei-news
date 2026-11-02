@@ -54,22 +54,27 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
-    # A valid X link card needs HTML metadata AND a publicly served raster
-    # image. The first published social preview may be cached by X.
-    for tag in (
-        'name="twitter:card" content="summary_large_image"',
-        'name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
-        'property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
-    ):
-        if tag not in body:
-            raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
-    image, image_mime=get("/og/brand-launch-20261102-v3.png")
-    # A clean launch URL forces a new card fetch instead of reusing old cached metadata.
-    share,mime=get("/?src=x-launch-20261102-v3")
-    if "text/html" not in mime or 'name="twitter:image" content="https://veripsa.com'+fresh+'"' not in share.decode("utf-8"):
-        raise RuntimeError("Cache-busting X share link is not published")
-    if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
-        raise RuntimeError("X card brand image missing or invalid PNG")
+    # Inspect the actual published metadata so future brand-image versions
+    # need no handwritten updates to this verification code.
+    if 'name="twitter:card" content="summary_large_image"' not in body:
+        raise RuntimeError("Large X summary card metadata missing")
+    twitter = re.search(r'<meta name="twitter:image" content="([^"]+)"', body)
+    og = re.search(r'<meta property="og:image" content="([^"]+)"', body)
+    if not twitter or not og or twitter.group(1) != og.group(1):
+        raise RuntimeError("X and OpenGraph preview images are inconsistent")
+    preview_url = urlsplit(twitter.group(1))
+    if (preview_url.scheme != "https" or preview_url.netloc != "veripsa.com"
+        or not preview_url.path.startswith("/og/") or not preview_url.path.endswith(".png")):
+        raise RuntimeError("Homepage must use an HTTPS first-party PNG preview")
+    image_path = preview_url.path + ("?" + preview_url.query if preview_url.query else "")
+    image, image_mime = get(image_path)
+    if (not image.startswith(bytes((137,80,78,71,13,10,26,10)))
+        or "image/png" not in image_mime or len(image) < 1024):
+        raise RuntimeError("X card preview image missing or invalid PNG")
+    share, mime = get("/?src=x-launch-20261102-v3")
+    shared_meta = re.search(r'<meta name="twitter:image" content="([^"]+)"', share.decode("utf-8"))
+    if "text/html" not in mime or not shared_meta or shared_meta.group(1) != twitter.group(1):
+        raise RuntimeError("Share URL is not publishing the same X preview image")
 
     if 'class="genre-explore"' not in body or 'href="/editorial/"' not in body:
         raise RuntimeError("Reader discovery or editorial link missing from live homepage")
