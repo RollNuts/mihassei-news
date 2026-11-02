@@ -66,7 +66,12 @@ class SatireAuditTests(unittest.TestCase):
     def test_unrelated_jokes_are_not_automatically_dismissed(self):
         self.assertEqual(near_duplicate("電話の着信を止められない",
                                         "映画の感想が明日になる"),0.0)
-        self.assertEqual(analyze([sample(1),sample(2),sample(3)]),[])
+        distinct=[
+            sample(1,title="電話を待ち続けた猫の休日",ending="猫は庭でしばらく眠っていた。"),
+            sample(2,title="山の向こうで始まった星の祭り",ending="夕方には星の色が変わった。"),
+            sample(3,title="音楽のない映画を観に行く",ending="観客は拍手の代わりに静かに帰宅した。"),
+        ]
+        self.assertEqual(analyze(distinct),[])
 
     def test_fictional_year_cannot_change_real_publication_order(self):
         articles=[sample(1),sample(15)]
