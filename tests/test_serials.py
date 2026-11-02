@@ -1,5 +1,7 @@
 """Original long-form serialization: published chapters, safe links and disclosures."""
 import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -15,8 +17,8 @@ OUT = BASE / "dist"
 class SeriesTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # The main SiteTests class builds dist in the same unittest suite;
-        # don't force a duplicate site build in the serial tests.
+        # Explicitly build the static output, independent of test module order.
+        subprocess.run([sys.executable,str(BASE/"scripts/build.py")],cwd=BASE,check=True)
         cls.serials=load_serials()
 
     def test_two_distinct_original_series_have_real_first_chapters(self):
@@ -56,7 +58,7 @@ class SeriesTests(unittest.TestCase):
         for serial in self.serials:
             page=serial_overview(serial)
             self.assertIn(serial["disclaimer"],page)
-            self.assertIn('href="'+series_url(serial)+'"',page)
+            self.assertIn('rel="canonical" href="'+SITE+series_url(serial)+'"',page)
             self.assertIn('href="'+serial_episode_url(serial,serial["episodes"][0])+'"',page)
             self.assertIn('href="'+"/feeds/series-"+serial["slug"]+".xml"+'"',page)
             episode=serial["episodes"][0]
@@ -83,8 +85,6 @@ class SeriesTests(unittest.TestCase):
                 self.assertIsNone(entry.find("pubDate"))
 
     def test_published_pages_exist_in_main_build_when_available(self):
-        if not (OUT / "series/index.html").is_file():
-            self.skipTest("Dist output not built yet")
         index=(OUT / "series/index.html").read_text(encoding="utf-8")
         self.assertIn("未発生新聞の連載",index)
         sitemap=(OUT / "sitemap.xml").read_text(encoding="utf-8")
