@@ -1,0 +1,82 @@
+name: One-time verify revised satire and editorial start page
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read live article and homepage without creating audience events
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html
+          import re
+          import time
+          from urllib.request import Request,urlopen
+          from xml.etree import ElementTree as ET
+          from scripts.build import load
+          from scripts.editorial_starter import starter_picks
+
+          site="https://veripsa.com"
+          slug="farm-friendship-across-species"
+          new_title="牛とロバの仲良し動画、SNSで考察合戦"
+          old_title="牧場が「仲良し優先」の部屋割り"
+          articles=load()
+          excluded={a["slug"] for a in articles[:4]}
+          picks=starter_picks(articles,excluded)
+          assert len(picks)==3
+          def get(path):
+              request=Request(site+path,headers={
+                  "User-Agent":"Mihassei-SatireEditorial-ReadOnly/1.0",
+                  "Cache-Control":"no-cache"})
+              with urlopen(request,timeout=17) as response:
+                  if response.status!=200:raise RuntimeError("HTTP "+str(response.status)+" "+path)
+                  return response.read(1800000),response.headers.get("Content-Type","")
+
+          for attempt in range(1,23):
+              try:
+                  article,mime=get("/articles/"+slug+"/")
+                  page=html.unescape(article.decode("utf-8"))
+                  for expected in (
+                      new_title,"牧草の草です","SNSで考察合戦",
+                      "2026-11-03T07:40:27+09:00",
+                      "2026-11-03T08:22:58+09:00",
+                      "theguardian.com/science/2026/nov/02/",
+                      'name="twitter:card" content="summary_large_image"',
+                  ):
+                      if expected not in page:raise RuntimeError("Updated article missing: "+expected)
+                  if old_title in page:raise RuntimeError("Stale generic headline still shown")
+                  cover,kind=get("/images/"+slug+".svg")
+                  if "svg" not in kind:raise RuntimeError("Article cover not SVG")
+                  svg=ET.fromstring(cover)
+                  ns="{http://www.w3.org/2000/svg}"
+                  texts="".join(x.text or "" for x in svg.iter(ns+"text"))
+                  if "SNS" not in texts or "草" not in texts:
+                      raise RuntimeError("Story art still has old headline")
+                  index,index_kind=get("/")
+                  homepage=html.unescape(index.decode("utf-8"))
+                  if "text/html" not in index_kind or 'class="starter-editorial"' not in homepage:
+                      raise RuntimeError("Curated starter section missing")
+                  begin=homepage.index('<section class="starter-editorial"')
+                  end=homepage.index("</section>",begin)
+                  starter=homepage[begin:end]
+                  if starter.count('class="starter-pick-card"')!=3:
+                      raise RuntimeError("Curated section has wrong number of cards")
+                  for item in picks:
+                      if 'href="/articles/'+item["article"]["slug"]+'/"' not in starter:
+                          raise RuntimeError("Editorial selection missing "+item["article"]["slug"])
+                  if "ai-chair-removes-executives" in starter:
+                      raise RuntimeError("Old repetitive AI office story still promoted")
+                  print("PASS: revised SNS satire, original publication dates, updated SVG, and cultural homepage picks all live",flush=True)
+                  print("LIVE_EDITORIAL_PICKS",",".join(x["article"]["slug"] for x in picks),flush=True)
+                  break
+              except Exception as e:
+                  print("Attempt",attempt,"failed:",str(e),flush=True)
+                  if attempt==22:raise
+                  time.sleep(10)
+          PY
