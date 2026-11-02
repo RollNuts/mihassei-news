@@ -173,6 +173,14 @@ class SiteTests(unittest.TestCase):
         self.assertLessEqual(len(choices),40)
         self.assertIn("今日の号外をめくる",home)
 
+        # Do not grow the homepage's embedded interactive JSON indefinitely.
+        from scripts.build import home as render_home
+        synthetic=[{**self.articles[0],"slug":"demo-"+str(i)} for i in range(75)]
+        large_markup=render_home(synthetic)
+        large_options=re.search(r'data-issue-options="([^"]+)"',large_markup)
+        self.assertIsNotNone(large_options)
+        self.assertEqual(len(json.loads(html.unescape(large_options.group(1)))),40)
+
     def test_social_previews_use_first_party_jpeg_or_png(self):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
