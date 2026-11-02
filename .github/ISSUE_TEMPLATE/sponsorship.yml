@@ -1,0 +1,44 @@
+name: 広告・協賛のご相談（公開）
+description: 一般公開して差し支えない初期相談のみ受け付けます。機密・個人情報は投稿しないでください。
+title: "[広告・協賛相談] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 公開されるお問い合わせフォームです
+        ここに入力した内容と返信は、GitHub上で誰でも閲覧できます。
+        個人の氏名、メールアドレス、電話番号、契約条件、見積書、非公開資料、秘密情報を入力しないでください。
+        このフォームから広告掲載が確定することはありません。
+  - type: dropdown
+    id: inquiry-type
+    attributes:
+      label: ご相談の種類
+      options:
+        - サイトへの小さな協賛表示
+        - PR表記のある企画・コラボレーション
+        - その他のご相談
+    validations:
+      required: true
+  - type: input
+    id: public-name
+    attributes:
+      label: 公開可能な会社・活動名（任意）
+      description: 公開して差し支えない名称のみ
+      placeholder: 例：○○プロジェクト
+    validations:
+      required: false
+  - type: textarea
+    id: overview
+    attributes:
+      label: 公開可能なご相談の概要
+      description: 数行で構いません。個人情報・機密・詳細な契約条件は記載しないでください。
+      placeholder: どのような形の協賛を検討しているか、公開可能な範囲でお知らせください。
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgment
+    attributes:
+      label: 公開されることへの確認
+      options:
+        - label: 投稿と返信が公開され、個人情報・機密情報は含めていないことを確認しました。
+          required: true

@@ -398,7 +398,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
-<a href="/editorial/">編集方針</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
+<a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
@@ -629,11 +629,35 @@ def editorial_policy():
 <p>着想元の現実のニュースは、各記事末尾の「この記事の着想元」から確認できます。着想元の報道が、記事内の創作内容を裏付けているわけではありません。元記事の本文や写真を無断転載せず、写真素材は使用条件とクレジットを確認し、架空の出来事の記録写真と誤認されないように表示します。</p>
 <h2>広告・アフィリエイトについて</h2>
 <p>現在は広告の自動配信を行っていません。将来、広告やアフィリエイトリンクを掲載する場合は、記事内容との区別と広告・PRの表示を行い、読みにくいほど広告を増やす運用は避けます。収益や検索順位を保証するものではありません。</p>
+<p><a href="/advertise/" style="text-decoration:underline">広告・協賛に関するご案内 ↗</a></p>
 <h2>運営者・訂正の連絡</h2>
 <p>出典の誤り、権利上の問題、記事の訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>からお知らせください。公開フォームのため個人情報は書かないでください。</p>
 <p><a href="/about/" style="text-decoration:underline">未発生新聞について ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
 </div></div>'''
     return layout("編集方針・記事の作り方","未発生新聞の創作ニュース制作、生成AIの利用、出典、広告と訂正に関する編集方針。","/editorial/",content)
+
+
+def advertise():
+    """Public, unambiguous commercial inquiry policy; no active advertising."""
+    content = '''<div class="container archive-page">
+<header class="page-intro"><span class="eyebrow">ADVERTISING &amp; PARTNERSHIPS</span>
+<h1>広告・協賛のご案内</h1><p>広告より先に、読者が楽しめる新聞を。</p></header>
+<div class="about-copy">
+<h2>未発生新聞について</h2>
+<p>未発生新聞は、日々の実際のニュースをきっかけに5年後の架空ニュースを届ける、風刺・創作メディアです。記事内の出来事や団体はフィクションであり、現実の報道や事実の証明ではありません。</p>
+<h2>ご相談いただける内容</h2>
+<p>サイト内の小さな協賛枠や、読者に役立つ関連企画について相談を受け付けています。内容・掲載期間・料金・実施可否は個別に決めます。現在、広告枠は販売・表示しておらず、スポンサー契約済みの企業も掲載していません。</p>
+<p>記事の文章やニュース判断は協賛者の意向で書き換えません。広告・PRの掲載が決まった場合は、一般記事との境界に「広告」「PR」等を明確に表示します。記事や共有投稿の中に広告を無表示で紛れ込ませません。</p>
+<h2>読者体験と実績</h2>
+<p>広告を大量に並べず、スマートフォンでも読みやすい配置を優先します。アクセスは匿名のブラウザ単位で参考集計していますが、実人数・ページビュー・広告の表示数・クリック数と同義ではありません。出稿効果、PV、売上、検索順位は保証しません。架空の実績や架空の協賛者を掲載しません。</p>
+<h2>ご相談の入口</h2>
+<p>まずは<a href="https://github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml" target="_blank" rel="noopener noreferrer external">公開GitHubのお問い合わせフォーム</a>から、公開しても問題のない概要のみお知らせください。GitHubアカウントが必要です。</p>
+<p><strong>重要：</strong>このフォームの投稿・返信は一般に公開されます。氏名、個人のメールアドレス、電話番号、見積書、非公開の契約条件、その他の機密情報を絶対に記入しないでください。非公開情報のやり取りが必要な場合は、公開フォームでの詳細交換を行わず、双方が合意した安全な連絡方法を別途検討します。</p>
+<p><a href="/editorial/" style="text-decoration:underline">編集方針を読む ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
+</div></div>'''
+    return layout("広告・協賛のご案内",
+                  "未発生新聞の広告・協賛掲載相談、広告表記、編集の独立性、公開問い合わせに関するご案内。",
+                  "/advertise/",content)
 
 
 def privacy():
@@ -660,7 +684,7 @@ def privacy():
 
 def other_files(articles):
     latest = max((modification_date(a) for a in articles), default=None)
-    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/editorial/", None), ("/privacy/", None)]
+    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend((category_url(category),
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
@@ -809,6 +833,7 @@ def build():
     write("index.html",home(articles))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
+    write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     for category, items in curated_categories(articles).items():

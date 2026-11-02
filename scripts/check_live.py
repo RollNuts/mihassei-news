@@ -85,6 +85,16 @@ def check():
     editorial_html = html.unescape(editorial.decode("utf-8"))
     if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
         raise RuntimeError("Editorial transparency page is not yet fully deployed")
+    commercial, commercial_mime = get("/advertise/")
+    commercial_html = html.unescape(commercial.decode("utf-8"))
+    if "text/html" not in commercial_mime or any(x not in commercial_html for x in (
+        "広告・協賛のご案内", "公開", "PR", "GitHub",
+    )):
+        raise RuntimeError("Public sponsorship information page is missing or incomplete")
+    if 'href="/advertise/"' not in body:
+        raise RuntimeError("Footer sponsor inquiry link not deployed")
+    if "adsbygoogle.js" in commercial_html:
+        raise RuntimeError("Unapproved advertising script unexpectedly enabled")
 
     # Check the growth path against the live deployment, not just the local
     # generator. All archived article links must remain accessible without JS.
