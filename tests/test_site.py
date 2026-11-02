@@ -272,6 +272,36 @@ class SiteTests(unittest.TestCase):
         # The footer share intent passes a distinct URL, not the cached plain root.
         self.assertIn("src%3Dx-launch-20261102-v3",home)
 
+    def test_no_photo_articles_have_distinct_offline_png_social_cards(self):
+        """Future articles automatically get meaningful, non-identical raster cards."""
+        from scripts.social_cards import render_social_card
+        from scripts.build import social_image
+        import struct
+        import tempfile
+        no_photo=[a for a in self.articles
+                  if not (ROOT/"assets/photos"/(a["slug"]+".jpg")).exists()]
+        self.assertGreaterEqual(len(no_photo),1,"Expected an article needing fallback preview")
+        images=set()
+        for a in no_photo:
+            path=ROOT/"dist"/"og"/"articles"/(a["slug"]+".png")
+            self.assertTrue(path.exists(),a["slug"])
+            data=path.read_bytes()
+            self.assertEqual(data[:8],b"\x89PNG\r\n\x1a\n")
+            self.assertEqual(struct.unpack(">II",data[16:24]),(1200,630))
+            self.assertGreater(len(data),1500)
+            self.assertLess(len(data),200000,"Social card should stay small for free hosting")
+            self.assertNotIn(data,images,"Each article should have a unique preview")
+            images.add(data)
+            self.assertEqual(social_image(a),"/og/articles/"+a["slug"]+".png")
+            with tempfile.TemporaryDirectory() as directory:
+                rerender=Path(directory)/"check.png"
+                render_social_card(a,rerender)
+                self.assertEqual(data,rerender.read_bytes(),"Cards should render deterministically")
+            page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('property="og:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png"',page)
+            self.assertIn('name="twitter:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png"',page)
+        self.assertEqual(sum(1 for _ in images),len(no_photo))
+
     def test_reader_growth_and_editorial_transparency(self):
         import re
         index=(ROOT/"dist/index.html").read_text(encoding="utf-8")
