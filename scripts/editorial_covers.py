@@ -27,7 +27,7 @@ CATEGORY_EN = {
 # The image motif must be traceable to the actual story subject, NOT to a
 # random seed or whichever reusable rectangle layout happened to be selected.
 SUBJECT_KEYWORDS = (
-    ("telephone", ("迷惑電話", "着信", "電話", "通話")),
+    ("telephone", ("迷惑電話", "着信", "電話", "通話", "恋活アプリ", "返信")),
     ("weather", ("天気", "低気圧", "気象", "機嫌予報", "降水")),
     ("baseball", ("野球", "球団", "投手", "ホームラン")),
     ("parcel", ("土産", "配達", "配送", "菓子", "物流")),
