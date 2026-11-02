@@ -72,6 +72,12 @@
       if(!res.ok || !Array.isArray(data.comments))throw new Error(data.error||'読者の声を取得できませんでした');
       list.replaceChildren(...data.comments.map(renderComment));
       count.textContent='（'+(data.total||0)+'件）';
+      const total=Number.isInteger(data.total) && data.total>=0 ? data.total : 0;
+      document.querySelectorAll('[data-comment-count]').forEach(node=>{
+        if(node.dataset.commentCount!==article)return;
+        node.textContent=total>0?String(total):'';
+        node.hidden=total===0;
+      });
       message(data.comments.length ? '新しいコメントから最大20件表示しています。' : 'まだコメントはありません。最初の未来人になろう。');
       ready=true;
     }catch(_){message('コメントを読み込めませんでした。投稿機能は一時的に利用できない場合があります。',true);}
@@ -94,6 +100,7 @@
       const data=await api('post',{nickname:nickname.value,body:content});
       if(data.comment?.id){mine.add(data.comment.id);cacheWrite(ownKey,mine);}
       body.value='';
+      try{sessionStorage.removeItem('mihassei-comment-count-summary-v1');}catch(_){}
       await refresh();
       message('コメントを公開しました。ありがとうございます。');
     }catch(e){message(e.message||'投稿できませんでした。',true);}
@@ -110,10 +117,14 @@
       const data=await api(action,{commentId:id});
       if(action==='report'){
         reported.add(id);cacheWrite(reportedKey,reported);
-        if(data.hidden){await refresh();message('ご報告ありがとうございます。コメントを一時非表示にしました。');}
+        if(data.hidden){
+          try{sessionStorage.removeItem('mihassei-comment-count-summary-v1');}catch(_){}
+          await refresh();message('ご報告ありがとうございます。コメントを一時非表示にしました。');
+        }
         else{btn.textContent='通報済み';message('ご報告ありがとうございます。');}
       } else {
         mine.delete(id);cacheWrite(ownKey,mine);
+        try{sessionStorage.removeItem('mihassei-comment-count-summary-v1');}catch(_){}
         await refresh();message('コメントを削除しました。');
       }
     }catch(e){btn.disabled=false;message(e.message||'操作に失敗しました。',true);}
