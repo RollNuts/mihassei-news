@@ -162,7 +162,7 @@ def serial_tile(serial):
         f'<p>{escape(serial["tagline"])}</p>'
         f'<span class="serial-episode-name">公開済み最新話：{escape(latest["title"])}</span>'
         f'<a class="serial-read" href="{serial_episode_url(serial, latest)}">'
-        '第1話から、あるいは最新話を読む ↗</a></article>'
+        '公開済み最新話を読む ↗</a></article>'
     )
 
 
@@ -240,7 +240,7 @@ def serial_chapter(serial, episode):
         f'<a href="{series_url(serial)}">{escape(serial["title"])}</a></nav>'
         '<article class="serial-article">'
         f'<header class="serial-article-header serial-kind-{serial["kind"]}">'
-        f'<span class="eyebrow">{escape(serial["kicker"])} / 第{episode["number"]}話</span>'
+        f'<span class="eyebrow">{escape(serial["kicker"])} / 第{episode["number"]}{"回" if serial["kind"]=="market-fiction" else "話"}</span>'
         f'<h1>{escape(episode["title"])}</h1>'
         f'<p class="serial-teaser">{escape(episode["teaser"])}</p>'
         f'<p class="serial-published"><time datetime="{escape(episode["published_on"])}">'
@@ -1406,6 +1406,7 @@ def build():
                   serial_chapter(serial,episode))
         render_social_card({
             "slug":serial["slug"],
+            "title":serial["title"],
             "category":"社会" if serial["kind"]=="mystery" else "経済",
             "art":"notice" if serial["kind"]=="mystery" else "tower",
             "fiction_at":"2031-11-03T00:00:00+09:00",
