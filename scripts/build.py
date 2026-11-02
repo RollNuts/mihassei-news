@@ -56,6 +56,8 @@ def load():
             raise ValueError("Fictional datetime must be exactly five years later: " + a["slug"])
         if a.get("published_on"):
             datetime.strptime(a["published_on"], "%Y-%m-%d")
+        if a.get("published_at"):
+            datetime.fromisoformat(a["published_at"])
         if a.get("photo"):
             p = a["photo"]
             if not isinstance(p, dict) or not p.get("url","").startswith("https://images.unsplash.com/photo-"):
@@ -186,6 +188,11 @@ def cover(a):
 
 
 
+def actual_publication(a):
+    """The timestamp this page was published, never the fictional 2031 dateline."""
+    return a.get("published_at") or a.get("published_on")
+
+
 def illustration_path(a):
     return "/images/" + a["slug"] + ".svg"
 
@@ -267,16 +274,18 @@ def layout(title, desc, path, main, active="", kind="website", record=None):
             "isAccessibleForFree": True,
             "inLanguage": "ja"
         }
-        if record.get("published_on"):
-            metadata["datePublished"] = record["published_on"]
+        if actual_publication(record):
+            metadata["datePublished"] = actual_publication(record)
+        if record.get("modified_at"):
+            metadata["dateModified"] = record["modified_at"]
     else:
         metadata = {
             "@context":"https://schema.org","@type":"WebSite",
             "name":"未発生新聞", "url":SITE, "description":desc,
             "inLanguage":"ja", "genre":"風刺・架空ニュース"}
     published_meta = (f'<meta property="article:published_time"'
-                      f' content="{escape(record["published_on"])}">'
-                      if record and record.get("published_on") else "")
+                      f' content="{escape(actual_publication(record))}">'
+                      if record and actual_publication(record) else "")
     og_width = '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">' if not photo_meta else ""
     ld = json.dumps(metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
@@ -479,7 +488,7 @@ def other_files(articles):
         n=ET.SubElement(channel,"item")
         for tag,value in (("title",a["title"]+" | 未発生新聞（創作）"),("link",SITE+article_url(a)),
                           ("guid",SITE+article_url(a)),("description",a["summary"]+" ※創作記事です。"),
-                          ("pubDate",format_datetime(datetime.fromisoformat((a.get("published_on") or a["source"]["published_at"][:10]) + ("T00:00:00+09:00" if a.get("published_on") else ""))))):
+                          ("pubDate",format_datetime(datetime.fromisoformat((actual_publication(a) or a["source"]["published_at"][:10]) + ("T00:00:00+09:00" if (actual_publication(a) or a["source"]["published_at"][:10]).count("T") == 0 else ""))))):
             ET.SubElement(n,tag).text=value
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
