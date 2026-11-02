@@ -111,8 +111,13 @@
   // Approximate, privacy-minimal traffic sources: never transmit a referrer URL.
   // Only externally arriving page views get a category; internal navigation is ignored.
   function arrivalChannel(){
-    const tagged=(new URLSearchParams(location.search).get("utm_source")||"").toLowerCase();
+    const params=new URLSearchParams(location.search);
+    const tagged=(params.get("utm_source")||"").toLowerCase();
     if(tagged==="x" || tagged==="twitter")return "x";
+    // The site's X launch share URL uses ?src=x-launch-YYYYMMDD-vN.
+    // Classify the short known campaign marker, never store the entire URL.
+    const launch=(params.get("src")||"").toLowerCase();
+    if(/^x-launch-[0-9]{8}-v[0-9]+$/.test(launch))return "x";
     if(["google","bing","yahoo","duckduckgo","search"].includes(tagged))return "search";
     let referrer;
     try{referrer=new URL(document.referrer);}catch(_){return "unattributed";}
