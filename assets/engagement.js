@@ -32,6 +32,53 @@
     window.setInterval(updateClock,1000);
   }
 
+
+  // Reveal one real archived fictional story; never fabricate a "breaking" event.
+  const picker=document.querySelector("[data-issue-picker]");
+  if(picker){
+    let choices=[];
+    try{choices=JSON.parse(picker.dataset.issueOptions || "[]");}
+    catch(_){choices=[];}
+    const button=picker.querySelector("[data-pick-issue]");
+    const label=picker.querySelector("[data-issue-headline]");
+    const link=picker.querySelector("[data-issue-link]");
+    const result=picker.querySelector("[data-issue-result]");
+    const banner=picker.querySelector(".issue-picker-result .small-label");
+    let previous=-1,working=false;
+    const reduced=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false;
+    function choose(){
+      if(choices.length===1)return 0;
+      const random=Math.floor(Math.random()*(choices.length-1))+1;
+      return (previous+random)%choices.length;
+    }
+    function reveal(index){
+      const story=choices[index];
+      if(!story)return;
+      previous=index;
+      label.textContent=story.headline;
+      banner.textContent=story.category+" / 号外";
+      link.href=story.url;
+      link.hidden=false;
+      result.classList.remove("shuffling");
+      button.disabled=false;working=false;
+      button.firstChild.textContent="もう一枚めくる ";
+    }
+    button?.addEventListener("click",()=>{
+      if(working || !choices.length)return;
+      working=true;button.disabled=true;link.hidden=true;
+      result.classList.add("shuffling");
+      const chosen=choose();
+      if(reduced){reveal(chosen);return;}
+      let ticks=0;
+      const interval=window.setInterval(()=>{
+        ticks++;
+        label.textContent=choices[(chosen+ticks)%choices.length].headline;
+        if(ticks>=9){window.clearInterval(interval);reveal(chosen);}
+      },105);
+    });
+    if(!choices.length)button.disabled=true;
+  }
+
   // A random browser ID is used only for one-per-browser deduplication.
   // No fingerprinting, user accounts, cookies, or IP-derived identity.
   const idKey = "mihassei-anonymous-browser-v1";

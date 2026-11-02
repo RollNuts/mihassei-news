@@ -108,6 +108,19 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('data-fallback=',html)
                 self.assertIn("イメージ写真",html)
 
+    def test_extra_edition_picker_links_to_real_articles(self):
+        import re
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('data-pick-issue',home)
+        self.assertIn('data-issue-link',home)
+        match=re.search(r'data-issue-options="([^"]+)"',home)
+        self.assertIsNotNone(match)
+        choices=json.loads(html.unescape(match.group(1)))
+        self.assertEqual(len(choices),len(self.articles))
+        self.assertEqual({a["slug"] for a in self.articles},
+                         {item["url"].split("/")[2] for item in choices})
+        self.assertIn("今日の号外をめくる",home)
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
