@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - .github/workflows/search-crawler-diagnostic.yml
+  pull_request:
+    paths:
+      - .github/workflows/search-crawler-diagnostic.yml
   # A free, read-only DNS/crawler check twice a day, while Search Console settles.
   schedule:
     - cron: '43 11,23 * * *' # 20:43 and 08:43 JST
