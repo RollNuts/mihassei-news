@@ -215,7 +215,7 @@ class SiteTests(unittest.TestCase):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
         from scripts.build import social_image
-        self.assertTrue(social_image({"slug":"nonexistent-story"}).startswith("/og/brand.png"))
+        self.assertEqual(social_image(None),"/og/brand.png?v=20261102-2")
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
@@ -264,6 +264,22 @@ class SiteTests(unittest.TestCase):
             self.assertIsNotNone(match,a["slug"])
             self.assertNotEqual(match.group(1),"/articles/"+a["slug"]+"/")
             self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",page)
+
+    def test_unique_article_png_cards(self):
+        from scripts.build import social_image
+        seen=set()
+        for article in self.articles:
+            image_path=social_image(article).split("?",1)[0]
+            self.assertTrue(image_path.endswith((".png",".jpg")))
+            self.assertNotIn(image_path,seen)
+            seen.add(image_path)
+            page=(ROOT/"dist/articles"/article["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('name="twitter:image" content="https://veripsa.com'+image_path+'"',page)
+            img=ROOT/"dist"/image_path.lstrip("/")
+            self.assertTrue(img.exists(),image_path)
+            self.assertGreater(img.stat().st_size,1000)
+            if image_path.endswith(".png"):
+                self.assertEqual(img.read_bytes()[:8],bytes((137,80,78,71,13,10,26,10)))
 
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")

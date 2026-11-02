@@ -275,6 +275,7 @@ def social_image(article):
         photo = BASE / "assets" / "photos" / (article["slug"] + ".jpg")
         if photo.is_file():
             return "/photos/" + article["slug"] + ".jpg"
+        return "/og/articles/" + article["slug"] + ".png"
     # Version is part of the URL to refresh external card caches after brand updates.
     return "/og/brand.png?v=20261102-2"
 
@@ -773,6 +774,52 @@ def build_revision():
     return "unknown"
 
 
+def make_article_social_images(articles):
+    """Create unique first-party PNG social cards without external APIs or fonts.
+
+    The rasterized illustration is intentionally abstract; the individual
+    article title is supplied separately via og:title and twitter:title.
+    """
+    import binascii
+    for article in articles:
+        width, height = 1200, 630
+        seed = sum((i + 1) * ord(c) for i, c in enumerate(article["slug"]))
+        palettes = [
+            ((32, 52, 55), (236, 102, 77)),
+            ((39, 45, 68), (230, 158, 76)),
+            ((39, 60, 48), (228, 122, 87)),
+            ((61, 44, 55), (232, 136, 112)),
+        ]
+        bg, accent = palettes[seed % len(palettes)]
+        raw = bytearray(bytes(bg) * width * height)
+        def rect(x0, y0, x1, y1, rgb):
+            color = bytes(rgb)
+            x0, x1 = max(0, x0), min(width, x1)
+            for y in range(max(0, y0), min(height, y1)):
+                start = (y * width + x0) * 3
+                raw[start:start+(x1-x0)*3] = color * (x1-x0)
+        rect(0, 0, width, 17, accent)
+        rect(60, 65, 76, 560, accent)
+        rect(115, 105, 1080, 110, (215, 213, 199))
+        rect(115, 520, 1080, 525, (215, 213, 199))
+        for i in range(7):
+            offset = (seed // (i+1)) % 140
+            rect(130 + i*115, 180+offset, 164+i*115, 455, accent)
+        rect(900, 125, 1050, 275, (245, 237, 215))
+        rect(929, 154, 1021, 246, accent)
+        rect(955, 181, 995, 220, bg)
+        def chunk(typ, data):
+            return (struct.pack(">I", len(data)) + typ + data
+                    + struct.pack(">I", binascii.crc32(typ+data) & 0xffffffff))
+        rows = b"".join(bytes((0,)) + raw[y*width*3:(y+1)*width*3] for y in range(height))
+        png = (bytes((137, 80, 78, 71, 13, 10, 26, 10))
+               + chunk(b"IHDR", struct.pack(">2I5B", width, height, 8, 2, 0, 0, 0))
+               + chunk(b"IDAT", zlib.compress(rows, 9)) + chunk(b"IEND", b""))
+        path = OUT / "og" / "articles" / (article["slug"] + ".png")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(png)
+
+
 def build():
     articles = load()
     if OUT.exists():
@@ -800,6 +847,7 @@ def build():
         write("images/"+a["slug"]+".svg",cover(a))
     other_files(articles)
     make_brand_image()
+    make_article_social_images(articles)
     print(f"Built {len(articles)} fictional articles to {OUT}")
 
 
