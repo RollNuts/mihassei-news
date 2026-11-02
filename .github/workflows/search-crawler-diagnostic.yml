@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - .github/workflows/search-crawler-diagnostic.yml
+  # A free, read-only DNS/crawler check twice a day, while Search Console settles.
+  schedule:
+    - cron: '43 11,23 * * *' # 20:43 and 08:43 JST
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +23,10 @@ jobs:
             dig +time=3 +tries=1 @"$dns" veripsa.com A +noall +answer
             dig +time=3 +tries=1 @"$dns" veripsa.com AAAA +noall +answer
             dig +time=3 +tries=1 @"$dns" veripsa.com NS +noall +answer
+            echo "DNSSEC DS records (if present):"
+            dig +time=3 +tries=1 @"$dns" veripsa.com DS +noall +answer
+            echo "Resolver reply status (watch for SERVFAIL):"
+            dig +time=3 +tries=1 @"$dns" veripsa.com A | grep -E 'status:|flags:' | head -2
           done
           echo "===== Default user-agent ====="
           for url in https://veripsa.com/ https://veripsa.com/robots.txt https://veripsa.com/sitemap.xml; do
@@ -31,7 +38,7 @@ jobs:
             echo
           done
           echo "===== Claimed Google-InspectionTool UA (does not emulate Google IP) ====="
-          for url in https://veripsa.com/ https://veripsa.com/robots.txt; do
+          for url in https://veripsa.com/ https://veripsa.com/robots.txt https://veripsa.com/sitemap.xml; do
             echo "--- $url ---"
             curl --compressed -sS -L -D /tmp/google-headers -o /tmp/google-body --connect-timeout 10 --max-time 18 \
               -A 'Mozilla/5.0 (compatible; Google-InspectionTool/1.0)' \
