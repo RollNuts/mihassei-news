@@ -38,6 +38,25 @@ class SiteTests(unittest.TestCase):
         self.assertIn("/build-revision.txt", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
         self.assertIn("Cache-Control: no-store", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
 
+    def test_illustrations_reserve_fixed_aspect_ratio_before_loading(self):
+        """Every editorial image carries intrinsic dimensions to avoid layout shift."""
+        import re
+        rendered=[ROOT/"dist/index.html",ROOT/"dist/archive/index.html"]
+        rendered += [ROOT/"dist/articles"/a["slug"]/"index.html"
+                     for a in self.articles]
+        checked=0
+        for path in rendered:
+            markup=path.read_text(encoding="utf-8")
+            for match in re.finditer(r'<img\b[^>]*>',markup):
+                tag=match.group(0)
+                if not any(c in tag for c in ('hero-image','story-thumb','article-visual')):
+                    continue
+                self.assertIn('width="1200"',tag,str(path))
+                self.assertIn('height="675"',tag,str(path))
+                self.assertIn('decoding="async"',tag,str(path))
+                checked+=1
+        self.assertGreaterEqual(checked,len(self.articles))
+
     def test_live_social_card_verification_uses_real_image_path(self):
         from scripts.build import social_image
         from scripts.check_live import verify_launch_card
