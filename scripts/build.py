@@ -15,11 +15,11 @@ from pathlib import Path
 
 if __package__:
     from .social_cards import render_social_card
-    from .editorial_covers import render_cover
+    from .editorial_covers import render_cover, story_subject
     from .media_policy import usable_cached_photo
 else:
     from social_cards import render_social_card
-    from editorial_covers import render_cover
+    from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
@@ -158,7 +158,7 @@ def category_meta(a, compact=False):
 
 
 def share_url(a):
-    url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share"
+    url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=topic_card_v2"
     # Small standalone hook for the reader's X draft. Does not post automatically.
     teaser = a["summary"][:75]
     text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞 （創作）"
@@ -244,7 +244,7 @@ def social_image(article):
     if article is not None:
         if usable_cached_photo(article, root=BASE):
             return "/photos/" + article["slug"] + ".jpg"
-        return "/og/articles/" + article["slug"] + ".png"
+        return "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
     # Use a physically new raster URL: X caches both page cards and image URLs.
     # The legacy brand.png remains available for previously published links.
     return "/og/brand-launch-20261102-v3.png"
@@ -773,6 +773,68 @@ def privacy():
     return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
 
 
+def image_review_page(articles):
+    """Public-but-noindex visual QA for published article and social card pairs.
+
+    This is a human review aid, not an automated guarantee of artistic quality.
+    It includes only already-public articles and keeps site navigation uncluttered.
+    """
+    cards = []
+    for a in articles:
+        photo_ok = usable_cached_photo(a, root=BASE)
+        main_src = editorial_image(a)
+        social_src = social_image(a)
+        category = escape(a["category"])
+        slug = escape(a["slug"])
+        title = escape(a["title"])
+        status = "承認済み写真" if photo_ok else "オリジナル表紙"
+        photo_note = (
+            f'撮影：{escape(a["photo"]["credit"])} / Unsplash'
+            if photo_ok else '見出し付き・編集部制作の創作表紙'
+        )
+        motif = escape(story_subject(a))
+        cards.append(
+            '<article class="review-card">'
+            f'<header><span class="status">{status}</span><span>{category}</span></header>'
+            f'<h2>{title}</h2>'
+            f'<p class="sub">題材：{motif} / {photo_note}</p>'
+            '<div class="review-images">'
+            f'<figure><img src="{escape(main_src)}" alt="{title} の掲載画像" loading="lazy" decoding="async">'
+            '<figcaption>記事の掲載画像（16:9）</figcaption></figure>'
+            f'<figure><img src="{escape(social_src)}" alt="{title} のSNS用画像" loading="lazy" decoding="async">'
+            '<figcaption>SNSのリンクカード用（PNGまたは承認済みJPEG）</figcaption></figure>'
+            '</div>'
+            f'<p><a href="/articles/{slug}/">公開記事を確認する ↗</a></p>'
+            '</article>'
+        )
+    return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="未発生新聞の公開記事画像を確認する編集用一覧です。">
+<title>画像検品一覧 | 未発生新聞</title>
+<style>
+:root{{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:#263631;background:#f8f6f0}}
+*{{box-sizing:border-box}}body{{margin:0}}main{{max-width:1160px;margin:0 auto;padding:32px 18px 65px}}
+h1{{font-size:clamp(25px,4vw,38px);margin:12px 0}}p{{line-height:1.85}}.note{{color:#606d66;font-size:13px}}
+.review-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,450px),1fr));gap:20px;margin-top:25px}}
+.review-card{{background:#fffefa;border:1px solid #d4d5c9;padding:18px;border-top:4px solid #bd513f}}
+.review-card header{{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#6e7670}}
+.status{{font-weight:800;color:#a23e30}}h2{{font-size:17px;line-height:1.65;margin:10px 0}}
+.sub{{font-size:11px;color:#626f67;margin:3px 0 12px}}
+.review-images{{display:grid;grid-template-columns:1fr 1fr;gap:10px}}
+figure{{min-width:0;margin:0}}img{{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;border:1px solid #ddd8ca;background:#e9e7dc}}
+figcaption{{font-size:10px;color:#72776e;line-height:1.6;margin-top:6px}}
+a{{color:#9c392b;font-weight:750}}a:hover{{color:#d85a48}}
+@media(max-width:470px){{.review-images{{grid-template-columns:1fr}}}}
+</style></head><body><main>
+<p><a href="/">未発生新聞トップへ戻る</a></p>
+<h1>公開画像の検品一覧</h1>
+<p class="note">公開済みの記事 {len(articles)} 本を掲載画像とSNS用画像で並べて確認できます。
+写真が承認済みでも、構図・文字の見やすさ・テーマとの相性は最終的に人が確認してください。
+このページは検索登録対象外で、サイトマップにも含めません。</p>
+<div class="review-grid">{''.join(cards)}</div></main></body></html>'''
+
+
 def other_files(articles, issues=None):
     latest = max((modification_date(a) for a in articles), default=None)
     issues = daily_issues(articles) if issues is None else issues
@@ -793,6 +855,8 @@ def other_files(articles, issues=None):
         if modified:
             ET.SubElement(node, "lastmod").text = modified
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
+    media_ns="http://search.yahoo.com/mrss/"
+    ET.register_namespace("media",media_ns)
     rss=ET.Element("rss", version="2.0")
     channel=ET.SubElement(rss,"channel")
     for name, value in (("title","未発生新聞 | 創作ニュース"),("description","5年後の世界を真顔で報じる創作ニュース。"),("link",SITE),("language","ja")):
@@ -808,11 +872,25 @@ def other_files(articles, issues=None):
             fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
         for tag, value in fields:
             ET.SubElement(n,tag).text=value
+        # First-party raster previews let feed readers show a real image for
+        # each article without fetching off-site content or using paid APIs.
+        image=SITE+social_image(a)
+        approved=usable_cached_photo(a,root=BASE)
+        thumb={"url":image}
+        if not approved:
+            thumb.update({"width":"1200","height":"630"})
+        ET.SubElement(n,f"{{{media_ns}}}thumbnail",thumb)
+        ET.SubElement(n,f"{{{media_ns}}}content",{
+            "url":image, "medium":"image",
+            "type":"image/jpeg" if approved else "image/png"
+        })
+        if approved:
+            ET.SubElement(n,f"{{{media_ns}}}credit",{"role":"photographer"}).text=a["photo"]["credit"]
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n")
 
 
 
@@ -934,6 +1012,8 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    # Human visual quality audit stays separate from the public news navigation.
+    write("image-review/index.html",image_review_page(articles))
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))

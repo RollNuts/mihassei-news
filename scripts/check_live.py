@@ -196,6 +196,29 @@ def check():
                 raise RuntimeError("Issue missing published article "+article["slug"])
     print("Public daily editions OK:",len(substantial))
 
+    # Verify both feed-reader images and the noindex visual editorial review.
+    feed_bytes,feed_type=get("/feed.xml")
+    if "xml" not in feed_type:
+        raise RuntimeError("RSS feed has an unexpected Content-Type")
+    feed_root=ET.fromstring(feed_bytes)
+    namespace={"media":"http://search.yahoo.com/mrss/"}
+    for entry in feed_root.findall("./channel/item")[:min(5,len(articles))]:
+        thumb=entry.find("media:thumbnail",namespace)
+        media=entry.find("media:content",namespace)
+        if thumb is None or media is None or thumb.get("url")!=media.get("url"):
+            raise RuntimeError("RSS thumbnail metadata is missing or inconsistent")
+        if not thumb.get("url","").startswith(SITE+"/"):
+            raise RuntimeError("RSS image is not first-party: "+str(thumb.get("url")))
+    review,review_type=get("/image-review/")
+    review_markup=review.decode("utf-8")
+    if ("text/html" not in review_type or
+        'name="robots" content="noindex,nofollow"' not in review_markup or
+        "公開画像の検品一覧" not in review_markup):
+        raise RuntimeError("Non-indexed visual image review page missing")
+    for article in articles:
+        if article["title"] not in review_markup:
+            raise RuntimeError("Image review gallery missing article "+article["slug"])
+
     checked_photos=0
     for item in recent:
         slug=item["slug"]
@@ -235,10 +258,10 @@ def check():
                 raise RuntimeError(slug+": safe original cover not displayed")
             if "オリジナル表紙" not in page:
                 raise RuntimeError(slug+": image not clearly marked as a fictional cover")
-            og_url=SITE+"/og/articles/"+slug+".png"
+            og_url=SITE+"/og/articles/"+slug+".png?v=20261103-topic2"
             if '<meta property="og:image" content="'+og_url+'">' not in page:
                 raise RuntimeError(slug+": original story PNG metadata missing")
-            picture,kind=get("/og/articles/"+slug+".png")
+            picture,kind=get("/og/articles/"+slug+".png?v=20261103-topic2")
             if (not picture.startswith(bytes((137,80,78,71,13,10,26,10)))
                 or "image/png" not in kind or len(picture)<1500):
                 raise RuntimeError(slug+": original social PNG unavailable")
