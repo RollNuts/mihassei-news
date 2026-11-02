@@ -57,6 +57,8 @@ class SiteTests(unittest.TestCase):
             self.assertIn("data-article-readers",text)
             self.assertIn("data-like-slug",text)
             self.assertIn("x.com/intent/tweet",text)
+            self.assertIn("未発生新聞",text)
+            self.assertIn("%23%E6%9C%AA%E7%99%BA%E7%94%9F%E6%96%B0%E8%81%9E",text)
             self.assertIn('data-like-count="'+a["slug"]+'"',text)
             self.assertNotIn('data-like-count="{slug}"',text)
             self.assertNotIn("Source: Unknown",text)
