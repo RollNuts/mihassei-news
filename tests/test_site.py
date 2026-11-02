@@ -651,7 +651,9 @@ class SiteTests(unittest.TestCase):
         import tempfile
         from scripts.editorial_covers import story_subject
         from scripts.social_cards import render_social_card, SUBJECT_LABELS
-        article=self.articles[0]
+        # Test a known topic, rather than assuming the newest article has
+        # familiar words. Future culture headlines must not break site CI.
+        article={**self.articles[0],"title":"迷惑電話の確認電話","art":"notice"}
         changed={**article,"art":"generic"}
         self.assertEqual(story_subject(article),story_subject(changed))
         # Strong headline keywords should override misleading old style labels.
@@ -662,7 +664,9 @@ class SiteTests(unittest.TestCase):
             "地元の土産に規制":"parcel",
             "ドラマの脚本が追いつかない":"movie",
             "情報漏洩より先に謝罪":"security",
-            "工場ロボットが退職":"robot"
+            "工場ロボットが退職":"robot",
+            "会見の例え話がバズる":"meeting",
+            "推しコラボのアイスが保存される":"fandom"
         }
         for title,subject in examples.items():
             self.assertEqual(story_subject({"title":title,"art":"cards"}),subject)

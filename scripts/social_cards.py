@@ -93,7 +93,8 @@ SUBJECT_LABELS = {
     "security": "DATA SECURITY",
     "robot": "FACTORY ROBOTS",
     "laboratory": "RESEARCH",
-    "meeting": "BOARD MEETING",
+    "meeting": "PRESS & MEETINGS",
+    "fandom": "FAN CULTURE",
     "document": "PAPERWORK",
     "newspaper": "FUTURE NEWS",
 }
@@ -231,6 +232,16 @@ def illustrate(canvas, art, accent, seed):
         canvas.circle(961,336,71,dark)
         canvas.line(924,339,952,363,pale,12)
         canvas.line(952,363,1004,307,pale,12)
+    elif art == "fandom":
+        # Collectible fan merchandise with a heart on its packaging.
+        canvas.rect(827,192,1094,453,ink)
+        canvas.rect(838,205,1082,439,pale)
+        canvas.rect(849,219,1070,420,dark)
+        canvas.circle(937,293,39,accent)
+        canvas.circle(986,293,39,accent)
+        canvas.line(905,309,960,374,accent,30)
+        canvas.line(960,374,1018,309,accent,30)
+        canvas.rect(883,402,1035,409,pale)
     elif art == "robot":
         canvas.rect(793, 423, 1110, 460, pale)
         canvas.rect(827, 378, 892, 430, accent)
