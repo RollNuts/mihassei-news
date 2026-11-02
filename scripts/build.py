@@ -559,7 +559,7 @@ def story(a, articles):
 <a class="reader-follow-x" href="{escape(share_url(a))}" target="_blank" rel="noopener noreferrer external">この記事をXで紹介 ↗</a>
 <a href="/feed.xml">RSSで購読 ↗</a></div></section>
 </article>
-<section class="reader-comments" id="reader-comments" data-comments data-article={escape(a["slug"])}" aria-labelledby="comments-heading">
+<section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
 <div class="reader-comments-heading">
 <span class="eyebrow">READERS' VOICES / 読者の声</span>
 <h2 id="comments-heading">未来の読者からの声 <small data-comments-count></small></h2>
