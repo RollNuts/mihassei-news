@@ -140,6 +140,8 @@ def check():
 
     if 'class="genre-explore"' not in body or 'href="/editorial/"' not in body:
         raise RuntimeError("Reader discovery or editorial link missing from live homepage")
+    if 'class="free-follow"' not in body or 'href="/feed.xml" type="application/rss+xml"' not in body:
+        raise RuntimeError("Free repeat-reader RSS discovery is missing from production")
     editorial, editorial_mime = get("/editorial/")
     editorial_html = html.unescape(editorial.decode("utf-8"))
     if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
@@ -219,13 +221,39 @@ def check():
         for article in substantial[day]:
             if 'href="/articles/'+article["slug"]+'/"' not in markup:
                 raise RuntimeError("Issue missing published article "+article["slug"])
-    print("Public daily editions OK:",len(substantial))
+        image_path="/og/issues/"+day+".png"
+        if ('<meta property="og:image" content="'+SITE+image_path+'">' not in markup or
+            'name="twitter:image" content="'+SITE+image_path+'"' not in markup):
+            raise RuntimeError("Edition-specific social image not deployed for "+day)
+        cover,cover_mime=get(image_path)
+        if (not cover.startswith(bytes((137,80,78,71,13,10,26,10))) or
+            "image/png" not in cover_mime or len(cover)<1500):
+            raise RuntimeError("Edition image missing or invalid for "+day)
+        linked=re.search(r'<script type="application/ld\+json">(.+?)</script>',markup,re.S)
+        if not linked:
+            raise RuntimeError("Edition lacks JSON-LD "+day)
+        schema=json.loads(linked.group(1))
+        if not isinstance(schema,list):
+            raise RuntimeError("Edition JSON-LD should provide CollectionPage and ItemList")
+        itemlist=next((x for x in schema if x.get("@type")=="ItemList"),None)
+        if not itemlist or itemlist.get("numberOfItems")!=min(len(substantial[day]),30):
+            raise RuntimeError("Edition structured article count mismatch for "+day)
+        if not any(x.get("@type")=="BreadcrumbList" for x in schema):
+            raise RuntimeError("Edition structured breadcrumb missing for "+day)
+    print("Public daily editions and their first-party social images OK:",len(substantial))
 
     # Verify both feed-reader images and the noindex visual editorial review.
     feed_bytes,feed_type=get("/feed.xml")
     if "xml" not in feed_type:
         raise RuntimeError("RSS feed has an unexpected Content-Type")
     feed_root=ET.fromstring(feed_bytes)
+    feed_entries=feed_root.findall("./channel/item")
+    if len(feed_entries)!=min(len(articles),90):
+        raise RuntimeError("New RSS retention window is not deployed")
+    if any(item.findtext("category") not in {
+        "社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ"
+    } for item in feed_entries):
+        raise RuntimeError("RSS feed category metadata missing")
     namespace={"media":"http://search.yahoo.com/mrss/"}
     for entry in feed_root.findall("./channel/item")[:min(5,len(articles))]:
         thumb=entry.find("media:thumbnail",namespace)
@@ -257,6 +285,26 @@ def check():
             raise RuntimeError(slug+": real publication timestamp missing")
         if f'"datePublished": "{item["fiction_at"]}"' in page:
             raise RuntimeError(slug+": fictional year leaked into SEO date")
+        schema_match=re.search(r'<script type="application/ld\+json">(.+?)</script>',page,re.S)
+        if not schema_match:
+            raise RuntimeError(slug+": missing article JSON-LD")
+        structures=json.loads(schema_match.group(1))
+        metadata=next((x for x in structures if x.get("@type")=="BlogPosting"),None)
+        if not metadata:
+            raise RuntimeError(slug+": missing BlogPosting structured data")
+        actual_url=SITE+"/articles/"+slug+"/"
+        if metadata.get("mainEntityOfPage",{}).get("@id")!=actual_url:
+            raise RuntimeError(slug+": canonical page not linked from structured article")
+        if metadata.get("dateModified")!=(item.get("modified_at") or published):
+            raise RuntimeError(slug+": real modification timestamp missing or fictional")
+        next_link=re.search(r'<a href="(/articles/([^/]+)/|/archive/)" class="reader-next-title">',page)
+        if not next_link or next_link.group(2)==slug:
+            raise RuntimeError(slug+": article continuation links to itself or is missing")
+        section=re.search(r'<section class="article-related">(.+?)</section>',page,re.S)
+        if section:
+            cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section.group(1))
+            if len(cards)!=len(set(cards)) or slug in cards or next_link.group(2) in cards:
+                raise RuntimeError(slug+": duplicate article recommendations")
         for widget in ('data-future-poll data-poll-article="'+slug+'"',
                        'data-poll-choice="plausible"', 'data-poll-choice="unlikely"'):
             if widget not in page:

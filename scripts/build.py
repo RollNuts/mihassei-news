@@ -17,11 +17,13 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, story_subject
     from .media_policy import usable_cached_photo
+    from .reader_paths import suggested_articles
     from .share_desk import render as render_share_desk
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
+    from reader_paths import suggested_articles
     from share_desk import render as render_share_desk
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
@@ -272,7 +274,7 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None):
     complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
@@ -315,14 +317,14 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "@type":"BlogPosting",
             "headline":title,
             "datePublished":publication_date(article),
+            "dateModified":modification_date(article),
+            "mainEntityOfPage":{"@type":"WebPage","@id":SITE+path},
             "author":{"@type":"Organization","name":"未発生新聞","url":SITE+"/about/"},
             "publisher":{"@type":"Organization","name":"未発生新聞","url":SITE},
             "isAccessibleForFree":True,
             "image":[og_image],
             "articleSection":article["category"]
         })
-        if article.get("modified_at"):
-            metadata["dateModified"] = article["modified_at"]
     schemas = [metadata]
     if kind == "story" and article is not None:
         schemas.append({
@@ -332,6 +334,27 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                 {"@type": "ListItem", "position": 2, "name": "記事一覧", "item": SITE + "/archive/"},
                 {"@type": "ListItem", "position": 3, "name": article["title"], "item": SITE + path},
             ]
+        })
+    if issue_path:
+        day = issue_path.group(1)
+        schemas.append({
+            "@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "トップ", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": "発行号一覧", "item": SITE + "/issues/"},
+                {"@type": "ListItem", "position": 3, "name": issue_date_label(day) + "号", "item": SITE + path},
+            ],
+        })
+    if collection:
+        entries = list(collection[:30])
+        schemas.append({
+            "@context": "https://schema.org", "@type": "ItemList",
+            "numberOfItems": len(entries),
+            "itemListElement": [
+                {"@type": "ListItem", "position": i + 1,
+                 "name": item["title"], "url": SITE + article_url(item)}
+                for i, item in enumerate(entries)
+            ],
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
@@ -509,6 +532,12 @@ def home(articles):
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
 {issue_section}
+<section class="free-follow" aria-label="新着記事の購読">
+<div class="free-follow-copy"><span class="small-label red">FOLLOW / FREE RSS</span>
+<h2>新しい5年後を、定期的に読む。</h2>
+<p>新着記事をRSSリーダーに登録できます。メールアドレス不要・追加料金なし。</p></div>
+<a class="free-follow-link" href="/feed.xml" type="application/rss+xml">新着RSSを購読する ↗</a>
+</section>
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -584,7 +613,7 @@ def category_page(category, items):
     )
     return layout(title,category + "の風刺・フィクション記事。未発生新聞が届ける5年後のニュース。",
                   category_url(category),content,active="archive",
-                  feed_url=category_feed_url(category))
+                  feed_url=category_feed_url(category),collection=items)
 
 
 def issue_index(issues):
@@ -656,20 +685,16 @@ def issue_page(day, items, issues):
         + nav + '</nav><p><a class="read-more" href="/issues/">発行号一覧へ戻る</a></p></div>'
     )
     return layout(title, f"{title}。{len(items)}本の5年後の架空ニュースを掲載。すべてフィクションです。",
-                  issue_url(day), content, active="issues")
+                  issue_url(day), content, active="issues", collection=items)
 
 
 def story(a, articles, issues=None):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
-    # Show a small edited set, never pretend these are actually the most-read stories.
-    related_list = [x for x in articles if x["slug"] != a["slug"]]
-    # Recommend actual published stories, favoring the same category; a newly
-    # published story with an older inspiration source must not be buried.
-    related_list.sort(key=publication_date, reverse=True)
-    related_list.sort(key=lambda x: x["category"] != a["category"])
-    related = "".join(card(x) for x in related_list[:3])
-    next_story = related_list[0] if related_list else None
+    # Strong topic continuity; no duplicate next story in the related cards.
+    recommended = suggested_articles(a, articles, limit=4)
+    next_story = recommended[0] if recommended else None
+    related = "".join(card(x) for x in recommended[1:4])
     next_url = article_url(next_story) if next_story else "/archive/"
     next_title = next_story["title"] if next_story else "記事一覧から次のニュースを探す"
     next_category = next_story["category"] if next_story else "新着記事"
@@ -677,11 +702,20 @@ def story(a, articles, issues=None):
     read_minutes = max(1, (text_len + 449) // 450)
     available_issues = daily_issues(articles) if issues is None else issues
     issue_day = publication_date(a)[:10]
+    category_link = (
+        f'<a href="{category_url(a["category"])}">{escape(a["category"])}の記事をまとめて読む ↗</a>'
+        if a["category"] in curated_categories(articles) else ""
+    )
     issue_link = (
         f'<a class="article-issue-link" href="{issue_url(issue_day)}">'
         f'{issue_date_label(issue_day)}の発行号を読む ↗</a>'
         if issue_day in available_issues else ""
     )
+    related_section = (
+        '<section class="article-related"><div class="section-head"><h2>さらに読む</h2>'
+        '<a href="/archive/">ほかの記事 ↗</a></div>'
+        '<div class="story-grid">' + related + '</div></section>'
+    ) if related else ""
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
 <header class="article-header">
@@ -727,7 +761,7 @@ def story(a, articles, issues=None):
 <span class="reader-next-kicker">NEXT STORY / 続けて読む · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
-<div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}<a href="/archive/">記事一覧へ ↗</a></div>
+<div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 <section class="reader-follow" aria-label="更新を読む">
 <div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
 <p>新作はRSSで確認できます。気になった記事はXでも紹介できます。</p></div>
@@ -752,8 +786,7 @@ def story(a, articles, issues=None):
 <button type="submit">コメントを投稿</button></div>
 </form>
 </section></div>
-<section class="article-related"><div class="section-head"><h2>あわせて読む</h2><a href="/archive/">ほかの記事 ↗</a></div>
-<div class="story-grid">{related}</div></section>
+{related_section}
 </div>'''
     return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
@@ -911,7 +944,7 @@ a{{color:#9c392b;font-weight:750}}a:hover{{color:#d85a48}}
 <div class="review-grid">{''.join(cards)}</div></main></body></html>'''
 
 
-def generate_rss(items, title, description, link, self_url):
+def generate_rss(items, title, description, link, self_url, limit=30):
     """One canonical RSS implementation for all posts and genre subscriptions.
 
     Items must be sorted newest-first by REAL publication time. The fictional
@@ -929,7 +962,7 @@ def generate_rss(items, title, description, link, self_url):
     ET.SubElement(channel,f"{{{atom_ns}}}link",{
         "href": SITE+self_url,"rel":"self","type":"application/rss+xml"
     })
-    for a in items[:30]:
+    for a in items[:limit]:
         entry=ET.SubElement(channel,"item")
         fields=[("title",a["title"]+" | 未発生新聞（創作）"),
                 ("link",SITE+article_url(a)),("guid",SITE+article_url(a)),
@@ -939,6 +972,7 @@ def generate_rss(items, title, description, link, self_url):
             fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
         for tag, value in fields:
             ET.SubElement(entry,tag).text=value
+        ET.SubElement(entry,"category").text=a["category"]
         image=SITE+social_image(a)
         approved=usable_cached_photo(a,root=BASE)
         thumb={"url":image}
@@ -976,7 +1010,7 @@ def other_files(articles, issues=None):
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
     write("feed.xml", generate_rss(
         articles, "未発生新聞 | 創作ニュース",
-        "5年後の世界を真顔で報じる創作ニュース。", SITE, "/feed.xml"
+        "5年後の世界を真顔で報じる創作ニュース。", SITE, "/feed.xml", limit=90
     ))
     substantial=curated_categories(articles)
     for category in CATEGORIES[1:]:
