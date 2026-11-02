@@ -37,6 +37,7 @@ class CoverQualityTests(unittest.TestCase):
                 t.text or "" for t in text_nodes
                 if t.attrib.get("x") == "74"
                 and t.attrib.get("font-weight") == "900"
+                and t.attrib.get("fill") == "#213039"
             ]
             expected = re.sub(r"\s+", "", article["title"])
             actual = re.sub(r"\s+", "", "".join(lines))
