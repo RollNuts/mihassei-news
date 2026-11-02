@@ -1227,11 +1227,15 @@ def generate_rss(items, title, description, link, self_url, limit=30):
 
 
 def other_files(articles, issues=None, serials=None):
-    latest = max((modification_date(a) for a in articles), default=None)
     issues = daily_issues(articles) if issues is None else issues
     serials = load_serials() if serials is None else serials
-    routes = [("/", latest), ("/archive/", latest), ("/issues/", latest),
-              ("/series/", max(ep["published_on"] for serial in serials for ep in serial["episodes"])), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    article_latest = max((modification_date(a) for a in articles), default=None)
+    series_latest = max((ep["published_on"] for serial in serials
+                         for ep in serial["episodes"]), default=None)
+    home_latest = max((v for v in (article_latest,series_latest) if v),default=None)
+    routes = [("/", home_latest), ("/archive/", article_latest), ("/issues/", article_latest),
+              ("/series/", series_latest), ("/about/", None),
+              ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend(
         (issue_url(day), max(modification_date(a) for a in items))
         for day, items in issues.items()
