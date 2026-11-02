@@ -22,8 +22,10 @@ from xml.etree import ElementTree as ET
 
 if __package__:
     from .media_policy import usable_cached_photo
+    from .share_desk import select_candidates
 else:
     from media_policy import usable_cached_photo
+    from share_desk import select_candidates
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -65,6 +67,20 @@ def check():
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
+
+    # Verify the manual promotion desk without creating any X posts.
+    desk, desk_mime=get("/share-desk/")
+    markup=desk.decode("utf-8")
+    if ("text/html" not in desk_mime or
+        'name="robots" content="noindex,nofollow"' not in markup or
+        'data-copy-post' not in markup or
+        'Xで下書きを開く' not in markup or
+        '画像を保存・開く' not in markup):
+        raise RuntimeError("Manual X promotion desk missing or misconfigured")
+    for article in select_candidates(articles):
+        if (html.escape(article["title"]) not in markup or
+            '/articles/'+article["slug"]+'/' not in markup):
+            raise RuntimeError("Promotion desk missing published story "+article["slug"])
 
     # This stylesheet is last in the cascade. A successful HTML deploy must
     # not silently leave the refreshed editorial design without its actual CSS.
