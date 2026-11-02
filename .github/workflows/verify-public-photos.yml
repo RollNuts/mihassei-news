@@ -1,0 +1,60 @@
+name: Verify public licensed photo delivery and SEO
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Verify editorial photos, privacy page and article markup
+        run: |
+          python3 - <<'PY'
+          import time
+          import urllib.request
+          import sys
+          from urllib.error import HTTPError,URLError
+          site="https://veripsa.com"
+          images=[
+              "apology-before-incident",
+              "ai-chooses-a-managers",
+              "research-completed-opening-day",
+              "robot-job-hopping",
+              "ai-chair-removes-executives",
+          ]
+          def get(path):
+              request=urllib.request.Request(site+path,headers={
+                  "User-Agent":"MihasseiPhotoHealth/1.0",
+                  "Cache-Control":"no-cache",
+                  "Accept":"text/html,image/jpeg,*/*"
+              })
+              with urllib.request.urlopen(request,timeout=15) as response:
+                  if response.status !=200:
+                      raise RuntimeError("HTTP "+str(response.status))
+                  return response.read(3*1024*1024),response.headers.get("Content-Type","")
+          # Cloudflare deployments can lag behind the GitHub push.
+          for attempt in range(15):
+              try:
+                  privacy,_=get("/privacy/")
+                  if b"Cloudflare" not in privacy:
+                      raise RuntimeError("Privacy page outdated")
+                  page,_=get("/articles/apology-before-incident/")
+                  if b"/photos/apology-before-incident.jpg" not in page:
+                      raise RuntimeError("Article photo reference not yet deployed")
+                  if b"datePublished" not in page:
+                      raise RuntimeError("Article metadata not yet available")
+                  for slug in images:
+                      data,mime=get("/photos/"+slug+".jpg")
+                      if data[:3]!=b"\xff\xd8\xff" or len(data)<15000 or "image/jpeg" not in mime:
+                          raise RuntimeError("Photo invalid: "+slug+" ("+mime+")")
+                      print("Verified original-hosted Unsplash photo:",slug,len(data),"bytes")
+                  print("OK: live article, licensed photos, privacy and SEO markup")
+                  break
+              except (RuntimeError,HTTPError,URLError,TimeoutError) as exc:
+                  print(f"Attempt {attempt+1}/15: {exc}")
+                  if attempt==14: sys.exit(1)
+                  time.sleep(5)
+          PY
