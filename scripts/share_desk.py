@@ -175,7 +175,7 @@ button:hover{{background:#833223}}.actions a{{font-size:12px;font-weight:800}}
 .note{{font-size:11px;line-height:1.85;color:#66746c}}
 @media(max-width:690px){{.content{{grid-template-columns:1fr}}.post{{margin-top:12px}}.item{{padding-top:20px}}}}
 </style></head><body><main>
-<p><a href="/">未発生新聞へ戻る</a> · <a href="/image-review/">公開画像の検品一覧</a></p>
+<p><a href="/">未発生新聞へ戻る</a> · <a href="/image-review/">公開画像の検品一覧</a> · <a href="/growth-desk/">集客の実測を見る</a></p>
 <h1>編集部のX投稿デスク</h1>
 <p class="lead">掲載済みの記事から、最新発行日を優先し、ジャンルを分散させた紹介候補を表示しています。
 面白さのランキングでも自動投稿予定表でもありません。最終的に紹介する記事は人が選んでください。</p>
