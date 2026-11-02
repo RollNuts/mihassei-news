@@ -8,7 +8,9 @@ from __future__ import annotations
 import html
 import json
 import re
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
+from xml.etree import ElementTree as ET
 from pathlib import Path
 from urllib.parse import urlencode, urlsplit
 
@@ -40,6 +42,7 @@ def load_serials(base: Path):
     if not isinstance(serials, list) or not serials:
         raise ValueError("Serials must be a non-empty list")
     seen = set()
+    today_jst = datetime.now(ZoneInfo('Asia/Tokyo')).date()
     for series in serials:
         _check_slug(series["slug"])
         if series["slug"] in seen:
@@ -59,6 +62,8 @@ def load_serials(base: Path):
                 raise ValueError("Duplicate or unsorted episode")
             episode_slugs.add(ep["slug"])
             _check_day(ep["published_at"])
+            if date.fromisoformat(ep["published_at"]) > today_jst:
+                raise ValueError("Unreleased future-dated chapter must not be published: "+ep["slug"])
             for field in ("title", "summary", "kicker"):
                 if not ep.get(field):
                     raise ValueError("Missing episode " + field)
@@ -95,6 +100,52 @@ def episode_url(series, episode):
     return series_url(series) + episode["slug"] + "/"
 
 
+def serial_feed_url(series):
+    """A self-hosted RSS feed that works without an email platform or API."""
+    return "/feeds/series-" + series["slug"] + ".xml"
+
+
+def serial_feed_xml(series):
+    """Release-only RSS. Date-only metadata never fabricates an exact publish time."""
+    atom_ns = "http://www.w3.org/2005/Atom"
+    media_ns = "http://search.yahoo.com/mrss/"
+    ET.register_namespace("atom", atom_ns)
+    ET.register_namespace("media", media_ns)
+    root=ET.Element("rss",version="2.0")
+    channel=ET.SubElement(root,"channel")
+    description = (
+        "未発生事件簿：完全オリジナルの創作推理小説。実際の事件ではありません。"
+        if series["kind"]=="fiction" else
+        "未来相場観測室：出典付き市場考察。予想には不確実性があり、投資助言や売買推奨ではありません。"
+    )
+    for tag,value in (("title",series["title"]+" | 未発生新聞 連載"),
+                      ("link","https://veripsa.com"+series_url(series)),
+                      ("description",description),("language","ja")):
+        ET.SubElement(channel,tag).text=value
+    ET.SubElement(channel,f"{{{atom_ns}}}link",{
+        "href":"https://veripsa.com"+serial_feed_url(series),
+        "rel":"self","type":"application/rss+xml"
+    })
+    for episode in reversed(series["episodes"][-30:]):
+        url="https://veripsa.com"+episode_url(series,episode)
+        item=ET.SubElement(channel,"item")
+        for tag,value in (("title",episode["title"]+" | "+series["title"]),
+                          ("link",url),("guid",url),
+                          ("description",episode["summary"]+" "+description),
+                          ("category","創作推理小説" if series["kind"]=="fiction" else "出典付き市場分析")):
+            ET.SubElement(item,tag).text=value
+        # The source tracks only the real publication DAY, not the clock time.
+        # Omitting pubDate avoids constructing a false midnight timestamp.
+        image=("https://veripsa.com/og/serials/"+series["slug"]+"-"+episode["slug"]+".png")
+        ET.SubElement(item,f"{{{media_ns}}}thumbnail",{
+            "url":image,"width":"1200","height":"630"
+        })
+        ET.SubElement(item,f"{{{media_ns}}}content",{
+            "url":image,"type":"image/png","medium":"image"
+        })
+    return ET.tostring(root,encoding="unicode")
+
+
 def serial_routes(serials):
     latest = max(e["published_at"] for s in serials for e in s["episodes"])
     routes = [("/serials/", latest)]
@@ -128,6 +179,7 @@ def _series_card(series):
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
             f'<p>{h(series["description"])}</p>{latest}'
             f'<a class="serial-link" href="{episode_url(series, ep)}">{episode_label(series,ep["number"])}を読む <span aria-hidden="true">→</span></a>'
+            f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
             f'</div></article>')
 
 
@@ -173,10 +225,12 @@ def render_series_page(series, layout):
             f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}'
             + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
             f'</span></div></header><p class="serials-disclosure">{state}</p>'
-            f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2></div>'
+            f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
+            f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
     return layout(series["title"], series["description"], series_url(series), main, active="serials",
-                  serial={"slug": series["slug"], "kind": series["kind"]})
+                  serial={"slug": series["slug"], "kind": series["kind"]},
+                  feed_url=serial_feed_url(series))
 
 
 def _share_link(series, ep):
@@ -243,12 +297,14 @@ def render_episode_page(series, ep, layout):
             f'<div class="serial-article-body"><p class="serial-article-kicker">{h(ep["kicker"])}</p>'
             f'{narrative}{extras}'
             f'<div class="serial-epilogue"><p>{h(ep.get("followup_note",""))}</p>'
-            f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a></div>'
+            f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
+            f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
             f'{navigation}<a class="serial-back-link" href="{series_url(series)}">連載一覧に戻る →</a>'
             f'</div></div>')
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
-                                                   "episode": ep["slug"], "published_at": ep["published_at"]})
+                                                   "episode": ep["slug"], "published_at": ep["published_at"]},
+                  feed_url=serial_feed_url(series))
 
 
 def render_cover_svg(series):
@@ -327,6 +383,7 @@ def build_serials(serials, layout, write, output):
     for series in serials:
         prefix = f'serials/{series["slug"]}'
         write(prefix + "/index.html", render_series_page(series, layout))
+        write(serial_feed_url(series).lstrip("/"), serial_feed_xml(series))
         write(prefix + "/cover.svg", render_cover_svg(series))
         render_social_preview(series, output / "og" / "serials" / (series["slug"]+".png"))
         for ep in series["episodes"]:
