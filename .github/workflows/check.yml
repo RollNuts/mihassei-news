@@ -28,6 +28,8 @@ jobs:
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
+      - name: Test archive filters and incremental browsing without network access
+        run: node --test tests/archive-pagination.test.cjs
       - name: Test anonymous comments in SQLite without network access
         run: node --test tests/comments.test.cjs
       - name: Verify Cloudflare Worker can be packaged without deploying
