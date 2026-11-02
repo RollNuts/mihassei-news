@@ -163,9 +163,14 @@ class SiteTests(unittest.TestCase):
         match=re.search(r'data-issue-options="([^"]+)"',home)
         self.assertIsNotNone(match)
         choices=json.loads(html.unescape(match.group(1)))
-        self.assertEqual(len(choices),len(self.articles))
-        self.assertEqual({a["slug"] for a in self.articles},
+        latest=sorted(self.articles,key=lambda a:(
+            a.get("published_at") or a["source"]["published_at"],
+            a["source"]["published_at"]
+        ),reverse=True)[:40]
+        self.assertEqual(len(choices),len(latest))
+        self.assertEqual({a["slug"] for a in latest},
                          {item["url"].split("/")[2] for item in choices})
+        self.assertLessEqual(len(choices),40)
         self.assertIn("今日の号外をめくる",home)
 
     def test_social_previews_use_first_party_jpeg_or_png(self):
