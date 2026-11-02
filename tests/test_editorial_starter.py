@@ -52,6 +52,26 @@ class EditorialStarterTests(unittest.TestCase):
         self.assertIn('class="serials-feature"',markup)
         self.assertNotIn('class="reading-ways"',markup)
 
+    def test_build_and_live_checker_share_real_editorial_lead_slots(self):
+        from scripts.build import editorial_lead
+        from scripts.editorial_starter import homepage_starter_picks
+        lead=editorial_lead(self.articles)
+        remaining=[item for item in self.articles if item["slug"]!=lead["slug"]]
+        occupied={lead["slug"],*(item["slug"] for item in remaining[:3])}
+        expected=starter_picks(self.articles,occupied,base=BASE)
+        actual=homepage_starter_picks(self.articles,lead,base=BASE)
+        self.assertEqual(actual,expected)
+        self.assertFalse({x["article"]["slug"] for x in actual}&occupied)
+        # Regression: publication sorting and editorial lead are different.
+        # Using articles[:4] silently checks different published cards.
+        fake_lead=self.articles[-1]
+        selected=homepage_starter_picks(self.articles,fake_lead,base=BASE)
+        excluded={fake_lead["slug"],*(item["slug"] for item in self.articles[:3])}
+        self.assertEqual(selected,starter_picks(self.articles,excluded,base=BASE))
+        source=(BASE/"scripts/check_live.py").read_text(encoding="utf-8")
+        self.assertIn("homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)",source)
+        self.assertIn("chosen_lead = editorial_lead(sorted_articles)",source)
+
     def test_curation_never_makes_the_publisher_skip_a_daily_build(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
