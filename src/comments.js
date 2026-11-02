@@ -30,7 +30,7 @@ function normalizeInput(data) {
   const normalized=(nickname+' '+body).normalize('NFKC');
   // Reject common contact details before they become publicly visible.
   // This is not a complete personal-information detector.
-  if (/(?:0[789]0|050)[-ー‐–\\s]?\\d{4}[-ー‐–\\s]?\\d{4}/u.test(normalized)) return null;
+  if (/(?:0[789]0|050)[-ー‐–\s]?\d{4}[-ー‐–\s]?\d{4}/u.test(normalized)) return null;
   if ((body.match(/\n/g)||[]).length>3 || URL_LIKE.test(body) || /(.)\1{12,}/u.test(body)) return null;
   return {nickname:nickname||'匿名の未来人',body};
 }
