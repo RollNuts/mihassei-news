@@ -20,6 +20,7 @@ API = "https://veripsa.com/api/engagement"
 TOKYO = ZoneInfo("Asia/Tokyo")
 MAX_ARTICLES = 100
 BATCH = 20
+CHANNELS = ("x", "search", "external", "unattributed")
 
 
 def report_date(now: datetime) -> str:
@@ -47,12 +48,13 @@ def recent_articles(articles: list[dict]) -> list[dict]:
     )[:MAX_ARTICLES]
 
 
-def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict]:
+def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, dict | None]:
     if not slugs:
         raise ValueError("No published article slugs available")
     unique = list(dict.fromkeys(slugs))
     visitors = None
     metrics = {}
+    channels = None
     for index in range(0, len(unique), BATCH):
         batch = unique[index:index + BATCH]
         request = Request(
@@ -75,6 +77,13 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict]:
             raise ValueError("Audience visitor counter is invalid")
         if visitors is None:
             visitors = count
+            source_counts = payload.get("channels")
+            if source_counts is not None:
+                if not isinstance(source_counts, dict) or set(source_counts) != set(CHANNELS):
+                    raise ValueError("Unexpected audience attribution categories")
+                if any(type(source_counts[key]) is not int or source_counts[key] < 0 for key in CHANNELS):
+                    raise ValueError("Invalid audience attribution counters")
+                channels = {key: source_counts[key] for key in CHANNELS}
         details = payload.get("articles")
         if not isinstance(details, dict):
             raise ValueError("Audience per-article data is missing")
@@ -90,17 +99,18 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict]:
                 "likes": item["likes"],
                 "share_clicks": item["shareClicks"],
             }
-    return visitors, metrics
+    return visitors, metrics, channels
 
 
-def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: dict) -> dict:
+def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: dict,
+                   channels: dict | None = None) -> dict:
     day = report_date(now)
     recent = recent_articles(articles)
     published_on_day = [a for a in articles if real_published_date(a) == day]
     for a in recent:
         if a["slug"] not in counts:
             raise ValueError("Missing read-only count: " + a["slug"])
-    return {
+    snapshot = {
         "schema_version": 1,
         "date_jst": day,
         "measured_at_utc": now.astimezone(timezone.utc).isoformat(timespec="seconds"),
@@ -121,6 +131,14 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
             for a in recent
         ],
     }
+    if channels is not None:
+        snapshot["channels_cumulative"] = channels
+        snapshot["channels_note"] = (
+            "Cumulative browser IDs per observed incoming category since activation. "
+            "Channels may overlap and are not people or page views. "
+            "Source attribution is approximate; unattributed is not necessarily direct."
+        )
+    return snapshot
 
 
 def main() -> None:
@@ -143,8 +161,8 @@ def main() -> None:
     if not isinstance(articles, list) or not articles:
         raise ValueError("No article data")
     recent = recent_articles(articles)
-    visitors, counts = read_public_metrics([a["slug"] for a in recent])
-    snapshot = build_snapshot(articles, now, visitors, counts)
+    visitors, counts, channels = read_public_metrics([a["slug"] for a in recent])
+    snapshot = build_snapshot(articles, now, visitors, counts, channels)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Recorded", output.relative_to(ROOT), "visitors=", visitors,
