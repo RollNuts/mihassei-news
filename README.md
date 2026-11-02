@@ -13,6 +13,19 @@
 - 記事の自動作成はChatGPTの定期タスクと接続済みGitHubで行う。外部のAI生成APIやAPIキーは使用しない。画像はAPI不要のオリジナルSVG。
 - ソーシャル（Redditなど）の公開RSSも候補。Xや5chの本文・画像の無断スクレイピングはしない。許諾済みの公開リンクを使う場合は `content/source_seeds.json` へURL・日時・要旨を追記する。
 
+## Cloudflare Workers 公開（推奨・現行ダッシュボード）
+
+Cloudflareの現在のGit取り込み画面はWorkersを標準表示します。**Pagesへ戻る必要はありません**。
+
+1. Workers & Pages → Create → Import Git repository → `RollNuts/mihassei-news`。
+2. Project name: `mihassei-news`。
+3. Build command: `python3 scripts/build.py`。
+4. Deploy command: `npx wrangler deploy`。
+5. Preview command: デフォルトのまま。
+6. 「デプロイ」を押す。`wrangler.jsonc`が`dist/`を静的アセットとして公開します。
+
+この構成は**Cloudflare Workers Static Assets**を利用し、Workersコードを動かさない静的配信のため、リクエストは無料・無制限の対象です。独自ドメインの切り替えは初回デプロイ成功後に実施してください。Squarespace登録ドメインもCloudflareへDNSを接続できますが、既存メール設定やレコードを保全してから切り替えます。
+
 ## Cloudflare Pages公開
 
 1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git**。
