@@ -186,6 +186,37 @@ def _share_link(series, ep):
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
+def render_mystery_notebook(series, episode):
+    """Private reader notes, intentionally not part of the comment system."""
+    if series["kind"] != "fiction":
+        return ""
+    return (
+        f'<section class="mystery-notebook" data-mystery-notebook '
+        f'data-mystery-serial="{h(series["slug"])}" data-mystery-episode="{h(episode["slug"])}" '
+        'aria-labelledby="mystery-notebook-heading">'
+        '<span class="small-label">MY CASE FILE / 読者専用</span>'
+        '<h2 id="mystery-notebook-heading">自分の推理メモ</h2>'
+        '<p class="mystery-notebook-intro">伏線、気になる人物、犯人の仮説を自由に残そう。'
+        'このメモは公開コメントとは別で、ほかの読者には表示されません。</p>'
+        '<label for="mystery-notebook-text">この話で気づいたこと</label>'
+        '<textarea id="mystery-notebook-text" data-mystery-note-input '
+        'maxlength="800" rows="5" placeholder="例：封筒をシャッターの内側に置けたのは誰だろう？"></textarea>'
+        '<div class="mystery-notebook-toolbar"><span data-mystery-note-count>0 / 800文字</span>'
+        '<div class="mystery-notebook-actions">'
+        '<button type="button" data-mystery-note-save>この端末に保存</button>'
+        '<button type="button" data-mystery-note-clear>メモを消す</button>'
+        '</div></div>'
+        '<p class="mystery-notebook-status" data-mystery-note-status role="status" aria-live="polite">'
+        '保存は任意です。保存を押すまで端末にも記録されません。</p>'
+        '<p class="mystery-notebook-privacy">保存するとこのブラウザのlocalStorageに記録されます。'
+        'サイトへの送信・読者への公開は行いません。端末やブラウザを変えると引き継がれず、'
+        'ブラウザのデータ削除でも消えます。</p>'
+        '<noscript><p class="mystery-notebook-privacy">メモの保存にはJavaScriptが必要です。</p></noscript>'
+        '<script defer src="/assets/mystery-notes.js"></script>'
+        '</section>'
+    )
+
+
 def render_episode_page(series, ep, layout):
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
@@ -219,6 +250,7 @@ def render_episode_page(series, ep, layout):
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
                   f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">公開予想の検証台帳を確認する ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol><p>数値・見通しは参照資料に基づきますが、株価についての見立ては編集上の仮説です。</p></section>')
+    extras += render_mystery_notebook(series, ep)
     navigation = (
         '<nav class="serial-next-prev" aria-label="連載の前後の話">'
         + (f'<a href="{episode_url(series, prev_ep)}">← 前の話を読む</a>' if prev_ep else
