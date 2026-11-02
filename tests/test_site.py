@@ -66,6 +66,21 @@ class SiteTests(unittest.TestCase):
         for token in ("公開される", "機密情報", "required: true", "public-name"):
             self.assertIn(token,template)
 
+    def test_newest_articles_are_easy_to_find_before_interactive_sections(self):
+        """Mobile readers see stories and categories before optional engagement widgets."""
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        hero=home.index('<section class="hero-grid">')
+        latest=home.index('<section class="section-block">')
+        genres=home.index('<section class="genre-explore"')
+        random=home.index('<section class="special-edition"')
+        discussions=home.index('<section class="reader-discussions"')
+        about=home.index('<aside class="banner">')
+        self.assertTrue(hero < latest < genres < random < discussions < about)
+        self.assertIn("<h2>新着記事を読む</h2>",home)
+        self.assertIn('data-issue-picker',home)
+        self.assertIn('data-comment-discussions',home)
+        self.assertIn('class="story-grid"',home)
+
     def test_modern_readable_editorial_layout_without_paid_assets(self):
         """Preserve all pages while improving reading comfort and mobile touch UI."""
         styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
