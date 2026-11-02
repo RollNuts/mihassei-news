@@ -86,6 +86,36 @@ test('admin requires secret and hides/restores/deletes',async()=>{
   db.close();
 });
 
+test('batch summaries include only visible verified counts',async()=>{
+  const token='q'.repeat(40);
+  const {db,api}=fixture(token);
+  const first=await api('POST','/api/comments',makePost(randomUUID(),'この未来予想はいい線いっていると思う'));
+  assert.equal(first.status,201);
+  assert.equal((await api('POST','/api/comments',makePost(randomUUID(),'ニュースの続きが楽しみです'))).status,201);
+  const query='/api/comments/summary?articles=test-story,other-story,bad_slug';
+  const initial=await api('GET',query);
+  assert.equal(initial.status,200);
+  assert.equal(initial.data.counts['test-story'],2);
+  assert.equal(initial.data.counts['other-story'],0);
+  assert.equal(Object.hasOwn(initial.data.counts,'bad_slug'),false);
+  assert.equal('visitor' in initial.data,false);
+  const headers={authorization:'Bearer '+token};
+  const hidden=await api('POST','/api/comments/admin',{action:'hide',commentId:first.data.comment.id},headers);
+  assert.equal(hidden.status,200);
+  const summary=await api('GET',query);
+  assert.equal(summary.data.counts['test-story'],1);
+  assert.equal((await api('POST','/api/comments/summary',{})).status,405);
+  db.close();
+});
+
+test('comment form rejects obvious phone numbers in either character width',async()=>{
+  const {db,api}=fixture();
+  assert.equal((await api('POST','/api/comments',makePost(randomUUID(),'連絡先 090-1234-5678'))).status,400);
+  assert.equal((await api('POST','/api/comments',makePost(randomUUID(),'０８０ー１２３４ー５６７８に連絡'))).status,400);
+  assert.equal((await api('POST','/api/comments',makePost(randomUUID(),'数字だけの未来予報は2040年です'))).status,201);
+  db.close();
+});
+
 test('browser renders user submissions without innerHTML',()=>{
   const js=readFileSync(path.join(__dirname,'../assets/comments.js'),'utf8');
   assert.match(js,/textContent=value/);
