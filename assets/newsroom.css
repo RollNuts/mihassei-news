@@ -84,3 +84,16 @@ body{background:var(--paper)}
 @media(max-width:850px){.news-briefing{align-items:flex-start}.news-briefing>div:first-child{flex-wrap:wrap;gap:6px}.edition-clock{flex-direction:column;gap:0;align-items:flex-end}}
 @media(max-width:600px){.strip-content{min-height:39px!important}.strip-brand{font-size:13px}.fiction-mark{font-size:8px}.clock-line{gap:4px;font-size:9px}.clock-line>span:not(.live-pulse){display:none}.clock-line time{font-size:11px}.masthead{padding-top:14px}.index-main{padding-top:12px}.news-briefing strong{font-size:19px}.edition-clock{display:none}.news-wire{margin-bottom:23px}.lead h1{font-size:32px}.lead .dek{font-size:14px}.story-card h3{font-size:23px}.article-header h1{font-size:34px}.article-page{padding-top:28px}.hero-actions{align-items:flex-start}.article-year{display:none}}
 @media(prefers-reduced-motion:reduce){.wire-track{animation:none}.lead-media img{transition:none}}
+
+
+.observer-shell{display:flex;justify-content:flex-end;margin-top:-10px;margin-bottom:11px}
+.observer-widget{display:inline-flex;align-items:center;gap:8px;padding:5px 0;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:800}
+.observer-widget strong{font-family:Georgia,serif;font-weight:900;font-size:24px;color:var(--accent);line-height:1.1;font-variant-numeric:tabular-nums}
+.observer-widget .observer-eye{color:var(--accent);font-size:13px}
+.observer-widget small{font-size:9px;font-weight:400;color:#889087;white-space:nowrap}
+.observer-suffix{font-size:11px}
+.like-count{font-weight:900;font-variant-numeric:tabular-nums;color:var(--accent)}
+.article-reader-metric{display:flex;align-items:center;justify-content:flex-start;gap:8px;margin:0 0 22px;font-size:12px;font-weight:700;color:var(--muted)}
+.article-reader-metric strong{font:900 20px Georgia,serif;color:var(--accent);font-variant-numeric:tabular-nums}
+.article-reader-metric small{font-size:10px;font-weight:400}
+@media(max-width:600px){.observer-shell{margin-top:-8px;margin-bottom:6px}.observer-widget{gap:5px;font-size:10px}.observer-widget strong{font-size:19px}.observer-widget small{font-size:8px}}
