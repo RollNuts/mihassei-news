@@ -1,0 +1,39 @@
+name: Cache licensed editorial photographs
+on:
+  push:
+    branches: [main]
+    paths:
+      - content/articles.json
+      - scripts/cache_photos.py
+      - .github/workflows/cache-photos.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mihassei-photo-cache
+  cancel-in-progress: false
+jobs:
+  cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache only verified free-license photo references
+        run: python3 scripts/cache_photos.py
+      - name: Publish licensed images to GitHub when fetched
+        run: |
+          if [ -n "$(git status --porcelain -- assets/photos)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add assets/photos
+            git commit -m "Cache attributed Unsplash editorial photos"
+            git pull --rebase origin main
+            git push
+          else
+            echo "All images already cached or safely skipped."
+          fi
