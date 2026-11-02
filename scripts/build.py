@@ -17,12 +17,14 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, story_subject
     from .media_policy import usable_cached_photo
+    from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
     from .share_desk import render as render_share_desk
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, story_subject
     from media_policy import usable_cached_photo
+    from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
     from share_desk import render as render_share_desk
 from urllib.parse import quote, urlencode
@@ -155,13 +157,29 @@ def article_url(a):
 
 
 def category_meta(a, compact=False):
-    d = datetime.fromisoformat(a["fiction_at"])
-    label = escape(a.get("flash", "速報"))
+    """Make the real publication timestamp distinct from the fictional dateline.
+
+    Some legacy stories only record a calendar date. Never invent midnight.
+    All article lists are sorted by publication_date(), not by fiction_at.
+    """
+    published = publication_date(a)
+    real = datetime.fromisoformat(published)
+    future = datetime.fromisoformat(a["fiction_at"])
+    real_label = f"公開 {real.year}/{real.month}/{real.day}"
+    if "T" in published:
+        real_label += f" {real.hour:02}:{real.minute:02}"
+    future_label = (
+        f"架空 {future.year}/{future.month}/{future.day}"
+        f" {future.hour:02}:{future.minute:02}"
+    )
     return (
         '<div class="story-meta">'
-        + '<span class="ticker">' + label + "</span>"
+        + '<span class="ticker">' + escape(a.get("flash", "速報")) + "</span>"
         + '<span class="category">' + escape(a["category"]) + "</span>"
-        + f'<time datetime="{escape(a["fiction_at"])}">{d.month}月{d.day}日 {d.hour:02}:{d.minute:02}</time>'
+        + f'<time class="real-published-at" datetime="{escape(published)}"'
+          f' aria-label="実際の掲載日時">{escape(real_label)}</time>'
+        + f'<time class="fiction-dateline" datetime="{escape(a["fiction_at"])}"'
+          f' aria-label="5年後の架空のニュース日時">{escape(future_label)}</time>'
         + "</div>"
     )
 
@@ -286,13 +304,23 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None):
-    complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None):
+    complete = ("未発生新聞｜5年後の架空ニュース" if path == "/" else
+                title + (" | 未発生新聞" if serial and serial["kind"] == "analysis" else " | 未発生新聞（創作ニュース）"))
+    article_time_meta = ""
+    if kind == "story" and article is not None:
+        article_time_meta = (
+            f'<meta property="article:published_time" content="{escape(publication_date(article))}">'
+            + (f'<meta property="article:modified_time" content="{escape(article["modified_at"])}">'
+               if article.get("modified_at") else "")
+            + f'<meta property="article:section" content="{escape(article["category"])}">'
+        )
     nav = [
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
         ("/issues/", "発行号", "issues"),
         ("/saved/", "あとで読む", "saved"),
+        ("/serials/", "連載", "serials"),
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
         ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
@@ -311,18 +339,38 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
     og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
                        if issue_path else social_image(article))
+    if serial is not None:
+        name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
+        og_image = SITE + "/og/serials/" + name + ".png"
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (photo["alt"] + "（イメージ写真）" if local_photo and photo else
               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
                ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
                 "未発生新聞（創作ニュース）")))
+    if serial is not None:
+        og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
     og_mime = "image/jpeg" if local_photo else "image/png"
     og_size = "" if local_photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
                 "inLanguage":"ja","genre":"風刺・フィクション"}
+    if serial is not None:
+        metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
+    if kind == "serial_episode" and serial is not None:
+        metadata.update({
+            "@type": "Article",
+            "headline": title,
+            "datePublished": serial["published_at"],
+            "dateModified": serial["published_at"],
+            "mainEntityOfPage": {"@type": "WebPage", "@id": SITE + path},
+            "author": {"@type": "Organization", "name": "未発生新聞", "url": SITE + "/about/"},
+            "publisher": {"@type": "Organization", "name": "未発生新聞", "url": SITE},
+            "isAccessibleForFree": True,
+            "image": [og_image],
+            "articleSection": "推理小説" if serial["kind"] == "fiction" else "株式市場予測"
+        })
     if issue_path:
         metadata["datePublished"] = issue_path.group(1)
     if kind == "story" and article is not None:
@@ -383,7 +431,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:site_name" content="未発生新聞">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:type" content="{"article" if kind=="story" else "website"}">
+<meta property="og:type" content="{"article" if kind in ("story", "serial_episode") else "website"}">
+{article_time_meta}
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
 <meta property="og:image:secure_url" content="{escape(og_image)}">
@@ -405,6 +454,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="stylesheet" href="/assets/future-poll.css">
 <link rel="stylesheet" href="/assets/comments.css">
 <link rel="stylesheet" href="/assets/editorial-polish.css">
+<link rel="stylesheet" href="/assets/serials.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
 <script defer src="/assets/comments.js"></script>
@@ -435,13 +485,14 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
-<span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
+<span>※架空ニュース・推理小説は創作です。市場考察は執筆時点の見解であり、投資助言ではありません。</span></div></div></footer>
 </body></html>'''
 
-def home(articles):
+def home(articles, serials=None):
+    serials = load_serials(BASE) if serials is None else serials
     a = articles[0]
     # The fictional masthead clock is not a claim that the newsroom posted
     # today. Use the genuine publication date, never the future dateline.
@@ -525,6 +576,7 @@ def home(articles):
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
+<p class="edition-time-key"><strong>時刻の見方</strong> 「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
 <div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
 <div class="wire-viewport" tabindex="0" role="region" aria-label="新着ニュースを横にスクロール"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
 <section class="hero-grid">
@@ -542,6 +594,7 @@ def home(articles):
 <section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
+{render_serials_feature(serials)}
 {popular_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
@@ -737,10 +790,10 @@ def story(a, articles, issues=None):
 <header class="article-header">
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a><span aria-hidden="true"> / </span><a href="/archive/">記事一覧</a><span aria-hidden="true"> / </span><span aria-current="page">この記事</span></nav>
 <div class="article-edition"><span>未発生新聞 {escape(a["category"])}部</span><span class="edition-tag">創作ニュース</span></div>
-<div class="article-dateline">{category_meta(a)}<span class="article-year">{escape(a["fiction_at"][:4])}年号</span></div>
+<div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="story-meta"><span>未発生新聞 編集部</span><span>実際の掲載日 {escape(publication_date(a)[:10])}</span><span>読了目安 約{read_minutes}分</span></div>
+<div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 <div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
 <p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
 </header>
@@ -817,8 +870,9 @@ def about():
 <h2>5年後の新聞です。</h2>
 <p>今、世の中で話題になっていること。その続きを、ちょうど5年後の同じ日時のニュースにしてしまう新聞です。</p>
 <p>「いや、それはないだろ」と笑ってもらえたら成功。少し考えて「でも、ないとも言えないかも」と思ってもらえたら、なお成功です。</p>
-<h2>記事はすべて創作です。</h2>
-<p>この新聞の記事、企業、人物、事件、発言、数値はフィクションです。実際のニュースや報道ではありません。</p>
+<h2>架空ニュースと推理小説は創作です。</h2>
+<p>本紙の架空ニュース・推理小説に登場する企業、人物、事件、発言、数値はフィクションです。実際のニュースや報道ではありません。</p>
+<p>連載「未来相場観測室」は別枠の市場考察です。出典を示した現実の情報と、編集上の仮説・予測を区別し、後日検証します。投資成果を保証したり、売買を勧めたりするものではありません。<a href="/serials/">連載を読む ↗</a></p>
 <p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
 <h2>今日も、未発生。</h2>
 <p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
@@ -834,8 +888,9 @@ def editorial_policy():
 <header class="page-intro"><span class="eyebrow">EDITORIAL POLICY</span>
 <h1>編集方針・記事の作り方</h1><p>現実を入り口に、未来を創作する。その境界を明確にします。</p></header>
 <div class="about-copy">
-<h2>本紙の記事は、すべて創作です。</h2>
-<p>未発生新聞は、現実の話題から着想した「5年後の架空ニュース」を届ける風刺・創作メディアです。記事に登場する企業、人物、発言、制度、事件、数値はフィクションであり、未来の予測や実際の報道ではありません。</p>
+<h2>創作ニュースと現実の市場考察を区別します。</h2>
+<p>ニュース面と連載「未発生事件簿」は創作です。架空ニュースに登場する企業、人物、発言、制度、事件、数値はフィクションであり、未来予測や実際の報道ではありません。</p>
+<p>連載「未来相場観測室」は現実の公開資料に基づく編集上の分析です。執筆時点と参照先を明記し、仮説・反対シナリオ・後日検証の条件を公開します。実在企業に関する事実は出典で確認し、予想を事実のように扱わず、特定銘柄の売買を勧誘しません。<a href="/serials/">連載の入り口 ↗</a></p>
 <h2>生成AIと自動化の利用</h2>
 <p>公開されたニュースを着想元として探し、生成AIを文章づくりの補助に活用しています。更新や公開の工程にも自動化を取り入れています。AIによる文章や着想には誤りや表現の偏りが起こりうるため、元の話題へのリンク、記事の創作表示、形式・重複などの確認を設けています。掲載後も必要に応じて修正します。</p>
 <p>実在する人物や企業が架空の不祥事を起こしたかのように見せることは避け、創作部分の固有名詞は原則として架空のものを用います。</p>
@@ -1035,8 +1090,13 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
-def other_files(articles, issues=None):
-    latest = max((modification_date(a) for a in articles), default=None)
+def other_files(articles, issues=None, serials=None):
+    serials = load_serials(BASE) if serials is None else serials
+    latest = max(
+        list(modification_date(a) for a in articles) +
+        list(e["published_at"] for s in serials for e in s["episodes"]),
+        default=None
+    )
     issues = daily_issues(articles) if issues is None else issues
     routes = [("/", latest), ("/archive/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend(
@@ -1047,6 +1107,7 @@ def other_files(articles, issues=None):
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
     routes.extend((article_url(a), modification_date(a)) for a in articles)
+    routes.extend(serial_routes(serials))
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
@@ -1184,6 +1245,7 @@ def make_article_social_images(articles):
 
 def build():
     articles = load()
+    serials = load_serials(BASE)
     issues = daily_issues(articles)
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -1197,7 +1259,7 @@ def build():
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("build-revision.txt", build_revision() + "\n")
-    write("index.html",home(articles))
+    write("index.html",home(articles,serials))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
     write("advertise/index.html",advertise())
@@ -1218,7 +1280,8 @@ def build():
     for a in articles:
         write("articles/"+a["slug"]+"/index.html",story(a,articles,issues))
         write("images/"+a["slug"]+".svg",cover(a))
-    other_files(articles, issues)
+    build_serials(serials, layout, write, OUT)
+    other_files(articles, issues, serials)
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)

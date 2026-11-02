@@ -376,6 +376,41 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',page)
             self.assertIn('"@type": "BlogPosting"',page)
 
+    def test_visible_dates_and_social_metadata_disambiguate_fiction(self):
+        """Every card clearly separates real publication from future story time."""
+        from scripts.build import category_meta, publication_date
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        self.assertIn('class="edition-time-key"',home)
+        self.assertIn("「公開」は実際に掲載した日時",home)
+        for selector in (".edition-time-key", ".story-meta .real-published-at",
+                         ".story-meta .fiction-dateline"):
+            self.assertIn(selector,css)
+        for article in self.articles:
+            published=publication_date(article)
+            fictional=article["fiction_at"]
+            actual_tag='class="real-published-at" datetime="'+published+'"'
+            fictional_tag='class="fiction-dateline" datetime="'+fictional+'"'
+            markup=category_meta(article)
+            self.assertIn(actual_tag,markup)
+            self.assertIn(fictional_tag,markup)
+            self.assertIn("公開 ",markup)
+            self.assertIn("架空 ",markup)
+            self.assertIn(actual_tag,archive)
+            self.assertIn(fictional_tag,archive)
+            page=(ROOT/"dist/articles"/article["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn(actual_tag,page)
+            self.assertIn(fictional_tag,page)
+            self.assertIn('property="article:published_time" content="'+published+'"',page)
+            self.assertIn('property="article:section" content="'+article["category"]+'"',page)
+            self.assertNotIn('property="article:published_time" content="'+fictional+'"',page)
+        legacy={**self.articles[0], "published_at": None}
+        legacy_meta=category_meta(legacy)
+        self.assertIn('datetime="'+legacy["source"]["published_at"][:10]+'"',legacy_meta)
+        self.assertIn("公開 ",legacy_meta)
+        self.assertNotIn("公開 "+legacy["source"]["published_at"][:4]+"/11/2 00:00",legacy_meta)
+
     def test_sitemap_and_category_archives(self):
         root=ET.parse(ROOT/"dist/sitemap.xml").getroot()
         ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}

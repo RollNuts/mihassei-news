@@ -134,7 +134,35 @@ body{
   font-size:13px;
   text-underline-offset:5px;
 }
-.story-meta{gap:8px 10px;letter-spacing:0}
+.story-meta{gap:8px 10px;letter-spacing:0;flex-wrap:wrap}
+.story-meta .real-published-at{
+  font-size:11px;
+  font-weight:800;
+  color:#355b48;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.story-meta .fiction-dateline{
+  font-size:10px;
+  font-weight:650;
+  color:#6c6c5e;
+  border-left:1px solid #cbd1c6;
+  padding-left:9px;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.edition-time-key{
+  color:#647167;
+  font-size:11px;
+  line-height:1.8;
+  margin:-3px 0 15px;
+}
+.edition-time-key strong{color:#385646;font-weight:800;margin-right:7px}
+@media(max-width:660px){
+  .edition-time-key{font-size:10.5px;margin-bottom:12px}
+  .story-meta{column-gap:8px;row-gap:7px}
+  .story-meta .fiction-dateline{padding-left:7px}
+}
 .story-meta .category,
 .category{
   border:1px solid #d7dcd2;

@@ -64,7 +64,7 @@ def check():
     recent=sorted(articles,key=lambda a:a["source"]["published_at"],reverse=True)[:10]
     home,mime=get("/")
     body=html.unescape(home.decode("utf-8"))
-    for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue"):
+    for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","edition-time-key"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
@@ -283,6 +283,15 @@ def check():
         published=item.get("published_at") or item["source"]["published_at"][:10]
         if f'"datePublished": "{published}"' not in page:
             raise RuntimeError(slug+": real publication timestamp missing")
+        # The dateline belongs to 5-years-later fiction, never to publication.
+        # Verify the same clear distinction on the live HTML without extra GETs.
+        for date_tag in (
+            f'class="real-published-at" datetime="{published}"',
+            f'class="fiction-dateline" datetime="{item["fiction_at"]}"',
+            f'property="article:published_time" content="{published}"',
+        ):
+            if date_tag not in page:
+                raise RuntimeError(slug+": publication/fiction label missing: "+date_tag)
         if f'"datePublished": "{item["fiction_at"]}"' in page:
             raise RuntimeError(slug+": fictional year leaked into SEO date")
         schema_match=re.search(r'<script type="application/ld\+json">(.+?)</script>',page,re.S)
