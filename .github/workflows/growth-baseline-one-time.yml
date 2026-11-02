@@ -1,0 +1,62 @@
+name: One-time read-only growth baseline
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read public browser-level counters without creating events
+        run: |
+          python3 - <<'PY'
+          import json
+          import datetime
+          from urllib.parse import urlencode
+          from urllib.request import Request, urlopen
+          base="https://veripsa.com"
+          items=json.load(open("content/articles.json",encoding="utf-8"))
+          items=sorted(items,key=lambda a:a.get("published_at") or a["source"]["published_at"],reverse=True)
+          slugs=[a["slug"] for a in items[:20]]
+          print("GROWTH_BASELINE_UTC",datetime.datetime.now(datetime.timezone.utc).isoformat(),flush=True)
+          print("ARTICLES_TOTAL",len(items),flush=True)
+          print("ARTICLE_SAMPLES",len(slugs),flush=True)
+          def get(path):
+              request=Request(base+path,headers={"User-Agent":"MihasseiGrowthBaseline/1.0","Accept":"application/json","Cache-Control":"no-cache"})
+              with urlopen(request,timeout=20) as r:
+                  assert r.status==200 and "application/json" in r.headers.get("Content-Type","")
+                  return json.load(r)
+          data=get("/api/engagement?"+urlencode({"articles":",".join(slugs)}))
+          assert data["unit"]=="anonymous-browser"
+          print("CUMULATIVE_BROWSER_IDS",data["visitors"],flush=True)
+          print("CUMULATIVE_CHANNELS",json.dumps(data.get("channels"),ensure_ascii=False,sort_keys=True),flush=True)
+          counts=get("/api/comments/summary?"+urlencode({"articles":",".join(slugs)}))["counts"]
+          summed={"article_readers":0,"likes":0,"share_clicks":0,"comments":0,"vote_plausible":0,"vote_unlikely":0}
+          rows=[]
+          for a in items[:20]:
+              slug=a["slug"]
+              m=data["articles"].get(slug,{})
+              row={
+                "slug":slug,
+                "published_at":a.get("published_at"),
+                "readers":m.get("readers",0),
+                "likes":m.get("likes",0),
+                "share_clicks":m.get("shareClicks",0),
+                "comments":counts.get(slug,0),
+                "yes":m.get("votes",{}).get("plausible",0),
+                "no":m.get("votes",{}).get("unlikely",0)
+              }
+              rows.append(row)
+              summed["article_readers"]+=row["readers"]
+              summed["likes"]+=row["likes"]
+              summed["share_clicks"]+=row["share_clicks"]
+              summed["comments"]+=row["comments"]
+              summed["vote_plausible"]+=row["yes"]
+              summed["vote_unlikely"]+=row["no"]
+          print("SAMPLED_TOTALS",json.dumps(summed,ensure_ascii=False),flush=True)
+          print("ARTICLE_COUNTS_JSON",json.dumps(rows,ensure_ascii=False),flush=True)
+          print("NOTE cumulative browser deduplication, not daily PV or persons; article counts are per-article and not mutually exclusive")
+          PY
