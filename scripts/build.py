@@ -670,7 +670,7 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 <div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
-<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題を5年進めると、何が起きる？ 架空の出来事を真顔で報じます。「公開」は掲載日時、「架空」は物語内の日時です。</p>
+<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題を5年進めると、何が起きる？ 架空の出来事を真顔で報じます。「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
