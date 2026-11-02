@@ -242,7 +242,6 @@ class SiteTests(unittest.TestCase):
         import binascii
         import struct
         import zlib
-        from urllib.parse import unquote
         old_image=ROOT/"dist/og/brand.png"
         new_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
         self.assertTrue(old_image.is_file())
@@ -269,7 +268,7 @@ class SiteTests(unittest.TestCase):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
         # The footer share intent passes a distinct URL, not the cached plain root.
-        self.assertIn("src%3Dx-launch-20261102-v3",unquote(home))
+        self.assertIn("src%3Dx-launch-20261102-v3",home)
 
     def test_reader_growth_and_editorial_transparency(self):
         import re
