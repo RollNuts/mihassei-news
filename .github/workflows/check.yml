@@ -30,9 +30,12 @@ jobs:
           node --check assets/comment-activity.js
           node --check assets/bookmarks.js
           node --check assets/growth-desk.js
+          node --check assets/mystery-notes.js
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
+      - name: Verify private on-device mystery notes
+        run: node --test tests/mystery-notes.test.cjs
       - name: Verify Japan-date edition freshness (today vs old issue)
         run: node --test tests/edition-freshness.test.cjs
       - name: Test coarse privacy-safe attribution without network access
