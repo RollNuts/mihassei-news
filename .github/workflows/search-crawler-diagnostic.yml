@@ -1,0 +1,43 @@
+name: Search crawler accessibility diagnostic
+on:
+  push:
+    paths:
+      - .github/workflows/search-crawler-diagnostic.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Inspect live DNS, SSL and Google inspection access
+        run: |
+          set +e
+          echo "===== Resolver results ====="
+          for dns in 8.8.8.8 1.1.1.1; do
+            echo "DNS server: $dns"
+            dig +time=3 +tries=1 @"$dns" veripsa.com A +noall +answer
+            dig +time=3 +tries=1 @"$dns" veripsa.com AAAA +noall +answer
+            dig +time=3 +tries=1 @"$dns" veripsa.com NS +noall +answer
+          done
+          echo "===== Default user-agent ====="
+          for url in https://veripsa.com/ https://veripsa.com/robots.txt https://veripsa.com/sitemap.xml; do
+            echo "--- $url ---"
+            curl --compressed -sS -L -D /tmp/response-headers -o /tmp/response-body --connect-timeout 10 --max-time 18 \
+              -w "HTTP=%{http_code} remote_ip=%{remote_ip} SSL_verify=%{ssl_verify_result} redirect=%{redirect_url} bytes=%{size_download}\n" "$url"
+            grep -iE '^(HTTP/|content-type:|location:|cf-ray:|x-robots-tag:|server:)' /tmp/response-headers | head -20
+            head -c 180 /tmp/response-body | tr '\n' ' '
+            echo
+          done
+          echo "===== Claimed Google-InspectionTool UA (does not emulate Google IP) ====="
+          for url in https://veripsa.com/ https://veripsa.com/robots.txt; do
+            echo "--- $url ---"
+            curl --compressed -sS -L -D /tmp/google-headers -o /tmp/google-body --connect-timeout 10 --max-time 18 \
+              -A 'Mozilla/5.0 (compatible; Google-InspectionTool/1.0)' \
+              -w "HTTP=%{http_code} remote_ip=%{remote_ip} SSL_verify=%{ssl_verify_result} redirect=%{redirect_url} bytes=%{size_download}\n" "$url"
+            grep -iE '^(HTTP/|content-type:|location:|cf-ray:|x-robots-tag:|server:)' /tmp/google-headers | head -20
+            head -c 180 /tmp/google-body | tr '\n' ' '
+            echo
+          done
+          echo "===== Test complete; genuine Google crawler IP must be checked in Cloudflare Security Events ====="
