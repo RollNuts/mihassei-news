@@ -1,0 +1,40 @@
+name: One-time X card delivery diagnostic
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Inspect public DNS, Twitterbot HTML and image response
+        shell: bash
+        run: |
+          set +e
+          echo "===== public DNS ====="
+          for ip in 1.1.1.1 8.8.8.8; do
+            for typ in A AAAA NS DS; do
+              echo "Resolver $ip type $typ"
+              dig @"$ip" +time=3 +tries=1 veripsa.com "$typ" | grep -E "status:|^[[:alnum:]]+.* IN $typ" | head -5
+            done
+          done
+          echo "===== crawler delivery ====="
+          for ua in 'Twitterbot/1.0' 'Mozilla/5.0 (compatible; Twitterbot/1.0)' 'facebookexternalhit/1.1' 'Googlebot/2.1'; do
+            for path in '/' '/og/brand.png?v=20261102-2' '/og/brand.png'; do
+              url="https://veripsa.com$path"
+              echo "========================================"
+              echo "USER-AGENT: $ua URL: $url"
+              curl -sS -L --compressed -A "$ua" -D /tmp/card-head -o /tmp/card-body --max-time 15 \
+                -w "HTTP=%{http_code} TYPE=%{content_type} SIZE=%{size_download} REMOTE_IP=%{remote_ip} SSL=%{ssl_verify_result} REDIRECT=%{redirect_url}\\n" "$url"
+              grep -iE '^(HTTP/|content-type:|content-length:|cache-control:|cf-cache-status:|location:|server:|x-robots-tag:|cf-ray:)' /tmp/card-head | head -20
+              file /tmp/card-body
+              if [[ "$path" == "/" ]]; then
+                grep -oiE '<meta[^>]+(og:|twitter:)[^>]*>' /tmp/card-body | head -24
+                grep -oiE '<meta[^>]+(robots|noindex)[^>]*>' /tmp/card-body | head -4
+              else
+                od -An -tx1 -N16 /tmp/card-body
+              fi
+            done
+          done
