@@ -52,7 +52,7 @@ def check():
         if tag not in body:
             raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
     image, image_mime=get("/og/brand.png?v=20261102-2")
-    if not image.startswith(b"\\x89PNG\\r\\n\\x1a\\n") or "image/png" not in image_mime or len(image) < 1024:
+    if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
         raise RuntimeError("X card brand image missing or invalid PNG")
 
     sitemap,mime=get("/sitemap.xml")
