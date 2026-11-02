@@ -154,7 +154,17 @@ def check():
     ads,_=get("/ads.txt")
     if ads.strip()!=b"google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0":
         raise RuntimeError("AdSense ownership file mismatch")
-    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; random edition; free hosting.")
+    # GET-only validation: ensure the deployed Worker exposes coarse aggregates
+    # without ever generating a new visit, reaction or comment.
+    traffic,_=get("/api/engagement?articles="+articles[0]["slug"])
+    payload=json.loads(traffic)
+    channel_counts=payload.get("channels")
+    names={"x","search","external","unattributed"}
+    if not isinstance(channel_counts,dict) or set(channel_counts)!=names:
+        raise RuntimeError("Coarse traffic attribution API is not deployed")
+    if any(type(channel_counts[k]) is not int or channel_counts[k]<0 for k in names):
+        raise RuntimeError("Coarse traffic attribution contains invalid counters")
+    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; free channel attribution; free hosting.")
 
 def main():
     last=None
