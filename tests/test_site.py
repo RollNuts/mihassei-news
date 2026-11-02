@@ -88,6 +88,23 @@ class SiteTests(unittest.TestCase):
                 self.assertIn(a["title"],category.read_text(encoding="utf-8"))
             self.assertIn("https://veripsa.com/category/economy/",mapped)
 
+    def test_real_photos_privacy_and_search_dates(self):
+        index=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/privacy/"',index)
+        self.assertTrue((ROOT/"dist/privacy/index.html").exists())
+        sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("https://veripsa.com/privacy/",sitemap)
+        for a in self.articles:
+            html=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('"datePublished": "'+a["published_at"]+'"',html)
+            self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',html)
+            if a.get("photo"):
+                self.assertIn(a["photo"]["source"],html)
+                self.assertIn(a["photo"]["credit"],html)
+                self.assertIn(a["photo"]["alt"],html)
+                self.assertIn('data-fallback=',html)
+                self.assertIn("イメージ写真",html)
+
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
