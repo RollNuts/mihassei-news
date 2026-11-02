@@ -195,6 +195,27 @@ class SiteTests(unittest.TestCase):
         self.assertIn('PAGE_SIZE = 18',javascript)
         self.assertIn('moreButton?.addEventListener',javascript)
 
+    def test_latest_issue_is_dated_by_real_publication_not_the_clock(self):
+        import re
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        latest=max(self.articles,key=lambda x:(
+            x.get("published_at") or x["source"]["published_at"],
+            x["source"]["published_at"]
+        ))
+        latest_date=latest["published_at"][:10]
+        daily=sum(a.get("published_at","")[:10]==latest_date for a in self.articles)
+        self.assertIn('data-edition-status data-last-edition="'+latest_date+'"',home)
+        self.assertIn('data-edition-count="'+str(daily)+'"',home)
+        self.assertIn('data-edition-title>最新の未発生ニュース</strong>',home)
+        self.assertIn('data-edition-updated>最終発行：',home)
+        self.assertIn("（現実時間）",home)
+        self.assertIn("5年先の時計",home)
+        self.assertNotIn("● LIVE",home)
+        self.assertNotIn("本日の未発生ニュース",home,
+                         "The no-JS fallback must not claim freshness")
+        self.assertNotIn("今日の号外をめくる",home,
+                         "Random archive articles are not necessarily from today")
+
     def test_extra_edition_picker_links_to_real_articles(self):
         import re
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
@@ -211,7 +232,7 @@ class SiteTests(unittest.TestCase):
         self.assertEqual({a["slug"] for a in latest},
                          {item["url"].split("/")[2] for item in choices})
         self.assertLessEqual(len(choices),40)
-        self.assertIn("今日の号外をめくる",home)
+        self.assertIn("号外をめくる",home)
 
         # Do not grow the homepage's embedded interactive JSON indefinitely.
         from scripts.build import home as render_home
