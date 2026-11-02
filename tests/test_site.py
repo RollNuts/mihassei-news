@@ -116,7 +116,8 @@ class SiteTests(unittest.TestCase):
         for day,items in groups.items():
             url="https://veripsa.com/issues/"+day+"/"
             self.assertIn(url,locations)
-            self.assertIn(day,locations[url])
+            self.assertEqual(locations[url][:10],
+                             max(modification_date(a) for a in items)[:10])
             self.assertIn('href="/issues/'+day+'/"',index)
             page=ROOT/"dist/issues"/day/"index.html"
             self.assertTrue(page.exists(),day)
