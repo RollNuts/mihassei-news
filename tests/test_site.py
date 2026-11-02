@@ -20,7 +20,7 @@ class SiteTests(unittest.TestCase):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
                   "sitemap.xml","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
-                  "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
+                  "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/engagement.js",
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
@@ -65,6 +65,38 @@ class SiteTests(unittest.TestCase):
         template=(ROOT/".github/ISSUE_TEMPLATE/sponsorship.yml").read_text(encoding="utf-8")
         for token in ("公開される", "機密情報", "required: true", "public-name"):
             self.assertIn(token,template)
+
+    def test_modern_readable_editorial_layout_without_paid_assets(self):
+        """Preserve all pages while improving reading comfort and mobile touch UI."""
+        styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        self.assertEqual(styles.count("{"),styles.count("}"))
+        for marker in (
+            ".hero-grid", ".story-grid", ".story-card", ".article-body",
+            ".article-header h1", ".reader-comments-form",
+            ".nav-inner", ".source-context", ".footer",
+            "@media(max-width:660px)", "@media(max-width:380px)",
+            "prefers-reduced-motion", "focus-visible",
+            "font-size:17px", "line-height:1.98", "min-height:44px",
+        ):
+            self.assertIn(marker,styles)
+        for unsafe in ("@import", "fonts.googleapis.com", "display:none!important"):
+            self.assertNotIn(unsafe,styles)
+        for name in ("index.html","archive/index.html","about/index.html",
+                     "editorial/index.html","advertise/index.html"):
+            page=(ROOT/"dist"/name).read_text(encoding="utf-8")
+            self.assertEqual(page.count('href="/assets/editorial-polish.css"'),1,name)
+            self.assertIn('現実の話題から生まれる、5年後の創作ニュース。',page)
+            self.assertLess(
+                page.index('href="/assets/comments.css"'),
+                page.index('href="/assets/editorial-polish.css"'),
+            )
+        for article in self.articles:
+            path=ROOT/"dist/articles"/article["slug"]/"index.html"
+            page=path.read_text(encoding="utf-8")
+            self.assertIn('href="/assets/editorial-polish.css"',page)
+            self.assertIn('class="article-body"',page)
+            self.assertIn('class="reader-comments"',page)
+            self.assertIn('class="future-poll"',page)
 
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
