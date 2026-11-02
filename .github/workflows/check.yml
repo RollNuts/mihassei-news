@@ -17,6 +17,9 @@ jobs:
       - run: python3 -m unittest discover -s tests -v
       - name: Warn about stale news sources and topic concentration (never blocks publishing)
         run: python3 scripts/audit_editorial.py
+      - name: Review repeated satire templates and generic openings (advisory only)
+        continue-on-error: true
+        run: python3 scripts/audit_satire.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
