@@ -19,6 +19,22 @@ OUT = BASE / "dist"
 SITE = "https://veripsa.com"
 CATEGORIES = ("すべて", "社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ")
 ARTS = ("notice", "cards", "tower", "robot", "meeting", "generic")
+CATEGORY_PATHS = {
+    "社会":"society", "経済":"economy", "技術":"technology",
+    "政治":"politics", "暮らし":"lifestyle",
+    "スポーツ":"sports", "エンタメ":"entertainment"
+}
+
+
+def curated_categories(articles):
+    """Create only substantial category archives, not thin or empty SEO pages."""
+    return {name: [a for a in articles if a["category"]==name]
+            for name in CATEGORY_PATHS
+            if sum(a["category"]==name for a in articles)>=3}
+
+
+def category_url(name):
+    return "/category/"+CATEGORY_PATHS[name]+"/"
 
 
 def escape(value):
@@ -344,8 +360,24 @@ def archive(articles):
 <select class="decade-select" data-decade-filter aria-label="年代フィルター">{options}</select>
 <output class="result-counter" data-result-count>{len(articles)}件の記事</output></div>
 <div class="archive-list">{''.join(card(a,True) for a in articles)}</div>
+{''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 <p class="no-results" data-no-results hidden>一致する記事がありません。</p></div>'''
     return layout("記事一覧","未発生新聞の記事一覧。すべてフィクションです。","/archive/",content,"archive")
+
+
+def category_page(category, items):
+    title = category + "の未発生ニュース"
+    content = (
+        '<div class="container archive-page">'
+        '<header class="page-intro"><span class="eyebrow">CATEGORY / FICTIONAL NEWS</span>'
+        f'<h1>{escape(title)}</h1>'
+        f'<p>{escape(category)}をめぐる、まだ起きていない出来事。</p></header>'
+        '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
+        '<p style="margin-top:26px"><a class="read-more" href="/archive/">すべての記事を見る</a></p>'
+        '</div>'
+    )
+    return layout(title,category + "の風刺・フィクション記事。未発生新聞が届ける5年後のニュース。",
+                  category_url(category),content,active="archive")
 
 
 def story(a, articles):
@@ -406,12 +438,19 @@ def about():
     return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
 
 def other_files(articles):
-    routes = ["/", "/about/", "/archive/"] + [article_url(a) for a in articles]
+    latest = max((modification_date(a) for a in articles), default=None)
+    routes = [("/", latest), ("/archive/", latest), ("/about/", None)]
+    routes.extend((category_url(category),
+                   max(modification_date(a) for a in group))
+                  for category, group in curated_categories(articles).items())
+    routes.extend((article_url(a), modification_date(a)) for a in articles)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     root = ET.Element("urlset", xmlns=xmlns)
-    for url in routes:
-        node=ET.SubElement(root,"url")
-        ET.SubElement(node,"loc").text=SITE+url
+    for url, modified in routes:
+        node = ET.SubElement(root, "url")
+        ET.SubElement(node, "loc").text = SITE + url
+        if modified:
+            ET.SubElement(node, "lastmod").text = modified
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
     rss=ET.Element("rss", version="2.0")
     channel=ET.SubElement(rss,"channel")
@@ -419,9 +458,14 @@ def other_files(articles):
         ET.SubElement(channel,name).text=value
     for a in articles[:30]:
         n=ET.SubElement(channel,"item")
-        for tag,value in (("title",a["title"]+" | 未発生新聞（創作）"),("link",SITE+article_url(a)),
-                          ("guid",SITE+article_url(a)),("description",a["summary"]+" ※創作記事です。"),
-                          ("pubDate",format_datetime(datetime.fromisoformat(a["source"]["published_at"])))):
+        fields = [("title",a["title"]+" | 未発生新聞（創作）"),
+                  ("link",SITE+article_url(a)),("guid",SITE+article_url(a)),
+                  ("description",a["summary"]+" ※創作記事です。")]
+        posted = publication_date(a)
+        # Older backfilled stories might have only a reliable date, not a timestamp.
+        if "T" in posted:
+            fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
+        for tag, value in fields:
             ET.SubElement(n,tag).text=value
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
@@ -513,6 +557,9 @@ def build():
     write("index.html",home(articles))
     write("about/index.html",about())
     write("archive/index.html",archive(articles))
+    for category, items in curated_categories(articles).items():
+        write("category/"+CATEGORY_PATHS[category]+"/index.html",
+              category_page(category, items))
     for a in articles:
         write("articles/"+a["slug"]+"/index.html",story(a,articles))
         write("images/"+a["slug"]+".svg",cover(a))
