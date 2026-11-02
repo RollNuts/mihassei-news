@@ -68,6 +68,7 @@
 - GitHub Actions：`.github/workflows/check.yml` のテストのみ。**生成AIへのリクエストは行わない。** GitHub Freeの公開リポジトリの標準ホストランナーを使用。
 - 自動サイト更新：Cloudflare WorkersのGit連携でmainの更新を検知し自動デプロイする。
 - 画像：`scripts/build.py` が記事ごとに独立したSVGイラストを生成する。画像AIのAPI費用なし。
+- X/OGP用画像：Unsplashの検証済み写真がローカルにある記事はJPEGを使い、写真がない記事は`scripts/social_cards.py`が記事ごとに異なる1200×630 PNGをビルド時に自動生成する。外部API・追加パッケージ・有料フォントなし。画像内の演出は創作であり、記事見出しはXカード本文やHTMLメタデータで日本語表示する。
 - 課金防止：Cloudflare Workers Freeを維持し、無料枠超過時は処理を停止する。R2・D1・有料の外部APIを使わない。外部APIの有料プランに接続しない。制限に達したら投稿を見送る（勝手に有料プランへ移行しない）。
 - **既存コストは別**：`veripsa.com`のドメイン更新費と利用中のChatGPTプラン料金はゼロにはならない。新たな月額・従量課金を増やさない方針。
 - CloudflareのGit連携と独自ドメインは設定済み。デプロイ失敗時はCloudflareのログを確認する。
