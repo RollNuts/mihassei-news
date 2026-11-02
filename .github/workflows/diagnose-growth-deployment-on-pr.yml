@@ -1,0 +1,38 @@
+name: One-time diagnose Cloudflare growth deployment
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+  checks: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check latest Workers build and public HTTP responses
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          echo "===== latest main SHA and GitHub check runs ====="
+          gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq '.sha'
+          gh api "repos/$GITHUB_REPOSITORY/commits/main/check-runs" \
+            --jq '.check_runs[] | [.name,.status,(.conclusion // "pending"),(.details_url // "")] | @tsv' | head -35
+          echo "===== public Cloudflare endpoints ====="
+          for path in '/' '/share-desk/' '/growth-desk/' '/assets/growth-desk.js' \
+            '/build-revision.txt' '/api/engagement?articles=unwanted-call-protection-calls-back'; do
+            echo ">>> PATH $path"
+            curl -sS -L --compressed --connect-timeout 12 --max-time 20 \
+              -A 'MihasseiDeploymentDiagnostic/1.0' \
+              -D /tmp/mh-head -o /tmp/mh-body \
+              -w 'STATUS=%{http_code} MIME=%{content_type} BYTES=%{size_download} IP=%{remote_ip}\n' \
+              "https://veripsa.com$path"
+            grep -iE '^(HTTP/|content-type:|cf-cache-status:|cf-ray:|x-robots-tag:|location:)' /tmp/mh-head | head -15
+            if [[ "$path" == "/build-revision.txt" ]]; then cat /tmp/mh-body; echo; fi
+            if [[ "$path" == "/api/engagement?articles=unwanted-call-protection-calls-back" ]]; then
+              python3 -c 'import json;d=json.load(open("/tmp/mh-body"));print("API keys:",sorted(d.keys()));print("article keys:",sorted(d.get("articles",{}).get("unwanted-call-protection-calls-back",{}).keys()))' || true
+            fi
+          done
+          echo "Diagnosis complete (read-only, no writes)"
