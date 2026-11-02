@@ -85,6 +85,202 @@ def daily_issues(articles):
     }
 
 
+def series_url(serial):
+    return "/series/" + serial["slug"] + "/"
+
+
+def serial_episode_url(serial, episode):
+    return series_url(serial) + episode["slug"] + "/"
+
+
+def series_feed_url(serial):
+    return "/feeds/series-" + serial["slug"] + ".xml"
+
+
+def load_serials():
+    """Editorial serials are original, date-labelled static writing, not news."""
+    path = BASE / "content/serials.json"
+    serials = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(serials, list) or not serials:
+        raise ValueError("Serial content must be a nonempty list")
+    safe = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+    seen = set()
+    for serial in serials:
+        slug = serial.get("slug")
+        if not isinstance(slug, str) or not safe.fullmatch(slug) or slug in seen:
+            raise ValueError("Unsafe or duplicate series slug")
+        seen.add(slug)
+        if serial.get("kind") not in ("mystery", "market-fiction"):
+            raise ValueError("Unknown editorial series kind: " + slug)
+        for field in ("title", "tagline", "description", "disclaimer", "category", "kicker"):
+            if not isinstance(serial.get(field), str) or len(serial[field].strip()) < 8:
+                raise ValueError("Missing series description: " + slug)
+        if serial["kind"] == "market-fiction" and (
+            "投資助言" not in serial["disclaimer"] or "売買" not in serial["disclaimer"]
+        ):
+            raise ValueError("Fictional market serial must disclaim investment advice")
+        episodes = serial.get("episodes")
+        if not isinstance(episodes, list) or not episodes:
+            raise ValueError("Series requires at least one released episode: " + slug)
+        episode_slugs = set()
+        for number, ep in enumerate(episodes, start=1):
+            if ep.get("number") != number:
+                raise ValueError("Series chapters must be sequential: " + slug)
+            ep_slug = ep.get("slug")
+            if not isinstance(ep_slug, str) or not safe.fullmatch(ep_slug) or ep_slug in episode_slugs:
+                raise ValueError("Unsafe or repeated episode slug: " + slug)
+            episode_slugs.add(ep_slug)
+            if not isinstance(ep.get("title"), str) or len(ep["title"].strip()) < 8:
+                raise ValueError("Missing episode headline")
+            if not isinstance(ep.get("teaser"), str) or len(ep["teaser"].strip()) < 30:
+                raise ValueError("Missing original episode teaser")
+            day = ep.get("published_on")
+            if not isinstance(day, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+                raise ValueError("Episode requires actual YYYY-MM-DD publication date")
+            if datetime.fromisoformat(day).date().isoformat() != day:
+                raise ValueError("Invalid real publication date")
+            paragraphs = ep.get("paragraphs")
+            if not isinstance(paragraphs, list) or len(paragraphs) < 5 or len(paragraphs) > 20:
+                raise ValueError("Serial fiction must have 5-20 original paragraphs")
+            if not all(isinstance(p, str) and len(p.strip()) >= 30 for p in paragraphs):
+                raise ValueError("Short or nontext serial paragraph")
+            if sum(len(p) for p in paragraphs) < 650:
+                raise ValueError("Serial chapter is too thin to publish")
+        if [ep["published_on"] for ep in episodes] != sorted(
+                ep["published_on"] for ep in episodes):
+            raise ValueError("Serial episodes must be in true publication order")
+    return serials
+
+
+def serial_tile(serial):
+    latest = serial["episodes"][-1]
+    kind = serial["kind"]
+    return (
+        f'<article class="serial-tile serial-kind-{kind}">'
+        f'<span class="serial-type">{escape(serial["category"])} / 全{len(serial["episodes"])}話公開</span>'
+        f'<h3><a href="{series_url(serial)}">{escape(serial["title"])}</a></h3>'
+        f'<p>{escape(serial["tagline"])}</p>'
+        f'<span class="serial-episode-name">公開済み最新話：{escape(latest["title"])}</span>'
+        f'<a class="serial-read" href="{serial_episode_url(serial, latest)}">'
+        '第1話から、あるいは最新話を読む ↗</a></article>'
+    )
+
+
+def serial_index(serials):
+    cards = "".join(serial_tile(serial) for serial in serials)
+    content = (
+        '<div class="container archive-page serials-page">'
+        '<header class="page-intro"><span class="eyebrow">ORIGINAL SERIALS</span>'
+        '<h1>未発生新聞の連載</h1>'
+        '<p>ニュースの先にある、まだ起きていない物語。創作推理と架空市場の思考実験を'
+        '少しずつ読み進められます。公開済みの話だけを掲載しています。</p></header>'
+        '<div class="serial-grid">' + cards + '</div>'
+        '<p class="serial-disclosure">※すべて創作です。相場連載は投資助言・売買推奨ではありません。</p>'
+        '<p><a class="read-more" href="/archive/">未発生ニュースを読む ↗</a></p>'
+        '</div>'
+    )
+    return layout("連載作品一覧",
+                  "未発生新聞オリジナルの推理小説と2031年の架空相場シナリオ。継続して読める創作作品。",
+                  "/series/", content, active="series")
+
+
+def serial_overview(serial):
+    chapters = "".join(
+        '<li><a class="serial-chapter-link" href="' + serial_episode_url(serial, ep) + '">'
+        f'<span>{escape(ep["title"])}</span>'
+        f'<small>現実の公開日：{escape(ep["published_on"])}</small></a>'
+        f'<p>{escape(ep["teaser"])}</p></li>'
+        for ep in serial["episodes"]
+    )
+    first = serial_episode_url(serial, serial["episodes"][0])
+    content = (
+        '<div class="container archive-page serials-page">'
+        '<nav class="breadcrumbs" aria-label="パンくずリスト">'
+        '<a href="/">トップ</a><span aria-hidden="true"> / </span>'
+        '<a href="/series/">連載</a></nav>'
+        f'<header class="serial-header serial-kind-{serial["kind"]}">'
+        f'<span class="eyebrow">{escape(serial["kicker"])}</span>'
+        f'<h1>{escape(serial["title"])}</h1>'
+        f'<p class="serial-tagline">{escape(serial["tagline"])}</p>'
+        f'<p>{escape(serial["description"])}</p>'
+        f'<p class="serial-disclosure">{escape(serial["disclaimer"])}</p>'
+        f'<a class="read-more" href="{first}">第1話から読む ↗</a></header>'
+        '<section class="serial-chapter-index" aria-label="公開済みの各話">'
+        '<div class="section-head"><h2>目次 / 公開済みの話</h2>'
+        f'<a href="{series_feed_url(serial)}" type="application/rss+xml">連載RSSで購読 ↗</a>'
+        '</div><ol>' + chapters + '</ol>'
+        '</section><p><a href="/series/">他の連載を見る ↗</a></p></div>'
+    )
+    return layout(serial["title"],serial["description"],series_url(serial),
+                  content,active="series",feed_url=series_feed_url(serial),
+                  serial=serial)
+
+
+def serial_chapter(serial, episode):
+    episodes = serial["episodes"]
+    position = episodes.index(episode)
+    previous = episodes[position - 1] if position > 0 else None
+    following = episodes[position + 1] if position + 1 < len(episodes) else None
+    nav_parts = []
+    if previous:
+        nav_parts.append(
+            f'<a href="{serial_episode_url(serial, previous)}">← 前の話：{escape(previous["title"])}</a>')
+    if following:
+        nav_parts.append(
+            f'<a href="{serial_episode_url(serial, following)}">次の話：{escape(following["title"])} →</a>')
+    else:
+        nav_parts.append('<span>続きはまだ公開されていません。</span>')
+    body = "".join(f'<p>{escape(p)}</p>' for p in episode["paragraphs"])
+    title = episode["title"] + "｜" + serial["title"]
+    content = (
+        '<div class="container article-page serial-reading">'
+        '<nav class="breadcrumbs" aria-label="パンくずリスト">'
+        '<a href="/">トップ</a><span aria-hidden="true"> / </span>'
+        '<a href="/series/">連載</a><span aria-hidden="true"> / </span>'
+        f'<a href="{series_url(serial)}">{escape(serial["title"])}</a></nav>'
+        '<article class="serial-article">'
+        f'<header class="serial-article-header serial-kind-{serial["kind"]}">'
+        f'<span class="eyebrow">{escape(serial["kicker"])} / 第{episode["number"]}話</span>'
+        f'<h1>{escape(episode["title"])}</h1>'
+        f'<p class="serial-teaser">{escape(episode["teaser"])}</p>'
+        f'<p class="serial-published"><time datetime="{escape(episode["published_on"])}">'
+        f'現実の公開日：{escape(episode["published_on"])}</time></p>'
+        f'<p class="serial-disclosure">{escape(serial["disclaimer"])}</p></header>'
+        f'<div class="serial-body">{body}</div>'
+        '<div class="serial-endmark" aria-hidden="true">◆</div>'
+        '<nav class="serial-next" aria-label="連載の前後の話">' + "".join(nav_parts) + '</nav>'
+        f'<p><a class="read-more" href="{series_url(serial)}">この連載の目次へ戻る ↗</a></p>'
+        '</article></div>'
+    )
+    return layout(title,episode["teaser"]+" ※創作作品です。",
+                  serial_episode_url(serial,episode),content,
+                  active="series",feed_url=series_feed_url(serial),serial=serial,episode=episode)
+
+
+def serial_rss(serial):
+    """RSS items for published chapters; date-only values are not fake times."""
+    ns = "http://www.w3.org/2005/Atom"
+    ET.register_namespace("atom",ns)
+    root=ET.Element("rss",version="2.0")
+    channel=ET.SubElement(root,"channel")
+    for tag,value in (
+        ("title","未発生新聞 | "+serial["title"]+"（創作連載）"),
+        ("description",serial["description"]+" "+serial["disclaimer"]),
+        ("link",SITE+series_url(serial)),("language","ja")):
+        ET.SubElement(channel,tag).text=value
+    ET.SubElement(channel,f"{{{ns}}}link",{
+        "href":SITE+series_feed_url(serial),"rel":"self","type":"application/rss+xml"})
+    for episode in reversed(serial["episodes"][-30:]):
+        item=ET.SubElement(channel,"item")
+        for tag,value in (
+            ("title",episode["title"]+" | "+serial["title"]+"（創作）"),
+            ("link",SITE+serial_episode_url(serial,episode)),
+            ("guid",SITE+serial_episode_url(serial,episode)),
+            ("description",episode["teaser"]+" "+serial["disclaimer"])):
+            ET.SubElement(item,tag).text=value
+    return ET.tostring(root,encoding="unicode")
+
+
 def escape(value):
     return html.escape(str(value), quote=True)
 
@@ -274,12 +470,13 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, episode=None):
     complete = "未発生新聞｜5年後の架空ニュース" if path == "/" else title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
         ("/archive/", "新着記事", "archive"),
         ("/issues/", "発行号", "issues"),
+        ("/series/", "連載", "series"),
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
         ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
@@ -296,8 +493,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         "url": SITE + "/?src=x-launch-20261102-v3",
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
-    og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
-                       if issue_path else social_image(article))
+    og_image = SITE + (
+        "/og/series/" + serial["slug"] + ".png" if serial else
+        "/og/issues/" + issue_path.group(1) + ".png" if issue_path else
+        social_image(article)
+    )
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (photo["alt"] + "（イメージ写真）" if local_photo and photo else
@@ -312,6 +512,18 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                 "inLanguage":"ja","genre":"風刺・フィクション"}
     if issue_path:
         metadata["datePublished"] = issue_path.group(1)
+    if serial:
+        metadata.update({
+            "@type": "CreativeWork" if episode else "CreativeWorkSeries",
+            "author":{"@type":"Organization","name":"未発生新聞","url":SITE+"/about/"},
+            "isAccessibleForFree":True,
+            "genre":serial["category"],
+        })
+        if episode:
+            metadata["datePublished"]=episode["published_on"]
+            metadata["isPartOf"]={"@type":"CreativeWorkSeries",
+                                  "name":serial["title"],"url":SITE+series_url(serial)}
+
     if kind == "story" and article is not None:
         metadata.update({
             "@type":"BlogPosting",
@@ -345,6 +557,17 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                 {"@type": "ListItem", "position": 3, "name": issue_date_label(day) + "号", "item": SITE + path},
             ],
         })
+    if serial:
+        crumbs = [
+            {"@type":"ListItem","position":1,"name":"トップ","item":SITE+"/"},
+            {"@type":"ListItem","position":2,"name":"連載","item":SITE+"/series/"},
+            {"@type":"ListItem","position":3,"name":serial["title"],"item":SITE+series_url(serial)}
+        ]
+        if episode:
+            crumbs.append({"@type":"ListItem","position":4,
+                           "name":episode["title"],"item":SITE+serial_episode_url(serial,episode)})
+        schemas.append({"@context":"https://schema.org","@type":"BreadcrumbList",
+                        "itemListElement":crumbs})
     if collection:
         entries = list(collection[:30])
         schemas.append({
@@ -419,13 +642,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/series/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
 
-def home(articles):
+def home(articles, serials=None):
     a = articles[0]
     # The fictional masthead clock is not a claim that the newsroom posted
     # today. Use the genuine publication date, never the future dateline.
@@ -443,6 +666,15 @@ def home(articles):
     # Lead and the three sidebar headlines are already visible above.
     # Never repeat them in the new-story grid: show the *next* nine articles.
     recent = "".join(card(x) for x in articles[4:13])
+    current_serials = load_serials() if serials is None else serials
+    serial_teasers = "".join(serial_tile(s) for s in current_serials[:2])
+    serial_section = (
+        '<section class="serial-promo" aria-labelledby="serial-promo-title">'
+        '<div class="section-head"><h2 id="serial-promo-title">連載を読む</h2>'
+        '<a href="/series/">すべての連載 ↗</a></div>'
+        '<p class="serial-promo-intro">短いニュースの先に続く、未発生新聞だけの物語。</p>'
+        '<div class="serial-grid">' + serial_teasers + '</div></section>'
+    ) if serial_teasers else ""
     featured_categories = curated_categories(articles)
     genre_links = []
     for cat in CATEGORIES[1:]:
@@ -532,6 +764,7 @@ def home(articles):
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
 {issue_section}
+{serial_section}
 <section class="free-follow" aria-label="新着記事の購読">
 <div class="free-follow-copy"><span class="small-label red">FOLLOW / FREE RSS</span>
 <h2>新しい5年後を、定期的に読む。</h2>
@@ -988,10 +1221,12 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
-def other_files(articles, issues=None):
+def other_files(articles, issues=None, serials=None):
     latest = max((modification_date(a) for a in articles), default=None)
     issues = daily_issues(articles) if issues is None else issues
-    routes = [("/", latest), ("/archive/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    serials = load_serials() if serials is None else serials
+    routes = [("/", latest), ("/archive/", latest), ("/issues/", latest),
+              ("/series/", max(ep["published_on"] for serial in serials for ep in serial["episodes"])), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend(
         (issue_url(day), max(modification_date(a) for a in items))
         for day, items in issues.items()
@@ -1000,6 +1235,11 @@ def other_files(articles, issues=None):
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
     routes.extend((article_url(a), modification_date(a)) for a in articles)
+    for serial in serials:
+        updated=max(ep["published_on"] for ep in serial["episodes"])
+        routes.append((series_url(serial),updated))
+        routes.extend((serial_episode_url(serial,episode),episode["published_on"])
+                      for episode in serial["episodes"])
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
@@ -1138,6 +1378,7 @@ def make_article_social_images(articles):
 def build():
     articles = load()
     issues = daily_issues(articles)
+    serials = load_serials()
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT/"assets").mkdir(parents=True)
@@ -1150,12 +1391,25 @@ def build():
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("build-revision.txt", build_revision() + "\n")
-    write("index.html",home(articles))
+    write("index.html",home(articles,serials))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    write("series/index.html",serial_index(serials))
+    for serial in serials:
+        write("series/"+serial["slug"]+"/index.html",serial_overview(serial))
+        write(series_feed_url(serial).lstrip("/"),serial_rss(serial))
+        for episode in serial["episodes"]:
+            write(serial_episode_url(serial,episode).lstrip("/")+"index.html",
+                  serial_chapter(serial,episode))
+        render_social_card({
+            "slug":serial["slug"],
+            "category":"社会" if serial["kind"]=="mystery" else "経済",
+            "art":"notice" if serial["kind"]=="mystery" else "tower",
+            "fiction_at":"2031-11-03T00:00:00+09:00",
+        }, OUT/"og"/"series"/(serial["slug"]+".png"))
     # Human visual quality audit stays separate from the public news navigation.
     write("image-review/index.html",image_review_page(articles))
     # Human-operated static promotion helper; no automated X publishing.
@@ -1170,7 +1424,7 @@ def build():
     for a in articles:
         write("articles/"+a["slug"]+"/index.html",story(a,articles,issues))
         write("images/"+a["slug"]+".svg",cover(a))
-    other_files(articles, issues)
+    other_files(articles, issues, serials)
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)
