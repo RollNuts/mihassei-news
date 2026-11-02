@@ -295,6 +295,40 @@ def check():
         if number>=3:
             if SITE+"/category/"+category_paths[cat]+"/" not in siteurls:
                 raise RuntimeError("Missing indexed category "+cat)
+    # RSS discovery is a free returning-reader path, not a new thin index
+    # page. Check first-party feeds and that every item is truly in its genre.
+    feed_namespace={"media":"http://search.yahoo.com/mrss/",
+                    "atom":"http://www.w3.org/2005/Atom"}
+    for category, total in counts.items():
+        feed="/feeds/"+category_paths[category]+".xml"
+        body_bytes, content_type=get(feed)
+        if "xml" not in content_type:
+            raise RuntimeError("Category RSS not served as XML: "+category)
+        channel=ET.fromstring(body_bytes).find("channel")
+        if channel is None:
+            raise RuntimeError("Missing category RSS channel: "+category)
+        if category not in (channel.findtext("title") or ""):
+            raise RuntimeError("Wrong category RSS title: "+category)
+        self_link=channel.find("atom:link",feed_namespace)
+        if self_link is None or self_link.get("href")!=SITE+feed:
+            raise RuntimeError("Category RSS canonical link missing: "+category)
+        expected_items=sorted(
+            [a for a in articles if a["category"]==category],
+            key=lambda a:(a.get("published_at") or a["source"]["published_at"],
+                          a["source"]["published_at"]),reverse=True
+        )[:30]
+        entries=channel.findall("item")
+        if len(entries)!=min(total,30):
+            raise RuntimeError("Wrong category RSS article count: "+category)
+        for entry, article in zip(entries,expected_items):
+            if entry.findtext("link")!=SITE+"/articles/"+article["slug"]+"/":
+                raise RuntimeError("Wrong category RSS article: "+article["slug"])
+            thumb=entry.find("media:thumbnail",feed_namespace)
+            if thumb is None or not thumb.get("url","").startswith(SITE+"/"):
+                raise RuntimeError("First-party category RSS thumbnail missing")
+        if 'href="'+feed+'" type="application/rss+xml"' not in archive_html:
+            raise RuntimeError("RSS feed is not discoverable: "+feed)
+    print("Public category RSS OK:",len(counts))
     robots,_=get("/robots.txt")
     if b"Sitemap: https://veripsa.com/sitemap.xml" not in robots:
         raise RuntimeError("Missing robots sitemap discovery")
