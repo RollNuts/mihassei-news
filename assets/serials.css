@@ -136,3 +136,23 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .forecast-ledger-result a,.forecast-ledger-link a{text-decoration:underline;text-underline-offset:4px}
 .forecast-ledger-link{font-size:12px;font-weight:800;padding:0 0 8px;margin:19px 0}
 @media(max-width:560px){.forecast-ledger{margin-top:42px}.forecast-ledger-facts{flex-direction:column;gap:7px}.forecast-ledger-card{padding:20px 15px}.forecast-ledger .section-head h2{font-size:22px}}
+
+
+/* Private, opt-in mystery reading notes: no account, external service or DB. */
+.mystery-notebook{margin:42px 0 29px;padding:28px clamp(18px,4vw,34px);background:#edf3f0;border:1px solid #b9cac2;border-left:5px solid #4c8174}
+.mystery-notebook .small-label{color:#4c7569}
+.mystery-notebook h2{font-family:var(--serif);font-size:clamp(22px,2.8vw,29px);line-height:1.4;margin:10px 0}
+.mystery-notebook-intro{margin:0 0 20px;font-size:13px;color:#4f615b;line-height:1.95}
+.mystery-notebook label{display:block;font-size:13px;font-weight:900;margin-bottom:7px}
+.mystery-notebook textarea{display:block;box-sizing:border-box;width:100%;min-height:145px;resize:vertical;line-height:1.75;font:inherit;font-size:15px;padding:14px 16px;color:var(--ink);background:#fffefa;border:1px solid #aabfb5;border-radius:3px}
+.mystery-notebook textarea:focus-visible,.mystery-notebook button:focus-visible{outline:3px solid #bf674b;outline-offset:3px}
+.mystery-notebook-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:12px}
+.mystery-notebook-toolbar>span{font-size:11px;color:#58685d;font-variant-numeric:tabular-nums}
+.mystery-notebook-actions{display:flex;gap:10px;flex-wrap:wrap}
+.mystery-notebook-actions button{min-height:44px;padding:9px 15px;border-radius:2px;font-size:12px;font-weight:800;border:1px solid #4c8174;background:#335e56;color:#fff}
+.mystery-notebook-actions button:hover{background:#274f46}
+.mystery-notebook-actions button[data-mystery-note-clear]{background:transparent;color:#355f57}
+.mystery-notebook-actions button[data-mystery-note-clear]:hover{background:#dde8e1}
+.mystery-notebook-status{min-height:20px;font-size:12px;line-height:1.7;font-weight:700;color:#355f57;margin:15px 0 10px}
+.mystery-notebook-privacy{font-size:11px;line-height:1.85;color:#637169;margin:8px 0 0}
+@media(max-width:560px){.mystery-notebook{padding:22px 16px}.mystery-notebook-toolbar{align-items:flex-start}.mystery-notebook-actions{width:100%}.mystery-notebook-actions button{flex:1}}
