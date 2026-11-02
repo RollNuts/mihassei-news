@@ -48,23 +48,26 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "missing/wrong canonical"):
             inspect_markup(doc, "/articles/unpublished/")
 
-    def test_first_reader_has_three_true_distinct_paths(self):
+    def test_first_reader_gets_three_distinct_editorial_starters(self):
+        """New readers see strong real stories, not another copy of the serial menu."""
         doc = (ROOT / "dist/index.html").read_text(encoding="utf-8")
-        self.assertIn('class="reading-ways"', doc)
+        self.assertIn('class="starter-editorial"', doc)
         self.assertLess(doc.index('<section class="hero-grid">'),
-                        doc.index('class="reading-ways"'))
-        self.assertLess(doc.index('class="reading-ways"'),
+                        doc.index('class="starter-editorial"'))
+        self.assertLess(doc.index('class="starter-editorial"'),
                         doc.index('<section class="section-block">'))
-        self.assertEqual(doc.count('class="reading-way reading-way--'), 3)
-        self.assertIn('href="/archive/"', doc)
-        self.assertIn('href="/serials/case-files/"', doc)
-        self.assertIn('href="/serials/market-lab/"', doc)
-        self.assertIn('FICTION / 架空ニュース', doc)
-        self.assertIn('MYSTERY / 創作推理小説', doc)
-        self.assertIn('MARKET / 現実の市場分析', doc)
+        self.assertEqual(doc.count('class="starter-pick-card"'), 3)
+        self.assertIn("人気ランキングではありません", doc)
+        self.assertNotIn('class="reading-ways"', doc)
+        # Ordinary serials, genre navigation and RSS must remain available.
+        for link in ('href="/archive/"',
+                     'href="/serials/case-files/"',
+                     'href="/serials/market-lab/"',
+                     'href="/feed.xml"'):
+            self.assertIn(link, doc)
         css = (ROOT / "dist/assets/editorial-polish.css").read_text(encoding="utf-8")
-        for token in (".reading-ways-grid", ".reading-way--mystery",
-                      ".reading-way--market", "@media(max-width:660px)"):
+        for token in (".starter-pick-grid", ".starter-pick-card",
+                      ".starter-pick-image", "@media(max-width:660px)"):
             self.assertIn(token, css)
         self.assertEqual(css.count("{"), css.count("}"))
 
