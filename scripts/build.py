@@ -35,6 +35,16 @@ def five_years_later(iso):
     return date.replace(year=date.year + 5).isoformat()
 
 
+def publication_date(a):
+    """Real publication date, never the fictional dateline five years ahead."""
+    return a.get("published_at") or a["source"]["published_at"][:10]
+
+
+def modification_date(a):
+    """Use only genuine recorded content updates for sitemap and search metadata."""
+    return a.get("modified_at") or publication_date(a)
+
+
 def load():
     articles = json.loads((BASE / "content/articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
@@ -197,7 +207,7 @@ def card(a, archive=False):
         + '</div></article>'
     )
 
-def layout(title, desc, path, main, active="", kind="website"):
+def layout(title, desc, path, main, active="", kind="website", article=None):
     complete = title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
@@ -210,9 +220,23 @@ def layout(title, desc, path, main, active="", kind="website"):
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
-    metadata = {"@context":"https://schema.org","@type":"CreativeWork" if kind=="story" else "WebSite",
-                "name": title, "url":SITE+path,"description":desc,"inLanguage":"ja",
-                "genre":"創作ニュース・風刺"}
+    metadata = {"@context":"https://schema.org",
+                "@type":"WebSite" if path=="/" else "WebPage",
+                "name":title,"url":SITE+path,"description":desc,
+                "inLanguage":"ja","genre":"風刺・フィクション"}
+    if kind == "story" and article is not None:
+        metadata.update({
+            "@type":"BlogPosting",
+            "headline":title,
+            "datePublished":publication_date(article),
+            "author":{"@type":"Organization","name":"未発生新聞","url":SITE+"/about/"},
+            "publisher":{"@type":"Organization","name":"未発生新聞","url":SITE},
+            "isAccessibleForFree":True,
+            "image":[SITE+"/images/"+article["slug"]+".svg"],
+            "articleSection":article["category"]
+        })
+        if article.get("modified_at"):
+            metadata["dateModified"] = article["modified_at"]
     ld = json.dumps(metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -341,7 +365,7 @@ def story(a, articles):
 <div class="article-dateline">{category_meta(a)}<span class="article-year">{escape(a["fiction_at"][:4])}年号</span></div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
+<div class="story-meta"><span>未発生新聞 編集部</span><span>実際の掲載日 {escape(publication_date(a)[:10])}</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
 <img class="article-visual" src="{image_path}" alt="記事のイメージ画">
@@ -361,7 +385,7 @@ def story(a, articles):
 <section class="article-related"><div class="section-head"><h2>あわせて読む</h2><a href="/archive/">ほかの記事 ↗</a></div>
 <div class="story-grid">{related}</div></section>
 </div>'''
-    return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story")
+    return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
 def about():
     content = '''<div class="container archive-page">
