@@ -94,8 +94,8 @@ def actions(a, compact=False):
     return (
         '<div class="engagement-actions' + (" compact" if compact else "") + '">'
         + f'<button class="like-control" type="button" data-like-slug="{slug}" aria-pressed="false"'
-        + ' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span></button>'
-        + f'<a class="share-control" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
+        + ' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span><span class="like-count" data-like-count="{slug}" hidden></span></button>'
+        + f'<a class="share-control" data-share-slug="{slug}" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
            '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button>')
@@ -251,7 +251,12 @@ def layout(title, desc, path, main, active="", kind="website"):
 <span class="brand-en">MIHASSEI SHIMBUN</span>
 <p class="mast-sub">まだ起きていないニュースを、どこよりも真面目に。</p>
 </div></header>
-<nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
+<div class="container observer-shell">
+<div class="observer-widget" data-observer-widget hidden>
+<span class="observer-eye" aria-hidden="true">◉</span><span>未来を見にきた人</span>
+<strong data-observer-count>—</strong><span class="observer-suffix">人</span>
+<small>※ブラウザ単位の参考値</small>
+</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
@@ -342,6 +347,7 @@ def story(a, articles):
 <figcaption>イメージ画像</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
+<div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
 <h2>この記事の着想元</h2>
@@ -370,7 +376,7 @@ def about():
 <p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
 <h2>今日も、未発生。</h2>
 <p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
-<p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
+<p>「未来を見にきた人」と「いいね」は匿名のブラウザ単位の集計です。実際の人数とは一致しない場合があります。</p><p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
     return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
 
