@@ -9,6 +9,7 @@ on:
       - wrangler.jsonc
       - scripts/build.py
       - assets/comments.js
+      - assets/comment-activity.js
   workflow_dispatch:
 permissions:
   contents: read
@@ -39,10 +40,17 @@ jobs:
                   story = get("/articles/" + slug + "/?probe=comments-"+str(attempt))
                   if 'data-comments data-article="' + slug + '"' not in story:
                       raise RuntimeError("Comment form not deployed")
+                  if 'id="reader-comments"' not in story or 'data-comment-count="' + slug + '"' not in story:
+                      raise RuntimeError("Comment link and counter not deployed")
+                  if 'data-comment-discussions' not in home:
+                      raise RuntimeError("Homepage participation not deployed")
                   data = json.loads(get("/api/comments?article="+slug+"&probe="+str(attempt)))
                   if data.get("article") != slug or not isinstance(data.get("comments"), list):
                       raise RuntimeError("Comments API does not return expected JSON")
-                  print("PASS: comment form and API live for", slug)
+                  summary = json.loads(get("/api/comments/summary?articles="+slug+"&probe="+str(attempt)))
+                  if summary.get("version") != 1 or not isinstance(summary.get("counts",{}).get(slug), int):
+                      raise RuntimeError("Comments summary API not deployed")
+                  print("PASS: comment UI, detail API and summary API live for", slug)
                   break
               except Exception as exc:
                   print("Attempt", attempt, ":", str(exc), flush=True)
