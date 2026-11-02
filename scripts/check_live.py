@@ -61,6 +61,22 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # A failed daily schedule must not leave the homepage falsely saying
+    # "today's" stories. The page embeds a genuine, JST publication date.
+    latest=max(articles,key=lambda a:(
+        a.get("published_at") or a["source"]["published_at"],
+        a["source"]["published_at"]
+    ))
+    last_day=(latest.get("published_at") or latest["source"]["published_at"])[:10]
+    dated_articles=sum((a.get("published_at") or a["source"]["published_at"])[:10]==last_day for a in articles)
+    for token in ('data-edition-status data-last-edition="'+last_day+'"',
+                  'data-edition-count="'+str(dated_articles)+'"',
+                  'data-edition-updated>最終発行：'):
+        if token not in body:
+            raise RuntimeError("Publication freshness information not deployed: "+token)
+    if "● LIVE" in body or "今日の号外をめくる" in body:
+        raise RuntimeError("Old archive must not masquerade as today's live news")
+
     # A valid X link card needs HTML metadata AND a publicly served raster
     # image. The first published social preview may be cached by X.
     for tag in (
