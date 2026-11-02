@@ -136,3 +136,11 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .forecast-ledger-result a,.forecast-ledger-link a{text-decoration:underline;text-underline-offset:4px}
 .forecast-ledger-link{font-size:12px;font-weight:800;padding:0 0 8px;margin:19px 0}
 @media(max-width:560px){.forecast-ledger{margin-top:42px}.forecast-ledger-facts{flex-direction:column;gap:7px}.forecast-ledger-card{padding:20px 15px}.forecast-ledger .section-head h2{font-size:22px}}
+
+/* First-party series RSS subscriptions; free and accessible on phones. */
+.serial-feed-link{display:inline-flex;align-items:center;min-height:42px;padding:7px 0;color:var(--accent);font-size:12px;font-weight:900;border-bottom:1px solid var(--accent);text-decoration:none}
+.serial-feed-link:hover,.serial-feed-link:focus-visible{color:var(--ink);border-color:var(--ink)}
+.serial-card-content>.serial-feed-link{display:table;margin-top:11px}
+.serial-episode-index .section-head{gap:10px;flex-wrap:wrap}
+.serial-epilogue .serial-feed-link{margin-left:14px}
+@media(max-width:560px){.serial-epilogue .serial-feed-link{display:table;margin:10px 0 0}.serial-episode-index .section-head{align-items:flex-start}}
