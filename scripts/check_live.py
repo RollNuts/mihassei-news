@@ -82,6 +82,24 @@ def check():
             '/articles/'+article["slug"]+'/' not in markup):
             raise RuntimeError("Promotion desk missing published story "+article["slug"])
 
+    # Read-only aggregate measurements: neither the review page nor the API
+    # GET should create a visitor or reaction event.
+    growth,growth_type=get("/growth-desk/")
+    page=growth.decode("utf-8")
+    if ("text/html" not in growth_type or
+        'name="robots" content="noindex,nofollow"' not in page or
+        'data-growth-stories=' not in page or
+        'data-growth-articles' not in page or
+        "集客の実測" not in page):
+        raise RuntimeError("Noindex growth review page is not deployed")
+    js,js_type=get("/assets/growth-desk.js")
+    if ("javascript" not in js_type and "text/plain" not in js_type):
+        raise RuntimeError("Growth review script has invalid Content-Type")
+    if b"/api/engagement?articles=" not in js or b"metric.arrivals.x" not in js:
+        raise RuntimeError("Growth review is not reading honest browser counters")
+    if "https://veripsa.com/growth-desk/" in get("/sitemap.xml")[0].decode("utf-8"):
+        raise RuntimeError("Growth desk must not enter search sitemap")
+
     # This stylesheet is last in the cascade. A successful HTML deploy must
     # not silently leave the refreshed editorial design without its actual CSS.
     if 'href="/assets/editorial-polish.css"' not in body:
@@ -425,6 +443,10 @@ def check():
         type(first_article.get("continuedReaders")) is not int or
         first_article["continuedReaders"]<0):
         raise RuntimeError("Anonymous article-continuation metric not deployed")
+    arrivals=first_article.get("arrivals")
+    if (not isinstance(arrivals,dict) or set(arrivals)!={"x","search"} or
+        any(type(arrivals[k]) is not int or arrivals[k]<0 for k in ("x","search"))):
+        raise RuntimeError("Per-article X/search arrival counters missing or invalid")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
