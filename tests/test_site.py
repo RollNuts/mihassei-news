@@ -19,7 +19,7 @@ class SiteTests(unittest.TestCase):
     def test_core_files(self):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
-                  "sitemap.xml","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
+                  "sitemap.xml","issues/index.html","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/engagement.js",
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
@@ -37,6 +37,25 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(marker,git.stdout.strip())
         self.assertIn("/build-revision.txt", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
         self.assertIn("Cache-Control: no-store", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
+
+    def test_illustrations_reserve_fixed_aspect_ratio_before_loading(self):
+        """Every editorial image carries intrinsic dimensions to avoid layout shift."""
+        import re
+        rendered=[ROOT/"dist/index.html",ROOT/"dist/archive/index.html"]
+        rendered += [ROOT/"dist/articles"/a["slug"]/"index.html"
+                     for a in self.articles]
+        checked=0
+        for path in rendered:
+            markup=path.read_text(encoding="utf-8")
+            for match in re.finditer(r'<img\b[^>]*>',markup):
+                tag=match.group(0)
+                if not any(c in tag for c in ('hero-image','story-thumb','article-visual')):
+                    continue
+                self.assertIn('width="1200"',tag,str(path))
+                self.assertIn('height="675"',tag,str(path))
+                self.assertIn('decoding="async"',tag,str(path))
+                checked+=1
+        self.assertGreaterEqual(checked,len(self.articles))
 
     def test_live_social_card_verification_uses_real_image_path(self):
         from scripts.build import social_image
@@ -145,6 +164,42 @@ class SiteTests(unittest.TestCase):
             self.assertIn('class="article-body"',page)
             self.assertIn('class="reader-comments"',page)
             self.assertIn('class="future-poll"',page)
+
+    def test_daily_issue_archives_are_real_and_discoverable(self):
+        from scripts.build import daily_issues, modification_date
+        groups=daily_issues(self.articles)
+        self.assertTrue(groups,"The production edition must have a substantial day")
+        index=(ROOT/"dist/issues/index.html").read_text(encoding="utf-8")
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        sitemap=ET.parse(ROOT/"dist/sitemap.xml").getroot()
+        namespace={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
+        locations={el.findtext("s:loc",namespaces=namespace):el.findtext("s:lastmod",namespaces=namespace)
+                   for el in sitemap.findall("s:url",namespace)}
+        self.assertIn("https://veripsa.com/issues/",locations)
+        self.assertIn('href="/issues/"',home)
+        self.assertIn('href="/issues/"',archive)
+        self.assertIn('class="daily-issues-section"',home)
+        for day,items in groups.items():
+            url="https://veripsa.com/issues/"+day+"/"
+            self.assertIn(url,locations)
+            self.assertEqual(locations[url][:10],
+                             max(modification_date(a) for a in items)[:10])
+            self.assertIn('href="/issues/'+day+'/"',index)
+            page=ROOT/"dist/issues"/day/"index.html"
+            self.assertTrue(page.exists(),day)
+            markup=page.read_text(encoding="utf-8")
+            self.assertIn('<link rel="canonical" href="'+url+'"',markup)
+            self.assertIn('datetime="'+day+'"',markup)
+            for article in items:
+                slug=article["slug"]
+                self.assertIn('href="/articles/'+slug+'/"',markup)
+                story=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
+                self.assertIn('href="/issues/'+day+'/"',story)
+        all_days={a["published_at"][:10] for a in self.articles}
+        for day in all_days-set(groups):
+            self.assertNotIn("https://veripsa.com/issues/"+day+"/",locations,
+                             "Two-article days must not create thin indexed editions")
 
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
