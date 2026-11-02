@@ -85,6 +85,12 @@ CATEGORY_COLORS = {
 
 
 SUBJECT_LABELS = {
+    "frozen": "FROZEN TREATS",
+    "livestock": "FARM ANIMALS",
+    "romance": "LOVE AND CHAT",
+    "gaming": "VIDEO GAMES",
+    "school": "SCHOOL LIFE",
+    "music": "MUSIC CULTURE",
     "telephone": "CALLS & PHONES",
     "weather": "WEATHER FORECAST",
     "baseball": "BASEBALL",
@@ -168,7 +174,96 @@ def illustrate(canvas, art, accent, seed):
         canvas.line(732, 120 + i*25, 1160, 120+i*25, (37, 78, 86), 1)
     canvas.circle(961 + offset, 306, 187, (38, 82, 88))
     canvas.circle(961 + offset, 306, 155, background)
-    if art == "telephone":
+    if art == "frozen":
+        # A cone and two scoops: the collectible ice-cream story must not look
+        # like a server rack or generic newspaper card.
+        canvas.circle(929,266,66,pale)
+        canvas.circle(1002,264,61,accent)
+        canvas.circle(967,222,49,pale)
+        canvas.line(876,309,1057,309,dark,9)
+        canvas.line(897,326,966,465,pale,15)
+        canvas.line(1038,326,966,465,pale,15)
+        for y in (355,389,423):
+            canvas.line(916+(y-355)//5,y,1018-(y-355)//5,y,dark,4)
+        canvas.circle(968,186,16,accent)
+        canvas.line(1115,193,1115,235,accent,5)
+        canvas.line(1094,214,1136,214,accent,5)
+        canvas.line(1100,199,1130,229,accent,3)
+        canvas.line(1100,229,1130,199,accent,3)
+    elif art == "livestock":
+        # Two distinct livestock faces, large enough to remain recognisable
+        # in compact social previews.
+        canvas.rect(810,199,953,408,pale)
+        canvas.rect(970,203,1106,415,(221,208,166))
+        canvas.rect(826,171,858,243,accent)
+        canvas.rect(899,171,932,243,accent)
+        canvas.rect(992,147,1012,237,pale)
+        canvas.rect(1067,147,1087,237,pale)
+        canvas.rect(835,279,847,291,dark)
+        canvas.rect(909,279,921,291,dark)
+        canvas.rect(991,281,1004,293,dark)
+        canvas.rect(1071,281,1084,293,dark)
+        canvas.rect(844,338,925,380,accent)
+        canvas.rect(1000,341,1076,379,dark)
+        for x in (861,906):
+            canvas.circle(x,356,9,pale)
+        for x in (1022,1055):
+            canvas.circle(x,358,8,pale)
+        canvas.circle(868,234,16,dark)
+        canvas.circle(1056,240,14,accent)
+    elif art == "romance":
+        # Two conversation windows and a simple heart; a dating story is not
+        # illustrated with a spam-call handset.
+        canvas.rect(789,185,1006,351,pale)
+        canvas.rect(800,196,995,339,dark)
+        canvas.rect(925,294,1133,457,accent)
+        canvas.rect(936,305,1121,442,dark)
+        canvas.rect(870,327,907,378,pale)
+        canvas.rect(1050,431,1090,474,accent)
+        for x in (838,883,928):
+            canvas.circle(x,270,11,accent)
+        canvas.circle(988,357,24,pale)
+        canvas.circle(1040,357,24,pale)
+        canvas.line(969,364,1015,415,pale,20)
+        canvas.line(1015,415,1058,364,pale,20)
+    elif art == "gaming":
+        # Conventional gamepad with a D-pad, paired buttons and joysticks.
+        canvas.rect(796,238,1123,400,pale)
+        canvas.rect(812,253,1105,383,dark)
+        canvas.line(819,376,804,458,pale,27)
+        canvas.line(1089,376,1110,458,pale,27)
+        canvas.rect(852,281,872,348,accent)
+        canvas.rect(829,303,895,325,accent)
+        for x,y in ((1012,299),(1064,337)):
+            canvas.circle(x,y,17,accent)
+        for x in (920,963):
+            canvas.circle(x,351,17,pale)
+            canvas.circle(x,351,9,dark)
+        canvas.rect(927,291,964,297,pale)
+    elif art == "school":
+        canvas.rect(791,175,1112,376,pale)
+        canvas.rect(804,189,1100,363,dark)
+        canvas.rect(835,228,1055,240,accent)
+        canvas.rect(835,258,995,266,pale)
+        canvas.rect(835,283,1042,291,pale)
+        canvas.line(804,393,1101,393,pale,8)
+        canvas.rect(837,407,957,474,pale)
+        canvas.rect(957,407,1080,474,pale)
+        canvas.line(958,407,958,474,accent,8)
+        canvas.line(850,430,934,430,dark,3)
+        canvas.line(980,430,1061,430,dark,3)
+    elif art == "music":
+        canvas.circle(928,306,139,pale)
+        canvas.circle(928,306,111,dark)
+        canvas.circle(928,306,69,accent)
+        canvas.circle(928,306,30,pale)
+        canvas.circle(928,306,12,dark)
+        canvas.line(1062,198,1062,364,pale,10)
+        canvas.line(1062,198,1141,179,pale,12)
+        canvas.line(1141,179,1141,348,pale,10)
+        canvas.circle(1040,373,22,accent)
+        canvas.circle(1119,356,22,accent)
+    elif art == "telephone":
         # Handset and incoming signal waves; not a random notice card.
         canvas.rect(869, 159, 1031, 433, ink)
         canvas.rect(880, 170, 1020, 421, pale)
