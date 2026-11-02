@@ -24,10 +24,12 @@ if __package__:
     from .media_policy import usable_cached_photo
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial
+    from .editorial_starter import starter_picks
 else:
     from media_policy import usable_cached_photo
     from share_desk import select_candidates
     from serial_discovery import choose_serial
+    from editorial_starter import starter_picks
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -70,6 +72,35 @@ def check():
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
 
+    # Three hand-selected, real stories replace the duplicate category portals.
+    # This is not a popularity claim; no new calls, events, or privacy tracking.
+    sorted_articles=sorted(articles,key=lambda x:(
+        x.get("published_at") or x["source"]["published_at"],
+        x["source"]["published_at"]),reverse=True)
+    starters=starter_picks(
+        sorted_articles,{a["slug"] for a in sorted_articles[:4]},base=ROOT)
+    if starters:
+        section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
+        if not section:
+            raise RuntimeError("Editorial starter choices not deployed")
+        if section.group(0).count('class="starter-pick-card"')!=len(starters):
+            raise RuntimeError("Editorial starter card count incorrect")
+        if "人気ランキングではありません" not in section.group(0):
+            raise RuntimeError("Editorial starters must not misrepresent popularity")
+        for choice in starters:
+            slug=choice["article"]["slug"]
+            if ('href="/articles/'+slug+'/"' not in section.group(0) or
+                choice["hook"] not in section.group(0)):
+                raise RuntimeError("Published editorial choice not visible: "+slug)
+        if 'class="reading-ways"' in body:
+            raise RuntimeError("Duplicate starter portals were not removed")
+        news=re.search(r'<section class="section-block">.*?</section>',body,re.S)
+        if not news:
+            raise RuntimeError("Fresh-news grid is missing")
+        for choice in starters:
+            if 'href="/articles/'+choice["article"]["slug"]+'/"' in news.group(0):
+                raise RuntimeError("Editorial starter duplicated in fresh news")
+    
     # A saved reading list is opt-in, browser-local and not a thin SEO archive.
     # Only GETs: no visits, bookmark writes, analytics POSTs or paid services.
     saved_html, saved_mime = get("/saved/")
