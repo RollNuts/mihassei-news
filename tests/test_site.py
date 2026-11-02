@@ -215,7 +215,7 @@ class SiteTests(unittest.TestCase):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
         from scripts.build import social_image
-        self.assertTrue(social_image({"slug":"nonexistent-story"}).startswith("/og/brand.png"))
+        self.assertEqual(social_image(None),"/og/brand.png?v=20261102-2")
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
