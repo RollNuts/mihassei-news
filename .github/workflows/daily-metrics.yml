@@ -1,0 +1,41 @@
+name: Record free daily readership
+on:
+  schedule:
+    - cron: '7 16 * * *' # 01:07 JST next day; schedules may be delayed
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mihassei-daily-metrics
+  cancel-in-progress: false
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Capture GET-only public metrics for previous JST day
+        run: python3 scripts/record_metrics.py
+      - name: Commit anonymous aggregate snapshot, if new
+        run: |
+          git add analytics/daily/
+          if git diff --cached --quiet; then
+            echo "No new snapshot."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "analytics: capture previous JST day audience counters"
+            for attempt in 1 2 3; do
+              git pull --rebase origin main
+              if git push origin HEAD:main; then exit 0; fi
+              echo "Push race on attempt $attempt"
+              sleep 3
+            done
+            echo "::error::Failed to push daily snapshot without overwriting concurrent changes"
+            exit 1
+          fi
+      - name: Flag a completed day with no published articles
+        run: python3 scripts/record_metrics.py --check-only
