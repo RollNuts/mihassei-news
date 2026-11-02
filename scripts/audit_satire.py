@@ -19,7 +19,7 @@ CLUSTER_LIMIT = 10
 SIMILARITY_THRESHOLD = 0.68
 
 # These patterns intentionally detect only clearly named mechanical premises.
-WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
+WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|人工知能|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
 FORMAL_ANNOUNCEMENT = re.compile(r"発表|開始|導入|公表|明らかにした")
 MECHANICAL_ENDINGS = re.compile(
     r"担当者|広報|謝罪|却下|不合格|新制度|管理職|手続き|承認|申請|通知"
