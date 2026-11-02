@@ -657,3 +657,58 @@ body{
 .category-page-feed a{display:inline-block;padding:8px 0;font-weight:900;font-size:12px;color:var(--accent);text-decoration:underline;text-underline-offset:4px}
 @media(max-width:750px){.category-feed-subscriptions{grid-template-columns:1fr;gap:13px}.category-feed-links{justify-content:flex-start}}
 @media(max-width:600px){.category-feed-subscriptions{margin-top:29px;padding:20px 0}.category-feed-links a{padding:10px 12px}}
+
+
+/* Original serialized fiction. Typography-first and intentionally lightweight. */
+.serial-promo{margin-top:42px;padding-top:24px;border-top:2px solid var(--ink)}
+.serial-promo-intro{margin:3px 0 16px;color:var(--muted);font-size:12px;line-height:1.8}
+.serial-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.serial-tile{background:#f1efe8;border:1px solid #d0d0c5;border-top:4px solid #26362e;padding:23px 23px 20px;min-width:0}
+.serial-tile.serial-kind-mystery{border-top-color:#536b64}
+.serial-tile.serial-kind-market-fiction{border-top-color:#b47649}
+.serial-type{display:block;color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.07em}
+.serial-tile h3{font:900 clamp(22px,2.5vw,29px)/1.4 var(--serif);letter-spacing:-.05em;margin:9px 0}
+.serial-tile p{font-size:13px;line-height:1.8;margin:0 0 13px;color:#44534d}
+.serial-episode-name{display:block;font-size:11px;font-weight:800;color:var(--muted);line-height:1.7;margin:4px 0 14px}
+.serial-read{font-size:12px;font-weight:900;color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.serials-page{padding-top:32px}
+.serials-page .serial-grid{margin:28px 0 20px}
+.serials-page .serial-tile{padding:29px 27px}
+.serial-disclosure{font-size:11px!important;line-height:1.8!important;color:#58655c!important;max-width:68ch}
+.serial-header{margin:20px 0 36px;padding:29px 33px;background:#f0ede4;border-top:4px solid #586d64}
+.serial-header.serial-kind-market-fiction{border-top-color:#b47649}
+.serial-header h1{font:900 clamp(35px,4.8vw,52px)/1.45 var(--serif);letter-spacing:-.065em;margin:7px 0 12px}
+.serial-header>p{font-size:14px;line-height:1.9;max-width:67ch}
+.serial-header .serial-tagline{font-size:17px;font-family:var(--serif);font-weight:800}
+.serial-header .read-more{display:inline-block;margin-top:14px}
+.serial-chapter-index{margin:27px 0 38px}
+.serial-chapter-index ol{list-style:none;padding:0;margin:0}
+.serial-chapter-index li{padding:18px 0 20px;border-bottom:1px solid var(--line)}
+.serial-chapter-index li:first-child{border-top:1px solid var(--line)}
+.serial-chapter-link{display:flex;align-items:baseline;justify-content:space-between;gap:16px;font-family:var(--serif);font-size:19px;font-weight:900;line-height:1.5}
+.serial-chapter-link small{white-space:nowrap;font:700 11px var(--sans);color:var(--muted)}
+.serial-chapter-index li>p{margin:8px 0 0;font-size:12px;line-height:1.85;color:var(--muted)}
+.serial-reading{max-width:920px}
+.serial-article{margin:0 auto 80px;max-width:760px}
+.serial-article-header{border-bottom:1px solid var(--line);padding:20px 0 24px}
+.serial-article-header h1{font:900 clamp(32px,4.7vw,50px)/1.5 var(--serif);letter-spacing:-.06em;margin:13px 0}
+.serial-article-header .serial-teaser{font-family:var(--serif);font-size:17px;font-weight:700;line-height:1.85;color:#4b5a51}
+.serial-published{font-size:11px;color:var(--muted);margin:13px 0}
+.serial-body{padding:12px 0 10px}
+.serial-body p{font-family:var(--serif);font-size:clamp(16px,1.7vw,19px);letter-spacing:.015em;line-height:2.15;margin:24px 0;overflow-wrap:anywhere}
+.serial-body p:first-child::first-letter{font-size:1.36em;font-weight:900}
+.serial-endmark{text-align:center;margin:18px 0 32px;font-size:19px;color:#8d9489}
+.serial-next{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin:26px 0 23px;padding:19px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;font-weight:800}
+.serial-next span{color:var(--muted);font-weight:500}
+.serial-next a{color:var(--accent)}
+.serial-next a:hover,.serial-next a:focus-visible,.serial-chapter-link:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:700px){
+  .serial-grid{grid-template-columns:1fr;gap:10px}
+  .serial-tile,.serials-page .serial-tile{padding:20px 18px}
+  .serial-header{padding:22px 19px}
+  .serial-chapter-link{display:block}
+  .serial-chapter-link small{display:block;margin-top:3px}
+  .serial-reading{padding-top:25px}
+  .serial-article-header{padding-top:12px}
+}
+@media(max-width:480px){.serial-body p{line-height:2.05;font-size:17px}.serial-article{margin-bottom:48px}}
