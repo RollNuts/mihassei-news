@@ -170,14 +170,36 @@ def episode_label(series, number):
     return f"第{number}{'話' if series['kind'] == 'fiction' else '回'}"
 
 
+def progress_attributes(series):
+    """Only published, validated episode IDs; HTML escape the JSON attribute."""
+    episodes = [{"slug": ep["slug"], "number": ep["number"]} for ep in series["episodes"]]
+    data = json.dumps(episodes, ensure_ascii=False, separators=(",", ":"))
+    return (f'data-serial-progress-series data-series-id="{h(series["slug"])}" '
+            f'data-kind="{h(series["kind"])}" data-serial-episodes="{h(data)}"')
+
+
+def render_completed_reading(series, episode):
+    """Optional per-browser marker; never claim a page view is a completed read."""
+    return (f'<section class="serial-reading-marker" data-serial-progress-current '
+            f'data-series-id="{h(series["slug"])}" data-episode-id="{h(episode["slug"])}" '
+            'aria-label="自分の読了記録">'
+            '<div><strong>ここまで読んだら</strong>'
+            '<p>読み終えた回を自分で記録できます。次の回は連載一覧から探せます。</p></div>'
+            '<button type="button" data-serial-progress-toggle aria-pressed="false">この回を読了にする</button>'
+            '<p data-serial-progress-status role="status" aria-live="polite">保存は任意。閲覧だけでは記録しません。</p>'
+            '<small>読了情報はこのブラウザ内にのみ保存します。登録不要・サーバー送信なし。'
+            'ブラウザを変えたり保存データを消したりすると記録は戻りません。</small>'
+            '</section>')
+
+
 def _series_card(series):
     ep = series["episodes"][-1]
     latest = (f'<span class="serial-latest">{episode_label(series,ep["number"])}：{h(ep["title"])}</span>')
-    return (f'<article class="serial-card serial-card--{series["kind"]}">'
+    return (f'<article class="serial-card serial-card--{series["kind"]}" {progress_attributes(series)}>'
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
-            f'<p>{h(series["description"])}</p>{latest}'
+            f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span>'
             f'<a class="serial-link" href="{episode_url(series, ep)}">{episode_label(series,ep["number"])}を読む <span aria-hidden="true">→</span></a>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
             f'</div></article>')
@@ -210,13 +232,13 @@ def render_series_page(series, layout):
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     items = "".join(
         f'<li><a href="{episode_url(series, ep)}"><span>{episode_label(series,ep["number"])} <time datetime="{ep["published_at"]}">{ep["published_at"]}</time></span>'
-        f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small></a></li>'
+        f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small>'f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small></a></li>'
         for ep in episodes
     )
     state = ('架空の登場人物と事件を扱うオリジナル小説です。'
              if series["kind"] == "fiction" else
              '現実のデータを参照した分析です。架空ニュースとは異なり、見解には不確実性があります。')
-    main = (f'<div class="container serials-page"><nav class="serial-breadcrumb" aria-label="現在位置">'
+    main = (f'<div class="container serials-page" {progress_attributes(series)}><nav class="serial-breadcrumb" aria-label="現在位置">'
             f'<a href="/">トップ</a> / <a href="/serials/">連載</a> / {h(series["title"])}</nav>'
             f'<header class="serial-series-hero serial-series-hero--{series["kind"]}">'
             f'<div class="serial-series-media">{_cover_img(series, loading="eager")}</div>'
@@ -224,7 +246,7 @@ def render_series_page(series, layout):
             f'<h1>{h(series["title"])}</h1><p class="serial-series-subtitle">{h(series["subtitle"])}</p>'
             f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}'
             + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
-            f'</span></div></header><p class="serials-disclosure">{state}</p>'
+            f'</span><div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span></div></div></header><p class="serials-disclosure">{state}</p>'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
@@ -331,7 +353,7 @@ def render_episode_page(series, ep, layout):
             f'<div class="serial-epilogue"><p>{h(ep.get("followup_note",""))}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
-            f'{navigation}<a class="serial-back-link" href="{series_url(series)}">連載一覧に戻る →</a>'
+            f'{render_completed_reading(series, ep)}{navigation}<a class="serial-back-link" href="{series_url(series)}">連載一覧に戻る →</a>'
             f'</div></div>')
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
