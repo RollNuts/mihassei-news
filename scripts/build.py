@@ -314,7 +314,17 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
         })
         if article.get("modified_at"):
             metadata["dateModified"] = article["modified_at"]
-    ld = json.dumps(metadata, ensure_ascii=False).replace("</", "<\\/")
+    schemas = [metadata]
+    if kind == "story" and article is not None:
+        schemas.append({
+            "@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "トップ", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": "記事一覧", "item": SITE + "/archive/"},
+                {"@type": "ListItem", "position": 3, "name": article["title"], "item": SITE + path},
+            ]
+        })
+    ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f7f4ec">
@@ -370,7 +380,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
-<a href="/feed.xml">RSS</a><a href="/privacy/">プライバシー</a></div></div>
+<a href="/editorial/">編集方針</a><a href="/feed.xml">RSS</a><a href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">公式X</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
 <span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
@@ -382,6 +392,15 @@ def home(articles):
                    f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
                    for x in articles[1:4])
     recent = "".join(card(x) for x in articles[1:10])
+    featured_categories = curated_categories(articles)
+    genre_links = []
+    for cat in CATEGORIES[1:]:
+        count = sum(x["category"] == cat for x in articles)
+        if count == 0:
+            continue
+        href = category_url(cat) if cat in featured_categories else "/archive/?category=" + quote(cat)
+        genre_links.append(f'<a href="{escape(href)}">{escape(cat)} <span>{count}本</span></a>')
+    genre_links = "".join(genre_links)
     line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
                    f'{escape(x["title"])}</a>' for x in articles[:5])
     issue_options = escape(json.dumps(
@@ -419,6 +438,10 @@ def home(articles):
       <a data-issue-link href="/archive/" hidden>記事を読む ↗</a>
     </div>
   </div>
+</section>
+<section class="genre-explore" aria-label="ジャンル別に記事を探す">
+<div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
+<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
 <section class="section-block"><div class="section-head"><h2>ほかのニュース</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
@@ -470,13 +493,21 @@ def story(a, articles):
     src = a["source"]
     # Show a small edited set, never pretend these are actually the most-read stories.
     related_list = [x for x in articles if x["slug"] != a["slug"]]
-    related_list.sort(key=lambda x: (x["category"] != a["category"], -datetime.fromisoformat(x["source"]["published_at"]).timestamp()))
+    # Recommend actual published stories, favoring the same category; a newly
+    # published story with an older inspiration source must not be buried.
+    related_list.sort(key=publication_date, reverse=True)
+    related_list.sort(key=lambda x: x["category"] != a["category"])
     related = "".join(card(x) for x in related_list[:3])
+    next_story = related_list[0] if related_list else None
+    next_url = article_url(next_story) if next_story else "/archive/"
+    next_title = next_story["title"] if next_story else "記事一覧から次のニュースを探す"
+    next_category = next_story["category"] if next_story else "新着記事"
     text_len = sum(len(p) for p in a["paragraphs"])
     read_minutes = max(1, (text_len + 449) // 450)
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
 <header class="article-header">
+<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a><span aria-hidden="true"> / </span><a href="/archive/">記事一覧</a><span aria-hidden="true"> / </span><span aria-current="page">この記事</span></nav>
 <div class="article-edition"><span>未発生新聞 {escape(a["category"])}部</span><span class="edition-tag">創作ニュース</span></div>
 <div class="article-dateline">{category_meta(a)}<span class="article-year">{escape(a["fiction_at"][:4])}年号</span></div>
 <h1>{escape(a["title"])}</h1>
@@ -496,7 +527,17 @@ def story(a, articles):
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
 </section>
+<nav class="reader-next" aria-label="続けて読む記事">
+<span class="reader-next-kicker">NEXT STORY / 続けて読む · {escape(next_category)}</span>
+<a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
+</nav>
 <div class="article-end"><span class="reporter">未発生新聞</span><a href="/archive/">記事一覧へ ↗</a></div>
+<section class="reader-follow" aria-label="更新を読む">
+<div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
+<p>新作はRSSで確認できます。Xでも未発生新聞をチェック。</p></div>
+<div class="reader-follow-links">
+<a class="reader-follow-x" href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">公式Xを見る ↗</a>
+<a href="/feed.xml">RSSで購読 ↗</a></div></section>
 </article></div>
 <section class="article-related"><div class="section-head"><h2>あわせて読む</h2><a href="/archive/">ほかの記事 ↗</a></div>
 <div class="story-grid">{related}</div></section>
@@ -517,9 +558,33 @@ def about():
 <p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
 <h2>今日も、未発生。</h2>
 <p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
-<p>「未来を見にきた人」と「いいね」は匿名のブラウザ単位の集計です。実際の人数とは一致しない場合があります。</p><p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
+<p>「未来を見にきた人」と「いいね」は匿名のブラウザ単位の集計です。実際の人数とは一致しない場合があります。</p>
+<p><a href="/editorial/" style="text-decoration:underline">編集方針と記事の作り方を読む ↗</a></p>
+<p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
     return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
+
+def editorial_policy():
+    """Public disclosure of the creative process and commercial independence."""
+    content = '''<div class="container archive-page">
+<header class="page-intro"><span class="eyebrow">EDITORIAL POLICY</span>
+<h1>編集方針・記事の作り方</h1><p>現実を入り口に、未来を創作する。その境界を明確にします。</p></header>
+<div class="about-copy">
+<h2>本紙の記事は、すべて創作です。</h2>
+<p>未発生新聞は、現実の話題から着想した「5年後の架空ニュース」を届ける風刺・創作メディアです。記事に登場する企業、人物、発言、制度、事件、数値はフィクションであり、未来の予測や実際の報道ではありません。</p>
+<h2>生成AIと自動化の利用</h2>
+<p>公開されたニュースを着想元として探し、生成AIを文章づくりの補助に活用しています。更新や公開の工程にも自動化を取り入れています。AIによる文章や着想には誤りや表現の偏りが起こりうるため、元の話題へのリンク、記事の創作表示、形式・重複などの確認を設けています。掲載後も必要に応じて修正します。</p>
+<p>実在する人物や企業が架空の不祥事を起こしたかのように見せることは避け、創作部分の固有名詞は原則として架空のものを用います。</p>
+<h2>出典と創作の境界</h2>
+<p>着想元の現実のニュースは、各記事末尾の「この記事の着想元」から確認できます。着想元の報道が、記事内の創作内容を裏付けているわけではありません。元記事の本文や写真を無断転載せず、写真素材は使用条件とクレジットを確認し、架空の出来事の記録写真と誤認されないように表示します。</p>
+<h2>広告・アフィリエイトについて</h2>
+<p>現在は広告の自動配信を行っていません。将来、広告やアフィリエイトリンクを掲載する場合は、記事内容との区別と広告・PRの表示を行い、読みにくいほど広告を増やす運用は避けます。収益や検索順位を保証するものではありません。</p>
+<h2>運営者・訂正の連絡</h2>
+<p>運営アカウント：<a href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">RollNuts / 0組（@Veripsa）</a>。出典の誤り、権利上の問題、記事の訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>からお知らせください。公開フォームのため個人情報は書かないでください。</p>
+<p><a href="/about/" style="text-decoration:underline">未発生新聞について ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
+</div></div>'''
+    return layout("編集方針・記事の作り方","未発生新聞の創作ニュース制作、生成AIの利用、出典、広告と訂正に関する編集方針。","/editorial/",content)
+
 
 def privacy():
     content='''<div class="container archive-page"><header class="page-intro">
@@ -541,7 +606,7 @@ def privacy():
 
 def other_files(articles):
     latest = max((modification_date(a) for a in articles), default=None)
-    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/privacy/", None)]
+    routes = [("/", latest), ("/archive/", latest), ("/about/", None), ("/editorial/", None), ("/privacy/", None)]
     routes.extend((category_url(category),
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
@@ -661,6 +726,7 @@ def build():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("index.html",home(articles))
     write("about/index.html",about())
+    write("editorial/index.html",editorial_policy())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     for category, items in curated_categories(articles).items():
