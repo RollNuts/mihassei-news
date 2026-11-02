@@ -58,12 +58,16 @@ def check():
     # image. The first published social preview may be cached by X.
     for tag in (
         'name="twitter:card" content="summary_large_image"',
-        'name="twitter:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',
-        'property="og:image" content="https://veripsa.com/og/brand.png?v=20261102-2"',
+        'name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
+        'property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
     ):
         if tag not in body:
             raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
-    image, image_mime=get("/og/brand.png?v=20261102-2")
+    image, image_mime=get("/og/brand-launch-20261102-v3.png")
+    # A clean launch URL forces a new card fetch instead of reusing old cached metadata.
+    share,mime=get("/?src=x-launch-20261102-v3")
+    if "text/html" not in mime or 'name="twitter:image" content="https://veripsa.com'+fresh+'"' not in share.decode("utf-8"):
+        raise RuntimeError("Cache-busting X share link is not published")
     if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
         raise RuntimeError("X card brand image missing or invalid PNG")
 
