@@ -282,7 +282,7 @@ def serial_rss(serial):
             ("title",episode["title"]+" | "+serial["title"]+"（創作）"),
             ("link",SITE+serial_episode_url(serial,episode)),
             ("guid",SITE+serial_episode_url(serial,episode)),
-            ("description",episode["teaser"]+" "+serial["disclaimer"])):
+            ("description",episode["teaser"]+" ※創作連載です。 "+serial["disclaimer"])):
             ET.SubElement(item,tag).text=value
     return ET.tostring(root,encoding="unicode")
 
