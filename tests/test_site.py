@@ -19,7 +19,7 @@ class SiteTests(unittest.TestCase):
     def test_core_files(self):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
-                  "sitemap.xml","editorial/index.html","assets/style.css","assets/site.js",
+                  "sitemap.xml","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
                   "assets/article-extra.css","assets/newsroom.css","assets/engagement.js",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
@@ -44,6 +44,26 @@ class SiteTests(unittest.TestCase):
         verify_launch_card(root_page,social_image(None))
         with self.assertRaises(RuntimeError):
             verify_launch_card('<html><head></head></html>',social_image(None))
+
+    def test_public_sponsorship_contact_with_no_premature_ad_placement(self):
+        import html
+        commercial=(ROOT/"dist/advertise/index.html").read_text(encoding="utf-8")
+        for item in ("広告・協賛のご案内", "フィクション", "広告", "PR",
+                     "記事の文章", "掲載期間", "保証しません",
+                     "一般に公開", "個人のメールアドレス",
+                     "github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml"):
+            self.assertIn(item,html.unescape(commercial))
+        for prohibited in ("adsbygoogle.js", "data-ad-client=", "広告を表示中"):
+            self.assertNotIn(prohibited, commercial)
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        editorial=(ROOT/"dist/editorial/index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/advertise/"',home)
+        self.assertIn('href="/advertise/"',editorial)
+        sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("https://veripsa.com/advertise/",sitemap)
+        template=(ROOT/".github/ISSUE_TEMPLATE/sponsorship.yml").read_text(encoding="utf-8")
+        for token in ("公開される", "機密情報", "required: true", "public-name"):
+            self.assertIn(token,template)
 
     def test_adsense_ownership_without_running_ads(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
