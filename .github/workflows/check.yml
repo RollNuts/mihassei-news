@@ -25,6 +25,7 @@ jobs:
           node --check assets/site.js
           node --check assets/engagement.js
           node --check assets/comments.js
+          node --check assets/comment-activity.js
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
