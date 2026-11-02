@@ -23,9 +23,11 @@ from xml.etree import ElementTree as ET
 if __package__:
     from .media_policy import usable_cached_photo
     from .share_desk import select_candidates
+    from .serial_discovery import choose_serial
 else:
     from media_policy import usable_cached_photo
     from share_desk import select_candidates
+    from serial_discovery import choose_serial
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -96,6 +98,10 @@ def check():
     serial_index=serial_hub.decode("utf-8")
     if "text/html" not in serial_type or "物語を追う。未来を検証する。" not in serial_index:
         raise RuntimeError("Live serial index was not deployed")
+    if ('<title>連載一覧 | 未発生新聞（創作と市場分析の連載）</title>' not in serial_index or
+        '"@type": "ItemList"' not in serial_index or
+        '"@type": "BreadcrumbList"' not in serial_index):
+        raise RuntimeError("Serial index lacks clear non-fiction/fiction SEO labels")
     live_sitemap=get("/sitemap.xml")[0].decode("utf-8")
     if SITE+"/saved/" in live_sitemap:
         raise RuntimeError("Private saved list should not be indexed")
@@ -108,6 +114,9 @@ def check():
         series_markup,series_type=get(prefix)
         if "text/html" not in series_type or serial["title"] not in series_markup.decode("utf-8"):
             raise RuntimeError("Series detail page missing: "+prefix)
+        if ('"@type": "ItemList"' not in series_markup.decode("utf-8") or
+            '"@type": "BreadcrumbList"' not in series_markup.decode("utf-8")):
+            raise RuntimeError("Series overview missing chapter list or breadcrumb schema: "+prefix)
         svg,svg_mime=get(prefix+"cover.svg")
         if not svg.startswith(b"<svg") or "svg" not in svg_mime:
             raise RuntimeError("Generated original serial cover unavailable: "+prefix)
@@ -156,6 +165,10 @@ def check():
                     raise RuntimeError("Serial live metadata incomplete: "+path+" "+tag)
             if url not in live_sitemap:
                 raise RuntimeError("Serial episode missing from sitemap: "+path)
+            if ('"isPartOf": {"@type": "CreativeWorkSeries"' not in page or
+                '"@type": "BreadcrumbList"' not in page or
+                '"name": "'+serial["title"]+'"' not in page):
+                raise RuntimeError("Serial chapter lost structured parent/breadcrumb: "+path)
             png,png_mime=get("/og/serials/"+serial["slug"]+"-"+ep["slug"]+".png")
             if not png.startswith(b"\x89PNG\r\n\x1a\n") or "image/png" not in png_mime or len(png)<1500:
                 raise RuntimeError("Serial X card not served as a proper PNG: "+path)
@@ -420,6 +433,20 @@ def check():
             raise RuntimeError(slug+": canonical page not linked from structured article")
         if metadata.get("dateModified")!=(item.get("modified_at") or published):
             raise RuntimeError(slug+": real modification timestamp missing or fictional")
+        # Only link to a real serial episode, with a clear editorial boundary.
+        chosen_serial=choose_serial(item,serials)
+        if chosen_serial:
+            latest_chapter=chosen_serial["episodes"][-1]
+            recommended_path="/serials/"+chosen_serial["slug"]+"/"+latest_chapter["slug"]+"/"
+            for required in ('class="article-serial-bridge"',
+                             'href="'+recommended_path+'"',
+                             '/serials/'+chosen_serial["slug"]+'/cover.svg',
+                             "この記事の架空の出来事を裏付けるものではなく" if chosen_serial["kind"]=="analysis"
+                             else "この記事の続報ではなく"):
+                if required not in page:
+                    raise RuntimeError(slug+": editorial serial discovery is not published: "+required)
+        elif 'class="article-serial-bridge"' in page:
+            raise RuntimeError(slug+": unrelated serial was forced into fictional news")
         next_link=re.search(r'<a href="(/articles/([^/]+)/|/archive/)" class="reader-next-title">',page)
         if not next_link or next_link.group(2)==slug:
             raise RuntimeError(slug+": article continuation links to itself or is missing")
