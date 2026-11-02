@@ -35,7 +35,8 @@ SUBJECT_KEYWORDS = (
     ("security", ("漏洩", "流出", "情報保護", "セキュリティ", "謝罪")),
     ("robot", ("ロボット", "工場", "製造装置")),
     ("laboratory", ("研究所", "研究室", "開所")),
-    ("meeting", ("会議", "議長", "役員", "管理職")),
+    ("meeting", ("会議", "議長", "役員", "管理職", "会見", "説明会")),
+    ("fandom", ("推し", "コラボグッズ", "アイドルグッズ", "ファンイベント")),
 )
 ART_FALLBACK = {
     "notice": "newspaper", "cards": "document",
@@ -46,6 +47,13 @@ ART_FALLBACK = {
 # The icons are deliberately stylized. An illustrative phone, for example,
 # cannot be mistaken for a photo documenting a real phone company or incident.
 ICONS = {
+    "fandom": '''
+      <rect x="40" y="73" width="187" height="135" rx="13"/>
+      <path d="M59 100h149M67 184h133"/>
+      <path d="M130 167l-44-39c-16-17 3-42 25-23l19 16 19-16c22-19 41 6 25 23z"/>
+      <path d="M65 47l7-20m123 20l-7-20M134 40V19"/>
+      <circle cx="130" cy="147" r="89" stroke-opacity=".20"/>
+    ''',
     "telephone": '''
       <rect x="73" y="22" width="114" height="192" rx="20"/>
       <path d="M107 49h46M105 177h50"/>
