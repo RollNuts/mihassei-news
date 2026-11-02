@@ -14,8 +14,10 @@ from urllib.parse import urlencode, urlsplit
 
 if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
+    from .forecast_ledger import render_forecast_ledger
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
+    from forecast_ledger import render_forecast_ledger
 
 
 def h(value):
@@ -172,7 +174,7 @@ def render_series_page(series, layout):
             + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
             f'</span></div></header><p class="serials-disclosure">{state}</p>'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2></div>'
-            f'<ol>{items}</ol></section></div>')
+            f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
     return layout(series["title"], series["description"], series_url(series), main, active="serials",
                   serial={"slug": series["slug"], "kind": series["kind"]})
 
@@ -215,7 +217,7 @@ def render_episode_page(series, ep, layout):
                   f'<p><strong>検証日：</strong><time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time>'
                   f'／ 判定状況：{h(fc["status"])}</p>'
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
-                  f'</aside><section class="serial-references"><h2>参照した公開資料</h2>'
+                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">公開予想の検証台帳を確認する ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol><p>数値・見通しは参照資料に基づきますが、株価についての見立ては編集上の仮説です。</p></section>')
     navigation = (
         '<nav class="serial-next-prev" aria-label="連載の前後の話">'
