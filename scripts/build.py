@@ -352,8 +352,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/article-extra.css">
 <link rel="stylesheet" href="/assets/newsroom.css">
+<link rel="stylesheet" href="/assets/comments.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
+<script defer src="/assets/comments.js"></script>
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
@@ -538,7 +540,24 @@ def story(a, articles):
 <div class="reader-follow-links">
 <a class="reader-follow-x" href="https://x.com/Veripsa" target="_blank" rel="noopener noreferrer external">公式Xを見る ↗</a>
 <a href="/feed.xml">RSSで購読 ↗</a></div></section>
-</article></div>
+</article>
+<section class="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
+<div class="reader-comments-heading">
+<span class="eyebrow">READERS' VOICES / 読者の声</span>
+<h2 id="comments-heading">未来の読者からの声 <small data-comments-count></small></h2>
+<p>架空ニュースへのツッコミや未来予想をどうぞ。ニックネームで投稿できます。投稿内容は公開されます。</p>
+</div>
+<div class="reader-comments-list" data-comments-list></div>
+<p class="reader-comments-status" data-comments-status role="status">コメントを準備しています…</p>
+<form class="reader-comments-form" data-comments-form>
+<label for="reader-nickname">ニックネーム <span>（任意・16文字以内）</span></label>
+<input id="reader-nickname" name="nickname" type="text" maxlength="16" autocomplete="nickname" placeholder="匿名の未来人">
+<label for="reader-body">コメント</label>
+<textarea id="reader-body" name="body" minlength="2" maxlength="180" rows="3" required placeholder="未来のニュースにひとこと…"></textarea>
+<div class="comment-form-footer"><span>2〜180文字／URL・個人情報・誹謗中傷の投稿は禁止。スパム対策の投稿制限があります。</span>
+<button type="submit">コメントを投稿</button></div>
+</form>
+</section></div>
 <section class="article-related"><div class="section-head"><h2>あわせて読む</h2><a href="/archive/">ほかの記事 ↗</a></div>
 <div class="story-grid">{related}</div></section>
 </div>'''
@@ -592,8 +611,11 @@ def privacy():
 <p>ニュースは架空。数字は実測。</p></header>
 <div class="about-copy">
 <h2>アクセスといいね</h2>
-<p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。個人名やメールアドレスは集めません。</p>
+<p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。アクセス計測のために氏名やメールアドレスの登録は求めません。</p>
 <p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
+<h2>読者コメントについて</h2>
+<p>記事へのコメントはニックネーム（省略可能）と本文、投稿日時を公開します。本文は180文字以内で、URLや個人情報の記載は禁止しています。匿名のブラウザ識別子をハッシュ化して保存し、連続投稿防止・自分の投稿の削除・通報の重複防止に使用します。IPアドレスやメールアドレスをコメントデータベースに保存しません。</p>
+<p>3件の異なるブラウザから通報があると、一時的に非表示になります。運営者は不適切な投稿を非表示・削除することがあります。自分の投稿は同じブラウザから削除できます。履歴を削除すると操作できなくなることがあります。</p>
 <h2>外部サービス</h2>
 <p>サイトの公開・集計にはCloudflareを使用します。記事の一部にはUnsplashで公開された商用利用可能な写真を使用しており、表示時にUnsplashへ通信する場合があります。Xへの共有を選択した場合、Xのページへ移動します。</p>
 <h2>広告について</h2>
