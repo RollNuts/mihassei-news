@@ -855,6 +855,8 @@ def other_files(articles, issues=None):
         if modified:
             ET.SubElement(node, "lastmod").text = modified
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
+    media_ns="http://search.yahoo.com/mrss/"
+    ET.register_namespace("media",media_ns)
     rss=ET.Element("rss", version="2.0")
     channel=ET.SubElement(rss,"channel")
     for name, value in (("title","未発生新聞 | 創作ニュース"),("description","5年後の世界を真顔で報じる創作ニュース。"),("link",SITE),("language","ja")):
@@ -870,11 +872,25 @@ def other_files(articles, issues=None):
             fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
         for tag, value in fields:
             ET.SubElement(n,tag).text=value
+        # First-party raster previews let feed readers show a real image for
+        # each article without fetching off-site content or using paid APIs.
+        image=SITE+social_image(a)
+        approved=usable_cached_photo(a,root=BASE)
+        thumb={"url":image}
+        if not approved:
+            thumb.update({"width":"1200","height":"630"})
+        ET.SubElement(n,f"{{{media_ns}}}thumbnail",thumb)
+        ET.SubElement(n,f"{{{media_ns}}}content",{
+            "url":image, "medium":"image",
+            "type":"image/jpeg" if approved else "image/png"
+        })
+        if approved:
+            ET.SubElement(n,f"{{{media_ns}}}credit",{"role":"photographer"}).text=a["photo"]["credit"]
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
-    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n")
+    write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n")
 
 
 
@@ -996,6 +1012,8 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    # Human visual quality audit stays separate from the public news navigation.
+    write("image-review/index.html",image_review_page(articles))
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))
