@@ -232,7 +232,7 @@ def home(articles):
 <div class="section-head"><h2>今日から5年後の見出し</h2><span class="small-label red">FIVE YEARS LATER / FICTION</span></div>
 <section class="hero-grid"><article class="lead">
 <a class="lead-media" href="{article_url(a)}"><img src="/images/{a["slug"]}.svg" alt="架空ニュースのオリジナルイラスト">
-<div class="overlay"><span class="issue-code">SPECIAL / FICTION</span><span class="large-year">2031</span></div></a>
+<div class="overlay"><span class="issue-code">SPECIAL / FICTION</span><span class="large-year">{escape(a["fiction_at"][:4])}</span></div></a>
 <div style="margin-top:20px">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p><a class="read-more" href="{article_url(a)}">架空の記事を読む</a>
@@ -332,7 +332,7 @@ def other_files(articles):
         n=ET.SubElement(channel,"item")
         for tag,value in (("title","【架空ニュース】"+a["title"]),("link",SITE+article_url(a)),
                           ("guid",SITE+article_url(a)),("description",a["summary"]+" ※本記事はフィクションです。"),
-                          ("pubDate",format_datetime(datetime.fromisoformat(a["source"]["published_at"]))))):
+                          ("pubDate",format_datetime(datetime.fromisoformat(a["source"]["published_at"])))):
             ET.SubElement(n,tag).text=value
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
     write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
