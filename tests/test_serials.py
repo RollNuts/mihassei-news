@@ -57,8 +57,11 @@ class SerialTests(unittest.TestCase):
         for serial,expected in ((mystery,"第1話"),(market,"第1回")):
             html=(ROOT/"dist/serials"/serial["slug"]/serial["episodes"][0]["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn(expected,html)
-            self.assertIn("市場シナリオ" if serial["kind"]=="analysis" else "創作推理小説",
-                          __import__("scripts.serials",fromlist=["_share_link"])._share_link(serial,serial["episodes"][0]))
+            from urllib.parse import urlsplit, parse_qs
+            from scripts.serials import _share_link
+            share=_share_link(serial,serial["episodes"][0])
+            draft=parse_qs(urlsplit(share).query)["text"][0]
+            self.assertIn("市場シナリオ" if serial["kind"]=="analysis" else "創作推理小説", draft)
 
         class RecordingCanvas:
             def __init__(self):
