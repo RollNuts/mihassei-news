@@ -277,7 +277,7 @@ def layout(title, desc, path, main, active="", kind="website", record=None):
     published_meta = (f'<meta property="article:published_time"'
                       f' content="{escape(record["published_on"])}">'
                       if record and record.get("published_on") else "")
-    og_width = '{og_width}' if not photo_meta else ""
+    og_width = '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">' if not photo_meta else ""
     ld = json.dumps(metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -572,7 +572,8 @@ def build():
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
     write("index.html",home(articles))
-    write("about/index.html",about())\n    write("privacy/index.html",privacy())
+    write("about/index.html",about())
+    write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     for a in articles:
         write("articles/"+a["slug"]+"/index.html",story(a,articles))
