@@ -794,3 +794,49 @@ body{
   .saved-controls button,.saved-controls a{width:100%;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){.bookmark-button{transition:none}}
+
+/* Editorial focus: optional mechanics stay available, but no longer compete
+   with the chosen story, fresh headlines, and the two serials. */
+.extras-shelf{
+  margin:56px 0 0;
+  border-top:1px solid #d8ded4;
+  border-bottom:1px solid #d8ded4;
+}
+.extras-shelf>summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:20px 2px;
+  color:#33483b;
+}
+.extras-shelf>summary::-webkit-details-marker{display:none}
+.extras-shelf>summary:focus-visible{outline:2px solid #36684d;outline-offset:4px}
+.extras-eyebrow{
+  font:750 10px var(--sans);
+  letter-spacing:.12em;
+  color:#9f4437;
+}
+.extras-shelf>summary strong{font-size:15px;line-height:1.6;font-weight:750}
+.extras-open{
+  margin-left:auto;
+  font:400 24px var(--sans);
+  line-height:1;
+  transition:transform .2s ease;
+}
+.extras-shelf[open] .extras-open{transform:rotate(45deg)}
+.extras-shelf-body{padding:0 0 25px}
+.extras-shelf-body .daily-issues-section{margin-top:18px}
+.extras-shelf-body .free-follow,
+.extras-shelf-body .special-edition,
+.extras-shelf-body .reader-discussions{margin-top:29px}
+@media(max-width:660px){
+  .extras-shelf{margin-top:38px}
+  .extras-shelf>summary{gap:8px;flex-wrap:wrap;padding:17px 2px}
+  .extras-eyebrow{flex-basis:100%}
+  .extras-shelf>summary strong{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .extras-open{transition:none}
+}

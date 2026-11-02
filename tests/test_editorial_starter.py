@@ -37,8 +37,12 @@ class EditorialStarterTests(unittest.TestCase):
         self.assertEqual(opening.count('class="starter-pick-card"'),3)
         self.assertIn('class="starter-pick-image"',opening)
         self.assertIn('width="1200" height="675"',opening)
+        from scripts.build import editorial_lead
+        lead=editorial_lead(self.articles)
+        remaining=[a for a in self.articles if a["slug"]!=lead["slug"]]
+        excluded={lead["slug"],*(a["slug"] for a in remaining[:3])}
         slugs=[x["article"]["slug"] for x in starter_picks(
-            self.articles,{x["slug"] for x in self.articles[:4]},base=BASE)]
+            self.articles,excluded,base=BASE)]
         for slug in slugs:
             expected='href="/articles/'+slug+'/"'
             self.assertIn(expected,opening)
