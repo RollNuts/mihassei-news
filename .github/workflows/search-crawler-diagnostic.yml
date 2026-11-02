@@ -53,8 +53,11 @@ jobs:
           grep -iE '^(HTTP/|content-type:|cf-ray:|server:)' /tmp/x-headers | head -12
           grep -oiE '<meta[^>]+(twitter:|og:)[^>]*>' /tmp/x-html | head -24 || true
           curl --compressed -sS -L -D /tmp/x-image-headers -o /tmp/x-image -A 'Twitterbot/1.0' --connect-timeout 10 --max-time 18 \
-            -w "IMAGE HTTP=%{http_code} bytes=%{size_download} mime=%{content_type}\n" https://veripsa.com/og/brand.png
+            -w "IMAGE HTTP=%{http_code} bytes=%{size_download} mime=%{content_type}\n" https://veripsa.com/og/brand-launch-20261102-v3.png
           grep -iE '^(HTTP/|content-type:|cf-ray:|server:)' /tmp/x-image-headers | head -12
           file /tmp/x-image
           od -An -tx1 -N8 /tmp/x-image
           echo "===== Test complete; genuine Google crawler IP must be checked in Cloudflare Security Events ====="
+
+      - name: Assert X preview metadata and image delivery (read-only)
+        run: python3 scripts/check_share_cards.py
