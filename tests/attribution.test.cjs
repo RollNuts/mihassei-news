@@ -35,6 +35,7 @@ async function classifyArrival(href,referrer=''){
 test('X UTM campaigns are observed without sending arbitrary URL data',async()=>{
   assert.equal(await classifyArrival('https://veripsa.com/articles/test/?utm_source=x&utm_medium=social'), 'x');
   assert.equal(await classifyArrival('https://veripsa.com/?utm_source=twitter'), 'x');
+  assert.equal(await classifyArrival('https://veripsa.com/?src=x-launch-20261102-v3'), 'x');
 });
 
 test('common social and search referrers map to coarse categories',async()=>{
@@ -52,6 +53,8 @@ test('internal movement is not misleadingly counted as a new arrival',async()=>{
   assert.equal(await classifyArrival('https://veripsa.com/articles/test/','https://veripsa.com/archive/'), null);
 });
 
-test('unrecognised utm_source cannot create arbitrary categories',async()=>{
+test('unrecognised campaign markers cannot invent categories',async()=>{
   assert.equal(await classifyArrival('https://veripsa.com/?utm_source=unspecified','https://veripsa.com/'), null);
+  assert.equal(await classifyArrival('https://veripsa.com/?src=unrelated','https://veripsa.com/'), null);
+  assert.equal(await classifyArrival('https://veripsa.com/?src=x-launch-missing-version','https://veripsa.com/'), null);
 });
