@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import tempfile
 import re
 import struct
 import subprocess
@@ -41,7 +42,7 @@ class SerialTests(unittest.TestCase):
             self.assertIn(s["title"], home)
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
-            self.assertIn("公開済み 1話", series_html)
+            self.assertIn("公開済み "+str(len(s["episodes"]))+"話", series_html)
             self.assertNotIn('href="/serials/'+s["slug"]+'/nonexistent', series_html)
 
     def test_episodes_canonical_dates_schema_and_first_party_images(self):
@@ -61,8 +62,11 @@ class SerialTests(unittest.TestCase):
                 self.assertIn('"@type": "Article"', page)
                 self.assertIn('href="/serials/'+s["slug"]+'/"', page)
                 self.assertIn('src="/serials/'+s["slug"]+'/cover.svg"', page)
-                self.assertIn('次回は未公開', page)
-                self.assertNotIn('href="/serials/'+s["slug"]+'/02-', page)
+                if e is s["episodes"][-1]:
+                    self.assertIn("次回は未公開", page)
+                else:
+                    upcoming=s["episodes"][s["episodes"].index(e)+1]
+                    self.assertIn('href="/serials/'+s["slug"]+'/'+upcoming["slug"]+'/"',page)
                 image = (ROOT / "dist" / png.lstrip("/")).read_bytes()
                 self.assertEqual(image[:8], b"\x89PNG\r\n\x1a\n")
                 self.assertEqual(struct.unpack(">II", image[16:24]), (1200,630))
@@ -114,6 +118,87 @@ class SerialTests(unittest.TestCase):
             self.assertEqual(root.attrib["viewBox"], "0 0 1200 675")
             self.assertNotIn("<script", cover.read_text(encoding="utf-8"))
         self.assertNotIn("2027-02-04", " ".join(mapped.keys()))
+
+    def test_serial_rss_is_specific_safe_and_updates_with_published_chapters(self):
+        from scripts.serials import serial_feed_xml, serial_feed_url
+        ns={"atom":"http://www.w3.org/2005/Atom",
+            "media":"http://search.yahoo.com/mrss/"}
+        hub=(ROOT/"dist/serials/index.html").read_text(encoding="utf-8")
+        sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
+        headers=(ROOT/"dist/_headers").read_text(encoding="utf-8")
+        self.assertIn("/feeds/*",headers)
+        self.assertIn("X-Robots-Tag: noindex",headers)
+        for series in self.data:
+            feed=serial_feed_url(series)
+            self.assertEqual(feed,"/feeds/series-"+series["slug"]+".xml")
+            self.assertIn('href="'+feed+'"',hub)
+            overview=(ROOT/"dist/serials"/series["slug"]/"index.html").read_text(encoding="utf-8")
+            self.assertIn('href="'+feed+'"',overview)
+            self.assertIn('rel="alternate" type="application/rss+xml"',overview)
+            self.assertNotIn("https://veripsa.com"+feed,sitemap,
+                             "RSS shouldn't be indexed as an article page")
+            source=ROOT/"dist"/feed.lstrip("/")
+            self.assertTrue(source.is_file())
+            rss=ET.parse(source).getroot()
+            channel=rss.find("channel")
+            self.assertIn(series["title"],channel.findtext("title"))
+            self.assertEqual(channel.findtext("language"),"ja")
+            atom=channel.find("atom:link",ns)
+            self.assertIsNotNone(atom)
+            self.assertEqual(atom.get("href"),"https://veripsa.com"+feed)
+            self.assertEqual(atom.get("rel"),"self")
+            self.assertEqual(atom.get("type"),"application/rss+xml")
+            entries=channel.findall("item")
+            self.assertEqual(len(entries),min(len(series["episodes"]),30))
+            for entry,ep in zip(entries,reversed(series["episodes"][-30:])):
+                url="https://veripsa.com/serials/"+series["slug"]+"/"+ep["slug"]+"/"
+                self.assertEqual(entry.findtext("link"),url)
+                self.assertEqual(entry.findtext("guid"),url)
+                self.assertIn(series["title"],entry.findtext("title"))
+                self.assertIn("投資助言" if series["kind"]=="analysis" else "創作",
+                              entry.findtext("description"))
+                self.assertIsNone(entry.find("pubDate"),
+                    "Don't invent a midnight release time from a date-only record")
+                thumb=entry.find("media:thumbnail",ns)
+                media=entry.find("media:content",ns)
+                self.assertIsNotNone(thumb)
+                self.assertIsNotNone(media)
+                image=("https://veripsa.com/og/serials/"+series["slug"]+"-"+ep["slug"]+".png")
+                self.assertEqual(thumb.get("url"),image)
+                self.assertEqual(media.get("url"),image)
+                self.assertEqual(media.get("type"),"image/png")
+                chapter=(ROOT/"dist/serials"/series["slug"]/ep["slug"]/"index.html").read_text(encoding="utf-8")
+                self.assertIn('href="'+feed+'"',chapter)
+                self.assertIn('rel="alternate" type="application/rss+xml"',chapter)
+            large={**series,"episodes":[{**series["episodes"][0],
+                                            "number":n,"slug":"chapter-"+str(n)}
+                                           for n in range(1,35)]}
+            capped=ET.fromstring(serial_feed_xml(large)).find("channel").findall("item")
+            self.assertEqual(len(capped),30)
+            self.assertTrue(capped[0].findtext("link").endswith("/chapter-34/"))
+
+    def test_future_dated_unreleased_chapters_are_rejected(self):
+        from scripts.serials import load_serials
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/"content").mkdir()
+            altered=json.loads(json.dumps(self.data))
+            altered[0]["episodes"][0]["published_at"]="2999-01-01"
+            (root/"content/serials.json").write_text(
+                json.dumps(altered,ensure_ascii=False),encoding="utf-8")
+            with self.assertRaisesRegex(ValueError,"future-dated"):
+                load_serials(root)
+
+    def test_episode_ogp_uses_real_chapter_number(self):
+        from scripts.serials import render_social_preview
+        series=self.data[0]
+        with tempfile.TemporaryDirectory() as temp:
+            first=Path(temp)/"one.png"
+            second=Path(temp)/"two.png"
+            render_social_preview(series,first,{"number":1})
+            render_social_preview(series,second,{"number":2})
+            self.assertNotEqual(first.read_bytes(),second.read_bytes(),
+                "Chapter 2 must not display an EP 01 image")
 
     def test_editorial_disclosure_covers_both_types(self):
         about = (ROOT / "dist/about/index.html").read_text(encoding="utf-8")
