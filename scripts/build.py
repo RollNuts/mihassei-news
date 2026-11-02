@@ -6,10 +6,12 @@ import html
 import json
 import re
 import shutil
+import struct
+import zlib
 from datetime import datetime
 from email.utils import format_datetime
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
 BASE = Path(__file__).resolve().parent.parent
@@ -68,15 +70,37 @@ def article_url(a):
 
 
 def category_meta(a, compact=False):
-    label = escape(a.get("flash", "架空記事"))
+    d = datetime.fromisoformat(a["fiction_at"])
+    label = escape(a.get("flash", "速報"))
     return (
         '<div class="story-meta">'
         + '<span class="ticker">' + label + "</span>"
         + '<span class="category">' + escape(a["category"]) + "</span>"
-        + '<span class="fiction-time">' + date_jp(a["fiction_at"]) + "</span>"
+        + f'<time datetime="{escape(a["fiction_at"])}">{d.month}月{d.day}日 {d.hour:02}:{d.minute:02}</time>'
         + "</div>"
     )
 
+
+def share_url(a):
+    url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share"
+    text = "【未発生新聞】" + a["title"] + "（創作ニュース）"
+    return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
+
+
+def actions(a, compact=False):
+    slug = escape(a["slug"])
+    link = article_url(a)
+    share = escape(share_url(a))
+    return (
+        '<div class="engagement-actions' + (" compact" if compact else "") + '">'
+        + f'<button class="like-control" type="button" data-like-slug="{slug}" aria-pressed="false"'
+        + ' aria-label="この記事にいいね"><span aria-hidden="true">♡</span><span class="like-label">いいね</span><span class="like-count" data-like-count="{slug}" hidden></span></button>'
+        + f'<a class="share-control" data-share-slug="{slug}" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
+        + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
+        + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
+           '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button>')
+        + '</div>'
+    )
 
 def cover(a):
     art = a["art"]
@@ -162,30 +186,33 @@ def card(a, archive=False):
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     return (
-        f'<article class="story-card"{attrs}><a href="{article_url(a)}">'
-        f'<img class="story-thumb" src="/images/{a["slug"]}.svg" loading="lazy" alt="架空ニュースのオリジナルイラスト"></a>'
-        + category_meta(a) +
-        f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
-        f'<p>{escape(a["summary"])}</p>'
-        f'<div class="story-foot">着想元：{escape(a["source"]["publisher"])} / 5年後の仮想報道</div></article>'
+        f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
+        f'<img class="story-thumb" src="/images/{a["slug"]}.svg" loading="lazy" alt="記事のイメージ画"></a>'
+        + category_meta(a)
+        + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
+        + f'<p>{escape(a["summary"])}</p>'
+        + '<div class="story-footer">'
+        + f'<span class="reporter">未発生新聞 {escape(a["category"])}部</span>'
+        + actions(a, compact=True)
+        + '</div></article>'
     )
 
-
 def layout(title, desc, path, main, active="", kind="website"):
-    complete = "【架空ニュース】" + title + " | 未発生新聞"
+    complete = title + " | 未発生新聞（創作ニュース）"
     nav = [
         ("/", "トップ", "home"),
-        ("/archive/", "記事一覧", "archive"),
+        ("/archive/", "新着記事", "archive"),
         ("/archive/?category=" + quote("社会"), "社会", ""),
         ("/archive/?category=" + quote("経済"), "経済", ""),
-        ("/archive/?category=" + quote("技術"), "技術", ""),
+        ("/archive/?category=" + quote("技術"), "テクノロジー", ""),
         ("/archive/?category=" + quote("スポーツ"), "スポーツ", ""),
         ("/about/", "本紙について", "about"),
     ]
-    navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>' for u,text,key in nav)
+    navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
+                      for u,text,key in nav)
     metadata = {"@context":"https://schema.org","@type":"CreativeWork" if kind=="story" else "WebSite",
-                "name":title,"url":SITE+path,"description":desc,"inLanguage":"ja",
-                "genre":"架空報道・フィクション"}
+                "name": title, "url":SITE+path,"description":desc,"inLanguage":"ja",
+                "genre":"創作ニュース・風刺"}
     ld = json.dumps(metadata, ensure_ascii=False).replace("</", "<\\/")
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -194,58 +221,88 @@ def layout(title, desc, path, main, active="", kind="website"):
 <meta property="og:title" content="{escape(complete)}">
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:site_name" content="未発生新聞">
-<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:type" content="{"article" if kind=="story" else "website"}">
 <meta property="og:url" content="{SITE+path}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE}/og/brand.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="未発生新聞。まだ起きていないことを真面目に報じる。">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="{SITE+path}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
-<link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/article-extra.css">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/article-extra.css">
+<link rel="stylesheet" href="/assets/newsroom.css">
 <script defer src="/assets/site.js"></script>
+<script defer src="/assets/engagement.js"></script>
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
 <a class="skip" href="#main">本文へ</a>
-<div class="strip"><div class="container"><span><strong>FICTION / 架空報道</strong>　この記事・見出し・登場する会社は創作です</span>
-<span class="mobile-hide">実際のニュースと混同しないでください。</span></div></div>
-<header class="container"><div class="masthead"><div class="mast-kicker">THE UNHAPPENED TIMES</div>
+<div class="strip"><div class="container strip-content">
+<a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">創作報道</span></a>
+<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>5年先の現在時刻</span>
+<time data-future-clock aria-label="5年先の架空の現在時刻">--:--:--</time></div>
+</div></div>
+<header class="container"><div class="masthead">
+<div class="mast-kicker">THE UNHAPPENED TIMES</div>
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
 <span class="brand-en">MIHASSEI SHIMBUN</span>
-<p class="mast-sub">5年後の続きが、ここにある。</p></div></header>
-<nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
+<p class="mast-sub">まだ起きていないニュースを、どこよりも真面目に。</p>
+</div></header>
+<div class="container observer-shell">
+<div class="observer-widget" data-observer-widget hidden>
+<span class="observer-eye" aria-hidden="true">◉</span><span>未来を見にきた人</span>
+<strong data-observer-count>—</strong><span class="observer-suffix">人</span>
+<small>※ブラウザ単位の参考値</small>
+</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
-<div><a class="footer-brand" href="/">未発生新聞</a><p class="footer-copy">今日のニュースやネットの話題を起点に、ちょうど5年後の同じ日時を報道する架空メディア。元ネタと創作は明確に分けて掲載しています。</p></div>
-<div class="footer-nav"><a href="/archive/">記事一覧</a><a href="/about/">本紙について</a><a href="/feed.xml">RSS</a></div></div>
+<div><a class="footer-brand" href="/">未発生新聞</a>
+<p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
+<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/about/">本紙について</a>
+<a href="/feed.xml">RSS</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
-<span>全記事フィクション。人物・団体・事象は創作であり、将来の事実を保証しません。</span></div></div></footer>
+<span>※本紙の記事・登場する団体・出来事は創作です。</span></div></div></footer>
 </body></html>'''
-
 
 def home(articles):
     a = articles[0]
     side = "".join('<article class="brief-card">' + category_meta(x) +
-                   f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3><p>{escape(x["summary"])}</p></article>'
-                   for x in articles[1:3])
-    recent = "".join(card(x) for x in articles[1:7])
+                   f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
+                   f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
+                   for x in articles[1:4])
+    recent = "".join(card(x) for x in articles[1:10])
+    line = "".join(f'<a href="{article_url(x)}"><span>{escape(x.get("flash","新着"))}</span> '
+                   f'{escape(x["title"])}</a>' for x in articles[:5])
     content = f'''<div class="container index-main">
-<div class="section-head"><h2>今日から5年後の見出し</h2><span class="small-label red">FIVE YEARS LATER / FICTION</span></div>
-<section class="hero-grid"><article class="lead">
-<a class="lead-media" href="{article_url(a)}"><img src="/images/{a["slug"]}.svg" alt="架空ニュースのオリジナルイラスト">
-<div class="overlay"><span class="issue-code">SPECIAL / FICTION</span><span class="large-year">{escape(a["fiction_at"][:4])}</span></div></a>
-<div style="margin-top:20px">{category_meta(a)}</div>
+<div class="news-briefing"><div><span class="small-label red">TODAY'S HEADLINES</span>
+<strong>本日の未発生ニュース</strong></div>
+<div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
+<div class="news-wire" aria-label="新着ニュース"><span class="wire-label">LATEST</span>
+<div class="wire-viewport"><div class="wire-track">{line}<span class="wire-copy" aria-hidden="true">{line}</span></div></div></div>
+<section class="hero-grid">
+<article class="lead">
+<a class="lead-media" href="{article_url(a)}"><img src="/images/{a["slug"]}.svg"
+ alt="記事のイメージ画" fetchpriority="high">
+<div class="overlay"><span class="issue-code">TOP STORY</span><span class="hero-live">● LIVE <span data-future-hms>--:--:--</span></span></div></a>
+<div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
-<p class="dek">{escape(a["summary"])}</p><a class="read-more" href="{article_url(a)}">架空の記事を読む</a>
+<p class="dek">{escape(a["summary"])}</p>
+<div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
-<aside class="side-brief"><div class="side-title"><h2>HEADLINES</h2><span>まだ起きていない話。</span></div>{side}</aside></section>
-<section class="section-block"><div class="section-head"><h2>最近の未発生</h2><a href="/archive/">すべて見る ↗</a></div>
+<aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
+</section>
+<section class="section-block"><div class="section-head"><h2>ほかのニュース</h2>
+<a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
-<aside class="banner"><div><div class="small-label red">ABOUT THIS PAPER</div>
-<h2>バカみたいだけど、5年後ならありそう。</h2>
-<p>報道された現実を起点に、架空の企業と架空の社会で「その先」を描く。記事本文と画像はすべてオリジナルのフィクションです。</p></div><a href="/about/">本紙について ↗</a></aside>
+<aside class="banner"><div><div class="small-label red">EDITORIAL</div>
+<h2>今日の常識は、5年後の非常識。</h2>
+<p>ニュースの続きは、たぶん誰も予想していない。</p></div>
+<a href="/about/">未発生新聞について ↗</a></aside>
 </div>'''
-    return layout("未発生新聞", "今日の現実から5年後の同じ時刻へ。記事はすべて架空のニュースです。", "/", content, "home")
-
+    return layout("未発生新聞", "まだ起きていないことを、真面目に報じる。5年後のニュースを読む創作メディア。", "/", content,"home")
 
 def archive(articles):
     buttons = "".join(f'<button class="filter-button{" active" if cat=="すべて" else ""}" '
@@ -270,51 +327,58 @@ def story(a, articles):
     image_path = "/images/" + a["slug"] + ".svg"
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
-    related = "".join(card(x) for x in articles if x["slug"] != a["slug"])[:20000]
+    # Show a small edited set, never pretend these are actually the most-read stories.
+    related_list = [x for x in articles if x["slug"] != a["slug"]]
+    related_list.sort(key=lambda x: (x["category"] != a["category"], -datetime.fromisoformat(x["source"]["published_at"]).timestamp()))
+    related = "".join(card(x) for x in related_list[:3])
+    text_len = sum(len(p) for p in a["paragraphs"])
+    read_minutes = max(1, (text_len + 449) // 450)
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
-<header class="article-header"><span class="eyebrow">FIVE YEARS LATER / FICTIONAL NEWS</span>
-<div style="margin-top:20px">{category_meta(a)}</div>
+<header class="article-header">
+<div class="article-edition"><span>未発生新聞 {escape(a["category"])}部</span><span class="edition-tag">創作ニュース</span></div>
+<div class="article-dateline">{category_meta(a)}<span class="article-year">{escape(a["fiction_at"][:4])}年号</span></div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="story-meta"><span>未発生新聞 編集部</span><span>架空の企業：{escape(a["fiction_company"])}</span></div></header>
-<p class="primary-disclaimer">【創作記事】以下は実際には起きていない出来事です。登場する企業・談話・数値は架空です。</p>
-<figure class="article-hero-figure"><img class="article-visual" src="{image_path}" alt="架空記事のために独自制作したイメージ画像">
-<figcaption>未発生新聞によるオリジナルイラスト（実際の報道写真ではありません）</figcaption></figure>
+<div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
+</header>
+<figure class="article-hero-figure">
+<img class="article-visual" src="{image_path}" alt="記事のイメージ画">
+<figcaption>イメージ画像</figcaption></figure>
 <div class="article-body">{paras}</div>
-<section class="banner-source" aria-label="現実の着想元">
-<h2>この架空記事のきっかけになった現実の話題</h2>
+<div class="article-endmark">◆</div>
+<div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
+{actions(a)}
+<section class="source-context" aria-label="着想した実際の話題">
+<h2>この記事の着想元</h2>
 <p>{escape(src["topic"])}</p>
-<p class="seed-label">現実の掲載日時：{date_jp(src["published_at"])} ／ 出典：{escape(src["publisher"])} ／ 未来の日時：{date_jp(a["fiction_at"])}</p>
-<a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">元の話題を読む（外部サイト） ↗</a>
-<p style="margin-top:10px">リンク先の実際の記事と、本紙の架空の記事に直接の関係はありません。本文・画像の転載ではありません。</p>
+<a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
+{escape(src["publisher"])} の元記事を見る ↗</a>
 </section>
-<div class="article-end"><span class="small-label red">— END OF FICTION —</span><a href="/archive/">一覧へ戻る ↗</a></div>
+<div class="article-end"><span class="reporter">未発生新聞</span><a href="/archive/">記事一覧へ ↗</a></div>
 </article></div>
-<section class="article-related"><div class="section-head"><h2>ほかの架空ニュース</h2><a href="/archive/">一覧 ↗</a></div>
+<section class="article-related"><div class="section-head"><h2>あわせて読む</h2><a href="/archive/">ほかの記事 ↗</a></div>
 <div class="story-grid">{related}</div></section>
 </div>'''
-    return layout(a["title"], a["summary"]+" ※本記事はフィクションです。", article_url(a), content,kind="story")
-
+    return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story")
 
 def about():
     content = '''<div class="container archive-page">
-<header class="page-intro"><span class="eyebrow">ABOUT THE UNHAPPENED TIMES</span>
+<header class="page-intro"><span class="eyebrow">ABOUT US</span>
 <h1>未発生新聞について</h1>
-<p>5年後の同じ日、同じ時刻に、世界は何を報じているのか。</p></header>
+<p>まだ起きていない出来事を、どこよりも真面目に。</p></header>
 <div class="about-copy">
-<p>未発生新聞は、今日のニュースやネット上で注目された話題を手掛かりに、「ちょうど5年後の同じ日時なら、こんなことが起きているかも」と想像した物語を、新聞記事の形式で掲載する架空メディアです。</p>
-<h2>すべてフィクションです</h2>
-<p>記事中の未来の日付・企業・事件・発言・統計は創作です。現実のニュースを装う意図はありません。記事は実際の報道・投資判断・意思決定の根拠にしないでください。</p>
-<h2>着想元の著作物を転載しません</h2>
-<p>元ニュースやSNS投稿の文章、画像、スクリーンショットを転載せず、話題のテーマをもとに独立した物語を創作します。可能な範囲で記事ごとに着想元へのリンクを示し、事実と虚構を分けます。</p>
-<h2>なぜ5年後？</h2>
-<p>50年後では何でもあり。5年後なら、少し無理があるのに、まったくの嘘とも思えない。その微妙な距離が本紙の取材対象です。</p>
-<h2>画像について</h2>
-<p>記事用の図版はオリジナル生成イラストです。実在する人や企業の写真、他媒体の報道写真は使いません。AIを制作補助に用いる場合があります。</p>
-<h2>配信</h2><p>記事は<a href="/feed.xml" style="text-decoration:underline">RSS</a>でもご覧いただけます。</p></div></div>'''
-    return layout("本紙について","未発生新聞は現実の話題の5年後を真顔で描くフィクションメディアです。","/about/",content,"about")
-
+<h2>5年後の新聞です。</h2>
+<p>今、世の中で話題になっていること。その続きを、ちょうど5年後の同じ日時のニュースにしてしまう新聞です。</p>
+<p>「いや、それはないだろ」と笑ってもらえたら成功。少し考えて「でも、ないとも言えないかも」と思ってもらえたら、なお成功です。</p>
+<h2>記事はすべて創作です。</h2>
+<p>この新聞の記事、企業、人物、事件、発言、数値はフィクションです。実際のニュースや報道ではありません。</p>
+<p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
+<h2>今日も、未発生。</h2>
+<p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
+<p>「未来を見にきた人」と「いいね」は匿名のブラウザ単位の集計です。実際の人数とは一致しない場合があります。</p><p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
+</div></div>'''
+    return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
 
 def other_files(articles):
     routes = ["/", "/about/", "/archive/"] + [article_url(a) for a in articles]
@@ -326,12 +390,12 @@ def other_files(articles):
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
     rss=ET.Element("rss", version="2.0")
     channel=ET.SubElement(rss,"channel")
-    for name, value in (("title","未発生新聞【フィクション】"),("description","すべて架空のニュースです。今日の話題から5年後の続報を創作します。"),("link",SITE),("language","ja")):
+    for name, value in (("title","未発生新聞 | 創作ニュース"),("description","5年後の世界を真顔で報じる創作ニュース。"),("link",SITE),("language","ja")):
         ET.SubElement(channel,name).text=value
     for a in articles[:30]:
         n=ET.SubElement(channel,"item")
-        for tag,value in (("title","【架空ニュース】"+a["title"]),("link",SITE+article_url(a)),
-                          ("guid",SITE+article_url(a)),("description",a["summary"]+" ※本記事はフィクションです。"),
+        for tag,value in (("title",a["title"]+" | 未発生新聞（創作）"),("link",SITE+article_url(a)),
+                          ("guid",SITE+article_url(a)),("description",a["summary"]+" ※創作記事です。"),
                           ("pubDate",format_datetime(datetime.fromisoformat(a["source"]["published_at"])))):
             ET.SubElement(n,tag).text=value
     write("feed.xml",ET.tostring(rss,encoding="unicode"))
@@ -339,6 +403,76 @@ def other_files(articles):
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
     write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n")
+
+
+
+def make_brand_image():
+    """Self-contained PNG for social previews. Pure stdlib; no fonts or paid APIs."""
+    width, height = 1200, 630
+    bg = (247,244,236)
+    raw = bytearray(bytes(bg) * (width * height))
+
+    def rect(x0,y0,x1,y1,rgb):
+        color=bytes(rgb)
+        for y in range(max(0,y0), min(height,y1)):
+            i=(y*width+max(0,x0))*3
+            raw[i:i+max(0,min(width,x1)-max(0,x0))*3] = color * max(0,min(width,x1)-max(0,x0))
+
+    rect(0,0,1200,44,(28,42,39))
+    rect(65,70,80,560,(214,74,53))
+    rect(108,113,1092,122,(34,43,39))
+    rect(108,479,1092,487,(34,43,39))
+    rect(108,521,1092,525,(171,172,163))
+    rect(845,182,1000,337,(238,96,68))
+    rect(868,206,977,315,(247,244,236))
+    rect(900,238,945,280,(238,96,68))
+    font={
+        "M":["10001","11011","10101","10101","10001","10001","10001"],
+        "I":["11111","00100","00100","00100","00100","00100","11111"],
+        "H":["10001","10001","10001","11111","10001","10001","10001"],
+        "A":["01110","10001","10001","11111","10001","10001","10001"],
+        "S":["01111","10000","10000","01110","00001","00001","11110"],
+        "E":["11111","10000","10000","11110","10000","10000","11111"],
+        "N":["10001","11001","10101","10101","10011","10001","10001"],
+        "W":["10001","10001","10001","10101","10101","11011","10001"],
+        "F":["11111","10000","10000","11110","10000","10000","10000"],
+        "V":["10001","10001","10001","10001","10001","01010","00100"],
+        "Y":["10001","10001","01010","00100","00100","00100","00100"],
+        "R":["11110","10001","10001","11110","10100","10010","10001"],
+        "L":["10000","10000","10000","10000","10000","10000","11111"],
+        "T":["11111","00100","00100","00100","00100","00100","00100"],
+        "O":["01110","10001","10001","10001","10001","10001","01110"],
+        "D":["11110","10001","10001","10001","10001","10001","11110"],
+        "0":["01110","10011","10101","10101","11001","10001","01110"],
+        "1":["00100","01100","00100","00100","00100","00100","01110"],
+        "2":["01110","10001","00001","00010","00100","01000","11111"],
+        "3":["11110","00001","00001","01110","00001","00001","11110"],
+        "5":["11111","10000","10000","11110","00001","00001","11110"],
+        " ":["00000"]*7,
+    }
+    def draw_text(text,x,y,scale,color):
+        for ch in text.upper():
+            grid=font.get(ch,font[" "])
+            for dy,line in enumerate(grid):
+                for dx,pixel in enumerate(line):
+                    if pixel=="1":
+                        rect(x+dx*scale,y+dy*scale,x+(dx+1)*scale,y+(dy+1)*scale,color)
+            x+=6*scale
+
+    draw_text("MIHASSEI",120,215,15,(29,41,38))
+    draw_text("NEWS",120,350,12,(214,74,53))
+    draw_text("5 YEARS LATER",115,550,5,(76,86,79))
+    draw_text("2026 2031",730,550,5,(76,86,79))
+
+    payload=b"".join(b"\x00"+raw[y*width*3:(y+1)*width*3] for y in range(height))
+    def pngchunk(typ,data):
+        import binascii
+        return struct.pack(">I",len(data))+typ+data+struct.pack(">I",binascii.crc32(typ+data)&0xffffffff)
+    png=(b"\x89PNG\r\n\x1a\n"+pngchunk(b"IHDR",struct.pack(">2I5B",width,height,8,2,0,0,0))
+         +pngchunk(b"IDAT",zlib.compress(payload,9))+pngchunk(b"IEND",b""))
+    filename=OUT/"og/brand.png"
+    filename.parent.mkdir(parents=True,exist_ok=True)
+    filename.write_bytes(png)
 
 
 def build():
@@ -357,6 +491,7 @@ def build():
         write("articles/"+a["slug"]+"/index.html",story(a,articles))
         write("images/"+a["slug"]+".svg",cover(a))
     other_files(articles)
+    make_brand_image()
     print(f"Built {len(articles)} fictional articles to {OUT}")
 
 
