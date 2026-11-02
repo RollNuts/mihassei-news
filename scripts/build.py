@@ -9,7 +9,7 @@ import shutil
 import struct
 import subprocess
 import zlib
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from pathlib import Path
 
@@ -137,8 +137,12 @@ def load_serials():
             day = ep.get("published_on")
             if not isinstance(day, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
                 raise ValueError("Episode requires actual YYYY-MM-DD publication date")
-            if datetime.fromisoformat(day).date().isoformat() != day:
+            published_day=datetime.fromisoformat(day).date()
+            if published_day.isoformat() != day:
                 raise ValueError("Invalid real publication date")
+            now_jst=datetime.now(timezone(timedelta(hours=9))).date()
+            if published_day > now_jst:
+                raise ValueError("Do not publish unreleased future serial chapters")
             paragraphs = ep.get("paragraphs")
             if not isinstance(paragraphs, list) or len(paragraphs) < 5 or len(paragraphs) > 20:
                 raise ValueError("Serial fiction must have 5-20 original paragraphs")
