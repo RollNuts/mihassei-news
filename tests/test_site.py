@@ -312,12 +312,20 @@ class SiteTests(unittest.TestCase):
             html=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn('"datePublished": "'+a["published_at"]+'"',html)
             self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',html)
-            if a.get("photo"):
+            from scripts.media_policy import usable_cached_photo
+            if usable_cached_photo(a,root=ROOT):
                 self.assertIn(a["photo"]["source"],html)
                 self.assertIn(a["photo"]["credit"],html)
                 self.assertIn(a["photo"]["alt"],html)
                 self.assertIn('data-fallback=',html)
                 self.assertIn("イメージ写真",html)
+                self.assertIn('src="/photos/'+a["slug"]+'.jpg"',html)
+            else:
+                self.assertIn('src="/images/'+a["slug"]+'.svg"',html)
+                self.assertIn("オリジナル表紙",html)
+                if a.get("photo"):
+                    self.assertNotIn(a["photo"]["source"],html)
+                    self.assertNotIn(a["photo"]["credit"]+" / Unsplash",html)
 
     def test_latest_publication_not_source_time_controls_lead(self):
         import re
@@ -453,6 +461,38 @@ class SiteTests(unittest.TestCase):
         self.assertIn('content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
         # The footer share intent passes a distinct URL, not the cached plain root.
         self.assertIn("src%3Dx-launch-20261102-v3",home)
+
+    def test_image_review_gate_applies_to_cached_photos_and_ogp(self):
+        """Cached images are not automatically editorially appropriate."""
+        from scripts.media_policy import photo_is_approved, usable_cached_photo
+        from scripts.build import social_image
+        import xml.etree.ElementTree as ET
+        approved=0
+        rejected=0
+        for article in self.articles:
+            slug=article["slug"]
+            svg=(ROOT/"dist/images"/(slug+".svg")).read_text(encoding="utf-8")
+            tree=ET.fromstring(svg)
+            self.assertEqual(tree.attrib["viewBox"],"0 0 1200 675")
+            self.assertIn("EDITORIAL ILLUSTRATION",svg)
+            self.assertIn("MIHASSEI NEWS",svg)
+            self.assertIn("創作",svg)
+            self.assertTrue(tree.findall("{http://www.w3.org/2000/svg}text"))
+            self.assertNotIn("<image",svg)
+            self.assertNotIn("<script",svg)
+            page=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
+            if usable_cached_photo(article,root=ROOT):
+                approved+=1
+                self.assertTrue(photo_is_approved(article,root=ROOT))
+                self.assertEqual(social_image(article),"/photos/"+slug+".jpg")
+                self.assertIn('src="/photos/'+slug+'.jpg"',page)
+            else:
+                rejected+=1
+                self.assertEqual(social_image(article),"/og/articles/"+slug+".png")
+                self.assertIn('src="/images/'+slug+'.svg"',page)
+                self.assertTrue((ROOT/"dist/og/articles"/(slug+".png")).is_file())
+        self.assertGreaterEqual(rejected,1)
+        self.assertGreaterEqual(approved,1)
 
     def test_no_photo_articles_have_distinct_offline_png_social_cards(self):
         """Future articles automatically get meaningful, non-identical raster cards."""
