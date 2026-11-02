@@ -417,6 +417,23 @@ def home(articles):
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
+    # This is only a pool of real published articles, not a claim that any
+    # of them is popular. The browser shows a ranking ONLY after the existing
+    # readership API returns genuine, sufficiently populated counts.
+    popular_candidates = articles[:20]
+    popular_options = escape(json.dumps(
+        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
+         for x in popular_candidates], ensure_ascii=False, separators=(",", ":")))
+    popular_section = f'''<section class="readers-choice" data-popular-section
+ data-popular-options="{popular_options}" aria-labelledby="readers-choice-title" hidden>
+<div class="section-head"><div>
+<span class="small-label red">READER DISCOVERY / 読者の注目</span>
+<h2 id="readers-choice-title">新着の中で読まれている記事</h2></div>
+<a href="/archive/">ほかの記事も探す ↗</a></div>
+<p class="readers-choice-note">直近{len(popular_candidates)}本から、閲覧した匿名ブラウザの累計が一定以上ある記事を紹介。
+実人数・PV・週間ランキングではありません。</p>
+<ol class="readers-choice-list" data-popular-list></ol>
+</section>'''
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
@@ -444,6 +461,7 @@ def home(articles):
 <section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
+{popular_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>

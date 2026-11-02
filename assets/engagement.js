@@ -197,7 +197,33 @@
   }
   renderPoll();
 
-  const allSlugs=[...new Set(buttons.map(b=>b.dataset.likeSlug).filter(Boolean))].slice(0,20);
+  // The homepage's "readers' choice" only uses the existing engagement GET.
+  // Titles are data from published local articles; no third-party requests.
+  const popularSection=document.querySelector("[data-popular-section]");
+  const popularList=document.querySelector("[data-popular-list]");
+  let popularCandidates=[];
+  if(popularSection && popularList) {
+    try {
+      const values=JSON.parse(popularSection.dataset.popularOptions||"[]");
+      if(Array.isArray(values)){
+        const unique=new Set();
+        popularCandidates=values.filter(item=>{
+          if(!item || typeof item.slug!=="string" ||
+             !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.slug) ||
+             typeof item.title!=="string" || !item.title.trim() ||
+             typeof item.category!=="string" || unique.has(item.slug))return false;
+          unique.add(item.slug);
+          return true;
+        }).slice(0,20);
+      }
+    }catch(_){popularCandidates=[];}
+  }
+  // The same GET already fetches counts for the visible article actions.
+  // Put reader-discovery candidates first, without adding any API requests.
+  const allSlugs=[...new Set([
+    ...popularCandidates.map(x=>x.slug),
+    ...buttons.map(b=>b.dataset.likeSlug).filter(Boolean)
+  ])].slice(0,20);
   if(article && !allSlugs.includes(article))allSlugs.unshift(article);
 
   // Approximate, privacy-minimal traffic sources: never transmit a referrer URL.
@@ -251,8 +277,50 @@
     return response.json();
   }
 
+  function showPopular(articles){
+    if(!popularSection || !popularList || !popularCandidates.length)return;
+    const ranked=popularCandidates.map((candidate,order)=>({
+      ...candidate,order,readers:articles?.[candidate.slug]?.readers
+    })).filter(x=>Number.isInteger(x.readers) && x.readers>=5)
+      .sort((a,b)=>b.readers-a.readers || a.order-b.order)
+      .slice(0,3);
+    // No empty or statistically meaningless "popular" section: all ranking
+    // rows are based on observed browser counts, not fake defaults.
+    if(ranked.length<2){
+      popularList.replaceChildren();
+      popularSection.hidden=true;
+      return;
+    }
+    const rows=ranked.map((item,index)=>{
+      const li=document.createElement("li");
+      li.className="readers-choice-item";
+      const rank=document.createElement("span");
+      rank.className="readers-choice-rank";
+      rank.textContent=String(index+1).padStart(2,"0");
+      rank.setAttribute("aria-label",String(index+1)+"番目");
+      const content=document.createElement("div");
+      const category=document.createElement("span");
+      category.className="readers-choice-category";
+      category.textContent=item.category+" / 創作ニュース";
+      const link=document.createElement("a");
+      link.href="/articles/"+item.slug+"/";
+      link.textContent=item.title;
+      link.className="readers-choice-link";
+      content.append(category,link);
+      const count=document.createElement("span");
+      count.className="readers-choice-count";
+      count.textContent=Intl.NumberFormat("ja-JP").format(item.readers)+"ブラウザ";
+      count.setAttribute("aria-label","閲覧した匿名ブラウザの累計 "+item.readers);
+      li.append(rank,content,count);
+      return li;
+    });
+    popularList.replaceChildren(...rows);
+    popularSection.hidden=false;
+  }
+
   function showMetrics(data){
     if(!data || data.unit!=="anonymous-browser" || !Number.isFinite(data.visitors))return;
+    showPopular(data.articles||{});
     const shell=document.querySelector("[data-observer-widget]");
     const value=document.querySelector("[data-observer-count]");
     if(shell && value){
