@@ -367,6 +367,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None):
 <link rel="stylesheet" href="/assets/style.css">
 <link rel="stylesheet" href="/assets/article-extra.css">
 <link rel="stylesheet" href="/assets/newsroom.css">
+<link rel="stylesheet" href="/assets/future-poll.css">
 <link rel="stylesheet" href="/assets/comments.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/engagement.js"></script>
@@ -552,6 +553,24 @@ def story(a, articles):
 <figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
+<section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
+<div class="future-poll-heading">
+<span class="future-poll-kicker">FUTURE VERDICT / 未来の判定</span>
+<h2 id="future-poll-title">この未来、本当にありそう？</h2>
+<p>記事はフィクション。あなたは5年後に起こりそうだと思う？</p>
+</div>
+<div class="future-poll-choices" role="group" aria-label="未来予想を投票">
+<button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
+<button type="button" data-poll-choice="unlikely" aria-pressed="false"><span aria-hidden="true">✕</span> それはない！</button>
+</div>
+<p class="future-poll-status" data-poll-status role="status">ブラウザ単位で1記事1票。投票後に結果を表示します。</p>
+<div class="future-poll-results" data-poll-results hidden aria-label="未来予想の投票結果">
+<div class="future-poll-result-line"><span>ありそう</span><strong data-poll-plausible-percent>—</strong></div>
+<div class="future-poll-meter"><span data-poll-plausible-bar></span></div>
+<div class="future-poll-result-line"><span>それはない！</span><strong data-poll-unlikely-percent>—</strong></div>
+<div class="future-poll-meter"><span data-poll-unlikely-bar></span></div>
+</div>
+</section>
 <div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
