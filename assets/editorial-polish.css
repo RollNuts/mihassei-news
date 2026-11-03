@@ -1256,3 +1256,68 @@ body [hidden] {
   .mobile-nav>a,.mobile-nav-more>summary{font-size:11px;padding-inline:4px}
   .mobile-nav-more>summary::after{margin-left:5px}
 }
+
+/* Editorial motion: make the paper feel alive without adding a duplicate ticker.
+   Purely decorative effects never gate access to content or use network calls. */
+.news-briefing{align-items:center;flex-wrap:wrap}
+.return-update{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border:1px solid #cfdbcf;
+  border-radius:6px;
+  color:#2b654a;
+  background:#f1f7ee;
+  font-size:11px;
+  font-weight:850;
+  line-height:1.5;
+  text-decoration:none;
+}
+.return-update:hover,.return-update:focus-visible{
+  color:#204c36;
+  background:#e8f0e6;
+  border-color:#9cb89f;
+}
+.return-update:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.reading-progress{
+  position:fixed;
+  z-index:150;
+  top:0;
+  left:0;
+  height:3px;
+  width:100%;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:left center;
+  pointer-events:none;
+}
+@keyframes newsroom-arrive{
+  from{opacity:.72;transform:translateY(9px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:no-preference){
+  .index-main .motion-arrived{
+    animation:newsroom-arrive .56s cubic-bezier(.2,.7,.23,1) both;
+  }
+  .return-update:not([hidden]){
+    animation:newsroom-arrive .42s ease-out both;
+  }
+}
+@media(prefers-reduced-motion:no-preference) and (hover:hover){
+  .index-main .story-image-link .story-thumb,
+  .index-main .starter-pick-media .starter-pick-image{
+    transition:transform .35s ease;
+  }
+  .index-main .story-image-link:hover .story-thumb,
+  .index-main .story-image-link:focus-visible .story-thumb,
+  .index-main .starter-pick-media:hover .starter-pick-image,
+  .index-main .starter-pick-media:focus-visible .starter-pick-image{
+    transform:scale(1.035);
+  }
+}
+@media(prefers-reduced-motion:reduce){.reading-progress{display:none}}
+@media(max-width:660px){
+  .news-briefing{align-items:flex-start}
+  .return-update{padding:7px 9px}
+}
