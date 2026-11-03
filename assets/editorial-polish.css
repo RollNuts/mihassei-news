@@ -1321,3 +1321,76 @@ body [hidden] {
   .news-briefing{align-items:flex-start}
   .return-update{padding:7px 9px}
 }
+
+/* The newsroom has a genuine publication history, not a simulated live ticker.
+   Keep the surface compact: users reach actual stories first. */
+.press-timeline{margin-top:39px;padding-top:18px;border-top:1px solid #cbd2c8}
+.press-timeline-heading,.press-timeline-heading>div{
+  display:flex;align-items:center;gap:7px 11px;flex-wrap:wrap
+}
+.press-timeline-heading{justify-content:space-between}
+.press-timeline-mark{width:7px;height:7px;flex:0 0 7px;background:var(--accent);border-radius:50%}
+.press-timeline-heading h2{font:900 19px/1.5 var(--serif);letter-spacing:-.04em;margin:0}
+.press-timeline-heading>div>span:last-child{font-size:11px;color:var(--muted);line-height:1.65}
+.press-timeline-heading>a{font-size:11px;font-weight:850;color:#465b4c;text-decoration:underline;text-underline-offset:4px}
+.press-timeline-heading>a:hover{color:var(--accent)}
+.press-timeline-list{
+  list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px;margin:13px 0 0;padding:0
+}
+.press-timeline-list li{min-width:0}
+.press-timeline-list a{
+  display:grid;grid-template-columns:auto 1fr;gap:2px 8px;
+  align-content:center;min-height:79px;padding:12px 14px;
+  border:1px solid #d5d8d0;border-radius:8px;background:#fdfcf7;
+  color:var(--ink);text-decoration:none
+}
+.press-timeline-list a:hover,.press-timeline-list a:focus-visible{
+  background:#f1f5ed;border-color:#9ab4a2;
+}
+.press-timeline-list a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.press-timeline-list time{
+  font-size:11px;font-weight:850;font-variant-numeric:tabular-nums;
+  color:#9c4036;white-space:nowrap
+}
+.press-timeline-category{font-size:10px;font-weight:800;color:#536c59}
+.press-timeline-headline{
+  grid-column:1/-1;display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:1;overflow:hidden;line-height:1.6;font-size:12px;
+  font-weight:800;letter-spacing:-.015em
+}
+/* The existing random-edition machine is no longer hidden in a details menu. */
+.index-main>.special-edition{
+  margin-top:17px;padding:18px 22px;gap:16px 26px;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);
+  background:linear-gradient(120deg,#f4f1e8,#f9f7f0);
+  border:1px solid #cbd1c7;border-left:3px solid var(--accent);
+  border-radius:9px
+}
+.index-main>.special-edition::before{font-size:70px;right:-6px;top:-18px;opacity:.4}
+.index-main>.special-edition .special-edition-heading h2{
+  font-size:clamp(17px,2vw,22px);line-height:1.4;margin:5px 0 4px
+}
+.index-main>.special-edition .special-edition-heading p{font-size:11px;line-height:1.6}
+.index-main>.special-edition .special-edition-machine{gap:6px}
+.index-main>.special-edition .issue-picker-result{min-height:0}
+.index-main>.special-edition .issue-picker-result p{font-size:13px;margin:3px 0}
+.index-main>.special-edition .issue-picker-button{min-height:44px}
+@media(max-width:660px){
+  .press-timeline{margin-top:30px;padding-top:14px}
+  .press-timeline-heading h2{font-size:18px}
+  .press-timeline-heading>div>span:last-child{display:none}
+  .press-timeline-list{
+    grid-auto-flow:column;grid-auto-columns:minmax(210px,80%);
+    grid-template-columns:none;overflow-x:auto;scroll-snap-type:x proximity;
+    overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    padding:2px 2px 13px;margin-top:11px;gap:9px
+  }
+  .press-timeline-list li{scroll-snap-align:start}
+  .index-main>.special-edition{
+    grid-template-columns:1fr;gap:10px;margin-top:4px;padding:16px 17px
+  }
+  .index-main>.special-edition .special-edition-heading h2{font-size:19px}
+  .index-main>.special-edition .issue-picker-button{min-height:47px}
+  .index-main>.special-edition .issue-picker-result p{font-size:13px}
+}
