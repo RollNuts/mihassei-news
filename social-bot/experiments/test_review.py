@@ -34,6 +34,15 @@ class WeeklyReviewTests(unittest.TestCase):
     def run_review(self,rows):
         return compose(self.posts,self.state,self.delivery,{"measurements":rows},self.now)
 
+    def test_mechanism_distribution_is_editorial_not_a_view_count(self):
+        self.posts["experiments"][0]["mechanism"]="visual_reveal"
+        self.posts["experiments"][1]["mechanism"]="dry_dialogue"
+        report=self.run_review([])
+        self.assertIn("笑いの構造（全在庫）",report)
+        self.assertIn("visual_reveal",report)
+        self.assertIn("dry_dialogue",report)
+        self.assertIn("未取得（0回ではない）",report)
+
     def test_missing_data_is_not_zero_or_a_winner(self):
         result=self.run_review([])
         self.assertIn("未取得（0回ではない）",result)
