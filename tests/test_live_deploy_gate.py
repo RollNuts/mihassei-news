@@ -13,6 +13,18 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn('if "創作イラスト" not in page:',checker)
         self.assertNotIn('class="reader-follow"',checker)
 
+    def test_live_checks_follow_daily_counter_labels_and_units(self):
+        """Release checks must not keep demanding retired lifetime count labels."""
+        checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
+        builder=(ROOT/"scripts/build.py").read_text(encoding="utf-8")
+        for token in ("今日の来訪","今日の記事閲覧",
+                      "data-observer-reads","1ブラウザ・1記事につき1日1回の集計"):
+            self.assertIn(token,checker)
+            self.assertIn(token,builder)
+        self.assertIn("Daily JST audience counters missing or invalid",checker)
+        self.assertIn("Daily per-story browser count missing or invalid",checker)
+        self.assertNotIn('"観測されたブラウザ" not in body',checker)
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
