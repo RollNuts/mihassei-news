@@ -152,7 +152,7 @@ def main():
     items=json.loads(SOURCE.read_text(encoding="utf-8"))["posts"]
     OUT.mkdir(parents=True,exist_ok=True)
     for item in items:
-        if item["kind"] != "comic":
+        if item["kind"] != "comic" or item.get("series") == "nejimachi":
             continue
         path=OUT/(item["id"]+".png")
         image=draw_comic(item)
