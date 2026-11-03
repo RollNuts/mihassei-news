@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from review import actual_summary, compose, hashtag_summary, satire_summary
+from review import actual_summary, compose, hashtag_summary, satire_summary, image_summary
 
 
 def fake_impression(post_id,fmt,count,when="2026-11-03T20:30:00+09:00",hours=24):
@@ -132,6 +132,61 @@ class WeeklyReviewTests(unittest.TestCase):
               fake_impression("a","surreal_text",150,"2026-11-04T20:30:00+09:00")]
         stats=actual_summary(rows,"surreal_text",24)
         self.assertEqual(stats,{"n":1,"median":150,"sum":150})
+
+    def test_image_metrics_require_linked_x_post_not_buffer_sent(self):
+        self.posts["experiments"][0]["visual"] = "test-scene"
+        measured = fake_impression("actual-x-image", "surreal_text", 120)
+        measured["experiment_id"] = "xexp-a"
+        plain = fake_impression("actual-x-text", "surreal_text", 50)
+        plain["experiment_id"] = "xexp-c"
+        unlinked = fake_impression("no-verified-match", "surreal_text", 90000)
+        results = image_summary(self.posts["experiments"],
+                                [measured, plain, unlinked])
+        self.assertEqual(results["image"], {"n": 1, "median": 120})
+        self.assertEqual(results["text"], {"n": 1, "median": 50})
+        output = self.run_review([measured, plain, unlinked])
+        self.assertIn("画像付き vs テキストのみ", output)
+        self.assertIn("画像の効果判定保留", output)
+        self.assertNotIn("中央値の観測上の差", output)
+
+    def test_image_comparison_requires_five_distinct_x_posts_each(self):
+        original = []
+        images = []
+        for i in range(5):
+            img_id = f"xexp-image-{i}"
+            text_id = f"xexp-text-{i}"
+            original += [
+                {"id": img_id, "sequence": 4+i*2, "format": "surreal_text",
+                 "visual": "independent-image", "text": f"visual scenario {i}"},
+                {"id": text_id, "sequence": 5+i*2, "format": "surreal_text",
+                 "text": f"text scenario {i}"}
+            ]
+            x_img = fake_impression(f"x-img-{i}", "surreal_text", 130+i)
+            x_txt = fake_impression(f"x-txt-{i}", "surreal_text", 55+i)
+            x_img["experiment_id"] = img_id
+            x_txt["experiment_id"] = text_id
+            images.extend([x_img, x_txt])
+        self.posts["experiments"].extend(original)
+        results = image_summary(self.posts["experiments"], images)
+        self.assertEqual(results["image"], {"n": 5, "median": 132})
+        self.assertEqual(results["text"], {"n": 5, "median": 57})
+        report = self.run_review(images)
+        self.assertIn("中央値の観測上の差：画像付き", report)
+        self.assertIn("画像の因果的効果を意味しない", report)
+        # Two snapshots for a single experiment do not inflate sample n.
+        copied = dict(images[0])
+        copied["captured_at_jst"] = "2026-11-05T20:30:00+09:00"
+        copied["impressions"] = 170
+        self.assertEqual(
+            image_summary(self.posts["experiments"], images + [copied])
+            ["image"]["n"], 5)
+
+    def test_image_comparison_rejects_mismatched_format(self):
+        self.posts["experiments"][0]["visual"] = "distinct-picture"
+        mismatch = fake_impression("x-misclassified", "character_moment", 99)
+        mismatch["experiment_id"] = "xexp-a"
+        with self.assertRaisesRegex(ValueError, "format differs"):
+            image_summary(self.posts["experiments"], [mismatch])
 
     def test_hashtag_report_is_unmeasured_without_linked_x_values(self):
         self.posts["experiments"][2]["hashtag"]="#シュールネタ"

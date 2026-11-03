@@ -35,7 +35,7 @@ X公式は投稿内のハッシュタグを**2個まで推奨**するが、必�
 - 新しいオリジナル短文を**10本追加**し、候補を合計22本に拡充。手が届く変な現象（透明人間とネイル、返事が遅いこだま、勝手に出勤するほうき、先に帰宅した影など）や、ネジまちの乾いた会話を追加。既存の12本、予約3件の本文やタグは変更しない。
 - 各投稿の `mechanism` に「視覚的なオチ」「言葉の字義通り」「視点の反転」「遅い返事」などの**笑いの仕組み**を編集メタデータとして記録。X本文には表示されない。
 - `dispatch.py` はすでに予約済みの投稿を保持しつつ、次に選ぶ候補の直近2件と同じ仕組みをできるだけ避ける。無理に見た目だけ変えた焼き直しを連続投稿しない。
-- 5件目ごとの枠では、新しい `featured:true` の有力候補を優先して**古い在庫を全部消費する前に新しい仮説を試す**。最大予約枠3件・1回2件・1日1投稿の既存無料運用は変えない。新候補でも、Xのインプが伸びる保証はない。
+- 5件目ごとの枠では、新しい `featured:true` の有力候補を優先して**古い在庫を全部消費する前に新しい仮説を試す**。現在の実行上限はオリジナル予約9件・1回の新規予約最大7件、Bufferの予約枠は全体10件で記事紹介用1件を確保する。X公開時刻はBuffer設定に従い、予約受付と公開成功は別に確認する。新候補でも、Xのインプが伸びる保証はない。
 - 毎週月曜の `review.md` に候補と予約済みの笑いの仕組みの分布を併記し、人気の**数字が取れた場合だけ**仮説と実績を照合する。インプ実測がない時は構造の多様化を成果や勝ち筋とは呼ばない。
 - `featured` と `mechanism` は内側の選定メモで、Bufferに送るのはオリジナル本文と実験用の明示ハッシュタグだけ。本文のSHA256保護はこれまで通り。
 
@@ -51,7 +51,7 @@ X公式は投稿内のハッシュタグを**2個まで推奨**するが、必�
 
 最優先KPIはXの実測表示回数。形式ごとの中央値・母数・公開後の観測時間を揃える。まずテキストを実運用し、後から画像・漫画・キャラの日常を同じルールで比較する。実測不可のときは「未取得」であり0ではない。**0インプを推計で作らない。**
 
-日々の補充は10〜15本単位の完全オリジナル創作を低頻度に行い、模倣・重複・同じオチの再利用を防ぐ。「数を増やすこと」が目的ではないが、在庫切れによる無投稿を避ける。
+日次補充は未登録原稿が21本未満のときだけ、1回最大12本を追加し、未登録21〜28本を目安にする。質の低い量合わせ、模倣・重複・同じオチの再利用を防ぐ。「数を増やすこと」が目的ではないが、在庫切れによる無投稿を避ける。
 
 ## 停止・復旧（ユーザーが必要な時のみ）
 
@@ -98,7 +98,7 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 
 - The owner set **seven recurring daily posting times** in the existing Buffer Veripsa X channel. The repository uses `mode: addToQueue`, so **Buffer owns the actual release times**. Verify the seven times apply to all seven weekdays in the correct channel timezone; GitHub cannot confirm UI settings.
 - Buffer Free permits **ten concurrently scheduled posts per channel**, not a ten-post daily limit. The original text/image/character feed reserves up to **nine**, with a maximum of **seven new entries per queue refill**. One remaining slot is available for a genuinely measured-interest article, at most once every 72 hours and with a permanent article-slug ledger. The shared total hard cap is ten.
-- The GitHub Action refills only at **00:05 and 12:05 JST** (best effort, may run late). Buffer's Free API also permits **1,000 requests per channel per 30 days**, so the high-cost per-post `probe_delivery.py` no longer runs in every refill. The daily read-only `x-delivery-state.yml` continues to track provider scheduled/sent states.
+- The GitHub Action refills only at **00:05 and 12:05 JST** (best effort, may run late). Buffer's Free API also permits **1,000 requests per channel per 30 days**, so the high-cost per-post `probe_delivery.py` no longer runs in every refill. The daily read-only `x-delivery-audit.yml` checks delivery at 23:45 JST; the former `x-delivery-state.yml` has no daily trigger and must not be treated as a second active audit.
 - The retired 12:30 `customScheduled` second-post workflow has **no scheduled trigger**, and `two_daily_midday_enabled` is false. It must not produce an eighth post beyond the owner's seven Buffer slots. Already queued posts are untouched; none are canceled or edited.
 - `publish.list_existing` paginates a bounded recent 30-day sent/scheduled window, combining provider recovery with permanent original and article ledgers. If pagination, authentication or provider limits fail, abort writes instead of guessing.
 - Daily original-idea replenishment should maintain **21–28 unsubmitted, genuinely distinct** short texts where quality permits. Prioritize an understandable setup and concrete ending; no identical/near-identical posts, click bait, blind auto-likes, bulk follows, trend hijacking or unapproved manga.
@@ -143,3 +143,7 @@ One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23
 - Buffer公式の `createPost` は `post { id dueAt }` を同じAPI受付応答で返せる。新しいオリジナル短文・画像予約では返却された予定日時を `state.json` に保存する（旧投稿・ID・本文は変更しない）。値がnullなら `buffer_due_at_missing_at_creation` を保存し、予定時刻は推定しない。
 - 配信監査の `post(input:{id})` でも `scheduled` に対する `dueAt` 欠落を数え、GitHub Actionsにwarningを表示する。作成時の時刻があっても、現在の時刻として使わず過去の受付証拠と区別する。
 - 1日7枠の設定だけでは、個々の投稿が7枠に割り当てられた証拠ではない。複数投稿で時刻が未取得ならBufferのVeripsaチャンネルの投稿スケジュール/タイムゾーンを確認。既存予約を消す・再送する・有料APIに切り替えることはしない。
+
+## X画像付き/テキストのみ比較（実測のある時だけ）
+
+週次レポートのsocial-bot/experiments/review.pyは同じsurreal_text形式の中で、画像ありと画像なしの24時間Xインプレッション（投稿別実測）を別群として整理する。登録済みX投稿のexperiment_idとの一致が必要。片群5件未満なら効果判定を保留し、Bufferの予約や送信成功件数・初期値0・窓未確定のBufferインサイトを実測として流用しない。両群5件以上でも、題材・タグ・投稿時刻の交絡があり画像の因果効果とは断定できない。追加API呼び出しはなく、保存した原稿・画像・Buffer予約の書き換えもしない。
