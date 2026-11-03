@@ -113,8 +113,8 @@ class ShareDeskTests(unittest.TestCase):
         articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
         self.assertTrue(articles)
         path=ROOT/"dist/share-desk/index.html"
-        self.assertTrue(path.is_file())
-        markup=path.read_text(encoding="utf-8")
+        self.assertFalse(path.exists(), "Promotion desk must not be publicly served")
+        markup=render(articles, social_image, lambda a: usable_cached_photo(a,root=ROOT))
         candidates=select_candidates(articles,3)
         self.assertEqual(markup.count('<article class="item">'),len(candidates))
         self.assertIn("name=\"robots\" content=\"noindex,nofollow\"",markup)
