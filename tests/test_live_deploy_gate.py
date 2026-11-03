@@ -71,6 +71,35 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn("data-video-fallback", checker)
         self.assertIn('hashlib.sha256(movie).hexdigest() != recorded_clip["sha256"]', checker)
 
+    def test_visible_headlines_match_real_article_data_across_all_surfaces(self):
+        """A title present only in metadata must not hide a stale visible heading."""
+        import html
+        from scripts.build import archive, editorial_lead, home, load, story
+        from scripts.check_live import require_matching_public_headline
+
+        articles = load()
+        lead = editorial_lead(articles)
+        snippets = (
+            ("home", home(articles)),
+            ("archive", archive(articles)),
+            ("article", story(lead, articles)),
+        )
+        for surface, markup in snippets:
+            with self.subTest(surface=surface):
+                require_matching_public_headline(lead, markup, surface)
+                wrong = dict(lead, title="旧版の見出し")
+                with self.assertRaisesRegex(RuntimeError, "headline mismatch"):
+                    require_matching_public_headline(wrong, markup, surface)
+
+        # A stale visible article H1 must fail even though the correct title
+        # is still present in Open Graph tags and related metadata.
+        detail = story(lead, articles)
+        original = "<h1>" + html.escape(lead["title"], quote=True) + "</h1>"
+        self.assertIn(original, detail)
+        stale = detail.replace(original, "<h1>古い記事見出し</h1>", 1)
+        with self.assertRaisesRegex(RuntimeError, "headline mismatch"):
+            require_matching_public_headline(lead, stale, "article")
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
