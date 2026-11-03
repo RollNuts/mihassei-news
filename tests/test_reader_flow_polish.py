@@ -58,7 +58,7 @@ class ReaderFlowPolishTests(unittest.TestCase):
         body = page.index('<div class="article-body">')
         end = page.index('class="article-endmark"')
         save = page.index('<div class="article-save-inline">')
-        details = page.index('<details class="source-context" id="story-source">')
+        details = page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">')
         self.assertTrue(image < body < end < save < details)
         self.assertEqual(page.count('data-bookmark-slug="' + item["slug"] + '"'), 1)
         self.assertEqual(page.count('<details class="source-context"'), 1)
