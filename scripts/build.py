@@ -590,8 +590,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 </div></header>
 <div class="container observer-shell">
 <div class="observer-widget" data-observer-widget hidden>
-<span class="observer-eye" aria-hidden="true">◉</span><span>未来を見にきた人</span>
-<strong data-observer-count>—</strong><span class="observer-suffix">人</span>
+<span class="observer-eye" aria-hidden="true">◉</span><span>観測されたブラウザ</span>
+<strong data-observer-count>—</strong><span class="observer-suffix">件</span>
 <small>※ブラウザ単位の参考値</small>
 </div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
@@ -1402,13 +1402,8 @@ def build():
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
     write("saved/index.html",saved_page())
-    # Human visual quality audit stays separate from the public news navigation.
-    write("image-review/index.html",image_review_page(articles))
-    # Human-operated static promotion helper; no automated X publishing.
-    write("share-desk/index.html",render_share_desk(
-        articles,social_image,lambda a: usable_cached_photo(a,root=BASE) and not usable_generated_scene(a,root=BASE)))
-    # Read-only X/search growth page; no extra tracking events or APIs.
-    write("growth-desk/index.html",render_growth_desk(articles))
+    # Owner-only review helpers remain available as local Python renderers.
+    # They are NOT shipped as public website pages: no auth provider or fee.
     write("issues/index.html",issue_index(issues))
     for day, items in issues.items():
         write("issues/"+day+"/index.html",issue_page(day, items, issues))

@@ -24,8 +24,7 @@ class SiteTests(unittest.TestCase):
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
-                  "og/brand.png","404.html","robots.txt","build-revision.txt",
-                  "image-review/index.html"]:
+                  "og/brand.png","404.html","robots.txt","build-revision.txt"]:
             self.assertTrue((ROOT/"dist"/p).exists(),p)
 
     def test_static_output_identifies_exact_build_revision(self):
@@ -700,7 +699,10 @@ class SiteTests(unittest.TestCase):
 
     def test_visual_review_gallery_is_complete_and_nonindexable(self):
         from scripts.build import social_image, editorial_image
-        review=(ROOT/"dist/image-review/index.html").read_text(encoding="utf-8")
+        from scripts.build import image_review_page
+        self.assertFalse((ROOT/"dist/image-review/index.html").exists(),
+                         "Private review gallery must not be published")
+        review=image_review_page(self.articles)
         self.assertIn('name="robots" content="noindex,nofollow"',review)
         self.assertIn('class="review-grid"',review)
         self.assertIn(str(len(self.articles))+" 本",review)
