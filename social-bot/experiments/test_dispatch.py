@@ -242,6 +242,25 @@ class ExperimentsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Unreviewed"):
             validate(p,c,state)
 
+    def test_images_continue_after_first_without_flooding(self):
+        posts=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["experiments"]
+        state={"schema_version":1,"queued":{}}
+        for post in posts[:4]:
+            state["queued"][post["id"]]={"buffer_id":post["id"],
+                "text_sha256":hash_text(post["text"])}
+        plan,_,_=decide(posts,state,[],3,2)
+        self.assertEqual(plan[0]["id"],"xexp-invisible-nails")
+        self.assertFalse(plan[1].get("visual"))
+        for post in plan:
+            state["queued"][post["id"]]={"buffer_id":post["id"],
+                "text_sha256":hash_text(post["text"])}
+        seventh,_,_=decide(posts,state,[],3,1)
+        self.assertTrue(seventh[0].get("visual"))
+        state["queued"][seventh[0]["id"]]={"buffer_id":seventh[0]["id"],
+            "text_sha256":hash_text(seventh[0]["text"])}
+        eighth,_,_=decide(posts,state,[],3,1)
+        self.assertEqual(eighth[0]["format"],"character_moment")
+
     def test_one_time_image_launch_even_when_buffer_queue_full(self):
         posts=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["experiments"]
         state={"schema_version":1,"queued":{}}

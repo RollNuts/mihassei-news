@@ -102,6 +102,11 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
     )
     status={x["post_id"]:x["buffer_status"] for x in delivery.get("items",[])}
     states=Counter(status.get(pid,"not_checked") for pid in posted)
+    image_ids={p["id"] for p in posts if p.get("visual")}
+    registered_image_ids=image_ids & posted
+    sent_image_ids={pid for pid in registered_image_ids if status.get(pid)=="sent"}
+    provider_x_links=sum(1 for item in delivery.get("items",[])
+        if item.get("post_id") in sent_image_ids and item.get("buffer_external_link"))
     observations=metric_data.get("measurements",[])
     for m in observations:
         validate_observation(m)
@@ -120,6 +125,8 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
 
         f"- 最終確認できたBuffer状態：{dict(sorted(states.items())) if states else '未確認'}",
         f"- Buffer状態確認日時：{delivery.get('checked_at_utc','未取得')}",
+        f"- 独自画像：在庫{len(image_ids)}枚・Buffer登録{len(registered_image_ids)}枚・Buffer sent {len(sent_image_ids)}枚",
+        f"- Buffer提供のX投稿URL：{provider_x_links}件（独立したX公開確認とは別）",
         "",
         "## Xインプレッション（主KPI）",
         ""

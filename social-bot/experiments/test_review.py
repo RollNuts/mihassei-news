@@ -43,6 +43,16 @@ class WeeklyReviewTests(unittest.TestCase):
         self.assertIn("dry_dialogue",report)
         self.assertIn("未取得（0回ではない）",report)
 
+    def test_buffer_image_status_is_not_x_impressions(self):
+        self.posts["experiments"][0]["visual"]="ufo"
+        self.delivery["items"][0].update({"buffer_status":"sent",
+            "buffer_external_link":"https://x.com/test/status/123"})
+        result=self.run_review([])
+        self.assertIn("独自画像：在庫1枚",result)
+        self.assertIn("Buffer sent 1枚",result)
+        self.assertIn("独立したX公開確認とは別",result)
+        self.assertIn("未取得（0回ではない）",result)
+
     def test_missing_data_is_not_zero_or_a_winner(self):
         result=self.run_review([])
         self.assertIn("未取得（0回ではない）",result)

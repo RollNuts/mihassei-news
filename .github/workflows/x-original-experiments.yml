@@ -9,6 +9,8 @@ on:
       - "social-bot/experiments/dispatch.py"
       - "social-bot/experiments/visuals.py"
       - "social-bot/experiments/test_visuals.py"
+      - "social-bot/experiments/probe_delivery.py"
+      - "social-bot/experiments/test_probe_delivery.py"
       - "social-bot/publish.py"
       - "social-bot/experiments/test_dispatch.py"
       - "social-bot/article-picks/**"
@@ -52,7 +54,8 @@ jobs:
       - name: Validate original X ideas, caps, no duplicates or cross-account sending
         run: |
           python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
-          python -m py_compile social-bot/experiments/dispatch.py
+          python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
+          python -m py_compile social-bot/experiments/dispatch.py social-bot/experiments/probe_delivery.py
 
       - name: Validate promotion dedupe, measured interest, creative-lane fairness
         run: |
@@ -88,12 +91,20 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/article-picks/dispatch.py
 
+      - name: Verify Buffer delivery and X link (read-only)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/probe_delivery.py
+
       - name: Record exact Buffer submission IDs (also after partial API failure)
         if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/state.json social-bot/article-picks/state.json
+          git add social-bot/experiments/state.json social-bot/experiments/delivery.json social-bot/article-picks/state.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
             git pull --rebase origin main
