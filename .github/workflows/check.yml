@@ -19,6 +19,10 @@ jobs:
       - name: Install free local image validation dependency
         run: python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
       - run: python3 -m unittest discover -s tests -v
+      - name: Verify original Buffer X feed and popular-article no-repost logic offline
+        run: |
+          python3 -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
+          python3 -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
       - name: Protect published mysteries and original market forecasts
         env:
           SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
