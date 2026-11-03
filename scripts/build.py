@@ -665,10 +665,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
 <p class="footer-copy">まだ起きていないニュースを、真顔で。</p></div>
-<div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
-<a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
+<nav class="footer-nav" aria-label="補助リンク"><a href="/saved/">あとで読む</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
+<a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/privacy/">プライバシー</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a></nav></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
-<span>※架空ニュース・推理小説は創作です。市場考察は執筆時点の見解であり、投資助言ではありません。</span></div></div></footer>
+<span>創作記事・推理小説はフィクションです。市場分析は投資助言ではありません。</span></div></div></footer>
 </body></html>'''
 
 def home(articles, serials=None):
