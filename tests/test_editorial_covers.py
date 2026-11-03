@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree
 
-from scripts.editorial_covers import headline_layout, render_cover, story_subject
+from scripts.editorial_covers import headline_layout, render_cover, render_story_visual, story_subject
 from scripts.media_policy import (
     approved_sources, jpeg_dimensions, photo_is_approved, usable_cached_photo,
 )
@@ -46,6 +46,23 @@ class CoverQualityTests(unittest.TestCase):
             seen.add(svg)
         self.assertEqual(len(seen), len(ARTICLES),
                          "A real story headline must distinguish each original cover")
+
+    def test_article_artwork_does_not_bake_a_second_headline_into_cards(self):
+        from scripts.editorial_covers import story_subject
+        seen = set()
+        for article in ARTICLES:
+            svg = render_story_visual(article)
+            root = ElementTree.fromstring(svg)
+            self.assertEqual(root.attrib["viewBox"], "0 0 1200 675")
+            self.assertEqual(root.attrib["role"], "img")
+            self.assertEqual(root.attrib["data-visual-topic"], story_subject(article))
+            self.assertIn("創作イラスト", root.attrib["aria-label"])
+            self.assertNotIn("<text", svg)
+            self.assertNotIn("<image", svg)
+            self.assertNotIn("<script", svg)
+            self.assertNotIn(article["title"], svg)
+            seen.add(svg)
+        self.assertEqual(len(seen), len(ARTICLES))
 
     def test_headlines_fit_bounded_lines_and_safe_xml(self):
         for title in (
