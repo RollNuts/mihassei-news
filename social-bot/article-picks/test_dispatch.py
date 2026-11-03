@@ -97,6 +97,89 @@ class ArticlePickTests(unittest.TestCase):
             "continued_readers": 1
         }}, ledger(), set(), CONFIG), [])
 
+    def test_observed_increase_preferred_to_old_cumulative_totals(self):
+        older = article("case-old", age_hours=48)
+        growing = article("case-growing", age_hours=36)
+        counts = {
+            "case-old": stats(readers=30, continued_readers=1),
+            "case-growing": stats(readers=12, likes=1, continued_readers=1),
+        }
+        base = picks.rank([older, growing], counts, ledger(), set(), CONFIG)
+        self.assertEqual(base[0][0]["slug"], "case-old")
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            folder = root / "analytics/daily"
+            folder.mkdir(parents=True)
+            prior = {
+                "schema_version": 1, "unit": "anonymous-browser",
+                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
+                "recent_articles": [
+                    {"slug": "case-old", **stats(readers=29, continued_readers=1)},
+                    {"slug": "case-growing", **stats(readers=6, likes=0,
+                                                    continued_readers=0)},
+                ],
+            }
+            (folder/"2026-11-04.json").write_text(json.dumps(prior), encoding="utf-8")
+            diff = picks.measured_recent_changes(
+                root, [older, growing], counts, NOW
+            )
+            self.assertEqual(diff["case-old"]["readers"], 1)
+            self.assertEqual(diff["case-growing"]["readers"], 6)
+            self.assertEqual(diff["case-growing"]["likes"], 1)
+            rows = picks.rank([older, growing], counts, ledger(), set(),
+                              CONFIG, momentum=diff)
+            self.assertEqual(rows[0][0]["slug"], "case-growing")
+            # The actual queued-post message never invents a ranking rank.
+            self.assertNotIn("ランキング1位", picks.publication_text(growing))
+
+    def test_new_article_after_snapshot_has_known_zero_baseline(self):
+        candidate = article("just-published", age_hours=15)
+        counts = {candidate["slug"]: stats(readers=11)}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            folder = root / "analytics/daily"
+            folder.mkdir(parents=True)
+            snapshot = {
+                "schema_version": 1, "unit": "anonymous-browser",
+                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
+                "recent_articles": [],
+            }
+            (folder/"2026-11-04.json").write_text(json.dumps(snapshot), encoding="utf-8")
+            diff = picks.measured_recent_changes(root, [candidate], counts, NOW)
+            self.assertEqual(diff["just-published"], stats(readers=11))
+
+    def test_missing_stale_or_reset_metrics_never_become_fake_growth(self):
+        older = article("case-old", age_hours=48)
+        counts = {"case-old": stats(readers=12, likes=0)}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            folder = root / "analytics/daily"
+            folder.mkdir(parents=True)
+            path = folder/"2026-11-04.json"
+            base = {
+                "schema_version": 1, "unit": "anonymous-browser",
+                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
+                "recent_articles": [{"slug": "case-old",
+                                     **stats(readers=20, likes=1)}],
+            }
+            for damaged in (
+                {**base, "unit":"people"},
+                {**base, "measured_at_utc": (NOW+timedelta(hours=1)).isoformat()},
+                {**base, "measured_at_utc": (NOW-timedelta(days=10)).isoformat()},
+                base,
+            ):
+                path.write_text(json.dumps(damaged), encoding="utf-8")
+                self.assertEqual(
+                    picks.measured_recent_changes(root, [older], counts, NOW),
+                    {},
+                )
+            path.write_text("{bad-json", encoding="utf-8")
+            self.assertEqual(picks.measured_recent_changes(root, [older], counts, NOW),
+                             {})
+            path.unlink()
+            self.assertEqual(picks.measured_recent_changes(root, [older], counts, NOW),
+                             {})
+
     def test_young_articles_and_2031_dates_cannot_game_promotion(self):
         a = article("yesterday", age_hours=2)
         b = article("old-story", age_hours=60 * 24)
