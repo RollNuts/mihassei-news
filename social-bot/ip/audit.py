@@ -38,12 +38,18 @@ def check(loaded_posts=None):
     closed_threads = set()
     previous_day = -1
     prev_order = 0
+    previous_chapter = 1
     threads = {a["id"]: a for a in canon["open_mysteries"]}
     periods = set()
     for post, entry in zip(series, entries):
         num = post["episode"]
         assert post["id"] == entry["post_id"], f"Ledger/post ID conflict at #{num}"
-        assert post["chapter"] == ledger["chapter"], f"Chapter conflict at #{num}"
+        chapter = post["chapter"]
+        assert isinstance(chapter, int) and previous_chapter <= chapter <= previous_chapter + (num > 1), f"Chapter gap/backtracking at #{num}"
+        assert chapter <= ledger["chapter"], f"Chapter exceeds active chapter at #{num}"
+        if num > 3:
+            assert entry.get("chapter") == chapter, f"Ledger must record the chapter at #{num}"
+        previous_chapter = chapter
         assert post["kind"] == "comic", f"Current serial delivery requires manga art #{num}"
         assert 2 <= len(post["panels"]) <= 6, f"Use 2-6 flexible panels at #{num}"
         assert len(post["text"]) <= 240
@@ -72,7 +78,7 @@ def check(loaded_posts=None):
             assert canon["facts"][fact]["introduced_in"] == num, f"Wrong canonical introduction: {fact}"
             seen_facts.add(fact)
         assert len(entry["event"]) >= 12 and len(entry["lasting_effect"]) >= 10
-        assert post["location"] in {"station","street","lamp","workshop"}
+        assert post["location"] in canon["locations"], "Unknown setting location"
         for p in post["panels"]:
             assert isinstance(p,dict) and 2 <= len(p["line"].strip()) <= 65
             assert p["scene"] in canon["locations"], "Scene is not in the canon"
@@ -95,6 +101,7 @@ def check(loaded_posts=None):
             assert frozen, f"Existing serial queued without canon snapshot: {post['id']}"
             assert frozen == payload_hash(post), f"Queued episode modified: {post['id']}"
 
+    assert ledger["chapter"] == previous_chapter, "Current chapter is out of sync"
     assert set(canon["facts"]) == {
         *[fid for fid,f in canon["facts"].items() if f["introduced_in"] == 0],
         *seen_facts,
