@@ -612,8 +612,8 @@ class SiteTests(unittest.TestCase):
             if usable_generated_scene(a,root=ROOT):
                 self.assertIn('src="/generated/'+a["slug"]+'.jpg"',html)
                 self.assertIn('data-generated-scene="true"',html)
-                self.assertIn("AI生成",html)
-                self.assertIn("実際の事件",html)
+                self.assertIn("再現イメージ（合成）",html)
+                self.assertIn("実際の出来事を撮影した報道写真ではありません",html)
                 self.assertIn('property="og:image:type" content="image/jpeg"',html)
             elif usable_cached_photo(a,root=ROOT):
                 self.assertIn(a["photo"]["source"],html)
@@ -948,7 +948,7 @@ class SiteTests(unittest.TestCase):
                 generated+=1
                 self.assertEqual(social_image(article),"/generated/"+slug+".jpg")
                 self.assertIn('src="/generated/'+slug+'.jpg"',page)
-                self.assertIn("AI生成",page)
+                self.assertIn("再現イメージ（合成）",page)
                 self.assertTrue((ROOT/"dist/generated"/(slug+".jpg")).is_file())
             elif usable_cached_photo(article,root=ROOT):
                 approved+=1
