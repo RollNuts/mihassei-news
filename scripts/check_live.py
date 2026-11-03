@@ -330,6 +330,15 @@ def check():
         raise RuntimeError("Public sponsorship information page is missing or incomplete")
     if 'href="/advertise/"' not in body:
         raise RuntimeError("Footer sponsor inquiry link not deployed")
+    if '<nav class="footer-nav" aria-label="補助リンク">' not in body:
+        raise RuntimeError("Compact footer navigation not deployed")
+    footer_nav = body.split('<nav class="footer-nav"', 1)[1].split('</nav>', 1)[0]
+    if (footer_nav.count('<a href=') != 8 or
+        any(f'href="{path}"' not in footer_nav for path in (
+            "/saved/", "/archive/#category-feeds", "/about/",
+            "/editorial/", "/advertise/", "/privacy/", "/feed.xml"
+        ))):
+        raise RuntimeError("Footer has lost a utility link or gained duplicated navigation")
     if "adsbygoogle.js" in commercial_html:
         raise RuntimeError("Unapproved advertising script unexpectedly enabled")
 
