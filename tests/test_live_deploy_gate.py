@@ -27,6 +27,15 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn("Daily per-story browser count missing or invalid",checker)
         self.assertNotIn('"観測されたブラウザ" not in body',checker)
 
+    def test_rss_live_checker_uses_all_current_categories(self):
+        from scripts.build import CATEGORIES
+        from xml.etree import ElementTree as ET
+        checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
+        self.assertIn('set(CATEGORIES[1:])', checker)
+        self.assertIn("事件", CATEGORIES)
+        feed=ET.fromstring("<rss><channel><item><category>事件</category></item></channel></rss>")
+        self.assertIn(feed.findtext("./channel/item/category"), set(CATEGORIES[1:]))
+
     def test_live_checker_inspects_new_publications_not_old_source_news(self):
         """A newly published story with an older source still needs smoke checks."""
         from scripts.check_live import latest_articles
