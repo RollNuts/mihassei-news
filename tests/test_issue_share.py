@@ -62,6 +62,7 @@ class IssueShareTests(unittest.TestCase):
         share_text = values["text"][0]
         target = values["url"][0]
         self.assertIn("フィクション", share_text)
+        self.assertIn("5年後の『もしも』", share_text)
         self.assertIn("未発生新聞", share_text)
         self.assertIn(self.items[0]["title"][:20], share_text)
         self.assertLess(len(share_text), 160)
