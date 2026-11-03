@@ -712,9 +712,9 @@ def home(articles, serials=None):
 <span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
 <div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
+<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">続きを読む</a></div>
-<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <div class="hero-actions">{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
