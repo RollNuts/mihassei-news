@@ -978,28 +978,8 @@ body{
 }
 
 
-/* Synthetic comedy stills are clearly fictional, even in compact news cards. */
-.story-card .story-image-link--generated::after,
-.archive-list .story-card .story-image-link--generated::after{
-  content:"AI生成・創作";
-  background:#263c35e8;
-  color:#fffdf8;
-  font-size:10px;
-  padding:4px 8px;
-  left:8px;
-  bottom:8px;
-  pointer-events:none;
-}
-@media(max-width:660px){
-  .story-card .story-image-link--generated::after,
-  .archive-list .story-card .story-image-link--generated::after{
-    font-size:9px;
-    padding:3px 5px;
-    left:5px;
-    bottom:5px;
-  }
-}
-
+/* All news-card pictures use the same quiet「イメージ」badge from newsroom.css.
+   The AI workflow disclosure is in the editorial policy, not repeated on cards. */
 /* Hidden means hidden, even when a component declares display:flex/grid.
    Do not expose placeholder visitor totals or unverified rankings before the
    existing free API confirms real counts. This adds no network requests. */
