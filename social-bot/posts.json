@@ -279,6 +279,63 @@
           "caption": "机の下で、小さな抜け道"
         }
       ]
+    },
+    {
+      "id": "nejimachi-004-highfive",
+      "series": "nejimachi",
+      "episode": 4,
+      "chapter": 1,
+      "day": "D1",
+      "order": 4,
+      "kind": "comic",
+      "title": "ハイタッチ",
+      "location": "workshop",
+      "characters": [
+        "neji",
+        "moku"
+      ],
+      "canon_refs": [],
+      "text": "【ネジまち 第4話｜ハイタッチ】\n修理が終わったふたりは大喜び。でもモクの手袋、ネジより大きかった。#ネジまち",
+      "episode_core": "小さな機械を修理したネジとモクがハイタッチ。モクの手袋が大きすぎてネジが隠れ、次は指一本でと頼む。",
+      "panels": [
+        {
+          "scene": "workshop",
+          "focus": "neji",
+          "secondary": "moku",
+          "mood": "happy",
+          "sign": "修理おわり",
+          "line": "「直った！」",
+          "caption": "小さな機械の修理が完了",
+          "shot": "wide",
+          "prop": "bolt",
+          "action": "ネジは最後のボルトを締め終わり、モクと喜ぶ"
+        },
+        {
+          "scene": "workshop",
+          "focus": "moku",
+          "secondary": "neji",
+          "mood": "happy",
+          "sign": "よろこび中",
+          "line": "「ハイタッチ！」",
+          "caption": "大きな手袋を前へ",
+          "shot": "medium",
+          "prop": "none",
+          "action": "モクが大きな橙色の作業手袋をネジへ差し出す"
+        },
+        {
+          "scene": "workshop",
+          "focus": "neji",
+          "secondary": "moku",
+          "mood": "confused",
+          "sign": "ぽふっ",
+          "line": "「つぎは指一本でね」",
+          "caption": "手袋から、ちいさな声",
+          "shot": "close",
+          "prop": "none",
+          "visual": "glove-cover",
+          "action": "モクの手袋に包まれたネジが顔を出す"
+        }
+      ]
     }
   ]
 }
