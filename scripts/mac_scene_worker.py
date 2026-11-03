@@ -89,6 +89,37 @@ def wait_for_server(proc: subprocess.Popen, seconds: int = 120) -> None:
     raise RuntimeError("Dedicated local ComfyUI did not start")
 
 
+def stop_process(proc: subprocess.Popen | None, *, group: bool = False) -> None:
+    """Reap an owned job even if it exits between poll and the stop signal."""
+    if proc is None or proc.poll() is not None:
+        return
+    try:
+        if group:
+            os.killpg(proc.pid, signal.SIGTERM)
+        else:
+            proc.terminate()
+    except ProcessLookupError:
+        pass
+    try:
+        proc.wait(timeout=20)
+    except subprocess.TimeoutExpired:
+        try:
+            if group:
+                os.killpg(proc.pid, signal.SIGKILL)
+            else:
+                proc.kill()
+        except ProcessLookupError:
+            pass
+        proc.wait(timeout=10)
+
+
+def request_stop(signum: int, frame) -> None:
+    # launchd sends SIGTERM when unloading the job. Turn it into an exception
+    # so run_once can stop its children and clean only its own PNGs in finally.
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    raise RuntimeError("Local photo worker stopped by termination signal")
+
+
 def run_once(limit: int = 4, min_free_gb: int = 12,
              timeout: int = 900) -> int:
     if not 1 <= limit <= 4:
@@ -175,25 +206,19 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                           else "Generation or git publish failed; site fallback preserved")
             return sync_process.returncode
         finally:
-            if sync_process is not None and sync_process.poll() is None:
-                os.killpg(sync_process.pid, signal.SIGTERM)
+            # A sync shutdown failure must not strand the GPU server or its
+            # temporary images. Each cleanup gets its own finally boundary.
+            try:
+                stop_process(sync_process, group=True)
+            finally:
                 try:
-                    sync_process.wait(timeout=20)
-                except subprocess.TimeoutExpired:
-                    os.killpg(sync_process.pid, signal.SIGKILL)
-                    sync_process.wait(timeout=10)
-            if server is not None and server.poll() is None:
-                server.terminate()
-                try:
-                    server.wait(timeout=20)
-                except subprocess.TimeoutExpired:
-                    server.kill()
-                    server.wait(timeout=10)
-            clean_owned_intermediates(output_dir)
-            # This dedicated temp directory is never shared with other apps.
-            if safe_dir(temp_dir):
-                shutil.rmtree(temp_dir)
-                temp_dir.mkdir()
+                    stop_process(server)
+                finally:
+                    clean_owned_intermediates(output_dir)
+                    # This dedicated temp directory is never shared with other apps.
+                    if safe_dir(temp_dir):
+                        shutil.rmtree(temp_dir)
+                        temp_dir.mkdir()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -202,15 +227,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--min-free-gb", type=int, default=12)
     parser.add_argument("--timeout", type=int, default=900)
     args = parser.parse_args(argv)
+    previous_term = signal.signal(signal.SIGTERM, request_stop)
     try:
         return run_once(args.limit, args.min_free_gb, args.timeout)
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         try:
             update_status("skipped", str(exc))
-        except OSError:
+        except (OSError, RuntimeError):
             pass
         print("Safe stop: " + str(exc), file=sys.stderr)
         return 1
+    finally:
+        signal.signal(signal.SIGTERM, previous_term)
 
 
 if __name__ == "__main__":

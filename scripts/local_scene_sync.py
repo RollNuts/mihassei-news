@@ -10,6 +10,7 @@ import argparse
 import fcntl
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -45,6 +46,20 @@ def require_image_budget(additional: int = 0) -> None:
         raise RuntimeError("1.5 GiB combined JPEG budget reached; all existing photos preserved")
 
 
+def check_checkout_budget(checkout: Path, revision: str, min_free_gb: int) -> None:
+    """Reserve new remote JPEGs before a checkout/reset can materialize them."""
+    sizes = git("ls-tree", "-rl", revision, "--", str(RELATIVE_DIR),
+                cwd=checkout if checkout.is_dir() else ROOT).stdout.splitlines()
+    incoming = sum(int(line.split()[3]) for line in sizes if line.endswith(".jpg"))
+    change = incoming - archive_bytes(checkout)
+    require_image_budget(change)
+    volume = checkout if checkout.is_dir() else APP_DIR
+    check_storage([volume], min_free_gb)
+    required = min_free_gb * 1024**3 + 32 * 1024**2 + max(0, change)
+    if shutil.disk_usage(volume).free < required:
+        raise RuntimeError("Not enough free storage to materialize remote JPEGs safely")
+
+
 def git(*args: str, cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["git", *args], cwd=cwd or ROOT, check=check, capture_output=True, text=True,
@@ -59,7 +74,8 @@ def safe_to_publish() -> None:
         raise RuntimeError("Origin is not exactly the expected GitHub newspaper repository")
 
 
-def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing_only: bool) -> list[str]:
+def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing_only: bool,
+                    min_free_gb: int = 12) -> list[str]:
     copied = []
     records = generated_manifest(source)
     for article in articles:
@@ -72,6 +88,7 @@ def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing
         data = (source / RELATIVE_DIR / (slug + ".jpg")).read_bytes()
         target_image = target / RELATIVE_DIR / (slug + ".jpg")
         replaced = target_image.stat().st_size if target_image.is_file() else 0
+        check_storage([target if target.exists() else target.parent], min_free_gb)
         require_image_budget(len(data) - replaced)
         write_generated(article, data, record["model"], root=target)
         copied.append(slug)
@@ -80,31 +97,44 @@ def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing
 
 def retire_published(outbox: Path, published: Path, articles: list[dict]) -> None:
     """Remove only disposable outbox copies proven to be on remote main."""
-    records = generated_manifest(outbox)
+    manifest = outbox / RELATIVE_DIR / "manifest.json"
+    stage = manifest.with_suffix(".json.tmp")
+    if any(path.is_symlink() for path in
+           (outbox, outbox / "assets", manifest.parent, manifest, stage)):
+        raise RuntimeError("Unsafe outbox manifest")
+    if not manifest.exists():
+        return
+    # The read-only fallback loader deliberately tolerates corrupt manifests.
+    # Cleanup must fail closed instead of replacing recovery data with {}.
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
+    if (not isinstance(payload, dict) or payload.get("version") != 1
+            or not isinstance(payload.get("images"), dict)):
+        raise ValueError("Invalid outbox manifest; refusing to discard recovery data")
+    records = payload["images"]
     for article in articles:
         slug = article["slug"]
         if usable_generated_scene(article, root=published) and usable_generated_scene(article, root=outbox):
             (outbox / RELATIVE_DIR / (slug + ".jpg")).unlink()
             records.pop(slug, None)
-    manifest = outbox / RELATIVE_DIR / "manifest.json"
     if manifest.parent.is_dir():
-        stage = manifest.with_suffix(".json.tmp")
-        if manifest.is_symlink() or stage.is_symlink():
-            raise RuntimeError("Unsafe outbox manifest")
         stage.write_text(json.dumps({"version": 1, "images": records}, indent=2) + "\n")
         os.replace(stage, manifest)
 
 
-def publish_outbox(checkout: Path, outbox: Path, attempts: int = 3) -> bool:
+def publish_outbox(checkout: Path, outbox: Path, attempts: int = 3,
+                   min_free_gb: int = 12) -> bool:
     for _ in range(attempts):
+        check_storage([checkout, APP_DIR], min_free_gb)
         git("fetch", "origin", "main", cwd=checkout)
+        check_checkout_budget(checkout, "FETCH_HEAD", min_free_gb)
         # Only this function's disposable checkout is reset, never ROOT.
         # Include new JPEGs in the index so reset removes stale untracked
         # generation results too. Their verified copies are in the outbox.
         git("add", "--", str(RELATIVE_DIR), cwd=checkout)
         git("reset", "--hard", "FETCH_HEAD", cwd=checkout)
         articles = load_articles(checkout)
-        transfer_scenes(outbox, checkout, articles, missing_only=True)
+        transfer_scenes(outbox, checkout, articles, missing_only=True,
+                        min_free_gb=min_free_gb)
         git("add", "--", str(RELATIVE_DIR), cwd=checkout)
         changed = git("diff", "--cached", "--name-only", cwd=checkout).stdout.splitlines()
         if not changed:
@@ -170,27 +200,27 @@ def sync(args) -> int:
             if not marker.is_file() or marker.read_text() != "veripsa-local-scenes-v2\n":
                 continue
             if abandoned.is_dir():
-                transfer_scenes(abandoned, OUTBOX, load_articles(abandoned), missing_only=True)
+                transfer_scenes(abandoned, OUTBOX, load_articles(abandoned), missing_only=True,
+                                min_free_gb=args.min_free_gb)
                 git("worktree", "remove", "--force", str(abandoned))
             marker.unlink()
             job.rmdir()
         git("fetch", "origin", "main")
         revision = git("rev-parse", "FETCH_HEAD").stdout.strip()
-        sizes = git("ls-tree", "-rl", revision, "--", str(RELATIVE_DIR)).stdout.splitlines()
-        checkout_jpegs = sum(int(line.split()[3]) for line in sizes if line.endswith(".jpg"))
-        require_image_budget(checkout_jpegs)
         temp = Path(tempfile.mkdtemp(prefix="sync-", dir=APP_DIR))
         marker = temp / ".veripsa-scene-job"
         marker.write_text("veripsa-local-scenes-v2\n")
         preserved = True
         checkout = temp / "checkout"
         try:
+            check_checkout_budget(checkout, revision, args.min_free_gb)
             git("worktree", "add", "--detach", str(checkout), revision)
             try:
                 # Recover old-runner files only when latest main needs them.
                 missing = pending_articles(load_articles(checkout), root=checkout, limit=0)
-                transfer_scenes(ROOT, OUTBOX, missing, missing_only=True)
-                if not publish_outbox(checkout, OUTBOX):
+                transfer_scenes(ROOT, OUTBOX, missing, missing_only=True,
+                                min_free_gb=args.min_free_gb)
+                if not publish_outbox(checkout, OUTBOX, min_free_gb=args.min_free_gb):
                     return 1
                 check_storage([checkout, APP_DIR], args.min_free_gb)
                 missing = pending_articles(load_articles(checkout), root=checkout, limit=0)
@@ -199,9 +229,10 @@ def sync(args) -> int:
                     result = generate(args, checkout)
                 finally:
                     # Keep successful scenes even if another scene fails.
-                    transfer_scenes(checkout, OUTBOX, missing, missing_only=True)
+                    transfer_scenes(checkout, OUTBOX, missing, missing_only=True,
+                                    min_free_gb=args.min_free_gb)
                     preserved = True
-                published = publish_outbox(checkout, OUTBOX)
+                published = publish_outbox(checkout, OUTBOX, min_free_gb=args.min_free_gb)
                 return result if published else 1
             finally:
                 # Disposable worktree only. Original working tree is untouched.

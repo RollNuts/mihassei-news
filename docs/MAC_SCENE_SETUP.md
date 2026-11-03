@@ -18,7 +18,11 @@ gh auth setup-git
 
 Xcodeの同意画面が出るMacでは、上のPATHでインストール済みCommand Line Toolsのgitを使えます。この処理でXcodeの規約へ自動同意はしません。
 
-最新mainを取得した本リポジトリ内で実行します。まだコピーがない場合は、既存ディレクトリと重ならない場所へ `git clone https://github.com/RollNuts/mihassei-news.git` してください。
+最新mainを取得した本リポジトリ内で実行します。まだコピーがない場合は、通常のMacのターミナルで以下を実行してください。同名のフォルダが既にあればcloneは停止し、既存ファイルを上書きしません。Workで検証用に取得したスナップショットではなく、GitHubをoriginとする通常のcloneが必要です。
+
+~~~bash
+git clone https://github.com/RollNuts/mihassei-news.git "$HOME/VeripsaScenesRepo" && cd "$HOME/VeripsaScenesRepo"
+~~~
 
 ~~~bash
 # 状態確認のみ。ダウンロード・削除・設定変更はしない
@@ -69,6 +73,8 @@ python3.11 scripts/mac_scene_setup.py
 
 Macが停止中は生成できません。ログイン直後と毎時45分に不足分を再確認します。各処理後に専用ComfyUIを終了し、PNGを片付けます。launchdが引き継がないHomebrew／gitのPATHも設定済みです。
 
+タイムアウト・容量不足時はその回の残りの画像をキューへ追加しません。launchdからの停止要求でも子プロセスを終了し、専用PNGを片付けます。セットアップ・生成・キャッシュ削除は同時実行を防止しています。push競合で最新mainを再取得するときも、増えたJPEG分の容量を確認します。壊れた再送用manifestは上書きせず保存し、本番確認では画像のSHA-256も照合します。
+
 ## 停止と診断
 
 ~~~bash
@@ -88,4 +94,6 @@ python3.11 scripts/local_scene_photos.py --dry-run --limit 3
 
 M3 MacBook Air（8CPU／10GPU、16GB）へアクセスでき、Python 3.11.15／3.12.13、空き約216.3GiBを確認。既存のComfyUI・公式モデルは確認できた場所にはありませんでした。このWorkセッションではシェルの外部通信が制限され、Macのgh認証も無効でした。
 
-このためモデル・ComfyUIのインストール、実画像3本の品質評価、launchd有効化は未実施です。GitHubのコード修正・ローカルの障害再現テストと実機での生成成功は区別してください。インストール前後の比較は未実施で、作業後の空きは約216.3GiB、生成JPEGは0MiBです。
+再確認でも専用アプリ・モデルは未導入、torchも未導入でした。モデルの公式配布ページに記載された6.94GBとSHA-256は設定値に一致し、Open RAIL++-M本文も確認しています。外部通信制限とMac側の認証はこのセッションから解除できません。
+
+このためモデル・ComfyUIのインストール、実画像3本の品質評価、launchd有効化は未実施です。GitHubのコード修正・ローカルの障害再現テストと実機での生成成功は区別してください。JPEGから記事・トップ・一覧・OGP・RSSへ出力する検証にはテスト用画像を使っており、AI生成写真として公開していません。インストール前後の比較は未実施で、再確認時の空きは約216.2GiB、生成JPEGは0MiBです。通常のMacターミナルで認証・clone・上記セットアップ・3枚生成の順に行い、品質を確認してから定期実行を有効にしてください。
