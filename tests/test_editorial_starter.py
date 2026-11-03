@@ -62,8 +62,8 @@ class EditorialStarterTests(unittest.TestCase):
         actual=homepage_starter_picks(self.articles,lead,base=BASE)
         self.assertEqual(actual,expected)
         self.assertFalse({x["article"]["slug"] for x in actual}&occupied)
-        # Regression: publication sorting and editorial lead are different.
-        # Using articles[:4] silently checks different published cards.
+        # When a different lead is passed, deduplicate exactly those occupied
+        # slots. The production lead itself always follows publication order.
         fake_lead=self.articles[-1]
         selected=homepage_starter_picks(self.articles,fake_lead,base=BASE)
         excluded={fake_lead["slug"],*(item["slug"] for item in self.articles[:3])}
