@@ -53,6 +53,23 @@ jobs:
           git add social-bot/experiments/review.md
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): record evidence-only editorial review [skip ci]"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # Multiple independent Actions write main; a transient ref race is
+            # not an editorial or Buffer failure. Rebase and retry, never force.
+            published=false
+            for attempt in 1 2 3 4; do
+              if ! git pull --rebase origin main; then
+                echo "::error::Rebase conflict. No forced push or silent overwrite."
+                exit 1
+              fi
+              if git push origin HEAD:main; then
+                published=true
+                break
+              fi
+              echo "::warning::main advanced during push (attempt $attempt); retry safely"
+              sleep $((attempt * 2))
+            done
+            if [ "$published" != true ]; then
+              echo "::error::Could not persist evidence after four attempts"
+              exit 1
+            fi
           fi
