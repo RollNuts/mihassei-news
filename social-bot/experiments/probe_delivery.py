@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only Buffer delivery check for original X posts. No posts are created."""
 import json
+import math
 import os
 import sys
 from datetime import datetime, timezone
@@ -59,7 +60,36 @@ def reconcile(post, record, remote, channel_id):
     return result
 
 
-def build(inventory, state, channel_id, fetch):
+def normalize_buffer_impressions(post_data, sent_at):
+    """One experimental provider snapshot, NEVER a normalized 24/72h X sample."""
+    if not isinstance(post_data,dict):
+        return None
+    updated=post_data.get("metricsUpdatedAt")
+    if not isinstance(updated,str) or not updated:
+        return None
+    try:
+        stamp=datetime.fromisoformat(updated.replace("Z","+00:00"))
+        sent=datetime.fromisoformat(sent_at.replace("Z","+00:00"))
+    except (ValueError,AttributeError):
+        return None
+    if stamp.tzinfo is None or sent.tzinfo is None or stamp<sent:
+        return None
+    for metric in post_data.get("metrics") or []:
+        if not isinstance(metric,dict) or metric.get("type")!="impressions":
+            continue
+        val=metric.get("value")
+        if (metric.get("unit")!="count" or isinstance(val,bool)
+                or not isinstance(val,(int,float))
+                or not math.isfinite(val) or val<0 or int(val)!=val):
+            continue
+        return {"impressions":int(val),
+                "observed_at_utc":stamp.astimezone(timezone.utc).isoformat(),
+                "provider":"buffer_experimental_personal_api",
+                "window_hours":None}
+    return None
+
+
+def build(inventory, state, channel_id, fetch, fetch_metrics=None):
     posts=validate(inventory,{"schema_version":1,
         "channel_id":channel_id,"max_queue_size":3,
         "max_new_per_run":2},state)
@@ -76,6 +106,16 @@ def build(inventory, state, channel_id, fetch):
         try:
             remote=fetch(rec["buffer_id"])
             row=reconcile(post,rec,remote,channel_id)
+            if (row["buffer_status"]=="sent" and fetch_metrics
+                    and row.get("buffer_sent_at_utc")):
+                try:
+                    snapshot=normalize_buffer_impressions(
+                        fetch_metrics(rec["buffer_id"]), row["buffer_sent_at_utc"])
+                    if snapshot is not None:
+                        row["buffer_latest_impressions"]=snapshot
+                except (RuntimeError,ValueError,OSError):
+                    # Insights scope is optional; delivery status remains valid.
+                    row["buffer_metrics_available"]=False
         except (RuntimeError,ValueError,OSError):
             row={"post_id":post["id"],"buffer_id":rec["buffer_id"],
                  "format":post["format"],"visual":bool(post.get("visual")),
@@ -101,14 +141,18 @@ def main():
     def fetch(postid):
         query="query { post(input: {id: "+qstring(postid)+"}) { id channelId text status sentAt externalLink assets { id mimeType } } }"
         return gql(key,query).get("post")
-    result=build(inventory,state,channel,fetch)
+    def fetch_metrics(postid):
+        query="query { post(input: {id: "+qstring(postid)+"}) { metrics { type value unit } metricsUpdatedAt } }"
+        return gql(key,query).get("post")
+    result=build(inventory,state,channel,fetch,fetch_metrics)
     (HERE/"delivery.json").write_text(
         json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     for row in result["items"]:
         print("Buffer delivery",row["post_id"],row["buffer_status"],
               "assets",row.get("buffer_asset_count","unknown"),
               "X URL",row.get("buffer_external_link","unverified"))
-    print("No media was reposted; no X metrics inferred.")
+    print("No media was reposted. Missing insights remain unmeasured; provider "
+          "metric snapshots are NOT 24h or 72h X impression counts.")
     return 0
 
 
