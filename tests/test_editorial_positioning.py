@@ -62,6 +62,18 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("未来の出来事が的中する確率", privacy())
         self.assertIn("もしもの二択投票", about())
 
+    def test_reader_share_is_a_joke_not_a_prophecy(self):
+        from urllib.parse import parse_qs, urlparse
+        from scripts.build import share_url, load
+        article = load()[0]
+        query = parse_qs(urlparse(share_url(article)).query)
+        text = query["text"][0]
+        self.assertIn("5年後のもしも（創作）", text)
+        self.assertIn("未発生新聞", text)
+        self.assertIn(article["title"], text)
+        self.assertIn("utm_campaign=reader_share", query["url"][0])
+        self.assertNotIn("的中率", text)
+
     def test_metadata_and_brand_stay_unhappened_newspaper(self):
         page = layout("未発生新聞", "テスト", "/", "<p>テスト</p>")
         self.assertIn("未発生新聞｜5年後を勝手に想像する風刺ニュース", page)
