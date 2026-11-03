@@ -62,7 +62,7 @@ def inspect_markup(markup: str, path: str) -> tuple[str, str]:
         raise RuntimeError(path + ": X and OpenGraph images disagree")
     parsed = urlsplit(image)
     if (parsed.scheme != "https" or parsed.netloc != "veripsa.com"
-            or not parsed.path.startswith(("/og/", "/photos/"))):
+            or not parsed.path.startswith(("/og/", "/photos/", "/generated/"))):
         raise RuntimeError(path + ": image must be first-party raster: " + image)
     extension = parsed.path.rsplit(".", 1)[-1].lower()
     expected_mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg"}.get(extension)
