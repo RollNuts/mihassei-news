@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "purpose": "Per-episode manual review; a global X switch never overrides an individual rejection.",
+  "policy": "Adult-oriented original character art and a legible complete manga must be visually approved. Every approval must pin the exact script and PNG SHA256. Do not auto-populate approvals.",
+  "approved": {},
+  "rejected": {
+    "nejimachi-006-big-shadow": {
+      "reviewed_jst": "2026-11-03",
+      "reason": "Rejected by owner: superhero/web-slinging impression; immature character appeal; must not be scheduled or restored."
+    }
+  },
+  "historical_previews_archived_to_drafts": [
+    "nejimachi-001-morning",
+    "nejimachi-002-blue-sky"
+  ],
+  "reactivation_note": "First two serial previews were removed from the queue. Before any new release, explicitly decide how the revised serial starts. Do not silently skip archived episodes.",
+  "artist_constraints": [
+    "Original six-sided copper Neji head, one-eye Pito display, purple steam Moku",
+    "Adult-facing dry satire, aging industrial detail, understated gestural acting",
+    "No superhero web/thread motifs; no toddler-like blush, glossy toy eyes, or cats/hedgehogs",
+    "Every panel must have a meaningful viewpoint and action; no static diagram"
+  ],
+  "owner_approval_required": true
+}

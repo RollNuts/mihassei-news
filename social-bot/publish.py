@@ -12,6 +12,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from ip.audit import check as validate_canon, payload_hash
+from review_policy import load_manifest, select_next, verify_one
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -166,6 +167,9 @@ def main():
     state_path = HERE/"state.json"
     state = json.loads(state_path.read_text(encoding="utf-8"))
     submitted = state.setdefault("submitted", {})
+    # Global switch is not enough: every episode requires an exact manuscript
+    # and PNG hash approval by the owner. Rejected issues never get released.
+    reviews = load_manifest()
     orgid, channelid = choose_x_channel(token)
     existing = list_existing(token, orgid, channelid)
     queued = sum(1 for p in existing if p.get("status") == "scheduled")
@@ -175,18 +179,18 @@ def main():
     # Reconcile posts already submitted to Buffer even if a previous git push failed.
     for post in posts:
         if post["id"] not in submitted and post["text"] in texts:
+            if post["id"] in reviews["rejected"] or post["id"] not in reviews["approved"]:
+                raise RuntimeError("Unapproved previously queued manga; refusing to reconcile: " + post["id"])
+            verify_one(post, reviews["approved"][post["id"]], HERE/"assets")
             submitted[post["id"]] = {"buffer_id": texts[post["text"]], "recovered": True,
                                       "series": "nejimachi", "episode": post["episode"],
                                       "content_sha256": payload_hash(post)}
+    eligible = select_next(
+        posts, submitted, existing, reviews, HERE/"assets",
+        max_new=MAX_NEW_PER_RUN, max_queue=TARGET_QUEUE,
+    )
     count = 0
-    for post in posts:
-        if queued >= TARGET_QUEUE or count >= MAX_NEW_PER_RUN:
-            break
-        if post["id"] in submitted:
-            saved = submitted[post["id"]]
-            if saved.get("content_sha256") != payload_hash(post):
-                raise RuntimeError("Queued serial episode has changed: " + post["id"])
-            continue
+    for post in eligible:
         if len(post["text"]) > 240:
             raise RuntimeError("Tweet exceeds conservative 240-character cap: " + post["id"])
         buffer_id = queue_one(token, channelid, post)
