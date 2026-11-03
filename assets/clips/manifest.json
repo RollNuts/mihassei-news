@@ -24,6 +24,18 @@
       "fps": 12,
       "duration_ms": 4000,
       "created_at": "2026-11-03T09:47:14.105928+00:00"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "origin": "verified-still-motion",
+      "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
+      "image_sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1",
+      "sha256": "9d505b0ae38f790eac341354f0870f2eab236e16f0ff00edff75d6c504db1f88",
+      "bytes": 8181,
+      "width": 640,
+      "height": 360,
+      "fps": 12,
+      "duration_ms": 4000,
+      "created_at": "2026-11-03T10:10:59.723939+00:00"
     }
   }
 }
