@@ -385,7 +385,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn('href="/assets/future-poll.css"',page)
             self.assertNotIn("50% / 50%",page)
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
-        self.assertIn("5年後の予想投票について",privacy)
+        self.assertIn("架空ニュースの二択投票について",privacy)
         self.assertIn("個人の回答は公開しません",privacy)
 
     def test_reader_comments_are_present_and_privacy_is_explained(self):
