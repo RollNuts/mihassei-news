@@ -192,6 +192,19 @@ def category_meta(a, compact=False):
         f"架空 {future.year}/{future.month}/{future.day}"
         f" {future.hour:02}:{future.minute:02}"
     )
+    if compact:
+        # Dense cards need one truthful date and one clear fiction label.
+        # The full five-years-later dateline remains on every article page.
+        compact_date = f"公開 {real.year}/{real.month}/{real.day}"
+        if "T" in published:
+            compact_date += f" {real.hour:02}:{real.minute:02}"
+        return (
+            '<div class="story-meta story-meta--compact">'
+            + '<span class="category">' + escape(a["category"]) + " / 創作</span>"
+            + f'<time class="real-published-at" datetime="{escape(published)}"'
+              f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
+            + "</div>"
+        )
     return (
         '<div class="story-meta">'
         + '<span class="ticker">' + escape(a.get("flash", "速報")) + "</span>"
@@ -252,7 +265,6 @@ def actions(a, compact=False):
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
            '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button>')
-        + ('' if compact else bookmark_button(a))
         + '</div>'
     )
 
@@ -303,7 +315,7 @@ def card(a, archive=False):
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + '</a>'
-        + category_meta(a)
+        + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
         + '<div class="story-footer">'
@@ -593,9 +605,10 @@ def home(articles, serials=None):
     last_label = f"{actual_stamp.month}月{actual_stamp.day}日"
     if "T" in last_published:
         last_label += f" {actual_stamp.hour:02}:{actual_stamp.minute:02}"
-    side = "".join('<article class="brief-card">' + category_meta(x) +
-                   f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3>'
-                   f'<p>{escape(x["summary"])}</p>{actions(x,compact=True)}</article>'
+    # A sidebar should read like a newspaper's short headline rail, not three
+    # miniature article pages with duplicate summaries and action buttons.
+    side = "".join('<article class="brief-card">' + category_meta(x, compact=True) +
+                   f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3></article>'
                    for x in remaining[:3])
     # Curated starters must not repeat the editorial lead or the sidebar.
     # Share this selection with the public read-only checker.
@@ -674,7 +687,7 @@ def home(articles, serials=None):
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
 <div class="overlay"><span class="issue-code">EDITOR’S PICK / 創作</span></div></a>
-<div class="lead-info">{category_meta(a)}</div>
+<div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p>
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
@@ -835,6 +848,7 @@ def issue_page(day, items, issues):
         '<span class="eyebrow">DAILY EDITION / 5年後の架空ニュース</span>'
         f'<h1><time datetime="{day}">{title}</time></h1>'
         f'<p>現実の{issue_date_label(day)}に掲載した、{len(items)}本の創作ニュースです。'
+        f'物語の舞台は{int(day[:4]) + 5}年の架空の未来。'
         '記事内の出来事・発言・登場人物はフィクションです。</p>'
         f'<p class="issue-categories">{escape(kinds)}</p></header>'
         '<aside class="issue-share-panel" aria-label="この号を紹介する">'

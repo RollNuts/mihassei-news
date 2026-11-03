@@ -127,6 +127,19 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(len(shown),len(set(shown)))
         self.assertEqual(len(shown),min(len(published),4+len(picked)+4))
 
+    def test_sidebar_emphasizes_recent_headlines_not_duplicate_actions(self):
+        """Homepage headline rail stays compact on mobile and keeps real dates."""
+        from scripts.build import load, editorial_lead, category_meta
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        aside=home.split('<aside class="side-brief">',1)[1].split('</aside>',1)[0]
+        remaining=[a for a in load() if a["slug"] != editorial_lead(load())["slug"]]
+        self.assertEqual(aside.count('<article class="brief-card">'),min(3,len(remaining)))
+        self.assertNotIn('class="engagement-actions',aside)
+        self.assertNotIn('class="fiction-dateline"',aside)
+        for article in remaining[:3]:
+            self.assertIn(category_meta(article,compact=True),aside)
+        self.assertIn('.story-meta--compact', (ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8"))
+
     def test_homepage_focus_and_secondary_content_is_accessible(self):
         """No duplicate ticker; optional features remain accessible on demand."""
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
@@ -413,8 +426,14 @@ class SiteTests(unittest.TestCase):
             self.assertIn(fictional_tag,markup)
             self.assertIn("公開 ",markup)
             self.assertIn("架空 ",markup)
-            self.assertIn(actual_tag,archive)
-            self.assertIn(fictional_tag,archive)
+            compact_markup=category_meta(article, compact=True)
+            self.assertIn('class="story-meta story-meta--compact"',compact_markup)
+            self.assertIn(actual_tag,compact_markup)
+            self.assertIn(article["category"]+" / 創作",compact_markup)
+            self.assertNotIn(fictional_tag,compact_markup)
+            self.assertNotIn('class="ticker"',compact_markup)
+            self.assertIn(compact_markup,archive)
+            self.assertNotIn(fictional_tag,archive)
             page=(ROOT/"dist/articles"/article["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn(actual_tag,page)
             self.assertIn(fictional_tag,page)
