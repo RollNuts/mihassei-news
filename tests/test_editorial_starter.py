@@ -47,7 +47,7 @@ class EditorialStarterTests(unittest.TestCase):
             expected='href="/articles/'+slug+'/"'
             self.assertIn(expected,opening)
             self.assertNotIn(expected,latest)
-        self.assertIn("人気ランキングではありません",opening)
+        self.assertIn("SELECTION",opening)
         self.assertNotIn("週間ランキング第",opening)
         self.assertIn('class="serials-feature"',markup)
         self.assertNotIn('class="reading-ways"',markup)
