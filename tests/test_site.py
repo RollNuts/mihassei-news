@@ -231,7 +231,8 @@ class SiteTests(unittest.TestCase):
                      "editorial/index.html","advertise/index.html"):
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
             self.assertEqual(page.count('href="/assets/editorial-polish.css"'),1,name)
-            self.assertIn('5年後は、こうなってるかも。今の話題をちょっと大げさに。',page)
+            self.assertIn('まだ起きていないニュースを、真顔で。',page)
+            self.assertIn('href="/assets/reader-first.css"',page)
             self.assertLess(
                 page.index('href="/assets/comments.css"'),
                 page.index('href="/assets/editorial-polish.css"'),
@@ -287,7 +288,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('class="readers-choice" data-popular-section',markup)
         self.assertIn('data-popular-list',markup)
         self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
-        self.assertIn("実人数・PV・週間ランキングではありません",markup)
+        self.assertIn("実測ブラウザ単位の参考集計。実人数・PVではありません。",markup)
         m=re.search(r'data-popular-options="([^"]+)"',markup)
         self.assertIsNotNone(m)
         candidates=json.loads(html.unescape(m.group(1)))
