@@ -57,7 +57,7 @@ jobs:
         run: |
           python social-bot/render.py
           python social-bot/render_ip.py
-          python social-bot/ip/ink_storyboard.py
+          # Rejected episode 6 is historical only. Never regenerate its art.
           python social-bot/ip/remaster_early.py
 
       - name: Validate variable-panel acting and drawing (offline)
@@ -71,6 +71,9 @@ jobs:
 
       - name: Reject unapproved manga, altered artwork and broken release sequence (offline)
         run: python -m unittest discover -s social-bot -p 'test_review_policy.py' -v
+
+      - name: Print editorial review state without publishing (read-only)
+        run: python social-bot/review_status.py
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py
