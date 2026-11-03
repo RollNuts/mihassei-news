@@ -8,6 +8,7 @@ download a ~7 GB model without explicit model-license acknowledgment.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 import fcntl
 import json
@@ -107,6 +108,23 @@ def guard_install_paths() -> None:
             raise RuntimeError("Refusing an app/cache symlink: " + str(item))
 
 
+@contextmanager
+def maintenance_lock():
+    """Serialize setup/cache cleanup with the generator using its existing lock."""
+    if APP_DIR.is_symlink():
+        raise RuntimeError("Refusing symlinked app directory")
+    APP_DIR.mkdir(parents=True, exist_ok=True)
+    lock_path = APP_DIR / "worker.lock"
+    if lock_path.is_symlink():
+        raise RuntimeError("Refusing symlinked worker lock")
+    with lock_path.open("a+") as lock:
+        try:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as exc:
+            raise RuntimeError("A photo worker or setup is running; retry after it finishes") from exc
+        yield
+
+
 def run(args: list[str], *, cwd: Path | None = None) -> None:
     print("+", " ".join(args[:4]), flush=True)
     subprocess.run(args, cwd=cwd, check=True)
@@ -163,7 +181,9 @@ def download_checkpoint(destination: Path) -> None:
                 downloaded += len(block)
                 if downloaded > MODEL_MAX_BYTES:
                     raise RuntimeError("Download exceeded the hard 7.5 GB cap")
-                if gib_free(APP_DIR) < MIN_RUNTIME_GIB:
+                # Reserve the next write too: testing only the current free
+                # bytes can cross the 12 GiB floor by an entire 8 MiB block.
+                if gib_free(destination.parent) < MIN_RUNTIME_GIB + len(block) / 1024**3:
                     raise RuntimeError("Disk free space fell below the 12 GiB safety floor")
                 sink.write(block)
                 digest.update(block)
@@ -193,7 +213,12 @@ def install(*, python_command: str, source_model: str = "",
     if min(gib_free(ROOT), gib_free(Path.home())) < free_required:
         raise RuntimeError(f"Need {free_required} GiB free before installation; no changes made")
     executable = candidate_python(python_command)
-    APP_DIR.mkdir(parents=True, exist_ok=True)
+    with maintenance_lock():
+        _install_runtime(executable, source)
+
+
+def _install_runtime(executable: str, source: Path | None) -> None:
+    """Mutate the dedicated installation only while the worker lock is held."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     guard_install_paths()
     setup_tmp = CACHE_DIR / "setup-tmp"
@@ -314,12 +339,7 @@ def cleanup_cache() -> None:
     require_supported_mac()
     if CACHE_DIR.is_symlink():
         raise RuntimeError("Refusing symlinked cache")
-    APP_DIR.mkdir(parents=True, exist_ok=True)
-    with (APP_DIR / "worker.lock").open("a+") as lock:
-        try:
-            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as exc:
-            raise RuntimeError("A photo worker is running; refusing cache cleanup") from exc
+    with maintenance_lock():
         if safe_dir(CACHE_DIR):
             shutil.rmtree(CACHE_DIR)
     print("Only VeripsaScenes temporary/cache files were deleted; model/photos preserved")
