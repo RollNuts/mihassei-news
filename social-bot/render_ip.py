@@ -367,6 +367,10 @@ def main():
             continue
         if post["kind"]!="comic":
             continue
+        if post.get("art_style") == "handink-v1":
+            # Hand-composed industrial manga is rendered by ip/ink_storyboard.py
+            # with distinct angles, rough strokes and physical storytelling.
+            continue
         path=out/(post["id"]+".png")
         # Never quietly redraw an image already linked by Buffer/X; append-only
         # scripts and GitHub history are the source of truth for released art.

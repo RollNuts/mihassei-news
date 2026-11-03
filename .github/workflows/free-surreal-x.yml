@@ -42,6 +42,7 @@ jobs:
         run: |
           python social-bot/ip/test_history_guard.py
           python social-bot/ip/history_guard.py
+          python social-bot/ip/art_history_guard.py
 
       - name: Install free rendering dependencies
         run: |
@@ -55,9 +56,13 @@ jobs:
         run: |
           python social-bot/render.py
           python social-bot/render_ip.py
+          python social-bot/ip/ink_storyboard.py
 
       - name: Validate variable-panel acting and drawing (offline)
         run: python -m unittest discover -s social-bot/ip -p 'test_art_readability.py' -v
+
+      - name: Verify hand-ink composition and original character shapes
+        run: python -m unittest discover -s social-bot/ip -p 'test_ink_storyboard.py' -v
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py

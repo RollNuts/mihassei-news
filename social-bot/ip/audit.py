@@ -53,6 +53,11 @@ def check(loaded_posts=None):
         assert post["kind"] == "comic", f"Current serial delivery requires manga art #{num}"
         assert 2 <= len(post["panels"]) <= 6, f"Use 2-6 flexible panels at #{num}"
         assert len(post["text"]) <= 240
+        if num >= 6:
+            assert post.get("art_style") == "handink-v1", (
+                f"Episode #{num} cannot fall back to flat static vector panels")
+            assert isinstance(post.get("ink_scene"), str) and post["ink_scene"], (
+                f"Episode #{num} needs a dedicated hand-composed visual story")
         if num >= 4:
             # A viewer should understand the protagonist's aim in a single sentence.
             assert 12 <= len(post.get("episode_core","")) <= 130, f"Missing plain-language premise at #{num}"
