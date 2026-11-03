@@ -6,6 +6,7 @@ photographs of fictional events. No accounts, fonts, external assets or APIs.
 """
 from __future__ import annotations
 
+import hashlib
 import html
 import re
 import unicodedata
@@ -278,4 +279,49 @@ def render_cover(article: dict) -> str:
       <rect x="864" y="567" width="288" height="2" fill="{accent}"/>
       <text x="865" y="608" font-family="sans-serif" font-size="21" font-weight="900" letter-spacing="3" fill="#f2eee1">5 YEARS LATER</text>
       <text x="866" y="641" font-family="sans-serif" font-size="16" letter-spacing="2" fill="#b8c6c2">EDITORIAL ILLUSTRATION</text>
+    </svg>'''
+
+
+def render_story_visual(article: dict) -> str:
+    """Text-free editorial illustration for on-site cards and article pages.
+
+    The large headline is already real HTML beside the image. Repeating it
+    inside every SVG made the mobile newspaper look like stacked text blocks.
+    Keep render_cover() for title-led review art; social OGP PNGs are separate.
+    """
+    category = str(article.get("category", "社会"))
+    ink, accent = PALETTES.get(category, PALETTES["社会"])
+    title = str(article.get("title", ""))
+    slug = str(article.get("slug", ""))
+    subject = story_subject(article)
+    motif = ICONS[subject]
+    fingerprint = hashlib.sha256((slug + "|" + title).encode("utf-8")).digest()
+    glow_x = 150 + fingerprint[0] * 3
+    glow_y = 90 + fingerprint[1] * 2
+    glow_radius = 150 + fingerprint[2] // 2
+    arc_x = 85 + fingerprint[3] * 3
+    accessible = html.escape(
+        "記事の題材を表現した編集部制作の創作イラスト", quote=True
+    )
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"
+      role="img" aria-label="{accessible}" data-visual-topic="{subject}">
+      <rect width="1200" height="675" fill="#f2f1e9"/>
+      <rect width="1200" height="675" fill="{ink}" opacity=".065"/>
+      <circle cx="{glow_x}" cy="{glow_y}" r="{glow_radius}" fill="{accent}" opacity=".14"/>
+      <circle cx="{arc_x}" cy="570" r="280" fill="{ink}" opacity=".045"/>
+      <path d="M0 615Q370 420 690 560T1200 390V675H0Z"
+            fill="{accent}" opacity=".12"/>
+      <rect x="352" y="85" width="496" height="505" rx="42"
+            fill="#fffdf7" opacity=".64"/>
+      <circle cx="600" cy="337" r="226" fill="{accent}" opacity=".08"/>
+      <circle cx="600" cy="337" r="214" fill="none"
+              stroke="{ink}" stroke-opacity=".18" stroke-width="3"/>
+      <g transform="translate(464 198) scale(1.06)" fill="none"
+         stroke="{ink}" stroke-width="10" stroke-linecap="round"
+         stroke-linejoin="round">{motif}</g>
+      <path d="M70 74H252" stroke="{accent}" stroke-width="10"
+            stroke-linecap="round"/>
+      <path d="M948 600H1130" stroke="{accent}" stroke-width="10"
+            stroke-linecap="round"/>
+      <rect x="0" y="661" width="1200" height="14" fill="{accent}"/>
     </svg>'''
