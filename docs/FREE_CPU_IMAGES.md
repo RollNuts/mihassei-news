@@ -1,5 +1,7 @@
 # 未発生新聞：Macなしでも生成する無料CPU画像ルート
 
+**2026-11-03 品質検証中:** 1枚の生成・GitHub保存は成功したが初回画像が暗く、再生成も品質検査で棄却した。これを自動大量掲載しないよう、定時実行は一時停止中。まず短いプロンプト・高輝度の一枚を検証し、見た目が適切な場合のみ定時実行を復活する。
+
 公開リポジトリ `RollNuts/mihassei-news` の GitHub Actions 標準 Linux CPU ランナーで、公開された軽量LCMモデルの**重みをダウンロードして自前推論**する。外部画像生成API、GPT API、ChatGPT追加クレジット、有料GPU、Hugging Face Inference Endpoint、Cloudflareの追加サービスは使わない。
 
 ## できること／できないこと
