@@ -98,6 +98,46 @@ class LocalComedySceneTests(unittest.TestCase):
         self.assertNotEqual(local_scene_photos.stable_seed(a),
                             local_scene_photos.stable_seed(different))
 
+    def test_visual_punchline_is_frontloaded_in_latest_photo_directions(self):
+        """Visual premise must be present early enough for short CLIP windows."""
+        from scripts.build import load
+        items = {a["slug"]: a for a in load()}
+        scenes = (
+            ("volleyball-team-lunch-plate-merch",
+             ("ceramic dinner plate", "volleyball net")),
+            ("family-dinner-gacha-243-rejections",
+             ("red toy capsule vending machine", "plastic capsules")),
+        )
+        for slug, props in scenes:
+            with self.subTest(slug=slug):
+                article = items[slug]
+                direction = local_scene_photos.scene_description(article)
+                first_words = " ".join(direction.split()[:65]).lower()
+                self.assertTrue(all(prop in first_words for prop in props))
+                # The first part of the actual ComfyUI prompt, before CLIP
+                # truncation, must describe the central joke and its setting.
+                actual = " ".join(local_scene_photos.scene_prompt(article).split()[:75]).lower()
+                self.assertTrue(all(prop in actual for prop in props))
+                self.assertIn("fictional", actual)
+
+    def test_fallback_sport_selection_never_treats_all_players_as_baseball(self):
+        """A generic athlete headline is not evidence of a baseball story."""
+        for title, expected, forbidden in (
+            ("バレー選手がユニフォームを交換", "volleyball net", "baseball stadium"),
+            ("プロ野球選手がグラウンドに登場", "baseball stadium", "volleyball net"),
+        ):
+            with self.subTest(title=title):
+                article = {**fixture(), "slug": "another-sport",
+                           "title": title, "summary": "練習の途中で珍事が起きた"}
+                text = local_scene_photos.scene_description(article).lower()
+                self.assertIn(expected, text)
+                self.assertNotIn(forbidden, text)
+        soccer = {**fixture(), "slug": "soccer-story",
+                  "title": "サッカー選手が初出場",
+                  "summary": "サッカーの試合中におかしな出来事があった"}
+        self.assertNotIn("baseball stadium",
+                         local_scene_photos.scene_description(soccer).lower())
+
     def test_comfyui_workflow_is_offline_and_uses_only_standard_nodes(self):
         a = fixture()
         workflow = local_scene_photos.workflow(a, "sd_xl_base_1.0.safetensors")
