@@ -992,3 +992,10 @@ body{
     bottom:5px;
   }
 }
+
+/* Hidden means hidden, even when a component declares display:flex/grid.
+   Do not expose placeholder visitor totals or unverified rankings before the
+   existing free API confirms real counts. This adds no network requests. */
+body [hidden] {
+  display: none;
+}
