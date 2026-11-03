@@ -2,10 +2,10 @@
   "schema_version": 1,
   "experiment_publishing_enabled": true,
   "channel_id": "6ae94b74e29c69a171436d72",
-  "max_queue_size": 3,
-  "max_new_per_run": 2,
+  "max_queue_size": 9,
+  "max_new_per_run": 7,
   "channel_name": "Veripsa",
-  "reason": "Owner requested raising original X publishing from 1 to up to 2 distinct posts/JST day on 2026-11-03. Buffer Free customScheduled noon lane plus existing 19:30 queue; no extra paid services, unapproved manga or duplicates.",
+  "reason": "Owner set seven Buffer X posting slots daily. Original feed reserves up to nine of ten Free queue spots; one remains for eligible articles. The separate two-per-day custom midday lane is retired. No paid APIs or unapproved comics.",
   "creative_constraints": [
     "Only original compact surreal text and occasional canon-respecting character moments",
     "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
@@ -13,5 +13,6 @@
     "Original serial manga review gates remain separate until new visuals are evaluated"
   ],
   "launch_first_visual_now": false,
-  "two_daily_midday_enabled": true
+  "two_daily_midday_enabled": false,
+  "expected_daily_slots": 7
 }
