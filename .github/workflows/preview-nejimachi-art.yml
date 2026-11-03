@@ -1,0 +1,69 @@
+name: Preview Adult Nejimachi Art (offline, never publish)
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/ip/adult_pilot.py"
+      - "social-bot/ip/test_adult_pilot.py"
+      - ".github/workflows/preview-nejimachi-art.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/ip/adult_pilot.py"
+      - "social-bot/ip/test_adult_pilot.py"
+      - ".github/workflows/preview-nejimachi-art.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nejimachi-adult-art-preview
+  cancel-in-progress: false
+
+jobs:
+  render-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install free Japanese font and drawing library
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          python -m pip install --disable-pip-version-check "Pillow==12.0.0"
+
+      - name: Verify no external API, distinct cast and original composition
+        run: python -m unittest discover -s social-bot/ip -p 'test_adult_pilot.py' -v
+
+      - name: Produce two private-to-repo critique images (not X posts)
+        run: python social-bot/ip/adult_pilot.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: adult-nejimachi-visual-pilot
+          path: social-bot/ip/previews/*.png
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Make previews inspectable in the repository (main only)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/ip/previews/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(ip): store noncanonical adult visual proof for review [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Assert that publication remains paused
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          gate=json.loads(Path('social-bot/ip/publication_quality_gate.json').read_text())
+          assert gate['new_reservations_enabled'] is False, "Preview cannot enable publication"
+          print("QUALITY HOLD IS STILL ACTIVE: no X posting")
+          PY
