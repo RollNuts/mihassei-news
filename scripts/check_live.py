@@ -105,7 +105,8 @@ def check():
     # The visible counters now reset by JST date; do not require the
     # retired lifetime-counter label or imply that browser IDs are people.
     for token in ("data-observer-widget","data-observer-count",
-                  "data-observer-reads","今日の来訪","今日の記事閲覧",
+                  "data-observer-yesterday","data-observer-reads",
+                  "今日の来訪","昨日の来訪","今日の記事閲覧",
                   "1ブラウザ・1記事につき1日1回の集計"):
         if token not in body:
             raise RuntimeError("Daily audience display missing: "+token)
@@ -702,6 +703,13 @@ def check():
         or any(type(daily.get(key)) is not int or daily[key]<0
                for key in ("visitors","articleReads"))):
         raise RuntimeError("Daily JST audience counters missing or invalid")
+    yesterday=payload.get("yesterday")
+    if (not isinstance(yesterday,dict)
+        or not isinstance(yesterday.get("dateJst"),str)
+        or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", yesterday["dateJst"])
+        or any(type(yesterday.get(key)) is not int or yesterday[key]<0
+               for key in ("visitors","articleReads"))):
+        raise RuntimeError("Previous JST audience counters missing or invalid")
     if (type(first_article.get("todayReaders")) is not int
         or first_article["todayReaders"]<0):
         raise RuntimeError("Daily per-story browser count missing or invalid")
