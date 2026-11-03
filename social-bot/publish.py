@@ -16,6 +16,23 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 HERE = Path(__file__).resolve().parent
+QUALITY_GATE = HERE / "ip" / "publication_quality_gate.json"
+
+
+def review_allows_new_queue(gate_path=QUALITY_GATE):
+    """Fail closed if editorial approval is missing or explicitly on hold.
+
+    Existing Buffer reservations are unchanged. This controls only NEW writes.
+    """
+    if not Path(gate_path).is_file():
+        return False
+    try:
+        value = json.loads(Path(gate_path).read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return False
+    return value.get("new_reservations_enabled") is True
+
+
 BASE_URL = "https://api.buffer.com"
 ASSET_BASE_URL = (
     "https://raw.githubusercontent.com/RollNuts/mihassei-news/main/social-bot/assets"
@@ -131,6 +148,11 @@ def queue_one(token, channelid, post):
 def main():
     if os.environ.get("ENABLE_X_BOT", "").lower() != "true":
         print("SAFE MODE: ENABLE_X_BOT is not true. Nothing submitted.")
+        return 0
+    # Never contact Buffer or submit new posts while visual IP quality is on hold.
+    if not review_allows_new_queue():
+        print("QUALITY HOLD: new Buffer reservations paused pending approved original mascot art.")
+        print("Existing Buffer reservations are unchanged; no API call made.")
         return 0
     token = os.environ.get("BUFFER_API_KEY", "")
     if not token:
