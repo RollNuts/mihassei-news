@@ -93,14 +93,17 @@ def decide(posts, state, existing, max_queue, max_new):
                 "recovered_from_buffer": True
             }
             recovered.append(post["id"])
+    # Early format comparison: try a character moment in every fourth slot,
+    # rather than burying all character stories at the end of the inventory.
+    # Counts include already submitted original experiments; never reorder those.
     to_queue = []
-    if scheduled < max_queue:
-        for post in posts:
-            if post["id"] in state["queued"]:
-                continue
-            to_queue.append(post)
-            if len(to_queue) >= min(max_new, max_queue-scheduled):
-                break
+    remaining = [p for p in posts if p["id"] not in state["queued"]]
+    while remaining and scheduled+len(to_queue)<max_queue and len(to_queue)<max_new:
+        next_slot = len(state["queued"]) + len(to_queue) + 1
+        preferred = "character_moment" if next_slot % 4 == 0 else "surreal_text"
+        chosen = next((p for p in remaining if p["format"] == preferred), remaining[0])
+        to_queue.append(chosen)
+        remaining.remove(chosen)
     return to_queue, recovered, scheduled
 
 
