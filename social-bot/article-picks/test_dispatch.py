@@ -54,7 +54,7 @@ class ArticlePickTests(unittest.TestCase):
         picks.validate_config(config, original)
         state = picks.read_json(HERE / "state.json")
         picks.validate_state(state)
-        self.assertEqual(config["max_queue_size"], 3)
+        self.assertEqual(config["max_queue_size"], 10)
         self.assertEqual(config["max_new_per_run"], 1)
         self.assertGreaterEqual(config["minimum_interval_hours"], 72)
 
@@ -108,7 +108,7 @@ class ArticlePickTests(unittest.TestCase):
         original = {"channel_id": "X-VERIPSA"}
         picks.validate_config(CONFIG, original)
         for field, value in (("channel_id", "OTHER-ACCOUNT"),
-                             ("max_queue_size", 10),
+                             ("max_queue_size", 11),
                              ("max_new_per_run", 2),
                              ("minimum_interval_hours", 0),
                              ("min_readers", 0),
@@ -173,6 +173,23 @@ class ArticlePickTests(unittest.TestCase):
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertEqual(item["slug"], "new-story")
+
+    def test_tenth_queue_slot_stays_available_for_eligible_articles(self):
+        candidate = article("fresh-story")
+        remote = [{"id":f"creative-{i}", "status":"scheduled",
+                   "text":f"異なる短文の予約です{i}"} for i in range(9)]
+        cfg = {**CONFIG, "max_queue_size":10}
+        selected, evidence, count = picks.decide(
+            [candidate], {"fresh-story":stats()}, ledger(), remote,
+            cfg, NOW, {p["id"] for p in remote})
+        self.assertEqual(count,9)
+        self.assertEqual(selected["slug"],"fresh-story")
+        remote.append({"id":"last","status":"scheduled","text":"別の予約"})
+        selected, _, count = picks.decide(
+            [candidate], {"fresh-story":stats()}, ledger(), remote,
+            cfg, NOW, {p["id"] for p in remote[:9]})
+        self.assertIsNone(selected)
+        self.assertEqual(count,10)
 
     def test_missing_data_token_or_disabled_never_posts(self):
         with patch.object(picks, "read_json") as read, patch.object(picks, "queue_one") as queue:
