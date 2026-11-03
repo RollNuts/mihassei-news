@@ -589,10 +589,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
 <div class="container observer-shell">
-<div class="observer-widget" data-observer-widget hidden>
-<span class="observer-eye" aria-hidden="true">◉</span><span>観測されたブラウザ</span>
-<strong data-observer-count>—</strong><span class="observer-suffix">件</span>
-<small>※ブラウザ単位の参考値</small>
+<div class="observer-widget" data-observer-widget hidden role="group" aria-label="本日の読者の動き">
+<span class="observer-eye" aria-hidden="true">◉</span>
+<span class="observer-stat"><span class="observer-label">今日の来訪</span>
+<strong data-observer-count>—</strong><span class="observer-suffix">ブラウザ</span></span>
+<span class="observer-stat"><span class="observer-label">今日の記事閲覧</span>
+<strong data-observer-reads>—</strong><span class="observer-suffix">件</span></span>
+<small>※1ブラウザ・1記事につき1日1回の集計</small>
 </div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
