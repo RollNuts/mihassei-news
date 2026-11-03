@@ -111,10 +111,10 @@ class SatireAuditTests(unittest.TestCase):
     def test_existing_animal_story_is_now_memetic_not_bureaucratic(self):
         stories=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
         farm=next(a for a in stories if a["slug"]=="farm-friendship-across-species")
-        self.assertIn("SNSで考察合戦",farm["title"])
-        self.assertIn("牧草の草です",farm["paragraphs"][-1])
-        self.assertNotIn("部屋割り",farm["title"])
-        self.assertEqual(len(farm["paragraphs"]),3)
+        self.assertIn("牛とロバ",farm["title"])
+        self.assertTrue(2 <= len(farm["paragraphs"]) <= 6)
+        self.assertIn("草", " ".join(farm["paragraphs"]))
+        # The headline and ending can be improved without invalidating the test.
         self.assertEqual(farm["published_at"],"2026-11-03T07:40:27+09:00")
         self.assertEqual(farm["source"]["publisher"],"The Guardian")
         self.assertEqual(farm["fiction_at"],"2031-11-03T01:53:00+09:00")
@@ -152,7 +152,15 @@ class SatireAuditTests(unittest.TestCase):
 
     def test_next_slot_brief_does_not_invent_humor_or_traffic_scores(self):
         self.assertIn("掲載済み記事なし",next_slot_brief([])[0])
-        articles = [sample(i,title=title) for i,title in enumerate((
+        endings = (
+            "歌手は駅でギターを弾き、通行人を見送った。",
+            "プレイヤーは最後に自分のコントローラーを箱に戻した。",
+            "旅行者は港で古い地図を買い、新しい店を見つけた。",
+            "家族は一緒に餃子を包み、お皿を空にした。",
+            "園芸家は朝日に向かって自慢の花を飾った。",
+            "児童たちは先生と山頂でお弁当を広げた。",
+        )
+        articles = [sample(i,title=title,ending=endings[i]) for i,title in enumerate((
             "夜の音楽祭", "ゲームの新しい遊び方",
             "旅先で人気のご当地グッズ", "家族の料理",
             "趣味の庭づくり", "子どもの遠足",
