@@ -47,9 +47,34 @@ def generated_manifest(root: Path = ROOT) -> dict:
     return images if isinstance(images, dict) else {}
 
 
+def visually_held_scene(article: dict, *, root: Path = ROOT) -> bool:
+    """A human visual rejection overrides otherwise valid JPEG hashes.
+
+    This is a hold for the exact article fingerprint. Once the scene direction
+    or story changes, a fresh generated image can be reviewed again.
+    """
+    slug = article.get("slug")
+    if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+        return False
+    try:
+        payload = json.loads((root / RELATIVE_DIR / MANIFEST_NAME).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    if not isinstance(payload, dict) or payload.get("version") != 1:
+        return False
+    rejected = payload.get("rejected")
+    if not isinstance(rejected, dict):
+        return False
+    record = rejected.get(slug)
+    return (isinstance(record, dict)
+            and record.get("article_sha256") == article_fingerprint(article))
+
+
 def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     slug = article.get("slug")
     if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+        return None
+    if visually_held_scene(article, root=root):
         return None
     record = generated_manifest(root).get(slug)
     if not isinstance(record, dict):

@@ -138,6 +138,43 @@ class LocalComedySceneTests(unittest.TestCase):
         self.assertNotIn("baseball stadium",
                          local_scene_photos.scene_description(soccer).lower())
 
+    def test_visual_rejection_disables_original_still_and_any_motion_clip(self):
+        """An actual visually mismatched photo must not reach the public page."""
+        from scripts.generated_photos import visually_held_scene, generated_scene_entry
+        from scripts.motion_clips import usable_clip
+        article = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local_scene_photos.write_generated(
+                article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            self.assertTrue(usable_generated_scene(article, root=root))
+            manifest = root / "assets/generated/manifest.json"
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+            data["rejected"] = {
+                article["slug"]: {
+                    "article_sha256": article_fingerprint(article),
+                    "reason": "Reviewer saw the wrong scene"
+                }
+            }
+            manifest.write_text(json.dumps(data), encoding="utf-8")
+            self.assertTrue(visually_held_scene(article, root=root))
+            self.assertFalse(usable_generated_scene(article, root=root))
+            self.assertIsNone(generated_scene_entry(article, root=root))
+            self.assertIsNone(usable_clip(article, root=root))
+            self.assertEqual(local_scene_photos.pending_articles(
+                [article], root=root), [])
+            with patch.object(build, "BASE", root):
+                self.assertEqual(build.editorial_image(article),
+                                 "/images/" + article["slug"] + ".svg")
+                self.assertEqual(build.social_image(article),
+                                 "/og/articles/" + article["slug"] +
+                                 ".png?v=20261103-topic2")
+            # A new editorial visual direction releases the old hold, but
+            # the old JPEG is still invalidated by the changed fingerprint.
+            altered = {**article, "scene_prompt": "Completely different scene"}
+            self.assertFalse(visually_held_scene(altered, root=root))
+            self.assertFalse(usable_generated_scene(altered, root=root))
+
     def test_comfyui_workflow_is_offline_and_uses_only_standard_nodes(self):
         a = fixture()
         workflow = local_scene_photos.workflow(a, "sd_xl_base_1.0.safetensors")
