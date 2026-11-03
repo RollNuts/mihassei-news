@@ -117,3 +117,9 @@ One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23
 - Daily audit is bounded to **eight** individual Buffer status reads and **one** mature provider metric read. Earlier IDs, permalinks and observation timestamps stay cached rather than rescanned. A provider read error may preserve an earlier link as a *historical* link without asserting a current sent state.
 - `delivery.json.health` now distinguishes all original scripts, ever-queued scripts, unused originals, unused image scenes, last-known provider sent and links, and warnings below **14 unused scripts or 2 unused images**. These are not verified impressions or reach. The weekly report independently includes unused image inventory.
 - Increase creativity and quality with a separate daily restock, but never duplicate near-identical jokes or spam seven posts to game X. Keep Buffer Free (ten queued slots/channel), pinned X account, no paid APIs, and no unapproved canonical manga.
+
+## 7投稿/日の実証データと焼き直し防止 (2026-11-03)
+
+- 新作の `dispatch.validate` はUnicode NFKC・句読点/空白を除く正規化と、日本語の3文字連続列Jaccard類似度0.72以上で、**既登録を含む過去原稿との焼き直し**を予約前に拒否する。これは最低限の重複防止で、ギャグの面白さを判定するAIではない。新案のネタやオチは編集時に読んで判断する。Bufferに登録済みの本文やハッシュは変更しない。
+- 日次無料監査 `probe_delivery.py` は直近7日間の日本時間別に、**Bufferが `sent` と返し送信時刻も保存できたオリジナル投稿の件数だけ**を `delivery.json.health.observed_original_sent_by_jst_day` に記録する。未取得・記事紹介・手動投稿は含まない。0件はXへの実投稿が0件だった証明ではなく、目標7枠の達成率でもない。
+- 週次 `review.md` では直近3日分の部分記録を確認できる。通常インプレッションと収益化画面の対象インプレッションは別指標で、双方とも根拠がない限り未取得とする。無料Bufferの既存API予算とX規約に反する投稿量産は避ける。
