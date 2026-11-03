@@ -50,7 +50,7 @@ def validate_config(config: dict, original_x_config: dict) -> None:
             or not config["channel_id"]):
         raise ValueError("Article X channel must equal the existing Veripsa X channel")
     caps = (
-        ("max_queue_size", 3, 3),
+        ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
         ("min_readers", 6, 100),
         ("minimum_article_age_hours", 12, 72),
