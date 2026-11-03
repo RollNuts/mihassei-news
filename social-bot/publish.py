@@ -121,7 +121,11 @@ def remote_asset_available(url):
         return False
 
 
-def queue_one(token, channelid, post):
+def queue_one(token, channelid, post, mode="addToQueue"):
+    if mode not in ("addToQueue", "shareNow"):
+        raise ValueError("Unsupported Buffer posting mode")
+    if mode == "shareNow" and post.get("kind") != "image":
+        raise ValueError("Immediate send is reserved for original picture experiment")
     extra = ""
     if post["kind"] in ("comic", "image"):
         if post["kind"] == "image" and (
@@ -140,7 +144,7 @@ def queue_one(token, channelid, post):
     mutation = (
         "mutation { createPost(input: {text: " + qstring(post["text"])
         + ", channelId: " + qstring(channelid)
-        + ", schedulingType: automatic, mode: addToQueue"
+        + ", schedulingType: automatic, mode: " + mode
         + extra
         + "}) { ... on PostActionSuccess { post { id } }"
         + " ... on MutationError { message } } }"

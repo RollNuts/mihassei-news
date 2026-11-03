@@ -72,3 +72,9 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - `dispatch.py` reserves the images through the proven Buffer `assets.image.url` mutation. First original visual post is prioritized on the next available FREE queue slot; existing first three text reservations never change. The initial image experiments use one relevant `#シュールネタ` tag; text-only/no-tag items remain comparison controls.
 - The Buffer post ID, final-text SHA256, and image SHA256 are persisted. Once an image is hosted or queued, the script does not overwrite it, and a mismatching hash fails validation. Unknown visuals and unapproved character comics cannot enter this path.
 - The shared queue stays capped at 3 scheduled / 2 new per refill. A successful Buffer request is only a reservation; confirm actual X posting and 24h/72h impressions separately before judging creative impact.
+
+### One-off instant illustration launch (owner request, 2026-11-03)
+
+- `launch_first_visual_now: true` selects the first unsubmitted original **surreal** illustration with one relevant hashtag and sends it using Buffer `mode: shareNow`. This runs at most once per ledger; the result is never interpreted as a verified X post until checked against Buffer/X. No unapproved manga, paid API or Buffer pricing change.
+- Only this first image can bypass the three **scheduled** post slots; it is an immediate attempt, not an extra queued post or permission to spam. All later posts use existing queue caps and scheduling. Even if the image launch fails, subsequent daily runs can safely retry without rewriting reserved posts.
+- Normal scheduling now gives original X experiments priority over optional article promotion, so an article cannot take the last free slot before the visual experiment.

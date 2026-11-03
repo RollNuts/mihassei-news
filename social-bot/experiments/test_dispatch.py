@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from dispatch import decide, hash_text, main, validate, HERE, publication_text, hashtag_variant
+from dispatch import decide, hash_text, main, validate, HERE, publication_text, hashtag_variant, choose_one_time_visual_launch
 
 def sample():
     p={"schema_version":1,"experiments":[
@@ -240,6 +240,27 @@ class ExperimentsTests(unittest.TestCase):
             validate(p,c,state)
         p["experiments"][0]["visual"]="ufo"
         with self.assertRaisesRegex(ValueError,"Unreviewed"):
+            validate(p,c,state)
+
+    def test_one_time_image_launch_even_when_buffer_queue_full(self):
+        posts=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["experiments"]
+        state={"schema_version":1,"queued":{}}
+        for p in posts[:3]:
+            state["queued"][p["id"]]={"buffer_id":p["id"],
+                                      "text_sha256":hash_text(p["text"])}
+        config={"launch_first_visual_now":True}
+        selection=choose_one_time_visual_launch(posts,state,config)
+        self.assertEqual(selection["id"],"xexp-ufo-ticket")
+        state["queued"][selection["id"]]={"buffer_id":"sent-once",
+            "image_sha256":"0"*64,"text_sha256":hash_text(selection["text"])}
+        self.assertIsNone(choose_one_time_visual_launch(posts,state,config))
+        self.assertIsNone(choose_one_time_visual_launch(posts,
+                        {"queued":{}},{"launch_first_visual_now":False}))
+
+    def test_unapproved_immediate_config_value_rejected(self):
+        p,c,state=sample()
+        c["launch_first_visual_now"]="yes"
+        with self.assertRaisesRegex(ValueError, "boolean"):
             validate(p,c,state)
 
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
