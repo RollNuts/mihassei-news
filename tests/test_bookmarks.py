@@ -37,7 +37,8 @@ class SavedStoriesTests(unittest.TestCase):
     def test_save_button_appears_only_on_article_not_auto_saving_cards(self):
         source = self.articles[0]
         page = build.story(source, self.articles)
-        self.assertEqual(page.count('data-bookmark-slug="' + source["slug"] + '"'), 2)
+        self.assertEqual(page.count('data-bookmark-slug="' + source["slug"] + '"'), 1,
+                         "A single save button near the article heading is enough")
         self.assertIn('data-bookmark-title="' + build.escape(source["title"]) + '"', page)
         self.assertIn('data-bookmark-category="' + source["category"] + '"', page)
         self.assertIn('disabled aria-pressed="false"', page)
