@@ -279,6 +279,72 @@
           "caption": "机の下で、小さな抜け道"
         }
       ]
+    },
+    {
+      "id": "nejimachi-004-steam-friend",
+      "series": "nejimachi",
+      "episode": 4,
+      "chapter": 1,
+      "day": "D2",
+      "order": 1,
+      "kind": "comic",
+      "title": "コップのともだち",
+      "location": "workshop",
+      "characters": [
+        "moku",
+        "neji"
+      ],
+      "canon_refs": [
+        "city-ceiling"
+      ],
+      "episode_core": "モクがコップの湯気を仲間だと思うが消えてしまう。ネジが温め直すと湯気が二つに増え、モクは双子だと思い込む。",
+      "text": "【ネジまち 第4話｜コップのともだち】\nモクは、コップの湯気を見てちょっと嬉しくなった。#ネジまち",
+      "panels": [
+        {
+          "scene": "workshop",
+          "focus": "moku",
+          "mood": "happy",
+          "shot": "medium",
+          "sign": "共同整備台",
+          "prop": "cup",
+          "effect": "steam-one",
+          "action": "モクがコップから上がる自分そっくりの湯気を見つける",
+          "line": "「ぼくに似てる……」"
+        },
+        {
+          "scene": "workshop",
+          "focus": "moku",
+          "mood": "sad",
+          "shot": "close",
+          "prop": "cup",
+          "effect": "steam-fade",
+          "action": "湯気が消えてモクがしょんぼり手を伸ばす",
+          "silent": true,
+          "line": ""
+        },
+        {
+          "scene": "workshop",
+          "focus": "neji",
+          "secondary": "moku",
+          "mood": "happy",
+          "shot": "wide",
+          "prop": "cup",
+          "effect": "steam-two",
+          "action": "ネジがコップを温め直すと二つの湯気が上がる",
+          "line": "「あっため直したよ」"
+        },
+        {
+          "scene": "workshop",
+          "focus": "moku",
+          "secondary": "neji",
+          "mood": "happy",
+          "shot": "close",
+          "prop": "cup",
+          "effect": "steam-two",
+          "action": "モクが二つの小さな湯気を見て固まり微笑む",
+          "line": "「……ふたごだった」"
+        }
+      ]
     }
   ]
 }
