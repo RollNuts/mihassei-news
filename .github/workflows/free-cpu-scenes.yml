@@ -62,7 +62,12 @@ jobs:
           df -h .
       - name: Generate and verify at most three fictional JPEGs
         run: |
-          python3 scripts/github_cpu_scenes.py --limit "${{ inputs.limit || (github.event_name == 'push' && '1' || '3') }}"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # First quality retrial for the single formerly dark image.
+            python3 scripts/github_cpu_scenes.py --limit 1 --slug variety-700-guests-only-introductions
+          else
+            python3 scripts/github_cpu_scenes.py --limit "${{ inputs.limit || '3' }}"
+          fi
           python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
           python3 -m unittest discover -s tests -p 'test_cpu_scenes.py' -v
           python3 scripts/build.py

@@ -81,14 +81,43 @@ def load_pipeline():
     return pipe, torch
 
 
+def cpu_prompt(article: dict) -> str:
+    """Put the visual joke first, then lighting/style before CLIP truncation."""
+    return (
+        scene_description(article) + " "
+        "Bright, colorful STAGED SATIRICAL NEWS COMEDY set with cheerful high-key "
+        "lighting, a single large visible joke prop, crisp sharp 35mm photography, "
+        "clear expressive foreground actors, vivid realistic colors, modern Japan. "
+        "Funny because everyone behaves seriously. 16:9 composition. "
+        "No real people, words, logos, captions, fog, horror or dark lighting."
+    )
+
+
+def check_quality(image):
+    """Reject dark, washed-out, or near-featureless scenes before site publication.
+
+    Cheap image statistics are a minimum visual gate, not a replacement for
+    human review of the joke or realistic anatomy.
+    """
+    from PIL import ImageStat
+
+    gray = ImageStat.Stat(image.convert("L"))
+    saturation = ImageStat.Stat(image.convert("HSV")).mean[1]
+    brightness, contrast = gray.mean[0], gray.stddev[0]
+    print(f"CPU scene quality: luminance={brightness:.0f}, "
+          f"contrast={contrast:.0f}, saturation={saturation:.0f}", flush=True)
+    if not (90 <= brightness <= 225 and contrast >= 30 and saturation >= 18):
+        raise ValueError("Scene too dark/washed out/unreadable for editorial use")
+
+
 def render_one(pipe, torch, article: dict) -> bytes:
     generator = torch.Generator(device="cpu").manual_seed(stable_seed(article))
-    # LCM: 4 inference steps; modest pixels fit the free 4-CPU/16GB runner.
-    # Upscaling to the publication's standard 1200x675 happens locally.
+    # LCM: eight CPU-only steps and enough native pixels for a recognisable prop.
+    # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
     with torch.inference_mode():
         result = pipe(
-            prompt=scene_prompt(article), num_inference_steps=4,
-            guidance_scale=8.0, width=704, height=400,
+            prompt=cpu_prompt(article), num_inference_steps=8,
+            guidance_scale=8.0, width=800, height=448,
             generator=generator, output_type="pil",
         )
     if (getattr(result, "nsfw_content_detected", None)
@@ -97,6 +126,7 @@ def render_one(pipe, torch, article: dict) -> bytes:
     image = result.images[0] if getattr(result, "images", None) else None
     if image is None or not hasattr(image, "save"):
         raise ValueError("No usable image from CPU generator")
+    check_quality(image)
     output = io.BytesIO()
     image.save(output, format="PNG")
     return png_to_jpeg(output.getvalue())
