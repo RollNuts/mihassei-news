@@ -5,7 +5,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from render_ip import draw_manga
+from PIL import Image, ImageChops, ImageDraw
+from render_ip import draw_manga, paint_prop
 
 class MangaVisualTests(unittest.TestCase):
     def post(self,panels):
@@ -37,6 +38,23 @@ class MangaVisualTests(unittest.TestCase):
                 {"scene":"lamp","focus":"pito","mood":"plain","line":"「……」"}]
         with self.assertRaisesRegex(ValueError,"Silent panel must not contain"):
             draw_manga(self.post(panels))
+
+    def test_steam_gag_has_different_visible_states(self):
+        pictures={}
+        for state in ("none","steam-one","steam-fade","steam-two"):
+            image=Image.new("RGB",(360,320),"white")
+            draw=ImageDraw.Draw(image)
+            paint_prop(draw,"cup",172,210,1.0,effect=state)
+            pictures[state]=image
+        for state in ("steam-one","steam-fade","steam-two"):
+            with self.subTest(effect=state):
+                self.assertIsNotNone(ImageChops.difference(pictures["none"],pictures[state]).getbbox())
+        self.assertIsNotNone(ImageChops.difference(pictures["steam-one"],pictures["steam-two"]).getbbox())
+
+    def test_steam_cannot_float_from_a_bolt(self):
+        image=Image.new("RGB",(360,320),"white")
+        with self.assertRaisesRegex(ValueError,"require a cup"):
+            paint_prop(ImageDraw.Draw(image),"bolt",172,210,1.0,effect="steam-two")
 
     def test_two_to_six_panels(self):
         for length in (2,4,5,6):
