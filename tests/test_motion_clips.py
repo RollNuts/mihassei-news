@@ -59,6 +59,32 @@ class MotionClipTests(unittest.TestCase):
             (clips/"manifest.json").symlink_to("/etc/hosts")
             self.assertEqual(manifest_entries(root), {})
 
+    def test_player_and_video_schema_are_optional_even_without_ffmpeg(self):
+        # Static publishing must work on runners that cannot encode a movie.
+        article = self.articles[0]
+        with patch.object(build, "usable_clip", return_value={"created_at": "2026-11-03T08:00:00+00:00"}):
+            player = build.article_hero_media(article)
+            self.assertIn('controls playsinline muted loop preload="none"', player)
+            self.assertIn('poster="', player)
+            self.assertIn('<source src="'+clip_url(article)+'" type="video/mp4">', player)
+            self.assertIn('class="article-visual"', player)
+            self.assertNotIn("autoplay", player)
+            meta = build.layout(article["title"], article["summary"], build.article_url(article),
+                                "<p>test</p>", kind="story", article=article)
+            self.assertIn('"@type": "BlogPosting"', meta)
+            self.assertIn('"@type": "VideoObject"', meta)
+            self.assertIn('"duration": "PT4S"', meta)
+            self.assertIn('"contentUrl": "https://veripsa.com'+clip_url(article)+'"', meta)
+            card = build.card(article)
+            self.assertIn("▶ 4秒映像", card)
+            self.assertNotIn("<video", card)
+        with patch.object(build, "usable_clip", return_value=None):
+            self.assertNotIn("<video", build.article_hero_media(article))
+            self.assertNotIn('"@type": "VideoObject"',
+                             build.layout(article["title"],article["summary"],
+                                          build.article_url(article),"<p>test</p>",
+                                          kind="story", article=article))
+
     def test_real_approved_still_generates_bounded_silent_mp4(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("No local ffmpeg tools installed; production static build still works.")
