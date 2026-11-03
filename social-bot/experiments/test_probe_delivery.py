@@ -55,6 +55,18 @@ class BufferReadOnlyTests(unittest.TestCase):
             "metricsUpdatedAt":"2026-11-04T12:00:00Z",
             "metrics":[{"type":"likes","value":99,"unit":"count"}]},sent))
 
+    def test_initial_zero_is_not_used_as_a_real_observation(self):
+        sent="2026-11-03T10:55:16Z"
+        early={"metricsUpdatedAt":"2026-11-03T10:55:25Z",
+               "metrics":[{"type":"impressions","value":0,"unit":"count"}]}
+        self.assertIsNone(normalize_buffer_impressions(early,sent))
+        early["metrics"][0]["value"]=500
+        self.assertIsNone(normalize_buffer_impressions(early,sent))
+        early["metricsUpdatedAt"]="2026-11-04T00:00:00Z"
+        sampled=normalize_buffer_impressions(early,sent)
+        self.assertEqual(sampled["impressions"],500)
+        self.assertIsNone(sampled["window_hours"])
+
     def test_missing_metric_scope_does_not_turn_sent_into_error(self):
         inv={"schema_version":1,"experiments":[self.post]}
         import hashlib

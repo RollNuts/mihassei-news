@@ -97,3 +97,5 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 ### Optional Buffer impressions sampling
 
 On each successful read-only delivery audit, the bot attempts the personal Buffer API insights read **only** for posts Buffer marks sent, preserving delivery status even when insights scopes/data are unavailable. It persists a provider timestamped impression snapshot only when Buffer reports an explicit nonnegative integer `impressions` count refreshed after publication. These are *non-windowed experimental provider snapshots*, never copied to the strict X 24h/72h `metrics/records.json` evidence ledger. No paid X API, metrics estimate or fabricated zeros.
+
+Sampling guard: Buffer sometimes initializes an impressions=0 value within seconds of publication. That is not a mature 24h performance observation. The optional read-only probe suppresses provider snapshots whose metricsUpdatedAt is less than 12 hours after sentAt, regardless of their value. This threshold is only a data-quality gate; later reported data still cannot be called exactly 24h/72h X insights.
