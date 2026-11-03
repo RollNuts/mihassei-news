@@ -98,20 +98,36 @@ def choose_x_channel(token):
     return orgid, channel["id"]
 
 
-def list_existing(token, orgid, channelid, include_due_at=False):
-    # The midday lane needs exact times. Other consumers keep the old query.
-    fields = "id text status dueAt sentAt" if include_due_at else "id text status"
-    result = gql(token, (
-        "query { posts(first: 100, input: {organizationId: " + qstring(orgid)
-        + ", filter: {channelIds: [" + qstring(channelid)
-        + "], status: [scheduled, sent]}}) { edges { node { " + fields + " } }"
-        " pageInfo { hasNextPage } } }"
-    ))
-    conn = result.get("posts") or {}
-    if (conn.get("pageInfo") or {}).get("hasNextPage"):
-        raise RuntimeError("Buffer post list exceeded 100; refusing uncertain dedupe")
-    existing = [edge["node"] for edge in conn.get("edges") or []]
-    return existing
+def list_existing(token, orgid, channelid):
+    """Get all scheduled posts and 30 days of sent history with safe pagination.
+
+    Permanent ledgers in the original and article bots protect older posts.
+    Buffer's page size is 100, so seven daily posts require pagination; a
+    one-page-only query would halt after roughly two weeks of activity.
+    """
+    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    cursor = None
+    existing = []
+    seen_cursors = set()
+    for _page in range(30):
+        after = ", after: " + qstring(cursor) if cursor else ""
+        result = gql(token, (
+            "query { posts(first: 100" + after + ", input: {organizationId: "
+            + qstring(orgid) + ", filter: {channelIds: [" + qstring(channelid)
+            + "], status: [scheduled, sent], dueAt: {start: " + qstring(since)
+            + "}}}) { edges { node { id text status } }"
+            " pageInfo { hasNextPage endCursor } } }"
+        ))
+        conn = result.get("posts") or {}
+        existing.extend(edge["node"] for edge in conn.get("edges") or [])
+        page = conn.get("pageInfo") or {}
+        if not page.get("hasNextPage"):
+            return existing
+        cursor = page.get("endCursor")
+        if not isinstance(cursor, str) or not cursor or cursor in seen_cursors:
+            raise RuntimeError("Buffer posts pagination cursor invalid; refusing uncertain dedupe")
+        seen_cursors.add(cursor)
+    raise RuntimeError("Buffer posts pagination exceeded safe page limit; refusing uncertain dedupe")
 
 
 def remote_asset_available(url):
@@ -123,26 +139,9 @@ def remote_asset_available(url):
         return False
 
 
-def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None):
-    if mode not in ("addToQueue", "shareNow", "customScheduled"):
+def queue_one(token, channelid, post, mode="addToQueue"):
+    if mode not in ("addToQueue", "shareNow"):
         raise ValueError("Unsupported Buffer posting mode")
-    # Custom scheduled posts are exclusively our X experiment lane, never
-    # unapproved comics; use an exact future UTC timestamp for auditability.
-    due_field = ""
-    if mode == "customScheduled":
-        if post.get("kind") not in ("text", "image") or not str(post.get("id", "")).startswith("xexp-"):
-            raise ValueError("Custom scheduling reserved for X experiment posts")
-        if not isinstance(due_at_utc, str) or not due_at_utc.endswith("Z"):
-            raise ValueError("Exact UTC dueAt required for custom scheduling")
-        try:
-            due = datetime.fromisoformat(due_at_utc.replace("Z", "+00:00"))
-        except ValueError as exc:
-            raise ValueError("Invalid UTC dueAt for custom scheduling") from exc
-        if due.utcoffset().total_seconds() != 0 or due <= datetime.now(timezone.utc) + timedelta(minutes=10):
-            raise ValueError("Custom scheduling dueAt must be future UTC")
-        due_field = ", dueAt: " + qstring(due_at_utc)
-    elif due_at_utc is not None:
-        raise ValueError("dueAt is only accepted with customScheduled")
     if mode == "shareNow" and post.get("kind") != "image":
         raise ValueError("Immediate send is reserved for original picture experiment")
     extra = ""
@@ -164,7 +163,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None):
         "mutation { createPost(input: {text: " + qstring(post["text"])
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
-        + due_field + extra
+        + extra
         + "}) { ... on PostActionSuccess { post { id } }"
         + " ... on MutationError { message } } }"
     )
