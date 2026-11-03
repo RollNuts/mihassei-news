@@ -20,6 +20,16 @@
       "seed": 3792932720945161705,
       "sha256": "56f5c4abaaf2eea1cae07e68b88356418a2124bb7947f8bca15625b2d09e3eb1"
     },
+    "fan-theories-write-final": {
+      "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
+      "bytes": 94588,
+      "generated_at": "2026-11-03T05:56:12.792054+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 3110783516514393951,
+      "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
+    },
     "farm-friendship-across-species": {
       "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
       "bytes": 109756,
@@ -29,6 +39,16 @@
       "prompt_version": 2,
       "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+    },
+    "local-souvenir-cannot-leave-town": {
+      "article_sha256": "9a4c73400cee12de4f0158729fc62cab51da7350c70f1af6afc1b41468d37cc1",
+      "bytes": 106081,
+      "generated_at": "2026-11-03T05:56:12.785563+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 6500820507977045750,
+      "sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b"
     },
     "mortgage-bank-clerk-invited-to-live-in": {
       "article_sha256": "61fcfcf46a70ca91c531dd4a0578b1ed1f5f0e4b181c0236b47e87678fc4c10f",
@@ -50,6 +70,16 @@
       "seed": 7680700911801401316,
       "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
     },
+    "pressure-office-mood-forecast": {
+      "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
+      "bytes": 100886,
+      "generated_at": "2026-11-03T05:56:12.789040+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 3262525616120615859,
+      "sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70"
+    },
     "quiet-reply-dating-matches": {
       "article_sha256": "1fbe5026d7edc3bbb284ea11c7c2cce37100927d915f6238447b368a8ed229ec",
       "bytes": 83461,
@@ -59,6 +89,16 @@
       "prompt_version": 2,
       "seed": 2771907992498822586,
       "sha256": "839d35bb769539cffac22cca4b88837ada978e0bbebf0f3b896a24c7c4d08d63"
+    },
+    "robot-job-hopping": {
+      "article_sha256": "7d5a0d1f09f864e6663ca371960f6695049b078a2c39fdee2c6fdc35cc2c926d",
+      "bytes": 89546,
+      "generated_at": "2026-11-03T05:56:12.799476+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 331504810597266324,
+      "sha256": "7992912ea34309fc78cf4c4b48b54154c8e3078c883ef2557ac0c5a3e21ee045"
     },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
