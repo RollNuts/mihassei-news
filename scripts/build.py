@@ -2,6 +2,7 @@
 """Build original, clearly labelled fictional-news pages. No third-party packages."""
 from __future__ import annotations
 
+import hashlib
 import html
 import json
 import re
@@ -11,6 +12,7 @@ import subprocess
 import zlib
 from datetime import datetime
 from email.utils import format_datetime
+from functools import lru_cache
 from pathlib import Path
 
 if __package__:
@@ -41,6 +43,39 @@ from xml.etree import ElementTree as ET
 BASE = Path(__file__).resolve().parent.parent
 OUT = BASE / "dist"
 SITE = "https://veripsa.com"
+# Preserve the precise cascade order of the former eight render-blocking links.
+# Keep original source files published (e.g. comments-admin.html), but pages
+# request one content-fingerprinted, first-party stylesheet instead.
+SITE_STYLESHEETS = (
+    "style.css",
+    "article-extra.css",
+    "newsroom.css",
+    "future-poll.css",
+    "comments.css",
+    "editorial-polish.css",
+    "serials.css",
+    "reader-first.css",
+)
+SITE_CSS_PATH = "/assets/newspaper.css"
+
+
+@lru_cache(maxsize=1)
+def bundled_stylesheets():
+    """Build the original cascade as one static CSS file, with no paid bundler."""
+    parts = ['@charset "UTF-8";\n']
+    for name in SITE_STYLESHEETS:
+        source = (BASE / "assets" / name).read_text(encoding="utf-8")
+        # Only the first declaration in a CSS resource can be @charset.
+        source = re.sub(r"^\s*@charset\s+['\"]utf-8['\"];\s*", "", source, count=1, flags=re.I)
+        parts.append(f"\n/* SOURCE {name} */\n{source}\n")
+    return "".join(parts)
+
+
+@lru_cache(maxsize=1)
+def stylesheet_url():
+    """A content digest prevents browsers from reusing an outdated CSS bundle."""
+    digest = hashlib.sha256(bundled_stylesheets().encode("utf-8")).hexdigest()[:12]
+    return f"{SITE_CSS_PATH}?v={digest}"
 CATEGORIES = ("すべて", "社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ")
 ARTS = ("notice", "cards", "tower", "robot", "meeting", "generic")
 CATEGORY_PATHS = {
@@ -596,14 +631,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
 {topic_rss}
-<link rel="stylesheet" href="/assets/style.css">
-<link rel="stylesheet" href="/assets/article-extra.css">
-<link rel="stylesheet" href="/assets/newsroom.css">
-<link rel="stylesheet" href="/assets/future-poll.css">
-<link rel="stylesheet" href="/assets/comments.css">
-<link rel="stylesheet" href="/assets/editorial-polish.css">
-<link rel="stylesheet" href="/assets/serials.css">
-<link rel="stylesheet" href="/assets/reader-first.css">
+<link rel="stylesheet" href="{stylesheet_url()}">
 {archive_script}
 <script defer src="/assets/engagement.js"></script>
 {comments_script}
@@ -1446,6 +1474,7 @@ def build():
     for f in (BASE/"assets").iterdir():
         if f.is_file():
             shutil.copy2(f, OUT/"assets"/f.name)
+    write(SITE_CSS_PATH.lstrip("/"), bundled_stylesheets())
     shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
     photos = BASE / "assets" / "photos"
     if photos.exists():
