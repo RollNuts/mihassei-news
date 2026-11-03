@@ -9,7 +9,7 @@ Environment:
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from ip.audit import check as validate_canon, payload_hash
 from review_policy import load_manifest, select_next, verify_one
@@ -99,17 +99,34 @@ def choose_x_channel(token):
 
 
 def list_existing(token, orgid, channelid):
-    result = gql(token, (
-        "query { posts(first: 100, input: {organizationId: " + qstring(orgid)
-        + ", filter: {channelIds: [" + qstring(channelid)
-        + "], status: [scheduled, sent]}}) { edges { node { id text status } }"
-        " pageInfo { hasNextPage } } }"
-    ))
-    conn = result.get("posts") or {}
-    if (conn.get("pageInfo") or {}).get("hasNextPage"):
-        raise RuntimeError("Buffer post list exceeded 100; refusing uncertain dedupe")
-    existing = [edge["node"] for edge in conn.get("edges") or []]
-    return existing
+    """Recent Buffer sent + scheduled posts, paginated for high-frequency use.
+
+    A 30-day remote recovery window is combined with the permanent original
+    and article ledgers. Buffer's single-page limit is only 100 posts.
+    """
+    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    cursor = None
+    existing = []
+    seen_cursors = set()
+    for _page in range(30):
+        after = ", after: " + qstring(cursor) if cursor else ""
+        result = gql(token, (
+            "query { posts(first: 100" + after + ", input: {organizationId: "
+            + qstring(orgid) + ", filter: {channelIds: [" + qstring(channelid)
+            + "], status: [scheduled, sent], dueAt: {start: " + qstring(since)
+            + "}}}) { edges { node { id text status } }"
+            " pageInfo { hasNextPage endCursor } } }"
+        ))
+        conn = result.get("posts") or {}
+        existing.extend(edge["node"] for edge in conn.get("edges") or [])
+        page = conn.get("pageInfo") or {}
+        if not page.get("hasNextPage"):
+            return existing
+        cursor = page.get("endCursor")
+        if not isinstance(cursor, str) or not cursor or cursor in seen_cursors:
+            raise RuntimeError("Buffer posts pagination cursor invalid; refusing uncertain dedupe")
+        seen_cursors.add(cursor)
+    raise RuntimeError("Buffer posts pagination exceeded safe page limit; refusing uncertain dedupe")
 
 
 def remote_asset_available(url):
