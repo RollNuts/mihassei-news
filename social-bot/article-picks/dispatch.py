@@ -160,9 +160,94 @@ def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list
     return eligible
 
 
+def measured_recent_changes(root: Path, articles: list[dict], counts: dict,
+                            now: datetime) -> dict[str, dict[str, int]]:
+    """Point-in-time *increase* since a trustworthy recent snapshot, not daily PV.
+
+    We compare the same anonymous-browser counters; snapshots are cumulative.
+    An article published AFTER that snapshot has a known zero baseline.
+    Missing, stale, malformed, reset or contradictory observations are skipped,
+    never converted into invented visits or impressions. No additional API calls.
+    """
+    if now.tzinfo is None:
+        raise ValueError("Current time must have timezone")
+    folder = root / "analytics" / "daily"
+    if folder.is_symlink() or not folder.is_dir():
+        return {}
+    recent_files = sorted(folder.glob("20??-??-??.json"), reverse=True)[:5]
+    latest: tuple[datetime, dict] | None = None
+    for file in recent_files:
+        try:
+            if file.is_symlink() or not 200 <= file.stat().st_size <= 2_000_000:
+                continue
+            doc = read_json(file)
+            if doc.get("schema_version") != 1 or doc.get("unit") != "anonymous-browser":
+                continue
+            timestamp = datetime.fromisoformat(doc["measured_at_utc"])
+            if timestamp.tzinfo is None:
+                continue
+            age = now - timestamp
+            # A brand-new sample cannot yet demonstrate meaningful momentum.
+            if not timedelta(hours=6) <= age <= timedelta(hours=72):
+                continue
+            rows = doc.get("recent_articles")
+            if not isinstance(rows, list) or len(rows) > 100:
+                continue
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+        if latest is None or timestamp > latest[0]:
+            latest = (timestamp, doc)
+    if latest is None:
+        return {}
+
+    sampled_at, doc = latest
+    prior = {}
+    for row in doc["recent_articles"]:
+        if not isinstance(row, dict):
+            continue
+        slug = row.get("slug")
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or slug in prior:
+            continue
+        if any(type(row.get(k)) is not int or row[k] < 0 for k in METRIC_FIELDS):
+            continue
+        prior[slug] = {key: row[key] for key in METRIC_FIELDS}
+
+    result = {}
+    for article in articles:
+        slug = article.get("slug")
+        now_counts = counts.get(slug)
+        if not isinstance(slug, str) or not isinstance(now_counts, dict):
+            continue
+        if any(type(now_counts.get(k)) is not int or now_counts[k] < 0
+               for k in METRIC_FIELDS):
+            continue
+        try:
+            published = datetime.fromisoformat(article["published_at"])
+            if published.tzinfo is None:
+                continue
+        except (ValueError, KeyError, TypeError):
+            continue
+        baseline = prior.get(slug)
+        if published > sampled_at:
+            # The article didn't exist at the previous measurement instant.
+            if baseline is not None:
+                continue  # Contradictory snapshot, do not infer a trend.
+            baseline = dict.fromkeys(METRIC_FIELDS, 0)
+        if baseline is None:
+            continue
+        if any(now_counts[k] < baseline[k] for k in METRIC_FIELDS):
+            continue  # Counter reset/decrement; can't compare safely.
+        result[slug] = {key: now_counts[key] - baseline[key]
+                        for key in METRIC_FIELDS}
+    # No observed increase = no claim about momentum. Use cumulative fallback.
+    return result if any(any(val > 0 for val in d.values())
+                         for d in result.values()) else {}
+
+
 def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
-         config: dict) -> list[tuple[dict, dict, int]]:
-    """Require meaningful sample + real engagement, no fake 'trending' score."""
+         config: dict, momentum: dict | None = None) -> list[tuple[dict, dict, int]]:
+    """Require genuine cumulative evidence, prefer observed recent increase."""
+
     validate_state(state)
     result = []
     for article in articles:
@@ -185,8 +270,18 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
         score = (readers + 3 * data["likes"] + 2 * data["share_clicks"]
                  + 2 * data["continued_readers"])
         result.append((article, data, score))
-    result.sort(key=lambda row: (row[2], row[1]["readers"],
-                                row[0]["published_at"]), reverse=True)
+    def recent_score(row):
+        recent = (momentum or {}).get(row[0]["slug"])
+        if not isinstance(recent, dict):
+            return 0
+        return (recent["readers"] + 3 * recent["likes"]
+                + 2 * recent["share_clicks"] + 2 * recent["continued_readers"])
+
+    # If valid recent changes exist, recent real reactions have priority;
+    # otherwise the historical cumulative ranking is unchanged.
+    result.sort(key=lambda row: (recent_score(row), row[2],
+                                 row[1]["readers"], row[0]["published_at"]),
+                reverse=True)
     return result
 
 
@@ -200,7 +295,8 @@ def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
 
 
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
-           config: dict, now: datetime, creative_ids: set[str]
+           config: dict, now: datetime, creative_ids: set[str],
+           momentum: dict | None = None
            ) -> tuple[dict | None, dict | None, int]:
     """Evaluate ONLY after recovering remote posts, keeping original queue alive."""
     known = {a["slug"] for a in articles if isinstance(a.get("slug"), str)}
@@ -218,7 +314,7 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     if queued and not any(p.get("id") in creative_ids for p in queued):
         return None, None, len(queued)
     candidates = rank(eligible_articles(articles, now, config), counts,
-                      state, remote_slugs, config)
+                      state, remote_slugs, config, momentum=momentum)
     if not candidates:
         return None, None, len(queued)
     item, metrics, _score = candidates[0]
@@ -259,8 +355,10 @@ def main() -> int:
         v["buffer_id"] for v in creative_state.get("queued", {}).values()
         if isinstance(v, dict) and isinstance(v.get("buffer_id"), str)
     }
+    momentum = measured_recent_changes(ROOT, candidates, metrics, now)
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
-                                            config, now, creative_ids)
+                                            config, now, creative_ids,
+                                            momentum=momentum)
     # Persist remote recovery before any further POST. The workflow also
     # commits both ledgers even after a partial API/network failure.
     save_state(state)
@@ -280,7 +378,9 @@ def main() -> int:
     save_state(state)
     print("Reader-interest article accepted by Buffer (not X impressions or "
           "verified X publication):", eligible["slug"], buffer_id,
-          "scheduled_before=", scheduled)
+          "scheduled_before=", scheduled,
+          "recent_observed_change=", momentum.get(eligible["slug"], "not available"),
+          "unit=anonymous-browser counter changes since snapshot")
     return 0
 
 
