@@ -79,6 +79,22 @@ class BufferReadOnlyTests(unittest.TestCase):
         self.assertIn("dueAt",gql.call_args.args[1])
         self.assertEqual(result["buffer-a"]["dueAt"],"2026-11-04T03:00:00Z")
 
+
+    def test_missing_due_at_is_flagged_separately_from_provider_sent(self):
+        remote=dict(self.remote, status="scheduled", dueAt=None)
+        record=dict(self.rec, buffer_due_at_at_creation_utc="2026-11-04T00:00:00+00:00")
+        observed=reconcile(self.post,record,remote,"x-1")
+        self.assertEqual(observed["buffer_status"],"scheduled")
+        self.assertTrue(observed["buffer_due_at_missing_on_audit"])
+        self.assertEqual(observed["buffer_due_at_at_creation_utc"],
+                         "2026-11-04T00:00:00+00:00")
+        self.assertNotIn("buffer_due_at_utc", observed)
+        remote["dueAt"]="2026-11-04T01:00:00Z"
+        available=reconcile(self.post,record,remote,"x-1")
+        self.assertEqual(available["buffer_due_at_utc"],
+                         "2026-11-04T01:00:00+00:00")
+        self.assertNotIn("buffer_due_at_missing_on_audit",available)
+
     def test_sent_has_only_provider_permalink(self):
         row=reconcile(self.post,self.rec,self.remote,"x-1")
         self.assertEqual(row["buffer_status"],"sent")

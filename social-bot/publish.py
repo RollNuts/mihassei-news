@@ -139,7 +139,14 @@ def remote_asset_available(url):
         return False
 
 
-def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None):
+def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return_post=False):
+    """Create one Buffer post. Existing callers receive its immutable ID.
+
+    When return_post=True, the original experiment lane also receives the
+    provider-reported dueAt without spending a separate Buffer API request.
+    """
+    if type(return_post) is not bool:
+        raise ValueError("return_post must be a boolean")
     if mode not in ("addToQueue", "shareNow", "customScheduled"):
         raise ValueError("Unsupported Buffer posting mode")
     # Custom scheduled posts are exclusively our X experiment lane, never
@@ -181,13 +188,13 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None):
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
-        + "}) { ... on PostActionSuccess { post { id } }"
+        + "}) { ... on PostActionSuccess { post { id dueAt } }"
         + " ... on MutationError { message } } }"
     )
     result = gql(token, mutation).get("createPost") or {}
     if not result.get("post", {}).get("id"):
         raise RuntimeError("Buffer did not accept post: " + str(result.get("message","unknown")))
-    return result["post"]["id"]
+    return dict(result["post"]) if return_post else result["post"]["id"]
 
 
 def main():

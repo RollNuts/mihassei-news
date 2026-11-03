@@ -262,6 +262,19 @@ def choose_one_time_visual_launch(posts, state, config):
                  and post["id"] not in state["queued"]), None)
 
 
+def utc_provider_due_at(value):
+    """Strictly parse Buffer's optional ISO-8601 dueAt; never invent a slot."""
+    if not isinstance(value, str):
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        return None
+    return dt.astimezone(timezone.utc).isoformat()
+
+
 def save_state(state, path=None):
     path = Path(path or HERE/"state.json")
     path.write_text(json.dumps(state, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
@@ -306,10 +319,14 @@ def main():
                 raise RuntimeError("Visual PNG not generated before Buffer queue: " + post["id"])
             image_sha256 = hashlib.sha256(image.read_bytes()).hexdigest()
         mode = "shareNow" if launch and post["id"] == launch["id"] else "addToQueue"
-        buffer_id = queue_one(token, channel_id, {
+        receipt = queue_one(token, channel_id, {
             "kind": "image" if image_sha256 else "text",
             "id": post["id"], "text": final_text
-        }, mode=mode)
+        }, mode=mode, return_post=True)
+        if not isinstance(receipt, dict) or not receipt.get("id"):
+            raise RuntimeError("Buffer accepted no post identifier")
+        buffer_id = receipt["id"]
+        observed_due_at = utc_provider_due_at(receipt.get("dueAt"))
         state["queued"][post["id"]] = {
             "buffer_id": buffer_id,
             "text_sha256": hash_text(post["text"]),
@@ -320,10 +337,18 @@ def main():
             "mechanism": post.get("mechanism"),
             "queued_at_utc": datetime.now(timezone.utc).isoformat(),
             "submission_mode": mode,
+            # Creation-time evidence is historical, not a promise that the
+            # queued slot cannot later change or that it was sent on X.
+            **({"buffer_due_at_at_creation_utc": observed_due_at}
+               if observed_due_at and mode == "addToQueue" else {}),
+            **({"buffer_due_at_missing_at_creation": True}
+               if observed_due_at is None and mode == "addToQueue" else {}),
             **({"image_sha256": image_sha256} if image_sha256 else {}),
         }
         save_state(state)
-        print("Original text queued:", post["id"])
+        print("Original text queued:", post["id"],
+              "Buffer dueAt:", observed_due_at if mode == "addToQueue" else "shareNow",
+              "(missing means schedule unverified; no duplicate submission)")
     print("Buffer X experiment feed: accepted", len(plan),
           "new post(s); X API paid endpoint not used.")
     return 0

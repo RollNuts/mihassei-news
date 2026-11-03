@@ -137,3 +137,9 @@ One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23
 - 2時間以上予定時刻を過ぎてもBufferから `scheduled` が返る場合は要確認件数を報告する。ただしAPI反映遅延と実際の投稿失敗は区別し、ユーザーの了承なく再投稿やリスケジュールをしない。
 - この部分記録では、Bufferの曜日別 **7件の繰り返し枠が有効かを証明できない**。無料プランのキュー上限10件、原稿在庫、投稿時刻、Bufferの実際の公開、Xインプをそれぞれ別指標として扱う。
 - 無料Buffer APIのまとめ読み（最大20件/2リクエスト）、成熟したインプの任意確認1件、毎日1回の監査、画像/漫画の安全ゲート、追加費用0円は変更しない。
+
+### Buffer予約の予定時刻が不明な場合の診断（2026-11-03）
+
+- Buffer公式の `createPost` は `post { id dueAt }` を同じAPI受付応答で返せる。新しいオリジナル短文・画像予約では返却された予定日時を `state.json` に保存する（旧投稿・ID・本文は変更しない）。値がnullなら `buffer_due_at_missing_at_creation` を保存し、予定時刻は推定しない。
+- 配信監査の `post(input:{id})` でも `scheduled` に対する `dueAt` 欠落を数え、GitHub Actionsにwarningを表示する。作成時の時刻があっても、現在の時刻として使わず過去の受付証拠と区別する。
+- 1日7枠の設定だけでは、個々の投稿が7枠に割り当てられた証拠ではない。複数投稿で時刻が未取得ならBufferのVeripsaチャンネルの投稿スケジュール/タイムゾーンを確認。既存予約を消す・再送する・有料APIに切り替えることはしない。

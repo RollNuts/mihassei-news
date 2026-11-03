@@ -63,6 +63,14 @@ def reconcile(post, record, remote, channel_id):
         due=parse_provider_utc(remote.get("dueAt"))
         if due is not None:
             result["buffer_due_at_utc"]=due.isoformat()
+        else:
+            # Buffer currently returns dueAt=null for some queued X posts.
+            # Do not infer publish time or equate status=scheduled with a
+            # verified seven-slot schedule. Keep creation evidence separately.
+            result["buffer_due_at_missing_on_audit"]=True
+            created=parse_provider_utc(record.get("buffer_due_at_at_creation_utc"))
+            if created is not None:
+                result["buffer_due_at_at_creation_utc"]=created.isoformat()
     assets=remote.get("assets")
     if isinstance(assets,list):
         result["buffer_asset_count"]=len(assets)
@@ -438,6 +446,16 @@ def main():
           "insights calls")
     health=result["health"]
     print("X original inventory capacity:",health)
+    schedule=health.get("observed_scheduled_originals_by_jst_day",{})
+    missing=schedule.get("fresh_scheduled_without_due_at",0)
+    checked=schedule.get("fresh_scheduled_records_checked",0)
+    if missing:
+        print("::warning::Buffer returned status=scheduled but no dueAt for",
+              missing, "of", checked,
+              "freshly audited originals. Confirm Veripsa queue times in "
+              "Buffer. Seven configured slots are NOT verified delivery times.")
+    if checked and missing == checked:
+        print("::warning::No exact scheduled X posting time was returned by Buffer.")
     print("Observed Buffer-sent originals by JST day (incomplete):",
           health["observed_original_sent_by_jst_day"][-3:])
     print("Observed future original queue slots (not entire Buffer schedule):",

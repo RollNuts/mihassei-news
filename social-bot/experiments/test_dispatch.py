@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from dispatch import decide, hash_text, main, validate, HERE, publication_text, hashtag_variant, choose_one_time_visual_launch
+from dispatch import decide, hash_text, main, validate, HERE, publication_text, hashtag_variant, choose_one_time_visual_launch, utc_provider_due_at
 
 def sample():
     p={"schema_version":1,"experiments":[
@@ -26,6 +26,34 @@ class ExperimentsTests(unittest.TestCase):
     def test_configured_original_posts_pass(self):
         a,b,c=sample()
         self.assertEqual(len(validate(a,b,c)),2)
+
+
+    def test_buffer_create_post_retains_old_id_return_and_can_return_due_at(self):
+        # New Buffer field does not break legacy article / comic callers.
+        from publish import queue_one
+        receipt={"createPost":{"post":{"id":"buf-123",
+                   "dueAt":"2026-11-04T09:30:00Z"}}}
+        with patch("publish.gql", return_value=receipt) as api:
+            value=queue_one("secret","X-ID",{"kind":"text","text":"original joke"})
+            self.assertEqual(value,"buf-123")
+            self.assertIn("post { id dueAt }",api.call_args.args[1])
+        with patch("publish.gql", return_value=receipt):
+            obj=queue_one("secret","X-ID",
+                          {"kind":"text","text":"another original joke"},
+                          return_post=True)
+        self.assertEqual(obj["id"],"buf-123")
+        self.assertEqual(obj["dueAt"],"2026-11-04T09:30:00Z")
+        with self.assertRaisesRegex(ValueError,"boolean"):
+            queue_one("secret","X-ID",{"kind":"text","text":"test"},
+                      return_post="yes")
+
+    def test_optional_buffer_due_at_never_fabricates_a_slot(self):
+        self.assertEqual(utc_provider_due_at("2026-11-04T09:30:00Z"),
+                         "2026-11-04T09:30:00+00:00")
+        self.assertEqual(utc_provider_due_at("2026-11-04T18:30:00+09:00"),
+                         "2026-11-04T09:30:00+00:00")
+        for invalid in (None,"","not-a-date","2026-11-04T09:30:00",123):
+            self.assertIsNone(utc_provider_due_at(invalid))
 
     def test_actual_inventory_validates(self):
         p=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))

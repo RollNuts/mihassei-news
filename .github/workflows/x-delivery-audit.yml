@@ -9,6 +9,8 @@ on:
   push:
     branches: [main]
     paths:
+      # A workflow code change is a one-off diagnostic trigger.
+      # Regular article/post updates do not trigger additional Buffer API reads.
       - ".github/workflows/x-delivery-audit.yml"
   workflow_dispatch:
   schedule:
