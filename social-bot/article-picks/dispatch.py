@@ -178,7 +178,7 @@ def measured_recent_changes(root: Path, articles: list[dict], counts: dict,
     latest: tuple[datetime, dict] | None = None
     for file in recent_files:
         try:
-            if file.is_symlink() or not 200 <= file.stat().st_size <= 2_000_000:
+            if file.is_symlink() or not 80 <= file.stat().st_size <= 2_000_000:
                 continue
             doc = read_json(file)
             if doc.get("schema_version") != 1 or doc.get("unit") != "anonymous-browser":
@@ -272,7 +272,9 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
         result.append((article, data, score))
     def recent_score(row):
         recent = (momentum or {}).get(row[0]["slug"])
-        if not isinstance(recent, dict):
+        if (not isinstance(recent, dict)
+                or any(type(recent.get(key)) is not int or recent[key] < 0
+                       for key in METRIC_FIELDS)):
             return 0
         return (recent["readers"] + 3 * recent["likes"]
                 + 2 * recent["share_clicks"] + 2 * recent["continued_readers"])
