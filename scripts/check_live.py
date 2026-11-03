@@ -212,37 +212,16 @@ def check():
             if serial["kind"]=="analysis" and ("投資助言" not in page or "参照した公開資料" not in page):
                 raise RuntimeError("Market analysis missing sources/disclosure: "+path)
 
-    # Verify the manual promotion desk without creating any X posts.
-    desk, desk_mime=get("/share-desk/")
-    markup=desk.decode("utf-8")
-    if ("text/html" not in desk_mime or
-        'name="robots" content="noindex,nofollow"' not in markup or
-        'data-copy-post' not in markup or
-        'Xで下書きを開く' not in markup or
-        '画像を保存・開く' not in markup):
-        raise RuntimeError("Manual X promotion desk missing or misconfigured")
-    for article in select_candidates(articles):
-        if (html.escape(article["title"]) not in markup or
-            '/articles/'+article["slug"]+'/' not in markup):
-            raise RuntimeError("Promotion desk missing published story "+article["slug"])
-
-    # Read-only aggregate measurements: neither the review page nor the API
-    # GET should create a visitor or reaction event.
-    growth,growth_type=get("/growth-desk/")
-    page=growth.decode("utf-8")
-    if ("text/html" not in growth_type or
-        'name="robots" content="noindex,nofollow"' not in page or
-        'data-growth-stories=' not in page or
-        'data-growth-articles' not in page or
-        "集客の実測" not in page):
-        raise RuntimeError("Noindex growth review page is not deployed")
-    js,js_type=get("/assets/growth-desk.js")
-    if ("javascript" not in js_type and "text/plain" not in js_type):
-        raise RuntimeError("Growth review script has invalid Content-Type")
-    if b"/api/engagement?articles=" not in js or b"metric.arrivals.x" not in js:
-        raise RuntimeError("Growth review is not reading honest browser counters")
-    if "https://veripsa.com/growth-desk/" in get("/sitemap.xml")[0].decode("utf-8"):
-        raise RuntimeError("Growth desk must not enter search sitemap")
+    # Internal publishing tools are intentionally not part of the public site.
+    # Do not mistake a robots noindex hint for real privacy.
+    for internal_path in ("/growth-desk/", "/share-desk/", "/image-review/"):
+        try:
+            get(internal_path)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (404, 410):
+                raise RuntimeError("Unexpected internal-tool status: "+internal_path)
+        else:
+            raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
     # This stylesheet is last in the cascade. A successful HTML deploy must
     # not silently leave the refreshed editorial design without its actual CSS.
@@ -424,16 +403,6 @@ def check():
             raise RuntimeError("RSS thumbnail metadata is missing or inconsistent")
         if not thumb.get("url","").startswith(SITE+"/"):
             raise RuntimeError("RSS image is not first-party: "+str(thumb.get("url")))
-    review,review_type=get("/image-review/")
-    review_markup=review.decode("utf-8")
-    if ("text/html" not in review_type or
-        'name="robots" content="noindex,nofollow"' not in review_markup or
-        "公開画像の検品一覧" not in review_markup):
-        raise RuntimeError("Non-indexed visual image review page missing")
-    for article in articles:
-        if article["title"] not in review_markup:
-            raise RuntimeError("Image review gallery missing article "+article["slug"])
-
     checked_photos=0
     for item in recent:
         slug=item["slug"]
