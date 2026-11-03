@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T12:15:11.641664+00:00",
+  "checked_at_utc": "2026-11-03T12:23:58.401980+00:00",
   "source": "buffer_post_by_saved_id_daily_bounded_readonly",
   "limits": {
-    "post_reads_this_run": 10,
-    "max_post_reads": 10,
+    "post_reads_this_run": 8,
+    "max_post_reads": 8,
     "metric_reads_this_run": 0,
-    "max_metric_reads": 2
+    "max_metric_reads": 1
   },
   "limitations": "Buffer status and permalink are provider evidence, not independent X page verification. Older cached rows are not reread. Metrics are not exact 24h/72h impressions.",
   "items": [
@@ -28,7 +28,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-reaper-late",
@@ -37,7 +37,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-ufo-ticket",
@@ -57,7 +57,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-invisible-nails",
@@ -66,7 +66,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-shadow-home",
@@ -75,7 +75,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-witch-autopilot",
@@ -84,7 +84,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-selfcheckout-dialogue",
@@ -93,7 +93,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     },
     {
       "post_id": "xexp-honest-survey",
@@ -102,8 +102,19 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:15:11.641664+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:23:58.401980+00:00"
     }
   ],
+  "health": {
+    "original_inventory_total": 38,
+    "original_ever_accepted_by_buffer": 10,
+    "original_unsubmitted": 28,
+    "unsubmitted_original_images": 3,
+    "provider_sent_last_known": 2,
+    "provider_permalinks_last_known": 2,
+    "unsubmitted_inventory_below_14": false,
+    "unsubmitted_images_below_2": false,
+    "note": "Sent rows may be cached; neither Buffer sent nor permalink proves independent X reach."
+  },
   "recent_unverified_experiment_ids": []
 }
