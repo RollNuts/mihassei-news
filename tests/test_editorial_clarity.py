@@ -5,12 +5,17 @@ does not amount to a machine judgement of whether a joke is genuinely funny.
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import unittest
 from datetime import datetime
+from html import escape
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts import build
-from scripts.generated_photos import usable_generated_scene
+from scripts.generated_photos import article_fingerprint, usable_generated_scene
+from scripts.media_policy import jpeg_dimensions
 
 ROOT = Path(__file__).resolve().parents[1]
 REVISED = {
@@ -18,6 +23,13 @@ REVISED = {
     "mortgage-bank-clerk-invited-to-live-in": ("家計会議", "食費", "利息", "2026-11-03T13:28:44+09:00"),
     "research-completed-opening-day": ("開所式", "あいさつ", "必要ありません", "2026-11-02T17:36:39+09:00"),
     "robot-job-hopping": ("充電", "17台", "省人化", "2026-11-02T17:36:39+09:00"),
+}
+# These exact JPEGs failed visual review. A genuinely new, reviewed image may
+# replace them; changing their manifest fingerprint must never reapprove them.
+# Identities are from the image manifest at b466868, before the new CPU images.
+REJECTED_JPEG_SHA256 = {
+    "family-dinner-gacha-243-rejections": "9d6d701b9a253f68f89a3119554fa4cbbb3bff29dc0170ca63fd632895d0eb1b",
+    "volleyball-team-lunch-plate-merch": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710",
 }
 
 
@@ -54,24 +66,12 @@ class EditorialClarityTests(unittest.TestCase):
                       self.articles["volleyball-team-lunch-plate-merch"]["source"]["topic"])
 
     def test_image_notes_are_discreet_but_non_deceptive(self):
-        # The mortgage image was regenerated after its editorial rewrite.
-        # Genuine bytes and the article fingerprint must both validate;
-        # never restamp a stale JPEG or weaken the visual hold gate.
-        article = self.articles["mortgage-bank-clerk-invited-to-live-in"]
-        self.assertTrue(usable_generated_scene(article, root=ROOT))
-        markup = build.story(article, list(self.articles.values()))
-        self.assertIn("再現イメージ（合成）", markup)
-        self.assertIn("実際の出来事を撮影した報道写真ではありません", markup)
-        self.assertNotIn("編集部制作の創作イラスト", markup)
-        self.assertIn("<strong>この記事は創作です。</strong>", markup)
-        # A genuinely unchanged image still receives its concise synthetic
-        # photography disclosure when the original image record is authentic.
-        intact = self.articles["music-ai-friends-monopolize-the-song"]
-        self.assertTrue(usable_generated_scene(intact, root=ROOT))
-        photo_page = build.story(intact, list(self.articles.values()))
-        self.assertIn("再現イメージ（合成）", photo_page)
-        self.assertIn("実際の出来事を撮影した報道写真ではありません", photo_page)
-        self.assertNotIn("AI生成の架空ニュース再現画像", photo_page)
+        for slug in ("mortgage-bank-clerk-invited-to-live-in",
+                     "music-ai-friends-monopolize-the-song"):
+            with self.subTest(slug=slug):
+                # Later editorial changes can invalidate a genuine photograph;
+                # publication must continue with an honest fallback in that case.
+                self.assert_story_image_contract(self.articles[slug])
         css = (ROOT/"assets/editorial-polish.css").read_text(encoding="utf-8")
         basic_css = (ROOT/"assets/newsroom.css").read_text(encoding="utf-8")
         self.assertNotIn('content:"AI生成・創作"', css)
@@ -82,32 +82,60 @@ class EditorialClarityTests(unittest.TestCase):
         self.assertIn("AIによる合成画像", policy)
 
     def test_revised_stories_use_new_verified_photos_or_honest_fallback(self):
-        # Two images remain visually held; three now have *new* authentic
-        # generated JPEGs that match the revised articles and file hashes.
-        # Never bypass visually_held_scene or treat stale manifest data as valid.
-        held = ("family-dinner-gacha-243-rejections",
-                "volleyball-team-lunch-plate-merch")
-        regenerated = ("mortgage-bank-clerk-invited-to-live-in",
-                       "research-completed-opening-day", "robot-job-hopping")
-        for slug in (*held, *regenerated):
+        for slug in ("family-dinner-gacha-243-rejections", *REVISED):
             with self.subTest(slug=slug):
-                article = self.articles[slug]
-                photo_ok = usable_generated_scene(article, root=ROOT)
-                self.assertEqual(photo_ok, slug in regenerated)
-                page = build.story(article, list(self.articles.values()))
-                self.assertIn("<h1>"+article["title"]+"</h1>", page)
-                self.assertIn('class="article-visual"', page)
-                safe_image = build.editorial_image(article)
-                self.assertIn('src="' + safe_image + '"', page)
-                if slug in regenerated:
-                    self.assertEqual(safe_image, "/generated/" + slug + ".jpg")
-                    self.assertIn("再現イメージ（合成）", page)
-                    self.assertIn("実際の出来事を撮影した報道写真ではありません", page)
-                else:
-                    self.assertNotEqual(safe_image, "/generated/" + slug + ".jpg")
-                    # A previously approved illustrative stock image is a valid
-                    # fallback as well as the first-party original SVG.
-                    self.assertTrue("創作イラスト" in page or "イメージ写真" in page)
+                self.assert_story_image_contract(self.articles[slug])
+
+    def test_editorial_changes_can_use_fallback_until_a_new_photo_is_verified(self):
+        for slug in ("family-dinner-gacha-243-rejections", *REVISED):
+            with self.subTest(slug=slug):
+                changed = {**self.articles[slug],
+                           "summary": self.articles[slug]["summary"] + " 改稿後の検証用。"}
+                self.assertFalse(usable_generated_scene(changed, root=ROOT))
+                self.assert_story_image_contract(changed)
+
+    def assert_story_image_contract(self, article):
+        slug = article["slug"]
+        generated_url = "/generated/" + slug + ".jpg"
+        with patch.object(build, "BASE", ROOT):
+            page = build.story(article, list(self.articles.values()))
+            safe_image = build.editorial_image(article)
+        self.assertIn("<h1>" + escape(article["title"]) + "</h1>", page)
+        self.assertIn('class="article-visual"', page)
+        self.assertIn('src="' + safe_image + '"', page)
+        self.assertIn("<strong>この記事は創作です。</strong>", page)
+        self.assertNotIn("AI生成の架空ニュース再現画像", page)
+
+        if safe_image == generated_url:
+            # Verify the actual published bytes and source independently of the
+            # builder's boolean gate, rather than pinning a permanent hold list.
+            manifest = json.loads((ROOT / "assets/generated/manifest.json").read_text(encoding="utf-8"))
+            record = manifest["images"][slug]
+            data = (ROOT / "assets/generated" / (slug + ".jpg")).read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            self.assertNotIn(digest, REJECTED_JPEG_SHA256.values())
+            self.assertEqual(record["sha256"], digest)
+            self.assertEqual(record["article_sha256"], article_fingerprint(article))
+            self.assertEqual(record["bytes"], len(data))
+            self.assertLessEqual(len(data), 700 * 1024)
+            self.assertEqual(jpeg_dimensions(data), (1200, 675))
+            rejection = manifest.get("rejected", {}).get(slug, {})
+            self.assertNotEqual(rejection.get("article_sha256"), article_fingerprint(article))
+            self.assertTrue(usable_generated_scene(article, root=ROOT))
+            self.assertIn("再現イメージ（合成）", page)
+            self.assertIn("実際の出来事を撮影した報道写真ではありません", page)
+            self.assertNotIn("編集部制作の創作イラスト", page)
+        else:
+            self.assertFalse(usable_generated_scene(article, root=ROOT))
+            self.assertIn(safe_image, ("/images/" + slug + ".svg",
+                                       "/photos/" + slug + ".jpg"))
+            self.assertTrue("創作イラスト" in page or "イメージ写真" in page)
+
+        # A removed hold marker must not turn either known bad JPEG into a
+        # public generated image, even if somebody restamps its metadata.
+        image = ROOT / "assets/generated" / (slug + ".jpg")
+        if image.is_file() and hashlib.sha256(image.read_bytes()).hexdigest() in REJECTED_JPEG_SHA256.values():
+            self.assertNotEqual(safe_image, generated_url)
 
 
 if __name__ == "__main__":
