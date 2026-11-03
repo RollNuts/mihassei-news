@@ -54,11 +54,17 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     record = generated_manifest(root).get(slug)
     if not isinstance(record, dict):
         return None
-    model = record.get("model")
-    if not isinstance(model, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+\.safetensors", model):
+    origin, model = record.get("origin"), record.get("model")
+    if origin == "local-comfyui":
+        if not isinstance(model, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+\.safetensors", model):
+            return None
+    elif origin == "github-cpu-lcm":
+        # Model weights run inside a GitHub-hosted CPU job, without image APIs.
+        if model != "SimianLuo/LCM_Dreamshaper_v7":
+            return None
+    else:
         return None
-    if (record.get("origin") != "local-comfyui"
-            or record.get("article_sha256") != article_fingerprint(article)
+    if (record.get("article_sha256") != article_fingerprint(article)
             or record.get("prompt_version") != PROMPT_VERSION
             or not isinstance(record.get("sha256"), str)
             or not SHA256.fullmatch(record["sha256"])):
