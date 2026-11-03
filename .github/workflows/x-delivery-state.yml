@@ -14,8 +14,9 @@ on:
       - ".github/workflows/x-delivery-state.yml"
   workflow_dispatch:
   schedule:
-    # 20:45 JST, after user-configured 19:30 posting slot.
-    - cron: "45 11 * * *"
+    # 23:45 JST after most of the seven user-configured daily X slots.
+    # One read-only audit; two individual post details maximum per day.
+    - cron: "45 14 * * *"
 
 permissions:
   contents: write
@@ -33,7 +34,7 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Test that no X impression count is invented
+      - name: Test lossless provider links, free API cap and inventory health
         run: python -m unittest discover -s social-bot/experiments -p 'test_delivery.py' -v
 
       - name: Inspect free Buffer channel delivery states without posting
