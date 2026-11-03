@@ -1,14 +1,34 @@
 {
   "images": {
+    "family-dinner-gacha-243-rejections": {
+      "article_sha256": "7fd87dd6199bcc24b51772266bd575a6e657c10ee1f1625daf3e06de070a9f0e",
+      "bytes": 68479,
+      "generated_at": "2026-11-03T03:50:35.657446+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 3792932720945161705,
+      "sha256": "56f5c4abaaf2eea1cae07e68b88356418a2124bb7947f8bca15625b2d09e3eb1"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "5d8278c17ca5f9849d126715cee8e0b30299c107096560739f682a203ecc5e65",
+      "bytes": 103133,
+      "generated_at": "2026-11-03T03:57:23.752436+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 6871038269748098871,
+      "sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1"
+    },
     "variety-700-guests-only-introductions": {
-      "article_sha256": "4237bd603632d891c64cab6d095d9d62a68c01d1c96a94b0636ee08120598087",
-      "bytes": 74207,
-      "generated_at": "2026-11-03T03:37:37.570229+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "1386400ab3fb9e1a929352db2c8499712a74e1c3f20da1d588b3b62a90f0735b",
+      "bytes": 62771,
+      "generated_at": "2026-11-03T03:46:10.220796+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
       "prompt_version": 2,
       "seed": 2479731755469378830,
-      "sha256": "b9f8adacf9993db03b6bbdc2b813245b7b3a39c0d16da8cac156ff36b2491f93"
+      "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
   "version": 1
