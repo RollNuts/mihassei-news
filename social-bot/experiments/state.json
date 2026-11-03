@@ -18,6 +18,18 @@
       "text_sha256": "6594077a893bad0eb01490cc535444b72b7c82cb2c3ce4480b08333a351eb3c8",
       "format": "surreal_text",
       "queued_at_utc": "2026-11-03T08:05:13.767790+00:00"
+    },
+    "xexp-ufo-ticket": {
+      "buffer_id": "6ae9bd935b02786f00d048be",
+      "text_sha256": "c53ae74f09b99841a5e405f4d007117d9826a6420e5993e8daa078b24ec69c64",
+      "published_text_sha256": "9771c35753df515bfd55621b41241fa4bce58e572647543307dafe6c3400ffde",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#シュールネタ",
+      "format": "surreal_text",
+      "mechanism": "inverted_expectation",
+      "queued_at_utc": "2026-11-03T10:55:17.055500+00:00",
+      "submission_mode": "shareNow",
+      "image_sha256": "1b5bc43bb282e65d8a02fb7509510f3093b77b278637b6868d8d9caabb4e2848"
     }
   }
 }
