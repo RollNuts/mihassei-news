@@ -11,13 +11,24 @@
   const moreButton = document.querySelector('[data-archive-more-button]');
   const PAGE_SIZE = 18;
   let visibleLimit = PAGE_SIZE;
-  const params = new URLSearchParams(window.location.search);
-  let category = params.get('category') || 'すべて';
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
-  if (!validCategories.has(category)) category = 'すべて';
+  const validDecades = new Set(cards.map(card => card.dataset.decade));
+  let category = 'すべて';
+  // Search and filters are shareable and survive a new visit or browser Back.
+  function restoreFiltersFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const requestedCategory = params.get('category') || 'すべて';
+    category = validCategories.has(requestedCategory) ? requestedCategory : 'すべて';
+    input.value = (params.get('q') || '').slice(0, 120);
+    if (decadeSelect) {
+      const requestedDecade = params.get('decade') || 'すべて';
+      decadeSelect.value = validDecades.has(requestedDecade) ? requestedDecade : 'すべて';
+    }
+  }
+  restoreFiltersFromUrl();
 
   const normalize = value => String(value || '').toLocaleLowerCase('ja-JP').normalize('NFKC');
-  function render() {
+  function render(syncUrl = true) {
     const query = normalize(input.value.trim());
     const decade = decadeSelect?.value || 'すべて';
     const matching = cards.filter(card =>
@@ -44,14 +55,22 @@
       tab.classList.toggle('active', active);
       tab.setAttribute('aria-pressed', String(active));
     });
-    const url = new URL(window.location.href);
-    if (category === 'すべて') url.searchParams.delete('category');
-    else url.searchParams.set('category', category);
-    window.history.replaceState(null, '', url.pathname + url.search);
+    if (syncUrl) {
+      const url = new URL(window.location.href);
+      if (category === 'すべて') url.searchParams.delete('category');
+      else url.searchParams.set('category', category);
+      const search = input.value.trim();
+      if (search) url.searchParams.set('q', search);
+      else url.searchParams.delete('q');
+      if (decade === 'すべて') url.searchParams.delete('decade');
+      else url.searchParams.set('decade', decade);
+      // Keep campaign parameters and links to page anchors intact.
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
   }
-  function resetAndRender() {
+  function resetAndRender(syncUrl = true) {
     visibleLimit = PAGE_SIZE;
-    render();
+    render(syncUrl);
   }
   tabs.forEach(tab => tab.addEventListener('click', () => {
     category = tab.dataset.categoryFilter;
@@ -69,6 +88,10 @@
   moreButton?.addEventListener('click', () => {
     visibleLimit += PAGE_SIZE;
     render();
+  });
+  window.addEventListener?.('popstate', () => {
+    restoreFiltersFromUrl();
+    resetAndRender(false);
   });
   render();
 })();
