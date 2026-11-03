@@ -111,14 +111,17 @@ class FreeCpuImageTests(unittest.TestCase):
         gen = Mock()
         gen.manual_seed.return_value = gen
         fake_torch = SimpleNamespace(Generator=Mock(return_value=gen), inference_mode=contextlib.nullcontext)
-        with patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()):
+        with patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()), \
+             patch.object(cpu, "check_quality"):
+
             data = cpu.render_one(pipeline, fake_torch, a)
         self.assertEqual(data, jpeg_header_fixture())
         self.assertEqual(gen.manual_seed.call_args.args[0], local_scene_photos.stable_seed(a))
         kwargs = pipeline.call_args.kwargs
-        self.assertEqual(kwargs["num_inference_steps"], 4)
-        self.assertEqual((kwargs["width"], kwargs["height"]), (704, 400))
+        self.assertEqual(kwargs["num_inference_steps"], 8)
+        self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
         self.assertIn("STAGED SATIRICAL NEWS COMEDY", kwargs["prompt"])
+        self.assertIn("Bright, colorful", kwargs["prompt"])
 
     def test_cpu_generator_rejects_model_safety_filter(self):
         fake_torch = SimpleNamespace(
