@@ -1,4 +1,15 @@
 {
-  "images": {},
+  "images": {
+    "variety-700-guests-only-introductions": {
+      "article_sha256": "92ab7852284ced1bc3e68430447faca7d01ee29514f193adcf6429960b5ad314",
+      "bytes": 127133,
+      "generated_at": "2026-11-03T04:00:46.132731+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 2479731755469378830,
+      "sha256": "c01cf5b29ad85c195e9636c27c17fdffa9cb1ff1162fd0ea6ced18667fd64db5"
+    }
+  },
   "version": 1
 }
