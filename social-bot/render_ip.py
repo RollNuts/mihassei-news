@@ -190,6 +190,50 @@ def layout(n):
     return [(x0+(i%2)*(tw+g),y0+(i//2)*(ph+g),tw,ph) for i in range(6)]
 
 
+def foreground_prop(d,p,x,y,w,h):
+    """Small, readable industrial objects. Drawn from original geometric shapes."""
+    item=p.get("prop","")
+    cx=x+int(w*.51)
+    cy=y+int(h*.67)
+    if item=="tiny-machine":
+        d.rounded_rectangle((cx-56,cy-66,cx+56,cy+12),radius=12,
+                            fill="#E2C58E",outline=INK,width=5)
+        d.ellipse((cx-22,cy-48,cx+22,cy-5),fill="#7DB4B3",outline=INK,width=4)
+        for dx in (-40,40):
+            d.ellipse((cx+dx-5,cy-51,cx+dx+5,cy-41),fill="#435F77")
+        d.line((cx-25,cy+12,cx-29,cy+26),fill=INK,width=5)
+        d.line((cx+25,cy+12,cx+29,cy+26),fill=INK,width=5)
+
+
+def visual_beat(d,p,x,y,w,h):
+    """Optional small visual punchlines, kept independent of any reference manga."""
+    effect=p.get("effect","")
+    cx=x+int(w*.53)
+    cy=y+int(h*.34)
+    if effect=="spark":
+        for dx,dy in [(-109,-66),(110,-77),(-80,-127),(73,-130)]:
+            px,py=cx+dx,cy+dy
+            d.line((px-10,py,px+10,py),fill="#E0A254",width=5)
+            d.line((px,py-10,px,py+10),fill="#E0A254",width=5)
+    elif effect=="glove-wrap":
+        # Moku's oversized orange workshop glove briefly engulfs Neji.
+        size=int(min(w*.23,h*.28))
+        gx,gy=cx+int(w*.1),cy+int(h*.1)
+        d.rounded_rectangle((gx-size,gy-size,gx+size,gy+size),
+                            radius=int(size*.47),fill="#DEAE70",outline=INK,width=7)
+        d.ellipse((gx-18,gy-4,gx-7,gy+7),fill=INK)
+        d.ellipse((gx+8,gy-4,gx+19,gy+7),fill=INK)
+        d.arc((gx-20,gy+7,gx+22,gy+27),0,170,fill=INK,width=4)
+        d.line((gx-size-18,gy-size//2,gx-size-54,gy-size//2-18),
+               fill="#D4925C",width=6)
+    elif effect=="tiny-touch":
+        px,py=cx,cy+int(h*.10)
+        d.ellipse((px-35,py-25,px+7,py+17),fill="#D8A26F",outline=INK,width=4)
+        d.ellipse((px+2,py-18,px+37,py+15),fill="#BEAED2",outline=INK,width=4)
+        d.ellipse((px-8,py-33,px+9,py-18),fill="#F8DC84")
+        d.line((px-5,py-43,px-5,py-56),fill="#F8DC84",width=5)
+
+
 def paint_panel(d,p,rect,idx):
     x,y,w,h=rect
     scene(d,rect,p["scene"],p.get("sign",""),idx)
@@ -197,13 +241,23 @@ def paint_panel(d,p,rect,idx):
     scale=min(1.0, (h-124)/350, w/710) if wide else min(.87,(h-140)/360,w/630)
     # Keep characters above the dialogue strip, particularly in 3-panel layouts.
     base_y=y+int(h*(.31 if wide and h<430 else (.43 if wide else .48)))
+    # Distinct camera distance in each beat: establish -> medium -> close.
+    # This avoids four near-identical static pictures while preserving the cast.
+    shot=p.get("shot","medium")
+    if shot not in {"wide","medium","close","detail"}:
+        raise ValueError("Unsupported camera shot: "+str(shot))
+    zoom={"wide":.75,"medium":1.0,"close":1.18,"detail":1.29}[shot]
+    scale*=zoom
     focus=p["focus"]
     if p.get("secondary"):
-        px=x+int(w*.68)
+        px=x+int(w*(.67 if shot!="detail" else .56))
         figure(d,focus,px,base_y,scale,p.get("mood","plain"))
-        figure(d,p["secondary"],x+int(w*.28),base_y+int(24*scale),scale*.66,"plain")
+        figure(d,p["secondary"],x+int(w*.25),base_y+int(24*scale),
+               scale*(.65 if shot!="wide" else .85),"plain")
     else:
-        figure(d,focus,x+int(w*.54),base_y,scale,p.get("mood","plain"))
+        figure(d,focus,x+int(w*.53),base_y,scale,p.get("mood","plain"))
+    foreground_prop(d,p,x,y,w,h)
+    visual_beat(d,p,x,y,w,h)
     # Narrative text strip: accessible readable lettering rather than cramped speech bubbles.
     bh=119 if wide else 123
     d.rounded_rectangle((x+9,y+h-bh-9,x+w-9,y+h-9),radius=10,fill="#FFF8EB",outline="#6B7783",width=2)
