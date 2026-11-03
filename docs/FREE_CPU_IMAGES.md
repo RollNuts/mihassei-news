@@ -4,7 +4,7 @@
 
 ## できること／できないこと
 
-- `.github/workflows/free-cpu-scenes.yml` は「手動実行」および一日4回の定時実行。1回1〜3枚まで。無料GitHub Actionsの**公開リポジトリ用標準CPU**に厳格限定。プライベート化・フォーク・PR からは生成しない。
+- `.github/workflows/free-cpu-scenes.yml` は「手動実行」・初回導入時の1枚検証・一日4回の定時実行。1回1〜3枚まで。無料GitHub Actionsの**公開リポジトリ用標準CPU**に厳格限定。プライベート化・フォーク・PR からは生成しない。
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
 - モデル: [SimianLuo/LCM_Dreamshaper_v7](https://huggingface.co/SimianLuo/LCM_Dreamshaper_v7)（掲載時点のカード記載はMIT、リビジョン固定）。モデルファイルのダウンロードのみで、推論はGitHubのCPU内部で実行する。将来収益化するならモデル・基盤モデルそれぞれのライセンスを確認すること。
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
@@ -12,7 +12,7 @@
 
 ## 初回確認
 
-1. GitHubの [Actions](https://github.com/RollNuts/mihassei-news/actions) → `Free CPU staged-news photos (public repository only)` → `Run workflow` → `limit=1` を選ぶ。
+1. mainへの初回マージ時には、ワークフローファイルの追加を契機に**1枚だけ**生成を試す（権限がある場合）。その結果を確認してから、必要ならGitHubの [Actions](https://github.com/RollNuts/mihassei-news/actions) → `Free CPU staged-news photos (public repository only)` → `Run workflow` → `limit=1` を選ぶ。
 2. `CPU staging` と `Saved verified first-party JPEG` が出た後、`images: generate free CPU staged comedy scenes` がmainにコミットされるか確認する。
 3. Cloudflareがmainから再ビルドし、該当記事の `/generated/<slug>.jpg` がHTTP 200、記事サムネイルも `AI生成` ラベル付きになるか確認する。画像の絵作りと意図が合うか目視する。
 4. パイプラインが稼働して初めて、通常の画像生成済み件数が0から増える。途中で失敗した場合は従来のSVGを表示し、毎日の記事発行は止めない。
