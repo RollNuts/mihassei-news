@@ -69,6 +69,29 @@ class WeeklyReviewTests(unittest.TestCase):
         self.assertIn("勝ち形式はまだ判断しない",result)
         self.assertNotIn("観測上の先行",result)
 
+    def test_future_buffer_due_times_are_not_seven_slot_configuration(self):
+        self.delivery["health"]={
+            "observed_scheduled_originals_by_jst_day":{
+                "days":[
+                    {"date_jst":"2026-11-03",
+                     "observed_fresh_original_scheduled":1,
+                     "observed_times_jst":["23:30"]},
+                    {"date_jst":"2026-11-04",
+                     "observed_fresh_original_scheduled":2,
+                     "observed_times_jst":["09:30","15:30"]},
+                ],
+                "overdue_scheduled_over_two_hours":1,
+                "fresh_scheduled_records_checked":4,
+            }
+        }
+        report=self.run_review([])
+        self.assertIn("Bufferで確認した今後の予約日時",report)
+        self.assertIn("2026-11-04：今回の監査で確認できたオリジナル予約 2件",report)
+        self.assertIn("09:30, 15:30",report)
+        self.assertIn("予定時刻から2時間を超えても",report)
+        self.assertIn("毎日7枠の設定そのものを検証した数値ではない",report)
+        self.assertIn("24h surreal_text：未取得",report)
+
     def test_daily_buffer_sent_lower_bound_is_not_x_impressions(self):
         self.delivery["health"]={
             "observed_original_sent_by_jst_day":[
