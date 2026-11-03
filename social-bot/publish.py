@@ -9,7 +9,7 @@ Environment:
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from ip.audit import check as validate_canon, payload_hash
 from review_policy import load_manifest, select_next, verify_one
@@ -98,11 +98,13 @@ def choose_x_channel(token):
     return orgid, channel["id"]
 
 
-def list_existing(token, orgid, channelid):
+def list_existing(token, orgid, channelid, include_due_at=False):
+    # The midday lane needs exact times. Other consumers keep the old query.
+    fields = "id text status dueAt sentAt" if include_due_at else "id text status"
     result = gql(token, (
         "query { posts(first: 100, input: {organizationId: " + qstring(orgid)
         + ", filter: {channelIds: [" + qstring(channelid)
-        + "], status: [scheduled, sent]}}) { edges { node { id text status } }"
+        + "], status: [scheduled, sent]}}) { edges { node { " + fields + " } }"
         " pageInfo { hasNextPage } } }"
     ))
     conn = result.get("posts") or {}
@@ -121,9 +123,26 @@ def remote_asset_available(url):
         return False
 
 
-def queue_one(token, channelid, post, mode="addToQueue"):
-    if mode not in ("addToQueue", "shareNow"):
+def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None):
+    if mode not in ("addToQueue", "shareNow", "customScheduled"):
         raise ValueError("Unsupported Buffer posting mode")
+    # Custom scheduled posts are exclusively our X experiment lane, never
+    # unapproved comics; use an exact future UTC timestamp for auditability.
+    due_field = ""
+    if mode == "customScheduled":
+        if post.get("kind") not in ("text", "image") or not str(post.get("id", "")).startswith("xexp-"):
+            raise ValueError("Custom scheduling reserved for X experiment posts")
+        if not isinstance(due_at_utc, str) or not due_at_utc.endswith("Z"):
+            raise ValueError("Exact UTC dueAt required for custom scheduling")
+        try:
+            due = datetime.fromisoformat(due_at_utc.replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("Invalid UTC dueAt for custom scheduling") from exc
+        if due.utcoffset().total_seconds() != 0 or due <= datetime.now(timezone.utc) + timedelta(minutes=10):
+            raise ValueError("Custom scheduling dueAt must be future UTC")
+        due_field = ", dueAt: " + qstring(due_at_utc)
+    elif due_at_utc is not None:
+        raise ValueError("dueAt is only accepted with customScheduled")
     if mode == "shareNow" and post.get("kind") != "image":
         raise ValueError("Immediate send is reserved for original picture experiment")
     extra = ""
@@ -145,7 +164,7 @@ def queue_one(token, channelid, post, mode="addToQueue"):
         "mutation { createPost(input: {text: " + qstring(post["text"])
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
-        + extra
+        + due_field + extra
         + "}) { ... on PostActionSuccess { post { id } }"
         + " ... on MutationError { message } } }"
     )
