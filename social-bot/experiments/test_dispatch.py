@@ -149,6 +149,15 @@ class ExperimentsTests(unittest.TestCase):
         self.assertEqual(state["queued"]["xexp-test"]["published_text_sha256"],hash_text(final))
         self.assertEqual(state["queued"]["xexp-test"]["hashtag_variant"],"one_relevant_tag")
 
+    def test_old_buffer_posts_cannot_be_retroactively_tagged(self):
+        p,c,state=sample()
+        state["queued"]["xexp-a"]={
+            "buffer_id":"legacy-booked",
+            "text_sha256":hash_text(p["experiments"][0]["text"])}
+        p["experiments"][0]["hashtag"]="#シュールネタ"
+        with self.assertRaisesRegex(ValueError,"already queued legacy"):
+            validate(p,c,state)
+
     def test_tag_change_after_queue_is_rejected_without_touching_api(self):
         p,c,state=sample()
         p["experiments"][0]["hashtag"]="#シュールネタ"
