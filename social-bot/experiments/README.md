@@ -104,3 +104,7 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - Daily original-idea replenishment should maintain **21–28 unsubmitted, genuinely distinct** short texts where quality permits. Prioritize an understandable setup and concrete ending; no identical/near-identical posts, click bait, blind auto-likes, bulk follows, trend hijacking or unapproved manga.
 - Seven daily slots is a **target**, not evidence of successful X publishing, impressions or monetization. Preserve X actual-post links, provider sent/scheduled statuses and verified-user 90-day reward metric as different data sources. Do not fabricate missing statistics.
 - Additional cost remains **0 yen**: free Buffer, public GitHub Actions and local rendering only; no upgraded subscriptions, metered X/GPT/image APIs, paid GPUs or extra credits.
+
+### Daily read-only delivery audit
+
+An independent GitHub Actions workflow checks Buffer delivery once each day at 21:20 JST, plus its initial deployment. It requests at most 10 posts and 2 matured metric snapshots per run; the historic record remains cached with its real last-check timestamp. It never sends to X. The Free plan's 1,000 API calls per channel per rolling 30 days are shared with publishing, so do not run this on every content push.
