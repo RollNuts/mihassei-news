@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from review import actual_summary, compose
+from review import actual_summary, compose, hashtag_summary
 
 
 def fake_impression(post_id,fmt,count,when="2026-11-03T20:30:00+09:00",hours=24):
@@ -22,13 +22,13 @@ def fake_impression(post_id,fmt,count,when="2026-11-03T20:30:00+09:00",hours=24)
 class WeeklyReviewTests(unittest.TestCase):
     def setUp(self):
         self.posts={"experiments":[
-            {"id":"a","sequence":1,"format":"surreal_text","text":"オリジナルA"},
-            {"id":"b","sequence":2,"format":"character_moment","text":"オリジナルB"},
-            {"id":"c","sequence":3,"format":"surreal_text","text":"オリジナルC"},
+            {"id":"xexp-a","sequence":1,"format":"surreal_text","text":"オリジナルA"},
+            {"id":"xexp-b","sequence":2,"format":"character_moment","text":"オリジナルB"},
+            {"id":"xexp-c","sequence":3,"format":"surreal_text","text":"オリジナルC"},
         ]}
-        self.state={"queued":{"a":{"buffer_id":"buffer-a"}}}
+        self.state={"queued":{"xexp-a":{"buffer_id":"buffer-a"}}}
         self.delivery={"checked_at_utc":"2026-11-03T11:45:00+00:00",
-                       "items":[{"post_id":"a","buffer_status":"scheduled"}]}
+                       "items":[{"post_id":"xexp-a","buffer_status":"scheduled"}]}
         self.now=datetime(2026,11,3,22,0,tzinfo=timezone(timedelta(hours=9)))
 
     def run_review(self,rows):
@@ -64,6 +64,38 @@ class WeeklyReviewTests(unittest.TestCase):
               fake_impression("a","surreal_text",150,"2026-11-04T20:30:00+09:00")]
         stats=actual_summary(rows,"surreal_text",24)
         self.assertEqual(stats,{"n":1,"median":150,"sum":150})
+
+    def test_hashtag_report_is_unmeasured_without_linked_x_values(self):
+        self.posts["experiments"][2]["hashtag"]="#シュールネタ"
+        data=self.run_review([])
+        self.assertIn("ハッシュタグ実験",data)
+        self.assertIn("効果は判定保留",data)
+        self.assertIn("未取得（0回ではない）",data)
+
+    def test_linked_hashtag_controls_are_compared_separately(self):
+        self.posts["experiments"][2]["hashtag"]="#シュールネタ"
+        tagged=fake_impression("x-actual-3","surreal_text",250)
+        control=fake_impression("x-actual-1","surreal_text",100)
+        tagged["experiment_id"]="xexp-c"
+        control["experiment_id"]="xexp-a"
+        stats=hashtag_summary(self.posts["experiments"],[tagged,control],"surreal_text",24)
+        self.assertEqual(stats["one_relevant_tag"],{"n":1,"median":250})
+        self.assertEqual(stats["no_tag"],{"n":1,"median":100})
+        self.assertIn("判定保留",self.run_review([tagged,control]))
+
+    def test_unlinked_x_metrics_do_not_inflate_hashtag_results(self):
+        self.posts["experiments"][2]["hashtag"]="#シュールネタ"
+        unknown=fake_impression("x-screenshot-without-experiment-id","surreal_text",10000)
+        stats=hashtag_summary(self.posts["experiments"],[unknown],"surreal_text")
+        self.assertEqual(stats["one_relevant_tag"]["n"],0)
+        self.assertEqual(stats["no_tag"]["n"],0)
+
+    def test_format_mismatch_in_linked_metric_is_rejected(self):
+        self.posts["experiments"][2]["hashtag"]="#シュールネタ"
+        wrong=fake_impression("x-post","character_moment",100)
+        wrong["experiment_id"]="xexp-c"
+        with self.assertRaisesRegex(ValueError,"format differs"):
+            hashtag_summary(self.posts["experiments"],[wrong],"surreal_text")
 
     def test_observations_of_different_time_window_not_mixed(self):
         rows=[fake_impression("a","surreal_text",100),

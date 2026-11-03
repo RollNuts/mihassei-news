@@ -22,6 +22,26 @@ from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 
 FORMATS = {"surreal_text", "character_moment"}
 MAX_CHARS = 180
+# Small relevant tags, explicitly assigned to some posts. No trend scraping.
+ALLOWED_TAGS = {"surreal_text": "#シュールネタ",
+                "character_moment": "#ネジまち"}
+
+
+def publication_text(post):
+    """Render the final Buffer text. No tag means a no-hashtag comparison."""
+    text = post["text"]
+    tag = post.get("hashtag")
+    if tag is None:
+        return text
+    if tag != ALLOWED_TAGS.get(post.get("format")):
+        raise ValueError("Only one relevant hashtag is allowed: " + post["id"])
+    if "#" in text or "＃" in text:
+        raise ValueError("Additional hashtags in body: " + post["id"])
+    return text.rstrip() + "\n\n" + tag
+
+
+def hashtag_variant(post):
+    return "one_relevant_tag" if post.get("hashtag") else "no_tag"
 
 
 def read_json(path):
@@ -59,6 +79,9 @@ def validate(posts, config, state):
             raise ValueError(f"Unsupported experiment format: {fmt}")
         if not isinstance(text, str) or not 12 <= len(text) <= MAX_CHARS:
             raise ValueError(f"Invalid text length: {pid}")
+        final_text = publication_text(post)
+        if len(final_text) > MAX_CHARS:
+            raise ValueError(f"Hashtag exceeds maximum post length: {pid}")
         if type(order) is not int or order < 1:
             raise ValueError("Sequence must be a positive integer")
         if pid in ids or text in texts or order in orders:
@@ -68,6 +91,11 @@ def validate(posts, config, state):
             record = state["queued"][pid]
             if record.get("text_sha256") != hash_text(text):
                 raise ValueError("Previously queued post was changed: " + pid)
+            pinned = record.get("published_text_sha256")
+            if pinned is None and post.get("hashtag"):
+                raise ValueError("Cannot add a hashtag to an already queued legacy post: " + pid)
+            if pinned and pinned != hash_text(final_text):
+                raise ValueError("Previously queued hashtag or public text changed: " + pid)
             if not record.get("buffer_id"):
                 raise ValueError("Missing Buffer identifier in post history: " + pid)
     if not posts["experiments"]:
@@ -84,11 +112,15 @@ def decide(posts, state, existing, max_queue, max_new):
     scheduled = sum(1 for p in existing if p.get("status") == "scheduled")
     recovered = []
     for post in posts:
-        if post["id"] not in state["queued"] and post["text"] in text_to_live:
-            live = text_to_live[post["text"]]
+        final_text = publication_text(post)
+        if post["id"] not in state["queued"] and final_text in text_to_live:
+            live = text_to_live[final_text]
             state["queued"][post["id"]] = {
                 "buffer_id": live["id"],
                 "text_sha256": hash_text(post["text"]),
+                "published_text_sha256": hash_text(final_text),
+                "hashtag_variant": hashtag_variant(post),
+                "hashtag": post.get("hashtag"),
                 "format": post["format"],
                 "recovered_from_buffer": True
             }
@@ -135,10 +167,14 @@ def main():
           "Recovered:",len(recovered),"New experiment posts:",len(plan))
     for post in plan:
         # Use the same proven Buffer Free createPost method as the existing bot.
-        buffer_id = queue_one(token, channel_id, {"kind":"text","text":post["text"]})
+        final_text = publication_text(post)
+        buffer_id = queue_one(token, channel_id, {"kind":"text","text":final_text})
         state["queued"][post["id"]] = {
             "buffer_id": buffer_id,
             "text_sha256": hash_text(post["text"]),
+            "published_text_sha256": hash_text(final_text),
+            "hashtag_variant": hashtag_variant(post),
+            "hashtag": post.get("hashtag"),
             "format": post["format"],
             "queued_at_utc": datetime.now(timezone.utc).isoformat(),
         }
