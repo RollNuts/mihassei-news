@@ -697,6 +697,34 @@ def home(articles, serials=None):
     # A compact fresh grid: the full article archive remains accessible.
     recent_articles = [x for x in remaining[3:] if x["slug"] not in picked_slugs][:4]
     recent = "".join(card(x) for x in recent_articles)
+    # The activity rail doubles as genuine article discovery: do not repeat
+    # the lead, sidebar, visible story grid, or carefully selected starters.
+    front_slugs = {a["slug"], *(x["slug"] for x in remaining[:3]),
+                   *(x["slug"] for x in recent_articles), *picked_slugs}
+    more_recent = [x for x in articles if x["slug"] not in front_slugs][:3]
+    timeline_links = []
+    for item in more_recent:
+        published = publication_date(item)
+        stamp = datetime.fromisoformat(published)
+        stamp_label = f"{stamp.month}/{stamp.day}"
+        if "T" in published:
+            stamp_label += f" {stamp.hour:02}:{stamp.minute:02}"
+        timeline_links.append(
+            f'<li><a href="{article_url(item)}">'
+            f'<time datetime="{escape(published)}">{escape(stamp_label)}</time>'
+            f'<span class="press-timeline-category">{escape(item["category"])}</span>'
+            f'<span class="press-timeline-headline">{escape(item["title"])}</span>'
+            '</a></li>'
+        )
+    timeline_section = (
+        '<section class="press-timeline" aria-labelledby="press-timeline-title">'
+        '<div class="press-timeline-heading">'
+        '<div><span class="press-timeline-mark" aria-hidden="true"></span>'
+        '<h2 id="press-timeline-title">発行ログ</h2>'
+        '<span>新着の次に読む、まだ見えていない記事</span></div>'
+        '<a href="/issues/">発行号一覧 ↗</a></div>'
+        '<ol class="press-timeline-list">' + "".join(timeline_links) + '</ol></section>'
+    ) if timeline_links else ""
     featured_categories = curated_categories(articles)
     genre_links = []
     for cat in CATEGORIES[1:]:
@@ -776,17 +804,7 @@ def home(articles, serials=None):
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
-<section class="genre-explore" aria-label="ジャンル別に記事を探す">
-<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
-<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
-</section>
-{render_serials_feature(serials)}
-{starter_section}
-{popular_section}
-<details class="extras-shelf">
-<summary><strong>発行号・号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
-<div class="extras-shelf-body">
-{issue_section}
+{timeline_section}
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -802,6 +820,17 @@ def home(articles, serials=None):
     </div>
   </div>
 </section>
+<section class="genre-explore" aria-label="ジャンル別に記事を探す">
+<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
+<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
+</section>
+{render_serials_feature(serials)}
+{starter_section}
+{popular_section}
+<details class="extras-shelf">
+<summary><strong>発行号・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
+<div class="extras-shelf-body">
+{issue_section}
 <section class="reader-discussions" data-comment-discussions data-comment-discussion-options="{discussion_options}" aria-labelledby="reader-discussions-title">
 <div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなのツッコミ</span>
 <h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
