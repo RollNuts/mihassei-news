@@ -5,7 +5,7 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from scripts.audit_satire import analyze, latest, near_duplicate, final_sentence
+from scripts.audit_satire import analyze, latest, near_duplicate, final_sentence, next_slot_brief
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -128,6 +128,42 @@ class SatireAuditTests(unittest.TestCase):
         self.assertEqual(len(articles),before)
         self.assertTrue(all(len(item)==3 for item in warnings))
         # No exit, exception or moderation operation: output is advice only.
+
+
+    def test_next_slot_brief_reacts_to_bursts_without_blocking_publication(self):
+        titles = [
+            "本人確認を追加する街", "購入申請が必要な店",
+            "新しい認証制度に失敗", "登録した人だけ拒否できる方法",
+            "帰省した家族の食卓", "サッカーの遠征",
+        ]
+        articles = [sample(i,title=title) for i,title in enumerate(titles)]
+        for i,article in enumerate(articles):
+            article["category"] = "社会" if i < 5 else "スポーツ"
+        original = copy.deepcopy(articles)
+        notes = next_slot_brief(articles)
+        rendered = "\n".join(notes)
+        self.assertIn("直近6本",rendered)
+        self.assertIn("確認・申請・認証・拒否",rendered)
+        self.assertIn("社会が集中",rendered)
+        self.assertIn("異なる仕組みの見出し2案",rendered)
+        self.assertIn("警告だけで発行を止めない",rendered)
+        self.assertEqual(articles,original)
+        self.assertEqual(len(articles),6)
+
+    def test_next_slot_brief_does_not_invent_humor_or_traffic_scores(self):
+        self.assertIn("掲載済み記事なし",next_slot_brief([])[0])
+        articles = [sample(i,title=title) for i,title in enumerate((
+            "夜の音楽祭", "ゲームの新しい遊び方",
+            "旅先で人気のご当地グッズ", "家族の料理",
+            "趣味の庭づくり", "子どもの遠足",
+        ))]
+        for article,category in zip(articles,("エンタメ","技術","暮らし","社会","経済","スポーツ")):
+            article["category"] = category
+        notes = "\n".join(next_slot_brief(articles))
+        self.assertIn("目立つ定型警告はなし",notes)
+        self.assertIn("面白さの採点ではない",notes)
+        self.assertNotIn("PV",notes)
+
 
 
 if __name__=="__main__":
