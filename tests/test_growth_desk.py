@@ -53,7 +53,9 @@ class GrowthDeskTests(unittest.TestCase):
         self.assertNotIn("広告を表示",output)
 
     def test_built_site_contains_review_and_noindex_http_header(self):
-        data=(ROOT/"dist/growth-desk/index.html").read_text(encoding="utf-8")
+        self.assertFalse((ROOT/"dist/growth-desk/index.html").exists(),
+                         "Growth desk must not be published as a public web page")
+        data=render(self.articles)
         js=(ROOT/"dist/assets/growth-desk.js").read_text(encoding="utf-8")
         rows=listed_articles(self.articles)
         self.assertIn('name="robots" content="noindex,nofollow"',data)
@@ -72,8 +74,7 @@ class GrowthDeskTests(unittest.TestCase):
         self.assertIn("/growth-desk/*\n  X-Robots-Tag: noindex, nofollow",headers)
         sitemap=(ROOT/"dist/sitemap.xml").read_text(encoding="utf-8")
         self.assertNotIn("https://veripsa.com/growth-desk/",sitemap)
-        share=(ROOT/"dist/share-desk/index.html").read_text(encoding="utf-8")
-        self.assertIn('href="/growth-desk/"',share)
+        self.assertFalse((ROOT/"dist/share-desk/index.html").exists())
 
 
 if __name__=="__main__":
