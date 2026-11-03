@@ -7,9 +7,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/free-cpu-scenes.yml'
-  schedule:
-    # Four bounded batches a day. No Mac, paid image API, or GPU.
-    - cron: '27 0,6,12,18 * * *'
+  # Automatic CPU batches are paused until the first photo passes visual QA.
   workflow_dispatch:
     inputs:
       limit:
