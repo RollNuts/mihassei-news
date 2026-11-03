@@ -65,7 +65,19 @@ class SatirePilotTests(unittest.TestCase):
                     self.assertIn(a["title"], markup)
                     self.assertIn('data-future-poll', markup)
                     self.assertIn('aria-label="着想した実際の話題"', markup)
-                    self.assertIn('content="https://veripsa.com/og/articles/'+slug+'.png', markup)
+                    # Live local JPEG art is preferred over the default PNG;
+                    # keep both first-party, non-SVG share-card routes valid.
+                    import re
+                    actual_og = re.search(
+                        r'<meta property="og:image" content="([^"]+)"', markup)
+                    self.assertIsNotNone(actual_og)
+                    image_url = actual_og.group(1)
+                    allowed_urls = {
+                        "https://veripsa.com/og/articles/" + slug + ".png",
+                        "https://veripsa.com/generated/" + slug + ".jpg",
+                        "https://veripsa.com/photos/" + slug + ".jpg",
+                    }
+                    self.assertIn(image_url.split("?")[0], allowed_urls)
         # This does not force all future stories to be two paragraphs.
         self.assertTrue(any(len(a["paragraphs"]) >= 3 for a in articles))
 

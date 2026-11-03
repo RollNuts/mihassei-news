@@ -57,12 +57,16 @@ jobs:
           python social-bot/render.py
           python social-bot/render_ip.py
           python social-bot/ip/ink_storyboard.py
+          python social-bot/ip/remaster_early.py
 
       - name: Validate variable-panel acting and drawing (offline)
         run: python -m unittest discover -s social-bot/ip -p 'test_art_readability.py' -v
 
       - name: Verify hand-ink composition and original character shapes
         run: python -m unittest discover -s social-bot/ip -p 'test_ink_storyboard.py' -v
+
+      - name: Verify safe image migration and design tests (offline only)
+        run: python social-bot/ip/test_swap_queued_media.py
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py
