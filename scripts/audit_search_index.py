@@ -12,7 +12,7 @@ from collections import deque
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 from xml.etree import ElementTree as ET
 
 SITE = "https://veripsa.com"
@@ -28,12 +28,15 @@ class Page(HTMLParser):
         self.meta: dict[str, str] = {}
         self.canonicals: list[str] = []
         self.links: list[str] = []
+        self.ids: set[str] = set()
         self.schemas: list[dict] = []
         self._title_parts: list[str] | None = None
         self._schema_parts: list[str] | None = None
 
     def handle_starttag(self, tag, attrs):
         values = dict(attrs)
+        if values.get("id"):
+            self.ids.add(values["id"])
         if tag == "title":
             self._title_parts = []
         elif tag == "meta":
@@ -82,6 +85,56 @@ def read_page(dist: Path, path: str) -> Page:
     page.feed(target.read_text(encoding="utf-8"))
     page.close()
     return page
+
+
+def check_internal_links(dist: Path, pages: dict[str, Page]) -> tuple[list[str], int]:
+    """Validate reader-facing links after static generation, never external URLs.
+
+    The source document, not JavaScript or a crawler, determines whether a
+    visitor can reach the article, section, local file or real fragment.
+    Queries are presentation filters; fragments need actual HTML target ids.
+    """
+    errors: list[str] = []
+    checked = 0
+    root = dist.resolve()
+    id_cache: dict[Path, set[str]] = {}
+
+    for source_path, page in pages.items():
+        for href in set(page.links):
+            target_url = urlsplit(urljoin(SITE + source_path, href))
+            if target_url.scheme not in ("http", "https") or target_url.hostname != "veripsa.com":
+                continue  # Links to sources, X sharing, mail or other domains.
+            checked += 1
+            url_path = unquote(target_url.path or "/")
+            # Urljoin normalizes normal "../"; guard against encoded traversal.
+            if ".." in url_path.split("/"):
+                errors.append("Unsafe internal link: " + source_path + " -> " + href)
+                continue
+            filename = url_path.lstrip("/")
+            resolved = (root / filename).resolve()
+            if not resolved.is_relative_to(root):
+                errors.append("Internal link escapes output: " + source_path + " -> " + href)
+                continue
+            if url_path == "/" or url_path.endswith("/"):
+                resolved = resolved / "index.html"
+            elif resolved.is_dir():
+                resolved = resolved / "index.html"
+            if not resolved.is_file():
+                errors.append("Broken internal link: " + source_path + " -> " + href)
+                continue
+            if target_url.fragment and resolved.suffix == ".html":
+                if resolved not in id_cache:
+                    # Reuse parsed sitemap pages, avoid repeatedly reading HTML.
+                    if url_path in pages:
+                        id_cache[resolved] = pages[url_path].ids
+                    else:
+                        target_page = Page()
+                        target_page.feed(resolved.read_text(encoding="utf-8"))
+                        id_cache[resolved] = target_page.ids
+                anchor = unquote(target_url.fragment)
+                if anchor and anchor not in id_cache[resolved]:
+                    errors.append("Broken internal fragment: " + source_path + " -> " + href)
+    return errors, checked
 
 
 def audit(dist: Path = DIST) -> dict:
@@ -187,6 +240,9 @@ def audit(dist: Path = DIST) -> dict:
     for path in sorted(routes.keys() - seen):
         errors.append("Sitemap page not linked from homepage navigation: " + path)
 
+    link_errors, checked_links = check_internal_links(dist, pages)
+    errors.extend(link_errors)
+
     robots = (dist / "robots.txt").read_text(encoding="utf-8")
     if "Sitemap: " + SITE + "/sitemap.xml" not in robots:
         errors.append("robots.txt does not expose sitemap.xml")
@@ -206,6 +262,7 @@ def audit(dist: Path = DIST) -> dict:
         "reachable_pages": len(seen),
         "articles": article_count,
         "serial_episodes": serial_episode_count,
+        "internal_links_checked": checked_links,
         "index_status": "unknown (requires Google Search Console)",
     }
 
