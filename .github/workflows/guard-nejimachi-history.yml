@@ -1,0 +1,34 @@
+name: Protect Nejimachi canon history
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/posts.json"
+      - "social-bot/ip/**"
+      - "social-bot/state.json"
+      - ".github/workflows/guard-nejimachi-history.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/posts.json"
+      - "social-bot/ip/**"
+      - "social-bot/state.json"
+      - ".github/workflows/guard-nejimachi-history.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  protect-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test allowable and forbidden canon revisions
+        run: python -m unittest discover -s social-bot/ip -p "test_history_guard.py" -v
+      - name: Refuse rewriting previous episodes or canon
+        env:
+          CANON_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python social-bot/ip/history_guard.py
