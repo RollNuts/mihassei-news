@@ -121,7 +121,8 @@ def scene_prompt(article: dict) -> str:
         "over-the-shoulder view toward the absurd action, 40mm lens",
     )[stable_seed(article) % 4]
     return (
-        scene_description(article) + " "
+        "Live-action color photograph, realistic Japanese adult actors. "
+        + scene_description(article) + " "
         "(Japanese adult actors:1.3), (photorealistic:1.2), "
         "STAGED SATIRICAL NEWS COMEDY SCENE, fictional deadpan sketch. "
         "Contemporary Japan, natural available light, realistic skin, "
