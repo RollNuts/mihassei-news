@@ -352,7 +352,11 @@ def image_tag(a, cls, extra=""):
     photo_ok = not generated and usable_cached_photo(a, root=BASE)
     url = editorial_image(a)
     alt = article_image_alt(a, generated=generated, photo_ok=photo_ok)
-    fallback = f' data-fallback="{escape(illustration_path(a))}"' if (generated or photo_ok) else ""
+    fallback = (
+        f' data-fallback="{escape(illustration_path(a))}"'
+        f' data-fallback-alt="{escape(article_image_alt(a))}"'
+        if generated or photo_ok else ""
+    )
     if generated:
         extra += ' data-generated-scene="true"'
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
