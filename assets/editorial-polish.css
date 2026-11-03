@@ -112,7 +112,9 @@ body{
   padding:17px 19px;
   background:linear-gradient(180deg,transparent,rgba(24,35,28,.82));
 }
-.lead-info{margin-top:20px}
+.lead-info{margin-top:10px}
+.lead .story-meta{margin-top:0}
+.lead>.lead-media{margin-top:22px}
 .lead h1{
   font-size:clamp(30px,3.5vw,43px);
   line-height:1.43;
@@ -128,6 +130,8 @@ body{
   margin-bottom:22px;
 }
 .hero-actions{row-gap:16px}
+.lead-media+.hero-actions{margin-top:14px}
+.article-reader-metric{flex-wrap:wrap}
 .read-more{
   min-height:42px;
   align-items:center;
@@ -851,7 +855,7 @@ body{
   .masthead{padding:14px 0 12px}
   .masthead .brand{font-size:clamp(38px,10.4vw,50px);line-height:1.17}
   .mast-kicker,.brand-en{display:none}
-  .mast-sub{font-size:11px;line-height:1.55;margin-top:4px}
+  .mast-sub{font-size:11px;line-height:1.55;margin-top:4px;max-width:none}
   .index-main{padding-top:16px}
   .news-briefing{margin-bottom:8px}
   .edition-time-key{margin:0 0 13px;line-height:1.65}

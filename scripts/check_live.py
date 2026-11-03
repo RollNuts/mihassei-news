@@ -73,6 +73,8 @@ def check():
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","edition-time-key"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
+    if "観測されたブラウザ" not in body or "未来を見にきた人" in body:
+        raise RuntimeError("Homepage audience metric must describe browsers, not people")
 
     # Three hand-selected, real stories replace the duplicate category portals.
     # This is not a popularity claim; no new calls, events, or privacy tracking.
@@ -408,7 +410,8 @@ def check():
         slug=item["slug"]
         data,mime=get("/articles/"+slug+"/")
         page=html.unescape(data.decode("utf-8"))
-        for needle in (item["title"],item["source"]["url"],"創作ニュース",f'data-like-count="{slug}"'):
+        for needle in (item["title"],item["summary"],*item["paragraphs"],
+                       item["source"]["url"],"創作ニュース",f'data-like-count="{slug}"'):
             if needle not in page:
                 raise RuntimeError(slug+": missing published material "+needle[:75])
         published=item.get("published_at") or item["source"]["published_at"][:10]

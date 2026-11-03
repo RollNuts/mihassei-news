@@ -93,9 +93,9 @@ def render_starter_picks(picks, image_tag, article_url):
         '<section class="starter-editorial" aria-labelledby="starter-editorial-title">'
         '<div class="starter-editorial-heading">'
         '<span class="small-label red">EDITOR’S PICKS / はじめての方へ</span>'
-        '<h2 id="starter-editorial-title">まず、この3本から。</h2>'
-        '<p>この新聞らしい、少しおかしな記事を編集部が選びました。'
-        '人気ランキングではありません。気になった見出しをどうぞ。</p>'
+        '<h2 id="starter-editorial-title">もう一本、読むなら。</h2>'
+        '<p>日常の理不尽から、考察のしすぎまで。編集部が選んだ3本です。'
+        '人気ランキングではありません。</p>'
         '</div><div class="starter-pick-grid">'
         + "".join(cards) + '</div></section>'
     )
