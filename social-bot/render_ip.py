@@ -249,8 +249,14 @@ def main():
             continue
         if post["kind"]!="comic":
             continue
-        image=draw_manga(post)
         path=out/(post["id"]+".png")
+        # Once a serial image is committed it becomes part of the historical IP.
+        # Future drawing improvements must apply ONLY to new episodes.
+        # Never regenerate an already-tracked asset automatically.
+        if path.exists():
+            print("Preserved historic manga", post["id"], path.stat().st_size, "bytes")
+            continue
+        image=draw_manga(post)
         image.save(path,format="PNG",optimize=True)
         if path.stat().st_size>2_000_000:
             raise ValueError("IP manga PNG exceeded 2MB: "+post["id"])
