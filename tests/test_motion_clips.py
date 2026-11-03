@@ -34,7 +34,7 @@ class MotionClipTests(unittest.TestCase):
                 self.assertNotIn("<video", page)
                 self.assertIn('class="article-visual"', page)
             else:
-                self.assertIn('preload="none"', page)
+                self.assertIn('preload="metadata"', page)
                 self.assertNotIn("autoplay", page)
         self.assertTrue((ROOT / RELATIVE_DIR / "manifest.json").is_file())
         self.assertIsInstance(current, dict)
@@ -62,11 +62,11 @@ class MotionClipTests(unittest.TestCase):
     def test_player_and_video_schema_are_optional_even_without_ffmpeg(self):
         # Static publishing must work on runners that cannot encode a movie.
         article = self.articles[0]
-        with patch.object(build, "usable_clip", return_value={"created_at": "2026-11-03T08:00:00+00:00"}):
+        with patch.object(build, "usable_clip", return_value={"created_at": "2026-11-03T08:00:00+00:00", "sha256": "a"*64}):
             player = build.article_hero_media(article)
-            self.assertIn('controls playsinline muted loop preload="none"', player)
+            self.assertIn('controls playsinline muted loop preload="metadata"', player)
             self.assertIn('poster="', player)
-            self.assertIn('<source src="'+clip_url(article)+'" type="video/mp4">', player)
+            self.assertIn('<source src="'+clip_url(article)+'?v='+("a"*12)+'" type="video/mp4">', player)
             self.assertIn('class="article-visual"', player)
             self.assertNotIn("autoplay", player)
             meta = build.layout(article["title"], article["summary"], build.article_url(article),
@@ -85,10 +85,24 @@ class MotionClipTests(unittest.TestCase):
                                           build.article_url(article),"<p>test</p>",
                                           kind="story", article=article))
 
+    def test_new_clip_candidates_need_explicit_editor_opt_in(self):
+        from scripts import motion_clips
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "content").mkdir()
+            source = self.articles[0]
+            chosen = {**source, "slug": "chosen-news-story", "broadcast_feature": True}
+            ordinary = {**source, "slug": "ordinary-story", "broadcast_feature": False}
+            (root / "content/articles.json").write_text(
+                json.dumps([ordinary, chosen], ensure_ascii=False), encoding="utf-8")
+            with patch.object(motion_clips, "usable_generated_scene", return_value=True), \
+                 patch.object(motion_clips, "usable_clip", return_value=None):
+                self.assertEqual([a["slug"] for a in candidates(root)], ["chosen-news-story"])
+
     def test_real_approved_still_generates_bounded_silent_mp4(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("No local ffmpeg tools installed; production static build still works.")
-        suitable = next((a for a in self.articles if usable_generated_scene(a, root=ROOT)), None)
+        suitable = next((a for a in self.articles if a.get("broadcast_feature") is True and usable_generated_scene(a, root=ROOT)), None)
         if suitable is None:
             self.skipTest("No approved locally generated stills at this revision.")
         slug = suitable["slug"]
@@ -113,15 +127,17 @@ class MotionClipTests(unittest.TestCase):
             self.assertIsNotNone(verified)
             self.assertLessEqual(verified["bytes"], MAX_CLIP_BYTES)
             self.assertEqual(verified["duration_ms"], 4000)
+            self.assertEqual(verified["motion_style_version"], 2)
             movie = root / clip_url(suitable).lstrip("/").replace("clips/","assets/clips/",1)
             self.assertTrue(movie.is_file())
             self.assertEqual(hashlib.sha256(movie.read_bytes()).hexdigest(), verified["sha256"])
-            with patch.object(build, "BASE", root):
+            with patch.object(build, "BASE", root), \
+                 patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                 html = build.article_hero_media(suitable)
                 self.assertIn('<video class="article-visual article-video"', html)
-                self.assertIn('controls playsinline muted loop preload="none"', html)
+                self.assertIn('controls playsinline muted loop preload="metadata"', html)
                 self.assertIn('poster="/generated/'+slug+'.jpg"', html)
-                self.assertIn('<source src="/clips/'+slug+'.mp4" type="video/mp4">', html)
+                self.assertIn('<source src="/clips/'+slug+'.mp4?v='+verified["sha256"][:12]+'" type="video/mp4">', html)
                 self.assertIn('src="/generated/'+slug+'.jpg"', html)
                 self.assertNotIn("autoplay", html)
                 page = build.layout("記事", "架空", build.article_url(suitable),

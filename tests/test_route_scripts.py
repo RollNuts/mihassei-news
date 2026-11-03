@@ -16,6 +16,7 @@ class RouteScriptsTests(unittest.TestCase):
             "/": {
                 "/assets/engagement.js", "/assets/comment-activity.js",
                 "/assets/serial-progress.js", "/assets/returning-shelf.js",
+                "/assets/news-broadcast.js",
             },
             "/archive/": {"/assets/engagement.js", "/assets/site.js"},
             "/saved/": {"/assets/engagement.js", "/assets/bookmarks.js"},
@@ -30,10 +31,11 @@ class RouteScriptsTests(unittest.TestCase):
 
         article = layout(a["title"], a["summary"], article_url(a), "<p>記事</p>",
                          kind="story", article=a)
-        self.assertEqual(self.scripts(article), {
-            "/assets/engagement.js", "/assets/comments.js",
-            "/assets/bookmarks.js"
-        })
+        expected = {"/assets/engagement.js", "/assets/comments.js", "/assets/bookmarks.js"}
+        from scripts import build
+        if build.usable_clip(a, root=build.BASE):
+            expected.add("/assets/news-broadcast.js")
+        self.assertEqual(self.scripts(article), expected)
 
     def test_only_non_content_pages_are_noindexed(self):
         a = load()[0]

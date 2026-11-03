@@ -140,7 +140,13 @@ def candidates(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
     for article in articles:
         if slug and article["slug"] != slug:
             continue
-        if usable_generated_scene(article, root=root) and not usable_clip(article, root=root):
+        # Explicit editor opt-in. A new photograph alone is not a reason to
+        # spend CPU or put a looping video on every article.
+        if article.get("broadcast_feature") is not True:
+            continue
+        clip = usable_clip(article, root=root)
+        if (usable_generated_scene(article, root=root)
+                and (clip is None or clip.get("motion_style_version") != 2)):
             result.append(article)
     return result
 
@@ -156,9 +162,9 @@ def require_mac_not_stopped() -> None:
 
 
 def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None:
-    """Tiny silent 4s slow photo push-in, explicitly NOT invented real footage."""
+    """Visible but bounded 4s photo zoom, never genuine incident footage."""
     filter_graph = (
-        "zoompan=z='min(zoom+0.001,1.04)':"
+        "zoompan=z='min(1.03+on*0.004,1.23)':"
         "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
         f"d=1:s={WIDTH}x{HEIGHT}:fps={FPS},format=yuv420p"
     )
@@ -241,6 +247,7 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
                 raise RuntimeError("24 MiB total video budget reached; no clips deleted")
             record = {
                 "origin": "verified-still-motion",
+                "motion_style_version": 2,
                 "article_sha256": article_fingerprint(article),
                 "image_sha256": src["sha256"],
                 "sha256": hashlib.sha256(staged.read_bytes()).hexdigest(),
