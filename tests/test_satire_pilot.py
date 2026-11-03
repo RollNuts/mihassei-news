@@ -45,6 +45,44 @@ class SatirePilotTests(unittest.TestCase):
                 # A rewrite must not be falsely promoted as a new publication.
                 self.assertEqual(a["published_at"],"2026-11-03T08:08:49+09:00")
 
+    def test_two_more_punchlines_focus_on_human_behavior(self):
+        """Old published articles are revised, not falsely relabeled new news."""
+        subjects={
+            "supporter-guarantor-contract":{
+                "title_parts":("ファンにも戦力外通告","FA宣言"),
+                "second_turn":"選手にはFAがあるのに",
+                "source":"https://kumanichi.com/articles/2053373",
+                "published":"2026-11-02T19:16:37+09:00",
+            },
+            "quiet-reply-dating-matches":{
+                "title_parts":("返信3日に1回","運営のブロック"),
+                "second_turn":"本人たちにはもう届かなかった",
+                "source":"https://www.reuters.com/technology/tinders-us-daily-active-users-return-growth-october-match-ramps-up-ai-efforts-2026-11-02/",
+                "published":"2026-11-03T07:40:27+09:00",
+            }
+        }
+        items={a["slug"]:a for a in load()}
+        for slug, expected in subjects.items():
+            with self.subTest(slug=slug):
+                a=items[slug]
+                for phrase in expected["title_parts"]:
+                    self.assertIn(phrase,a["title"])
+                self.assertIn(expected["second_turn"],a["paragraphs"][-1])
+                self.assertEqual(a["source"]["url"],expected["source"])
+                self.assertEqual(a["published_at"],expected["published"])
+                self.assertEqual(len(a["paragraphs"]),2)
+                self.assertGreaterEqual(sum(map(len,a["paragraphs"])),180)
+                self.assertLessEqual(sum(map(len,a["paragraphs"])),390)
+                self.assertGreater(datetime.fromisoformat(a["modified_at"]),
+                                   datetime.fromisoformat(a["published_at"]))
+                source=datetime.fromisoformat(a["source"]["published_at"])
+                self.assertEqual(datetime.fromisoformat(a["fiction_at"]),source.replace(year=source.year+5))
+                html=story(a,list(items.values()))
+                body=html.split('<div class="article-body">',1)[1].split("</div>",1)[0]
+                self.assertEqual(body.count("<p>"),2)
+                self.assertIn('data-future-poll',html)
+                self.assertIn('aria-label="着想した実際の話題"',html)
+
     def test_two_paragraph_stories_render_without_changing_site_schema(self):
         articles=load()
         by_slug={a["slug"]:a for a in articles}
