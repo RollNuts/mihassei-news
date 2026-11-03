@@ -263,6 +263,34 @@ class ExperimentsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "boolean"):
             validate(p,c,state)
 
+    def test_everyday_satire_pilot_only_in_designated_slots(self):
+        posts=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["experiments"]
+        state={"schema_version":1,"queued":{}}
+        # Five already submitted (including an original visual): next is slot 6.
+        for p in posts[:5]:
+            state["queued"][p["id"]]={"buffer_id":p["id"],
+                                     "text_sha256":hash_text(p["text"])}
+        original=copy.deepcopy(state)
+        plan,_,_=decide(posts,state,[],3,2)
+        self.assertEqual(plan[0]["id"],"xexp-selfcheckout-dialogue")
+        self.assertEqual(plan[0]["angle"],"everyday_satire")
+        self.assertNotEqual(plan[1].get("angle"),"everyday_satire")
+        self.assertEqual(state,original)
+
+    def test_pilot_has_valid_source_texts_and_balanced_tags(self):
+        inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
+        cfg=json.loads((HERE/"config.json").read_text(encoding="utf-8"))
+        ledger=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
+        validate(inventory,cfg,ledger)
+        pilots=[p for p in inventory["experiments"] if p.get("angle")=="everyday_satire"]
+        self.assertEqual(len(pilots),6)
+        self.assertEqual(sum(bool(p.get("hashtag")) for p in pilots),3)
+        self.assertTrue(all(12 <= len(publication_text(p)) <= 180 for p in pilots))
+        p,c,state=sample()
+        p["experiments"][0]["angle"]="viral_growth"
+        with self.assertRaisesRegex(ValueError,"angle"):
+            validate(p,c,state)
+
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
         c["queued"]["xexp-a"]={"buffer_id":"past-id","text_sha256":hash_text(a["experiments"][0]["text"])}
