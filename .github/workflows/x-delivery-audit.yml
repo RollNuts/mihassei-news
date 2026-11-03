@@ -1,0 +1,51 @@
+name: X Original Delivery Audit (Free, read only)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/x-delivery-audit.yml"
+  workflow_dispatch:
+  schedule:
+    # 21:20 JST (12:20 UTC). No repeated full-history API scans.
+    - cron: "20 12 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  audit-delivery:
+    if: github.repository == 'RollNuts/mihassei-news'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Verify bounded read-only logic without X access
+        run: |
+          python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
+          python -m py_compile social-bot/experiments/probe_delivery.py
+
+      - name: Check saved Buffer post IDs (read-only, bounded)
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/probe_delivery.py
+
+      - name: Persist delivery evidence only, not X posts or original ledger
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/experiments/delivery.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): store bounded delivery evidence [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

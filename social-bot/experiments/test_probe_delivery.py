@@ -75,7 +75,9 @@ class BufferReadOnlyTests(unittest.TestCase):
                 "text_sha256":hashlib.sha256(self.post["text"].encode()).hexdigest()}}}
         def inaccessible(_):
             raise RuntimeError("insightsRead scope unavailable")
-        report=build(inv,state,"x-1",lambda _:self.remote,inaccessible)
+        from datetime import datetime, timezone
+        report=build(inv,state,"x-1",lambda _:self.remote,inaccessible,
+                     now=datetime(2026,11,4,1,tzinfo=timezone.utc))
         row=report["items"][0]
         self.assertEqual(row["buffer_status"],"sent")
         self.assertFalse(row["buffer_metrics_available"])
@@ -90,6 +92,69 @@ class BufferReadOnlyTests(unittest.TestCase):
         result=build(inv,state,"x-1",lambda id:None)
         self.assertEqual(result["items"][0]["buffer_status"],"unverified")
         self.assertEqual(len(result["recent_unverified_experiment_ids"]),1)
+    def test_daily_audit_scales_without_losing_old_permalinks(self):
+        posts, queued = [], {}
+        for i in range(40):
+            pid = f"xexp-many-{i}"
+            body = f"独立した奇妙な創作ネタです。番号{i}の確認用です。"
+            posts.append({"id": pid, "sequence": i+1,
+                          "format": "surreal_text", "text": body})
+            queued[pid] = {"buffer_id": f"b{i}",
+                           "text_sha256": hashlib.sha256(body.encode()).hexdigest(),
+                           "queued_at_utc": f"2026-11-{(i%20)+1:02d}T11:00:00+00:00"}
+        state = {"schema_version": 1, "queued": queued}
+        inventory = {"schema_version": 1, "experiments": posts}
+        previous = {"items": [
+            {"post_id": "xexp-many-0", "buffer_id": "b0",
+             "buffer_status": "sent", "format": "surreal_text",
+             "buffer_external_link": "https://x.com/user/status/123"}]}
+        queried = []
+        def get_post(postid):
+            queried.append(postid)
+            number = int(postid[1:])
+            return {"id": postid, "channelId": "x-1",
+                    "text": posts[number]["text"], "status": "scheduled",
+                    "assets": []}
+        result = build(inventory, state, "x-1", get_post, previous=previous)
+        self.assertEqual(len(queried), 10)
+        self.assertEqual(len(result["items"]), 40)
+        self.assertEqual(result["limits"]["max_post_reads"], 10)
+        old = next(item for item in result["items"]
+                   if item["post_id"] == "xexp-many-0")
+        self.assertEqual(old["buffer_status"], "sent")
+        self.assertIn("buffer_external_link", old)
+
+    def test_only_mature_sent_posts_use_two_metric_reads(self):
+        from datetime import datetime, timezone
+        posts, queued = [], {}
+        for i in range(6):
+            pid = f"xexp-measure-{i}"
+            body = f"別のオリジナルの短文になります。テスト投稿{i}の文章。"
+            posts.append({"id": pid, "sequence": i+1,
+                          "format": "surreal_text", "text": body})
+            queued[pid] = {"buffer_id": f"b{i}",
+                           "text_sha256": hashlib.sha256(body.encode()).hexdigest()}
+        state = {"schema_version": 1, "queued": queued}
+        inventory = {"schema_version": 1, "experiments": posts}
+        def get_post(postid):
+            i = int(postid[1:])
+            return {"id": postid, "channelId": "x-1",
+                    "text": posts[i]["text"], "status": "sent",
+                    "sentAt": "2026-11-01T00:00:00Z",
+                    "externalLink": "https://x.com/u/status/123", "assets": []}
+        metric_calls = []
+        def get_insights(postid):
+            metric_calls.append(postid)
+            return {"metricsUpdatedAt": "2026-11-03T00:00:00Z",
+                    "metrics": [{"type": "impressions",
+                                 "value": 20, "unit": "count"}]}
+        result = build(inventory, state, "x-1", get_post, get_insights,
+                       now=datetime(2026,11,3,12,tzinfo=timezone.utc))
+        self.assertEqual(len(metric_calls), 2)
+        self.assertEqual(result["limits"]["metric_reads_this_run"], 2)
+        self.assertEqual(sum("buffer_latest_impressions" in item
+                             for item in result["items"]), 2)
+
     def test_image_attachment_is_audited_not_assumed(self):
         self.post["visual"]="ufo"
         row=reconcile(self.post,self.rec,self.remote,"x-1")
