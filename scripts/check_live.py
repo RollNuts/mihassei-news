@@ -488,7 +488,7 @@ def check():
         # disclosure instead of another large pre-reading explanation.
         for tag in ('<div class="article-body">',
                     '<div class="article-save-inline">',
-                    '<details class="source-context" id="story-source">',
+                    '<details class="source-context" id="story-source" aria-label="着想した実際の話題">',
                     '<summary>着想元を見る</summary>',
                     'href="#story-source"'):
             if tag not in page:
@@ -497,7 +497,7 @@ def check():
             page.index('<figure class="article-hero-figure">'),
             page.index('<div class="article-body">'),
             page.index('<div class="article-save-inline">'),
-            page.index('<details class="source-context" id="story-source">'),
+            page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">'),
         ]
         if positions != sorted(positions) or len(set(positions)) != len(positions):
             raise RuntimeError(slug+": image, prose, bookmark and source order regressed")
