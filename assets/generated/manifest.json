@@ -41,14 +41,14 @@
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "family-dinner-gacha-243-rejections": {
-      "article_sha256": "7fd87dd6199bcc24b51772266bd575a6e657c10ee1f1625daf3e06de070a9f0e",
-      "bytes": 68479,
-      "generated_at": "2026-11-03T03:50:35.657446+00:00",
+      "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
+      "bytes": 104469,
+      "generated_at": "2026-11-03T09:58:46.405801+00:00",
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3792932720945161700,
-      "sha256": "56f5c4abaaf2eea1cae07e68b88356418a2124bb7947f8bca15625b2d09e3eb1"
+      "seed": 3792932720945161705,
+      "sha256": "9d6d701b9a253f68f89a3119554fa4cbbb3bff29dc0170ca63fd632895d0eb1b"
     },
     "fan-theories-write-final": {
       "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
@@ -205,14 +205,14 @@
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     },
     "volleyball-team-lunch-plate-merch": {
-      "article_sha256": "c57cfd5dba2605dbfe6ad682a6415a7103f7a6c6db6fcd214af9177a2168a6b4",
-      "bytes": 128221,
-      "generated_at": "2026-11-03T08:51:50.126603+00:00",
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "bytes": 98642,
+      "generated_at": "2026-11-03T09:58:46.391906+00:00",
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 5595470469396586000,
-      "sha256": "a7214c97e77e8f3626009b053c00f94f5e4e48782e8a8233309d30635f3baaf0"
+      "seed": 2586442448911147407,
+      "sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710"
     }
   },
   "rejected": {},
