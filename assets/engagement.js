@@ -332,6 +332,13 @@
   let lastCheckedAt=0,haveSnapshot=false,refreshPromise=null;
   function observerFeedback(healthy){
     if(!observerShell)return;
+    // A failed first fetch is not a visitor count. Keep the widget hidden
+    // instead of exposing the placeholder dash as if it were a real number.
+    // If we already have a verified snapshot, retain it with a stale hint.
+    if(!healthy && !haveSnapshot){
+      observerShell.hidden=true;
+      return;
+    }
     observerShell.hidden=false;
     if(!observerHint)return;
     observerHint.textContent=healthy
