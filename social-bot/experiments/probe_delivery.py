@@ -96,8 +96,8 @@ def normalize_buffer_impressions(post_data, sent_at):
 
 # Query budgets for the shared Buffer Free monthly allowance. This is invoked
 # once daily, not by every refill or every main push.
-MAX_STATUS_READS = 10
-MAX_METRICS_READS = 2
+MAX_STATUS_READS = 8
+MAX_METRICS_READS = 1
 
 
 def selected_posts(registered, state, previous, limit=MAX_STATUS_READS):
@@ -128,6 +128,32 @@ def mature_sent(sent_at, now):
         return False
     return (timestamp.tzinfo is not None and
             timedelta(hours=12) <= now-timestamp <= timedelta(hours=96))
+
+
+def queue_health(inventory, state, rows):
+    """Capacity signals from the original ledger, never fabricated X views.
+
+    Some status rows are cached from prior audits. Do not call their counts
+    "currently sent" or assert that provider URLs are independently verified.
+    """
+    posts=inventory.get("experiments",[])
+    queued=set(state.get("queued",{}))
+    pending=[p for p in posts if p["id"] not in queued]
+    pending_images=sum(bool(p.get("visual")) for p in pending)
+    return {
+        "original_inventory_total":len(posts),
+        "original_ever_accepted_by_buffer":len(queued),
+        "original_unsubmitted":len(pending),
+        "unsubmitted_original_images":pending_images,
+        "provider_sent_last_known":sum(
+            r.get("buffer_status")=="sent" for r in rows),
+        "provider_permalinks_last_known":sum(
+            r.get("buffer_status")=="sent" and bool(r.get("buffer_external_link"))
+            for r in rows),
+        "unsubmitted_inventory_below_14":len(pending)<14,
+        "unsubmitted_images_below_2":pending_images<2,
+        "note":"Sent rows may be cached; neither Buffer sent nor permalink proves independent X reach.",
+    }
 
 
 def build(inventory, state, channel_id, fetch, fetch_metrics=None,
@@ -164,9 +190,19 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
                    "format": post["format"], "visual": bool(post.get("visual")),
                    "buffer_status": "unverified", "reason": "provider_read_failed"}
         row["last_buffer_check_utc"] = now.astimezone(timezone.utc).isoformat()
-        old_metric = old.get(post["id"], {}).get("buffer_latest_impressions")
-        if old_metric is not None and "buffer_latest_impressions" not in row:
-            row["buffer_latest_impressions"] = old_metric
+        previous_row=old.get(post["id"], {})
+        old_metric=previous_row.get("buffer_latest_impressions")
+        if (previous_row.get("buffer_id")==record["buffer_id"]
+                and old_metric is not None
+                and "buffer_latest_impressions" not in row):
+            row["buffer_latest_impressions"]=old_metric
+        # A temporary provider read error must not erase the fact that
+        # Buffer previously returned a URL, but don't claim current sent.
+        if (row["buffer_status"]=="unverified"
+                and previous_row.get("buffer_id")==record["buffer_id"]):
+            previous_link=x_link(previous_row.get("buffer_external_link"))
+            if previous_link:
+                row["previous_buffer_external_link"]=previous_link
         output[post["id"]] = row
     for post in registered:
         pid = post["id"]
@@ -194,6 +230,7 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
                         "independent X page verification. Older cached rows are "
                         "not reread. Metrics are not exact 24h/72h impressions."),
         "items": items,
+        "health": queue_health(inventory,state,items),
         "recent_unverified_experiment_ids": [
             item["post_id"] for item in items
             if item.get("buffer_status") not in ("sent", "scheduled")]
@@ -231,6 +268,12 @@ def main():
     print("Read budget:", result["limits"]["post_reads_this_run"],
           "post checks and", result["limits"]["metric_reads_this_run"],
           "insights checks")
+    health=result["health"]
+    print("X original inventory capacity:",health)
+    if health["unsubmitted_inventory_below_14"]:
+        print("::warning::Fewer than 14 unsubmitted X originals; replenish.")
+    if health["unsubmitted_images_below_2"]:
+        print("::warning::Fewer than two unused original X image scenes.")
     print("No media was reposted. Missing insights remain unmeasured; provider "
           "metric snapshots are NOT 24h or 72h X impression counts.")
     return 0
