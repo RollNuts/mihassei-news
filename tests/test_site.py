@@ -227,7 +227,7 @@ class SiteTests(unittest.TestCase):
                      "editorial/index.html","advertise/index.html"):
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
             self.assertEqual(page.count('href="/assets/editorial-polish.css"'),1,name)
-            self.assertIn('現実の話題から生まれる、5年後の創作ニュース。',page)
+            self.assertIn('5年後は、こうなってるかも。今の話題をちょっと大げさに。',page)
             self.assertLess(
                 page.index('href="/assets/comments.css"'),
                 page.index('href="/assets/editorial-polish.css"'),
@@ -439,7 +439,7 @@ class SiteTests(unittest.TestCase):
         archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertIn('class="edition-time-key"',home)
-        self.assertIn("「公開」は実際に掲載した日時",home)
+        self.assertIn("「公開」は実際の掲載日時",home)
         for selector in (".edition-time-key", ".story-meta .real-published-at",
                          ".story-meta .fiction-dateline"):
             self.assertIn(selector,css)
@@ -562,12 +562,12 @@ class SiteTests(unittest.TestCase):
         daily=sum(a.get("published_at","")[:10]==latest_date for a in self.articles)
         self.assertIn('data-edition-status data-last-edition="'+latest_date+'"',home)
         self.assertIn('data-edition-count="'+str(daily)+'"',home)
-        self.assertIn('data-edition-title>最新の未発生ニュース</strong>',home)
+        self.assertIn('data-edition-title>最新の架空ニュース</strong>',home)
         self.assertIn('data-edition-updated>最終発行：',home)
         self.assertIn("（現実時間）",home)
         self.assertIn("5年先の時計",home)
         self.assertNotIn("● LIVE",home)
-        self.assertNotIn("本日の未発生ニュース",home,
+        self.assertNotIn("本日の架空ニュース",home,
                          "The no-JS fallback must not claim freshness")
         self.assertNotIn("今日の号外をめくる",home,
                          "Random archive articles are not necessarily from today")
@@ -652,7 +652,7 @@ class SiteTests(unittest.TestCase):
                 category=(ROOT/"dist"/category_url(cat).lstrip("/")/"index.html")
                 page=category.read_text(encoding="utf-8")
                 self.assertIn('href="'+feed+'" type="application/rss+xml"',page)
-                self.assertIn('title="'+cat+'の未発生ニュース RSS"',page)
+                self.assertIn('title="'+cat+'の架空ニュース RSS"',page)
         main=ET.parse(ROOT/"dist/feed.xml").getroot()
         self.assertEqual(len(main.findall("./channel/item")),min(30,len(articles)))
         self.assertEqual(main.find("channel").find("atom:link",ns).get("href"),
@@ -938,7 +938,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
         self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
         self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
-        self.assertIn('name="twitter:title" content="未発生新聞｜5年後の架空ニュース"',home)
+        self.assertIn('name="twitter:title" content="未発生新聞｜5年後を勝手に想像する風刺ニュース"',home)
         self.assertNotIn('未発生新聞 | 未発生新聞',home)
         for a in self.articles:
             page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")

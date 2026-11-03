@@ -347,7 +347,7 @@ def social_image(article):
 
 def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None):
     if path == "/":
-        complete = "未発生新聞｜5年後の架空ニュース"
+        complete = "未発生新聞｜5年後を勝手に想像する風刺ニュース"
     elif path == "/serials/":
         complete = title + " | 未発生新聞（創作と市場分析の連載）"
     elif serial is not None and serial["kind"] == "analysis":
@@ -369,7 +369,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
     else:
         publication_label = "創作報道"
-        mast_subtitle = "現実の話題から生まれる、5年後の創作ニュース。"
+        mast_subtitle = "5年後は、こうなってるかも。今の話題をちょっと大げさに。"
     if kind == "story" and article is not None:
         article_time_meta = (
             f'<meta property="article:published_time" content="{escape(publication_date(article))}">'
@@ -389,7 +389,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                       for u,text,key in nav)
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
-        "text": "5年後の架空ニュースを真顔で読む、未発生新聞。 #未発生新聞 （創作）",
+        "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞（創作）",
         "url": SITE + "/?src=x-launch-20261102-v3",
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
@@ -609,7 +609,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
-<p class="footer-copy">5年後の世界からお届けする、少しおかしな新聞。</p></div>
+<p class="footer-copy">5年後を想像して、今の世の中をちょっと笑う新聞。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
@@ -703,10 +703,10 @@ def home(articles, serials=None):
 <div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
  data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
 <div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
-<strong data-edition-title>最新の未発生ニュース</strong>
+<strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題の5年後を、真顔で報じる創作新聞です。「公開」は実際に掲載した日時、「架空」は物語内の日時です。</p>
+<p class="edition-time-key"><strong>この新聞の読み方</strong> 未来を当てるための予測ではありません。今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
 <span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
@@ -735,7 +735,7 @@ def home(articles, serials=None):
 {issue_section}
 <section class="free-follow" aria-label="新着記事の購読">
 <div class="free-follow-copy"><span class="small-label red">FOLLOW / FREE RSS</span>
-<h2>新しい5年後を、定期的に読む。</h2>
+<h2>新しい「もしも」を、定期的に読む。</h2>
 <p>新着記事をRSSリーダーに登録できます。メールアドレス不要・追加料金なし。</p></div>
 <a class="free-follow-link" href="/feed.xml" type="application/rss+xml">新着RSSを購読する ↗</a>
 </section>
@@ -757,17 +757,17 @@ def home(articles, serials=None):
 <section class="reader-discussions" data-comment-discussions data-comment-discussion-options="{discussion_options}" aria-labelledby="reader-discussions-title">
 <div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなの未来予想</span>
 <h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
-<p data-discussion-intro>記事の最後から、5年後の世界にひとこと。ニックネームで参加できます。</p>
+<p data-discussion-intro>架空ニュースへのツッコミを、記事の最後からひとこと。ニックネームで参加できます。</p>
 <a class="reader-discussions-cta" href="{article_url(newest)}#reader-comments">新着記事にコメントする ↗</a></div>
 <nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
 </div></details>
 <aside class="banner"><div><div class="small-label red">EDITORIAL</div>
-<h2>今日の常識は、5年後の非常識。</h2>
-<p>ニュースの続きは、たぶん誰も予想していない。</p></div>
+<h2>まだ起きていないニュースを、真顔で。</h2>
+<p>5年後を勝手に想像すると、今の世の中もちょっとおかしく見えてくる。</p></div>
 <a href="/about/">未発生新聞について ↗</a></aside>
 </div>'''
-    return layout("未発生新聞", "まだ起きていないことを、真面目に報じる。5年後のニュースを読む創作メディア。", "/", content,"home")
+    return layout("未発生新聞", "未来を当てるつもりはありません。今のニュースを少し大げさに描く、5年後の風刺とユーモアの架空新聞。", "/", content,"home")
 
 def archive(articles):
     buttons = "".join(f'<button class="filter-button{" active" if cat=="すべて" else ""}" '
@@ -777,7 +777,7 @@ def archive(articles):
     options = '<option value="すべて">すべての年代</option>' + "".join(
         f'<option value="{x}">{x}年代</option>' for x in decades)
     content = f'''<div class="container archive-page">
-<header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>未発生の記事一覧</h1>
+<header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>架空ニュースの記事一覧</h1>
 <p>全部作り話です。着想元の現実の記事とは分けてお読みください。</p>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" aria-label="カテゴリー">{buttons}</div>
@@ -797,11 +797,11 @@ def archive(articles):
 </nav></section>
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 <p class="no-results" data-no-results hidden>一致する記事がありません。</p></div>'''
-    return layout("記事一覧","未発生新聞の記事一覧。すべてフィクションです。","/archive/",content,"archive")
+    return layout("記事一覧","現実の話題を5年後に広げた未発生新聞の創作ニュース一覧。未来の的中を狙う予測ではありません。","/archive/",content,"archive")
 
 
 def category_page(category, items):
-    title = category + "の未発生ニュース"
+    title = category + "の架空ニュース"
     content = (
         '<div class="container archive-page">'
         '<header class="page-intro"><span class="eyebrow">CATEGORY / FICTIONAL NEWS</span>'
@@ -813,7 +813,7 @@ def category_page(category, items):
         '<p style="margin-top:26px"><a class="read-more" href="/archive/">すべての記事を見る</a></p>'
         '</div>'
     )
-    return layout(title,category + "の風刺・フィクション記事。未発生新聞が届ける5年後のニュース。",
+    return layout(title,category + "の架空ニュース。今の話題をちょっと大げさに描く、5年後の社会風刺です。",
                   category_url(category),content,active="archive",
                   feed_url=category_feed_url(category),collection=items)
 
@@ -995,11 +995,11 @@ def about():
     content = '''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">ABOUT US</span>
 <h1>未発生新聞について</h1>
-<p>まだ起きていない出来事を、どこよりも真面目に。</p></header>
+<p>まだ起きていないニュースを、真顔で。</p></header>
 <div class="about-copy">
-<h2>5年後の新聞です。</h2>
-<p>今、世の中で話題になっていること。その続きを、ちょうど5年後の同じ日時のニュースにしてしまう新聞です。</p>
-<p>「いや、それはないだろ」と笑ってもらえたら成功。少し考えて「でも、ないとも言えないかも」と思ってもらえたら、なお成功です。</p>
+<h2>5年後を、ちょっと大げさに想像する新聞です。</h2>
+<p>今のニュースや身近な話題を、「もし5年後もこの調子だったら？」と勝手に膨らませる架空の新聞です。現実の出来事を出発点に、少し大げさで、ちょっと皮肉な世界を創作します。</p>
+<p>未来を当てようとしているわけではありません。「そんなわけないだろ」と笑えて、「でも、ちょっとありそう」と思えるくらいが理想。人を見下すためではなく、世の中の変な仕組みや行き過ぎた常識を笑うための新聞です。</p>
 <h2>架空ニュースと推理小説は創作です。</h2>
 <p>本紙の架空ニュース・推理小説に登場する企業、人物、事件、発言、数値はフィクションです。実際のニュースや報道ではありません。</p>
 <p>連載「未来相場観測室」は別枠の市場考察です。出典を示した現実の情報と、編集上の仮説・予測を区別し、後日検証します。投資成果を保証したり、売買を勧めたりするものではありません。<a href="/serials/">連載を読む ↗</a></p>
@@ -1010,14 +1010,16 @@ def about():
 <p><a href="/editorial/" style="text-decoration:underline">編集方針と記事の作り方を読む ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
-    return layout("本紙について","未発生新聞は今日の話題を5年後の創作ニュースにするメディアです。","/about/",content,"about")
+    return layout("本紙について","未発生新聞は今の話題を5年後の架空ニュースにして笑う創作メディアです。未来を的中させる予測ではありません。","/about/",content,"about")
 
 def editorial_policy():
     """Public disclosure of the creative process and commercial independence."""
     content = '''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">EDITORIAL POLICY</span>
-<h1>編集方針・記事の作り方</h1><p>現実を入り口に、未来を創作する。その境界を明確にします。</p></header>
+<h1>編集方針・記事の作り方</h1><p>5年後を当てるためではなく、今を少し笑うために。事実と創作は分けて伝えます。</p></header>
 <div class="about-copy">
+<h2>これは予知ではなく、未来を使った冗談です。</h2>
+<p>今の話題の何がちょっとおかしいのかを見つけ、「もし5年後に行き過ぎたら？」と想像して創作ニュースにします。予測の的中率を競うものでも、誰かを攻撃するためのものでもありません。見出しだけでも状況が伝わり、最後にもう一段笑える記事を目指します。</p>
 <h2>創作ニュースと現実の市場考察を区別します。</h2>
 <p>ニュース面と連載「未発生事件簿」は創作です。架空ニュースに登場する企業、人物、発言、制度、事件、数値はフィクションであり、未来予測や実際の報道ではありません。</p>
 <p>連載「未来相場観測室」は現実の公開資料に基づく編集上の分析です。執筆時点と参照先を明記し、仮説・反対シナリオ・後日検証の条件を公開します。実在企業に関する事実は出典で確認し、予想を事実のように扱わず、特定銘柄の売買を勧誘しません。<a href="/serials/">連載の入り口 ↗</a></p>
@@ -1043,7 +1045,7 @@ def advertise():
 <h1>広告・協賛のご案内</h1><p>広告より先に、読者が楽しめる新聞を。</p></header>
 <div class="about-copy">
 <h2>未発生新聞について</h2>
-<p>未発生新聞は、日々の実際のニュースをきっかけに5年後の架空ニュースを届ける、風刺・創作メディアです。記事内の出来事や団体はフィクションであり、現実の報道や事実の証明ではありません。</p>
+<p>未発生新聞は、今のニュースから「5年後はこうなるかも」を少し大げさに描く、風刺とユーモアの創作新聞です。未来の的中を目指す予測ではなく、記事内の出来事や団体はフィクションです。</p>
 <h2>ご相談いただける内容</h2>
 <p>サイト内の小さな協賛枠や、読者に役立つ関連企画について相談を受け付けています。内容・掲載期間・料金・実施可否は個別に決めます。現在、広告枠は販売・表示しておらず、スポンサー契約済みの企業も掲載していません。</p>
 <p>記事の文章やニュース判断は協賛者の意向で書き換えません。広告・PRの掲載が決まった場合は、一般記事との境界に「広告」「PR」等を明確に表示します。記事や共有投稿の中に広告を無表示で紛れ込ませません。</p>
@@ -1263,7 +1265,7 @@ def other_files(articles, issues=None, serials=None):
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
     write("feed.xml", generate_rss(
         articles, "未発生新聞 | 創作ニュース",
-        "5年後の世界を真顔で報じる創作ニュース。", SITE, "/feed.xml", limit=90
+        "今の話題をちょっと大げさに。5年後の架空ニュースを楽しむ創作新聞。", SITE, "/feed.xml", limit=90
     ))
     substantial=curated_categories(articles)
     for category in CATEGORIES[1:]:

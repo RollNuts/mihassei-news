@@ -40,7 +40,7 @@
         const todayIssued = editionStatus.dataset.lastEdition === today;
         const latestCount = Math.max(0,Number(editionStatus.dataset.editionCount)||0);
         const lastLabel = editionStatus.dataset.lastLabel || editionStatus.dataset.lastEdition || "不明";
-        if (editionTitle) editionTitle.textContent = todayIssued ? "本日の未発生ニュース" : "最新の未発生ニュース";
+        if (editionTitle) editionTitle.textContent = todayIssued ? "本日の架空ニュース" : "最新の架空ニュース";
         if (editionEyebrow) editionEyebrow.textContent = todayIssued ? "TODAY'S HEADLINES" : "LATEST HEADLINES";
         if (editionUpdated) editionUpdated.textContent = todayIssued ?
           "本日発行 "+latestCount+"本 ・ 最終発行："+lastLabel+"（現実時間）" :
