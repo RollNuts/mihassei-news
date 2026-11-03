@@ -1,21 +1,18 @@
 {
   "purpose": "Reversible hold on unapproved original manga designs",
-  "checked_at_utc": "2026-11-03T05:13:50.887491+00:00",
+  "checked_at_utc": "2026-11-03T05:22:42.271240+00:00",
   "new_queue_disabled": true,
   "decisions": [
     {
       "post_id": "nejimachi-001-morning",
       "buffer_id": "6ae963beb1dfe2c544f0b53d",
-      "result": "move_to_draft"
+      "result": "not_in_schedule"
     },
     {
       "post_id": "nejimachi-002-blue-sky",
       "buffer_id": "6ae963bf5d60da1eff76923b",
-      "result": "move_to_draft"
+      "result": "not_in_schedule"
     }
   ],
-  "confirmed_removed_from_schedule": [
-    "nejimachi-001-morning",
-    "nejimachi-002-blue-sky"
-  ]
+  "confirmed_removed_from_schedule": []
 }
