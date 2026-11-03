@@ -143,3 +143,7 @@ One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23
 - Buffer公式の `createPost` は `post { id dueAt }` を同じAPI受付応答で返せる。新しいオリジナル短文・画像予約では返却された予定日時を `state.json` に保存する（旧投稿・ID・本文は変更しない）。値がnullなら `buffer_due_at_missing_at_creation` を保存し、予定時刻は推定しない。
 - 配信監査の `post(input:{id})` でも `scheduled` に対する `dueAt` 欠落を数え、GitHub Actionsにwarningを表示する。作成時の時刻があっても、現在の時刻として使わず過去の受付証拠と区別する。
 - 1日7枠の設定だけでは、個々の投稿が7枠に割り当てられた証拠ではない。複数投稿で時刻が未取得ならBufferのVeripsaチャンネルの投稿スケジュール/タイムゾーンを確認。既存予約を消す・再送する・有料APIに切り替えることはしない。
+
+## X画像付き/テキストのみ比較（実測のある時だけ）
+
+週次レポートのsocial-bot/experiments/review.pyは同じsurreal_text形式の中で、画像ありと画像なしの24時間Xインプレッション（投稿別実測）を別群として整理する。登録済みX投稿のexperiment_idとの一致が必要。片群5件未満なら効果判定を保留し、Bufferの予約や送信成功件数・初期値0・窓未確定のBufferインサイトを実測として流用しない。両群5件以上でも、題材・タグ・投稿時刻の交絡があり画像の因果効果とは断定できない。追加API呼び出しはなく、保存した原稿・画像・Buffer予約の書き換えもしない。

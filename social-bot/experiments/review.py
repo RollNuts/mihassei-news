@@ -68,6 +68,37 @@ def hashtag_summary(posts, observations, fmt, hours=24):
     }
 
 
+def image_summary(posts, observations, hours=24):
+    """Image vs text within surreal_text, using only linked measured X posts.
+
+    Buffer acceptance, media attachments and provider status cannot create a
+    numeric X observation. Multiple screenshots for one experiment count once.
+    """
+    by_id = {post["id"]: post for post in posts}
+    latest = {}
+    for item in observations:
+        measured_at = validate_observation(item)
+        experiment_id = item.get("experiment_id")
+        post = by_id.get(experiment_id)
+        if (not post or post.get("format") != "surreal_text"
+                or item["window_hours"] != hours):
+            continue
+        if item["format"] != post["format"]:
+            raise ValueError("X measurement format differs from experiment")
+        if (experiment_id not in latest
+                or measured_at > latest[experiment_id][0]):
+            latest[experiment_id] = (measured_at, item["impressions"])
+    buckets = {"image": [], "text": []}
+    for experiment_id, (_, views) in latest.items():
+        bucket = "image" if by_id[experiment_id].get("visual") else "text"
+        buckets[bucket].append(views)
+    return {
+        kind: {"n": len(values),
+               "median": statistics.median(values) if values else None}
+        for kind, values in buckets.items()
+    }
+
+
 def satire_summary(posts, observations, hours=24):
     """Observed post impressions only, never X's qualified 90d reward counter."""
     by_id={p["id"]:p for p in posts}
@@ -214,6 +245,24 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
             lines.append(f"- {fmt}：観測上の先行は{lead}（投稿時刻・ネタ差は未調整）")
         else:
             lines.append(f"- {fmt}：効果は判定保留（各群5本の実測未満）")
+    lines += ["", "## 画像付き vs テキストのみ（同じsurreal_text内・実測24h）", ""]
+    image_stats = image_summary(posts, observations, 24)
+    for kind, label in (("image", "画像付き"), ("text", "テキストのみ")):
+        stat = image_stats[kind]
+        desc = (f"{stat['n']}件 / 24h中央値 {stat['median']:g}" if stat["n"]
+                else "未取得（0回ではない）")
+        lines.append(f"- {label}：{desc}")
+    if all(stat["n"] >= 5 for stat in image_stats.values()):
+        im = image_stats["image"]["median"]
+        tx = image_stats["text"]["median"]
+        direction = "画像付き" if im > tx else "テキストのみ" if tx > im else "同値"
+        lines.append(
+            f"- 中央値の観測上の差：{direction}。題材・タグ・配信時刻の違いが"
+            "含まれ、画像の因果的効果を意味しない。")
+    else:
+        lines.append(
+            "- 画像の効果判定保留：両群5件以上の実測未満。"
+            "Bufferの予約件数・画像添付成功はインプレッションではない。")
     lines+=["", "## 身近な理不尽ネタの比較パイロット", ""]
     satire=satire_summary(posts,observations,24)
     for name,label in (("everyday_satire","身近な理不尽"),
