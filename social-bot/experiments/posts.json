@@ -24,7 +24,8 @@
       "id": "xexp-ufo-ticket",
       "sequence": 4,
       "format": "surreal_text",
-      "text": "UFOが駐車違反を取られた。\n宇宙人は「もうこの星には来ない」と言って、反則金だけ払った。"
+      "text": "UFOが駐車違反を取られた。\n宇宙人は「もうこの星には来ない」と言って、反則金だけ払った。",
+      "hashtag": "#シュールネタ"
     },
     {
       "id": "xexp-robot-job",
@@ -36,7 +37,8 @@
       "id": "xexp-fortune-spoiler",
       "sequence": 6,
       "format": "surreal_text",
-      "text": "占い師の予言が当たりすぎて、店に「ネタバレ禁止」の張り紙が出た。"
+      "text": "占い師の予言が当たりすぎて、店に「ネタバレ禁止」の張り紙が出た。",
+      "hashtag": "#シュールネタ"
     },
     {
       "id": "xexp-underwater-office",
@@ -48,7 +50,8 @@
       "id": "xexp-time-warranty",
       "sequence": 8,
       "format": "surreal_text",
-      "text": "タイムマシンの保証書に「過去への返品は受け付けません」と書いてあった。"
+      "text": "タイムマシンの保証書に「過去への返品は受け付けません」と書いてあった。",
+      "hashtag": "#シュールネタ"
     },
     {
       "id": "xexp-dragon-candles",
@@ -60,13 +63,15 @@
       "id": "xexp-ghost-reunion",
       "sequence": 10,
       "format": "surreal_text",
-      "text": "幽霊の同窓会、出席者全員が来ているのに、椅子だけ全部空いている。"
+      "text": "幽霊の同窓会、出席者全員が来ているのに、椅子だけ全部空いている。",
+      "hashtag": "#シュールネタ"
     },
     {
       "id": "xexp-nejimachi-nothing-wrong",
       "sequence": 11,
       "format": "character_moment",
-      "text": "ピトが「本日は問題ありません」と言った。\nネジはその報告を聞いて、初めて不安になった。"
+      "text": "ピトが「本日は問題ありません」と言った。\nネジはその報告を聞いて、初めて不安になった。",
+      "hashtag": "#ネジまち"
     },
     {
       "id": "xexp-nejimachi-one-screw",
