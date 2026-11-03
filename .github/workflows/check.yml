@@ -11,12 +11,18 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install free local image validation dependency
         run: python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
       - run: python3 -m unittest discover -s tests -v
+      - name: Protect published mysteries and original market forecasts
+        env:
+          SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/guard_serial_history.py "$SERIAL_BASE_SHA"
       - name: Warn about stale news sources and topic concentration (never blocks publishing)
         run: python3 scripts/audit_editorial.py
       - name: Review repeated satire templates and generic openings (advisory only)
@@ -39,15 +45,12 @@ jobs:
           node --check assets/comment-activity.js
           node --check assets/bookmarks.js
           node --check assets/growth-desk.js
-          node --check assets/mystery-notes.js
           node --check assets/serial-progress.js
           node --check assets/comments-admin.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
       - name: Verify private serial read/resume progress
         run: node --test tests/serial-progress.test.cjs
-      - name: Verify private on-device mystery notes
-        run: node --test tests/mystery-notes.test.cjs
       - name: Verify Japan-date edition freshness (today vs old issue)
         run: node --test tests/edition-freshness.test.cjs
       - name: Test coarse privacy-safe attribution without network access

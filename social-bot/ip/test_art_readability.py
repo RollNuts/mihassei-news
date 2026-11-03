@@ -5,7 +5,8 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from render_ip import draw_manga
+from PIL import Image, ImageChops, ImageDraw
+from render_ip import draw_manga, paint_prop
 
 class MangaVisualTests(unittest.TestCase):
     def post(self,panels):
@@ -50,6 +51,22 @@ class MangaVisualTests(unittest.TestCase):
                 {"scene":"lamp","focus":"pito","mood":"plain","line":"「……」"}]
         with self.assertRaisesRegex(ValueError,"Silent panel must not contain"):
             draw_manga(self.post(panels))
+
+    def test_steam_effects_read_as_distinct_illustrations(self):
+        drawings={}
+        for effect in ("none","steam-one","steam-fade","steam-two"):
+            im=Image.new("RGB",(360,320),"white")
+            paint_prop(ImageDraw.Draw(im),"cup",172,210,1.0,effect=effect)
+            drawings[effect]=im
+        for effect in ("steam-one","steam-fade","steam-two"):
+            with self.subTest(effect=effect):
+                self.assertIsNotNone(ImageChops.difference(drawings["none"],drawings[effect]).getbbox())
+        self.assertIsNotNone(ImageChops.difference(drawings["steam-one"],drawings["steam-two"]).getbbox())
+
+    def test_steam_effect_requires_cup(self):
+        im=Image.new("RGB",(360,320),"white")
+        with self.assertRaisesRegex(ValueError,"require a cup"):
+            paint_prop(ImageDraw.Draw(im),"bolt",172,210,1.0,effect="steam-two")
 
     def test_two_to_six_panels(self):
         for length in (2,4,5,6):
