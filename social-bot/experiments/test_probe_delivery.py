@@ -4,7 +4,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions
+from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions, queue_health
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -116,15 +116,15 @@ class BufferReadOnlyTests(unittest.TestCase):
                     "text": posts[number]["text"], "status": "scheduled",
                     "assets": []}
         result = build(inventory, state, "x-1", get_post, previous=previous)
-        self.assertEqual(len(queried), 10)
+        self.assertEqual(len(queried), 8)
         self.assertEqual(len(result["items"]), 40)
-        self.assertEqual(result["limits"]["max_post_reads"], 10)
+        self.assertEqual(result["limits"]["max_post_reads"], 8)
         old = next(item for item in result["items"]
                    if item["post_id"] == "xexp-many-0")
         self.assertEqual(old["buffer_status"], "sent")
         self.assertIn("buffer_external_link", old)
 
-    def test_only_mature_sent_posts_use_two_metric_reads(self):
+    def test_only_mature_sent_posts_use_one_metric_read(self):
         from datetime import datetime, timezone
         posts, queued = [], {}
         for i in range(6):
@@ -150,10 +150,28 @@ class BufferReadOnlyTests(unittest.TestCase):
                                  "value": 20, "unit": "count"}]}
         result = build(inventory, state, "x-1", get_post, get_insights,
                        now=datetime(2026,11,3,12,tzinfo=timezone.utc))
-        self.assertEqual(len(metric_calls), 2)
-        self.assertEqual(result["limits"]["metric_reads_this_run"], 2)
+        self.assertEqual(len(metric_calls), 1)
+        self.assertEqual(result["limits"]["metric_reads_this_run"], 1)
         self.assertEqual(sum("buffer_latest_impressions" in item
-                             for item in result["items"]), 2)
+                             for item in result["items"]), 1)
+
+    def test_capacity_report_is_based_on_original_inventory_only(self):
+        inventory={"experiments":[
+            {"id":"xexp-one","format":"surreal_text","text":"昔の本文"},
+            {"id":"xexp-two","visual":"sock","format":"surreal_text","text":"新作"},
+            {"id":"xexp-three","visual":"book","format":"surreal_text","text":"新作2"},
+        ]}
+        state={"queued":{"xexp-one":{"buffer_id":"b1"}}}
+        rows=[{"post_id":"xexp-one","buffer_id":"b1",
+               "buffer_status":"sent",
+               "buffer_external_link":"https://x.com/user/status/12"}]
+        summary=queue_health(inventory,state,rows)
+        self.assertEqual(summary["original_unsubmitted"],2)
+        self.assertEqual(summary["unsubmitted_original_images"],2)
+        self.assertEqual(summary["provider_permalinks_last_known"],1)
+        self.assertTrue(summary["unsubmitted_inventory_below_14"])
+        self.assertFalse(summary["unsubmitted_images_below_2"])
+        self.assertNotIn("impressions",summary)
 
     def test_image_attachment_is_audited_not_assumed(self):
         self.post["visual"]="ufo"
