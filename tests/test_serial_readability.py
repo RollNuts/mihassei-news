@@ -23,10 +23,11 @@ class SerialReadingTests(unittest.TestCase):
         data = copy.deepcopy(self.data)
         fiction = next(s for s in data if s["kind"] == "fiction")
         market = next(s for s in data if s["kind"] == "analysis")
-        second = copy.deepcopy(fiction["episodes"][-1])
-        second["number"] = 2
-        second["slug"] = "victim-not-yet-dead-02"
-        fiction["episodes"].append(second)
+        if len(fiction["episodes"]) == 1:
+            second = copy.deepcopy(fiction["episodes"][-1])
+            second["number"] = 2
+            second["slug"] = "victim-not-yet-dead-02"
+            fiction["episodes"].append(second)
         home = render_serials_feature(data)
         self.assertIn('href="/serials/case-files/victim-not-yet-dead-01/">第1話から読む', home)
         self.assertIn('href="/serials/case-files/victim-not-yet-dead-02/">最新の第2話へ', home)
@@ -44,7 +45,10 @@ class SerialReadingTests(unittest.TestCase):
         self.assertNotIn("data-mystery-notebook", story)
         self.assertNotIn("mystery-notes.js", story)
         self.assertNotIn("<textarea", story)
-        self.assertIn("次回は未公開", story)
+        self.assertIn("次の話を読む" if len(fiction["episodes"]) > 1 else "次回は未公開", story)
+        if len(fiction["episodes"]) > 1:
+            self.assertNotIn("第2話は準備中です", story)
+            self.assertIn("第2話が公開されています", story)
 
     def test_old_local_notes_are_never_silently_deleted(self):
         notice = privacy()
