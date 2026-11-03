@@ -1036,21 +1036,44 @@ body [hidden] {
 .archive-page .reset-filters:hover{background:var(--accent);border-color:var(--accent)}
 
 
-/* Explain the editorial joke without mistaking the imagined dateline for a forecast. */
+/* The first screen belongs to the headline: explain the format without a large box.
+   Keep the full fiction/real-time explanation available in native keyboard-friendly details. */
 .concept-primer{
-  margin:2px 0 22px;
-  padding:14px 18px;
-  border-left:3px solid var(--accent);
-  background:#f4f2eb;
-  border-radius:0 7px 7px 0;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:3px 18px;
+  margin:0 0 15px;
+  padding:6px 0 10px;
+  border:0;
+  border-bottom:1px solid var(--line);
+  border-radius:0;
+  background:transparent;
   color:#43564a;
 }
 .concept-primer p{margin:0}
-.concept-primer-lead{font-size:13px;line-height:1.75}
-.concept-primer-lead strong{font-size:15px;color:#24382c;margin-right:8px}
-.concept-primer-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px;color:#6c7366;font-size:11px;font-weight:750}
+.concept-primer-lead{flex:1 1 420px;font-size:13px;line-height:1.6}
+.concept-primer-lead strong{font-size:14px;color:#263b2e;margin-right:8px}
+.concept-primer-details{flex:0 1 auto;margin-left:auto;max-width:100%}
+.concept-primer-details>summary{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  list-style:none;
+  font-size:11px;
+  font-weight:800;
+  color:var(--accent);
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.concept-primer-details>summary::-webkit-details-marker{display:none}
+.concept-primer-details>summary::after{content:" ＋";text-decoration:none}
+.concept-primer-details[open]>summary::after{content:" −"}
+.concept-primer-details[open]{flex-basis:100%;margin-left:0}
+.concept-primer-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px!important;color:#6c7366;font-size:11px;font-weight:750}
 .concept-primer-route span:nth-child(odd){color:#365a46}
-.concept-primer-foot{font-size:10.5px;line-height:1.75;color:#6e776c;margin-top:7px}
+.concept-primer-foot{font-size:11px;line-height:1.7;color:#647067;margin-top:7px!important}
 .story-fiction-context{
   padding:9px 12px;
   border-left:2px solid #bba376;
@@ -1065,9 +1088,11 @@ body [hidden] {
 .story-fiction-context a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .source-context-disclaimer{border-top:1px solid #dcded4;padding-top:9px;margin-top:11px}
 @media(max-width:660px){
-  .concept-primer{padding:12px 13px;margin:0 0 17px}
-  .concept-primer-lead{font-size:12px}
-  .concept-primer-lead strong{display:block;font-size:14px;margin-bottom:2px}
+  .concept-primer{padding:3px 0 7px;margin:0 0 12px;gap:0}
+  .concept-primer-lead{flex-basis:100%;font-size:12px;line-height:1.55}
+  .concept-primer-lead strong{display:inline;font-size:13px;margin-right:5px}
+  .concept-primer-details{margin-left:0}
+  .concept-primer-details>summary{min-height:30px;font-size:11px}
   .concept-primer-route{gap:3px 7px;font-size:10px}
   .concept-primer-foot{font-size:10px}
   .story-fiction-context{font-size:11px}
