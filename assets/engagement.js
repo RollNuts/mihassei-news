@@ -367,7 +367,7 @@
     // A legacy API can still return cumulative 'visitors'. Never label that
     // lifetime figure as today's traffic during a staggered deployment.
     const today=data.today;
-    if(!today || !/^\\d{4}-\\d{2}-\\d{2}$/.test(today.dateJst||"") ||
+    if(!today || !/^\d{4}-\d{2}-\d{2}$/.test(today.dateJst||"") ||
        !Number.isSafeInteger(today.visitors) || today.visitors<0 ||
        !Number.isSafeInteger(today.articleReads) || today.articleReads<0)
       return false;
