@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from review import actual_summary, compose, hashtag_summary
+from review import actual_summary, compose, hashtag_summary, satire_summary
 
 
 def fake_impression(post_id,fmt,count,when="2026-11-03T20:30:00+09:00",hours=24):
@@ -105,6 +105,30 @@ class WeeklyReviewTests(unittest.TestCase):
         wrong["experiment_id"]="xexp-c"
         with self.assertRaisesRegex(ValueError,"format differs"):
             hashtag_summary(self.posts["experiments"],[wrong],"surreal_text")
+
+    def test_satire_pilot_requires_linked_x_impressions(self):
+        self.posts["experiments"][0]["angle"]="everyday_satire"
+        linked=fake_impression("real-x-id","surreal_text",75)
+        linked["experiment_id"]="xexp-a"
+        other=fake_impression("real-x-id-2","surreal_text",20)
+        other["experiment_id"]="xexp-c"
+        unknown=fake_impression("unlinked","surreal_text",100000)
+        result=satire_summary(self.posts["experiments"],[linked,other,unknown])
+        self.assertEqual(result["everyday_satire"],{"n":1,"median":75})
+        self.assertEqual(result["other_surreal"],{"n":1,"median":20})
+        report=self.run_review([linked,other,unknown])
+        self.assertIn("身近な理不尽ネタの比較パイロット",report)
+        self.assertIn("効果判定保留",report)
+        self.assertIn("別指標",report)
+
+    def test_satire_duplicate_snapshot_not_double_counted(self):
+        self.posts["experiments"][0]["angle"]="everyday_satire"
+        early=fake_impression("same-x-id","surreal_text",10)
+        early["experiment_id"]="xexp-a"
+        later=fake_impression("same-x-id","surreal_text",23,"2026-11-04T20:30:00+09:00")
+        later["experiment_id"]="xexp-a"
+        result=satire_summary(self.posts["experiments"],[early,later])
+        self.assertEqual(result["everyday_satire"],{"n":1,"median":23})
 
     def test_observations_of_different_time_window_not_mixed(self):
         rows=[fake_impression("a","surreal_text",100),
