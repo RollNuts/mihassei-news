@@ -54,13 +54,23 @@ class EditorialClarityTests(unittest.TestCase):
                       self.articles["volleyball-team-lunch-plate-merch"]["source"]["topic"])
 
     def test_image_notes_are_discreet_but_non_deceptive(self):
+        # The old mortgage photo belongs to the old copy and cannot be
+        # "reapproved" by rewriting its article fingerprint.
         article = self.articles["mortgage-bank-clerk-invited-to-live-in"]
-        self.assertTrue(usable_generated_scene(article, root=ROOT))
+        self.assertFalse(usable_generated_scene(article, root=ROOT))
         markup = build.story(article, list(self.articles.values()))
-        self.assertIn("再現イメージ（合成）", markup)
-        self.assertIn("実際の出来事を撮影した報道写真ではありません", markup)
+        self.assertIn("編集部制作の創作イラスト", markup)
+        self.assertIn("実際の出来事の写真ではありません", markup)
+        self.assertNotIn("再現イメージ（合成）", markup)
         self.assertIn("<strong>この記事は創作です。</strong>", markup)
-        self.assertNotIn("AI生成の架空ニュース再現画像", markup)
+        # A genuinely unchanged image still receives its concise synthetic
+        # photography disclosure when the original image record is authentic.
+        intact = self.articles["music-ai-friends-monopolize-the-song"]
+        self.assertTrue(usable_generated_scene(intact, root=ROOT))
+        photo_page = build.story(intact, list(self.articles.values()))
+        self.assertIn("再現イメージ（合成）", photo_page)
+        self.assertIn("実際の出来事を撮影した報道写真ではありません", photo_page)
+        self.assertNotIn("AI生成の架空ニュース再現画像", photo_page)
         css = (ROOT/"assets/editorial-polish.css").read_text(encoding="utf-8")
         basic_css = (ROOT/"assets/newsroom.css").read_text(encoding="utf-8")
         self.assertNotIn('content:"AI生成・創作"', css)
@@ -70,17 +80,21 @@ class EditorialClarityTests(unittest.TestCase):
         # The photo/fiction disclosure stays; unrelated visible AI badges do not.
         self.assertIn("AIによる合成画像", policy)
 
-    def test_reapproved_stills_match_live_copy_and_old_volleyball_can_fallback(self):
-        for slug in ("mortgage-bank-clerk-invited-to-live-in",
+    def test_revised_stories_fall_back_until_new_real_photos_exist(self):
+        # The editorial rewrites did not regenerate any of these JPEGs.
+        # Photo records remain honest; the static build supplies illustrations.
+        for slug in ("family-dinner-gacha-243-rejections",
+                     "volleyball-team-lunch-plate-merch",
+                     "mortgage-bank-clerk-invited-to-live-in",
                      "research-completed-opening-day", "robot-job-hopping"):
-            self.assertTrue(usable_generated_scene(self.articles[slug], root=ROOT), slug)
-        # This older generated photo showed unrelated crowd outfits, not the
-        # new focus on the press officer's practical task. It is intentionally
-        # not reapproved by this editorial revision.
-        volleyball = self.articles["volleyball-team-lunch-plate-merch"]
-        rendered = build.story(volleyball, list(self.articles.values()))
-        self.assertIn("<h1>"+volleyball["title"]+"</h1>", rendered)
-        self.assertIn('class="article-visual"', rendered)
+            with self.subTest(slug=slug):
+                article = self.articles[slug]
+                self.assertFalse(usable_generated_scene(article, root=ROOT))
+                page = build.story(article, list(self.articles.values()))
+                self.assertIn("<h1>"+article["title"]+"</h1>", page)
+                self.assertIn('class="article-visual"', page)
+                self.assertIn('src="/images/'+slug+'.svg"', page)
+                self.assertIn("創作イラスト", page)
 
 
 if __name__ == "__main__":
