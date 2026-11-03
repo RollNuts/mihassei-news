@@ -129,9 +129,16 @@ class BufferReadOnlyTests(unittest.TestCase):
     def test_only_mature_sent_posts_use_one_metric_read(self):
         from datetime import datetime, timezone
         posts, queued = [], {}
-        for i in range(6):
+        distinct_texts = [
+            "図書館で本が突然空を飛んで、読者が座り込んで驚いてしまった。",
+            "駅のホームに雲が並んで、改札機が傘を持って待っていた。",
+            "弁当箱が朝から家を出て、箸だけが台所に取り残された。",
+            "時計屋のショーケースの中で、秒針が静かな昼寝を始めた。",
+            "海辺の灯台が夕方に目を閉じて、船に少しだけ謝った。",
+            "山奥の郵便箱が手紙を読んで、宛先より先に泣き出した。",
+        ]
+        for i, body in enumerate(distinct_texts):
             pid = f"xexp-measure-{i}"
-            body = f"別のオリジナルの短文になります。テスト投稿{i}の文章。"
             posts.append({"id": pid, "sequence": i+1,
                           "format": "surreal_text", "text": body})
             queued[pid] = {"buffer_id": f"b{i}",
