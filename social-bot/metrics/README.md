@@ -6,7 +6,7 @@
 
 補助指標はリポスト、返信、いいね、プロフィールへのアクセス、フォロワー増加。インプだけを水増しする連投・釣り・重複・トレンドへの自動便乗は禁止する。
 
-**現在のX投稿停止を継続**。 `social-bot/ip/publication_quality_gate.json` がfalseの間は画像・テキストを問わずXへ自動予約しない。未承認の漫画を投稿するために停止条件を迂回しない。
+**投稿レーンを区別する（2026-11-03運用再開）**。`social-bot/ip/publication_quality_gate.json` がfalseの間に停止するのは、**旧来の未承認漫画の自動予約のみ**。独立した `social-bot/experiments/` のオリジナル短文投稿は `config.json` の `experiment_publishing_enabled=true` と既存Buffer Freeの設定で稼働中であり、漫画の承認待ちを理由に停止しない。既存の漫画の停止条件・下書き・既出正史は変更しない。Bufferでの予約成功・送信状態・X上での公開・Xインプレッション実測はそれぞれ別の確認事項とする。
 
 ## 最初に検証する形式
 
@@ -53,7 +53,7 @@
 
 ## 改善サイクル
 
-1. **日次**：新しい作品アイデアは未公開の試作として検討。初見で理解できるか・オチはあるか・既出投稿と重複しないかを見る。品質停止中は投稿や正史に追加しない。
+1. **日次**：新しい作品アイデアは未公開の試作として検討。初見で理解できるか・オチはあるか・既出投稿と重複しないかを見る。漫画の品質保留中は**未承認漫画を予約せず、正史も勝手に改変しない**。独立したオリジナル短文レーンは止めず、原稿の重複とオチの質を確認しながら継続する。
 2. **週次**：実測可能な場合のみ、24h/72h表示回数の中央値を形式ごとに比較。タイトル・導入・コマ数・オチ・投稿時刻のうち**1つの変数**を次の試作で変える。
 3. **3本以上の比較**：傾向を仮説として記録する。投稿時刻やフォロワー数などの交絡があるため、因果関係を決めつけない。
 4. **品質の原則**：インプが上がっても、盗用・似すぎたキャラ・架空の事実を現実のニュースに装うこと・大量投稿はしない。
@@ -61,6 +61,6 @@
 
 ## 実績と制約
 
-2026-11-03時点の `records.json` は空で、**Xインプレッションの基準値は未取得**。漫画の第1・2話は以前Bufferの下書きに移した。現在のX投稿状況はGit履歴だけではリアルタイムに確定できない。
+2026-11-03時点の `records.json` は空で、**Xインプレッションの基準値は未取得**。漫画の第1・2話は以前Bufferの下書きに移した。一方、短文実験レーンではBufferへ3件を登録済み。最新の登録台帳は `experiments/state.json`、送信・予約確認は `experiments/delivery.json`。Git履歴やBufferの `sent` だけでX公開URL・実測表示回数まで確認できたことにはしない。
 
 参考：X公式「おすすめ」 https://help.x.com/en/rules-and-policies/recommendations 、Buffer公式の無料Insight https://support.buffer.com/en-us/articles/getting-started-with-buffers-analytics-features-UVAe3hwLD8 、X無料プランのSent投稿制限 https://support.buffer.com/articles/understanding-sent-post-metrics-within-buffers-publish-dashboard-kppgBDLK6y
