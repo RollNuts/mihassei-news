@@ -5,12 +5,13 @@
   "max_queue_size": 3,
   "max_new_per_run": 2,
   "channel_name": "Veripsa",
-  "reason": "2026-11-03 first original image accepted once via shareNow. Keep original illustrations rotating through capped free Buffer queue; preserve held manga.",
+  "reason": "Owner requested raising original X publishing from 1 to up to 2 distinct posts/JST day on 2026-11-03. Buffer Free customScheduled noon lane plus existing 19:30 queue; no extra paid services, unapproved manga or duplicates.",
   "creative_constraints": [
     "Only original compact surreal text and occasional canon-respecting character moments",
     "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
     "Keep Buffer free plan, GitHub public Actions and zero metered APIs",
     "Original serial manga review gates remain separate until new visuals are evaluated"
   ],
-  "launch_first_visual_now": false
+  "launch_first_visual_now": false,
+  "two_daily_midday_enabled": true
 }
