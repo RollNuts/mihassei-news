@@ -102,7 +102,7 @@ def check(loaded_posts=None):
                 assert isinstance(p.get("line"),str) and 2 <= len(p["line"].strip()) <= 65, f"Missing or too long dialogue in #{num}"
                 if num >= 4:
                     assert len(p["line"]) <= 55, f"Dialogue crowded in #{num}"
-                    assert all(len(line) <= 28 for line in p["line"].split("\\n")), f"Phone-screen line too long in #{num}"
+                    assert all(len(line) <= 28 for line in p["line"].split("\n")), f"Phone-screen line too long in #{num}"
             if num >= 4:
                 action=p.get("action","").strip()
                 assert 4 <= len(action) <= 60, f"Missing concrete action for panel in #{num}"
