@@ -716,6 +716,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span class="observer-eye" aria-hidden="true">◉</span>
 <span class="observer-stat"><span class="observer-label">今日の来訪</span>
 <strong data-observer-count>—</strong><span class="observer-suffix">ブラウザ</span></span>
+<span class="observer-stat" data-observer-yesterday-stat hidden><span class="observer-label">昨日の来訪</span>
+<strong data-observer-yesterday>—</strong><span class="observer-suffix">ブラウザ</span></span>
 <span class="observer-stat"><span class="observer-label">今日の記事閲覧</span>
 <strong data-observer-reads>—</strong><span class="observer-suffix">件</span></span>
 <small>※1ブラウザ・1記事につき1日1回の集計</small>
