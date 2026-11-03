@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "series": "x-impressions-experiments",
+  "experiments": [
+    {
+      "id": "xexp-ghost-interview",
+      "sequence": 1,
+      "format": "surreal_text",
+      "text": "本物の幽霊がお化け屋敷の面接に落ちた。\n理由は「怖がらせ方がわざとらしい」。"
+    },
+    {
+      "id": "xexp-future-advice",
+      "sequence": 2,
+      "format": "surreal_text",
+      "text": "未来の自分が助言しに来た。\n「何をすればいい？」と聞くと、向こうも俺に聞きに来たらしい。"
+    },
+    {
+      "id": "xexp-reaper-late",
+      "sequence": 3,
+      "format": "surreal_text",
+      "text": "死神が初めて遅刻した。\n上司に「命に関わるぞ」と怒られた。"
+    },
+    {
+      "id": "xexp-ufo-ticket",
+      "sequence": 4,
+      "format": "surreal_text",
+      "text": "UFOが駐車違反を取られた。\n宇宙人は「もうこの星には来ない」と言って、反則金だけ払った。"
+    },
+    {
+      "id": "xexp-robot-job",
+      "sequence": 5,
+      "format": "surreal_text",
+      "text": "巨大ロボットが「目立たない仕事」に応募した。\n面接会場に入れなかった。"
+    },
+    {
+      "id": "xexp-fortune-spoiler",
+      "sequence": 6,
+      "format": "surreal_text",
+      "text": "占い師の予言が当たりすぎて、店に「ネタバレ禁止」の張り紙が出た。"
+    },
+    {
+      "id": "xexp-underwater-office",
+      "sequence": 7,
+      "format": "surreal_text",
+      "text": "海底の役所で「水に濡れた書類は受け付けません」と言われた。"
+    },
+    {
+      "id": "xexp-time-warranty",
+      "sequence": 8,
+      "format": "surreal_text",
+      "text": "タイムマシンの保証書に「過去への返品は受け付けません」と書いてあった。"
+    },
+    {
+      "id": "xexp-dragon-candles",
+      "sequence": 9,
+      "format": "surreal_text",
+      "text": "ドラゴンがキャンドル店を開いた。\n開店初日のレビューは「火力が強すぎる」。"
+    },
+    {
+      "id": "xexp-ghost-reunion",
+      "sequence": 10,
+      "format": "surreal_text",
+      "text": "幽霊の同窓会、出席者全員が来ているのに、椅子だけ全部空いている。"
+    },
+    {
+      "id": "xexp-nejimachi-nothing-wrong",
+      "sequence": 11,
+      "format": "character_moment",
+      "text": "ピトが「本日は問題ありません」と言った。\nネジはその報告を聞いて、初めて不安になった。"
+    },
+    {
+      "id": "xexp-nejimachi-one-screw",
+      "sequence": 12,
+      "format": "character_moment",
+      "text": "ネジは街灯のネジを一本締めた。\n街は何も変わらなかったので、少し安心した。"
+    }
+  ]
+}

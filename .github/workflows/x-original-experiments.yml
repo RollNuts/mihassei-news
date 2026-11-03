@@ -1,0 +1,60 @@
+name: X Impressions Original Text Experiments (Buffer Free)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/experiments/posts.json"
+      - "social-bot/experiments/config.json"
+      - "social-bot/experiments/dispatch.py"
+      - "social-bot/experiments/test_dispatch.py"
+      - ".github/workflows/x-original-experiments.yml"
+  pull_request:
+    paths:
+      - "social-bot/experiments/**"
+      - ".github/workflows/x-original-experiments.yml"
+  workflow_dispatch:
+  schedule:
+    # Buffer decides the actual publishing time (currently 19:30 JST).
+    # Queue refill at 09:35 JST; 1-2 new posts max, 3 total queued.
+    - cron: "35 0 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  validate-and-refill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Validate original X ideas, caps, no duplicates or cross-account sending
+        run: |
+          python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
+          python -m py_compile social-bot/experiments/dispatch.py
+
+      - name: Queue original short posts through existing Buffer FREE account
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/dispatch.py
+
+      - name: Record exact Buffer submission IDs (also after partial API failure)
+        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/experiments/state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

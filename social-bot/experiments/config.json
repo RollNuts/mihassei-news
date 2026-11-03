@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "experiment_publishing_enabled": true,
+  "channel_id": "6ae94b74e29c69a171436d72",
+  "max_queue_size": 3,
+  "max_new_per_run": 2,
+  "channel_name": "Veripsa",
+  "reason": "User authorized live X experiments, 2026-11-03. Original text-only feed; independent of unapproved Nejimachi comic drafts.",
+  "creative_constraints": [
+    "Only original compact surreal text and occasional canon-respecting character moments",
+    "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
+    "Keep Buffer free plan, GitHub public Actions and zero metered APIs",
+    "Original serial manga review gates remain separate until new visuals are evaluated"
+  ]
+}
