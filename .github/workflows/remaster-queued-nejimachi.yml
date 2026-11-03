@@ -1,0 +1,50 @@
+name: Upgrade first two scheduled Nejimachi manga images (one-time)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/assets/nejimachi-001-morning-ink-v1.png"
+      - "social-bot/assets/nejimachi-002-blue-sky-ink-v1.png"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  exact-media-upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Verify exact two targets without calling Buffer
+        run: python social-bot/ip/test_swap_queued_media.py
+      - name: Verify remaster PNGs are present
+        run: |
+          test -s social-bot/assets/nejimachi-001-morning-ink-v1.png
+          test -s social-bot/assets/nejimachi-002-blue-sky-ink-v1.png
+      - name: Replace only previously verified media, preserving schedule (one-time)
+        env:
+          ENABLE_MEDIA_REMASTER: "true"
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/ip/swap_queued_media.py
+      - name: Record reversible one-time media upgrade audit
+        if: always()
+        run: |
+          if [ -f social-bot/ip/ink_remaster_delivery.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add social-bot/ip/ink_remaster_delivery.json
+            if ! git diff --cached --quiet; then
+              git commit -m "chore(social): log exact Buffer media upgrade [skip ci]"
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          fi
