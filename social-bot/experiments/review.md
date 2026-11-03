@@ -1,6 +1,6 @@
 # Veripsa X 改善ログ（実測と仮説の区別）
 
-作成日（日本時間）：2026-11-03 21:23
+作成日（日本時間）：2026-11-03 21:45
 
 ## 観測済みの運営状況
 
@@ -10,10 +10,17 @@
 - 笑いの構造（全在庫）：{'delayed_response': 2, 'dry_dialogue': 4, 'inverted_expectation': 5, 'literal_wordplay': 3, 'meta_commentary': 2, 'perspective_flip': 4, 'physical_scale': 1, 'role_reversal': 4, 'self_reference': 3, 'small_action': 2, 'unexpected_kindness': 2, 'visual_reveal': 6}
 - 笑いの構造（Bufferへ一度でも登録済み）：{'dry_dialogue': 1, 'inverted_expectation': 2, 'literal_wordplay': 1, 'meta_commentary': 1, 'role_reversal': 1, 'self_reference': 1, 'small_action': 1, 'visual_reveal': 2}
 - 最終確認できたBuffer状態：{'scheduled': 8, 'sent': 2}
-- Buffer状態確認日時：2026-11-03T12:15:11.641664+00:00
+- Buffer状態確認日時：2026-11-03T12:42:26.209864+00:00
 - 独自画像：在庫7枚・Buffer登録4枚・Buffer sent 1枚
 - Buffer提供のX投稿URL：1件（独立したX公開確認とは別）
 - Buffer暫定インプ取得：0件（各投稿の取得時点が異なり24h/72h比較には使わない）
+
+## 日別Buffer送信確認（部分記録）
+
+- 2026-11-01：オリジナルBuffer sent確認 0件 / 設定7枠（未確認分は含まない）
+- 2026-11-02：オリジナルBuffer sent確認 0件 / 設定7枠（未確認分は含まない）
+- 2026-11-03：オリジナルBuffer sent確認 2件 / 設定7枠（未確認分は含まない）
+- 上記は保存済みのBuffer送信時刻がある原稿だけ。記事紹介・手動投稿・取得漏れは含まない。0件は実際の投稿0件とは限らない。
 
 ## Xインプレッション（主KPI）
 
