@@ -41,6 +41,8 @@ def validate(record):
     date=datetime.fromisoformat(record["captured_at_jst"])
     if date.utcoffset() is None:
         raise ValueError("Recorded time must have a timezone offset")
+    if "experiment_id" in record and (not isinstance(record["experiment_id"],str) or not record["experiment_id"].startswith("xexp-")):
+        raise ValueError("Invalid X experiment identifier")
     for field in ("likes","replies","reposts","profile_visits"):
         if field in record and (type(record[field]) is not int or record[field]<0):
             raise ValueError("Invalid optional metric: "+field)
