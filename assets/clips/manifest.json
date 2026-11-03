@@ -39,15 +39,16 @@
     },
     "bakery-no-important-announcement-panic": {
       "origin": "verified-still-motion",
+      "motion_style_version": 2,
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
       "image_sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db",
-      "sha256": "cb4b060d9ff8d284b66ac95832135683c64ac3156c8ce0b2ae28e9f66c4c7df6",
-      "bytes": 9906,
+      "sha256": "4cc85f4dfb619b25f50ff1e49f48c73bb287e5540940c48f1adae1e9e841d0d4",
+      "bytes": 19082,
       "width": 640,
       "height": 360,
       "fps": 12,
       "duration_ms": 4000,
-      "created_at": "2026-11-03T12:50:37.064871+00:00"
+      "created_at": "2026-11-03T14:13:59.408291+00:00"
     }
   }
 }
