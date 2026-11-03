@@ -770,21 +770,33 @@ def home(articles, serials=None):
     return layout("未発生新聞", "未来を当てるつもりはありません。今のニュースを少し大げさに描く、5年後の風刺とユーモアの架空新聞。", "/", content,"home")
 
 def archive(articles):
+    # Only offer categories with actual published articles; the list grows with
+    # future editions without showing dead-end filters in the meantime.
+    visible_categories = ["すべて"] + [
+        cat for cat in CATEGORIES[1:] if any(a["category"] == cat for a in articles)
+    ]
     buttons = "".join(f'<button class="filter-button{" active" if cat=="すべて" else ""}" '
                       f'data-category-filter="{cat}" aria-pressed="{"true" if cat=="すべて" else "false"}" type="button">{cat}</button>'
-                      for cat in CATEGORIES)
+                      for cat in visible_categories)
     decades = sorted({a["fiction_at"][:3] + "0" for a in articles})
     options = '<option value="すべて">すべての年代</option>' + "".join(
         f'<option value="{x}">{x}年代</option>' for x in decades)
+    # One available decade is not a meaningful filter. Keep the select in DOM
+    # so existing filtering works automatically when a second decade exists.
+    decade_hidden = ' hidden' if len(decades) < 2 else ''
     content = f'''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>架空ニュースの記事一覧</h1>
 <p>全部作り話です。着想元の現実の記事とは分けてお読みください。</p>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" aria-label="カテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
-<select class="decade-select" data-decade-filter aria-label="年代フィルター">{options}</select>
+<select class="decade-select" data-decade-filter aria-label="年代フィルター"{decade_hidden}>{options}</select>
 <output class="result-counter" data-result-count aria-live="polite">{len(articles)}件の記事</output></div>
 <div id="archive-results" class="archive-list">{''.join(card(a,True) for a in articles)}</div>
+<div class="no-results" data-no-results hidden role="status">
+<p>一致する記事はありません。検索語やジャンルを変えてみてください。</p>
+<button class="reset-filters" type="button" data-reset-filters>絞り込みを解除</button>
+</div>
 <div class="archive-load-more" data-archive-more hidden>
   <button type="button" data-archive-more-button aria-controls="archive-results">さらに記事を見る</button>
 </div>
@@ -796,7 +808,7 @@ def archive(articles):
 {''.join(f'<a href="{category_feed_url(name)}" type="application/rss+xml">{escape(name)}のRSS <span aria-hidden="true">↗</span></a>' for name in CATEGORIES[1:] if any(a["category"]==name for a in articles))}
 </nav></section>
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
-<p class="no-results" data-no-results hidden>一致する記事がありません。</p></div>'''
+</div>'''
     return layout("記事一覧","現実の話題を5年後に広げた未発生新聞の創作ニュース一覧。未来の的中を狙う予測ではありません。","/archive/",content,"archive")
 
 
