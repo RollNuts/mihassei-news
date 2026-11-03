@@ -226,16 +226,38 @@ class SiteTests(unittest.TestCase):
         self.assertIn('@media(prefers-reduced-motion:reduce)',css)
         self.assertIn('.reading-progress{',css)
 
-    def test_editorial_lead_is_recent_or_falls_back_to_newest(self):
-        from scripts.build import editorial_lead
+    def test_homepage_lead_always_follows_newest_publication_not_curated_pin(self):
+        """A new edition must change the hero even if an older story is curated."""
+        from scripts.build import editorial_lead, publication_date, home
+        from scripts.editorial_starter import starter_picks
         original=next(a for a in self.articles
-                      if a["slug"]=="unwanted-call-protection-calls-back")
-        latest={**self.articles[0],"slug":"synthetic-latest",
-                "published_at":"2026-11-03T12:00:00+09:00"}
-        picked={**original,"published_at":"2026-11-02T12:00:00+09:00"}
-        self.assertEqual(editorial_lead([latest,picked])["slug"],picked["slug"])
-        expired={**original,"published_at":"2026-10-29T12:00:00+09:00"}
-        self.assertEqual(editorial_lead([latest,expired])["slug"],latest["slug"])
+                      if a["slug"]=="family-dinner-gacha-243-rejections")
+        older={**original,"published_at":"2026-11-03T09:35:30+09:00"}
+        newer={**self.articles[0],"slug":"synthetic-newest",
+               "published_at":"2026-11-03T12:00:00+09:00"}
+        newest_next={**self.articles[0],"slug":"synthetic-next-edition",
+                     "published_at":"2026-11-03T15:30:00+09:00"}
+        # The selection must not depend on the input order, the invented
+        # 2031 dateline, source dates, or a revised older article.
+        self.assertEqual(editorial_lead([older,newer])["slug"],newer["slug"])
+        self.assertEqual(editorial_lead([newer,older])["slug"],newer["slug"])
+        self.assertEqual(editorial_lead([older,newer,newest_next])["slug"],
+                         newest_next["slug"])
+        revised={**older,"modified_at":"2026-11-03T23:59:00+09:00"}
+        self.assertEqual(editorial_lead([revised,newer])["slug"],newer["slug"])
+        self.assertIsNone(editorial_lead([]))
+        self.assertEqual(editorial_lead(self.articles)["slug"],self.articles[0]["slug"])
+        # The front-page headline really uses the same article as the
+        # newest publication, while human recommendations remain separate.
+        published=home(self.articles)
+        self.assertIn('<h1><a href="/articles/'+self.articles[0]["slug"]+'/">',published)
+        picks=starter_picks(self.articles,
+                            {article["slug"] for article in self.articles[:4]})
+        self.assertTrue(picks)
+        for item in picks:
+            self.assertIn('href="/articles/'+item["article"]["slug"]+'/"',published)
+        self.assertIn('data-last-edition="'+publication_date(self.articles[0])[:10]+'"',
+                      published)
 
     def test_mobile_search_and_actions_have_usable_touch_targets(self):
         """Avoid iOS auto-zoom on search inputs without disabling native pinch zoom."""
