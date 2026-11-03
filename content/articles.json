@@ -1,5 +1,28 @@
 [
   {
+    "slug": "volleyball-team-lunch-plate-merch",
+    "category": "スポーツ",
+    "flash": "ファン文化",
+    "fiction_company": "男子バレーチーム『青空エース』",
+    "art": "cards",
+    "fiction_at": "2031-11-03T13:17:00+09:00",
+    "title": "バレー選手の昼食写真、皿だけ公式グッズに　試合でも皿に声援",
+    "summary": "選手2人が一枚の皿を囲む写真が好評で、チームが食器をグッズ化。試合の日、客席の注目は得点より皿の無事に集まった。",
+    "paragraphs": [
+      "「同じ皿から食べてる！」。2031年、男子バレーチーム『青空エース』の選手2人が昼食写真を公開すると、ファンは料理より皿に注目した。「どっちが先に取った？」「お皿になりたい」。チームが冗談半分で皿のレプリカを売ると、選手のタオルより先に完売した。",
+      "次の試合、客席では応援旗の代わりに白い皿が揺れた。選手が決勝点を決めても歓声はまばら。ところが観客の一人が皿を落としかけると、体育館中から悲鳴が上がった。試合後、選手が「勝ててよかったです」と笑うと、ファンは皿を両手で抱え、「割れなくてよかったです」と答えた。"
+    ],
+    "scene_prompt": "Photorealistic wide film still from a deadpan Japanese sports comedy. In a modest indoor volleyball arena, rows of anonymous adult spectators solemnly hold plain white ceramic dinner plates above their heads instead of cheering banners. Two exhausted fictional volleyball players in unmarked uniforms stand beside the bench holding a single shared lunch plate. Awkward expressions, natural arena lighting, cinematic realism, no writing, logos, text or real people.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日刊スポーツ",
+      "published_at": "2026-11-03T13:17:00+09:00",
+      "url": "https://www.nikkansports.com/sports/news/202611030000498.html",
+      "topic": "2026年11月3日13:17公開。男子バレー選手2人の昼食ツーショットが投稿され、同じプレートを囲んだ姿にファンから親しみのある声が寄せられたと報道。2031年のチーム・グッズ・観客の行動は創作で、実在する選手や団体の出来事ではない。"
+    },
+    "published_at": "2026-11-03T17:37:14+09:00"
+  },
+  {
     "slug": "music-ai-friends-monopolize-the-song",
     "category": "技術",
     "flash": "音楽・技術",
