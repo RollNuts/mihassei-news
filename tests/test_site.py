@@ -180,6 +180,26 @@ class SiteTests(unittest.TestCase):
                         home.index('<details class="extras-shelf">'))
         self.assertEqual(css.count("{"),css.count("}"))
 
+    def test_homepage_motion_is_fresh_truthful_and_optional(self):
+        """Movement uses real publication dates and preserves no-JS readability."""
+        from scripts.build import load, publication_date
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        js=(ROOT/"dist/assets/engagement.js").read_text(encoding="utf-8")
+        latest=load()[0]
+        self.assertIn('data-return-update',home)
+        self.assertIn('data-latest-published="'+publication_date(latest)+'"',home)
+        self.assertIn('href="/articles/'+latest["slug"]+'/" hidden>前回から新しい記事',home)
+        # No extra ticker, fake impression counts, or new API dependency.
+        self.assertNotIn('<div class="news-wire"',home)
+        self.assertIn('mihassei-latest-published-v1',js)
+        self.assertIn('window.IntersectionObserver',js)
+        self.assertIn('returnNotice.hidden=false',js)
+        self.assertIn('className="reading-progress"',js)
+        self.assertIn('@media(prefers-reduced-motion:no-preference)',css)
+        self.assertIn('@media(prefers-reduced-motion:reduce)',css)
+        self.assertIn('.reading-progress{',css)
+
     def test_editorial_lead_is_recent_or_falls_back_to_newest(self):
         from scripts.build import editorial_lead
         original=next(a for a in self.articles
