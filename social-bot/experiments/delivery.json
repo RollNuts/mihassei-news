@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T12:45:41.578982+00:00",
+  "checked_at_utc": "2026-11-03T14:03:54.652481+00:00",
   "source": "buffer_post_by_saved_id_daily_bounded_readonly",
   "limits": {
     "post_reads_this_run": 10,
@@ -21,7 +21,7 @@
       "buffer_asset_count": 0,
       "buffer_sent_at_utc": "2026-11-03T10:30:12.842Z",
       "buffer_external_link": "https://x.com/2046775749500428288/status/2117564998318772347",
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-future-advice",
@@ -29,8 +29,9 @@
       "format": "surreal_text",
       "visual": false,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-03T22:00:00+00:00",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-reaper-late",
@@ -38,8 +39,9 @@
       "format": "surreal_text",
       "visual": false,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T00:00:00+00:00",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-ufo-ticket",
@@ -50,7 +52,7 @@
       "buffer_asset_count": 1,
       "buffer_sent_at_utc": "2026-11-03T10:55:16.784Z",
       "buffer_external_link": "https://x.com/2046775749500428288/status/2117571306006724878",
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-nejimachi-one-screw",
@@ -58,8 +60,9 @@
       "format": "character_moment",
       "visual": false,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T11:11:00+00:00",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-invisible-nails",
@@ -67,8 +70,9 @@
       "format": "surreal_text",
       "visual": true,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T09:30:00+00:00",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-shadow-home",
@@ -76,8 +80,9 @@
       "format": "surreal_text",
       "visual": true,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T22:00:00+00:00",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-witch-autopilot",
@@ -85,8 +90,9 @@
       "format": "surreal_text",
       "visual": true,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T10:30:00+00:00",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-selfcheckout-dialogue",
@@ -94,8 +100,9 @@
       "format": "surreal_text",
       "visual": false,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T10:11:00+00:00",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     },
     {
       "post_id": "xexp-honest-survey",
@@ -103,8 +110,9 @@
       "format": "surreal_text",
       "visual": false,
       "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-05T00:00:00+00:00",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:45:41.578982+00:00"
+      "last_buffer_check_utc": "2026-11-03T14:03:54.652481+00:00"
     }
   ],
   "health": {
@@ -160,7 +168,46 @@
         "evidence": "incomplete_lower_bound_not_total_X_publications"
       }
     ],
-    "note": "Daily counts are incomplete lower bounds of Buffer-sent originals; cached statuses may be old. Neither provider sent nor permalink independently verifies X reach."
+    "observed_scheduled_originals_by_jst_day": {
+      "days": [
+        {
+          "date_jst": "2026-11-03",
+          "observed_fresh_original_scheduled": 0,
+          "observed_times_jst": [],
+          "configured_daily_slots": 7,
+          "evidence": "partial_provider_queue_not_a_schedule_configuration"
+        },
+        {
+          "date_jst": "2026-11-04",
+          "observed_fresh_original_scheduled": 6,
+          "observed_times_jst": [
+            "07:00",
+            "09:00",
+            "18:30",
+            "19:11",
+            "19:30",
+            "20:11"
+          ],
+          "configured_daily_slots": 7,
+          "evidence": "partial_provider_queue_not_a_schedule_configuration"
+        },
+        {
+          "date_jst": "2026-11-05",
+          "observed_fresh_original_scheduled": 2,
+          "observed_times_jst": [
+            "07:00",
+            "09:00"
+          ],
+          "configured_daily_slots": 7,
+          "evidence": "partial_provider_queue_not_a_schedule_configuration"
+        }
+      ],
+      "fresh_scheduled_records_checked": 8,
+      "fresh_scheduled_without_due_at": 0,
+      "overdue_scheduled_over_two_hours": 0,
+      "note": "These are audited original reservations only. Counts may be below seven when queue size or audit coverage is limited; not a count of recurring slots."
+    },
+    "note": "Daily sent counts are incomplete Buffer lower bounds. Future queue slots are verified scheduled posts, NOT a test that seven recurring Buffer times are configured."
   },
   "recent_unverified_experiment_ids": []
 }
