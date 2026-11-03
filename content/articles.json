@@ -1,5 +1,28 @@
 [
   {
+    "slug": "diner-refund-customer-paying-escape",
+    "category": "社会",
+    "flash": "まちの珍事",
+    "fiction_company": "商店街の食堂『おかえし亭』",
+    "art": "cards",
+    "fiction_at": "2031-11-03T12:00:00+09:00",
+    "title": "食堂で「払い逃げ」　店主が50円握って追跡",
+    "summary": "料理を待たせると小銭を返す食堂では、親切が評判を呼ぶほど会計が長引いた。心配した常連たちが代金を置いて店を抜け出し始める。",
+    "paragraphs": [
+      "「お願い、今日は満額払わせて」。2031年、商店街の食堂『おかえし亭』で、常連客が代金をぴったり置いて店を飛び出した。店主は料理を待たせるたび、申し訳なさそうに50円を返す。評判を聞いた客が増え、いつしか店は返金する時間の方が長くなった。心配した常連たちは小銭を渡される前に帰る「払い逃げ」を始めていた。",
+      "店主は50円玉を握り、商店街まで追いかけた。「お待たせした分だから」と差し出すと、客は首を振った。「待ったけど、おいしかったから」。二人が押し問答しているうちに、店の前には新しい列が伸びた。店主はあわてて走り戻ったが、今度は客が追いかけてきた。店主の手に50円玉を握らせ、客は言った。「引き止めてごめん。これ、こっちのおわび」。"
+    ],
+    "scene_prompt": "A small silver coin is pressed into the palm of a surprised restaurant owner wearing a plain apron by a fictional customer outside a tiny Japanese diner. The owner still holds a second refund coin. A short lunch queue is visible through the open doorway. Deadpan photorealistic comedy, warm natural light, anonymous people, no writing or logos.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "ORICON NEWS",
+      "published_at": "2026-11-03T12:00:00+09:00",
+      "url": "https://www.oricon.co.jp/news/2490464/full/",
+      "topic": "2026年11月3日12:00公開。大阪の食堂が待たせた客や常連客に50円、100円などを返す接客を続け、テレビ放送後の営業日に行列ができたと紹介。『払い逃げ』や客と店主が小銭を渡し合う場面は本紙独自の創作。"
+    },
+    "published_at": "2026-11-03T19:39:42.990+09:00"
+  },
+  {
     "slug": "volleyball-team-lunch-plate-merch",
     "category": "スポーツ",
     "flash": "ファン文化",
