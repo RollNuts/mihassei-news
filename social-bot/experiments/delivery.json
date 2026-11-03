@@ -1,26 +1,44 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T09:03:54.740822+00:00",
-  "source": "buffer_free_posts_api",
-  "limitations": "Buffer sent indicates provider state only. X impressions and actual live URL not determined.",
+  "checked_at_utc": "2026-11-03T11:09:48.973654+00:00",
+  "source": "buffer_post_by_saved_id_readonly",
+  "limitations": "Buffer statuses/URLs are provider evidence; they are not independent X verification or X impression counts.",
   "items": [
-    {
-      "post_id": "xexp-future-advice",
-      "buffer_id": "6ae990ec3b00665c737f50e7",
-      "buffer_status": "scheduled",
-      "format": "surreal_text"
-    },
     {
       "post_id": "xexp-ghost-interview",
       "buffer_id": "6ae990ece5f645e4e3352053",
+      "format": "surreal_text",
+      "visual": false,
+      "buffer_status": "sent",
+      "buffer_asset_count": 0,
+      "buffer_sent_at_utc": "2026-11-03T10:30:12.842Z",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117564998318772347"
+    },
+    {
+      "post_id": "xexp-future-advice",
+      "buffer_id": "6ae990ec3b00665c737f50e7",
+      "format": "surreal_text",
+      "visual": false,
       "buffer_status": "scheduled",
-      "format": "surreal_text"
+      "buffer_asset_count": 0
     },
     {
       "post_id": "xexp-reaper-late",
       "buffer_id": "6ae995b92f050cf24296aafc",
+      "format": "surreal_text",
+      "visual": false,
       "buffer_status": "scheduled",
-      "format": "surreal_text"
+      "buffer_asset_count": 0
+    },
+    {
+      "post_id": "xexp-ufo-ticket",
+      "buffer_id": "6ae9bd935b02786f00d048be",
+      "format": "surreal_text",
+      "visual": true,
+      "buffer_status": "sent",
+      "buffer_asset_count": 1,
+      "buffer_sent_at_utc": "2026-11-03T10:55:16.784Z",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117571306006724878"
     }
   ],
   "recent_unverified_experiment_ids": []
