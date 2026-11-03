@@ -1,6 +1,6 @@
 # Veripsa X 改善ログ（実測と仮説の区別）
 
-作成日（日本時間）：2026-11-03 23:03
+作成日（日本時間）：2026-11-03 23:15
 
 ## 観測済みの運営状況
 
@@ -10,7 +10,7 @@
 - 笑いの構造（全在庫）：{'delayed_response': 2, 'dry_dialogue': 4, 'inverted_expectation': 5, 'literal_wordplay': 3, 'meta_commentary': 2, 'perspective_flip': 4, 'physical_scale': 1, 'role_reversal': 4, 'self_reference': 3, 'small_action': 2, 'unexpected_kindness': 2, 'visual_reveal': 6}
 - 笑いの構造（Bufferへ一度でも登録済み）：{'dry_dialogue': 1, 'inverted_expectation': 2, 'literal_wordplay': 1, 'meta_commentary': 1, 'role_reversal': 1, 'self_reference': 1, 'small_action': 1, 'visual_reveal': 2}
 - 最終確認できたBuffer状態：{'scheduled': 8, 'sent': 2}
-- Buffer状態確認日時：2026-11-03T12:45:41.578982+00:00
+- Buffer状態確認日時：2026-11-03T14:03:54.652481+00:00
 - 独自画像：在庫7枚・Buffer登録4枚・Buffer sent 1枚
 - Buffer提供のX投稿URL：1件（独立したX公開確認とは別）
 - Buffer暫定インプ取得：0件（各投稿の取得時点が異なり24h/72h比較には使わない）
@@ -21,6 +21,12 @@
 - 2026-11-02：オリジナルBuffer sent確認 0件 / 設定7枠（未確認分は含まない）
 - 2026-11-03：オリジナルBuffer sent確認 2件 / 設定7枠（未確認分は含まない）
 - 上記は保存済みのBuffer送信時刻がある原稿だけ。記事紹介・手動投稿・取得漏れは含まない。0件は実際の投稿0件とは限らない。
+
+## Bufferで確認した今後の予約日時（部分記録）
+
+- 2026-11-03：今回の監査で確認できたオリジナル予約 0件 （時刻：該当なし）
+- 2026-11-04：今回の監査で確認できたオリジナル予約 6件 （時刻：07:00, 09:00, 18:30, 19:11, 19:30, 20:11）
+- この件数は監査で取得した予約のみで、Buffer全体の予約や毎日7枠の設定そのものを検証した数値ではない。
 
 ## Xインプレッション（主KPI）
 
@@ -37,6 +43,12 @@
 - character_moment / タグ1個：未取得（0回ではない）
 - character_moment / タグなし：未取得（0回ではない）
 - character_moment：効果は判定保留（各群5本の実測未満）
+
+## 画像付き vs テキストのみ（同じsurreal_text内・実測24h）
+
+- 画像付き：未取得（0回ではない）
+- テキストのみ：未取得（0回ではない）
+- 画像の効果判定保留：両群5件以上の実測未満。Bufferの予約件数・画像添付成功はインプレッションではない。
 
 ## 身近な理不尽ネタの比較パイロット
 
