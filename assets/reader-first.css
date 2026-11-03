@@ -182,3 +182,59 @@ details.category-feed-subscriptions{
   outline:3px solid var(--accent);
   outline-offset:3px;
 }
+
+/* Give the story the first uninterrupted read. Reader tools sit after the
+   article instead of forming a toolbar between image and first paragraph. */
+.article-hero-figure+.article-body{margin-top:20px}
+.article-page .article-save-inline{
+  margin:22px 0 4px;
+  padding:12px 0 0;
+  border-top:1px solid var(--line);
+  border-bottom:0;
+}
+.article-page .bookmark-status{margin:5px 0 14px}
+/* The source and the fiction/real-world distinction remain in crawlable HTML.
+   Native disclosure removes an extra full-size callout for casual readers. */
+details.source-context{
+  display:block;
+  margin:26px 0 20px;
+  padding:0 17px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  background:#f5f3ed;
+}
+details.source-context>summary{
+  display:flex;
+  align-items:center;
+  min-height:48px;
+  cursor:pointer;
+  list-style:none;
+  font-size:13px;
+  font-weight:800;
+  color:var(--ink);
+}
+details.source-context>summary::-webkit-details-marker{display:none}
+details.source-context>summary::after{
+  content:"＋";
+  margin-left:auto;
+  font-size:16px;
+  font-weight:500;
+  color:var(--accent);
+}
+details.source-context[open]>summary::after{content:"−"}
+details.source-context>summary:focus-visible{
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+}
+.source-context-body{
+  border-top:1px solid var(--line);
+  padding:1px 1px 16px;
+}
+.source-context-body p{font-size:12px;line-height:1.76}
+.source-context-body a{font-size:12px}
+@media(max-width:660px){
+  .article-hero-figure+.article-body{margin-top:16px}
+  .article-page .article-save-inline{margin:17px 0 4px;padding-top:10px}
+  details.source-context{margin:20px 0 16px;padding:0 13px}
+  details.source-context>summary{min-height:48px}
+}

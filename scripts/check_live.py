@@ -483,6 +483,24 @@ def check():
             raise RuntimeError(slug+": canonical page not linked from structured article")
         if metadata.get("dateModified")!=(item.get("modified_at") or published):
             raise RuntimeError(slug+": real modification timestamp missing or fictional")
+        # Reading flow is headline -> image -> uninterrupted prose -> tools.
+        # Source material is always present in HTML, behind a native details
+        # disclosure instead of another large pre-reading explanation.
+        for tag in ('<div class="article-body">',
+                    '<div class="article-save-inline">',
+                    '<details class="source-context" id="story-source" aria-label="着想した実際の話題">',
+                    '<summary>着想元を見る</summary>',
+                    'href="#story-source"'):
+            if tag not in page:
+                raise RuntimeError(slug+": reading-first layout missing: "+tag)
+        positions = [
+            page.index('<figure class="article-hero-figure">'),
+            page.index('<div class="article-body">'),
+            page.index('<div class="article-save-inline">'),
+            page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">'),
+        ]
+        if positions != sorted(positions) or len(set(positions)) != len(positions):
+            raise RuntimeError(slug+": image, prose, bookmark and source order regressed")
         # Only link to a real serial episode, with a clear editorial boundary.
         chosen_serial=choose_serial(item,serials)
         if chosen_serial:

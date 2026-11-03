@@ -51,6 +51,33 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertIn('type="button" data-reset-filters', html)
         self.assertIn("絞り込みを解除", html)
 
+    def test_body_precedes_save_and_sources_are_opt_in(self):
+        item = self.articles[0]
+        page = story(item, self.articles)
+        image = page.index('<figure class="article-hero-figure">')
+        body = page.index('<div class="article-body">')
+        end = page.index('class="article-endmark"')
+        save = page.index('<div class="article-save-inline">')
+        details = page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">')
+        self.assertTrue(image < body < end < save < details)
+        self.assertEqual(page.count('data-bookmark-slug="' + item["slug"] + '"'), 1)
+        self.assertEqual(page.count('<details class="source-context"'), 1)
+        self.assertIn('<summary>着想元を見る</summary>', page)
+        self.assertIn(item["source"]["url"], page)
+        self.assertIn(item["source"]["topic"], page)
+        self.assertIn("元記事が報じた事実ではありません", page)
+        self.assertIn('<strong>この記事は創作です。</strong>', page)
+
+    def test_small_category_still_has_a_relevant_archive_link(self):
+        from urllib.parse import quote
+        article = self.articles[0]
+        page = story(article, [article])
+        expected = '/archive/?category=' + quote(article["category"])
+        self.assertIn('href="' + expected + '"', page)
+        self.assertIn(article["category"] + 'の記事を読む', page)
+        self.assertNotIn('href="/category/', page,
+                         "One story is not a substantive category index")
+
     def test_next_story_is_visible_immediately_after_article_ending(self):
         item = self.articles[0]
         html = story(item, self.articles)
