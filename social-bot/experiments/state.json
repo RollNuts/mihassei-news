@@ -12,6 +12,12 @@
       "text_sha256": "370b805deaf3c9767d8206d5d9c3509fbd15fcbd62c02e0c928b3dd21a40e6f4",
       "format": "surreal_text",
       "queued_at_utc": "2026-11-03T07:44:44.248347+00:00"
+    },
+    "xexp-reaper-late": {
+      "buffer_id": "6ae995b92f050cf24296aafc",
+      "text_sha256": "6594077a893bad0eb01490cc535444b72b7c82cb2c3ce4480b08333a351eb3c8",
+      "format": "surreal_text",
+      "queued_at_utc": "2026-11-03T08:05:13.767790+00:00"
     }
   }
 }
