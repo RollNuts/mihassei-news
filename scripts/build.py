@@ -694,15 +694,16 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題を5年進めると、何が起きる？ 架空の出来事を真顔で報じます。「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
+<p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題の5年後を、真顔で報じる創作新聞です。「公開」は実際に掲載した日時、「架空」は物語内の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
-<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
-<div class="overlay"><span class="issue-code">EDITOR’S PICK / 創作</span></div></a>
+<span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
 <div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
+<div class="hero-actions"><a class="read-more" href="{article_url(a)}">続きを読む</a></div>
+<a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
+<div class="hero-actions">{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
 </section>
@@ -942,7 +943,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="future-poll-meter"><span data-poll-unlikely-bar></span></div>
 </div>
 </section>
-<div class="article-reader-metric" data-article-readers hidden>この記事を読んだ人 <strong data-article-reader-count>—</strong><small>※端末単位</small></div>
+<div class="article-reader-metric" data-article-readers hidden><span>この記事を閲覧したブラウザ <strong data-article-reader-count>—</strong>件</span><small>※匿名ブラウザの累計・実人数ではありません</small></div>
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
 <h2>この記事の着想元</h2>
@@ -993,7 +994,7 @@ def about():
 <p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
 <h2>今日も、未発生。</h2>
 <p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
-<p>「未来を見にきた人」「いいね」「未来の予想投票」は匿名のブラウザ単位の参考集計です。実際の人数とは一致しない場合があります。</p>
+<p>「観測されたブラウザ」「いいね」「未来の予想投票」は匿名のブラウザ単位の参考集計です。実際の人数とは一致しない場合があります。</p>
 <p><a href="/editorial/" style="text-decoration:underline">編集方針と記事の作り方を読む ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
