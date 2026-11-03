@@ -83,7 +83,7 @@ def check():
     recent=sorted(articles,key=lambda a:a["source"]["published_at"],reverse=True)[:10]
     home,mime=get("/")
     body=html.unescape(home.decode("utf-8"))
-    for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","edition-time-key"):
+    for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","fiction-mark"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
     # The visible counters now reset by JST date; do not require the
@@ -111,8 +111,8 @@ def check():
             raise RuntimeError("Editorial starter choices not deployed")
         if section.group(0).count('class="starter-pick-card"')!=len(starters):
             raise RuntimeError("Editorial starter card count incorrect")
-        if "人気ランキングではありません" not in section.group(0):
-            raise RuntimeError("Editorial starters must not misrepresent popularity")
+        if "SELECTION" not in section.group(0):
+            raise RuntimeError("Editorial curation label missing")
         for choice in starters:
             slug=choice["article"]["slug"]
             if ('href="/articles/'+slug+'/"' not in section.group(0) or
@@ -246,8 +246,8 @@ def check():
             raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
 
-    # This stylesheet is last in the cascade. A successful HTML deploy must
-    # not silently leave the refreshed editorial design without its actual CSS.
+    # Verify the legacy foundation and the final reader-first visual layer.
+    # A new HTML build must not silently ship without the new stylesheet.
     if 'href="/assets/editorial-polish.css"' not in body:
         raise RuntimeError("Modern editorial design stylesheet not linked in homepage")
     design, design_mime = get("/assets/editorial-polish.css")
@@ -259,13 +259,23 @@ def check():
         if selector not in design_text:
             raise RuntimeError("Modern editorial design CSS missing: "+selector)
 
+    if 'href="/assets/reader-first.css"' not in body:
+        raise RuntimeError("Reader-first CSS is not linked in the live homepage")
+    reader_css, reader_mime = get("/assets/reader-first.css")
+    if "text/css" not in reader_mime or any(
+        selector not in reader_css.decode("utf-8") for selector in (
+            ".masthead", ".hero-grid", ".article-body", "@media(max-width:660px)"
+        )
+    ):
+        raise RuntimeError("Reader-first CSS missing or malformed")
+
     # Genuine reader discovery is absent for low sample sizes and only
     # appears when confirmed browser counts arrive from the existing API.
     for token in ('data-popular-section', 'data-popular-options=', 'data-popular-list',
                   'readers-choice-title" hidden'):
         if token not in body:
             raise RuntimeError("Reader-discovery layout not deployed: "+token)
-    if '実人数・PV・週間ランキングではありません' not in body:
+    if "実測ブラウザ単位の参考集計。実人数・PVではありません。" not in body:
         raise RuntimeError("Readership ranking must explain its actual counting unit")
 
     # A failed daily schedule must not leave the homepage falsely saying
@@ -304,8 +314,9 @@ def check():
 
     if 'class="genre-explore"' not in body or 'href="/editorial/"' not in body:
         raise RuntimeError("Reader discovery or editorial link missing from live homepage")
-    if 'class="free-follow"' not in body or 'href="/feed.xml" type="application/rss+xml"' not in body:
-        raise RuntimeError("Free repeat-reader RSS discovery is missing from production")
+    if ('href="/feed.xml">' not in body or
+        '<link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">' not in body):
+        raise RuntimeError("Footer and metadata RSS links are missing from production")
     editorial, editorial_mime = get("/editorial/")
     editorial_html = html.unescape(editorial.decode("utf-8"))
     if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
