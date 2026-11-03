@@ -107,3 +107,90 @@ test('API failure preserves hidden layout without fabricated readership',async()
   assert.equal(result.rankings.length,0);
   assert.equal(result.calls.filter(x=>x.method==='GET').length,1);
 });
+
+
+test('real browser counters refresh while visible, resume on focus and preserve last good value',async()=>{
+  const timers=[],listeners={},requests=[];
+  let clock=Date.UTC(2026,10,3,2,30);
+  class FakeDate extends Date {
+    constructor(...args){super(...(args.length?args:[clock]));}
+    static now(){return clock;}
+  }
+  const note={textContent:'※ブラウザ単位の参考値'};
+  const widget={hidden:true,querySelector:selector=>selector==='small'?note:null};
+  const number={textContent:'—'};
+  const responses=[25,26,27,'offline',28];
+  const document={
+    referrer:'',visibilityState:'visible',
+    querySelector:selector=>selector==='[data-observer-widget]'?widget:
+                            selector==='[data-observer-count]'?number:null,
+    querySelectorAll:()=>[],
+    addEventListener(name,callback){listeners[name]=callback;}
+  };
+  const window={
+    setInterval(callback,delay){timers.push({callback,delay});return timers.length;},
+    addEventListener(name,callback){listeners['window:'+name]=callback;}
+  };
+  const ctx={
+    window,document,Date:FakeDate,Intl,URL,URLSearchParams,
+    location:{pathname:'/',origin:'https://veripsa.com',search:''},
+    localStorage:{getItem:()=>null,setItem(){}},
+    crypto:{randomUUID:()=>'aabbccdd-eeff-4abb-8ccc-123456789012'},
+    fetch:async(url,options={})=>{
+      if(options.method==='POST'){
+        requests.push('POST');
+        return {ok:true,json:async()=>({})};
+      }
+      requests.push('GET');
+      const current=responses.shift();
+      if(current==='offline')return {ok:false,json:async()=>({})};
+      return {ok:true,json:async()=>({
+        unit:'anonymous-browser',visitors:current,articles:{}
+      })};
+    }
+  };
+  vm.runInNewContext(source,vm.createContext(ctx),{timeout:1500});
+  const settle=()=>new Promise(resolve=>setImmediate(resolve));
+
+  await settle();
+  assert.deepEqual(requests,['POST','GET']);
+  assert.equal(number.textContent,'25');
+  assert.equal(widget.hidden,false);
+  assert.match(note.textContent,/最終確認/);
+  assert.equal(timers.length,1);
+  assert.equal(timers[0].delay,180000,'bounded free-tier polling');
+
+  clock+=180000;
+  timers[0].callback();
+  await settle();
+  assert.deepEqual(requests,['POST','GET','GET']);
+  assert.equal(number.textContent,'26');
+
+  document.visibilityState='hidden';
+  clock+=180000;
+  timers[0].callback();
+  await settle();
+  assert.equal(requests.filter(x=>x==='GET').length,2,'hidden tabs make no API requests');
+
+  document.visibilityState='visible';
+  listeners.visibilitychange();
+  await settle();
+  assert.equal(number.textContent,'27');
+  listeners['window:focus']();
+  await settle();
+  assert.equal(requests.filter(x=>x==='GET').length,3,'focus is throttled');
+
+  clock+=180000;
+  timers[0].callback();
+  await settle();
+  assert.equal(number.textContent,'27','do not show a fake zero on API failure');
+  assert.match(note.textContent,/再接続待ち/);
+
+  clock+=180000;
+  timers[0].callback();
+  await settle();
+  assert.equal(number.textContent,'28');
+  assert.match(note.textContent,/最終確認/);
+  assert.equal(requests.filter(x=>x==='POST').length,1,
+    'read-only refresh never registers additional visits');
+});
