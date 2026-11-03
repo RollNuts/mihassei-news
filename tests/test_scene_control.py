@@ -304,5 +304,19 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['last_success_at'], before)
         self.assertEqual(result['last_error']['detail'], 'offline')
 
+    def test_status_displays_resource_deferral_separately_from_persistent_stop(self):
+        result = {'automatic': 'ON', 'running': False, 'persistent_stop': False,
+                  'generated_images': 1, 'pending_articles': 2, 'held_articles': 0,
+                  'free_gib': 100, 'app_gib': 8, 'jpeg_bytes': 1024,
+                  'counts_source': 'origin/main', 'cpu': {'state': 'active'},
+                  'resource_guard': {'allowed': False, 'reason': 'Swap exceeds safety limit',
+                                     'swap_gib': 5, 'free_percent': 40}}
+        output = io.StringIO()
+        with patch.object(control, 'status', return_value=result), contextlib.redirect_stdout(output):
+            self.assertEqual(control.main(['status']), 0)
+        self.assertIn('自動運転：ON', output.getvalue())
+        self.assertIn('Mac負荷保護：生成を見送り', output.getvalue())
+        self.assertIn('スワップ5GiB', output.getvalue())
+
 
 if __name__ == '__main__': unittest.main()

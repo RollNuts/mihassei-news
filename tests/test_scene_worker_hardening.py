@@ -64,6 +64,7 @@ class WorkerShutdownTests(unittest.TestCase):
                  patch.object(worker, "storage_ok", return_value=True), \
                  patch.object(worker, "port_in_use", return_value=False), \
                  patch.object(worker, "wait_for_server"), \
+                 patch.object(worker.resources, "Guard"), \
                  patch.object(worker.control, "register_runtime"), \
                  patch.object(setup, "verify_model"), \
                  patch.object(worker.subprocess, "Popen", side_effect=[server, sync]), \

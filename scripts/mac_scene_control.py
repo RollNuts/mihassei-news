@@ -525,6 +525,7 @@ def status() -> dict:
             'persistent_stop': stopped, 'running': bool(running),
             'last_success_at': last.get('last_success_at'), 'last_error': last.get('last_error'),
             'last_run': last, 'publish': read_json(APP_DIR / 'publish-result.json'),
+            'resource_guard': read_json(APP_DIR / 'resources.json'),
             'quality_pilot_passed': quality_ready(), 'generated_images': generated,
             'pending_articles': len(articles) - generated, 'held_articles': held, 'counts_source': source, 'counts_error': counts_error, 'cpu': cpu,
             'jpeg_bytes': byte_count, 'jpeg_cap_bytes': 1536 * 1024**2,
@@ -580,6 +581,12 @@ def main(argv=None) -> int:
             print('自動運転：' + result['automatic'])
             print('現在生成中：' + ('はい' if result['running'] else 'いいえ'))
             print('停止状態を維持：' + ('はい' if result['persistent_stop'] else 'いいえ'))
+            resource = result.get('resource_guard') or {}
+            if resource:
+                print('Mac負荷保護：' + ('実行可能' if resource.get('allowed') else '生成を見送り')
+                      + ' ／ ' + str(resource.get('reason') or '正常')
+                      + ' ／ 確認 ' + display_time(resource.get('checked_at')))
+                print(f"メモリ：空き{resource.get('free_percent', '未確認')}% ／ スワップ{resource.get('swap_gib', '未確認')}GiB")
             print('最後の成功日時：' + display_time(result.get('last_success_at')))
             print('最後のエラー：' + (json.dumps(error, ensure_ascii=False) if isinstance(error, dict) else error))
             print(f"生成済み：{result['generated_images']}枚 ／ 未生成：{result['pending_articles']}記事（品質保留{result.get('held_articles', 0)}件）")
