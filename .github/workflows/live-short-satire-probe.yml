@@ -1,0 +1,84 @@
+name: One-time verify short satire pilot published
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check public revision, two short stories, unchanged original publication and first-party PNG
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html
+          import json
+          import re
+          import time
+          from urllib.request import Request,urlopen
+          from xml.etree import ElementTree as ET
+
+          SITE="https://veripsa.com"
+          ARTICLES={
+            "press-conference-metaphor-viral":(
+              "謝罪会見、原因説明だけ「ネタバレ注意」",
+              "公式が解釈を確定させるな",
+              "www.itmedia.co.jp/news/article/2611/02/2000002828/"
+            ),
+            "idol-ice-kept-in-freezer":(
+              "推しアイス、無料試食まで保存用に",
+              "無料配布の限定品",
+              "prtimes.jp/main/html/rd/p/000000097.000086324.html"
+            ),
+          }
+          def get(path):
+              req=Request(SITE+path,headers={
+                  "User-Agent":"Mihassei-SatirePilot-ReadOnly/1.0",
+                  "Cache-Control":"no-cache"
+              })
+              with urlopen(req,timeout=18) as res:
+                  if res.status!=200:raise RuntimeError("HTTP "+str(res.status)+" "+path)
+                  return res.read(3500000),res.headers.get("Content-Type","")
+          for attempt in range(1,23):
+              try:
+                  revision,_=get("/build-revision.txt?editorial-probe="+str(attempt))
+                  rev=revision.decode("utf-8").strip()
+                  if not re.fullmatch(r"[a-f0-9]{40}",rev):
+                      raise RuntimeError("Build revision metadata invalid")
+                  sitemap,typ=get("/sitemap.xml")
+                  listing=sitemap.decode("utf-8")
+                  for slug,(headline,punch,source) in ARTICLES.items():
+                      response,mime=get("/articles/"+slug+"/")
+                      markup=html.unescape(response.decode("utf-8"))
+                      if "text/html" not in mime:raise RuntimeError(slug+" MIME mismatch")
+                      for token in (
+                        headline,punch,source,
+                        "2026-11-03T08:08:49+09:00",
+                        "2026-11-03T09:15:56+09:00",
+                        'name="twitter:card" content="summary_large_image"',
+                      ):
+                          if token not in markup:
+                              raise RuntimeError(slug+" missing article element: "+token)
+                      start=markup.find('<div class="article-body">')
+                      if start<0:raise RuntimeError(slug+" article body missing")
+                      body=markup[start:].split("</div>",1)[0]
+                      if body.count("<p>")!=2 or body.count("</p>")!=2:
+                          raise RuntimeError(slug+" short satire is not two paragraphs")
+                      if SITE+"/articles/"+slug+"/" not in listing:
+                          raise RuntimeError(slug+" absent from public sitemap")
+                      hero,htype=get("/images/"+slug+".svg")
+                      if "svg" not in htype:raise RuntimeError(slug+" cover missing")
+                      ET.fromstring(hero)
+                      png,mime=get("/og/articles/"+slug+".png?v=20261103-topic2")
+                      if "image/png" not in mime or png[:8]!=bytes((137,80,78,71,13,10,26,10)):
+                          raise RuntimeError(slug+" OG PNG missing")
+                  print("PASS: both rewritten two-paragraph satires are public; original publication preserved, revised time and safe OGP valid",flush=True)
+                  print("LIVE_BUILD_REVISION",rev,flush=True)
+                  break
+              except Exception as exc:
+                  print("Attempt",attempt,"failed:",str(exc),flush=True)
+                  if attempt==22:raise
+                  time.sleep(8)
+          PY
