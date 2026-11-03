@@ -31,6 +31,7 @@ content/serials.json ────┘                │
 - 通常の表紙は[`scripts/editorial_covers.py`](../scripts/editorial_covers.py)で生成する記事別SVG。SNS共有用にはPNGを生成します。
 - 写真は`content/approved_photos.json`の承認情報、ライセンス、形式などを検証してから採用。不採用の場合は自作表紙に戻します。
 - ローカルのComfyUIによる生成は任意であり、Macが停止していても記事発行には影響しません。詳細は[`MAC_SCENE_SETUP.md`](MAC_SCENE_SETUP.md)。
+- 承認済みのJPEGをゆっくり動かした**任意の4秒MP4**は、存在するときだけ記事に表示。自動再生なし、容量制限あり。詳細は[`MOTION_CLIPS.md`](MOTION_CLIPS.md)。
 - GitHub公開ランナーでのCPU画像生成は実験的な経路です。**定時実行の有効・停止や画質検証は[`FREE_CPU_IMAGES.md`](FREE_CPU_IMAGES.md)を正本として確認**してください。設定済みというだけで画像の品質・本番反映を成功と見なしません。
 
 ## 読者向けAPIと測定
