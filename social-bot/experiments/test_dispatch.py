@@ -83,6 +83,35 @@ class ExperimentsTests(unittest.TestCase):
         self.assertIn("xexp-a",rec)
         self.assertEqual([x["id"] for x in p],["xexp-b"])
 
+    def test_character_moment_is_not_buried_after_all_surreal_posts(self):
+        first_three = [
+            {"id":f"xexp-s{i}","sequence":i,"format":"surreal_text",
+             "text":f"オリジナルのシュールなボケを検証するためのテスト文章{i}"}
+            for i in range(1,7)
+        ]
+        character = {"id":"xexp-c1","sequence":10,"format":"character_moment",
+                     "text":"キャラクターの乾いた会話で印象が変わるテスト投稿"}
+        state = {"schema_version":1,"queued":{}}
+        # The first three original posts are already booked. Fourth slot
+        # should sample a different creative format, not just list order.
+        for p in first_three[:3]:
+            state["queued"][p["id"]] = {
+                "buffer_id":p["id"],"text_sha256":hash_text(p["text"]),
+                "format":p["format"]}
+        plan,_,_=decide([*first_three,character],state,[],3,2)
+        self.assertEqual(plan[0]["id"],"xexp-c1")
+        self.assertEqual(plan[1]["id"],"xexp-s4")
+
+    def test_interleaving_does_not_modify_existing_queue(self):
+        p,c,state=sample()
+        state["queued"]["xexp-a"]={
+            "buffer_id":"original-buffer-123",
+            "text_sha256":hash_text(p["experiments"][0]["text"]),
+            "format":"surreal_text"}
+        before=copy.deepcopy(state["queued"])
+        decide(p["experiments"],state,[],3,2)
+        self.assertEqual(state["queued"],before)
+
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
         c["queued"]["xexp-a"]={"buffer_id":"past-id","text_sha256":hash_text(a["experiments"][0]["text"])}
