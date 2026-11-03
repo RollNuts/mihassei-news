@@ -209,3 +209,55 @@ test('untrusted source strings and invalid continuation events cannot write coun
   assert.equal((await get('story-a')).result.articles['story-a'].continuedReaders,0);
   db.close();
 });
+
+
+test('daily browser and article counters stay honest, reset in JST and expire old dedupe data',async()=>{
+  // The server clock (not user-supplied time) determines the JST calendar day.
+  const runtimeDate=vm.runInContext('Date',context);
+  const previousNow=runtimeDate.now;
+  let now=Date.parse('2026-11-03T14:58:00Z'); // Nov 3, 23:58 JST
+  runtimeDate.now=()=>now;
+  const {db,api,get}=fixture();
+  try{
+    const a=randomUUID(),b=randomUUID();
+    const empty=(await get('story-a')).result;
+    assert.deepEqual(JSON.parse(JSON.stringify(empty.today)),{
+      dateJst:'2026-11-03',visitors:0,articleReads:0
+    });
+
+    await api('visit',a); // Home page only
+    await api('visit',a,'story-a');
+    await api('visit',a,'story-a'); // Reload must not inflate
+    await api('visit',a,'story-b');
+    await api('visit',b,'story-a');
+    const oneDay=(await get('story-a,story-b')).result;
+    assert.equal(oneDay.today.visitors,2);
+    assert.equal(oneDay.today.articleReads,3,
+      'one browser reading two distinct stories counts as two article reads');
+    assert.equal(oneDay.articles['story-a'].todayReaders,2);
+    assert.equal(oneDay.articles['story-b'].todayReaders,1);
+    assert.equal(oneDay.visitors,2,'original cumulative remains unchanged');
+
+    now=Date.parse('2026-11-03T15:02:00Z'); // Nov 4, 00:02 JST
+    const midnight=(await get('story-a')).result;
+    assert.equal(midnight.today.dateJst,'2026-11-04');
+    assert.equal(midnight.today.visitors,0,'today resets without a visit');
+    assert.equal(midnight.today.articleReads,0);
+    assert.equal(midnight.articles['story-a'].todayReaders,0);
+    await api('visit',a,'story-a');
+    const next=(await get('story-a')).result;
+    assert.equal(next.today.visitors,1,'same browser can count again next day');
+    assert.equal(next.today.articleReads,1);
+    assert.equal(next.visitors,2,'lifetime browser dedupe is unchanged');
+
+    now=Date.parse('2026-11-20T00:00:00Z');
+    await api('visit',b,'story-b'); // Prune daily rows older than 14 days
+    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM events WHERE kind LIKE 'day:2026-11-03:%'").get().n,0);
+    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'day:2026-11-03:%'").get().n,0);
+    assert.equal((await get('story-a')).result.visitors,2,
+      'purging daily data must not erase lifetime totals');
+  }finally{
+    runtimeDate.now=previousNow;
+    db.close();
+  }
+});
