@@ -13,6 +13,7 @@ import hashlib
 import io
 import json
 import os
+import shutil
 import sys
 import time
 import urllib.parse
@@ -172,7 +173,8 @@ def request_json(base: str, path: str, data: dict | None = None) -> dict:
         return json.loads(resp.read(2_000_000))
 
 
-def create_png(base: str, article: dict, checkpoint: str, timeout: int) -> bytes:
+def create_png(base: str, article: dict, checkpoint: str, timeout: int,
+               output_dir: Path | None = None) -> bytes:
     queued = request_json(base, "/prompt", {
         "prompt": workflow(article, checkpoint),
         "client_id": "mihassei-local-scene",
@@ -197,17 +199,31 @@ def create_png(base: str, article: dict, checkpoint: str, timeout: int) -> bytes
         raise TimeoutError("Local ComfyUI did not finish within " + str(timeout) + " seconds")
     if result.get("type") != "output" or not isinstance(result.get("filename"), str):
         raise RuntimeError("Unexpected local ComfyUI image output")
+    filename = result["filename"]
+    subfolder = result.get("subfolder", "")
+    if (not isinstance(filename, str) or not filename.startswith("mihassei-staged-scene_")
+            or not filename.endswith(".png") or Path(filename).name != filename or subfolder != ""):
+        raise RuntimeError("Unexpected ComfyUI image name; refusing unsafe cleanup")
     params = urllib.parse.urlencode({
-        "filename": result["filename"], "subfolder": result.get("subfolder", ""), "type": "output",
+        "filename": filename, "subfolder": subfolder, "type": "output",
     })
     req = urllib.request.Request(base + "/view?" + params)
-    with LOCAL_OPENER.open(req, timeout=40) as response:
-        if response.geturl().split("?", 1)[0] != base + "/view":
-            raise RuntimeError("Image download redirected away from local ComfyUI")
-        payload = response.read(12 * 1024 * 1024 + 1)
-    if len(payload) > 12 * 1024 * 1024 or not payload.startswith(b"\x89PNG\r\n\x1a\n"):
-        raise ValueError("Local ComfyUI did not return a valid, bounded PNG")
-    return payload
+    try:
+        with LOCAL_OPENER.open(req, timeout=40) as response:
+            if response.geturl().split("?", 1)[0] != base + "/view":
+                raise RuntimeError("Image download redirected away from local ComfyUI")
+            payload = response.read(12 * 1024 * 1024 + 1)
+        if len(payload) > 12 * 1024 * 1024 or not payload.startswith(b"\x89PNG\r\n\x1a\n"):
+            raise ValueError("Local ComfyUI did not return a valid, bounded PNG")
+        return payload
+    finally:
+        # The dedicated Mac worker passes its own output directory. Delete only
+        # this exact SaveImage result; never other users' ComfyUI files.
+        if output_dir is not None:
+            root = output_dir.resolve()
+            candidate = root / filename
+            if candidate.parent.resolve() == root and not candidate.is_symlink() and candidate.is_file():
+                candidate.unlink()
 
 
 def png_to_jpeg(png: bytes) -> bytes:
@@ -220,11 +236,17 @@ def png_to_jpeg(png: bytes) -> bytes:
         if source.width < 640 or source.height < 360:
             raise ValueError("Generated scene is too small")
         resized = ImageOps.fit(source.convert("RGB"), (1200, 675), method=Image.Resampling.LANCZOS)
-        buffer = io.BytesIO()
-        resized.save(buffer, format="JPEG", quality=86, optimize=True)
-    data = buffer.getvalue()
-    if not MIN_JPEG_BYTES <= len(data) <= MAX_JPEG_BYTES or jpeg_dimensions(data) != (1200, 675):
-        raise ValueError("Generated image failed first-party JPEG validation")
+        # A small per-article cap keeps storage/repository growth predictable.
+        # Prioritize visual quality, then reduce JPEG quality only as needed.
+        data = b""
+        for quality in (84, 80, 76, 72, 68, 62):
+            buffer = io.BytesIO()
+            resized.save(buffer, format="JPEG", quality=quality, optimize=True)
+            data = buffer.getvalue()
+            if len(data) <= 700 * 1024:
+                break
+    if not MIN_JPEG_BYTES <= len(data) <= min(MAX_JPEG_BYTES, 700 * 1024) or jpeg_dimensions(data) != (1200, 675):
+        raise ValueError("Generated image exceeds 700 KiB or failed JPEG validation")
     return data
 
 
@@ -294,9 +316,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--limit", type=int, default=0, help="Maximum new scenes this run, 0 = all missing")
     ap.add_argument("--force", action="store_true", help="Regenerate even if a verified local scene exists")
     ap.add_argument("--timeout", type=int, default=600, help="Time limit in seconds for each scene")
+    ap.add_argument("--output-dir", default="", help="Optional dedicated ComfyUI output directory; remove only this job's PNG")
+    ap.add_argument("--min-free-gb", type=int, default=12, help="Stop generation if repo or output disk has less free space")
     args = ap.parse_args(argv)
     base = loopback_base(args.server)
-    if args.limit < 0 or not 30 <= args.timeout <= 3600:
+    if args.limit < 0 or not 30 <= args.timeout <= 3600 or not 2 <= args.min_free_gb <= 100:
         ap.error("limit must be nonnegative and timeout must be between 30 and 3600 seconds")
     articles = load_articles()
     if args.slug and not any(a.get("slug") == args.slug for a in articles):
@@ -316,10 +340,19 @@ def main(argv: list[str] | None = None) -> int:
     # Validate checkpoint before starting jobs, without fetching anything.
     workflow(work[0], args.checkpoint)
     succeeded, failed = 0, []
+    output_dir = Path(args.output_dir).expanduser() if args.output_dir else None
+    if output_dir is not None and not output_dir.is_dir():
+        ap.error("--output-dir must be an existing directory owned by the local ComfyUI worker")
     for idx, article in enumerate(work, 1):
+        minimum = args.min_free_gb * 1024**3
+        volumes = [ROOT] + ([output_dir] if output_dir is not None else [])
+        if any(shutil.disk_usage(volume).free < minimum for volume in volumes):
+            print(f"Stopped before image {idx}: less than {args.min_free_gb} GiB free.", file=sys.stderr)
+            return 1
         print(f"[{idx}/{len(work)}] Creating a staged comedy photo for {article['slug']}",flush=True)
         try:
-            image = png_to_jpeg(create_png(base, article, args.checkpoint, args.timeout))
+            image = png_to_jpeg(create_png(
+                base, article, args.checkpoint, args.timeout, output_dir=output_dir))
             destination = write_generated(article, image, args.checkpoint)
             print("  Saved validated JPEG:", destination, flush=True)
             succeeded += 1
