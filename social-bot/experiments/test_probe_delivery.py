@@ -2,9 +2,10 @@
 import hashlib
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions, queue_health
+from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions, queue_health, fetch_status_batch
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -116,9 +117,9 @@ class BufferReadOnlyTests(unittest.TestCase):
                     "text": posts[number]["text"], "status": "scheduled",
                     "assets": []}
         result = build(inventory, state, "x-1", get_post, previous=previous)
-        self.assertEqual(len(queried), 8)
+        self.assertEqual(len(queried), 20)
         self.assertEqual(len(result["items"]), 40)
-        self.assertEqual(result["limits"]["max_post_reads"], 8)
+        self.assertEqual(result["limits"]["max_post_reads"], 20)
         old = next(item for item in result["items"]
                    if item["post_id"] == "xexp-many-0")
         self.assertEqual(old["buffer_status"], "sent")
@@ -154,6 +155,80 @@ class BufferReadOnlyTests(unittest.TestCase):
         self.assertEqual(result["limits"]["metric_reads_this_run"], 1)
         self.assertEqual(sum("buffer_latest_impressions" in item
                              for item in result["items"]), 1)
+
+    def test_buffer_graphql_aliases_are_one_call_per_ten_ids(self):
+        posts = ["buf-one", "buf-two", "buf-three"]
+        payload = {"p0": {"id": posts[0]}, "p1": {"id": posts[1]},
+                   "p2": {"id": posts[2]}}
+        with patch("probe_delivery.gql", return_value=payload) as caller:
+            found = fetch_status_batch("token-from-secret", posts)
+            self.assertEqual(caller.call_count, 1)
+            query = caller.call_args.args[1]
+            self.assertIn('p0: post(input: {id: "buf-one"})', query)
+            self.assertIn('p2: post(input: {id: "buf-three"})', query)
+            self.assertEqual(found["buf-two"]["id"], "buf-two")
+        with self.assertRaisesRegex(ValueError, "alias batch"):
+            fetch_status_batch("token", posts*4)
+        with self.assertRaisesRegex(ValueError, "alias batch"):
+            fetch_status_batch("token", ["duplicate", "duplicate"])
+        with patch("probe_delivery.gql", return_value={"p0": {}}):
+            with self.assertRaisesRegex(RuntimeError, "incomplete"):
+                fetch_status_batch("token", posts)
+
+    def test_twenty_post_statuses_only_cost_two_api_calls(self):
+        posts, queued = [], {}
+        for i in range(25):
+            pid = f"xexp-bulk-{i}"
+            body = f"試験用の独立した短文です。おかしな出来事番号{i}。"
+            posts.append({"id": pid, "sequence": i+1,
+                          "format": "surreal_text", "text": body})
+            queued[pid] = {"buffer_id": f"b{i}",
+                           "text_sha256": hashlib.sha256(body.encode()).hexdigest(),
+                           "queued_at_utc": f"2026-11-03T{(i%24):02d}:00:00Z"}
+        inv = {"schema_version": 1, "experiments": posts}
+        state = {"schema_version": 1, "queued": queued}
+        requests = []
+        def batch_fetch(ids):
+            requests.append(ids)
+            return {postid: {
+                "id": postid, "channelId": "x-1",
+                "text": posts[int(postid[1:])]["text"], "status": "scheduled",
+                "assets": []} for postid in ids}
+        def must_not_call(_):
+            self.fail("Batch fallback must not issue per-post queries")
+        outcome = build(inv, state, "x-1", must_not_call,
+                        fetch_batch=batch_fetch)
+        self.assertEqual([len(ids) for ids in requests], [10, 10])
+        self.assertEqual(outcome["limits"]["post_reads_this_run"], 20)
+        self.assertEqual(outcome["limits"]["status_api_requests_this_run"], 2)
+        self.assertEqual(len(outcome["items"]), 25)
+        self.assertEqual(sum(row["buffer_status"]=="scheduled"
+                             for row in outcome["items"]), 20)
+
+    def test_failed_alias_batch_never_reposts_or_spams_fallback(self):
+        inventory = {"schema_version": 1, "experiments": [self.post]}
+        state = {"schema_version": 1, "queued": {
+            self.post["id"]: {
+                "buffer_id": "buf-1",
+                "text_sha256": hashlib.sha256(self.post["text"].encode()).hexdigest()
+            }
+        }}
+        previous = {"items": [{
+            "post_id": self.post["id"], "buffer_id": "buf-1",
+            "format": "surreal_text", "buffer_status": "sent",
+            "buffer_external_link": "https://x.com/Veripsa/status/123"
+        }]}
+        def broken(_):
+            raise RuntimeError("GraphQL provider temporarily unavailable")
+        def must_not_call(_):
+            self.fail("A failing batch must not retry all posts")
+        result = build(inventory, state, "x-1", must_not_call,
+                       previous=previous, fetch_batch=broken)
+        row = result["items"][0]
+        self.assertEqual(row["buffer_status"], "unverified")
+        self.assertEqual(row["previous_buffer_external_link"],
+                         "https://x.com/Veripsa/status/123")
+        self.assertEqual(result["limits"]["status_api_requests_this_run"], 1)
 
     def test_capacity_report_is_based_on_original_inventory_only(self):
         inventory={"experiments":[

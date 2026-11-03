@@ -33,7 +33,7 @@ jobs:
           python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
           python -m py_compile social-bot/experiments/probe_delivery.py
 
-      - name: Check saved Buffer posts and image inventory (read-only, bounded)
+      - name: Audit up to 20 Buffer posts in two aliased GraphQL requests (read-only)
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}

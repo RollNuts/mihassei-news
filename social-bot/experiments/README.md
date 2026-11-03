@@ -114,6 +114,12 @@ One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23
 - Added 10 new, unsubmitted original posts (three fresh Pillow scene-only illustrations, two small Nejimachi moments, five unrelated short/satirical jokes). Existing Buffer-registered texts, image hashes and the unapproved-comic gate are immutable.
 - The new scenes are deterministic 1200x675 PNGs with a 1MB cap. The existing main workflow generates and hosts them before Buffer can queue them; no image model API, credit, GPU or paid storage is needed.
 - Keep **exactly one** daily read-only delivery audit: `x-delivery-audit.yml` at **23:45 JST**. The older status-only `x-delivery-state.yml` has **no daily schedule or main-push trigger** to avoid writing the same delivery.json twice.
-- Daily audit is bounded to **eight** individual Buffer status reads and **one** mature provider metric read. Earlier IDs, permalinks and observation timestamps stay cached rather than rescanned. A provider read error may preserve an earlier link as a *historical* link without asserting a current sent state.
+- Daily audit fetches up to **20 post statuses in two 10-item GraphQL alias requests** and **one** mature provider metric snapshot. Buffer explicitly documents this batching method for reducing API usage. Earlier IDs, permalinks and observation timestamps stay cached rather than rescanned. A provider read error may preserve an earlier link as a *historical* link without asserting a current sent state.
 - `delivery.json.health` now distinguishes all original scripts, ever-queued scripts, unused originals, unused image scenes, last-known provider sent and links, and warnings below **14 unused scripts or 2 unused images**. These are not verified impressions or reach. The weekly report independently includes unused image inventory.
 - Increase creativity and quality with a separate daily restock, but never duplicate near-identical jokes or spam seven posts to game X. Keep Buffer Free (ten queued slots/channel), pinned X account, no paid APIs, and no unapproved canonical manga.
+
+### 2026-11-03：無料API呼び出しのさらなる節約
+
+- Buffer公式のGraphQL `post(input:{id})` エイリアスを使い、10投稿を1リクエストで照会。1日最大20投稿を**2リクエスト**で配信監査する。これまでの個別8照会よりAPIコストを下げつつ、7投稿/日の遷移を追いやすくする。
+- レスポンスに欠損・不一致やAPIエラーがある場合は `unverified` として記録し、各件再照会への自動フォールバックはしない。既存Buffer投稿や予約・画像・漫画承認ゲートに変更はない。
+- 以前のBuffer送信URLは歴史的な参考値として保持するが、現在のXインプレッションや公開確認と取り違えない。追加費用0円。
