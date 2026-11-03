@@ -67,7 +67,8 @@ class SerialReadingProgressTests(unittest.TestCase):
                 self.assertIn("投資助言", rendered)
                 self.assertNotIn('data-mystery-notebook', rendered)
             else:
-                self.assertIn('data-mystery-notebook', rendered)
+                self.assertNotIn('data-mystery-notebook', rendered)
+                self.assertIn('読了後に伏線を振り返る', rendered)
 
     def test_series_page_links_first_and_latest_independently(self):
         for series in SERIALS:

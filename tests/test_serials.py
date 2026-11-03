@@ -134,8 +134,9 @@ class SerialTests(unittest.TestCase):
         s = next(x for x in self.data if x["kind"] == "fiction")
         e = s["episodes"][0]
         page = (ROOT / "dist/serials" / s["slug"] / e["slug"] / "index.html").read_text(encoding="utf-8")
-        self.assertIn("読者への手掛かり", page)
-        self.assertIn("あなたへの問い", page)
+        self.assertIn("読了後に伏線を振り返る", page)
+        self.assertIn('<details class="serial-clues">', page)
+        self.assertIn("考えるヒント", page)
         for clue in e["clues"]:
             self.assertIn(clue, page)
         self.assertIn("すべて創作", page)
