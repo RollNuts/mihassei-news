@@ -20,6 +20,7 @@ if __package__:
     from .editorial_covers import render_cover, render_story_visual, story_subject
     from .media_policy import usable_cached_photo
     from .generated_photos import usable_generated_scene, generated_url
+    from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR, DURATION_SECONDS
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
     from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -31,6 +32,7 @@ else:
     from editorial_covers import render_cover, render_story_visual, story_subject
     from media_policy import usable_cached_photo
     from generated_photos import usable_generated_scene, generated_url
+    from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR, DURATION_SECONDS
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
     from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -364,6 +366,24 @@ def image_tag(a, cls, extra=""):
             f' width="1200" height="675" {extra}{fallback}>')
 
 
+def article_hero_media(a):
+    """Preserve the original picture as poster and fallback; never autoplay."""
+    picture = image_tag(a, "article-visual",
+                        extra='loading="eager" fetchpriority="high" decoding="async"')
+    clip = usable_clip(a, root=BASE)
+    if clip is None:
+        return picture
+    return (
+        '<video class="article-visual article-video" controls playsinline muted loop'
+        ' preload="none"'
+        f' poster="{escape(editorial_image(a))}"'
+        ' width="1200" height="675"'
+        f' aria-label="{escape("創作ニュース「" + a["title"] + "」の写真をゆっくり動かした4秒の無音演出映像")}">'
+        f'<source src="{escape(clip_url(a))}" type="video/mp4">'
+        + picture + '</video>'
+    )
+
+
 def photo_credit(a):
     """Always disclose AI staging; never mislabel a synthetic scene as real."""
     if usable_generated_scene(a, root=BASE):
@@ -384,9 +404,11 @@ def card(a, archive=False):
         searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
+    clip_label = ('<span class="story-clip-label">▶ 4秒映像</span>'
+                  if usable_clip(a, root=BASE) else '')
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if usable_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
-        + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + '</a>'
+        + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
@@ -534,6 +556,22 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "articleSection":article["category"]
         })
     schemas = [metadata]
+    # Video is an optional, first-party photo-motion extra, not fabricated
+    # footage. Only publish structured video data for a verified local MP4.
+    clip = usable_clip(article, root=BASE) if kind == "story" and article else None
+    if clip:
+        schemas.append({
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": article["title"] + "｜4秒の演出映像",
+            "description": "記事の承認済み画像にゆっくり動きをつけた無音の創作映像。実際の報道映像ではありません。",
+            "thumbnailUrl": og_image,
+            "contentUrl": SITE + clip_url(article),
+            "uploadDate": clip["created_at"],
+            "duration": "PT4S",
+            "width": 640,
+            "height": 360,
+        })
     if path == "/serials/":
         schemas.append({
             "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -1047,8 +1085,8 @@ def story(a, articles, issues=None, serials=None):
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
-{image_tag(a, "article-visual", extra='loading="eager" fetchpriority="high" decoding="async"')}
-<figcaption>{photo_credit(a)}</figcaption></figure>
+{article_hero_media(a)}
+<figcaption>{photo_credit(a)}{" 写真に動きをつけた4秒の無音演出映像。実際の事件の映像ではありません。" if usable_clip(a, root=BASE) else ""}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <nav class="reader-next" aria-label="続けて読む記事">
@@ -1551,6 +1589,13 @@ def build():
             destination = OUT / generated_url(item).lstrip("/")
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(BASE / "assets" / "generated" / (item["slug"] + ".jpg"), destination)
+    # Only validated, fingerprint-matched optional MP4s are ever published.
+    # Stale/over-budget files in the source tree do not reach the live site.
+    for item in articles:
+        if usable_clip(item, root=BASE):
+            target = OUT / clip_url(item).lstrip("/")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(BASE / CLIP_DIR / (item["slug"] + ".mp4"), target)
     write("build-revision.txt", build_revision() + "\n")
     write("index.html",home(articles,serials))
     write("about/index.html",about())
