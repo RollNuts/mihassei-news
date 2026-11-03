@@ -22,6 +22,12 @@ from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 
 FORMATS = {"surreal_text", "character_moment"}
 MAX_CHARS = 180
+MECHANISMS = {
+    "inverted_expectation", "self_reference", "literal_wordplay",
+    "physical_scale", "meta_commentary", "visual_reveal",
+    "dry_dialogue", "small_action", "delayed_response",
+    "perspective_flip", "role_reversal", "unexpected_kindness"
+}
 # Small relevant tags, explicitly assigned to some posts. No trend scraping.
 ALLOWED_TAGS = {"surreal_text": "#シュールネタ",
                 "character_moment": "#ネジまち"}
@@ -84,6 +90,11 @@ def validate(posts, config, state):
             raise ValueError(f"Hashtag exceeds maximum post length: {pid}")
         if type(order) is not int or order < 1:
             raise ValueError("Sequence must be a positive integer")
+        mechanism = post.get("mechanism")
+        if mechanism is not None and mechanism not in MECHANISMS:
+            raise ValueError("Unsupported comedy mechanism: " + str(mechanism))
+        if "featured" in post and type(post["featured"]) is not bool:
+            raise ValueError("Featured must be a boolean")
         if pid in ids or text in texts or order in orders:
             raise ValueError("Duplicated ID, content, or sequence")
         ids.add(pid); texts.add(text); orders.add(order)
@@ -122,20 +133,42 @@ def decide(posts, state, existing, max_queue, max_new):
                 "hashtag_variant": hashtag_variant(post),
                 "hashtag": post.get("hashtag"),
                 "format": post["format"],
+                "mechanism": post.get("mechanism"),
                 "recovered_from_buffer": True
             }
             recovered.append(post["id"])
-    # Early format comparison: try a character moment in every fourth slot,
-    # rather than burying all character stories at the end of the inventory.
-    # Counts include already submitted original experiments; never reorder those.
+    # The schedule stays at one per day. Interleave distinct creative
+    # mechanisms instead of queuing several almost identical work/office jokes.
+    # One in five slots can introduce a newly curated 'featured' story from
+    # deeper in the backlog. Previously submitted Buffer posts are untouched.
     to_queue = []
     remaining = [p for p in posts if p["id"] not in state["queued"]]
+    post_by_id = {p["id"]: p for p in posts}
+    previous_mechanisms = [
+        post_by_id[pid].get("mechanism")
+        for pid in state["queued"]
+        if pid in post_by_id and post_by_id[pid].get("mechanism")
+    ]
     while remaining and scheduled+len(to_queue)<max_queue and len(to_queue)<max_new:
         next_slot = len(state["queued"]) + len(to_queue) + 1
         preferred = "character_moment" if next_slot % 4 == 0 else "surreal_text"
-        chosen = next((p for p in remaining if p["format"] == preferred), remaining[0])
+        options = [p for p in remaining if p["format"] == preferred] or remaining
+        if next_slot % 5 == 0:
+            spotlight = [p for p in options if p.get("featured") is True]
+            if spotlight:
+                options = spotlight
+        if previous_mechanisms:
+            recent = previous_mechanisms[-2:]
+            alternatives = [
+                p for p in options if p.get("mechanism") not in recent
+            ]
+            if alternatives:
+                options = alternatives
+        chosen = options[0]
         to_queue.append(chosen)
         remaining.remove(chosen)
+        if chosen.get("mechanism"):
+            previous_mechanisms.append(chosen["mechanism"])
     return to_queue, recovered, scheduled
 
 
@@ -176,6 +209,7 @@ def main():
             "hashtag_variant": hashtag_variant(post),
             "hashtag": post.get("hashtag"),
             "format": post["format"],
+            "mechanism": post.get("mechanism"),
             "queued_at_utc": datetime.now(timezone.utc).isoformat(),
         }
         save_state(state)
