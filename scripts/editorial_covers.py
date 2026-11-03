@@ -177,8 +177,23 @@ ICONS = {
 
 
 def story_subject(article: dict) -> str:
-    # Prioritize strong concrete noun matches; title over generic template art.
+    """Keep a story's main visual stable when a headline is sharpened.
+
+    Use concrete nouns in the headline first, then the article summary/body;
+    broad "fan" labels cannot outrank an actual freezer or weather story.
+    """
     title = str(article.get("title", ""))
+    paragraphs = article.get("paragraphs") or []
+    if not isinstance(paragraphs, list):
+        paragraphs = []
+    context = " ".join([title, str(article.get("summary", "")),
+                        *[str(p) for p in paragraphs[:2]]])
+    for subject, keywords in SUBJECT_KEYWORDS:
+        if subject != "fandom" and any(word in title for word in keywords):
+            return subject
+    for subject, keywords in SUBJECT_KEYWORDS:
+        if subject != "fandom" and any(word in context for word in keywords):
+            return subject
     for subject, keywords in SUBJECT_KEYWORDS:
         if any(word in title for word in keywords):
             return subject
