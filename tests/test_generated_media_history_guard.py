@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from scripts.guard_generated_media_history import (
-    incompatible_rewrites, verify_new_images, images,
+    incompatible_rewrites, verify_new_images, images, exact_historical_restorations,
 )
 from scripts.generated_photos import article_fingerprint
 from scripts.local_scene_photos import stable_seed, write_generated
@@ -84,6 +84,25 @@ class MediaHistoryGuardTests(unittest.TestCase):
                              article_fingerprint(ARTICLE))
             self.assertEqual(new["images"][ARTICLE["slug"]]["seed"],
                              stable_seed(ARTICLE))
+
+    def test_one_time_restoration_must_match_exact_trusted_record(self):
+        trusted = document(seed=9007199254740999)
+        corrupted = copy.deepcopy(trusted)
+        corrupted["images"]["hypothetical-satire"]["seed"] = 9007199254741000
+        corrupted["images"]["hypothetical-satire"]["article_sha256"] = "c" * 64
+        self.assertEqual(
+            exact_historical_restorations(corrupted, trusted, trusted),
+            {"hypothetical-satire"})
+        not_trusted = copy.deepcopy(trusted)
+        not_trusted["images"]["hypothetical-satire"]["article_sha256"] = "d" * 64
+        self.assertEqual(
+            exact_historical_restorations(corrupted, not_trusted, trusted),
+            set())
+        modified_sha = copy.deepcopy(trusted)
+        modified_sha["images"]["hypothetical-satire"]["sha256"] = "f" * 64
+        self.assertEqual(
+            exact_historical_restorations(corrupted, modified_sha, trusted),
+            set())
 
     def test_invalid_manifest_fails_closed(self):
         with self.assertRaises(ValueError):
