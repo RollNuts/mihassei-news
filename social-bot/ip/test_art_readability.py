@@ -21,7 +21,10 @@ class MangaVisualTests(unittest.TestCase):
         result=draw_manga(self.post(panels))
         self.assertEqual(result.size,(1080,1350))
         self.assertEqual(result.mode,"RGB")
-        self.assertNotEqual(result.getpixel((200,250)),result.getpixel((200,310)))
+        # Panel 1 has a cream dialogue strip; silent panel 2 has no strip.
+        cream=(255,248,235)
+        self.assertEqual(result.getpixel((60,505)),cream)
+        self.assertNotEqual(result.getpixel((60,864)),cream)
 
     def test_bad_shot_fails(self):
         panels=[{"scene":"lamp","focus":"pito","mood":"plain","line":"「だめです」","shot":"overpaint"},
