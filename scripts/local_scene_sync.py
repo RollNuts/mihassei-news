@@ -90,7 +90,7 @@ def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing
         replaced = target_image.stat().st_size if target_image.is_file() else 0
         check_storage([target if target.exists() else target.parent], min_free_gb)
         require_image_budget(len(data) - replaced)
-        write_generated(article, data, record["model"], root=target)
+        write_generated(article, data, record["model"], root=target, origin=record["origin"])
         copied.append(slug)
     return copied
 

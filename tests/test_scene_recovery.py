@@ -113,6 +113,16 @@ class SceneStorageTests(unittest.TestCase):
 
 
 class SceneGitIntegrationTests(unittest.TestCase):
+    def test_cpu_photo_transfer_preserves_verified_origin_and_model(self):
+        model = "SimianLuo/LCM_Dreamshaper_v7"
+        photos.write_generated(article(), jpeg(), model, root=self.repo, origin="github-cpu-lcm")
+        self.outbox.mkdir(parents=True)
+        self.assertEqual(sync.transfer_scenes(self.repo, self.outbox, [article()], missing_only=True),
+                         [article()["slug"]])
+        self.assertTrue(generated.usable_generated_scene(article(), root=self.outbox))
+        record = generated.generated_manifest(self.outbox)[article()["slug"]]
+        self.assertEqual((record["origin"], record["model"]), ("github-cpu-lcm", model))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.base = Path(self.temp.name)
