@@ -30,12 +30,12 @@ class EditorialPositioningTests(unittest.TestCase):
 
     def test_home_shows_the_reality_to_what_if_to_joke_sequence(self):
         page = home(load())
-        self.assertIn('class="concept-primer"', page)
+        self.assertIn('class="edition-time-key concept-primer"', page)
         self.assertIn("もし、この調子で5年たったら？", page)
         self.assertIn("現実の話題</span>", page)
         self.assertIn("5年後の「もしも」</span>", page)
         self.assertIn("真顔の冗談</span>", page)
-        self.assertTrue(page.index('class="concept-primer"') < page.index('<section class="hero-grid">'))
+        self.assertTrue(page.index('class="edition-time-key concept-primer"') < page.index('<section class="hero-grid">'))
 
     def test_article_marks_fiction_and_preserves_the_real_source(self):
         from scripts.build import story
