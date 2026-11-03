@@ -83,6 +83,27 @@ def latest_articles(articles: list[dict], limit: int | None = 10) -> list[dict]:
     return ordered if limit is None else ordered[:limit]
 
 
+
+def require_matching_public_headline(article: dict, markup: str, surface: str) -> None:
+    """Detect stale HTML where the visible headline disagrees with the published source.
+
+    Check the visible heading with its article URL, not a title appearing in
+    metadata, a related-story rail, or a JSON payload. No additional GETs.
+    """
+    slug, title = article["slug"], article["title"]
+    url = "/articles/" + slug + "/"
+    if surface == "home":
+        expected = f'<h1><a href="{url}">{title}</a></h1>'
+    elif surface == "archive":
+        expected = f'<h3><a href="{url}">{title}</a></h3>'
+    elif surface == "article":
+        expected = f'<h1>{title}</h1>'
+    else:
+        raise ValueError("Unknown headline surface: " + surface)
+    if expected not in html.unescape(markup):
+        raise RuntimeError(slug + ": " + surface + " headline mismatch (stale or mixed revision)")
+
+
 def check():
     # Verify the exact public deployment, not merely an older set of 200 pages.
     expected=subprocess.run(
@@ -118,8 +139,7 @@ def check():
     chosen_lead = editorial_lead(sorted_articles)
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")
-    if ('<h1><a href="/articles/'+chosen_lead["slug"]+'/"' not in body):
-        raise RuntimeError("Published front-page lead differs from newest real article")
+    require_matching_public_headline(chosen_lead, body, "home")
     starters=homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)
     if starters:
         section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
@@ -369,6 +389,7 @@ def check():
     for article in articles:
         if 'href="/articles/'+article["slug"]+'/"' not in archive_html:
             raise RuntimeError("Live archive missing article link: "+article["slug"])
+        require_matching_public_headline(article, archive_html, "archive")
     site_js, _ = get("/assets/site.js")
     if b"PAGE_SIZE = 18" not in site_js or b"visibleLimit" not in site_js:
         raise RuntimeError("Live archive pagination script has not deployed")
@@ -470,6 +491,7 @@ def check():
         slug=item["slug"]
         data,mime=get("/articles/"+slug+"/")
         page=html.unescape(data.decode("utf-8"))
+        require_matching_public_headline(item, page, "article")
         for needle in (item["title"],item["summary"],*item["paragraphs"],
                        item["source"]["url"],"創作ニュース",f'data-like-count="{slug}"'):
             if needle not in page:
