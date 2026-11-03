@@ -51,7 +51,7 @@ def permitted_ci() -> bool:
         os.getenv("GITHUB_REF") == "refs/heads/main",
         os.getenv("RUNNER_OS") == "Linux",
         os.getenv("VERIPSA_ENABLE_FREE_CPU") == "1",
-        os.getenv("GITHUB_EVENT_NAME") in ("schedule", "workflow_dispatch"),
+        os.getenv("GITHUB_EVENT_NAME") in ("schedule", "workflow_dispatch", "push"),
     ))
 
 
