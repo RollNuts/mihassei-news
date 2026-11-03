@@ -62,6 +62,23 @@
       "lasting_effect": "ネジとモクはここで初めて読者の前で会話した。2人が旧知かどうかはまだ未設定。親切の受付規則は残っている。",
       "threads_opened": [],
       "threads_closed": []
+    },
+    {
+      "episode": 4,
+      "post_id": "nejimachi-004-highfive",
+      "chapter": 1,
+      "day": "D1",
+      "order": 4,
+      "location": "workshop",
+      "characters": [
+        "neji",
+        "moku"
+      ],
+      "established": [],
+      "event": "ネジとモクは共同整備台で小型機械の修理を終えた。ハイタッチをしようとしたがモクの手袋が大きく、ネジがすっぽり隠れた。",
+      "lasting_effect": "ネジとモクは互いの大きさの違いに気づき、次は指先で喜びを分かち合うことを話した。けがや破損はしていない。",
+      "threads_opened": [],
+      "threads_closed": []
     }
   ]
 }
