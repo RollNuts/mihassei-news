@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from dispatch import decide, hash_text, main, validate, HERE
+from dispatch import decide, hash_text, main, validate, HERE, publication_text, hashtag_variant
 
 def sample():
     p={"schema_version":1,"experiments":[
@@ -111,6 +111,56 @@ class ExperimentsTests(unittest.TestCase):
         before=copy.deepcopy(state["queued"])
         decide(p["experiments"],state,[],3,2)
         self.assertEqual(state["queued"],before)
+
+    def test_one_hashtag_on_some_new_posts_and_untagged_control(self):
+        posts=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["experiments"]
+        by_id={p["id"]:p for p in posts}
+        self.assertEqual(publication_text(by_id["xexp-ghost-interview"]),
+                         by_id["xexp-ghost-interview"]["text"])
+        self.assertEqual(publication_text(by_id["xexp-ufo-ticket"]),
+                         by_id["xexp-ufo-ticket"]["text"]+"\n\n#シュールネタ")
+        self.assertTrue(publication_text(by_id["xexp-nejimachi-nothing-wrong"]).endswith("#ネジまち"))
+        self.assertNotIn("#",publication_text(by_id["xexp-robot-job"]))
+        self.assertLessEqual(max(len(publication_text(p)) for p in posts),180)
+
+    def test_irrelevant_or_multiple_hashtags_are_rejected(self):
+        p={"id":"xexp-test","sequence":4,"format":"surreal_text",
+           "text":"変わった幽霊が現れる不思議な文章",
+           "hashtag":"#バズりたい #拡散希望"}
+        with self.assertRaisesRegex(ValueError,"Only one relevant"):
+            publication_text(p)
+        p["hashtag"]="#ネジまち"
+        with self.assertRaisesRegex(ValueError,"Only one relevant"):
+            publication_text(p)
+        p["hashtag"]="#シュールネタ"
+        p["text"]="追加の #幽霊 を混ぜた変わった文章"
+        with self.assertRaisesRegex(ValueError,"Additional hashtags"):
+            publication_text(p)
+
+    def test_tagged_buffer_recovery_uses_final_text(self):
+        p={"id":"xexp-test","sequence":4,"format":"surreal_text",
+           "text":"宇宙人の窓口はいつも閉まっていたらしい",
+           "hashtag":"#シュールネタ"}
+        final=publication_text(p)
+        state={"schema_version":1,"queued":{}}
+        plan,recovered,queued=decide([p],state,[{"id":"live-123","text":final,"status":"scheduled"}],3,2)
+        self.assertEqual(plan,[])
+        self.assertEqual(recovered,["xexp-test"])
+        self.assertEqual(state["queued"]["xexp-test"]["published_text_sha256"],hash_text(final))
+        self.assertEqual(state["queued"]["xexp-test"]["hashtag_variant"],"one_relevant_tag")
+
+    def test_tag_change_after_queue_is_rejected_without_touching_api(self):
+        p,c,state=sample()
+        p["experiments"][0]["hashtag"]="#シュールネタ"
+        final=publication_text(p["experiments"][0])
+        state["queued"]["xexp-a"]={
+            "buffer_id":"already-booked",
+            "text_sha256":hash_text(p["experiments"][0]["text"]),
+            "published_text_sha256":hash_text(final)}
+        validate(p,c,state)
+        del p["experiments"][0]["hashtag"]
+        with self.assertRaisesRegex(ValueError,"Previously queued hashtag"):
+            validate(p,c,state)
 
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
