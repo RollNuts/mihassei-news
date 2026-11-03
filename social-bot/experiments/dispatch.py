@@ -71,10 +71,18 @@ def validate(posts, config, state):
         raise ValueError("Pinned Buffer X channel is required")
     if type(config.get("launch_first_visual_now", False)) is not bool:
         raise ValueError("Immediate original-visual launch must be a boolean")
-    for name in ("max_queue_size", "max_new_per_run"):
-        val = config.get(name)
-        if type(val) is not int or val < 1 or val > 3:
-            raise ValueError(f"{name} must be between 1 and 3 (free, no flooding)")
+    queue_cap = config.get("max_queue_size")
+    new_cap = config.get("max_new_per_run")
+    # Buffer Free permits ten *queued* items, not ten items per day.
+    # One reserved queue slot remains available for article promotions.
+    if type(queue_cap) is not int or not 1 <= queue_cap <= 9:
+        raise ValueError("max_queue_size must be between 1 and 9")
+    if type(new_cap) is not int or not 1 <= new_cap <= 7 or new_cap > queue_cap:
+        raise ValueError("max_new_per_run must be between 1 and 7 and <= queue size")
+    if "expected_daily_slots" in config and (
+            type(config["expected_daily_slots"]) is not int or
+            config["expected_daily_slots"] != 7):
+        raise ValueError("Expected owner-configured daily Buffer slots must equal seven")
     ids, texts, orders = set(), set(), set()
     for post in posts["experiments"]:
         if not isinstance(post, dict):
@@ -157,10 +165,9 @@ def decide(posts, state, existing, max_queue, max_new):
                 "recovered_from_buffer": True
             }
             recovered.append(post["id"])
-    # The schedule stays at one per day. Interleave distinct creative
-    # mechanisms instead of queuing several almost identical work/office jokes.
-    # One in five slots can introduce a newly curated 'featured' story from
-    # deeper in the backlog. Previously submitted Buffer posts are untouched.
+    # Buffer owns the seven daily publish times. Interleave distinct creative
+    # mechanisms instead of repeating the same type of joke.
+    # Preserve all previously submitted Buffer posts unchanged.
     to_queue = []
     remaining = [p for p in posts if p["id"] not in state["queued"]]
     post_by_id = {p["id"]: p for p in posts}
