@@ -891,3 +891,77 @@ body{
   .story-meta--compact{row-gap:5px;column-gap:8px}
   .story-meta--compact .real-published-at{font-size:10.5px}
 }
+
+
+/* Mobile editorial list: one compact preview per story.
+   Keep the photo and real headline clickable; actions stay on article pages. */
+@media(max-width:660px){
+  .story-grid > .story-card,
+  .archive-list > .story-card{
+    display:grid;
+    grid-template-columns:minmax(94px,32%) minmax(0,1fr);
+    grid-template-areas:"image meta" "image headline" "image summary";
+    align-content:start;
+    align-items:start;
+    column-gap:13px;
+    row-gap:3px;
+    padding:12px;
+    min-width:0;
+  }
+  .story-grid > .story-card > .story-image-link,
+  .archive-list > .story-card > .story-image-link{
+    grid-area:image;
+    margin:0;
+    align-self:start;
+    min-width:0;
+  }
+  .story-grid > .story-card .story-thumb,
+  .archive-list > .story-card .story-thumb{
+    width:100%;
+    height:auto;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    object-position:center;
+    border-radius:7px;
+  }
+  .story-grid > .story-card > .story-meta,
+  .archive-list > .story-card > .story-meta{
+    grid-area:meta;
+    margin:0;
+    min-width:0;
+    gap:4px 7px;
+  }
+  .story-grid > .story-card > h3,
+  .archive-list > .story-card > h3{
+    grid-area:headline;
+    min-width:0;
+    font-size:clamp(17px,4.35vw,20px);
+    line-height:1.44;
+    margin:4px 0;
+    overflow-wrap:anywhere;
+  }
+  .story-grid > .story-card > p,
+  .archive-list > .story-card > p{
+    grid-area:summary;
+    min-width:0;
+    margin:0;
+    font-size:12px;
+    line-height:1.55;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    overflow:hidden;
+  }
+}
+@media(max-width:360px){
+  .story-grid > .story-card,
+  .archive-list > .story-card{
+    grid-template-columns:minmax(80px,30%) minmax(0,1fr);
+    column-gap:10px;
+    padding:10px;
+  }
+  .story-grid > .story-card > h3,
+  .archive-list > .story-card > h3{font-size:16px}
+  .story-grid > .story-card > p,
+  .archive-list > .story-card > p{-webkit-line-clamp:1}
+}
