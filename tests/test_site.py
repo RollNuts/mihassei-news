@@ -93,16 +93,42 @@ class SiteTests(unittest.TestCase):
         genres=home.index('<section class="genre-explore"')
         serials=home.index('<section class="serials-feature"')
         starter=home.index('<section class="starter-editorial"')
-        extras=home.index('<details class="extras-shelf">')
+        timeline=home.index('<section class="press-timeline"')
         random=home.index('<section class="special-edition"')
+        extras=home.index('<details class="extras-shelf">')
         discussions=home.index('<section class="reader-discussions"')
-        self.assertTrue(hero < latest < genres < serials < starter < extras < random < discussions)
+        self.assertTrue(hero < latest < timeline < random < genres < serials < starter < extras < discussions)
         self.assertIn("<h2>新着記事</h2>",home)
         self.assertNotIn('<aside class="banner">',home)
         self.assertNotIn("この新聞の読み方",home)
         self.assertIn('data-issue-picker',home)
         self.assertIn('data-comment-discussions',home)
         self.assertIn('class="story-grid"',home)
+
+    def test_activity_rail_shows_real_publication_history_without_repeats(self):
+        """The interactive discovery rail must not duplicate the main story grid."""
+        import re
+        from scripts.build import load, publication_date
+        home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
+        styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        rail=home.split('<section class="press-timeline"',1)[1].split('</section>',1)[0]
+        links=re.findall(r'<li><a href="/articles/([^/]+)/">',rail)
+        published=load()
+        self.assertEqual(len(links),min(3,max(0,len(published)-11)))
+        self.assertEqual(len(links),len(set(links)))
+        hero=re.search(r'<h1><a href="/articles/([^/]+)/">',home).group(1)
+        above=home.split('<section class="hero-grid">',1)[1].split(
+            '<section class="press-timeline"',1)[0]
+        earlier=set(re.findall(r'href="/articles/([^/]+)/"',above))
+        self.assertNotIn(hero,links)
+        self.assertTrue(earlier.isdisjoint(links))
+        for slug in links:
+            article=next(a for a in published if a["slug"]==slug)
+            self.assertIn('datetime="'+publication_date(article)+'"',rail)
+        self.assertIn('scroll-snap-type:x proximity',styles)
+        self.assertIn('.index-main>.special-edition',styles)
+        self.assertEqual(home.count('data-issue-picker data-issue-options='),1)
+        self.assertNotIn('<div class="news-wire"',home)
 
     def test_homepage_does_not_repeat_lead_or_sidebar_news(self):
         """News grid fills with different headlines rather than showing the same story twice."""
@@ -174,7 +200,7 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("発行号・号外・コメント",home)
+        self.assertIn("発行号・コメント",home)
         self.assertIn('.extras-shelf>summary:focus-visible',css)
         self.assertTrue(home.index('<section class="genre-explore"') <
                         home.index('<details class="extras-shelf">'))
