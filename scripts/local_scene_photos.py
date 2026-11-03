@@ -23,14 +23,14 @@ from pathlib import Path
 
 try:
     from .generated_photos import (
-        RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT,
+        RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene,
     )
     from .media_policy import MIN_JPEG_BYTES, MAX_JPEG_BYTES, jpeg_dimensions
     from .editorial_covers import story_subject
 except ImportError:
     from generated_photos import (
-        RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT,
+        RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene,
     )
     from media_policy import MIN_JPEG_BYTES, MAX_JPEG_BYTES, jpeg_dimensions
@@ -148,6 +148,15 @@ def loopback_base(url: str) -> str:
     return url.rstrip("/")
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Do not forward local image-generation requests to external URLs."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+LOCAL_OPENER = urllib.request.build_opener(NoRedirect)
+
+
 def request_json(base: str, path: str, data: dict | None = None) -> dict:
     payload = None if data is None else json.dumps(data, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(
@@ -155,7 +164,7 @@ def request_json(base: str, path: str, data: dict | None = None) -> dict:
         headers={"Content-Type": "application/json"} if payload is not None else {},
         method="POST" if payload is not None else "GET",
     )
-    with urllib.request.urlopen(req, timeout=20) as resp:
+    with LOCAL_OPENER.open(req, timeout=20) as resp:
         if resp.geturl().split("?", 1)[0] != base + path.split("?", 1)[0]:
             raise RuntimeError("ComfyUI redirected outside the configured local endpoint")
         if resp.status != 200:
@@ -192,7 +201,7 @@ def create_png(base: str, article: dict, checkpoint: str, timeout: int) -> bytes
         "filename": result["filename"], "subfolder": result.get("subfolder", ""), "type": "output",
     })
     req = urllib.request.Request(base + "/view?" + params)
-    with urllib.request.urlopen(req, timeout=40) as response:
+    with LOCAL_OPENER.open(req, timeout=40) as response:
         if response.geturl().split("?", 1)[0] != base + "/view":
             raise RuntimeError("Image download redirected away from local ComfyUI")
         payload = response.read(12 * 1024 * 1024 + 1)
@@ -222,6 +231,10 @@ def png_to_jpeg(png: bytes) -> bytes:
 def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT) -> Path:
     """Atomic writes, with per-image hash and matched article fingerprint."""
     slug = article["slug"]
+    if not SAFE_SLUG.fullmatch(slug):
+        raise ValueError("Invalid article slug")
+    if not MIN_JPEG_BYTES <= len(data) <= MAX_JPEG_BYTES or jpeg_dimensions(data) != (1200, 675):
+        raise ValueError("Refusing to save a non-conforming 1200x675 JPEG")
     target_dir = root / RELATIVE_DIR
     target_dir.mkdir(parents=True, exist_ok=True)
     image_path = target_dir / (slug + ".jpg")
