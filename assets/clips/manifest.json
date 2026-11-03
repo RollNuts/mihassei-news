@@ -3,15 +3,15 @@
   "clips": {
     "volleyball-team-lunch-plate-merch": {
       "origin": "verified-still-motion",
-      "article_sha256": "c57cfd5dba2605dbfe6ad682a6415a7103f7a6c6db6fcd214af9177a2168a6b4",
-      "image_sha256": "a7214c97e77e8f3626009b053c00f94f5e4e48782e8a8233309d30635f3baaf0",
-      "sha256": "5331a07c037c9d4d9a8c4a8c21e2314b4705eee0c6aa3039bef2c5e0f5f1420b",
-      "bytes": 14134,
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "image_sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710",
+      "sha256": "34cb43f57cd5bf97b6fb7528e8e821c3fd47ac5997cf3cb812a841bd968a9178",
+      "bytes": 10694,
       "width": 640,
       "height": 360,
       "fps": 12,
       "duration_ms": 4000,
-      "created_at": "2026-11-03T09:09:01.873170+00:00"
+      "created_at": "2026-11-03T09:59:43.045450+00:00"
     },
     "music-ai-friends-monopolize-the-song": {
       "origin": "verified-still-motion",
