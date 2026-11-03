@@ -105,10 +105,11 @@ class SceneStorageTests(unittest.TestCase):
         proxies = [h for h in photos.LOCAL_OPENER.handlers if isinstance(h, urllib.request.ProxyHandler)]
         self.assertTrue(all(not h.proxies for h in proxies))
 
-    def test_prompt_puts_article_action_first_and_varies_camera(self):
+    def test_prompt_puts_photo_medium_before_early_article_action_and_varies_camera(self):
         a = {**article(), "scene_prompt":"A solemn actor carries an empty chair through a quiet hallway."}
-        self.assertTrue(photos.scene_prompt(a).startswith(a["scene_prompt"]))
-        self.assertIn("(Japanese adult actors:1.3)", photos.scene_prompt(a))
+        self.assertTrue(photos.scene_prompt(a).startswith("Candid color photograph"))
+        self.assertLess(photos.scene_prompt(a).index(a["scene_prompt"]), 100)
+        self.assertNotIn("sketch", photos.scene_prompt(a))
         directions = {photos.scene_prompt({**a,"slug":"story-"+str(i)}).split("16:9")[0] for i in range(16)}
         self.assertGreater(len(directions), 1)
 

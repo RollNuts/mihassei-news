@@ -120,13 +120,14 @@ def scene_prompt(article: dict) -> str:
         "slightly elevated wide shot, 35mm lens",
         "over-the-shoulder view toward the absurd action, 40mm lens",
     )[stable_seed(article) % 4]
+    # Put the photographic medium in the first CLIP chunk. "Sketch" also
+    # means a drawing to SDXL; it must not appear as a positive style token.
     return (
-        scene_description(article) + " "
-        "(Japanese adult actors:1.3), (photorealistic:1.2), "
-        "STAGED SATIRICAL NEWS COMEDY SCENE, fictional deadpan sketch. "
-        "Contemporary Japan, natural available light, realistic skin, "
+        "Candid color photograph of anonymous Japanese adult actors. "
+        + scene_description(article) + " "
+        "A staged fictional live-action scene, neutral serious faces. "
+        "Full-frame DSLR, realistic skin and fabric, natural daylight, "
         + framing + ", 16:9 composition. "
-        + "Straight faces, absurd situation, clearly visible key prop. "
         "No title text, no captions, no logos, no recognizable real person."
     )
 
@@ -136,7 +137,7 @@ def stable_seed(article: dict) -> int:
         (article["slug"] + "|" + article["title"]).encode("utf-8")).digest()[:8], "big") % (2**63)
 
 
-def workflow(article: dict, checkpoint: str, steps: int = 28) -> dict:
+def workflow(article: dict, checkpoint: str, steps: int = 24) -> dict:
     if not checkpoint or "/" in checkpoint or "\\" in checkpoint or not checkpoint.endswith(".safetensors"):
         raise ValueError("Use a local checkpoint filename ending in .safetensors, not a URL or path")
     seed = stable_seed(article)
@@ -144,10 +145,10 @@ def workflow(article: dict, checkpoint: str, steps: int = 28) -> dict:
         "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": checkpoint}},
         "2": {"class_type": "CLIPTextEncode", "inputs": {"text": scene_prompt(article), "clip": ["1", 1]}},
         "3": {"class_type": "CLIPTextEncode", "inputs": {"text": NEGATIVE, "clip": ["1", 1]}},
-        "4": {"class_type": "EmptyLatentImage", "inputs": {"width": 1024, "height": 576, "batch_size": 1}},
+        "4": {"class_type": "EmptyLatentImage", "inputs": {"width": 1152, "height": 648, "batch_size": 1}},
         "5": {"class_type": "KSampler", "inputs": {
-            "seed": seed, "steps": steps, "cfg": 6.5, "sampler_name": "euler",
-            "scheduler": "normal", "denoise": 1.0,
+            "seed": seed, "steps": steps, "cfg": 5.5, "sampler_name": "dpmpp_2m",
+            "scheduler": "karras", "denoise": 1.0,
             "model": ["1", 0], "positive": ["2", 0],
             "negative": ["3", 0], "latent_image": ["4", 0]}},
         "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["1", 2]}},

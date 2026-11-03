@@ -35,6 +35,23 @@ REMOTES = {
 }
 
 
+def require_running() -> None:
+    """Honor the persistent stop latch without introducing an import cycle."""
+    try:
+        from .mac_scene_control import check_allowed
+    except ImportError:
+        from mac_scene_control import check_allowed
+    check_allowed(app_dir=APP_DIR)
+
+
+def record_publish(status: str, detail: str, sha: str = "") -> None:
+    try:
+        from .mac_scene_control import record_publish_result
+    except ImportError:
+        from mac_scene_control import record_publish_result
+    record_publish_result(status, detail, sha=sha, app_dir=APP_DIR)
+
+
 def managed_jpeg_bytes() -> int:
     roots = {ROOT.resolve(), OUTBOX.resolve()}
     roots.update(p.resolve() for p in APP_DIR.glob("sync-*/checkout") if not p.is_symlink())
@@ -61,10 +78,34 @@ def check_checkout_budget(checkout: Path, revision: str, min_free_gb: int) -> No
 
 
 def git(*args: str, cwd: Path | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        ["git", *args], cwd=cwd or ROOT, check=check, capture_output=True, text=True,
-        timeout=120, env={**os.environ, "GIT_TERMINAL_PROMPT": "0"},
-    )
+    command = ["git", *args]
+    options = {"cwd": cwd or ROOT, "text": True,
+               "env": {**os.environ, "GIT_TERMINAL_PROMPT": "0"}}
+    if not args or args[0] != "push":
+        return subprocess.run(command, check=check, capture_output=True, timeout=120, **options)
+    try:
+        from .mac_scene_control import transition_lock
+    except ImportError:
+        from mac_scene_control import transition_lock
+    # Serialize only process creation with stop/resume. Holding the lock while
+    # waiting for a network push would make the stop button unresponsive.
+    with transition_lock(app_dir=APP_DIR):
+        require_running()
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **options)
+    try:
+        stdout, stderr = process.communicate(timeout=120)
+    finally:
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=5)
+    result = subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
+    if check and result.returncode:
+        raise subprocess.CalledProcessError(result.returncode, command, stdout, stderr)
+    return result
 
 
 def safe_to_publish() -> None:
@@ -124,8 +165,10 @@ def retire_published(outbox: Path, published: Path, articles: list[dict]) -> Non
 def publish_outbox(checkout: Path, outbox: Path, attempts: int = 3,
                    min_free_gb: int = 12) -> bool:
     for _ in range(attempts):
+        require_running()
         check_storage([checkout, APP_DIR], min_free_gb)
         git("fetch", "origin", "main", cwd=checkout)
+        require_running()
         check_checkout_budget(checkout, "FETCH_HEAD", min_free_gb)
         # Only this function's disposable checkout is reset, never ROOT.
         # Include new JPEGs in the index so reset removes stale untracked
@@ -138,6 +181,9 @@ def publish_outbox(checkout: Path, outbox: Path, attempts: int = 3,
         git("add", "--", str(RELATIVE_DIR), cwd=checkout)
         changed = git("diff", "--cached", "--name-only", cwd=checkout).stdout.splitlines()
         if not changed:
+            require_running()
+            record_publish("ok", "No unpublished matching images; remote main verified",
+                           git("rev-parse", "HEAD", cwd=checkout).stdout.strip())
             retire_published(outbox, checkout, articles)
             return True
         if any(not path.startswith("assets/generated/") for path in changed):
@@ -145,16 +191,25 @@ def publish_outbox(checkout: Path, outbox: Path, attempts: int = 3,
         git("-c", "user.name=Veripsa local photos", "-c",
             "user.email=277724446+RollNuts@users.noreply.github.com",
             "commit", "-m", "images: locally generate staged comedy-news photos", cwd=checkout)
+        revision = git("rev-parse", "HEAD", cwd=checkout).stdout.strip()
+        # Stop can arrive during model inference, fetch, transfer or commit.
+        # Never begin another push after observing the persistent latch.
+        require_running()
         pushed = git("push", "origin", "HEAD:refs/heads/main", cwd=checkout, check=False)
         if pushed.returncode == 0:
+            record_publish("ok", "Image-only normal push succeeded", revision)
+            require_running()
             retire_published(outbox, checkout, articles)
             return True
+        record_publish("error", "Push deferred; JPEGs retained. " + pushed.stderr.strip()[-400:])
         print("Push deferred; retrying against latest main with saved JPEGs.", flush=True)
     print("Verified images remain in the local outbox for the next run.", file=sys.stderr)
     return False
 
 
 def generate(args, checkout: Path) -> int:
+    if not args.dry_run:
+        require_running()
     command = [sys.executable, str(checkout / "scripts/local_scene_photos.py"),
                "--server", args.server, "--checkpoint", args.checkpoint,
                "--limit", str(args.limit), "--timeout", str(args.timeout),
@@ -175,6 +230,7 @@ def generate(args, checkout: Path) -> int:
 
 
 def sync(args) -> int:
+    require_running()
     safe_to_publish()
     for directory in (APP_DIR, OUTBOX):
         if directory.is_symlink():
@@ -190,6 +246,7 @@ def sync(args) -> int:
         except BlockingIOError:
             print("Another image sync is active; skipping")
             return 0
+        require_running()
         # A killed process can leave its private checkout behind. Recover it
         # under the same lock before starting a new run, then remove only it.
         for job in APP_DIR.glob("sync-*"):
@@ -205,7 +262,9 @@ def sync(args) -> int:
                 git("worktree", "remove", "--force", str(abandoned))
             marker.unlink()
             job.rmdir()
+        require_running()
         git("fetch", "origin", "main")
+        require_running()
         revision = git("rev-parse", "FETCH_HEAD").stdout.strip()
         temp = Path(tempfile.mkdtemp(prefix="sync-", dir=APP_DIR))
         marker = temp / ".veripsa-scene-job"
@@ -213,6 +272,7 @@ def sync(args) -> int:
         preserved = True
         checkout = temp / "checkout"
         try:
+            require_running()
             check_checkout_budget(checkout, revision, args.min_free_gb)
             git("worktree", "add", "--detach", str(checkout), revision)
             try:
@@ -269,5 +329,15 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
-        print("Local scene sync stopped safely: " + str(exc), file=sys.stderr)
+        detail = str(exc) + ("; " + exc.stderr.strip()[-400:]
+                             if isinstance(exc, subprocess.CalledProcessError) and exc.stderr else "")
+        try:
+            # A stop may arrive after an already in-flight push succeeded.
+            # Preserve that truthful SHA/result instead of relabelling it as
+            # a GitHub failure merely because later cleanup was deferred.
+            require_running()
+            record_publish("error", detail)
+        except (OSError, RuntimeError):
+            pass
+        print("Local scene sync stopped safely: " + detail, file=sys.stderr)
         sys.exit(1)

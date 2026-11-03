@@ -42,7 +42,8 @@ class LocalComedySceneTests(unittest.TestCase):
         direction = local_scene_photos.scene_description(a)
         self.assertIn("capsule lottery machine", direction)
         prompt = local_scene_photos.scene_prompt(a)
-        self.assertIn("STAGED SATIRICAL NEWS COMEDY", prompt)
+        self.assertTrue(prompt.startswith("Candid color photograph"))
+        self.assertNotIn("sketch", prompt)
         self.assertIn("fictional", prompt)
         self.assertIn("No title text", prompt)
         different = {**a, "slug": "silent-show", "title": "スベるほど黒字のお笑い番組"}
@@ -54,8 +55,9 @@ class LocalComedySceneTests(unittest.TestCase):
         a = fixture()
         workflow = local_scene_photos.workflow(a, "sd_xl_base_1.0.safetensors")
         self.assertEqual(workflow["1"]["class_type"], "CheckpointLoaderSimple")
-        self.assertEqual(workflow["4"]["inputs"]["width"], 1024)
-        self.assertEqual(workflow["4"]["inputs"]["height"], 576)
+        dimensions = workflow["4"]["inputs"]
+        self.assertEqual(dimensions["width"] * 9, dimensions["height"] * 16)
+        self.assertLessEqual(dimensions["width"] * dimensions["height"], 1024**2)
         self.assertEqual(workflow["5"]["class_type"], "KSampler")
         self.assertEqual(workflow["7"]["class_type"], "SaveImage")
         self.assertEqual(workflow["5"]["inputs"]["seed"], local_scene_photos.stable_seed(a))

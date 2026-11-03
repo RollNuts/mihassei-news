@@ -283,17 +283,25 @@ def agent_payload() -> dict:
 
 
 def disable_schedule() -> None:
-    if platform.system() != "Darwin":
-        raise RuntimeError("launchd is available only on macOS")
-    if PLIST.is_file():
-        subprocess.run(["launchctl", "bootout", f"gui/{os.getuid()}", str(PLIST)],
-                       capture_output=True, check=False)
-        PLIST.unlink()
-    print("Local photo schedule disabled; generated images and model left intact")
+    try:
+        from . import mac_scene_control as control
+    except ImportError:
+        import mac_scene_control as control
+    result = control.stop()
+    if result["errors"]:
+        raise RuntimeError("; ".join(result["errors"]))
+    print("Local photos OFF, current dedicated jobs stopped; model and outbox preserved")
 
 
 def enable_schedule() -> None:
+    try:
+        from . import mac_scene_control as control
+    except ImportError:
+        import mac_scene_control as control
     require_supported_mac()
+    control.check_allowed(app_dir=APP_DIR)
+    if not control.quality_ready(app_dir=APP_DIR):
+        raise RuntimeError("A reviewed, publicly verified three-image pilot is required")
     if not ((COMFY / "main.py").is_file() and PYTHON.is_file() and CHECKPOINT.is_file()):
         raise RuntimeError("Install the model/runtime successfully before enabling launchd")
     if not (APP_DIR / "install-ok.txt").is_file():
@@ -303,15 +311,15 @@ def enable_schedule() -> None:
         status = json.loads((APP_DIR / "last-run.json").read_text())
     except (OSError, ValueError):
         status = {}
-    if status.get("status") != "ok":
+    if not status.get("last_success_at") and status.get("status") != "ok":
         raise RuntimeError("Run mac_scene_worker.py successfully once before enabling the schedule")
     if min(gib_free(ROOT), gib_free(APP_DIR)) < MIN_RUNTIME_GIB:
         raise RuntimeError("Low free space: refusing scheduler installation")
     PLIST.parent.mkdir(parents=True, exist_ok=True)
     if PLIST.is_symlink():
         raise RuntimeError("Refusing symlinked LaunchAgent")
-    if PLIST.exists():
-        disable_schedule()
+    if PLIST.exists() or control.launch_loaded():
+        control.unload_schedule()
     PLIST.write_bytes(plistlib.dumps(agent_payload()))
     try:
         subprocess.run(["launchctl", "bootstrap", f"gui/{os.getuid()}", str(PLIST)],
@@ -319,6 +327,9 @@ def enable_schedule() -> None:
     except subprocess.CalledProcessError:
         PLIST.unlink(missing_ok=True)
         raise
+    if not control.launch_loaded():
+        PLIST.unlink(missing_ok=True)
+        raise RuntimeError("launchd bootstrap returned without a loaded photo service")
     print("Local scheduler enabled: up to 4 missing scenes hourly, also after login")
 
 
@@ -363,7 +374,11 @@ def main(argv: list[str] | None = None) -> int:
                     download_model=args.download_model,
                     accepted_license=args.acknowledge_model_license)
         elif args.enable_schedule:
-            enable_schedule()
+            try:
+                from . import mac_scene_control as control
+            except ImportError:
+                import mac_scene_control as control
+            control.resume()
         elif args.disable_schedule:
             disable_schedule()
         elif args.cleanup_cache:
