@@ -40,7 +40,7 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
                 self.assertEqual(promo, "", article["slug"])
                 continue
             count += 1
-            episode = selected["episodes"][-1]
+            episode = selected["episodes"][-1] if selected["kind"] == "analysis" else selected["episodes"][0]
             url = f'/serials/{selected["slug"]}/{episode["slug"]}/'
             self.assertIn('class="article-serial-bridge"', promo)
             self.assertIn(f'href="{url}"', promo)
@@ -147,9 +147,18 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
         e["title"] = "新たな事件の続編"
         mystery["episodes"].append(e)
         promo = render_serial_bridge(article, expanded)
-        self.assertIn("/second-real-episode/", promo)
-        self.assertNotIn("/victim-not-yet-dead-01/", promo)
-        self.assertIn("第2話", promo)
+        self.assertIn("/victim-not-yet-dead-01/", promo)
+        self.assertNotIn("/second-real-episode/", promo)
+        self.assertIn("最新の第2話", promo)
+        self.assertIn("第1話から読む", promo)
+        market = next(s for s in expanded if s["kind"] == "analysis")
+        forecast = deepcopy(market["episodes"][0])
+        forecast["number"] = 2
+        forecast["slug"] = "follow-up-power-grid-02"
+        market["episodes"].append(forecast)
+        markets = render_serial_bridge({"category": "経済", "title": "電力市場", "summary": ""}, expanded)
+        self.assertIn("/follow-up-power-grid-02/", markets)
+        self.assertIn("最新の第2回を読む", markets)
 
 
 if __name__ == "__main__":

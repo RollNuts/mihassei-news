@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -20,7 +20,9 @@ jobs:
         run: python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
       - run: python3 -m unittest discover -s tests -v
       - name: Protect published mysteries and original market forecasts
-        run: python3 scripts/guard_serial_history.py 'HEAD^1'
+        env:
+          SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/guard_serial_history.py "$SERIAL_BASE_SHA"
       - name: Warn about stale news sources and topic concentration (never blocks publishing)
         run: python3 scripts/audit_editorial.py
       - name: Review repeated satire templates and generic openings (advisory only)

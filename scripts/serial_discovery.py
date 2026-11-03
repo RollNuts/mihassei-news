@@ -52,9 +52,10 @@ def render_serial_bridge(article: dict, serials: list[dict]):
     if series is None:
         return ""
     latest = series["episodes"][-1]
-    prefix = "/serials/" + escape(series["slug"]) + "/"
-    chapter = prefix + escape(latest["slug"]) + "/"
     analysis = series["kind"] == "analysis"
+    entry = latest if analysis else series["episodes"][0]
+    prefix = "/serials/" + escape(series["slug"]) + "/"
+    chapter = prefix + escape(entry["slug"]) + "/"
     label = "現実の市場分析" if analysis else "創作推理小説"
     introduction = (
         "こちらは実際の公開資料から市場を考える別枠の連載です。"
@@ -64,7 +65,8 @@ def render_serial_bridge(article: dict, serials: list[dict]):
         "この記事の続報ではなく、実際の事件を扱うものでもありません。"
     )
     unit = "回" if analysis else "話"
-    number = latest["number"]
+    number = entry["number"]
+    action = f"最新の第{number}回を読む" if analysis else "第1話から読む"
     return (
         '<aside class="article-serial-bridge" aria-labelledby="article-serial-bridge-title">'
         '<div class="article-serial-bridge-media">'
@@ -76,9 +78,9 @@ def render_serial_bridge(article: dict, serials: list[dict]):
         '<h2 id="article-serial-bridge-title">ニュースの外側にも、読み物がある。</h2>'
         f'<h3><a href="{prefix}">{escape(series["title"])}</a></h3>'
         f'<p class="article-serial-bridge-explain">{introduction}</p>'
-        f'<p class="article-serial-bridge-latest">公開中の第{number}{unit}：{escape(latest["title"])}</p>'
+        f'<p class="article-serial-bridge-latest">最新の第{latest["number"]}{unit}：{escape(latest["title"])}</p>'
         '<div class="article-serial-bridge-links">'
-        f'<a class="article-serial-bridge-primary" href="{chapter}">第{number}{unit}を読む →</a>'
+        f'<a class="article-serial-bridge-primary" href="{chapter}">{action} →</a>'
         f'<a href="{prefix}">作品の目次を見る ↗</a></div></div>'
         '</aside>'
     )

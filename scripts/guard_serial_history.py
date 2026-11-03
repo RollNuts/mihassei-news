@@ -1,7 +1,8 @@
 """Prevent retroactive rewrites of published serial episodes and market predictions.
 
-GitHub Actions calls this with the first parent of the evaluated commit:
-    python3 scripts/guard_serial_history.py 'HEAD^1'
+GitHub Actions passes the PR base SHA or, on a main push, the pre-push
+commit SHA. That compares the complete change set rather than only HEAD^1:
+    python3 scripts/guard_serial_history.py '<40-char-base-sha>'
 
 The original forecast is immutable; only later, evidence-backed verification
 may be added. No external API, database, or new runtime dependency.
@@ -104,8 +105,8 @@ def guard_serial_history(before, after, *, today=None):
 
 
 def main():
-    if len(sys.argv) != 2 or not re.fullmatch(r"(?:[a-f0-9]{7,40}|HEAD\^1)", sys.argv[1]):
-        raise SystemExit("Usage: guard_serial_history.py <base-commit-sha|HEAD^1>")
+    if len(sys.argv) != 2 or not re.fullmatch(r"[a-f0-9]{40}", sys.argv[1]):
+        raise SystemExit("Usage: guard_serial_history.py <40-char-base-commit-sha>")
     repo = Path(__file__).resolve().parents[1]
     original = subprocess.run(
         ["git", "show", sys.argv[1] + ":content/serials.json"],
