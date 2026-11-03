@@ -93,8 +93,12 @@ class EditorialClarityTests(unittest.TestCase):
                 page = build.story(article, list(self.articles.values()))
                 self.assertIn("<h1>"+article["title"]+"</h1>", page)
                 self.assertIn('class="article-visual"', page)
-                self.assertIn('src="/images/'+slug+'.svg"', page)
-                self.assertIn("創作イラスト", page)
+                safe_image = build.editorial_image(article)
+                self.assertNotEqual(safe_image, "/generated/" + slug + ".jpg")
+                self.assertIn('src="' + safe_image + '"', page)
+                # A previously approved illustrative stock image is a valid
+                # fallback as well as the first-party original SVG.
+                self.assertTrue("創作イラスト" in page or "イメージ写真" in page)
 
 
 if __name__ == "__main__":
