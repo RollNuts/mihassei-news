@@ -23,11 +23,11 @@ class HiddenVisibilityTests(unittest.TestCase):
             self.assertIn(marker, build)
         self.assertIn('aria-labelledby="readers-choice-title" hidden', build)
         self.assertRegex(css, r"body\s+\[hidden\]\s*\{\s*display:\s*none\s*;")
-        self.assertIn('shell.hidden=false', js)
+        self.assertIn('observerShell.hidden=false', js)
         self.assertIn('popularSection.hidden=false', js)
         # No fake traffic is generated just to fill an empty widget.
         self.assertIn('data.unit!=="anonymous-browser"', js)
-        self.assertIn('!Number.isFinite(data.visitors)', js)
+        self.assertIn('!Number.isSafeInteger(data.visitors)', js)
 
     def test_visibility_fix_does_not_need_new_api_calls_or_paid_assets(self):
         css = (ROOT / "assets" / "editorial-polish.css").read_text(encoding="utf-8")
