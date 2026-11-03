@@ -203,6 +203,16 @@
       "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
       "seed": 2479731755469378830,
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "volleyball-team-lunch-plate-merch": {
+      "article_sha256": "c57cfd5dba2605dbfe6ad682a6415a7103f7a6c6db6fcd214af9177a2168a6b4",
+      "bytes": 128221,
+      "generated_at": "2026-11-03T08:51:50.126603+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 5595470469396586373,
+      "sha256": "a7214c97e77e8f3626009b053c00f94f5e4e48782e8a8233309d30635f3baaf0"
     }
   },
   "rejected": {},
