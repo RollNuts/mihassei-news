@@ -318,14 +318,35 @@
     popularSection.hidden=false;
   }
 
+  // Counters are cumulative *distinct browsers*, not views or a synthetic
+  // ticking number. Re-read genuine numbers while a reader keeps the page open.
+  // Only the existing free GET is used; a refresh never records a new visit.
+  const observerShell=document.querySelector("[data-observer-widget]");
+  const observerValue=document.querySelector("[data-observer-count]");
+  const observerHint=observerShell?.querySelector("small");
+  const observedAtFormat=new Intl.DateTimeFormat("ja-JP",{
+    timeZone:"Asia/Tokyo",hour:"2-digit",minute:"2-digit"
+  });
+  const LIVE_REFRESH_MS=180000; // 3 minutes, only while a page is visible.
+  const RETURN_REFRESH_COOLDOWN_MS=45000;
+  let lastCheckedAt=0,haveSnapshot=false,refreshPromise=null;
+  function observerFeedback(healthy){
+    if(!observerShell)return;
+    observerShell.hidden=false;
+    if(!observerHint)return;
+    observerHint.textContent=healthy
+      ? "※ブラウザ単位の累計・最終確認 "+observedAtFormat.format(new Date())
+      : haveSnapshot ? "※直近の集計値・再接続待ち"
+                     : "※集計を取得できません・自動再試行";
+  }
+
   function showMetrics(data){
-    if(!data || data.unit!=="anonymous-browser" || !Number.isFinite(data.visitors))return;
+    if(!data || data.unit!=="anonymous-browser" ||
+       !Number.isSafeInteger(data.visitors) || data.visitors<0)return false;
     showPopular(data.articles||{});
-    const shell=document.querySelector("[data-observer-widget]");
-    const value=document.querySelector("[data-observer-count]");
-    if(shell && value){
-      value.textContent=Intl.NumberFormat("ja-JP").format(data.visitors);
-      shell.hidden=false;
+    if(observerShell && observerValue){
+      observerValue.textContent=Intl.NumberFormat("ja-JP").format(data.visitors);
+      observerFeedback(true);
     }
     for(const [slug,metric] of Object.entries(data.articles||{})){
       if(!metric || !Number.isFinite(metric.likes))continue;
@@ -342,22 +363,54 @@
       }
       if(slug===article)renderPoll(metric.votes);
     }
+    return true;
   }
   async function refresh(){
-    try{
-      const params=new URLSearchParams();
-      if(allSlugs.length)params.set("articles",allSlugs.join(","));
-      const res=await fetch("/api/engagement?"+params.toString(),{cache:"no-store"});
-      if(res.ok)showMetrics(await res.json());
-    }catch(_){}
+    if(refreshPromise)return refreshPromise; // Avoid overlapping requests.
+    refreshPromise=(async()=>{
+      try{
+        const params=new URLSearchParams();
+        if(allSlugs.length)params.set("articles",allSlugs.join(","));
+        const res=await fetch("/api/engagement?"+params.toString(),{
+          cache:"no-store",credentials:"same-origin"
+        });
+        if(!res.ok || !showMetrics(await res.json()))
+          throw new Error("audience data unavailable");
+        haveSnapshot=true;
+      }catch(_){
+        // Keep the last confirmed count when a transient API error occurs.
+        // Never turn a failed request into a plausible-looking zero.
+        observerFeedback(false);
+      }
+    })();
+    try{await refreshPromise;}
+    finally{lastCheckedAt=Date.now();refreshPromise=null;}
   }
 
-  // A page visit counts each browser once globally, and once per article.
+  // One browser is counted once globally and once per visited article.
+  // Fetching the current number again is read-only.
   (async()=>{
     try{await apiPost("visit",article);}
     catch(_){/* The news pages and local likes work independently. */}
     await refresh();
   })();
+
+  // Poll no more than once every 3 minutes on visible pages. Paused tabs
+  // make no requests. Returning to a tab refreshes stale data immediately.
+  if(observerShell && typeof window.setInterval==="function"){
+    window.setInterval(()=>{
+      if(document.visibilityState!=="hidden" && !refreshPromise)void refresh();
+    },LIVE_REFRESH_MS);
+  }
+  if(observerShell){
+    const refreshOnReturn=()=>{
+      if(document.visibilityState==="hidden" || refreshPromise ||
+         Date.now()-lastCheckedAt<RETURN_REFRESH_COOLDOWN_MS)return;
+      void refresh();
+    };
+    document.addEventListener("visibilitychange",refreshOnReturn);
+    window.addEventListener?.("focus",refreshOnReturn);
+  }
 
   document.addEventListener("click",async e=>{
     const b=e.target.closest("[data-like-slug]");
