@@ -28,7 +28,7 @@ if __package__:
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_starter import homepage_starter_picks
-    from .build import editorial_lead
+    from .build import editorial_lead, CATEGORIES
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
     from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
@@ -36,7 +36,7 @@ else:
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_starter import homepage_starter_picks
-    from build import editorial_lead
+    from build import editorial_lead, CATEGORIES
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -451,9 +451,10 @@ def check():
     feed_entries=feed_root.findall("./channel/item")
     if len(feed_entries)!=min(len(articles),90):
         raise RuntimeError("New RSS retention window is not deployed")
-    if any(item.findtext("category") not in {
-        "社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ"
-    } for item in feed_entries):
+    # The RSS verifier must follow the newspaper's actual editorial sections,
+    # including newly added 事件, not a stale hard-coded set.
+    if any(item.findtext("category") not in set(CATEGORIES[1:])
+           for item in feed_entries):
         raise RuntimeError("RSS feed category metadata missing")
     namespace={"media":"http://search.yahoo.com/mrss/"}
     for entry in feed_root.findall("./channel/item")[:min(5,len(articles))]:
