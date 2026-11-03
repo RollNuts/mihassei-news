@@ -24,6 +24,7 @@ from xml.etree import ElementTree as ET
 if __package__:
     from .media_policy import usable_cached_photo, jpeg_dimensions
     from .generated_photos import usable_generated_scene, generated_url, generated_scene_entry
+    from .motion_clips import usable_clip, clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_starter import homepage_starter_picks
@@ -31,6 +32,7 @@ if __package__:
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
     from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
+    from motion_clips import usable_clip, clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_starter import homepage_starter_picks
@@ -504,6 +506,32 @@ def check():
             raise RuntimeError(slug+": duplicate source CTA before the article text")
         if 'class="article-visual"' not in page or 'fetchpriority="high"' not in page:
             raise RuntimeError(slug+": article hero lacks high-priority image loading")
+        # The optional video never replaces a readable still, and it must
+        # match the source article + local manifest rather than a guessed URL.
+        recorded_clip = usable_clip(item, root=ROOT)
+        if recorded_clip:
+            for token in (
+                'class="article-visual article-video"',
+                'controls playsinline muted loop preload="none"',
+                'poster="'+generated_url(item)+'"',
+                '<source src="'+clip_url(item)+'" type="video/mp4">',
+                '"@type": "VideoObject"',
+            ):
+                if token not in page:
+                    raise RuntimeError(slug+": verified clip metadata or player missing: "+token)
+            if 'autoplay' in page:
+                raise RuntimeError(slug+": video must not autoplay")
+            # The existing photo is always an image fallback, even if video fails.
+            if 'src="'+generated_url(item)+'"' not in page:
+                raise RuntimeError(slug+": video poster image fallback lost")
+            # A few HEAD-free GET probes per build; do not download every MP4.
+            if slug in {a["slug"] for a in recent[:2]}:
+                movie, movie_mime = get(clip_url(item))
+                if ("video/mp4" not in movie_mime or
+                    hashlib.sha256(movie).hexdigest() != recorded_clip["sha256"]):
+                    raise RuntimeError(slug+": live optional clip has wrong MIME or SHA-256")
+        elif 'class="article-visual article-video"' in page:
+            raise RuntimeError(slug+": unverified motion clip leaked into public site")
         # Only link to a real serial episode, with a clear editorial boundary.
         chosen_serial=choose_serial(item,serials)
         if chosen_serial:
