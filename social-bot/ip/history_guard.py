@@ -103,6 +103,28 @@ def git_json(ref, path):
     return json.loads(result.stdout)
 
 
+def forbid_prior_media_edits(base):
+    """A previously committed manga image is part of the historical record.
+
+    New images may be added, but changed or deleted existing episodes are
+    rejected, even if the media renderer was improved meanwhile.
+    """
+    result = subprocess.run(
+        ["git", "diff", "--name-status", "--no-renames", base, "HEAD",
+         "--", "social-bot/assets"],
+        cwd=REPO, check=True, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, text=True,
+    )
+    for row in result.stdout.splitlines():
+        code, sep, path = row.partition("\t")
+        if not sep:
+            raise CanonHistoryError("Unrecognized image diff row")
+        if path.startswith("social-bot/assets/nejimachi-") and path.endswith(".png"):
+            if code.startswith(("M","D","T","R","C")):
+                raise CanonHistoryError("Canonical manga image edited or deleted: " + path)
+    print("Historic manga assets protected")
+
+
 def main():
     event = os.environ.get("GITHUB_EVENT_NAME", "")
     if event not in ("pull_request", "push"):
@@ -122,6 +144,7 @@ def main():
     after = {key:json.loads((REPO/filename).read_text(encoding="utf-8"))
              for key,filename in paths.items()}
     check_history(before, after)
+    forbid_prior_media_edits(base)
     return 0
 
 
