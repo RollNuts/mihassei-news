@@ -195,12 +195,21 @@ def render_completed_reading(series, episode):
 def _series_card(series):
     ep = series["episodes"][-1]
     latest = (f'<span class="serial-latest">最新公開：{h(ep["title"])}</span>')
+    # A new mystery reader needs the beginning; a market reader needs the latest analysis.
+    first = series["episodes"][0]
+    main_ep = first if series["kind"] == "fiction" else ep
+    main_label = "第1話から読む" if series["kind"] == "fiction" else f'最新の{episode_label(series, ep["number"])}を読む'
+    newer_episode_link = (
+        f'<a class="serial-latest-link" href="{episode_url(series, ep)}">最新の{episode_label(series, ep["number"])}へ →</a>'
+        if series["kind"] == "fiction" and ep["slug"] != first["slug"] else ""
+    )
     return (f'<article class="serial-card serial-card--{series["kind"]}" {progress_attributes(series)}>'
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
             f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span>'
-            f'<a class="serial-link" href="{episode_url(series, ep)}">{episode_label(series,ep["number"])}を読む <span aria-hidden="true">→</span></a>'
+            f'<a class="serial-link" href="{episode_url(series, main_ep)}">{main_label} <span aria-hidden="true">→</span></a>'
+            f'{newer_episode_link}'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
             f'</div></article>')
 
@@ -246,7 +255,10 @@ def render_series_page(series, layout):
             f'<h1>{h(series["title"])}</h1><p class="serial-series-subtitle">{h(series["subtitle"])}</p>'
             f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}'
             + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
-            f'</span><div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span></div></div></header><p class="serials-disclosure">{state}</p>'
+            f'</span>'
+            + (f'<a class="serial-start-link" href="{episode_url(series, series["episodes"][0])}">第1話から読む →</a>'
+               if series["kind"] == "fiction" else '') +
+            f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span></div></div></header><p class="serials-disclosure">{state}</p>'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
@@ -264,37 +276,6 @@ def _share_link(series, ep):
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
-def render_mystery_notebook(series, episode):
-    """Private reader notes, intentionally not part of the comment system."""
-    if series["kind"] != "fiction":
-        return ""
-    return (
-        f'<section class="mystery-notebook" data-mystery-notebook '
-        f'data-mystery-serial="{h(series["slug"])}" data-mystery-episode="{h(episode["slug"])}" '
-        'aria-labelledby="mystery-notebook-heading">'
-        '<span class="small-label">MY CASE FILE / 読者専用</span>'
-        '<h2 id="mystery-notebook-heading">自分の推理メモ</h2>'
-        '<p class="mystery-notebook-intro">伏線、気になる人物、犯人の仮説を自由に残そう。'
-        'このメモは公開コメントとは別で、ほかの読者には表示されません。</p>'
-        '<label for="mystery-notebook-text">この話で気づいたこと</label>'
-        '<textarea id="mystery-notebook-text" data-mystery-note-input '
-        'maxlength="800" rows="5" placeholder="例：封筒をシャッターの内側に置けたのは誰だろう？"></textarea>'
-        '<div class="mystery-notebook-toolbar"><span data-mystery-note-count>0 / 800文字</span>'
-        '<div class="mystery-notebook-actions">'
-        '<button type="button" data-mystery-note-save>この端末に保存</button>'
-        '<button type="button" data-mystery-note-clear>メモを消す</button>'
-        '</div></div>'
-        '<p class="mystery-notebook-status" data-mystery-note-status role="status" aria-live="polite">'
-        '保存は任意です。保存を押すまで端末にも記録されません。</p>'
-        '<p class="mystery-notebook-privacy">保存するとこのブラウザのlocalStorageに記録されます。'
-        'サイトへの送信・読者への公開は行いません。端末やブラウザを変えると引き継がれず、'
-        'ブラウザのデータ削除でも消えます。</p>'
-        '<noscript><p class="mystery-notebook-privacy">メモの保存にはJavaScriptが必要です。</p></noscript>'
-        '<script defer src="/assets/mystery-notes.js"></script>'
-        '</section>'
-    )
-
-
 def render_episode_page(series, ep, layout):
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
@@ -307,9 +288,10 @@ def render_episode_page(series, ep, layout):
     extras = ""
     if series["kind"] == "fiction":
         clues = "".join(f"<li>{h(clue)}</li>" for clue in ep["clues"])
-        extras = (f'<aside class="serial-reader-box"><span class="small-label">READERS CASE FILE</span>'
-                  f'<h2>読者への手掛かり</h2><ul>{clues}</ul>'
-                  f'<p><strong>あなたへの問い：</strong>{h(ep["reader_prompt"])}</p></aside>')
+        # Hints stay optional and do not interrupt the ending or explain the answer.
+        extras = (f'<details class="serial-clues"><summary>読了後に伏線を振り返る</summary>'
+                  f'<div><ul>{clues}</ul>'
+                  f'<p><strong>考えるヒント：</strong>{h(ep["reader_prompt"])}</p></div></details>')
     else:
         scenarios = "".join(
             f'<article class="serial-scenario"><h3>{h(s["label"])}</h3><p>{h(s["text"])}</p></article>'
@@ -328,7 +310,6 @@ def render_episode_page(series, ep, layout):
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
                   f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">公開予想の検証台帳を確認する ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol><p>数値・見通しは参照資料に基づきますが、株価についての見立ては編集上の仮説です。</p></section>')
-    extras += render_mystery_notebook(series, ep)
     navigation = (
         '<nav class="serial-next-prev" aria-label="連載の前後の話">'
         + (f'<a href="{episode_url(series, prev_ep)}">← 前の話を読む</a>' if prev_ep else
