@@ -1,6 +1,6 @@
 # Veripsa X 改善ログ（実測と仮説の区別）
 
-作成日（日本時間）：2026-11-03 17:36
+作成日（日本時間）：2026-11-03 19:51
 
 ## 観測済みの運営状況
 
@@ -9,8 +9,8 @@
 - 未登録原稿：19本
 - 笑いの構造（全在庫）：{'delayed_response': 1, 'dry_dialogue': 2, 'inverted_expectation': 3, 'literal_wordplay': 2, 'meta_commentary': 1, 'perspective_flip': 2, 'physical_scale': 1, 'role_reversal': 2, 'self_reference': 2, 'small_action': 2, 'unexpected_kindness': 1, 'visual_reveal': 3}
 - 笑いの構造（Bufferへ一度でも登録済み）：{'inverted_expectation': 1, 'literal_wordplay': 1, 'self_reference': 1}
-- 最終確認できたBuffer状態：{'not_checked': 1, 'scheduled': 2}
-- Buffer状態確認日時：2026-11-03T07:52:08.161939+00:00
+- 最終確認できたBuffer状態：{'scheduled': 3}
+- Buffer状態確認日時：2026-11-03T09:03:54.740822+00:00
 
 ## Xインプレッション（主KPI）
 
