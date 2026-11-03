@@ -4,7 +4,8 @@ import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from check_delivery import report, recent_unknown_ids
+from check_delivery import (report, recent_unknown_ids, collect_missing_links,
+                            queue_health, trusted_x_permalink)
 
 class DeliveryStateTests(unittest.TestCase):
     def test_buffer_sent_not_conflated_with_impressions(self):
@@ -27,6 +28,64 @@ class DeliveryStateTests(unittest.TestCase):
                     [{"id":"unrelated","status":"sent"}])
         self.assertEqual(len(rows),1)
         self.assertEqual(rows[0]["post_id"],"xexp-a")
+
+    def test_preserve_permalink_only_with_matching_sent_buffer_id(self):
+        old={"items":[{"post_id":"xexp-a","buffer_id":"original",
+                        "buffer_status":"sent",
+                        "buffer_external_link":"https://x.com/account/status/1234",
+                        "buffer_asset_count":1}]}
+        state={"queued":{"xexp-a":{"buffer_id":"original"}}}
+        rows=report(state,[{"id":"original","status":"sent"}],old)
+        self.assertEqual(rows[0]["buffer_external_link"],
+                         "https://x.com/account/status/1234")
+        self.assertEqual(rows[0]["buffer_asset_count"],1)
+        changed={"queued":{"xexp-a":{"buffer_id":"different"}}}
+        self.assertNotIn("buffer_external_link",
+                         report(changed,[{"id":"different","status":"sent"}],old)[0])
+        self.assertNotIn("buffer_external_link",
+                         report(state,[{"id":"original","status":"scheduled"}],old)[0])
+        old["items"][0]["buffer_external_link"]="https://invalid.example/status/1234"
+        self.assertNotIn("buffer_external_link",
+                         report(state,[{"id":"original","status":"sent"}],old)[0])
+        self.assertFalse(trusted_x_permalink("https://fake-x.com/user/status/123"))
+
+    def test_provider_detail_queries_are_read_only_and_capped_at_two(self):
+        now=datetime(2026,11,4,12,0,tzinfo=timezone.utc)
+        inventory={"experiments":[{"id":f"xexp-{i}","text":f"テスト文{i}",
+                   "format":"surreal_text"} for i in range(5)]}
+        state={"queued":{f"xexp-{i}":{"buffer_id":f"buf-{i}",
+               "queued_at_utc":f"2026-11-04T0{i}:00:00+00:00"} for i in range(5)}}
+        remote=[{"id":f"buf-{i}","status":"sent"} for i in range(5)]
+        rows=report(state,remote)
+        calls=[]
+        def get_one(bufid):
+            calls.append(bufid)
+            i=int(bufid[-1])
+            return {"id":bufid,"channelId":"Veripsa",
+                    "text":f"テスト文{i}","status":"sent",
+                    "externalLink":f"https://x.com/account/status/{100+i}",
+                    "assets":[]}
+        count=collect_missing_links(rows,state,inventory,"Veripsa",get_one,
+                                    now=now,max_probes=2)
+        self.assertEqual(count,2)
+        self.assertEqual(len(calls),2)
+        self.assertEqual(sum(bool(r.get("buffer_external_link")) for r in rows),2)
+        with self.assertRaisesRegex(ValueError,"cap exceeded"):
+            collect_missing_links(rows,state,inventory,"Veripsa",get_one,
+                                  now=now,max_probes=3)
+
+    def test_inventory_health_uses_only_known_records(self):
+        inventory={"experiments":[{"id":"xexp-a","visual":"sock"},
+                                  {"id":"xexp-b"},{"id":"xexp-c","visual":"book"}]}
+        state={"queued":{"xexp-a":{"buffer_id":"sent-id"}}}
+        remote=[{"id":"sent-id","status":"sent"},
+                {"id":"other","status":"scheduled"}]
+        health=queue_health(inventory,state,remote,report(state,remote))
+        self.assertEqual(health["original_unsubmitted"],2)
+        self.assertEqual(health["unsubmitted_original_images"],1)
+        self.assertEqual(health["buffer_currently_scheduled_total"],1)
+        self.assertEqual(health["buffer_sent_original_records"],1)
+        self.assertNotIn("impressions",health)
 
     def test_recent_unlisted_submission_needs_review_but_is_not_failure(self):
         state={"queued":{"xexp-a":{
