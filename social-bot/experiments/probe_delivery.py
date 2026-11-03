@@ -96,7 +96,8 @@ def normalize_buffer_impressions(post_data, sent_at):
 
 # Query budgets for the shared Buffer Free monthly allowance. This is invoked
 # once daily, not by every refill or every main push.
-MAX_STATUS_READS = 8
+MAX_STATUS_READS = 20
+MAX_STATUS_BATCH = 10
 MAX_METRICS_READS = 1
 
 
@@ -119,6 +120,30 @@ def selected_posts(registered, state, previous, limit=MAX_STATUS_READS):
             seen.add(post["id"])
             output.append(post)
     return output[:limit]
+
+
+def fetch_status_batch(token, post_ids):
+    """Fetch up to ten immutable IDs in ONE read-only GraphQL request.
+
+    Buffer documents aliased lookups as an official quota-saving pattern.
+    Do not silently fall back to per-ID queries on an API error.
+    """
+    if (not isinstance(post_ids, list) or
+            not 1 <= len(post_ids) <= MAX_STATUS_BATCH or
+            len(set(post_ids)) != len(post_ids) or
+            any(not isinstance(pid, str) or not pid for pid in post_ids)):
+        raise ValueError("Invalid bounded Buffer alias batch")
+    fields = "id channelId text status sentAt externalLink assets { id mimeType }"
+    aliases = [
+        "p" + str(i) + ": post(input: {id: " + qstring(pid) + "}) { " +
+        fields + " }"
+        for i, pid in enumerate(post_ids)
+    ]
+    result = gql(token, "query { " + " ".join(aliases) + " }")
+    if not isinstance(result, dict) or any(
+            "p" + str(i) not in result for i in range(len(post_ids))):
+        raise RuntimeError("Buffer alias result incomplete")
+    return {pid: result["p" + str(i)] for i, pid in enumerate(post_ids)}
 
 
 def mature_sent(sent_at, now):
@@ -157,7 +182,7 @@ def queue_health(inventory, state, rows):
 
 
 def build(inventory, state, channel_id, fetch, fetch_metrics=None,
-          previous=None, now=None):
+          previous=None, now=None, fetch_batch=None):
     now = now or datetime.now(timezone.utc)
     previous = previous if isinstance(previous, dict) else {}
     old = {r.get("post_id"): r for r in previous.get("items", [])
@@ -168,10 +193,32 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
     chosen = selected_posts(registered, state, previous)
     output = {}
     metric_reads = 0
+    bulk = {}
+    batch_failures = set()
+    status_requests = 0
+    if fetch_batch is not None:
+        for offset in range(0, len(chosen), MAX_STATUS_BATCH):
+            group = chosen[offset:offset + MAX_STATUS_BATCH]
+            ids = [state["queued"][item["id"]]["buffer_id"] for item in group]
+            status_requests += 1
+            try:
+                fetched = fetch_batch(ids)
+                if not isinstance(fetched, dict) or any(
+                        pid not in fetched for pid in ids):
+                    raise RuntimeError("Buffer alias batch missing a post result")
+                bulk.update(fetched)
+            except (RuntimeError, ValueError, OSError):
+                batch_failures.update(ids)
     for post in chosen:
         record = state["queued"][post["id"]]
         try:
-            remote = fetch(record["buffer_id"])
+            if fetch_batch is None:
+                status_requests += 1
+                remote = fetch(record["buffer_id"])
+            else:
+                if record["buffer_id"] in batch_failures:
+                    raise RuntimeError("Buffer alias batch failed")
+                remote = bulk.get(record["buffer_id"])
             row = reconcile(post, record, remote, channel_id)
             if (row["buffer_status"] == "sent" and fetch_metrics is not None and
                     metric_reads < MAX_METRICS_READS and
@@ -224,6 +271,8 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
         "source": "buffer_post_by_saved_id_daily_bounded_readonly",
         "limits": {"post_reads_this_run": len(chosen),
                    "max_post_reads": MAX_STATUS_READS,
+                   "status_api_requests_this_run": status_requests,
+                   "max_batched_status_api_requests": 2,
                    "metric_reads_this_run": metric_reads,
                    "max_metric_reads": MAX_METRICS_READS},
         "limitations": ("Buffer status and permalink are provider evidence, not "
@@ -258,7 +307,8 @@ def main():
     except (OSError, ValueError):
         previous = {}
     result=build(inventory,state,channel,fetch,fetch_metrics,
-                 previous=previous)
+                 previous=previous,
+                 fetch_batch=lambda ids:fetch_status_batch(key, ids))
     (HERE/"delivery.json").write_text(
         json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     for row in result["items"]:
@@ -266,8 +316,9 @@ def main():
               "assets",row.get("buffer_asset_count","unknown"),
               "X URL",row.get("buffer_external_link","unverified"))
     print("Read budget:", result["limits"]["post_reads_this_run"],
-          "post checks and", result["limits"]["metric_reads_this_run"],
-          "insights checks")
+          "post statuses via",result["limits"]["status_api_requests_this_run"],
+          "aliased API calls; and", result["limits"]["metric_reads_this_run"],
+          "insights calls")
     health=result["health"]
     print("X original inventory capacity:",health)
     if health["unsubmitted_inventory_below_14"]:
