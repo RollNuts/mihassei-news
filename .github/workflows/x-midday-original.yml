@@ -13,9 +13,8 @@ on:
       - "social-bot/publish.py"
       - ".github/workflows/x-midday-original.yml"
   workflow_dispatch:
-  schedule:
-    # 10:15 JST daily. Only schedules for 12:30 JST TODAY; never runs late.
-    - cron: "15 1 * * *"
+  # Superseded: owner changed the Buffer X channel to seven slots per day.
+  # Tests still run on PR/push, but there is no separate automated noon send.
 
 permissions:
   contents: write
