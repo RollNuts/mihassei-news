@@ -57,7 +57,7 @@ class ScenePublicationTests(unittest.TestCase):
                 self.assertIn('name="twitter:image" content="https://veripsa.com' + url + '"', page)
                 self.assertIn('data-fallback="/images/' + slug + '.svg"', page)
                 self.assertIn('width="1200" height="675"', page)
-                self.assertIn("AI生成", page)
+                self.assertIn("再現イメージ（合成）", page)
                 media = entries[build.SITE + "/articles/" + slug + "/"].find("{http://search.yahoo.com/mrss/}content")
                 self.assertEqual(media.attrib["url"], build.SITE + url)
                 self.assertEqual(media.attrib["type"], "image/jpeg")
