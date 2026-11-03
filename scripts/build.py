@@ -960,9 +960,14 @@ def story(a, articles, issues=None, serials=None):
     read_minutes = max(1, (text_len + 449) // 450)
     available_issues = daily_issues(articles) if issues is None else issues
     issue_day = publication_date(a)[:10]
+    # Even a thin category should have a useful reader route, without
+    # creating a duplicate low-value category page for search engines.
+    category_href = (category_url(a["category"])
+                     if a["category"] in curated_categories(articles)
+                     else "/archive/?category=" + quote(a["category"]))
     category_link = (
-        f'<a href="{category_url(a["category"])}">{escape(a["category"])}の記事をまとめて読む ↗</a>'
-        if a["category"] in curated_categories(articles) else ""
+        f'<a href="{escape(category_href)}">'
+        f'{escape(a["category"])}の記事を読む ↗</a>'
     )
     issue_link = (
         f'<a class="article-issue-link" href="{issue_url(issue_day)}">'
@@ -988,8 +993,6 @@ def story(a, articles, issues=None, serials=None):
 <figure class="article-hero-figure">
 {image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
 <figcaption>{photo_credit(a)}</figcaption></figure>
-<div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
-<p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <nav class="reader-next" aria-label="続けて読む記事">
@@ -1016,13 +1019,17 @@ def story(a, articles, issues=None, serials=None):
 </section>
 <div class="article-reader-metric" data-article-readers hidden><span>今日この記事を読んだブラウザ <strong data-article-reader-count>—</strong>件</span><small>※日本時間・1日1回集計、実人数ではありません</small></div>
 {actions(a)}
-<section class="source-context" id="story-source" aria-label="着想した実際の話題">
-<h2>着想元</h2>
+<div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
+<p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
+<details class="source-context" id="story-source">
+<summary>着想元を見る</summary>
+<div class="source-context-body">
 <p>{escape(src["topic"])}</p>
 <p class="source-context-disclaimer">記事内の出来事は創作であり、元記事が報じた事実ではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
-</section>
+</div>
+</details>
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 </article>
