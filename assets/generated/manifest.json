@@ -10,6 +10,16 @@
       "seed": 3792932720945161705,
       "sha256": "56f5c4abaaf2eea1cae07e68b88356418a2124bb7947f8bca15625b2d09e3eb1"
     },
+    "farm-friendship-across-species": {
+      "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
+      "bytes": 109756,
+      "generated_at": "2026-11-03T04:34:29.880437+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 6455747253186509503,
+      "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+    },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
       "bytes": 103133,
@@ -21,6 +31,26 @@
       "reviewed_at": "2026-11-03T03:59:18.579837+00:00",
       "seed": 6871038269748098871,
       "sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1"
+    },
+    "supporter-guarantor-contract": {
+      "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
+      "bytes": 91416,
+      "generated_at": "2026-11-03T04:34:29.882290+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 5748070834390824869,
+      "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
+    },
+    "unwanted-call-protection-calls-back": {
+      "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
+      "bytes": 98358,
+      "generated_at": "2026-11-03T04:34:29.881395+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 877056317251028032,
+      "sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c"
     },
     "variety-700-guests-only-introductions": {
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
