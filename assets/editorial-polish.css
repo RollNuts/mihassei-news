@@ -100,6 +100,9 @@ body{
   align-items:start;
 }
 .lead-media{
+  display:block;
+  width:100%;
+  height:auto; /* override the legacy fixed 260px frame on small screens */
   aspect-ratio:16/9;
   border:0;
   border-radius:12px;
@@ -107,7 +110,11 @@ body{
   background:#dfe1d7;
   box-shadow:0 8px 32px rgba(36,48,42,.09);
 }
-.lead-media .hero-image{width:100%;height:100%;object-fit:cover}
+/* The previous newspaper masthead drew a decorative circle over this image.
+   The current hero is a real topic illustration: never cover it with that art. */
+.lead-media::before,.lead-media::after{content:none}
+.lead-media .hero-image{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.lead-media+.dek{margin-top:15px}
 .lead-media .overlay{
   padding:17px 19px;
   background:linear-gradient(180deg,transparent,rgba(24,35,28,.82));
