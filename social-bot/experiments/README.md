@@ -104,3 +104,13 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - Daily original-idea replenishment should maintain **21–28 unsubmitted, genuinely distinct** short texts where quality permits. Prioritize an understandable setup and concrete ending; no identical/near-identical posts, click bait, blind auto-likes, bulk follows, trend hijacking or unapproved manga.
 - Seven daily slots is a **target**, not evidence of successful X publishing, impressions or monetization. Preserve X actual-post links, provider sent/scheduled statuses and verified-user 90-day reward metric as different data sources. Do not fabricate missing statistics.
 - Additional cost remains **0 yen**: free Buffer, public GitHub Actions and local rendering only; no upgraded subscriptions, metered X/GPT/image APIs, paid GPUs or extra credits.
+
+## Seven-post/day inventory and evidence patch (2026-11-03)
+
+- Added **10 new original short scripts**, including **three new, distinct Pillow-only image scenes** (sock with a new career, a book reviewing its reader, a raincloud with an umbrella). No already submitted Buffer text, post ID, media SHA, queued order, or unpublished manga gate is touched.
+- The free GitHub Action renders the new PNGs before validating dimensions, size and image integrity. After merge, the images are first committed to public main **before** Buffer references the new image URL. A Buffer acceptance is not proof of successful X publication.
+- The once-daily `check_delivery.py` preserves previous Buffer-provided X permalinks and image counts only for an exact, unchanged Buffer ID with **sent** status. It makes **at most two individual read-only post-detail queries** beyond the existing bounded scheduled/sent listing. Prior X links will no longer silently disappear when the status-only report runs.
+- `delivery.json.health` tracks unpublished originals, unpublished image scenes, scheduled Buffer items and Buffer-sent records. Warnings trigger below **14 unsubmitted scripts** or **two unused new images**; these are editorial indicators, not X reach measurements.
+- The daily read-only audit runs at **23:45 JST** to cover more of the owner-configured seven daily Buffer slots. GitHub Actions scheduling is best-effort; late slots may appear in the following day's report.
+- The weekly evidence report separately notes the unused image inventory and issues a capacity warning below 14 originals (about two days' worth at seven slots/day). Its counts are not qualified 90-day X Creator monetization impressions.
+- No paid X/GPT/image APIs, paid Buffer tier, additional credits, image hosting fees, or ads. Never use bulk auto-replies/follows, engagement bait, or rewritten copies of already accepted posts.
