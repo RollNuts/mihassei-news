@@ -21,6 +21,13 @@ class OriginalXVisualTests(unittest.TestCase):
                 self.assertEqual(stored.format, "PNG")
                 self.assertEqual(stored.size, (W, H))
 
+    def test_new_visuals_are_distinct_and_original(self):
+        expected={"xexp-sock-career", "xexp-book-review", "xexp-cloud-bus"}
+        self.assertTrue(expected.issubset(SCENES))
+        # Layouts must be recognizably different in visual structure.
+        samples={name:draw_scene(name).getpixel((620, 450)) for name in expected}
+        self.assertEqual(len(set(samples.values())),len(expected))
+
     def test_does_not_overwrite_any_existing_asset(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
