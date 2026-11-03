@@ -1,5 +1,28 @@
 [
   {
+    "slug": "historical-lookalike-contest-dog-wins",
+    "category": "社会",
+    "flash": "まちの珍事",
+    "fiction_company": "郷土の偉人そっくり大会",
+    "art": "cards",
+    "fiction_at": "2031-11-03T11:52:00+09:00",
+    "title": "偉人そっくり大会、犬が優勝　親切さの審査で人間に勝つ",
+    "summary": "見た目だけでなく親切さも審査する、町のそっくりさん大会。落とし物を届けた犬が、付けひげ姿の出場者たちを差し置いて優勝した。",
+    "paragraphs": [
+      "「顔だけでは決まりません」。2031年、南の町の「郷土の偉人そっくり大会」では、出場者の親切さも審査している。付けひげと羽織で並んだ人たちの横で、出場者が連れてきた犬が、係員の落とした杖をくわえて届けた。審査員は犬の前にしゃがみ、優勝のリボンをかけた。",
+      "記念撮影では、犬が表彰台に乗るのを嫌がり、飼い主の足にぴったりくっついた。落選した出場者たちは付けひげ姿のまま膝をつき、おやつを振って犬を呼んだ。ようやく撮れた一枚には、犬のために一列にしゃがむ偉人たちが写った。司会者が「受賞者から一言」とマイクを向けると、犬はそれをくわえ、舞台の端で待つ飼い主へ返しに行った。"
+    ],
+    "scene_prompt": "A small friendly dog wearing an oversized winner's ribbon gently carries a handheld microphone in its mouth toward its owner. Three anonymous adults in generic old-fashioned costumes with theatrical fake beards kneel beside a low podium, trying to coax the dog into a winner's photo. Small fictional town festival stage, warm natural light, deadpan photorealistic comedy, no writing, logos, or real celebrities.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "KYT鹿児島読売テレビ（ライブドアニュース配信）",
+      "published_at": "2026-11-03T11:52:00+09:00",
+      "url": "https://news.livedoor.com/article/detail/32720465/",
+      "topic": "2026年11月3日11:52公開の当日報道。鹿児島おはら祭で西郷どんそっくりさんコンテストも実施されることを紹介。鹿児島市の10月13日発表では見た目だけでなく人物像も審査対象。本文の犬の優勝、大会関係者、出来事は本紙の創作。"
+    },
+    "published_at": "2026-11-03T23:31:05.893+09:00"
+  },
+  {
     "slug": "stolen-doorbell-returned-by-parcel",
     "category": "事件",
     "flash": "まちの珍事件",
