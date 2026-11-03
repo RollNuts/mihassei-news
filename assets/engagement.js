@@ -3,14 +3,19 @@
 
   // Broken or blocked third-party stock photographs never leave empty cards.
   document.querySelectorAll("img[data-fallback]").forEach(image=>{
-    image.addEventListener("error",()=>{
+    const recoverImage=()=>{
       const fallback=image.getAttribute("data-fallback");
       if(!fallback || image.getAttribute("src")===fallback)return;
       image.removeAttribute("data-fallback");
       image.src=fallback;
       const caption=image.closest("figure")?.querySelector("figcaption");
       if(caption)caption.textContent="イメージ画像";
-    },{once:true});
+      image.removeAttribute("data-generated-scene");
+      image.closest(".story-image-link")?.classList.remove("story-image-link--generated");
+    };
+    image.addEventListener("error",recoverImage,{once:true});
+    // A cached failure can finish before this deferred script attaches.
+    if(image.complete && image.naturalWidth===0)recoverImage();
   });
 
   // An animated, explicitly fictional clock, shifted five calendar years.

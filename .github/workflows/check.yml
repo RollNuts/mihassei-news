@@ -14,6 +14,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install free local image validation dependency
+        run: python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
       - run: python3 -m unittest discover -s tests -v
       - name: Warn about stale news sources and topic concentration (never blocks publishing)
         run: python3 scripts/audit_editorial.py
@@ -25,6 +27,10 @@ jobs:
           node-version: '22'
       - name: Validate read-only public health checker
         run: python3 -m py_compile scripts/check_live.py
+      - name: Build the static site with all image fallback routes
+        run: python3 scripts/build.py
+      - name: Verify cached and late image failures recover without broken layouts
+        run: node --test tests/image-fallback.test.cjs
       - name: Validate browser JavaScript
         run: |
           node --check assets/site.js

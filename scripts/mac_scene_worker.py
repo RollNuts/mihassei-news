@@ -12,6 +12,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import socket
 import subprocess
 import sys
@@ -58,9 +59,13 @@ def clean_owned_intermediates(output_dir: Path) -> int:
 
 
 def update_status(status: str, detail: str) -> None:
+    if APP_DIR.is_symlink():
+        raise RuntimeError("Unsafe app directory")
     APP_DIR.mkdir(parents=True, exist_ok=True)
     target = APP_DIR / "last-run.json"
     stage = APP_DIR / "last-run.json.tmp"
+    if stage.is_symlink() or target.is_symlink():
+        raise RuntimeError("Unsafe status file")
     stage.write_text(json.dumps({
         "status": status, "detail": detail[:300],
         "at_utc": datetime.now(timezone.utc).isoformat()
@@ -86,8 +91,8 @@ def wait_for_server(proc: subprocess.Popen, seconds: int = 120) -> None:
 
 def run_once(limit: int = 4, min_free_gb: int = 12,
              timeout: int = 900) -> int:
-    if not 1 <= limit <= 8:
-        raise ValueError("Limit must be 1–8 images each run")
+    if not 1 <= limit <= 4:
+        raise ValueError("Limit must be 1–4 images each run")
     if not 12 <= min_free_gb <= 100:
         raise ValueError("Free disk floor must be at least 12 GiB")
     if not 30 <= timeout <= 3600:
@@ -97,22 +102,27 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
     checkpoint = comfy / "models" / "checkpoints" / "sd_xl_base_1.0.safetensors"
     if not (interpreter.is_file() and (comfy / "main.py").is_file() and checkpoint.is_file()):
         raise RuntimeError("ComfyUI/model missing; install on your Mac first")
+    if not (APP_DIR / "install-ok.txt").is_file():
+        raise RuntimeError("Verified installation/model-license marker missing")
     if generated_mib() >= MAX_GENERATED_MIB:
         raise RuntimeError("Generated JPEG cap reached; existing photos preserved")
-    if any(path.exists() and path.is_symlink() for path in (APP_DIR, CACHE_DIR, comfy)):
+    if any(path.is_symlink() for path in (APP_DIR, CACHE_DIR, comfy)):
         raise RuntimeError("Refusing symlinked worker installation directories")
     APP_DIR.mkdir(parents=True, exist_ok=True)
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     output_dir = CACHE_DIR / "output"
     temp_dir = CACHE_DIR / "temp"
     for d in (output_dir, temp_dir):
-        if d.exists() and not safe_dir(d):
+        if d.is_symlink() or (d.exists() and not safe_dir(d)):
             raise RuntimeError("Unsafe cache directory: " + str(d))
         d.mkdir(exist_ok=True)
     if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
         raise RuntimeError(f"Less than {min_free_gb} GiB free; no image generation started")
 
-    with (APP_DIR / "worker.lock").open("a+") as lock:
+    lock_path = APP_DIR / "worker.lock"
+    if lock_path.is_symlink():
+        raise RuntimeError("Unsafe worker lock")
+    with lock_path.open("a+") as lock:
         try:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
@@ -120,6 +130,11 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
             return 0
         if port_in_use():
             raise RuntimeError("Dedicated ComfyUI port occupied; refusing unsafe reuse")
+        try:
+            from .mac_scene_setup import verify_model
+        except ImportError:
+            from mac_scene_setup import verify_model
+        verify_model(checkpoint)
         clean_owned_intermediates(output_dir)
         cmd = [
             str(interpreter), str(comfy / "main.py"),
@@ -127,11 +142,15 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
             "--output-directory", str(output_dir),
             "--temp-directory", str(temp_dir),
             "--disable-auto-launch",
+            "--disable-api-nodes", "--disable-all-custom-nodes",
         ]
         server = None
+        sync_process = None
         try:
             server = subprocess.Popen(cmd, cwd=comfy, stdout=subprocess.DEVNULL,
-                                      stderr=subprocess.DEVNULL)
+                                      stderr=subprocess.DEVNULL,
+                                      env={**os.environ, "HF_HUB_OFFLINE": "1",
+                                           "TRANSFORMERS_OFFLINE": "1"})
             wait_for_server(server)
             invoke = [
                 str(interpreter), str(ROOT / "scripts" / "local_scene_sync.py"),
@@ -143,15 +162,26 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                 "--output-dir", str(output_dir),
                 "--min-free-gb", str(min_free_gb),
             ]
-            result = subprocess.run(
-                invoke, cwd=ROOT, check=False,
-                timeout=limit * timeout + 240,
-            )
-            update_status("ok" if result.returncode == 0 else "skipped",
-                          "Local photo sync completed" if result.returncode == 0
+            sync_process = subprocess.Popen(invoke, cwd=ROOT, start_new_session=True)
+            deadline = time.monotonic() + limit * timeout + 900
+            while sync_process.poll() is None:
+                if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
+                    raise RuntimeError("Free storage reached the safety floor; stopping local jobs")
+                if time.monotonic() >= deadline:
+                    raise RuntimeError("Local photo sync timed out; saved outbox will retry next run")
+                time.sleep(2)
+            update_status("ok" if sync_process.returncode == 0 else "skipped",
+                          "Local photo sync completed" if sync_process.returncode == 0
                           else "Generation or git publish failed; site fallback preserved")
-            return result.returncode
+            return sync_process.returncode
         finally:
+            if sync_process is not None and sync_process.poll() is None:
+                os.killpg(sync_process.pid, signal.SIGTERM)
+                try:
+                    sync_process.wait(timeout=20)
+                except subprocess.TimeoutExpired:
+                    os.killpg(sync_process.pid, signal.SIGKILL)
+                    sync_process.wait(timeout=10)
             if server is not None and server.poll() is None:
                 server.terminate()
                 try:

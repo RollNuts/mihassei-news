@@ -1,41 +1,91 @@
-# 未発生新聞：Macの無料ローカル画像生成セットアップ
+# Macでの実写コント画像生成
 
-## Mac用の容量制限付きローカル生成（手元のMacで有効化）
+GitHub側のコードだけではMacにモデルは入りません。画像がなくても、承認済み写真またはSVGで毎日の発行は続きます。外部の画像API・有料GPU・追加ChatGPTクレジットは使用しません。
 
-上のComfyUI画像生成機能に、Mac向けの安全なインストーラと定期実行用 `launchd` 設定を追加した。**GitHubにマージしただけではMac本体へソフトはインストールされない。** 実際にMacで明示的にコマンドを実行して有効化する必要がある。ChatGPTの追加課金、画像APIの従量課金、外部GPUは使わない。
+## 最小のセットアップ
 
-**前提:** Apple Silicon Mac、メモリ16GiB以上、Python 3.11–3.13（`python3` で見つからなければ `--python python3.12` などを指定）、gitがインストール済み、モデルを新規取得するなら空き30GiB以上。SDXL 1.0のOpenRAIL++の条件と用途を確認すること。画像は架空のコント再現であり、実際の事件や人物の報道写真ではない。
+Apple Silicon、メモリ16GiB以上、空き30GiB以上、Python 3.11〜3.13が必要です。以下は既存のPython 3.11を使う例です。システムPythonは変更しません。
+
+まずGitHubへのローカル認証を確認してください。接続済みChatGPTのGitHub認証はMacのgitとは別です。
 
 ~~~bash
-# 1. Macにコピーした本リポジトリ内で最新コードを取得
-git pull --ff-only origin main
-
-# 2. ストレージと設定を確認するだけ（ダウンロードも変更もなし）
-python3 scripts/mac_scene_setup.py
-
-# 3-A. 公式モデルを1本だけ取得してセットアップ（約6.94GB）
-# モデルのライセンスを確認した場合のみ実行
-python3 scripts/mac_scene_setup.py --install --download-model --acknowledge-model-license
-
-# 3-B. すでに同じ公式モデルがある場合は重複ダウンロードせず再利用
-# python3 scripts/mac_scene_setup.py --install --model-path "/path/to/sd_xl_base_1.0.safetensors" --acknowledge-model-license
-
-# 4. Macのlaunchdに定期実行を登録（新着記事を4本ずつ、1日4枠）
-python3 scripts/mac_scene_setup.py --enable-schedule
-
-# 任意: その場で1枚だけ試す
-# python3 scripts/mac_scene_worker.py --limit 1
-
-# 現在の状態・最終実行結果・画像容量
-python3 scripts/mac_scene_setup.py
-
-# 停止（生成済み画像・モデルは保持）
-python3 scripts/mac_scene_setup.py --disable-schedule
-
-# 専用キャッシュだけ掃除（既存画像・モデルは保持）
-python3 scripts/mac_scene_setup.py --cleanup-cache
+export PATH="/Library/Developer/CommandLineTools/usr/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+gh auth status
+# 認証が無効な場合のみ、本人がブラウザでログイン
+gh auth login --hostname github.com --git-protocol https --web
+gh auth setup-git
 ~~~
 
-**上限・保護:** アプリ本体は `~/Library/Application Support/VeripsaScenes`、一時ファイルは `~/Library/Caches/VeripsaScenes` に分離。モデルは公式SHA-256で検証し、ダウンロードは最大7.5GB。新規セットアップ前の空き容量は30GiB、既存モデルを再利用するときは20GiBが下限。生成中は12GiBを下回る前に停止する。生成は1回最大4枚（毎日4枠）、JPEGは**1枚700KiB以下**、生成済みJPEGの合計が**1.5GiB**に達したら停止。完了後は専用作業フォルダの一時PNGだけを削除し、モデル・既存写真・他ファイルには触れない。GitHubへのpushは`--publish`を明示したワーカーからのみ行い、強制pushしない。失敗しても従来のSVGで記事公開を継続する。
+Xcodeの同意画面が出るMacでは、上のPATHでインストール済みCommand Line Toolsのgitを使えます。この処理でXcodeの規約へ自動同意はしません。
 
-**実機依存:** Python/PyTorchのApple MPS対応、GitHubへの認証、ComfyUIの起動とモデルライセンスによっては失敗する。Macの電源が切れている間は実行できない。**全記事に写真が必ず付くことを保証する機能ではない。** 写真未生成なら既存写真／SVGを表示する。
+最新mainを取得した本リポジトリ内で実行します。まだコピーがない場合は、既存ディレクトリと重ならない場所へ `git clone https://github.com/RollNuts/mihassei-news.git` してください。
+
+~~~bash
+# 状態確認のみ。ダウンロード・削除・設定変更はしない
+python3.11 scripts/mac_scene_setup.py
+
+# 公式SDXL 1.0のライセンスと用途を確認してから実行
+python3.11 scripts/mac_scene_setup.py --install --python python3.11 --download-model --acknowledge-model-license
+
+# まず3本を実際に生成し、検証済みのJPEGだけGitHubへ反映
+python3.11 scripts/mac_scene_worker.py --limit 3
+
+# 上が成功してから有効化。毎時45分、ログイン直後に最大4本
+python3.11 scripts/mac_scene_setup.py --enable-schedule
+
+# 状態と最終結果を確認
+python3.11 scripts/mac_scene_setup.py
+~~~
+
+同じ公式モデルが既にある場合はダウンロード指定の代わりに `--model-path "/absolute/path/sd_xl_base_1.0.safetensors"` を使ってください。SHA-256を確認し、シンボリックリンクで再利用します。他のモデルを上書きしません。
+
+## ライセンス・容量・依存関係
+
+- [公式SDXL 1.0モデル](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)：CreativeML Open RAIL++-M。無償ですが用途の制限があります。[ライセンス本文](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)を確認してください。モデルは配布せず、匿名の架空人物による創作として表示します。
+- ファイル名 `sd_xl_base_1.0.safetensors`、約6.94GB、SHA-256 `31e35c80fc4829d14f90153f4c74cd59c90b779f6afe05a74cd6120b893f7e5b`。毎回の起動前にも正当性を検証します。
+- 新規のComfyUIは[公式v0.43.0](https://github.com/Comfy-Org/ComfyUI/releases/tag/v0.43.0)に固定。GPL-3.0のローカルソフトです。既存の専用環境は勝手に更新しません。PyTorch・Pillow等は専用venvへ、pipキャッシュなしでインストールします。
+- 追加インストールの代替は既存の公式モデル・専用環境の再利用。外部画像APIには切り替えません。
+- 専用アプリ：`~/Library/Application Support/VeripsaScenes`。一時PNG：`~/Library/Caches/VeripsaScenes`。
+- モデル再利用時もセットアップ前に30GiB、実行中に12GiB＋小さな作業余裕を確保します。依存インストール・モデル取得・生成待機中も空き容量を監視し、不足時は停止します。
+- 1回1〜4本、JPEGは1200×675（16:9）、1枚700KiB以下。元の作業場所・専用outbox・一時checkoutを合わせた生成JPEG総量が1.5GiBを超えないよう、コピー前と生成前に容量を予約します。既存の画像を削除して空きを作ることはしません。
+- 一時checkoutには既存画像の作業コピーができます。1.5GiBのJPEG上限と12GiBのディスク空き下限は、この作業コピーも含みます。正常終了時には専用の作業コピーだけ片付けます。
+- キャッシュの削除は下記コマンドで専用領域だけ行います。アンインストールはまずスケジュールを解除し、必要な再送画像を確認してから専用アプリ領域を手動で取り除きます。既存モデルへのリンク先や写真は削除しません。
+
+## 記事ごとに異なる場面
+
+各記事の `scene_prompt` に、本文のオチを視覚化する英語30〜70語（800文字以内）の具体的な場面を保存します。人物の動作・小道具・場所を指定し、文字・ロゴ・実在人物を入れません。記事自動発行時にこの項目も執筆し、Macは画像生成だけ行います。指定がない旧記事は既存の場面テンプレートを使います。
+
+本文・見出し・要約・場面指示が変われば旧画像は無効となり、次回に生成し直します。画像の解像度、形式、サイズ、SHA-256、記事との対応を検証します。真っ黒などほぼ単色の生成物も拒否します。ただし、人物の手・文字の混入・笑いの分かりやすさは機械検証だけでは保証できません。初回の実生成は目視確認してください。
+
+## 競合・障害からの復旧
+
+1. 最新mainをfetchし、専用の一時worktreeを用意。
+2. 以前の成功画像を再送してから、画像のない記事を最大4本生成。
+3. 成功画像を専用outbox `VeripsaScenes/pending` に保管。一部失敗しても成功分を反映。
+4. push直前に再び最新mainを取得し、内容が一致する画像とmanifestだけを合成。記事追加・他の画像を維持。
+5. 通常pushが競合したら最大3回再試行。失敗した画像は次回へ持ち越し。force pushはしない。
+
+ユーザーの作業ブランチ・未保存変更・記事本文には触れません。強制終了で残った専用worktreeも次回に復旧します。記事本文が生成中に編集された場合は古い画像を公開しません。通信障害時も既存写真／SVGで公開を継続します。
+
+Macが停止中は生成できません。ログイン直後と毎時45分に不足分を再確認します。各処理後に専用ComfyUIを終了し、PNGを片付けます。launchdが引き継がないHomebrew／gitのPATHも設定済みです。
+
+## 停止と診断
+
+~~~bash
+# スケジュール停止。モデル・記事・JPEGを保持
+python3.11 scripts/mac_scene_setup.py --disable-schedule
+
+# 専用の一時キャッシュだけ削除。実行中は拒否
+python3.11 scripts/mac_scene_setup.py --cleanup-cache
+
+# 生成予定を確認（モデル、通信、GitHub書き込みは不要）
+python3.11 scripts/local_scene_photos.py --dry-run --limit 3
+~~~
+
+`last-run.json` が `skipped` のときは `detail` を確認します。認証無効なら `gh auth login`、容量不足なら利用者が保存先を整理してください。生成済みJPEG・記事・他アプリのファイルを自動で削除することはありません。
+
+## 2026-11-03の実機確認
+
+M3 MacBook Air（8CPU／10GPU、16GB）へアクセスでき、Python 3.11.15／3.12.13、空き約216.3GiBを確認。既存のComfyUI・公式モデルは確認できた場所にはありませんでした。このWorkセッションではシェルの外部通信が制限され、Macのgh認証も無効でした。
+
+このためモデル・ComfyUIのインストール、実画像3本の品質評価、launchd有効化は未実施です。GitHubのコード修正・ローカルの障害再現テストと実機での生成成功は区別してください。インストール前後の比較は未実施で、作業後の空きは約216.3GiB、生成JPEGは0MiBです。
