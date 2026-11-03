@@ -604,7 +604,8 @@ def check():
         raise RuntimeError("Per-article X/search arrival counters missing or invalid")
     daily=payload.get("today")
     if (not isinstance(daily,dict)
-        or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", daily.get("dateJst",""))
+        or not isinstance(daily.get("dateJst"),str)
+        or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", daily["dateJst"])
         or any(type(daily.get(key)) is not int or daily[key]<0
                for key in ("visitors","articleReads"))):
         raise RuntimeError("Daily JST audience counters missing or invalid")
