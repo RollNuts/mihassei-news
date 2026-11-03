@@ -15,6 +15,9 @@ SCENES = {
     "xexp-invisible-nails": "nails",
     "xexp-witch-autopilot": "broom",
     "xexp-shadow-home": "shadow",
+    "xexp-sock-career": "sock",
+    "xexp-book-review": "book",
+    "xexp-cloud-bus": "cloud",
 }
 ROOT = Path(__file__).resolve().parents[1] / "assets"
 
@@ -25,7 +28,10 @@ def base(scene):
     colors = {"ufo": ((24, 33, 52), (75, 96, 107)),
               "nails": ((36, 53, 67), (100, 128, 136)),
               "broom": ((47, 46, 65), (170, 119, 102)),
-              "shadow": ((35, 40, 56), (117, 91, 82))}
+              "shadow": ((35, 40, 56), (117, 91, 82)),
+              "sock": ((52, 79, 91), (160, 174, 154)),
+              "book": ((39, 53, 72), (144, 105, 91)),
+              "cloud": ((73, 115, 149), (216, 176, 137))}
     top, bottom = colors[scene]
     im = Image.new("RGB", (W, H))
     px = im.load()
@@ -187,13 +193,115 @@ def shadow(d):
     d.ellipse((1120, 618, 1180, 650), fill=(191, 163, 134))
 
 
+def sock(d):
+    """Single sock returns in a tie while the matching sock stays in washer."""
+    d.rectangle((0, 486, W, H), fill=(70, 81, 91))
+    d.rectangle((65, 120, 500, 595), fill=(184, 194, 183), outline=(244, 221, 187), width=12)
+    d.ellipse((133, 198, 431, 510), fill=(49, 68, 85), outline=(221, 227, 216), width=20)
+    d.ellipse((162, 229, 403, 479), fill=(73, 110, 119), outline=(146, 186, 182), width=7)
+    d.polygon([(240, 290), (294, 282), (310, 368), (344, 385),
+               (318, 421), (251, 402)], fill=(235, 200, 166), outline=(49, 59, 76))
+    for x in (134, 192, 250):
+        d.ellipse((x-7, 145, x+7, 159), fill=(66, 74, 80))
+    d.line((520, 100, 1120, 100), fill=(211, 206, 184), width=11)
+    d.line((1020, 100, 1020, 187), fill=(211, 206, 184), width=9)
+    # An anthropomorphic sock in a red tie and carrying a briefcase.
+    d.polygon([(730, 175), (880, 173), (907, 432), (983, 453),
+               (955, 543), (806, 536), (752, 497)], fill=(230, 208, 174),
+              outline=(66, 70, 78))
+    d.line((751, 260, 902, 257), fill=(197, 179, 158), width=11)
+    d.polygon([(794, 263), (842, 263), (834, 305), (849, 438),
+               (818, 468), (790, 438), (805, 302)], fill=(185, 77, 81))
+    d.ellipse((779, 333, 797, 351), fill=(34, 45, 55))
+    d.ellipse((861, 333, 879, 351), fill=(34, 45, 55))
+    d.arc((798, 334, 865, 390), 15, 160, fill=(84, 57, 62), width=6)
+    d.line((778, 496, 741, 604), fill=(226, 203, 174), width=15)
+    d.line((906, 510, 945, 608), fill=(226, 203, 174), width=15)
+    d.rectangle((1000, 432, 1148, 550), fill=(83, 61, 63),
+                outline=(195, 145, 120), width=7)
+    d.arc((1041, 393, 1112, 481), 180, 355, fill=(190, 164, 137), width=9)
+    d.line((930, 401, 1033, 451), fill=(228, 202, 175), width=18)
+
+
+def book(d):
+    """Book writes a review of a reader asleep at the desk."""
+    # Bookshelf, table and sleeping reader at left.
+    d.rectangle((0, 95, 1200, 420), fill=(65, 66, 72))
+    for shelf in (185, 305, 412):
+        d.line((20, shelf, 1180, shelf), fill=(175, 148, 118), width=15)
+    for row in (110, 231):
+        for x in range(40, 1140, 65):
+            h=65 + (x % 3) * 8
+            d.rectangle((x, row, x+46, row+h), fill=(91+(x%90), 114, 117))
+    d.rectangle((0, 448, 1200, 675), fill=(106, 72, 65))
+    d.line((0, 455, 1200, 455), fill=(208, 165, 118), width=13)
+    d.ellipse((158, 290, 398, 473), fill=(223, 181, 147))
+    d.polygon([(133, 325), (176, 234), (375, 248), (415, 325)],
+              fill=(43, 50, 63))
+    d.arc((230, 364, 277, 386), 5, 175, fill=(76, 55, 61), width=5)
+    d.line((333, 444, 483, 495), fill=(225, 176, 144), width=30)
+    d.line((225, 465, 480, 482), fill=(225, 176, 144), width=30)
+    # A standing open book writing with a giant quill.
+    d.polygon([(620, 253), (796, 235), (810, 551), (628, 536)],
+              fill=(225, 210, 183), outline=(100, 74, 70))
+    d.polygon([(804, 236), (991, 253), (996, 539), (812, 551)],
+              fill=(247, 235, 201), outline=(100, 74, 70))
+    d.line((807, 237, 810, 554), fill=(160, 123, 107), width=10)
+    for y in (312, 346, 380, 414):
+        d.line((658, y, 767, y+5), fill=(126, 123, 116), width=5)
+    # Two review stars; no language-specific font is necessary.
+    for x in (853, 923):
+        d.polygon([(x, 302), (x+9, 322), (x+33, 325),
+                   (x+16, 342), (x+21, 367), (x, 355),
+                   (x-21, 367), (x-16, 342), (x-33, 325),
+                   (x-9, 322)], fill=(237, 186, 104))
+    d.line((998, 440, 1105, 291), fill=(166, 111, 78), width=17)
+    d.polygon([(1101, 281), (1120, 254), (1113, 305)], fill=(236, 212, 162))
+    d.line((1003, 444, 962, 497), fill=(225, 215, 179), width=18)
+
+
+def cloud(d):
+    """Raincloud waits at the bus stop under its own umbrella."""
+    d.rectangle((0, 501, W, H), fill=(81, 95, 101))
+    d.rectangle((0, 483, W, 516), fill=(192, 171, 142))
+    for x in range(90, 1190, 270):
+        d.line((x, 611, x+117, 611), fill=(206, 193, 163), width=9)
+    # The shelter, its roof, and an otherwise empty bench.
+    d.rectangle((198, 300, 780, 327), fill=(47, 60, 73))
+    d.polygon([(165, 305), (280, 231), (763, 231), (820, 307)],
+              fill=(71, 80, 91))
+    for x in (220, 764):
+        d.line((x, 303, x, 544), fill=(55, 67, 82), width=15)
+    d.rectangle((273, 469, 714, 490), fill=(191, 136, 99))
+    d.line((292, 483, 292, 551), fill=(70, 68, 75), width=17)
+    d.line((683, 483, 683, 551), fill=(70, 68, 75), width=17)
+    # Cloud is crouching beneath a brightly colored umbrella.
+    for cx,cy,rr in ((420,386,62),(480,358,88),(549,381,67),(604,405,53)):
+        d.ellipse((cx-rr,cy-rr,cx+rr,cy+rr), fill=(89, 101, 123))
+    d.ellipse((461, 376, 477, 390), fill=(244, 223, 190))
+    d.ellipse((542, 376, 558, 390), fill=(244, 223, 190))
+    d.arc((473, 376, 548, 431), 20, 153, fill=(225, 208, 174), width=6)
+    d.line((462, 440, 450, 504), fill=(94, 105, 125), width=20)
+    d.line((544, 441, 569, 503), fill=(94, 105, 125), width=20)
+    d.pieslice((327, 180, 665, 368), 180, 360, fill=(220, 135, 117),
+               outline=(240, 197, 169), width=8)
+    d.line((495, 274, 495, 449), fill=(226, 188, 153), width=11)
+    d.arc((491, 423, 542, 482), 10, 190, fill=(226, 188, 153), width=9)
+    # Route sign at right.
+    d.line((1029, 260, 1029, 552), fill=(228, 220, 193), width=17)
+    d.ellipse((967, 159, 1092, 284), fill=(69, 83, 97),
+              outline=(231, 217, 172), width=10)
+    d.rectangle((993, 194, 1063, 217), fill=(224, 204, 162))
+
+
 def draw_scene(name):
     from PIL import Image, ImageDraw
     if name not in SCENES:
         raise ValueError("Unknown original X visual: " + name)
     scene = SCENES[name]
     im, d = base(scene)
-    {"ufo": ufo, "nails": nails, "broom": broom, "shadow": shadow}[scene](d)
+    {"ufo": ufo, "nails": nails, "broom": broom, "shadow": shadow,
+     "sock": sock, "book": book, "cloud": cloud}[scene](d)
     rng = random.Random(int(hashlib.sha256(name.encode()).hexdigest()[:12], 16))
     grain = Image.new("RGBA", im.size, (0, 0, 0, 0))
     g = ImageDraw.Draw(grain)
