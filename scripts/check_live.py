@@ -494,7 +494,7 @@ def check():
                        'data-poll-choice="plausible"', 'data-poll-choice="unlikely"'):
             if widget not in page:
                 raise RuntimeError(slug+": future prediction UI not deployed: "+widget)
-        for token in ('class="reader-next"', 'class="reader-follow"', '"@type": "BreadcrumbList"'):
+        for token in ('class="reader-next"', 'class="share-control"', '"@type": "BreadcrumbList"'):
             if token not in page:
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         # Publicly inspect the actual image picked by the review gate.
@@ -513,9 +513,9 @@ def check():
             checked_photos+=1
         else:
             if 'src="/images/'+slug+'.svg"' not in page:
-                raise RuntimeError(slug+": safe original cover not displayed")
-            if "オリジナル表紙" not in page:
-                raise RuntimeError(slug+": image not clearly marked as a fictional cover")
+                raise RuntimeError(slug+": safe original illustration not displayed")
+            if "創作イラスト" not in page:
+                raise RuntimeError(slug+": image not clearly marked as fictional artwork")
             og_url=SITE+"/og/articles/"+slug+".png?v=20261103-topic2"
             if '<meta property="og:image" content="'+og_url+'">' not in page:
                 raise RuntimeError(slug+": original story PNG metadata missing")
@@ -526,12 +526,14 @@ def check():
             cover,kind=get("/images/"+slug+".svg")
             if "image/svg+xml" not in kind:
                 raise RuntimeError(slug+": original SVG has incorrect Content-Type")
-            if b"MIHASSEI NEWS" not in cover or b"EDITORIAL ILLUSTRATION" not in cover:
-                raise RuntimeError(slug+": headline-led safe cover not deployed")
+            if b"data-visual-topic=" not in cover or b"<text" in cover or b"<image" in cover:
+                raise RuntimeError(slug+": text-free editorial illustration not deployed")
             try:
-                ET.fromstring(cover)
+                parsed=ET.fromstring(cover)
+                if parsed.attrib.get("viewBox")!="0 0 1200 675" or parsed.attrib.get("role")!="img":
+                    raise RuntimeError(slug+": illustration aspect ratio or image role is wrong")
             except ET.ParseError:
-                raise RuntimeError(slug+": original cover XML is invalid")
+                raise RuntimeError(slug+": original illustration XML is invalid")
         print("Public article OK:",slug)
 
     category_paths={
