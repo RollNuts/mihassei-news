@@ -12,7 +12,7 @@
       "「同じ皿から食べてる！」。2031年、男子バレーチーム『青空エース』の選手2人が昼食写真を公開すると、ファンは料理より皿に注目した。「どっちが先に取った？」「お皿になりたい」。チームが冗談半分で皿のレプリカを売ると、選手のタオルより先に完売した。",
       "次の試合、客席では応援旗の代わりに白い皿が揺れた。選手が決勝点を決めても歓声はまばら。ところが観客の一人が皿を落としかけると、体育館中から悲鳴が上がった。試合後、選手が「勝ててよかったです」と笑うと、ファンは皿を両手で抱え、「割れなくてよかったです」と答えた。"
     ],
-    "scene_prompt": "Photorealistic wide film still from a deadpan Japanese sports comedy. In a modest indoor volleyball arena, rows of anonymous adult spectators solemnly hold plain white ceramic dinner plates above their heads instead of cheering banners. Two exhausted fictional volleyball players in unmarked uniforms stand beside the bench holding a single shared lunch plate. Awkward expressions, natural arena lighting, cinematic realism, no writing, logos, text or real people.",
+    "scene_prompt": "A large plain white ceramic dinner plate dominates the foreground, held overhead by a Japanese volleyball fan wearing a bright casual T-shirt. Two other adult fans hold identical dinner plates like cheering signs, all looking solemn. A volleyball net and two fictional players in colorful unbranded jerseys are clearly visible behind them. Bright indoor volleyball arena, eye-level staged comedy photograph, no words or logos.",
     "source": {
       "kind": "ニュース",
       "publisher": "日刊スポーツ",
@@ -139,7 +139,7 @@
     },
     "published_at": "2026-11-03T09:35:30+09:00",
     "modified_at": "2026-11-03T11:19:54.201+09:00",
-    "scene_prompt": "An exhausted Japanese mother wearing an apron and an outdoor coat stands beside a dining table buried under colorful plastic toy capsules. A red capsule toy vending machine sits beside three empty white dinner plates. Two Japanese adults at the table hold forks and wait with completely serious faces. No food on the table. Ordinary Japanese home, wide photograph."
+    "scene_prompt": "A bright red toy capsule vending machine dominates the center of a Japanese family dining table. Dozens of colorful plastic capsules surround three empty white dinner plates. An exhausted parent holds the last capsule while two adult family members sit with crossed arms, silently rejecting yet another dinner choice. Bright ordinary kitchen, deadpan staged comedy photograph, no words or logos."
   },
   {
     "slug": "comedy-show-profits-from-silence",
