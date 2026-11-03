@@ -17,6 +17,7 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, render_story_visual, story_subject
     from .media_policy import usable_cached_photo
+    from .generated_photos import usable_generated_scene, generated_url
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
     from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -27,6 +28,7 @@ else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject
     from media_policy import usable_cached_photo
+    from generated_photos import usable_generated_scene, generated_url
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
     from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -278,24 +280,33 @@ def illustration_path(a):
 
 
 def editorial_image(a):
-    """Use a reviewed local JPEG or a free, headline-led editorial SVG."""
+    """Priority: locally generated staged scene > approved stock > offline SVG."""
+    if usable_generated_scene(a, root=BASE):
+        return generated_url(a)
     if usable_cached_photo(a, root=BASE):
         return "/photos/" + a["slug"] + ".jpg"
     return illustration_path(a)
 
 
 def image_tag(a, cls, extra=""):
-    photo_ok = usable_cached_photo(a, root=BASE)
+    generated = usable_generated_scene(a, root=BASE)
+    photo_ok = not generated and usable_cached_photo(a, root=BASE)
     url = editorial_image(a)
-    alt = a["photo"]["alt"] if photo_ok else "記事の題材を表現した創作イラスト"
-    fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo_ok else ""
+    alt = ("AI生成による架空ニュースのコント風再現画像。実際の報道写真ではありません"
+           if generated else a["photo"]["alt"] if photo_ok else
+           "記事の題材を表現した創作イラスト")
+    fallback = f' data-fallback="{escape(illustration_path(a))}"' if (generated or photo_ok) else ""
+    if generated:
+        extra += ' data-generated-scene="true"'
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
             f' width="1200" height="675" {extra}{fallback}>')
 
 
 def photo_credit(a):
-    """Attribution follows the asset actually displayed, not stale metadata."""
+    """Always disclose AI staging; never mislabel a synthetic scene as real."""
+    if usable_generated_scene(a, root=BASE):
+        return "AI生成の架空ニュース再現画像（コント風演出）。実際の事件・人物を撮影した報道写真ではありません。"
     if not usable_cached_photo(a, root=BASE):
         return "記事の題材を表現した編集部制作の創作イラスト。実際の出来事の写真ではありません。"
     p = a["photo"]
@@ -313,7 +324,7 @@ def card(a, archive=False):
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     return (
-        f'<article class="story-card"{attrs}><a class="story-image-link" href="{article_url(a)}">'
+        f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if usable_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + '</a>'
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
@@ -322,8 +333,10 @@ def card(a, archive=False):
     )
 
 def social_image(article):
-    """Crawlers receive a first-party PNG/JPEG, never an SVG or an external image."""
+    """Use verified local JPEG for OGP when present, else deterministic PNG."""
     if article is not None:
+        if usable_generated_scene(article, root=BASE):
+            return generated_url(article)
         if usable_cached_photo(article, root=BASE):
             return "/photos/" + article["slug"] + ".jpg"
         return "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
@@ -387,10 +400,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         og_image = SITE + "/og/serials/" + name + ".png"
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
-    og_alt = (photo["alt"] + "（イメージ写真）" if local_photo and photo else
-              ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
-               ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
-                "未発生新聞（創作ニュース）")))
+    og_alt = ("AI生成した架空ニュースのコント風再現画像（実際の報道写真ではありません）"
+              if article and usable_generated_scene(article, root=BASE) else
+              (photo["alt"] + "（イメージ写真）" if local_photo and photo else
+               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
+                ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
+                 "未発生新聞（創作ニュース）"))))
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
     og_mime = "image/jpeg" if local_photo else "image/png"
@@ -1101,16 +1116,18 @@ def image_review_page(articles):
     """
     cards = []
     for a in articles:
-        photo_ok = usable_cached_photo(a, root=BASE)
+        generated = usable_generated_scene(a, root=BASE)
+        photo_ok = not generated and usable_cached_photo(a, root=BASE)
         main_src = editorial_image(a)
         social_src = social_image(a)
         category = escape(a["category"])
         slug = escape(a["slug"])
         title = escape(a["title"])
-        status = "承認済み写真" if photo_ok else "創作イラスト"
+        status = "AI生成の架空再現画像" if generated else "承認済み写真" if photo_ok else "創作イラスト"
         photo_note = (
-            f'撮影：{escape(a["photo"]["credit"])} / Unsplash'
-            if photo_ok else '見出し付き・編集部制作の創作表紙'
+            'AI生成・架空のコント風再現画像（実際の出来事を撮影していません）'
+            if generated else f'撮影：{escape(a["photo"]["credit"])} / Unsplash'
+            if photo_ok else '編集部制作の創作イラスト'
         )
         motif = escape(story_subject(a))
         cards.append(
@@ -1122,7 +1139,7 @@ def image_review_page(articles):
             f'<figure><img src="{escape(main_src)}" alt="{title} の掲載画像" loading="lazy" decoding="async">'
             '<figcaption>記事の掲載画像（16:9）</figcaption></figure>'
             f'<figure><img src="{escape(social_src)}" alt="{title} のSNS用画像" loading="lazy" decoding="async">'
-            '<figcaption>SNSのリンクカード用（PNGまたは承認済みJPEG）</figcaption></figure>'
+            '<figcaption>SNS用（PNG・承認済み写真・AI生成の架空再現画像）</figcaption></figure>'
             '</div>'
             f'<p><a href="/articles/{slug}/">公開記事を確認する ↗</a></p>'
             '</article>'
@@ -1185,14 +1202,18 @@ def generate_rss(items, title, description, link, self_url, limit=30):
             ET.SubElement(entry,tag).text=value
         ET.SubElement(entry,"category").text=a["category"]
         image=SITE+social_image(a)
-        approved=usable_cached_photo(a,root=BASE)
+        generated=usable_generated_scene(a,root=BASE)
+        approved=not generated and usable_cached_photo(a,root=BASE)
+        raster=generated or approved
         thumb={"url":image}
-        if not approved:
+        if generated:
+            thumb.update({"width":"1200","height":"675"})
+        elif not approved:
             thumb.update({"width":"1200","height":"630"})
         ET.SubElement(entry,f"{{{media_ns}}}thumbnail",thumb)
         ET.SubElement(entry,f"{{{media_ns}}}content",{
             "url":image,"medium":"image",
-            "type":"image/jpeg" if approved else "image/png"
+            "type":"image/jpeg" if raster else "image/png"
         })
         if approved:
             ET.SubElement(entry,f"{{{media_ns}}}credit",{"role":"photographer"}).text=a["photo"]["credit"]
@@ -1347,7 +1368,7 @@ def make_article_social_images(articles):
     for article in articles:
         # Cached stock images are not auto-approved; always generate a safe
         # topic-specific PNG for anything not explicitly editorially reviewed.
-        if usable_cached_photo(article, root=BASE):
+        if usable_generated_scene(article, root=BASE) or usable_cached_photo(article, root=BASE):
             continue
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"))
 
@@ -1367,6 +1388,13 @@ def build():
     photos = BASE / "assets" / "photos"
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
+    # Publish ONLY verified generated JPEGs; the local provenance manifest
+    # itself never needs to be public or requested by a browser.
+    for item in articles:
+        if usable_generated_scene(item, root=BASE):
+            destination = OUT / generated_url(item).lstrip("/")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(BASE / "assets" / "generated" / (item["slug"] + ".jpg"), destination)
     write("build-revision.txt", build_revision() + "\n")
     write("index.html",home(articles,serials))
     write("about/index.html",about())

@@ -21,13 +21,15 @@ from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
 if __package__:
-    from .media_policy import usable_cached_photo
+    from .media_policy import usable_cached_photo, jpeg_dimensions
+    from .generated_photos import usable_generated_scene, generated_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial
     from .editorial_starter import homepage_starter_picks
     from .build import editorial_lead
 else:
-    from media_policy import usable_cached_photo
+    from media_policy import usable_cached_photo, jpeg_dimensions
+    from generated_photos import usable_generated_scene, generated_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial
     from editorial_starter import homepage_starter_picks
@@ -225,6 +227,7 @@ def check():
         else:
             raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
+
     # This stylesheet is last in the cascade. A successful HTML deploy must
     # not silently leave the refreshed editorial design without its actual CSS.
     if 'href="/assets/editorial-polish.css"' not in body:
@@ -405,6 +408,7 @@ def check():
             raise RuntimeError("RSS thumbnail metadata is missing or inconsistent")
         if not thumb.get("url","").startswith(SITE+"/"):
             raise RuntimeError("RSS image is not first-party: "+str(thumb.get("url")))
+
     checked_photos=0
     for item in recent:
         slug=item["slug"]
@@ -471,7 +475,19 @@ def check():
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         # Publicly inspect the actual image picked by the review gate.
         # Merely having a cached stock file must NEVER imply it is suitable.
-        if usable_cached_photo(item,root=ROOT):
+        if usable_generated_scene(item,root=ROOT):
+            image_path=generated_url(item)
+            if 'src="'+image_path+'"' not in page:
+                raise RuntimeError(slug+": locally generated staged photograph not displayed")
+            if "AI生成" not in page or "実際の事件" not in page:
+                raise RuntimeError(slug+": staged photo needs a clear fiction disclosure")
+            if ('<meta property="og:image" content="'+SITE+image_path+'">' not in page):
+                raise RuntimeError(slug+": local staged photograph missing from OGP")
+            image,kind=get(image_path)
+            if ("image/jpeg" not in kind or
+                jpeg_dimensions(image)!=(1200,675) or len(image)<16000):
+                raise RuntimeError(slug+": locally generated photo invalid on production")
+        elif usable_cached_photo(item,root=ROOT):
             photo=item["photo"]
             if photo["source"] not in page or photo["credit"] not in page:
                 raise RuntimeError(slug+": reviewed photo attribution missing")

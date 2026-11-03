@@ -95,7 +95,7 @@ def render(articles: list[dict], image_for, photo_allowed,
         slug = article["slug"]
         image = image_for(article)
         local = image.split("?", 1)[0]
-        if not (local.startswith("/og/articles/") or local.startswith("/photos/")):
+        if not (local.startswith("/og/articles/") or local.startswith("/photos/") or local.startswith("/generated/")):
             raise ValueError("Share image must be an approved local PNG/JPEG")
         if not local.endswith((".png", ".jpg")):
             raise ValueError("Share image must be a raster PNG or JPEG")
@@ -105,6 +105,8 @@ def render(articles: list[dict], image_for, photo_allowed,
             credit = ("イメージ写真："
                       + html.escape(article["photo"]["credit"])
                       + " / Unsplash（画像を添付する際は出典にも配慮）")
+        elif local.startswith("/generated/"):
+            credit = "AI生成の架空ニュース再現画像。実在事件を撮影したものではありません。"
         else:
             credit = "編集部制作の架空ニュース用イラスト。事件の記録写真ではありません。"
         img_name = slug + (".jpg" if local.endswith(".jpg") else ".png")

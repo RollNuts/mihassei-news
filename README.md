@@ -4,6 +4,51 @@
 
 > 【重要】架空ニュース・推理小説の事件・企業・談話は創作であり、実在する人物・企業の架空の不祥事を描きません。別枠の「未来相場観測室」は公開資料の出典を示した市場分析と編集上の仮説で、予想は保証されません。創作と事実の境界を明確にします。
 
+## コント風の実写AI再現画像（ローカル生成・追加API課金なし）
+
+- **表示の優先順位：** ①PCで生成した検証済みのコント風AI再現画像 → ②編集承認済みのUnsplash写真 → ③記事別の無料SVGイラスト。写真がなくても毎日の記事発行は止めない。
+- **架空ニュースの再現画像は現実の報道写真ではない。** 「AI生成・架空再現」と表示し、実際の事件や実在人物を撮影したかのように見せない。画像内に文字や偽ロゴを入れず、見出しはHTMLで表示。
+- **GitHub ActionsやCloudflareで画像AIは動かさない。** 外部の画像生成APIや追加ChatGPTクレジットなどを一切使わない。自宅PCのハードウェア・電気代・通信は別。
+- [ComfyUI](https://github.com/comfyanonymous/ComfyUI)をPCで起動し、使用権を確認したSDXL系ローカルチェックポイントを `ComfyUI/models/checkpoints/` に置く。標準名は `sd_xl_base_1.0.safetensors`。別のファイル名なら `--checkpoint` で指定する。 [SDXL 1.0のライセンス説明](https://stability.ai/news-updates/stable-diffusion-sdxl-1-announcement)も確認し、追加のLoRAや他のチェックポイントは個別に商用利用条件を確かめる。
+- 生成用PCのみ無料のPillowが必要：`python -m pip install Pillow`。通常のサイトビルドとGitHubのテストはPython標準ライブラリだけで動作する。
+- ComfyUIのローカルURLは通常 `http://127.0.0.1:8188`。生成スクリプトはループバック以外とリダイレクトを拒否し、外部サービスへ代替リクエストしない。
+
+### 最初に試す
+
+~~~bash
+# 読み取り専用。記事ごとの画像構図を確認（生成・ネット接続なし）
+python scripts/local_scene_photos.py --dry-run --limit 5
+
+# ComfyUI起動・チェックポイントの商用利用条件確認後、まず3本
+python scripts/local_scene_photos.py --checkpoint sd_xl_base_1.0.safetensors --acknowledge-model-license --limit 3
+
+# 既存の有効画像をスキップし、残りの未生成記事を全部処理
+python scripts/local_scene_photos.py --acknowledge-model-license
+
+# 写真だけを手動で公開する場合
+git add assets/generated
+git commit -m "images: locally generated fictional comedy photographs"
+git push origin main
+~~~
+
+- 画像構図は見出し・概要とジャンルから自動選択。必要なら記事データの任意項目 `scene_prompt` に英語の場面説明を追加できる。
+- 出力は1200×675のJPEG。`assets/generated/manifest.json` でSHA-256、記事指紋、生成モデル、生成時刻を管理。検証に失敗した場合は旧写真またはSVGに戻す。manifestの内容はサイトへ公開しない。
+- 有効な画像は記事本文、トップ、一覧、SNS用OGP、RSSへ自動反映し、AIによる架空の再現画像であると表示する。
+
+### 新着記事も毎回生成する場合
+
+自宅PCでComfyUIを起動し、Git認証を用意したうえで、WindowsタスクスケジューラやmacOS/Linuxの定期実行機能に次を登録する。`--publish` を明示したときに限り、最新mainを取得→未生成分だけ作成→画像とmanifestのみコミット→GitHubにpushする。
+
+~~~bash
+# 予行演習。画像生成もpushもしない
+python scripts/local_scene_sync.py --dry-run --limit 5
+
+# 毎回の自動実行対象。生成PCの準備が済んだ場合のみ
+python scripts/local_scene_sync.py --publish --acknowledge-model-license
+~~~
+
+PCが停止している、ComfyUIが未起動、GPUメモリが足りない、ライセンス未確認、Git認証がない場合は画像を自動生成できない。記事自体はそのまま発行し、今までどおりのSVGで表示する。衝突時の強制pushはしない。
+
 ## 設計
 
 - 静的HTML/CSS。Python標準ライブラリだけでビルド。記事は `content/articles.json` に保存。
