@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: free-surreal-x
+  group: x-readonly-delivery-state
   cancel-in-progress: false
 
 jobs:
