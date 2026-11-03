@@ -1,5 +1,25 @@
 {
   "images": {
+    "ai-chooses-a-managers": {
+      "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
+      "bytes": 86250,
+      "generated_at": "2026-11-03T06:59:06.928320+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 4337816327905069863,
+      "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
+    },
+    "apology-before-incident": {
+      "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
+      "bytes": 64365,
+      "generated_at": "2026-11-03T06:59:06.918696+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 9006481694354583717,
+      "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
+    },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
       "bytes": 88127,
@@ -60,6 +80,16 @@
       "seed": 4046117540620537502,
       "sha256": "d4c1a31777f46c9285d4821e970d0c942289faca3bd046f277b1f4cfd5df1e34"
     },
+    "music-ai-friends-monopolize-the-song": {
+      "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
+      "bytes": 82999,
+      "generated_at": "2026-11-03T06:59:06.894591+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 2650339348663260751,
+      "sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662"
+    },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "bytes": 140070,
@@ -89,6 +119,16 @@
       "prompt_version": 2,
       "seed": 2771907992498822586,
       "sha256": "839d35bb769539cffac22cca4b88837ada978e0bbebf0f3b896a24c7c4d08d63"
+    },
+    "research-completed-opening-day": {
+      "article_sha256": "6c18833cd9efb35367f2cbb799945421c702e3fedf0172407ebc370a1d05fc33",
+      "bytes": 82821,
+      "generated_at": "2026-11-03T06:59:06.909158+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 1962014450314178046,
+      "sha256": "d5f6519790df020f89adc71735e7db56911df17236bc9d2f807bbf69f0d08ab4"
     },
     "robot-job-hopping": {
       "article_sha256": "7d5a0d1f09f864e6663ca371960f6695049b078a2c39fdee2c6fdc35cc2c926d",
