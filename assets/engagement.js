@@ -59,6 +59,73 @@
   }
 
 
+  // A real publication is newer than the last headline this browser saw.
+  // Do not show a fictional number or call an analytics endpoint.
+  const returnNotice=document.querySelector("[data-return-update]");
+  if(returnNotice){
+    const key="mihassei-latest-published-v1";
+    const current=returnNotice.dataset.latestPublished||"";
+    const currentTime=Date.parse(current);
+    if(Number.isFinite(currentTime)){
+      try{
+        const seen=localStorage.getItem(key);
+        const seenTime=seen ? Date.parse(seen) : NaN;
+        if(Number.isFinite(seenTime) && currentTime>seenTime){
+          returnNotice.hidden=false;
+        }
+        // Never roll back the saved revision if an older cached page is opened.
+        if(!Number.isFinite(seenTime) || currentTime>seenTime){
+          localStorage.setItem(key,current);
+        }
+      }catch(_){/* Some browsers disable local storage. The paper still works. */}
+    }
+  }
+
+  // Progressive enhancement: animate what is already on the page only once.
+  // Unscripted browsers and reduced-motion users always see static content.
+  const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches===true;
+  if(!reduceMotion && typeof window.IntersectionObserver==="function"){
+    const elements=[...document.querySelectorAll(
+      ".index-main .lead, .index-main .brief-card, .index-main .story-card, "+
+      ".index-main .genre-explore, .index-main .serials-feature, .index-main .starter-pick-card"
+    )].slice(0,32);
+    if(elements.length){
+      const observer=new window.IntersectionObserver((entries,instance)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add("motion-arrived");
+            instance.unobserve(entry.target);
+          }
+        });
+      },{threshold:0.07,rootMargin:"0px 0px -24px 0px"});
+      elements.forEach(node=>observer.observe(node));
+    }
+  }
+
+  // Page-reading progress uses only scroll position. No timer or API calls.
+  if(document.querySelector(".article-page") && document.body?.appendChild &&
+     typeof window.requestAnimationFrame==="function"){
+    const progress=document.createElement("div");
+    progress.className="reading-progress";
+    progress.setAttribute("aria-hidden","true");
+    document.body.appendChild(progress);
+    let scheduled=false;
+    function drawProgress(){
+      scheduled=false;
+      const extent=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+      const fraction=Math.max(0,Math.min(1,window.scrollY/extent));
+      progress.style.transform="scaleX("+fraction.toFixed(4)+")";
+    }
+    function scheduleProgress(){
+      if(scheduled)return;
+      scheduled=true;
+      window.requestAnimationFrame(drawProgress);
+    }
+    window.addEventListener("scroll",scheduleProgress,{passive:true});
+    window.addEventListener("resize",scheduleProgress);
+    scheduleProgress();
+  }
+
   // Reveal one real archived fictional story; never fabricate a "breaking" event.
   const picker=document.querySelector("[data-issue-picker]");
   if(picker){
