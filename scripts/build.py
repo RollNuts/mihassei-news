@@ -387,6 +387,24 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
+    # Native mobile navigation: important reading routes are always visible.
+    # Secondary pages live in a keyboard-accessible details menu, not an
+    # undiscoverable horizontal scroller. Desktop keeps the full navigation.
+    mobile_main_keys = {"home", "archive", "serials"}
+    mobile_primary = "".join(
+        f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
+        for u, text, key in nav if key in mobile_main_keys
+    )
+    mobile_secondary = "".join(
+        f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
+        for u, text, key in nav if key not in mobile_main_keys
+    )
+    mobile_navhtml = (
+        '<div class="container mobile-nav">'
+        + mobile_primary
+        + '<details class="mobile-nav-more"><summary>メニュー</summary>'
+        + '<div class="mobile-nav-menu">' + mobile_secondary + '</div></details></div>'
+    )
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
         "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞（創作）",
@@ -605,7 +623,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span class="observer-stat"><span class="observer-label">今日の記事閲覧</span>
 <strong data-observer-reads>—</strong><span class="observer-suffix">件</span></span>
 <small>※1ブラウザ・1記事につき1日1回の集計</small>
-</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
+</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div>{mobile_navhtml}</nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
@@ -943,18 +961,17 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-shell"><article>
 <header class="article-header">
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a><span aria-hidden="true"> / </span><a href="/archive/">記事一覧</a><span aria-hidden="true"> / </span><span aria-current="page">この記事</span></nav>
-<div class="article-edition"><span>未発生新聞 {escape(a["category"])}部</span><span class="edition-tag">創作ニュース</span></div>
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
 <p class="story-fiction-context"><strong>この記事は創作です。</strong> 現実の話題から「5年後のもしも」を想像しました。<a href="#story-source">現実の着想元を見る</a></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
-<div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
-<p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
 </header>
 <figure class="article-hero-figure">
 {image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
 <figcaption>{photo_credit(a)}</figcaption></figure>
+<div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
+<p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <nav class="reader-next" aria-label="続けて読む記事">
