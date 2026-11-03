@@ -1,0 +1,60 @@
+name: X Midday Original (Buffer Free, up to 2/day)
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/experiments/**"
+      - "social-bot/publish.py"
+      - ".github/workflows/x-midday-original.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/experiments/**"
+      - "social-bot/publish.py"
+      - ".github/workflows/x-midday-original.yml"
+  workflow_dispatch:
+  schedule:
+    # 10:15 JST daily. Only schedules for 12:30 JST TODAY; never runs late.
+    - cron: "15 1 * * *"
+
+permissions:
+  contents: write
+
+# Same mutual exclusion as the normal 09:35 queue and article promotion.
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  validate-and-schedule:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Test midday window, day cap, deduplication, Buffer API and comics gate
+        run: |
+          python -m unittest discover -s social-bot/experiments -p 'test_midday_dispatch.py' -v
+          python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
+          python -m py_compile social-bot/experiments/midday_dispatch.py social-bot/publish.py
+
+      - name: Reserve at most one additional original for 12:30 JST today
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/midday_dispatch.py
+
+      - name: Persist exact submitted Buffer ID even after partial failure
+        if: always() && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/experiments/state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): record midday Buffer post ID [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
