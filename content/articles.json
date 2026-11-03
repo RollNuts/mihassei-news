@@ -1,5 +1,28 @@
 [
   {
+    "slug": "bakery-no-important-announcement-panic",
+    "category": "社会",
+    "flash": "ネットの話題",
+    "fiction_company": "町のパン屋『こむぎの窓』",
+    "art": "cards",
+    "fiction_at": "2031-11-03T13:27:00+09:00",
+    "title": "「重要なお知らせはありません」毎朝投稿するパン屋、1日忘れて客殺到",
+    "summary": "曖昧な告知を閉店予告と勘違いされたパン屋が、何もない日も毎朝その旨を投稿していた。ある朝、投稿を忘れると、心配した常連が店に集まった。",
+    "paragraphs": [
+      "「今日も、重要なお知らせはありません」。2031年、町のパン屋『こむぎの窓』は毎朝、開店前にこう投稿している。以前、新作パンの予告に「大事なお知らせ」と書いたところ、閉店すると勘違いした常連が駆けつけた。それ以来、店主は何もない日も無事を知らせるようになった。",
+      "ある朝、店主はパンを焼くのに忙しく、投稿を忘れた。常連たちは「今日は、お知らせがないというお知らせがない」と心配して店へ。店主は慌てて「今日もありません」と投稿したが、集まった客がついでにパンを買い、昼前に完売した。翌朝、店主は予約投稿の画面を開き、昨日の売上帳を眺めてから、スマホを伏せた。"
+    ],
+    "scene_prompt": "An almost empty wooden bread rack fills the foreground of a tiny Japanese bakery. A deadpan fictional baker turns a smartphone face down beside a plain sales ledger, while relieved customers leave with paper bags of bread. Candid photorealistic comedy, soft morning daylight, anonymous adults, no legible text, branding or logos.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "東スポWEB（ライブドアニュース配信）",
+      "published_at": "2026-11-03T13:27:00+09:00",
+      "url": "https://news.livedoor.com/article/detail/32721147/",
+      "topic": "11月2日の公的発表の予告からSNSに根拠のない憶測が広がり、11月3日に『何も起きなくてよかった』という受け止めを伝えた報道。店の話は独自創作。"
+    },
+    "published_at": "2026-11-03T21:38:41+09:00"
+  },
+  {
     "slug": "diner-refund-customer-paying-escape",
     "category": "社会",
     "flash": "まちの珍事",
