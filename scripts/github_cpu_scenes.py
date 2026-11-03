@@ -41,9 +41,9 @@ CLIP_TOKEN_LIMIT = 77
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
     "sweet-potato-chorus-starts-too-late": (
-        "At a Japanese school festival, solemn participants hold half-peeled "
-        "sweet potatoes without eating, while a referee raises a whistle. "
-        "Paper trays of sweet potatoes fill the foreground."
+        "Whole steamed Japanese sweet potatoes with dark purple skin fill a "
+        "plain plate. One is cut open, exposing dense yellow flesh. Behind "
+        "them, blurred adults wait with potatoes while a referee holds a whistle."
     ),
     "historical-lookalike-contest-dog-wins": (
         "A small dog wearing a large winner's ribbon carries a microphone "
@@ -51,19 +51,20 @@ CPU_SCENES = {
         "fake beards kneel to coax the dog into a winner's photograph."
     ),
     "stolen-doorbell-returned-by-parcel": (
-        "A delivery worker holds an open cardboard parcel containing a brass "
-        "door bell beside a shop doorway. An empty bell hook is visible "
-        "on the door frame. The shopkeeper looks baffled."
+        "One polished brass counter service bell with a round top push button "
+        "sits inside an open plain cardboard parcel on a clean counter. "
+        "Tight close-up, the bell fills the frame."
     ),
     "family-dinner-gacha-243-rejections": (
-        "A bright red toy capsule lottery machine stands on a Japanese "
-        "dining table among empty dinner plates and colorful capsules. "
-        "An exhausted parent holds a capsule; two adults sit with crossed arms."
+        "A red gumball vending machine dominates the frame: a transparent "
+        "spherical globe filled with colorful plastic capsules, a silver coin "
+        "slot and a large turning handle. It stands on a wooden dining table "
+        "beside three empty plates."
     ),
     "volleyball-team-lunch-plate-merch": (
-        "A serious team publicist measures a large white dinner plate with "
-        "a tape measure. The plate dominates the foreground. Two volleyball "
-        "players eat lunch beside an indoor volleyball net."
+        "A large white ceramic dinner plate fills the foreground on a wooden "
+        "table, with a measuring tape stretched across its diameter. An indoor "
+        "volleyball net and a single volleyball are visible behind the table."
     ),
 }
 FILES = [
@@ -140,8 +141,8 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
 
 
 def wrap_prompt(core: str, context: list[str] | None = None, *, minimal: bool = False) -> str:
-    prefix = "Staged fictional scene. " if minimal else "Bright staged fictional comedy photograph. "
-    return prefix + " ".join([core, *(context or [])]) + " No text or logos."
+    prefix = "DSLR color photograph. " if minimal else "Contemporary DSLR color photograph in natural daylight. "
+    return prefix + " ".join([core, *(context or [])]) + " Plain unmarked props."
 
 
 def cpu_prompt(article: dict) -> str:
