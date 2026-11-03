@@ -19,6 +19,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
+from visuals import SCENES  # noqa: E402
 
 FORMATS = {"surreal_text", "character_moment"}
 MAX_CHARS = 180
@@ -93,6 +94,9 @@ def validate(posts, config, state):
         mechanism = post.get("mechanism")
         if mechanism is not None and mechanism not in MECHANISMS:
             raise ValueError("Unsupported comedy mechanism: " + str(mechanism))
+        visual = post.get("visual")
+        if visual is not None and (fmt != "surreal_text" or SCENES.get(pid) != visual):
+            raise ValueError("Unreviewed or character-comic visual is forbidden: " + pid)
         if "featured" in post and type(post["featured"]) is not bool:
             raise ValueError("Featured must be a boolean")
         if pid in ids or text in texts or order in orders:
@@ -107,6 +111,12 @@ def validate(posts, config, state):
                 raise ValueError("Cannot add a hashtag to an already queued legacy post: " + pid)
             if pinned and pinned != hash_text(final_text):
                 raise ValueError("Previously queued hashtag or public text changed: " + pid)
+            if visual and not record.get("image_sha256"):
+                raise ValueError("Previously queued visual lacks pinned image hash: " + pid)
+            if visual:
+                asset = HERE.parent / "assets" / (pid + ".png")
+                if asset.is_file() and hashlib.sha256(asset.read_bytes()).hexdigest() != record["image_sha256"]:
+                    raise ValueError("Previously queued visual image was changed: " + pid)
             if not record.get("buffer_id"):
                 raise ValueError("Missing Buffer identifier in post history: " + pid)
     if not posts["experiments"]:
@@ -134,6 +144,10 @@ def decide(posts, state, existing, max_queue, max_new):
                 "hashtag": post.get("hashtag"),
                 "format": post["format"],
                 "mechanism": post.get("mechanism"),
+                **({"image_sha256": hashlib.sha256(
+                    (HERE.parent / "assets" / (post["id"] + ".png")).read_bytes()
+                ).hexdigest()} if post.get("visual") and
+                    (HERE.parent / "assets" / (post["id"] + ".png")).is_file() else {}),
                 "recovered_from_buffer": True
             }
             recovered.append(post["id"])
@@ -144,6 +158,9 @@ def decide(posts, state, existing, max_queue, max_new):
     to_queue = []
     remaining = [p for p in posts if p["id"] not in state["queued"]]
     post_by_id = {p["id"]: p for p in posts}
+    visual_already_queued = any(
+        post_by_id[pid].get("visual") for pid in state["queued"] if pid in post_by_id
+    )
     previous_mechanisms = [
         post_by_id[pid].get("mechanism")
         for pid in state["queued"]
@@ -153,6 +170,12 @@ def decide(posts, state, existing, max_queue, max_new):
         next_slot = len(state["queued"]) + len(to_queue) + 1
         preferred = "character_moment" if next_slot % 4 == 0 else "surreal_text"
         options = [p for p in remaining if p["format"] == preferred] or remaining
+        # First ever visual test gets priority so a one-slot opening can
+        # actually ship an illustration, rather than only future text.
+        if not visual_already_queued:
+            image_options = [p for p in remaining if p.get("visual") and p.get("hashtag")]
+            if image_options:
+                options = image_options
         if next_slot % 5 == 0:
             spotlight = [p for p in options if p.get("featured") is True]
             if spotlight:
@@ -167,6 +190,8 @@ def decide(posts, state, existing, max_queue, max_new):
         chosen = options[0]
         to_queue.append(chosen)
         remaining.remove(chosen)
+        if chosen.get("visual"):
+            visual_already_queued = True
         if chosen.get("mechanism"):
             previous_mechanisms.append(chosen["mechanism"])
     return to_queue, recovered, scheduled
@@ -201,7 +226,16 @@ def main():
     for post in plan:
         # Use the same proven Buffer Free createPost method as the existing bot.
         final_text = publication_text(post)
-        buffer_id = queue_one(token, channel_id, {"kind":"text","text":final_text})
+        image_sha256 = None
+        if post.get("visual"):
+            image = HERE.parent / "assets" / (post["id"] + ".png")
+            if not image.is_file():
+                raise RuntimeError("Visual PNG not generated before Buffer queue: " + post["id"])
+            image_sha256 = hashlib.sha256(image.read_bytes()).hexdigest()
+        buffer_id = queue_one(token, channel_id, {
+            "kind": "image" if image_sha256 else "text",
+            "id": post["id"], "text": final_text
+        })
         state["queued"][post["id"]] = {
             "buffer_id": buffer_id,
             "text_sha256": hash_text(post["text"]),
@@ -211,6 +245,7 @@ def main():
             "format": post["format"],
             "mechanism": post.get("mechanism"),
             "queued_at_utc": datetime.now(timezone.utc).isoformat(),
+            **({"image_sha256": image_sha256} if image_sha256 else {}),
         }
         save_state(state)
         print("Original text queued:", post["id"])

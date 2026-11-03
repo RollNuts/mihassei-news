@@ -29,7 +29,8 @@
       "format": "surreal_text",
       "text": "UFOが駐車違反を取られた。\n宇宙人は「もうこの星には来ない」と言って、反則金だけ払った。",
       "hashtag": "#シュールネタ",
-      "mechanism": "inverted_expectation"
+      "mechanism": "inverted_expectation",
+      "visual": "ufo"
     },
     {
       "id": "xexp-robot-job",
@@ -98,7 +99,8 @@
       "text": "透明人間がネイルサロンに行った。\n帰りの電車で、つり革をつかむ爪だけが宙に浮いていた。",
       "mechanism": "visual_reveal",
       "hashtag": "#シュールネタ",
-      "featured": true
+      "featured": true,
+      "visual": "nails"
     },
     {
       "id": "xexp-late-echo",
@@ -121,7 +123,8 @@
       "sequence": 16,
       "format": "surreal_text",
       "text": "影が本人より先に帰宅していた。\n玄関の明かりをつけたら、慌てて床に寝転んだ。",
-      "mechanism": "visual_reveal"
+      "mechanism": "visual_reveal",
+      "visual": "shadow"
     },
     {
       "id": "xexp-witch-autopilot",
@@ -130,7 +133,8 @@
       "text": "魔女が空飛ぶほうきを自動運転にした。\n翌朝、ほうきだけ出勤して、魔女が家に残された。",
       "mechanism": "role_reversal",
       "hashtag": "#シュールネタ",
-      "featured": true
+      "featured": true,
+      "visual": "broom"
     },
     {
       "id": "xexp-planetarium-star",
