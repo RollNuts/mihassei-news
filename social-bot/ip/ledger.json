@@ -79,6 +79,23 @@
       "lasting_effect": "ネジとモクは互いの大きさの違いに気づき、次は指先で喜びを分かち合うことを話した。けがや破損はしていない。",
       "threads_opened": [],
       "threads_closed": []
+    },
+    {
+      "episode": 5,
+      "post_id": "nejimachi-005-steam-friend",
+      "chapter": 1,
+      "day": "D2",
+      "order": 1,
+      "location": "workshop",
+      "characters": [
+        "moku",
+        "neji"
+      ],
+      "established": [],
+      "event": "共同整備台でコップから上がった湯気がモクと似た形になった。消えて悲しむモクを見てネジが温め直すと湯気が二つ現れ、モクは『ふたごだった』と受け取った。",
+      "lasting_effect": "湯気は偶然モクに似た形に見えただけで、新種の生物や子どもの存在は確定しない。ネジとモクは互いの気持ちを少し知った。",
+      "threads_opened": [],
+      "threads_closed": []
     }
   ]
 }
