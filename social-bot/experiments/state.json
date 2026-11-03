@@ -1,4 +1,17 @@
 {
   "schema_version": 1,
-  "queued": {}
+  "queued": {
+    "xexp-ghost-interview": {
+      "buffer_id": "6ae990ece5f645e4e3352053",
+      "text_sha256": "abd5dec05f0a0db43c65ac9750c38d1b550963fd2a95e373579be47d1cae1098",
+      "format": "surreal_text",
+      "queued_at_utc": "2026-11-03T07:44:44.106041+00:00"
+    },
+    "xexp-future-advice": {
+      "buffer_id": "6ae990ec3b00665c737f50e7",
+      "text_sha256": "370b805deaf3c9767d8206d5d9c3509fbd15fcbd62c02e0c928b3dd21a40e6f4",
+      "format": "surreal_text",
+      "queued_at_utc": "2026-11-03T07:44:44.248347+00:00"
+    }
+  }
 }
