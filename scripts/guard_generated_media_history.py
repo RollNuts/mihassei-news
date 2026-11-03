@@ -24,6 +24,9 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = "assets/generated/manifest.json"
 SHA = re.compile(r"[0-9a-f]{40}\Z")
+# One-time recovery of records corrupted by PR #181. Remove after recovery.
+# This is an immutable Git revision from before that PR. No new image is claimed.
+RESTORE_BASE = "ffe7c90547299ea45f823f39099097c766c85d01"
 
 
 def images(payload: object) -> dict:
@@ -54,6 +57,26 @@ def incompatible_rewrites(previous: dict, current: dict) -> list[str]:
                             + "; preserve the old manifest and use the SVG fallback "
                               "until a truly new JPEG is generated")
     return failures
+
+
+def exact_historical_restorations(previous: dict, current: dict,
+                                  trusted: dict) -> set[str]:
+    """Temporarily permit only exact records from the last-known good manifest.
+
+    An ordinary fingerprint or seed change is still rejected. The JPEG SHA
+    must match *both* the corrupted record and the historical genuine record.
+    """
+    old, new, original = images(previous), images(current), images(trusted)
+    allowed = set()
+    for slug in old.keys() & new.keys() & original.keys():
+        prior, now, authentic = old[slug], new[slug], original[slug]
+        if (isinstance(prior, dict) and isinstance(now, dict)
+                and isinstance(authentic, dict)
+                and prior != now and now == authentic
+                and prior.get("sha256") == now.get("sha256")
+                and authentic.get("sha256") == now.get("sha256")):
+            allowed.add(slug)
+    return allowed
 
 
 def verify_new_images(previous: dict, current: dict, *, root: Path = ROOT) -> list[str]:
@@ -111,8 +134,22 @@ def main(argv: list[str] | None = None) -> int:
     try:
         previous = json.loads(fetched.stdout)
         current = json.loads((ROOT / MANIFEST).read_text(encoding="utf-8"))
-        errors = incompatible_rewrites(previous, current)
+        # Restore only the exact pre-corruption records from the verified
+        # historical commit. Normal edits remain fail-closed.
+        historical = subprocess.run(
+            ["git", "show", RESTORE_BASE + ":" + MANIFEST],
+            cwd=ROOT, capture_output=True, text=True, check=False, timeout=15
+        )
+        if historical.returncode:
+            raise ValueError("Cannot retrieve trusted pre-corruption image manifest")
+        accepted = exact_historical_restorations(
+            previous, current, json.loads(historical.stdout))
+        errors = [error for error in incompatible_rewrites(previous, current)
+                  if error.split(":", 1)[0] not in accepted]
         errors.extend(verify_new_images(previous, current))
+        if accepted:
+            print("Restored original generation records for "
+                  + str(len(accepted)) + " existing JPEGs; no new images claimed.")
     except (OSError, ValueError, TypeError) as exc:
         print("Generated-image history check failed: " + str(exc), file=sys.stderr)
         return 2
