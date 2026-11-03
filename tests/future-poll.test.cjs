@@ -225,7 +225,7 @@ test('daily browser and article counters stay honest, reset in JST and expire ol
       dateJst:'2026-11-03',visitors:0,articleReads:0
     });
 
-    await api('visit',a); // Home page only
+    await api('visit',a,''); // Home page only (no article slug)
     await api('visit',a,'story-a');
     await api('visit',a,'story-a'); // Reload must not inflate
     await api('visit',a,'story-b');
