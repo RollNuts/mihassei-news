@@ -216,6 +216,45 @@ def paint_prop(d, prop, cx, cy, s):
         raise ValueError("Unsupported narrative prop: " + str(prop))
 
 
+def paint_visual_gag(d, p, rect, base_y, scale):
+    """Small independent slapstick drawings for the original machine-city cast."""
+    visual=p.get("visual","none")
+    if visual=="none":
+        return
+    if visual!="glove-cover":
+        raise ValueError("Unsupported visual gag: "+str(visual))
+    x,y,w,h=rect
+    # The huge angular copper work glove belongs to Moku, not to the source
+    # material studied for editorial principles. Neji is under this glove.
+    cx=x+int(w*.68)
+    cy=base_y
+    radius=int(112*scale)
+    outline=max(4,int(6*scale))
+    # Extended arm comes from the secondary character on the left.
+    d.line((x+int(w*.37),cy+int(24*scale),
+            cx-radius+int(14*scale),cy+int(28*scale)),
+           fill="#DCA06D",width=max(8,int(36*scale)))
+    d.rounded_rectangle((cx-radius,cy-radius,cx+radius,cy+radius),
+                        radius=max(12,int(27*scale)),
+                        fill="#DCA06D",outline=INK,width=outline)
+    # Large thumb and sleeve cuff make the silhouette unmistakable.
+    d.rounded_rectangle((cx+int(70*scale),cy-int(70*scale),
+                         cx+int(142*scale),cy+int(22*scale)),
+                        radius=max(8,int(21*scale)),
+                        fill="#DCA06D",outline=INK,width=outline)
+    d.line((cx-int(52*scale),cy-int(59*scale),
+            cx+int(40*scale),cy-int(59*scale)),fill="#AF7A57",width=outline)
+    d.line((cx-int(57*scale),cy+int(61*scale),
+            cx+int(58*scale),cy+int(61*scale)),fill="#AF7A57",width=outline)
+    # Neji's two peeking eyes and tiny worry line are visible inside.
+    er=max(2,int(5*scale))
+    for dx in (-20,20):
+        ex=cx+int(dx*scale)
+        d.ellipse((ex-er,cy-er,ex+er,cy+er),fill=INK)
+    d.line((cx-int(15*scale),cy+int(18*scale),
+            cx+int(16*scale),cy+int(18*scale)),fill=INK,width=max(2,int(3*scale)))
+
+
 def paint_panel(d,p,rect,idx):
     x,y,w,h=rect
     scene(d,rect,p["scene"],p.get("sign",""),idx)
@@ -242,6 +281,7 @@ def paint_panel(d,p,rect,idx):
     prop=p.get("prop","none")
     if prop!="none":
         paint_prop(d,prop,x+int(w*.84),y+int(h*.65),max(.65,scale*.9))
+    paint_visual_gag(d,p,rect,base_y,scale)
     # Silence is a genuine acting beat: no empty dialogue strip.
     if p.get("silent",False):
         if p.get("line","").strip():
