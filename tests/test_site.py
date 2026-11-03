@@ -140,6 +140,31 @@ class SiteTests(unittest.TestCase):
             self.assertIn(category_meta(article,compact=True),aside)
         self.assertIn('.story-meta--compact', (ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8"))
 
+    def test_article_previews_are_readable_without_duplicate_action_strips(self):
+        """The compact list encourages reading; comments, likes and shares stay in stories."""
+        from scripts.build import card, story
+        article=self.articles[0]
+        href='/articles/'+article["slug"]+'/'
+        for preview in (card(article),card(article,archive=True)):
+            self.assertEqual(preview.count('href="'+href+'"'),2)
+            self.assertIn('class="story-image-link"',preview)
+            self.assertIn('class="story-thumb"',preview)
+            self.assertIn('class="story-meta story-meta--compact"',preview)
+            self.assertIn('<h3><a href="'+href+'">',preview)
+            self.assertNotIn('class="engagement-actions',preview)
+            self.assertNotIn('class="story-footer"',preview)
+            self.assertNotIn('data-like-slug=',preview)
+        self.assertIn('data-archive-card',card(article,archive=True))
+        full=story(article,self.articles)
+        self.assertIn('class="engagement-actions"',full)
+        self.assertIn('data-like-slug="'+article["slug"]+'"',full)
+        self.assertIn('href="'+href+'#reader-comments"',full)
+        styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
+        self.assertIn('Mobile editorial list: one compact preview per story',styles)
+        self.assertIn('grid-template-areas:"image meta" "image headline" "image summary"',styles)
+        self.assertIn('-webkit-line-clamp:2',styles)
+        self.assertIn('@media(max-width:360px)',styles)
+
     def test_homepage_focus_and_secondary_content_is_accessible(self):
         """No duplicate ticker; optional features remain accessible on demand."""
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
