@@ -217,10 +217,8 @@ def _series_card(series):
 def render_serials_feature(serials):
     return ('''<section class="serials-feature" aria-labelledby="serials-home-heading">
       <div class="section-head"><div><span class="small-label red">SERIALS / 連載</span>
-      <h2 id="serials-home-heading">続きを読みに、また来たくなる。</h2></div>
+      <h2 id="serials-home-heading">連載</h2></div>
       <a href="/serials/">連載一覧を見る ↗</a></div>
-      <p class="serials-lede">まだ起きていない事件を推理する。実際の市場を予測して答え合わせする。
-      創作と現実の分析を、はっきり分けた2つの連載です。</p>
       <div class="serial-grid">''' +
             "".join(_series_card(s) for s in serials) + "</div></section>")
 
