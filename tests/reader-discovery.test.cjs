@@ -120,11 +120,14 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   const note={textContent:'※ブラウザ単位の参考値'};
   const widget={hidden:true,querySelector:selector=>selector==='small'?note:null};
   const number={textContent:'—'},reads={textContent:'—'};
+  const yesterdayStat={hidden:true},yesterdayNumber={textContent:'—'};
   const responses=[25,26,27,'offline',28];
   const document={
     referrer:'',visibilityState:'visible',
     querySelector:selector=>selector==='[data-observer-widget]'?widget:
                             selector==='[data-observer-count]'?number:
+                            selector==='[data-observer-yesterday-stat]'?yesterdayStat:
+                            selector==='[data-observer-yesterday]'?yesterdayNumber:
                             selector==='[data-observer-reads]'?reads:null,
     querySelectorAll:()=>[],
     addEventListener(name,callback){listeners[name]=callback;}
@@ -148,7 +151,8 @@ test('real browser counters refresh while visible, resume on focus and preserve 
       if(current==='offline')return {ok:false,json:async()=>({})};
       return {ok:true,json:async()=>({
         unit:'anonymous-browser',visitors:900,articles:{},
-        today:{dateJst:'2026-11-03',visitors:current,articleReads:current+10}
+        today:{dateJst:'2026-11-03',visitors:current,articleReads:current+10},
+        yesterday:{dateJst:'2026-11-02',visitors:17,articleReads:21}
       })};
     }
   };
@@ -159,6 +163,8 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   assert.deepEqual(requests,['POST','GET']);
   assert.equal(number.textContent,'25');
   assert.equal(reads.textContent,'35');
+  assert.equal(yesterdayNumber.textContent,'17');
+  assert.equal(yesterdayStat.hidden,false);
   assert.equal(widget.hidden,false);
   assert.match(note.textContent,/3分ごと更新/);
   assert.equal(timers.length,1);
