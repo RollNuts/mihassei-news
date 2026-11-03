@@ -41,8 +41,8 @@ class NewsBroadcastTests(unittest.TestCase):
         }):
             markup = build.article_hero_media(article)
             self.assertIn('data-video-shell', markup)
-            self.assertIn('class="article-video-fallback"', markup)
-            self.assertIn('hidden loading="lazy"', markup)
+            self.assertIn('data-video-fallback', markup)
+            self.assertIn('hidden loading="eager"', markup)
             self.assertIn('?v=' + "b"*12, markup)
         js = (ROOT/"assets/news-broadcast.js").read_text(encoding="utf-8")
         self.assertIn("addEventListener('error'", js)
