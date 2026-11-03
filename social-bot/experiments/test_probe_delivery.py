@@ -75,7 +75,9 @@ class BufferReadOnlyTests(unittest.TestCase):
                 "text_sha256":hashlib.sha256(self.post["text"].encode()).hexdigest()}}}
         def inaccessible(_):
             raise RuntimeError("insightsRead scope unavailable")
-        report=build(inv,state,"x-1",lambda _:self.remote,inaccessible)
+        from datetime import datetime, timezone
+        report=build(inv,state,"x-1",lambda _:self.remote,inaccessible,
+                     now=datetime(2026,11,4,1,tzinfo=timezone.utc))
         row=report["items"][0]
         self.assertEqual(row["buffer_status"],"sent")
         self.assertFalse(row["buffer_metrics_available"])
