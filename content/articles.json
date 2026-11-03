@@ -1,5 +1,28 @@
 [
   {
+    "slug": "sweet-potato-chorus-starts-too-late",
+    "category": "社会",
+    "flash": "まちの珍事",
+    "fiction_company": "町の学園祭",
+    "art": "cards",
+    "fiction_at": "2031-11-03T18:33:00+09:00",
+    "title": "ふかし芋の一斉食べ大会、合図の練習が終わらない　参加者が芋を握って待機",
+    "summary": "ふかし芋を同時に食べ始める記録会で、掛け声と手の動きを何度も練習。ようやく始まった本番では、芋がすっかり冷めていた。",
+    "paragraphs": [
+      "「まだ食べないでください！」。2031年、町の学園祭で、ふかし芋を全員同時に食べる記録会が開かれた。参加者は芋を手に「いただきます」の合図を練習したが、一人が皮をむくと周りもつられてむいてしまう。進行役は「食べ始める瞬間をそろえたい」と、何度も笛を吹いてやり直した。",
+      "ようやく本番の合図が出ると、全員が一斉に芋をかじった。熱々だったはずの芋はすっかり冷めている。最前列の子が「冷めてる！」と叫ぶと、ほかの参加者からも同じ声が上がった。端から端まで「冷めてる！」がきれいに重なり、進行役は思わず笛を置いた。そろえようとしていた「いただきます」より、ずっと息が合っていた。"
+    ],
+    "scene_prompt": "A row of cooled steamed sweet potatoes on paper trays, with participants frozen mid-bite as a solemn referee raises a small whistle. Anonymous children and adults in a modest Japanese school festival courtyard hold half-peeled sweet potatoes and look surprised. Eye-level medium shot, natural daylight, deadpan photorealistic staged comedy, no writing, logos, or identifiable people.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "広島テレビニュース（ライブドアニュース配信）",
+      "published_at": "2026-11-03T18:33:00+09:00",
+      "url": "https://news.livedoor.com/article/detail/32723003/",
+      "topic": "2026年11月3日18:33公開。広島の学園祭で551人が合図に合わせてふかし芋を食べる日本記録に挑み、防災炊き出し訓練も兼ねたと報道。作中の町・練習や芋が冷める出来事は創作。"
+    },
+    "published_at": "2026-11-04T07:38:09+09:00"
+  },
+  {
     "slug": "historical-lookalike-contest-dog-wins",
     "category": "社会",
     "flash": "まちの珍事",
