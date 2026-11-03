@@ -94,7 +94,7 @@ def cpu_prompt(article: dict) -> str:
             "actors, no captions, logos or words."
         )
     return (
-        "Bright, colorful, sharp staged comedy photograph, cheerful high-key "
+        "Bright, colorful, sharp STAGED SATIRICAL NEWS COMEDY photograph, high-key "
         "professional lighting and clear visible props. "
         + scene_description(article) + " Fictional actors, no words or logos."
     )
