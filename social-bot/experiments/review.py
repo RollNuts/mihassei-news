@@ -39,6 +39,35 @@ def actual_summary(observations, fmt, hours):
     }
 
 
+def hashtag_summary(posts, observations, fmt, hours=24):
+    """Compare tagged/control within the SAME format using verified X metrics.
+
+    A record must carry experiment_id linking it to the exact tested post;
+    similar-looking X text, Buffer IDs and unlinked X post IDs are not guesses.
+    """
+    by_id={post["id"]:post for post in posts}
+    latest={}
+    for item in observations:
+        date=validate_observation(item)
+        eid=item.get("experiment_id")
+        post=by_id.get(eid)
+        if not post or post["format"]!=fmt or item["window_hours"]!=hours:
+            continue
+        if item["format"]!=post["format"]:
+            raise ValueError("X measurement format differs from experiment")
+        if eid not in latest or date>latest[eid][0]:
+            latest[eid]=(date,item["impressions"])
+    buckets={"one_relevant_tag":[],"no_tag":[]}
+    for eid,(_,impressions) in latest.items():
+        group="one_relevant_tag" if by_id[eid].get("hashtag") else "no_tag"
+        buckets[group].append(impressions)
+    return {
+        k:{"n":len(values),
+           "median":statistics.median(values) if values else None}
+        for k,values in buckets.items()
+    }
+
+
 def compose(inventory, ledger, delivery, metric_data, now=None):
     now=now or datetime.now(JST)
     posts=sorted(inventory["experiments"],key=lambda x:x["sequence"])
@@ -75,6 +104,26 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
             else:
                 desc=f"{stats['n']}件 / 中央値 {stats['median']:g} / 合計 {stats['sum']}（実測の範囲のみ）"
             lines.append(f"- {window}h {fmt}：{desc}")
+    # Hashtag effects can only be compared with linked, observed X metrics.
+    # A Buffer scheduled/sent record is NOT an X impression.
+    lines+=["","## ハッシュタグ実験：タグ1個 vs タグなし（同一形式内）",""]
+    for fmt in formats_to_test:
+        stats=hashtag_summary(posts,observations,fmt,24)
+        for group in ("one_relevant_tag","no_tag"):
+            row=stats[group]
+            label="タグ1個" if group=="one_relevant_tag" else "タグなし"
+            value=(f"{row['n']}件 / 24h中央値 {row['median']:g}" if row["n"]
+                   else "未取得（0回ではない）")
+            lines.append(f"- {fmt} / {label}：{value}")
+        enough=all(row["n"]>=5 for row in stats.values())
+        if enough:
+            tag=stats["one_relevant_tag"]["median"]
+            control=stats["no_tag"]["median"]
+            lead=("タグあり" if tag>control else
+                  "タグなし" if tag<control else "同値")
+            lines.append(f"- {fmt}：観測上の先行は{lead}（投稿時刻・ネタ差は未調整）")
+        else:
+            lines.append(f"- {fmt}：効果は判定保留（各群5本の実測未満）")
     lines+=["","## 来週の検証と判断",""]
     cases={}
     for fmt in formats_to_test:
