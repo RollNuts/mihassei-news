@@ -123,7 +123,7 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(kwargs["num_inference_steps"], 8)
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
         self.assertIn("capsule lottery machine", kwargs["prompt"])
-        self.assertIn("Bright staged fictional comedy", kwargs["prompt"])
+        self.assertIn("DSLR color photograph", kwargs["prompt"])
 
     def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
         a = {**article(), "title": "有名人700人の特番、名前を呼ぶだけで放送終了"}
@@ -155,9 +155,9 @@ class FreeCpuImageTests(unittest.TestCase):
 
     def test_compact_backlog_prompts_keep_the_article_objects(self):
         expected = {
-            "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "referee", "whistle"),
+            "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "purple skin", "yellow flesh", "referee", "whistle"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
-            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "empty"),
+            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "push button", "close-up"),
             "family-dinner-gacha-243-rejections": ("capsule lottery machine", "plates", "crossed arms"),
             "volleyball-team-lunch-plate-merch": ("plate", "tape measure", "volleyball net"),
         }
@@ -165,8 +165,8 @@ class FreeCpuImageTests(unittest.TestCase):
             prompt = cpu.cpu_prompt({"slug": slug})
             for item in objects:
                 self.assertIn(item, prompt)
-            self.assertIn("fictional", prompt)
-            self.assertIn("No text or logos", prompt)
+            self.assertIn("DSLR color photograph", prompt)
+            self.assertIn("unmarked props", prompt)
             self.assertLess(len(prompt.split()), 55)
 
     def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
