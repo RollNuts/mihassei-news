@@ -113,6 +113,7 @@ class FreeCpuImageTests(unittest.TestCase):
         gen.manual_seed.return_value = gen
         fake_torch = SimpleNamespace(Generator=Mock(return_value=gen), inference_mode=contextlib.nullcontext)
         with patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()), \
+             patch.object(cpu, "normalize_exposure", return_value=fake_image), \
              patch.object(cpu, "check_quality"):
 
             data = cpu.render_one(pipeline, fake_torch, a)
@@ -130,6 +131,13 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("EMPTY CHAIRS", prompt)
         self.assertIn("Bright, colorful", prompt)
         self.assertLess(len(prompt.split()), 65)
+
+    def test_auto_exposure_has_strict_underexposure_and_amplification_caps(self):
+        with self.assertRaisesRegex(ValueError, "severely underexposed"):
+            cpu.exposure_multiplier(20)
+        self.assertAlmostEqual(cpu.exposure_multiplier(62), 125 / 62)
+        self.assertEqual(cpu.exposure_multiplier(30), 2.4)
+        self.assertEqual(cpu.exposure_multiplier(150), 1.0)
 
     def test_clipped_prompt_is_rejected_before_model_call(self):
         a = article()
