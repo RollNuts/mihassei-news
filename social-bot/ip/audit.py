@@ -54,8 +54,14 @@ def check(loaded_posts=None):
         assert 2 <= len(post["panels"]) <= 6, f"Use 2-6 flexible panels at #{num}"
         assert len(post["text"]) <= 240
         if num >= 4:
-            # Record each episode's understandable one-sentence visual premise.
+            # A viewer should understand the protagonist's aim in a single sentence.
             assert 12 <= len(post.get("episode_core","")) <= 130, f"Missing plain-language premise at #{num}"
+            assert len(post["text"]) <= 180, f"Overlong social summary at #{num}"
+            first, last = post["panels"][0], post["panels"][-1]
+            assert first.get("sign") and first.get("scene") and first.get("focus"), f"Opening needs location and visible protagonist at #{num}"
+            assert first.get("line","").strip() != last.get("line","").strip(), f"Ending repeats setup at #{num}"
+            shots={panel.get("shot","medium") for panel in post["panels"]}
+            assert len(shots)>=2 or len(post["panels"])==2, f"Episode #{num} has no change of shot"
         assert post["day"] == entry["day"] and post["order"] == entry["order"]
         assert post["location"] == entry["location"], f"Location conflict at #{num}"
         assert post["characters"] == entry["characters"], f"Cast conflict at #{num}"
@@ -87,12 +93,16 @@ def check(loaded_posts=None):
             assert isinstance(p,dict), f"Invalid panel in #{num}"
             assert p.get("shot","medium") in {"wide","medium","close"}, f"Bad camera shot in #{num}"
             assert p.get("prop","none") in {"none","bolt","ticket","lamp","cup"}, f"Bad visual prop in #{num}"
+            assert p.get("visual","none") in {"none","glove-cover"}, f"Bad custom visual gag in #{num}"
             assert isinstance(p.get("silent",False), bool), f"Silent flag must be boolean at #{num}"
             if p.get("silent",False):
                 assert p.get("line","") == "", f"Silent panel has dialogue in #{num}"
                 assert p.get("mood") in {"happy","sad","sleepy","confused","wink"} or p.get("prop","none") != "none", f"Silent panel has no visible emotional or object cue in #{num}"
             else:
                 assert isinstance(p.get("line"),str) and 2 <= len(p["line"].strip()) <= 65, f"Missing or too long dialogue in #{num}"
+                if num >= 4:
+                    assert len(p["line"]) <= 55, f"Dialogue crowded in #{num}"
+                    assert all(len(line) <= 28 for line in p["line"].split("\\n")), f"Phone-screen line too long in #{num}"
             if num >= 4:
                 action=p.get("action","").strip()
                 assert 4 <= len(action) <= 60, f"Missing concrete action for panel in #{num}"
