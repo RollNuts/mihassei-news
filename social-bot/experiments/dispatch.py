@@ -22,6 +22,7 @@ from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 from visuals import SCENES  # noqa: E402
 
 FORMATS = {"surreal_text", "character_moment"}
+ANGLES = {"everyday_satire"}
 MAX_CHARS = 180
 MECHANISMS = {
     "inverted_expectation", "self_reference", "literal_wordplay",
@@ -96,6 +97,9 @@ def validate(posts, config, state):
         mechanism = post.get("mechanism")
         if mechanism is not None and mechanism not in MECHANISMS:
             raise ValueError("Unsupported comedy mechanism: " + str(mechanism))
+        angle = post.get("angle")
+        if angle is not None and (angle not in ANGLES or fmt != "surreal_text"):
+            raise ValueError("Unrecognized X satire experiment angle: " + pid)
         visual = post.get("visual")
         if visual is not None and (fmt != "surreal_text" or SCENES.get(pid) != visual):
             raise ValueError("Unreviewed or character-comic visual is forbidden: " + pid)
@@ -178,6 +182,12 @@ def decide(posts, state, existing, max_queue, max_new):
             image_options = [p for p in remaining if p.get("visual") and p.get("hashtag")]
             if image_options:
                 options = image_options
+        # Controlled pilot: sample relatable satire in about one in four
+        # free slots. Existing Buffer posts never change.
+        if next_slot % 4 == 2 and preferred == "surreal_text":
+            relatable = [p for p in options if p.get("angle") == "everyday_satire"]
+            if relatable:
+                options = relatable
         if next_slot % 5 == 0:
             spotlight = [p for p in options if p.get("featured") is True]
             if spotlight:

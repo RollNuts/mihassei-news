@@ -78,3 +78,12 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - `launch_first_visual_now: true` selects the first unsubmitted original **surreal** illustration with one relevant hashtag and sends it using Buffer `mode: shareNow`. This runs at most once per ledger; the result is never interpreted as a verified X post until checked against Buffer/X. No unapproved manga, paid API or Buffer pricing change.
 - Only this first image can bypass the three **scheduled** post slots; it is an immediate attempt, not an extra queued post or permission to spam. All later posts use existing queue caps and scheduling. Even if the image launch fails, subsequent daily runs can safely retry without rewriting reserved posts.
 - Normal scheduling now gives original X experiments priority over optional article promotion, so an article cannot take the last free slot before the visual experiment.
+
+## Everyday satire pilot (2026-11-03)
+
+- Added six new, unsubmitted self-contained Japanese jokes about familiar daily friction: self-checkout, surveys, waiting, notifications, bento pricing and paperless receipts. Previously registered Buffer texts, tags, URLs and images remain immutable.
+- New items use internal metadata `angle: everyday_satire`. The dispatcher samples a relatable-joke candidate approximately once every four available slots, without raising the current daily publishing frequency or Buffer Free queue limit. This is an unproven creative hypothesis, not an algorithm hack.
+- Three pilot posts use one relevant `#シュールネタ` tag, and three have no tag. Do not conflate tag effects with topic/format differences.
+- `review.py` separately compares **linked, measured 24-hour ordinary X post impressions** for satire vs the other surreal short posts, keeping verdicts on hold until each group has at least five measured posts. This ordinary metric is **not** the unique Premium verified-user Home Timeline impressions from the 90-day Original Content Rewards eligibility screen.
+- Never infer monetization progress from normal impressions, Buffer sent/scheduled states or the website traffic. Do not put private creator dashboard screenshots or identifiers in this public repository without explicit owner permission.
+- Zero new cost: existing Buffer Free + GitHub Actions only. No paid X API, ads, automated bulk follows/replies or release of unapproved comic IP.
