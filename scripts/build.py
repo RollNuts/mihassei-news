@@ -1294,12 +1294,31 @@ def other_files(articles, issues=None, serials=None):
     routes.extend((article_url(a), modification_date(a)) for a in articles)
     routes.extend(serial_routes(serials))
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
+    image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
+    ET.register_namespace("image", image_xmlns)
+    # These first-party raster cards already exist on the published pages.
+    # Expose them to image crawlers even when the visible illustration is SVG.
+    sitemap_images = {article_url(a): SITE + social_image(a) for a in articles}
+    sitemap_images.update({
+        issue_url(day): SITE + "/og/issues/" + day + ".png"
+        for day in issues
+    })
+    for series in serials:
+        slug = series["slug"]
+        sitemap_images["/serials/" + slug + "/"] = SITE + "/og/serials/" + slug + ".png"
+        for episode in series["episodes"]:
+            sitemap_images["/serials/" + slug + "/" + episode["slug"] + "/"] = (
+                SITE + "/og/serials/" + slug + "-" + episode["slug"] + ".png"
+            )
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
         node = ET.SubElement(root, "url")
         ET.SubElement(node, "loc").text = SITE + url
         if modified:
             ET.SubElement(node, "lastmod").text = modified
+        if url in sitemap_images:
+            image = ET.SubElement(node, f"{{{image_xmlns}}}image")
+            ET.SubElement(image, f"{{{image_xmlns}}}loc").text = sitemap_images[url]
     write("sitemap.xml", ET.tostring(root, encoding="unicode"))
     write("feed.xml", generate_rss(
         articles, "未発生新聞 | 創作ニュース",
