@@ -176,12 +176,16 @@ def decide(posts, state, existing, max_queue, max_new):
         next_slot = len(state["queued"]) + len(to_queue) + 1
         preferred = "character_moment" if next_slot % 4 == 0 else "surreal_text"
         options = [p for p in remaining if p["format"] == preferred] or remaining
-        # First ever visual test gets priority so a one-slot opening can
-        # actually ship an illustration, rather than only future text.
-        if not visual_already_queued:
-            image_options = [p for p in remaining if p.get("visual") and p.get("hashtag")]
-            if image_options:
-                options = image_options
+        # Rotate images after the first image too: odd eligible surreal slots
+        # are visual candidates; even slots remain text/satire controls.
+        # Existing pending slots and every fourth character moment stay intact.
+        if not visual_already_queued or (preferred == "surreal_text"
+                                          and next_slot % 2 == 1):
+            visual_choices = ([p for p in options if p.get("visual")]
+                              if visual_already_queued
+                              else [p for p in remaining if p.get("visual")])
+            if visual_choices:
+                options = visual_choices
         # Controlled pilot: sample relatable satire in about one in four
         # free slots. Existing Buffer posts never change.
         if next_slot % 4 == 2 and preferred == "surreal_text":

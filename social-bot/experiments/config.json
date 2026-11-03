@@ -5,12 +5,12 @@
   "max_queue_size": 3,
   "max_new_per_run": 2,
   "channel_name": "Veripsa",
-  "reason": "Owner authorized immediate original illustrated X test on 2026-11-03. One-off shareNow with dedupe; no unapproved Nejimachi manga, paid APIs, extra credits, or queue overflow.",
+  "reason": "2026-11-03 first original image accepted once via shareNow. Keep original illustrations rotating through capped free Buffer queue; preserve held manga.",
   "creative_constraints": [
     "Only original compact surreal text and occasional canon-respecting character moments",
     "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
     "Keep Buffer free plan, GitHub public Actions and zero metered APIs",
     "Original serial manga review gates remain separate until new visuals are evaluated"
   ],
-  "launch_first_visual_now": true
+  "launch_first_visual_now": false
 }

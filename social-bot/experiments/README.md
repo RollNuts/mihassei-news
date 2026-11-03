@@ -87,3 +87,9 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - `review.py` separately compares **linked, measured 24-hour ordinary X post impressions** for satire vs the other surreal short posts, keeping verdicts on hold until each group has at least five measured posts. This ordinary metric is **not** the unique Premium verified-user Home Timeline impressions from the 90-day Original Content Rewards eligibility screen.
 - Never infer monetization progress from normal impressions, Buffer sent/scheduled states or the website traffic. Do not put private creator dashboard screenshots or identifiers in this public repository without explicit owner permission.
 - Zero new cost: existing Buffer Free + GitHub Actions only. No paid X API, ads, automated bulk follows/replies or release of unapproved comic IP.
+
+### Continuous original picture rotation and provider-status audit (2026-11-03)
+
+- After the one-off original shareNow image, `launch_first_visual_now` is OFF. Future originals alternate image/plain surreal candidates where inventory allows; text-only and new everyday satire experiments remain live, as does every fourth character moment.
+- `probe_delivery.py` makes read-only Buffer queries for saved Buffer IDs, verifies exact Veripsa channel and immutable caption, records provider status, image attachment evidence and Buffer-returned X permalink. No invented views, no sending on this audit route, and no resurfacing unapproved Nejimachi episodes.
+- `delivery.json` is committed after each live queue run and the weekly review reports image/Buffer sent separately from actual X impression evidence.
