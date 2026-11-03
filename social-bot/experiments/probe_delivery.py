@@ -74,6 +74,11 @@ def normalize_buffer_impressions(post_data, sent_at):
         return None
     if stamp.tzinfo is None or sent.tzinfo is None or stamp<sent:
         return None
+    # Buffer can return an initial impressions=0 seconds after posting,
+    # before real network performance has been ingested. Suppress any
+    # near-immediate provider sample (even non-zero) as immature.
+    if (stamp-sent).total_seconds() < 12*3600:
+        return None
     for metric in post_data.get("metrics") or []:
         if not isinstance(metric,dict) or metric.get("type")!="impressions":
             continue
