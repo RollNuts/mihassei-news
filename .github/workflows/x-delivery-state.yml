@@ -1,0 +1,60 @@
+name: X Buffer Delivery State (read-only, free)
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/experiments/check_delivery.py"
+      - "social-bot/experiments/test_delivery.py"
+      - ".github/workflows/x-delivery-state.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/experiments/check_delivery.py"
+      - "social-bot/experiments/test_delivery.py"
+      - ".github/workflows/x-delivery-state.yml"
+  workflow_dispatch:
+  schedule:
+    # 20:45 JST, after user-configured 19:30 posting slot.
+    - cron: "45 11 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: x-readonly-delivery-state
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Test that no X impression count is invented
+        run: python -m unittest discover -s social-bot/experiments -p 'test_delivery.py' -v
+
+      - name: Inspect free Buffer channel delivery states without posting
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/check_delivery.py
+
+      - name: Save verified delivery-state report
+        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          if ! test -f social-bot/experiments/delivery.json; then
+            echo "No verified report to save"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/experiments/delivery.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): record Buffer sent/scheduled status [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
