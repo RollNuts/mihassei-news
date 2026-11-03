@@ -195,7 +195,8 @@ def paint_panel(d,p,rect,idx):
     scene(d,rect,p["scene"],p.get("sign",""),idx)
     wide=w>=750
     scale=min(1.0, (h-124)/350, w/710) if wide else min(.87,(h-140)/360,w/630)
-    base_y=y+int(h*.54)
+    # Keep characters above the dialogue strip, particularly in 3-panel layouts.
+    base_y=y+int(h*(.31 if wide and h<430 else (.43 if wide else .48)))
     focus=p["focus"]
     if p.get("secondary"):
         px=x+int(w*.68)
