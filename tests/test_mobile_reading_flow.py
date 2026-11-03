@@ -28,14 +28,16 @@ class MobileReadingFlowTests(unittest.TestCase):
         self.assertEqual(re.findall(r'href="([^"]+)"', primary),
                          ['/', '/archive/', '/serials/'])
         self.assertEqual(re.findall(r'href="([^"]+)"', secondary),
-                         ['/issues/', '/saved/', '/about/'])
+                         ['/issues/'])
         self.assertEqual(set(re.findall(r'href="([^"]+)"', mobile)),
                          set(re.findall(r'href="([^"]+)"', desktop)))
-        self.assertIn('<a href="/" aria-current=page>トップ</a>', primary)
+        self.assertIn('<a href="/" aria-current=page>一面</a>', primary)
+        self.assertIn('href="/saved/"', html)
+        self.assertIn('href="/about/"', html)
 
-    def test_current_page_still_marked_in_secondary_menu(self):
-        html = layout("テスト", "テスト", "/saved/", "<p>テスト</p>", active="saved")
-        self.assertIn('<a href="/saved/" aria-current=page>あとで読む</a>', html)
+    def test_current_issue_page_still_marked_in_secondary_menu(self):
+        html = layout("テスト", "テスト", "/issues/", "<p>テスト</p>", active="issues")
+        self.assertIn('<a href="/issues/" aria-current=page>発行号</a>', html)
 
     def test_headline_and_hero_come_before_secondary_bookmark_tools(self):
         article = self.articles[0]

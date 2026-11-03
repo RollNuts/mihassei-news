@@ -7,11 +7,11 @@ from scripts.build import about, editorial_policy, home, layout, load
 class EditorialPositioningTests(unittest.TestCase):
     def test_home_explains_fiction_before_reader_interactions(self):
         page = home(load())
-        self.assertIn("未来を当てるための予測ではありません", page)
-        self.assertIn("今の話題をちょっと大げさにした", page)
+        self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("まだ起きていないニュースを、真顔で。", page)
         self.assertIn("最新の架空ニュース", page)
-        self.assertIn("「公開」は実際の掲載日時", page)
+        self.assertIn("社会の矛盾や日常の理不尽", page)
+        self.assertNotIn("この新聞の読み方", page)
 
     def test_about_identifies_satire_without_claiming_accuracy(self):
         page = about()
@@ -28,14 +28,12 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("連載「未来相場観測室」は現実の公開資料", page)
         self.assertIn("記事の創作表示", page)
 
-    def test_home_shows_the_reality_to_what_if_to_joke_sequence(self):
+    def test_home_presents_a_single_disclosure_before_the_lead(self):
         page = home(load())
-        self.assertIn('class="concept-primer"', page)
-        self.assertIn("もし、この調子で5年たったら？", page)
-        self.assertIn("現実の話題</span>", page)
-        self.assertIn("5年後の「もしも」</span>", page)
-        self.assertIn("真顔の冗談</span>", page)
-        self.assertTrue(page.index('class="concept-primer"') < page.index('<section class="hero-grid">'))
+        self.assertIn('class="fiction-mark">創作報道', page)
+        self.assertIn('TOP STORY / 一面', page)
+        self.assertNotIn('class="concept-primer"', page)
+        self.assertTrue(page.index('class="fiction-mark"') < page.index('<section class="hero-grid">'))
 
     def test_article_marks_fiction_and_preserves_the_real_source(self):
         from scripts.build import story
@@ -45,10 +43,10 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn('href="#story-source"', page)
         self.assertIn('id="story-source"', page)
         self.assertIn("元記事が報じた事実ではありません", page)
-        self.assertIn("未来を当てる投票ではなく", page)
+        self.assertIn('aria-label="架空ニュースのありそう度を投票"', page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)
-        self.assertIn("架空ニュースへのツッコミや感想をどうぞ", page)
+        self.assertIn("感想やツッコミをどうぞ。投稿内容は公開されます。", page)
 
     def test_public_poll_labels_do_not_claim_to_predict_the_future(self):
         from pathlib import Path
@@ -79,7 +77,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("未発生新聞｜5年後を勝手に想像する風刺ニュース", page)
         self.assertIn('property="og:site_name" content="未発生新聞"', page)
         self.assertIn('class="fiction-mark">創作報道', page)
-        self.assertIn("5年後は、こうなってるかも", page)
+        self.assertIn("まだ起きていないニュースを、真顔で。", page)
         self.assertIn("紙面の架空時計", page)
         self.assertNotIn("5年先の時計", page)
 

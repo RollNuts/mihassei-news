@@ -20,7 +20,7 @@ class SiteTests(unittest.TestCase):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
                   "sitemap.xml","issues/index.html","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
-                  "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/engagement.js",
+                  "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/reader-first.css","assets/engagement.js",
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
@@ -91,11 +91,15 @@ class SiteTests(unittest.TestCase):
         hero=home.index('<section class="hero-grid">')
         latest=home.index('<section class="section-block">')
         genres=home.index('<section class="genre-explore"')
+        serials=home.index('<section class="serials-feature"')
+        starter=home.index('<section class="starter-editorial"')
+        extras=home.index('<details class="extras-shelf">')
         random=home.index('<section class="special-edition"')
         discussions=home.index('<section class="reader-discussions"')
-        about=home.index('<aside class="banner">')
-        self.assertTrue(hero < latest < genres < random < discussions < about)
-        self.assertIn("<h2>さらに新着を読む</h2>",home)
+        self.assertTrue(hero < latest < genres < serials < starter < extras < random < discussions)
+        self.assertIn("<h2>新着記事</h2>",home)
+        self.assertNotIn('<aside class="banner">',home)
+        self.assertNotIn("この新聞の読み方",home)
         self.assertIn('data-issue-picker',home)
         self.assertIn('data-comment-discussions',home)
         self.assertIn('class="story-grid"',home)
@@ -170,7 +174,7 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("発行号・号外・読者参加・RSS",home)
+        self.assertIn("発行号・号外・コメント",home)
         self.assertIn('.extras-shelf>summary:focus-visible',css)
         self.assertTrue(home.index('<section class="genre-explore"') <
                         home.index('<details class="extras-shelf">'))
@@ -227,7 +231,8 @@ class SiteTests(unittest.TestCase):
                      "editorial/index.html","advertise/index.html"):
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
             self.assertEqual(page.count('href="/assets/editorial-polish.css"'),1,name)
-            self.assertIn('5年後は、こうなってるかも。今の話題をちょっと大げさに。',page)
+            self.assertIn('まだ起きていないニュースを、真顔で。',page)
+            self.assertIn('href="/assets/reader-first.css"',page)
             self.assertLess(
                 page.index('href="/assets/comments.css"'),
                 page.index('href="/assets/editorial-polish.css"'),
@@ -283,7 +288,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('class="readers-choice" data-popular-section',markup)
         self.assertIn('data-popular-list',markup)
         self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
-        self.assertIn("実人数・PV・週間ランキングではありません",markup)
+        self.assertIn("実測ブラウザ単位の参考集計。実人数・PVではありません。",markup)
         m=re.search(r'data-popular-options="([^"]+)"',markup)
         self.assertIsNotNone(m)
         candidates=json.loads(html.unescape(m.group(1)))
@@ -438,9 +443,9 @@ class SiteTests(unittest.TestCase):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
-        self.assertIn('class="edition-time-key"',home)
-        self.assertIn("「公開」は実際の掲載日時",home)
-        for selector in (".edition-time-key", ".story-meta .real-published-at",
+        self.assertIn('class="fiction-mark">創作報道',home)
+        self.assertNotIn("この新聞の読み方",home)
+        for selector in (".story-meta .real-published-at",
                          ".story-meta .fiction-dateline"):
             self.assertIn(selector,css)
         for article in self.articles:
@@ -456,7 +461,7 @@ class SiteTests(unittest.TestCase):
             compact_markup=category_meta(article, compact=True)
             self.assertIn('class="story-meta story-meta--compact"',compact_markup)
             self.assertIn(actual_tag,compact_markup)
-            self.assertIn(article["category"]+" / 創作",compact_markup)
+            self.assertIn('class="category">'+article["category"]+'</span>',compact_markup)
             self.assertNotIn(fictional_tag,compact_markup)
             self.assertNotIn('class="ticker"',compact_markup)
             self.assertIn(compact_markup,archive)

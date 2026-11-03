@@ -54,10 +54,10 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
         self.assertIn('class="starter-editorial"', doc)
         self.assertLess(doc.index('<section class="hero-grid">'),
                         doc.index('class="starter-editorial"'))
-        self.assertLess(doc.index('class="starter-editorial"'),
-                        doc.index('<section class="section-block">'))
+        self.assertLess(doc.index('<section class="section-block">'),
+                        doc.index('class="starter-editorial"'))
         self.assertEqual(doc.count('class="starter-pick-card"'), 3)
-        self.assertIn("人気ランキングではありません", doc)
+        self.assertIn("SELECTION", doc)
         self.assertNotIn('class="reading-ways"', doc)
         # Ordinary serials, genre navigation and RSS must remain available.
         for link in ('href="/archive/"',
