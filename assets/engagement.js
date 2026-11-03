@@ -6,7 +6,10 @@
     const recoverImage=()=>{
       const fallback=image.getAttribute("data-fallback");
       if(!fallback || image.getAttribute("src")===fallback)return;
+      const fallbackAlt=image.getAttribute("data-fallback-alt");
       image.removeAttribute("data-fallback");
+      image.removeAttribute("data-fallback-alt");
+      if(fallbackAlt) image.setAttribute("alt",fallbackAlt);
       image.src=fallback;
       const caption=image.closest("figure")?.querySelector("figcaption");
       if(caption)caption.textContent="イメージ画像";

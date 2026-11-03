@@ -489,8 +489,7 @@ def check():
         for tag in ('<div class="article-body">',
                     '<div class="article-save-inline">',
                     '<details class="source-context" id="story-source" aria-label="着想した実際の話題">',
-                    '<summary>着想元を見る</summary>',
-                    'href="#story-source"'):
+                    '<summary>着想元を見る</summary>'):
             if tag not in page:
                 raise RuntimeError(slug+": reading-first layout missing: "+tag)
         positions = [
@@ -501,6 +500,10 @@ def check():
         ]
         if positions != sorted(positions) or len(set(positions)) != len(positions):
             raise RuntimeError(slug+": image, prose, bookmark and source order regressed")
+        if 'href="#story-source"' in page:
+            raise RuntimeError(slug+": duplicate source CTA before the article text")
+        if 'class="article-visual"' not in page or 'fetchpriority="high"' not in page:
+            raise RuntimeError(slug+": article hero lacks high-priority image loading")
         # Only link to a real serial episode, with a clear editorial boundary.
         chosen_serial=choose_serial(item,serials)
         if chosen_serial:

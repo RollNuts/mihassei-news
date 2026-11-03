@@ -333,14 +333,30 @@ def editorial_image(a):
     return illustration_path(a)
 
 
+def article_image_alt(a, *, generated=False, photo_ok=False):
+    """Honest, article-specific description without claiming to see AI pixels.
+
+    Generated scene prompts are not guaranteed to match each rendered image.
+    The headline identifies the depicted story context; the caption carries
+    detailed provenance. The alt is useful when images fail or in screen readers.
+    """
+    if generated:
+        return "創作ニュース「" + a["title"] + "」を題材にしたAI生成のイメージ画像"
+    if photo_ok:
+        return a["photo"]["alt"] + "（記事のイメージ写真）"
+    return "創作ニュース「" + a["title"] + "」の編集部制作イラスト"
+
+
 def image_tag(a, cls, extra=""):
     generated = usable_generated_scene(a, root=BASE)
     photo_ok = not generated and usable_cached_photo(a, root=BASE)
     url = editorial_image(a)
-    alt = ("AI生成による架空ニュースのコント風再現画像。実際の報道写真ではありません"
-           if generated else a["photo"]["alt"] if photo_ok else
-           "記事の題材を表現した創作イラスト")
-    fallback = f' data-fallback="{escape(illustration_path(a))}"' if (generated or photo_ok) else ""
+    alt = article_image_alt(a, generated=generated, photo_ok=photo_ok)
+    fallback = (
+        f' data-fallback="{escape(illustration_path(a))}"'
+        f' data-fallback-alt="{escape(article_image_alt(a))}"'
+        if generated or photo_ok else ""
+    )
     if generated:
         extra += ' data-generated-scene="true"'
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
@@ -462,12 +478,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         og_image = SITE + "/og/serials/" + name + ".png"
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
-    og_alt = ("AI生成した架空ニュースのコント風再現画像（実際の報道写真ではありません）"
-              if article and usable_generated_scene(article, root=BASE) else
-              (photo["alt"] + "（イメージ写真）" if local_photo and photo else
-               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙" if issue_path else
-                ("創作記事『" + article["title"] + "』の編集部制作イラスト" if article else
-                 "未発生新聞（創作ニュース）"))))
+    og_alt = (article_image_alt(
+                  article,
+                  generated=usable_generated_scene(article, root=BASE),
+                  photo_ok=bool(photo and local_photo and not usable_generated_scene(article, root=BASE))
+              ) if article else
+              ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙"
+               if issue_path else "未発生新聞（創作ニュース）"))
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
     og_mime = "image/jpeg" if local_photo else "image/png"
@@ -1026,11 +1043,11 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<p class="story-fiction-context"><strong>この記事は創作です。</strong> <a href="#story-source">着想元を見る</a></p>
+<p class="story-fiction-context"><strong>この記事は創作です。</strong></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
-{image_tag(a, "article-visual", extra='loading="eager" decoding="async"')}
+{image_tag(a, "article-visual", extra='loading="eager" fetchpriority="high" decoding="async"')}
 <figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
