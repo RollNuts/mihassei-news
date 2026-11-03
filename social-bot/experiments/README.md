@@ -107,4 +107,13 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 
 ### Daily read-only delivery audit
 
-An independent GitHub Actions workflow checks Buffer delivery once each day at 21:20 JST, plus its initial deployment. It requests at most 10 posts and 2 matured metric snapshots per run; the historic record remains cached with its real last-check timestamp. It never sends to X. The Free plan's 1,000 API calls per channel per rolling 30 days are shared with publishing, so do not run this on every content push.
+One dedicated GitHub Actions workflow checks Buffer delivery once each day at 23:45 JST, plus its initial deployment. It requests at most 8 posts and 1 matured metric snapshot per run; the historic record remains cached with its real last-check timestamp. It never sends to X. The Free plan's 1,000 API calls per channel per rolling 30 days are shared with publishing, so do not run this on every content push.
+
+## Original content restock and free evidence audit (2026-11-03)
+
+- Added 10 new, unsubmitted original posts (three fresh Pillow scene-only illustrations, two small Nejimachi moments, five unrelated short/satirical jokes). Existing Buffer-registered texts, image hashes and the unapproved-comic gate are immutable.
+- The new scenes are deterministic 1200x675 PNGs with a 1MB cap. The existing main workflow generates and hosts them before Buffer can queue them; no image model API, credit, GPU or paid storage is needed.
+- Keep **exactly one** daily read-only delivery audit: `x-delivery-audit.yml` at **23:45 JST**. The older status-only `x-delivery-state.yml` has **no daily schedule or main-push trigger** to avoid writing the same delivery.json twice.
+- Daily audit is bounded to **eight** individual Buffer status reads and **one** mature provider metric read. Earlier IDs, permalinks and observation timestamps stay cached rather than rescanned. A provider read error may preserve an earlier link as a *historical* link without asserting a current sent state.
+- `delivery.json.health` now distinguishes all original scripts, ever-queued scripts, unused originals, unused image scenes, last-known provider sent and links, and warnings below **14 unused scripts or 2 unused images**. These are not verified impressions or reach. The weekly report independently includes unused image inventory.
+- Increase creativity and quality with a separate daily restock, but never duplicate near-identical jokes or spam seven posts to game X. Keep Buffer Free (ten queued slots/channel), pinned X account, no paid APIs, and no unapproved canonical manga.
