@@ -1,6 +1,6 @@
 {
   "new_reservations_enabled": false,
-  "reason": "Visual design quality hold: episode 6 draft resembled superhero web-slinging composition and mascot designs lack organic hand-drawn appeal. No unreviewed art should be queued.",
+  "reason": "Adult-audience visual redesign required: prior superhero-like shadow page and infantile mascot drafts rejected. Keep new queue submissions paused until a distinct, mature, dry-humor machine-city visual identity is approved.",
   "paused_at_jst": "2026-11-03",
   "existing_buffer_posts": "Untouched by this config; audit separately before publishing.",
   "reopen_requirements": [
@@ -9,7 +9,10 @@
     "Panels vary camera angle and visible character action; no static diagrams",
     "Soft pencil or ink linework; simple memorable forms and expressive gestures",
     "At least one full future episode viewed at mobile size and editorially approved",
-    "CI, continuity, file size, and Buffer dry-read checks pass"
+    "CI, continuity, file size, and Buffer dry-read checks pass",
+    "No baby-like blush cheeks, oversized glossy eyes, plush-toy anatomy, toy-bright palette or animal substitution",
+    "Adult-oriented dry satire, worn industrial textures and understated character acting; no educational or moralizing endings",
+    "Original character sheets and mobile-size sequential manga reviewed for mature visual appeal and unique composition"
   ],
   "review_owner": "human"
 }
