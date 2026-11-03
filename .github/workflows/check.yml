@@ -54,6 +54,8 @@ jobs:
           node --input-type=module --check < src/worker.js
       - name: Verify private serial read/resume progress
         run: node --test tests/serial-progress.test.cjs
+      - name: Verify reading progress follows article and serial text
+        run: node --test tests/reading-progress.test.cjs
       - name: Verify Japan-date edition freshness (today vs old issue)
         run: node --test tests/edition-freshness.test.cjs
       - name: Test coarse privacy-safe attribution without network access
