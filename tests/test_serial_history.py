@@ -18,13 +18,15 @@ class SerialHistoryGuardTests(unittest.TestCase):
     def test_no_change_or_appending_new_chapter_is_safe(self):
         previous = copy.deepcopy(self.before)
         current = copy.deepcopy(previous)
-        self.assertEqual(guard_serial_history(previous, current), 2)
+        published = sum(len(s["episodes"]) for s in previous)
+        self.assertEqual(guard_serial_history(previous, current), published)
         extra = copy.deepcopy(current[0]["episodes"][-1])
-        extra["number"] = 2
-        extra["slug"] = "victim-not-yet-dead-02"
-        extra["title"] = "新しい第2話"
+        next_number = len(current[0]["episodes"]) + 1
+        extra["number"] = next_number
+        extra["slug"] = f"victim-not-yet-dead-{next_number:02d}"
+        extra["title"] = f"新しい第{next_number}話"
         current[0]["episodes"].append(extra)
-        self.assertEqual(guard_serial_history(previous, current), 2)
+        self.assertEqual(guard_serial_history(previous, current), published)
 
     def test_fiction_retcon_and_removal_are_blocked(self):
         changed = copy.deepcopy(self.before)
@@ -58,7 +60,7 @@ class SerialHistoryGuardTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(ValueError, "verification date"):
             guard_serial_history(self.before, verified, today=date(2027, 2, 4))
-        self.assertEqual(guard_serial_history(self.before, verified, today=date(2027, 2, 5)), 2)
+        self.assertEqual(guard_serial_history(self.before, verified, today=date(2027, 2, 5)), sum(len(s["episodes"]) for s in self.before))
         with self.assertRaisesRegex(ValueError, "immutable"):
             modified = copy.deepcopy(verified)
             modified[1]["episodes"][0]["forecast"]["result"]["outcome"] = "的中"
