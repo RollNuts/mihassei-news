@@ -50,6 +50,15 @@ class AdultPilotTests(unittest.TestCase):
         self.assertNotEqual(im.getpixel((200,160)),PAPER)
         self.assertNotEqual(im.getpixel((190,185)),PAPER)
 
+    def test_side_shout_is_visibly_different_from_resting_mouth(self):
+        # The close shot needs a readable open mouth, not the same flat mark.
+        resting=Image.new("RGB",(400,400),PAPER)
+        shouting=Image.new("RGB",(400,400),PAPER)
+        neji(ImageDraw.Draw(resting),200,185,1,"side","plain","rest")
+        neji(ImageDraw.Draw(shouting),200,185,1,"side","shout","rest")
+        self.assertNotEqual(resting.getpixel((240,185)),
+                            shouting.getpixel((240,185)))
+
     def test_pito_old_display_is_not_baby_face(self):
         im=Image.new("RGB",(430,360),PAPER)
         pito(ImageDraw.Draw(im),210,165,1.0)
