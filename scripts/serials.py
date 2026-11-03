@@ -310,6 +310,11 @@ def render_episode_page(series, ep, layout):
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
                   f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">公開予想の検証台帳を確認する ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol><p>数値・見通しは参照資料に基づきますが、株価についての見立ては編集上の仮説です。</p></section>')
+    # Publishing a sequel must not leave an old "next chapter in preparation"
+    # message in the first chapter. Preserve immutable editorial source data.
+    followup = ep.get("followup_note", "")
+    if next_ep is not None and ("準備中" in followup or "未公開" in followup):
+        followup = f'{episode_label(series, next_ep["number"])}が公開されています。'
     navigation = (
         '<nav class="serial-next-prev" aria-label="連載の前後の話">'
         + (f'<a href="{episode_url(series, prev_ep)}">← 前の話を読む</a>' if prev_ep else
@@ -333,7 +338,7 @@ def render_episode_page(series, ep, layout):
             f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}<figcaption>編集部制作のオリジナル表紙イラスト</figcaption></figure>'
             f'<div class="serial-article-body"><p class="serial-article-kicker">{h(ep["kicker"])}</p>'
             f'{narrative}{extras}'
-            f'<div class="serial-epilogue"><p>{h(ep.get("followup_note",""))}</p>'
+            f'<div class="serial-epilogue"><p>{h(followup)}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
             f'{render_completed_reading(series, ep)}{navigation}<a class="serial-back-link" href="{series_url(series)}">連載一覧に戻る →</a>'
