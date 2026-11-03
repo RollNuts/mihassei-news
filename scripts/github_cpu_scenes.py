@@ -18,13 +18,13 @@ import tempfile
 from pathlib import Path
 
 try:
-    from .generated_photos import ROOT, generated_manifest, usable_generated_scene
+    from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
         load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 except ImportError:
-    from generated_photos import ROOT, generated_manifest, usable_generated_scene
+    from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
         load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
@@ -36,6 +36,7 @@ REVISION = "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5"
 MAX_CPU_BATCH = 3
 MIN_RUNNER_FREE_BYTES = 1_000_000_000
 CLIP_TOKEN_LIMIT = 77
+TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # These compact scenes retain the conspicuous object and action from the
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
@@ -62,10 +63,21 @@ CPU_SCENES = {
         "beside three empty plates."
     ),
     "volleyball-team-lunch-plate-merch": (
-        "A large white ceramic dinner plate fills the foreground on a wooden "
-        "table, with a measuring tape stretched across its diameter. An indoor "
-        "volleyball net and a single volleyball are visible behind the table."
+        "Flat lay product photo of ONE round white ceramic plate with a yellow "
+        "measuring tape across it. A blue-yellow volleyball sits beside the "
+        "plate, cropped at the frame edge. Plain blue background."
     ),
+}
+# These source snapshots bind reviewed compact directions to their article
+# versions. A later body or scene edit must use its current direction rather
+# than silently repeating an old compact scene with the unchanged stable seed.
+CPU_SCENE_SOURCE_HASHES = {
+    TV_PILOT_SLUG: "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+    "sweet-potato-chorus-starts-too-late": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
+    "historical-lookalike-contest-dog-wins": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
+    "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
+    "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
+    "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
@@ -115,9 +127,13 @@ def load_pipeline():
     return pipe, torch
 
 
+def reviewed_source_matches(article: dict, slug: str) -> bool:
+    return article.get("slug") == slug and CPU_SCENE_SOURCE_HASHES.get(slug) == article_fingerprint(article)
+
+
 def prompt_parts(article: dict) -> tuple[str, list[str]]:
     """Keep a complete primary action; optional sentences are scene context."""
-    if "700人" in article.get("title", ""):
+    if reviewed_source_matches(article, TV_PILOT_SLUG):
         # Show the punchline (everyone already left), not anonymous grim crowds.
         return (
             "Bright, colorful, sharp photoreal staged Japanese TV comedy scene. "
@@ -127,7 +143,7 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
             "powerful joyful professional studio lights. Wide shot, fictional "
             "actors, no captions, logos or words."
         ), []
-    if article.get("slug") in CPU_SCENES:
+    if article.get("slug") in CPU_SCENES and reviewed_source_matches(article, article["slug"]):
         return CPU_SCENES[article["slug"]], []
     sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", scene_description(article)) if s.strip()]
     # A short opening such as "Photorealistic Japanese comedy." is a style
@@ -149,13 +165,13 @@ def cpu_prompt(article: dict) -> str:
     """Offline preview of a compact, article-specific primary scene."""
     core, _ = prompt_parts(article)
     # Preserve the already-tested 75-token TV pilot, including its lighting.
-    return core if "700人" in article.get("title", "") else wrap_prompt(core)
+    return core if reviewed_source_matches(article, TV_PILOT_SLUG) else wrap_prompt(core)
 
 
 def fit_cpu_prompt(article: dict, tokenizer) -> str:
     """Fit whole scene sentences, never silently truncate the primary action."""
     core, context = prompt_parts(article)
-    tv_pilot = "700人" in article.get("title", "")
+    tv_pilot = reviewed_source_matches(article, TV_PILOT_SLUG)
     count = lambda text: len(tokenizer.encode(text, add_special_tokens=True))
     prompt = cpu_prompt(article)
     minimal = False
@@ -272,7 +288,9 @@ def check_quality(image):
     brightness, contrast = gray.mean[0], gray.stddev[0]
     print(f"CPU scene quality: luminance={brightness:.0f}, "
           f"contrast={contrast:.0f}, saturation={saturation:.0f}", flush=True)
-    if not (90 <= brightness <= 225 and contrast >= 30 and saturation >= 18):
+    # White ceramics and polished metal can legitimately be almost neutral.
+    # Saturation is diagnostic, not a reason to discard a readable product.
+    if not (90 <= brightness <= 225 and contrast >= 30):
         raise ValueError("Scene too dark/washed out/unreadable for editorial use")
 
 
