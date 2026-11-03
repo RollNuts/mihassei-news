@@ -1,0 +1,82 @@
+name: Free CPU staged-news photos (public repository only)
+
+on:
+  schedule:
+    # Four bounded batches a day. No Mac, paid image API, or GPU.
+    - cron: '27 0,6,12,18 * * *'
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Number of missing story images (max 3)'
+        type: choice
+        options: ['1', '2', '3']
+        default: '1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: first-party-cpu-scenes
+  cancel-in-progress: false
+
+jobs:
+  render:
+    # Standard CPU runners are free on a public GitHub repository. Never bill
+    # a private fork or execute image generation from an untrusted pull request.
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      VERIPSA_ENABLE_FREE_CPU: '1'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+      PYTHONUNBUFFERED: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Show current free disk space and pending image plan
+        run: |
+          df -h .
+          python3 scripts/github_cpu_scenes.py --dry-run --limit 3
+      - name: Install CPU-only open-source local model runtime (no cache)
+        run: |
+          python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
+          python3 -m pip install --no-cache-dir \
+            diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
+            accelerate==1.2.1 safetensors==0.4.5 Pillow==11.1.0 numpy==1.26.4
+          df -h .
+      - name: Generate and verify at most three fictional JPEGs
+        run: |
+          python3 scripts/github_cpu_scenes.py --limit "${{ inputs.limit || '3' }}"
+          python3 -m unittest tests.test_generated_photos -v
+          python3 scripts/build.py
+      - name: Commit only images and manifest, rebase safely, and publish
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- assets/generated
+          if git diff --cached --quiet; then
+            echo 'No new images. Existing site and articles untouched.'
+            exit 0
+          fi
+          git commit -m 'images: generate free CPU staged comedy scenes'
+          for attempt in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then
+              echo 'Published images. Cloudflare will deploy the updated main.'
+              exit 0
+            fi
+            echo "Image-only push attempt $attempt did not succeed."
+          done
+          echo 'Unable to publish images; no force push or article edits attempted.' >&2
+          exit 1
