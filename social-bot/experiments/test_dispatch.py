@@ -171,6 +171,55 @@ class ExperimentsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Previously queued hashtag"):
             validate(p,c,state)
 
+    def test_fifth_slot_can_spotlight_new_original_joke(self):
+        posts=[
+            {"id":"xexp-old-a","sequence":1,"format":"surreal_text",
+             "text":"とても古いテストの文","mechanism":"self_reference"},
+            {"id":"xexp-old-b","sequence":2,"format":"surreal_text",
+             "text":"二番目のテストです","mechanism":"visual_reveal"},
+            {"id":"xexp-old-c","sequence":3,"format":"surreal_text",
+             "text":"三番目のテストです","mechanism":"literal_wordplay"},
+            {"id":"xexp-old-d","sequence":4,"format":"character_moment",
+             "text":"キャラが会話するテスト","mechanism":"dry_dialogue"},
+            {"id":"xexp-old-e","sequence":5,"format":"surreal_text",
+             "text":"もともと順番が先の話","mechanism":"inverted_expectation"},
+            {"id":"xexp-feature","sequence":20,"format":"surreal_text",
+             "text":"新しい絵が浮かぶおもしろい話","mechanism":"visual_reveal",
+             "featured":True},
+        ]
+        state={"schema_version":1,"queued":{}}
+        for p in posts[:3]:
+            state["queued"][p["id"]]={
+                "buffer_id":p["id"],"text_sha256":hash_text(p["text"]),
+                "format":p["format"]}
+        plan,_,_=decide(posts,state,[],3,2)
+        self.assertEqual([x["id"] for x in plan],
+                         ["xexp-old-d","xexp-feature"])
+        self.assertEqual(len(state["queued"]),3)
+
+    def test_rotates_mechanisms_when_distinct_alternative_exists(self):
+        posts=[
+            {"id":"xexp-one","sequence":1,"format":"surreal_text",
+             "text":"いちばん目のオリジナル","mechanism":"visual_reveal"},
+            {"id":"xexp-two","sequence":2,"format":"surreal_text",
+             "text":"ふたつ目のオリジナル","mechanism":"visual_reveal"},
+            {"id":"xexp-three","sequence":3,"format":"surreal_text",
+             "text":"別の視点のオリジナル","mechanism":"perspective_flip"},
+        ]
+        state={"schema_version":1,"queued":{}}
+        plan,_,_=decide(posts,state,[],3,2)
+        self.assertEqual([x["id"] for x in plan],["xexp-one","xexp-three"])
+
+    def test_unknown_mechanism_and_non_boolean_featured_are_rejected(self):
+        posts,c,state=sample()
+        posts["experiments"][0]["mechanism"]="very_trending_spam"
+        with self.assertRaisesRegex(ValueError,"Unsupported comedy mechanism"):
+            validate(posts,c,state)
+        posts["experiments"][0]["mechanism"]="visual_reveal"
+        posts["experiments"][0]["featured"]="true"
+        with self.assertRaisesRegex(ValueError,"Featured must be a boolean"):
+            validate(posts,c,state)
+
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
         c["queued"]["xexp-a"]={"buffer_id":"past-id","text_sha256":hash_text(a["experiments"][0]["text"])}
