@@ -68,6 +68,28 @@ def hashtag_summary(posts, observations, fmt, hours=24):
     }
 
 
+def satire_summary(posts, observations, hours=24):
+    """Observed post impressions only, never X's qualified 90d reward counter."""
+    by_id={p["id"]:p for p in posts}
+    latest={}
+    for item in observations:
+        date=validate_observation(item)
+        eid=item.get("experiment_id")
+        post=by_id.get(eid)
+        if not post or post["format"]!="surreal_text" or item["window_hours"]!=hours:
+            continue
+        if item["format"]!=post["format"]:
+            raise ValueError("X measurement format differs from experiment")
+        if eid not in latest or date>latest[eid][0]:
+            latest[eid]=(date,item["impressions"])
+    groups={"everyday_satire":[], "other_surreal":[]}
+    for eid,(_,count) in latest.items():
+        group="everyday_satire" if by_id[eid].get("angle")=="everyday_satire" else "other_surreal"
+        groups[group].append(count)
+    return {group:{"n":len(vals), "median":statistics.median(vals) if vals else None}
+            for group,vals in groups.items()}
+
+
 def compose(inventory, ledger, delivery, metric_data, now=None):
     now=now or datetime.now(JST)
     posts=sorted(inventory["experiments"],key=lambda x:x["sequence"])
@@ -131,6 +153,18 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
             lines.append(f"- {fmt}：観測上の先行は{lead}（投稿時刻・ネタ差は未調整）")
         else:
             lines.append(f"- {fmt}：効果は判定保留（各群5本の実測未満）")
+    lines+=["", "## 身近な理不尽ネタの比較パイロット", ""]
+    satire=satire_summary(posts,observations,24)
+    for name,label in (("everyday_satire","身近な理不尽"),
+                       ("other_surreal","その他のシュール短文")):
+        row=satire[name]
+        desc=(f"{row['n']}件 / 24h中央値 {row['median']:g}" if row["n"]
+              else "未取得（0回ではない）")
+        lines.append(f"- {label}：{desc}")
+    if all(group["n"]>=5 for group in satire.values()):
+        lines.append("- 両群とも実測5件以上。題材と配信時間の交絡に注意して比較する。")
+    else:
+        lines.append("- 効果判定保留：両群の実測が各5件に達するまでは優劣を決めない。")
     lines+=["","## 来週の検証と判断",""]
     cases={}
     for fmt in formats_to_test:
@@ -139,7 +173,7 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
     if not enough:
         lines+= [
             "- **勝ち形式はまだ判断しない。** 両形式で24h実測が各5本未満。",
-            "- **次のテスト**：短文3本に対してキャラ日常1本を目安に投稿を分散し、片方が最後に固まる問題を避ける。",
+            "- **次のテスト**：従来の形式分散を維持し、身近な理不尽を題材にした新作を約4枠に1件だけ試す。既存予約は触らない。",
             "- 投稿の公開が確認できたら、X公式インサイトから24h/72h表示回数を取得して social-bot/metrics/records.json に記録する。",
             "- 自動取得できない指標を推計で埋めない。"
         ]
@@ -162,6 +196,7 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
         lines.append(f"- 未登録 {len(pending)}本。新作を大量に増やす前に既存ネタの重複とオチの質を確認する。")
     lines+=["","## できていないこと（自動で成功と呼ばない）","",
             "- Bufferの sent はX上の表示回数ではない。X URL・実際の配信・インプは別途確認。",
+            "- X収益化画面の過去90日の対象インプレッションは、ここに記録する投稿別の通常インプレッションと別指標。自動取得不能なら未取得。",
             "- このレポートは定型の結果整理。AIが勝手にXのアルゴリズムを発見・学習したことを意味しない。",
             "- 他の漫画・記事・Xアカウントの数字は混ぜない。",
             ""]
