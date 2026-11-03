@@ -101,3 +101,32 @@ ComfyUIのHTTP応答、`Device: mps`、実際のSDXL生成を確認。初回は3
 通常のgitはXcode規約未同意で停止しましたが、インストール済みCommand Line Toolsのgitを使えました。Macのgh認証とGitHubへの通常pushも使用できています。モデル・venvの追加取得は不要です。
 
 採用した3枚は1200×675のJPEGです。スパイ記事は複数人物の動作再現が安定しなかったため、脱出後の無人の部屋と縄に絞りました。箱に生じた不要なラベルはローカルの切り抜きで画面外に除き、JPEGとSHAを再検証しています。小道具やオチの再現度には改善の余地があります。
+
+### 最終運用状態（2026-11-03）
+
+- インストール、MPS起動、公式モデル照合：成功。モデル1個、専用領域約8.5GiB。
+- 3記事（夕飯ガチャ／700人特番／スパイ）のJPEGをmainと本番へ反映。各1200×675、約61〜101KiB、合計約229KiB。トップ・記事・一覧・OGP・RSSの参照と、本番JPEGのSHA一致を確認。
+- PC幅1280pxとスマホ幅390pxで表示確認。スマホの横はみ出しなし。ロード失敗時のSVG復旧テストも成功。
+- Macワーカーの最新main取得→追加1枚生成→検証→通常push→後片付けは成功。ただし生成されたお笑い記事の画像はアニメ調だったため、承認manifestから外してSVGへ戻しました。JPEG自体は削除していません。
+- 実写指定を冒頭へ移す追加実験も、お笑い記事の画風・アイス記事の小道具が安定せず不採用。実験PR #132は閉じ、未検証の変更はmainへ入れていません。試作は専用アプリの `quality-review-20261103` に少量保管。
+- **launchdは未有効化。全記事の狙った品質による完全自動運用は未完了です。** `last-run.json` は `quality-review-required`。正常終了だけで画質合格とはせず、意図的にスケジュールの有効化条件を満たさない状態にしています。
+- 現在は18記事中3記事が承認済み生成画像、残りは従来の承認済み写真／SVG。毎日の記事発行処理は変更していません。試験用ComfyUIは停止し、専用出力の不要PNGは残っていません。
+- 追加の有料API・画像API・GPU契約は0件。モデル再ダウンロード、他アプリや既存写真の削除、force pushは行っていません。
+
+変更箇所は `scripts/mac_scene_worker.py`（容量を増やさないエラー診断）、`scripts/local_scene_sync.py`（画像の出所維持）、`scripts/local_scene_photos.py`（短いスタイル指示）、対象3記事の `scene_prompt`、生成JPEGとmanifest、関連テスト、本書です。実装はPR #120・#121・#129で反映しました。
+
+実行した主な検証コマンド：
+
+~~~bash
+python -m unittest discover -s tests       # 最終242件成功
+node --test tests/*.test.cjs               # 54件成功
+python scripts/build.py                   # 18記事ビルド成功
+npx --yes wrangler@4 deploy --dry-run      # パッケージ検証成功
+python scripts/mac_scene_worker.py --limit 1  # 実生成・通常push成功、目視で不採用
+python scripts/check_live.py              # 公開記事・RSS等の検証成功
+python scripts/check_share_cards.py       # Twitterbot用カード6件成功
+~~~
+
+PR #129の画像配信を確認した本番コミットは `f51290d13b22949959ecf96f8089b38a31ff65fc`。追加の実機ワーカー試験のコミットは `28da49c`、その不採用画像は後続コミットで承認解除しています。公開されたバイト列の確認と、任意のCloudflareステータス表示は区別しています。
+
+残る作業は、指定した実写の画風と視覚的なオチが複数記事で安定するモデル／生成条件を確立することです。単に `last-run.json` をokへ書き換えて定期運用を開始しないでください。Macの再インストールや公式モデルの追加ダウンロードは不要です。
