@@ -27,7 +27,7 @@ class ImageContextTests(unittest.TestCase):
             self.assertIn('width="1200" height="675"', tag)
             self.assertIn('loading="lazy"', tag)
             if generated:
-                self.assertIn("AI生成", expected)
+                self.assertIn("再現イメージ", expected)
             elif photo_ok:
                 self.assertIn(article["photo"]["alt"], expected)
             else:
