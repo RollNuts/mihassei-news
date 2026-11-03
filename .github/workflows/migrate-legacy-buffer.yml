@@ -1,0 +1,64 @@
+name: Replace old test queue with Nejimachi (one-time)
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/retire_legacy_queue.py"
+      - "social-bot/test_retire_legacy_queue.py"
+      - ".github/workflows/migrate-legacy-buffer.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/retire_legacy_queue.py"
+      - ".github/workflows/migrate-legacy-buffer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  safe-migration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Validate exact old-queue targeting without Buffer access
+        run: python social-bot/test_retire_legacy_queue.py
+
+      - name: Preserve only two old setup posts as Buffer drafts (not deleted)
+        if: github.event_name != 'pull_request'
+        env:
+          MIGRATE_LEGACY_QUEUE: "true"
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/retire_legacy_queue.py
+
+      - name: Fill queue with up to two canonical Nejimachi episodes
+        if: github.event_name != 'pull_request'
+        env:
+          ENABLE_X_BOT: ${{ vars.ENABLE_X_BOT }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/publish.py
+
+      - name: Save queue ledger and reversible migration audit
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/state.json
+          if test -f social-bot/legacy_queue_migration.json; then
+            git add social-bot/legacy_queue_migration.json
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(social): record safe Buffer draft migration and serial queue [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
