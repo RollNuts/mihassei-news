@@ -122,15 +122,12 @@ def scene_prompt(article: dict) -> str:
     )[stable_seed(article) % 4]
     return (
         scene_description(article) + " "
-        "Photorealistic STAGED SATIRICAL NEWS COMEDY SCENE, "
-        "actors in an obviously fictional, deadpan comedy sketch, "
-        "Japanese contemporary everyday setting, one coherent moment, "
-        "natural cinematic lighting, editorial documentary-style still, "
-        "convincing human expressions, realistic textures, clear visual storytelling, "
+        "(Japanese adult actors:1.3), (photorealistic:1.2), "
+        "STAGED SATIRICAL NEWS COMEDY SCENE, fictional deadpan sketch. "
+        "Contemporary Japan, natural available light, realistic skin, "
         + framing + ", 16:9 composition. "
-        + " The situation looks absurd but everyone acts completely seriously. "
-        "No title text, no subtitles, no captions, no logos, no recognizable real person. "
-        "This is a staged fictional photograph, NOT evidence of an actual event."
+        + "Straight faces, absurd situation, clearly visible key prop. "
+        "No title text, no captions, no logos, no recognizable real person."
     )
 
 
