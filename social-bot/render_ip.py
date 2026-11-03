@@ -190,8 +190,16 @@ def layout(n):
     return [(x0+(i%2)*(tw+g),y0+(i//2)*(ph+g),tw,ph) for i in range(6)]
 
 
-def paint_prop(d, prop, cx, cy, s):
-    """Small original machine-city objects. Not sourced from any other comic."""
+def paint_prop(d, prop, cx, cy, s, effect="none"):
+    """Small original machine-city objects and visible action cues.
+
+    For the cup, vapor can resemble Moku's uneven outline. It remains ordinary
+    steam: the gag is a character's interpretation, not a new creature.
+    """
+    if effect not in {"none","steam-one","steam-fade","steam-two"}:
+        raise ValueError("Unsupported prop effect: "+str(effect))
+    if effect != "none" and prop != "cup":
+        raise ValueError("Steam effects require a cup")
     stroke = max(2, int(4*s))
     if prop == "none":
         return
@@ -211,7 +219,31 @@ def paint_prop(d, prop, cx, cy, s):
     elif prop == "cup":
         d.rounded_rectangle((cx-30*s,cy-22*s,cx+22*s,cy+29*s),radius=max(3,int(7*s)),fill="#FFF3E0",outline=INK,width=stroke)
         d.arc((cx+8*s,cy-18*s,cx+42*s,cy+16*s),290,85,fill=INK,width=stroke)
-        d.arc((cx-18*s,cy-62*s,cx+12*s,cy-28*s),0,160,fill="#A4BED2",width=stroke)
+        if effect == "none":
+            d.arc((cx-18*s,cy-62*s,cx+12*s,cy-28*s),0,160,fill="#A4BED2",width=stroke)
+        elif effect == "steam-fade":
+            # Specks drift away: no dialogue is needed to see the loss.
+            for dx,dy,r in ((-17,-46,8),(10,-64,6),(21,-85,3)):
+                d.ellipse((cx+(dx-r)*s,cy+(dy-r)*s,
+                           cx+(dx+r)*s,cy+(dy+r)*s),fill="#D6CDD9")
+        else:
+            # A deliberately irregular original outline: the steam merely
+            # *resembles* Moku, with no proof it is alive.
+            offsets=[(-9,-74,1.03)] if effect=="steam-one" else [(-43,-78,.78),(30,-83,.78)]
+            for dx,dy,scale in offsets:
+                px=cx+dx*s
+                py=cy+dy*s
+                ss=s*scale
+                p=[(-39,12),(-49,-9),(-33,-27),(-12,-27),(-7,-43),
+                   (18,-37),(25,-24),(41,-19),(42,4),(26,23),(-21,25)]
+                points=[(px+a*ss,py+b*ss) for a,b in p]
+                d.polygon(points,fill="#BBAED0",outline="#776F8E",width=max(2,int(3*s)))
+                for ex in (-12,13):
+                    d.ellipse((px+(ex-4)*ss,py-7*ss,px+(ex+4)*ss,py+1*ss),fill="#655C78")
+                d.arc((px-9*ss,py+2*ss,px+11*ss,py+13*ss),0,165,
+                      fill="#776F8E",width=max(1,int(2*s)))
+                d.arc((px-7*ss,py+21*ss,px+5*ss,py+54*ss),210,330,
+                      fill="#A4BED2",width=stroke)
     else:
         raise ValueError("Unsupported narrative prop: " + str(prop))
 
@@ -241,7 +273,9 @@ def paint_panel(d,p,rect,idx):
     # Make a tangible object part of the scene, not just an explanatory subtitle.
     prop=p.get("prop","none")
     if prop!="none":
-        paint_prop(d,prop,x+int(w*.84),y+int(h*.65),max(.65,scale*.9))
+        px=x+int(w*(.80 if not wide else .84))
+        py=y+int(h*.65)
+        paint_prop(d,prop,px,py,max(.65,scale*.9),p.get("effect","none"))
     # Silence is a genuine acting beat: no empty dialogue strip.
     if p.get("silent",False):
         if p.get("line","").strip():
