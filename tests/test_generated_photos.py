@@ -36,13 +36,61 @@ def fake_jpeg():
     return sof + b"\x00" * 17000 + b"\xff\xd9"
 
 
+class SceneQualityHoldTests(unittest.TestCase):
+    def hold(self, root: Path, article: dict) -> Path:
+        manifest = root / "assets/generated/manifest.json"
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(json.dumps({
+            "version": 1, "images": {}, "rejected": {
+                article["slug"]: {"article_sha256": article_fingerprint(article),
+                                  "reason": "Visual content did not match the article"},
+            },
+        }))
+        return manifest
+
+    def test_exact_rejected_fingerprint_keeps_fallback_and_allows_manual_retry(self):
+        article = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = self.hold(root, article)
+            before = manifest.read_bytes()
+            self.assertTrue(local_scene_photos.held_scene(article, root=root))
+            self.assertEqual(local_scene_photos.pending_articles([article], root=root), [])
+            self.assertEqual(local_scene_photos.pending_articles([article], root=root, force=True), [article])
+            self.assertEqual(manifest.read_bytes(), before)
+
+    def test_story_or_scene_edit_unlocks_rejected_fingerprint(self):
+        article = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.hold(root, article)
+            for changed in ({**article, "scene_prompt": "A new visual direction for the joke"},
+                            {**article, "paragraphs": ["A different ending"]}):
+                self.assertFalse(local_scene_photos.held_scene(changed, root=root))
+                self.assertEqual(local_scene_photos.pending_articles([changed], root=root), [changed])
+
+    def test_held_article_does_not_block_others_and_survives_other_image_writes(self):
+        article = fixture()
+        other = {**article, "slug": "another-article"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.hold(root, article)
+            self.assertEqual(local_scene_photos.pending_articles([article, other], root=root), [other])
+            local_scene_photos.write_generated(other, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            self.assertTrue(local_scene_photos.held_scene(article, root=root))
+            self.assertTrue(usable_generated_scene(other, root=root))
+            local_scene_photos.write_generated(article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            self.assertFalse(local_scene_photos.held_scene(article, root=root))
+
+
 class LocalComedySceneTests(unittest.TestCase):
     def test_a_story_gets_specific_deadpan_photo_direction(self):
         a = fixture()
         direction = local_scene_photos.scene_description(a)
         self.assertIn("capsule lottery machine", direction)
         prompt = local_scene_photos.scene_prompt(a)
-        self.assertIn("STAGED SATIRICAL NEWS COMEDY", prompt)
+        self.assertTrue(prompt.startswith("Candid color photograph"))
+        self.assertNotIn("sketch", prompt)
         self.assertIn("fictional", prompt)
         self.assertIn("No title text", prompt)
         different = {**a, "slug": "silent-show", "title": "スベるほど黒字のお笑い番組"}
@@ -54,8 +102,9 @@ class LocalComedySceneTests(unittest.TestCase):
         a = fixture()
         workflow = local_scene_photos.workflow(a, "sd_xl_base_1.0.safetensors")
         self.assertEqual(workflow["1"]["class_type"], "CheckpointLoaderSimple")
-        self.assertEqual(workflow["4"]["inputs"]["width"], 1024)
-        self.assertEqual(workflow["4"]["inputs"]["height"], 576)
+        dimensions = workflow["4"]["inputs"]
+        self.assertEqual(dimensions["width"] * 9, dimensions["height"] * 16)
+        self.assertLessEqual(dimensions["width"] * dimensions["height"], 1024**2)
         self.assertEqual(workflow["5"]["class_type"], "KSampler")
         self.assertEqual(workflow["7"]["class_type"], "SaveImage")
         self.assertEqual(workflow["5"]["inputs"]["seed"], local_scene_photos.stable_seed(a))

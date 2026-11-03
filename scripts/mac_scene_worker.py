@@ -21,6 +21,11 @@ import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from . import mac_scene_control as control
+except ImportError:
+    import mac_scene_control as control
+
 ROOT = Path(__file__).resolve().parents[1]
 APP_DIR = Path.home() / "Library" / "Application Support" / "VeripsaScenes"
 CACHE_DIR = Path.home() / "Library" / "Caches" / "VeripsaScenes"
@@ -77,10 +82,17 @@ def update_status(status: str, detail: str) -> None:
     stage = APP_DIR / "last-run.json.tmp"
     if stage.is_symlink() or target.is_symlink():
         raise RuntimeError("Unsafe status file")
-    stage.write_text(json.dumps({
-        "status": status, "detail": detail[:300],
-        "at_utc": datetime.now(timezone.utc).isoformat()
-    }, ensure_ascii=False) + "\n", encoding="utf-8")
+    try:
+        previous = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
+    except (OSError, ValueError):
+        previous = {}
+    at = datetime.now(timezone.utc).isoformat()
+    payload = {**previous, "status": status, "detail": detail[:300], "at_utc": at}
+    if status == "ok":
+        payload["last_success_at"] = at
+    elif status not in ("stopped",):
+        payload["last_error"] = {"at": at, "detail": detail[:300]}
+    stage.write_text(json.dumps(payload, ensure_ascii=False) + "\n", encoding="utf-8")
     os.replace(stage, target)
 
 
@@ -139,6 +151,7 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
         raise ValueError("Free disk floor must be at least 12 GiB")
     if not 30 <= timeout <= 3600:
         raise ValueError("Per-image timeout must be between 30 and 3600")
+    control.check_allowed(app_dir=APP_DIR)
     comfy = APP_DIR / "ComfyUI"
     interpreter = APP_DIR / "venv" / "bin" / "python"
     checkpoint = comfy / "models" / "checkpoints" / "sd_xl_base_1.0.safetensors"
@@ -170,77 +183,93 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
         except BlockingIOError:
             print("Another photo run is active; skipping")
             return 0
-        if port_in_use():
-            raise RuntimeError("Dedicated ComfyUI port occupied; refusing unsafe reuse")
+        with control.transition_lock(app_dir=APP_DIR):
+            control.check_allowed(app_dir=APP_DIR)
+            control.register_runtime("worker", os.getpid(), root=ROOT, app_dir=APP_DIR)
         try:
-            from .mac_scene_setup import verify_model
-        except ImportError:
-            from mac_scene_setup import verify_model
-        verify_model(checkpoint)
-        clean_owned_intermediates(output_dir)
-        cmd = [
-            str(interpreter), str(comfy / "main.py"),
-            "--listen", "127.0.0.1", "--port", str(PORT),
-            "--output-directory", str(output_dir),
-            "--temp-directory", str(temp_dir),
-            "--disable-auto-launch",
-            "--disable-api-nodes", "--disable-all-custom-nodes",
-        ]
-        server = None
-        sync_process = None
-        server_errors = bytearray()
-        error_reader = None
-        try:
-            server = subprocess.Popen(cmd, cwd=comfy, stdout=subprocess.DEVNULL,
-                                      stderr=subprocess.PIPE,
-                                      env={**os.environ, "HF_HUB_OFFLINE": "1",
-                                           "TRANSFORMERS_OFFLINE": "1"})
-            error_reader = threading.Thread(target=capture_server_errors,
-                                            args=(server.stderr, server_errors), daemon=True)
-            error_reader.start()
-            wait_for_server(server)
-            invoke = [
-                str(interpreter), str(ROOT / "scripts" / "local_scene_sync.py"),
-                "--publish", "--acknowledge-model-license",
-                "--checkpoint", checkpoint.name,
-                "--server", f"http://127.0.0.1:{PORT}",
-                "--limit", str(limit),
-                "--timeout", str(timeout),
-                "--output-dir", str(output_dir),
-                "--min-free-gb", str(min_free_gb),
-            ]
-            sync_process = subprocess.Popen(invoke, cwd=ROOT, start_new_session=True)
-            deadline = time.monotonic() + limit * timeout + 900
-            while sync_process.poll() is None:
-                if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
-                    raise RuntimeError("Free storage reached the safety floor; stopping local jobs")
-                if time.monotonic() >= deadline:
-                    raise RuntimeError("Local photo sync timed out; saved outbox will retry next run")
-                time.sleep(2)
-            update_status("ok" if sync_process.returncode == 0 else "skipped",
-                          "Local photo sync completed" if sync_process.returncode == 0
-                          else "Generation or git publish failed; site fallback preserved. "
-                          + server_errors.decode("utf-8", errors="replace")[-200:])
-            return sync_process.returncode
-        except RuntimeError as exc:
-            diagnostic = server_errors.decode("utf-8", errors="replace")[-200:]
-            raise RuntimeError(str(exc) + ("; ComfyUI: " + diagnostic if diagnostic else "")) from exc
-        finally:
-            # A sync shutdown failure must not strand the GPU server or its
-            # temporary images. Each cleanup gets its own finally boundary.
+            control.check_allowed(app_dir=APP_DIR)
+            if port_in_use():
+                raise RuntimeError("Dedicated ComfyUI port occupied; refusing unsafe reuse")
             try:
-                stop_process(sync_process, group=True)
+                from .mac_scene_setup import verify_model
+            except ImportError:
+                from mac_scene_setup import verify_model
+            verify_model(checkpoint)
+            clean_owned_intermediates(output_dir)
+            cmd = [
+                str(interpreter), str(comfy / "main.py"),
+                "--listen", "127.0.0.1", "--port", str(PORT),
+                "--output-directory", str(output_dir),
+                "--temp-directory", str(temp_dir),
+                "--disable-auto-launch",
+                "--disable-api-nodes", "--disable-all-custom-nodes",
+            ]
+            server = None
+            sync_process = None
+            server_errors = bytearray()
+            error_reader = None
+            try:
+                with control.transition_lock(app_dir=APP_DIR):
+                    control.check_allowed(app_dir=APP_DIR)
+                    server = subprocess.Popen(cmd, cwd=comfy, stdout=subprocess.DEVNULL,
+                                              stderr=subprocess.PIPE, start_new_session=True,
+                                              env={**os.environ, "HF_HUB_OFFLINE": "1",
+                                                   "TRANSFORMERS_OFFLINE": "1"})
+                    control.register_runtime("server", server.pid, root=ROOT, app_dir=APP_DIR)
+                control.check_allowed(app_dir=APP_DIR)
+                error_reader = threading.Thread(target=capture_server_errors,
+                                                args=(server.stderr, server_errors), daemon=True)
+                error_reader.start()
+                wait_for_server(server)
+                invoke = [
+                    str(interpreter), str(ROOT / "scripts" / "local_scene_sync.py"),
+                    "--publish", "--acknowledge-model-license",
+                    "--checkpoint", checkpoint.name,
+                    "--server", f"http://127.0.0.1:{PORT}",
+                    "--limit", str(limit),
+                    "--timeout", str(timeout),
+                    "--output-dir", str(output_dir),
+                    "--min-free-gb", str(min_free_gb),
+                ]
+                with control.transition_lock(app_dir=APP_DIR):
+                    control.check_allowed(app_dir=APP_DIR)
+                    sync_process = subprocess.Popen(invoke, cwd=ROOT, start_new_session=True)
+                    control.register_runtime("sync", sync_process.pid, root=ROOT, app_dir=APP_DIR)
+                deadline = time.monotonic() + limit * timeout + 900
+                while sync_process.poll() is None:
+                    control.check_allowed(app_dir=APP_DIR)
+                    if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
+                        raise RuntimeError("Free storage reached the safety floor; stopping local jobs")
+                    if time.monotonic() >= deadline:
+                        raise RuntimeError("Local photo sync timed out; saved outbox will retry next run")
+                    time.sleep(2)
+                update_status("ok" if sync_process.returncode == 0 else "skipped",
+                              "Local photo sync completed" if sync_process.returncode == 0
+                              else "Generation or git publish failed; site fallback preserved. "
+                              + server_errors.decode("utf-8", errors="replace")[-200:])
+                return sync_process.returncode
+            except RuntimeError as exc:
+                diagnostic = server_errors.decode("utf-8", errors="replace")[-200:]
+                raise RuntimeError(str(exc) + ("; ComfyUI: " + diagnostic if diagnostic else "")) from exc
             finally:
+                # A sync shutdown failure must not strand the GPU server or its
+                # temporary images. Each cleanup gets its own finally boundary.
                 try:
-                    stop_process(server)
+                    stop_process(sync_process, group=True)
                 finally:
-                    if error_reader is not None:
-                        error_reader.join(timeout=2)
-                    clean_owned_intermediates(output_dir)
-                    # This dedicated temp directory is never shared with other apps.
-                    if safe_dir(temp_dir):
-                        shutil.rmtree(temp_dir)
-                        temp_dir.mkdir()
+                    try:
+                        stop_process(server)
+                    finally:
+                        if error_reader is not None:
+                            error_reader.join(timeout=2)
+                        control.clear_runtime(app_dir=APP_DIR)
+                        clean_owned_intermediates(output_dir)
+                        # This dedicated temp directory is never shared with other apps.
+                        if safe_dir(temp_dir):
+                            shutil.rmtree(temp_dir)
+                            temp_dir.mkdir()
+        finally:
+            control.clear_runtime(app_dir=APP_DIR)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -264,4 +293,9 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    # Canonical arguments make PID ownership verifiable for both relative CLI
+    # invocations and launchd, without scanning/killing unrelated Python jobs.
+    absolute = str(Path(__file__).resolve())
+    if sys.argv[0] != absolute:
+        os.execv(sys.executable, [sys.executable, absolute, *sys.argv[1:]])
     sys.exit(main())

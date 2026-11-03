@@ -2,6 +2,42 @@
 
 GitHub側のコードだけではMacにモデルは入りません。画像がなくても、承認済み写真またはSVGで毎日の発行は続きます。外部の画像API・有料GPU・追加ChatGPTクレジットは使用しません。
 
+## 停止・再開・状態確認（既存Mac向け）
+
+導入済みモデルとvenvを再利用します。デスクトップの **未発生新聞画像生成** フォルダにある次のファイルをダブルクリックできます。
+
+| ファイル | 動作 |
+| --- | --- |
+| `画像生成を停止.command` | Macの画像生成だけを停止。実行中の専用処理とlaunchdを解除し、再起動後もOFFを維持 |
+| `画像生成を再開.command` | 初回3枚の確認記録を検証して未生成分の自動運転を再開。全停止で無効化したCPU画像ワークフローも元の状態へ復旧 |
+| `画像生成の状態確認.command` | ON/OFF、実行中、成功・エラー、画像数と未処理数、容量、GitHub最終反映結果を表示 |
+| `全画像生成を停止.command` | Mac側と、GitHubの `free-cpu-scenes.yml` だけを停止。該当する実行中ジョブもキャンセル |
+
+ターミナルではリポジトリ内で以下を実行します。ほかの記事発行・漫画・GitHub Actionsは停止対象に含めません。
+
+~~~bash
+python3.11 scripts/mac_scene_control.py status
+python3.11 scripts/mac_scene_control.py stop
+python3.11 scripts/mac_scene_control.py resume
+python3.11 scripts/mac_scene_control.py stop-all
+# GitHub CPU画像ワークフローだけを明示的に復旧
+python3.11 scripts/mac_scene_control.py resume-cpu
+# ショートカットを作り直す
+python3.11 scripts/mac_scene_control.py install-shortcuts
+~~~
+
+停止は専用アプリ領域の `stopped.json` に永続化します。ワーカー起動時、生成前、push直前に確認し、明示的な再開まで新しい処理を始めません。停止時はPID・起動日時・UID・実行パス・専用プロセスグループを照合し、他のPythonや一般のComfyUIを一括終了しません。モデル・保留画像・既存記事は保持します。
+
+停止要求の直前に既に送信中だったpushはGitHub側で完了する場合があります。その場合も完了SHAを記録し、次回の再開で最新mainと照合します。停止後に新たなpushを始めることは防止し、成功分のoutboxを消しません。認証不足や通信障害でGitHub CPU側を止められなければ、エラーと対象を表示し、成功扱いにしません。
+
+自動実行は毎時45分とログイン時、1回最大4枚。Macがスリープ・電源OFF中は処理できず、復帰・ログイン後に未処理分を確認します。常駐のComfyUIは残さず、処理終了・停止後に専用サーバーと不要PNGを片付けます。生成中は12GiBの空き、1枚700KiB・生成JPEG総量1.5GiBの上限を維持します。
+
+目視で題材が不一致だった記事はmanifestの `rejected` に記事のSHAを記録し、同じ内容のまま自動再公開しません。記事本文や場面指示を直すと保留が解除され、明示的な `--force` でも再試験できます。保留中も写真／SVGで記事公開を継続します。
+
+画像は実写風を基本に、利用者の希望に従って多少のアニメ調も許容します。機械検証は破損・寸法・容量・SHA・記事対応を確認し、画風・小道具・オチの完全一致までは保証しません。初回3枚の実生成・目視・本番配信確認を記録した `quality-pilot.json` がない状態では再開できません。
+
+GitHub CPUワークフローは現在のmainでcronが保留されているため、ONへ戻しても新しい定期スケジュールは追加しません。既存のpush／手動起動条件を維持し、Macとは独立して状態を制御します。
+
 ## 最小のセットアップ
 
 Apple Silicon、メモリ16GiB以上、空き30GiB以上、Python 3.11〜3.13が必要です。以下は既存のPython 3.11を使う例です。システムPythonは変更しません。
