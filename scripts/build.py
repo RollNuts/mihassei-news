@@ -223,7 +223,7 @@ def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=topic_card_v2"
     # Small standalone hook for the reader's X draft. Does not post automatically.
     teaser = a["summary"][:75]
-    text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞 （創作）"
+    text = "【未発生新聞｜5年後のもしも（創作）】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞"
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
@@ -232,7 +232,7 @@ def issue_share_url(day, items):
     stamp = datetime.fromisoformat(day)
     lines = [
         f"【未発生新聞 {stamp.month}/{stamp.day}号】",
-        f"{len(items)}本の5年後の創作ニュース。",
+        f"5年後の『もしも』を真顔で報じる創作ニュース、{len(items)}本。",
     ]
     for item in items[:2]:
         headline = item["title"]
