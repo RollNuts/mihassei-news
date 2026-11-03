@@ -6,7 +6,8 @@ from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from probe_delivery import (build, reconcile, x_link, normalize_buffer_impressions,
-                            queue_health, fetch_status_batch, observed_original_sent_by_jst_day)
+                            queue_health, fetch_status_batch, observed_original_sent_by_jst_day,
+                            observed_scheduled_originals_by_jst_day)
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -17,6 +18,67 @@ class BufferReadOnlyTests(unittest.TestCase):
                      "channelId":"x-1","status":"sent",
                      "externalLink":"https://x.com/Veripsa/status/123?src=buffer",
                      "sentAt":"2026-11-03T12:00:00Z","assets":[]}
+    def test_provider_due_at_is_accepted_only_for_verified_scheduled_post(self):
+        self.remote["status"]="scheduled"
+        self.remote["dueAt"]="2026-11-04T03:30:00Z"
+        result=reconcile(self.post,self.rec,self.remote,"x-1")
+        self.assertEqual(result["buffer_due_at_utc"],"2026-11-04T03:30:00+00:00")
+        self.remote["dueAt"]="2026-11-04T12:30:00"  # naive provider value
+        self.assertNotIn("buffer_due_at_utc",
+                         reconcile(self.post,self.rec,self.remote,"x-1"))
+        self.remote["dueAt"]="2026-11-04T03:30:00Z"
+        self.remote["channelId"]="unrelated-x"
+        self.assertNotIn("buffer_due_at_utc",
+                         reconcile(self.post,self.rec,self.remote,"x-1"))
+        self.remote["channelId"]="x-1"
+        self.remote["status"]="sent"
+        self.assertNotIn("buffer_due_at_utc",
+                         reconcile(self.post,self.rec,self.remote,"x-1"))
+
+    def test_future_queue_slots_only_count_fresh_verified_originals(self):
+        from datetime import datetime,timezone
+        now=datetime(2026,11,3,13,30,tzinfo=timezone.utc)  # Nov 3 22:30 JST
+        checked=now.isoformat()
+        rows=[
+            {"post_id":"a","buffer_status":"scheduled",
+             "last_buffer_check_utc":checked,
+             "buffer_due_at_utc":"2026-11-04T00:30:00Z"}, # Nov4 09:30 JST
+            {"post_id":"b","buffer_status":"scheduled",
+             "last_buffer_check_utc":checked,
+             "buffer_due_at_utc":"2026-11-04T06:30:00+00:00"},
+            {"post_id":"c","buffer_status":"scheduled",
+             "last_buffer_check_utc":"2026-11-02T13:30:00+00:00",
+             "buffer_due_at_utc":"2026-11-04T09:30:00Z"},  # cached excluded
+            {"post_id":"d","buffer_status":"sent",
+             "last_buffer_check_utc":checked,
+             "buffer_due_at_utc":"2026-11-04T10:00:00Z"},
+            {"post_id":"e","buffer_status":"scheduled",
+             "last_buffer_check_utc":checked,
+             "buffer_due_at_utc":"invalid"},
+            {"post_id":"f","buffer_status":"scheduled",
+             "last_buffer_check_utc":checked,
+             "buffer_due_at_utc":"2026-11-03T07:00:00Z"},  # overdue >2h
+        ]
+        result=observed_scheduled_originals_by_jst_day(rows,now=now,days=3)
+        self.assertEqual(result["days"][1]["date_jst"],"2026-11-04")
+        self.assertEqual(result["days"][1]["observed_fresh_original_scheduled"],2)
+        self.assertEqual(result["days"][1]["observed_times_jst"],["09:30","15:30"])
+        self.assertEqual(result["fresh_scheduled_records_checked"],4)
+        self.assertEqual(result["fresh_scheduled_without_due_at"],1)
+        self.assertEqual(result["overdue_scheduled_over_two_hours"],1)
+        self.assertIn("partial_provider_queue",result["days"][1]["evidence"])
+        with self.assertRaisesRegex(ValueError,"Invalid scheduled-slot"):
+            observed_scheduled_originals_by_jst_day(rows,now=now,days=30)
+
+    def test_status_batch_includes_due_at_without_extra_provider_queries(self):
+        with patch("probe_delivery.gql",return_value={
+            "p0":{"id":"buffer-a","status":"scheduled","dueAt":"2026-11-04T03:00:00Z"}
+        }) as gql:
+            result=fetch_status_batch("secret",["buffer-a"])
+        self.assertEqual(gql.call_count,1)
+        self.assertIn("dueAt",gql.call_args.args[1])
+        self.assertEqual(result["buffer-a"]["dueAt"],"2026-11-04T03:00:00Z")
+
     def test_sent_has_only_provider_permalink(self):
         row=reconcile(self.post,self.rec,self.remote,"x-1")
         self.assertEqual(row["buffer_status"],"sent")
