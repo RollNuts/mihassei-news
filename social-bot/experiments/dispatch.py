@@ -92,6 +92,8 @@ def validate(posts, config, state):
             if record.get("text_sha256") != hash_text(text):
                 raise ValueError("Previously queued post was changed: " + pid)
             pinned = record.get("published_text_sha256")
+            if pinned is None and post.get("hashtag"):
+                raise ValueError("Cannot add a hashtag to an already queued legacy post: " + pid)
             if pinned and pinned != hash_text(final_text):
                 raise ValueError("Previously queued hashtag or public text changed: " + pid)
             if not record.get("buffer_id"):
