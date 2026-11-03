@@ -1,14 +1,38 @@
 {
   "images": {
-    "variety-700-guests-only-introductions": {
-      "article_sha256": "92ab7852284ced1bc3e68430447faca7d01ee29514f193adcf6429960b5ad314",
-      "bytes": 127133,
-      "generated_at": "2026-11-03T04:00:46.132731+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+    "family-dinner-gacha-243-rejections": {
+      "article_sha256": "7fd87dd6199bcc24b51772266bd575a6e657c10ee1f1625daf3e06de070a9f0e",
+      "bytes": 68479,
+      "generated_at": "2026-11-03T03:50:35.657446+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
       "prompt_version": 2,
+      "seed": 3792932720945161705,
+      "sha256": "56f5c4abaaf2eea1cae07e68b88356418a2124bb7947f8bca15625b2d09e3eb1"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
+      "bytes": 103133,
+      "generated_at": "2026-11-03T03:57:23.752436+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
+      "reviewed_at": "2026-11-03T03:59:18.579837+00:00",
+      "seed": 6871038269748098871,
+      "sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1"
+    },
+    "variety-700-guests-only-introductions": {
+      "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+      "bytes": 62771,
+      "generated_at": "2026-11-03T03:46:10.220796+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
+      "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
       "seed": 2479731755469378830,
-      "sha256": "c01cf5b29ad85c195e9636c27c17fdffa9cb1ff1162fd0ea6ced18667fd64db5"
+      "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
   "version": 1

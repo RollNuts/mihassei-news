@@ -108,6 +108,7 @@ class SceneStorageTests(unittest.TestCase):
     def test_prompt_puts_article_action_first_and_varies_camera(self):
         a = {**article(), "scene_prompt":"A solemn actor carries an empty chair through a quiet hallway."}
         self.assertTrue(photos.scene_prompt(a).startswith(a["scene_prompt"]))
+        self.assertIn("(Japanese adult actors:1.3)", photos.scene_prompt(a))
         directions = {photos.scene_prompt({**a,"slug":"story-"+str(i)}).split("16:9")[0] for i in range(16)}
         self.assertGreater(len(directions), 1)
 
