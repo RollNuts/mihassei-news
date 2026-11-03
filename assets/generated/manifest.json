@@ -212,6 +212,16 @@
       "seed": 5748070834390824869,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
+      "bytes": 100731,
+      "generated_at": "2026-11-03T23:23:16.638581+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 3098375253472829687,
+      "sha256": "a28e3ed114b0079feaa2447591462d2f27e73c40027985049d3a0a01d7c97606"
+    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "bytes": 98358,
