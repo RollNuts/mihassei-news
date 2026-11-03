@@ -90,6 +90,16 @@
       "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
+    "historical-lookalike-contest-dog-wins": {
+      "article_sha256": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
+      "bytes": 105991,
+      "generated_at": "2026-11-03T23:09:46.002211+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 6800298270750902626,
+      "sha256": "608fc502a4e90b9648fce0878b74a36d0f568ffd7c7e47554acc1cdbea6d1910"
+    },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
       "bytes": 66053,
