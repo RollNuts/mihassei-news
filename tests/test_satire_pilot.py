@@ -24,6 +24,15 @@ class SatirePilotTests(unittest.TestCase):
             "quiet-reply-dating-matches": (
                 "2026-11-03T07:40:27+09:00",
                 "https://www.reuters.com/technology/tinders-us-daily-active-users-return-growth-october-match-ramps-up-ai-efforts-2026-11-02/"),
+            "local-souvenir-cannot-leave-town": (
+                "2026-11-02T21:21:04+09:00",
+                "https://news.livedoor.com/article/detail/32715693/"),
+            "farm-friendship-across-species": (
+                "2026-11-03T07:40:27+09:00",
+                "https://www.theguardian.com/science/2026/nov/02/tender-bond-male-donkey-bull-baffles-scientists"),
+            "robot-job-hopping": (
+                "2026-11-02T17:36:39+09:00",
+                "https://newsdig.tbs.co.jp/articles/sbc/3055301"),
         }
         articles = {a["slug"]: a for a in load()}
         for slug, (original_date, original_url) in known.items():
