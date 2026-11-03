@@ -35,6 +35,8 @@ jobs:
         run: python3 -m py_compile scripts/check_live.py
       - name: Build the static site with all image fallback routes
         run: python3 scripts/build.py
+      - name: Audit all sitemap URLs and crawlable internal links (no APIs)
+        run: python3 scripts/audit_search_index.py
       - name: Verify cached and late image failures recover without broken layouts
         run: node --test tests/image-fallback.test.cjs
       - name: Validate browser JavaScript
