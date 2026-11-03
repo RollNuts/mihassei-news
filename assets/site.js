@@ -6,6 +6,7 @@
   const decadeSelect = document.querySelector('[data-decade-filter]');
   const count = document.querySelector('[data-result-count]');
   const empty = document.querySelector('[data-no-results]');
+  const resetFilters = document.querySelector('[data-reset-filters]');
   const morePanel = document.querySelector('[data-archive-more]');
   const moreButton = document.querySelector('[data-archive-more-button]');
   const PAGE_SIZE = 18;
@@ -58,6 +59,13 @@
   }));
   input.addEventListener('input', resetAndRender);
   decadeSelect?.addEventListener('change', resetAndRender);
+  resetFilters?.addEventListener('click', () => {
+    input.value = '';
+    category = 'すべて';
+    if (decadeSelect) decadeSelect.value = 'すべて';
+    resetAndRender();
+    input.focus?.();
+  });
   moreButton?.addEventListener('click', () => {
     visibleLimit += PAGE_SIZE;
     render();
