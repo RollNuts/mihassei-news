@@ -26,7 +26,20 @@ python3 scripts/motion_clips.py --generate --slug ARTICLE-SLUG
 
 **ffmpeg／ffprobeが入っていなければ停止するだけ**。自動インストール、brewの追加導入、API利用、有料GPUへの切り替えはしません。動画は `assets/clips/ARTICLE-SLUG.mp4` と `assets/clips/manifest.json` に保存されます。GitHubへの反映には、生成物の目視確認と通常のgitによる明示的なコミット・pushが必要です。スクリプトは勝手にpushしません。
 
-既存の写真自動生成ワーカーへは**まだ組み込んでいません**。現状は任意実行で、Macが止まってもサイトの通常発行は続きます。勝手にcronやlaunchdを追加しません。
+## GitHub Actionsによる自動生成（無料、上限付き）
+
+既存のMac画像生成スケジュールは変更せず、Macから**検証済みJPEGがmainへ届いたとき**に `.github/workflows/auto-motion-clips.yml` が動きます。初回導入時にも1回起動します。
+
+- GitHubの公開リポジトリで、通常の無料Ubuntuランナーを使用。新しい有料GPU・AI・動画生成API・サブスクリプションは使いません。使い切りランナーに限り、無償ffmpegを用意します。
+- **1回の実行で動画を最大1本**。すでに有効なクリップがあれば再生成せず、画像に合わない古い映像は無視します。
+- `assets/clips/manifest.json` と検証済みMP4のみを、GitHubのbotが**通常の非強制push**で反映。更新競合時は最新mainを取り直して最大3回だけ再試行。
+- 動画追加のbot pushでは通常のGitHub CIは自動発火しないため、**公開確認用ワークフローを明示的に起動**します。変更がなければ何もpushしません。
+- Macローカル生成とは別の停止スイッチです。Macの `stopped.json` だけではGitHub上の動画生成は停止しません。
+
+**いつでも停止:** `.github/motion-clips.json` の `"enabled": false` をmainへコミットするか、GitHub Actionsの `Free bounded article motion clips` をDisableしてください。再開は `"enabled": true`。停止中も既存の写真・記事・動画ファイルを削除しません。進行中の処理はmainの再確認とpush競合で停止し、緊急時はGitHub Actionsで実行中のジョブもキャンセルできます。
+
+実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。GitHub上の自動生成結果とCloudflare本番への反映は**別々に検証**します。実際の人物を動かすAI動画ではなく、写真を動かす短い演出です。
+
 
 ## 容量と安全
 
