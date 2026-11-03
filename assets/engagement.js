@@ -176,8 +176,8 @@
       message.classList.toggle("is-error",Boolean(pollError));
       message.textContent=pollError ||
         (pollPending?"投票を送信しています…" :
-         selectedPoll?(total>0?"投票済み・実際の予想 "+total+"票（ブラウザ単位）":"投票済み。集計を取得しています。"):
-         total>0?"いままでの予想 "+total+"票。投票すると結果が見られます。":"最初の予想をどうぞ。1ブラウザにつき1票。");
+         selectedPoll?(total>0?"投票済み。この『もしも』に "+total+"票（ブラウザ単位）":"投票済み。集計を取得しています。"):
+         total>0?"この『もしも』に "+total+"票。投票すると内訳が見られます。":"まだ投票はありません。最初の一票をどうぞ。1ブラウザにつき1票。");
     }
     const results=poll.querySelector("[data-poll-results]");
     if(results){
@@ -473,7 +473,7 @@
     try {
       const result=await apiPost("vote",article,choice);
       if(!["plausible","unlikely"].includes(result.vote))
-        throw new Error("予想を確認できませんでした");
+        throw new Error("投票結果を確認できませんでした");
       // Server confirms the choice, including idempotent retries.
       selectedPoll=result.vote;
       savePolls();

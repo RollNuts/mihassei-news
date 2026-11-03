@@ -22,6 +22,9 @@ SIMILARITY_THRESHOLD = 0.68
 # These patterns intentionally detect only clearly named mechanical premises.
 WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|人工知能|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
 FORMAL_ANNOUNCEMENT = re.compile(r"発表|開始|導入|公表|明らかにした")
+# Repeated boilerplate fictional datelines can push the actual comic scene back.
+# The fictional date must stay in the article metadata; this checks prose only.
+FORMULA_FUTURE_INTRO = re.compile(r"20\d{2}年[、，]\s*架空の")
 MECHANICAL_ENDINGS = re.compile(
     r"担当者|広報|謝罪|却下|不合格|新制度|管理職|手続き|承認|申請|通知"
 )
@@ -132,6 +135,16 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 f"直近{SHORT_RUN}本で確認・申請・認証などの逆効果が{procedural}本。"
                 "人間の選択、文化、言葉遊び、意外な成功例など別の仕組みを試す",
             ))
+        future_intros = sum(
+            bool(FORMULA_FUTURE_INTRO.search(str((item.get("paragraphs") or [""])[0])[:140]))
+            for item in short_run
+        )
+        if future_intros >= 4:
+            warnings.append((
+                "FORMULA_FUTURE_INTRO_LOOP", "-",
+                f"直近{SHORT_RUN}本で「2031年、架空の〜」型の書き出しが{future_intros}本。"
+                "次枠は会話や動作から始め、架空の日付や組織名を説明しすぎない",
+            ))
     if len(newest) >= 6:
         work = [a for a in newest if WORK_AI.search(a.get("title", ""))]
         if len(work) >= max(5, (len(newest) * 3 + 4) // 5):
@@ -184,6 +197,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append(f"{dominant}が集中。当日の確かな出典があれば別ジャンル・別の読者層も探す。")
     if "PROCEDURAL_PREMISE_LOOP" in labels:
         lines.append("確認・申請・認証・拒否の逆効果が続く。誤解、意外な成功、言葉遊び、善意の空回りなど別の笑いを探す。")
+    if "FORMULA_FUTURE_INTRO_LOOP" in labels:
+        lines.append("「2031年、架空の〜」を連発しない。先に人物の会話や目に見える珍事を置く。架空設定はその後の短い説明に回す。")
     if "WORK_AI_CLUSTER" in labels:
         lines.append("AI・仕事・会議に偏り気味。食・遊び・家族・スポーツ・趣味など身近な場面を探す。")
     if "PRESS_RELEASE_OPENING_LOOP" in labels:

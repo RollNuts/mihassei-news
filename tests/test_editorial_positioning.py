@@ -48,6 +48,19 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("未来を当てる投票ではなく", page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)
+        self.assertIn("架空ニュースへのツッコミや感想をどうぞ", page)
+
+    def test_public_poll_labels_do_not_claim_to_predict_the_future(self):
+        from pathlib import Path
+        from scripts.build import about, privacy
+        browser = (Path(__file__).resolve().parent.parent /
+                   "assets" / "engagement.js").read_text(encoding="utf-8")
+        self.assertIn("この『もしも』に", browser)
+        self.assertNotIn("実際の予想", browser)
+        self.assertNotIn("最初の予想", browser)
+        self.assertIn("架空ニュースの二択投票について", privacy())
+        self.assertIn("未来の出来事が的中する確率", privacy())
+        self.assertIn("もしもの二択投票", about())
 
     def test_metadata_and_brand_stay_unhappened_newspaper(self):
         page = layout("未発生新聞", "テスト", "/", "<p>テスト</p>")
