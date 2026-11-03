@@ -528,9 +528,18 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             ],
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
-    robots_tag = '<meta name="robots" content="noindex,follow">' if path == "/saved/" else ""
+    # Non-content utility pages should never compete with actual stories in search.
+    robots_tag = '<meta name="robots" content="noindex,follow">' if path in ("/saved/", "/404.html") else ""
     serial_progress_script = ('<script defer src="/assets/serial-progress.js"></script>'
                               if path in ('/', '/serials/') or serial is not None else '')
+    # Only load reader tools where they can be used. Leave engagement active for
+    # the newspaper clock and real audience counts; these links work without JS.
+    archive_script = '<script defer src="/assets/site.js"></script>' if path == "/archive/" else ""
+    comments_script = '<script defer src="/assets/comments.js"></script>' if kind == "story" else ""
+    comment_activity_script = ('<script defer src="/assets/comment-activity.js"></script>'
+                               if path == "/" else "")
+    bookmarks_script = ('<script defer src="/assets/bookmarks.js"></script>'
+                        if kind == "story" or path == "/saved/" else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     return f'''<!doctype html><html lang="ja"><head>
@@ -567,11 +576,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="stylesheet" href="/assets/comments.css">
 <link rel="stylesheet" href="/assets/editorial-polish.css">
 <link rel="stylesheet" href="/assets/serials.css">
-<script defer src="/assets/site.js"></script>
+{archive_script}
 <script defer src="/assets/engagement.js"></script>
-<script defer src="/assets/comments.js"></script>
-<script defer src="/assets/comment-activity.js"></script>
-<script defer src="/assets/bookmarks.js"></script>
+{comments_script}
+{comment_activity_script}
+{bookmarks_script}
 {serial_progress_script}
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
