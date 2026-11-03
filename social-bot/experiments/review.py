@@ -125,7 +125,7 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
         "",
         f"- 原稿在庫：{len(posts)}本（内訳 {', '.join(f'{key}={n}' for key,n in sorted(formats.items()))}）",
         f"- Bufferに一度でも登録した原稿：{len(posted)}本（現在予約中の本数ではない）",
-        f"- 未登録原稿：{len(pending)}本",
+        f"- 未登録原稿：{len(pending)}本（うち独自画像{sum(bool(p.get('visual')) for p in pending)}本）",
         f"- 笑いの構造（全在庫）：{dict(sorted(mechanisms.items()))}",
         f"- 笑いの構造（Bufferへ一度でも登録済み）：{dict(sorted(queued_mechanisms.items()))}",
 
@@ -204,10 +204,12 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
         ]
     if not pending:
         lines.append("- **在庫切れ**：既存の重複や弱いオチを避け、新作を補充して無投稿を防ぐ。")
-    elif len(pending)<7:
-        lines.append(f"- **在庫注意**：未登録 {len(pending)}本。火・金の補充タスクで完全オリジナルを追加する。")
+    if not any(p.get("visual") for p in pending):
+        lines.append("- **画像在庫切れ**：未登録画像0件。既存漫画を流用せず無料Pillowで新しいシーンを作る。")
+    elif len(pending)<14:
+        lines.append(f"- **在庫注意**：未登録 {len(pending)}本。7投稿/日の約2日分未満。日次補充を優先する。")
     else:
-        lines.append(f"- 未登録 {len(pending)}本。新作を大量に増やす前に既存ネタの重複とオチの質を確認する。")
+        lines.append(f"- 未登録 {len(pending)}本。既存ネタの重複とオチの質を確認し、日次補充を継続する。")
     lines+=["","## できていないこと（自動で成功と呼ばない）","",
             "- Bufferの sent はX上の表示回数ではない。X URL・実際の配信・インプは別途確認。",
             "- X収益化画面の過去90日の対象インプレッションは、ここに記録する投稿別の通常インプレッションと別指標。自動取得不能なら未取得。",
