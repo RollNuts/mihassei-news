@@ -64,6 +64,9 @@ jobs:
       - name: Verify hand-ink composition and original character shapes
         run: python -m unittest discover -s social-bot/ip -p 'test_ink_storyboard.py' -v
 
+      - name: Validate new-post quality gate (must remain safely paused)
+        run: python -m unittest discover -s social-bot -p 'test_publication_quality_gate.py' -v
+
       - name: Validate post and image inventory
         run: python social-bot/validate.py
 
