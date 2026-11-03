@@ -25,14 +25,14 @@ if __package__:
     from .media_policy import usable_cached_photo, jpeg_dimensions
     from .generated_photos import usable_generated_scene, generated_url, generated_scene_entry
     from .share_desk import select_candidates
-    from .serial_discovery import choose_serial
+    from .serial_discovery import choose_serial, primary_episode
     from .editorial_starter import homepage_starter_picks
     from .build import editorial_lead
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
     from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
     from share_desk import select_candidates
-    from serial_discovery import choose_serial
+    from serial_discovery import choose_serial, primary_episode
     from editorial_starter import homepage_starter_picks
     from build import editorial_lead
 
@@ -465,9 +465,8 @@ def check():
         # Only link to a real serial episode, with a clear editorial boundary.
         chosen_serial=choose_serial(item,serials)
         if chosen_serial:
-            # Fresh mystery readers need chapter 1; market readers need latest analysis.
-            linked_chapter = (chosen_serial["episodes"][-1] if chosen_serial["kind"]=="analysis"
-                              else chosen_serial["episodes"][0])
+            # Share the source of truth with site rendering to prevent drift.
+            linked_chapter = primary_episode(chosen_serial)
             recommended_path="/serials/"+chosen_serial["slug"]+"/"+linked_chapter["slug"]+"/"
             for required in ('class="article-serial-bridge"',
                              'href="'+recommended_path+'"',
