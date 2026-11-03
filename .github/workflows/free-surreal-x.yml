@@ -8,6 +8,7 @@ on:
       - "social-bot/render.py"
       - "social-bot/render_ip.py"
       - "social-bot/ip/**"
+      - "social-bot/metrics/**"
       - "social-bot/validate.py"
       - ".github/workflows/free-surreal-x.yml"
   pull_request:
@@ -74,6 +75,11 @@ jobs:
 
       - name: Print editorial review state without publishing (read-only)
         run: python social-bot/review_status.py
+
+      - name: Verify evidence-only impression data and summary (no network)
+        run: |
+          python -m unittest discover -s social-bot/metrics -p 'test_report.py' -v
+          python social-bot/metrics/report.py
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py
