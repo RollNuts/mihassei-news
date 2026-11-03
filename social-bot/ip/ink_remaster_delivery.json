@@ -1,0 +1,20 @@
+{
+  "completed": true,
+  "checked_at": "2026-11-03T05:07:31.954754+00:00",
+  "changed": [
+    {
+      "key": "nejimachi-001-morning",
+      "buffer_id": "6ae963beb1dfe2c544f0b53d",
+      "image_url": "https://raw.githubusercontent.com/RollNuts/mihassei-news/main/social-bot/assets/nejimachi-001-morning-ink-v1.png",
+      "due_at_unchanged": true
+    },
+    {
+      "key": "nejimachi-002-blue-sky",
+      "buffer_id": "6ae963bf5d60da1eff76923b",
+      "image_url": "https://raw.githubusercontent.com/RollNuts/mihassei-news/main/social-bot/assets/nejimachi-002-blue-sky-ink-v1.png",
+      "due_at_unchanged": true
+    }
+  ],
+  "skipped": [],
+  "note": "Only media replaced; text and dueAt unchanged"
+}
