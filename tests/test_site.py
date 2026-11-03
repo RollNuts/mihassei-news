@@ -97,7 +97,7 @@ class SiteTests(unittest.TestCase):
         random=home.index('<section class="special-edition"')
         extras=home.index('<details class="extras-shelf">')
         discussions=home.index('<section class="reader-discussions"')
-        self.assertTrue(hero < latest < timeline < random < genres < serials < starter < extras < discussions)
+        self.assertTrue(hero < latest < starter < timeline < genres < serials < extras < random < discussions)
         self.assertIn("<h2>新着記事</h2>",home)
         self.assertNotIn('<aside class="banner">',home)
         self.assertNotIn("この新聞の読み方",home)
