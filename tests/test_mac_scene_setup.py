@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import plistlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,14 @@ from scripts import mac_scene_worker as worker
 
 
 class MacSceneSafetyTests(unittest.TestCase):
+    def test_server_diagnostics_are_drained_and_bounded_without_disk_logs(self):
+        stream = io.BytesIO(b"x" * 20000 + b"model load failed")
+        tail = bytearray()
+        worker.capture_server_errors(stream, tail)
+        self.assertEqual(len(tail), 8192)
+        self.assertTrue(tail.endswith(b"model load failed"))
+        self.assertTrue(stream.closed)
+
     def test_default_invocation_is_read_only(self):
         with patch.object(setup, "check") as checker, \
              patch.object(setup, "install", side_effect=AssertionError("installed")):

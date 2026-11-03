@@ -17,6 +17,7 @@ import socket
 import subprocess
 import sys
 import time
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -26,6 +27,16 @@ CACHE_DIR = Path.home() / "Library" / "Caches" / "VeripsaScenes"
 PORT = 18188
 OWN_PNG = re.compile(r"mihassei-staged-scene_[0-9]{5}_\.png\Z")
 MAX_GENERATED_MIB = 1536
+
+
+def capture_server_errors(stream, tail: bytearray) -> None:
+    """Drain stderr without growing a log file or blocking ComfyUI."""
+    try:
+        for block in iter(lambda: stream.read(1024), b""):
+            tail.extend(block)
+            del tail[:-8192]
+    finally:
+        stream.close()
 
 
 def safe_dir(path: Path) -> bool:
@@ -146,11 +157,16 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
         ]
         server = None
         sync_process = None
+        server_errors = bytearray()
+        error_reader = None
         try:
             server = subprocess.Popen(cmd, cwd=comfy, stdout=subprocess.DEVNULL,
-                                      stderr=subprocess.DEVNULL,
+                                      stderr=subprocess.PIPE,
                                       env={**os.environ, "HF_HUB_OFFLINE": "1",
                                            "TRANSFORMERS_OFFLINE": "1"})
+            error_reader = threading.Thread(target=capture_server_errors,
+                                            args=(server.stderr, server_errors), daemon=True)
+            error_reader.start()
             wait_for_server(server)
             invoke = [
                 str(interpreter), str(ROOT / "scripts" / "local_scene_sync.py"),
@@ -172,8 +188,12 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                 time.sleep(2)
             update_status("ok" if sync_process.returncode == 0 else "skipped",
                           "Local photo sync completed" if sync_process.returncode == 0
-                          else "Generation or git publish failed; site fallback preserved")
+                          else "Generation or git publish failed; site fallback preserved. "
+                          + server_errors.decode("utf-8", errors="replace")[-200:])
             return sync_process.returncode
+        except RuntimeError as exc:
+            diagnostic = server_errors.decode("utf-8", errors="replace")[-200:]
+            raise RuntimeError(str(exc) + ("; ComfyUI: " + diagnostic if diagnostic else "")) from exc
         finally:
             if sync_process is not None and sync_process.poll() is None:
                 os.killpg(sync_process.pid, signal.SIGTERM)
@@ -189,6 +209,8 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                 except subprocess.TimeoutExpired:
                     server.kill()
                     server.wait(timeout=10)
+            if error_reader is not None:
+                error_reader.join(timeout=2)
             clean_owned_intermediates(output_dir)
             # This dedicated temp directory is never shared with other apps.
             if safe_dir(temp_dir):
