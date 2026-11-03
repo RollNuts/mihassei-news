@@ -40,7 +40,7 @@ jobs:
         env:
           CANON_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: |
-          python social-bot/ip/test_history_guard.py
+          python -m unittest discover -s social-bot/ip -p 'test_*.py'
           python social-bot/ip/history_guard.py
 
       - name: Install free rendering dependencies
