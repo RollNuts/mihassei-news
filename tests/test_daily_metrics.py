@@ -19,6 +19,30 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(m.report_date(datetime.fromisoformat(
             "2026-11-03T00:30:00+09:00")), "2026-11-02")
 
+    def test_completed_jst_day_read_never_uses_lifetime_count(self):
+        calls = []
+        def successful(request, timeout):
+            self.assertEqual(request.get_method(), "GET")
+            calls.append(parse_qs(urlsplit(request.full_url).query))
+            return FakeResponse(json.dumps({
+                "unit": "anonymous-browser", "visitors": 999,
+                "day": {"dateJst": "2026-11-02", "visitors": 7, "articleReads": 15}
+            }).encode())
+        self.assertEqual(m.read_day_totals("2026-11-02", opener=successful),
+                         {"visitors": 7, "articleReads": 15})
+        self.assertEqual(calls, [{"day": ["2026-11-02"]}])
+
+    def test_invalid_or_legacy_day_payload_is_not_fabricated(self):
+        for daily in (None, {"dateJst": "2026-11-03", "visitors": 6, "articleReads": 8},
+                      {"dateJst": "2026-11-02", "visitors": "six", "articleReads": 8},
+                      {"dateJst": "2026-11-02", "visitors": 0, "articleReads": -1}):
+            def broken(request, timeout):
+                return FakeResponse(json.dumps({
+                    "unit": "anonymous-browser", "visitors": 999, "day": daily
+                }).encode())
+            with self.assertRaises(ValueError):
+                m.read_day_totals("2026-11-02", opener=broken)
+
     def test_one_batch_per_twenty_and_only_get(self):
         calls = []
 
@@ -110,10 +134,14 @@ class DailyMetricsTests(unittest.TestCase):
         counts = {slug: {"readers": 4, "likes": 0, "share_clicks": 1, "continued_readers": 2}
                   for slug in ("new-story", "old-story")}
         result = m.build_snapshot(
-            articles, datetime.fromisoformat("2026-11-03T01:07:00+09:00"), 15, counts)
+            articles, datetime.fromisoformat("2026-11-03T01:07:00+09:00"), 15, counts,
+            {"visitors": 7, "articleReads": 12})
         self.assertEqual(result["articles_published_on_date"], 1)
         self.assertEqual(result["published_categories"], {"暮らし": 1})
         self.assertEqual(result["visitors_cumulative"], 15)
+        self.assertEqual(result["daily_visitors"], 7)
+        self.assertEqual(result["daily_article_reads"], 12)
+        self.assertEqual(result["schema_version"], 2)
         self.assertEqual(result["unit"], "anonymous-browser")
         self.assertEqual(result["recent_articles_sampled"], 2)
         self.assertEqual(result["recent_articles"][0]["continued_readers"], 2)
@@ -121,9 +149,13 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertNotIn("channels_cumulative", result)
         with_channels=m.build_snapshot(
             articles,datetime.fromisoformat("2026-11-03T01:07:00+09:00"),15,counts,
+            {"visitors": 7, "articleReads": 12},
             {"x": 2, "search": 3, "external": 1, "unattributed": 4})
         self.assertEqual(with_channels["channels_cumulative"]["search"], 3)
         self.assertIn("may overlap", with_channels["channels_note"])
+        with self.assertRaises(ValueError):
+            m.build_snapshot(articles, datetime.fromisoformat(
+                "2026-11-03T01:07:00+09:00"), 15, counts, {"visitors": 7})
 
 
 if __name__ == "__main__":

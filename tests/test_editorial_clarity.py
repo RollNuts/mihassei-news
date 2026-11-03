@@ -54,14 +54,15 @@ class EditorialClarityTests(unittest.TestCase):
                       self.articles["volleyball-team-lunch-plate-merch"]["source"]["topic"])
 
     def test_image_notes_are_discreet_but_non_deceptive(self):
-        # The old mortgage photo belongs to the old copy and cannot be
-        # "reapproved" by rewriting its article fingerprint.
+        # The mortgage image was regenerated after its editorial rewrite.
+        # Genuine bytes and the article fingerprint must both validate;
+        # never restamp a stale JPEG or weaken the visual hold gate.
         article = self.articles["mortgage-bank-clerk-invited-to-live-in"]
-        self.assertFalse(usable_generated_scene(article, root=ROOT))
+        self.assertTrue(usable_generated_scene(article, root=ROOT))
         markup = build.story(article, list(self.articles.values()))
-        self.assertIn("編集部制作の創作イラスト", markup)
-        self.assertIn("実際の出来事の写真ではありません", markup)
-        self.assertNotIn("再現イメージ（合成）", markup)
+        self.assertIn("再現イメージ（合成）", markup)
+        self.assertIn("実際の出来事を撮影した報道写真ではありません", markup)
+        self.assertNotIn("編集部制作の創作イラスト", markup)
         self.assertIn("<strong>この記事は創作です。</strong>", markup)
         # A genuinely unchanged image still receives its concise synthetic
         # photography disclosure when the original image record is authentic.
@@ -80,25 +81,33 @@ class EditorialClarityTests(unittest.TestCase):
         # The photo/fiction disclosure stays; unrelated visible AI badges do not.
         self.assertIn("AIによる合成画像", policy)
 
-    def test_revised_stories_fall_back_until_new_real_photos_exist(self):
-        # The editorial rewrites did not regenerate any of these JPEGs.
-        # Photo records remain honest; the static build supplies illustrations.
-        for slug in ("family-dinner-gacha-243-rejections",
-                     "volleyball-team-lunch-plate-merch",
-                     "mortgage-bank-clerk-invited-to-live-in",
-                     "research-completed-opening-day", "robot-job-hopping"):
+    def test_revised_stories_use_new_verified_photos_or_honest_fallback(self):
+        # Two images remain visually held; three now have *new* authentic
+        # generated JPEGs that match the revised articles and file hashes.
+        # Never bypass visually_held_scene or treat stale manifest data as valid.
+        held = ("family-dinner-gacha-243-rejections",
+                "volleyball-team-lunch-plate-merch")
+        regenerated = ("mortgage-bank-clerk-invited-to-live-in",
+                       "research-completed-opening-day", "robot-job-hopping")
+        for slug in (*held, *regenerated):
             with self.subTest(slug=slug):
                 article = self.articles[slug]
-                self.assertFalse(usable_generated_scene(article, root=ROOT))
+                photo_ok = usable_generated_scene(article, root=ROOT)
+                self.assertEqual(photo_ok, slug in regenerated)
                 page = build.story(article, list(self.articles.values()))
                 self.assertIn("<h1>"+article["title"]+"</h1>", page)
                 self.assertIn('class="article-visual"', page)
                 safe_image = build.editorial_image(article)
-                self.assertNotEqual(safe_image, "/generated/" + slug + ".jpg")
                 self.assertIn('src="' + safe_image + '"', page)
-                # A previously approved illustrative stock image is a valid
-                # fallback as well as the first-party original SVG.
-                self.assertTrue("創作イラスト" in page or "イメージ写真" in page)
+                if slug in regenerated:
+                    self.assertEqual(safe_image, "/generated/" + slug + ".jpg")
+                    self.assertIn("再現イメージ（合成）", page)
+                    self.assertIn("実際の出来事を撮影した報道写真ではありません", page)
+                else:
+                    self.assertNotEqual(safe_image, "/generated/" + slug + ".jpg")
+                    # A previously approved illustrative stock image is a valid
+                    # fallback as well as the first-party original SVG.
+                    self.assertTrue("創作イラスト" in page or "イメージ写真" in page)
 
 
 if __name__ == "__main__":

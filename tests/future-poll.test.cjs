@@ -49,8 +49,10 @@ function fixture(){
     }));
     return {status:response.status,result:await response.json()};
   };
-  const get=async(articles='future-story')=>{
-    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?articles='+articles));
+  const get=async(articles='future-story',day)=>{
+    const params=new URLSearchParams({articles});
+    if(day!==undefined)params.set('day',day);
+    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,result:await response.json()};
   };
   return {db,api,get};
@@ -243,7 +245,19 @@ test('daily browser and article counters stay honest, reset in JST and expire ol
     assert.equal(midnight.today.dateJst,'2026-11-04');
     assert.equal(midnight.today.visitors,0,'today resets without a visit');
     assert.equal(midnight.today.articleReads,0);
+    assert.deepEqual(JSON.parse(JSON.stringify(midnight.yesterday)),{
+      dateJst:'2026-11-03',visitors:2,articleReads:3
+    });
     assert.equal(midnight.articles['story-a'].todayReaders,0);
+    const historical=await get('story-a','2026-11-03');
+    assert.equal(historical.status,200);
+    assert.deepEqual(JSON.parse(JSON.stringify(historical.result.day)),{
+      dateJst:'2026-11-03',visitors:2,articleReads:3
+    });
+    for(const invalid of ['2026-11-31','2026-11-05','2026-10-01','2026-11-03T00:00','NaN']){
+      assert.equal((await get('story-a',invalid)).status,400,
+        'invalid/out-of-retention days must fail instead of reporting zero: '+invalid);
+    }
     await api('visit',a,'story-a');
     const next=(await get('story-a')).result;
     assert.equal(next.today.visitors,1,'same browser can count again next day');
@@ -256,6 +270,8 @@ test('daily browser and article counters stay honest, reset in JST and expire ol
     assert.equal(db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'day:2026-11-03:%'").get().n,0);
     assert.equal((await get('story-a')).result.visitors,2,
       'purging daily data must not erase lifetime totals');
+    assert.equal((await get('story-a','2026-11-03')).status,400,
+      'pruned days must not look like genuine zero-visit days');
   }finally{
     runtimeDate.now=previousNow;
     db.close();

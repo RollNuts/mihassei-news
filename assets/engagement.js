@@ -407,6 +407,8 @@
   // Re-reading these counters is GET-only and cannot inflate readership.
   const observerShell=document.querySelector("[data-observer-widget]");
   const observerValue=document.querySelector("[data-observer-count]");
+  const observerYesterdayStat=document.querySelector("[data-observer-yesterday-stat]");
+  const observerYesterday=document.querySelector("[data-observer-yesterday]");
   const observerReads=document.querySelector("[data-observer-reads]");
   const observerHint=observerShell?.querySelector("small");
   const observedAtFormat=new Intl.DateTimeFormat("ja-JP",{
@@ -459,6 +461,19 @@
     observedDay=today.dateJst;
     updateObserverNumber(observerValue,today.visitors);
     updateObserverNumber(observerReads,today.articleReads);
+    // Only show yesterday when the API returns the actual preceding JST date.
+    // Missing fields from a staggered/older deployment must not become zero.
+    const yesterday=data.yesterday;
+    const todayStamp=Date.parse(today.dateJst+"T00:00:00Z");
+    const expectedPrevious=Number.isFinite(todayStamp)
+      ? new Date(todayStamp-86400000).toISOString().slice(0,10) : "";
+    if(observerYesterdayStat && observerYesterday){
+      const verified=Boolean(yesterday && yesterday.dateJst===expectedPrevious &&
+        Number.isSafeInteger(yesterday.visitors) && yesterday.visitors>=0 &&
+        Number.isSafeInteger(yesterday.articleReads) && yesterday.articleReads>=0);
+      observerYesterdayStat.hidden=!verified;
+      if(verified)updateObserverNumber(observerYesterday,yesterday.visitors);
+    }
     observerFeedback(true);
     for(const [slug,metric] of Object.entries(data.articles||{})){
       if(!metric || !Number.isFinite(metric.likes))continue;

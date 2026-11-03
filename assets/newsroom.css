@@ -94,7 +94,9 @@ body{background:var(--paper)}
 .observer-widget[hidden]{display:none}
 .observer-widget .observer-eye{font-size:12px;color:var(--accent);align-self:center}
 .observer-stat{display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap}
+.observer-stat[hidden]{display:none}
 .observer-stat+.observer-stat{border-left:1px solid #d6d8cf;padding-left:12px}
+.observer-stat[data-observer-yesterday-stat] strong{font-size:20px;color:var(--ink)}
 .observer-label{font-size:10px;color:var(--muted);letter-spacing:.025em}
 .observer-stat strong{display:inline-block;font-family:Georgia,serif;font-weight:900;font-size:24px;color:var(--accent);line-height:1.1;font-variant-numeric:tabular-nums}
 .observer-widget small{flex-basis:100%;text-align:right;font-size:9px;font-weight:400;line-height:1.4;color:#737e75}
@@ -105,7 +107,8 @@ body{background:var(--paper)}
   .observer-shell{justify-content:center;margin-top:-6px;margin-bottom:7px}
   .observer-widget{justify-content:center;gap:5px 8px}
   .observer-label{font-size:9px}
-  .observer-stat strong{font-size:21px}
+  .observer-stat strong{font-size:19px}
+  .observer-stat[data-observer-yesterday-stat] strong{font-size:18px}
   .observer-stat+.observer-stat{padding-left:8px}
   .observer-widget small{text-align:center;font-size:9px}
   .observer-suffix{font-size:9px}
