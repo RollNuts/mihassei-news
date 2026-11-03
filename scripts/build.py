@@ -933,7 +933,18 @@ def home(articles, serials=None):
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
+{starter_section}
 {timeline_section}
+<section class="genre-explore" aria-label="ジャンル別に記事を探す">
+<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
+<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
+</section>
+{render_serials_feature(serials)}
+{popular_section}
+<details class="extras-shelf">
+<summary><strong>発行号・号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
+<div class="extras-shelf-body">
+{issue_section}
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -949,17 +960,6 @@ def home(articles, serials=None):
     </div>
   </div>
 </section>
-<section class="genre-explore" aria-label="ジャンル別に記事を探す">
-<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
-<nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
-</section>
-{render_serials_feature(serials)}
-{starter_section}
-{popular_section}
-<details class="extras-shelf">
-<summary><strong>発行号・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
-<div class="extras-shelf-body">
-{issue_section}
 <section class="reader-discussions" data-comment-discussions data-comment-discussion-options="{discussion_options}" aria-labelledby="reader-discussions-title">
 <div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなのツッコミ</span>
 <h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
