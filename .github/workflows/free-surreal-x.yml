@@ -1,0 +1,79 @@
+name: Free Surreal X + 4-koma Bot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/posts.json"
+      - "social-bot/render.py"
+      - "social-bot/validate.py"
+  pull_request:
+    paths:
+      - "social-bot/**"
+      - ".github/workflows/free-surreal-x.yml"
+  workflow_dispatch:
+  schedule:
+    # 09:23 JST daily. Buffer determines the actual X publication time.
+    - cron: "23 0 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  build-and-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Install free rendering dependencies
+        run: |
+          if [ ! -f /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fi
+          python -m pip install --disable-pip-version-check "Pillow==12.0.0"
+
+      - name: Generate small original 4-panel PNGs
+        run: python social-bot/render.py
+
+      - name: Validate post and image inventory
+        run: python social-bot/validate.py
+
+      - name: Commit new assets (never on PRs)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/assets/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(social): render latest four-panel comics [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Add up to two original posts to Buffer queue (opt-in)
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        env:
+          ENABLE_X_BOT: ${{ vars.ENABLE_X_BOT }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/publish.py
+
+      - name: Save post ledger, even if queue request failed partway
+        if: always() && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(social): record Buffer queue submissions [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
