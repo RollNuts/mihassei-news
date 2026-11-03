@@ -28,7 +28,7 @@ if __package__:
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_starter import homepage_starter_picks
-    from .build import editorial_lead, CATEGORIES
+    from .build import editorial_lead, CATEGORIES, CATEGORY_PATHS
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
     from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
@@ -36,7 +36,7 @@ else:
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_starter import homepage_starter_picks
-    from build import editorial_lead, CATEGORIES
+    from build import editorial_lead, CATEGORIES, CATEGORY_PATHS
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -629,11 +629,8 @@ def check():
                 raise RuntimeError(slug+": original illustration XML is invalid")
         print("Public article OK:",slug)
 
-    category_paths={
-        "社会":"society","経済":"economy","技術":"technology",
-        "政治":"politics","暮らし":"lifestyle",
-        "スポーツ":"sports","エンタメ":"entertainment",
-    }
+    # Keep the live checker synchronized with the site's category routes.
+    category_paths = CATEGORY_PATHS
     counts=Counter(a["category"] for a in articles)
     for cat,number in counts.items():
         if number>=3:
