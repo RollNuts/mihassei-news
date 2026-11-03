@@ -376,8 +376,8 @@ def article_hero_media(a):
     if clip is None:
         return picture
     version = clip["sha256"][:12]  # prevent stale CDNs/browsers after re-encoding
-    fallback = image_tag(a, "article-video-fallback",
-                         extra='hidden loading="lazy" decoding="async"')
+    fallback = image_tag(a, "article-visual",
+                         extra='hidden loading="eager" fetchpriority="high" decoding="async" data-video-fallback')
     return (
         '<div class="article-video-shell" data-video-shell>'
         '<video class="article-visual article-video" controls playsinline muted loop'
