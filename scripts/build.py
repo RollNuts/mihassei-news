@@ -848,6 +848,7 @@ def issue_page(day, items, issues):
         '<span class="eyebrow">DAILY EDITION / 5年後の架空ニュース</span>'
         f'<h1><time datetime="{day}">{title}</time></h1>'
         f'<p>現実の{issue_date_label(day)}に掲載した、{len(items)}本の創作ニュースです。'
+        f'物語の舞台は{int(day[:4]) + 5}年の架空の未来。'
         '記事内の出来事・発言・登場人物はフィクションです。</p>'
         f'<p class="issue-categories">{escape(kinds)}</p></header>'
         '<aside class="issue-share-panel" aria-label="この号を紹介する">'
