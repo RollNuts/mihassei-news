@@ -295,8 +295,14 @@ def png_to_jpeg(png: bytes) -> bytes:
     return data
 
 
-def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT) -> Path:
-    """Atomic writes, with per-image hash and matched article fingerprint."""
+def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT,
+                    origin: str = "local-comfyui") -> Path:
+    """Atomic first-party image writes with provenance and a strict storage budget."""
+    if origin == "github-cpu-lcm":
+        if checkpoint != "SimianLuo/LCM_Dreamshaper_v7":
+            raise ValueError("Unreviewed CPU model is forbidden")
+    elif origin != "local-comfyui":
+        raise ValueError("Unreviewed image origin is forbidden")
     slug = article["slug"]
     if not SAFE_SLUG.fullmatch(slug):
         raise ValueError("Invalid article slug")
@@ -325,7 +331,7 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
     image_tmp.write_bytes(data)
     os.replace(image_tmp, image_path)
     manifest["images"][slug] = {
-        "origin": "local-comfyui",
+        "origin": origin,
         "sha256": hashlib.sha256(data).hexdigest(),
         "bytes": len(data),
         "article_sha256": article_fingerprint(article),
