@@ -9,7 +9,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from scripts.build import SITE, layout, load, story
-from scripts.serial_discovery import choose_serial, render_serial_bridge
+from scripts.serial_discovery import choose_serial, render_serial_bridge, primary_episode
 from scripts.serials import (
     load_serials, render_episode_page, render_serials_index, render_series_page,
 )
@@ -136,6 +136,14 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
                 self.assertEqual(crumbs["itemListElement"][-1]["item"],
                                  SITE + "/serials/" + serial["slug"] + "/" + ep["slug"] + "/")
                 self.assertIn('rel="canonical"', page)
+
+    def test_shared_reader_entry_policy_is_stable(self):
+        fiction = next(s for s in self.serials if s["kind"]=="fiction")
+        market = next(s for s in self.serials if s["kind"]=="analysis")
+        self.assertEqual(primary_episode(fiction)["slug"], fiction["episodes"][0]["slug"])
+        self.assertEqual(primary_episode(market)["slug"], market["episodes"][-1]["slug"])
+        with self.assertRaisesRegex(ValueError, "published episodes"):
+            primary_episode({"kind": "fiction", "episodes": []})
 
     def test_bridge_uses_current_episode_as_serial_grows(self):
         article = {"category": "社会", "title": "推理事件", "summary": ""}
