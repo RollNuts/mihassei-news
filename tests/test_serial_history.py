@@ -64,6 +64,14 @@ class SerialHistoryGuardTests(unittest.TestCase):
             modified[1]["episodes"][0]["forecast"]["result"]["outcome"] = "的中"
             guard_serial_history(verified, modified, today=date(2027, 2, 6))
 
+    def test_full_history_baseline_is_used_by_ci(self):
+        workflow = (ROOT / ".github/workflows/check.yml").read_text(encoding="utf-8")
+        self.assertIn("fetch-depth: 0", workflow)
+        self.assertIn("github.event.pull_request.base.sha", workflow)
+        self.assertIn("github.event.before", workflow)
+        self.assertIn('scripts/guard_serial_history.py "$SERIAL_BASE_SHA"', workflow)
+        self.assertNotIn("scripts/guard_serial_history.py 'HEAD^1'", workflow)
+
     def test_no_result_without_citable_evidence(self):
         changed = copy.deepcopy(self.before)
         fc = changed[1]["episodes"][0]["forecast"]
