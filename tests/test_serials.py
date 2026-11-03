@@ -136,7 +136,7 @@ class SerialTests(unittest.TestCase):
         page = (ROOT / "dist/serials" / s["slug"] / e["slug"] / "index.html").read_text(encoding="utf-8")
         self.assertIn("読了後に伏線を振り返る", page)
         self.assertIn('<details class="serial-clues">', page)
-        self.assertIn("あなたへの問い", page)
+        self.assertIn("考えるヒント", page)
         for clue in e["clues"]:
             self.assertIn(clue, page)
         self.assertIn("すべて創作", page)
