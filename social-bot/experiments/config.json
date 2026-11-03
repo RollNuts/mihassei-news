@@ -2,15 +2,16 @@
   "schema_version": 1,
   "experiment_publishing_enabled": true,
   "channel_id": "6ae94b74e29c69a171436d72",
-  "max_queue_size": 3,
-  "max_new_per_run": 2,
+  "max_queue_size": 9,
+  "max_new_per_run": 7,
   "channel_name": "Veripsa",
-  "reason": "2026-11-03 first original image accepted once via shareNow. Keep original illustrations rotating through capped free Buffer queue; preserve held manga.",
+  "reason": "Owner set seven daily Buffer posting slots; keep up to nine original scheduled posts and reserve one of Free channel ten queue slots for a qualified article. No scheduled time changes, metered API, or unapproved comics.",
   "creative_constraints": [
     "Only original compact surreal text and occasional canon-respecting character moments",
     "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
     "Keep Buffer free plan, GitHub public Actions and zero metered APIs",
     "Original serial manga review gates remain separate until new visuals are evaluated"
   ],
-  "launch_first_visual_now": false
+  "launch_first_visual_now": false,
+  "expected_daily_slots": 7
 }
