@@ -151,6 +151,7 @@ class FreeCpuImageTests(unittest.TestCase):
             inference_mode=contextlib.nullcontext,
         )
         pipeline = Mock(return_value=SimpleNamespace(images=[None], nsfw_content_detected=[True]))
+        pipeline.tokenizer = None
         with self.assertRaises(ValueError):
             cpu.render_one(pipeline, fake_torch, article())
 
