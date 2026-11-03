@@ -66,10 +66,10 @@ def draft(article: dict, *, site: str = SITE) -> dict:
     title = _short(article["title"], 58)
     teaser = _short(article["summary"], 62)
     year = str(article["fiction_at"])[:4]
-    if len(year) != 4 or not year.isdigit():
-        year = "5年後"
-    heading = "【" + year + "年の架空ニュース】\n" + title
-    ending = "\n\nこんな未来、ありそう？\n※創作 #未発生新聞"
+    # A dateline is the setting for a joke, not the site's actual publication year.
+    imagined = year + "年" if len(year) == 4 and year.isdigit() else "5年後"
+    heading = "【" + imagined + "のもしも｜創作ニュース】\n" + title
+    ending = "\n\nこんな5年後、ちょっとありそう？\n※創作 #未発生新聞"
     # Keep the literal copied draft short, even when the human pastes the
     # entire tracking URL into X instead of using the X-intent link.
     fixed = heading + ending + "\n\n" + tagged
