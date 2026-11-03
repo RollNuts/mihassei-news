@@ -949,6 +949,10 @@ def story(a, articles, issues=None, serials=None):
 <figcaption>{photo_credit(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
+<nav class="reader-next" aria-label="続けて読む記事">
+<span class="reader-next-kicker">NEXT STORY / もう1本、読む · {escape(next_category)}</span>
+<a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
+</nav>
 <section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
 <div class="future-poll-heading">
 <span class="future-poll-kicker">FUTURE VERDICT / 未来の判定</span>
@@ -975,10 +979,6 @@ def story(a, articles, issues=None, serials=None):
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
 </section>
-<nav class="reader-next" aria-label="続けて読む記事">
-<span class="reader-next-kicker">NEXT STORY / 続けて読む · {escape(next_category)}</span>
-<a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
-</nav>
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 </article>
