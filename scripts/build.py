@@ -318,10 +318,7 @@ def card(a, archive=False):
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
-        + '<div class="story-footer">'
-        + f'<span class="reporter">未発生新聞 {escape(a["category"])}部</span>'
-        + actions(a, compact=True)
-        + '</div></article>'
+        + '</article>'
     )
 
 def social_image(article):
