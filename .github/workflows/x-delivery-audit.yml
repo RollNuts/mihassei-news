@@ -7,8 +7,8 @@ on:
       - ".github/workflows/x-delivery-audit.yml"
   workflow_dispatch:
   schedule:
-    # 21:20 JST (12:20 UTC). No repeated full-history API scans.
-    - cron: "20 12 * * *"
+    # 23:45 JST (14:45 UTC). One bounded audit after most daily X slots.
+    - cron: "45 14 * * *"
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
           python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
           python -m py_compile social-bot/experiments/probe_delivery.py
 
-      - name: Check saved Buffer post IDs (read-only, bounded)
+      - name: Check saved Buffer posts and image inventory (read-only, bounded)
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}

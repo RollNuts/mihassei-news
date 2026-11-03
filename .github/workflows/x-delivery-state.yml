@@ -6,16 +6,9 @@ on:
       - "social-bot/experiments/check_delivery.py"
       - "social-bot/experiments/test_delivery.py"
       - ".github/workflows/x-delivery-state.yml"
-  push:
-    branches: [main]
-    paths:
-      - "social-bot/experiments/check_delivery.py"
-      - "social-bot/experiments/test_delivery.py"
-      - ".github/workflows/x-delivery-state.yml"
-  workflow_dispatch:
-  schedule:
-    # 20:45 JST, after user-configured 19:30 posting slot.
-    - cron: "45 11 * * *"
+
+# Retired old scheduled audit: superseded by x-delivery-audit.yml.
+# PR tests only, no scheduled or push-triggered Buffer queries.
 
 permissions:
   contents: write

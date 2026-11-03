@@ -225,6 +225,87 @@
       "mechanism": "literal_wordplay",
       "angle": "everyday_satire",
       "featured": true
+    },
+    {
+      "id": "xexp-sock-career",
+      "format": "surreal_text",
+      "text": "洗濯機から消えた靴下が、三日後ネクタイを締めて帰ってきた。「片方だけでもやっていけるって、証明したかった」。残された片方が一番大きく拍手した。",
+      "mechanism": "visual_reveal",
+      "visual": "sock",
+      "hashtag": "#シュールネタ",
+      "featured": true,
+      "sequence": 29
+    },
+    {
+      "id": "xexp-book-review",
+      "format": "surreal_text",
+      "text": "図書館で借りた本が、私の読書感想文を書いていた。「毎晩3ページ目で寝る人です」。星は2つだった。返却期限だけは延ばしてくれた。",
+      "mechanism": "role_reversal",
+      "visual": "book",
+      "hashtag": "#シュールネタ",
+      "sequence": 30
+    },
+    {
+      "id": "xexp-cloud-bus",
+      "format": "surreal_text",
+      "text": "雨雲がバス停で傘を差していた。「自分で降らせるんじゃないの？」と聞いたら、「今日は休みなんで」。バスが来る前に晴れた。",
+      "mechanism": "perspective_flip",
+      "visual": "cloud",
+      "sequence": 31
+    },
+    {
+      "id": "xexp-free-trial-farewell",
+      "format": "surreal_text",
+      "text": "無料体験を解約したら「本当にお別れですか」と聞かれた。次の画面では送別会が始まった。主賓なのに、退会ボタンはまだ見つからない。",
+      "mechanism": "inverted_expectation",
+      "angle": "everyday_satire",
+      "sequence": 32
+    },
+    {
+      "id": "xexp-fridge-egg-light",
+      "format": "surreal_text",
+      "text": "冷蔵庫の明かりが消える瞬間を見たくて、扉を少しだけ開けていた。中で卵がスマホのライトをつけていた。あっちもこっちを見ていた。",
+      "mechanism": "visual_reveal",
+      "sequence": 33
+    },
+    {
+      "id": "xexp-door-shy",
+      "format": "surreal_text",
+      "text": "駅前の自動ドアが人見知りになった。人が来ると5センチだけ開いて、また閉じる。常連客だけが「今日も無理か」と横の手動ドアを使う。",
+      "mechanism": "role_reversal",
+      "hashtag": "#シュールネタ",
+      "sequence": 34
+    },
+    {
+      "id": "xexp-quiet-museum",
+      "format": "surreal_text",
+      "text": "『静かにお楽しみください』と書かれた美術館。注意のアナウンスが5分おきに流れる。最後に絵の中の犬が「うるさい」と吠えた。",
+      "mechanism": "perspective_flip",
+      "angle": "everyday_satire",
+      "sequence": 35
+    },
+    {
+      "id": "xexp-umbrella-return",
+      "format": "surreal_text",
+      "text": "雨の日に傘を借りて、晴れたら返そうと思った。貸出所には「雨の日だけ営業」と書いてあった。傘が少しずつ家族になっている。",
+      "mechanism": "delayed_response",
+      "hashtag": "#シュールネタ",
+      "sequence": 36
+    },
+    {
+      "id": "xexp-neji-doorbell",
+      "format": "character_moment",
+      "text": "ネジがきしむドアを直した。音が消えた翌朝、隣の家から「毎朝の挨拶が聞こえない」と言われた。ネジはネジを、ほんの少しだけ緩めた。",
+      "mechanism": "unexpected_kindness",
+      "sequence": 37
+    },
+    {
+      "id": "xexp-moku-later-notes",
+      "format": "character_moment",
+      "text": "モクのポケットから「あとでやる」と書かれた紙が12枚出てきた。ネジが1枚に「いま読んだ」と書いて返すと、モクはそれを大切にしまった。",
+      "mechanism": "dry_dialogue",
+      "hashtag": "#ネジまち",
+      "sequence": 38
     }
   ]
 }

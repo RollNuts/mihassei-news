@@ -304,8 +304,9 @@ class ExperimentsTests(unittest.TestCase):
         ledger=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
         validate(inventory,cfg,ledger)
         pilots=[p for p in inventory["experiments"] if p.get("angle")=="everyday_satire"]
-        self.assertEqual(len(pilots),6)
-        self.assertEqual(sum(bool(p.get("hashtag")) for p in pilots),3)
+        self.assertGreaterEqual(len(pilots),6)
+        self.assertGreaterEqual(sum(bool(p.get("hashtag")) for p in pilots),3)
+        self.assertGreaterEqual(sum(not p.get("hashtag") for p in pilots),3)
         self.assertTrue(all(12 <= len(publication_text(p)) <= 180 for p in pilots))
         p,c,state=sample()
         p["experiments"][0]["angle"]="viral_growth"
