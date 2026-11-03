@@ -78,16 +78,17 @@ def stylesheet_url():
     """A content digest prevents browsers from reusing an outdated CSS bundle."""
     digest = hashlib.sha256(bundled_stylesheets().encode("utf-8")).hexdigest()[:12]
     return f"{SITE_CSS_PATH}?v={digest}"
-CATEGORIES = ("すべて", "社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ")
+CATEGORIES = ("すべて", "社会", "事件", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ")
 ARTS = ("notice", "cards", "tower", "robot", "meeting", "generic")
 CATEGORY_PATHS = {
-    "社会":"society", "経済":"economy", "技術":"technology",
+    "社会":"society", "事件":"incidents", "経済":"economy", "技術":"technology",
     "政治":"politics", "暮らし":"lifestyle",
     "スポーツ":"sports", "エンタメ":"entertainment"
 }
 # Editorial category descriptions help readers choose without keyword stuffing.
 CATEGORY_INTROS = {
     "社会":"親切な制度ほど、なぜか不便。暮らしの矛盾を切り取る社会風刺。",
+    "事件":"架空の事件とまちの珍事。小さな謎を現場の行動とオチで読む。",
     "経済":"値上げ、節約、働き方。数字の理屈が少し暴走した世界のニュース。",
     "技術":"便利になるほど増える手間。AIと技術の奇妙な日常を描く。",
     "政治":"会議も説明も立派なのに、なぜか話が進まない。政治の風刺。",
