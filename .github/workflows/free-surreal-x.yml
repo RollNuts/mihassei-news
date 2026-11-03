@@ -6,6 +6,8 @@ on:
     paths:
       - "social-bot/posts.json"
       - "social-bot/render.py"
+      - "social-bot/render_ip.py"
+      - "social-bot/ip/**"
       - "social-bot/validate.py"
   pull_request:
     paths:
@@ -40,8 +42,10 @@ jobs:
           fi
           python -m pip install --disable-pip-version-check "Pillow==12.0.0"
 
-      - name: Generate small original 4-panel PNGs
-        run: python social-bot/render.py
+      - name: Generate original variable-panel manga PNGs (no AI API)
+        run: |
+          python social-bot/render.py
+          python social-bot/render_ip.py
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py
@@ -58,7 +62,7 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Add up to two original posts to Buffer queue (opt-in)
+      - name: Queue canonical Nejimachi serial episodes in Buffer (opt-in)
         if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         env:
           ENABLE_X_BOT: ${{ vars.ENABLE_X_BOT }}
