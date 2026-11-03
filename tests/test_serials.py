@@ -34,7 +34,8 @@ class SerialTests(unittest.TestCase):
         self.assertIn('href="/serials/"', home)
         self.assertIn('class="serials-feature"', home)
         self.assertIn('class="serial-grid"', home)
-        self.assertIn('href="/assets/serials.css"', hub)
+        self.assertIn('href="/assets/newspaper.css?v=', hub)
+        self.assertIn("/* SOURCE serials.css */", (ROOT/"dist/assets/newspaper.css").read_text(encoding="utf-8"))
         self.assertIn("市場", hub)
         self.assertIn("推理", hub)
         for s in self.data:
