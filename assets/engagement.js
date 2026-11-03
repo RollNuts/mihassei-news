@@ -384,10 +384,13 @@
           node.hidden=false;
         }
       });
-      if(slug===article && Number.isFinite(metric.readers)){
+      if(slug===article && Number.isSafeInteger(metric.todayReaders) && metric.todayReaders>=0){
         const wrapper=document.querySelector("[data-article-readers]");
         const count=document.querySelector("[data-article-reader-count]");
-        if(wrapper && count){wrapper.hidden=false;count.textContent=Intl.NumberFormat("ja-JP").format(metric.readers);}
+        if(wrapper && count){
+          wrapper.hidden=false;
+          updateObserverNumber(count,metric.todayReaders);
+        }
       }
       if(slug===article)renderPoll(metric.votes);
     }
