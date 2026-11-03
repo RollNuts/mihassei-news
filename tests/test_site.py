@@ -95,7 +95,7 @@ class SiteTests(unittest.TestCase):
         discussions=home.index('<section class="reader-discussions"')
         about=home.index('<aside class="banner">')
         self.assertTrue(hero < latest < genres < random < discussions < about)
-        self.assertIn("<h2>新着記事を読む</h2>",home)
+        self.assertIn("<h2>さらに新着を読む</h2>",home)
         self.assertIn('data-issue-picker',home)
         self.assertIn('data-comment-discussions',home)
         self.assertIn('class="story-grid"',home)

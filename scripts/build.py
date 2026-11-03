@@ -708,9 +708,12 @@ def home(articles, serials=None):
 </div>
 <section class="edition-time-key" aria-label="未発生新聞の読み方">
 <div class="concept-primer">
-<p class="concept-primer-lead"><strong>もし、この調子で5年たったら？</strong> 今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。</p>
+<p class="concept-primer-lead"><strong>もし、この調子で5年たったら？</strong> 今の話題をちょっと大げさにした架空ニュースです。</p>
+<details class="concept-primer-details">
+<summary>この新聞の読み方</summary>
 <p class="concept-primer-route"><span>現実の話題</span><span aria-hidden="true">→</span><span>5年後の「もしも」</span><span aria-hidden="true">→</span><span>真顔の冗談</span></p>
 <p class="concept-primer-foot">未来を当てるための予測ではありません。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
+</details>
 </div></section>
 <section class="hero-grid">
 <article class="lead">
@@ -719,13 +722,12 @@ def home(articles, serials=None):
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
-<div class="hero-actions"><a class="read-more" href="{article_url(a)}">続きを読む</a></div>
-<div class="hero-actions">{actions(a,compact=True)}</div>
+<div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
 </section>
 {starter_section}
-<section class="section-block"><div class="section-head"><h2>新着記事を読む</h2>
+<section class="section-block"><div class="section-head"><h2>さらに新着を読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
 {render_serials_feature(serials)}
