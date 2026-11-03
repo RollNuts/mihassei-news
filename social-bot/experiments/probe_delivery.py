@@ -130,7 +130,49 @@ def mature_sent(sent_at, now):
             timedelta(hours=12) <= now-timestamp <= timedelta(hours=96))
 
 
-def queue_health(inventory, state, rows):
+JST = timezone(timedelta(hours=9))
+DAILY_SLOT_GOAL = 7
+
+
+def observed_original_sent_by_jst_day(rows, now=None, days=7):
+    """Observed Buffer-sent originals only, with incomplete coverage clearly marked.
+
+    Historical statuses may be cached, but each qualifying timestamp came
+    from an earlier exact-ID read. Missing observations never mean zero X
+    posts, and articles/manual posts are outside this original-only metric.
+    """
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None or type(days) is not int or not 1 <= days <= 14:
+        raise ValueError("Invalid daily evidence window")
+    today = now.astimezone(JST).date()
+    seen = {}
+    for row in rows:
+        if row.get("buffer_status") != "sent":
+            continue
+        raw = row.get("buffer_sent_at_utc")
+        if not isinstance(raw, str):
+            continue
+        try:
+            sent = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if sent.tzinfo is None or sent > now:
+            continue
+        day = sent.astimezone(JST).date()
+        if 0 <= (today - day).days < days:
+            seen[day] = seen.get(day, 0) + 1
+    return [
+        {
+            "date_jst": (today-timedelta(days=offset)).isoformat(),
+            "observed_original_buffer_sent": seen.get(today-timedelta(days=offset), 0),
+            "configured_daily_slots": DAILY_SLOT_GOAL,
+            "evidence": "incomplete_lower_bound_not_total_X_publications",
+        }
+        for offset in range(days-1, -1, -1)
+    ]
+
+
+def queue_health(inventory, state, rows, now=None):
     """Capacity signals from the original ledger, never fabricated X views.
 
     Some status rows are cached from prior audits. Do not call their counts
@@ -152,7 +194,9 @@ def queue_health(inventory, state, rows):
             for r in rows),
         "unsubmitted_inventory_below_14":len(pending)<14,
         "unsubmitted_images_below_2":pending_images<2,
-        "note":"Sent rows may be cached; neither Buffer sent nor permalink proves independent X reach.",
+        "observed_original_sent_by_jst_day":
+            observed_original_sent_by_jst_day(rows, now=now),
+        "note":"Daily counts are incomplete lower bounds of Buffer-sent original posts, not all X posts. Cached rows may be old; Buffer sent/permalink does not independently verify reach.",
     }
 
 
@@ -230,7 +274,7 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
                         "independent X page verification. Older cached rows are "
                         "not reread. Metrics are not exact 24h/72h impressions."),
         "items": items,
-        "health": queue_health(inventory,state,items),
+        "health": queue_health(inventory,state,items,now=now),
         "recent_unverified_experiment_ids": [
             item["post_id"] for item in items
             if item.get("buffer_status") not in ("sent", "scheduled")]
@@ -270,6 +314,8 @@ def main():
           "insights checks")
     health=result["health"]
     print("X original inventory capacity:",health)
+    print("Observed original Buffer-sent by JST day (incomplete lower bounds):",
+          health["observed_original_sent_by_jst_day"][-3:])
     if health["unsubmitted_inventory_below_14"]:
         print("::warning::Fewer than 14 unsubmitted X originals; replenish.")
     if health["unsubmitted_images_below_2"]:
