@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T11:17:49.242016+00:00",
+  "checked_at_utc": "2026-11-03T11:23:10.890934+00:00",
   "source": "buffer_post_by_saved_id_readonly",
   "limitations": "Buffer statuses/URLs are provider evidence; they are not independent X verification or X impression counts.",
   "items": [
