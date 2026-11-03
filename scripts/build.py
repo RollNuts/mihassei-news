@@ -759,6 +759,8 @@ def home(articles, serials=None):
 <div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
 <strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
+<a class="return-update" data-return-update data-latest-published="{escape(last_published)}"
+ href="{article_url(newest)}" hidden>前回から新しい記事が届きました <span aria-hidden="true">↗</span></a>
 </div>
 <section class="hero-grid">
 <article class="lead">
