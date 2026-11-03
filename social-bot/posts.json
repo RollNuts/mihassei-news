@@ -402,6 +402,65 @@
           "line": "「……ふたごだった」"
         }
       ]
+    },
+    {
+      "id": "nejimachi-006-big-shadow",
+      "series": "nejimachi",
+      "episode": 6,
+      "chapter": 1,
+      "day": "D2",
+      "order": 2,
+      "kind": "comic",
+      "title": "おおきな影",
+      "art_style": "handink-v1",
+      "ink_scene": "shadow-reveal",
+      "location": "street",
+      "characters": [
+        "neji",
+        "moku"
+      ],
+      "canon_refs": [
+        "city-ceiling"
+      ],
+      "episode_core": "ネジが配管街で巨大な影におびえるが、正体は街灯の前で両手を上げた小さなモク。モクは少し大きくなれたと喜ぶ。",
+      "text": "【ネジまち 第6話｜おおきな影】\n機械都市の路地で、ネジは大きな影を見つけた。影の正体は……。#ネジまち",
+      "panels": [
+        {
+          "scene": "street",
+          "focus": "neji",
+          "shot": "wide",
+          "mood": "confused",
+          "sign": "六番配管街",
+          "line": "「……なんかいる？」",
+          "action": "ネジが路地を歩き、配管壁の巨大な影に気づく"
+        },
+        {
+          "scene": "street",
+          "focus": "neji",
+          "shot": "wide",
+          "mood": "sleepy",
+          "line": "「でっか…」",
+          "action": "見上げたネジの上で、正体不明の巨大な影が壁いっぱいに広がる"
+        },
+        {
+          "scene": "street",
+          "focus": "neji",
+          "shot": "close",
+          "mood": "confused",
+          "silent": true,
+          "line": "",
+          "action": "ネジが無言で目を見開き、おそるおそる振り向く"
+        },
+        {
+          "scene": "street",
+          "focus": "moku",
+          "secondary": "neji",
+          "shot": "wide",
+          "mood": "happy",
+          "line": "「ぼく、ついに大きくなれた」",
+          "action": "街灯の下でモクが手を上げ、壁に巨大な影を作って笑い、ネジは安心する"
+        }
+      ]
     }
   ]
 }
