@@ -27,6 +27,19 @@ def x_link(value):
     return urlunsplit((u.scheme,u.netloc,u.path,"",""))
 
 
+def parse_provider_utc(value):
+    """Only accept timezone-aware provider dates; never guess local time."""
+    if not isinstance(value,str):
+        return None
+    try:
+        result=datetime.fromisoformat(value.replace("Z","+00:00"))
+    except ValueError:
+        return None
+    if result.tzinfo is None:
+        return None
+    return result.astimezone(timezone.utc)
+
+
 def reconcile(post, record, remote, channel_id):
     result={"post_id":post["id"],"buffer_id":record["buffer_id"],
             "format":post["format"],"visual":bool(post.get("visual")),
@@ -44,6 +57,12 @@ def reconcile(post, record, remote, channel_id):
         result["reason"]="unknown_buffer_status"
         return result
     result["buffer_status"]=status
+    # Buffer's documented dueAt is the scheduled publish time.
+    # It is an observed provider reservation, not proof of seven recurring slots.
+    if status=="scheduled":
+        due=parse_provider_utc(remote.get("dueAt"))
+        if due is not None:
+            result["buffer_due_at_utc"]=due.isoformat()
     assets=remote.get("assets")
     if isinstance(assets,list):
         result["buffer_asset_count"]=len(assets)
@@ -133,7 +152,7 @@ def fetch_status_batch(token, post_ids):
             len(set(post_ids)) != len(post_ids) or
             any(not isinstance(pid, str) or not pid for pid in post_ids)):
         raise ValueError("Invalid bounded Buffer alias batch")
-    fields = "id channelId text status sentAt externalLink assets { id mimeType }"
+    fields = "id channelId text status dueAt sentAt externalLink assets { id mimeType }"
     aliases = [
         "p" + str(i) + ": post(input: {id: " + qstring(pid) + "}) { " +
         fields + " }"
@@ -195,6 +214,60 @@ def observed_original_sent_by_jst_day(rows, now=None, days=7):
     ]
 
 
+def observed_scheduled_originals_by_jst_day(rows, now=None, days=3):
+    """Actual observed queue slots, not the account's weekly schedule.
+
+    Only count exact-ID, freshly audited, future-due original posts. A cached
+    'scheduled' entry may already have been sent, so it cannot establish
+    today's current queue. Other Buffer/hand-posted content is out of scope.
+    """
+    now = now or datetime.now(timezone.utc)
+    if now.tzinfo is None or type(days) is not int or not 1 <= days <= 7:
+        raise ValueError("Invalid scheduled-slot evidence window")
+    today=now.astimezone(JST).date()
+    checked_at=now.astimezone(timezone.utc).isoformat()
+    groups={}
+    overdue=0
+    examined=0
+    missing_due=0
+    for row in rows:
+        if row.get("buffer_status")!="scheduled":
+            continue
+        if row.get("last_buffer_check_utc")!=checked_at:
+            continue
+        examined+=1
+        due=parse_provider_utc(row.get("buffer_due_at_utc"))
+        if due is None:
+            missing_due+=1
+            continue
+        if due < now:
+            if now-due > timedelta(hours=2):
+                overdue+=1
+            continue
+        local_due=due.astimezone(JST)
+        date=local_due.date()
+        if 0 <= (date-today).days < days:
+            groups.setdefault(date,[]).append(local_due)
+    items=[]
+    for offset in range(days):
+        date=today+timedelta(days=offset)
+        times=sorted(groups.get(date,[]))
+        items.append({
+            "date_jst":date.isoformat(),
+            "observed_fresh_original_scheduled":len(times),
+            "observed_times_jst":[t.strftime("%H:%M") for t in times],
+            "configured_daily_slots":DAILY_SLOT_GOAL,
+            "evidence":"partial_provider_queue_not_a_schedule_configuration",
+        })
+    return {
+        "days":items,
+        "fresh_scheduled_records_checked":examined,
+        "fresh_scheduled_without_due_at":missing_due,
+        "overdue_scheduled_over_two_hours":overdue,
+        "note":"These are audited original reservations only. Counts may be below seven when queue size or audit coverage is limited; not a count of recurring slots.",
+    }
+
+
 def queue_health(inventory, state, rows, now=None):
     """Capacity signals from the original ledger, never fabricated X views.
 
@@ -219,7 +292,9 @@ def queue_health(inventory, state, rows, now=None):
         "unsubmitted_images_below_2":pending_images<2,
         "observed_original_sent_by_jst_day":
             observed_original_sent_by_jst_day(rows,now=now),
-        "note":"Daily counts are incomplete lower bounds of Buffer-sent originals; cached statuses may be old. Neither provider sent nor permalink independently verifies X reach.",
+        "observed_scheduled_originals_by_jst_day":
+            observed_scheduled_originals_by_jst_day(rows,now=now),
+        "note":"Daily sent counts are incomplete Buffer lower bounds. Future queue slots are verified scheduled posts, NOT a test that seven recurring Buffer times are configured.",
     }
 
 
@@ -339,7 +414,7 @@ def main():
     inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
     state=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
     def fetch(postid):
-        query="query { post(input: {id: "+qstring(postid)+"}) { id channelId text status sentAt externalLink assets { id mimeType } } }"
+        query="query { post(input: {id: "+qstring(postid)+"}) { id channelId text status dueAt sentAt externalLink assets { id mimeType } } }"
         return gql(key,query).get("post")
     def fetch_metrics(postid):
         query="query { post(input: {id: "+qstring(postid)+"}) { metrics { type value unit } metricsUpdatedAt } }"
@@ -365,6 +440,8 @@ def main():
     print("X original inventory capacity:",health)
     print("Observed Buffer-sent originals by JST day (incomplete):",
           health["observed_original_sent_by_jst_day"][-3:])
+    print("Observed future original queue slots (not entire Buffer schedule):",
+          health["observed_scheduled_originals_by_jst_day"])
     if health["unsubmitted_inventory_below_14"]:
         print("::warning::Fewer than 14 unsubmitted X originals; replenish.")
     if health["unsubmitted_images_below_2"]:
