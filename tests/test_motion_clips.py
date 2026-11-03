@@ -131,7 +131,8 @@ class MotionClipTests(unittest.TestCase):
             movie = root / clip_url(suitable).lstrip("/").replace("clips/","assets/clips/",1)
             self.assertTrue(movie.is_file())
             self.assertEqual(hashlib.sha256(movie.read_bytes()).hexdigest(), verified["sha256"])
-            with patch.object(build, "BASE", root):
+            with patch.object(build, "BASE", root), \
+                 patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                 html = build.article_hero_media(suitable)
                 self.assertIn('<video class="article-visual article-video"', html)
                 self.assertIn('controls playsinline muted loop preload="metadata"', html)
