@@ -1071,9 +1071,9 @@ body [hidden] {
 .concept-primer-details>summary::after{content:" ＋";text-decoration:none}
 .concept-primer-details[open]>summary::after{content:" −"}
 .concept-primer-details[open]{flex-basis:100%;margin-left:0}
-.concept-primer-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px!important;color:#6c7366;font-size:11px;font-weight:750}
+.concept-primer .concept-primer-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px;color:#6c7366;font-size:11px;font-weight:750}
 .concept-primer-route span:nth-child(odd){color:#365a46}
-.concept-primer-foot{font-size:11px;line-height:1.7;color:#647067;margin-top:7px!important}
+.concept-primer .concept-primer-foot{font-size:11px;line-height:1.7;color:#647067;margin-top:7px}
 .story-fiction-context{
   padding:9px 12px;
   border-left:2px solid #bba376;
