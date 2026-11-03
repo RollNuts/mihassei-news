@@ -1,0 +1,85 @@
+name: One-time verify rewritten sports and dating satire
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Read public real dates, story punchlines and X image delivery
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import html,time,json,re
+          from urllib.request import Request,urlopen
+          from xml.etree import ElementTree as ET
+
+          SITE="https://veripsa.com"
+          EXPECTED={
+            "supporter-guarantor-contract":{
+              "title":"プロ野球、ファンにも戦力外通告",
+              "turn":"選手にはFAがあるのに",
+              "source":"kumanichi.com/articles/2053373",
+              "published":"2026-11-02T19:16:37+09:00",
+              "modified":"2026-11-03T09:58:47+09:00",
+              "photo":True,
+            },
+            "quiet-reply-dating-matches":{
+              "title":"恋活アプリ、返信3日に1回の2人が結婚",
+              "turn":"本人たちにはもう届かなかった",
+              "source":"www.reuters.com/technology/tinders-us-daily-active-users-return-growth-october-match-ramps-up-ai-efforts-2026-11-02/",
+              "published":"2026-11-03T07:40:27+09:00",
+              "modified":"2026-11-03T09:58:47+09:00",
+              "photo":False,
+            }
+          }
+          def get(path):
+              r=Request(SITE+path,headers={
+                 "User-Agent":"Mihassei-ShortSatire-ReadOnly/1.0",
+                 "Accept":"text/html,image/png,image/jpeg,image/svg+xml,*/*",
+                 "Cache-Control":"no-cache"})
+              with urlopen(r,timeout=17) as response:
+                  if response.status!=200:raise RuntimeError("HTTP "+str(response.status)+" "+path)
+                  return response.read(3500000),response.headers.get("Content-Type","")
+          for attempt in range(1,24):
+              try:
+                  sitemap,_=get("/sitemap.xml")
+                  listing=sitemap.decode("utf-8")
+                  for slug,expected in EXPECTED.items():
+                      body,kind=get("/articles/"+slug+"/")
+                      if "text/html" not in kind:raise RuntimeError("HTML MIME "+slug)
+                      page=html.unescape(body.decode("utf-8"))
+                      for term in (expected["title"],expected["turn"],expected["source"],
+                                   expected["published"],expected["modified"],
+                                   'name="twitter:card" content="summary_large_image"'):
+                          if term not in page:raise RuntimeError("Missing "+slug+" "+term)
+                      if SITE+"/articles/"+slug+"/" not in listing:
+                          raise RuntimeError("Not in sitemap "+slug)
+                      section=page.split('<div class="article-body">',1)
+                      if len(section)!=2:raise RuntimeError("Missing body "+slug)
+                      paragraph_markup=section[1].split("</div>",1)[0]
+                      if paragraph_markup.count("<p>")!=2 or paragraph_markup.count("</p>")!=2:
+                          raise RuntimeError("Expected a 2-paragraph original satire "+slug)
+                      svg,svgtype=get("/images/"+slug+".svg")
+                      if "svg" not in svgtype:raise RuntimeError("SVG missing "+slug)
+                      cover=ET.fromstring(svg)
+                      if "編集部制作表紙" not in cover.attrib.get("aria-label",""):
+                          raise RuntimeError("Story cover not editorial "+slug)
+                      if expected["photo"]:
+                          image,imtype=get("/photos/"+slug+".jpg")
+                          if "image/jpeg" not in imtype or not image.startswith(bytes((255,216,255))):
+                              raise RuntimeError("Approved photo unavailable "+slug)
+                      else:
+                          image,imtype=get("/og/articles/"+slug+".png?v=20261103-topic2")
+                          if "image/png" not in imtype or not image.startswith(bytes((137,80,78,71,13,10,26,10))):
+                              raise RuntimeError("Original X card unavailable "+slug)
+                  print("PASS: both stronger 2-paragraph satires published with original dates, genuine sources and first-party images",flush=True)
+                  break
+              except Exception as exc:
+                  print("Attempt",attempt,"failed:",str(exc),flush=True)
+                  if attempt==23:raise
+                  time.sleep(9)
+          PY
