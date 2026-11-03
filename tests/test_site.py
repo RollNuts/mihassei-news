@@ -838,8 +838,9 @@ class SiteTests(unittest.TestCase):
             self.assertIn('class="breadcrumbs"',page)
             self.assertIn('"@type": "BreadcrumbList"',page)
             self.assertIn('class="reader-next"',page)
-            self.assertIn('class="reader-follow"',page)
-            self.assertIn('class="reader-follow-x"',page)
+            self.assertNotIn('class="reader-follow"',page,
+                             "RSS and share links remain available without duplicate promo panels")
+            self.assertIn('class="share-control"',page)
             self.assertIn("https://x.com/intent/tweet?",page)
             self.assertNotIn('https://x.com/Veripsa',page)
             self.assertIn('href="/feed.xml"',page)
