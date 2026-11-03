@@ -69,6 +69,8 @@ def validate(posts, config, state):
         raise ValueError("Invalid experiment submission ledger")
     if not isinstance(config.get("channel_id"), str) or not config["channel_id"].strip():
         raise ValueError("Pinned Buffer X channel is required")
+    if type(config.get("two_daily_midday_enabled", False)) is not bool:
+        raise ValueError("Two daily midday switch must be a boolean")
     if type(config.get("launch_first_visual_now", False)) is not bool:
         raise ValueError("Immediate original-visual launch must be a boolean")
     for name in ("max_queue_size", "max_new_per_run"):
@@ -157,7 +159,8 @@ def decide(posts, state, existing, max_queue, max_new):
                 "recovered_from_buffer": True
             }
             recovered.append(post["id"])
-    # The schedule stays at one per day. Interleave distinct creative
+    # The 19:30 base queue remains one per day; the optional noon lane is
+    # controlled separately with a hard per-day cap. Interleave distinct creative
     # mechanisms instead of queuing several almost identical work/office jokes.
     # One in five slots can introduce a newly curated 'featured' story from
     # deeper in the backlog. Previously submitted Buffer posts are untouched.
