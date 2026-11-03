@@ -32,6 +32,9 @@ class DeploymentWorkflowTests(unittest.TestCase):
         from xml.etree import ElementTree as ET
         checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
         self.assertIn('set(CATEGORIES[1:])', checker)
+        from scripts.build import CATEGORY_PATHS
+        self.assertIn('category_paths = CATEGORY_PATHS', checker)
+        self.assertEqual(CATEGORY_PATHS["事件"], "incidents")
         self.assertIn("事件", CATEGORIES)
         feed=ET.fromstring("<rss><channel><item><category>事件</category></item></channel></rss>")
         self.assertIn(feed.findtext("./channel/item/category"), set(CATEGORIES[1:]))
