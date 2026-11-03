@@ -46,6 +46,7 @@ jobs:
           node --check assets/comments.js
           node --check assets/comment-activity.js
           node --check assets/bookmarks.js
+          node --check assets/returning-shelf.js
           node --check assets/growth-desk.js
           node --check assets/serial-progress.js
           node --check assets/comments-admin.js
@@ -61,6 +62,8 @@ jobs:
         run: node --test tests/archive-pagination.test.cjs
       - name: Test offline reader bookmarks with no network or accounts
         run: node --test tests/bookmarks.test.cjs
+      - name: Test optional homepage return-to-bookmarks (privacy-safe)
+        run: node --test tests/returning-shelf.test.cjs
       - name: Test genuine reader discovery without additional API calls
         run: node --test tests/reader-discovery.test.cjs
       - name: Test anonymous comments in SQLite without network access
