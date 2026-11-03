@@ -42,6 +42,7 @@ jobs:
         run: |
           python social-bot/ip/test_history_guard.py
           python social-bot/ip/history_guard.py
+          python social-bot/ip/art_history_guard.py
 
       - name: Install free rendering dependencies
         run: |
