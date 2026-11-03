@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T12:34:02.993304+00:00",
+  "checked_at_utc": "2026-11-03T12:42:26.209864+00:00",
   "source": "buffer_post_by_saved_id_daily_bounded_readonly",
   "limits": {
     "post_reads_this_run": 10,
@@ -21,7 +21,7 @@
       "buffer_asset_count": 0,
       "buffer_sent_at_utc": "2026-11-03T10:30:12.842Z",
       "buffer_external_link": "https://x.com/2046775749500428288/status/2117564998318772347",
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-future-advice",
@@ -30,7 +30,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-reaper-late",
@@ -39,7 +39,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-ufo-ticket",
@@ -50,7 +50,7 @@
       "buffer_asset_count": 1,
       "buffer_sent_at_utc": "2026-11-03T10:55:16.784Z",
       "buffer_external_link": "https://x.com/2046775749500428288/status/2117571306006724878",
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-nejimachi-one-screw",
@@ -59,7 +59,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-invisible-nails",
@@ -68,7 +68,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-shadow-home",
@@ -77,7 +77,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-witch-autopilot",
@@ -86,7 +86,7 @@
       "visual": true,
       "buffer_status": "scheduled",
       "buffer_asset_count": 1,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-selfcheckout-dialogue",
@@ -95,7 +95,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     },
     {
       "post_id": "xexp-honest-survey",
@@ -104,7 +104,7 @@
       "visual": false,
       "buffer_status": "scheduled",
       "buffer_asset_count": 0,
-      "last_buffer_check_utc": "2026-11-03T12:34:02.993304+00:00"
+      "last_buffer_check_utc": "2026-11-03T12:42:26.209864+00:00"
     }
   ],
   "health": {
@@ -116,7 +116,51 @@
     "provider_permalinks_last_known": 2,
     "unsubmitted_inventory_below_14": false,
     "unsubmitted_images_below_2": false,
-    "note": "Sent rows may be cached; neither Buffer sent nor permalink proves independent X reach."
+    "observed_original_sent_by_jst_day": [
+      {
+        "date_jst": "2026-10-28",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-10-29",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-10-30",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-10-31",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-11-01",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-11-02",
+        "observed_original_buffer_sent": 0,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      },
+      {
+        "date_jst": "2026-11-03",
+        "observed_original_buffer_sent": 2,
+        "configured_daily_slots": 7,
+        "evidence": "incomplete_lower_bound_not_total_X_publications"
+      }
+    ],
+    "note": "Daily counts are incomplete lower bounds of Buffer-sent originals; cached statuses may be old. Neither provider sent nor permalink independently verifies X reach."
   },
   "recent_unverified_experiment_ids": []
 }
