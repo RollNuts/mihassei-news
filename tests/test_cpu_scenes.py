@@ -122,7 +122,7 @@ class FreeCpuImageTests(unittest.TestCase):
         kwargs = pipeline.call_args.kwargs
         self.assertEqual(kwargs["num_inference_steps"], 8)
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
-        self.assertIn("capsule lottery machine", kwargs["prompt"])
+        self.assertIn("gumball vending machine", kwargs["prompt"])
         self.assertIn("DSLR color photograph", kwargs["prompt"])
 
     def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
@@ -158,8 +158,8 @@ class FreeCpuImageTests(unittest.TestCase):
             "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "purple skin", "yellow flesh", "referee", "whistle"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
             "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "push button", "close-up"),
-            "family-dinner-gacha-243-rejections": ("capsule lottery machine", "plates", "crossed arms"),
-            "volleyball-team-lunch-plate-merch": ("plate", "tape measure", "volleyball net"),
+            "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
+            "volleyball-team-lunch-plate-merch": ("ceramic dinner plate", "measuring tape", "volleyball net"),
         }
         for slug, objects in expected.items():
             prompt = cpu.cpu_prompt({"slug": slug})
