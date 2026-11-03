@@ -40,6 +40,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--server", default="http://127.0.0.1:8188")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--timeout", type=int, default=600)
+    ap.add_argument("--output-dir", default="")
+    ap.add_argument("--min-free-gb", type=int, default=12)
     ap.add_argument("--acknowledge-model-license", action="store_true")
     args = ap.parse_args(argv)
 
@@ -54,7 +56,10 @@ def main(argv: list[str] | None = None) -> int:
         sys.executable, str(ROOT / "scripts/local_scene_photos.py"),
         "--server", args.server, "--checkpoint", args.checkpoint,
         "--limit", str(args.limit), "--timeout", str(args.timeout),
+        "--min-free-gb", str(args.min_free_gb),
     ]
+    if args.output_dir:
+        command += ["--output-dir", args.output_dir]
     if args.dry_run:
         command += ["--dry-run"]
     elif args.acknowledge_model_license:
