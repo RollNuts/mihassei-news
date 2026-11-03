@@ -1,5 +1,28 @@
 [
   {
+    "slug": "stolen-doorbell-returned-by-parcel",
+    "category": "事件",
+    "flash": "まちの珍事件",
+    "fiction_company": "雑貨店『こつこつ堂』",
+    "art": "cards",
+    "fiction_at": "2031-11-03T13:45:00+09:00",
+    "title": "盗まれた店の呼び鈴、宅配便で戻る　配達員は押せず不在票",
+    "summary": "商店街の雑貨店から入口の呼び鈴が消えた。翌日、謝罪の手紙と一緒に送り返されたが、呼び鈴のない店では小包を受け取れなかった。",
+    "paragraphs": [
+      "「呼び鈴がありません。ご用の方は声をかけてください」。2031年、商店街の雑貨店『こつこつ堂』の入口に、そんな貼り紙が出た。前の晩、何者かがドアの呼び鈴だけを外して持ち去ったのだ。店主は交番に届け、奥で品出しをしながら、聞こえないはずの鈴の音を何度も気にしていた。",
+      "翌日、店に小包が届いた。中身は呼び鈴と「返します。すみません」の手紙。しかし店主は奥にいて、配達員が何度呼んでも気づかなかった。小包はいったん持ち帰られ、不在票には「呼び鈴がなく、お声がけのみ」と書かれていた。再配達でようやく鈴を受け取った店主は、取り付ける前にドアを開け、帰りかけた配達員を追いかけて「すみません、これで次は鳴らせます」と鈴を振ってみせた。"
+    ],
+    "scene_prompt": "A small empty mounting hook beside the entrance of a fictional Japanese stationery shop, with a delivery person in plain uniform holding a tiny parcel containing a brass door chime. A baffled anonymous shopkeeper stands at the open doorway, warm street daylight, deadpan photorealistic comedy, no readable signs, no logos, no identifiable real businesses.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "J-CASTニュース",
+      "published_at": "2026-11-03T13:45:00+09:00",
+      "url": "https://www.j-cast.com/2026/11/03518870.html",
+      "topic": "2026年11月3日、高額腕時計の盗難後に郵送で返却され、謝罪メモが同封されていたという報道。呼び鈴の盗難、雑貨店、配達員の出来事は実在しない本紙の創作。"
+    },
+    "published_at": "2026-11-03T23:03:27+09:00"
+  },
+  {
     "slug": "bakery-no-important-announcement-panic",
     "category": "社会",
     "flash": "ネットの話題",
@@ -20,7 +43,8 @@
       "url": "https://news.livedoor.com/article/detail/32721147/",
       "topic": "11月2日の公的発表の予告からSNSに根拠のない憶測が広がり、11月3日に『何も起きなくてよかった』という受け止めを伝えた報道。店の話は独自創作。"
     },
-    "published_at": "2026-11-03T21:38:41+09:00"
+    "published_at": "2026-11-03T21:38:41+09:00",
+    "broadcast_feature": true
   },
   {
     "slug": "diner-refund-customer-paying-escape",
@@ -139,7 +163,8 @@
     },
     "published_at": "2026-11-03T11:38:33+09:00",
     "scene_prompt": "Live-action color photograph of a deserted room in a Japanese office. An empty wooden chair stands in the center with an untied rope coiled on its seat. An absurdly large unopened rescue equipment bag sits beside the empty chair. The exit door stands wide open. Nobody is in the room. Natural daylight, realistic photographic textures, eye-level wide photograph of the empty room.",
-    "modified_at": "2026-11-03T12:49:41.396+09:00"
+    "modified_at": "2026-11-03T12:49:41.396+09:00",
+    "broadcast_feature": true
   },
   {
     "slug": "variety-700-guests-only-introductions",
