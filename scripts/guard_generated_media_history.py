@@ -23,7 +23,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = "assets/generated/manifest.json"
-SHA = re.compile(r"[0-9a-f]{40}\\Z")
+SHA = re.compile(r"[0-9a-f]{40}\Z")
 # One-time recovery of records corrupted by PR #181. Remove after recovery.
 # This is an immutable Git revision from before that PR. No new image is claimed.
 RESTORE_BASE = "ffe7c90547299ea45f823f39099097c766c85d01"
