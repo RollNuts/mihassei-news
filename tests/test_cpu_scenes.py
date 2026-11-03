@@ -108,6 +108,7 @@ class FreeCpuImageTests(unittest.TestCase):
         a = article()
         fake_image = SimpleNamespace(save=Mock())
         pipeline = Mock(return_value=SimpleNamespace(images=[fake_image], nsfw_content_detected=[False]))
+        pipeline.tokenizer = None
         gen = Mock()
         gen.manual_seed.return_value = gen
         fake_torch = SimpleNamespace(Generator=Mock(return_value=gen), inference_mode=contextlib.nullcontext)
@@ -122,6 +123,27 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
         self.assertIn("STAGED SATIRICAL NEWS COMEDY", kwargs["prompt"])
         self.assertIn("Bright, colorful", kwargs["prompt"])
+
+    def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
+        a = {**article(), "title": "有名人700人の特番、名前を呼ぶだけで放送終了"}
+        prompt = cpu.cpu_prompt(a)
+        self.assertIn("EMPTY CHAIRS", prompt)
+        self.assertIn("Bright, colorful", prompt)
+        self.assertLess(len(prompt.split()), 65)
+
+    def test_clipped_prompt_is_rejected_before_model_call(self):
+        a = article()
+        pipeline = Mock()
+        pipeline.tokenizer.encode.return_value = list(range(78))
+        generator = Mock()
+        generator.manual_seed.return_value = generator
+        fake_torch = SimpleNamespace(
+            Generator=Mock(return_value=generator),
+            inference_mode=contextlib.nullcontext,
+        )
+        with self.assertRaisesRegex(ValueError, "CLIP budget"):
+            cpu.render_one(pipeline, fake_torch, a)
+        pipeline.assert_not_called()
 
     def test_cpu_generator_rejects_model_safety_filter(self):
         fake_torch = SimpleNamespace(
