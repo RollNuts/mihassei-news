@@ -55,6 +55,19 @@ jobs:
                               raise RuntimeError("future poll API counts are missing or invalid")
                           print("VERIFIED engagement API: visitors={}, readers={}, likes={}, votes={}/{} (browser units)".format(
                               data["visitors"],details["readers"],details["likes"],votes["plausible"],votes["unlikely"]))
+                          # The public header reads these real daily metrics.
+                          # Legacy cumulative counts must never impersonate "today".
+                          today=data.get("today")
+                          if (not isinstance(today,dict)
+                              or not isinstance(today.get("dateJst"),str)
+                              or len(today["dateJst"])!=10
+                              or any(type(today.get(k)) is not int or today[k]<0
+                                     for k in ("visitors","articleReads"))):
+                              raise RuntimeError("daily audience fields not available")
+                          if type(details.get("todayReaders")) is not int or details["todayReaders"]<0:
+                              raise RuntimeError("daily article audience field missing")
+                          print("VERIFIED daily audience: {} / {} browsers / {} article reads (JST)".format(
+                              today["dateJst"],today["visitors"],today["articleReads"]))
                       elif kind=="poll_page":
                           text=body.decode("utf-8")
                           if ('data-future-poll' not in text or
