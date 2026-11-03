@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T07:52:08.161939+00:00",
+  "checked_at_utc": "2026-11-03T09:03:54.740822+00:00",
   "source": "buffer_free_posts_api",
   "limitations": "Buffer sent indicates provider state only. X impressions and actual live URL not determined.",
   "items": [
@@ -15,6 +15,13 @@
       "buffer_id": "6ae990ece5f645e4e3352053",
       "buffer_status": "scheduled",
       "format": "surreal_text"
+    },
+    {
+      "post_id": "xexp-reaper-late",
+      "buffer_id": "6ae995b92f050cf24296aafc",
+      "buffer_status": "scheduled",
+      "format": "surreal_text"
     }
-  ]
+  ],
+  "recent_unverified_experiment_ids": []
 }
