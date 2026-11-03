@@ -70,6 +70,19 @@ def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> No
         raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
 
 
+def latest_articles(articles: list[dict], limit: int | None = 10) -> list[dict]:
+    """Use actual site publication recency for live smoke tests.
+
+    Source articles can be older than when we published our fictional story.
+    Checking by source time could ignore the newest live edition entirely.
+    """
+    ordered = sorted(articles, key=lambda a: (
+        a.get("published_at") or a["source"]["published_at"],
+        a["source"]["published_at"]
+    ), reverse=True)
+    return ordered if limit is None else ordered[:limit]
+
+
 def check():
     # Verify the exact public deployment, not merely an older set of 200 pages.
     expected=subprocess.run(
@@ -82,7 +95,8 @@ def check():
         if actual!=expected:
             raise RuntimeError("Cloudflare serving different revision: live="+actual+" expected="+expected)
     articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
-    recent=sorted(articles,key=lambda a:a["source"]["published_at"],reverse=True)[:10]
+    sorted_articles=latest_articles(articles, limit=None)
+    recent=sorted_articles[:10]
     home,mime=get("/")
     body=html.unescape(home.decode("utf-8"))
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","fiction-mark"):
@@ -100,9 +114,6 @@ def check():
 
     # Three hand-selected, real stories replace the duplicate category portals.
     # This is not a popularity claim; no new calls, events, or privacy tracking.
-    sorted_articles=sorted(articles,key=lambda x:(
-        x.get("published_at") or x["source"]["published_at"],
-        x["source"]["published_at"]),reverse=True)
     chosen_lead = editorial_lead(sorted_articles)
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")

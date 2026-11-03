@@ -731,11 +731,17 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 </body></html>'''
 
 def home(articles, serials=None):
+    # The newest published story must lead, even if a caller supplies an
+    # unsorted list (e.g. a scheduled content edit or a local preview).
+    # Use actual site publication time, never the source date alone or 2031.
+    articles = sorted(articles, key=lambda a: (
+        publication_date(a), a["source"]["published_at"]
+    ), reverse=True)
     serials = load_serials(BASE) if serials is None else serials
     a = editorial_lead(articles)
     newest = articles[0]
     remaining = [item for item in articles if item["slug"] != a["slug"]]
-    # A curated story may lead, but issue dates and feeds always use the newest.
+    # The same real newest article controls the lead and edition counters.
     last_published = publication_date(newest)
     last_day = last_published[:10]
     last_day_count = sum(publication_date(item)[:10] == last_day for item in articles)

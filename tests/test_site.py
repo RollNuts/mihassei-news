@@ -259,6 +259,25 @@ class SiteTests(unittest.TestCase):
         self.assertIn('data-last-edition="'+publication_date(self.articles[0])[:10]+'"',
                       published)
 
+    def test_homepage_is_fresh_even_if_articles_arrive_out_of_order(self):
+        """A content ingestion reorder must never pin yesterday's lead."""
+        from scripts.build import home, publication_date
+        import re
+        newest=self.articles[0]
+        normal=home(self.articles)
+        reversed_page=home(list(reversed(self.articles)))
+        newest_link='<h1><a href="/articles/'+newest["slug"]+'/">'
+        self.assertIn(newest_link,normal)
+        self.assertIn(newest_link,reversed_page)
+        self.assertEqual(normal,reversed_page)
+        self.assertIn('data-last-edition="'+publication_date(newest)[:10]+'"',
+                      reversed_page)
+        self.assertIn('data-latest-published="'+publication_date(newest)+'"',
+                      reversed_page)
+        # The front-page article and its realtime status cannot disagree.
+        match=re.search(r'<h1><a href="/articles/([^/]+)/">',reversed_page)
+        self.assertEqual(match.group(1),newest["slug"])
+
     def test_mobile_search_and_actions_have_usable_touch_targets(self):
         """Avoid iOS auto-zoom on search inputs without disabling native pinch zoom."""
         styles=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
