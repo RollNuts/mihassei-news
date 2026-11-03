@@ -53,11 +53,12 @@ def move_to_draft(token, post_id):
     query = (
         "mutation { editPost(input: {id: " + qstring(post_id)
         + ", saveToDraft: true}) { __typename "
-        + "... on PostActionSuccess { post { id status } } } }"
+        + "... on PostActionSuccess { post { id status } } "
+        + "... on MutationError { message } } }"
     )
     obj = gql(token, query).get("editPost") or {}
     if obj.get("__typename") != "PostActionSuccess":
-        raise RuntimeError("Buffer editPost rejected: " + str(obj.get("__typename", "unknown")))
+        raise RuntimeError("Buffer editPost rejected: " + str(obj.get("__typename", "unknown")) + " - " + str(obj.get("message","unavailable"))[:200])
     post = obj.get("post") or {}
     if post.get("id") != post_id or post.get("status") != "draft":
         raise RuntimeError("Could not confirm draft state for " + post_id)
