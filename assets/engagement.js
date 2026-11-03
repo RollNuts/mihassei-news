@@ -102,8 +102,11 @@
     }
   }
 
-  // Page-reading progress uses only scroll position. No timer or API calls.
-  if(document.querySelector(".article-page") && document.body?.appendChild &&
+  // Show progress through the *content*, not the footer or comment widgets.
+  // This works for short newspaper articles and long serial episodes alike.
+  const readingBody=document.querySelector(".article-body, .serial-article-body");
+  if(readingBody?.getBoundingClientRect && !reduceMotion &&
+     document.body?.appendChild &&
      typeof window.requestAnimationFrame==="function"){
     const progress=document.createElement("div");
     progress.className="reading-progress";
@@ -112,8 +115,14 @@
     let scheduled=false;
     function drawProgress(){
       scheduled=false;
-      const extent=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
-      const fraction=Math.max(0,Math.min(1,window.scrollY/extent));
+      const rect=readingBody.getBoundingClientRect();
+      const contentTop=window.scrollY+rect.top;
+      const contentHeight=Math.max(1,rect.height);
+      // Read position follows the middle of the viewport so it reaches 100%
+      // at the text's end instead of requiring a scroll through the footer.
+      const readPosition=window.scrollY+window.innerHeight*0.5;
+      const fraction=Math.max(0,Math.min(1,
+        (readPosition-contentTop)/contentHeight));
       progress.style.transform="scaleX("+fraction.toFixed(4)+")";
     }
     function scheduleProgress(){
