@@ -603,6 +603,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="stylesheet" href="/assets/comments.css">
 <link rel="stylesheet" href="/assets/editorial-polish.css">
 <link rel="stylesheet" href="/assets/serials.css">
+<link rel="stylesheet" href="/assets/reader-first.css">
 {archive_script}
 <script defer src="/assets/engagement.js"></script>
 {comments_script}
@@ -813,13 +814,11 @@ def archive(articles):
 <div class="archive-load-more" data-archive-more hidden>
   <button type="button" data-archive-more-button aria-controls="archive-results">さらに記事を見る</button>
 </div>
-<section class="category-feed-subscriptions" id="category-feeds" aria-labelledby="category-feeds-title">
-<div><span class="eyebrow">PICK YOUR FUTURE / RSS</span>
-<h2 id="category-feeds-title">好きなジャンルだけ、続けて読む。</h2>
-<p>RSSリーダーに登録すると、選んだ分野の新着記事を受け取れます。無料・登録不要です。</p></div>
+<details class="category-feed-subscriptions" id="category-feeds">
+<summary id="category-feeds-title">ジャンル別RSS</summary>
 <nav class="category-feed-links" aria-label="ジャンル別RSS">
 {''.join(f'<a href="{category_feed_url(name)}" type="application/rss+xml">{escape(name)}のRSS <span aria-hidden="true">↗</span></a>' for name in CATEGORIES[1:] if any(a["category"]==name for a in articles))}
-</nav></section>
+</nav></details>
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 </div>'''
     return layout("記事一覧","現実の話題を5年後に広げた未発生新聞の創作ニュース一覧。未来の的中を狙う予測ではありません。","/archive/",content,"archive")
