@@ -194,3 +194,29 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   assert.equal(requests.filter(x=>x==='POST').length,1,
     'read-only refresh never registers additional visits');
 });
+
+test('a failed first metrics request never displays the placeholder as a visitor total',async()=>{
+  const hint={textContent:''};
+  const widget={hidden:true,querySelector:selector=>selector==='small'?hint:null};
+  const number={textContent:'—'};
+  const document={
+    referrer:'',visibilityState:'visible',
+    querySelector:selector=>selector==='[data-observer-widget]'?widget:
+                            selector==='[data-observer-count]'?number:null,
+    querySelectorAll:()=>[],
+    addEventListener(){}
+  };
+  const context={
+    window:{setInterval(){},addEventListener(){}},document,Date,Intl,URL,URLSearchParams,
+    location:{pathname:'/',origin:'https://veripsa.com',search:''},
+    localStorage:{getItem:()=>null,setItem(){}},
+    crypto:{randomUUID:()=>'aabbccdd-eeff-4abb-8ccc-123456789012'},
+    fetch:async(url,options={})=>options.method==='POST'
+      ? {ok:true,json:async()=>({})}
+      : {ok:false,json:async()=>({})}
+  };
+  vm.runInNewContext(source,vm.createContext(context),{timeout:1500});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(widget.hidden,true,'no verified count means no counter on screen');
+  assert.equal(number.textContent,'—','error must not invent a count');
+});
