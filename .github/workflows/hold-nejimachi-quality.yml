@@ -1,0 +1,60 @@
+name: Hold unreviewed Nejimachi queue (one-time)
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/hold_unreviewed_queue.py"
+      - "social-bot/ip/publication_quality_gate.json"
+      - ".github/workflows/hold-nejimachi-quality.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/hold_unreviewed_queue.py"
+      - "social-bot/ip/publication_quality_gate.json"
+      - ".github/workflows/hold-nejimachi-quality.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+
+jobs:
+  safe-quality-hold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Verify production quality switch and zero-cost tests
+        run: |
+          python -m unittest discover -s social-bot -p 'test_publication_quality_gate.py' -v
+          python -m py_compile social-bot/hold_unreviewed_queue.py
+
+      - name: Move only the two exact unreviewed manga previews to Buffer drafts
+        if: github.event_name != 'pull_request'
+        env:
+          PAUSE_UNREVIEWED_MANGA: "true"
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/hold_unreviewed_queue.py
+
+      - name: Preserve hold audit in Git history
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          if ! test -f social-bot/ip/quality_held_posts.json; then
+            echo "No new audit ledger; do not commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/ip/quality_held_posts.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(ip): record reversible visual quality pause [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
