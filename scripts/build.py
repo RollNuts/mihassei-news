@@ -368,20 +368,63 @@ def image_tag(a, cls, extra=""):
 
 
 def article_hero_media(a):
-    """Preserve the original picture as poster and fallback; never autoplay."""
+    """Only vetted MP4s become video players; preserve a real image on failure."""
     picture = image_tag(a, "article-visual",
                         extra='loading="eager" fetchpriority="high" decoding="async"')
     clip = usable_clip(a, root=BASE)
     if clip is None:
         return picture
+    version = clip["sha256"][:12]  # prevent stale CDNs/browsers after re-encoding
+    fallback = image_tag(a, "article-video-fallback",
+                         extra='hidden loading="lazy" decoding="async"')
     return (
+        '<div class="article-video-shell" data-video-shell>'
         '<video class="article-visual article-video" controls playsinline muted loop'
-        ' preload="none"'
+        ' preload="metadata"'
         f' poster="{escape(editorial_image(a))}"'
         ' width="1200" height="675"'
-        f' aria-label="{escape("創作ニュース「" + a["title"] + "」の写真をゆっくり動かした4秒の無音演出映像")}">'
-        f'<source src="{escape(clip_url(a))}" type="video/mp4">'
-        + picture + '</video>'
+        f' aria-label="{escape("創作ニュース「" + a["title"] + "」の4秒の無音演出映像")}">'
+        f'<source src="{escape(clip_url(a))}?v={version}" type="video/mp4">'
+        '</video>' + fallback + '</div>'
+    )
+
+
+def broadcast_feature(articles, *, exclude_slug=None):
+    """One opt-in playable clip per homepage, never an all-article video wall."""
+    chosen = next((a for a in articles
+                   if a.get("broadcast_feature") is True
+                   and a["slug"] != exclude_slug
+                   and usable_clip(a, root=BASE)), None)
+    if chosen is None:
+        return ""
+    clip = usable_clip(chosen, root=BASE)
+    poster = editorial_image(chosen)
+    version = clip["sha256"][:12]
+    headline = escape(chosen["title"])
+    url = escape(article_url(chosen))
+    return (
+        '<section class="broadcast-spotlight" aria-labelledby="broadcast-title">'
+        '<div class="broadcast-intro"><div>'
+        '<span class="small-label red">UNHAPPENED TV / 映像ニュース</span>'
+        '<h2 id="broadcast-title">未発生ニュース放送室</h2>'
+        '<p>選んだ記事だけ、無音のニュース番組風に。</p></div>'
+        f'<a href="{url}" class="broadcast-article-link">記事全文を読む →</a></div>'
+        '<div class="broadcast-screen" data-news-broadcast>'
+        f'<img class="broadcast-poster" src="{escape(poster)}" alt=""'
+        ' width="1200" height="675" loading="lazy" decoding="async">'
+        '<video class="broadcast-video" controls playsinline muted loop'
+        ' preload="none" width="1200" height="675"'
+        ' aria-label="記事のイメージ写真を動かした無音の演出映像">'
+        f'<source src="{escape(clip_url(chosen))}?v={version}" type="video/mp4">'
+        '</video>'
+        '<div class="broadcast-super" aria-hidden="true">'
+        '<span class="broadcast-mark">UNHAPPENED TV · FICTION</span>'
+        '<div class="broadcast-lower-third">'
+        f'<span>架空ニュース / {escape(chosen["category"])}</span>'
+        f'<strong>{headline}</strong></div></div></div>'
+        '<p class="broadcast-note">※創作ニュースの演出映像です。現実の事件・報道映像ではありません。'
+        '音声はありません。再生できない場合は画像を表示します。</p>'
+        '</section>'
     )
 
 
@@ -653,6 +696,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     # Only load reader tools where they can be used. Leave engagement active for
     # the newspaper clock and real audience counts; these links work without JS.
     archive_script = '<script defer src="/assets/site.js"></script>' if path == "/archive/" else ""
+    broadcast_script = ('<script defer src="/assets/news-broadcast.js"></script>'
+                        if path == "/" or (kind == "story" and article is not None
+                                           and usable_clip(article, root=BASE)) else "")
     comments_script = '<script defer src="/assets/comments.js"></script>' if kind == "story" else ""
     comment_activity_script = ('<script defer src="/assets/comment-activity.js"></script>'
                                if path == "/" else "")
@@ -691,6 +737,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 {topic_rss}
 <link rel="stylesheet" href="{stylesheet_url()}">
 {archive_script}
+{broadcast_script}
 <script defer src="/assets/engagement.js"></script>
 {comments_script}
 {comment_activity_script}
@@ -875,6 +922,7 @@ def home(articles, serials=None):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2><span>LATEST</span></div>{side}</aside>
 </section>
+{broadcast_feature(articles, exclude_slug=a["slug"])}
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
