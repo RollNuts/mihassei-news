@@ -8,10 +8,12 @@ on:
       - "social-bot/experiments/config.json"
       - "social-bot/experiments/dispatch.py"
       - "social-bot/experiments/test_dispatch.py"
+      - "social-bot/article-picks/**"
       - ".github/workflows/x-original-experiments.yml"
   pull_request:
     paths:
       - "social-bot/experiments/**"
+      - "social-bot/article-picks/**"
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
   schedule:
@@ -40,7 +42,20 @@ jobs:
           python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
           python -m py_compile social-bot/experiments/dispatch.py
 
-      - name: Queue original short posts through existing Buffer FREE account
+      - name: Validate promotion dedupe, measured interest, creative-lane fairness
+        run: |
+          python -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
+          python -m py_compile social-bot/article-picks/dispatch.py
+
+      - name: Queue at most one genuinely read article using shared Buffer FREE budget
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/article-picks/dispatch.py
+
+      - name: Refill original short posts after article selection (same queue)
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -52,7 +67,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/state.json
+          git add social-bot/experiments/state.json social-bot/article-picks/state.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
             git pull --rebase origin main
