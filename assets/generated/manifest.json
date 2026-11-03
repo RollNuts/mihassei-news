@@ -62,13 +62,13 @@
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
-      "bytes": 104469,
-      "generated_at": "2026-11-03T09:58:46.405801+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "bytes": 95502,
+      "generated_at": "2026-11-03T23:39:12.945470+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 3792932720945161705,
-      "sha256": "9d6d701b9a253f68f89a3119554fa4cbbb3bff29dc0170ca63fd632895d0eb1b"
+      "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
     },
     "fan-theories-write-final": {
       "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
@@ -256,11 +256,6 @@
     }
   },
   "rejected": {
-    "family-dinner-gacha-243-rejections": {
-      "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
-      "reason": "Manual visual review: colored cylinders on dinner table, no recognizable capsule lottery machine. Hold for new scene design.",
-      "reviewed_at_jst": "2026-11-03"
-    },
     "volleyball-team-lunch-plate-merch": {
       "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
       "reason": "Manual visual review: masked figure in indoor room, no volleyball net or plate. Do not publish as the story image.",
