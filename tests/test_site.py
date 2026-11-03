@@ -146,7 +146,7 @@ class SiteTests(unittest.TestCase):
         href='/articles/'+article["slug"]+'/'
         for preview in (card(article),card(article,archive=True)):
             self.assertEqual(preview.count('href="'+href+'"'),2)
-            self.assertIn('class="story-image-link"',preview)
+            self.assertRegex(preview, r'class="story-image-link(?: story-image-link--generated)?"')
             self.assertIn('class="story-thumb"',preview)
             self.assertIn('class="story-meta story-meta--compact"',preview)
             self.assertIn('<h3><a href="'+href+'">',preview)
