@@ -526,15 +526,18 @@ def check():
         if recorded_clip:
             for token in (
                 'class="article-visual article-video"',
-                'controls playsinline muted loop preload="none"',
+                'controls playsinline muted loop preload="metadata"',
                 'poster="'+generated_url(item)+'"',
-                '<source src="'+clip_url(item)+'" type="video/mp4">',
+                '<source src="'+clip_url(item)+'?v='+recorded_clip["sha256"][:12]+'" type="video/mp4">',
                 '"@type": "VideoObject"',
             ):
                 if token not in page:
                     raise RuntimeError(slug+": verified clip metadata or player missing: "+token)
             if 'autoplay' in page:
                 raise RuntimeError(slug+": video must not autoplay")
+            # The display image is available even if the codec or browser rejects video.
+            if 'data-video-fallback' not in page:
+                raise RuntimeError(slug+": missing explicit playable-video image fallback")
             # The existing photo is always an image fallback, even if video fails.
             if 'src="'+generated_url(item)+'"' not in page:
                 raise RuntimeError(slug+": video poster image fallback lost")
