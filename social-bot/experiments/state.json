@@ -30,6 +30,75 @@
       "queued_at_utc": "2026-11-03T10:55:17.055500+00:00",
       "submission_mode": "shareNow",
       "image_sha256": "1b5bc43bb282e65d8a02fb7509510f3093b77b278637b6868d8d9caabb4e2848"
+    },
+    "xexp-invisible-nails": {
+      "buffer_id": "6ae9c80347205d2c39966f7a",
+      "text_sha256": "004f817b8d0a01e415c0ceb2a1472d641cb3c4af5383983ba7cfdbd618801881",
+      "published_text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#シュールネタ",
+      "format": "surreal_text",
+      "mechanism": "visual_reveal",
+      "queued_at_utc": "2026-11-03T11:39:47.706667+00:00",
+      "submission_mode": "addToQueue",
+      "image_sha256": "093345a28aa5f013dead063d8cf55a459e44314bb0933d408c9576c78d0552fa"
+    },
+    "xexp-selfcheckout-dialogue": {
+      "buffer_id": "6ae9c803e9a91b5943cdd3b2",
+      "text_sha256": "601e37c4916315dd1d306252e120184099f29e825b3df870649dc0f63d08751c",
+      "published_text_sha256": "1bf51e1e06611fe8c6c9efc12dc8feb592b795deb0044cb61b43a5e021f6dac9",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#シュールネタ",
+      "format": "surreal_text",
+      "mechanism": "dry_dialogue",
+      "queued_at_utc": "2026-11-03T11:39:47.950659+00:00",
+      "submission_mode": "addToQueue"
+    },
+    "xexp-witch-autopilot": {
+      "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+      "text_sha256": "fa9c411f7501c82745db4c2642f5ececc723fe73b794ec7898a75609ce021974",
+      "published_text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#シュールネタ",
+      "format": "surreal_text",
+      "mechanism": "role_reversal",
+      "queued_at_utc": "2026-11-03T11:39:48.485866+00:00",
+      "submission_mode": "addToQueue",
+      "image_sha256": "bf9d3ef6e0e15f292df0daaeb32b00d4f9988e6be13dfb4f869afcba565fa36f"
+    },
+    "xexp-nejimachi-one-screw": {
+      "buffer_id": "6ae9c80447205d2c39966fbc",
+      "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+      "published_text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+      "hashtag_variant": "no_tag",
+      "hashtag": null,
+      "format": "character_moment",
+      "mechanism": "small_action",
+      "queued_at_utc": "2026-11-03T11:39:48.895893+00:00",
+      "submission_mode": "addToQueue"
+    },
+    "xexp-shadow-home": {
+      "buffer_id": "6ae9c80547205d2c39966fe4",
+      "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+      "published_text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+      "hashtag_variant": "no_tag",
+      "hashtag": null,
+      "format": "surreal_text",
+      "mechanism": "visual_reveal",
+      "queued_at_utc": "2026-11-03T11:39:49.400598+00:00",
+      "submission_mode": "addToQueue",
+      "image_sha256": "b81fdd86911d73e9fac048eff1f6990131ce08d389d24f10bde703f966acacd0"
+    },
+    "xexp-honest-survey": {
+      "buffer_id": "6ae9c80535443b847afe9195",
+      "text_sha256": "ac7c59dd09d55205b00e486f2440cb6c2d0d3f9f3f50bea800d39c6dfab16db0",
+      "published_text_sha256": "ac7c59dd09d55205b00e486f2440cb6c2d0d3f9f3f50bea800d39c6dfab16db0",
+      "hashtag_variant": "no_tag",
+      "hashtag": null,
+      "format": "surreal_text",
+      "mechanism": "meta_commentary",
+      "queued_at_utc": "2026-11-03T11:39:49.635566+00:00",
+      "submission_mode": "addToQueue"
     }
   }
 }
