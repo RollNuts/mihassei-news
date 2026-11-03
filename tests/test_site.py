@@ -465,7 +465,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('src="/photos/'+a["slug"]+'.jpg"',html)
             else:
                 self.assertIn('src="/images/'+a["slug"]+'.svg"',html)
-                self.assertIn("オリジナル表紙",html)
+                self.assertIn("創作イラスト",html)
                 if a.get("photo"):
                     self.assertNotIn(a["photo"]["source"],html)
                     self.assertNotIn(a["photo"]["credit"]+" / Unsplash",html)
@@ -768,10 +768,12 @@ class SiteTests(unittest.TestCase):
             svg=(ROOT/"dist/images"/(slug+".svg")).read_text(encoding="utf-8")
             tree=ET.fromstring(svg)
             self.assertEqual(tree.attrib["viewBox"],"0 0 1200 675")
-            self.assertIn("EDITORIAL ILLUSTRATION",svg)
-            self.assertIn("MIHASSEI NEWS",svg)
-            self.assertIn("創作",svg)
-            self.assertTrue(tree.findall("{http://www.w3.org/2000/svg}text"))
+            self.assertEqual(tree.attrib["role"],"img")
+            self.assertIn("創作イラスト",tree.attrib["aria-label"])
+            self.assertIn("data-visual-topic=",svg)
+            self.assertNotIn("<text",svg,
+                             "On-site illustrations must not repeat the HTML headline")
+            self.assertNotIn(article["title"],svg)
             self.assertNotIn("<image",svg)
             self.assertNotIn("<script",svg)
             page=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
