@@ -15,7 +15,7 @@ from pathlib import Path
 
 if __package__:
     from .social_cards import render_social_card, render_issue_card
-    from .editorial_covers import render_cover, story_subject
+    from .editorial_covers import render_cover, render_story_visual, story_subject
     from .media_policy import usable_cached_photo
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
@@ -25,7 +25,7 @@ if __package__:
     from .growth_desk import render as render_growth_desk
 else:
     from social_cards import render_social_card, render_issue_card
-    from editorial_covers import render_cover, story_subject
+    from editorial_covers import render_cover, render_story_visual, story_subject
     from media_policy import usable_cached_photo
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
@@ -257,8 +257,8 @@ def actions(a, compact=False):
     )
 
 def cover(a):
-    """Illustrated editorial cover with an actual story headline and subject motif."""
-    return render_cover(a)
+    """Article artwork has no baked-in headline; text remains accessible HTML."""
+    return render_story_visual(a)
 
 
 def illustration_path(a):
@@ -275,8 +275,7 @@ def editorial_image(a):
 def image_tag(a, cls, extra=""):
     photo_ok = usable_cached_photo(a, root=BASE)
     url = editorial_image(a)
-    alt = a["photo"]["alt"] if photo_ok else (
-        "創作ニュース「" + a["title"] + "」の編集部制作表紙")
+    alt = a["photo"]["alt"] if photo_ok else "記事の題材を表現した創作イラスト"
     fallback = f' data-fallback="{escape(illustration_path(a))}"' if photo_ok else ""
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
@@ -286,7 +285,7 @@ def image_tag(a, cls, extra=""):
 def photo_credit(a):
     """Attribution follows the asset actually displayed, not stale metadata."""
     if not usable_cached_photo(a, root=BASE):
-        return "記事の見出しを使ったオリジナル表紙（創作イラスト）。実際の出来事の写真ではありません。"
+        return "記事の題材を表現した編集部制作の創作イラスト。実際の出来事の写真ではありません。"
     p = a["photo"]
     return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
             f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>。'
@@ -556,7 +555,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
 <a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">{escape(publication_label)}</span></a>
-<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>5年先の現在時刻</span>
+<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>5年先の時計</span>
 <time data-future-clock aria-label="5年先の架空の現在時刻">--:--:--</time></div>
 </div></div>
 <header class="container"><div class="masthead">
@@ -669,12 +668,12 @@ def home(articles, serials=None):
 <div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
 <strong data-edition-title>最新の未発生ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
-<div class="edition-clock"><span>現実から5年先</span><time data-future-clock>--:--:--</time></div></div>
+</div>
 <p class="edition-time-key"><strong>この新聞の読み方</strong> 現実の話題を5年進めると、何が起きる？ 架空の出来事を真顔で報じます。「公開」は実際に掲載した日時、「架空」は5年後の物語内の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}
-<div class="overlay"><span class="issue-code">EDITOR’S PICK / おすすめ・創作</span><span class="hero-live">5年先の時計 <span data-future-hms>--:--:--</span></span></div></a>
+<div class="overlay"><span class="issue-code">EDITOR’S PICK / 創作</span></div></a>
 <div class="lead-info">{category_meta(a)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <p class="dek">{escape(a["summary"])}</p>
@@ -931,12 +930,6 @@ def story(a, articles, issues=None, serials=None):
 </nav>
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
-<section class="reader-follow" aria-label="更新を読む">
-<div><span class="small-label">STAY CURIOUS</span><h2>明日も、まだ起きていないニュースを。</h2>
-<p>新作はRSSで確認できます。気になった記事はXでも紹介できます。</p></div>
-<div class="reader-follow-links">
-<a class="reader-follow-x" href="{escape(share_url(a))}" target="_blank" rel="noopener noreferrer external">この記事をXで紹介 ↗</a>
-<a href="/feed.xml">RSSで購読 ↗</a></div></section>
 </article>
 <section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
 <div class="reader-comments-heading">
@@ -1102,7 +1095,7 @@ def image_review_page(articles):
         category = escape(a["category"])
         slug = escape(a["slug"])
         title = escape(a["title"])
-        status = "承認済み写真" if photo_ok else "オリジナル表紙"
+        status = "承認済み写真" if photo_ok else "創作イラスト"
         photo_note = (
             f'撮影：{escape(a["photo"]["credit"])} / Unsplash'
             if photo_ok else '見出し付き・編集部制作の創作表紙'
