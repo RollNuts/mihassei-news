@@ -75,8 +75,15 @@ def check():
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","edition-time-key"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
-    if "観測されたブラウザ" not in body or "未来を見にきた人" in body:
-        raise RuntimeError("Homepage audience metric must describe browsers, not people")
+    # The visible counters now reset by JST date; do not require the
+    # retired lifetime-counter label or imply that browser IDs are people.
+    for token in ("data-observer-widget","data-observer-count",
+                  "data-observer-reads","今日の来訪","今日の記事閲覧",
+                  "1ブラウザ・1記事につき1日1回の集計"):
+        if token not in body:
+            raise RuntimeError("Daily audience display missing: "+token)
+    if "未来を見にきた人" in body:
+        raise RuntimeError("Homepage must not label browser counters as people")
 
     # Three hand-selected, real stories replace the duplicate category portals.
     # This is not a popularity claim; no new calls, events, or privacy tracking.
@@ -595,6 +602,15 @@ def check():
     if (not isinstance(arrivals,dict) or set(arrivals)!={"x","search"} or
         any(type(arrivals[k]) is not int or arrivals[k]<0 for k in ("x","search"))):
         raise RuntimeError("Per-article X/search arrival counters missing or invalid")
+    daily=payload.get("today")
+    if (not isinstance(daily,dict)
+        or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", daily.get("dateJst",""))
+        or any(type(daily.get(key)) is not int or daily[key]<0
+               for key in ("visitors","articleReads"))):
+        raise RuntimeError("Daily JST audience counters missing or invalid")
+    if (type(first_article.get("todayReaders")) is not int
+        or first_article["todayReaders"]<0):
+        raise RuntimeError("Daily per-story browser count missing or invalid")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
