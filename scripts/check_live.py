@@ -246,28 +246,29 @@ def check():
             raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
 
-    # Verify the legacy foundation and the final reader-first visual layer.
-    # A new HTML build must not silently ship without the new stylesheet.
-    if 'href="/assets/editorial-polish.css"' not in body:
-        raise RuntimeError("Modern editorial design stylesheet not linked in homepage")
-    design, design_mime = get("/assets/editorial-polish.css")
-    if "text/css" not in design_mime:
-        raise RuntimeError("Modern editorial design stylesheet served with invalid MIME")
-    design_text = design.decode("utf-8")
+    # The browser now requests ONE fingerprinted CSS bundle. Verify both the
+    # content digest (cache busting) and the preserved styles in production.
+    style_tags = re.findall(r'<link rel="stylesheet" href="([^"]+)"', body)
+    match = (re.fullmatch(r'/assets/newspaper\.css\?v=([0-9a-f]{12})', style_tags[0])
+             if len(style_tags) == 1 else None)
+    if not match:
+        raise RuntimeError("Expected one versioned first-party stylesheet: " + str(style_tags))
+    style_data, style_mime = get(style_tags[0])
+    if "text/css" not in style_mime:
+        raise RuntimeError("Bundled CSS served with an invalid MIME")
+    style_text = style_data.decode("utf-8")
+    if hashlib.sha256(style_data).hexdigest()[:12] != match.group(1):
+        raise RuntimeError("Bundled CSS body and version hash disagree (stale cache)")
+    for name in ("style.css", "article-extra.css", "newsroom.css",
+                 "future-poll.css", "comments.css", "editorial-polish.css",
+                 "serials.css", "reader-first.css"):
+        if ("/* SOURCE " + name + " */") not in style_text:
+            raise RuntimeError("Bundled CSS has lost styles from " + name)
     for selector in (".article-body", ".story-card", ".nav-inner",
-                     "@media(max-width:660px)", "prefers-reduced-motion"):
-        if selector not in design_text:
-            raise RuntimeError("Modern editorial design CSS missing: "+selector)
-
-    if 'href="/assets/reader-first.css"' not in body:
-        raise RuntimeError("Reader-first CSS is not linked in the live homepage")
-    reader_css, reader_mime = get("/assets/reader-first.css")
-    if "text/css" not in reader_mime or any(
-        selector not in reader_css.decode("utf-8") for selector in (
-            ".masthead", ".hero-grid", ".article-body", "@media(max-width:660px)"
-        )
-    ):
-        raise RuntimeError("Reader-first CSS missing or malformed")
+                     ".masthead", ".hero-grid", ".reader-comments",
+                     ".future-poll", ".serial-card", "@media(max-width:660px)"):
+        if selector not in style_text:
+            raise RuntimeError("Bundled CSS missing: " + selector)
 
     # Genuine reader discovery is absent for low sample sizes and only
     # appears when confirmed browser counts arrive from the existing API.

@@ -20,7 +20,7 @@ class SiteTests(unittest.TestCase):
         self.assertGreaterEqual(len(self.articles),5)
         for p in ["index.html","archive/index.html","about/index.html","feed.xml",
                   "sitemap.xml","issues/index.html","editorial/index.html","advertise/index.html","assets/style.css","assets/site.js",
-                  "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/reader-first.css","assets/engagement.js",
+                  "assets/article-extra.css","assets/newsroom.css","assets/editorial-polish.css","assets/reader-first.css","assets/newspaper.css","assets/engagement.js",
                   "assets/future-poll.css",
                   "assets/comments.js","assets/comments.css","assets/comments-admin.js","assets/comments-admin.html",
                   "assets/comment-activity.js",
@@ -227,20 +227,34 @@ class SiteTests(unittest.TestCase):
             self.assertIn(marker,styles)
         for unsafe in ("@import", "fonts.googleapis.com", "display:none!important"):
             self.assertNotIn(unsafe,styles)
-        for name in ("index.html","archive/index.html","about/index.html",
-                     "editorial/index.html","advertise/index.html"):
+        from scripts.build import bundled_stylesheets, stylesheet_url, SITE_STYLESHEETS
+        import re
+        import hashlib
+        stylesheet=(ROOT/"dist/assets/newspaper.css").read_text(encoding="utf-8")
+        self.assertEqual(stylesheet, bundled_stylesheets())
+        self.assertTrue(stylesheet.startswith('@charset "UTF-8";'))
+        self.assertEqual(stylesheet.count('@charset "UTF-8";'),1)
+        self.assertEqual(stylesheet.count("/* SOURCE "),len(SITE_STYLESHEETS))
+        self.assertEqual(stylesheet_url(),
+                         "/assets/newspaper.css?v="+hashlib.sha256(stylesheet.encode("utf-8")).hexdigest()[:12])
+        sources=["/* SOURCE "+name+" */" for name in SITE_STYLESHEETS]
+        self.assertEqual([stylesheet.index(marker) for marker in sources],
+                         sorted(stylesheet.index(marker) for marker in sources))
+        self.assertIn(".reader-comments",stylesheet)
+        self.assertIn(".future-poll",stylesheet)
+        self.assertIn(".serial-card",stylesheet)
+        self.assertIn(".article-body",stylesheet)
+        pages=("index.html","archive/index.html","about/index.html",
+               "editorial/index.html","advertise/index.html")
+        pages += tuple("articles/"+a["slug"]+"/index.html" for a in self.articles)
+        for name in pages:
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
-            self.assertEqual(page.count('href="/assets/editorial-polish.css"'),1,name)
+            self.assertEqual(page.count('rel="stylesheet"'),1,name)
+            self.assertIn('href="'+stylesheet_url()+'"',page)
+            self.assertNotIn('href="/assets/editorial-polish.css"',page)
             self.assertIn('まだ起きていないニュースを、真顔で。',page)
-            self.assertIn('href="/assets/reader-first.css"',page)
-            self.assertLess(
-                page.index('href="/assets/comments.css"'),
-                page.index('href="/assets/editorial-polish.css"'),
-            )
         for article in self.articles:
-            path=ROOT/"dist/articles"/article["slug"]/"index.html"
-            page=path.read_text(encoding="utf-8")
-            self.assertIn('href="/assets/editorial-polish.css"',page)
+            page=(ROOT/"dist/articles"/article["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn('class="article-body"',page)
             self.assertIn('class="reader-comments"',page)
             self.assertIn('class="future-poll"',page)
@@ -387,7 +401,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn('data-poll-choice="unlikely"',page)
             self.assertIn('data-poll-results hidden',page)
             self.assertIn('data-poll-status role="status"',page)
-            self.assertIn('href="/assets/future-poll.css"',page)
+            self.assertIn('href="/assets/newspaper.css?v=',page)
             self.assertNotIn("50% / 50%",page)
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
         self.assertIn("架空ニュースの二択投票について",privacy)
@@ -400,7 +414,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn('data-comments data-article="'+article["slug"]+'"',text)
             self.assertIn("reader-comments-form",text)
             self.assertIn("/assets/comments.js",text)
-            self.assertIn("/assets/comments.css",text)
+            self.assertIn("/assets/newspaper.css?v=",text)
             self.assertIn('name="body"',text)
             self.assertIn("問題", (ROOT/"assets/comments.js").read_text(encoding="utf-8"))
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
