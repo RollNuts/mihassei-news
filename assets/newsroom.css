@@ -86,17 +86,35 @@ body{background:var(--paper)}
 @media(prefers-reduced-motion:reduce){.wire-track{animation:none}.lead-media img{transition:none}}
 
 
-.observer-shell{display:flex;justify-content:flex-end;margin-top:-10px;margin-bottom:11px}
-.observer-widget{display:inline-flex;align-items:center;gap:8px;padding:5px 0;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:800}
-.observer-widget strong{font-family:Georgia,serif;font-weight:900;font-size:24px;color:var(--accent);line-height:1.1;font-variant-numeric:tabular-nums}
-.observer-widget .observer-eye{color:var(--accent);font-size:13px}
-.observer-widget small{font-size:9px;font-weight:400;color:#889087;white-space:nowrap}
-.observer-suffix{font-size:11px}
+
+/* The newsroom's small genuine daily activity strip. Counters never tick
+   artificially; only a confirmed value change triggers the subtle motion. */
+.observer-shell{display:flex;justify-content:flex-end;margin-top:-8px;margin-bottom:11px}
+.observer-widget{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:9px 12px;padding:6px 0;font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:800}
+.observer-widget[hidden]{display:none}
+.observer-widget .observer-eye{font-size:12px;color:var(--accent);align-self:center}
+.observer-stat{display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap}
+.observer-stat+.observer-stat{border-left:1px solid #d6d8cf;padding-left:12px}
+.observer-label{font-size:10px;color:var(--muted);letter-spacing:.025em}
+.observer-stat strong{display:inline-block;font-family:Georgia,serif;font-weight:900;font-size:24px;color:var(--accent);line-height:1.1;font-variant-numeric:tabular-nums}
+.observer-widget small{flex-basis:100%;text-align:right;font-size:9px;font-weight:400;line-height:1.4;color:#737e75}
+.observer-suffix{font-size:10px;font-weight:500;color:var(--muted)}
+.observer-updated{animation:observer-change .65s ease-out}
+@keyframes observer-change{from{color:#b67653;transform:translateY(-2px)}to{color:var(--accent);transform:translateY(0)}}
+@media(max-width:600px){
+  .observer-shell{justify-content:center;margin-top:-6px;margin-bottom:7px}
+  .observer-widget{justify-content:center;gap:5px 8px}
+  .observer-label{font-size:9px}
+  .observer-stat strong{font-size:21px}
+  .observer-stat+.observer-stat{padding-left:8px}
+  .observer-widget small{text-align:center;font-size:9px}
+  .observer-suffix{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){.observer-updated{animation:none}}
 .like-count{font-weight:900;font-variant-numeric:tabular-nums;color:var(--accent)}
 .article-reader-metric{display:flex;align-items:center;justify-content:flex-start;gap:8px;margin:0 0 22px;font-size:12px;font-weight:700;color:var(--muted)}
 .article-reader-metric strong{font:900 20px Georgia,serif;color:var(--accent);font-variant-numeric:tabular-nums}
 .article-reader-metric small{font-size:10px;font-weight:400}
-@media(max-width:600px){.observer-shell{margin-top:-8px;margin-bottom:6px}.observer-widget{gap:5px;font-size:10px}.observer-widget strong{font-size:19px}.observer-widget small{font-size:8px}}
 
 
 /* Photojournalism-inspired editorial photography, credited without implying real incidents */
