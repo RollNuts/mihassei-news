@@ -7,6 +7,20 @@
     "shooting-star-return": {
       "buffer_id": "6ae950625d60da1eff7116b8",
       "queued_at": "2026-11-03T03:09:23.037734+00:00"
+    },
+    "nejimachi-001-morning": {
+      "buffer_id": "6ae963beb1dfe2c544f0b53d",
+      "queued_at": "2026-11-03T04:31:58.893535+00:00",
+      "series": "nejimachi",
+      "episode": 1,
+      "content_sha256": "fc1db9ee92c1a0f2446686884893c4773bc95306f25b36a844813bf7b15a0375"
+    },
+    "nejimachi-002-blue-sky": {
+      "buffer_id": "6ae963bf5d60da1eff76923b",
+      "queued_at": "2026-11-03T04:31:59.397687+00:00",
+      "series": "nejimachi",
+      "episode": 2,
+      "content_sha256": "6828c91d527eb194949da26721a2ca1fdd3d460133f107832539770255c5c7b2"
     }
   }
 }

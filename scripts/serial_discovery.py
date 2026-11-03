@@ -46,6 +46,13 @@ def choose_serial(article: dict, serials: list[dict]):
     return None
 
 
+def primary_episode(series: dict):
+    """Consistent destinations for first-time mystery and current-market readers."""
+    if not series.get("episodes"):
+        raise ValueError("A serial needs published episodes for a reader destination")
+    return series["episodes"][-1] if series["kind"] == "analysis" else series["episodes"][0]
+
+
 def render_serial_bridge(article: dict, serials: list[dict]):
     """Static, crawlable links to a *real* episode with a visible editorial boundary."""
     series = choose_serial(article, serials)
@@ -53,7 +60,7 @@ def render_serial_bridge(article: dict, serials: list[dict]):
         return ""
     latest = series["episodes"][-1]
     analysis = series["kind"] == "analysis"
-    entry = latest if analysis else series["episodes"][0]
+    entry = primary_episode(series)
     prefix = "/serials/" + escape(series["slug"]) + "/"
     chapter = prefix + escape(entry["slug"]) + "/"
     label = "現実の市場分析" if analysis else "創作推理小説"

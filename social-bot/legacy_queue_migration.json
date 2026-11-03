@@ -1,0 +1,18 @@
+{
+  "purpose": "Archive two low-quality setup tests, keep reversible drafts",
+  "targets": [
+    {
+      "original_id": "alien-no-entry",
+      "buffer_id": "6ae95062da2711fd26a95f7f",
+      "outcome": "moved_to_draft",
+      "at": "2026-11-03T04:31:57.354302+00:00"
+    },
+    {
+      "original_id": "shooting-star-return",
+      "buffer_id": "6ae950625d60da1eff7116b8",
+      "outcome": "moved_to_draft",
+      "at": "2026-11-03T04:31:57.630944+00:00"
+    }
+  ],
+  "verified_no_original_scheduled": true
+}

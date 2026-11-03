@@ -1,5 +1,28 @@
 [
   {
+    "slug": "mortgage-bank-clerk-invited-to-live-in",
+    "category": "経済",
+    "flash": "家計面",
+    "fiction_company": "架空の住宅街「はるか丘」",
+    "art": "cards",
+    "fiction_at": "2031-11-03T12:30:00+09:00",
+    "title": "住宅ローン高騰、夫婦が銀行員に同居を提案「毎月そんなに払うなら住んで」",
+    "summary": "利息が増える一方の住宅ローンを払う夫婦が、支払先の銀行員にも家の一部を使ってもらおうとした。食卓には一人分の皿が増え、職員は思わぬ家事を頼まれる。",
+    "paragraphs": [
+      "「毎月そんなに払ってるんだから、もう住んでください」。2031年、オーストラリアの架空の町で、住宅ローンを返す夫婦が銀行員を客間に招いた。物価を抑えるために金利が上がり、夫婦は外食も旅行もやめた。それでも、銀行に払う利息だけは増え続けていた。",
+      "「私はお金を貸しているだけで」と断る銀行員に、夫は返済明細を見せた。「この家でいちばん毎月お金を受け取ってるのは、あなたの会社です」。妻は食卓に皿を一枚増やし、職員の席まで用意した。戸惑いながら座る職員に、夕食が終わるころ妻が声をかけた。「利息の分、皿洗いお願いしますね」"
+    ],
+    "scene_prompt": "Photorealistic wide still from a deadpan comedy in an ordinary suburban Australian dining room. A nervous anonymous bank clerk in a plain suit sits at a small dining table between two solemn homeowners. A thick blank mortgage statement lies on the table, alongside a spare dinner plate and a pile of unwashed dishes. Natural afternoon light, cinematic realism, no readable text, logos or celebrities.",
+    "source": {
+      "kind": "公式発表",
+      "publisher": "Reserve Bank of Australia",
+      "published_at": "2026-11-03T12:30:00+09:00",
+      "url": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
+      "topic": "2026年11月3日14:30 AEDT（同日12:30 JST）に豪準備銀行が政策金利を4.60％から4.85％へ引き上げたと発表。住宅ローン負担と物価抑制の矛盾を着想とした架空の2031年の家族・銀行員の話。実在の銀行や人物と無関係。"
+    },
+    "published_at": "2026-11-03T13:28:44+09:00"
+  },
+  {
     "slug": "spy-captive-escapes-before-rescue",
     "category": "エンタメ",
     "flash": "ドラマ面",

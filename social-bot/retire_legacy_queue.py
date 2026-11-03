@@ -49,15 +49,17 @@ def plan_migration(feed, state, buffer_posts):
     return planned, results
 
 
-def move_to_draft(token, post_id):
+def move_to_draft(token, post_id, original_text):
     query = (
         "mutation { editPost(input: {id: " + qstring(post_id)
+        + ", text: " + qstring(original_text)
         + ", saveToDraft: true}) { __typename "
-        + "... on PostActionSuccess { post { id status } } } }"
+        + "... on PostActionSuccess { post { id status } } "
+        + "... on MutationError { message } } }"
     )
     obj = gql(token, query).get("editPost") or {}
     if obj.get("__typename") != "PostActionSuccess":
-        raise RuntimeError("Buffer editPost rejected: " + str(obj.get("__typename", "unknown")))
+        raise RuntimeError("Buffer editPost rejected: " + str(obj.get("__typename", "unknown")) + " - " + str(obj.get("message","unavailable"))[:200])
     post = obj.get("post") or {}
     if post.get("id") != post_id or post.get("status") != "draft":
         raise RuntimeError("Could not confirm draft state for " + post_id)
@@ -79,8 +81,12 @@ def main():
     planned, other = plan_migration(inventory, state, posts)
     print("Verified target posts:", len(planned), "scheduled; other:", len(other))
     updates = []
+    original_by_id = {p["id"]: p for p in inventory["posts"]}
     for original_id, post_id in planned:
-        move_to_draft(token, post_id)
+        # Buffer validates editPost requires text or media even when the
+        # scheduling-only change would otherwise preserve it. Re-send EXACT
+        # same verified text; omit assets so existing image is preserved.
+        move_to_draft(token, post_id, original_by_id[original_id]["text"])
         updates.append({
             "original_id": original_id,
             "buffer_id": post_id,
