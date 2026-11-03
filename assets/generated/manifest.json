@@ -7,7 +7,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6825572438772902000,
+      "seed": 6825572438772901493,
       "sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873"
     },
     "ai-chooses-a-managers": {
@@ -17,7 +17,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 4337816327905070000,
+      "seed": 4337816327905069863,
       "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
     },
     "apology-before-incident": {
@@ -27,7 +27,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 9006481694354584000,
+      "seed": 9006481694354583717,
       "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
     },
     "comedy-show-profits-from-silence": {
@@ -37,7 +37,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 706460328480055400,
+      "seed": 706460328480055475,
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "family-dinner-gacha-243-rejections": {
@@ -57,7 +57,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3110783516514394000,
+      "seed": 3110783516514393951,
       "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
     },
     "farm-friendship-across-species": {
@@ -67,7 +67,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6455747253186510000,
+      "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
     "idol-ice-kept-in-freezer": {
@@ -77,7 +77,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3443340707540982000,
+      "seed": 3443340707540981827,
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
     },
     "local-souvenir-cannot-leave-town": {
@@ -87,17 +87,17 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6500820507977046000,
+      "seed": 6500820507977045750,
       "sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b"
     },
     "mortgage-bank-clerk-invited-to-live-in": {
-      "article_sha256": "b471407868bb1e2b2e24b169a8e09d0be6ee48686c8f0d00ef3e301c59133359",
+      "article_sha256": "61fcfcf46a70ca91c531dd4a0578b1ed1f5f0e4b181c0236b47e87678fc4c10f",
       "bytes": 97911,
       "generated_at": "2026-11-03T04:57:58.650337+00:00",
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 4046117540620537300,
+      "seed": 4046117540620537502,
       "sha256": "d4c1a31777f46c9285d4821e970d0c942289faca3bd046f277b1f4cfd5df1e34"
     },
     "music-ai-friends-monopolize-the-song": {
@@ -107,7 +107,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 2650339348663260700,
+      "seed": 2650339348663260751,
       "sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662"
     },
     "press-conference-metaphor-viral": {
@@ -117,7 +117,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7680700911801401000,
+      "seed": 7680700911801401316,
       "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
     },
     "pressure-office-mood-forecast": {
@@ -127,7 +127,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3262525616120616000,
+      "seed": 3262525616120615859,
       "sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70"
     },
     "quiet-reply-dating-matches": {
@@ -137,27 +137,27 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 2771907992498822700,
+      "seed": 2771907992498822586,
       "sha256": "839d35bb769539cffac22cca4b88837ada978e0bbebf0f3b896a24c7c4d08d63"
     },
     "research-completed-opening-day": {
-      "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
+      "article_sha256": "6c18833cd9efb35367f2cbb799945421c702e3fedf0172407ebc370a1d05fc33",
       "bytes": 82821,
       "generated_at": "2026-11-03T06:59:06.909158+00:00",
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 1962014450314178000,
+      "seed": 1962014450314178046,
       "sha256": "d5f6519790df020f89adc71735e7db56911df17236bc9d2f807bbf69f0d08ab4"
     },
     "robot-job-hopping": {
-      "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
+      "article_sha256": "7d5a0d1f09f864e6663ca371960f6695049b078a2c39fdee2c6fdc35cc2c926d",
       "bytes": 89546,
       "generated_at": "2026-11-03T05:56:12.799476+00:00",
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 331504810597266300,
+      "seed": 331504810597266324,
       "sha256": "7992912ea34309fc78cf4c4b48b54154c8e3078c883ef2557ac0c5a3e21ee045"
     },
     "spy-captive-escapes-before-rescue": {
@@ -169,7 +169,7 @@
       "prompt_version": 2,
       "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
       "reviewed_at": "2026-11-03T03:59:18.579837+00:00",
-      "seed": 6871038269748099000,
+      "seed": 6871038269748098871,
       "sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1"
     },
     "supporter-guarantor-contract": {
@@ -179,7 +179,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 5748070834390825000,
+      "seed": 5748070834390824869,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
     "unwanted-call-protection-calls-back": {
@@ -189,7 +189,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 877056317251028000,
+      "seed": 877056317251028032,
       "sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c"
     },
     "variety-700-guests-only-introductions": {
@@ -201,7 +201,7 @@
       "prompt_version": 2,
       "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
       "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
-      "seed": 2479731755469379000,
+      "seed": 2479731755469378830,
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     },
     "volleyball-team-lunch-plate-merch": {
@@ -215,6 +215,9 @@
       "sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710"
     }
   },
-  "rejected": {},
+  "rejected": {
+    "family-dinner-gacha-243-rejections": {"article_sha256":"fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8","reason":"Manual visual review: colored cylinders on dinner table, no recognizable capsule lottery machine. Hold for new scene design.","reviewed_at_jst":"2026-11-03"},
+    "volleyball-team-lunch-plate-merch": {"article_sha256":"8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6","reason":"Manual visual review: masked figure in indoor room, no volleyball net or plate. Do not publish as the story image.","reviewed_at_jst":"2026-11-03"}
+  },
   "version": 1
 }
