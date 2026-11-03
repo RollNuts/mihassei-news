@@ -122,8 +122,8 @@ class FreeCpuImageTests(unittest.TestCase):
         kwargs = pipeline.call_args.kwargs
         self.assertEqual(kwargs["num_inference_steps"], 8)
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
-        self.assertIn("STAGED SATIRICAL NEWS COMEDY", kwargs["prompt"])
-        self.assertIn("Bright, colorful", kwargs["prompt"])
+        self.assertIn("capsule lottery machine", kwargs["prompt"])
+        self.assertIn("Bright staged fictional comedy", kwargs["prompt"])
 
     def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
         a = {**article(), "title": "有名人700人の特番、名前を呼ぶだけで放送終了"}
@@ -152,6 +152,104 @@ class FreeCpuImageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "CLIP budget"):
             cpu.render_one(pipeline, fake_torch, a)
         pipeline.assert_not_called()
+
+    def test_compact_backlog_prompts_keep_the_article_objects(self):
+        expected = {
+            "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "referee", "whistle"),
+            "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
+            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "empty"),
+            "family-dinner-gacha-243-rejections": ("capsule lottery machine", "plates", "crossed arms"),
+            "volleyball-team-lunch-plate-merch": ("plate", "tape measure", "volleyball net"),
+        }
+        for slug, objects in expected.items():
+            prompt = cpu.cpu_prompt({"slug": slug})
+            for item in objects:
+                self.assertIn(item, prompt)
+            self.assertIn("fictional", prompt)
+            self.assertIn("No text or logos", prompt)
+            self.assertLess(len(prompt.split()), 55)
+
+    def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
+        core = "An actor holds a giant spoon beside an empty soup bowl."
+        long_context = "A distant skyline " + "tall " * 85 + "with many buildings."
+        a = {"slug": "new-scene", "scene_prompt": core + " " + long_context + " Warm daylight."}
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output): prompt = cpu.fit_cpu_prompt(a, tokenizer)
+        self.assertIn(core, prompt)
+        self.assertNotIn("distant skyline", prompt)
+        self.assertIn("Warm daylight.", prompt)
+        self.assertLessEqual(len(tokenizer.encode(prompt)), 77)
+        self.assertIn("omitted 1 optional context", output.getvalue())
+        with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
+            cpu.fit_cpu_prompt({"slug": "long-core", "scene_prompt": "large " * 90 + "."}, tokenizer)
+
+    def test_single_held_retry_is_explicit_and_never_overwrites_a_valid_image(self):
+        a = article()
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            with self.assertRaisesRegex(ValueError, "explicit --slug"):
+                cpu.select_articles([a], retry_held=True, root=root)
+            local_scene_photos.write_generated(a, jpeg_header_fixture(), cpu.MODEL,
+                                              root=root, origin="github-cpu-lcm")
+            self.assertEqual(cpu.select_articles([a], slug=a["slug"], retry_held=True, root=root), [])
+            path = root / "assets/generated/manifest.json"
+            payload = json.loads(path.read_text())
+            payload["rejected"] = {a["slug"]: {"article_sha256": article_fingerprint(a)}}
+            path.write_text(json.dumps(payload))
+            self.assertEqual(cpu.select_articles([a], root=root), [])
+            self.assertEqual(cpu.select_articles([a], slug=a["slug"], retry_held=True, root=root), [a])
+
+    def test_review_bundle_contains_only_successes_and_preserves_exact_large_seed(self):
+        a, b = article(), {**article(), "slug": "other-scene"}
+        with tempfile.TemporaryDirectory() as folder:
+            root, bundle = Path(folder) / "repo", Path(folder) / "review"
+            for item in (a, b):
+                local_scene_photos.write_generated(item, jpeg_header_fixture(), cpu.MODEL,
+                                                  root=root, origin="github-cpu-lcm")
+            (root / "assets/generated/intermediate.png").write_bytes(b"not for export")
+            cpu.export_review_bundle([a], bundle, root=root)
+            files = {str(p.relative_to(bundle)) for p in bundle.rglob("*") if p.is_file()}
+            self.assertEqual(files, {"content/articles.json", "assets/generated/manifest.json",
+                                     "assets/generated/" + a["slug"] + ".jpg"})
+            payload = json.loads((bundle / "assets/generated/manifest.json").read_text())
+            original = json.loads((root / "assets/generated/manifest.json").read_text())
+            self.assertEqual(payload["images"], {a["slug"]: original["images"][a["slug"]]})
+            seed = payload["images"][a["slug"]]["seed"]
+            self.assertIs(type(seed), int)
+            self.assertGreater(seed, 2**53)
+            self.assertEqual(seed, local_scene_photos.stable_seed(a))
+            self.assertEqual(json.loads((bundle / "content/articles.json").read_text()), [a])
+            self.assertTrue(usable_generated_scene(a, root=bundle))
+
+    def test_review_export_refuses_foreign_directories_symlinks_and_source_overlap(self):
+        a = article()
+        with tempfile.TemporaryDirectory() as folder:
+            root, foreign = Path(folder) / "repo", Path(folder) / "foreign"
+            root.mkdir(); foreign.mkdir()
+            (foreign / "keep.txt").write_text("important")
+            link = Path(folder) / "link"
+            link.symlink_to(foreign, target_is_directory=True)
+            for destination in (foreign, link, root / "review"):
+                with self.assertRaises(RuntimeError): cpu.export_review_bundle([a], destination, root=root)
+            self.assertEqual((foreign / "keep.txt").read_text(), "important")
+
+    def test_partial_success_is_bundled_even_if_later_disk_check_fails(self):
+        a, b = article(), {**article(), "slug": "other-scene"}
+        with tempfile.TemporaryDirectory() as folder:
+            root, bundle = Path(folder) / "repo", Path(folder) / "review"
+            root.mkdir()
+            with patch.object(cpu, "ROOT", root), \
+                 patch.object(cpu, "load_articles", return_value=[a, b]), \
+                 patch.object(cpu, "load_pipeline", return_value=(None, None)), \
+                 patch.object(cpu, "permitted_ci", return_value=True), \
+                 patch.object(cpu, "render_one", return_value=jpeg_header_fixture()), \
+                 patch.object(cpu, "ensure_disk", side_effect=[None, RuntimeError("disk full")]), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError, "disk full"):
+                    cpu.main(["--limit", "2", "--review-dir", str(bundle)])
+            self.assertEqual(json.loads((bundle / "content/articles.json").read_text()), [a])
+            self.assertTrue(usable_generated_scene(a, root=bundle))
 
     def test_cpu_generator_rejects_model_safety_filter(self):
         fake_torch = SimpleNamespace(
