@@ -82,14 +82,21 @@ def load_pipeline():
 
 
 def cpu_prompt(article: dict) -> str:
-    """Put the visual joke first, then lighting/style before CLIP truncation."""
+    """Short, bright and punchline-first: fit the CLIP 77-token input budget."""
+    if "700人" in article.get("title", ""):
+        # Show the punchline (everyone already left), not anonymous grim crowds.
+        return (
+            "Bright, colorful, sharp photoreal staged Japanese TV comedy scene. "
+            "One tired host holds a microphone on a cheerful neon-lit game-show "
+            "stage, HUNDREDS OF EMPTY CHAIRS behind him, an unused enormous red "
+            "game buzzer on a trolley. Two confused stagehands, confetti and "
+            "powerful joyful professional studio lights. Wide shot, fictional "
+            "actors, no captions, logos or words."
+        )
     return (
-        scene_description(article) + " "
-        "Bright, colorful STAGED SATIRICAL NEWS COMEDY set with cheerful high-key "
-        "lighting, a single large visible joke prop, crisp sharp 35mm photography, "
-        "clear expressive foreground actors, vivid realistic colors, modern Japan. "
-        "Funny because everyone behaves seriously. 16:9 composition. "
-        "No real people, words, logos, captions, fog, horror or dark lighting."
+        "Bright, colorful, sharp STAGED SATIRICAL NEWS COMEDY photograph, high-key "
+        "professional lighting and clear visible props. "
+        + scene_description(article) + " Fictional actors, no words or logos."
     )
 
 
@@ -114,9 +121,16 @@ def render_one(pipe, torch, article: dict) -> bytes:
     generator = torch.Generator(device="cpu").manual_seed(stable_seed(article))
     # LCM: eight CPU-only steps and enough native pixels for a recognisable prop.
     # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
+    prompt = cpu_prompt(article)
+    tokenizer = getattr(pipe, "tokenizer", None)
+    if tokenizer is not None:
+        count = len(tokenizer.encode(prompt, add_special_tokens=True))
+        print(f"CPU prompt CLIP token count: {count}/77", flush=True)
+        if count > 77:
+            raise ValueError("Visual prompt exceeds CLIP budget; refusing truncated staging")
     with torch.inference_mode():
         result = pipe(
-            prompt=cpu_prompt(article), num_inference_steps=8,
+            prompt=prompt, num_inference_steps=8,
             guidance_scale=8.0, width=800, height=448,
             generator=generator, output_type="pil",
         )
