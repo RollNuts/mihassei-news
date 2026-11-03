@@ -116,19 +116,55 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
     return visitors, metrics, channels
 
 
+def read_day_totals(day: str, opener=urlopen) -> dict:
+    """GET the requested completed JST day, not a lifetime counter or today's partial total."""
+    request = Request(
+        API + "?" + urlencode({"day": day}),
+        headers={
+            "User-Agent": "MihasseiDailyReadOnlySnapshot/1.0",
+            "Accept": "application/json",
+            "Cache-Control": "no-cache",
+        },
+        method="GET",
+    )
+    with opener(request, timeout=20) as response:
+        if response.status != 200:
+            raise RuntimeError("Audience day API returned HTTP " + str(response.status))
+        payload = json.load(response)
+    counts = payload.get("day")
+    if (payload.get("unit") != "anonymous-browser" or not isinstance(counts, dict)
+            or counts.get("dateJst") != day
+            or any(type(counts.get(key)) is not int or counts[key] < 0
+                   for key in ("visitors", "articleReads"))):
+        raise ValueError("Day-scoped audience counters missing or invalid for " + day)
+    return {"visitors": counts["visitors"], "articleReads": counts["articleReads"]}
+
+
 def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: dict,
-                   channels: dict | None = None) -> dict:
+                   daily_totals: dict, channels: dict | None = None) -> dict:
     day = report_date(now)
+    if (not isinstance(daily_totals, dict) or
+        any(type(daily_totals.get(key)) is not int or daily_totals[key] < 0
+            for key in ("visitors", "articleReads"))):
+        raise ValueError("No trustworthy completed-day audience totals")
     recent = recent_articles(articles)
     published_on_day = [a for a in articles if real_published_date(a) == day]
     for a in recent:
         if a["slug"] not in counts:
             raise ValueError("Missing read-only count: " + a["slug"])
     snapshot = {
-        "schema_version": 1,
+        "schema_version": 2,
         "date_jst": day,
         "measured_at_utc": now.astimezone(timezone.utc).isoformat(timespec="seconds"),
         "unit": "anonymous-browser",
+        "daily_visitors": daily_totals["visitors"],
+        "daily_article_reads": daily_totals["articleReads"],
+        "daily_note": (
+            "Completed JST date. A browser counts once per day for daily_visitors; "
+            "a browser+article pair counts once per day for daily_article_reads. "
+            "Neither is people, sessions or PV. Legacy snapshots without these "
+            "fields are missing, not zero."
+        ),
         "note": "Cumulative distinct browser identifiers, NOT people or PV. Counts are a point-in-time sample, not daily visitor totals.",
         "continuation_note": (
             "continued_readers is cumulative unique browser IDs that arrived at a DIFFERENT "
@@ -176,6 +212,10 @@ def main() -> None:
         if not output.exists():
             sys.exit("::error::Missing audience snapshot for " + day)
         data = json.loads(output.read_text(encoding="utf-8"))
+        if (data.get("schema_version") != 2 or data.get("date_jst") != day or
+            any(type(data.get(key)) is not int or data[key] < 0
+                for key in ("daily_visitors", "daily_article_reads"))):
+            sys.exit("::error::Completed-day audience counters missing for " + day)
         published = data["articles_published_on_date"]
         if published == 0:
             sys.exit("::error::No new newspaper articles published on " + day + " JST")
@@ -189,10 +229,14 @@ def main() -> None:
         raise ValueError("No article data")
     recent = recent_articles(articles)
     visitors, counts, channels = read_public_metrics([a["slug"] for a in recent])
-    snapshot = build_snapshot(articles, now, visitors, counts, channels)
+    daily_totals = read_day_totals(day)
+    snapshot = build_snapshot(articles, now, visitors, counts, daily_totals, channels)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("Recorded", output.relative_to(ROOT), "visitors=", visitors,
+    print("Recorded", output.relative_to(ROOT),
+          "daily_visitors=", snapshot["daily_visitors"],
+          "daily_article_reads=", snapshot["daily_article_reads"],
+          "cumulative_browser_ids=", visitors,
           "published_on_date=", snapshot["articles_published_on_date"],
           "article_metrics=", len(counts))
 
