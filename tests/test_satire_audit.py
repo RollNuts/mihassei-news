@@ -52,6 +52,26 @@ class SatireAuditTests(unittest.TestCase):
         flags=analyze(articles)
         self.assertIn("PRESS_RELEASE_OPENING_LOOP",{x[0] for x in flags})
 
+    def test_repeated_fictional_year_preambles_get_an_advisory_only(self):
+        articles = [
+            sample(i, opening=(f"「急いで」。2031年、架空の商店{i}で事件があった。" if i < 4
+                              else f"店員が商品を抱えて走っていた{i}。"))
+            for i in range(6)
+        ]
+        for i, article in enumerate(articles):
+            article["category"] = ("社会", "経済", "暮らし", "スポーツ", "技術", "エンタメ")[i]
+        original = copy.deepcopy(articles)
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertIn("FORMULA_FUTURE_INTRO_LOOP", labels)
+        self.assertIn("架空の日付", "\n".join(next_slot_brief(articles)))
+        self.assertEqual(articles, original)
+
+        # A varied set of scene-first openings should not trigger this warning.
+        for i, article in enumerate(articles):
+            article["paragraphs"][0] = f"雨の中、店員{i}が棚の前で考え込んだ。"
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertNotIn("FORMULA_FUTURE_INTRO_LOOP", labels)
+
     def test_recurring_ai_management_stories_get_a_variety_warning(self):
         titles=[
             "AI議長が会議の司会を奪う", "ロボットが上司に出勤簿を出す",
