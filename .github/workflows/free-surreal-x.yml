@@ -1,4 +1,4 @@
-name: Free Surreal X + 4-koma Bot
+name: Free Nejimachi X Manga
 
 on:
   push:
@@ -55,6 +55,9 @@ jobs:
         run: |
           python social-bot/render.py
           python social-bot/render_ip.py
+
+      - name: Validate variable-panel acting and drawing (offline)
+        run: python -m unittest discover -s social-bot/ip -p 'test_art_readability.py' -v
 
       - name: Validate post and image inventory
         run: python social-bot/validate.py
