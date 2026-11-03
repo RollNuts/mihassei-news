@@ -4,7 +4,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from probe_delivery import build, reconcile, x_link
+from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -37,6 +37,38 @@ class BufferReadOnlyTests(unittest.TestCase):
                     "https://x.com.evil.org/a/status/1",
                     "https://x.com/example"):
             self.assertIsNone(x_link(url))
+    def test_provider_metric_requires_genuine_count_and_timestamp(self):
+        sent="2026-11-03T10:55:00Z"
+        snapshot=normalize_buffer_impressions({
+            "metricsUpdatedAt":"2026-11-04T12:00:00Z",
+            "metrics":[{"type":"impressions","value":42,"unit":"count"}]},sent)
+        self.assertEqual(snapshot["impressions"],42)
+        self.assertIsNone(snapshot["window_hours"])
+        self.assertEqual(snapshot["provider"],"buffer_experimental_personal_api")
+        self.assertIsNone(normalize_buffer_impressions({
+            "metricsUpdatedAt":"2026-11-03T09:00:00Z",
+            "metrics":[{"type":"impressions","value":99,"unit":"count"}]},sent))
+        self.assertIsNone(normalize_buffer_impressions({
+            "metricsUpdatedAt":"2026-11-04T12:00:00Z",
+            "metrics":[{"type":"impressions","value":-1,"unit":"count"}]},sent))
+        self.assertIsNone(normalize_buffer_impressions({
+            "metricsUpdatedAt":"2026-11-04T12:00:00Z",
+            "metrics":[{"type":"likes","value":99,"unit":"count"}]},sent))
+
+    def test_missing_metric_scope_does_not_turn_sent_into_error(self):
+        inv={"schema_version":1,"experiments":[self.post]}
+        import hashlib
+        state={"schema_version":1,"queued":{
+            self.post["id"]:{"buffer_id":"buf-1",
+                "text_sha256":hashlib.sha256(self.post["text"].encode()).hexdigest()}}}
+        def inaccessible(_):
+            raise RuntimeError("insightsRead scope unavailable")
+        report=build(inv,state,"x-1",lambda _:self.remote,inaccessible)
+        row=report["items"][0]
+        self.assertEqual(row["buffer_status"],"sent")
+        self.assertFalse(row["buffer_metrics_available"])
+        self.assertNotIn("buffer_latest_impressions",row)
+
     def test_missing_remote_never_means_sent(self):
         inv={"schema_version":1,"experiments":[self.post]}
         state={"schema_version":1,"queued":{

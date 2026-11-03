@@ -43,6 +43,16 @@ class WeeklyReviewTests(unittest.TestCase):
         self.assertIn("dry_dialogue",report)
         self.assertIn("未取得（0回ではない）",report)
 
+    def test_buffer_snapshot_never_becomes_fabricated_exact_window(self):
+        self.delivery["items"][0].update({
+            "buffer_status":"sent",
+            "buffer_latest_impressions":{
+                "impressions":88,"provider":"buffer_experimental_personal_api",
+                "observed_at_utc":"2026-11-04T11:00:00Z","window_hours":None}})
+        report=self.run_review([])
+        self.assertIn("Buffer暫定インプ取得：1件",report)
+        self.assertIn("24h surreal_text：未取得",report)
+
     def test_buffer_image_status_is_not_x_impressions(self):
         self.posts["experiments"][0]["visual"]="ufo"
         self.delivery["items"][0].update({"buffer_status":"sent",

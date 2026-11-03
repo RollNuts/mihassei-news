@@ -93,3 +93,7 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - After the one-off original shareNow image, `launch_first_visual_now` is OFF. Future originals alternate image/plain surreal candidates where inventory allows; text-only and new everyday satire experiments remain live, as does every fourth character moment.
 - `probe_delivery.py` makes read-only Buffer queries for saved Buffer IDs, verifies exact Veripsa channel and immutable caption, records provider status, image attachment evidence and Buffer-returned X permalink. No invented views, no sending on this audit route, and no resurfacing unapproved Nejimachi episodes.
 - `delivery.json` is committed after each live queue run and the weekly review reports image/Buffer sent separately from actual X impression evidence.
+
+### Optional Buffer impressions sampling
+
+On each successful read-only delivery audit, the bot attempts the personal Buffer API insights read **only** for posts Buffer marks sent, preserving delivery status even when insights scopes/data are unavailable. It persists a provider timestamped impression snapshot only when Buffer reports an explicit nonnegative integer `impressions` count refreshed after publication. These are *non-windowed experimental provider snapshots*, never copied to the strict X 24h/72h `metrics/records.json` evidence ledger. No paid X API, metrics estimate or fabricated zeros.
