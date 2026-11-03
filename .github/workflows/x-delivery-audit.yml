@@ -1,6 +1,11 @@
 name: X Original Delivery Audit (Free, read only)
 
 on:
+  pull_request:
+    paths:
+      - "social-bot/experiments/probe_delivery.py"
+      - "social-bot/experiments/test_probe_delivery.py"
+      - ".github/workflows/x-delivery-audit.yml"
   push:
     branches: [main]
     paths:
@@ -36,12 +41,14 @@ jobs:
           python -m py_compile social-bot/experiments/probe_delivery.py
 
       - name: Audit up to 20 Buffer posts in two aliased GraphQL requests (read-only)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/experiments/probe_delivery.py
 
       - name: Persist delivery evidence only, not X posts or original ledger
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
