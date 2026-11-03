@@ -66,6 +66,8 @@ def manifest_entries(root: Path = ROOT) -> dict:
     for record in clips.values():
         if not isinstance(record, dict) or type(record.get("bytes")) is not int:
             return {}
+        if not 0 <= record["bytes"] <= MAX_CLIP_BYTES:
+            return {}
         total += record["bytes"]
         if total > MAX_TOTAL_BYTES:
             return {}
@@ -192,8 +194,21 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
     if not 1 <= limit <= MAX_BATCH:
         raise ValueError("Generate at most two clips per run")
     folder = root / RELATIVE_DIR
-    if folder.is_symlink() or (folder / MANIFEST_NAME).is_symlink():
+    registry = folder / MANIFEST_NAME
+    if folder.is_symlink() or registry.is_symlink():
         raise RuntimeError("Unsafe clip directory or manifest symlink")
+    # Never overwrite a damaged registry or silently disconnect past clips.
+    # The read-only publishing path will simply ignore an invalid registry.
+    if registry.exists():
+        try:
+            original = json.loads(registry.read_text(encoding="utf-8"))
+            existing_records = manifest_entries(root)
+            if (not isinstance(original, dict) or original.get("version") != 1
+                    or not isinstance(original.get("clips"), dict)
+                    or existing_records != original["clips"]):
+                raise RuntimeError("Invalid video manifest; fix manually without losing clips")
+        except (ValueError, UnicodeError) as exc:
+            raise RuntimeError("Unreadable video manifest; preserved without overwrite") from exc
     ffmpeg, ffprobe = shutil.which("ffmpeg"), shutil.which("ffprobe")
     if not ffmpeg or not ffprobe:
         raise RuntimeError("Existing local ffmpeg and ffprobe required; nothing installed")
