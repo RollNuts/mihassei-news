@@ -5,6 +5,12 @@ export { ReaderComments } from "./comments.js";
 const attributionChannels = ["x","search","external","unattributed"];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+function currentJstDay(now = Date.now()) {
+  const serial = Math.floor((now + JST_OFFSET_MS) / DAY_MS);
+  return {serial, date: new Date(serial * DAY_MS).toISOString().slice(0,10)};
+}
 function validArticle(slug) {
   return typeof slug === "string" && slug.length <= 100 && slugPattern.test(slug);
 }
@@ -35,8 +41,28 @@ export class NewsroomStats extends DurableObject {
     this.sql.exec("INSERT OR IGNORE INTO events(kind,article,visitor) VALUES (?,?,?)",kind,article,visitor);
     return this.sql.exec("SELECT changes() AS n").one().n > 0;
   }
+  // Retain only the most recent 14 JST days of daily deduplication records.
+  // Cumulative counters, likes, votes and the existing attribution history
+  // are untouched. Cleanup runs at most once per day on a genuine visit.
+  pruneDailyCounts(serial) {
+    if(this.count("maintenance:daily-pruned")>=serial)return;
+    const oldest=new Date((serial-13)*DAY_MS).toISOString().slice(0,10);
+    const threshold="day:"+oldest;
+    this.sql.exec("DELETE FROM events WHERE kind LIKE 'day:%' AND kind < ?",threshold);
+    this.sql.exec("DELETE FROM counters WHERE key LIKE 'day:%' AND key < ?",threshold);
+    this.sql.exec("INSERT INTO counters(key,value) VALUES ('maintenance:daily-pruned',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",serial);
+  }
+  dailySnapshot(day) {
+    const key="day:"+day.date+":";
+    return {
+      dateJst:day.date,
+      visitors:this.count(key+"visitors"),
+      articleReads:this.count(key+"articleReads")
+    };
+  }
   async fetch(req) {
     const url=new URL(req.url);
+    const day=currentJstDay();
     if(req.method==="GET") {
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
@@ -44,6 +70,7 @@ export class NewsroomStats extends DurableObject {
         details[slug]={
           likes:this.count("likes:"+slug),
           readers:this.count("readers:"+slug),
+          todayReaders:this.count("day:"+day.date+":reader:"+slug),
           shareClicks:this.count("shares:"+slug),
           // An approximate number of browser IDs that opened another story
           // after visiting this article. Not people, clicks, or a conversion rate.
@@ -63,6 +90,7 @@ export class NewsroomStats extends DurableObject {
       const channels={};
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
       return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
+        today:this.dailySnapshot(day),
         channels,channelScope:"distinct-browser-per-observed-channel-since-activation"});
     }
     if(req.method!=="POST")return json({error:"method not allowed"},405);
@@ -92,6 +120,17 @@ export class NewsroomStats extends DurableObject {
     let liked=null,selectedVote=null,alreadyVoted=false;
     this.ctx.storage.transactionSync(()=>{
       if(data.action==="visit") {
+        this.pruneDailyCounts(day.serial);
+        const dayPrefix="day:"+day.date+":";
+        // Real daily browser activity: a reload does not inflate the numbers.
+        // Article reads count distinct (browser, article) pairs per JST date,
+        // not total page views or unique people.
+        if(this.insertOnce(dayPrefix+"site","",visitor))
+          this.increment(dayPrefix+"visitors",1);
+        if(article && this.insertOnce(dayPrefix+"reader",article,visitor)){
+          this.increment(dayPrefix+"articleReads",1);
+          this.increment(dayPrefix+"reader:"+article,1);
+        }
         if(this.insertOnce("site","",visitor))this.increment("visitors",1);
         if(article && this.insertOnce("reader",article,visitor))this.increment("readers:"+article,1);
         // Count one browser once per source article when it arrives at a
@@ -139,6 +178,7 @@ export class NewsroomStats extends DurableObject {
       }
     });
     return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),article,
+      today:this.dailySnapshot(day),
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
       shareClicks:article?this.count("shares:"+article):undefined,
