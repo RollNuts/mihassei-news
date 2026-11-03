@@ -1,0 +1,24 @@
+name: Test Buffer Connection (read-only)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/check_connection.py"
+      - ".github/workflows/test-buffer-connection.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  connection-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Buffer authentication and linked X channel (read-only)
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/check_connection.py
