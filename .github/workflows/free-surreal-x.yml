@@ -33,6 +33,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 0
+
+      - name: Verify immutable prior canon before any manga or publishing
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          CANON_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          python social-bot/ip/test_history_guard.py
+          python social-bot/ip/history_guard.py
 
       - name: Install free rendering dependencies
         run: |
