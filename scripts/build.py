@@ -706,11 +706,12 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<section class="edition-time-key concept-primer" aria-label="未発生新聞の読み方">
+<section class="edition-time-key" aria-label="未発生新聞の読み方">
+<div class="concept-primer">
 <p class="concept-primer-lead"><strong>もし、この調子で5年たったら？</strong> 今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。</p>
 <p class="concept-primer-route"><span>現実の話題</span><span aria-hidden="true">→</span><span>5年後の「もしも」</span><span aria-hidden="true">→</span><span>真顔の冗談</span></p>
 <p class="concept-primer-foot">未来を当てるための予測ではありません。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
-</section>
+</div></section>
 <section class="hero-grid">
 <article class="lead">
 <span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
