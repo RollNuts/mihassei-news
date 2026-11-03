@@ -5,6 +5,14 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
 class DeploymentWorkflowTests(unittest.TestCase):
+    def test_live_artwork_checks_follow_actual_text_free_article_design(self):
+        checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
+        self.assertIn('b"data-visual-topic="',checker)
+        self.assertIn('b"<text" in cover',checker)
+        self.assertIn('class="share-control"',checker)
+        self.assertIn('if "創作イラスト" not in page:',checker)
+        self.assertNotIn('class="reader-follow"',checker)
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
