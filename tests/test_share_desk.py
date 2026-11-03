@@ -71,13 +71,22 @@ class ShareDeskTests(unittest.TestCase):
         self.assertIn("※創作", details["copy"])
         self.assertIn("#未発生新聞", details["copy"])
         self.assertIn(TRACKING, details["copy"])
-        self.assertIn("2031年の架空ニュース", details["text"])
+        self.assertIn("2031年のもしも｜創作ニュース", details["text"])
+        self.assertIn("こんな5年後、ちょっとありそう？", details["text"])
         self.assertNotIn("人気第1位", details["copy"])
         params = parse_qs(urlparse(details["intent"]).query)
         self.assertEqual(params["text"], [details["text"]])
         self.assertEqual(params["url"], [details["tagged_url"]])
         self.assertEqual(params["url"][0].split("?")[0],
                          "https://veripsa.com/articles/very-long-story/")
+
+    def test_bad_fiction_year_does_not_produce_double_year_label(self):
+        item = sample("fallback", "社会", "2026-11-02")
+        item["fiction_at"] = "?"
+        copied = draft(item)["copy"]
+        self.assertIn("【5年後のもしも｜創作ニュース】", copied)
+        self.assertNotIn("5年後年", copied)
+        self.assertIn("※創作", copied)
 
     def test_render_is_safe_noindex_and_only_uses_local_images(self):
         a = sample("safe-story", "社会", "2026-11-02",
