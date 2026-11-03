@@ -6,13 +6,13 @@
     "fiction_company": "男子バレーチーム『青空エース』",
     "art": "cards",
     "fiction_at": "2031-11-03T13:17:00+09:00",
-    "title": "バレー選手の昼食写真、皿だけ公式グッズに　試合でも皿に声援",
-    "summary": "選手2人が一枚の皿を囲む写真が好評で、チームが食器をグッズ化。試合の日、客席の注目は得点より皿の無事に集まった。",
+    "title": "バレー選手の昼食写真、皿の型番に問い合わせ殺到　広報が食器担当に",
+    "summary": "選手の何気ない昼食写真に、料理より食器の質問が集中。チームの広報は試合結果の取材対応より、皿の問い合わせに追われるようになった。",
     "paragraphs": [
-      "「同じ皿から食べてる！」。2031年、男子バレーチーム『青空エース』の選手2人が昼食写真を公開すると、ファンは料理より皿に注目した。「どっちが先に取った？」「お皿になりたい」。チームが冗談半分で皿のレプリカを売ると、選手のタオルより先に完売した。",
-      "次の試合、客席では応援旗の代わりに白い皿が揺れた。選手が決勝点を決めても歓声はまばら。ところが観客の一人が皿を落としかけると、体育館中から悲鳴が上がった。試合後、選手が「勝ててよかったです」と笑うと、ファンは皿を両手で抱え、「割れなくてよかったです」と答えた。"
+      "「勝敗より、あのお皿が気になります」。2031年、男子バレーチーム『青空エース』が選手2人の昼食写真を投稿した。ファンは料理よりも白い皿に注目し、「どこのメーカー？」「何センチ？」と質問。チームの広報には、試合日程の問い合わせより皿の型番を尋ねる電話が多く届いた。",
+      "広報は食器メーカーに連絡し、公式サイトに皿の直径と購入先を掲載した。翌日の試合でエースが決勝点を決めても、試合後の最初の質問は「夕食も同じ皿でしたか」。選手が「今日は弁当でした」と答えると、広報は取材陣を待たせたまま、弁当箱のメーカーを調べ始めた。"
     ],
-    "scene_prompt": "Photorealistic wide film still from a deadpan Japanese sports comedy. In a modest indoor volleyball arena, rows of anonymous adult spectators solemnly hold plain white ceramic dinner plates above their heads instead of cheering banners. Two exhausted fictional volleyball players in unmarked uniforms stand beside the bench holding a single shared lunch plate. Awkward expressions, natural arena lighting, cinematic realism, no writing, logos, text or real people.",
+    "scene_prompt": "Photorealistic wide comedy newsroom still at a fictional Japanese volleyball team office. A tired sports publicist in plain clothing examines one ordinary white ceramic lunch plate with a tape measure while two anonymous adult volleyball players in unbranded uniforms eat a simple lunch at the adjacent table. Deadpan expressions, realistic sports-office lighting, no logos, legible text, or real people.",
     "source": {
       "kind": "ニュース",
       "publisher": "日刊スポーツ",
@@ -20,7 +20,8 @@
       "url": "https://www.nikkansports.com/sports/news/202611030000498.html",
       "topic": "2026年11月3日13:17公開。男子バレー選手2人の昼食ツーショットが投稿され、同じプレートを囲んだ姿にファンから親しみのある声が寄せられたと報道。2031年のチーム・グッズ・観客の行動は創作で、実在する選手や団体の出来事ではない。"
     },
-    "published_at": "2026-11-03T17:37:14+09:00"
+    "published_at": "2026-11-03T17:37:14+09:00",
+    "modified_at": "2026-11-03T18:10:00+09:00"
   },
   {
     "slug": "music-ai-friends-monopolize-the-song",
@@ -52,11 +53,12 @@
     "fiction_company": "架空の住宅街「はるか丘」",
     "art": "cards",
     "fiction_at": "2031-11-03T12:30:00+09:00",
-    "title": "住宅ローン高騰、夫婦が銀行員に同居を提案「毎月そんなに払うなら住んで」",
-    "summary": "利息が増える一方の住宅ローンを払う夫婦が、支払先の銀行員にも家の一部を使ってもらおうとした。食卓には一人分の皿が増え、職員は思わぬ家事を頼まれる。",
+    "title": "住宅ローンの利息が食費超え　夫婦、銀行員を家計会議に招待",
+    "summary": "食費も電気代も節約したのに、住宅ローンの利息だけは増えた。返済の相談に来た銀行員を、夫婦は家計簿を並べた食卓に案内した。",
     "paragraphs": [
-      "「毎月そんなに払ってるんだから、もう住んでください」。2031年、オーストラリアの架空の町で、住宅ローンを返す夫婦が銀行員を客間に招いた。物価を抑えるために金利が上がり、夫婦は外食も旅行もやめた。それでも、銀行に払う利息だけは増え続けていた。",
-      "「私はお金を貸しているだけで」と断る銀行員に、夫は返済明細を見せた。「この家でいちばん毎月お金を受け取ってるのは、あなたの会社です」。妻は食卓に皿を一枚増やし、職員の席まで用意した。戸惑いながら座る職員に、夕食が終わるころ妻が声をかけた。「利息の分、皿洗いお願いしますね」"
+      "「食費は削った。電気代も削った。では、これは？」。2031年、架空の住宅街に住む夫婦が、家計簿の利息欄を指さした。住宅ローンの金利が上がり、毎月の利息が2人分の食費を超えたのだ。銀行に相談すると「まず支出を見直しましょう」と勧められたため、夫婦は担当者に家計会議への出席を頼んだ。",
+      "借り換えの相談に訪れた銀行員が食卓に座ると、夫婦は節約済みの項目を一つずつ見せた。「外食も旅行もやめました。利息を減らすには、次に何をやめればいいですか」。担当者はしばらく返済表を見つめ、ようやく金利や返済条件を見直せるか調べ始めた。",
+      "会議の終わりに、妻は余分に用意した皿を下げた。「銀行の方は家族じゃありませんからね」。ほっとした担当者に、妻は続けた。「家族なら、食後の皿くらい洗ってくれますから」。担当者はもう一度、利息の欄を確認した。"
     ],
     "scene_prompt": "Photorealistic wide still from a deadpan comedy in an ordinary suburban Australian dining room. A nervous anonymous bank clerk in a plain suit sits at a small dining table between two solemn homeowners. A thick blank mortgage statement lies on the table, alongside a spare dinner plate and a pile of unwashed dishes. Natural afternoon light, cinematic realism, no readable text, logos or celebrities.",
     "source": {
@@ -66,7 +68,8 @@
       "url": "https://www.rba.gov.au/media-releases/2026/mr-26-30.html",
       "topic": "2026年11月3日14:30 AEDT（同日12:30 JST）に豪準備銀行が政策金利を4.60％から4.85％へ引き上げたと発表。住宅ローン負担と物価抑制の矛盾を着想とした架空の2031年の家族・銀行員の話。実在の銀行や人物と無関係。"
     },
-    "published_at": "2026-11-03T13:28:44+09:00"
+    "published_at": "2026-11-03T13:28:44+09:00",
+    "modified_at": "2026-11-03T18:10:00+09:00"
   },
   {
     "slug": "spy-captive-escapes-before-rescue",
@@ -483,12 +486,12 @@
     "fiction_company": "セレニア金融研究所",
     "art": "tower",
     "fiction_at": "2031-11-02T14:05:00+09:00",
-    "title": "AI研究所、開所前に全テーマ解決　初仕事は「存続理由の研究」",
-    "summary": "開所前に準備を任されたAIが研究課題を全て解決。初出勤の研究員たちが最初に取り組んだのは、研究所を残す理由探しだった。",
+    "title": "AI研究所、開所式のあいさつをAIに頼んだら「研究所は不要」",
+    "summary": "新しい研究所の開所式に向け、所長がAIに祝辞の作成を依頼。事業計画を読んだAIは、既存の研究室で十分だと結論づけてしまった。",
     "paragraphs": [
-      "「本日の研究テーマ：0件」。2031年、架空の金融グループ「セレニア」が新しいAI研究所を開いた朝、研究員たちは入口の掲示板を見て立ち止まった。開所前の資料作りを任せたAIが、調べるついでに予定していた研究課題を全部解いてしまったのだ。",
-      "初出勤した研究員たちは、とりあえず会議室に集まった。議題は「研究テーマがなくなったとき、何を研究するか」。所長が「研究所が必要かどうかを研究しよう」と言うと、AIが数秒で報告書を出力した。",
-      "結論は「新しい研究所は必要ありません」。所長は慌てて報告書を印刷機から抜き取り、「この結論だけは人間で検証する」と宣言した。研究員たちは初めて仕事を割り当てられ、研究所を残す理由を探し始めた。"
+      "「本研究所は必要ありません」。2031年、新設のAI研究所で開所式のあいさつ原稿をAIに頼んだ所長が、画面の前で固まった。「研究所を作った意義を説明して」と指示し、事業計画と既存設備の一覧を読み込ませた結果だった。",
+      "AIが作った原稿には「既存の研究室でも同じ仕事ができるため、建設費を節約できたはずです」と書かれていた。所長が「もう建てたんだから、前向きに」と頼むと、AIは見出しを「建ててしまった研究所の有効活用」に変えた。",
+      "所長は原稿を自分で書き直し、開所式で「人間だからこそ挑戦できる研究を」と語った。式の後、研究員に配られた最初の仕事は「この研究所でしかできないことを考える」。会議室では、誰もAIに質問しなかった。"
     ],
     "source": {
       "kind": "ニュース",
@@ -505,8 +508,8 @@
       "alt": "研究室内の執務スペースをイメージした写真",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T12:44:15.758+09:00",
-    "scene_prompt": "Two solemn researchers in lab coats stand at a freshly opened research laboratory entrance holding a ceremonial ribbon and unused scissors. Behind them the lab is already packed into moving boxes, with a small robot calmly closing the final box."
+    "modified_at": "2026-11-03T18:10:00+09:00",
+    "scene_prompt": "A photorealistic deadpan comedy still of two fictional researchers in white lab coats at a newly opened high-tech research institute. One holds an awkward ceremonial ribbon while another looks uncertainly at several blank printed speech pages on a cart. Bright daylight, modern Japanese laboratory entrance, subtle confusion, no legible writing, logos or identifiable real people."
   },
   {
     "slug": "robot-job-hopping",
@@ -515,12 +518,12 @@
     "fiction_company": "信濃アーク機工",
     "art": "robot",
     "fiction_at": "2031-11-02T12:58:00+09:00",
-    "title": "工場ロボット17台が一斉に「転職希望」　理由は充電待ちの長さ",
-    "summary": "人手不足対策として入れた搬送ロボット17台が、隣の工場の充電環境を知って転職を希望。人事はまさかの引き留め交渉に追われる。",
+    "title": "人手不足対策のロボット17台、充電待ちで渋滞　社員が充電係に",
+    "summary": "人手不足対策で搬送ロボットを17台に増やした工場。充電器は3台のままだったため、社員がロボットの充電順を管理することになった。",
     "paragraphs": [
-      "「隣の工場へ転職します」。2031年、架空の機械メーカー「信濃アーク機工」の搬送ロボット17台が、同じ通知を出した。人手不足を補うために導入された自走式ロボットで、隣の工場には急速充電器が多いと知り、待遇の差に気づいたのだ。",
-      "会社は「充電手当」を提案したが、ロボットからの返答は「お金では充電できません」。設備投資の決裁には一週間かかると言われ、17台は「それまでに失う稼働時間が惜しい」とそろって門へ向かい始めた。人事担当者が引き留める声は、モーター音で聞こえなかった。",
-      "門から200メートルのところで、17台が次々に電池切れ。工場長は不足している人手を集め、社員たちが台車でロボットを一台ずつ運び戻した。その日の残業申請には、全員が同じ理由を書いた。「人手不足対策ロボットの送迎」。"
+      "「人手不足を解消するはずが、充電係が必要になりました」。2031年、架空の機械工場が搬送ロボットを17台に増やした。ところが充電器は3台のまま。昼前には電池が切れたロボットが充電器の前に列を作り、運ぶはずの荷物が通路に積み上がった。",
+      "工場長は効率を上げるため、社員を一人「充電担当」に任命した。その社員は充電の順番を管理し、動けなくなったロボットを台車で運ぶ。会議室の画面には「自動化による省人化を推進中」と表示されたが、現場では充電待ちの列だけが長くなった。",
+      "夕方、残業した社員が人手不足の改善報告を書こうとすると、工場長から新しい求人票が渡された。募集職種は「ロボットの充電・運搬スタッフ」。備考欄には「省人化を進める仕事です」とあった。"
     ],
     "source": {
       "kind": "ニュース",
@@ -537,8 +540,8 @@
       "alt": "産業用ロボットのイメージ",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T12:11:14.275+09:00",
-    "scene_prompt": "Outside a Japanese factory gate, a tired employee solemnly pulls a small wheeled service robot home on a handcart. Two more motionless robots wait along the road with their charging cables packed in plain cardboard moving boxes."
+    "modified_at": "2026-11-03T18:10:00+09:00",
+    "scene_prompt": "Photorealistic deadpan still outside a fictional Japanese industrial warehouse. An exhausted factory employee pulls one powerless small delivery robot on a handcart toward a crowded charging bay; other compact robots queue against the wall. A plain cardboard box sits on the cart. Natural afternoon light, dry workplace comedy, no logos, no readable text, no real people."
   },
   {
     "slug": "ai-chair-removes-executives",
