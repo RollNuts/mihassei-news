@@ -15,7 +15,7 @@ class RouteScriptsTests(unittest.TestCase):
         cases = {
             "/": {
                 "/assets/engagement.js", "/assets/comment-activity.js",
-                "/assets/serial-progress.js",
+                "/assets/serial-progress.js", "/assets/returning-shelf.js",
             },
             "/archive/": {"/assets/engagement.js", "/assets/site.js"},
             "/saved/": {"/assets/engagement.js", "/assets/bookmarks.js"},

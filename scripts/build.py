@@ -602,6 +602,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                                if path == "/" else "")
     bookmarks_script = ('<script defer src="/assets/bookmarks.js"></script>'
                         if kind == "story" or path == "/saved/" else "")
+    resume_script = ('<script defer src="/assets/returning-shelf.js"></script>'
+                     if path == "/" else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     return f'''<!doctype html><html lang="ja"><head>
@@ -638,6 +640,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 {comment_activity_script}
 {bookmarks_script}
 {serial_progress_script}
+{resume_script}
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
 </head><body>
@@ -790,6 +793,13 @@ def home(articles, serials=None):
 <a class="return-update" data-return-update data-latest-published="{escape(last_published)}"
  href="{article_url(newest)}" hidden>前回から新しい記事が届きました <span aria-hidden="true">↗</span></a>
 </div>
+<aside class="returning-shelf" data-returning-shelf hidden aria-label="この端末に保存した記事">
+ <span class="returning-shelf-eyebrow">SAVED / あとで読む</span>
+ <span class="returning-shelf-intro">保存した記事から再開</span>
+ <a class="returning-shelf-article" data-returning-shelf-article href="/saved/"></a>
+ <span class="returning-shelf-count" data-returning-shelf-count></span>
+ <a class="returning-shelf-all" href="/saved/">保存一覧 ↗</a>
+</aside>
 <section class="hero-grid">
 <article class="lead">
 <span class="small-label red">TOP STORY / 一面</span>
