@@ -8,7 +8,6 @@ import hashlib
 import random
 from pathlib import Path
 
-from PIL import Image, ImageDraw
 
 W, H = 1200, 675
 SCENES = {
@@ -21,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1] / "assets"
 
 
 def base(scene):
+    # Keep SCENES metadata importable by text-only CI without Pillow installed.
+    from PIL import Image, ImageDraw
     colors = {"ufo": ((24, 33, 52), (75, 96, 107)),
               "nails": ((36, 53, 67), (100, 128, 136)),
               "broom": ((47, 46, 65), (170, 119, 102)),
@@ -187,6 +188,7 @@ def shadow(d):
 
 
 def draw_scene(name):
+    from PIL import Image, ImageDraw
     if name not in SCENES:
         raise ValueError("Unknown original X visual: " + name)
     scene = SCENES[name]
