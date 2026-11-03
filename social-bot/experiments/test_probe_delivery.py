@@ -4,7 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions, queue_health
+from probe_delivery import (build, reconcile, x_link, normalize_buffer_impressions,
+                            queue_health, observed_original_sent_by_jst_day)
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -172,6 +173,43 @@ class BufferReadOnlyTests(unittest.TestCase):
         self.assertTrue(summary["unsubmitted_inventory_below_14"])
         self.assertFalse(summary["unsubmitted_images_below_2"])
         self.assertNotIn("impressions",summary)
+
+    def test_jst_daily_buffer_sent_counts_are_partial_and_timestamped(self):
+        from datetime import datetime, timezone
+        now = datetime(2026,11,4,16,0,tzinfo=timezone.utc)  # Nov 5 01:00 JST
+        rows = [
+            {"post_id":"a","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-04T14:50:00Z"},  # Nov 4 JST
+            {"post_id":"b","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-04T15:10:00Z"},  # Nov 5 JST
+            {"post_id":"c","buffer_status":"scheduled",
+             "buffer_sent_at_utc":"2026-11-04T15:12:00Z"},
+            {"post_id":"d","buffer_status":"sent"},  # no confirmed timestamp
+            {"post_id":"e","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-06T09:00:00Z"},  # future
+        ]
+        daily = observed_original_sent_by_jst_day(rows,now=now)
+        self.assertEqual(len(daily),7)
+        self.assertEqual(daily[-2]["date_jst"],"2026-11-04")
+        self.assertEqual(daily[-2]["observed_original_buffer_sent"],1)
+        self.assertEqual(daily[-1]["date_jst"],"2026-11-05")
+        self.assertEqual(daily[-1]["observed_original_buffer_sent"],1)
+        self.assertEqual(daily[-1]["configured_daily_slots"],7)
+        self.assertIn("incomplete_lower_bound",daily[-1]["evidence"])
+
+    def test_daily_metric_never_turns_missing_or_malformed_data_into_reach(self):
+        from datetime import datetime, timezone
+        now = datetime(2026,11,4,16,0,tzinfo=timezone.utc)
+        rows=[
+            {"post_id":"a","buffer_status":"sent","buffer_sent_at_utc":"bad-date"},
+            {"post_id":"b","buffer_status":"sent","buffer_sent_at_utc":"2026-11-04T14:30:00"},
+            {"post_id":"c","buffer_status":"unverified","buffer_sent_at_utc":"2026-11-04T15:15:00Z"},
+        ]
+        daily=observed_original_sent_by_jst_day(rows,now=now)
+        self.assertTrue(all(x["observed_original_buffer_sent"]==0 for x in daily))
+        self.assertTrue(all(x["evidence"].startswith("incomplete") for x in daily))
+        with self.assertRaisesRegex(ValueError,"Invalid daily evidence window"):
+            observed_original_sent_by_jst_day(rows,now=now,days=90)
 
     def test_image_attachment_is_audited_not_assumed(self):
         self.post["visual"]="ufo"
