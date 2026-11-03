@@ -1,0 +1,58 @@
+name: X Weekly Evidence & Creative Experiment
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/experiments/review.py"
+      - "social-bot/experiments/test_review.py"
+      - "social-bot/experiments/dispatch.py"
+      - ".github/workflows/x-weekly-experiments.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/experiments/review.py"
+      - "social-bot/experiments/test_review.py"
+      - "social-bot/experiments/dispatch.py"
+      - "social-bot/metrics/records.json"
+      - ".github/workflows/x-weekly-experiments.yml"
+  workflow_dispatch:
+  schedule:
+    # Monday 09:05 JST, before Monday editorial improvement sessions.
+    - cron: "5 0 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: x-weekly-evidence-review
+  cancel-in-progress: false
+
+jobs:
+  learn-from-observed-impressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Verify offline review logic and distribution test
+        run: |
+          python -m unittest discover -s social-bot/experiments -p 'test_review.py' -v
+          python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
+          python -m unittest discover -s social-bot/metrics -p 'test_report.py' -v
+
+      - name: Compose evidence-based weekly editorial review (no API)
+        run: python social-bot/experiments/review.py
+
+      - name: Commit latest measured review only to main
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/experiments/review.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): record evidence-only editorial review [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
