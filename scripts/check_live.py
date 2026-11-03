@@ -7,6 +7,7 @@ It runs after GitHub pushes; Cloudflare may take a little time to deploy.
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import re
 import os
@@ -22,14 +23,14 @@ from xml.etree import ElementTree as ET
 
 if __package__:
     from .media_policy import usable_cached_photo, jpeg_dimensions
-    from .generated_photos import usable_generated_scene, generated_url
+    from .generated_photos import usable_generated_scene, generated_url, generated_scene_entry
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial
     from .editorial_starter import homepage_starter_picks
     from .build import editorial_lead
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
-    from generated_photos import usable_generated_scene, generated_url
+    from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
     from share_desk import select_candidates
     from serial_discovery import choose_serial
     from editorial_starter import homepage_starter_picks
@@ -55,6 +56,16 @@ def verify_launch_card(markup: str, image_path: str) -> None:
     expected='name="twitter:image" content="'+SITE+image_path+'"'
     if expected not in markup:
         raise RuntimeError("Cache-busting X share link is not published")
+
+
+def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> None:
+    """Detect stale CDN bytes as well as malformed or oversized public JPEGs."""
+    record = generated_scene_entry(article, root=root)
+    if (not record or "image/jpeg" not in mime
+            or len(image) != record["bytes"]
+            or jpeg_dimensions(image) != (1200, 675)
+            or hashlib.sha256(image).hexdigest() != record["sha256"]):
+        raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
 
 
 def check():
@@ -491,9 +502,7 @@ def check():
             if ('<meta property="og:image" content="'+SITE+image_path+'">' not in page):
                 raise RuntimeError(slug+": local staged photograph missing from OGP")
             image,kind=get(image_path)
-            if ("image/jpeg" not in kind or
-                jpeg_dimensions(image)!=(1200,675) or len(image)<16000):
-                raise RuntimeError(slug+": locally generated photo invalid on production")
+            verify_generated_image(item, image, kind, root=ROOT)
         elif usable_cached_photo(item,root=ROOT):
             photo=item["photo"]
             if photo["source"] not in page or photo["credit"] not in page:

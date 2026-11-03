@@ -176,11 +176,15 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 LOCAL_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect)
 
 
+class StorageLimitError(RuntimeError):
+    """A batch-wide resource stop, rather than one bad article/image."""
+
+
 def check_storage(paths: list[Path], min_free_gb: int = MIN_FREE_GIB) -> None:
     # Reserve space for the bounded PNG, JPEG and atomic-write scratch bytes.
     required = min_free_gb * 1024**3 + 32 * 1024**2
     if any(shutil.disk_usage(path).free < required for path in paths):
-        raise RuntimeError(f"Less than {min_free_gb} GiB plus image headroom free")
+        raise StorageLimitError(f"Less than {min_free_gb} GiB plus image headroom free")
 
 
 def archive_bytes(root: Path) -> int:
@@ -291,8 +295,14 @@ def png_to_jpeg(png: bytes) -> bytes:
     return data
 
 
-def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT) -> Path:
-    """Atomic writes, with per-image hash and matched article fingerprint."""
+def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT,
+                    origin: str = "local-comfyui") -> Path:
+    """Atomic first-party image writes with provenance and a strict storage budget."""
+    if origin == "github-cpu-lcm":
+        if checkpoint != "SimianLuo/LCM_Dreamshaper_v7":
+            raise ValueError("Unreviewed CPU model is forbidden")
+    elif origin != "local-comfyui":
+        raise ValueError("Unreviewed image origin is forbidden")
     slug = article["slug"]
     if not SAFE_SLUG.fullmatch(slug):
         raise ValueError("Invalid article slug")
@@ -310,7 +320,7 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
             raise RuntimeError("Refusing symlinked generated-image file")
     existing_size = image_path.stat().st_size if image_path.exists() else 0
     if archive_bytes(root) - existing_size + len(data) + reserved_jpeg_bytes() > MAX_ARCHIVE_BYTES:
-        raise RuntimeError("Generated JPEG archive would exceed 1.5 GiB; photos preserved")
+        raise StorageLimitError("Generated JPEG archive would exceed 1.5 GiB; photos preserved")
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         if not isinstance(manifest, dict) or manifest.get("version") != 1 or not isinstance(manifest.get("images"), dict):
@@ -321,7 +331,7 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
     image_tmp.write_bytes(data)
     os.replace(image_tmp, image_path)
     manifest["images"][slug] = {
-        "origin": "local-comfyui",
+        "origin": origin,
         "sha256": hashlib.sha256(data).hexdigest(),
         "bytes": len(data),
         "article_sha256": article_fingerprint(article),
@@ -399,7 +409,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             check_storage(volumes, args.min_free_gb)
             if archive_bytes(ROOT) + MAX_SCENE_BYTES + reserved_jpeg_bytes() > MAX_ARCHIVE_BYTES:
-                raise RuntimeError("Generated JPEG archive at capacity; photos preserved")
+                raise StorageLimitError("Generated JPEG archive at capacity; photos preserved")
             image = png_to_jpeg(create_png(
                 base, article, args.checkpoint, args.timeout, output_dir=output_dir,
                 min_free_gb=args.min_free_gb))
@@ -410,6 +420,12 @@ def main(argv: list[str] | None = None) -> int:
         except (OSError, ValueError, RuntimeError, TimeoutError) as exc:
             failed.append(article["slug"])
             print(f"  Skipped (existing site fallback remains): {type(exc).__name__}: {exc}",file=sys.stderr)
+            if isinstance(exc, (StorageLimitError, TimeoutError)):
+                # A timed-out ComfyUI job may still be running. Do not enqueue
+                # more GPU work behind it. The dedicated worker owns shutdown;
+                # already validated JPEGs are still saved by local_scene_sync.
+                print("  Stopping this batch; remaining articles will retry next run.", file=sys.stderr)
+                break
     print(f"Scenes created: {succeeded} | failed: {len(failed)}",flush=True)
     return 1 if failed else 0
 
