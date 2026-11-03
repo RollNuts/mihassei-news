@@ -21,13 +21,19 @@ RELATIVE_DIR = Path("assets/generated")
 MANIFEST_NAME = "manifest.json"
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
-PROMPT_VERSION = 1
+PROMPT_VERSION = 2
+MAX_SCENE_BYTES = 700 * 1024
+MAX_ARCHIVE_BYTES = 1536 * 1024**2
+MAX_BATCH = 4
+MIN_FREE_GIB = 12
 
 
 def article_fingerprint(article: dict) -> str:
-    """Invalidate an old scene if its story title or summary changes."""
-    fields = [str(article.get(k, "")) for k in ("slug", "title", "summary", "category")]
-    return hashlib.sha256("\n".join(fields).encode("utf-8")).hexdigest()
+    """Body/punchline and visual-direction edits also invalidate old scenes."""
+    fields = {k: article.get(k, "") for k in
+              ("slug", "title", "summary", "category", "paragraphs", "scene_prompt")}
+    return hashlib.sha256(json.dumps(fields, ensure_ascii=False, sort_keys=True,
+                                    separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
 def generated_manifest(root: Path = ROOT) -> dict:
@@ -48,6 +54,9 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     record = generated_manifest(root).get(slug)
     if not isinstance(record, dict):
         return None
+    model = record.get("model")
+    if not isinstance(model, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+\.safetensors", model):
+        return None
     if (record.get("origin") != "local-comfyui"
             or record.get("article_sha256") != article_fingerprint(article)
             or record.get("prompt_version") != PROMPT_VERSION
@@ -55,7 +64,7 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
             or not SHA256.fullmatch(record["sha256"])):
         return None
     size = record.get("bytes")
-    if type(size) is not int or not MIN_JPEG_BYTES <= size <= MAX_JPEG_BYTES:
+    if type(size) is not int or not MIN_JPEG_BYTES <= size <= MAX_SCENE_BYTES:
         return None
     return record
 
@@ -67,6 +76,8 @@ def usable_generated_scene(article: dict, *, root: Path = ROOT) -> bool:
     slug = article["slug"]
     path = root / RELATIVE_DIR / (slug + ".jpg")
     try:
+        if path.is_symlink() or (root / RELATIVE_DIR).is_symlink():
+            return False
         if path.stat().st_size != record["bytes"]:
             return False
         data = path.read_bytes()

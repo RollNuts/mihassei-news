@@ -51,8 +51,10 @@ class MacSceneSafetyTests(unittest.TestCase):
     def test_launchd_is_opt_in_and_uses_bounded_worker(self):
         agent = setup.agent_payload()
         self.assertEqual(agent["Label"], setup.LABEL)
-        self.assertEqual(agent["RunAtLoad"], False)
-        self.assertEqual([t["Hour"] for t in agent["StartCalendarInterval"]], [0, 6, 12, 18])
+        self.assertEqual(agent["RunAtLoad"], True)
+        self.assertEqual([t["Hour"] for t in agent["StartCalendarInterval"]], list(range(24)))
+        self.assertIn("/opt/homebrew/bin", agent["EnvironmentVariables"]["PATH"])
+        self.assertIn("CommandLineTools", agent["EnvironmentVariables"]["PATH"])
         self.assertEqual(agent["ProgramArguments"][-4:], ["--limit", "4", "--min-free-gb", "12"])
         self.assertEqual(agent["StandardOutPath"], "/dev/null")
         self.assertEqual(agent["StandardErrorPath"], "/dev/null")
@@ -74,7 +76,7 @@ class MacSceneSafetyTests(unittest.TestCase):
 
     def test_worker_rejects_unbounded_jobs_without_launching(self):
         with self.assertRaisesRegex(ValueError, "Limit"):
-            worker.run_once(limit=9)
+            worker.run_once(limit=5)
         with self.assertRaisesRegex(ValueError, "floor"):
             worker.run_once(min_free_gb=3)
         with self.assertRaisesRegex(ValueError, "timeout"):

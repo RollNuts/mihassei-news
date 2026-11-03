@@ -10,12 +10,14 @@ from __future__ import annotations
 import argparse
 import hashlib
 import fcntl
+import json
 import os
 import platform
 import plistlib
 import shutil
 import subprocess
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -41,7 +43,8 @@ MODEL_MAX_BYTES = 7_500_000_000
 MODEL_MIN_BYTES = 6_000_000_000
 MIN_RUNTIME_GIB = 12
 MIN_INSTALL_GIB = 30
-MIN_REUSE_GIB = 20
+MIN_REUSE_GIB = 30
+COMFY_RELEASE = "v0.43.0"
 
 
 def gib_free(path: Path) -> float:
@@ -49,9 +52,18 @@ def gib_free(path: Path) -> float:
 
 
 def ram_gib() -> float:
-    output = subprocess.run(["sysctl", "-n", "hw.memsize"],
-                            capture_output=True, text=True, check=True)
-    return int(output.stdout.strip()) / 1024**3
+    try:
+        output = subprocess.run(["sysctl", "-n", "hw.memsize"],
+                                capture_output=True, text=True, check=True)
+        return int(output.stdout.strip()) / 1024**3
+    except (subprocess.CalledProcessError, ValueError):
+        output = subprocess.run(["system_profiler", "SPHardwareDataType", "-json"],
+                                capture_output=True, text=True, check=True)
+        memory = json.loads(output.stdout)["SPHardwareDataType"][0]["physical_memory"]
+        value, unit = memory.split()
+        if unit not in ("GB", "TB"):
+            raise RuntimeError("Unable to verify unified memory")
+        return float(value) * (1024 if unit == "TB" else 1)
 
 
 def require_supported_mac() -> None:
@@ -98,6 +110,31 @@ def guard_install_paths() -> None:
 def run(args: list[str], *, cwd: Path | None = None) -> None:
     print("+", " ".join(args[:4]), flush=True)
     subprocess.run(args, cwd=cwd, check=True)
+
+
+def install_packages(env: dict) -> None:
+    """Stop the owned pip subprocess if storage falls to the safety floor."""
+    command = [str(PYTHON), "-m", "pip", "--no-cache-dir", "install",
+               "-r", str(COMFY / "requirements.txt")]
+    process = subprocess.Popen(command, cwd=COMFY, env=env)
+    try:
+        deadline = time.monotonic() + 1800
+        while process.poll() is None:
+            if min(gib_free(APP_DIR), gib_free(CACHE_DIR)) < MIN_RUNTIME_GIB + 0.25:
+                raise RuntimeError("Storage safety floor reached during dependency installation")
+            if time.monotonic() >= deadline:
+                raise RuntimeError("Dependency installation timed out; rerun setup to resume")
+            time.sleep(2)
+        if process.returncode:
+            raise subprocess.CalledProcessError(process.returncode, command)
+    finally:
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=20)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=10)
 
 
 def download_checkpoint(destination: Path) -> None:
@@ -167,7 +204,7 @@ def install(*, python_command: str, source_model: str = "",
            "PIP_DISABLE_PIP_VERSION_CHECK": "1"}
     try:
         if not COMFY.exists():
-            run(["git", "clone", "--depth", "1", "--single-branch",
+            run(["git", "clone", "--depth", "1", "--single-branch", "--branch", COMFY_RELEASE,
                  "https://github.com/Comfy-Org/ComfyUI.git", str(COMFY)])
         elif not (safe_dir(COMFY) and (COMFY / "main.py").is_file()):
             raise RuntimeError("Existing app path is not a valid ComfyUI checkout; not overwriting it")
@@ -176,9 +213,7 @@ def install(*, python_command: str, source_model: str = "",
         elif not PYTHON.is_file():
             raise RuntimeError("Existing virtual environment is incomplete; refusing to overwrite it")
         if not (APP_DIR / "install-ok.txt").exists():
-            subprocess.run([str(PYTHON), "-m", "pip", "--no-cache-dir", "install",
-                            "-r", str(COMFY / "requirements.txt")],
-                           cwd=COMFY, env=env, check=True)
+            install_packages(env)
         # Always validate GPU support; a CPU-only installation would be impractical.
         subprocess.run([str(PYTHON), "-c",
                         "import torch; assert torch.backends.mps.is_available(), 'Apple MPS unavailable'"],
@@ -206,11 +241,17 @@ def agent_payload() -> dict:
         "ProgramArguments": [str(PYTHON), str(ROOT / "scripts" / "mac_scene_worker.py"),
                              "--limit", "4", "--min-free-gb", "12"],
         "WorkingDirectory": str(ROOT),
-        "StartCalendarInterval": [{"Hour": hour, "Minute": 15} for hour in (0, 6, 12, 18)],
-        "RunAtLoad": False,
+        "StartCalendarInterval": [{"Hour": hour, "Minute": 45} for hour in range(24)],
+        "RunAtLoad": True,
         "KeepAlive": False,
         "Nice": 10,
         "ProcessType": "Background",
+        "EnvironmentVariables": {
+            "PATH": ":".join((str(VENV / "bin"), "/Library/Developer/CommandLineTools/usr/bin",
+                              "/opt/homebrew/bin", str(Path.home() / ".local/bin"),
+                              "/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin")),
+            "GIT_TERMINAL_PROMPT": "0",
+        },
         "StandardOutPath": "/dev/null",
         "StandardErrorPath": "/dev/null",
     }
@@ -232,6 +273,13 @@ def enable_schedule() -> None:
         raise RuntimeError("Install the model/runtime successfully before enabling launchd")
     if not (APP_DIR / "install-ok.txt").is_file():
         raise RuntimeError("Installation validation marker missing")
+    # Schedule only after a real successful manual generation/push.
+    try:
+        status = json.loads((APP_DIR / "last-run.json").read_text())
+    except (OSError, ValueError):
+        status = {}
+    if status.get("status") != "ok":
+        raise RuntimeError("Run mac_scene_worker.py successfully once before enabling the schedule")
     if min(gib_free(ROOT), gib_free(APP_DIR)) < MIN_RUNTIME_GIB:
         raise RuntimeError("Low free space: refusing scheduler installation")
     PLIST.parent.mkdir(parents=True, exist_ok=True)
@@ -246,7 +294,7 @@ def enable_schedule() -> None:
     except subprocess.CalledProcessError:
         PLIST.unlink(missing_ok=True)
         raise
-    print("Opt-in launchd scheduler enabled: up to 4 new article images four times daily")
+    print("Local scheduler enabled: up to 4 missing scenes hourly, also after login")
 
 
 def check() -> None:
