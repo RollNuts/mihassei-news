@@ -955,7 +955,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="future-poll-meter"><span data-poll-unlikely-bar></span></div>
 </div>
 </section>
-<div class="article-reader-metric" data-article-readers hidden><span>この記事を閲覧したブラウザ <strong data-article-reader-count>—</strong>件</span><small>※匿名ブラウザの累計・実人数ではありません</small></div>
+<div class="article-reader-metric" data-article-readers hidden><span>今日この記事を読んだブラウザ <strong data-article-reader-count>—</strong>件</span><small>※日本時間・1日1回集計、実人数ではありません</small></div>
 {actions(a)}
 <section class="source-context" aria-label="着想した実際の話題">
 <h2>この記事の着想元</h2>
