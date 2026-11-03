@@ -64,6 +64,18 @@ export class NewsroomStats extends DurableObject {
     const url=new URL(req.url);
     const day=currentJstDay();
     if(req.method==="GET") {
+      // Optional historical read for the completed-day archive. Never accept
+      // arbitrary dates: daily deduplication is retained for 14 JST days.
+      const requestedDay=url.searchParams.get("day");
+      if(requestedDay!==null){
+        const stamp=/^\d{4}-\d{2}-\d{2}$/.test(requestedDay)
+          ? Date.parse(requestedDay+"T00:00:00Z") : NaN;
+        const serial=stamp/DAY_MS;
+        if(!Number.isInteger(serial) ||
+           new Date(stamp).toISOString().slice(0,10)!==requestedDay ||
+           serial<day.serial-13 || serial>day.serial)
+          return json({error:"day outside available JST history"},400);
+      }
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
@@ -89,8 +101,11 @@ export class NewsroomStats extends DurableObject {
       }
       const channels={};
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
+      const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
       return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
         today:this.dailySnapshot(day),
+        yesterday:this.dailySnapshot({date:previousDate}),
+        ...(requestedDay===null ? {} : {day:this.dailySnapshot({date:requestedDay})}),
         channels,channelScope:"distinct-browser-per-observed-channel-since-activation"});
     }
     if(req.method!=="POST")return json({error:"method not allowed"},405);
