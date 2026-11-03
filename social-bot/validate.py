@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 from ip.audit import check as canon_check
+from ip.readability import verify as readability_check
 
 ROOT=Path(__file__).resolve().parent
 data=json.loads((ROOT/"posts.json").read_text(encoding="utf-8"))
@@ -32,5 +33,6 @@ for post in posts:
     assert img.stat().st_size<2_000_000,"Comic PNG larger than 2MB: "+str(img)
 
 canon=canon_check(posts)
+readability_check(posts)
 print(f"Validated {len(posts)} posts; {sum(p['kind']=='comic' for p in posts)} comics; "
       f"{len(canon)} serialized episodes with 2-6 panels.")
