@@ -706,7 +706,7 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<p class="edition-time-key"><strong>この新聞の読み方</strong> 未来を当てるための予測ではありません。今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
+<p class="edition-time-key"><strong>世の中の矛盾を、真顔で笑う。</strong> 未来を当てるための予測ではありません。今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
 <section class="hero-grid">
 <article class="lead">
 <span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
