@@ -26,6 +26,19 @@ class MangaVisualTests(unittest.TestCase):
         self.assertEqual(result.getpixel((60,505)),cream)
         self.assertNotEqual(result.getpixel((60,864)),cream)
 
+    def test_original_glove_gag_changes_the_drawing(self):
+        panels=[
+            {"scene":"workshop","focus":"neji","secondary":"moku","mood":"confused",
+             "line":"「指一本でね」","shot":"close"},
+            {"scene":"workshop","focus":"moku","mood":"happy",
+             "line":"「うんっ」","shot":"wide"}
+        ]
+        before=draw_manga(self.post(panels))
+        panels[0]["visual"]="glove-cover"
+        after=draw_manga(self.post(panels))
+        self.assertEqual(after.size,(1080,1350))
+        self.assertNotEqual(before.tobytes(),after.tobytes())
+
     def test_bad_shot_fails(self):
         panels=[{"scene":"lamp","focus":"pito","mood":"plain","line":"「だめです」","shot":"overpaint"},
                 {"scene":"lamp","focus":"neji","mood":"happy","line":"「そうか」"}]
