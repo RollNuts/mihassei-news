@@ -1,0 +1,15 @@
+{
+  "new_reservations_enabled": false,
+  "reason": "Visual design quality hold: episode 6 draft resembled superhero web-slinging composition and mascot designs lack organic hand-drawn appeal. No unreviewed art should be queued.",
+  "paused_at_jst": "2026-11-03",
+  "existing_buffer_posts": "Untouched by this config; audit separately before publishing.",
+  "reopen_requirements": [
+    "Approved original design sheet for Neji, Pito, Moku, retaining canon silhouettes",
+    "No webs, hanging-from-threads compositions, superhero masks or costumes",
+    "Panels vary camera angle and visible character action; no static diagrams",
+    "Soft pencil or ink linework; simple memorable forms and expressive gestures",
+    "At least one full future episode viewed at mobile size and editorially approved",
+    "CI, continuity, file size, and Buffer dry-read checks pass"
+  ],
+  "review_owner": "human"
+}
