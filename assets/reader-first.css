@@ -149,3 +149,36 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 @media(prefers-reduced-motion:reduce){
   .serial-card{transition:none}
 }
+
+/* RSS is available on demand, not an advertisement ahead of the archive. */
+details.category-feed-subscriptions{
+  display:block;
+  margin:28px 0 20px;
+  padding:0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:transparent;
+}
+.category-feed-subscriptions>summary{
+  list-style:none;
+  cursor:pointer;
+  min-height:48px;
+  padding:12px 2px;
+  font-size:13px;
+  font-weight:800;
+  color:var(--ink);
+}
+.category-feed-subscriptions>summary::-webkit-details-marker{display:none}
+.category-feed-subscriptions>summary::after{content:" ＋";color:var(--accent)}
+.category-feed-subscriptions[open]>summary::after{content:" −"}
+.category-feed-subscriptions .category-feed-links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:2px 0 15px;
+}
+.category-feed-subscriptions a{min-height:44px;display:inline-flex;align-items:center}
+.category-feed-subscriptions>summary:focus-visible{
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+}
