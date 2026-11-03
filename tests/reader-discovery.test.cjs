@@ -47,7 +47,8 @@ async function simulate(candidates,counts,apiFails=false){
       for(const [slug,readers] of Object.entries(counts)){
         articles[slug]={readers,likes:0,shareClicks:0};
       }
-      return {ok:true,json:async()=>({unit:'anonymous-browser',visitors:20,articles})};
+      return {ok:true,json:async()=>({unit:'anonymous-browser',visitors:20,articles,
+        today:{dateJst:'2026-11-03',visitors:20,articleReads:32}})};
     }
   };
   vm.runInNewContext(source,vm.createContext(ctx),{timeout:1500});
@@ -118,12 +119,13 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   }
   const note={textContent:'※ブラウザ単位の参考値'};
   const widget={hidden:true,querySelector:selector=>selector==='small'?note:null};
-  const number={textContent:'—'};
+  const number={textContent:'—'},reads={textContent:'—'};
   const responses=[25,26,27,'offline',28];
   const document={
     referrer:'',visibilityState:'visible',
     querySelector:selector=>selector==='[data-observer-widget]'?widget:
-                            selector==='[data-observer-count]'?number:null,
+                            selector==='[data-observer-count]'?number:
+                            selector==='[data-observer-reads]'?reads:null,
     querySelectorAll:()=>[],
     addEventListener(name,callback){listeners[name]=callback;}
   };
@@ -145,7 +147,8 @@ test('real browser counters refresh while visible, resume on focus and preserve 
       const current=responses.shift();
       if(current==='offline')return {ok:false,json:async()=>({})};
       return {ok:true,json:async()=>({
-        unit:'anonymous-browser',visitors:current,articles:{}
+        unit:'anonymous-browser',visitors:900,articles:{},
+        today:{dateJst:'2026-11-03',visitors:current,articleReads:current+10}
       })};
     }
   };
@@ -155,8 +158,9 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   await settle();
   assert.deepEqual(requests,['POST','GET']);
   assert.equal(number.textContent,'25');
+  assert.equal(reads.textContent,'35');
   assert.equal(widget.hidden,false);
-  assert.match(note.textContent,/最終確認/);
+  assert.match(note.textContent,/3分ごと更新/);
   assert.equal(timers.length,1);
   assert.equal(timers[0].delay,180000,'bounded free-tier polling');
 
@@ -165,6 +169,7 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   await settle();
   assert.deepEqual(requests,['POST','GET','GET']);
   assert.equal(number.textContent,'26');
+  assert.equal(reads.textContent,'36');
 
   document.visibilityState='hidden';
   clock+=180000;
@@ -184,13 +189,14 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   timers[0].callback();
   await settle();
   assert.equal(number.textContent,'27','do not show a fake zero on API failure');
-  assert.match(note.textContent,/再接続待ち/);
+  assert.match(note.textContent,/通信回復待ち/);
 
   clock+=180000;
   timers[0].callback();
   await settle();
   assert.equal(number.textContent,'28');
-  assert.match(note.textContent,/最終確認/);
+  assert.equal(reads.textContent,'38');
+  assert.match(note.textContent,/確認/);
   assert.equal(requests.filter(x=>x==='POST').length,1,
     'read-only refresh never registers additional visits');
 });
