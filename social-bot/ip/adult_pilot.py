@@ -172,7 +172,12 @@ def neji(d,x,y,s,view="front",emotion="plain",pose="rest"):
     # Face is restrained, dry, NOT toy/cute. Side view uses one visible eye.
     if view=="side":
         d.ellipse((*p(23,-29),*p(31,-20)),fill=INK)
-        rough(d,[p(31,-6),p(49,-8)],"side-mouth"+str(x),max(1,int(2*s)),INK)
+        if emotion=="shout":
+            # A small open side-mouth makes the failed voice input legible.
+            d.ellipse((*p(35,-9),*p(49,9)),fill=(68,46,44),outline=INK,
+                      width=max(1,int(2*s)))
+        else:
+            rough(d,[p(31,-6),p(49,-8)],"side-mouth"+str(x),max(1,int(2*s)),INK)
     elif view=="back":
         rough(d,[p(-27,8),p(26,8)],"back-metal"+str(x),2,(127,86,67))
     else:
