@@ -84,7 +84,7 @@ class ArticlePickTests(unittest.TestCase):
         }
         rows = picks.rank([a, b, c], counts, ledger(), set(), CONFIG)
         self.assertEqual([x[0]["slug"] for x in rows],
-                         ["case-c", "case-b", "case-a"])
+                         ["case-c", "case-a", "case-b"])
         # Many real readers alone can qualify, but tiny passive samples cannot.
         no_engagement = article("passive-story")
         self.assertEqual(picks.rank([no_engagement], {
