@@ -121,7 +121,10 @@ class MotionClipTests(unittest.TestCase):
                 json.dumps([suitable], ensure_ascii=False), encoding="utf-8"
             )
             self.assertEqual([a["slug"] for a in candidates(root)], [slug])
-            self.assertEqual(generate(root, limit=1, slug=slug, min_free_gib=0), [slug])
+            # Encoding this temporary fixture must not depend on the operator's
+            # real persistent OFF switch, or change it during the test.
+            with patch("scripts.mac_scene_control.APP_DIR", root / "test-control"):
+                self.assertEqual(generate(root, limit=1, slug=slug, min_free_gib=0), [slug])
             self.assertEqual(candidates(root), [])
             verified = usable_clip(suitable, root=root)
             self.assertIsNotNone(verified)

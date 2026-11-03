@@ -23,8 +23,10 @@ from pathlib import Path
 
 try:
     from . import mac_scene_control as control
+    from . import mac_scene_resources as resources
 except ImportError:
     import mac_scene_control as control
+    import mac_scene_resources as resources
 
 ROOT = Path(__file__).resolve().parents[1]
 APP_DIR = Path.home() / "Library" / "Application Support" / "VeripsaScenes"
@@ -90,7 +92,7 @@ def update_status(status: str, detail: str) -> None:
     payload = {**previous, "status": status, "detail": detail[:300], "at_utc": at}
     if status == "ok":
         payload["last_success_at"] = at
-    elif status not in ("stopped",):
+    elif status not in ("stopped", "resource-paused"):
         payload["last_error"] = {"at": at, "detail": detail[:300]}
     stage.write_text(json.dumps(payload, ensure_ascii=False) + "\n", encoding="utf-8")
     os.replace(stage, target)
@@ -102,8 +104,12 @@ def port_in_use() -> bool:
         return sock.connect_ex(("127.0.0.1", PORT)) == 0
 
 
-def wait_for_server(proc: subprocess.Popen, seconds: int = 120) -> None:
+def wait_for_server(proc: subprocess.Popen, seconds: int = 120,
+                    guard: resources.Guard | None = None) -> None:
     for _ in range(seconds):
+        control.check_allowed(app_dir=APP_DIR)
+        if guard is not None:
+            guard.check()
         if proc.poll() is not None:
             raise RuntimeError("Dedicated local ComfyUI exited during startup")
         if port_in_use():
@@ -143,7 +149,7 @@ def request_stop(signum: int, frame) -> None:
     raise RuntimeError("Local photo worker stopped by termination signal")
 
 
-def run_once(limit: int = 4, min_free_gb: int = 12,
+def run_once(limit: int = 1, min_free_gb: int = 12,
              timeout: int = 900) -> int:
     if not 1 <= limit <= 4:
         raise ValueError("Limit must be 1–4 images each run")
@@ -188,6 +194,8 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
             control.register_runtime("worker", os.getpid(), root=ROOT, app_dir=APP_DIR)
         try:
             control.check_allowed(app_dir=APP_DIR)
+            guard = resources.Guard(APP_DIR)
+            guard.check(force=True)
             if port_in_use():
                 raise RuntimeError("Dedicated ComfyUI port occupied; refusing unsafe reuse")
             try:
@@ -203,24 +211,30 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                 "--temp-directory", str(temp_dir),
                 "--disable-auto-launch",
                 "--disable-api-nodes", "--disable-all-custom-nodes",
+                "--preview-method", "none", "--reserve-vram", "3",
             ]
             server = None
             sync_process = None
             server_errors = bytearray()
             error_reader = None
             try:
+                guard.check(force=True)
                 with control.transition_lock(app_dir=APP_DIR):
                     control.check_allowed(app_dir=APP_DIR)
                     server = subprocess.Popen(cmd, cwd=comfy, stdout=subprocess.DEVNULL,
                                               stderr=subprocess.PIPE, start_new_session=True,
                                               env={**os.environ, "HF_HUB_OFFLINE": "1",
-                                                   "TRANSFORMERS_OFFLINE": "1"})
+                                                   "TRANSFORMERS_OFFLINE": "1",
+                                                   "OMP_NUM_THREADS": "2",
+                                                   "VECLIB_MAXIMUM_THREADS": "2",
+                                                   "PYTORCH_MPS_HIGH_WATERMARK_RATIO": "0.8",
+                                                   "PYTORCH_MPS_LOW_WATERMARK_RATIO": "0.7"})
                     control.register_runtime("server", server.pid, root=ROOT, app_dir=APP_DIR)
                 control.check_allowed(app_dir=APP_DIR)
                 error_reader = threading.Thread(target=capture_server_errors,
                                                 args=(server.stderr, server_errors), daemon=True)
                 error_reader.start()
-                wait_for_server(server)
+                wait_for_server(server, guard=guard)
                 invoke = [
                     str(interpreter), str(ROOT / "scripts" / "local_scene_sync.py"),
                     "--publish", "--acknowledge-model-license",
@@ -238,6 +252,7 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                 deadline = time.monotonic() + limit * timeout + 900
                 while sync_process.poll() is None:
                     control.check_allowed(app_dir=APP_DIR)
+                    guard.check()
                     if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
                         raise RuntimeError("Free storage reached the safety floor; stopping local jobs")
                     if time.monotonic() >= deadline:
@@ -248,6 +263,8 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
                               else "Generation or git publish failed; site fallback preserved. "
                               + server_errors.decode("utf-8", errors="replace")[-200:])
                 return sync_process.returncode
+            except resources.ResourceDeferred:
+                raise
             except RuntimeError as exc:
                 diagnostic = server_errors.decode("utf-8", errors="replace")[-200:]
                 raise RuntimeError(str(exc) + ("; ComfyUI: " + diagnostic if diagnostic else "")) from exc
@@ -274,13 +291,17 @@ def run_once(limit: int = 4, min_free_gb: int = 12,
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Bounded Mac-only ComfyUI news photo worker")
-    parser.add_argument("--limit", type=int, default=4)
+    parser.add_argument("--limit", type=int, default=1)
     parser.add_argument("--min-free-gb", type=int, default=12)
     parser.add_argument("--timeout", type=int, default=900)
     args = parser.parse_args(argv)
     previous_term = signal.signal(signal.SIGTERM, request_stop)
     try:
         return run_once(args.limit, args.min_free_gb, args.timeout)
+    except resources.ResourceDeferred as exc:
+        update_status("resource-paused", str(exc))
+        print("Mac resource pause: " + str(exc), file=sys.stderr)
+        return 0
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         try:
             latch = APP_DIR / "stopped.json"

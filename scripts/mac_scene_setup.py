@@ -264,7 +264,7 @@ def agent_payload() -> dict:
     return {
         "Label": LABEL,
         "ProgramArguments": [str(PYTHON), str(ROOT / "scripts" / "mac_scene_worker.py"),
-                             "--limit", "4", "--min-free-gb", "12"],
+                             "--limit", "1", "--min-free-gb", "12"],
         "WorkingDirectory": str(ROOT),
         "StartCalendarInterval": [{"Hour": hour, "Minute": 45} for hour in range(24)],
         "RunAtLoad": True,
@@ -276,6 +276,8 @@ def agent_payload() -> dict:
                               "/opt/homebrew/bin", str(Path.home() / ".local/bin"),
                               "/usr/local/bin", "/usr/bin", "/bin", "/usr/sbin", "/sbin")),
             "GIT_TERMINAL_PROMPT": "0",
+            "OMP_NUM_THREADS": "2",
+            "VECLIB_MAXIMUM_THREADS": "2",
         },
         "StandardOutPath": "/dev/null",
         "StandardErrorPath": "/dev/null",
@@ -330,7 +332,7 @@ def enable_schedule() -> None:
     if not control.launch_loaded():
         PLIST.unlink(missing_ok=True)
         raise RuntimeError("launchd bootstrap returned without a loaded photo service")
-    print("Local scheduler enabled: up to 4 missing scenes hourly, also after login")
+    print("Local scheduler enabled: one missing scene hourly when Mac resources permit, also after login")
 
 
 def check() -> None:
