@@ -128,16 +128,19 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(entries[0].findtext("category"), "社会")
             self.assertEqual(entries[-1].findtext("title"), "テスト創作記事89 | 未発生新聞（創作）")
 
-    def test_home_follow_is_visible_and_without_tracking_or_email_form(self):
+    def test_rss_remains_discoverable_without_a_large_follow_banner(self):
         home = build.home(self.articles)
-        self.assertIn('class="free-follow"', home)
-        self.assertIn('href="/feed.xml" type="application/rss+xml"', home)
-        self.assertIn("メールアドレス不要", home)
-        self.assertLess(home.index('class="genre-explore"'), home.index('class="free-follow"'))
-        self.assertLess(home.index('class="free-follow"'), home.index('class="special-edition"'))
-        css = (Path(__file__).resolve().parents[1] / "assets/newsroom.css").read_text(encoding="utf-8")
-        self.assertIn(".free-follow-link", css)
-        self.assertIn("@media(max-width:680px)", css)
+        self.assertNotIn('class="free-follow"', home)
+        self.assertIn('rel="alternate" type="application/rss+xml"', home)
+        self.assertIn('<a href="/feed.xml">RSS</a>', home)
+        self.assertIn('href="/archive/#category-feeds"', home)
+        self.assertLess(home.index('class="genre-explore"'),
+                        home.index('class="extras-shelf"'))
+        self.assertNotIn('type="email"', home)
+        css = (Path(__file__).resolve().parents[1] / "assets/reader-first.css").read_text(encoding="utf-8")
+        self.assertIn(".extras-shelf", css)
+        self.assertIn("details.category-feed-subscriptions", css)
+        self.assertIn("@media(max-width:660px)", css)
         self.assertEqual(css.count("{"), css.count("}"))
 
 
