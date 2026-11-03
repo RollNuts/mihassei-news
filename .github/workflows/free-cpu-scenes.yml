@@ -57,7 +57,8 @@ jobs:
       - name: Generate and verify at most three fictional JPEGs
         run: |
           python3 scripts/github_cpu_scenes.py --limit "${{ inputs.limit || '3' }}"
-          python3 -m unittest tests.test_generated_photos -v
+          python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
+          python3 -m unittest discover -s tests -p 'test_cpu_scenes.py' -v
           python3 scripts/build.py
       - name: Commit only images and manifest, rebase safely, and publish
         run: |
