@@ -73,20 +73,20 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Queue at most one genuinely read article using shared Buffer FREE budget
+      - name: Publish the first original image now, then refill original X posts
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/experiments/dispatch.py
+
+      - name: Fill any remaining free Buffer slot with a measured-interest article
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         continue-on-error: true
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/article-picks/dispatch.py
-
-      - name: Refill original short posts after article selection (same queue)
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: python social-bot/experiments/dispatch.py
 
       - name: Record exact Buffer submission IDs (also after partial API failure)
         if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

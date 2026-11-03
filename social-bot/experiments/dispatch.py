@@ -68,6 +68,8 @@ def validate(posts, config, state):
         raise ValueError("Invalid experiment submission ledger")
     if not isinstance(config.get("channel_id"), str) or not config["channel_id"].strip():
         raise ValueError("Pinned Buffer X channel is required")
+    if type(config.get("launch_first_visual_now", False)) is not bool:
+        raise ValueError("Immediate original-visual launch must be a boolean")
     for name in ("max_queue_size", "max_new_per_run"):
         val = config.get(name)
         if type(val) is not int or val < 1 or val > 3:
@@ -197,6 +199,21 @@ def decide(posts, state, existing, max_queue, max_new):
     return to_queue, recovered, scheduled
 
 
+def choose_one_time_visual_launch(posts, state, config):
+    """Explicit owner-requested one-off image post; never runs twice per ID.
+
+    Does not occupy another Buffer scheduled slot. Sent/scheduled posts are
+    recovered by the regular exact-text lookup before choosing a launch.
+    """
+    if config.get("launch_first_visual_now") is not True:
+        return None
+    if any(row.get("image_sha256") for row in state["queued"].values()):
+        return None
+    return next((post for post in posts
+                 if post.get("visual") and post.get("hashtag")
+                 and post["id"] not in state["queued"]), None)
+
+
 def save_state(state, path=None):
     path = Path(path or HERE/"state.json")
     path.write_text(json.dumps(state, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
@@ -221,8 +238,16 @@ def main():
               config["max_queue_size"], config["max_new_per_run"])
     if recovered:
         save_state(state)
+    # The owner requested an immediate picture post, even if regular Buffer
+    # slots are currently full. It is one original image only, never manga.
+    # A successful accepted ID is persisted; no daily re-send after launch.
+    launch = choose_one_time_visual_launch(posts, state, config)
+    if launch:
+        plan = [launch] + [p for p in plan if p["id"] != launch["id"]]
+        plan = plan[:config["max_new_per_run"]]
     print("Current Buffer queued posts:", queued_count,
-          "Recovered:",len(recovered),"New experiment posts:",len(plan))
+          "Recovered:",len(recovered),"New experiment posts:",len(plan),
+          "Immediate original image:", launch["id"] if launch else "none")
     for post in plan:
         # Use the same proven Buffer Free createPost method as the existing bot.
         final_text = publication_text(post)
@@ -232,10 +257,11 @@ def main():
             if not image.is_file():
                 raise RuntimeError("Visual PNG not generated before Buffer queue: " + post["id"])
             image_sha256 = hashlib.sha256(image.read_bytes()).hexdigest()
+        mode = "shareNow" if launch and post["id"] == launch["id"] else "addToQueue"
         buffer_id = queue_one(token, channel_id, {
             "kind": "image" if image_sha256 else "text",
             "id": post["id"], "text": final_text
-        })
+        }, mode=mode)
         state["queued"][post["id"]] = {
             "buffer_id": buffer_id,
             "text_sha256": hash_text(post["text"]),
@@ -245,6 +271,7 @@ def main():
             "format": post["format"],
             "mechanism": post.get("mechanism"),
             "queued_at_utc": datetime.now(timezone.utc).isoformat(),
+            "submission_mode": mode,
             **({"image_sha256": image_sha256} if image_sha256 else {}),
         }
         save_state(state)
