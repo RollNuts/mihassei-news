@@ -21,7 +21,7 @@ function element(dataset={}) {
 function harness(count) {
   const input=element();
   const decade=element();decade.value='すべて';
-  const counter=element(),empty=element(),morePanel=element(),moreButton=element();
+  const counter=element(),empty=element(),morePanel=element(),moreButton=element(),resetFilters=element();
   morePanel.hidden=true;
   const cards=Array.from({length:count},(_,i)=>element({
     category:i%3===0?'社会':'経済',
@@ -31,7 +31,7 @@ function harness(count) {
   const tabs=['すべて','社会','経済'].map(category=>element({categoryFilter:category}));
   const nodes=new Map([
     ['[data-search-input]',input],['[data-decade-filter]',decade],
-    ['[data-result-count]',counter],['[data-no-results]',empty],
+    ['[data-result-count]',counter],['[data-no-results]',empty],['[data-reset-filters]',resetFilters],
     ['[data-archive-more]',morePanel],['[data-archive-more-button]',moreButton]
   ]);
   let lastUrl='';
@@ -44,7 +44,7 @@ function harness(count) {
     history:{replaceState:(_a,_b,url)=>{lastUrl=url;}}};
   const src=fs.readFileSync(path.join(__dirname,'..','assets','site.js'),'utf8');
   vm.runInNewContext(src,{document,window,URL,URLSearchParams,Set,String}, {timeout:1000});
-  return {cards,input,decade,counter,empty,morePanel,moreButton,tabs,
+  return {cards,input,decade,counter,empty,morePanel,moreButton,resetFilters,tabs,
     get url(){return lastUrl;},
     get visible(){return cards.filter(card=>!card.hidden).length;}
   };
@@ -71,7 +71,12 @@ function harness(count) {
   h.input.value='絶対に存在しない';h.input.emit('input');
   assert.equal(h.visible,0);
   assert.equal(h.empty.hidden,false);
-  h.input.value='';h.input.emit('input');
+  h.resetFilters.emit('click');
+  assert.equal(h.input.value,'','reset clears the search');
+  assert.equal(h.visible,18,'reset restores the first page of all articles');
+  assert.equal(h.tabs[0].getAttribute('aria-pressed'),'true');
+  assert.equal(h.empty.hidden,true);
+  assert.ok(!h.url.includes('category='),'reset clears the category parameter');
   h.decade.value='2040';h.decade.emit('change');
   assert.equal(h.visible,h.cards.filter(x=>x.dataset.category==='社会' && x.dataset.decade==='2040').length);
   h.tabs[0].emit('click');
