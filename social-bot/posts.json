@@ -132,6 +132,153 @@
       "kind": "text",
       "title": "四つ葉のクローバー",
       "text": "四つ葉のクローバー、見つけられた瞬間に引き抜かれる。幸運の象徴にしては、本人の運が悪すぎる。"
+    },
+    {
+      "id": "nejimachi-001-morning",
+      "series": "nejimachi",
+      "episode": 1,
+      "chapter": 1,
+      "day": "D1",
+      "order": 1,
+      "kind": "comic",
+      "title": "朝の配給",
+      "location": "station",
+      "characters": [
+        "neji",
+        "pito"
+      ],
+      "canon_refs": [
+        "city-ceiling",
+        "tower-announces",
+        "slips-not-magic",
+        "morning-slip"
+      ],
+      "text": "【ネジまち 第1話｜朝の配給】\n巨大な機械都市で、小さな整備員が「朝」をもらいに来た。受付は7:03までだった。#ネジまち",
+      "panels": [
+        {
+          "scene": "station",
+          "focus": "neji",
+          "mood": "sleepy",
+          "sign": "朝の配給所",
+          "line": "「朝をひとつください」",
+          "caption": "7:05 / 配給窓口"
+        },
+        {
+          "scene": "station",
+          "focus": "pito",
+          "mood": "plain",
+          "sign": "朝 7:00〜7:03",
+          "line": "「本日分は終了しました」",
+          "caption": "受付時間を確認するピト"
+        },
+        {
+          "scene": "street",
+          "focus": "neji",
+          "secondary": "pito",
+          "mood": "confused",
+          "sign": "ただいま 7:05",
+          "line": "「じゃあ今日、朝なし？」\n「昼から始めてください」",
+          "caption": "まだ眠いネジ"
+        }
+      ]
+    },
+    {
+      "id": "nejimachi-002-blue-sky",
+      "series": "nejimachi",
+      "episode": 2,
+      "chapter": 1,
+      "day": "D1",
+      "order": 2,
+      "kind": "comic",
+      "title": "青空の品質",
+      "location": "lamp",
+      "characters": [
+        "neji",
+        "pito"
+      ],
+      "canon_refs": [
+        "city-ceiling",
+        "tower-announces",
+        "lamp-blue"
+      ],
+      "text": "【ネジまち 第2話｜青空の品質】\n街の空を青くする装置が完成した。空そのものは、まだ見つかっていない。#ネジまち",
+      "panels": [
+        {
+          "scene": "lamp",
+          "focus": "neji",
+          "mood": "happy",
+          "sign": "本日 青空",
+          "line": "「今日は青空なんだ！」",
+          "caption": "昼灯の広場"
+        },
+        {
+          "scene": "lamp",
+          "focus": "pito",
+          "secondary": "neji",
+          "mood": "plain",
+          "sign": "青色点灯：正常",
+          "line": "「空は見えませんが\n青の点灯は正常です」",
+          "caption": "機械の報告はいつも正確"
+        }
+      ]
+    },
+    {
+      "id": "nejimachi-003-kindness",
+      "series": "nejimachi",
+      "episode": 3,
+      "chapter": 1,
+      "day": "D1",
+      "order": 3,
+      "kind": "comic",
+      "title": "親切の申請",
+      "location": "workshop",
+      "characters": [
+        "neji",
+        "pito",
+        "moku"
+      ],
+      "canon_refs": [
+        "slips-not-magic",
+        "tower-announces",
+        "kindness-form"
+      ],
+      "text": "【ネジまち 第3話｜親切の申請】\nネジは、部品を落としたモクを手伝おうとした。でも、この街では親切にも申請が必要らしい。#ネジまち",
+      "panels": [
+        {
+          "scene": "workshop",
+          "focus": "moku",
+          "mood": "sad",
+          "sign": "共同整備台",
+          "line": "「あっ、部品が……」",
+          "caption": "六番配管街"
+        },
+        {
+          "scene": "workshop",
+          "focus": "neji",
+          "secondary": "moku",
+          "mood": "happy",
+          "sign": "部品回収中",
+          "line": "「いっしょに拾うよ」",
+          "caption": "ネジはもう手を伸ばした"
+        },
+        {
+          "scene": "workshop",
+          "focus": "pito",
+          "mood": "plain",
+          "sign": "親切：要事前申請",
+          "line": "「規定では、親切には\n事前申請が必要です」",
+          "caption": "丁寧なピト"
+        },
+        {
+          "scene": "workshop",
+          "focus": "neji",
+          "secondary": "moku",
+          "mood": "wink",
+          "sign": "拾得物です",
+          "line": "「これは、偶然拾っただけ」\n「ありがとう！」",
+          "caption": "机の下で、小さな抜け道"
+        }
+      ]
     }
   ]
 }

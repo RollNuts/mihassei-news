@@ -11,6 +11,7 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from ip.audit import check as validate_canon, payload_hash
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -136,7 +137,10 @@ def main():
         print("SAFE MODE: BUFFER_API_KEY missing. Nothing submitted.")
         return 0
 
-    posts = json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["posts"]
+    all_posts = json.loads((HERE/"posts.json").read_text(encoding="utf-8"))["posts"]
+    validate_canon(all_posts)
+    # Continue the new IP serial in story order; never exhaust or mix in the old idea backlog.
+    posts = sorted((p for p in all_posts if p.get("series") == "nejimachi"), key=lambda p: p["episode"])
     state_path = HERE/"state.json"
     state = json.loads(state_path.read_text(encoding="utf-8"))
     submitted = state.setdefault("submitted", {})
@@ -149,12 +153,17 @@ def main():
     # Reconcile posts already submitted to Buffer even if a previous git push failed.
     for post in posts:
         if post["id"] not in submitted and post["text"] in texts:
-            submitted[post["id"]] = {"buffer_id": texts[post["text"]], "recovered": True}
+            submitted[post["id"]] = {"buffer_id": texts[post["text"]], "recovered": True,
+                                      "series": "nejimachi", "episode": post["episode"],
+                                      "content_sha256": payload_hash(post)}
     count = 0
     for post in posts:
         if queued >= TARGET_QUEUE or count >= MAX_NEW_PER_RUN:
             break
         if post["id"] in submitted:
+            saved = submitted[post["id"]]
+            if saved.get("content_sha256") != payload_hash(post):
+                raise RuntimeError("Queued serial episode has changed: " + post["id"])
             continue
         if len(post["text"]) > 240:
             raise RuntimeError("Tweet exceeds conservative 240-character cap: " + post["id"])
@@ -162,6 +171,9 @@ def main():
         submitted[post["id"]] = {
             "buffer_id": buffer_id,
             "queued_at": datetime.now(timezone.utc).isoformat(),
+            "series": "nejimachi",
+            "episode": post["episode"],
+            "content_sha256": payload_hash(post),
         }
         state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2)+"\n",encoding="utf-8")
         print("Queued:",post["id"])
