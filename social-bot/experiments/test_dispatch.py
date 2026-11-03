@@ -32,12 +32,14 @@ class ExperimentsTests(unittest.TestCase):
         c=json.loads((HERE/"config.json").read_text(encoding="utf-8"))
         state=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
         self.assertGreaterEqual(len(validate(p,c,state)),10)
-        self.assertLessEqual(c["max_queue_size"],3)
+        self.assertEqual(c["max_queue_size"],9)
+        self.assertEqual(c["max_new_per_run"],7)
+        self.assertEqual(c["expected_daily_slots"],7)
 
     def test_no_spam_limit_override(self):
         a,b,c=sample()
         b["max_queue_size"]=11
-        with self.assertRaisesRegex(ValueError,"between 1 and 3"):
+        with self.assertRaisesRegex(ValueError,"between 1 and 9"):
             validate(a,b,c)
 
     def test_refuse_edit_to_queued_post(self):
@@ -309,6 +311,56 @@ class ExperimentsTests(unittest.TestCase):
         p["experiments"][0]["angle"]="viral_growth"
         with self.assertRaisesRegex(ValueError,"angle"):
             validate(p,c,state)
+
+    def test_owner_seven_daily_slots_fit_nine_plus_one_free_budget(self):
+        src, cfg, state = sample()
+        cfg.update(max_queue_size=9,max_new_per_run=7,expected_daily_slots=7)
+        validate(src,cfg,state)
+        examples = [
+            {"id":f"xexp-demo{i}","sequence":i,"format":"surreal_text",
+             "text":f"テスト用のオリジナル投稿の本文です。番号{i}"}
+            for i in range(1,20)
+        ]
+        proposed,_,count=decide(examples,state,[],9,7)
+        self.assertEqual((len(proposed),count),(7,0))
+        remote=[{"id":f"buf-{i}","status":"scheduled",
+                 "text":f"無関係の予約{i}"} for i in range(8)]
+        proposed,_,_=decide(examples,state,remote,9,7)
+        self.assertEqual(len(proposed),1)
+        full=remote+[{"id":"article","status":"scheduled","text":"別の記事"}]
+        proposed,_,_=decide(examples,state,full,9,7)
+        self.assertEqual(proposed,[])
+        cfg["max_new_per_run"]=8
+        with self.assertRaisesRegex(ValueError,"between 1 and 7"):
+            validate(src,cfg,state)
+        cfg["max_new_per_run"]=7
+        cfg["max_queue_size"]=10
+        with self.assertRaisesRegex(ValueError,"between 1 and 9"):
+            validate(src,cfg,state)
+
+    def test_buffer_sent_history_paginates_with_safe_cursors(self):
+        from publish import list_existing
+        responses=[
+            {"posts":{"edges":[{"node":{"id":"scheduled-a","text":"投稿A",
+                                       "status":"scheduled"}}],
+                      "pageInfo":{"hasNextPage":True,"endCursor":"next-page"}}},
+            {"posts":{"edges":[{"node":{"id":"sent-b","text":"投稿B",
+                                       "status":"sent"}}],
+                      "pageInfo":{"hasNextPage":False,"endCursor":None}}},
+        ]
+        with patch("publish.gql",side_effect=responses) as gql:
+            values=list_existing("token","org","channel")
+        self.assertEqual([v["id"] for v in values],["scheduled-a","sent-b"])
+        self.assertIn('after: "next-page"',gql.call_args_list[1].args[1])
+        self.assertIn("dueAt: {start:",gql.call_args_list[0].args[1])
+
+    def test_buffer_missing_pagination_cursor_fails_closed(self):
+        from publish import list_existing
+        result={"posts":{"edges":[],"pageInfo":{"hasNextPage":True,
+                                                  "endCursor":None}}}
+        with patch("publish.gql",return_value=result):
+            with self.assertRaisesRegex(RuntimeError,"cursor invalid"):
+                list_existing("token","org","channel")
 
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
