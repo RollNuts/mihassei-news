@@ -115,17 +115,18 @@ class ControlTests(unittest.TestCase):
     def test_cpu_stop_only_mutates_exact_workflow_and_its_runs(self):
         state = {'id': 7, 'path': '.github/workflows/free-cpu-scenes.yml', 'state': 'active'}
         calls = []
-        def github(*args):
+        def github(*args, **kwargs):
             calls.append(args)
             if 'disable' in args[-1]: return {}
             if args[-1].endswith('/cancel'): return {}
-            if '/runs?status=queued' in args[-1]:
-                return [{'workflow_runs': [{'id': 11, 'workflow_id': 7}]}]
-            if '/runs?status=' in args[-1]: return [{'workflow_runs': []}]
+            if '/runs?per_page=' in args[-1]:
+                return [{'workflow_runs': [{'id': 11, 'workflow_id': 7, 'status': 'completed' if any(a[-1].endswith('/cancel') for a in calls) else 'queued'}]}]
             if args[-1].endswith('/runs/11'): return {'status': 'completed'}
             raise AssertionError(args)
         with patch.object(control, 'cpu_state', side_effect=[state, {**state, 'state': 'disabled_manually'}]), \
-             patch.object(control, 'gh', side_effect=github):
+             patch.object(control, 'gh', side_effect=github), \
+             patch.object(control.time, 'monotonic', side_effect=range(0, 1000)), \
+             patch.object(control.time, 'sleep'):
             result = control.stop_cpu(self.app)
         self.assertEqual(result['cancelled_or_completed'], [11])
         mutations = [a[-1] for a in calls if '--method' in a]
@@ -133,9 +134,55 @@ class ControlTests(unittest.TestCase):
                                      'repos/RollNuts/mihassei-news/actions/runs/11/cancel'])
         self.assertTrue(control.read_json(self.app / 'cpu-restore.json')['restore_active'])
 
+    def test_cpu_stop_catches_late_run_and_status_transition_between_scans(self):
+        state = {'id': 7, 'path': '.github/workflows/free-cpu-scenes.yml', 'state': 'active'}
+        scans = iter([[], [{'id': 44, 'workflow_id': 7, 'status': 'queued'}],
+                      [{'id': 44, 'workflow_id': 7, 'status': 'in_progress'}], [], []])
+        calls = []
+        checks = 0
+        def github(*args, **kwargs):
+            nonlocal checks
+            calls.append(args)
+            endpoint = args[-1]
+            if endpoint.endswith('/disable') or endpoint.endswith('/cancel'): return {}
+            if '/runs?per_page=' in endpoint:
+                self.assertNotIn('status=', endpoint)
+                return [{'workflow_runs': next(scans)}]
+            if endpoint.endswith('/runs/44'):
+                checks += 1
+                return {'status': 'in_progress' if checks == 1 else 'completed'}
+            raise AssertionError(args)
+        clock = [0.0]
+        def sleep(seconds): clock[0] += seconds
+        with patch.object(control, 'cpu_state', side_effect=[state, {**state, 'state': 'disabled_manually'}]), \
+             patch.object(control, 'gh', side_effect=github), \
+             patch.object(control.time, 'monotonic', side_effect=lambda: clock[0]), \
+             patch.object(control.time, 'sleep', side_effect=sleep):
+            result = control.stop_cpu(self.app)
+        self.assertEqual(result['cancelled_or_completed'], [44])
+        self.assertEqual(sum(a[-1].endswith('/cancel') for a in calls), 1)
+        self.assertGreaterEqual(checks, 2)
+        self.assertGreaterEqual(clock[0], 5)
+
+    def test_cpu_stop_reports_unfinished_cancellation_at_deadline(self):
+        state = {'id': 7, 'path': '.github/workflows/free-cpu-scenes.yml', 'state': 'active'}
+        def github(*args, **kwargs):
+            if args[-1].endswith('/disable') or args[-1].endswith('/cancel'): return {}
+            if '/runs?per_page=' in args[-1]:
+                return [{'workflow_runs': [{'id': 55, 'workflow_id': 7, 'status': 'in_progress'}]}]
+            if args[-1].endswith('/runs/55'): return {'status': 'in_progress'}
+            raise AssertionError(args)
+        clock = [0.0]
+        def sleep(seconds): clock[0] += seconds
+        with patch.object(control, 'cpu_state', return_value=state), patch.object(control, 'gh', side_effect=github), \
+             patch.object(control.time, 'monotonic', side_effect=lambda: clock[0]), \
+             patch.object(control.time, 'sleep', side_effect=sleep):
+            with self.assertRaisesRegex(RuntimeError, 'did not settle|timed out'): control.stop_cpu(self.app)
+        self.assertEqual(clock[0], 30)
+
     def test_cpu_run_from_different_workflow_never_cancelled(self):
         state = {'id': 7, 'path': '.github/workflows/free-cpu-scenes.yml', 'state': 'active'}
-        def github(*args):
+        def github(*args, **kwargs):
             if args[-1].endswith('/disable'): return {}
             if '/runs?' in args[-1]: return [{'workflow_runs': [{'id': 9, 'workflow_id': 99}]}]
             raise AssertionError('Unrelated run was mutated')

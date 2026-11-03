@@ -282,8 +282,8 @@ def unload_schedule() -> None:
     plist.unlink(missing_ok=True)
 
 
-def gh(*args: str) -> dict:
-    result = subprocess.run(['gh', *args], capture_output=True, text=True, timeout=45, check=False,
+def gh(*args: str, timeout: float = 45) -> dict:
+    result = subprocess.run(['gh', *args], capture_output=True, text=True, timeout=timeout, check=False,
                             env=command_env())
     if result.returncode:
         raise RuntimeError('GitHub image workflow request failed: ' + result.stderr.strip()[-400:])
@@ -306,36 +306,59 @@ def stop_cpu(app_dir=None) -> dict:
     restore = bool(prior.get('restore_active')) or was_active
     write_json(prior_file, {'restore_active': restore, 'stopped_at': now(), 'workflow': WORKFLOW})
     gh('api', '--method', 'PUT', f'repos/{REPO}/actions/workflows/{WORKFLOW}/disable')
-    cancelled = []
-    for status in ('queued', 'in_progress', 'waiting', 'requested', 'pending'):
-        payload = gh('api', '--paginate', '--slurp', f'repos/{REPO}/actions/workflows/{WORKFLOW}/runs?status={status}&per_page=100')
+    # A run can move queued -> in_progress between separate status-filtered
+    # queries, and newly dispatched runs may take a moment to appear. Sweep
+    # the complete workflow listing repeatedly after disabling new triggers.
+    cancelled = set()
+    pending = set()
+    started = time.monotonic()
+    deadline = started + 30
+    quiet_passes = 0
+    def request(*args):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise RuntimeError('CPU workflow disabled but cancellation verification timed out')
+        return gh(*args, timeout=min(45, remaining))
+    while True:
+        if time.monotonic() >= deadline:
+            raise RuntimeError('CPU workflow disabled but active runs did not settle: ' + str(sorted(pending)))
+        payload = request('api', '--paginate', '--slurp',
+                     f'repos/{REPO}/actions/workflows/{WORKFLOW}/runs?per_page=100')
         pages = payload if isinstance(payload, list) else [payload]
+        active = []
         for run in [run for page in pages for run in page.get('workflow_runs', [])]:
             if run.get('workflow_id') != state.get('id'):
                 raise RuntimeError('Unexpected workflow run returned; refusing cancellation')
+            if run.get('status') != 'completed':
+                active.append(int(run['id']))
+        for run_id in active:
+            pending.add(run_id)
+            if run_id in cancelled:
+                continue
             try:
-                gh('api', '--method', 'POST', f'repos/{REPO}/actions/runs/{int(run["id"])}/cancel')
+                request('api', '--method', 'POST', f'repos/{REPO}/actions/runs/{run_id}/cancel')
             except RuntimeError:
-                # It may have completed between list and cancel; verify rather
-                # than silently claiming a failed cancellation succeeded.
-                current = gh('api', f'repos/{REPO}/actions/runs/{int(run["id"])}')
+                current = request('api', f'repos/{REPO}/actions/runs/{run_id}')
                 if current.get('status') != 'completed':
                     raise
-            cancelled.append(run['id'])
-    deadline = time.monotonic() + 30
-    pending = list(dict.fromkeys(cancelled))
-    while pending:
-        pending = [run_id for run_id in pending
-                   if gh('api', f'repos/{REPO}/actions/runs/{int(run_id)}').get('status') != 'completed']
-        if not pending:
+            cancelled.add(run_id)
+        # Listing absence alone is insufficient: prove every targeted run has
+        # completed, even if cancellation is still propagating to the list.
+        pending = {run_id for run_id in pending
+                   if request('api', f'repos/{REPO}/actions/runs/{run_id}').get('status') != 'completed'}
+        quiet_passes = quiet_passes + 1 if not active and not pending else 0
+        at = time.monotonic()
+        if at >= deadline:
+            raise RuntimeError('CPU workflow disabled but cancellation verification timed out: ' + str(sorted(pending)))
+        # Minimum settling window also catches a pre-disable dispatch that was
+        # accepted by GitHub but not visible in the first listing response.
+        if quiet_passes >= 2 and at - started >= 5:
             break
-        if time.monotonic() >= deadline:
-            raise RuntimeError('CPU workflow disabled but runs did not finish cancelling: ' + str(pending))
-        time.sleep(1)
+        time.sleep(min(2, deadline - at))
     after = cpu_state()
     if after.get('state') != 'disabled_manually':
         raise RuntimeError('CPU image workflow was not disabled')
-    return {'state': after['state'], 'cancelled_or_completed': list(dict.fromkeys(cancelled))}
+    return {'state': after['state'], 'cancelled_or_completed': sorted(cancelled)}
 
 
 def resume_cpu(*, only_if_stopped=False, app_dir=None) -> dict:
