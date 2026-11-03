@@ -159,6 +159,32 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
             ""
         ]
         lines[-2:-2]=evidence_lines
+    upcoming=health.get("observed_scheduled_originals_by_jst_day")
+    if isinstance(upcoming,dict) and isinstance(upcoming.get("days"),list):
+        queue_lines=["## Bufferで確認した今後の予約日時（部分記録）",""]
+        for item in upcoming["days"][:2]:
+            if (not isinstance(item,dict)
+                    or not isinstance(item.get("date_jst"),str)
+                    or type(item.get("observed_fresh_original_scheduled")) is not int):
+                continue
+            times=item.get("observed_times_jst")
+            times_desc=", ".join(times) if isinstance(times,list) and all(
+                isinstance(t,str) for t in times) else "日時未取得"
+            queue_lines.append(
+                f"- {item['date_jst']}：今回の監査で確認できたオリジナル予約 "
+                f"{item['observed_fresh_original_scheduled']}件 "
+                f"（時刻：{times_desc or '該当なし'}）")
+        overdue=upcoming.get("overdue_scheduled_over_two_hours")
+        if type(overdue) is int and overdue>0:
+            queue_lines.append(
+                f"- **要確認**：予定時刻から2時間を超えてもBufferがscheduledと返した投稿 "
+                f"{overdue}件（APIの反映遅延の可能性もあり）")
+        queue_lines.extend([
+            "- この件数は監査で取得した予約のみで、Buffer全体の予約や"
+            "毎日7枠の設定そのものを検証した数値ではない。",
+            ""
+        ])
+        lines[-2:-2]=queue_lines
     formats_to_test=["surreal_text","character_moment"]
     for window in (24,72):
         for fmt in formats_to_test:
