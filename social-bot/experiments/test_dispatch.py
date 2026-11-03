@@ -49,6 +49,32 @@ class ExperimentsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"changed"):
             validate(a,b,c)
 
+    def test_different_punctuation_is_not_a_new_original(self):
+        posts, config, state = sample()
+        posts["experiments"][1]["text"] = posts["experiments"][0]["text"].replace(
+            "。", "！").replace("、", " ")
+        with self.assertRaisesRegex(ValueError,"Near-duplicate X original"):
+            validate(posts,config,state)
+
+    def test_slightly_reworded_copy_is_rejected(self):
+        posts, config, state = sample()
+        original=("駅前の時計が毎朝の通勤時間を少しだけ遅く表示していた。"
+                  "誰も遅刻していないと思っていたら、時計自身が先に帰宅していた。")
+        posts["experiments"][0]["text"] = original
+        posts["experiments"][1]["text"] = original.replace(
+            "駅前の時計", "公園の時計")
+        with self.assertRaisesRegex(ValueError,"Near-duplicate X original"):
+            validate(posts,config,state)
+
+    def test_genuinely_different_originals_still_pass_guard(self):
+        posts, config, state = sample()
+        self.assertEqual(len(validate(posts,config,state)),2)
+        # Actual live inventory must remain valid without changing old Buffer IDs.
+        inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
+        cfg=json.loads((HERE/"config.json").read_text(encoding="utf-8"))
+        ledger=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
+        self.assertGreaterEqual(len(validate(inventory,cfg,ledger)),30)
+
     def test_refuse_duplicate_text_or_ids(self):
         a,b,c=sample()
         a["experiments"][1]["text"]=a["experiments"][0]["text"]

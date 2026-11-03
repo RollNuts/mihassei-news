@@ -138,6 +138,27 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
         "## Xインプレッション（主KPI）",
         ""
     ]
+    # Provider receipts are an incomplete lower bound of original Buffer sends.
+    # Never substitute them for X publication, daily schedule completion, or
+    # qualified monetization/24h impression counters.
+    health=delivery.get("health") or {}
+    daily=health.get("observed_original_sent_by_jst_day")
+    if isinstance(daily,list) and daily:
+        evidence_lines=["## 日別Buffer送信確認（部分記録）",""]
+        for entry in daily[-3:]:
+            if (isinstance(entry,dict)
+                    and isinstance(entry.get("date_jst"),str)
+                    and type(entry.get("observed_original_buffer_sent")) is int):
+                evidence_lines.append(
+                    f"- {entry['date_jst']}：オリジナルBuffer sent確認 "
+                    f"{entry['observed_original_buffer_sent']}件 "
+                    f"/ 設定7枠（未確認分は含まない）")
+        evidence_lines += [
+            "- 上記は保存済みのBuffer送信時刻がある原稿だけ。"
+            "記事紹介・手動投稿・取得漏れは含まない。0件は実際の投稿0件とは限らない。",
+            ""
+        ]
+        lines[-2:-2]=evidence_lines
     formats_to_test=["surreal_text","character_moment"]
     for window in (24,72):
         for fmt in formats_to_test:

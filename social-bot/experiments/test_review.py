@@ -69,6 +69,22 @@ class WeeklyReviewTests(unittest.TestCase):
         self.assertIn("勝ち形式はまだ判断しない",result)
         self.assertNotIn("観測上の先行",result)
 
+    def test_daily_buffer_sent_lower_bound_is_not_x_impressions(self):
+        self.delivery["health"]={
+            "observed_original_sent_by_jst_day":[
+                {"date_jst":"2026-11-02","observed_original_buffer_sent":1,
+                 "configured_daily_slots":7},
+                {"date_jst":"2026-11-03","observed_original_buffer_sent":2,
+                 "configured_daily_slots":7},
+            ]
+        }
+        report=self.run_review([])
+        self.assertIn("日別Buffer送信確認（部分記録）",report)
+        self.assertIn("2026-11-03：オリジナルBuffer sent確認 2件",report)
+        self.assertIn("未確認分は含まない",report)
+        self.assertIn("24h surreal_text：未取得",report)
+        self.assertIn("0件は実際の投稿0件とは限らない",report)
+
     def test_two_buffer_statuses_are_not_fake_x_views(self):
         result=self.run_review([])
         self.assertIn("scheduled",result)

@@ -5,7 +5,8 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from probe_delivery import build, reconcile, x_link, normalize_buffer_impressions, queue_health, fetch_status_batch
+from probe_delivery import (build, reconcile, x_link, normalize_buffer_impressions,
+                            queue_health, fetch_status_batch, observed_original_sent_by_jst_day)
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -128,9 +129,16 @@ class BufferReadOnlyTests(unittest.TestCase):
     def test_only_mature_sent_posts_use_one_metric_read(self):
         from datetime import datetime, timezone
         posts, queued = [], {}
-        for i in range(6):
+        distinct_texts = [
+            "図書館で本が突然空を飛んで、読者が座り込んで驚いてしまった。",
+            "駅のホームに雲が並んで、改札機が傘を持って待っていた。",
+            "弁当箱が朝から家を出て、箸だけが台所に取り残された。",
+            "時計屋のショーケースの中で、秒針が静かな昼寝を始めた。",
+            "海辺の灯台が夕方に目を閉じて、船に少しだけ謝った。",
+            "山奥の郵便箱が手紙を読んで、宛先より先に泣き出した。",
+        ]
+        for i, body in enumerate(distinct_texts):
             pid = f"xexp-measure-{i}"
-            body = f"別のオリジナルの短文になります。テスト投稿{i}の文章。"
             posts.append({"id": pid, "sequence": i+1,
                           "format": "surreal_text", "text": body})
             queued[pid] = {"buffer_id": f"b{i}",
@@ -247,6 +255,43 @@ class BufferReadOnlyTests(unittest.TestCase):
         self.assertTrue(summary["unsubmitted_inventory_below_14"])
         self.assertFalse(summary["unsubmitted_images_below_2"])
         self.assertNotIn("impressions",summary)
+
+    def test_jst_daily_receipts_cross_midnight_without_fake_reach(self):
+        from datetime import datetime, timezone
+        now=datetime(2026,11,4,16,0,tzinfo=timezone.utc)  # Nov 5 01:00 JST
+        rows=[
+            {"post_id":"a","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-04T14:50:00Z"},
+            {"post_id":"b","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-04T15:10:00Z"},
+            {"post_id":"c","buffer_status":"scheduled",
+             "buffer_sent_at_utc":"2026-11-04T15:30:00Z"},
+            {"post_id":"d","buffer_status":"sent"},  # no provider sent timestamp
+            {"post_id":"e","buffer_status":"sent",
+             "buffer_sent_at_utc":"2026-11-06T09:00:00Z"},  # future
+        ]
+        days=observed_original_sent_by_jst_day(rows,now=now)
+        self.assertEqual(len(days),7)
+        self.assertEqual(days[-2]["date_jst"],"2026-11-04")
+        self.assertEqual(days[-2]["observed_original_buffer_sent"],1)
+        self.assertEqual(days[-1]["date_jst"],"2026-11-05")
+        self.assertEqual(days[-1]["observed_original_buffer_sent"],1)
+        self.assertEqual(days[-1]["configured_daily_slots"],7)
+        self.assertIn("incomplete_lower_bound",days[-1]["evidence"])
+
+    def test_ambiguous_or_missing_buffer_dates_never_count_as_x_posts(self):
+        from datetime import datetime, timezone
+        now=datetime(2026,11,4,16,0,tzinfo=timezone.utc)
+        rows=[
+            {"buffer_status":"sent","buffer_sent_at_utc":"invalid"},
+            {"buffer_status":"sent","buffer_sent_at_utc":"2026-11-04T15:15:00"},
+            {"buffer_status":"unverified","buffer_sent_at_utc":"2026-11-04T15:12:00Z"},
+        ]
+        days=observed_original_sent_by_jst_day(rows,now=now)
+        self.assertTrue(all(day["observed_original_buffer_sent"]==0 for day in days))
+        self.assertTrue(all(day["evidence"].startswith("incomplete") for day in days))
+        with self.assertRaisesRegex(ValueError,"Invalid daily evidence window"):
+            observed_original_sent_by_jst_day(rows,now=now,days=90)
 
     def test_image_attachment_is_audited_not_assumed(self):
         self.post["visual"]="ufo"
