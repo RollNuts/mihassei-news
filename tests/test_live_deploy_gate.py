@@ -25,6 +25,22 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn("Daily per-story browser count missing or invalid",checker)
         self.assertNotIn('"観測されたブラウザ" not in body',checker)
 
+    def test_live_checker_inspects_new_publications_not_old_source_news(self):
+        """A newly published story with an older source still needs smoke checks."""
+        from scripts.check_live import latest_articles
+        from scripts.build import editorial_lead
+        older={"slug":"older","published_at":"2026-11-02T18:30:00+09:00",
+               "source":{"published_at":"2026-11-03T17:00:00+09:00"}}
+        fresh={"slug":"fresh","published_at":"2026-11-03T18:00:00+09:00",
+               "source":{"published_at":"2026-11-01T07:00:00+09:00"}}
+        items=[older,fresh]
+        self.assertEqual(latest_articles(items)[0]["slug"],"fresh")
+        self.assertEqual(latest_articles(list(reversed(items)))[0]["slug"],"fresh")
+        self.assertEqual(latest_articles(items,limit=1)[0]["slug"],"fresh")
+        self.assertEqual(len(latest_articles(items,limit=None)),2)
+        self.assertEqual(editorial_lead(items)["slug"],
+                         latest_articles(items)[0]["slug"])
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
