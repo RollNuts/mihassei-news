@@ -63,7 +63,7 @@ class SatireAuditTests(unittest.TestCase):
         original = copy.deepcopy(articles)
         labels = {entry[0] for entry in analyze(articles)}
         self.assertIn("FORMULA_FUTURE_INTRO_LOOP", labels)
-        self.assertIn("架空の日付", "\n".join(next_slot_brief(articles)))
+        self.assertIn("架空設定はその後", "\n".join(next_slot_brief(articles)))
         self.assertEqual(articles, original)
 
         # A varied set of scene-first openings should not trigger this warning.
