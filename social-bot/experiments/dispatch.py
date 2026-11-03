@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import sys
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -33,6 +34,9 @@ MECHANISMS = {
 # Small relevant tags, explicitly assigned to some posts. No trend scraping.
 ALLOWED_TAGS = {"surreal_text": "#シュールネタ",
                 "character_moment": "#ネジまち"}
+# Conservative character trigram Jaccard guard for truly near-identical text.
+# It is not a semantic humor-quality judge and never edits accepted content.
+NEAR_DUPLICATE_THRESHOLD = 0.72
 
 
 def publication_text(post):
@@ -60,6 +64,21 @@ def hash_text(text):
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def normalized_comedy_text(text):
+    """Ignore spacing and punctuation while preserving Japanese words."""
+    return "".join(ch for ch in unicodedata.normalize("NFKC", text)
+                   if ch.isalnum())
+
+
+def trigram_jaccard(a, b):
+    """Detect reworded copies with identical long phrases, not shared genre."""
+    if min(len(a),len(b)) < 24:
+        return 0.0
+    grams_a = {a[i:i+3] for i in range(len(a)-2)}
+    grams_b = {b[i:i+3] for i in range(len(b)-2)}
+    return len(grams_a & grams_b) / len(grams_a | grams_b)
+
+
 def validate(posts, config, state):
     if config.get("schema_version") != 1:
         raise ValueError("Unknown X experiment config")
@@ -85,6 +104,7 @@ def validate(posts, config, state):
             or config["expected_daily_slots"] != 7):
         raise ValueError("Expected owner-configured daily Buffer slots must equal seven")
     ids, texts, orders = set(), set(), set()
+    normalized_history = []
     for post in posts["experiments"]:
         if not isinstance(post, dict):
             raise ValueError("Post entry must be object")
@@ -116,6 +136,13 @@ def validate(posts, config, state):
             raise ValueError("Featured must be a boolean")
         if pid in ids or text in texts or order in orders:
             raise ValueError("Duplicated ID, content, or sequence")
+        normalized = normalized_comedy_text(text)
+        for historical_id, historical_text in normalized_history:
+            if normalized == historical_text or trigram_jaccard(
+                    normalized, historical_text) >= NEAR_DUPLICATE_THRESHOLD:
+                raise ValueError("Near-duplicate X original: " + pid
+                                 + " repeats " + historical_id)
+        normalized_history.append((pid, normalized))
         ids.add(pid); texts.add(text); orders.add(order)
         if pid in state["queued"]:
             record = state["queued"][pid]
