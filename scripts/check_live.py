@@ -104,8 +104,10 @@ def check():
         x.get("published_at") or x["source"]["published_at"],
         x["source"]["published_at"]),reverse=True)
     chosen_lead = editorial_lead(sorted_articles)
-    if not chosen_lead or ('<h1><a href="/articles/'+chosen_lead["slug"]+'/"' not in body):
-        raise RuntimeError("Published front-page lead differs from editorial selection")
+    if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
+        raise RuntimeError("Latest publication is not the front-page lead")
+    if ('<h1><a href="/articles/'+chosen_lead["slug"]+'/"' not in body):
+        raise RuntimeError("Published front-page lead differs from newest real article")
     starters=homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)
     if starters:
         section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
