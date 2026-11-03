@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Zero-network safety tests for original Buffer-Free X experiments."""
+import copy
+import json
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dispatch import decide, hash_text, main, validate, HERE
+
+def sample():
+    p={"schema_version":1,"experiments":[
+        {"id":"xexp-a","sequence":1,"format":"surreal_text","text":"本物の幽霊が面接で落ちた。理由は演技がわざとらしい。"},
+        {"id":"xexp-b","sequence":2,"format":"character_moment","text":"ネジは街灯の部品を一つ締めた。街は何も変わらなかった。"},
+    ]}
+    c={"schema_version":1,"experiment_publishing_enabled":True,"channel_id":"X-ID",
+       "max_queue_size":3,"max_new_per_run":2}
+    st={"schema_version":1,"queued":{}}
+    return p,c,st
+
+
+class ExperimentsTests(unittest.TestCase):
+    def test_configured_original_posts_pass(self):
+        a,b,c=sample()
+        self.assertEqual(len(validate(a,b,c)),2)
+
+    def test_actual_inventory_validates(self):
+        p=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
+        c=json.loads((HERE/"config.json").read_text(encoding="utf-8"))
+        state=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
+        self.assertGreaterEqual(len(validate(p,c,state)),10)
+        self.assertLessEqual(c["max_queue_size"],3)
+
+    def test_no_spam_limit_override(self):
+        a,b,c=sample()
+        b["max_queue_size"]=11
+        with self.assertRaisesRegex(ValueError,"between 1 and 3"):
+            validate(a,b,c)
+
+    def test_refuse_edit_to_queued_post(self):
+        a,b,c=sample()
+        c["queued"]["xexp-a"]={"buffer_id":"buf-1","text_sha256":hash_text(a["experiments"][0]["text"])}
+        a["experiments"][0]["text"]="違う本文で同じIDを使っている"
+        with self.assertRaisesRegex(ValueError,"changed"):
+            validate(a,b,c)
+
+    def test_refuse_duplicate_text_or_ids(self):
+        a,b,c=sample()
+        a["experiments"][1]["text"]=a["experiments"][0]["text"]
+        with self.assertRaisesRegex(ValueError,"Duplicated"):
+            validate(a,b,c)
+
+    def test_queue_2_when_empty(self):
+        a,b,c=sample()
+        selected,recovered,scheduled=decide(a["experiments"],c,[],3,2)
+        self.assertEqual(len(selected),2)
+        self.assertEqual(recovered,[])
+        self.assertEqual(scheduled,0)
+
+    def test_never_exceed_total_3(self):
+        a,b,c=sample()
+        live=[{"id":"someone","status":"scheduled","text":"not ours"}]*2
+        selected,_,scheduled=decide(a["experiments"],c,live,3,2)
+        self.assertEqual(len(selected),1)
+        self.assertEqual(scheduled,2)
+        self.assertEqual(decide(a["experiments"],c,live+[{"id":"last","status":"scheduled","text":"other"}],3,2)[0],[])
+
+    def test_reconcile_after_lost_git_commit(self):
+        a,b,c=sample()
+        same={"id":"buffer-success","status":"scheduled","text":a["experiments"][0]["text"]}
+        plan,recovered,queued=decide(a["experiments"],c,[same],3,2)
+        self.assertEqual(recovered,["xexp-a"])
+        self.assertEqual([x["id"] for x in plan],["xexp-b"])
+        self.assertEqual(c["queued"]["xexp-a"]["buffer_id"],"buffer-success")
+
+    def test_sent_original_is_never_reposted(self):
+        a,b,c=sample()
+        sent={"id":"already-sent","status":"sent","text":a["experiments"][0]["text"]}
+        p,rec,_=decide(a["experiments"],c,[sent],3,2)
+        self.assertIn("xexp-a",rec)
+        self.assertEqual([x["id"] for x in p],["xexp-b"])
+
+    def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
+        a,b,c=sample()
+        c["queued"]["xexp-a"]={"buffer_id":"past-id","text_sha256":hash_text(a["experiments"][0]["text"])}
+        p,_,_=decide(a["experiments"],c,[],3,2)
+        self.assertEqual([x["id"] for x in p],["xexp-b"])
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
