@@ -49,7 +49,7 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
 
 test('real same-day issue shows actual count, not a fictional timestamp',()=>{
   const ui=runEdition('2026-11-02T14:10:00Z');
-  assert.equal(ui.title.textContent,'本日の未発生ニュース');
+  assert.equal(ui.title.textContent,'本日の架空ニュース');
   assert.equal(ui.eyebrow.textContent,"TODAY'S HEADLINES");
   assert.match(ui.updated.textContent,/本日発行 10本/);
   assert.match(ui.updated.textContent,/11月2日 21:21（現実時間）/);
@@ -58,10 +58,10 @@ test('real same-day issue shows actual count, not a fictional timestamp',()=>{
 
 test('after JST midnight, prior articles are labelled latest, never today',()=>{
   const ui=runEdition('2026-11-02T14:40:00Z');
-  assert.equal(ui.title.textContent,'本日の未発生ニュース');
+  assert.equal(ui.title.textContent,'本日の架空ニュース');
   ui.advance('2026-11-02T15:01:00Z'); // 00:01 JST Nov 3
   ui.tick();
-  assert.equal(ui.title.textContent,'最新の未発生ニュース');
+  assert.equal(ui.title.textContent,'最新の架空ニュース');
   assert.equal(ui.eyebrow.textContent,'LATEST HEADLINES');
   assert.equal(ui.updated.textContent,'最終発行：11月2日 21:21（現実時間）');
   assert.ok(ui.clock.textContent.startsWith('2031.11.03'));
@@ -69,6 +69,6 @@ test('after JST midnight, prior articles are labelled latest, never today',()=>{
 
 test('a previously published issue is not presented as new on first load',()=>{
   const ui=runEdition('2026-11-04T02:00:00Z');
-  assert.equal(ui.title.textContent,'最新の未発生ニュース');
+  assert.equal(ui.title.textContent,'最新の架空ニュース');
   assert.doesNotMatch(ui.updated.textContent,/本日発行/);
 });
