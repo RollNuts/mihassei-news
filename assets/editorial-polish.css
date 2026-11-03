@@ -1034,3 +1034,41 @@ body [hidden] {
   cursor:pointer;
 }
 .archive-page .reset-filters:hover{background:var(--accent);border-color:var(--accent)}
+
+
+/* Explain the editorial joke without mistaking the imagined dateline for a forecast. */
+.concept-primer{
+  margin:2px 0 22px;
+  padding:14px 18px;
+  border-left:3px solid var(--accent);
+  background:#f4f2eb;
+  border-radius:0 7px 7px 0;
+  color:#43564a;
+}
+.concept-primer p{margin:0}
+.concept-primer-lead{font-size:13px;line-height:1.75}
+.concept-primer-lead strong{font-size:15px;color:#24382c;margin-right:8px}
+.concept-primer-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:8px;color:#6c7366;font-size:11px;font-weight:750}
+.concept-primer-route span:nth-child(odd){color:#365a46}
+.concept-primer-foot{font-size:10.5px;line-height:1.75;color:#6e776c;margin-top:7px}
+.story-fiction-context{
+  padding:9px 12px;
+  border-left:2px solid #bba376;
+  background:#f7f5ed;
+  color:#59665d;
+  font-size:12px;
+  line-height:1.8;
+  margin:0 0 16px;
+}
+.story-fiction-context strong{color:#3a4e42}
+.story-fiction-context a{color:#365c48;text-decoration:underline;text-underline-offset:3px}
+.story-fiction-context a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.source-context-disclaimer{border-top:1px solid #dcded4;padding-top:9px;margin-top:11px}
+@media(max-width:660px){
+  .concept-primer{padding:12px 13px;margin:0 0 17px}
+  .concept-primer-lead{font-size:12px}
+  .concept-primer-lead strong{display:block;font-size:14px;margin-bottom:2px}
+  .concept-primer-route{gap:3px 7px;font-size:10px}
+  .concept-primer-foot{font-size:10px}
+  .story-fiction-context{font-size:11px}
+}

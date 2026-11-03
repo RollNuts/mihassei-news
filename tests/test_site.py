@@ -565,7 +565,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('data-edition-title>最新の架空ニュース</strong>',home)
         self.assertIn('data-edition-updated>最終発行：',home)
         self.assertIn("（現実時間）",home)
-        self.assertIn("5年先の時計",home)
+        self.assertIn("紙面の架空時計",home)
         self.assertNotIn("● LIVE",home)
         self.assertNotIn("本日の架空ニュース",home,
                          "The no-JS fallback must not claim freshness")

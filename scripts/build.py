@@ -588,8 +588,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
 <a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">{escape(publication_label)}</span></a>
-<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>5年先の時計</span>
-<time data-future-clock aria-label="5年先の架空の現在時刻">--:--:--</time></div>
+<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>紙面の架空時計</span>
+<time data-future-clock aria-label="物語内の架空の時刻">--:--:--</time></div>
 </div></div>
 <header class="container"><div class="masthead">
 <div class="mast-kicker">THE UNHAPPENED TIMES</div>
@@ -706,7 +706,12 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<p class="edition-time-key"><strong>世の中の矛盾を、真顔で笑う。</strong> 未来を当てるための予測ではありません。今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
+<section class="edition-time-key" aria-label="未発生新聞の読み方">
+<div class="concept-primer">
+<p class="concept-primer-lead"><strong>もし、この調子で5年たったら？</strong> 今の話題をちょっと大げさにした、ありそうでおかしい架空ニュースです。</p>
+<p class="concept-primer-route"><span>現実の話題</span><span aria-hidden="true">→</span><span>5年後の「もしも」</span><span aria-hidden="true">→</span><span>真顔の冗談</span></p>
+<p class="concept-primer-foot">未来を当てるための予測ではありません。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
+</div></section>
 <section class="hero-grid">
 <article class="lead">
 <span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
@@ -940,6 +945,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
+<p class="story-fiction-context"><strong>この記事は創作です。</strong> 現実の話題から「5年後のもしも」を想像しました。<a href="#story-source">現実の着想元を見る</a></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 <div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
 <p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
@@ -955,16 +961,16 @@ def story(a, articles, issues=None, serials=None):
 </nav>
 <section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
 <div class="future-poll-heading">
-<span class="future-poll-kicker">FUTURE VERDICT / 未来の判定</span>
-<h2 id="future-poll-title">この未来、本当にありそう？</h2>
-<p>記事はフィクション。あなたは5年後に起こりそうだと思う？</p>
+<span class="future-poll-kicker">WHAT IF? / もしもの投票</span>
+<h2 id="future-poll-title">この「もしも」、ありそう？</h2>
+<p>未来を当てる投票ではなく、架空の設定を楽しむ二択です。</p>
 </div>
-<div class="future-poll-choices" role="group" aria-label="未来予想を投票">
+<div class="future-poll-choices" role="group" aria-label="架空ニュースのありそう度を投票">
 <button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
 <button type="button" data-poll-choice="unlikely" aria-pressed="false"><span aria-hidden="true">✕</span> それはない！</button>
 </div>
 <p class="future-poll-status" data-poll-status role="status">ブラウザ単位で1記事1票。投票後に結果を表示します。</p>
-<div class="future-poll-results" data-poll-results hidden aria-label="未来予想の投票結果">
+<div class="future-poll-results" data-poll-results hidden aria-label="もしもの投票結果">
 <div class="future-poll-result-line"><span>ありそう</span><strong data-poll-plausible-percent>—</strong></div>
 <div class="future-poll-meter"><span data-poll-plausible-bar></span></div>
 <div class="future-poll-result-line"><span>それはない！</span><strong data-poll-unlikely-percent>—</strong></div>
@@ -973,9 +979,10 @@ def story(a, articles, issues=None, serials=None):
 </section>
 <div class="article-reader-metric" data-article-readers hidden><span>今日この記事を読んだブラウザ <strong data-article-reader-count>—</strong>件</span><small>※日本時間・1日1回集計、実人数ではありません</small></div>
 {actions(a)}
-<section class="source-context" aria-label="着想した実際の話題">
-<h2>この記事の着想元</h2>
+<section class="source-context" id="story-source" aria-label="着想した実際の話題">
+<h2>現実の話題が、この記事の出発点です</h2>
 <p>{escape(src["topic"])}</p>
+<p class="source-context-disclaimer">ここから創作した5年後の出来事は、元記事が報じた事実ではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
 </section>
@@ -985,7 +992,7 @@ def story(a, articles, issues=None, serials=None):
 <section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
 <div class="reader-comments-heading">
 <span class="eyebrow">READERS' VOICES / 読者の声</span>
-<h2 id="comments-heading">未来の読者からの声 <small data-comments-count></small></h2>
+<h2 id="comments-heading">読者のツッコミ <small data-comments-count></small></h2>
 <p>架空ニュースへのツッコミや未来予想をどうぞ。ニックネームで投稿できます。投稿内容は公開されます。</p>
 </div>
 <div class="reader-comments-list" data-comments-list></div>
