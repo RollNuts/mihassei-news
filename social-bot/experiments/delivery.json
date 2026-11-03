@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-11-03T07:52:08.161939+00:00",
+  "source": "buffer_free_posts_api",
+  "limitations": "Buffer sent indicates provider state only. X impressions and actual live URL not determined.",
+  "items": [
+    {
+      "post_id": "xexp-future-advice",
+      "buffer_id": "6ae990ec3b00665c737f50e7",
+      "buffer_status": "scheduled",
+      "format": "surreal_text"
+    },
+    {
+      "post_id": "xexp-ghost-interview",
+      "buffer_id": "6ae990ece5f645e4e3352053",
+      "buffer_status": "scheduled",
+      "format": "surreal_text"
+    }
+  ]
+}
