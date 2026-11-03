@@ -19,6 +19,22 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertIn('fetchpriority="high"',lead)
         self.assertIn('class="hero-image"',lead)
 
+    def test_first_screen_prioritizes_article_not_three_line_explanation(self):
+        markup = home(load())
+        primer = markup.split('<section class="edition-time-key"', 1)[1].split('</section>', 1)[0]
+        lead = markup.split('<article class="lead">', 1)[1].split('</article>', 1)[0]
+        self.assertIn('<details class="concept-primer-details">', primer)
+        self.assertIn('<summary>この新聞の読み方</summary>', primer)
+        self.assertIn('class="concept-primer-foot"', primer)
+        self.assertTrue(markup.index('<section class="edition-time-key"') <
+                        markup.index('<section class="hero-grid">'))
+        self.assertEqual(lead.count('class="hero-actions"'), 1)
+        self.assertIn('>記事を読む</a>', lead)
+        css = (ROOT / "assets/editorial-polish.css").read_text(encoding="utf-8")
+        self.assertIn('border-bottom:1px solid var(--line);', css)
+        self.assertIn('.concept-primer-details>summary', css)
+        self.assertIn('.concept-primer-lead strong{display:inline;', css)
+
     def test_picture_never_has_old_graphic_overlay_or_fixed_height(self):
         css=(ROOT/"assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertIn('.lead-media::before,.lead-media::after{content:none}',css)
