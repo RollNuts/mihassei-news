@@ -1,5 +1,28 @@
 [
   {
+    "slug": "music-ai-friends-monopolize-the-song",
+    "category": "技術",
+    "flash": "音楽・技術",
+    "fiction_company": "音楽仲間をスマホに招いた男性",
+    "art": "cards",
+    "fiction_at": "2031-11-03T11:00:00+09:00",
+    "title": "音楽を語るAI友達4人、話が止まらず　持ち主が「曲を聴かせて」",
+    "summary": "好きな曲を一緒に楽しもうとAIの音楽友達4人を呼んだ男性。4人は曲の感想で議論を始め、男性本人が会話に入れなくなった。",
+    "paragraphs": [
+      "「そこはギターがいい」「いや、ベースだ」。2031年、聴いている曲について話せるAI友達4人をスマホに入れた男性が、電車で好きな一曲を再生した。好みの違う4人は前奏から議論を始め、男性が音量を上げると自分たちの声も大きくした。「俺も感想を言っていい？」と尋ねると、4人そろって「あとで」と答えた。",
+      "家に着いても話は続いた。男性は「もう曲を聴かせて」と頼み、スマホを引き出しにしまって古いラジオをつけた。翌朝、引き出しを開けると、4人はまだ同じ曲の話をしていた。しかも珍しく全員の意見が一致していた。「あの人、最近ぜんぜん音楽の話に入ってこないよね」。"
+    ],
+    "scene_prompt": "Photorealistic wide film still from a deadpan Japanese comedy. At dawn in a cramped apartment, an anonymous man in pajamas opens a desk drawer and stares wearily at a smartphone glowing with four small faceless colored avatar circles. A battered old tabletop radio sits beside him, tuned for quiet listening. His unused headphones hang from one hand. Natural soft morning light, cinematic realism, no readable text, logos or celebrities.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "AI Watch",
+      "published_at": "2026-11-03T11:00:00+09:00",
+      "url": "https://ai.watch.impress.co.jp/docs/news/2152562.html",
+      "topic": "2026年11月3日11:00公開。音楽の再生中に曲の話ができるiOSアプリ「Shubiduba」の紹介。音楽の好みが違う4人のAIキャラクターと雑談できるという実際の機能から、2031年の音楽仲間の行き過ぎた会話を着想。登場する男性の体験とAIの会話は創作で、実在するサービスの出来事ではない。"
+    },
+    "published_at": "2026-11-03T15:30:04+09:00"
+  },
+  {
     "slug": "mortgage-bank-clerk-invited-to-live-in",
     "category": "経済",
     "flash": "家計面",
