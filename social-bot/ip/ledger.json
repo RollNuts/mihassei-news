@@ -1,0 +1,67 @@
+{
+  "series_id": "nejimachi",
+  "chapter": 1,
+  "chapter_name": "朝の札",
+  "chronology": "D1の朝から午後まで。話数は必ず昇順で、配信後の話の事実を書き換えない。",
+  "entries": [
+    {
+      "episode": 1,
+      "post_id": "nejimachi-001-morning",
+      "day": "D1",
+      "order": 1,
+      "location": "station",
+      "characters": [
+        "neji",
+        "pito"
+      ],
+      "established": [
+        "morning-slip"
+      ],
+      "event": "ネジは朝7:05に朝の区分札を受け取りに来たが、窓口は7:03で終了していた。ピトは昼から始めるよう案内した。",
+      "lasting_effect": "ネジは朝札を受け取れていない。時刻は正常に進んでいる。",
+      "threads_opened": [
+        "who-writes-rules"
+      ],
+      "threads_closed": []
+    },
+    {
+      "episode": 2,
+      "post_id": "nejimachi-002-blue-sky",
+      "day": "D1",
+      "order": 2,
+      "location": "lamp",
+      "characters": [
+        "neji",
+        "pito"
+      ],
+      "established": [
+        "lamp-blue"
+      ],
+      "event": "天井灯の青点灯を青空と呼ぶ制度がある。ネジは青空だと思って喜んだが空そのものは見えない。",
+      "lasting_effect": "本物の空の有無は依然不明。",
+      "threads_opened": [
+        "beyond-pipes"
+      ],
+      "threads_closed": []
+    },
+    {
+      "episode": 3,
+      "post_id": "nejimachi-003-kindness",
+      "day": "D1",
+      "order": 3,
+      "location": "workshop",
+      "characters": [
+        "neji",
+        "pito",
+        "moku"
+      ],
+      "established": [
+        "kindness-form"
+      ],
+      "event": "モクが部品を落とし、ネジが拾う。ピトは親切行為に事前申請が必要と伝えるが、ネジは『偶然拾った』と説明し助ける。",
+      "lasting_effect": "ネジとモクはここで初めて読者の前で会話した。2人が旧知かどうかはまだ未設定。親切の受付規則は残っている。",
+      "threads_opened": [],
+      "threads_closed": []
+    }
+  ]
+}
