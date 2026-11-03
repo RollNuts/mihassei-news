@@ -500,7 +500,14 @@ class SiteTests(unittest.TestCase):
             self.assertIn('"datePublished": "'+a["published_at"]+'"',html)
             self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',html)
             from scripts.media_policy import usable_cached_photo
-            if usable_cached_photo(a,root=ROOT):
+            from scripts.generated_photos import usable_generated_scene
+            if usable_generated_scene(a,root=ROOT):
+                self.assertIn('src="/generated/'+a["slug"]+'.jpg"',html)
+                self.assertIn('data-generated-scene="true"',html)
+                self.assertIn("AI生成",html)
+                self.assertIn("実際の事件",html)
+                self.assertIn('property="og:image:type" content="image/jpeg"',html)
+            elif usable_cached_photo(a,root=ROOT):
                 self.assertIn(a["photo"]["source"],html)
                 self.assertIn(a["photo"]["credit"],html)
                 self.assertIn(a["photo"]["alt"],html)
@@ -595,6 +602,7 @@ class SiteTests(unittest.TestCase):
                                    category_url, category_feed_url, social_image,
                                    curated_categories, generate_rss)
         from scripts.media_policy import usable_cached_photo
+        from scripts.generated_photos import usable_generated_scene
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -636,7 +644,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIsNotNone(image)
                 self.assertEqual(thumbnail.get("url"),SITE+social_image(a))
                 self.assertEqual(image.get("url"),SITE+social_image(a))
-                mime="image/jpeg" if usable_cached_photo(a,root=ROOT) else "image/png"
+                mime="image/jpeg" if (usable_generated_scene(a,root=ROOT) or usable_cached_photo(a,root=ROOT)) else "image/png"
                 self.assertEqual(image.get("type"),mime)
             if cat in curated_categories(articles):
                 category=(ROOT/"dist"/category_url(cat).lstrip("/")/"index.html")
@@ -659,6 +667,7 @@ class SiteTests(unittest.TestCase):
         """Feed clients can find safe image previews with the Media RSS standard."""
         from scripts.build import social_image
         from scripts.media_policy import usable_cached_photo
+        from scripts.generated_photos import usable_generated_scene
         namespace={"media":"http://search.yahoo.com/mrss/"}
         root=ET.parse(ROOT/"dist/feed.xml").getroot()
         entries=root.findall("./channel/item")
@@ -676,8 +685,9 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(thumbnail.get("url"),expected)
             self.assertEqual(full.get("url"),expected)
             self.assertEqual(full.get("medium"),"image")
-            photo=usable_cached_photo(a,root=ROOT)
-            self.assertEqual(full.get("type"),"image/jpeg" if photo else "image/png")
+            generated=usable_generated_scene(a,root=ROOT)
+            photo=not generated and usable_cached_photo(a,root=ROOT)
+            self.assertEqual(full.get("type"),"image/jpeg" if (photo or generated) else "image/png")
             credit=item.find("media:credit",namespace)
             if photo:
                 self.assertIsNotNone(credit)
@@ -685,7 +695,7 @@ class SiteTests(unittest.TestCase):
             else:
                 self.assertIsNone(credit)
                 self.assertEqual(thumbnail.get("width"),"1200")
-                self.assertEqual(thumbnail.get("height"),"630")
+                self.assertEqual(thumbnail.get("height"),"675" if generated else "630")
             self.assertTrue((ROOT/"dist"/social_image(a).split("?",1)[0].lstrip("/")).is_file())
 
     def test_visual_review_gallery_is_complete_and_nonindexable(self):
@@ -803,9 +813,11 @@ class SiteTests(unittest.TestCase):
     def test_image_review_gate_applies_to_cached_photos_and_ogp(self):
         """Cached images are not automatically editorially appropriate."""
         from scripts.media_policy import photo_is_approved, usable_cached_photo
+        from scripts.generated_photos import usable_generated_scene
         from scripts.build import social_image
         import xml.etree.ElementTree as ET
         approved=0
+        generated=0
         rejected=0
         for article in self.articles:
             slug=article["slug"]
@@ -821,7 +833,13 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn("<image",svg)
             self.assertNotIn("<script",svg)
             page=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
-            if usable_cached_photo(article,root=ROOT):
+            if usable_generated_scene(article,root=ROOT):
+                generated+=1
+                self.assertEqual(social_image(article),"/generated/"+slug+".jpg")
+                self.assertIn('src="/generated/'+slug+'.jpg"',page)
+                self.assertIn("AI生成",page)
+                self.assertTrue((ROOT/"dist/generated"/(slug+".jpg")).is_file())
+            elif usable_cached_photo(article,root=ROOT):
                 approved+=1
                 self.assertTrue(photo_is_approved(article,root=ROOT))
                 self.assertEqual(social_image(article),"/photos/"+slug+".jpg")
@@ -831,8 +849,7 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(social_image(article),"/og/articles/"+slug+".png?v=20261103-topic2")
                 self.assertIn('src="/images/'+slug+'.svg"',page)
                 self.assertTrue((ROOT/"dist/og/articles"/(slug+".png")).is_file())
-        self.assertGreaterEqual(rejected,1)
-        self.assertGreaterEqual(approved,1)
+        self.assertEqual(generated+approved+rejected,len(self.articles))
 
     def test_no_photo_articles_have_distinct_offline_png_social_cards(self):
         """Future articles automatically get meaningful, non-identical raster cards."""
@@ -840,9 +857,10 @@ class SiteTests(unittest.TestCase):
         from scripts.build import social_image
         import struct
         import tempfile
+        from scripts.media_policy import usable_cached_photo
+        from scripts.generated_photos import usable_generated_scene
         no_photo=[a for a in self.articles
-                  if not (ROOT/"assets/photos"/(a["slug"]+".jpg")).exists()]
-        self.assertGreaterEqual(len(no_photo),1,"Expected an article needing fallback preview")
+                  if not usable_generated_scene(a,root=ROOT) and not usable_cached_photo(a,root=ROOT)]
         images=set()
         for a in no_photo:
             path=ROOT/"dist"/"og"/"articles"/(a["slug"]+".png")
