@@ -36,6 +36,18 @@
       "fps": 12,
       "duration_ms": 4000,
       "created_at": "2026-11-03T10:10:59.723939+00:00"
+    },
+    "bakery-no-important-announcement-panic": {
+      "origin": "verified-still-motion",
+      "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
+      "image_sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db",
+      "sha256": "cb4b060d9ff8d284b66ac95832135683c64ac3156c8ce0b2ae28e9f66c4c7df6",
+      "bytes": 9906,
+      "width": 640,
+      "height": 360,
+      "fps": 12,
+      "duration_ms": 4000,
+      "created_at": "2026-11-03T12:50:37.064871+00:00"
     }
   }
 }
