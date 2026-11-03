@@ -18,7 +18,7 @@ function element(dataset={}) {
   };
 }
 
-function harness(count) {
+function harness(count, query = '') {
   const input=element();
   const decade=element();decade.value='すべて';
   const counter=element(),empty=element(),morePanel=element(),moreButton=element(),resetFilters=element();
@@ -40,7 +40,10 @@ function harness(count) {
     querySelectorAll:(selector)=>selector==='[data-archive-card]'?cards:
       selector==='[data-category-filter]'?tabs:[],
   };
-  const window={location:{href:'https://veripsa.com/archive/'},
+  const window={location:{
+      href:'https://veripsa.com/archive/'+query+'#category-feeds',
+      search:query,
+    },
     history:{replaceState:(_a,_b,url)=>{lastUrl=url;}}};
   const src=fs.readFileSync(path.join(__dirname,'..','assets','site.js'),'utf8');
   vm.runInNewContext(src,{document,window,URL,URLSearchParams,Set,String}, {timeout:1000});
@@ -88,5 +91,23 @@ function harness(count) {
   const h=harness(8);
   assert.equal(h.visible,8);
   assert.equal(h.morePanel.hidden,true,'no unnecessary button for eight stories');
+}
+{
+  const h=harness(52,'?category=%E7%A4%BE%E4%BC%9A&q=%E3%83%AD%E3%83%9C%E3%83%83%E3%83%88&decade=2040&src=share');
+  const expected=h.cards.filter(x=>x.dataset.category==='社会' &&
+      x.dataset.decade==='2040' && x.dataset.search==='ロボット').length;
+  assert.equal(h.input.value,'ロボット','shared search query restored');
+  assert.equal(h.decade.value,'2040','shared decade restored');
+  assert.equal(h.tabs[1].getAttribute('aria-pressed'),'true');
+  assert.equal(h.visible,expected,'deep link filters the complete archive');
+  h.input.value='別の検索語';h.input.emit('input');
+  assert.ok(h.url.includes('q='),'search query is shareable');
+  assert.ok(h.url.includes('decade=2040'),'decade is preserved in shared URL');
+  assert.ok(h.url.includes('src=share'),'unrelated campaign query is not lost');
+  assert.ok(h.url.endsWith('#category-feeds'),'anchor is preserved');
+  h.resetFilters.emit('click');
+  assert.ok(!h.url.includes('q=') && !h.url.includes('decade=') &&
+            !h.url.includes('category='),'reset cleans filter-only URL parameters');
+  assert.ok(h.url.includes('src=share'),'reset preserves unrelated query');
 }
 console.log('Archive pagination and filters passed: 52 and 8 article scenarios.');
