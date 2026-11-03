@@ -23,9 +23,9 @@ on:
   workflow_dispatch:
   schedule:
     # Buffer's seven owner-configured daily slots govern actual X publish time.
-    # UTC 15:05/21:05/03:05/09:05 = JST 00:05/06:05/12:05/18:05.
+    # UTC 15:05/03:05 = JST 00:05/12:05. Free API budget 1,000/30d.
     # GitHub cron is best effort and may be delayed.
-    - cron: "5 3,9,15,21 * * *"
+    - cron: "5 3,15 * * *"
 
 permissions:
   contents: write
@@ -92,20 +92,12 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/article-picks/dispatch.py
 
-      - name: Verify Buffer delivery and X link (read-only)
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        continue-on-error: true
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: python social-bot/experiments/probe_delivery.py
-
       - name: Record exact Buffer submission IDs (also after partial API failure)
         if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/state.json social-bot/experiments/delivery.json social-bot/article-picks/state.json
+          git add social-bot/experiments/state.json social-bot/article-picks/state.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
             git pull --rebase origin main
