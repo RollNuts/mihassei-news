@@ -35,5 +35,12 @@
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
+  "rejected": {
+    "idol-ice-kept-in-freezer": {
+      "article_sha256": "46cb52925bfa93db17ef3a13b8df8b6332eba1a9d0ac1b5acb9bd9d4f83c2dd4",
+      "reason": "Pilot produced cleaning/bakery scene rather than ice-cream collecting; keep fallback until visual direction changes.",
+      "reviewed_at": "2026-11-03T04:32:17.206300+00:00"
+    }
+  },
   "version": 1
 }

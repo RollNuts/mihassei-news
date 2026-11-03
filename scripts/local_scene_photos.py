@@ -338,6 +338,10 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
         "seed": stable_seed(article),
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
+    # A successful deliberate repair replaces that article's visual hold.
+    # Preserve holds for every other article when merging new image records.
+    if isinstance(manifest.get("rejected"), dict):
+        manifest["rejected"].pop(slug, None)
     manifest_tmp = manifest_path.with_suffix(".json.tmp")
     manifest_tmp.write_text(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     os.replace(manifest_tmp, manifest_path)
@@ -353,12 +357,32 @@ def load_articles(root: Path = ROOT) -> list[dict]:
     return sorted(items, key=lambda a: (a.get("published_at") or "", a.get("slug") or ""), reverse=True)
 
 
+def held_scene(article: dict, *, root: Path = ROOT) -> bool:
+    """Keep a visually rejected scene on fallback until its source changes."""
+    slug = article.get("slug")
+    if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+        return False
+    try:
+        payload = json.loads((root / RELATIVE_DIR / MANIFEST_NAME).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    if not isinstance(payload, dict) or payload.get("version") != 1:
+        return False
+    rejected = payload.get("rejected")
+    if not isinstance(rejected, dict):
+        return False
+    record = rejected.get(slug)
+    return (isinstance(record, dict)
+            and record.get("article_sha256") == article_fingerprint(article))
+
+
 def pending_articles(articles: list[dict], *, root: Path = ROOT, force: bool = False,
                      slug: str = "", limit: int = MAX_BATCH) -> list[dict]:
     pending = [
         a for a in articles
         if (not slug or a.get("slug") == slug)
         and (force or not usable_generated_scene(a, root=root))
+        and (force or not held_scene(a, root=root))
     ]
     return pending[:limit] if limit else pending
 
