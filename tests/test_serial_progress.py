@@ -62,7 +62,8 @@ class SerialReadingProgressTests(unittest.TestCase):
             self.assertIn('aria-pressed="false"', rendered)
             self.assertIn("閲覧だけでは記録しません", rendered)
             self.assertIn('role="status"', rendered)
-            self.assertIn("次回は未公開", rendered)
+            last = render_episode_page(series, series["episodes"][-1], identity_layout)
+            self.assertIn("次回は未公開", last)
             if series["kind"] == "analysis":
                 self.assertIn("投資助言", rendered)
                 self.assertNotIn('data-mystery-notebook', rendered)
