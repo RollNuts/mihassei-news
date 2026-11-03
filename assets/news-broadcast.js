@@ -4,7 +4,7 @@
     video.hidden = true;
     video.pause();
     const shell = video.closest('[data-video-shell]');
-    const fallback = shell?.querySelector('.article-video-fallback');
+    const fallback = shell?.querySelector('[data-video-fallback]');
     if (fallback) fallback.hidden = false;
     video.closest('[data-news-broadcast]')?.classList.add('broadcast-video-failed');
   };
