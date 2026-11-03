@@ -100,6 +100,26 @@ def cpu_prompt(article: dict) -> str:
     )
 
 
+def exposure_multiplier(brightness: float) -> float:
+    """Bounded auto-exposure; don't mask effectively black/unrecoverable images."""
+    if brightness < 30:
+        raise ValueError("Scene is severely underexposed; cannot recover photo")
+    return min(2.4, max(1.0, 125.0 / brightness))
+
+
+def normalize_exposure(image):
+    """Brighten underexposed local CPU stills before the publication quality gate."""
+    from PIL import ImageEnhance, ImageStat
+
+    brightness = ImageStat.Stat(image.convert("L")).mean[0]
+    factor = exposure_multiplier(brightness)
+    if factor > 1.1:
+        image = ImageEnhance.Brightness(image).enhance(factor)
+        print(f"CPU auto exposure: initial luminance={brightness:.0f}, "
+              f"multiplier={factor:.2f}", flush=True)
+    return image
+
+
 def check_quality(image):
     """Reject dark, washed-out, or near-featureless scenes before site publication.
 
@@ -140,6 +160,7 @@ def render_one(pipe, torch, article: dict) -> bytes:
     image = result.images[0] if getattr(result, "images", None) else None
     if image is None or not hasattr(image, "save"):
         raise ValueError("No usable image from CPU generator")
+    image = normalize_exposure(image)
     check_quality(image)
     output = io.BytesIO()
     image.save(output, format="PNG")
