@@ -3,9 +3,10 @@
 import copy
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from retire_legacy_queue import plan_migration
+from retire_legacy_queue import plan_migration, move_to_draft
 
 def dataset():
     feed = {"posts":[
@@ -27,6 +28,16 @@ def dataset():
     return feed,state,queue
 
 class MigrationSafety(unittest.TestCase):
+    def test_draft_edit_preserves_same_original_text(self):
+        def fake_gql(token, query):
+            self.assertIn('text: "宇宙人のテスト"', query)
+            self.assertIn('saveToDraft: true', query)
+            self.assertIn('id: "old-1"', query)
+            return {"editPost":{"__typename":"PostActionSuccess",
+                                "post":{"id":"old-1","status":"draft"}}}
+        with patch("retire_legacy_queue.gql", side_effect=fake_gql):
+            self.assertEqual(move_to_draft("test-token","old-1","宇宙人のテスト")["status"],"draft")
+
     def test_only_original_two(self):
         feed,state,queue=dataset()
         plan,notes=plan_migration(feed,state,queue)
