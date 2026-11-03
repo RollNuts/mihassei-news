@@ -77,6 +77,7 @@ function harness(count) {
   assert.equal(h.tabs[0].getAttribute('aria-pressed'),'true');
   assert.equal(h.empty.hidden,true);
   assert.ok(!h.url.includes('category='),'reset clears the category parameter');
+  h.tabs[1].emit('click');
   h.decade.value='2040';h.decade.emit('change');
   assert.equal(h.visible,h.cards.filter(x=>x.dataset.category==='社会' && x.dataset.decade==='2040').length);
   h.tabs[0].emit('click');
