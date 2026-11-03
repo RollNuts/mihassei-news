@@ -172,6 +172,59 @@
       "format": "character_moment",
       "text": "ピトが壊れた自販機に「調子はいかがですか」と聞いた。\n返事はなかったけど、ネジが温かい缶を一本置いていった。",
       "mechanism": "small_action"
+    },
+    {
+      "id": "xexp-selfcheckout-dialogue",
+      "sequence": 23,
+      "format": "surreal_text",
+      "text": "セルフレジに「店員をお呼びください」と言われた。店員には「セルフレジでお願いします」と言われた。二人とも丁寧なので、まだ会計が終わらない。",
+      "mechanism": "dry_dialogue",
+      "angle": "everyday_satire",
+      "hashtag": "#シュールネタ"
+    },
+    {
+      "id": "xexp-honest-survey",
+      "sequence": 24,
+      "format": "surreal_text",
+      "text": "「率直なご意見を」と書かれたアンケート。自由記入欄は10文字まで。送信ボタンだけが、やけに大きい。",
+      "mechanism": "meta_commentary",
+      "angle": "everyday_satire",
+      "featured": true
+    },
+    {
+      "id": "xexp-waiting-zero",
+      "sequence": 25,
+      "format": "surreal_text",
+      "text": "「待ち時間ゼロ」を売りにした新サービス。申し込み窓口の行列が、駅前まで伸びていた。",
+      "mechanism": "inverted_expectation",
+      "angle": "everyday_satire",
+      "hashtag": "#シュールネタ"
+    },
+    {
+      "id": "xexp-polite-notification",
+      "sequence": 26,
+      "format": "surreal_text",
+      "text": "「スマホを見すぎないように」とスマホが通知してきた。朝から7回。8回目は「さっきの件、見ましたか？」だった。",
+      "mechanism": "self_reference",
+      "angle": "everyday_satire"
+    },
+    {
+      "id": "xexp-lunch-price",
+      "sequence": 27,
+      "format": "surreal_text",
+      "text": "弁当屋が「値上げしません」と宣言した。翌週、唐揚げは写真になった。容器だけは前より立派だった。",
+      "mechanism": "visual_reveal",
+      "angle": "everyday_satire",
+      "hashtag": "#シュールネタ"
+    },
+    {
+      "id": "xexp-paperless-announcement",
+      "sequence": 28,
+      "format": "surreal_text",
+      "text": "ペーパーレスを始めたスーパー。「紙のレシートは出ません」というお知らせだけ、毎回紙で出てくる。",
+      "mechanism": "literal_wordplay",
+      "angle": "everyday_satire",
+      "featured": true
     }
   ]
 }
