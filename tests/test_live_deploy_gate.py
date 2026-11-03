@@ -43,6 +43,22 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertEqual(editorial_lead(items)["slug"],
                          latest_articles(items)[0]["slug"])
 
+    def test_verified_motion_player_and_live_checker_agree_on_cache_bust(self):
+        from scripts import build
+        from unittest.mock import patch
+        checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
+        test_article=build.load()[0]
+        manifest={"sha256": "b"*64, "created_at": "2026-11-03T01:00:00+00:00"}
+        with patch.object(build, "usable_clip", return_value=manifest):
+            player=build.article_hero_media(test_article)
+        self.assertIn('preload="metadata"', player)
+        self.assertIn('?v=' + "b"*12, player)
+        self.assertIn("data-video-fallback", player)
+        self.assertIn('recorded_clip["sha256"][:12]', checker)
+        self.assertIn('controls playsinline muted loop preload="metadata"', checker)
+        self.assertIn("data-video-fallback", checker)
+        self.assertIn('hashlib.sha256(movie).hexdigest() != recorded_clip["sha256"]', checker)
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
