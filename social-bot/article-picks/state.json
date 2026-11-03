@@ -1,4 +1,17 @@
 {
   "schema_version": 1,
-  "queued": {}
+  "queued": {
+    "apology-before-incident": {
+      "buffer_id": "6ae9bca88bcf49341df56aee",
+      "queued_at_utc": "2026-11-03T10:51:19.139752+00:00",
+      "source": "verified_anonymous_browser_article_metrics",
+      "text_sha256": "7ae96acf73fa6b0e4dac7d928d86cc9708b55b5cd5630c7286627d7dd7d632f1",
+      "metrics_at_queue": {
+        "readers": 15,
+        "likes": 0,
+        "share_clicks": 1,
+        "continued_readers": 0
+      }
+    }
+  }
 }
