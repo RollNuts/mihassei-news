@@ -14,7 +14,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: free-surreal-x
+  # Read-only auditing must not be evicted by a parallel X queue refill.
+  # It writes delivery.json only; the publishing workflow writes state.json.
+  group: free-surreal-x-delivery-audit
   cancel-in-progress: false
 
 jobs:
