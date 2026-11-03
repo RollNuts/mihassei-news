@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "enabled": true,
+  "max_per_run": 1,
+  "min_free_gib": 2
+}
