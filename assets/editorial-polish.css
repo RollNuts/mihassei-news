@@ -840,3 +840,32 @@ body{
 @media(prefers-reduced-motion:reduce){
   .extras-open{transition:none}
 }
+
+
+/* Readability repair: mobile masthead and navigation must not crowd the news.
+   These are presentation-only corrections; no new features or paid services. */
+.news-briefing{align-items:flex-start}
+.lead-media .overlay{min-width:0;gap:8px}
+.article-hero-figure figcaption{line-height:1.7}
+@media(max-width:660px){
+  .masthead{padding:14px 0 12px}
+  .masthead .brand{font-size:clamp(38px,10.4vw,50px);line-height:1.17}
+  .mast-kicker,.brand-en{display:none}
+  .mast-sub{font-size:11px;line-height:1.55;margin-top:4px}
+  .index-main{padding-top:16px}
+  .news-briefing{margin-bottom:8px}
+  .edition-time-key{margin:0 0 13px;line-height:1.65}
+  .nav-bar{position:relative}
+  .nav-bar::after{
+    content:"";position:absolute;right:0;top:0;bottom:0;width:19px;
+    pointer-events:none;background:linear-gradient(90deg,transparent,#fcfbf7);
+  }
+  .lead-media .overlay{padding:10px 13px}
+  .story-card .story-image-link{margin-bottom:11px}
+}
+@media(max-width:380px){
+  .strip-brand .fiction-mark{display:none}
+  .strip-brand{font-size:12px}
+  .clock-line{gap:5px}
+  .clock-line time{font-size:10px;letter-spacing:0}
+}
