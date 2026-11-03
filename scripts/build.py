@@ -1021,7 +1021,7 @@ def story(a, articles, issues=None, serials=None):
 {actions(a)}
 <div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
 <p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
-<details class="source-context" id="story-source">
+<details class="source-context" id="story-source" aria-label="着想した実際の話題">
 <summary>着想元を見る</summary>
 <div class="source-context-body">
 <p>{escape(src["topic"])}</p>
