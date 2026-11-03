@@ -53,6 +53,9 @@ def check(loaded_posts=None):
         assert post["kind"] == "comic", f"Current serial delivery requires manga art #{num}"
         assert 2 <= len(post["panels"]) <= 6, f"Use 2-6 flexible panels at #{num}"
         assert len(post["text"]) <= 240
+        if num >= 4:
+            # Record each episode's understandable one-sentence visual premise.
+            assert 12 <= len(post.get("episode_core","")) <= 130, f"Missing plain-language premise at #{num}"
         assert post["day"] == entry["day"] and post["order"] == entry["order"]
         assert post["location"] == entry["location"], f"Location conflict at #{num}"
         assert post["characters"] == entry["characters"], f"Cast conflict at #{num}"
@@ -79,8 +82,22 @@ def check(loaded_posts=None):
             seen_facts.add(fact)
         assert len(entry["event"]) >= 12 and len(entry["lasting_effect"]) >= 10
         assert post["location"] in canon["locations"], "Unknown setting location"
+        actions=set()
         for p in post["panels"]:
-            assert isinstance(p,dict) and 2 <= len(p["line"].strip()) <= 65
+            assert isinstance(p,dict), f"Invalid panel in #{num}"
+            assert p.get("shot","medium") in {"wide","medium","close"}, f"Bad camera shot in #{num}"
+            assert p.get("prop","none") in {"none","bolt","ticket","lamp","cup"}, f"Bad visual prop in #{num}"
+            assert isinstance(p.get("silent",False), bool), f"Silent flag must be boolean at #{num}"
+            if p.get("silent",False):
+                assert p.get("line","") == "", f"Silent panel has dialogue in #{num}"
+                assert p.get("mood") in {"happy","sad","sleepy","confused","wink"} or p.get("prop","none") != "none", f"Silent panel has no visible emotional or object cue in #{num}"
+            else:
+                assert isinstance(p.get("line"),str) and 2 <= len(p["line"].strip()) <= 65, f"Missing or too long dialogue in #{num}"
+            if num >= 4:
+                action=p.get("action","").strip()
+                assert 4 <= len(action) <= 60, f"Missing concrete action for panel in #{num}"
+                assert action not in actions, f"Same visible action duplicated in #{num}"
+                actions.add(action)
             assert p["scene"] in canon["locations"], "Scene is not in the canon"
             assert canon["locations"][p["scene"]]["introduced_in"] <= num
             assert p["focus"] in post["characters"], "An unlisted character appears"

@@ -190,13 +190,47 @@ def layout(n):
     return [(x0+(i%2)*(tw+g),y0+(i//2)*(ph+g),tw,ph) for i in range(6)]
 
 
+def paint_prop(d, prop, cx, cy, s):
+    """Small original machine-city objects. Not sourced from any other comic."""
+    stroke = max(2, int(4*s))
+    if prop == "none":
+        return
+    if prop == "bolt":
+        d.polygon([(cx-26*s,cy-5*s),(cx-15*s,cy-24*s),(cx+17*s,cy-24*s),
+                   (cx+28*s,cy-5*s),(cx+17*s,cy+13*s),(cx-15*s,cy+13*s)],
+                  fill="#D49B69")
+        d.ellipse((cx-11*s,cy-11*s,cx+11*s,cy+10*s),fill="#668999",outline=INK,width=stroke)
+    elif prop == "ticket":
+        d.rounded_rectangle((cx-46*s,cy-25*s,cx+46*s,cy+25*s),radius=max(3,int(5*s)),fill="#F8E9B7",outline=INK,width=stroke)
+        d.line((cx-12*s,cy-17*s,cx-12*s,cy+18*s),fill="#BF976B",width=stroke)
+        d.ellipse((cx+9*s,cy-8*s,cx+29*s,cy+10*s),outline="#697C8A",width=stroke)
+    elif prop == "lamp":
+        d.ellipse((cx-38*s,cy-24*s,cx+38*s,cy+17*s),fill="#BDE1EA",outline=INK,width=stroke)
+        d.ellipse((cx-22*s,cy-12*s,cx+22*s,cy+12*s),fill="#F5D77E")
+        d.line((cx,cy-40*s,cx,cy-25*s),fill=INK,width=stroke)
+    elif prop == "cup":
+        d.rounded_rectangle((cx-30*s,cy-22*s,cx+22*s,cy+29*s),radius=max(3,int(7*s)),fill="#FFF3E0",outline=INK,width=stroke)
+        d.arc((cx+8*s,cy-18*s,cx+42*s,cy+16*s),290,85,fill=INK,width=stroke)
+        d.arc((cx-18*s,cy-62*s,cx+12*s,cy-28*s),0,160,fill="#A4BED2",width=stroke)
+    else:
+        raise ValueError("Unsupported narrative prop: " + str(prop))
+
+
 def paint_panel(d,p,rect,idx):
     x,y,w,h=rect
     scene(d,rect,p["scene"],p.get("sign",""),idx)
     wide=w>=750
     scale=min(1.0, (h-124)/350, w/710) if wide else min(.87,(h-140)/360,w/630)
-    # Keep characters above the dialogue strip, particularly in 3-panel layouts.
-    base_y=y+int(h*(.31 if wide and h<430 else (.43 if wide else .48)))
+    # Wide shots show the district; close shots make facial acting legible.
+    shot = p.get("shot", "medium")
+    if shot not in {"wide", "medium", "close"}:
+        raise ValueError("Unsupported visual shot: " + str(shot))
+    scale *= {"wide": 0.72, "medium": 1.0, "close": 1.14}[shot]
+    # Silent beats have more room for acting (no caption bar).
+    if p.get("silent",False):
+        base_y=y+int(h*(.47 if wide else .57))
+    else:
+        base_y=y+int(h*(.31 if wide and h<430 else (.43 if wide else .48)))
     focus=p["focus"]
     if p.get("secondary"):
         px=x+int(w*.68)
@@ -204,6 +238,15 @@ def paint_panel(d,p,rect,idx):
         figure(d,p["secondary"],x+int(w*.28),base_y+int(24*scale),scale*.66,"plain")
     else:
         figure(d,focus,x+int(w*.54),base_y,scale,p.get("mood","plain"))
+    # Make a tangible object part of the scene, not just an explanatory subtitle.
+    prop=p.get("prop","none")
+    if prop!="none":
+        paint_prop(d,prop,x+int(w*.84),y+int(h*.65),max(.65,scale*.9))
+    # Silence is a genuine acting beat: no empty dialogue strip.
+    if p.get("silent",False):
+        if p.get("line","").strip():
+            raise ValueError("Silent panel must not contain spoken dialogue")
+        return
     # Narrative text strip: accessible readable lettering rather than cramped speech bubbles.
     bh=119 if wide else 123
     d.rounded_rectangle((x+9,y+h-bh-9,x+w-9,y+h-9),radius=10,fill="#FFF8EB",outline="#6B7783",width=2)
@@ -249,8 +292,13 @@ def main():
             continue
         if post["kind"]!="comic":
             continue
-        image=draw_manga(post)
         path=out/(post["id"]+".png")
+        # Never quietly redraw an image already linked by Buffer/X; append-only
+        # scripts and GitHub history are the source of truth for released art.
+        if path.is_file():
+            print("Preserved published/approved manga image:",post["id"])
+            continue
+        image=draw_manga(post)
         image.save(path,format="PNG",optimize=True)
         if path.stat().st_size>2_000_000:
             raise ValueError("IP manga PNG exceeded 2MB: "+post["id"])
