@@ -48,6 +48,16 @@ CATEGORY_PATHS = {
     "政治":"politics", "暮らし":"lifestyle",
     "スポーツ":"sports", "エンタメ":"entertainment"
 }
+# Editorial category descriptions help readers choose without keyword stuffing.
+CATEGORY_INTROS = {
+    "社会":"親切な制度ほど、なぜか不便。暮らしの矛盾を切り取る社会風刺。",
+    "経済":"値上げ、節約、働き方。数字の理屈が少し暴走した世界のニュース。",
+    "技術":"便利になるほど増える手間。AIと技術の奇妙な日常を描く。",
+    "政治":"会議も説明も立派なのに、なぜか話が進まない。政治の風刺。",
+    "暮らし":"家族、買い物、毎日の小さな面倒。笑えるほど身近な出来事。",
+    "スポーツ":"勝つこと、応援すること。熱すぎるルールと期待をニュースに。",
+    "エンタメ":"推し活、配信、考察。好きが行きすぎた世界のニュース。",
+}
 
 
 def curated_categories(articles):
@@ -202,7 +212,7 @@ def category_meta(a, compact=False):
             compact_date += f" {real.hour:02}:{real.minute:02}"
         return (
             '<div class="story-meta story-meta--compact">'
-            + '<span class="category">' + escape(a["category"]) + " / 創作</span>"
+            + '<span class="category">' + escape(a["category"]) + "</span>"
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
             + "</div>"
@@ -369,7 +379,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
     else:
         publication_label = "創作報道"
-        mast_subtitle = "5年後は、こうなってるかも。今の話題をちょっと大げさに。"
+        mast_subtitle = "まだ起きていないニュースを、真顔で。"
     if kind == "story" and article is not None:
         article_time_meta = (
             f'<meta property="article:published_time" content="{escape(publication_date(article))}">'
@@ -377,13 +387,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                if article.get("modified_at") else "")
             + f'<meta property="article:section" content="{escape(article["category"])}">'
         )
+    # Keep reading routes in the header; utilities remain in the footer.
     nav = [
-        ("/", "トップ", "home"),
-        ("/archive/", "新着記事", "archive"),
-        ("/issues/", "発行号", "issues"),
-        ("/saved/", "あとで読む", "saved"),
+        ("/", "一面", "home"),
+        ("/archive/", "記事一覧", "archive"),
         ("/serials/", "連載", "serials"),
-        ("/about/", "本紙について", "about"),
+        ("/issues/", "発行号", "issues"),
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
@@ -605,14 +614,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 </head><body>
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
-<a href="/" class="strip-brand">未発生新聞 <span class="fiction-mark">{escape(publication_label)}</span></a>
+<span class="strip-category"><span class="fiction-mark">{escape(publication_label)}</span></span>
 <div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>紙面の架空時計</span>
 <time data-future-clock aria-label="物語内の架空の時刻">--:--:--</time></div>
 </div></div>
 <header class="container"><div class="masthead">
 <div class="mast-kicker">THE UNHAPPENED TIMES</div>
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
-<span class="brand-en">MIHASSEI SHIMBUN</span>
 <p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
 <div class="container observer-shell">
@@ -627,7 +635,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
-<p class="footer-copy">5年後を想像して、今の世の中をちょっと笑う新聞。</p></div>
+<p class="footer-copy">まだ起きていないニュースを、真顔で。</p></div>
 <div class="footer-nav"><a href="/archive/">新着記事</a><a href="/issues/">発行号</a><a href="/saved/">あとで読む</a><a href="/serials/">連載</a><a href="/archive/#category-feeds">ジャンル別RSS</a><a href="/about/">本紙について</a>
 <a href="/editorial/">編集方針</a><a href="/advertise/">広告・協賛</a><a href="/feed.xml">RSS</a><a href="{site_share}" target="_blank" rel="noopener noreferrer external">Xで紹介する</a><a href="/privacy/">プライバシー</a></div></div>
 <div class="footer-bottom"><span>© 未発生新聞 / veripsa.com</span>
@@ -710,8 +718,7 @@ def home(articles, serials=None):
 <span class="small-label red">READER DISCOVERY / 読者の注目</span>
 <h2 id="readers-choice-title">新着の中で読まれている記事</h2></div>
 <a href="/archive/">ほかの記事も探す ↗</a></div>
-<p class="readers-choice-note">直近{len(popular_candidates)}本から、閲覧した匿名ブラウザの累計が一定以上ある記事を紹介。
-実人数・PV・週間ランキングではありません。</p>
+<p class="readers-choice-note">実測ブラウザ単位の参考集計。実人数・PVではありません。</p>
 <ol class="readers-choice-list" data-popular-list></ol>
 </section>'''
     discussion_options = escape(json.dumps(
@@ -724,46 +731,31 @@ def home(articles, serials=None):
 <strong data-edition-title>最新の架空ニュース</strong>
 <span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
 </div>
-<section class="edition-time-key" aria-label="未発生新聞の読み方">
-<div class="concept-primer">
-<p class="concept-primer-lead"><strong>もし、この調子で5年たったら？</strong> 今の話題をちょっと大げさにした架空ニュースです。</p>
-<details class="concept-primer-details">
-<summary>この新聞の読み方</summary>
-<p class="concept-primer-route"><span>現実の話題</span><span aria-hidden="true">→</span><span>5年後の「もしも」</span><span aria-hidden="true">→</span><span>真顔の冗談</span></p>
-<p class="concept-primer-foot">未来を当てるための予測ではありません。「公開」は実際の掲載日時、「架空」は物語の日時です。</p>
-</details>
-</div></section>
 <section class="hero-grid">
 <article class="lead">
-<span class="small-label red">EDITOR’S PICK / まずは、この一本。</span>
+<span class="small-label red">TOP STORY / 一面</span>
 <div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
-<aside class="side-brief"><div class="side-title"><h2>新着ニュース</h2><span>THE LATEST</span></div>{side}</aside>
+<aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2><span>LATEST</span></div>{side}</aside>
 </section>
-{starter_section}
-<section class="section-block"><div class="section-head"><h2>さらに新着を読む</h2>
+<section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
-{render_serials_feature(serials)}
-{popular_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
-<div><span class="small-label red">DISCOVER</span><h2>好きなジャンルから、5年後へ。</h2></div>
+<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
+{render_serials_feature(serials)}
+{starter_section}
+{popular_section}
 <details class="extras-shelf">
-<summary><span class="extras-eyebrow">MORE / 紙面の楽しみ方</span><strong>発行号・号外・読者参加・RSS</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
+<summary><strong>発行号・号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">
 {issue_section}
-<section class="free-follow" aria-label="新着記事の購読">
-<div class="free-follow-copy"><span class="small-label red">FOLLOW / FREE RSS</span>
-<h2>新しい「もしも」を、定期的に読む。</h2>
-<p>新着記事をRSSリーダーに登録できます。メールアドレス不要・追加料金なし。</p></div>
-<a class="free-follow-link" href="/feed.xml" type="application/rss+xml">新着RSSを購読する ↗</a>
-</section>
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
@@ -787,12 +779,8 @@ def home(articles, serials=None):
 <nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
 </div></details>
-<aside class="banner"><div><div class="small-label red">EDITORIAL</div>
-<h2>まだ起きていないニュースを、真顔で。</h2>
-<p>5年後を勝手に想像すると、今の世の中もちょっとおかしく見えてくる。</p></div>
-<a href="/about/">未発生新聞について ↗</a></aside>
 </div>'''
-    return layout("未発生新聞", "未来を当てるつもりはありません。今のニュースを少し大げさに描く、5年後の風刺とユーモアの架空新聞。", "/", content,"home")
+    return layout("未発生新聞", "未発生新聞は、社会の矛盾や日常の理不尽を5年後の架空ニュースにして笑う風刺メディア。読み切りの創作記事と推理小説を公開中。", "/", content,"home")
 
 def archive(articles):
     # Only offer categories with actual published articles; the list grows with
@@ -811,7 +799,7 @@ def archive(articles):
     decade_hidden = ' hidden' if len(decades) < 2 else ''
     content = f'''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>架空ニュースの記事一覧</h1>
-<p>全部作り話です。着想元の現実の記事とは分けてお読みください。</p>
+<p>気になる見出しから、どうぞ。</p>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" aria-label="カテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
@@ -839,18 +827,19 @@ def archive(articles):
 
 def category_page(category, items):
     title = category + "の架空ニュース"
+    intro = CATEGORY_INTROS[category]
     content = (
         '<div class="container archive-page">'
         '<header class="page-intro"><span class="eyebrow">CATEGORY / FICTIONAL NEWS</span>'
         f'<h1>{escape(title)}</h1>'
-        f'<p>{escape(category)}をめぐる、まだ起きていない出来事。</p>'
+        f'<p>{escape(intro)}</p>'
         f'<p class="category-page-feed"><a href="{category_feed_url(category)}" type="application/rss+xml">'
         f'{escape(category)}の新着をRSSで購読 ↗</a></p></header>'
         '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
         '<p style="margin-top:26px"><a class="read-more" href="/archive/">すべての記事を見る</a></p>'
         '</div>'
     )
-    return layout(title,category + "の架空ニュース。今の話題をちょっと大げさに描く、5年後の社会風刺です。",
+    return layout(title,category + "の架空ニュース・社会風刺。"+intro,
                   category_url(category),content,active="archive",
                   feed_url=category_feed_url(category),collection=items)
 
@@ -964,7 +953,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<p class="story-fiction-context"><strong>この記事は創作です。</strong> 現実の話題から「5年後のもしも」を想像しました。<a href="#story-source">現実の着想元を見る</a></p>
+<p class="story-fiction-context"><strong>この記事は創作です。</strong> <a href="#story-source">着想元を見る</a></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
@@ -982,7 +971,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="future-poll-heading">
 <span class="future-poll-kicker">WHAT IF? / もしもの投票</span>
 <h2 id="future-poll-title">この「もしも」、ありそう？</h2>
-<p>未来を当てる投票ではなく、架空の設定を楽しむ二択です。</p>
+
 </div>
 <div class="future-poll-choices" role="group" aria-label="架空ニュースのありそう度を投票">
 <button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
@@ -999,9 +988,9 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-reader-metric" data-article-readers hidden><span>今日この記事を読んだブラウザ <strong data-article-reader-count>—</strong>件</span><small>※日本時間・1日1回集計、実人数ではありません</small></div>
 {actions(a)}
 <section class="source-context" id="story-source" aria-label="着想した実際の話題">
-<h2>現実の話題が、この記事の出発点です</h2>
+<h2>着想元</h2>
 <p>{escape(src["topic"])}</p>
-<p class="source-context-disclaimer">ここから創作した5年後の出来事は、元記事が報じた事実ではありません。</p>
+<p class="source-context-disclaimer">記事内の出来事は創作であり、元記事が報じた事実ではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} の元記事を見る ↗</a>
 </section>
@@ -1012,7 +1001,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="reader-comments-heading">
 <span class="eyebrow">READERS' VOICES / 読者の声</span>
 <h2 id="comments-heading">読者のツッコミ <small data-comments-count></small></h2>
-<p>架空ニュースへのツッコミや感想をどうぞ。ニックネームで投稿できます。投稿内容は公開されます。</p>
+<p>感想やツッコミをどうぞ。投稿内容は公開されます。</p>
 </div>
 <div class="reader-comments-list" data-comments-list></div>
 <p class="reader-comments-status" data-comments-status role="status">コメントを準備しています…</p>
