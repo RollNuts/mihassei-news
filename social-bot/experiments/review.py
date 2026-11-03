@@ -74,6 +74,10 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
     posted=set(ledger.get("queued",{}))
     pending=[p for p in posts if p["id"] not in posted]
     formats=Counter(p["format"] for p in posts)
+    mechanisms=Counter(p.get("mechanism","unspecified") for p in posts)
+    queued_mechanisms=Counter(
+        p.get("mechanism","unspecified") for p in posts if p["id"] in posted
+    )
     status={x["post_id"]:x["buffer_status"] for x in delivery.get("items",[])}
     states=Counter(status.get(pid,"not_checked") for pid in posted)
     observations=metric_data.get("measurements",[])
@@ -89,6 +93,9 @@ def compose(inventory, ledger, delivery, metric_data, now=None):
         f"- 原稿在庫：{len(posts)}本（内訳 {', '.join(f'{key}={n}' for key,n in sorted(formats.items()))}）",
         f"- Bufferに一度でも登録した原稿：{len(posted)}本（現在予約中の本数ではない）",
         f"- 未登録原稿：{len(pending)}本",
+        f"- 笑いの構造（全在庫）：{dict(sorted(mechanisms.items()))}",
+        f"- 笑いの構造（Bufferへ一度でも登録済み）：{dict(sorted(queued_mechanisms.items()))}",
+
         f"- 最終確認できたBuffer状態：{dict(sorted(states.items())) if states else '未確認'}",
         f"- Buffer状態確認日時：{delivery.get('checked_at_utc','未取得')}",
         "",

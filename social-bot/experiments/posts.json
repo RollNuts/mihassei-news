@@ -6,78 +6,168 @@
       "id": "xexp-ghost-interview",
       "sequence": 1,
       "format": "surreal_text",
-      "text": "本物の幽霊がお化け屋敷の面接に落ちた。\n理由は「怖がらせ方がわざとらしい」。"
+      "text": "本物の幽霊がお化け屋敷の面接に落ちた。\n理由は「怖がらせ方がわざとらしい」。",
+      "mechanism": "inverted_expectation"
     },
     {
       "id": "xexp-future-advice",
       "sequence": 2,
       "format": "surreal_text",
-      "text": "未来の自分が助言しに来た。\n「何をすればいい？」と聞くと、向こうも俺に聞きに来たらしい。"
+      "text": "未来の自分が助言しに来た。\n「何をすればいい？」と聞くと、向こうも俺に聞きに来たらしい。",
+      "mechanism": "self_reference"
     },
     {
       "id": "xexp-reaper-late",
       "sequence": 3,
       "format": "surreal_text",
-      "text": "死神が初めて遅刻した。\n上司に「命に関わるぞ」と怒られた。"
+      "text": "死神が初めて遅刻した。\n上司に「命に関わるぞ」と怒られた。",
+      "mechanism": "literal_wordplay"
     },
     {
       "id": "xexp-ufo-ticket",
       "sequence": 4,
       "format": "surreal_text",
       "text": "UFOが駐車違反を取られた。\n宇宙人は「もうこの星には来ない」と言って、反則金だけ払った。",
-      "hashtag": "#シュールネタ"
+      "hashtag": "#シュールネタ",
+      "mechanism": "inverted_expectation"
     },
     {
       "id": "xexp-robot-job",
       "sequence": 5,
       "format": "surreal_text",
-      "text": "巨大ロボットが「目立たない仕事」に応募した。\n面接会場に入れなかった。"
+      "text": "巨大ロボットが「目立たない仕事」に応募した。\n面接会場に入れなかった。",
+      "mechanism": "physical_scale"
     },
     {
       "id": "xexp-fortune-spoiler",
       "sequence": 6,
       "format": "surreal_text",
       "text": "占い師の予言が当たりすぎて、店に「ネタバレ禁止」の張り紙が出た。",
-      "hashtag": "#シュールネタ"
+      "hashtag": "#シュールネタ",
+      "mechanism": "meta_commentary"
     },
     {
       "id": "xexp-underwater-office",
       "sequence": 7,
       "format": "surreal_text",
-      "text": "海底の役所で「水に濡れた書類は受け付けません」と言われた。"
+      "text": "海底の役所で「水に濡れた書類は受け付けません」と言われた。",
+      "mechanism": "literal_wordplay"
     },
     {
       "id": "xexp-time-warranty",
       "sequence": 8,
       "format": "surreal_text",
       "text": "タイムマシンの保証書に「過去への返品は受け付けません」と書いてあった。",
-      "hashtag": "#シュールネタ"
+      "hashtag": "#シュールネタ",
+      "mechanism": "self_reference"
     },
     {
       "id": "xexp-dragon-candles",
       "sequence": 9,
       "format": "surreal_text",
-      "text": "ドラゴンがキャンドル店を開いた。\n開店初日のレビューは「火力が強すぎる」。"
+      "text": "ドラゴンがキャンドル店を開いた。\n開店初日のレビューは「火力が強すぎる」。",
+      "mechanism": "inverted_expectation"
     },
     {
       "id": "xexp-ghost-reunion",
       "sequence": 10,
       "format": "surreal_text",
       "text": "幽霊の同窓会、出席者全員が来ているのに、椅子だけ全部空いている。",
-      "hashtag": "#シュールネタ"
+      "hashtag": "#シュールネタ",
+      "mechanism": "visual_reveal"
     },
     {
       "id": "xexp-nejimachi-nothing-wrong",
       "sequence": 11,
       "format": "character_moment",
       "text": "ピトが「本日は問題ありません」と言った。\nネジはその報告を聞いて、初めて不安になった。",
-      "hashtag": "#ネジまち"
+      "hashtag": "#ネジまち",
+      "mechanism": "dry_dialogue"
     },
     {
       "id": "xexp-nejimachi-one-screw",
       "sequence": 12,
       "format": "character_moment",
-      "text": "ネジは街灯のネジを一本締めた。\n街は何も変わらなかったので、少し安心した。"
+      "text": "ネジは街灯のネジを一本締めた。\n街は何も変わらなかったので、少し安心した。",
+      "mechanism": "small_action"
+    },
+    {
+      "id": "xexp-invisible-nails",
+      "sequence": 13,
+      "format": "surreal_text",
+      "text": "透明人間がネイルサロンに行った。\n帰りの電車で、つり革をつかむ爪だけが宙に浮いていた。",
+      "mechanism": "visual_reveal",
+      "hashtag": "#シュールネタ",
+      "featured": true
+    },
+    {
+      "id": "xexp-late-echo",
+      "sequence": 14,
+      "format": "surreal_text",
+      "text": "山で「ヤッホー！」と叫んだら、こだまが「今日は無理」と返した。\n翌朝、「ホー！」だけ届いた。",
+      "mechanism": "delayed_response",
+      "featured": true
+    },
+    {
+      "id": "xexp-alien-ocean",
+      "sequence": 15,
+      "format": "surreal_text",
+      "text": "宇宙人が初めて海を見て、しばらく黙っていた。\n「地球、飲み物こぼしすぎじゃない？」",
+      "mechanism": "perspective_flip",
+      "hashtag": "#シュールネタ"
+    },
+    {
+      "id": "xexp-shadow-home",
+      "sequence": 16,
+      "format": "surreal_text",
+      "text": "影が本人より先に帰宅していた。\n玄関の明かりをつけたら、慌てて床に寝転んだ。",
+      "mechanism": "visual_reveal"
+    },
+    {
+      "id": "xexp-witch-autopilot",
+      "sequence": 17,
+      "format": "surreal_text",
+      "text": "魔女が空飛ぶほうきを自動運転にした。\n翌朝、ほうきだけ出勤して、魔女が家に残された。",
+      "mechanism": "role_reversal",
+      "hashtag": "#シュールネタ",
+      "featured": true
+    },
+    {
+      "id": "xexp-planetarium-star",
+      "sequence": 18,
+      "format": "surreal_text",
+      "text": "プラネタリウムの星が、本物の夜空を見に行った。\n感想は「思ったより暗い」。",
+      "mechanism": "perspective_flip"
+    },
+    {
+      "id": "xexp-scarecrow-dayoff",
+      "sequence": 19,
+      "format": "surreal_text",
+      "text": "かかしが休みの日、カラスたちは畑の隅でおとなしく待っていた。\n「今日いないんだ」って。",
+      "mechanism": "unexpected_kindness",
+      "hashtag": "#シュールネタ"
+    },
+    {
+      "id": "xexp-map-lost",
+      "sequence": 20,
+      "format": "surreal_text",
+      "text": "地図が道に迷ったので、道路標識に現在地を聞いた。\n標識はずっと同じ方向を指していた。",
+      "mechanism": "role_reversal"
+    },
+    {
+      "id": "xexp-neji-lunch",
+      "sequence": 21,
+      "format": "character_moment",
+      "text": "モクがネジに「昼休み何する？」と聞いた。\n「休む」\nモクは少し考えて「それ、いいね」と言った。",
+      "mechanism": "dry_dialogue",
+      "hashtag": "#ネジまち"
+    },
+    {
+      "id": "xexp-pito-vending",
+      "sequence": 22,
+      "format": "character_moment",
+      "text": "ピトが壊れた自販機に「調子はいかがですか」と聞いた。\n返事はなかったけど、ネジが温かい缶を一本置いていった。",
+      "mechanism": "small_action"
     }
   ]
 }
