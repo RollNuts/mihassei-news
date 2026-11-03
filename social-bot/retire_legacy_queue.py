@@ -49,10 +49,10 @@ def plan_migration(feed, state, buffer_posts):
     return planned, results
 
 
-def move_to_draft(token, post_id):
+def move_to_draft(token, post_id, exact_original_text):
     query = (
         "mutation { editPost(input: {id: " + qstring(post_id)
-        + ", saveToDraft: true}) { __typename "
+        + ", text: " + qstring(exact_original_text) + ", saveToDraft: true}) { __typename "
         + "... on PostActionSuccess { post { id status } } "
         + "... on MutationError { message } } }"
     )
@@ -80,8 +80,12 @@ def main():
     planned, other = plan_migration(inventory, state, posts)
     print("Verified target posts:", len(planned), "scheduled; other:", len(other))
     updates = []
+    original_text_by_id = {p['id']: p['text'] for p in inventory['posts']}
     for original_id, post_id in planned:
-        move_to_draft(token, post_id)
+        # Buffer editPost currently validates that text/media is supplied even
+        # when the docs say an omitted text value should be preserved.
+        # We reuse only the exact original text verified by plan_migration.
+        move_to_draft(token, post_id, original_text_by_id[original_id])
         updates.append({
             "original_id": original_id,
             "buffer_id": post_id,
