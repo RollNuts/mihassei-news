@@ -123,7 +123,12 @@ def remote_asset_available(url):
 
 def queue_one(token, channelid, post):
     extra = ""
-    if post["kind"] == "comic":
+    if post["kind"] in ("comic", "image"):
+        if post["kind"] == "image" and (
+            not post.get("id", "").startswith("xexp-") or
+            not post["id"].replace("-", "").isalnum()
+        ):
+            raise RuntimeError("Only original experiment image IDs may use image posts")
         filename = post["id"] + ".png"
         local = HERE / "assets" / filename
         if not local.is_file():

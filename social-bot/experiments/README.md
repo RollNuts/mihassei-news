@@ -64,3 +64,11 @@ X公式は投稿内のハッシュタグを**2個まで推奨**するが、必�
 GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネル・既存APIキーのみ。OpenAI API / 画像生成 API / X API従量課金 / 新たな有料サービスは使用しない。Buffer無料プランの機能と制限は将来変更される可能性があるため、失敗したら**有料化して回避せず**理由を記録する。
 
 **公開済みの検証方法**：Actionsの実行ログでBufferのAPI受付成功を確認し、Bufferで予約時刻・画像/本文を確認する。その後Xに公開されたURLと表示回数を確認する。予約受付＝実際のX公開成功ではない。
+
+## Original X illustrations (2026-11-03)
+
+- Four independent surreal stories have scene-only original 1200×675 PNG illustrations: UFO parking ticket, invisible person's nail salon/train, commuter broom, shadow home. This is a visual experiment, **not** an approved Nejimachi manga episode or a photoreal AI image.
+- `visuals.py` generates assets locally using Pillow only. CI generates the PNGs and commits them to `social-bot/assets/xexp-*.png` on main **before** submitting the Buffer image URL. No paid image API, X API, additional cloud storage, or extra credits.
+- `dispatch.py` reserves the images through the proven Buffer `assets.image.url` mutation. First original visual post is prioritized on the next available FREE queue slot; existing first three text reservations never change. The initial image experiments use one relevant `#シュールネタ` tag; text-only/no-tag items remain comparison controls.
+- The Buffer post ID, final-text SHA256, and image SHA256 are persisted. Once an image is hosted or queued, the script does not overwrite it, and a mismatching hash fails validation. Unknown visuals and unapproved character comics cannot enter this path.
+- The shared queue stays capped at 3 scheduled / 2 new per refill. A successful Buffer request is only a reservation; confirm actual X posting and 24h/72h impressions separately before judging creative impact.

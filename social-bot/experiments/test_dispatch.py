@@ -220,6 +220,28 @@ class ExperimentsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"Featured must be a boolean"):
             validate(posts,c,state)
 
+    def test_first_available_image_is_prioritized_and_has_a_relevant_tag(self):
+        inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
+        posts=inventory["experiments"]
+        state={"schema_version":1,"queued":{}}
+        for p in posts[:3]:
+            state["queued"][p["id"]]={"buffer_id":p["id"],
+                                      "text_sha256":hash_text(p["text"])}
+        planned,_,_=decide(posts,state,[],3,1)
+        self.assertEqual(len(planned),1)
+        self.assertEqual(planned[0]["id"],"xexp-ufo-ticket")
+        self.assertEqual(planned[0]["visual"],"ufo")
+        self.assertTrue(publication_text(planned[0]).endswith("#シュールネタ"))
+
+    def test_unapproved_or_comic_visual_rejected(self):
+        p,c,state=sample()
+        p["experiments"][0]["visual"]="made-up"
+        with self.assertRaisesRegex(ValueError,"Unreviewed"):
+            validate(p,c,state)
+        p["experiments"][0]["visual"]="ufo"
+        with self.assertRaisesRegex(ValueError,"Unreviewed"):
+            validate(p,c,state)
+
     def test_state_ledger_prevents_repeat_when_outside_buffer_window(self):
         a,b,c=sample()
         c["queued"]["xexp-a"]={"buffer_id":"past-id","text_sha256":hash_text(a["experiments"][0]["text"])}
