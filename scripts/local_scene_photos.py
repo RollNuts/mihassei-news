@@ -58,7 +58,10 @@ SCENES = (
     (("返信3日", "恋活アプリ"), "A slightly awkward couple in a Japanese cafe sitting side by side, each staring at a phone, both sharing a shy smile after an extremely long silent conversation."),
     (("上司の機嫌予報", "機嫌予報"), "An office employee studies an elaborate weather forecast of office moods on a monitor; a stern manager silently walks past with a tiny personal rain cloud above the desk."),
     (("地元100％", "土産"), "A tourist carrying a locally wrapped souvenir box at a small rural town boundary, while two very serious shopkeepers measure the package with a clipboard."),
-    (("球団", "野球", "選手"), "A Japanese baseball stadium at afternoon practice, with a completely serious team official, a confused player, and absurd fan memorabilia on a folding table."),
+    # Sport-specific cues: the generic word "選手" must never turn volleyball
+    # or another sport into a baseball photograph.
+    (("バレー", "バレーボール"), "A bright indoor volleyball court with a clearly visible volleyball net, fictional players in plain uniforms and fans solemnly watching an absurd game-day moment."),
+    (("球団", "野球", "プロ野球"), "A Japanese baseball stadium at afternoon practice, with a completely serious team official, a confused player, and absurd fan memorabilia on a folding table."),
     (("会見", "謝罪"), "A serious formal press conference with suited actors, many empty chairs and an absurdly oversized stack of apology documents on the podium."),
     (("ドラマ", "最終回", "考察"), "A living room with several devoted television fans in deep concentration, a corkboard covered in blank notes and red strings, television playing a blank final scene."),
     (("転職", "求人"), "A strangely solemn office job interview with a humanoid service robot sitting opposite a person holding a folder."),
