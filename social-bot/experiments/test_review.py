@@ -22,13 +22,13 @@ def fake_impression(post_id,fmt,count,when="2026-11-03T20:30:00+09:00",hours=24)
 class WeeklyReviewTests(unittest.TestCase):
     def setUp(self):
         self.posts={"experiments":[
-            {"id":"a","sequence":1,"format":"surreal_text","text":"オリジナルA"},
-            {"id":"b","sequence":2,"format":"character_moment","text":"オリジナルB"},
-            {"id":"c","sequence":3,"format":"surreal_text","text":"オリジナルC"},
+            {"id":"xexp-a","sequence":1,"format":"surreal_text","text":"オリジナルA"},
+            {"id":"xexp-b","sequence":2,"format":"character_moment","text":"オリジナルB"},
+            {"id":"xexp-c","sequence":3,"format":"surreal_text","text":"オリジナルC"},
         ]}
-        self.state={"queued":{"a":{"buffer_id":"buffer-a"}}}
+        self.state={"queued":{"xexp-a":{"buffer_id":"buffer-a"}}}
         self.delivery={"checked_at_utc":"2026-11-03T11:45:00+00:00",
-                       "items":[{"post_id":"a","buffer_status":"scheduled"}]}
+                       "items":[{"post_id":"xexp-a","buffer_status":"scheduled"}]}
         self.now=datetime(2026,11,3,22,0,tzinfo=timezone(timedelta(hours=9)))
 
     def run_review(self,rows):
@@ -76,8 +76,8 @@ class WeeklyReviewTests(unittest.TestCase):
         self.posts["experiments"][2]["hashtag"]="#シュールネタ"
         tagged=fake_impression("x-actual-3","surreal_text",250)
         control=fake_impression("x-actual-1","surreal_text",100)
-        tagged["experiment_id"]="c"
-        control["experiment_id"]="a"
+        tagged["experiment_id"]="xexp-c"
+        control["experiment_id"]="xexp-a"
         stats=hashtag_summary(self.posts["experiments"],[tagged,control],"surreal_text",24)
         self.assertEqual(stats["one_relevant_tag"],{"n":1,"median":250})
         self.assertEqual(stats["no_tag"],{"n":1,"median":100})
@@ -93,7 +93,7 @@ class WeeklyReviewTests(unittest.TestCase):
     def test_format_mismatch_in_linked_metric_is_rejected(self):
         self.posts["experiments"][2]["hashtag"]="#シュールネタ"
         wrong=fake_impression("x-post","character_moment",100)
-        wrong["experiment_id"]="c"
+        wrong["experiment_id"]="xexp-c"
         with self.assertRaisesRegex(ValueError,"format differs"):
             hashtag_summary(self.posts["experiments"],[wrong],"surreal_text")
 
