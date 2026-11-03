@@ -167,17 +167,18 @@ def modification_date(a):
 
 
 def editorial_lead(articles):
-    """Use a recent, human-curated pick for the front page, never for RSS."""
+    """Show the newest *actual publication* in the front-page lead.
+
+    Earlier curation could pin an older pick for up to 48 hours, making an
+    actively updated newsroom look stale. Human picks still appear in the
+    separate editorial starter section, with their own deduplicated links.
+    Use the same keys as load(); never use the fictional date or modified_at.
+    """
     if not articles:
         return None
-    latest = datetime.fromisoformat(publication_date(articles[0]))
-    for item in starter_picks(articles, base=BASE, limit=8):
-        article = item["article"]
-        published = datetime.fromisoformat(publication_date(article))
-        hours_old = (latest - published).total_seconds() / 3600
-        if 0 <= hours_old <= 48:
-            return article
-    return articles[0]
+    return max(articles, key=lambda a: (
+        publication_date(a), a["source"]["published_at"]
+    ))
 
 
 def load():
