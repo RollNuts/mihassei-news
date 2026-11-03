@@ -47,6 +47,7 @@ class WorkerShutdownTests(unittest.TestCase):
             keep.write_bytes(b"important")
             own = output / "mihassei-staged-scene_00001_.png"
             server, sync = MagicMock(pid=1111), MagicMock(pid=2222)
+            server.stderr = io.BytesIO(b"startup diagnostic")
             server.poll.return_value = sync.poll.return_value = None
 
             def interrupted_sleep(seconds):
