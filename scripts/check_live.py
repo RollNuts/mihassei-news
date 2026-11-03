@@ -465,8 +465,10 @@ def check():
         # Only link to a real serial episode, with a clear editorial boundary.
         chosen_serial=choose_serial(item,serials)
         if chosen_serial:
-            latest_chapter=chosen_serial["episodes"][-1]
-            recommended_path="/serials/"+chosen_serial["slug"]+"/"+latest_chapter["slug"]+"/"
+            # Fresh mystery readers need chapter 1; market readers need latest analysis.
+            linked_chapter = (chosen_serial["episodes"][-1] if chosen_serial["kind"]=="analysis"
+                              else chosen_serial["episodes"][0])
+            recommended_path="/serials/"+chosen_serial["slug"]+"/"+linked_chapter["slug"]+"/"
             for required in ('class="article-serial-bridge"',
                              'href="'+recommended_path+'"',
                              '/serials/'+chosen_serial["slug"]+'/cover.svg',
