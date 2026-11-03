@@ -3,9 +3,10 @@
 import copy
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from retire_legacy_queue import plan_migration
+from retire_legacy_queue import plan_migration, move_to_draft
 
 def dataset():
     feed = {"posts":[
@@ -27,6 +28,22 @@ def dataset():
     return feed,state,queue
 
 class MigrationSafety(unittest.TestCase):
+    def test_draft_mutation_retains_original_text_and_only_updates_target(self):
+        original_text="宇宙人のテスト"
+        mocked={"editPost":{"__typename":"PostActionSuccess","post":{"id":"old-1","status":"draft"}}}
+        with patch("retire_legacy_queue.gql", return_value=mocked) as client:
+            move_to_draft("redacted-token","old-1",original_text)
+        query=client.call_args.args[1]
+        self.assertIn('editPost(input: {id: "old-1", text: "宇宙人のテスト", saveToDraft: true}',query)
+        self.assertNotIn("deletePost",query)
+        self.assertNotIn("shareNow",query)
+
+    def test_error_message_cannot_be_silenced(self):
+        response={"editPost":{"__typename":"InvalidInputError","message":"Post must have either text or media."}}
+        with patch("retire_legacy_queue.gql", return_value=response):
+            with self.assertRaisesRegex(RuntimeError,"Post must have either text or media"):
+                move_to_draft("redacted-token","old-1","宇宙人のテスト")
+
     def test_only_original_two(self):
         feed,state,queue=dataset()
         plan,notes=plan_migration(feed,state,queue)
