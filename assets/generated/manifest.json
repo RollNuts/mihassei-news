@@ -1,15 +1,5 @@
 {
   "images": {
-    "comedy-show-profits-from-silence": {
-      "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
-      "bytes": 78051,
-      "generated_at": "2026-11-03T04:04:47.532607+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 706460328480055475,
-      "sha256": "a750d9e925bd21923dbf59e9074280826d1a7d723a6785bdf2b9cba3b27271c2"
-    },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "7fd87dd6199bcc24b51772266bd575a6e657c10ee1f1625daf3e06de070a9f0e",
       "bytes": 68479,
