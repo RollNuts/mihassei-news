@@ -1,5 +1,15 @@
 {
   "images": {
+    "ai-chair-removes-executives": {
+      "article_sha256": "debe9196cff8eba02a4055f720b49e5ac16e9ceb1558cb80310fbbc37313efb9",
+      "bytes": 73871,
+      "generated_at": "2026-11-03T07:31:04.544586+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 6825572438772901493,
+      "sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "bytes": 86250,
@@ -59,6 +69,16 @@
       "prompt_version": 2,
       "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+    },
+    "idol-ice-kept-in-freezer": {
+      "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
+      "bytes": 66053,
+      "generated_at": "2026-11-03T07:31:04.542144+00:00",
+      "model": "sd_xl_base_1.0.safetensors",
+      "origin": "local-comfyui",
+      "prompt_version": 2,
+      "seed": 3443340707540981827,
+      "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
     },
     "local-souvenir-cannot-leave-town": {
       "article_sha256": "9a4c73400cee12de4f0158729fc62cab51da7350c70f1af6afc1b41468d37cc1",
@@ -185,12 +205,6 @@
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
-  "rejected": {
-    "idol-ice-kept-in-freezer": {
-      "article_sha256": "46cb52925bfa93db17ef3a13b8df8b6332eba1a9d0ac1b5acb9bd9d4f83c2dd4",
-      "reason": "Pilot produced cleaning/bakery scene rather than ice-cream collecting; keep fallback until visual direction changes.",
-      "reviewed_at": "2026-11-03T04:32:17.206300+00:00"
-    }
-  },
+  "rejected": {},
   "version": 1
 }
