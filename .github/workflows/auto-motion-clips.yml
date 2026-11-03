@@ -1,0 +1,117 @@
+name: Free bounded article motion clips
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/auto-motion-clips.yml'
+      - '.github/motion-clips.json'
+      - 'scripts/motion_clips.py'
+      - 'scripts/publish_motion_clips.py'
+      - 'tests/test_motion_clips.py'
+      - 'tests/test_motion_publisher.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/auto-motion-clips.yml'
+      - '.github/motion-clips.json'
+      - 'assets/generated/*.jpg'
+      - 'assets/generated/manifest.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+# Parallel article/photo pushes cannot publish clips in parallel.
+concurrency:
+  group: free-motion-clips-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.repository == 'RollNuts/mihassei-news'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install only free system FFmpeg on the disposable runner
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install --yes --no-install-recommends ffmpeg
+          fi
+          ffmpeg -hide_banner -version | head -n 1
+      - name: Test real four-second encoding, source hashes, and OFF switch
+        run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher
+
+  publish:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check persistent ON/OFF toggle before installing anything
+        id: gate
+        run: |
+          echo "enabled=$(python3 scripts/publish_motion_clips.py --status)" >> "$GITHUB_OUTPUT"
+      - name: Prepare free local video encoding and static checks
+        if: steps.gate.outputs.enabled == 'true'
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install --yes --no-install-recommends ffmpeg
+          fi
+          python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
+      - name: Publish at most one verified clip with normal non-force push
+        if: steps.gate.outputs.enabled == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            echo "Clip publish attempt $attempt of 3"
+            git fetch --quiet origin main
+            # Disposable GitHub runner only; never reset a user's Mac checkout.
+            git checkout -B motion-clip-work origin/main
+            if [[ "$(python3 scripts/publish_motion_clips.py --status)" != "true" ]]; then
+              echo "Clip generation turned OFF in the latest main; stopped safely."
+              exit 0
+            fi
+            python3 scripts/publish_motion_clips.py --generate
+            git add -A -- assets/clips
+            if git diff --cached --quiet; then
+              echo "No eligible approved stills or clip budget reached; no commit."
+              exit 0
+            fi
+            # The stage must contain ONLY pre-vetted movie bytes and its manifest.
+            unexpected="$(git diff --cached --name-only | grep -Ev '^assets/clips/(manifest\.json|[a-z0-9]+(-[a-z0-9]+)*\.mp4)$' || true)"
+            if [[ -n "$unexpected" ]]; then
+              echo "Unexpected staged file; refusing to publish: $unexpected" >&2
+              exit 1
+            fi
+            git diff --cached --check
+            python3 scripts/build.py
+            python3 scripts/audit_search_index.py
+            python3 -m unittest discover -s tests -q
+            git commit -m "media: publish one verified 4s article motion clip"
+            if git push origin HEAD:main; then
+              echo "Clip-only commit pushed safely. Dispatching exact public release verification."
+              # GitHub-token pushes do not launch ordinary push workflows.
+              # workflow_dispatch explicitly DOES launch the existing verifier.
+              gh workflow run verify-public-photos.yml --ref main
+              exit 0
+            fi
+            echo "Main advanced; re-read all approved image + clip hashes and retry."
+            sleep 3
+          done
+          echo "Main kept changing; no force push or silent overwrite." >&2
+          exit 1
