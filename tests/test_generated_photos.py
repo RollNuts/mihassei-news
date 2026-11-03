@@ -21,6 +21,7 @@ def fixture():
         "slug": "family-dinner-gacha-243-rejections",
         "title": "夕飯ガチャ、243種類すべて却下",
         "summary": "献立を決めるガチャを家族全員が真顔で却下。",
+        "published_at": "2026-11-03T10:00:00+09:00",
         "category": "暮らし",
         "art": "generic",
         "fiction_at": "2031-11-03T08:20:00+09:00",
