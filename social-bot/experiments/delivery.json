@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-03T11:09:48.973654+00:00",
+  "checked_at_utc": "2026-11-03T11:15:16.597875+00:00",
   "source": "buffer_post_by_saved_id_readonly",
   "limitations": "Buffer statuses/URLs are provider evidence; they are not independent X verification or X impression counts.",
   "items": [
@@ -12,7 +12,13 @@
       "buffer_status": "sent",
       "buffer_asset_count": 0,
       "buffer_sent_at_utc": "2026-11-03T10:30:12.842Z",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2117564998318772347"
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117564998318772347",
+      "buffer_latest_impressions": {
+        "impressions": 0,
+        "observed_at_utc": "2026-11-03T10:30:22.116000+00:00",
+        "provider": "buffer_experimental_personal_api",
+        "window_hours": null
+      }
     },
     {
       "post_id": "xexp-future-advice",
@@ -38,7 +44,13 @@
       "buffer_status": "sent",
       "buffer_asset_count": 1,
       "buffer_sent_at_utc": "2026-11-03T10:55:16.784Z",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2117571306006724878"
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117571306006724878",
+      "buffer_latest_impressions": {
+        "impressions": 0,
+        "observed_at_utc": "2026-11-03T10:55:25.860000+00:00",
+        "provider": "buffer_experimental_personal_api",
+        "window_hours": null
+      }
     }
   ],
   "recent_unverified_experiment_ids": []
