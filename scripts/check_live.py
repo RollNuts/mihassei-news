@@ -581,8 +581,8 @@ def check():
             image_path=generated_url(item)
             if 'src="'+image_path+'"' not in page:
                 raise RuntimeError(slug+": locally generated staged photograph not displayed")
-            if "AI生成" not in page or "実際の事件" not in page:
-                raise RuntimeError(slug+": staged photo needs a clear fiction disclosure")
+            if "再現イメージ（合成）" not in page or "実際の出来事を撮影した報道写真ではありません" not in page:
+                raise RuntimeError(slug+": staged photo needs a concise synthetic-image disclosure")
             if ('<meta property="og:image" content="'+SITE+image_path+'">' not in page):
                 raise RuntimeError(slug+": local staged photograph missing from OGP")
             image,kind=get(image_path)

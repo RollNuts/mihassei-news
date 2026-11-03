@@ -85,7 +85,7 @@ class FreeCpuImageTests(unittest.TestCase):
             with patch.object(build, "BASE", root):
                 self.assertEqual(build.editorial_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertEqual(build.social_image(a), "/generated/" + a["slug"] + ".jpg")
-                self.assertIn("AI生成", build.photo_credit(a))
+                self.assertIn("再現イメージ（合成）", build.photo_credit(a))
             manifest = root / "assets/generated/manifest.json"
             original = json.loads(manifest.read_text(encoding="utf-8"))
             for origin, model in (
