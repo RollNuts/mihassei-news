@@ -17,7 +17,7 @@ from scripts import mac_scene_worker as worker
 
 class ControlTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
+        self.temp = tempfile.TemporaryDirectory(prefix="未発生新聞-停止テスト-")
         self.base = Path(self.temp.name)
         self.app = self.base / 'app'
         self.app.mkdir()
@@ -58,9 +58,31 @@ class ControlTests(unittest.TestCase):
             self.assertFalse(control.signal_owned(saved, 'sync', self.root, self.app, signal.SIGTERM))
         kill.assert_not_called()
 
+    def test_python_launcher_transition_preserves_exact_owned_script_arguments(self):
+        app_python = str(Path(sys.base_prefix) / 'Resources/Python.app/Contents/MacOS/Python')
+        initial = {'pid': 321, 'pgid': 321, 'uid': os.getuid(), 'started': 'same',
+                   'command': sys.executable + ' ' + str(self.root / 'scripts/local_scene_sync.py') + ' --limit 4'}
+        transitioned = {**initial, 'command': app_python + ' ' + str(self.root / 'scripts/local_scene_sync.py') + ' --limit 4'}
+        with patch.object(control, 'process_identity', return_value=transitioned):
+            self.assertIsNotNone(control.matching_process(initial, 'sync', self.root, self.app))
+        for changed in ({**transitioned, 'started': 'reused'},
+                        {**transitioned, 'command': transitioned['command'] + ' --unexpected'},
+                        {**transitioned, 'command': '/unrelated/python ' + str(self.root / 'scripts/local_scene_sync.py') + ' --limit 4'}):
+            with patch.object(control, 'process_identity', return_value=changed):
+                self.assertIsNone(control.matching_process(initial, 'sync', self.root, self.app))
+
+    def test_intentional_off_keeps_prior_real_error(self):
+        with patch.object(worker, 'APP_DIR', self.app), contextlib.redirect_stderr(io.StringIO()):
+            worker.update_status('skipped', 'previous network failure')
+            control.write_json(self.app / 'stopped.json', {'reason': 'user'})
+            self.assertEqual(worker.main([]), 1)
+        result = control.read_json(self.app / 'last-run.json')
+        self.assertEqual(result['status'], 'stopped')
+        self.assertEqual(result['last_error']['detail'], 'previous network failure')
+
     def test_generic_comfy_and_lookalike_listen_are_rejected(self):
         owned = {'pid': 42, 'pgid': 42, 'uid': os.getuid(), 'started': 'today',
-                 'command': 'python ' + str(self.app / 'ComfyUI/main.py') + ' --listen 127.0.0.1 --port 18188'}
+                 'command': sys.executable + ' ' + str(self.app / 'ComfyUI/main.py') + ' --listen 127.0.0.1 --port 18188'}
         self.assertTrue(control.expected_process(owned, 'server', self.root, self.app))
         self.assertFalse(control.expected_process({**owned, 'command': owned['command'].replace('127.0.0.1', '127.0.0.10')}, 'server', self.root, self.app))
         self.assertFalse(control.expected_process({**owned, 'command': owned['command'].replace(str(self.app), '/other-app')}, 'server', self.root, self.app))
@@ -81,6 +103,23 @@ class ControlTests(unittest.TestCase):
             for proc in (owned, foreign):
                 if proc.poll() is None: proc.terminate()
                 proc.wait(timeout=5)
+
+    def test_native_identity_preserves_japanese_path_under_c_parent_locale(self):
+        script = self.root / 'scripts/mac_scene_worker.py'
+        script.write_text('import time\ntime.sleep(60)\n')
+        process = subprocess.Popen([sys.executable, str(script)], start_new_session=True)
+        try:
+            with patch.dict(os.environ, {'LC_ALL': 'C', 'LANG': 'C'}):
+                control.register_runtime('worker', process.pid, root=self.root, app_dir=self.app)
+                identity = control.process_identity(process.pid)
+                self.assertIn('未発生新聞-停止テスト-', identity['command'])
+                self.assertTrue(control.has_arg(identity['command'], str(script)))
+                self.assertIn(process.pid, control.group_members(os.getpgid(process.pid)))
+                self.assertEqual(control.stop_owned(self.app, grace=2), ['worker'])
+            process.wait(timeout=3)
+        finally:
+            if process.poll() is None: process.terminate()
+            process.wait(timeout=5)
 
     def test_child_group_record_is_verified_before_capture(self):
         worker_record = {'pid': 22, 'pgid': 22, 'uid': os.getuid(), 'started': 'old', 'command': 'old'}

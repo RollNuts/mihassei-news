@@ -283,7 +283,8 @@ def main(argv: list[str] | None = None) -> int:
         return run_once(args.limit, args.min_free_gb, args.timeout)
     except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
         try:
-            update_status("skipped", str(exc))
+            latch = APP_DIR / "stopped.json"
+            update_status("stopped" if latch.exists() or latch.is_symlink() else "skipped", str(exc))
         except (OSError, RuntimeError):
             pass
         print("Safe stop: " + str(exc), file=sys.stderr)

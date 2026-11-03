@@ -96,13 +96,19 @@ def check_allowed(app_dir=None) -> None:
         raise RuntimeError('Image generation is OFF; explicitly run mac_scene_control.py resume')
 
 
+def process_env() -> dict:
+    # macOS ps renders non-ASCII argv as M-escaped bytes in the C locale.
+    # Keep English start-time fields stable without losing Japanese repo paths.
+    locale = 'en_US.UTF-8' if sys.platform == 'darwin' else 'C.UTF-8'
+    return {**os.environ, 'LC_ALL': locale, 'LANG': locale, 'TZ': 'UTC'}
+
+
 def process_identity(pid: int) -> dict | None:
     if type(pid) is not int or pid <= 1:
         return None
     result = subprocess.run(['/bin/ps', '-ww', '-p', str(pid), '-o',
                              'pid=,pgid=,uid=,stat=,lstart=,command='], capture_output=True,
-                            text=True, timeout=5, check=False,
-                            env={**os.environ, 'LC_ALL': 'C', 'TZ': 'UTC'})
+                            text=True, encoding='utf-8', timeout=5, check=False, env=process_env())
     parts = result.stdout.strip().split(None, 9)
     if result.returncode or len(parts) != 10 or parts[3].startswith('Z'):
         return None
@@ -117,10 +123,35 @@ def has_arg(command: str, value: str) -> bool:
     return re.search(r'(?:^|\s)' + re.escape(value) + r'(?=\s|$)', command) is not None
 
 
+def normalize_python_command(command: str, app_dir: Path) -> str:
+    # macOS Homebrew launchers exec Python.app while preserving PID/start time.
+    # Normalize only known Python executable aliases; retain every script/arg.
+    paths = {Path(sys.executable), Path(getattr(sys, '_base_executable', sys.executable)),
+             app_dir / 'venv/bin/python',
+             Path(sys.base_prefix) / 'Resources/Python.app/Contents/MacOS/Python'}
+    names = {str(p) for p in paths} | {str(p.resolve()) for p in paths}
+    first = command.split(' ', 1)[0]
+    if first.startswith('/') and str(Path(first).resolve()) in names:
+        names.add(first)
+    for name in sorted(names, key=len, reverse=True):
+        if command.startswith(name + ' '):
+            return 'VERIPSA_PYTHON ' + command[len(name) + 1:]
+    return command
+
+
+def same_identity(left, right, app_dir: Path) -> bool:
+    return (isinstance(left, dict) and isinstance(right, dict)
+            and all(left.get(key) == right.get(key) for key in ('pid', 'pgid', 'uid', 'started'))
+            and normalize_python_command(left.get('command', ''), app_dir)
+            == normalize_python_command(right.get('command', ''), app_dir))
+
+
 def expected_process(identity: dict, role: str, root: Path, app_dir: Path) -> bool:
     if identity.get('uid') != os.getuid():
         return False
     command = identity.get('command', '')
+    if not normalize_python_command(command, app_dir).startswith('VERIPSA_PYTHON '):
+        return False
     if role == 'worker':
         return has_arg(command, str(root / 'scripts/mac_scene_worker.py'))
     if role == 'sync':
@@ -167,7 +198,7 @@ def clear_runtime(app_dir=None) -> None:
 
 def matching_process(saved: dict, role: str, root: Path, app_dir: Path) -> dict | None:
     current = process_identity(saved.get('pid'))
-    if current != saved or not current or not expected_process(current, role, root, app_dir):
+    if not same_identity(current, saved, app_dir) or not current or not expected_process(current, role, root, app_dir):
         return None
     return current
 
@@ -188,7 +219,7 @@ def signal_owned(saved: dict, role: str, root: Path, app_dir: Path, sig: int) ->
 
 def group_members(pgid: int) -> dict[int, dict]:
     result = subprocess.run(['/bin/ps', '-axo', 'pid=,pgid=,uid='], capture_output=True,
-                            text=True, timeout=5, check=True)
+                            text=True, encoding='utf-8', timeout=5, check=True, env=process_env())
     members = {}
     for row in result.stdout.splitlines():
         fields = row.split()
@@ -248,7 +279,7 @@ def stop_owned(app_dir=None, grace: float = 20) -> list[str]:
         alive = survivors()
     if alive:
         for pid, identity in alive.items():
-            if known.get(pid) == identity and process_identity(pid) == identity:
+            if same_identity(known.get(pid), identity, directory) and same_identity(process_identity(pid), identity, directory):
                 try:
                     os.kill(pid, signal.SIGKILL)
                 except ProcessLookupError:
