@@ -35,6 +35,24 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertIn(".article-body", css)
         self.assertEqual(css.count("{"), css.count("}"))
 
+    def test_stories_take_priority_over_optional_issue_picker(self):
+        markup = home(load())
+        content = markup.split('<div class="container index-main">', 1)[1]
+        positions = [
+            content.index('class="hero-grid"'),
+            content.index('<section class="section-block">'),
+            content.index('class="starter-editorial"'),
+            content.index('class="press-timeline"'),
+            content.index('class="genre-explore"'),
+            content.index('<details class="extras-shelf">'),
+            content.index('class="special-edition"'),
+            content.index('class="reader-discussions"'),
+        ]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn('<summary><strong>発行号・号外・コメント</strong>', content)
+        self.assertNotIn('class="special-edition"', content[:positions[5]])
+        self.assertEqual(content.count('data-issue-picker'), 1)
+
     def test_picture_never_has_old_graphic_overlay_or_fixed_height(self):
         css=(ROOT/"assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertIn('.lead-media::before,.lead-media::after{content:none}',css)

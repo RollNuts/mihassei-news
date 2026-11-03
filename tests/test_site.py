@@ -97,7 +97,7 @@ class SiteTests(unittest.TestCase):
         random=home.index('<section class="special-edition"')
         extras=home.index('<details class="extras-shelf">')
         discussions=home.index('<section class="reader-discussions"')
-        self.assertTrue(hero < latest < timeline < random < genres < serials < starter < extras < discussions)
+        self.assertTrue(hero < latest < starter < timeline < genres < serials < extras < random < discussions)
         self.assertIn("<h2>新着記事</h2>",home)
         self.assertNotIn('<aside class="banner">',home)
         self.assertNotIn("この新聞の読み方",home)
@@ -200,7 +200,7 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("発行号・コメント",home)
+        self.assertIn("発行号・号外・コメント",home)
         self.assertIn('.extras-shelf>summary:focus-visible',css)
         self.assertTrue(home.index('<section class="genre-explore"') <
                         home.index('<details class="extras-shelf">'))
