@@ -96,6 +96,23 @@
       "lasting_effect": "湯気は偶然モクに似た形に見えただけで、新種の生物や子どもの存在は確定しない。ネジとモクは互いの気持ちを少し知った。",
       "threads_opened": [],
       "threads_closed": []
+    },
+    {
+      "episode": 6,
+      "post_id": "nejimachi-006-big-shadow",
+      "chapter": 1,
+      "day": "D2",
+      "order": 2,
+      "location": "street",
+      "characters": [
+        "neji",
+        "moku"
+      ],
+      "established": [],
+      "event": "D2の六番配管街で、ネジが配管の壁に映る巨大な影を見ておびえる。影の正体は街灯の前で両手を広げたモク。モクは自分が大きくなったように見えて喜び、ネジも安心した。",
+      "lasting_effect": "壁の影は普通の光学現象。モクの体が巨大化する能力は設定していない。2人の親しさが小さく積み重なる出来事。",
+      "threads_opened": [],
+      "threads_closed": []
     }
   ]
 }
