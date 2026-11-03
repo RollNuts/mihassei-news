@@ -22,9 +22,9 @@ on:
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
   schedule:
-    # Buffer decides the actual publishing time (currently 19:30 JST).
-    # Queue refill at 09:35 JST; 1-2 new posts max, 3 total queued.
-    - cron: "35 0 * * *"
+    # Buffer owns all seven daily publishing slots; refill only at 00:05
+    # and 12:05 JST (UTC 15:05 and 03:05) to respect the Free API budget.
+    - cron: "5 3,15 * * *"
 
 permissions:
   contents: write
@@ -76,7 +76,7 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Publish the first original image now, then refill original X posts
+      - name: Refill seven daily original X Buffer slots safely
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -91,20 +91,12 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/article-picks/dispatch.py
 
-      - name: Verify Buffer delivery and X link (read-only)
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        continue-on-error: true
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: python social-bot/experiments/probe_delivery.py
-
       - name: Record exact Buffer submission IDs (also after partial API failure)
         if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/state.json social-bot/experiments/delivery.json social-bot/article-picks/state.json
+          git add social-bot/experiments/state.json social-bot/article-picks/state.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
             git pull --rebase origin main

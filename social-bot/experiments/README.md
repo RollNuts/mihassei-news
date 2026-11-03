@@ -5,10 +5,10 @@
 2026-11-03、アカウント運営者から **「出さないことは許さない。実際に投稿して反応を見る」** という明示的な方針変更があった。
 
 - `experiments/posts.json`：**未投稿のオリジナル短文**を日付固定なしの配信順で保存。初期12本。既存の不採用漫画や古い試験漫画の再利用はしない。
-- `experiments/config.json`：この短文実験だけの配信ON/OFF、実際のXチャンネルの固定ID、予約キュー3件・1回最大2件を定義。
+- `experiments/config.json`：この短文実験だけの配信ON/OFF、実際のXチャンネルの固定ID、オリジナル最大予約9件・1回最大7件（同一Xチャンネルの全体は10件）を定義。
 - `experiments/dispatch.py`：Buffer Freeの既存APIキーから安全に予約投稿。X有料API、OpenAI API、画像生成APIは使わない。
 - `experiments/state.json`：登録した本文のSHA256とBuffer投稿IDを保存し、処理再実行でも同一投稿を2度予約しない。
-- `.github/workflows/x-original-experiments.yml`：**main反映直後に1回、その後毎朝9:35 JSTごろ**に予約キューを補充。公開時刻はBuffer側の19:30 JST（ユーザーが設定済み）に従う。
+- `.github/workflows/x-original-experiments.yml`：**main反映直後に1回、その後00:05・12:05 JSTごろ**に予約キューを補充。公開時刻はBuffer側でオーナーが設定した7枠/日に従う。
 - `metrics/records.json`：Xの画面・正規に接続された集計などの実測が確認できた場合のみ、24h/72hの表示回数を記録。GitHub更新・漫画話数・Buffer予約件数は**実測インプではない**。
 
 ## 漫画との分離
@@ -43,7 +43,7 @@ X公式は投稿内のハッシュタグを**2個まで推奨**するが、必�
 
 - **先に違う形式を試す**：Buffer予約は原稿の単純な並び順ではなく、原則「短文3本→キャラ日常1本」を繰り返す。該当タイプが品切れなら他形式へ切り替え、投稿ゼロを避ける。すでにBufferへ予約済みの本文と順序は変えない。
 - **週に一度、事実と仮説を分離**：`experiments/review.py` が `posts.json`、`state.json`、`delivery.json` と `metrics/records.json` を読み、配信済み・予約中・未登録、24/72時間後の表示回数を照合する。結果は `experiments/review.md` に保存する。
-- **火曜・金曜の新ネタ補充**：定期制作タスクが `review.md` を参照し、**実測が十分な形式を優先**。数値が未取得なら勝敗を捏造せず、オチの違いと形式のバリエーションを試す。
+- **日次の新ネタ補充**：定期制作タスクが `review.md` を参照し、**実測が十分な形式を優先**。数値が未取得なら勝敗を捏造せず、オチの違いと形式のバリエーションを試す。
 - **勝ち判定の最低条件**：比較する各形式で実測24時間後の投稿が5本以上。そこまで「勝ち形式」は断言しない。条件を満たしても時刻・フォロワー等は未調整なので、観測上の先行としか呼ばない。
 - **投稿品質**：新作は一読で状況とオチが伝わる短文で、過去ネタの焼き直し・不自然な説明・誰かを見下す笑いを避ける。新しいX施策のためにX有料APIや画像生成従量課金はしない。
 
@@ -94,11 +94,13 @@ GitHub公開リポジトリの無料Actions、Buffer Freeの既存チャンネ�
 - `probe_delivery.py` makes read-only Buffer queries for saved Buffer IDs, verifies exact Veripsa channel and immutable caption, records provider status, image attachment evidence and Buffer-returned X permalink. No invented views, no sending on this audit route, and no resurfacing unapproved Nejimachi episodes.
 - `delivery.json` is committed after each live queue run and the weekly review reports image/Buffer sent separately from actual X impression evidence.
 
-## Twice-daily X publishing pilot: 12:30 + 19:30 JST (2026-11-03)
+## Owner-configured seven X posting slots per day (2026-11-03)
 
-- Owner asked to raise posting frequency. Keep the original Buffer posting queue (configured 19:30 JST) untouched. Add the optional `midday_dispatch.py` customScheduled slot at **12:30 JST**, triggered daily by `.github/workflows/x-midday-original.yml` around 10:15 JST. GitHub Actions cron timing is best effort; runs outside the safe pre-post window will safely skip rather than post later.
-- Use only the existing Buffer Free API key, pinned Veripsa X channel and original `experiments/posts.json` feed. This is **up to 2 distinct posts per JST day**, not an unconditional guarantee of 2 published posts. X and Buffer service failures or content shortages cause an explicit safe skip.
-- Buffer's documented Free queue is 10 per channel, but the midday code caps the shared scheduled queue at **4** (normal feed continues targeting 3). It schedules at most one extra original post per day; it rejects any third post today, anything within 4 hours of another known same-day post, unknown existing scheduled times, insufficient scheduling lead, an existing midday ledger entry, and channel mismatches. Already booked posts, order, images and hashtags are immutable.
-- `midday_dispatch.py` writes `submission_mode=customScheduled`, `due_at_utc`, final text/image hashes and Buffer ID to the same existing ledger so both workflows deduplicate each other. It never turns unapproved Nejimachi comics back on. The PR/push workflows are **test-only**; only schedule or explicit workflow_dispatch within the 10:15 JST window can send a new midday post.
-- The monthly Free API budget is 1,000 calls/channel (verify ongoing usage, never upgrade). Buffer accepted is not verified publication; qualified 90-day reward impressions are a different metric from ordinary per-post X impressions.
-- Stop only the extra midday lane by changing `two_daily_midday_enabled` to `false`. Existing queued custom posts are not automatically canceled; use Buffer to review them if stopping. Keep original `experiment_publishing_enabled` control for the whole experiment feed.
+- The owner set **seven recurring daily posting times** in the existing Buffer Veripsa X channel. The repository uses `mode: addToQueue`, so **Buffer owns the actual release times**. Verify the seven times apply to all seven weekdays in the correct channel timezone; GitHub cannot confirm UI settings.
+- Buffer Free permits **ten concurrently scheduled posts per channel**, not a ten-post daily limit. The original text/image/character feed reserves up to **nine**, with a maximum of **seven new entries per queue refill**. One remaining slot is available for a genuinely measured-interest article, at most once every 72 hours and with a permanent article-slug ledger. The shared total hard cap is ten.
+- The GitHub Action refills only at **00:05 and 12:05 JST** (best effort, may run late). Buffer's Free API also permits **1,000 requests per channel per 30 days**, so the high-cost per-post `probe_delivery.py` no longer runs in every refill. The daily read-only `x-delivery-state.yml` continues to track provider scheduled/sent states.
+- The retired 12:30 `customScheduled` second-post workflow has **no scheduled trigger**, and `two_daily_midday_enabled` is false. It must not produce an eighth post beyond the owner's seven Buffer slots. Already queued posts are untouched; none are canceled or edited.
+- `publish.list_existing` paginates a bounded recent 30-day sent/scheduled window, combining provider recovery with permanent original and article ledgers. If pagination, authentication or provider limits fail, abort writes instead of guessing.
+- Daily original-idea replenishment should maintain **21–28 unsubmitted, genuinely distinct** short texts where quality permits. Prioritize an understandable setup and concrete ending; no identical/near-identical posts, click bait, blind auto-likes, bulk follows, trend hijacking or unapproved manga.
+- Seven daily slots is a **target**, not evidence of successful X publishing, impressions or monetization. Preserve X actual-post links, provider sent/scheduled statuses and verified-user 90-day reward metric as different data sources. Do not fabricate missing statistics.
+- Additional cost remains **0 yen**: free Buffer, public GitHub Actions and local rendering only; no upgraded subscriptions, metered X/GPT/image APIs, paid GPUs or extra credits.
