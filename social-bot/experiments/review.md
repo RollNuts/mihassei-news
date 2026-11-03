@@ -1,17 +1,17 @@
 # Veripsa X 改善ログ（実測と仮説の区別）
 
-作成日（日本時間）：2026-11-03 20:39
+作成日（日本時間）：2026-11-03 21:23
 
 ## 観測済みの運営状況
 
-- 原稿在庫：28本（内訳 character_moment=4, surreal_text=24）
-- Bufferに一度でも登録した原稿：4本（現在予約中の本数ではない）
-- 未登録原稿：24本
-- 笑いの構造（全在庫）：{'delayed_response': 1, 'dry_dialogue': 3, 'inverted_expectation': 4, 'literal_wordplay': 3, 'meta_commentary': 2, 'perspective_flip': 2, 'physical_scale': 1, 'role_reversal': 2, 'self_reference': 3, 'small_action': 2, 'unexpected_kindness': 1, 'visual_reveal': 4}
-- 笑いの構造（Bufferへ一度でも登録済み）：{'inverted_expectation': 2, 'literal_wordplay': 1, 'self_reference': 1}
-- 最終確認できたBuffer状態：{'scheduled': 2, 'sent': 2}
-- Buffer状態確認日時：2026-11-03T11:23:10.890934+00:00
-- 独自画像：在庫4枚・Buffer登録1枚・Buffer sent 1枚
+- 原稿在庫：38本（内訳 character_moment=6, surreal_text=32）
+- Bufferに一度でも登録した原稿：10本（現在予約中の本数ではない）
+- 未登録原稿：28本（うち独自画像3本）
+- 笑いの構造（全在庫）：{'delayed_response': 2, 'dry_dialogue': 4, 'inverted_expectation': 5, 'literal_wordplay': 3, 'meta_commentary': 2, 'perspective_flip': 4, 'physical_scale': 1, 'role_reversal': 4, 'self_reference': 3, 'small_action': 2, 'unexpected_kindness': 2, 'visual_reveal': 6}
+- 笑いの構造（Bufferへ一度でも登録済み）：{'dry_dialogue': 1, 'inverted_expectation': 2, 'literal_wordplay': 1, 'meta_commentary': 1, 'role_reversal': 1, 'self_reference': 1, 'small_action': 1, 'visual_reveal': 2}
+- 最終確認できたBuffer状態：{'scheduled': 8, 'sent': 2}
+- Buffer状態確認日時：2026-11-03T12:15:11.641664+00:00
+- 独自画像：在庫7枚・Buffer登録4枚・Buffer sent 1枚
 - Buffer提供のX投稿URL：1件（独立したX公開確認とは別）
 - Buffer暫定インプ取得：0件（各投稿の取得時点が異なり24h/72h比較には使わない）
 
@@ -43,7 +43,7 @@
 - **次のテスト**：従来の形式分散を維持し、身近な理不尽を題材にした新作を約4枠に1件だけ試す。既存予約は触らない。
 - 投稿の公開が確認できたら、X公式インサイトから24h/72h表示回数を取得して social-bot/metrics/records.json に記録する。
 - 自動取得できない指標を推計で埋めない。
-- 未登録 24本。新作を大量に増やす前に既存ネタの重複とオチの質を確認する。
+- 未登録 28本。既存ネタの重複とオチの質を確認し、日次補充を継続する。
 
 ## できていないこと（自動で成功と呼ばない）
 
