@@ -30,11 +30,13 @@ class SerialReadingTests(unittest.TestCase):
             fiction["episodes"].append(second)
         home = render_serials_feature(data)
         self.assertIn('href="/serials/case-files/victim-not-yet-dead-01/">第1話から読む', home)
-        self.assertIn('href="/serials/case-files/victim-not-yet-dead-02/">最新の第2話へ', home)
+        latest = fiction["episodes"][-1]
+        self.assertIn('href="/serials/case-files/'+latest["slug"]+'/">' +
+                      f'最新の第{latest["number"]}話へ', home)
         self.assertIn('href="/serials/market-lab/power-grid-after-ai-01/">最新の第1回を読む', home)
         series = render_series_page(fiction, identity_layout)
         self.assertIn('class="serial-start-link" href="/serials/case-files/victim-not-yet-dead-01/"', series)
-        self.assertIn("公開済み 2話", series)
+        self.assertIn(f'公開済み {len(fiction["episodes"])}話', series)
 
     def test_article_keeps_prose_and_clues_without_a_note_form(self):
         fiction = next(s for s in self.data if s["kind"] == "fiction")
