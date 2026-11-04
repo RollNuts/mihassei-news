@@ -1,6 +1,15 @@
 {
   "schema_version": 1,
-  "attempts": {},
+  "attempts": {
+    "xexp-useful-20261104-one-change": {
+      "payload_sha256": "c1b535126e08c83750904bca869cd3aa12d80458c6d5ca720bca351305ee360d",
+      "text_sha256": "3404233b70e95520ece513869e919b35cadb74dfd99f0f4251f0b97943e785b8",
+      "day_jst": "2026-11-04",
+      "requested_due_at": "2026-11-04T03:00:00Z",
+      "provider_status": "intent",
+      "attempted_at": "2026-11-04T01:08:36.478767+00:00"
+    }
+  },
   "last_selection": {
     "checked_at_utc": "2026-11-04T01:08:36.478767+00:00",
     "scheduled_count": 9,
