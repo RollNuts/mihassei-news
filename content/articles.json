@@ -1,5 +1,32 @@
 [
   {
+    "slug": "midterm-prediction-notebook-full-of-holes",
+    "category": "社会",
+    "flash": "選挙の珍事",
+    "fiction_company": "ある政治解説者",
+    "art": "cards",
+    "fiction_at": "2031-11-04T07:49:00+09:00",
+    "title": "米中間選挙を「全部当てた」と5年後に自慢　予想ノートは穴だらけ",
+    "summary": "米中間選挙の予想を全的中させたと主張する解説者が、5年前の手書きノートを公開。開票速報のたびに書き直した跡で、予想より紙の傷みが目立っている。",
+    "paragraphs": [
+      "5年前の米中間選挙で「すべての勝敗を予想していた」と語る政治解説者が、記念展示に当時のノートを持ち込んだ。開票速報を見るたびに鉛筆で書いた予想を消し、テレビにはその都度「予想通りです」と話していたという。",
+      "ページを開くと、消しゴムのかすが紙の間からこぼれ落ちた。ある州の予想欄は何度もこすられて丸い穴が開き、その向こうから次のページの文字が見える。来場者が「ここは何を予想していたんですか」と尋ねると、解説者は穴を指さして答えた。「全部、見通していました」"
+    ],
+    "scene_prompt": "A battered paper prediction notebook with a large round hole rubbed through a page and gray eraser crumbs spilling across the desk dominates the foreground. An anonymous middle-aged commentator proudly points at the hole while a puzzled visitor examines it in a small exhibition room. Dry photorealistic staged comedy, no readable writing, logos, or recognizable public figures.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "The Guardian",
+      "published_at": "2026-11-04T07:49:00+09:00",
+      "url": "https://www.theguardian.com/us-news/live/2026/nov/03/midterm-election-results-live-updates",
+      "topic": "2026年11月3日17:49 EST（日本時間11月4日07:49）初公開。米中間選挙の開票・州ごとの当落判定を随時報道。作中の予想を消す評論家、展示、ノートの穴や発言は創作であり、実在人物や選挙で確認された出来事ではない。"
+    },
+    "published_at": "2026-11-04T13:38:35+09:00",
+    "tags": [
+      "選挙",
+      "メディア"
+    ]
+  },
+  {
     "slug": "double-speed-drama-explainer-marathon",
     "category": "エンタメ",
     "flash": "映像の珍事",
