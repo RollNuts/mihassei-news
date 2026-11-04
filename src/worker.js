@@ -1,7 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 export { ReaderComments } from "./comments.js";
 
-// True, browser-level counters. No IP logging, cookies, tracking pixels or external APIs.
+// Browser-level engagement and page displays, without IP logging or external APIs.
 const attributionChannels = ["x","search","external","unattributed"];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
@@ -30,6 +30,10 @@ export class NewsroomStats extends DurableObject {
     this.sql=ctx.storage.sql;
     this.sql.exec("CREATE TABLE IF NOT EXISTS events (kind TEXT NOT NULL, article TEXT NOT NULL, visitor TEXT NOT NULL, PRIMARY KEY(kind,article,visitor)) WITHOUT ROWID;");
     this.sql.exec("CREATE TABLE IF NOT EXISTS counters (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0);");
+    // A display's retry token is separate from browser deduplication. Keeping its
+    // day as data makes a retry across JST midnight idempotent too.
+    this.sql.exec("CREATE TABLE IF NOT EXISTS pageview_events (id TEXT PRIMARY KEY, day TEXT NOT NULL) WITHOUT ROWID;");
+    this.sql.exec("CREATE INDEX IF NOT EXISTS pageview_events_day ON pageview_events(day);");
   }
   count(key) {
     return this.sql.exec("SELECT value FROM counters WHERE key=?", key).toArray()[0]?.value ?? 0;
@@ -50,19 +54,57 @@ export class NewsroomStats extends DurableObject {
     const threshold="day:"+oldest;
     this.sql.exec("DELETE FROM events WHERE kind LIKE 'day:%' AND kind < ?",threshold);
     this.sql.exec("DELETE FROM counters WHERE key LIKE 'day:%' AND key < ?",threshold);
+    this.sql.exec("DELETE FROM pageview_events WHERE day < ?",oldest);
     this.sql.exec("INSERT INTO counters(key,value) VALUES ('maintenance:daily-pruned',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",serial);
   }
-  dailySnapshot(day) {
+  dailySnapshot(day, currentDay, startedAt) {
     const key="day:"+day.date+":";
+    const startDay=startedAt ? currentJstDay(startedAt) : null;
+    const measured=Boolean(startDay && day.date>=startDay.date);
+    let coverage="unmeasured";
+    if(measured){
+      if(day.date===currentDay.date)coverage="in-progress";
+      else if(day.date===startDay.date && startedAt>startDay.serial*DAY_MS-JST_OFFSET_MS)
+        coverage="partial";
+      else coverage="complete";
+    }
     return {
       dateJst:day.date,
       visitors:this.count(key+"visitors"),
-      articleReads:this.count(key+"articleReads")
+      articleReads:this.count(key+"articleReads"),
+      pageViews:measured ? this.count(key+"pageViews") : null,
+      pageViewsCoverage:coverage
+    };
+  }
+  pageViewSummary(day, startedAt) {
+    const firstSerial=day.serial-6;
+    const firstDate=new Date(firstSerial*DAY_MS).toISOString().slice(0,10);
+    const keys=Array.from({length:7},(_,i)=>
+      "day:"+new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10)+":pageViews");
+    return {
+      pageViews:startedAt ? this.count("pageViews") : null,
+      pageViewTracking:{
+        startedAtUtc:startedAt ? new Date(startedAt).toISOString() : null,
+        timezone:"Asia/Tokyo",
+        unit:"page-view"
+      },
+      last7Days:{
+        startDateJst:firstDate,
+        endDateJst:day.date,
+        pageViews:startedAt ? this.sql.exec(
+          "SELECT COALESCE(SUM(value),0) AS n FROM counters WHERE key IN (?,?,?,?,?,?,?)",...keys
+        ).one().n : null,
+        measuredDays:startedAt ? Math.max(0,Math.min(7,day.serial-currentJstDay(startedAt).serial+1)) : 0,
+        // This window includes today through now, not seven completed days.
+        // A partial first day is not a fully covered seven-date window.
+        complete:Boolean(startedAt && startedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
+      }
     };
   }
   async fetch(req) {
     const url=new URL(req.url);
-    const day=currentJstDay();
+    const now=Date.now();
+    const day=currentJstDay(now);
     if(req.method==="GET") {
       // Optional historical read for the completed-day archive. Never accept
       // arbitrary dates: daily deduplication is retained for 14 JST days.
@@ -76,6 +118,7 @@ export class NewsroomStats extends DurableObject {
            serial<day.serial-13 || serial>day.serial)
           return json({error:"day outside available JST history"},400);
       }
+      const startedAt=this.count("pageViews:startedAt");
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
@@ -83,6 +126,8 @@ export class NewsroomStats extends DurableObject {
           likes:this.count("likes:"+slug),
           readers:this.count("readers:"+slug),
           todayReaders:this.count("day:"+day.date+":reader:"+slug),
+          pageViews:startedAt ? this.count("pageViews:"+slug) : null,
+          todayPageViews:startedAt ? this.count("day:"+day.date+":pageViews:"+slug) : null,
           shareClicks:this.count("shares:"+slug),
           // An approximate number of browser IDs that opened another story
           // after visiting this article. Not people, clicks, or a conversion rate.
@@ -103,9 +148,10 @@ export class NewsroomStats extends DurableObject {
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
       const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
       return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
-        today:this.dailySnapshot(day),
-        yesterday:this.dailySnapshot({date:previousDate}),
-        ...(requestedDay===null ? {} : {day:this.dailySnapshot({date:requestedDay})}),
+        ...this.pageViewSummary(day,startedAt),
+        today:this.dailySnapshot(day,day,startedAt),
+        yesterday:this.dailySnapshot({date:previousDate},day,startedAt),
+        ...(requestedDay===null ? {} : {day:this.dailySnapshot({date:requestedDay},day,startedAt)}),
         channels,channelScope:"distinct-browser-per-observed-channel-since-activation"});
     }
     if(req.method!=="POST")return json({error:"method not allowed"},405);
@@ -114,6 +160,9 @@ export class NewsroomStats extends DurableObject {
     try{data=await req.json();}catch(_){return json({error:"invalid payload"},400);}
     if(!data || JSON.stringify(data).length>512 || !idPattern.test(data.clientId||""))return json({error:"invalid client"},400);
     if(!["visit","like","share","vote"].includes(data.action))return json({error:"invalid action"},400);
+    if(data.viewId!==undefined &&
+       (data.action!=="visit" || typeof data.viewId!=="string" || !idPattern.test(data.viewId)))
+      return json({error:"invalid page view id"},400);
     if(data.action==="vote" && !["plausible","unlikely"].includes(data.choice))
       return json({error:"invalid prediction choice"},400);
     const article=data.article||"";
@@ -132,11 +181,34 @@ export class NewsroomStats extends DurableObject {
       return json({error:"invalid channel"},400);
     const hash=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(data.clientId));
     const visitor=Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,"0")).join("");
+    const viewHash=data.viewId===undefined ? null : await crypto.subtle.digest(
+      "SHA-256",new TextEncoder().encode("page-view:"+data.viewId.toLowerCase())
+    );
+    const pageViewId=viewHash ? Array.from(new Uint8Array(viewHash),v=>v.toString(16).padStart(2,"0")).join("") : null;
+    const purpose=(req.headers.get("sec-purpose")||"")+" "+(req.headers.get("purpose")||"");
+    const automated=/Googlebot|bingbot|Baiduspider|YandexBot|DuckDuckBot|Twitterbot|facebookexternalhit|Slackbot|Discordbot|Applebot|HeadlessChrome|Playwright/i.test(req.headers.get("user-agent")||"");
+    const ignoredVisit=data.action==="visit" && (/prefetch|prerender/i.test(purpose) || automated);
     let liked=null,selectedVote=null,alreadyVoted=false;
     this.ctx.storage.transactionSync(()=>{
-      if(data.action==="visit") {
+      if(data.action==="visit" && !ignoredVisit) {
         this.pruneDailyCounts(day.serial);
         const dayPrefix="day:"+day.date+":";
+        // No reconstruction from old distinct readers. Only new display IDs
+        // count, once per event; actual reloads receive different display IDs.
+        if(pageViewId){
+          this.sql.exec("INSERT OR IGNORE INTO pageview_events(id,day) VALUES (?,?)",pageViewId,day.date);
+          // A retransmission is not a visit on the following day either.
+          if(this.sql.exec("SELECT changes() AS n").one().n===0)return;
+          // Request bodies and digests can finish out of order across midnight.
+          // Keep the earliest accepted display's arrival, not whichever writes first.
+          this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+          this.increment("pageViews",1);
+          this.increment(dayPrefix+"pageViews",1);
+          if(article){
+            this.increment("pageViews:"+article,1);
+            this.increment(dayPrefix+"pageViews:"+article,1);
+          }
+        }
         // Real daily browser activity: a reload does not inflate the numbers.
         // Article reads count distinct (browser, article) pairs per JST date,
         // not total page views or unique people.
@@ -192,8 +264,15 @@ export class NewsroomStats extends DurableObject {
         }
       }
     });
+    const startedAt=this.count("pageViews:startedAt");
+    const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
     return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),article,
-      today:this.dailySnapshot(day),
+      ...this.pageViewSummary(day,startedAt),
+      today:this.dailySnapshot(day,day,startedAt),
+      yesterday:this.dailySnapshot({date:previousDate},day,startedAt),
+      articlePageViews:article ? (startedAt ? this.count("pageViews:"+article) : null) : undefined,
+      todayArticlePageViews:article ? (startedAt ? this.count("day:"+day.date+":pageViews:"+article) : null) : undefined,
+      ...(ignoredVisit ? {ignored:true} : {}),
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
       shareClicks:article?this.count("shares:"+article):undefined,
@@ -240,3 +319,4 @@ export default {
     }
   }
 };
+
