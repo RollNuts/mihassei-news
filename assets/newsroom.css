@@ -1,7 +1,7 @@
 /* Newsroom UI: dynamic date line, satire-forward cards and easy sharing */
 :root{--accent:#c44230;--ink:#222927;--paper:#f8f7f1;--line:#d1d2c8;--muted:#6b746d;--charcoal:#25302c}
 body{background:var(--paper)}
-.strip{position:sticky;top:0;z-index:100;background:#202b26;border-bottom:1px solid #48594e}
+.strip{background:#202b26;border-bottom:1px solid #48594e}
 .strip-content{display:flex;align-items:center;justify-content:space-between;min-height:40px!important;gap:14px}
 .strip-brand{font-family:var(--serif);font-size:15px;font-weight:900;letter-spacing:-.02em;color:#fffaf2}
 .strip-brand:hover{color:#f8dfd5}
