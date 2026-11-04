@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
@@ -101,6 +102,59 @@ class ArticlePickTests(unittest.TestCase):
             self.assertTrue(picks.trigger_allows_network(event, NOW))
         with self.assertRaisesRegex(ValueError, "timezone"):
             picks.trigger_allows_network("push", NOW.replace(tzinfo=None))
+
+    def test_push_requires_a_new_recent_article_in_git_history(self):
+        previous = [article("existing", age_hours=3)]
+        new_article = article("newly-published", age_hours=2)
+        with patch.object(
+            picks.subprocess, "run",
+            return_value=SimpleNamespace(stdout=json.dumps(previous)),
+        ) as git_show:
+            self.assertFalse(picks.push_has_new_article("a" * 40, previous, NOW))
+            self.assertTrue(
+                picks.push_has_new_article("a" * 40, previous + [new_article], NOW)
+            )
+            self.assertFalse(
+                picks.push_has_new_article(
+                    "a" * 40, previous + [article("backfilled", age_hours=60)], NOW
+                )
+            )
+            self.assertFalse(picks.push_has_new_article("", previous + [new_article], NOW))
+            git_show.assert_called()
+        with patch.object(
+            picks.subprocess, "run",
+            return_value=SimpleNamespace(stdout="{not valid json"),
+        ):
+            self.assertFalse(
+                picks.push_has_new_article("a" * 40, previous + [new_article], NOW)
+            )
+        with patch.object(picks.subprocess, "run", side_effect=OSError("git unavailable")):
+            self.assertFalse(
+                picks.push_has_new_article("a" * 40, previous + [new_article], NOW)
+            )
+
+    def test_code_or_existing_article_push_never_contacts_buffer(self):
+        documents = {HERE / "config.json": CONFIG, HERE / "state.json": ledger()}
+        with patch.object(
+            picks, "read_json",
+            side_effect=lambda path: copy.deepcopy(documents[path]),
+        ), patch.object(picks, "datetime", wraps=datetime) as clock, \
+             patch.dict(
+                 os.environ,
+                 {"X_TRIGGER_EVENT": "push", "X_PUSH_BEFORE": "a" * 40},
+                 clear=True,
+             ), patch.object(picks, "push_has_new_article", return_value=False) as new, \
+             patch.object(picks, "read_page_view_metrics") as metrics, \
+             patch.object(picks, "choose_x_channel") as choose, \
+             patch.object(picks, "list_existing") as existing, \
+             patch.object(picks, "queue_one") as queue:
+            clock.now.return_value = NOW
+            self.assertEqual(picks.main(), 0)
+            new.assert_called_once()
+            metrics.assert_not_called()
+            choose.assert_not_called()
+            existing.assert_not_called()
+            queue.assert_not_called()
 
     def test_outside_window_push_exits_before_any_buffer_or_metrics_network(self):
         documents = {
