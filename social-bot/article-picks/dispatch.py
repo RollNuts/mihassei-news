@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -56,6 +57,41 @@ def trigger_allows_network(event_name: str, now: datetime) -> bool:
     hour = now.astimezone(JST).hour
     return 9 <= hour <= 21
 
+
+def push_has_new_article(before_sha: str, articles: list[dict], now: datetime) -> bool:
+    """Fail closed unless this main push introduced a recently published slug.
+
+    A code/config-only update, an edit of an existing article, and an
+    unavailable Git parent are not new publication events. Scheduled checks
+    still run normally, with their own dedupe and quota protections.
+    """
+    if not re.fullmatch(r"[0-9a-f]{40}", before_sha):
+        return False
+    try:
+        previous_text = subprocess.run(
+            ["git", "show", f"{before_sha}:content/articles.json"],
+            cwd=ROOT, capture_output=True, text=True, check=True, timeout=10,
+        ).stdout
+        previous = json.loads(previous_text)
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return False
+    if not isinstance(previous, list):
+        return False
+    previous_slugs = {
+        item.get("slug") for item in previous if isinstance(item, dict)
+    }
+    for item in articles:
+        if not isinstance(item, dict):
+            continue
+        slug = item.get("slug")
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+            continue
+        if slug in previous_slugs:
+            continue
+        age = article_age(item, now)
+        if age is not None and timedelta(0) <= age <= timedelta(hours=24):
+            return True
+    return False
 
 def read_json(path: Path) -> dict:
     if path.is_symlink():
@@ -503,6 +539,11 @@ def main() -> int:
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
+    if trigger_event == "push" and not push_has_new_article(
+        os.environ.get("X_PUSH_BEFORE", ""), articles, now
+    ):
+        print("No new publication in this push; no Buffer read/write.")
+        return 0
 
     # Fresh articles can be promoted before PV has had time to accumulate.
     # Mature candidates still use the site's actual PV period, never legacy
