@@ -8,7 +8,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from scripts.editorial_covers import story_subject
 from scripts.generated_photos import article_fingerprint, usable_generated_scene
 from scripts.visual_review import main, reviewed_generated_scene
 
@@ -69,6 +71,50 @@ class VisualReviewTests(unittest.TestCase):
         article = self.article if article is None else article
         self.reviews["reviews"][article["slug"]] = self.accepted_record(article)
         self.write_reviews()
+
+    def write_editorial_scene(self, article: dict) -> Path:
+        """A synthetic SVG fixture, not an actual visual approval."""
+        path = self.root / "assets/editorial-scenes" / (article["slug"] + ".svg")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" '
+            'role="img" aria-label="テスト用の創作イラスト" '
+            f'data-visual-topic="{story_subject(article)}" '
+            f'data-article-sha256="{article_fingerprint(article)}">'
+            '<title>Synthetic fixture, not an actual reviewed image</title>'
+            '<rect width="1200" height="675" fill="#ffffff"/></svg>',
+            encoding="utf-8",
+        )
+        return path
+
+    def write_stock_photo(self, article: dict):
+        """Supply all stock-photo gate inputs locally, without any request."""
+        article["photo"] = {
+            "source": "https://unsplash.com/photos/fixture-photo",
+            "url": "https://images.unsplash.com/photo-fixture",
+            "license": "Unsplash", "credit": "Synthetic fixture",
+            "alt": "Synthetic fixture; not an actual photograph.",
+        }
+        approvals = self.root / "content/approved_photos.json"
+        data = json.loads(approvals.read_text()) if approvals.exists() else {
+            "version": 1, "approved": {},
+        }
+        data["approved"][article["slug"]] = {
+            "source": article["photo"]["source"],
+            "reason": "Synthetic fixture; not an actual visual review.",
+        }
+        approvals.write_text(json.dumps(data), encoding="utf-8")
+        path = self.root / "assets/photos" / (article["slug"] + ".jpg")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(fake_jpeg())
+
+    def report(self, articles: list[dict]) -> dict:
+        (self.root / "content/articles.json").write_text(
+            json.dumps(articles, ensure_ascii=False), encoding="utf-8")
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(main(["--root", str(self.root)]), 0)
+        return json.loads(output.getvalue())
 
     def test_intact_jpeg_needs_a_matching_explicit_visual_review(self):
         self.assertTrue(usable_generated_scene(self.article, root=self.root))
@@ -172,9 +218,79 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(by_slug[rejected["slug"]], "rejected")
         self.assertEqual(by_slug[missing["slug"]], "missing")
         self.assertIn("自動判定しません", result["basis"])
+        self.assertEqual(result["publication_counts"], {
+            "generated_jpeg": 1, "editorial_svg": 0, "stock_photo": 0, "generic_fallback": 3,
+        })
+        self.assertIn("本番配信を確認した結果ではありません", result["publication_basis"])
         after = {path.relative_to(self.root): path.read_bytes()
                  for path in self.root.rglob("*") if path.is_file()}
         self.assertEqual(after, before)
+
+    def test_report_matches_build_selection_for_all_four_image_kinds(self):
+        from scripts import build
+
+        generated = self.article
+        editorial = {**self.article, "slug": "editorial-fixture"}
+        stock = {**self.article, "slug": "stock-fixture"}
+        generic = {**self.article, "slug": "generic-fixture"}
+        self.accept(generated)
+        for article in (generated, editorial):
+            self.write_editorial_scene(article)
+        for article in (generated, editorial, stock):
+            self.write_stock_photo(article)
+        articles = [generated, editorial, stock, generic]
+        result = self.report(articles)
+        rows = {row["slug"]: row for row in result["images"]}
+        expected = {
+            generated["slug"]: "generated_jpeg", editorial["slug"]: "editorial_svg",
+            stock["slug"]: "stock_photo", generic["slug"]: "generic_fallback",
+        }
+        with patch.object(build, "BASE", self.root):
+            for article in articles:
+                row = rows[article["slug"]]
+                self.assertEqual(row["publication"]["kind"], expected[article["slug"]])
+                self.assertEqual(row["publication"]["url"], build.editorial_image(article))
+        self.assertEqual(result["publication_counts"], dict.fromkeys(expected.values(), 1))
+        self.assertEqual(rows[editorial["slug"]]["editorial_scene"]["status"], "current")
+        # Missing/rejected JPEGs do not mandate generation when an approved
+        # illustration or stock photo is already selected.
+        self.assertEqual([item["slug"] for item in result["attention"]], [generic["slug"]])
+
+    def test_article_edit_reports_lost_editorial_scene_without_reapproving_it(self):
+        path = self.write_editorial_scene(self.article)
+        original_svg = path.read_bytes()
+        before = self.report([self.article])
+        self.assertEqual(before["images"][0]["publication"]["kind"], "editorial_svg")
+
+        changed = {**self.article, "paragraphs": ["店主が別の呼び鈴を取り付けた。"]}
+        result = self.report([changed])
+        row = result["images"][0]
+        self.assertEqual(row["status"], "missing")
+        self.assertEqual(row["publication"], {
+            "kind": "generic_fallback", "url": "/images/review-fixture.svg",
+        })
+        self.assertEqual(row["editorial_scene"]["status"], "stale")
+        self.assertEqual(row["editorial_scene"]["reason"], "article_fingerprint_changed")
+        self.assertEqual(result["attention"][0]["reason"], "stale_editorial_scene")
+        self.assertIn("実物で再確認", result["attention"][0]["next_action"])
+        self.assertEqual(path.read_bytes(), original_svg)
+        self.assertFalse(reviewed_generated_scene(changed, root=self.root))
+
+    def test_report_flags_invalid_scene_instead_of_treating_it_as_reviewed(self):
+        path = self.write_editorial_scene(self.article)
+        path.write_text(path.read_text(encoding="utf-8").replace(
+            '<rect width="1200" height="675" fill="#ffffff"/>',
+            '<image href="https://example.invalid/unreviewed.png"/>',
+        ), encoding="utf-8")
+        original_svg = path.read_bytes()
+        result = self.report([self.article])
+        row = result["images"][0]
+        self.assertEqual(row["editorial_scene"]["status"], "invalid")
+        self.assertEqual(row["publication"]["kind"], "generic_fallback")
+        self.assertEqual({item["reason"] for item in result["attention"]}, {
+            "invalid_editorial_scene", "pending_jpeg",
+        })
+        self.assertEqual(path.read_bytes(), original_svg)
 
 
 if __name__ == "__main__":
