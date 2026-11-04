@@ -87,7 +87,7 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
 
         paragraph_list = a.get("paragraphs")
         first_paragraph = paragraph_list[0].strip() if isinstance(paragraph_list, list) and paragraph_list and isinstance(paragraph_list[0], str) else ""
-        for field_name, opening in (("summary", str(a.get("summary") or "").strip()), ("本文冒頭", first_paragraph)):
+        for field_name, opening in (("見出し", str(a.get("title") or "").strip()), ("summary", str(a.get("summary") or "").strip()), ("本文冒頭", first_paragraph)):
             if opening and CONTEXT_DEPENDENT_OPENING_PATTERN.search(opening):
                 warnings.append((
                     "CONTEXT_DEPENDENT_OPENING",
