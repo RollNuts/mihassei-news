@@ -298,6 +298,108 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(ranked[0]["slug"], "fresh-followup")
         self.assertEqual(ranked[1]["slug"], "fresh-new")
 
+    def test_fresh_lane_prefers_unused_primary_topic_within_top_candidates(self):
+        used = article("used-ai", age_hours=8)
+        used["tags"] = ["AI", "働き方"]
+        newest_ai = article("newest-ai", age_hours=3)
+        newest_ai["tags"] = ["AI", "研究"]
+        diverse = article("diverse-sns", age_hours=4)
+        diverse["tags"] = ["SNS", "カフェ"]
+        state = ledger(**{
+            "used-ai": {
+                "buffer_id": "buf-used",
+                "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            }
+        })
+        selected, evidence, _ = picks.decide(
+            [used, newest_ai, diverse], {}, state, [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "diverse-sns")
+        self.assertIsNone(evidence)
+
+    def test_followup_keeps_priority_even_when_topic_repeats(self):
+        used = article("used-ai", age_hours=8)
+        used["tags"] = ["AI", "働き方"]
+        followup = article("ai-followup", age_hours=5)
+        followup["tags"] = ["AI", "研究"]
+        followup["followup_of"] = "earlier-ai"
+        diverse = article("diverse-sns", age_hours=3)
+        diverse["tags"] = ["SNS", "カフェ"]
+        state = ledger(**{
+            "used-ai": {
+                "buffer_id": "buf-used",
+                "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            }
+        })
+        selected, _, _ = picks.decide(
+            [used, followup, diverse], {}, state, [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "ai-followup")
+
+    def test_measured_lane_diversifies_only_within_top_three(self):
+        used = article("used-ai", age_hours=40)
+        used["tags"] = ["AI", "働き方"]
+        top_ai = article("top-ai", age_hours=36)
+        top_ai["tags"] = ["AI", "研究"]
+        second_ai = article("second-ai", age_hours=38)
+        second_ai["tags"] = ["AI", "仕事"]
+        diverse = article("diverse-market", age_hours=42)
+        diverse["tags"] = ["お金", "生活"]
+        low = article("low-sns", age_hours=44)
+        low["tags"] = ["SNS", "文化"]
+        state = ledger(**{
+            "used-ai": {
+                "buffer_id": "buf-used",
+                "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            }
+        })
+        counts = {
+            "top-ai": stats(30, 2),
+            "second-ai": stats(29, 2),
+            "diverse-market": stats(28, 1),
+            "low-sns": stats(27, 1),
+            "used-ai": stats(20, 0),
+        }
+        selected, evidence, _ = picks.decide(
+            [used, top_ai, second_ai, diverse, low], counts, state, [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "diverse-market")
+        self.assertEqual(evidence["last7DaysPageViews"], 28)
+
+    def test_measured_lane_does_not_promote_lower_followup_over_diverse_candidate(self):
+        used = article("used-ai", age_hours=40)
+        used["tags"] = ["AI", "働き方"]
+        top_ai = article("top-ai", age_hours=36)
+        top_ai["tags"] = ["AI", "研究"]
+        lower_followup = article("lower-followup", age_hours=38)
+        lower_followup["tags"] = ["AI", "続報"]
+        lower_followup["followup_of"] = "older-ai"
+        diverse = article("diverse-money", age_hours=42)
+        diverse["tags"] = ["お金", "生活"]
+        state = ledger(**{
+            "used-ai": {
+                "buffer_id": "buf-used",
+                "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            }
+        })
+        counts = {
+            "used-ai": stats(20, 0),
+            "top-ai": stats(30, 2),
+            "lower-followup": stats(29, 1),
+            "diverse-money": stats(28, 1),
+        }
+        selected, _, _ = picks.decide(
+            [used, top_ai, lower_followup, diverse], counts, state, [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "diverse-money")
+
+    def test_primary_topic_falls_back_to_category_without_tags(self):
+        tagged = {"tags": ["AI", "働き方"], "category": "技術"}
+        category_only = {"tags": [], "category": "社会"}
+        self.assertEqual(picks.primary_topic(tagged), "tag:ai")
+        self.assertEqual(picks.primary_topic(category_only), "category:社会")
+        self.assertEqual(picks.primary_topic({}), "")
+
     def test_crisis_articles_never_enter_automatic_article_promotion(self):
         crisis = article("quake", age_hours=4, title="地震後の避難所で起きた話")
         crisis["summary"] = "被災者の避難が続いている。"

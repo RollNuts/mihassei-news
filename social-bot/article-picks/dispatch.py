@@ -338,6 +338,63 @@ def rank_fresh(articles: list[dict], state: dict, blocked: set[str],
     return result
 
 
+def primary_topic(article: dict) -> str:
+    """Use the first published topic tag as a small diversity key."""
+    tags = article.get("tags")
+    if isinstance(tags, list):
+        for tag in tags:
+            if isinstance(tag, str) and tag.strip():
+                return "tag:" + tag.strip().casefold()
+    category = article.get("category")
+    if isinstance(category, str) and category.strip():
+        return "category:" + category.strip().casefold()
+    return ""
+
+
+def promoted_topics_today(state: dict, articles: list[dict], now: datetime) -> set[str]:
+    """Topics already selected today; missing old metadata never blocks a post."""
+    by_slug = {
+        item.get("slug"): item for item in articles
+        if isinstance(item, dict) and isinstance(item.get("slug"), str)
+    }
+    day = now.astimezone(JST).date()
+    result = set()
+    for slug, entry in state.get("queued", {}).items():
+        try:
+            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not queued_at.tzinfo or queued_at.astimezone(JST).date() != day:
+            continue
+        topic = primary_topic(by_slug.get(slug, {}))
+        if topic:
+            result.add(topic)
+    return result
+
+
+def prefer_topic_diversity(items: list, used_topics: set[str], *,
+                           article_of=lambda item: item, lookahead: int = 3):
+    """Prefer a different topic within the leading candidates, never skip all.
+
+    A genuine follow-up keeps editorial priority because repeating its topic is
+    intentional. For ordinary posts this only reorders the first few already
+    eligible candidates; it never lowers the daily cap or invents a candidate.
+    """
+    if not items:
+        return None
+    first_article = article_of(items[0])
+    if first_article.get("followup_of"):
+        return items[0]
+    if not used_topics:
+        return items[0]
+    for item in items[:lookahead]:
+        article = article_of(item)
+        topic = primary_topic(article)
+        if not topic or topic not in used_topics:
+            return item
+    return items[0]
+
+
 def promotions_today(state: dict, now: datetime) -> int:
     day = now.astimezone(JST).date()
     count = 0
@@ -398,14 +455,19 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
             or today_count >= config["max_per_jst_day"]
             or cooldown_active(state, now, config["minimum_interval_hours"])):
         return None, None, len(queued)
+    used_topics = promoted_topics_today(state, articles, now)
     fresh = rank_fresh(articles, state, remote_slugs, config, now)
     if fresh:
-        return fresh[0], None, len(queued)
+        selected = prefer_topic_diversity(fresh, used_topics)
+        return selected, None, len(queued)
     candidates = rank(eligible_articles(articles, now, config), counts,
                       state, remote_slugs, config)
     if not candidates:
         return None, None, len(queued)
-    item, metrics, _score = candidates[0]
+    selected = prefer_topic_diversity(
+        candidates, used_topics, article_of=lambda row: row[0]
+    )
+    item, metrics, _score = selected
     return item, metrics, len(queued)
 
 
@@ -458,6 +520,7 @@ def main() -> int:
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
+        "primary_topic": primary_topic(eligible) or None,
     }
     if evidence is not None:
         entry["metrics_at_queue"] = {**window,
