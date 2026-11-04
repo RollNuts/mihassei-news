@@ -7,8 +7,8 @@
   "min_page_views": 8,
   "minimum_article_age_hours": 12,
   "maximum_article_age_days": 21,
-  "minimum_interval_hours": 6,
-  "max_per_jst_day": 3,
+  "minimum_interval_hours": 4,
+  "max_per_jst_day": 4,
   "fresh_minimum_age_hours": 2,
   "fresh_maximum_age_hours": 18
 }
