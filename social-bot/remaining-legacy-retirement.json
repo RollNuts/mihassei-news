@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "request_id": "x-retire-remaining-legacy-20261104",
-  "enabled": true,
+  "enabled": false,
   "channel_id": "6ae94b74e29c69a171436d72",
   "action": "move_to_draft",
   "targets": [
@@ -68,6 +68,21 @@
       },
       "state": "skipped",
       "reason": "already_published"
+    },
+    "xexp-honest-survey": {
+      "checked_at": "2026-11-04T10:41:57.190117+00:00",
+      "before": {
+        "buffer_id": "6ae9c80535443b847afe9195",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "sent",
+        "due_at": "2026-11-04T10:11:00.000Z",
+        "sent_at": "2026-11-04T10:11:01.874Z",
+        "text_sha256": "ac7c59dd09d55205b00e486f2440cb6c2d0d3f9f3f50bea800d39c6dfab16db0",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "already_published"
     }
-  }
+  },
+  "completed_at": "2026-11-04T10:41:57.276312+00:00"
 }
