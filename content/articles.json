@@ -1,5 +1,33 @@
 [
   {
+    "slug": "self-oseibo-recipient-refuses-own-gift",
+    "category": "暮らし",
+    "flash": "年末のごほうび",
+    "fiction_company": "菓子店ねぎらい堂",
+    "art": "cards",
+    "fiction_at": "2031-10-15T14:00:00+09:00",
+    "published_at": "2026-11-04T21:39:42+09:00",
+    "title": "「自分へのお歳暮」、受取人の自分が辞退　宅配員「贈り主もあなたです」",
+    "summary": "自分へのごほうびに高級菓子を注文した会社員が、届いた箱を見て急に遠慮。「こんな高いものは」と受け取りをためらうが、伝票には贈り主も受取人も自分の名前があった。",
+    "paragraphs": [
+      "百貨店で自分向けのお歳暮が売られるなか、架空の菓子店「ねぎらい堂」も、自分宛ての贈り物を立派なのし紙で包むようになった。会社員の佐藤さんは一年間のごほうびに、普段は買わない高級焼き菓子を自宅へ注文。贈り主と受取人の欄に同じ名前を書いた。",
+      "配達員が大きな箱を差し出すと、佐藤さんは値段を思い出し、「いや、こんな高いものはいただけません」と手を引いた。「でも、贈り主も佐藤さんですよ」。配達員に伝票を示されると、佐藤さんは「贈るときは勢いがありまして」と小さく答えた。",
+      "結局、佐藤さんは箱を受け取った。だが、金色ののし紙をはがそうとして手が止まる。「こんな立派なもの、自分にはもったいない」。箱は食卓の真ん中に飾り、佐藤さんはいつもの安い菓子を買いにスーパーへ出かけた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "東急百貨店（PR TIMES）",
+      "published_at": "2026-10-15T14:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000169.000020722.html",
+      "topic": "2026年10月15日14時の東急百貨店発表では、自分に贈る『ごほうびパレット』を2026年お歳暮のラインアップとして紹介。2026年11月4日の時事通信配信でも百貨店の自分向けギフト拡充を報道。菓子店・佐藤さん・辞退のやり取りは創作。"
+    },
+    "scene_prompt": "A gently absurd photorealistic Japanese apartment doorstep scene in winter. A courteous parcel delivery worker holds a carefully wrapped luxurious gift box with a decorative noshi paper band toward a puzzled office worker in casual home clothes, who politely holds both hands up as if declining the gift. A small low dining table with ordinary inexpensive snacks visible inside the apartment. Natural daylight, subtle deadpan expression, candid editorial photograph, no legible text, no brands, no identifiable real people.",
+    "tags": [
+      "お歳暮",
+      "ご褒美"
+    ]
+  },
+  {
     "slug": "crosswalk-photo-captcha-human-stuck",
     "category": "技術",
     "flash": "街の本人確認",
