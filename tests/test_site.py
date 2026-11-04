@@ -546,7 +546,9 @@ class SiteTests(unittest.TestCase):
         self.assertIn('data-comment-discussions',home)
         self.assertIn('data-comment-discussion-options=',home)
         self.assertIn('data-discussion-list',home)
-        self.assertIn('href="/assets/comment-activity.js"',home.replace('src=', 'href='))
+        from scripts.build import asset_url
+        self.assertIn('href="' + asset_url("comment-activity.js") + '"',
+                      home.replace('src=', 'href='))
         self.assertIn("新着記事にコメントする",home)
         self.assertIn('data-comment-count=',home)
         for a in self.articles:

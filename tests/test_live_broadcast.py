@@ -17,8 +17,9 @@ class LiveBroadcastTests(unittest.TestCase):
         (self.root / "assets/clips").mkdir(parents=True)
         self.script = b"/* current verified broadcast player */"
         (self.root / "assets/news-broadcast.js").write_bytes(self.script)
+        self.script_url = "/assets/news-broadcast.js?v=" + hashlib.sha256(self.script).hexdigest()[:12]
         self.playlist = []
-        self.responses = {"/assets/news-broadcast.js": (self.script, "text/javascript")}
+        self.responses = {self.script_url: (self.script, "text/javascript")}
         self.requests = []
         for slug in ("new-story", "previous-story", "third-story"):
             movie = ("verified-" + slug).encode()
@@ -35,7 +36,7 @@ class LiveBroadcastTests(unittest.TestCase):
         data = html.escape(json.dumps(playlist), quote=True)
         return (f'<section class="broadcast-spotlight" data-broadcast-playlist="{data}">'
                 f'<video class="broadcast-video"><source src="{playlist[0]["video_url"]}"></video>'
-                '</section><script defer src="/assets/news-broadcast.js"></script>')
+                f'</section><script defer src="{self.script_url}"></script>')
 
     def fetch(self, path):
         self.requests.append(path)
@@ -56,7 +57,7 @@ class LiveBroadcastTests(unittest.TestCase):
         self.assertEqual(self.requests, [])
 
     def test_rejects_stale_script_and_media_despite_success_status(self):
-        for path in ("/assets/news-broadcast.js", self.playlist[-1]["video_url"]):
+        for path in (self.script_url, self.playlist[-1]["video_url"]):
             with self.subTest(path=path):
                 original = self.responses[path]
                 self.responses[path] = b"old deployed bytes", original[1]

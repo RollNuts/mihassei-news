@@ -1,7 +1,7 @@
 """Keep page-specific reader scripts lean without disabling their features."""
 import unittest
 
-from scripts.build import article_url, layout, load
+from scripts.build import article_url, asset_url, layout, load
 
 
 class RouteScriptsTests(unittest.TestCase):
@@ -12,16 +12,17 @@ class RouteScriptsTests(unittest.TestCase):
 
     def test_only_relevant_scripts_are_loaded(self):
         a = load()[0]
+        js = asset_url
         cases = {
             "/": {
-                "/assets/engagement.js", "/assets/comment-activity.js",
-                "/assets/serial-progress.js", "/assets/returning-shelf.js",
-                "/assets/news-broadcast.js",
+                js("engagement.js"), js("comment-activity.js"),
+                js("serial-progress.js"), js("returning-shelf.js"),
+                js("news-broadcast.js"),
             },
-            "/archive/": {"/assets/engagement.js", "/assets/site.js"},
-            "/saved/": {"/assets/engagement.js", "/assets/bookmarks.js"},
-            "/about/": {"/assets/engagement.js"},
-            "/404.html": {"/assets/engagement.js"},
+            "/archive/": {js("engagement.js"), js("site.js")},
+            "/saved/": {js("engagement.js"), js("bookmarks.js")},
+            "/about/": {js("engagement.js")},
+            "/404.html": {js("engagement.js")},
         }
         for route, expected in cases.items():
             with self.subTest(route=route):
@@ -31,11 +32,20 @@ class RouteScriptsTests(unittest.TestCase):
 
         article = layout(a["title"], a["summary"], article_url(a), "<p>記事</p>",
                          kind="story", article=a)
-        expected = {"/assets/engagement.js", "/assets/comments.js", "/assets/bookmarks.js"}
+        expected = {asset_url("engagement.js"), asset_url("comments.js"), asset_url("bookmarks.js")}
         from scripts import build
         if build.usable_clip(a, root=build.BASE):
-            expected.add("/assets/news-broadcast.js")
+            expected.add(asset_url("news-broadcast.js"))
         self.assertEqual(self.scripts(article), expected)
+
+    def test_reader_script_urls_are_content_fingerprinted(self):
+        import re
+        for name in ("engagement.js", "site.js", "news-broadcast.js", "comments.js",
+                     "comment-activity.js", "bookmarks.js", "serial-progress.js",
+                     "returning-shelf.js"):
+            self.assertRegex(asset_url(name), rf"^/assets/{re.escape(name)}\?v=[0-9a-f]{{12}}$")
+        with self.assertRaises(ValueError):
+            asset_url("../engagement.js")
 
     def test_only_non_content_pages_are_noindexed(self):
         a = load()[0]

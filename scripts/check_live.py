@@ -68,6 +68,20 @@ def verify_launch_card(markup: str, image_path: str) -> None:
         raise RuntimeError("Cache-busting X share link is not published")
 
 
+def published_script_path(markup: str, name: str, *, root=ROOT) -> str:
+    """Require HTML to select the exact current reader script by content digest."""
+    if not re.fullmatch(r"[a-z0-9-]+\.js", name):
+        raise ValueError("Invalid reader script name")
+    expected = hashlib.sha256((Path(root) / "assets" / name).read_bytes()).hexdigest()[:12]
+    match = re.search(
+        r'<script\b[^>]*\bsrc="(/assets/' + re.escape(name)
+        + r'\?v=([0-9a-f]{12}))"', markup
+    )
+    if not match or match.group(2) != expected:
+        raise RuntimeError("Reader script fingerprint missing or stale: " + name)
+    return html.unescape(match.group(1))
+
+
 def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> None:
     """Detect stale CDN bytes as well as malformed or oversized public JPEGs."""
     record = generated_scene_entry(article, root=root)
@@ -256,10 +270,8 @@ def verify_broadcast_delivery(markup, expected_playlist, *, fetch=None, root=ROO
     if (not player or
             'src="' + expected_playlist[0]["video_url"] + '"' not in html.unescape(player.group(1))):
         raise RuntimeError("Initial broadcast player and its selected story disagree")
-    script_paths = re.findall(r'<script\b[^>]*src="(/assets/news-broadcast\.js(?:\?[^\"]*)?)"', markup)
-    if len(script_paths) != 1:
-        raise RuntimeError("Published broadcast player script is missing")
-    script, script_mime = fetch(html.unescape(script_paths[0]))
+    script_path = published_script_path(markup, "news-broadcast.js", root=root)
+    script, script_mime = fetch(script_path)
     if (("javascript" not in script_mime and "text/plain" not in script_mime)
             or script != (root / "assets/news-broadcast.js").read_bytes()):
         raise RuntimeError("Published broadcast script is stale or has an invalid MIME")
@@ -552,17 +564,18 @@ def check():
     if ("text/html" not in saved_mime or
         'name="robots" content="noindex,follow"' not in saved_markup or
         'data-saved-list' not in saved_markup or
-        'data-clear-bookmarks' not in saved_markup or
-        'src="/assets/bookmarks.js"' not in saved_markup):
+        'data-clear-bookmarks' not in saved_markup):
         raise RuntimeError("Private browser-only reading list is missing from production")
     if 'href="/saved/"' not in body:
         raise RuntimeError("Saved reading list is not discoverable from homepage")
-    bookmark_js, bookmark_mime = get("/assets/bookmarks.js")
+    bookmark_path = published_script_path(saved_markup, "bookmarks.js")
+    bookmark_js, bookmark_mime = get(bookmark_path)
     if ("javascript" not in bookmark_mime and "text/plain" not in bookmark_mime):
         raise RuntimeError("Bookmark script is missing or served with wrong MIME")
-    if (b"mihassei-saved-stories-v1" not in bookmark_js or
+    if (bookmark_js != (ROOT / "assets/bookmarks.js").read_bytes() or
+        b"mihassei-saved-stories-v1" not in bookmark_js or
         b"localStorage.setItem" not in bookmark_js):
-        raise RuntimeError("Bookmark script missing expected device-local functionality")
+        raise RuntimeError("Bookmark script missing expected current device-local functionality")
 
     # Serial long-form reading, links and share cards must ship alongside the news.
     # Static GETs only; do not generate visits, votes or any paid API traffic.
@@ -763,8 +776,11 @@ def check():
         if 'href="/articles/'+article["slug"]+'/"' not in archive_html:
             raise RuntimeError("Live archive missing article link: "+article["slug"])
         require_matching_public_headline(article, archive_html, "archive")
-    site_js, _ = get("/assets/site.js")
-    if b"PAGE_SIZE = 18" not in site_js or b"visibleLimit" not in site_js:
+    site_path = published_script_path(archive_html, "site.js")
+    site_js, site_mime = get(site_path)
+    if (("javascript" not in site_mime and "text/plain" not in site_mime)
+            or site_js != (ROOT / "assets/site.js").read_bytes()
+            or b"PAGE_SIZE = 18" not in site_js or b"visibleLimit" not in site_js):
         raise RuntimeError("Live archive pagination script has not deployed")
     # The random edition is deliberately bounded to avoid an ever-growing
     # homepage payload as automated publishing accelerates.

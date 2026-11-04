@@ -35,7 +35,7 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertIn('UNHAPPENED TV', home)
         self.assertIn('<p class="broadcast-note">再現映像・音声なし</p>', home)
         self.assertIn('controls playsinline muted loop preload="none"', home)
-        self.assertIn('src="/assets/news-broadcast.js"', home)
+        self.assertIn('src="' + build.asset_url("news-broadcast.js") + '"', home)
         self.assertNotIn('autoplay', home)
         self.assertIn('架空ニュース', home)
 
