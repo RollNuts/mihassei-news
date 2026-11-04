@@ -19,6 +19,7 @@ SCENES = {
     "xexp-sock-career": "sock",
     "xexp-book-review": "book",
     "xexp-cloud-bus": "cloud",
+    "xexp-lunch-price": "bento",
 }
 ROOT = Path(__file__).resolve().parents[1] / "assets"
 
@@ -32,7 +33,8 @@ def base(scene):
               "shadow": ((35, 40, 56), (117, 91, 82)),
               "sock": ((52, 79, 91), (160, 174, 154)),
               "book": ((39, 53, 72), (144, 105, 91)),
-              "cloud": ((73, 115, 149), (216, 176, 137))}
+              "cloud": ((73, 115, 149), (216, 176, 137)),
+              "bento": ((70, 67, 70), (210, 154, 112))}
     top, bottom = colors[scene]
     im = Image.new("RGB", (W, H))
     px = im.load()
@@ -319,6 +321,79 @@ def cloud(d):
     d.rectangle((993, 194, 1063, 217), fill=(224, 204, 162))
 
 
+def bento(d):
+    """A price-frozen bento where the chicken compartment holds a PHOTO.
+
+    Visual surprise rather than a text card: one consistent price and a flat
+    print pasted over an empty food compartment. Reader sees the literal swap.
+    """
+    # Shop counter and warm takeaway lights.
+    d.rectangle((0, 410, W, H), fill=(116, 77, 64))
+    d.rectangle((0, 430, W, 460), fill=(223, 170, 115))
+    for x in (112, 300, 488, 676, 864, 1052):
+        d.ellipse((x-23, 57, x+23, 101), fill=(250, 217, 147))
+        d.line((x, 0, x, 56), fill=(225, 200, 151), width=4)
+    # Vendor is large enough to be recognized in a 320px feed thumbnail.
+    d.ellipse((81, 164, 330, 408), fill=(235, 190, 151))
+    d.pieslice((71, 143, 343, 260), 180, 360, fill=(66, 78, 78))
+    d.ellipse((167, 275, 180, 290), fill=(53, 56, 56))
+    d.ellipse((263, 275, 276, 290), fill=(53, 56, 56))
+    d.arc((180, 303, 260, 352), 5, 173, fill=(115, 71, 65), width=7)
+    d.polygon([(91, 384), (334, 381), (403, 640), (40, 640)],
+              fill=(219, 211, 184))
+    d.line([(370, 420), (427, 379), (447, 390)],
+           fill=(232, 192, 159), width=34, joint="curve")
+    d.ellipse((426, 356, 472, 403), fill=(232, 192, 159))
+    # The container is comically luxurious despite the missing food.
+    d.rounded_rectangle((326, 204, 1159, 626), radius=46,
+                        fill=(41, 47, 52))
+    d.rounded_rectangle((344, 217, 1141, 602), radius=39,
+                        fill=(206, 205, 190), outline=(244, 226, 183), width=18)
+    d.rounded_rectangle((374, 250, 717, 571), radius=35,
+                        fill=(77, 89, 90))
+    d.rounded_rectangle((734, 250, 1109, 571), radius=35,
+                        fill=(70, 81, 85))
+    # Rice and umeboshi have volume; the chicken doesn't.
+    d.ellipse((390, 265, 705, 553), fill=(243, 237, 213))
+    d.ellipse((418, 290, 681, 538), fill=(255, 248, 224))
+    for x, y in ((458, 323), (502, 302), (540, 350), (584, 316),
+                 (627, 357), (472, 416), (515, 460), (602, 448),
+                 (649, 413), (539, 515), (438, 481)):
+        d.ellipse((x, y, x+18, y+10), fill=(207, 204, 177))
+    d.ellipse((513, 377, 588, 449), fill=(178, 65, 58),
+              outline=(116, 53, 56), width=5)
+    # White paper border + tape + folded corner make it visibly a flat print.
+    d.polygon([(767, 286), (1059, 271), (1093, 531), (781, 545)],
+              fill=(233, 225, 199))
+    d.polygon([(778, 289), (1042, 278), (1066, 505), (796, 518)],
+              fill=(251, 248, 234))
+    d.polygon([(808, 317), (1021, 305), (1040, 475), (822, 488)],
+              fill=(112, 149, 103))
+    for cx, cy, radius in ((864, 375, 46), (952, 375, 47),
+                           (901, 442, 45)):
+        d.ellipse((cx-radius, cy-radius*.68, cx+radius, cy+radius*.68),
+                  fill=(178, 99, 49), outline=(113, 70, 39), width=5)
+        d.ellipse((cx-radius+10, cy-radius*.68+7,
+                   cx+radius-9, cy+radius*.68-8), fill=(217, 140, 64))
+        for dx, dy in ((-19, -6), (10, 6), (15, -12)):
+            d.ellipse((cx+dx-3, cy+dy-3, cx+dx+4, cy+dy+3),
+                      fill=(249, 188, 90))
+    d.polygon([(1048, 478), (1076, 520), (1045, 506)],
+              fill=(211, 203, 189))
+    d.polygon([(1048, 478), (1041, 508), (1076, 520)],
+              fill=(254, 249, 233))
+    for x, y in ((782, 281), (1050, 275)):
+        d.polygon([(x-18, y-10), (x+35, y-12),
+                   (x+40, y+12), (x-17, y+14)], fill=(226, 204, 164))
+    # Only one number, so the drawing is not a text-heavy satire card.
+    d.rounded_rectangle((749, 89, 1085, 192), radius=21,
+                        fill=(252, 227, 167), outline=(107, 86, 71), width=9)
+    d.text((799, 105), "500", fill=(65, 59, 58),
+           stroke_width=2, stroke_fill=(65, 59, 58), font_size=70)
+    d.ellipse((746, 136, 756, 147), fill=(107, 86, 71))
+    d.ellipse((1079, 136, 1089, 147), fill=(107, 86, 71))
+
+
 def draw_scene(name):
     from PIL import Image, ImageDraw
     if name not in SCENES:
@@ -326,7 +401,7 @@ def draw_scene(name):
     scene = SCENES[name]
     im, d = base(scene)
     {"ufo": ufo, "nails": nails, "broom": broom, "shadow": shadow,
-     "sock": sock, "book": book, "cloud": cloud}[scene](d)
+     "sock": sock, "book": book, "cloud": cloud, "bento": bento}[scene](d)
     rng = random.Random(int(hashlib.sha256(name.encode()).hexdigest()[:12], 16))
     grain = Image.new("RGBA", im.size, (0, 0, 0, 0))
     g = ImageDraw.Draw(grain)

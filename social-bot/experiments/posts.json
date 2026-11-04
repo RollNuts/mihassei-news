@@ -210,6 +210,7 @@
     },
     {
       "id": "xexp-lunch-price",
+      "visual": "bento",
       "sequence": 27,
       "format": "surreal_text",
       "text": "弁当屋が「値上げしません」と宣言した。翌週、唐揚げは写真になった。容器だけは前より立派だった。",
