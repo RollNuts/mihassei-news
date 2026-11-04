@@ -2,10 +2,56 @@
 (() => {
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
   const saveData = navigator.connection?.saveData === true;
+  const seenKey = 'mihassei:broadcast-seen:v1';
+  const readSeen = () => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(seenKey) || '[]');
+      return Array.isArray(saved) ? saved.filter(key =>
+        typeof key === 'string' && /^[a-z0-9-]+:[a-f0-9]{12}$/.test(key)).slice(0, 12) : [];
+    } catch (_) { return []; }
+  };
+
+  const nativeCaptions = video => {
+    let element = video.querySelector('[data-broadcast-track]');
+    let webkitFullscreen = false;
+    const update = () => {
+      if (!element?.track) return;
+      const fullscreen = webkitFullscreen || video.webkitPresentationMode === 'fullscreen'
+        || document.fullscreenElement === video;
+      element.track.mode = element.getAttribute('src')
+        ? (fullscreen ? 'showing' : 'hidden') : 'disabled';
+    };
+    element?.addEventListener('load', update);
+    video.addEventListener('webkitbeginfullscreen', () => { webkitFullscreen = true; update(); });
+    video.addEventListener('webkitendfullscreen', () => { webkitFullscreen = false; update(); });
+    video.addEventListener('webkitpresentationmodechanged', () => {
+      webkitFullscreen = video.webkitPresentationMode === 'fullscreen';
+      update();
+    });
+    document.addEventListener('fullscreenchange', update);
+    update();
+    return url => {
+      if (!element && url) {
+        element = document.createElement('track');
+        element.kind = 'subtitles';
+        element.srclang = 'ja';
+        element.label = '日本語';
+        element.setAttribute('data-broadcast-track', '');
+        element.addEventListener('load', update);
+        video.appendChild(element);
+      }
+      if (!element) return;
+      if (url) element.setAttribute('src', url);
+      else element.removeAttribute('src');
+      update();
+    };
+  };
 
   document.querySelectorAll('[data-video-shell]').forEach(shell => {
     const video = shell.querySelector('video');
     if (!video) return;
+    let mediaSource = video.querySelector('source');
+    const setNativeCaptions = nativeCaptions(video);
     const overlay = shell.querySelector('[data-broadcast-overlay]');
     const label = overlay?.querySelector('[data-broadcast-label]');
     const caption = overlay?.querySelector('[data-broadcast-text]');
@@ -62,8 +108,11 @@
       if (overlay) overlay.hidden = true;
       shell.classList.add('broadcast-video-failed');
     };
-    video.addEventListener('error', fail, { once: true });
-    video.querySelector('source')?.addEventListener('error', fail, { once: true });
+    video.addEventListener('error', () => { if (video.error) fail(); });
+    const watchSource = source => source?.addEventListener('error', () => {
+      if (source === mediaSource) fail();
+    });
+    watchSource(mediaSource);
     ['loadedmetadata', 'timeupdate', 'seeked', 'ended'].forEach(event => video.addEventListener(event, sync));
     video.addEventListener('playing', () => {
       stopFrames();
@@ -87,25 +136,21 @@
     let autoplayBlocked = false;
     let playPending = false;
     let automaticallyInterrupted = false;
-    const update = () => {
-      if (video.hidden || document.hidden || !inView) {
-        if (!video.paused) {
-          automaticPause = true;
-          if (playPending) automaticallyInterrupted = true;
-          video.pause();
-        }
-        return;
-      }
-      if (!mayAutoplay || readerPaused || autoplayBlocked || playPending || !video.paused) return;
+    let playbackRevision = 0;
+    let switchingSource = false;
+    const play = () => {
+      const revision = playbackRevision;
       video.muted = true;
       playPending = true;
       automaticallyInterrupted = false;
       const request = video.play();
       if (request?.then) {
         request.then(() => {
+          if (revision !== playbackRevision) return;
           playPending = false;
           update(); // Visibility may have changed while playback was loading.
         }, error => {
+          if (revision !== playbackRevision) return;
           playPending = false;
           // An automatic offscreen pause may interrupt a pending play request.
           const retry = error?.name === 'AbortError' && automaticallyInterrupted;
@@ -118,15 +163,118 @@
         });
       } else playPending = false;
     };
+    const update = () => {
+      if (video.hidden || document.hidden || !inView) {
+        if (!video.paused) {
+          automaticPause = true;
+          if (playPending) automaticallyInterrupted = true;
+          video.pause();
+        }
+        return;
+      }
+      if (!mayAutoplay || readerPaused || autoplayBlocked || playPending || !video.paused) return;
+      play();
+    };
     video.addEventListener('pause', () => {
-      if (automaticPause) automaticPause = false;
-      else readerPaused = true;
+      if (automaticPause || switchingSource) automaticPause = false;
+      else if (video.paused) readerPaused = true;
     });
     video.addEventListener('play', () => {
+      switchingSource = false;
+      automaticPause = false;
       readerPaused = false;
       autoplayBlocked = false;
       shell.classList.remove('broadcast-tap-to-play');
     });
+    video.addEventListener('loadstart', () => { switchingSource = false; automaticPause = false; });
+
+    // Only the initial selection uses viewing history. Never replace the story
+    // on a timer, at a loop boundary, or in response to another tab's storage.
+    const program = shell.closest?.('[data-broadcast-playlist]');
+    let items = [];
+    try {
+      const parsed = JSON.parse(program?.dataset.broadcastPlaylist || '[]');
+      if (Array.isArray(parsed)) items = parsed.filter(item =>
+        typeof item.key === 'string' && typeof item.title === 'string'
+        && typeof item.video_url === 'string' && item.video_url.startsWith('/clips/')
+        && typeof item.poster_url === 'string' && item.poster_url.startsWith('/generated/')
+        && typeof item.article_url === 'string' && item.article_url.startsWith('/articles/')
+        && [4, 12].includes(item.duration_seconds)).slice(0, 3);
+    } catch (_) { /* Retain the server-rendered player when optional data is invalid. */ }
+    if (items.length && mediaSource) {
+      const buttons = [...program.querySelectorAll('[data-broadcast-choice]')];
+      const headline = program.querySelector('[data-broadcast-headline]');
+      const articleLink = program.querySelector('[data-broadcast-article-link]');
+      const choices = program.querySelector('[data-broadcast-choices]');
+      const poster = shell.querySelector('.broadcast-poster');
+      let selected = 0;
+      let remembered = '';
+      const choose = (index, initial = false) => {
+        if (!items[index] || (!initial && selected === index)) return;
+        const changed = selected !== index;
+        const resume = !video.paused;
+        if (changed) {
+          switchingSource = true;
+          playbackRevision += 1;
+          playPending = false;
+          automaticallyInterrupted = false;
+          video.pause();
+          stopFrames();
+        }
+        selected = index;
+        const item = items[index];
+        remembered = '';
+        cues = Array.isArray(item.cues) ? item.cues : [];
+        activeCue = -1;
+        if (label) label.textContent = cues[0]?.label || item.category;
+        if (caption) caption.textContent = cues[0]?.text || item.title;
+        if (counter) counter.textContent = cues.length ? '01 / 03' : `${item.duration_seconds}秒`;
+        if (overlay) overlay.hidden = false;
+        if (progress) progress.style.transform = 'scaleX(0)';
+        if (headline) { headline.textContent = item.title; headline.href = item.article_url; }
+        if (articleLink) articleLink.href = item.article_url;
+        if (poster) poster.src = item.poster_url;
+        video.poster = item.poster_url;
+        video.setAttribute('aria-label', `${item.title}・${item.duration_seconds}秒の無音演出映像`);
+        buttons.forEach(button => button.setAttribute('aria-pressed',
+          String(Number(button.dataset.broadcastChoice) === index)));
+        setNativeCaptions(item.track_url || '');
+        if (changed) {
+          // A detached source's delayed error must not hide the newly selected
+          // video. Each resource has its own element and guarded listener.
+          const nextSource = document.createElement('source');
+          nextSource.type = 'video/mp4';
+          nextSource.src = item.video_url;
+          video.replaceChild(nextSource, mediaSource);
+          mediaSource = nextSource;
+          watchSource(mediaSource);
+          video.hidden = false;
+          shell.classList.remove('broadcast-video-failed');
+          video.load();
+        }
+        sync();
+        // Choosing another item preserves a reader's pause. A playing video
+        // continues only after this explicit click, with the new story at 0s.
+        if (!initial && resume && inView && !document.hidden) play();
+      };
+      const seen = readSeen();
+      let preferred = items.findIndex(item => !seen.includes(item.key));
+      if (preferred < 0) preferred = items.reduce((oldest, item, index) =>
+        seen.indexOf(item.key) > seen.indexOf(items[oldest].key) ? index : oldest, 0);
+      choose(preferred, true);
+      buttons.forEach(button => button.addEventListener('click', () =>
+        choose(Number(button.dataset.broadcastChoice))));
+      if (choices) choices.hidden = items.length < 2;
+      video.addEventListener('playing', () => {
+        const key = items[selected].key;
+        if (remembered === key) return;
+        remembered = key;
+        try {
+          window.localStorage.setItem(seenKey, JSON.stringify(
+            [key, ...readSeen().filter(saved => saved !== key)].slice(0, 12)));
+        } catch (_) { /* Playback and explicit choices never require storage. */ }
+      });
+    }
     if ('IntersectionObserver' in window) {
       const watcher = new IntersectionObserver(entries => {
         inView = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.35);

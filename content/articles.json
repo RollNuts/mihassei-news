@@ -141,6 +141,7 @@
   },
   {
     "slug": "volleyball-team-lunch-plate-merch",
+    "broadcast_feature": true,
     "category": "スポーツ",
     "flash": "ファン文化",
     "fiction_company": "男子バレーチーム『青空エース』",
@@ -165,6 +166,7 @@
   },
   {
     "slug": "music-ai-friends-monopolize-the-song",
+    "broadcast_feature": true,
     "category": "技術",
     "flash": "音楽・技術",
     "fiction_company": "音楽仲間をスマホに招いた男性",
