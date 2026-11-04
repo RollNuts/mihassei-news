@@ -39,6 +39,24 @@ class ReaderFlowPolishTests(unittest.TestCase):
             archive(multi), r'<select class="decade-select" data-decade-filter[^>]* hidden>'
         )
 
+    def test_archive_filters_have_an_accessible_group_name(self):
+        # A plain div has the implicit generic role: aria-label alone is
+        # ignored. Screen-reader users need a named group for these toggles.
+        markup = archive(self.articles)
+        group = re.search(
+            r'<div class="filters" role="group" aria-label="記事のカテゴリー">(.*?)</div>',
+            markup, re.S,
+        )
+        self.assertIsNotNone(group)
+        buttons = re.findall(r'data-category-filter="([^"]+)"', group.group(1))
+        expected = ["すべて"] + [
+            cat for cat in CATEGORIES[1:]
+            if any(a["category"] == cat for a in self.articles)
+        ]
+        self.assertEqual(buttons, expected)
+        self.assertEqual(group.group(1).count('aria-pressed='), len(buttons))
+        self.assertEqual(group.group(1).count('type="button"'), len(buttons))
+
     def test_no_results_can_be_cleared_without_scrolling_past_rss(self):
         html = archive(self.articles)
         start = html.index('id="archive-results"')
