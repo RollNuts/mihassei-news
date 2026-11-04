@@ -800,7 +800,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('href="'+feed+'" type="application/rss+xml"',page)
                 self.assertIn('title="'+cat+'の記事 RSS"',page)
         main=ET.parse(ROOT/"dist/feed.xml").getroot()
-        self.assertEqual(len(main.findall("./channel/item")),min(30,len(articles)))
+        self.assertEqual(len(main.findall("./channel/item")),min(90,len(articles)))
         self.assertEqual(main.find("channel").find("atom:link",ns).get("href"),
                          SITE+"/feed.xml")
 
@@ -818,9 +818,9 @@ class SiteTests(unittest.TestCase):
         namespace={"media":"http://search.yahoo.com/mrss/"}
         root=ET.parse(ROOT/"dist/feed.xml").getroot()
         entries=root.findall("./channel/item")
-        self.assertEqual(len(entries),min(30,len(self.articles)))
+        self.assertEqual(len(entries),min(90,len(self.articles)))
         by_url={n.findtext("link"):n for n in entries}
-        for a in self.articles[:30]:
+        for a in self.articles[:90]:
             url="https://veripsa.com/articles/"+a["slug"]+"/"
             self.assertIn(url,by_url)
             item=by_url[url]
