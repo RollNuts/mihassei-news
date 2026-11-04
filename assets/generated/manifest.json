@@ -255,6 +255,13 @@
       "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     }
   },
-  "rejected": {},
+  "rejected": {
+    "stolen-doorbell-returned-by-parcel": {
+      "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
+      "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970",
+      "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504"
+    }
+  },
   "version": 1
 }

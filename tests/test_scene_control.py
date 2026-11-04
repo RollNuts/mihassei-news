@@ -285,15 +285,135 @@ class ControlTests(unittest.TestCase):
         git('init'); git('add', '.'); git('commit', '-m', 'initial'); git('update-ref', 'refs/remotes/origin/main', 'HEAD')
         (self.root / 'content/articles.json').write_text(json.dumps([article, {**article, 'slug': 'uncommitted'}]))
         with patch.dict(os.environ, {'PATH': env['PATH']}), patch.object(control, 'launch_loaded', return_value=False), \
-             patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}), \
+             patch.object(control, 'gh', side_effect=AssertionError('unexpected run API without workflow ID')):
             # Include an empty tracked manifest so the immutable snapshot is usable.
             (self.root / 'assets/generated').mkdir(parents=True)
             (self.root / 'assets/generated/manifest.json').write_text('{"version":1,"images":{}}')
             git('add', 'assets'); git('commit', '-m', 'manifest'); git('update-ref', 'refs/remotes/origin/main', 'HEAD')
             result = control.status()
         self.assertEqual(result['pending_articles'], 1)
-        self.assertTrue(result['counts_source'].startswith('origin/main at'))
+        self.assertTrue(result['counts_source'].startswith('cached origin/main at'))
+        self.assertIn('fetch failed', result['counts_error'])
         self.assertEqual(len(json.loads((self.root / 'content/articles.json').read_text())), 2)
+
+    def status_repository(self):
+        from scripts.local_scene_photos import write_generated
+        env = {**os.environ, 'PATH': '/Library/Developer/CommandLineTools/usr/bin:' + os.environ['PATH'],
+               'GIT_AUTHOR_NAME': 'test', 'GIT_AUTHOR_EMAIL': 'test@test.invalid',
+               'GIT_COMMITTER_NAME': 'test', 'GIT_COMMITTER_EMAIL': 'test@test.invalid'}
+        def git(*args, cwd=None):
+            return subprocess.run(['git', *args], cwd=cwd or self.root, env=env,
+                                  check=True, capture_output=True).stdout.decode().strip()
+        (self.root / 'content').mkdir()
+        (self.root / 'assets/generated').mkdir(parents=True)
+        one = {'slug': 'one', 'title': 'One', 'paragraphs': ['first']}
+        (self.root / 'content/articles.json').write_text(json.dumps([one]))
+        (self.root / 'assets/generated/manifest.json').write_text('{"version":1,"images":{}}')
+        git('init', '--initial-branch=main'); git('add', '.'); git('commit', '-m', 'initial')
+        original = git('rev-parse', 'HEAD')
+        remote = self.base / 'remote.git'
+        git('init', '--bare', str(remote))
+        git('remote', 'add', 'origin', str(remote)); git('push', '-u', 'origin', 'main')
+        publisher = self.base / 'publisher'
+        git('clone', '--branch', 'main', str(remote), str(publisher))
+        two = {'slug': 'two', 'title': 'Two', 'paragraphs': ['second']}
+        (publisher / 'content/articles.json').write_text(json.dumps([one, two]))
+        jpeg = (b'\xff\xd8\xff\xc0\x00\x11\x08' + (675).to_bytes(2, 'big')
+                + (1200).to_bytes(2, 'big') + b'\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00'
+                + b'\x00' * 17000 + b'\xff\xd9')
+        write_generated(two, jpeg, 'sd_xl_base_1.0.safetensors', root=publisher)
+        git('add', '.', cwd=publisher); git('commit', '-m', 'new article and CPU-published photo', cwd=publisher)
+        latest = git('rev-parse', 'HEAD', cwd=publisher)
+        git('push', 'origin', 'main', cwd=publisher)
+        return git, original, latest
+
+    def test_status_fetches_new_cpu_images_without_touching_local_files_or_stop_latch(self):
+        git, original, latest = self.status_repository()
+        local = self.root / 'content/articles.json'
+        local.write_text('[{"slug":"unsaved-local-edit","title":"Keep me"}]')
+        before = local.read_bytes()
+        control.write_json(self.app / 'stopped.json', {'reason': 'user stop'})
+        latch = (self.app / 'stopped.json').read_bytes()
+        self.assertEqual(git('rev-parse', 'origin/main'), original)
+        with patch.object(control, 'launch_loaded', return_value=True), \
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+            result = control.status()
+        self.assertEqual(result['generated_images'], 1)
+        self.assertEqual(result['pending_articles'], 1)
+        self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
+        self.assertIsNone(result['counts_error'])
+        self.assertEqual(result['automatic'], 'OFF')
+        self.assertEqual(local.read_bytes(), before)
+        self.assertEqual((self.app / 'stopped.json').read_bytes(), latch)
+        self.assertEqual(git('rev-parse', 'HEAD'), original)
+
+    def test_status_fetch_failure_uses_cached_snapshot_with_explicit_error(self):
+        git, original, _ = self.status_repository()
+        git('remote', 'set-url', 'origin', str(self.base / 'missing.git'))
+        with patch.object(control, 'launch_loaded', return_value=False), \
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+            result = control.status()
+        self.assertEqual(result['generated_images'], 0)
+        self.assertEqual(result['pending_articles'], 1)
+        self.assertEqual(result['counts_source'], 'cached origin/main at ' + original)
+        self.assertIn('fetch failed', result['counts_error'])
+
+    def test_status_pins_all_blob_reads_even_when_remote_ref_moves_mid_count(self):
+        git, original, latest = self.status_repository()
+        actual_run = subprocess.run
+        reads = []
+        moved = False
+        def moving_run(command, *args, **kwargs):
+            nonlocal moved
+            result = actual_run(command, *args, **kwargs)
+            if command[:2] == ['git', 'show']:
+                reads.append(command[2])
+                if not moved:
+                    moved = True
+                    actual_run(['git', 'update-ref', 'refs/remotes/origin/main', original],
+                               cwd=self.root, env=control.command_env(), capture_output=True, check=True)
+            return result
+        with patch.object(control, 'launch_loaded', return_value=False), \
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}), \
+             patch.object(control.subprocess, 'run', side_effect=moving_run):
+            result = control.status()
+        self.assertEqual(result['generated_images'], 1)
+        self.assertEqual(result['pending_articles'], 1)
+        self.assertTrue(reads)
+        self.assertTrue(all(path.startswith(latest + ':') for path in reads))
+        self.assertEqual(git('rev-parse', 'origin/main'), original)
+
+    def test_cpu_latest_job_reports_metadata_without_claiming_new_images(self):
+        self.status_repository()
+        latest = {'id': 42, 'workflow_id': 7, 'status': 'completed', 'conclusion': 'success',
+                  'created_at': '2026-11-04T00:00:00Z', 'updated_at': '2026-11-04T00:01:00Z',
+                  'html_url': 'https://github.com/RollNuts/mihassei-news/actions/runs/42'}
+        with patch.object(control, 'launch_loaded', return_value=False), \
+             patch.object(control, 'cpu_state', return_value={'id': 7, 'state': 'active'}), \
+             patch.object(control, 'gh', return_value={'workflow_runs': [latest]}) as github:
+            result = control.status()
+        self.assertEqual(result['cpu']['latest_run']['id'], 42)
+        self.assertEqual(result['cpu']['latest_run']['conclusion'], 'success')
+        self.assertNotIn('generated', result['cpu']['latest_run'])
+        github.assert_called_once_with('api', 'repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml/runs?per_page=1', timeout=15)
+        out = io.StringIO()
+        with patch.object(control, 'status', return_value=result), contextlib.redirect_stdout(out):
+            self.assertEqual(control.main(['status']), 0)
+        self.assertIn('CPU直近ジョブ：', out.getvalue())
+        self.assertIn('Mac最後の成功日時：', out.getvalue())
+        self.assertIn('Mac最後のエラー：', out.getvalue())
+        self.assertIn('MacからGitHubへの最終反映：', out.getvalue())
+        self.assertNotIn('CPU画像生成成功', out.getvalue())
+
+    def test_cpu_latest_job_auth_error_is_visible(self):
+        self.status_repository()
+        with patch.object(control, 'launch_loaded', return_value=False), \
+             patch.object(control, 'cpu_state', return_value={'id': 7, 'state': 'active'}), \
+             patch.object(control, 'gh', side_effect=RuntimeError('authentication failed')):
+            result = control.status()
+        self.assertEqual(result['cpu']['latest_run']['status'], 'unknown')
+        self.assertIn('authentication failed', result['cpu']['latest_run']['error'])
 
     def test_status_history_retains_last_success_when_later_run_errors(self):
         with patch.object(worker, 'APP_DIR', self.app):
