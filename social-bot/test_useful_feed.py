@@ -78,10 +78,45 @@ class UsefulFeedTests(unittest.TestCase):
         p = self.feed["posts"][0]
         self.state["attempts"][p["id"]] = {"day_jst": "2026-11-04", "text_sha256": m.fingerprint(p["text"])}
         self.assertIsNone(self.pick())
-    def test_second_id_same_day_rejected(self):
-        p = copy.deepcopy(self.feed["posts"][0]); p["id"] += "-other"; p["text"] = "これは完全に別の長さが十分なテスト原稿です。"
+    def add_second_same_day_candidate(self):
+        p = copy.deepcopy(self.feed["posts"][0])
+        p["id"] += "-other"
+        p["publish_at"] = "2026-11-04T11:00:00Z"
+        p["text"] = "創作・会話例。\n客『最安だけ見ればいい？』\n店員『送料と返品条件も見ます』\n客『値札以外の出口も見るわけか』"
+        p["editorial_review"] = {
+            "decision": "approved",
+            "text_sha256": m.fingerprint(p["text"]),
+            "concrete_anchor": "送料と返品条件も見ます",
+            "added_value": "値札以外の出口も見るわけか",
+            "reader_payoff": "価格だけで決めず送料と返品条件まで比較すべきだと、確認項目を具体的に二つへ絞れる。",
+            "why_now_or_save": "購入前に保存しておけば、表示価格だけで選んで返品時に困る判断ミスを減らせる。",
+        }
         self.feed["posts"].append(p)
-        with self.assertRaises(ValueError): self.pick()
+        return p
+
+    def test_second_id_same_day_is_allowed(self):
+        self.add_second_same_day_candidate()
+        m.validate(self.feed, self.state)
+
+    def test_daily_manuscript_cap_is_enforced(self):
+        self.add_second_same_day_candidate()
+        with patch.object(m, "MAX_DAILY_POSTS", 1):
+            with self.assertRaisesRegex(ValueError, "seven automatic useful posts"):
+                m.validate(self.feed, self.state)
+
+    def test_second_same_day_can_be_selected_after_first_attempt(self):
+        first = self.feed["posts"][0]
+        second = self.add_second_same_day_candidate()
+        self.state["attempts"][first["id"]] = {
+            "day_jst": "2026-11-04",
+            "text_sha256": m.fingerprint(first["text"]),
+            "payload_sha256": m.payload_hash(first),
+            "provider_status": "sent",
+            "buffer_id": "sent-first",
+        }
+        live = [{"id": "sent-first", "text": first["text"], "status": "sent",
+                 "sentAt": "2026-11-04T00:30:00Z"}]
+        self.assertEqual(self.pick(live)["id"], second["id"])
     def test_trend_rejected(self):
         self.feed["posts"][0]["trend_targeted"] = True
         with self.assertRaises(ValueError): self.pick()
@@ -134,6 +169,17 @@ class UsefulFeedTests(unittest.TestCase):
 
     def test_past_sent_posts_do_not_consume_slots(self):
         self.assertIsNotNone(self.pick([{"status": "sent"}] * 20))
+
+    def test_all_x_posts_share_the_seven_per_day_cap(self):
+        live = [
+            {"id": f"remote-{i}", "status": "sent",
+             "sentAt": f"2026-11-04T00:{i:02d}:00Z"}
+            for i in range(7)
+        ]
+        reasons = []
+        self.assertIsNone(m.select(self.feed, self.state, self.now, live, reasons=reasons))
+        self.assertEqual(reasons[0]["reason"], "daily_x_cap_reached")
+        self.assertEqual(reasons[0]["observed_or_intent_count"], 7)
 
     def test_full_queue_has_exact_reason(self):
         reasons = []
