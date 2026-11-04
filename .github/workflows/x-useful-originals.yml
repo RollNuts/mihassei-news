@@ -1,4 +1,4 @@
-name: Useful X Originals (one per day, Buffer Free)
+name: Useful X Originals (multi-window checks, Buffer Free)
 on:
   push:
     branches: [main]
@@ -21,8 +21,9 @@ on:
       - '.github/workflows/x-useful-originals.yml'
   workflow_dispatch:
   schedule:
-    # 11:10 JST. Manuscripts are due at 12:00 JST; no expired catch-up.
-    - cron: '10 2 * * *'
+    # JST 09:10, 11:10, 14:10, 17:10, 20:10, 22:10.
+    # Existing safety checks and per-day guard remain until multi-post support is tested.
+    - cron: '10 0,2,5,8,11,13 * * *'
 permissions:
   contents: write
 concurrency:
