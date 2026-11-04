@@ -27,6 +27,9 @@ on:
       - 'content/broadcasts.json'
       - 'assets/generated/*.jpg'
       - 'assets/generated/manifest.json'
+  # Recover ready clips after missed bot-triggered events; encoding remains gated.
+  schedule:
+    - cron: '17 0,6,12,18 * * *'
   workflow_dispatch:
 permissions:
   contents: read

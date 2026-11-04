@@ -118,14 +118,14 @@ class MotionWorkflowTests(unittest.TestCase):
                     self.assertEqual(result.returncode, int(status), result.stderr)
                     self.assertEqual(output.read_text(), "" if status == "1" else f"pending={count}\n")
 
-    def test_no_work_skips_encoders_and_publishing_without_adding_a_timer(self):
+    def test_no_work_skips_encoders_and_publishing_with_recovery_schedule(self):
         install = step(self.video, "Install only free system FFmpeg on the disposable runner")
         self.assertIn("github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'", install)
         publish = self.video.split("\n  publish:\n", 1)[1]
         self.assertIn("github.ref == 'refs/heads/main'", publish)
         self.assertIn("needs.validate.outputs.pending != '0'", publish)
         self.assertIn("github.event.repository.private == false", self.video)
-        self.assertNotRegex(self.video, r"(?m)^  schedule:")
+        self.assertIn("    - cron: '17 0,6,12,18 * * *'", self.video)
         self.assertIn("cron: '17 * * * *'", self.images)
 
 
