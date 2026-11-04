@@ -25,6 +25,10 @@ CRISIS_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
 )
+CONTEXT_DEPENDENT_OPENING_PATTERN = re.compile(
+    r"^(?:これ(?:を|で|が|は)?|それ(?:を|で|が|は)?|この件|その件|例の|あの件|"
+    r"このニュース|この話|こうした(?:動き|流れ|結果|状況)|これを受け|その結果)"
+)
 MAX_FOLLOWUP_CHAIN_ARTICLES = 3
 
 
@@ -80,6 +84,16 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
                 slug,
                 "災害・戦争・テロ・大量死傷事故などの可能性。急性期の直接風刺・被害者を笑いにする表現・惨事のクリック誘導を避け、EDITORIAL_LOOPの危機ニュース規則を再確認",
             ))
+
+        paragraph_list = a.get("paragraphs")
+        first_paragraph = paragraph_list[0].strip() if isinstance(paragraph_list, list) and paragraph_list and isinstance(paragraph_list[0], str) else ""
+        for field_name, opening in (("summary", str(a.get("summary") or "").strip()), ("本文冒頭", first_paragraph)):
+            if opening and CONTEXT_DEPENDENT_OPENING_PATTERN.search(opening):
+                warnings.append((
+                    "CONTEXT_DEPENDENT_OPENING",
+                    slug,
+                    f"{field_name}が前の記事・SNS・元ニュースを見ている前提の書き出しです。対象と出来事から単体で書き始めてください",
+                ))
 
         depth = 1
         cursor = a
