@@ -63,7 +63,7 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertNotIn("data-fallback", poster, "the playlist owns recovery across successive selections")
 
     def test_video_failure_has_a_real_image_fallback(self):
-        article = next(a for a in self.articles if a.get("broadcast_feature"))
+        article = next(a for a in self.articles if a.get("broadcast_feature") and build.reviewed_generated_scene(a, root=build.BASE))
         with patch.object(build, "usable_clip", return_value={
             "sha256": "b"*64, "created_at": "2026-11-03T00:00:00+00:00"
         }):
@@ -78,6 +78,17 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertIn("prefers-reduced-motion: reduce", js)
         self.assertIn("navigator.connection?.saveData", js)
         self.assertIn("IntersectionObserver", js)
+
+    def test_unreviewed_revision_cannot_claim_video_even_when_clip_metadata_exists(self):
+        article = next(a for a in self.articles if a.get("broadcast_feature"))
+        revised = {**article, "summary": article["summary"] + "（検品前の改稿）"}
+        with patch.object(build, "usable_clip", return_value={
+            "sha256": "e"*64, "created_at": "2026-11-04T00:00:00+00:00",
+            "motion_style_version": 3, "duration_ms": 12000,
+        }):
+            markup = build.article_hero_media(revised)
+            self.assertNotIn('data-video-shell', markup)
+            self.assertIn('class="article-visual"', markup)
 
     def test_three_captions_belong_to_the_exact_current_article(self):
         article = next(a for a in self.articles if a["slug"] == "bakery-no-important-announcement-panic")
