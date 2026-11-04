@@ -410,8 +410,41 @@ def build(inventory, state, channel_id, fetch, fetch_metrics=None,
             if item.get("buffer_status") not in ("sent", "scheduled")]
     }
 
+def delivery_audit_needed(config, state, previous):
+    """Drain a paused lane's existing reservations, then stop redundant API reads."""
+    enabled = config.get("experiment_publishing_enabled")
+    if type(enabled) is not bool:
+        raise ValueError("Invalid original X publishing switch")
+    if enabled:
+        return True
+    queued = state.get("queued")
+    if not isinstance(queued, dict):
+        raise ValueError("Invalid original X submission ledger")
+    items = previous.get("items", []) if isinstance(previous, dict) else []
+    old = {row.get("post_id"): row for row in items if isinstance(row, dict)} if isinstance(items, list) else {}
+    for post_id, record in queued.items():
+        if not isinstance(record, dict) or not record.get("buffer_id"):
+            raise ValueError("Missing saved Buffer identifier")
+        row = old.get(post_id, {})
+        if (row.get("buffer_id") != record["buffer_id"]
+                or row.get("buffer_status") not in ("sent", "draft")
+                or parse_provider_utc(row.get("last_buffer_check_utc")) is None):
+            return True
+    return False
+
+
 def main():
     config=json.loads((HERE/"config.json").read_text(encoding="utf-8"))
+    inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
+    state=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
+    try:
+        previous = json.loads((HERE/"delivery.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        previous = {}
+    if not delivery_audit_needed(config, state, previous):
+        print("Old X lane is OFF and no unresolved saved reservations remain; "
+              "keeping delivery history without Buffer calls.")
+        return 0
     key=os.environ.get("BUFFER_API_KEY","").strip()
     if not key:
         print("No Buffer key; keeping last known delivery state")
@@ -419,18 +452,12 @@ def main():
     _,channel=choose_x_channel(key)
     if channel!=config["channel_id"]:
         raise RuntimeError("Pinned Buffer X channel mismatch")
-    inventory=json.loads((HERE/"posts.json").read_text(encoding="utf-8"))
-    state=json.loads((HERE/"state.json").read_text(encoding="utf-8"))
     def fetch(postid):
         query="query { post(input: {id: "+qstring(postid)+"}) { id channelId text status dueAt sentAt externalLink assets { id mimeType } } }"
         return gql(key,query).get("post")
     def fetch_metrics(postid):
         query="query { post(input: {id: "+qstring(postid)+"}) { metrics { type value unit } metricsUpdatedAt } }"
         return gql(key,query).get("post")
-    try:
-        previous = json.loads((HERE/"delivery.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        previous = {}
     result=build(inventory,state,channel,fetch,fetch_metrics,
                  previous=previous,
                  fetch_batch=lambda ids:fetch_status_batch(key, ids))
@@ -460,9 +487,9 @@ def main():
           health["observed_original_sent_by_jst_day"][-3:])
     print("Observed future original queue slots (not entire Buffer schedule):",
           health["observed_scheduled_originals_by_jst_day"])
-    if health["unsubmitted_inventory_below_14"]:
+    if config["experiment_publishing_enabled"] and health["unsubmitted_inventory_below_14"]:
         print("::warning::Fewer than 14 unsubmitted X originals; replenish.")
-    if health["unsubmitted_images_below_2"]:
+    if config["experiment_publishing_enabled"] and health["unsubmitted_images_below_2"]:
         print("::warning::Fewer than two unused original X image scenes.")
     print("No media was reposted. Missing insights remain unmeasured; provider "
           "metric snapshots are NOT 24h or 72h X impression counts.")

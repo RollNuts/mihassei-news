@@ -646,24 +646,6 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
                       for u,text,key in nav)
-    # Native mobile navigation: important reading routes are always visible.
-    # Secondary pages live in a keyboard-accessible details menu, not an
-    # undiscoverable horizontal scroller. Desktop keeps the full navigation.
-    mobile_main_keys = {"home", "archive", "serials"}
-    mobile_primary = "".join(
-        f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
-        for u, text, key in nav if key in mobile_main_keys
-    )
-    mobile_secondary = "".join(
-        f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
-        for u, text, key in nav if key not in mobile_main_keys
-    )
-    mobile_navhtml = (
-        '<div class="container mobile-nav">'
-        + mobile_primary
-        + '<details class="mobile-nav-more"><summary>メニュー</summary>'
-        + '<div class="mobile-nav-menu">' + mobile_secondary + '</div></details></div>'
-    )
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
         "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞",
@@ -906,7 +888,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span class="observer-stat"><span class="observer-label" data-site-pv-period-label>直近7日</span>
 <strong data-site-pv-week>—</strong><span class="observer-suffix">PV</span></span>
 <small><span data-pv-tracking-note>PVを読み込み中</span> · <a href="/privacy/#pageviews">集計について</a></small>
-</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div>{mobile_navhtml}</nav>
+</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>

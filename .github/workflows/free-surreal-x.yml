@@ -23,7 +23,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: free-surreal-x
+  group: ${{ github.event_name == 'pull_request' && format('x-validation-{0}-{1}', github.workflow, github.ref) || 'free-surreal-x' }}
+  queue: max
   cancel-in-progress: false
 
 jobs:

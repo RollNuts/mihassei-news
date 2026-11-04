@@ -1,60 +1,73 @@
-# どうでもいい世界 → 《ネジまち》連載漫画 | X無料自動運用
+# Veripsa X運用
 
-既存のシュールネタ投稿から、オリジナル機械都市の漫画連載 **《ネジまち》** に進化。既存の予約済み2件は消さず、以後の新規投稿は `series: "nejimachi"` の連載だけを順番に予約。**4コマ固定ではなく2〜6コマ**、おかしな機械の街で生きる3体の小さな住民が主人公。**[正史と時系列の設定資料](ip/README.md)** を執筆前に参照する。未発生新聞の既存記事・表示には変更を加えない。
+Xの編集・配信・確認の共通手順。開発と本番反映は[共通運用](../docs/OPERATIONS.md)に従う。設定・コード・実際の配信記録を正本とし、過去の試作や変更履歴を現在の実行指示にしない。
 
-## 仕組み
+## 現行の配信経路
 
-- `posts.json`：旧ネタ15本は保存。新しい漫画は `series: nejimachi` と `episode` を付けて追記。
-- `render.py`：過去ネタの4コマ専用レンダラ。
-- `render_ip.py`：新シリーズ2〜6コマ漫画（同じ街とキャラの固定絵柄）。無料Pillowだけで1080×1350 PNGを描画。
-- `ip/canon.json`：確定世界観とキャラクター。変更前に必ず確認。
-- `ip/ledger.json`：第1話からの出来事・既知の事実・未解決の謎・時系列。
-- `ip/audit.py`：登場時期・時系列・事実の初出・予約後の原稿固定を検査。
-- `validate.py`：ID・本文の重複、文字数、漫画の2〜6コマ構成、PNG容量、正史との整合を検査。
-- `publish.py`：Buffer経由で、`nejimachi` の連番エピソード**だけ**予約。キュー3件まで・1回最大2件、既出本文と履歴のSHA256を照合。旧ネタ在庫は自動投稿対象から除外。
-- `state.json`：予約済みIDと連載の内容SHA256を記録し、予約後の改変を検知。画像は `assets/`。
-- `.github/workflows/free-surreal-x.yml`：毎日09:23 JSTに起動。設定済みの場合に限り予約投稿、スクリプト・本文変更時には画像生成と検証を行う。
+| 経路 | 状態と入口 | 範囲 |
+| --- | --- | --- |
+| 独自コンテンツ `useful` | `useful-posts.json.enabled: true`、[`x-useful-originals.yml`](../.github/workflows/x-useful-originals.yml) | 日本時間で1日最大1本。本文・事実を確認した当日分だけを既存Bufferへ予約 |
+| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | 実測条件を満たす記事を72時間に最大1本。記事slugで重複防止。詳細は[記事紹介](article-picks/README.md) |
+| 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
+| ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
-## まずユーザー本人が行う設定（秘密情報はチャットに貼らない）
+停止中の経路は、本人の明示的な再開依頼なしに有効化しない。漫画や旧実験の停止を理由に`useful`を止めない。停止フラグは既存のBuffer予約を取り消さない。既存予約の削除・編集・再送、台帳の手動削除で空き枠や成功件数を作らない。
 
-1. [Buffer](https://buffer.com/pricing) の **Free** を利用し、使いたいXアカウントを1つ接続する。Xアカウント側の連携認可は本人が行う。
-2. BufferでXの投稿スケジュールを設定する。例：毎日19:17（日本時間）。本ツールはそのキューへ投稿を追加するだけで、Xへ直接ログインしない。
-3. [BufferのAPI設定](https://publish.buffer.com/settings/api) から個人APIキーを取得する（Free枠内）。**APIキーは他人に送らずGitHub Secretsにだけ登録する**。
-4. GitHub `RollNuts/mihassei-news` → Settings → Secrets and variables → Actions → Repository secrets へ `BUFFER_API_KEY` を登録する。
-5. Xを複数接続している場合だけ、ActionsのRepository variablesに `BUFFER_CHANNEL_ID` を設定する。1チャンネルなら自動選択。
-6. 接続後、ActionsのRepository variablesに `ENABLE_X_BOT` = `true` を設定する。**これを設定するまでは自動投稿しない**。
-7. GitHub Actions → `Free Surreal X + 4-koma Bot` → Run workflow を実行してログを確認する。予約キューの中身はBufferで確認する。
+## 役割と引き継ぎ
 
-**本運用**：現在は連携済みのXアカウントへ自動予約が有効。旧ネタ2本はすでにBuffer予約済みのため削除せず、次の空き枠から新連載を始める。投稿枠はBufferの設定（19:30 JST）を使う。投稿に失敗した際はログとキューで確認。
+時刻はAutomationsの実設定を参照する。時刻差だけで前担当の完了を判断せず、相手の最新の**完了結果**と自分の前回結果を日時・run_idで照合する。
 
-## 無料運営・安全設計
+| 担当 | 成果物 | 書き込み範囲 |
+| --- | --- | --- |
+| X朝・手動原稿 | コピーできるおすすめ本文1本。別の明確な価値がある日のみ追加1本 | ユーザーへの原稿提示のみ。X・Buffer・GitHubへ書き込まない |
+| X自動投稿 | 当日用の確認済み原稿、Buffer受付ID・予定時刻、確認できた公開状態 | 未試行の`useful-posts.json`への追記。通常のPR・CI・統合後、既存Actionsに配信を任せる |
+| X夜・レビュー | 確認できた配信・反応と、翌日に変える内容1つ。日曜は週の比較もこの枠で実施 | 読み取りと編集提案のみ。再送、予約編集、コード・他タスク変更はしない |
 
-- Buffer Free：X含む最大3チャンネル・各10件の予約キュー、APIキー1本。API呼び出し上限の範囲内で運用。無料アカウントのX指標取得には制約がある。
-- GitHub：**公開リポジトリの標準Actions**を利用。追加有料サービス、従量課金のX API、OpenAI APIの呼び出しはしない。
-- 無料の画像生成AIを毎日無制限に使えるわけではない。漫画は2〜6コマの小容量PNGで描画する。
-- 内容は架空・創作と分かるようにし、模倣・差別・個人攻撃・虚偽の実ニュース風投稿はしない。
-- Xの自動化ポリシーに従い、重複・大量投稿・トレンド便乗自動化・自動いいね/自動フォローをしない。
-- `ENABLE_X_BOT` を `false` にするか削除すると翌回から予約追加を停止。既にBufferに登録された予約はBuffer内でキャンセルする。
-- リポジトリ内の `state.json` はAPIキーや認証情報を含まない。
-- GitHubストレージが肥大化しないよう画像は圧縮PNG・5MB未満（通常もっと小さい）とし、生成した画像のみ保持する。
-- ネタは有限在庫。**追加GPT API課金なしで新ネタを増やすには、既存ChatGPTの定期タスク等で `posts.json` を補充する必要がある**。このCIだけでは無限に新ネタを生成しない。
+全担当が`useful-posts.json`・`useful-state.json`と直近の採用結果を照合し、手動稿・自動稿・既刊で同文や同じ展開・オチを重ねない。提案、本人の採用、予約、実投稿、実測を分ける。引き継ぎは既存のタスク結果へ題材・独自の中身・形式・状態を短く残し、夜の編集メモは最大8行。新しい外部ログや私的会話の保存先は作らない。
 
-## 追加ネタの書き方
+## 共通の編集基準
 
-```json
-{"id":"unique-short-id","title":"面白い題名","kind":"text","text":"本文"}
-```
+- **固有の中身から選ぶ。** 観察、解釈、比較・検証、理由のある好み、独自に設計した人物・場面・因果の何を加え、読者に何が残るかを本文から示す。「新しく書いた」「転載でない」「会話が自然」だけでは採用しない。世界初や本人の実話だけに限らず、創作も認める。
+- ニュースの要約、一般論の問答、借り物の格言、ありふれた人情話、無意味なシュールネタを埋め草にしない。内容が弱ければ言い回しや絵文字ではなく企画から直す。自動化・効率化の話、同じ対比や教訓、特定キャラへ無理に固定しない。
+- 会話・物語は題材に合う時だけ選ぶ。人物がその場で話す理由、自然な反応、具体的な行動と変化で見せる。説明役同士の問答、都合のよい相手の論破、末尾の「つまり」「仕事でも同じ」という教訓にしない。未採用の試作や過去のAI案を本人の採用済み作風・経験・確定意見にしない。
+- 情報稿は対象日・公開日・数字・確定/速報を公式等で確認する。購入、観戦、プレイ、売買、成果、読者の発言を捏造しない。独立した会話例は短く創作と分かるようにし、本人・実在人物の実話にしない。新聞記事の紹介は見出しとリンクを中心にし、定型の「創作」注記を毎回付けない。勤務先、顧客、私生活、資産額、生の会話履歴を公開しない。
+- 自然な口語、短い改行、絵文字0〜2個を基本に、狭い専門用語・説教・誇張を避ける。手動稿は現行のX重み付き文字数を確認。自動稿は下記のコード上限を守る。独自性の編集評価とX報酬の適格性は別で、認定や成長を保証しない。規約判断が必要ならその時点の公式資料を確認する。
 
-既存の単発ネタはこの形式のまま保存するが、**自動予約の対象にはしない**。
+## 自動原稿の登録と配信
 
-新しい漫画では `ip/README.md` を読み、`series: "nejimachi"`、`episode` 連番、`chapter`、`day`、`order`、`location`、`characters`、`canon_refs`、`panels`（2〜6個の `{scene,focus,secondary?,mood,sign,line,caption}`）を指定。**同時に `ip/ledger.json` の対応話も追記**。新しい設定は先に `ip/canon.json` に追加する。予約済み原稿は編集禁止。
+開始時に最新main、未統合PR、`useful_feed.py`、`useful-posts.json`、`useful-state.json`、`test_useful_feed.py`、当該Actionsを確認する。日次担当は原稿だけを扱い、投稿コード・workflow・停止設定・上限を変更しない。`enabled: false`や認証エラーを別アカウント・有料経路で回避しない。
+
+| 項目 | 条件 |
+| --- | --- |
+| `id` | `xexp-useful-YYYYMMDD-ASCII識別子`。当日分が既にあれば新IDで作り直さない |
+| `kind` | `evergreen_explainer`、`conversation_example`、`market_close`の現行許可値のみ |
+| `text` | 現コードでは12〜138コードポイント。タグ・メンションなし。創作会話は「創作・会話例」等で短く明示し、別kindへの偽装で検査を回避しない |
+| 配信指定 | `delivery: automatic`、`trend_targeted: false`。流行への便乗、政治・事件速報、本人の感想確認が必要な稿は手動候補へ |
+| 日時 | 当日12:00 JSTを目標にCI余裕を確保。実際の`checked_at`、当日中の`valid_until`、タイムゾーン付き`publish_at`を記録。古い稿を翌日へ自動繰越ししない |
+| 根拠 | 公開可能な`basis`とHTTPSの`sources`。創作は創作であることと固有の読みどころを記し、私的情報を入れない |
+| 市況 | 対象取引日を本文と`market_session`へ。確定値と出典を確認し、投稿まで12時間以内の実確認日時を記録。数字・原因・売買判断を捏造しない |
+
+`x-useful-originals.yml`は対象ファイルのmain更新と11:10 JSTの既存確認枠から動く。共有キュー上限10件、日本時間1日1本、既存予約との30分間隔、期限、類似原稿の排除、共有排他、**送信前intentの永続保存**を維持する。投稿予定まで15分超の余裕が必要。受付済み・応答不明の試行を再送せず、本文・時刻・メタデータ・台帳を固定する。空き不足や期限超過を安全策の解除で解消しない。
+
+必要な検証と最新headのCI、競合確認を経て安全にmainへ統合し、既存Actionsの結果を読む。追加費用0円。既存無料Buffer・公開GitHub Actionsを使い、有料API・AI/画像/動画API・追加クレジット・GPU・データ・広告・有料プラン変更は行わない。
+
+## 受付と公開を分けて確認する
+
+`useful-state.json.attempts`のID・本文指紋・観測日時・`provider_status`・`due_at`、`last_selection`の時刻・件数・理由をログと照合する。
+
+- 原稿登録や緑のCIは公開証拠ではない。`intent`は送信前記録、`accepted_not_verified_published`はBuffer受付。受付IDと予定時刻を報告する。
+- Bufferの`scheduled`/`sent`と、X上の実際の公開URL・本文を区別する。古い状態や日時欠損から現在の公開を推測しない。見えないものは未確認とする。
+- 23:45 JSTの既存配信監査は**旧experiments台帳の投稿**が対象で、usefulや記事紹介を含む全X投稿の監査ではない。確認範囲は[旧配信記録](experiments/README.md)を参照する。
+- 未送信・空き不足・期限・重複・当日試行済み・応答不明は実際の理由で分ける。ユーザーへ手動で重ねて投稿させない。
+- 表示回数・返信等は取得元、観測時刻、公開後の経過時間、母数を添える。未取得を0、当夜の値を24時間実測、全体増加を1投稿の成果にしない。記事PV、Buffer送信、通常X表示回数、報酬対象指標も混同しない。
+
+夜は本人の評価・本文からの編集判断・実測を分け、翌日に変える点を1つ示す。実際に確認した返信に限り手動返信案を最大1本。少数標本で勝ち形式・ファン獲得を断定せず、公開済み本文を上書きしない。
+
+## オフライン確認
 
 ```bash
-python social-bot/render.py
-python social-bot/render_ip.py
-python social-bot/validate.py
+python3 -m unittest discover -s social-bot -p 'test_useful_feed.py' -v
+python3 social-bot/useful_feed.py --validate
 ```
 
-**無料運用の限界**：毎回の本格的な手描きクオリティや完全な意味上の矛盾検出は保証されない。現在の作画はPillowのオリジナル図形による試作品。設定の整合と画像の見やすさを継続改善する。
-
-公式資料：[Buffer API](https://developers.buffer.com/guides/your-first-post.html) ／ [Buffer無料プラン](https://buffer.com/pricing) ／ [X自動化ルール](https://help.x.com/en/rules-and-policies/x-automation)
+`--validate`はBufferへ送信しない。接続・認証情報は既存のSecretsを使い、チャット・公開ファイルに記録しない。コードや設定に変更がなければ、確認のためだけに配信workflowを再実行しない。

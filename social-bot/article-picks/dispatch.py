@@ -296,6 +296,39 @@ def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
     return False
 
 
+def accepted_useful_ids(feed: dict, state: dict, existing: list[dict],
+                        channel_id: str) -> set[str]:
+    """Recognize confirmed useful reservations without treating an intent as a post.
+
+    Existing posts come from the already pinned channel query. Check the saved
+    receipt against both its immutable manuscript and the current queued text;
+    unrelated/manual posts and ambiguous requests cannot open the fairness gate.
+    """
+    if (feed.get("schema_version") != 1 or feed.get("channel_id") != channel_id
+            or not isinstance(feed.get("posts"), list)
+            or state.get("schema_version") != 1 or not isinstance(state.get("attempts"), dict)):
+        raise ValueError("Invalid useful X feed or pinned submission ledger")
+    posts = {post.get("id"): post for post in feed["posts"] if isinstance(post, dict)}
+    scheduled = {post.get("id"): post for post in existing
+                 if post.get("status") == "scheduled"
+                 and post.get("channelId", channel_id) == channel_id}
+    confirmed = set()
+    for post_id, receipt in state["attempts"].items():
+        if not isinstance(receipt, dict) or receipt.get("provider_status") not in (
+                "accepted_not_verified_published", "scheduled", "sent"):
+            continue
+        buffer_id = receipt.get("buffer_id")
+        if not isinstance(buffer_id, str) or not buffer_id:
+            continue
+        post, remote = posts.get(post_id, {}), scheduled.get(buffer_id, {})
+        text = post.get("text")
+        if (post.get("delivery") == "automatic" and isinstance(text, str) and text
+                and receipt.get("text_sha256") == hashlib.sha256(text.encode("utf-8")).hexdigest()
+                and remote.get("text") == text):
+            confirmed.add(buffer_id)
+    return confirmed
+
+
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
            config: dict, now: datetime, creative_ids: set[str],
            momentum: dict | None = None
@@ -311,8 +344,8 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     if (len(queued) >= config["max_queue_size"]
             or cooldown_active(state, now, config["minimum_interval_hours"])):
         return None, None, len(queued)
-    # When Buffer contains only unrelated/legacy scheduled posts, let the
-    # original short-text lane refill first; do not monopolize its queue.
+    # When Buffer contains only unrelated/legacy scheduled posts, let a known
+    # original lane refill first. Confirmed useful originals count as well.
     if queued and not any(p.get("id") in creative_ids for p in queued):
         return None, None, len(queued)
     candidates = rank(eligible_articles(articles, now, config), counts,
@@ -357,6 +390,9 @@ def main() -> int:
         v["buffer_id"] for v in creative_state.get("queued", {}).values()
         if isinstance(v, dict) and isinstance(v.get("buffer_id"), str)
     }
+    creative_ids.update(accepted_useful_ids(
+        read_json(HERE.parent / "useful-posts.json"),
+        read_json(HERE.parent / "useful-state.json"), existing, channel_id))
     momentum = measured_recent_changes(ROOT, candidates, metrics, now)
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
                                             config, now, creative_ids,

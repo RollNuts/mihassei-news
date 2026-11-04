@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 import hashlib
+import json
+import os
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from probe_delivery import (build, reconcile, x_link, normalize_buffer_impressions,
                             queue_health, fetch_status_batch, observed_original_sent_by_jst_day,
-                            observed_scheduled_originals_by_jst_day)
+                            observed_scheduled_originals_by_jst_day, delivery_audit_needed, main)
 
 class BufferReadOnlyTests(unittest.TestCase):
     def setUp(self):
@@ -378,5 +381,51 @@ class BufferReadOnlyTests(unittest.TestCase):
         self.remote["assets"]=[{"id":"asset1","mimeType":"image/png"}]
         self.assertEqual(reconcile(self.post,self.rec,self.remote,"x-1")
                          ["buffer_asset_count"],1)
+
+    def test_paused_lane_only_stops_auditing_exact_confirmed_terminal_receipts(self):
+        config={"experiment_publishing_enabled":False}
+        state={"queued":{self.post["id"]:self.rec}}
+        row={"post_id":self.post["id"],"buffer_id":"buf-1",
+             "last_buffer_check_utc":"2026-11-04T00:00:00+00:00"}
+        for status in ("scheduled","sending","error","unverified","needs_approval"):
+            with self.subTest(status=status):
+                self.assertTrue(delivery_audit_needed(config,state,{
+                    "items":[dict(row,buffer_status=status)]}))
+        for status in ("sent","draft"):
+            previous={"items":[dict(row,buffer_status=status)]}
+            self.assertFalse(delivery_audit_needed(config,state,previous))
+            self.assertTrue(delivery_audit_needed(
+                {"experiment_publishing_enabled":True},state,previous))
+        for changed in (dict(row,buffer_id="different",buffer_status="sent"),
+                        dict(row,last_buffer_check_utc=None,buffer_status="sent")):
+            self.assertTrue(delivery_audit_needed(config,state,{"items":[changed]}))
+        self.assertTrue(delivery_audit_needed(config,state,{}))
+        self.assertFalse(delivery_audit_needed(config,{"queued":{}},{}))
+
+    def test_paused_finished_lane_never_opens_buffer_or_rewrites_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            documents={
+                "config.json":{"experiment_publishing_enabled":False,"channel_id":"x-1"},
+                "posts.json":{"schema_version":1,"experiments":[self.post]},
+                "state.json":{"schema_version":1,"queued":{self.post["id"]:self.rec}},
+                "delivery.json":{"items":[{
+                    "post_id":self.post["id"],"buffer_id":"buf-1","buffer_status":"sent",
+                    "last_buffer_check_utc":"2026-11-04T00:00:00+00:00"}]},
+            }
+            for name, document in documents.items():
+                (root/name).write_text(json.dumps(document))
+            original={path.name:path.read_bytes() for path in root.iterdir()}
+            with patch("probe_delivery.HERE",root), patch.dict(os.environ,{"BUFFER_API_KEY":"test-only"}), \
+                 patch("probe_delivery.choose_x_channel",side_effect=AssertionError("No Buffer reads allowed")), \
+                 patch("probe_delivery.gql",side_effect=AssertionError("No Buffer reads allowed")):
+                self.assertEqual(main(),0)
+            self.assertEqual({path.name:path.read_bytes() for path in root.iterdir()},original)
+            documents["delivery.json"]["items"][0]["buffer_status"]="scheduled"
+            (root/"delivery.json").write_text(json.dumps(documents["delivery.json"]))
+            with patch("probe_delivery.HERE",root), patch.dict(os.environ,{"BUFFER_API_KEY":"test-only"}), \
+                 patch("probe_delivery.choose_x_channel",side_effect=RuntimeError("Audit still required")):
+                with self.assertRaisesRegex(RuntimeError,"Audit still required"):
+                    main()
 
 if __name__=="__main__":unittest.main(verbosity=2)
