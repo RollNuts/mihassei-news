@@ -52,9 +52,9 @@ CPU_SCENES = {
         "fake beards kneel to coax the dog into a winner's photograph."
     ),
     "stolen-doorbell-returned-by-parcel": (
-        "Tight close-up of a small silver hotel reception bell on a flat black "
-        "base. It has a low hemispherical metal dome and a little round top "
-        "push button. The bell is packed in an open plain cardboard parcel."
+        "Close-up of ONE upright brass handbell with a long wooden handle on "
+        "top and a wide flared metal rim at the bottom. The handbell stands "
+        "inside an open plain brown cardboard box."
     ),
     "family-dinner-gacha-243-rejections": (
         "A red gumball vending machine dominates the frame: a transparent "
