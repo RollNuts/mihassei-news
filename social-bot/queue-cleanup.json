@@ -192,8 +192,19 @@
         "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
         "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
       },
-      "state": "intent",
-      "intent_at": "2026-11-04T03:27:18.006238+00:00"
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:18.006238+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6aea76084c41ba80aa4864d8",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
     }
   }
 }
