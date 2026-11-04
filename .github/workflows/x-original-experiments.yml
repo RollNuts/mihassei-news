@@ -3,12 +3,10 @@ name: X Article Promotion (Buffer Free)
 on:
   push:
     branches: [main]
+    # Posting fallback only wakes for article archive changes.
+    # Validation of code edits remains on pull_request and the shared CI.
     paths:
       - "content/articles.json"
-      - "social-bot/article-picks/**"
-      - "social-bot/publish.py"
-      - "social-bot/social_text.py"
-      - ".github/workflows/x-original-experiments.yml"
   pull_request:
     paths:
       - "social-bot/article-picks/**"
@@ -34,7 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+          ref: ${{ github.event_name == 'pull_request' && github.ref || github.event_name == 'push' && github.sha || 'main' }}
+          fetch-depth: 0
           persist-credentials: true
 
       - name: Validate article promotion, dedupe and safety gates
@@ -48,6 +47,7 @@ jobs:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           X_TRIGGER_EVENT: ${{ github.event_name }}
+          X_PUSH_BEFORE: ${{ github.event.before }}
         run: python social-bot/article-picks/dispatch.py
 
       - name: Persist exact Buffer article receipt
