@@ -474,13 +474,27 @@ def record_publish_result(status: str, detail: str, sha: str = '', app_dir=None)
                {'status': status, 'detail': detail[:400], 'sha': sha, 'at': now()})
 
 
-def status() -> dict:
+def image_status_counts(articles: list[dict], root) -> dict:
+    """Use the publication gate without treating an intact JPEG as approval."""
     try:
         from .generated_photos import usable_generated_scene
-        from .local_scene_photos import load_articles, held_scene
+        from .visual_review import _scene_state
     except ImportError:
         from generated_photos import usable_generated_scene
-        from local_scene_photos import load_articles, held_scene
+        from visual_review import _scene_state
+    states = [_scene_state(article, root=root)['status'] for article in articles]
+    return {'generated_images': sum(usable_generated_scene(article, root=root) for article in articles),
+            'published_images': states.count('accepted'),
+            'pending_review_images': states.count('pending'),
+            'pending_generation_articles': states.count('missing'),
+            'held_articles': states.count('rejected')}
+
+
+def status() -> dict:
+    try:
+        from .local_scene_photos import load_articles
+    except ImportError:
+        from local_scene_photos import load_articles
     last = read_json(APP_DIR / 'last-run.json')
     runtime = read_json(APP_DIR / 'runtime.json')
     records = runtime.get('processes', {})
@@ -504,10 +518,21 @@ def status() -> dict:
         revision = subprocess.run(['git', 'rev-parse', 'refs/remotes/origin/main'], cwd=ROOT,
                                   capture_output=True, check=True, text=True, timeout=10, env=command_env()).stdout.strip()
         blobs = {}
+        missing = set()
         def blob(path):
             # Pin every read to this captured commit; another worker may fetch
             # or push origin/main while status is calculating the counts.
+            if path in missing:
+                raise FileNotFoundError(path)
             if path not in blobs:
+                if path == 'content/visual_reviews.json':
+                    # Old snapshots may legitimately predate visual reviews.
+                    # Missing review records mean pending, not local fallback.
+                    listing = subprocess.run(['git', 'ls-tree', revision, '--', path], cwd=ROOT,
+                                             capture_output=True, check=True, timeout=10, env=command_env())
+                    if not listing.stdout:
+                        missing.add(path)
+                        raise FileNotFoundError(path)
                 data = subprocess.run(['git', 'show', revision + ':' + path], cwd=ROOT,
                                       capture_output=True, check=True, timeout=30, env=command_env()).stdout
                 if path.lower().endswith('.jpg'):
@@ -526,15 +551,13 @@ def status() -> dict:
                 from types import SimpleNamespace
                 return SimpleNamespace(st_size=len(self.read_bytes()))
         articles = json.loads(blob('content/articles.json'))
-        generated = sum(usable_generated_scene(a, root=Snapshot()) for a in articles)
-        held = sum(held_scene(a, root=Snapshot()) for a in articles)
+        counts = image_status_counts(articles, Snapshot())
         source = ('origin/main at ' if fetched else 'cached origin/main at ') + revision
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         detail = 'Remote snapshot unavailable; local counts used: ' + str(exc)[:200]
         counts_error = counts_error + '; ' + detail if counts_error else detail
         articles = load_articles(ROOT)
-        generated = sum(usable_generated_scene(a, root=ROOT) for a in articles)
-        held = sum(held_scene(a, root=ROOT) for a in articles)
+        counts = image_status_counts(articles, ROOT)
     byte_count = sum(p.stat().st_size for p in (ROOT / 'assets/generated').glob('*.jpg') if p.is_file())
     try:
         workflow = cpu_state()
@@ -557,8 +580,8 @@ def status() -> dict:
             'last_success_at': last.get('last_success_at'), 'last_error': last.get('last_error'),
             'last_run': last, 'publish': read_json(APP_DIR / 'publish-result.json'),
             'resource_guard': read_json(APP_DIR / 'resources.json'),
-            'quality_pilot_passed': quality_ready(), 'generated_images': generated,
-            'pending_articles': len(articles) - generated, 'held_articles': held, 'counts_source': source, 'counts_error': counts_error, 'cpu': cpu,
+            'quality_pilot_passed': quality_ready(), **counts,
+            'pending_articles': len(articles) - counts['generated_images'], 'counts_source': source, 'counts_error': counts_error, 'cpu': cpu,
             'jpeg_bytes': byte_count, 'jpeg_cap_bytes': 1536 * 1024**2,
             'free_gib': round(shutil.disk_usage(ROOT).free / 1024**3, 2),
             'app_gib': round(sum(p.stat().st_size for p in APP_DIR.rglob('*') if p.is_file() and not p.is_symlink()) / 1024**3, 2)}
@@ -620,7 +643,8 @@ def main(argv=None) -> int:
                 print(f"メモリ：空き{resource.get('free_percent', '未確認')}% ／ スワップ{resource.get('swap_gib', '未確認')}GiB")
             print('Mac最後の成功日時：' + display_time(result.get('last_success_at')))
             print('Mac最後のエラー：' + (json.dumps(error, ensure_ascii=False) if isinstance(error, dict) else error))
-            print(f"生成済み：{result['generated_images']}枚 ／ 未生成：{result['pending_articles']}記事（品質保留{result.get('held_articles', 0)}件）")
+            print(f"生成JPEG：{result['generated_images']}枚 ／ 掲載採用：{result.get('published_images', '未確認')}枚")
+            print(f"目視待ち：{result.get('pending_review_images', '未確認')}枚 ／ 要生成：{result.get('pending_generation_articles', '未確認')}記事 ／ 品質保留：{result.get('held_articles', 0)}件")
             print(f"ストレージ：空き{result['free_gib']}GiB ／ 専用領域{result['app_gib']}GiB ／ JPEG {result['jpeg_bytes']/1024**2:.2f}MiB（上限1536MiB）")
             print('MacからGitHubへの最終反映：' + json.dumps(publish, ensure_ascii=False))
             print('画像数の参照元：' + result['counts_source'])
