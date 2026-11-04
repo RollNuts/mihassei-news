@@ -72,9 +72,11 @@ def local_page(dist: Path, path: str) -> Path:
     """Every indexed URL must map to an existing generated HTML route."""
     if path == "/":
         return dist / "index.html"
-    if not path.startswith("/") or not path.endswith("/") or ".." in path.split("/"):
+    decoded = unquote(path)
+    if (not decoded.startswith("/") or not decoded.endswith("/")
+            or ".." in decoded.split("/")):
         raise ValueError("Non-canonical page path: " + path)
-    return dist / path.lstrip("/") / "index.html"
+    return dist / decoded.lstrip("/") / "index.html"
 
 
 def read_page(dist: Path, path: str) -> Page:
