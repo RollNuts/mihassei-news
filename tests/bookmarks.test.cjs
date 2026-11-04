@@ -299,3 +299,27 @@ test("clearing a focused saved list moves focus to the article archive link", ()
   assert.equal(page.document.activeElement, page.archiveLink);
   assert.equal(page.empty.hidden, false);
 });
+
+test("returning through browser history restores the current reading list without writing it", () => {
+  const saved = {slug:"robot-job-hopping",title:"ロボット記事",category:"経済",savedAt:1};
+  const page = createPage({initial:[saved]});
+  page.store.set(KEY, "[]");
+  page.events.pageshow({persisted:true});
+  assert.equal(page.list.children.length, 0);
+  assert.equal(page.buttons[0].attrs["aria-pressed"], "false");
+  assert.equal(page.empty.hidden, false);
+  assert.equal(page.writes.length, 0);
+});
+
+test("returning to an unchanged saved list preserves its focused article link", () => {
+  const page = createPage({initial:[{
+    slug:"saved",title:"保存した記事",category:"社会",savedAt:1
+  }]});
+  const link = page.list.children[0].children[0].children[1];
+  link.focus();
+  page.events.pageshow({persisted:true});
+  assert.equal(page.list.children[0].children[0].children[1], link,
+    "history restoration must not detach the focused link from the list");
+  assert.equal(page.document.activeElement, link);
+  assert.equal(page.writes.length, 0);
+});

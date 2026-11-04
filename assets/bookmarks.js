@@ -19,6 +19,7 @@
 
   let available = true;
   let saved = [];
+  let renderedListState = "";
 
   function clean(input) {
     if (!Array.isArray(input)) return [];
@@ -144,7 +145,12 @@
       total.hidden = !saved.length;
     }
     if (list) {
-      list.replaceChildren(...saved.map(makeEntry));
+      const currentListState = JSON.stringify([available, saved]);
+      // Keep the link restored by browser history when the list is unchanged.
+      if (currentListState !== renderedListState) {
+        list.replaceChildren(...saved.map(makeEntry));
+        renderedListState = currentListState;
+      }
       if (empty) empty.hidden = saved.length !== 0;
       if (clearAll) {
         clearAll.hidden = saved.length === 0;
@@ -193,10 +199,17 @@
   });
 
   window.addEventListener?.("storage", event => {
-    if (event.key === KEY || event.key === null) {
+    if ((!event.storageArea || event.storageArea === localStorage) &&
+        (event.key === KEY || event.key === null)) {
       saved = readSaved();
       render();
       announce("別のタブで保存一覧が更新されました。");
     }
+  });
+  window.addEventListener?.("pageshow", event => {
+    if (!event.persisted) return;
+    saved = readSaved();
+    render();
+    if (!available) announce("このブラウザは保存機能を利用できません。");
   });
 })();
