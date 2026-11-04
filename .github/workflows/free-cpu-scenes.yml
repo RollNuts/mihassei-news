@@ -79,13 +79,19 @@ jobs:
           print('Pending:', len(selected))
           PY
           df -h .
+      - name: Verify offline image gates before downloading model runtime
+        if: steps.plan.outputs.pending != '0'
+        run: |
+          python3 -m pip install --no-cache-dir Pillow==11.1.0
+          python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
+          python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
       - name: Install CPU-only open-source local model runtime (no cache)
         if: steps.plan.outputs.pending != '0'
         run: |
           python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
           python3 -m pip install --no-cache-dir \
             diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
-            accelerate==1.2.1 safetensors==0.4.5 Pillow==11.1.0 numpy==1.26.4
+            accelerate==1.2.1 safetensors==0.4.5 numpy==1.26.4
           df -h .
       - name: Generate at most three fictional JPEGs and stage only new successes
         if: steps.plan.outputs.pending != '0'
@@ -95,8 +101,6 @@ jobs:
           if [ "$RETRY_HELD" = 1 ]; then args+=(--retry-held); fi
           python3 scripts/github_cpu_scenes.py "${args[@]}"
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
-          python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
-          python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
           python3 scripts/build.py
       - name: Publish only matching images against latest main
         if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held

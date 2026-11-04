@@ -257,6 +257,7 @@ class FreeCpuImageTests(unittest.TestCase):
 
     def test_compact_backlog_prompts_keep_the_article_objects(self):
         expected = {
+            "midterm-prediction-notebook-full-of-holes": ("ragged circular hole", "dark desk underneath", "pink eraser", "Overhead close-up"),
             "sweet-potato-chorus-starts-too-late": ("whole Japanese sweet potato", "deep-purple skin", "golden-yellow flesh", "close-up"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
             "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
@@ -282,20 +283,28 @@ class FreeCpuImageTests(unittest.TestCase):
                 for crowd_context in ("crowd", "referee", "participants", "adults", "rectangles"):
                     self.assertNotIn(crowd_context, prompt.lower())
 
-    def test_current_potato_revision_uses_its_reviewed_food_direction_and_edits_expire_it(self):
-        source = next(a for a in local_scene_photos.load_articles()
-                      if a["slug"] == "sweet-potato-chorus-starts-too-late")
-        # Only this known article revision should require the curated direction;
-        # later editorial changes are allowed to use their fresh scene normally.
-        if article_fingerprint(source) == "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008":
-            self.assertTrue(cpu.reviewed_source_matches(source, source["slug"]))
-            self.assertIn("deep-purple skin", cpu.cpu_prompt(source))
-            self.assertIn("golden-yellow flesh", cpu.cpu_prompt(source))
-        scene = "An anonymous actor holds a green toolbox beside a garden gate."
-        changed = {**source, "scene_prompt": scene}
-        self.assertFalse(cpu.reviewed_source_matches(changed, changed["slug"]))
-        self.assertIn(scene, cpu.cpu_prompt(changed))
-        self.assertNotIn("deep-purple skin", cpu.cpu_prompt(changed))
+    def test_current_compact_revisions_use_their_directions_and_edits_expire_them(self):
+        articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
+        for slug, fingerprint, props in (
+            ("sweet-potato-chorus-starts-too-late",
+             "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+             ("deep-purple skin", "golden-yellow flesh")),
+            ("midterm-prediction-notebook-full-of-holes",
+             "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+             ("ragged circular hole", "pink eraser")),
+        ):
+            with self.subTest(slug=slug):
+                source = articles[slug]
+                # Later editorial changes may use their fresh scene normally.
+                if article_fingerprint(source) == fingerprint:
+                    self.assertTrue(cpu.reviewed_source_matches(source, slug))
+                    for prop in props:
+                        self.assertIn(prop, cpu.cpu_prompt(source))
+                scene = "An anonymous actor holds a green toolbox beside a garden gate."
+                changed = {**source, "scene_prompt": scene}
+                self.assertFalse(cpu.reviewed_source_matches(changed, slug))
+                self.assertIn(scene, cpu.cpu_prompt(changed))
+                self.assertNotIn(props[0], cpu.cpu_prompt(changed))
 
     def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
         source = {**article(), "paragraphs": ["Original fictional scene."],
