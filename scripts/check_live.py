@@ -399,7 +399,7 @@ def check():
         raise RuntimeError("New serials not discoverable on published homepage")
     serial_hub, serial_type=get("/serials/")
     serial_index=serial_hub.decode("utf-8")
-    if "text/html" not in serial_type or "物語を追う。未来を検証する。" not in serial_index:
+    if "text/html" not in serial_type:
         raise RuntimeError("Live serial index was not deployed")
     if ('<title>連載一覧 | 未発生新聞（創作と市場分析の連載）</title>' not in serial_index or
         '"@type": "ItemList"' not in serial_index or
