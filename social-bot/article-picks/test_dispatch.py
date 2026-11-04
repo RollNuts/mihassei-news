@@ -97,6 +97,14 @@ class ArticlePickTests(unittest.TestCase):
             picks.article_slug_in_text("少し話題に https://veripsa.com/articles/story-a/?utm_source=x"),
             {"story-a"}
         )
+        tagged = article("story-tags", title="タグを共通語彙として使う記事")
+        tagged["tags"] = ["AI", "働き方", "3つ目"]
+        tagged_msg = picks.publication_text(tagged)
+        self.assertIn("\n\n#AI #働き方\n\n", tagged_msg)
+        self.assertNotIn("#3つ目", tagged_msg)
+        self.assertEqual(picks.article_hashtags(tagged), ["AI", "働き方"])
+        tagged["tags"] = ["AI", "AI", "bad tag", "#bad", 3]
+        self.assertEqual(picks.article_hashtags(tagged), ["AI"])
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
