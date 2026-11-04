@@ -10,6 +10,13 @@ import html
 from datetime import datetime
 from urllib.parse import urlencode
 
+if __package__:
+    from .social_text import (X_TEXT_LIMIT, article_hashtags, truncate_x_text,
+                              x_weighted_length)
+else:
+    from social_text import (X_TEXT_LIMIT, article_hashtags, truncate_x_text,
+                             x_weighted_length)
+
 SITE = "https://veripsa.com"
 TRACKING = "?utm_source=x&utm_medium=social&utm_campaign=share_desk"
 
@@ -65,17 +72,20 @@ def draft(article: dict, *, site: str = SITE) -> dict:
     tagged = href + TRACKING
     title = _short(article["title"], 58)
     teaser = _short(article["summary"], 62)
-    heading = "【未発生新聞】\n" + title
-    ending = "\n\n#未発生新聞"
-    # Keep the literal copied draft short, even when the human pastes the
-    # entire tracking URL into X instead of using the X-intent link.
+    prefix = "【未発生新聞】\n"
+    ending = "\n\n" + (" ".join(article_hashtags(article)) or "#未発生新聞")
+    # Keep the URL and published tags complete. Spend the remaining budget
+    # on the headline before the teaser, for both copy and X-intent drafts.
+    title_budget = X_TEXT_LIMIT - x_weighted_length(prefix + ending + "\n\n" + tagged)
+    title = truncate_x_text(title, max(0, title_budget))
+    heading = prefix + title
     fixed = heading + ending + "\n\n" + tagged
-    available = max(0, 265 - len(fixed) - 2)
-    excerpt = _short(teaser, available) if available else ""
+    available = max(0, X_TEXT_LIMIT - x_weighted_length(fixed) - 2)
+    excerpt = truncate_x_text(teaser, available)
     text = heading + ("\n\n" + excerpt if excerpt else "") + ending
     copied = text + "\n\n" + tagged
-    if len(copied) > 265:
-        raise ValueError("X draft exceeds the conservative length limit")
+    if not title or x_weighted_length(copied) > X_TEXT_LIMIT:
+        raise ValueError("X draft exceeds the conservative weighted length limit")
     intent = "https://x.com/intent/tweet?" + urlencode({"text": text, "url": tagged})
     return {"text": text, "copy": copied, "intent": intent,
             "tagged_url": tagged, "article_url": href}

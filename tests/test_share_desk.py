@@ -11,6 +11,7 @@ from urllib.parse import parse_qs, urlparse
 from xml.etree import ElementTree as ET
 
 from scripts.share_desk import TRACKING, draft, real_date, render, select_candidates
+from scripts.social_text import X_TEXT_LIMIT, article_hashtags, x_weighted_length
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -67,7 +68,7 @@ class ShareDeskTests(unittest.TestCase):
                    title="未来の新しいニュースを届ける不思議な世界" * 11,
                    summary="とても長い、まだ起きていない出来事を描いた紹介文。" * 12)
         details = draft(a)
-        self.assertLessEqual(len(details["copy"]), 265)
+        self.assertLessEqual(x_weighted_length(details["copy"]), X_TEXT_LIMIT)
         for label in ("創作", "フィクション", "のもしも"):
             self.assertNotIn(label, details["copy"])
         self.assertIn("#未発生新聞", details["copy"])
@@ -79,6 +80,35 @@ class ShareDeskTests(unittest.TestCase):
         self.assertEqual(params["url"], [details["tagged_url"]])
         self.assertEqual(params["url"][0].split("?")[0],
                          "https://veripsa.com/articles/very-long-story/")
+
+    def test_copy_and_intent_include_only_the_first_two_published_tags(self):
+        a = sample("tagged-story", "技術", "2026-11-02",
+                   title="倍速にした動画の説明を聞く")
+        a["tags"] = ["タイパ", "AI", "仕事"]
+        details = draft(a)
+        self.assertEqual(details["text"].splitlines()[-1], "#タイパ #AI")
+        self.assertEqual(details["copy"].count("#タイパ"), 1)
+        self.assertNotIn("#仕事", details["copy"])
+        self.assertNotIn("#未発生新聞", details["copy"])
+        self.assertEqual(details["copy"], details["text"] + "\n\n" + details["tagged_url"])
+        params = parse_qs(urlparse(details["intent"]).query)
+        self.assertEqual(params["text"], [details["text"]])
+        self.assertEqual(params["url"], [details["tagged_url"]])
+
+    def test_length_budget_shortens_teaser_first_and_keeps_tags_and_long_url(self):
+        title = "見出し" * 19  # 57 Japanese characters, below the existing 58-character cap.
+        a = sample("long-" + "a" * 250, "社会", "2026-11-02",
+                   title=title, summary="説明文" * 50)
+        a["tags"] = ["タイパ", "人間関係"]
+        details = draft(a)
+        self.assertEqual(details["text"].splitlines()[1], title)
+        self.assertIn("…", details["text"])
+        self.assertEqual(details["text"].splitlines()[-1], " ".join(article_hashtags(a)))
+        self.assertTrue(details["copy"].endswith(details["tagged_url"]))
+        self.assertIn(a["slug"], details["tagged_url"])
+        self.assertIn(TRACKING, details["tagged_url"])
+        self.assertGreater(len(details["copy"]), 265)
+        self.assertLessEqual(x_weighted_length(details["copy"]), X_TEXT_LIMIT)
 
     def test_draft_does_not_add_a_fiction_dateline(self):
         item = sample("fallback", "社会", "2026-11-02", title="家計簿の利息を銀行員に見せた夫婦")

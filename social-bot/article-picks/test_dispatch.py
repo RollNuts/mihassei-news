@@ -91,7 +91,7 @@ class ArticlePickTests(unittest.TestCase):
         self.assertIn("https://veripsa.com/articles/story-a/", msg)
         self.assertNotIn("AI生成", msg)
         self.assertNotIn("大人気", msg)
-        self.assertLessEqual(len(msg), 220)
+        self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
         self.assertEqual(picks.article_slug_in_text(msg), {"story-a"})
         self.assertEqual(
             picks.article_slug_in_text("少し話題に https://veripsa.com/articles/story-a/?utm_source=x"),
@@ -102,11 +102,30 @@ class ArticlePickTests(unittest.TestCase):
         tagged_msg = picks.publication_text(tagged)
         self.assertIn("\n\n#AI #働き方\n\n", tagged_msg)
         self.assertNotIn("#3つ目", tagged_msg)
-        self.assertEqual(picks.article_hashtags(tagged), ["AI", "働き方"])
+        self.assertEqual(picks.article_hashtags(tagged), ["#AI", "#働き方"])
         tagged["tags"] = ["AI", "AI", "bad tag", "#bad", 3]
-        self.assertEqual(picks.article_hashtags(tagged), ["AI"])
+        self.assertEqual(picks.article_hashtags(tagged), ["#AI"])
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
+
+    def test_long_slug_preserves_the_link_and_topics_within_x_budget(self):
+        tagged = article("story-" + "a" * 200, title="見出し" * 40)
+        tagged["tags"] = ["長" * 12, "別" * 12, "AI"]
+        msg = picks.publication_text(tagged)
+        self.assertIn("…", msg)
+        self.assertIn("#" + "長" * 12 + " #" + "別" * 12, msg)
+        self.assertNotIn("#AI", msg)
+        self.assertTrue(msg.endswith("https://veripsa.com/articles/" + tagged["slug"] + "/"))
+        self.assertGreater(len(msg), 220)
+        self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
+
+    def test_every_published_article_uses_the_shared_topic_vocabulary(self):
+        articles = json.loads((picks.ROOT / "content/articles.json").read_text(encoding="utf-8"))
+        for item in articles:
+            with self.subTest(slug=item["slug"]):
+                msg = picks.publication_text(item)
+                self.assertIn("\n\n" + " ".join("#" + tag for tag in item["tags"][:2]) + "\n\n", msg)
+                self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
     def test_rank_uses_recent_pv_then_today_then_publication_time(self):
         old, newer, busy_today, top = (article("old", 72), article("newer", 24),
