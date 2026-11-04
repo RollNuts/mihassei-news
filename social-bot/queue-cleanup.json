@@ -75,6 +75,21 @@
         "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
         "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
       }
+    },
+    "xexp-witch-autopilot": {
+      "target_sha256": "0e3cb0b8f23b2218745314ff29bab5e122680fe03a1ad7f79e4d8e245e11dbc4",
+      "checked_at": "2026-11-04T03:27:04.884496+00:00",
+      "before": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "intent",
+      "intent_at": "2026-11-04T03:27:04.987513+00:00"
     }
   }
 }
