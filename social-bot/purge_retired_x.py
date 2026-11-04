@@ -12,11 +12,13 @@ import hashlib
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CHANNEL = "6ae94b74e29c69a171436d72"
 DELETABLE_STATUSES = {"draft", "scheduled", "pending", "error", "failed"}
+RESULT_PATH = HERE / "purge-retired-x-result.json"
 
 
 def read(path: Path) -> dict:
@@ -132,44 +134,102 @@ def main() -> int:
         return gql(token, query).get("deletePost") or {}
 
     deleted = 0
-    skipped = 0
+    absent = 0
+    published = 0
     held = 0
+    outcomes = []
 
     for target in rows:
         pid = target["post_id"]
+        bid = target["buffer_id"]
         try:
-            before = fetch_post(target["buffer_id"])
+            before = fetch_post(bid)
         except Exception as exc:
-            print("HELD", pid, "provider_read_failed", type(exc).__name__, str(exc)[:180])
+            reason = "provider_read_failed"
+            print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
             held += 1
             continue
 
         reason = validate_live(target, before)
+        if reason == "already_absent":
+            print("ABSENT", pid)
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "absent"})
+            absent += 1
+            continue
+        if reason == "already_published":
+            print("PUBLISHED_UNTOUCHED", pid)
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "published_untouched"})
+            published += 1
+            continue
         if reason:
-            print("SKIP", pid, reason)
-            skipped += 1
+            print("HELD", pid, reason)
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
+            held += 1
             continue
 
-        result = delete_post(target["buffer_id"])
-        if result.get("__typename") == "DeletePostSuccess" and result.get("id") == target["buffer_id"]:
-            print("DELETED", pid, target["buffer_id"])
+        try:
+            result = delete_post(bid)
+        except Exception as exc:
+            result = {}
+            try:
+                after = fetch_post(bid)
+            except Exception:
+                after = None
+            if after is None:
+                print("DELETED", pid, bid, "verified_absent_after_error")
+                outcomes.append({"post_id": pid, "buffer_id": bid, "state": "deleted", "verification": "absent_after_error"})
+                deleted += 1
+                continue
+            reason = "delete_request_failed"
+            print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
+            held += 1
+            continue
+
+        if result.get("__typename") == "DeletePostSuccess" and result.get("id") == bid:
+            print("DELETED", pid, bid)
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "deleted", "verification": "delete_receipt_confirmed"})
             deleted += 1
             continue
 
-        # A mutation may have completed even if its response was unusual.
-        # Re-read once; missing means the requested cleanup succeeded.
         try:
-            after = fetch_post(target["buffer_id"])
+            after = fetch_post(bid)
         except Exception:
             after = None
         if after is None:
-            print("DELETED", pid, target["buffer_id"], "verified_absent")
+            print("DELETED", pid, bid, "verified_absent")
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "deleted", "verification": "absent"})
             deleted += 1
         else:
-            print("HELD", pid, "delete_unverified", str(result.get("message", ""))[:180])
+            reason = "delete_unverified"
+            print("HELD", pid, reason, str(result.get("message", ""))[:180])
+            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
             held += 1
 
-    print(f"Retired experiment purge summary: deleted={deleted} skipped={skipped} held={held}")
+    report = {
+        "schema_version": 1,
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "scope": "retired_x_experiments_only",
+        "article_promotion_untouched": True,
+        "counts": {
+            "ledger_receipts_checked": len(rows),
+            "deleted_now": deleted,
+            "already_absent": absent,
+            "published_untouched": published,
+            "held": held,
+        },
+        "remaining_unpublished_legacy_known": held,
+        "outcomes": outcomes,
+    }
+    RESULT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(
+        "Retired experiment purge summary:",
+        f"deleted={deleted}",
+        f"absent={absent}",
+        f"published_untouched={published}",
+        f"held={held}",
+    )
     if held:
         return 2
     return 0
