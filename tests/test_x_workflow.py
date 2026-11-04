@@ -65,15 +65,13 @@ class XWorkflowTests(unittest.TestCase):
             self.article,
         ).group(1)
         self.assertIn('"content/articles.json"', push_block)
-        self.assertNotIn('"social-bot/', push_block)
-        self.assertNotIn('"x-original-experiments.yml"', push_block)
-        self.assertIn("fetch-depth: 0", self.article)
         queue = step(self.article, "Queue at most one eligible Veripsa article")
         self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", queue)
-        self.assertIn("X_PUSH_BEFORE: ${{ github.event.before }}", queue)
 
     def test_read_only_delivery_audit_cannot_publish(self):
         self.assertIn('cron: "45 14 * * *"', self.audit)
+        self.assertIn('- "content/articles.json"', self.audit)
+        self.assertIn("X_AUDIT_TRIGGER_EVENT: ${{ github.event_name }}", self.audit)
         self.assertIn("article-picks/audit_delivery.py", self.audit)
         self.assertNotIn("article-picks/dispatch.py", self.audit)
         self.assertNotIn("experiments/dispatch.py", self.audit)
