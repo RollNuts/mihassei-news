@@ -564,6 +564,10 @@ def check():
         raise RuntimeError("Duplicate starter portals were not removed")
     if not re.search(r'<section class="section-block">.*?</section>', body, re.S):
         raise RuntimeError("Fresh-news grid is missing")
+    if '<aside class="side-brief"><div class="side-title"><h2>新着記事</h2>' not in body:
+        raise RuntimeError("Newest headline rail is not labelled as the actual fresh-news list")
+    if '<section class="section-block"><div class="section-head"><h2>さらに読む</h2>' not in body:
+        raise RuntimeError("Older homepage cards still claim to be the newest articles")
     
     # A saved reading list is opt-in, browser-local and not a thin SEO archive.
     # Only GETs: no visits, bookmark writes, analytics POSTs or paid services.

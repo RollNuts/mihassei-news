@@ -1058,8 +1058,9 @@ def home(articles, serials=None):
     last_label = f"{actual_stamp.month}月{actual_stamp.day}日"
     if "T" in last_published:
         last_label += f" {actual_stamp.hour:02}:{actual_stamp.minute:02}"
-    # A sidebar should read like a newspaper's short headline rail, not three
-    # miniature article pages with duplicate summaries and action buttons.
+    # The sidebar is the actual newest-article rail after the lead. Keep its
+    # three headlines immediately adjacent to the front page so "new" never
+    # labels the older card grid below.
     side = "".join('<article class="brief-card">' + category_meta(x, compact=True) +
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3></article>'
                    for x in remaining[:3])
@@ -1185,10 +1186,10 @@ def home(articles, serials=None):
 {tag_links(a, compact=True)}
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
-<aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2></div>{side}</aside>
+<aside class="side-brief"><div class="side-title"><h2>新着記事</h2></div>{side}</aside>
 </section>
 {broadcast_feature(articles)}
-<section class="section-block"><div class="section-head"><h2>新着記事</h2>
+<section class="section-block"><div class="section-head"><h2>さらに読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
 {popular_section}
