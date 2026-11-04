@@ -1,0 +1,20 @@
+name: Temporary verify batched retirement evidence
+on:
+  push:
+    branches: [fix/batch-legacy-retirement-evidence-20261104]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run retirement tests offline
+        run: |
+          python -m unittest discover -s social-bot -p 'test_retire_remaining_legacy.py' -v
+          python social-bot/retire_remaining_legacy.py --validate
+          python -m py_compile social-bot/retire_remaining_legacy.py
