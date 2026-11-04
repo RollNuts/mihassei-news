@@ -12,7 +12,7 @@ from scripts.serials import (
     progress_attributes,
     render_completed_reading,
 )
-from scripts.build import layout, privacy
+from scripts.build import asset_url, layout, privacy
 
 ROOT = Path(__file__).resolve().parents[1]
 SERIALS = json.loads((ROOT / "content" / "serials.json").read_text(encoding="utf-8"))
@@ -92,9 +92,9 @@ class SerialReadingProgressTests(unittest.TestCase):
                    "main", serial={"slug":"market-lab","kind":"analysis","episode":"power-grid-after-ai-01"}),
         ]
         for page in relevant:
-            self.assertEqual(page.count('src="/assets/serial-progress.js"'), 1)
+            self.assertEqual(page.count('src="' + asset_url("serial-progress.js") + '"'), 1)
         irrelevant = layout("記事一覧", "desc", "/archive/", "main")
-        self.assertNotIn('src="/assets/serial-progress.js"', irrelevant)
+        self.assertNotIn('src="' + asset_url("serial-progress.js") + '"', irrelevant)
         disclosure = privacy()
         for item in ("保存記事・読了記録", "このブラウザ内だけに保存", "読了ボタンで選んだ作品・回", "サーバーに送信せず"):
             self.assertIn(item, disclosure)
