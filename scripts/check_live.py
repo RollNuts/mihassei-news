@@ -255,7 +255,7 @@ def verify_pv_recommendations(markup: str, articles: list[dict], current_article
             or "hidden" in fallbacks[0]["attrs"]):
         raise RuntimeError("Article must retain a visible newest-story fallback without JavaScript")
     fallback = fallbacks[0]
-    if "NEXT STORY / 新着からもう1本" not in "".join(fallback["text"]):
+    if "新着からもう1本" not in "".join(fallback["text"]):
         raise RuntimeError("Article fallback must be labelled as a new story, not a PV ranking")
     next_articles = [article for article in latest_articles(articles, limit=None)
                      if article["slug"] != excluded]

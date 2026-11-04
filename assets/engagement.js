@@ -30,7 +30,6 @@
   const hmsClocks = [...document.querySelectorAll("[data-future-hms]")];
   const editionStatus = document.querySelector("[data-edition-status]");
   const editionTitle = document.querySelector("[data-edition-title]");
-  const editionEyebrow = document.querySelector("[data-edition-eyebrow]");
   const editionUpdated = document.querySelector("[data-edition-updated]");
   let lastDisplayedDay = "";
   function updateClock() {
@@ -49,7 +48,6 @@
         const latestCount = Math.max(0,Number(editionStatus.dataset.editionCount)||0);
         const lastLabel = editionStatus.dataset.lastLabel || editionStatus.dataset.lastEdition || "不明";
         if (editionTitle) editionTitle.textContent = todayIssued ? "本日の記事" : "最新記事";
-        if (editionEyebrow) editionEyebrow.textContent = todayIssued ? "TODAY'S HEADLINES" : "LATEST HEADLINES";
         if (editionUpdated) editionUpdated.textContent = todayIssued ?
           "本日 "+latestCount+"本 ・ 更新："+lastLabel :
           "更新："+lastLabel;
@@ -161,16 +159,19 @@
       if(!story)return;
       previous=index;
       label.textContent=story.headline;
-      banner.textContent=story.category+" / 号外";
+      banner.textContent=story.category;
       link.href=story.url;
       link.hidden=false;
       result.classList.remove("shuffling");
+      result.setAttribute("aria-busy","false");
       button.disabled=false;working=false;
-      button.firstChild.textContent="もう一枚めくる ";
+      button.firstChild.textContent="もう1本選ぶ ";
     }
     button?.addEventListener("click",()=>{
       if(working || !choices.length)return;
       working=true;button.disabled=true;link.hidden=true;
+      result.hidden=false;
+      result.setAttribute("aria-busy","true");
       result.classList.add("shuffling");
       const chosen=choose();
       if(reduced){reveal(chosen);return;}
@@ -432,7 +433,7 @@
       const content=document.createElement("div");
       const category=document.createElement("span");
       category.className="readers-choice-category";
-      category.textContent=item.category+" / 創作ニュース";
+      category.textContent=item.category;
       const link=document.createElement("a");
       link.href="/articles/"+item.slug+"/";
       link.textContent=item.title;

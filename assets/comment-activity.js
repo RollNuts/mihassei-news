@@ -36,7 +36,6 @@
     }
     if(!discussions)return;
     const list=discussions.querySelector('[data-discussion-list]');
-    const intro=discussions.querySelector('[data-discussion-intro]');
     const entries=options
       .map(item=>({...item,count:counts[item.slug]}))
       .filter(item=>Number.isInteger(item.count) && item.count>0)
@@ -47,7 +46,6 @@
       list.replaceChildren();
       return;
     }
-    intro.textContent='実際に読者からコメントが届いた記事を紹介しています。';
     const fragment=document.createDocumentFragment();
     for(const item of entries){
       const link=document.createElement('a');

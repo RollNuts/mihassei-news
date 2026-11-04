@@ -35,7 +35,7 @@ class Element {
   }
 }
 
-function createPage({initial = null, blocked = false, twoButtons = true, confirmResult = true} = {}) {
+function createPage({initial = null, blocked = false, twoButtons = true, confirmResult = true, category = "経済"} = {}) {
   const store = new Map();
   if (initial !== null) store.set(KEY, typeof initial === "string" ? initial : JSON.stringify(initial));
   const writes = [];
@@ -53,7 +53,7 @@ function createPage({initial = null, blocked = false, twoButtons = true, confirm
   const first = new Element({
     bookmarkSlug: "robot-job-hopping",
     bookmarkTitle: "工場ロボット17台が一斉退職",
-    bookmarkCategory: "経済"
+    bookmarkCategory: category
   });
   const second = new Element({...first.dataset});
   const buttons = twoButtons ? [first, second] : [first];
@@ -99,6 +99,7 @@ test("bookmark stays opt-in and saves one published story across controls", () =
   assert.equal(items[0].title, "工場ロボット17台が一斉退職");
   assert.equal(items[0].category, "経済");
   assert.equal(page.list.children.length, 1);
+  assert.equal(page.list.children[0].children[0].children[0].textContent, "経済");
   assert.equal(page.buttons[0].attrs["aria-pressed"], "true");
   assert.equal(page.buttons[1].attrs["aria-pressed"], "true");
   assert.equal(page.empty.hidden, true);
@@ -111,6 +112,22 @@ test("bookmark stays opt-in and saves one published story across controls", () =
   assert.equal(page.empty.hidden, false);
   assert.equal(page.total.hidden, true);
   assert.equal(page.clear.hidden, true);
+});
+
+test("incident category survives an explicit save and a new page load", () => {
+  const page = createPage({category: "事件", twoButtons: false});
+  page.buttons[0].click();
+  const stored = page.store.get(KEY);
+  assert.equal(JSON.parse(stored)[0].category, "事件");
+  assert.equal(page.list.children[0].children[0].children[0].textContent, "事件");
+
+  const reopened = createPage({initial: stored, twoButtons: false});
+  assert.equal(reopened.list.children.length, 1);
+  const content = reopened.list.children[0].children[0];
+  assert.equal(content.children[0].textContent, "事件");
+  assert.equal(content.children[1].href, "/articles/robot-job-hopping/");
+  assert.equal(reopened.buttons[0].attrs["aria-pressed"], "true");
+  assert.equal(reopened.writes.length, 0, "Loading a saved category does not rewrite the reading list");
 });
 
 test("malicious and malformed local storage cannot inject unsafe links or HTML", () => {
@@ -128,7 +145,7 @@ test("malicious and malformed local storage cannot inject unsafe links or HTML",
   const articleLink = content.children[1];
   assert.equal(articleLink.href, "/articles/safe-article/");
   assert.equal(articleLink.textContent, "<img src=x onerror=alert(1)>");
-  assert.equal(content.children[0].textContent, "創作ニュース ／ 創作ニュース");
+  assert.equal(content.children[0].textContent, "創作ニュース");
   assert.equal(page.writes.length, 0, "Even dirty storage never gets sent or rewritten without action");
   assert.equal(source.includes("innerHTML"), false);
   assert.equal(source.includes("fetch("), false);

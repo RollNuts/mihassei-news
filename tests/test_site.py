@@ -715,7 +715,7 @@ class SiteTests(unittest.TestCase):
         self.assertEqual({a["slug"] for a in latest},
                          {item["url"].split("/")[2] for item in choices})
         self.assertLessEqual(len(choices),40)
-        self.assertIn("号外をめくる",home)
+        self.assertIn("ランダムに1本選ぶ",home)
 
         # Do not grow the homepage's embedded interactive JSON indefinitely.
         from scripts.build import home as render_home

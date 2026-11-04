@@ -9,7 +9,7 @@
   const KEY = "mihassei-saved-stories-v1";
   const MAX = 100;
   const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  const CATEGORIES = new Set(["社会", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ"]);
+  const CATEGORIES = new Set(["社会", "事件", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ"]);
   const buttons = [...document.querySelectorAll("[data-bookmark-slug]")];
   const list = document.querySelector("[data-saved-list]");
   const empty = document.querySelector("[data-saved-empty]");
@@ -85,7 +85,7 @@
     content.className = "saved-entry-copy";
     const category = document.createElement("span");
     category.className = "saved-entry-category";
-    category.textContent = item.category + " ／ 創作ニュース";
+    category.textContent = item.category;
     const link = document.createElement("a");
     link.className = "saved-entry-title";
     link.href = "/articles/" + item.slug + "/";
