@@ -1371,7 +1371,7 @@ def topic_index(articles):
     if satire:
         sections.append(
             '<section class="topic-index-section"><h2>何を風刺しているか</h2>'
-            '<p>人ではなく、行動や空気感を軽く茶化すタグです。</p>'
+            '<p>記事の中にある「あるある」や、行きすぎた空気感から探せます。</p>'
             '<div class="tag-filters">' + "".join(satire) + '</div></section>'
         )
     content = (
@@ -1394,7 +1394,7 @@ def topic_page(tag, items):
     satire = topic_is_satire(tag, items)
     indexable = len(items) >= TOPIC_MIN_INDEXABLE_ARTICLES
     if satire:
-        intro = f'「{tag}」と呼びたくなる行動や空気感を、人物攻撃ではなく出来事のズレとして描いた記事。'
+        intro = f'「{tag}」と呼びたくなる行動や空気感を、5年後の架空ニュースで描いた記事。'
         eyebrow = "SATIRE TAG"
     else:
         intro = f'{tag}を題材に、今の生活や社会のズレを5年後の架空ニュースへ広げた記事。'
