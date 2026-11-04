@@ -44,8 +44,10 @@ content/serials.json ────┘                │
 - `/api/engagement`の`pageViews`がサイト全体、`articles[slug].pageViews`が記事別の累計PV。既存の`visitors`は匿名ブラウザ識別子の数、`articleReads`は1日あたりのブラウザ×記事の重複除外件数であり、PV・人間の人数・読了数へ読み替えません。APIの既存`unit: anonymous-browser`は旧項目の単位として維持し、PVの単位は`pageViewTracking.unit: page-view`で区別します。
 - 集計日は日本時間。`today`・`yesterday`・`day`の`pageViewsCoverage`は未計測`unmeasured`、開始日の一部`partial`、終了済み日`complete`、当日途中`in-progress`を区別します。開始前のPVは`null`で返し、最初の有効なPVの日時を`pageViewTracking.startedAtUtc`に記録。古い閲覧数からPVを推定・移行しません。
 - `last7Days`は当日を含む直近7暦日のPV合計。`measuredDays`と`complete`で期間の欠測を示し、`complete`も当日が終了したという意味ではありません。日別カウンターと表示イベントの重複排除記録は直近14日分に制限し、累計PVは保持します。既存のDurable Objectを使い、追加の計測サービスや有料APIは導入しません。
+- 記事ごとの`last7DaysPageViews`も同じ日本時間7暦日の表示回数。トップと記事末尾の「よく読まれている記事」は全公開記事を候補に、この値→当日PV→実際の掲載日時の順で選びます。現在読んでいる記事は記事末尾の候補から除外します。旧ブラウザ数、いいね、編集者による固定選択をPV順位に混ぜません。必要な値が欠けた場合はランキングを表示せず、新着記事への通常リンクを使います。
 - 運営者の確認は`?analytics=off`でそのブラウザの自動閲覧送信を停止できます。`/privacy/`の「このブラウザの閲覧を集計しない」でも切り替えられ、`?analytics=on`で再開できます。設定は`localStorage`の`mihassei-analytics-disabled-v1`に保存（保存できなければ当該ページのみ）。`navigator.webdriver === true`の自動操作も送信を抑止しますが、全botや運営者を自動判別する仕組みではありません。GET集計表示と明示的ないいね等の操作は独立しています。
 - [`scripts/record_metrics.py`](../scripts/record_metrics.py)はGETだけで前日の集計を`analytics/daily/`へ保存。schema v3は日別PV・対象日の計測範囲・計測開始日時・記事別累計PVを旧ブラウザ指標と分けます。累計値は取得時点の値であり、対象日の終了時点の値ではありません。旧APIにPVがなければ`page_views_available: false`と`null`で残し、既存のschema v2記録は上書きしません。終了済みの日付でも計測開始日は一日分の実績とは限りません。
+- 日次記録の`recent_articles[].page_views_last_7_days`は取得時点の推薦用PVです。`page_views_last_7_days_window`で対象期間を確認し、前日の終了値や日別PVと混同しません。日次の伸びは`daily_page_views`と計測範囲を主に確認し、旧ブラウザ指標は互換性と補助分析のために保持します。
 - コメント等の書き込みは制限・検証・削除経路が必要です。管理用トークンはCloudflareのSecretとして扱い、GitHubや公開JSに記録しないでください。
 - 登録・保存・削除・プライバシーの細部は実装とサイト内`/privacy/`を参照。新しい計測項目を単純な「実人数」と表記しないでください。
 

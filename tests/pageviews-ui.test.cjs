@@ -12,7 +12,7 @@ const uuid=()=>`00000000-0000-4000-8000-${(++uuidSequence).toString(16).padStart
 function measuredSnapshot(){
   return {
     unit:'anonymous-browser',visitors:900,pageViews:24,
-    pageViewTracking:{startedAtUtc:'2026-11-04T00:00:00.000Z',timezone:'Asia/Tokyo'},
+    pageViewTracking:{unit:'page-view',startedAtUtc:'2026-11-04T00:00:00.000Z',timezone:'Asia/Tokyo'},
     today:{dateJst:'2026-11-04',visitors:6,articleReads:4,pageViews:24,pageViewsCoverage:'in-progress'},
     yesterday:{dateJst:'2026-11-03',visitors:30,articleReads:20,pageViews:null,pageViewsCoverage:'unmeasured'},
     last7Days:{startDateJst:'2026-10-29',endDateJst:'2026-11-04',pageViews:24,measuredDays:1,complete:false}
@@ -130,6 +130,19 @@ test('PV labels use display counts, retain missing history, and populate every a
   assert.match(page.note.textContent,/2026\/11\/4.*昨日は未計測/);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['105','0','105']);
   assert.match(page.badges[0].attributes['aria-label'],/105PV/);
+  assert.equal(page.widget.hidden,false);
+});
+
+test('measured PV rendering does not depend on legacy browser counters',async()=>{
+  const snapshot=measuredSnapshot();
+  delete snapshot.unit;delete snapshot.visitors;
+  for(const day of [snapshot.today,snapshot.yesterday]){
+    delete day.visitors;delete day.articleReads;
+  }
+  const page=await runPage({snapshot,badges:['news']});
+  assert.equal(page.today.textContent,'24');
+  assert.equal(page.week.textContent,'24');
+  assert.equal(page.badges[0].count.textContent,'7');
   assert.equal(page.widget.hidden,false);
 });
 

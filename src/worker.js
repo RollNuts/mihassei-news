@@ -76,11 +76,19 @@ export class NewsroomStats extends DurableObject {
       pageViewsCoverage:coverage
     };
   }
+  last7DaysPageViews(day, startedAt, article="") {
+    if(!startedAt)return null;
+    const firstSerial=day.serial-6;
+    const keys=Array.from({length:7},(_,i)=>
+      "day:"+new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10)+
+      ":pageViews"+(article ? ":"+article : ""));
+    return this.sql.exec(
+      "SELECT COALESCE(SUM(value),0) AS n FROM counters WHERE key IN (?,?,?,?,?,?,?)",...keys
+    ).one().n;
+  }
   pageViewSummary(day, startedAt) {
     const firstSerial=day.serial-6;
     const firstDate=new Date(firstSerial*DAY_MS).toISOString().slice(0,10);
-    const keys=Array.from({length:7},(_,i)=>
-      "day:"+new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10)+":pageViews");
     return {
       pageViews:startedAt ? this.count("pageViews") : null,
       pageViewTracking:{
@@ -91,9 +99,7 @@ export class NewsroomStats extends DurableObject {
       last7Days:{
         startDateJst:firstDate,
         endDateJst:day.date,
-        pageViews:startedAt ? this.sql.exec(
-          "SELECT COALESCE(SUM(value),0) AS n FROM counters WHERE key IN (?,?,?,?,?,?,?)",...keys
-        ).one().n : null,
+        pageViews:this.last7DaysPageViews(day,startedAt),
         measuredDays:startedAt ? Math.max(0,Math.min(7,day.serial-currentJstDay(startedAt).serial+1)) : 0,
         // This window includes today through now, not seven completed days.
         // A partial first day is not a fully covered seven-date window.
@@ -128,6 +134,9 @@ export class NewsroomStats extends DurableObject {
           todayReaders:this.count("day:"+day.date+":reader:"+slug),
           pageViews:startedAt ? this.count("pageViews:"+slug) : null,
           todayPageViews:startedAt ? this.count("day:"+day.date+":pageViews:"+slug) : null,
+          // Same Japan-date window and coverage as the site's last7Days.
+          // Repeated displays count; historical browser IDs never fill gaps.
+          last7DaysPageViews:this.last7DaysPageViews(day,startedAt,slug),
           shareClicks:this.count("shares:"+slug),
           // An approximate number of browser IDs that opened another story
           // after visiting this article. Not people, clicks, or a conversion rate.

@@ -17,7 +17,8 @@ import subprocess
 import urllib.error
 import urllib.request
 from collections import Counter
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
@@ -28,7 +29,6 @@ if __package__:
     from .motion_clips import usable_clip, clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
-    from .editorial_starter import homepage_starter_picks
     from .build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
@@ -36,7 +36,6 @@ else:
     from motion_clips import usable_clip, clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
-    from editorial_starter import homepage_starter_picks
     from build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -156,6 +155,182 @@ def require_matching_public_headline(article: dict, markup: str, surface: str) -
         raise RuntimeError(slug + ": " + surface + " headline mismatch (stale or mixed revision)")
 
 
+class _RecommendationMarkup(HTMLParser):
+    """Read attributes before unescaping HTML so quoted article titles stay intact."""
+    VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+                 "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.elements = []
+        self.stack = []
+
+    def handle_starttag(self, tag, attrs):
+        element = {"tag": tag, "attrs": dict(attrs), "children": [], "text": []}
+        self.elements.append(element)
+        if self.stack:
+            self.stack[-1]["children"].append(element)
+        if tag not in self.VOID_TAGS:
+            self.stack.append(element)
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        self.handle_endtag(tag)
+
+    def handle_endtag(self, tag):
+        for index in range(len(self.stack) - 1, -1, -1):
+            if self.stack[index]["tag"] == tag:
+                del self.stack[index:]
+                break
+
+    def handle_data(self, value):
+        for element in self.stack:
+            element["text"].append(value)
+
+
+def _descendants(element):
+    for child in element["children"]:
+        yield child
+        yield from _descendants(child)
+
+
+def verify_pv_recommendations(markup: str, articles: list[dict], current_article=None) -> None:
+    """Verify the entire eligible archive and a usable, honestly labelled fallback.
+
+    This only inspects an existing HTML GET. Static metadata must not claim that
+    a story is popular before the browser receives the real recent-PV snapshot.
+    """
+    parser = _RecommendationMarkup()
+    parser.feed(markup)
+    parser.close()
+    for element in parser.elements:
+        if {"starter-editorial", "article-related"} & set(element["attrs"].get("class", "").split()):
+            raise RuntimeError("Old editorial recommendations remain beside the PV panel")
+    panels = [element for element in parser.elements
+              if "data-popular-section" in element["attrs"]]
+    if len(panels) != 1:
+        raise RuntimeError("Expected exactly one PV recommendation panel")
+    panel = panels[0]
+    attrs = panel["attrs"]
+    if (panel["tag"] != "section" or "hidden" not in attrs
+            or "readers-choice" not in attrs.get("class", "").split()
+            or attrs.get("aria-labelledby") != "readers-choice-title"):
+        raise RuntimeError("PV recommendation panel must start hidden with an accessible heading")
+    try:
+        options = json.loads(attrs.get("data-popular-options", ""))
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("PV recommendation candidate JSON is invalid") from exc
+    if not isinstance(options, list) or any(not isinstance(item, dict) for item in options):
+        raise RuntimeError("PV recommendation candidates must be a list of article metadata")
+    excluded = current_article["slug"] if current_article else None
+    expected = {article["slug"]: article for article in articles if article["slug"] != excluded}
+    slugs = [item.get("slug") for item in options]
+    if (any(not isinstance(slug, str) for slug in slugs)
+            or len(slugs) != len(set(slugs)) or set(slugs) != set(expected)):
+        raise RuntimeError("PV candidates must match every eligible published article exactly once")
+    for option in options:
+        article = expected[option["slug"]]
+        if option.get("title") != article["title"] or option.get("category") != article["category"]:
+            raise RuntimeError(option["slug"] + ": PV candidate metadata is stale")
+    descendants = list(_descendants(panel))
+    headings = [element for element in descendants
+                if element["tag"] == "h2" and element["attrs"].get("id") == "readers-choice-title"]
+    periods = [element for element in descendants if "data-popular-period" in element["attrs"]]
+    lists = [element for element in descendants if "data-popular-list" in element["attrs"]]
+    if len(headings) != 1 or "".join(headings[0]["text"]).strip() != "よく読まれている記事":
+        raise RuntimeError("PV recommendation heading is missing or misleading")
+    if len(periods) != 1 or "".join(periods[0]["text"]).strip() != "過去7日間のPV順":
+        raise RuntimeError("PV recommendation period is missing or still uses browser counts")
+    if (len(lists) != 1 or lists[0]["tag"] != "ol" or lists[0]["children"]
+            or "".join(lists[0]["text"]).strip()):
+        raise RuntimeError("PV recommendation results must wait for measured API values")
+
+    fallbacks = [element for element in parser.elements if "data-popular-fallback" in element["attrs"]]
+    if current_article is None:
+        if fallbacks:
+            raise RuntimeError("Homepage has an unexpected article-continuation fallback")
+        return
+    if (len(fallbacks) != 1 or fallbacks[0]["tag"] != "nav"
+            or "reader-next" not in fallbacks[0]["attrs"].get("class", "").split()
+            or "hidden" in fallbacks[0]["attrs"]):
+        raise RuntimeError("Article must retain a visible newest-story fallback without JavaScript")
+    fallback = fallbacks[0]
+    if "NEXT STORY / 新着からもう1本" not in "".join(fallback["text"]):
+        raise RuntimeError("Article fallback must be labelled as a new story, not a PV ranking")
+    next_articles = [article for article in latest_articles(articles, limit=None)
+                     if article["slug"] != excluded]
+    expected_url = "/articles/" + next_articles[0]["slug"] + "/" if next_articles else "/archive/"
+    links = [element for element in _descendants(fallback)
+             if element["tag"] == "a" and "reader-next-title" in element["attrs"].get("class", "").split()]
+    if len(links) != 1 or links[0]["attrs"].get("href") != expected_url:
+        raise RuntimeError("Article fallback must link to the newest other published story")
+
+
+def verify_pageview_contract(payload: dict, article_slug: str) -> None:
+    """Validate measured PVs and the common seven-date ranking window from GET."""
+    tracking = payload.get("pageViewTracking")
+    if (not isinstance(tracking, dict) or tracking.get("timezone") != "Asia/Tokyo"
+            or tracking.get("unit") != "page-view" or "startedAtUtc" not in tracking
+            or "pageViews" not in payload):
+        raise RuntimeError("Separate PV measurement metadata is not deployed")
+    started = tracking["startedAtUtc"]
+    if started is not None:
+        if not isinstance(started, str):
+            raise RuntimeError("PV measurement start must be an ISO timestamp")
+        parsed_start = datetime.fromisoformat(started.replace("Z", "+00:00"))
+        if parsed_start.tzinfo is None:
+            raise RuntimeError("PV measurement start must include a timezone")
+
+    def valid_pv(value):
+        return type(value) is int and value >= 0
+
+    def measured_count(container, key):
+        if (key not in container or (started is None and container[key] is not None)
+                or (started is not None and not valid_pv(container[key]))):
+            raise RuntimeError("PV value is missing or disagrees with measurement availability: " + key)
+
+    measured_count(payload, "pageViews")
+    daily, yesterday = payload.get("today"), payload.get("yesterday")
+    for label, period in (("today", daily), ("yesterday", yesterday)):
+        if (not isinstance(period, dict) or not isinstance(period.get("dateJst"), str)
+                or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", period["dateJst"])
+                or "pageViews" not in period or period.get("pageViewsCoverage") not in
+                {"unmeasured", "partial", "complete", "in-progress"}):
+            raise RuntimeError("PV daily measurement coverage missing: " + label)
+        date.fromisoformat(period["dateJst"])
+        if period["pageViewsCoverage"] == "unmeasured":
+            if period["pageViews"] is not None:
+                raise RuntimeError("Unmeasured PV history must not be fabricated as zero")
+        elif started is None or not valid_pv(period["pageViews"]):
+            raise RuntimeError("Invalid measured daily PV: " + label)
+    if daily["pageViewsCoverage"] != ("in-progress" if started is not None else "unmeasured"):
+        raise RuntimeError("Today must expose the current PV measurement state")
+    today_date = date.fromisoformat(daily["dateJst"])
+    if date.fromisoformat(yesterday["dateJst"]) != today_date - timedelta(days=1):
+        raise RuntimeError("PV yesterday is not the preceding JST date")
+    week = payload.get("last7Days")
+    if (not isinstance(week, dict) or type(week.get("complete")) is not bool
+            or type(week.get("measuredDays")) is not int or not 0 <= week["measuredDays"] <= 7
+            or week.get("startDateJst") != (today_date - timedelta(days=6)).isoformat()
+            or week.get("endDateJst") != today_date.isoformat()):
+        raise RuntimeError("PV seven-date aggregate has a missing or inconsistent JST period")
+    measured_count(week, "pageViews")
+    if started is None and (week["measuredDays"] != 0 or week["complete"]):
+        raise RuntimeError("Unmeasured PV history cannot claim a covered ranking period")
+    if started is not None and not daily["pageViews"] <= week["pageViews"] <= payload["pageViews"]:
+        raise RuntimeError("Site PV totals disagree across daily, seven-day and cumulative periods")
+    article_metrics = payload.get("articles")
+    details = article_metrics.get(article_slug) if isinstance(article_metrics, dict) else None
+    if not isinstance(details, dict):
+        raise RuntimeError("Per-article PV is missing: " + article_slug)
+    for key in ("pageViews", "todayPageViews", "last7DaysPageViews"):
+        measured_count(details, key)
+    if started is not None and (
+            not details["todayPageViews"] <= details["last7DaysPageViews"] <= details["pageViews"]
+            or details["last7DaysPageViews"] > week["pageViews"]):
+        raise RuntimeError("Per-article PV ranking values disagree with measured totals")
+
+
 def check():
     # Verify the exact public deployment, not merely an older set of 200 pages.
     expected=subprocess.run(
@@ -186,35 +361,17 @@ def check():
     if "未来を見にきた人" in body:
         raise RuntimeError("Homepage must not label browser counters as people")
 
-    # Three hand-selected, real stories replace the duplicate category portals.
-    # This is not a popularity claim; no new calls, events, or privacy tracking.
+    # Keep the lead current and all recommendations tied to measured recent PV.
     chosen_lead = editorial_lead(sorted_articles)
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")
     require_matching_public_headline(chosen_lead, body, "home")
     verify_broadcast_delivery(home.decode("utf-8"), broadcast_playlist(sorted_articles))
-    starters=homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)
-    if starters:
-        section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
-        if not section:
-            raise RuntimeError("Editorial starter choices not deployed")
-        if section.group(0).count('class="starter-pick-card"')!=len(starters):
-            raise RuntimeError("Editorial starter card count incorrect")
-        if "SELECTION" not in section.group(0):
-            raise RuntimeError("Editorial curation label missing")
-        for choice in starters:
-            slug=choice["article"]["slug"]
-            if ('href="/articles/'+slug+'/"' not in section.group(0) or
-                choice["hook"] not in section.group(0)):
-                raise RuntimeError("Published editorial choice not visible: "+slug)
-        if 'class="reading-ways"' in body:
-            raise RuntimeError("Duplicate starter portals were not removed")
-        news=re.search(r'<section class="section-block">.*?</section>',body,re.S)
-        if not news:
-            raise RuntimeError("Fresh-news grid is missing")
-        for choice in starters:
-            if 'href="/articles/'+choice["article"]["slug"]+'/"' in news.group(0):
-                raise RuntimeError("Editorial starter duplicated in fresh news")
+    verify_pv_recommendations(home.decode("utf-8"), sorted_articles)
+    if 'class="reading-ways"' in body:
+        raise RuntimeError("Duplicate starter portals were not removed")
+    if not re.search(r'<section class="section-block">.*?</section>', body, re.S):
+        raise RuntimeError("Fresh-news grid is missing")
     
     # A saved reading list is opt-in, browser-local and not a thin SEO archive.
     # Only GETs: no visits, bookmark writes, analytics POSTs or paid services.
@@ -358,15 +515,6 @@ def check():
                      ".future-poll", ".serial-card", "@media(max-width:660px)"):
         if selector not in style_text:
             raise RuntimeError("Bundled CSS missing: " + selector)
-
-    # Genuine reader discovery is absent for low sample sizes and only
-    # appears when confirmed browser counts arrive from the existing API.
-    for token in ('data-popular-section', 'data-popular-options=', 'data-popular-list',
-                  'readers-choice-title" hidden'):
-        if token not in body:
-            raise RuntimeError("Reader-discovery layout not deployed: "+token)
-    if "閲覧ブラウザ数順" not in body or 'href="/privacy/#readership"' not in body:
-        raise RuntimeError("Readership ranking must explain its actual counting unit")
 
     # A failed daily schedule must not leave the homepage falsely saying
     # "today's" stories. The page embeds a genuine, JST publication date.
@@ -640,14 +788,7 @@ def check():
                     raise RuntimeError(slug+": editorial serial discovery is not published: "+required)
         elif 'class="article-serial-bridge"' in page:
             raise RuntimeError(slug+": unrelated serial was forced into fictional news")
-        next_link=re.search(r'<a href="(/articles/([^/]+)/|/archive/)" class="reader-next-title">',page)
-        if not next_link or next_link.group(2)==slug:
-            raise RuntimeError(slug+": article continuation links to itself or is missing")
-        section=re.search(r'<section class="article-related">(.+?)</section>',page,re.S)
-        if section:
-            cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section.group(1))
-            if len(cards)!=len(set(cards)) or slug in cards or next_link.group(2) in cards:
-                raise RuntimeError(slug+": duplicate article recommendations")
+        verify_pv_recommendations(data.decode("utf-8"), sorted_articles, item)
         for widget in ('data-future-poll data-poll-article="'+slug+'"',
                        'data-poll-choice="plausible"', 'data-poll-choice="unlikely"'):
             if widget not in page:
@@ -789,49 +930,12 @@ def check():
     if (type(first_article.get("todayReaders")) is not int
         or first_article["todayReaders"]<0):
         raise RuntimeError("Daily per-story browser count missing or invalid")
-    tracking=payload.get("pageViewTracking")
-    if (not isinstance(tracking,dict) or tracking.get("timezone")!="Asia/Tokyo"
-        or "startedAtUtc" not in tracking or "pageViews" not in payload):
-        raise RuntimeError("Separate PV measurement metadata is not deployed")
-    started=tracking["startedAtUtc"]
-    if started is not None:
-        if not isinstance(started,str):
-            raise RuntimeError("PV measurement start must be an ISO timestamp")
-        parsed_start=datetime.fromisoformat(started.replace("Z","+00:00"))
-        if parsed_start.tzinfo is None:
-            raise RuntimeError("PV measurement start must include a timezone")
-    def valid_pv(value):
-        return type(value) is int and value>=0
-    if (started is None and payload["pageViews"] is not None) or (
-        started is not None and not valid_pv(payload["pageViews"])):
-        raise RuntimeError("PV total disagrees with its measurement availability")
-    for label,period in (("today",daily),("yesterday",yesterday)):
-        if ("pageViews" not in period or period.get("pageViewsCoverage") not in
-            {"unmeasured","partial","complete","in-progress"}):
-            raise RuntimeError("PV daily measurement coverage missing: "+label)
-        if period["pageViewsCoverage"]=="unmeasured":
-            if period["pageViews"] is not None:
-                raise RuntimeError("Unmeasured PV history must not be fabricated as zero")
-        elif not valid_pv(period["pageViews"]):
-            raise RuntimeError("Invalid measured daily PV: "+label)
-    for key in ("pageViews","todayPageViews"):
-        if key not in first_article or (
-            started is None and first_article[key] is not None) or (
-            started is not None and not valid_pv(first_article[key])):
-            raise RuntimeError("Per-article PV is missing or invalid: "+key)
-    week=payload.get("last7Days")
-    if (not isinstance(week,dict) or type(week.get("complete")) is not bool
-        or type(week.get("measuredDays")) is not int
-        or not 0<=week["measuredDays"]<=7 or "pageViews" not in week):
-        raise RuntimeError("PV seven-date aggregate missing or invalid")
-    if (started is None and week["pageViews"] is not None) or (
-        started is not None and not valid_pv(week["pageViews"])):
-        raise RuntimeError("PV seven-date aggregate availability is inconsistent")
+    verify_pageview_contract(payload, articles[0]["slug"])
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
         raise RuntimeError("Future verdict counters missing or invalid")
-    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; separate site/article PV with coverage; free channel attribution; free hosting.")
+    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; whole-archive recent-PV recommendations; separate site/article PV with coverage; free channel attribution; free hosting.")
 
 def main():
     last=None

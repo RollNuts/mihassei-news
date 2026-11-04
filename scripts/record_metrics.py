@@ -68,18 +68,56 @@ def read_page_view_totals(payload: dict, counts: dict, day: str) -> dict:
     """An old Worker has no PV fields; a partly updated/corrupt payload is an error."""
     fields = ("pageViews" in payload, "pageViewTracking" in payload,
               "pageViews" in counts, "pageViewsCoverage" in counts)
-    if not any(fields):
+    if not any(fields) and "last7Days" not in payload:
         return {}
     if not all(fields):
         raise ValueError("Incomplete page-view metrics from public API")
     validate_page_views(day, payload["pageViews"], counts["pageViews"],
                         counts["pageViewsCoverage"], payload["pageViewTracking"])
-    return {
+    result = {
         "pageViews": counts["pageViews"],
         "pageViewsCoverage": counts["pageViewsCoverage"],
         "pageViewsCumulative": payload["pageViews"],
         "pageViewTracking": payload["pageViewTracking"],
     }
+    if "last7Days" in payload:
+        window = payload["last7Days"]
+        if not isinstance(window, dict):
+            raise ValueError("Invalid seven-date page-view window")
+        metadata = {
+            "start_date_jst": window.get("startDateJst"),
+            "end_date_jst": window.get("endDateJst"),
+            "measured_days": window.get("measuredDays"),
+            "complete": window.get("complete"),
+        }
+        validate_page_view_window(metadata, payload["pageViewTracking"]["startedAtUtc"])
+        result["last7Days"] = metadata
+    return result
+
+
+def validate_page_view_window(window: dict, started_at: str | None,
+                              measured_at: datetime | None = None) -> None:
+    """A seven-date window includes an unfinished current day, even if fully covered."""
+    if not isinstance(window, dict):
+        raise ValueError("Invalid seven-date page-view window")
+    try:
+        first = date.fromisoformat(window["start_date_jst"])
+        last = date.fromisoformat(window["end_date_jst"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("Invalid seven-date page-view dates") from exc
+    if (last - first != timedelta(days=6)
+            or not valid_count(window.get("measured_days"))
+            or window["measured_days"] > 7
+            or type(window.get("complete")) is not bool):
+        raise ValueError("Invalid seven-date page-view coverage")
+    start = datetime.fromisoformat(started_at).astimezone(TOKYO) if started_at else None
+    expected_days = min(7, max(0, (last - start.date()).days + 1)) if start else 0
+    complete = bool(start and start <= datetime.combine(first, datetime.min.time(), TOKYO))
+    if window["measured_days"] != expected_days or window["complete"] != complete:
+        raise ValueError("Seven-date page-view coverage disagrees with tracking start")
+    if measured_at is not None and (
+            measured_at.tzinfo is None or last != measured_at.astimezone(TOKYO).date()):
+        raise ValueError("Seven-date page-view window must include the capture JST date")
 
 
 def report_date(now: datetime) -> str:
@@ -165,12 +203,15 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
                         for k in ("x","search"))):
                     raise ValueError("Invalid per-article arrivals for " + slug)
                 extra = {"x_arrivals":arrivals["x"],"search_arrivals":arrivals["search"]}
-            if "pageViews" in item:
-                # This is a separate display counter, never item["readers"].
-                value = item["pageViews"]
-                if value is not None and not valid_count(value):
-                    raise ValueError("Invalid article page views for " + slug)
-                extra["page_views_cumulative"] = value
+            # Display counters are independent of reader browsers. Legacy fields
+            # stay absent, and an explicit unmeasured null must remain null.
+            for api_key, saved_key in (("pageViews", "page_views_cumulative"),
+                                       ("last7DaysPageViews", "page_views_last_7_days")):
+                if api_key in item:
+                    value = item[api_key]
+                    if value is not None and not valid_count(value):
+                        raise ValueError("Invalid article " + api_key + " for " + slug)
+                    extra[saved_key] = value
             metrics[slug] = {
                 "readers": item["readers"],
                 "likes": item["likes"],
@@ -239,6 +280,13 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "page_views_cumulative": daily_totals.get("pageViewsCumulative"),
         "page_views_started_at_utc": daily_totals.get("pageViewTracking", {}).get("startedAtUtc"),
         "page_views_timezone": "Asia/Tokyo",
+        "page_views_last_7_days_window": daily_totals.get("last7Days"),
+        "page_views_last_7_days_note": (
+            "Article page_views_last_7_days covers seven JST calendar dates including "
+            "measured_at_utc, through capture time; not seven completed days or the "
+            "date_jst end-of-day total. Window/coverage is null when unavailable; "
+            "missing/null article values are not zero."
+        ),
         "page_views_note": (
             "JavaScript-visible page displays, including repeat loads, with request "
             "retries deduplicated by view ID. Not people or completed article reads. "
@@ -318,10 +366,17 @@ def validate_snapshot(data: dict, day: str) -> None:
                                 "startedAtUtc": data["page_views_started_at_utc"],
                                 "timezone": data["page_views_timezone"],
                             })
+    window = data.get("page_views_last_7_days_window")
+    if window is not None:
+        try:
+            captured_at = datetime.fromisoformat(data["measured_at_utc"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("Seven-date page-view capture time is missing or invalid") from exc
+        validate_page_view_window(window, data["page_views_started_at_utc"], captured_at)
     for item in data.get("recent_articles", []):
-        if ("page_views_cumulative" in item and item["page_views_cumulative"] is not None
-                and not valid_count(item["page_views_cumulative"])):
-            raise ValueError("Invalid per-article page views in snapshot")
+        for key in ("page_views_cumulative", "page_views_last_7_days"):
+            if key in item and item[key] is not None and not valid_count(item[key]):
+                raise ValueError("Invalid per-article page views in snapshot: " + key)
 
 
 def main() -> None:
@@ -354,13 +409,13 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("Recorded", output.relative_to(ROOT),
-          "daily_visitors=", snapshot["daily_visitors"],
-          "daily_article_reads=", snapshot["daily_article_reads"],
           "daily_page_views=", snapshot["daily_page_views"],
           "pv_coverage=", snapshot["daily_page_views_coverage"],
-          "cumulative_browser_ids=", visitors,
           "published_on_date=", snapshot["articles_published_on_date"],
-          "article_metrics=", len(counts))
+          "article_metrics=", len(counts),
+          "supplementary_daily_visitors=", snapshot["daily_visitors"],
+          "supplementary_daily_article_reads=", snapshot["daily_article_reads"],
+          "supplementary_cumulative_browser_ids=", visitors)
 
 
 if __name__ == "__main__":

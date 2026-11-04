@@ -69,11 +69,14 @@ test('PV begins with the first display, never with GETs or legacy distinct reade
   assert.equal(snapshot.last7Days.measuredDays,0);
   assert.equal(snapshot.last7Days.complete,false);
   assert.equal(snapshot.articles['story-a'].pageViews,null);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,null);
   for(let i=0;i<3;i++)await f.post({action:'visit',clientId:browser,article:'story-a'});
   snapshot=(await f.get()).data;
   assert.equal(snapshot.visitors,1);
   assert.equal(snapshot.articles['story-a'].readers,1);
   assert.equal(snapshot.pageViews,null,'old browser IDs cannot be relabelled as PV');
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,null,
+    'legacy browser visits cannot initialize a PV recommendation');
   const first=await f.post(view(browser));
   assert.equal(first.status,200);
   assert.equal(first.data.pageViews,1);
@@ -89,7 +92,9 @@ test('PV begins with the first display, never with GETs or legacy distinct reade
   assert.equal(first.data.last7Days.measuredDays,1);
   snapshot=(await f.get()).data;
   assert.equal(snapshot.pageViews,1);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,1);
   assert.equal(snapshot.articles['story-b'].pageViews,0,'measured zero stays distinguishable from missing history');
+  assert.equal(snapshot.articles['story-b'].last7DaysPageViews,0);
 });
 
 test('new page loads count PV while retries, widget reads and reactions do not',async t=>{
@@ -120,7 +125,10 @@ test('new page loads count PV while retries, widget reads and reactions do not',
     assert.equal(data.last7Days.pageViews,4);
     assert.equal(data.articles['story-a'].pageViews,2);
     assert.equal(data.articles['story-a'].todayPageViews,2);
+    assert.equal(data.articles['story-a'].last7DaysPageViews,2,
+      'repeat displays from the same browser count for recommendations');
     assert.equal(data.articles['story-b'].pageViews,1);
+    assert.equal(data.articles['story-b'].last7DaysPageViews,1);
     assert.equal(data.visitors,1);
   }
   const events=f.db.prepare('SELECT * FROM pageview_events').all();
@@ -234,6 +242,7 @@ test('seven-day PV excludes the older day and distinguishes partial start covera
   assert.equal(snapshot.last7Days.startDateJst,'2026-11-03');
   assert.equal(snapshot.last7Days.endDateJst,'2026-11-09');
   assert.equal(snapshot.last7Days.pageViews,7);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,7);
   assert.equal(snapshot.last7Days.measuredDays,7);
   assert.equal(snapshot.last7Days.complete,false,'the first day began at noon');
   f.setTime('2026-11-10T03:00:00Z');
@@ -241,12 +250,55 @@ test('seven-day PV excludes the older day and distinguishes partial start covera
   snapshot=(await f.get()).data;
   assert.equal(snapshot.pageViews,8);
   assert.equal(snapshot.last7Days.pageViews,7);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,7);
   assert.equal(snapshot.last7Days.startDateJst,'2026-11-04');
   assert.equal(snapshot.last7Days.endDateJst,'2026-11-10');
   assert.equal(snapshot.last7Days.measuredDays,7);
   assert.equal(snapshot.last7Days.complete,true,'coverage starts before this window\'s first midnight');
   assert.equal(snapshot.today.pageViewsCoverage,'in-progress');
   assert.equal(snapshot.yesterday.pageViewsCoverage,'complete');
+});
+
+test('article PV recommendations use exactly the current seven JST dates and GETs remain read-only',async t=>{
+  const f=fixture('2026-10-28T14:59:59.999Z');t.after(()=>f.db.close());
+  const browser=randomUUID();
+  await f.post(view(browser,'story-a'));
+  await f.post(view(browser,'story-old'));
+  f.setTime('2026-10-28T15:00:00.000Z');
+  await f.post(view(browser,'story-a'));
+  await f.post(view(browser,'story-a'));
+  f.setTime('2026-11-03T14:59:59.999Z');
+  await f.post(view(browser,'story-b'));
+  f.setTime('2026-11-03T15:00:00.000Z');
+  await f.post(view(browser,'story-a'));
+  const state=()=>['counters','events','pageview_events'].map(table=>
+    f.db.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all());
+  const before=state();
+  for(let i=0;i<3;i++){
+    // The optional archive date affects `day`, not the current recommendation window.
+    const snapshot=(await f.get('story-a,story-b,story-old,unread-story','2026-11-03')).data;
+    assert.equal(snapshot.last7Days.startDateJst,'2026-10-29');
+    assert.equal(snapshot.last7Days.endDateJst,'2026-11-04');
+    assert.equal(snapshot.last7Days.pageViews,4);
+    assert.equal(snapshot.articles['story-a'].pageViews,4);
+    assert.equal(snapshot.articles['story-a'].last7DaysPageViews,3);
+    assert.equal(snapshot.articles['story-b'].last7DaysPageViews,1);
+    assert.equal(snapshot.articles['story-old'].pageViews,1);
+    assert.equal(snapshot.articles['story-old'].last7DaysPageViews,0);
+    assert.equal(snapshot.articles['unread-story'].last7DaysPageViews,0);
+    assert.equal(snapshot.articles['story-a'].readers,1);
+    assert.equal(snapshot.visitors,1);
+  }
+  assert.deepEqual(state(),before,'reading the ranking cannot change stored counts or events');
+  f.setTime('2026-11-04T15:00:00.000Z');
+  const next=(await f.get()).data;
+  assert.equal(next.last7Days.startDateJst,'2026-10-30');
+  assert.equal(next.last7Days.endDateJst,'2026-11-05');
+  assert.equal(next.last7Days.pageViews,2);
+  assert.equal(next.articles['story-a'].last7DaysPageViews,1,
+    'the oldest day expires at JST midnight even without a new visit or prune');
+  assert.equal(next.articles['story-b'].last7DaysPageViews,1);
+  assert.deepEqual(state(),before,'midnight reads do not prune or fabricate PV events');
 });
 
 test('an exact-midnight start covers its first ended day without inventing earlier PV',async t=>{
@@ -271,6 +323,7 @@ test('retention removes old event IDs and daily data but keeps lifetime PV and t
   assert.equal(snapshot.articles['story-a'].pageViews,2);
   assert.equal(snapshot.pageViewTracking.startedAtUtc,'2026-11-03T03:00:00.000Z');
   assert.equal(snapshot.last7Days.pageViews,1);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,1);
   assert.equal(snapshot.last7Days.complete,true);
   assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM pageview_events').get().n,1);
   assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'day:2026-11-03:%'").get().n,0);

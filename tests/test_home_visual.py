@@ -41,7 +41,7 @@ class HomepageVisualTests(unittest.TestCase):
         positions = [
             content.index('class="hero-grid"'),
             content.index('<section class="section-block">'),
-            content.index('class="starter-editorial"'),
+            content.index('data-popular-section'),
             content.index('class="press-timeline"'),
             content.index('class="genre-explore"'),
             content.index('<details class="extras-shelf">'),
@@ -51,6 +51,7 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
         self.assertIn('<summary><strong>発行号・号外・コメント</strong>', content)
         self.assertNotIn('class="special-edition"', content[:positions[5]])
+        self.assertEqual(content.count('data-popular-section'), 1)
         self.assertEqual(content.count('data-issue-picker'), 1)
 
     def test_picture_never_has_old_graphic_overlay_or_fixed_height(self):

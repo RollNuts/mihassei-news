@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -30,29 +31,20 @@ class EditorialStarterTests(unittest.TestCase):
             self.assertTrue(item["label"])
         self.assertGreaterEqual(len({x["article"]["category"] for x in selected}), 2)
 
-    def test_homepage_no_repeated_starter_in_latest_news_grid(self):
+    def test_homepage_replaces_fixed_starters_with_all_article_pv_candidates(self):
         markup=home(self.articles,self.serials)
-        opening=markup.split('<section class="starter-editorial"',1)[1].split('</section>',1)[0]
-        latest=markup.split('<section class="section-block">',1)[1].split('</section>',1)[0]
-        self.assertEqual(opening.count('class="starter-pick-card"'),3)
-        self.assertIn('class="starter-pick-image"',opening)
-        self.assertIn('width="1200" height="675"',opening)
-        from scripts.build import editorial_lead
-        lead=editorial_lead(self.articles)
-        remaining=[a for a in self.articles if a["slug"]!=lead["slug"]]
-        excluded={lead["slug"],*(a["slug"] for a in remaining[:3])}
-        slugs=[x["article"]["slug"] for x in starter_picks(
-            self.articles,excluded,base=BASE)]
-        for slug in slugs:
-            expected='href="/articles/'+slug+'/"'
-            self.assertIn(expected,opening)
-            self.assertNotIn(expected,latest)
-        self.assertIn("SELECTION",opening)
-        self.assertNotIn("週間ランキング第",opening)
+        self.assertNotIn('class="starter-editorial"',markup)
+        self.assertNotIn('class="starter-pick-card"',markup)
+        self.assertEqual(markup.count('data-popular-section'),1)
+        raw=re.search(r'data-popular-options="([^"]+)"',markup)
+        self.assertIsNotNone(raw)
+        candidates=json.loads(html.unescape(raw.group(1)))
+        self.assertEqual({x['slug'] for x in candidates},{x['slug'] for x in self.articles})
+        self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
         self.assertIn('class="serials-feature"',markup)
         self.assertNotIn('class="reading-ways"',markup)
 
-    def test_build_and_live_checker_share_real_editorial_lead_slots(self):
+    def test_legacy_curation_helper_deduplicates_but_no_longer_controls_public_rankings(self):
         from scripts.build import editorial_lead
         from scripts.editorial_starter import homepage_starter_picks
         lead=editorial_lead(self.articles)
@@ -68,9 +60,9 @@ class EditorialStarterTests(unittest.TestCase):
         selected=homepage_starter_picks(self.articles,fake_lead,base=BASE)
         excluded={fake_lead["slug"],*(item["slug"] for item in self.articles[:3])}
         self.assertEqual(selected,starter_picks(self.articles,excluded,base=BASE))
-        source=(BASE/"scripts/check_live.py").read_text(encoding="utf-8")
-        self.assertIn("homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)",source)
-        self.assertIn("chosen_lead = editorial_lead(sorted_articles)",source)
+        source=(BASE/"scripts/build.py").read_text(encoding="utf-8")
+        self.assertNotIn("homepage_starter_picks(articles",source)
+        self.assertIn("popular_section = pv_recommendations(articles)",source)
 
     def test_curation_never_makes_the_publisher_skip_a_daily_build(self):
         with tempfile.TemporaryDirectory() as temp:
