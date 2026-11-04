@@ -1,5 +1,35 @@
 [
   {
+    "slug": "datacenter-unbuilt-ribbon-cutting",
+    "category": "経済",
+    "flash": "未完成の完成式",
+    "fiction_company": "余白クラウド",
+    "art": "cards",
+    "fiction_at": "2031-11-05T01:53:00+09:00",
+    "published_at": "2026-11-05T07:39:52+09:00",
+    "title": "データセンターを建てなかったIT企業、空き地で完成式　社長「無事、完成しませんでした」",
+    "summary": "AI用の施設を新たに建てない方が評価されるとの見方から、架空のIT企業が建設を見送った空き地で完成式を開いた。社長は、存在しない建物を来賓に案内する。",
+    "paragraphs": [
+      "米中間選挙後、AIの計算を担うデータセンターの新設が鈍るかもしれないとの見方から、既に施設を持つ大手IT企業の株が上がった。実際に建設中止が決まったわけではないが、架空のIT企業「余白クラウド」は投資を控えた成果を見せようと、建てる予定だった空き地で「完成式」を開いた。",
+      "社長は白手袋でハサミを持ち、砂利の上に張った赤いテープを切った。「本日は、無事に完成しませんでした」。招待客は拍手のあと、どこを見ればよいか分からず立ち尽くした。社長は敷地図を指し、「右手が建てなかった一号棟、奥が増築しなかった二号棟です」と胸を張った。",
+      "記念撮影で社員が横一列に並ぶと、広報が慌てて手を振った。「皆さん、もう少し左右へ。何もない建物が隠れてしまいます」。全員が画面の端まで移動し、写真の真ん中には空き地だけが残った。社長は出来栄えを確かめ、「この景色を維持するのが我が社の仕事です」とうなずいた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "Reuters",
+      "published_at": "2026-11-05T01:53:00+09:00",
+      "url": "https://www.reuters.com/business/retail-consumer/democrats-midterm-sweep-fuels-750-billion-big-tech-rally-2026-11-04/",
+      "topic": "Reutersが2026年11月4日16:53 UTCに公開。米中間選挙での民主党勝利後、AI向けデータセンター新設のペースが鈍るとの観測から既存施設を持つ大手IT企業の株価が上昇。建設中止の決定を報じたものではない。余白クラウド、空き地での式典、発言と人物は創作。"
+    },
+    "scene_prompt": "An enormous empty gravel lot with a bright red ceremonial ribbon stretched across the foreground dominates the frame. An anonymous Japanese tech-company executive in a dark suit and white gloves solemnly cuts the ribbon with oversized scissors while a few formally dressed employees applaud, then step aside to leave the empty site visible. Sunlit deadpan photorealistic editorial photograph, readable gestures, no buildings or machines, no text, no logos, no recognizable real public figures.",
+    "tags": [
+      "AI",
+      "設備投資"
+    ],
+    "followup_of": "midterm-prediction-notebook-full-of-holes",
+    "broadcast_feature": true
+  },
+  {
     "slug": "stock-rebound-confetti-still-in-red",
     "category": "経済",
     "flash": "相場のいいところだけ",
