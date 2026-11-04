@@ -17,6 +17,7 @@ import subprocess
 import urllib.error
 import urllib.request
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
@@ -123,14 +124,14 @@ def check():
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","fiction-mark"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
-    # The visible counters now reset by JST date; do not require the
-    # retired lifetime-counter label or imply that browser IDs are people.
-    for token in ("data-observer-widget","data-observer-count",
-                  "data-observer-yesterday","data-observer-reads",
-                  "今日の来訪","昨日の来訪","今日の記事閲覧",
-                  "1ブラウザ・1記事につき1日1回の集計"):
+    # PV is measured separately from the legacy distinct-browser counters.
+    # Missing pre-activation history must remain unmeasured, never backfilled.
+    for token in ("data-observer-widget","data-pv-widget",
+                  "data-site-pv-today","data-site-pv-yesterday",
+                  "data-site-pv-week","data-pv-tracking-note",
+                  "今日のPV","昨日のPV","data-article-pv="):
         if token not in body:
-            raise RuntimeError("Daily audience display missing: "+token)
+            raise RuntimeError("PV display missing: "+token)
     if "未来を見にきた人" in body:
         raise RuntimeError("Homepage must not label browser counters as people")
 
@@ -736,11 +737,49 @@ def check():
     if (type(first_article.get("todayReaders")) is not int
         or first_article["todayReaders"]<0):
         raise RuntimeError("Daily per-story browser count missing or invalid")
+    tracking=payload.get("pageViewTracking")
+    if (not isinstance(tracking,dict) or tracking.get("timezone")!="Asia/Tokyo"
+        or "startedAtUtc" not in tracking or "pageViews" not in payload):
+        raise RuntimeError("Separate PV measurement metadata is not deployed")
+    started=tracking["startedAtUtc"]
+    if started is not None:
+        if not isinstance(started,str):
+            raise RuntimeError("PV measurement start must be an ISO timestamp")
+        parsed_start=datetime.fromisoformat(started.replace("Z","+00:00"))
+        if parsed_start.tzinfo is None:
+            raise RuntimeError("PV measurement start must include a timezone")
+    def valid_pv(value):
+        return type(value) is int and value>=0
+    if (started is None and payload["pageViews"] is not None) or (
+        started is not None and not valid_pv(payload["pageViews"])):
+        raise RuntimeError("PV total disagrees with its measurement availability")
+    for label,period in (("today",daily),("yesterday",yesterday)):
+        if ("pageViews" not in period or period.get("pageViewsCoverage") not in
+            {"unmeasured","partial","complete","in-progress"}):
+            raise RuntimeError("PV daily measurement coverage missing: "+label)
+        if period["pageViewsCoverage"]=="unmeasured":
+            if period["pageViews"] is not None:
+                raise RuntimeError("Unmeasured PV history must not be fabricated as zero")
+        elif not valid_pv(period["pageViews"]):
+            raise RuntimeError("Invalid measured daily PV: "+label)
+    for key in ("pageViews","todayPageViews"):
+        if key not in first_article or (
+            started is None and first_article[key] is not None) or (
+            started is not None and not valid_pv(first_article[key])):
+            raise RuntimeError("Per-article PV is missing or invalid: "+key)
+    week=payload.get("last7Days")
+    if (not isinstance(week,dict) or type(week.get("complete")) is not bool
+        or type(week.get("measuredDays")) is not int
+        or not 0<=week["measuredDays"]<=7 or "pageViews" not in week):
+        raise RuntimeError("PV seven-date aggregate missing or invalid")
+    if (started is None and week["pageViews"] is not None) or (
+        started is not None and not valid_pv(week["pageViews"])):
+        raise RuntimeError("PV seven-date aggregate availability is inconsistent")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
         raise RuntimeError("Future verdict counters missing or invalid")
-    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; free channel attribution; free hosting.")
+    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; separate site/article PV with coverage; free channel attribution; free hosting.")
 
 def main():
     last=None
@@ -757,3 +796,4 @@ def main():
 
 if __name__=="__main__":
     main()
+

@@ -27,6 +27,18 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .observer-widget{padding:5px 0;font-size:11px}
 .observer-widget strong{font-size:15px}
 .observer-widget small{font-size:9px}
+.pv-widget{max-width:100%;gap:5px 12px}
+.pv-widget .observer-stat{min-width:0}
+.pv-widget .observer-label{font-size:10px}
+.pv-widget strong{font-variant-numeric:tabular-nums}
+.pv-widget small a{text-decoration:underline;text-underline-offset:2px}
+.article-pv{display:inline-flex;align-items:baseline;gap:3px;white-space:nowrap;color:var(--muted);font-size:10px;font-weight:500}
+.article-pv strong{color:var(--ink);font-size:inherit;font-weight:750;font-variant-numeric:tabular-nums}
+.analytics-preference{margin:20px 0;padding:14px 16px;border:1px solid var(--line);border-radius:4px;background:#f5f3ed}
+.analytics-preference label{display:flex;align-items:center;gap:9px;min-height:44px;font-size:14px;font-weight:700;cursor:pointer}
+.analytics-preference input{width:18px;height:18px;flex-shrink:0;accent-color:var(--accent)}
+.analytics-preference input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.analytics-preference p{font-size:12px;line-height:1.65}
 
 /* The lead headline should appear immediately, not after a help panel. */
 .index-main{padding-top:25px;padding-bottom:70px}
@@ -118,6 +130,13 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
   .masthead .brand{font-size:clamp(39px,10vw,51px);line-height:1.16}
   .mast-kicker{font-size:8px}
   .mast-sub{font-size:11px;margin-top:4px}
+  .pv-widget{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;column-gap:5px;padding:7px 0 5px}
+  .pv-widget .observer-eye{display:none}
+  .pv-widget .observer-stat{display:flex;justify-content:center;flex-wrap:wrap;gap:1px 3px;padding-left:5px;white-space:normal}
+  .pv-widget .observer-stat:nth-child(2){padding-left:0}
+  .pv-widget .observer-label{flex-basis:100%;text-align:center;font-size:9px;line-height:1.5}
+  .pv-widget strong{max-width:100%;overflow-wrap:anywhere;font-size:15px;line-height:1.25}
+  .pv-widget small{grid-column:1/-1;text-align:center;line-height:1.5;font-size:9px}
   .mobile-nav{min-height:46px;gap:3px}
   .mobile-nav>a,.mobile-nav-more>summary{padding-inline:5px;font-size:12px}
   .index-main{padding-top:16px;padding-bottom:51px}
@@ -269,3 +288,4 @@ details.source-context>summary:focus-visible{
   .article-hero-figure .article-video{border-radius:4px}
   .story-clip-label{bottom:5px;right:5px;font-size:10px;padding:3px 6px}
 }
+
