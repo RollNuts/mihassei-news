@@ -36,18 +36,18 @@
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
     "father-tries-own-overpacked-bento": {
-      "article_sha256": "a248d165a8126334ecb47b412b4fa5eeeaee065f1e1078ceddcd54d2ac2c1c7b",
+      "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
       "decision": "accepted",
-      "image_sha256": "d56b7537863e85e8ed223235888876ff214d12d30486c78c0adc497ce65b68e4",
-      "note": "弁当箱と詰められた卵焼きを中心にした食べ物の場面。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
+      "image_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
+      "note": "詰めすぎた大きな弁当箱とふたが主役。おかずの量が分かり、本文の題材に合う創作イメージ。父子の動作は未再現だが、目立つ読める文字やロゴはない。",
+      "reviewed_at": "2026-11-04T11:19:31.334151+09:00"
     },
     "historical-lookalike-contest-dog-wins": {
-      "article_sha256": "2fd4fb637bf5b844a4f23e19a661ddd30127962bf27e62547d8dcc32eb9b725d",
+      "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
       "decision": "accepted",
-      "image_sha256": "0f1e6c0a915954ff22d130c778d0a79780da0cead01a44b131dd1d5b5922a773",
-      "note": "歴史上の人物を模した衣装の人々と犬の記念撮影。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
+      "image_sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3",
+      "note": "付けひげ・時代衣装の架空の参加者と犬が並ぶ場面。杖を運ぶ動作は未再現だが、犬と偉人そっくり大会の題材が判別できる。目立つ文字や重大な融合はない。",
+      "reviewed_at": "2026-11-04T11:19:31.334619+09:00"
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -125,6 +125,13 @@
       "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
       "note": "皿と球を並べた物撮りで、記事の食器への注目を表す。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "decision": "rejected",
+      "image_sha256": "23c8ab913f832148c8237a9d7e506a51b2cc3f4ea1dde982122e5c7464aa47a9",
+      "note": "主役が角のそろったオレンジ色の棒状食品に見え、ふかし芋と認識できない。正しい芋を実際に再生成・検品するまで記事に合うイラストを使用する。",
+      "reviewed_at": "2026-11-04T11:19:31.334891+09:00"
     }
   },
   "version": 1
