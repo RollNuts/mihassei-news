@@ -22,9 +22,10 @@ on:
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
   schedule:
-    # Buffer owns all seven daily publishing slots; refill only at 00:05
-    # and 12:05 JST (UTC 15:05 and 03:05) to respect the Free API budget.
-    - cron: "5 3,15 * * *"
+    # Check article discovery three times per JST day while keeping one
+    # Buffer queue slot reserved for useful/original content.
+    # JST 00:05 / 08:05 / 16:05 = UTC 15:05 / 23:05 / 07:05.
+    - cron: "5 7,15,23 * * *"
 
 permissions:
   contents: write
@@ -125,7 +126,7 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/experiments/dispatch.py
 
-      - name: Fill any remaining free Buffer slot with a measured-interest article
+      - name: Fill a reserved article slot with fresh, follow-up or measured-interest story
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.lanes.outputs.article_picks == 'true'
         continue-on-error: true
         env:
