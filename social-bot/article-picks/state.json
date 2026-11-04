@@ -19,6 +19,14 @@
       "source": "fresh_article",
       "text_sha256": "12dddc3b8558f62fc3e444f2783ddd39edac2b720c922e339393a94b2d749a7d",
       "published_at": "2026-11-04T11:32:29+09:00"
+    },
+    "stock-rebound-confetti-still-in-red": {
+      "buffer_id": "6aeb714376b2ba7a5c8f1644",
+      "queued_at_utc": "2026-11-04T17:54:09.894548+00:00",
+      "source": "fresh_article",
+      "text_sha256": "59e5ca070514f0b6467e85c61461c29a513fcb21f6564e5f575febd9d8def445",
+      "published_at": "2026-11-04T23:31:05+09:00",
+      "primary_topic": "tag:お金"
     }
   }
 }
