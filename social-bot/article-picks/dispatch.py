@@ -42,6 +42,21 @@ CRISIS_PROMO_PATTERN = re.compile(
 )
 
 
+def trigger_allows_network(event_name: str, now: datetime) -> bool:
+    """Allow cron/manual runs anytime; bound article-push fallback to daytime.
+
+    Site publication pushes at 07:30 and 23:30 JST must not touch Buffer.
+    The seven daytime publication slots (roughly 09:30–21:30) may act as a
+    fallback when GitHub's scheduled :05 check is delayed or absent.
+    """
+    if now.tzinfo is None:
+        raise ValueError("Current time must have timezone")
+    if event_name != "push":
+        return True
+    hour = now.astimezone(JST).hour
+    return 9 <= hour <= 21
+
+
 def read_json(path: Path) -> dict:
     if path.is_symlink():
         raise RuntimeError("Unsafe symlink: " + str(path))
@@ -481,6 +496,10 @@ def main() -> int:
     state = read_json(HERE / "state.json")
     validate_state(state)
     now = datetime.now(timezone.utc)
+    trigger_event = os.environ.get("X_TRIGGER_EVENT", "").strip()
+    if not trigger_allows_network(trigger_event, now):
+        print("Article X push trigger outside 09:00-21:59 JST; no Buffer read/write.")
+        return 0
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
