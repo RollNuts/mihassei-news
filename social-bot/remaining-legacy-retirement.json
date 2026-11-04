@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "request_id": "x-retire-remaining-legacy-20261104",
+  "enabled": true,
+  "channel_id": "6ae94b74e29c69a171436d72",
+  "action": "move_to_draft",
+  "targets": [
+    {
+      "post_id": "xexp-future-advice",
+      "buffer_id": "6ae990ec3b00665c737f50e7",
+      "text_sha256": "370b805deaf3c9767d8206d5d9c3509fbd15fcbd62c02e0c928b3dd21a40e6f4"
+    },
+    {
+      "post_id": "xexp-reaper-late",
+      "buffer_id": "6ae995b92f050cf24296aafc",
+      "text_sha256": "6594077a893bad0eb01490cc535444b72b7c82cb2c3ce4480b08333a351eb3c8"
+    },
+    {
+      "post_id": "xexp-selfcheckout-dialogue",
+      "buffer_id": "6ae9c803e9a91b5943cdd3b2",
+      "text_sha256": "1bf51e1e06611fe8c6c9efc12dc8feb592b795deb0044cb61b43a5e021f6dac9"
+    },
+    {
+      "post_id": "xexp-honest-survey",
+      "buffer_id": "6ae9c80535443b847afe9195",
+      "text_sha256": "ac7c59dd09d55205b00e486f2440cb6c2d0d3f9f3f50bea800d39c6dfab16db0"
+    }
+  ],
+  "results": {}
+}
