@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img"
+ aria-label="祝福の紙吹雪が舞う投資アプリのスマートフォンと、資産が減る赤いグラフの明細が並んだ創作イラスト"
+ data-visual-topic="document"
+ data-article-sha256="16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4">
+  <title>紙吹雪の上昇画面、隣には赤字の明細</title>
+  <desc>オフィスの机の左に青緑色の上昇線と紙吹雪が踊るスマートフォン、右に赤い下降線の明細書。二つの数字が逆方向を向く矛盾を、文字・実在人物・ブランドを用いずに示した架空ニュースの編集部制作イラスト。</desc>
+  <defs>
+    <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#243b50"/><stop offset="1" stop-color="#101e30"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#c2a388"/><stop offset="1" stop-color="#8f705c"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#1d4157"/><stop offset="1" stop-color="#142b39"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fffdf4"/><stop offset="1" stop-color="#e8e0d4"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="675" fill="url(#back)"/>
+  <rect x="0" y="175" width="1200" height="500" fill="url(#wood)"/>
+  <path d="M0 178h1200" stroke="#dbbd9f" stroke-width="8"/>
+  <path d="M0 485q340-50 655 24t545 5M0 587q385-45 672 15t528 8" fill="none" stroke="#6c564b" stroke-width="3" opacity=".23"/>
+  <ellipse cx="570" cy="614" rx="503" ry="34" fill="#1c1823" opacity=".29" filter="url(#shadow)"/>
+  <!-- A cheerful mobile screen, with a very short intraday rebound. -->
+  <g transform="translate(123 64) rotate(-8 221 289)">
+    <rect x="10" y="18" width="432" height="571" rx="50" fill="#302d32" opacity=".35" transform="translate(16 19)"/>
+    <rect x="10" y="18" width="432" height="571" rx="50" fill="#303f4b" stroke="#17222d" stroke-width="8"/>
+    <rect x="35" y="60" width="382" height="486" rx="25" fill="url(#glass)"/>
+    <rect x="173" y="30" width="107" height="13" rx="7" fill="#64747d"/>
+    <circle cx="226" cy="567" r="11" fill="#8698a0"/>
+    <g fill="none" stroke="#608597" stroke-width="3" opacity=".26">
+      <path d="M67 206h319M67 270h319M67 334h319M67 398h319M67 462h319"/>
+    </g>
+    <path d="M87 427L153 403 196 428 258 347 307 375 365 302"
+          fill="none" stroke="#6de2b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M346 303l19-1-5 20" fill="none" stroke="#6de2b4" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>
+    <g fill="#f4ce70">
+      <path d="M218 165l-17-9-17 9 4-19-13-13 20-2 6-18 7 18 20 2-15 13z"/>
+      <path d="M313 185l-8-13-15-4 15-8 8-12 7 12 15 8-15 4z"/>
+      <circle cx="126" cy="166" r="7"/><circle cx="364" cy="141" r="6"/>
+    </g>
+    <g stroke-width="11" stroke-linecap="round">
+      <path d="M87 103l14-9M340 108l-13-10M146 125l-7-17M290 105l9-19" stroke="#edac8b"/>
+      <path d="M110 240l-12-7M353 243l13-7M153 190l9 12" stroke="#9fcef0"/>
+      <path d="M267 227l9-16M372 202l-10-15" stroke="#e4e18b"/>
+    </g>
+    <g fill="#d2e3e0" opacity=".85">
+      <rect x="95" y="486" width="91" height="9" rx="5"/>
+      <rect x="196" y="486" width="56" height="9" rx="5"/>
+      <rect x="95" y="505" width="164" height="8" rx="4" opacity=".42"/>
+    </g>
+  </g>
+  <!-- The actual balance goes the other way: no word labels required. -->
+  <g transform="translate(643 158) rotate(8 229 218)">
+    <path d="M0 0h461v444H0z" fill="#231e20" opacity=".26" transform="translate(15 20)"/>
+    <path d="M0 0h461v444H0z" fill="url(#paper)" stroke="#b5a89c" stroke-width="5"/>
+    <rect x="36" y="37" width="106" height="17" rx="8" fill="#536779"/>
+    <rect x="36" y="76" width="218" height="10" rx="5" fill="#a6ada9"/>
+    <path d="M35 114H423" stroke="#ccc2b5" stroke-width="4"/>
+    <g stroke="#bac2c2" stroke-width="3" opacity=".6">
+      <path d="M40 171h384M40 235h384M40 299h384M40 363h384"/>
+    </g>
+    <path d="M69 170l72 12 62 51 62-17 64 83 62 58"
+          fill="none" stroke="#c83e49" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M376 333l15 24-29-2" fill="none" stroke="#c83e49" stroke-width="16" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="49" y="391" width="205" height="14" rx="7" fill="#a0a4a1"/>
+    <rect x="283" y="386" width="126" height="23" rx="10" fill="#e3c5c2"/>
+  </g>
+  <!-- Two ordinary mugs keep the scene in a mundane workplace. -->
+  <g stroke="#453f42" stroke-width="6" stroke-linejoin="round">
+    <ellipse cx="607" cy="583" rx="56" ry="16" fill="#f6eee0"/>
+    <path d="M563 525h91l-12 65q-34 23-68 0z" fill="#e8e2d7"/>
+    <path d="M649 536q44-4 31 33l-31 8" fill="none"/>
+    <ellipse cx="608" cy="525" rx="47" ry="10" fill="#71625a"/>
+  </g>
+  <path d="M594 492q-13-26 6-47M620 489q-13-25 7-45" fill="none" stroke="#f0ede2" stroke-width="5" opacity=".42" stroke-linecap="round"/>
+</svg>
