@@ -34,6 +34,7 @@ CACHE_DIR = Path.home() / "Library" / "Caches" / "VeripsaScenes"
 PORT = 18188
 OWN_PNG = re.compile(r"mihassei-staged-scene_[0-9]{5}_\.png\Z")
 MAX_GENERATED_MIB = 1536
+PREPARE_NEEDS_GPU = 10
 
 
 def capture_server_errors(stream, tail: bytearray) -> None:
@@ -92,7 +93,7 @@ def update_status(status: str, detail: str) -> None:
     payload = {**previous, "status": status, "detail": detail[:300], "at_utc": at}
     if status == "ok":
         payload["last_success_at"] = at
-    elif status not in ("stopped", "resource-paused"):
+    elif status not in ("stopped", "resource-paused", "idle"):
         payload["last_error"] = {"at": at, "detail": detail[:300]}
     stage.write_text(json.dumps(payload, ensure_ascii=False) + "\n", encoding="utf-8")
     os.replace(stage, target)
@@ -149,6 +150,34 @@ def request_stop(signum: int, frame) -> None:
     raise RuntimeError("Local photo worker stopped by termination signal")
 
 
+def prepare_sync(min_free_gb: int, timeout: int = 180) -> int:
+    """Resend saved JPEGs/check fresh main before touching model weights or GPU."""
+    invoke = [sys.executable, str(ROOT / "scripts/local_scene_sync.py"),
+              "--publish", "--prepare-only", "--min-free-gb", str(min_free_gb)]
+    process = None
+    try:
+        with control.transition_lock(app_dir=APP_DIR):
+            control.check_allowed(app_dir=APP_DIR)
+            process = subprocess.Popen(invoke, cwd=ROOT, start_new_session=True,
+                                       env=control.command_env())
+            control.register_runtime("sync", process.pid, root=ROOT, app_dir=APP_DIR)
+        deadline = time.monotonic() + timeout
+        while process.poll() is None:
+            control.check_allowed(app_dir=APP_DIR)
+            if not storage_ok([ROOT, CACHE_DIR, APP_DIR], min_free_gb):
+                raise RuntimeError("Free storage reached the safety floor during image preflight")
+            if time.monotonic() >= deadline:
+                raise RuntimeError("Fresh-main/outbox preflight timed out; generation deferred")
+            time.sleep(.25)
+        control.check_allowed(app_dir=APP_DIR)
+        if process.returncode not in (0, PREPARE_NEEDS_GPU):
+            raise RuntimeError("Fresh-main/outbox preflight failed; generation deferred (exit "
+                               + str(process.returncode) + ")")
+        return process.returncode
+    finally:
+        stop_process(process, group=True)
+
+
 def run_once(limit: int = 1, min_free_gb: int = 12,
              timeout: int = 900) -> int:
     if not 1 <= limit <= 4:
@@ -161,10 +190,6 @@ def run_once(limit: int = 1, min_free_gb: int = 12,
     comfy = APP_DIR / "ComfyUI"
     interpreter = APP_DIR / "venv" / "bin" / "python"
     checkpoint = comfy / "models" / "checkpoints" / "sd_xl_base_1.0.safetensors"
-    if not (interpreter.is_file() and (comfy / "main.py").is_file() and checkpoint.is_file()):
-        raise RuntimeError("ComfyUI/model missing; install on your Mac first")
-    if not (APP_DIR / "install-ok.txt").is_file():
-        raise RuntimeError("Verified installation/model-license marker missing")
     if generated_mib() >= MAX_GENERATED_MIB:
         raise RuntimeError("Generated JPEG cap reached; existing photos preserved")
     if any(path.is_symlink() for path in (APP_DIR, CACHE_DIR, comfy)):
@@ -194,6 +219,15 @@ def run_once(limit: int = 1, min_free_gb: int = 12,
             control.register_runtime("worker", os.getpid(), root=ROOT, app_dir=APP_DIR)
         try:
             control.check_allowed(app_dir=APP_DIR)
+            if prepare_sync(min_free_gb) == 0:
+                clean_owned_intermediates(output_dir)
+                update_status("idle", "Fresh main has no unheld missing scenes; saved JPEGs synchronized without GPU")
+                print("No pending scenes; ComfyUI and model verification were not started", flush=True)
+                return 0
+            if not (interpreter.is_file() and (comfy / "main.py").is_file() and checkpoint.is_file()):
+                raise RuntimeError("ComfyUI/model missing; install on your Mac first")
+            if not (APP_DIR / "install-ok.txt").is_file():
+                raise RuntimeError("Verified installation/model-license marker missing")
             guard = resources.Guard(APP_DIR)
             guard.check(force=True)
             if port_in_use():

@@ -66,6 +66,7 @@ class WorkerShutdownTests(unittest.TestCase):
                  patch.object(worker, "wait_for_server"), \
                  patch.object(worker.resources, "Guard"), \
                  patch.object(worker.control, "register_runtime"), \
+                 patch.object(worker, "prepare_sync", return_value=worker.PREPARE_NEEDS_GPU), \
                  patch.object(setup, "verify_model"), \
                  patch.object(worker.subprocess, "Popen", side_effect=[server, sync]), \
                  patch.object(worker.os, "killpg") as kill, \
