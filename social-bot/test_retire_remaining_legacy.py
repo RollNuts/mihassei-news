@@ -73,6 +73,21 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         first_edit = next(i for i, event in enumerate(self.events) if event[0] == "edit")
         self.assertIn(("persist", None), self.events[:first_edit])
 
+    def test_all_already_published_results_persist_once_at_completion(self):
+        for target in self.request["targets"]:
+            self.remote[target["buffer_id"]].update(
+                status="sent",
+                sentAt="2026-11-04T09:50:00Z",
+            )
+        self.perform()
+        self.assertFalse(self.request["enabled"])
+        self.assertEqual(len(self.saved), 1)
+        self.assertTrue(all(
+            self.request["results"][pid]["reason"] == "already_published"
+            for pid in m.TARGET_IDS
+        ))
+        self.assertFalse(any(action == "edit" for action, _bid in self.events))
+
     def test_sent_and_draft_posts_are_never_mutated(self):
         first, second = self.request["targets"][:2]
         self.remote[first["buffer_id"]].update(status="sent", sentAt="2026-11-04T09:50:00Z")
