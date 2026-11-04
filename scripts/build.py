@@ -1741,9 +1741,16 @@ def build():
     shutil.copy2(BASE / "assets" / "favicon.ico", OUT / "favicon.ico")
     write(SITE_CSS_PATH.lstrip("/"), bundled_stylesheets())
     shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
+    # Publish only stock photos selected by the current image policy. Cached
+    # candidates that lost review, were replaced by a generated scene, or now have
+    # a reviewed story illustration stay in the source tree but never ship to readers.
     photos = BASE / "assets" / "photos"
-    if photos.exists():
-        shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
+    for item in articles:
+        if uses_stock_photo(item):
+            source = photos / (item["slug"] + ".jpg")
+            destination = OUT / "photos" / source.name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
     # Publish ONLY byte-verified and visually reviewed JPEGs; the provenance manifest
     # itself never needs to be public or requested by a browser.
     for item in articles:
