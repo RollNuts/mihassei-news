@@ -98,6 +98,7 @@ class SiteTests(unittest.TestCase):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         hero=home.index('<section class="hero-grid">')
         latest=home.index('<section class="section-block">')
+        topics=home.index('<section class="topic-explore genre-explore"')
         genres=home.index('<section class="genre-explore"')
         serials=home.index('<section class="serials-feature"')
         popular=home.index('<section class="readers-choice"')
@@ -105,8 +106,10 @@ class SiteTests(unittest.TestCase):
         random=home.index('<section class="special-edition"')
         extras=home.index('<details class="extras-shelf">')
         discussions=home.index('<section class="reader-discussions"')
-        self.assertTrue(hero < latest < popular < timeline < genres < serials < extras < random < discussions)
+        self.assertTrue(hero < latest < popular < timeline < topics < genres < serials < extras < random < discussions)
         self.assertIn("<h2>新着記事</h2>",home)
+        self.assertIn("<h2>話題から読む</h2>",home)
+        self.assertIn('class="story-tags story-tags--home"',home)
         self.assertNotIn('<aside class="banner">',home)
         self.assertNotIn("この新聞の読み方",home)
         self.assertIn('data-issue-picker',home)
@@ -177,6 +180,10 @@ class SiteTests(unittest.TestCase):
         chosen=editorial_lead(published)
         remaining=[a for a in published if a["slug"]!=chosen["slug"]]
         self.assertEqual(lead.group(1),chosen["slug"])
+        lead_markup=home.split('<article class="lead">',1)[1].split('</article>',1)[0]
+        if chosen.get("tags"):
+            from scripts.build import tag_links
+            self.assertIn(tag_links(chosen,compact=True),lead_markup)
         self.assertEqual(sidebar,[a["slug"] for a in remaining[:3]])
         expected=[a["slug"] for a in remaining[3:7]]
         self.assertEqual(cards,expected)
@@ -1064,6 +1071,8 @@ class SiteTests(unittest.TestCase):
         import re
         index=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('class="genre-explore"',index)
+        self.assertIn('class="topic-explore genre-explore"',index)
+        self.assertIn("話題から読む",index)
         self.assertIn('class="genre-links"',index)
         self.assertIn('https://x.com/intent/tweet?',index)
         self.assertNotIn('https://x.com/Veripsa',index)

@@ -540,7 +540,7 @@ def broadcast_overlay(article, clip):
     counter = "01 / 03" if cues else f'{clip_seconds(clip)}秒'
     return (
         f'<div class="broadcast-super" data-broadcast-overlay data-cues="{cue_data}" aria-hidden="true">'
-        '<span class="broadcast-mark">未発生ニュース <small>FICTION</small></span>'
+        '<span class="broadcast-mark">未発生ニュース</span>'
         f'<span class="broadcast-counter" data-broadcast-counter>{counter}</span>'
         '<div class="broadcast-lower-third" data-broadcast-caption>'
         f'<span data-broadcast-label>{escape(label)}</span>'
@@ -1090,6 +1090,29 @@ def home(articles, serials=None):
         href = category_url(cat) if cat in featured_categories else "/archive/?category=" + quote(cat)
         genre_links.append(f'<a href="{escape(href)}">{escape(cat)} <span>{count}本</span></a>')
     genre_links = "".join(genre_links)
+    # Surface a few fresh reusable topics on the front page. Tags stay a
+    # discovery axis, not a second category system or a standalone thin page.
+    topic_tags = []
+    seen_tags = set()
+    for item in articles[:20]:
+        for tag in item.get("tags", []):
+            if tag in seen_tags:
+                continue
+            seen_tags.add(tag)
+            topic_tags.append(tag)
+            if len(topic_tags) >= 8:
+                break
+        if len(topic_tags) >= 8:
+            break
+    topic_links = "".join(
+        f'<a href="{escape(tag_url(tag))}">#{escape(tag)}</a>' for tag in topic_tags
+    )
+    topic_section = (
+        '<section class="topic-explore genre-explore" aria-label="話題タグから記事を探す">'
+        '<div><h2>話題から読む</h2></div>'
+        '<nav class="story-tags story-tags--home" aria-label="話題タグから探す">'
+        + topic_links + '</nav></section>'
+    ) if topic_links else ""
     issues_for_home = daily_issues(articles)
     issue_cards = "".join(
         f'<a class="daily-issue-card" href="{issue_url(day)}">'
@@ -1144,6 +1167,7 @@ def home(articles, serials=None):
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
+{tag_links(a, compact=True)}
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2></div>{side}</aside>
@@ -1154,6 +1178,7 @@ def home(articles, serials=None):
 <div class="story-grid">{recent}</div></section>
 {popular_section}
 {timeline_section}
+{topic_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
@@ -1246,7 +1271,7 @@ def category_page(category, items):
     intro = CATEGORY_INTROS[category]
     content = (
         '<div class="container archive-page">'
-        '<header class="page-intro"><span class="eyebrow">CATEGORY / FICTIONAL NEWS</span>'
+        '<header class="page-intro"><span class="eyebrow">CATEGORY</span>'
         f'<h1>{escape(title)}</h1>'
         f'<p>{escape(intro)}</p>'
         f'<p class="category-page-feed"><a href="{category_feed_url(category)}" type="application/rss+xml">'

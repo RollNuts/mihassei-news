@@ -502,6 +502,7 @@ details.source-context>summary:focus-visible{
 .story-tags a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .story-card>.story-tags{grid-column:2;grid-row:4;margin-top:2px}
 .article-header>.story-tags{margin-top:10px}
+.story-tags--home{margin:0}
 .tag-filter-panel{
   margin:0 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
 }
