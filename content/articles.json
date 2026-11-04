@@ -1,5 +1,33 @@
 [
   {
+    "slug": "park-recorded-laughter-real-kids-shushed",
+    "category": "社会",
+    "flash": "公園の静けさ",
+    "fiction_company": "夕空町公園管理室",
+    "art": "notice",
+    "fiction_at": "2031-03-18T16:02:00+09:00",
+    "published_at": "2026-11-04T17:33:29+09:00",
+    "title": "「子どもの声は禁止」の公園、録音の笑い声は大音量　笑った児童だけ注意",
+    "summary": "子どもの声への苦情で静かに遊ぶ決まりを作った公園が、にぎやかさを保つため録音の笑い声だけを大音量で放送。滑り台で思わず笑った児童は注意され、誰もいない夕方も笑い声が流れ続けた。",
+    "paragraphs": [
+      "公園で遊ぶ子どもの声への苦情を受け、夕空町の公園管理室は「子どもは静かに遊ぶ」ルールを導入した。寂しい雰囲気を防ぐため、代わりに録音した子どもの笑い声をスピーカーから大音量で流している。",
+      "午後3時、小学生の女の子が滑り台を滑って「わあっ」と笑うと、巡回の管理員が駆け寄った。「生の笑い声はご遠慮ください」。女の子が口を押さえた途端、頭上のスピーカーから「ワハハハハ」と歓声が流れた。隣の子も思わず笑いそうになり、両手で口を押さえた。",
+      "近くの住民から「前よりうるさい」と電話が入ったが、管理室は再生を続けた。音量を下げると「楽しい公園の雰囲気が失われる」ためだという。夕方、子どもが帰って誰もいなくなった公園には、スピーカーから元気な笑い声だけが響いた。管理員は再生回数を記録し、「今日もにぎわった」と日報に書き込んだ。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "テレビ朝日（羽鳥慎一モーニングショー）",
+      "published_at": "2026-03-18T16:02:00+09:00",
+      "url": "https://news.tv-asahi.co.jp/news_society/articles/900186216.html",
+      "topic": "2026年3月18日に、公園の遊びの禁止事項が増えている状況と、子どもの声を騒音とする苦情・異なる住民の見方を報道。静かな公園で録音の笑い声を流す規則、架空の町・公園・人物・会話は本紙の創作であり実在しない。"
+    },
+    "scene_prompt": "A gently absurd Japanese neighborhood playground in the afternoon. A school-aged child at the slide covers her mouth after laughing. A serious park attendant in plain work clothes gestures toward a loudspeaker on a pole. Benches and swings visible, understated comedy, candid cinematic photorealistic still, no words, no logos, no identifiable real people.",
+    "tags": [
+      "公園",
+      "子育て"
+    ]
+  },
+  {
     "slug": "chance-meeting-cafe-reservation-full",
     "category": "暮らし",
     "flash": "新商売",
