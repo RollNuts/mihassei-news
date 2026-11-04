@@ -184,8 +184,11 @@ def modification_date(a):
     return a.get("modified_at") or publication_date(a)
 
 
+MAX_FOLLOWUP_CHAIN_ARTICLES = 3  # initial story + at most two follow-ups
+
+
 def validate_followup_relationships(articles):
-    """A follow-up is a new, later article linked to one earlier published story."""
+    """A follow-up is a later story in a deliberately short topic chain."""
     by_slug = {a["slug"]: a for a in articles}
     for article in articles:
         parent_slug = article.get("followup_of")
@@ -199,6 +202,18 @@ def validate_followup_relationships(articles):
         parent = by_slug[parent_slug]
         if publication_date(parent) >= publication_date(article):
             raise ValueError("Follow-up must be published after its parent: " + article["slug"])
+
+    for article in articles:
+        depth = 1
+        cursor = article
+        while cursor.get("followup_of"):
+            depth += 1
+            if depth > MAX_FOLLOWUP_CHAIN_ARTICLES:
+                raise ValueError(
+                    "Follow-up chain exceeds initial story plus two follow-ups: "
+                    + article["slug"]
+                )
+            cursor = by_slug[cursor["followup_of"]]
 
 
 def followup_parent(article, articles):
