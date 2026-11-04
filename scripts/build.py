@@ -131,6 +131,37 @@ def category_feed_url(name):
     return "/feeds/" + CATEGORY_PATHS[name] + ".xml"
 
 
+TOPIC_MIN_INDEXABLE_ARTICLES = 3
+
+
+def article_tags(article):
+    """All reader-facing labels: durable topics first, playful satire lenses second."""
+    return list(dict.fromkeys([
+        *article.get("tags", []),
+        *article.get("satire_tags", []),
+    ]))
+
+
+def topic_groups(articles):
+    groups = {}
+    for article in articles:
+        for tag in article_tags(article):
+            groups.setdefault(tag, []).append(article)
+    return groups
+
+
+def curated_topics(articles):
+    """Only substantial topic pages enter the sitemap; thin pages remain reader-only."""
+    return {
+        tag: items for tag, items in topic_groups(articles).items()
+        if len(items) >= TOPIC_MIN_INDEXABLE_ARTICLES
+    }
+
+
+def topic_is_satire(tag, items):
+    return any(tag in item.get("satire_tags", []) for item in items)
+
+
 def issue_url(day):
     """Actual publication date in JST, never the fictional year."""
     if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
@@ -261,13 +292,22 @@ def load():
         if a["category"] not in CATEGORIES[1:] or a["art"] not in ARTS:
             raise ValueError("Invalid category/art")
         tags = a["tags"]
+        satire_tags = a.get("satire_tags", [])
+        invalid_label = lambda tag: (
+            not isinstance(tag, str) or tag != tag.strip()
+            or not 1 <= len(tag) <= 12 or re.search(r"[\s#|/?&]", tag)
+        )
         if (not isinstance(tags, list) or not 1 <= len(tags) <= 3
                 or len(tags) != len(set(tags))
                 or a["category"] in tags
-                or any(not isinstance(tag, str) or tag != tag.strip()
-                       or not 1 <= len(tag) <= 12 or re.search(r"[\s#|]", tag)
-                       for tag in tags)):
+                or any(invalid_label(tag) for tag in tags)):
             raise ValueError("Article tags must be 1-3 distinct reader topics: " + a["slug"])
+        if (not isinstance(satire_tags, list) or len(satire_tags) > 2
+                or len(satire_tags) != len(set(satire_tags))
+                or a["category"] in satire_tags
+                or set(tags) & set(satire_tags)
+                or any(invalid_label(tag) for tag in satire_tags)):
+            raise ValueError("Satire tags must be 0-2 distinct non-abusive lenses: " + a["slug"])
         source = a["source"]
         if not source["url"].startswith("https://"):
             raise ValueError("Source must use HTTPS")
@@ -301,21 +341,26 @@ def article_url(a):
 
 
 def tag_url(tag):
-    """One shareable archive filter; avoid thin standalone tag pages."""
-    return "/archive/?tag=" + quote(tag)
+    """Stable crawlable path; indexability depends on how much useful content exists."""
+    return "/topics/" + quote(tag, safe="") + "/"
 
 
 def tag_links(a, compact=False):
-    """Reader-facing topic labels, distinct from the newspaper category."""
-    tags = a.get("tags", [])
+    """Show subject tags plus a small number of playful, non-abusive satire lenses."""
+    tags = article_tags(a)
     if compact:
-        tags = tags[:2]
+        tags = tags[:3]
     if not tags:
         return ""
+    satire = set(a.get("satire_tags", []))
     suffix = " story-tags--compact" if compact else ""
     return (
-        f'<nav class="story-tags{suffix}" aria-label="話題タグ">'
-        + "".join(f'<a href="{escape(tag_url(tag))}">#{escape(tag)}</a>' for tag in tags)
+        f'<nav class="story-tags{suffix}" aria-label="話題・風刺タグ">'
+        + "".join(
+            f'<a class="{"satire-tag" if tag in satire else "topic-tag"}" '
+            f'href="{escape(tag_url(tag))}">#{escape(tag)}</a>'
+            for tag in tags
+        )
         + "</nav>"
     )
 
@@ -689,9 +734,10 @@ def card(a, archive=False):
     if archive:
         category = a["category"]
         decade = a["fiction_at"][:3] + "0"
-        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category, *a.get("tags", [])))
+        labels = article_tags(a)
+        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category, *labels))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
-                 f'data-decade="{decade}" data-tags="{escape("|".join(a.get("tags", [])))}" '
+                 f'data-decade="{decade}" data-tags="{escape("|".join(labels))}" '
                  f'data-search="{escape(searchable)}"')
     clip = article_clip(a)
     clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
@@ -719,7 +765,7 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True):
     if path == "/":
         complete = "未発生新聞｜5年後を勝手に想像する風刺ニュース"
     elif path == "/serials/":
@@ -751,7 +797,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                if article.get("modified_at") else "")
             + f'<meta property="article:section" content="{escape(article["category"])}">'
             + "".join(f'<meta property="article:tag" content="{escape(tag)}">'
-                      for tag in article.get("tags", []))
+                      for tag in article_tags(article))
         )
     # Keep reading routes in the header; utilities remain in the footer.
     nav = [
@@ -831,7 +877,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "isAccessibleForFree":True,
             "image":[og_image],
             "articleSection":article["category"],
-            "keywords":article.get("tags", [])
+            "keywords":article_tags(article)
         })
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
@@ -924,7 +970,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     # Non-content utility pages should never compete with actual stories in search.
-    robots_tag = '<meta name="robots" content="noindex,follow">' if path in ("/saved/", "/404.html") else ""
+    robots_tag = '<meta name="robots" content="noindex,follow">' if (path in ("/saved/", "/404.html") or not indexable) else ""
     serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -1111,7 +1157,7 @@ def home(articles, serials=None):
     topic_tags = []
     seen_tags = set()
     for item in articles[:20]:
-        for tag in item.get("tags", []):
+        for tag in article_tags(item):
             if tag in seen_tags:
                 continue
             seen_tags.add(tag)
@@ -1236,7 +1282,7 @@ def archive(articles):
     buttons = "".join(f'<button class="filter-button{" active" if cat=="すべて" else ""}" '
                       f'data-category-filter="{cat}" aria-pressed="{"true" if cat=="すべて" else "false"}" type="button">{cat}</button>'
                       for cat in visible_categories)
-    tag_counts = Counter(tag for article in articles for tag in article.get("tags", []))
+    tag_counts = Counter(tag for article in articles for tag in article_tags(article))
     tag_names = sorted(tag_counts, key=lambda tag: (-tag_counts[tag], tag))
     tag_buttons = (
         '<button class="filter-button tag-filter-button active" data-tag-filter="すべて"'
@@ -1258,8 +1304,9 @@ def archive(articles):
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
 <details class="tag-filter-panel" data-tag-panel>
-<summary>話題タグから探す</summary>
-<div class="tag-filters" role="group" aria-label="記事の話題タグ">{tag_buttons}</div>
+<summary>話題・風刺タグから探す</summary>
+<div class="tag-filters" role="group" aria-label="記事の話題・風刺タグ">{tag_buttons}</div>
+<p class="archive-editions-link"><a href="/topics/">タグ一覧を見る ↗</a></p>
 </details>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター"{decade_hidden}>{options}</select>
@@ -1299,6 +1346,68 @@ def category_page(category, items):
     return layout(title,category + "の架空ニュース・社会風刺。"+intro,
                   category_url(category),content,active="archive",
                   feed_url=category_feed_url(category),collection=items)
+
+
+def topic_index(articles):
+    groups = topic_groups(articles)
+    regular = []
+    satire = []
+    for tag, items in sorted(groups.items(), key=lambda pair: (-len(pair[1]), pair[0])):
+        entry = (
+            f'<a class="topic-index-link" href="{escape(tag_url(tag))}">'
+            f'<strong>#{escape(tag)}</strong><span>{len(items)}本</span></a>'
+        )
+        (satire if topic_is_satire(tag, items) else regular).append(entry)
+    sections = []
+    if regular:
+        sections.append(
+            '<section class="topic-index-section"><h2>題材から読む</h2>'
+            '<div class="tag-filters">' + "".join(regular) + '</div></section>'
+        )
+    if satire:
+        sections.append(
+            '<section class="topic-index-section"><h2>何を風刺しているか</h2>'
+            '<p>人ではなく、行動や空気感を軽く茶化すタグです。</p>'
+            '<div class="tag-filters">' + "".join(satire) + '</div></section>'
+        )
+    content = (
+        '<div class="container archive-page">'
+        '<header class="page-intro"><span class="eyebrow">TOPICS</span>'
+        '<h1>話題・風刺タグ</h1>'
+        '<p>題材と、記事がどんな「あるある」を風刺しているかから探せます。</p></header>'
+        + "".join(sections)
+        + '<p style="margin-top:26px"><a class="read-more" href="/archive/">記事一覧へ戻る</a></p>'
+        '</div>'
+    )
+    return layout(
+        "話題・風刺タグ",
+        "AI、タイパ、推し活などの題材と、仕事してる感・考察沼などの軽い風刺タグから未発生新聞を探せます。",
+        "/topics/", content, active="archive"
+    )
+
+
+def topic_page(tag, items):
+    satire = topic_is_satire(tag, items)
+    indexable = len(items) >= TOPIC_MIN_INDEXABLE_ARTICLES
+    if satire:
+        intro = f'「{tag}」と呼びたくなる行動や空気感を、人物攻撃ではなく出来事のズレとして描いた記事。'
+        eyebrow = "SATIRE TAG"
+    else:
+        intro = f'{tag}を題材に、今の生活や社会のズレを5年後の架空ニュースへ広げた記事。'
+        eyebrow = "TOPIC"
+    title = f"#{tag}の記事"
+    content = (
+        '<div class="container archive-page">'
+        f'<header class="page-intro"><span class="eyebrow">{eyebrow}</span>'
+        f'<h1>{escape(title)}</h1><p>{escape(intro)}</p></header>'
+        '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
+        '<p style="margin-top:26px"><a class="read-more" href="/topics/">タグ一覧へ戻る</a></p>'
+        '</div>'
+    )
+    return layout(
+        title, intro, tag_url(tag), content, active="archive",
+        collection=items, indexable=indexable
+    )
 
 
 def issue_index(issues):
@@ -1718,7 +1827,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
         for tag, value in fields:
             ET.SubElement(entry,tag).text=value
         ET.SubElement(entry,"category").text=a["category"]
-        for tag in a.get("tags", []):
+        for tag in article_tags(a):
             ET.SubElement(entry,"category").text=tag
         image=SITE+social_image(a)
         generated=reviewed_generated_scene(a,root=BASE)
@@ -1747,7 +1856,7 @@ def other_files(articles, issues=None, serials=None):
         default=None
     )
     issues = daily_issues(articles) if issues is None else issues
-    routes = [("/", latest), ("/archive/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    routes = [("/", latest), ("/archive/", latest), ("/topics/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend(
         (issue_url(day), max(modification_date(a) for a in items))
         for day, items in issues.items()
@@ -1756,6 +1865,10 @@ def other_files(articles, issues=None, serials=None):
                    max(modification_date(a) for a in group))
                   for category, group in curated_categories(articles).items())
     routes.extend((article_url(a), modification_date(a)) for a in articles)
+    routes.extend(
+        (tag_url(tag), max(modification_date(a) for a in items))
+        for tag, items in curated_topics(articles).items()
+    )
     routes.extend(serial_routes(serials))
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -1801,7 +1914,7 @@ def other_files(articles, issues=None, serials=None):
             f"{category}にまつわる5年後の架空ニュース。フィクションです。",
             SITE+category_link,feed
         ))
-    write("robots.txt","User-agent: *\nAllow: /\nSitemap: "+SITE+"/sitemap.xml\n")
+    write("robots.txt","User-agent: *\nAllow: /\nDisallow: /archive/?\nSitemap: "+SITE+"/sitemap.xml\n")
     write("404.html",layout("記事がありません","お探しの架空ニュースはありません。","/404.html",
                          '<div class="container not-found"><h1>404</h1><p>まだ起きていないどころか、記事が存在しません。</p><a href="/">トップに戻る ↗</a></div>'))
     write("_headers","/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n/build-revision.txt\n  Cache-Control: no-store\n/image-review/*\n  X-Robots-Tag: noindex, nofollow\n/feeds/*\n  X-Robots-Tag: noindex\n/share-desk/*\n  X-Robots-Tag: noindex, nofollow\n/growth-desk/*\n  X-Robots-Tag: noindex, nofollow\n/saved/*\n  X-Robots-Tag: noindex\n")
@@ -1961,6 +2074,9 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    write("topics/index.html",topic_index(articles))
+    for tag, items in topic_groups(articles).items():
+        write("topics/"+tag+"/index.html", topic_page(tag, items))
     write("saved/index.html",saved_page())
     # Owner-only review helpers remain available as local Python renderers.
     # They are NOT shipped as public website pages: no auth provider or fee.
