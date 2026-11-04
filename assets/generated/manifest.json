@@ -60,6 +60,16 @@
       "seed": 706460328480055475,
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
+    "crosswalk-photo-captcha-human-stuck": {
+      "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+      "bytes": 120355,
+      "generated_at": "2026-11-04T10:36:46.017519+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 2648102085126781280,
+      "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
+    },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
       "bytes": 123807,
