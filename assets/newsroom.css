@@ -171,7 +171,8 @@ body{background:var(--paper)}
 .breadcrumbs a{text-decoration:underline;text-underline-offset:3px}
 .breadcrumbs [aria-current="page"]{color:var(--ink)}
 .reader-next{margin:30px 0 24px;padding:22px 24px;background:#f1eee5;border-left:4px solid var(--accent)}
-.reader-next-kicker{display:block;font-size:11px;font-weight:900;color:var(--accent);letter-spacing:.07em}
+.reader-next-kicker{display:block;font-size:12px;font-weight:900;color:var(--accent);letter-spacing:.07em}
+.reader-next-meta{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:800;line-height:1.5}
 .reader-next-title{display:flex;justify-content:space-between;align-items:center;gap:15px;font-family:var(--serif);font-size:clamp(18px,2.5vw,25px);font-weight:900;line-height:1.6;letter-spacing:-.055em;margin-top:7px}
 .reader-next-title span{font-family:var(--sans);font-size:24px;font-weight:600;flex:0 0 auto}
 .reader-next:hover{border-left-color:#27392f}
