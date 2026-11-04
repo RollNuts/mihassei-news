@@ -6,12 +6,12 @@
       "text_sha256": "3404233b70e95520ece513869e919b35cadb74dfd99f0f4251f0b97943e785b8",
       "day_jst": "2026-11-04",
       "requested_due_at": "2026-11-04T03:00:00Z",
-      "provider_status": "scheduled",
+      "provider_status": "sent",
       "attempted_at": "2026-11-04T01:08:36.478767+00:00",
       "buffer_id": "6aea859787b7c6d24c81d57f",
       "due_at": "2026-11-04T03:00:00.000Z",
-      "sent_at": null,
-      "checked_at": "2026-11-04T02:54:02.235017+00:00"
+      "sent_at": "2026-11-04T03:00:26.993Z",
+      "checked_at": "2026-11-04T03:27:21.887761+00:00"
     }
   },
   "last_selection": {
