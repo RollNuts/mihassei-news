@@ -1,7 +1,13 @@
 name: Free CPU staged-news photos (public repository only)
 
 on:
-  # Preview actual new JPEGs before restoring automatic publication.
+  # Image-only pushes do not match, so publication cannot recurse.
+  push:
+    branches: [main]
+    paths: ['content/articles.json']
+  # Catch missed token-origin pushes and a backlog while the Mac is asleep.
+  schedule:
+    - cron: '17 * * * *'
   workflow_dispatch:
     inputs:
       limit:
@@ -93,7 +99,7 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
           python3 scripts/build.py
       - name: Publish only matching images against latest main
-        if: steps.plan.outputs.pending != '0' && inputs.publish && !inputs.retry_held
+        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

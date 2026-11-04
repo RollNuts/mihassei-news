@@ -490,12 +490,30 @@ def status() -> dict:
     stopped = (APP_DIR / 'stopped.json').exists() or (APP_DIR / 'stopped.json').is_symlink()
     source = 'current local checkout (origin/main unavailable)'
     counts_error = None
+    fetched = False
     try:
-        def blob(path):
-            return subprocess.run(['git', 'show', 'refs/remotes/origin/main:' + path], cwd=ROOT,
-                                  capture_output=True, check=True, timeout=30, env=command_env()).stdout
+        # Refresh remote-tracking data even when the GPU worker is deferring
+        # for memory pressure. This never checks out or merges user files.
+        subprocess.run(['git', 'fetch', '--no-tags', 'origin', 'main'], cwd=ROOT,
+                       capture_output=True, check=True, text=True, timeout=15, env=command_env())
+        fetched = True
+    except (OSError, subprocess.SubprocessError) as exc:
+        detail = getattr(exc, 'stderr', '') or str(exc)
+        counts_error = 'Latest main fetch failed; cached counts used: ' + str(detail).strip()[:200]
+    try:
         revision = subprocess.run(['git', 'rev-parse', 'refs/remotes/origin/main'], cwd=ROOT,
                                   capture_output=True, check=True, text=True, timeout=10, env=command_env()).stdout.strip()
+        blobs = {}
+        def blob(path):
+            # Pin every read to this captured commit; another worker may fetch
+            # or push origin/main while status is calculating the counts.
+            if path not in blobs:
+                data = subprocess.run(['git', 'show', revision + ':' + path], cwd=ROOT,
+                                      capture_output=True, check=True, timeout=30, env=command_env()).stdout
+                if path.lower().endswith('.jpg'):
+                    return data  # Do not retain the whole JPEG archive in RAM.
+                blobs[path] = data
+            return blobs[path]
         class Snapshot:
             # Reuse the full existing integrity gate against immutable git blobs,
             # without checking out files or touching the user's working tree.
@@ -510,15 +528,28 @@ def status() -> dict:
         articles = json.loads(blob('content/articles.json'))
         generated = sum(usable_generated_scene(a, root=Snapshot()) for a in articles)
         held = sum(held_scene(a, root=Snapshot()) for a in articles)
-        source = 'origin/main at ' + revision
+        source = ('origin/main at ' if fetched else 'cached origin/main at ') + revision
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
-        counts_error = str(exc)[:200]
+        detail = 'Remote snapshot unavailable; local counts used: ' + str(exc)[:200]
+        counts_error = counts_error + '; ' + detail if counts_error else detail
         articles = load_articles(ROOT)
         generated = sum(usable_generated_scene(a, root=ROOT) for a in articles)
         held = sum(held_scene(a, root=ROOT) for a in articles)
     byte_count = sum(p.stat().st_size for p in (ROOT / 'assets/generated').glob('*.jpg') if p.is_file())
     try:
-        cpu = {'state': cpu_state().get('state')}
+        workflow = cpu_state()
+        cpu = {'state': workflow.get('state')}
+        if workflow.get('id') is not None:
+            try:
+                runs = gh('api', f'repos/{REPO}/actions/workflows/{WORKFLOW}/runs?per_page=1', timeout=15)
+                latest = (runs.get('workflow_runs') or [None])[0]
+                if latest is not None and latest.get('workflow_id') != workflow['id']:
+                    raise RuntimeError('Unexpected CPU workflow run returned')
+                cpu['latest_run'] = ({key: latest.get(key) for key in
+                                      ('id', 'status', 'conclusion', 'created_at', 'updated_at', 'html_url')}
+                                     if latest is not None else None)
+            except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+                cpu['latest_run'] = {'status': 'unknown', 'error': str(exc)[:300]}
     except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
         cpu = {'state': 'unknown', 'error': str(exc)}
     return {'automatic': 'ON' if loaded and not stopped else 'OFF', 'launchd_loaded': loaded,
@@ -578,22 +609,27 @@ def main(argv=None) -> int:
         elif args.action == 'status':
             error = result.get('last_error') or 'なし'
             publish = result.get('publish') or {'status': '未確認'}
-            print('自動運転：' + result['automatic'])
-            print('現在生成中：' + ('はい' if result['running'] else 'いいえ'))
-            print('停止状態を維持：' + ('はい' if result['persistent_stop'] else 'いいえ'))
+            print('Mac自動運転：' + result['automatic'])
+            print('Mac現在生成中：' + ('はい' if result['running'] else 'いいえ'))
+            print('Mac停止状態を維持：' + ('はい' if result['persistent_stop'] else 'いいえ'))
             resource = result.get('resource_guard') or {}
             if resource:
                 print('Mac負荷保護：' + ('実行可能' if resource.get('allowed') else '生成を見送り')
                       + ' ／ ' + str(resource.get('reason') or '正常')
                       + ' ／ 確認 ' + display_time(resource.get('checked_at')))
                 print(f"メモリ：空き{resource.get('free_percent', '未確認')}% ／ スワップ{resource.get('swap_gib', '未確認')}GiB")
-            print('最後の成功日時：' + display_time(result.get('last_success_at')))
-            print('最後のエラー：' + (json.dumps(error, ensure_ascii=False) if isinstance(error, dict) else error))
+            print('Mac最後の成功日時：' + display_time(result.get('last_success_at')))
+            print('Mac最後のエラー：' + (json.dumps(error, ensure_ascii=False) if isinstance(error, dict) else error))
             print(f"生成済み：{result['generated_images']}枚 ／ 未生成：{result['pending_articles']}記事（品質保留{result.get('held_articles', 0)}件）")
             print(f"ストレージ：空き{result['free_gib']}GiB ／ 専用領域{result['app_gib']}GiB ／ JPEG {result['jpeg_bytes']/1024**2:.2f}MiB（上限1536MiB）")
-            print('GitHub最終反映：' + json.dumps(publish, ensure_ascii=False))
+            print('MacからGitHubへの最終反映：' + json.dumps(publish, ensure_ascii=False))
             print('画像数の参照元：' + result['counts_source'])
-            print('GitHub CPU画像生成：' + json.dumps(result['cpu'], ensure_ascii=False))
+            cpu = dict(result['cpu'])
+            latest = cpu.pop('latest_run', None)
+            print('GitHub CPU画像生成：' + json.dumps(cpu, ensure_ascii=False))
+            print('CPU直近ジョブ：' + (json.dumps(latest, ensure_ascii=False) if latest is not None else '未記録'))
+            if result.get('counts_error'):
+                print('画像数の取得エラー：' + result['counts_error'])
         else:
             if 'automatic' in result:
                 print('自動運転：' + result['automatic'])
