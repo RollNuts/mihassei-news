@@ -1,0 +1,53 @@
+name: Retire Remaining Legacy X Reservations
+
+on:
+  pull_request:
+    paths:
+      - "social-bot/remaining-legacy-retirement.json"
+      - "social-bot/retire_remaining_legacy.py"
+      - "social-bot/test_retire_remaining_legacy.py"
+      - ".github/workflows/retire-remaining-legacy-x.yml"
+  push:
+    branches: [main]
+    paths:
+      - "social-bot/remaining-legacy-retirement.json"
+      - "social-bot/retire_remaining_legacy.py"
+      - "social-bot/test_retire_remaining_legacy.py"
+      - ".github/workflows/retire-remaining-legacy-x.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: retire-remaining-legacy-x
+  cancel-in-progress: false
+
+jobs:
+  validate-and-retire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate one-time legacy retirement offline
+        run: |
+          python -m unittest discover -s social-bot -p 'test_retire_remaining_legacy.py' -v
+          python social-bot/retire_remaining_legacy.py --validate
+          python -m py_compile social-bot/retire_remaining_legacy.py
+
+      # Pull requests execute only the offline validation above. The Buffer
+      # mutation is main-only and still revalidates exact ID/text/channel live.
+      - name: Move only exact remaining scheduled legacy posts to Buffer drafts
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: python social-bot/retire_remaining_legacy.py --apply
