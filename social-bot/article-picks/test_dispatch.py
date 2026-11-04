@@ -286,7 +286,7 @@ class ArticlePickTests(unittest.TestCase):
         for field, value in (("channel_id", "OTHER-ACCOUNT"),
                              ("max_queue_size", 10),
                              ("max_new_per_run", 2),
-                             ("max_per_jst_day", 4),
+                             ("max_per_jst_day", 5),
                              ("minimum_interval_hours", 0),
                              ("fresh_minimum_age_hours", 0),
                              ("fresh_maximum_age_hours", 25),
