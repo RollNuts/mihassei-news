@@ -17,9 +17,13 @@ from urllib.parse import urlencode, urlsplit
 if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
     from .forecast_ledger import render_forecast_ledger
+    from .tags import render_tag_links, tags_for_episode, tags_for_series, topic_hashtags
+    from .social_text import X_TEXT_LIMIT, truncate_x_text, x_weighted_length
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
+    from tags import render_tag_links, tags_for_episode, tags_for_series, topic_hashtags
+    from social_text import X_TEXT_LIMIT, truncate_x_text, x_weighted_length
 
 
 def h(value):
@@ -204,7 +208,9 @@ def _series_card(series):
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
-            f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
+            f'<p>{h(series["description"])}</p>'
+            f'{render_tag_links(tags_for_series(series), compact=True)}'
+            f'{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
             f'<a class="serial-link" href="{episode_url(series, main_ep)}">{main_label} <span aria-hidden="true">→</span></a>'
             f'{newer_episode_link}'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
@@ -243,7 +249,9 @@ def render_series_page(series, layout):
             f'<div class="serial-series-media">{_cover_img(series, loading="eager")}</div>'
             f'<div class="serial-series-copy"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h1>{h(series["title"])}</h1><p class="serial-series-subtitle">{h(series["subtitle"])}</p>'
-            f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}</span>'
+            f'<p>{h(series["description"])}</p>'
+            f'{render_tag_links(tags_for_series(series))}'
+            f'<span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}</span>'
             + (f'<a class="serial-start-link" href="{episode_url(series, series["episodes"][0])}">第1話から読む →</a>'
                if series["kind"] == "fiction" else '') +
             f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span></div></div></header>{disclosure}'
@@ -260,11 +268,21 @@ def render_series_page(series, layout):
 def _share_link(series, ep):
     url = "https://veripsa.com" + episode_url(series, ep)
     label = "創作推理小説" if series["kind"]=="fiction" else "出典付き市場シナリオ（投資助言ではありません）"
-    subject = f'{ep["title"]}｜未発生新聞 {label}'
+    hashtags = topic_hashtags(tags_for_episode(series, ep), limit=2)
+    ending = "｜未発生新聞 " + label
+    if hashtags:
+        ending += "\n" + " ".join(hashtags)
+    title_budget = X_TEXT_LIMIT - x_weighted_length(ending + "\n" + url)
+    headline = truncate_x_text(re.sub(r"\s+", " ", ep["title"].strip()),
+                               max(0, title_budget))
+    if not headline:
+        raise ValueError("Serial X draft has no room for a headline")
+    subject = headline + ending
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
 def render_episode_page(series, ep, layout):
+    episode_tags = tags_for_episode(series, ep)
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
     next_ep = series["episodes"][idx + 1] if idx + 1 < len(series["episodes"]) else None
@@ -324,6 +342,7 @@ def render_episode_page(series, ep, layout):
             f' / {episode_label(series,ep["number"])}</nav>'
             f'<header class="serial-article-head"><span class="serial-type">{_kind_label(series)} / {episode_label(series,ep["number"])}</span>'
             f'<h1>{h(ep["title"])}</h1><p class="serial-article-dek">{h(ep["summary"])}</p>'
+            f'{render_tag_links(episode_tags)}'
             f'<div class="serial-pub"><time datetime="{ep["published_at"]}">公開日 {h(ep["published_at"])}</time>'
             f' · <span>{h(series["title"])}</span></div>'
             f'<p class="serial-article-warning">{marker}</p></header>'
@@ -338,7 +357,8 @@ def render_episode_page(series, ep, layout):
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
                                                    "title": series["title"], "episode_title": ep["title"],
-                                                   "episode": ep["slug"], "published_at": ep["published_at"]},
+                                                   "episode": ep["slug"], "published_at": ep["published_at"],
+                                                   "keywords": [tag["label"] for tag in episode_tags]},
                   feed_url=serial_feed_url(series))
 
 

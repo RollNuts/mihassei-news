@@ -100,6 +100,37 @@ class ArticlePickTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
+    def test_article_post_uses_the_same_registered_themes_as_the_site(self):
+        a = article("double-speed-drama-explainer-marathon")
+        tags = picks.article_hashtags(a, limit=2)
+        self.assertIn("#タイパ", tags)
+        msg = picks.publication_text(a)
+        self.assertEqual(msg.splitlines()[-2], " ".join(tags))
+        self.assertLessEqual(len(tags), 2)
+        for tag in tags:
+            self.assertEqual(msg.count(tag), 1)
+
+    def test_unknown_article_never_invents_theme_tags(self):
+        a = article("unclassified-test-story", title="記事にはAIという語がある")
+        msg = picks.publication_text(a)
+        self.assertEqual(picks.article_hashtags(a), [])
+        self.assertNotIn("#", msg)
+        self.assertTrue(msg.endswith("https://veripsa.com/articles/unclassified-test-story/"))
+
+    def test_long_title_preserves_complete_hashtags_and_url_within_x_budget(self):
+        a = article("double-speed-drama-explainer-marathon", title="長い見出しAI🤔" * 60)
+        msg = picks.publication_text(a)
+        self.assertTrue(msg.splitlines()[1].endswith("…"))
+        self.assertEqual(msg.splitlines()[-2], " ".join(picks.article_hashtags(a)))
+        self.assertEqual(msg.splitlines()[-1],
+                         "https://veripsa.com/articles/double-speed-drama-explainer-marathon/")
+        self.assertLessEqual(picks.x_weighted_length(msg), 280)
+        # X shortens a complete URL regardless of the canonical slug's length.
+        long_link_article = article("story-" + "a" * 250, title="URLの長い記事")
+        long_link_message = picks.publication_text(long_link_article)
+        self.assertTrue(long_link_message.endswith(long_link_article["slug"] + "/"))
+        self.assertLessEqual(picks.x_weighted_length(long_link_message), 280)
+
     def test_rank_uses_recent_pv_then_today_then_publication_time(self):
         old, newer, busy_today, top = (article("old", 72), article("newer", 24),
                                      article("today", 48), article("top", 96))

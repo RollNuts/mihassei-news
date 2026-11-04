@@ -16,11 +16,11 @@ class MobileReadingFlowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.articles = load()
 
-    def test_one_navigation_keeps_all_four_destinations_directly_accessible(self):
+    def test_one_navigation_keeps_all_five_destinations_directly_accessible(self):
         html = layout("テスト", "テスト", "/", "<p>テスト</p>", active="home")
         navigation = html.split('<nav class="nav-bar" aria-label="メインナビゲーション">', 1)[1].split('</nav>', 1)[0]
         self.assertEqual(re.findall(r'href="([^"]+)"', navigation),
-                         ['/', '/archive/', '/serials/', '/issues/'])
+                         ['/', '/archive/', '/tags/', '/serials/', '/issues/'])
         self.assertNotIn('<details', navigation)
         self.assertNotIn('mobile-nav', html)
         self.assertIn('<a href="/" aria-current=page>一面</a>', navigation)
@@ -51,7 +51,7 @@ class MobileReadingFlowTests(unittest.TestCase):
     def test_mobile_nav_has_real_touch_targets_and_article_images_keep_fallback(self):
         css = (ROOT / 'assets/editorial-polish.css').read_text(encoding='utf-8')
         responsive_css = (ROOT / 'assets/reader-first.css').read_text(encoding='utf-8')
-        self.assertIn('grid-template-columns:repeat(4,minmax(0,1fr))', responsive_css)
+        self.assertIn('grid-template-columns:repeat(5,minmax(0,1fr))', responsive_css)
         self.assertIn('min-height:46px', responsive_css)
         self.assertIn('.nav-inner a:focus-visible', responsive_css)
         for source in (css, responsive_css):

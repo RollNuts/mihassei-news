@@ -18,8 +18,11 @@ from urllib.request import Request, urlopen
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(HERE.parent))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
+from social_text import X_TEXT_LIMIT, truncate_x_text, x_weighted_length  # noqa: E402
+from tags import article_hashtags  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # Match canonical articles regardless of query parameters, extra prose or
@@ -130,12 +133,15 @@ def publication_text(article: dict) -> str:
     if not isinstance(title, str) or not title.strip():
         raise ValueError("Empty article title")
     tidy = re.sub(r"\s+", " ", title.strip())
-    if len(tidy) > 68:
-        tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/"
-    rendered = TEXT_PREFIX + "\n" + tidy + "\n\n" + url
-    if len(rendered) > 220:
-        raise ValueError("Article X post text exceeds safe length")
+    hashtags = article_hashtags(article, limit=2)
+    prefix = TEXT_PREFIX + "\n"
+    suffix = "\n\n" + (" ".join(hashtags) + "\n" if hashtags else "") + url
+    title_budget = X_TEXT_LIMIT - x_weighted_length(prefix + suffix)
+    tidy = truncate_x_text(tidy, max(0, title_budget))
+    rendered = prefix + tidy + suffix
+    if not tidy or x_weighted_length(rendered) > X_TEXT_LIMIT:
+        raise ValueError("Article X post text exceeds weighted length limit")
     return rendered
 
 

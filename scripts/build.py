@@ -27,6 +27,10 @@ if __package__:
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
+    from .tags import (tags_for_article, tags_for_episode, render_tag_links,
+                       tag_url, tag_collections, validate_tag_assignments,
+                       article_hashtags)
+    from .social_text import x_weighted_length, truncate_x_text
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -39,6 +43,10 @@ else:
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
+    from tags import (tags_for_article, tags_for_episode, render_tag_links,
+                      tag_url, tag_collections, validate_tag_assignments,
+                      article_hashtags)
+    from social_text import x_weighted_length, truncate_x_text
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -227,7 +235,7 @@ def article_url(a):
     return "/articles/" + a["slug"] + "/"
 
 
-def category_meta(a, compact=False):
+def category_meta(a, compact=False, content_label=""):
     """Make the real publication timestamp distinct from the fictional dateline.
 
     Some legacy stories only record a calendar date. Never invent midnight.
@@ -256,6 +264,7 @@ def category_meta(a, compact=False):
             compact_date += f" {real.hour:02}:{real.minute:02}"
         return (
             '<div class="story-meta story-meta--compact">'
+            + (f'<span class="tag-content-kind">{escape(content_label)}</span>' if content_label else "")
             + '<span class="category">' + escape(a["category"]) + "</span>"
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
@@ -278,8 +287,15 @@ def category_meta(a, compact=False):
 def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=topic_card_v2"
     # Small standalone hook for the reader's X draft. Does not post automatically.
-    teaser = a["summary"][:75]
-    text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞"
+    hashtags = " ".join(article_hashtags(a)) or "#未発生新聞"
+    ending = "\n\n" + hashtags
+    # The intent's separate URL still consumes one shortened URL in the post.
+    budget = 280 - x_weighted_length(ending + "\n" + url)
+    prefix = "【未発生新聞】\n"
+    headline = prefix + truncate_x_text(a["title"], min(160, max(0, budget - x_weighted_length(prefix))))
+    teaser_budget = budget - x_weighted_length(headline + "\n\n")
+    teaser = truncate_x_text(a["summary"], max(0, min(110, teaser_budget)))
+    text = headline + ("\n\n" + teaser if teaser else "") + ending
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
@@ -581,13 +597,14 @@ def photo_credit(a):
             f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>')
 
 
-def card(a, archive=False):
-    attrs = ""
+def card(a, archive=False, *, show_kind=False):
+    attrs = ' data-content-kind="news"'
     if archive:
         category = a["category"]
         decade = a["fiction_at"][:3] + "0"
-        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category))
-        attrs = (f' data-archive-card data-category="{escape(category)}" '
+        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category,
+                               " ".join("#" + tag["label"] for tag in tags_for_article(a))))
+        attrs += (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
     clip = article_clip(a)
     clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
@@ -595,9 +612,10 @@ def card(a, archive=False):
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if reviewed_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
-        + category_meta(a, compact=True)
+        + category_meta(a, compact=True, content_label="創作ニュース" if show_kind else "")
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
+        + render_tag_links(tags_for_article(a), compact=True)
         + '</article>'
     )
 
@@ -614,7 +632,7 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, tag_collection=None, noindex=False):
     if path == "/":
         complete = "未発生新聞｜5年後を勝手に想像する風刺ニュース"
     elif path == "/serials/":
@@ -623,6 +641,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         complete = title + " | 未発生新聞（市場分析）"
     elif serial is not None and serial["kind"] == "fiction":
         complete = title + " | 未発生新聞（創作小説）"
+    elif path.startswith("/tags/"):
+        complete = title + " | 未発生新聞"
     else:
         complete = title + " | 未発生新聞（創作ニュース）"
     article_time_meta = ""
@@ -636,6 +656,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     elif serial is not None and serial["kind"] == "fiction":
         publication_label = "創作小説"
         mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
+    elif path.startswith("/tags/"):
+        publication_label = "テーマで読む"
+        mast_subtitle = "風刺ニュース、推理小説、市場分析。"
     else:
         publication_label = "創作報道"
         mast_subtitle = "まだ起きていないニュースを、真顔で。"
@@ -650,6 +673,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     nav = [
         ("/", "一面", "home"),
         ("/archive/", "記事一覧", "archive"),
+        ("/tags/", "タグ", "tags"),
         ("/serials/", "連載", "serials"),
         ("/issues/", "発行号", "issues"),
     ]
@@ -688,6 +712,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if path == "/serials/":
         metadata["@type"] = "CollectionPage"
         metadata["genre"] = "創作小説・市場分析"
+    if path.startswith("/tags/"):
+        metadata["@type"] = "CollectionPage"
+        metadata["genre"] = "風刺ニュース・推理小説・市場分析"
     if serial is not None:
         metadata["@type"] = "CollectionPage" if not serial.get("episode") else metadata["@type"]
         metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
@@ -725,7 +752,40 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "image":[og_image],
             "articleSection":article["category"]
         })
+        keywords = [tag["label"] for tag in tags_for_article(article)]
+        if keywords:
+            metadata["keywords"] = keywords
+            article_time_meta += "".join(
+                f'<meta property="article:tag" content="{escape(label)}">'
+                for label in keywords
+            )
+    if kind == "serial_episode" and serial is not None and serial.get("keywords"):
+        metadata["keywords"] = serial["keywords"]
+        article_time_meta += "".join(
+            f'<meta property="article:tag" content="{escape(label)}">'
+            for label in serial["keywords"]
+        )
     schemas = [metadata]
+    if path.startswith("/tags/"):
+        crumbs = [
+            {"@type": "ListItem", "position": 1, "name": "トップ", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "タグ", "item": SITE + "/tags/"},
+        ]
+        if path != "/tags/":
+            crumbs.append({"@type": "ListItem", "position": 3, "name": title,
+                           "item": SITE + path})
+        schemas.append({"@context": "https://schema.org", "@type": "BreadcrumbList",
+                        "itemListElement": crumbs})
+        if tag_collection is not None:
+            schemas.append({
+                "@context": "https://schema.org", "@type": "ItemList",
+                "numberOfItems": len(tag_collection),
+                "itemListElement": [
+                    {"@type": "ListItem", "position": i + 1, "name": item["title"],
+                     "url": SITE + item["url"]}
+                    for i, item in enumerate(tag_collection)
+                ],
+            })
     # Video is an optional, first-party photo-motion extra, not fabricated
     # footage. Only publish structured video data for a verified local MP4.
     clip = article_clip(article) if kind == "story" and article else None
@@ -816,7 +876,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     # Non-content utility pages should never compete with actual stories in search.
-    robots_tag = '<meta name="robots" content="noindex,follow">' if path in ("/saved/", "/404.html") else ""
+    robots_tag = '<meta name="robots" content="noindex,follow">' if noindex or path in ("/saved/", "/404.html") else ""
     serial_progress_script = ('<script defer src="/assets/serial-progress.js"></script>'
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -1050,6 +1110,7 @@ def home(articles, serials=None):
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
+{render_tag_links(tags_for_article(a))}
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2></div>{side}</aside>
@@ -1060,6 +1121,7 @@ def home(articles, serials=None):
 <div class="story-grid">{recent}</div></section>
 {popular_section}
 {timeline_section}
+{tag_discovery(articles, serials)}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
@@ -1109,7 +1171,7 @@ def archive(articles):
     decade_hidden = ' hidden' if len(decades) < 2 else ''
     content = f'''<div class="container archive-page">
 <header class="page-intro"><h1>記事一覧</h1>
-<p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
+<p class="archive-editions-link"><a href="/tags/">タグから探す ↗</a><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター"{decade_hidden}>{options}</select>
@@ -1130,6 +1192,93 @@ def archive(articles):
 {''.join('<p><a class="read-more" href="'+category_url(k)+'">'+escape(k)+'の関連記事を読む</a></p>' for k in curated_categories(articles))}
 </div>'''
     return layout("記事一覧","現実の話題を5年後に広げた未発生新聞の創作ニュース一覧。未来の的中を狙う予測ではありません。","/archive/",content,"archive")
+
+
+def tag_discovery(articles, serials):
+    groups = tag_collections(articles, serials)
+    links = "".join(
+        f'<a class="topic-tag" href="{tag_url(group["tag"])}">'
+        f'#{escape(group["tag"]["label"])} <span>{group["count"]}本</span></a>'
+        for group in groups[:10]
+    )
+    if not links:
+        return ""
+    return (
+        '<section class="tag-discovery" aria-labelledby="tag-discovery-title">'
+        '<div class="section-head"><h2 id="tag-discovery-title">タグから読む</h2>'
+        '<a href="/tags/">すべてのタグ ↗</a></div>'
+        '<nav class="topic-tags" aria-label="テーマから記事を探す">' + links + '</nav></section>'
+    )
+
+
+def tag_item_details(item):
+    """One canonical reading route per story, independent of content format."""
+    if item["kind"] == "news":
+        article = item["article"]
+        return {"url": article_url(article), "title": article["title"]}
+    series, episode = item["series"], item["episode"]
+    return {"url": f'/serials/{series["slug"]}/{episode["slug"]}/', "title": episode["title"]}
+
+
+def tag_item_card(item):
+    if item["kind"] == "news":
+        return card(item["article"], show_kind=True)
+    series, episode = item["series"], item["episode"]
+    detail = tag_item_details(item)
+    kind = "推理小説" if item["kind"] == "fiction" else "市場分析"
+    stamp = datetime.fromisoformat(episode["published_at"])
+    date_label = f"公開 {stamp.year}/{stamp.month}/{stamp.day}"
+    tags = render_tag_links(tags_for_episode(series, episode), compact=True)
+    return (
+        f'<article class="story-card topic-serial-card" data-content-kind="{escape(item["kind"])}">'
+        f'<a class="story-image-link" href="{detail["url"]}">'
+        f'<img class="story-thumb" src="/serials/{series["slug"]}/cover.svg"'
+        f' alt="{escape(series["title"])}の表紙" width="1200" height="675" loading="lazy" decoding="async"></a>'
+        f'<div class="story-meta story-meta--compact"><span class="tag-content-kind">{kind}</span>'
+        f'<time class="real-published-at" datetime="{episode["published_at"]}">{date_label}</time></div>'
+        f'<h3><a href="{detail["url"]}">{escape(episode["title"])}</a></h3>'
+        f'<p>{escape(episode["summary"])}</p>{tags}</article>'
+    )
+
+
+def tag_index(articles, serials):
+    groups = tag_collections(articles, serials)
+    links = "".join(
+        f'<a class="tag-directory-item" href="{tag_url(group["tag"])}">'
+        f'<span class="tag-directory-heading"><strong>#{escape(group["tag"]["label"])}</strong>'
+        f'<span>{group["count"]}本</span></span>'
+        f'<span class="tag-directory-description">{escape(group["tag"].get("description", ""))}</span></a>'
+        for group in groups
+    )
+    content = (
+        '<div class="container archive-page tags-page"><header class="page-intro">'
+        '<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>'
+        '<span aria-hidden="true"> / </span><span aria-current="page">タグ</span></nav>'
+        '<h1>タグから読む</h1><p>ニュース・小説・市場分析を、気になるテーマから。</p></header>'
+        '<nav class="tag-directory" aria-label="記事のテーマタグ">' + links + '</nav></div>'
+    )
+    return layout("タグから読む", "タイパ、AI、SNS、人間関係。気になるテーマから風刺ニュース・推理小説・市場分析を読む。",
+                  "/tags/", content, active="tags",
+                  tag_collection=[{"title": "#" + g["tag"]["label"], "url": tag_url(g["tag"])} for g in groups])
+
+
+def tag_page(group):
+    tag, items = group["tag"], group["items"]
+    title = "#" + tag["label"]
+    description = tag.get("description", "")
+    content = (
+        '<div class="container archive-page tags-page"><header class="page-intro">'
+        '<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>'
+        '<span aria-hidden="true"> / </span><a href="/tags/">タグ</a>'
+        f'<span aria-hidden="true"> / </span><span aria-current="page">{escape(title)}</span></nav>'
+        f'<h1>{escape(title)}</h1><p>{escape(description)}</p></header>'
+        f'<div class="tag-results-heading"><span>{len(items)}本の記事</span><span>新着順</span></div>'
+        '<div class="archive-list">' + "".join(tag_item_card(item) for item in items) + '</div>'
+        '<a class="tag-back-link" href="/tags/">ほかのタグから探す ↗</a></div>'
+    )
+    return layout(title, f'{tag["label"]}の記事一覧。{description}', tag_url(tag), content,
+                  active="tags", tag_collection=[tag_item_details(item) for item in items],
+                  noindex=len(items) < 3)
 
 
 def category_page(category, items):
@@ -1260,6 +1409,7 @@ def story(a, articles, issues=None, serials=None):
 <p class="dek">{escape(a["summary"])}</p>
 <p class="story-fiction-context"><strong>創作ニュース</strong></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
+{render_tag_links(tags_for_article(a))}
 </header>
 <figure class="article-hero-figure">
 {article_hero_media(a)}
@@ -1563,6 +1713,11 @@ def other_files(articles, issues=None, serials=None):
     )
     issues = daily_issues(articles) if issues is None else issues
     routes = [("/", latest), ("/archive/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    # Small tags remain useful reader routes; only substantial collections enter
+    # the sitemap. Do not invent a content-modification timestamp for retagging.
+    routes.append(("/tags/", None))
+    routes.extend((tag_url(group["tag"]), None)
+                  for group in tag_collections(articles, serials) if group["count"] >= 3)
     routes.extend(
         (issue_url(day), max(modification_date(a) for a in items))
         for day, items in issues.items()
@@ -1729,6 +1884,7 @@ def make_article_social_images(articles):
 def build():
     articles = load()
     serials = load_serials(BASE)
+    validate_tag_assignments(articles, serials)
     issues = daily_issues(articles)
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -1769,6 +1925,9 @@ def build():
     write("advertise/index.html",advertise())
     write("privacy/index.html",privacy())
     write("archive/index.html",archive(articles))
+    write("tags/index.html", tag_index(articles, serials))
+    for group in tag_collections(articles, serials):
+        write(tag_url(group["tag"]).lstrip("/") + "index.html", tag_page(group))
     write("saved/index.html",saved_page())
     # Owner-only review helpers remain available as local Python renderers.
     # They are NOT shipped as public website pages: no auth provider or fee.
