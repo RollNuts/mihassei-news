@@ -389,8 +389,6 @@ def prefer_topic_diversity(items: list, used_topics: set[str], *,
         return items[0]
     for item in items[:lookahead]:
         article = article_of(item)
-        if article.get("followup_of"):
-            return item
         topic = primary_topic(article)
         if not topic or topic not in used_topics:
             return item
