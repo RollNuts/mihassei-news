@@ -143,7 +143,7 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
             warnings.append((
                 "FORMULA_FUTURE_INTRO_LOOP", "-",
                 f"直近{SHORT_RUN}本で「2031年、架空の〜」型の書き出しが{future_intros}本。"
-                "次枠は会話や動作から始め、架空の日付や組織名を説明しすぎない",
+                "次枠は冒頭2文で人物・現場・原因を示す。台詞始まりは必須ではない",
             ))
     if len(newest) >= 6:
         work = [a for a in newest if WORK_AI.search(a.get("title", ""))]
@@ -163,7 +163,7 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
             warnings.append((
                 "PRESS_RELEASE_OPENING_LOOP", "-",
                 f"直近{len(newest)}本のうち{len(release_leads)}本が発表・開始・導入中心の書き出し。"
-                "現場の珍事や会話から始まる記事も混ぜる",
+                "冒頭2文で出来事と原因が分かる書き出しも試す。会話への置換だけで済ませない",
             ))
         # A formulaic punchline is a warning signal, not proof of low quality.
         mechanical = [
@@ -198,18 +198,18 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
     if "PROCEDURAL_PREMISE_LOOP" in labels:
         lines.append("確認・申請・認証・拒否の逆効果が続く。誤解、意外な成功、言葉遊び、善意の空回りなど別の笑いを探す。")
     if "FORMULA_FUTURE_INTRO_LOOP" in labels:
-        lines.append("「2031年、架空の〜」を連発しない。先に人物の会話や目に見える珍事を置く。架空設定はその後の短い説明に回す。")
+        lines.append("「2031年、架空の〜」を連発しない。年号や社名などの架空設定はその後に回しても、人物・現場・原因は冒頭2文で示す。台詞始まりは必須ではない。")
     if "WORK_AI_CLUSTER" in labels:
         lines.append("AI・仕事・会議に偏り気味。食・遊び・家族・スポーツ・趣味など身近な場面を探す。")
     if "PRESS_RELEASE_OPENING_LOOP" in labels:
-        lines.append("企業の発表から始まる記事が続く。人物の行動、会話、具体的な現場の珍事から始める。")
+        lines.append("企業の発表から始まる記事が続く。冒頭2文で誰がどこで何に困るかと、その原因を示す。会話も地の文も理解の早い方を選ぶ。")
     if "FORMULA_PUNCHLINE_LOOP" in labels or "SIMILAR_PUNCHLINE" in labels:
-        lines.append("定型謝罪や担当者コメントの締めを避ける。人物が実際に取る行動で、見出しよりもう一段ひねる。")
+        lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・一言で閉じる。二度目の逆転は不要。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
     if len(lines) == 2:
         lines.append("目立つ定型警告はなし。新案は直近の見出しと末文を読み比べ、展開の使い回しを防ぐ。")
-    lines.append("掲載前: 異なる仕組みの見出し2案→現場の冒頭→第2の展開→独自のオチを読み比べる。")
+    lines.append("掲載前: 異なる仕組みの見出し2案を比べ、採用案の見出し→冒頭2文→末文を照合する。原因→人物の行動→結果がつながらなければ、説明を継ぎ足さず設定を減らす。")
     lines.append("出典・公開日時・創作の区別を守り、反応数は捏造しない。警告だけで発行を止めない。")
     return lines
 
