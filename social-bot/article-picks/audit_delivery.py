@@ -108,9 +108,19 @@ def build(state: dict, existing: list[dict], now: datetime) -> dict:
     today = now.astimezone(JST).date()
     sent_today = 0
     scheduled_today = 0
+    overdue_scheduled = 0
+    missing_provider_timestamps = 0
     for row in items:
         sent = aware(row.get("buffer_sent_at_utc"))
         due = aware(row.get("buffer_due_at_utc"))
+        if row["buffer_status"] == "sent" and sent is None:
+            missing_provider_timestamps += 1
+        if row["buffer_status"] == "scheduled":
+            if due is None:
+                missing_provider_timestamps += 1
+            elif now - due > timedelta(hours=2):
+                overdue_scheduled += 1
+                row["review_needed"] = "scheduled_more_than_two_hours_past_due"
         if sent is not None and sent.astimezone(JST).date() == today:
             sent_today += 1
         if due is not None and due.astimezone(JST).date() == today:
@@ -130,10 +140,13 @@ def build(state: dict, existing: list[dict], now: datetime) -> dict:
             "buffer_sent_today": sent_today,
             "buffer_scheduled_today": scheduled_today,
             "unverified": sum(row["buffer_status"] == "unverified" for row in items),
+            "overdue_scheduled": overdue_scheduled,
+            "missing_provider_timestamps": missing_provider_timestamps,
         },
         "limitations": (
             "Buffer scheduled/sent is provider evidence, not independent X page verification. "
-            "Posts outside the recent provider window and missing timestamps stay unverified."
+            "Overdue scheduled posts require investigation, not automatic retry. "
+            "Posts outside the recent provider window and missing timestamps are not assumed sent."
         ),
         "items": items,
     }

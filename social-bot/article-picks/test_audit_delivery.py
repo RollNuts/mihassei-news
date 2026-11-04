@@ -61,6 +61,25 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(report["observed"]["unverified"], 1)
         self.assertEqual(report["scope"]["automatic_lane"], "article-picks-only")
 
+    def test_overdue_reservations_are_flagged_not_counted_as_sent(self):
+        state = {"schema_version": 1, "queued": {
+            "late": entry("late", 5),
+            "no-date": entry("no-date", 4),
+        }}
+        existing = [
+            {"id": "buf-late", "status": "scheduled",
+             "text": "https://veripsa.com/articles/late/",
+             "dueAt": (NOW - timedelta(hours=3)).isoformat()},
+            {"id": "buf-no-date", "status": "scheduled",
+             "text": "https://veripsa.com/articles/no-date/"},
+        ]
+        report = m.build(state, existing, NOW)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 0)
+        self.assertEqual(report["observed"]["overdue_scheduled"], 1)
+        self.assertEqual(report["observed"]["missing_provider_timestamps"], 1)
+        late = next(row for row in report["items"] if row["slug"] == "late")
+        self.assertEqual(late["review_needed"], "scheduled_more_than_two_hours_past_due")
+
     def test_old_ledger_entries_are_outside_bounded_audit(self):
         state = {"schema_version": 1, "queued": {
             "old": entry("old", 24 * 10),
