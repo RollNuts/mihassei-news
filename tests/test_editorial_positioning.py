@@ -81,7 +81,8 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn('property="og:site_name" content="未発生新聞"', page)
         self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("まだ起きていないニュースを、真顔で。", page)
-        self.assertIn("紙面の架空時計", page)
+        self.assertNotIn("紙面の架空時計", page)
+        self.assertNotIn("data-future-clock", page)
         self.assertNotIn("5年先の時計", page)
 
 
