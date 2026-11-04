@@ -22,6 +22,7 @@ sys.path.insert(0, str(HERE.parent))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+SAFE_TOPIC_TAG = re.compile(r"[^#\s]{1,20}\Z")
 # Match canonical articles regardless of query parameters, extra prose or
 # UTM links. Do not touch unknown external/shortened/manual-X URLs.
 ARTICLE_URL = re.compile(
@@ -122,6 +123,21 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
     return recovered
 
 
+def article_hashtags(article: dict) -> list[str]:
+    """Reuse up to two site topic tags; never invent unrelated X hashtags."""
+    tags = article.get("tags", [])
+    if not isinstance(tags, list):
+        return []
+    result = []
+    for tag in tags:
+        if (isinstance(tag, str) and SAFE_TOPIC_TAG.fullmatch(tag)
+                and tag not in result):
+            result.append(tag)
+        if len(result) == 2:
+            break
+    return result
+
+
 def publication_text(article: dict) -> str:
     """No misleading popularity ranking, analytics numbers or AI promo labels."""
     slug, title = article["slug"], article["title"]
@@ -133,7 +149,11 @@ def publication_text(article: dict) -> str:
     if len(tidy) > 68:
         tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/"
-    rendered = TEXT_PREFIX + "\n" + tidy + "\n\n" + url
+    hashtags = " ".join("#" + tag for tag in article_hashtags(article))
+    rendered = TEXT_PREFIX + "\n" + tidy
+    if hashtags:
+        rendered += "\n\n" + hashtags
+    rendered += "\n\n" + url
     if len(rendered) > 220:
         raise ValueError("Article X post text exceeds safe length")
     return rendered
