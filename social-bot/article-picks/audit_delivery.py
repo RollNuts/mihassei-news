@@ -18,6 +18,13 @@ MAX_AUDIT_DAYS = 7
 MAX_ITEMS = 60
 
 
+def trigger_allows_provider_read(event_name: str, now: datetime) -> bool:
+    """Late article pushes back up the read-only 23:45 JST provider audit."""
+    if now.tzinfo is None:
+        raise ValueError("Audit current time must have timezone")
+    return event_name != "push" or now.astimezone(JST).hour >= 21
+
+
 def read_json(path: Path) -> dict:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -163,6 +170,11 @@ def main() -> int:
     state = read_json(HERE / "state.json")
     if config.get("schema_version") != 1 or not isinstance(config.get("channel_id"), str):
         raise ValueError("Invalid article promotion config")
+    now = datetime.now(timezone.utc)
+    event_name = os.environ.get("X_AUDIT_TRIGGER_EVENT", "").strip()
+    if not trigger_allows_provider_read(event_name, now):
+        print("Article audit daytime push: offline validation only; no Buffer read/write.")
+        return 0
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         print("No Buffer key; article delivery audit skipped without changing evidence.")
@@ -171,7 +183,7 @@ def main() -> int:
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
-    report = build(state, existing, datetime.now(timezone.utc))
+    report = build(state, existing, now)
     save(report)
     print(
         "Article delivery audit:",

@@ -20,7 +20,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 確認
 
-23:45 JSTの`x-delivery-audit.yml`は`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをscheduled/sentの現在値へ照合する。結果は`article-picks/delivery.json`へ保存する。これは読み取り専用で、再送・予約編集・X投稿は行わない。
+23:45 JSTの`x-delivery-audit.yml`は`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをscheduled/sentの現在値へ照合する。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の公開pushはテストのみでBufferを読まない。結果は既存の`article-picks/delivery.json`へ保存する。再送・予約編集・X投稿は行わない。
 
 `state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間を保存する。Buffer受付とX実公開は別状態として扱い、確認できない公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
 
