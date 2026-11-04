@@ -256,7 +256,7 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual([p["slug"] for p in good], ["real-recent"])
 
     def test_fresh_lane_promotes_before_pv_and_prefers_followup_then_newest(self):
-        too_new = article("too-new", age_hours=1)
+        too_new = article("too-new", age_hours=0)
         fresh_old = article("fresh-old", age_hours=10)
         fresh_new = article("fresh-new", age_hours=4)
         followup = article("fresh-followup", age_hours=8)
@@ -349,7 +349,7 @@ class ArticlePickTests(unittest.TestCase):
         same_day = {
             f"story-{i}": {
                 "buffer_id": f"buf-{i}",
-                "queued_at_utc": (NOW - timedelta(hours=8 + i)).isoformat(),
+                "queued_at_utc": (NOW - timedelta(hours=3 + i)).isoformat(),
             }
             for i in range(7)
         }
