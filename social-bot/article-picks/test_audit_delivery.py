@@ -24,6 +24,36 @@ def entry(slug, hours=2):
 
 
 class ArticleDeliveryAuditTests(unittest.TestCase):
+    def test_article_publish_push_only_reads_buffer_in_evening(self):
+        for hour, allowed in ((0, False), (20, False), (21, True), (23, True)):
+            with self.subTest(hour=hour):
+                self.assertIs(m.trigger_allows_provider_read("push", NOW.replace(hour=hour)), allowed)
+                self.assertTrue(m.trigger_allows_provider_read("schedule", NOW.replace(hour=hour)))
+                self.assertTrue(m.trigger_allows_provider_read("workflow_dispatch", NOW.replace(hour=hour)))
+        with self.assertRaisesRegex(ValueError, "timezone"):
+            m.trigger_allows_provider_read("push", NOW.replace(tzinfo=None))
+
+    def test_daytime_article_push_does_not_contact_buffer_or_write_delivery(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config.json").write_text(json.dumps({
+                "schema_version": 1, "channel_id": "x-1",
+            }))
+            (root / "state.json").write_text(json.dumps({
+                "schema_version": 1, "queued": {},
+            }))
+            before = {p.name: p.read_bytes() for p in root.iterdir()}
+            with patch.object(m, "HERE", root), \
+                 patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only", "X_AUDIT_TRIGGER_EVENT": "push"}, clear=True), \
+                 patch.object(m, "choose_x_channel") as channel, \
+                 patch.object(m, "list_existing") as existing:
+                clock.now.return_value = NOW.replace(hour=20)
+                self.assertEqual(m.main(), 0)
+                channel.assert_not_called()
+                existing.assert_not_called()
+            self.assertEqual({p.name: p.read_bytes() for p in root.iterdir()}, before)
+
     def test_reconcile_requires_saved_id_and_canonical_article_url(self):
         e = entry("story")
         remote = {
