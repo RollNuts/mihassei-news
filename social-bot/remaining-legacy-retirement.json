@@ -40,6 +40,20 @@
       },
       "state": "skipped",
       "reason": "already_published"
+    },
+    "xexp-reaper-late": {
+      "checked_at": "2026-11-04T10:38:23.529113+00:00",
+      "before": {
+        "buffer_id": "6ae995b92f050cf24296aafc",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "sent",
+        "due_at": "2026-11-04T00:00:00.000Z",
+        "sent_at": "2026-11-04T00:01:33.584Z",
+        "text_sha256": "6594077a893bad0eb01490cc535444b72b7c82cb2c3ce4480b08333a351eb3c8",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "already_published"
     }
   }
 }
