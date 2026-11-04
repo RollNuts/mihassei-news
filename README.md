@@ -1,6 +1,6 @@
 # 未発生新聞 / Mihassei News
 
-[**サイトを見る — veripsa.com**](https://veripsa.com) · [**CI**](https://github.com/RollNuts/mihassei-news/actions/workflows/check.yml)
+[**サイトを見る — veripsa.com**](https://veripsa.com) · [**技術構成**](docs/ARCHITECTURE.md) · [**CI**](https://github.com/RollNuts/mihassei-news/actions/workflows/check.yml)
 
 > A fictional satire newspaper powered by a Python static-site generator, GitHub Actions, and Cloudflare Workers.
 
@@ -65,3 +65,9 @@ CIではこれに加え、Nodeのブラウザ周辺テストとWorkerのdry-run�
 ## Usage and rights
 
 コードを公開していますが、**このリポジトリにはソフトウェアの再利用を許諾するLICENSEを設定していません**。公開されていること自体は、コード・記事・画像の無断再利用を許可する意味ではありません。ライセンス方針が決まるまで、再利用は事前に確認してください。外部の有料AI APIはサイト生成に必要ありません。
+
+## Follow the project
+
+気になったら **[Star](https://github.com/RollNuts/mihassei-news)** して後で見返してください。更新通知は **Watch → Custom** から選べます。バグ報告は再現手順を添えて [Issues](https://github.com/RollNuts/mihassei-news/issues) へ。
+
+Created by [RollNuts](https://github.com/RollNuts) · [Veripsa Core](https://github.com/RollNuts/veripsa) — 並行PRの関係を調べる開発ツール。ホスト版は停止中、ローカル評価は利用可能です。
