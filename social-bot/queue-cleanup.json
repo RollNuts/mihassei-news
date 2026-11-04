@@ -299,6 +299,22 @@
       },
       "state": "skipped",
       "reason": "schedule_changed"
+    },
+    "xexp-nejimachi-nothing-wrong": {
+      "target_sha256": "7595ece45325a29ea039c7c143f9afc40ab29a810398e94af80d9accd6a096cf",
+      "checked_at": "2026-11-04T03:36:01.076499+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6aea76084c41ba80aa4864d8",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T02:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
     }
   }
 }
