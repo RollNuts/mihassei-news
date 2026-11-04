@@ -70,9 +70,9 @@ class XWorkflowTests(unittest.TestCase):
                              "Host newly generated experiment PNGs on main before queueing",
                              "Refill seven daily original X Buffer slots safely"):
                     self.assertFalse(self.gate(name, event=event, flags=flags), name)
-                self.assertTrue(self.gate("Fill any remaining free Buffer slot with a measured-interest article",
+                self.assertTrue(self.gate("Fill a reserved article slot with fresh, follow-up or measured-interest story",
                                           event=event, flags=flags))
-        self.assertIn('cron: "5 3,15 * * *"', self.original)
+        self.assertIn('cron: "5 7,15,23 * * *"', self.original)
 
     def test_pr_validation_remains_offline_even_with_enabled_lanes(self):
         for enabled in (False, True):
@@ -83,7 +83,7 @@ class XWorkflowTests(unittest.TestCase):
             self.assertTrue(self.gate("Check visual content, dimensions and image mutation safety", **context))
             for name in ("Host newly generated experiment PNGs on main before queueing",
                          "Refill seven daily original X Buffer slots safely",
-                         "Fill any remaining free Buffer slot with a measured-interest article",
+                         "Fill a reserved article slot with fresh, follow-up or measured-interest story",
                          "Record exact Buffer submission IDs (also after partial API failure)"):
                 self.assertFalse(self.gate(name, **context), name)
 
@@ -95,7 +95,7 @@ class XWorkflowTests(unittest.TestCase):
                 self.assertEqual(flags, {})
         result, flags = self.plan(False, False)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertFalse(self.gate("Fill any remaining free Buffer slot with a measured-interest article", flags=flags))
+        self.assertFalse(self.gate("Fill a reserved article slot with fresh, follow-up or measured-interest story", flags=flags))
 
     def test_prs_cannot_displace_other_workflows_or_production_submissions(self):
         names = ("x-original-experiments.yml", "x-useful-originals.yml", "x-midday-original.yml",
