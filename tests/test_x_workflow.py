@@ -32,8 +32,10 @@ class XWorkflowTests(unittest.TestCase):
 
     def test_article_promotion_is_the_only_scheduled_x_sender(self):
         self.assertIn('cron: "5 0,2,4,6,8,10,12 * * *"', self.article)
+        self.assertIn('- "content/articles.json"', self.article)
         self.assertIn("run: python social-bot/article-picks/dispatch.py", self.article)
         self.assertIn("BUFFER_API_KEY:", self.article)
+        self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", self.article)
         queue = step(self.article, "Queue at most one eligible Veripsa article")
         self.assertIn("github.ref == 'refs/heads/main'", queue)
         self.assertIn("github.event_name != 'pull_request'", queue)
@@ -53,6 +55,18 @@ class XWorkflowTests(unittest.TestCase):
         # The old manga workflow is hard-paused at job level and has no cron.
         self.assertNotRegex(self.surreal, r"(?m)^\s*schedule:\s*$")
         self.assertIn("if: ${{ false }}", self.surreal)
+
+    def test_article_publication_push_is_only_a_fallback_trigger(self):
+        # The workflow may wake on article publication, but dispatch.py owns the
+        # JST 09:00-21:59 network gate so 07:30/23:30 publication pushes cannot
+        # touch Buffer. Cron remains independently scheduled as backup.
+        push_block = re.search(
+            r"(?ms)^  push:\n(.*?)(?=^  pull_request:)",
+            self.article,
+        ).group(1)
+        self.assertIn('"content/articles.json"', push_block)
+        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", queue)
 
     def test_read_only_delivery_audit_cannot_publish(self):
         self.assertIn('cron: "45 14 * * *"', self.audit)
