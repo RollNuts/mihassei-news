@@ -5,6 +5,7 @@ Independent from paused, unapproved Nejimachi canon manga. Each scene is
 deterministic and its existing file is never overwritten after publication.
 """
 import hashlib
+import json
 import random
 from pathlib import Path
 
@@ -18,6 +19,7 @@ SCENES = {
     "xexp-sock-career": "sock",
     "xexp-book-review": "book",
     "xexp-cloud-bus": "cloud",
+    "xexp-lunch-price": "bento",
 }
 ROOT = Path(__file__).resolve().parents[1] / "assets"
 
@@ -31,7 +33,8 @@ def base(scene):
               "shadow": ((35, 40, 56), (117, 91, 82)),
               "sock": ((52, 79, 91), (160, 174, 154)),
               "book": ((39, 53, 72), (144, 105, 91)),
-              "cloud": ((73, 115, 149), (216, 176, 137))}
+              "cloud": ((73, 115, 149), (216, 176, 137)),
+              "bento": ((70, 67, 70), (210, 154, 112))}
     top, bottom = colors[scene]
     im = Image.new("RGB", (W, H))
     px = im.load()
@@ -249,12 +252,36 @@ def book(d):
     d.line((807, 237, 810, 554), fill=(160, 123, 107), width=10)
     for y in (312, 346, 380, 414):
         d.line((658, y, 767, y+5), fill=(126, 123, 116), width=5)
-    # Two review stars; no language-specific font is necessary.
-    for x in (853, 923):
-        d.polygon([(x, 302), (x+9, 322), (x+33, 325),
-                   (x+16, 342), (x+21, 367), (x, 355),
-                   (x-21, 367), (x-16, 342), (x-33, 325),
-                   (x-9, 322)], fill=(237, 186, 104))
+    # A recognizable sleeping reader + active reviewer at phone-card scale.
+    # The original composition showed two stars but not who judged whom.
+    # Two large Z-shapes now lead the eye from the reader to the book.
+    d.line([(407, 294), (457, 294), (410, 331), (462, 331)],
+           fill=(245, 222, 168), width=10, joint="curve")
+    d.line([(473, 246), (511, 246), (474, 276), (512, 276)],
+           fill=(245, 222, 168), width=7, joint="curve")
+    # The book has a face on the left leaf, with a wry critic's smile.
+    d.ellipse((678, 282, 711, 315), fill=(65, 55, 63))
+    d.ellipse((748, 282, 781, 315), fill=(65, 55, 63))
+    d.ellipse((696, 289, 703, 297), fill=(246, 234, 205))
+    d.ellipse((766, 289, 773, 297), fill=(246, 234, 205))
+    d.arc((701, 321, 767, 369), 8, 170, fill=(108, 76, 75), width=9)
+    # A *five*-star review with only the first two awarded: the joke
+    # must read visually without requiring tiny text or a Japanese font.
+    for i, x in enumerate((827, 865, 903, 941, 977)):
+        y = 345
+        points = [(x, y-19), (x+6, y-7), (x+18, y-5),
+                  (x+9, y+5), (x+12, y+18), (x, y+11),
+                  (x-12, y+18), (x-9, y+5), (x-18, y-5),
+                  (x-6, y-7)]
+        if i < 2:
+            d.polygon(points, fill=(238, 182, 75))
+        else:
+            d.polygon(points, fill=(248, 235, 201),
+                      outline=(148, 132, 115), width=4)
+    d.line((848, 396, 958, 396), fill=(171, 139, 123), width=6)
+    d.line((844, 431, 954, 431), fill=(171, 139, 123), width=6)
+    # Book's own arm reaches towards the pen; this is a review in progress.
+    d.line((977, 475, 1023, 430), fill=(225, 207, 169), width=22)
     d.line((998, 440, 1105, 291), fill=(166, 111, 78), width=17)
     d.polygon([(1101, 281), (1120, 254), (1113, 305)], fill=(236, 212, 162))
     d.line((1003, 444, 962, 497), fill=(225, 215, 179), width=18)
@@ -294,6 +321,79 @@ def cloud(d):
     d.rectangle((993, 194, 1063, 217), fill=(224, 204, 162))
 
 
+def bento(d):
+    """A price-frozen bento where the chicken compartment holds a PHOTO.
+
+    Visual surprise rather than a text card: one consistent price and a flat
+    print pasted over an empty food compartment. Reader sees the literal swap.
+    """
+    # Shop counter and warm takeaway lights.
+    d.rectangle((0, 410, W, H), fill=(116, 77, 64))
+    d.rectangle((0, 430, W, 460), fill=(223, 170, 115))
+    for x in (112, 300, 488, 676, 864, 1052):
+        d.ellipse((x-23, 57, x+23, 101), fill=(250, 217, 147))
+        d.line((x, 0, x, 56), fill=(225, 200, 151), width=4)
+    # Vendor is large enough to be recognized in a 320px feed thumbnail.
+    d.ellipse((81, 164, 330, 408), fill=(235, 190, 151))
+    d.pieslice((71, 143, 343, 260), 180, 360, fill=(66, 78, 78))
+    d.ellipse((167, 275, 180, 290), fill=(53, 56, 56))
+    d.ellipse((263, 275, 276, 290), fill=(53, 56, 56))
+    d.arc((180, 303, 260, 352), 5, 173, fill=(115, 71, 65), width=7)
+    d.polygon([(91, 384), (334, 381), (403, 640), (40, 640)],
+              fill=(219, 211, 184))
+    d.line([(370, 420), (427, 379), (447, 390)],
+           fill=(232, 192, 159), width=34, joint="curve")
+    d.ellipse((426, 356, 472, 403), fill=(232, 192, 159))
+    # The container is comically luxurious despite the missing food.
+    d.rounded_rectangle((326, 204, 1159, 626), radius=46,
+                        fill=(41, 47, 52))
+    d.rounded_rectangle((344, 217, 1141, 602), radius=39,
+                        fill=(206, 205, 190), outline=(244, 226, 183), width=18)
+    d.rounded_rectangle((374, 250, 717, 571), radius=35,
+                        fill=(77, 89, 90))
+    d.rounded_rectangle((734, 250, 1109, 571), radius=35,
+                        fill=(70, 81, 85))
+    # Rice and umeboshi have volume; the chicken doesn't.
+    d.ellipse((390, 265, 705, 553), fill=(243, 237, 213))
+    d.ellipse((418, 290, 681, 538), fill=(255, 248, 224))
+    for x, y in ((458, 323), (502, 302), (540, 350), (584, 316),
+                 (627, 357), (472, 416), (515, 460), (602, 448),
+                 (649, 413), (539, 515), (438, 481)):
+        d.ellipse((x, y, x+18, y+10), fill=(207, 204, 177))
+    d.ellipse((513, 377, 588, 449), fill=(178, 65, 58),
+              outline=(116, 53, 56), width=5)
+    # White paper border + tape + folded corner make it visibly a flat print.
+    d.polygon([(767, 286), (1059, 271), (1093, 531), (781, 545)],
+              fill=(233, 225, 199))
+    d.polygon([(778, 289), (1042, 278), (1066, 505), (796, 518)],
+              fill=(251, 248, 234))
+    d.polygon([(808, 317), (1021, 305), (1040, 475), (822, 488)],
+              fill=(112, 149, 103))
+    for cx, cy, radius in ((864, 375, 46), (952, 375, 47),
+                           (901, 442, 45)):
+        d.ellipse((cx-radius, cy-radius*.68, cx+radius, cy+radius*.68),
+                  fill=(178, 99, 49), outline=(113, 70, 39), width=5)
+        d.ellipse((cx-radius+10, cy-radius*.68+7,
+                   cx+radius-9, cy+radius*.68-8), fill=(217, 140, 64))
+        for dx, dy in ((-19, -6), (10, 6), (15, -12)):
+            d.ellipse((cx+dx-3, cy+dy-3, cx+dx+4, cy+dy+3),
+                      fill=(249, 188, 90))
+    d.polygon([(1048, 478), (1076, 520), (1045, 506)],
+              fill=(211, 203, 189))
+    d.polygon([(1048, 478), (1041, 508), (1076, 520)],
+              fill=(254, 249, 233))
+    for x, y in ((782, 281), (1050, 275)):
+        d.polygon([(x-18, y-10), (x+35, y-12),
+                   (x+40, y+12), (x-17, y+14)], fill=(226, 204, 164))
+    # Only one number, so the drawing is not a text-heavy satire card.
+    d.rounded_rectangle((749, 89, 1085, 192), radius=21,
+                        fill=(252, 227, 167), outline=(107, 86, 71), width=9)
+    d.text((799, 105), "500", fill=(65, 59, 58),
+           stroke_width=2, stroke_fill=(65, 59, 58), font_size=70)
+    d.ellipse((746, 136, 756, 147), fill=(107, 86, 71))
+    d.ellipse((1079, 136, 1089, 147), fill=(107, 86, 71))
+
+
 def draw_scene(name):
     from PIL import Image, ImageDraw
     if name not in SCENES:
@@ -301,7 +401,7 @@ def draw_scene(name):
     scene = SCENES[name]
     im, d = base(scene)
     {"ufo": ufo, "nails": nails, "broom": broom, "shadow": shadow,
-     "sock": sock, "book": book, "cloud": cloud}[scene](d)
+     "sock": sock, "book": book, "cloud": cloud, "bento": bento}[scene](d)
     rng = random.Random(int(hashlib.sha256(name.encode()).hexdigest()[:12], 16))
     grain = Image.new("RGBA", im.size, (0, 0, 0, 0))
     g = ImageDraw.Draw(grain)
@@ -310,6 +410,48 @@ def draw_scene(name):
         color = (226, 222, 205, 22) if rng.random() > .5 else (18, 26, 37, 22)
         g.point((x, y), fill=color)
     return Image.alpha_composite(im.convert("RGBA"), grain).convert("RGB")
+
+
+# One-time migration for a *not yet Buffer-registered* scene. The git blob
+# fingerprint is the exact pre-improvement xexp-book-review.png on main.
+# Any different file, or a queued experiment, is immutable by default.
+_BOOK_OLD_GIT_BLOB = "8fb3cdec7b71b25ada61a6b0eed5f05ef90ad498"
+
+
+def git_blob_sha(data):
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii")
+                        + b"\0" + data).hexdigest()
+
+
+def refresh_unqueued_book(root=ROOT, state_path=None,
+                          expected_blob=_BOOK_OLD_GIT_BLOB):
+    """Replace one known old illustration once, never registered media.
+
+    Existing media for other IDs are never touched. Reject unknown bytes
+    rather than accidentally rewriting an asset changed by another worker.
+    """
+    root = Path(root)
+    state_path = Path(state_path or Path(__file__).with_name("state.json"))
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    queued = state.get("queued")
+    if not isinstance(queued, dict):
+        raise ValueError("Refusing visual refresh without a valid queued ledger")
+    target = root / "xexp-book-review.png"
+    if "xexp-book-review" in queued or not target.exists():
+        return False
+    if git_blob_sha(target.read_bytes()) != expected_blob:
+        return False
+    candidate = target.with_suffix(".pending")
+    try:
+        draw_scene("xexp-book-review").save(candidate, format="PNG",
+                                            optimize=True)
+        if candidate.stat().st_size > 1_000_000:
+            raise ValueError("Updated X image exceeds 1 MB limit")
+        candidate.replace(target)
+    finally:
+        candidate.unlink(missing_ok=True)
+    print("Refreshed unqueued book review scene once:", target)
+    return True
 
 
 def render(root=ROOT):
@@ -330,3 +472,4 @@ def render(root=ROOT):
 
 if __name__ == "__main__":
     render()
+    refresh_unqueued_book()

@@ -1,24 +1,30 @@
 name: Free CPU staged-news photos (public repository only)
 
 on:
-  # Run a single real-image pilot immediately when this workflow lands on main.
-  # Image-commit pushes do NOT match this path, so there is no recursion.
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/free-cpu-scenes.yml'
-      - 'scripts/github_cpu_scenes.py'
-  # Automatic CPU batches are paused until the first photo passes visual QA.
+  # Preview actual new JPEGs before restoring automatic publication.
   workflow_dispatch:
     inputs:
       limit:
         description: 'Number of missing story images (max 3)'
         type: choice
         options: ['1', '2', '3']
-        default: '1'
+        default: '3'
+      slug:
+        description: 'Optional exact article slug'
+        type: string
+        default: ''
+      retry_held:
+        description: 'Retry one held image for visual review only (requires exact slug)'
+        type: boolean
+        default: false
+      publish:
+        description: 'Publish verified new JPEGs; leave OFF for visual review'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: first-party-cpu-scenes
@@ -39,6 +45,9 @@ jobs:
       OMP_NUM_THREADS: '4'
       MKL_NUM_THREADS: '4'
       TOKENIZERS_PARALLELISM: 'false'
+      SCENE_LIMIT: ${{ inputs.limit || '3' }}
+      SCENE_SLUG: ${{ inputs.slug || '' }}
+      RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,46 +57,54 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Show current free disk space and pending image plan
+      - name: Plan missing images without downloading any runtime or model
+        id: plan
         run: |
+          python3 - <<'PY'
+          import json, os
+          from scripts.github_cpu_scenes import load_articles, select_articles, cpu_prompt
+          selected = select_articles(load_articles(), slug=os.environ['SCENE_SLUG'],
+                                    limit=int(os.environ['SCENE_LIMIT']),
+                                    retry_held=os.environ['RETRY_HELD'] == '1')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'pending={len(selected)}\n')
+          for article in selected:
+              print(json.dumps({'slug': article['slug'], 'prompt': cpu_prompt(article)}, ensure_ascii=False))
+          print('Pending:', len(selected))
+          PY
           df -h .
-          python3 scripts/github_cpu_scenes.py --dry-run --limit 3
       - name: Install CPU-only open-source local model runtime (no cache)
+        if: steps.plan.outputs.pending != '0'
         run: |
           python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
           python3 -m pip install --no-cache-dir \
             diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
             accelerate==1.2.1 safetensors==0.4.5 Pillow==11.1.0 numpy==1.26.4
           df -h .
-      - name: Generate and verify at most three fictional JPEGs
+      - name: Generate at most three fictional JPEGs and stage only new successes
+        if: steps.plan.outputs.pending != '0'
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            # First quality retrial for the single formerly dark image.
-            python3 scripts/github_cpu_scenes.py --limit 1 --slug variety-700-guests-only-introductions
-          else
-            python3 scripts/github_cpu_scenes.py --limit "${{ inputs.limit || '3' }}"
-          fi
+          args=(--limit "$SCENE_LIMIT" --review-dir "$RUNNER_TEMP/cpu-scenes-review")
+          if [ -n "$SCENE_SLUG" ]; then args+=(--slug "$SCENE_SLUG"); fi
+          if [ "$RETRY_HELD" = 1 ]; then args+=(--retry-held); fi
+          python3 scripts/github_cpu_scenes.py "${args[@]}"
+          python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
           python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
-          python3 -m unittest discover -s tests -p 'test_cpu_scenes.py' -v
+          python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
           python3 scripts/build.py
-      - name: Commit only images and manifest, rebase safely, and publish
+      - name: Publish only matching images against latest main
+        if: steps.plan.outputs.pending != '0' && inputs.publish && !inputs.retry_held
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- assets/generated
-          if git diff --cached --quiet; then
-            echo 'No new images. Existing site and articles untouched.'
-            exit 0
-          fi
-          git commit -m 'images: generate free CPU staged comedy scenes'
-          for attempt in 1 2 3; do
-            git pull --rebase origin main
-            if git push origin HEAD:main; then
-              echo 'Published images. Cloudflare will deploy the updated main.'
-              exit 0
-            fi
-            echo "Image-only push attempt $attempt did not succeed."
-          done
-          echo 'Unable to publish images; no force push or article edits attempted.' >&2
-          exit 1
+          python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review" --publish
+          # GitHub-token pushes do not trigger ordinary push workflows.
+          gh workflow run verify-public-photos.yml --ref main
+      - name: Keep only small new JPEGs for visual review or failed-push recovery
+        if: always() && steps.plan.outputs.pending != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpu-scenes-review-${{ github.run_id }}
+          path: ${{ runner.temp }}/cpu-scenes-review/
+          if-no-files-found: ignore
+          retention-days: 1

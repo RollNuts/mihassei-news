@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "experiment_publishing_enabled": true,
+  "experiment_publishing_enabled": false,
   "channel_id": "6ae94b74e29c69a171436d72",
   "max_queue_size": 9,
   "max_new_per_run": 7,
   "channel_name": "Veripsa",
-  "reason": "Owner set seven Buffer X posting slots daily. Original feed reserves up to nine of ten Free queue spots; one remains for eligible articles. The separate two-per-day custom midday lane is retired. No paid APIs or unapproved comics.",
+  "reason": "2026-11-04 owner editorial pivot: pause further automated surreal/character experiment queueing in favor of sourced market commentary and manually reviewed relevant news. Preserve existing Buffer submissions and ledger. Keep zero added cost and unrelated article publishing unchanged.",
   "creative_constraints": [
     "Only original compact surreal text and occasional canon-respecting character moments",
     "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",

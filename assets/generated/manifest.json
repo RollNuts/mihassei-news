@@ -62,13 +62,13 @@
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
-      "bytes": 104469,
-      "generated_at": "2026-11-03T09:58:46.405801+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "bytes": 95502,
+      "generated_at": "2026-11-03T23:39:12.945470+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 3792932720945161705,
-      "sha256": "9d6d701b9a253f68f89a3119554fa4cbbb3bff29dc0170ca63fd632895d0eb1b"
+      "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
     },
     "fan-theories-write-final": {
       "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
@@ -89,6 +89,16 @@
       "prompt_version": 2,
       "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+    },
+    "historical-lookalike-contest-dog-wins": {
+      "article_sha256": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
+      "bytes": 105991,
+      "generated_at": "2026-11-03T23:09:46.002211+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 6800298270750902626,
+      "sha256": "608fc502a4e90b9648fce0878b74a36d0f568ffd7c7e47554acc1cdbea6d1910"
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -202,6 +212,16 @@
       "seed": 5748070834390824869,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
+      "bytes": 100731,
+      "generated_at": "2026-11-03T23:23:16.638581+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 3098375253472829687,
+      "sha256": "a28e3ed114b0079feaa2447591462d2f27e73c40027985049d3a0a01d7c97606"
+    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "bytes": 98358,
@@ -226,26 +246,15 @@
     },
     "volleyball-team-lunch-plate-merch": {
       "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "bytes": 98642,
-      "generated_at": "2026-11-03T09:58:46.391906+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "bytes": 60109,
+      "generated_at": "2026-11-04T00:18:02.108596+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 2586442448911147407,
-      "sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710"
+      "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     }
   },
-  "rejected": {
-    "family-dinner-gacha-243-rejections": {
-      "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
-      "reason": "Manual visual review: colored cylinders on dinner table, no recognizable capsule lottery machine. Hold for new scene design.",
-      "reviewed_at_jst": "2026-11-03"
-    },
-    "volleyball-team-lunch-plate-merch": {
-      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "reason": "Manual visual review: masked figure in indoor room, no volleyball net or plate. Do not publish as the story image.",
-      "reviewed_at_jst": "2026-11-03"
-    }
-  },
+  "rejected": {},
   "version": 1
 }
