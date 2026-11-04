@@ -72,7 +72,7 @@ class XWorkflowTests(unittest.TestCase):
                     self.assertFalse(self.gate(name, event=event, flags=flags), name)
                 self.assertTrue(self.gate("Fill a reserved article slot with fresh, follow-up or measured-interest story",
                                           event=event, flags=flags))
-        self.assertIn('cron: "5 7,15,23 * * *"', self.original)
+        self.assertIn('cron: "5 3,7,11,15,19,23 * * *"', self.original)
 
     def test_pr_validation_remains_offline_even_with_enabled_lanes(self):
         for enabled in (False, True):
