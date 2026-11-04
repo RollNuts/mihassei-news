@@ -224,12 +224,16 @@ test('URL, saved and automated-preview opt-outs suppress visits while retaining 
     assert.equal(page.gets().length,1);
     assert.ok(page.requests.every(request=>!request.endpoint.includes('analytics=')));
     if(options.storageFails)assert.match(page.status.textContent,/次のページには引き継がれません/);
+    else assert.equal(page.storage.has('mihassei-anonymous-browser-v1'),false,
+      'read-only opt-out must not create a browser identifier');
   }
   const page=await runPage({url:'https://veripsa.com/privacy/?analytics=off',preference:true});
   assert.equal(page.preference.checked,true);
   page.preference.checked=false;page.preference.fire('change');await settle();
   assert.equal(page.visits().length,1);
   assert.equal(page.storage.get('mihassei-analytics-disabled-v1'),'0');
+  assert.ok(page.storage.has('mihassei-anonymous-browser-v1'),
+    're-enabling analytics creates the identifier only when the visit is sent');
   page.preference.checked=true;page.preference.fire('change');
   page.fire('window','pageshow',{persisted:true});await settle();
   assert.equal(page.visits().length,1,'disabled BFCache displays remain excluded');

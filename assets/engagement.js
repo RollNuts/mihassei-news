@@ -203,10 +203,14 @@
     return [x.slice(0,8),x.slice(8,12),x.slice(12,16),x.slice(16,20),x.slice(20)].join("-");
   }
   let clientId="";
-  try {
-    clientId=localStorage.getItem(idKey)||makeId();
-    localStorage.setItem(idKey,clientId);
-  } catch(_) {clientId=makeId();}
+  function clientIdentifier(){
+    if(clientId)return clientId;
+    try {
+      clientId=localStorage.getItem(idKey)||makeId();
+      localStorage.setItem(idKey,clientId);
+    } catch(_) {clientId=makeId();}
+    return clientId;
+  }
 
   let liked=[];
   try {
@@ -361,7 +365,7 @@
   heartView();
 
   async function apiPost(action,articleSlug="",choice="",viewId=""){
-    const payload={action,article:articleSlug,clientId};
+    const payload={action,article:articleSlug,clientId:clientIdentifier()};
     if(action==="vote")payload.choice=choice;
     if(action==="visit" && visitChannel)payload.channel=visitChannel;
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
@@ -803,7 +807,7 @@
 
   document.querySelectorAll("[data-share-slug]").forEach(link=>{
     link.addEventListener("click",()=>{
-      const body=JSON.stringify({action:"share",article:link.dataset.shareSlug,clientId});
+      const body=JSON.stringify({action:"share",article:link.dataset.shareSlug,clientId:clientIdentifier()});
       try {
         if(navigator.sendBeacon){
           navigator.sendBeacon("/api/engagement",new Blob([body],{type:"application/json"}));
