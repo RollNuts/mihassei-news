@@ -153,7 +153,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：15:30枠は2027年ヒット予測の「偶然ロス」をフックに、偶然の出会いを予約で売るカフェを描いた。記事：https://veripsa.com/articles/chance-meeting-cafe-reservation-full/（本番確認は公開検証後に更新）。
+- **直前**：15:30枠は2027年ヒット予測の「偶然ロス」をフックに、偶然の出会いを予約で売るカフェを描いた。記事：https://veripsa.com/articles/chance-meeting-cafe-reservation-full/（本番実配信・一面・記事・安全なSVG代替・OGPをrevision 25f5b470f9dfcf53ee1b2d0f2e13ff908a640a39の公開検証で確認。選抜動画は画像検品待ち image_required）。
 - **次枠**：17:30枠は偶然・予約・相席・予定外の出会いを避ける。今枠の動画候補は画像未承認なら image_required のまま画像回収へ渡し、候補を積み増さない。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
