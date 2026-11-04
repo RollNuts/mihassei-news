@@ -784,7 +784,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta name="twitter:image" content="{escape(og_image)}">
 <meta name="twitter:image:alt" content="{escape(og_alt)}">
 <link rel="canonical" href="{SITE+path}">
-<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png">
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48 64x64" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
 {topic_rss}
 <link rel="stylesheet" href="{stylesheet_url()}">
@@ -1686,6 +1688,8 @@ def build():
     for f in (BASE/"assets").iterdir():
         if f.is_file():
             shutil.copy2(f, OUT/"assets"/f.name)
+    # Serve the conventional root URL as well as the explicit HTML icon links.
+    shutil.copy2(BASE / "assets" / "favicon.ico", OUT / "favicon.ico")
     write(SITE_CSS_PATH.lstrip("/"), bundled_stylesheets())
     shutil.copy2(BASE / "ads.txt", OUT / "ads.txt")
     photos = BASE / "assets" / "photos"

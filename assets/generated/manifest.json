@@ -246,21 +246,15 @@
     },
     "volleyball-team-lunch-plate-merch": {
       "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "bytes": 98642,
-      "generated_at": "2026-11-03T09:58:46.391906+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "bytes": 60109,
+      "generated_at": "2026-11-04T00:18:02.108596+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 2586442448911147407,
-      "sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710"
+      "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     }
   },
-  "rejected": {
-    "volleyball-team-lunch-plate-merch": {
-      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "reason": "Manual visual review: masked figure in indoor room, no volleyball net or plate. Do not publish as the story image.",
-      "reviewed_at_jst": "2026-11-03"
-    }
-  },
+  "rejected": {},
   "version": 1
 }
