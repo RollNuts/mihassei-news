@@ -14,6 +14,7 @@
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
   const validDecades = new Set(cards.map(card => card.dataset.decade));
   let category = 'すべて';
+  const filterKey = () => JSON.stringify([category, input.value.trim(), decadeSelect?.value || 'すべて']);
   // Search and filters are shareable and survive a new visit or browser Back.
   function restoreFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -24,6 +25,10 @@
       const requestedDecade = params.get('decade') || 'すべて';
       decadeSelect.value = validDecades.has(requestedDecade) ? requestedDecade : 'すべて';
     }
+    const prior = window.history.state?.mihasseiArchive;
+    const maximum = Math.ceil(cards.length / PAGE_SIZE) * PAGE_SIZE;
+    visibleLimit = prior?.filters === filterKey() && Number.isSafeInteger(prior.visibleLimit) &&
+      prior.visibleLimit >= PAGE_SIZE && prior.visibleLimit <= maximum ? prior.visibleLimit : PAGE_SIZE;
   }
   restoreFiltersFromUrl();
 
@@ -70,7 +75,15 @@
       if (decade === 'すべて') url.searchParams.delete('decade');
       else url.searchParams.set('decade', decade);
       // Keep campaign parameters and links to page anchors intact.
-      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      const state = window.history.state;
+      const previous = state && typeof state === 'object' && !Array.isArray(state) ? state : {};
+      // Keep the expanded list in this history entry, without adding URL parameters
+      // or replacing state belonging to another reader feature.
+      try {
+        window.history.replaceState({...previous, mihasseiArchive: {
+          filters: filterKey(), visibleLimit
+        }}, '', url.pathname + url.search + url.hash);
+      } catch (_) { /* Filtering remains usable when browser history is unavailable. */ }
     }
   }
   function resetAndRender(syncUrl = true) {
@@ -91,12 +104,20 @@
     input.focus?.();
   });
   moreButton?.addEventListener('click', () => {
+    const previouslyVisible = new Set(cards.filter(card => !card.hidden));
     visibleLimit += PAGE_SIZE;
     render();
+    const firstNew = cards.find(card => !card.hidden && !previouslyVisible.has(card));
+    firstNew?.querySelector('h3 a')?.focus();
   });
   window.addEventListener?.('popstate', () => {
     restoreFiltersFromUrl();
-    resetAndRender(false);
+    render(false);
+  });
+  window.addEventListener?.('pageshow', event => {
+    if (!event.persisted) return;
+    restoreFiltersFromUrl();
+    render(false);
   });
   render();
 })();

@@ -53,7 +53,7 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 
 ## 受付と公開を分けて確認する
 
-`useful-state.json.attempts`のID・本文指紋・観測日時・`provider_status`・`due_at`、`last_selection`の時刻・件数・理由をログと照合する。
+`useful-state.json.attempts`のID・本文指紋・`provider_status`・`due_at`、`last_selection`の件数・理由をログと照合する。状態が同じなら確認時刻だけの台帳更新は行わず、その回の確認日時と状態はActionsログへ残す。台帳の日時を最新の確認時刻とみなさない。
 
 - 原稿登録や緑のCIは公開証拠ではない。`intent`は送信前記録、`accepted_not_verified_published`はBuffer受付。受付IDと予定時刻を報告する。
 - Bufferの`scheduled`/`sent`と、X上の実際の公開URL・本文を区別する。古い状態や日時欠損から現在の公開を推測しない。見えないものは未確認とする。

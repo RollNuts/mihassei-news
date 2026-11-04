@@ -157,7 +157,25 @@ def select(feed, state, now, live, prior_texts=(), reasons=None):
     return None
 
 
+def durable_state(state):
+    """Compare evidence and decisions; observation freshness stays in run logs."""
+    result = dict(state)
+    result["attempts"] = {
+        pid: {key: value for key, value in row.items() if key != "checked_at"}
+        for pid, row in state["attempts"].items()
+    }
+    if "last_selection" in state:
+        result["last_selection"] = {
+            key: value for key, value in state["last_selection"].items()
+            if key != "checked_at_utc"
+        }
+    return result
+
+
 def persist(state):
+    # Keep every intent/receipt/status change, without committing each recheck.
+    if STATE_PATH.exists() and durable_state(read(STATE_PATH)) == durable_state(state):
+        return
     STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     subprocess.run(["git", "add", str(STATE_PATH)], check=True)
     if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
@@ -195,6 +213,9 @@ def main():
             r = matches[0]
             row.update(buffer_id=r["id"], provider_status=r["status"], due_at=r.get("dueAt"),
                        sent_at=r.get("sentAt"), checked_at=datetime.now(timezone.utc).isoformat())
+            print("Useful feed observation:", json.dumps({"post_id": pid, **{
+                key: row[key] for key in ("buffer_id", "provider_status", "due_at", "sent_at", "checked_at")
+            }}, ensure_ascii=False))
     persist(state)
     if any(not a.get("buffer_id") for a in state["attempts"].values()):
         raise RuntimeError("Uncertain previous request: hold, inspect Buffer; never blind retry")

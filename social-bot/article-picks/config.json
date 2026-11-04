@@ -4,7 +4,7 @@
   "channel_id": "6ae94b74e29c69a171436d72",
   "max_queue_size": 10,
   "max_new_per_run": 1,
-  "min_readers": 8,
+  "min_page_views": 8,
   "minimum_article_age_hours": 12,
   "maximum_article_age_days": 21,
   "minimum_interval_hours": 72

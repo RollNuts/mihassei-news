@@ -1,9 +1,11 @@
 import copy
 import importlib.util
 import json
+import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 HERE = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location("useful_feed", HERE / "useful_feed.py")
@@ -100,5 +102,93 @@ class UsefulFeedTests(unittest.TestCase):
         self.pick([{"status": "scheduled"}] * 9)
         self.assertEqual(self.feed, feed)
         self.assertEqual(self.state, state)
+
+class UsefulFeedPersistenceTests(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.path = Path(directory.name) / "useful-state.json"
+        self.state = {
+            "schema_version": 1,
+            "attempts": {"test-post": {
+                "provider_status": "scheduled", "buffer_id": "receipt-1",
+                "due_at": "2026-11-04T03:00:00Z", "sent_at": None,
+                "attempted_at": "2026-11-04T01:00:00Z",
+                "checked_at": "2026-11-04T02:00:00Z",
+            }},
+            "last_selection": {
+                "checked_at_utc": "2026-11-04T02:00:00Z", "scheduled_count": 9,
+                "shared_queue_limit": 10, "selected_post_id": None,
+                "reasons": [{"reason": "day_already_attempted"}],
+            },
+        }
+        self.path.write_text(json.dumps(self.state) + "\n", encoding="utf-8")
+        path_patch = patch.object(m, "STATE_PATH", self.path)
+        path_patch.start()
+        self.addCleanup(path_patch.stop)
+        # No test may run Git or contact a provider. Simulate a real staged diff.
+        def git_result(args, **kwargs):
+            return Mock(returncode=1 if args[1] == "diff" else 0)
+        run_patch = patch.object(m.subprocess, "run", side_effect=git_result)
+        self.run = run_patch.start()
+        self.addCleanup(run_patch.stop)
+
+    def test_recheck_changes_neither_file_nor_git(self):
+        original = self.path.read_bytes()
+        self.state["attempts"]["test-post"]["checked_at"] = "2026-11-04T02:54:00Z"
+        self.state["last_selection"]["checked_at_utc"] = "2026-11-04T02:54:01Z"
+        unchanged_input = copy.deepcopy(self.state)
+        m.persist(self.state)
+        self.assertEqual(self.path.read_bytes(), original)
+        self.assertEqual(self.state, unchanged_input)
+        self.run.assert_not_called()
+
+    def assert_persisted(self):
+        m.persist(self.state)
+        self.assertEqual(m.read(self.path), self.state)
+        self.assertIn(["git", "push", "origin", "HEAD:main"],
+                      [call.args[0] for call in self.run.call_args_list])
+
+    def test_delivery_transition_keeps_provider_evidence(self):
+        self.state["attempts"]["test-post"].update(
+            provider_status="sent", sent_at="2026-11-04T03:00:01Z",
+            checked_at="2026-11-04T03:05:00Z")
+        self.assert_persisted()
+
+    def test_new_intent_without_receipt_is_durable(self):
+        self.state["attempts"]["new-post"] = {
+            "provider_status": "intent", "attempted_at": "2026-11-05T01:00:00Z",
+            "day_jst": "2026-11-05", "text_sha256": "immutable-text",
+        }
+        self.assert_persisted()
+        self.assertNotIn("buffer_id", m.read(self.path)["attempts"]["new-post"])
+
+    def test_changed_queue_or_selection_is_durable(self):
+        for key, value in (
+            ("scheduled_count", 10),
+            ("reasons", [{"reason": "shared_free_queue_full"}]),
+            ("selected_post_id", "next-post"),
+        ):
+            with self.subTest(key=key):
+                self.run.reset_mock()
+                self.state["last_selection"][key] = value
+                self.assert_persisted()
+
+    def test_only_observation_times_are_ignored(self):
+        for key, value in (
+            ("buffer_id", "receipt-2"),
+            ("due_at", "2026-11-04T03:05:00Z"),
+            ("attempted_at", "2026-11-04T01:01:00Z"),
+            ("payload_sha256", "immutable-payload"),
+        ):
+            with self.subTest(key=key):
+                self.run.reset_mock()
+                self.state["attempts"]["test-post"][key] = value
+                self.assert_persisted()
+
+    def test_first_ledger_is_persisted(self):
+        self.path.unlink()
+        self.assert_persisted()
+
 
 if __name__ == "__main__": unittest.main()

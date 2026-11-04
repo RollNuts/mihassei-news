@@ -18,7 +18,7 @@ function element(dataset={}) {
   };
 }
 
-function harness(count, query = '', stories = []) {
+function harness(count, query = '', stories = [], initialHistory = null) {
   const input=element();
   const decade=element();decade.value='すべて';
   const counter=element(),empty=element(),morePanel=element(),moreButton=element(),resetFilters=element();
@@ -38,13 +38,20 @@ function harness(count, query = '', stories = []) {
   const historyWrites=[];
   const windowHandlers=new Map();
   const document={
+    activeElement: null,
     querySelector:(selector)=>nodes.get(selector)||null,
     querySelectorAll:(selector)=>selector==='[data-archive-card]'?cards:
       selector==='[data-category-filter]'?tabs:[],
   };
+  for (const card of cards) {
+    const title = {focus: () => { document.activeElement = title; }};
+    card.titleLink = title;
+    card.querySelector = selector => selector === 'h3 a' ? title : null;
+  }
   const location=new URL('https://veripsa.com/archive/'+query+'#category-feeds');
   const window={location,
-    history:{replaceState:(_a,_b,url)=>{
+    history:{state:initialHistory,replaceState:(state,_b,url)=>{
+      window.history.state=state;
       historyWrites.push(url);
       location.href=new URL(url,location.href).href;
     }},
@@ -52,12 +59,15 @@ function harness(count, query = '', stories = []) {
   };
   const src=fs.readFileSync(path.join(__dirname,'..','assets','site.js'),'utf8');
   vm.runInNewContext(src,{document,window,URL,URLSearchParams,Set,String}, {timeout:1000});
-  return {cards,input,decade,counter,empty,morePanel,moreButton,resetFilters,tabs,historyWrites,
-    popstate(url){
+  return {cards,input,decade,counter,empty,morePanel,moreButton,resetFilters,tabs,historyWrites,document,
+    get historyState(){return window.history.state;},
+    popstate(url,state=null){
       location.href=new URL(url,location.href).href;
+      window.history.state=state;
       assert.ok(windowHandlers.has('popstate'));
       windowHandlers.get('popstate')();
     },
+    pageshow(){windowHandlers.get('pageshow')({persisted:true});},
     get url(){return location.pathname+location.search+location.hash;},
     get visible(){return cards.filter(card=>!card.hidden).length;}
   };
@@ -70,14 +80,16 @@ function harness(count, query = '', stories = []) {
   assert.equal(h.counter.textContent,'52件中18件を表示');
   h.moreButton.emit('click');
   assert.equal(h.visible,36,'show-more reveals the next 18');
+  assert.equal(h.document.activeElement,h.cards[18].titleLink,'continue at the first newly revealed article');
   assert.equal(h.counter.textContent,'52件中36件を表示');
   h.moreButton.emit('click');
   assert.equal(h.visible,52,'last page shows remainder');
+  assert.equal(h.document.activeElement,h.cards[36].titleLink,'focus stays on an article when the final button disappears');
   assert.equal(h.counter.textContent,'52件の記事');
   assert.equal(h.morePanel.hidden,true,'button hidden after final page');
   const writesBeforeBack=h.historyWrites.length;
   h.popstate('/archive/?src=history#category-feeds');
-  assert.equal(h.visible,18,'browser history resets pagination to the first page');
+  assert.equal(h.visible,18,'a different history entry without saved progress starts at the first page');
   assert.equal(h.historyWrites.length,writesBeforeBack,'history restoration does not rewrite the URL');
   h.tabs[1].emit('click');
   assert.equal(h.visible,18,'changing category resets to the first page');
@@ -178,4 +190,34 @@ const keywordStories=[
   assert.equal(h.historyWrites.length,writesBeforeBack);
   assert.ok(h.url.includes('src=share') && h.url.endsWith('#category-feeds'));
 }
-console.log('Archive pagination, keyword search, filters, and history passed.');
+{
+  const query='?category='+encodeURIComponent('経済')+'&src=reader';
+  const h=harness(80,query,[],{otherReaderFeature:'preserved'});
+  const matches=h.cards.filter(card=>card.dataset.category==='経済');
+  h.moreButton.emit('click');
+  assert.equal(h.document.activeElement,matches[18].titleLink,'filtered paging focuses a newly visible matching title');
+  const expandedState=h.historyState;
+  const expandedUrl=h.url;
+  assert.equal(expandedState.otherReaderFeature,'preserved','archive paging preserves unrelated history state');
+  const restored=harness(80,query,[],expandedState);
+  assert.equal(restored.visible,36,'a page reload restores the expanded list');
+  assert.equal(restored.document.activeElement,null,'restoration does not move keyboard focus');
+  restored.pageshow();
+  assert.equal(restored.visible,36,'BFCache restoration keeps expanded progress');
+  h.resetFilters.emit('click');
+  assert.equal(h.visible,18,'changing filters starts a fresh list');
+  const writes=h.historyWrites.length;
+  h.popstate(expandedUrl,expandedState);
+  assert.equal(h.visible,36,'returning from an article restores the same expanded filtered list');
+  assert.equal(h.historyWrites.length,writes,'restoring an entry does not create or replace history');
+  assert.ok(h.url.includes('src=reader') && h.url.endsWith('#category-feeds'));
+  const differentQuery=harness(80,'',[],expandedState);
+  assert.equal(differentQuery.visible,18,'progress from a different filter is ignored');
+  for(const visibleLimit of [-18,19.5,'36',Number.MAX_SAFE_INTEGER]){
+    const invalid=harness(80,query,[],{
+      ...expandedState,mihasseiArchive:{...expandedState.mihasseiArchive,visibleLimit}
+    });
+    assert.equal(invalid.visible,18,'invalid or out-of-bounds pagination cannot restore');
+  }
+}
+console.log('Archive pagination, keyword search, filters, focus, and history passed.');
