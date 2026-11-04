@@ -5,6 +5,7 @@ import contextlib
 import hashlib
 import io
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -53,6 +54,23 @@ def write_review_fixture(root: Path, article: dict, **changes) -> Path:
         "version": 1, "reviews": {article["slug"]: record},
     }), encoding="utf-8")
     return path
+
+
+@contextlib.contextmanager
+def layout_asset_fixture(root: Path):
+    """Use real reader scripts without importing generated media into a fixture."""
+    source = Path(__file__).resolve().parents[1] / "assets"
+    assets = root / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    for script in source.glob("*.js"):
+        shutil.copyfile(script, assets / script.name)
+    # asset_url caches by filename, so another layout test must not hide a
+    # missing fixture script or inherit a temporary directory's cached result.
+    build.asset_url.cache_clear()
+    try:
+        yield
+    finally:
+        build.asset_url.cache_clear()
 
 
 class SceneQualityHoldTests(unittest.TestCase):
@@ -284,7 +302,7 @@ class LocalComedySceneTests(unittest.TestCase):
                 # Retain the separate generation/byte-integrity contract.
                 self.assertTrue(usable_generated_scene(article, root=root))
                 self.assertFalse(reviewed_generated_scene(article, root=root))
-                with patch.object(build, "BASE", root), \
+                with layout_asset_fixture(root), patch.object(build, "BASE", root), \
                      patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                     fallback = "/images/" + article["slug"] + ".svg"
                     social = "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"

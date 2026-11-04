@@ -41,6 +41,11 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
+    "midterm-prediction-notebook-full-of-holes": (
+        "A battered open paper notebook has a large ragged circular hole "
+        "through its page, revealing the dark desk underneath, with a pink "
+        "eraser and gray eraser crumbs alongside. Overhead close-up."
+    ),
     "sweet-potato-chorus-starts-too-late": (
         "A whole Japanese sweet potato with rough deep-purple skin lies "
         "beside a cut-open sweet potato showing dense golden-yellow flesh "
@@ -72,6 +77,7 @@ CPU_SCENES = {
 # versions. A later body or scene edit must use its current direction rather
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
+    "midterm-prediction-notebook-full-of-holes": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
     TV_PILOT_SLUG: "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
     "sweet-potato-chorus-starts-too-late": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
     "historical-lookalike-contest-dog-wins": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
