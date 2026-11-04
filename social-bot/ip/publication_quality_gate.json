@@ -1,9 +1,10 @@
 {
   "new_reservations_enabled": false,
-  "reason": "Adult-audience visual redesign required: prior superhero-like shadow page and infantile mascot drafts rejected. Keep new queue submissions paused until a distinct, mature, dry-humor machine-city visual identity is approved.",
-  "paused_at_jst": "2026-11-03",
+  "reason": "Owner paused the manga project on 2026-11-04 to focus X on useful market/news commentary. No new production, reservations, or publishing until the owner explicitly requests a restart; historical works and records remain unchanged.",
+  "paused_at_jst": "2026-11-04",
   "existing_buffer_posts": "Untouched by this config; audit separately before publishing.",
   "reopen_requirements": [
+    "Explicit owner request to restart manga production and publishing; passing prior visual/quality checks alone does not authorize restarting",
     "Approved original design sheet for Neji, Pito, Moku, retaining canon silhouettes",
     "No webs, hanging-from-threads compositions, superhero masks or costumes",
     "Panels vary camera angle and visible character action; no static diagrams",

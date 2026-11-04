@@ -122,15 +122,33 @@ class FreeCpuImageTests(unittest.TestCase):
         kwargs = pipeline.call_args.kwargs
         self.assertEqual(kwargs["num_inference_steps"], 8)
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
-        self.assertIn("gumball vending machine", kwargs["prompt"])
+        self.assertIn("capsule lottery machine", kwargs["prompt"])
         self.assertIn("DSLR color photograph", kwargs["prompt"])
 
     def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
-        a = {**article(), "title": "有名人700人の特番、名前を呼ぶだけで放送終了"}
-        prompt = cpu.cpu_prompt(a)
+        a = {"slug": cpu.TV_PILOT_SLUG, "title": "有名人700人の特番、名前を呼ぶだけで放送終了",
+             "summary": "紹介が終わり、ゲームは始まらなかった。", "category": "エンタメ",
+             "paragraphs": ["架空の司会者は出演者を紹介し続けた。"],
+             "scene_prompt": "A host holds a microphone beside an unused television game buzzer."}
+        with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {a["slug"]: article_fingerprint(a)}):
+            prompt = cpu.cpu_prompt(a)
         self.assertIn("EMPTY CHAIRS", prompt)
         self.assertIn("Bright, colorful", prompt)
         self.assertLess(len(prompt.split()), 65)
+
+    def test_tv_override_cannot_follow_title_alone_or_an_edited_source(self):
+        scene = "An anonymous actor carries a blue umbrella into an empty station."
+        other = {**article(), "title": "有名人700人の特番、名前を呼ぶだけで放送終了", "scene_prompt": scene}
+        self.assertNotIn("EMPTY CHAIRS", cpu.cpu_prompt(other))
+        self.assertIn(scene, cpu.cpu_prompt(other))
+        source = {**other, "slug": cpu.TV_PILOT_SLUG, "paragraphs": ["Original fictional television story."]}
+        with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {source["slug"]: article_fingerprint(source)}):
+            self.assertIn("EMPTY CHAIRS", cpu.cpu_prompt(source))
+            for changed in ({**source, "paragraphs": ["A different fictional ending."]},
+                            {**source, "scene_prompt": "An actor holds a green toolbox beside a garden gate."}):
+                self.assertFalse(cpu.reviewed_source_matches(changed, cpu.TV_PILOT_SLUG))
+                self.assertNotIn("EMPTY CHAIRS", cpu.cpu_prompt(changed))
+                self.assertIn(changed["scene_prompt"], cpu.cpu_prompt(changed))
 
     def test_auto_exposure_has_strict_underexposure_and_amplification_caps(self):
         with self.assertRaisesRegex(ValueError, "severely underexposed"):
@@ -138,6 +156,30 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertAlmostEqual(cpu.exposure_multiplier(62), 125 / 62)
         self.assertEqual(cpu.exposure_multiplier(30), 2.4)
         self.assertEqual(cpu.exposure_multiplier(150), 1.0)
+
+    def test_neutral_high_contrast_scene_passes_but_unreadable_exposure_does_not(self):
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow is needed for the real image-statistics gate")
+        def fixture(values):
+            image = Image.new("L", (20, 20))
+            image.putdata(values)
+            return image.convert("RGB")
+        # A silver bell or white plate need not carry colorful surfaces.
+        neutral = fixture([85, 165] * 200)
+        with contextlib.redirect_stdout(io.StringIO()):
+            cpu.check_quality(neutral)
+            for unreadable in (
+                fixture([0, 80] * 200),                  # dark but contrasting
+                fixture([150] * 100 + [255] * 300),    # bright but contrasting
+                fixture([124, 126] * 200),             # ordinary luma, featureless
+                fixture([0] * 400),                    # black
+            ):
+                with self.assertRaisesRegex(ValueError, "dark/washed out/unreadable"):
+                    cpu.check_quality(unreadable)
+        with self.assertRaisesRegex(ValueError, "severely underexposed"):
+            cpu.normalize_exposure(fixture([0] * 400))
 
     def test_clipped_prompt_is_rejected_before_model_call(self):
         a = article()
@@ -157,17 +199,42 @@ class FreeCpuImageTests(unittest.TestCase):
         expected = {
             "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "purple skin", "yellow flesh", "referee", "whistle"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
-            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "push button", "close-up"),
+            "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
-            "volleyball-team-lunch-plate-merch": ("ceramic dinner plate", "measuring tape", "volleyball net"),
+            "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
         }
         for slug, objects in expected.items():
-            prompt = cpu.cpu_prompt({"slug": slug})
+            source = {**article(), "slug": slug, "scene_prompt": "An adult holds a toolbox beside a garden gate."}
+            with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {slug: article_fingerprint(source)}):
+                prompt = cpu.cpu_prompt(source)
             for item in objects:
                 self.assertIn(item, prompt)
             self.assertIn("DSLR color photograph", prompt)
             self.assertIn("unmarked props", prompt)
             self.assertLess(len(prompt.split()), 55)
+            if slug == "volleyball-team-lunch-plate-merch":
+                for room_context in ("table", "room", "indoor", "dinner", "net"):
+                    self.assertNotIn(room_context, prompt.lower())
+            if slug == "stolen-doorbell-returned-by-parcel":
+                for appliance_context in ("hotel", "reception", "counter", "electric", "push button", "skirt"):
+                    self.assertNotIn(appliance_context, prompt.lower())
+
+    def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
+        source = {**article(), "paragraphs": ["Original fictional scene."],
+                  "scene_prompt": "An adult holds a toolbox beside a garden gate."}
+        slug = source["slug"]
+        with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {slug: article_fingerprint(source)}):
+            self.assertEqual(cpu.prompt_parts(source), (cpu.CPU_SCENES[slug], []))
+            for changed, scene in (
+                ({**source, "paragraphs": ["The fictional story now has a different ending."]}, source["scene_prompt"]),
+                ({**source, "scene_prompt": "An adult opens a blue umbrella inside a train station."},
+                 "An adult opens a blue umbrella inside a train station."),
+            ):
+                self.assertNotEqual(article_fingerprint(changed), article_fingerprint(source))
+                self.assertEqual(local_scene_photos.stable_seed(changed), local_scene_photos.stable_seed(source))
+                self.assertEqual(cpu.prompt_parts(changed), (scene, []))
+                self.assertIn(scene, cpu.cpu_prompt(changed))
+                self.assertNotIn("gumball vending machine", cpu.cpu_prompt(changed))
 
     def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
         core = "An actor holds a giant spoon beside an empty soup bowl."

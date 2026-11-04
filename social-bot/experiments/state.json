@@ -99,6 +99,31 @@
       "mechanism": "meta_commentary",
       "queued_at_utc": "2026-11-03T11:39:49.635566+00:00",
       "submission_mode": "addToQueue"
+    },
+    "xexp-book-review": {
+      "buffer_id": "6aea7608ff887f055cd9d61f",
+      "text_sha256": "cda2f027980cfa6f641b3e4e4aabb06a0886117a45a7e6762259ec70e25b6505",
+      "published_text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#シュールネタ",
+      "format": "surreal_text",
+      "mechanism": "role_reversal",
+      "queued_at_utc": "2026-11-04T00:02:16.404378+00:00",
+      "submission_mode": "addToQueue",
+      "buffer_due_at_at_creation_utc": "2026-11-05T02:30:00+00:00",
+      "image_sha256": "73eff6cfcc6c22760ddb9ed66fb4bde45e5d5a0f61704b077c01ac770b4c6306"
+    },
+    "xexp-nejimachi-nothing-wrong": {
+      "buffer_id": "6aea76084c41ba80aa4864d8",
+      "text_sha256": "8484b67fa61fcd579b30fad2b83b95cf998bb308428de106ce66089e60a738d6",
+      "published_text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+      "hashtag_variant": "one_relevant_tag",
+      "hashtag": "#ネジまち",
+      "format": "character_moment",
+      "mechanism": "dry_dialogue",
+      "queued_at_utc": "2026-11-04T00:02:16.719880+00:00",
+      "submission_mode": "addToQueue",
+      "buffer_due_at_at_creation_utc": "2026-11-05T09:30:00+00:00"
     }
   }
 }
