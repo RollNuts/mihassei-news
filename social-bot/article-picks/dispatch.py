@@ -34,6 +34,10 @@ METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
 JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
+CRISIS_PROMO_PATTERN = re.compile(
+    r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
+    r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
+)
 
 
 def read_json(path: Path) -> dict:
@@ -53,17 +57,24 @@ def validate_config(config: dict, original_x_config: dict) -> None:
             or not config["channel_id"]):
         raise ValueError("Article X channel must equal the existing Veripsa X channel")
     caps = (
-        ("max_queue_size", 3, 10),
+        ("max_queue_size", 3, 9),
         ("max_new_per_run", 1, 1),
+        ("max_per_jst_day", 1, 3),
         ("min_page_views", 6, 100),
-        ("minimum_article_age_hours", 12, 72),
+        ("fresh_minimum_age_hours", 1, 8),
+        ("fresh_maximum_age_hours", 6, 24),
+        ("minimum_article_age_hours", 8, 72),
         ("maximum_article_age_days", 7, 30),
-        ("minimum_interval_hours", 72, 168),
+        ("minimum_interval_hours", 6, 168),
     )
     for name, lower, upper in caps:
         value = config.get(name)
         if type(value) is not int or not lower <= value <= upper:
             raise ValueError(f"Unsafe article promotion config {name}")
+    if config["fresh_minimum_age_hours"] >= config["fresh_maximum_age_hours"]:
+        raise ValueError("Fresh article window is inverted")
+    if config["fresh_maximum_age_hours"] > config["minimum_article_age_hours"] * 2:
+        raise ValueError("Fresh article window overlaps too broadly with measured-PV lane")
 
 
 def validate_state(state: dict) -> None:
@@ -136,7 +147,8 @@ def publication_text(article: dict) -> str:
         tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/"
     hashtags = " ".join(article_hashtags(article))
-    rendered = TEXT_PREFIX + "\n" + tidy
+    prefix = "【続報｜未発生新聞】" if article.get("followup_of") else TEXT_PREFIX
+    rendered = prefix + "\n" + tidy
     if hashtags:
         rendered += "\n\n" + hashtags
     rendered += "\n\n" + url
@@ -145,26 +157,58 @@ def publication_text(article: dict) -> str:
     return rendered
 
 
+def article_age(article: dict, now: datetime) -> timedelta | None:
+    try:
+        published = datetime.fromisoformat(article["published_at"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if published.tzinfo is None:
+        return None
+    return now - published
+
+
+def is_crisis_article(article: dict) -> bool:
+    """Automatic article promotion stays conservative around acute human harm."""
+    searchable = " ".join(str(value or "") for value in (
+        article.get("title"), article.get("summary"), article.get("source", {}).get("topic")
+    ))
+    return bool(CRISIS_PROMO_PATTERN.search(searchable))
+
+
 def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list[dict]:
-    """Use real publication time; never 2031 fictional dates or source dates."""
+    """Measured-PV lane uses real publication time, never fictional dates."""
     if now.tzinfo is None:
         raise ValueError("Current time must have timezone")
     eligible = []
     for article in articles:
         slug = article.get("slug")
-        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or is_crisis_article(article):
             continue
-        try:
-            published = datetime.fromisoformat(article["published_at"])
-        except (KeyError, TypeError, ValueError):
+        age = article_age(article, now)
+        if age is None:
             continue
-        if published.tzinfo is None:
-            continue
-        age = now - published
         if (timedelta(hours=config["minimum_article_age_hours"]) <= age <=
                 timedelta(days=config["maximum_article_age_days"])):
             eligible.append(article)
     return eligible
+
+
+def eligible_fresh_articles(articles: list[dict], now: datetime, config: dict) -> list[dict]:
+    """Fresh lane exists to drive discovery before an article has enough PV to rank."""
+    if now.tzinfo is None:
+        raise ValueError("Current time must have timezone")
+    result = []
+    for article in articles:
+        slug = article.get("slug")
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or is_crisis_article(article):
+            continue
+        age = article_age(article, now)
+        if age is None:
+            continue
+        if (timedelta(hours=config["fresh_minimum_age_hours"]) <= age <=
+                timedelta(hours=config["fresh_maximum_age_hours"])):
+            result.append(article)
+    return result
 
 
 def valid_page_views(value: object) -> bool:
@@ -265,8 +309,40 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
     return result
 
 
+def rank_fresh(articles: list[dict], state: dict, blocked: set[str],
+               config: dict, now: datetime) -> list[dict]:
+    """Prefer a genuine follow-up, then the newest still-fresh unpromoted story."""
+    result = []
+    for article in eligible_fresh_articles(articles, now, config):
+        slug = article["slug"]
+        if slug in state["queued"] or slug in blocked:
+            continue
+        result.append(article)
+    result.sort(
+        key=lambda item: (
+            bool(item.get("followup_of")),
+            datetime.fromisoformat(item["published_at"]),
+        ),
+        reverse=True,
+    )
+    return result
+
+
+def promotions_today(state: dict, now: datetime) -> int:
+    day = now.astimezone(JST).date()
+    count = 0
+    for entry in state["queued"].values():
+        try:
+            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if queued_at.tzinfo and queued_at.astimezone(JST).date() == day:
+            count += 1
+    return count
+
+
 def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
-    """At most one article promotion in any rolling 72-hour window."""
+    """Keep article promotions separated even when several are allowed per day."""
     for entry in state["queued"].values():
         t = datetime.fromisoformat(entry["queued_at_utc"])
         if t.tzinfo and timedelta(0) <= now - t < timedelta(hours=hours):
@@ -318,13 +394,21 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
         *(article_slug_in_text(p.get("text", "")) for p in existing
           if p.get("status") in ("scheduled", "sent"))
     ) if existing else set()
+    today_count = promotions_today(state, now)
     if (len(queued) >= config["max_queue_size"]
+            or today_count >= config["max_per_jst_day"]
             or cooldown_active(state, now, config["minimum_interval_hours"])):
         return None, None, len(queued)
-    # When Buffer contains only unrelated/legacy scheduled posts, let a known
-    # original lane refill first. Confirmed useful originals count as well.
-    if queued and not any(p.get("id") in creative_ids for p in queued):
+    # Allow article-led discovery, but after two article promotions in one JST
+    # day do not take a third queued slot until a confirmed useful/original
+    # reservation exists. max_queue_size=9 also permanently leaves one Buffer
+    # slot available for another lane.
+    if (today_count >= 2 and queued
+            and not any(p.get("id") in creative_ids for p in queued)):
         return None, None, len(queued)
+    fresh = rank_fresh(articles, state, remote_slugs, config, now)
+    if fresh:
+        return fresh[0], None, len(queued)
     candidates = rank(eligible_articles(articles, now, config), counts,
                       state, remote_slugs, config)
     if not candidates:
@@ -348,16 +432,20 @@ def main() -> int:
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
 
-    # Read-only GETs use the site's actual page-view period, not legacy
+    # Fresh articles can be promoted before PV has had time to accumulate.
+    # Mature candidates still use the site's actual PV period, never legacy
     # browser counts, cumulative reactions or estimated snapshot changes.
     candidates = eligible_articles(articles, now, config)
-    if not candidates:
-        print("No sufficiently old published articles; no Buffer write.")
+    fresh_candidates = eligible_fresh_articles(articles, now, config)
+    if not candidates and not fresh_candidates:
+        print("No fresh or measured-interest articles; no Buffer write.")
         return 0
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Buffer secret unavailable; cannot promote articles")
-    metrics, window = read_page_view_metrics([a["slug"] for a in candidates], now)
+    metrics, window = ({}, None)
+    if candidates:
+        metrics, window = read_page_view_metrics([a["slug"] for a in candidates], now)
     org_id, channel_id = choose_x_channel(token)
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
@@ -381,19 +469,23 @@ def main() -> int:
         return 0
     text = publication_text(eligible)
     buffer_id = queue_one(token, channel_id, {"kind": "text", "text": text})
-    state["queued"][eligible["slug"]] = {
+    entry = {
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
-        "source": "verified_article_page_views",
+        "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
-        "metrics_at_queue": {**window,
-                             "last_7_days_page_views": evidence["last7DaysPageViews"],
-                             "today_page_views": evidence["todayPageViews"]},
+        "published_at": eligible["published_at"],
     }
+    if evidence is not None:
+        entry["metrics_at_queue"] = {**window,
+                                     "last_7_days_page_views": evidence["last7DaysPageViews"],
+                                     "today_page_views": evidence["todayPageViews"]}
+    state["queued"][eligible["slug"]] = entry
     save_state(state)
-    print("PV-selected article accepted by Buffer (not verified X publication):",
+    print("Article accepted by Buffer (not verified X publication):",
           eligible["slug"], buffer_id, "scheduled_before=", scheduled,
-          "page_views=", evidence, "measurement_window=", window)
+          "selection=", entry["source"], "page_views=", evidence,
+          "measurement_window=", window)
     return 0
 
 
