@@ -56,7 +56,7 @@ class XWorkflowTests(unittest.TestCase):
 
     def test_read_only_delivery_audit_cannot_publish(self):
         self.assertIn('cron: "45 14 * * *"', self.audit)
-        self.assertIn("probe_delivery.py", self.audit)
+        self.assertIn("article-picks/audit_delivery.py", self.audit)
         self.assertNotIn("article-picks/dispatch.py", self.audit)
         self.assertNotIn("experiments/dispatch.py", self.audit)
         self.assertNotIn("publish.py", self.audit)
