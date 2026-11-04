@@ -61,6 +61,7 @@ python3 -m unittest discover -s tests -v
 ```
 
 - CIの正本は[`.github/workflows/check.yml`](../.github/workflows/check.yml)。Pythonテスト、Nodeテスト、Workerのdry-runを含みます。
+- Cloudflare Buildsは本番`main`の自動デプロイを有効にし、非本番のプレビューブランチビルドはOFFにします。ブランチごとの`wrangler preview`がDurable Objectの無料namespace枠を使い切るためです。既存namespaceは削除せず、PRは上記CIで検証し、統合後の本番revisionと実配信を確認します。プレビュー停止を画像・記事発行や本番ビルドの停止と混同しません。再有効化する場合は無料枠と実行コマンドを確認し、本番のbindings・migrationsを変更したり、検証失敗時に本番deployへ切り替えたりしません。
 - 本番の公開確認は[`.github/workflows/verify-public-photos.yml`](../.github/workflows/verify-public-photos.yml)を参照。PR・CIの成功と、公開URLの到達・画像表示の成功を混同しません。
 - 記事の編集方針と引き継ぎは[`EDITORIAL_LOOP.md`](EDITORIAL_LOOP.md)、検索インデックスは[`SEARCH_INDEX_REFRESH.md`](SEARCH_INDEX_REFRESH.md)を参照。
 - 不要な従量課金サービス、外部AI API、広告費を勝手に導入しません。ホスティング・ドメイン等の契約状況は契約画面で確認が必要です。
