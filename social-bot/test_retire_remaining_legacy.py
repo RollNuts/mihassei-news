@@ -16,6 +16,11 @@ spec.loader.exec_module(m)
 class RemainingLegacyRetirementTests(unittest.TestCase):
     def setUp(self):
         self.request = copy.deepcopy(m.read(HERE / "remaining-legacy-retirement.json"))
+        # Tests model a fresh one-time request even when production has already
+        # persisted some terminal results.
+        self.request["enabled"] = True
+        self.request["results"] = {}
+        self.request.pop("completed_at", None)
         self.inventory = m.read(HERE / "experiments" / "posts.json")
         self.ledger = m.read(HERE / "experiments" / "state.json")
         self.now = datetime(2026, 11, 4, 10, 0, tzinfo=timezone.utc)
