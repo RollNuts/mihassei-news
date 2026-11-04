@@ -310,6 +310,12 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .archive-list .story-card .story-thumb{
   height:100%;width:100%;aspect-ratio:auto;border-radius:4px;object-fit:cover;
 }
+/* Story illustrations rely on relationships across the whole 16:9 scene.
+   Preserve both sides in compact cards; JPEGs retain their existing crop. */
+.index-main>.section-block>.story-grid>.story-card .story-thumb[data-editorial-scene-src][src$=".svg"],
+.archive-list .story-card .story-thumb[data-editorial-scene-src][src$=".svg"]{
+  object-fit:contain;background-color:#f2f1e9;
+}
 .index-main>.section-block>.story-grid>.story-card .story-meta,
 .archive-list .story-card .story-meta{grid-column:2;grid-row:1;margin:0;gap:4px 8px}
 .index-main>.section-block>.story-grid>.story-card h3,

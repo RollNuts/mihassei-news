@@ -11,6 +11,7 @@ import hashlib
 import json
 import re
 import os
+import struct
 import sys
 import time
 import subprocess
@@ -20,7 +21,8 @@ from collections import Counter
 from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
+from urllib.robotparser import RobotFileParser
 from xml.etree import ElementTree as ET
 
 if __package__:
@@ -74,6 +76,159 @@ def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> No
             or jpeg_dimensions(image) != (1200, 675)
             or hashlib.sha256(image).hexdigest() != record["sha256"]):
         raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
+
+
+class _IconLinks(HTMLParser):
+    """Collect actual icon declarations from the document head."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.in_head = False
+        self.links = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "head":
+            self.in_head = True
+        elif self.in_head and tag == "link":
+            self.links.append(dict(attrs))
+
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self.in_head = False
+
+
+def _png_icon_size(data: bytes) -> tuple[int, int]:
+    if (len(data) < 33 or not data.startswith(b"\x89PNG\r\n\x1a\n")
+            or data[8:16] != b"\x00\x00\x00\rIHDR"):
+        raise ValueError("invalid PNG header")
+    return struct.unpack_from(">II", data, 16)
+
+
+def _ico_icon_sizes(data: bytes) -> set[tuple[int, int]]:
+    if len(data) < 6 or data[:4] != b"\x00\x00\x01\x00":
+        raise ValueError("invalid ICO header")
+    count = struct.unpack_from("<H", data, 4)[0]
+    table_end = 6 + count * 16
+    if count != 4 or len(data) < table_end:
+        raise ValueError("ICO needs all four browser sizes")
+    sizes = set()
+    for index in range(count):
+        width, height, _, reserved, _, _, length, offset = struct.unpack_from(
+            "<BBBBHHII", data, 6 + index * 16
+        )
+        declared = (width or 256, height or 256)
+        if reserved or not length or offset < table_end or offset + length > len(data):
+            raise ValueError("invalid ICO frame bounds")
+        frame = data[offset:offset + length]
+        if frame.startswith(b"\x89PNG\r\n\x1a\n"):
+            actual = _png_icon_size(frame)
+        else:
+            if len(frame) < 40:
+                raise ValueError("truncated ICO bitmap")
+            header, bitmap_width, bitmap_height, planes, bits = struct.unpack_from("<IiiHH", frame)
+            if header < 40 or header > len(frame) or planes != 1 or bits not in (1, 4, 8, 16, 24, 32):
+                raise ValueError("invalid ICO bitmap header")
+            # DIB height includes the colour bitmap and its transparency mask.
+            if bitmap_height != declared[1] * 2:
+                raise ValueError("ICO bitmap height differs from its directory")
+            actual = (bitmap_width, bitmap_height // 2)
+        if actual != declared:
+            raise ValueError("ICO bitmap size differs from its directory")
+        sizes.add(actual)
+    return sizes
+
+
+def verify_site_icons(markup: str, *, fetch=None, root=ROOT) -> None:
+    """Verify three icon URLs, including real bytes rather than a 200 HTML fallback."""
+    fetch = fetch or get
+    parser = _IconLinks()
+    parser.feed(markup)
+    icons = (
+        ("/assets/favicon-192.png", "icon", {"image/png"}, {(192, 192)}),
+        ("/favicon.ico", "icon", {"image/x-icon", "image/vnd.microsoft.icon"},
+         {(16, 16), (32, 32), (48, 48), (64, 64)}),
+        ("/assets/apple-touch-icon.png", "apple-touch-icon", {"image/png"}, {(180, 180)}),
+    )
+    for path, relation, media_types, sizes in icons:
+        declarations = [link for link in parser.links
+                        if link.get("href") == path
+                        and relation in (link.get("rel") or "").lower().split()]
+        declared_sizes = {f"{width}x{height}" for width, height in sizes}
+        if (len(declarations) != 1
+                or set((declarations[0].get("sizes") or "").split()) != declared_sizes
+                or (relation == "icon" and declarations[0].get("type") not in media_types)):
+            raise RuntimeError("Site icon declaration missing or invalid: " + path)
+        try:
+            data, mime = fetch(path)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise RuntimeError("Site icon is not reachable: " + path) from exc
+        if mime.split(";", 1)[0].strip().lower() not in media_types:
+            raise RuntimeError("Site icon has an invalid MIME: " + path)
+        try:
+            actual_sizes = (_ico_icon_sizes(data) if path.endswith(".ico")
+                            else {_png_icon_size(data)})
+            if actual_sizes != sizes:
+                raise ValueError("unexpected icon dimensions")
+        except (ValueError, struct.error) as exc:
+            raise RuntimeError("Site icon format or dimensions invalid: " + path) from exc
+        original = Path(root) / "assets" / path.rsplit("/", 1)[-1]
+        if hashlib.sha256(data).digest() != hashlib.sha256(original.read_bytes()).digest():
+            raise RuntimeError("Site icon differs from the current source: " + path)
+    print("Public site icons OK: PNG 192; ICO 16/32/48/64; Apple touch PNG 180")
+
+
+class _RobotsGroups(RobotFileParser):
+    def _add_entry(self, entry):
+        # Google merges equally specific groups, including repeated '*'.
+        # The standard parser otherwise retains only the first default group.
+        self.entries.append(entry)
+
+
+def verify_icon_crawl_rules(robots: bytes) -> None:
+    """Inspect published directives only; this does not observe Google's crawlers."""
+    parser = _RobotsGroups()
+    # Ignore provider extensions such as Content-Signal and sitemap placement.
+    # They must not split otherwise consecutive User-agent declarations.
+    parser.parse([line for line in robots.decode("utf-8-sig").splitlines()
+                  if line.partition(":")[0].strip().lower()
+                  in {"user-agent", "allow", "disallow"}])
+    targets = (("Googlebot", "/"),
+               ("Googlebot-Image", "/assets/favicon-192.png"),
+               ("Googlebot-Image", "/favicon.ico"),
+               ("Googlebot-Image", "/assets/apple-touch-icon.png"))
+    for bot, path in targets:
+        groups = []
+        for entry in parser.entries:
+            specificity = -1
+            for agent in entry.useragents:
+                token = re.match(r"[A-Za-z0-9_-]+", agent)
+                if agent == "*":
+                    specificity = max(specificity, 0)
+                elif token and bot.lower().startswith(token.group().lower()):
+                    specificity = max(specificity, len(token.group()))
+            if specificity >= 0:
+                groups.append((specificity, entry))
+        best_group = max((score for score, _ in groups), default=-1)
+        matches = []
+        for score, entry in groups:
+            if score != best_group:
+                continue
+            for rule in entry.rulelines:
+                # Undo robotparser's quoting, preserving encoded reserved bytes.
+                pattern = unquote(rule.path)
+                pattern = re.sub(r"%([0-9A-Fa-f]{2})", lambda match:
+                                 chr(int(match[1], 16)) if chr(int(match[1], 16))
+                                 in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+                                 else match[0].upper(), pattern)
+                end = pattern.endswith("$")
+                expression = re.escape(pattern[:-1] if end else pattern).replace(r"\*", ".*")
+                if re.match(expression + ("$" if end else ""), path):
+                    matches.append((len(pattern.encode("utf-8")), rule.allowance))
+        # Unlike RobotFileParser.can_fetch(), Google uses the longest path;
+        # an equally specific Allow wins, regardless of line/group order.
+        if matches and not max(matches)[1]:
+            raise RuntimeError("robots.txt blocks " + bot + " from " + path)
+    print("Public robots rules OK: homepage and 3 icon URLs; Google crawling not observed")
 
 
 def verify_broadcast_delivery(markup, expected_playlist, *, fetch=None, root=ROOT):
@@ -352,6 +507,7 @@ def check():
     sorted_articles=latest_articles(articles, limit=None)
     recent=sorted_articles[:10]
     home,mime=get("/")
+    verify_site_icons(home.decode("utf-8"))
     body=html.unescape(home.decode("utf-8"))
     for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","fiction-mark"):
         if token not in body:
@@ -899,6 +1055,7 @@ def check():
     robots,_=get("/robots.txt")
     if b"Sitemap: https://veripsa.com/sitemap.xml" not in robots:
         raise RuntimeError("Missing robots sitemap discovery")
+    verify_icon_crawl_rules(robots)
     ads,_=get("/ads.txt")
     if ads.strip()!=b"google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0":
         raise RuntimeError("AdSense ownership file mismatch")
