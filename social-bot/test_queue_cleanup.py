@@ -2,6 +2,7 @@ import copy
 import importlib.util
 import json
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -15,6 +16,8 @@ class QueueCleanupTests(unittest.TestCase):
     def setUp(self):
         self.request = json.loads((HERE / "queue-cleanup.json").read_text())
         self.request["results"] = {}
+        self.request.pop("recovery_request_id", None)
+        self.request.pop("recovery_results", None)
         self.inventory = json.loads((HERE / "experiments/posts.json").read_text())
         self.ledger = json.loads((HERE / "experiments/state.json").read_text())
         self.now = datetime(2026, 11, 4, 3, tzinfo=timezone.utc)
@@ -43,7 +46,8 @@ class QueueCleanupTests(unittest.TestCase):
         self.read_count[bid] = self.read_count.get(bid, 0) + 1
         return copy.deepcopy(self.remote.get(bid))
 
-    def move(self, bid):
+    def move(self, bid, original_text):
+        self.assertEqual(original_text, self.remote[bid]["text"])
         self.events.append(("edit", bid))
         self.remote[bid]["status"] = "draft"
         self.remote[bid]["dueAt"] = None
@@ -53,9 +57,9 @@ class QueueCleanupTests(unittest.TestCase):
         self.events.append(("persist", None))
         self.saved.append(copy.deepcopy(request))
 
-    def perform(self, fetch=None, move=None, persist=None):
+    def perform(self, fetch=None, move=None, persist=None, recovery=False):
         m.process(self.request, self.inventory, self.ledger,
-                  fetch or self.fetch, move or self.move, persist or self.persist, lambda: self.now)
+                  fetch or self.fetch, move or self.move, persist or self.persist, lambda: self.now, recovery=recovery)
 
     def result(self):
         return self.request["results"][self.request["targets"][0]["post_id"]]
@@ -189,7 +193,7 @@ class QueueCleanupTests(unittest.TestCase):
 
     def test_ambiguous_provider_edit_is_held_and_never_repeated(self):
         self.single()
-        def timeout(bid):
+        def timeout(bid, original_text):
             self.events.append(("edit", bid))
             raise TimeoutError("No response")
         self.perform(move=timeout)
@@ -201,8 +205,8 @@ class QueueCleanupTests(unittest.TestCase):
 
     def test_timeout_can_be_verified_by_reading_draft_without_repeating_edit(self):
         self.single()
-        def timeout_after_success(bid):
-            self.move(bid)
+        def timeout_after_success(bid, original_text):
+            self.move(bid, original_text)
             raise TimeoutError("Lost response")
         self.perform(move=timeout_after_success)
         self.assertEqual(self.result()["state"], "verified_draft")
@@ -221,8 +225,8 @@ class QueueCleanupTests(unittest.TestCase):
 
     def test_asset_loss_is_not_claimed_as_verified(self):
         self.single()
-        def damaged(bid):
-            receipt = self.move(bid)
+        def damaged(bid, original_text):
+            receipt = self.move(bid, original_text)
             self.remote[bid]["assets"] = []
             return receipt
         self.perform(move=damaged)
@@ -248,6 +252,117 @@ class QueueCleanupTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.perform()
         self.assertEqual(self.events, [])
+
+    def failed_original(self):
+        self.single()
+        def rejected(bid, original_text):
+            self.events.append(("edit", bid))
+            raise RuntimeError("Buffer editPost rejected: PostInvalidInputError - Text or media is required")
+        self.perform(move=rejected)
+        initial = copy.deepcopy(self.request["results"])
+        self.request["recovery_request_id"] = m.RECOVERY_ID
+        self.request["recovery_results"] = {}
+        self.events.clear()
+        return initial
+
+    def test_provider_rejection_type_and_message_are_preserved(self):
+        self.failed_original()
+        error = self.result()["provider_error"]
+        self.assertEqual(error["provider_type"], "PostInvalidInputError")
+        self.assertIn("Text or media is required", error["message"])
+
+    def test_named_recovery_keeps_original_failed_result_and_exact_text(self):
+        initial = self.failed_original()
+        self.perform(recovery=True)
+        self.assertEqual(self.request["results"], initial)
+        row = next(iter(self.request["recovery_results"].values()))
+        self.assertEqual(row["state"], "verified_draft")
+        self.assertEqual(row["recovery_request_id"], m.RECOVERY_ID)
+        self.assertEqual(len(self.edits()), 1)
+        first_recovery = self.saved[-2]["recovery_results"]
+        self.assertEqual(next(iter(first_recovery.values()))["state"], "intent")
+
+    def test_recovery_requires_its_explicit_request_id(self):
+        self.failed_original()
+        self.request.pop("recovery_request_id")
+        with self.assertRaises(ValueError):
+            self.perform(recovery=True)
+        self.assertEqual(self.events, [])
+
+    def test_initial_unknown_outcome_without_same_scheduled_proof_is_not_retried(self):
+        self.failed_original()
+        self.result().pop("after")
+        self.perform(recovery=True)
+        self.assertFalse(self.edits())
+        row = next(iter(self.request["recovery_results"].values()))
+        self.assertEqual(row["reason"], "initial_input_failure_not_proven")
+        self.assertEqual([event[0] for event in self.events], ["persist"])
+
+    def test_changed_initial_after_snapshot_is_not_retried(self):
+        self.failed_original()
+        self.result()["after"]["text_sha256"] = "f" * 64
+        self.perform(recovery=True)
+        self.assertFalse(self.edits())
+
+    def test_successful_original_cannot_be_retried_as_recovery(self):
+        self.failed_original()
+        self.result()["state"] = "verified_draft"
+        self.perform(recovery=True)
+        self.assertFalse(self.edits())
+
+    def test_recovery_rereads_current_post_and_will_not_touch_published_post(self):
+        self.failed_original()
+        target = self.request["targets"][0]
+        self.remote[target["buffer_id"]]["status"] = "sent"
+        self.perform(recovery=True)
+        self.assertFalse(self.edits())
+        row = next(iter(self.request["recovery_results"].values()))
+        self.assertEqual(row["reason"], "already_published")
+
+    def test_failed_recovery_is_recorded_separately_and_never_repeated(self):
+        initial = self.failed_original()
+        def unavailable(bid, original_text):
+            self.events.append(("edit", bid))
+            raise RuntimeError("Buffer editPost rejected: UnauthorizedError - Access denied")
+        self.perform(move=unavailable, recovery=True)
+        self.assertEqual(self.request["results"], initial)
+        row = next(iter(self.request["recovery_results"].values()))
+        self.assertEqual(row["state"], "held_unknown")
+        self.assertEqual(row["provider_error"]["provider_type"], "UnauthorizedError")
+        self.events.clear()
+        self.perform(recovery=True)
+        self.assertEqual(self.events, [])
+
+    def test_successful_recovery_is_never_repeated(self):
+        self.failed_original()
+        self.perform(recovery=True)
+        self.events.clear()
+        self.perform(recovery=True)
+        self.assertEqual(self.events, [])
+
+    def test_recovery_cannot_expand_to_other_legacy_reservations(self):
+        self.single()
+        pid = "xexp-selfcheckout-dialogue"
+        receipt = self.ledger["queued"][pid]
+        self.request["targets"][0].update(
+            post_id=pid, buffer_id=receipt["buffer_id"],
+            text_sha256=receipt["published_text_sha256"],
+        )
+        self.request["recovery_request_id"] = m.RECOVERY_ID
+        with self.assertRaisesRegex(ValueError, "original six named"):
+            self.perform(recovery=True)
+        self.assertEqual(self.events, [])
+
+    def test_error_evidence_redacts_credentials(self):
+        with patch.dict("os.environ", {"BUFFER_API_KEY": "test-secret-key"}):
+            error = m.provider_error(RuntimeError(
+                "Buffer GraphQL error: token=test-secret-key Bearer different-secret api_key=third-secret"
+            ))
+        serialized = json.dumps(error)
+        self.assertNotIn("test-secret-key", serialized)
+        self.assertNotIn("different-secret", serialized)
+        self.assertNotIn("third-secret", serialized)
+        self.assertIn("[redacted]", serialized)
 
 
 if __name__ == "__main__":
