@@ -184,15 +184,16 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
 
         current = self.articles[-1]
         fallback = ('<nav class="reader-next" data-popular-fallback>'
-                    '<span>新着からもう1本 · 社会</span>'
-                    '<a class="reader-next-title" href="/articles/story-28/">次の記事</a></nav>')
+                    '<span class="reader-next-kicker">次の記事</span>'
+                    '<span class="reader-next-meta">新着 · 社会</span>'
+                    '<a class="reader-next-title" href="/articles/story-28/">記事タイトル</a></nav>')
         panel = pv_recommendations(self.articles, current["slug"])
         verify_pv_recommendations(fallback + panel, self.articles, current)
         variants = {
             "self link": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-29/"'),
             "older fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
             "hidden fallback": (fallback + panel).replace("data-popular-fallback>", "data-popular-fallback hidden>"),
-            "misleading label": (fallback + panel).replace("新着からもう1本", "一番人気"),
+            "misleading label": (fallback + panel).replace("次の記事", "一番人気"),
             "self candidate": fallback + pv_recommendations(self.articles),
             "missing fallback": panel,
             "old related rail": fallback + panel + '<section class="article-related"></section>',

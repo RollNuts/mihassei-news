@@ -1316,8 +1316,9 @@ def story(a, articles, issues=None, serials=None):
 <figcaption>{photo_credit(a)}{clip_caption(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
-<nav class="reader-next" data-popular-fallback aria-label="新着から続けて読む記事">
-<span class="reader-next-kicker">新着からもう1本 · {escape(next_category)}</span>
+<nav class="reader-next" data-popular-fallback aria-label="次の記事へ進む">
+<span class="reader-next-kicker">次の記事</span>
+<span class="reader-next-meta">新着 · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
 {popular_section}

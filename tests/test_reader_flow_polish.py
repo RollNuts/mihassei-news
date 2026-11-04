@@ -105,6 +105,8 @@ class ReaderFlowPolishTests(unittest.TestCase):
         source = html.index('class="source-context"')
         self.assertTrue(ending < next_story < poll < source)
         self.assertEqual(html.count('class="reader-next"'), 1)
+        self.assertIn('<span class="reader-next-kicker">次の記事</span>', html)
+        self.assertIn('<span class="reader-next-meta">新着 · ', html)
         target = re.search(r'<a href="([^"]+)" class="reader-next-title">', html)
         self.assertIsNotNone(target)
         self.assertNotEqual(target.group(1), '/articles/' + item["slug"] + '/')
