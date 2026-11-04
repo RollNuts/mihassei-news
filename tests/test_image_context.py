@@ -3,10 +3,14 @@
 All checks operate on locally rendered HTML; no image API or network calls.
 """
 import html
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 from scripts import build
+from scripts.generated_photos import article_fingerprint
 
 
 class ImageContextTests(unittest.TestCase):
@@ -93,6 +97,60 @@ class ImageContextTests(unittest.TestCase):
         self.assertIn('fetchpriority="high"', lead)
         self.assertNotIn('loading="lazy"', lead)
         self.assertIn('loading="lazy"', markup.split('class="story-grid"', 1)[1])
+
+
+class EditorialSceneCardFramingTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.article = {
+            "slug": "scene-framing-fixture", "title": "呼び鈴が店に届いた",
+            "category": "事件", "summary": "入口と小包を同時に見せる構図。",
+            "paragraphs": ["店主は入口で小包に入った呼び鈴を見つけた。"],
+            "art": "cards",
+        }
+        self.scene_source = "/images/scene-framing-fixture.svg"
+        self.scene_file = self.root / "assets/editorial-scenes/scene-framing-fixture.svg"
+        self.scene_file.parent.mkdir(parents=True)
+        self.scene_file.write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"'
+            ' role="img" aria-label="入口と小包を描いた創作イラスト"'
+            ' data-visual-topic="doorbell"'
+            f' data-article-sha256="{article_fingerprint(self.article)}">'
+            '<title>構図保持の一時テスト用イラスト</title>'
+            '<path d="M10 10H100V100H10Z"/></svg>', encoding="utf-8",
+        )
+        base_patch = patch.object(build, "BASE", self.root)
+        base_patch.start()
+        self.addCleanup(base_patch.stop)
+
+    def image_attributes(self, article=None):
+        return ET.fromstring(
+            build.image_tag(article or self.article, "story-thumb")[:-1] + " />"
+        ).attrib
+
+    def test_current_reviewed_scene_preserves_composition_but_stale_scene_does_not(self):
+        attributes = self.image_attributes()
+        self.assertEqual(attributes["src"], self.scene_source)
+        self.assertEqual(attributes["data-editorial-scene-src"], self.scene_source)
+        self.assertNotIn("data-fallback", attributes)
+        changed = {**self.article, "paragraphs": ["店主は新しい呼び鈴を買い直した。"]}
+        fallback = self.image_attributes(changed)
+        self.assertEqual(fallback["src"], self.scene_source)
+        self.assertNotIn("data-editorial-scene-src", fallback)
+
+    def test_photo_retains_its_source_and_identifies_only_its_reviewed_svg_fallback(self):
+        with patch.object(build, "reviewed_generated_scene", return_value=True):
+            attributes = self.image_attributes()
+            self.assertEqual(attributes["src"], "/generated/scene-framing-fixture.jpg")
+            self.assertEqual(attributes["data-fallback"], self.scene_source)
+            self.assertEqual(attributes["data-editorial-scene-src"], self.scene_source)
+            self.assertEqual(attributes["data-generated-scene"], "true")
+            self.scene_file.unlink()
+            ordinary_photo = self.image_attributes()
+            self.assertEqual(ordinary_photo["src"], "/generated/scene-framing-fixture.jpg")
+            self.assertNotIn("data-editorial-scene-src", ordinary_photo)
 
 
 if __name__ == "__main__":

@@ -11,20 +11,26 @@ import argparse
 import json
 from datetime import datetime
 from pathlib import Path
+from xml.etree import ElementTree
 
 try:
+    from .editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from .generated_photos import (
-        ROOT, SAFE_SLUG, article_fingerprint, generated_scene_entry,
+        ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
         usable_generated_scene, visually_held_scene,
     )
+    from .media_policy import usable_cached_photo
 except ImportError:
+    from editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from generated_photos import (
-        ROOT, SAFE_SLUG, article_fingerprint, generated_scene_entry,
+        ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
         usable_generated_scene, visually_held_scene,
     )
+    from media_policy import usable_cached_photo
 
 REVIEW_FILE = Path("content/visual_reviews.json")
 STATUSES = ("accepted", "pending", "rejected", "missing")
+PUBLICATION_KINDS = ("generated_jpeg", "editorial_svg", "stock_photo", "generic_fallback")
 
 
 def _review_records(root: Path) -> dict:
@@ -99,6 +105,68 @@ def reviewed_generated_scene(article: dict, *, root: Path = ROOT) -> bool:
     return _scene_state(article, root=Path(root))["status"] == "accepted"
 
 
+def _editorial_scene_state(article: dict, *, root: Path) -> dict:
+    """Explain an authored SVG's gate result without changing its approval."""
+    relative = Path("assets/editorial-scenes") / (article["slug"] + ".svg")
+    path = root / relative
+    state = {"path": relative.as_posix(), "status": "absent", "reason": "no_editorial_scene"}
+    if path.parent.is_symlink() or path.is_symlink():
+        return {**state, "status": "invalid", "reason": "unsafe_scene_path"}
+    if not path.exists():
+        return state
+    if reviewed_story_scene(article, root=root) is not None:
+        return {**state, "status": "current", "reason": "matching_reviewed_scene"}
+    # The publication validator above remains authoritative. Parsing here only
+    # distinguishes an article edit from other invalid assets for the operator.
+    try:
+        svg = path.read_text(encoding="utf-8")
+        if "<!DOCTYPE" in svg.upper() or "<!ENTITY" in svg.upper():
+            raise ValueError("Unsupported SVG declaration")
+        scene = ElementTree.fromstring(svg)
+        fingerprint = scene.get("data-article-sha256", "")
+        if (scene.tag == f"{{{SVG_NAMESPACE}}}svg" and SHA256.fullmatch(fingerprint)
+                and fingerprint != article_fingerprint(article)):
+            return {**state, "status": "stale", "reason": "article_fingerprint_changed"}
+    except (OSError, UnicodeError, ValueError, ElementTree.ParseError):
+        pass
+    return {**state, "status": "invalid", "reason": "scene_validation_failed"}
+
+
+def _publication_row(article: dict, *, root: Path) -> dict:
+    """Report build selection, not a claim that those bytes are deployed live."""
+    row = _scene_state(article, root=root)
+    scene = _editorial_scene_state(article, root=root)
+    # Match build.editorial_image() and uses_stock_photo() priority, using the
+    # same validators. Importing build here would create a publication-gate cycle.
+    kind, url = "generic_fallback", "/images/" + article["slug"] + ".svg"
+    if row["status"] == "accepted":
+        kind, url = "generated_jpeg", generated_url(article)
+    elif scene["status"] == "current":
+        kind = "editorial_svg"
+    elif usable_cached_photo(article, root=root):
+        kind, url = "stock_photo", "/photos/" + article["slug"] + ".jpg"
+    return {**row, "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
+
+
+def _attention(row: dict) -> list[dict]:
+    """Keep actionable review work separate from acceptable SVG replacements."""
+    work = []
+    if row["editorial_scene"]["status"] in ("stale", "invalid"):
+        work.append((
+            row["editorial_scene"]["status"] + "_editorial_scene",
+            "現在の本文と専用SVGを実物で再確認し、必要なら修正する。指紋だけで承認しない。",
+        ))
+    if row["status"] == "pending":
+        work.append(("pending_jpeg", "現在のJPEGを本文と目視照合し、採否を記録する。"))
+    if row["publication"]["kind"] == "generic_fallback" and not work:
+        work.append((
+            "generic_fallback",
+            "本文の具体的な場面に合う素材を用意し、実物確認する。保留解除だけで復旧しない。",
+        ))
+    return [{"slug": row["slug"], "publication": row["publication"],
+             "reason": reason, "next_action": action} for reason, action in work]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="保存済みの画像目視レビュー記録を照合する、読み取り専用の一覧。"
@@ -120,12 +188,18 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"error": "記事データを読み込めません", "detail": str(error)},
                          ensure_ascii=False))
         return 2
-    rows = [_scene_state(article, root=args.root)
+    rows = [_publication_row(article, root=args.root)
             for article in sorted(articles, key=lambda article: article["slug"])]
     print(json.dumps({
         "version": 1,
         "basis": "保存済みの目視レビュー記録とJPEGの整合性を照合。画像の意味適合は自動判定しません。",
+        "publication_basis": "現在のファイルからビルドが選ぶ素材。本番配信を確認した結果ではありません。",
         "counts": {status: sum(row["status"] == status for row in rows) for status in STATUSES},
+        "publication_counts": {
+            kind: sum(row["publication"]["kind"] == kind for row in rows)
+            for kind in PUBLICATION_KINDS
+        },
+        "attention": [item for row in rows for item in _attention(row)],
         "images": rows,
     }, ensure_ascii=False, indent=2))
     return 0
