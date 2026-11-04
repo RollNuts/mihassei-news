@@ -132,6 +132,9 @@ def category_feed_url(name):
 
 
 TOPIC_MIN_INDEXABLE_ARTICLES = 3
+PERSON_ATTACKING_SATIRE_TAGS = frozenset({
+    "社畜", "情弱", "老害", "ドパガキ", "フレネミー",
+})
 
 
 def article_tags(article):
@@ -306,6 +309,7 @@ def load():
                 or len(satire_tags) != len(set(satire_tags))
                 or a["category"] in satire_tags
                 or set(tags) & set(satire_tags)
+                or any(tag in PERSON_ATTACKING_SATIRE_TAGS for tag in satire_tags)
                 or any(invalid_label(tag) for tag in satire_tags)):
             raise ValueError("Satire tags must be 0-2 distinct non-abusive lenses: " + a["slug"])
         source = a["source"]
