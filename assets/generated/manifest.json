@@ -358,6 +358,12 @@
     }
   },
   "rejected": {
+    "stock-rebound-confetti-still-in-red": {
+      "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+      "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
+      "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
