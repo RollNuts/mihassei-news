@@ -72,8 +72,7 @@ def recorded(buf="buf-old", hours=180):
 class ArticlePickTests(unittest.TestCase):
     def test_actual_config_and_initial_ledger(self):
         config = picks.read_json(HERE / "config.json")
-        original = picks.read_json(HERE.parent / "experiments" / "config.json")
-        picks.validate_config(config, original)
+        picks.validate_config(config)
         state = picks.read_json(HERE / "state.json")
         picks.validate_state(state)
         self.assertEqual(config["max_queue_size"], 10)
@@ -281,9 +280,8 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(picks.eligible_articles([crisis], NOW, CONFIG), [])
 
     def test_pinned_channel_and_limits_fail_closed(self):
-        original = {"channel_id": "X-VERIPSA"}
-        picks.validate_config(CONFIG, original)
-        for field, value in (("channel_id", "OTHER-ACCOUNT"),
+        picks.validate_config(CONFIG)
+        for field, value in (("channel_id", ""),
                              ("max_queue_size", 11),
                              ("max_new_per_run", 2),
                              ("max_per_jst_day", 8),
@@ -294,7 +292,7 @@ class ArticlePickTests(unittest.TestCase):
                              ("enabled", "true")):
             cfg = {**CONFIG, field: value}
             with self.subTest(field=field), self.assertRaises(ValueError):
-                picks.validate_config(cfg, original)
+                picks.validate_config(cfg)
 
     def test_recover_scheduled_or_sent_before_queue_and_permanent_slug_dedupe(self):
         state = ledger()
@@ -388,8 +386,6 @@ class ArticlePickTests(unittest.TestCase):
         documents = {
             HERE / "config.json": CONFIG,
             HERE / "state.json": ledger(),
-            HERE.parent / "experiments/config.json": {"channel_id": CONFIG["channel_id"],
-                                                       "experiment_publishing_enabled": False},
             HERE.parent / "experiments/state.json": ledger(),
         }
         original = copy.deepcopy(documents)
@@ -441,8 +437,6 @@ class ArticlePickTests(unittest.TestCase):
         documents = {
             HERE / "config.json": CONFIG,
             HERE / "state.json": ledger(),
-            HERE.parent / "experiments/config.json": {"channel_id": CONFIG["channel_id"],
-                                                       "experiment_publishing_enabled": False},
             HERE.parent / "experiments/state.json": ledger(),
         }
         with tempfile.TemporaryDirectory() as temp:
