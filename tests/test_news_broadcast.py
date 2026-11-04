@@ -38,6 +38,7 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertIn('src="' + build.asset_url("news-broadcast.js") + '"', home)
         self.assertNotIn('autoplay', home)
         self.assertIn('架空ニュース', home)
+        self.assertNotIn("<small>FICTION</small>", home)
 
     def test_missing_clip_drops_newsroom_but_keeps_headlines(self):
         with patch.object(build, "usable_clip", return_value=None):
