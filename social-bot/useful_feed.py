@@ -25,6 +25,7 @@ STATE_PATH = HERE / "useful-state.json"
 # One shared Free queue; new useful originals may use the last free slot.
 # All senders serialize on the same workflow concurrency group.
 MAX_TOTAL_SCHEDULED = 10
+MAX_DAILY_POSTS = 7
 CRISIS_AUTO_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
@@ -122,7 +123,7 @@ def validate(feed, state, *, require_editorial=True):
     posts = feed.get("posts")
     if not isinstance(posts, list):
         raise ValueError("Posts must be a list")
-    ids, days, texts = set(), set(), []
+    ids, day_counts, texts = set(), {}, []
     for p in posts:
         pid, text = p.get("id"), p.get("text")
         if not isinstance(pid, str) or not re.fullmatch(r"xexp-useful-[a-z0-9-]+", pid):
@@ -178,9 +179,9 @@ def validate(feed, state, *, require_editorial=True):
                 if reason not in (None, "editorial_review_rejected"):
                     raise ValueError(f"{pid}: {reason}")
         if p["delivery"] == "automatic":
-            if day in days:
-                raise ValueError("Only one automatic useful post per JST day")
-            days.add(day)
+            day_counts[day] = day_counts.get(day, 0) + 1
+            if day_counts[day] > MAX_DAILY_POSTS:
+                raise ValueError("No more than seven automatic useful posts per JST day")
         if any(close_copy(text, other) for other in texts):
             raise ValueError("Duplicate or near-duplicate manuscript")
         if pid in state["attempts"] and state["attempts"][pid].get("payload_sha256") not in (None, payload_hash(p)):
@@ -194,6 +195,26 @@ def validate(feed, state, *, require_editorial=True):
     return posts
 
 
+def live_day_count(live, day_jst):
+    """Count all observed X posts for one JST day, regardless of publishing lane."""
+    seen = set()
+    for row in live:
+        if row.get("status") not in ("scheduled", "sent"):
+            continue
+        value = row.get("sentAt") if row.get("status") == "sent" else row.get("dueAt")
+        if not value:
+            value = row.get("dueAt") or row.get("sentAt")
+        if not value:
+            continue
+        try:
+            observed_day = stamp(value).astimezone(JST).date().isoformat()
+        except (TypeError, ValueError):
+            continue
+        if observed_day == day_jst:
+            seen.add(row.get("id") or ("anonymous", row.get("text"), value))
+    return len(seen), seen
+
+
 def select(feed, state, now, live, prior_texts=(), reasons=None):
     # Runtime selection records an exact review failure instead of turning a
     # missing approval into an unexplained empty queue. --validate is stricter.
@@ -203,12 +224,19 @@ def select(feed, state, now, live, prior_texts=(), reasons=None):
         reasons.append({"reason": "disabled"})
         return None
     today = now.astimezone(JST).date().isoformat()
-    if any(a.get("day_jst") == today for a in state["attempts"].values()):
-        reasons.append({"reason": "day_already_attempted"})
-        return None
     if sum(p.get("status") == "scheduled" for p in live) >= MAX_TOTAL_SCHEDULED:
         reasons.append({"reason": "shared_free_queue_full"})
         return None  # Never exceed Buffer Free's shared ten scheduled posts.
+    remote_today, remote_ids = live_day_count(live, today)
+    local_only_today = sum(
+        1 for row in state["attempts"].values()
+        if row.get("day_jst") == today
+        and row.get("provider_status") not in ("cancelled_before_submission",)
+        and (not row.get("buffer_id") or row.get("buffer_id") not in remote_ids)
+    )
+    if remote_today + local_only_today >= MAX_DAILY_POSTS:
+        reasons.append({"reason": "daily_x_cap_reached", "observed_or_intent_count": remote_today + local_only_today})
+        return None
     for p in posts:
         due = stamp(p["publish_at"])
         reason = None
@@ -309,6 +337,8 @@ def main():
         "checked_at_utc": now.isoformat(),
         "scheduled_count": sum(r.get("status") == "scheduled" for r in live),
         "shared_queue_limit": MAX_TOTAL_SCHEDULED,
+        "daily_x_cap": MAX_DAILY_POSTS,
+        "observed_today_count": live_day_count(live, now.astimezone(JST).date().isoformat())[0],
         "selected_post_id": p["id"] if p else None,
         "reasons": reasons,
     }
