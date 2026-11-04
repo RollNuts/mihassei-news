@@ -1,16 +1,17 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-11-04T13:22:18.212205+00:00",
+  "checked_at": "2026-11-04T13:23:10.542709+00:00",
   "scope": "retired_x_experiments_only",
   "article_promotion_untouched": true,
   "counts": {
     "ledger_receipts_checked": 12,
     "deleted_now": 0,
-    "already_absent": 0,
+    "already_absent": 6,
     "published_untouched": 6,
-    "held": 6
+    "held": 0
   },
-  "remaining_unpublished_legacy_known": 6,
+  "remaining_unpublished_legacy_known": 0,
+  "provider_post_count": 42,
   "outcomes": [
     {
       "post_id": "xexp-ghost-interview",
@@ -35,32 +36,27 @@
     {
       "post_id": "xexp-nejimachi-nothing-wrong",
       "buffer_id": "6aea76084c41ba80aa4864d8",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     },
     {
       "post_id": "xexp-nejimachi-one-screw",
       "buffer_id": "6ae9c80447205d2c39966fbc",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     },
     {
       "post_id": "xexp-invisible-nails",
       "buffer_id": "6ae9c80347205d2c39966f7a",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     },
     {
       "post_id": "xexp-shadow-home",
       "buffer_id": "6ae9c80547205d2c39966fe4",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     },
     {
       "post_id": "xexp-witch-autopilot",
       "buffer_id": "6ae9c804e9a91b5943cdd3ff",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     },
     {
       "post_id": "xexp-selfcheckout-dialogue",
@@ -75,8 +71,7 @@
     {
       "post_id": "xexp-book-review",
       "buffer_id": "6aea7608ff887f055cd9d61f",
-      "state": "held",
-      "reason": "provider_read_failed"
+      "state": "absent"
     }
   ]
 }
