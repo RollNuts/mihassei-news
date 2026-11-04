@@ -368,6 +368,11 @@
     }
   },
   "rejected": {
+    "datacenter-unbuilt-ribbon-cutting": {
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "reason": "Visual review (2026-11-05 JST): the generated JPEG shows a large built roofed concrete hall/corridor and a crowd behind the ribbon, not the empty gravel lot with no buildings required by the article. The visible building defeats the central unbuilt-data-center joke; use the safe illustration until a genuinely different new JPEG is generated and reviewed.",
+      "rejected_candidate_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
