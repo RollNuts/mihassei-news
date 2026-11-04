@@ -6,8 +6,8 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 
 | 経路 | 状態と入口 | 範囲 |
 | --- | --- | --- |
-| 独自コンテンツ `useful` | `useful-posts.json.enabled: true`、[`x-useful-originals.yml`](../.github/workflows/x-useful-originals.yml) | 本文・事実を確認した当日分を、他のX経路も含む1日合計7本上限の空きへ予約 |
-| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | 新着・続報・実測PV記事から1日最大4本。最低4時間間隔、記事slugで重複防止。全X経路合計7本上限の範囲で使う。詳細は[記事紹介](article-picks/README.md) |
+| 旧独自コンテンツ `useful` | `useful-posts.json.enabled: false`、[`x-useful-originals.yml`](../.github/workflows/x-useful-originals.yml) | 自動送信は停止。履歴とオフライン検証だけ保持 |
+| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | **唯一のX自動投稿経路**。新着・続報・実測PV記事から1日最大7本、最低2時間間隔、記事slugで重複防止。詳細は[記事紹介](article-picks/README.md) |
 | 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
 | ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
@@ -22,10 +22,10 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 | 担当 | 成果物 | 書き込み範囲 |
 | --- | --- | --- |
 | X朝・手動原稿 | コピーできるおすすめ本文1本。別の明確な価値がある日のみ追加1本 | ユーザーへの原稿提示のみ。X・Buffer・GitHubへ書き込まない |
-| X自動投稿 | 当日用の確認済み原稿、Buffer受付ID・予定時刻、確認できた公開状態 | 未試行の`useful-posts.json`への追記。通常のPR・CI・統合後、既存Actionsに配信を任せる |
+| X自動投稿 | 記事紹介の候補・Buffer受付ID・予定時刻・確認できた公開状態 | `article-picks`だけを使う。旧シュール・useful・漫画を自動送信へ戻さない |
 | X夜・レビュー | 確認できた配信・反応と、翌日に変える内容1つ。日曜は週の比較もこの枠で実施 | 読み取りと編集提案のみ。再送、予約編集、コード・他タスク変更はしない |
 
-全担当が`useful-posts.json`・`useful-state.json`と直近の採用結果を照合し、手動稿・自動稿・既刊で同文や同じ展開・オチを重ねない。提案、本人の採用、予約、実投稿、実測を分ける。引き継ぎは既存のタスク結果へ題材・独自の中身・形式・状態を短く残し、夜の編集メモは最大8行。新しい外部ログや私的会話の保存先は作らない。
+全担当が`article-picks/state.json`と直近の実投稿を照合し、同じ記事URLや同一slugを重ねて自動投稿しない。提案、本人の採用、予約、実投稿、実測を分ける。引き継ぎは既存のタスク結果へ題材・独自の中身・形式・状態を短く残し、夜の編集メモは最大8行。新しい外部ログや私的会話の保存先は作らない。
 
 ## 共通の編集基準
 
@@ -38,48 +38,23 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 - 情報稿は対象日・公開日・数字・確定/速報を公式等で確認する。購入、観戦、プレイ、売買、成果、読者の発言を捏造しない。独立した会話例は短く創作と分かるようにし、本人・実在人物の実話にしない。新聞記事の紹介は見出しとリンクを中心にし、定型の「創作」注記を毎回付けない。勤務先、顧客、私生活、資産額、生の会話履歴を公開しない。
 - 自然な口語、短い改行、絵文字0〜2個を基本に、狭い専門用語・説教・誇張を避ける。手動稿は現行のX重み付き文字数を確認。自動稿は下記のコード上限を守る。独自性の編集評価とX報酬の適格性は別で、認定や成長を保証しない。規約判断が必要ならその時点の公式資料を確認する。
 
-## 自動原稿の登録と配信
+## X自動投稿の登録と配信
 
-開始時に最新main、未統合PR、`useful_feed.py`、`useful-posts.json`、`useful-state.json`、`test_useful_feed.py`、当該Actionsを確認する。日次担当は原稿だけを扱い、投稿コード・workflow・停止設定・上限を変更しない。`enabled: false`や認証エラーを別アカウント・有料経路で回避しない。
+Xの自動送信は記事紹介だけ。日次独自稿、シュール短文、キャラ日常、漫画を空き枠の穴埋めに使わない。サイト側の記事発行は1日7〜9本を目標にするが、Xは最大7本で、弱い記事を無理に流さない。
 
-| 項目 | 条件 |
-| --- | --- |
-| `id` | `xexp-useful-YYYYMMDD-ASCII識別子`。同じ内容を別IDで再投入しない。同一JST日に自動稿は最大7本 |
-| `kind` | `evergreen_explainer`、`conversation_example`、`market_close`、`source_commentary`。出典を確かめたニュース・公開議論への独自の見方は`source_commentary`を使う |
-| `text` | 現コードでは12〜138コードポイント。タグ・メンションなし。創作会話は「創作・会話例」等で短く明示し、別kindへの偽装で検査を回避しない |
-| 配信指定 | `delivery: automatic`、`trend_targeted: false`。流行への便乗、政治・事件速報、本人の感想確認が必要な稿は手動候補へ |
-| 日時 | 当日の分散枠を使い、各稿に十分なCI余裕を持つ`publish_at`を設定。実際の`checked_at`、当日中の`valid_until`、タイムゾーン付き時刻を記録し、古い稿を翌日へ自動繰越ししない |
-| 根拠 | 公開可能な`basis`とHTTPSの`sources`。会話例を除く新規自動稿は出典必須。事実と独自の解釈を区別し、公開議論の一投稿を世論として扱わない。創作は創作であることと固有の読みどころを記し、私的情報を入れない |
-| 市況 | 対象取引日を本文と`market_session`へ。確定値と出典を確認し、投稿まで12時間以内の実確認日時を記録。数字・原因・売買判断を捏造しない |
-| 出典への見解 | `source_commentary`は元資料の実日付`source_date`と、投稿まで12時間以内の`checked_at`を記録。公開日と出来事の日を混同せず、本文を確認する |
-
-新規自動稿には`editorial_review`を付ける。`decision`（`approved`/`rejected`）、本文の`text_sha256`、本文の異なる箇所からの`concrete_anchor`（対象・場面）と`added_value`（読者へ渡す答え、または矛盾を言語化した箇所）、`reader_payoff`（どの調査・比較・判断の手間を一つ減らせるか）、`why_now_or_save`（今読む、または後から役立つ理由）を記録する。最後の2つを「有益」「共感できる」「面白い」だけで済ませない。却下稿は送らず、修正後は本文と審査を読み直す。
-
-コードは審査の欠落・却下・本文との不一致・出典不足を検出する。面白さや独自性を自動採点して保証するものではない。編集者は上記の実文比較で採否を判断し、既に試行済みの稿には遡って審査情報を追加しない。新規自動稿の有効期限は投稿予定と同じJST日付に収める。
-
-`x-useful-originals.yml`は対象ファイルのmain更新と09:10〜21:10 JSTの7確認枠から動く。共有キュー上限10件、全X経路合計1日7本、既存予約との30分間隔、期限、類似原稿の排除、共有排他、**送信前intentの永続保存**を維持する。投稿予定まで15分超の余裕が必要。受付済み・応答不明の試行を再送せず、本文・時刻・メタデータ・台帳を固定する。空き不足や期限超過を安全策の解除で解消しない。
-
-必要な検証と最新headのCI、競合確認を経て安全にmainへ統合し、既存Actionsの結果を読む。追加費用0円。既存無料Buffer・公開GitHub Actionsを使い、有料API・AI/画像/動画API・追加クレジット・GPU・データ・広告・有料プラン変更は行わない。
-
-## 受付と公開を分けて確認する
-
-`useful-state.json.attempts`のID・本文指紋・`provider_status`・`due_at`、`last_selection`の件数・理由をログと照合する。状態が同じなら確認時刻だけの台帳更新は行わず、その回の確認日時と状態はActionsログへ残す。台帳の日時を最新の確認時刻とみなさない。
-
-- 原稿登録や緑のCIは公開証拠ではない。`intent`は送信前記録、`accepted_not_verified_published`はBuffer受付。受付IDと予定時刻を報告する。
-- Bufferの`scheduled`/`sent`と、X上の実際の公開URL・本文を区別する。古い状態や日時欠損から現在の公開を推測しない。見えないものは未確認とする。
-- 23:45 JSTの既存配信監査は**旧experiments台帳の投稿**が対象で、usefulや記事紹介を含む全X投稿の監査ではない。確認範囲は[旧配信記録](experiments/README.md)を参照する。
-- 未送信・空き不足・期限・重複・当日試行済み・応答不明は実際の理由で分ける。ユーザーへ手動で重ねて投稿させない。
-- 表示回数・返信等は取得元、観測時刻、公開後の経過時間、母数を添える。未取得を0、当夜の値を24時間実測、全体増加を1投稿の成果にしない。記事PV、Buffer送信、通常X表示回数、報酬対象指標も混同しない。
-
-夜は本人の評価・本文からの編集判断・実測を分け、翌日に変える点を1つ示す。配信できたことだけを合格にせず、読者の何を調べる・比べる・判断する手間が減ったか、答えが本文にあったか確認する。風刺は何の矛盾を言語化したかを見る。本人の「意味がない」「分かりにくい」は次の採否へ反映する。実際に確認した返信に限り手動返信案を最大1本。少数標本で勝ち形式・ファン獲得を断定せず、公開済み本文を上書きしない。
+- 記事紹介は09:05〜21:05の2時間ごと7回に候補判定し、1回最大1本・1日最大7本・最低2時間間隔。
+- 新着1〜18時間を優先し、続報、その次に新しい記事。成熟記事は実測PVで選ぶ。
+- 同一slug、Bufferのscheduled/sentに同じ正規URLがある記事は再送しない。
+- 災害・戦争・武力衝突・テロ・大量死傷事故は自動対象外。
+- 記事側の先頭2タグを再利用し、X専用の流行語を足さない。定型の「創作」注記は毎回付けない。
+- Buffer受付、scheduled/sent、X実公開を区別し、未確認を成功や0反応にしない。
+- `useful-posts.json.enabled`、`experiments/config.json.experiment_publishing_enabled`、漫画の新規予約ゲートは停止状態を維持する。
 
 ## オフライン確認
 
 ```bash
-python3 -m unittest discover -s social-bot -p 'test_useful_feed.py' -v
-python3 social-bot/useful_feed.py --validate
-python3 -m unittest discover -s social-bot -p 'test_queue_cleanup.py' -v
-python3 social-bot/queue_cleanup.py --validate
+python3 -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
+python3 -m py_compile social-bot/article-picks/dispatch.py
 ```
 
-`--validate`はBufferへ送信しない。接続・認証情報は既存のSecretsを使い、チャット・公開ファイルに記録しない。コードや設定に変更がなければ、確認のためだけに配信workflowを再実行しない。
+記事紹介の検証はBufferへ送信しない。本番送信は既存Secretsを使うActionsだけから行い、認証情報を公開ファイルへ残さない。
