@@ -153,6 +153,21 @@
         "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
         "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
       }
+    },
+    "xexp-book-review": {
+      "target_sha256": "8a694a4aa112d9ecc25e201db4519cdc74742b665c793cc2e460c26083026638",
+      "checked_at": "2026-11-04T03:27:14.579322+00:00",
+      "before": {
+        "buffer_id": "6aea7608ff887f055cd9d61f",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T02:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "intent",
+      "intent_at": "2026-11-04T03:27:14.725901+00:00"
     }
   }
 }
