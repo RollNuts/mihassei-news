@@ -48,7 +48,7 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         self.events.append(("persist", None))
         self.saved.append(copy.deepcopy(request))
 
-    def run(self, move=None):
+    def perform(self, move=None):
         m.process(
             self.request, self.inventory, self.ledger,
             self.fetch, move or self.move, self.persist, lambda: self.now,
@@ -59,7 +59,7 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         self.assertEqual([t["post_id"] for t in targets], list(m.TARGET_IDS))
 
     def test_scheduled_unchanged_posts_move_to_draft_once(self):
-        self.run()
+        self.perform()
         self.assertEqual(sum(event[0] == "edit" for event in self.events), 4)
         self.assertFalse(self.request["enabled"])
         self.assertTrue(all(
@@ -74,7 +74,7 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         first, second = self.request["targets"][:2]
         self.remote[first["buffer_id"]].update(status="sent", sentAt="2026-11-04T09:50:00Z")
         self.remote[second["buffer_id"]].update(status="draft", dueAt=None)
-        self.run()
+        self.perform()
         edited = {bid for action, bid in self.events if action == "edit"}
         self.assertNotIn(first["buffer_id"], edited)
         self.assertNotIn(second["buffer_id"], edited)
@@ -85,7 +85,7 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         first, second = self.request["targets"][:2]
         self.remote[first["buffer_id"]]["text"] += " changed"
         self.remote[second["buffer_id"]]["channelId"] = "other-channel"
-        self.run()
+        self.perform()
         edited = {bid for action, bid in self.events if action == "edit"}
         self.assertNotIn(first["buffer_id"], edited)
         self.assertNotIn(second["buffer_id"], edited)
@@ -95,7 +95,7 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
     def test_past_or_imminent_scheduled_post_is_not_raced(self):
         first = self.request["targets"][0]
         self.remote[first["buffer_id"]]["dueAt"] = "2026-11-04T10:01:00Z"
-        self.run()
+        self.perform()
         edited = {bid for action, bid in self.events if action == "edit"}
         self.assertNotIn(first["buffer_id"], edited)
         self.assertEqual(
@@ -111,14 +111,14 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
             calls.append(bid)
             raise TimeoutError("response lost")
 
-        self.run(move=timeout)
+        self.perform(move=timeout)
         self.assertEqual(calls, [first["buffer_id"], *[
             target["buffer_id"] for target in self.request["targets"][1:]
         ]])
         # All ambiguous outcomes are terminal for this one-time request.
         snapshot = copy.deepcopy(self.request)
         self.events.clear()
-        self.run(move=timeout)
+        self.perform(move=timeout)
         self.assertEqual(self.request, snapshot)
         self.assertFalse(self.events)
 
