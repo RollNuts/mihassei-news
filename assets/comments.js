@@ -17,10 +17,14 @@
   const cacheWrite=(key,list)=>{try{localStorage.setItem(key,JSON.stringify([...list].slice(-200)));}catch(_){}};
   const mine=new Set(cacheRead(ownKey)), reported=new Set(cacheRead(reportedKey));
   let clientId='';
-  try {
-    clientId=localStorage.getItem(idKey)||crypto.randomUUID();
-    localStorage.setItem(idKey,clientId);
-  } catch(_){clientId=crypto.randomUUID();}
+  function clientIdentifier(){
+    if(clientId)return clientId;
+    try {
+      clientId=localStorage.getItem(idKey)||crypto.randomUUID();
+      localStorage.setItem(idKey,clientId);
+    } catch(_){clientId=crypto.randomUUID();}
+    return clientId;
+  }
   const fmt=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
   let loading=false,ready=false;
 
@@ -32,7 +36,7 @@
   async function api(action,extras={}){
     const response=await fetch('/api/comments',{
       method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',cache:'no-store',
-      body:JSON.stringify({action,article,clientId,...extras})
+      body:JSON.stringify({action,article,clientId:clientIdentifier(),...extras})
     });
     const result=await response.json().catch(()=>({}));
     if(!response.ok)throw new Error(result.error||'現在コメント機能を利用できません');
