@@ -7,7 +7,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6825572438772901493,
+      "seed": 6825572438772902000,
       "sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873"
     },
     "ai-chooses-a-managers": {
@@ -17,7 +17,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 4337816327905069863,
+      "seed": 4337816327905070000,
       "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
     },
     "apology-before-incident": {
@@ -27,7 +27,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 9006481694354583717,
+      "seed": 9006481694354584000,
       "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
     },
     "bakery-no-important-announcement-panic": {
@@ -37,7 +37,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7531663354728220206,
+      "seed": 7531663354728221000,
       "sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db"
     },
     "chance-meeting-cafe-reservation-full": {
@@ -47,7 +47,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 9164180507365929936,
+      "seed": 9164180507365930000,
       "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
     "comedy-show-profits-from-silence": {
@@ -57,7 +57,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 706460328480055475,
+      "seed": 706460328480055400,
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "crosswalk-photo-captcha-human-stuck": {
@@ -67,8 +67,18 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 2648102085126781280,
+      "seed": 2648102085126781400,
       "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "bytes": 117063,
+      "generated_at": "2026-11-04T22:47:11.414344+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 1068116499113448600,
+      "sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
     },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
@@ -83,7 +93,7 @@
         "source_sha256": "f427b70c803eee2e102fd159ca1867de1fdca19169e63ee6ffbc95b319712c66"
       },
       "prompt_version": 2,
-      "seed": 1135968338982907543,
+      "seed": 1135968338982907500,
       "sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1"
     },
     "double-speed-drama-explainer-marathon": {
@@ -93,7 +103,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 3201759797992626446,
+      "seed": 3201759797992626700,
       "sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25"
     },
     "family-dinner-gacha-243-rejections": {
@@ -103,7 +113,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 3792932720945161705,
+      "seed": 3792932720945161700,
       "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
     },
     "fan-theories-write-final": {
@@ -113,7 +123,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3110783516514393951,
+      "seed": 3110783516514394000,
       "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
     },
     "farm-friendship-across-species": {
@@ -123,7 +133,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6455747253186509503,
+      "seed": 6455747253186510000,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
     "father-tries-own-overpacked-bento": {
@@ -133,7 +143,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 3645685199179627378,
+      "seed": 3645685199179627500,
       "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
     "historical-lookalike-contest-dog-wins": {
@@ -143,7 +153,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 6861070434247018276,
+      "seed": 6861070434247018000,
       "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
     },
     "idol-ice-kept-in-freezer": {
@@ -153,7 +163,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3443340707540981827,
+      "seed": 3443340707540982000,
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
     },
     "local-souvenir-cannot-leave-town": {
@@ -163,7 +173,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6500820507977045750,
+      "seed": 6500820507977046000,
       "sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b"
     },
     "midterm-prediction-notebook-full-of-holes": {
@@ -173,7 +183,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 979487124694735815,
+      "seed": 979487124694735900,
       "sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf"
     },
     "mortgage-bank-clerk-invited-to-live-in": {
@@ -183,7 +193,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7373647264621116198,
+      "seed": 7373647264621116000,
       "sha256": "76d2f68e0804c58ebf17c14a086f0ade278bcb6de77c751aaf8babbfe522ae89"
     },
     "music-ai-friends-monopolize-the-song": {
@@ -193,7 +203,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 2650339348663260751,
+      "seed": 2650339348663260700,
       "sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662"
     },
     "park-recorded-laughter-real-kids-shushed": {
@@ -203,7 +213,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 4713491567798505932,
+      "seed": 4713491567798505000,
       "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
     },
     "press-conference-metaphor-viral": {
@@ -213,7 +223,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7680700911801401316,
+      "seed": 7680700911801401000,
       "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
     },
     "pressure-office-mood-forecast": {
@@ -223,7 +233,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3262525616120615859,
+      "seed": 3262525616120616000,
       "sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70"
     },
     "quiet-reply-dating-matches": {
@@ -239,7 +249,7 @@
         "source_sha256": "165651f03aa5585da7b4ff24a1df2bb0305d7557d859f85ac4a2c438ef9cece2"
       },
       "prompt_version": 2,
-      "seed": 6903667958466384986,
+      "seed": 6903667958466385000,
       "sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658"
     },
     "research-completed-opening-day": {
@@ -249,7 +259,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 1848290859289303548,
+      "seed": 1848290859289303600,
       "sha256": "e8b4f13290e6611091c9baa1f933451540aa97e361d60b301341449995e3a49f"
     },
     "robot-job-hopping": {
@@ -259,7 +269,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 1615501253303699901,
+      "seed": 1615501253303700000,
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
     "self-oseibo-recipient-refuses-own-gift": {
@@ -269,7 +279,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 227822134817257212,
+      "seed": 227822134817257200,
       "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
     },
     "spy-captive-escapes-before-rescue": {
@@ -279,7 +289,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 6871038269748098871,
+      "seed": 6871038269748099000,
       "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
     },
     "stock-rebound-confetti-still-in-red": {
@@ -289,7 +299,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 264982437597800576,
+      "seed": 264982437597800580,
       "sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615"
     },
     "supporter-guarantor-contract": {
@@ -299,7 +309,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 5748070834390824869,
+      "seed": 5748070834390825000,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
     "sweet-potato-chorus-starts-too-late": {
@@ -321,7 +331,7 @@
         "source_sha256": "d347b38796fe853c70f5df337a0d0458cea3021b3893ce3526511dff9b12aa0b"
       },
       "prompt_version": 2,
-      "seed": 6902181079209608273,
+      "seed": 6902181079209608000,
       "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
     },
     "unwanted-call-protection-calls-back": {
@@ -331,7 +341,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 877056317251028032,
+      "seed": 877056317251028000,
       "sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c"
     },
     "variety-700-guests-only-introductions": {
@@ -343,7 +353,7 @@
       "prompt_version": 2,
       "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
       "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
-      "seed": 2479731755469378830,
+      "seed": 2479731755469379000,
       "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     },
     "volleyball-team-lunch-plate-merch": {
@@ -353,17 +363,11 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 2586442448911147407,
+      "seed": 2586442448911147500,
       "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     }
   },
   "rejected": {
-    "stock-rebound-confetti-still-in-red": {
-      "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
-      "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
-      "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
@@ -405,6 +409,12 @@
       "reason": "Visual review: humans, including masked figures, queue behind a single robot instead of robots waiting for one charging point. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
+    "stock-rebound-confetti-still-in-red": {
+      "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+      "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
+      "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
+    },
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
       "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
@@ -415,6 +425,11 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "reason": "Visual review (2026-11-05 JST): the generated JPEG shows a large built roofed concrete hall/corridor and a crowd behind the ribbon, not the empty gravel lot with no buildings required by the article. The visible building defeats the central unbuilt-data-center joke; use the safe illustration until a genuinely different new JPEG is generated and reviewed.",
+      "rejected_candidate_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
     }
   },
   "version": 1
