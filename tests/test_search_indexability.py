@@ -8,7 +8,7 @@ import subprocess
 import sys
 import unittest
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +39,7 @@ class SearchIndexabilityTests(unittest.TestCase):
                 self.assertFalse(parsed.query or parsed.fragment, url)
                 self.assertNotIn(url, seen)
                 seen.add(url)
-                html_path = ROOT / "dist" / parsed.path.lstrip("/") / "index.html"
+                html_path = ROOT / "dist" / unquote(parsed.path).lstrip("/") / "index.html"
                 self.assertTrue(html_path.is_file(), str(html_path))
                 page = html_path.read_text(encoding="utf-8")
                 self.assertIn(f'<link rel="canonical" href="{url}">', page)
