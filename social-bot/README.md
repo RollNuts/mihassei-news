@@ -11,9 +11,9 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 | 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
 | ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
-停止中の経路は、本人の明示的な再開依頼なしに有効化しない。記事一本化前にBufferへ入っていた旧シュールの残存予約4件は `remaining-legacy-retirement.json` の固定IDだけを一回限りで確認し、未送信のscheduledだけdraftへ退避する。送信済み・下書き済み・本文変更・アカウント不一致・公開直前は触らない。旧シュール、`useful`、漫画はいずれも記事枠の穴埋め目的で再開しない。停止フラグは既存のBuffer予約を取り消さない。通常の担当は既存予約の削除・編集・再送、台帳の手動削除で空き枠や成功件数を作らない。本人から予約内容の是正を依頼された場合は、承認された対象だけを現在の状態・本文・アカウントで照合し、未配信分を下書きへ戻して結果を残す。公開済み投稿や受付履歴は消さない。
+停止中の経路は、本人の明示的な再開依頼なしに有効化しない。記事一本化前の旧シュール短文・キャラ日常・ネタ画像でBufferに残る**未公開**エントリは、`experiments/state.json` の受付ID・固定Xチャンネル・本文ハッシュがlive Bufferと完全一致するものだけ `purge_retired_x.py` で削除する。対象はdraft/scheduled/pending/error等の未公開状態に限り、sent済み投稿・記事紹介・別レーン・本文変更済みの投稿は触らない。旧シュール、`useful`、漫画はいずれも記事枠の穴埋め目的で再開しない。受付台帳や公開済み履歴は監査証跡として保持し、台帳の`queued`を現在の予約件数に読み替えない。
 
-2026-11-04に承認された旧予約整理の結果は`queue-cleanup.json`へ履歴として保持する。`verified_draft`はBufferでの下書き退避を再確認した記録。現在の`x-useful-originals.yml`は検証専用で、定期送信や定期cleanupを行わない。旧台帳の`queued`は受付履歴として残るため、現在の公開待ち件数に読み替えず、成功・応答不明を再操作しない。
+2026-11-04の`queue-cleanup.json`にある`verified_draft`は、削除前の安全な中間退避を確認した履歴であり、現行の配信候補ではない。以後は旧実験の未公開Bufferエントリを残存登録として扱い、上記の完全一致条件で削除する。現在の`x-useful-originals.yml`は検証専用で、定期送信や定期cleanupを行わない。
 
 ## 役割と引き継ぎ
 
