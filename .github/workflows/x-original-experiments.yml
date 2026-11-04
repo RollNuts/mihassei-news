@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "content/articles.json"
       - "social-bot/article-picks/**"
       - "social-bot/publish.py"
       - "social-bot/social_text.py"
@@ -46,6 +47,7 @@ jobs:
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+          X_TRIGGER_EVENT: ${{ github.event_name }}
         run: python social-bot/article-picks/dispatch.py
 
       - name: Persist exact Buffer article receipt
