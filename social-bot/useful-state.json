@@ -1,4 +1,11 @@
 {
   "schema_version": 1,
-  "attempts": {}
+  "attempts": {},
+  "last_selection": {
+    "checked_at_utc": "2026-11-04T01:08:36.478767+00:00",
+    "scheduled_count": 9,
+    "shared_queue_limit": 10,
+    "selected_post_id": "xexp-useful-20261104-one-change",
+    "reasons": []
+  }
 }
