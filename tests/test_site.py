@@ -38,6 +38,14 @@ class SiteTests(unittest.TestCase):
         self.assertIn("/build-revision.txt", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
         self.assertIn("Cache-Control: no-store", (ROOT/"dist/_headers").read_text(encoding="utf-8"))
 
+    def test_dist_contains_only_stock_photos_selected_by_current_policy(self):
+        """Unused cached candidates must not inflate or leak into the deployment."""
+        from scripts.build import load, uses_stock_photo
+        expected = {a["slug"] + ".jpg" for a in load() if uses_stock_photo(a)}
+        folder = ROOT / "dist" / "photos"
+        actual = {p.name for p in folder.glob("*.jpg")} if folder.exists() else set()
+        self.assertEqual(actual, expected)
+
     def test_illustrations_reserve_fixed_aspect_ratio_before_loading(self):
         """Every editorial image carries intrinsic dimensions to avoid layout shift."""
         import re
