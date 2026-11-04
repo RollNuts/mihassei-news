@@ -91,7 +91,9 @@ class ArticlePickTests(unittest.TestCase):
         for label in ("創作", "架空", "フィクション"):
             self.assertNotIn(label, msg)
         self.assertIn("家計簿", msg)
-        self.assertIn("https://veripsa.com/articles/story-a/", msg)
+        self.assertIn("https://veripsa.com/articles/story-a/?utm_source=x&utm_medium=social&utm_campaign=article_auto", msg)
+        self.assertIn("utm_source=x", msg)
+        self.assertIn("utm_campaign=article_auto", msg)
         self.assertNotIn("AI生成", msg)
         self.assertNotIn("大人気", msg)
         self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
@@ -121,7 +123,10 @@ class ArticlePickTests(unittest.TestCase):
         self.assertIn("…", msg)
         self.assertIn("#" + "長" * 12 + " #" + "別" * 12, msg)
         self.assertNotIn("#AI", msg)
-        self.assertTrue(msg.endswith("https://veripsa.com/articles/" + tagged["slug"] + "/"))
+        self.assertTrue(msg.endswith(
+            "https://veripsa.com/articles/" + tagged["slug"] + "/"
+            + picks.TRACKING_QUERY
+        ))
         self.assertGreater(len(msg), 220)
         self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
@@ -408,6 +413,7 @@ class ArticlePickTests(unittest.TestCase):
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
                 self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
+                self.assertIn("utm_campaign=article_auto", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
