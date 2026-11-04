@@ -362,8 +362,8 @@ class ArticlePickTests(unittest.TestCase):
         fresh = article("fresh", age_hours=4)
         state = ledger(
             **{
-                "one": {"buffer_id": "a1", "queued_at_utc": (NOW - timedelta(hours=16)).isoformat()},
-                "two": {"buffer_id": "a2", "queued_at_utc": (NOW - timedelta(hours=8)).isoformat()},
+                "one": {"buffer_id": "a1", "queued_at_utc": (NOW - timedelta(hours=10)).isoformat()},
+                "two": {"buffer_id": "a2", "queued_at_utc": (NOW - timedelta(hours=7)).isoformat()},
             }
         )
         remote = [{"id": "article-existing", "status": "scheduled", "text": "記事予約"}]
@@ -399,7 +399,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(selected["slug"], "new-story")
                 self.assertEqual(count, 1)
 
-    def test_useful_intents_unknown_ids_and_changed_text_do_not_open_article_gate(self):
+    def test_invalid_useful_receipts_do_not_unlock_third_article(self):
         changes = (
             ("receipt", "provider_status", "intent"),
             ("receipt", "provider_status", "cancelled_before_submission"),
@@ -410,22 +410,28 @@ class ArticlePickTests(unittest.TestCase):
             ("remote", "channelId", "OTHER-ACCOUNT"),
             ("post", "delivery", "manual_only"),
         )
+        two_today = ledger(
+            **{
+                "one": {"buffer_id": "a1", "queued_at_utc": (NOW - timedelta(hours=10)).isoformat()},
+                "two": {"buffer_id": "a2", "queued_at_utc": (NOW - timedelta(hours=7)).isoformat()},
+            }
+        )
         for target, key, value in changes:
             with self.subTest(target=target, key=key, value=value):
-                feed, state, remote = self.useful_reservation()
-                destination = {"receipt": state["attempts"]["xexp-useful-example"],
+                feed, useful_state, remote = self.useful_reservation()
+                destination = {"receipt": useful_state["attempts"]["xexp-useful-example"],
                                "remote": remote[0], "post": feed["posts"][0]}[target]
                 destination[key] = value
-                known = picks.accepted_useful_ids(feed, state, remote, CONFIG["channel_id"])
+                known = picks.accepted_useful_ids(feed, useful_state, remote, CONFIG["channel_id"])
                 self.assertEqual(known, set())
                 selected, _, _ = picks.decide(
-                    [article("new-story")], {"new-story": stats()}, ledger(), remote,
+                    [article("new-story")], {"new-story": stats()}, two_today, remote,
                     CONFIG, NOW, known)
                 self.assertIsNone(selected)
-        feed, state, remote = self.useful_reservation()
+        feed, useful_state, remote = self.useful_reservation()
         feed["channel_id"] = "OTHER-ACCOUNT"
         with self.assertRaisesRegex(ValueError, "pinned submission"):
-            picks.accepted_useful_ids(feed, state, remote, CONFIG["channel_id"])
+            picks.accepted_useful_ids(feed, useful_state, remote, CONFIG["channel_id"])
 
     def test_main_uses_confirmed_useful_queue_without_enabling_legacy_experiments(self):
         feed, state, remote = self.useful_reservation()
