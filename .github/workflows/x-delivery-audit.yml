@@ -3,27 +3,26 @@ name: X Delivery Audit (Free, read only)
 on:
   pull_request:
     paths:
-      - "social-bot/experiments/probe_delivery.py"
-      - "social-bot/experiments/test_probe_delivery.py"
+      - "social-bot/article-picks/audit_delivery.py"
+      - "social-bot/article-picks/test_audit_delivery.py"
+      - "social-bot/article-picks/state.json"
       - ".github/workflows/x-delivery-audit.yml"
   push:
     branches: [main]
     paths:
-      # A workflow code change is a one-off diagnostic trigger.
-      # Regular article updates do not trigger additional Buffer API reads.
+      - "social-bot/article-picks/audit_delivery.py"
+      - "social-bot/article-picks/test_audit_delivery.py"
       - ".github/workflows/x-delivery-audit.yml"
   workflow_dispatch:
   schedule:
-    # 23:45 JST (14:45 UTC). One bounded audit after most daily X slots.
+    # 23:45 JST (14:45 UTC). One bounded read-only audit after daily article promotion.
     - cron: "45 14 * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  # Read-only auditing must not be evicted by article promotion.
-  # It writes delivery evidence only; article promotion writes article-picks/state.json.
-  group: free-surreal-x-delivery-audit
+  group: x-article-delivery-audit
   cancel-in-progress: false
 
 jobs:
@@ -37,43 +36,35 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Verify bounded read-only logic without X access
+      - name: Verify article delivery audit offline
         run: |
-          python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
-          python -m py_compile social-bot/experiments/probe_delivery.py
+          python -m unittest discover -s social-bot/article-picks -p 'test_audit_delivery.py' -v
+          python -m py_compile social-bot/article-picks/audit_delivery.py
 
-      - name: Audit up to 20 Buffer posts in two aliased GraphQL requests (read-only)
+      - name: Audit recent article promotions in Buffer (read-only)
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: python social-bot/experiments/probe_delivery.py
+        run: python social-bot/article-picks/audit_delivery.py
 
-      - name: Persist delivery evidence only, not X posts or original ledger
+      - name: Persist article delivery evidence only
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
+          test -f social-bot/article-picks/delivery.json || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/delivery.json
+          git add social-bot/article-picks/delivery.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore(x): store bounded delivery evidence [skip ci]"
-            # Multiple independent Actions write main; a transient ref race is
-            # not an editorial or Buffer failure. Rebase and retry, never force.
+            git commit -m "chore(x): store article delivery evidence [skip ci]"
             published=false
             for attempt in 1 2 3 4; do
-              if ! git pull --rebase origin main; then
-                echo "::error::Rebase conflict. No forced push or silent overwrite."
-                exit 1
-              fi
+              git pull --rebase origin main || exit 1
               if git push origin HEAD:main; then
                 published=true
                 break
               fi
-              echo "::warning::main advanced during push (attempt $attempt); retry safely"
               sleep $((attempt * 2))
             done
-            if [ "$published" != true ]; then
-              echo "::error::Could not persist evidence after four attempts"
-              exit 1
-            fi
+            test "$published" = true
           fi
