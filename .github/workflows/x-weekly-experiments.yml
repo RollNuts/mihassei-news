@@ -1,4 +1,4 @@
-name: X Weekly Evidence & Creative Experiment
+name: Legacy X Experiment Review Validation
 
 on:
   pull_request:
@@ -13,63 +13,20 @@ on:
       - "social-bot/experiments/review.py"
       - "social-bot/experiments/test_review.py"
       - "social-bot/experiments/dispatch.py"
-      - "social-bot/metrics/records.json"
       - ".github/workflows/x-weekly-experiments.yml"
   workflow_dispatch:
-  schedule:
-    # Monday 09:05 JST, before Monday editorial improvement sessions.
-    - cron: "5 0 * * 1"
 
 permissions:
-  contents: write
-
-concurrency:
-  group: x-weekly-evidence-review
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  learn-from-observed-impressions:
+  validate-retired-review:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
-      - name: Verify offline review logic and distribution test
+      - name: Verify old experiment review logic offline
         run: |
           python -m unittest discover -s social-bot/experiments -p 'test_review.py' -v
           python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
-          python -m unittest discover -s social-bot/metrics -p 'test_report.py' -v
-
-      - name: Compose evidence-based weekly editorial review (no API)
-        run: python social-bot/experiments/review.py
-
-      - name: Commit latest measured review only to main
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/review.md
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(x): record evidence-only editorial review [skip ci]"
-            # Multiple independent Actions write main; a transient ref race is
-            # not an editorial or Buffer failure. Rebase and retry, never force.
-            published=false
-            for attempt in 1 2 3 4; do
-              if ! git pull --rebase origin main; then
-                echo "::error::Rebase conflict. No forced push or silent overwrite."
-                exit 1
-              fi
-              if git push origin HEAD:main; then
-                published=true
-                break
-              fi
-              echo "::warning::main advanced during push (attempt $attempt); retry safely"
-              sleep $((attempt * 2))
-            done
-            if [ "$published" != true ]; then
-              echo "::error::Could not persist evidence after four attempts"
-              exit 1
-            fi
-          fi
+          python -m py_compile social-bot/experiments/review.py social-bot/experiments/dispatch.py
