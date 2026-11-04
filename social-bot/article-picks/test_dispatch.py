@@ -84,6 +84,45 @@ class ArticlePickTests(unittest.TestCase):
         self.assertNotIn("min_readers", config)
         self.assertGreaterEqual(config["minimum_interval_hours"], 2)
 
+    def test_push_fallback_network_window_is_exactly_daytime_jst(self):
+        cases = (
+            ("2026-11-05T08:59:59+09:00", False),
+            ("2026-11-05T09:00:00+09:00", True),
+            ("2026-11-05T21:59:59+09:00", True),
+            ("2026-11-05T22:00:00+09:00", False),
+        )
+        for value, expected in cases:
+            with self.subTest(value=value):
+                self.assertEqual(
+                    picks.trigger_allows_network("push", datetime.fromisoformat(value)),
+                    expected,
+                )
+        for event in ("", "schedule", "workflow_dispatch"):
+            self.assertTrue(picks.trigger_allows_network(event, NOW))
+        with self.assertRaisesRegex(ValueError, "timezone"):
+            picks.trigger_allows_network("push", NOW.replace(tzinfo=None))
+
+    def test_outside_window_push_exits_before_any_buffer_or_metrics_network(self):
+        documents = {
+            HERE / "config.json": CONFIG,
+            HERE / "state.json": ledger(),
+        }
+        with patch.object(
+            picks, "read_json",
+            side_effect=lambda path: copy.deepcopy(documents[path]),
+        ), patch.object(picks, "datetime", wraps=datetime) as clock, \
+             patch.dict(os.environ, {"X_TRIGGER_EVENT": "push"}, clear=True), \
+             patch.object(picks, "read_page_view_metrics") as metrics, \
+             patch.object(picks, "choose_x_channel") as choose, \
+             patch.object(picks, "list_existing") as existing, \
+             patch.object(picks, "queue_one") as queue:
+            clock.now.return_value = datetime.fromisoformat("2026-11-05T08:30:00+09:00")
+            self.assertEqual(picks.main(), 0)
+            metrics.assert_not_called()
+            choose.assert_not_called()
+            existing.assert_not_called()
+            queue.assert_not_called()
+
     def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
         msg = picks.publication_text(a)
