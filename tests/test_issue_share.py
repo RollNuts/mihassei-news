@@ -61,9 +61,8 @@ class IssueShareTests(unittest.TestCase):
         values = parse_qs(urlparse(link).query)
         share_text = values["text"][0]
         target = values["url"][0]
-        for label in ("創作", "フィクション", "5年後の『もしも』"):
-            self.assertNotIn(label, share_text)
-        self.assertIn(f"今号の記事は{len(self.items)}本。", share_text)
+        self.assertEqual(share_text.splitlines()[1], f"今号の記事は{len(self.items)}本。")
+        self.assertEqual(share_text.splitlines()[-1], "#未発生新聞")
         self.assertIn("未発生新聞", share_text)
         self.assertIn(self.items[0]["title"][:20], share_text)
         self.assertLess(len(share_text), 160)

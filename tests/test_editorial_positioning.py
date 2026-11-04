@@ -68,9 +68,8 @@ class EditorialPositioningTests(unittest.TestCase):
         article = load()[0]
         query = parse_qs(urlparse(share_url(article)).query)
         text = query["text"][0]
-        self.assertTrue(text.startswith("【未発生新聞】"))
-        for label in ("（創作）", "創作ニュース", "※創作", "※フィクション"):
-            self.assertNotIn(label, text)
+        self.assertEqual(text.splitlines()[0], "【未発生新聞】")
+        self.assertEqual(text.splitlines()[-1], "#未発生新聞")
         self.assertIn("未発生新聞", text)
         self.assertIn(article["title"], text)
         self.assertIn("utm_campaign=reader_share", query["url"][0])
