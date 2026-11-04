@@ -14,12 +14,11 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
   let current=start;
   let tick=null;
   const edition={dataset:{lastEdition:latestDay,editionCount:String(count),lastLabel:'11月2日 21:21'}};
-  const title={textContent:''},eyebrow={textContent:''},updated={textContent:''};
+  const title={textContent:''},updated={textContent:''};
   const clock={textContent:'',setAttribute(){}};
   const map={
     '[data-edition-status]':edition,
     '[data-edition-title]':title,
-    '[data-edition-eyebrow]':eyebrow,
     '[data-edition-updated]':updated,
   };
   const document={
@@ -43,14 +42,13 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
     fetch:async()=>{throw new Error('network disabled in test');}
   };
   vm.runInNewContext(src,ctx,{timeout:1000});
-  return {title,eyebrow,updated,clock,tick:()=>tick(),
+  return {title,updated,clock,tick:()=>tick(),
     advance(value){current=value;}};
 }
 
 test('real same-day issue shows actual count, not a fictional timestamp',()=>{
   const ui=runEdition('2026-11-02T14:10:00Z');
   assert.equal(ui.title.textContent,'本日の記事');
-  assert.equal(ui.eyebrow.textContent,"TODAY'S HEADLINES");
   assert.match(ui.updated.textContent,/本日 10本/);
   assert.match(ui.updated.textContent,/11月2日 21:21/);
   assert.ok(ui.clock.textContent.startsWith('2031.11.02'));
@@ -62,7 +60,6 @@ test('after JST midnight, prior articles are labelled latest, never today',()=>{
   ui.advance('2026-11-02T15:01:00Z'); // 00:01 JST Nov 3
   ui.tick();
   assert.equal(ui.title.textContent,'最新記事');
-  assert.equal(ui.eyebrow.textContent,'LATEST HEADLINES');
   assert.equal(ui.updated.textContent,'更新：11月2日 21:21');
   assert.ok(ui.clock.textContent.startsWith('2031.11.03'));
 });

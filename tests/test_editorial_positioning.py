@@ -31,7 +31,7 @@ class EditorialPositioningTests(unittest.TestCase):
     def test_home_presents_a_single_disclosure_before_the_lead(self):
         page = home(load())
         self.assertIn('class="fiction-mark">創作報道', page)
-        self.assertIn('TOP STORY / 一面', page)
+        self.assertIn('<span class="small-label red">一面</span>', page)
         self.assertNotIn('class="concept-primer"', page)
         self.assertTrue(page.index('class="fiction-mark"') < page.index('<section class="hero-grid">'))
 
@@ -47,7 +47,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn('aria-label="架空ニュースのありそう度を投票"', page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)
-        self.assertIn("感想やツッコミをどうぞ。投稿内容は公開されます。", page)
+        self.assertIn("投稿内容は公開されます。", page)
 
     def test_public_poll_labels_do_not_claim_to_predict_the_future(self):
         from pathlib import Path

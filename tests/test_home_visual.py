@@ -26,7 +26,7 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertNotIn("この新聞の読み方", opening)
         self.assertNotIn('class="concept-primer"', opening)
         self.assertIn('class="fiction-mark">創作報道', opening)
-        self.assertIn('TOP STORY / 一面', lead)
+        self.assertIn('<span class="small-label red">一面</span>', lead)
         self.assertEqual(lead.count('class="hero-actions"'), 1)
         self.assertIn('>記事を読む</a>', lead)
         css = (ROOT / "assets/reader-first.css").read_text(encoding="utf-8")

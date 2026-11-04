@@ -29,13 +29,14 @@
 
   const normalize = value => String(value || '').toLocaleLowerCase('ja-JP').normalize('NFKC');
   function render(syncUrl = true) {
-    const query = normalize(input.value.trim());
+    const terms = normalize(input.value).trim().split(/\s+/).filter(Boolean);
     const decade = decadeSelect?.value || 'すべて';
-    const matching = cards.filter(card =>
-      (category === 'すべて' || card.dataset.category === category) &&
-      (decade === 'すべて' || card.dataset.decade === decade) &&
-      (!query || normalize(card.dataset.search).includes(query))
-    );
+    const matching = cards.filter(card => {
+      const searchable = normalize(card.dataset.search);
+      return (category === 'すべて' || card.dataset.category === category) &&
+        (decade === 'すべて' || card.dataset.decade === decade) &&
+        terms.every(term => searchable.includes(term));
+    });
     const matchSet = new Set(matching);
     const shown = Math.min(matching.length,visibleLimit);
     let visible = 0;
@@ -44,7 +45,11 @@
       card.hidden = !matches || visible >= visibleLimit;
       if (matches) visible++;
     }
-    if (count) count.textContent = shown + ' / ' + matching.length + '件の記事を表示';
+    if (count) {
+      count.textContent = matching.length === 0 ? '0件' :
+        shown < matching.length ? matching.length + '件中' + shown + '件を表示' :
+        matching.length + '件の記事';
+    }
     if (empty) empty.hidden = matching.length !== 0;
     if (morePanel) morePanel.hidden = matching.length <= visibleLimit;
     if (moreButton) {

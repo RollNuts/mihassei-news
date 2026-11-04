@@ -109,7 +109,7 @@ test('last-seven-day PV determines the actual top three, regardless of browser o
   assert.deepEqual(urls(result),['/articles/b/','/articles/c/','/articles/a/']);
   assert.deepEqual(result.rankings.map(li=>li.children[2].textContent),['11 PV','7 PV','6 PV']);
   assert.equal(result.rankings[0].children[0].textContent,'01');
-  assert.equal(result.rankings[0].children[1].children[0].textContent,'経済 / 創作ニュース');
+  assert.equal(result.rankings[0].children[1].children[0].textContent,'経済');
   assert.equal(result.period.textContent,'過去7日間のPV順');
   assert.equal(result.calls.filter(x=>x.method==='GET').length,1,'reuse the shared statistics request');
 });

@@ -78,7 +78,7 @@
         node.textContent=total>0?String(total):'';
         node.hidden=total===0;
       });
-      message(data.comments.length ? '新しいコメントから最大20件表示しています。' : 'まだコメントはありません。最初の未来人になろう。');
+      message(data.comments.length ? '新着順・最大20件' : 'まだコメントはありません。');
       ready=true;
     }catch(_){message('コメントを読み込めませんでした。投稿機能は一時的に利用できない場合があります。',true);}
     finally{loading=false;}

@@ -929,7 +929,6 @@ def pv_recommendations(articles, excluded_slug=""):
     return f'''<section class="readers-choice" data-popular-section
  data-popular-options="{options}" aria-labelledby="readers-choice-title" hidden>
 <div class="section-head"><div>
-<span class="small-label red">POPULAR</span>
 <h2 id="readers-choice-title">よく読まれている記事</h2></div>
 <a href="/archive/">記事一覧へ ↗</a></div>
 <p class="readers-choice-note" data-popular-period>過去7日間のPV順</p>
@@ -1038,28 +1037,28 @@ def home(articles, serials=None):
     content = f'''<div class="container index-main">
 <div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
  data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
-<div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
+<div class="news-briefing-title">
 <strong data-edition-title>最新記事</strong>
 <span class="edition-updated" data-edition-updated>更新：{escape(last_label)}</span></div>
 <a class="return-update" data-return-update data-latest-published="{escape(last_published)}"
  href="{article_url(newest)}" hidden>新着記事を読む <span aria-hidden="true">↗</span></a>
 </div>
 <aside class="returning-shelf" data-returning-shelf hidden aria-label="この端末に保存した記事">
- <span class="returning-shelf-eyebrow">SAVED / あとで読む</span>
+ <span class="returning-shelf-eyebrow">あとで読む</span>
  <a class="returning-shelf-article" data-returning-shelf-article href="/saved/"></a>
  <span class="returning-shelf-count" data-returning-shelf-count></span>
  <a class="returning-shelf-all" href="/saved/">保存一覧 ↗</a>
 </aside>
 <section class="hero-grid">
 <article class="lead">
-<span class="small-label red">TOP STORY / 一面</span>
+<span class="small-label red">一面</span>
 <div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
 <p class="dek">{escape(a["summary"])}</p>
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
-<aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2><span>LATEST</span></div>{side}</aside>
+<aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2></div>{side}</aside>
 </section>
 {broadcast_feature(articles)}
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
@@ -1068,7 +1067,7 @@ def home(articles, serials=None):
 {popular_section}
 {timeline_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
-<div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
+<div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
 {render_serials_feature(serials)}
@@ -1078,23 +1077,20 @@ def home(articles, serials=None):
 {issue_section}
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
-    <span class="special-edition-kicker">EXTRA EDITION / 号外</span>
-    <h2>何が起きるか、まだ分からない。</h2>
-    <p>気になる号外を一枚めくってみよう。</p>
+    <h2>号外</h2>
   </div>
   <div class="special-edition-machine">
-    <button type="button" class="issue-picker-button" data-pick-issue>号外をめくる <span aria-hidden="true">↗</span></button>
-    <div class="issue-picker-result" data-issue-result aria-live="polite">
-      <span class="small-label">まだ開封されていません</span>
-      <p data-issue-headline>ニュースの続きは、めくってからのお楽しみ。</p>
+    <button type="button" class="issue-picker-button" data-pick-issue>ランダムに1本選ぶ <span aria-hidden="true">↗</span></button>
+    <div class="issue-picker-result" data-issue-result aria-live="polite" hidden>
+      <span class="small-label"></span>
+      <p data-issue-headline></p>
       <a data-issue-link href="/archive/" hidden>記事を読む ↗</a>
     </div>
   </div>
 </section>
 <section class="reader-discussions" data-comment-discussions data-comment-discussion-options="{discussion_options}" aria-labelledby="reader-discussions-title">
-<div class="reader-discussions-copy"><span class="small-label red">READER PARTICIPATION / みんなのツッコミ</span>
-<h2 id="reader-discussions-title">このニュース、あなたならどうツッコむ？</h2>
-<p data-discussion-intro>架空ニュースへのツッコミを、記事の最後からひとこと。ニックネームで参加できます。</p>
+<div class="reader-discussions-copy">
+<h2 id="reader-discussions-title">読者のツッコミ</h2>
 <a class="reader-discussions-cta" href="{article_url(newest)}#reader-comments">新着記事にコメントする ↗</a></div>
 <nav class="reader-discussions-list" data-discussion-list aria-label="コメントの付いた記事" hidden></nav>
 </section>
@@ -1118,7 +1114,7 @@ def archive(articles):
     # so existing filtering works automatically when a second decade exists.
     decade_hidden = ' hidden' if len(decades) < 2 else ''
     content = f'''<div class="container archive-page">
-<header class="page-intro"><span class="eyebrow">ARCHIVE</span><h1>記事一覧</h1>
+<header class="page-intro"><h1>記事一覧</h1>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
@@ -1277,13 +1273,12 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <nav class="reader-next" data-popular-fallback aria-label="新着から続けて読む記事">
-<span class="reader-next-kicker">NEXT STORY / 新着からもう1本 · {escape(next_category)}</span>
+<span class="reader-next-kicker">新着からもう1本 · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
 {popular_section}
 <section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
 <div class="future-poll-heading">
-<span class="future-poll-kicker">WHAT IF? / もしもの投票</span>
 <h2 id="future-poll-title">この「もしも」、ありそう？</h2>
 
 </div>
@@ -1316,9 +1311,8 @@ def story(a, articles, issues=None, serials=None):
 </article>
 <section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
 <div class="reader-comments-heading">
-<span class="eyebrow">READERS' VOICES / 読者の声</span>
 <h2 id="comments-heading">読者のツッコミ <small data-comments-count></small></h2>
-<p>感想やツッコミをどうぞ。投稿内容は公開されます。</p>
+<p>投稿内容は公開されます。</p>
 </div>
 <div class="reader-comments-list" data-comments-list></div>
 <p class="reader-comments-status" data-comments-status role="status">コメントを読み込み中…</p>
@@ -1435,7 +1429,7 @@ def saved_page():
     content = '''<div class="container saved-page">
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>
 <span aria-hidden="true"> / </span><span aria-current="page">あとで読む</span></nav>
-<header class="page-intro"><span class="eyebrow">SAVED</span>
+<header class="page-intro">
 <h1>あとで読む</h1>
 <p>このブラウザに保存した記事</p></header>
 <section class="saved-intro" aria-label="保存について">

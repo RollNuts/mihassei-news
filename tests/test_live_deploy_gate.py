@@ -181,7 +181,7 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
 
         current = self.articles[-1]
         fallback = ('<nav class="reader-next" data-popular-fallback>'
-                    '<span>NEXT STORY / 新着からもう1本 · 社会</span>'
+                    '<span>新着からもう1本 · 社会</span>'
                     '<a class="reader-next-title" href="/articles/story-28/">次の記事</a></nav>')
         panel = pv_recommendations(self.articles, current["slug"])
         verify_pv_recommendations(fallback + panel, self.articles, current)

@@ -338,7 +338,7 @@ body{
   padding:29px 31px;
   margin-top:46px;
 }
-.special-edition::before{opacity:.68}
+.special-edition::before{content:none}
 .issue-picker-button{min-height:45px;border-radius:7px;padding:11px 16px}
 .issue-picker-result{border-left-width:2px}
 .reader-discussions{
