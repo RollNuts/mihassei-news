@@ -87,14 +87,14 @@ class UsefulFeedTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.pick()
     def test_crisis_topic_cannot_enter_automatic_lane(self):
         p = self.feed["posts"][0]
-        p["text"] = "地震の被害について今すぐ考えるべきことをまとめました。"
+        p["text"] = "会話例。地震の被害について今すぐ考えるべきことをまとめました。"
         p["editorial_review"]["text_sha256"] = m.fingerprint(p["text"])
         with self.assertRaisesRegex(ValueError, "Crisis-topic automatic X posts are forbidden"):
             m.validate(self.feed, self.state)
 
     def test_attempted_legacy_payload_is_not_rewritten_by_new_crisis_guard(self):
         p = self.feed["posts"][0]
-        p["text"] = "地震についての過去の送信済み原稿です。"
+        p["text"] = "会話例。地震についての過去の送信済み原稿です。"
         p["editorial_review"]["text_sha256"] = m.fingerprint(p["text"])
         self.state["attempts"][p["id"]] = {
             "day_jst": "2026-11-04",
