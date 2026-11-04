@@ -4,7 +4,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 配信
 
-[`x-original-experiments.yml`](../../.github/workflows/x-original-experiments.yml)は毎日09:05・11:05・13:05・15:05・17:05・19:05・21:05頃（JST）のcronを基本に候補を判定する。加えて、09:00〜21:59 JSTに`content/articles.json`へ直近24時間の新規公開slugが追加されたmain pushだけを補助トリガーにする。コード更新や既刊の改稿だけのpushはBufferへ接続しない（Git履歴の差分が取得できない場合も安全に見送る）。07:30・23:30枠の公開pushはBufferを読まず書かず終了する。cronはバックアップとして維持し、どちらから起動しても1回最大1本、JST1日最大7本、記事紹介同士は最低2時間間隔、slug重複防止を同じコードで適用する。Bufferで観測できる当日の送信・予約が7本に達した場合も追加しない。共有キューは最大10件まで使える。
+[`x-original-experiments.yml`](../../.github/workflows/x-original-experiments.yml)は毎日09:05・11:05・13:05・15:05・17:05・19:05・21:05頃（JST）のcronを基本に候補を判定する。加えて、09:00〜21:59 JSTに`content/articles.json`がmainへ公開されたpushも補助トリガーにする。07:30・23:30枠の公開pushはBufferを読まず書かず終了する。cronはバックアップとして維持し、どちらから起動しても1回最大1本、JST1日最大7本、記事紹介同士は最低2時間間隔、slug重複防止を同じコードで適用する。Bufferで観測できる当日の送信・予約が7本に達した場合も追加しない。共有キューは最大10件まで使える。
 
 - **新着レーン**: 公開1〜18時間の未紹介記事。続報を優先し、その次に新しい記事を選ぶ。PV蓄積前でも対象にする。
 - **話題の偏り防止**: 続報でない通常記事は、当日すでに自動紹介した記事の先頭タグと重ならない候補が上位3件にあればそちらを優先する。候補がなければ元の順位を使い、投稿本数を減らさない。続報は同じ話題を追うこと自体に意味があるため優先を維持する。
@@ -20,7 +20,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 確認
 
-23:45 JSTの`x-delivery-audit.yml`は`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをscheduled/sentの現在値へ照合する。結果は`article-picks/delivery.json`へ保存する。これは読み取り専用で、再送・予約編集・X投稿は行わない。
+23:45 JSTの`x-delivery-audit.yml`は`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをscheduled/sentの現在値へ照合する。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の公開pushはテストのみでBufferを読まない。結果は既存の`article-picks/delivery.json`へ保存する。再送・予約編集・X投稿は行わない。
 
 `state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間を保存する。Buffer受付とX実公開は別状態として扱い、確認できない公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
 
