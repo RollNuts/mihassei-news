@@ -235,6 +235,22 @@
         "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
       },
       "verified_at": "2026-11-04T03:35:52.726265+00:00"
+    },
+    "xexp-witch-autopilot": {
+      "target_sha256": "2b437924b03374261a4eb3b9fb7086593db417695d39974b96aa3f820974059d",
+      "checked_at": "2026-11-04T03:35:54.403419+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
     }
   }
 }
