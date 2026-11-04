@@ -103,6 +103,15 @@ class ArticlePickTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "timezone"):
             picks.trigger_allows_network("push", NOW.replace(tzinfo=None))
 
+    def test_only_article_archive_push_wakes_promotion_workflow(self):
+        workflow = (picks.ROOT / ".github" / "workflows" /
+                    "x-original-experiments.yml").read_text(encoding="utf-8")
+        push = workflow.split("  push:\n", 1)[1].split("  pull_request:\n", 1)[0]
+        self.assertIn('"content/articles.json"', push)
+        self.assertNotIn('"social-bot/', push)
+        self.assertIn("fetch-depth: 0", workflow)
+        self.assertIn("X_PUSH_BEFORE: ${{ github.event.before }}", workflow)
+
     def test_push_requires_a_new_recent_article_in_git_history(self):
         previous = [article("existing", age_hours=3)]
         new_article = article("newly-published", age_hours=2)
