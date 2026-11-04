@@ -1,5 +1,33 @@
 [
   {
+    "slug": "stock-rebound-confetti-still-in-red",
+    "category": "経済",
+    "flash": "相場のいいところだけ",
+    "fiction_company": "ごきげん証券",
+    "art": "cards",
+    "fiction_at": "2031-11-04T15:56:00+09:00",
+    "published_at": "2026-11-04T23:31:05+09:00",
+    "title": "株価下落でも「本日も勝利」　証券アプリ、昼の安値から戻っただけで紙吹雪",
+    "summary": "株価が急落したあと少し戻ると、架空の投資アプリが「勝利」と紙吹雪で利用者を祝う。会社員は喜んで同僚に見せるが、実際の資産は前日より減ったまま。",
+    "paragraphs": [
+      "日経平均株価が急落後に下げ幅を縮めた日、架空の投資アプリ「ごきげん証券」は「昼の底値より上がったら勝利」と判定する通知を導入した。前日より株価が下がっていても、午後に持ち直すだけで画面いっぱいに紙吹雪が舞う。",
+      "会社員の小川さんには午後、「おめでとうございます！　2,100ポイント回復しました」と通知が届いた。小川さんは同僚に「今日は勝ったらしい」とスマホを見せたが、「で、資産はいくら増えたの？」と聞かれて口座画面を開くと、前日より残高が減っていた。",
+      "問い合わせ窓口は「いちばん悪かった瞬間より良い状態です」と説明。小川さんは「昨日よりは悪いですよね」と聞いたが、担当者は「その比較は『詳細』を押すと表示されます」と案内した。帰りの電車で小川さんが再び開いたのは、詳細ではなく紙吹雪の画面だった。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "株探",
+      "published_at": "2026-11-04T15:56:00+09:00",
+      "url": "https://s.kabutan.jp/news/n202611041113/",
+      "topic": "2026年11月4日、日経平均は一時下げ幅が3000円を超えたが、下げ幅を縮小して前営業日比893円23銭安で終了。架空の証券アプリ・人物・発言・祝福表示は創作。"
+    },
+    "scene_prompt": "A photorealistic deadpan Japanese office scene: an office worker raises a smartphone showing an abstract celebration of confetti over a rising intraday stock chart, while a paper account statement on the desk beside it shows a clearly descending red arrow. A coworker looks at the paper skeptically. Phone and statement large in frame, no readable text, no brands, no recognizable real people.",
+    "tags": [
+      "お金",
+      "投資"
+    ]
+  },
+  {
     "slug": "self-oseibo-recipient-refuses-own-gift",
     "category": "暮らし",
     "flash": "年末のごほうび",
