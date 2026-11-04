@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-11-04T13:21:21.920200+00:00",
+  "scope": "retired_x_experiments_only",
+  "article_promotion_untouched": true,
+  "counts": {
+    "ledger_receipts_checked": 12,
+    "deleted_now": 0,
+    "already_absent": 0,
+    "published_untouched": 6,
+    "held": 6
+  },
+  "remaining_unpublished_legacy_known": 6,
+  "outcomes": [
+    {
+      "post_id": "xexp-ghost-interview",
+      "buffer_id": "6ae990ece5f645e4e3352053",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-future-advice",
+      "buffer_id": "6ae990ec3b00665c737f50e7",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-reaper-late",
+      "buffer_id": "6ae995b92f050cf24296aafc",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-ufo-ticket",
+      "buffer_id": "6ae9bd935b02786f00d048be",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-nejimachi-nothing-wrong",
+      "buffer_id": "6aea76084c41ba80aa4864d8",
+      "state": "held",
+      "reason": "provider_read_failed"
+    },
+    {
+      "post_id": "xexp-nejimachi-one-screw",
+      "buffer_id": "6ae9c80447205d2c39966fbc",
+      "state": "held",
+      "reason": "provider_read_failed"
+    },
+    {
+      "post_id": "xexp-invisible-nails",
+      "buffer_id": "6ae9c80347205d2c39966f7a",
+      "state": "held",
+      "reason": "provider_read_failed"
+    },
+    {
+      "post_id": "xexp-shadow-home",
+      "buffer_id": "6ae9c80547205d2c39966fe4",
+      "state": "held",
+      "reason": "provider_read_failed"
+    },
+    {
+      "post_id": "xexp-witch-autopilot",
+      "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+      "state": "held",
+      "reason": "provider_read_failed"
+    },
+    {
+      "post_id": "xexp-selfcheckout-dialogue",
+      "buffer_id": "6ae9c803e9a91b5943cdd3b2",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-honest-survey",
+      "buffer_id": "6ae9c80535443b847afe9195",
+      "state": "published_untouched"
+    },
+    {
+      "post_id": "xexp-book-review",
+      "buffer_id": "6aea7608ff887f055cd9d61f",
+      "state": "held",
+      "reason": "provider_read_failed"
+    }
+  ]
+}
