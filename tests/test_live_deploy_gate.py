@@ -71,7 +71,10 @@ class DeploymentWorkflowTests(unittest.TestCase):
         checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
         test_article=build.load()[0]
         manifest={"sha256": "b"*64, "created_at": "2026-11-03T01:00:00+00:00"}
-        with patch.object(build, "usable_clip", return_value=manifest):
+        # Exercise the player contract with an already-vetted clip. Editorial
+        # changes may correctly invalidate the newest article's old image;
+        # image/review rejection is covered separately in test_visual_review.
+        with patch.object(build, "article_clip", return_value=manifest):
             player=build.article_hero_media(test_article)
         self.assertIn('preload="metadata"', player)
         self.assertIn('?v=' + "b"*12, player)
