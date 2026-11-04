@@ -1,5 +1,28 @@
 [
   {
+    "slug": "father-tries-own-overpacked-bento",
+    "category": "暮らし",
+    "flash": "家庭の珍事",
+    "fiction_company": "ある町の家庭",
+    "art": "cards",
+    "fiction_at": "2031-11-03T22:35:00+09:00",
+    "title": "子の弁当を毎日残される父、自分も同じ量を詰めて出勤",
+    "summary": "好物の卵焼きを多めに入れても、子どもは弁当を食べ残す。父親が自分にも同じ量を用意すると、弁当箱の大きさに初めて気づいた。",
+    "paragraphs": [
+      "2031年、ある町で父親が、幼い息子の弁当箱を毎朝おかずでいっぱいにしていた。好物の卵焼きも、隙間を見つけるたびに追加する。ところが息子はいつも半分ほど残して帰ってくる。「好きなものばかりなのに」と悩んだ父は、翌朝、息子には小さい箱を、自分には今までの大きい箱を用意し、同じおかずをぎっしり詰めた。",
+      "昼休み、父は「これくらい楽勝だ」と箸をつけた。だが卵焼きを食べても唐揚げを食べても、箱の底は見えない。昼休みが終わり、父は半分残った箱にふたをして持ち帰った。夕方、息子の小さい箱は空っぽ。父の大きな箱を開けた息子は、真顔で言った。「お父さん、好き嫌いしちゃだめだよ」。父は「量が多いだけ」と言いかけて、黙ってふたを閉めた。"
+    ],
+    "scene_prompt": "An oversized Japanese bento box still half full of tamagoyaki and fried chicken sits beside a tiny empty lunchbox on a wooden dining table. An anonymous father quietly closes the oversized lid while his young child points at the leftovers, both with solemn expressions. Modest family kitchen, candid photorealistic staged comedy, no text, logos, or identifiable people.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日刊スポーツ（ライブドアニュース配信）",
+      "published_at": "2026-11-03T22:35:00+09:00",
+      "url": "https://news.livedoor.com/article/detail/32724280/",
+      "topic": "2026年11月3日22:35公開。父親が子の弁当を作っても残されてしまい、弁当箱が大きすぎるのではとの指摘を受けたと報道。作中の家族・出来事・会話は創作。"
+    },
+    "published_at": "2026-11-04T09:36:32+09:00"
+  },
+  {
     "slug": "sweet-potato-chorus-starts-too-late",
     "category": "社会",
     "flash": "まちの珍事",
