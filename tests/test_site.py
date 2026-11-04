@@ -114,12 +114,16 @@ class SiteTests(unittest.TestCase):
         rail=home.split('<section class="press-timeline"',1)[1].split('</section>',1)[0]
         links=re.findall(r'<li><a href="/articles/([^/]+)/">',rail)
         published=load()
-        self.assertEqual(len(links),min(3,max(0,len(published)-11)))
         self.assertEqual(len(links),len(set(links)))
         hero=re.search(r'<h1><a href="/articles/([^/]+)/">',home).group(1)
         above=home.split('<section class="hero-grid">',1)[1].split(
             '<section class="press-timeline"',1)[0]
         earlier=set(re.findall(r'href="/articles/([^/]+)/"',above))
+        playlist=re.search(r'data-broadcast-playlist="([^"]+)"',above)
+        if playlist:
+            earlier.update(item["slug"] for item in json.loads(html.unescape(playlist.group(1))))
+        available={article["slug"] for article in published}-earlier
+        self.assertEqual(len(links),min(3,len(available)))
         self.assertNotIn(hero,links)
         self.assertTrue(earlier.isdisjoint(links))
         for slug in links:
