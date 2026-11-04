@@ -1,5 +1,33 @@
 [
   {
+    "slug": "crosswalk-photo-captcha-human-stuck",
+    "category": "技術",
+    "flash": "街の本人確認",
+    "fiction_company": "花見坂市交通安全室",
+    "art": "notice",
+    "fiction_at": "2031-07-09T06:00:00+09:00",
+    "published_at": "2026-11-04T19:30:03+09:00",
+    "title": "横断歩道を渡る前に「横断歩道の写真を選択」　人間が苦戦、AIだけ一発合格",
+    "summary": "歩行者を守るため、横断歩道に「人間確認」の画像クイズを置いた架空の町。目の前に本物の横断歩道があるのに、通行人はスマホ画面の白線探しに苦戦し、最後はAIに解いてもらった。",
+    "paragraphs": [
+      "ウェブサイトで人間かどうかを確かめる画像クイズを、花見坂市の交通安全室が横断歩道にも導入した。歩行者は青信号でも、スマホの画面に並ぶ写真から「横断歩道が写っているマス」をすべて選ばないと、通行用のゲートが開かない。",
+      "朝の通勤時間、列の先頭の男性は白線が少しだけ写ったマスを見落とし、三度目の挑戦に入った。目の前には本物の横断歩道がある。「これを見れば分かるのに」と顔を上げると、案内係に「画面の中だけを見てください」と注意され、また青信号が終わった。",
+      "遅刻しそうな女性がスマホのAIに写真を見せると、クイズは一瞬で正解した。ゲートには「人間であることを確認しました」と表示。女性が「解いたのはAIですけど」と伝えると、案内係はしばらく黙り、「次の青信号で渡ってください」と答えた。背後の列には、まだ画面の横断歩道を探す人たちが並んでいた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "GIGAZINE",
+      "published_at": "2026-07-09T06:00:00+09:00",
+      "url": "https://www.gigazine.net/news/20260709-ai-captcha-obsolete/",
+      "topic": "2026年7月9日公開の記事で、画像から信号などを選ばせるCAPTCHAが人間の確認に使われてきた一方、AIも突破できるようになり人間に負担が残る逆転を紹介。道路上の本人確認ゲート・花見坂市・登場人物・会話は創作。"
+    },
+    "scene_prompt": "A candid photorealistic deadpan street scene at a fictional Japanese pedestrian crosswalk. Foreground: frustrated office commuters are stopped at a small pedestrian gate while one woman shows a smartphone with a grid of tiny street photo tiles. Behind them, a clearly visible real zebra crossing and traffic light. The woman's phone displays simple image thumbnails, not readable lettering. Natural morning light, plausible human hands, no brand logos, no identifiable real people.",
+    "tags": [
+      "AI",
+      "本人確認"
+    ]
+  },
+  {
     "slug": "park-recorded-laughter-real-kids-shushed",
     "category": "社会",
     "flash": "公園の静けさ",
