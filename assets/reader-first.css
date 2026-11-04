@@ -16,9 +16,9 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .strip-content{min-height:30px!important}
 .strip-category{display:inline-flex;align-items:center;min-height:30px}
 .strip-category .fiction-mark{font-size:10px;font-weight:800;letter-spacing:.12em;color:#f6f0e6}
-.masthead{padding:23px 0 18px;border-bottom:1px solid #bac4b8}
+.masthead{padding:17px 0 15px;border-bottom:1px solid #bac4b8}
 .mast-kicker{font-size:9px;letter-spacing:.25em}
-.masthead .brand{font-size:clamp(46px,6.5vw,69px);line-height:1.22;letter-spacing:-.087em}
+.masthead .brand{font-size:clamp(46px,6vw,62px);line-height:1.22;letter-spacing:-.075em}
 .mast-sub{font-size:12px;line-height:1.45;margin:6px auto 0;max-width:none}
 .nav-bar{box-shadow:none;background:#f9f8f4}
 .nav-inner{gap:clamp(18px,3vw,38px);min-height:47px}
@@ -42,19 +42,19 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 
 /* The lead headline should appear immediately, not after a help panel. */
 .index-main{padding-top:25px;padding-bottom:70px}
-.news-briefing{padding-bottom:11px;margin:0 0 22px;border-bottom:1px solid var(--line)}
+.news-briefing{padding-bottom:10px;margin:0 0 20px;border-bottom:1px solid var(--line)}
 .news-briefing-title{gap:2px 11px}
 .news-briefing-title strong{font-size:clamp(17px,2.1vw,20px);line-height:1.4}
 .news-briefing-title .edition-updated{font-size:10px;line-height:1.4}
 .hero-grid{gap:clamp(22px,3vw,39px);align-items:start}
 .lead-info{margin-top:7px}
-.lead h1{font-size:clamp(30px,3.5vw,43px);line-height:1.37;letter-spacing:-.055em;margin:10px 0 13px}
+.lead h1{font-size:clamp(30px,3.2vw,39px);line-height:1.4;letter-spacing:-.035em;margin:10px 0 13px;text-wrap:balance;overflow-wrap:anywhere}
 .lead>.lead-media{margin-top:15px}
 .lead-media{border-radius:5px;box-shadow:none}
 .lead .dek{font-size:14px;line-height:1.75;margin:13px 0 16px;max-width:59ch}
 .hero-actions{gap:9px 15px}
 .story-meta .category,.category{background:transparent;border:1px solid #d0d6ca;color:#42564a;border-radius:3px;padding:2px 7px}
-.story-meta .real-published-at{font-size:10px;color:var(--muted);font-weight:700}
+.story-meta .real-published-at{font-size:11px;color:var(--muted);font-weight:700}
 .story-meta--compact{gap:6px 9px}
 .side-brief{background:transparent;border:0;border-top:2px solid var(--ink);border-radius:0;padding:8px 0 0}
 .side-brief .side-title{margin-bottom:1px}
@@ -94,14 +94,14 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .extras-open{font-size:23px;color:var(--muted)}
 
 /* Archive and article reading: spare dividers, good line length, small notices. */
-.archive-page{padding-top:36px}
-.page-intro{border-bottom:1px solid #aebbad;padding-bottom:20px;margin-bottom:20px}
-.page-intro h1{font-size:clamp(32px,4.5vw,52px);line-height:1.25;margin:8px 0}
+.archive-page{padding-top:27px}
+.page-intro{border-bottom:1px solid #aebbad;padding-bottom:16px;margin-bottom:12px}
+.page-intro h1{font-size:clamp(29px,3.3vw,39px);line-height:1.35;margin:7px 0;text-wrap:balance}
 .page-intro p{line-height:1.65}
 .archive-list .story-card{border-color:var(--line)}
 .article-page{padding-top:30px}
 .article-header{padding-bottom:15px;border-bottom:1px solid var(--line)}
-.article-header h1{line-height:1.38}
+.article-header h1{font-size:clamp(30px,3.2vw,41px);line-height:1.43;letter-spacing:-.035em;text-wrap:balance;margin:16px 0}
 .article-header .dek{line-height:1.7}
 .story-fiction-context{color:#57645d;background:transparent;border-left:2px solid #c6a887;padding:2px 0 2px 10px;font-size:11px}
 .article-hero-figure{margin:18px 0 10px}
@@ -141,8 +141,9 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
   .mobile-nav>a,.mobile-nav-more>summary{padding-inline:5px;font-size:12px}
   .index-main{padding-top:16px;padding-bottom:51px}
   .news-briefing{margin-bottom:16px;padding-bottom:10px}
-  .news-briefing-title strong{font-size:18px}
-  .lead h1{font-size:clamp(28px,7.8vw,34px);line-height:1.4}
+  .news-briefing-title strong{font-size:17px}
+  .news-briefing-title>.small-label,.lead>.small-label{display:none}
+  .lead h1{font-size:clamp(26px,7.2vw,30px);line-height:1.45}
   .lead>.lead-media{margin-top:13px}
   .lead-media{border-radius:4px}
   .lead .dek{font-size:13px;line-height:1.67;margin:10px 0 13px}
@@ -159,7 +160,7 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
   .readers-choice{margin-top:27px;padding:16px}
   .extras-shelf{margin-top:26px}
   .article-page{padding-top:18px}
-  .article-header h1{font-size:clamp(27px,7.5vw,35px)}
+  .article-header h1{font-size:clamp(27px,7.2vw,31px)}
   .article-body{font-size:17px;line-height:1.92}
   .footer{padding-top:26px}
   .footer-nav{gap:8px 16px}
@@ -167,6 +168,98 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 }
 @media(prefers-reduced-motion:reduce){
   .serial-card{transition:none}
+}
+
+/* Inner pages use a reading header instead of repeating the full front page. */
+@media(min-width:661px){
+  .page-inner .masthead{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 0}
+  .page-inner .mast-kicker{display:none}
+  .page-inner .masthead .brand{font-size:43px;line-height:1.2;flex-shrink:0}
+  .page-inner .mast-sub{margin:0;text-align:right;font-size:12px}
+}
+
+/* Keep the principal photograph and its headline together on a wide screen.
+   The DOM reading order stays headline, image, summary, actions. */
+@media(min-width:1000px){
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:28px}
+  .lead{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);column-gap:32px;align-items:start}
+  .lead>.small-label{grid-column:1;grid-row:1}
+  .lead>.lead-info{grid-column:1;grid-row:2;margin-top:8px}
+  .lead>h1{grid-column:1;grid-row:3;font-size:clamp(30px,2.9vw,37px);margin:12px 0 10px}
+  .lead>.dek{grid-column:1;grid-row:4;margin:4px 0 15px;font-size:14px}
+  .lead>.hero-actions{grid-column:1;grid-row:5;align-self:end}
+  .lead>.lead-media{grid-column:2;grid-row:1 / span 5;align-self:stretch;aspect-ratio:auto;height:100%;min-height:320px;max-height:430px;margin:0}
+  .lead-media .hero-image{height:100%;aspect-ratio:auto;object-fit:cover}
+  .side-brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:23px;padding-top:9px}
+  .side-brief .side-title{grid-column:1 / -1;margin-bottom:10px}
+  .side-brief .brief-card{border:0;padding:0;min-width:0}
+  .side-brief .brief-card+.brief-card{border-left:1px solid var(--line);padding-left:23px}
+  .side-brief .brief-card h3{font-size:20px;line-height:1.5;margin:8px 0 0;text-wrap:pretty}
+}
+
+/* Four recent stories form two balanced rows. Archive readers see the
+   headline beside its thumbnail; unrelated three-story features keep theirs. */
+.index-main>.section-block>.story-grid,.archive-list{
+  grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;
+}
+.index-main>.section-block>.story-grid>.story-card,.archive-list .story-card{
+  display:grid;grid-template-columns:146px minmax(0,1fr);align-content:start;
+  column-gap:17px;row-gap:7px;padding:21px 0;
+  background:transparent;border:0;border-bottom:1px solid var(--line);
+  border-radius:0;box-shadow:none;transform:none;
+}
+.index-main>.section-block>.story-grid>.story-card .story-image-link,
+.archive-list .story-card .story-image-link{
+  grid-column:1;grid-row:1 / span 3;align-self:start;
+  height:132px;margin:0;border-radius:4px;
+}
+.index-main>.section-block>.story-grid>.story-card .story-thumb,
+.archive-list .story-card .story-thumb{
+  height:100%;width:100%;aspect-ratio:auto;border-radius:4px;object-fit:cover;
+}
+.index-main>.section-block>.story-grid>.story-card .story-meta,
+.archive-list .story-card .story-meta{grid-column:2;grid-row:1;margin:0;gap:4px 8px}
+.index-main>.section-block>.story-grid>.story-card h3,
+.archive-list .story-card h3{
+  grid-column:2;grid-row:2;font-size:20px;line-height:1.55;letter-spacing:-.025em;margin:0;
+}
+.index-main>.section-block>.story-grid>.story-card p,
+.archive-list .story-card p{
+  grid-column:2;grid-row:3;font-size:12px;line-height:1.75;margin:0;color:#58665d;
+}
+.index-main>.section-block>.story-grid>.story-card .story-image-link::after,
+.archive-list .story-card .story-image-link::after{left:6px;bottom:6px;font-size:8px;padding:2px 5px}
+.index-main>.section-block>.story-grid>.story-card .story-clip-label,
+.archive-list .story-card .story-clip-label{top:6px;right:6px;bottom:auto;font-size:9px;padding:3px 5px}
+.archive-page .filters{gap:7px;padding:8px 0 12px}
+.archive-page .filter-button{min-height:44px}
+.archive-page .search-row{padding:0 0 18px}
+.archive-page .search-input{min-height:46px}
+@media(min-width:661px) and (max-width:999px){
+  .index-main>.section-block>.story-grid>.story-card,.archive-list .story-card{
+    grid-template-columns:114px minmax(0,1fr);column-gap:13px;
+  }
+  .index-main>.section-block>.story-grid>.story-card h3,.archive-list .story-card h3{font-size:18px}
+  .index-main>.section-block>.story-grid>.story-card p,.archive-list .story-card p{grid-column:1 / -1}
+  .index-main>.section-block>.story-grid>.story-card .story-image-link,
+  .archive-list .story-card .story-image-link{grid-row:1 / span 2;height:114px}
+}
+@media(max-width:850px){
+  .index-main>.section-block>.story-grid,.archive-list{grid-template-columns:minmax(0,1fr);gap:0}
+}
+@media(max-width:660px){
+  .index-main>.section-block>.story-grid>.story-card,.archive-list .story-card{
+    grid-template-columns:104px minmax(0,1fr);column-gap:14px;row-gap:7px;padding:18px 0;
+  }
+  .index-main>.section-block>.story-grid>.story-card .story-image-link,
+  .archive-list .story-card .story-image-link{grid-row:1 / span 2;height:108px}
+  .index-main>.section-block>.story-grid>.story-card h3,.archive-list .story-card h3{font-size:18px;line-height:1.55}
+  .index-main>.section-block>.story-grid>.story-card p,.archive-list .story-card p{grid-column:1 / -1;font-size:13px;line-height:1.75}
+  .archive-page .page-intro{padding-bottom:13px;margin-bottom:10px}
+  .archive-page .page-intro h1{font-size:29px;line-height:1.4}
+  .archive-page .filters{gap:6px;padding-bottom:12px}
+  .archive-page .search-row{flex-wrap:wrap;row-gap:9px;padding-bottom:13px}
+  .archive-page .result-counter{width:100%;text-align:right}
 }
 
 /* RSS is available on demand, not an advertisement ahead of the archive. */
