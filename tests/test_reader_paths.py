@@ -60,7 +60,8 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             lead = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
             self.assertIsNotNone(lead, item["slug"])
             self.assertIn('data-popular-fallback', page)
-            self.assertIn('新着からもう1本', page)
+            self.assertIn('<span class="reader-next-kicker">次の記事</span>', page)
+            self.assertIn('<span class="reader-next-meta">新着 · ', page)
             expected_latest = max(
                 (a for a in self.articles if a["slug"] != item["slug"]),
                 key=lambda a: (build.publication_date(a), a["source"]["published_at"]),
