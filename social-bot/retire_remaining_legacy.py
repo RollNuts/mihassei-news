@@ -226,9 +226,14 @@ def persist_request(request):
     REQUEST_PATH.write_text(content, encoding="utf-8")
     relative = "social-bot/remaining-legacy-retirement.json"
     subprocess.run(["git", "add", relative], cwd=HERE.parent, check=True)
-    if subprocess.run(["git", "diff", "--cached", "--quiet", "--", relative],
-                      cwd=HERE.parent).returncode:
+    diff = subprocess.run(
+        ["git", "diff", "--cached", "--quiet", "--", relative],
+        cwd=HERE.parent,
+    )
+    if diff.returncode == 0:
         return
+    if diff.returncode != 1:
+        raise RuntimeError("Could not inspect staged retirement evidence")
     subprocess.run(
         ["git", "commit", "-m", "chore(x): record remaining legacy retirement [skip ci]", "--", relative],
         cwd=HERE.parent, check=True,

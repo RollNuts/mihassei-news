@@ -1,6 +1,9 @@
 import copy
 import importlib.util
+import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -121,6 +124,52 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
         self.perform(move=timeout)
         self.assertEqual(self.request, snapshot)
         self.assertFalse(self.events)
+
+
+    def test_persist_request_commits_when_staged_diff_has_changes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            social = root / "social-bot"
+            social.mkdir()
+            target = social / "remaining-legacy-retirement.json"
+            calls = []
+
+            def fake_run(args, cwd=None, check=False):
+                calls.append(list(args))
+                if args[:4] == ["git", "diff", "--cached", "--quiet"]:
+                    return SimpleNamespace(returncode=1)
+                return SimpleNamespace(returncode=0)
+
+            with patch.object(m, "HERE", social), \
+                 patch.object(m, "REQUEST_PATH", target), \
+                 patch.object(m.subprocess, "run", side_effect=fake_run):
+                m.persist_request({"schema_version": 1, "enabled": False, "results": {}})
+
+            commands = [" ".join(args[:2]) for args in calls]
+            self.assertIn("git commit", commands)
+            self.assertIn("git push", commands)
+
+    def test_persist_request_skips_commit_when_nothing_changed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            social = root / "social-bot"
+            social.mkdir()
+            target = social / "remaining-legacy-retirement.json"
+            calls = []
+
+            def fake_run(args, cwd=None, check=False):
+                calls.append(list(args))
+                if args[:4] == ["git", "diff", "--cached", "--quiet"]:
+                    return SimpleNamespace(returncode=0)
+                return SimpleNamespace(returncode=0)
+
+            with patch.object(m, "HERE", social), \
+                 patch.object(m, "REQUEST_PATH", target), \
+                 patch.object(m.subprocess, "run", side_effect=fake_run):
+                m.persist_request({"schema_version": 1, "enabled": False, "results": {}})
+
+            self.assertFalse(any(args[:2] == ["git", "commit"] for args in calls))
+            self.assertFalse(any(args[:2] == ["git", "push"] for args in calls))
 
 
 if __name__ == "__main__":
