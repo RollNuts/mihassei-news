@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675"
+     role="img" aria-label="消しすぎて大きな穴が開いたノートと消しゴム、机に散らばる消しかすを描いた創作イラスト"
+     data-visual-topic="document" data-article-sha256="605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc">
+  <title>予想を消しすぎたノート</title>
+  <desc>開いたノートの右ページは何度もこすられ、大きな丸い穴から茶色の机が見えている。すぐ横の消しゴムはすり減り、消しかすが散らばる。文字や実在人物を含まない、架空の記事のための編集部制作イラスト。</desc>
+  <defs>
+    <linearGradient id="desk" x2="0" y2="1"><stop stop-color="#704d3c"/><stop offset="1" stop-color="#4f352d"/></linearGradient>
+    <linearGradient id="left-page"><stop stop-color="#fffdf3"/><stop offset="1" stop-color="#e7dfcf"/></linearGradient>
+    <linearGradient id="right-page"><stop stop-color="#ded6c6"/><stop offset=".08" stop-color="#fffcf1"/><stop offset="1" stop-color="#f2eddf"/></linearGradient>
+    <mask id="page-hole"><rect width="1200" height="675" fill="white"/>
+      <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="black"/>
+    </mask>
+  </defs>
+  <rect width="1200" height="675" fill="url(#desk)"/>
+  <g fill="none" stroke="#c49e79" stroke-width="3" opacity=".12"><path d="M0 108h1200M0 228h1200M0 471h1200M0 595h1200"/><path d="M680 302q100-17 231 5M686 326q80-12 220 2"/></g>
+  <path d="M171 132l387-20 386 24 8 436-396-4-389 10z" fill="#251b18" opacity=".3" transform="translate(12 16)"/>
+  <path d="M168 129l388-15 387 18 6 430-393 9-390-2z" fill="#344855"/>
+  <path d="M187 130q180-21 369-6v428q-186-20-370 3z" fill="url(#left-page)"/>
+  <path d="M556 124q189-15 368 8l6 420q-185-21-374 0z" fill="url(#right-page)" mask="url(#page-hole)"/>
+  <path d="M556 124v428" stroke="#9b8c79" stroke-width="2"/>
+  <g stroke="#a2a09b" stroke-width="5" stroke-linecap="round" opacity=".35" fill="none">
+    <path d="M243 216l221 4M249 247l181-2M239 281l233 5M247 318l167-3M242 351l219 5"/>
+    <path d="M657 173l181 6M650 419l188-6M651 451l128 5"/>
+  </g>
+  <g stroke="#b7b0a1" stroke-width="16" stroke-linecap="round" opacity=".35" fill="none" mask="url(#page-hole)">
+    <path d="M648 223l229 151M648 253l213 127M659 377l203-152M674 389l202-124"/>
+  </g>
+  <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="#684737"/>
+  <path d="M708 291q68-8 153 3M710 324q66-8 145 2" stroke="#b78e6c" stroke-width="3" opacity=".22" fill="none"/>
+  <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="none" stroke="#d8ccb7" stroke-width="10" stroke-linejoin="round"/>
+  <g transform="translate(989 446) rotate(20)"><path d="M0 0h86l13 62-75 10L-7 46z" fill="#c17178"/><path d="M0 0h86l-9 40-84 6z" fill="#edb6b7"/><path d="M-7 46l84-6 22 22-75 10z" fill="#a25b63"/></g>
+  <g fill="none" stroke="#77716a" stroke-width="5" stroke-linecap="round">
+    <path d="M961 367l11 5M953 392l-9 8M1005 409l6-9M959 430l12 2M974 535l-10 6M1021 552l12-6M1026 386l10 5M932 580l8 3M891 575l13-7M881 501l9-7M656 387l9 4M690 435l-8 5M822 200l11-4M676 203l-7-4M858 413l8 3M914 451l-8 7M917 392l4-10M885 227l7 3"/>
+  </g>
+</svg>
