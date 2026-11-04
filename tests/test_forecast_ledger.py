@@ -85,7 +85,7 @@ class MarketForecastLedgerTests(unittest.TestCase):
         hub=render_series_page(self.series,html_only)
         article=render_episode_page(self.series,self.series["episodes"][0],html_only)
         self.assertIn('id="forecast-ledger"',hub)
-        self.assertIn("予測は、答え合わせまで残す。",hub)
+        self.assertIn("予想の検証一覧",hub)
         self.assertIn('href="/serials/market-lab/#forecast-ledger"',article)
         self.assertNotIn("判定済み：的中",hub)
 

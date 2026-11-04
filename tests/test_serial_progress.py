@@ -60,7 +60,7 @@ class SerialReadingProgressTests(unittest.TestCase):
             self.assertIn('data-episode-id="'+ep["slug"]+'"', rendered)
             self.assertIn('data-serial-progress-toggle', rendered)
             self.assertIn('aria-pressed="false"', rendered)
-            self.assertIn("閲覧だけでは記録しません", rendered)
+            self.assertIn("このブラウザに保存します", rendered)
             self.assertIn('role="status"', rendered)
             last = render_episode_page(series, series["episodes"][-1], identity_layout)
             self.assertIn("次回は未公開", last)
@@ -96,7 +96,7 @@ class SerialReadingProgressTests(unittest.TestCase):
         irrelevant = layout("記事一覧", "desc", "/archive/", "main")
         self.assertNotIn('src="/assets/serial-progress.js"', irrelevant)
         disclosure = privacy()
-        for item in ("連載の読了記録", "localStorage", "閲覧だけで読了を記録せず", "サーバーへ送信しません"):
+        for item in ("保存記事・読了記録", "このブラウザ内だけに保存", "読了ボタンで選んだ作品・回", "サーバーに送信せず"):
             self.assertIn(item, disclosure)
 
     def test_local_progress_requires_no_new_api_or_paid_assets(self):

@@ -54,9 +54,9 @@ class SerialReadingTests(unittest.TestCase):
 
     def test_old_local_notes_are_never_silently_deleted(self):
         notice = privacy()
-        self.assertIn("以前の推理メモ", notice)
-        self.assertIn("localStorage", notice)
-        self.assertIn("自動で消去・送信しません", notice)
+        self.assertIn("提供を終了した推理メモの文章が残っている場合", notice)
+        self.assertIn("ブラウザのサイトデータを削除すると記録も消えます", notice)
+        self.assertIn("同じ方法で削除できます", notice)
 
 
 if __name__ == "__main__":

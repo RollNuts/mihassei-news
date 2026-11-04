@@ -214,7 +214,7 @@ def check():
         svg,svg_mime=get(prefix+"cover.svg")
         if not svg.startswith(b"<svg") or "svg" not in svg_mime:
             raise RuntimeError("Generated original serial cover unavailable: "+prefix)
-        expected_kind="創作ミステリー" if serial["kind"]=="fiction" else "実際の市場に関する考察"
+        expected_kind="推理小説" if serial["kind"]=="fiction" else "市場分析"
         feed="/feeds/series-"+serial["slug"]+".xml"
         if ('href="'+feed+'"' not in serial_index or
             'href="'+feed+'"' not in series_markup.decode("utf-8")):
@@ -313,7 +313,7 @@ def check():
                   'readers-choice-title" hidden'):
         if token not in body:
             raise RuntimeError("Reader-discovery layout not deployed: "+token)
-    if "実測ブラウザ単位の参考集計。実人数・PVではありません。" not in body:
+    if "閲覧ブラウザ数順" not in body or 'href="/privacy/#readership"' not in body:
         raise RuntimeError("Readership ranking must explain its actual counting unit")
 
     # A failed daily schedule must not leave the homepage falsely saying
@@ -326,7 +326,7 @@ def check():
     dated_articles=sum((a.get("published_at") or a["source"]["published_at"])[:10]==last_day for a in articles)
     for token in ('data-edition-status data-last-edition="'+last_day+'"',
                   'data-edition-count="'+str(dated_articles)+'"',
-                  'data-edition-updated>最終発行：'):
+                  'data-edition-updated>更新：'):
         if token not in body:
             raise RuntimeError("Publication freshness information not deployed: "+token)
     if "● LIVE" in body or "今日の号外をめくる" in body:
@@ -609,7 +609,7 @@ def check():
             image_path=generated_url(item)
             if 'src="'+image_path+'"' not in page:
                 raise RuntimeError(slug+": locally generated staged photograph not displayed")
-            if "再現イメージ（合成）" not in page or "実際の出来事を撮影した報道写真ではありません" not in page:
+            if "再現イメージ（合成）" not in page or '<figcaption>再現イメージ（合成）' not in page:
                 raise RuntimeError(slug+": staged photo needs a concise synthetic-image disclosure")
             if ('<meta property="og:image" content="'+SITE+image_path+'">' not in page):
                 raise RuntimeError(slug+": local staged photograph missing from OGP")

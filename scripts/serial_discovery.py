@@ -65,11 +65,9 @@ def render_serial_bridge(article: dict, serials: list[dict]):
     chapter = prefix + escape(entry["slug"]) + "/"
     label = "現実の市場分析" if analysis else "創作推理小説"
     introduction = (
-        "こちらは実際の公開資料から市場を考える別枠の連載です。"
-        "この記事の架空の出来事を裏付けるものではなく、投資助言・売買推奨でもありません。"
+        "公開資料から株式市場を読み解く。投資助言・売買推奨ではありません。"
         if analysis else
-        "こちらは架空の事件を追う独立した推理小説です。"
-        "この記事の続報ではなく、実際の事件を扱うものでもありません。"
+        series["subtitle"]
     )
     unit = "回" if analysis else "話"
     number = entry["number"]
@@ -79,15 +77,15 @@ def render_serial_bridge(article: dict, serials: list[dict]):
         '<div class="article-serial-bridge-media">'
         f'<a href="{chapter}" aria-label="{escape(series["title"])}の第{number}{unit}を読む">'
         f'<img src="{prefix}cover.svg" width="1200" height="675" loading="lazy" decoding="async"'
-        f' alt="{escape(series["title"])}のオリジナル表紙"></a></div>'
+        f' alt="{escape(series["title"])}の表紙"></a></div>'
         '<div class="article-serial-bridge-copy">'
-        f'<span class="article-serial-bridge-label">{label} / 未発生新聞の連載</span>'
-        '<h2 id="article-serial-bridge-title">ニュースの外側にも、読み物がある。</h2>'
+        f'<span class="article-serial-bridge-label">{label}</span>'
+        '<h2 id="article-serial-bridge-title">連載</h2>'
         f'<h3><a href="{prefix}">{escape(series["title"])}</a></h3>'
-        f'<p class="article-serial-bridge-explain">{introduction}</p>'
+        f'<p class="article-serial-bridge-explain">{escape(introduction)}</p>'
         f'<p class="article-serial-bridge-latest">最新の第{latest["number"]}{unit}：{escape(latest["title"])}</p>'
         '<div class="article-serial-bridge-links">'
         f'<a class="article-serial-bridge-primary" href="{chapter}">{action} →</a>'
-        f'<a href="{prefix}">作品の目次を見る ↗</a></div></div>'
+        f'<a href="{prefix}">目次 ↗</a></div></div>'
         '</aside>'
     )

@@ -69,8 +69,8 @@ class SiteTests(unittest.TestCase):
         import html
         commercial=(ROOT/"dist/advertise/index.html").read_text(encoding="utf-8")
         for item in ("広告・協賛のご案内", "フィクション", "広告", "PR",
-                     "記事の文章", "掲載期間", "保証しません",
-                     "一般に公開", "個人のメールアドレス",
+                     "記事を書き換えません", "掲載期間", "料金",
+                     "投稿・返信は公開されます", "個人情報や非公開の契約条件",
                      "github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml"):
             self.assertIn(item,html.unescape(commercial))
         for prohibited in ("adsbygoogle.js", "data-ad-client=", "広告を表示中"):
@@ -215,7 +215,7 @@ class SiteTests(unittest.TestCase):
         latest=load()[0]
         self.assertIn('data-return-update',home)
         self.assertIn('data-latest-published="'+publication_date(latest)+'"',home)
-        self.assertIn('href="/articles/'+latest["slug"]+'/" hidden>前回から新しい記事',home)
+        self.assertIn('href="/articles/'+latest["slug"]+'/" hidden>新着記事を読む',home)
         # No extra ticker, fake impression counts, or new API dependency.
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('mihassei-latest-published-v1',js)
@@ -389,7 +389,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('class="readers-choice" data-popular-section',markup)
         self.assertIn('data-popular-list',markup)
         self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
-        self.assertIn("実測ブラウザ単位の参考集計。実人数・PVではありません。",markup)
+        self.assertIn("閲覧ブラウザ数順",markup)
         m=re.search(r'data-popular-options="([^"]+)"',markup)
         self.assertIsNotNone(m)
         candidates=json.loads(html.unescape(m.group(1)))
@@ -491,7 +491,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn('href="/assets/newspaper.css?v=',page)
             self.assertNotIn("50% / 50%",page)
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
-        self.assertIn("架空ニュースの二択投票について",privacy)
+        self.assertIn("<h2>投票</h2>",privacy)
         self.assertIn("個人の回答は公開しません",privacy)
 
     def test_reader_comments_are_present_and_privacy_is_explained(self):
@@ -505,11 +505,11 @@ class SiteTests(unittest.TestCase):
             self.assertIn('name="body"',text)
             self.assertIn("問題", (ROOT/"assets/comments.js").read_text(encoding="utf-8"))
         privacy=(ROOT/"dist/privacy/index.html").read_text(encoding="utf-8")
-        self.assertIn("読者コメントについて",privacy)
+        self.assertIn("<h2>コメント</h2>",privacy)
         self.assertIn("参照元URL全体",privacy)
-        self.assertIn("記事から次の記事への移動",privacy)
-        self.assertIn("移動先の組み合わせ",privacy)
-        self.assertIn("検索した言葉",privacy)
+        self.assertIn("記事から別の記事へ進んだブラウザ数",privacy)
+        self.assertIn("移動先との組み合わせ",privacy)
+        self.assertIn("検索語",privacy)
         self.assertIn("投稿日時を公開",privacy)
 
     def test_genuine_reader_participation_discovery(self):
@@ -613,7 +613,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('src="/generated/'+a["slug"]+'.jpg"',html)
                 self.assertIn('data-generated-scene="true"',html)
                 self.assertIn("再現イメージ（合成）",html)
-                self.assertIn("実際の出来事を撮影した報道写真ではありません",html)
+                self.assertIn("<figcaption>再現イメージ（合成）",html)
                 self.assertIn('property="og:image:type" content="image/jpeg"',html)
             elif usable_cached_photo(a,root=ROOT):
                 self.assertIn(a["photo"]["source"],html)
@@ -668,12 +668,12 @@ class SiteTests(unittest.TestCase):
         daily=sum(a.get("published_at","")[:10]==latest_date for a in self.articles)
         self.assertIn('data-edition-status data-last-edition="'+latest_date+'"',home)
         self.assertIn('data-edition-count="'+str(daily)+'"',home)
-        self.assertIn('data-edition-title>最新の架空ニュース</strong>',home)
-        self.assertIn('data-edition-updated>最終発行：',home)
-        self.assertIn("（現実時間）",home)
+        self.assertIn('data-edition-title>最新記事</strong>',home)
+        self.assertIn('data-edition-updated>更新：',home)
+        self.assertIn('data-last-edition="'+latest_date+'"',home)
         self.assertIn("紙面の架空時計",home)
         self.assertNotIn("● LIVE",home)
-        self.assertNotIn("本日の架空ニュース",home,
+        self.assertNotIn("本日の記事",home,
                          "The no-JS fallback must not claim freshness")
         self.assertNotIn("今日の号外をめくる",home,
                          "Random archive articles are not necessarily from today")
@@ -758,7 +758,7 @@ class SiteTests(unittest.TestCase):
                 category=(ROOT/"dist"/category_url(cat).lstrip("/")/"index.html")
                 page=category.read_text(encoding="utf-8")
                 self.assertIn('href="'+feed+'" type="application/rss+xml"',page)
-                self.assertIn('title="'+cat+'の架空ニュース RSS"',page)
+                self.assertIn('title="'+cat+'の記事 RSS"',page)
         main=ET.parse(ROOT/"dist/feed.xml").getroot()
         self.assertEqual(len(main.findall("./channel/item")),min(30,len(articles)))
         self.assertEqual(main.find("channel").find("atom:link",ns).get("href"),

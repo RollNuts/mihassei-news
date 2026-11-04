@@ -28,7 +28,7 @@ class SavedStoriesTests(unittest.TestCase):
         self.assertIn('id="main"', markup)
         self.assertIn('data-saved-list aria-label="保存した記事一覧"', markup)
         self.assertIn('data-clear-bookmarks hidden', markup)
-        self.assertIn("ブラウザのデータを消去すると", markup)
+        self.assertIn("ブラウザのデータを消すと保存も消えます", markup)
         self.assertIn('href="/archive/"', markup)
         self.assertNotIn("data-bookmark-slug=", markup)
         self.assertIn('src="/assets/bookmarks.js"', markup)
@@ -77,9 +77,9 @@ class SavedStoriesTests(unittest.TestCase):
 
     def test_privacy_explains_opt_in_local_storage_and_delete(self):
         markup = build.privacy()
-        self.assertIn("localStorage", markup)
-        self.assertIn("運営者のサーバーへ送信せず", markup)
-        self.assertIn("個別に解除・すべて解除", markup)
+        self.assertIn("このブラウザ内だけに保存", markup)
+        self.assertIn("サーバーに送信せず", markup)
+        self.assertIn("保存・読了はいつでも解除できます", markup)
         css = (ROOT / "assets/editorial-polish.css").read_text(encoding="utf-8")
         for selector in (".bookmark-button", ".saved-entry", ".saved-empty[hidden]",
                          "@media(max-width:660px)"):

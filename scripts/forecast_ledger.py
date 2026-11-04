@@ -119,7 +119,7 @@ def render_forecast_ledger(series, *, today=None):
             )
             outcome_html = (
                 '<div class="forecast-ledger-result">'
-                f'<p><strong>実際の判定：</strong>{_escape(result["outcome"])}'
+                f'<p><strong>判定結果：</strong>{_escape(result["outcome"])}'
                 f'（検証日：<time datetime="{_escape(result["verified_on"])}">'
                 f'{_escape(result["verified_on"])}</time>）</p>'
                 f'<p>{_escape(result["explanation"])}</p>'
@@ -142,11 +142,8 @@ def render_forecast_ledger(series, *, today=None):
         )
     return (
         '<section class="forecast-ledger" id="forecast-ledger" aria-labelledby="forecast-ledger-heading">'
-        '<div class="section-head"><div><span class="small-label red">FORECAST TRACKER / 公開予想の検証台帳</span>'
-        '<h2 id="forecast-ledger-heading">予測は、答え合わせまで残す。</h2></div></div>'
-        '<p class="forecast-ledger-intro">予測日・検証条件・判定期日を一覧化しています。'
-        '期日を過ぎても実績資料を確認できなければ「判定待ち」と表示し、'
-        '的中したことにはしません。未検証の予想を的中率に含めず、'
-        '十分な検証件数がない段階で成績を誇張しません。個別株の売買を勧誘するものではありません。</p>'
+        '<div class="section-head"><div>'
+        '<h2 id="forecast-ledger-heading">予想の検証一覧</h2></div></div>'
+        '<p class="forecast-ledger-intro">検証日以降、結果を確認できるまで「判定待ち」と表示します。</p>'
         '<div class="forecast-ledger-grid">' + "".join(cards) + '</div></section>'
     )

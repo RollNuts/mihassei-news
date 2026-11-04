@@ -21,7 +21,7 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertEqual(home.count('class="broadcast-spotlight"'), 1)
         self.assertEqual(home.count('class="broadcast-video"'), 1)
         self.assertIn('UNHAPPENED TV', home)
-        self.assertIn('創作ニュースの演出映像', home)
+        self.assertIn('<p class="broadcast-note">再現映像・音声なし</p>', home)
         self.assertIn('controls playsinline muted loop preload="none"', home)
         self.assertIn('src="/assets/news-broadcast.js"', home)
         self.assertNotIn('autoplay', home)
@@ -88,7 +88,7 @@ class NewsBroadcastTests(unittest.TestCase):
         archive = build.archive(self.articles)
         self.assertIn('data-category-filter="事件"', archive)
         page = build.story(incidents[0], self.articles)
-        self.assertIn('この記事は創作です', page)
+        self.assertIn('<strong>創作ニュース</strong>', page)
         self.assertIn("J-CASTニュース", page)
 
 

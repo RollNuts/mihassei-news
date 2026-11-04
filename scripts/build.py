@@ -427,7 +427,7 @@ def broadcast_overlay(article, clip):
 
 def clip_caption(article):
     clip = usable_clip(article, root=BASE)
-    return (f" 写真を編集した{clip_seconds(clip)}秒の無音演出映像。" if clip else "")
+    return (f" · {clip_seconds(clip)}秒・音声なし" if clip else "")
 
 
 def article_hero_media(a):
@@ -469,7 +469,7 @@ def broadcast_feature(articles, *, exclude_slug=None):
         '<div class="broadcast-intro"><div>'
         '<span class="small-label red">UNHAPPENED TV / 映像ニュース</span>'
         '<h2 id="broadcast-title">未発生ニュース放送室</h2>'
-        '<p>ひとつのニュースを、短い映像で。</p></div>'
+        '</div>'
         f'<a href="{url}" class="broadcast-article-link">記事全文を読む →</a></div>'
         '<div class="broadcast-screen" data-news-broadcast data-video-shell>'
         f'<img class="broadcast-poster" src="{escape(poster)}" alt=""'
@@ -481,7 +481,7 @@ def broadcast_feature(articles, *, exclude_slug=None):
         f'<source src="{escape(clip_url(chosen))}?v={version}" type="video/mp4">'
         '</video>' + broadcast_overlay(chosen, clip) + '</div>'
         f'<p class="broadcast-headline"><a href="{url}">{escape(chosen["title"])}</a></p>'
-        '<p class="broadcast-note">創作ニュースの演出映像・無音。再生できない場合は画像を表示します。</p>'
+        '<p class="broadcast-note">再現映像・音声なし</p>'
         '</section>'
     )
 
@@ -489,13 +489,12 @@ def broadcast_feature(articles, *, exclude_slug=None):
 def photo_credit(a):
     """Always disclose AI staging; never mislabel a synthetic scene as real."""
     if usable_generated_scene(a, root=BASE):
-        return "再現イメージ（合成）。実際の出来事を撮影した報道写真ではありません。"
+        return "再現イメージ（合成）"
     if not usable_cached_photo(a, root=BASE):
-        return "記事の題材を表現した編集部制作の創作イラスト。実際の出来事の写真ではありません。"
+        return "創作イラスト"
     p = a["photo"]
     return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
-            f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>。'
-            '記事内の出来事や架空の企業とは関係ありません。')
+            f' rel="noopener noreferrer external">{escape(p["credit"])} / Unsplash</a>')
 
 
 def card(a, archive=False):
@@ -549,7 +548,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         mast_subtitle = "架空の推理小説と、公開資料に基づく市場予測。"
     elif serial is not None and serial["kind"] == "analysis":
         publication_label = "市場分析"
-        mast_subtitle = "公開資料から考える未来。予測は保証されません。"
+        mast_subtitle = "公開資料から、相場の先を考える。"
     elif serial is not None and serial["kind"] == "fiction":
         publication_label = "創作小説"
         mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
@@ -896,8 +895,7 @@ def home(articles, serials=None):
         '<section class="press-timeline" aria-labelledby="press-timeline-title">'
         '<div class="press-timeline-heading">'
         '<div><span class="press-timeline-mark" aria-hidden="true"></span>'
-        '<h2 id="press-timeline-title">発行ログ</h2>'
-        '<span>新着の次に読む、まだ見えていない記事</span></div>'
+        '<h2 id="press-timeline-title">ほかの見出し</h2></div>'
         '<a href="/issues/">発行号一覧 ↗</a></div>'
         '<ol class="press-timeline-list">' + "".join(timeline_links) + '</ol></section>'
     ) if timeline_links else ""
@@ -949,9 +947,9 @@ def home(articles, serials=None):
  data-popular-options="{popular_options}" aria-labelledby="readers-choice-title" hidden>
 <div class="section-head"><div>
 <span class="small-label red">READER DISCOVERY / 読者の注目</span>
-<h2 id="readers-choice-title">新着の中で読まれている記事</h2></div>
+<h2 id="readers-choice-title">読まれている記事</h2></div>
 <a href="/archive/">ほかの記事も探す ↗</a></div>
-<p class="readers-choice-note">実測ブラウザ単位の参考集計。実人数・PVではありません。</p>
+<p class="readers-choice-note">閲覧ブラウザ数順 · <a href="/privacy/#readership">集計について</a></p>
 <ol class="readers-choice-list" data-popular-list></ol>
 </section>'''
     discussion_options = escape(json.dumps(
@@ -961,14 +959,13 @@ def home(articles, serials=None):
 <div class="news-briefing" data-edition-status data-last-edition="{escape(last_day)}"
  data-edition-count="{last_day_count}" data-last-label="{escape(last_label)}">
 <div class="news-briefing-title"><span class="small-label red" data-edition-eyebrow>LATEST HEADLINES</span>
-<strong data-edition-title>最新の架空ニュース</strong>
-<span class="edition-updated" data-edition-updated>最終発行：{escape(last_label)}（現実時間）</span></div>
+<strong data-edition-title>最新記事</strong>
+<span class="edition-updated" data-edition-updated>更新：{escape(last_label)}</span></div>
 <a class="return-update" data-return-update data-latest-published="{escape(last_published)}"
- href="{article_url(newest)}" hidden>前回から新しい記事が届きました <span aria-hidden="true">↗</span></a>
+ href="{article_url(newest)}" hidden>新着記事を読む <span aria-hidden="true">↗</span></a>
 </div>
 <aside class="returning-shelf" data-returning-shelf hidden aria-label="この端末に保存した記事">
  <span class="returning-shelf-eyebrow">SAVED / あとで読む</span>
- <span class="returning-shelf-intro">保存した記事から再開</span>
  <a class="returning-shelf-article" data-returning-shelf-article href="/saved/"></a>
  <span class="returning-shelf-count" data-returning-shelf-count></span>
  <a class="returning-shelf-all" href="/saved/">保存一覧 ↗</a>
@@ -1042,8 +1039,7 @@ def archive(articles):
     # so existing filtering works automatically when a second decade exists.
     decade_hidden = ' hidden' if len(decades) < 2 else ''
     content = f'''<div class="container archive-page">
-<header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>架空ニュースの記事一覧</h1>
-<p>気になる見出しから、どうぞ。</p>
+<header class="page-intro"><span class="eyebrow">ARCHIVE</span><h1>記事一覧</h1>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
@@ -1068,7 +1064,7 @@ def archive(articles):
 
 
 def category_page(category, items):
-    title = category + "の架空ニュース"
+    title = category + "の記事"
     intro = CATEGORY_INTROS[category]
     content = (
         '<div class="container archive-page">'
@@ -1104,9 +1100,8 @@ def issue_index(issues):
     content = (
         '<div class="container archive-page issue-page">'
         '<header class="page-intro"><span class="eyebrow">THE EDITION ARCHIVE</span>'
-        '<h1>未発生新聞の発行号</h1>'
-        '<p>現実に記事を公開した日付ごとに、5年後の架空ニュースをまとめています。'
-        '3本以上の創作ニュースを掲載した日だけをひとつの発行号にしています。</p></header>'
+        '<h1>発行号</h1>'
+        '<p>日付ごとにまとめて読む。</p></header>'
         '<section class="issue-index-list" aria-label="日付ごとの発行号">'
         + ("".join(links) if links else '<p>まとまった発行号はまだありません。新着記事をご覧ください。</p>')
         + '</section><p><a class="read-more" href="/archive/">新着記事をすべて読む</a></p></div>'
@@ -1140,13 +1135,9 @@ def issue_page(day, items, issues):
         '<header class="page-intro">'
         '<span class="eyebrow">DAILY EDITION / 5年後の架空ニュース</span>'
         f'<h1><time datetime="{day}">{title}</time></h1>'
-        f'<p>現実の{issue_date_label(day)}に掲載した、{len(items)}本の創作ニュースです。'
-        f'物語の舞台は{int(day[:4]) + 5}年の架空の未来。'
-        '記事内の出来事・発言・登場人物はフィクションです。</p>'
+        f'<p>{len(items)}本掲載</p>'
         f'<p class="issue-categories">{escape(kinds)}</p></header>'
         '<aside class="issue-share-panel" aria-label="この号を紹介する">'
-        '<div><span class="eyebrow">SHARE THIS EDITION / 創作新聞</span>'
-        '<p>気になる見出しを、フィクションと明記してXで紹介できます。</p></div>'
         f'<a class="issue-share-cta" href="{escape(issue_share_url(day, items))}"'
         ' target="_blank" rel="noopener noreferrer external">𝕏 この号をXで紹介する ↗</a>'
         '</aside>'
@@ -1200,7 +1191,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
-<p class="story-fiction-context"><strong>この記事は創作です。</strong></p>
+<p class="story-fiction-context"><strong>創作ニュース</strong></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 </header>
 <figure class="article-hero-figure">
@@ -1222,7 +1213,7 @@ def story(a, articles, issues=None, serials=None):
 <button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
 <button type="button" data-poll-choice="unlikely" aria-pressed="false"><span aria-hidden="true">✕</span> それはない！</button>
 </div>
-<p class="future-poll-status" data-poll-status role="status">ブラウザ単位で1記事1票。投票後に結果を表示します。</p>
+<p class="future-poll-status" data-poll-status role="status">投票すると結果が見られます。</p>
 <div class="future-poll-results" data-poll-results hidden aria-label="もしもの投票結果">
 <div class="future-poll-result-line"><span>ありそう</span><strong data-poll-plausible-percent>—</strong></div>
 <div class="future-poll-meter"><span data-poll-plausible-bar></span></div>
@@ -1252,13 +1243,13 @@ def story(a, articles, issues=None, serials=None):
 <p>感想やツッコミをどうぞ。投稿内容は公開されます。</p>
 </div>
 <div class="reader-comments-list" data-comments-list></div>
-<p class="reader-comments-status" data-comments-status role="status">コメントを準備しています…</p>
+<p class="reader-comments-status" data-comments-status role="status">コメントを読み込み中…</p>
 <form class="reader-comments-form" data-comments-form>
 <label for="reader-nickname">ニックネーム <span>（任意・16文字以内）</span></label>
 <input id="reader-nickname" name="nickname" type="text" maxlength="16" autocomplete="nickname" placeholder="匿名の未来人">
 <label for="reader-body">コメント</label>
 <textarea id="reader-body" name="body" minlength="2" maxlength="180" rows="3" required placeholder="未来のニュースにひとこと…"></textarea>
-<div class="comment-form-footer"><span>2〜180文字／URL・個人情報・誹謗中傷の投稿は禁止。スパム対策の投稿制限があります。</span>
+<div class="comment-form-footer"><span>2〜180文字。URL・個人情報・誹謗中傷は投稿できません。</span>
 <button type="submit">コメントを投稿</button></div>
 </form>
 </section></div>
@@ -1272,63 +1263,47 @@ def about():
 <h1>未発生新聞について</h1>
 <p>まだ起きていないニュースを、真顔で。</p></header>
 <div class="about-copy">
-<h2>5年後を、ちょっと大げさに想像する新聞です。</h2>
-<p>今のニュースや身近な話題を、「もし5年後もこの調子だったら？」と勝手に膨らませる架空の新聞です。現実の出来事を出発点に、少し大げさで、ちょっと皮肉な世界を創作します。</p>
-<p>未来を当てようとしているわけではありません。「そんなわけないだろ」と笑えて、「でも、ちょっとありそう」と思えるくらいが理想。人を見下すためではなく、世の中の変な仕組みや行き過ぎた常識を笑うための新聞です。</p>
-<h2>架空ニュースと推理小説は創作です。</h2>
-<p>本紙の架空ニュース・推理小説に登場する企業、人物、事件、発言、数値はフィクションです。実際のニュースや報道ではありません。</p>
-<p>連載「未来相場観測室」は別枠の市場考察です。出典を示した現実の情報と、編集上の仮説・予測を区別し、後日検証します。投資成果を保証したり、売買を勧めたりするものではありません。<a href="/serials/">連載を読む ↗</a></p>
-<p>元の話題から着想して記事を書きますが、元記事やSNSの文章、画像、スクリーンショットは転載しません。参考にした実際の話題へは記事末尾から移動できます。</p>
-<h2>今日も、未発生。</h2>
-<p>小さなニュースから大きな事件まで。何も起きていない毎日に、ちょっとした号外を。</p>
-<p>「観測されたブラウザ」「いいね」「もしもの二択投票」は匿名のブラウザ単位の参考集計です。実際の人数とは一致しない場合があります。</p>
-<p><a href="/editorial/" style="text-decoration:underline">編集方針と記事の作り方を読む ↗</a></p>
+<p>未発生新聞は、今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞です。</p>
+<h2>掲載内容</h2>
+<p>ニュース記事と推理小説はフィクションです。連載「未来相場観測室」では、現実の公開資料に基づく市場分析を掲載しています。</p>
+<p><a href="/archive/" style="text-decoration:underline">記事一覧 ↗</a>　<a href="/serials/" style="text-decoration:underline">連載 ↗</a></p>
+<p><a href="/editorial/" style="text-decoration:underline">編集方針・お問い合わせ ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 </div></div>'''
-    return layout("本紙について","未発生新聞は今の話題を5年後の架空ニュースにして笑う創作メディアです。未来を的中させる予測ではありません。","/about/",content,"about")
+    return layout("本紙について","今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞。","/about/",content,"about")
 
 def editorial_policy():
     """Public disclosure of the creative process and commercial independence."""
     content = '''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">EDITORIAL POLICY</span>
-<h1>編集方針・記事の作り方</h1><p>5年後を当てるためではなく、今を少し笑うために。事実と創作は分けて伝えます。</p></header>
+<h1>編集方針</h1></header>
 <div class="about-copy">
-<h2>これは予知ではなく、未来を使った冗談です。</h2>
-<p>今の話題の何がちょっとおかしいのかを見つけ、「もし5年後に行き過ぎたら？」と想像して創作ニュースにします。予測の的中率を競うものでも、誰かを攻撃するためのものでもありません。見出しだけでも状況が伝わり、最後にもう一段笑える記事を目指します。</p>
-<h2>創作ニュースと現実の市場考察を区別します。</h2>
-<p>ニュース面と連載「未発生事件簿」は創作です。架空ニュースに登場する企業、人物、発言、制度、事件、数値はフィクションであり、未来予測や実際の報道ではありません。</p>
-<p>連載「未来相場観測室」は現実の公開資料に基づく編集上の分析です。執筆時点と参照先を明記し、仮説・反対シナリオ・後日検証の条件を公開します。実在企業に関する事実は出典で確認し、予想を事実のように扱わず、特定銘柄の売買を勧誘しません。<a href="/serials/">連載の入り口 ↗</a></p>
-<h2>生成AIと自動化の利用</h2>
-<p>ニュース、公開投稿、生活や文化の話題を着想元に、生成AIを文章づくりの補助と公開工程の自動化に利用しています。記事に添える実写風画像にもAIによる合成画像を使う場合があります。これらは演出用の再現イメージであり、現実の出来事を撮影した報道写真ではありません。出典・記事の創作表示・画像の検証を行い、必要に応じて改稿します。</p>
-<p>実在する人物や企業が架空の不祥事を起こしたかのように見せることは避け、創作部分の固有名詞は原則として架空のものを用います。</p>
-<h2>出典と創作の境界</h2>
-<p>着想元の公開情報や投稿は、各記事末尾の「着想元を見る」から確認できます。着想元が、記事内の創作内容を裏付けているわけではありません。元の記事・投稿の本文や写真を無断転載せず、写真素材は使用条件とクレジットを確認し、架空の出来事の記録写真と誤認されないように表示します。</p>
-<h2>広告・アフィリエイトについて</h2>
-<p>現在は広告の自動配信を行っていません。将来、広告やアフィリエイトリンクを掲載する場合は、記事内容との区別と広告・PRの表示を行い、読みにくいほど広告を増やす運用は避けます。収益や検索順位を保証するものではありません。</p>
-<p><a href="/advertise/" style="text-decoration:underline">広告・協賛に関するご案内 ↗</a></p>
-<h2>運営者・訂正の連絡</h2>
-<p>出典の誤り、権利上の問題、記事の訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>からお知らせください。公開フォームのため個人情報は書かないでください。</p>
+<h2>創作と市場分析</h2>
+<p>ニュース記事と「未発生事件簿」はフィクションです。「未来相場観測室」は現実の公開資料に基づく市場分析で、出典・予測日・検証条件を示します。投資助言や売買の勧誘ではありません。</p>
+<h2>出典・画像</h2>
+<p>着想元の公開情報や投稿は、本文末尾の「着想元を見る」から確認できます。参照先が記事内の創作内容を裏付けるものではありません。</p>
+<p>文章づくりの補助に生成AIを使用しています。実写風の合成画像は「再現イメージ（合成）」と表示し、写真素材には出典・クレジットを添えます。</p>
+<h2>広告</h2>
+<p>広告・アフィリエイトを掲載する場合は「広告」「PR」などを表示し、記事と区別します。協賛者の意向で記事を書き換えません。<a href="/advertise/">広告・協賛のご相談 ↗</a></p>
+<h2>訂正・お問い合わせ</h2>
+<p>出典の誤り、権利上の問題、訂正依頼は<a href="https://github.com/RollNuts/mihassei-news/issues" target="_blank" rel="noopener noreferrer external">公開GitHub Issues</a>へ。投稿は公開されるため、個人情報は記入しないでください。</p>
 <p><a href="/about/" style="text-decoration:underline">未発生新聞について ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
 </div></div>'''
-    return layout("編集方針・記事の作り方","未発生新聞の創作ニュース制作、生成AIの利用、出典、広告と訂正に関する編集方針。","/editorial/",content)
+    return layout("編集方針","未発生新聞の創作・市場分析・出典・画像・広告の方針と、訂正の連絡先。","/editorial/",content)
 
 
 def advertise():
     """Public, unambiguous commercial inquiry policy; no active advertising."""
     content = '''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">ADVERTISING &amp; PARTNERSHIPS</span>
-<h1>広告・協賛のご案内</h1><p>広告より先に、読者が楽しめる新聞を。</p></header>
+<h1>広告・協賛</h1></header>
 <div class="about-copy">
-<h2>未発生新聞について</h2>
-<p>未発生新聞は、今のニュースから「5年後はこうなるかも」を少し大げさに描く、風刺とユーモアの創作新聞です。未来の的中を目指す予測ではなく、記事内の出来事や団体はフィクションです。</p>
 <h2>ご相談いただける内容</h2>
-<p>サイト内の小さな協賛枠や、読者に役立つ関連企画について相談を受け付けています。内容・掲載期間・料金・実施可否は個別に決めます。現在、広告枠は販売・表示しておらず、スポンサー契約済みの企業も掲載していません。</p>
-<p>記事の文章やニュース判断は協賛者の意向で書き換えません。広告・PRの掲載が決まった場合は、一般記事との境界に「広告」「PR」等を明確に表示します。記事や共有投稿の中に広告を無表示で紛れ込ませません。</p>
-<h2>読者体験と実績</h2>
-<p>広告を大量に並べず、スマートフォンでも読みやすい配置を優先します。アクセスは匿名のブラウザ単位で参考集計していますが、実人数・ページビュー・広告の表示数・クリック数と同義ではありません。出稿効果、PV、売上、検索順位は保証しません。架空の実績や架空の協賛者を掲載しません。</p>
-<h2>ご相談の入口</h2>
-<p>まずは<a href="https://github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml" target="_blank" rel="noopener noreferrer external">公開GitHubのお問い合わせフォーム</a>から、公開しても問題のない概要のみお知らせください。GitHubアカウントが必要です。</p>
-<p><strong>重要：</strong>このフォームの投稿・返信は一般に公開されます。氏名、個人のメールアドレス、電話番号、見積書、非公開の契約条件、その他の機密情報を絶対に記入しないでください。非公開情報のやり取りが必要な場合は、公開フォームでの詳細交換を行わず、双方が合意した安全な連絡方法を別途検討します。</p>
+<p>サイト内の協賛枠や関連企画についてご相談を受け付けています。内容・掲載期間・料金は個別に相談します。</p>
+<p>広告・PRは一般記事と区別して表示し、協賛者の意向で記事を書き換えません。</p>
+<h2>お問い合わせ</h2>
+<p><a href="https://github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml" target="_blank" rel="noopener noreferrer external">広告・協賛のお問い合わせ ↗</a>（GitHubアカウントが必要です）</p>
+<p>投稿・返信は公開されます。個人情報や非公開の契約条件を記入せず、ご相談の概要だけをお知らせください。</p>
 <p><a href="/editorial/" style="text-decoration:underline">編集方針を読む ↗</a>　<a href="/privacy/" style="text-decoration:underline">プライバシーについて ↗</a></p>
 </div></div>'''
     return layout("広告・協賛のご案内",
@@ -1338,48 +1313,42 @@ def advertise():
 
 def privacy():
     content='''<div class="container archive-page"><header class="page-intro">
-<span class="eyebrow">PRIVACY</span><h1>プライバシーについて</h1>
-<p>ニュースは架空。数字は実測。</p></header>
+<span class="eyebrow">PRIVACY</span><h1>プライバシーについて</h1></header>
 <div class="about-copy">
-<h2>アクセスといいね</h2>
-<p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。アクセス計測のために氏名やメールアドレスの登録は求めません。</p>
-<p>来訪ブラウザ数は実際の人数ではありません。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
-<h2 id="pageviews">PV（ページ閲覧数）について</h2>
-<p>PVは、ページがブラウザに表示され、閲覧の通知を受信した回数です。同じ記事の再読み込みも数え、人数・読了数とは区別します。トップページの数字はサイト全体、記事の見出し横の数字はその記事の計測開始後の累計です。日別の区切りは日本時間の0時、直近7日は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」と表示し、開始前の数字は「—」とします。以前のブラウザ数をPVに換算したり、過去のPVを推定して加算したりしません。</p>
-<p>ページ表示ごとのランダムな識別子で通信の再送による二重計上を防ぎます。ブラウザの戻る操作でページが再表示された場合も数えますが、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが動かない場合や通信できない場合は計測できません。自動テストとして識別できるブラウザでは閲覧通知を送りませんが、すべての自動アクセスを見分けるものではありません。</p>
+<h2>アクセスの集計</h2>
+<p>閲覧・いいね・投票などの集計に、ブラウザ内のランダムな識別子を使います。識別子はハッシュ化してCloudflareに保存します。氏名やメールアドレスの登録は不要です。</p>
+<h2 id="pageviews">PV（ページ閲覧数）</h2>
+<p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。トップはサイト全体、記事の見出し横はその記事の累計PVです。</p>
+<p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」、未計測の期間は「—」と表示します。</p>
+<p>通信の再送による二重計上を防ぎ、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが無効な場合や通信に失敗した場合は計測できません。自動アクセスを完全に除外した数字ではありません。</p>
 <div class="analytics-preference">
 <label><input type="checkbox" data-analytics-opt-out> このブラウザの閲覧を集計しない</label>
 <p data-analytics-status role="status">設定を読み込み中です。</p>
-<noscript><p>JavaScriptが無効なため、このブラウザから閲覧通知は送信されていません。</p></noscript>
-<p>運営者の確認などを除外したい場合にも使えます。このブラウザに設定を保存し、以後の自動的な閲覧通知を停止します。既に集計した数値は取り消さず、いいね・投票など自分で選ぶ操作は利用できます。別のブラウザには引き継がれません。</p>
+<noscript><p>JavaScriptが無効なため、閲覧通知は送信されていません。</p></noscript>
+<p>設定はこのブラウザに保存されます。過去の集計は変わらず、いいね・投票は引き続き利用できます。</p>
 </div>
-<h2>ブラウザ単位の参考集計について</h2>
-<p>PVとは別に、日別の来訪ブラウザ数と記事閲覧の重複を除いた件数も記録しています。同じブラウザが同じ記事を一日に何度開いても、この参考集計では1件です。翌日や別の記事は別に数えます。これらをPVや実人数と表示することはありません。</p>
-<p>日別の集計値と再送を判別する記録は直近14日分に限定し、訪問が発生した際に古い記録を削除します。過去の集計値を日次記録として保存する場合があります。ページ表示の識別子とブラウザ識別子はハッシュ化し、新しい個人情報や課金型の外部サービスは追加しません。</p>
-<p>どこから訪れたかは「X」「検索」「その他の外部サイト」「判別できない流入」の4種類に大まかに分類します。ブラウザ内で分類した種類名だけを送信し、参照元URL全体・検索した言葉・IPアドレスを集計データベースには保存しません。サイト内のページ移動は流入経路に含めず、同じブラウザでも複数経路を利用すれば複数の区分に数えられます。数値は実際の来訪人数やPVではなく、計測開始以降の参考値です。</p>
-<h2>記事別のX・検索流入について</h2>
-<p>「X」「検索」の2区分について、匿名ブラウザの識別子をハッシュ化し、記事ごと・区分ごとに重複を除いて記録することがあります。投稿内容、検索語、SNSアカウント、参照元URL全体、UTMの詳細、IPアドレスはこの集計データベースに保存しません。区分の推定はブラウザ側の参照情報などに依存し、実際の投稿数・クリック数・ページビュー・実人数ではありません。同じブラウザが複数の記事や区分に重複して数えられることがあり、この計測機能を導入する前の過去の流入は復元できません。記事ごとの匿名ブラウザ単位の参考値は各記事ページや、条件を満たした場合のトップページの読者の注目欄に表示することがあります。運営者向けの分析画面は公開していません。</p>
-<h2>記事から次の記事への移動</h2>
-<p>サイト内の記事から別の記事へ進んだ場合、元の記事を表す短い識別子だけを、通常の閲覧計測と一緒に送信することがあります。サイト内の参照元であることを確認し、参照元URL全体・検索語・クエリ文字列は送信しません。識別子をハッシュ化したブラウザ単位で、元の記事から別の記事へ進んだ経験のあるブラウザを重複排除して集計します。移動先の組み合わせ、クリック履歴、個人の閲覧経路は保存しません。ブラウザが参照元を送らない場合は計測できず、実人数やクリック総数、回遊率とは異なります。</p>
-<h2>架空ニュースの二択投票について</h2>
-<p>記事にある「ありそう／それはない！」は、匿名ブラウザ単位の任意投票です。投票する際はブラウザのランダム識別子をSHA-256でハッシュ化して保存し、各記事で1ブラウザ1票として重複を防ぎます。公開するのは選択肢ごとの合計と割合だけで、個人の回答は公開しません。IPアドレス・メールアドレスを投票データベースに保存しません。別のブラウザやデータ削除後は重複投票が可能なため、実人数や世論調査ではなく、未来の出来事が的中する確率を示すものでもありません。投票後の変更・取り消しはできません。</p>
-<h2>読者コメントについて</h2>
-<p>記事へのコメントはニックネーム（省略可能）と本文、投稿日時を公開します。本文は180文字以内で、URLや個人情報の記載は禁止しています。匿名のブラウザ識別子をハッシュ化して保存し、連続投稿防止・自分の投稿の削除・通報の重複防止に使用します。IPアドレスやメールアドレスをコメントデータベースに保存しません。</p>
-<p>3件の異なるブラウザから通報があると、一時的に非表示になります。運営者は不適切な投稿を非表示・削除することがあります。自分の投稿は同じブラウザから削除できます。履歴を削除すると操作できなくなることがあります。</p>
-<h2>以前の推理メモについて</h2>
-<p>以前の推理メモ欄に明示的に保存した文章は、そのブラウザのlocalStorageに残っている場合があります。現在は記事本文の読みやすさを優先してメモ欄の提供を終了し、古い文章をサイト側から自動で消去・送信しません。削除するにはブラウザのveripsa.comのサイトデータを消去してください。ただし読了記録や「あとで読む」の保存も消えます。</p>
-<h2>連載の読了記録</h2>
-<p>連載の各話で「この回を読了にする」を押した場合に限り、作品・エピソードを表す短い識別子をこのブラウザのlocalStorageへ記録します。読了状態はいつでも取り消せます。連載ページではその記録を使って次の未読回へのリンクを表示します。閲覧だけで読了を記録せず、サーバーへ送信しません。別の端末やブラウザには同期せず、サイトデータを消すと記録も消えます。</p>
-<h2>「あとで読む」の保存</h2>
-<p>任意で「あとで読む」を押した記事の識別子・タイトル・ジャンル・保存日時を、その端末のブラウザ内（localStorage）だけに最大100件保存します。保存情報は運営者のサーバーへ送信せず、他の端末とは同期しません。保存記事の一覧から個別に解除・すべて解除できます。ブラウザのサイトデータを消去すると保存情報も消えます。</p>
-<h2>外部サービス</h2>
-<p>サイトの公開・集計にはCloudflareを使用します。記事の一部にはUnsplashで公開された商用利用可能な写真を使用しており、表示時にUnsplashへ通信する場合があります。Xへの共有を選択した場合、Xのページへ移動します。</p>
-<h2>広告について</h2>
-<p>現在は広告の審査準備中で、広告の自動表示はしていません。将来広告を掲載する際は、使用する事業者とプライバシー情報を更新します。</p>
+<h2 id="readership">閲覧ブラウザ数・流入元</h2>
+<p>PVとは別に、閲覧したブラウザ数も集計します。同じ記事の一日内の重複閲覧を除いた件数も記録します。実人数ではなく、ブラウザを変えたり保存データを消したりすると、重複する場合があります。</p>
+<p>流入元は「X」「検索」「その他の外部サイト」「判別できない流入」に分類します。「X」「検索」は記事別にも集計し、参考値を表示する場合があります。X共有ボタンのクリックや、記事から別の記事へ進んだブラウザ数も集計します。</p>
+<p>参照元URL全体・検索語・SNSアカウント・UTMの詳細・IPアドレスは集計データベースに保存しません。記事間の移動は元の記事の識別子だけを送り、移動先との組み合わせや個人の閲覧経路は保存しません。</p>
+<p>日別集計と再送判別の記録は直近14日分を保持し、次の訪問時に古い記録を削除します。累計や日次の集計値は別途保存する場合があります。</p>
+<h2>投票</h2>
+<p>「ありそう／それはない！」は1ブラウザにつき1記事1票です。公開するのは合計と割合だけで、個人の回答は公開しません。投票後の変更・取り消しはできません。</p>
+<p>別のブラウザやデータ削除後には重複投票できるため、実人数・世論調査・出来事が起こる確率を示すものではありません。IPアドレスやメールアドレスは投票データベースに保存しません。</p>
+<h2>コメント</h2>
+<p>ニックネーム・本文・投稿日時を公開します。ニックネームは任意、本文は180文字以内です。URL・個人情報・誹謗中傷は投稿できません。</p>
+<p>ハッシュ化したブラウザ識別子を、連続投稿の制限・投稿の削除・通報の重複防止に使います。IPアドレスやメールアドレスはコメントデータベースに保存しません。異なる3ブラウザからの通報で一時非表示になり、不適切な投稿は運営者が非表示・削除する場合があります。</p>
+<p>自分の投稿は同じブラウザから削除できます。ブラウザの保存データを消すと削除できなくなる場合があります。</p>
+<h2>保存記事・読了記録</h2>
+<p>「あとで読む」で選んだ記事の識別子・タイトル・ジャンル・保存日時を最大100件、読了ボタンで選んだ作品・回の識別子を、このブラウザ内だけに保存します。サーバーに送信せず、別の端末とは同期しません。保存・読了はいつでも解除できます。</p>
+<p>ブラウザのサイトデータを削除すると記録も消えます。提供を終了した推理メモの文章が残っている場合も、同じ方法で削除できます。</p>
+<h2>外部サービス・広告</h2>
+<p>公開・集計にCloudflareを使用します。一部の写真にはUnsplashを使用し、表示時に通信する場合があります。Xで共有するとXのページへ移動します。</p>
+<p>広告を掲載する際は、使用する事業者とプライバシー情報をこのページに記載します。</p>
 <h2>お問い合わせ</h2>
-<p>運営上の問題や権利に関するご連絡は、<a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHubのIssues</a>をご利用ください。公開される場所のため個人情報は投稿しないでください。</p>
+<p><a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHub Issues</a>へお知らせください。投稿は公開されるため、個人情報は記入しないでください。</p>
 </div></div>'''
-    return layout("プライバシーについて","未発生新聞の閲覧計測と外部サービスの取り扱い。","/privacy/",content)
+    return layout("プライバシーについて","閲覧計測、コメント、保存記事と外部サービスの取り扱い。","/privacy/",content)
 
 
 def saved_page():
@@ -1387,22 +1356,19 @@ def saved_page():
     content = '''<div class="container saved-page">
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a>
 <span aria-hidden="true"> / </span><span aria-current="page">あとで読む</span></nav>
-<header class="page-intro"><span class="eyebrow">YOUR READING LIST / 保存記事</span>
+<header class="page-intro"><span class="eyebrow">SAVED</span>
 <h1>あとで読む</h1>
-<p>気になる未発生ニュースを、このブラウザだけに保存できます。</p></header>
+<p>このブラウザに保存した記事</p></header>
 <section class="saved-intro" aria-label="保存について">
-<div><strong>アカウント・メール登録不要</strong>
-<p>記事の保存先は、この端末のブラウザ内だけ。運営者のサーバーには送信しません。
-ブラウザのデータを消去すると、保存記事も消えます。</p></div>
+<div><p>別の端末とは同期されません。ブラウザのデータを消すと保存も消えます。</p></div>
 <a href="/archive/">新しい記事を探す ↗</a></section>
-<p class="saved-status" data-bookmark-status role="status" aria-live="polite">
-JavaScriptが有効なら、保存した記事をここから開けます。</p>
+<p class="saved-status" data-bookmark-status role="status" aria-live="polite"></p>
 <p class="saved-empty" data-saved-empty hidden>まだ保存された記事はありません。
 記事ページの「☆ あとで読む」を押すと、ここに並びます。</p>
 <ol class="saved-list" data-saved-list aria-label="保存した記事一覧"></ol>
 <div class="saved-controls"><button type="button" data-clear-bookmarks hidden>
 保存をすべて解除</button><a href="/archive/">記事一覧を見る ↗</a></div>
-<noscript><p>保存記事の一覧にはJavaScriptが必要です。記事自体は通常どおり読めます。</p></noscript>
+<noscript><p>保存した記事を見るにはJavaScriptを有効にしてください。</p></noscript>
 </div>'''
     return layout("あとで読む",
                   "未発生新聞で気になった創作ニュースを、この端末のブラウザだけに保存する読書リスト。",

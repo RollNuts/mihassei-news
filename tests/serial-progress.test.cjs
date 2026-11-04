@@ -77,7 +77,7 @@ test("opening a page is read-only and keeps normal serial links as fallback", ()
   assert.equal(a.resume.hidden, true);
   assert.equal(a.complete.hidden, true);
   assert.equal(a.button.getAttribute("aria-pressed"), "false");
-  assert.match(a.status.textContent, /閲覧だけでは記録されません/);
+  assert.match(a.status.textContent, /このブラウザに保存します/);
 });
 
 test("explicit completion unlocks the actual next unread chapter", () => {

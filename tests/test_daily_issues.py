@@ -49,8 +49,9 @@ class DailyIssueTests(unittest.TestCase):
         older=issue_page("2026-11-01",groups["2026-11-01"],groups)
         self.assertIn('<link rel="canonical" href="https://veripsa.com/issues/2026-11-02/">',newer)
         self.assertIn('<time datetime="2026-11-02">2026年11月2日発行号</time>',newer)
-        self.assertIn("現実の2026年11月2日に掲載した、4本の創作ニュース",newer)
-        self.assertIn("2031",newer)
+        self.assertIn("<p>4本掲載</p>",newer)
+        self.assertIn("DAILY EDITION / 5年後の架空ニュース",newer)
+        self.assertIn('aria-label="実際の掲載日時">公開 2026/11/2',newer)
         self.assertIn("/issues/2026-11-01/",newer)
         self.assertIn("/issues/2026-11-02/",older)
         for a in groups["2026-11-02"]:

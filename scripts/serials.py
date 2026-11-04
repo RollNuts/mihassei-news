@@ -157,12 +157,12 @@ def serial_routes(serials):
 
 def _cover_img(series, loading="lazy"):
     src = series_url(series) + "cover.svg"
-    return (f'<img class="serial-cover" src="{h(src)}" alt="{h(series["title"])}のオリジナル表紙イラスト"'
+    return (f'<img class="serial-cover" src="{h(src)}" alt="{h(series["title"])}の表紙"'
             f' width="1200" height="675" loading="{loading}" decoding="async">')
 
 
 def _kind_label(series):
-    return "創作ミステリー" if series["kind"] == "fiction" else "実際の市場に関する考察"
+    return "推理小説" if series["kind"] == "fiction" else "市場分析"
 
 
 def episode_label(series, number):
@@ -183,12 +183,9 @@ def render_completed_reading(series, episode):
     return (f'<section class="serial-reading-marker" data-serial-progress-current '
             f'data-series-id="{h(series["slug"])}" data-episode-id="{h(episode["slug"])}" '
             'aria-label="自分の読了記録">'
-            '<div><strong>ここまで読んだら</strong>'
-            '<p>読み終えた回を自分で記録できます。次の回は連載一覧から探せます。</p></div>'
+            '<div><strong>読了記録</strong></div>'
             '<button type="button" data-serial-progress-toggle aria-pressed="false">この回を読了にする</button>'
-            '<p data-serial-progress-status role="status" aria-live="polite">保存は任意。閲覧だけでは記録しません。</p>'
-            '<small>読了情報はこのブラウザ内にのみ保存します。登録不要・サーバー送信なし。'
-            'ブラウザを変えたり保存データを消したりすると記録は戻りません。</small>'
+            '<p data-serial-progress-status role="status" aria-live="polite">このブラウザに保存します。</p>'
             '</section>')
 
 
@@ -207,7 +204,7 @@ def _series_card(series):
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
-            f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span>'
+            f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
             f'<a class="serial-link" href="{episode_url(series, main_ep)}">{main_label} <span aria-hidden="true">→</span></a>'
             f'{newer_episode_link}'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
@@ -216,7 +213,7 @@ def _series_card(series):
 
 def render_serials_feature(serials):
     return ('''<section class="serials-feature" aria-labelledby="serials-home-heading">
-      <div class="section-head"><div><span class="small-label red">SERIALS / 連載</span>
+      <div class="section-head"><div>
       <h2 id="serials-home-heading">連載</h2></div>
       <a href="/serials/">連載一覧を見る ↗</a></div>
       <div class="serial-grid">''' +
@@ -225,13 +222,9 @@ def render_serials_feature(serials):
 
 def render_serials_index(serials, layout):
     main = ('''<div class="container serials-page"><header class="serials-intro">
-      <span class="small-label red">THE SERIAL DESK / 連載</span>
-      <h1>物語を追う。未来を検証する。</h1>
-      <p>このページには、2種類の読み物があります。推理小説はすべて創作。
-      株式市場の予測は現実の資料と執筆時点の見解に基づく分析です。</p></header>
+      <h1>連載</h1></header>
       <div class="serial-grid serial-grid--archive">''' +
-      "".join(_series_card(s) for s in serials) + "</div>"
-      '<p class="serials-disclosure">※創作は事実を示しません。市場分析は将来の成果を保証せず、特定銘柄の売買推奨でもありません。</p></div>')
+      "".join(_series_card(s) for s in serials) + "</div></div>")
     return layout("連載一覧", "未発生事件簿の連載推理小説と、未来相場観測室の市場予測・検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
@@ -242,21 +235,18 @@ def render_series_page(series, layout):
         f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small>'f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small></a></li>'
         for ep in episodes
     )
-    state = ('架空の登場人物と事件を扱うオリジナル小説です。'
-             if series["kind"] == "fiction" else
-             '現実のデータを参照した分析です。架空ニュースとは異なり、見解には不確実性があります。')
+    disclosure = ('<p class="serials-disclosure">投資助言・売買推奨ではありません。</p>'
+                  if series["kind"] == "analysis" else '')
     main = (f'<div class="container serials-page" {progress_attributes(series)}><nav class="serial-breadcrumb" aria-label="現在位置">'
             f'<a href="/">トップ</a> / <a href="/serials/">連載</a> / {h(series["title"])}</nav>'
             f'<header class="serial-series-hero serial-series-hero--{series["kind"]}">'
             f'<div class="serial-series-media">{_cover_img(series, loading="eager")}</div>'
             f'<div class="serial-series-copy"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h1>{h(series["title"])}</h1><p class="serial-series-subtitle">{h(series["subtitle"])}</p>'
-            f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}'
-            + (f' / 全{series["planned_episodes"]}話構想' if series.get("planned_episodes") else '') +
-            f'</span>'
+            f'<p>{h(series["description"])}</p><span class="serial-series-counter">公開済み {len(episodes)}{"話" if series["kind"]=="fiction" else "回"}</span>'
             + (f'<a class="serial-start-link" href="{episode_url(series, series["episodes"][0])}">第1話から読む →</a>'
                if series["kind"] == "fiction" else '') +
-            f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開中のすべての回を読了</span></div></div></header><p class="serials-disclosure">{state}</p>'
+            f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span></div></div></header>{disclosure}'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
@@ -302,28 +292,32 @@ def render_episode_page(series, ep, layout):
         extras = (f'<section class="serial-scenario-section"><h2>3つのシナリオ</h2>'
                   f'<div class="serial-scenarios">{scenarios}</div></section>'
                   f'<aside class="serial-reader-box serial-forecast"><span class="small-label">PUBLIC FORECAST LOG</span>'
-                  f'<h2>後日検証する予想</h2><p><strong>予想：</strong>{h(fc["statement"])}</p>'
+                  f'<h2>予想と検証条件</h2><p><strong>予想：</strong>{h(fc["statement"])}</p>'
                   f'<p><strong>検証日：</strong><time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time>'
                   f'／ 判定状況：{h(fc["status"])}</p>'
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
-                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">公開予想の検証台帳を確認する ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
-                  f'<ol>{refs}</ol><p>数値・見通しは参照資料に基づきますが、株価についての見立ては編集上の仮説です。</p></section>')
+                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">検証一覧を見る ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
+                  f'<ol>{refs}</ol></section>')
     # Publishing a sequel must not leave an old "next chapter in preparation"
     # message in the first chapter. Preserve immutable editorial source data.
     followup = ep.get("followup_note", "")
     if next_ep is not None and ("準備中" in followup or "未公開" in followup):
         followup = f'{episode_label(series, next_ep["number"])}が公開されています。'
+    unit = "話" if series["kind"] == "fiction" else "回"
     navigation = (
-        '<nav class="serial-next-prev" aria-label="連載の前後の話">'
-        + (f'<a href="{episode_url(series, prev_ep)}">← 前の話を読む</a>' if prev_ep else
-           '<span>ここが第1話です</span>')
-        + (f'<a href="{episode_url(series, next_ep)}">次の話を読む →</a>' if next_ep else
+        '<nav class="serial-next-prev" aria-label="連載の前後のページ">'
+        + (f'<a href="{episode_url(series, prev_ep)}">← 前の{unit}を読む</a>' if prev_ep else '')
+        + (f'<a href="{episode_url(series, next_ep)}">次の{unit}を読む →</a>' if next_ep else
            '<span>次回は未公開</span>')
         + '</nav>'
     )
-    marker = ('※この物語の人物・事件・地名・書類はすべて創作です。実際の事件ではありません。'
+    marker = ('登場人物・事件はすべて創作です。'
               if series["kind"] == "fiction" else
-              '※この記事は執筆時点の情報をもとにした市場考察です。予想は不確実であり、投資助言・売買推奨ではありません。')
+              '市場の見通しは仮説であり、投資助言・売買推奨ではありません。')
+    kicker = ep["kicker"].replace("ここから先はすべて創作です。", "").strip()
+    if kicker == "現実の市場に関する独立した分析記事です。創作ニュースではありません。":
+        kicker = ""
+    kicker_html = f'<p class="serial-article-kicker">{h(kicker)}</p>' if kicker else ""
     main = (f'<div class="container serials-page serial-article serial-article--{series["kind"]}">'
             f'<nav class="serial-breadcrumb" aria-label="現在位置"><a href="/">トップ</a> / '
             f'<a href="/serials/">連載</a> / <a href="{series_url(series)}">{h(series["title"])}</a>'
@@ -333,13 +327,13 @@ def render_episode_page(series, ep, layout):
             f'<div class="serial-pub"><time datetime="{ep["published_at"]}">公開日 {h(ep["published_at"])}</time>'
             f' · <span>{h(series["title"])}</span></div>'
             f'<p class="serial-article-warning">{marker}</p></header>'
-            f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}<figcaption>編集部制作のオリジナル表紙イラスト</figcaption></figure>'
-            f'<div class="serial-article-body"><p class="serial-article-kicker">{h(ep["kicker"])}</p>'
+            f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
+            f'<div class="serial-article-body">{kicker_html}'
             f'{narrative}{extras}'
             f'<div class="serial-epilogue"><p>{h(followup)}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
-            f'{render_completed_reading(series, ep)}{navigation}<a class="serial-back-link" href="{series_url(series)}">連載一覧に戻る →</a>'
+            f'{render_completed_reading(series, ep)}{navigation}<a class="serial-back-link" href="{series_url(series)}">目次に戻る →</a>'
             f'</div></div>')
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],

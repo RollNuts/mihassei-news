@@ -5,7 +5,7 @@
     "eyebrow": "FICTION / SERIAL MYSTERY",
     "title": "未発生事件簿",
     "subtitle": "事件が起こる前に、謎だけが届く。",
-    "description": "2031年の架空都市を舞台にした、読者への手掛かり付き連載推理小説。伏線を追いながら、次の事件を推理する。",
+    "description": "翌日の日付で届いた死亡届。そこに名前のある女性は、まだ生きている。雨代市を舞台にした連載ミステリー。",
     "planned_episodes": 8,
     "episodes": [
       {
@@ -168,7 +168,7 @@
     "eyebrow": "MARKET / SCENARIO JOURNAL",
     "title": "未来相場観測室",
     "subtitle": "予測を残す。外れた理由まで確かめる。",
-    "description": "公開データを出発点に、株式市場の強気・中立・弱気シナリオを記録。予測日と検証方法を固定して、あとから答え合わせする。",
+    "description": "公開資料から株式市場の動きを読み解き、過去の予想も検証する。",
     "episodes": [
       {
         "slug": "power-grid-after-ai-01",

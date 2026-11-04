@@ -154,7 +154,7 @@
       const category = CATEGORIES.has(button.dataset.bookmarkCategory) ?
                        button.dataset.bookmarkCategory : "創作ニュース";
       writeSaved([{slug, title, category, savedAt: Date.now()}, ...saved],
-                 "この記事を保存しました。このブラウザであとから読めます。");
+                 "あとで読むに保存しました。");
     });
   }
 

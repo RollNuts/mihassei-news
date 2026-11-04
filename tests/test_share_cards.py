@@ -79,7 +79,7 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
                     "index.html").read_text(encoding="utf-8")
             if serial["kind"] == "analysis":
                 self.assertIn('class="fiction-mark">市場分析</span>', page)
-                self.assertIn("公開資料から考える未来", page)
+                self.assertIn("公開資料から、相場の先を考える。", page)
                 self.assertNotIn('class="fiction-mark">創作報道</span>', page)
                 self.assertNotIn('class="fiction-mark">創作小説</span>', page)
             else:
