@@ -153,7 +153,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：15:30枠は2027年ヒット予測の「偶然ロス」をフックに、偶然の出会いを予約で売るカフェを描いた。記事：https://veripsa.com/articles/chance-meeting-cafe-reservation-full/（本番実配信・一面・記事・安全なSVG代替・OGPをrevision 25f5b470f9dfcf53ee1b2d0f2e13ff908a640a39の公開検証で確認。選抜動画は生成JPEGの目視不合格につき image_required（画像回収へ））。
-- **次枠**：17:30枠は偶然・予約・相席・予定外の出会いを避ける。今枠の動画候補は画像未承認なら image_required のまま画像回収へ渡し、候補を積み増さない。
+- **直前**：17:30枠は本人案U3を採用。「子どもの生の笑い声には注意、録音の笑い声は大音量」を風刺。記事：https://veripsa.com/articles/park-recorded-laughter-real-kids-shushed/（JST 2026-11-04 17:33初刊。本番revision 5a01300d531b1c8ade25582702af97dcdf08ce75の実配信と一面・記事・安全なSVG/OGPをGitHub公開SEO検証で確認。動画は追加選抜せず）。
+- **次枠**：19:30枠は公園・子どもの声・録音笑い声・規則と活気の逆転を繰り返さず、現実の新事実か別の生活矛盾へ。chance-meeting-cafe-reservation-full の動画は実写JPEG不合格による image_required のまま画像回収担当へ渡す。未生成候補を積み増さない。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
