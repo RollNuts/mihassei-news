@@ -23,7 +23,7 @@ class OriginalXVisualTests(unittest.TestCase):
                 self.assertEqual(stored.size, (W, H))
 
     def test_new_visuals_are_distinct_and_original(self):
-        expected={"xexp-sock-career", "xexp-book-review", "xexp-cloud-bus"}
+        expected={"xexp-sock-career", "xexp-book-review", "xexp-cloud-bus", "xexp-lunch-price"}
         self.assertTrue(expected.issubset(SCENES))
         # Layouts must be recognizably different in visual structure.
         samples={name:draw_scene(name).getpixel((620, 450)) for name in expected}
@@ -70,6 +70,18 @@ class OriginalXVisualTests(unittest.TestCase):
             self.assertFalse(refresh_unqueued_book(root, state_path,
                                                    expected_blob="0"*40))
             self.assertEqual(old.read_bytes(), original)
+
+    def test_lunch_satire_image_is_legible_at_feed_size(self):
+        im = draw_scene("xexp-lunch-price")
+        thumb = im.resize((320, 180), Image.Resampling.LANCZOS)
+        self.assertEqual(thumb.size, (320, 180))
+        # Rice, the empty dark compartment, and the printed fake chicken
+        # all remain visibly different, without using a block of text.
+        self.assertNotEqual(im.getpixel((545, 360)),
+                            im.getpixel((750, 360)))
+        self.assertNotEqual(im.getpixel((750, 360)),
+                            im.getpixel((880, 385)))
+        self.assertEqual(SCENES["xexp-lunch-price"], "bento")
 
     def test_does_not_overwrite_any_existing_asset(self):
         with tempfile.TemporaryDirectory() as tmp:
