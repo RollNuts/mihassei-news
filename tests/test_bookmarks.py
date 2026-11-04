@@ -31,7 +31,7 @@ class SavedStoriesTests(unittest.TestCase):
         self.assertIn("ブラウザのデータを消すと保存も消えます", markup)
         self.assertIn('href="/archive/"', markup)
         self.assertNotIn("data-bookmark-slug=", markup)
-        self.assertIn('src="/assets/bookmarks.js"', markup)
+        self.assertIn('src="' + build.asset_url("bookmarks.js") + '"', markup)
         self.assertIn('aria-live="polite"', markup)
 
     def test_save_button_appears_only_on_article_not_auto_saving_cards(self):
