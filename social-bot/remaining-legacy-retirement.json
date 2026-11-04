@@ -26,5 +26,20 @@
       "text_sha256": "ac7c59dd09d55205b00e486f2440cb6c2d0d3f9f3f50bea800d39c6dfab16db0"
     }
   ],
-  "results": {}
+  "results": {
+    "xexp-future-advice": {
+      "checked_at": "2026-11-04T10:38:19.935561+00:00",
+      "before": {
+        "buffer_id": "6ae990ec3b00665c737f50e7",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "sent",
+        "due_at": "2026-11-03T22:00:00.000Z",
+        "sent_at": "2026-11-03T22:01:11.999Z",
+        "text_sha256": "370b805deaf3c9767d8206d5d9c3509fbd15fcbd62c02e0c928b3dd21a40e6f4",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "already_published"
+    }
+  }
 }
