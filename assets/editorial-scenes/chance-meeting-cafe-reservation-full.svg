@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675"
+     role="img" aria-label="カフェで隣客に話しかけた男性を真顔の店員が手で制し、予約票とコーヒーの横で次の客が待つ創作イラスト"
+     data-visual-topic="movie" data-article-sha256="6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512">
+  <title>予約された偶然の相席</title>
+  <desc>二人の客が座るカフェ。左の客が隣の客へ手を上げて話しかけると、間に立つエプロン姿の店員が真顔で手のひらを向けて制止する。店員の手には無記入の予約台帳。テーブルには二つのコーヒーと切り取り線のある予約票。入口には次の二人客が待つ。文字・ロゴ・実在人物を含まない架空の場面。</desc>
+  <defs>
+    <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f3e9d9"/><stop offset="1" stop-color="#d9c4a6"/></linearGradient>
+    <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#b68153"/><stop offset="1" stop-color="#845936"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#wall)"/>
+  <path d="M0 448h1200v227H0z" fill="#b79b78"/>
+  <path d="M0 448h1200M0 567h1200M340 448L239 675M803 448l98 227" fill="none" stroke="#8e785f" stroke-width="3" opacity=".35"/>
+  <rect x="46" y="65" width="294" height="247" rx="5" fill="#765c46"/>
+  <rect x="58" y="77" width="270" height="222" fill="#bed0c7"/>
+  <path d="M58 246q90-58 139-17t131-16v86H58z" fill="#92ad99"/>
+  <path d="M191 77v222M58 187h270" stroke="#765c46" stroke-width="11"/>
+  <path d="M35 321h318" stroke="#795b42" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="573" cy="112" r="46" fill="#fffaf0" stroke="#806e59" stroke-width="9"/>
+  <path d="M573 80v32l23 14" fill="none" stroke="#514c43" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="573" cy="112" r="5" fill="#514c43"/>
+  <rect x="943" y="79" width="220" height="376" rx="4" fill="#745f4a"/>
+  <rect x="955" y="91" width="196" height="350" fill="#bed0c7"/>
+  <path d="M955 341h196v100H955z" fill="#aab5a1"/>
+  <path d="M1052 91v350" stroke="#745f4a" stroke-width="9"/>
+  <circle cx="1036" cy="296" r="5" fill="#5a5041"/>
+  <!-- Waiting customers remain behind the foreground encounter. -->
+  <g stroke="#5c5248" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M969 395q-7-63 38-66t45 66v89h-83z" fill="#8a9b8d"/>
+    <path d="M1071 393q-4-55 35-59t39 59v91h-74z" fill="#c29b78"/>
+    <path d="M981 477l-4 87m58-87 4 87m42-86-3 86m56-86 6 86" fill="none"/>
+    <ellipse cx="1009" cy="293" rx="30" ry="39" fill="#e8bf9c"/>
+    <path d="M979 286q-3-42 31-40t29 42l-15-24-45 9" fill="#4d4b48"/>
+    <ellipse cx="1108" cy="299" rx="28" ry="36" fill="#edc8a5"/>
+    <path d="M1080 292q-5-38 28-39t29 38l-19-24-38 14" fill="#6a5548"/>
+    <path d="M1001 305h13m86 6h12" fill="none" stroke-width="3"/>
+  </g>
+  <g fill="#433f3b"><circle cx="999" cy="291" r="3"/><circle cx="1018" cy="291" r="3"/><circle cx="1099" cy="298" r="3"/><circle cx="1117" cy="298" r="3"/></g>
+  <!-- The left guest greets the wrong neighbour. -->
+  <path d="M123 399h151v198H123z" fill="#775a44"/>
+  <path d="M131 586v60m133-60v60" stroke="#604936" stroke-width="14"/>
+  <g stroke="#504b46" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M151 464q-14-96 42-99h46q58 8 63 99l-18 100H151z" fill="#5a7d8c"/>
+    <path d="M262 397l53 17 51-48" fill="none" stroke="#5a7d8c" stroke-width="33"/>
+    <path d="M356 374l13-25q3-7 8-4l-1 12 11-10q5-3 8 2l-11 18-14 13" fill="#e8be99" stroke-width="4"/>
+    <path d="M172 416l-7 57 78 12" fill="none" stroke="#4e6d7c" stroke-width="29"/>
+    <path d="M235 480l27 3" stroke="#e8be99" stroke-width="16"/>
+    <path d="M224 348v29" stroke="#e8be99" stroke-width="26"/>
+    <ellipse cx="223" cy="309" rx="40" ry="49" fill="#e8be99"/>
+    <path d="M184 306q-14-54 29-56t51 34l-32-8-16 14-32 1" fill="#454946"/>
+    <path d="M239 326h14" fill="none" stroke-width="3"/>
+  </g>
+  <circle cx="240" cy="305" r="4" fill="#403e39"/>
+  <!-- The employee's upright palm visibly interrupts the greeting. -->
+  <path d="M467 524h85l8 97h-32l-15-69-12 69h-33z" fill="#4c514b" stroke="#454a43" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M467 617h34v17h-47q-5-12 13-17m62 0h32q19 5 13 17h-45z" fill="#45433c"/>
+  <g stroke="#4d4a43" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M446 369q20-37 70-34t67 40l14 164H437z" fill="#f7f1e6"/>
+    <path d="M474 354l-10 53-9 126h113l-8-126-14-53" fill="#547566"/>
+    <path d="M486 416h61v45h-61z" fill="#6f8e7c" stroke-width="3"/>
+    <path d="M445 388l-30-12-4-46" fill="none" stroke="#f7f1e6" stroke-width="32"/>
+    <path d="M400 337l-8-31-1-22q0-8 6-7l6 23-2-36q0-8 6-6l5 35 1-36q1-8 7-5l2 38 4-29q2-6 7-3l-2 42 8-12q6-5 9 1l-11 28-18 23" fill="#e9c4a4" stroke-width="4"/>
+    <path d="M577 380l35 54-40 27" fill="none" stroke="#f7f1e6" stroke-width="29"/>
+    <path d="M514 316v28" stroke="#e9c4a4" stroke-width="27"/>
+    <ellipse cx="514" cy="275" rx="38" ry="48" fill="#e9c4a4"/>
+    <path d="M477 274q-12-53 30-55t46 47l-31-29-45 16" fill="#454a43"/>
+    <path d="M504 296h17" fill="none" stroke-width="3"/>
+    <path d="M506 282l-4 7h8" fill="none" stroke-width="2"/>
+    <path d="M559 404l50 5-10 77-50-6z" fill="#9d7851" stroke-width="4"/>
+    <path d="M565 416l34 3-7 53-34-3z" fill="#faf3df" stroke="none"/>
+    <path d="M571 411l19 2" stroke="#676c64" stroke-width="9"/>
+    <path d="M566 454l16-2" stroke="#e9c4a4" stroke-width="16"/>
+  </g>
+  <g fill="#3b403b"><circle cx="499" cy="273" r="3.5"/><circle cx="523" cy="273" r="3.5"/></g>
+  <!-- The neighbouring guest waits, without an exaggerated expression. -->
+  <path d="M720 403h143v198H720z" fill="#775a44"/>
+  <path d="M731 589v57m122-57v57" stroke="#604936" stroke-width="14"/>
+  <g stroke="#524940" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M702 468q-3-91 49-101h45q57 17 49 101l-3 93H702z" fill="#ba886d"/>
+    <path d="M765 348v29" stroke="#edc4a1" stroke-width="26"/>
+    <ellipse cx="764" cy="310" rx="40" ry="49" fill="#edc4a1"/>
+    <path d="M723 306q-7-56 39-56t44 49l-22-28-61 17" fill="#595047"/>
+    <path d="M723 414l-19 61-37 6m151-66-10 63-43 7" fill="none" stroke="#ba886d" stroke-width="27"/>
+    <path d="M663 481h25m72 5h24" stroke="#edc4a1" stroke-width="16"/>
+    <path d="M738 329h16" fill="none" stroke-width="3"/>
+  </g>
+  <circle cx="742" cy="306" r="4" fill="#443e38"/>
+  <!-- Separate tables, blank perforated tickets and untouched cups. -->
+  <g stroke="#745035" stroke-width="6" stroke-linejoin="round">
+    <path d="M125 491h276l-18 38H137zM634 491h247l-14 38H646z" fill="url(#wood)"/>
+    <path d="M170 531v111m181-111v111m319-111v111m169-111v111" fill="none" stroke-width="15"/>
+  </g>
+  <g fill="#fff9ed" stroke="#706153" stroke-width="4">
+    <ellipse cx="276" cy="490" rx="39" ry="9"/><path d="M252 457h49l-4 27q-21 14-41 0z"/><path d="M302 462q23-2 15 17l-19 2" fill="none"/>
+    <ellipse cx="716" cy="490" rx="39" ry="9"/><path d="M692 457h49l-4 27q-21 14-41 0z"/><path d="M742 462q23-2 15 17l-19 2" fill="none"/>
+  </g>
+  <g fill="#f7dfa8" stroke="#a68b59" stroke-width="2">
+    <path d="M327 482l48-4 4 15-49 4zM790 478l49 3-4 16-49-4z"/>
+  </g>
+  <path d="M363 479l3 16m463-15-5 16" fill="none" stroke="#a68b59" stroke-width="2" stroke-dasharray="3 3"/>
+</svg>
