@@ -10,6 +10,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "content/articles.json"
       - "social-bot/article-picks/audit_delivery.py"
       - "social-bot/article-picks/test_audit_delivery.py"
       - ".github/workflows/x-delivery-audit.yml"
@@ -46,6 +47,7 @@ jobs:
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+          X_AUDIT_TRIGGER_EVENT: ${{ github.event_name }}
         run: python social-bot/article-picks/audit_delivery.py
 
       - name: Persist article delivery evidence only
