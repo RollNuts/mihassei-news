@@ -262,6 +262,16 @@
       "seed": 1615501253303699901,
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
+    "self-oseibo-recipient-refuses-own-gift": {
+      "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+      "bytes": 82992,
+      "generated_at": "2026-11-04T12:46:18.577727+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 227822134817257212,
+      "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
+    },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
       "bytes": 123162,
