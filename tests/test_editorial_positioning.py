@@ -44,7 +44,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertNotIn('href="#story-source"', page)
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn('id="story-source"', page)
-        self.assertIn("記事内の出来事は創作であり、着想元の内容をそのまま伝えるものではありません", page)
+        self.assertIn("着想元は、記事内の創作内容を裏付けるものではありません", page)
         self.assertIn('aria-label="架空ニュースのありそう度を投票"', page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)

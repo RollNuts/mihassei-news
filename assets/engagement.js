@@ -299,6 +299,7 @@
   const popularPeriod=document.querySelector("[data-popular-period]");
   const popularFallback=document.querySelector("[data-popular-fallback]");
   let popularCandidates=[];
+  let popularHasConfirmedRanking=false;
   if(popularSection && popularList) {
     try {
       const values=JSON.parse(popularSection.dataset.popularOptions||"[]");
@@ -383,6 +384,7 @@
     if(popularList)popularList.replaceChildren();
     if(popularSection)popularSection.hidden=true;
     if(popularFallback)popularFallback.hidden=false;
+    popularHasConfirmedRanking=false;
   }
   function showPopular(data,pvHealthy){
     if(!popularSection || !popularList || !popularCandidates.length)return;
@@ -445,6 +447,7 @@
     if(popularPeriod)popularPeriod.textContent=week.complete
       ? "過去7日間のPV順" : pvStartLabel+"からのPV順";
     popularSection.hidden=false;
+    popularHasConfirmedRanking=true;
     if(popularFallback)popularFallback.hidden=true;
   }
 
@@ -649,10 +652,14 @@
           throw new Error("audience data unavailable");
         haveSnapshot=true;
       }catch(_){
-        // Keep the last confirmed count when a transient API error occurs.
-        // Never turn a failed request into a plausible-looking zero.
+        // Keep the last confirmed counts and ranking when a transient refresh
+        // fails. An initial failure still exposes no popularity claim; once a
+        // complete whole-archive ranking was confirmed, do not make it vanish
+        // just because the next three-minute read missed the API.
         observerFeedback(false);
-        hidePopular();
+        if(!popularHasConfirmedRanking)hidePopular();
+        else if(popularPeriod && !popularPeriod.textContent.includes("更新待ち"))
+          popularPeriod.textContent+=" · 更新待ち";
       }
     })();
     try{await refreshPromise;}

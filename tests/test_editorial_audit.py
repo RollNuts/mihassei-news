@@ -117,6 +117,32 @@ class EditorialAuditTests(unittest.TestCase):
         codes_by_slug = {(code, slug) for code, slug, _ in audit([third, second, first], NOW)}
         self.assertIn(("FOLLOWUP_THREAD_CLOSED", "third"), codes_by_slug)
 
+    def test_context_dependent_headline_summary_and_opening_are_flagged(self):
+        cases = (
+            ("title", "この件で町内会が臨時会議"),
+            ("summary", "これを受け、住民が新しい当番表を作った。"),
+            ("paragraphs", ["その結果、店主は毎朝二度開店するようになった。"]),
+        )
+        for field, value in cases:
+            with self.subTest(field=field):
+                a = story("context", NOW, NOW - timedelta(hours=1))
+                a["paragraphs"] = ["店主が新しい当番表を作った。"]
+                a[field] = value
+                codes = {code for code, _, _ in audit([a], NOW)}
+                self.assertIn("CONTEXT_DEPENDENT_OPENING", codes)
+
+    def test_standalone_headline_and_opening_are_not_flagged(self):
+        a = story(
+            "standalone",
+            NOW,
+            NOW - timedelta(hours=1),
+            title="パン屋、閉店予告と誤解され毎朝『営業します』",
+        )
+        a["summary"] = "曖昧な告知を閉店予告と誤解されたパン屋が、毎朝営業を知らせるようになった。"
+        a["paragraphs"] = ["町のパン屋が、開店前に毎朝営業中だと投稿するようになった。"]
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertNotIn("CONTEXT_DEPENDENT_OPENING", codes)
+
     def test_missing_publication_date_is_not_assumed_from_future_dateline(self):
         a = story("undated", NOW, NOW)
         del a["published_at"]

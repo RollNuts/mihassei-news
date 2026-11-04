@@ -22,10 +22,10 @@ on:
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
   schedule:
-    # Check article discovery three times per JST day while keeping one
-    # Buffer queue slot reserved for useful/original content.
-    # JST 00:05 / 08:05 / 16:05 = UTC 15:05 / 23:05 / 07:05.
-    - cron: "5 7,15,23 * * *"
+    # Check article discovery every four hours so 2–18h fresh stories do not
+    # age out before their first promotion chance. Daily X total remains capped at 7.
+    # JST 00:05 / 04:05 / 08:05 / 12:05 / 16:05 / 20:05.
+    - cron: "5 3,7,11,15,19,23 * * *"
 
 permissions:
   contents: write

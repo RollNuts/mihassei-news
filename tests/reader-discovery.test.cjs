@@ -178,13 +178,15 @@ test('failed or mixed-day batches do not expose a partial ranking',async()=>{
   }
 });
 
-test('a later request failure returns to the latest fallback without invented or stale ranking',async()=>{
+test('a later request failure keeps the last confirmed whole-archive ranking visible',async()=>{
   const result=await simulate([candidate('a','A'),candidate('b','B')],{a:10,b:5});
   assert.equal(result.popular.hidden,false);
+  assert.deepEqual(urls(result),['/articles/a/','/articles/b/']);
   result.fail();result.intervals[0]();await settle();
-  assert.equal(result.popular.hidden,true);
-  assert.equal(result.fallback.hidden,false);
-  assert.equal(result.rankings.length,0);
+  assert.equal(result.popular.hidden,false);
+  assert.equal(result.fallback.hidden,true);
+  assert.deepEqual(urls(result),['/articles/a/','/articles/b/']);
+  assert.match(result.period.textContent,/更新待ち/);
   assert.equal(result.calls.filter(call=>call.method==='POST').length,1,'refreshes are GET-only');
 });
 

@@ -60,13 +60,13 @@ def validate_config(config: dict, original_x_config: dict) -> None:
     caps = (
         ("max_queue_size", 3, 9),
         ("max_new_per_run", 1, 1),
-        ("max_per_jst_day", 1, 3),
+        ("max_per_jst_day", 1, 4),
         ("min_page_views", 6, 100),
         ("fresh_minimum_age_hours", 1, 8),
         ("fresh_maximum_age_hours", 6, 24),
         ("minimum_article_age_hours", 8, 72),
         ("maximum_article_age_days", 7, 30),
-        ("minimum_interval_hours", 6, 168),
+        ("minimum_interval_hours", 4, 168),
     )
     for name, lower, upper in caps:
         value = config.get(name)
