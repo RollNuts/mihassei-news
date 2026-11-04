@@ -118,7 +118,7 @@ def main() -> int:
     if channel != CHANNEL:
         raise RuntimeError("Pinned X account mismatch")
 
-    def list_unpublished():
+    def list_live_posts():
         cursor = None
         out = {}
         seen = set()
@@ -128,7 +128,7 @@ def main() -> int:
                 "query { posts(first: 100" + after
                 + ", input: {organizationId: " + qstring(orgid)
                 + ", filter: {channelIds: [" + qstring(CHANNEL)
-                + "], status: [draft, scheduled]}}) { "
+                + "]}}) { "
                 "edges { node { id channelId text status dueAt sentAt allowedActions } } "
                 "pageInfo { hasNextPage endCursor } } }"
             )
@@ -144,7 +144,7 @@ def main() -> int:
             if not isinstance(cursor, str) or not cursor or cursor in seen:
                 raise RuntimeError("Buffer unpublished pagination cursor invalid")
             seen.add(cursor)
-        raise RuntimeError("Buffer unpublished pagination exceeded safe page limit")
+        raise RuntimeError("Buffer live-post pagination exceeded safe page limit")
 
     def fetch_post(buffer_id: str):
         query = (
@@ -168,24 +168,31 @@ def main() -> int:
     outcomes = []
 
     try:
-        unpublished = list_unpublished()
+        live_posts = list_live_posts()
+        list_error = None
     except Exception as exc:
-        print("Could not list draft/scheduled Buffer posts:", type(exc).__name__, str(exc)[:240], file=sys.stderr)
-        unpublished = None
+        live_posts = {}
+        list_error = type(exc).__name__ + ": " + str(exc)[:240]
+        print("Could not list Buffer posts:", list_error, file=sys.stderr)
+
+    if list_error:
+        report = {
+            "schema_version": 1,
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+            "scope": "retired_x_experiments_only",
+            "article_promotion_untouched": True,
+            "counts": {"ledger_receipts_checked": len(rows), "deleted_now": 0, "already_absent": 0, "published_untouched": 0, "held": len(rows)},
+            "remaining_unpublished_legacy_known": len(rows),
+            "provider_list_error": list_error,
+            "outcomes": [],
+        }
+        RESULT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return 2
 
     for target in rows:
         pid = target["post_id"]
         bid = target["buffer_id"]
-        before = unpublished.get(bid) if isinstance(unpublished, dict) else None
-        if before is None:
-            try:
-                before = fetch_post(bid)
-            except Exception as exc:
-                reason = "provider_read_failed"
-                print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
-                outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
-                held += 1
-                continue
+        before = live_posts.get(bid)
 
         reason = validate_live(target, before)
         if reason == "already_absent":
@@ -256,6 +263,7 @@ def main() -> int:
             "held": held,
         },
         "remaining_unpublished_legacy_known": held,
+        "provider_post_count": len(live_posts),
         "outcomes": outcomes,
     }
     RESULT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
