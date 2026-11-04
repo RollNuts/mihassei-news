@@ -58,15 +58,15 @@ def validate_config(config: dict, original_x_config: dict) -> None:
             or not config["channel_id"]):
         raise ValueError("Article X channel must equal the existing Veripsa X channel")
     caps = (
-        ("max_queue_size", 3, 9),
+        ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
-        ("max_per_jst_day", 1, 4),
+        ("max_per_jst_day", 1, 7),
         ("min_page_views", 6, 100),
         ("fresh_minimum_age_hours", 1, 8),
         ("fresh_maximum_age_hours", 6, 24),
         ("minimum_article_age_hours", 8, 72),
         ("maximum_article_age_days", 7, 30),
-        ("minimum_interval_hours", 4, 168),
+        ("minimum_interval_hours", 2, 168),
     )
     for name, lower, upper in caps:
         value = config.get(name)
@@ -422,13 +422,6 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
             or today_count >= config["max_per_jst_day"]
             or cooldown_active(state, now, config["minimum_interval_hours"])):
         return None, None, len(queued)
-    # Allow article-led discovery, but after two article promotions in one JST
-    # day do not take a third queued slot until a confirmed useful/original
-    # reservation exists. max_queue_size=9 also permanently leaves one Buffer
-    # slot available for another lane.
-    if (today_count >= 2 and queued
-            and not any(p.get("id") in creative_ids for p in queued)):
-        return None, None, len(queued)
     fresh = rank_fresh(articles, state, remote_slugs, config, now)
     if fresh:
         return fresh[0], None, len(queued)
@@ -445,7 +438,7 @@ def main() -> int:
     original = read_json(HERE.parent / "experiments" / "config.json")
     validate_config(config, original)
     if not config["enabled"]:
-        print("Article X promotions OFF; short original X lane unaffected.")
+        print("Article X promotions OFF; no automatic X post is sent.")
         return 0
 
     state = read_json(HERE / "state.json")
@@ -473,22 +466,15 @@ def main() -> int:
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
-    creative_state = read_json(HERE.parent / "experiments" / "state.json")
-    creative_ids = {
-        v["buffer_id"] for v in creative_state.get("queued", {}).values()
-        if isinstance(v, dict) and isinstance(v.get("buffer_id"), str)
-    }
-    creative_ids.update(accepted_useful_ids(
-        read_json(HERE.parent / "useful-posts.json"),
-        read_json(HERE.parent / "useful-state.json"), existing, channel_id))
+    # Automatic X publishing is article-only. Legacy creative/useful receipts
+    # remain historical evidence, but they no longer gate article slots.
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
-                                            config, now, creative_ids)
+                                            config, now, set())
     # Persist remote recovery before any further POST. The workflow also
     # commits both ledgers even after a partial API/network failure.
     save_state(state)
     if eligible is None:
-        print("No eligible page-view article today; Buffer scheduled:",
-              scheduled, "- original X feed retains priority.")
+        print("No eligible article for this check; Buffer scheduled:", scheduled)
         return 0
     text = publication_text(eligible)
     buffer_id = queue_one(token, channel_id, {"kind": "text", "text": text})
