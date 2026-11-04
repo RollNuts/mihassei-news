@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -152,9 +153,11 @@ def process(request, inventory, ledger, fetch_post, move_to_draft, persist, now_
             reason = "provider_read_failed"
             row["read_error"] = {"error_class": type(exc).__name__, "message": str(exc)[:240]}
         if reason:
+            # No Buffer mutation is possible on this path. Batch these
+            # observation-only results and persist once at the next durable
+            # intent or at final completion to avoid unnecessary Git pushes.
             row.update(state="skipped", reason=reason)
             results[pid] = row
-            persist(request)
             continue
 
         row.update(state="intent", intent_at=now_fn().isoformat())
@@ -238,12 +241,13 @@ def persist_request(request):
         ["git", "commit", "-m", "chore(x): record remaining legacy retirement [skip ci]", "--", relative],
         cwd=HERE.parent, check=True,
     )
-    for _ in range(4):
+    for attempt in range(4):
         subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=HERE.parent, check=True)
         if REQUEST_PATH.read_text(encoding="utf-8") != content:
             raise RuntimeError("Retirement request changed while running; stop before further Buffer edits")
-        if subprocess.run(["git", "push", "origin", "HEAD:main"], cwd=HERE.parent).returncode == 0:
+        if subprocess.run(["git", "push", "origin", "HEAD:main"]).returncode == 0:
             return
+        time.sleep(1 + attempt * 2)
     raise RuntimeError("Could not persist retirement evidence; no further Buffer edits")
 
 
