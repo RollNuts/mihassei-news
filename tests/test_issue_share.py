@@ -51,7 +51,7 @@ class IssueShareTests(unittest.TestCase):
         self.assertIn('"datePublished": "' + self.day + '"', markup)
         self.assertNotIn('"datePublished": "' + self.items[0]["fiction_at"] + '"', markup)
 
-    def test_share_link_is_manual_and_discloses_fiction(self):
+    def test_share_link_is_manual_and_focuses_on_issue_headlines(self):
         markup = issue_page(self.day, self.items, self.issues)
         self.assertIn('class="issue-share-panel"', markup)
         match = re.search(r'<a class="issue-share-cta" href="([^"]+)"', markup)
@@ -61,8 +61,8 @@ class IssueShareTests(unittest.TestCase):
         values = parse_qs(urlparse(link).query)
         share_text = values["text"][0]
         target = values["url"][0]
-        self.assertIn("フィクション", share_text)
-        self.assertIn("5年後の『もしも』", share_text)
+        self.assertEqual(share_text.splitlines()[1], f"今号の記事は{len(self.items)}本。")
+        self.assertEqual(share_text.splitlines()[-1], "#未発生新聞")
         self.assertIn("未発生新聞", share_text)
         self.assertIn(self.items[0]["title"][:20], share_text)
         self.assertLess(len(share_text), 160)

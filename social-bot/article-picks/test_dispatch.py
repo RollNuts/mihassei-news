@@ -58,10 +58,12 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(config["max_new_per_run"], 1)
         self.assertGreaterEqual(config["minimum_interval_hours"], 72)
 
-    def test_single_clearly_fictional_post_with_canonical_url(self):
+    def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
         msg = picks.publication_text(a)
-        self.assertTrue(msg.startswith("【未発生新聞・創作】"))
+        self.assertTrue(msg.startswith("【未発生新聞】"))
+        for label in ("創作", "架空", "フィクション"):
+            self.assertNotIn(label, msg)
         self.assertIn("家計簿", msg)
         self.assertIn("https://veripsa.com/articles/story-a/", msg)
         self.assertNotIn("AI生成", msg)

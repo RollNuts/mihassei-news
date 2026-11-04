@@ -62,13 +62,14 @@ class EditorialPositioningTests(unittest.TestCase):
         articles = load()
         self.assertIn('aria-label="架空ニュースのありそう度を投票"', story(articles[0], articles))
 
-    def test_reader_share_is_a_joke_not_a_prophecy(self):
+    def test_reader_share_keeps_article_without_repeated_fiction_labels(self):
         from urllib.parse import parse_qs, urlparse
         from scripts.build import share_url, load
         article = load()[0]
         query = parse_qs(urlparse(share_url(article)).query)
         text = query["text"][0]
-        self.assertIn("5年後のもしも（創作）", text)
+        self.assertEqual(text.splitlines()[0], "【未発生新聞】")
+        self.assertEqual(text.splitlines()[-1], "#未発生新聞")
         self.assertIn("未発生新聞", text)
         self.assertIn(article["title"], text)
         self.assertIn("utm_campaign=reader_share", query["url"][0])
