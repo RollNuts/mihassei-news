@@ -42,9 +42,9 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
     "sweet-potato-chorus-starts-too-late": (
-        "Whole steamed Japanese sweet potatoes with dark purple skin fill a "
-        "plain plate. One is cut open, exposing dense yellow flesh. Behind "
-        "them, blurred adults wait with potatoes while a referee holds a whistle."
+        "A whole Japanese sweet potato with rough deep-purple skin lies "
+        "beside a cut-open sweet potato showing dense golden-yellow flesh "
+        "inside its purple peel. Tight food close-up on a plain white plate."
     ),
     "historical-lookalike-contest-dog-wins": (
         "A small dog wearing a large winner's ribbon carries a microphone "
@@ -73,7 +73,7 @@ CPU_SCENES = {
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
     TV_PILOT_SLUG: "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
-    "sweet-potato-chorus-starts-too-late": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
+    "sweet-potato-chorus-starts-too-late": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
     "historical-lookalike-contest-dog-wins": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
