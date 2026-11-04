@@ -116,6 +116,28 @@ class ArticlePickTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
+    def test_article_summary_adds_a_short_reader_teaser_within_budget(self):
+        a = article("story-teaser", title="倍速視聴で内容が分からなくなった男性")
+        a["summary"] = "時間を節約したはずが、登場人物を確認する解説動画を本編より長く見ることになった。"
+        a["tags"] = ["タイパ", "ドラマ"]
+        msg = picks.publication_text(a)
+        self.assertIn("時間を節約したはずが", msg)
+        self.assertIn("#タイパ #ドラマ", msg)
+        self.assertIn("utm_campaign=article_auto", msg)
+        self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
+
+    def test_summary_never_breaks_required_tags_or_tracked_url(self):
+        a = article("story-summary-budget", title="見出し" * 30)
+        a["summary"] = "要約" * 200
+        a["tags"] = ["働き方", "メディア"]
+        msg = picks.publication_text(a)
+        self.assertIn("#働き方 #メディア", msg)
+        self.assertTrue(msg.endswith(
+            "https://veripsa.com/articles/story-summary-budget/"
+            + picks.TRACKING_QUERY
+        ))
+        self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
+
     def test_long_slug_preserves_the_link_and_topics_within_x_budget(self):
         tagged = article("story-" + "a" * 200, title="見出し" * 40)
         tagged["tags"] = ["長" * 12, "別" * 12, "AI"]
