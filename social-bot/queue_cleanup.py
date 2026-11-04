@@ -28,6 +28,7 @@ REQUEST_PATH = HERE / "queue-cleanup.json"
 CHANNEL = "6ae94b74e29c69a171436d72"
 REQUEST_ID = "x-quality-20261104"
 RECOVERY_ID = "x-quality-20261104-preserve-text-v1"
+CONTINUATION_ID = "x-quality-20261104-queue-compaction-v1"
 RECOVERY_TARGETS = frozenset({
     "xexp-invisible-nails", "xexp-witch-autopilot", "xexp-nejimachi-one-screw",
     "xexp-shadow-home", "xexp-book-review", "xexp-nejimachi-nothing-wrong",
@@ -63,6 +64,45 @@ def recovery_hash(request, target):
     return digest(RECOVERY_ID + ":" + target_hash(request, target))
 
 
+def continuation_hash(request, target):
+    return digest(CONTINUATION_ID + ":" + target_hash(request, target))
+
+
+def continuation_targets(request):
+    """Use observed replacement slots only for edits never attempted in recovery.
+
+    Buffer compacts later queue slots when a post is moved to drafts. Working
+    from the latest slot backwards leaves each remaining target's slot intact.
+    Original targets and both previous evidence collections stay unchanged.
+    """
+    eligible = []
+    for target in request["targets"]:
+        pid = target["post_id"]
+        row = request.get("recovery_results", {}).get(pid, {})
+        before = row.get("before")
+        if (pid not in RECOVERY_TARGETS or row.get("state") != "skipped"
+                or row.get("reason") != "schedule_changed"
+                or any(key in row for key in ("intent_at", "mutation_receipt_confirmed", "provider_error", "after"))
+                or not initial_input_failure_unchanged(target, request["results"].get(pid))
+                or not isinstance(before, dict)):
+            continue
+        if (before.get("provider_status") != "scheduled" or before.get("sent_at")
+                or before.get("buffer_id") != target["buffer_id"]
+                or before.get("channel_id") != CHANNEL
+                or before.get("text_sha256") != target["text_sha256"]
+                or not re.fullmatch(r"[a-f0-9]{64}", str(before.get("assets_sha256", "")))):
+            continue
+        try:
+            if stamp(before.get("due_at")) == stamp(target["expected_due_at"]):
+                continue
+        except (TypeError, ValueError):
+            continue
+        eligible.append({**target, "expected_due_at": before["due_at"]})
+    if len(eligible) > 5:
+        raise ValueError("Only the five unattempted compacted reservations may continue")
+    return sorted(eligible, key=lambda item: stamp(item["expected_due_at"]), reverse=True)
+
+
 def provider_error(error):
     """Keep actionable provider errors, never credentials or request headers."""
     message = str(error)
@@ -93,6 +133,11 @@ def validate(request, inventory, ledger):
             or request.get("recovery_request_id") not in (None, RECOVERY_ID)
             or (recovery and request.get("recovery_request_id") != RECOVERY_ID)):
         raise ValueError("Invalid named recovery request")
+    continuation = request.get("continuation_results", {})
+    if (not isinstance(continuation, dict)
+            or request.get("continuation_request_id") not in (None, CONTINUATION_ID)
+            or (continuation and request.get("continuation_request_id") != CONTINUATION_ID)):
+        raise ValueError("Invalid named queue-compaction continuation")
     manuscripts = {post["id"]: post for post in inventory["experiments"]}
     queued = ledger["queued"]
     seen_ids, seen_buffer = set(), set()
@@ -118,10 +163,15 @@ def validate(request, inventory, ledger):
             raise ValueError("Cannot change an attempted recovery target")
         seen_ids.add(pid)
         seen_buffer.add(bid)
-    if not set(results).issubset(seen_ids) or not set(recovery).issubset(seen_ids):
+    if any(not set(rows).issubset(seen_ids) for rows in (results, recovery, continuation)):
         raise ValueError("Never remove cleanup history")
-    if request.get("recovery_request_id") and not seen_ids.issubset(RECOVERY_TARGETS):
+    if (request.get("recovery_request_id") or request.get("continuation_request_id")) and not seen_ids.issubset(RECOVERY_TARGETS):
         raise ValueError("Recovery is restricted to the original six named targets")
+    if continuation:
+        observed = {target["post_id"]: target for target in continuation_targets(request)}
+        for pid, row in continuation.items():
+            if pid not in observed or row.get("target_sha256") != continuation_hash(request, observed[pid]):
+                raise ValueError("Cannot change recorded continuation or its observed source slot")
     return targets
 
 
@@ -187,22 +237,32 @@ def refusal(target, post, now):
     return None
 
 
-def process(request, inventory, ledger, fetch_post, move_to_draft, persist, now_fn, *, recovery=False):
+def process(request, inventory, ledger, fetch_post, move_to_draft, persist, now_fn, *, recovery=False, continuation=False):
     targets = validate(request, inventory, ledger)
+    if recovery and continuation:
+        raise ValueError("Select one named cleanup request")
     if recovery and request.get("recovery_request_id") != RECOVERY_ID:
         raise ValueError("Explicit named preserve-text recovery is required")
+    if continuation and request.get("continuation_request_id") != CONTINUATION_ID:
+        raise ValueError("Explicit named queue-compaction continuation is required")
     if not request["enabled"]:
         return
-    results = request.setdefault("recovery_results", {}) if recovery else request["results"]
+    if continuation:
+        targets = continuation_targets(request)
+    result_key = "continuation_results" if continuation else "recovery_results" if recovery else "results"
+    results = request.setdefault(result_key, {})
     for target in targets:
         pid = target["post_id"]
         # Any previous attempt (including an uncertain one) is terminal here.
         if pid in results:
             continue
-        row = {"target_sha256": (recovery_hash if recovery else target_hash)(request, target),
+        hash_target = continuation_hash if continuation else recovery_hash if recovery else target_hash
+        row = {"target_sha256": hash_target(request, target),
                "checked_at": now_fn().isoformat()}
         if recovery:
             row["recovery_request_id"] = RECOVERY_ID
+        if continuation:
+            row.update(continuation_request_id=CONTINUATION_ID, expected_due_at=target["expected_due_at"])
         if recovery and not initial_input_failure_unchanged(target, request["results"].get(pid)):
             row.update(state="skipped", reason="initial_input_failure_not_proven")
         elif now_fn() >= stamp(request["expires_at"]):
@@ -286,17 +346,25 @@ def main():
     inventory, ledger = read(HERE / "experiments/posts.json"), read(HERE / "experiments/state.json")
     targets = validate(request, inventory, ledger)
     recovery = "--recover" in sys.argv
-    if "--validate" in sys.argv or not ({"--apply", "--recover"} & set(sys.argv)) or not request["enabled"]:
+    continuation = "--continue-cleanup" in sys.argv
+    flags = {"--apply", "--recover", "--continue-cleanup"} & set(sys.argv)
+    if "--validate" in sys.argv or not flags or not request["enabled"]:
         print("Validated named queue cleanup. No Buffer request.")
         return 0
-    if recovery and "--apply" in sys.argv:
-        raise ValueError("Run either the original request or its named recovery, never both")
+    if len(flags) != 1:
+        raise ValueError("Run one named cleanup request at a time")
     if recovery and request.get("recovery_request_id") != RECOVERY_ID:
         print("No named preserve-text recovery requested. No Buffer request.")
         return 0
+    if continuation and request.get("continuation_request_id") != CONTINUATION_ID:
+        print("No named queue-compaction continuation requested. No Buffer request.")
+        return 0
     if os.environ.get("GITHUB_REF") != "refs/heads/main" or os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
         raise RuntimeError("Queue withdrawal is only permitted from main Actions")
-    results = request.get("recovery_results", {}) if recovery else request["results"]
+    if continuation:
+        targets = continuation_targets(request)
+    result_key = "continuation_results" if continuation else "recovery_results" if recovery else "results"
+    results = request.get(result_key, {})
     pending = [t for t in targets if t["post_id"] not in results]
     if not pending:
         print("Named queue cleanup already recorded; no Buffer request or retry.")
@@ -319,8 +387,8 @@ def main():
         return proven_move_to_draft(token, bid, original_text)
 
     process(request, inventory, ledger, fetch_post, move_to_draft, persist_request,
-            lambda: datetime.now(timezone.utc), recovery=recovery)
-    results = request.get("recovery_results", {}) if recovery else request["results"]
+            lambda: datetime.now(timezone.utc), recovery=recovery, continuation=continuation)
+    results = request.get(result_key, {})
     for pid, row in results.items():
         print("Queue withdrawal:", pid, row["state"], row.get("reason", ""))
         if row.get("provider_error"):

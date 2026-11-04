@@ -18,6 +18,8 @@ class QueueCleanupTests(unittest.TestCase):
         self.request["results"] = {}
         self.request.pop("recovery_request_id", None)
         self.request.pop("recovery_results", None)
+        self.request.pop("continuation_request_id", None)
+        self.request.pop("continuation_results", None)
         self.inventory = json.loads((HERE / "experiments/posts.json").read_text())
         self.ledger = json.loads((HERE / "experiments/state.json").read_text())
         self.now = datetime(2026, 11, 4, 3, tzinfo=timezone.utc)
@@ -57,9 +59,10 @@ class QueueCleanupTests(unittest.TestCase):
         self.events.append(("persist", None))
         self.saved.append(copy.deepcopy(request))
 
-    def perform(self, fetch=None, move=None, persist=None, recovery=False):
+    def perform(self, fetch=None, move=None, persist=None, recovery=False, continuation=False):
         m.process(self.request, self.inventory, self.ledger,
-                  fetch or self.fetch, move or self.move, persist or self.persist, lambda: self.now, recovery=recovery)
+                  fetch or self.fetch, move or self.move, persist or self.persist, lambda: self.now,
+                  recovery=recovery, continuation=continuation)
 
     def result(self):
         return self.request["results"][self.request["targets"][0]["post_id"]]
@@ -363,6 +366,82 @@ class QueueCleanupTests(unittest.TestCase):
         self.assertNotIn("different-secret", serialized)
         self.assertNotIn("third-secret", serialized)
         self.assertIn("[redacted]", serialized)
+
+    def compacting_move(self, bid, original_text):
+        ordered = sorted((p for p in self.remote.values() if p["status"] == "scheduled"),
+                         key=lambda p: m.stamp(p["dueAt"]))
+        slots = [p["dueAt"] for p in ordered]
+        index = next(i for i, p in enumerate(ordered) if p["id"] == bid)
+        result = self.move(bid, original_text)
+        for i in range(index + 1, len(ordered)):
+            ordered[i]["dueAt"] = slots[i - 1]
+        return result
+
+    def compacted_recovery(self):
+        def rejected(bid, original_text):
+            raise RuntimeError("Buffer editPost rejected: PostInvalidInputError - Text or media is required")
+        self.perform(move=rejected)
+        self.request["recovery_request_id"] = m.RECOVERY_ID
+        self.perform(move=self.compacting_move, recovery=True)
+        self.assertEqual(sum(r["state"] == "verified_draft" for r in self.request["recovery_results"].values()), 1)
+        self.assertEqual(sum(r.get("reason") == "schedule_changed" for r in self.request["recovery_results"].values()), 5)
+        self.request["continuation_request_id"] = m.CONTINUATION_ID
+        self.request["continuation_results"] = {}
+        self.events.clear()
+
+    def test_reverse_order_completes_five_while_provider_compacts_later_slots(self):
+        self.compacted_recovery()
+        immutable = {k: copy.deepcopy(self.request[k]) for k in ("targets", "results", "recovery_results")}
+        expected = [t["buffer_id"] for t in m.continuation_targets(self.request)]
+        self.perform(move=self.compacting_move, continuation=True)
+        self.assertEqual([bid for action, bid in self.edits()], expected)
+        self.assertEqual(len(self.edits()), 5)
+        self.assertTrue(all(r["state"] == "verified_draft" for r in self.request["continuation_results"].values()))
+        for key, original in immutable.items():
+            self.assertEqual(self.request[key], original)
+        self.events.clear()
+        self.perform(continuation=True)
+        self.assertEqual(self.events, [])
+
+    def test_continuation_excludes_any_recovery_that_reached_intent(self):
+        self.compacted_recovery()
+        target = m.continuation_targets(self.request)[0]
+        self.request["recovery_results"][target["post_id"]]["intent_at"] = self.now.isoformat()
+        self.assertNotIn(target["post_id"], {t["post_id"] for t in m.continuation_targets(self.request)})
+
+    def test_continuation_excludes_unknown_recovery_outcome(self):
+        self.compacted_recovery()
+        target = m.continuation_targets(self.request)[0]
+        self.request["recovery_results"][target["post_id"]].update(
+            state="held_unknown", reason="draft_outcome_unverified", mutation_receipt_confirmed=False)
+        self.assertNotIn(target["post_id"], {t["post_id"] for t in m.continuation_targets(self.request)})
+
+    def test_continuation_keeps_exact_observed_schedule_guard(self):
+        self.compacted_recovery()
+        target = m.continuation_targets(self.request)[0]
+        self.remote[target["buffer_id"]]["dueAt"] = "2026-11-06T12:00:00Z"
+        self.perform(continuation=True)
+        row = self.request["continuation_results"][target["post_id"]]
+        self.assertEqual(row["reason"], "schedule_changed")
+        self.assertNotIn(("edit", target["buffer_id"]), self.edits())
+
+    def test_continuation_requires_its_named_request(self):
+        self.compacted_recovery()
+        self.request.pop("continuation_request_id")
+        with self.assertRaises(ValueError):
+            self.perform(continuation=True)
+        self.assertEqual(self.events, [])
+
+    def test_unknown_continuation_is_never_replayed(self):
+        self.compacted_recovery()
+        def timeout(bid, original_text):
+            self.events.append(("edit", bid))
+            raise TimeoutError("Response lost")
+        self.perform(move=timeout, continuation=True)
+        self.assertTrue(all(r["state"] == "held_unknown" for r in self.request["continuation_results"].values()))
+        self.events.clear()
+        self.perform(continuation=True)
+        self.assertEqual(self.events, [])
 
 
 if __name__ == "__main__":
