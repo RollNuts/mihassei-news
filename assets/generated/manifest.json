@@ -264,11 +264,51 @@
     }
   },
   "rejected": {
+    "ai-chooses-a-managers": {
+      "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
+      "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
+      "rejected_candidate_sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
+    },
+    "apology-before-incident": {
+      "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
+      "reason": "Visual review: a paper card is handed across a desk, replacing the mistaken mass apology email in the story. Use the article-specific illustration until a new email scene is reviewed.",
+      "rejected_candidate_sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
+    },
+    "fan-theories-write-final": {
+      "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
+      "reason": "Visual review: loose red cords float through an otherwise empty room without the evidence cards or board they should connect. Use the article-specific illustration until a coherent new scene is reviewed.",
+      "rejected_candidate_sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
+    },
+    "farm-friendship-across-species": {
+      "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
+      "reason": "Visual review: one hybrid-looking animal replaces the cow and donkey whose relationship is the central subject. Use the article-specific illustration until two recognizably distinct animals are reviewed.",
+      "rejected_candidate_sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+    },
+    "press-conference-metaphor-viral": {
+      "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
+      "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
+      "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
+    },
+    "robot-job-hopping": {
+      "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
+      "reason": "Visual review: humans, including masked figures, queue behind a single robot instead of robots waiting for one charging point. Use the article-specific illustration until a correct new scene is reviewed.",
+      "rejected_candidate_sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
+    },
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
       "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
       "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970"
+    },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
+      "reason": "Visual review: peeled wedge-like food on a plate does not clearly depict whole steamed sweet potatoes or participants waiting for a shared signal. Use the article-specific illustration until a clearly matching new scene is reviewed.",
+      "rejected_candidate_sha256": "a28e3ed114b0079feaa2447591462d2f27e73c40027985049d3a0a01d7c97606"
+    },
+    "variety-700-guests-only-introductions": {
+      "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+      "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
+      "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
   "version": 1

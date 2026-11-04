@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="テレビの収録セットで司会者がマイクを持ち床まで続く長い出演者名簿を読み、後ろの出演者たちが紹介を待つ創作イラスト" data-visual-topic="gaming" data-article-sha256="46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d">
+  <title>テレビの収録セットで司会者がマイクを持ち床まで続く長い出演者名簿を読み、後ろの出演者たちが紹介を待つ創作イラスト</title>
+  <rect width="1200" height="675" fill="#f2f1e9"/>
+  <path d="M80 473V265c0-96 76-161 182-153 104 7 167 81 267 62 108-20 161-80 281-65 176 23 287 160 287 364z" fill="#243c46" opacity=".045"/>
+  <ellipse cx="602" cy="585" rx="518" ry="27" fill="#243c46" opacity=".07"/>
+  <path d="M77 586h1046" fill="none" stroke="#243c46" stroke-width="3" opacity=".3"/>
+
+  <!-- Studio architecture and lamps identify a television recording. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M117 150h963" fill="none" opacity=".3"/>
+    <path d="M158 151v24m850-24v24" fill="none" stroke-width="5"/>
+    <g transform="rotate(24 162 192)">
+      <path d="M135 174h48v37h-48z" fill="#243c46"/>
+      <path d="M183 177l22-9v50l-22-10z" fill="#f2f1e9"/>
+      <path d="M143 174v-12h31v12" fill="none" stroke-width="3"/>
+    </g>
+    <g transform="rotate(-24 1007 192)">
+      <path d="M985 174h48v37h-48z" fill="#243c46"/>
+      <path d="M985 177l-22-9v50l22-10z" fill="#f2f1e9"/>
+      <path d="M992 174v-12h31v12" fill="none" stroke-width="3"/>
+    </g>
+    <path d="M573 454V238q0-43 43-43h412q43 0 43 43v216" fill="none" opacity=".2"/>
+    <path d="M592 454V242q0-28 28-28h405q28 0 28 28v212" fill="none" stroke-width="2" opacity=".15"/>
+    <path d="m672 242 6 17 18 1-14 11 4 18-14-10-15 10 5-18-15-11 18-1zM956 242l6 17 18 1-14 11 4 18-14-10-15 10 5-18-15-11 18-1z" fill="#d65e48" stroke="none" opacity=".5"/>
+    <path d="M291 549h801v27H291z" fill="#243c46"/>
+    <path d="M301 576h780v9H301z" fill="#d65e48" stroke="none"/>
+  </g>
+  <path d="m198 188 415 319H332zM970 186 705 521h285z" fill="#243c46" opacity=".025"/>
+
+  <!-- A short visible sample of the enormous guest queue waits on the set. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m620 446-7 99h29l15-97m19-1 9 98h30l-8-99" fill="#243c46"/>
+    <path d="M609 359q11-28 47-30 36 0 54 28l13 92H601z" fill="#f2f1e9"/>
+    <path d="M644 309v24q12 12 27 0v-25" fill="#f2f1e9"/>
+    <path d="M625 281q-1-34 30-38 37-2 39 33l-3 25q-5 24-25 24-21-1-30-21l-7-3q-10-5-4-14z" fill="#f2f1e9"/>
+    <path d="M625 280q-8-25 10-39 23-16 47-1 13 9 15 29-24-3-36-17-12 20-29 23l-2 16-8-5" fill="#243c46"/>
+    <path d="m645 285 9 1m15 0 9-2m-17 8 3 11h-7m-9 13h14" fill="none" stroke-width="3"/>
+    <path d="m621 373 64 27m15-26-64 26" fill="none" stroke-width="21"/>
+    <path d="m670 391 19-7 8 13-18 9m-40-17-17-5-9 12 18 10" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M644 336q12 13 28 0" fill="none" stroke-width="3"/>
+
+    <path d="m789 444-7 101h30l14-101m19 0 8 101h30l-9-101" fill="#243c46"/>
+    <path d="M773 345q3-58 47-64 46-4 58 60l-6 58h-98z" fill="#243c46"/>
+    <path d="M771 369q13-29 49-31 38 2 53 30l12 80H760z" fill="#d65e48"/>
+    <path d="M810 321v22q11 12 25 0v-22" fill="#f2f1e9"/>
+    <path d="M791 291q-3-33 28-38 35-1 37 32l-3 25q-5 24-24 25-22-1-31-23l-6-3q-9-5-3-13z" fill="#f2f1e9"/>
+    <path d="M790 289q-9-25 11-39 27-18 49 7 9 11 9 28-25-6-34-24-12 22-35 28" fill="#243c46"/>
+    <path d="m809 295 9 1m15 0 9-2m-17 8 3 10h-6m-10 12h14" fill="none" stroke-width="3"/>
+    <path d="m783 381 65 24m13-25-67 24" fill="none" stroke-width="21"/>
+    <path d="m837 395 19-7 8 13-18 9m-40-15-18-6-8 12 18 10" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M809 344q12 14 27 0" fill="none" stroke-width="3"/>
+
+    <path d="m958 448-7 97h30l15-97m18-1 9 98h31l-9-97" fill="#243c46"/>
+    <path d="M943 366q13-30 50-32 38 1 54 29l14 88H934z" fill="#f2f1e9"/>
+    <path d="M981 315v24q12 12 26 0v-24" fill="#f2f1e9"/>
+    <path d="M962 288q-2-34 29-39 38-2 40 32l-4 27q-5 23-25 24-20-1-30-22l-7-3q-10-6-4-14z" fill="#f2f1e9"/>
+    <path d="M962 287q-8-27 11-41 25-15 46 0 13 10 15 29-25-3-35-17-14 19-30 24l-1 15-8-5" fill="#243c46"/>
+    <path d="m981 293 9 1m15 0 9-2m-17 8 3 11h-7m-9 12h14" fill="none" stroke-width="3"/>
+    <path d="m954 381 65 24m15-25-67 24" fill="none" stroke-width="21"/>
+    <path d="m1008 395 19-7 8 13-18 9m-40-15-18-6-8 12 18 10" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M979 341q13 13 28 0" fill="none" stroke-width="3"/>
+  </g>
+
+  <!-- The host is still introducing guests with a microphone and a long list. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m373 446-13 126h39l25-125m24-1 15 126h39l-15-126" fill="#243c46"/>
+    <path d="M359 340q18-31 61-33 49 1 73 36l12 114H346z" fill="#243c46"/>
+    <path d="m403 312 23 63 24-64-21-17z" fill="#f2f1e9"/>
+    <path d="m422 329-8 15 12 28 12-28-9-15z" fill="#d65e48" stroke="none"/>
+    <path d="m394 313-14 29 19 8-8 19 34 29m26-84 18 28-14 15 10 19-40 22" fill="none" stroke="#f2f1e9" stroke-width="2" opacity=".5"/>
+    <path d="M404 286v26q15 18 31 0v-27" fill="#f2f1e9"/>
+    <g transform="rotate(10 423 266)">
+      <path d="M383 255q-3-43 36-47 45-3 47 39l-4 30q-5 28-29 29-24-1-35-25l-8-3q-12-6-7-17z" fill="#f2f1e9"/>
+      <path d="M383 254q-10-31 11-47 25-18 50-1 18 10 20 34-28-1-41-20-16 25-32 28l-2 20-8-7" fill="#243c46"/>
+      <path d="m408 258 10 2m17 0 10-2m-18 9 4 12h-8m-11 12h15" fill="none" stroke-width="3"/>
+      <path d="m410 268 8 1m17 0 8-2" fill="none" stroke-width="3"/>
+    </g>
+    <path d="M369 351q-34 37-49-1l-8-31m171 40q22 35-12 41" fill="none" stroke-width="27"/>
+    <path d="M304 326q-11-6-9-19l5-17 17 2 3 26z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="m301 295 41-33" fill="none" stroke-width="13"/>
+    <path d="m338 267 18-15" fill="none" stroke-width="23"/>
+    <path d="m344 254 7 9" fill="none" stroke="#f2f1e9" stroke-width="2" opacity=".5"/>
+    <path d="M471 391q-13-11-25-5l-13 12 11 13 24-5z" fill="#f2f1e9" stroke-width="3"/>
+  </g>
+
+  <!-- A continuous roll spills from the host's hand all the way across the floor. -->
+  <g stroke="#243c46" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M435 345h98q-18 24-15 69l7 87q2 43 43 43h201q28 0 28 20 0 21-28 21H555q-71 0-73-73l-6-103q-2-39-41-37z" fill="#f2f1e9"/>
+    <path d="M435 345q-20 1-20 15 0 13 20 12" fill="#f2f1e9"/>
+    <path d="M435 345q17 0 17 13 0 14-17 14m333 172q-19 1-19 20 0 20 19 21" fill="none"/>
+    <path d="M476 365h34m-29 19h28m-26 19h28m-26 19h28m-26 19h28m-25 19h28m-26 19h29m-23 19h27m-20 19h29m-9 21h34m5 20h46m-14 15h40m14-15h43m-21 15h42m13-15h39m-19 15h28" fill="none" stroke-width="2" opacity=".45"/>
+  </g>
+
+  <!-- The foreground camera, tally light, and tripod make the medium unmistakable. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M178 453v31m0 0-51 99m51-99 54 99m-54-99v99" fill="none" stroke-width="8"/>
+    <rect x="103" y="378" width="146" height="75" rx="7" fill="#243c46"/>
+    <path d="m249 393 42-15v76l-42-16z" fill="#243c46"/>
+    <path d="M294 377v78" fill="none" stroke-width="8"/>
+    <path d="M126 378v-17h64v17m-33-17v-16h39" fill="none" stroke-width="6"/>
+    <rect x="117" y="389" width="51" height="34" rx="2" fill="#f2f1e9" stroke="none"/>
+    <circle cx="209" cy="399" r="8" fill="#d65e48" stroke="none"/>
+    <path d="M119 438h69" fill="none" stroke="#f2f1e9" stroke-width="3" opacity=".5"/>
+  </g>
+
+  <!-- Unopened game equipment remains at the edge of the stage. -->
+  <g stroke="#243c46" stroke-width="3" stroke-linejoin="round">
+    <path d="M962 513h103v66H962z" fill="#f2f1e9"/>
+    <path d="M962 513l19-15h101l-17 15m17-15v64l-17 17M1003 513v24h17v-24" fill="none"/>
+    <path d="M978 560h33m-33 9h20" fill="none" opacity=".35"/>
+  </g>
+</svg>

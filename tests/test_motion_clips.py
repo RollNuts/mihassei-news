@@ -12,7 +12,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts import build
-from scripts.generated_photos import generated_manifest, usable_generated_scene
+from scripts.generated_photos import article_fingerprint, generated_manifest, usable_generated_scene
 from scripts.motion_clips import (
     MAX_CLIP_BYTES, MAX_TOTAL_BYTES, clip_url, candidates, generate,
     manifest_entries, usable_clip,
@@ -31,7 +31,7 @@ class MotionClipTests(unittest.TestCase):
         current = manifest_entries(ROOT)
         for article in self.articles:
             page = build.article_hero_media(article)
-            approved = usable_clip(article, root=ROOT)
+            approved = build.article_clip(article)
             if approved is None:
                 self.assertNotIn("<video", page)
                 self.assertIn('class="article-visual"', page)
@@ -64,7 +64,8 @@ class MotionClipTests(unittest.TestCase):
     def test_player_and_video_schema_are_optional_even_without_ffmpeg(self):
         # Static publishing must work on runners that cannot encode a movie.
         article = self.articles[0]
-        with patch.object(build, "usable_clip", return_value={
+        with patch.object(build, "reviewed_generated_scene", return_value=True), \
+             patch.object(build, "usable_clip", return_value={
             "created_at": "2026-11-03T08:00:00+00:00", "sha256": "a"*64,
             "duration_ms": 4000, "fps": 12,
         }):
@@ -83,12 +84,37 @@ class MotionClipTests(unittest.TestCase):
             card = build.card(article)
             self.assertIn("▶ 4秒映像", card)
             self.assertNotIn("<video", card)
-        with patch.object(build, "usable_clip", return_value=None):
+        with patch.object(build, "reviewed_generated_scene", return_value=True), \
+             patch.object(build, "usable_clip", return_value=None):
             self.assertNotIn("<video", build.article_hero_media(article))
             self.assertNotIn('"@type": "VideoObject"',
                              build.layout(article["title"],article["summary"],
                                           build.article_url(article),"<p>test</p>",
                                           kind="story", article=article))
+
+    def test_unreviewed_still_blocks_valid_clip_player_schema_and_broadcast(self):
+        """A valid optional MP4 cannot bypass its source image's visual review."""
+        article = {**self.articles[0], "broadcast_feature": True}
+        article.pop("photo", None)
+        record = {
+            "created_at": "2026-11-03T08:00:00+00:00", "sha256": "a" * 64,
+            "duration_ms": 4000, "fps": 12,
+        }
+        with patch.object(build, "reviewed_generated_scene", return_value=False), \
+             patch.object(build, "usable_clip", return_value=record) as raw_clip:
+            self.assertIsNone(build.article_clip(article))
+            self.assertNotIn("<video", build.article_hero_media(article))
+            self.assertEqual(build.clip_caption(article), "")
+            self.assertNotIn("story-clip-label", build.card(article))
+            self.assertEqual(build.broadcast_playlist([article]), [])
+            page = build.layout(article["title"], article["summary"],
+                                build.article_url(article), "<p>test</p>",
+                                kind="story", article=article)
+            self.assertIn('"@type": "BlogPosting"', page)
+            self.assertNotIn('"@type": "VideoObject"', page)
+            self.assertNotIn(clip_url(article), page)
+            self.assertNotIn("/generated/" + article["slug"] + ".jpg", page)
+            raw_clip.assert_not_called()
 
     def test_new_clip_candidates_need_explicit_editor_opt_in(self):
         from scripts import motion_clips
@@ -226,6 +252,25 @@ class MotionClipTests(unittest.TestCase):
             for frame in frames.values():
                 # No blank white/black flash at the cut boundaries.
                 self.assertGreater(max(frame) - min(frame), 20)
+            # Encoding/integrity can succeed before an editor reviews the
+            # source. Those valid bytes still must not become public video.
+            with patch.object(build, "BASE", root):
+                self.assertIsNotNone(usable_clip(suitable, root=root))
+                self.assertIsNone(build.article_clip(suitable))
+                self.assertNotIn("<video", build.article_hero_media(suitable))
+                self.assertEqual(build.broadcast_playlist([suitable]), [])
+            # Synthetic review input for this temporary fixture only; no
+            # production review is written by a generation or encoding test.
+            (root / "content/visual_reviews.json").write_text(json.dumps({
+                "version": 1,
+                "reviews": {slug: {
+                    "decision": "accepted",
+                    "article_sha256": article_fingerprint(suitable),
+                    "image_sha256": entry["sha256"],
+                    "reviewed_at": "2026-11-04T01:30:05+00:00",
+                    "note": "Synthetic test fixture; not an actual visual review.",
+                }},
+            }), encoding="utf-8")
             with patch.object(build, "BASE", root), \
                  patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                 html = build.article_hero_media(suitable)

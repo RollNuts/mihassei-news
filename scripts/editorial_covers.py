@@ -10,6 +10,16 @@ import hashlib
 import html
 import re
 import unicodedata
+from pathlib import Path
+from xml.etree import ElementTree
+
+try:
+    from .generated_photos import SAFE_SLUG, article_fingerprint
+except ImportError:
+    from generated_photos import SAFE_SLUG, article_fingerprint
+
+ROOT = Path(__file__).resolve().parent.parent
+SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 
 PALETTES = {
     "社会": ("#243c46", "#d65e48"),
@@ -28,6 +38,8 @@ CATEGORY_EN = {
 # The image motif must be traceable to the actual story subject, NOT to a
 # random seed or whichever reusable rectangle layout happened to be selected.
 SUBJECT_KEYWORDS = (
+    # A missing shop bell is the subject even when delivery/apology also appear.
+    ("doorbell", ("呼び鈴", "ドアベル")),
     # Specific culture / everyday-life nouns come before generic "phone" or
     # "fandom" so a dating-app story isn't illustrated as a spam call.
     ("frozen", ("保存用", "食べる用", "アイスクリーム", "かき氷", "ソフトクリーム", "冷凍庫")),
@@ -57,6 +69,13 @@ ART_FALLBACK = {
 # cannot be mistaken for a photo documenting a real phone company or incident.
 ICONS = {
     # Decorative single-stroke pictograms. No photos, fonts, tracking, or API.
+    "doorbell": '''
+      <circle cx="130" cy="46" r="10"/>
+      <path d="M130 56v9M93 132v-30a37 37 0 0 1 74 0v30l15 20H78z"/>
+      <path d="M120 153q0 19 10 19t10-19"/>
+      <path d="M34 155l96 35 96-35M34 155v61l96 35 96-35v-61M130 190v61"/>
+      <path d="M34 155l-17-34 65-25M226 155l17-34-65-25"/>
+    ''',
     "frozen": '''
       <path d="M92 143l39 96 39-96M100 161h62M112 190h39M122 216h21"/>
       <path d="M66 139q-12-25 17-39-5-36 31-40 17-49 53-13 33-7 35 32 23 14 9 40q-5 20-31 20z"/>
@@ -200,6 +219,55 @@ def story_subject(article: dict) -> str:
     return ART_FALLBACK.get(article.get("art"), "newspaper")
 
 
+def reviewed_story_scene(article: dict, *, root: Path = ROOT) -> str | None:
+    """Return a reviewed local SVG only while it matches the exact story.
+
+    Editorial scenes are explicitly authored assets, separate from generated
+    JPEG approvals. An edited body or scene direction falls back safely until
+    the illustration is reviewed again; no remote image or renderer is used.
+    """
+    slug = article.get("slug")
+    if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+        return None
+    directory = Path(root) / "assets" / "editorial-scenes"
+    path = directory / (slug + ".svg")
+    try:
+        if directory.is_symlink() or path.is_symlink():
+            return None
+        svg = path.read_text(encoding="utf-8")
+        if "<!DOCTYPE" in svg.upper() or "<!ENTITY" in svg.upper():
+            return None
+        scene = ElementTree.fromstring(svg)
+    except (OSError, UnicodeError, ElementTree.ParseError):
+        return None
+    if (scene.tag != f"{{{SVG_NAMESPACE}}}svg"
+            or scene.get("viewBox", "").split() != ["0", "0", "1200", "675"]
+            or scene.get("role") != "img"
+            or "創作イラスト" not in scene.get("aria-label", "")
+            or scene.get("data-visual-topic") != story_subject(article)
+            or scene.get("data-article-sha256") != article_fingerprint(article)):
+        return None
+    title = scene.find(f"{{{SVG_NAMESPACE}}}title")
+    if title is None or not "".join(title.itertext()).strip():
+        return None
+    # A reviewed scene stays self-contained and illustrative. Local gradients
+    # and clipping paths are fine; executable, embedded or external content is not.
+    forbidden = {"script", "image", "text", "foreignobject", "iframe", "style"}
+    for node in scene.iter():
+        if node.tag.rsplit("}", 1)[-1].lower() in forbidden:
+            return None
+        for name, value in node.attrib.items():
+            attribute = name.rsplit("}", 1)[-1].lower()
+            if attribute.startswith("on"):
+                return None
+            if attribute == "href" and not value.startswith("#"):
+                return None
+            references = re.findall(r"url\s*\((.*?)\)", value, flags=re.IGNORECASE)
+            if any(not ref.strip(" \t\r\n\"'").startswith("#") for ref in references):
+                return None
+    return svg
+
+
 def _char_width(char: str) -> float:
     if char == " ":
         return .43
@@ -304,6 +372,9 @@ def render_story_visual(article: dict) -> str:
     inside every SVG made the mobile newspaper look like stacked text blocks.
     Keep render_cover() for title-led review art; social OGP PNGs are separate.
     """
+    reviewed = reviewed_story_scene(article)
+    if reviewed is not None:
+        return reviewed
     category = str(article.get("category", "社会"))
     ink, accent = PALETTES.get(category, PALETTES["社会"])
     title = str(article.get("title", ""))

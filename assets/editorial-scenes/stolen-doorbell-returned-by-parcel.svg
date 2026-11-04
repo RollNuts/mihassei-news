@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"
+      width="1200" height="675" role="img" aria-label="閉じた店の入口と呼び鈴の外れた取付跡、呼び鈴入りの宅配箱を持つ配達員、ドアに残された不在票を描いた編集部制作の創作イラスト"
+      data-visual-topic="doorbell" data-article-sha256="55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2">
+      <title>呼び鈴が戻ってきた店先</title>
+      <desc>閉じたドアの横には空の取付跡。配達員がそこへ手を伸ばし、
+      もう片方の腕に抱えた宅配箱からは返された呼び鈴がのぞいている。
+      ドアの取っ手には不在票が残されている。実際の出来事を撮影した写真ではない。</desc>
+      <rect width="1200" height="675" fill="#f2f1e9"/>
+      <path d="M0 545H1200V675H0Z" fill="#dfe3d8"/>
+      <path d="M0 605H1200" stroke="#243c46" stroke-opacity=".12" stroke-width="3"/>
+      <path d="M102 77H246" stroke="#d65e48" stroke-width="8"/>
+
+      <!-- A quiet shopfront: the door is visibly shut. -->
+      <g stroke="#243c46" stroke-linejoin="round">
+        <path d="M116 134H654V552H116Z" fill="#e4e6da" stroke="none"/>
+        <path d="M141 143H525V555H141Z" fill="#f9f6eb" stroke-width="7"/>
+        <path d="M167 162H499V550H167Z" fill="#31514d" stroke-width="9"/>
+        <path d="M185 180H480V431H185Z" fill="#597168" stroke-width="4"/>
+        <path d="M186 180H290L186 360ZM391 180H430L253 431H211Z" fill="#dae3d7" opacity=".14" stroke="none"/>
+        <path d="M187 296H479M187 372H479" stroke="#bac7b8" stroke-opacity=".25" stroke-width="5"/>
+        <path d="M207 327H240V369H207ZM255 342H294V369H255ZM307 315H336V369H307Z" fill="#a6b3a0" opacity=".28" stroke="none"/>
+        <path d="M185 448H481V533H185Z" fill="#29473f" stroke-width="3"/>
+        <path d="M459 326V389" fill="none" stroke="#e5dcc5" stroke-width="13" stroke-linecap="round"/>
+        <path d="M274 219L332 187 390 219" fill="none" stroke="#d5d9c9" stroke-width="3"/>
+        <rect x="269" y="219" width="126" height="51" rx="3" fill="#ece8d8" stroke-width="3"/>
+        <path d="M294 244H370" stroke="#d65e48" stroke-width="8"/>
+        <path d="M116 114H654L670 163H100Z" fill="#446050" stroke-width="5"/>
+        <path d="M197 116L185 160M294 116L289 160M391 116L394 160M488 116L500 160M585 116L606 160" stroke="#738975" stroke-width="24"/>
+        <path d="M101 164H669" stroke-width="7"/>
+        <path d="M128 557H544V578H128Z" fill="#bdc7b6" stroke-width="4"/>
+      </g>
+
+      <!-- The pale scar and exposed screws show what is missing. -->
+      <g stroke="#243c46" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="558" y="249" width="68" height="105" rx="9" fill="#f7f4e9" stroke-opacity=".3" stroke-width="3" stroke-dasharray="6 7"/>
+        <circle cx="572" cy="264" r="4" fill="#243c46" stroke="none"/>
+        <circle cx="612" cy="338" r="4" fill="#243c46" stroke="none"/>
+        <path d="M583 290V277Q583 268 592 268Q601 268 601 277" fill="none" stroke-width="5"/>
+        <path d="M575 319Q578 299 592 299Q606 299 609 319L615 327H569Z" fill="#d4d9ca" stroke="none"/>
+      </g>
+
+      <!-- A missed-delivery slip hangs from the handle, without tiny copy. -->
+      <g transform="rotate(-7 456 444)" stroke="#243c46" stroke-linejoin="round">
+        <path d="M451 390V406" fill="none" stroke-width="4"/>
+        <rect x="423" y="405" width="70" height="103" rx="3" fill="#fffcf2" stroke-width="4"/>
+        <path d="M437 424H479" stroke="#d65e48" stroke-width="9"/>
+        <path d="M437 445H478M437 458H466" stroke-opacity=".55" stroke-width="3"/>
+        <circle cx="470" cy="484" r="8" fill="none" stroke="#d65e48" stroke-width="3"/>
+      </g>
+
+      <!-- An anonymous courier reaches towards the absent bell. -->
+      <ellipse cx="883" cy="628" rx="126" ry="15" fill="#243c46" opacity=".12"/>
+      <g stroke="#243c46" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M817 494L872 500 861 611H806Z" fill="#3e514a"/>
+        <path d="M884 500L936 496 952 611H897Z" fill="#4d6056"/>
+        <path d="M805 605L861 607V630H781Q777 618 805 605Z" fill="#243c46"/>
+        <path d="M898 606H948L973 626Q970 631 957 631H897Z" fill="#243c46"/>
+        <path d="M860 276V320L900 328 906 268Z" fill="#d5c6a8"/>
+        <path d="M865 215Q876 190 910 204Q943 216 938 250L925 279Q909 296 883 280L868 262H855L863 247Z" fill="#deceb0"/>
+        <path d="M858 222Q860 184 903 184Q944 185 949 224Z" fill="#4c6958"/>
+        <path d="M866 221H951L950 231H836Q828 222 866 221Z" fill="#355345"/>
+        <circle cx="875" cy="244" r="3" fill="#243c46" stroke="none"/>
+        <path d="M894 267L881 269" fill="none" stroke-width="3"/>
+        <path d="M812 323L758 326 677 280 658 309 745 365 815 370Z" fill="#5a7562"/>
+        <path d="M930 330Q949 340 958 369L973 403 947 429 918 402 919 365Z" fill="#5a7562"/>
+        <path d="M851 313L809 326 805 502H941L936 334 900 315 876 339Z" fill="#5a7562"/>
+        <path d="M676 282L644 270 621 276 601 285Q597 292 606 294L630 289 647 298 658 309Z" fill="#deceb0"/>
+        <path d="M852 313L876 339 900 316" fill="#f1eee1"/>
+        <path d="M876 339V486" fill="none" stroke-width="3"/>
+        <path d="M893 358H924V391H893Z" fill="#4c6856" stroke-width="3"/>
+        <path d="M822 350H846" stroke="#d65e48" stroke-width="6"/>
+        <path d="M810 491H937" stroke-width="9"/>
+      </g>
+
+      <!-- Open corrugated parcel: the returned brass bell is the focal point. -->
+      <ellipse cx="739" cy="602" rx="169" ry="16" fill="#243c46" opacity=".1"/>
+      <g stroke="#243c46" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M604 446L683 400 864 429 778 469Z" fill="#75684d"/>
+        <path d="M683 400L709 360 885 389 864 429Z" fill="#c3a576"/>
+        <path d="M604 446L560 412 643 366 683 400Z" fill="#d6b98b"/>
+        <path d="M786 393L827 380 844 428 801 439Z" fill="#f5f0df" stroke-width="3"/>
+        <path d="M800 400L820 394M804 411L825 405" fill="none" stroke-opacity=".4" stroke-width="3"/>
+        <path d="M650 428L679 412 706 443 670 451Z" fill="#e6d7b9" stroke="none"/>
+        <circle cx="735" cy="332" r="11" fill="none" stroke="#927039" stroke-width="7"/>
+        <path d="M735 345V357" stroke="#927039" stroke-width="7"/>
+        <path d="M699 404V395Q697 359 735 357Q774 359 773 395V404L789 423Q737 443 682 423Z" fill="#c7a358" stroke-width="6"/>
+        <path d="M713 394Q712 373 728 371" fill="none" stroke="#eddb9d" stroke-width="8"/>
+        <path d="M718 433Q721 449 735 449Q749 449 751 433" fill="#9c773b" stroke-width="4"/>
+        <path d="M604 446L778 469V595L604 568Z" fill="#d7b88b"/>
+        <path d="M778 469L864 429V555L778 595Z" fill="#b49265"/>
+        <path d="M778 469L831 506 919 466 864 429Z" fill="#cfb080"/>
+        <path d="M604 446L572 482 758 512 778 469Z" fill="#e0c59b"/>
+        <path d="M643 507L711 518V552L643 541Z" fill="#f9f4e6" stroke="none"/>
+        <path d="M654 520L697 527M654 530L684 535" stroke-opacity=".5" stroke-width="3"/>
+        <path d="M943 417L915 439 875 458 864 446 855 453 862 468Q865 477 880 471L925 455 955 430Z" fill="#deceb0" stroke-width="5"/>
+      </g>
+      <path d="M995 574H1105" stroke="#d65e48" stroke-width="8"/>
+      <rect y="661" width="1200" height="14" fill="#d65e48"/>
+    </svg>

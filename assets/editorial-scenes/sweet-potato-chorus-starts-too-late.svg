@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="学園祭の記録会で紫の皮がついた丸ごとのふかし芋を持つ参加者たちが一斉に食べる合図を待ち、進行役が笛と手の合図で待機を求める創作イラスト" data-visual-topic="document" data-article-sha256="d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81">
+  <title>学園祭の記録会で紫の皮がついた丸ごとのふかし芋を持つ参加者たちが一斉に食べる合図を待ち、進行役が笛と手の合図で待機を求める創作イラスト</title>
+  <rect width="1200" height="675" fill="#f2f1e9"/>
+  <path d="M76 472V254c0-90 93-150 198-140 100 9 169 76 256 57 111-25 166-80 288-62 165 24 278 168 278 363z" fill="#243c46" opacity=".045"/>
+  <ellipse cx="600" cy="584" rx="517" ry="28" fill="#243c46" opacity=".07"/>
+  <path d="M77 585h1046" fill="none" stroke="#243c46" stroke-width="3" opacity=".3"/>
+  <!-- Quiet school-festival bunting locates the shared event. -->
+  <g stroke="#243c46" stroke-width="3" stroke-linejoin="round">
+    <path d="M96 129q380 104 734 11" fill="none" opacity=".35"/>
+    <path d="m146 143 20 39 27-28m47 12 22 37 25-31m54 9 23 35 23-32m52 3 24 34 22-35m52-2 25 32 20-36m51-9 28 29 18-39m48-13 31 24 14-39" fill="#f2f1e9" opacity=".45"/>
+    <path d="m341 181 23 35 23-32m252-21 28 29 18-39" fill="#d65e48" opacity=".55" stroke="none"/>
+  </g>
+
+  <!-- Three participants all hold intact sweet potatoes, waiting together. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m180 474-8 106h36l19-106m27 0 8 106h37l-5-106" fill="#243c46"/>
+    <path d="M160 341q15-33 65-35 50 2 73 36l15 141H151z" fill="#d65e48"/>
+    <path d="M213 288v24q16 19 32 0v-25" fill="#f2f1e9"/>
+    <path d="M190 254q-2-40 37-45 44-2 44 40l-4 30q-5 29-30 28-23-2-34-25l-8-3q-12-6-7-17z" fill="#f2f1e9"/>
+    <path d="M190 254q-10-29 9-45 25-20 56-4 17 9 19 34-24-3-35-19-17 27-41 27v21l-9-7" fill="#243c46"/>
+    <path d="m219 255 11-1m16 0 11 2m-17 9 4 13-8 1m-12 12h16" fill="none" stroke-width="3"/>
+    <circle cx="227" cy="263" r="2.7" fill="#243c46" stroke="none"/><circle cx="253" cy="264" r="2.7" fill="#243c46" stroke="none"/>
+    <path d="M174 356q-4 54 49 55m64-54q2 43-30 49" fill="none" stroke-width="27"/>
+    <path d="M223 398q8-13 21-11l18 5 1 15-25 8-16-5z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M257 399q13-14 25-11l12 8-8 15-25 4z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M183 442v28m99-29 3 29" fill="none" stroke-width="2" opacity=".3"/>
+
+    <path d="m421 487-6 92h30l13-92m22-1 8 93h31l-4-93" fill="#243c46"/>
+    <path d="M397 385q20-31 60-31 39 0 59 31l16 103H391z" fill="#f2f1e9"/>
+    <path d="M442 340v21q14 13 28 0v-23" fill="#f2f1e9"/>
+    <path d="M422 306q-2-35 31-39 39-2 41 32l-3 26q-5 25-27 26-22-2-31-23l-8-4q-10-5-5-13z" fill="#f2f1e9"/>
+    <path d="M420 305q-8-25 9-39 23-17 48-4 17 9 19 29l-25-10-8 13-11-10q-10 15-26 16v15l-8-5" fill="#243c46"/>
+    <path d="m443 307 9-1m16 1 10 2m-17 7 3 10h-7m-10 12h15" fill="none" stroke-width="3"/>
+    <circle cx="450" cy="314" r="2.5" fill="#243c46" stroke="none"/><circle cx="476" cy="316" r="2.5" fill="#243c46" stroke="none"/>
+    <path d="M410 395q-6 40 31 38m65-37q-2 39-29 38" fill="none" stroke-width="20"/>
+    <path d="M438 421q11-11 23-7l10 7-8 14-24 4zM473 420q15-11 25-4l8 9-11 12-23-1z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M444 365q13 12 26 0" fill="none" stroke-width="3"/>
+
+    <path d="m633 480-6 100h37l18-100m27 0 9 100h37l-5-100" fill="#243c46"/>
+    <path d="M617 352q2-68 52-80 55-6 73 71l-5 66H615z" fill="#243c46"/>
+    <path d="M607 362q15-34 66-35 51 4 70 38l16 117H599z" fill="#243c46"/>
+    <path d="M659 311v24q14 15 31 0v-25" fill="#f2f1e9"/>
+    <path d="M641 281q-3-36 32-41 38-1 40 36l-4 27q-5 25-25 26-25-1-35-25l-6-4q-10-5-3-12z" fill="#f2f1e9"/>
+    <path d="M640 279q-10-26 11-43 31-22 55 6 9 11 11 30-26-6-39-24-12 24-38 31" fill="#243c46"/>
+    <path d="m661 282 11-1m15 1 10 3m-17 7 4 11-7 1m-12 13h15" fill="none" stroke-width="3"/>
+    <circle cx="669" cy="290" r="2.7" fill="#243c46" stroke="none"/><circle cx="695" cy="293" r="2.7" fill="#243c46" stroke="none"/>
+    <path d="M624 373q-8 38 39 39m66-39q1 37-33 37" fill="none" stroke-width="26"/>
+    <path d="M659 399q10-12 22-8l13 8-9 15-24 2zM693 397q12-12 25-5l10 9-11 13-24-1z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M655 333q17 20 38 2" fill="none" stroke="#f2f1e9" stroke-width="3"/>
+  </g>
+
+  <!-- Purple skins and uneven tapered ends distinguish whole sweet potatoes. -->
+  <g fill="#72516d" stroke="#243c46" stroke-width="3" stroke-linejoin="round">
+    <path d="M224 378q12-23 37-29 19-3 39-10 12-4 13 6-2 11-12 19-19 16-36 22-21 10-42 5-11-3 1-13z"/>
+    <path d="M435 408q10-23 32-28 18-3 39-10 10-4 12 5-3 12-12 21-17 16-36 21-21 7-35 4-10-4 0-13z"/>
+    <path d="M657 380q9-21 33-28 21-3 41-11 10-4 13 5-2 13-14 23-19 15-40 20-20 6-33 3-9-3 0-12z"/>
+  </g>
+  <g fill="none" stroke="#f2f1e9" stroke-width="2.5" stroke-linecap="round" opacity=".5">
+    <path d="m244 374 15-10m12-5 8-2m-32 24 5-3m203 28 15-10m11-5 8-2m-29 23 6-3m210-31 15-9m13-5 8-2m-32 24 6-3"/>
+  </g>
+
+  <!-- A single shared table reinforces the simultaneous-start rule. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linejoin="round">
+    <path d="M111 479h723v19H111z" fill="#243c46"/>
+    <path d="m136 498-9 82m680-82 9 82" fill="none" stroke-width="9" stroke-linecap="round"/>
+    <path d="M177 460h121l-10 17H188zm226 0h119l-10 17h-99zm213 0h119l-10 17h-99z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M191 467h94m132 0h91m122 0h92" fill="none" stroke-width="2" opacity=".3"/>
+  </g>
+
+  <!-- Raised palm, whistle, and eye direction make the shared pause explicit. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m925 455-9 122h37l24-122m20 0 14 122h37l-12-122" fill="#243c46"/>
+    <path d="M912 329q17-25 53-27 45 0 68 31l16 129H900z" fill="#f2f1e9"/>
+    <path d="M951 284v24q15 17 31 0v-25" fill="#f2f1e9"/>
+    <path d="M930 250q-3-37 32-42 43-3 45 37l-3 28q-6 25-29 27-22-2-33-24l-8-3q-11-6-6-16z" fill="#f2f1e9"/>
+    <path d="M929 249q-8-29 11-43 28-18 52 0 16 10 17 30-26-3-40-19-15 24-33 25l-1 17-8-4" fill="#243c46"/>
+    <path d="m944 251 11-3m16 1 11 3m-18 9-4 12h8m-14 13h16" fill="none" stroke-width="3"/>
+    <circle cx="947" cy="258" r="2.6" fill="#243c46" stroke="none"/><circle cx="974" cy="259" r="2.6" fill="#243c46" stroke="none"/>
+    <path d="M922 340q-31-1-39-29l-14-38" fill="none" stroke-width="26"/>
+    <path d="M868 278q-12-2-17-15l-7-25q-2-9 4-10l9 18-1-31q1-8 6-6l5 28 4-32q3-6 7-2v34l9-25q4-6 8-1l-5 35 7-11q5-4 7 1l-13 28q-9 18-23 14" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M1024 346q-7 28-33 13l-45-47" fill="none" stroke-width="25"/>
+    <path d="M940 318q-13-3-14-16l2-19 15-1 7 24z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M932 281h30v15h-20l-5 9-11-5z" fill="#d65e48" stroke-width="3"/>
+    <circle cx="936" cy="290" r="4" fill="#f2f1e9" stroke="none"/>
+    <path d="M943 305q9 75 35 89 25-28 14-75" fill="none" stroke="#d65e48" stroke-width="3"/>
+    <path d="M913 412h36v28h-36m43-110v118m48-34h30" fill="none" stroke-width="2" opacity=".35"/>
+  </g>
+</svg>

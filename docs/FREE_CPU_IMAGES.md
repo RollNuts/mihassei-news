@@ -2,6 +2,8 @@
 
 記事データのmain更新時と、毎時17分に未生成画像を確認します。Macがメモリ保護・スリープで生成できない間も、公開リポジトリの無料CPUで最大3枚ずつ補います。対象0件ならモデルを取得せず終了します。手動実行の標準はプレビュー保存であり、公開しません。
 
+生成JPEGがmainへ保存されても、その時点では読者向けの掲載採用を意味しません。`scripts/visual_review.py`で未検品を確認し、実画像と本文を照合して`content/visual_reviews.json`へ現在の記事・画像のSHAを記録します。公開ビルドは一致する合格記録を持つJPEGと派生動画だけを採用し、残りはイラスト等を表示します。生成済みJPEGを再生成し続ける必要はありません。検品と再試験の手順は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を参照。
+
 公開リポジトリ `RollNuts/mihassei-news` の GitHub Actions 標準 Linux CPU ランナーで、公開された軽量LCMモデルの**重みをダウンロードして自前推論**する。外部画像生成API、GPT API、ChatGPT追加クレジット、有料GPU、Hugging Face Inference Endpoint、Cloudflareの追加サービスは使わない。
 
 ## できること／できないこと

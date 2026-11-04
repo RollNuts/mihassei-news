@@ -73,8 +73,18 @@
     }
   }
 
-  function remove(slug) {
+  function focusSavedPosition(index) {
+    const controls = list ? [...list.querySelectorAll(".saved-entry-remove")].filter(button => !button.disabled) : [];
+    const target = controls[Math.min(index, controls.length - 1)] ||
+                   document.querySelector(".saved-controls a");
+    target?.focus();
+  }
+
+  function remove(slug, trigger = null) {
+    const restoreFocus = trigger && document.activeElement === trigger;
+    const index = Math.max(0, saved.findIndex(item => item.slug === slug));
     writeSaved(saved.filter(item => item.slug !== slug), "保存を解除しました。");
+    if (restoreFocus) focusSavedPosition(index);
   }
 
   function makeEntry(item) {
@@ -98,10 +108,11 @@
 
     const removeButton = document.createElement("button");
     removeButton.type = "button";
+    removeButton.disabled = !available;
     removeButton.className = "saved-entry-remove";
     removeButton.textContent = "保存を解除";
     removeButton.setAttribute("aria-label", "「" + item.title + "」の保存を解除");
-    removeButton.addEventListener("click", () => remove(item.slug));
+    removeButton.addEventListener("click", () => remove(item.slug, removeButton));
     li.append(content, removeButton);
     return li;
   }
@@ -162,7 +173,9 @@
     if (!available || !saved.length) return;
     if (typeof window.confirm === "function" &&
         !window.confirm("保存した記事をすべて解除しますか？")) return;
+    const restoreFocus = document.activeElement === clearAll;
     writeSaved([], "保存した記事をすべて解除しました。");
+    if (restoreFocus) focusSavedPosition(0);
   });
 
   window.addEventListener?.("storage", event => {

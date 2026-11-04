@@ -333,14 +333,26 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
             raise ValueError("Invalid existing manifest; refusing to overwrite it")
     else:
         manifest = {"version": 1, "images": {}}
+    image_sha256 = hashlib.sha256(data).hexdigest()
+    fingerprint = article_fingerprint(article)
+    rejected = manifest.get("rejected")
+    hold = rejected.get(slug) if isinstance(rejected, dict) else None
+    previous = manifest["images"].get(slug)
+    # A stale outbox must not lift a current visual hold by reimporting the
+    # rejected bytes. Genuinely new bytes still need a separate visual review.
+    if (isinstance(hold, dict) and hold.get("article_sha256") == fingerprint
+            and (hold.get("rejected_candidate_sha256") == image_sha256
+                 or (isinstance(previous, dict)
+                     and previous.get("sha256") == image_sha256))):
+        raise ValueError("Rejected JPEG cannot be reimported without new bytes: " + slug)
     image_tmp = image_path.with_suffix(".jpg.tmp")
     image_tmp.write_bytes(data)
     os.replace(image_tmp, image_path)
     manifest["images"][slug] = {
         "origin": origin,
-        "sha256": hashlib.sha256(data).hexdigest(),
+        "sha256": image_sha256,
         "bytes": len(data),
-        "article_sha256": article_fingerprint(article),
+        "article_sha256": fingerprint,
         "prompt_version": PROMPT_VERSION,
         "model": checkpoint,
         "seed": stable_seed(article),

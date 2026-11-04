@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="事故対応AIが謝罪メールを一斉送信し、画面を見守る広報担当者と、スマートフォンに届いたメールに戸惑う顧客たちの創作イラスト" data-visual-topic="security" data-article-sha256="64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30">
+  <title>事故対応AIが謝罪メールを一斉送信し、画面を見守る広報担当者と、スマートフォンに届いたメールに戸惑う顧客たちの創作イラスト</title>
+  <rect width="1200" height="675" fill="#f2f1e9"/>
+  <path d="M75 473V210c0-76 105-114 227-101 103 12 138 65 228 62 94-4 148-80 267-63 158 23 270 168 270 304v61z" fill="#243c46" opacity=".045"/>
+  <ellipse cx="601" cy="581" rx="516" ry="28" fill="#243c46" opacity=".07"/>
+  <g fill="none" stroke="#243c46" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M77 584h1046" stroke-width="3" opacity=".3"/>
+    <path d="M104 137h126m-126 12h73m-73 12h93" stroke-width="2" opacity=".13"/>
+  </g>
+
+  <!-- The company records remain closed; the incident has not happened. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linejoin="round">
+    <rect x="88" y="184" width="112" height="252" rx="7" fill="#f2f1e9"/>
+    <path d="M88 266h112M88 349h112" fill="none"/>
+    <path d="M110 207h43m-43 15h25m-25 66h43m-43 15h25m-25 68h43m-43 15h25" fill="none" stroke-width="3" opacity=".38"/>
+    <rect x="152" y="232" width="30" height="28" rx="4" fill="#243c46"/>
+    <path d="M159 232v-9a8 8 0 0 1 16 0v9" fill="none"/>
+    <circle cx="167" cy="244" r="3" fill="#f2f1e9" stroke="none"/>
+  </g>
+
+  <!-- A puzzled employee has no hand on the send controls. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M182 471l-9 105h39l20-108m23-4 9 112h39l-4-105" fill="#243c46"/>
+    <path d="M168 339q22-27 61-27 43 0 68 27l14 137H158z" fill="#243c46"/>
+    <path d="m213 315 18 73 24-73-17-19z" fill="#f2f1e9"/>
+    <path d="m229 332-8 16 10 35 12-35-9-16" fill="#d65e48" stroke="none"/>
+    <path d="m209 314-14 30 16 9-10 22 30 35m26-95 17 29-15 10 9 23-37 33" fill="none" stroke="#f2f1e9" stroke-width="2" opacity=".5"/>
+    <path d="M211 286v27q15 20 32 0v-28" fill="#f2f1e9"/>
+    <path d="M191 258q-2-42 37-45 43-2 43 39l-3 31q-6 28-30 27-22-2-35-24l-8-4q-12-6-7-17z" fill="#f2f1e9"/>
+    <path d="M190 258q-10-29 9-45 25-20 56-4 17 9 19 34-24-3-35-19-17 27-41 27v21l-9-7" fill="#243c46"/>
+    <path d="m219 258 10-2m16-1 10 3m-17 7 4 13-8 1m-9 12q10-6 18-1" fill="none" stroke-width="3"/>
+    <circle cx="225" cy="266" r="2.7" fill="#243c46" stroke="none"/>
+    <circle cx="251" cy="267" r="2.7" fill="#243c46" stroke="none"/>
+    <path d="M175 350q-23 45-44 32l-25-32" fill="none" stroke-width="27"/>
+    <path d="M105 354q-12-1-17-13l-5-20q-2-10 5-9l8 17 4-25q2-9 7-4l2 27 8-18q4-6 8-1l-5 27q-2 16-15 19" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M287 349q17 39 34 17l16-35" fill="none" stroke-width="26"/>
+    <path d="M334 335q-10-4-11-16l1-22q1-9 7-6l3 20 10-21q4-7 8-2l-6 25 12-14q5-5 8 0l-16 26q-6 12-16 10" fill="#f2f1e9" stroke-width="3"/>
+  </g>
+
+  <!-- One large computer is actively distributing electronic messages. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linejoin="round">
+    <path d="M129 480h517v20H129z" fill="#243c46"/>
+    <path d="m153 500-9 79m474-79 9 79" fill="none" stroke-width="10"/>
+    <path d="M407 432v38m-48 7h99" fill="none" stroke-width="10" stroke-linecap="round"/>
+    <rect x="305" y="250" width="292" height="188" rx="11" fill="#243c46"/>
+    <rect x="316" y="262" width="270" height="162" rx="4" fill="#f2f1e9" stroke="none"/>
+    <path d="M316 284h270" fill="none" stroke-width="2" opacity=".3"/>
+    <g fill="#243c46" stroke="none" opacity=".5">
+      <circle cx="330" cy="273" r="3"/><circle cx="341" cy="273" r="3"/><circle cx="352" cy="273" r="3"/>
+    </g>
+    <rect x="342" y="308" width="136" height="87" rx="4" fill="#d65e48" stroke="none"/>
+    <path d="m344 313 66 44 66-44m-132 78 45-35m86 35-44-35" fill="none" stroke="#f2f1e9" stroke-width="4"/>
+    <rect x="514" y="303" width="42" height="42" rx="5" fill="none" stroke-width="3"/>
+    <path d="M523 296v7m12-7v7m12-7v7m-24 42v7m12-7v7m12-7v7m-40-40h7m-7 12h7m-7 12h7m42-24h7m-7 12h7m-7 12h7" fill="none" stroke-width="3"/>
+    <circle cx="535" cy="324" r="8" fill="#243c46" stroke="none"/>
+    <circle cx="536" cy="384" r="22" fill="#d65e48" stroke="none"/>
+    <path d="M525 384h21m-8-8 9 8-9 8" fill="none" stroke="#f2f1e9" stroke-width="4" stroke-linecap="round"/>
+    <path d="M360 465h154l17 12H343z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M375 470h120" stroke-width="2" opacity=".4"/>
+  </g>
+
+  <!-- Repeated envelopes travel from the AI to two customers' phones. -->
+  <g fill="none" stroke="#d65e48" stroke-width="3" stroke-linecap="round">
+    <path d="M605 305C657 194 782 172 879 225"/>
+    <path d="M638 333c45-30 107-32 141 6" stroke-dasharray="5 10"/>
+    <path d="M924 310q64 24 74 91" stroke-dasharray="5 10"/>
+    <path d="m770 328 10 13-16-1m226 55 8 12 7-13"/>
+  </g>
+  <g transform="translate(663 210) rotate(-10 66 44)" stroke-linejoin="round">
+    <rect width="132" height="87" rx="5" fill="#d65e48"/>
+    <path d="m3 5 63 44 63-44M4 82l42-35m82 35-42-35" fill="none" stroke="#f2f1e9" stroke-width="4"/>
+  </g>
+  <g transform="translate(831 240) rotate(12 44 29)" stroke-linejoin="round">
+    <rect width="88" height="58" rx="4" fill="#f2f1e9" stroke="#243c46" stroke-width="4"/>
+    <path d="m3 4 41 29L85 4M4 54l26-24m54 24L58 30" fill="none" stroke="#243c46" stroke-width="3"/>
+  </g>
+
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- First recipient, reading rather than receiving a paper envelope. -->
+    <path d="M847 355q6-60 51-64 51 2 58 76l-10 59-104-4z" fill="#243c46"/>
+    <path d="M838 420q2-57 42-65h36q44 15 47 66l13 157H829z" fill="#d65e48"/>
+    <path d="M883 343v20q16 17 31-1v-22" fill="#f2f1e9"/>
+    <path d="M868 316q-3-39 31-42 36 1 34 39l-4 23q-5 23-25 24-23-1-32-24z" fill="#f2f1e9"/>
+    <path d="M867 309q-9-32 13-42 33-14 51 14l6 31q-25-5-37-28-10 18-33 25" fill="#243c46"/>
+    <path d="m876 313 10-3m16 3 10 1m-17 8-3 11h7m-16 12q9-5 16 0" fill="none" stroke-width="3"/>
+    <circle cx="883" cy="319" r="2.6" fill="#243c46" stroke="none"/>
+    <circle cx="906" cy="320" r="2.6" fill="#243c46" stroke="none"/>
+    <path d="M845 401q-14 40-39 42l-11-40m137 9-15 31-67-27" fill="none" stroke-width="22"/>
+    <path d="M844 405q-13-12-25-6l-15 13 12 14 31-9z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M796 411q-11-6-8-21l3-18 15 2 1 31" fill="#f2f1e9" stroke-width="3"/>
+    <rect x="782" y="349" width="46" height="72" rx="6" fill="#243c46"/>
+    <rect x="789" y="358" width="32" height="46" rx="1" fill="#f2f1e9" stroke="none"/>
+    <path d="M793 373h24v17h-24zm0 1 12 8 12-8" fill="none" stroke="#d65e48" stroke-width="2.5"/>
+    <circle cx="805" cy="412" r="2.5" fill="#f2f1e9" stroke="none"/>
+    <path d="M860 459v102m77-102 6 102" stroke-width="2" opacity=".28"/>
+
+    <!-- Second recipient makes the mass mailing legible at thumbnail size. -->
+    <path d="M1005 464q-4-46 37-60l38 4q37 14 41 57l10 113h-129z" fill="#243c46"/>
+    <path d="m1037 406 15 49 25-46-16-13z" fill="#f2f1e9"/>
+    <path d="M1043 386v22q12 13 28 0v-25" fill="#f2f1e9"/>
+    <path d="M1025 359q0-31 30-34 36-2 38 31l-4 28q-7 25-26 22-18-1-28-23l-8-4q-9-5-2-13z" fill="#f2f1e9"/>
+    <path d="M1024 358q-5-27 15-39 33-15 52 12l6 23q-29-1-42-17-14 18-31 21" fill="#243c46"/>
+    <path d="m1041 359 10-2m16 2 10 5m-18 3 3 11h-7m-8 15 13-2" fill="none" stroke-width="3"/>
+    <circle cx="1047" cy="366" r="2.5" fill="#243c46" stroke="none"/>
+    <circle cx="1071" cy="369" r="2.5" fill="#243c46" stroke="none"/>
+    <path d="m1023 458-13 30-27-25m114-13q-15 52-57 33" fill="none" stroke-width="23"/>
+    <path d="M1040 475q-18-13-29-8l-13 10 12 15 25-1" fill="#f2f1e9" stroke-width="3"/>
+    <rect x="969" y="417" width="45" height="73" rx="6" fill="#243c46"/>
+    <rect x="976" y="425" width="31" height="49" fill="#f2f1e9" stroke="none"/>
+    <path d="M979 440h25v18h-25zm0 1 12.5 8 12.5-8" fill="none" stroke="#d65e48" stroke-width="2.5"/>
+    <circle cx="992" cy="482" r="2.5" fill="#f2f1e9" stroke="none"/>
+  </g>
+  <g fill="none" stroke="#243c46" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="m873 249-8-11m20 7-2-13m137 74-9-9m20 2-4-13"/>
+  </g>
+</svg>

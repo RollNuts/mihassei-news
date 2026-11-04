@@ -14,6 +14,7 @@ from unittest.mock import Mock, patch
 
 from scripts import build, github_cpu_scenes as cpu, local_scene_photos
 from scripts.generated_photos import article_fingerprint, generated_scene_entry, usable_generated_scene
+from scripts.visual_review import reviewed_generated_scene
 
 
 def article():
@@ -82,6 +83,27 @@ class FreeCpuImageTests(unittest.TestCase):
             self.assertEqual(record["model"], cpu.MODEL)
             self.assertEqual(record["sha256"], hashlib.sha256(data).hexdigest())
             self.assertEqual(record["article_sha256"], article_fingerprint(a))
+            self.assertFalse(reviewed_generated_scene(a, root=root))
+            with patch.object(build, "BASE", root):
+                self.assertEqual(build.editorial_image(a), "/images/" + a["slug"] + ".svg")
+                self.assertEqual(build.social_image(a),
+                                 "/og/articles/" + a["slug"] + ".png?v=20261103-topic2")
+                self.assertEqual(build.photo_credit(a), "創作イラスト")
+            # Synthetic review input for this temporary header fixture only;
+            # CPU generation itself must never grant visual acceptance.
+            reviews = root / "content/visual_reviews.json"
+            reviews.parent.mkdir(parents=True)
+            reviews.write_text(json.dumps({
+                "version": 1,
+                "reviews": {a["slug"]: {
+                    "decision": "accepted",
+                    "article_sha256": article_fingerprint(a),
+                    "image_sha256": record["sha256"],
+                    "reviewed_at": "2026-11-04T01:30:05+00:00",
+                    "note": "Synthetic test fixture; not an actual visual review.",
+                }},
+            }), encoding="utf-8")
+            self.assertTrue(reviewed_generated_scene(a, root=root))
             with patch.object(build, "BASE", root):
                 self.assertEqual(build.editorial_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertEqual(build.social_image(a), "/generated/" + a["slug"] + ".jpg")
@@ -97,6 +119,9 @@ class FreeCpuImageTests(unittest.TestCase):
                 document["images"][a["slug"]]["model"] = model
                 manifest.write_text(json.dumps(document), encoding="utf-8")
                 self.assertFalse(usable_generated_scene(a, root=root))
+                self.assertFalse(reviewed_generated_scene(a, root=root))
+                with patch.object(build, "BASE", root):
+                    self.assertEqual(build.editorial_image(a), "/images/" + a["slug"] + ".svg")
             manifest.write_text(json.dumps(original), encoding="utf-8")
             self.assertFalse(usable_generated_scene({**a, "summary": "修正済み"}, root=root))
             with self.assertRaises(ValueError):

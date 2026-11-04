@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="8枚の考察カードが赤い糸で結ばれた壁の前で、カメラを構えたファンが花瓶を持つ仲間と別の最終回を撮影する創作イラスト" data-visual-topic="movie" data-article-sha256="577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02">
+  <title>考察カードを背に、自分たちの結末をカメラで撮り始めるドラマファンの創作イラスト</title>
+  <defs>
+    <pattern id="paper" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="7" r=".8" fill="#243c46" opacity=".055"/>
+      <circle cx="20" cy="22" r=".6" fill="#243c46" opacity=".045"/>
+    </pattern>
+  </defs>
+  <path fill="#f2f1e9" d="M0 0h1200v675H0z"/>
+  <path fill="#e2e6dc" d="M67 81h1066v459H67z"/>
+  <path fill="#d4dcce" d="M67 486h1066v54H67z"/>
+  <path fill="#e9e9df" d="M67 540h1066v66H67z"/>
+  <path d="M67 540h1066" stroke="#b9c7b7" stroke-width="3"/>
+  <path fill="#c5d0be" d="M970 103h136v356H970z"/>
+  <path fill="#aebfae" d="m1094 103 12 356h-31l6-356z"/>
+  <path d="M990 112v323m20-323v323m20-323v323" stroke="#b3c3af" stroke-width="3"/>
+  <!-- Eight physical cards, all threads fixed to pin points on the cards. -->
+  <path fill="#243c46" d="M96 108h465v298H96z"/>
+  <path fill="#b5c2b0" d="M106 118h445v278H106z"/>
+  <g fill="#f2f1e9">
+    <path d="M132 144h78v90h-78zM235 144h78v90h-78zM338 144h78v90h-78zM441 144h78v90h-78z"/>
+    <path d="M132 276h78v90h-78zM235 276h78v90h-78zM338 276h78v90h-78zM441 276h78v90h-78z"/>
+  </g>
+  <g fill="#849a8e">
+    <path d="m161 177 5 13-8 13v12h27v-12l-8-13 5-13z"/>
+    <path d="M256 178h36v38h-36z"/>
+    <path d="M263 185h22v31h-22z" fill="#d4dcd0"/>
+    <path d="M355 208q19-38 44 0l-10 9h-23z"/>
+    <path d="m458 187 17-13 18 13v28h-35z"/>
+    <path d="m151 338 13-21 13 10 15-20v38h-41z"/>
+    <path d="M255 317h39v24h-39zm4-8h14v8h-14z"/>
+    <path d="M358 321h38v26h-38zm4-15h30v15h-30z"/>
+    <path d="M463 311h29v37h-29z"/>
+  </g>
+  <g fill="none" stroke="#d65e48" stroke-width="3" stroke-linejoin="round">
+    <path d="m171 154 103 132 103-132 103 132M171 286l103-132 103 132 103-132M171 154h309M171 286h309"/>
+  </g>
+  <g fill="#d65e48" stroke="#f2f1e9" stroke-width="2">
+    <circle cx="171" cy="154" r="5"/><circle cx="274" cy="154" r="5"/><circle cx="377" cy="154" r="5"/><circle cx="480" cy="154" r="5"/>
+    <circle cx="171" cy="286" r="5"/><circle cx="274" cy="286" r="5"/><circle cx="377" cy="286" r="5"/><circle cx="480" cy="286" r="5"/>
+  </g>
+  <!-- A living-room sofa and a blank clapperboard establish an improvised film set. -->
+  <path fill="#9caf9e" d="M102 459q0-29 29-29h226q30 0 30 29v94H102z"/>
+  <path fill="#879e8d" d="M102 491h285v62H102z"/>
+  <path fill="#b6c5b2" d="M122 449h112v45H122zm124 0h120v45H246z"/>
+  <path d="M121 553v32m247-32v32" stroke="#243c46" stroke-width="8"/>
+  <path fill="#d0d8c9" d="M81 471q0-10 10-10h25q10 0 10 10v83H81zm282 0q0-10 10-10h25q10 0 10 10v83h-45z"/>
+  <g transform="translate(142 515) rotate(-8)">
+    <path fill="#243c46" d="M0 0h137v76H0z"/>
+    <path fill="#f2f1e9" d="M9 26h119v40H9z"/>
+    <path fill="#243c46" d="m0-13 132-19 4 19L3 7z"/>
+    <path d="m21-16 12 15m20-19 12 15m20-19 12 15m20-19 12 15" stroke="#f2f1e9" stroke-width="10"/>
+  </g>
+  <ellipse cx="608" cy="597" rx="197" ry="19" fill="#cdd6c7"/>
+  <ellipse cx="942" cy="591" rx="147" ry="20" fill="#cdd6c7"/>
+  <!-- The first fan operates a camera aimed at the new ending, not at the theory wall. -->
+  <path fill="#243c46" d="m510 478-20 44-2 63h33l17-60 24-30zm44 2 30 41 9 56 34-4-2-65-38-40z"/>
+  <path fill="#243c46" d="M485 577h38l4 15-55 2q-6-8 13-17m109-10h31l18 18-4 10h-44z"/>
+  <path fill="#d65e48" d="M484 370q18-22 44-25 31 2 52 31l21 100-43 25-59-8-23-51z"/>
+  <path fill="#b6493e" d="m484 380-9 64 23 48 24 3-11-95z"/>
+  <path fill="#f2f1e9" d="m515 352 15 26 17-24-12-13z"/>
+  <path fill="#d9c0a1" d="M514 325h29v32q-14 15-29-1z"/>
+  <path fill="#dec9ad" d="M495 286q3-37 39-37 36 1 39 38l-7 35q-12 25-36 20-28-5-32-31z"/>
+  <path fill="#243c46" d="M494 306q-18-36 2-58 21-20 51-8 31 11 31 41l-12 15-6-26q-26 10-49-4l-3 41z"/>
+  <path d="m523 295 6 1m23-1 6-2m-18 10 3 11-8 2m-8 10h18" stroke="#243c46" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path fill="#d65e48" d="m566 372 35 11 36-38 18 21-33 48q-13 13-30 6l-35-15z"/>
+  <path fill="#dec9ad" d="m633 352 8-25 18-12 16 9-10 14-10 30z"/>
+  <path fill="#d65e48" d="m495 383-8 35 43 29 35-7-6-28-25 3z"/>
+  <path fill="#dec9ad" d="m556 412 28-11 27 2 10 11-10 11-26-1-25 17z"/>
+  <!-- The camera and tripod have clean, continuous physical joints. -->
+  <path d="M680 398v50m0 0-58 140m58-140 66 140m-66-140v144" stroke="#243c46" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M680 448h-44l-37-20" stroke="#243c46" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path fill="#243c46" d="M615 311h117q11 0 11 11v76H605v-76q0-11 10-11z"/>
+  <path fill="#3f5b61" d="M614 322h119v62H614z"/>
+  <path fill="#243c46" d="m731 331 43-14v77l-43-13zM609 330h-31v36h31z"/>
+  <path fill="#aebfb0" d="M621 335h47v34h-47z"/>
+  <circle cx="701" cy="347" r="16" fill="#243c46"/>
+  <circle cx="701" cy="347" r="8" fill="#d65e48"/>
+  <path d="M642 311v-19h56v19" stroke="#243c46" stroke-width="7" fill="none" stroke-linejoin="round"/>
+  <path d="M620 588h9m113 0h10m-77 4h11" stroke="#243c46" stroke-width="7" stroke-linecap="round"/>
+  <!-- The other fan performs with the vase that inspired the disputed theories. -->
+  <path fill="#243c46" d="m906 437 8 138h29l8-135zm49-2 16 139h31l2-140z"/>
+  <path fill="#243c46" d="m913 569 30 1 6 20-54 1q-8-8 18-22m57-1h31l19 17-3 8h-49z"/>
+  <path fill="#879b91" d="M907 285q42-22 74 4l22 72-1 99-47 16-49-20-16-99z"/>
+  <path fill="#a6b5a8" d="m931 282 15 43-15 140-25-10-16-99 18-70z"/>
+  <path fill="#f2f1e9" d="m926 283 19 34 20-32-18-15z"/>
+  <path fill="#d9c0a1" d="M931 258h30v30q-14 21-31 0z"/>
+  <path fill="#dec9ad" d="M908 212q0-41 39-42 40 2 42 44l-6 35q-10 32-39 30-30-1-36-37z"/>
+  <path fill="#243c46" d="M906 237q-22-23-9-49 13-29 48-28 41-1 48 33l-5 42-12-24-9-25q-24 25-50 22l-2 32z"/>
+  <path fill="#243c46" d="M893 217q-19 31-4 61l22 7 4-49z"/>
+  <path d="m926 226 6 1m28-1 6-2m-22 12-2 12 8 2m-20 12q15 6 26-1" stroke="#243c46" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path fill="#879b91" d="m977 302 24 36-12 52-37 12-7-24 24-13-11-34z"/>
+  <path fill="#a6b5a8" d="m907 306-29 30-21 43 22 16 33-36 16-35z"/>
+  <path fill="#dec9ad" d="m860 374-16 7-7 18 19 7 27-12-5-17zm85 1-17 3-18 15 9 14 30-9 10-15z"/>
+  <path fill="#d65e48" stroke="#b6493e" stroke-width="3" stroke-linejoin="round" d="M865 333h47l-9 29q27 24 21 50-6 23-36 23-31 0-37-23-6-26 23-50z"/>
+  <path d="M865 333h47m-37 26h28m-40 54q24 12 49 0" stroke="#e7b69a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path fill="#dec9ad" d="m851 383 12 5 9 12-10 11-20-15zm65 2-13 7-7 12 12 9 19-17z"/>
+  <path fill="#c4b496" d="M829 443h229v17H829z"/>
+  <path d="M849 460v126m187-126v126" stroke="#243c46" stroke-width="9"/>
+  <path fill="#f2f1e9" d="M860 433h152v9H860z"/>
+  <path d="M70 610h1060" stroke="#243c46" stroke-width="3"/>
+  <path fill="url(#paper)" d="M0 0h1200v675H0z"/>
+</svg>
