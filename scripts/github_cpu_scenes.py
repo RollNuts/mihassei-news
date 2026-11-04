@@ -295,7 +295,9 @@ def check_quality(image):
 
 
 def render_one(pipe, torch, article: dict) -> bytes:
-    generator = torch.Generator(device="cpu").manual_seed(stable_seed(article))
+    seed = stable_seed(article)
+    print(f"CPU scene seed: {seed}", flush=True)
+    generator = torch.Generator(device="cpu").manual_seed(seed)
     # LCM: eight CPU-only steps and enough native pixels for a recognisable prop.
     # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
     tokenizer = getattr(pipe, "tokenizer", None)
