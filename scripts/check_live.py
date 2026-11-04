@@ -426,18 +426,27 @@ def verify_pv_recommendations(markup: str, articles: list[dict], current_article
     if (len(fallbacks) != 1 or fallbacks[0]["tag"] != "nav"
             or "reader-next" not in fallbacks[0]["attrs"].get("class", "").split()
             or "hidden" in fallbacks[0]["attrs"]):
-        raise RuntimeError("Article must retain a visible newest-story fallback without JavaScript")
+        raise RuntimeError("Article must retain a visible sequential-story fallback without JavaScript")
     fallback = fallbacks[0]
     fallback_text = "".join(fallback["text"])
-    if "次の記事" not in fallback_text or "新着" not in fallback_text:
-        raise RuntimeError("Article fallback must clearly label the next story and its new-story context")
-    next_articles = [article for article in latest_articles(articles, limit=None)
-                     if article["slug"] != excluded]
-    expected_url = "/articles/" + next_articles[0]["slug"] + "/" if next_articles else "/archive/"
+    if "次の記事" not in fallback_text or "続けて読む" not in fallback_text:
+        raise RuntimeError("Article fallback must clearly label the sequential next-story route")
+    reading_order = latest_articles(articles, limit=None)
+    current_index = next(
+        (index for index, article in enumerate(reading_order)
+         if article["slug"] == excluded),
+        None,
+    )
+    next_article = (
+        reading_order[current_index + 1]
+        if current_index is not None and current_index + 1 < len(reading_order)
+        else None
+    )
+    expected_url = "/articles/" + next_article["slug"] + "/" if next_article else "/archive/"
     links = [element for element in _descendants(fallback)
              if element["tag"] == "a" and "reader-next-title" in element["attrs"].get("class", "").split()]
     if len(links) != 1 or links[0]["attrs"].get("href") != expected_url:
-        raise RuntimeError("Article fallback must link to the newest other published story")
+        raise RuntimeError("Article fallback must advance one step through the publication stream")
 
 
 def verify_pageview_contract(payload: dict, article_slug: str) -> None:
