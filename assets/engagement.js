@@ -188,6 +188,21 @@
   // No fingerprinting, user accounts, cookies, or IP-derived identity.
   const idKey = "mihassei-anonymous-browser-v1";
   const likesKey = "mihassei-likes-v1";
+  const analyticsPreferenceKey="mihassei-analytics-disabled-v1";
+  let analyticsDisabled=false,analyticsPreferenceStored=true;
+  try{analyticsDisabled=localStorage.getItem(analyticsPreferenceKey)==="1";}
+  catch(_){analyticsPreferenceStored=false;}
+  // A deliberate local opt-out also lets production checks remain read-only.
+  // Never transmit the query, and honour it even when storage is unavailable.
+  const analyticsQuery=new URLSearchParams(location.search).get("analytics");
+  if(analyticsQuery==="off" || analyticsQuery==="on"){
+    analyticsDisabled=analyticsQuery==="off";
+    try{
+      localStorage.setItem(analyticsPreferenceKey,analyticsDisabled?"1":"0");
+      analyticsPreferenceStored=true;
+    }catch(_){analyticsPreferenceStored=false;}
+  }
+  const automatedPreview=typeof navigator!=="undefined" && navigator.webdriver===true;
   function makeId(){
     if(crypto.randomUUID)return crypto.randomUUID();
     const b = crypto.getRandomValues(new Uint8Array(16));
@@ -302,13 +317,17 @@
       }
     }catch(_){popularCandidates=[];}
   }
-  // The same GET already fetches counts for the visible article actions.
-  // Put reader-discovery candidates first, without adding any API requests.
-  const allSlugs=[...new Set([
-    ...popularCandidates.map(x=>x.slug),
-    ...buttons.map(b=>b.dataset.likeSlug).filter(Boolean)
-  ])].slice(0,20);
-  if(article && !allSlugs.includes(article))allSlugs.unshift(article);
+  // Fetch visible card PVs with the same read-only statistics request. The
+  // Worker accepts at most 20 slugs; large archives use bounded batches.
+  function requestedArticleSlugs(){
+    const visible=[...document.querySelectorAll("[data-article-pv]")]
+      .filter(node=>!node.closest?.("[hidden]"))
+      .map(node=>node.dataset.articlePv);
+    return [...new Set([
+      article,...visible,...popularCandidates.map(x=>x.slug),
+      ...buttons.map(b=>b.dataset.likeSlug)
+    ])].filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug));
+  }
 
   // Approximate, privacy-minimal traffic sources: never transmit a referrer URL.
   // Only externally arriving page views get a category; internal navigation is ignored.
@@ -347,11 +366,12 @@
   }
   heartView();
 
-  async function apiPost(action,articleSlug="",choice=""){
+  async function apiPost(action,articleSlug="",choice="",viewId=""){
     const payload={action,article:articleSlug,clientId};
     if(action==="vote")payload.choice=choice;
     if(action==="visit" && visitChannel)payload.channel=visitChannel;
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
+    if(action==="visit" && viewId)payload.viewId=viewId;
     const response=await fetch("/api/engagement",{
       method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify(payload),
@@ -411,6 +431,14 @@
   const observerYesterday=document.querySelector("[data-observer-yesterday]");
   const observerReads=document.querySelector("[data-observer-reads]");
   const observerHint=observerShell?.querySelector("small");
+  const pvWidget=document.querySelector("[data-pv-widget]");
+  const pvToday=document.querySelector("[data-site-pv-today]");
+  const pvYesterday=document.querySelector("[data-site-pv-yesterday]");
+  const pvWeek=document.querySelector("[data-site-pv-week]");
+  const pvPeriodLabel=document.querySelector("[data-site-pv-period-label]");
+  const pvTrackingNote=document.querySelector("[data-pv-tracking-note]");
+  const knownArticlePvs=new Set();
+  let pvMeasurementNote="",pvStartLabel="";
   const observedAtFormat=new Intl.DateTimeFormat("ja-JP",{
     timeZone:"Asia/Tokyo",hour:"2-digit",minute:"2-digit"
   });
@@ -431,6 +459,12 @@
   }
   function observerFeedback(healthy){
     if(!observerShell)return;
+    if(pvWidget){
+      observerShell.hidden=false;
+      if(pvTrackingNote)pvTrackingNote.textContent=healthy ? pvMeasurementNote :
+        haveSnapshot ? pvMeasurementNote+" · 通信回復待ち" : "PVを取得できません・自動再試行";
+      return;
+    }
     // A failed first fetch is not a visitor count. Keep the widget hidden
     // instead of exposing the placeholder dash as if it were a real number.
     // If we already have a verified snapshot, retain it with a stale hint.
@@ -447,6 +481,64 @@
                      : "※集計を取得できません・自動再試行";
   }
 
+  function validPageViews(value){
+    return value===null || (Number.isSafeInteger(value) && value>=0);
+  }
+  function showPageViewNumber(node,value){
+    if(!node)return;
+    if(value===null){node.textContent="—";return;}
+    updateObserverNumber(node,value);
+  }
+  function showPageViews(data){
+    const tracking=data.pageViewTracking,today=data.today;
+    if(!tracking || tracking.timezone!=="Asia/Tokyo" ||
+       !(tracking.startedAtUtc===null ||
+         (typeof tracking.startedAtUtc==="string" && Number.isFinite(Date.parse(tracking.startedAtUtc)))) ||
+       !today || !/^\d{4}-\d{2}-\d{2}$/.test(today.dateJst||"") ||
+       !validPageViews(today.pageViews) || !validPageViews(data.pageViews))return false;
+    const todayStamp=Date.parse(today.dateJst+"T00:00:00Z");
+    if(!Number.isFinite(todayStamp))return false;
+    // The legacy browser counters are never used as a fallback for PV.
+    if(tracking.startedAtUtc===null && (data.pageViews!==null || today.pageViews!==null))return false;
+    observedDay=today.dateJst;
+    pvStartLabel=tracking.startedAtUtc===null ? "" : new Intl.DateTimeFormat("ja-JP",{
+      timeZone:"Asia/Tokyo",year:"numeric",month:"numeric",day:"numeric"
+    }).format(new Date(tracking.startedAtUtc));
+    showPageViewNumber(pvToday,today.pageViews);
+    const expectedPrevious=new Date(todayStamp-86400000).toISOString().slice(0,10);
+    const yesterday=data.yesterday;
+    const validYesterday=Boolean(yesterday && yesterday.dateJst===expectedPrevious &&
+      validPageViews(yesterday.pageViews));
+    showPageViewNumber(pvYesterday,validYesterday ? yesterday.pageViews : null);
+    const windowStart=new Date(todayStamp-6*86400000).toISOString().slice(0,10);
+    const week=data.last7Days;
+    const validWeek=Boolean(week && week.startDateJst===windowStart && week.endDateJst===today.dateJst &&
+      validPageViews(week.pageViews) && typeof week.complete==="boolean" &&
+      Number.isInteger(week.measuredDays) && week.measuredDays>=0 && week.measuredDays<=7);
+    showPageViewNumber(pvWeek,validWeek ? week.pageViews : null);
+    if(pvPeriodLabel)pvPeriodLabel.textContent=validWeek && !week.complete ? "計測開始から" : "直近7日";
+    pvMeasurementNote=pvStartLabel ? pvStartLabel+"から計測・日本時間" : "PVの計測開始待ち";
+    if(pvStartLabel && validYesterday){
+      if(yesterday.pageViews===null)pvMeasurementNote+=" · 昨日は未計測";
+      else if(yesterday.pageViewsCoverage==="partial")pvMeasurementNote+=" · 昨日は途中から";
+    }
+    observerFeedback(true);
+    return true;
+  }
+  function showArticlePageViews(slug,metric){
+    if(!validPageViews(metric.pageViews))return;
+    knownArticlePvs.add(slug);
+    document.querySelectorAll("[data-article-pv]").forEach(node=>{
+      if(node.dataset.articlePv!==slug)return;
+      const count=node.querySelector("[data-article-pv-count]");
+      showPageViewNumber(count,metric.pageViews);
+      const label=metric.pageViews===null ? "この記事のPVは未計測" :
+        "この記事のページ表示回数 "+Intl.NumberFormat("ja-JP").format(metric.pageViews)+"PV";
+      node.setAttribute("aria-label",label);
+      node.setAttribute("title",pvStartLabel ? pvStartLabel+"からの表示回数" : "計測開始後の表示回数");
+    });
+  }
+
   function showMetrics(data){
     if(!data || data.unit!=="anonymous-browser" ||
        !Number.isSafeInteger(data.visitors) || data.visitors<0)return false;
@@ -459,24 +551,29 @@
       return false;
     showPopular(data.articles||{});
     observedDay=today.dateJst;
-    updateObserverNumber(observerValue,today.visitors);
-    updateObserverNumber(observerReads,today.articleReads);
+    const pvHealthy=pvWidget ? showPageViews(data) : true;
+    if(!pvWidget){
+      updateObserverNumber(observerValue,today.visitors);
+      updateObserverNumber(observerReads,today.articleReads);
+    }
     // Only show yesterday when the API returns the actual preceding JST date.
     // Missing fields from a staggered/older deployment must not become zero.
     const yesterday=data.yesterday;
     const todayStamp=Date.parse(today.dateJst+"T00:00:00Z");
     const expectedPrevious=Number.isFinite(todayStamp)
       ? new Date(todayStamp-86400000).toISOString().slice(0,10) : "";
-    if(observerYesterdayStat && observerYesterday){
+    if(!pvWidget && observerYesterdayStat && observerYesterday){
       const verified=Boolean(yesterday && yesterday.dateJst===expectedPrevious &&
         Number.isSafeInteger(yesterday.visitors) && yesterday.visitors>=0 &&
         Number.isSafeInteger(yesterday.articleReads) && yesterday.articleReads>=0);
       observerYesterdayStat.hidden=!verified;
       if(verified)updateObserverNumber(observerYesterday,yesterday.visitors);
     }
-    observerFeedback(true);
+    if(!pvWidget)observerFeedback(true);
     for(const [slug,metric] of Object.entries(data.articles||{})){
-      if(!metric || !Number.isFinite(metric.likes))continue;
+      if(!metric)continue;
+      if(pvHealthy && data.pageViewTracking)showArticlePageViews(slug,metric);
+      if(!Number.isFinite(metric.likes))continue;
       document.querySelectorAll("[data-like-count]").forEach(node=>{
         if(node.dataset.likeCount===slug){
           node.textContent=Intl.NumberFormat("ja-JP").format(metric.likes);
@@ -493,18 +590,27 @@
       }
       if(slug===article)renderPoll(metric.votes);
     }
-    return true;
+    return pvHealthy;
   }
   async function refresh(){
     if(refreshPromise)return refreshPromise; // Avoid overlapping requests.
     refreshPromise=(async()=>{
       try{
-        const params=new URLSearchParams();
-        if(allSlugs.length)params.set("articles",allSlugs.join(","));
-        const res=await fetch("/api/engagement?"+params.toString(),{
-          cache:"no-store",credentials:"same-origin"
-        });
-        if(!res.ok || !showMetrics(await res.json()))
+        const slugs=requestedArticleSlugs(),batches=[];
+        for(let offset=0;offset<slugs.length;offset+=20)batches.push(slugs.slice(offset,offset+20));
+        if(!batches.length)batches.push([]);
+        const snapshots=await Promise.all(batches.map(async batch=>{
+          const params=new URLSearchParams();
+          if(batch.length)params.set("articles",batch.join(","));
+          const res=await fetch("/api/engagement?"+params.toString(),{
+            cache:"no-store",credentials:"same-origin"
+          });
+          if(!res.ok)throw new Error("audience data unavailable");
+          return res.json();
+        }));
+        const first=snapshots[0];
+        if(!first || snapshots.some(item=>item.unit!==first.unit || !item.articles || typeof item.articles!=="object") ||
+           !showMetrics({...first,articles:Object.assign({},...snapshots.map(item=>item.articles))}))
           throw new Error("audience data unavailable");
         haveSnapshot=true;
       }catch(_){
@@ -517,29 +623,108 @@
     finally{lastCheckedAt=Date.now();refreshPromise=null;}
   }
 
-  // One browser is counted once globally and once per visited article.
-  // Fetching the current number again is read-only.
-  (async()=>{
-    try{await apiPost("visit",article);}
-    catch(_){/* The news pages and local likes work independently. */}
+  // A page display has its own random event ID, separate from browser-level
+  // readership. A retry reuses this ID; only a new document/BFCache display
+  // creates a new one. Never count pre-rendered or still-hidden documents.
+  let currentView={id:"",attempts:0,finished:false,pending:false};
+  const visibleDocument=()=>document.visibilityState!=="hidden" && !document.prerendering;
+  const trackingAllowed=()=>!analyticsDisabled && !automatedPreview;
+  async function recordView(view){
+    if(!visibleDocument() || !trackingAllowed() || view.pending || view.finished || view.attempts>=2)return;
+    if(!view.id)view.id=makeId();
+    view.pending=true;view.attempts++;
+    try{
+      await apiPost("visit",article,"",view.id);
+      view.finished=true;
+    }catch(_){/* A lost response may be retried safely with the same event ID. */}
+    finally{view.pending=false;}
     await refresh();
-  })();
+    if(!view.finished && view===currentView && view.attempts<2 && typeof window.setTimeout==="function"){
+      window.setTimeout(()=>{if(view===currentView)void recordView(view);},1500);
+    }
+  }
+  async function showVisibleDocument(){
+    if(!visibleDocument())return;
+    if(trackingAllowed())await recordView(currentView);
+    else await refresh();
+  }
+  void showVisibleDocument();
+
+  const preferenceControls=[...document.querySelectorAll("[data-analytics-opt-out]")];
+  const preferenceStatus=document.querySelector("[data-analytics-status]");
+  function renderAnalyticsPreference(){
+    preferenceControls.forEach(control=>{control.checked=analyticsDisabled;});
+    if(preferenceStatus)preferenceStatus.textContent=automatedPreview
+      ? "この自動テスト環境では閲覧を集計しません。"
+      : analyticsDisabled
+        ? analyticsPreferenceStored ? "このブラウザの閲覧は集計しません。" : "このページの閲覧は集計しません。設定を保存できないため、次のページには引き継がれません。"
+        : analyticsPreferenceStored ? "このブラウザの閲覧を集計します。" : "閲覧を集計します。設定を保存できない状態です。";
+  }
+  preferenceControls.forEach(control=>{
+    control.addEventListener("change",()=>{
+      analyticsDisabled=control.checked;
+      try{
+        localStorage.setItem(analyticsPreferenceKey,analyticsDisabled?"1":"0");
+        analyticsPreferenceStored=true;
+      }catch(_){analyticsPreferenceStored=false;}
+      renderAnalyticsPreference();
+      if(!analyticsDisabled && !currentView.finished)void showVisibleDocument();
+    });
+  });
+  renderAnalyticsPreference();
+  window.addEventListener?.("storage",event=>{
+    if(event.key!==analyticsPreferenceKey)return;
+    analyticsDisabled=event.newValue==="1";
+    analyticsPreferenceStored=true;
+    renderAnalyticsPreference();
+  });
 
   // Poll no more than once every 3 minutes on visible pages. Paused tabs
   // make no requests. Returning to a tab refreshes stale data immediately.
   if(observerShell && typeof window.setInterval==="function"){
     window.setInterval(()=>{
-      if(document.visibilityState!=="hidden" && !refreshPromise)void refresh();
+      if(visibleDocument() && !refreshPromise && !currentView.pending)void refresh();
     },LIVE_REFRESH_MS);
   }
-  if(observerShell){
-    const refreshOnReturn=()=>{
-      if(document.visibilityState==="hidden" || refreshPromise ||
-         Date.now()-lastCheckedAt<RETURN_REFRESH_COOLDOWN_MS)return;
-      void refresh();
-    };
-    document.addEventListener("visibilitychange",refreshOnReturn);
-    window.addEventListener?.("focus",refreshOnReturn);
+  const refreshOnReturn=()=>{
+    if(!visibleDocument() || refreshPromise || currentView.pending ||
+       Date.now()-lastCheckedAt<RETURN_REFRESH_COOLDOWN_MS)return;
+    void refresh();
+  };
+  const onVisible=()=>{
+    if(!visibleDocument())return;
+    if(trackingAllowed() && !currentView.finished && currentView.attempts<2)void showVisibleDocument();
+    else refreshOnReturn();
+  };
+  document.addEventListener("visibilitychange",onVisible);
+  document.addEventListener("prerenderingchange",onVisible);
+  window.addEventListener?.("focus",refreshOnReturn);
+  window.addEventListener?.("pageshow",event=>{
+    if(!event.persisted)return;
+    currentView={id:"",attempts:0,finished:false,pending:false};
+    void showVisibleDocument();
+  });
+
+  // Archive filters reveal existing cards. Load newly visible PVs once, using
+  // GET-only batches rather than turning a filter action into a page view.
+  const archiveList=document.querySelector(".archive-list");
+  if(archiveList && typeof window.MutationObserver==="function" && typeof window.setTimeout==="function"){
+    let queued=false;
+    const watchCards=new window.MutationObserver(()=>{
+      if(queued)return;
+      queued=true;
+      window.setTimeout(()=>{
+        queued=false;
+        const fillVisibleCards=()=>{
+          if(visibleDocument() && requestedArticleSlugs().some(slug=>!knownArticlePvs.has(slug)))void refresh();
+        };
+        // A filter can change while the preceding batch is in flight. Keep
+        // that request's result, then read any newly visible missing cards.
+        if(refreshPromise)refreshPromise.then(fillVisibleCards);
+        else fillVisibleCards();
+      },200);
+    });
+    watchCards.observe(archiveList,{subtree:true,attributes:true,attributeFilter:["hidden"]});
   }
 
   document.addEventListener("click",async e=>{
@@ -609,3 +794,4 @@
     });
   });
 })();
+

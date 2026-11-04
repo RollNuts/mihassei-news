@@ -1,5 +1,28 @@
 [
   {
+    "slug": "father-tries-own-overpacked-bento",
+    "category": "暮らし",
+    "flash": "家庭の珍事",
+    "fiction_company": "ある町の家庭",
+    "art": "cards",
+    "fiction_at": "2031-11-03T22:35:00+09:00",
+    "title": "子の弁当を毎日残される父、自分も同じ量を詰めて出勤",
+    "summary": "好物の卵焼きを多めに入れても、子どもは弁当を食べ残す。父親が自分にも同じ量を用意すると、弁当箱の大きさに初めて気づいた。",
+    "paragraphs": [
+      "2031年、ある町で父親が、幼い息子の弁当箱を毎朝おかずでいっぱいにしていた。好物の卵焼きも、隙間を見つけるたびに追加する。ところが息子はいつも半分ほど残して帰ってくる。「好きなものばかりなのに」と悩んだ父は、翌朝、息子には小さい箱を、自分には今までの大きい箱を用意し、同じおかずをぎっしり詰めた。",
+      "昼休み、父は「これくらい楽勝だ」と箸をつけた。だが卵焼きを食べても唐揚げを食べても、箱の底は見えない。昼休みが終わり、父は半分残った箱にふたをして持ち帰った。夕方、息子の小さい箱は空っぽ。父の大きな箱を開けた息子は、真顔で言った。「お父さん、好き嫌いしちゃだめだよ」。父は「量が多いだけ」と言いかけて、黙ってふたを閉めた。"
+    ],
+    "scene_prompt": "An oversized Japanese bento box still half full of tamagoyaki and fried chicken sits beside a tiny empty lunchbox on a wooden dining table. An anonymous father quietly closes the oversized lid while his young child points at the leftovers, both with solemn expressions. Modest family kitchen, candid photorealistic staged comedy, no text, logos, or identifiable people.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日刊スポーツ（ライブドアニュース配信）",
+      "published_at": "2026-11-03T22:35:00+09:00",
+      "url": "https://news.livedoor.com/article/detail/32724280/",
+      "topic": "2026年11月3日22:35公開。父親が子の弁当を作っても残されてしまい、弁当箱が大きすぎるのではとの指摘を受けたと報道。作中の家族・出来事・会話は創作。"
+    },
+    "published_at": "2026-11-04T09:36:32+09:00"
+  },
+  {
     "slug": "sweet-potato-chorus-starts-too-late",
     "category": "社会",
     "flash": "まちの珍事",
@@ -196,10 +219,10 @@
     "art": "notice",
     "fiction_at": "2031-11-03T11:01:00+09:00",
     "title": "毎週捕まるスパイ役、ついに自力脱出　主演の見せ場が消える",
-    "summary": "毎週敵に捕まるドラマの相棒が、今回は自力で脱出。命がけの救出シーンを予定していた主人公は、45分分の見せ場を失った。",
+    "summary": "毎週敵に捕まる相棒が、今回は自分で脱出して帰宅。命がけの救出に向かった主人公は、誰もいない隠れ家で別の頼み事を引き受けることになった。",
     "paragraphs": [
-      "「今回は自分で帰る」。2031年の架空スパイドラマ『夜明けの合鍵』で、毎週敵に捕まる相棒が、初めて自分で縄をほどいた。敵が席を外した隙に裏口から出て、そのまま帰宅。いつも主人公が命がけで助けに来る場面は、開始15分で必要なくなった。",
-      "救出道具を抱えた主人公が隠れ家に着くと、人質用の椅子は空だった。台本の残り45分は救出作戦の見せ場でびっしり。主人公は相棒に電話し、「もう一度捕まってくれないか」と頼んだが、「もう風呂に入ったよ」と断られた。結局、番組は主人公が隠れ家へ向かう道のりを長々と放送。視聴者の感想は「そりゃ先に帰るわ」で一致した。"
+      "「今回は自分で帰る」。2031年、架空のスパイドラマ『夜明けの合鍵』では、毎週敵に捕まる相棒が、今週は見張りの隙に縄をほどいて裏口から脱出した。そのまま帰宅したため、いつも命がけで助けに来る主人公は、煙幕とロープカッターを抱えて空の隠れ家に到着した。",
+      "「助けに来たんだけど」。主人公が電話すると、相棒は「もう風呂に入ってる」と答えた。道具をしまって帰ろうとしたところで、「あ、椅子に上着を忘れた。取ってきて」と頼まれる。主人公はロープカッターをバッグに戻し、人質用の椅子に掛かった上着を畳んで持ち帰った。翌朝、相棒からメッセージが届いた。「昨日は助かった。上着、きれいに畳んでくれてありがとう」。"
     ],
     "source": {
       "kind": "ニュース",
@@ -209,8 +232,8 @@
       "topic": "2026年11月3日11:01公開。連続ドラマ『VIVANT』の11月1日放送回で登場人物が再び捕まり、これまでの繰り返しを含めて視聴者が話題にしたと報道。架空のドラマ『夜明けの合鍵』、制作室、登場人物、展開は実在作品とは無関係の創作。"
     },
     "published_at": "2026-11-03T11:38:33+09:00",
-    "scene_prompt": "Live-action color photograph of a deserted room in a Japanese office. An empty wooden chair stands in the center with an untied rope coiled on its seat. An absurdly large unopened rescue equipment bag sits beside the empty chair. The exit door stands wide open. Nobody is in the room. Natural daylight, realistic photographic textures, eye-level wide photograph of the empty room.",
-    "modified_at": "2026-11-03T12:49:41.396+09:00",
+    "scene_prompt": "A solemn fictional spy protagonist in a plain dark jacket carefully folds a forgotten coat taken from the back of an empty wooden hostage chair while holding an oversized unused rescue-equipment bag. An untied rope rests on the seat and an open back door reveals a quiet corridor. Photorealistic staged Japanese spy-TV comedy, anonymous adult, no readable text, logos, or recognizable real actors.",
+    "modified_at": "2026-11-04T06:56:54.530+09:00",
     "broadcast_feature": true
   },
   {

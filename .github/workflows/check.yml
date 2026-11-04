@@ -79,6 +79,8 @@ jobs:
         run: node --test tests/returning-shelf.test.cjs
       - name: Test genuine reader discovery without additional API calls
         run: node --test tests/reader-discovery.test.cjs
+      - name: Test PV event deduplication, coverage and browser display
+        run: node --test tests/pageviews.test.cjs tests/pageviews-ui.test.cjs
       - name: Test anonymous comments in SQLite without network access
         run: node --test tests/comments.test.cjs
       - name: Test future prediction voting with local SQLite (no paid API)

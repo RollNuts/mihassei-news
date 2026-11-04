@@ -439,11 +439,11 @@ class SiteTests(unittest.TestCase):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn("data-future-clock",home)
         self.assertIn("data-observer-widget",home)
-        self.assertIn("data-observer-count",home)
-        self.assertIn("今日の来訪",home)
-        self.assertIn("今日の記事閲覧",home)
-        self.assertIn("data-observer-reads",home)
-        self.assertIn("1ブラウザ・1記事につき1日1回の集計",home)
+        self.assertIn("data-pv-widget",home)
+        self.assertIn("今日のPV",home)
+        self.assertIn("昨日のPV",home)
+        self.assertIn("data-site-pv-week",home)
+        self.assertIn("data-pv-tracking-note",home)
         self.assertIn("hidden",home)
         self.assertIn("創作報道",home)
         self.assertIn("data-like-slug",home)
@@ -461,7 +461,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(a["source"]["url"],html.unescape(text))
             self.assertIn(a["source"]["topic"],text)
             self.assertIn("創作ニュース",text)
-            self.assertIn("data-article-readers",text)
+            self.assertIn('data-article-pv="'+a["slug"]+'"',text)
             self.assertIn("data-like-slug",text)
             self.assertIn("x.com/intent/tweet",text)
             self.assertIn("未発生新聞",text)
@@ -1058,3 +1058,4 @@ class SiteTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
+

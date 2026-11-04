@@ -13,13 +13,13 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn('if "創作イラスト" not in page:',checker)
         self.assertNotIn('class="reader-follow"',checker)
 
-    def test_live_checks_follow_daily_counter_labels_and_units(self):
-        """Release checks must not keep demanding retired lifetime count labels."""
+    def test_live_checks_follow_pv_labels_and_keep_browser_units_separate(self):
+        """Release checks follow measured PV without relabeling legacy readers."""
         checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
         builder=(ROOT/"scripts/build.py").read_text(encoding="utf-8")
-        for token in ("今日の来訪","昨日の来訪","今日の記事閲覧",
-                      "data-observer-yesterday","data-observer-reads",
-                      "1ブラウザ・1記事につき1日1回の集計"):
+        for token in ("今日のPV","昨日のPV","data-pv-widget",
+                      "data-site-pv-yesterday","data-site-pv-week",
+                      "data-pv-tracking-note"):
             self.assertIn(token,checker)
             self.assertIn(token,builder)
         self.assertIn("Daily JST audience counters missing or invalid",checker)
@@ -115,3 +115,4 @@ class DeploymentWorkflowTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
+

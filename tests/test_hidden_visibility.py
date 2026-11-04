@@ -18,7 +18,6 @@ class HiddenVisibilityTests(unittest.TestCase):
         for marker in (
             'data-observer-widget hidden',
             'data-popular-section',
-            'data-article-readers hidden',
         ):
             self.assertIn(marker, build)
         self.assertIn('aria-labelledby="readers-choice-title" hidden', build)
@@ -38,3 +37,4 @@ class HiddenVisibilityTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

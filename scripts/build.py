@@ -243,6 +243,11 @@ def category_meta(a, compact=False):
         f"架空 {future.year}/{future.month}/{future.day}"
         f" {future.hour:02}:{future.minute:02}"
     )
+    page_views = (
+        f'<span class="article-pv" data-article-pv="{escape(a["slug"])}"'
+        ' title="計測開始後のページ表示回数" aria-label="この記事のPVを取得中">'
+        '<strong data-article-pv-count>—</strong><span>PV</span></span>'
+    )
     if compact:
         # Dense cards need one truthful date and one clear fiction label.
         # The full five-years-later dateline remains on every article page.
@@ -254,6 +259,7 @@ def category_meta(a, compact=False):
             + '<span class="category">' + escape(a["category"]) + "</span>"
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
+            + page_views
             + "</div>"
         )
     return (
@@ -264,6 +270,7 @@ def category_meta(a, compact=False):
           f' aria-label="実際の掲載日時">{escape(real_label)}</time>'
         + f'<time class="fiction-dateline" datetime="{escape(a["fiction_at"])}"'
           f' aria-label="5年後の架空のニュース日時">{escape(future_label)}</time>'
+        + page_views
         + "</div>"
     )
 
@@ -813,15 +820,15 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
 <div class="container observer-shell">
-<div class="observer-widget" data-observer-widget hidden role="group" aria-label="本日の読者の動き">
+<div class="observer-widget pv-widget" data-observer-widget hidden data-pv-widget role="group" aria-label="サイトのページ閲覧数">
 <span class="observer-eye" aria-hidden="true">◉</span>
-<span class="observer-stat"><span class="observer-label">今日の来訪</span>
-<strong data-observer-count>—</strong><span class="observer-suffix">ブラウザ</span></span>
-<span class="observer-stat" data-observer-yesterday-stat hidden><span class="observer-label">昨日の来訪</span>
-<strong data-observer-yesterday>—</strong><span class="observer-suffix">ブラウザ</span></span>
-<span class="observer-stat"><span class="observer-label">今日の記事閲覧</span>
-<strong data-observer-reads>—</strong><span class="observer-suffix">件</span></span>
-<small>※1ブラウザ・1記事につき1日1回の集計</small>
+<span class="observer-stat"><span class="observer-label">今日のPV</span>
+<strong data-site-pv-today>—</strong><span class="observer-suffix">PV</span></span>
+<span class="observer-stat"><span class="observer-label">昨日のPV</span>
+<strong data-site-pv-yesterday>—</strong><span class="observer-suffix">PV</span></span>
+<span class="observer-stat"><span class="observer-label" data-site-pv-period-label>直近7日</span>
+<strong data-site-pv-week>—</strong><span class="observer-suffix">PV</span></span>
+<small><span data-pv-tracking-note>PVを読み込み中</span> · <a href="/privacy/#pageviews">集計について</a></small>
 </div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div>{mobile_navhtml}</nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
@@ -1222,7 +1229,6 @@ def story(a, articles, issues=None, serials=None):
 <div class="future-poll-meter"><span data-poll-unlikely-bar></span></div>
 </div>
 </section>
-<div class="article-reader-metric" data-article-readers hidden><span>今日この記事を読んだブラウザ <strong data-article-reader-count>—</strong>件</span><small>※日本時間・1日1回集計、実人数ではありません</small></div>
 {actions(a)}
 <div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
 <p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
@@ -1336,10 +1342,19 @@ def privacy():
 <div class="about-copy">
 <h2>アクセスといいね</h2>
 <p>未発生新聞では、来訪端末のおおよその数や、記事の閲覧・いいねを把握するため、ブラウザ内にランダムな識別子を保存します。識別子をハッシュ化した値をCloudflareのデータ保存機能に保管し、サイト全体の訪問、記事閲覧、いいね、X共有ボタンのクリックを集計しています。アクセス計測のために氏名やメールアドレスの登録は求めません。</p>
-<p>閲覧数は人数ではなくブラウザ単位の参考値です。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
-<h2>「今日の来訪」「今日の記事閲覧」について</h2>
-<p>毎日の数字は日本時間の0時で区切ります。「今日の来訪」は、その日にページを開いた匿名ブラウザ識別子の数です。「今日の記事閲覧」は、同じブラウザが同じ記事を何度読み直してもその日は1件とし、異なる記事を読んだ場合は記事ごとに数える延べ件数です。どちらも実際の人数やPV、現在閲覧中の人数ではありません。過去のアクセスを後から推定して加算することはなく、導入時点から集計します。</p>
-<p>重複を防ぐための日別記録と日別の集計値は直近14日分に限定し、訪問が発生した際に古い記録を削除します。集計には既存の匿名ブラウザ識別子のハッシュ値のみを使い、新しい個人情報や課金型の外部サービスは追加しません。</p>
+<p>来訪ブラウザ数は実際の人数ではありません。ブラウザの保存データを削除すると、新しいブラウザとして集計される場合があります。</p>
+<h2 id="pageviews">PV（ページ閲覧数）について</h2>
+<p>PVは、ページがブラウザに表示され、閲覧の通知を受信した回数です。同じ記事の再読み込みも数え、人数・読了数とは区別します。トップページの数字はサイト全体、記事の見出し横の数字はその記事の計測開始後の累計です。日別の区切りは日本時間の0時、直近7日は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」と表示し、開始前の数字は「—」とします。以前のブラウザ数をPVに換算したり、過去のPVを推定して加算したりしません。</p>
+<p>ページ表示ごとのランダムな識別子で通信の再送による二重計上を防ぎます。ブラウザの戻る操作でページが再表示された場合も数えますが、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが動かない場合や通信できない場合は計測できません。自動テストとして識別できるブラウザでは閲覧通知を送りませんが、すべての自動アクセスを見分けるものではありません。</p>
+<div class="analytics-preference">
+<label><input type="checkbox" data-analytics-opt-out> このブラウザの閲覧を集計しない</label>
+<p data-analytics-status role="status">設定を読み込み中です。</p>
+<noscript><p>JavaScriptが無効なため、このブラウザから閲覧通知は送信されていません。</p></noscript>
+<p>運営者の確認などを除外したい場合にも使えます。このブラウザに設定を保存し、以後の自動的な閲覧通知を停止します。既に集計した数値は取り消さず、いいね・投票など自分で選ぶ操作は利用できます。別のブラウザには引き継がれません。</p>
+</div>
+<h2>ブラウザ単位の参考集計について</h2>
+<p>PVとは別に、日別の来訪ブラウザ数と記事閲覧の重複を除いた件数も記録しています。同じブラウザが同じ記事を一日に何度開いても、この参考集計では1件です。翌日や別の記事は別に数えます。これらをPVや実人数と表示することはありません。</p>
+<p>日別の集計値と再送を判別する記録は直近14日分に限定し、訪問が発生した際に古い記録を削除します。過去の集計値を日次記録として保存する場合があります。ページ表示の識別子とブラウザ識別子はハッシュ化し、新しい個人情報や課金型の外部サービスは追加しません。</p>
 <p>どこから訪れたかは「X」「検索」「その他の外部サイト」「判別できない流入」の4種類に大まかに分類します。ブラウザ内で分類した種類名だけを送信し、参照元URL全体・検索した言葉・IPアドレスを集計データベースには保存しません。サイト内のページ移動は流入経路に含めず、同じブラウザでも複数経路を利用すれば複数の区分に数えられます。数値は実際の来訪人数やPVではなく、計測開始以降の参考値です。</p>
 <h2>記事別のX・検索流入について</h2>
 <p>「X」「検索」の2区分について、匿名ブラウザの識別子をハッシュ化し、記事ごと・区分ごとに重複を除いて記録することがあります。投稿内容、検索語、SNSアカウント、参照元URL全体、UTMの詳細、IPアドレスはこの集計データベースに保存しません。区分の推定はブラウザ側の参照情報などに依存し、実際の投稿数・クリック数・ページビュー・実人数ではありません。同じブラウザが複数の記事や区分に重複して数えられることがあり、この計測機能を導入する前の過去の流入は復元できません。記事ごとの匿名ブラウザ単位の参考値は各記事ページや、条件を満たした場合のトップページの読者の注目欄に表示することがあります。運営者向けの分析画面は公開していません。</p>
