@@ -11,12 +11,12 @@
       "buffer_id": "6aea859787b7c6d24c81d57f",
       "due_at": "2026-11-04T03:00:00.000Z",
       "sent_at": "2026-11-04T03:00:26.993Z",
-      "checked_at": "2026-11-04T03:36:03.250240+00:00"
+      "checked_at": "2026-11-04T03:45:05.892243+00:00"
     }
   },
   "last_selection": {
-    "checked_at_utc": "2026-11-04T03:36:03.250642+00:00",
-    "scheduled_count": 7,
+    "checked_at_utc": "2026-11-04T03:45:05.892763+00:00",
+    "scheduled_count": 2,
     "shared_queue_limit": 10,
     "selected_post_id": null,
     "reasons": [
