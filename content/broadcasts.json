@@ -80,6 +80,26 @@
           "text": "主人公は忘れ物の上着を畳んで持ち帰った"
         }
       ]
+    },
+    "chance-meeting-cafe-reservation-full": {
+      "article_sha256": "e1a453165d226008ecc268a0b9a5d63d03e8edea35fe2ae2630eec0f3ddd80fc",
+      "cues": [
+        {
+          "at": 0,
+          "label": "偶然を予約する店",
+          "text": "知らない人との相席を時間指定で予約"
+        },
+        {
+          "at": 4,
+          "label": "予定外の会話",
+          "text": "隣客へ声をかけると「別の偶然です」"
+        },
+        {
+          "at": 8,
+          "label": "次の偶然待ち",
+          "text": "話の途中でベル。入口では次の客が待つ"
+        }
+      ]
     }
   }
 }
