@@ -1287,7 +1287,12 @@ def archive(articles):
                       f'data-category-filter="{cat}" aria-pressed="{"true" if cat=="すべて" else "false"}" type="button">{cat}</button>'
                       for cat in visible_categories)
     tag_counts = Counter(tag for article in articles for tag in article_tags(article))
-    tag_names = sorted(tag_counts, key=lambda tag: (-tag_counts[tag], tag))
+    # Keep the filter usable: one-off labels remain on stories and topic pages,
+    # while the archive control surfaces only reusable navigation choices.
+    tag_names = sorted(
+        (tag for tag, count in tag_counts.items() if count >= 2),
+        key=lambda tag: (-tag_counts[tag], tag)
+    )
     tag_buttons = (
         '<button class="filter-button tag-filter-button active" data-tag-filter="すべて"'
         ' aria-pressed="true" type="button">すべての話題</button>'
@@ -1356,12 +1361,16 @@ def topic_index(articles):
     groups = topic_groups(articles)
     regular = []
     satire = []
+    one_off = []
     for tag, items in sorted(groups.items(), key=lambda pair: (-len(pair[1]), pair[0])):
         entry = (
             f'<a class="topic-index-link" href="{escape(tag_url(tag))}">'
             f'<strong>#{escape(tag)}</strong><span>{len(items)}本</span></a>'
         )
-        (satire if topic_is_satire(tag, items) else regular).append(entry)
+        if len(items) == 1:
+            one_off.append(entry)
+        else:
+            (satire if topic_is_satire(tag, items) else regular).append(entry)
     sections = []
     if regular:
         sections.append(
@@ -1373,6 +1382,12 @@ def topic_index(articles):
             '<section class="topic-index-section"><h2>何を風刺しているか</h2>'
             '<p>記事の中にある「あるある」や、行きすぎた空気感から探せます。</p>'
             '<div class="tag-filters">' + "".join(satire) + '</div></section>'
+        )
+    if one_off:
+        sections.append(
+            '<details class="tag-filter-panel topic-one-offs">'
+            '<summary>細かいタグも見る</summary>'
+            '<div class="tag-filters">' + "".join(one_off) + '</div></details>'
         )
     content = (
         '<div class="container archive-page">'
