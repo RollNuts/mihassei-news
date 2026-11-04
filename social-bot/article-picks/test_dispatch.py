@@ -21,10 +21,10 @@ import dispatch as picks
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
     "schema_version": 1, "enabled": True, "channel_id": "X-VERIPSA",
-    "max_queue_size": 9, "max_new_per_run": 1, "max_per_jst_day": 3,
+    "max_queue_size": 9, "max_new_per_run": 1, "max_per_jst_day": 4,
     "min_page_views": 8, "fresh_minimum_age_hours": 2,
     "fresh_maximum_age_hours": 18, "minimum_article_age_hours": 12,
-    "maximum_article_age_days": 21, "minimum_interval_hours": 6,
+    "maximum_article_age_days": 21, "minimum_interval_hours": 4,
 }
 
 
@@ -78,12 +78,12 @@ class ArticlePickTests(unittest.TestCase):
         picks.validate_state(state)
         self.assertEqual(config["max_queue_size"], 9)
         self.assertEqual(config["max_new_per_run"], 1)
-        self.assertEqual(config["max_per_jst_day"], 3)
+        self.assertEqual(config["max_per_jst_day"], 4)
         self.assertEqual(config["min_page_views"], 8)
         self.assertEqual(config["fresh_minimum_age_hours"], 2)
         self.assertEqual(config["fresh_maximum_age_hours"], 18)
         self.assertNotIn("min_readers", config)
-        self.assertGreaterEqual(config["minimum_interval_hours"], 6)
+        self.assertGreaterEqual(config["minimum_interval_hours"], 4)
 
     def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
@@ -323,7 +323,7 @@ class ArticlePickTests(unittest.TestCase):
         offer = picks.rank([article("story-a")], {"story-a": stats()}, old, set(), CONFIG)
         self.assertEqual(offer, [])
 
-    def test_six_hour_cooldown_daily_cap_and_creative_queue_safety(self):
+    def test_four_hour_cooldown_daily_cap_and_creative_queue_safety(self):
         a = article("new-story", age_hours=36)
         counts = {"new-story": stats()}
         remote = [
@@ -337,11 +337,11 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(queued, 2)
         self.assertEqual(evidence, counts["new-story"])
 
-        state = ledger(**{"previous-story": recorded(hours=5)})
+        state = ledger(**{"previous-story": recorded(hours=3)})
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertIsNone(item)
-        state = ledger(**{"previous-story": recorded(hours=7)})
+        state = ledger(**{"previous-story": recorded(hours=5)})
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertEqual(item["slug"], "new-story")
@@ -351,9 +351,9 @@ class ArticlePickTests(unittest.TestCase):
                 "buffer_id": f"buf-{i}",
                 "queued_at_utc": (NOW - timedelta(hours=8 + i)).isoformat(),
             }
-            for i in range(3)
+            for i in range(4)
         }
-        self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 3)
+        self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 4)
         item, _, _ = picks.decide([a], counts, ledger(**same_day),
                                   remote, CONFIG, NOW, {"short-1"})
         self.assertIsNone(item)
