@@ -509,7 +509,7 @@ def check():
     home,mime=get("/")
     verify_site_icons(home.decode("utf-8"))
     body=html.unescape(home.decode("utf-8"))
-    for token in ("未発生新聞","data-future-clock","data-issue-picker","data-pick-issue","fiction-mark"):
+    for token in ("未発生新聞","data-edition-status","data-issue-picker","data-pick-issue","fiction-mark"):
         if token not in body:
             raise RuntimeError("Newest homepage has not reached production: "+token)
     # PV is measured separately from the legacy distinct-browser counters.
