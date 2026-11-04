@@ -1,4 +1,4 @@
-name: Useful X Originals (one per day, Buffer Free)
+name: Useful X Originals (seven-slot safe checks, Buffer Free)
 on:
   push:
     branches: [main]
@@ -21,8 +21,9 @@ on:
       - '.github/workflows/x-useful-originals.yml'
   workflow_dispatch:
   schedule:
-    # 11:10 JST. Manuscripts are due at 12:00 JST; no expired catch-up.
-    - cron: '10 2 * * *'
+    # Seven JST checks: 09:10, 11:10, 13:10, 15:10, 17:10, 19:10, 21:10.
+    # Each run can submit only one current-day reviewed manuscript; all X lanes share a 7/day cap.
+    - cron: '10 0,2,4,6,8,10,12 * * *'
 permissions:
   contents: write
 concurrency:
@@ -60,7 +61,7 @@ jobs:
           python social-bot/queue_cleanup.py --apply
           python social-bot/queue_cleanup.py --recover
           python social-bot/queue_cleanup.py --continue-cleanup
-      - name: Schedule only the current-day useful original
+      - name: Schedule at most one current-day reviewed useful original
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
