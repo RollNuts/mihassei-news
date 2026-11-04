@@ -54,6 +54,20 @@
       },
       "state": "skipped",
       "reason": "already_published"
+    },
+    "xexp-selfcheckout-dialogue": {
+      "checked_at": "2026-11-04T10:38:34.356219+00:00",
+      "before": {
+        "buffer_id": "6ae9c803e9a91b5943cdd3b2",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "sent",
+        "due_at": "2026-11-04T09:30:00.000Z",
+        "sent_at": "2026-11-04T09:30:18.552Z",
+        "text_sha256": "1bf51e1e06611fe8c6c9efc12dc8feb592b795deb0044cb61b43a5e021f6dac9",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "already_published"
     }
   }
 }
