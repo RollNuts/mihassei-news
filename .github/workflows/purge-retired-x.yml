@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: purge-retired-x
@@ -39,4 +39,19 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-        run: python social-bot/purge_retired_x.py --apply
+        run: |
+          set +e
+          python social-bot/purge_retired_x.py --apply
+          purge_code=$?
+          set -e
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add social-bot/purge-retired-x-result.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(x): record retired Buffer purge result [skip ci]"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+          exit "$purge_code"
