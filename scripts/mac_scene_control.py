@@ -420,7 +420,8 @@ def quality_ready(app_dir=None) -> bool:
 
 def stop(*, all_images=False) -> dict:
     with transition_lock():
-        write_json(APP_DIR / 'stopped.json', {'stopped_at': now(), 'reason': 'explicit user stop'})
+        write_json(APP_DIR / 'stopped.json', {'stopped_at': now(), 'reason': 'explicit user stop',
+                                             'scope': 'all' if all_images else 'mac'})
         errors = []
         try:
             unload_schedule()
@@ -501,7 +502,18 @@ def status() -> dict:
     running = any(isinstance(v, dict) and matching_process(v, k, ROOT, APP_DIR)
                   for k, v in records.items()) if isinstance(records, dict) else False
     loaded = launch_loaded()
-    stopped = (APP_DIR / 'stopped.json').exists() or (APP_DIR / 'stopped.json').is_symlink()
+    latch = APP_DIR / 'stopped.json'
+    stopped = latch.exists() or latch.is_symlink()
+    stop_scope = None
+    if stopped:
+        stop_scope = 'unknown'
+        if not latch.is_symlink():
+            try:
+                scope = read_json(latch).get('scope')
+                if scope in ('all', 'mac'):
+                    stop_scope = scope
+            except (OSError, ValueError, RuntimeError):
+                pass  # An unreadable or legacy latch must never imply Mac-only intent.
     source = 'current local checkout (origin/main unavailable)'
     counts_error = None
     fetched = False
@@ -576,7 +588,7 @@ def status() -> dict:
     except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
         cpu = {'state': 'unknown', 'error': str(exc)}
     return {'automatic': 'ON' if loaded and not stopped else 'OFF', 'launchd_loaded': loaded,
-            'persistent_stop': stopped, 'running': bool(running),
+            'persistent_stop': stopped, 'stop_scope': stop_scope, 'running': bool(running),
             'last_success_at': last.get('last_success_at'), 'last_error': last.get('last_error'),
             'last_run': last, 'publish': read_json(APP_DIR / 'publish-result.json'),
             'resource_guard': read_json(APP_DIR / 'resources.json'),
@@ -635,6 +647,8 @@ def main(argv=None) -> int:
             print('Mac自動運転：' + result['automatic'])
             print('Mac現在生成中：' + ('はい' if result['running'] else 'いいえ'))
             print('Mac停止状態を維持：' + ('はい' if result['persistent_stop'] else 'いいえ'))
+            if result['stop_scope'] is not None:
+                print('停止範囲：' + {'mac': 'Macのみ', 'all': '全画像', 'unknown': '不明（安全側で停止）'}[result['stop_scope']])
             resource = result.get('resource_guard') or {}
             if resource:
                 print('Mac負荷保護：' + ('実行可能' if resource.get('allowed') else '生成を見送り')

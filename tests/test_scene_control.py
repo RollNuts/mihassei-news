@@ -42,6 +42,22 @@ class ControlTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'OFF'):
                 worker.run_once()
 
+    def test_stop_scope_is_latched_before_shutdown_and_cpu_requests(self):
+        for all_images, scope in ((False, 'mac'), (True, 'all')):
+            with self.subTest(scope=scope):
+                phases = []
+                def check_intent(phase):
+                    self.assertEqual(control.read_json(self.app / 'stopped.json')['scope'], scope)
+                    with self.assertRaisesRegex(RuntimeError, 'OFF'):
+                        control.check_allowed(self.app)
+                    phases.append(phase)
+                with patch.object(control, 'unload_schedule', side_effect=lambda: check_intent('launchd')), \
+                     patch.object(control, 'stop_owned', side_effect=lambda: check_intent('processes') or []), \
+                     patch.object(control, 'stop_cpu', side_effect=lambda: check_intent('cpu') or {}):
+                    result = control.stop(all_images=all_images)
+                self.assertEqual(result['errors'], [])
+                self.assertEqual(phases, ['launchd', 'processes', 'cpu'] if all_images else ['launchd', 'processes'])
+
     def test_corrupt_or_symlink_latch_cannot_enable_generation(self):
         latch = self.app / 'stopped.json'
         latch.write_text('invalid')
@@ -150,6 +166,7 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['automatic'], 'OFF')
         self.assertIn('authentication failed', result['errors'][0])
         self.assertTrue((self.app / 'stopped.json').exists())
+        self.assertEqual(control.read_json(self.app / 'stopped.json')['scope'], 'all')
 
     def test_cpu_stop_only_mutates_exact_workflow_and_its_runs(self):
         state = {'id': 7, 'path': '.github/workflows/free-cpu-scenes.yml', 'state': 'active'}
@@ -344,9 +361,40 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
         self.assertIsNone(result['counts_error'])
         self.assertEqual(result['automatic'], 'OFF')
+        self.assertEqual(result['stop_scope'], 'unknown')
         self.assertEqual(local.read_bytes(), before)
         self.assertEqual((self.app / 'stopped.json').read_bytes(), latch)
         self.assertEqual(git('rev-parse', 'HEAD'), original)
+
+    def test_status_distinguishes_mac_all_and_unknown_stop_intent(self):
+        self.status_repository()
+        latch = self.app / 'stopped.json'
+        # A stale control result is not a current stop instruction after resume.
+        control.write_json(self.app / 'last-control.json', {'action': 'stop-all'})
+        cases = ((None, None), ({'scope': 'mac'}, 'mac'), ({'scope': 'all'}, 'all'),
+                 ({'reason': 'legacy user stop'}, 'unknown'), ({'scope': 'unexpected'}, 'unknown'),
+                 ('invalid JSON', 'unknown'))
+        with patch.object(control, 'launch_loaded', return_value=True), \
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+            for record, expected in cases:
+                with self.subTest(record=record):
+                    if record is None:
+                        latch.unlink(missing_ok=True)
+                    elif isinstance(record, str):
+                        latch.write_text(record)
+                    else:
+                        control.write_json(latch, record)
+                    result = control.status()
+                    self.assertEqual(result['stop_scope'], expected)
+                    self.assertEqual(result['persistent_stop'], expected is not None)
+                    self.assertEqual(result['automatic'], 'ON' if expected is None else 'OFF')
+                    self.assertEqual(result['cpu']['state'], 'active')
+            latch.unlink()
+            latch.symlink_to(self.app / 'absent-stop-target')
+            result = control.status()
+            self.assertEqual(result['stop_scope'], 'unknown')
+            self.assertTrue(result['persistent_stop'])
+            self.assertEqual(result['automatic'], 'OFF')
 
     def test_status_fetch_failure_uses_cached_snapshot_with_explicit_error(self):
         git, original, _ = self.status_repository()
@@ -510,7 +558,7 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['last_error']['detail'], 'offline')
 
     def test_status_displays_resource_deferral_separately_from_persistent_stop(self):
-        result = {'automatic': 'ON', 'running': False, 'persistent_stop': False,
+        result = {'automatic': 'ON', 'running': False, 'persistent_stop': False, 'stop_scope': None,
                   'generated_images': 1, 'pending_articles': 2, 'held_articles': 0,
                   'published_images': 0, 'pending_review_images': 1, 'pending_generation_articles': 2,
                   'free_gib': 100, 'app_gib': 8, 'jpeg_bytes': 1024,
