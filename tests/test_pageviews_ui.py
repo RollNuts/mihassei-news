@@ -46,7 +46,7 @@ class PageViewPresentationTests(unittest.TestCase):
         for token in ('id="pageviews"', "再読み込みも数え", "計測開始から", "二重計上",
                       "data-analytics-opt-out", "data-analytics-status", "このブラウザの閲覧を集計しない"):
             self.assertIn(token, html)
-        self.assertIn("以前のブラウザ数をPVに換算", html)
+        self.assertIn("未計測の期間は「—」", html)
 
 
 if __name__ == "__main__":

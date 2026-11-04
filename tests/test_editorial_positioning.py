@@ -9,24 +9,24 @@ class EditorialPositioningTests(unittest.TestCase):
         page = home(load())
         self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("まだ起きていないニュースを、真顔で。", page)
-        self.assertIn("最新の架空ニュース", page)
+        self.assertIn("data-edition-title>最新記事", page)
         self.assertIn("社会の矛盾や日常の理不尽", page)
         self.assertNotIn("この新聞の読み方", page)
 
     def test_about_identifies_satire_without_claiming_accuracy(self):
         page = about()
-        self.assertIn("未来を当てようとしているわけではありません", page)
-        self.assertIn("でも、ちょっとありそう", page)
-        self.assertIn("世の中の変な仕組み", page)
-        self.assertIn("推理小説は創作です", page)
-        self.assertIn("市場考察", page)
+        self.assertIn("風刺とユーモアの新聞", page)
+        self.assertIn("今のニュースや身近な出来事", page)
+        self.assertIn("5年後にふくらませて楽しむ", page)
+        self.assertIn("ニュース記事と推理小説はフィクションです", page)
+        self.assertIn("現実の公開資料に基づく市場分析", page)
 
     def test_policy_preserves_separation_from_source_backed_market_analysis(self):
         page = editorial_policy()
-        self.assertIn("予知ではなく、未来を使った冗談", page)
-        self.assertIn("予測の的中率を競うものでも", page)
-        self.assertIn("連載「未来相場観測室」は現実の公開資料", page)
-        self.assertIn("記事の創作表示", page)
+        self.assertIn("ニュース記事と「未発生事件簿」はフィクションです", page)
+        self.assertIn("投資助言や売買の勧誘ではありません", page)
+        self.assertIn("「未来相場観測室」は現実の公開資料に基づく市場分析", page)
+        self.assertIn("出典・予測日・検証条件を示します", page)
 
     def test_home_presents_a_single_disclosure_before_the_lead(self):
         page = home(load())
@@ -43,7 +43,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertNotIn('href="#story-source"', page)
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn('id="story-source"', page)
-        self.assertIn("着想元の内容をそのまま伝えるものではありません", page)
+        self.assertIn("記事内の出来事は創作であり、着想元の内容をそのまま伝えるものではありません", page)
         self.assertIn('aria-label="架空ニュースのありそう度を投票"', page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)
@@ -51,15 +51,16 @@ class EditorialPositioningTests(unittest.TestCase):
 
     def test_public_poll_labels_do_not_claim_to_predict_the_future(self):
         from pathlib import Path
-        from scripts.build import about, privacy
+        from scripts.build import privacy, story
         browser = (Path(__file__).resolve().parent.parent /
                    "assets" / "engagement.js").read_text(encoding="utf-8")
         self.assertIn("この『もしも』に", browser)
         self.assertNotIn("実際の予想", browser)
         self.assertNotIn("最初の予想", browser)
-        self.assertIn("架空ニュースの二択投票について", privacy())
-        self.assertIn("未来の出来事が的中する確率", privacy())
-        self.assertIn("もしもの二択投票", about())
+        self.assertIn("<h2>投票</h2>", privacy())
+        self.assertIn("実人数・世論調査・出来事が起こる確率を示すものではありません", privacy())
+        articles = load()
+        self.assertIn('aria-label="架空ニュースのありそう度を投票"', story(articles[0], articles))
 
     def test_reader_share_is_a_joke_not_a_prophecy(self):
         from urllib.parse import parse_qs, urlparse

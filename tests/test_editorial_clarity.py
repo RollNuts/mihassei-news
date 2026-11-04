@@ -77,9 +77,9 @@ class EditorialClarityTests(unittest.TestCase):
         self.assertNotIn('content:"AI生成・創作"', css)
         self.assertIn('content:"イメージ"', basic_css)
         policy = build.editorial_policy()
-        self.assertIn("実写風画像にもAIによる合成画像", policy)
+        self.assertIn("実写風の合成画像", policy)
         # The photo/fiction disclosure stays; unrelated visible AI badges do not.
-        self.assertIn("AIによる合成画像", policy)
+        self.assertIn("「再現イメージ（合成）」と表示", policy)
 
     def test_revised_stories_use_new_verified_photos_or_honest_fallback(self):
         for slug in ("family-dinner-gacha-243-rejections", *REVISED):
@@ -103,7 +103,7 @@ class EditorialClarityTests(unittest.TestCase):
         self.assertIn("<h1>" + escape(article["title"]) + "</h1>", page)
         self.assertIn('class="article-visual"', page)
         self.assertIn('src="' + safe_image + '"', page)
-        self.assertIn("<strong>この記事は創作です。</strong>", page)
+        self.assertIn("<strong>創作ニュース</strong>", page)
         self.assertNotIn("AI生成の架空ニュース再現画像", page)
 
         if safe_image == generated_url:
@@ -123,8 +123,8 @@ class EditorialClarityTests(unittest.TestCase):
             self.assertNotEqual(rejection.get("article_sha256"), article_fingerprint(article))
             self.assertTrue(usable_generated_scene(article, root=ROOT))
             self.assertIn("再現イメージ（合成）", page)
-            self.assertIn("実際の出来事を撮影した報道写真ではありません", page)
-            self.assertNotIn("編集部制作の創作イラスト", page)
+            self.assertIn("<figcaption>再現イメージ（合成）", page)
+            self.assertNotIn("<figcaption>創作イラスト", page)
         else:
             self.assertFalse(usable_generated_scene(article, root=ROOT))
             self.assertIn(safe_image, ("/images/" + slug + ".svg",

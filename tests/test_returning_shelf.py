@@ -12,7 +12,7 @@ class ReturningShelfTests(unittest.TestCase):
     def test_only_homepage_has_an_optional_saved_entry(self):
         html = home(load())
         assert '<aside class="returning-shelf" data-returning-shelf hidden' in html
-        self.assertIn('保存した記事から再開', html)
+        self.assertIn('aria-label="この端末に保存した記事"', html)
         self.assertIn('data-returning-shelf-article', html)
         self.assertIn('data-returning-shelf-count', html)
         self.assertIn('href="/saved/"', html)

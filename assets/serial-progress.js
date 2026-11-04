@@ -57,7 +57,7 @@
     const continuation = node.querySelector("[data-serial-progress-continue]");
     if (summary) {
       summary.textContent = state.ok ?
-        "この端末で " + count + " / " + episodes.length + " " + (node.getAttribute("data-kind") === "fiction" ? "話" : "回") + "を読了" :
+        "読了 " + count + " / " + episodes.length + " " + (node.getAttribute("data-kind") === "fiction" ? "話" : "回") :
         "読了記録を利用できません";
     }
 
@@ -78,7 +78,7 @@
     for (const item of node.querySelectorAll("[data-serial-episode-state]")) {
       const epSlug = item.getAttribute("data-episode") || "";
       item.textContent = state.ok && completed.has(epSlug) && episodes.some(ep => ep.slug === epSlug) ?
-        "この端末で読了済み" : "";
+        "読了済み" : "";
     }
   }
 
@@ -97,8 +97,8 @@
       button.textContent = checked ? "読了を取り消す" : "この回を読了にする";
       status.textContent = message ||
         (!state.ok ? "このブラウザでは読了記録を保存できません。" :
-         checked ? "この端末に読了を保存しています。" :
-         "読み終えたらボタンを押してください。閲覧だけでは記録されません。");
+         checked ? "このブラウザに読了を保存しています。" :
+         "このブラウザに保存します。");
     }
 
     button.addEventListener("click", () => {
@@ -111,7 +111,7 @@
         // The reader explicitly requested this write with the button.
         window.localStorage.setItem(PREFIX + series,
                                     JSON.stringify(Array.from(next).slice(0, MAX_EPISODES)));
-        draw(next.has(episode) ? "読了をこの端末に記録しました。" : "読了記録を取り消しました。");
+        draw(next.has(episode) ? "読了を保存しました。" : "読了記録を取り消しました。");
         seriesNodes.forEach(renderSeries);
       } catch (_error) {
         draw("保存できませんでした。ブラウザの保存設定をご確認ください。");
@@ -137,8 +137,8 @@
         button.disabled = !state.ok;
         button.setAttribute("aria-pressed", checked ? "true" : "false");
         button.textContent = checked ? "読了を取り消す" : "この回を読了にする";
-        status.textContent = checked ? "この端末に読了を保存しています。" :
-          "読み終えたらボタンを押してください。";
+        status.textContent = checked ? "このブラウザに読了を保存しています。" :
+          "このブラウザに保存します。";
       });
     });
   }

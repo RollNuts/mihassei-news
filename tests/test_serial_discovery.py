@@ -47,15 +47,15 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
             self.assertIn(f'href="/serials/{selected["slug"]}/"', promo)
             self.assertIn(f'src="/serials/{selected["slug"]}/cover.svg"', promo)
             self.assertIn('width="1200" height="675"', promo)
-            self.assertIn("未発生新聞の連載", promo)
+            self.assertIn('id="article-serial-bridge-title">連載</h2>', promo)
             if selected["kind"] == "analysis":
-                self.assertIn("実際の公開資料", promo)
-                self.assertIn("投資助言・売買推奨でもありません", promo)
-                self.assertIn("架空の出来事", promo)
+                self.assertIn("公開資料", promo)
+                self.assertIn("投資助言・売買推奨ではありません", promo)
+                self.assertIn("現実の市場分析", promo)
                 self.assertNotIn("創作推理小説", promo)
             else:
                 self.assertIn("創作推理小説", promo)
-                self.assertIn("この記事の続報ではなく", promo)
+                self.assertIn(html.escape(selected["subtitle"]), promo)
                 self.assertNotIn("現実の市場分析", promo)
         self.assertGreaterEqual(count, 5)
 

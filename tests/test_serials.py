@@ -127,7 +127,7 @@ class SerialTests(unittest.TestCase):
         for source in e["sources"]:
             self.assertIn('href="'+source["url"]+'"', page)
             self.assertTrue(source["url"].startswith("https://"))
-        self.assertIn("現実の市場", page)
+        self.assertIn("市場分析", page)
         self.assertIn("株式市場のシナリオ分析", page)
         self.assertNotIn("架空ニュースはすべて創作です", page)
 
