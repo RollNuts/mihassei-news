@@ -6,12 +6,18 @@ on:
       - 'social-bot/useful-posts.json'
       - 'social-bot/useful_feed.py'
       - 'social-bot/test_useful_feed.py'
+      - 'social-bot/queue-cleanup.json'
+      - 'social-bot/queue_cleanup.py'
+      - 'social-bot/test_queue_cleanup.py'
       - '.github/workflows/x-useful-originals.yml'
   pull_request:
     paths:
       - 'social-bot/useful-posts.json'
       - 'social-bot/useful_feed.py'
       - 'social-bot/test_useful_feed.py'
+      - 'social-bot/queue-cleanup.json'
+      - 'social-bot/queue_cleanup.py'
+      - 'social-bot/test_queue_cleanup.py'
       - '.github/workflows/x-useful-originals.yml'
   workflow_dispatch:
   schedule:
@@ -38,6 +44,20 @@ jobs:
         run: |
           python -m unittest discover -s social-bot -p 'test_useful_feed.py' -v
           python social-bot/useful_feed.py --validate
+          python -m unittest discover -s social-bot -p 'test_queue_cleanup.py' -v
+          python social-bot/queue_cleanup.py --validate
+      - name: Withdraw only the six named weak legacy reservations into drafts
+        id: cleanup
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          python social-bot/queue_cleanup.py --apply
       - name: Schedule only the current-day useful original
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
@@ -54,7 +74,7 @@ jobs:
           test -f social-bot/useful-state.json || exit 0
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add social-bot/useful-state.json
+          git add social-bot/useful-state.json social-bot/queue-cleanup.json
           if ! git diff --cached --quiet; then
             git commit -m 'chore(x): preserve useful-feed receipt [skip ci]'
           fi
@@ -63,3 +83,10 @@ jobs:
             git push origin HEAD:main && exit 0
           done
           exit 1
+      - name: Preserve withdrawal evidence if its provider or Git result is uncertain
+        if: always() && steps.cleanup.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: named-queue-withdrawal-evidence
+          path: social-bot/queue-cleanup.json
+          retention-days: 7
