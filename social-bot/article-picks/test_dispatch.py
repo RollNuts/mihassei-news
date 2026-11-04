@@ -358,6 +358,23 @@ class ArticlePickTests(unittest.TestCase):
                                   remote, CONFIG, NOW, {"short-1"})
         self.assertIsNone(item)
 
+    def test_shared_seven_post_cap_blocks_article_lane(self):
+        fresh = article("fresh-cap", age_hours=4)
+        six = [
+            {"id": f"sent-{i}", "status": "sent", "text": f"post {i}",
+             "sentAt": f"2026-11-05T0{i}:00:00+09:00"}
+            for i in range(6)
+        ]
+        selected, _, _ = picks.decide([fresh], {}, ledger(), six, CONFIG, NOW, set())
+        self.assertEqual(selected["slug"], "fresh-cap")
+        seven = six + [{
+            "id": "sent-6", "status": "sent", "text": "post 6",
+            "sentAt": "2026-11-05T10:00:00+09:00",
+        }]
+        self.assertEqual(picks.x_posts_today(seven, NOW), 7)
+        selected, _, _ = picks.decide([fresh], {}, ledger(), seven, CONFIG, NOW, set())
+        self.assertIsNone(selected)
+
     def test_third_article_waits_for_confirmed_creative_reservation_when_queue_exists(self):
         fresh = article("fresh", age_hours=4)
         state = ledger(
