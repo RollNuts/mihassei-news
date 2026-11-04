@@ -1,4 +1,4 @@
-name: Public audience API health
+name: Public PV API health
 on:
   push:
     branches: [main]
@@ -18,6 +18,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, sys, time, urllib.request, urllib.error
+          from datetime import date, datetime, timedelta
           base = "https://veripsa.com"
           urls = [
             ("/", "html"),
@@ -53,10 +54,8 @@ jobs:
                           votes=details.get("votes")
                           if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0 for k in ("plausible","unlikely")):
                               raise RuntimeError("future poll API counts are missing or invalid")
-                          print("VERIFIED engagement API: visitors={}, readers={}, likes={}, votes={}/{} (browser units)".format(
-                              data["visitors"],details["readers"],details["likes"],votes["plausible"],votes["unlikely"]))
-                          # The public header reads these real daily metrics.
-                          # Legacy cumulative counts must never impersonate "today".
+                          # Keep legacy API compatibility checks, but measure the
+                          # public counters and recommendations with actual PVs.
                           today=data.get("today")
                           if (not isinstance(today,dict)
                               or not isinstance(today.get("dateJst"),str)
@@ -66,8 +65,62 @@ jobs:
                               raise RuntimeError("daily audience fields not available")
                           if type(details.get("todayReaders")) is not int or details["todayReaders"]<0:
                               raise RuntimeError("daily article audience field missing")
-                          print("VERIFIED daily audience: {} / {} browsers / {} article reads (JST)".format(
-                              today["dateJst"],today["visitors"],today["articleReads"]))
+                          tracking=data.get("pageViewTracking")
+                          if (not isinstance(tracking,dict)
+                              or tracking.get("unit")!="page-view"
+                              or tracking.get("timezone")!="Asia/Tokyo"
+                              or "startedAtUtc" not in tracking):
+                              raise RuntimeError("PV measurement metadata missing")
+                          started=tracking["startedAtUtc"]
+                          if started is not None:
+                              if (not isinstance(started,str)
+                                  or datetime.fromisoformat(started.replace("Z","+00:00")).tzinfo is None):
+                                  raise RuntimeError("PV measurement start is invalid")
+                          def measured(container,key):
+                              if (not isinstance(container,dict) or key not in container
+                                  or (started is None and container[key] is not None)
+                                  or (started is not None and (type(container[key]) is not int or container[key]<0))):
+                                  raise RuntimeError("PV field missing or invalid: "+key)
+                          measured(data,"pageViews")
+                          measured(today,"pageViews")
+                          if today.get("pageViewsCoverage")!=("in-progress" if started is not None else "unmeasured"):
+                              raise RuntimeError("current PV coverage is invalid")
+                          for key in ("pageViews","todayPageViews","last7DaysPageViews"):
+                              measured(details,key)
+                          yesterday=data.get("yesterday")
+                          today_date=date.fromisoformat(today["dateJst"])
+                          if (not isinstance(yesterday,dict)
+                              or yesterday.get("dateJst")!=(today_date-timedelta(days=1)).isoformat()
+                              or "pageViews" not in yesterday
+                              or yesterday.get("pageViewsCoverage") not in ("unmeasured","partial","complete")):
+                              raise RuntimeError("previous PV measurement period missing")
+                          if yesterday["pageViewsCoverage"]=="unmeasured":
+                              if yesterday["pageViews"] is not None:
+                                  raise RuntimeError("unmeasured previous PV must remain null")
+                          elif (started is None or type(yesterday["pageViews"]) is not int
+                                or yesterday["pageViews"]<0):
+                              raise RuntimeError("previous PV count is invalid")
+                          week=data.get("last7Days")
+                          measured(week,"pageViews")
+                          if (week.get("startDateJst")!=(today_date-timedelta(days=6)).isoformat()
+                              or week.get("endDateJst")!=today["dateJst"]
+                              or type(week.get("complete")) is not bool
+                              or type(week.get("measuredDays")) is not int
+                              or not 0<=week["measuredDays"]<=7):
+                              raise RuntimeError("seven-day PV period is invalid")
+                          if started is None and (week["measuredDays"]!=0 or week["complete"]):
+                              raise RuntimeError("unmeasured PV cannot claim ranking coverage")
+                          if started is not None and (
+                              not today["pageViews"]<=week["pageViews"]<=data["pageViews"]
+                              or not details["todayPageViews"]<=details["last7DaysPageViews"]<=details["pageViews"]
+                              or details["last7DaysPageViews"]>week["pageViews"]):
+                              raise RuntimeError("PV totals disagree across measurement periods")
+                          print("VERIFIED PV API: site={}, article={}, article last7Days={} PV".format(
+                              data["pageViews"],details["pageViews"],details["last7DaysPageViews"]))
+                          print("VERIFIED daily PV: {} / today={} / yesterday={} / last7Days={} (JST)".format(
+                              today["dateJst"],today["pageViews"],yesterday["pageViews"],week["pageViews"]))
+                          print("VERIFIED reactions: likes={}, votes={}/{}".format(
+                              details["likes"],votes["plausible"],votes["unlikely"]))
                       elif kind=="poll_page":
                           text=body.decode("utf-8")
                           if ('data-future-poll' not in text or

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import copy
+import html
 import json
 import re
 import tempfile
@@ -52,25 +53,27 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         self.assertEqual(suggested_articles(article, self.articles, limit=0), [])
         self.assertEqual(suggested_articles(article, [article]), [])
 
-    def test_next_story_never_repeats_in_related_cards(self):
+    def test_pv_recommendations_cover_all_other_stories_and_keep_a_latest_fallback(self):
         available = {a["slug"] for a in self.articles}
         for item in self.articles:
             page = build.story(item, self.articles)
             lead = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
             self.assertIsNotNone(lead, item["slug"])
-            other_links = re.findall(
-                r'<section class="article-related">(.+?)</section>', page, flags=re.S
+            self.assertIn('data-popular-fallback', page)
+            self.assertIn('新着からもう1本', page)
+            expected_latest = max(
+                (a for a in self.articles if a["slug"] != item["slug"]),
+                key=lambda a: (build.publication_date(a), a["source"]["published_at"]),
             )
-            self.assertEqual(len(other_links), 1)
-            related = re.findall(
-                r'<h3><a href="/articles/([^/]+)/">', other_links[0]
-            )
-            self.assertTrue(related, item["slug"])
-            combined = [lead.group(1), *related]
-            self.assertEqual(len(combined), len(set(combined)))
-            self.assertNotIn(item["slug"], combined)
-            self.assertTrue(set(combined) <= available)
-            self.assertLessEqual(len(combined), 4)
+            self.assertEqual(lead.group(1), expected_latest["slug"])
+            raw = re.search(r'data-popular-options="([^"]+)"', page)
+            self.assertIsNotNone(raw)
+            candidates = json.loads(html.unescape(raw.group(1)))
+            slugs = [a["slug"] for a in candidates]
+            self.assertEqual(len(slugs), len(set(slugs)))
+            self.assertEqual(set(slugs), available - {item["slug"]})
+            self.assertIn('aria-labelledby="readers-choice-title" hidden', page)
+            self.assertNotIn('class="article-related"', page)
 
     def test_article_structured_data_uses_real_dates_and_canonical(self):
         item = self.articles[0]

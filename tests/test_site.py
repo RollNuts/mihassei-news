@@ -92,12 +92,12 @@ class SiteTests(unittest.TestCase):
         latest=home.index('<section class="section-block">')
         genres=home.index('<section class="genre-explore"')
         serials=home.index('<section class="serials-feature"')
-        starter=home.index('<section class="starter-editorial"')
+        popular=home.index('<section class="readers-choice"')
         timeline=home.index('<section class="press-timeline"')
         random=home.index('<section class="special-edition"')
         extras=home.index('<details class="extras-shelf">')
         discussions=home.index('<section class="reader-discussions"')
-        self.assertTrue(hero < latest < starter < timeline < genres < serials < extras < random < discussions)
+        self.assertTrue(hero < latest < popular < timeline < genres < serials < extras < random < discussions)
         self.assertIn("<h2>新着記事</h2>",home)
         self.assertNotIn('<aside class="banner">',home)
         self.assertNotIn("この新聞の読み方",home)
@@ -165,20 +165,16 @@ class SiteTests(unittest.TestCase):
         section=home.split('<section class="section-block">',1)[1].split('</section>',1)[0]
         cards=re.findall(r'<h3><a href="/articles/([^/]+)/">',section)
         from scripts.build import load, editorial_lead
-        from scripts.editorial_starter import starter_picks
         published=load()
         chosen=editorial_lead(published)
         remaining=[a for a in published if a["slug"]!=chosen["slug"]]
         self.assertEqual(lead.group(1),chosen["slug"])
         self.assertEqual(sidebar,[a["slug"] for a in remaining[:3]])
-        excluded={chosen["slug"],*(a["slug"] for a in remaining[:3])}
-        starters=starter_picks(published,excluded,base=ROOT)
-        picked=[x["article"]["slug"] for x in starters]
-        expected=[a["slug"] for a in remaining[3:] if a["slug"] not in picked][:4]
+        expected=[a["slug"] for a in remaining[3:7]]
         self.assertEqual(cards,expected)
-        shown=[lead.group(1),*sidebar,*picked,*cards]
+        shown=[lead.group(1),*sidebar,*cards]
         self.assertEqual(len(shown),len(set(shown)))
-        self.assertEqual(len(shown),min(len(published),4+len(picked)+4))
+        self.assertEqual(len(shown),min(len(published),8))
 
     def test_sidebar_emphasizes_recent_headlines_not_duplicate_actions(self):
         """Homepage headline rail stays compact on mobile and keeps real dates."""
@@ -253,7 +249,6 @@ class SiteTests(unittest.TestCase):
     def test_homepage_lead_always_follows_newest_publication_not_curated_pin(self):
         """A new edition must change the hero even if an older story is curated."""
         from scripts.build import editorial_lead, publication_date, home
-        from scripts.editorial_starter import starter_picks
         original=next(a for a in self.articles
                       if a["slug"]=="family-dinner-gacha-243-rejections")
         older={**original,"published_at":"2026-11-03T09:35:30+09:00"}
@@ -272,14 +267,11 @@ class SiteTests(unittest.TestCase):
         self.assertIsNone(editorial_lead([]))
         self.assertEqual(editorial_lead(self.articles)["slug"],self.articles[0]["slug"])
         # The front-page headline really uses the same article as the
-        # newest publication, while human recommendations remain separate.
+        # newest publication, while measured recommendations remain separate.
         published=home(self.articles)
         self.assertIn('<h1><a href="/articles/'+self.articles[0]["slug"]+'/">',published)
-        picks=starter_picks(self.articles,
-                            {article["slug"] for article in self.articles[:4]})
-        self.assertTrue(picks)
-        for item in picks:
-            self.assertIn('href="/articles/'+item["article"]["slug"]+'/"',published)
+        self.assertIn('data-popular-section',published)
+        self.assertNotIn('class="starter-editorial"',published)
         self.assertIn('data-last-edition="'+publication_date(self.articles[0])[:10]+'"',
                       published)
 
@@ -413,7 +405,12 @@ class SiteTests(unittest.TestCase):
         self.assertIn('class="readers-choice" data-popular-section',markup)
         self.assertIn('data-popular-list',markup)
         self.assertIn('aria-labelledby="readers-choice-title" hidden',markup)
-        self.assertIn("閲覧ブラウザ数順",markup)
+        self.assertIn('data-popular-period>過去7日間のPV順',markup)
+        self.assertIn('id="readers-choice-title">よく読まれている記事',markup)
+        self.assertEqual(markup.count('data-popular-section'),1)
+        section=markup.split('<section class="readers-choice"',1)[1].split('</section>',1)[0]
+        self.assertNotIn('<li',section,"Static markup cannot invent ranks or PVs")
+        self.assertNotIn('ブラウザ',section)
         m=re.search(r'data-popular-options="([^"]+)"',markup)
         self.assertIsNotNone(m)
         candidates=json.loads(html.unescape(m.group(1)))
@@ -422,22 +419,22 @@ class SiteTests(unittest.TestCase):
                              self.articles,
                              key=lambda a:(a.get("published_at") or a["source"]["published_at"],
                                            a["source"]["published_at"]),
-                             reverse=True)[:20]])
+                             reverse=True)])
         self.assertEqual(len(candidates),len(set(x["slug"] for x in candidates)))
-        self.assertLessEqual(len(candidates),20)
+        self.assertEqual(len(candidates),len(self.articles))
         synthetic=[{**self.articles[0],"slug":"sample-"+str(i)}
                    for i in range(25)]
         sample=generate_home(synthetic)
         raw=re.search(r'data-popular-options="([^"]+)"',sample)
         self.assertIsNotNone(raw)
-        self.assertEqual(len(json.loads(html.unescape(raw.group(1)))),20)
+        self.assertEqual(len(json.loads(html.unescape(raw.group(1)))),25)
         script=(ROOT/"assets/engagement.js").read_text(encoding="utf-8")
         self.assertIn("const popularCandidates=",script.replace("let popularCandidates=","const popularCandidates="))
-        self.assertIn("readers>=5",script)
-        self.assertIn("ranked.length<2",script)
+        self.assertIn("last7DaysPageViews",script)
+        self.assertNotIn("readers>=5",script)
         self.assertIn("popularSection.hidden=false",script)
         self.assertIn("popularList.replaceChildren",script)
-        self.assertIn("showPopular(data.articles||{})",script)
+        self.assertIn("showPopular(data,pvHealthy)",script)
         self.assertNotIn("innerHTML=",script)
 
     def test_adsense_ownership_without_running_ads(self):

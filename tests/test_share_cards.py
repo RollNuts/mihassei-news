@@ -48,16 +48,17 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "missing/wrong canonical"):
             inspect_markup(doc, "/articles/unpublished/")
 
-    def test_first_reader_gets_three_distinct_editorial_starters(self):
-        """New readers see strong real stories, not another copy of the serial menu."""
+    def test_first_reader_gets_one_measured_recommendation_area(self):
+        """Keep real story navigation before a PV panel, without hand-picked ranks."""
         doc = (ROOT / "dist/index.html").read_text(encoding="utf-8")
-        self.assertIn('class="starter-editorial"', doc)
+        self.assertNotIn('class="starter-editorial"', doc)
+        self.assertEqual(doc.count('data-popular-section'), 1)
         self.assertLess(doc.index('<section class="hero-grid">'),
-                        doc.index('class="starter-editorial"'))
+                        doc.index('data-popular-section'))
         self.assertLess(doc.index('<section class="section-block">'),
-                        doc.index('class="starter-editorial"'))
-        self.assertEqual(doc.count('class="starter-pick-card"'), 3)
-        self.assertIn("SELECTION", doc)
+                        doc.index('data-popular-section'))
+        self.assertIn('aria-labelledby="readers-choice-title" hidden', doc)
+        self.assertIn('data-popular-period>過去7日間のPV順', doc)
         self.assertNotIn('class="reading-ways"', doc)
         # Ordinary serials, genre navigation and RSS must remain available.
         for link in ('href="/archive/"',
@@ -66,8 +67,8 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
                      'href="/feed.xml"'):
             self.assertIn(link, doc)
         css = (ROOT / "dist/assets/editorial-polish.css").read_text(encoding="utf-8")
-        for token in (".starter-pick-grid", ".starter-pick-card",
-                      ".starter-pick-image", "@media(max-width:660px)"):
+        for token in (".readers-choice-list", ".readers-choice-item",
+                      ".readers-choice-count", "@media(max-width:660px)"):
             self.assertIn(token, css)
         self.assertEqual(css.count("{"), css.count("}"))
 

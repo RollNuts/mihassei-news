@@ -296,10 +296,12 @@
   }
   renderPoll();
 
-  // The homepage's "readers' choice" only uses the existing engagement GET.
-  // Titles are data from published local articles; no third-party requests.
+  // Published titles are local metadata, never inferred from traffic. Both
+  // homepage and article recommendations use actual recent page displays.
   const popularSection=document.querySelector("[data-popular-section]");
   const popularList=document.querySelector("[data-popular-list]");
+  const popularPeriod=document.querySelector("[data-popular-period]");
+  const popularFallback=document.querySelector("[data-popular-fallback]");
   let popularCandidates=[];
   if(popularSection && popularList) {
     try {
@@ -310,10 +312,10 @@
           if(!item || typeof item.slug!=="string" ||
              !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.slug) ||
              typeof item.title!=="string" || !item.title.trim() ||
-             typeof item.category!=="string" || unique.has(item.slug))return false;
+             typeof item.category!=="string" || item.slug===article || unique.has(item.slug))return false;
           unique.add(item.slug);
           return true;
-        }).slice(0,20);
+        });
       }
     }catch(_){popularCandidates=[];}
   }
@@ -381,18 +383,43 @@
     return response.json();
   }
 
-  function showPopular(articles){
+  function hidePopular(){
+    if(popularList)popularList.replaceChildren();
+    if(popularSection)popularSection.hidden=true;
+    if(popularFallback)popularFallback.hidden=false;
+  }
+  function showPopular(data,pvHealthy){
     if(!popularSection || !popularList || !popularCandidates.length)return;
+    const week=data.last7Days;
+    const date=data.today?.dateJst;
+    const todayStamp=Date.parse((date||"")+"T00:00:00Z");
+    const windowStart=Number.isFinite(todayStamp)
+      ? new Date(todayStamp-6*86400000).toISOString().slice(0,10) : "";
+    const measured=value=>Number.isSafeInteger(value) && value>=0;
+    // Every candidate needs an observed value in the same recent window.
+    // Missing batches or pre-PV history cannot silently become zeros, and
+    // legacy unique-browser counts cannot stand in for page displays.
+    if(!pvHealthy || !data.pageViewTracking?.startedAtUtc || !week ||
+       week.startDateJst!==windowStart || week.endDateJst!==date ||
+       !measured(week.pageViews) || typeof week.complete!=="boolean" ||
+       !Number.isInteger(week.measuredDays) || week.measuredDays<1 || week.measuredDays>7 ||
+       popularCandidates.some(candidate=>{
+         const metric=data.articles?.[candidate.slug];
+         return !metric || !measured(metric.last7DaysPageViews) ||
+           !measured(metric.todayPageViews) || metric.todayPageViews>metric.last7DaysPageViews;
+       })){
+      hidePopular();
+      return;
+    }
     const ranked=popularCandidates.map((candidate,order)=>({
-      ...candidate,order,readers:articles?.[candidate.slug]?.readers
-    })).filter(x=>Number.isInteger(x.readers) && x.readers>=5)
-      .sort((a,b)=>b.readers-a.readers || a.order-b.order)
+      ...candidate,order,
+      pageViews:data.articles[candidate.slug].last7DaysPageViews,
+      todayPageViews:data.articles[candidate.slug].todayPageViews
+    })).filter(x=>x.pageViews>0)
+      .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
       .slice(0,3);
-    // No empty or statistically meaningless "popular" section: all ranking
-    // rows are based on observed browser counts, not fake defaults.
-    if(ranked.length<2){
-      popularList.replaceChildren();
-      popularSection.hidden=true;
+    if(!ranked.length){
+      hidePopular();
       return;
     }
     const rows=ranked.map((item,index)=>{
@@ -413,18 +440,21 @@
       content.append(category,link);
       const count=document.createElement("span");
       count.className="readers-choice-count";
-      count.textContent=Intl.NumberFormat("ja-JP").format(item.readers)+"ブラウザ";
-      count.setAttribute("aria-label","閲覧した匿名ブラウザの累計 "+item.readers);
+      count.textContent=Intl.NumberFormat("ja-JP").format(item.pageViews)+" PV";
+      count.setAttribute("aria-label","過去7日間のページ表示回数 "+item.pageViews+"PV");
       li.append(rank,content,count);
       return li;
     });
     popularList.replaceChildren(...rows);
+    if(popularPeriod)popularPeriod.textContent=week.complete
+      ? "過去7日間のPV順" : pvStartLabel+"からのPV順";
     popularSection.hidden=false;
+    if(popularFallback)popularFallback.hidden=true;
   }
 
-  // Daily counters are server-measured by JST date. A browser contributes
-  // once per day, and at most once per article per day; never show fake PVs.
-  // Re-reading these counters is GET-only and cannot inflate readership.
+  // New pages show measured PVs. Legacy elements only support older cached
+  // markup while a deployment propagates; their numbers never supply PVs.
+  // Re-reading any of these counters is GET-only and cannot create a display.
   const observerShell=document.querySelector("[data-observer-widget]");
   const observerValue=document.querySelector("[data-observer-count]");
   const observerYesterdayStat=document.querySelector("[data-observer-yesterday-stat]");
@@ -491,7 +521,7 @@
   }
   function showPageViews(data){
     const tracking=data.pageViewTracking,today=data.today;
-    if(!tracking || tracking.timezone!=="Asia/Tokyo" ||
+    if(!tracking || tracking.unit!=="page-view" || tracking.timezone!=="Asia/Tokyo" ||
        !(tracking.startedAtUtc===null ||
          (typeof tracking.startedAtUtc==="string" && Number.isFinite(Date.parse(tracking.startedAtUtc)))) ||
        !today || !/^\d{4}-\d{2}-\d{2}$/.test(today.dateJst||"") ||
@@ -539,8 +569,10 @@
     });
   }
 
-  function showMetrics(data){
-    if(!data || data.unit!=="anonymous-browser" ||
+  function showLegacyObservers(data){
+    // Only old cached HTML has these elements. New PV widgets never depend
+    // on the anonymous-browser fields, even during a staged API update.
+    if(data.unit!=="anonymous-browser" ||
        !Number.isSafeInteger(data.visitors) || data.visitors<0)return false;
     // A legacy API can still return cumulative 'visitors'. Never label that
     // lifetime figure as today's traffic during a staggered deployment.
@@ -549,27 +581,30 @@
        !Number.isSafeInteger(today.visitors) || today.visitors<0 ||
        !Number.isSafeInteger(today.articleReads) || today.articleReads<0)
       return false;
-    showPopular(data.articles||{});
     observedDay=today.dateJst;
-    const pvHealthy=pvWidget ? showPageViews(data) : true;
-    if(!pvWidget){
-      updateObserverNumber(observerValue,today.visitors);
-      updateObserverNumber(observerReads,today.articleReads);
-    }
+    updateObserverNumber(observerValue,today.visitors);
+    updateObserverNumber(observerReads,today.articleReads);
     // Only show yesterday when the API returns the actual preceding JST date.
     // Missing fields from a staggered/older deployment must not become zero.
     const yesterday=data.yesterday;
     const todayStamp=Date.parse(today.dateJst+"T00:00:00Z");
     const expectedPrevious=Number.isFinite(todayStamp)
       ? new Date(todayStamp-86400000).toISOString().slice(0,10) : "";
-    if(!pvWidget && observerYesterdayStat && observerYesterday){
+    if(observerYesterdayStat && observerYesterday){
       const verified=Boolean(yesterday && yesterday.dateJst===expectedPrevious &&
         Number.isSafeInteger(yesterday.visitors) && yesterday.visitors>=0 &&
         Number.isSafeInteger(yesterday.articleReads) && yesterday.articleReads>=0);
       observerYesterdayStat.hidden=!verified;
       if(verified)updateObserverNumber(observerYesterday,yesterday.visitors);
     }
-    if(!pvWidget)observerFeedback(true);
+    observerFeedback(true);
+    return true;
+  }
+  function showMetrics(data){
+    if(!data || typeof data!=="object" || Array.isArray(data))return false;
+    const pvHealthy=showPageViews(data);
+    const legacyHealthy=!pvWidget ? showLegacyObservers(data) : false;
+    showPopular(data,pvHealthy);
     for(const [slug,metric] of Object.entries(data.articles||{})){
       if(!metric)continue;
       if(pvHealthy && data.pageViewTracking)showArticlePageViews(slug,metric);
@@ -590,7 +625,7 @@
       }
       if(slug===article)renderPoll(metric.votes);
     }
-    return pvHealthy;
+    return pvWidget ? pvHealthy : pvHealthy || legacyHealthy;
   }
   async function refresh(){
     if(refreshPromise)return refreshPromise; // Avoid overlapping requests.
@@ -609,7 +644,11 @@
           return res.json();
         }));
         const first=snapshots[0];
-        if(!first || snapshots.some(item=>item.unit!==first.unit || !item.articles || typeof item.articles!=="object") ||
+        if(!first || snapshots.some(item=>!item || !item.articles || typeof item.articles!=="object" ||
+             Array.isArray(item.articles) || item.today?.dateJst!==first.today?.dateJst ||
+             item.pageViewTracking?.startedAtUtc!==first.pageViewTracking?.startedAtUtc ||
+             item.last7Days?.startDateJst!==first.last7Days?.startDateJst ||
+             item.last7Days?.endDateJst!==first.last7Days?.endDateJst) ||
            !showMetrics({...first,articles:Object.assign({},...snapshots.map(item=>item.articles))}))
           throw new Error("audience data unavailable");
         haveSnapshot=true;
@@ -617,6 +656,7 @@
         // Keep the last confirmed count when a transient API error occurs.
         // Never turn a failed request into a plausible-looking zero.
         observerFeedback(false);
+        hidePopular();
       }
     })();
     try{await refreshPromise;}

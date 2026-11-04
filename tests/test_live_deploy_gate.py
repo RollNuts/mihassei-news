@@ -1,6 +1,16 @@
 """The production workflow must verify actual published bytes, not an optional app check."""
 import unittest
+import copy
+import html
+import io
+import json
+import re
+import textwrap
+from contextlib import redirect_stdout
+from datetime import datetime, timedelta
 from pathlib import Path
+from unittest.mock import patch
+from urllib.parse import urlsplit
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -112,6 +122,193 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertNotIn("Workers Builds: mihassei-news",markup)
         self.assertNotIn("GH_TOKEN:",markup)
         self.assertIn("read-only",markup.lower())
+
+
+class PVRecommendationDeploymentTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        start = datetime.fromisoformat("2026-11-01T00:00:00+09:00")
+        cls.articles = [
+            {"slug": "story-" + str(index), "title": '記事 "A&B" <' + str(index) + ">",
+             "category": "社会", "published_at": (start + timedelta(hours=index)).isoformat(),
+             "source": {"published_at": "2026-11-01T00:00:00+09:00"}}
+            for index in range(30)
+        ]
+
+    @staticmethod
+    def with_options(markup, transform):
+        def replace(match):
+            options = json.loads(html.unescape(match.group(2)))
+            value = html.escape(json.dumps(transform(options), ensure_ascii=False), quote=True)
+            return match.group(1) + value + match.group(3)
+        return re.sub(r'(data-popular-options=")([^"]*)(")', replace, markup, count=1)
+
+    def test_live_checker_accepts_full_archive_and_escaped_article_metadata(self):
+        from scripts.build import home, load, pv_recommendations, story
+        from scripts.check_live import verify_pv_recommendations
+
+        markup = pv_recommendations(self.articles)
+        verify_pv_recommendations(markup, self.articles)
+        actual = load()
+        verify_pv_recommendations(home(actual), actual)
+        verify_pv_recommendations(story(actual[0], actual), actual, actual[0])
+
+    def test_live_checker_rejects_truncation_duplicates_stale_titles_and_fake_rankings(self):
+        from scripts.build import pv_recommendations
+        from scripts.check_live import verify_pv_recommendations
+
+        markup = pv_recommendations(self.articles)
+        variants = {
+            "only newest twenty": self.with_options(markup, lambda options: options[:20]),
+            "duplicate": self.with_options(markup, lambda options: options + options[:1]),
+            "unknown story": self.with_options(markup, lambda options: options + [
+                {"slug": "unpublished", "title": "未公開", "category": "社会"}]),
+            "stale title": self.with_options(markup, lambda options: [dict(options[0], title="旧題")] + options[1:]),
+            "stale category": self.with_options(markup, lambda options: [dict(options[0], category="技術")] + options[1:]),
+            "visible without PV": markup.replace(" hidden>", ">", 1),
+            "browser ranking": markup.replace("過去7日間のPV順", "ブラウザ数順"),
+            "static winner": markup.replace('data-popular-list></ol>', 'data-popular-list><li>人気1位</li></ol>'),
+            "duplicate panels": markup + markup,
+            "old selection": markup + '<section class="starter-editorial"></section>',
+        }
+        for label, candidate in variants.items():
+            with self.subTest(label=label), self.assertRaises(RuntimeError):
+                verify_pv_recommendations(candidate, self.articles)
+
+    def test_article_fallback_is_newest_other_story_and_never_claims_popularity(self):
+        from scripts.build import pv_recommendations
+        from scripts.check_live import verify_pv_recommendations
+
+        current = self.articles[-1]
+        fallback = ('<nav class="reader-next" data-popular-fallback>'
+                    '<span>NEXT STORY / 新着からもう1本 · 社会</span>'
+                    '<a class="reader-next-title" href="/articles/story-28/">次の記事</a></nav>')
+        panel = pv_recommendations(self.articles, current["slug"])
+        verify_pv_recommendations(fallback + panel, self.articles, current)
+        variants = {
+            "self link": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-29/"'),
+            "older fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
+            "hidden fallback": (fallback + panel).replace("data-popular-fallback>", "data-popular-fallback hidden>"),
+            "misleading label": (fallback + panel).replace("新着からもう1本", "一番人気"),
+            "self candidate": fallback + pv_recommendations(self.articles),
+            "missing fallback": panel,
+            "old related rail": fallback + panel + '<section class="article-related"></section>',
+        }
+        for label, candidate in variants.items():
+            with self.subTest(label=label), self.assertRaises(RuntimeError):
+                verify_pv_recommendations(candidate, self.articles, current)
+        # A single published story still offers a valid archive route.
+        only = self.articles[:1]
+        archive = fallback.replace("/articles/story-28/", "/archive/")
+        verify_pv_recommendations(archive + pv_recommendations(only, only[0]["slug"]), only, only[0])
+
+
+class PVAPIDeploymentTests(unittest.TestCase):
+    @staticmethod
+    def payload(slug="story-a"):
+        return {
+            "unit": "anonymous-browser", "visitors": 900, "pageViews": 32,
+            "pageViewTracking": {"unit": "page-view", "timezone": "Asia/Tokyo",
+                                 "startedAtUtc": "2026-11-04T00:00:00.000Z"},
+            "today": {"dateJst": "2026-11-04", "visitors": 12, "articleReads": 8,
+                      "pageViews": 32, "pageViewsCoverage": "in-progress"},
+            "yesterday": {"dateJst": "2026-11-03", "visitors": 30, "articleReads": 40,
+                          "pageViews": None, "pageViewsCoverage": "unmeasured"},
+            "last7Days": {"startDateJst": "2026-10-29", "endDateJst": "2026-11-04",
+                          "pageViews": 32, "measuredDays": 1, "complete": False},
+            "articles": {slug: {"likes": 0, "readers": 500, "todayReaders": 200,
+                                "pageViews": 7, "todayPageViews": 7, "last7DaysPageViews": 7,
+                                "votes": {"plausible": 0, "unlikely": 0}}},
+        }
+
+    def test_pv_contract_validates_recent_counts_without_using_legacy_browsers(self):
+        from scripts.check_live import verify_pageview_contract
+        payload = self.payload()
+        before = copy.deepcopy(payload)
+        verify_pageview_contract(payload, "story-a")
+        self.assertEqual(payload, before)
+        payload["pageViewTracking"]["startedAtUtc"] = None
+        payload["pageViews"] = None
+        payload["today"].update(pageViews=None, pageViewsCoverage="unmeasured")
+        payload["last7Days"].update(pageViews=None, measuredDays=0)
+        payload["articles"]["story-a"].update(pageViews=None, todayPageViews=None, last7DaysPageViews=None)
+        verify_pageview_contract(payload, "story-a")
+
+    def test_pv_contract_rejects_missing_recent_pv_false_counts_and_period_mismatch(self):
+        from scripts.check_live import verify_pageview_contract
+        payload = self.payload()
+        del payload["articles"]["story-a"]["last7DaysPageViews"]
+        with self.assertRaisesRegex(RuntimeError, "last7DaysPageViews"):
+            verify_pageview_contract(payload, "story-a")
+        for value in (None, -1, True, "7", 33):
+            payload = self.payload()
+            payload["articles"]["story-a"]["last7DaysPageViews"] = value
+            with self.subTest(value=value), self.assertRaises(RuntimeError):
+                verify_pageview_contract(payload, "story-a")
+        for key, value in (("startDateJst", "2026-10-28"), ("endDateJst", "2026-11-03")):
+            payload = self.payload()
+            payload["last7Days"][key] = value
+            with self.subTest(key=key), self.assertRaisesRegex(RuntimeError, "JST period"):
+                verify_pageview_contract(payload, "story-a")
+        payload = self.payload()
+        payload["pageViewTracking"]["unit"] = "anonymous-browser"
+        with self.assertRaisesRegex(RuntimeError, "metadata"):
+            verify_pageview_contract(payload, "story-a")
+
+    def run_health_workflow(self, payload):
+        workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
+        code = textwrap.dedent(workflow.split("          python3 - <<'PY'\n", 1)[1].rsplit("          PY", 1)[0])
+        requests = []
+        responses = {
+            "/": "未発生新聞".encode(),
+            "/ads.txt": b"google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0",
+            "/api/engagement": json.dumps(payload).encode(),
+            "/api/comments": json.dumps({"article": "apology-before-incident", "total": 0, "comments": []}).encode(),
+            "/articles/apology-before-incident/": b'data-future-poll data-poll-choice="plausible" data-poll-choice="unlikely"',
+        }
+
+        class Response:
+            status = 200
+            headers = {"content-type": "application/json"}
+
+            def __init__(self, data):
+                self.data = data
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self, limit):
+                return self.data[:limit]
+
+        def fetch(request, timeout):
+            self.assertEqual(request.get_method(), "GET")
+            requests.append(request.full_url)
+            return Response(responses[urlsplit(request.full_url).path])
+
+        output = io.StringIO()
+        with patch("urllib.request.urlopen", side_effect=fetch), patch("time.sleep"), redirect_stdout(output):
+            exec(compile(code, "public-engagement-health.yml", "exec"), {})
+        return output.getvalue(), requests
+
+    def test_scheduled_health_workflow_reports_pv_and_only_performs_gets(self):
+        output, requests = self.run_health_workflow(self.payload("apology-before-incident"))
+        self.assertEqual(len(requests), 5)
+        self.assertIn("site=32, article=7, article last7Days=7 PV", output)
+        self.assertIn("today=32 / yesterday=None / last7Days=32", output)
+        self.assertNotIn("900", output)
+        self.assertNotIn("500", output)
+        workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
+        self.assertIn("cron: '41 23 * * *'", workflow)
+        self.assertIn("permissions:\n  contents: read", workflow)
+
+    def test_scheduled_health_workflow_rejects_old_browser_only_ranking_contract(self):
+        payload = self.payload("apology-before-incident")
+        del payload["articles"]["apology-before-incident"]["last7DaysPageViews"]
+        with self.assertRaisesRegex(SystemExit, "last7DaysPageViews"):
+            self.run_health_workflow(payload)
 
 if __name__=="__main__":
     unittest.main()

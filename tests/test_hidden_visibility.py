@@ -25,8 +25,8 @@ class HiddenVisibilityTests(unittest.TestCase):
         self.assertIn('observerShell.hidden=false', js)
         self.assertIn('popularSection.hidden=false', js)
         # No fake traffic is generated just to fill an empty widget.
-        self.assertIn('data.unit!=="anonymous-browser"', js)
-        self.assertIn('!Number.isSafeInteger(data.visitors)', js)
+        self.assertIn('tracking.unit!=="page-view"', js)
+        self.assertIn('showPopular(data,pvHealthy)', js)
 
     def test_visibility_fix_does_not_need_new_api_calls_or_paid_assets(self):
         css = (ROOT / "assets" / "editorial-polish.css").read_text(encoding="utf-8")

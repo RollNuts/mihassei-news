@@ -99,6 +99,7 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertNotIn("x_arrivals",metrics["story"])
         self.assertNotIn("search_arrivals",metrics["story"])
         self.assertNotIn("page_views_cumulative",metrics["story"])
+        self.assertNotIn("page_views_last_7_days",metrics["story"])
 
     def test_reject_corrupted_article_arrivals(self):
         for bad in ({"x":-1,"search":0},{"x":"many","search":1},
@@ -149,6 +150,7 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertFalse(result["page_views_available"])
         self.assertIsNone(result["daily_page_views"])
         self.assertIsNone(result["daily_page_views_coverage"])
+        self.assertIsNone(result["page_views_last_7_days_window"])
         self.assertEqual(result["unit"], "anonymous-browser")
         self.assertEqual(result["recent_articles_sampled"], 2)
         self.assertEqual(result["recent_articles"][0]["continued_readers"], 2)
@@ -277,22 +279,125 @@ class PageViewSnapshotsTests(unittest.TestCase):
                 return FakeResponse(json.dumps({
                     "unit": "anonymous-browser", "visitors": 200,
                     "articles": {"story": {"readers": 2, "likes": 0,
-                        "shareClicks": 0, "continuedReaders": 0, "pageViews": value}}
+                        "shareClicks": 0, "continuedReaders": 0, "pageViews": value,
+                        "last7DaysPageViews": value}}
                 }).encode())
             _, counts, _ = m.read_public_metrics(["story"], opener=response)
             self.assertEqual(counts["story"]["page_views_cumulative"], value)
+            self.assertEqual(counts["story"]["page_views_last_7_days"], value)
             self.assertEqual(counts["story"]["readers"], 2)
 
     def test_invalid_article_pv_is_not_saved(self):
-        for value in (-1, "17", True):
-            def response(request, timeout):
-                return FakeResponse(json.dumps({
-                    "unit": "anonymous-browser", "visitors": 200,
-                    "articles": {"story": {"readers": 2, "likes": 0,
-                        "shareClicks": 0, "continuedReaders": 0, "pageViews": value}}
-                }).encode())
+        for key in ("pageViews", "last7DaysPageViews"):
+            for value in (-1, "17", True, 1.5):
+                def response(request, timeout):
+                    return FakeResponse(json.dumps({
+                        "unit": "anonymous-browser", "visitors": 200,
+                        "articles": {"story": {"readers": 2, "likes": 0,
+                            "shareClicks": 0, "continuedReaders": 0, key: value}}
+                    }).encode())
+                with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                    m.read_public_metrics(["story"], opener=response)
+
+    def test_seven_date_pv_keeps_opposite_browser_order_and_capture_window(self):
+        payload = self.payload()
+        payload["last7Days"] = {
+            "startDateJst": "2026-10-30", "endDateJst": "2026-11-05",
+            "pageViews": 53, "measuredDays": 2, "complete": False,
+        }
+        payload["articles"] = {
+            "many-browsers": {"readers": 90, "likes": 0, "shareClicks": 0,
+                              "continuedReaders": 0, "pageViews": 4,
+                              "last7DaysPageViews": 3},
+            "repeat-displays": {"readers": 2, "likes": 0, "shareClicks": 0,
+                                "continuedReaders": 0, "pageViews": 41,
+                                "last7DaysPageViews": 36},
+        }
+        def get_only(request, timeout):
+            self.assertEqual(request.get_method(), "GET")
+            self.assertIsNone(request.data)
+            return FakeResponse(json.dumps(payload).encode())
+        visitors, counts, channels = m.read_public_metrics(
+            list(payload["articles"]), opener=get_only)
+        result = m.build_snapshot(
+            [{"slug": slug, "category": "社会", "published_at": "2026-11-04T18:00:00+09:00"}
+             for slug in counts], datetime.fromisoformat("2026-11-05T01:07:00+09:00"),
+            visitors, counts, self.read(payload), channels)
+        saved = {item["slug"]: item for item in result["recent_articles"]}
+        self.assertEqual(saved["many-browsers"]["readers"], 90)
+        self.assertEqual(saved["repeat-displays"]["readers"], 2)
+        self.assertEqual(saved["many-browsers"]["page_views_last_7_days"], 3)
+        self.assertEqual(saved["repeat-displays"]["page_views_last_7_days"], 36)
+        self.assertEqual(saved["repeat-displays"]["page_views_cumulative"], 41)
+        self.assertEqual(result["daily_page_views"], 40)
+        self.assertEqual(result["date_jst"], "2026-11-04")
+        self.assertEqual(result["measured_at_utc"], "2026-11-04T16:07:00+00:00")
+        self.assertEqual(result["page_views_last_7_days_window"], {
+            "start_date_jst": "2026-10-30", "end_date_jst": "2026-11-05",
+            "measured_days": 2, "complete": False,
+        })
+        self.assertIn("measured_at_utc", result["page_views_last_7_days_note"])
+        self.assertIn("not seven completed days", result["page_views_last_7_days_note"])
+
+    def test_seven_date_unmeasured_coverage_is_not_zero_history(self):
+        payload = self.payload(start=None, total=None, daily=None, coverage="unmeasured")
+        payload["last7Days"] = {
+            "startDateJst": "2026-10-30", "endDateJst": "2026-11-05",
+            "pageViews": None, "measuredDays": 0, "complete": False,
+        }
+        result = m.build_snapshot(
+            [{"slug": "story", "category": "社会",
+              "published_at": "2026-11-04T18:00:00+09:00"}],
+            datetime.fromisoformat("2026-11-05T01:07:00+09:00"), 206,
+            {"story": {"readers": 2, "likes": 0, "share_clicks": 0,
+                       "continued_readers": 0, "page_views_cumulative": None,
+                       "page_views_last_7_days": None}}, self.read(payload))
+        self.assertEqual(result["page_views_last_7_days_window"]["measured_days"], 0)
+        self.assertFalse(result["page_views_last_7_days_window"]["complete"])
+        self.assertIsNone(result["recent_articles"][0]["page_views_last_7_days"])
+
+    def test_seven_measured_dates_distinguish_full_and_partial_first_day(self):
+        for start, complete in (("2026-10-29T15:00:00Z", True),
+                                ("2026-10-29T15:00:00.001Z", False)):
+            payload = self.payload(start=start, coverage="complete")
+            payload["last7Days"] = {
+                "startDateJst": "2026-10-30", "endDateJst": "2026-11-05",
+                "pageViews": 53, "measuredDays": 7, "complete": complete,
+            }
+            with self.subTest(start=start):
+                result = self.snapshot(self.read(payload))
+                self.assertEqual(result["page_views_last_7_days_window"]["measured_days"], 7)
+                self.assertEqual(result["page_views_last_7_days_window"]["complete"], complete)
+
+    def test_seven_date_window_rejects_false_coverage_and_wrong_capture_date(self):
+        valid = {"startDateJst": "2026-10-30", "endDateJst": "2026-11-05",
+                 "pageViews": 53, "measuredDays": 2, "complete": False}
+        for change in ({"complete": True}, {"complete": "false"},
+                       {"measuredDays": 7}, {"measuredDays": True},
+                       {"startDateJst": "2026-10-29"}, {"endDateJst": None}):
+            payload = self.payload()
+            payload["last7Days"] = {**valid, **change}
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.read(payload)
+        payload = self.payload()
+        # This is a valid seven-date API window, but it belongs to a different
+        # capture date. It must not be labeled as a window ending November 5.
+        payload["last7Days"] = {**valid, "startDateJst": "2026-10-29",
+                               "endDateJst": "2026-11-04", "measuredDays": 1}
+        with self.assertRaises(ValueError):
+            self.snapshot(self.read(payload))
+
+    def test_saved_seven_date_article_values_validate_without_requiring_legacy_fields(self):
+        for value in (0, None, 17):
+            result = self.snapshot(self.read(self.payload()))
+            result["recent_articles"][0]["page_views_last_7_days"] = value
+            m.validate_snapshot(result, "2026-11-04")
+            self.assertEqual(result["recent_articles"][0]["page_views_last_7_days"], value)
+        for value in (-1, True, "17", 1.5):
+            result = self.snapshot(self.read(self.payload()))
+            result["recent_articles"][0]["page_views_last_7_days"] = value
             with self.subTest(value=value), self.assertRaises(ValueError):
-                m.read_public_metrics(["story"], opener=response)
+                m.validate_snapshot(result, "2026-11-04")
 
     def test_v3_check_requires_pv_metadata_and_consistent_coverage(self):
         original = self.snapshot(self.read(self.payload()))
@@ -305,28 +410,33 @@ class PageViewSnapshotsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             m.validate_snapshot(broken, "2026-11-04")
 
-    def test_check_only_preserves_valid_legacy_v2_bytes(self):
-        legacy = {"schema_version": 2, "date_jst": "2026-11-03", "daily_visitors": 30,
-                  "daily_article_reads": 20, "articles_published_on_date": 15}
-        content = json.dumps(legacy, indent=2) + "\n"
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            target = root / "analytics" / "daily" / "2026-11-03.json"
-            target.parent.mkdir(parents=True)
-            target.write_text(content)
-            with (patch.object(m, "ROOT", root),
-                  patch.object(m, "report_date", return_value="2026-11-03"),
-                  patch.object(m.sys, "argv", ["record_metrics.py", "--check-only"]),
-                  patch.object(m, "read_public_metrics", side_effect=AssertionError("No network needed"))):
-                m.main()
-            self.assertEqual(target.read_text(), content)
-            # A normal scheduled run also leaves an existing snapshot unchanged.
-            with (patch.object(m, "ROOT", root),
-                  patch.object(m, "report_date", return_value="2026-11-03"),
-                  patch.object(m.sys, "argv", ["record_metrics.py"]),
-                  patch.object(m, "read_public_metrics", side_effect=AssertionError("No overwrite"))):
-                m.main()
-            self.assertEqual(target.read_text(), content)
+    def test_check_only_preserves_valid_legacy_v2_and_v3_bytes(self):
+        v2 = {"schema_version": 2, "date_jst": "2026-11-03", "daily_visitors": 30,
+              "daily_article_reads": 20, "articles_published_on_date": 15}
+        v3 = self.snapshot(self.read(self.payload()))
+        del v3["page_views_last_7_days_window"]
+        del v3["page_views_last_7_days_note"]
+        for legacy in (v2, v3):
+            day = legacy["date_jst"]
+            content = json.dumps(legacy, indent=2) + "\n"
+            with self.subTest(schema=legacy["schema_version"]), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                target = root / "analytics" / "daily" / (day + ".json")
+                target.parent.mkdir(parents=True)
+                target.write_text(content)
+                with (patch.object(m, "ROOT", root),
+                      patch.object(m, "report_date", return_value=day),
+                      patch.object(m.sys, "argv", ["record_metrics.py", "--check-only"]),
+                      patch.object(m, "read_public_metrics", side_effect=AssertionError("No network needed"))):
+                    m.main()
+                self.assertEqual(target.read_text(), content)
+                # A normal scheduled run also leaves an existing snapshot unchanged.
+                with (patch.object(m, "ROOT", root),
+                      patch.object(m, "report_date", return_value=day),
+                      patch.object(m.sys, "argv", ["record_metrics.py"]),
+                      patch.object(m, "read_public_metrics", side_effect=AssertionError("No overwrite"))):
+                    m.main()
+                self.assertEqual(target.read_text(), content)
 
 
 if __name__ == "__main__":

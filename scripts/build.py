@@ -22,8 +22,6 @@ if __package__:
     from .generated_photos import usable_generated_scene, generated_url, article_fingerprint
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
-    from .reader_paths import suggested_articles
-    from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
@@ -34,8 +32,6 @@ else:
     from generated_photos import usable_generated_scene, generated_url, article_fingerprint
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
-    from reader_paths import suggested_articles
-    from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
@@ -171,8 +167,8 @@ def editorial_lead(articles):
     """Show the newest *actual publication* in the front-page lead.
 
     Earlier curation could pin an older pick for up to 48 hours, making an
-    actively updated newsroom look stale. Human picks still appear in the
-    separate editorial starter section, with their own deduplicated links.
+    actively updated newsroom look stale. Measured PV recommendations appear
+    separately, after their complete statistics have arrived.
     Use the same keys as load(); never use the fictional date or modified_at.
     """
     if not articles:
@@ -916,6 +912,31 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span>創作記事・推理小説はフィクションです。市場分析は投資助言ではありません。</span></div></div></footer>
 </body></html>'''
 
+def pv_recommendations(articles, excluded_slug=""):
+    """Only publish eligibility metadata; runtime PVs determine the ranking.
+
+    Include the whole published archive, not just the newest twenty stories.
+    The browser fetches metrics in twenty-article batches and keeps this panel
+    hidden until all candidates have a measured value for the same JST period.
+    """
+    candidates = sorted(articles, key=lambda a: (
+        publication_date(a), a["source"]["published_at"]
+    ), reverse=True)
+    options = escape(json.dumps(
+        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
+         for x in candidates if x["slug"] != excluded_slug],
+        ensure_ascii=False, separators=(",", ":")))
+    return f'''<section class="readers-choice" data-popular-section
+ data-popular-options="{options}" aria-labelledby="readers-choice-title" hidden>
+<div class="section-head"><div>
+<span class="small-label red">POPULAR</span>
+<h2 id="readers-choice-title">よく読まれている記事</h2></div>
+<a href="/archive/">記事一覧へ ↗</a></div>
+<p class="readers-choice-note" data-popular-period>過去7日間のPV順</p>
+<ol class="readers-choice-list" data-popular-list></ol>
+</section>'''
+
+
 def home(articles, serials=None):
     # The newest published story must lead, even if a caller supplies an
     # unsorted list (e.g. a scheduled content edit or a local preview).
@@ -940,18 +961,13 @@ def home(articles, serials=None):
     side = "".join('<article class="brief-card">' + category_meta(x, compact=True) +
                    f'<h3><a href="{article_url(x)}">{escape(x["title"])}</a></h3></article>'
                    for x in remaining[:3])
-    # Curated starters must not repeat the editorial lead or the sidebar.
-    # Share this selection with the public read-only checker.
-    starters = homepage_starter_picks(articles, a, base=BASE)
-    starter_section = render_starter_picks(starters, image_tag, article_url)
-    picked_slugs = {item["article"]["slug"] for item in starters}
     # A compact fresh grid: the full article archive remains accessible.
-    recent_articles = [x for x in remaining[3:] if x["slug"] not in picked_slugs][:4]
+    recent_articles = remaining[3:7]
     recent = "".join(card(x) for x in recent_articles)
     # The activity rail doubles as genuine article discovery: do not repeat
-    # the lead, sidebar, visible story grid, or carefully selected starters.
+    # the lead, sidebar, or visible story grid.
     front_slugs = {a["slug"], *(x["slug"] for x in remaining[:3]),
-                   *(x["slug"] for x in recent_articles), *picked_slugs}
+                   *(x["slug"] for x in recent_articles)}
     # Rotating video choices also appear above the history rail, including
     # older stories whose newly delivered clips move them to the foreground.
     front_slugs.update(item["slug"] for item in broadcast_playlist(articles))
@@ -1015,22 +1031,7 @@ def home(articles, serials=None):
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
-    # This is only a pool of real published articles, not a claim that any
-    # of them is popular. The browser shows a ranking ONLY after the existing
-    # readership API returns genuine, sufficiently populated counts.
-    popular_candidates = articles[:20]
-    popular_options = escape(json.dumps(
-        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
-         for x in popular_candidates], ensure_ascii=False, separators=(",", ":")))
-    popular_section = f'''<section class="readers-choice" data-popular-section
- data-popular-options="{popular_options}" aria-labelledby="readers-choice-title" hidden>
-<div class="section-head"><div>
-<span class="small-label red">READER DISCOVERY / 読者の注目</span>
-<h2 id="readers-choice-title">読まれている記事</h2></div>
-<a href="/archive/">ほかの記事も探す ↗</a></div>
-<p class="readers-choice-note">閲覧ブラウザ数順 · <a href="/privacy/#readership">集計について</a></p>
-<ol class="readers-choice-list" data-popular-list></ol>
-</section>'''
+    popular_section = pv_recommendations(articles)
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
@@ -1064,14 +1065,13 @@ def home(articles, serials=None):
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
-{starter_section}
+{popular_section}
 {timeline_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><span class="small-label red">SECTIONS</span><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
 {render_serials_feature(serials)}
-{popular_section}
 <details class="extras-shelf">
 <summary><strong>発行号・号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">
@@ -1232,10 +1232,12 @@ def issue_page(day, items, issues):
 def story(a, articles, issues=None, serials=None):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
-    # Strong topic continuity; no duplicate next story in the related cards.
-    recommended = suggested_articles(a, articles, limit=4)
-    next_story = recommended[0] if recommended else None
-    related = "".join(card(x) for x in recommended[1:4])
+    # A normal newest-article link works without JavaScript or measurements.
+    # Live recommendations replace it only after verified PVs are available.
+    latest = sorted((x for x in articles if x["slug"] != a["slug"]), key=lambda x: (
+        publication_date(x), x["source"]["published_at"]
+    ), reverse=True)
+    next_story = latest[0] if latest else None
     next_url = article_url(next_story) if next_story else "/archive/"
     next_title = next_story["title"] if next_story else "記事一覧から次のニュースを探す"
     next_category = next_story["category"] if next_story else "新着記事"
@@ -1258,11 +1260,7 @@ def story(a, articles, issues=None, serials=None):
         if issue_day in available_issues else ""
     )
     bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else serials)
-    related_section = (
-        '<section class="article-related"><div class="section-head"><h2>さらに読む</h2>'
-        '<a href="/archive/">ほかの記事 ↗</a></div>'
-        '<div class="story-grid">' + related + '</div></section>'
-    ) if related else ""
+    popular_section = pv_recommendations(articles, a["slug"])
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
 <header class="article-header">
@@ -1278,10 +1276,11 @@ def story(a, articles, issues=None, serials=None):
 <figcaption>{photo_credit(a)}{clip_caption(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
-<nav class="reader-next" aria-label="続けて読む記事">
-<span class="reader-next-kicker">NEXT STORY / もう1本、読む · {escape(next_category)}</span>
+<nav class="reader-next" data-popular-fallback aria-label="新着から続けて読む記事">
+<span class="reader-next-kicker">NEXT STORY / 新着からもう1本 · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
+{popular_section}
 <section class="future-poll" data-future-poll data-poll-article="{escape(a["slug"])}" aria-labelledby="future-poll-title">
 <div class="future-poll-heading">
 <span class="future-poll-kicker">WHAT IF? / もしもの投票</span>
@@ -1332,7 +1331,6 @@ def story(a, articles, issues=None, serials=None):
 <button type="submit">コメントを投稿</button></div>
 </form>
 </section></div>
-{related_section}
 </div>'''
     return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
@@ -1399,6 +1397,7 @@ def privacy():
 <h2 id="pageviews">PV（ページ閲覧数）</h2>
 <p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。トップはサイト全体、記事の見出し横はその記事の累計PVです。</p>
 <p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」、未計測の期間は「—」と表示します。</p>
+<p>「よく読まれている記事」は、公開済みの全記事を過去7日間のPV順に並べています。計測期間が短い場合は、表示した開始日以降のPVを使います。</p>
 <p>通信の再送による二重計上を防ぎ、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが無効な場合や通信に失敗した場合は計測できません。自動アクセスを完全に除外した数字ではありません。</p>
 <div class="analytics-preference">
 <label><input type="checkbox" data-analytics-opt-out> このブラウザの閲覧を集計しない</label>
@@ -1408,7 +1407,7 @@ def privacy():
 </div>
 <h2 id="readership">閲覧ブラウザ数・流入元</h2>
 <p>PVとは別に、閲覧したブラウザ数も集計します。同じ記事の一日内の重複閲覧を除いた件数も記録します。実人数ではなく、ブラウザを変えたり保存データを消したりすると、重複する場合があります。</p>
-<p>流入元は「X」「検索」「その他の外部サイト」「判別できない流入」に分類します。「X」「検索」は記事別にも集計し、参考値を表示する場合があります。X共有ボタンのクリックや、記事から別の記事へ進んだブラウザ数も集計します。</p>
+<p>流入元は「X」「検索」「その他の外部サイト」「判別できない流入」に分類します。「X」「検索」は記事別にも集計します。これらは運営改善の補助指標で、PVやおすすめの順位には使いません。X共有ボタンのクリックや、記事から別の記事へ進んだブラウザ数も集計します。</p>
 <p>参照元URL全体・検索語・SNSアカウント・UTMの詳細・IPアドレスは集計データベースに保存しません。記事間の移動は元の記事の識別子だけを送り、移動先との組み合わせや個人の閲覧経路は保存しません。</p>
 <p>日別集計と再送判別の記録は直近14日分を保持し、次の訪問時に古い記録を削除します。累計や日次の集計値は別途保存する場合があります。</p>
 <h2>投票</h2>
