@@ -1,8 +1,8 @@
 # 停止中のX実験と配信記録
 
-旧シュール短文・キャラ日常・ネタ画像の新規制作と予約は停止中。`config.json`の`experiment_publishing_enabled`、`launch_first_visual_now`、`two_daily_midday_enabled`はすべて`false`。以前の「7枠を補充」「21〜28本を常備」「画像を交互に投稿」は現行の制作指示ではない。再開には本人の明示的な依頼が必要。
+旧シュール短文・キャラ日常・ネタ画像の新規制作と予約は退役済み。`config.json`の`experiment_publishing_enabled`、`launch_first_visual_now`、`two_daily_midday_enabled`はすべて`false`。以前の「7枠を補充」「21〜28本を常備」「画像を交互に投稿」は現行の制作指示ではない。自動X投稿は記事紹介だけで、再開には本人の新しい明示的な依頼が必要。
 
-現在の独自コンテンツは別の`useful`経路で継続する。[X共通運用](../README.md)を参照。旧実験が停止しても、共有workflow内の[記事紹介](../article-picks/README.md)は独立した設定で動くため、旧実験の停止をworkflow全体の停止と取り違えない。
+`useful`自動経路も退役済み。[X共通運用](../README.md)を参照。現在の自動送信は[記事紹介](../article-picks/README.md)だけであり、この旧実験ディレクトリは履歴・検証・過去配信の読み取り専用として扱う。
 
 ## 保持する記録
 
@@ -18,7 +18,7 @@
 
 ## 既存予約の読み取り監査
 
-[`x-delivery-audit.yml`](../../.github/workflows/x-delivery-audit.yml)が23:45 JSTに1回、`probe_delivery.py`でこのディレクトリの`posts.json`・`state.json`にあるBuffer IDを確認する。旧実験がOFFで、全保存予約の同一Buffer ID・確認日時付きsent/draftがそろえば、外部API照会とファイル更新を省略する。未確認・scheduledが残れば監査を続ける。**useful、記事紹介、手動投稿を網羅する監査ではない。** 同じ日の確認を増やすための新しい定期処理は作らない。
+[`x-delivery-audit.yml`](../../.github/workflows/x-delivery-audit.yml)が23:45 JSTに1回、`probe_delivery.py`でこのディレクトリの`posts.json`・`state.json`にあるBuffer IDを確認する。旧実験がOFFで、全保存予約の同一Buffer ID・確認日時付きsent/draftがそろえば、外部API照会とファイル更新を省略する。未確認・scheduledが残れば監査を続ける。**この旧監査は過去実験の履歴確認用で、現行の記事紹介を網羅しない。現行配信監査はarticle-picks側を使う。** 同じ日の確認を増やすための新しい定期処理は作らない。
 
 - 同一Buffer ID・チャンネル・最終本文を照合する。最大20件を10件ずつの2リクエストで読み、成熟した指標は最大1件。失敗時に個別照会を追加して無料API枠を消費しない。
 - `scheduled`の`dueAt`はタイムゾーンを含む観測値だけ採用する。欠損時は未取得とし、作成時の受付予定から現在の時刻を推定しない。

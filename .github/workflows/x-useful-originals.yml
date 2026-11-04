@@ -1,4 +1,5 @@
-name: Useful X Originals (seven-slot safe checks, Buffer Free)
+name: Legacy X Originals Validation Only
+
 on:
   push:
     branches: [main]
@@ -6,90 +7,36 @@ on:
       - 'social-bot/useful-posts.json'
       - 'social-bot/useful_feed.py'
       - 'social-bot/test_useful_feed.py'
-      - 'social-bot/queue-cleanup.json'
-      - 'social-bot/queue_cleanup.py'
-      - 'social-bot/test_queue_cleanup.py'
       - '.github/workflows/x-useful-originals.yml'
   pull_request:
     paths:
       - 'social-bot/useful-posts.json'
       - 'social-bot/useful_feed.py'
       - 'social-bot/test_useful_feed.py'
-      - 'social-bot/queue-cleanup.json'
-      - 'social-bot/queue_cleanup.py'
-      - 'social-bot/test_queue_cleanup.py'
       - '.github/workflows/x-useful-originals.yml'
   workflow_dispatch:
-  schedule:
-    # Seven JST checks: 09:10, 11:10, 13:10, 15:10, 17:10, 19:10, 21:10.
-    # Each run can submit only one current-day reviewed manuscript; all X lanes share a 7/day cap.
-    - cron: '10 0,2,4,6,8,10,12 * * *'
+
 permissions:
-  contents: write
-concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('x-validation-{0}-{1}', github.workflow, github.ref) || 'free-surreal-x' }}
-  queue: max
-  cancel-in-progress: false
+  contents: read
+
 jobs:
-  validate-and-submit:
+  validate-retired-lane:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate independent useful feed offline
+      - name: Verify retired useful feed stays valid and disabled
         run: |
           python -m unittest discover -s social-bot -p 'test_useful_feed.py' -v
           python social-bot/useful_feed.py --validate
-          python -m unittest discover -s social-bot -p 'test_queue_cleanup.py' -v
-          python social-bot/queue_cleanup.py --validate
-      - name: Withdraw only the six named weak legacy reservations into drafts
-        id: cleanup
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        continue-on-error: true
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git pull --rebase origin main
-          python social-bot/queue_cleanup.py --apply
-          python social-bot/queue_cleanup.py --recover
-          python social-bot/queue_cleanup.py --continue-cleanup
-      - name: Schedule at most one current-day reviewed useful original
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git pull --rebase origin main
-          python social-bot/useful_feed.py
-      - name: Preserve any response evidence even after an interrupted request
-        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          test -f social-bot/useful-state.json || exit 0
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add social-bot/useful-state.json social-bot/queue-cleanup.json
-          if ! git diff --cached --quiet; then
-            git commit -m 'chore(x): preserve useful-feed receipt [skip ci]'
-          fi
-          for attempt in 1 2 3 4; do
-            git pull --rebase origin main || exit 1
-            git push origin HEAD:main && exit 0
-          done
-          exit 1
-      - name: Preserve withdrawal evidence if its provider or Git result is uncertain
-        if: always() && steps.cleanup.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: named-queue-withdrawal-evidence
-          path: social-bot/queue-cleanup.json
-          retention-days: 7
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          feed = json.loads(Path("social-bot/useful-posts.json").read_text())
+          if feed.get("enabled") is not False:
+              raise SystemExit("Legacy useful X lane must remain disabled")
+          print("Legacy useful X auto-posting is disabled.")
+          PY

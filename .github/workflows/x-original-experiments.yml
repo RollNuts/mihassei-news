@@ -1,164 +1,69 @@
-name: X Impressions Original Text Experiments (Buffer Free)
+name: X Article Promotion (Buffer Free)
 
 on:
   push:
     branches: [main]
     paths:
-      - "social-bot/experiments/posts.json"
-      - "social-bot/experiments/config.json"
-      - "social-bot/experiments/dispatch.py"
-      - "social-bot/experiments/visuals.py"
-      - "social-bot/experiments/test_visuals.py"
-      - "social-bot/experiments/probe_delivery.py"
-      - "social-bot/experiments/test_probe_delivery.py"
-      - "social-bot/publish.py"
-      - "social-bot/experiments/test_dispatch.py"
       - "social-bot/article-picks/**"
+      - "social-bot/publish.py"
+      - "social-bot/social_text.py"
       - ".github/workflows/x-original-experiments.yml"
   pull_request:
     paths:
-      - "social-bot/experiments/**"
       - "social-bot/article-picks/**"
+      - "social-bot/publish.py"
+      - "social-bot/social_text.py"
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
   schedule:
-    # Check article discovery every four hours so 2–18h fresh stories do not
-    # age out before their first promotion chance. Daily X total remains capped at 7.
-    # JST 00:05 / 04:05 / 08:05 / 12:05 / 16:05 / 20:05.
-    - cron: "5 3,7,11,15,19,23 * * *"
+    # Seven JST checks: 09:05, 11:05, 13:05, 15:05, 17:05, 19:05, 21:05.
+    - cron: "5 0,2,4,6,8,10,12 * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  # Offline PR checks must never replace a waiting production submission.
-  group: ${{ github.event_name == 'pull_request' && format('x-validation-{0}-{1}', github.workflow, github.ref) || 'free-surreal-x' }}
-  queue: max
+  group: ${{ github.event_name == 'pull_request' && format('x-article-validation-{0}', github.ref) || 'x-article-promotion' }}
   cancel-in-progress: false
 
 jobs:
-  validate-and-refill:
+  validate-and-promote:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
         with:
-          # A queued run must respect the latest OFF switches and receipts.
           ref: ${{ github.event_name == 'pull_request' && github.ref || 'main' }}
           persist-credentials: true
 
-      - name: Read X lane switches before preparing any renderer
-        id: lanes
-        run: |
-          python3 - <<'PY'
-          import json, os
-          from pathlib import Path
-          flags = {
-              "experiments": json.loads(Path("social-bot/experiments/config.json").read_text())["experiment_publishing_enabled"],
-              "article_picks": json.loads(Path("social-bot/article-picks/config.json").read_text())["enabled"],
-          }
-          if any(type(value) is not bool for value in flags.values()):
-              raise SystemExit("Invalid X lane switch; no renderer or submission may start")
-          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
-              for name, enabled in flags.items():
-                  output.write(f"{name}={str(enabled).lower()}\n")
-          print("X lane switches:", flags)
-          PY
-
-      - name: Install free local illustration renderer (no AI API)
-        if: github.event_name == 'pull_request' || steps.lanes.outputs.experiments == 'true'
-        run: python -m pip install --disable-pip-version-check "Pillow==12.0.0"
-
-      - name: Render original X illustrations without revising old assets
-        if: github.event_name == 'pull_request' || steps.lanes.outputs.experiments == 'true'
-        run: python social-bot/experiments/visuals.py
-
-      - name: Check visual content, dimensions and image mutation safety
-        if: github.event_name == 'pull_request' || steps.lanes.outputs.experiments == 'true'
-        run: python -m unittest discover -s social-bot/experiments -p 'test_visuals.py' -v
-
-      - name: Validate original X ideas, caps, no duplicates or cross-account sending
-        run: |
-          python -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
-          python -m unittest discover -s social-bot/experiments -p 'test_probe_delivery.py' -v
-          python -m py_compile social-bot/experiments/dispatch.py social-bot/experiments/probe_delivery.py
-
-      - name: Validate promotion dedupe, measured interest, creative-lane fairness
+      - name: Validate article promotion, dedupe and safety gates
         run: |
           python -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
           python -m py_compile social-bot/article-picks/dispatch.py
 
-      # Asset URLs must exist at main BEFORE the Buffer image mutation.
-      # PR validation renders locally but never pushes or calls Buffer.
-      - name: Host newly generated experiment PNGs on main before queueing
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.lanes.outputs.experiments == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/assets/xexp-*.png
-          if ! git diff --cached --quiet; then
-            git commit -m "media(x): add original zero-cost X scene illustrations [skip ci]"
-            # Multiple independent Actions write main; a transient ref race is
-            # not an editorial or Buffer failure. Rebase and retry, never force.
-            published=false
-            for attempt in 1 2 3 4; do
-              if ! git pull --rebase origin main; then
-                echo "::error::Rebase conflict. No forced push or silent overwrite."
-                exit 1
-              fi
-              if git push origin HEAD:main; then
-                published=true
-                break
-              fi
-              echo "::warning::main advanced during push (attempt $attempt); retry safely"
-              sleep $((attempt * 2))
-            done
-            if [ "$published" != true ]; then
-              echo "::error::Could not persist evidence after four attempts"
-              exit 1
-            fi
-          fi
-
-      - name: Refill seven daily original X Buffer slots safely
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.lanes.outputs.experiments == 'true'
-        env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
-        run: python social-bot/experiments/dispatch.py
-
-      - name: Fill a reserved article slot with fresh, follow-up or measured-interest story
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.lanes.outputs.article_picks == 'true'
-        continue-on-error: true
+      - name: Queue at most one eligible Veripsa article
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/article-picks/dispatch.py
 
-      - name: Record exact Buffer submission IDs (also after partial API failure)
+      - name: Persist exact Buffer article receipt
         if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/experiments/state.json social-bot/article-picks/state.json
+          git add social-bot/article-picks/state.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore(x): persist verified Buffer experiment IDs [skip ci]"
-            # Multiple independent Actions write main; a transient ref race is
-            # not an editorial or Buffer failure. Rebase and retry, never force.
+            git commit -m "chore(x): persist article promotion receipt [skip ci]"
             published=false
             for attempt in 1 2 3 4; do
-              if ! git pull --rebase origin main; then
-                echo "::error::Rebase conflict. No forced push or silent overwrite."
-                exit 1
-              fi
+              git pull --rebase origin main || exit 1
               if git push origin HEAD:main; then
                 published=true
                 break
               fi
-              echo "::warning::main advanced during push (attempt $attempt); retry safely"
               sleep $((attempt * 2))
             done
-            if [ "$published" != true ]; then
-              echo "::error::Could not persist evidence after four attempts"
-              exit 1
-            fi
+            test "$published" = true
           fi

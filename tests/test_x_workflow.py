@@ -1,137 +1,106 @@
-"""Offline workflow boundaries: paused rendering, independent feeds and X locks."""
+"""Offline guards for the current X article-only publishing policy."""
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 import re
-import subprocess
-import tempfile
-import textwrap
-from types import SimpleNamespace
 import unittest
 
 
-WORKFLOWS = Path(__file__).resolve().parents[1] / ".github/workflows"
+ROOT = Path(__file__).resolve().parents[1]
+WORKFLOWS = ROOT / ".github" / "workflows"
 
 
-def step(document, name):
-    return re.search(r"(?ms)^      - name: " + re.escape(name) +
-                     r"\n(.*?)(?=^      - |\Z)", document).group(1)
-
-
-def expression(value, event="schedule", ref="refs/heads/main", workflow="X", flags=None):
-    """Evaluate only the boolean/string subset used by these checked-in gates."""
-    value = value.removeprefix("${{").removesuffix("}}").strip()
-    value = value.replace("&&", " and ").replace("||", " or ")
-    context = {
-        "github": SimpleNamespace(event_name=event, ref=ref, workflow=workflow),
-        "steps": SimpleNamespace(lanes=SimpleNamespace(outputs=SimpleNamespace(**(flags or {})))),
-        "format": lambda template, *args: template.format(*args),
-        "always": lambda: True,
-    }
-    return eval(value, {"__builtins__": {}}, context)
+def step(document: str, name: str) -> str:
+    match = re.search(
+        r"(?ms)^      - name: " + re.escape(name) + r"\n(.*?)(?=^      - |\Z)",
+        document,
+    )
+    if not match:
+        raise AssertionError(f"workflow step not found: {name}")
+    return match.group(1)
 
 
 class XWorkflowTests(unittest.TestCase):
     def setUp(self):
-        self.original = (WORKFLOWS / "x-original-experiments.yml").read_text()
+        self.article = (WORKFLOWS / "x-original-experiments.yml").read_text()
+        self.useful = (WORKFLOWS / "x-useful-originals.yml").read_text()
+        self.midday = (WORKFLOWS / "x-midday-original.yml").read_text()
+        self.weekly = (WORKFLOWS / "x-weekly-experiments.yml").read_text()
+        self.audit = (WORKFLOWS / "x-delivery-audit.yml").read_text()
+        self.surreal = (WORKFLOWS / "free-surreal-x.yml").read_text()
 
-    def gate(self, name, **context):
-        block = step(self.original, name)
-        condition = re.search(r"^        if: (.*)$", block, re.M).group(1)
-        return expression(condition, **context)
+    def test_article_promotion_is_the_only_scheduled_x_sender(self):
+        self.assertIn('cron: "5 0,2,4,6,8,10,12 * * *"', self.article)
+        self.assertIn("run: python social-bot/article-picks/dispatch.py", self.article)
+        self.assertIn("BUFFER_API_KEY:", self.article)
+        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        self.assertIn("github.ref == 'refs/heads/main'", queue)
+        self.assertIn("github.event_name != 'pull_request'", queue)
 
-    def plan(self, experiments, picks):
-        block = step(self.original, "Read X lane switches before preparing any renderer")
-        shell = textwrap.dedent(block.split("        run: |\n", 1)[1])
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            for folder, key, value in (("experiments", "experiment_publishing_enabled", experiments),
-                                       ("article-picks", "enabled", picks)):
-                path = root / "social-bot" / folder / "config.json"
-                path.parent.mkdir(parents=True)
-                path.write_text(json.dumps({key: value}))
-            output = root / "output"
-            result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell],
-                                    cwd=root, env={**os.environ, "GITHUB_OUTPUT": str(output)},
-                                    capture_output=True, text=True)
-            flags = dict(line.split("=", 1) for line in output.read_text().splitlines()) if output.exists() else {}
-            return result, flags
+        # Retired creative lanes may retain offline tests/history, but never a schedule
+        # or Buffer credential that could post an original automatically.
+        for name, document in (
+            ("useful", self.useful),
+            ("midday", self.midday),
+            ("weekly", self.weekly),
+        ):
+            with self.subTest(name=name):
+                self.assertNotRegex(document, r"(?m)^\s*schedule:\s*$")
+                self.assertNotIn("BUFFER_API_KEY:", document)
+                self.assertNotIn("addToQueue", document)
 
-    def test_paused_experiments_skip_renderer_and_submission_but_keep_article_picks(self):
-        result, flags = self.plan(False, True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        for event in ("schedule", "push", "workflow_dispatch"):
-            with self.subTest(event=event):
-                for name in ("Install free local illustration renderer (no AI API)",
-                             "Render original X illustrations without revising old assets",
-                             "Check visual content, dimensions and image mutation safety",
-                             "Host newly generated experiment PNGs on main before queueing",
-                             "Refill seven daily original X Buffer slots safely"):
-                    self.assertFalse(self.gate(name, event=event, flags=flags), name)
-                self.assertTrue(self.gate("Fill a reserved article slot with fresh, follow-up or measured-interest story",
-                                          event=event, flags=flags))
-        self.assertIn('cron: "5 3,7,11,15,19,23 * * *"', self.original)
+        # The old manga workflow is hard-paused at job level and has no cron.
+        self.assertNotRegex(self.surreal, r"(?m)^\s*schedule:\s*$")
+        self.assertIn("if: ${{ false }}", self.surreal)
 
-    def test_pr_validation_remains_offline_even_with_enabled_lanes(self):
-        for enabled in (False, True):
-            result, flags = self.plan(enabled, enabled)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            context = dict(event="pull_request", ref="refs/pull/99/merge", flags=flags)
-            self.assertTrue(self.gate("Install free local illustration renderer (no AI API)", **context))
-            self.assertTrue(self.gate("Check visual content, dimensions and image mutation safety", **context))
-            for name in ("Host newly generated experiment PNGs on main before queueing",
-                         "Refill seven daily original X Buffer slots safely",
-                         "Fill a reserved article slot with fresh, follow-up or measured-interest story",
-                         "Record exact Buffer submission IDs (also after partial API failure)"):
-                self.assertFalse(self.gate(name, **context), name)
+    def test_read_only_delivery_audit_cannot_publish(self):
+        self.assertIn('cron: "45 14 * * *"', self.audit)
+        self.assertIn("article-picks/audit_delivery.py", self.audit)
+        self.assertNotIn("article-picks/dispatch.py", self.audit)
+        self.assertNotIn("experiments/dispatch.py", self.audit)
+        self.assertNotIn("publish.py", self.audit)
 
-    def test_invalid_switches_fail_before_emitting_any_enabled_lane(self):
-        for experiments, picks in (("false", True), (False, 1), (None, False)):
-            with self.subTest(experiments=experiments, picks=picks):
-                result, flags = self.plan(experiments, picks)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertEqual(flags, {})
-        result, flags = self.plan(False, False)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertFalse(self.gate("Fill a reserved article slot with fresh, follow-up or measured-interest story", flags=flags))
+    def test_retired_lane_switches_are_off(self):
+        useful = json.loads((ROOT / "social-bot" / "useful-posts.json").read_text())
+        experiments = json.loads((ROOT / "social-bot" / "experiments" / "config.json").read_text())
+        picks = json.loads((ROOT / "social-bot" / "article-picks" / "config.json").read_text())
+        self.assertIs(useful["enabled"], False)
+        self.assertIs(experiments["experiment_publishing_enabled"], False)
+        self.assertIs(experiments["two_daily_midday_enabled"], False)
+        self.assertIs(picks["enabled"], True)
+        self.assertEqual(picks["max_per_jst_day"], 7)
+        self.assertEqual(picks["minimum_interval_hours"], 2)
 
-    def test_prs_cannot_displace_other_workflows_or_production_submissions(self):
-        names = ("x-original-experiments.yml", "x-useful-originals.yml", "x-midday-original.yml",
-                 "free-surreal-x.yml", "hold-nejimachi-quality.yml", "migrate-legacy-buffer.yml")
-        validation_groups = set()
-        for name in names:
-            document = (WORKFLOWS / name).read_text()
-            block = re.search(r"(?ms)^concurrency:\n(.*?)(?=^\S)", document).group(1)
-            group = re.search(r"^  group: (.*)$", block, re.M).group(1)
-            self.assertIn("queue: max", block, name)
-            self.assertIn("cancel-in-progress: false", block, name)
-            self.assertEqual(expression(group, event="workflow_dispatch", workflow=name), "free-surreal-x")
-            for ref in ("refs/pull/98/merge", "refs/pull/99/merge"):
-                pr_group = expression(group, event="pull_request", ref=ref, workflow=name)
-                self.assertNotEqual(pr_group, "free-surreal-x", name)
-                self.assertNotIn(pr_group, validation_groups, name)
-                validation_groups.add(pr_group)
-        remaster = (WORKFLOWS / "remaster-queued-nejimachi.yml").read_text()
-        self.assertIn("group: free-surreal-x\n  queue: max\n  cancel-in-progress: false", remaster)
+    def test_pr_article_validation_never_calls_buffer(self):
+        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        persist = step(self.article, "Persist exact Buffer article receipt")
+        for block in (queue, persist):
+            self.assertIn("github.ref == 'refs/heads/main'", block)
+            self.assertIn("github.event_name != 'pull_request'", block)
 
-    def test_completed_migrations_cannot_replay_buffer_operations_on_push(self):
+    def test_completed_legacy_migrations_remain_manual_only(self):
         mutations = {
-            "hold-nejimachi-quality.yml": ("Move only the two exact unreviewed manga previews to Buffer drafts",
-                                          "Preserve hold audit in Git history"),
-            "migrate-legacy-buffer.yml": ("Preserve only two old setup posts as Buffer drafts (not deleted)",
-                                         "Fill queue with up to two canonical Nejimachi episodes",
-                                         "Save queue ledger and reversible migration audit"),
+            "hold-nejimachi-quality.yml": (
+                "Move only the two exact unreviewed manga previews to Buffer drafts",
+                "Preserve hold audit in Git history",
+            ),
+            "migrate-legacy-buffer.yml": (
+                "Preserve only two old setup posts as Buffer drafts (not deleted)",
+                "Fill queue with up to two canonical Nejimachi episodes",
+                "Save queue ledger and reversible migration audit",
+            ),
         }
         for filename, steps in mutations.items():
             document = (WORKFLOWS / filename).read_text()
+            self.assertNotRegex(document, r"(?m)^\s*schedule:\s*$")
             for name in steps:
-                condition = re.search(r"^        if: (.*)$", step(document, name), re.M).group(1)
-                for event in ("push", "pull_request", "schedule"):
-                    self.assertFalse(expression(condition, event=event), (filename, name, event))
-                self.assertTrue(expression(condition, event="workflow_dispatch"))
-                self.assertFalse(expression(condition, event="workflow_dispatch", ref="refs/heads/preview"))
+                block = step(document, name)
+                condition = re.search(r"^        if: (.*)$", block, re.M)
+                self.assertIsNotNone(condition, (filename, name))
+                expression = condition.group(1)
+                self.assertIn("workflow_dispatch", expression)
+                self.assertNotIn("schedule", expression)
 
 
 if __name__ == "__main__":
