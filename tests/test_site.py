@@ -134,6 +134,26 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(home.count('data-issue-picker data-issue-options='),1)
         self.assertNotIn('<div class="news-wire"',home)
 
+    def test_activity_rail_excludes_all_video_choices_when_a_new_clip_leads(self):
+        """A newly delivered clip must not repeat a story in the discovery rail."""
+        import re
+        from unittest.mock import patch
+        from scripts import build
+        articles=build.load()
+        playlist=build.broadcast_playlist(articles)
+        self.assertGreater(len(playlist),1)
+        broadcast_slugs={item["slug"] for item in playlist}
+        for offset in range(len(playlist)):
+            reordered=playlist[offset:]+playlist[:offset]
+            with self.subTest(first=reordered[0]["slug"]), \
+                 patch.object(build,"broadcast_playlist",return_value=reordered):
+                home=build.home(articles)
+                rail=home.split('<section class="press-timeline"',1)[1].split('</section>',1)[0]
+                links=re.findall(r'<li><a href="/articles/([^/]+)/">',rail)
+                self.assertEqual(len(links),3,"fill the rail with different published stories")
+                self.assertTrue(broadcast_slugs.isdisjoint(links),
+                                "all selectable videos are already shown above the rail")
+
     def test_homepage_does_not_repeat_lead_or_sidebar_news(self):
         """News grid fills with different headlines rather than showing the same story twice."""
         import re
