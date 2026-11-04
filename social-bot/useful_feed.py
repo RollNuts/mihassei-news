@@ -22,6 +22,9 @@ JST = timezone(timedelta(hours=9))
 CHANNEL = "6ae94b74e29c69a171436d72"
 KINDS = {"evergreen_explainer", "conversation_example", "market_close"}
 STATE_PATH = HERE / "useful-state.json"
+# One shared Free queue; new useful originals may use the last free slot.
+# All senders serialize on the same workflow concurrency group.
+MAX_TOTAL_SCHEDULED = 10
 
 
 def read(path):
@@ -116,29 +119,41 @@ def validate(feed, state):
     return posts
 
 
-def select(feed, state, now, live, prior_texts=()):
+def select(feed, state, now, live, prior_texts=(), reasons=None):
     posts = validate(feed, state)
+    reasons = reasons if reasons is not None else []
     if not feed["enabled"]:
+        reasons.append({"reason": "disabled"})
         return None
     today = now.astimezone(JST).date().isoformat()
     if any(a.get("day_jst") == today for a in state["attempts"].values()):
+        reasons.append({"reason": "day_already_attempted"})
         return None
-    if sum(p.get("status") == "scheduled" for p in live) >= 9:
-        return None  # reserve one of the existing shared Free ten slots
+    if sum(p.get("status") == "scheduled" for p in live) >= MAX_TOTAL_SCHEDULED:
+        reasons.append({"reason": "shared_free_queue_full"})
+        return None  # Never exceed Buffer Free's shared ten scheduled posts.
     for p in posts:
         due = stamp(p["publish_at"])
+        reason = None
         if p["delivery"] != "automatic" or p["id"] in state["attempts"]:
+            reason = "manual_or_already_attempted"
+        elif due.astimezone(JST).date().isoformat() != today:
+            reason = "not_current_jst_day"
+        elif stamp(p["checked_at"]) > now:
+            reason = "check_time_in_future"
+        elif not now + timedelta(minutes=15) < due < stamp(p["valid_until"]):
+            reason = "past_cutoff_or_expired"
+        elif any(close_copy(p["text"], t) for t in list(prior_texts) + [r.get("text", "") for r in live]):
+            reason = "duplicate_or_near_duplicate"
+        elif any(r.get("status") == "scheduled" and r.get("dueAt") and
+                 abs((stamp(r["dueAt"]) - due).total_seconds()) < 1800 for r in live):
+            reason = "within_30_minutes_of_existing_reservation"
+        if reason:
+            reasons.append({"post_id": p["id"], "reason": reason})
             continue
-        if due.astimezone(JST).date().isoformat() != today:
-            continue
-        if stamp(p["checked_at"]) > now or not now + timedelta(minutes=15) < due < stamp(p["valid_until"]):
-            continue
-        if any(close_copy(p["text"], t) for t in list(prior_texts) + [r.get("text", "") for r in live]):
-            continue
-        if any(r.get("status") == "scheduled" and r.get("dueAt") and
-               abs((stamp(r["dueAt"]) - due).total_seconds()) < 1800 for r in live):
-            continue  # do not crowd or edit an existing reservation
         return p
+    if not posts:
+        reasons.append({"reason": "no_manuscripts"})
     return None
 
 
@@ -188,9 +203,19 @@ def main():
         if path.exists():
             prior.extend(p.get("text", "") for p in read(path).get(key, []))
     now = datetime.now(timezone.utc)
-    p = select(feed, state, now, live, prior)
+    reasons = []
+    p = select(feed, state, now, live, prior, reasons=reasons)
+    state["last_selection"] = {
+        "checked_at_utc": now.isoformat(),
+        "scheduled_count": sum(r.get("status") == "scheduled" for r in live),
+        "shared_queue_limit": MAX_TOTAL_SCHEDULED,
+        "selected_post_id": p["id"] if p else None,
+        "reasons": reasons,
+    }
+    print("Useful feed selection:", json.dumps(state["last_selection"], ensure_ascii=False))
+    persist(state)
     if p is None:
-        print("No eligible current-day original (empty/expired/duplicate/crowded/already attempted).")
+        print("No submission; exact reason is recorded in last_selection.")
         return
     row = {"payload_sha256": payload_hash(p), "text_sha256": fingerprint(p["text"]), "day_jst": stamp(p["publish_at"]).astimezone(JST).date().isoformat(),
            "requested_due_at": p["publish_at"], "provider_status": "intent", "attempted_at": now.isoformat()}
