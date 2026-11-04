@@ -1271,15 +1271,24 @@ def issue_page(day, items, issues):
 def story(a, articles, issues=None, serials=None):
     paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
     src = a["source"]
-    # A normal newest-article link works without JavaScript or measurements.
-    # Live recommendations replace it only after verified PVs are available.
-    latest = sorted((x for x in articles if x["slug"] != a["slug"]), key=lambda x: (
+    # Continue through the publication stream instead of always jumping back
+    # to the newest other story. The previous behavior could create a two-story
+    # loop (newest <-> second newest) and strand readers there.
+    reading_order = sorted(articles, key=lambda x: (
         publication_date(x), x["source"]["published_at"]
     ), reverse=True)
-    next_story = latest[0] if latest else None
+    current_index = next(
+        (index for index, item in enumerate(reading_order) if item["slug"] == a["slug"]),
+        None,
+    )
+    next_story = (
+        reading_order[current_index + 1]
+        if current_index is not None and current_index + 1 < len(reading_order)
+        else None
+    )
     next_url = article_url(next_story) if next_story else "/archive/"
     next_title = next_story["title"] if next_story else "記事一覧から次のニュースを探す"
-    next_category = next_story["category"] if next_story else "新着記事"
+    next_category = next_story["category"] if next_story else "記事一覧"
     text_len = sum(len(p) for p in a["paragraphs"])
     read_minutes = max(1, (text_len + 449) // 450)
     available_issues = daily_issues(articles) if issues is None else issues
@@ -1318,7 +1327,7 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-endmark">◆</div>
 <nav class="reader-next" data-popular-fallback aria-label="次の記事へ進む">
 <span class="reader-next-kicker">次の記事</span>
-<span class="reader-next-meta">新着 · {escape(next_category)}</span>
+<span class="reader-next-meta">続けて読む · {escape(next_category)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
 {popular_section}
