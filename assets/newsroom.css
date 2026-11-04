@@ -6,9 +6,6 @@ body{background:var(--paper)}
 .strip-brand{font-family:var(--serif);font-size:15px;font-weight:900;letter-spacing:-.02em;color:#fffaf2}
 .strip-brand:hover{color:#f8dfd5}
 .fiction-mark{border:1px solid #ad755e;color:#ffd4c5;padding:2px 5px;font:800 9px var(--sans);letter-spacing:.07em;vertical-align:2px;margin-left:7px}
-.clock-line{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:800;white-space:nowrap}
-.clock-line time{font-variant-numeric:tabular-nums;letter-spacing:.045em;font-size:12px;color:#fff}
-.live-pulse{width:7px;height:7px;border-radius:50%;background:#f56a53;box-shadow:0 0 0 3px #f56a5330}
 .masthead{padding:23px 0 17px}
 .masthead .brand{font-size:clamp(48px,7vw,80px)}
 .masthead .brand-en{margin-bottom:8px}
@@ -82,7 +79,7 @@ body{background:var(--paper)}
 .page-intro h1{font-size:clamp(38px,5vw,55px)}
 .footer-copy{max-width:31ch}
 @media(max-width:850px){.news-briefing{align-items:flex-start}.news-briefing>div:first-child{flex-wrap:wrap;gap:6px}.edition-clock{flex-direction:column;gap:0;align-items:flex-end}}
-@media(max-width:600px){.strip-content{min-height:39px!important}.strip-brand{font-size:13px}.fiction-mark{font-size:8px}.clock-line{gap:4px;font-size:9px}.clock-line>span:not(.live-pulse){display:none}.clock-line time{font-size:11px}.masthead{padding-top:14px}.index-main{padding-top:12px}.news-briefing strong{font-size:19px}.edition-clock{display:none}.news-wire{margin-bottom:23px}.lead h1{font-size:32px}.lead .dek{font-size:14px}.story-card h3{font-size:23px}.article-header h1{font-size:34px}.article-page{padding-top:28px}.hero-actions{align-items:flex-start}.article-year{display:none}}
+@media(max-width:600px){.strip-content{min-height:39px!important}.strip-brand{font-size:13px}.fiction-mark{font-size:8px}.masthead{padding-top:14px}.index-main{padding-top:12px}.news-briefing strong{font-size:19px}.edition-clock{display:none}.news-wire{margin-bottom:23px}.lead h1{font-size:32px}.lead .dek{font-size:14px}.story-card h3{font-size:23px}.article-header h1{font-size:34px}.article-page{padding-top:28px}.hero-actions{align-items:flex-start}.article-year{display:none}}
 @media(prefers-reduced-motion:reduce){.wire-track{animation:none}.lead-media img{transition:none}}
 
 
