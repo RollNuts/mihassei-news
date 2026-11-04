@@ -21,7 +21,7 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(ROOT / "scripts"))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
-from social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length  # noqa: E402
+from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # Match canonical articles regardless of query parameters, extra prose or
@@ -148,10 +148,20 @@ def publication_text(article: dict) -> str:
     url = "https://veripsa.com/articles/" + slug + "/" + TRACKING_QUERY
     hashtags = " ".join(article_hashtags(article))
     prefix = "【続報｜未発生新聞】" if article.get("followup_of") else TEXT_PREFIX
+    suffix = ("\n\n" + hashtags if hashtags else "") + "\n\n" + url
     rendered = prefix + "\n" + tidy
-    if hashtags:
-        rendered += "\n\n" + hashtags
-    rendered += "\n\n" + url
+    summary = article.get("summary")
+    if isinstance(summary, str):
+        summary = re.sub(r"\s+", " ", summary.strip())
+        if summary:
+            separator = "\n\n"
+            budget = X_TEXT_LIMIT - x_weighted_length(rendered + separator + suffix)
+            teaser = truncate_x_text(summary, budget)
+            # Very short scraps do not give a reader enough context to earn
+            # another line. Keep the stable headline/tags/link format instead.
+            if x_weighted_length(teaser) >= 20:
+                rendered += separator + teaser
+    rendered += suffix
     if x_weighted_length(rendered) > X_TEXT_LIMIT:
         raise ValueError("Article X post text exceeds safe length")
     return rendered
