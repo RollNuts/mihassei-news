@@ -82,6 +82,15 @@
 
   function remove(slug, trigger = null) {
     const restoreFocus = trigger && document.activeElement === trigger;
+    // A storage event from another tab may still be queued when this is clicked.
+    // Remove only the selected story from the latest list, never a stale copy.
+    saved = readSaved();
+    if (!available) {
+      render();
+      announce("このブラウザは保存機能を利用できません。");
+      if (restoreFocus) focusSavedPosition(0);
+      return;
+    }
     const index = Math.max(0, saved.findIndex(item => item.slug === slug));
     writeSaved(saved.filter(item => item.slug !== slug), "保存を解除しました。");
     if (restoreFocus) focusSavedPosition(index);
@@ -152,6 +161,11 @@
     button.addEventListener("click", () => {
       if (!available || button.disabled) return;
       saved = readSaved(); // Read latest state before mutating, including another tab.
+      if (!available) {
+        render();
+        announce("このブラウザは保存機能を利用できません。");
+        return;
+      }
       const slug = button.dataset.bookmarkSlug;
       if (saved.some(item => item.slug === slug)) {
         remove(slug);
@@ -179,7 +193,7 @@
   });
 
   window.addEventListener?.("storage", event => {
-    if (event.key === KEY) {
+    if (event.key === KEY || event.key === null) {
       saved = readSaved();
       render();
       announce("別のタブで保存一覧が更新されました。");

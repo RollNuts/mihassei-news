@@ -10,6 +10,7 @@
   const morePanel = document.querySelector('[data-archive-more]');
   const moreButton = document.querySelector('[data-archive-more-button]');
   const PAGE_SIZE = 18;
+  const HISTORY_KEY = 'mihasseiArchive';
   let visibleLimit = PAGE_SIZE;
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
   const validDecades = new Set(cards.map(card => card.dataset.decade));
@@ -26,6 +27,14 @@
     }
   }
   restoreFiltersFromUrl();
+
+  function restoreVisibleLimit() {
+    const saved = window.history.state?.[HISTORY_KEY];
+    const currentUrl = window.location.pathname + window.location.search;
+    visibleLimit = saved?.url === currentUrl && Number.isSafeInteger(saved.limit) && saved.limit >= PAGE_SIZE
+      ? Math.min(saved.limit, Math.max(PAGE_SIZE, cards.length)) : PAGE_SIZE;
+  }
+  restoreVisibleLimit();
 
   const normalize = value => String(value || '').toLocaleLowerCase('ja-JP').normalize('NFKC');
   function render(syncUrl = true) {
@@ -70,8 +79,14 @@
       if (decade === 'すべて') url.searchParams.delete('decade');
       else url.searchParams.set('decade', decade);
       // Keep campaign parameters and links to page anchors intact.
-      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+      const previous = window.history.state;
+      const state = previous && typeof previous === 'object' && !Array.isArray(previous) ? {...previous} : {};
+      state[HISTORY_KEY] = {url: url.pathname + url.search, limit: visibleLimit};
+      try {
+        window.history.replaceState(state, '', url.pathname + url.search + url.hash);
+      } catch (_) { /* Browsing still works when the browser cannot retain history state. */ }
     }
+    return matching.slice(0, shown);
   }
   function resetAndRender(syncUrl = true) {
     visibleLimit = PAGE_SIZE;
@@ -91,12 +106,18 @@
     input.focus?.();
   });
   moreButton?.addEventListener('click', () => {
+    const firstNewIndex = visibleLimit;
     visibleLimit += PAGE_SIZE;
-    render();
+    const shown = render();
+    // The last expansion hides the button. Continue from the new headline,
+    // including for keyboard readers, instead of dropping focus to the body.
+    const card = shown[firstNewIndex];
+    (card?.querySelector('h3 a') || card?.querySelector('a[href]'))?.focus();
   });
   window.addEventListener?.('popstate', () => {
     restoreFiltersFromUrl();
-    resetAndRender(false);
+    restoreVisibleLimit();
+    render(false);
   });
   render();
 })();

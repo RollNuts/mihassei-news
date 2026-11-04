@@ -13,12 +13,13 @@ function element(dataset={}) {
     classList:{toggle:(name,on)=>props.set('class:'+name,on)},
     setAttribute:(name,val)=>props.set(name,val),
     getAttribute:(name)=>props.get(name),
+    focus(){this.ownerDocument.activeElement=this;},
     addEventListener:(name,fn)=>handlers.set(name,fn),
     emit:(name)=>{assert.ok(handlers.has(name),'missing event: '+name);handlers.get(name)();}
   };
 }
 
-function harness(count, query = '', stories = []) {
+function harness(count, query = '', stories = [], historyState = null) {
   const input=element();
   const decade=element();decade.value='すべて';
   const counter=element(),empty=element(),morePanel=element(),moreButton=element(),resetFilters=element();
@@ -42,9 +43,19 @@ function harness(count, query = '', stories = []) {
     querySelectorAll:(selector)=>selector==='[data-archive-card]'?cards:
       selector==='[data-category-filter]'?tabs:[],
   };
+  for (const card of cards) {
+    card.headline=element();
+    card.imageLink=element();
+    card.headline.ownerDocument=document;
+    card.imageLink.ownerDocument=document;
+    card.querySelector=selector=>selector==='h3 a'?card.headline:
+      selector==='a[href]'?card.imageLink:null;
+  }
+  for (const node of [...nodes.values(),...tabs]) node.ownerDocument=document;
   const location=new URL('https://veripsa.com/archive/'+query+'#category-feeds');
   const window={location,
-    history:{replaceState:(_a,_b,url)=>{
+    history:{state:historyState,replaceState:(state,_b,url)=>{
+      window.history.state=state;
       historyWrites.push(url);
       location.href=new URL(url,location.href).href;
     }},
@@ -53,8 +64,11 @@ function harness(count, query = '', stories = []) {
   const src=fs.readFileSync(path.join(__dirname,'..','assets','site.js'),'utf8');
   vm.runInNewContext(src,{document,window,URL,URLSearchParams,Set,String}, {timeout:1000});
   return {cards,input,decade,counter,empty,morePanel,moreButton,resetFilters,tabs,historyWrites,
-    popstate(url){
+    document,
+    get historyState(){return window.history.state;},
+    popstate(url,state=null){
       location.href=new URL(url,location.href).href;
+      window.history.state=state;
       assert.ok(windowHandlers.has('popstate'));
       windowHandlers.get('popstate')();
     },
@@ -68,13 +82,17 @@ function harness(count, query = '', stories = []) {
   assert.equal(h.visible,18,'initial archive shows the latest 18');
   assert.equal(h.morePanel.hidden,false);
   assert.equal(h.counter.textContent,'52件中18件を表示');
+  h.moreButton.focus();
   h.moreButton.emit('click');
   assert.equal(h.visible,36,'show-more reveals the next 18');
+  assert.equal(h.document.activeElement,h.cards[18].headline,'focus starts at the first added title, not its image');
   assert.equal(h.counter.textContent,'52件中36件を表示');
+  h.moreButton.focus();
   h.moreButton.emit('click');
   assert.equal(h.visible,52,'last page shows remainder');
   assert.equal(h.counter.textContent,'52件の記事');
   assert.equal(h.morePanel.hidden,true,'button hidden after final page');
+  assert.equal(h.document.activeElement,h.cards[36].headline,'focus survives hiding the final more button');
   const writesBeforeBack=h.historyWrites.length;
   h.popstate('/archive/?src=history#category-feeds');
   assert.equal(h.visible,18,'browser history resets pagination to the first page');
@@ -103,6 +121,36 @@ function harness(count, query = '', stories = []) {
   h.tabs[0].emit('click');
   assert.ok(!h.url.includes('category='),'all-category removes query param');
   assert.equal(h.tabs[0].getAttribute('aria-pressed'),'true');
+}
+{
+  const h=harness(52,'?src=reader',[],{anotherFeature:{value:'keep'}});
+  h.moreButton.emit('click');
+  const expandedState=JSON.parse(JSON.stringify(h.historyState));
+  assert.equal(expandedState.anotherFeature.value,'keep','archive state preserves unrelated history fields');
+  assert.equal(h.url,'/archive/?src=reader#category-feeds','expansion does not add a query parameter');
+  const reloaded=harness(52,'?src=reader',[],expandedState);
+  assert.equal(reloaded.visible,36,'reload or a non-cached return restores expanded results');
+  assert.equal(reloaded.document.activeElement,undefined,'restoration never steals focus');
+  reloaded.input.value='ロボット';reloaded.input.emit('input');
+  assert.equal(reloaded.historyState.mihasseiArchive.limit,18,'a new query resets the expansion');
+  const beforeBack=reloaded.historyWrites.length;
+  reloaded.popstate('/archive/?src=reader#category-feeds',expandedState);
+  assert.equal(reloaded.visible,36,'history restores the expansion belonging to its URL');
+  assert.equal(reloaded.input.value,'');
+  assert.equal(reloaded.historyWrites.length,beforeBack,'history restoration does not create another write');
+  reloaded.tabs[1].emit('click');
+  assert.equal(reloaded.historyState.mihasseiArchive.limit,18,'a category change starts from its first results');
+  assert.equal(harness(52,'?src=other',[],expandedState).visible,18,'state from a different URL is ignored');
+}
+{
+  for (const limit of [-10,0,17,18.5,'36',null]) {
+    const h=harness(52,'',[],{mihasseiArchive:{url:'/archive/',limit}});
+    assert.equal(h.visible,18,'invalid expansion state uses the first page');
+  }
+  const bounded=harness(28,'',[],{mihasseiArchive:{url:'/archive/',limit:Number.MAX_SAFE_INTEGER}});
+  assert.equal(bounded.visible,28,'a restored limit is bounded by the available stories');
+  assert.equal(bounded.historyState.mihasseiArchive.limit,28);
+  assert.equal(bounded.morePanel.hidden,true);
 }
 {
   const h=harness(8);

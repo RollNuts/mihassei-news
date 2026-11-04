@@ -511,6 +511,8 @@ def broadcast_playlist(articles, *, exclude_slug=None):
             "slug": article["slug"], "key": article["slug"] + ":" + version,
             "title": article["title"], "category": article["category"],
             "article_url": article_url(article), "poster_url": editorial_image(article),
+            "poster_fallback_url": illustration_path(article),
+            "poster_fallback_alt": article_image_alt(article),
             "video_url": clip_url(article) + "?v=" + version,
             "track_url": broadcast_track_url(article, clip),
             "duration_seconds": clip_seconds(clip),
@@ -552,6 +554,8 @@ def broadcast_feature(articles, *, exclude_slug=None):
         f'<a href="{url}" class="broadcast-article-link" data-broadcast-article-link>記事全文を読む →</a></div>'
         '<div class="broadcast-screen" data-news-broadcast data-video-shell>'
         f'<img class="broadcast-poster" src="{escape(poster)}" alt=""'
+        f' data-broadcast-poster-fallback="{escape(selected["poster_fallback_url"])}"'
+        f' data-broadcast-poster-fallback-alt="{escape(selected["poster_fallback_alt"])}"'
         ' width="1200" height="675" loading="lazy" decoding="async">'
         '<video class="broadcast-video" controls playsinline muted loop'
         ' preload="none" width="1200" height="675" id="broadcast-player"'

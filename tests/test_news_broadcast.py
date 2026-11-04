@@ -1,11 +1,23 @@
 """Single-clip fictional newsroom: opt-in, accessibility and static fallbacks."""
 from __future__ import annotations
 import unittest
+import json
+from html.parser import HTMLParser
 from unittest.mock import patch
 from pathlib import Path
 from scripts import build
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class MediaMarkup(HTMLParser):
+    def __init__(self, markup):
+        super().__init__()
+        self.tags = []
+        self.feed(markup)
+
+    def handle_starttag(self, tag, attrs):
+        self.tags.append((tag, dict(attrs)))
 
 
 class NewsBroadcastTests(unittest.TestCase):
@@ -33,6 +45,21 @@ class NewsBroadcastTests(unittest.TestCase):
             self.assertNotIn('class="broadcast-spotlight"', page)
             self.assertIn('class="hero-grid"', page)
             self.assertIn('class="hero-image"', page)
+
+    def test_each_broadcast_selection_has_its_own_illustration_fallback(self):
+        tags = MediaMarkup(build.broadcast_feature(self.articles)).tags
+        section = next(attrs for tag, attrs in tags if "data-broadcast-playlist" in attrs)
+        playlist = json.loads(section["data-broadcast-playlist"])
+        self.assertGreater(len(playlist), 1)
+        articles = {article["slug"]: article for article in self.articles}
+        for item in playlist:
+            self.assertEqual(item["poster_fallback_url"], "/images/" + item["slug"] + ".svg")
+            self.assertEqual(item["poster_fallback_alt"], build.article_image_alt(articles[item["slug"]]))
+        poster = next(attrs for tag, attrs in tags if attrs.get("class") == "broadcast-poster")
+        self.assertEqual(poster["src"], playlist[0]["poster_url"])
+        self.assertEqual(poster["data-broadcast-poster-fallback"], playlist[0]["poster_fallback_url"])
+        self.assertEqual(poster["data-broadcast-poster-fallback-alt"], playlist[0]["poster_fallback_alt"])
+        self.assertNotIn("data-fallback", poster, "the playlist owns recovery across successive selections")
 
     def test_video_failure_has_a_real_image_fallback(self):
         article = next(a for a in self.articles if a.get("broadcast_feature"))
