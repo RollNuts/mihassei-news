@@ -43,7 +43,7 @@ class RouteScriptsTests(unittest.TestCase):
         for name in ("engagement.js", "site.js", "news-broadcast.js", "comments.js",
                      "comment-activity.js", "bookmarks.js", "serial-progress.js",
                      "returning-shelf.js"):
-            self.assertRegex(asset_url(name), rf"^/assets/{re.escape(name)}\\?v=[0-9a-f]{{12}}$")
+            self.assertRegex(asset_url(name), rf"^/assets/{re.escape(name)}\?v=[0-9a-f]{{12}}$")
         with self.assertRaises(ValueError):
             asset_url("../engagement.js")
 
