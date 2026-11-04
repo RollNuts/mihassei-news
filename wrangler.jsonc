@@ -36,5 +36,19 @@
         "ReaderComments"
       ]
     }
-  ]
+  ],
+  "previews": {
+    "durable_objects": {
+      "bindings": [
+        {
+          "name": "NEWSROOM_STATS",
+          "class_name": "NewsroomStats"
+        },
+        {
+          "name": "READER_COMMENTS",
+          "class_name": "ReaderComments"
+        }
+      ]
+    }
+  }
 }
