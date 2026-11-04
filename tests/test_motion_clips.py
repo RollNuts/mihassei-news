@@ -193,6 +193,7 @@ class MotionClipTests(unittest.TestCase):
             stream = info["streams"][0]
             self.assertEqual(stream["codec_name"], "h264")
             self.assertEqual(stream["pix_fmt"], "yuv420p")
+            self.assertEqual(stream["color_range"], "tv")
             self.assertEqual((stream["width"], stream["height"]), (640, 360))
             self.assertEqual(Fraction(stream["avg_frame_rate"]), 24)
             self.assertEqual(int(stream["nb_frames"]), 288)
