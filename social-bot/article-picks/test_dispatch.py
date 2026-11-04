@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import io
 import json
 import os
 import sys
@@ -11,6 +12,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlparse
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -19,7 +21,7 @@ import dispatch as picks
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
     "schema_version": 1, "enabled": True, "channel_id": "X-VERIPSA",
-    "max_queue_size": 3, "max_new_per_run": 1, "min_readers": 8,
+    "max_queue_size": 3, "max_new_per_run": 1, "min_page_views": 8,
     "minimum_article_age_hours": 12, "maximum_article_age_days": 21,
     "minimum_interval_hours": 72,
 }
@@ -35,9 +37,26 @@ def article(slug: str, age_hours: int = 36, title: str = "人が戸惑う架空�
     }
 
 
-def stats(readers=11, likes=0, share_clicks=0, continued_readers=1):
-    return {"readers": readers, "likes": likes, "share_clicks": share_clicks,
-            "continued_readers": continued_readers}
+def stats(page_views=11, today_page_views=1):
+    return {"last7DaysPageViews": page_views, "todayPageViews": today_page_views}
+
+
+def pv_payload(slugs, started_at=None):
+    started = started_at or NOW - timedelta(days=10)
+    first = NOW.date() - timedelta(days=6)
+    return {
+        # The legacy root unit must never replace the PV tracking unit.
+        "unit": "anonymous-browser",
+        "pageViewTracking": {"unit": "page-view", "timezone": "Asia/Tokyo",
+                             "startedAtUtc": started.isoformat()},
+        "today": {"dateJst": NOW.date().isoformat()},
+        "last7Days": {
+            "startDateJst": first.isoformat(), "endDateJst": NOW.date().isoformat(),
+            "pageViews": 10000, "measuredDays": min(7, (NOW.date() - started.date()).days + 1),
+            "complete": started <= datetime.combine(first, datetime.min.time(), tzinfo=picks.JST),
+        },
+        "articles": {slug: stats() for slug in slugs},
+    }
 
 
 def ledger(**entries):
@@ -58,6 +77,8 @@ class ArticlePickTests(unittest.TestCase):
         picks.validate_state(state)
         self.assertEqual(config["max_queue_size"], 10)
         self.assertEqual(config["max_new_per_run"], 1)
+        self.assertEqual(config["min_page_views"], 8)
+        self.assertNotIn("min_readers", config)
         self.assertGreaterEqual(config["minimum_interval_hours"], 72)
 
     def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
@@ -79,110 +100,119 @@ class ArticlePickTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
-    def test_rank_only_observed_signals_without_fabricating_popularity(self):
-        a, b, c = article("case-a"), article("case-b"), article("case-c")
+    def test_rank_uses_recent_pv_then_today_then_publication_time(self):
+        old, newer, busy_today, top = (article("old", 72), article("newer", 24),
+                                     article("today", 48), article("top", 96))
         counts = {
-            "case-a": stats(readers=10, continued_readers=1),
-            "case-b": stats(readers=9, likes=1, continued_readers=0),
-            "case-c": stats(readers=100, continued_readers=0),
+            "old": {**stats(10, 1), "readers": 9000, "likes": 1000, "pageViews": 99999},
+            "newer": stats(10, 1), "today": stats(10, 2), "top": stats(11, 0),
         }
-        rows = picks.rank([a, b, c], counts, ledger(), set(), CONFIG)
-        self.assertEqual([x[0]["slug"] for x in rows],
-                         ["case-c", "case-a", "case-b"])
-        # Many real readers alone can qualify, but tiny passive samples cannot.
-        no_engagement = article("passive-story")
-        self.assertEqual(picks.rank([no_engagement], {
-            "passive-story": stats(readers=9, continued_readers=0)
-        }, ledger(), set(), CONFIG), [])
-        # Missing evidence is not a zero metric and must not be selected.
+        rows = picks.rank([old, newer, busy_today, top], counts, ledger(), set(), CONFIG)
+        self.assertEqual([row[0]["slug"] for row in rows], ["top", "today", "newer", "old"])
+        # A real PV count at the floor qualifies without an invented reaction requirement.
+        self.assertEqual(len(picks.rank([old], {"old": stats(8, 0)}, ledger(), set(), CONFIG)), 1)
+        self.assertEqual(picks.rank([old], {"old": stats(7, 0)}, ledger(), set(), CONFIG), [])
+        self.assertEqual(picks.rank([old], counts, ledger(), {"old"}, CONFIG), [])
+        # Compare actual instants, not ISO strings with different timezone offsets.
+        newer["published_at"] = (NOW - timedelta(hours=23)).astimezone(timezone.utc).isoformat()
+        old["published_at"] = (NOW - timedelta(hours=24)).isoformat()
+        rows = picks.rank([old, newer], counts, ledger(), set(), CONFIG)
+        self.assertEqual(rows[0][0]["slug"], "newer")
+
+    def test_missing_or_invalid_pv_never_falls_back_to_browser_reactions(self):
+        a = article("story")
+        bad = [{}, {"readers": 999, "likes": 999}, stats(8, 9)]
+        for field in picks.METRIC_FIELDS:
+            for value in (None, True, -1, 8.0, 2**53):
+                bad.append({**stats(), field: value})
+        for counts in bad:
+            with self.subTest(counts=counts):
+                self.assertEqual(picks.rank([a], {"story": counts}, ledger(), set(), CONFIG), [])
+                payload = pv_payload(["story"])
+                payload["articles"]["story"] = counts
+                with self.assertRaises(ValueError):
+                    picks.read_page_view_metrics(["story"], NOW,
+                        opener=lambda *_args, **_kw: io.StringIO(json.dumps(payload)))
         self.assertEqual(picks.rank([a], {}, ledger(), set(), CONFIG), [])
-        self.assertEqual(picks.rank([a], {"case-a": {
-            "readers": 10, "likes": None, "share_clicks": 0,
-            "continued_readers": 1
-        }}, ledger(), set(), CONFIG), [])
 
-    def test_observed_increase_preferred_to_old_cumulative_totals(self):
-        older = article("case-old", age_hours=48)
-        growing = article("case-growing", age_hours=36)
-        counts = {
-            "case-old": stats(readers=30, continued_readers=1),
-            "case-growing": stats(readers=12, likes=1, continued_readers=1),
-        }
-        base = picks.rank([older, growing], counts, ledger(), set(), CONFIG)
-        self.assertEqual(base[0][0]["slug"], "case-old")
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            folder = root / "analytics/daily"
-            folder.mkdir(parents=True)
-            prior = {
-                "schema_version": 1, "unit": "anonymous-browser",
-                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
-                "recent_articles": [
-                    {"slug": "case-old", **stats(readers=29, continued_readers=1)},
-                    {"slug": "case-growing", **stats(readers=6, likes=0,
-                                                    continued_readers=0)},
-                ],
-            }
-            (folder/"2026-11-04.json").write_text(json.dumps(prior), encoding="utf-8")
-            diff = picks.measured_recent_changes(
-                root, [older, growing], counts, NOW
-            )
-            self.assertEqual(diff["case-old"]["readers"], 1)
-            self.assertEqual(diff["case-growing"]["readers"], 6)
-            self.assertEqual(diff["case-growing"]["likes"], 1)
-            rows = picks.rank([older, growing], counts, ledger(), set(),
-                              CONFIG, momentum=diff)
-            self.assertEqual(rows[0][0]["slug"], "case-growing")
-            # The actual queued-post message never invents a ranking rank.
-            self.assertNotIn("ランキング1位", picks.publication_text(growing))
+    def test_read_every_candidate_in_get_batches_without_snapshot_limit(self):
+        slugs = [f"story-{n}" for n in range(105)]
+        requests = []
+        def opener(request, timeout):
+            self.assertEqual(request.get_method(), "GET")
+            self.assertIsNone(request.data)
+            self.assertEqual(timeout, 20)
+            self.assertEqual(request.get_header("Cache-control"), "no-cache")
+            batch = parse_qs(urlparse(request.full_url).query)["articles"][0].split(",")
+            requests.append(batch)
+            payload = pv_payload(batch)
+            if slugs[-1] in batch:
+                payload["articles"][slugs[-1]] = stats(100, 10)
+            return io.StringIO(json.dumps(payload))
+        metrics, window = picks.read_page_view_metrics(slugs + slugs[:2], NOW, opener)
+        self.assertEqual([len(batch) for batch in requests], [20, 20, 20, 20, 20, 5])
+        self.assertEqual([slug for batch in requests for slug in batch], slugs)
+        self.assertEqual(len(metrics), 105)
+        self.assertEqual(window["unit"], "page-view")
+        self.assertTrue(window["complete"])
+        rows = picks.rank([article(slug) for slug in slugs], metrics, ledger(), set(), CONFIG)
+        self.assertEqual(rows[0][0]["slug"], slugs[-1])
 
-    def test_new_article_after_snapshot_has_known_zero_baseline(self):
-        candidate = article("just-published", age_hours=15)
-        counts = {candidate["slug"]: stats(readers=11)}
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            folder = root / "analytics/daily"
-            folder.mkdir(parents=True)
-            snapshot = {
-                "schema_version": 1, "unit": "anonymous-browser",
-                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
-                "recent_articles": [],
-            }
-            (folder/"2026-11-04.json").write_text(json.dumps(snapshot), encoding="utf-8")
-            diff = picks.measured_recent_changes(root, [candidate], counts, NOW)
-            self.assertEqual(diff["just-published"], stats(readers=11))
+    def test_partial_tracking_window_retains_actual_coverage(self):
+        started = NOW - timedelta(days=1)
+        payload = pv_payload(["story"], started_at=started)
+        metrics, window = picks.read_page_view_metrics(["story"], NOW,
+            opener=lambda *_args, **_kw: io.StringIO(json.dumps(payload)))
+        self.assertEqual(metrics["story"], stats())
+        self.assertFalse(window["complete"])
+        self.assertEqual(window["measured_days"], 2)
+        self.assertEqual(window["started_at_utc"], started.astimezone(timezone.utc).isoformat())
+        # Seven measured dates still aren't complete if collection started after midnight.
+        payload = pv_payload(["story"], started_at=NOW - timedelta(days=6))
+        window = picks.page_view_window(payload, NOW)
+        self.assertEqual(window["measured_days"], 7)
+        self.assertFalse(window["complete"])
 
-    def test_missing_stale_or_reset_metrics_never_become_fake_growth(self):
-        older = article("case-old", age_hours=48)
-        counts = {"case-old": stats(readers=12, likes=0)}
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            folder = root / "analytics/daily"
-            folder.mkdir(parents=True)
-            path = folder/"2026-11-04.json"
-            base = {
-                "schema_version": 1, "unit": "anonymous-browser",
-                "measured_at_utc": (NOW-timedelta(hours=24)).isoformat(),
-                "recent_articles": [{"slug": "case-old",
-                                     **stats(readers=20, likes=1)}],
-            }
-            for damaged in (
-                {**base, "unit":"people"},
-                {**base, "measured_at_utc": (NOW+timedelta(hours=1)).isoformat()},
-                {**base, "measured_at_utc": (NOW-timedelta(days=10)).isoformat()},
-                base,
-            ):
-                path.write_text(json.dumps(damaged), encoding="utf-8")
-                self.assertEqual(
-                    picks.measured_recent_changes(root, [older], counts, NOW),
-                    {},
-                )
-            path.write_text("{bad-json", encoding="utf-8")
-            self.assertEqual(picks.measured_recent_changes(root, [older], counts, NOW),
-                             {})
-            path.unlink()
-            self.assertEqual(picks.measured_recent_changes(root, [older], counts, NOW),
-                             {})
+    def test_invalid_or_stale_tracking_window_fails_closed(self):
+        changes = (
+            ("pageViewTracking", "unit", "anonymous-browser"),
+            ("pageViewTracking", "timezone", "UTC"),
+            ("pageViewTracking", "startedAtUtc", None),
+            ("pageViewTracking", "startedAtUtc", NOW.replace(tzinfo=None).isoformat()),
+            ("pageViewTracking", "startedAtUtc", (NOW + timedelta(hours=1)).isoformat()),
+            ("today", "dateJst", "2026-11-04"),
+            ("last7Days", "startDateJst", "2026-10-29"),
+            ("last7Days", "endDateJst", "2026-11-04"),
+            ("last7Days", "pageViews", None),
+            ("last7Days", "measuredDays", 2),
+            ("last7Days", "measuredDays", True),
+            ("last7Days", "complete", False),
+            ("last7Days", "complete", "true"),
+        )
+        for section, key, value in changes:
+            with self.subTest(section=section, key=key, value=value):
+                payload = pv_payload(["story"])
+                payload[section][key] = value
+                with self.assertRaises(ValueError):
+                    picks.read_page_view_metrics(["story"], NOW,
+                        opener=lambda *_args, **_kw: io.StringIO(json.dumps(payload)))
+
+    def test_missing_batch_rows_and_changed_tracking_never_rank_partial_candidates(self):
+        slugs = [f"story-{n}" for n in range(21)]
+        for failure in ("missing-row", "different-start", "invalid-json"):
+            with self.subTest(failure=failure):
+                responses = [pv_payload(slugs[:20]), pv_payload(slugs[20:])]
+                if failure == "missing-row":
+                    responses[1]["articles"] = {}
+                elif failure == "different-start":
+                    responses[1] = pv_payload(slugs[20:], started_at=NOW - timedelta(days=11))
+                def opener(*_args, **_kw):
+                    response = responses.pop(0)
+                    if failure == "invalid-json" and not responses:
+                        return io.StringIO("{broken")
+                    return io.StringIO(json.dumps(response))
+                with self.assertRaises(ValueError):
+                    picks.read_page_view_metrics(slugs, NOW, opener)
 
     def test_young_articles_and_2031_dates_cannot_game_promotion(self):
         a = article("yesterday", age_hours=2)
@@ -198,7 +228,7 @@ class ArticlePickTests(unittest.TestCase):
                              ("max_queue_size", 11),
                              ("max_new_per_run", 2),
                              ("minimum_interval_hours", 0),
-                             ("min_readers", 0),
+                             ("min_page_views", 0),
                              ("enabled", "true")):
             cfg = {**CONFIG, field: value}
             with self.subTest(field=field), self.assertRaises(ValueError):
@@ -325,6 +355,7 @@ class ArticlePickTests(unittest.TestCase):
             HERE.parent / "useful-state.json": state,
         }
         original = copy.deepcopy(documents)
+        window = picks.page_view_window(pv_payload(["new-story"]), NOW)
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root / "content").mkdir()
@@ -333,7 +364,7 @@ class ArticlePickTests(unittest.TestCase):
                  patch.object(picks, "read_json", side_effect=lambda path: copy.deepcopy(documents[path])), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
                  patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
-                 patch.object(picks, "read_public_metrics", return_value=(None, {"new-story": stats()}, None)), \
+                 patch.object(picks, "read_page_view_metrics", return_value=({"new-story": stats()}, window)), \
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=remote), \
                  patch.object(picks, "save_state") as save, \
@@ -343,7 +374,11 @@ class ArticlePickTests(unittest.TestCase):
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
                 self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
-                self.assertEqual(save.call_args.args[0]["queued"]["new-story"]["buffer_id"], "article-confirmed")
+                receipt = save.call_args.args[0]["queued"]["new-story"]
+                self.assertEqual(receipt["buffer_id"], "article-confirmed")
+                self.assertEqual(receipt["source"], "verified_article_page_views")
+                self.assertEqual(receipt["metrics_at_queue"], {
+                    **window, "last_7_days_page_views": 11, "today_page_views": 1})
         self.assertEqual(documents, original)
 
     def test_tenth_queue_slot_stays_available_for_eligible_articles(self):

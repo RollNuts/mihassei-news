@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Exactly-once-ish Buffer Free queueing for genuinely observed reader-interest stories.
+"""Buffer Free article queueing ranked by the site's observed page views.
 
-Uses the site's own GET-only anonymous-browser article counters, NEVER X
-impressions or invented popularity. Shares the established X posting workflow
-and its concurrency/queue budget with the original short-text lane.
+Reads the same JST seven-date window as on-site recommendations. Shares the
+established X workflow and its queue budget with the original short-text lane.
 """
 from __future__ import annotations
 
@@ -14,12 +13,12 @@ import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(HERE.parent))
-from record_metrics import read_public_metrics  # noqa: E402
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -29,8 +28,10 @@ ARTICLE_URL = re.compile(
     r"https?://(?:www\.)?veripsa\.com/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
 )
 TEXT_PREFIX = "【未発生新聞】"
-MIN_EXTRA_SIGNALS = ("likes", "share_clicks", "continued_readers")
-METRIC_FIELDS = ("readers", *MIN_EXTRA_SIGNALS)
+METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
+METRICS_URL = "https://veripsa.com/api/engagement"
+JST = timezone(timedelta(hours=9))
+MAX_SAFE_INTEGER = 2**53 - 1
 
 
 def read_json(path: Path) -> dict:
@@ -52,7 +53,7 @@ def validate_config(config: dict, original_x_config: dict) -> None:
     caps = (
         ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
-        ("min_readers", 6, 100),
+        ("min_page_views", 6, 100),
         ("minimum_article_age_hours", 12, 72),
         ("maximum_article_age_days", 7, 30),
         ("minimum_interval_hours", 72, 168),
@@ -160,94 +161,85 @@ def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list
     return eligible
 
 
-def measured_recent_changes(root: Path, articles: list[dict], counts: dict,
-                            now: datetime) -> dict[str, dict[str, int]]:
-    """Point-in-time *increase* since a trustworthy recent snapshot, not daily PV.
+def valid_page_views(value: object) -> bool:
+    return type(value) is int and 0 <= value <= MAX_SAFE_INTEGER
 
-    We compare the same anonymous-browser counters; snapshots are cumulative.
-    An article published AFTER that snapshot has a known zero baseline.
-    Missing, stale, malformed, reset or contradictory observations are skipped,
-    never converted into invented visits or impressions. No additional API calls.
+
+def page_view_window(data: dict, now: datetime) -> dict:
+    """Validate observed coverage; an incomplete first window is not seven full days."""
+    if now.tzinfo is None or not isinstance(data, dict):
+        raise ValueError("Invalid page-view response or current time")
+    tracking, week = data.get("pageViewTracking"), data.get("last7Days")
+    if (not isinstance(tracking, dict) or tracking.get("unit") != "page-view"
+            or tracking.get("timezone") != "Asia/Tokyo" or not isinstance(week, dict)):
+        raise ValueError("Missing page-view tracking or period")
+    try:
+        started = datetime.fromisoformat(tracking["startedAtUtc"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("Page-view measurement has not started") from exc
+    if started.tzinfo is None or started > now:
+        raise ValueError("Invalid page-view tracking start")
+    today = now.astimezone(JST).date()
+    first = today - timedelta(days=6)
+    first_midnight = datetime.combine(first, datetime.min.time(), tzinfo=JST)
+    measured_days = min(7, (today - started.astimezone(JST).date()).days + 1)
+    if (not isinstance(data.get("today"), dict)
+            or data["today"].get("dateJst") != today.isoformat()
+            or week.get("startDateJst") != first.isoformat()
+            or week.get("endDateJst") != today.isoformat()
+            or not valid_page_views(week.get("pageViews"))
+            or type(week.get("measuredDays")) is not int
+            or week["measuredDays"] != measured_days
+            or type(week.get("complete")) is not bool
+            or week["complete"] != (started <= first_midnight)):
+        raise ValueError("Inconsistent or stale page-view period")
+    return {
+        "unit": "page-view", "timezone": "Asia/Tokyo",
+        "started_at_utc": started.astimezone(timezone.utc).isoformat(),
+        "start_date_jst": first.isoformat(), "end_date_jst": today.isoformat(),
+        "measured_days": measured_days, "complete": week["complete"],
+    }
+
+
+def read_page_view_metrics(slugs: list[str], now: datetime,
+                           opener=urlopen) -> tuple[dict, dict]:
+    """GET every candidate in API-sized batches, with one coherent measured window.
+
+    Do not truncate to the daily snapshot's article limit or fall back to legacy
+    browser/reaction counters. A missing batch or row invalidates the selection.
     """
-    if now.tzinfo is None:
-        raise ValueError("Current time must have timezone")
-    folder = root / "analytics" / "daily"
-    if folder.is_symlink() or not folder.is_dir():
-        return {}
-    recent_files = sorted(folder.glob("20??-??-??.json"), reverse=True)[:5]
-    latest: tuple[datetime, dict] | None = None
-    for file in recent_files:
-        try:
-            if file.is_symlink() or not 80 <= file.stat().st_size <= 2_000_000:
-                continue
-            doc = read_json(file)
-            if doc.get("schema_version") != 1 or doc.get("unit") != "anonymous-browser":
-                continue
-            timestamp = datetime.fromisoformat(doc["measured_at_utc"])
-            if timestamp.tzinfo is None:
-                continue
-            age = now - timestamp
-            # A brand-new sample cannot yet demonstrate meaningful momentum.
-            if not timedelta(hours=6) <= age <= timedelta(hours=72):
-                continue
-            rows = doc.get("recent_articles")
-            if not isinstance(rows, list) or len(rows) > 100:
-                continue
-        except (OSError, ValueError, KeyError, TypeError):
-            continue
-        if latest is None or timestamp > latest[0]:
-            latest = (timestamp, doc)
-    if latest is None:
-        return {}
-
-    sampled_at, doc = latest
-    prior = {}
-    for row in doc["recent_articles"]:
-        if not isinstance(row, dict):
-            continue
-        slug = row.get("slug")
-        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or slug in prior:
-            continue
-        if any(type(row.get(k)) is not int or row[k] < 0 for k in METRIC_FIELDS):
-            continue
-        prior[slug] = {key: row[key] for key in METRIC_FIELDS}
-
-    result = {}
-    for article in articles:
-        slug = article.get("slug")
-        now_counts = counts.get(slug)
-        if not isinstance(slug, str) or not isinstance(now_counts, dict):
-            continue
-        if any(type(now_counts.get(k)) is not int or now_counts[k] < 0
-               for k in METRIC_FIELDS):
-            continue
-        try:
-            published = datetime.fromisoformat(article["published_at"])
-            if published.tzinfo is None:
-                continue
-        except (ValueError, KeyError, TypeError):
-            continue
-        baseline = prior.get(slug)
-        if published > sampled_at:
-            # The article didn't exist at the previous measurement instant.
-            if baseline is not None:
-                continue  # Contradictory snapshot, do not infer a trend.
-            baseline = dict.fromkeys(METRIC_FIELDS, 0)
-        if baseline is None:
-            continue
-        if any(now_counts[k] < baseline[k] for k in METRIC_FIELDS):
-            continue  # Counter reset/decrement; can't compare safely.
-        result[slug] = {key: now_counts[key] - baseline[key]
-                        for key in METRIC_FIELDS}
-    # No observed increase = no claim about momentum. Use cumulative fallback.
-    return result if any(any(val > 0 for val in d.values())
-                         for d in result.values()) else {}
+    if not slugs or any(not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
+                        for slug in slugs):
+        raise ValueError("Invalid article metrics request")
+    slugs = list(dict.fromkeys(slugs))
+    metrics, window = {}, None
+    for offset in range(0, len(slugs), 20):
+        batch = slugs[offset:offset + 20]
+        request = Request(METRICS_URL + "?" + urlencode({"articles": ",".join(batch)}),
+                          headers={"Accept": "application/json", "Cache-Control": "no-cache",
+                                   "User-Agent": "VeripsaArticlePicksReadOnly/1.0"}, method="GET")
+        with opener(request, timeout=20) as response:
+            data = json.load(response)
+        observed_window = page_view_window(data, now)
+        if window is not None and observed_window != window:
+            raise ValueError("Page-view batches have different tracking periods")
+        window = observed_window
+        rows = data.get("articles")
+        if not isinstance(rows, dict):
+            raise ValueError("Missing article page views")
+        for slug in batch:
+            row = rows.get(slug)
+            if (not isinstance(row, dict)
+                    or any(not valid_page_views(row.get(key)) for key in METRIC_FIELDS)
+                    or row["todayPageViews"] > row["last7DaysPageViews"]):
+                raise ValueError("Missing or invalid article page views: " + slug)
+            metrics[slug] = {key: row[key] for key in METRIC_FIELDS}
+    return metrics, window
 
 
 def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
-         config: dict, momentum: dict | None = None) -> list[tuple[dict, dict, int]]:
-    """Require genuine cumulative evidence, prefer observed recent increase."""
-
+         config: dict) -> list[tuple[dict, dict, int]]:
+    """Rank observed seven-date PV, today's PV, then real publication time."""
     validate_state(state)
     result = []
     for article in articles:
@@ -255,34 +247,14 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
         if slug in state["queued"] or slug in blocked:
             continue
         data = counts.get(slug)
-        if not isinstance(data, dict) or any(
-            type(data.get(key)) is not int or data[key] < 0 for key in METRIC_FIELDS
-        ):
+        if (not isinstance(data, dict)
+                or any(not valid_page_views(data.get(key)) for key in METRIC_FIELDS)
+                or data["todayPageViews"] > data["last7DaysPageViews"]
+                or data["last7DaysPageViews"] < config["min_page_views"]):
             continue
-        readers = data["readers"]
-        if readers < config["min_readers"]:
-            continue
-        # One secondary signal or 12 cumulative reader browsers; these
-        # thresholds are eligibility heuristics, NOT a site ranking.
-        secondary = sum(data[key] for key in MIN_EXTRA_SIGNALS)
-        if not (secondary > 0 or readers >= 12):
-            continue
-        score = (readers + 3 * data["likes"] + 2 * data["share_clicks"]
-                 + 2 * data["continued_readers"])
-        result.append((article, data, score))
-    def recent_score(row):
-        recent = (momentum or {}).get(row[0]["slug"])
-        if (not isinstance(recent, dict)
-                or any(type(recent.get(key)) is not int or recent[key] < 0
-                       for key in METRIC_FIELDS)):
-            return 0
-        return (recent["readers"] + 3 * recent["likes"]
-                + 2 * recent["share_clicks"] + 2 * recent["continued_readers"])
-
-    # If valid recent changes exist, recent real reactions have priority;
-    # otherwise the historical cumulative ranking is unchanged.
-    result.sort(key=lambda row: (recent_score(row), row[2],
-                                 row[1]["readers"], row[0]["published_at"]),
+        result.append((article, data, data["last7DaysPageViews"]))
+    result.sort(key=lambda row: (row[2], row[1]["todayPageViews"],
+                                 datetime.fromisoformat(row[0]["published_at"])),
                 reverse=True)
     return result
 
@@ -330,8 +302,7 @@ def accepted_useful_ids(feed: dict, state: dict, existing: list[dict],
 
 
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
-           config: dict, now: datetime, creative_ids: set[str],
-           momentum: dict | None = None
+           config: dict, now: datetime, creative_ids: set[str]
            ) -> tuple[dict | None, dict | None, int]:
     """Evaluate ONLY after recovering remote posts, keeping original queue alive."""
     known = {a["slug"] for a in articles if isinstance(a.get("slug"), str)}
@@ -349,7 +320,7 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     if queued and not any(p.get("id") in creative_ids for p in queued):
         return None, None, len(queued)
     candidates = rank(eligible_articles(articles, now, config), counts,
-                      state, remote_slugs, config, momentum=momentum)
+                      state, remote_slugs, config)
     if not candidates:
         return None, None, len(queued)
     item, metrics, _score = candidates[0]
@@ -371,8 +342,8 @@ def main() -> int:
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
 
-    # Read-only GETs, with strict per-article unit/field checks shared with
-    # existing daily snapshots. Not impressions or human unique users.
+    # Read-only GETs use the site's actual page-view period, not legacy
+    # browser counts, cumulative reactions or estimated snapshot changes.
     candidates = eligible_articles(articles, now, config)
     if not candidates:
         print("No sufficiently old published articles; no Buffer write.")
@@ -380,7 +351,7 @@ def main() -> int:
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Buffer secret unavailable; cannot promote articles")
-    _, metrics, _ = read_public_metrics([a["slug"] for a in candidates])
+    metrics, window = read_page_view_metrics([a["slug"] for a in candidates], now)
     org_id, channel_id = choose_x_channel(token)
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
@@ -393,15 +364,13 @@ def main() -> int:
     creative_ids.update(accepted_useful_ids(
         read_json(HERE.parent / "useful-posts.json"),
         read_json(HERE.parent / "useful-state.json"), existing, channel_id))
-    momentum = measured_recent_changes(ROOT, candidates, metrics, now)
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
-                                            config, now, creative_ids,
-                                            momentum=momentum)
+                                            config, now, creative_ids)
     # Persist remote recovery before any further POST. The workflow also
     # commits both ledgers even after a partial API/network failure.
     save_state(state)
     if eligible is None:
-        print("No eligible reader-interest article today; Buffer scheduled:",
+        print("No eligible page-view article today; Buffer scheduled:",
               scheduled, "- original X feed retains priority.")
         return 0
     text = publication_text(eligible)
@@ -409,16 +378,16 @@ def main() -> int:
     state["queued"][eligible["slug"]] = {
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
-        "source": "verified_anonymous_browser_article_metrics",
+        "source": "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
-        "metrics_at_queue": {key: evidence[key] for key in METRIC_FIELDS},
+        "metrics_at_queue": {**window,
+                             "last_7_days_page_views": evidence["last7DaysPageViews"],
+                             "today_page_views": evidence["todayPageViews"]},
     }
     save_state(state)
-    print("Reader-interest article accepted by Buffer (not X impressions or "
-          "verified X publication):", eligible["slug"], buffer_id,
-          "scheduled_before=", scheduled,
-          "recent_observed_change=", momentum.get(eligible["slug"], "not available"),
-          "unit=anonymous-browser counter changes since snapshot")
+    print("PV-selected article accepted by Buffer (not verified X publication):",
+          eligible["slug"], buffer_id, "scheduled_before=", scheduled,
+          "page_views=", evidence, "measurement_window=", window)
     return 0
 
 

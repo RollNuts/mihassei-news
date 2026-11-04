@@ -206,5 +206,115 @@
         "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
       }
     }
+  },
+  "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+  "recovery_results": {
+    "xexp-invisible-nails": {
+      "target_sha256": "ddc38f8a60e14b9c123461d0f8f9b58a0ed4128622b6afd33cc2de9601398c4f",
+      "checked_at": "2026-11-04T03:35:50.402932+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6ae9c80347205d2c39966f7a",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "verified_draft",
+      "intent_at": "2026-11-04T03:35:50.579084+00:00",
+      "mutation_receipt_confirmed": true,
+      "after": {
+        "buffer_id": "6ae9c80347205d2c39966f7a",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "draft",
+        "due_at": "2026-11-04T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "verified_at": "2026-11-04T03:35:52.726265+00:00"
+    },
+    "xexp-witch-autopilot": {
+      "target_sha256": "2b437924b03374261a4eb3b9fb7086593db417695d39974b96aa3f820974059d",
+      "checked_at": "2026-11-04T03:35:54.403419+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
+    },
+    "xexp-nejimachi-one-screw": {
+      "target_sha256": "bb5c572f7a87f92a699b5a23a719b6e7e685f19e3cec2ae893a8b79041a35d74",
+      "checked_at": "2026-11-04T03:35:56.116295+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6ae9c80447205d2c39966fbc",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
+    },
+    "xexp-shadow-home": {
+      "target_sha256": "ca66e574358f7448da53727326bfe9e080d48500bbd00635ff16210147b18716",
+      "checked_at": "2026-11-04T03:35:57.832240+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6ae9c80547205d2c39966fe4",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T11:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
+    },
+    "xexp-book-review": {
+      "target_sha256": "72df62fd204cc48b671d0ba823a10c1d2082fa469fed038b4228ec86009c6878",
+      "checked_at": "2026-11-04T03:35:59.591311+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6aea7608ff887f055cd9d61f",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T00:00:00.000Z",
+        "sent_at": null,
+        "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
+    },
+    "xexp-nejimachi-nothing-wrong": {
+      "target_sha256": "7595ece45325a29ea039c7c143f9afc40ab29a810398e94af80d9accd6a096cf",
+      "checked_at": "2026-11-04T03:36:01.076499+00:00",
+      "recovery_request_id": "x-quality-20261104-preserve-text-v1",
+      "before": {
+        "buffer_id": "6aea76084c41ba80aa4864d8",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T02:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "skipped",
+      "reason": "schedule_changed"
+    }
   }
 }
