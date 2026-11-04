@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Buffer Free article queueing ranked by the site's observed page views.
 
-Reads the same JST seven-date window as on-site recommendations. Shares the
-established X workflow and its queue budget with the original short-text lane.
+Reads the same JST seven-date window as on-site recommendations. This is the
+only automatic X publishing lane; retired original lanes are not dependencies.
 """
 from __future__ import annotations
 
@@ -50,13 +50,11 @@ def read_json(path: Path) -> dict:
     return result
 
 
-def validate_config(config: dict, original_x_config: dict) -> None:
+def validate_config(config: dict) -> None:
     if config.get("schema_version") != 1 or type(config.get("enabled")) is not bool:
         raise ValueError("Invalid article promotion switch")
-    if (config.get("channel_id") != original_x_config.get("channel_id")
-            or not isinstance(config.get("channel_id"), str)
-            or not config["channel_id"]):
-        raise ValueError("Article X channel must equal the existing Veripsa X channel")
+    if not isinstance(config.get("channel_id"), str) or not config["channel_id"]:
+        raise ValueError("Article X channel must be a pinned nonempty channel ID")
     caps = (
         ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
@@ -375,7 +373,7 @@ def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
            config: dict, now: datetime
            ) -> tuple[dict | None, dict | None, int]:
-    """Evaluate ONLY after recovering remote posts, keeping original queue alive."""
+    """Evaluate only after recovering remote article URLs and saved Buffer IDs."""
     known = {a["slug"] for a in articles if isinstance(a.get("slug"), str)}
     recover_from_buffer(state, existing, now, known)
     queued = [p for p in existing if p.get("status") == "scheduled"]
@@ -402,8 +400,7 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
 
 def main() -> int:
     config = read_json(HERE / "config.json")
-    original = read_json(HERE.parent / "experiments" / "config.json")
-    validate_config(config, original)
+    validate_config(config)
     if not config["enabled"]:
         print("Article X promotions OFF; no automatic X post is sent.")
         return 0
@@ -433,8 +430,7 @@ def main() -> int:
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
-    # Automatic X publishing is article-only. Legacy creative/useful receipts
-    # remain historical evidence, but they no longer gate article slots.
+    # Automatic X publishing is article-only; retired lanes do not gate slots.
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
                                             config, now)
     # Persist remote recovery before any further POST. The workflow also
