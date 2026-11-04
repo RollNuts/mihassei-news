@@ -21,10 +21,10 @@ import dispatch as picks
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
     "schema_version": 1, "enabled": True, "channel_id": "X-VERIPSA",
-    "max_queue_size": 9, "max_new_per_run": 1, "max_per_jst_day": 4,
-    "min_page_views": 8, "fresh_minimum_age_hours": 2,
+    "max_queue_size": 10, "max_new_per_run": 1, "max_per_jst_day": 7,
+    "min_page_views": 8, "fresh_minimum_age_hours": 1,
     "fresh_maximum_age_hours": 18, "minimum_article_age_hours": 12,
-    "maximum_article_age_days": 21, "minimum_interval_hours": 4,
+    "maximum_article_age_days": 21, "minimum_interval_hours": 2,
 }
 
 
@@ -76,14 +76,14 @@ class ArticlePickTests(unittest.TestCase):
         picks.validate_config(config, original)
         state = picks.read_json(HERE / "state.json")
         picks.validate_state(state)
-        self.assertEqual(config["max_queue_size"], 9)
+        self.assertEqual(config["max_queue_size"], 10)
         self.assertEqual(config["max_new_per_run"], 1)
-        self.assertEqual(config["max_per_jst_day"], 4)
+        self.assertEqual(config["max_per_jst_day"], 7)
         self.assertEqual(config["min_page_views"], 8)
-        self.assertEqual(config["fresh_minimum_age_hours"], 2)
+        self.assertEqual(config["fresh_minimum_age_hours"], 1)
         self.assertEqual(config["fresh_maximum_age_hours"], 18)
         self.assertNotIn("min_readers", config)
-        self.assertGreaterEqual(config["minimum_interval_hours"], 4)
+        self.assertGreaterEqual(config["minimum_interval_hours"], 2)
 
     def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
@@ -284,10 +284,10 @@ class ArticlePickTests(unittest.TestCase):
         original = {"channel_id": "X-VERIPSA"}
         picks.validate_config(CONFIG, original)
         for field, value in (("channel_id", "OTHER-ACCOUNT"),
-                             ("max_queue_size", 10),
+                             ("max_queue_size", 11),
                              ("max_new_per_run", 2),
-                             ("max_per_jst_day", 5),
-                             ("minimum_interval_hours", 0),
+                             ("max_per_jst_day", 8),
+                             ("minimum_interval_hours", 1),
                              ("fresh_minimum_age_hours", 0),
                              ("fresh_maximum_age_hours", 25),
                              ("min_page_views", 0),
@@ -323,7 +323,7 @@ class ArticlePickTests(unittest.TestCase):
         offer = picks.rank([article("story-a")], {"story-a": stats()}, old, set(), CONFIG)
         self.assertEqual(offer, [])
 
-    def test_four_hour_cooldown_daily_cap_and_creative_queue_safety(self):
+    def test_two_hour_cooldown_and_seven_article_daily_cap(self):
         a = article("new-story", age_hours=36)
         counts = {"new-story": stats()}
         remote = [
@@ -337,11 +337,11 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(queued, 2)
         self.assertEqual(evidence, counts["new-story"])
 
-        state = ledger(**{"previous-story": recorded(hours=3)})
+        state = ledger(**{"previous-story": recorded(hours=1)})
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertIsNone(item)
-        state = ledger(**{"previous-story": recorded(hours=5)})
+        state = ledger(**{"previous-story": recorded(hours=3)})
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertEqual(item["slug"], "new-story")
@@ -351,9 +351,9 @@ class ArticlePickTests(unittest.TestCase):
                 "buffer_id": f"buf-{i}",
                 "queued_at_utc": (NOW - timedelta(hours=8 + i)).isoformat(),
             }
-            for i in range(4)
+            for i in range(7)
         }
-        self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 4)
+        self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 7)
         item, _, _ = picks.decide([a], counts, ledger(**same_day),
                                   remote, CONFIG, NOW, {"short-1"})
         self.assertIsNone(item)
@@ -375,7 +375,7 @@ class ArticlePickTests(unittest.TestCase):
         selected, _, _ = picks.decide([fresh], {}, ledger(), seven, CONFIG, NOW, set())
         self.assertIsNone(selected)
 
-    def test_third_article_waits_for_confirmed_creative_reservation_when_queue_exists(self):
+    def test_third_article_no_longer_requires_a_creative_reservation(self):
         fresh = article("fresh", age_hours=4)
         state = ledger(
             **{
@@ -385,11 +385,6 @@ class ArticlePickTests(unittest.TestCase):
         )
         remote = [{"id": "article-existing", "status": "scheduled", "text": "記事予約"}]
         item, _, _ = picks.decide([fresh], {}, state, remote, CONFIG, NOW, set())
-        self.assertIsNone(item)
-        item, _, _ = picks.decide(
-            [fresh], {}, state,
-            remote + [{"id": "useful", "status": "scheduled", "text": "独自稿"}],
-            CONFIG, NOW, {"useful"})
         self.assertEqual(item["slug"], "fresh")
 
     def useful_reservation(self):
@@ -444,13 +439,13 @@ class ArticlePickTests(unittest.TestCase):
                 selected, _, _ = picks.decide(
                     [article("new-story")], {"new-story": stats()}, two_today, remote,
                     CONFIG, NOW, known)
-                self.assertIsNone(selected)
+                self.assertEqual(selected["slug"], "new-story")
         feed, useful_state, remote = self.useful_reservation()
         feed["channel_id"] = "OTHER-ACCOUNT"
         with self.assertRaisesRegex(ValueError, "pinned submission"):
             picks.accepted_useful_ids(feed, useful_state, remote, CONFIG["channel_id"])
 
-    def test_main_uses_confirmed_useful_queue_without_enabling_legacy_experiments(self):
+    def test_main_queues_article_without_enabling_legacy_experiments(self):
         feed, state, remote = self.useful_reservation()
         documents = {
             HERE / "config.json": CONFIG,
@@ -488,21 +483,21 @@ class ArticlePickTests(unittest.TestCase):
                     **window, "last_7_days_page_views": 11, "today_page_views": 1})
         self.assertEqual(documents, original)
 
-    def test_tenth_queue_slot_is_reserved_for_other_x_lane(self):
+    def test_ten_queue_slots_are_available_to_article_lane(self):
         candidate = article("measured-story", age_hours=36)
         remote = [{"id":f"creative-{i}", "status":"scheduled",
-                   "text":f"異なる短文の予約です{i}"} for i in range(8)]
+                   "text":f"異なる短文の予約です{i}"} for i in range(9)]
         selected, evidence, count = picks.decide(
             [candidate], {"measured-story":stats()}, ledger(), remote,
             CONFIG, NOW, {p["id"] for p in remote})
-        self.assertEqual(count,8)
+        self.assertEqual(count,9)
         self.assertEqual(selected["slug"],"measured-story")
-        remote.append({"id":"ninth","status":"scheduled","text":"別の予約"})
+        remote.append({"id":"tenth","status":"scheduled","text":"別の予約"})
         selected, _, count = picks.decide(
             [candidate], {"measured-story":stats()}, ledger(), remote,
             CONFIG, NOW, {p["id"] for p in remote})
         self.assertIsNone(selected)
-        self.assertEqual(count,9)
+        self.assertEqual(count,10)
 
     def test_main_can_queue_fresh_article_without_pv_threshold(self):
         feed, useful_state, remote = self.useful_reservation()
