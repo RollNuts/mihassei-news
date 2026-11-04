@@ -184,6 +184,38 @@ def modification_date(a):
     return a.get("modified_at") or publication_date(a)
 
 
+def validate_followup_relationships(articles):
+    """A follow-up is a new, later article linked to one earlier published story."""
+    by_slug = {a["slug"]: a for a in articles}
+    for article in articles:
+        parent_slug = article.get("followup_of")
+        if parent_slug is None:
+            continue
+        if (not isinstance(parent_slug, str)
+                or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", parent_slug)
+                or parent_slug == article["slug"]
+                or parent_slug not in by_slug):
+            raise ValueError("Invalid followup_of: " + article["slug"])
+        parent = by_slug[parent_slug]
+        if publication_date(parent) >= publication_date(article):
+            raise ValueError("Follow-up must be published after its parent: " + article["slug"])
+
+
+def followup_parent(article, articles):
+    parent_slug = article.get("followup_of")
+    if not parent_slug:
+        return None
+    return next((item for item in articles if item["slug"] == parent_slug), None)
+
+
+def followup_children(article, articles):
+    return sorted(
+        (item for item in articles if item.get("followup_of") == article["slug"]),
+        key=lambda item: (publication_date(item), item["source"]["published_at"]),
+        reverse=True,
+    )
+
+
 def editorial_lead(articles):
     """Show the newest *actual publication* in the front-page lead.
 
@@ -234,6 +266,7 @@ def load():
                 raise ValueError("Photo requires verified Unsplash license and attribution")
         if len(a["paragraphs"]) < 2 or len(a["paragraphs"]) > 6:
             raise ValueError("Article must contain 2-6 paragraphs")
+    validate_followup_relationships(articles)
     # Source timestamps establish fictional dates; actual site publication controls
     # recency and the home-page lead, so a newly published item never starts buried.
     return sorted(articles, key=lambda a: (
@@ -293,6 +326,7 @@ def category_meta(a, compact=False):
         ' title="計測開始後のページ表示回数" aria-label="この記事のPVを取得中">'
         '<strong data-article-pv-count>—</strong><span>PV</span></span>'
     )
+    followup_badge = '<span class="followup-label">続報</span>' if a.get("followup_of") else ""
     if compact:
         # Dense cards need one truthful date and one clear fiction label.
         # The full five-years-later dateline remains on every article page.
@@ -302,6 +336,7 @@ def category_meta(a, compact=False):
         return (
             '<div class="story-meta story-meta--compact">'
             + '<span class="category">' + escape(a["category"]) + "</span>"
+            + followup_badge
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
             + page_views
@@ -311,6 +346,7 @@ def category_meta(a, compact=False):
         '<div class="story-meta">'
         + '<span class="ticker">' + escape(a.get("flash", "速報")) + "</span>"
         + '<span class="category">' + escape(a["category"]) + "</span>"
+        + followup_badge
         + f'<time class="real-published-at" datetime="{escape(published)}"'
           f' aria-label="実際の掲載日時">{escape(real_label)}</time>'
         + f'<time class="fiction-dateline" datetime="{escape(a["fiction_at"])}"'
@@ -1333,6 +1369,26 @@ def story(a, articles, issues=None, serials=None):
     )
     bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else serials)
     popular_section = pv_recommendations(articles, a["slug"])
+    parent = followup_parent(a, articles)
+    followup_context = (
+        '<aside class="story-followup-context" aria-label="前の記事">'
+        '<strong>続報</strong>'
+        f'<a href="{article_url(parent)}">前の記事：{escape(parent["title"])} <span aria-hidden="true">↗</span></a>'
+        '</aside>'
+        if parent else ""
+    )
+    children = followup_children(a, articles)
+    followup_section = (
+        '<section class="story-followups" aria-labelledby="story-followups-title">'
+        '<h2 id="story-followups-title">この話題の続報</h2><ul>'
+        + "".join(
+            f'<li><a href="{article_url(item)}">{escape(item["title"])}</a>'
+            f'<time datetime="{escape(publication_date(item))}">{escape(publication_date(item)[:10])}</time></li>'
+            for item in children
+        )
+        + '</ul></section>'
+        if children else ""
+    )
     content = f'''<div class="container article-page">
 <div class="article-shell"><article>
 <header class="article-header">
@@ -1341,6 +1397,7 @@ def story(a, articles, issues=None, serials=None):
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(a["summary"])}</p>
 <p class="story-fiction-context"><strong>創作ニュース</strong></p>
+{followup_context}
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 {tag_links(a)}
 </header>
@@ -1384,6 +1441,7 @@ def story(a, articles, issues=None, serials=None):
 {escape(src["publisher"])} で着想元を見る ↗</a>
 </div>
 </details>
+{followup_section}
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 </article>
