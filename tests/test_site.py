@@ -455,9 +455,10 @@ class SiteTests(unittest.TestCase):
         self.assertNotIn("/api/continuation",script,
                          "A separate endpoint would create unnecessary traffic")
 
-    def test_site_has_dynamic_clock_with_no_fake_visits(self):
+    def test_site_has_real_pv_without_decorative_fake_clock(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
-        self.assertIn("data-future-clock",home)
+        self.assertNotIn("data-future-clock",home)
+        self.assertNotIn("紙面の架空時計",home)
         self.assertIn("data-observer-widget",home)
         self.assertIn("data-pv-widget",home)
         self.assertIn("今日のPV",home)
@@ -691,7 +692,7 @@ class SiteTests(unittest.TestCase):
         self.assertIn('data-edition-title>最新記事</strong>',home)
         self.assertIn('data-edition-updated>更新：',home)
         self.assertIn('data-last-edition="'+latest_date+'"',home)
-        self.assertIn("紙面の架空時計",home)
+        self.assertNotIn("紙面の架空時計",home)
         self.assertNotIn("● LIVE",home)
         self.assertNotIn("本日の記事",home,
                          "The no-JS fallback must not claim freshness")

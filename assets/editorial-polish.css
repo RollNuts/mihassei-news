@@ -859,8 +859,6 @@ body{
 @media(max-width:380px){
   .strip-brand .fiction-mark{display:none}
   .strip-brand{font-size:12px}
-  .clock-line{gap:5px}
-  .clock-line time{font-size:10px;letter-spacing:0}
 }
 
 

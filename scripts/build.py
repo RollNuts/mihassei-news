@@ -879,8 +879,6 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
 <span class="strip-category"><span class="fiction-mark">{escape(publication_label)}</span></span>
-<div class="clock-line"><span class="live-pulse" aria-hidden="true"></span><span>紙面の架空時計</span>
-<time data-future-clock aria-label="物語内の架空の時刻">--:--:--</time></div>
 </div></div>
 <header class="container"><div class="masthead">
 <div class="mast-kicker">THE UNHAPPENED TIMES</div>

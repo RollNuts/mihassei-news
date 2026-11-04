@@ -19,7 +19,7 @@ function imageFixture(complete,naturalWidth){
     closest:n=>n==='figure'?{querySelector:()=>caption}:{classList:{remove:c=>removed.push(c)}},
     set src(v){attrs.src=v;},
   };
-  vm.runInNewContext(source.split('// An animated')[0]+'})();',{
+  vm.runInNewContext(source.split('// Keep the genuine edition label current')[0]+'})();',{
     document:{querySelectorAll:()=>[image]}
   });
   return {image,attrs,listeners,caption,removed};
