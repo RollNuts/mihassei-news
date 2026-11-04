@@ -79,6 +79,20 @@ def stylesheet_url():
     """A content digest prevents browsers from reusing an outdated CSS bundle."""
     digest = hashlib.sha256(bundled_stylesheets().encode("utf-8")).hexdigest()[:12]
     return f"{SITE_CSS_PATH}?v={digest}"
+
+
+@lru_cache(maxsize=None)
+def asset_url(name):
+    """Fingerprint reader JavaScript so new HTML never points at stale behavior."""
+    if not re.fullmatch(r"[a-z0-9-]+\.js", name):
+        raise ValueError("Invalid reader asset name")
+    source = (BASE / "assets" / name).read_bytes()
+    digest = hashlib.sha256(source).hexdigest()[:12]
+    return f"/assets/{name}?v={digest}"
+
+
+def script_tag(name):
+    return f'<script defer src="{asset_url(name)}"></script>'
 CATEGORIES = ("すべて", "社会", "事件", "経済", "技術", "政治", "暮らし", "スポーツ", "エンタメ")
 ARTS = ("notice", "cards", "tower", "robot", "meeting", "generic")
 CATEGORY_PATHS = {
@@ -851,21 +865,22 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     # Non-content utility pages should never compete with actual stories in search.
     robots_tag = '<meta name="robots" content="noindex,follow">' if path in ("/saved/", "/404.html") else ""
-    serial_progress_script = ('<script defer src="/assets/serial-progress.js"></script>'
+    serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
-    # the newspaper clock and real audience counts; these links work without JS.
-    archive_script = '<script defer src="/assets/site.js"></script>' if path == "/archive/" else ""
-    broadcast_script = ('<script defer src="/assets/news-broadcast.js"></script>'
+    # real audience counts; these links work without JavaScript.
+    archive_script = script_tag("site.js") if path == "/archive/" else ""
+    broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = '<script defer src="/assets/comments.js"></script>' if kind == "story" else ""
-    comment_activity_script = ('<script defer src="/assets/comment-activity.js"></script>'
+    comments_script = script_tag("comments.js") if kind == "story" else ""
+    comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
-    bookmarks_script = ('<script defer src="/assets/bookmarks.js"></script>'
+    bookmarks_script = (script_tag("bookmarks.js")
                         if kind == "story" or path == "/saved/" else "")
-    resume_script = ('<script defer src="/assets/returning-shelf.js"></script>'
+    resume_script = (script_tag("returning-shelf.js")
                      if path == "/" else "")
+    engagement_script = script_tag("engagement.js")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     page_class = "page-home" if path == "/" else "page-inner"
@@ -901,7 +916,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="stylesheet" href="{stylesheet_url()}">
 {archive_script}
 {broadcast_script}
-<script defer src="/assets/engagement.js"></script>
+{engagement_script}
 {comments_script}
 {comment_activity_script}
 {bookmarks_script}
