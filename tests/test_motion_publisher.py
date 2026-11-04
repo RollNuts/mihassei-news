@@ -69,6 +69,32 @@ class MotionPublisherTests(unittest.TestCase):
                 # remaining work so another run can drain the bounded backlog.
                 encode.assert_not_called()
 
+    def test_plan_off_reports_disabled_without_scanning_or_writing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._config(root, {**GOOD, "enabled": False})
+            before = {p: p.read_bytes() for p in root.rglob("*") if p.is_file()}
+            with patch.object(publisher, "readiness_report") as scan, \
+                 patch.object(publisher, "generate") as encode:
+                self.assertEqual(publisher.plan(root), {"enabled": False, "pending": 0, "stories": []})
+                scan.assert_not_called()
+                encode.assert_not_called()
+            self.assertEqual({p: p.read_bytes() for p in root.rglob("*") if p.is_file()}, before)
+
+    def test_plan_cli_emits_read_only_json_without_encoding(self):
+        expected = {"enabled": True, "pending": 0,
+                    "stories": [{"slug": "selected-story", "state": "captions_required"}]}
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch.object(publisher, "plan", return_value=expected), \
+             patch.object(publisher, "run") as publish, \
+             patch.object(publisher, "generate") as encode, \
+             redirect_stdout(stdout), redirect_stderr(stderr):
+            self.assertEqual(publisher.main(["--plan"]), 0)
+        self.assertEqual(json.loads(stdout.getvalue()), expected)
+        self.assertEqual(stderr.getvalue(), "")
+        publish.assert_not_called()
+        encode.assert_not_called()
+
     def test_pending_cli_prints_only_count_without_running_publisher(self):
         stdout, stderr = io.StringIO(), io.StringIO()
         with patch.object(publisher, "pending_count", return_value=2), \
@@ -112,6 +138,8 @@ class MotionPublisherTests(unittest.TestCase):
                 {"slug": "second-selected-story", "broadcast_feature": True},
                 {"slug": "already-published-story", "broadcast_feature": True},
                 {"slug": "held-image-story", "broadcast_feature": True},
+                {"slug": "unreviewed-story", "broadcast_feature": True},
+                {"slug": "captionless-story", "broadcast_feature": True},
             ]
             for article in stories:
                 article["published_at"] = "2026-11-04T00:00:00+00:00"
@@ -126,10 +154,22 @@ class MotionPublisherTests(unittest.TestCase):
             with patch.object(motion_clips, "usable_clip", side_effect=current_clip), \
                  patch.object(motion_clips, "usable_generated_scene",
                               side_effect=lambda article, **_: article["slug"] != "held-image-story"), \
+                 patch.object(motion_clips, "reviewed_generated_scene",
+                              side_effect=lambda article, **_: article["slug"] != "unreviewed-story"), \
+                 patch.object(motion_clips, "story_cues",
+                              side_effect=lambda article, **_: [] if article["slug"] == "captionless-story" else [{"text": "Ready"}]), \
                  patch.object(publisher, "generate") as encode:
                 # Exercise the real candidate filter, not a mock queue. The
-                # article selection and image approval both gate publication.
+                # selected story, current image, review and captions all gate it.
                 self.assertEqual(publisher.pending_count(root), 2)
+                report = publisher.plan(root)
+                self.assertEqual(report["pending"], 2)
+                self.assertIs(report["enabled"], True)
+                self.assertEqual({row["slug"]: row["state"] for row in report["stories"]}, {
+                    "first-selected-story": "ready", "second-selected-story": "ready",
+                    "already-published-story": "current", "held-image-story": "image_required",
+                    "unreviewed-story": "visual_review_required", "captionless-story": "captions_required",
+                })
                 encode.assert_not_called()
 
             after = {path: path.read_bytes() for path in root.rglob("*") if path.is_file()}

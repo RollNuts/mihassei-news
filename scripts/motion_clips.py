@@ -24,10 +24,14 @@ try:
     from .generated_photos import (
         SAFE_SLUG, article_fingerprint, generated_scene_entry, usable_generated_scene
     )
+    from .visual_review import reviewed_generated_scene
+    from .broadcast_captions import story_cues
 except ImportError:
     from generated_photos import (
         SAFE_SLUG, article_fingerprint, generated_scene_entry, usable_generated_scene
     )
+    from visual_review import reviewed_generated_scene
+    from broadcast_captions import story_cues
 
 ROOT = Path(__file__).resolve().parents[1]
 RELATIVE_DIR = Path("assets/clips")
@@ -138,7 +142,7 @@ def movie_bytes(root: Path) -> int:
                if p.is_file() and not p.is_symlink())
 
 
-def candidates(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
+def selected_articles(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
     articles = json.loads((root / "content/articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Article source is not a list")
@@ -153,11 +157,31 @@ def candidates(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
         # spend CPU or put a looping video on every article.
         if article.get("broadcast_feature") is not True:
             continue
-        clip = usable_clip(article, root=root)
-        if (usable_generated_scene(article, root=root)
-                and (clip is None or clip.get("motion_style_version") != MOTION_STYLE_VERSION)):
-            result.append(article)
+        result.append(article)
     return result
+
+
+def preparation_state(article: dict, *, root: Path = ROOT) -> str:
+    """Explain why a selected story is ready, current, or waiting for an editor."""
+    if not usable_generated_scene(article, root=root):
+        return "image_required"
+    if not reviewed_generated_scene(article, root=root):
+        return "visual_review_required"
+    if not story_cues(article, root=root):
+        return "captions_required"
+    clip = usable_clip(article, root=root)
+    return ("current" if clip and clip.get("motion_style_version") == MOTION_STYLE_VERSION
+            else "ready")
+
+
+def readiness_report(root: Path = ROOT) -> list[dict]:
+    return [{"slug": article["slug"], "state": preparation_state(article, root=root)}
+            for article in selected_articles(root)]
+
+
+def candidates(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
+    return [article for article in selected_articles(root, slug=slug)
+            if preparation_state(article, root=root) == "ready"]
 
 
 def require_mac_not_stopped() -> None:
@@ -267,7 +291,9 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
     for article in current[:limit]:
         require_mac_not_stopped()
         src = generated_scene_entry(article, root=root)
-        if src is None or not usable_generated_scene(article, root=root):
+        if (src is None or not usable_generated_scene(article, root=root)
+                or not reviewed_generated_scene(article, root=root)
+                or not story_cues(article, root=root)):
             continue
         image = root / "assets" / "generated" / (article["slug"] + ".jpg")
         movie = folder / (article["slug"] + ".mp4")
