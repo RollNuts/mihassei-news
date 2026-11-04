@@ -25,7 +25,7 @@
 - **前記事：** `midterm-prediction-notebook-full-of-holes`（https://veripsa.com/articles/midterm-prediction-notebook-full-of-holes/、11/4 13:38初刊）。前回の「予想を消し直す解説者」とは別に、「工事をしなかったことを祝う会社」を描く。新記事として採用するなら `followup_of` に元slugを入れ、初報＋続報2本で終える。速報の議席数や規制の成立を作らない。
 - **出典：** Reuters 2026-11-04 16:53 UTC（11/5 01:53 JST）https://www.reuters.com/business/retail-consumer/democrats-midterm-sweep-fuels-750-billion-big-tech-rally-2026-11-04/ 。前記事の公開後の新しい市場反応。掲載前に事実を再確認。
 
-- **採用状態：** 2026-11-05 07:30枠に1本採用し、本番記事・一面・公開revisionを確認：https://veripsa.com/articles/datacenter-unbuilt-ribbon-cutting/ 。前記事 `midterm-prediction-notebook-full-of-holes` への正規の続報1本目。空き地での完成式が笑いの核。映像選抜済み、JPEG未生成で `image_required`（07:55画像回収担当へ）。
+- **採用状態：** 2026-11-05 07:30枠に1本採用し、本番記事・一面・公開revisionを確認：https://veripsa.com/articles/datacenter-unbuilt-ribbon-cutting/ 。前記事 `midterm-prediction-notebook-full-of-holes` への正規の続報1本目。空き地での完成式が笑いの核。映像選抜済み、生成JPEGは実物確認して不採用（建物に見える屋根がある）、現在のJPEGは品質保留で `image_required`（07:55画像回収担当へ）。
 
 ### H2｜音楽番組の歌う曲を先に公開（ホット候補）
 
