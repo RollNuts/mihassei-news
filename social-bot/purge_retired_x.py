@@ -114,9 +114,37 @@ def main() -> int:
 
     from publish import choose_x_channel, gql, qstring
 
-    _, channel = choose_x_channel(token)
+    orgid, channel = choose_x_channel(token)
     if channel != CHANNEL:
         raise RuntimeError("Pinned X account mismatch")
+
+    def list_unpublished():
+        cursor = None
+        out = {}
+        seen = set()
+        for _page in range(20):
+            after = ", after: " + qstring(cursor) if cursor else ""
+            query = (
+                "query { posts(first: 100" + after
+                + ", input: {organizationId: " + qstring(orgid)
+                + ", filter: {channelIds: [" + qstring(CHANNEL)
+                + "], status: [draft, scheduled]}}) { "
+                "edges { node { id channelId text status dueAt sentAt allowedActions } } "
+                "pageInfo { hasNextPage endCursor } } }"
+            )
+            conn = gql(token, query).get("posts") or {}
+            for edge in conn.get("edges") or []:
+                node = edge.get("node") or {}
+                if isinstance(node.get("id"), str):
+                    out[node["id"]] = node
+            page = conn.get("pageInfo") or {}
+            if not page.get("hasNextPage"):
+                return out
+            cursor = page.get("endCursor")
+            if not isinstance(cursor, str) or not cursor or cursor in seen:
+                raise RuntimeError("Buffer unpublished pagination cursor invalid")
+            seen.add(cursor)
+        raise RuntimeError("Buffer unpublished pagination exceeded safe page limit")
 
     def fetch_post(buffer_id: str):
         query = (
@@ -139,17 +167,25 @@ def main() -> int:
     held = 0
     outcomes = []
 
+    try:
+        unpublished = list_unpublished()
+    except Exception as exc:
+        print("Could not list draft/scheduled Buffer posts:", type(exc).__name__, str(exc)[:240], file=sys.stderr)
+        unpublished = None
+
     for target in rows:
         pid = target["post_id"]
         bid = target["buffer_id"]
-        try:
-            before = fetch_post(bid)
-        except Exception as exc:
-            reason = "provider_read_failed"
-            print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
-            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
-            held += 1
-            continue
+        before = unpublished.get(bid) if isinstance(unpublished, dict) else None
+        if before is None:
+            try:
+                before = fetch_post(bid)
+            except Exception as exc:
+                reason = "provider_read_failed"
+                print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
+                outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
+                held += 1
+                continue
 
         reason = validate_live(target, before)
         if reason == "already_absent":
