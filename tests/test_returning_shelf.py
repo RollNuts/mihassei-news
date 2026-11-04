@@ -2,7 +2,7 @@
 from pathlib import Path
 import unittest
 
-from scripts.build import home, layout, load
+from scripts.build import asset_url, home, layout, load
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,15 +18,15 @@ class ReturningShelfTests(unittest.TestCase):
         self.assertIn('href="/saved/"', html)
         self.assertLess(html.index('data-returning-shelf hidden'), html.index('class="hero-grid"'))
         self.assertEqual(html.count('data-returning-shelf hidden'), 1)
-        self.assertEqual(html.count('src="/assets/returning-shelf.js"'), 1)
+        self.assertEqual(html.count('src="' + asset_url("returning-shelf.js") + '"'), 1)
 
     def test_other_pages_do_not_load_home_only_script(self):
         article = layout('A title', 'desc', '/articles/a-test/', '<p>story</p>', kind='story')
         saved = layout('Saved', 'desc', '/saved/', '<p>saved</p>')
         for html in (article, saved):
-            self.assertNotIn('src="/assets/returning-shelf.js"', html)
-        self.assertIn('src="/assets/bookmarks.js"', article)
-        self.assertIn('src="/assets/bookmarks.js"', saved)
+            self.assertNotIn('src="' + asset_url("returning-shelf.js") + '"', html)
+        self.assertIn('src="' + asset_url("bookmarks.js") + '"', article)
+        self.assertIn('src="' + asset_url("bookmarks.js") + '"', saved)
 
     def test_only_existing_local_bookmarks_and_no_paid_calls(self):
         source = (ROOT / 'assets/returning-shelf.js').read_text(encoding='utf-8')
