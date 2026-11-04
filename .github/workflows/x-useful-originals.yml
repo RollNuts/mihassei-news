@@ -1,0 +1,64 @@
+name: Useful X Originals (one per day, Buffer Free)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'social-bot/useful-posts.json'
+      - 'social-bot/useful_feed.py'
+      - 'social-bot/test_useful_feed.py'
+      - '.github/workflows/x-useful-originals.yml'
+  pull_request:
+    paths:
+      - 'social-bot/useful-posts.json'
+      - 'social-bot/useful_feed.py'
+      - 'social-bot/test_useful_feed.py'
+      - '.github/workflows/x-useful-originals.yml'
+  workflow_dispatch:
+  schedule:
+    # 11:10 JST. Manuscripts are due at 12:00 JST; no expired catch-up.
+    - cron: '10 2 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: free-surreal-x
+  cancel-in-progress: false
+jobs:
+  validate-and-submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate independent useful feed offline
+        run: |
+          python -m unittest discover -s social-bot -p 'test_useful_feed.py' -v
+          python social-bot/useful_feed.py --validate
+      - name: Schedule only the current-day useful original
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin main
+          python social-bot/useful_feed.py
+      - name: Preserve any response evidence even after an interrupted request
+        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          test -f social-bot/useful-state.json || exit 0
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add social-bot/useful-state.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore(x): preserve useful-feed receipt [skip ci]'
+          fi
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main || exit 1
+            git push origin HEAD:main && exit 0
+          done
+          exit 1

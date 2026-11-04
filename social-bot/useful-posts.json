@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "channel_id": "6ae94b74e29c69a171436d72",
+  "posts": [
+    {
+      "id": "xexp-useful-20261104-one-change",
+      "kind": "conversation_example",
+      "delivery": "automatic",
+      "trend_targeted": false,
+      "publish_at": "2026-11-04T03:00:00Z",
+      "checked_at": "2026-11-04T00:47:00Z",
+      "valid_until": "2026-11-04T14:59:00Z",
+      "text": "💡改善するときの会話例。\n\n「反応が良くなった！」\n「何を変えた？」\n「見出しも内容も投稿時間も」\n「じゃあ、次は何を残そう？」\n\n一度に全部変えると、成功しても再現しにくい。\nまずは1つ変える。結果だけじゃなく、うまくいった理由も残したい。",
+      "basis": "A clearly hypothetical conversation about learning from a small content experiment. It makes no claim of actual audience growth or private personal experience.",
+      "sources": []
+    }
+  ]
+}
