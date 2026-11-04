@@ -15,7 +15,6 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
   let tick=null;
   const edition={dataset:{lastEdition:latestDay,editionCount:String(count),lastLabel:'11月2日 21:21'}};
   const title={textContent:''},updated={textContent:''};
-  const clock={textContent:'',setAttribute(){}};
   const map={
     '[data-edition-status]':edition,
     '[data-edition-title]':title,
@@ -24,7 +23,7 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
   const document={
     referrer:'',
     querySelector:selector=>map[selector]||null,
-    querySelectorAll:selector=>selector==='[data-future-clock]'?[clock]:[],
+    querySelectorAll:()=>[],
     addEventListener:()=>{},
   };
   class FakeDate extends RealDate {
@@ -32,7 +31,7 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
   }
   const window={
     matchMedia:()=>({matches:true}),
-    setInterval(fn, interval){assert.equal(interval,1000);tick=fn;return 1;}
+    setInterval(fn, interval){assert.equal(interval,60000);tick=fn;return 1;}
   };
   const ctx={window,document,URL,URLSearchParams,Intl,Date:FakeDate,
     location:{pathname:'/',search:'',origin:'https://veripsa.com'},
@@ -42,7 +41,7 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
     fetch:async()=>{throw new Error('network disabled in test');}
   };
   vm.runInNewContext(src,ctx,{timeout:1000});
-  return {title,updated,clock,tick:()=>tick(),
+  return {title,updated,tick:()=>tick(),
     advance(value){current=value;}};
 }
 
@@ -51,7 +50,6 @@ test('real same-day issue shows actual count, not a fictional timestamp',()=>{
   assert.equal(ui.title.textContent,'本日の記事');
   assert.match(ui.updated.textContent,/本日 10本/);
   assert.match(ui.updated.textContent,/11月2日 21:21/);
-  assert.ok(ui.clock.textContent.startsWith('2031.11.02'));
 });
 
 test('after JST midnight, prior articles are labelled latest, never today',()=>{
@@ -61,7 +59,6 @@ test('after JST midnight, prior articles are labelled latest, never today',()=>{
   ui.tick();
   assert.equal(ui.title.textContent,'最新記事');
   assert.equal(ui.updated.textContent,'更新：11月2日 21:21');
-  assert.ok(ui.clock.textContent.startsWith('2031.11.03'));
 });
 
 test('a previously published issue is not presented as new on first load',()=>{
