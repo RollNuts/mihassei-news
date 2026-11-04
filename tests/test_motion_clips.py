@@ -4,8 +4,10 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
+from fractions import Fraction
 from pathlib import Path
 from unittest.mock import patch
 
@@ -62,7 +64,10 @@ class MotionClipTests(unittest.TestCase):
     def test_player_and_video_schema_are_optional_even_without_ffmpeg(self):
         # Static publishing must work on runners that cannot encode a movie.
         article = self.articles[0]
-        with patch.object(build, "usable_clip", return_value={"created_at": "2026-11-03T08:00:00+00:00", "sha256": "a"*64}):
+        with patch.object(build, "usable_clip", return_value={
+            "created_at": "2026-11-03T08:00:00+00:00", "sha256": "a"*64,
+            "duration_ms": 4000, "fps": 12,
+        }):
             player = build.article_hero_media(article)
             self.assertIn('controls playsinline muted loop preload="metadata"', player)
             self.assertIn('poster="', player)
@@ -99,6 +104,52 @@ class MotionClipTests(unittest.TestCase):
                  patch.object(motion_clips, "usable_clip", return_value=None):
                 self.assertEqual([a["slug"] for a in candidates(root)], ["chosen-news-story"])
 
+    def test_legacy_clips_stay_usable_but_mixed_profiles_fail_closed(self):
+        current = manifest_entries(ROOT)
+        legacy = next((a for a in self.articles
+                       if current.get(a["slug"], {}).get("duration_ms") == 4000
+                       and usable_clip(a, root=ROOT)), None)
+        if legacy is None:
+            self.skipTest("No unchanged approved legacy clip at this revision.")
+        slug = legacy["slug"]
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            photos = root / "assets/generated"
+            clips = root / "assets/clips"
+            photos.mkdir(parents=True)
+            clips.mkdir()
+            (photos / "manifest.json").write_text(json.dumps({
+                "version": 1, "images": {slug: generated_manifest(ROOT)[slug]}
+            }), encoding="utf-8")
+            shutil.copyfile(ROOT / "assets/generated" / (slug + ".jpg"), photos / (slug + ".jpg"))
+            shutil.copyfile(ROOT / "assets/clips" / (slug + ".mp4"), clips / (slug + ".mp4"))
+            original = current[slug]
+
+            def write_record(record):
+                (clips / "manifest.json").write_text(json.dumps({
+                    "version": 1, "clips": {slug: record}
+                }), encoding="utf-8")
+
+            # Existing v1 clips omit the style field; both old encoder styles
+            # must remain playable while a selected article waits for an update.
+            for style in (None, 1, 2):
+                record = {**original}
+                if style is None:
+                    record.pop("motion_style_version", None)
+                else:
+                    record["motion_style_version"] = style
+                write_record(record)
+                with self.subTest(legacy_style=style):
+                    self.assertIsNotNone(usable_clip(legacy, root=root))
+            for incompatible in (
+                {"motion_style_version": 3}, {"motion_style_version": 99},
+                {"duration_ms": 12000}, {"fps": 24},
+                {"motion_style_version": True}, {"fps": 12.0},
+            ):
+                write_record({**original, **incompatible})
+                with self.subTest(incompatible=incompatible):
+                    self.assertIsNone(usable_clip(legacy, root=root))
+
     def test_real_approved_still_generates_bounded_silent_mp4(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("No local ffmpeg tools installed; production static build still works.")
@@ -129,11 +180,49 @@ class MotionClipTests(unittest.TestCase):
             verified = usable_clip(suitable, root=root)
             self.assertIsNotNone(verified)
             self.assertLessEqual(verified["bytes"], MAX_CLIP_BYTES)
-            self.assertEqual(verified["duration_ms"], 4000)
-            self.assertEqual(verified["motion_style_version"], 2)
+            self.assertEqual(verified["duration_ms"], 12000)
+            self.assertEqual(verified["fps"], 24)
+            self.assertEqual(verified["motion_style_version"], 3)
             movie = root / clip_url(suitable).lstrip("/").replace("clips/","assets/clips/",1)
             self.assertTrue(movie.is_file())
             self.assertEqual(hashlib.sha256(movie.read_bytes()).hexdigest(), verified["sha256"])
+            info = json.loads(subprocess.check_output([
+                "ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(movie)
+            ], timeout=15))
+            self.assertEqual(len(info["streams"]), 1)  # No audio or extra media.
+            stream = info["streams"][0]
+            self.assertEqual(stream["codec_name"], "h264")
+            self.assertEqual(stream["pix_fmt"], "yuv420p")
+            self.assertEqual((stream["width"], stream["height"]), (640, 360))
+            self.assertEqual(Fraction(stream["avg_frame_rate"]), 24)
+            self.assertEqual(int(stream["nb_frames"]), 288)
+            self.assertAlmostEqual(float(info["format"]["duration"]), 12, places=2)
+            # Inspect actual decoded pixels, not only the filter expression:
+            # movement within a shot and distinct clean cuts at 4s and 8s.
+            frame_numbers = (0, 48, 94, 95, 96, 144, 190, 191, 192, 240, 287)
+            selected = "+".join(f"eq(n,{n})" for n in frame_numbers)
+            pixels = subprocess.check_output([
+                "ffmpeg", "-nostdin", "-v", "error", "-i", str(movie),
+                "-vf", f"select='{selected}',scale=64:36,format=gray",
+                "-vsync", "0", "-an", "-f", "rawvideo", "-pix_fmt", "gray", "pipe:1",
+            ], timeout=15)
+            frame_size = 64 * 36
+            self.assertEqual(len(pixels), frame_size * len(frame_numbers))
+            frames = dict(zip(frame_numbers, [
+                pixels[i:i + frame_size] for i in range(0, len(pixels), frame_size)
+            ]))
+
+            def difference(first, second):
+                return sum(abs(a - b) for a, b in zip(frames[first], frames[second])) / frame_size
+
+            self.assertGreater(difference(0, 48), 0.5, "Opening must visibly move")
+            self.assertGreater(difference(96, 144), 0.5, "Detail shot must pan")
+            self.assertGreater(difference(192, 287), 0.5, "Closing must pull back")
+            self.assertGreater(difference(95, 96), difference(94, 95) * 2 + 1)
+            self.assertGreater(difference(191, 192), difference(190, 191) * 2 + 1)
+            for frame in frames.values():
+                # No blank white/black flash at the cut boundaries.
+                self.assertGreater(max(frame) - min(frame), 20)
             with patch.object(build, "BASE", root), \
                  patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                 html = build.article_hero_media(suitable)
@@ -147,7 +236,7 @@ class MotionClipTests(unittest.TestCase):
                                     "<p>記事</p>", kind="story", article=suitable)
                 self.assertIn('"@type": "VideoObject"', page)
                 self.assertIn('https://veripsa.com/clips/'+slug+'.mp4', page)
-                self.assertIn('"duration": "PT4S"', page)
+                self.assertIn('"duration": "PT12S"', page)
                 self.assertIn('"@type": "BlogPosting"', page)
             movie.write_bytes(movie.read_bytes() + b"tampered")
             self.assertIsNone(usable_clip(suitable, root=root))

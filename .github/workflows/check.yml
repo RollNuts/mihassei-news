@@ -58,8 +58,11 @@ jobs:
           node --check assets/growth-desk.js
           node --check assets/serial-progress.js
           node --check assets/comments-admin.js
+          node --check assets/news-broadcast.js
           node --input-type=module --check < src/comments.js
           node --input-type=module --check < src/worker.js
+      - name: Verify news video captions, playback controls and image fallback
+        run: node --test tests/news-broadcast.test.cjs
       - name: Verify private serial read/resume progress
         run: node --test tests/serial-progress.test.cjs
       - name: Verify reading progress follows article and serial text

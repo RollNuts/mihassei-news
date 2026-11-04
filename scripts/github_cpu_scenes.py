@@ -52,9 +52,9 @@ CPU_SCENES = {
         "fake beards kneel to coax the dog into a winner's photograph."
     ),
     "stolen-doorbell-returned-by-parcel": (
-        "Tight close-up of a small silver hotel reception bell on a flat black "
-        "base. It has a low hemispherical metal dome and a little round top "
-        "push button. The bell is packed in an open plain cardboard parcel."
+        "Close-up of ONE upright brass handbell with a long wooden handle on "
+        "top and a wide flared metal rim at the bottom. The handbell stands "
+        "inside an open plain brown cardboard box."
     ),
     "family-dinner-gacha-243-rejections": (
         "A red gumball vending machine dominates the frame: a transparent "
@@ -295,7 +295,9 @@ def check_quality(image):
 
 
 def render_one(pipe, torch, article: dict) -> bytes:
-    generator = torch.Generator(device="cpu").manual_seed(stable_seed(article))
+    seed = stable_seed(article)
+    print(f"CPU scene seed: {seed}", flush=True)
+    generator = torch.Generator(device="cpu").manual_seed(seed)
     # LCM: eight CPU-only steps and enough native pixels for a recognisable prop.
     # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
     tokenizer = getattr(pipe, "tokenizer", None)

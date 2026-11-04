@@ -125,6 +125,41 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("capsule lottery machine", kwargs["prompt"])
         self.assertIn("DSLR color photograph", kwargs["prompt"])
 
+    def test_bell_redraw_changes_real_inference_seed_and_records_the_same_integer(self):
+        a = {**article(), "slug": "stolen-doorbell-returned-by-parcel", "title": "盗まれた呼び鈴が小包で戻る"}
+        legacy = int.from_bytes(hashlib.sha256((a["slug"] + "|" + a["title"]).encode()).digest()[:8], "big") % (2**63)
+        seed = local_scene_photos.stable_seed(a)
+        self.assertNotEqual(seed, legacy)
+        self.assertEqual(local_scene_photos.stable_seed(dict(a)), seed)
+        self.assertTrue(0 <= seed < 2**63)
+        fake_image = SimpleNamespace(save=Mock())
+        pipeline = Mock(return_value=SimpleNamespace(images=[fake_image], nsfw_content_detected=[False]))
+        pipeline.tokenizer = None
+        generator = Mock()
+        generator.manual_seed.return_value = generator
+        fake_torch = SimpleNamespace(Generator=Mock(return_value=generator), inference_mode=contextlib.nullcontext)
+        output = io.StringIO()
+        with patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()), \
+             patch.object(cpu, "normalize_exposure", return_value=fake_image), \
+             patch.object(cpu, "check_quality"), contextlib.redirect_stdout(output):
+            data = cpu.render_one(pipeline, fake_torch, a)
+        generator.manual_seed.assert_called_once_with(seed)
+        self.assertIs(pipeline.call_args.kwargs["generator"], generator)
+        self.assertIn("CPU scene seed: " + str(seed), output.getvalue())
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            local_scene_photos.write_generated(a, data, cpu.MODEL, root=root, origin="github-cpu-lcm")
+            self.assertEqual(generated_scene_entry(a, root=root)["seed"], seed)
+            self.assertTrue(usable_generated_scene(a, root=root))
+
+    def test_other_articles_preserve_the_original_seed_formula(self):
+        for a in local_scene_photos.load_articles():
+            if a["slug"] == "stolen-doorbell-returned-by-parcel":
+                continue
+            legacy = int.from_bytes(hashlib.sha256((a["slug"] + "|" + a["title"]).encode()).digest()[:8], "big") % (2**63)
+            with self.subTest(slug=a["slug"]):
+                self.assertEqual(local_scene_photos.stable_seed(a), legacy)
+
     def test_tv_comedy_punchline_in_prompt_not_generic_crowd(self):
         a = {"slug": cpu.TV_PILOT_SLUG, "title": "有名人700人の特番、名前を呼ぶだけで放送終了",
              "summary": "紹介が終わり、ゲームは始まらなかった。", "category": "エンタメ",
@@ -199,7 +234,7 @@ class FreeCpuImageTests(unittest.TestCase):
         expected = {
             "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "purple skin", "yellow flesh", "referee", "whistle"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
-            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "push button", "close-up"),
+            "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
             "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
         }
@@ -215,6 +250,9 @@ class FreeCpuImageTests(unittest.TestCase):
             if slug == "volleyball-team-lunch-plate-merch":
                 for room_context in ("table", "room", "indoor", "dinner", "net"):
                     self.assertNotIn(room_context, prompt.lower())
+            if slug == "stolen-doorbell-returned-by-parcel":
+                for appliance_context in ("hotel", "reception", "counter", "electric", "push button", "skirt"):
+                    self.assertNotIn(appliance_context, prompt.lower())
 
     def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
         source = {**article(), "paragraphs": ["Original fictional scene."],

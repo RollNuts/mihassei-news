@@ -31,7 +31,9 @@ content/serials.json ────┘                │
 - 通常の表紙は[`scripts/editorial_covers.py`](../scripts/editorial_covers.py)で生成する記事別SVG。SNS共有用にはPNGを生成します。
 - 写真は`content/approved_photos.json`の承認情報、ライセンス、形式などを検証してから採用。不採用の場合は自作表紙に戻します。
 - ローカルのComfyUIによる生成は任意であり、Macが停止していても記事発行には影響しません。詳細は[`MAC_SCENE_SETUP.md`](MAC_SCENE_SETUP.md)。
-- 承認済みのJPEGをゆっくり動かした**任意の4秒MP4**は、存在するときだけ記事に表示。自動再生なし、容量制限あり。詳細は[`MOTION_CLIPS.md`](MOTION_CLIPS.md)。
+- 承認済みJPEGから無料CPUとFFmpegで作る**任意の12秒・24fps・3カットMP4**は、検証済みのものだけ表示。旧4秒・12fpsクリップも互換性を維持し、1本450KiB・全体24MiBの上限を適用します。人物自体を動かすAI動画生成ではありません。
+- 動画は編集者が選んだ記事だけが対象。トップは最大1本の画面内無音プレビュー、記事ページは手動再生とし、動きを減らす設定・データ節約設定・読者の手動停止を尊重します。記事一覧は静止画のままです。
+- 字幕は`content/broadcasts.json`に記事slugと3つの短い文を定義し、ブラウザで`video.currentTime`へ同期。字幕だけの変更ではMP4を再生成せず、静的ビルドで反映します。動画の検証・停止・容量管理の詳細は[`MOTION_CLIPS.md`](MOTION_CLIPS.md)。
 - GitHub公開ランナーでのCPU画像生成は実験的な経路です。**定時実行の有効・停止や画質検証は[`FREE_CPU_IMAGES.md`](FREE_CPU_IMAGES.md)を正本として確認**してください。設定済みというだけで画像の品質・本番反映を成功と見なしません。
 
 ## 読者向けAPIと測定

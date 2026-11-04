@@ -136,8 +136,13 @@ def scene_prompt(article: dict) -> str:
 
 
 def stable_seed(article: dict) -> int:
+    key = article["slug"] + "|" + article["title"]
+    if article["slug"] == "stolen-doorbell-returned-by-parcel":
+        # This unpublished scene needs genuinely new initial noise after the
+        # original seed repeatedly produced appliances instead of a handbell.
+        key += "|handbell-redraw-1"
     return int.from_bytes(hashlib.sha256(
-        (article["slug"] + "|" + article["title"]).encode("utf-8")).digest()[:8], "big") % (2**63)
+        key.encode("utf-8")).digest()[:8], "big") % (2**63)
 
 
 def workflow(article: dict, checkpoint: str, steps: int = 24) -> dict:
