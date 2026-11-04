@@ -19,8 +19,8 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, render_story_visual, story_subject
     from .media_policy import usable_cached_photo
-    from .generated_photos import usable_generated_scene, generated_url
-    from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR, DURATION_SECONDS
+    from .generated_photos import usable_generated_scene, generated_url, article_fingerprint
+    from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .reader_paths import suggested_articles
     from .editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -31,8 +31,8 @@ else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject
     from media_policy import usable_cached_photo
-    from generated_photos import usable_generated_scene, generated_url
-    from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR, DURATION_SECONDS
+    from generated_photos import usable_generated_scene, generated_url, article_fingerprint
+    from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from reader_paths import suggested_articles
     from editorial_starter import starter_picks, homepage_starter_picks, render_starter_picks
@@ -368,6 +368,61 @@ def image_tag(a, cls, extra=""):
             f' width="1200" height="675" {extra}{fallback}>')
 
 
+def clip_seconds(clip):
+    """Use each verified clip's duration; old four-second clips remain valid."""
+    return int(clip.get("duration_ms", 4000)) // 1000
+
+
+def broadcast_cues(article, clip):
+    """Editorial captions belong to the exact story, never stale revised text."""
+    if clip.get("motion_style_version") != 3:
+        return []
+    try:
+        source = json.loads((BASE / "content/broadcasts.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    if not isinstance(source, dict) or source.get("version") != 1:
+        return []
+    stories = source.get("stories")
+    item = stories.get(article["slug"]) if isinstance(stories, dict) else None
+    if not isinstance(item, dict) or item.get("article_sha256") != article_fingerprint(article):
+        return []
+    cues = item.get("cues")
+    if not isinstance(cues, list) or len(cues) != 3:
+        return []
+    for index, cue in enumerate(cues):
+        if (not isinstance(cue, dict) or type(cue.get("at")) is not int
+                or cue["at"] != index * 4
+                or not isinstance(cue.get("label"), str) or not 1 <= len(cue["label"]) <= 12
+                or not isinstance(cue.get("text"), str) or not 1 <= len(cue["text"]) <= 40):
+            return []
+    return cues
+
+
+def broadcast_overlay(article, clip):
+    """Short readable captions share the video clock on home and article pages."""
+    cues = broadcast_cues(article, clip)
+    label = cues[0]["label"] if cues else article["category"]
+    caption = cues[0]["text"] if cues else article["title"]
+    cue_data = escape(json.dumps(cues, ensure_ascii=False, separators=(",", ":")))
+    counter = "01 / 03" if cues else f'{clip_seconds(clip)}秒'
+    return (
+        f'<div class="broadcast-super" data-broadcast-overlay data-cues="{cue_data}" aria-hidden="true">'
+        '<span class="broadcast-mark">未発生ニュース <small>FICTION</small></span>'
+        f'<span class="broadcast-counter" data-broadcast-counter>{counter}</span>'
+        '<div class="broadcast-lower-third" data-broadcast-caption>'
+        f'<span data-broadcast-label>{escape(label)}</span>'
+        f'<strong data-broadcast-text>{escape(caption)}</strong></div>'
+        '<div class="broadcast-progress"><span data-broadcast-progress></span></div>'
+        '</div>'
+    )
+
+
+def clip_caption(article):
+    clip = usable_clip(article, root=BASE)
+    return (f" 写真を編集した{clip_seconds(clip)}秒の無音演出映像。" if clip else "")
+
+
 def article_hero_media(a):
     """Only vetted MP4s become video players; preserve a real image on failure."""
     picture = image_tag(a, "article-visual",
@@ -384,9 +439,9 @@ def article_hero_media(a):
         ' preload="metadata"'
         f' poster="{escape(editorial_image(a))}"'
         ' width="1200" height="675"'
-        f' aria-label="{escape("創作ニュース「" + a["title"] + "」の4秒の無音演出映像")}">'
+        f' aria-label="{escape("創作ニュース「" + a["title"] + "」の" + str(clip_seconds(clip)) + "秒の無音演出映像")}">'
         f'<source src="{escape(clip_url(a))}?v={version}" type="video/mp4">'
-        '</video>' + fallback + '</div>'
+        '</video>' + fallback + (broadcast_overlay(a, clip) if broadcast_cues(a, clip) else '') + '</div>'
     )
 
 
@@ -401,36 +456,25 @@ def broadcast_feature(articles, *, exclude_slug=None):
     clip = usable_clip(chosen, root=BASE)
     poster = editorial_image(chosen)
     version = clip["sha256"][:12]
-    headline = escape(chosen["title"])
     url = escape(article_url(chosen))
     return (
         '<section class="broadcast-spotlight" aria-labelledby="broadcast-title">'
         '<div class="broadcast-intro"><div>'
         '<span class="small-label red">UNHAPPENED TV / 映像ニュース</span>'
         '<h2 id="broadcast-title">未発生ニュース放送室</h2>'
-        '<p>選んだ記事だけ、無音のニュース番組風に。</p></div>'
+        '<p>ひとつのニュースを、短い映像で。</p></div>'
         f'<a href="{url}" class="broadcast-article-link">記事全文を読む →</a></div>'
-        '<div class="broadcast-screen" data-news-broadcast>'
+        '<div class="broadcast-screen" data-news-broadcast data-video-shell>'
         f'<img class="broadcast-poster" src="{escape(poster)}" alt=""'
         ' width="1200" height="675" loading="lazy" decoding="async">'
         '<video class="broadcast-video" controls playsinline muted loop'
         ' preload="none" width="1200" height="675"'
-        ' aria-label="記事のイメージ写真を動かした無音の演出映像">'
+        f' poster="{escape(poster)}"'
+        f' aria-label="{escape(chosen["title"])}・{clip_seconds(clip)}秒の無音演出映像">'
         f'<source src="{escape(clip_url(chosen))}?v={version}" type="video/mp4">'
-        '</video>'
-        '<div class="broadcast-super" aria-hidden="true">'
-        '<span class="broadcast-mark">UNHAPPENED TV · FICTION</span>'
-        '<div class="broadcast-lower-third">'
-        f'<span>架空ニュース / {escape(chosen["category"])}</span>'
-        f'<strong>{headline}</strong></div></div></div>'
-        '<div class="broadcast-ticker" aria-hidden="true"><span>'
-        'FICTION NEWS　/　これは架空のニュースです　/　'
-        'UNHAPPENED TV　/　2031年のもしも　/　'
-        'FICTION NEWS　/　これは架空のニュースです　/　'
-        'UNHAPPENED TV　/　2031年のもしも　/　'
-        '</span></div>'
-        '<p class="broadcast-note">※創作ニュースの演出映像です。現実の事件・報道映像ではありません。'
-        '音声はありません。再生できない場合は画像を表示します。</p>'
+        '</video>' + broadcast_overlay(chosen, clip) + '</div>'
+        f'<p class="broadcast-headline"><a href="{url}">{escape(chosen["title"])}</a></p>'
+        '<p class="broadcast-note">創作ニュースの演出映像・無音。再生できない場合は画像を表示します。</p>'
         '</section>'
     )
 
@@ -455,8 +499,9 @@ def card(a, archive=False):
         searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
-    clip_label = ('<span class="story-clip-label">▶ 4秒映像</span>'
-                  if usable_clip(a, root=BASE) else '')
+    clip = usable_clip(a, root=BASE)
+    clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
+                  if clip else '')
     return (
         f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if usable_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
@@ -614,12 +659,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         schemas.append({
             "@context": "https://schema.org",
             "@type": "VideoObject",
-            "name": article["title"] + "｜4秒の演出映像",
-            "description": "記事の承認済み画像にゆっくり動きをつけた無音の創作映像。実際の報道映像ではありません。",
+            "name": article["title"] + f"｜{clip_seconds(clip)}秒の演出映像",
+            "description": "記事の承認済み画像を編集した無音の創作映像。実際の報道映像ではありません。",
             "thumbnailUrl": og_image,
             "contentUrl": SITE + clip_url(article),
             "uploadDate": clip["created_at"],
-            "duration": "PT4S",
+            "duration": f"PT{clip_seconds(clip)}S",
             "width": 640,
             "height": 360,
         })
@@ -1150,7 +1195,7 @@ def story(a, articles, issues=None, serials=None):
 </header>
 <figure class="article-hero-figure">
 {article_hero_media(a)}
-<figcaption>{photo_credit(a)}{" 写真に動きをつけた4秒の無音演出映像。実際の事件の映像ではありません。" if usable_clip(a, root=BASE) else ""}</figcaption></figure>
+<figcaption>{photo_credit(a)}{clip_caption(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
 <nav class="reader-next" aria-label="続けて読む記事">

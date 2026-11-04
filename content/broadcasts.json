@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "stories": {
+    "bakery-no-important-announcement-panic": {
+      "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
+      "cues": [
+        {"at": 0, "label": "毎朝の投稿", "text": "パン屋「重要なお知らせはありません」"},
+        {"at": 4, "label": "ある朝、投稿を忘れると", "text": "心配した常連が殺到。パンは昼前に完売"},
+        {"at": 8, "label": "翌朝の店主", "text": "売上帳を見て、投稿せずスマホを伏せた"}
+      ]
+    }
+  }
+}

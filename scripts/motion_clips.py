@@ -17,6 +17,7 @@ import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
+from fractions import Fraction
 from pathlib import Path
 
 try:
@@ -31,7 +32,11 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[1]
 RELATIVE_DIR = Path("assets/clips")
 MANIFEST_NAME = "manifest.json"
-WIDTH, HEIGHT, FPS, DURATION_SECONDS = 640, 360, 12, 4
+WIDTH, HEIGHT, FPS, DURATION_SECONDS = 640, 360, 24, 12
+MOTION_STYLE_VERSION = 3
+# Do not invalidate already-published four-second clips when a new encoder is
+# released. Each style admits only its own exact duration/frame-rate pair.
+CLIP_PROFILES = {1: (4000, 12), 2: (4000, 12), 3: (12000, 24)}
 MAX_CLIP_BYTES = 450 * 1024
 MAX_TOTAL_BYTES = 24 * 1024 * 1024
 MAX_CLIPS = 48
@@ -85,11 +90,15 @@ def usable_clip(article: dict, *, root: Path = ROOT) -> dict | None:
     source = generated_scene_entry(article, root=root)
     if not source or not usable_generated_scene(article, root=root):
         return None
+    style = item.get("motion_style_version", 1)
+    if (type(style) is not int
+            or type(item.get("duration_ms")) is not int
+            or type(item.get("fps")) is not int
+            or CLIP_PROFILES.get(style) != (item["duration_ms"], item["fps"])):
+        return None
     if (item.get("article_sha256") != article_fingerprint(article)
             or item.get("image_sha256") != source.get("sha256")
-            or item.get("duration_ms") != DURATION_SECONDS * 1000
             or item.get("width") != WIDTH or item.get("height") != HEIGHT
-            or item.get("fps") != FPS
             or item.get("origin") != "verified-still-motion"
             or type(item.get("bytes")) is not int
             or not 1024 <= item["bytes"] <= MAX_CLIP_BYTES
@@ -146,7 +155,7 @@ def candidates(root: Path = ROOT, *, slug: str | None = None) -> list[dict]:
             continue
         clip = usable_clip(article, root=root)
         if (usable_generated_scene(article, root=root)
-                and (clip is None or clip.get("motion_style_version") != 2)):
+                and (clip is None or clip.get("motion_style_version") != MOTION_STYLE_VERSION)):
             result.append(article)
     return result
 
@@ -162,10 +171,31 @@ def require_mac_not_stopped() -> None:
 
 
 def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None:
-    """Visible but bounded 4s photo zoom, never genuine incident footage."""
+    """Three four-second camera shots from one verified still, without AI APIs.
+
+    Establish the scene, cut to a closer lateral pan, then pull back to the
+    scene. Crop at four times the output resolution to keep slow movement
+    smooth instead of jumping a whole output pixel at a time. Hard cuts at
+    4s/8s preserve all 288 frames: no black/white transition frames or gaps.
+    These are camera movements, not animation of the depicted people.
+    """
+    shot_frames = FPS * DURATION_SECONDS // 3
+    last = shot_frames - 1
+    close_progress = f"(on-{shot_frames})/{last}"
+    ending_progress = f"(on-{shot_frames * 2})/{last}"
+    zoom = (
+        f"if(lt(on,{shot_frames}),1.02+0.16*on/{last},"
+        f"if(lt(on,{shot_frames * 2}),1.45+0.04*{close_progress},"
+        f"1.24-0.22*{ending_progress}))"
+    )
+    horizontal = (
+        f"if(between(on,{shot_frames},{shot_frames * 2 - 1}),"
+        f"(iw-iw/zoom)*(0.12+0.76*{close_progress}),(iw-iw/zoom)/2)"
+    )
     filter_graph = (
-        "zoompan=z='min(1.03+on*0.004,1.23)':"
-        "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
+        f"scale={WIDTH * 4}:{HEIGHT * 4}:force_original_aspect_ratio=increase,"
+        f"crop={WIDTH * 4}:{HEIGHT * 4},"
+        f"zoompan=z='{zoom}':x='{horizontal}':y='(ih-ih/zoom)/2':"
         f"d=1:s={WIDTH}x{HEIGHT}:fps={FPS},format=yuv420p"
     )
     command = [
@@ -173,7 +203,8 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None
         "-loop", "1", "-framerate", str(FPS), "-i", str(image),
         "-frames:v", str(FPS * DURATION_SECONDS),
         "-vf", filter_graph, "-an",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "36",
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
+        "-maxrate", "240k", "-bufsize", "480k",
         "-pix_fmt", "yuv420p", "-movflags", "+faststart",
         str(output),
     ]
@@ -191,8 +222,11 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None
             or streams[0].get("codec_name") != "h264"
             or streams[0].get("width") != WIDTH
             or streams[0].get("height") != HEIGHT
-            or not 3.8 <= float(info["format"]["duration"]) <= 4.2):
-        raise RuntimeError("Invalid encoded clip codec, dimensions, audio or duration")
+            or streams[0].get("pix_fmt") != "yuv420p"
+            or Fraction(streams[0].get("avg_frame_rate", "0/1")) != FPS
+            or int(streams[0].get("nb_frames", 0)) != FPS * DURATION_SECONDS
+            or not DURATION_SECONDS - 0.1 <= float(info["format"]["duration"]) <= DURATION_SECONDS + 0.1):
+        raise RuntimeError("Invalid encoded clip codec, dimensions, audio, frame rate or duration")
 
 
 def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
@@ -247,7 +281,7 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
                 raise RuntimeError("24 MiB total video budget reached; no clips deleted")
             record = {
                 "origin": "verified-still-motion",
-                "motion_style_version": 2,
+                "motion_style_version": MOTION_STYLE_VERSION,
                 "article_sha256": article_fingerprint(article),
                 "image_sha256": src["sha256"],
                 "sha256": hashlib.sha256(staged.read_bytes()).hexdigest(),
