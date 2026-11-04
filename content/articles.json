@@ -1,5 +1,28 @@
 [
   {
+    "slug": "double-speed-drama-explainer-marathon",
+    "category": "エンタメ",
+    "flash": "映像の珍事",
+    "fiction_company": "ある動画好きの男性",
+    "art": "cards",
+    "fiction_at": "2031-11-04T10:27:00+09:00",
+    "title": "ドラマを倍速で見た男性、内容を知るため解説動画を3時間視聴",
+    "summary": "時間を節約するためにドラマを倍速で見た男性が、登場人物の関係を見失い解説動画を次々と再生。浮いた時間より長く解説を見ても、本編は効率よく見たつもりだった。",
+    "paragraphs": [
+      "配信ドラマを2倍速で見終えた男性が、登場人物の関係を理解するために解説動画を3時間見続けた。休日に少しでも多くの作品を見るため、本編は会話の間も早送りするのが習慣だ。今回も短時間で全話を見終えたが、最終回で主人公が抱き合った相手を見て「この人、誰だったっけ」と立ち止まった。",
+      "男性は登場人物の関係図を手書きし、解説動画を一本ずつ再生した。大事な伏線を聞き逃さないよう、解説だけは等倍速。画面を何度も止めてメモを取り、気がつけば夜になっていた。友人から「本編を普通に見直したら？」と言われると、男性はノートから目を上げずに答えた。「そんな時間ないよ。今、答え合わせで忙しいんだから」"
+    ],
+    "scene_prompt": "A large open notebook filled with messy, illegible character relationship sketches sits beside a paused abstract streaming video on a laptop. An anonymous young man earnestly studies the notes with a pencil while a small remote lies unused near him. Modest apartment living room after dark, candid photorealistic staged comedy, no readable text, brand logos, or recognizable faces.",
+    "source": {
+      "kind": "ニュース",
+      "publisher": "日刊スポーツ",
+      "published_at": "2026-11-04T10:27:00+09:00",
+      "url": "https://www.nikkansports.com/entertainment/news/202611040000312.html",
+      "topic": "2026年11月4日10:27公開。番組出演者が動画の倍速視聴なら短い時間でより多くの作品を見られると語ったと報道。本文の男性・視聴行動・会話は創作であり、出演者の実際の行為ではない。"
+    },
+    "published_at": "2026-11-04T11:32:29+09:00"
+  },
+  {
     "slug": "father-tries-own-overpacked-bento",
     "category": "暮らし",
     "flash": "家庭の珍事",
