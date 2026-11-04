@@ -53,20 +53,23 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         self.assertEqual(suggested_articles(article, self.articles, limit=0), [])
         self.assertEqual(suggested_articles(article, [article]), [])
 
-    def test_pv_recommendations_cover_all_other_stories_and_keep_a_latest_fallback(self):
+    def test_pv_recommendations_cover_archive_and_next_link_advances_sequentially(self):
         available = {a["slug"] for a in self.articles}
-        for item in self.articles:
+        ordered = sorted(self.articles, key=lambda a: (
+            build.publication_date(a), a["source"]["published_at"]
+        ), reverse=True)
+        for index, item in enumerate(ordered):
             page = build.story(item, self.articles)
-            lead = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
+            lead = re.search(r'<a href="([^"]+)" class="reader-next-title">', page)
             self.assertIsNotNone(lead, item["slug"])
             self.assertIn('data-popular-fallback', page)
             self.assertIn('<span class="reader-next-kicker">次の記事</span>', page)
-            self.assertIn('<span class="reader-next-meta">新着 · ', page)
-            expected_latest = max(
-                (a for a in self.articles if a["slug"] != item["slug"]),
-                key=lambda a: (build.publication_date(a), a["source"]["published_at"]),
+            self.assertIn('<span class="reader-next-meta">続けて読む · ', page)
+            expected = (
+                build.article_url(ordered[index + 1])
+                if index + 1 < len(ordered) else "/archive/"
             )
-            self.assertEqual(lead.group(1), expected_latest["slug"])
+            self.assertEqual(lead.group(1), expected)
             raw = re.search(r'data-popular-options="([^"]+)"', page)
             self.assertIsNotNone(raw)
             candidates = json.loads(html.unescape(raw.group(1)))
@@ -75,6 +78,18 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(set(slugs), available - {item["slug"]})
             self.assertIn('aria-labelledby="readers-choice-title" hidden', page)
             self.assertNotIn('class="article-related"', page)
+
+        # The first two stories must not point back at each other.
+        first = build.story(ordered[0], self.articles)
+        second = build.story(ordered[1], self.articles)
+        first_target = re.search(r'class="reader-next-title"[^>]*href="([^"]+)"|href="([^"]+)" class="reader-next-title"', first)
+        second_target = re.search(r'class="reader-next-title"[^>]*href="([^"]+)"|href="([^"]+)" class="reader-next-title"', second)
+        self.assertIsNotNone(first_target)
+        self.assertIsNotNone(second_target)
+        first_href = next(value for value in first_target.groups() if value)
+        second_href = next(value for value in second_target.groups() if value)
+        self.assertEqual(first_href, build.article_url(ordered[1]))
+        self.assertEqual(second_href, build.article_url(ordered[2]))
 
     def test_article_structured_data_uses_real_dates_and_canonical(self):
         item = self.articles[0]
