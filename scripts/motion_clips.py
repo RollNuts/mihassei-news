@@ -193,7 +193,10 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None
         f"(iw-iw/zoom)*(0.12+0.76*{close_progress}),(iw-iw/zoom)/2)"
     )
     filter_graph = (
-        f"scale={WIDTH * 4}:{HEIGHT * 4}:force_original_aspect_ratio=increase,"
+        # JPEG stills are full-range. Convert their samples, then explicitly
+        # signal limited-range video; FFmpeg 8 otherwise preserves JPEG range
+        # and ffprobe reports yuvj420p despite the requested yuv420p format.
+        f"scale={WIDTH * 4}:{HEIGHT * 4}:force_original_aspect_ratio=increase:out_range=tv,"
         f"crop={WIDTH * 4}:{HEIGHT * 4},"
         f"zoompan=z='{zoom}':x='{horizontal}':y='(ih-ih/zoom)/2':"
         f"d=1:s={WIDTH}x{HEIGHT}:fps={FPS},format=yuv420p"
@@ -205,7 +208,7 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None
         "-vf", filter_graph, "-an",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
         "-maxrate", "240k", "-bufsize", "480k",
-        "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+        "-pix_fmt", "yuv420p", "-color_range", "tv", "-movflags", "+faststart",
         str(output),
     ]
     subprocess.run(command, capture_output=True, text=True, timeout=120, check=True)
