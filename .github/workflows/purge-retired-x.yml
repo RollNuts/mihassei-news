@@ -1,12 +1,6 @@
 name: Purge Retired X Experiment Posts
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "social-bot/purge_retired_x.py"
-      - "social-bot/experiments/config.json"
-      - ".github/workflows/purge-retired-x.yml"
   workflow_dispatch:
 
 permissions:
@@ -33,7 +27,7 @@ jobs:
           python -m py_compile social-bot/purge_retired_x.py
 
       - name: Delete only exact unsent retired experiment Buffer posts
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
