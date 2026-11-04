@@ -304,6 +304,11 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "rejected_candidate_sha256": "23c8ab913f832148c8237a9d7e506a51b2cc3f4ea1dde982122e5c7464aa47a9",
+      "reason": "主役が角のそろったオレンジ色の棒状食品に見え、ふかし芋と認識できない。正しい芋を実際に再生成・検品するまで記事に合うイラストを使用する。"
     }
   },
   "version": 1
