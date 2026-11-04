@@ -34,6 +34,7 @@ METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
 JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
+MAX_DAILY_X_POSTS = 7
 CRISIS_PROMO_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
@@ -341,6 +342,27 @@ def promotions_today(state: dict, now: datetime) -> int:
     return count
 
 
+def x_posts_today(existing: list[dict], now: datetime) -> int:
+    """Count all observed Buffer X posts on the JST day, across every lane."""
+    day = now.astimezone(JST).date()
+    seen = set()
+    for row in existing:
+        if row.get("status") not in ("scheduled", "sent"):
+            continue
+        value = row.get("sentAt") if row.get("status") == "sent" else row.get("dueAt")
+        if not value:
+            value = row.get("dueAt") or row.get("sentAt")
+        if not value:
+            continue
+        try:
+            observed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except (AttributeError, ValueError):
+            continue
+        if observed.tzinfo and observed.astimezone(JST).date() == day:
+            seen.add(row.get("id") or ("anonymous", row.get("text"), value))
+    return len(seen)
+
+
 def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
     """Keep article promotions separated even when several are allowed per day."""
     for entry in state["queued"].values():
@@ -395,7 +417,8 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
           if p.get("status") in ("scheduled", "sent"))
     ) if existing else set()
     today_count = promotions_today(state, now)
-    if (len(queued) >= config["max_queue_size"]
+    if (x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
+            or len(queued) >= config["max_queue_size"]
             or today_count >= config["max_per_jst_day"]
             or cooldown_active(state, now, config["minimum_interval_hours"])):
         return None, None, len(queued)
@@ -449,7 +472,7 @@ def main() -> int:
     org_id, channel_id = choose_x_channel(token)
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
-    existing = list_existing(token, org_id, channel_id)
+    existing = list_existing(token, org_id, channel_id, include_due_at=True)
     creative_state = read_json(HERE.parent / "experiments" / "state.json")
     creative_ids = {
         v["buffer_id"] for v in creative_state.get("queued", {}).values()
