@@ -51,14 +51,14 @@
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "diner-refund-customer-paying-escape": {
-      "article_sha256": "2f91fd25e715009905eb0f162f156f994c93e1b8a552afc09a018eac42aaebe4",
-      "bytes": 104340,
-      "generated_at": "2026-11-03T11:13:20.895086+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+      "bytes": 116258,
+      "generated_at": "2026-11-04T02:20:33.351318+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 9182230524234289819,
-      "sha256": "7abff72e8cad6250a5449fb62c8813e68b63044738985c20f2d5f75c5599e5dd"
+      "seed": 1135968338982907543,
+      "sha256": "f427b70c803eee2e102fd159ca1867de1fdca19169e63ee6ffbc95b319712c66"
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
@@ -171,14 +171,14 @@
       "sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70"
     },
     "quiet-reply-dating-matches": {
-      "article_sha256": "1fbe5026d7edc3bbb284ea11c7c2cce37100927d915f6238447b368a8ed229ec",
-      "bytes": 83461,
-      "generated_at": "2026-11-03T04:57:58.681159+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+      "bytes": 92917,
+      "generated_at": "2026-11-04T02:20:33.354427+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 2771907992498822586,
-      "sha256": "839d35bb769539cffac22cca4b88837ada978e0bbebf0f3b896a24c7c4d08d63"
+      "seed": 6903667958466384986,
+      "sha256": "165651f03aa5585da7b4ff24a1df2bb0305d7557d859f85ac4a2c438ef9cece2"
     },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
