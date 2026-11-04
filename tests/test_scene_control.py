@@ -360,7 +360,13 @@ class ControlTests(unittest.TestCase):
         self.assertIn('fetch failed', result['counts_error'])
 
     def test_status_pins_all_blob_reads_even_when_remote_ref_moves_mid_count(self):
-        git, original, latest = self.status_repository()
+        git, original, _ = self.status_repository()
+        publisher = self.base / 'publisher'
+        article = json.loads((publisher / 'content/articles.json').read_text())[1]
+        self.write_count_review(publisher, article)
+        git('add', '.', cwd=publisher); git('commit', '-m', 'review exact image', cwd=publisher)
+        latest = git('rev-parse', 'HEAD', cwd=publisher)
+        git('push', 'origin', 'main', cwd=publisher)
         actual_run = subprocess.run
         reads = []
         moved = False
@@ -381,7 +387,11 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['generated_images'], 1)
         self.assertEqual(result['pending_articles'], 1)
         self.assertTrue(reads)
+        self.assertIn(latest + ':content/visual_reviews.json', reads)
         self.assertTrue(all(path.startswith(latest + ':') for path in reads))
+        self.assertEqual(result['published_images'], 1)
+        self.assertEqual(result['pending_review_images'], 0)
+        self.assertEqual(result['pending_generation_articles'], 1)
         self.assertEqual(git('rev-parse', 'origin/main'), original)
 
     def test_cpu_latest_job_reports_metadata_without_claiming_new_images(self):
@@ -415,6 +425,81 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['cpu']['latest_run']['status'], 'unknown')
         self.assertIn('authentication failed', result['cpu']['latest_run']['error'])
 
+    def write_count_review(self, root, article, decision='accepted'):
+        from scripts.generated_photos import generated_manifest
+        record = generated_manifest(root)[article['slug']]
+        payload = {'version': 1, 'reviews': {article['slug']: {
+            'decision': decision, 'article_sha256': record['article_sha256'],
+            'image_sha256': record['sha256'], 'reviewed_at': '2026-11-04T05:00:00+00:00',
+            'note': 'Unit-test fixture review; no real generated photo was approved.'}}}
+        path = root / 'content/visual_reviews.json'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload))
+
+    def count_fixture(self):
+        from scripts.local_scene_photos import write_generated
+        article = {'slug': 'review-status', 'title': 'Fixture story', 'paragraphs': ['Original ending']}
+        jpeg = (b'\xff\xd8\xff\xc0\x00\x11\x08' + (675).to_bytes(2, 'big')
+                + (1200).to_bytes(2, 'big') + b'\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00'
+                + b'\x00' * 17000 + b'\xff\xd9')
+        write_generated(article, jpeg, 'sd_xl_base_1.0.safetensors', root=self.root)
+        return article, jpeg
+
+    def test_verified_jpeg_waits_for_exact_visual_review_before_published_count(self):
+        article, _ = self.count_fixture()
+        initial = control.image_status_counts([article], self.root)
+        self.assertEqual(initial, {'generated_images': 1, 'published_images': 0,
+                                  'pending_review_images': 1, 'pending_generation_articles': 0,
+                                  'held_articles': 0})
+        self.write_count_review(self.root, article)
+        adopted = control.image_status_counts([article], self.root)
+        self.assertEqual(adopted['generated_images'], 1)
+        self.assertEqual(adopted['published_images'], 1)
+        self.assertEqual(adopted['pending_review_images'], 0)
+        manifest = (self.root / 'assets/generated/manifest.json').read_bytes()
+        reviews = (self.root / 'content/visual_reviews.json').read_bytes()
+        control.image_status_counts([article], self.root)
+        self.assertEqual((self.root / 'assets/generated/manifest.json').read_bytes(), manifest)
+        self.assertEqual((self.root / 'content/visual_reviews.json').read_bytes(), reviews)
+
+    def test_changed_image_bytes_do_not_inherit_old_published_count(self):
+        from scripts.local_scene_photos import write_generated
+        article, jpeg = self.count_fixture()
+        self.write_count_review(self.root, article)
+        changed = jpeg[:-2] + b'new fixture pixels' + jpeg[-2:]
+        write_generated(article, changed, 'sd_xl_base_1.0.safetensors', root=self.root)
+        counts = control.image_status_counts([article], self.root)
+        self.assertEqual(counts['generated_images'], 1)
+        self.assertEqual(counts['published_images'], 0)
+        self.assertEqual(counts['pending_review_images'], 1)
+        self.assertEqual(counts['pending_generation_articles'], 0)
+
+    def test_changed_article_needs_generation_then_a_new_matching_review(self):
+        from scripts.local_scene_photos import write_generated
+        article, jpeg = self.count_fixture()
+        self.write_count_review(self.root, article)
+        changed = {**article, 'paragraphs': ['A different ending']}
+        stale = control.image_status_counts([changed], self.root)
+        self.assertEqual(stale['generated_images'], 0)
+        self.assertEqual(stale['published_images'], 0)
+        self.assertEqual(stale['pending_generation_articles'], 1)
+        write_generated(changed, jpeg, 'sd_xl_base_1.0.safetensors', root=self.root)
+        pending = control.image_status_counts([changed], self.root)
+        self.assertEqual(pending['generated_images'], 1)
+        self.assertEqual(pending['published_images'], 0)
+        self.assertEqual(pending['pending_review_images'], 1)
+        self.assertEqual(pending['pending_generation_articles'], 0)
+
+    def test_matching_rejection_is_quality_held_not_waiting_to_generate(self):
+        article, _ = self.count_fixture()
+        self.write_count_review(self.root, article, decision='rejected')
+        counts = control.image_status_counts([article], self.root)
+        self.assertEqual(counts['generated_images'], 1)  # Preserve raw JPEG semantics.
+        self.assertEqual(counts['published_images'], 0)
+        self.assertEqual(counts['pending_review_images'], 0)
+        self.assertEqual(counts['pending_generation_articles'], 0)
+        self.assertEqual(counts['held_articles'], 1)
+
     def test_status_history_retains_last_success_when_later_run_errors(self):
         with patch.object(worker, 'APP_DIR', self.app):
             worker.update_status('ok', 'published')
@@ -427,6 +512,7 @@ class ControlTests(unittest.TestCase):
     def test_status_displays_resource_deferral_separately_from_persistent_stop(self):
         result = {'automatic': 'ON', 'running': False, 'persistent_stop': False,
                   'generated_images': 1, 'pending_articles': 2, 'held_articles': 0,
+                  'published_images': 0, 'pending_review_images': 1, 'pending_generation_articles': 2,
                   'free_gib': 100, 'app_gib': 8, 'jpeg_bytes': 1024,
                   'counts_source': 'origin/main', 'cpu': {'state': 'active'},
                   'resource_guard': {'allowed': False, 'reason': 'Swap exceeds safety limit',
@@ -437,6 +523,8 @@ class ControlTests(unittest.TestCase):
         self.assertIn('自動運転：ON', output.getvalue())
         self.assertIn('Mac負荷保護：生成を見送り', output.getvalue())
         self.assertIn('スワップ5GiB', output.getvalue())
+        self.assertIn('生成JPEG：1枚 ／ 掲載採用：0枚', output.getvalue())
+        self.assertIn('目視待ち：1枚 ／ 要生成：2記事 ／ 品質保留：0件', output.getvalue())
 
 
 if __name__ == '__main__': unittest.main()
