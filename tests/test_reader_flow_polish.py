@@ -65,7 +65,7 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn(item["source"]["url"], page)
         self.assertIn(item["source"]["topic"], page)
-        self.assertIn("元記事が報じた事実ではありません", page)
+        self.assertIn("着想元の内容をそのまま伝えるものではありません", page)
         self.assertIn('<strong>この記事は創作です。</strong>', page)
 
     def test_small_category_still_has_a_relevant_archive_link(self):
