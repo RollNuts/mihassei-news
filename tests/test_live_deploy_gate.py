@@ -178,20 +178,20 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
             with self.subTest(label=label), self.assertRaises(RuntimeError):
                 verify_pv_recommendations(candidate, self.articles)
 
-    def test_article_fallback_is_newest_other_story_and_never_claims_popularity(self):
+    def test_article_fallback_advances_sequentially_and_never_claims_popularity(self):
         from scripts.build import pv_recommendations
         from scripts.check_live import verify_pv_recommendations
 
         current = self.articles[-1]
         fallback = ('<nav class="reader-next" data-popular-fallback>'
                     '<span class="reader-next-kicker">次の記事</span>'
-                    '<span class="reader-next-meta">新着 · 社会</span>'
+                    '<span class="reader-next-meta">続けて読む · 社会</span>'
                     '<a class="reader-next-title" href="/articles/story-28/">記事タイトル</a></nav>')
         panel = pv_recommendations(self.articles, current["slug"])
         verify_pv_recommendations(fallback + panel, self.articles, current)
         variants = {
             "self link": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-29/"'),
-            "older fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
+            "skipped fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
             "hidden fallback": (fallback + panel).replace("data-popular-fallback>", "data-popular-fallback hidden>"),
             "misleading label": (fallback + panel).replace("次の記事", "一番人気"),
             "self candidate": fallback + pv_recommendations(self.articles),
@@ -201,10 +201,13 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
         for label, candidate in variants.items():
             with self.subTest(label=label), self.assertRaises(RuntimeError):
                 verify_pv_recommendations(candidate, self.articles, current)
-        # A single published story still offers a valid archive route.
-        only = self.articles[:1]
+        # The oldest (or only) published story ends the linear stream at the archive.
+        oldest = self.articles[:1]
         archive = fallback.replace("/articles/story-28/", "/archive/")
-        verify_pv_recommendations(archive + pv_recommendations(only, only[0]["slug"]), only, only[0])
+        verify_pv_recommendations(
+            archive + pv_recommendations(oldest, oldest[0]["slug"]),
+            oldest, oldest[0],
+        )
 
 
 class PVAPIDeploymentTests(unittest.TestCase):
