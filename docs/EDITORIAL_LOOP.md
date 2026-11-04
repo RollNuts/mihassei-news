@@ -153,7 +153,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：17:30枠は本人案U3を採用。「子どもの生の笑い声には注意、録音の笑い声は大音量」を風刺。記事：https://veripsa.com/articles/park-recorded-laughter-real-kids-shushed/（JST 2026-11-04 17:33初刊。本番revision 5a01300d531b1c8ade25582702af97dcdf08ce75の実配信と一面・記事・安全なSVG/OGPをGitHub公開SEO検証で確認。動画は追加選抜せず）。
-- **次枠**：19:30枠は公園・子どもの声・録音笑い声・規則と活気の逆転を繰り返さず、現実の新事実か別の生活矛盾へ。chance-meeting-cafe-reservation-full の動画は実写JPEG不合格による image_required のまま画像回収担当へ渡す。未生成候補を積み増さない。
+- **直前**：21:30枠は「自分に贈ったお歳暮を、受取人の自分が遠慮して辞退する」笑いを採用。記事：https://veripsa.com/articles/self-oseibo-recipient-refuses-own-gift/（JST 2026-11-04 21:39初刊／初見104字テスト合格。PR #331 CI合格、main a26f957398fcfb5c25d3aff63b3c5f29fa3add7e・本番revision一致、記事・一面・OGP・安全な代替画像をGitHub公開検証で確認。動画の追加選抜なし）。
+- **次枠**：23:30枠はお歳暮・自分への贈り物・受取辞退や前枠の横断歩道／AI本人認証を繰り返さず、別の生活矛盾や新しい事実から選ぶ。chance-meeting-cafe-reservation-full の動画は image_required（未合格JPEG）のまま画像回収担当へ渡し、選抜だけを積み増さない。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
