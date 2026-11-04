@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "request_id": "x-quality-20261104",
+  "enabled": true,
+  "channel_id": "6ae94b74e29c69a171436d72",
+  "action": "move_to_draft",
+  "expires_at": "2026-11-05T00:00:00+09:00",
+  "targets": [
+    {
+      "post_id": "xexp-invisible-nails",
+      "buffer_id": "6ae9c80347205d2c39966f7a",
+      "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+      "expected_due_at": "2026-11-04T09:30:00+00:00",
+      "reason": "意外な見た目だけで、読者の生活や理解につながる観察が薄い。"
+    },
+    {
+      "post_id": "xexp-witch-autopilot",
+      "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+      "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+      "expected_due_at": "2026-11-04T10:30:00+00:00",
+      "reason": "魔女とほうきの取り違えだけで終わり、固有の読みどころが弱い。"
+    },
+    {
+      "post_id": "xexp-nejimachi-one-screw",
+      "buffer_id": "6ae9c80447205d2c39966fbc",
+      "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+      "expected_due_at": "2026-11-04T11:11:00+00:00",
+      "reason": "初見の読者には背景も変化もなく、何が起きた話なのか伝わらない。"
+    },
+    {
+      "post_id": "xexp-shadow-home",
+      "buffer_id": "6ae9c80547205d2c39966fe4",
+      "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+      "expected_due_at": "2026-11-04T22:00:00+00:00",
+      "reason": "影を擬人化した一発ネタで、読後に残る観察や物語が足りない。"
+    },
+    {
+      "post_id": "xexp-book-review",
+      "buffer_id": "6aea7608ff887f055cd9d61f",
+      "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+      "expected_due_at": "2026-11-05T02:30:00+00:00",
+      "reason": "本と読者の役割逆転が中心で、今の発信方針に合う具体的な価値が薄い。"
+    },
+    {
+      "post_id": "xexp-nejimachi-nothing-wrong",
+      "buffer_id": "6aea76084c41ba80aa4864d8",
+      "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+      "expected_due_at": "2026-11-05T09:30:00+00:00",
+      "reason": "問題なしで不安になるという逆転だけで、具体的な場面や原因がない。"
+    }
+  ],
+  "results": {
+    "xexp-invisible-nails": {
+      "target_sha256": "de04262ce8fb7062c863f83a495faa84f5bb12e2c169adb92d03e2b81558fcc8",
+      "checked_at": "2026-11-04T03:27:01.472313+00:00",
+      "before": {
+        "buffer_id": "6ae9c80347205d2c39966f7a",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:01.591300+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6ae9c80347205d2c39966f7a",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      }
+    },
+    "xexp-witch-autopilot": {
+      "target_sha256": "0e3cb0b8f23b2218745314ff29bab5e122680fe03a1ad7f79e4d8e245e11dbc4",
+      "checked_at": "2026-11-04T03:27:04.884496+00:00",
+      "before": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:04.987513+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      }
+    },
+    "xexp-nejimachi-one-screw": {
+      "target_sha256": "06c1d3b46bba1ee50a2c4029c662a65a9019344a3f77f7bfe5944da6cb3de7ef",
+      "checked_at": "2026-11-04T03:27:08.077815+00:00",
+      "before": {
+        "buffer_id": "6ae9c80447205d2c39966fbc",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T11:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:08.169428+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6ae9c80447205d2c39966fbc",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T11:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "xexp-shadow-home": {
+      "target_sha256": "febc12551fcdd0b93895ae48d5415381437b25fed27a11c5b2799589bbe26738",
+      "checked_at": "2026-11-04T03:27:11.240026+00:00",
+      "before": {
+        "buffer_id": "6ae9c80547205d2c39966fe4",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T22:00:00.000Z",
+        "sent_at": null,
+        "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:11.384785+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6ae9c80547205d2c39966fe4",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T22:00:00.000Z",
+        "sent_at": null,
+        "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      }
+    },
+    "xexp-book-review": {
+      "target_sha256": "8a694a4aa112d9ecc25e201db4519cdc74742b665c793cc2e460c26083026638",
+      "checked_at": "2026-11-04T03:27:14.579322+00:00",
+      "before": {
+        "buffer_id": "6aea7608ff887f055cd9d61f",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T02:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:14.725901+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6aea7608ff887f055cd9d61f",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T02:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      }
+    },
+    "xexp-nejimachi-nothing-wrong": {
+      "target_sha256": "e0321c659422c2ab3fd894d2726f05eefa2f5cdc54cee2bc6c1e510df53dcb68",
+      "checked_at": "2026-11-04T03:27:17.850575+00:00",
+      "before": {
+        "buffer_id": "6aea76084c41ba80aa4864d8",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "held_unknown",
+      "intent_at": "2026-11-04T03:27:18.006238+00:00",
+      "reason": "draft_outcome_unverified",
+      "mutation_receipt_confirmed": false,
+      "after": {
+        "buffer_id": "6aea76084c41ba80aa4864d8",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-05T09:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    }
+  }
+}

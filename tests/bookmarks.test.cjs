@@ -102,7 +102,7 @@ function createPage({initial = null, blocked = false, twoButtons = true, confirm
   };
   const ctx = {document, window, localStorage: storage, Date, Set, JSON, Number};
   vm.runInNewContext(source, ctx, {timeout: 1500});
-  return {store, writes, buttons, list, status, empty, clear, total, events, document, archiveLink};
+  return {store, storage, writes, buttons, list, status, empty, clear, total, events, document, archiveLink};
 }
 
 test("bookmark stays opt-in and saves one published story across controls", () => {
@@ -207,6 +207,55 @@ test("cross-tab storage event refreshes the saved list without network calls", (
   assert.equal(page.buttons[0].attrs["aria-pressed"], "true");
 });
 
+test("removing from a stale saved list preserves a new bookmark from another tab", () => {
+  const original = {slug:"original",title:"先に保存",category:"社会",savedAt:1};
+  const added = {slug:"added-elsewhere",title:"別タブで保存",category:"技術",savedAt:2};
+  const page = createPage({initial:[original]});
+  const remove = page.list.children[0].children[1];
+  // Simulate the storage update arriving before its asynchronous notification.
+  page.store.set(KEY,JSON.stringify([added,original]));
+  remove.focus();
+  remove.click();
+  assert.deepEqual(JSON.parse(page.store.get(KEY)),[added]);
+  assert.equal(page.list.children.length,1);
+  assert.equal(page.document.activeElement,page.list.children[0].children[1]);
+});
+
+test("removing one saved story never restores stories removed in another tab", () => {
+  const first = {slug:"first",title:"最初の記事",category:"社会",savedAt:1};
+  const second = {slug:"second",title:"次の記事",category:"経済",savedAt:2};
+  const page = createPage({initial:[first,second]});
+  const removeFirst = page.list.children[0].children[1];
+  page.store.set(KEY,JSON.stringify([first]));
+  removeFirst.click();
+  assert.deepEqual(JSON.parse(page.store.get(KEY)),[]);
+  assert.equal(page.empty.hidden,false);
+});
+
+test("clearing local storage in another tab updates the list without writing it back", () => {
+  const page = createPage({initial:[{slug:"robot-job-hopping",title:"保存記事",category:"経済",savedAt:1}]});
+  page.store.delete(KEY);
+  page.events.storage({key:null});
+  assert.equal(page.list.children.length,0);
+  assert.equal(page.buttons[0].attrs["aria-pressed"],"false");
+  assert.equal(page.empty.hidden,false);
+  assert.equal(page.writes.length,0);
+});
+
+test("a failed refresh never overwrites unreadable saved data on save or removal", () => {
+  const original = [{slug:"original",title:"保存記事",category:"社会",savedAt:1}];
+  for (const action of ['save','remove']) {
+    const page = createPage({initial:original});
+    const control = action === 'save' ? page.buttons[0] : page.list.children[0].children[1];
+    page.storage.getItem = () => { throw new Error('Storage read no longer available'); };
+    control.click();
+    assert.equal(page.writes.length,0);
+    assert.deepEqual(JSON.parse(page.store.get(KEY)),original);
+    assert.equal(page.buttons[0].disabled,true);
+    assert.match(page.status.textContent,/利用できません/);
+  }
+});
+
 test("maximum 100 saved entries prevents unbounded local storage growth", () => {
   const items = Array.from({length:100}, (_,i)=>({
     slug:"story-"+i, title:"記事"+i, category:"社会", savedAt:i
@@ -251,36 +300,14 @@ test("clearing a focused saved list moves focus to the article archive link", ()
   assert.equal(page.empty.hidden, false);
 });
 
-test("removing a saved entry preserves a newer save before its storage event arrives", () => {
-  const first = {slug:"first",title:"先の記事",category:"社会",savedAt:1};
-  const added = {slug:"later",title:"別のタブで保存した記事",category:"技術",savedAt:2};
-  const page = createPage({initial:[first]});
-  const remove = page.list.children[0].children[1];
-  page.store.set(KEY, JSON.stringify([added, first]));
-  remove.click();
-  assert.deepEqual(JSON.parse(page.store.get(KEY)), [added]);
-  assert.equal(page.list.children[0].children[0].children[1].href, "/articles/later/");
-});
-
 test("returning through browser history restores the current reading list without writing it", () => {
   const saved = {slug:"robot-job-hopping",title:"ロボット記事",category:"経済",savedAt:1};
   const page = createPage({initial:[saved]});
   page.store.set(KEY, "[]");
-  page.events.pageshow?.({persisted:true});
+  page.events.pageshow({persisted:true});
   assert.equal(page.list.children.length, 0);
   assert.equal(page.buttons[0].attrs["aria-pressed"], "false");
   assert.equal(page.empty.hidden, false);
-  assert.equal(page.writes.length, 0);
-});
-
-test("clearing local storage in another tab removes stale saved controls", () => {
-  const page = createPage({initial:[{
-    slug:"robot-job-hopping",title:"ロボット記事",category:"経済",savedAt:1
-  }]});
-  page.store.delete(KEY);
-  page.events.storage({key:null});
-  assert.equal(page.list.children.length, 0);
-  assert.equal(page.buttons[0].attrs["aria-pressed"], "false");
   assert.equal(page.writes.length, 0);
 });
 

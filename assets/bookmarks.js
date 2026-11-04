@@ -83,13 +83,18 @@
 
   function remove(slug, trigger = null) {
     const restoreFocus = trigger && document.activeElement === trigger;
+    // A storage event from another tab may still be queued when this is clicked.
+    // Remove only the selected story from the latest list, never a stale copy.
+    saved = readSaved();
+    if (!available) {
+      render();
+      announce("このブラウザは保存機能を利用できません。");
+      if (restoreFocus) focusSavedPosition(0);
+      return;
+    }
     const index = Math.max(0, saved.findIndex(item => item.slug === slug));
-    // A restored page or a delayed storage event may still show an older list.
-    // Remove only this article from the latest list, preserving newer saves.
-    reloadSaved();
-    if (!available) return;
-    if (writeSaved(saved.filter(item => item.slug !== slug), "保存を解除しました。") && restoreFocus)
-      focusSavedPosition(index);
+    writeSaved(saved.filter(item => item.slug !== slug), "保存を解除しました。");
+    if (restoreFocus) focusSavedPosition(index);
   }
 
   function makeEntry(item) {
@@ -141,8 +146,7 @@
     }
     if (list) {
       const currentListState = JSON.stringify([available, saved]);
-      // BFCache restores the focused article link too. Keep its DOM when the
-      // saved list is unchanged instead of dropping focus on every return.
+      // Keep the link restored by browser history when the list is unchanged.
       if (currentListState !== renderedListState) {
         list.replaceChildren(...saved.map(makeEntry));
         renderedListState = currentListState;
@@ -155,20 +159,19 @@
     }
   }
 
-  function reloadSaved(message = "") {
-    saved = readSaved();
-    render();
-    if (!available) announce("このブラウザは保存機能を利用できません。");
-    else if (message) announce(message);
-  }
-
-  reloadSaved();
+  saved = readSaved();
+  render();
+  if (!available) announce("このブラウザは保存機能を利用できません。");
 
   for (const button of buttons) {
     button.addEventListener("click", () => {
       if (!available || button.disabled) return;
-      reloadSaved(); // Read latest state before mutating, including another tab.
-      if (!available) return;
+      saved = readSaved(); // Read latest state before mutating, including another tab.
+      if (!available) {
+        render();
+        announce("このブラウザは保存機能を利用できません。");
+        return;
+      }
       const slug = button.dataset.bookmarkSlug;
       if (saved.some(item => item.slug === slug)) {
         remove(slug);
@@ -198,10 +201,15 @@
   window.addEventListener?.("storage", event => {
     if ((!event.storageArea || event.storageArea === localStorage) &&
         (event.key === KEY || event.key === null)) {
-      reloadSaved("別のタブで保存一覧が更新されました。");
+      saved = readSaved();
+      render();
+      announce("別のタブで保存一覧が更新されました。");
     }
   });
   window.addEventListener?.("pageshow", event => {
-    if (event.persisted) reloadSaved();
+    if (!event.persisted) return;
+    saved = readSaved();
+    render();
+    if (!available) announce("このブラウザは保存機能を利用できません。");
   });
 })();

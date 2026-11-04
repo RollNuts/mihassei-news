@@ -10,11 +10,11 @@
   const morePanel = document.querySelector('[data-archive-more]');
   const moreButton = document.querySelector('[data-archive-more-button]');
   const PAGE_SIZE = 18;
+  const HISTORY_KEY = 'mihasseiArchive';
   let visibleLimit = PAGE_SIZE;
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
   const validDecades = new Set(cards.map(card => card.dataset.decade));
   let category = 'すべて';
-  const filterKey = () => JSON.stringify([category, input.value.trim(), decadeSelect?.value || 'すべて']);
   // Search and filters are shareable and survive a new visit or browser Back.
   function restoreFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -25,12 +25,16 @@
       const requestedDecade = params.get('decade') || 'すべて';
       decadeSelect.value = validDecades.has(requestedDecade) ? requestedDecade : 'すべて';
     }
-    const prior = window.history.state?.mihasseiArchive;
-    const maximum = Math.ceil(cards.length / PAGE_SIZE) * PAGE_SIZE;
-    visibleLimit = prior?.filters === filterKey() && Number.isSafeInteger(prior.visibleLimit) &&
-      prior.visibleLimit >= PAGE_SIZE && prior.visibleLimit <= maximum ? prior.visibleLimit : PAGE_SIZE;
   }
   restoreFiltersFromUrl();
+
+  function restoreVisibleLimit() {
+    const saved = window.history.state?.[HISTORY_KEY];
+    const currentUrl = window.location.pathname + window.location.search;
+    visibleLimit = saved?.url === currentUrl && Number.isSafeInteger(saved.limit) && saved.limit >= PAGE_SIZE
+      ? Math.min(saved.limit, Math.max(PAGE_SIZE, cards.length)) : PAGE_SIZE;
+  }
+  restoreVisibleLimit();
 
   const normalize = value => String(value || '').toLocaleLowerCase('ja-JP').normalize('NFKC');
   function render(syncUrl = true) {
@@ -75,16 +79,14 @@
       if (decade === 'すべて') url.searchParams.delete('decade');
       else url.searchParams.set('decade', decade);
       // Keep campaign parameters and links to page anchors intact.
-      const state = window.history.state;
-      const previous = state && typeof state === 'object' && !Array.isArray(state) ? state : {};
-      // Keep the expanded list in this history entry, without adding URL parameters
-      // or replacing state belonging to another reader feature.
+      const previous = window.history.state;
+      const state = previous && typeof previous === 'object' && !Array.isArray(previous) ? {...previous} : {};
+      state[HISTORY_KEY] = {url: url.pathname + url.search, limit: visibleLimit};
       try {
-        window.history.replaceState({...previous, mihasseiArchive: {
-          filters: filterKey(), visibleLimit
-        }}, '', url.pathname + url.search + url.hash);
-      } catch (_) { /* Filtering remains usable when browser history is unavailable. */ }
+        window.history.replaceState(state, '', url.pathname + url.search + url.hash);
+      } catch (_) { /* Browsing still works when the browser cannot retain history state. */ }
     }
+    return matching.slice(0, shown);
   }
   function resetAndRender(syncUrl = true) {
     visibleLimit = PAGE_SIZE;
@@ -104,19 +106,17 @@
     input.focus?.();
   });
   moreButton?.addEventListener('click', () => {
-    const previouslyVisible = new Set(cards.filter(card => !card.hidden));
+    const firstNewIndex = visibleLimit;
     visibleLimit += PAGE_SIZE;
-    render();
-    const firstNew = cards.find(card => !card.hidden && !previouslyVisible.has(card));
-    firstNew?.querySelector('h3 a')?.focus();
+    const shown = render();
+    // The last expansion hides the button. Continue from the new headline,
+    // including for keyboard readers, instead of dropping focus to the body.
+    const card = shown[firstNewIndex];
+    (card?.querySelector('h3 a') || card?.querySelector('a[href]'))?.focus();
   });
   window.addEventListener?.('popstate', () => {
     restoreFiltersFromUrl();
-    render(false);
-  });
-  window.addEventListener?.('pageshow', event => {
-    if (!event.persisted) return;
-    restoreFiltersFromUrl();
+    restoreVisibleLimit();
     render(false);
   });
   render();
