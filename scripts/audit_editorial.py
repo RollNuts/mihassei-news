@@ -16,6 +16,9 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 JST = ZoneInfo("Asia/Tokyo")
 FRESHNESS_HOURS = 12
+# Dated observations can remain relevant beyond the breaking-news window.
+# Missing or unknown kinds keep the existing news-freshness warning.
+FRESHNESS_EXEMPT_KINDS = ("公開投稿", "生活・文化")
 WINDOW_HOURS = 48
 AI_PATTERN = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|ロボット|人工知能|生成ＡＩ|生成AI", re.IGNORECASE)
 
@@ -51,7 +54,8 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
         lag_hours = (published - source).total_seconds() / 3600
         if lag_hours < -0.1:
             warnings.append(("SOURCE_IN_FUTURE", slug, "元ネタが本紙掲載時刻より後に発表されています"))
-        elif lag_hours > FRESHNESS_HOURS:
+        elif (lag_hours > FRESHNESS_HOURS
+              and a["source"].get("kind") not in FRESHNESS_EXEMPT_KINDS):
             warnings.append(("STALE_SOURCE", slug,
                 f"本紙掲載時の元ネタが {lag_hours:.1f} 時間前。推奨上限 {FRESHNESS_HOURS} 時間を超過"))
         if not a["source"].get("url", "").startswith("https://"):
