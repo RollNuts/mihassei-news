@@ -33,6 +33,19 @@ class FollowupArticleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "published after"):
             build.validate_followup_relationships([child, backwards])
 
+    def test_followup_chain_stops_after_two_followups(self):
+        first = copy.deepcopy(self.articles[3])
+        second = copy.deepcopy(self.articles[2])
+        third = copy.deepcopy(self.articles[1])
+        fourth = copy.deepcopy(self.articles[0])
+        second["followup_of"] = first["slug"]
+        third["followup_of"] = second["slug"]
+        build.validate_followup_relationships([fourth, third, second, first])
+
+        fourth["followup_of"] = third["slug"]
+        with self.assertRaisesRegex(ValueError, "initial story plus two follow-ups"):
+            build.validate_followup_relationships([fourth, third, second, first])
+
     def test_followup_article_links_back_to_previous_story(self):
         child, parent = self.pair()
         page = build.story(child, [child, parent])
