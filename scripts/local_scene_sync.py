@@ -25,6 +25,9 @@ except ImportError:
     from local_scene_photos import load_articles, pending_articles, write_generated, check_storage, archive_bytes
     from mac_scene_worker import APP_DIR
 
+PREPARE_NEEDS_GPU = 10
+PREPARE_DEFERRED = 75
+
 ROOT = Path(__file__).resolve().parents[1]
 OUTBOX = APP_DIR / "pending"
 REMOTES = {
@@ -245,7 +248,9 @@ def sync(args) -> int:
             fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             print("Another image sync is active; skipping")
-            return 0
+            # A busy lock has not checked fresh main. It must not be mistaken
+            # for the prepare-only success code that means no GPU work exists.
+            return PREPARE_DEFERRED if getattr(args, "prepare_only", False) else 0
         require_running()
         # A killed process can leave its private checkout behind. Recover it
         # under the same lock before starting a new run, then remove only it.
@@ -284,6 +289,9 @@ def sync(args) -> int:
                     return 1
                 check_storage([checkout, APP_DIR], args.min_free_gb)
                 missing = pending_articles(load_articles(checkout), root=checkout, limit=0)
+                if getattr(args, "prepare_only", False):
+                    print(f"Fresh main checked: {len(missing)} unheld scene(s) still need generation", flush=True)
+                    return PREPARE_NEEDS_GPU if missing else 0
                 preserved = False
                 try:
                     result = generate(args, checkout)
@@ -308,6 +316,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Resumable image-only local GitHub publishing")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--publish", action="store_true")
+    ap.add_argument("--prepare-only", action="store_true",
+                    help="Publish saved JPEGs without ComfyUI; exit 10 only if fresh main needs generation")
     ap.add_argument("--checkpoint", default="sd_xl_base_1.0.safetensors")
     ap.add_argument("--server", default="http://127.0.0.1:8188")
     ap.add_argument("--limit", type=int, default=4)
@@ -320,7 +330,9 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("limit must be 1–4, free-space floor 12–100 GiB, timeout 30–3600 seconds")
     if args.publish and args.dry_run:
         ap.error("Choose either --publish or --dry-run")
-    if args.publish and not args.acknowledge_model_license:
+    if args.prepare_only and not args.publish:
+        ap.error("--prepare-only requires --publish")
+    if args.publish and not args.acknowledge_model_license and not args.prepare_only:
         ap.error("Review the model license before publishing generated scenes")
     return sync(args) if args.publish else generate(args, ROOT)
 
