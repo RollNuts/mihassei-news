@@ -372,41 +372,8 @@ def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
     return False
 
 
-def accepted_useful_ids(feed: dict, state: dict, existing: list[dict],
-                        channel_id: str) -> set[str]:
-    """Recognize confirmed useful reservations without treating an intent as a post.
-
-    Existing posts come from the already pinned channel query. Check the saved
-    receipt against both its immutable manuscript and the current queued text;
-    unrelated/manual posts and ambiguous requests cannot open the fairness gate.
-    """
-    if (feed.get("schema_version") != 1 or feed.get("channel_id") != channel_id
-            or not isinstance(feed.get("posts"), list)
-            or state.get("schema_version") != 1 or not isinstance(state.get("attempts"), dict)):
-        raise ValueError("Invalid useful X feed or pinned submission ledger")
-    posts = {post.get("id"): post for post in feed["posts"] if isinstance(post, dict)}
-    scheduled = {post.get("id"): post for post in existing
-                 if post.get("status") == "scheduled"
-                 and post.get("channelId", channel_id) == channel_id}
-    confirmed = set()
-    for post_id, receipt in state["attempts"].items():
-        if not isinstance(receipt, dict) or receipt.get("provider_status") not in (
-                "accepted_not_verified_published", "scheduled", "sent"):
-            continue
-        buffer_id = receipt.get("buffer_id")
-        if not isinstance(buffer_id, str) or not buffer_id:
-            continue
-        post, remote = posts.get(post_id, {}), scheduled.get(buffer_id, {})
-        text = post.get("text")
-        if (post.get("delivery") == "automatic" and isinstance(text, str) and text
-                and receipt.get("text_sha256") == hashlib.sha256(text.encode("utf-8")).hexdigest()
-                and remote.get("text") == text):
-            confirmed.add(buffer_id)
-    return confirmed
-
-
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
-           config: dict, now: datetime, creative_ids: set[str]
+           config: dict, now: datetime
            ) -> tuple[dict | None, dict | None, int]:
     """Evaluate ONLY after recovering remote posts, keeping original queue alive."""
     known = {a["slug"] for a in articles if isinstance(a.get("slug"), str)}
@@ -469,7 +436,7 @@ def main() -> int:
     # Automatic X publishing is article-only. Legacy creative/useful receipts
     # remain historical evidence, but they no longer gate article slots.
     eligible, evidence, scheduled = decide(articles, metrics, state, existing,
-                                            config, now, set())
+                                            config, now)
     # Persist remote recovery before any further POST. The workflow also
     # commits both ledgers even after a partial API/network failure.
     save_state(state)
