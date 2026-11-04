@@ -1045,7 +1045,7 @@ def archive(articles):
 <header class="page-intro"><span class="eyebrow">FICTION ARCHIVE</span><h1>架空ニュースの記事一覧</h1>
 <p>気になる見出しから、どうぞ。</p>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
-<div class="filters" aria-label="カテゴリー">{buttons}</div>
+<div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター"{decade_hidden}>{options}</select>
 <output class="result-counter" data-result-count aria-live="polite">{len(articles)}件の記事</output></div>
