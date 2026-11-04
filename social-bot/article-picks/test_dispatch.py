@@ -305,11 +305,11 @@ class ArticlePickTests(unittest.TestCase):
             {"id": "remote-2", "status": "sent",
              "text": "https://veripsa.com/articles/story-b/"},
         ]
-        recovered = picks.recover_from_buffer(state, existing, NOW)
+        recovered = picks.recover_from_buffer(state, existing, NOW, {"story-a", "story-b"})
         self.assertEqual(set(recovered), {"story-a", "story-b"})
         self.assertEqual(state["queued"]["story-a"]["buffer_id"], "remote-1")
         self.assertEqual(state["queued"]["story-b"]["buffer_id"], "remote-2")
-        self.assertEqual(picks.recover_from_buffer(state, existing, NOW), [])
+        self.assertEqual(picks.recover_from_buffer(state, existing, NOW, {"story-a", "story-b"}), [])
         self.assertEqual(picks.rank([a], {"story-a": stats()},
                                     state, set(), CONFIG), [])
         with tempfile.TemporaryDirectory() as temp:
