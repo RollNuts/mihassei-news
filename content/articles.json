@@ -219,10 +219,10 @@
     "art": "notice",
     "fiction_at": "2031-11-03T11:01:00+09:00",
     "title": "毎週捕まるスパイ役、ついに自力脱出　主演の見せ場が消える",
-    "summary": "毎週敵に捕まるドラマの相棒が、今回は自力で脱出。命がけの救出シーンを予定していた主人公は、45分分の見せ場を失った。",
+    "summary": "毎週敵に捕まる相棒が、今回は自分で脱出して帰宅。命がけの救出に向かった主人公は、誰もいない隠れ家で別の頼み事を引き受けることになった。",
     "paragraphs": [
-      "「今回は自分で帰る」。2031年の架空スパイドラマ『夜明けの合鍵』で、毎週敵に捕まる相棒が、初めて自分で縄をほどいた。敵が席を外した隙に裏口から出て、そのまま帰宅。いつも主人公が命がけで助けに来る場面は、開始15分で必要なくなった。",
-      "救出道具を抱えた主人公が隠れ家に着くと、人質用の椅子は空だった。台本の残り45分は救出作戦の見せ場でびっしり。主人公は相棒に電話し、「もう一度捕まってくれないか」と頼んだが、「もう風呂に入ったよ」と断られた。結局、番組は主人公が隠れ家へ向かう道のりを長々と放送。視聴者の感想は「そりゃ先に帰るわ」で一致した。"
+      "「今回は自分で帰る」。2031年、架空のスパイドラマ『夜明けの合鍵』では、毎週敵に捕まる相棒が、今週は見張りの隙に縄をほどいて裏口から脱出した。そのまま帰宅したため、いつも命がけで助けに来る主人公は、煙幕とロープカッターを抱えて空の隠れ家に到着した。",
+      "「助けに来たんだけど」。主人公が電話すると、相棒は「もう風呂に入ってる」と答えた。道具をしまって帰ろうとしたところで、「あ、椅子に上着を忘れた。取ってきて」と頼まれる。主人公はロープカッターをバッグに戻し、人質用の椅子に掛かった上着を畳んで持ち帰った。翌朝、相棒からメッセージが届いた。「昨日は助かった。上着、きれいに畳んでくれてありがとう」。"
     ],
     "source": {
       "kind": "ニュース",
@@ -232,8 +232,8 @@
       "topic": "2026年11月3日11:01公開。連続ドラマ『VIVANT』の11月1日放送回で登場人物が再び捕まり、これまでの繰り返しを含めて視聴者が話題にしたと報道。架空のドラマ『夜明けの合鍵』、制作室、登場人物、展開は実在作品とは無関係の創作。"
     },
     "published_at": "2026-11-03T11:38:33+09:00",
-    "scene_prompt": "Live-action color photograph of a deserted room in a Japanese office. An empty wooden chair stands in the center with an untied rope coiled on its seat. An absurdly large unopened rescue equipment bag sits beside the empty chair. The exit door stands wide open. Nobody is in the room. Natural daylight, realistic photographic textures, eye-level wide photograph of the empty room.",
-    "modified_at": "2026-11-03T12:49:41.396+09:00",
+    "scene_prompt": "A solemn fictional spy protagonist in a plain dark jacket carefully folds a forgotten coat taken from the back of an empty wooden hostage chair while holding an oversized unused rescue-equipment bag. An untied rope rests on the seat and an open back door reveals a quiet corridor. Photorealistic staged Japanese spy-TV comedy, anonymous adult, no readable text, logos, or recognizable real actors.",
+    "modified_at": "2026-11-04T06:56:54.530+09:00",
     "broadcast_feature": true
   },
   {
