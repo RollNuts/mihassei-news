@@ -17,7 +17,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: free-surreal-x
+  group: ${{ github.event_name != 'workflow_dispatch' && format('x-validation-{0}-{1}', github.workflow, github.ref) || 'free-surreal-x' }}
+  queue: max
   cancel-in-progress: false
 
 jobs:
@@ -33,7 +34,8 @@ jobs:
         run: python social-bot/test_retire_legacy_queue.py
 
       - name: Preserve only two old setup posts as Buffer drafts (not deleted)
-        if: github.event_name != 'pull_request'
+        # A completed one-time operation must not rerun after workflow maintenance.
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           MIGRATE_LEGACY_QUEUE: "true"
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -41,7 +43,7 @@ jobs:
         run: python social-bot/retire_legacy_queue.py
 
       - name: Fill queue with up to two canonical Nejimachi episodes
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           ENABLE_X_BOT: ${{ vars.ENABLE_X_BOT }}
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -49,7 +51,7 @@ jobs:
         run: python social-bot/publish.py
 
       - name: Save queue ledger and reversible migration audit
-        if: always() && github.event_name != 'pull_request'
+        if: always() && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -4,6 +4,7 @@
 
 ## README / docs
 
+- 運用の担当・重複防止・公開完了の共通手順は`docs/OPERATIONS.md`を入口にする。同じ規則を各タスク・README・別docsへ複製せず、担当別の正本を参照する。
 - READMEは訪問した開発者が短時間で理解できる概要、主な機能、技術構成、ローカルでの試し方、詳細ドキュメントへのリンクに限定する。目安は100行以内。
 - 「本日対応したこと」「改善日付ごとの施策」「詳細な内部運営ルール」「同じ注意書きの繰り返し」をREADMEへ追記しない。変更履歴はコミット・PRに残す。
 - 永続的に役立つ技術上のルールは`docs/ARCHITECTURE.md`、画像関連は`docs/MAC_SCENE_SETUP.md`や`docs/FREE_CPU_IMAGES.md`、編集ルールは`docs/EDITORIAL_LOOP.md`や`docs/SERIAL_EDITING_GUIDE.md`に記録。

@@ -16,28 +16,20 @@ class MobileReadingFlowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.articles = load()
 
-    def test_native_menu_shows_primary_routes_and_keeps_every_destination(self):
+    def test_one_navigation_keeps_all_four_destinations_directly_accessible(self):
         html = layout("テスト", "テスト", "/", "<p>テスト</p>", active="home")
-        desktop = html.split('<div class="container nav-inner">', 1)[1].split('</div>', 1)[0]
-        mobile = html.split('<div class="container mobile-nav">', 1)[1].split('</div></details></div>', 1)[0]
-        self.assertIn('<details class="mobile-nav-more">', mobile)
-        self.assertIn('<summary>メニュー</summary>', mobile)
-        self.assertIn('<div class="mobile-nav-menu">', mobile)
-        primary = mobile.split('<details', 1)[0]
-        secondary = mobile.split('<div class="mobile-nav-menu">', 1)[1]
-        self.assertEqual(re.findall(r'href="([^"]+)"', primary),
-                         ['/', '/archive/', '/serials/'])
-        self.assertEqual(re.findall(r'href="([^"]+)"', secondary),
-                         ['/issues/'])
-        self.assertEqual(set(re.findall(r'href="([^"]+)"', mobile)),
-                         set(re.findall(r'href="([^"]+)"', desktop)))
-        self.assertIn('<a href="/" aria-current=page>一面</a>', primary)
+        navigation = html.split('<nav class="nav-bar" aria-label="メインナビゲーション">', 1)[1].split('</nav>', 1)[0]
+        self.assertEqual(re.findall(r'href="([^"]+)"', navigation),
+                         ['/', '/archive/', '/serials/', '/issues/'])
+        self.assertNotIn('<details', navigation)
+        self.assertNotIn('mobile-nav', html)
+        self.assertIn('<a href="/" aria-current=page>一面</a>', navigation)
         self.assertIn('href="/saved/"', html)
         self.assertIn('href="/about/"', html)
 
-    def test_current_issue_page_still_marked_in_secondary_menu(self):
+    def test_current_issue_page_is_marked_in_shared_navigation(self):
         html = layout("テスト", "テスト", "/issues/", "<p>テスト</p>", active="issues")
-        self.assertIn('<a href="/issues/" aria-current=page>発行号</a>', html)
+        self.assertEqual(html.count('<a href="/issues/" aria-current=page>発行号</a>'), 1)
 
     def test_headline_and_hero_come_before_secondary_bookmark_tools(self):
         article = self.articles[0]
@@ -58,9 +50,13 @@ class MobileReadingFlowTests(unittest.TestCase):
 
     def test_mobile_nav_has_real_touch_targets_and_article_images_keep_fallback(self):
         css = (ROOT / 'assets/editorial-polish.css').read_text(encoding='utf-8')
-        self.assertIn('.mobile-nav{display:none}', css)
-        self.assertIn('.mobile-nav-more>summary:focus-visible', css)
-        self.assertIn('.mobile-nav-menu>a{', css)
+        responsive_css = (ROOT / 'assets/reader-first.css').read_text(encoding='utf-8')
+        self.assertIn('grid-template-columns:repeat(4,minmax(0,1fr))', responsive_css)
+        self.assertIn('min-height:46px', responsive_css)
+        self.assertIn('.nav-inner a:focus-visible', responsive_css)
+        for source in (css, responsive_css):
+            self.assertNotIn('mobile-nav', source)
+            self.assertEqual(source.count('{'), source.count('}'))
         self.assertIn('min-height:44px;', css)
         self.assertIn('.article-hero-figure .article-visual{', css)
         self.assertIn('aspect-ratio:16/9;', css)

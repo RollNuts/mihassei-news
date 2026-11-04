@@ -112,9 +112,25 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # Explicit dispatch also works after a GITHUB_TOKEN image push.
-          # The existing hourly image pass recovers remaining videos even when
-          # no image is missing. The video workflow checks OFF/no work first.
-          gh workflow run auto-motion-clips.yml --ref main
+          # Image and video backlogs are independent: recover ready videos even
+          # with zero missing JPEGs, but do not launch another idle workflow.
+          plan="$(python3 scripts/publish_motion_clips.py --plan)"
+          printf '%s\n' "$plan"
+          pending="$(MOTION_PLAN_JSON="$plan" python3 - <<'PY'
+          import json, os
+          plan = json.loads(os.environ["MOTION_PLAN_JSON"])
+          if (type(plan.get("enabled")) is not bool
+                  or type(plan.get("pending")) is not int or plan["pending"] < 0
+                  or (not plan["enabled"] and plan["pending"] != 0)):
+              raise SystemExit("Invalid video plan; no workflow dispatched")
+          print(plan["pending"])
+          PY
+          )"
+          if (( pending > 0 )); then
+            gh workflow run auto-motion-clips.yml --ref main
+          else
+            echo "No ready video work; preserve OFF, current and editorial waiting states."
+          fi
       - name: Keep only small new JPEGs for visual review or failed-push recovery
         if: always() && steps.plan.outputs.pending != '0'
         uses: actions/upload-artifact@v4

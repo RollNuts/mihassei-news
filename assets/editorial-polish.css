@@ -517,17 +517,6 @@ body{
   .mast-kicker{font-size:9px;letter-spacing:.22em}
   .brand-en{letter-spacing:.19em;margin-bottom:8px}
   .mast-sub{font-size:12px;line-height:1.75;max-width:32ch}
-  .nav-inner{
-    min-height:48px;
-    gap:13px;
-    justify-content:flex-start;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    overscroll-behavior-x:contain;
-    -webkit-overflow-scrolling:touch;
-    white-space:nowrap;
-  }
-  .nav-inner a{font-size:12px;min-height:45px;flex:0 0 auto}
   .observer-shell{margin-top:0;margin-bottom:6px}
   .observer-widget small{white-space:normal;line-height:1.25}
   .index-main{padding-top:21px;padding-bottom:65px}
@@ -693,8 +682,6 @@ body{
   .footer-nav a{
     min-height:44px;
   }
-  .nav-inner{scroll-snap-type:x proximity;scrollbar-width:thin}
-  .nav-inner a{scroll-snap-align:start}
   .article-end a{
     min-height:44px;
     display:inline-flex;
@@ -866,11 +853,6 @@ body{
   .index-main{padding-top:16px}
   .news-briefing{margin-bottom:8px}
   .edition-time-key{margin:0 0 13px;line-height:1.65}
-  .nav-bar{position:relative}
-  .nav-bar::after{
-    content:"";position:absolute;right:0;top:0;bottom:0;width:19px;
-    pointer-events:none;background:linear-gradient(90deg,transparent,#fcfbf7);
-  }
   .lead-media .overlay{padding:10px 13px}
   .story-card .story-image-link{margin-bottom:11px}
 }
@@ -1079,10 +1061,6 @@ body [hidden] {
 }
 
 
-/* Mobile reading-flow pass: primary navigation, article focus, and imagery. */
-/* Desktop retains every section in its original navigation. */
-.mobile-nav{display:none}
-
 /* The article should read as headline -> context -> image -> story. */
 .article-page{padding-top:38px}
 .article-header{padding-bottom:19px}
@@ -1135,85 +1113,6 @@ body [hidden] {
 }
 
 @media(max-width:660px){
-  .nav-bar{position:relative;z-index:90}
-  .nav-bar::after{content:none}
-  .nav-inner{display:none}
-  .mobile-nav{
-    display:flex;
-    align-items:stretch;
-    justify-content:space-between;
-    gap:6px;
-    min-height:47px;
-  }
-  .mobile-nav>a,
-  .mobile-nav-more>summary{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:46px;
-    padding:4px 7px;
-    color:var(--ink);
-    font-size:12px;
-    font-weight:850;
-    white-space:nowrap;
-    text-decoration:none;
-  }
-  .mobile-nav>a[aria-current=page],
-  .mobile-nav-menu>a[aria-current=page]{
-    color:var(--accent);
-    text-decoration:underline;
-    text-underline-offset:5px;
-    text-decoration-thickness:2px;
-  }
-  .mobile-nav-more{position:relative}
-  .mobile-nav-more>summary{
-    list-style:none;
-    cursor:pointer;
-    color:#45544a;
-  }
-  .mobile-nav-more>summary::-webkit-details-marker{display:none}
-  .mobile-nav-more>summary::after{
-    content:"";
-    width:6px;
-    height:6px;
-    border-right:1.6px solid currentColor;
-    border-bottom:1.6px solid currentColor;
-    margin:-3px 0 0 8px;
-    transform:rotate(45deg);
-  }
-  .mobile-nav-more[open]>summary::after{margin-top:3px;transform:rotate(225deg)}
-  .mobile-nav-more>summary:focus-visible{
-    outline:3px solid var(--accent);
-    outline-offset:-3px;
-  }
-  .mobile-nav-menu{
-    position:absolute;
-    right:0;
-    top:calc(100% + 5px);
-    z-index:2;
-    display:flex;
-    flex-direction:column;
-    min-width:195px;
-    max-width:calc(100vw - 36px);
-    padding:7px;
-    background:var(--surface);
-    border:1px solid #cbd2c9;
-    border-radius:8px;
-    box-shadow:0 13px 30px rgba(27,42,34,.17);
-  }
-  .mobile-nav-menu>a{
-    display:flex;
-    align-items:center;
-    padding:10px 13px;
-    min-height:44px;
-    border-radius:5px;
-    font-size:13px;
-    font-weight:750;
-    text-decoration:none;
-  }
-  .mobile-nav-menu>a:hover,.mobile-nav-menu>a:focus-visible{
-    background:#f2eee6;
-  }
   .article-page{padding-top:19px}
   .article-header{padding-bottom:13px}
   .article-header .breadcrumbs{margin-bottom:11px}
@@ -1231,12 +1130,6 @@ body [hidden] {
   .article-body{font-size:16.5px;line-height:1.9}
   .article-body p{margin-bottom:1.3em}
 }
-@media(max-width:360px){
-  .mobile-nav{gap:2px}
-  .mobile-nav>a,.mobile-nav-more>summary{font-size:11px;padding-inline:4px}
-  .mobile-nav-more>summary::after{margin-left:5px}
-}
-
 /* Editorial motion: make the paper feel alive without adding a duplicate ticker.
    Purely decorative effects never gate access to content or use network calls. */
 .news-briefing{align-items:center;flex-wrap:wrap}

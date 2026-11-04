@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -258,6 +260,91 @@ class ArticlePickTests(unittest.TestCase):
         item, _, _ = picks.decide([a], counts, state, remote, CONFIG,
                                   NOW, {"short-1"})
         self.assertEqual(item["slug"], "new-story")
+
+    def useful_reservation(self):
+        post = {"id": "xexp-useful-example", "text": "たとえば、現行の有益な会話例を投稿します。",
+                "delivery": "automatic"}
+        feed = {"schema_version": 1, "enabled": True,
+                "channel_id": CONFIG["channel_id"], "posts": [post]}
+        state = {"schema_version": 1, "attempts": {post["id"]: {
+            "buffer_id": "useful-confirmed", "provider_status": "accepted_not_verified_published",
+            "text_sha256": hashlib.sha256(post["text"].encode("utf-8")).hexdigest()}}}
+        remote = [{"id": "useful-confirmed", "status": "scheduled", "text": post["text"]}]
+        return feed, state, remote
+
+    def test_useful_receipt_allows_articles_after_old_experiment_queue_is_empty(self):
+        feed, useful_state, remote = self.useful_reservation()
+        for status in ("accepted_not_verified_published", "scheduled", "sent"):
+            with self.subTest(status=status):
+                useful_state["attempts"]["xexp-useful-example"]["provider_status"] = status
+                known = picks.accepted_useful_ids(feed, useful_state, remote, CONFIG["channel_id"])
+                self.assertEqual(known, {"useful-confirmed"})
+                selected, _, count = picks.decide(
+                    [article("new-story")], {"new-story": stats()}, ledger(), remote,
+                    CONFIG, NOW, known)
+                self.assertEqual(selected["slug"], "new-story")
+                self.assertEqual(count, 1)
+
+    def test_useful_intents_unknown_ids_and_changed_text_do_not_open_article_gate(self):
+        changes = (
+            ("receipt", "provider_status", "intent"),
+            ("receipt", "provider_status", "cancelled_before_submission"),
+            ("receipt", "buffer_id", None),
+            ("receipt", "buffer_id", "unknown-id"),
+            ("receipt", "text_sha256", "0" * 64),
+            ("remote", "text", "別の手動投稿の本文です。"),
+            ("remote", "channelId", "OTHER-ACCOUNT"),
+            ("post", "delivery", "manual_only"),
+        )
+        for target, key, value in changes:
+            with self.subTest(target=target, key=key, value=value):
+                feed, state, remote = self.useful_reservation()
+                destination = {"receipt": state["attempts"]["xexp-useful-example"],
+                               "remote": remote[0], "post": feed["posts"][0]}[target]
+                destination[key] = value
+                known = picks.accepted_useful_ids(feed, state, remote, CONFIG["channel_id"])
+                self.assertEqual(known, set())
+                selected, _, _ = picks.decide(
+                    [article("new-story")], {"new-story": stats()}, ledger(), remote,
+                    CONFIG, NOW, known)
+                self.assertIsNone(selected)
+        feed, state, remote = self.useful_reservation()
+        feed["channel_id"] = "OTHER-ACCOUNT"
+        with self.assertRaisesRegex(ValueError, "pinned submission"):
+            picks.accepted_useful_ids(feed, state, remote, CONFIG["channel_id"])
+
+    def test_main_uses_confirmed_useful_queue_without_enabling_legacy_experiments(self):
+        feed, state, remote = self.useful_reservation()
+        documents = {
+            HERE / "config.json": CONFIG,
+            HERE / "state.json": ledger(),
+            HERE.parent / "experiments/config.json": {"channel_id": CONFIG["channel_id"],
+                                                       "experiment_publishing_enabled": False},
+            HERE.parent / "experiments/state.json": ledger(),
+            HERE.parent / "useful-posts.json": feed,
+            HERE.parent / "useful-state.json": state,
+        }
+        original = copy.deepcopy(documents)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(json.dumps([article("new-story")]))
+            with patch.object(picks, "ROOT", root), \
+                 patch.object(picks, "read_json", side_effect=lambda path: copy.deepcopy(documents[path])), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
+                 patch.object(picks, "read_public_metrics", return_value=(None, {"new-story": stats()}, None)), \
+                 patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
+                 patch.object(picks, "list_existing", return_value=remote), \
+                 patch.object(picks, "save_state") as save, \
+                 patch.object(picks, "queue_one", return_value="article-confirmed") as queue:
+                clock.now.return_value = NOW
+                self.assertEqual(picks.main(), 0)
+                queue.assert_called_once()
+                self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
+                self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
+                self.assertEqual(save.call_args.args[0]["queued"]["new-story"]["buffer_id"], "article-confirmed")
+        self.assertEqual(documents, original)
 
     def test_tenth_queue_slot_stays_available_for_eligible_articles(self):
         candidate = article("fresh-story")

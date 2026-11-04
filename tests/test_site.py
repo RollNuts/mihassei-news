@@ -303,7 +303,6 @@ class SiteTests(unittest.TestCase):
         for part in (".search-input,", ".decade-select{", "font-size:16px",
                      "min-height:48px", ".filter-button,", ".genre-links a,",
                      ".engagement-actions.compact button,", ".footer-nav a",
-                     ".nav-inner{scroll-snap-type:x proximity",
                      ".article-end a{"):
             self.assertIn(part,block)
         self.assertNotIn("user-scalable=no",styles)

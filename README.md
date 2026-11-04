@@ -60,7 +60,7 @@ CIではこれに加え、Nodeのブラウザ周辺テストとWorkerのdry-run�
 
 ### Documentation
 
-[編集ルール](docs/EDITORIAL_LOOP.md) · [連載ガイド](docs/SERIAL_EDITING_GUIDE.md) · [Mac画像生成](docs/MAC_SCENE_SETUP.md) · [CPU画像生成の検証状況](docs/FREE_CPU_IMAGES.md) · [検索インデックス確認](docs/SEARCH_INDEX_REFRESH.md)
+[運用の入口](docs/OPERATIONS.md) · [編集ルール](docs/EDITORIAL_LOOP.md) · [連載ガイド](docs/SERIAL_EDITING_GUIDE.md) · [Mac画像生成](docs/MAC_SCENE_SETUP.md) · [CPU画像生成の検証状況](docs/FREE_CPU_IMAGES.md) · [検索インデックス確認](docs/SEARCH_INDEX_REFRESH.md)
 
 ## Usage and rights
 
