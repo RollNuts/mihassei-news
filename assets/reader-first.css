@@ -489,3 +489,36 @@ details.source-context>summary:focus-visible{
   .story-clip-label{bottom:5px;right:5px;font-size:10px;padding:3px 6px}
 }
 
+
+
+/* Topic tags are a quiet second axis beside broad newspaper categories. */
+.story-tags{display:flex;flex-wrap:wrap;gap:6px 8px;margin:9px 0 0}
+.story-tags a{
+  display:inline-flex;align-items:center;min-height:30px;padding:3px 8px;
+  border:1px solid var(--line);border-radius:999px;background:#f7f5ef;
+  color:#55635b;font-size:11px;font-weight:700;text-decoration:none;
+}
+.story-tags a:hover{border-color:#9daaa0;color:var(--ink);background:#fffefa}
+.story-tags a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.story-card>.story-tags{grid-column:2;grid-row:4;margin-top:2px}
+.article-header>.story-tags{margin-top:10px}
+.tag-filter-panel{
+  margin:0 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.tag-filter-panel>summary{
+  cursor:pointer;list-style:none;min-height:46px;padding:11px 2px;
+  display:flex;align-items:center;font-size:13px;font-weight:800;color:var(--ink);
+}
+.tag-filter-panel>summary::-webkit-details-marker{display:none}
+.tag-filter-panel>summary::after{content:" ＋";margin-left:5px;color:var(--accent)}
+.tag-filter-panel[open]>summary::after{content:" −"}
+.tag-filter-panel>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tag-filters{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 13px}
+.tag-filter-button{min-height:38px;padding:6px 9px;font-size:11px}
+.tag-filter-button span{margin-left:3px;font-size:9px;font-weight:600;opacity:.72}
+@media(max-width:660px){
+  .story-card>.story-tags{grid-column:1 / -1;grid-row:4;margin-top:1px}
+  .story-tags a{min-height:32px}
+  .tag-filter-panel{margin-bottom:10px}
+  .tag-filters{gap:6px;padding-bottom:11px}
+}

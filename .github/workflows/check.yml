@@ -74,7 +74,7 @@ jobs:
       - name: Test coarse privacy-safe attribution without network access
         run: node --test tests/attribution.test.cjs
       - name: Test archive filters and incremental browsing without network access
-        run: node --test tests/archive-pagination.test.cjs
+        run: node --test tests/archive-pagination.test.cjs tests/archive-tags.test.cjs
       - name: Test offline reader bookmarks with no network or accounts
         run: node --test tests/bookmarks.test.cjs
       - name: Test optional homepage return-to-bookmarks (privacy-safe)

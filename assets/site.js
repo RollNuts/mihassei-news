@@ -3,6 +3,8 @@
   const cards = [...document.querySelectorAll('[data-archive-card]')];
   if (!input || !cards.length) return;
   const tabs = [...document.querySelectorAll('[data-category-filter]')];
+  const tagButtons = [...document.querySelectorAll('[data-tag-filter]')];
+  const tagPanel = document.querySelector('[data-tag-panel]');
   const decadeSelect = document.querySelector('[data-decade-filter]');
   const count = document.querySelector('[data-result-count]');
   const empty = document.querySelector('[data-no-results]');
@@ -13,13 +15,18 @@
   const HISTORY_KEY = 'mihasseiArchive';
   let visibleLimit = PAGE_SIZE;
   const validCategories = new Set(tabs.map(t => t.dataset.categoryFilter));
+  const validTags = new Set(tagButtons.map(button => button.dataset.tagFilter));
   const validDecades = new Set(cards.map(card => card.dataset.decade));
   let category = 'すべて';
+  let tag = 'すべて';
   // Search and filters are shareable and survive a new visit or browser Back.
   function restoreFiltersFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const requestedCategory = params.get('category') || 'すべて';
     category = validCategories.has(requestedCategory) ? requestedCategory : 'すべて';
+    const requestedTag = params.get('tag') || 'すべて';
+    tag = validTags.has(requestedTag) ? requestedTag : 'すべて';
+    if (tagPanel && tag !== 'すべて') tagPanel.open = true;
     input.value = (params.get('q') || '').slice(0, 120);
     if (decadeSelect) {
       const requestedDecade = params.get('decade') || 'すべて';
@@ -42,7 +49,9 @@
     const decade = decadeSelect?.value || 'すべて';
     const matching = cards.filter(card => {
       const searchable = normalize(card.dataset.search);
+      const tags = String(card.dataset.tags || '').split('|').filter(Boolean);
       return (category === 'すべて' || card.dataset.category === category) &&
+        (tag === 'すべて' || tags.includes(tag)) &&
         (decade === 'すべて' || card.dataset.decade === decade) &&
         terms.every(term => searchable.includes(term));
     });
@@ -69,10 +78,17 @@
       tab.classList.toggle('active', active);
       tab.setAttribute('aria-pressed', String(active));
     });
+    tagButtons.forEach(button => {
+      const active = button.dataset.tagFilter === tag;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
     if (syncUrl) {
       const url = new URL(window.location.href);
       if (category === 'すべて') url.searchParams.delete('category');
       else url.searchParams.set('category', category);
+      if (tag === 'すべて') url.searchParams.delete('tag');
+      else url.searchParams.set('tag', tag);
       const search = input.value.trim();
       if (search) url.searchParams.set('q', search);
       else url.searchParams.delete('q');
@@ -96,11 +112,16 @@
     category = tab.dataset.categoryFilter;
     resetAndRender();
   }));
+  tagButtons.forEach(button => button.addEventListener('click', () => {
+    tag = button.dataset.tagFilter;
+    resetAndRender();
+  }));
   input.addEventListener('input', resetAndRender);
   decadeSelect?.addEventListener('change', resetAndRender);
   resetFilters?.addEventListener('click', () => {
     input.value = '';
     category = 'すべて';
+    tag = 'すべて';
     if (decadeSelect) decadeSelect.value = 'すべて';
     resetAndRender();
     input.focus?.();
