@@ -316,5 +316,7 @@
       "state": "skipped",
       "reason": "schedule_changed"
     }
-  }
+  },
+  "continuation_request_id": "x-quality-20261104-queue-compaction-v1",
+  "continuation_results": {}
 }

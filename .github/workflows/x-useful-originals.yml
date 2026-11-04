@@ -59,6 +59,7 @@ jobs:
           git pull --rebase origin main
           python social-bot/queue_cleanup.py --apply
           python social-bot/queue_cleanup.py --recover
+          python social-bot/queue_cleanup.py --continue-cleanup
       - name: Schedule only the current-day useful original
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
