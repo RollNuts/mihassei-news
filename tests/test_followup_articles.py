@@ -38,6 +38,9 @@ class FollowupArticleTests(unittest.TestCase):
         second = copy.deepcopy(self.articles[2])
         third = copy.deepcopy(self.articles[1])
         fourth = copy.deepcopy(self.articles[0])
+        # Synthetic chain fixtures must not inherit real editorial follow-up links.
+        for article in (first, second, third, fourth):
+            article.pop("followup_of", None)
         second["followup_of"] = first["slug"]
         third["followup_of"] = second["slug"]
         build.validate_followup_relationships([fourth, third, second, first])
