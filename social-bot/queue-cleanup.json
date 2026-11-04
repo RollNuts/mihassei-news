@@ -402,6 +402,23 @@
         "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
       },
       "verified_at": "2026-11-04T03:44:55.669107+00:00"
+    },
+    "xexp-nejimachi-one-screw": {
+      "target_sha256": "2679730fded0c6374c91a50f63957bb182c62c54c0946baf9f1b41d875d191be",
+      "checked_at": "2026-11-04T03:44:57.366283+00:00",
+      "continuation_request_id": "x-quality-20261104-queue-compaction-v1",
+      "expected_due_at": "2026-11-04T10:30:00.000Z",
+      "before": {
+        "buffer_id": "6ae9c80447205d2c39966fbc",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T10:30:00.000Z",
+        "sent_at": null,
+        "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+        "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "state": "intent",
+      "intent_at": "2026-11-04T03:44:57.490807+00:00"
     }
   }
 }
