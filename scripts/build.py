@@ -1476,7 +1476,7 @@ def story(a, articles, issues=None, serials=None):
 <summary>着想元を見る</summary>
 <div class="source-context-body">
 <p>{escape(src["topic"])}</p>
-<p class="source-context-disclaimer">記事内の出来事は創作であり、着想元の内容をそのまま伝えるものではありません。</p>
+<p class="source-context-disclaimer">着想元は、記事内の創作内容を裏付けるものではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} で着想元を見る ↗</a>
 </div>
