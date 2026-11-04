@@ -127,6 +127,21 @@
         "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
         "assets_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
       }
+    },
+    "xexp-shadow-home": {
+      "target_sha256": "febc12551fcdd0b93895ae48d5415381437b25fed27a11c5b2799589bbe26738",
+      "checked_at": "2026-11-04T03:27:11.240026+00:00",
+      "before": {
+        "buffer_id": "6ae9c80547205d2c39966fe4",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "scheduled",
+        "due_at": "2026-11-04T22:00:00.000Z",
+        "sent_at": null,
+        "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "state": "intent",
+      "intent_at": "2026-11-04T03:27:11.384785+00:00"
     }
   }
 }
