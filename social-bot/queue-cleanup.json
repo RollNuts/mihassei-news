@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "request_id": "x-quality-20261104",
+  "enabled": true,
+  "channel_id": "6ae94b74e29c69a171436d72",
+  "action": "move_to_draft",
+  "expires_at": "2026-11-05T00:00:00+09:00",
+  "targets": [
+    {
+      "post_id": "xexp-invisible-nails",
+      "buffer_id": "6ae9c80347205d2c39966f7a",
+      "text_sha256": "2e5a343ba0205cf14574d3dc1b2db5c52950df21b04621b7ff099ee38c8f0f18",
+      "expected_due_at": "2026-11-04T09:30:00+00:00",
+      "reason": "意外な見た目だけで、読者の生活や理解につながる観察が薄い。"
+    },
+    {
+      "post_id": "xexp-witch-autopilot",
+      "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+      "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+      "expected_due_at": "2026-11-04T10:30:00+00:00",
+      "reason": "魔女とほうきの取り違えだけで終わり、固有の読みどころが弱い。"
+    },
+    {
+      "post_id": "xexp-nejimachi-one-screw",
+      "buffer_id": "6ae9c80447205d2c39966fbc",
+      "text_sha256": "6b1af0658455fbe1875bad226d390a7e11d082b2be42284fbe9c7de1672f95b5",
+      "expected_due_at": "2026-11-04T11:11:00+00:00",
+      "reason": "初見の読者には背景も変化もなく、何が起きた話なのか伝わらない。"
+    },
+    {
+      "post_id": "xexp-shadow-home",
+      "buffer_id": "6ae9c80547205d2c39966fe4",
+      "text_sha256": "61b7a29136f5ef31288d5bf5f846439d9b86b04f6fc6df0066dc8e5202b20233",
+      "expected_due_at": "2026-11-04T22:00:00+00:00",
+      "reason": "影を擬人化した一発ネタで、読後に残る観察や物語が足りない。"
+    },
+    {
+      "post_id": "xexp-book-review",
+      "buffer_id": "6aea7608ff887f055cd9d61f",
+      "text_sha256": "9e0e323c45433fbc21dbb4f98073f9a2681075fe23a6c09ffd66597037944c10",
+      "expected_due_at": "2026-11-05T02:30:00+00:00",
+      "reason": "本と読者の役割逆転が中心で、今の発信方針に合う具体的な価値が薄い。"
+    },
+    {
+      "post_id": "xexp-nejimachi-nothing-wrong",
+      "buffer_id": "6aea76084c41ba80aa4864d8",
+      "text_sha256": "2bf8dd1a7bed6e5903567064176831c1bd0d1b69258f9be856f33aaff3a9f5fe",
+      "expected_due_at": "2026-11-05T09:30:00+00:00",
+      "reason": "問題なしで不安になるという逆転だけで、具体的な場面や原因がない。"
+    }
+  ],
+  "results": {}
+}

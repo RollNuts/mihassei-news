@@ -20,7 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 JST = timezone(timedelta(hours=9))
 CHANNEL = "6ae94b74e29c69a171436d72"
-KINDS = {"evergreen_explainer", "conversation_example", "market_close"}
+KINDS = {"evergreen_explainer", "conversation_example", "market_close", "source_commentary"}
 STATE_PATH = HERE / "useful-state.json"
 # One shared Free queue; new useful originals may use the last free slot.
 # All senders serialize on the same workflow concurrency group.
@@ -61,7 +61,54 @@ def close_copy(a, b):
     return len(aa & bb) / len(aa | bb) >= 0.72
 
 
-def validate(feed, state):
+def editorial_issue(post):
+    """Check review evidence, not whether a post is funny or insightful.
+
+    An editor must read the manuscript and apply the README's content standard.
+    The review should identify a lookup, comparison or decision the text resolves
+    for its reader; this validator does not infer that meaning from word counts.
+    A nonempty basis or an approval flag alone is not a completed review. Exact
+    excerpts and a text hash make the editor's judgment inspectable and prevent
+    an old approval from silently following a rewritten manuscript.
+    """
+    review = post.get("editorial_review")
+    if review is None:
+        return "editorial_review_missing"
+    if not isinstance(review, dict):
+        return "editorial_review_invalid"
+    if review.get("text_sha256") != fingerprint(post["text"]):
+        return "editorial_review_stale"
+    if review.get("decision") == "rejected":
+        return "editorial_review_rejected"
+    if review.get("decision") != "approved":
+        return "editorial_review_unapproved"
+
+    excerpts = []
+    for key, minimum in (("concrete_anchor", 4), ("added_value", 8)):
+        excerpt = review.get(key)
+        if (not isinstance(excerpt, str) or excerpt != excerpt.strip()
+                or len(normalized(excerpt)) < minimum or excerpt not in post["text"]):
+            return "editorial_review_ungrounded"
+        excerpts.append(normalized(excerpt))
+    if excerpts[0] == excerpts[1]:
+        return "editorial_review_ungrounded"
+
+    notes = []
+    for key in ("reader_payoff", "why_now_or_save"):
+        note = review.get(key)
+        # Bare labels such as "有益", "共感できる" or "面白い" do not explain
+        # what a reader gains. Length is a schema check, never a quality score.
+        if not isinstance(note, str) or not 12 <= len(normalized(note)) <= 400:
+            return "editorial_review_incomplete"
+        notes.append(normalized(note))
+    if notes[0] == notes[1]:
+        return "editorial_review_incomplete"
+    if post["kind"] != "conversation_example" and not post.get("sources"):
+        return "source_evidence_missing"
+    return None
+
+
+def validate(feed, state, *, require_editorial=True):
     if feed.get("schema_version") != 1 or type(feed.get("enabled")) is not bool:
         raise ValueError("Invalid useful feed")
     if feed.get("channel_id") != CHANNEL:
@@ -96,12 +143,31 @@ def validate(feed, state):
                 raise ValueError("Market session, sources and recent check required")
         if not isinstance(p.get("basis"), str) or not p["basis"].strip():
             raise ValueError("Public, non-private editorial basis required")
-        for url in p.get("sources", []):
+        sources = p.get("sources", [])
+        if not isinstance(sources, list):
+            raise ValueError("Sources must be a list of HTTPS URLs")
+        for url in sources:
             if not isinstance(url, str) or not url.startswith("https://"):
                 raise ValueError("HTTPS sources required")
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", due.astimezone(JST).date().isoformat()):
             raise ValueError("Invalid day")
         day = due.astimezone(JST).date().isoformat()
+        if pid not in state["attempts"] and p["delivery"] == "automatic":
+            if expiry.astimezone(JST).date() != due.astimezone(JST).date():
+                raise ValueError("New automatic manuscripts must expire on their publish day in JST")
+            if p["kind"] == "source_commentary":
+                source_date = p.get("source_date")
+                if not isinstance(source_date, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", source_date):
+                    raise ValueError("Source commentary requires its actual source_date (YYYY-MM-DD)")
+                source_day = datetime.strptime(source_date, "%Y-%m-%d").date()
+                if source_day > checked.astimezone(JST).date() or due - checked > timedelta(hours=12):
+                    raise ValueError("Source commentary requires a non-future source date and a check within 12 hours")
+            if require_editorial:
+                reason = editorial_issue(p)
+                # A recorded rejection may remain in the file without becoming
+                # a publishing candidate. Missing/broken approvals fail CI.
+                if reason not in (None, "editorial_review_rejected"):
+                    raise ValueError(f"{pid}: {reason}")
         if p["delivery"] == "automatic":
             if day in days:
                 raise ValueError("Only one automatic useful post per JST day")
@@ -120,7 +186,9 @@ def validate(feed, state):
 
 
 def select(feed, state, now, live, prior_texts=(), reasons=None):
-    posts = validate(feed, state)
+    # Runtime selection records an exact review failure instead of turning a
+    # missing approval into an unexplained empty queue. --validate is stricter.
+    posts = validate(feed, state, require_editorial=False)
     reasons = reasons if reasons is not None else []
     if not feed["enabled"]:
         reasons.append({"reason": "disabled"})
@@ -143,6 +211,8 @@ def select(feed, state, now, live, prior_texts=(), reasons=None):
             reason = "check_time_in_future"
         elif not now + timedelta(minutes=15) < due < stamp(p["valid_until"]):
             reason = "past_cutoff_or_expired"
+        elif (review_reason := editorial_issue(p)) is not None:
+            reason = review_reason
         elif any(close_copy(p["text"], t) for t in list(prior_texts) + [r.get("text", "") for r in live]):
             reason = "duplicate_or_near_duplicate"
         elif any(r.get("status") == "scheduled" and r.get("dueAt") and
@@ -173,7 +243,7 @@ def persist(state):
 def main():
     feed = read(HERE / "useful-posts.json")
     state = read(STATE_PATH) if STATE_PATH.exists() else {"schema_version": 1, "attempts": {}}
-    validate(feed, state)
+    validate(feed, state, require_editorial="--validate" in sys.argv)
     if "--validate" in sys.argv or not feed["enabled"]:
         print("Validated. No Buffer request.")
         return
