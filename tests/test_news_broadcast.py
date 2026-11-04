@@ -16,7 +16,7 @@ class NewsBroadcastTests(unittest.TestCase):
     def test_broadcast_is_single_and_not_a_live_news_claim(self):
         marked = [a for a in self.articles if a.get("broadcast_feature") is True]
         self.assertTrue(marked)
-        self.assertLessEqual(len(marked), 2)
+        self.assertLessEqual(len(build.broadcast_playlist(self.articles)), 3)
         home = build.home(self.articles)
         self.assertEqual(home.count('class="broadcast-spotlight"'), 1)
         self.assertEqual(home.count('class="broadcast-video"'), 1)

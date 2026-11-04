@@ -4,9 +4,81 @@
     "bakery-no-important-announcement-panic": {
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
       "cues": [
-        {"at": 0, "label": "毎朝の投稿", "text": "パン屋「重要なお知らせはありません」"},
-        {"at": 4, "label": "ある朝、投稿を忘れると", "text": "心配した常連が殺到。パンは昼前に完売"},
-        {"at": 8, "label": "翌朝の店主", "text": "売上帳を見て、投稿せずスマホを伏せた"}
+        {
+          "at": 0,
+          "label": "毎朝の投稿",
+          "text": "パン屋「重要なお知らせはありません」"
+        },
+        {
+          "at": 4,
+          "label": "ある朝、投稿を忘れると",
+          "text": "心配した常連が殺到。パンは昼前に完売"
+        },
+        {
+          "at": 8,
+          "label": "翌朝の店主",
+          "text": "売上帳を見て、投稿せずスマホを伏せた"
+        }
+      ]
+    },
+    "volleyball-team-lunch-plate-merch": {
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "cues": [
+        {
+          "at": 0,
+          "label": "選手の昼食写真",
+          "text": "昼食写真に質問殺到。料理より皿が話題"
+        },
+        {
+          "at": 4,
+          "label": "広報、食器担当に",
+          "text": "広報が皿の型番と直径、購入先まで案内"
+        },
+        {
+          "at": 8,
+          "label": "翌日の試合後",
+          "text": "「今日は弁当」今度は弁当箱のメーカー調べ"
+        }
+      ]
+    },
+    "music-ai-friends-monopolize-the-song": {
+      "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
+      "cues": [
+        {
+          "at": 0,
+          "label": "音楽を聴くはずが",
+          "text": "AI友達4人が曲の議論。持ち主は入れず"
+        },
+        {
+          "at": 4,
+          "label": "静かに聴きたい",
+          "text": "スマホを引き出しにしまい、ラジオをつける"
+        },
+        {
+          "at": 8,
+          "label": "翌朝も議論中",
+          "text": "AI4人「あの人、音楽の話に入らないね」"
+        }
+      ]
+    },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "cues": [
+        {
+          "at": 0,
+          "label": "相棒は自力で帰宅",
+          "text": "救出に来た主人公、隠れ家には誰もいない"
+        },
+        {
+          "at": 4,
+          "label": "電話の相手は入浴中",
+          "text": "相棒「椅子の上着、取ってきて」"
+        },
+        {
+          "at": 8,
+          "label": "救出道具をしまって",
+          "text": "主人公は忘れ物の上着を畳んで持ち帰った"
+        }
       ]
     }
   }

@@ -3,40 +3,42 @@
   "clips": {
     "volleyball-team-lunch-plate-merch": {
       "origin": "verified-still-motion",
-      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "image_sha256": "1bd7bbecba52b761eeabcaa17729e9447f54515be33730c8ad8d3202a8d54710",
-      "sha256": "34cb43f57cd5bf97b6fb7528e8e821c3fd47ac5997cf3cb812a841bd968a9178",
-      "bytes": 10694,
-      "width": 640,
-      "height": 360,
-      "fps": 12,
-      "duration_ms": 4000,
-      "created_at": "2026-11-03T09:59:43.045450+00:00"
-    },
-    "music-ai-friends-monopolize-the-song": {
-      "origin": "verified-still-motion",
-      "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
-      "image_sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662",
-      "sha256": "ffd7f9a4af2360a38790c55b63f6af6b96959e6de9bae683e3cf768bd09c525c",
-      "bytes": 8745,
-      "width": 640,
-      "height": 360,
-      "fps": 12,
-      "duration_ms": 4000,
-      "created_at": "2026-11-03T09:47:14.105928+00:00"
-    },
-    "spy-captive-escapes-before-rescue": {
-      "origin": "verified-still-motion",
       "motion_style_version": 3,
-      "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
-      "image_sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1",
-      "sha256": "545845943836f40761db02e1bc9d2d18ce15bc1861889c754103ae0c33cb5b01",
-      "bytes": 85930,
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
+      "sha256": "21c696a8fd814fbff06514392e4dbc2f03f01c3bf9ccdeac7dfa2be9945ece6e",
+      "bytes": 49968,
       "width": 640,
       "height": 360,
       "fps": 24,
       "duration_ms": 12000,
-      "created_at": "2026-11-04T00:25:10.420771+00:00"
+      "created_at": "2026-11-04T00:47:35.455161+00:00"
+    },
+    "music-ai-friends-monopolize-the-song": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
+      "image_sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662",
+      "sha256": "32f2c41c7cc21980d829523fc9c15d4ceb3e4ad64fda0d946c40d24ab420ee5e",
+      "bytes": 85792,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-04T00:50:32.799921+00:00"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+      "sha256": "51875c629a8b1b8bb6e9f270bfa5369ac4dfa0e49af60f147f3235480d8f8ba3",
+      "bytes": 116214,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-04T00:56:49.550378+00:00"
     },
     "bakery-no-important-announcement-panic": {
       "origin": "verified-still-motion",

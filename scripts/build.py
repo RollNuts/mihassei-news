@@ -10,7 +10,7 @@ import shutil
 import struct
 import subprocess
 import zlib
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from functools import lru_cache
 from pathlib import Path
@@ -406,6 +406,39 @@ def broadcast_cues(article, clip):
     return cues
 
 
+def broadcast_vtt(article, clip):
+    """Expose the same vetted captions to native fullscreen video players."""
+    cues = broadcast_cues(article, clip)
+    if not cues:
+        return ""
+    blocks = ["WEBVTT"]
+    for index, cue in enumerate(cues):
+        end = cues[index + 1]["at"] if index + 1 < len(cues) else clip_seconds(clip)
+        # These are plain editorial words, not WebVTT tags or extra cue blocks.
+        label = html.escape(" ".join(cue["label"].split()), quote=False)
+        text = html.escape(" ".join(cue["text"].split()), quote=False)
+        blocks.append(f'00:00:{cue["at"]:02d}.000 --> 00:00:{end:02d}.000\n{label}\n{text}')
+    return "\n\n".join(blocks) + "\n"
+
+
+def broadcast_track_url(article, clip):
+    subtitles = broadcast_vtt(article, clip)
+    if not subtitles:
+        return ""
+    version = hashlib.sha256(subtitles.encode("utf-8")).hexdigest()[:12]
+    return clip_url(article)[:-4] + ".vtt?v=" + version
+
+
+def broadcast_track(article, clip):
+    url = broadcast_track_url(article, clip)
+    if not url:
+        return ""
+    # The player shows this track in native fullscreen and hides it inline,
+    # where the readable newsroom overlay already displays the same words.
+    return (f'<track kind="subtitles" srclang="ja" label="日本語"'
+            f' src="{escape(url)}" data-broadcast-track>')
+
+
 def broadcast_overlay(article, clip):
     """Short readable captions share the video clock on home and article pages."""
     cues = broadcast_cues(article, clip)
@@ -448,39 +481,82 @@ def article_hero_media(a):
         ' width="1200" height="675"'
         f' aria-label="{escape("創作ニュース「" + a["title"] + "」の" + str(clip_seconds(clip)) + "秒の無音演出映像")}">'
         f'<source src="{escape(clip_url(a))}?v={version}" type="video/mp4">'
-        '</video>' + fallback + (broadcast_overlay(a, clip) if broadcast_cues(a, clip) else '') + '</div>'
+        + broadcast_track(a, clip) + '</video>' + fallback
+        + (broadcast_overlay(a, clip) if broadcast_cues(a, clip) else '') + '</div>'
     )
 
 
+def broadcast_playlist(articles, *, exclude_slug=None):
+    """A small editorial selection, newest verified video first, with no requests."""
+    items = []
+    for article in articles:
+        if article.get("broadcast_feature") is not True or article["slug"] == exclude_slug:
+            continue
+        clip = usable_clip(article, root=BASE)
+        if not clip:
+            continue
+        published = publication_date(article)
+        stamp = datetime.fromisoformat(published)
+        if stamp.tzinfo is not None:
+            stamp = stamp.astimezone(timezone(timedelta(hours=9)))
+        published_label = f"{stamp.year}/{stamp.month}/{stamp.day}"
+        if "T" in published:
+            published_label += f" {stamp.hour:02}:{stamp.minute:02}"
+        version = clip["sha256"][:12]
+        items.append({
+            "slug": article["slug"], "key": article["slug"] + ":" + version,
+            "title": article["title"], "category": article["category"],
+            "article_url": article_url(article), "poster_url": editorial_image(article),
+            "video_url": clip_url(article) + "?v=" + version,
+            "track_url": broadcast_track_url(article, clip),
+            "duration_seconds": clip_seconds(clip),
+            "published_at": published, "published_label": published_label,
+            "created_at": clip["created_at"], "cues": broadcast_cues(article, clip),
+        })
+    # A newly delivered video gets a turn even when its article is older. Its
+    # genuine article publication date is still displayed beside the headline.
+    items.sort(key=lambda item: (datetime.fromisoformat(item["created_at"]).timestamp(),
+                                 item["published_at"], item["slug"]), reverse=True)
+    return items[:3]
+
+
 def broadcast_feature(articles, *, exclude_slug=None):
-    """One opt-in playable clip per homepage, never an all-article video wall."""
-    chosen = next((a for a in articles
-                   if a.get("broadcast_feature") is True
-                   and a["slug"] != exclude_slug
-                   and usable_clip(a, root=BASE)), None)
-    if chosen is None:
+    """One player with explicit choices; never swap stories during playback."""
+    playlist = broadcast_playlist(articles, exclude_slug=exclude_slug)
+    if not playlist:
         return ""
+    selected = playlist[0]
+    chosen = next(article for article in articles if article["slug"] == selected["slug"])
     clip = usable_clip(chosen, root=BASE)
-    poster = editorial_image(chosen)
-    version = clip["sha256"][:12]
-    url = escape(article_url(chosen))
+    poster = selected["poster_url"]
+    url = escape(selected["article_url"])
+    payload = escape(json.dumps(playlist, ensure_ascii=False, separators=(",", ":")))
+    choices = "".join(
+        f'<button class="broadcast-choice" type="button" data-broadcast-choice="{index}"'
+        f' aria-pressed="{str(index == 0).lower()}" aria-controls="broadcast-player">'
+        f'<small>公開 <time datetime="{escape(item["published_at"])}">{escape(item["published_label"])}</time>'
+        f' · {item["duration_seconds"]}秒</small><strong>{escape(item["title"])}</strong>'
+        '</button>' for index, item in enumerate(playlist)
+    )
     return (
-        '<section class="broadcast-spotlight" aria-labelledby="broadcast-title">'
+        '<section class="broadcast-spotlight" aria-labelledby="broadcast-title"'
+        f' data-broadcast-playlist="{payload}">'
         '<div class="broadcast-intro"><div>'
         '<span class="small-label red">UNHAPPENED TV / 映像ニュース</span>'
         '<h2 id="broadcast-title">未発生ニュース放送室</h2>'
-        '<p>ひとつのニュースを、短い映像で。</p></div>'
-        f'<a href="{url}" class="broadcast-article-link">記事全文を読む →</a></div>'
+        '<p>見たいニュースを選んで、短い映像で。</p></div>'
+        f'<a href="{url}" class="broadcast-article-link" data-broadcast-article-link>記事全文を読む →</a></div>'
         '<div class="broadcast-screen" data-news-broadcast data-video-shell>'
         f'<img class="broadcast-poster" src="{escape(poster)}" alt=""'
         ' width="1200" height="675" loading="lazy" decoding="async">'
         '<video class="broadcast-video" controls playsinline muted loop'
-        ' preload="none" width="1200" height="675"'
+        ' preload="none" width="1200" height="675" id="broadcast-player"'
         f' poster="{escape(poster)}"'
         f' aria-label="{escape(chosen["title"])}・{clip_seconds(clip)}秒の無音演出映像">'
-        f'<source src="{escape(clip_url(chosen))}?v={version}" type="video/mp4">'
-        '</video>' + broadcast_overlay(chosen, clip) + '</div>'
-        f'<p class="broadcast-headline"><a href="{url}">{escape(chosen["title"])}</a></p>'
+        f'<source src="{escape(selected["video_url"])}" type="video/mp4">'
+        + broadcast_track(chosen, clip) + '</video>' + broadcast_overlay(chosen, clip) + '</div>'
+        f'<p class="broadcast-headline" aria-live="polite"><a href="{url}" data-broadcast-headline>{escape(chosen["title"])}</a></p>'
+        f'<div class="broadcast-choices" data-broadcast-choices hidden aria-label="映像ニュースを切り替える">{choices}</div>'
         '<p class="broadcast-note">創作ニュースの演出映像・無音。再生できない場合は画像を表示します。</p>'
         '</section>'
     )
@@ -984,7 +1060,7 @@ def home(articles, serials=None):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着の見出し</h2><span>LATEST</span></div>{side}</aside>
 </section>
-{broadcast_feature(articles, exclude_slug=a["slug"])}
+{broadcast_feature(articles)}
 <section class="section-block"><div class="section-head"><h2>新着記事</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
@@ -1721,10 +1797,14 @@ def build():
     # Only validated, fingerprint-matched optional MP4s are ever published.
     # Stale/over-budget files in the source tree do not reach the live site.
     for item in articles:
-        if usable_clip(item, root=BASE):
+        clip = usable_clip(item, root=BASE)
+        if clip:
             target = OUT / clip_url(item).lstrip("/")
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(BASE / CLIP_DIR / (item["slug"] + ".mp4"), target)
+            subtitles = broadcast_vtt(item, clip)
+            if subtitles:
+                write(clip_url(item).lstrip("/")[:-4] + ".vtt", subtitles)
     write("build-revision.txt", build_revision() + "\n")
     write("index.html",home(articles,serials))
     write("about/index.html",about())
