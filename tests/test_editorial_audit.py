@@ -77,6 +77,7 @@ class EditorialAuditTests(unittest.TestCase):
 
     def test_missing_kind_keeps_the_freshness_warning(self):
         a = story("old-untyped-source", NOW, NOW - timedelta(days=30))
+        del a["source"]["kind"]
         self.assertNotIn("kind", a["source"])
         self.assertEqual({code for code, _, _ in audit([a], NOW)}, {"STALE_SOURCE"})
 
