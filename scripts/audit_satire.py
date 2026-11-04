@@ -194,7 +194,7 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
     if "RECENT_CATEGORY_RUN" in labels:
         counts = Counter(str(a.get("category") or "") for a in sample)
         dominant, _ = counts.most_common(1)[0]
-        lines.append(f"{dominant}が集中。当日の確かな出典があれば別ジャンル・別の読者層も探す。")
+        lines.append(f"{dominant}が集中。確認できるニュース・公開投稿・生活や文化の話題から、別ジャンル・別の読者層も探す。")
     if "PROCEDURAL_PREMISE_LOOP" in labels:
         lines.append("確認・申請・認証・拒否の逆効果が続く。誤解、意外な成功、言葉遊び、善意の空回りなど別の笑いを探す。")
     if "FORMULA_FUTURE_INTRO_LOOP" in labels:
