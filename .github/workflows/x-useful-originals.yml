@@ -58,6 +58,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase origin main
           python social-bot/queue_cleanup.py --apply
+          python social-bot/queue_cleanup.py --recover
       - name: Schedule only the current-day useful original
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
