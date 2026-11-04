@@ -6,11 +6,11 @@
     "fiction_company": "ある町の家庭",
     "art": "cards",
     "fiction_at": "2031-11-03T22:35:00+09:00",
-    "title": "子の弁当を毎日残される父、自分も同じ量を詰めて出勤",
-    "summary": "好物の卵焼きを多めに入れても、子どもは弁当を食べ残す。父親が自分にも同じ量を用意すると、弁当箱の大きさに初めて気づいた。",
+    "title": "子の食べ残しに悩む父、同じ弁当を持参して自分も半分残す",
+    "summary": "子どもの好物を詰めた弁当が毎日残るため、父親が同じ量を自分で食べてみた。息子には小さい箱を渡すと、空にして帰ってきたのは息子の方だった。",
     "paragraphs": [
-      "2031年、ある町で父親が、幼い息子の弁当箱を毎朝おかずでいっぱいにしていた。好物の卵焼きも、隙間を見つけるたびに追加する。ところが息子はいつも半分ほど残して帰ってくる。「好きなものばかりなのに」と悩んだ父は、翌朝、息子には小さい箱を、自分には今までの大きい箱を用意し、同じおかずをぎっしり詰めた。",
-      "昼休み、父は「これくらい楽勝だ」と箸をつけた。だが卵焼きを食べても唐揚げを食べても、箱の底は見えない。昼休みが終わり、父は半分残った箱にふたをして持ち帰った。夕方、息子の小さい箱は空っぽ。父の大きな箱を開けた息子は、真顔で言った。「お父さん、好き嫌いしちゃだめだよ」。父は「量が多いだけ」と言いかけて、黙ってふたを閉めた。"
+      "息子の食べ残しに悩んだ父親が、いつも持たせている量の弁当を自分で食べてみた。昼休みが終わっても、箱には半分が残った。父は毎朝、大きな箱の隙間を息子の好物の卵焼きや唐揚げで埋めていた。「好きなものばかりなのに」と思い、この日は息子に小さい箱を渡し、いつもの大きい箱を自分で持ってきたのだった。",
+      "夕方、息子が持ち帰った小さい箱は空っぽだった。父の大きな箱を開けた息子は、半分残ったおかずを見て真顔で言った。「お父さん、好き嫌いしちゃだめだよ」。父は「量が多いだけ」と言いかけて、黙ってふたを閉めた。"
     ],
     "scene_prompt": "An oversized Japanese bento box still half full of tamagoyaki and fried chicken sits beside a tiny empty lunchbox on a wooden dining table. An anonymous father quietly closes the oversized lid while his young child points at the leftovers, both with solemn expressions. Modest family kitchen, candid photorealistic staged comedy, no text, logos, or identifiable people.",
     "source": {
@@ -20,7 +20,8 @@
       "url": "https://news.livedoor.com/article/detail/32724280/",
       "topic": "2026年11月3日22:35公開。父親が子の弁当を作っても残されてしまい、弁当箱が大きすぎるのではとの指摘を受けたと報道。作中の家族・出来事・会話は創作。"
     },
-    "published_at": "2026-11-04T09:36:32+09:00"
+    "published_at": "2026-11-04T09:36:32+09:00",
+    "modified_at": "2026-11-04T10:56:47+09:00"
   },
   {
     "slug": "sweet-potato-chorus-starts-too-late",
@@ -29,11 +30,11 @@
     "fiction_company": "町の学園祭",
     "art": "cards",
     "fiction_at": "2031-11-03T18:33:00+09:00",
-    "title": "ふかし芋の一斉食べ大会、合図の練習が終わらない　参加者が芋を握って待機",
-    "summary": "ふかし芋を同時に食べ始める記録会で、掛け声と手の動きを何度も練習。ようやく始まった本番では、芋がすっかり冷めていた。",
+    "title": "ふかし芋の一斉食べ大会、合図の練習で芋が冷める",
+    "summary": "全員で一口目をそろえるため、「いただきます」と手の動きを何度も練習。参加者は食べるのを止められたまま、湯気の消えた芋を握って本番を待った。",
     "paragraphs": [
-      "「まだ食べないでください！」。2031年、町の学園祭で、ふかし芋を全員同時に食べる記録会が開かれた。参加者は芋を手に「いただきます」の合図を練習したが、一人が皮をむくと周りもつられてむいてしまう。進行役は「食べ始める瞬間をそろえたい」と、何度も笛を吹いてやり直した。",
-      "ようやく本番の合図が出ると、全員が一斉に芋をかじった。熱々だったはずの芋はすっかり冷めている。最前列の子が「冷めてる！」と叫ぶと、ほかの参加者からも同じ声が上がった。端から端まで「冷めてる！」がきれいに重なり、進行役は思わず笛を置いた。そろえようとしていた「いただきます」より、ずっと息が合っていた。"
+      "町の学園祭で、全員同時にふかし芋を食べる記録会が開かれた。進行役が一口目をそろえる練習を繰り返すうち、参加者の手の中で芋の湯気が消えていった。笛が鳴る前に芋を口へ運ぶ人が出るたび、「まだ食べないでください！」とやり直しになった。参加者は芋を握ったまま、「いただきます」の合図を待ち続けた。",
+      "ようやく本番の合図が出ると、全員が一斉に芋をかじった。最前列の子が「冷めてる！」と叫ぶと、ほかの参加者からも同じ声が上がった。端から端まで「冷めてる！」がきれいに重なり、進行役は思わず笛を置いた。"
     ],
     "scene_prompt": "A row of cooled steamed sweet potatoes on paper trays, with participants frozen mid-bite as a solemn referee raises a small whistle. Anonymous children and adults in a modest Japanese school festival courtyard hold half-peeled sweet potatoes and look surprised. Eye-level medium shot, natural daylight, deadpan photorealistic staged comedy, no writing, logos, or identifiable people.",
     "source": {
@@ -43,7 +44,8 @@
       "url": "https://news.livedoor.com/article/detail/32723003/",
       "topic": "2026年11月3日18:33公開。広島の学園祭で551人が合図に合わせてふかし芋を食べる日本記録に挑み、防災炊き出し訓練も兼ねたと報道。作中の町・練習や芋が冷める出来事は創作。"
     },
-    "published_at": "2026-11-04T07:38:09+09:00"
+    "published_at": "2026-11-04T07:38:09+09:00",
+    "modified_at": "2026-11-04T10:52:28+09:00"
   },
   {
     "slug": "historical-lookalike-contest-dog-wins",
@@ -52,10 +54,10 @@
     "fiction_company": "郷土の偉人そっくり大会",
     "art": "cards",
     "fiction_at": "2031-11-03T11:52:00+09:00",
-    "title": "偉人そっくり大会、犬が優勝　親切さの審査で人間に勝つ",
-    "summary": "町の偉人そっくり大会は、顔より親切な行動を重く採点することにした。飼い主と一緒に出場した犬が落とした杖を届け、人間の出場者たちを抑えて優勝した。",
+    "title": "偉人そっくり大会、犬が優勝　人間がポーズを取る間に杖を届ける",
+    "summary": "顔の似方より「偉人らしい親切さ」を重く採点する大会で、人間の出場者はポーズに熱中。横で落ちた杖を係員へ届けた犬が、優勝のリボンをもらった。",
     "paragraphs": [
-      "2031年、南の町の「郷土の偉人そっくり大会」は、顔の似方よりも「その偉人らしい親切さ」を重視する審査に変えた。飼い主と一緒に出場した犬が、付けひげ姿の人たちがポーズを取る横で、係員の落とした杖をくわえて届けた。審査員は「今日一番、人の役に立った」と犬に優勝のリボンをかけた。",
+      "町の「郷土の偉人そっくり大会」で、飼い主と出場した犬が優勝した。今年は顔の似方より「偉人らしい親切さ」を重く採点することになり、犬は付けひげ姿の人たちがポーズを取る横で、係員の落とした杖をくわえて届けた。審査員は「今日一番、人の役に立った」と犬に優勝のリボンをかけた。",
       "記念撮影になると、犬は表彰台を嫌がって飼い主の足元へ逃げた。落選した付けひげ姿の出場者たちが膝をついておやつを振ると、犬はようやく中央を向いた。写真には、一匹の犬のためにしゃがんでカメラ目線を促す「偉人」たちが写った。司会者が「受賞者から一言」とマイクを差し出すと、犬はそれをくわえ、舞台の端の飼い主に届けた。"
     ],
     "scene_prompt": "A small friendly dog wearing an oversized winner's ribbon gently carries a handheld microphone in its mouth toward its owner. Three anonymous adults in generic old-fashioned costumes with theatrical fake beards kneel beside a low podium, trying to coax the dog into a winner's photo. Small fictional town festival stage, warm natural light, deadpan photorealistic comedy, no writing, logos, or real celebrities.",
@@ -67,7 +69,7 @@
       "topic": "2026年11月3日11:52公開の当日報道。鹿児島おはら祭で西郷どんそっくりさんコンテストも実施されることを紹介。鹿児島市の10月13日発表では見た目だけでなく人物像も審査対象。本文の犬の優勝、大会関係者、出来事は本紙の創作。"
     },
     "published_at": "2026-11-03T23:31:05+09:00",
-    "modified_at": "2026-11-03T23:35:21.440Z"
+    "modified_at": "2026-11-04T10:52:28+09:00"
   },
   {
     "slug": "stolen-doorbell-returned-by-parcel",
@@ -123,11 +125,11 @@
     "fiction_company": "商店街の食堂『おかえし亭』",
     "art": "cards",
     "fiction_at": "2031-11-03T12:00:00+09:00",
-    "title": "食堂で「払い逃げ」　店主が50円握って追跡",
-    "summary": "料理を待たせると小銭を返す食堂では、親切が評判を呼ぶほど会計が長引いた。心配した常連たちが代金を置いて店を抜け出し始める。",
+    "title": "食堂の常連、満額払って逃走　店主が返金の50円を持って追跡",
+    "summary": "待たせたおわびに小銭を返す店主が心配で、常連は代金を置き、受け取らされる前に店を出た。店主は50円玉をつかんで追いかけ、通りで返金を巡る押し問答が始まった。",
     "paragraphs": [
-      "「お願い、今日は満額払わせて」。2031年、商店街の食堂『おかえし亭』で、常連客が代金をぴったり置いて店を飛び出した。店主は料理を待たせるたび、申し訳なさそうに50円を返す。評判を聞いた客が増え、いつしか店は返金する時間の方が長くなった。心配した常連たちは小銭を渡される前に帰る「払い逃げ」を始めていた。",
-      "店主は50円玉を握り、商店街まで追いかけた。「お待たせした分だから」と差し出すと、客は首を振った。「待ったけど、おいしかったから」。二人が押し問答しているうちに、店の前には新しい列が伸びた。店主はあわてて走り戻ったが、今度は客が追いかけてきた。店主の手に50円玉を握らせ、客は言った。「引き止めてごめん。これ、こっちのおわび」。"
+      "商店街の食堂『おかえし亭』で、客が代金を満額払って逃げ、店主が50円玉を握って追いかける騒ぎが起きた。待たせた客に必ず小銭を返す店主に、常連客が「今日は満額払わせて」と返金を断ったのが始まりだった。親切な店と評判になって客が増え、返金のやり取りで後ろの客がさらに待つようになっていた。常連たちは、返金される前に店を出る「払い逃げ」を始めていた。",
+      "追いついた店主が「お待たせした分だから」と50円を差し出すと、客は首を振った。「待ったけど、おいしかったから」。二人が押し問答しているうちに、店の前には新しい列が伸びた。店主はあわてて走り戻ったが、今度は客が追いかけてきた。店主の手に50円玉を握らせ、客は言った。「引き止めてごめん。これ、こっちのおわび」。"
     ],
     "scene_prompt": "A small silver coin is pressed into the palm of a surprised restaurant owner wearing a plain apron by a fictional customer outside a tiny Japanese diner. The owner still holds a second refund coin. A short lunch queue is visible through the open doorway. Deadpan photorealistic comedy, warm natural light, anonymous people, no writing or logos.",
     "source": {
@@ -137,7 +139,8 @@
       "url": "https://www.oricon.co.jp/news/2490464/full/",
       "topic": "2026年11月3日12:00公開。大阪の食堂が待たせた客や常連客に50円、100円などを返す接客を続け、テレビ放送後の営業日に行列ができたと紹介。『払い逃げ』や客と店主が小銭を渡し合う場面は本紙独自の創作。"
     },
-    "published_at": "2026-11-03T19:39:42+09:00"
+    "published_at": "2026-11-03T19:39:42+09:00",
+    "modified_at": "2026-11-04T10:52:28+09:00"
   },
   {
     "slug": "volleyball-team-lunch-plate-merch",
@@ -369,11 +372,11 @@
     "fiction_company": "余白マッチ",
     "art": "cards",
     "fiction_at": "2031-11-03T06:14:00+09:00",
-    "title": "返信は3日に1度、それでも結婚　恋活アプリだけが毎日心配",
-    "summary": "返信は3日に一度でも結婚できた2人。毎日アプリを開くほど順調と判定する運営AIだけが、2人の仲を心配し続けた。",
+    "title": "結婚が決まった2人に「会話が止まっています」　恋活アプリが毎日催促",
+    "summary": "アプリを使わなくなった理由は、2人が会うようになったからだった。それでも毎日の利用回数で交際を判断する運営からは、返信を促す通知が届き続けた。",
     "paragraphs": [
-      "「返事は3日後でも大丈夫です」。2031年、架空の恋活アプリ「余白マッチ」で出会った2人は、最初から連絡を急がなかった。初デートを決めるまで2か月かかったが、会えば無言で散歩し、隣で別々の本を読んでも落ち着く。やがて2人は結婚した。",
-      "ところがアプリは、毎日ログインするほど交際が順調だと判断する仕組みだった。2人は会う回数が増えるほどアプリを開かなくなり、運営からは「会話が止まっています」「今日は返信しましょう」と毎日通知が届く。通知が鳴る間も、2人は同じソファでそれぞれの本を読んでいた。",
+      "恋活アプリ「余白マッチ」で出会い、結婚を決めた2人に「会話が止まっています」という通知が毎日届いていた。会う回数が増えるほどアプリを開かなくなったため、毎日ログインするほど交際が順調だと判断する仕組みに心配されていた。",
+      "2人は最初から「返事は3日後でも大丈夫」と話していた。初デートを決めるまで2か月かかったが、会えば無言で散歩し、隣で別々の本を読んでも落ち着いた。アプリが「今日は返信しましょう」と催促している間も、2人は同じソファに座って本を読んでいた。",
       "婚姻届を出した日、2人は並んで退会画面を開いた。理由を「結婚したから」と選ぶと、アプリは「もう少し頑張ってみませんか」と表示した。2人は顔を見合わせ、初めて3秒で意見が一致した。「退会する」。"
     ],
     "source": {
@@ -384,8 +387,8 @@
       "topic": "米マッチ・グループ幹部が、相性判定アルゴリズムの改善などを背景に、Tinderの米国の日次利用者数が10月に前年同月比で増加したと説明した。ロイターの初公開は2026年11月2日21:14 UTCで、日本時間11月3日06:14。"
     },
     "published_at": "2026-11-03T07:40:27+09:00",
-    "modified_at": "2026-11-03T12:30:49.322+09:00",
-    "scene_prompt": "A calmly content adult couple sits side by side at a small Japanese cafe table with two untouched phones face down. Between their coffee cups an absurdly large pile of identical vibrating pagers demands attention, but both people look peacefully out the window."
+    "modified_at": "2026-11-04T11:01:36+09:00",
+    "scene_prompt": "Two smartphones glowing with unread-message notification dots sit on a low table in front of a relaxed adult couple sharing one sofa and reading separate books. The couple ignores the phones. A modest Japanese living room, photorealistic staged comedy, no readable text, logos, or identifiable people."
   },
   {
     "slug": "farm-friendship-across-species",
