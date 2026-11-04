@@ -81,23 +81,23 @@
         }
       ]
     },
-    "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+    "park-recorded-laughter-real-kids-shushed": {
+      "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
       "cues": [
         {
           "at": 0,
-          "label": "偶然を予約する店",
-          "text": "知らない人との相席を時間指定で予約"
+          "label": "生声禁止の公園",
+          "text": "本物の子どもの声は禁止。録音の笑い声だけ大音量"
         },
         {
           "at": 4,
-          "label": "予定外の会話",
-          "text": "隣客へ声をかけると「別の偶然です」"
+          "label": "笑った児童に注意",
+          "text": "滑り台の女の子に「生の笑い声はご遠慮ください」"
         },
         {
           "at": 8,
-          "label": "次の偶然待ち",
-          "text": "話の途中でベル。入口では次の客が待つ"
+          "label": "誰もいない夕方",
+          "text": "放送だけ続き、管理員は「今日もにぎわった」"
         }
       ]
     }
