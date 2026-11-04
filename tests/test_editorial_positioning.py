@@ -84,6 +84,8 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertNotIn("紙面の架空時計", page)
         self.assertNotIn("data-future-clock", page)
         self.assertNotIn("5年先の時計", page)
+        css = (Path(__file__).resolve().parent.parent / "assets" / "newsroom.css").read_text(encoding="utf-8")
+        self.assertNotIn(".strip{position:sticky", css)
 
 
 if __name__ == "__main__":
