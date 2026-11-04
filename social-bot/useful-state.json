@@ -11,17 +11,20 @@
       "buffer_id": "6aea859787b7c6d24c81d57f",
       "due_at": "2026-11-04T03:00:00.000Z",
       "sent_at": "2026-11-04T03:00:26.993Z",
-      "checked_at": "2026-11-04T03:45:05.892243+00:00"
+      "checked_at": "2026-11-04T04:56:55.005037+00:00"
     }
   },
   "last_selection": {
-    "checked_at_utc": "2026-11-04T03:45:05.892763+00:00",
+    "checked_at_utc": "2026-11-04T04:56:55.005403+00:00",
     "scheduled_count": 2,
     "shared_queue_limit": 10,
+    "daily_x_cap": 7,
+    "observed_today_count": 17,
     "selected_post_id": null,
     "reasons": [
       {
-        "reason": "day_already_attempted"
+        "reason": "daily_x_cap_reached",
+        "observed_or_intent_count": 17
       }
     ]
   }
