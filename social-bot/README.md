@@ -7,7 +7,7 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 | 経路 | 状態と入口 | 範囲 |
 | --- | --- | --- |
 | 独自コンテンツ `useful` | `useful-posts.json.enabled: true`、[`x-useful-originals.yml`](../.github/workflows/x-useful-originals.yml) | 本文・事実を確認した当日分を、他のX経路も含む1日合計7本上限の空きへ予約 |
-| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | 新着・続報・実測PV記事から1日最大3本。最低6時間間隔、記事slugで重複防止。全X経路合計7本上限の範囲で使う。詳細は[記事紹介](article-picks/README.md) |
+| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | 新着・続報・実測PV記事から1日最大4本。最低4時間間隔、記事slugで重複防止。全X経路合計7本上限の範囲で使う。詳細は[記事紹介](article-picks/README.md) |
 | 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
 | ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
