@@ -199,7 +199,7 @@ class FreeCpuImageTests(unittest.TestCase):
         expected = {
             "sweet-potato-chorus-starts-too-late": ("sweet potatoes", "purple skin", "yellow flesh", "referee", "whistle"),
             "historical-lookalike-contest-dog-wins": ("dog", "ribbon", "microphone"),
-            "stolen-doorbell-returned-by-parcel": ("parcel", "bell", "push button", "close-up"),
+            "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
             "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
         }
@@ -215,6 +215,9 @@ class FreeCpuImageTests(unittest.TestCase):
             if slug == "volleyball-team-lunch-plate-merch":
                 for room_context in ("table", "room", "indoor", "dinner", "net"):
                     self.assertNotIn(room_context, prompt.lower())
+            if slug == "stolen-doorbell-returned-by-parcel":
+                for appliance_context in ("hotel", "reception", "counter", "electric", "push button", "skirt"):
+                    self.assertNotIn(appliance_context, prompt.lower())
 
     def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
         source = {**article(), "paragraphs": ["Original fictional scene."],
