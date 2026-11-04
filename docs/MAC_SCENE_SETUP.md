@@ -15,6 +15,8 @@ GitHub側のコードだけではMacにモデルは入りません。画像が�
 
 ターミナルではリポジトリ内で以下を実行します。ほかの記事発行・漫画・GitHub Actionsは停止対象に含めません。
 
+画像回収担当チャットの定期確認も停止範囲に従います。Macだけの停止ではCPU成果物の検品・公開を継続し、全停止では変更・生成・公開を行いません。状態JSONの`stop_scope`は`mac`・`all`・`unknown`、停止ラッチなしは`null`です。旧形式などで停止範囲が不明な場合も回収は読み取りだけにします。回収の担当と実行枠は[OPERATIONS.md](OPERATIONS.md)を参照してください。
+
 ~~~bash
 python3.11 scripts/mac_scene_control.py status
 python3.11 scripts/mac_scene_control.py stop
