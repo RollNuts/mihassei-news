@@ -5,6 +5,7 @@ Independent from paused, unapproved Nejimachi canon manga. Each scene is
 deterministic and its existing file is never overwritten after publication.
 """
 import hashlib
+import json
 import random
 from pathlib import Path
 
@@ -249,12 +250,36 @@ def book(d):
     d.line((807, 237, 810, 554), fill=(160, 123, 107), width=10)
     for y in (312, 346, 380, 414):
         d.line((658, y, 767, y+5), fill=(126, 123, 116), width=5)
-    # Two review stars; no language-specific font is necessary.
-    for x in (853, 923):
-        d.polygon([(x, 302), (x+9, 322), (x+33, 325),
-                   (x+16, 342), (x+21, 367), (x, 355),
-                   (x-21, 367), (x-16, 342), (x-33, 325),
-                   (x-9, 322)], fill=(237, 186, 104))
+    # A recognizable sleeping reader + active reviewer at phone-card scale.
+    # The original composition showed two stars but not who judged whom.
+    # Two large Z-shapes now lead the eye from the reader to the book.
+    d.line([(407, 294), (457, 294), (410, 331), (462, 331)],
+           fill=(245, 222, 168), width=10, joint="curve")
+    d.line([(473, 246), (511, 246), (474, 276), (512, 276)],
+           fill=(245, 222, 168), width=7, joint="curve")
+    # The book has a face on the left leaf, with a wry critic's smile.
+    d.ellipse((678, 282, 711, 315), fill=(65, 55, 63))
+    d.ellipse((748, 282, 781, 315), fill=(65, 55, 63))
+    d.ellipse((696, 289, 703, 297), fill=(246, 234, 205))
+    d.ellipse((766, 289, 773, 297), fill=(246, 234, 205))
+    d.arc((701, 321, 767, 369), 8, 170, fill=(108, 76, 75), width=9)
+    # A *five*-star review with only the first two awarded: the joke
+    # must read visually without requiring tiny text or a Japanese font.
+    for i, x in enumerate((827, 865, 903, 941, 977)):
+        y = 345
+        points = [(x, y-19), (x+6, y-7), (x+18, y-5),
+                  (x+9, y+5), (x+12, y+18), (x, y+11),
+                  (x-12, y+18), (x-9, y+5), (x-18, y-5),
+                  (x-6, y-7)]
+        if i < 2:
+            d.polygon(points, fill=(238, 182, 75))
+        else:
+            d.polygon(points, fill=(248, 235, 201),
+                      outline=(148, 132, 115), width=4)
+    d.line((848, 396, 958, 396), fill=(171, 139, 123), width=6)
+    d.line((844, 431, 954, 431), fill=(171, 139, 123), width=6)
+    # Book's own arm reaches towards the pen; this is a review in progress.
+    d.line((977, 475, 1023, 430), fill=(225, 207, 169), width=22)
     d.line((998, 440, 1105, 291), fill=(166, 111, 78), width=17)
     d.polygon([(1101, 281), (1120, 254), (1113, 305)], fill=(236, 212, 162))
     d.line((1003, 444, 962, 497), fill=(225, 215, 179), width=18)
@@ -312,6 +337,48 @@ def draw_scene(name):
     return Image.alpha_composite(im.convert("RGBA"), grain).convert("RGB")
 
 
+# One-time migration for a *not yet Buffer-registered* scene. The git blob
+# fingerprint is the exact pre-improvement xexp-book-review.png on main.
+# Any different file, or a queued experiment, is immutable by default.
+_BOOK_OLD_GIT_BLOB = "8fb3cdec7b71b25ada61a6b0eed5f05ef90ad498"
+
+
+def git_blob_sha(data):
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii")
+                        + b"\0" + data).hexdigest()
+
+
+def refresh_unqueued_book(root=ROOT, state_path=None,
+                          expected_blob=_BOOK_OLD_GIT_BLOB):
+    """Replace one known old illustration once, never registered media.
+
+    Existing media for other IDs are never touched. Reject unknown bytes
+    rather than accidentally rewriting an asset changed by another worker.
+    """
+    root = Path(root)
+    state_path = Path(state_path or Path(__file__).with_name("state.json"))
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    queued = state.get("queued")
+    if not isinstance(queued, dict):
+        raise ValueError("Refusing visual refresh without a valid queued ledger")
+    target = root / "xexp-book-review.png"
+    if "xexp-book-review" in queued or not target.exists():
+        return False
+    if git_blob_sha(target.read_bytes()) != expected_blob:
+        return False
+    candidate = target.with_suffix(".pending")
+    try:
+        draw_scene("xexp-book-review").save(candidate, format="PNG",
+                                            optimize=True)
+        if candidate.stat().st_size > 1_000_000:
+            raise ValueError("Updated X image exceeds 1 MB limit")
+        candidate.replace(target)
+    finally:
+        candidate.unlink(missing_ok=True)
+    print("Refreshed unqueued book review scene once:", target)
+    return True
+
+
 def render(root=ROOT):
     root = Path(root)
     root.mkdir(parents=True, exist_ok=True)
@@ -330,3 +397,4 @@ def render(root=ROOT):
 
 if __name__ == "__main__":
     render()
+    refresh_unqueued_book()
