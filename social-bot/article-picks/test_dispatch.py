@@ -366,6 +366,33 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(selected["slug"], "diverse-market")
         self.assertEqual(evidence["last7DaysPageViews"], 28)
 
+    def test_measured_lane_does_not_promote_lower_followup_over_diverse_candidate(self):
+        used = article("used-ai", age_hours=40)
+        used["tags"] = ["AI", "働き方"]
+        top_ai = article("top-ai", age_hours=36)
+        top_ai["tags"] = ["AI", "研究"]
+        lower_followup = article("lower-followup", age_hours=38)
+        lower_followup["tags"] = ["AI", "続報"]
+        lower_followup["followup_of"] = "older-ai"
+        diverse = article("diverse-money", age_hours=42)
+        diverse["tags"] = ["お金", "生活"]
+        state = ledger(**{
+            "used-ai": {
+                "buffer_id": "buf-used",
+                "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            }
+        })
+        counts = {
+            "used-ai": stats(20, 0),
+            "top-ai": stats(30, 2),
+            "lower-followup": stats(29, 1),
+            "diverse-money": stats(28, 1),
+        }
+        selected, _, _ = picks.decide(
+            [used, top_ai, lower_followup, diverse], counts, state, [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "diverse-money")
+
     def test_primary_topic_falls_back_to_category_without_tags(self):
         tagged = {"tags": ["AI", "働き方"], "category": "技術"}
         category_only = {"tags": [], "category": "社会"}
