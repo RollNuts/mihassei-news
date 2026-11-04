@@ -12,7 +12,10 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts import build
-from scripts.generated_photos import article_fingerprint, generated_manifest, usable_generated_scene
+from scripts import motion_clips
+from scripts.broadcast_captions import story_cues
+from scripts.generated_photos import generated_manifest
+from scripts.visual_review import reviewed_generated_scene
 from scripts.motion_clips import (
     MAX_CLIP_BYTES, MAX_TOTAL_BYTES, clip_url, candidates, generate,
     manifest_entries, usable_clip,
@@ -127,8 +130,31 @@ class MotionClipTests(unittest.TestCase):
             (root / "content/articles.json").write_text(
                 json.dumps([ordinary, chosen], ensure_ascii=False), encoding="utf-8")
             with patch.object(motion_clips, "usable_generated_scene", return_value=True), \
+                 patch.object(motion_clips, "reviewed_generated_scene", return_value=True), \
+                 patch.object(motion_clips, "story_cues", return_value=[{"text": "Ready"}]), \
                  patch.object(motion_clips, "usable_clip", return_value=None):
                 self.assertEqual([a["slug"] for a in candidates(root)], ["chosen-news-story"])
+
+    def test_generation_rechecks_review_and_captions_before_encoding(self):
+        article = {**self.articles[0], "broadcast_feature": True}
+        for reviewed, cues in ((False, [{"text": "Ready"}]), (True, [])):
+            with self.subTest(reviewed=reviewed, captions=bool(cues)), \
+                 tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                # Model a source that was eligible at planning time, then lost
+                # its review or captions before the encoder could start.
+                with patch.object(motion_clips, "candidates", return_value=[article]), \
+                     patch.object(motion_clips, "generated_scene_entry", return_value={"sha256": "a" * 64}), \
+                     patch.object(motion_clips, "usable_generated_scene", return_value=True), \
+                     patch.object(motion_clips, "reviewed_generated_scene", return_value=reviewed), \
+                     patch.object(motion_clips, "story_cues", return_value=cues), \
+                     patch.object(motion_clips.shutil, "which", return_value="test-encoder"), \
+                     patch.object(motion_clips, "require_mac_not_stopped"), \
+                     patch.object(motion_clips, "encode_clip") as encode:
+                    self.assertEqual(generate(root, min_free_gib=0), [])
+                    encode.assert_not_called()
+                self.assertEqual(list(root.rglob("*.mp4")), [])
+                self.assertFalse((root / "assets/clips/manifest.json").exists())
 
     def test_legacy_clips_stay_usable_but_mixed_profiles_fail_closed(self):
         current = manifest_entries(ROOT)
@@ -179,9 +205,12 @@ class MotionClipTests(unittest.TestCase):
     def test_real_approved_still_generates_bounded_silent_mp4(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("No local ffmpeg tools installed; production static build still works.")
-        suitable = next((a for a in self.articles if a.get("broadcast_feature") is True and usable_generated_scene(a, root=ROOT)), None)
+        suitable = next((a for a in self.articles
+                         if a.get("broadcast_feature") is True
+                         and reviewed_generated_scene(a, root=ROOT)
+                         and story_cues(a, root=ROOT)), None)
         if suitable is None:
-            self.skipTest("No approved locally generated stills at this revision.")
+            self.skipTest("No visually reviewed selected still with current captions at this revision.")
         slug = suitable["slug"]
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
@@ -197,6 +226,16 @@ class MotionClipTests(unittest.TestCase):
             (root/"content/articles.json").write_text(
                 json.dumps([suitable], ensure_ascii=False), encoding="utf-8"
             )
+            self.assertEqual(candidates(root), [])
+            self.assertEqual(motion_clips.preparation_state(suitable, root=root), "visual_review_required")
+            # Copy real source evidence verbatim; never manufacture approval
+            # metadata or rewrite production image fingerprints for a test.
+            reviews = root / "content/visual_reviews.json"
+            shutil.copyfile(ROOT / "content/visual_reviews.json", reviews)
+            self.assertEqual(candidates(root), [])
+            self.assertEqual(motion_clips.preparation_state(suitable, root=root), "captions_required")
+            captions = root / "content/broadcasts.json"
+            shutil.copyfile(ROOT / "content/broadcasts.json", captions)
             self.assertEqual([a["slug"] for a in candidates(root)], [slug])
             # Encoding this temporary fixture must not depend on the operator's
             # real persistent OFF switch, or change it during the test.
@@ -252,25 +291,16 @@ class MotionClipTests(unittest.TestCase):
             for frame in frames.values():
                 # No blank white/black flash at the cut boundaries.
                 self.assertGreater(max(frame) - min(frame), 20)
-            # Encoding/integrity can succeed before an editor reviews the
-            # source. Those valid bytes still must not become public video.
+            # Removing an approval also retracts an already encoded movie from
+            # public surfaces without touching the valid original MP4 bytes.
+            review_bytes = reviews.read_bytes()
+            reviews.unlink()
             with patch.object(build, "BASE", root):
                 self.assertIsNotNone(usable_clip(suitable, root=root))
                 self.assertIsNone(build.article_clip(suitable))
                 self.assertNotIn("<video", build.article_hero_media(suitable))
                 self.assertEqual(build.broadcast_playlist([suitable]), [])
-            # Synthetic review input for this temporary fixture only; no
-            # production review is written by a generation or encoding test.
-            (root / "content/visual_reviews.json").write_text(json.dumps({
-                "version": 1,
-                "reviews": {slug: {
-                    "decision": "accepted",
-                    "article_sha256": article_fingerprint(suitable),
-                    "image_sha256": entry["sha256"],
-                    "reviewed_at": "2026-11-04T01:30:05+00:00",
-                    "note": "Synthetic test fixture; not an actual visual review.",
-                }},
-            }), encoding="utf-8")
+            reviews.write_bytes(review_bytes)
             with patch.object(build, "BASE", root), \
                  patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
                 html = build.article_hero_media(suitable)
@@ -286,6 +316,18 @@ class MotionClipTests(unittest.TestCase):
                 self.assertIn('https://veripsa.com/clips/'+slug+'.mp4', page)
                 self.assertIn('"duration": "PT12S"', page)
                 self.assertIn('"@type": "BlogPosting"', page)
+            before_movie = movie.read_bytes()
+            before_manifest = (root / "assets/clips/manifest.json").read_bytes()
+            changed_captions = json.loads(captions.read_text(encoding="utf-8"))
+            changed_captions["stories"][slug]["cues"][2]["text"] = "字幕だけを修正した確認用の文"
+            captions.write_text(json.dumps(changed_captions, ensure_ascii=False), encoding="utf-8")
+            self.assertEqual(motion_clips.preparation_state(suitable, root=root), "current")
+            with patch("scripts.mac_scene_control.APP_DIR", root / "test-control"), \
+                 patch.object(motion_clips, "encode_clip") as encode:
+                self.assertEqual(generate(root, limit=1, slug=slug, min_free_gib=0), [])
+                encode.assert_not_called()
+            self.assertEqual(movie.read_bytes(), before_movie)
+            self.assertEqual((root / "assets/clips/manifest.json").read_bytes(), before_manifest)
             movie.write_bytes(movie.read_bytes() + b"tampered")
             self.assertIsNone(usable_clip(suitable, root=root))
             with patch.object(build, "BASE", root):

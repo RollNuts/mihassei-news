@@ -7,6 +7,9 @@ on:
       - '.github/motion-clips.json'
       - 'scripts/motion_clips.py'
       - 'scripts/publish_motion_clips.py'
+      - 'scripts/broadcast_captions.py'
+      - 'scripts/visual_review.py'
+      - 'tests/test_broadcast_captions.py'
       - 'tests/test_motion_clips.py'
       - 'tests/test_motion_publisher.py'
       - 'tests/test_motion_workflow.py'
@@ -17,7 +20,11 @@ on:
       - '.github/motion-clips.json'
       - 'scripts/motion_clips.py'
       - 'scripts/publish_motion_clips.py'
+      - 'scripts/broadcast_captions.py'
+      - 'scripts/visual_review.py'
       - 'content/articles.json'
+      - 'content/visual_reviews.json'
+      - 'content/broadcasts.json'
       - 'assets/generated/*.jpg'
       - 'assets/generated/manifest.json'
   workflow_dispatch:
@@ -42,6 +49,7 @@ jobs:
       - name: Check selected video backlog before installing any encoder
         id: plan
         run: |
+          python3 scripts/publish_motion_clips.py --plan
           pending="$(python3 scripts/publish_motion_clips.py --pending)"
           echo "pending=$pending" >> "$GITHUB_OUTPUT"
           echo "Selected clips waiting for generation: $pending"
@@ -55,7 +63,7 @@ jobs:
           ffmpeg -hide_banner -version | head -n 1
       - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
         if: github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'
-        run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow
+        run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow tests.test_broadcast_captions
 
   publish:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0'

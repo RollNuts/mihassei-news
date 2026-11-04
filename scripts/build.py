@@ -19,8 +19,9 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
-    from .generated_photos import generated_url, article_fingerprint
+    from .generated_photos import generated_url
     from .visual_review import reviewed_generated_scene
+    from .broadcast_captions import story_cues
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .serial_discovery import render_serial_bridge
@@ -30,8 +31,9 @@ else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
-    from generated_photos import generated_url, article_fingerprint
+    from generated_photos import generated_url
     from visual_review import reviewed_generated_scene
+    from broadcast_captions import story_cues
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from serial_discovery import render_serial_bridge
@@ -382,8 +384,13 @@ def image_tag(a, cls, extra=""):
 
 
 def article_clip(article):
-    """A still must pass visual review before its derived clip is published."""
-    return usable_clip(article, root=BASE) if reviewed_generated_scene(article, root=BASE) else None
+    """Publish reviewed footage with current captions; retain legacy compatibility."""
+    if not reviewed_generated_scene(article, root=BASE):
+        return None
+    clip = usable_clip(article, root=BASE)
+    if clip and clip.get("motion_style_version") == 3 and not story_cues(article, root=BASE):
+        return None
+    return clip
 
 
 def clip_seconds(clip):
@@ -395,26 +402,7 @@ def broadcast_cues(article, clip):
     """Editorial captions belong to the exact story, never stale revised text."""
     if clip.get("motion_style_version") != 3:
         return []
-    try:
-        source = json.loads((BASE / "content/broadcasts.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return []
-    if not isinstance(source, dict) or source.get("version") != 1:
-        return []
-    stories = source.get("stories")
-    item = stories.get(article["slug"]) if isinstance(stories, dict) else None
-    if not isinstance(item, dict) or item.get("article_sha256") != article_fingerprint(article):
-        return []
-    cues = item.get("cues")
-    if not isinstance(cues, list) or len(cues) != 3:
-        return []
-    for index, cue in enumerate(cues):
-        if (not isinstance(cue, dict) or type(cue.get("at")) is not int
-                or cue["at"] != index * 4
-                or not isinstance(cue.get("label"), str) or not 1 <= len(cue["label"]) <= 12
-                or not isinstance(cue.get("text"), str) or not 1 <= len(cue["text"]) <= 40):
-            return []
-    return cues
+    return story_cues(article, root=BASE)
 
 
 def broadcast_vtt(article, clip):

@@ -13,9 +13,9 @@ import sys
 from pathlib import Path
 
 try:
-    from .motion_clips import candidates, generate
+    from .motion_clips import candidates, generate, readiness_report
 except ImportError:
-    from motion_clips import candidates, generate
+    from motion_clips import candidates, generate, readiness_report
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = Path(".github/motion-clips.json")
@@ -56,6 +56,15 @@ def pending_count(root: Path = ROOT) -> int:
     return len(candidates(root))
 
 
+def plan(root: Path = ROOT) -> dict:
+    """Report editorial waiting states separately from an empty or OFF queue."""
+    enabled = load_settings(root)["enabled"]
+    stories = readiness_report(root) if enabled else []
+    return {"enabled": enabled,
+            "pending": sum(story["state"] == "ready" for story in stories),
+            "stories": stories}
+
+
 def run(root: Path = ROOT, *, env: dict | None = None) -> list[str]:
     config = load_settings(root)
     if not config["enabled"]:
@@ -70,6 +79,7 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--status", action="store_true", help="Emit true/false for the durable switch")
     mode.add_argument("--pending", action="store_true", help="Count selected missing clips without encoding")
+    mode.add_argument("--plan", action="store_true", help="Explain each selected story's readiness without encoding")
     mode.add_argument("--generate", action="store_true", help="Generate at most one video, only on main Actions")
     args = parser.parse_args(argv)
     try:
@@ -78,6 +88,9 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.pending:
             print(pending_count())
+            return 0
+        if args.plan:
+            print(json.dumps(plan(), ensure_ascii=False))
             return 0
         produced = run()
         print("GitHub-only video generation:", produced or "nothing needed / disabled")

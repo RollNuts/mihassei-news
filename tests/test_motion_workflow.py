@@ -39,14 +39,14 @@ class MotionWorkflowTests(unittest.TestCase):
         cls.video = (WORKFLOWS / "auto-motion-clips.yml").read_text()
         cls.images = (WORKFLOWS / "free-cpu-scenes.yml").read_text()
 
-    def test_selection_and_image_changes_wake_video_but_video_output_cannot_recurse(self):
+    def test_selection_review_and_captions_wake_video_but_output_cannot_recurse(self):
         filters = push_paths(self.video)
         for path in ("content/articles.json", "assets/generated/chosen-story.jpg",
-                     "assets/generated/manifest.json"):
+                     "assets/generated/manifest.json", "content/visual_reviews.json",
+                     "content/broadcasts.json"):
             with self.subTest(path=path):
                 self.assertTrue(any(fnmatch.fnmatchcase(path, rule) for rule in filters))
-        for path in ("assets/clips/chosen-story.mp4", "assets/clips/manifest.json",
-                     "content/broadcasts.json"):
+        for path in ("assets/clips/chosen-story.mp4", "assets/clips/manifest.json"):
             with self.subTest(path=path):
                 self.assertFalse(any(fnmatch.fnmatchcase(path, rule) for rule in filters))
                 self.assertFalse(any(fnmatch.fnmatchcase(path, rule)
