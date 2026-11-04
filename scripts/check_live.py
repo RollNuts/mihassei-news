@@ -552,6 +552,14 @@ def check():
     require_matching_public_headline(chosen_lead, body, "home")
     verify_broadcast_delivery(home.decode("utf-8"), broadcast_playlist(sorted_articles))
     verify_pv_recommendations(home.decode("utf-8"), sorted_articles)
+    # Verify the already-shipped topic navigation rather than adding more UI.
+    # This also catches a successful main merge whose public deploy is stale.
+    if 'class="topic-explore genre-explore"' not in body or "話題から読む" not in body:
+        raise RuntimeError("Front-page topic navigation has not reached production")
+    if chosen_lead.get("tags") and 'class="story-tags story-tags--compact"' not in body:
+        raise RuntimeError("Front-page lead topic tags have not reached production")
+    if "未発生ニュース <small>FICTION</small>" in body:
+        raise RuntimeError("Old broadcast overlay is still deployed")
     if 'class="reading-ways"' in body:
         raise RuntimeError("Duplicate starter portals were not removed")
     if not re.search(r'<section class="section-block">.*?</section>', body, re.S):
