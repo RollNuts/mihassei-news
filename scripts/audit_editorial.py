@@ -21,6 +21,11 @@ FRESHNESS_HOURS = 12
 FRESHNESS_EXEMPT_KINDS = ("公開投稿", "生活・文化")
 WINDOW_HOURS = 48
 AI_PATTERN = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|ロボット|人工知能|生成ＡＩ|生成AI", re.IGNORECASE)
+CRISIS_PATTERN = re.compile(
+    r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
+    r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
+)
+MAX_FOLLOWUP_CHAIN_ARTICLES = 3
 
 
 def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
@@ -60,6 +65,38 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
                 f"本紙掲載時の元ネタが {lag_hours:.1f} 時間前。推奨上限 {FRESHNESS_HOURS} 時間を超過"))
         if not a["source"].get("url", "").startswith("https://"):
             warnings.append(("INVALID_SOURCE_URL", slug, "元ネタのHTTPSリンクを確認してください"))
+
+    by_slug = {a.get("slug"): a for a in articles if isinstance(a.get("slug"), str)}
+    for a in recent:
+        slug = a.get("slug", "unknown")
+        searchable = " ".join(
+            str(value or "") for value in (
+                a.get("title"), a.get("summary"), a.get("source", {}).get("topic")
+            )
+        )
+        if CRISIS_PATTERN.search(searchable):
+            warnings.append((
+                "CRISIS_TOPIC_REVIEW",
+                slug,
+                "災害・戦争・テロ・大量死傷事故などの可能性。急性期の直接風刺・被害者を笑いにする表現・惨事のクリック誘導を避け、EDITORIAL_LOOPの危機ニュース規則を再確認",
+            ))
+
+        depth = 1
+        cursor = a
+        seen_chain = {slug}
+        while cursor.get("followup_of") in by_slug:
+            parent_slug = cursor["followup_of"]
+            if parent_slug in seen_chain:
+                break
+            seen_chain.add(parent_slug)
+            depth += 1
+            cursor = by_slug[parent_slug]
+        if depth == MAX_FOLLOWUP_CHAIN_ARTICLES:
+            warnings.append((
+                "FOLLOWUP_THREAD_CLOSED",
+                slug,
+                "この話題は初報＋続報2本の上限に到達。次の新展開を実質4本目として延命しないでください",
+            ))
 
     if len(recent) >= 6:
         counts = Counter(a.get("category") for a in recent)
