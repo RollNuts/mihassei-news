@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-04T09:55:32.662219+00:00",
+  "checked_at_utc": "2026-11-04T10:06:09.711519+00:00",
   "source": "buffer_recent_scheduled_sent_readonly",
   "scope": {
     "ledger_days": 7,
@@ -12,9 +12,11 @@
     "article_records_checked": 2,
     "buffer_sent_today": 1,
     "buffer_scheduled_today": 1,
-    "unverified": 0
+    "unverified": 0,
+    "overdue_scheduled": 0,
+    "missing_provider_timestamps": 0
   },
-  "limitations": "Buffer scheduled/sent is provider evidence, not independent X page verification. Posts outside the recent provider window and missing timestamps stay unverified.",
+  "limitations": "Buffer scheduled/sent is provider evidence, not independent X page verification. Overdue scheduled posts require investigation, not automatic retry. Posts outside the recent provider window and missing timestamps are not assumed sent.",
   "items": [
     {
       "slug": "double-speed-drama-explainer-marathon",
