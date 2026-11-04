@@ -121,3 +121,59 @@ test('browser renders user submissions without innerHTML',()=>{
   assert.match(js,/textContent=value/);
   assert.doesNotMatch(js,/\.innerHTML\s*=/);
 });
+
+
+test('reading comments does not create a browser id until the reader writes',async()=>{
+  const browserSource=readFileSync(path.join(__dirname,'../assets/comments.js'),'utf8');
+  const storage=new Map(),requests=[];
+  const listeners={};
+  const basic=()=>({
+    textContent:'',hidden:false,disabled:false,value:'',dataset:{},
+    classList:{toggle(){}},
+    addEventListener(name,callback){this.listeners??={};this.listeners[name]=callback;},
+    replaceChildren(){},focus(){}
+  });
+  const status=basic(),count=basic(),list=basic(),submit=basic(),nickname=basic(),body=basic();
+  body.value='読んでから初めて投稿します';
+  const form=basic();
+  form.querySelector=selector=>({
+    '[type="submit"]':submit,'[name="nickname"]':nickname,'[name="body"]':body
+  })[selector]||null;
+  form.addEventListener=(name,callback)=>{listeners[name]=callback;};
+  const root=basic();root.dataset.article='test-story';
+  root.querySelector=selector=>({
+    '[data-comments-list]':list,'[data-comments-status]':status,
+    '[data-comments-count]':count,'[data-comments-form]':form
+  })[selector]||null;
+  const document={
+    querySelector:selector=>selector==='[data-comments]'?root:null,
+    querySelectorAll:()=>[],
+    createElement:basic
+  };
+  const window={confirm:()=>true};
+  const localStorage={
+    getItem:key=>storage.get(key)||null,
+    setItem:(key,value)=>storage.set(key,value)
+  };
+  const fetch=async(url,options={})=>{
+    const method=options.method||'GET';
+    const payload=options.body?JSON.parse(options.body):null;
+    requests.push({url,method,payload});
+    if(method==='POST')return {ok:true,json:async()=>({comment:{id:'comment-1'}})};
+    return {ok:true,json:async()=>({comments:[],total:0})};
+  };
+  vm.runInNewContext(browserSource,{
+    document,window,localStorage,sessionStorage:{removeItem(){}},fetch,
+    crypto:{randomUUID:()=> '11111111-1111-4111-8111-111111111111'},Intl,Date,Array,
+  });
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(requests.filter(x=>x.method==='GET').length,1);
+  assert.equal(requests.filter(x=>x.method==='POST').length,0);
+  assert.equal(storage.has('mihassei-anonymous-browser-v1'),false,
+    'opening and reading comments stays identifier-free');
+  await listeners.submit({preventDefault(){}});
+  assert.equal(requests.filter(x=>x.method==='POST').length,1);
+  const post=requests.find(x=>x.method==='POST');
+  assert.equal(post.payload.clientId,'11111111-1111-4111-8111-111111111111');
+  assert.equal(storage.get('mihassei-anonymous-browser-v1'),post.payload.clientId);
+});
