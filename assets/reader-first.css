@@ -49,6 +49,8 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .hero-grid{gap:clamp(22px,3vw,39px);align-items:start}
 .lead-info{margin-top:7px}
 .lead h1{font-size:clamp(30px,3.2vw,39px);line-height:1.4;letter-spacing:-.035em;margin:10px 0 13px;text-wrap:balance;overflow-wrap:anywhere}
+/* A headline remains clickable between its wrapped lines. */
+.lead h1>a,.brief-card h3>a,.story-card h3>a{display:block}
 .lead>.lead-media{margin-top:15px}
 .lead-media{border-radius:5px;box-shadow:none}
 .lead .dek{font-size:14px;line-height:1.75;margin:13px 0 16px;max-width:59ch}
