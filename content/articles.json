@@ -20,7 +20,11 @@
       "url": "https://www.nikkansports.com/entertainment/news/202611040000312.html",
       "topic": "2026年11月4日10:27公開。番組出演者が動画の倍速視聴なら短い時間でより多くの作品を見られると語ったと報道。本文の男性・視聴行動・会話は創作であり、出演者の実際の行為ではない。"
     },
-    "published_at": "2026-11-04T11:32:29+09:00"
+    "published_at": "2026-11-04T11:32:29+09:00",
+    "tags": [
+      "タイパ",
+      "ドラマ"
+    ]
   },
   {
     "slug": "father-tries-own-overpacked-bento",
@@ -44,7 +48,11 @@
       "topic": "2026年11月3日22:35公開。父親が子の弁当を作っても残されてしまい、弁当箱が大きすぎるのではとの指摘を受けたと報道。作中の家族・出来事・会話は創作。"
     },
     "published_at": "2026-11-04T09:36:32+09:00",
-    "modified_at": "2026-11-04T10:56:47+09:00"
+    "modified_at": "2026-11-04T10:56:47+09:00",
+    "tags": [
+      "家族",
+      "食"
+    ]
   },
   {
     "slug": "sweet-potato-chorus-starts-too-late",
@@ -68,7 +76,11 @@
       "topic": "2026年11月3日18:33公開。広島の学園祭で551人が合図に合わせてふかし芋を食べる日本記録に挑み、防災炊き出し訓練も兼ねたと報道。作中の町・練習や芋が冷める出来事は創作。"
     },
     "published_at": "2026-11-04T07:38:09+09:00",
-    "modified_at": "2026-11-04T10:52:28+09:00"
+    "modified_at": "2026-11-04T10:52:28+09:00",
+    "tags": [
+      "イベント",
+      "食"
+    ]
   },
   {
     "slug": "historical-lookalike-contest-dog-wins",
@@ -92,7 +104,11 @@
       "topic": "2026年11月3日11:52公開の当日報道。鹿児島おはら祭で西郷どんそっくりさんコンテストも実施されることを紹介。鹿児島市の10月13日発表では見た目だけでなく人物像も審査対象。本文の犬の優勝、大会関係者、出来事は本紙の創作。"
     },
     "published_at": "2026-11-03T23:31:05+09:00",
-    "modified_at": "2026-11-04T10:52:28+09:00"
+    "modified_at": "2026-11-04T10:52:28+09:00",
+    "tags": [
+      "イベント",
+      "動物"
+    ]
   },
   {
     "slug": "stolen-doorbell-returned-by-parcel",
@@ -115,7 +131,11 @@
       "url": "https://www.j-cast.com/2026/11/03518870.html",
       "topic": "2026年11月3日、高額腕時計の盗難後に郵送で返却され、謝罪メモが同封されていたという報道。呼び鈴の盗難、雑貨店、配達員の出来事は実在しない本紙の創作。"
     },
-    "published_at": "2026-11-03T23:03:27+09:00"
+    "published_at": "2026-11-03T23:03:27+09:00",
+    "tags": [
+      "防犯",
+      "店舗"
+    ]
   },
   {
     "slug": "bakery-no-important-announcement-panic",
@@ -139,7 +159,11 @@
       "topic": "11月2日の公的発表の予告からSNSに根拠のない憶測が広がり、11月3日に『何も起きなくてよかった』という受け止めを伝えた報道。店の話は独自創作。"
     },
     "published_at": "2026-11-03T21:38:41+09:00",
-    "broadcast_feature": true
+    "broadcast_feature": true,
+    "tags": [
+      "SNS",
+      "店舗"
+    ]
   },
   {
     "slug": "diner-refund-customer-paying-escape",
@@ -163,7 +187,11 @@
       "topic": "2026年11月3日12:00公開。大阪の食堂が待たせた客や常連客に50円、100円などを返す接客を続け、テレビ放送後の営業日に行列ができたと紹介。『払い逃げ』や客と店主が小銭を渡し合う場面は本紙独自の創作。"
     },
     "published_at": "2026-11-03T19:39:42+09:00",
-    "modified_at": "2026-11-04T10:52:28+09:00"
+    "modified_at": "2026-11-04T10:52:28+09:00",
+    "tags": [
+      "接客",
+      "店舗"
+    ]
   },
   {
     "slug": "volleyball-team-lunch-plate-merch",
@@ -188,7 +216,11 @@
       "topic": "2026年11月3日13:17公開。男子バレー選手2人が同じプレートを囲んだ昼食写真への反応を報道。皿の型番への問い合わせや架空チーム広報の対応は本紙の創作であり、実在の選手・団体の出来事ではない。"
     },
     "published_at": "2026-11-03T17:37:14+09:00",
-    "modified_at": "2026-11-03T09:25:53.838+00:00"
+    "modified_at": "2026-11-03T09:25:53.838+00:00",
+    "tags": [
+      "ファン文化",
+      "SNS"
+    ]
   },
   {
     "slug": "music-ai-friends-monopolize-the-song",
@@ -212,7 +244,11 @@
       "url": "https://ai.watch.impress.co.jp/docs/news/2152562.html",
       "topic": "2026年11月3日11:00公開。音楽の再生中に曲の話ができるiOSアプリ「Shubiduba」の紹介。音楽の好みが違う4人のAIキャラクターと雑談できるという実際の機能から、2031年の音楽仲間の行き過ぎた会話を着想。登場する男性の体験とAIの会話は創作で、実在するサービスの出来事ではない。"
     },
-    "published_at": "2026-11-03T15:30:04+09:00"
+    "published_at": "2026-11-03T15:30:04+09:00",
+    "tags": [
+      "AI",
+      "音楽"
+    ]
   },
   {
     "slug": "mortgage-bank-clerk-invited-to-live-in",
@@ -237,7 +273,11 @@
       "topic": "2026年11月3日14:30 AEDT（同日12:30 JST）に豪準備銀行が政策金利を4.60％から4.85％へ引き上げたと発表。住宅ローン負担と物価抑制の矛盾を着想とした架空の2031年の家族・銀行員の話。実在の銀行や人物と無関係。"
     },
     "published_at": "2026-11-03T13:28:44+09:00",
-    "modified_at": "2026-11-03T09:25:53.838+00:00"
+    "modified_at": "2026-11-03T09:25:53.838+00:00",
+    "tags": [
+      "お金",
+      "家族"
+    ]
   },
   {
     "slug": "spy-captive-escapes-before-rescue",
@@ -262,7 +302,11 @@
     "published_at": "2026-11-03T11:38:33+09:00",
     "scene_prompt": "A solemn fictional spy protagonist in a plain dark jacket carefully folds a forgotten coat taken from the back of an empty wooden hostage chair while holding an oversized unused rescue-equipment bag. An untied rope rests on the seat and an open back door reveals a quiet corridor. Photorealistic staged Japanese spy-TV comedy, anonymous adult, no readable text, logos, or recognizable real actors.",
     "modified_at": "2026-11-04T06:56:54.530+09:00",
-    "broadcast_feature": true
+    "broadcast_feature": true,
+    "tags": [
+      "ドラマ",
+      "テレビ"
+    ]
   },
   {
     "slug": "variety-700-guests-only-introductions",
@@ -286,7 +330,11 @@
     },
     "published_at": "2026-11-03T11:38:33+09:00",
     "scene_prompt": "A Japanese television host in a plain dark suit holds a handheld microphone and an absurdly long blank paper scroll spilling across the floor. Behind him a long queue of Japanese adult contestants in plain white shirts waits silently in a small television studio, arms folded, bored serious faces. The host is still reading his endless guest list. Wide photograph, blank background.",
-    "modified_at": "2026-11-03T12:49:41.396+09:00"
+    "modified_at": "2026-11-03T12:49:41.396+09:00",
+    "tags": [
+      "テレビ",
+      "タイパ"
+    ]
   },
   {
     "slug": "family-dinner-gacha-243-rejections",
@@ -311,7 +359,11 @@
     },
     "published_at": "2026-11-03T09:35:30+09:00",
     "modified_at": "2026-11-03T11:19:54.201+09:00",
-    "scene_prompt": "A bright red toy capsule vending machine dominates the center of a Japanese family dining table. Dozens of colorful plastic capsules surround three empty white dinner plates. An exhausted parent holds the last capsule while two adult family members sit with crossed arms, silently rejecting yet another dinner choice. Bright ordinary kitchen, deadpan staged comedy photograph, no words or logos."
+    "scene_prompt": "A bright red toy capsule vending machine dominates the center of a Japanese family dining table. Dozens of colorful plastic capsules surround three empty white dinner plates. An exhausted parent holds the last capsule while two adult family members sit with crossed arms, silently rejecting yet another dinner choice. Bright ordinary kitchen, deadpan staged comedy photograph, no words or logos.",
+    "tags": [
+      "家族",
+      "食"
+    ]
   },
   {
     "slug": "comedy-show-profits-from-silence",
@@ -336,7 +388,11 @@
     },
     "published_at": "2026-11-03T09:35:30+09:00",
     "modified_at": "2026-11-03T12:33:16.273+09:00",
-    "scene_prompt": "A comedian stands alone beside a microphone on a small theater stage. In the near foreground a worried production assistant silently gestures for quiet to three stone-faced audience members; one spectator presses both lips together to suppress a laugh."
+    "scene_prompt": "A comedian stands alone beside a microphone on a small theater stage. In the near foreground a worried production assistant silently gestures for quiet to three stone-faced audience members; one spectator presses both lips together to suppress a laugh.",
+    "tags": [
+      "テレビ",
+      "お金"
+    ]
   },
   {
     "slug": "press-conference-metaphor-viral",
@@ -361,7 +417,11 @@
     },
     "published_at": "2026-11-03T08:08:49+09:00",
     "modified_at": "2026-11-03T12:17:08.480+09:00",
-    "scene_prompt": "A suited spokesperson at a modest press conference slowly covers a disconnected router with a cloth as though protecting a grand surprise. Two deadpan reporters wait with phones in their hands and empty notebooks on their knees."
+    "scene_prompt": "A suited spokesperson at a modest press conference slowly covers a disconnected router with a cloth as though protecting a grand surprise. Two deadpan reporters wait with phones in their hands and empty notebooks on their knees.",
+    "tags": [
+      "通信",
+      "コンプラ"
+    ]
   },
   {
     "slug": "idol-ice-kept-in-freezer",
@@ -386,7 +446,11 @@
     },
     "published_at": "2026-11-03T08:08:49+09:00",
     "modified_at": "2026-11-03T12:17:08.480+09:00",
-    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face."
+    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face.",
+    "tags": [
+      "ファン文化",
+      "食"
+    ]
   },
   {
     "slug": "quiet-reply-dating-matches",
@@ -411,7 +475,11 @@
     },
     "published_at": "2026-11-03T07:40:27+09:00",
     "modified_at": "2026-11-04T11:01:36+09:00",
-    "scene_prompt": "Two smartphones glowing with unread-message notification dots sit on a low table in front of a relaxed adult couple sharing one sofa and reading separate books. The couple ignores the phones. A modest Japanese living room, photorealistic staged comedy, no readable text, logos, or identifiable people."
+    "scene_prompt": "Two smartphones glowing with unread-message notification dots sit on a low table in front of a relaxed adult couple sharing one sofa and reading separate books. The couple ignores the phones. A modest Japanese living room, photorealistic staged comedy, no readable text, logos, or identifiable people.",
+    "tags": [
+      "恋愛",
+      "アプリ"
+    ]
   },
   {
     "slug": "farm-friendship-across-species",
@@ -436,7 +504,11 @@
     },
     "published_at": "2026-11-03T07:40:27+09:00",
     "modified_at": "2026-11-03T12:08:09.115+09:00",
-    "scene_prompt": "A cow and a donkey calmly graze on opposite sides of a small pasture. Between them a solemn farmer kneels with a measuring tape, carefully measuring the distance between two feed buckets while an onlooker films with a phone."
+    "scene_prompt": "A cow and a donkey calmly graze on opposite sides of a small pasture. Between them a solemn farmer kneels with a measuring tape, carefully measuring the distance between two feed buckets while an onlooker films with a phone.",
+    "tags": [
+      "動物",
+      "SNS"
+    ]
   },
   {
     "slug": "unwanted-call-protection-calls-back",
@@ -461,7 +533,11 @@
     },
     "published_at": "2026-11-02T21:21:04+09:00",
     "modified_at": "2026-11-03T11:19:54.205+09:00",
-    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea."
+    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea.",
+    "tags": [
+      "防犯",
+      "通信"
+    ]
   },
   {
     "slug": "local-souvenir-cannot-leave-town",
@@ -486,7 +562,11 @@
     },
     "published_at": "2026-11-02T21:21:04+09:00",
     "modified_at": "2026-11-03T12:08:09.115+09:00",
-    "scene_prompt": "On a Japanese train station platform, two solemn tourists hurriedly eat small cakes straight from gift boxes beside their luggage. In the foreground an open souvenir bag contains only pristine empty boxes kept for their families."
+    "scene_prompt": "On a Japanese train station platform, two solemn tourists hurriedly eat small cakes straight from gift boxes beside their luggage. In the foreground an open souvenir bag contains only pristine empty boxes kept for their families.",
+    "tags": [
+      "地域",
+      "食"
+    ]
   },
   {
     "slug": "supporter-guarantor-contract",
@@ -518,7 +598,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T11:42:13.365+09:00",
-    "scene_prompt": "An older baseball fan wearing a plain unbranded cap solemnly hands his cheering megaphone to a suited stadium official across a folding table. The official measures the megaphone with a ruler while a plain fan scarf lies folded in a cardboard box."
+    "scene_prompt": "An older baseball fan wearing a plain unbranded cap solemnly hands his cheering megaphone to a suited stadium official across a folding table. The official measures the megaphone with a ruler while a plain fan scarf lies folded in a cardboard box.",
+    "tags": [
+      "ファン文化",
+      "野球"
+    ]
   },
   {
     "slug": "pressure-office-mood-forecast",
@@ -550,7 +634,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T12:30:49.322+09:00",
-    "scene_prompt": "In an ordinary Japanese office, a stern manager stands beside his desk beneath an obviously theatrical little cloud prop dripping water. A deadpan employee has opened an umbrella over the keyboard and calmly watches the manager."
+    "scene_prompt": "In an ordinary Japanese office, a stern manager stands beside his desk beneath an obviously theatrical little cloud prop dripping water. A deadpan employee has opened an umbrella over the keyboard and calmly watches the manager.",
+    "tags": [
+      "働き方",
+      "職場"
+    ]
   },
   {
     "slug": "fan-theories-write-final",
@@ -582,7 +670,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T12:22:20.257+09:00",
-    "scene_prompt": "Two solemn television fans in a living room study a wall of blank cards connected by red strings. One fan turns the television face toward the wall as if rejecting its ending, while the other presents a tiny handmade model of a different ending."
+    "scene_prompt": "Two solemn television fans in a living room study a wall of blank cards connected by red strings. One fan turns the television face toward the wall as if rejecting its ending, while the other presents a tiny handmade model of a different ending.",
+    "tags": [
+      "ファン文化",
+      "ドラマ"
+    ]
   },
   {
     "slug": "apology-before-incident",
@@ -614,7 +706,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T12:22:20.257+09:00",
-    "scene_prompt": "A suited office employee solemnly hands a sealed apology envelope to a bewildered customer. In the background a second employee is still attaching a large new padlock to an unopened filing cabinet, and nothing has been removed."
+    "scene_prompt": "A suited office employee solemnly hands a sealed apology envelope to a bewildered customer. In the background a second employee is still attaching a large new padlock to an unopened filing cabinet, and nothing has been removed.",
+    "tags": [
+      "コンプラ",
+      "セキュリティ"
+    ]
   },
   {
     "slug": "ai-chooses-a-managers",
@@ -646,7 +742,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T12:33:16.273+09:00",
-    "scene_prompt": "A solemn manager sits at a bare desk holding an absurdly oversized rubber stamp with a blank face. At the neighboring desk, a tiny desktop robot controls all the keyboards, telephones and folders, leaving the manager with nothing to operate."
+    "scene_prompt": "A solemn manager sits at a bare desk holding an absurdly oversized rubber stamp with a blank face. At the neighboring desk, a tiny desktop robot controls all the keyboards, telephones and folders, leaving the manager with nothing to operate.",
+    "tags": [
+      "AI",
+      "働き方"
+    ]
   },
   {
     "slug": "research-completed-opening-day",
@@ -678,7 +778,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T09:25:53.838+00:00",
-    "scene_prompt": "A photorealistic deadpan comedy still of two fictional researchers in white lab coats at a newly opened high-tech research institute. One holds an awkward ceremonial ribbon while another looks uncertainly at several blank printed speech pages on a cart. Bright daylight, modern Japanese laboratory entrance, subtle confusion, no legible writing, logos or identifiable real people."
+    "scene_prompt": "A photorealistic deadpan comedy still of two fictional researchers in white lab coats at a newly opened high-tech research institute. One holds an awkward ceremonial ribbon while another looks uncertainly at several blank printed speech pages on a cart. Bright daylight, modern Japanese laboratory entrance, subtle confusion, no legible writing, logos or identifiable real people.",
+    "tags": [
+      "AI",
+      "研究"
+    ]
   },
   {
     "slug": "robot-job-hopping",
@@ -710,7 +814,11 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T09:25:53.838+00:00",
-    "scene_prompt": "Photorealistic deadpan still outside a fictional Japanese industrial warehouse. An exhausted factory employee pulls one powerless small delivery robot on a handcart toward a crowded charging bay; other compact robots queue against the wall. A plain cardboard box sits on the cart. Natural afternoon light, dry workplace comedy, no logos, no readable text, no real people."
+    "scene_prompt": "Photorealistic deadpan still outside a fictional Japanese industrial warehouse. An exhausted factory employee pulls one powerless small delivery robot on a handcart toward a crowded charging bay; other compact robots queue against the wall. A plain cardboard box sits on the cart. Natural afternoon light, dry workplace comedy, no logos, no readable text, no real people.",
+    "tags": [
+      "人手不足",
+      "働き方"
+    ]
   },
   {
     "slug": "ai-chair-removes-executives",
@@ -742,6 +850,10 @@
       "license": "Unsplash"
     },
     "modified_at": "2026-11-03T12:44:15.758+09:00",
-    "scene_prompt": "Three solemn suited executives stand in the corridor outside a glass meeting-room door, each carrying his own office chair. Inside, a small tabletop robot sits alone at the head of a nearly empty conference table."
+    "scene_prompt": "Three solemn suited executives stand in the corridor outside a glass meeting-room door, each carrying his own office chair. Inside, a small tabletop robot sits alone at the head of a nearly empty conference table.",
+    "tags": [
+      "AI",
+      "働き方"
+    ]
   }
 ]
