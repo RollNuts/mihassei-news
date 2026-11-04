@@ -91,24 +91,24 @@
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
     "father-tries-own-overpacked-bento": {
-      "article_sha256": "a248d165a8126334ecb47b412b4fa5eeeaee065f1e1078ceddcd54d2ac2c1c7b",
-      "bytes": 92859,
-      "generated_at": "2026-11-04T00:46:45.935511+00:00",
+      "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+      "bytes": 98594,
+      "generated_at": "2026-11-04T02:12:30.613223+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 547713882556549762,
-      "sha256": "d56b7537863e85e8ed223235888876ff214d12d30486c78c0adc497ce65b68e4"
+      "seed": 3645685199179627378,
+      "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
     "historical-lookalike-contest-dog-wins": {
-      "article_sha256": "2fd4fb637bf5b844a4f23e19a661ddd30127962bf27e62547d8dcc32eb9b725d",
-      "bytes": 103735,
-      "generated_at": "2026-11-04T00:46:45.937267+00:00",
+      "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+      "bytes": 110440,
+      "generated_at": "2026-11-04T02:12:30.618695+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 6800298270750902626,
-      "sha256": "0f1e6c0a915954ff22d130c778d0a79780da0cead01a44b131dd1d5b5922a773"
+      "seed": 6861070434247018276,
+      "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -221,14 +221,14 @@
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
     "sweet-potato-chorus-starts-too-late": {
-      "article_sha256": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
-      "bytes": 100731,
-      "generated_at": "2026-11-03T23:23:16.638581+00:00",
+      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "bytes": 108168,
+      "generated_at": "2026-11-04T02:12:30.615849+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 3098375253472829687,
-      "sha256": "a28e3ed114b0079feaa2447591462d2f27e73c40027985049d3a0a01d7c97606"
+      "seed": 6902181079209608273,
+      "sha256": "23c8ab913f832148c8237a9d7e506a51b2cc3f4ea1dde982122e5c7464aa47a9"
     },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
@@ -299,11 +299,6 @@
       "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
       "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970"
-    },
-    "sweet-potato-chorus-starts-too-late": {
-      "article_sha256": "d38cb3a73e38225b24b10677a3ec1d63eb0daa9f91fafc272b6c71986e2f1a81",
-      "reason": "Visual review: peeled wedge-like food on a plate does not clearly depict whole steamed sweet potatoes or participants waiting for a shared signal. Use the article-specific illustration until a clearly matching new scene is reviewed.",
-      "rejected_candidate_sha256": "a28e3ed114b0079feaa2447591462d2f27e73c40027985049d3a0a01d7c97606"
     },
     "variety-700-guests-only-introductions": {
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
