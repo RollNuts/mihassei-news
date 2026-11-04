@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-04T10:06:09.711519+00:00",
+  "checked_at_utc": "2026-11-04T20:56:46.242027+00:00",
   "source": "buffer_recent_scheduled_sent_readonly",
   "scope": {
     "ledger_days": 7,
     "max_items": 60,
     "automatic_lane": "article-picks-only"
   },
-  "today_jst": "2026-11-04",
+  "today_jst": "2026-11-05",
   "observed": {
-    "article_records_checked": 2,
-    "buffer_sent_today": 1,
+    "article_records_checked": 3,
+    "buffer_sent_today": 0,
     "buffer_scheduled_today": 1,
     "unverified": 0,
     "overdue_scheduled": 0,
@@ -19,11 +19,18 @@
   "limitations": "Buffer scheduled/sent is provider evidence, not independent X page verification. Overdue scheduled posts require investigation, not automatic retry. Posts outside the recent provider window and missing timestamps are not assumed sent.",
   "items": [
     {
+      "slug": "stock-rebound-confetti-still-in-red",
+      "buffer_id": "6aeb714376b2ba7a5c8f1644",
+      "queued_at_utc": "2026-11-04T17:54:09.894548+00:00",
+      "buffer_status": "scheduled",
+      "buffer_due_at_utc": "2026-11-04T22:00:00+00:00"
+    },
+    {
       "slug": "double-speed-drama-explainer-marathon",
       "buffer_id": "6aeabbc4b8d162e0d805346b",
       "queued_at_utc": "2026-11-04T04:59:47.571323+00:00",
-      "buffer_status": "scheduled",
-      "buffer_due_at_utc": "2026-11-04T10:30:00+00:00"
+      "buffer_status": "sent",
+      "buffer_sent_at_utc": "2026-11-04T10:30:09.747000+00:00"
     },
     {
       "slug": "apology-before-incident",
