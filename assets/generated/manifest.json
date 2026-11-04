@@ -90,15 +90,25 @@
       "seed": 6455747253186509503,
       "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
+    "father-tries-own-overpacked-bento": {
+      "article_sha256": "a248d165a8126334ecb47b412b4fa5eeeaee065f1e1078ceddcd54d2ac2c1c7b",
+      "bytes": 92859,
+      "generated_at": "2026-11-04T00:46:45.935511+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 547713882556549762,
+      "sha256": "d56b7537863e85e8ed223235888876ff214d12d30486c78c0adc497ce65b68e4"
+    },
     "historical-lookalike-contest-dog-wins": {
-      "article_sha256": "0f1b07544adeeed645722c686eb1b770d4ce2bd3172f2fdb6103d65a8f2f6478",
-      "bytes": 105991,
-      "generated_at": "2026-11-03T23:09:46.002211+00:00",
+      "article_sha256": "2fd4fb637bf5b844a4f23e19a661ddd30127962bf27e62547d8dcc32eb9b725d",
+      "bytes": 103735,
+      "generated_at": "2026-11-04T00:46:45.937267+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 6800298270750902626,
-      "sha256": "608fc502a4e90b9648fce0878b74a36d0f568ffd7c7e47554acc1cdbea6d1910"
+      "sha256": "0f1e6c0a915954ff22d130c778d0a79780da0cead01a44b131dd1d5b5922a773"
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -191,16 +201,14 @@
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
     "spy-captive-escapes-before-rescue": {
-      "article_sha256": "8f0e8c3d92011732903d2b69e6b316945f818766af9655f2982ae1e95a1f68a8",
-      "bytes": 103133,
-      "generated_at": "2026-11-03T03:57:23.752436+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "bytes": 123162,
+      "generated_at": "2026-11-04T00:46:45.939531+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
-      "reviewed_at": "2026-11-03T03:59:18.579837+00:00",
       "seed": 6871038269748098871,
-      "sha256": "4bd41954c9f5306c478b44716522f73ec9b1662b554434b4db4091972e0941f1"
+      "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
     },
     "supporter-guarantor-contract": {
       "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
@@ -259,8 +267,8 @@
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
       "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970",
-      "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504"
+      "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970"
     }
   },
   "version": 1
