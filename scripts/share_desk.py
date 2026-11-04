@@ -60,16 +60,13 @@ def _short(value: str, limit: int) -> str:
 
 
 def draft(article: dict, *, site: str = SITE) -> dict:
-    """One clearly fictional, bounded, human-editable X draft per story."""
+    """One bounded, human-editable X draft focused on the headline and link."""
     href = site + "/articles/" + article["slug"] + "/"
     tagged = href + TRACKING
     title = _short(article["title"], 58)
     teaser = _short(article["summary"], 62)
-    year = str(article["fiction_at"])[:4]
-    # A dateline is the setting for a joke, not the site's actual publication year.
-    imagined = year + "年" if len(year) == 4 and year.isdigit() else "5年後"
-    heading = "【" + imagined + "のもしも｜創作ニュース】\n" + title
-    ending = "\n\nこんな5年後、ちょっとありそう？\n※創作 #未発生新聞"
+    heading = "【未発生新聞】\n" + title
+    ending = "\n\n#未発生新聞"
     # Keep the literal copied draft short, even when the human pastes the
     # entire tracking URL into X instead of using the X-intent link.
     fixed = heading + ending + "\n\n" + tagged

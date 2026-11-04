@@ -62,17 +62,17 @@ class ShareDeskTests(unittest.TestCase):
         self.assertIn("10月31日公開", page)
         self.assertNotIn("全員が注目", page)
 
-    def test_draft_is_fiction_labeled_and_small_enough_to_copy(self):
+    def test_draft_omits_repeated_disclaimers_and_is_small_enough_to_copy(self):
         a = sample("very-long-story", "技術", "2026-11-02",
                    title="未来の新しいニュースを届ける不思議な世界" * 11,
                    summary="とても長い、まだ起きていない出来事を描いた紹介文。" * 12)
         details = draft(a)
         self.assertLessEqual(len(details["copy"]), 265)
-        self.assertIn("※創作", details["copy"])
+        for label in ("創作", "フィクション", "のもしも"):
+            self.assertNotIn(label, details["copy"])
         self.assertIn("#未発生新聞", details["copy"])
         self.assertIn(TRACKING, details["copy"])
-        self.assertIn("2031年のもしも｜創作ニュース", details["text"])
-        self.assertIn("こんな5年後、ちょっとありそう？", details["text"])
+        self.assertTrue(details["text"].startswith("【未発生新聞】"))
         self.assertNotIn("人気第1位", details["copy"])
         params = parse_qs(urlparse(details["intent"]).query)
         self.assertEqual(params["text"], [details["text"]])
@@ -80,13 +80,14 @@ class ShareDeskTests(unittest.TestCase):
         self.assertEqual(params["url"][0].split("?")[0],
                          "https://veripsa.com/articles/very-long-story/")
 
-    def test_bad_fiction_year_does_not_produce_double_year_label(self):
-        item = sample("fallback", "社会", "2026-11-02")
+    def test_draft_does_not_add_a_fiction_dateline(self):
+        item = sample("fallback", "社会", "2026-11-02", title="家計簿の利息を銀行員に見せた夫婦")
         item["fiction_at"] = "?"
         copied = draft(item)["copy"]
-        self.assertIn("【5年後のもしも｜創作ニュース】", copied)
-        self.assertNotIn("5年後年", copied)
-        self.assertIn("※創作", copied)
+        self.assertTrue(copied.startswith("【未発生新聞】\n" + item["title"]))
+        self.assertIn("https://veripsa.com/articles/fallback/", copied)
+        for label in ("創作", "フィクション", "のもしも"):
+            self.assertNotIn(label, copied)
 
     def test_render_is_safe_noindex_and_only_uses_local_images(self):
         a = sample("safe-story", "社会", "2026-11-02",

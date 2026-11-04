@@ -28,7 +28,7 @@ SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 ARTICLE_URL = re.compile(
     r"https?://(?:www\.)?veripsa\.com/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
 )
-TEXT_PREFIX = "【未発生新聞・創作】"
+TEXT_PREFIX = "【未発生新聞】"
 MIN_EXTRA_SIGNALS = ("likes", "share_clicks", "continued_readers")
 METRIC_FIELDS = ("readers", *MIN_EXTRA_SIGNALS)
 

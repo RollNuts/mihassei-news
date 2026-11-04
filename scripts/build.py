@@ -279,21 +279,21 @@ def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=topic_card_v2"
     # Small standalone hook for the reader's X draft. Does not post automatically.
     teaser = a["summary"][:75]
-    text = "【未発生新聞｜5年後のもしも（創作）】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞"
+    text = "【未発生新聞】\n" + a["title"] + "\n\n" + teaser + "\n\n#未発生新聞"
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
 def issue_share_url(day, items):
-    """Reader-initiated X draft, with the true issue date and fiction disclosure."""
+    """Reader-initiated X draft with the true issue date and selected headlines."""
     stamp = datetime.fromisoformat(day)
     lines = [
         f"【未発生新聞 {stamp.month}/{stamp.day}号】",
-        f"5年後の『もしも』を真顔で報じる創作ニュース、{len(items)}本。",
+        f"今号の記事は{len(items)}本。",
     ]
     for item in items[:2]:
         headline = item["title"]
         lines.append("・" + headline[:27] + ("…" if len(headline) > 27 else ""))
-    lines.append("※フィクション #未発生新聞")
+    lines.append("#未発生新聞")
     tagged = SITE + issue_url(day) + "?utm_source=x&utm_medium=social&utm_campaign=daily_edition"
     return "https://x.com/intent/tweet?" + urlencode({"text": "\n".join(lines), "url": tagged})
 
@@ -666,7 +666,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     )
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
-        "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞（創作）",
+        "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞",
         "url": SITE + "/?src=x-launch-20261102-v3",
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
