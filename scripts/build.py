@@ -767,6 +767,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                      if path == "/" else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
+    page_class = "page-home" if path == "/" else "page-inner"
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 {robots_tag}
@@ -807,7 +808,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 {resume_script}
 <script type="application/ld+json">{ld}</script>
 <title>{escape(complete)}</title>
-</head><body>
+</head><body class="{page_class}">
 <a class="skip" href="#main">本文へ</a>
 <div class="strip"><div class="container strip-content">
 <span class="strip-category"><span class="fiction-mark">{escape(publication_label)}</span></span>
