@@ -626,7 +626,8 @@ def check():
                  for day,count in issue_days.items() if count>=3}
     index_data, index_mime = get("/issues/")
     index_markup=index_data.decode("utf-8")
-    if "text/html" not in index_mime or "未発生新聞の発行号" not in index_markup:
+    if ("text/html" not in index_mime or 'class="issue-index-list"' not in index_markup or
+        '<link rel="canonical" href="'+SITE+'/issues/"' not in index_markup):
         raise RuntimeError("Issue archive listing is not published")
     if SITE+"/issues/" not in siteurls:
         raise RuntimeError("Daily issue index missing from sitemap")
@@ -782,10 +783,13 @@ def check():
             for required in ('class="article-serial-bridge"',
                              'href="'+recommended_path+'"',
                              '/serials/'+chosen_serial["slug"]+'/cover.svg',
-                             "この記事の架空の出来事を裏付けるものではなく" if chosen_serial["kind"]=="analysis"
-                             else "この記事の続報ではなく"):
+                             '<span class="article-serial-bridge-label">'+
+                             ("現実の市場分析" if chosen_serial["kind"]=="analysis" else "創作推理小説")+
+                             '</span>'):
                 if required not in page:
                     raise RuntimeError(slug+": editorial serial discovery is not published: "+required)
+            if chosen_serial["kind"]=="analysis" and "投資助言・売買推奨ではありません。" not in page:
+                raise RuntimeError(slug+": market analysis bridge missing its disclosure")
         elif 'class="article-serial-bridge"' in page:
             raise RuntimeError(slug+": unrelated serial was forced into fictional news")
         verify_pv_recommendations(data.decode("utf-8"), sorted_articles, item)
