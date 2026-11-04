@@ -29,7 +29,7 @@ if __package__:
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_starter import homepage_starter_picks
-    from .build import editorial_lead, CATEGORIES, CATEGORY_PATHS
+    from .build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
 else:
     from media_policy import usable_cached_photo, jpeg_dimensions
     from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
@@ -37,7 +37,7 @@ else:
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_starter import homepage_starter_picks
-    from build import editorial_lead, CATEGORIES, CATEGORY_PATHS
+    from build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -69,6 +69,57 @@ def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> No
             or jpeg_dimensions(image) != (1200, 675)
             or hashlib.sha256(image).hexdigest() != record["sha256"]):
         raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
+
+
+def verify_broadcast_delivery(markup, expected_playlist, *, fetch=None, root=ROOT):
+    """Check the actual selected media, even when it is not in the newest two articles.
+
+    At most three small MP4s, three caption tracks and one script are fetched.
+    A 200 response alone cannot prove that a new player or caption edit deployed.
+    """
+    fetch = fetch or get
+    payloads = re.findall(r'<section\b[^>]*\bdata-broadcast-playlist="([^"]+)"', markup)
+    if not expected_playlist:
+        if payloads or 'data-news-broadcast' in markup:
+            raise RuntimeError("Homepage exposes a broadcast without a verified selection")
+        return
+    if not 1 <= len(expected_playlist) <= 3 or len(payloads) != 1:
+        raise RuntimeError("Published broadcast selection is missing or exceeds its limit")
+    try:
+        published_playlist = json.loads(html.unescape(payloads[0]))
+    except (ValueError, TypeError) as exc:
+        raise RuntimeError("Published broadcast selection has invalid data") from exc
+    if published_playlist != expected_playlist:
+        raise RuntimeError("Published broadcast selection differs from the current editorial selection")
+
+    player = re.search(r'<video\b[^>]*class="broadcast-video"[^>]*>(.*?)</video>', markup, re.S)
+    if (not player or
+            'src="' + expected_playlist[0]["video_url"] + '"' not in html.unescape(player.group(1))):
+        raise RuntimeError("Initial broadcast player and its selected story disagree")
+    script_paths = re.findall(r'<script\b[^>]*src="(/assets/news-broadcast\.js(?:\?[^\"]*)?)"', markup)
+    if len(script_paths) != 1:
+        raise RuntimeError("Published broadcast player script is missing")
+    script, script_mime = fetch(html.unescape(script_paths[0]))
+    if (("javascript" not in script_mime and "text/plain" not in script_mime)
+            or script != (root / "assets/news-broadcast.js").read_bytes()):
+        raise RuntimeError("Published broadcast script is stale or has an invalid MIME")
+
+    tracks = 0
+    for item in expected_playlist:
+        slug = item["slug"]
+        movie, movie_mime = fetch(item["video_url"])
+        expected_movie = (root / "assets/clips" / (slug + ".mp4")).read_bytes()
+        if "video/mp4" not in movie_mime or movie != expected_movie:
+            raise RuntimeError(slug + ": published broadcast MP4 differs from the verified clip")
+        track_url = item.get("track_url")
+        if track_url:
+            subtitles, subtitle_mime = fetch(track_url)
+            version = track_url.rsplit("?v=", 1)[-1]
+            if ("text/vtt" not in subtitle_mime or not subtitles.startswith(b"WEBVTT\n")
+                    or hashlib.sha256(subtitles).hexdigest()[:12] != version):
+                raise RuntimeError(slug + ": published native subtitles are stale or invalid")
+            tracks += 1
+    print("Public broadcast OK:", len(expected_playlist), "verified videos;", tracks, "native subtitle tracks")
 
 
 def latest_articles(articles: list[dict], limit: int | None = 10) -> list[dict]:
@@ -141,6 +192,7 @@ def check():
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")
     require_matching_public_headline(chosen_lead, body, "home")
+    verify_broadcast_delivery(home.decode("utf-8"), broadcast_playlist(sorted_articles))
     starters=homepage_starter_picks(sorted_articles,chosen_lead,base=ROOT)
     if starters:
         section=re.search(r'<section class="starter-editorial".*?</section>',body,re.S)
