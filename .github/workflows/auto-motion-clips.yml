@@ -3,17 +3,21 @@ on:
   pull_request:
     paths:
       - '.github/workflows/auto-motion-clips.yml'
+      - '.github/workflows/free-cpu-scenes.yml'
       - '.github/motion-clips.json'
       - 'scripts/motion_clips.py'
       - 'scripts/publish_motion_clips.py'
       - 'tests/test_motion_clips.py'
       - 'tests/test_motion_publisher.py'
+      - 'tests/test_motion_workflow.py'
   push:
     branches: [main]
     paths:
       - '.github/workflows/auto-motion-clips.yml'
       - '.github/motion-clips.json'
       - 'scripts/motion_clips.py'
+      - 'scripts/publish_motion_clips.py'
+      - 'content/articles.json'
       - 'assets/generated/*.jpg'
       - 'assets/generated/manifest.json'
   workflow_dispatch:
@@ -25,15 +29,24 @@ concurrency:
   cancel-in-progress: false
 jobs:
   validate:
-    if: github.repository == 'RollNuts/mihassei-news'
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    outputs:
+      pending: ${{ steps.plan.outputs.pending }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Check selected video backlog before installing any encoder
+        id: plan
+        run: |
+          pending="$(python3 scripts/publish_motion_clips.py --pending)"
+          echo "pending=$pending" >> "$GITHUB_OUTPUT"
+          echo "Selected clips waiting for generation: $pending"
       - name: Install only free system FFmpeg on the disposable runner
+        if: github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
             sudo apt-get update -qq
@@ -41,10 +54,11 @@ jobs:
           fi
           ffmpeg -hide_banner -version | head -n 1
       - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
-        run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher
+        if: github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'
+        run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow
 
   publish:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -58,12 +72,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Check persistent ON/OFF toggle before installing anything
+      - name: Recheck selected video backlog before installing anything
         id: gate
         run: |
-          echo "enabled=$(python3 scripts/publish_motion_clips.py --status)" >> "$GITHUB_OUTPUT"
+          pending="$(python3 scripts/publish_motion_clips.py --pending)"
+          echo "pending=$pending" >> "$GITHUB_OUTPUT"
       - name: Prepare free local video encoding and static checks
-        if: steps.gate.outputs.enabled == 'true'
+        if: steps.gate.outputs.pending != '0'
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
             sudo apt-get update -qq
@@ -71,7 +86,7 @@ jobs:
           fi
           python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
       - name: Publish at most one verified clip with normal non-force push
-        if: steps.gate.outputs.enabled == 'true'
+        if: steps.gate.outputs.pending != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

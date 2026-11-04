@@ -4,7 +4,7 @@ on:
   # Image-only pushes do not match, so publication cannot recurse.
   push:
     branches: [main]
-    paths: ['content/articles.json']
+    paths: ['content/articles.json', '.github/workflows/free-cpu-scenes.yml']
   # Catch missed token-origin pushes and a backlog while the Mac is asleep.
   schedule:
     - cron: '17 * * * *'
@@ -106,6 +106,15 @@ jobs:
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review" --publish
           # GitHub-token pushes do not trigger ordinary push workflows.
           gh workflow run verify-public-photos.yml --ref main
+      - name: Continue selected videos after a successful public image pass
+        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Explicit dispatch also works after a GITHUB_TOKEN image push.
+          # The existing hourly image pass recovers remaining videos even when
+          # no image is missing. The video workflow checks OFF/no work first.
+          gh workflow run auto-motion-clips.yml --ref main
       - name: Keep only small new JPEGs for visual review or failed-push recovery
         if: always() && steps.plan.outputs.pending != '0'
         uses: actions/upload-artifact@v4
