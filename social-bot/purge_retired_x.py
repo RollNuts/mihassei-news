@@ -73,7 +73,7 @@ def targets(inventory: dict, ledger: dict, config: dict) -> list[dict]:
 
 def validate_live(target: dict, remote: dict | None) -> str | None:
     if not isinstance(remote, dict):
-        return "already_absent"
+        return "not_in_listing_unverified"
     if remote.get("id") != target["buffer_id"]:
         return "identity_mismatch"
     if remote.get("channelId") != CHANNEL:
