@@ -12,9 +12,15 @@ def story(slug, published, source, category="社会", title="架空の地方ニ�
     return {
         "slug": slug,
         "title": title,
+        "summary": "身近な出来事を扱う架空ニュースです。",
         "category": category,
         "published_at": published.isoformat(),
-        "source": {"url": "https://example.org/source", "published_at": source.isoformat()},
+        "source": {
+            "url": "https://example.org/source",
+            "published_at": source.isoformat(),
+            "kind": "ニュース",
+            "topic": "通常のニュース",
+        },
     }
 
 
@@ -71,6 +77,7 @@ class EditorialAuditTests(unittest.TestCase):
 
     def test_missing_kind_keeps_the_freshness_warning(self):
         a = story("old-untyped-source", NOW, NOW - timedelta(days=30))
+        del a["source"]["kind"]
         self.assertNotIn("kind", a["source"])
         self.assertEqual({code for code, _, _ in audit([a], NOW)}, {"STALE_SOURCE"})
 
@@ -90,6 +97,25 @@ class EditorialAuditTests(unittest.TestCase):
         codes = {code for code, _, _ in audit(articles, NOW)}
         self.assertIn("CATEGORY_BIAS", codes)
         self.assertIn("AI_TOPIC_BIAS", codes)
+
+    def test_crisis_topic_gets_an_advisory_review_warning(self):
+        a = story("quake", NOW, NOW - timedelta(hours=1), title="地震後の避難所を題材にした記事")
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertIn("CRISIS_TOPIC_REVIEW", codes)
+
+    def test_non_crisis_news_is_not_flagged_as_crisis(self):
+        a = story("prices", NOW, NOW - timedelta(hours=1), title="スーパーの値札が毎日変わる")
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertNotIn("CRISIS_TOPIC_REVIEW", codes)
+
+    def test_third_story_closes_followup_thread_in_editorial_audit(self):
+        first = story("first", NOW - timedelta(hours=3), NOW - timedelta(hours=4))
+        second = story("second", NOW - timedelta(hours=2), NOW - timedelta(hours=3))
+        third = story("third", NOW - timedelta(hours=1), NOW - timedelta(hours=2))
+        second["followup_of"] = "first"
+        third["followup_of"] = "second"
+        codes_by_slug = {(code, slug) for code, slug, _ in audit([third, second, first], NOW)}
+        self.assertIn(("FOLLOWUP_THREAD_CLOSED", "third"), codes_by_slug)
 
     def test_missing_publication_date_is_not_assumed_from_future_dateline(self):
         a = story("undated", NOW, NOW)

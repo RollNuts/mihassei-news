@@ -25,6 +25,10 @@ STATE_PATH = HERE / "useful-state.json"
 # One shared Free queue; new useful originals may use the last free slot.
 # All senders serialize on the same workflow concurrency group.
 MAX_TOTAL_SCHEDULED = 10
+CRISIS_AUTO_PATTERN = re.compile(
+    r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
+    r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
+)
 
 
 def read(path):
@@ -152,6 +156,11 @@ def validate(feed, state, *, require_editorial=True):
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", due.astimezone(JST).date().isoformat()):
             raise ValueError("Invalid day")
         day = due.astimezone(JST).date().isoformat()
+        if (pid not in state["attempts"] and p["delivery"] == "automatic"
+                and CRISIS_AUTO_PATTERN.search(text)):
+            raise ValueError(
+                "Crisis-topic automatic X posts are forbidden; keep acute disasters, war, terrorism and mass-casualty events out of the automatic lane"
+            )
         if pid not in state["attempts"] and p["delivery"] == "automatic":
             if expiry.astimezone(JST).date() != due.astimezone(JST).date():
                 raise ValueError("New automatic manuscripts must expire on their publish day in JST")

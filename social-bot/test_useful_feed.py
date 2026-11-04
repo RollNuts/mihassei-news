@@ -85,6 +85,25 @@ class UsefulFeedTests(unittest.TestCase):
     def test_trend_rejected(self):
         self.feed["posts"][0]["trend_targeted"] = True
         with self.assertRaises(ValueError): self.pick()
+    def test_crisis_topic_cannot_enter_automatic_lane(self):
+        p = self.feed["posts"][0]
+        p["text"] = "会話例。地震の被害について今すぐ考えるべきことをまとめました。"
+        p["editorial_review"]["text_sha256"] = m.fingerprint(p["text"])
+        with self.assertRaisesRegex(ValueError, "Crisis-topic automatic X posts are forbidden"):
+            m.validate(self.feed, self.state)
+
+    def test_attempted_legacy_payload_is_not_rewritten_by_new_crisis_guard(self):
+        p = self.feed["posts"][0]
+        p["text"] = "会話例。地震についての過去の送信済み原稿です。"
+        p["editorial_review"]["text_sha256"] = m.fingerprint(p["text"])
+        self.state["attempts"][p["id"]] = {
+            "day_jst": "2026-11-04",
+            "text_sha256": m.fingerprint(p["text"]),
+            "payload_sha256": m.payload_hash(p),
+        }
+        m.validate(self.feed, self.state)
+        self.assertIsNone(self.pick())
+
     def test_market_needs_evidence(self):
         self.feed["posts"][0]["kind"] = "market_close"
         with self.assertRaises(ValueError): self.pick()
