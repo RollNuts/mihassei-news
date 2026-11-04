@@ -949,10 +949,12 @@ def home(articles, serials=None):
     recent_articles = [x for x in remaining[3:] if x["slug"] not in picked_slugs][:4]
     recent = "".join(card(x) for x in recent_articles)
     # The activity rail doubles as genuine article discovery: do not repeat
-    # the lead, sidebar, video choices, visible story grid, or selected starters.
+    # the lead, sidebar, visible story grid, or carefully selected starters.
     front_slugs = {a["slug"], *(x["slug"] for x in remaining[:3]),
-                   *(x["slug"] for x in recent_articles), *picked_slugs,
-                   *(x["slug"] for x in broadcast_playlist(articles))}
+                   *(x["slug"] for x in recent_articles), *picked_slugs}
+    # Rotating video choices also appear above the history rail, including
+    # older stories whose newly delivered clips move them to the foreground.
+    front_slugs.update(item["slug"] for item in broadcast_playlist(articles))
     more_recent = [x for x in articles if x["slug"] not in front_slugs][:3]
     timeline_links = []
     for item in more_recent:
