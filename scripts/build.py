@@ -10,6 +10,7 @@ import shutil
 import struct
 import subprocess
 import zlib
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from functools import lru_cache
@@ -188,7 +189,7 @@ def load():
         raise ValueError("Articles must be a list")
     seen = set()
     for a in articles:
-        required = ("slug", "title", "summary", "category", "fiction_at", "paragraphs", "source", "art")
+        required = ("slug", "title", "summary", "category", "fiction_at", "paragraphs", "source", "art", "tags")
         if any(k not in a for k in required):
             raise ValueError("Missing article field")
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", a["slug"]) or a["slug"] in seen:
@@ -196,6 +197,14 @@ def load():
         seen.add(a["slug"])
         if a["category"] not in CATEGORIES[1:] or a["art"] not in ARTS:
             raise ValueError("Invalid category/art")
+        tags = a["tags"]
+        if (not isinstance(tags, list) or not 1 <= len(tags) <= 3
+                or len(tags) != len(set(tags))
+                or a["category"] in tags
+                or any(not isinstance(tag, str) or tag != tag.strip()
+                       or not 1 <= len(tag) <= 12 or re.search(r"[\s#|]", tag)
+                       for tag in tags)):
+            raise ValueError("Article tags must be 1-3 distinct reader topics: " + a["slug"])
         source = a["source"]
         if not source["url"].startswith("https://"):
             raise ValueError("Source must use HTTPS")
@@ -225,6 +234,26 @@ def write(path, text):
 
 def article_url(a):
     return "/articles/" + a["slug"] + "/"
+
+
+def tag_url(tag):
+    """One shareable archive filter; avoid thin standalone tag pages."""
+    return "/archive/?tag=" + quote(tag)
+
+
+def tag_links(a, compact=False):
+    """Reader-facing topic labels, distinct from the newspaper category."""
+    tags = a.get("tags", [])
+    if compact:
+        tags = tags[:2]
+    if not tags:
+        return ""
+    suffix = " story-tags--compact" if compact else ""
+    return (
+        f'<nav class="story-tags{suffix}" aria-label="話題タグ">'
+        + "".join(f'<a href="{escape(tag_url(tag))}">#{escape(tag)}</a>' for tag in tags)
+        + "</nav>"
+    )
 
 
 def category_meta(a, compact=False):
@@ -586,9 +615,10 @@ def card(a, archive=False):
     if archive:
         category = a["category"]
         decade = a["fiction_at"][:3] + "0"
-        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category))
+        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category, *a.get("tags", [])))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
-                 f'data-decade="{decade}" data-search="{escape(searchable)}"')
+                 f'data-decade="{decade}" data-tags="{escape("|".join(a.get("tags", [])))}" '
+                 f'data-search="{escape(searchable)}"')
     clip = article_clip(a)
     clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
                   if clip else '')
@@ -598,6 +628,7 @@ def card(a, archive=False):
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
         + f'<p>{escape(a["summary"])}</p>'
+        + tag_links(a, compact=True)
         + '</article>'
     )
 
@@ -645,6 +676,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             + (f'<meta property="article:modified_time" content="{escape(article["modified_at"])}">'
                if article.get("modified_at") else "")
             + f'<meta property="article:section" content="{escape(article["category"])}">'
+            + "".join(f'<meta property="article:tag" content="{escape(tag)}">'
+                      for tag in article.get("tags", []))
         )
     # Keep reading routes in the header; utilities remain in the footer.
     nav = [
@@ -723,7 +756,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "publisher":{"@type":"Organization","name":"未発生新聞","url":SITE},
             "isAccessibleForFree":True,
             "image":[og_image],
-            "articleSection":article["category"]
+            "articleSection":article["category"],
+            "keywords":article.get("tags", [])
         })
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
@@ -1101,6 +1135,17 @@ def archive(articles):
     buttons = "".join(f'<button class="filter-button{" active" if cat=="すべて" else ""}" '
                       f'data-category-filter="{cat}" aria-pressed="{"true" if cat=="すべて" else "false"}" type="button">{cat}</button>'
                       for cat in visible_categories)
+    tag_counts = Counter(tag for article in articles for tag in article.get("tags", []))
+    tag_names = sorted(tag_counts, key=lambda tag: (-tag_counts[tag], tag))
+    tag_buttons = (
+        '<button class="filter-button tag-filter-button active" data-tag-filter="すべて"'
+        ' aria-pressed="true" type="button">すべての話題</button>'
+        + "".join(
+            f'<button class="filter-button tag-filter-button" data-tag-filter="{escape(tag)}"'
+            f' aria-pressed="false" type="button">#{escape(tag)} <span>{tag_counts[tag]}本</span></button>'
+            for tag in tag_names
+        )
+    )
     decades = sorted({a["fiction_at"][:3] + "0" for a in articles})
     options = '<option value="すべて">すべての年代</option>' + "".join(
         f'<option value="{x}">{x}年代</option>' for x in decades)
@@ -1111,6 +1156,10 @@ def archive(articles):
 <header class="page-intro"><h1>記事一覧</h1>
 <p class="archive-editions-link"><a href="/issues/">発行日ごとの紙面から読む ↗</a></p></header>
 <div class="filters" role="group" aria-label="記事のカテゴリー">{buttons}</div>
+<details class="tag-filter-panel" data-tag-panel>
+<summary>話題タグから探す</summary>
+<div class="tag-filters" role="group" aria-label="記事の話題タグ">{tag_buttons}</div>
+</details>
 <div class="search-row"><input class="search-input" data-search-input type="search" aria-label="記事検索" placeholder="見出しやキーワードで検索">
 <select class="decade-select" data-decade-filter aria-label="年代フィルター"{decade_hidden}>{options}</select>
 <output class="result-counter" data-result-count aria-live="polite">{len(articles)}件の記事</output></div>
@@ -1260,6 +1309,7 @@ def story(a, articles, issues=None, serials=None):
 <p class="dek">{escape(a["summary"])}</p>
 <p class="story-fiction-context"><strong>創作ニュース</strong></p>
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
+{tag_links(a)}
 </header>
 <figure class="article-hero-figure">
 {article_hero_media(a)}
@@ -1535,6 +1585,8 @@ def generate_rss(items, title, description, link, self_url, limit=30):
         for tag, value in fields:
             ET.SubElement(entry,tag).text=value
         ET.SubElement(entry,"category").text=a["category"]
+        for tag in a.get("tags", []):
+            ET.SubElement(entry,"category").text=tag
         image=SITE+social_image(a)
         generated=reviewed_generated_scene(a,root=BASE)
         approved=not generated and uses_stock_photo(a)
