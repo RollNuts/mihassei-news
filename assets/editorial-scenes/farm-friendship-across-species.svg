@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="別々の餌場でのんびり草を食べる牛と長い耳のロバ、その間隔をメジャーで測る飼育員を描いた創作イラスト" data-visual-topic="livestock" data-article-sha256="aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202">
+  <title>草を食べる牛とロバの間で、餌場の距離を測る飼育員の創作イラスト</title>
+  <defs>
+    <pattern id="paper" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="5" cy="7" r=".8" fill="#243c46" opacity=".055"/>
+      <circle cx="20" cy="22" r=".6" fill="#243c46" opacity=".045"/>
+    </pattern>
+  </defs>
+  <path fill="#f2f1e9" d="M0 0h1200v675H0z"/>
+  <path fill="#e3e7da" d="M60 278q167-149 365-88 158 49 290-8 209-80 425 57v287H60z"/>
+  <path fill="#d0dac9" d="M60 352q194-61 393-10 170 44 327-9 185-66 360 7v204H60z"/>
+  <path fill="#bdccba" d="M60 483q302-45 537 14 279-68 543-11v94H60z"/>
+  <path d="M111 264v123m143-150v130m147-114v107m412-97v94m140-130v139m143-116v141M87 290l330-16m380 5 316 1M89 337l326-18m380 3 316 3" fill="none" stroke="#b2c0ad" stroke-width="7" stroke-linecap="round"/>
+  <path d="m125 211 9-12 9 12m858-34 9-12 9 12m43 18 7-10 8 10" fill="none" stroke="#84998e" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="332" cy="544" rx="198" ry="24" fill="#a8bba3"/>
+  <ellipse cx="933" cy="544" rx="177" ry="24" fill="#a8bba3"/>
+  <ellipse cx="639" cy="565" rx="117" ry="15" fill="#a8bba3"/>
+  <!-- The cow is broad, piebald, short-eared and visibly separate from the donkey. -->
+  <path d="M205 346q-49-14-51 56l-8 62" fill="none" stroke="#243c46" stroke-width="9" stroke-linecap="round"/>
+  <path fill="#243c46" d="M144 454q-16 21-11 41 20-1 25-18l-2-19z"/>
+  <path fill="#a8b3a2" d="m245 414-3 96-23 5-5-91m126-9 11 95 25 3 4-100"/>
+  <path fill="#243c46" d="m219 505 24-2 3 20h-29zm130 1 26 3 4 14h-31z"/>
+  <path fill="#f2f1e9" stroke="#243c46" stroke-width="3" stroke-linejoin="round" d="M192 348q18-34 76-33l92 6q54 5 75 37l23 62-39 42-25-29-24 8-9 77h-27l-6-84-67 1-8 83h-28l-4-92q-45-27-29-78z"/>
+  <path fill="#243c46" d="M193 347q18-28 58-31l18 20-12 45-33 12-37-21zM302 318l54 4 23 26-16 32-43-6-29-27zM327 409l50-20 29 30-11 13-24 9-10 77h-27z"/>
+  <path fill="#243c46" d="m225 507 28 1v18h-30zm108 1 29-1v19h-30z"/>
+  <path fill="#f2f1e9" stroke="#243c46" stroke-width="3" stroke-linejoin="round" d="M408 364q-2-15 8-32l10 23q10-6 21-2l13-25q7 20 0 35l20 15 13 45-13 48-42-5-22-42-15-42z"/>
+  <path fill="#dec8a4" d="m415 357 3-16 6 15m23 0 10-17-2 21"/>
+  <path fill="#243c46" d="m412 370-32-10q1 23 30 25zm47 1 29-8q1 19-23 25z"/>
+  <path fill="#e4d1b6" d="M432 437q29-13 53 0l-6 34q-18 13-36-2z"/>
+  <path d="m424 403 7 2m30-4 6-2m-14 52v3m18-1v3" stroke="#243c46" stroke-width="3" stroke-linecap="round"/>
+  <path fill="#243c46" d="M410 374q14-13 28-9l-3 34-19 13z"/>
+  <path d="m458 475 3 19m6-19 7 17" stroke="#667f6b" stroke-width="3" stroke-linecap="round"/>
+  <!-- A smaller grey donkey, with long ears, a dark mane and a narrow muzzle. -->
+  <path d="M1035 368q41 13 36 57l-1 44" fill="none" stroke="#243c46" stroke-width="8" stroke-linecap="round"/>
+  <path fill="#243c46" d="M1066 458q-12 15-8 37 22-3 24-20l-5-17z"/>
+  <path fill="#8a9c92" d="m911 421 1 89-21 4-7-90m110-1 20 86-21 8-22-85"/>
+  <path fill="#243c46" d="m891 505 21-1 4 18h-26zm101 1 22-4 7 17-27 5z"/>
+  <path fill="#a6b5aa" stroke="#243c46" stroke-width="3" stroke-linejoin="round" d="M865 365q28-23 84-21l55 8q38 7 40 47l-10 28-8 88h-25l-9-83-73 2-25 81h-27l16-101-27-20z"/>
+  <path fill="#879c91" d="M983 349q47 0 60 36l-7 37-11 93h-24l-9-83-19-12 20-31z"/>
+  <path fill="#243c46" d="m868 505 26 1-3 19h-27zm133 0h25v20h-26z"/>
+  <path fill="#a6b5aa" stroke="#243c46" stroke-width="3" stroke-linejoin="round" d="m879 373-30-54-30 11-16 68-25 28 7 33 28 4 27-37 33-24z"/>
+  <path fill="#a6b5aa" stroke="#243c46" stroke-width="3" stroke-linejoin="round" d="M824 336q-29-39-21-76 24 16 34 69m6-5q-4-44 15-70 14 40-1 79"/>
+  <path d="M815 285l13 38m26-40-5 39" stroke="#d7c4a6" stroke-width="6" stroke-linecap="round"/>
+  <path fill="#243c46" d="m845 326 11-15 9 16 9 4-5 12 13 13-6 9 13 18-14 14-21-45z"/>
+  <path fill="#e0cfb0" d="m785 422 23 8 11 20-8 13-27-1-7-29z"/>
+  <path d="m818 388 7-1m-34 54 3 1" stroke="#243c46" stroke-width="3" stroke-linecap="round"/>
+  <path d="m797 466-4 20m10-18 4 17" stroke="#667f6b" stroke-width="3" stroke-linecap="round"/>
+  <!-- The keeper is doing the only anxious work in the scene: measuring the feed stations. -->
+  <path fill="#243c46" d="m609 469-34 41-4 39 62 7 2-22-31-9 29-27zm51 9 30 54 45 4-3 23-66-3-41-48z"/>
+  <path fill="#879c91" d="M605 383q17-21 47-9l25 34-17 76-56 6-20-38z"/>
+  <path fill="#f2f1e9" d="m611 380 21 19 17-21 18 27-16 32-47-7-10-23z"/>
+  <path fill="#697f77" d="m605 398 7 38 40 4 10-31 12 12-14 63-56 6-20-38 9-41z"/>
+  <path fill="#d9c1a0" d="m621 361 24-2 4 23q-10 14-24 4z"/>
+  <path fill="#dec9ac" d="M601 327q4-28 31-29 30 1 34 29l-4 32q-10 22-34 15-23-7-26-25z"/>
+  <path fill="#243c46" d="m601 335-8-18 7-22 25-10 32 13 12 28-11 6-4-17-46 3z"/>
+  <path fill="#d65e48" d="M591 306q4-33 39-36 30-1 39 31l-33 9z"/>
+  <path fill="#b6493e" d="m583 307 51-10 46 9-1 9-47-4-48 6z"/>
+  <path d="m617 336 5-1m24-1 5 1m-20 11-1 10 7 1m-9 7 15 1" stroke="#243c46" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <path fill="#f2f1e9" d="m596 394-14 13-31 68 23 11 37-63z"/>
+  <path fill="#dec9ac" d="m552 471-14 30-20 8-2 14 37 6 14-17 10-30z"/>
+  <path fill="#f2f1e9" d="m656 389 20 17 47 60-21 17-52-49z"/>
+  <path fill="#dec9ac" d="m702 467 15-5 25 39 19 9-4 16-31-10-18-22z"/>
+  <path fill="#243c46" d="M567 549h66v14h-68q-9-6 2-14m100-5 66 1 12 10-3 9-74-1z"/>
+  <!-- The two troughs and the taut measuring tape have clear physical endpoints. -->
+  <path fill="#7f9780" d="m413 501 19-16 12 16 15-22 14 21 21-14 11 15 22-19 15 19zM757 501l17-17 13 16 16-20 14 20 20-16 10 17 24-19 14 19z"/>
+  <path fill="#d65e48" d="m413 501 16 44h100l13-44z"/>
+  <path fill="#b6493e" d="m413 501 16 44h16l-14-44z"/>
+  <path fill="#d65e48" d="m757 501 15 44h99l14-44z"/>
+  <path fill="#b6493e" d="m757 501 15 44h17l-14-44z"/>
+  <path d="M414 501h128m215 0h128" stroke="#243c46" stroke-width="4" stroke-linecap="round"/>
+  <path fill="#dec8a4" d="M541 525h217v15H541z"/>
+  <path d="M548 525v15m16-15v8m16-8v8m16-8v15m16-15v8m16-8v8m16-8v15m16-15v8m16-8v8m16-8v15m16-15v8m16-8v8m16-8v15m16-15v8" fill="none" stroke="#243c46" stroke-width="2"/>
+  <path fill="#243c46" d="M528 516h18v28h-18zM754 519h12v27h-12z"/>
+  <path d="m150 572 7-17 10 18m115 13 7-18 10 18m692-8 8-18 9 18m77 14 7-17 10 18M70 607h1060" fill="none" stroke="#7f9780" stroke-width="3" stroke-linecap="round"/>
+  <path fill="url(#paper)" d="M0 0h1200v675H0z"/>
+</svg>

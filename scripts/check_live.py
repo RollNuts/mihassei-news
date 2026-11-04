@@ -24,19 +24,25 @@ from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
 if __package__:
-    from .media_policy import usable_cached_photo, jpeg_dimensions
-    from .generated_photos import usable_generated_scene, generated_url, generated_scene_entry
-    from .motion_clips import usable_clip, clip_url
+    from .media_policy import jpeg_dimensions
+    from .generated_photos import generated_url, generated_scene_entry
+    from .motion_clips import clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
-    from .build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
+    from .build import (
+        editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
+        article_clip, uses_stock_photo, reviewed_generated_scene,
+    )
 else:
-    from media_policy import usable_cached_photo, jpeg_dimensions
-    from generated_photos import usable_generated_scene, generated_url, generated_scene_entry
-    from motion_clips import usable_clip, clip_url
+    from media_policy import jpeg_dimensions
+    from generated_photos import generated_url, generated_scene_entry
+    from motion_clips import clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
-    from build import editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS
+    from build import (
+        editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
+        article_clip, uses_stock_photo, reviewed_generated_scene,
+    )
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://veripsa.com"
@@ -747,7 +753,7 @@ def check():
             raise RuntimeError(slug+": article hero lacks high-priority image loading")
         # The optional video never replaces a readable still, and it must
         # match the source article + local manifest rather than a guessed URL.
-        recorded_clip = usable_clip(item, root=ROOT)
+        recorded_clip = article_clip(item)
         if recorded_clip:
             for token in (
                 'class="article-visual article-video"',
@@ -802,7 +808,7 @@ def check():
                 raise RuntimeError(slug + ": reader path / breadcrumb missing: " + token)
         # Publicly inspect the actual image picked by the review gate.
         # Merely having a cached stock file must NEVER imply it is suitable.
-        if usable_generated_scene(item,root=ROOT):
+        if reviewed_generated_scene(item,root=ROOT):
             image_path=generated_url(item)
             if 'src="'+image_path+'"' not in page:
                 raise RuntimeError(slug+": locally generated staged photograph not displayed")
@@ -812,7 +818,7 @@ def check():
                 raise RuntimeError(slug+": local staged photograph missing from OGP")
             image,kind=get(image_path)
             verify_generated_image(item, image, kind, root=ROOT)
-        elif usable_cached_photo(item,root=ROOT):
+        elif uses_stock_photo(item):
             photo=item["photo"]
             if photo["source"] not in page or photo["credit"] not in page:
                 raise RuntimeError(slug+": reviewed photo attribution missing")

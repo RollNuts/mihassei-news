@@ -33,6 +33,17 @@ class Element {
   append(...children) {
     this.children.push(...children);
   }
+  querySelectorAll(selector) {
+    const result = [];
+    for (const child of this.children) {
+      if (selector === ".saved-entry-remove" && child.className === "saved-entry-remove") result.push(child);
+      result.push(...child.querySelectorAll(selector));
+    }
+    return result;
+  }
+  focus() {
+    this.ownerDocument.activeElement = this;
+  }
 }
 
 function createPage({initial = null, blocked = false, twoButtons = true, confirmResult = true, category = "経済"} = {}) {
@@ -62,11 +73,13 @@ function createPage({initial = null, blocked = false, twoButtons = true, confirm
   const empty = new Element();
   const clear = new Element();
   const total = new Element();
+  const archiveLink = new Element();
   const events = {};
   const nodes = {
     "[data-saved-list]": list,
     "[data-saved-empty]": empty,
-    "[data-clear-bookmarks]": clear
+    "[data-clear-bookmarks]": clear,
+    ".saved-controls a": archiveLink
   };
   const groups = {
     "[data-bookmark-slug]": buttons,
@@ -76,15 +89,20 @@ function createPage({initial = null, blocked = false, twoButtons = true, confirm
   const document = {
     querySelector: selector => nodes[selector] || null,
     querySelectorAll: selector => groups[selector] || [],
-    createElement: () => new Element()
+    createElement: () => {
+      const element = new Element();
+      element.ownerDocument = document;
+      return element;
+    }
   };
+  for (const node of [...buttons, status, list, empty, clear, total, archiveLink]) node.ownerDocument = document;
   const window = {
     addEventListener(type, handler) { events[type] = handler; },
     confirm: () => confirmResult
   };
   const ctx = {document, window, localStorage: storage, Date, Set, JSON, Number};
   vm.runInNewContext(source, ctx, {timeout: 1500});
-  return {store, writes, buttons, list, status, empty, clear, total, events};
+  return {store, writes, buttons, list, status, empty, clear, total, events, document, archiveLink};
 }
 
 test("bookmark stays opt-in and saves one published story across controls", () => {
@@ -197,4 +215,38 @@ test("maximum 100 saved entries prevents unbounded local storage growth", () => 
   page.buttons[0].click();
   assert.equal(page.writes.length,0);
   assert.match(page.status.textContent,/最大100件/);
+});
+
+test("incident articles keep their category after saving and restoring", () => {
+  const page = createPage();
+  page.buttons[0].dataset.bookmarkCategory = "事件";
+  page.buttons[0].click();
+  const saved = JSON.parse(page.store.get(KEY));
+  assert.equal(saved[0].category, "事件");
+  const restored = createPage({initial:saved});
+  assert.equal(restored.list.children[0].children[0].children[0].textContent, "事件");
+});
+
+test("removing a focused saved entry keeps keyboard position until the list is empty", () => {
+  const page = createPage({initial:[
+    {slug:"first",title:"先の記事",category:"社会",savedAt:1},
+    {slug:"second",title:"次の記事",category:"事件",savedAt:2}
+  ]});
+  const firstRemove = page.list.children[0].children[1];
+  firstRemove.focus();
+  firstRemove.click();
+  const remainingRemove = page.list.children[0].children[1];
+  assert.equal(page.document.activeElement, remainingRemove);
+  assert.match(remainingRemove.attrs["aria-label"], /次の記事/);
+  remainingRemove.click();
+  assert.equal(page.list.children.length, 0);
+  assert.equal(page.document.activeElement, page.archiveLink);
+});
+
+test("clearing a focused saved list moves focus to the article archive link", () => {
+  const page = createPage({initial:[{slug:"saved",title:"保存記事",category:"社会",savedAt:1}]});
+  page.clear.focus();
+  page.clear.click();
+  assert.equal(page.document.activeElement, page.archiveLink);
+  assert.equal(page.empty.hidden, false);
 });

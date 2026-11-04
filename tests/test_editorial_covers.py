@@ -2,12 +2,17 @@
 import html
 import json
 import re
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree
 
-from scripts.editorial_covers import headline_layout, render_cover, render_story_visual, story_subject
+from scripts.editorial_covers import (
+    ICONS, headline_layout, render_cover, render_story_visual,
+    reviewed_story_scene, story_subject,
+)
+from scripts.generated_photos import article_fingerprint
 from scripts.media_policy import (
     approved_sources, jpeg_dimensions, photo_is_approved, usable_cached_photo,
 )
@@ -97,6 +102,69 @@ class CoverQualityTests(unittest.TestCase):
         for slug, subject in examples.items():
             if slug in by_slug:
                 self.assertEqual(story_subject(by_slug[slug]), subject, slug)
+
+    def test_doorbell_subject_takes_priority_over_delivery_and_apology(self):
+        for title in (
+            "盗まれた店の呼び鈴、宅配便で戻る　配達員は押せず不在票",
+            "謝罪の配達員、ドアベルのない店先で立ち止まる",
+        ):
+            article = {"title": title, "art": "cards"}
+            self.assertEqual(story_subject(article), "doorbell")
+            cover = render_cover(article)
+            ElementTree.fromstring(cover)
+            self.assertIn(ICONS["doorbell"], cover)
+            self.assertNotIn(ICONS["parcel"], cover)
+        self.assertEqual(story_subject({
+            "title": "店に届いた小包", "summary": "配達された中身は呼び鈴だった。",
+        }), "doorbell")
+        self.assertEqual(story_subject({"title": "地元の土産を配達する"}), "parcel")
+
+    def test_reviewed_svg_requires_the_current_article_body(self):
+        article = {
+            "slug": "doorbell-scene-test", "title": "呼び鈴が戻った店",
+            "category": "事件", "summary": "小包の中に呼び鈴が入っていた。",
+            "paragraphs": ["閉じた入口の横には呼び鈴の取付跡が残っていた。"],
+        }
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"'
+            ' role="img" aria-label="空の取付跡と小包を描いた創作イラスト"'
+            ' data-visual-topic="doorbell"'
+            f' data-article-sha256="{article_fingerprint(article)}">'
+            '<title>店先へ届いた呼び鈴</title><path d="M10 10H100V100H10Z"/></svg>'
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            directory = root / "assets/editorial-scenes"
+            directory.mkdir(parents=True)
+            path = directory / (article["slug"] + ".svg")
+            self.assertIsNone(reviewed_story_scene(article, root=root))
+            path.write_text(svg, encoding="utf-8")
+            self.assertEqual(reviewed_story_scene(article, root=root), svg)
+            changed = {**article, "paragraphs": ["後日、店主が別の呼び鈴を買った。"]}
+            self.assertIsNone(reviewed_story_scene(changed, root=root))
+            with patch("scripts.editorial_covers.reviewed_story_scene",
+                       side_effect=lambda value: reviewed_story_scene(value, root=root)):
+                self.assertEqual(render_story_visual(article), svg)
+                fallback = render_story_visual(changed)
+                self.assertNotEqual(fallback, svg)
+                parsed = ElementTree.fromstring(fallback)
+                self.assertEqual(parsed.get("data-visual-topic"), "doorbell")
+                self.assertEqual(parsed.get("role"), "img")
+                self.assertIn("創作イラスト", parsed.get("aria-label"))
+            # Invalid, inaccessible or executable SVGs never become a reviewed scene.
+            for invalid in (
+                svg[:-6],
+                svg.replace('role="img"', 'role="none"'),
+                svg.replace('viewBox="0 0 1200 675"', 'viewBox="0 0 1200 630"'),
+                svg.replace('data-visual-topic="doorbell"', 'data-visual-topic="parcel"'),
+                svg.replace('aria-label="空の取付跡と小包を描いた創作イラスト"', ''),
+                svg.replace('<title>店先へ届いた呼び鈴</title>', ''),
+                svg.replace('</svg>', '<script>alert(1)</script></svg>'),
+                svg.replace('</svg>', '<image href="https://example.com/photo.jpg"/></svg>'),
+            ):
+                path.write_text(invalid, encoding="utf-8")
+                self.assertIsNone(reviewed_story_scene(article, root=root))
+            self.assertIsNone(reviewed_story_scene({**article, "slug": "../doorbell-scene-test"}, root=root))
 
     def test_photo_review_is_explicit_and_matches_exact_source(self):
         approvals = approved_sources()

@@ -17,9 +17,10 @@ from pathlib import Path
 
 if __package__:
     from .social_cards import render_social_card, render_issue_card
-    from .editorial_covers import render_cover, render_story_visual, story_subject
+    from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
-    from .generated_photos import usable_generated_scene, generated_url, article_fingerprint
+    from .generated_photos import generated_url, article_fingerprint
+    from .visual_review import reviewed_generated_scene
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials
     from .serial_discovery import render_serial_bridge
@@ -27,9 +28,10 @@ if __package__:
     from .growth_desk import render as render_growth_desk
 else:
     from social_cards import render_social_card, render_issue_card
-    from editorial_covers import render_cover, render_story_visual, story_subject
+    from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
-    from generated_photos import usable_generated_scene, generated_url, article_fingerprint
+    from generated_photos import generated_url, article_fingerprint
+    from visual_review import reviewed_generated_scene
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials
     from serial_discovery import render_serial_bridge
@@ -331,11 +333,16 @@ def illustration_path(a):
     return "/images/" + a["slug"] + ".svg"
 
 
+def uses_stock_photo(a):
+    """Reviewed story illustrations take precedence over generic stock photos."""
+    return not reviewed_story_scene(a, root=BASE) and usable_cached_photo(a, root=BASE)
+
+
 def editorial_image(a):
-    """Priority: locally generated staged scene > approved stock > offline SVG."""
-    if usable_generated_scene(a, root=BASE):
+    """Prefer verified scenes, then reviewed illustrations, stock and fallback."""
+    if reviewed_generated_scene(a, root=BASE):
         return generated_url(a)
-    if usable_cached_photo(a, root=BASE):
+    if uses_stock_photo(a):
         return "/photos/" + a["slug"] + ".jpg"
     return illustration_path(a)
 
@@ -351,12 +358,15 @@ def article_image_alt(a, *, generated=False, photo_ok=False):
         return "創作ニュース「" + a["title"] + "」の再現イメージ"
     if photo_ok:
         return a["photo"]["alt"] + "（記事のイメージ写真）"
+    scene = reviewed_story_scene(a, root=BASE)
+    if scene:
+        return ET.fromstring(scene).attrib["aria-label"]
     return "創作ニュース「" + a["title"] + "」の編集部制作イラスト"
 
 
 def image_tag(a, cls, extra=""):
-    generated = usable_generated_scene(a, root=BASE)
-    photo_ok = not generated and usable_cached_photo(a, root=BASE)
+    generated = reviewed_generated_scene(a, root=BASE)
+    photo_ok = not generated and uses_stock_photo(a)
     url = editorial_image(a)
     alt = article_image_alt(a, generated=generated, photo_ok=photo_ok)
     fallback = (
@@ -369,6 +379,11 @@ def image_tag(a, cls, extra=""):
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
             f' width="1200" height="675" {extra}{fallback}>')
+
+
+def article_clip(article):
+    """A still must pass visual review before its derived clip is published."""
+    return usable_clip(article, root=BASE) if reviewed_generated_scene(article, root=BASE) else None
 
 
 def clip_seconds(clip):
@@ -455,7 +470,7 @@ def broadcast_overlay(article, clip):
 
 
 def clip_caption(article):
-    clip = usable_clip(article, root=BASE)
+    clip = article_clip(article)
     return (f" · {clip_seconds(clip)}秒・音声なし" if clip else "")
 
 
@@ -463,7 +478,7 @@ def article_hero_media(a):
     """Only vetted MP4s become video players; preserve a real image on failure."""
     picture = image_tag(a, "article-visual",
                         extra='loading="eager" fetchpriority="high" decoding="async"')
-    clip = usable_clip(a, root=BASE)
+    clip = article_clip(a)
     if clip is None:
         return picture
     version = clip["sha256"][:12]  # prevent stale CDNs/browsers after re-encoding
@@ -488,7 +503,7 @@ def broadcast_playlist(articles, *, exclude_slug=None):
     for article in articles:
         if article.get("broadcast_feature") is not True or article["slug"] == exclude_slug:
             continue
-        clip = usable_clip(article, root=BASE)
+        clip = article_clip(article)
         if not clip:
             continue
         published = publication_date(article)
@@ -523,7 +538,7 @@ def broadcast_feature(articles, *, exclude_slug=None):
         return ""
     selected = playlist[0]
     chosen = next(article for article in articles if article["slug"] == selected["slug"])
-    clip = usable_clip(chosen, root=BASE)
+    clip = article_clip(chosen)
     poster = selected["poster_url"]
     url = escape(selected["article_url"])
     payload = escape(json.dumps(playlist, ensure_ascii=False, separators=(",", ":")))
@@ -560,9 +575,9 @@ def broadcast_feature(articles, *, exclude_slug=None):
 
 def photo_credit(a):
     """Always disclose AI staging; never mislabel a synthetic scene as real."""
-    if usable_generated_scene(a, root=BASE):
+    if reviewed_generated_scene(a, root=BASE):
         return "再現イメージ（合成）"
-    if not usable_cached_photo(a, root=BASE):
+    if not uses_stock_photo(a):
         return "創作イラスト"
     p = a["photo"]
     return (f'イメージ写真：<a href="{escape(p["source"])}" target="_blank"'
@@ -577,11 +592,11 @@ def card(a, archive=False):
         searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-search="{escape(searchable)}"')
-    clip = usable_clip(a, root=BASE)
+    clip = article_clip(a)
     clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
                   if clip else '')
     return (
-        f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if usable_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
+        f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if reviewed_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
@@ -592,9 +607,9 @@ def card(a, archive=False):
 def social_image(article):
     """Use verified local JPEG for OGP when present, else deterministic PNG."""
     if article is not None:
-        if usable_generated_scene(article, root=BASE):
+        if reviewed_generated_scene(article, root=BASE):
             return generated_url(article)
-        if usable_cached_photo(article, root=BASE):
+        if uses_stock_photo(article):
             return "/photos/" + article["slug"] + ".jpg"
         return "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
     # Use a physically new raster URL: X caches both page cards and image URLs.
@@ -676,11 +691,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (article_image_alt(
                   article,
-                  generated=usable_generated_scene(article, root=BASE),
-                  photo_ok=bool(photo and local_photo and not usable_generated_scene(article, root=BASE))
+                  generated=reviewed_generated_scene(article, root=BASE),
+                  photo_ok=bool(photo and local_photo and not reviewed_generated_scene(article, root=BASE))
               ) if article else
               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙"
                if issue_path else "未発生新聞（創作ニュース）"))
+    if article is not None and not local_photo:
+        og_alt = "創作ニュース「" + article["title"] + "」のテーマを表した共有イラスト"
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
     og_mime = "image/jpeg" if local_photo else "image/png"
@@ -732,7 +749,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
     # footage. Only publish structured video data for a verified local MP4.
-    clip = usable_clip(article, root=BASE) if kind == "story" and article else None
+    clip = article_clip(article) if kind == "story" and article else None
     if clip:
         schemas.append({
             "@context": "https://schema.org",
@@ -828,7 +845,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     archive_script = '<script defer src="/assets/site.js"></script>' if path == "/archive/" else ""
     broadcast_script = ('<script defer src="/assets/news-broadcast.js"></script>'
                         if path == "/" or (kind == "story" and article is not None
-                                           and usable_clip(article, root=BASE)) else "")
+                                           and article_clip(article)) else "")
     comments_script = '<script defer src="/assets/comments.js"></script>' if kind == "story" else ""
     comment_activity_script = ('<script defer src="/assets/comment-activity.js"></script>'
                                if path == "/" else "")
@@ -1456,8 +1473,8 @@ def image_review_page(articles):
     """
     cards = []
     for a in articles:
-        generated = usable_generated_scene(a, root=BASE)
-        photo_ok = not generated and usable_cached_photo(a, root=BASE)
+        generated = reviewed_generated_scene(a, root=BASE)
+        photo_ok = not generated and uses_stock_photo(a)
         main_src = editorial_image(a)
         social_src = social_image(a)
         category = escape(a["category"])
@@ -1542,8 +1559,8 @@ def generate_rss(items, title, description, link, self_url, limit=30):
             ET.SubElement(entry,tag).text=value
         ET.SubElement(entry,"category").text=a["category"]
         image=SITE+social_image(a)
-        generated=usable_generated_scene(a,root=BASE)
-        approved=not generated and usable_cached_photo(a,root=BASE)
+        generated=reviewed_generated_scene(a,root=BASE)
+        approved=not generated and uses_stock_photo(a)
         raster=generated or approved
         thumb={"url":image}
         if generated:
@@ -1727,7 +1744,7 @@ def make_article_social_images(articles):
     for article in articles:
         # Cached stock images are not auto-approved; always generate a safe
         # topic-specific PNG for anything not explicitly editorially reviewed.
-        if usable_generated_scene(article, root=BASE) or usable_cached_photo(article, root=BASE):
+        if reviewed_generated_scene(article, root=BASE) or uses_stock_photo(article):
             continue
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"))
 
@@ -1750,17 +1767,17 @@ def build():
     photos = BASE / "assets" / "photos"
     if photos.exists():
         shutil.copytree(photos, OUT / "photos", dirs_exist_ok=True)
-    # Publish ONLY verified generated JPEGs; the local provenance manifest
+    # Publish ONLY byte-verified and visually reviewed JPEGs; the provenance manifest
     # itself never needs to be public or requested by a browser.
     for item in articles:
-        if usable_generated_scene(item, root=BASE):
+        if reviewed_generated_scene(item, root=BASE):
             destination = OUT / generated_url(item).lstrip("/")
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(BASE / "assets" / "generated" / (item["slug"] + ".jpg"), destination)
     # Only validated, fingerprint-matched optional MP4s are ever published.
     # Stale/over-budget files in the source tree do not reach the live site.
     for item in articles:
-        clip = usable_clip(item, root=BASE)
+        clip = article_clip(item)
         if clip:
             target = OUT / clip_url(item).lstrip("/")
             target.parent.mkdir(parents=True, exist_ok=True)

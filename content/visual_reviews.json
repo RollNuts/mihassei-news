@@ -1,0 +1,131 @@
+{
+  "reviews": {
+    "ai-chair-removes-executives": {
+      "article_sha256": "debe9196cff8eba02a4055f720b49e5ac16e9ceb1558cb80310fbbc37313efb9",
+      "decision": "accepted",
+      "image_sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873",
+      "note": "オフィスの椅子に座った人物と、その後ろに立つ人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "bakery-no-important-announcement-panic": {
+      "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
+      "decision": "accepted",
+      "image_sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db",
+      "note": "パンが並ぶ店頭と店員・客の場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "comedy-show-profits-from-silence": {
+      "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
+      "decision": "accepted",
+      "image_sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6",
+      "note": "マイクを向けられた人物と笑っていない周囲の人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "diner-refund-customer-paying-escape": {
+      "article_sha256": "2f91fd25e715009905eb0f162f156f994c93e1b8a552afc09a018eac42aaebe4",
+      "decision": "accepted",
+      "image_sha256": "7abff72e8cad6250a5449fb62c8813e68b63044738985c20f2d5f75c5599e5dd",
+      "note": "食堂のカウンターに店員と客がいる場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "family-dinner-gacha-243-rejections": {
+      "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
+      "decision": "accepted",
+      "image_sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704",
+      "note": "本文に登場する物理的なガチャ機を並べた場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "father-tries-own-overpacked-bento": {
+      "article_sha256": "a248d165a8126334ecb47b412b4fa5eeeaee065f1e1078ceddcd54d2ac2c1c7b",
+      "decision": "accepted",
+      "image_sha256": "d56b7537863e85e8ed223235888876ff214d12d30486c78c0adc497ce65b68e4",
+      "note": "弁当箱と詰められた卵焼きを中心にした食べ物の場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "historical-lookalike-contest-dog-wins": {
+      "article_sha256": "2fd4fb637bf5b844a4f23e19a661ddd30127962bf27e62547d8dcc32eb9b725d",
+      "decision": "accepted",
+      "image_sha256": "0f1e6c0a915954ff22d130c778d0a79780da0cead01a44b131dd1d5b5922a773",
+      "note": "歴史上の人物を模した衣装の人々と犬の記念撮影。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "idol-ice-kept-in-freezer": {
+      "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
+      "decision": "accepted",
+      "image_sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc",
+      "note": "記事の対象であるアイスバーの物撮り。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "local-souvenir-cannot-leave-town": {
+      "article_sha256": "9a4c73400cee12de4f0158729fc62cab51da7350c70f1af6afc1b41468d37cc1",
+      "decision": "accepted",
+      "image_sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b",
+      "note": "駅で箱を持った旅行者と係員が向き合う場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "mortgage-bank-clerk-invited-to-live-in": {
+      "article_sha256": "b471407868bb1e2b2e24b169a8e09d0be6ee48686c8f0d00ef3e301c59133359",
+      "decision": "accepted",
+      "image_sha256": "76d2f68e0804c58ebf17c14a086f0ade278bcb6de77c751aaf8babbfe522ae89",
+      "note": "家庭の食卓でスーツ姿の担当者を交えて話す場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "music-ai-friends-monopolize-the-song": {
+      "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
+      "decision": "accepted",
+      "image_sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662",
+      "note": "本文の結末に登場するラジオを前に座る人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "pressure-office-mood-forecast": {
+      "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
+      "decision": "accepted",
+      "image_sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70",
+      "note": "オフィスの机越しに向き合う人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "quiet-reply-dating-matches": {
+      "article_sha256": "1fbe5026d7edc3bbb284ea11c7c2cce37100927d915f6238447b368a8ed229ec",
+      "decision": "accepted",
+      "image_sha256": "839d35bb769539cffac22cca4b88837ada978e0bbebf0f3b896a24c7c4d08d63",
+      "note": "喫茶の席で静かに向き合う二人。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "research-completed-opening-day": {
+      "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
+      "decision": "accepted",
+      "image_sha256": "e8b4f13290e6611091c9baa1f933451540aa97e361d60b301341449995e3a49f",
+      "note": "研究所の実験台で資料を確認する研究者。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "decision": "accepted",
+      "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+      "note": "荒れた隠れ家に入る人物を描いた場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "supporter-guarantor-contract": {
+      "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
+      "decision": "accepted",
+      "image_sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350",
+      "note": "野球場で応援用メガホンを使う人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "unwanted-call-protection-calls-back": {
+      "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
+      "decision": "accepted",
+      "image_sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c",
+      "note": "家庭の固定電話を前にした二人。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "volleyball-team-lunch-plate-merch": {
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "decision": "accepted",
+      "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
+      "note": "皿と球を並べた物撮りで、記事の食器への注目を表す。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    }
+  },
+  "version": 1
+}

@@ -14,6 +14,7 @@ from scripts import build, local_scene_photos
 from scripts.generated_photos import (
     article_fingerprint, usable_generated_scene, generated_scene_entry, generated_url,
 )
+from scripts.visual_review import reviewed_generated_scene
 
 
 def fixture():
@@ -34,6 +35,24 @@ def fake_jpeg():
            + (675).to_bytes(2, "big") + (1200).to_bytes(2, "big")
            + b"\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00")
     return sof + b"\x00" * 17000 + b"\xff\xd9"
+
+
+def write_review_fixture(root: Path, article: dict, **changes) -> Path:
+    """Synthetic gate input in a temporary directory, never a real approval."""
+    record = {
+        "decision": "accepted",
+        "article_sha256": article_fingerprint(article),
+        "image_sha256": generated_scene_entry(article, root=root)["sha256"],
+        "reviewed_at": "2026-11-04T01:30:05+00:00",
+        "note": "Synthetic test fixture; not an actual visual review.",
+        **changes,
+    }
+    path = root / "content/visual_reviews.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({
+        "version": 1, "reviews": {article["slug"]: record},
+    }), encoding="utf-8")
+    return path
 
 
 class SceneQualityHoldTests(unittest.TestCase):
@@ -148,6 +167,8 @@ class LocalComedySceneTests(unittest.TestCase):
             local_scene_photos.write_generated(
                 article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
             self.assertTrue(usable_generated_scene(article, root=root))
+            write_review_fixture(root, article)
+            self.assertTrue(reviewed_generated_scene(article, root=root))
             manifest = root / "assets/generated/manifest.json"
             data = json.loads(manifest.read_text(encoding="utf-8"))
             data["rejected"] = {
@@ -159,6 +180,7 @@ class LocalComedySceneTests(unittest.TestCase):
             manifest.write_text(json.dumps(data), encoding="utf-8")
             self.assertTrue(visually_held_scene(article, root=root))
             self.assertFalse(usable_generated_scene(article, root=root))
+            self.assertFalse(reviewed_generated_scene(article, root=root))
             self.assertIsNone(generated_scene_entry(article, root=root))
             self.assertIsNone(usable_clip(article, root=root))
             self.assertEqual(local_scene_photos.pending_articles(
@@ -220,11 +242,14 @@ class LocalComedySceneTests(unittest.TestCase):
             manifest.write_text("{bad-json", encoding="utf-8")
             self.assertFalse(usable_generated_scene(a, root=root))
 
-    def test_builder_prefers_valid_generated_still_without_misleading_attribution(self):
+    def test_builder_prefers_reviewed_generated_still_without_misleading_attribution(self):
         a = fixture()
         with tempfile.TemporaryDirectory() as dirname:
             root = Path(dirname)
             local_scene_photos.write_generated(a, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            write_review_fixture(root, a)
+            self.assertTrue(usable_generated_scene(a, root=root))
+            self.assertTrue(reviewed_generated_scene(a, root=root))
             with patch.object(build, "BASE", root):
                 self.assertEqual(build.editorial_image(a), generated_url(a))
                 self.assertEqual(build.social_image(a), generated_url(a))
@@ -239,6 +264,73 @@ class LocalComedySceneTests(unittest.TestCase):
                 card = build.card(a)
                 self.assertIn("story-image-link--generated", card)
                 self.assertIn(a["title"], card)
+
+    def test_missing_rejected_or_stale_review_never_reaches_pages_og_or_rss(self):
+        """Byte-valid JPEGs are not public until the exact scene is accepted."""
+        article = fixture()
+        cases = (
+            ("missing", None),
+            ("rejected", {"decision": "rejected"}),
+            ("stale article", {"article_sha256": "0" * 64}),
+            ("different image", {"image_sha256": "0" * 64}),
+        )
+        for label, changes in cases:
+            with self.subTest(review=label), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                local_scene_photos.write_generated(
+                    article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+                if changes is not None:
+                    write_review_fixture(root, article, **changes)
+                # Retain the separate generation/byte-integrity contract.
+                self.assertTrue(usable_generated_scene(article, root=root))
+                self.assertFalse(reviewed_generated_scene(article, root=root))
+                with patch.object(build, "BASE", root), \
+                     patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
+                    fallback = "/images/" + article["slug"] + ".svg"
+                    social = "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
+                    self.assertEqual(build.editorial_image(article), fallback)
+                    self.assertEqual(build.social_image(article), social)
+                    tag = build.image_tag(article, "article-visual")
+                    self.assertIn('src="' + fallback + '"', tag)
+                    self.assertNotIn(generated_url(article), tag)
+                    self.assertNotIn("data-generated-scene", tag)
+                    self.assertEqual(build.photo_credit(article), "創作イラスト")
+                    card = build.card(article)
+                    self.assertNotIn("story-image-link--generated", card)
+                    self.assertNotIn(generated_url(article), card)
+                    page = build.layout(article["title"], article["summary"],
+                                        build.article_url(article), tag,
+                                        kind="story", article=article)
+                    self.assertIn('property="og:image" content="' + build.SITE + social + '"', page)
+                    self.assertIn('name="twitter:image" content="' + build.SITE + social + '"', page)
+                    self.assertIn('property="og:image:type" content="image/png"', page)
+                    self.assertNotIn(generated_url(article), page)
+                    rss = build.generate_rss([article], "test", "創作ニュース",
+                                             build.SITE + "/", "/feed.xml")
+                    self.assertIn(build.SITE + social, rss)
+                    self.assertIn('type="image/png"', rss)
+                    self.assertNotIn(generated_url(article), rss)
+
+    def test_new_valid_jpeg_does_not_inherit_previous_visual_acceptance(self):
+        """Regeneration updates byte provenance but cannot approve new pixels."""
+        article = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local_scene_photos.write_generated(
+                article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            review = write_review_fixture(root, article)
+            previous_review = review.read_bytes()
+            self.assertTrue(reviewed_generated_scene(article, root=root))
+            # This is still a well-formed header fixture, with a new byte hash.
+            replacement = fake_jpeg()[:-2] + b"\x01\x02" + b"\xff\xd9"
+            local_scene_photos.write_generated(
+                article, replacement, "sd_xl_base_1.0.safetensors", root=root)
+            self.assertTrue(usable_generated_scene(article, root=root))
+            self.assertEqual(review.read_bytes(), previous_review)
+            self.assertFalse(reviewed_generated_scene(article, root=root))
+            with patch.object(build, "BASE", root):
+                self.assertEqual(build.editorial_image(article), build.illustration_path(article))
+                self.assertTrue(build.social_image(article).startswith("/og/articles/"))
 
     def test_dry_run_never_connects_or_generates_assets(self):
         a = fixture()

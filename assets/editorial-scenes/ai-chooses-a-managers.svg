@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="AIが予算の決裁と仕事の割り振りを進める横で、操作権限のない人間の部長が説明会のマイクに向かって頭を下げる創作イラスト" data-visual-topic="document" data-article-sha256="a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11">
+  <title>AIが予算の決裁と仕事の割り振りを進める横で、操作権限のない人間の部長が説明会のマイクに向かって頭を下げる創作イラスト</title>
+  <rect width="1200" height="675" fill="#f2f1e9"/>
+  <path d="M110 474V265c0-100 67-154 176-143 101 10 151 91 246 62 104-32 167-98 298-77 166 26 276 162 276 352v15z" fill="#243c46" opacity=".045"/>
+  <ellipse cx="597" cy="583" rx="502" ry="28" fill="#243c46" opacity=".07"/>
+  <path d="M78 585h1044" fill="none" stroke="#243c46" stroke-width="3" opacity=".3"/>
+  <path d="M507 159v367" fill="none" stroke="#243c46" stroke-width="2" stroke-dasharray="3 10" opacity=".18"/>
+
+  <!-- A human faces the public with a microphone, not decision controls. -->
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M225 438q-14-85 2-122l56-16q51 6 67 69l12 70z" fill="#243c46"/>
+    <path d="m267 310 29 58 8-66-26-13z" fill="#f2f1e9"/>
+    <path d="m283 323-3 15 15 26 8-29-11-12z" fill="#d65e48" stroke="none"/>
+    <path d="m253 311-12 32 19 6-4 22 40 27m10-88 19 23-13 16 11 19-27 30" fill="none" stroke="#f2f1e9" stroke-width="2" opacity=".5"/>
+    <path d="m260 275 11 35q14 9 30-10l-5-29" fill="#f2f1e9"/>
+    <g transform="rotate(20 280 261)">
+      <path d="M243 251q-5-43 34-47 46-4 47 41l-2 28q-4 29-28 30-25 2-37-24l-7-3q-11-5-9-15z" fill="#f2f1e9"/>
+      <path d="M243 250q-14-34 10-49 29-19 55 1 14 11 17 35-29 1-45-18-11 20-29 25l-1 21-9-7z" fill="#243c46"/>
+      <path d="m273 251 11 3m18 2 10-2m-19 8 5 13h-9m-10 14h15" fill="none" stroke-width="3"/>
+      <path d="m276 263 8 2m18-1 8-2" fill="none" stroke-width="3"/>
+    </g>
+    <path d="M238 344q-20 43 9 64m80-55 21 52" fill="none" stroke-width="29"/>
+    <path d="M239 402q-2 17 11 19h34q6-5-1-11l-22-8z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M338 403q-4 14 8 18h27q9-7-1-12l-20-7z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M182 424h222l-19 151H204z" fill="#f2f1e9"/>
+    <path d="M180 418h226v15H180z" fill="#243c46"/>
+    <path d="M204 575h181" fill="none" stroke-width="10"/>
+    <path d="M215 452h155v92H215z" fill="#243c46" opacity=".07" stroke="none"/>
+    <path d="M247 458h66l22 22v57h-88z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M313 458v22h22m-72 15h48m-48 12h35" fill="none" stroke-width="3" opacity=".5"/>
+    <circle cx="313" cy="526" r="17" fill="#d65e48" stroke="none"/>
+    <path d="m305 541-4 16 12-6 11 6-3-16" fill="#d65e48" stroke="none"/>
+    <path d="M378 416v-60q0-20-20-28" fill="none" stroke-width="5"/>
+    <path d="m345 314 22 15" fill="none" stroke-width="13"/>
+    <path d="M366 417h25" fill="none" stroke-width="6"/>
+  </g>
+
+  <!-- The manager's small screen is locked, while the AI has all the routes. -->
+  <g transform="translate(147 357) rotate(-9 41 28)" stroke="#243c46" stroke-linejoin="round">
+    <rect width="83" height="58" rx="5" fill="#243c46" stroke-width="4"/>
+    <rect x="7" y="7" width="69" height="43" rx="2" fill="#f2f1e9" stroke="none"/>
+    <rect x="29" y="24" width="24" height="19" rx="3" fill="#d65e48" stroke="none"/>
+    <path d="M34 25v-7a7 7 0 0 1 14 0v7" fill="none" stroke="#d65e48" stroke-width="4"/>
+  </g>
+  <g fill="none" stroke="#243c46" stroke-width="3" stroke-linecap="round" opacity=".3">
+    <path d="M108 300h61m-61 13h38m-38 13h48"/>
+  </g>
+
+  <!-- Decisions and assignments flow from the machine to distinct work areas. -->
+  <g fill="none" stroke="#d65e48" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M753 287V221H672"/>
+    <path d="m682 213-10 8 10 8"/>
+    <path d="M892 287V234h82"/>
+    <path d="m964 226 10 8-10 8"/>
+    <path d="M755 380H649v56"/>
+    <path d="m641 426 8 10 8-10"/>
+    <path d="M893 380h132v37"/>
+    <path d="m1017 407 8 10 8-10"/>
+  </g>
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="543" y="159" width="134" height="148" rx="7" fill="#f2f1e9"/>
+    <path d="M543 192h134" fill="none" stroke-width="3"/>
+    <circle cx="559" cy="175" r="4" fill="#d65e48" stroke="none"/>
+    <path d="M575 175h74" fill="none" stroke-width="3" opacity=".3"/>
+    <g fill="none" stroke-width="3">
+      <rect x="559" y="209" width="20" height="19" rx="2"/>
+      <rect x="559" y="240" width="20" height="19" rx="2"/>
+      <rect x="559" y="271" width="20" height="19" rx="2"/>
+      <path d="m561 216 6 6 12-15m-18 41 6 6 12-15m-18 40 6 6 12-15" stroke="#d65e48"/>
+      <path d="M592 218h64m-64 32h45m-45 30h56" opacity=".45"/>
+    </g>
+    <path d="M976 155h103l29 29v157H976z" fill="#f2f1e9"/>
+    <path d="M1079 155v29h29" fill="none"/>
+    <path d="M996 207h84m-84 13h48" fill="none" stroke-width="3" opacity=".4"/>
+    <path d="M997 294v-35h19v35m13 0v-52h19v52m13 0v-72h19v72" fill="#243c46" stroke="none"/>
+    <path d="M993 296h91" stroke-width="3"/>
+    <circle cx="1081" cy="319" r="20" fill="#d65e48" stroke="none"/>
+    <path d="m1071 319 7 7 14-16" fill="none" stroke="#f2f1e9" stroke-width="4"/>
+  </g>
+
+  <g stroke="#243c46" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="552" y="476" width="554" height="20" rx="2" fill="#243c46"/>
+    <path d="m579 496-7 83m505-83 8 83" fill="none" stroke-width="10"/>
+    <rect x="706" y="263" width="240" height="173" rx="11" fill="#243c46"/>
+    <rect x="717" y="275" width="218" height="149" rx="4" fill="#f2f1e9" stroke="none"/>
+    <path d="M817 438v29m-43 8h104" fill="none" stroke-width="10"/>
+    <rect x="786" y="307" width="80" height="80" rx="8" fill="#243c46"/>
+    <g fill="none" stroke-width="4">
+      <path d="M800 293v14m17-14v14m18-14v14m17-14v14m-52 80v14m17-14v14m18-14v14m17-14v14M772 322h14m-14 17h14m-14 18h14m-14 17h14m80-52h14m-14 17h14m-14 18h14m-14 17h14"/>
+    </g>
+    <path d="m800 365 11-35h30l12 35z" fill="none" stroke="#f2f1e9" stroke-width="3"/>
+    <path d="M811 330h30m-15 0v35m-26 0h53" fill="none" stroke="#f2f1e9" stroke-width="3"/>
+    <circle cx="826" cy="347" r="8" fill="#d65e48" stroke="none"/>
+    <circle cx="739" cy="405" r="4" fill="#d65e48" stroke="none"/>
+    <path d="M750 405h30" fill="none" stroke-width="3" opacity=".3"/>
+    <!-- Work product on both sides, no keyboard or lever for the manager. -->
+    <path d="M585 446h109v27H585zm7-8h99v8h-99m6-9h86v9h-86" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M607 458h45" stroke-width="3" opacity=".4"/>
+    <rect x="973" y="429" width="107" height="45" rx="5" fill="#f2f1e9"/>
+    <path d="M986 429v-24h79v24" fill="#f2f1e9"/>
+    <path d="M990 447h73" fill="none" stroke-width="5"/>
+    <path d="M994 450h64v25h-64z" fill="#f2f1e9" stroke-width="3"/>
+    <path d="M1004 460h41" stroke-width="2" opacity=".4"/>
+    <circle cx="1066" cy="439" r="3" fill="#d65e48" stroke="none"/>
+  </g>
+  <g fill="#243c46" opacity=".07">
+    <path d="M595 508h96v50h-96zM965 508h90v50h-90z"/>
+  </g>
+</svg>

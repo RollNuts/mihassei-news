@@ -628,15 +628,15 @@ class SiteTests(unittest.TestCase):
             html=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn('"datePublished": "'+a["published_at"]+'"',html)
             self.assertNotIn('"datePublished": "'+a["fiction_at"]+'"',html)
-            from scripts.media_policy import usable_cached_photo
-            from scripts.generated_photos import usable_generated_scene
-            if usable_generated_scene(a,root=ROOT):
+            from scripts.build import uses_stock_photo
+            from scripts.visual_review import reviewed_generated_scene
+            if reviewed_generated_scene(a,root=ROOT):
                 self.assertIn('src="/generated/'+a["slug"]+'.jpg"',html)
                 self.assertIn('data-generated-scene="true"',html)
                 self.assertIn("再現イメージ（合成）",html)
                 self.assertIn("<figcaption>再現イメージ（合成）",html)
                 self.assertIn('property="og:image:type" content="image/jpeg"',html)
-            elif usable_cached_photo(a,root=ROOT):
+            elif uses_stock_photo(a):
                 self.assertIn(a["photo"]["source"],html)
                 self.assertIn(a["photo"]["credit"],html)
                 self.assertIn(a["photo"]["alt"],html)
@@ -730,8 +730,8 @@ class SiteTests(unittest.TestCase):
         from scripts.build import (load, CATEGORIES, CATEGORY_PATHS, SITE,
                                    category_url, category_feed_url, social_image,
                                    curated_categories, generate_rss)
-        from scripts.media_policy import usable_cached_photo
-        from scripts.generated_photos import usable_generated_scene
+        from scripts.build import uses_stock_photo
+        from scripts.visual_review import reviewed_generated_scene
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -773,7 +773,7 @@ class SiteTests(unittest.TestCase):
                 self.assertIsNotNone(image)
                 self.assertEqual(thumbnail.get("url"),SITE+social_image(a))
                 self.assertEqual(image.get("url"),SITE+social_image(a))
-                mime="image/jpeg" if (usable_generated_scene(a,root=ROOT) or usable_cached_photo(a,root=ROOT)) else "image/png"
+                mime="image/jpeg" if (reviewed_generated_scene(a,root=ROOT) or uses_stock_photo(a)) else "image/png"
                 self.assertEqual(image.get("type"),mime)
             if cat in curated_categories(articles):
                 category=(ROOT/"dist"/category_url(cat).lstrip("/")/"index.html")
@@ -794,9 +794,8 @@ class SiteTests(unittest.TestCase):
 
     def test_rss_contains_licensed_first_party_preview_images(self):
         """Feed clients can find safe image previews with the Media RSS standard."""
-        from scripts.build import social_image
-        from scripts.media_policy import usable_cached_photo
-        from scripts.generated_photos import usable_generated_scene
+        from scripts.build import social_image, uses_stock_photo
+        from scripts.visual_review import reviewed_generated_scene
         namespace={"media":"http://search.yahoo.com/mrss/"}
         root=ET.parse(ROOT/"dist/feed.xml").getroot()
         entries=root.findall("./channel/item")
@@ -814,8 +813,8 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(thumbnail.get("url"),expected)
             self.assertEqual(full.get("url"),expected)
             self.assertEqual(full.get("medium"),"image")
-            generated=usable_generated_scene(a,root=ROOT)
-            photo=not generated and usable_cached_photo(a,root=ROOT)
+            generated=reviewed_generated_scene(a,root=ROOT)
+            photo=not generated and uses_stock_photo(a)
             self.assertEqual(full.get("type"),"image/jpeg" if (photo or generated) else "image/png")
             credit=item.find("media:credit",namespace)
             if photo:
@@ -944,9 +943,9 @@ class SiteTests(unittest.TestCase):
 
     def test_image_review_gate_applies_to_cached_photos_and_ogp(self):
         """Cached images are not automatically editorially appropriate."""
-        from scripts.media_policy import photo_is_approved, usable_cached_photo
-        from scripts.generated_photos import usable_generated_scene
-        from scripts.build import social_image
+        from scripts.media_policy import photo_is_approved
+        from scripts.visual_review import reviewed_generated_scene
+        from scripts.build import social_image, uses_stock_photo
         import xml.etree.ElementTree as ET
         approved=0
         generated=0
@@ -965,13 +964,13 @@ class SiteTests(unittest.TestCase):
             self.assertNotIn("<image",svg)
             self.assertNotIn("<script",svg)
             page=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
-            if usable_generated_scene(article,root=ROOT):
+            if reviewed_generated_scene(article,root=ROOT):
                 generated+=1
                 self.assertEqual(social_image(article),"/generated/"+slug+".jpg")
                 self.assertIn('src="/generated/'+slug+'.jpg"',page)
                 self.assertIn("再現イメージ（合成）",page)
                 self.assertTrue((ROOT/"dist/generated"/(slug+".jpg")).is_file())
-            elif usable_cached_photo(article,root=ROOT):
+            elif uses_stock_photo(article):
                 approved+=1
                 self.assertTrue(photo_is_approved(article,root=ROOT))
                 self.assertEqual(social_image(article),"/photos/"+slug+".jpg")
@@ -981,18 +980,55 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(social_image(article),"/og/articles/"+slug+".png?v=20261103-topic2")
                 self.assertIn('src="/images/'+slug+'.svg"',page)
                 self.assertTrue((ROOT/"dist/og/articles"/(slug+".png")).is_file())
+                self.assertFalse((ROOT/"dist/generated"/(slug+".jpg")).exists())
+                self.assertFalse((ROOT/"dist/clips"/(slug+".mp4")).exists())
         self.assertEqual(generated+approved+rejected,len(self.articles))
+
+    def test_build_does_not_copy_generated_media_when_visual_review_is_missing(self):
+        """The export gate must protect actual public files as well as HTML."""
+        import tempfile
+        from unittest.mock import patch
+        from scripts import build
+        from scripts.generated_photos import usable_generated_scene
+        from scripts.motion_clips import usable_clip
+        generated=[a for a in self.articles if usable_generated_scene(a,root=ROOT)]
+        clips=[a for a in generated if usable_clip(a,root=ROOT)]
+        self.assertTrue(generated,"Exercise real byte-valid source JPEGs")
+        self.assertTrue(clips,"Exercise real byte-valid derived MP4s")
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/"dist"
+            # Denial at the public review boundary simulates a lost review
+            # ledger without changing the real ledger or the byte validators.
+            with patch.object(build,"OUT",output), \
+                 patch.object(build,"reviewed_generated_scene",return_value=False):
+                build.build()
+                for article in generated:
+                    slug=article["slug"]
+                    self.assertFalse((output/"generated"/(slug+".jpg")).exists(),slug)
+                    self.assertFalse((output/"clips"/(slug+".mp4")).exists(),slug)
+                    self.assertFalse((output/"clips"/(slug+".vtt")).exists(),slug)
+                    page=(output/"articles"/slug/"index.html").read_text(encoding="utf-8")
+                    self.assertNotIn("/generated/"+slug+".jpg",page,slug)
+                    self.assertNotIn("/clips/"+slug+".mp4",page,slug)
+                    self.assertNotIn('"@type": "VideoObject"',page,slug)
+                    if not build.uses_stock_photo(article):
+                        self.assertTrue((output/"og/articles"/(slug+".png")).is_file(),slug)
+                        self.assertIn('property="og:image:type" content="image/png"',page,slug)
+                for relative in ("index.html","archive/index.html","feed.xml","sitemap.xml"):
+                    markup=(output/relative).read_text(encoding="utf-8")
+                    for article in generated:
+                        self.assertNotIn("/generated/"+article["slug"]+".jpg",markup,relative)
+                        self.assertNotIn("/clips/"+article["slug"]+".mp4",markup,relative)
 
     def test_no_photo_articles_have_distinct_offline_png_social_cards(self):
         """Future articles automatically get meaningful, non-identical raster cards."""
         from scripts.social_cards import render_social_card
-        from scripts.build import social_image
+        from scripts.build import social_image, uses_stock_photo
         import struct
         import tempfile
-        from scripts.media_policy import usable_cached_photo
-        from scripts.generated_photos import usable_generated_scene
+        from scripts.visual_review import reviewed_generated_scene
         no_photo=[a for a in self.articles
-                  if not usable_generated_scene(a,root=ROOT) and not usable_cached_photo(a,root=ROOT)]
+                  if not reviewed_generated_scene(a,root=ROOT) and not uses_stock_photo(a)]
         images=set()
         for a in no_photo:
             path=ROOT/"dist"/"og"/"articles"/(a["slug"]+".png")
