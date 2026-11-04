@@ -51,6 +51,35 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertIn("navigator.connection?.saveData", js)
         self.assertIn("IntersectionObserver", js)
 
+    def test_three_captions_belong_to_the_exact_current_article(self):
+        article = next(a for a in self.articles if a["slug"] == "bakery-no-important-announcement-panic")
+        clip = {"motion_style_version": 3, "duration_ms": 12000}
+        cues = build.broadcast_cues(article, clip)
+        self.assertEqual([cue["at"] for cue in cues], [0, 4, 8])
+        self.assertIn("完売", cues[1]["text"])
+        self.assertIn("スマホ", cues[2]["text"])
+        self.assertEqual(build.broadcast_cues({**article, "summary": "An edited story"}, clip), [])
+        self.assertEqual(build.broadcast_cues(article, {"motion_style_version": 2}), [])
+        # Scripts are optional; invalid JSON must not break the newspaper build.
+        with patch.object(Path, "read_text", return_value="not json"):
+            self.assertEqual(build.broadcast_cues(article, clip), [])
+
+    def test_new_video_length_and_captions_reach_all_reader_surfaces(self):
+        article = next(a for a in self.articles if a["slug"] == "bakery-no-important-announcement-panic")
+        with patch.object(build, "usable_clip", return_value={
+            "sha256": "c"*64, "created_at": "2026-11-04T00:00:00+00:00",
+            "motion_style_version": 3, "duration_ms": 12000,
+        }):
+            player = build.article_hero_media(article)
+            self.assertIn("12秒の無音演出映像", player)
+            self.assertIn("data-broadcast-overlay", player)
+            self.assertIn("data-cues=", player)
+            self.assertIn("▶ 12秒映像", build.card(article))
+            home = build.broadcast_feature([article])
+            self.assertIn('poster="' + build.editorial_image(article) + '"', home)
+            self.assertNotIn("broadcast-ticker", home)
+            self.assertIn("data-broadcast-progress", home)
+
     def test_incident_is_separate_from_social_and_linked(self):
         incidents = [a for a in self.articles if a["category"] == "事件"]
         self.assertTrue(incidents)

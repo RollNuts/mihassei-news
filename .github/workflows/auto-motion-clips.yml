@@ -40,7 +40,7 @@ jobs:
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
           ffmpeg -hide_banner -version | head -n 1
-      - name: Test real four-second encoding, source hashes, and OFF switch
+      - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
         run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher
 
   publish:
@@ -103,7 +103,7 @@ jobs:
             python3 scripts/build.py
             python3 scripts/audit_search_index.py
             python3 -m unittest discover -s tests -q
-            git commit -m "media: publish one verified 4s article motion clip"
+            git commit -m "media: publish one verified multi-shot article clip"
             if git push origin HEAD:main; then
               echo "Clip-only commit pushed safely. Dispatching exact public release verification."
               # GitHub-token pushes do not launch ordinary push workflows.

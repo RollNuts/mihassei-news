@@ -1,14 +1,23 @@
 # 未発生新聞：軽量動画（任意・追加費用0円）
 
-記事本文を邪魔しない短い動画を、承認済みの生成JPEGからローカルで作る仕組み。**実際の人物が動くAI動画生成ではなく、静止画へゆっくりズームする4秒の無音演出クリップ**です。現実のニュース映像ではありません。
+承認済みの生成JPEGを、**12秒・24fps・3カットの無音ニュース映像**に編集する仕組みです。全景→注目箇所→引きの順に構図を切り替え、パンやズームと短い字幕で記事の展開を伝えます。処理は無料のローカルCPUとFFmpegで行い、人物そのものを動かすAI動画生成や実際の報道映像ではありません。
 
 ## 読者への配信
 
 - 記事ごとの動画は、**検証済みMP4が存在する場合だけ**ネイティブHTML `<video>` で表示。動画がない記事は従来の写真／SVGのまま。
-- **autoplayなし・preload="none"・静止画posterあり・音声なし**。タップして見たい読者だけ再生し、モバイルのデータセーバーや動きを減らす設定を尊重します。
-- トップ・記事一覧は従来どおり静止画。動画があるカードには「▶ 4秒映像」の小さな表示だけを付け、動画ファイルは読み込みません。
+- **記事ページは手動再生・静止画posterあり・音声なし**。タップして見たい読者だけ再生します。
+- トップには、編集者が選んだ記事の動画を**最大1本**表示します。画面内にある間だけ無音プレビューを再生し、画面外やタブ非表示では停止します。読者の手動停止、動きを減らす設定、データ節約設定を尊重します。ブラウザが自動再生を拒否した場合も、手動で再生できます。
+- 記事一覧のカードは静止画のまま。動画がある場合は実際の長さを示す小さなラベルだけを付け、一覧の動画ファイルは読み込みません。
 - OGP／RSSはこれまでの軽いJPEG／PNGを使用。記事URL・canonical・サイトマップも変えません。
-- 実際の動画がある記事だけ `VideoObject` に公開日時・MP4・サムネイルを記録。検索結果での動画表示は保証されません。
+- 実際の動画がある記事だけ `VideoObject` に公開日時・MP4・サムネイル・動画の長さを記録。検索結果での動画表示は保証されません。
+
+## カットと字幕
+
+新しい動画は、全景を見せるカット、注目箇所へ寄るカット、再び引くカットの3つで構成します。写真の中の人物や小道具は静止したままです。記事の状況と合う写真だけを使い、構図を変えても主役やオチを見失わないか確認します。
+
+字幕は `content/broadcasts.json` に記事slugと3つの短い文を明示し、ブラウザで `video.currentTime` に合わせて切り替えます。一時停止・シーク・ループでも動画と同じ位置を示します。字幕はMP4に焼き込まないため、字幕だけの修正は次の静的ビルドで反映でき、動画の再生成や画像・動画の指紋の変更は不要です。
+
+既存の**4秒・12fps**の検証済みクリップも引き続き配信できます。12秒形式の追加だけで旧動画を失効させず、各動画の長さに合う表示と構造化データを生成します。記事や元画像が変わった場合の整合性検査は、どちらの形式にも適用します。
 
 ## 使い方（既存のMac／ローカルPC）
 
@@ -18,7 +27,7 @@
 # 候補の確認だけ。インストール・ネットワーク・新規ファイル作成なし
 python3 scripts/motion_clips.py --limit 1
 
-# 既存のffmpeg・ffprobeがある場合だけ、1本作る（通常4秒）
+# 既存のffmpeg・ffprobeがある場合だけ、12秒の3カット映像を1本作る
 python3 scripts/motion_clips.py --generate --limit 1
 # または特定の記事だけ
 python3 scripts/motion_clips.py --generate --slug ARTICLE-SLUG
@@ -28,25 +37,27 @@ python3 scripts/motion_clips.py --generate --slug ARTICLE-SLUG
 
 ## GitHub Actionsによる自動生成（無料、上限付き）
 
-既存のMac画像生成スケジュールは変更せず、Macから**検証済みJPEGがmainへ届いたとき**に `.github/workflows/auto-motion-clips.yml` が動きます。初回導入時にも1回起動します。
+既存のMac画像生成スケジュールは変更せず、**検証済みJPEGがmainへ届いたとき**や、動画生成処理・設定が更新されたときに `.github/workflows/auto-motion-clips.yml` が動きます。手動実行にも対応します。字幕ファイルの変更だけでは動画を再生成しません。
 
 - GitHubの公開リポジトリで、通常の無料Ubuntuランナーを使用。新しい有料GPU・AI・動画生成API・サブスクリプションは使いません。使い切りランナーに限り、無償ffmpegを用意します。
-- **1回の実行で動画を最大1本**。すでに有効なクリップがあれば再生成せず、画像に合わない古い映像は無視します。
+- 対象は `broadcast_feature: true` と明示された記事だけ。新しい写真が増えただけで全記事を動画化しません。
+- **1回の実行で動画を最大1本**。現在の演出形式で有効なクリップがあれば再生成しません。選定済み記事の旧形式は新形式への更新候補になりますが、新しいMP4が検証されるまでは有効な旧動画を保持します。画像に合わない古い映像は配信しません。
 - `assets/clips/manifest.json` と検証済みMP4のみを、GitHubのbotが**通常の非強制push**で反映。更新競合時は最新mainを取り直して最大3回だけ再試行。
 - 動画追加のbot pushでは通常のGitHub CIは自動発火しないため、**公開確認用ワークフローを明示的に起動**します。変更がなければ何もpushしません。
 - Macローカル生成とは別の停止スイッチです。Macの `stopped.json` だけではGitHub上の動画生成は停止しません。
 
 **いつでも停止:** `.github/motion-clips.json` の `"enabled": false` をmainへコミットするか、GitHub Actionsの `Free bounded article motion clips` をDisableしてください。再開は `"enabled": true`。停止中も既存の写真・記事・動画ファイルを削除しません。進行中の処理はmainの再確認とpush競合で停止し、緊急時はGitHub Actionsで実行中のジョブもキャンセルできます。
 
-実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。GitHub上の自動生成結果とCloudflare本番への反映は**別々に検証**します。実際の人物を動かすAI動画ではなく、写真を動かす短い演出です。
+実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。GitHub上の自動生成結果とCloudflare本番への反映は**別々に検証**します。
 
 
 ## 容量と安全
 
 | 項目 | 制限 |
 | --- | --- |
-| 動画長さ | 4秒 |
-| 解像度／fps | 640×360／12fps |
+| 新しい動画 | 12秒・3カット・24fps |
+| 既存動画の互換性 | 4秒・12fpsの検証済みクリップを維持 |
+| 解像度 | 640×360 |
 | 形式 | H.264 MP4・音声なし |
 | 動画1本 | 最大450KiB |
 | 全クリップ合計 | 最大24MiB |
