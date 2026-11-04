@@ -109,6 +109,7 @@ class ResourceTests(unittest.TestCase):
         stack.enter_context(patch.object(worker.resources, "Guard", return_value=guard))
         stack.enter_context(patch.object(worker.control, "check_allowed"))
         stack.enter_context(patch.object(worker.control, "register_runtime"))
+        stack.enter_context(patch.object(worker, "prepare_sync", return_value=worker.PREPARE_NEEDS_GPU))
         stack.enter_context(patch.object(worker.control, "clear_runtime"))
         stack.enter_context(patch.object(worker, "port_in_use", return_value=False))
 
