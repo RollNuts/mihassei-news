@@ -445,8 +445,19 @@
         "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
         "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
       },
-      "state": "intent",
-      "intent_at": "2026-11-04T03:45:01.239124+00:00"
+      "state": "verified_draft",
+      "intent_at": "2026-11-04T03:45:01.239124+00:00",
+      "mutation_receipt_confirmed": true,
+      "after": {
+        "buffer_id": "6ae9c804e9a91b5943cdd3ff",
+        "channel_id": "6ae94b74e29c69a171436d72",
+        "provider_status": "draft",
+        "due_at": "2026-11-04T10:11:00.000Z",
+        "sent_at": null,
+        "text_sha256": "b25ca2988fcf7a68d650a0e90b0b9c57c24079e365d43cac10063cf3b32ffc93",
+        "assets_sha256": "c2ba1f6798d72d76d2a6d35b2860bb70e7b1ef516fd33ea41f13c778420e1f70"
+      },
+      "verified_at": "2026-11-04T03:45:03.604069+00:00"
     }
   }
 }
