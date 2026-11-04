@@ -12,6 +12,13 @@
         "share_clicks": 1,
         "continued_readers": 0
       }
+    },
+    "double-speed-drama-explainer-marathon": {
+      "buffer_id": "6aeabbc4b8d162e0d805346b",
+      "queued_at_utc": "2026-11-04T04:59:47.571323+00:00",
+      "source": "fresh_article",
+      "text_sha256": "12dddc3b8558f62fc3e444f2783ddd39edac2b720c922e339393a94b2d749a7d",
+      "published_at": "2026-11-04T11:32:29+09:00"
     }
   }
 }
