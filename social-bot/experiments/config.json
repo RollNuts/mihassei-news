@@ -5,12 +5,12 @@
   "max_queue_size": 9,
   "max_new_per_run": 7,
   "channel_name": "Veripsa",
-  "reason": "2026-11-04 owner editorial pivot: pause further automated surreal/character experiment queueing in favor of sourced market commentary and manually reviewed relevant news. Preserve existing Buffer submissions and ledger. Keep zero added cost and unrelated article publishing unchanged.",
+  "reason": "2026-11-04 owner decision: retire automated surreal/character/useful-style X originals. Automatic X publishing is article promotion only. Preserve historical Buffer receipts and do not re-enable this lane without a new explicit owner request.",
   "creative_constraints": [
-    "Only original compact surreal text and occasional canon-respecting character moments",
-    "No repeated text or harassment, trend hijacking, engagement bait or IP mimicry",
+    "Historical data only; do not create or queue new surreal, character-moment or experiment posts automatically",
+    "Do not re-enable experiment_publishing_enabled or two_daily_midday_enabled without a new explicit owner request",
     "Keep Buffer free plan, GitHub public Actions and zero metered APIs",
-    "Original serial manga review gates remain separate until new visuals are evaluated"
+    "Existing sent/draft/ledger records remain immutable evidence"
   ],
   "launch_first_visual_now": false,
   "two_daily_midday_enabled": false,
