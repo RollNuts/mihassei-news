@@ -35,7 +35,10 @@ function element(tag) {
   const attributes = new Map();
   return Object.assign(eventTarget(), {
     tagName: tag.toUpperCase(), dataset: {},
-    setAttribute(name, value) { attributes.set(name, String(value)); if (name === 'src') this.src = value; },
+    setAttribute(name, value) {
+      attributes.set(name, String(value));
+      if (name === 'src') { this.src = value; this.sourceWrites = (this.sourceWrites || 0) + 1; }
+    },
     getAttribute(name) { return attributes.get(name) ?? null; },
     removeAttribute(name) { attributes.delete(name); if (name === 'src') this.src = ''; },
     ...(tag === 'track' ? { track: { mode: 'disabled' } } : {}),
@@ -44,7 +47,8 @@ function element(tag) {
 
 function fixture({ homepage = true, reduced = false, saveData = false,
   observer = true, playResults = [], captions = true, playlist = null,
-  storage = new Map(), storageThrows = false, nativeTrack = false } = {}) {
+  storage = new Map(), storageThrows = false, nativeTrack = false,
+  posterComplete = false, posterNaturalWidth = 0 } = {}) {
   const frames = new Map();
   const watchers = [];
   const pending = [];
@@ -82,7 +86,13 @@ function fixture({ homepage = true, reduced = false, saveData = false,
   const headline = { textContent: playlist?.[0]?.title || '', href: '' };
   const articleLink = { href: '' };
   const choices = { hidden: true };
-  const poster = { src: '' };
+  let poster = element('img');
+  poster.complete = posterComplete;
+  poster.naturalWidth = posterNaturalWidth;
+  poster.setAttribute('src', playlist?.[0]?.poster_url || '/generated/current.jpg');
+  poster.setAttribute('alt', '');
+  poster.setAttribute('data-broadcast-poster-fallback', playlist?.[0]?.poster_fallback_url || '/images/current.svg');
+  poster.setAttribute('data-broadcast-poster-fallback-alt', playlist?.[0]?.poster_fallback_alt || '現在の記事のイラスト');
   const program = playlist ? {
     dataset: { broadcastPlaylist: JSON.stringify(playlist) },
     querySelectorAll() { return buttons; },
@@ -96,6 +106,7 @@ function fixture({ homepage = true, reduced = false, saveData = false,
   } : null;
   const video = Object.assign(element('video'), {
     paused: true, hidden: false, controls: true, muted: false,
+    poster: playlist?.[0]?.poster_url || '/generated/current.jpg',
     currentTime: 0, duration: 12, playCalls: 0, pauseCalls: 0,
     error: null, loadCalls: 0, webkitPresentationMode: 'inline',
     querySelector(selector) {
@@ -139,6 +150,7 @@ function fixture({ homepage = true, reduced = false, saveData = false,
       remove(name) { classes.delete(name); },
     },
     hasAttribute(name) { return homepage && name === 'data-news-broadcast'; },
+    replaceChild(child, previous) { assert.equal(previous, poster); poster = child; return previous; },
     closest() { return program; },
     querySelector(selector) {
       return {
@@ -175,6 +187,7 @@ function fixture({ homepage = true, reduced = false, saveData = false,
     video, label, caption, counter, progress, panel, overlay,
     fallback, frames, pending, classes, storage, choices, headline, articleLink, buttons,
     get mediaSource() { return mediaSource; },
+    get poster() { return poster; },
     get subtitles() { return subtitles; },
     choose(index) { buttons[index].emit('click'); },
     fullscreen(enabled) { document.fullscreenElement = enabled ? video : null; document.emit('fullscreenchange'); },
@@ -367,16 +380,74 @@ test('an interrupted pending autoplay recovers after a quick return into view', 
 const playlist = [
   { slug: 'newest-story', key: 'newest-story:aaaaaaaaaaaa', title: '新しい映像の記事', category: '社会',
     video_url: '/clips/newest-story.mp4?v=aaaaaaaaaaaa', poster_url: '/generated/newest-story.jpg',
+    poster_fallback_url: '/images/newest-story.svg', poster_fallback_alt: '新しい記事のイラスト',
     article_url: '/articles/newest-story/', track_url: '/clips/newest-story.vtt?v=111111111111',
     duration_seconds: 12, cues },
   { slug: 'another-story', key: 'another-story:bbbbbbbbbbbb', title: '別の記事', category: 'スポーツ',
     video_url: '/clips/another-story.mp4?v=bbbbbbbbbbbb', poster_url: '/generated/another-story.jpg',
+    poster_fallback_url: '/images/another-story.svg', poster_fallback_alt: '別の記事のイラスト',
     article_url: '/articles/another-story/', track_url: '/clips/another-story.vtt?v=222222222222',
     duration_seconds: 12, cues: cues.map(cue => ({ ...cue, text: '別の記事：' + cue.text })) },
   { slug: 'legacy-story', key: 'legacy-story:cccccccccccc', title: '旧形式の記事', category: '技術',
     video_url: '/clips/legacy-story.mp4?v=cccccccccccc', poster_url: '/generated/legacy-story.jpg',
+    poster_fallback_url: '/images/legacy-story.svg', poster_fallback_alt: '旧形式の記事のイラスト',
     article_url: '/articles/legacy-story/', track_url: '', duration_seconds: 4, cues: [] },
 ];
+
+test('a cached broken broadcast poster recovers even without playlist data', () => {
+  const ui = fixture({posterComplete:true, posterNaturalWidth:0});
+  assert.equal(ui.poster.src,'/images/current.svg');
+  assert.equal(ui.video.poster,'/images/current.svg','native controls use the recovered poster too');
+  assert.equal(ui.poster.getAttribute('alt'),'現在の記事のイラスト');
+  const writes = ui.poster.sourceWrites;
+  ui.poster.emit('error');
+  ui.poster.emit('error');
+  assert.equal(ui.poster.sourceWrites,writes,'a failed SVG does not cause a retry loop');
+  assert.equal(ui.video.playCalls,0);
+});
+
+test('a healthy poster is retained and a late image failure does not stop a healthy video', () => {
+  const ui = fixture({playlist, posterComplete:true, posterNaturalWidth:1200});
+  assert.equal(ui.poster.src,playlist[0].poster_url);
+  assert.equal(ui.poster.getAttribute('alt'),'');
+  ui.poster.emit('error');
+  assert.equal(ui.poster.src,playlist[0].poster_fallback_url);
+  assert.equal(ui.video.poster,playlist[0].poster_fallback_url);
+  assert.equal(ui.video.hidden,false);
+});
+
+test('initial playlist setup keeps a cached poster recovery and rejects external fallback URLs', () => {
+  const cached = fixture({playlist, posterComplete:true, posterNaturalWidth:0});
+  assert.equal(cached.poster.src,playlist[0].poster_fallback_url);
+  assert.equal(cached.video.poster,playlist[0].poster_fallback_url);
+  const invalid = playlist.map(item => ({...item, poster_fallback_url:'https://example.com/fallback.svg'}));
+  const ui = fixture({playlist:invalid});
+  ui.poster.emit('error');
+  assert.equal(ui.poster.src,invalid[0].poster_url);
+  ui.choose(1);
+  ui.poster.emit('error');
+  assert.equal(ui.poster.src,invalid[1].poster_url);
+});
+
+test('video and poster failures retain the selected story and ignore detached image errors', () => {
+  const ui = fixture({playlist});
+  const oldPoster = ui.poster;
+  ui.choose(1);
+  oldPoster.emit('error');
+  assert.equal(ui.video.poster,playlist[1].poster_url,'an old image cannot replace the current poster');
+  ui.poster.emit('error');
+  ui.mediaSource.emit('error');
+  assert.equal(ui.video.hidden,true);
+  assert.equal(ui.poster.src,playlist[1].poster_fallback_url);
+  assert.equal(ui.poster.getAttribute('alt'),playlist[1].poster_fallback_alt);
+  assert.equal(ui.headline.href,playlist[1].article_url);
+  ui.choose(2);
+  assert.equal(ui.video.hidden,false);
+  assert.equal(ui.poster.src,playlist[2].poster_url,'another selection starts from its own photograph');
+  ui.poster.emit('error');
+  assert.equal(ui.poster.src,playlist[2].poster_fallback_url,'recovery remains available after a second switch');
+  assert.equal(ui.poster.getAttribute('alt'),playlist[2].poster_fallback_alt);
+});
 
 test('return visits prefer unseen videos, then the least recently played; new deliveries win', async () => {
   const storage = new Map();

@@ -51,6 +51,25 @@
     const video = shell.querySelector('video');
     if (!video) return;
     let mediaSource = video.querySelector('source');
+    let poster = shell.querySelector('.broadcast-poster');
+    let watchedPoster = null;
+    const watchPoster = image => {
+      if (!image || image === watchedPoster) return;
+      watchedPoster = image;
+      const original = image.getAttribute('src');
+      const fallback = image.getAttribute('data-broadcast-poster-fallback');
+      if (!/^\/images\/[a-z0-9-]+\.svg$/.test(fallback || '') || original === fallback) return;
+      const fallbackAlt = image.getAttribute('data-broadcast-poster-fallback-alt') || '';
+      const recover = () => {
+        // A detached image can report an old error after another story is selected.
+        if (image !== poster || image.getAttribute('src') !== original) return;
+        image.setAttribute('src', fallback);
+        image.setAttribute('alt', fallbackAlt);
+        video.poster = fallback;
+      };
+      image.addEventListener('error', recover, { once: true });
+      if (image.complete && image.naturalWidth === 0) recover();
+    };
     const setNativeCaptions = nativeCaptions(video);
     const overlay = shell.querySelector('[data-broadcast-overlay]');
     const label = overlay?.querySelector('[data-broadcast-label]');
@@ -206,7 +225,6 @@
       const headline = program.querySelector('[data-broadcast-headline]');
       const articleLink = program.querySelector('[data-broadcast-article-link]');
       const choices = program.querySelector('[data-broadcast-choices]');
-      const poster = shell.querySelector('.broadcast-poster');
       let selected = 0;
       let remembered = '';
       const choose = (index, initial = false) => {
@@ -233,8 +251,22 @@
         if (progress) progress.style.transform = 'scaleX(0)';
         if (headline) { headline.textContent = item.title; headline.href = item.article_url; }
         if (articleLink) articleLink.href = item.article_url;
-        if (poster) poster.src = item.poster_url;
         video.poster = item.poster_url;
+        if (changed && poster) {
+          const nextPoster = document.createElement('img');
+          nextPoster.className = 'broadcast-poster';
+          nextPoster.width = 1200;
+          nextPoster.height = 675;
+          nextPoster.loading = 'lazy';
+          nextPoster.decoding = 'async';
+          nextPoster.alt = '';
+          nextPoster.setAttribute('src', item.poster_url);
+          nextPoster.setAttribute('data-broadcast-poster-fallback', item.poster_fallback_url || '');
+          nextPoster.setAttribute('data-broadcast-poster-fallback-alt', item.poster_fallback_alt || '');
+          shell.replaceChild(nextPoster, poster);
+          poster = nextPoster;
+        }
+        watchPoster(poster);
         video.setAttribute('aria-label', `${item.title}・${item.duration_seconds}秒の無音演出映像`);
         buttons.forEach(button => button.setAttribute('aria-pressed',
           String(Number(button.dataset.broadcastChoice) === index)));
@@ -275,6 +307,8 @@
         } catch (_) { /* Playback and explicit choices never require storage. */ }
       });
     }
+    // Also protect the server-rendered poster when the optional playlist is absent.
+    watchPoster(poster);
     if ('IntersectionObserver' in window) {
       const watcher = new IntersectionObserver(entries => {
         inView = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.35);
