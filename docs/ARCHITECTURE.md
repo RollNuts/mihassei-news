@@ -24,6 +24,7 @@ content/serials.json ────┘                │
 - 連載は`content/serials.json`。推理小説は`kind: fiction`、実在の市場データに基づく考察は`kind: analysis`。
 - 市場分析は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
 - RSS、構造化データ、サイトマップでは架空の未来日時を実際の掲載日時として扱いません。
+- 続報記事は既刊を上書きせず独立した記事として保存し、任意の `followup_of` に直前の関連記事slugを記録します。親記事が存在し、子記事より先に実公開されていることをビルドで検証し、公開ページでは前後を相互リンクします。
 - 詳しい検証基準は[`docs/SERIAL_EDITING_GUIDE.md`](SERIAL_EDITING_GUIDE.md)と[`scripts/forecast_ledger.py`](../scripts/forecast_ledger.py)を参照。
 
 ## 画像
