@@ -44,6 +44,7 @@ class SearchIndexabilityTests(unittest.TestCase):
                 page = html_path.read_text(encoding="utf-8")
                 self.assertIn(f'<link rel="canonical" href="{url}">', page)
                 self.assertNotRegex(page, r'<meta\s+name="robots"\s+content="[^"]*noindex')
+                self.assertIn('<meta name="robots" content="max-image-preview:large">', page)
                 self.assertIn('<meta name="description" content="', page)
                 self.assertIn("<title>", page)
                 match = re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)
