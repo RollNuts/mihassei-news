@@ -316,7 +316,7 @@ def load():
         raise ValueError("Articles must be a list")
     seen = set()
     for a in articles:
-        required = ("slug", "title", "summary", "category", "fiction_at", "paragraphs", "source", "art", "tags")
+        required = ("slug", "title", "summary", "category", "fiction_at", "published_at", "paragraphs", "source", "art", "tags")
         if any(k not in a for k in required):
             raise ValueError("Missing article field")
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", a["slug"]) or a["slug"] in seen:
@@ -345,8 +345,11 @@ def load():
         source = a["source"]
         if not source["url"].startswith("https://"):
             raise ValueError("Source must use HTTPS")
-        if five_years_later(source["published_at"]) != a["fiction_at"]:
-            raise ValueError("Fictional datetime must be exactly five years later: " + a["slug"])
+        if five_years_later(a["published_at"]) != a["fiction_at"]:
+            raise ValueError(
+                "Fictional datetime must keep publication month/day/time and shift only "
+                "the year by five: " + a["slug"]
+            )
         if a.get("photo"):
             p = a["photo"]
             if not p.get("url","").startswith("https://images.unsplash.com/photo-"):
