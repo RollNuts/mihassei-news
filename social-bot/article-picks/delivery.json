@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-05T14:45:07.637940+00:00",
+  "checked_at_utc": "2026-11-05T16:22:42.561293+00:00",
   "source": "buffer_recent_list_plus_saved_id_readonly",
   "scope": {
     "ledger_days": 7,
     "max_items": 60,
     "automatic_lane": "article-picks-only"
   },
-  "today_jst": "2026-11-05",
+  "today_jst": "2026-11-06",
   "observed": {
     "article_records_checked": 8,
-    "buffer_sent_today": 6,
+    "buffer_sent_today": 0,
     "buffer_scheduled_today": 0,
     "unverified": 0,
     "overdue_scheduled": 0,
