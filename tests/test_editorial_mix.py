@@ -9,6 +9,7 @@ from scripts.editorial_mix import (
     LANE_TARGETS,
     lane_counts,
     next_preferred_lane,
+    report_day,
     validate_articles,
 )
 
@@ -87,6 +88,19 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(counts["trend"], 1)
         self.assertEqual(counts["social_life"], 1)
         self.assertEqual(counts["original_satire"], 0)
+
+    def test_rollout_day_does_not_force_backfill_after_seven_legacy_stories(self):
+        articles = [
+            {
+                "slug": f"legacy-{i}",
+                "published_at": f"2026-11-05T{7 + i * 2:02d}:30:00+09:00",
+                "source": {"url": f"https://example.com/legacy-{i}"},
+            }
+            for i in range(7)
+        ]
+        report = report_day(articles, "2026-11-05")
+        self.assertIn("published=7", report)
+        self.assertIn("rollout tracking partial", report)
 
     def test_valid_trend_metadata_passes(self):
         errors, warnings = validate_articles([story("fresh", "trend")])
