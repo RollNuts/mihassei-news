@@ -53,7 +53,7 @@
       "url": "https://www.reuters.com/business/media-telecom/chinas-hollywood-visitors-become-stars-consumers-spend-more-experiences-2026-11-02/",
       "topic": "2026年11月2日のReuters報道。中国・横店影視城では観光客が映画セットで撮影体験を楽しみ、体験型消費への関心が紹介された。全員が主演を希望する小町映画村の混乱、監督が通行人になる描写や人物の発言は本紙独自の設定であり、実際の撮影事故や運営事実ではない。"
     },
-    "scene_prompt": "A tired film director carrying shopping bags is the ONLY person walking across an empty historical street set. Far behind him, a tight cluster of costumed lead actors pose beside a tripod camera; no other pedestrians are present.",
+    "scene_prompt": "ONE solitary tired film director carrying two shopping bags walks across a completely empty historical movie street. A tripod camera stands at the curb pointed at him. Empty sidewalks and empty storefronts; no other people anywhere in the frame.",
     "tags": [
       "体験消費",
       "イベント"
@@ -85,7 +85,7 @@
       "url": "https://www.hakuhodo.co.jp/news/newsrelease/267437/",
       "topic": "博報堂生活総合研究所が2026年10月30日に公表した11月消費意欲調査では、セール・ブラックフライデーへの期待と、物価高や年末年始に備えた節約・我慢の声が併存する。実際に値引き額を稼ぐために不要品を買い足した家庭がいたとの調査結果ではない。藤村家の買い物・支出額・レシートの額装と発言は本紙独自の創作。"
     },
-    "scene_prompt": "A proud father holds a picture frame containing ONE long blank store receipt with a single red highlighted band. Behind him, a narrow home hallway is blocked by sealed cardboard appliance boxes and shopping bags; a puzzled teenage boy points at the pile.",
+    "scene_prompt": "Close-up still life in a home hallway: ONE black picture frame contains a very long narrow white cash-register paper strip with one red band. Sealed cardboard appliance boxes and shopping bags tower around the frame. No people.",
     "tags": [
       "お金",
       "節約"
