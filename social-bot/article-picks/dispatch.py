@@ -39,7 +39,7 @@ JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
 PROMOTION_SLOT_HOURS = (9, 11, 13, 15, 17, 19, 21)
 PROMOTION_SLOT_MINUTE = 5
-RECOVERABLE_BUFFER_STATUSES = ("scheduled", "sent", "draft", "pending", "error", "failed")
+RECOVERABLE_BUFFER_STATUSES = ("scheduled", "sent", "draft", "error", "needs_approval", "sending")
 CRISIS_PROMO_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"

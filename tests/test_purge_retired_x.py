@@ -115,7 +115,7 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
             self.target, self.post, dict(self.post)))
         for patch, expected in (
             ({"status": "sent", "sentAt": "2026-11-05T09:30:00Z"}, "already_published"),
-            ({"status": "pending"}, "changed_before_delete"),
+            ({"status": "sending"}, "changed_before_delete"),
             ({"dueAt": "2026-11-05T09:30:00Z"}, "changed_before_delete"),
             ({"text": "edited"}, "text_changed"),
             ({"channelId": "unrelated"}, "channel_mismatch"),
@@ -202,7 +202,7 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
                     self.target, {"recovery_results": {"xexp-test": forged}}))
 
     def test_unpublished_matching_status_is_allowed_only_in_manual_purge(self):
-        for status in ("draft", "scheduled", "pending", "error", "failed"):
+        for status in ("draft", "scheduled", "error", "needs_approval", "sending"):
             with self.subTest(status=status):
                 self.assertIsNone(purge.validate_live(
                     self.target, {**self.post, "status": status}))

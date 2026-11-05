@@ -448,8 +448,8 @@ class ExperimentsTests(unittest.TestCase):
                                          "status":"sent","sentAt":"2026-11-05T01:00:00Z"}}],
                       "pageInfo":{"hasNextPage":False,"endCursor":None}}},
             {"posts":{"edges":[
-                {"node":{"id":"pending-b","text":"記事B","status":"pending"}},
-                {"node":{"id":"failed-c","text":"記事C","status":"failed"}}
+                {"node":{"id":"approval-b","text":"記事B","status":"needs_approval"}},
+                {"node":{"id":"sending-c","text":"記事C","status":"sending"}}
             ],"pageInfo":{"hasNextPage":False,"endCursor":None}}},
         ]
         with patch("publish.gql", side_effect=responses) as api:
@@ -459,12 +459,12 @@ class ExperimentsTests(unittest.TestCase):
             )
         self.assertEqual(
             [row["id"] for row in values],
-            ["sent-a","pending-b","failed-c"],
+            ["sent-a","approval-b","sending-c"],
         )
         self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
         self.assertIn("dueAt: {start:", api.call_args_list[0].args[1])
         self.assertIn(
-            "status: [draft, pending, error, failed]",
+            "status: [draft, error, needs_approval, sending]",
             api.call_args_list[1].args[1],
         )
         self.assertNotIn("dueAt: {start:", api.call_args_list[1].args[1])

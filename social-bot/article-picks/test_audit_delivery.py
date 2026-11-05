@@ -92,25 +92,25 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(report["observed"]["delivery_problems"], 0)
         self.assertEqual(report["scope"]["automatic_lane"], "article-picks-only")
 
-    def test_direct_saved_id_read_can_reveal_failed_immediate_delivery(self):
+    def test_direct_saved_id_read_can_reveal_unsettled_immediate_delivery(self):
         state = {"schema_version": 1, "queued": {
-            "failed": entry("failed", 2),
-            "pending": entry("pending", 1),
+            "error": entry("error", 2),
+            "sending": entry("sending", 1),
         }}
         existing = [
-            {"id": "buf-failed", "status": "failed",
-             "text": "https://veripsa.com/articles/failed/"},
-            {"id": "buf-pending", "status": "pending",
-             "text": "https://veripsa.com/articles/pending/"},
+            {"id": "buf-error", "status": "error",
+             "text": "https://veripsa.com/articles/error/"},
+            {"id": "buf-sending", "status": "sending",
+             "text": "https://veripsa.com/articles/sending/"},
         ]
         report = m.build(state, existing, NOW)
         self.assertEqual(report["observed"]["delivery_problems"], 2)
         by_slug = {row["slug"]: row for row in report["items"]}
-        self.assertEqual(by_slug["failed"]["buffer_status"], "failed")
+        self.assertEqual(by_slug["error"]["buffer_status"], "error")
         self.assertEqual(
-            by_slug["failed"]["review_needed"], "provider_not_sent_failed"
+            by_slug["error"]["review_needed"], "provider_not_sent_error"
         )
-        self.assertEqual(by_slug["pending"]["buffer_status"], "pending")
+        self.assertEqual(by_slug["sending"]["buffer_status"], "sending")
 
     def test_read_post_by_id_is_read_only_and_uses_saved_id(self):
         with patch.object(m, "gql", return_value={
