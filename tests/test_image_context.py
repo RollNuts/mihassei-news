@@ -87,7 +87,7 @@ class ImageContextTests(unittest.TestCase):
             for field in ('property="og:image:alt"', 'name="twitter:image:alt"'):
                 self.assertIn(field + ' content="' + encoded_social + '"', story)
             self.assertIn('alt="' + encoded + '"', figure)
-            self.assertIn('<strong>創作ニュース</strong>', story)
+            self.assertIn('class="fiction-mark">創作報道', story)
             self.assertIn('<summary>着想元を見る</summary>', story)
             self.assertNotIn('href="#story-source"', story)
 
