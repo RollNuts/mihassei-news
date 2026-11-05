@@ -116,7 +116,7 @@ class EditorialMixTests(unittest.TestCase):
             ),
         ]
         advice = tone_advice(articles, "2026-11-06")
-        self.assertIn("last 2 are comic_exaggeration", advice)
+        self.assertIn("last 2 tracked stories are comic_exaggeration", advice)
         self.assertNotIn("comic_exaggeration (last 2", advice)
 
     def test_missing_tone_is_invalid_after_rollout(self):
