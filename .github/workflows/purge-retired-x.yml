@@ -1,6 +1,12 @@
 name: Inspect / Purge Retired X Experiment Posts (manual)
 
 on:
+  # Read-only inspection once when this safety workflow itself changes on main.
+  # Never execute Buffer deletion on push or schedule.
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/purge-retired-x.yml"
   workflow_dispatch:
     inputs:
       mode:
@@ -37,13 +43,13 @@ jobs:
           python -m py_compile social-bot/purge_retired_x.py
 
       - name: Inspect retired posts or delete exact unsent matches (manual only)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'push')
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          PURGE_MODE: ${{ inputs.mode }}
+          PURGE_MODE: ${{ github.event_name == 'push' && 'inspect' || inputs.mode }}
         run: |
           case "$PURGE_MODE" in
             inspect) purge_arg="--inspect" ;;
