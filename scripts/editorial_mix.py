@@ -72,6 +72,10 @@ def lane_counts(articles: list[dict], day_jst: str) -> Counter:
     return counts
 
 
+def day_story_count(articles: list[dict], day_jst: str) -> int:
+    return sum(article_day(article) == day_jst for article in articles)
+
+
 def next_preferred_lane(counts: Counter) -> str | None:
     """Return the lane with the largest remaining target deficit."""
     best_lane = None
@@ -235,14 +239,22 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
 def report_day(articles: list[dict], day_jst: str) -> str:
     counts = lane_counts(articles, day_jst)
-    total = sum(counts.values())
+    tracked = sum(counts.values())
+    published = day_story_count(articles, day_jst)
     parts = [
         f"{lane}={counts.get(lane, 0)}/{target}"
         for lane, target in LANE_TARGETS.items()
     ]
-    preferred = next_preferred_lane(counts)
-    suffix = preferred or "quality-only (3/2/2 target filled)"
-    return f"{day_jst}: tracked={total}; " + ", ".join(parts) + f"; next={suffix}"
+    if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
+        suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
+    else:
+        preferred = next_preferred_lane(counts)
+        suffix = preferred or "quality-only (3/2/2 target filled)"
+    return (
+        f"{day_jst}: published={published}; tracked={tracked}; "
+        + ", ".join(parts)
+        + f"; next={suffix}"
+    )
 
 
 def main() -> int:
