@@ -1,4 +1,4 @@
-name: Inspect / Purge Retired X Experiment Posts (manual)
+name: Inspect / Purge Retired X Experiment Posts
 
 on:
   # Read-only inspection once when this safety workflow itself changes on main.
