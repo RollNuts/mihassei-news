@@ -131,9 +131,12 @@ def execution_mode(args: list[str], env: dict) -> str:
         raise ValueError("Inspection and deletion modes are mutually exclusive")
     if not args:
         return "validate"
-    if (env.get("GITHUB_REF") != "refs/heads/main"
-            or env.get("GITHUB_EVENT_NAME") != "workflow_dispatch"):
-        raise RuntimeError("Buffer inspection/deletion requires manual main Actions")
+    if env.get("GITHUB_REF") != "refs/heads/main":
+        raise RuntimeError("Buffer inspection/deletion requires main Actions")
+    event = env.get("GITHUB_EVENT_NAME")
+    if (args[0] == "--apply" and event != "workflow_dispatch") or (
+            args[0] == "--inspect" and event not in ("workflow_dispatch", "push")):
+        raise RuntimeError("Deletion is manual-only; inspection is manual or trusted main push")
     return "inspect" if args[0] == "--inspect" else "apply"
 
 
@@ -211,13 +214,18 @@ def main() -> int:
     held = 0
     outcomes = []
 
-    try:
-        live_posts = list_live_posts()
-        list_error = None
-    except Exception as exc:
-        live_posts = {}
-        list_error = type(exc).__name__ + ": " + str(exc)[:240]
-        print("Could not list Buffer posts:", list_error, file=sys.stderr)
+    if mode == "inspect":
+        # A full list can omit old drafts. Inspect by exact immutable ID only;
+        # broad-list failure must not prevent read-only identity checks.
+        live_posts, list_error = {}, None
+    else:
+        try:
+            live_posts = list_live_posts()
+            list_error = None
+        except Exception as exc:
+            live_posts = {}
+            list_error = type(exc).__name__ + ": " + str(exc)[:240]
+            print("Could not list Buffer posts:", list_error, file=sys.stderr)
 
     if list_error:
         report = {
@@ -331,7 +339,8 @@ def main() -> int:
             "held": held,
         },
         "remaining_unpublished_legacy_known": verified_unpublished + held,
-        "provider_post_count": len(live_posts),
+        "provider_post_count": len(live_posts) if mode == "apply" else None,
+        "provider_lookup": "direct_id_each_target",
         "outcomes": outcomes,
     }
     RESULT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
