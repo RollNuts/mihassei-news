@@ -72,6 +72,24 @@ CPU_SCENES = {
         "measuring tape across it. A blue-yellow volleyball sits beside the "
         "plate, cropped at the frame edge. Plain blue background."
     ),
+    "film-village-all-stars-no-extras": (
+        "A tired middle-aged film director carrying shopping bags is the ONLY "
+        "person walking across a wide empty historical street set. Far behind "
+        "him, one tight cluster of brightly costumed aspiring lead actors pose "
+        "together beside a tripod camera; the street itself has no other pedestrians."
+    ),
+    "sale-discount-savings-receipt-framed": (
+        "A proud father holds a picture frame containing ONE long blank store "
+        "receipt with a single red highlighted band. Behind him, a narrow home "
+        "hallway is blocked by sealed cardboard appliance boxes and shopping bags; "
+        "a puzzled teenage boy points at the pile."
+    ),
+    "office-face-to-face-day-video-call-echo": (
+        "Foreground close-up of ONE large computer monitor clearly showing a "
+        "three-by-three video-call grid of fictional coworkers' faces. Behind it "
+        "is an otherwise empty Japanese open-plan office with rows of unused desks "
+        "and several closed meeting-booth doors."
+    ),
 }
 # These source snapshots bind reviewed compact directions to their article
 # versions. A later body or scene edit must use its current direction rather
@@ -84,6 +102,9 @@ CPU_SCENE_SOURCE_HASHES = {
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
     "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+    "film-village-all-stars-no-extras": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
+    "sale-discount-savings-receipt-framed": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
+    "office-face-to-face-day-video-call-echo": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
