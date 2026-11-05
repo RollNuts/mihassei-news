@@ -168,6 +168,25 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
+    def test_official_source_kind_requires_matching_official_host(self):
+        google = story("google-host", "trend")
+        google["trend_observation"]["url"] = "https://example.com/trending"
+        errors, _ = validate_articles([google])
+        self.assertTrue(any("trends.google.com" in error for error in errors))
+
+        x_item = story("x-host", "trend", term="別の話題")
+        x_item["trend_observation"]["source_kind"] = "x_official"
+        x_item["trend_observation"]["url"] = "https://trend.example.com/x"
+        errors, _ = validate_articles([x_item])
+        self.assertTrue(any("x.com or twitter.com" in error for error in errors))
+
+    def test_official_x_host_is_accepted(self):
+        item = story("x-official", "trend")
+        item["trend_observation"]["source_kind"] = "x_official"
+        item["trend_observation"]["url"] = "https://x.com/explore/tabs/trending"
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_public_x_aggregator_is_allowed_but_warned(self):
         item = story("x-public", "trend")
         item["trend_observation"]["source_kind"] = "x_public_aggregator"
@@ -184,6 +203,34 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertTrue(any("max is" in error for error in errors))
         self.assertTrue(any("verification_urls" in error for error in errors))
+
+    def test_typography_variants_do_not_bypass_trend_duplicate_guard(self):
+        first = story("first", "trend", term="ＡＩ 規制")
+        second = story(
+            "second",
+            "trend",
+            term="AI・規制！",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(any("duplicate trend term" in error for error in errors))
+
+    def test_typography_variants_do_not_bypass_signature_guard(self):
+        first = story("first", "social_life")
+        second = story(
+            "second",
+            "original_satire",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        second["editorial_signature"] = {
+            "target": "Ｆｉｒｓｔ が効率を重視しすぎる！",
+            "action": "first・が手段を目的にする",
+            "outcome": "ｆｉｒｓｔ・の本来の目的が消える。",
+        }
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(
+            any("editorial_signature duplicates" in error for error in errors)
+        )
 
     def test_same_trend_term_is_blocked_within_seven_days(self):
         first = story("first", "trend", term="通信障害")
