@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts import build, local_scene_photos
+from scripts import build, github_cpu_scenes, local_scene_photos
 from scripts.generated_photos import (
     article_fingerprint, usable_generated_scene, generated_scene_entry, generated_url,
 )
@@ -349,6 +349,32 @@ class LocalComedySceneTests(unittest.TestCase):
             with patch.object(build, "BASE", root):
                 self.assertEqual(build.editorial_image(article), build.illustration_path(article))
                 self.assertTrue(build.social_image(article).startswith("/og/articles/"))
+
+    def test_cpu_prompt_compacts_long_single_sentence_at_clause_boundaries(self):
+        """Long comma-rich scene directions keep the main visual action under CLIP budget."""
+        article = {
+            **fixture(),
+            "slug": "music-show-surprise-face-rehearsal",
+            "scene_prompt": (
+                "Close-up of a row of Japanese television studio audience members holding "
+                "small rehearsal cue cards without legible text while practicing exaggerated "
+                "surprised facial expressions, one attentive female audience member in the "
+                "front row glancing at her card, a discreet stage manager with a clipboard "
+                "counting beats, bright warm concert-stage lights behind them, contemporary "
+                "music television studio, deadpan photorealistic editorial scene, clear human "
+                "gestures, no performer likeness, no brand marks, no writing or logos."
+            ),
+        }
+
+        class WordTokenizer:
+            def encode(self, text, add_special_tokens=True):
+                return text.split()
+
+        prompt = github_cpu_scenes.fit_cpu_prompt(article, WordTokenizer())
+        self.assertLessEqual(len(WordTokenizer().encode(prompt)), github_cpu_scenes.CLIP_TOKEN_LIMIT)
+        self.assertIn("rehearsal cue cards", prompt)
+        self.assertIn("exaggerated surprised facial expressions", prompt)
+        self.assertNotIn("no writing or logos", prompt)
 
     def test_dry_run_never_connects_or_generates_assets(self):
         a = fixture()
