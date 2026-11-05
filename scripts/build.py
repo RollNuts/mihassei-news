@@ -30,6 +30,7 @@ if __package__:
     from .growth_desk import render as render_growth_desk
     from .social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from .editorial_copy import reader_copy, source_reader_copy
+    from .reader_paths import suggested_articles
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -44,6 +45,7 @@ else:
     from growth_desk import render as render_growth_desk
     from social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from editorial_copy import reader_copy, source_reader_copy
+    from reader_paths import suggested_articles
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -976,7 +978,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     # Non-content utility pages should never compete with actual stories in search.
-    robots_tag = '<meta name="robots" content="noindex,follow">' if (path in ("/saved/", "/404.html") or not indexable) else ""
+    noindex_page = path in ("/saved/", "/404.html") or not indexable
+    robots_tag = '<meta name="robots" content="noindex,follow">' if noindex_page else ""
+    image_preview_tag = "" if noindex_page else '<meta name="robots" content="max-image-preview:large">'
     serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -998,6 +1002,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     page_class = "page-home" if path == "/" else "page-inner"
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+{image_preview_tag}
 {robots_tag}
 <meta name="theme-color" content="#f9f8f3">
 <meta name="google-adsense-account" content="ca-pub-6754575901141756">
@@ -1158,20 +1163,18 @@ def home(articles, serials=None):
         href = category_url(cat) if cat in featured_categories else "/archive/?category=" + quote(cat)
         genre_links.append(f'<a href="{escape(href)}">{escape(cat)} <span>{count}本</span></a>')
     genre_links = "".join(genre_links)
-    # Surface a few fresh reusable topics on the front page. Tags stay a
-    # discovery axis, not a second category system or a standalone thin page.
-    topic_tags = []
-    seen_tags = set()
-    for item in articles[:20]:
-        for tag in article_tags(item):
-            if tag in seen_tags:
-                continue
-            seen_tags.add(tag)
-            topic_tags.append(tag)
-            if len(topic_tags) >= 8:
-                break
-        if len(topic_tags) >= 8:
-            break
+    # Promote established topic clusters instead of linking one-off thin tags
+    # from the front page. This makes the strongest internal-link hubs stable
+    # as the archive grows while keeping playful satire tags secondary.
+    home_topics = curated_topics(articles)
+    topic_tags = [
+        tag for tag, items in sorted(
+            home_topics.items(),
+            key=lambda pair: (
+                topic_is_satire(pair[0], pair[1]), -len(pair[1]), pair[0]
+            ),
+        )
+    ][:8]
     topic_links = "".join(
         f'<a href="{escape(tag_url(tag))}">#{escape(tag)}</a>' for tag in topic_tags
     )
@@ -1538,6 +1541,37 @@ def story(a, articles, issues=None, serials=None):
     )
     bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else serials)
     popular_section = pv_recommendations(articles, a["slug"])
+    # Static related-story links strengthen topic clusters even without JS or PV data.
+    # Only stories sharing an actual published tag qualify; the existing topic
+    # ranker decides order, so this adds no new opaque recommendation system.
+    ranked_related = suggested_articles(a, articles, limit=max(0, len(articles) - 1))
+    related_items = []
+    for item in ranked_related:
+        item_topics = set(article_tags(item))
+        shared_topics = [tag for tag in article_tags(a) if tag in item_topics][:2]
+        if not shared_topics:
+            continue
+        shared_links = "".join(
+            f'<a href="{escape(tag_url(tag))}">#{escape(tag)}</a>'
+            for tag in shared_topics
+        )
+        related_items.append(
+            '<article class="topic-related-item">'
+            f'<div><span class="topic-related-category">{escape(item["category"])}</span>'
+            f'<h3><a href="{article_url(item)}">{escape(item["title"])}</a></h3></div>'
+            f'<nav class="topic-related-tags" aria-label="共通する話題">{shared_links}</nav>'
+            '</article>'
+        )
+        if len(related_items) >= 3:
+            break
+    related_section = (
+        '<section class="topic-related" aria-labelledby="topic-related-title">'
+        '<div class="topic-related-heading"><div><span class="small-label">RELATED</span>'
+        '<h2 id="topic-related-title">同じ話題の記事</h2></div>'
+        '<a href="/topics/">話題一覧 ↗</a></div>'
+        '<div class="topic-related-list">' + "".join(related_items) + '</div></section>'
+        if related_items else ""
+    )
     parent = followup_parent(a, articles)
     followup_context = (
         '<aside class="story-followup-context" aria-label="前の記事">'
@@ -1609,6 +1643,7 @@ def story(a, articles, issues=None, serials=None):
 {escape(src["publisher"])} で着想元を見る ↗</a>
 </div>
 </details>
+{related_section}
 {followup_section}
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
