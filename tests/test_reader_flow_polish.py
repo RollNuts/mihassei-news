@@ -82,8 +82,9 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertEqual(page.count('<details class="source-context"'), 1)
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn(item["source"]["url"], page)
-        self.assertIn(item["source"]["topic"], page)
-        self.assertIn("着想元は、記事内の創作内容を裏付けるものではありません", page)
+        from scripts.editorial_copy import source_reader_copy
+        self.assertIn(source_reader_copy(item["source"]["topic"]), page)
+        self.assertIn("着想元は、この記事の出来事を報じたものではありません", page)
         self.assertIn('<strong>創作ニュース</strong>', page)
 
     def test_small_category_still_has_a_relevant_archive_link(self):
