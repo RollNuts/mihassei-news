@@ -92,6 +92,25 @@ def validate_live(target: dict, remote: dict | None) -> str | None:
     return None
 
 
+def resolve_live_target(target: dict, listing: dict, read_by_id) -> tuple[dict | None, str | None]:
+    """Do not treat omitted list entries as deleted or trust them blindly.
+
+    The provider list can exclude drafts or older posts. A direct ID lookup
+    must still pass the exact ID/channel/text/sent/action checks in
+    validate_live before any mutation is possible.
+    """
+    remote = listing.get(target["buffer_id"])
+    if remote is not None:
+        return remote, None
+    try:
+        remote = read_by_id(target["buffer_id"])
+    except Exception:
+        return None, "direct_id_lookup_failed"
+    if remote is None:
+        return None, "not_in_listing_or_direct_lookup_unverified"
+    return remote, None
+
+
 def main() -> int:
     inventory = read(HERE / "experiments" / "posts.json")
     ledger = read(HERE / "experiments" / "state.json")
@@ -192,7 +211,13 @@ def main() -> int:
     for target in rows:
         pid = target["post_id"]
         bid = target["buffer_id"]
-        before = live_posts.get(bid)
+        before, lookup_issue = resolve_live_target(target, live_posts, fetch_post)
+        if lookup_issue:
+            print("HELD", pid, lookup_issue)
+            outcomes.append({"post_id": pid, "buffer_id": bid,
+                             "state": "held", "reason": lookup_issue})
+            held += 1
+            continue
 
         reason = validate_live(target, before)
         if reason == "already_absent":
@@ -214,19 +239,12 @@ def main() -> int:
         try:
             result = delete_post(bid)
         except Exception as exc:
-            result = {}
-            try:
-                after = fetch_post(bid)
-            except Exception:
-                after = None
-            if after is None:
-                print("DELETED", pid, bid, "verified_absent_after_error")
-                outcomes.append({"post_id": pid, "buffer_id": bid, "state": "deleted", "verification": "absent_after_error"})
-                deleted += 1
-                continue
-            reason = "delete_request_failed"
+            # A failed mutation plus a failed/empty follow-up read is NOT
+            # evidence that our deletion succeeded. Preserve uncertainty.
+            reason = "delete_request_failed_unverified"
             print("HELD", pid, reason, type(exc).__name__, str(exc)[:180])
-            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
+            outcomes.append({"post_id": pid, "buffer_id": bid,
+                             "state": "held", "reason": reason})
             held += 1
             continue
 
@@ -236,19 +254,13 @@ def main() -> int:
             deleted += 1
             continue
 
-        try:
-            after = fetch_post(bid)
-        except Exception:
-            after = None
-        if after is None:
-            print("DELETED", pid, bid, "verified_absent")
-            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "deleted", "verification": "absent"})
-            deleted += 1
-        else:
-            reason = "delete_unverified"
-            print("HELD", pid, reason, str(result.get("message", ""))[:180])
-            outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
-            held += 1
+        # Without a matching DeletePostSuccess receipt, a null post or an
+        # API read error cannot prove that this invocation deleted anything.
+        reason = "delete_without_receipt_unverified"
+        print("HELD", pid, reason, str(result.get("message", ""))[:180])
+        outcomes.append({"post_id": pid, "buffer_id": bid,
+                         "state": "held", "reason": reason})
+        held += 1
 
     report = {
         "schema_version": 1,
