@@ -196,6 +196,22 @@ def deletion_recheck_reason(target: dict, before: dict, current: dict | None) ->
     return None
 
 
+def posts_list_query(orgid: str, channelid: str, cursor: str | None, *,
+                     drafts_only: bool = False) -> str:
+    """Bounded, channel-pinned Buffer list; draft filter is explicit."""
+    from publish import qstring
+    after = ", after: " + qstring(cursor) if cursor else ""
+    status_clause = ", status: [draft]" if drafts_only else ""
+    return (
+        "query { posts(first: 100" + after
+        + ", input: {organizationId: " + qstring(orgid)
+        + ", filter: {channelIds: [" + qstring(channelid)
+        + "]" + status_clause + "}}) { "
+        "edges { node { id channelId text status dueAt sentAt allowedActions } } "
+        "pageInfo { hasNextPage endCursor } } }"
+    )
+
+
 def execution_mode(args: list[str], env: dict) -> str:
     """Read-only inspection may run on main push; deletion is manual-only."""
     if any(arg not in ("--inspect", "--apply") for arg in args):
@@ -249,15 +265,8 @@ def main() -> int:
         out = {}
         seen = set()
         for _page in range(20):
-            after = ", after: " + qstring(cursor) if cursor else ""
-            query = (
-                "query { posts(first: 100" + after
-                + ", input: {organizationId: " + qstring(orgid)
-                + ", filter: {channelIds: [" + qstring(CHANNEL)
-                + "]" + (", status: [draft]" if drafts_only else "") + "}}) { "
-                "edges { node { id channelId text status dueAt sentAt allowedActions } } "
-                "pageInfo { hasNextPage endCursor } } }"
-            )
+            query = posts_list_query(orgid, CHANNEL, cursor,
+                                     drafts_only=drafts_only)
             conn = gql(token, query).get("posts") or {}
             for edge in conn.get("edges") or []:
                 node = edge.get("node") or {}
