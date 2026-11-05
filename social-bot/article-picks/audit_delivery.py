@@ -17,6 +17,8 @@ JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
 MAX_ITEMS = 60
 UNDELIVERED_STATUSES = {"draft", "error", "needs_approval", "sending"}
+IMMEDIATE_PROBLEM_STATUSES = {"draft", "error", "needs_approval"}
+SENDING_GRACE = timedelta(minutes=15)
 
 
 def trigger_allows_provider_read(event_name: str, now: datetime) -> bool:
@@ -123,7 +125,7 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
     share_mode = remote.get("shareMode")
     if isinstance(share_mode, str) and share_mode:
         result["buffer_share_mode"] = share_mode
-    if status in UNDELIVERED_STATUSES:
+    if status in IMMEDIATE_PROBLEM_STATUSES:
         result["review_needed"] = "provider_not_sent_" + status
     if status == "scheduled":
         due = aware(remote.get("dueAt"))
@@ -159,13 +161,36 @@ def build(state: dict, existing: list[dict], now: datetime,
     overdue_scheduled = 0
     missing_provider_timestamps = 0
     delivery_problems = 0
+    delivery_in_progress = 0
+    overdue_sending = 0
     for row in items:
         sent = aware(row.get("buffer_sent_at_utc"))
         due = aware(row.get("buffer_due_at_utc"))
         if row["buffer_status"] == "sent" and sent is None:
             missing_provider_timestamps += 1
-        if row["buffer_status"] in UNDELIVERED_STATUSES:
+        if row["buffer_status"] in IMMEDIATE_PROBLEM_STATUSES:
             delivery_problems += 1
+        if row["buffer_status"] == "sending":
+            created = (
+                aware(row.get("buffer_created_at_utc"))
+                or aware(row.get("buffer_created_at_at_accept"))
+                or aware(row.get("queued_at_utc"))
+            )
+            if created is None:
+                missing_provider_timestamps += 1
+                delivery_problems += 1
+                row["review_needed"] = "provider_sending_without_created_at"
+            elif now - created > SENDING_GRACE:
+                delivery_problems += 1
+                overdue_sending += 1
+                row["review_needed"] = "provider_sending_more_than_15_minutes"
+                row["sending_age_minutes"] = int((now - created).total_seconds() // 60)
+            else:
+                delivery_in_progress += 1
+                row["delivery_in_progress"] = True
+                row["sending_age_minutes"] = max(
+                    0, int((now - created).total_seconds() // 60)
+                )
         if row["buffer_status"] == "scheduled":
             if due is None:
                 missing_provider_timestamps += 1
@@ -194,11 +219,14 @@ def build(state: dict, existing: list[dict], now: datetime,
             "overdue_scheduled": overdue_scheduled,
             "missing_provider_timestamps": missing_provider_timestamps,
             "delivery_problems": delivery_problems,
+            "delivery_in_progress": delivery_in_progress,
+            "overdue_sending": overdue_sending,
         },
         "limitations": (
             "Buffer status is provider evidence, not independent X page verification. "
-            "Missing list entries are checked by saved Buffer ID. Error/needs_approval/sending/draft "
-            "statuses and overdue scheduled posts require investigation, never automatic retry. "
+            "Missing list entries are checked by saved Buffer ID. Draft/error/needs_approval "
+            "require investigation. Sending is normal for up to 15 minutes, then requires review. "
+            "Overdue scheduled posts also require investigation. Nothing is automatically retried. "
             "Missing provider timestamps are not assumed sent."
         ),
         "items": items,
@@ -252,7 +280,8 @@ def main() -> int:
         report["observed"]["article_records_checked"],
         "checked;",
         report["observed"]["unverified"],
-        "unverified;", report["observed"]["delivery_problems"],
+        "unverified;", report["observed"]["delivery_in_progress"],
+        "sending;", report["observed"]["delivery_problems"],
         "delivery problems.",
     )
     return 0
