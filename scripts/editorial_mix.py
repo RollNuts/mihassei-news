@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import unicodedata
 from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -49,9 +50,16 @@ def _parse_dt(value: object) -> datetime | None:
 
 
 def _norm(value: object) -> str:
+    """Normalize harmless typography differences before duplicate comparisons."""
     if not isinstance(value, str):
         return ""
-    return _ws.sub("", value).casefold().strip()
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(
+        char for char in normalized
+        if not char.isspace()
+        and not unicodedata.category(char).startswith("P")
+        and unicodedata.category(char) != "Cf"
+    ).strip()
 
 
 def article_day(article: dict) -> str | None:
