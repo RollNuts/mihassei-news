@@ -475,6 +475,8 @@ class ExperimentsTests(unittest.TestCase):
         self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
         self.assertIn("startDate:", api.call_args_list[0].args[1])
         self.assertIn("createdAt", api.call_args_list[0].args[1])
+        self.assertIn("error { message supportUrl }", api.call_args_list[0].args[1])
+        self.assertNotIn("rawError", api.call_args_list[0].args[1])
         self.assertNotIn("dueAt: {start:", api.call_args_list[0].args[1])
         self.assertIn(
             "status: [draft, error, needs_approval, sending]",
