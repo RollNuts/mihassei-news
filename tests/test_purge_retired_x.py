@@ -33,9 +33,24 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
     def test_failed_direct_read_is_not_treated_as_deleted(self):
         def fail(_bid):
             raise RuntimeError("provider timeout")
-        item, problem = purge.resolve_live_target(self.target, {}, fail)
+        details = {}
+        item, problem = purge.resolve_live_target(
+            self.target, {}, fail, error_detail=details)
         self.assertIsNone(item)
         self.assertEqual(problem, "direct_id_lookup_failed")
+        self.assertEqual(details, {"error_class": "RuntimeError"})
+
+    def test_safe_buffer_error_is_preserved_without_credentials(self):
+        def fail(_bid):
+            raise RuntimeError("Buffer GraphQL error: post cannot be found")
+        detail = {}
+        _, reason = purge.resolve_live_target(
+            self.target, {}, fail, error_detail=detail)
+        self.assertEqual(reason, "direct_id_lookup_failed")
+        self.assertEqual(detail, {
+            "error_class": "RuntimeError",
+            "provider_message": "Buffer GraphQL error: post cannot be found",
+        })
 
     def test_listing_presence_avoids_extra_api_read(self):
         def fail(_bid):
