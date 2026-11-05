@@ -30,6 +30,7 @@ CONTEXT_DEPENDENT_OPENING_PATTERN = re.compile(
     r"このニュース|この話|こうした(?:動き|流れ|結果|状況)|これを受け|その結果)"
 )
 MAX_FOLLOWUP_CHAIN_ARTICLES = 3
+BACKGROUND_ONLY_FIRST_SENTENCE_CHARS = 55
 
 
 def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
@@ -93,6 +94,22 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
                     "CONTEXT_DEPENDENT_OPENING",
                     slug,
                     f"{field_name}が前の記事・SNS・元ニュースを見ている前提の書き出しです。対象と出来事から単体で書き始めてください",
+                ))
+
+        # A long real-world setup before the first clearly fictional subject is a
+        # useful signal for hot-news explainers that bury the comic scene.
+        # This is deliberately advisory: many strong stories need one short
+        # factual sentence before the fictional action.
+        if first_paragraph:
+            first_sentence = re.split(r"(?<=[。！？!?])", first_paragraph, maxsplit=1)[0].strip()
+            fiction_pos = first_paragraph.find("架空")
+            if (fiction_pos >= len(first_sentence)
+                    and len(first_sentence) >= BACKGROUND_ONLY_FIRST_SENTENCE_CHARS):
+                warnings.append((
+                    "BACKGROUND_LOADED_OPENING",
+                    slug,
+                    f"本文1文目が現実背景中心で{len(first_sentence)}字あり、創作の主役が次文以降です。"
+                    "元ニュースの説明を伸ばさず、冒頭2文の早い位置で人物・現場・具体的行動を見せてください",
                 ))
 
         depth = 1
