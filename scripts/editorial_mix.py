@@ -38,6 +38,11 @@ TONE_LABELS = {
     "observational": "観察",
     "wildcard": "変化球",
 }
+PLAUSIBILITY_KEYS = (
+    "present_signal",
+    "continuation_force",
+    "future_result",
+)
 TREND_SOURCE_KINDS = {
     "google_trends",
     "x_official",
@@ -114,12 +119,22 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
         (article for article in articles if article_day(article) == day_jst),
         key=lambda article: str(article.get("published_at") or ""),
     )
-    tones = [
+    day_tones = [
         article.get("editorial_tone")
         for article in day_items
         if article.get("editorial_tone") in EDITORIAL_TONES
     ]
-    counts = Counter(tones)
+    counts = Counter(day_tones)
+
+    tracked_items = sorted(
+        (
+            article for article in articles
+            if _parse_dt(article.get("published_at")) is not None
+            and article.get("editorial_tone") in EDITORIAL_TONES
+        ),
+        key=lambda article: str(article.get("published_at") or ""),
+    )
+    recent_tones = [article.get("editorial_tone") for article in tracked_items]
 
     if counts["plausible_future"] == 0:
         return (
@@ -127,16 +142,16 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
             "five-year extension before choosing)"
         )
 
-    if len(tones) >= 2 and tones[-1] == tones[-2]:
-        repeated = tones[-1]
+    if len(recent_tones) >= 2 and recent_tones[-1] == recent_tones[-2]:
+        repeated = recent_tones[-1]
         alternatives = [tone for tone in EDITORIAL_TONES if tone != repeated]
         preferred = min(
             alternatives,
             key=lambda tone: (counts.get(tone, 0), EDITORIAL_TONES.index(tone)),
         )
         return (
-            f"{preferred} (last 2 are {repeated}; compare a different reader "
-            "aftertaste before a third)"
+            f"{preferred} (last 2 tracked stories are {repeated}; compare a "
+            "different reader aftertaste before a third, even across midnight)"
         )
 
     if counts["wildcard"] >= 1:
@@ -173,6 +188,29 @@ def _validate_signature(article: dict, slug: str) -> list[str]:
         value = signature.get(key)
         if not isinstance(value, str) or not 4 <= len(value.strip()) <= 220:
             errors.append(f"{slug}: editorial_signature.{key} must be 4-220 chars")
+    return errors
+
+
+def _validate_plausibility(article: dict, slug: str) -> list[str]:
+    """Require an inspectable causal path only for the deliberately plausible tone."""
+    if article.get("editorial_tone") != "plausible_future":
+        return []
+
+    basis = article.get("plausibility_basis")
+    if not isinstance(basis, dict):
+        return [f"{slug}: plausible_future requires plausibility_basis"]
+
+    errors: list[str] = []
+    for key in PLAUSIBILITY_KEYS:
+        value = basis.get(key)
+        if not isinstance(value, str) or not 8 <= len(value.strip()) <= 240:
+            errors.append(f"{slug}: plausibility_basis.{key} must be 8-240 chars")
+
+    source_url = article.get("source", {}).get("url")
+    if not isinstance(source_url, str) or not source_url.startswith("https://"):
+        errors.append(
+            f"{slug}: plausible_future needs an HTTPS source.url for its present signal"
+        )
     return errors
 
 
@@ -288,6 +326,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             )
 
         errors.extend(_validate_signature(article, slug))
+        errors.extend(_validate_plausibility(article, slug))
         signature = article.get("editorial_signature")
         if isinstance(signature, dict):
             normalized = tuple(
