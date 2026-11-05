@@ -6,7 +6,7 @@ import unittest
 from scripts.trend_brief import build_snapshot, parse_google_trends
 
 
-RSS = b"""<?xml version="1.0" encoding="UTF-8"?>
+RSS = """<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:ht="https://trends.google.com/trending/rss" version="2.0">
   <channel>
     <item>
@@ -23,7 +23,7 @@ RSS = b"""<?xml version="1.0" encoding="UTF-8"?>
     </item>
   </channel>
 </rss>
-"""
+""".encode("utf-8")
 
 
 class TrendBriefTests(unittest.TestCase):
