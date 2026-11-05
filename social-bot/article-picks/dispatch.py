@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Buffer Free article queueing ranked by the site's observed page views.
+"""Buffer Free article publishing selected from fresh stories and observed page views.
 
 Reads the same JST seven-date window as on-site recommendations. This is the
-only automatic X publishing lane; retired original lanes are not dependencies.
+only automatic X publishing lane; selected articles use Buffer shareNow.
 """
 from __future__ import annotations
 
