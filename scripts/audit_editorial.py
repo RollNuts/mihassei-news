@@ -29,6 +29,12 @@ CONTEXT_DEPENDENT_OPENING_PATTERN = re.compile(
     r"^(?:これ(?:を|で|が|は)?|それ(?:を|で|が|は)?|この件|その件|例の|あの件|"
     r"このニュース|この話|こうした(?:動き|流れ|結果|状況)|これを受け|その結果)"
 )
+# Warn about reader-facing meta-disclaimers, not genuine uses such as 架空請求.
+# Keep this advisory: proper names and plot-relevant wording need human review.
+FICTION_DISCLAIMER_PATTERN = re.compile(
+    r"架空の|創作の|これはフィクション|フィクションです|"
+    r"架空ニュースです|創作ニュースです|あくまで創作"
+)
 MAX_FOLLOWUP_CHAIN_ARTICLES = 3
 BACKGROUND_ONLY_FIRST_SENTENCE_CHARS = 55
 
@@ -85,6 +91,21 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
                 slug,
                 "災害・戦争・テロ・大量死傷事故などの可能性。急性期の直接風刺・被害者を笑いにする表現・惨事のクリック誘導を避け、EDITORIAL_LOOPの危機ニュース規則を再確認",
             ))
+
+        for field_name, value in (
+            ("見出し", a.get("title")),
+            ("summary", a.get("summary")),
+            *((f"本文{index + 1}段落", paragraph)
+              for index, paragraph in enumerate(a.get("paragraphs") or [])
+              if isinstance(paragraph, str)),
+        ):
+            if isinstance(value, str) and FICTION_DISCLAIMER_PATTERN.search(value):
+                warnings.append((
+                    "REDUNDANT_FICTION_DISCLAIMER",
+                    slug,
+                    f"{field_name}に創作の定型注記があります。紙面共通の表示に任せ、"
+                    "物語に必要な固有名詞や意味を損なわない範囲で編集確認してください",
+                ))
 
         paragraph_list = a.get("paragraphs")
         first_paragraph = paragraph_list[0].strip() if isinstance(paragraph_list, list) and paragraph_list and isinstance(paragraph_list[0], str) else ""
