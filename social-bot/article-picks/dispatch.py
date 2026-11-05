@@ -112,7 +112,6 @@ def validate_config(config: dict) -> None:
     if not isinstance(config.get("channel_id"), str) or not config["channel_id"]:
         raise ValueError("Article X channel must be a pinned nonempty channel ID")
     caps = (
-        ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
         ("max_per_jst_day", 1, 7),
         ("min_page_views", 6, 100),
@@ -606,7 +605,6 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     current_slot = promotion_slot(now)
     if (current_slot is None
             or x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
-            or len(queued) >= config["max_queue_size"]
             or today_count >= config["max_per_jst_day"]
             or slot_already_used(state, now)):
         return None, None, len(queued)
