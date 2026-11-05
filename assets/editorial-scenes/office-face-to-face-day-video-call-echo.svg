@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img"
+ aria-label="無人の会社の執務室を背景に、出社した社員6人がモニターのオンライン会議画面だけに並ぶ創作イラスト" data-visual-topic="meeting" data-article-sha256="634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37">
+  <title>全員出社なのに画面だけで集合写真</title><desc>机も椅子も無人の出社フロア。手前の大きな画面には六人の同僚がビデオ会議タイルに並ぶ、対面のための出社が画面越しに終わる逆説を描く。</desc>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e8ede7"/><stop offset="1" stop-color="#becfd0"/></linearGradient>
+    <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#ead7c3"/><stop offset="1" stop-color="#c29e82"/></linearGradient>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fffdf0"/><stop offset="1" stop-color="#e9e2d1"/></linearGradient>
+    <linearGradient id="screen" x2="0" y2="1"><stop stop-color="#334a57"/><stop offset="1" stop-color="#192c39"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="#c6d5d4"/>
+  <rect x="0" width="1200" height="425" fill="url(#sky)"/>
+  <path d="M765 0v410M960 0v410M1187 0v410" stroke="#7e9699" stroke-width="11"/>
+  <path d="M765 90h435M765 270h435" stroke="#9bb6b4" stroke-width="10"/>
+  <path d="M0 390h1200v285H0" fill="url(#floor)"/>
+  <path d="M0 389h1200" stroke="#a4a6a0" stroke-width="14"/>
+  <g stroke="#bca58f" stroke-width="4" opacity=".45"><path d="M750 510h450M770 590h430M850 388l-95 287M1080 388l110 287"/></g>
+  <g stroke="#50646b" stroke-width="7" stroke-linejoin="round">
+   <path d="M790 420h180l28 26H773zM1007 410h171l22 27H995z" fill="#b2a293"/>
+   <path d="M804 448v106m151-106v105m74-116v108m143-108v108" fill="none"/>
+   <rect x="816" y="370" width="65" height="38" rx="5" fill="#6e8792"/>
+   <rect x="1059" y="355" width="64" height="45" rx="5" fill="#687e88"/>
+   <path d="M838 408v12m252-20v12" fill="none"/>
+   <path d="M846 464q-38 0-42 47v40h83v-40q-4-47-41-47zM1111 453q-39 0-40 47v46h84v-46q-1-47-44-47z" fill="#8f9c9c"/>
+   <path d="M846 550v56m-32 0h64m233-60v64m-32 0h64" fill="none"/>
+   <circle cx="815" cy="606" r="8" fill="#50646b"/><circle cx="878" cy="606" r="8" fill="#50646b"/><circle cx="1080" cy="610" r="8" fill="#50646b"/><circle cx="1142" cy="610" r="8" fill="#50646b"/>
+  </g>
+  <g stroke-linejoin="round">
+    <rect x="59" y="40" width="701" height="499" rx="25" fill="#263943" stroke="#152a35" stroke-width="12"/>
+    <rect x="79" y="59" width="658" height="426" rx="12" fill="url(#screen)"/>
+    <rect x="330" y="538" width="151" height="57" fill="#40525a"/>
+    <path d="M280 595h250l35 19H245z" fill="#3c4c54"/>
+    <ellipse cx="405" cy="616" rx="184" ry="12" fill="#536169" opacity=".17"/>
+  </g>
+  <g stroke="#223845" stroke-width="5" stroke-linejoin="round">
+    <rect x="96" y="74" width="198" height="180" rx="11" fill="#89a9ac"/>
+    <rect x="308" y="74" width="198" height="180" rx="11" fill="#b1bcc0"/>
+    <rect x="520" y="74" width="198" height="180" rx="11" fill="#9dabba"/>
+    <rect x="96" y="268" width="198" height="200" rx="11" fill="#b8b0a3"/>
+    <rect x="308" y="268" width="198" height="200" rx="11" fill="#8faaaa"/>
+    <rect x="520" y="268" width="198" height="200" rx="11" fill="#b7afa4"/>
+  </g>
+  <g stroke="#4a4c50" stroke-width="5">
+   <path d="M124 222q9-60 70-62t73 62v19H124z" fill="#487b89"/><ellipse cx="192" cy="132" rx="40" ry="45" fill="#e5b998"/><path d="M151 119q-6-41 42-44t45 42l-18-21-66 10" fill="#343c46"/>
+   <path d="M337 222q9-63 67-64t77 64v19H337z" fill="#a06a5d"/><ellipse cx="406" cy="128" rx="40" ry="46" fill="#e4bc9c"/><path d="M366 123q-10-46 38-47t44 40l-33-19-45 20" fill="#363d49"/>
+   <path d="M548 222q9-60 68-62t73 62v19H548z" fill="#4b667c"/><ellipse cx="617" cy="128" rx="40" ry="46" fill="#dab18f"/><path d="M577 122q-7-46 38-47t43 40l-26-26-46 19" fill="#5c534b"/>
+   <path d="M125 440q5-65 66-66t77 66v16H125z" fill="#667f6b"/><ellipse cx="194" cy="345" rx="40" ry="47" fill="#ddb395"/><path d="M153 330q1-43 43-43t42 45l-30-27-55 16" fill="#4b4045"/>
+   <path d="M336 440q10-63 70-64t76 64v16H336z" fill="#596e9a"/><ellipse cx="409" cy="346" rx="40" ry="47" fill="#e4b99b"/><path d="M369 335q-2-45 42-45t41 41l-31-20-52 18" fill="#414653"/>
+   <path d="M548 440q8-63 68-64t74 64v16H548z" fill="#a47a62"/><ellipse cx="617" cy="346" rx="40" ry="47" fill="#d5ac8c"/><path d="M577 338q-8-43 41-45t38 41l-23-24-56 17" fill="#534b4b"/>
+  </g>
+  <g fill="#34343a"><circle cx="179" cy="130" r="4"/><circle cx="203" cy="130" r="4"/><circle cx="392" cy="129" r="4"/><circle cx="417" cy="129" r="4"/><circle cx="605" cy="129" r="4"/><circle cx="628" cy="129" r="4"/><circle cx="179" cy="344" r="4"/><circle cx="203" cy="344" r="4"/><circle cx="396" cy="344" r="4"/><circle cx="420" cy="344" r="4"/><circle cx="605" cy="344" r="4"/><circle cx="630" cy="344" r="4"/></g>
+  <rect x="82" y="491" width="649" height="29" rx="5" fill="#172a32"/>
+  <g fill="#8da5ac"><circle cx="310" cy="506" r="8"/><circle cx="347" cy="506" r="8"/><circle cx="384" cy="506" r="8"/></g>
+  <rect x="443" y="497" width="50" height="17" rx="8" fill="#b95a59"/>
+  <path d="M0 655h1200v20H0" fill="#506b70"/>
+</svg>
