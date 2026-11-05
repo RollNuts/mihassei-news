@@ -73,10 +73,10 @@ CPU_SCENES = {
         "plate, cropped at the frame edge. Plain blue background."
     ),
     "film-village-all-stars-no-extras": (
-        "A tired middle-aged film director carrying shopping bags is the ONLY "
-        "person walking across a wide empty historical street set. Far behind "
-        "him, one tight cluster of brightly costumed aspiring lead actors pose "
-        "together beside a tripod camera; the street itself has no other pedestrians."
+        "A tired film director carrying shopping bags is the ONLY person "
+        "walking across an empty historical street set. Far behind him, a tight "
+        "cluster of costumed lead actors pose beside a tripod camera; no other "
+        "pedestrians are present."
     ),
     "sale-discount-savings-receipt-framed": (
         "A proud father holds a picture frame containing ONE long blank store "
@@ -102,9 +102,9 @@ CPU_SCENE_SOURCE_HASHES = {
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
     "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-    "film-village-all-stars-no-extras": "0b23083f1b6c59827dad35c822955a61467846842146de191130ac0efad83bbd",
-    "sale-discount-savings-receipt-framed": "a59d84b533dfab440fa2fd8e1d867baef4fa16e7f6f229e6f416f2bfdd2c9881",
-    "office-face-to-face-day-video-call-echo": "0c28252627308d5c9dec9d83d9bc7b65c40343f2f34b1b2281b31d39c8201e37",
+    "film-village-all-stars-no-extras": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
+    "sale-discount-savings-receipt-framed": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+    "office-face-to-face-day-video-call-echo": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
