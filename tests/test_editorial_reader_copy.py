@@ -21,10 +21,11 @@ class EditorialReaderCopyTests(unittest.TestCase):
 
     def test_cleanup_is_narrow_and_idempotent(self):
         original = "2031年、架空の会社「ポロリ」は創作の制度を始めた。"
-        expected = "2031年、会社「ポロリ」は制度を始めた。"
+        expected = "会社「ポロリ」は制度を始めた。"
         self.assertEqual(reader_copy(original), expected)
         self.assertEqual(reader_copy(expected), expected)
         self.assertEqual(reader_copy("架空請求ではない"), "架空請求ではない")
+        self.assertEqual(reader_copy("2031年までに完成予定"), "2031年までに完成予定")
         source = "Reuters報道。体験消費が紹介された。人物の発言は本紙独自の設定であり、実際の出来事ではない。"
         self.assertEqual(source_reader_copy(source), "Reuters報道。体験消費が紹介された。")
 
