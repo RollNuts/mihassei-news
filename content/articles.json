@@ -36,7 +36,8 @@
       "target": "店舗がセルフレジの省人化を優先し、客が担う手助けを労働として数えない",
       "action": "会計を手伝う常連客を月間優秀スタッフとして表彰し、店の戦力に組み込む",
       "outcome": "表彰された客がほかの人のレジを回ってから自分の牛乳一本を会計する"
-    }
+    },
+    "visual_strategy": "illustration"
   },
   {
     "slug": "sns-quit-support-site-hundred-day-login-award",
