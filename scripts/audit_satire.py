@@ -75,6 +75,33 @@ def final_sentence(article: dict) -> str:
     return parts[-1] if parts else ""
 
 
+def editorial_tag_counts(articles: list[dict]) -> Counter:
+    """Reader-facing topic/satire labels only; categories are a separate axis."""
+    return Counter(
+        tag
+        for article in articles
+        for tag in [*(article.get("tags") or []), *(article.get("satire_tags") or [])]
+        if isinstance(tag, str) and tag
+    )
+
+
+def reusable_topic_note(articles: list[dict]) -> str:
+    counts = editorial_tag_counts(articles)
+    if not counts:
+        return ""
+    established = [(tag, count) for tag, count in counts.most_common() if count >= 3][:6]
+    emerging = sorted(
+        ((tag, count) for tag, count in counts.items() if count == 2),
+        key=lambda pair: pair[0],
+    )[:6]
+    parts = []
+    if established:
+        parts.append("育っているタグ: " + " / ".join(f"{tag}({count})" for tag, count in established))
+    if emerging:
+        parts.append("2本あるタグ: " + " / ".join(tag for tag, _ in emerging))
+    return "。".join(parts)
+
+
 def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
     """Warn about repetition but never reject or silently delete an article."""
     recent = latest(articles)
@@ -114,6 +141,17 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                     "SIMILAR_PUNCHLINE", a.get("slug", "?"),
                     f"{b.get('slug')} と末文が {ending_similarity:.0%} 似ている。最後の一撃を差別化",
                 ))
+
+    counts = editorial_tag_counts(articles)
+    if len(articles) >= 10 and counts:
+        one_off = sum(count == 1 for count in counts.values())
+        if one_off >= max(12, (len(counts) + 1) // 2):
+            warnings.append((
+                "TOPIC_FRAGMENTATION", "-",
+                f"記事{len(articles)}本に対してタグ{len(counts)}種類、うち1回だけが{one_off}種類。"
+                "新作の主題に合う既存タグがあれば同じ表記を再利用し、近い意味の新タグを増やさない。"
+                "無関係なタグをSEO目的で付ける必要はない",
+            ))
 
     newest = recent[:CLUSTER_LIMIT]
     short_run = recent[:SHORT_RUN]
@@ -207,6 +245,13 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・一言で閉じる。二度目の逆転は不要。本文の追加の笑いは既存の人物と前提から作る。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
+    if "TOPIC_FRAGMENTATION" in labels:
+        note = reusable_topic_note(articles)
+        lines.append(
+            "タグが分散気味。新しい記事に本当に合う既存タグがあれば同じ表記を優先する。"
+            "3本目を作るために題材や本文を曲げず、新しい主題なら新タグでよい。"
+            + ((" " + note + "。") if note else "")
+        )
     if len(lines) == 2:
         lines.append("目立つ定型警告はなし。新案は直近の見出しと末文を読み比べ、展開の使い回しを防ぐ。")
     lines.append("掲載前: 異なる仕組みの見出し2案を本文なしで比べ、状況だけでなく何がおかしいかが伝わる案を選ぶ。冒頭2文→全文→末文を読み、本文に見出しを繰り返さない行動・結果・一言の笑いがあるか確かめる。原因→人物の行動→結果がつながらなければ、説明を継ぎ足さず設定を減らす。")
