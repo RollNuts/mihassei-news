@@ -20,7 +20,7 @@ content/serials.json ────┘                │
 
 ## データと日時
 
-- 架空ニュースは`content/articles.json`。実際の出典・公開日時と、5年後という演出上の`fiction_at`を混ぜません。
+- 架空ニュースは`content/articles.json`。`published_at`が実際の初回掲載日時で、演出上の`fiction_at`はその年だけを5年進め、月日・時刻・タイムゾーンを一致させます。`source.published_at`は着想元資料の日時であり、紙面日時の基準には使いません。
 - 連載は`content/serials.json`。推理小説は`kind: fiction`、実在の市場データに基づく考察は`kind: analysis`。
 - 市場分析は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
 - RSS、構造化データ、サイトマップでは架空の未来日時を実際の掲載日時として扱いません。
