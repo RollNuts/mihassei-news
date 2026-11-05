@@ -741,6 +741,14 @@ def main() -> int:
         value = buffer_receipt.get(provider_key)
         if value is not None:
             entry[ledger_key] = value
+    provider_error = buffer_receipt.get("error")
+    if isinstance(provider_error, dict):
+        message = provider_error.get("message")
+        if isinstance(message, str) and message.strip():
+            entry["buffer_error_message_at_accept"] = message.strip()[:500]
+        support_url = provider_error.get("supportUrl")
+        if isinstance(support_url, str) and support_url.startswith("https://"):
+            entry["buffer_error_support_url_at_accept"] = support_url[:500]
     if evidence is not None:
         entry["metrics_at_queue"] = {**window,
                                      "last_7_days_page_views": evidence["last7DaysPageViews"],
