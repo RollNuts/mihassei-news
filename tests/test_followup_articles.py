@@ -13,8 +13,10 @@ class FollowupArticleTests(unittest.TestCase):
         cls.articles = build.load()
 
     def pair(self):
-        child = copy.deepcopy(self.articles[0])
-        parent = copy.deepcopy(self.articles[1])
+        # A real newest article can itself be a follow-up. Synthetic parent
+        # fixtures must not inherit a followup_of link from editorial data.
+        standalone = [copy.deepcopy(a) for a in self.articles if not a.get("followup_of")]
+        child, parent = standalone[:2]
         self.assertGreater(build.publication_date(child), build.publication_date(parent))
         child["followup_of"] = parent["slug"]
         return child, parent

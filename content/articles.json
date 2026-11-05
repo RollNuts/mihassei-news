@@ -1,5 +1,33 @@
 [
   {
+    "slug": "music-show-surprise-face-rehearsal",
+    "category": "エンタメ",
+    "flash": "初耳の練習",
+    "fiction_company": "新鮮ヒット歌謡祭",
+    "art": "cards",
+    "fiction_at": "2031-11-04T17:00:00+09:00",
+    "published_at": "2026-11-05T09:31:45+09:00",
+    "title": "歌う曲を事前発表した音楽特番、観客に「初耳の顔」を練習させる",
+    "summary": "出演者が歌う曲を事前に発表しておきながら、観客には驚いてほしい架空の音楽特番。客席は完璧な「初耳」を演じ、歌手は自分の曲が知られていないと思い込んだ。",
+    "paragraphs": [
+      "11月11日放送予定の音楽特番は、出演する28組の歌唱曲を11月4日に発表した。好きな歌手が何を歌うか分かる楽しみがある一方、架空の番組「新鮮ヒット歌謡祭」は、曲名を事前にすべて知らせたあとで「本番の驚き」を守ろうと、観覧客に「初耳の顔」を練習させた。",
+      "開演前の客席には「知っている曲でも目を丸くする」と書いた練習用カードが配られた。スタッフが曲名を読み上げるたび、客は二秒待ってから一斉に「ええっ！」。何度も繰り返すうちに、スタッフは拍手よりも顔の角度を細かく直し、「いい初耳になってきました」と満足そうにうなずいた。",
+      "本番、司会が長年親しまれてきた定番曲を紹介すると、客席は練習どおり大きく驚いた。歌手が笑顔で「この歌、知っている人？」と尋ねても、誰も手を挙げない。歌手は少し間を置き、予定になかった自己紹介を始めた。最前列の客は手元のカードを見ながら、今度は「初めて見る歌手の顔」を練習していた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "ORICON NEWS",
+      "published_at": "2026-11-04T17:00:00+09:00",
+      "url": "https://www.oricon.co.jp/news/2490556/full/",
+      "topic": "2026年11月4日17:00 JST、読売テレビが11月11日の「ベストヒット歌謡祭2026」で出演28組の歌唱曲を発表したと報道。実際の番組が観客に驚く練習を求めたという事実はない。「新鮮ヒット歌謡祭」・客席の演技・歌手の反応はすべて創作。"
+    },
+    "scene_prompt": "Close-up of a row of Japanese television studio audience members holding small rehearsal cue cards without legible text while practicing exaggerated surprised facial expressions, one attentive female audience member in the front row glancing at her card, a discreet stage manager with a clipboard counting beats, bright warm concert-stage lights behind them, contemporary music television studio, deadpan photorealistic editorial scene, clear human gestures, no performer likeness, no brand marks, no writing or logos.",
+    "tags": [
+      "音楽",
+      "テレビ"
+    ]
+  },
+  {
     "slug": "datacenter-unbuilt-ribbon-cutting",
     "category": "経済",
     "flash": "未完成の完成式",
