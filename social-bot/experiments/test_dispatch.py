@@ -47,6 +47,30 @@ class ExperimentsTests(unittest.TestCase):
             queue_one("secret","X-ID",{"kind":"text","text":"test"},
                       return_post="yes")
 
+    def test_share_now_is_limited_to_article_lane_or_reviewed_images(self):
+        from publish import queue_one
+        receipt={"createPost":{"post":{"id":"buf-now","dueAt":None}}}
+        with patch("publish.gql", return_value=receipt) as api:
+            value=queue_one(
+                "secret","X-ID",
+                {"kind":"article","id":"article-clear-story","text":"article text"},
+                mode="shareNow",
+            )
+        self.assertEqual(value,"buf-now")
+        self.assertIn("mode: shareNow", api.call_args.args[1])
+        with self.assertRaisesRegex(ValueError,"reserved"):
+            queue_one(
+                "secret","X-ID",
+                {"kind":"text","id":"xexp-old-text","text":"retired original"},
+                mode="shareNow",
+            )
+        with self.assertRaisesRegex(ValueError,"reserved"):
+            queue_one(
+                "secret","X-ID",
+                {"kind":"article","id":"unsafe/article","text":"article text"},
+                mode="shareNow",
+            )
+
     def test_optional_buffer_due_at_never_fabricates_a_slot(self):
         self.assertEqual(utc_provider_due_at("2026-11-04T09:30:00Z"),
                          "2026-11-04T09:30:00+00:00")
