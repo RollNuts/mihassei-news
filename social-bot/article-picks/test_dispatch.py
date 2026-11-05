@@ -749,11 +749,15 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
+                self.assertEqual(queue.call_args.args[2]["id"], "article-new-story")
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
                 self.assertIn("utm_campaign=article_auto", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
+                self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["metrics_at_queue"], {
                     **window, "last_7_days_page_views": 11, "today_page_views": 1})
@@ -800,8 +804,12 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
                 queue.assert_called_once()
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
+                self.assertEqual(queue.call_args.args[2]["id"], "article-fresh-story")
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 receipt = save.call_args.args[0]["queued"]["fresh-story"]
                 self.assertEqual(receipt["source"], "fresh_article")
+                self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertNotIn("metrics_at_queue", receipt)
 
@@ -832,6 +840,8 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
                 queue.assert_called_once()
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
                 self.assertIn("fresh-mixed", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["fresh-mixed"]
                 self.assertEqual(receipt["source"], "fresh_article")
