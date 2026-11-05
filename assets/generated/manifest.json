@@ -428,6 +428,11 @@
     }
   },
   "rejected": {
+    "office-face-to-face-day-video-call-echo": {
+      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
+      "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
