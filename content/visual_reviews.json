@@ -77,6 +77,13 @@
       "note": "本文の結末に登場するラジオを前に座る人物。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
+    "music-show-surprise-face-rehearsal": {
+      "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+      "decision": "accepted",
+      "image_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
+      "note": "実画像と現本文を照合。観客席で複数の架空人物が白い練習カードを持ち、驚いた表情を作る場面が記事の「初耳の顔を練習する」主題に合う。カードには擬似文字があるが読める文章・固有名詞・ロゴは見当たらない。ステージマネージャーや歌手、顔の角度を直す動作は未再現で、人物描写は柔らかいが主役の大きな人体破綻は見当たらない。",
+      "reviewed_at": "2026-11-05T03:46:29+00:00"
+    },
     "pressure-office-mood-forecast": {
       "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
       "decision": "accepted",
