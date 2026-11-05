@@ -98,7 +98,12 @@ GENERIC_SCENES = {
 NEGATIVE = (
     "written text, captions, headlines, letters, words, numbers, logo, watermark, "
     "press logo, brand marks, named real people, recognizable public figures, "
-    "photomontage, collage, cartoon, anime, illustration, CGI, glossy stock photo, "
+    "photomontage, collage, cartoon, anime, manga, illustration, painting, digital art, "
+    "concept art, CGI, 3d render, unreal engine, octane render, game asset, miniature, "
+    "plastic skin, synthetic skin, airbrushed skin, doll-like face, wax figure, "
+    "glossy stock photo, advertising photography, commercial product photo, poster, "
+    "cinematic color grading, teal and orange, dramatic rim lighting, volumetric lighting, "
+    "lens flare, glamour lighting, surreal, fantasy glow, oversharpened, "
     "deformed faces, duplicate people, extra fingers, extra hands, low resolution, "
     "blurry, oversaturated, violence, weapons, gore"
 )
@@ -135,20 +140,22 @@ def scene_description(article: dict) -> str:
 
 
 def scene_prompt(article: dict) -> str:
-    """Keep the central absurdity visually legible; never pose as real evidence."""
+    """Keep the joke legible while forcing an ordinary documentary-photo look."""
     framing = (
-        "eye-level medium-wide shot, 35mm lens",
-        "side-on view with the key prop in the foreground, 50mm lens",
-        "slightly elevated wide shot, 35mm lens",
-        "over-the-shoulder view toward the absurd action, 40mm lens",
+        "eye-level medium-wide news shot, 35mm lens",
+        "side-on documentary view with the key prop in the foreground, 50mm lens",
+        "slightly elevated documentary wide shot, 35mm lens",
+        "over-the-shoulder news view toward the absurd action, 40mm lens",
     )[stable_seed(article) % 4]
-    # Put the photographic medium in the first CLIP chunk. "Sketch" also
-    # means a drawing to SDXL; it must not appear as a positive style token.
+    # The first CLIP chunk now establishes the medium as documentary press
+    # photography, not "AI art". The absurdity comes from the event itself;
+    # visual spectacle, ad polish and cinematic styling are explicitly avoided.
     return (
-        "Candid color photograph of anonymous Japanese adult actors. "
+        "Candid documentary press photograph of anonymous fictional Japanese adults. "
         + scene_description(article) + " "
-        "A staged fictional live-action scene, neutral serious faces. "
-        "Full-frame DSLR, realistic skin and fabric, natural daylight, "
+        "Treat the absurd event as an ordinary local-news assignment, not a poster or advertisement. "
+        "Real physical location, natural available light, realistic skin texture, ordinary clothing "
+        "and materials, restrained colors, neutral white balance, slight real-camera imperfections, "
         + framing + ", 16:9 composition. "
         "No title text, no captions, no logos, no recognizable real person."
     )
@@ -174,7 +181,7 @@ def workflow(article: dict, checkpoint: str, steps: int = 24) -> dict:
         "3": {"class_type": "CLIPTextEncode", "inputs": {"text": NEGATIVE, "clip": ["1", 1]}},
         "4": {"class_type": "EmptyLatentImage", "inputs": {"width": 1152, "height": 648, "batch_size": 1}},
         "5": {"class_type": "KSampler", "inputs": {
-            "seed": seed, "steps": steps, "cfg": 5.5, "sampler_name": "dpmpp_2m",
+            "seed": seed, "steps": steps, "cfg": 5.0, "sampler_name": "dpmpp_2m",
             "scheduler": "karras", "denoise": 1.0,
             "model": ["1", 0], "positive": ["2", 0],
             "negative": ["3", 0], "latent_image": ["4", 0]}},
@@ -428,7 +435,7 @@ def pending_articles(articles: list[dict], *, root: Path = ROOT, force: bool = F
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Free local ComfyUI: staged photorealistic satire scenes")
+    ap = argparse.ArgumentParser(description="Free local ComfyUI: documentary-style satire news photos")
     ap.add_argument("--dry-run", action="store_true", help="Print pending scene directions; do not call ComfyUI")
     ap.add_argument("--server", default="http://127.0.0.1:8188", help="Must be a loopback ComfyUI URL")
     ap.add_argument("--checkpoint", default="sd_xl_base_1.0.safetensors", help="Installed local SDXL checkpoint filename")
