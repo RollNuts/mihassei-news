@@ -40,6 +40,16 @@
       "seed": 7531663354728220206,
       "sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db"
     },
+    "basketball-opening-day-game-seven": {
+      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "bytes": 174771,
+      "generated_at": "2026-11-05T02:46:58.461209+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 8539460300984130488,
+      "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
+    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "bytes": 93846,
@@ -368,11 +378,6 @@
     }
   },
   "rejected": {
-    "datacenter-unbuilt-ribbon-cutting": {
-      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
-      "reason": "Visual review (2026-11-05 JST): the generated JPEG shows a large built roofed concrete hall/corridor and a crowd behind the ribbon, not the empty gravel lot with no buildings required by the article. The visible building defeats the central unbuilt-data-center joke; use the safe illustration until a genuinely different new JPEG is generated and reviewed.",
-      "rejected_candidate_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
@@ -387,6 +392,11 @@
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
       "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "reason": "Visual review (2026-11-05 JST): the generated JPEG shows a large built roofed concrete hall/corridor and a crowd behind the ribbon, not the empty gravel lot with no buildings required by the article. The visible building defeats the central unbuilt-data-center joke; use the safe illustration until a genuinely different new JPEG is generated and reviewed.",
+      "rejected_candidate_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
     },
     "fan-theories-write-final": {
       "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
