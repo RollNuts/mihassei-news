@@ -523,7 +523,7 @@ def illustration_only(a):
 
 
 def uses_generated_scene(a):
-    return not illustration_only(a) and uses_generated_scene(a)
+    return not illustration_only(a) and reviewed_generated_scene(a, root=BASE)
 
 
 def uses_stock_photo(a):
