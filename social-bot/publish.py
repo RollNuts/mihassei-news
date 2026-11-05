@@ -111,7 +111,9 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = ("id text status dueAt sentAt externalLink sharedNow shareMode"\n              if include_due_at else "id text status")\n    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    fields = ("id text status dueAt sentAt externalLink sharedNow shareMode"
+              if include_due_at else "id text status")
+    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
     def collect(statuses: str, due_clause: str, *, pages: int) -> list[dict]:
         cursor = None
