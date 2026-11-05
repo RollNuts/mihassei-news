@@ -1,5 +1,44 @@
 [
   {
+    "slug": "self-checkout-regular-awarded-unpaid-staff",
+    "category": "暮らし",
+    "flash": "常連はレジの戦力",
+    "fiction_company": "よりみち市場",
+    "art": "cards",
+    "fiction_at": "2031-01-13T11:00:00+09:00",
+    "published_at": "2026-11-05T21:38:20+09:00",
+    "title": "セルフレジの常連客、スーパーの「月間優秀スタッフ」に　時給は0円",
+    "summary": "操作に戸惑う客を手伝ってきた男性が店内で表彰された。買い物のたびに別のレジから呼ばれ、自分の会計はいつも最後になっている。",
+    "paragraphs": [
+      "スーパー「よりみち市場」は、レジ業務を省力化するためセルフレジを増やした。バーコードの読み取りに困る客がいると、隣で会計中の常連・田中さんが「少し斜めにすると通りますよ」と教えるようになった。",
+      "店長は、ひと月に40人以上を助けた田中さんを「月間優秀スタッフ」に選び、レジ横に表彰状と写真を掲示した。田中さんが「従業員割引はありますか」と尋ねると、店長は「お客様なので」と答えた。",
+      "翌週から読み取りエラーが鳴ると、ほかの客は表彰状を見て田中さんを探すようになった。牛乳一本を買いに来た日も三台のレジを回り、ようやく自分の品を通した。出口で店員に「今日は早上がりですね」と声をかけられ、田中さんはレシートを握ったまま立ち止まった。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社Textrade（StorePro）",
+      "published_at": "2026-01-13T11:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000045.000080608.html",
+      "topic": "2026年1月13日11時公開のStorePro『有人レジとセルフレジの心理・行動』調査。セルフレジ利用者を含む1,008人の回答で、セルフレジ利用時の読み取りエラー経験は39.5%、操作方法が分かりにくいは23.7%。記事中のよりみち市場、田中さん、客による操作説明の実績集計、表彰と台詞は実際の調査事実や同社の行為ではない独自創作。"
+    },
+    "scene_prompt": "Photorealistic Japanese supermarket self-checkout area. In the foreground an ordinary middle-aged shopper holding a single carton of milk pauses beside a checkout scanner, while another shopper asks for help. On the wall beside the registers is a modest employee-of-the-month style recognition frame with a generic portrait but no readable text. Bright ordinary grocery lighting, dry deadpan realism, one coherent scene, no logos, no real people, no legible lettering.",
+    "tags": [
+      "店舗",
+      "接客"
+    ],
+    "satire_tags": [
+      "お客さん任せ",
+      "セルフレジあるある"
+    ],
+    "editorial_lane": "social_life",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_signature": {
+      "target": "店舗がセルフレジの省人化を優先し、客が担う手助けを労働として数えない",
+      "action": "会計を手伝う常連客を月間優秀スタッフとして表彰し、店の戦力に組み込む",
+      "outcome": "表彰された客がほかの人のレジを回ってから自分の牛乳一本を会計する"
+    }
+  },
+  {
     "slug": "sns-quit-support-site-hundred-day-login-award",
     "category": "社会",
     "flash": "やめる宣言100日目",
