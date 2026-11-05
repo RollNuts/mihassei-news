@@ -1,5 +1,37 @@
 [
   {
+    "slug": "office-face-to-face-day-video-call-echo",
+    "category": "社会",
+    "flash": "出社したのに画面越し",
+    "fiction_company": "朝凪商事",
+    "art": "cards",
+    "fiction_at": "2031-10-07T16:00:00+09:00",
+    "published_at": "2026-11-05T17:30:00+09:00",
+    "title": "「直接話すため全員出社」の会社、隣席同士のオンライン会議がうるさく全員別室へ",
+    "summary": "顔を合わせる機会を増やすため、朝凪商事は全員出社日を導入した。ところが会議はオンラインのままで、隣席の音声が響くため社員は個室へ移動。対面交流を記録する集合写真まで画面越しになった。",
+    "paragraphs": [
+      "社員同士の顔を合わせる機会を増やすため、朝凪商事は毎週木曜を全員出社日にした。初日の朝、隣の席に座った同僚同士も、予定表どおりオンライン会議のリンクを開いた。「おはよう」と声をかけた社員に、相手は画面を指さして「今、会議中」と口だけ動かした。",
+      "同じ会議に入った社員が隣同士で話し始めると、パソコンから自分の声が遅れて返ってきた。「聞こえますか」が重なり、会議は音声の調整だけで10分経過。反響を防ごうと、社員たちは一人ずつ小会議室や廊下、給湯室へ移動した。",
+      "午後、人事部が「対面交流の成果を写真に残したい」と全員に呼びかけた。フロアへ戻るとまた音が響くため、社員たちはそれぞれの個室から画面に顔を出した。完成した集合写真には、社員の顔が並ぶモニターと、その前に広がる誰もいない執務室が写っていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社LASSIC（テレリモ総研）",
+      "published_at": "2026-10-07T16:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000166.000069473.html",
+      "topic": "株式会社LASSICが2026年10月7日16時に公表した、テレワーク経験者1,007人を対象とする調査。出社日に『オンライン会議ばかりで対面が少ない』と感じる回答は全体14.5％。朝凪商事の全員出社日、同僚のオンライン会議による反響、別室への移動と集合写真は本紙の独自創作。実在企業の行為を報じるものではない。"
+    },
+    "scene_prompt": "Photorealistic deadpan comedy in a modern Japanese office, wide view of an almost empty open-plan workspace, one large desktop monitor in the foreground displaying a grid of fictional coworkers in separate tiny office meeting booths on a video call, a deserted row of work desks visible behind it. Comic paradox: everyone came to the same office but only meets on a screen. Natural afternoon office lighting, believable mundane furnishings, no readable lettering, no recognizable brands, no famous faces.",
+    "tags": [
+      "働き方",
+      "職場"
+    ],
+    "satire_tags": [
+      "仕事してる感",
+      "本末転倒"
+    ]
+  },
+  {
     "slug": "film-village-all-stars-no-extras",
     "category": "エンタメ",
     "flash": "主役だらけで通行人ゼロ",
