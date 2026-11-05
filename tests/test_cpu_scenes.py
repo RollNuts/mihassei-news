@@ -415,6 +415,17 @@ class FreeCpuImageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             cpu.render_one(pipeline, fake_torch, article())
 
+    def test_cpu_workflow_reports_publication_health_separately_from_generation(self):
+        workflow = (Path(__file__).resolve().parents[1]
+                    / ".github/workflows/free-cpu-scenes.yml").read_text(encoding="utf-8")
+        self.assertIn("Summarize reader-visible image coverage", workflow)
+        self.assertIn("python3 scripts/visual_review.py", workflow)
+        self.assertIn("Accepted generated JPEG", workflow)
+        self.assertIn("Generic SVG fallback", workflow)
+        self.assertIn("JPEG awaiting visual review", workflow)
+        self.assertIn("green CPU job may be intentionally idle", workflow)
+        self.assertNotIn("All published articles already have valid local scenes.", workflow)
+
     def test_limits_and_empty_batch_are_safe(self):
         with self.assertRaises(SystemExit):
             cpu.main(["--dry-run", "--limit", "4"])

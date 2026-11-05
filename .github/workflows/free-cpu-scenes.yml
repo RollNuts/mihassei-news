@@ -77,20 +77,45 @@ jobs:
           for article in selected:
               print(json.dumps({'slug': article['slug'], 'prompt': cpu_prompt(article)}, ensure_ascii=False))
           print('Pending:', len(selected))
-          # Distinguish idle success from image coverage gaps when the Mac is offline.
-          from scripts.generated_photos import usable_generated_scene
-          articles = load_articles()
-          missing = [a['slug'] for a in articles if not usable_generated_scene(a)]
-          summary = os.getenv('GITHUB_STEP_SUMMARY')
-          if summary:
-              with open(summary, 'a') as report:
-                  report.write(f"### Article image coverage\n\nPublished articles: {len(articles)}\n\nUsable generated images: {len(articles)-len(missing)}\n\nMissing or held: {len(missing)}\n\nCPU queue selected: {len(selected)}\n\n")
-                  if missing:
-                      report.write("Uncovered slugs: " + ", ".join(missing[:30]) + "\n\n")
-                      if not selected:
-                          report.write("**Attention:** no CPU-eligible work despite uncovered articles; inspect holds, selection policy, and offline Mac. Do not treat green workflow as image delivery.\n")
           PY
           df -h .
+      - name: Summarize reader-visible image coverage
+        env:
+          IMAGE_HEALTH: ${{ runner.temp }}/image-health.json
+        run: |
+          python3 scripts/visual_review.py > "$IMAGE_HEALTH"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          report = json.loads(Path(os.environ["IMAGE_HEALTH"]).read_text(encoding="utf-8"))
+          counts = report["counts"]
+          publication = report["publication_counts"]
+          attention = report["attention"]
+          pending_review = counts.get("pending", 0)
+          rejected = counts.get("rejected", 0)
+          generic = publication.get("generic_fallback", 0)
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          with summary.open("a", encoding="utf-8") as out:
+              out.write("### Article image health\n\n")
+              out.write(f"- Accepted generated JPEG: {publication.get('generated_jpeg', 0)}\n")
+              out.write(f"- Reviewed editorial SVG: {publication.get('editorial_svg', 0)}\n")
+              out.write(f"- Approved cached photo: {publication.get('stock_photo', 0)}\n")
+              out.write(f"- Generic SVG fallback: {generic}\n")
+              out.write(f"- JPEG awaiting visual review: {pending_review}\n")
+              out.write(f"- JPEG held/rejected: {rejected}\n")
+              out.write("\nA green CPU job may be intentionally idle; reader-visible coverage is reported separately from generation work.\n")
+              if attention:
+                  out.write("\n#### Image attention queue\n")
+                  for item in attention[:12]:
+                      out.write(f"- `{item['slug']}`: {item['reason']}\n")
+              if generic:
+                  out.write("\n**Attention:** generic fallbacks remain. Keep publishing safely, but route these through image recovery instead of treating idle generation as completed image work.\n")
+              elif pending_review:
+                  out.write("\n**Attention:** generated JPEGs exist but are not reader-visible until visual review is recorded.\n")
+              else:
+                  out.write("\nNo reader-visible image coverage gap is reported by the current build-selection rules.\n")
+          PY
       - name: Verify offline image gates before downloading model runtime
         if: steps.plan.outputs.pending != '0'
         run: |
