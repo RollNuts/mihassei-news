@@ -46,6 +46,43 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("SIMILAR_PUNCHLINE",labels)
         self.assertEqual(articles,original,"Warnings must never mutate or remove new articles")
 
+    def test_near_duplicate_editorial_signatures_are_advisory(self):
+        first = sample(1, title="出社したのに画面越し")
+        second = sample(2, title="会議室に集まったのに全員オンライン")
+        first["editorial_signature"] = {
+            "target": "対面交流を大事にしすぎて目的を見失う",
+            "action": "全員を出社させたのにオンライン会議を続ける",
+            "outcome": "同じオフィスの社員が別室へ散って画面越しになる",
+        }
+        second["editorial_signature"] = {
+            "target": "対面交流を重視しすぎて本来の目的を見失う",
+            "action": "全員を出社させてもオンライン会議を続ける",
+            "outcome": "同じ会社の社員が別室へ散り画面越しになる",
+        }
+        original = copy.deepcopy([first, second])
+        flags = analyze([first, second])
+        self.assertIn("SIMILAR_EDITORIAL_SIGNATURE", {item[0] for item in flags})
+        self.assertIn("風刺の的・行動・逆効果", "\n".join(next_slot_brief([first, second])))
+        self.assertEqual([first, second], original)
+
+    def test_distinct_editorial_signatures_do_not_warn(self):
+        first = sample(1)
+        second = sample(2)
+        first["editorial_signature"] = {
+            "target": "節約額だけを成績にする",
+            "action": "値引きを増やすため不要な家電を買う",
+            "outcome": "廊下が未開封の箱で埋まる",
+        }
+        second["editorial_signature"] = {
+            "target": "主役体験だけを価値にする",
+            "action": "全員が主演を選び通行人役を断る",
+            "outcome": "監督一人が背景を何度も歩く",
+        }
+        self.assertNotIn(
+            "SIMILAR_EDITORIAL_SIGNATURE",
+            {item[0] for item in analyze([first, second])},
+        )
+
     def test_group_of_formal_press_releases_prompts_better_scene_openings(self):
         articles=[
             sample(i,opening="本社の担当者は3日、新しいサービスを発表した。"

@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECENT_LIMIT = 20
 CLUSTER_LIMIT = 10
 SIMILARITY_THRESHOLD = 0.68
+SIGNATURE_SIMILARITY_THRESHOLD = 0.45
 
 # These patterns intentionally detect only clearly named mechanical premises.
 WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|人工知能|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
@@ -82,6 +83,20 @@ def final_sentence(article: dict) -> str:
         return ""
     parts = [p.strip() for p in re.split(r"[。！？!?]", paragraphs[-1]) if p.strip()]
     return parts[-1] if parts else ""
+
+
+def signature_text(article: dict) -> str:
+    """Flatten the explicit satire mechanism metadata for advisory comparison."""
+    signature = article.get("editorial_signature")
+    if not isinstance(signature, dict):
+        return ""
+    parts = [
+        signature.get(key)
+        for key in ("target", "action", "outcome")
+    ]
+    if not all(isinstance(part, str) and part.strip() for part in parts):
+        return ""
+    return " ".join(part.strip() for part in parts)
 
 
 def editorial_tag_counts(articles: list[dict]) -> Counter:
@@ -149,6 +164,13 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 warnings.append((
                     "SIMILAR_PUNCHLINE", a.get("slug", "?"),
                     f"{b.get('slug')} と末文が {ending_similarity:.0%} 似ている。最後の一撃を差別化",
+                ))
+            signature_similarity = near_duplicate(signature_text(a), signature_text(b))
+            if signature_similarity >= SIGNATURE_SIMILARITY_THRESHOLD:
+                warnings.append((
+                    "SIMILAR_EDITORIAL_SIGNATURE", a.get("slug", "?"),
+                    f"{b.get('slug')} と風刺の的・行動・逆効果が {signature_similarity:.0%} 近い。"
+                    "言い換えではなく、別の行動か別の目に見える結果を検討",
                 ))
 
     counts = editorial_tag_counts(articles)
@@ -268,6 +290,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append("最後の一言で落とす記事が続いている。次は、人物が実際にしてしまう行動、残った物、数字や光景そのものがオチになる案も比べる。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
+    if "SIMILAR_EDITORIAL_SIGNATURE" in labels:
+        lines.append("風刺の的・行動・逆効果が近い記事がある。単語だけ変えず、主役の行動か目に見える結果を別の仕組みにする。")
     if "TOPIC_FRAGMENTATION" in labels:
         note = reusable_topic_note(articles)
         lines.append(
