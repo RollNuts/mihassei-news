@@ -154,13 +154,31 @@ def _validate_trend(article: dict, slug: str, published: datetime) -> list[str]:
     return errors
 
 
+def _followup_ancestors(slug: str, by_slug: dict[str, dict]) -> set[str]:
+    """Return existing parent-chain slugs without trusting malformed/cyclic links."""
+    ancestors: set[str] = set()
+    cursor = by_slug.get(slug)
+    while isinstance(cursor, dict):
+        parent = cursor.get("followup_of")
+        if not isinstance(parent, str) or parent not in by_slug or parent in ancestors:
+            break
+        ancestors.add(parent)
+        cursor = by_slug[parent]
+    return ancestors
+
+
 def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
     """Return (errors, warnings). Errors block malformed metadata/duplicates."""
     errors: list[str] = []
     warnings: list[str] = []
+    by_slug = {
+        article["slug"]: article
+        for article in articles
+        if isinstance(article, dict) and isinstance(article.get("slug"), str)
+    }
 
-    recent_trends: list[tuple[datetime, str, str, str | None]] = []
-    recent_signatures: list[tuple[datetime, tuple[str, str, str], str, str | None]] = []
+    recent_trends: list[tuple[datetime, str, str]] = []
+    recent_signatures: list[tuple[datetime, tuple[str, str, str], str]] = []
 
     for article in articles:
         slug = str(article.get("slug") or "unknown")
@@ -177,12 +195,6 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             continue
 
         errors.extend(_validate_signature(article, slug))
-        followup_of = (
-            article.get("followup_of")
-            if isinstance(article.get("followup_of"), str)
-            else None
-        )
-
         signature = article.get("editorial_signature")
         if isinstance(signature, dict):
             normalized = tuple(
@@ -190,7 +202,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 for key in ("target", "action", "outcome")
             )
             if all(normalized):
-                recent_signatures.append((published, normalized, slug, followup_of))
+                recent_signatures.append((published, normalized, slug))
 
         if lane == "trend":
             errors.extend(_validate_trend(article, slug, published))
@@ -199,7 +211,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 term = _norm(trend.get("term"))
                 source_kind = str(trend.get("source_kind") or "")
                 if term:
-                    recent_trends.append((published, term, slug, followup_of))
+                    recent_trends.append((published, term, slug))
                 if source_kind == "x_public_aggregator":
                     warnings.append(
                         f"{slug}: X trend is from a public aggregator; "
@@ -207,24 +219,25 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                     )
 
     recent_trends.sort(key=lambda item: item[0])
-    for i, (published, term, slug, followup_of) in enumerate(recent_trends):
-        if followup_of:
-            continue
-        for prior_published, prior_term, prior_slug, _ in recent_trends[:i]:
+    for i, (published, term, slug) in enumerate(recent_trends):
+        ancestors = _followup_ancestors(slug, by_slug)
+        for prior_published, prior_term, prior_slug in recent_trends[:i]:
             if published - prior_published > DUPLICATE_WINDOW:
                 continue
-            if term == prior_term:
+            if term == prior_term and prior_slug not in ancestors:
                 errors.append(
                     f"{slug}: duplicate trend term '{term}' already used by "
-                    f"{prior_slug} within {DUPLICATE_WINDOW.days} days"
+                    f"{prior_slug} within {DUPLICATE_WINDOW.days}; "
+                    "reuse is allowed only inside the same follow-up chain"
                 )
                 break
 
+    # A follow-up may revisit the same real-world topic, but it still needs a
+    # genuinely new satire mechanism. Exact target/action/outcome reuse is never
+    # exempted by followup_of.
     recent_signatures.sort(key=lambda item: item[0])
-    for i, (published, signature, slug, followup_of) in enumerate(recent_signatures):
-        if followup_of:
-            continue
-        for prior_published, prior_signature, prior_slug, _ in recent_signatures[:i]:
+    for i, (published, signature, slug) in enumerate(recent_signatures):
+        for prior_published, prior_signature, prior_slug in recent_signatures[:i]:
             if published - prior_published > DUPLICATE_WINDOW:
                 continue
             if signature == prior_signature:
