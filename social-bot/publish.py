@@ -111,7 +111,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode"
+    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl }"
               if include_due_at else "id text status")
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
