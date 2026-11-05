@@ -12,7 +12,7 @@ def story(slug, published, source, category="社会", title="架空の地方ニ�
     return {
         "slug": slug,
         "title": title,
-        "summary": "身近な出来事を扱う架空ニュースです。",
+        "summary": "町の人たちが思わぬ出来事に巻き込まれた。",
         "category": category,
         "published_at": published.isoformat(),
         "source": {
