@@ -56,15 +56,28 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
 
     def test_reconcile_requires_saved_id_and_canonical_article_url(self):
         e = entry("story")
+        e.update({
+            "buffer_status_at_accept": "sending",
+            "buffer_shared_now_at_accept": True,
+            "buffer_share_mode_at_accept": "shareNow",
+        })
         remote = {
             "id": e["buffer_id"],
             "status": "scheduled",
             "text": "【未発生新聞】\n見出し\n\nhttps://veripsa.com/articles/story/",
             "dueAt": "2026-11-05T05:00:00Z",
+            "externalLink": "https://x.com/veripsa/status/123",
+            "sharedNow": True,
+            "shareMode": "shareNow",
         }
         row = m.reconcile("story", e, remote)
         self.assertEqual(row["buffer_status"], "scheduled")
         self.assertEqual(row["buffer_due_at_utc"], "2026-11-05T05:00:00+00:00")
+        self.assertEqual(row["buffer_status_at_accept"], "sending")
+        self.assertIs(row["buffer_shared_now_at_accept"], True)
+        self.assertEqual(row["buffer_external_link"], "https://x.com/veripsa/status/123")
+        self.assertIs(row["buffer_shared_now"], True)
+        self.assertEqual(row["buffer_share_mode"], "shareNow")
 
         wrong = dict(remote, text="別の記事 https://veripsa.com/articles/other/")
         row = m.reconcile("story", e, wrong)
@@ -124,6 +137,7 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(row["id"], "buf-story")
         query = api.call_args.args[1]
         self.assertIn('post(input: {id: "buf-story"})', query)
+        self.assertIn("externalLink sharedNow shareMode", query)
         self.assertNotIn("mutation", query)
 
     def test_direct_lookup_failure_stays_unverified_without_retry(self):
