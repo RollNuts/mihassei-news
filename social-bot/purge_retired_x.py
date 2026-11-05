@@ -93,7 +93,8 @@ def validate_live(target: dict, remote: dict | None) -> str | None:
 
 
 def resolve_live_target(target: dict, listing: dict, read_by_id, *,
-                        always_direct: bool = False) -> tuple[dict | None, str | None]:
+                        always_direct: bool = False,
+                        error_detail: dict | None = None) -> tuple[dict | None, str | None]:
     """Do not treat omitted list entries as deleted or trust them blindly.
 
     The provider list can exclude drafts or older posts. A direct ID lookup
@@ -105,7 +106,16 @@ def resolve_live_target(target: dict, listing: dict, read_by_id, *,
         return remote, None
     try:
         remote = read_by_id(target["buffer_id"])
-    except Exception:
+    except Exception as exc:
+        if error_detail is not None:
+            error_detail["error_class"] = type(exc).__name__
+            message = str(exc).strip().replace("\n", " ")
+            # publish.gql removes authorization headers/tokens from errors.
+            # Store only the bounded, known-safe provider error categories.
+            if message.startswith((
+                    "Buffer GraphQL error:", "Buffer HTTP error:",
+                    "Buffer network error:")):
+                error_detail["provider_message"] = message[:180]
         return None, "direct_id_lookup_failed"
     if remote is None:
         return None, "not_in_listing_or_direct_lookup_unverified"
@@ -152,7 +162,7 @@ def main() -> int:
         print("Validation only; no Buffer read or mutation.")
         return 0
     if mode == "inspect":
-        print("Read-only manual inspection; Buffer deletion disabled.")
+        print("Read-only legacy inspection; Buffer deletion disabled.")
 
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
@@ -247,12 +257,16 @@ def main() -> int:
         bid = target["buffer_id"]
         # Exact-ID reads are mandatory in both modes, even when a broad
         # listing contains a matching ID that may already be stale.
+        lookup_detail = {}
         before, lookup_issue = resolve_live_target(
-            target, live_posts, fetch_post, always_direct=True)
+            target, live_posts, fetch_post, always_direct=True,
+            error_detail=lookup_detail)
         if lookup_issue:
-            print("HELD", pid, lookup_issue)
+            print("HELD", pid, lookup_issue,
+                  lookup_detail.get("provider_message", lookup_detail.get("error_class", "")))
             outcomes.append({"post_id": pid, "buffer_id": bid,
-                             "state": "held", "reason": lookup_issue})
+                             "state": "held", "reason": lookup_issue,
+                             "lookup_error": lookup_detail or None})
             held += 1
             continue
 
