@@ -23,6 +23,9 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("断りを書かない", prompt)
         self.assertIn("summary", prompt)
         self.assertIn("設定を減らす", prompt)
+        self.assertIn("editorial_tone", prompt)
+        self.assertIn("plausible_future", prompt)
+        self.assertIn("直近2本", prompt)
         for directive in STALE_DIRECTIVES:
             self.assertNotIn(directive, guide)
 
