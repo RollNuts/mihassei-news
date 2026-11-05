@@ -138,5 +138,19 @@ class EditorialClarityTests(unittest.TestCase):
             self.assertNotEqual(safe_image, generated_url)
 
 
+    def test_article_prose_does_not_self_label_as_fictional(self):
+        articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
+        for article in articles:
+            reader_text = "\n".join([
+                str(article.get("title", "")),
+                str(article.get("summary", "")),
+                *(str(p) for p in article.get("paragraphs", [])),
+            ])
+            self.assertNotIn(
+                "架空の", reader_text,
+                f'{article.get("slug", "?")}: 記事本文では媒体説明を繰り返さない',
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
