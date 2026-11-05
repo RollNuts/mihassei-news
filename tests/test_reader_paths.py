@@ -77,7 +77,6 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(len(slugs), len(set(slugs)))
             self.assertEqual(set(slugs), available - {item["slug"]})
             self.assertIn('aria-labelledby="readers-choice-title" hidden', page)
-            self.assertNotIn('class="article-related"', page)
 
         # The first two stories must not point back at each other.
         first = build.story(ordered[0], self.articles)
@@ -90,6 +89,38 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         second_href = next(value for value in second_target.groups() if value)
         self.assertEqual(first_href, build.article_url(ordered[1]))
         self.assertEqual(second_href, build.article_url(ordered[2]))
+
+    def test_related_topic_links_use_existing_shared_tags(self):
+        source = next(
+            item for item in self.articles
+            if any(
+                item["slug"] != other["slug"]
+                and set(build.article_tags(item)) & set(build.article_tags(other))
+                for other in self.articles
+            )
+        )
+        ranked = suggested_articles(source, self.articles, limit=len(self.articles))
+        expected = [
+            item for item in ranked
+            if set(build.article_tags(source)) & set(build.article_tags(item))
+        ][:3]
+        self.assertTrue(expected)
+        page = build.story(source, self.articles)
+        self.assertIn('class="article-related"', page)
+        related = page.split('<section class="article-related"', 1)[1].split('</section>', 1)[0]
+        links = re.findall(r'<h3><a href="([^"]+)">', related)
+        self.assertEqual(links, [build.article_url(item) for item in expected])
+        source_tags = set(build.article_tags(source))
+        for item in expected:
+            self.assertTrue(source_tags & set(build.article_tags(item)))
+
+    def test_home_topic_navigation_only_links_indexable_clusters(self):
+        page = build.home(self.articles)
+        section = page.split('<section class="topic-explore genre-explore"', 1)[1].split('</section>', 1)[0]
+        links = re.findall(r'href="([^"]+)"', section)
+        indexable = {build.tag_url(tag) for tag in build.curated_topics(self.articles)}
+        self.assertTrue(links)
+        self.assertTrue(set(links) <= indexable)
 
     def test_article_structured_data_uses_real_dates_and_canonical(self):
         item = self.articles[0]
