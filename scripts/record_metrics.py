@@ -22,6 +22,8 @@ TOKYO = ZoneInfo("Asia/Tokyo")
 MAX_ARTICLES = 100
 BATCH = 20
 CHANNELS = ("x", "search", "external", "unattributed")
+EDITORIAL_LANES = ("trend", "social_life", "original_satire")
+EDITORIAL_TONES = ("plausible_future", "comic_exaggeration", "observational", "wildcard")
 
 
 def valid_count(value) -> bool:
@@ -314,12 +316,39 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "articles_published_total": len(articles),
         "articles_published_on_date": len(published_on_day),
         "published_categories": dict(sorted(Counter(a["category"] for a in published_on_day).items())),
+        "published_editorial_lanes": dict(sorted(
+            Counter(a.get("editorial_lane") for a in published_on_day
+                    if a.get("editorial_lane") in EDITORIAL_LANES).items()
+        )),
+        "published_editorial_lane_untracked": sum(
+            a.get("editorial_lane") not in EDITORIAL_LANES for a in published_on_day
+        ),
+        "published_editorial_tones": dict(sorted(
+            Counter(a.get("editorial_tone") for a in published_on_day
+                    if a.get("editorial_tone") in EDITORIAL_TONES).items()
+        )),
+        "published_editorial_tone_untracked": sum(
+            a.get("editorial_tone") not in EDITORIAL_TONES for a in published_on_day
+        ),
+        "editorial_metadata_note": (
+            "Editorial lane/tone labels are internal authoring metadata, not reader "
+            "segments or performance claims. Older/pre-rollout articles may be "
+            "untracked; do not backfill missing labels from topic guesses."
+        ),
         "recent_articles_sampled": len(recent),
         "recent_articles": [
             {
                 "slug": a["slug"],
                 "category": a["category"],
                 "published_at": a.get("published_at"),
+                "editorial_lane": (
+                    a.get("editorial_lane")
+                    if a.get("editorial_lane") in EDITORIAL_LANES else None
+                ),
+                "editorial_tone": (
+                    a.get("editorial_tone")
+                    if a.get("editorial_tone") in EDITORIAL_TONES else None
+                ),
                 **counts[a["slug"]],
             }
             for a in recent
@@ -373,7 +402,32 @@ def validate_snapshot(data: dict, day: str) -> None:
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError("Seven-date page-view capture time is missing or invalid") from exc
         validate_page_view_window(window, data["page_views_started_at_utc"], captured_at)
+    if "published_editorial_lanes" in data:
+        lanes = data["published_editorial_lanes"]
+        tones = data.get("published_editorial_tones")
+        if (not isinstance(lanes, dict)
+                or any(key not in EDITORIAL_LANES or not valid_count(value)
+                       for key, value in lanes.items())
+                or not valid_count(data.get("published_editorial_lane_untracked"))):
+            raise ValueError("Invalid editorial lane counts in snapshot")
+        if (not isinstance(tones, dict)
+                or any(key not in EDITORIAL_TONES or not valid_count(value)
+                       for key, value in tones.items())
+                or not valid_count(data.get("published_editorial_tone_untracked"))):
+            raise ValueError("Invalid editorial tone counts in snapshot")
+        if (sum(lanes.values()) + data["published_editorial_lane_untracked"]
+                != data["articles_published_on_date"]):
+            raise ValueError("Editorial lane counts disagree with published total")
+        if (sum(tones.values()) + data["published_editorial_tone_untracked"]
+                != data["articles_published_on_date"]):
+            raise ValueError("Editorial tone counts disagree with published total")
     for item in data.get("recent_articles", []):
+        lane = item.get("editorial_lane")
+        tone = item.get("editorial_tone")
+        if lane is not None and lane not in EDITORIAL_LANES:
+            raise ValueError("Invalid per-article editorial lane")
+        if tone is not None and tone not in EDITORIAL_TONES:
+            raise ValueError("Invalid per-article editorial tone")
         for key in ("page_views_cumulative", "page_views_last_7_days"):
             if key in item and item[key] is not None and not valid_count(item[key]):
                 raise ValueError("Invalid per-article page views in snapshot: " + key)
