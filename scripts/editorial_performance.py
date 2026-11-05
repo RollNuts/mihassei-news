@@ -111,7 +111,7 @@ def eligible_articles(
             "page_views_last_7_days": page_views,
             # A rough age normalization for early comparisons. It is not a
             # forecast and does not correct for time-of-day or distribution.
-            "page_views_per_hour": round(page_views / age_hours, 3),
+            "page_views_per_hour": round(page_views / age_hours, 3) if age_hours > 0 else None,
             # Missing attribution/history remains null, never zero.
             "readers": readers,
             "x_arrivals": _count(item.get("x_arrivals")),
