@@ -1,5 +1,37 @@
 [
   {
+    "slug": "sns-quit-support-site-hundred-day-login-award",
+    "category": "社会",
+    "flash": "やめる宣言100日目",
+    "fiction_company": "おやすみ広場",
+    "art": "cards",
+    "fiction_at": "2031-07-02T16:00:00+09:00",
+    "published_at": "2026-11-05T19:30:21+09:00",
+    "title": "「SNS断ち」を応援するSNS、100日連続ログインを表彰　受賞者「明日こそやめます」",
+    "summary": "「今日で最後」と書いた会員は、届いた励ましに一人ずつ返事をしている。別れのあいさつが毎日続き、退会した人よりも「やめます」の投稿を続ける人が増えた。",
+    "paragraphs": [
+      "SNSを見続けて疲れた人のために、交流サイト「おやすみ広場」が「ここで最後のあいさつを」と登録を勧めた。利用者は「今日こそやめます」と書き込み、届いた「頑張って」に一件ずつ返信。気づけば夜が明け、翌朝も「昨日は本当に最後のつもりでした」と投稿した。",
+      "運営は退会を目指す会員を励ますため、連続ログインの記録を付け始めた。毎日「今日でやめます」と宣言し続けた会員が100日を達成し、記念式典でトロフィーを受け取った。「やめる決意だけなら誰にも負けません」。会場ではほかの会員がスマホで拍手の絵文字を送り合った。",
+      "式典の終わりに司会者が「では、皆さんでログアウトしましょう」と呼びかけた。受賞者たちはスマホを構え、「まず受賞報告を投稿しないと」と立ち止まった。客席の照明が消えても、会場には反応を確かめるスマホの光だけが残っていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社クロス・マーケティング",
+      "published_at": "2026-07-02T16:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000790.000004729.html",
+      "topic": "2026年7月2日16時公開のクロス・マーケティング「SNSに関する調査（2026年）意識編」。全国20〜69歳男女3,000人を調査し、SNS利用者の45％がSNS疲れを感じ、若年層にはやめたいのに見続けるとの回答傾向もあった。SNS断ちを助ける交流サイト「おやすみ広場」、100日連続ログインの表彰、利用者や式典の台詞は同社の事業・調査事実ではなく独自の創作。"
+    },
+    "scene_prompt": "Photorealistic deadpan satire in a small Japanese community award ceremony. Foreground: ONE silver trophy on a table beside ONE smartphone held by a formally dressed award recipient, its blue screen glowing but with no readable text. Background: an audience of a few people still looking at their phones rather than at the stage. One coherent scene, no logos, no text, no famous people.",
+    "tags": [
+      "SNS",
+      "アプリ"
+    ],
+    "satire_tags": [
+      "SNSあるある",
+      "本末転倒"
+    ]
+  },
+  {
     "slug": "office-face-to-face-day-video-call-echo",
     "category": "社会",
     "flash": "出社したのに画面越し",
