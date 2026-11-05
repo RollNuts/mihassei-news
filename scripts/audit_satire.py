@@ -29,8 +29,12 @@ MECHANICAL_ENDINGS = re.compile(
     r"担当者|広報|謝罪|却下|不合格|新制度|管理職|手続き|承認|申請|通知"
 )
 DIRECT_SPEECH_ENDING = re.compile(
-    r"(?:「[^」]{2,}」\s*$|「[^」]{2,}」(?:と|、)\s*"
-    r"(?:答え|言|説明|案内|告げ|うなず|笑|書き|つぶや|繰り返|話|宣言|認め))"
+    r"(?:"
+    r"「[^」]{2,}」"
+    r"|「[^」]{2,}」\s*と\s*"
+    r"(?:答えた|言った|説明した|案内した|告げた|うなずいた|笑った|"
+    r"書き込んだ|つぶやいた|繰り返した|話した|宣言した|認めた)"
+    r")[。！？!?]?\s*$"
 )
 # A short burst of similar premises can bore a first-time visitor even when
 # the 20-story average looks diverse. A signal, never an automatic rejection.
@@ -189,7 +193,9 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 "次枠は冒頭2文で人物・現場・原因を示す。台詞始まりは必須ではない",
             ))
         dialogue_endings = sum(
-            bool(DIRECT_SPEECH_ENDING.search(final_sentence(item)))
+            bool(DIRECT_SPEECH_ENDING.search(
+                str((item.get("paragraphs") or [""])[-1]).strip()
+            ))
             for item in short_run
         )
         if dialogue_endings >= DIALOGUE_ENDING_THRESHOLD:
