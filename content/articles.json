@@ -1,5 +1,33 @@
 [
   {
+    "slug": "film-village-all-stars-no-extras",
+    "category": "エンタメ",
+    "flash": "主役だらけで通行人ゼロ",
+    "fiction_company": "小町映画村",
+    "art": "cards",
+    "fiction_at": "2031-11-02T16:07:00+09:00",
+    "published_at": "2026-11-05T15:30:00+09:00",
+    "title": "全員が主役を選んだ映画村、通行人役ゼロ　監督が背景を走り回る",
+    "summary": "主演体験に20人が申し込んだ映画村で、商店街の撮影に必要な通行人役が集まらなかった。主演たちがカメラの前で待つ間、監督だけが買い物客に扮して何度も道を横切った。",
+    "paragraphs": [
+      "主役になれる撮影体験を売り出した小町映画村で、参加者20人が全員主演を希望した。「主人公がにぎやかな商店街を歩く」場面を撮ろうとしたところ、通行人役を引き受ける人が一人もいなかった。",
+      "監督が「誰か一人だけ、背景を歩いてください」と頼むと、参加者はそろって主演の予約票を掲げた。「通行人になるために来たんじゃありません」。20人は店先で思い思いの決めポーズを取り始め、商店街には客も店員も映らなかった。",
+      "結局、監督が買い物袋を持って右から左へ歩き、帽子を替えて左から右へ歩く作業を繰り返した。完成した映像の上映会では、主演20人よりも背景を歩く監督の登場回数が多かった。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "Reuters",
+      "published_at": "2026-11-02T16:07:00+09:00",
+      "url": "https://www.reuters.com/business/media-telecom/chinas-hollywood-visitors-become-stars-consumers-spend-more-experiences-2026-11-02/",
+      "topic": "2026年11月2日のReuters報道。中国・横店影視城では観光客が映画セットで撮影体験を楽しみ、体験型消費への関心が紹介された。全員が主演を希望する小町映画村の混乱、監督が通行人になる描写や人物の発言は本紙独自の設定であり、実際の撮影事故や運営事実ではない。"
+    },
+    "scene_prompt": "Photorealistic dry-comedy news scene at a Japanese historical film studio's outdoor shopping street set: a tired middle-aged film director in plain clothes carrying shopping bags walks alone as the only background pedestrian, while about twenty brightly dressed aspiring lead actors pose together facing a camera on a tripod. The striking absence of ordinary extras and shoppers is obvious. Foreground director and crowd in focus, natural daylight, believable film-set props, no legible text, logos, or famous faces.",
+    "tags": [
+      "体験消費",
+      "イベント"
+    ]
+  },
+  {
     "slug": "sale-discount-savings-receipt-framed",
     "category": "暮らし",
     "flash": "値引き額で節約",
