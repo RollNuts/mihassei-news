@@ -1556,20 +1556,20 @@ def story(a, articles, issues=None, serials=None):
             for tag in shared_topics
         )
         related_items.append(
-            '<article class="article-related-item">'
-            f'<div><span class="article-related-category">{escape(item["category"])}</span>'
+            '<article class="topic-related-item">'
+            f'<div><span class="topic-related-category">{escape(item["category"])}</span>'
             f'<h3><a href="{article_url(item)}">{escape(item["title"])}</a></h3></div>'
-            f'<nav class="article-related-tags" aria-label="共通する話題">{shared_links}</nav>'
+            f'<nav class="topic-related-tags" aria-label="共通する話題">{shared_links}</nav>'
             '</article>'
         )
         if len(related_items) >= 3:
             break
     related_section = (
-        '<section class="article-related" aria-labelledby="article-related-title">'
-        '<div class="article-related-heading"><div><span class="small-label">RELATED</span>'
-        '<h2 id="article-related-title">同じ話題の記事</h2></div>'
+        '<section class="topic-related" aria-labelledby="topic-related-title">'
+        '<div class="topic-related-heading"><div><span class="small-label">RELATED</span>'
+        '<h2 id="topic-related-title">同じ話題の記事</h2></div>'
         '<a href="/topics/">話題一覧 ↗</a></div>'
-        '<div class="article-related-list">' + "".join(related_items) + '</div></section>'
+        '<div class="topic-related-list">' + "".join(related_items) + '</div></section>'
         if related_items else ""
     )
     parent = followup_parent(a, articles)
