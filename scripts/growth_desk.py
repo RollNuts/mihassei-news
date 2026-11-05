@@ -89,12 +89,11 @@ main{{padding:22px 12px 65px}}.panel{{padding:9px 10px}}th,td{{padding:10px 7px}
 <span class="kicker">AUDIENCE INSIGHTS / 読者の入口</span>
 <h1>集客の実測</h1>
 <p class="lead">「記事が読まれたか」から一歩進んで、直近{len(rows)}本のうち、
-どの記事にXや検索からブラウザが訪れたかを確かめるページです。
+どの記事にXや検索からブラウザが訪れ、何回表示されたかを確かめるページです。
 公開済みの匿名集計だけを読み込み、ここを開いても閲覧数や反応数を増やしません。</p>
 <div class="notice">
-<strong>数字の読み方：</strong>実人数でもPVでもありません。匿名のブラウザ識別子が、
-記事ごと・流入経路ごとに一度記録された累積参考値です。
-同じ人の別端末や、同じブラウザのX・検索の重複を含みます。
+<strong>数字の読み方：</strong>X・検索・記事閲覧・次の記事へは実人数ではなく、
+匿名ブラウザ識別子の累積参考値です。一方、PVはページの表示回数で、同じブラウザの再表示も含みます。
 この記事別の計測開始以前の過去データは復元できません。
 参照元やUTMの申告は厳密な証明ではなく、順位・売上・広告表示回数の根拠には使えません。
 </div>
@@ -106,6 +105,10 @@ main{{padding:22px 12px 65px}}.panel{{padding:9px 10px}}th,td{{padding:10px 7px}
 <small>記事以外への到着も含む</small></div>
 <div class="stat"><span>検索由来・サイト全体</span><strong data-growth-channel-search>—</strong>
 <small>検索結果の表示回数ではない</small></div>
+<div class="stat"><span>サイト累計PV</span><strong data-growth-page-views>—</strong>
+<small>ページ表示回数。ブラウザ数とは別</small></div>
+<div class="stat"><span>直近7暦日PV</span><strong data-growth-week-page-views>—</strong>
+<small data-growth-week-page-views-note>計測範囲を確認中</small></div>
 </section>
 <section data-growth-details hidden>
 <h2>ジャンル別の実測</h2>
@@ -118,12 +121,15 @@ main{{padding:22px 12px 65px}}.panel{{padding:9px 10px}}th,td{{padding:10px 7px}
 <div class="controls"><h2>記事ごとの反応</h2>
 <label>並べ替え <select data-growth-sort>
 <option value="x">X経由</option><option value="search">検索経由</option>
-<option value="readers">記事閲覧</option><option value="continuedReaders">次の記事へ</option>
+<option value="weekPv">直近7日PV</option><option value="pageViews">累計PV</option>
+<option value="readers">記事閲覧ブラウザ</option><option value="continuedReaders">次の記事へ</option>
 <option value="published">実際の掲載日</option></select></label></div>
-<p class="footnote">いずれも累積・ブラウザ単位。Xでの投稿数、実際のクリック数、
-PV、転換率ではありません。0件の記事は「読まれていない」と断定しないでください。</p>
+<p class="footnote">X・検索・閲覧・次記事へ・いいね・共有操作はブラウザ単位の累積参考値。
+PV列だけは表示回数です。未計測は0に置き換えず「—」と表示します。</p>
+<p class="footnote" data-growth-pv-coverage>PVの計測範囲を取得しています。</p>
 <div class="panel table-wrap"><table class="article-table">
 <thead><tr><th scope="col">記事</th><th scope="col">X</th><th scope="col">検索</th>
+<th scope="col">7日PV</th><th scope="col">累計PV</th>
 <th scope="col">閲覧</th><th scope="col">次記事へ</th>
 <th scope="col">いいね</th><th scope="col">共有操作</th></tr></thead>
 <tbody data-growth-articles></tbody></table></div>
