@@ -50,8 +50,9 @@ class EditorialClarityTests(unittest.TestCase):
                 self.assertTrue(2 <= len(article["paragraphs"]) <= 4)
                 self.assertTrue(all(65 <= len(p) <= 210 for p in article["paragraphs"]))
                 self.assertEqual(article["published_at"], original_date)
-                self.assertEqual(datetime.fromisoformat(article["fiction_at"]).year,
-                                 datetime.fromisoformat(article["source"]["published_at"]).year + 5)
+                published = datetime.fromisoformat(article["published_at"])
+                self.assertEqual(datetime.fromisoformat(article["fiction_at"]),
+                                 published.replace(year=published.year + 5))
                 self.assertTrue(datetime.fromisoformat(article["modified_at"]).tzinfo)
                 self.assertGreater(datetime.fromisoformat(article["modified_at"]),
                                    datetime.fromisoformat(article["published_at"]))

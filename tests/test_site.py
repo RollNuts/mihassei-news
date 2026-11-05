@@ -511,11 +511,9 @@ class SiteTests(unittest.TestCase):
             self.assertIn('data-like-count="'+a["slug"]+'"',text)
             self.assertNotIn('data-like-count="{slug}"',text)
             self.assertNotIn("Source: Unknown",text)
-            original=datetime.fromisoformat(a["source"]["published_at"])
+            published=datetime.fromisoformat(a["published_at"])
             fiction=datetime.fromisoformat(a["fiction_at"])
-            self.assertEqual(fiction.year,original.year+5)
-            self.assertEqual((fiction.month,fiction.day,fiction.hour,fiction.minute),
-                             (original.month,original.day,original.hour,original.minute))
+            self.assertEqual(fiction, published.replace(year=published.year+5))
 
     def test_future_verdict_poll_is_genuine_and_available_on_all_stories(self):
         css=(ROOT/"dist/assets/future-poll.css").read_text(encoding="utf-8")

@@ -214,7 +214,7 @@ class SatireAuditTests(unittest.TestCase):
         # The headline and ending can be improved without invalidating the test.
         self.assertEqual(farm["published_at"],"2026-11-03T07:40:27+09:00")
         self.assertEqual(farm["source"]["publisher"],"The Guardian")
-        self.assertEqual(farm["fiction_at"],"2031-11-03T01:53:00+09:00")
+        self.assertEqual(farm["fiction_at"],"2031-11-03T07:40:27+09:00")
         self.assertGreater(datetime.fromisoformat(farm["modified_at"]),
                            datetime.fromisoformat(farm["published_at"]))
 

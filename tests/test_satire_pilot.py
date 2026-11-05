@@ -40,9 +40,9 @@ class SatirePilotTests(unittest.TestCase):
                 a = articles[slug]
                 self.assertEqual(a["published_at"], original_date)
                 self.assertEqual(a["source"]["url"], original_url)
-                real = datetime.fromisoformat(a["source"]["published_at"])
+                published = datetime.fromisoformat(a["published_at"])
                 future = datetime.fromisoformat(a["fiction_at"])
-                self.assertEqual(future, real.replace(year=real.year + 5))
+                self.assertEqual(future, published.replace(year=published.year + 5))
                 self.assertGreater(datetime.fromisoformat(a["modified_at"]),
                                    datetime.fromisoformat(a["published_at"]))
                 self.assertTrue(2 <= len(a["paragraphs"]) <= 6)
