@@ -143,6 +143,25 @@ class EditorialAuditTests(unittest.TestCase):
         codes = {code for code, _, _ in audit([a], NOW)}
         self.assertNotIn("CONTEXT_DEPENDENT_OPENING", codes)
 
+
+    def test_long_real_world_setup_before_fiction_gets_clarity_warning(self):
+        a = story("background-heavy", NOW, NOW - timedelta(hours=1))
+        a["paragraphs"] = [
+            "米中間選挙後、AIの計算を担うデータセンターの新設が鈍るかもしれないとの見方から、既に施設を持つ大手IT企業の株が上がった。"
+            "架空の会社は、建設を見送った空き地で完成式を開いた。"
+        ]
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertIn("BACKGROUND_LOADED_OPENING", codes)
+
+    def test_short_fact_then_fiction_is_not_background_loaded(self):
+        a = story("short-setup", NOW, NOW - timedelta(hours=1))
+        a["paragraphs"] = [
+            "音楽特番が出演者の歌唱曲を事前発表した。"
+            "その一方、架空の番組は観客に「初耳の顔」を練習させた。"
+        ]
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertNotIn("BACKGROUND_LOADED_OPENING", codes)
+
     def test_missing_publication_date_is_not_assumed_from_future_dateline(self):
         a = story("undated", NOW, NOW)
         del a["published_at"]
