@@ -1439,7 +1439,6 @@ def story(a, articles, issues=None, serials=None):
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
 <p class="dek">{escape(reader_copy(a["summary"]))}</p>
-<p class="story-fiction-context"><strong>創作ニュース</strong></p>
 {followup_context}
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
 {tag_links(a)}
