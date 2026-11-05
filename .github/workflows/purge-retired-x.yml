@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/purge-retired-x.yml"
+      - "social-bot/purge_retired_x.py"
   workflow_dispatch:
     inputs:
       mode:
@@ -42,7 +43,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_purge_retired_x.py' -v
           python -m py_compile social-bot/purge_retired_x.py
 
-      - name: Inspect retired posts or delete exact unsent matches (manual only)
+      - name: Read-only inspection on push; exact cleanup only by manual apply
         if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'push')
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
