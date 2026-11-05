@@ -9,6 +9,7 @@
 ## できること／できないこと
 
 - `.github/workflows/free-cpu-scenes.yml` は新着時・定時・手動とも1回1〜3枚まで。無料GitHub Actionsの**公開リポジトリ用標準CPU**に厳格限定。プライベート化・フォーク・PR からは生成しない。対象が0件ならランタイムやモデルをダウンロードせず終了する。画像だけのpushでは起動せず、生成・公開を再帰させない。
+- 同ワークフローのSummaryは、`生成対象0件`と`読者向け画像が十分`を同義にしない。`scripts/visual_review.py`の既存判定を使い、承認済みJPEG・専用SVG・承認写真・汎用SVG、未検品JPEG、品質保留JPEGを分けて表示する。Mac停止中でも、CPU生成のidleと画像回収待ちを区別して引き継ぐ。
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
 - CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。
 - モデル: [SimianLuo/LCM_Dreamshaper_v7](https://huggingface.co/SimianLuo/LCM_Dreamshaper_v7)の既存リビジョンを固定して再利用する。LCMのカード記載はMITだが、基盤[DreamShaper 7](https://huggingface.co/Lykon/dreamshaper-7)は[CreativeML Open RAIL-M](https://huggingface.co/spaces/CompVis/stable-diffusion-license/blob/main/license.txt)であり、その利用制限も確認する。モデルは公開・非ゲートで、外部推論APIを呼ばずGitHubのCPU内部で実行する。公開するのは架空人物による風刺JPEGで、モデル重みは配布しない。
