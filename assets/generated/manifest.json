@@ -157,14 +157,14 @@
       "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
     "film-village-all-stars-no-extras": {
-      "article_sha256": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
-      "bytes": 124026,
-      "generated_at": "2026-11-05T09:05:12.556209+00:00",
+      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "bytes": 116735,
+      "generated_at": "2026-11-05T09:15:38.773814+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 8989241339850763742,
-      "sha256": "a9321fc347c29ab2e048bdfc5d3b5fa26e26f4d4efbb179fe36b8a0c68d431eb"
+      "sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd"
     },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
@@ -313,14 +313,14 @@
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
     "sale-discount-savings-receipt-framed": {
-      "article_sha256": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
-      "bytes": 105803,
-      "generated_at": "2026-11-05T09:05:12.559711+00:00",
+      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+      "bytes": 63354,
+      "generated_at": "2026-11-05T09:15:38.775789+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 4846405115373740905,
-      "sha256": "e31a5108ef0118d28c53f9dc08a4792aec26dcb3efa408eacafc9d03f084caf0"
+      "sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da"
     },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
@@ -418,18 +418,6 @@
     }
   },
   "rejected": {
-    "film-village-all-stars-no-extras": {
-      "article_sha256": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
-      "reason": "Visual review of regenerated JPEG from free CPU run 41998720390: the image still fills the street and sidewalks with many background pedestrians despite the story requiring the director to be the only person walking the set. The central no-extras joke remains reversed, so keep the safe fallback and retry only with a materially simpler one-person composition.",
-      "rejected_candidate_sha256": "a9321fc347c29ab2e048bdfc5d3b5fa26e26f4d4efbb179fe36b8a0c68d431eb",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
-    },
-    "sale-discount-savings-receipt-framed": {
-      "article_sha256": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
-      "reason": "Visual review of regenerated JPEG from free CPU run 41998720390: boxes are now visible, but the key framed long receipt becomes a large poster/collage with prominent pseudo-text and the puzzled child is absent. The spend-more-to-save joke is still not clear enough, so keep the safe fallback and retry as an object-only still life.",
-      "rejected_candidate_sha256": "e31a5108ef0118d28c53f9dc08a4792aec26dcb3efa408eacafc9d03f084caf0",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
