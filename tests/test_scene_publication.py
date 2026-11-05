@@ -27,7 +27,14 @@ class ScenePublicationTests(unittest.TestCase):
             articles = json.loads((root / "content/articles.json").read_text())
             with patch.object(build, "BASE", root):
                 lead = build.editorial_lead(articles)
-            selected = [lead] + [a for a in articles if a["slug"] != lead["slug"]][:2]
+            eligible = [a for a in articles
+                        if a.get("visual_strategy", "cpu-photo") == "cpu-photo"]
+            selected = []
+            if lead in eligible:
+                selected.append(lead)
+            selected.extend(a for a in eligible
+                            if a["slug"] not in {item["slug"] for item in selected})
+            selected = selected[:3]
             review_path = root / "content/visual_reviews.json"
             reviews = json.loads(review_path.read_text(encoding="utf-8"))
             for article in selected:

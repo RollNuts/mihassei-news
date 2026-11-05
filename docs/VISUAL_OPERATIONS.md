@@ -41,6 +41,8 @@ JPEGの状態だけで表示を判断しない。同じレポートの `publicat
 
 写真が使えない場合、本文に合う専門SVGを `assets/editorial-scenes/` に用意できる。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
 
+`visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGがまだない場合だけ `illustration_strategy_without_reviewed_scene` を回収対象にする。CPUを再起動して解消しない。
+
 ## 選抜動画の確認
 
 選抜記事を変更した発行・改稿担当と、画像を検品するサイト担当は、既存の枠で `python3 scripts/publish_motion_clips.py --plan` を確認する。状態と次の作業は[MOTION_CLIPS.md](MOTION_CLIPS.md)に従い、未解決分を既存の結果・引き継ぎへ「slug／待ち理由／次の作業と担当」で残す。OFF時の空一覧は未処理なしを意味しない。

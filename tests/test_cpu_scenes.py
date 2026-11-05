@@ -108,6 +108,14 @@ class FreeCpuImageTests(unittest.TestCase):
                 self.assertEqual(build.editorial_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertEqual(build.social_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertIn("再現イメージ（合成）", build.photo_credit(a))
+                illustration = {**a, "visual_strategy": "illustration"}
+                self.assertTrue(reviewed_generated_scene(illustration, root=root))
+                self.assertFalse(build.uses_generated_scene(illustration))
+                self.assertEqual(build.editorial_image(illustration),
+                                 "/images/" + a["slug"] + ".svg")
+                self.assertEqual(build.social_image(illustration),
+                                 "/og/articles/" + a["slug"] + ".png?v=20261103-topic2")
+                self.assertEqual(build.photo_credit(illustration), "創作イラスト")
             manifest = root / "assets/generated/manifest.json"
             original = json.loads(manifest.read_text(encoding="utf-8"))
             for origin, model in (
@@ -380,6 +388,22 @@ class FreeCpuImageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
             cpu.fit_cpu_prompt({"slug": "long-core", "scene_prompt": "large " * 90 + "."}, tokenizer)
 
+    def test_illustration_strategy_never_enters_cpu_or_local_generation(self):
+        a = {**article(), "visual_strategy": "illustration"}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.assertEqual(local_scene_photos.pending_articles([a], root=root), [])
+            self.assertEqual(local_scene_photos.pending_articles([a], root=root, force=True), [])
+            self.assertEqual(cpu.select_articles([a], root=root), [])
+            self.assertEqual(
+                cpu.select_articles([a], slug=a["slug"], retry_held=True, root=root), []
+            )
+        with self.assertRaisesRegex(ValueError, "visual_strategy"):
+            local_scene_photos.pending_articles(
+                [{**article(), "visual_strategy": "unknown"}]
+            )
+        self.assertEqual(local_scene_photos.visual_strategy(article()), "cpu-photo")
+
     def test_single_held_retry_is_explicit_and_never_overwrites_a_valid_image(self):
         a = article()
         with tempfile.TemporaryDirectory() as folder:
@@ -464,6 +488,8 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("python3 scripts/visual_review.py", workflow)
         self.assertIn("Accepted generated JPEG", workflow)
         self.assertIn("Generic SVG fallback", workflow)
+        self.assertIn("Illustration-routed stories", workflow)
+        self.assertIn("CPU-photo stories", workflow)
         self.assertIn("JPEG awaiting visual review", workflow)
         self.assertIn("green CPU job may be intentionally idle", workflow)
         self.assertNotIn("All published articles already have valid local scenes.", workflow)

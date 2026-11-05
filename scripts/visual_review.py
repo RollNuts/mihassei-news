@@ -135,17 +135,22 @@ def _editorial_scene_state(article: dict, *, root: Path) -> dict:
 def _publication_row(article: dict, *, root: Path) -> dict:
     """Report build selection, not a claim that those bytes are deployed live."""
     row = _scene_state(article, root=root)
+    strategy = article.get("visual_strategy", "cpu-photo")
     scene = _editorial_scene_state(article, root=root)
     # Match build.editorial_image() and uses_stock_photo() priority, using the
     # same validators. Importing build here would create a publication-gate cycle.
     kind, url = "generic_fallback", "/images/" + article["slug"] + ".svg"
-    if row["status"] == "accepted":
+    if strategy == "illustration":
+        if scene["status"] == "current":
+            kind = "editorial_svg"
+    elif row["status"] == "accepted":
         kind, url = "generated_jpeg", generated_url(article)
     elif scene["status"] == "current":
         kind = "editorial_svg"
     elif usable_cached_photo(article, root=root):
         kind, url = "stock_photo", "/photos/" + article["slug"] + ".jpg"
-    return {**row, "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
+    return {**row, "visual_strategy": strategy,
+            "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
 
 
 def _attention(row: dict) -> list[dict]:
@@ -156,13 +161,19 @@ def _attention(row: dict) -> list[dict]:
             row["editorial_scene"]["status"] + "_editorial_scene",
             "現在の本文と専用SVGを実物で再確認し、必要なら修正する。指紋だけで承認しない。",
         ))
-    if row["status"] == "pending":
+    if row["status"] == "pending" and row.get("visual_strategy") != "illustration":
         work.append(("pending_jpeg", "現在のJPEGを本文と目視照合し、採否を記録する。"))
     if row["publication"]["kind"] == "generic_fallback" and not work:
-        work.append((
-            "generic_fallback",
-            "本文の具体的な場面に合う素材を用意し、実物確認する。保留解除だけで復旧しない。",
-        ))
+        if row.get("visual_strategy") == "illustration":
+            work.append((
+                "illustration_strategy_without_reviewed_scene",
+                "CPU生成へ戻さず、本文のオチに合う専用SVG等を用意して実物確認する。",
+            ))
+        else:
+            work.append((
+                "generic_fallback",
+                "本文の具体的な場面に合う素材を用意し、実物確認する。保留解除だけで復旧しない。",
+            ))
     return [{"slug": row["slug"], "publication": row["publication"],
              "reason": reason, "next_action": action} for reason, action in work]
 
@@ -179,9 +190,10 @@ def main(argv: list[str] | None = None) -> int:
             not isinstance(article, dict)
             or not isinstance(article.get("slug"), str)
             or not SAFE_SLUG.fullmatch(article["slug"])
+            or article.get("visual_strategy", "cpu-photo") not in ("cpu-photo", "illustration")
             for article in articles
         ):
-            raise ValueError("記事の配列と安全なslugが必要です")
+            raise ValueError("記事の配列・安全なslug・有効なvisual_strategyが必要です")
         if len({article["slug"] for article in articles}) != len(articles):
             raise ValueError("記事のslugが重複しています")
     except (OSError, UnicodeError, ValueError) as error:
@@ -198,6 +210,10 @@ def main(argv: list[str] | None = None) -> int:
         "publication_counts": {
             kind: sum(row["publication"]["kind"] == kind for row in rows)
             for kind in PUBLICATION_KINDS
+        },
+        "strategy_counts": {
+            strategy: sum(row["visual_strategy"] == strategy for row in rows)
+            for strategy in ("cpu-photo", "illustration")
         },
         "attention": [item for row in rows for item in _attention(row)],
         "images": rows,

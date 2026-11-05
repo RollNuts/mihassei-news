@@ -103,6 +103,25 @@ NEGATIVE = (
     "blurry, oversaturated, violence, weapons, gore"
 )
 
+VISUAL_STRATEGIES = ("cpu-photo", "illustration")
+
+
+def visual_strategy(article: dict) -> str:
+    """Route each story to photo generation or a deliberate illustration fallback."""
+    strategy = article.get("visual_strategy", "cpu-photo")
+    if strategy not in VISUAL_STRATEGIES:
+        raise ValueError(
+            "visual_strategy must be 'cpu-photo' or 'illustration': "
+            + str(article.get("slug", "<unknown>"))
+        )
+    return strategy
+
+
+def cpu_generation_allowed(article: dict) -> bool:
+    """Explicit illustration stories never enter Mac or GitHub CPU generation."""
+    return visual_strategy(article) == "cpu-photo"
+
+
 
 def scene_description(article: dict) -> str:
     override = article.get("scene_prompt")
@@ -401,6 +420,7 @@ def pending_articles(articles: list[dict], *, root: Path = ROOT, force: bool = F
     pending = [
         a for a in articles
         if (not slug or a.get("slug") == slug)
+        and cpu_generation_allowed(a)
         and (force or not usable_generated_scene(a, root=root))
         and (force or not held_scene(a, root=root))
     ]
