@@ -497,8 +497,8 @@ class SiteTests(unittest.TestCase):
             text=page.read_text(encoding="utf-8")
             self.assertIn(a["title"],text)
             self.assertIn(a["source"]["url"],html.unescape(text))
-            from scripts.editorial_copy import reader_copy
-            self.assertIn(reader_copy(a["source"]["topic"]),text)
+            from scripts.editorial_copy import source_reader_copy
+            self.assertIn(source_reader_copy(a["source"]["topic"]),text)
             self.assertIn("創作ニュース",text)
             self.assertIn('data-article-pv="'+a["slug"]+'"',text)
             self.assertIn("data-like-slug",text)
@@ -599,7 +599,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(actual_tag,markup)
             self.assertIn(fictional_tag,markup)
             self.assertIn("公開 ",markup)
-            self.assertIn("架空 ",markup)
+            self.assertIn("紙面 ",markup)
             compact_markup=category_meta(article, compact=True)
             self.assertIn('class="story-meta story-meta--compact"',compact_markup)
             self.assertIn(actual_tag,compact_markup)

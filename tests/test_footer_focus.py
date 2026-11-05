@@ -31,7 +31,8 @@ class FooterFocusTests(unittest.TestCase):
         self.assertIn("市場分析は投資助言ではありません。", footer)
         item = load()[0]
         story_page = story(item, [item])
-        self.assertIn("<strong>創作ニュース</strong>", story_page)
+        self.assertIn('class="fiction-mark">創作報道', story_page)
+        self.assertNotIn('class="story-fiction-context"', story_page)
         self.assertIn('id="story-source"', story_page)
 
 

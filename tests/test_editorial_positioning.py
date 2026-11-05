@@ -40,12 +40,13 @@ class EditorialPositioningTests(unittest.TestCase):
         from scripts.build import story
         items = load()
         page = story(items[0], items)
-        self.assertIn('class="story-fiction-context"', page)
+        self.assertIn('class="fiction-mark">創作報道', page)
+        self.assertNotIn('class="story-fiction-context"', page)
         self.assertNotIn('href="#story-source"', page)
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn('id="story-source"', page)
-        self.assertIn("着想元は、記事内の創作内容を裏付けるものではありません", page)
-        self.assertIn('aria-label="架空ニュースのありそう度を投票"', page)
+        self.assertIn("着想元は、この記事の出来事を報じたものではありません", page)
+        self.assertIn('aria-label="この「もしも」のありそう度を投票"', page)
         self.assertIn('data-poll-choice="plausible"', page)
         self.assertIn('data-poll-choice="unlikely"', page)
         self.assertIn("投稿内容は公開されます。", page)
@@ -61,7 +62,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("<h2>投票</h2>", privacy())
         self.assertIn("実人数・世論調査・出来事が起こる確率を示すものではありません", privacy())
         articles = load()
-        self.assertIn('aria-label="架空ニュースのありそう度を投票"', story(articles[0], articles))
+        self.assertIn('aria-label="この「もしも」のありそう度を投票"', story(articles[0], articles))
 
     def test_reader_share_keeps_article_without_repeated_fiction_labels(self):
         from urllib.parse import parse_qs, urlparse
