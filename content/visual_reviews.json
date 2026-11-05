@@ -147,6 +147,13 @@
       "reviewed_at": "2026-11-04T05:36:49.800111+00:00",
       "note": "実画像と本文を照合。ノートと鉛筆は分かるが、ページを貫く大きな穴はなく、丸い穴は右側の別のピンクのリング状物体にある。紙面にも擬似文字が残る。記事の主題に合わないためJPEGは不採用とし、確認済みの穴あきノート専用SVGを継続する。"
     },
+    "basketball-opening-day-game-seven": {
+      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "decision": "rejected",
+      "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+      "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
+      "reviewed_at": "2026-11-05T02:51:28.168Z"
+    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "decision": "rejected",
