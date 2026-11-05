@@ -147,7 +147,7 @@ class EditorialAuditTests(unittest.TestCase):
     def test_long_real_world_setup_before_fiction_gets_clarity_warning(self):
         a = story("background-heavy", NOW, NOW - timedelta(hours=1))
         a["paragraphs"] = [
-            "米国の選挙後、AI施設の新設が鈍るとの見方から、既存施設を持つ企業の株価が大きく上昇した。"
+            "米中間選挙後、AIの計算を担うデータセンターの新設が鈍るかもしれないとの見方から、既に施設を持つ大手IT企業の株が上がった。"
             "架空の会社は、建設を見送った空き地で完成式を開いた。"
         ]
         codes = {code for code, _, _ in audit([a], NOW)}
