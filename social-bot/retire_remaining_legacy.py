@@ -259,8 +259,9 @@ def main():
     if "--validate" in sys.argv or "--apply" not in sys.argv or not request["enabled"]:
         print("Validated remaining legacy X retirement. No Buffer mutation.")
         return 0
-    if os.environ.get("GITHUB_REF") != "refs/heads/main" or os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
-        raise RuntimeError("Retirement may only run from main Actions")
+    if (os.environ.get("GITHUB_REF") != "refs/heads/main"
+            or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"):
+        raise RuntimeError("Retirement requires manually dispatched main Actions")
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Existing Buffer key unavailable; no fallback")

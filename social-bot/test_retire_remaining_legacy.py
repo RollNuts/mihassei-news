@@ -192,5 +192,17 @@ class RemainingLegacyRetirementTests(unittest.TestCase):
             self.assertFalse(any(args[:2] == ["git", "push"] for args in calls))
 
 
+    def test_retired_x_buffer_mutations_require_manual_dispatch(self):
+        workflows = HERE.parent / ".github" / "workflows"
+        guard = "if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'"
+        for name in ("retire-remaining-legacy-x.yml", "remaster-queued-nejimachi.yml"):
+            with self.subTest(workflow=name):
+                self.assertIn(guard, (workflows / name).read_text(encoding="utf-8"))
+        self.assertIn(
+            'os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"',
+            (HERE / "retire_remaining_legacy.py").read_text(encoding="utf-8"),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

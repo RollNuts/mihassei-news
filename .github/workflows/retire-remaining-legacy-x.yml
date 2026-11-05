@@ -43,10 +43,10 @@ jobs:
           python social-bot/retire_remaining_legacy.py --validate
           python -m py_compile social-bot/retire_remaining_legacy.py
 
-      # Pull requests execute only the offline validation above. The Buffer
-      # mutation is main-only and still revalidates exact ID/text/channel live.
+      # Push/PR runs validate offline only. Buffer mutation requires a separate
+      # owner-initiated manual dispatch on main and exact live identity checks.
       - name: Move only exact remaining scheduled legacy posts to Buffer drafts
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}

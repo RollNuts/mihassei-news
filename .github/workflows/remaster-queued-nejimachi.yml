@@ -31,13 +31,15 @@ jobs:
           test -s social-bot/assets/nejimachi-001-morning-ink-v1.png
           test -s social-bot/assets/nejimachi-002-blue-sky-ink-v1.png
       - name: Replace only previously verified media, preserving schedule (one-time)
+        # No automatic Buffer edits on asset pushes or PRs.
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           ENABLE_MEDIA_REMASTER: "true"
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
         run: python social-bot/ip/swap_queued_media.py
       - name: Record reversible one-time media upgrade audit
-        if: always()
+        if: always() && github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
           if [ -f social-bot/ip/ink_remaster_delivery.json ]; then
             git config user.name "github-actions[bot]"
