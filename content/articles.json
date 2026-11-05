@@ -1,5 +1,50 @@
 [
   {
+    "slug": "delivery-locker-zero-redelivery-waiting-line",
+    "category": "暮らし",
+    "flash": "再配達ゼロ、待機列あり",
+    "fiction_company": "さざなみ館",
+    "art": "cards",
+    "fiction_at": "2031-11-05T23:42:00+09:00",
+    "published_at": "2026-11-05T23:42:00+09:00",
+    "title": "再配達ゼロのマンション、宅配ボックスの空きを待つ配達員がロビーに行列",
+    "summary": "荷物を受け取る時間は自由になったが、宅配ボックスは昼過ぎに満杯。持ち帰りを避けたい配達員が待機し続け、管理組合の成績表だけが改善した。",
+    "paragraphs": [
+      "マンション「さざなみ館」は、再配達を減らすため宅配ボックスを増設した。住民は好きな時間に荷物を受け取れるようになったが、取り出すのも後回しになり、昼過ぎには全ての箱が埋まる。",
+      "配達員は荷物を持ち帰らずに済むよう、ロビーで空きを待つようになった。住民が一箱取り出すと、待っていた配達員が立って荷物を入れる。夕方には配達会社の違う制服が椅子を一列に占め、管理人が座布団を配っていた。",
+      "掲示板には管理組合が張った「再配達ゼロ達成」の紙がある。荷物を取りに来た住民がそれを褒めると、朝からロビーにいる配達員は「僕は、まだ最初の配達の途中です」と答えた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社ライナフ",
+      "published_at": "2026-03-26T11:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000145.000015549.html",
+      "topic": "2026年3月26日11時のライナフ調査（マンション居住者441人、2月13〜14日実施）。再配達削減への協力意向が高い一方、オートロックと宅配ボックス満杯が課題とされる。さざなみ館、管理組合の成績表、配達員の待機列や発言はこの調査から着想した独自の創作で、調査対象の実例ではない。"
+    },
+    "scene_prompt": "Natural documentary news photograph of a Japanese apartment lobby with a row of fully occupied parcel delivery lockers. Three tired but patient delivery couriers in plain unbranded work clothes wait with cardboard parcels on a bench beside the lockers. Modest fluorescent indoor light, believable building materials, unstaged ordinary expressions, eye-level realistic camera, no readable logos or signs.",
+    "tags": [
+      "宅配",
+      "人手不足"
+    ],
+    "satire_tags": [
+      "数字だけ改善",
+      "効率化のしわ寄せ"
+    ],
+    "editorial_lane": "original_satire",
+    "editorial_tone": "plausible_future",
+    "editorial_signature": {
+      "target": "マンション管理組合が再配達ゼロの数字を重視し、配送員の待機負担を見落とす",
+      "action": "宅配ボックスが満杯でも持ち帰りを避けるため配送員をロビーで空き待ちさせる",
+      "outcome": "配送員が朝からロビーに並ぶ一方、管理組合は再配達ゼロを掲示して喜ぶ"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年3月のマンション居住者調査で、再配達削減への意欲と宅配ボックス満杯の問題が併存している。",
+      "continuation_force": "非対面の受け取りが広がっても、住民が荷物を取り出すタイミングが遅れれば、宅配ボックスの数だけでは混雑を解消できない。",
+      "future_result": "配達員が空きロッカーをロビーで長時間待ち、再配達件数だけゼロになるマンションが現れる。"
+    },
+    "visual_strategy": "illustration"
+  },
+  {
     "slug": "self-checkout-regular-awarded-unpaid-staff",
     "category": "暮らし",
     "flash": "常連はレジの戦力",
