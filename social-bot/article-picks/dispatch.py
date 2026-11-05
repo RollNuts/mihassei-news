@@ -201,6 +201,10 @@ def entry_promotion_slot(entry: dict) -> datetime | None:
         except ValueError:
             return None
         return slot.astimezone(JST) if slot.tzinfo else None
+    if entry.get("source") == "recovered_from_buffer":
+        # A recovered receipt without provider timing is valid permanent dedupe
+        # evidence, but its recovery time is not evidence of a promotion slot.
+        return None
     try:
         queued = datetime.fromisoformat(entry["queued_at_utc"])
     except (KeyError, TypeError, ValueError):
@@ -239,9 +243,34 @@ def slot_already_used(state: dict, now: datetime) -> bool:
     return False
 
 
+def buffer_observed_time(item: dict) -> datetime | None:
+    """Best provider timestamp for attributing a recovered article to a past slot."""
+    candidates = (
+        item.get("sentAt") if item.get("status") == "sent" else item.get("dueAt"),
+        item.get("dueAt"),
+        item.get("sentAt"),
+    )
+    for value in candidates:
+        if not isinstance(value, str) or not value:
+            continue
+        try:
+            observed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if observed.tzinfo is not None:
+            return observed
+    return None
+
+
 def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                         known_slugs: set[str]) -> list[str]:
-    """Reserve previously scheduled/sent article URLs before any new send."""
+    """Reserve remote article URLs without stealing the current logical slot.
+
+    Recovery can happen long after Buffer accepted or sent the post. Attribute
+    the recovered entry to provider timing when available. If the provider does
+    not expose a usable timestamp, preserve dedupe evidence but leave slot_jst
+    absent so a recovery alone cannot consume the current article slot.
+    """
     validate_state(state)
     recovered = []
     for item in existing:
@@ -261,9 +290,24 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                         (item.get("text", "") or "").encode("utf-8")
                     ).hexdigest(),
                 }
-                slot = promotion_slot(now)
-                if slot is not None:
-                    recovered_entry["slot_jst"] = slot.isoformat()
+                observed = buffer_observed_time(item)
+                if observed is not None:
+                    slot = promotion_slot(observed)
+                    if slot is not None:
+                        recovered_entry["slot_jst"] = slot.isoformat()
+                    else:
+                        local = observed.astimezone(JST)
+                        if local.hour == PROMOTION_SLOT_HOURS[0]:
+                            recovered_entry["slot_jst"] = local.replace(
+                                hour=PROMOTION_SLOT_HOURS[0],
+                                minute=PROMOTION_SLOT_MINUTE,
+                                second=0,
+                                microsecond=0,
+                            ).isoformat()
+                recovered_entry["recovered_provider_time_utc"] = (
+                    observed.astimezone(timezone.utc).isoformat()
+                    if observed is not None else None
+                )
                 state["queued"][slug] = recovered_entry
                 recovered.append(slug)
     return recovered
