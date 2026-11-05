@@ -49,7 +49,7 @@ CPU_SCENES = {
     "sweet-potato-chorus-starts-too-late": (
         "A whole Japanese sweet potato with rough deep-purple skin lies "
         "beside a cut-open sweet potato showing dense golden-yellow flesh "
-        "inside its purple peel. Tight food close-up on a plain white plate."
+        "inside its purple peel. Tight documentary food close-up on an ordinary white plate."
     ),
     "historical-lookalike-contest-dog-wins": (
         "A small dog wearing a large winner's ribbon carries a microphone "
@@ -68,9 +68,9 @@ CPU_SCENES = {
         "beside three empty plates."
     ),
     "volleyball-team-lunch-plate-merch": (
-        "Flat lay product photo of ONE round white ceramic plate with a yellow "
+        "Casual overhead news photograph of ONE round white ceramic plate with a yellow "
         "measuring tape across it. A blue-yellow volleyball sits beside the "
-        "plate, cropped at the frame edge. Plain blue background."
+        "plate, cropped at the frame edge. Ordinary blue tabletop."
     ),
     "film-village-all-stars-no-extras": (
         "ONE solitary tired film director carrying two shopping bags walks "
@@ -173,12 +173,12 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
     if reviewed_source_matches(article, TV_PILOT_SLUG):
         # Show the punchline (everyone already left), not anonymous grim crowds.
         return (
-            "Bright, colorful, sharp photoreal staged Japanese TV comedy scene. "
-            "One tired host holds a microphone on a cheerful neon-lit game-show "
-            "stage, HUNDREDS OF EMPTY CHAIRS behind him, an unused enormous red "
-            "game buzzer on a trolley. Two confused stagehands, confetti and "
-            "powerful joyful professional studio lights. Wide shot, fictional "
-            "actors, no captions, logos or words."
+            "Candid documentary photograph inside a real Japanese television studio. "
+            "One tired host holds a microphone on an ordinary game-show stage, "
+            "HUNDREDS OF EMPTY CHAIRS behind him, an unused enormous red game buzzer "
+            "on a trolley. Two confused stagehands and scattered confetti under normal "
+            "broadcast lighting. Wide news shot, realistic skin and materials, no captions, "
+            "logos or words."
         ), []
     if article.get("slug") in CPU_SCENES and reviewed_source_matches(article, article["slug"]):
         return CPU_SCENES[article["slug"]], []
@@ -186,7 +186,8 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
     # A short opening such as "Photorealistic Japanese comedy." is a style
     # instruction, not the visual action that must survive token fitting.
     while len(sentences) > 1 and len(sentences[0].split()) <= 10 and any(
-            word in sentences[0].lower() for word in ("photoreal", "photograph", "comedy", "lighting")):
+            word in sentences[0].lower() for word in
+            ("photoreal", "photograph", "documentary", "press photo", "comedy", "lighting")):
         sentences.pop(0)
     if not sentences:
         raise ValueError("No complete visual scene for CPU generation")
@@ -194,14 +195,17 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
 
 
 def wrap_prompt(core: str, context: list[str] | None = None, *, minimal: bool = False) -> str:
-    prefix = "DSLR color photograph. " if minimal else "Contemporary DSLR color photograph in natural daylight. "
-    return prefix + " ".join([core, *(context or [])]) + " Plain unmarked props."
+    prefix = (
+        "Documentary press photo. " if minimal
+        else "Candid documentary press photograph, natural available light, realistic textures. "
+    )
+    return prefix + " ".join([core, *(context or [])]) + " Ordinary real-world materials."
 
 
 def cpu_prompt(article: dict) -> str:
     """Offline preview of a compact, article-specific primary scene."""
     core, _ = prompt_parts(article)
-    # Preserve the already-tested 75-token TV pilot, including its lighting.
+    # Preserve the reviewed TV-pilot composition while using its documentary rewrite.
     return core if reviewed_source_matches(article, TV_PILOT_SLUG) else wrap_prompt(core)
 
 
