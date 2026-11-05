@@ -2,7 +2,6 @@
   "schema_version": 1,
   "enabled": true,
   "channel_id": "6ae94b74e29c69a171436d72",
-  "max_queue_size": 10,
   "max_new_per_run": 1,
   "min_page_views": 8,
   "minimum_article_age_hours": 12,

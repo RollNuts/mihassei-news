@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Buffer Free article queueing ranked by the site's observed page views.
+"""Buffer Free article publishing selected from fresh stories and observed page views.
 
 Reads the same JST seven-date window as on-site recommendations. This is the
-only automatic X publishing lane; retired original lanes are not dependencies.
+only automatic X publishing lane; selected articles use Buffer shareNow.
 """
 from __future__ import annotations
 
@@ -112,7 +112,6 @@ def validate_config(config: dict) -> None:
     if not isinstance(config.get("channel_id"), str) or not config["channel_id"]:
         raise ValueError("Article X channel must be a pinned nonempty channel ID")
     caps = (
-        ("max_queue_size", 3, 10),
         ("max_new_per_run", 1, 1),
         ("max_per_jst_day", 1, 7),
         ("min_page_views", 6, 100),
@@ -606,7 +605,6 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     current_slot = promotion_slot(now)
     if (current_slot is None
             or x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
-            or len(queued) >= config["max_queue_size"]
             or today_count >= config["max_per_jst_day"]
             or slot_already_used(state, now)):
         return None, None, len(queued)
@@ -683,7 +681,11 @@ def main() -> int:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return 0
     text = publication_text(eligible)
-    buffer_id = queue_one(token, channel_id, {"kind": "text", "text": text})
+    buffer_id = queue_one(
+        token, channel_id,
+        {"kind": "article", "id": "article-" + eligible["slug"], "text": text},
+        mode="shareNow",
+    )
     slot = promotion_slot(now)
     if slot is None:
         raise RuntimeError("No logical article promotion slot is active")
@@ -691,6 +693,7 @@ def main() -> int:
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
         "slot_jst": slot.isoformat(),
+        "submission_mode": "shareNow",
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
@@ -702,7 +705,7 @@ def main() -> int:
                                      "today_page_views": evidence["todayPageViews"]}
     state["queued"][eligible["slug"]] = entry
     save_state(state)
-    print("Article accepted by Buffer (not verified X publication):",
+    print("Article accepted by Buffer for immediate send (X publication still unverified):",
           eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],
           "scheduled_before=", scheduled, "selection=", entry["source"],
           "page_views=", evidence,

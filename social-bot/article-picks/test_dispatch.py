@@ -22,7 +22,7 @@ import dispatch as picks
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
     "schema_version": 1, "enabled": True, "channel_id": "X-VERIPSA",
-    "max_queue_size": 10, "max_new_per_run": 1, "max_per_jst_day": 7,
+    "max_new_per_run": 1, "max_per_jst_day": 7,
     "min_page_views": 8, "fresh_minimum_age_hours": 1,
     "fresh_maximum_age_hours": 18, "minimum_article_age_hours": 12,
     "maximum_article_age_days": 21, "minimum_interval_hours": 2,
@@ -77,7 +77,7 @@ class ArticlePickTests(unittest.TestCase):
         picks.validate_config(config)
         state = picks.read_json(HERE / "state.json")
         picks.validate_state(state)
-        self.assertEqual(config["max_queue_size"], 10)
+        self.assertNotIn("max_queue_size", config)
         self.assertEqual(config["max_new_per_run"], 1)
         self.assertEqual(config["max_per_jst_day"], 7)
         self.assertEqual(config["min_page_views"], 8)
@@ -559,7 +559,6 @@ class ArticlePickTests(unittest.TestCase):
     def test_pinned_channel_and_limits_fail_closed(self):
         picks.validate_config(CONFIG)
         for field, value in (("channel_id", ""),
-                             ("max_queue_size", 11),
                              ("max_new_per_run", 2),
                              ("max_per_jst_day", 8),
                              ("minimum_interval_hours", 1),
@@ -749,31 +748,30 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
+                self.assertEqual(queue.call_args.args[2]["id"], "article-new-story")
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
                 self.assertIn("utm_campaign=article_auto", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
+                self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["metrics_at_queue"], {
                     **window, "last_7_days_page_views": 11, "today_page_views": 1})
         self.assertEqual(documents, original)
 
-    def test_ten_queue_slots_are_available_to_article_lane(self):
+    def test_queue_fullness_does_not_block_share_now_article_lane(self):
         candidate = article("measured-story", age_hours=36)
         remote = [{"id":f"creative-{i}", "status":"scheduled",
-                   "text":f"異なる短文の予約です{i}"} for i in range(9)]
+                   "text":f"異なる短文の予約です{i}"} for i in range(10)]
         selected, evidence, count = picks.decide(
             [candidate], {"measured-story":stats()}, ledger(), remote,
             CONFIG, NOW)
-        self.assertEqual(count,9)
-        self.assertEqual(selected["slug"],"measured-story")
-        remote.append({"id":"tenth","status":"scheduled","text":"別の予約"})
-        selected, _, count = picks.decide(
-            [candidate], {"measured-story":stats()}, ledger(), remote,
-            CONFIG, NOW)
-        self.assertIsNone(selected)
         self.assertEqual(count,10)
+        self.assertEqual(selected["slug"],"measured-story")
+        self.assertEqual(evidence["last7DaysPageViews"], 11)
 
     def test_main_can_queue_fresh_article_without_pv_threshold(self):
         remote = []
@@ -800,8 +798,12 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
                 queue.assert_called_once()
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
+                self.assertEqual(queue.call_args.args[2]["id"], "article-fresh-story")
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 receipt = save.call_args.args[0]["queued"]["fresh-story"]
                 self.assertEqual(receipt["source"], "fresh_article")
+                self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertNotIn("metrics_at_queue", receipt)
 
@@ -832,6 +834,8 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
                 queue.assert_called_once()
+                self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
+                self.assertEqual(queue.call_args.args[2]["kind"], "article")
                 self.assertIn("fresh-mixed", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["fresh-mixed"]
                 self.assertEqual(receipt["source"], "fresh_article")
