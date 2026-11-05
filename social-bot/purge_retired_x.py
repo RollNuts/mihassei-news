@@ -124,7 +124,7 @@ def deletion_recheck_reason(target: dict, before: dict, current: dict | None) ->
 
 
 def execution_mode(args: list[str], env: dict) -> str:
-    """Live inspection and cleanup require an explicit manual main run."""
+    """Read-only inspection may run on main push; deletion is manual-only."""
     if any(arg not in ("--inspect", "--apply") for arg in args):
         raise ValueError("Unknown retired X cleanup argument")
     if "--inspect" in args and "--apply" in args:
