@@ -78,18 +78,17 @@ jobs:
               print(json.dumps({'slug': article['slug'], 'prompt': cpu_prompt(article)}, ensure_ascii=False))
           print('Pending:', len(selected))
           # Distinguish idle success from image coverage gaps when the Mac is offline.
-          from scripts.generated_photos import usable_generated_scene, visually_held_scene
+          from scripts.generated_photos import usable_generated_scene
           articles = load_articles()
           missing = [a['slug'] for a in articles if not usable_generated_scene(a)]
-          held = [s for s in missing if visually_held_scene(next(a for a in articles if a['slug'] == s))]
           summary = os.getenv('GITHUB_STEP_SUMMARY')
           if summary:
               with open(summary, 'a') as report:
-                  report.write(f"### Article image coverage\\n\\nPublished articles: {len(articles)}\\n\\nUsable generated images: {len(articles)-len(missing)}\\n\\nMissing or held: {len(missing)}\\n\\nCPU queue selected: {len(selected)}\\n\\n")
+                  report.write(f"### Article image coverage\n\nPublished articles: {len(articles)}\n\nUsable generated images: {len(articles)-len(missing)}\n\nMissing or held: {len(missing)}\n\nCPU queue selected: {len(selected)}\n\n")
                   if missing:
-                      report.write("Uncovered slugs: " + ", ".join(missing[:30]) + "\\n\\n")
+                      report.write("Uncovered slugs: " + ", ".join(missing[:30]) + "\n\n")
                       if not selected:
-                          report.write("**Attention:** no CPU-eligible work despite uncovered articles; inspect holds, selection policy, and offline Mac. Do not treat green workflow as image delivery.\\n")
+                          report.write("**Attention:** no CPU-eligible work despite uncovered articles; inspect holds, selection policy, and offline Mac. Do not treat green workflow as image delivery.\n")
           PY
           df -h .
       - name: Verify offline image gates before downloading model runtime
