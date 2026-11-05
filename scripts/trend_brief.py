@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -19,6 +20,7 @@ from email.utils import parsedate_to_datetime
 
 GOOGLE_TRENDS_RSS = "https://trends.google.com/trending/rss?geo=JP"
 USER_AGENT = "veripsa-editorial-trend-brief/1.0 (+https://veripsa.com)"
+MAX_RSS_BYTES = 2 * 1024 * 1024
 
 
 def fetch_bytes(url: str, timeout: float = 12.0) -> bytes:
@@ -27,10 +29,14 @@ def fetch_bytes(url: str, timeout: float = 12.0) -> bytes:
         headers={
             "User-Agent": USER_AGENT,
             "Accept": "application/rss+xml, application/xml, text/xml;q=0.9",
+            "Accept-Encoding": "identity",
         },
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.read()
+        payload = response.read(MAX_RSS_BYTES + 1)
+    if len(payload) > MAX_RSS_BYTES:
+        raise ValueError("Google Trends RSS exceeded the 2 MiB safety limit")
+    return payload
 
 
 def _child_text(item: ET.Element, local_name: str) -> str | None:
@@ -77,6 +83,9 @@ def parse_google_trends(xml_bytes: bytes, *, limit: int = 20) -> list[dict]:
 
 
 def build_snapshot(xml_bytes: bytes, *, limit: int = 20) -> dict:
+    items = parse_google_trends(xml_bytes, limit=limit)
+    if not items:
+        raise ValueError("Google Trends RSS contained no usable trend items")
     return {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "source": {
@@ -89,7 +98,7 @@ def build_snapshot(xml_bytes: bytes, *, limit: int = 20) -> dict:
                 "Verify the underlying event separately before publication."
             ),
         },
-        "items": parse_google_trends(xml_bytes, limit=limit),
+        "items": items,
     }
 
 
@@ -109,18 +118,21 @@ def main() -> int:
     if not 1 <= args.limit <= 100:
         parser.error("--limit must be between 1 and 100")
 
-    xml_bytes = (
-        Path(args.input).read_bytes()
-        if args.input
-        else fetch_bytes(GOOGLE_TRENDS_RSS)
-    )
-    snapshot = build_snapshot(xml_bytes, limit=args.limit)
-    rendered = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
-
-    if args.out:
-        Path(args.out).write_text(rendered, encoding="utf-8")
-    else:
-        print(rendered, end="")
+    try:
+        xml_bytes = (
+            Path(args.input).read_bytes()
+            if args.input
+            else fetch_bytes(GOOGLE_TRENDS_RSS)
+        )
+        snapshot = build_snapshot(xml_bytes, limit=args.limit)
+        rendered = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
+        if args.out:
+            Path(args.out).write_text(rendered, encoding="utf-8")
+        else:
+            print(rendered, end="")
+    except (OSError, ValueError, ET.ParseError) as error:
+        print(f"Trend snapshot unavailable: {error}", file=sys.stderr)
+        return 1
     return 0
 
 

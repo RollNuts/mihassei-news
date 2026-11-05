@@ -10,10 +10,12 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import unicodedata
 from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 JST = ZoneInfo("Asia/Tokyo")
@@ -61,9 +63,16 @@ def _parse_dt(value: object) -> datetime | None:
 
 
 def _norm(value: object) -> str:
+    """Normalize harmless typography differences before duplicate comparisons."""
     if not isinstance(value, str):
         return ""
-    return _ws.sub("", value).casefold().strip()
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(
+        char for char in normalized
+        if not char.isspace()
+        and not unicodedata.category(char).startswith("P")
+        and unicodedata.category(char) != "Cf"
+    ).strip()
 
 
 def article_day(article: dict) -> str | None:
@@ -200,6 +209,16 @@ def _validate_trend(article: dict, slug: str, published: datetime) -> list[str]:
     trend_url = trend.get("url")
     if not isinstance(trend_url, str) or not trend_url.startswith("https://"):
         errors.append(f"{slug}: trend_observation.url must be HTTPS")
+    else:
+        host = (urlsplit(trend_url).hostname or "").casefold()
+        if source_kind == "google_trends" and host != "trends.google.com":
+            errors.append(
+                f"{slug}: google_trends observation URL must use trends.google.com"
+            )
+        if source_kind == "x_official" and host not in {"x.com", "www.x.com", "twitter.com", "www.twitter.com"}:
+            errors.append(
+                f"{slug}: x_official observation URL must use x.com or twitter.com"
+            )
 
     verification_urls = trend.get("verification_urls")
     if not isinstance(verification_urls, list) or not verification_urls:
