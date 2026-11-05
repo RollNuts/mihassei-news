@@ -17,7 +17,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 CHANNEL = "6ae94b74e29c69a171436d72"
-DELETABLE_STATUSES = {"draft", "scheduled", "pending", "error", "failed"}
+DELETABLE_STATUSES = {"draft", "scheduled", "error", "needs_approval", "sending"}
 RESULT_PATH = HERE / "purge-retired-x-result.json"
 
 
