@@ -134,9 +134,11 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(report["observed"]["buffer_scheduled_today"], 1)
         self.assertEqual(report["observed"]["unverified"], 1)
         self.assertEqual(report["observed"]["delivery_problems"], 0)
+        self.assertEqual(report["observed"]["delivery_in_progress"], 0)
+        self.assertEqual(report["observed"]["overdue_sending"], 0)
         self.assertEqual(report["scope"]["automatic_lane"], "article-picks-only")
 
-    def test_direct_saved_id_read_can_reveal_unsettled_immediate_delivery(self):
+    def test_direct_saved_id_distinguishes_short_sending_from_real_problem(self):
         state = {"schema_version": 1, "queued": {
             "error": entry("error", 2),
             "sending": entry("sending", 1),
@@ -145,16 +147,64 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
             {"id": "buf-error", "status": "error",
              "text": "https://veripsa.com/articles/error/"},
             {"id": "buf-sending", "status": "sending",
-             "text": "https://veripsa.com/articles/sending/"},
+             "text": "https://veripsa.com/articles/sending/",
+             "createdAt": (NOW - timedelta(minutes=5)).isoformat()},
         ]
         report = m.build(state, existing, NOW)
-        self.assertEqual(report["observed"]["delivery_problems"], 2)
+        self.assertEqual(report["observed"]["delivery_problems"], 1)
+        self.assertEqual(report["observed"]["delivery_in_progress"], 1)
+        self.assertEqual(report["observed"]["overdue_sending"], 0)
         by_slug = {row["slug"]: row for row in report["items"]}
         self.assertEqual(by_slug["error"]["buffer_status"], "error")
         self.assertEqual(
             by_slug["error"]["review_needed"], "provider_not_sent_error"
         )
         self.assertEqual(by_slug["sending"]["buffer_status"], "sending")
+        self.assertIs(by_slug["sending"]["delivery_in_progress"], True)
+        self.assertEqual(by_slug["sending"]["sending_age_minutes"], 5)
+        self.assertNotIn("review_needed", by_slug["sending"])
+
+    def test_sending_more_than_fifteen_minutes_requires_review_without_retry(self):
+        state = {"schema_version": 1, "queued": {
+            "sending-old": entry("sending-old", 1),
+        }}
+        existing = [{
+            "id": "buf-sending-old",
+            "status": "sending",
+            "text": "https://veripsa.com/articles/sending-old/",
+            "createdAt": (NOW - timedelta(minutes=16)).isoformat(),
+        }]
+        report = m.build(state, existing, NOW)
+        self.assertEqual(report["observed"]["delivery_problems"], 1)
+        self.assertEqual(report["observed"]["delivery_in_progress"], 0)
+        self.assertEqual(report["observed"]["overdue_sending"], 1)
+        row = report["items"][0]
+        self.assertEqual(
+            row["review_needed"], "provider_sending_more_than_15_minutes"
+        )
+        self.assertEqual(row["sending_age_minutes"], 16)
+
+    def test_sending_without_any_timestamp_is_problem_not_success(self):
+        state = {"schema_version": 1, "queued": {
+            "sending-unknown": {
+                "buffer_id": "buf-sending-unknown",
+                "queued_at_utc": "",
+            },
+        }}
+        # selected_entries rejects unusable ledger time, so exercise reconcile/build
+        # through a valid queued time but no provider createdAt.
+        state["queued"]["sending-unknown"]["queued_at_utc"] = (
+            NOW - timedelta(minutes=5)
+        ).astimezone(timezone.utc).isoformat()
+        existing = [{
+            "id": "buf-sending-unknown",
+            "status": "sending",
+            "text": "https://veripsa.com/articles/sending-unknown/",
+        }]
+        report = m.build(state, existing, NOW)
+        # queued_at is the final conservative fallback; this remains in progress.
+        self.assertEqual(report["observed"]["delivery_in_progress"], 1)
+        self.assertEqual(report["observed"]["delivery_problems"], 0)
 
     def test_read_post_by_id_is_read_only_and_uses_saved_id(self):
         with patch.object(m, "gql", return_value={
