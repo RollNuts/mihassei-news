@@ -30,8 +30,37 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
                 self.assertIs(m.trigger_allows_provider_read("push", NOW.replace(hour=hour)), allowed)
                 self.assertTrue(m.trigger_allows_provider_read("schedule", NOW.replace(hour=hour)))
                 self.assertTrue(m.trigger_allows_provider_read("workflow_dispatch", NOW.replace(hour=hour)))
+                # Only trusted main publisher completions can reach this event in CI.
+                self.assertTrue(m.trigger_allows_provider_read("workflow_run", NOW.replace(hour=hour)))
         with self.assertRaisesRegex(ValueError, "timezone"):
             m.trigger_allows_provider_read("push", NOW.replace(tzinfo=None))
+
+    def test_main_publisher_completion_is_safe_audit_fallback(self):
+        workflow = (
+            HERE.parents[1] / ".github" / "workflows" / "x-delivery-audit.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            'workflow_run:\n    workflows: ["X Article Promotion (Buffer Free)"]\n    types: [completed]',
+            workflow,
+        )
+        self.assertIn(
+            "github.event.workflow_run.head_repository.full_name == github.repository",
+            workflow,
+        )
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
+        self.assertIn(
+            """contains(fromJSON('["push","schedule","workflow_dispatch"]'), github.event.workflow_run.event)""",
+            workflow,
+        )
+        self.assertIn(
+            """contains(fromJSON('["success","failure"]'), github.event.workflow_run.conclusion)""",
+            workflow,
+        )
+        self.assertIn("github.event_name != 'pull_request'", workflow)
+        # Existing :35 and 23:45 UTC cron slots and read-only entrypoint stay.
+        self.assertIn('cron: "35 0,2,4,6,8,10,12 * * *"', workflow)
+        self.assertIn('cron: "45 14 * * *"', workflow)
+        self.assertIn("python social-bot/article-picks/audit_delivery.py", workflow)
 
     def test_daytime_article_push_does_not_contact_buffer_or_write_delivery(self):
         with tempfile.TemporaryDirectory() as tmp:
