@@ -216,6 +216,16 @@
       "seed": 2650339348663260751,
       "sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662"
     },
+    "music-show-surprise-face-rehearsal": {
+      "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+      "bytes": 101314,
+      "generated_at": "2026-11-05T03:45:06.091495+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 4671421502652190209,
+      "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
+    },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
       "bytes": 136997,
