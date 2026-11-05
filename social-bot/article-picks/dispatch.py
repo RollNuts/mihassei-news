@@ -236,6 +236,35 @@ def is_crisis_article(article: dict) -> bool:
     return bool(CRISIS_PROMO_PATTERN.search(searchable))
 
 
+# Block context-only teasers before either fresh or measured-PV promotion.
+# This is a conservative structural backstop, not a machine judgement of humor.
+# Editors can explicitly skip an article without rewriting it or its public title.
+CONTEXT_DEPENDENT_OPENING = re.compile(
+    r"^(?:【続報】\s*)?(?:この件|あの件|例の(?:件|発表|ニュース)|"
+    r"これを受け|それを受け|その結果|前回の話|この話の続き)"
+)
+
+
+def passes_x_first_read_gate(article: dict) -> bool:
+    """Require a self-contained headline and short summary for X discovery.
+
+    Do not use tags, earlier posts, a longer X explanation or PV to rescue
+    an article that cannot stand on its own. Semantic/funny judgement remains
+    with the editorial first-read review in docs/EDITORIAL_LOOP.md.
+    """
+    if article.get("x_promotion_skip") is True:
+        return False
+    title, summary = article.get("title"), article.get("summary")
+    if not isinstance(title, str) or not isinstance(summary, str):
+        return False
+    title, summary = title.strip(), summary.strip()
+    if len(title) < 16 or len(summary) < 36:
+        return False
+    if CONTEXT_DEPENDENT_OPENING.match(title) or CONTEXT_DEPENDENT_OPENING.match(summary):
+        return False
+    return True
+
+
 def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list[dict]:
     """Measured-PV lane uses real publication time, never fictional dates."""
     if now.tzinfo is None:
@@ -243,7 +272,8 @@ def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list
     eligible = []
     for article in articles:
         slug = article.get("slug")
-        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or is_crisis_article(article):
+        if (not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
+                or is_crisis_article(article) or not passes_x_first_read_gate(article)):
             continue
         age = article_age(article, now)
         if age is None:
@@ -261,7 +291,8 @@ def eligible_fresh_articles(articles: list[dict], now: datetime, config: dict) -
     result = []
     for article in articles:
         slug = article.get("slug")
-        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or is_crisis_article(article):
+        if (not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
+                or is_crisis_article(article) or not passes_x_first_read_gate(article)):
             continue
         age = article_age(article, now)
         if age is None:
