@@ -447,7 +447,8 @@ class ExperimentsTests(unittest.TestCase):
             values=list_existing("token","org","channel")
         self.assertEqual([v["id"] for v in values],["scheduled-a","sent-b"])
         self.assertIn('after: "next-page"',gql.call_args_list[1].args[1])
-        self.assertIn("dueAt: {start:",gql.call_args_list[0].args[1])
+        self.assertIn("startDate:",gql.call_args_list[0].args[1])
+        self.assertNotIn("dueAt: {start:",gql.call_args_list[0].args[1])
 
     def test_buffer_unsettled_listing_is_opt_in_for_article_recovery(self):
         from publish import list_existing
@@ -470,7 +471,8 @@ class ExperimentsTests(unittest.TestCase):
             ["sent-a","approval-b","sending-c"],
         )
         self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
-        self.assertIn("dueAt: {start:", api.call_args_list[0].args[1])
+        self.assertIn("startDate:", api.call_args_list[0].args[1])
+        self.assertNotIn("dueAt: {start:", api.call_args_list[0].args[1])
         self.assertIn(
             "status: [draft, error, needs_approval, sending]",
             api.call_args_list[1].args[1],
