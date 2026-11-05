@@ -73,7 +73,7 @@ def read_post_by_id(token: str, buffer_id: str):
         raise ValueError("Invalid Buffer post id")
     query = (
         "query { post(input: {id: " + qstring(buffer_id)
-        + "}) { id text status dueAt sentAt externalLink sharedNow shareMode } }"
+        + "}) { id text status createdAt dueAt sentAt externalLink sharedNow shareMode } }"
     )
     return gql(token, query).get("post")
 
@@ -87,6 +87,7 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
     }
     initial_fields = (
         "buffer_status_at_accept",
+        "buffer_created_at_at_accept",
         "buffer_due_at_at_accept",
         "buffer_sent_at_at_accept",
         "buffer_external_link_at_accept",
@@ -111,6 +112,9 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         result["reason"] = "unexpected_buffer_status"
         return result
     result["buffer_status"] = status
+    created = aware(remote.get("createdAt"))
+    if created is not None:
+        result["buffer_created_at_utc"] = created.astimezone(timezone.utc).isoformat()
     external_link = remote.get("externalLink")
     if isinstance(external_link, str) and external_link:
         result["buffer_external_link"] = external_link
