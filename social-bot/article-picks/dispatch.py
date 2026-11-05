@@ -212,10 +212,18 @@ def entry_promotion_slot(entry: dict) -> datetime | None:
     slot = promotion_slot(queued)
     if slot is not None:
         return slot
-    # Legacy receipts created after midnight but before the first 09:05 slot
-    # came from a heavily delayed previous-day run. Attribute them to the
-    # previous day's final 21:05 slot so they do not steal today's quota.
-    previous = queued.astimezone(JST) - timedelta(days=1)
+    local = queued.astimezone(JST)
+    # Before this migration, article-push fallback was allowed from 09:00.
+    # Preserve 09:00-09:04 receipts as the current day's 09:05 logical slot.
+    if local.hour == PROMOTION_SLOT_HOURS[0]:
+        return local.replace(
+            hour=PROMOTION_SLOT_HOURS[0], minute=PROMOTION_SLOT_MINUTE,
+            second=0, microsecond=0,
+        )
+    # Earlier after-midnight receipts came from a heavily delayed previous-day
+    # run. Attribute them to the previous day's final 21:05 slot so they do not
+    # steal today's quota.
+    previous = local - timedelta(days=1)
     return previous.replace(
         hour=PROMOTION_SLOT_HOURS[-1], minute=PROMOTION_SLOT_MINUTE,
         second=0, microsecond=0,
