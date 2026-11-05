@@ -584,10 +584,8 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(set(recovered), {"story-a", "story-b"})
         self.assertEqual(state["queued"]["story-a"]["buffer_id"], "remote-1")
         self.assertEqual(state["queued"]["story-b"]["buffer_id"], "remote-2")
-        self.assertEqual(
-            state["queued"]["story-a"]["slot_jst"],
-            "2026-11-05T11:05:00+09:00",
-        )
+        self.assertNotIn("slot_jst", state["queued"]["story-a"])
+        self.assertIsNone(state["queued"]["story-a"]["recovered_provider_time_utc"])
         self.assertEqual(picks.recover_from_buffer(state, existing, NOW, {"story-a", "story-b"}), [])
         self.assertEqual(picks.rank([a], {"story-a": stats()},
                                     state, set(), CONFIG), [])
@@ -595,6 +593,72 @@ class ArticlePickTests(unittest.TestCase):
             target = Path(temp) / "state.json"
             picks.save_state(state, target)
             self.assertEqual(picks.read_json(target), state)
+
+    def test_recovery_uses_provider_time_and_never_steals_current_slot(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        state = ledger()
+        existing = [{
+            "id": "remote-old",
+            "status": "sent",
+            "text": "https://veripsa.com/articles/story-old/",
+            "sentAt": "2026-11-05T15:20:00+09:00",
+        }]
+        recovered = picks.recover_from_buffer(
+            state, existing, now, {"story-old"}
+        )
+        self.assertEqual(recovered, ["story-old"])
+        entry = state["queued"]["story-old"]
+        self.assertEqual(entry["slot_jst"], "2026-11-05T15:05:00+09:00")
+        self.assertEqual(
+            entry["recovered_provider_time_utc"], "2026-11-05T06:20:00+00:00"
+        )
+        self.assertFalse(picks.slot_already_used(state, now))
+
+    def test_unsettled_provider_article_is_recovered_and_never_auto_retried(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        failed = article("failed-story", age_hours=4)
+        existing = [{
+            "id": "buf-failed",
+            "status": "failed",
+            "text": picks.publication_text(failed),
+        }]
+        state = ledger()
+        selected, _, _ = picks.decide(
+            [failed], {}, state, existing, CONFIG, now
+        )
+        self.assertIsNone(selected)
+        self.assertIn("failed-story", state["queued"])
+        self.assertEqual(
+            state["queued"]["failed-story"]["buffer_status_when_recovered"],
+            "failed",
+        )
+        self.assertIsNone(picks.entry_promotion_slot(state["queued"]["failed-story"]))
+        self.assertFalse(picks.slot_already_used(state, now))
+
+    def test_recovery_without_provider_time_dedupes_but_does_not_consume_slot(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        state = ledger()
+        existing = [{
+            "id": "remote-unknown-time",
+            "status": "sent",
+            "text": "https://veripsa.com/articles/story-unknown/",
+        }]
+        picks.recover_from_buffer(
+            state, existing, now, {"story-unknown"}
+        )
+        entry = state["queued"]["story-unknown"]
+        self.assertNotIn("slot_jst", entry)
+        self.assertIsNone(entry["recovered_provider_time_utc"])
+        self.assertIsNone(picks.entry_promotion_slot(entry))
+        self.assertFalse(picks.slot_already_used(state, now))
+        self.assertEqual(
+            picks.rank(
+                [article("story-unknown")],
+                {"story-unknown": stats()},
+                state, set(), CONFIG,
+            ),
+            [],
+        )
 
     def test_previous_post_persists_when_buffer_no_longer_lists_sent_history(self):
         old = ledger(**{"story-a": recorded(hours=500)})
@@ -752,11 +816,15 @@ class ArticlePickTests(unittest.TestCase):
                  patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
                  patch.object(picks, "read_page_view_metrics", return_value=({"new-story": stats()}, window)), \
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
-                 patch.object(picks, "list_existing", return_value=remote), \
+                 patch.object(picks, "list_existing", return_value=remote) as list_existing, \
                  patch.object(picks, "save_state") as save, \
                  patch.object(picks, "queue_one", return_value="article-confirmed") as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
+                list_existing.assert_called_once_with(
+                    "test-only", "org", CONFIG["channel_id"],
+                    include_due_at=True, include_unsettled=True,
+                )
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
                 self.assertEqual(queue.call_args.args[2]["kind"], "article")
