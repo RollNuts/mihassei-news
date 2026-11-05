@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="開幕戦なのに巨大な数字の7と優勝旗が用意され、初対面のバスケ選手が握手する創作イラスト" data-visual-topic="document" data-article-sha256="8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676">
+  <title>初戦から決勝第7戦、握手する選手と早すぎる優勝旗の創作イラスト</title>
+  <defs>
+    <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#172e48"/><stop offset="1" stop-color="#354b60"/></linearGradient>
+    <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#f6dcaa"/><stop offset="1" stop-color="#dfaa69"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#wall)"/>
+  <path d="M0 75H1200M0 145H1200M0 215H1200" stroke="#72818e" stroke-width="4" opacity=".48"/>
+  <g fill="#61748c" opacity=".65">
+    <circle cx="88" cy="108" r="22"/><circle cx="188" cy="108" r="22"/><circle cx="287" cy="108" r="22"/><circle cx="935" cy="108" r="22"/><circle cx="1040" cy="108" r="22"/>
+    <circle cx="70" cy="186" r="22"/><circle cx="170" cy="186" r="22"/><circle cx="288" cy="186" r="22"/><circle cx="955" cy="186" r="22"/><circle cx="1065" cy="186" r="22"/>
+  </g>
+  <path d="M0 342H1200V675H0Z" fill="url(#wood)"/>
+  <path d="M0 375H1200M0 455H1200M0 548H1200M180 342L60 675M1020 342L1140 675M600 342V675" fill="none" stroke="#ba874b" stroke-width="4" opacity=".42"/>
+  <ellipse cx="600" cy="530" rx="204" ry="103" fill="none" stroke="#fff6dc" stroke-width="7" opacity=".67"/>
+  <path d="M554 66h178v39L634 276h-62l92-155H554Z" fill="#f8d467" stroke="#b48023" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M568 307h165" stroke="#f8d467" stroke-width="7" stroke-linecap="round"/>
+  <g stroke="#243a4d" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="411" cy="588" rx="90" ry="18" fill="#7b624f" opacity=".30" stroke="none"/>
+    <path d="M369 474l-20 89-27 23h46l24-92M425 474l20 86-8 26h50l-14-34-18-91" fill="#f7f1e5"/>
+    <path d="M350 558h-19l-27 29h67l7-27M439 557h30l22 30h-66z" fill="#26374b"/>
+    <path d="M357 346q55-24 103 6l8 125-107 8z" fill="#e4f0f2"/>
+    <path d="M364 358l-31 89 24 12 42-75M456 365l63 44 20-12-66-67" fill="#e4f0f2"/>
+    <circle cx="414" cy="298" r="39" fill="#edbd92"/>
+    <path d="M381 288q9-40 45-31 21 4 26 25-40 0-54-10z" fill="#26374b" stroke="none"/>
+    <path d="M404 315h17" stroke="#936e56" stroke-width="3"/>
+  </g>
+  <g stroke="#283c4b" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="663" cy="588" rx="85" ry="18" fill="#7b624f" opacity=".3" stroke="none"/>
+    <path d="M616 474l-16 85-23 27h48l26-96M676 479l22 79-7 28h50l-13-31-20-88" fill="#f7f1e5"/>
+    <path d="M594 561l-16 25h56l4-24M701 559h26l23 27h-59z" fill="#283c4b"/>
+    <path d="M604 350q55-27 102-3l7 133-108 4z" fill="#de7960"/>
+    <path d="M610 367l-81 36 9 24 88-35M700 365l26 74-21 13-37-74" fill="#de7960"/>
+    <circle cx="658" cy="302" r="39" fill="#d79d79"/>
+    <path d="M623 291q-1-36 33-38 40-2 43 33-35-10-53-16-8 17-23 21" fill="#283c4b" stroke="none"/>
+    <path d="M649 317h17" stroke="#8d6456" stroke-width="3"/>
+  </g>
+  <circle cx="532" cy="412" r="15" fill="#d79d79" stroke="#283c4b" stroke-width="5"/>
+  <g stroke="#273e4d" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M930 341l-8 195M938 477l-13 108M971 484l28 101" fill="none"/>
+    <circle cx="932" cy="311" r="33" fill="#edbd92"/>
+    <path d="M897 360q36-25 70 0l20 107-104 3z" fill="#e9e3d5"/>
+    <path d="M902 375l-31-64 18-14 47 58" fill="#e9e3d5"/>
+    <path d="M959 377l49-15 12 20-57 22" fill="#e9e3d5"/>
+  </g>
+  <path d="M868 233v222" stroke="#f1df9a" stroke-width="9" stroke-linecap="round"/>
+  <path d="M874 241h194l-34 53 34 51H874z" fill="#f9da6c" stroke="#a97c26" stroke-width="6"/>
+  <path d="M971 253l14 29 32 4-23 22 6 31-29-15-29 15 6-31-23-22 32-4z" fill="#fff6d6"/>
+  <g fill="#243a4d" stroke="#fff6dc" stroke-width="5">
+    <circle cx="115" cy="495" r="34" fill="#e8b48c"/>
+    <path d="M75 538q42-27 82 0l10 74H66z" fill="#e06b55"/>
+  </g>
+  <path d="M164 480q-7-35 17-42 28-7 23 18-4 15-19 25v11" fill="none" stroke="#fff6dc" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="184" cy="509" r="6" fill="#fff6dc"/>
+</svg>

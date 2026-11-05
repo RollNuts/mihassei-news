@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="建物のない広い砂利の空き地で社長が赤いリボンを切り、社員が端で拍手する創作イラスト" data-visual-topic="document" data-article-sha256="263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33">
+  <title>何も建っていない空き地での完成式、切られた赤いリボンの創作イラスト</title>
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#cde8ef"/><stop offset="1" stop-color="#eff1e7"/></linearGradient>
+    <linearGradient id="lot" x2="0" y2="1"><stop stop-color="#c5bca6"/><stop offset="1" stop-color="#968e7e"/></linearGradient>
+    <pattern id="gravel" width="81" height="47" patternUnits="userSpaceOnUse"><path d="M7 30l13-3M42 8l8 2M67 32l13-3M31 39l9-2" stroke="#6d6a5f" stroke-width="3" opacity=".3"/><circle cx="13" cy="10" r="3" fill="#a3a294"/><circle cx="58" cy="21" r="2" fill="#c2b5a0"/></pattern>
+  </defs>
+  <rect width="1200" height="675" fill="url(#sky)"/>
+  <circle cx="997" cy="102" r="47" fill="#fff9d0" opacity=".87"/>
+  <path d="M0 319q116-26 234 0t250-1 245-4 251 8 220-8v361H0Z" fill="#a4b2a0"/>
+  <path d="M0 365q118-18 259 0t250-2 234-10 237 8 220-5v319H0Z" fill="url(#lot)"/>
+  <rect y="372" width="1200" height="303" fill="url(#gravel)" opacity=".8"/>
+  <path d="M310 421L860 404 1071 573 156 583Z" fill="#d7cbb5" opacity=".54" stroke="#f9f4e8" stroke-width="5" stroke-dasharray="17 15"/>
+  <path d="M380 436L836 425 948 545 290 555Z" fill="none" stroke="#f9f4e8" stroke-width="4" stroke-dasharray="14 16" opacity=".65"/>
+  <g stroke="#776f61" stroke-width="4" stroke-linecap="round"><path d="M220 370v90M975 370v90M240 376l-29 8M958 380l33 9"/><path d="M162 502l24-7M700 588l24-9M1064 609l30 7"/></g>
+  <path d="M84 474h378l-16 17H85z" fill="#d95d50"/>
+  <path d="M528 492h575v-18H543z" fill="#d95d50"/>
+  <path d="M81 462v134M1101 457v138" stroke="#675747" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="81" cy="457" r="12" fill="#efe4d3"/><circle cx="1101" cy="453" r="12" fill="#efe4d3"/>
+  <path d="M460 480l57 27M464 493l50-27" fill="none" stroke="#d9e6e8" stroke-width="11" stroke-linecap="round"/>
+  <path d="M460 480l57 27M464 493l50-27" fill="none" stroke="#526474" stroke-width="3"/>
+  <circle cx="460" cy="486" r="9" fill="#536c76"/>
+  <g stroke="#2b3e47" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="262" cy="606" rx="91" ry="16" fill="#766e62" opacity=".25" stroke="none"/>
+    <path d="M205 394q50-29 107 0l12 125H189z" fill="#293d4b"/>
+    <path d="M208 511l-7 80-16 22h39l30-94M282 514l15 73-3 26h41l-11-29-14-76" fill="#2c3e47"/>
+    <path d="M213 585l-24 28h50M303 585l19 28h-50" fill="#1f303a"/>
+    <circle cx="260" cy="350" r="40" fill="#e0af8b"/>
+    <path d="M222 339q-5-46 42-47 29 0 35 38-24 0-41-14-12 20-36 23" fill="#253740" stroke="none"/>
+    <path d="M222 409l-32 71 22 13 54-77M303 415l105 59 14-19-99-66" fill="#2c3e47"/>
+    <path d="M256 390l7 22 10-22" fill="#eff2ed" stroke-width="5"/>
+  </g>
+  <path d="M205 477l13 10m186-31 20 7" stroke="#f5f4ec" stroke-width="11" stroke-linecap="round"/>
+  <g stroke="#2a444b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="1028" cy="602" rx="72" ry="13" fill="#726c61" opacity=".28" stroke="none"/>
+    <circle cx="1034" cy="393" r="35" fill="#d6a17e"/>
+    <path d="M993 442q38-27 79 1l6 92H991z" fill="#f0ece1"/>
+    <path d="M1002 530l-12 67h27l22-60M1054 530l17 67h29l-20-78" fill="#303e48"/>
+    <path d="M1004 464l-29 25 18 16 43-28M1061 462l-20 30 18 16 31-27" fill="#f0ece1"/>
+    <path d="M982 490l15 12m50-4 13-5" stroke="#dfad88" stroke-width="12"/>
+  </g>
+  <g fill="none" stroke="#f8fbf4" stroke-width="9" stroke-linecap="round" opacity=".85"><path d="M614 229v42M593 248l43-1M757 206l20 34M793 217l-20 20"/></g>
+</svg>
