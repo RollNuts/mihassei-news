@@ -596,6 +596,51 @@ class ArticlePickTests(unittest.TestCase):
             picks.save_state(state, target)
             self.assertEqual(picks.read_json(target), state)
 
+    def test_recovery_uses_provider_time_and_never_steals_current_slot(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        state = ledger()
+        existing = [{
+            "id": "remote-old",
+            "status": "sent",
+            "text": "https://veripsa.com/articles/story-old/",
+            "sentAt": "2026-11-05T15:20:00+09:00",
+        }]
+        recovered = picks.recover_from_buffer(
+            state, existing, now, {"story-old"}
+        )
+        self.assertEqual(recovered, ["story-old"])
+        entry = state["queued"]["story-old"]
+        self.assertEqual(entry["slot_jst"], "2026-11-05T15:05:00+09:00")
+        self.assertEqual(
+            entry["recovered_provider_time_utc"], "2026-11-05T06:20:00+00:00"
+        )
+        self.assertFalse(picks.slot_already_used(state, now))
+
+    def test_recovery_without_provider_time_dedupes_but_does_not_consume_slot(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        state = ledger()
+        existing = [{
+            "id": "remote-unknown-time",
+            "status": "sent",
+            "text": "https://veripsa.com/articles/story-unknown/",
+        }]
+        picks.recover_from_buffer(
+            state, existing, now, {"story-unknown"}
+        )
+        entry = state["queued"]["story-unknown"]
+        self.assertNotIn("slot_jst", entry)
+        self.assertIsNone(entry["recovered_provider_time_utc"])
+        self.assertIsNone(picks.entry_promotion_slot(entry))
+        self.assertFalse(picks.slot_already_used(state, now))
+        self.assertEqual(
+            picks.rank(
+                [article("story-unknown")],
+                {"story-unknown": stats()},
+                state, set(), CONFIG,
+            ),
+            [],
+        )
+
     def test_previous_post_persists_when_buffer_no_longer_lists_sent_history(self):
         old = ledger(**{"story-a": recorded(hours=500)})
         offer = picks.rank([article("story-a")], {"story-a": stats()}, old, set(), CONFIG)
