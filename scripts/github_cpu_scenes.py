@@ -174,8 +174,25 @@ def cpu_prompt(article: dict) -> str:
     return core if reviewed_source_matches(article, TV_PILOT_SLUG) else wrap_prompt(core)
 
 
+def compact_core_at_clause_boundaries(core: str, count) -> str:
+    """Shorten only trailing comma/semicolon clauses, preserving the primary action."""
+    clauses = [part.strip() for part in re.split(r"[,;]\s*", core) if part.strip()]
+    if len(clauses) <= 1:
+        return core
+    kept = [clauses[0]]
+    if count(wrap_prompt(kept[0], minimal=True)) > CLIP_TOKEN_LIMIT:
+        return core
+    for clause in clauses[1:]:
+        candidate_core = ", ".join([*kept, clause]).rstrip(".") + "."
+        if count(wrap_prompt(candidate_core, minimal=True)) > CLIP_TOKEN_LIMIT:
+            break
+        kept.append(clause)
+    compact = ", ".join(kept).rstrip(".") + "."
+    return compact if len(kept) < len(clauses) else core
+
+
 def fit_cpu_prompt(article: dict, tokenizer) -> str:
-    """Fit whole scene sentences, never silently truncate the primary action."""
+    """Fit complete visual clauses without letting CLIP silently truncate the joke."""
     core, context = prompt_parts(article)
     tv_pilot = reviewed_source_matches(article, TV_PILOT_SLUG)
     count = lambda text: len(tokenizer.encode(text, add_special_tokens=True))
@@ -184,6 +201,12 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
     if count(prompt) > CLIP_TOKEN_LIMIT and not tv_pilot:
         minimal = True
         prompt = wrap_prompt(core, minimal=True)
+    if count(prompt) > CLIP_TOKEN_LIMIT and not tv_pilot:
+        compact_core = compact_core_at_clause_boundaries(core, count)
+        if compact_core != core:
+            core = compact_core
+            prompt = wrap_prompt(core, minimal=True)
+            print("CPU prompt compacted trailing visual clauses; primary action retained", flush=True)
     if count(prompt) > CLIP_TOKEN_LIMIT:
         raise ValueError("Visual core exceeds CLIP budget; refusing truncated staging")
     included = []
