@@ -29,7 +29,7 @@ if __package__:
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
-    from .editorial_copy import reader_copy
+    from .editorial_copy import reader_copy, source_reader_copy
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -43,7 +43,7 @@ else:
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
-    from editorial_copy import reader_copy
+    from editorial_copy import reader_copy, source_reader_copy
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -335,7 +335,7 @@ def category_meta(a, compact=False):
     if "T" in published:
         real_label += f" {real.hour:02}:{real.minute:02}"
     future_label = (
-        f"架空 {future.year}/{future.month}/{future.day}"
+        f"紙面 {future.year}/{future.month}/{future.day}"
         f" {future.hour:02}:{future.minute:02}"
     )
     page_views = (
@@ -1460,7 +1460,7 @@ def story(a, articles, issues=None, serials=None):
 <h2 id="future-poll-title">この「もしも」、ありそう？</h2>
 
 </div>
-<div class="future-poll-choices" role="group" aria-label="架空ニュースのありそう度を投票">
+<div class="future-poll-choices" role="group" aria-label="この「もしも」のありそう度を投票">
 <button type="button" data-poll-choice="plausible" aria-pressed="false"><span aria-hidden="true">◉</span> ありそう</button>
 <button type="button" data-poll-choice="unlikely" aria-pressed="false"><span aria-hidden="true">✕</span> それはない！</button>
 </div>
@@ -1478,8 +1478,8 @@ def story(a, articles, issues=None, serials=None):
 <details class="source-context" id="story-source" aria-label="着想した実際の話題">
 <summary>着想元を見る</summary>
 <div class="source-context-body">
-<p>{escape(reader_copy(src["topic"]))}</p>
-<p class="source-context-disclaimer">着想元は、記事内の創作内容を裏付けるものではありません。</p>
+<p>{escape(source_reader_copy(src["topic"]))}</p>
+<p class="source-context-disclaimer">着想元は、この記事の出来事を報じたものではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} で着想元を見る ↗</a>
 </div>
