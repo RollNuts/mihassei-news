@@ -36,7 +36,9 @@ permissions:
 # Parallel article/photo pushes cannot publish clips in parallel.
 concurrency:
   group: free-motion-clips-${{ github.ref }}
-  cancel-in-progress: false
+  # PR head updates supersede their own validation run. Main/scheduled publication
+  # stays serialized so a newer push never interrupts a clip write in progress.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   validate:
     if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
