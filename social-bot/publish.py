@@ -111,7 +111,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = ("id text status dueAt sentAt externalLink sharedNow shareMode"
+    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode"
               if include_due_at else "id text status")
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
@@ -179,7 +179,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
     shareNow is deliberately narrow: reviewed experiment images and the
     article-promotion lane may use it. Retired text experiments cannot turn it
     into an immediate-send escape hatch. With return_post=True the caller gets
-    Buffer's same-mutation post evidence (status/timestamps/link/share mode)
+    Buffer's same-mutation post evidence (status/createdAt/timestamps/link/share mode)
     without an extra provider read.
     """
     if type(return_post) is not bool:
