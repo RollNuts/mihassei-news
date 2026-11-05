@@ -21,7 +21,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000166.000069473.html",
       "topic": "株式会社LASSICが2026年10月7日16時に公表した、テレワーク経験者1,007人を対象とする調査。出社日に『オンライン会議ばかりで対面が少ない』と感じる回答は全体14.5％。朝凪商事の全員出社日、同僚のオンライン会議による反響、別室への移動と集合写真は本紙の独自創作。実在企業の行為を報じるものではない。"
     },
-    "scene_prompt": "Photorealistic deadpan comedy in a modern Japanese office, wide view of an almost empty open-plan workspace, one large desktop monitor in the foreground displaying a grid of fictional coworkers in separate tiny office meeting booths on a video call, a deserted row of work desks visible behind it. Comic paradox: everyone came to the same office but only meets on a screen. Natural afternoon office lighting, believable mundane furnishings, no readable lettering, no recognizable brands, no famous faces.",
+    "scene_prompt": "Foreground close-up of ONE large computer monitor clearly showing a three-by-three video-call grid of fictional coworkers' faces. Behind it is an otherwise empty Japanese open-plan office with rows of unused desks and several closed meeting-booth doors.",
     "tags": [
       "働き方",
       "職場"
@@ -53,7 +53,7 @@
       "url": "https://www.reuters.com/business/media-telecom/chinas-hollywood-visitors-become-stars-consumers-spend-more-experiences-2026-11-02/",
       "topic": "2026年11月2日のReuters報道。中国・横店影視城では観光客が映画セットで撮影体験を楽しみ、体験型消費への関心が紹介された。全員が主演を希望する小町映画村の混乱、監督が通行人になる描写や人物の発言は本紙独自の設定であり、実際の撮影事故や運営事実ではない。"
     },
-    "scene_prompt": "Photorealistic dry-comedy news scene at a Japanese historical film studio's outdoor shopping street set: a tired middle-aged film director in plain clothes carrying shopping bags walks alone as the only background pedestrian, while about twenty brightly dressed aspiring lead actors pose together facing a camera on a tripod. The striking absence of ordinary extras and shoppers is obvious. Foreground director and crowd in focus, natural daylight, believable film-set props, no legible text, logos, or famous faces.",
+    "scene_prompt": "A tired film director carrying shopping bags is the ONLY person walking across an empty historical street set. Far behind him, a tight cluster of costumed lead actors pose beside a tripod camera; no other pedestrians are present.",
     "tags": [
       "体験消費",
       "イベント"
@@ -85,7 +85,7 @@
       "url": "https://www.hakuhodo.co.jp/news/newsrelease/267437/",
       "topic": "博報堂生活総合研究所が2026年10月30日に公表した11月消費意欲調査では、セール・ブラックフライデーへの期待と、物価高や年末年始に備えた節約・我慢の声が併存する。実際に値引き額を稼ぐために不要品を買い足した家庭がいたとの調査結果ではない。藤村家の買い物・支出額・レシートの額装と発言は本紙独自の創作。"
     },
-    "scene_prompt": "A photorealistic dry comedy scene in the entryway of a modest Japanese family home. A proud father holds a framed long shopping receipt with the discount section highlighted in red, while unopened boxed kitchen appliances and shopping bags block the narrow hallway, and his puzzled teenage son gestures toward the towering purchases. Focus on receipt frame and piled boxes, candid natural light, no legible text, logos or actual brands.",
+    "scene_prompt": "A proud father holds a picture frame containing ONE long blank store receipt with a single red highlighted band. Behind him, a narrow home hallway is blocked by sealed cardboard appliance boxes and shopping bags; a puzzled teenage boy points at the pile.",
     "tags": [
       "お金",
       "節約"

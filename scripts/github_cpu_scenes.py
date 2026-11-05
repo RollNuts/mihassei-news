@@ -72,6 +72,24 @@ CPU_SCENES = {
         "measuring tape across it. A blue-yellow volleyball sits beside the "
         "plate, cropped at the frame edge. Plain blue background."
     ),
+    "film-village-all-stars-no-extras": (
+        "A tired film director carrying shopping bags is the ONLY person "
+        "walking across an empty historical street set. Far behind him, a tight "
+        "cluster of costumed lead actors pose beside a tripod camera; no other "
+        "pedestrians are present."
+    ),
+    "sale-discount-savings-receipt-framed": (
+        "A proud father holds a picture frame containing ONE long blank store "
+        "receipt with a single red highlighted band. Behind him, a narrow home "
+        "hallway is blocked by sealed cardboard appliance boxes and shopping bags; "
+        "a puzzled teenage boy points at the pile."
+    ),
+    "office-face-to-face-day-video-call-echo": (
+        "Foreground close-up of ONE large computer monitor clearly showing a "
+        "three-by-three video-call grid of fictional coworkers' faces. Behind it "
+        "is an otherwise empty Japanese open-plan office with rows of unused desks "
+        "and several closed meeting-booth doors."
+    ),
 }
 # These source snapshots bind reviewed compact directions to their article
 # versions. A later body or scene edit must use its current direction rather
@@ -84,6 +102,9 @@ CPU_SCENE_SOURCE_HASHES = {
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
     "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+    "film-village-all-stars-no-extras": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
+    "sale-discount-savings-receipt-framed": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+    "office-face-to-face-day-video-call-echo": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
