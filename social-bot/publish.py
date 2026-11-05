@@ -245,7 +245,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
-        + "}) { ... on PostActionSuccess { post { id createdAt dueAt status sentAt externalLink sharedNow shareMode } }"
+        + "}) { ... on PostActionSuccess { post { id createdAt dueAt status sentAt externalLink sharedNow shareMode error { message supportUrl } } }"
         + " ... on MutationError { message } } }"
     )
     result = gql(token, mutation).get("createPost") or {}
