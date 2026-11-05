@@ -156,6 +156,16 @@
       "seed": 3645685199179627378,
       "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
+      "bytes": 130698,
+      "generated_at": "2026-11-05T06:36:31.207198+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 8989241339850763742,
+      "sha256": "25769f1c47beb9027b5061bfa9236e759ef72e30ec33fa3c7458c41d15f37999"
+    },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
       "bytes": 110440,
