@@ -53,7 +53,7 @@ class ExperimentsTests(unittest.TestCase):
         with patch("publish.gql", return_value=receipt) as api:
             value=queue_one(
                 "secret","X-ID",
-                {"kind":"article","id":"article-clear-story","text":"article text"},
+                {"kind":"article","id":"article-clear-story","text":"https://veripsa.com/articles/clear-story/"},
                 mode="shareNow",
             )
         self.assertEqual(value,"buf-now")
@@ -68,6 +68,14 @@ class ExperimentsTests(unittest.TestCase):
             queue_one(
                 "secret","X-ID",
                 {"kind":"article","id":"unsafe/article","text":"article text"},
+                mode="shareNow",
+            )
+
+        with self.assertRaisesRegex(ValueError,"reserved"):
+            queue_one(
+                "secret","X-ID",
+                {"kind":"article","id":"article-clear-story",
+                 "text":"https://veripsa.com/articles/other-story/"},
                 mode="shareNow",
             )
 
