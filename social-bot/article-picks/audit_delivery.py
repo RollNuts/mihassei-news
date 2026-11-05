@@ -11,11 +11,12 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from publish import choose_x_channel, list_existing  # noqa: E402
+from publish import choose_x_channel, gql, list_existing, qstring  # noqa: E402
 
 JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
 MAX_ITEMS = 60
+UNDELIVERED_STATUSES = {"draft", "pending", "error", "failed"}
 
 
 def trigger_allows_provider_read(event_name: str, now: datetime) -> bool:
@@ -66,7 +67,18 @@ def selected_entries(state: dict, now: datetime, days: int = MAX_AUDIT_DAYS):
     return rows[:MAX_ITEMS]
 
 
-def reconcile(slug: str, entry: dict, remote: object) -> dict:
+def read_post_by_id(token: str, buffer_id: str):
+    """Read one saved Buffer receipt without mutating or retrying it."""
+    if not isinstance(buffer_id, str) or not buffer_id:
+        raise ValueError("Invalid Buffer post id")
+    query = (
+        "query { post(input: {id: " + qstring(buffer_id)
+        + "}) { id text status dueAt sentAt } }"
+    )
+    return gql(token, query).get("post")
+
+
+def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None = None) -> dict:
     result = {
         "slug": slug,
         "buffer_id": entry["buffer_id"],
@@ -74,7 +86,7 @@ def reconcile(slug: str, entry: dict, remote: object) -> dict:
         "buffer_status": "unverified",
     }
     if not isinstance(remote, dict):
-        result["reason"] = "not_returned_in_recent_scheduled_or_sent_window"
+        result["reason"] = lookup_error or "not_returned_in_recent_scheduled_or_sent_window"
         return result
     if remote.get("id") != entry["buffer_id"]:
         result["reason"] = "buffer_id_mismatch"
@@ -84,10 +96,12 @@ def reconcile(slug: str, entry: dict, remote: object) -> dict:
         result["reason"] = "canonical_article_url_missing_or_text_mismatch"
         return result
     status = remote.get("status")
-    if status not in ("scheduled", "sent"):
+    if status not in ("scheduled", "sent") and status not in UNDELIVERED_STATUSES:
         result["reason"] = "unexpected_buffer_status"
         return result
     result["buffer_status"] = status
+    if status in UNDELIVERED_STATUSES:
+        result["review_needed"] = "provider_not_sent_" + status
     if status == "scheduled":
         due = aware(remote.get("dueAt"))
         if due is not None:
@@ -103,25 +117,32 @@ def reconcile(slug: str, entry: dict, remote: object) -> dict:
     return result
 
 
-def build(state: dict, existing: list[dict], now: datetime) -> dict:
+def build(state: dict, existing: list[dict], now: datetime,
+          lookup_errors: dict[str, str] | None = None) -> dict:
     chosen = selected_entries(state, now)
     remote = {
         row.get("id"): row
         for row in existing
         if isinstance(row, dict) and isinstance(row.get("id"), str)
     }
-    items = [reconcile(slug, entry, remote.get(entry["buffer_id"]))
-             for slug, entry, _queued_at in chosen]
+    lookup_errors = lookup_errors or {}
+    items = [reconcile(
+        slug, entry, remote.get(entry["buffer_id"]),
+        lookup_errors.get(entry["buffer_id"]),
+    ) for slug, entry, _queued_at in chosen]
     today = now.astimezone(JST).date()
     sent_today = 0
     scheduled_today = 0
     overdue_scheduled = 0
     missing_provider_timestamps = 0
+    delivery_problems = 0
     for row in items:
         sent = aware(row.get("buffer_sent_at_utc"))
         due = aware(row.get("buffer_due_at_utc"))
         if row["buffer_status"] == "sent" and sent is None:
             missing_provider_timestamps += 1
+        if row["buffer_status"] in UNDELIVERED_STATUSES:
+            delivery_problems += 1
         if row["buffer_status"] == "scheduled":
             if due is None:
                 missing_provider_timestamps += 1
@@ -135,7 +156,7 @@ def build(state: dict, existing: list[dict], now: datetime) -> dict:
     return {
         "schema_version": 1,
         "checked_at_utc": now.astimezone(timezone.utc).isoformat(),
-        "source": "buffer_recent_scheduled_sent_readonly",
+        "source": "buffer_recent_list_plus_saved_id_readonly",
         "scope": {
             "ledger_days": MAX_AUDIT_DAYS,
             "max_items": MAX_ITEMS,
@@ -149,11 +170,13 @@ def build(state: dict, existing: list[dict], now: datetime) -> dict:
             "unverified": sum(row["buffer_status"] == "unverified" for row in items),
             "overdue_scheduled": overdue_scheduled,
             "missing_provider_timestamps": missing_provider_timestamps,
+            "delivery_problems": delivery_problems,
         },
         "limitations": (
-            "Buffer scheduled/sent is provider evidence, not independent X page verification. "
-            "Overdue scheduled posts require investigation, not automatic retry. "
-            "Posts outside the recent provider window and missing timestamps are not assumed sent."
+            "Buffer status is provider evidence, not independent X page verification. "
+            "Missing list entries are checked by saved Buffer ID. Error/pending/failed/draft "
+            "statuses and overdue scheduled posts require investigation, never automatic retry. "
+            "Missing provider timestamps are not assumed sent."
         ),
         "items": items,
     }
@@ -183,14 +206,31 @@ def main() -> int:
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
-    report = build(state, existing, now)
+    chosen = selected_entries(state, now)
+    known = {row.get("id") for row in existing if isinstance(row, dict)}
+    lookup_errors = {}
+    for _slug, entry, _queued_at in chosen:
+        buffer_id = entry["buffer_id"]
+        if buffer_id in known:
+            continue
+        try:
+            direct = read_post_by_id(token, buffer_id)
+        except (RuntimeError, ValueError) as exc:
+            message = str(exc).strip().replace("\n", " ")
+            lookup_errors[buffer_id] = "direct_id_lookup_failed:" + message[:160]
+            continue
+        if isinstance(direct, dict):
+            existing.append(direct)
+            known.add(buffer_id)
+    report = build(state, existing, now, lookup_errors)
     save(report)
     print(
         "Article delivery audit:",
         report["observed"]["article_records_checked"],
         "checked;",
         report["observed"]["unverified"],
-        "unverified.",
+        "unverified;", report["observed"]["delivery_problems"],
+        "delivery problems.",
     )
     return 0
 
