@@ -21,7 +21,11 @@ RELATIVE_DIR = Path("assets/generated")
 MANIFEST_NAME = "manifest.json"
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
-PROMPT_VERSION = 2
+# v3 makes documentary/news-photo realism explicit for new generations.
+# Keep v2 readable so already-reviewed photographs do not disappear merely
+# because the prompt policy improved; new writes always use PROMPT_VERSION.
+PROMPT_VERSION = 3
+SUPPORTED_PROMPT_VERSIONS = frozenset((2, PROMPT_VERSION))
 MAX_SCENE_BYTES = 700 * 1024
 MAX_ARCHIVE_BYTES = 1536 * 1024**2
 MAX_BATCH = 4
@@ -90,7 +94,7 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     else:
         return None
     if (record.get("article_sha256") != article_fingerprint(article)
-            or record.get("prompt_version") != PROMPT_VERSION
+            or record.get("prompt_version") not in SUPPORTED_PROMPT_VERSIONS
             or not isinstance(record.get("sha256"), str)
             or not SHA256.fullmatch(record["sha256"])):
         return None
