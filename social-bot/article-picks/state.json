@@ -68,6 +68,23 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118291286063026215",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow"
+    },
+    "sns-quit-support-site-hundred-day-login-award": {
+      "buffer_id": "6aec79bfe971cfdd3056c118",
+      "queued_at_utc": "2026-11-05T12:42:39.017561+00:00",
+      "slot_jst": "2026-11-05T21:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "6ae15724041759577a95b4e85c4e68f18b08b69d0358975481bb4b20361d4554",
+      "published_at": "2026-11-05T19:30:21+09:00",
+      "primary_topic": "tag:sns",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-05T12:42:39.533Z",
+      "buffer_due_at_at_accept": "2026-11-05T12:42:39.582Z",
+      "buffer_sent_at_at_accept": "2026-11-05T12:42:39.913Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118323106292830408",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
