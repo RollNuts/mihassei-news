@@ -190,7 +190,7 @@
     const topPv=[...pvRows].sort((a,b)=>b.weekPv-a.weekPv)[0];
     const pvAdvice=topPv && topPv.weekPv>0
       ? ' 取得できた直近7日PVでは「'+topPv.title+'」が'+count(topPv.weekPv)+
-        'PV。計測範囲を揃えて次回も比較します。'
+        'PV。反応の強い記事は続報候補に戻せますが、前回公開後の新しい現実の事実がある時だけ続報化し、なければ別の独立ネタとして扱います。'
       : '';
     if(xArticles===0 && searchArticles===0)
       advice.textContent='この記事別の流入記録はまだありません。X投稿デスクから2〜3本を実際に紹介し、数日後にX・検索の実測が増えたか確認しましょう。計測開始前の訪問は復元できません。'+pvAdvice;

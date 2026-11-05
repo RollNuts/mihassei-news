@@ -23,6 +23,8 @@ SIGNATURE_SIMILARITY_THRESHOLD = 0.45
 # These patterns intentionally detect only clearly named mechanical premises.
 WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|人工知能|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
 FORMAL_ANNOUNCEMENT = re.compile(r"発表|開始|導入|公表|明らかにした")
+# Abstract clickbait can hide the actual comic event. Advisory only.
+VAGUE_HEADLINE = re.compile(r"まさかの|衝撃(?:の|が)|ネット騒然|話題に|波紋(?:が|広がる)|新時代へ")
 # Repeated boilerplate fictional datelines can push the actual comic scene back.
 # The fictional date must stay in the article metadata; this checks prose only.
 FORMULA_FUTURE_INTRO = re.compile(r"20\d{2}年[、，]\s*架空の")
@@ -146,6 +148,11 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
             warnings.append((
                 "VERY_LONG_HEADLINE", slug,
                 f"見出し{len(title)}字。SNSの小画面でも何がおかしいか一目で分かるか確認",
+            ))
+        if VAGUE_HEADLINE.search(title):
+            warnings.append((
+                "VAGUE_HEADLINE", slug,
+                "抽象的な煽り語より、誰が何をして何が逆効果になったかを見出しに出す",
             ))
 
     # Highlight strong surface-level repetition only. These are warnings;
@@ -290,6 +297,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append("最後の一言で落とす記事が続いている。次は、人物が実際にしてしまう行動、残った物、数字や光景そのものがオチになる案も比べる。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
+    if "VAGUE_HEADLINE" in labels:
+        lines.append("抽象煽りで引っ張らず、主語・具体的な行動・見える逆効果をタイトルに置く。")
     if "SIMILAR_EDITORIAL_SIGNATURE" in labels:
         lines.append("風刺の的・行動・逆効果が近い記事がある。単語だけ変えず、主役の行動か目に見える結果を別の仕組みにする。")
     if "TOPIC_FRAGMENTATION" in labels:
@@ -301,7 +310,7 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         )
     if len(lines) == 2:
         lines.append("目立つ定型警告はなし。新案は直近の見出しと末文を読み比べ、展開の使い回しを防ぐ。")
-    lines.append("掲載前: 異なる仕組みの見出し2案を本文なしで比べ、状況だけでなく何がおかしいかが伝わる案を選ぶ。冒頭2文→全文→末文を読み、本文に見出しを繰り返さない行動・結果・一言の笑いがあるか確かめる。原因→人物の行動→結果がつながらなければ、説明を継ぎ足さず設定を減らす。")
+    lines.append("掲載前: 見出し3案（真顔の新聞案／矛盾を前面に出す案／「ありそうで、ない」が残る未来案）を本文なしで比べ、誰が何をして何がおかしいかが最短で伝わる案を選ぶ。冒頭2文→全文→末文を読み、本文に見出しを繰り返さない行動・結果・一言の笑いがあるか確かめる。原因→人物の行動→結果がつながらなければ、説明を継ぎ足さず設定を減らす。")
     lines.append("意味が通る、珍しい、会話が自然なだけでは合格にしない。企画そのものが弱いなら同じ枠で候補を選び直す。誇張は大胆でよいが変える前提は一つ。全記事を同じ逆転型にしない。")
     lines.append("出典・公開日時・創作の区別を守り、反応数は捏造しない。警告だけで発行を止めない。")
     return lines

@@ -79,6 +79,9 @@ class DailyIssueTests(unittest.TestCase):
         self.assertIn('href="/issues/"',markup)
         self.assertIn('href="/issues/2026-11-02/"',markup)
         self.assertIn("発行号を読む",markup)
+        self.assertIn("今日の未発生新聞",markup)
+        self.assertTrue(markup.index('class="daily-issues-section"') <
+                        markup.index('<details class="extras-shelf">'))
         self.assertNotIn('/issues/2031-',markup)
 
 

@@ -1239,7 +1239,7 @@ def home(articles, serials=None):
         )
     issue_section = (
         '<section class="daily-issues-section" aria-labelledby="daily-issues-heading">'
-        '<div class="section-head"><h2 id="daily-issues-heading">日付で紙面をめくる</h2>'
+        '<div class="section-head"><h2 id="daily-issues-heading">今日の未発生新聞</h2>'
         '<a href="/issues/">発行号をすべて見る ↗</a></div>'
         '<div class="daily-issues-grid">' + issue_cards + '</div>'
         + latest_issue_share + '</section>'
@@ -1286,6 +1286,7 @@ def home(articles, serials=None):
 <div class="story-grid">{recent}</div></section>
 {popular_section}
 {timeline_section}
+{issue_section}
 {topic_section}
 <section class="genre-explore" aria-label="ジャンル別に記事を探す">
 <div><h2>ジャンルから読む</h2></div>
@@ -1293,9 +1294,8 @@ def home(articles, serials=None):
 </section>
 {render_serials_feature(serials)}
 <details class="extras-shelf">
-<summary><strong>発行号・号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
+<summary><strong>号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">
-{issue_section}
 <section class="special-edition" aria-label="ランダムに号外記事を読む" data-issue-picker data-issue-options="{issue_options}">
   <div class="special-edition-heading">
     <h2>号外</h2>
