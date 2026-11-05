@@ -92,14 +92,15 @@ def validate_live(target: dict, remote: dict | None) -> str | None:
     return None
 
 
-def resolve_live_target(target: dict, listing: dict, read_by_id) -> tuple[dict | None, str | None]:
+def resolve_live_target(target: dict, listing: dict, read_by_id, *,
+                        always_direct: bool = False) -> tuple[dict | None, str | None]:
     """Do not treat omitted list entries as deleted or trust them blindly.
 
     The provider list can exclude drafts or older posts. A direct ID lookup
     must still pass the exact ID/channel/text/sent/action checks in
     validate_live before any mutation is possible.
     """
-    remote = listing.get(target["buffer_id"])
+    remote = None if always_direct else listing.get(target["buffer_id"])
     if remote is not None:
         return remote, None
     try:
@@ -111,6 +112,20 @@ def resolve_live_target(target: dict, listing: dict, read_by_id) -> tuple[dict |
     return remote, None
 
 
+def execution_mode(args: list[str], env: dict) -> str:
+    """Live inspection and cleanup require an explicit manual main run."""
+    if any(arg not in ("--inspect", "--apply") for arg in args):
+        raise ValueError("Unknown retired X cleanup argument")
+    if "--inspect" in args and "--apply" in args:
+        raise ValueError("Inspection and deletion modes are mutually exclusive")
+    if not args:
+        return "validate"
+    if (env.get("GITHUB_REF") != "refs/heads/main"
+            or env.get("GITHUB_EVENT_NAME") != "workflow_dispatch"):
+        raise RuntimeError("Buffer inspection/deletion requires manual main Actions")
+    return "inspect" if args[0] == "--inspect" else "apply"
+
+
 def main() -> int:
     inventory = read(HERE / "experiments" / "posts.json")
     ledger = read(HERE / "experiments" / "state.json")
@@ -118,14 +133,12 @@ def main() -> int:
     rows = targets(inventory, ledger, config)
     print(f"Validated {len(rows)} retired experiment Buffer receipts.")
 
-    if "--apply" not in sys.argv:
-        print("Validation only; no Buffer mutation.")
+    mode = execution_mode(sys.argv[1:], os.environ)
+    if mode == "validate":
+        print("Validation only; no Buffer read or mutation.")
         return 0
-
-    if os.environ.get("GITHUB_REF") != "refs/heads/main":
-        raise RuntimeError("Live purge may only run from main Actions")
-    if os.environ.get("GITHUB_EVENT_NAME") == "pull_request":
-        raise RuntimeError("Live purge is disabled for pull requests")
+    if mode == "inspect":
+        print("Read-only manual inspection; Buffer deletion disabled.")
 
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
@@ -183,6 +196,7 @@ def main() -> int:
     deleted = 0
     absent = 0
     published = 0
+    verified_unpublished = 0
     held = 0
     outcomes = []
 
@@ -197,10 +211,11 @@ def main() -> int:
     if list_error:
         report = {
             "schema_version": 1,
+            "mode": mode,
             "checked_at": datetime.now(timezone.utc).isoformat(),
             "scope": "retired_x_experiments_only",
             "article_promotion_untouched": True,
-            "counts": {"ledger_receipts_checked": len(rows), "deleted_now": 0, "already_absent": 0, "published_untouched": 0, "held": len(rows)},
+            "counts": {"ledger_receipts_checked": len(rows), "deleted_now": 0, "already_absent": 0, "published_untouched": 0, "verified_unpublished": 0, "held": len(rows)},
             "remaining_unpublished_legacy_known": len(rows),
             "provider_list_error": list_error,
             "outcomes": [],
@@ -211,7 +226,10 @@ def main() -> int:
     for target in rows:
         pid = target["post_id"]
         bid = target["buffer_id"]
-        before, lookup_issue = resolve_live_target(target, live_posts, fetch_post)
+        # Exact-ID reads are mandatory in both modes, even when a broad
+        # listing contains a matching ID that may already be stale.
+        before, lookup_issue = resolve_live_target(
+            target, live_posts, fetch_post, always_direct=True)
         if lookup_issue:
             print("HELD", pid, lookup_issue)
             outcomes.append({"post_id": pid, "buffer_id": bid,
@@ -233,6 +251,36 @@ def main() -> int:
         if reason:
             print("HELD", pid, reason)
             outcomes.append({"post_id": pid, "buffer_id": bid, "state": "held", "reason": reason})
+            held += 1
+            continue
+
+        if mode == "inspect":
+            print("VERIFIED_UNPUBLISHED", pid, before.get("status"), before.get("dueAt"))
+            outcomes.append({
+                "post_id": pid, "buffer_id": bid,
+                "state": "verified_unpublished",
+                "provider_status": before.get("status"),
+                "provider_due_at_utc": before.get("dueAt"),
+            })
+            verified_unpublished += 1
+            continue
+
+        # A post can change between the first observation and mutation.
+        # Re-read its exact ID and refuse deletion if state/timing changed.
+        try:
+            current = fetch_post(bid)
+            reason = validate_live(target, current)
+            if reason is None and any(
+                current.get(field) != before.get(field)
+                for field in ("status", "dueAt", "sentAt")
+            ):
+                reason = "changed_before_delete"
+        except Exception:
+            reason = "direct_id_recheck_failed"
+        if reason:
+            print("HELD", pid, reason)
+            outcomes.append({"post_id": pid, "buffer_id": bid,
+                             "state": "held", "reason": reason})
             held += 1
             continue
 
@@ -264,6 +312,7 @@ def main() -> int:
 
     report = {
         "schema_version": 1,
+        "mode": mode,
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "scope": "retired_x_experiments_only",
         "article_promotion_untouched": True,
@@ -272,9 +321,10 @@ def main() -> int:
             "deleted_now": deleted,
             "already_absent": absent,
             "published_untouched": published,
+            "verified_unpublished": verified_unpublished,
             "held": held,
         },
-        "remaining_unpublished_legacy_known": held,
+        "remaining_unpublished_legacy_known": verified_unpublished + held,
         "provider_post_count": len(live_posts),
         "outcomes": outcomes,
     }
@@ -284,6 +334,7 @@ def main() -> int:
         f"deleted={deleted}",
         f"absent={absent}",
         f"published_untouched={published}",
+        f"verified_unpublished={verified_unpublished}",
         f"held={held}",
     )
     if held:
