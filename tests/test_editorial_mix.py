@@ -135,7 +135,7 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([first, second])
         self.assertTrue(any("duplicate trend term" in error for error in errors))
 
-    def test_followup_can_reuse_trend_term(self):
+    def test_followup_chain_can_reuse_trend_term(self):
         first = story("first", "trend", term="通信障害")
         second = story(
             "second",
@@ -144,8 +144,32 @@ class EditorialMixTests(unittest.TestCase):
             published=BASE_TIME + timedelta(hours=2),
             followup_of="first",
         )
-        errors, _ = validate_articles([first, second])
+        third = story(
+            "third",
+            "trend",
+            term="通信障害",
+            published=BASE_TIME + timedelta(hours=4),
+            followup_of="second",
+        )
+        errors, _ = validate_articles([first, second, third])
         self.assertFalse(any("duplicate trend term" in error for error in errors))
+
+    def test_unrelated_followup_cannot_bypass_duplicate_trend_guard(self):
+        first = story("first", "trend", term="通信障害")
+        unrelated = story(
+            "unrelated",
+            "social_life",
+            published=BASE_TIME + timedelta(hours=1),
+        )
+        second = story(
+            "second",
+            "trend",
+            term="通信障害",
+            published=BASE_TIME + timedelta(hours=2),
+            followup_of="unrelated",
+        )
+        errors, _ = validate_articles([first, unrelated, second])
+        self.assertTrue(any("duplicate trend term" in error for error in errors))
 
     def test_exact_satire_signature_reuse_is_blocked(self):
         first = story("first", "social_life")
@@ -159,6 +183,22 @@ class EditorialMixTests(unittest.TestCase):
         self.assertTrue(
             any("editorial_signature duplicates" in error for error in errors)
         )
+
+    def test_followup_still_cannot_reuse_exact_satire_signature(self):
+        first = story("first", "trend", term="通信障害")
+        second = story(
+            "second",
+            "trend",
+            term="通信障害",
+            published=BASE_TIME + timedelta(hours=2),
+            followup_of="first",
+        )
+        second["editorial_signature"] = first["editorial_signature"].copy()
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(
+            any("editorial_signature duplicates" in error for error in errors)
+        )
+        self.assertFalse(any("duplicate trend term" in error for error in errors))
 
     def test_pre_rollout_article_is_not_retroactively_required(self):
         old = {
