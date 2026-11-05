@@ -72,9 +72,11 @@ def local_page(dist: Path, path: str) -> Path:
     """Every indexed URL must map to an existing generated HTML route."""
     if path == "/":
         return dist / "index.html"
-    if not path.startswith("/") or not path.endswith("/") or ".." in path.split("/"):
+    decoded = unquote(path)
+    if (not decoded.startswith("/") or not decoded.endswith("/")
+            or ".." in decoded.split("/")):
         raise ValueError("Non-canonical page path: " + path)
-    return dist / path.lstrip("/") / "index.html"
+    return dist / decoded.lstrip("/") / "index.html"
 
 
 def read_page(dist: Path, path: str) -> Page:
@@ -164,7 +166,7 @@ def audit(dist: Path = DIST) -> dict:
             except ValueError:
                 errors.append("Invalid <lastmod>: " + url + " " + lastmod)
 
-    for path in ("/", "/archive/", "/issues/", "/serials/"):
+    for path in ("/", "/archive/", "/topics/", "/issues/", "/serials/"):
         if path not in routes:
             errors.append("Missing primary discovery route: " + path)
 
@@ -246,7 +248,7 @@ def audit(dist: Path = DIST) -> dict:
     robots = (dist / "robots.txt").read_text(encoding="utf-8")
     if "Sitemap: " + SITE + "/sitemap.xml" not in robots:
         errors.append("robots.txt does not expose sitemap.xml")
-    if "Disallow: /" in robots:
+    if any(line.strip() == "Disallow: /" for line in robots.splitlines()):
         errors.append("robots.txt appears to block all crawling")
     for path in ("/saved/", "/404.html"):
         target = dist / ("404.html" if path == "/404.html" else "saved/index.html")

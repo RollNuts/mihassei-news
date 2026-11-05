@@ -499,6 +499,7 @@ details.source-context>summary:focus-visible{
   color:#55635b;font-size:11px;font-weight:700;text-decoration:none;
 }
 .story-tags a:hover{border-color:#9daaa0;color:var(--ink);background:#fffefa}
+.story-tags a.satire-tag{border-style:dashed;background:#fffaf1}
 .story-tags a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .story-card>.story-tags{grid-column:2;grid-row:4;margin-top:2px}
 .article-header>.story-tags{margin-top:10px}
@@ -515,6 +516,16 @@ details.source-context>summary:focus-visible{
 .tag-filter-panel[open]>summary::after{content:" −"}
 .tag-filter-panel>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tag-filters{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 13px}
+.topic-index-section{margin:18px 0 26px}
+.topic-index-section>p{margin:4px 0 12px;color:var(--muted);font-size:13px}
+.topic-index-link{
+  display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:6px 10px;
+  border:1px solid var(--line);border-radius:999px;background:#fffefa;
+  color:var(--ink);font-size:12px;font-weight:700;text-decoration:none;
+}
+.topic-index-link span{font-size:10px;color:var(--muted);font-weight:600}
+.topic-index-link:hover{border-color:#9daaa0;background:#fff}
+.topic-index-link:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tag-filter-button{min-height:38px;padding:6px 9px;font-size:11px}
 .tag-filter-button span{margin-left:3px;font-size:9px;font-weight:600;opacity:.72}
 @media(max-width:660px){
