@@ -108,6 +108,8 @@ test('growth desk keeps browser IDs and PV as separate measured units',async()=>
   assert.equal(sorted[0].children[3].textContent,'12');
   assert.equal(sorted[0].children[4].textContent,'20');
   assert.equal(articleTitle(sorted[1]),'記事B','unmeasured PV sorts after measured PV');
+  assert.match(e['[data-growth-advice]'].textContent,/続報候補/);
+  assert.match(e['[data-growth-advice]'].textContent,/新しい現実の事実/);
 });
 
 test('legacy API without PV stays unmeasured instead of becoming zero',async()=>{
