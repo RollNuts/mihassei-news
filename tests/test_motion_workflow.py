@@ -118,6 +118,11 @@ class MotionWorkflowTests(unittest.TestCase):
                     self.assertEqual(result.returncode, int(status), result.stderr)
                     self.assertEqual(output.read_text(), "" if status == "1" else f"pending={count}\n")
 
+    def test_pr_updates_cancel_obsolete_motion_validation_but_main_stays_serialized(self):
+        block = re.search(r"(?ms)^concurrency:\n(.*?)(?=^jobs:)", self.video).group(1)
+        self.assertIn("group: free-motion-clips-${{ github.ref }}", block)
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", block)
+
     def test_no_work_skips_encoders_and_publishing_with_recovery_schedule(self):
         install = step(self.video, "Install only free system FFmpeg on the disposable runner")
         self.assertIn("github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'", install)
