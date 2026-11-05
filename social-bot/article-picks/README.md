@@ -21,7 +21,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 確認
 
-`x-delivery-audit.yml`は各論理枠の約30分後（09:35〜21:35）と23:45 JSTに`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをproviderの現在値へ照合する。scheduled/sent一覧にない保存済みIDは直接読み、pending/error/failed/draftをdelivery problemとして残す。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の記事公開push自身は監査のprovider読み取りをせず、次の定時監査へ渡す。結果は既存の`article-picks/delivery.json`へ保存する。再送・予約編集・X投稿は行わない。
+`x-delivery-audit.yml`は各論理枠の約30分後（09:35〜21:35）と23:45 JSTに`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをproviderの現在値へ照合する。scheduled/sent一覧にない保存済みIDは直接読み、pending/error/failed/draftをdelivery problemとして残す。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の記事公開push自身は監査のprovider読み取りをしない。GitHubが定時監査を取りこぼしても、記事投稿workflowの**同一リポジトリ・mainでの完了**を補助トリガーとして監査を実行する（PR・fork由来は除外）。これは投稿処理の完了後に保存済みIDを照会する読み取り専用の補助経路であり、新規送信・再送・旧投稿削除はしない。結果は既存の`article-picks/delivery.json`へ保存する。再送・予約編集・X投稿は行わない。
 
 `state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間、`slot_jst`、`submission_mode: shareNow`を保存する。移行前の受理記録は`queued_at_utc`から論理枠を推定する。Bufferの即時送信受付はX実公開の独立確認ではないため、provider上のsentとX実公開を分けて確認し、未確認の公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
 
