@@ -102,6 +102,35 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("PROCEDURAL_PREMISE_LOOP", labels)
         self.assertEqual(articles, original, "Advisory quality checks must never rewrite publications")
 
+    def test_repeated_dialogue_endings_prompt_a_different_kind_of_punchline(self):
+        endings = (
+            "父は額を指して答えた。「それは節約額に表示されないんだよ」",
+            "店員は時計を見て告げた。「次の偶然が待っております」",
+            "社長は空き地を見て「この景色を維持します」とうなずいた。",
+            "担当者は少し考えて言った。「詳細を押してください」",
+            "観客は静かに席を立ち、出口へ向かった。",
+            "子どもは空の弁当箱を父に渡した。",
+        )
+        articles = [sample(i, ending=ending) for i, ending in enumerate(endings)]
+        for i, article in enumerate(articles):
+            article["category"] = ("暮らし", "社会", "経済", "技術", "エンタメ", "スポーツ")[i]
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertIn("DIALOGUE_PUNCHLINE_LOOP", labels)
+        self.assertIn("最後の一言", "\n".join(next_slot_brief(articles)))
+
+    def test_quotes_used_as_labels_do_not_count_as_dialogue_endings(self):
+        endings = (
+            "受付には「次週・運命の第7戦」の予約札が並んでいた。",
+            "壁には「節約額」の欄だけが大きく印刷されていた。",
+            "客席には「初耳」の札が置かれていた。",
+            "看板の「完成」の文字だけが風で揺れていた。",
+            "観客は静かに席を立ち、出口へ向かった。",
+            "子どもは空の弁当箱を父に渡した。",
+        )
+        articles = [sample(i, ending=ending) for i, ending in enumerate(endings)]
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertNotIn("DIALOGUE_PUNCHLINE_LOOP", labels)
+
     def test_varied_recent_topics_do_not_raise_burst_warnings(self):
         titles = [
             "夜の音楽祭", "ゲームの新しい遊び方",
