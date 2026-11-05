@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "inspect",
-  "checked_at": "2026-11-05T07:19:35.483395+00:00",
+  "checked_at": "2026-11-05T07:37:30.882100+00:00",
   "scope": "retired_x_experiments_only",
   "article_promotion_untouched": true,
   "counts": {
@@ -10,11 +10,15 @@
     "already_absent": 0,
     "published_untouched": 6,
     "verified_unpublished": 0,
-    "held": 6
+    "held": 6,
+    "historical_draft_receipts": 6
   },
-  "remaining_unpublished_legacy_known": 6,
-  "provider_post_count": null,
-  "provider_lookup": "direct_id_each_target",
+  "remaining_unpublished_legacy_known": 0,
+  "unresolved_legacy_status": 6,
+  "provider_post_count": 4,
+  "provider_list_filter": "draft",
+  "provider_list_error": null,
+  "provider_lookup": "draft_list_with_direct_id_fallback",
   "outcomes": [
     {
       "post_id": "xexp-ghost-interview",
@@ -44,6 +48,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6aea76084c41ba80aa4864d8"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:44:48.240184+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     },
     {
@@ -54,6 +64,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80447205d2c39966fbc"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:44:59.533923+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     },
     {
@@ -64,6 +80,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80347205d2c39966f7a"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:35:52.726265+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     },
     {
@@ -74,6 +96,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80547205d2c39966fe4"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:44:55.669107+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     },
     {
@@ -84,6 +112,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c804e9a91b5943cdd3ff"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:45:03.604069+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     },
     {
@@ -104,6 +138,12 @@
       "lookup_error": {
         "error_class": "RuntimeError",
         "provider_message": "Buffer GraphQL error: Post not found for id: 6aea7608ff887f055cd9d61f"
+      },
+      "last_verified_historical": {
+        "status": "draft",
+        "verified_at_utc": "2026-11-04T03:44:52.063207+00:00",
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state"
       }
     }
   ]
