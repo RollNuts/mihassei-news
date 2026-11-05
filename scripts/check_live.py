@@ -34,7 +34,7 @@ if __package__:
     from .editorial_copy import reader_copy, source_reader_copy
     from .build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
-        article_clip, uses_stock_photo, reviewed_generated_scene,
+        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags,
     )
 else:
     from media_policy import jpeg_dimensions
@@ -45,7 +45,7 @@ else:
     from editorial_copy import reader_copy, source_reader_copy
     from build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
-        article_clip, uses_stock_photo, reviewed_generated_scene,
+        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags,
     )
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -446,8 +446,12 @@ def verify_pv_recommendations(markup: str, articles: list[dict], current_article
         raise RuntimeError("Article must retain a visible sequential-story fallback without JavaScript")
     fallback = fallbacks[0]
     fallback_text = "".join(fallback["text"])
-    if "次の記事" not in fallback_text or "続けて読む" not in fallback_text:
-        raise RuntimeError("Article fallback must clearly label the sequential next-story route")
+    if "次の記事" not in fallback_text:
+        raise RuntimeError("Article fallback must clearly label the next-story route")
+    mode = fallback["attrs"].get("data-reader-next-mode")
+    if mode not in {"related-topic", "sequential", "archive"}:
+        raise RuntimeError("Article fallback must declare a supported next-story mode")
+
     reading_order = latest_articles(articles, limit=None)
     current_index = next(
         (index for index, article in enumerate(reading_order)
@@ -459,11 +463,43 @@ def verify_pv_recommendations(markup: str, articles: list[dict], current_article
         if current_index is not None and current_index + 1 < len(reading_order)
         else None
     )
-    expected_url = "/articles/" + next_article["slug"] + "/" if next_article else "/archive/"
     links = [element for element in _descendants(fallback)
              if element["tag"] == "a" and "reader-next-title" in element["attrs"].get("class", "").split()]
-    if len(links) != 1 or links[0]["attrs"].get("href") != expected_url:
-        raise RuntimeError("Article fallback must advance one step through the publication stream")
+    if len(links) != 1:
+        raise RuntimeError("Article fallback must expose exactly one next-story link")
+    href = links[0]["attrs"].get("href")
+
+    if mode == "archive":
+        if next_article is not None or href != "/archive/" or "続けて読む" not in fallback_text:
+            raise RuntimeError("Archive fallback is only valid at the end of the publication stream")
+        return
+
+    if not isinstance(href, str):
+        raise RuntimeError("Article fallback next-story URL is missing")
+    match = re.fullmatch(r"/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/", href)
+    if not match:
+        raise RuntimeError("Article fallback must link to a canonical published article")
+    target_slug = match.group(1)
+    target_index = next(
+        (index for index, article in enumerate(reading_order)
+         if article["slug"] == target_slug),
+        None,
+    )
+    if current_index is None or target_index is None or target_index <= current_index:
+        raise RuntimeError("Article fallback must only advance to an older published story")
+
+    if mode == "sequential":
+        expected_url = "/articles/" + next_article["slug"] + "/" if next_article else "/archive/"
+        if href != expected_url or "続けて読む" not in fallback_text:
+            raise RuntimeError("Sequential article fallback must advance one publication step")
+        return
+
+    if "同じ話題" not in fallback_text:
+        raise RuntimeError("Related article fallback must label the shared-topic route")
+    current_tags = set(article_tags(current_article))
+    target = reading_order[target_index]
+    if not current_tags.intersection(article_tags(target)):
+        raise RuntimeError("Related article fallback must share a published topic tag")
 
 
 def verify_pageview_contract(payload: dict, article_slug: str) -> None:

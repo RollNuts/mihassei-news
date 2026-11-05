@@ -201,7 +201,7 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
         from scripts.check_live import verify_pv_recommendations
 
         current = self.articles[-1]
-        fallback = ('<nav class="reader-next" data-popular-fallback>'
+        fallback = ('<nav class="reader-next" data-popular-fallback data-reader-next-mode="sequential">'
                     '<span class="reader-next-kicker">次の記事</span>'
                     '<span class="reader-next-meta">続けて読む · 社会</span>'
                     '<a class="reader-next-title" href="/articles/story-28/">記事タイトル</a></nav>')
@@ -210,7 +210,10 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
         variants = {
             "self link": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-29/"'),
             "skipped fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
-            "hidden fallback": (fallback + panel).replace("data-popular-fallback>", "data-popular-fallback hidden>"),
+            "hidden fallback": (fallback + panel).replace(
+                'data-reader-next-mode="sequential">',
+                'data-reader-next-mode="sequential" hidden>',
+            ),
             "misleading label": (fallback + panel).replace("次の記事", "一番人気"),
             "self candidate": fallback + pv_recommendations(self.articles),
             "missing fallback": panel,
@@ -221,7 +224,10 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
                 verify_pv_recommendations(candidate, self.articles, current)
         # The oldest (or only) published story ends the linear stream at the archive.
         oldest = self.articles[:1]
-        archive = fallback.replace("/articles/story-28/", "/archive/")
+        archive = fallback.replace(
+            'data-reader-next-mode="sequential"',
+            'data-reader-next-mode="archive"',
+        ).replace("/articles/story-28/", "/archive/")
         verify_pv_recommendations(
             archive + pv_recommendations(oldest, oldest[0]["slug"]),
             oldest, oldest[0],

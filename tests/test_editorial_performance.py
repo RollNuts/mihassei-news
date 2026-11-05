@@ -18,6 +18,7 @@ def article(
     pv: int | None = 5,
     x: int | None = 1,
     continued: int | None = 1,
+    readers: int | None = 5,
 ) -> dict:
     item = {
         "slug": slug,
@@ -25,6 +26,7 @@ def article(
         "page_views_last_7_days": pv,
         "x_arrivals": x,
         "continued_readers": continued,
+        "readers": readers,
     }
     if lane is not None:
         item["editorial_lane"] = lane
@@ -68,6 +70,15 @@ class EditorialPerformanceTests(unittest.TestCase):
             report["by_lane"]["trend"]["page_views_last_7_days"]["median"],
             10,
         )
+        self.assertAlmostEqual(
+            report["by_lane"]["trend"]["page_views_per_hour"]["median"],
+            0.476,
+            places=3,
+        )
+        self.assertEqual(
+            report["by_lane"]["trend"]["continuation_share"]["median"],
+            0.2,
+        )
         self.assertNotIn("winner", json.dumps(report))
         self.assertIn("not evidence", report["note"])
 
@@ -76,6 +87,13 @@ class EditorialPerformanceTests(unittest.TestCase):
         trend_x = report["by_lane"]["trend"]["x_arrivals"]
         self.assertEqual(trend_x["observed"], 2)
         self.assertEqual(trend_x["median"], 2.5)
+
+    def test_missing_reader_denominator_keeps_continuation_share_missing(self):
+        snapshot = self.snapshot()
+        snapshot["recent_articles"][0]["readers"] = None
+        report = p.build_report(snapshot, source_name="snapshot.json")
+        row = next(item for item in report["articles"] if item["slug"] == "t1")
+        self.assertIsNone(row["continuation_share"])
 
     def test_legacy_and_missing_pv_are_not_backfilled(self):
         items = p.eligible_articles(self.snapshot())

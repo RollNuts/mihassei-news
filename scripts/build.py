@@ -1565,14 +1565,36 @@ def story(a, articles, issues=None, serials=None):
         (index for index, item in enumerate(reading_order) if item["slug"] == a["slug"]),
         None,
     )
-    next_story = (
+    chronological_next = (
         reading_order[current_index + 1]
         if current_index is not None and current_index + 1 < len(reading_order)
         else None
     )
+    # The first post-article CTA should keep the reader in the subject they just
+    # chose when possible. Restrict candidates to older stories so two articles
+    # can never point at each other; fall back to the chronological stream.
+    ranked_related = suggested_articles(a, articles, limit=max(0, len(articles) - 1))
+    older_slugs = {
+        item["slug"] for item in (
+            reading_order[current_index + 1:]
+            if current_index is not None else []
+        )
+    }
+    current_tags = set(article_tags(a))
+    topic_next = next(
+        (
+            item for item in ranked_related
+            if item["slug"] in older_slugs
+            and current_tags.intersection(article_tags(item))
+        ),
+        None,
+    )
+    next_story = topic_next or chronological_next
     next_url = article_url(next_story) if next_story else "/archive/"
     next_title = next_story["title"] if next_story else "記事一覧から次のニュースを探す"
     next_category = next_story["category"] if next_story else "記事一覧"
+    next_mode = "related-topic" if topic_next else ("sequential" if next_story else "archive")
+    next_meta = ("同じ話題 · " if topic_next else "続けて読む · ") + next_category
     text_len = sum(len(p) for p in a["paragraphs"])
     read_minutes = max(1, (text_len + 449) // 450)
     available_issues = daily_issues(articles) if issues is None else issues
@@ -1596,7 +1618,6 @@ def story(a, articles, issues=None, serials=None):
     # Static related-story links strengthen topic clusters even without JS or PV data.
     # Only stories sharing an actual published tag qualify; the existing topic
     # ranker decides order, so this adds no new opaque recommendation system.
-    ranked_related = suggested_articles(a, articles, limit=max(0, len(articles) - 1))
     related_items = []
     for item in ranked_related:
         item_topics = set(article_tags(item))
@@ -1660,9 +1681,9 @@ def story(a, articles, issues=None, serials=None):
 <figcaption>{photo_credit(a)}{clip_caption(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
-<nav class="reader-next" data-popular-fallback aria-label="次の記事へ進む">
+<nav class="reader-next" data-popular-fallback data-reader-next-mode="{escape(next_mode)}" aria-label="次の記事へ進む">
 <span class="reader-next-kicker">次の記事</span>
-<span class="reader-next-meta">続けて読む · {escape(next_category)}</span>
+<span class="reader-next-meta">{escape(next_meta)}</span>
 <a href="{escape(next_url)}" class="reader-next-title">{escape(next_title)} <span aria-hidden="true">→</span></a>
 </nav>
 {popular_section}
