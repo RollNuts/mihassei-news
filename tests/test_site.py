@@ -237,7 +237,10 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("発行号・号外・コメント",home)
+        self.assertIn("今日の未発生新聞",home)
+        self.assertIn("号外・コメント",home)
+        self.assertTrue(home.index('class="daily-issues-section"') <
+                        home.index('<details class="extras-shelf">'))
         self.assertIn('.extras-shelf>summary:focus-visible',css)
         self.assertTrue(home.index('<section class="genre-explore"') <
                         home.index('<details class="extras-shelf">'))
