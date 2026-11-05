@@ -53,23 +53,40 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         self.assertEqual(suggested_articles(article, self.articles, limit=0), [])
         self.assertEqual(suggested_articles(article, [article]), [])
 
-    def test_pv_recommendations_cover_archive_and_next_link_advances_sequentially(self):
+    def test_pv_recommendations_cover_archive_and_next_link_prefers_older_related_story(self):
         available = {a["slug"] for a in self.articles}
         ordered = sorted(self.articles, key=lambda a: (
             build.publication_date(a), a["source"]["published_at"]
         ), reverse=True)
+        order_index = {item["slug"]: index for index, item in enumerate(ordered)}
         for index, item in enumerate(ordered):
             page = build.story(item, self.articles)
             lead = re.search(r'<a href="([^"]+)" class="reader-next-title">', page)
             self.assertIsNotNone(lead, item["slug"])
             self.assertIn('data-popular-fallback', page)
             self.assertIn('<span class="reader-next-kicker">次の記事</span>', page)
-            self.assertIn('<span class="reader-next-meta">続けて読む · ', page)
-            expected = (
-                build.article_url(ordered[index + 1])
-                if index + 1 < len(ordered) else "/archive/"
+
+            older = ordered[index + 1:]
+            older_slugs = {candidate["slug"] for candidate in older}
+            ranked = suggested_articles(item, self.articles, limit=len(self.articles))
+            related = next(
+                (
+                    candidate for candidate in ranked
+                    if candidate["slug"] in older_slugs
+                    and set(build.article_tags(item)) & set(build.article_tags(candidate))
+                ),
+                None,
             )
+            expected_story = related or (older[0] if older else None)
+            expected = build.article_url(expected_story) if expected_story else "/archive/"
             self.assertEqual(lead.group(1), expected)
+            expected_mode = "related-topic" if related else ("sequential" if expected_story else "archive")
+            self.assertIn(f'data-reader-next-mode="{expected_mode}"', page)
+            if related:
+                self.assertIn('<span class="reader-next-meta">同じ話題 · ', page)
+            else:
+                self.assertIn('<span class="reader-next-meta">続けて読む · ', page)
+
             raw = re.search(r'data-popular-options="([^"]+)"', page)
             self.assertIsNotNone(raw)
             candidates = json.loads(html.unescape(raw.group(1)))
@@ -78,17 +95,13 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(set(slugs), available - {item["slug"]})
             self.assertIn('aria-labelledby="readers-choice-title" hidden', page)
 
-        # The first two stories must not point back at each other.
-        first = build.story(ordered[0], self.articles)
-        second = build.story(ordered[1], self.articles)
-        first_target = re.search(r'class="reader-next-title"[^>]*href="([^"]+)"|href="([^"]+)" class="reader-next-title"', first)
-        second_target = re.search(r'class="reader-next-title"[^>]*href="([^"]+)"|href="([^"]+)" class="reader-next-title"', second)
-        self.assertIsNotNone(first_target)
-        self.assertIsNotNone(second_target)
-        first_href = next(value for value in first_target.groups() if value)
-        second_href = next(value for value in second_target.groups() if value)
-        self.assertEqual(first_href, build.article_url(ordered[1]))
-        self.assertEqual(second_href, build.article_url(ordered[2]))
+        # Every article CTA points strictly backward in publication order, so
+        # topic relevance can never create a two-story loop.
+        for index, item in enumerate(ordered[:-1]):
+            page = build.story(item, self.articles)
+            target = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
+            self.assertIsNotNone(target, item["slug"])
+            self.assertGreater(order_index[target.group(1)], index)
 
     def test_related_topic_links_use_existing_shared_tags(self):
         source = next(
