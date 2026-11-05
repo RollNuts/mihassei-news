@@ -15,6 +15,11 @@ on:
       - "social-bot/article-picks/test_audit_delivery.py"
       - ".github/workflows/x-delivery-audit.yml"
   workflow_dispatch:
+  # Fallback when GitHub skips/delays scheduled :35 checks: audit only after
+  # the article publisher has completed its own receipt-persistence step.
+  workflow_run:
+    workflows: ["X Article Promotion (Buffer Free)"]
+    types: [completed]
   schedule:
     # Read-only checks 30 minutes after each article slot, plus one final 23:45 JST audit.
     - cron: "35 0,2,4,6,8,10,12 * * *"
@@ -29,7 +34,15 @@ concurrency:
 
 jobs:
   audit-delivery:
-    if: github.repository == 'RollNuts/mihassei-news'
+    # workflow_run can access write credentials: never run a PR/fork workflow's
+    # code or allow a non-main publisher event to trigger provider reads.
+    if: >-
+      github.repository == 'RollNuts/mihassei-news' &&
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.head_repository.full_name == github.repository &&
+        github.event.workflow_run.head_branch == 'main' &&
+        contains(fromJSON('["push","schedule","workflow_dispatch"]'), github.event.workflow_run.event) &&
+        contains(fromJSON('["success","failure"]'), github.event.workflow_run.conclusion)))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
