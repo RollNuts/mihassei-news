@@ -60,7 +60,7 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
                     expected,
                 )
 
-    def test_read_only_inspection_requires_manual_main_dispatch(self):
+    def test_readonly_main_inspection_and_manual_only_deletion(self):
         manual = {"GITHUB_REF": "refs/heads/main",
                   "GITHUB_EVENT_NAME": "workflow_dispatch"}
         self.assertEqual(purge.execution_mode([], {}), "validate")
