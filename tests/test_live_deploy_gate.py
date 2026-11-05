@@ -201,7 +201,7 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
         from scripts.check_live import verify_pv_recommendations
 
         current = self.articles[-1]
-        fallback = ('<nav class="reader-next" data-popular-fallback>'
+        fallback = ('<nav class="reader-next" data-popular-fallback data-reader-next-mode="sequential">'
                     '<span class="reader-next-kicker">次の記事</span>'
                     '<span class="reader-next-meta">続けて読む · 社会</span>'
                     '<a class="reader-next-title" href="/articles/story-28/">記事タイトル</a></nav>')
@@ -221,7 +221,10 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
                 verify_pv_recommendations(candidate, self.articles, current)
         # The oldest (or only) published story ends the linear stream at the archive.
         oldest = self.articles[:1]
-        archive = fallback.replace("/articles/story-28/", "/archive/")
+        archive = fallback.replace(
+            'data-reader-next-mode="sequential"',
+            'data-reader-next-mode="archive"',
+        ).replace("/articles/story-28/", "/archive/")
         verify_pv_recommendations(
             archive + pv_recommendations(oldest, oldest[0]["slug"]),
             oldest, oldest[0],
