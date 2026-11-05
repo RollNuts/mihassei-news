@@ -380,6 +380,22 @@ class FreeCpuImageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
             cpu.fit_cpu_prompt({"slug": "long-core", "scene_prompt": "large " * 90 + "."}, tokenizer)
 
+    def test_illustration_strategy_never_enters_cpu_or_local_generation(self):
+        a = {**article(), "visual_strategy": "illustration"}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.assertEqual(local_scene_photos.pending_articles([a], root=root), [])
+            self.assertEqual(local_scene_photos.pending_articles([a], root=root, force=True), [])
+            self.assertEqual(cpu.select_articles([a], root=root), [])
+            self.assertEqual(
+                cpu.select_articles([a], slug=a["slug"], retry_held=True, root=root), []
+            )
+        with self.assertRaisesRegex(ValueError, "visual_strategy"):
+            local_scene_photos.pending_articles(
+                [{**article(), "visual_strategy": "unknown"}]
+            )
+        self.assertEqual(local_scene_photos.visual_strategy(article()), "cpu-photo")
+
     def test_single_held_retry_is_explicit_and_never_overwrites_a_valid_image(self):
         a = article()
         with tempfile.TemporaryDirectory() as folder:
