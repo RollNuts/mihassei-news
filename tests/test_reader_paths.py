@@ -106,8 +106,8 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         ][:3]
         self.assertTrue(expected)
         page = build.story(source, self.articles)
-        self.assertIn('class="article-related"', page)
-        related = page.split('<section class="article-related"', 1)[1].split('</section>', 1)[0]
+        self.assertIn('class="topic-related"', page)
+        related = page.split('<section class="topic-related"', 1)[1].split('</section>', 1)[0]
         links = re.findall(r'<h3><a href="([^"]+)">', related)
         self.assertEqual(links, [build.article_url(item) for item in expected])
         source_tags = set(build.article_tags(source))
