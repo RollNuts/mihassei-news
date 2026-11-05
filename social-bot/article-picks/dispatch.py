@@ -250,6 +250,7 @@ def buffer_observed_time(item: dict) -> datetime | None:
         item.get("sentAt") if item.get("status") == "sent" else item.get("dueAt"),
         item.get("dueAt"),
         item.get("sentAt"),
+        item.get("createdAt"),
     )
     for value in candidates:
         if not isinstance(value, str) or not value:
@@ -729,6 +730,7 @@ def main() -> int:
     }
     receipt_fields = {
         "status": "buffer_status_at_accept",
+        "createdAt": "buffer_created_at_at_accept",
         "dueAt": "buffer_due_at_at_accept",
         "sentAt": "buffer_sent_at_at_accept",
         "externalLink": "buffer_external_link_at_accept",
