@@ -41,7 +41,7 @@ jobs:
           python -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
           python -m py_compile social-bot/article-picks/dispatch.py
 
-      - name: Queue at most one eligible Veripsa article
+      - name: Send at most one eligible Veripsa article now
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
