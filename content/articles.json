@@ -1,5 +1,33 @@
 [
   {
+    "slug": "sale-discount-savings-receipt-framed",
+    "category": "暮らし",
+    "flash": "値引き額で節約",
+    "fiction_company": "藤村家",
+    "art": "cards",
+    "fiction_at": "2031-10-30T14:00:00+09:00",
+    "published_at": "2026-11-05T13:30:00+09:00",
+    "title": "セールで10万円使った家族、「3万円節約」とレシートを額装",
+    "summary": "値引き額を家計の成績にした家族が、セールで買い足しを続けて会計10万円に。「3万円も節約した」と値引き欄だけを額に入れ、買った商品の置き場に困っている。",
+    "paragraphs": [
+      "物価高で財布を締めたい藤村家は、セール会場で「値引きされた額」を家計の成果として数え始めた。父が洗剤をかごに入れると、母は「これじゃ600円しか節約できない」と大型家電売り場へ向かった。",
+      "買う予定のなかった炊飯器や空気清浄機が次々とかごに加わり、父はスマホで値引きの合計を計算した。「あと少しで3万円も浮く」。家族は目標達成のためにさらに品物を探し、レジでは「お支払いは10万円です」と告げられた。父と母は顔を見合わせ、「3万円も節約できた」と握手した。",
+      "帰宅後、父は長いレシートの「値引き合計3万円」の部分だけを切り取り、額に入れて玄関に飾った。未開封の箱で廊下が埋まるなか、息子が「何も買わなければ10万円残ったんじゃない？」と聞くと、父は額を指して答えた。「それは節約額に表示されないんだよ」"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "博報堂生活総合研究所",
+      "published_at": "2026-10-30T14:00:00+09:00",
+      "url": "https://www.hakuhodo.co.jp/news/newsrelease/267437/",
+      "topic": "博報堂生活総合研究所が2026年10月30日に公表した11月消費意欲調査では、セール・ブラックフライデーへの期待と、物価高や年末年始に備えた節約・我慢の声が併存する。実際に値引き額を稼ぐために不要品を買い足した家庭がいたとの調査結果ではない。藤村家の買い物・支出額・レシートの額装と発言は本紙独自の創作。"
+    },
+    "scene_prompt": "A photorealistic dry comedy scene in the entryway of a modest Japanese family home. A proud father holds a framed long shopping receipt with the discount section highlighted in red, while unopened boxed kitchen appliances and shopping bags block the narrow hallway, and his puzzled teenage son gestures toward the towering purchases. Focus on receipt frame and piled boxes, candid natural light, no legible text, logos or actual brands.",
+    "tags": [
+      "お金",
+      "節約"
+    ]
+  },
+  {
     "slug": "basketball-opening-day-game-seven",
     "category": "スポーツ",
     "flash": "開幕から第7戦",
