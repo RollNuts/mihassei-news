@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "inspect",
-  "checked_at": "2026-11-05T07:14:16.772664+00:00",
+  "checked_at": "2026-11-05T07:19:35.483395+00:00",
   "scope": "retired_x_experiments_only",
   "article_promotion_untouched": true,
   "counts": {
@@ -40,31 +40,51 @@
       "post_id": "xexp-nejimachi-nothing-wrong",
       "buffer_id": "6aea76084c41ba80aa4864d8",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6aea76084c41ba80aa4864d8"
+      }
     },
     {
       "post_id": "xexp-nejimachi-one-screw",
       "buffer_id": "6ae9c80447205d2c39966fbc",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80447205d2c39966fbc"
+      }
     },
     {
       "post_id": "xexp-invisible-nails",
       "buffer_id": "6ae9c80347205d2c39966f7a",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80347205d2c39966f7a"
+      }
     },
     {
       "post_id": "xexp-shadow-home",
       "buffer_id": "6ae9c80547205d2c39966fe4",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c80547205d2c39966fe4"
+      }
     },
     {
       "post_id": "xexp-witch-autopilot",
       "buffer_id": "6ae9c804e9a91b5943cdd3ff",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6ae9c804e9a91b5943cdd3ff"
+      }
     },
     {
       "post_id": "xexp-selfcheckout-dialogue",
@@ -80,7 +100,11 @@
       "post_id": "xexp-book-review",
       "buffer_id": "6aea7608ff887f055cd9d61f",
       "state": "held",
-      "reason": "direct_id_lookup_failed"
+      "reason": "direct_id_lookup_failed",
+      "lookup_error": {
+        "error_class": "RuntimeError",
+        "provider_message": "Buffer GraphQL error: Post not found for id: 6aea7608ff887f055cd9d61f"
+      }
     }
   ]
 }
