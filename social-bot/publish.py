@@ -102,14 +102,17 @@ def list_existing(token, orgid, channelid, include_due_at=False,
                   include_unsettled=False):
     """Read recent sent/scheduled posts and, when requested, unsettled posts.
 
-    Normal callers keep the bounded recent scheduled/sent window. The article
-    lane can additionally inspect draft/error/needs_approval/sending entries so a
+    Normal callers keep the bounded recent scheduled/sent window, using
+    Buffer startDate (createdAt OR dueAt) so shareNow sent posts with no dueAt
+    remain recoverable. The article lane can additionally inspect
+    draft/error/needs_approval/sending entries so a
     Buffer-accepted post cannot be duplicated merely because the Git receipt
     failed to persist before the next run.
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = "id text status dueAt sentAt" if include_due_at else "id text status"
+    fields = ("id text status dueAt sentAt externalLink sharedNow shareMode"
+              if include_due_at else "id text status")
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
     def collect(statuses: str, due_clause: str, *, pages: int) -> list[dict]:
@@ -142,7 +145,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
 
     recent = collect(
         "scheduled, sent",
-        ", dueAt: {start: " + qstring(since) + "}",
+        ", startDate: " + qstring(since),
         pages=30,
     )
     if not include_unsettled:
@@ -175,7 +178,9 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
 
     shareNow is deliberately narrow: reviewed experiment images and the
     article-promotion lane may use it. Retired text experiments cannot turn it
-    into an immediate-send escape hatch.
+    into an immediate-send escape hatch. With return_post=True the caller gets
+    Buffer's same-mutation post evidence (status/timestamps/link/share mode)
+    without an extra provider read.
     """
     if type(return_post) is not bool:
         raise ValueError("return_post must be a boolean")
@@ -240,7 +245,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
-        + "}) { ... on PostActionSuccess { post { id dueAt } }"
+        + "}) { ... on PostActionSuccess { post { id dueAt status sentAt externalLink sharedNow shareMode } }"
         + " ... on MutationError { message } } }"
     )
     result = gql(token, mutation).get("createPost") or {}

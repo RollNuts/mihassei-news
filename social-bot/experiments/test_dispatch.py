@@ -32,17 +32,25 @@ class ExperimentsTests(unittest.TestCase):
         # New Buffer field does not break legacy article / comic callers.
         from publish import queue_one
         receipt={"createPost":{"post":{"id":"buf-123",
-                   "dueAt":"2026-11-04T09:30:00Z"}}}
+                   "dueAt":"2026-11-04T09:30:00Z",
+                   "status":"sent","sentAt":"2026-11-04T09:30:03Z",
+                   "externalLink":"https://x.com/veripsa/status/123",
+                   "sharedNow":True,"shareMode":"shareNow"}}}
         with patch("publish.gql", return_value=receipt) as api:
             value=queue_one("secret","X-ID",{"kind":"text","text":"original joke"})
             self.assertEqual(value,"buf-123")
-            self.assertIn("post { id dueAt }",api.call_args.args[1])
+            self.assertIn("post { id dueAt status sentAt externalLink sharedNow shareMode }",api.call_args.args[1])
         with patch("publish.gql", return_value=receipt):
             obj=queue_one("secret","X-ID",
                           {"kind":"text","text":"another original joke"},
                           return_post=True)
         self.assertEqual(obj["id"],"buf-123")
         self.assertEqual(obj["dueAt"],"2026-11-04T09:30:00Z")
+        self.assertEqual(obj["status"],"sent")
+        self.assertEqual(obj["sentAt"],"2026-11-04T09:30:03Z")
+        self.assertEqual(obj["externalLink"],"https://x.com/veripsa/status/123")
+        self.assertIs(obj["sharedNow"],True)
+        self.assertEqual(obj["shareMode"],"shareNow")
         with self.assertRaisesRegex(ValueError,"boolean"):
             queue_one("secret","X-ID",{"kind":"text","text":"test"},
                       return_post="yes")
@@ -439,7 +447,8 @@ class ExperimentsTests(unittest.TestCase):
             values=list_existing("token","org","channel")
         self.assertEqual([v["id"] for v in values],["scheduled-a","sent-b"])
         self.assertIn('after: "next-page"',gql.call_args_list[1].args[1])
-        self.assertIn("dueAt: {start:",gql.call_args_list[0].args[1])
+        self.assertIn("startDate:",gql.call_args_list[0].args[1])
+        self.assertNotIn("dueAt: {start:",gql.call_args_list[0].args[1])
 
     def test_buffer_unsettled_listing_is_opt_in_for_article_recovery(self):
         from publish import list_existing
@@ -462,7 +471,8 @@ class ExperimentsTests(unittest.TestCase):
             ["sent-a","approval-b","sending-c"],
         )
         self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
-        self.assertIn("dueAt: {start:", api.call_args_list[0].args[1])
+        self.assertIn("startDate:", api.call_args_list[0].args[1])
+        self.assertNotIn("dueAt: {start:", api.call_args_list[0].args[1])
         self.assertIn(
             "status: [draft, error, needs_approval, sending]",
             api.call_args_list[1].args[1],
