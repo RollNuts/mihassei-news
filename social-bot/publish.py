@@ -103,7 +103,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """Read recent sent/scheduled posts and, when requested, unsettled posts.
 
     Normal callers keep the bounded recent scheduled/sent window. The article
-    lane can additionally inspect draft/pending/error/failed entries so a
+    lane can additionally inspect draft/error/needs_approval/sending entries so a
     Buffer-accepted post cannot be duplicated merely because the Git receipt
     failed to persist before the next run.
     """
@@ -148,7 +148,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     if not include_unsettled:
         return recent
 
-    unsettled = collect("draft, pending, error, failed", "", pages=10)
+    unsettled = collect("draft, error, needs_approval, sending", "", pages=10)
     by_id = {}
     ordered = []
     for row in [*recent, *unsettled]:
