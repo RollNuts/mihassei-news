@@ -263,8 +263,8 @@ class FreeCpuImageTests(unittest.TestCase):
             "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
             "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
-            "film-village-all-stars-no-extras": ("ONLY", "empty historical street set", "tripod camera", "no other pedestrians"),
-            "sale-discount-savings-receipt-framed": ("picture frame", "long blank store receipt", "sealed cardboard appliance boxes", "teenage boy"),
+            "film-village-all-stars-no-extras": ("ONE solitary", "completely empty historical movie street", "tripod camera", "no other people"),
+            "sale-discount-savings-receipt-framed": ("Close-up still life", "black picture frame", "cash-register paper strip", "No people"),
             "office-face-to-face-day-video-call-echo": ("large computer monitor", "three-by-three video-call grid", "empty Japanese open-plan office", "unused desks"),
         }
         for slug, objects in expected.items():
@@ -290,12 +290,12 @@ class FreeCpuImageTests(unittest.TestCase):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
         expected = {
             "film-village-all-stars-no-extras": (
-                "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
-                ("ONLY", "empty historical street set", "tripod camera"),
+                "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+                ("ONE solitary", "completely empty historical movie street", "tripod camera"),
             ),
             "sale-discount-savings-receipt-framed": (
-                "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
-                ("picture frame", "long blank store receipt", "appliance boxes"),
+                "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+                ("black picture frame", "cash-register paper strip", "appliance boxes"),
             ),
             "office-face-to-face-day-video-call-echo": (
                 "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
@@ -311,6 +311,19 @@ class FreeCpuImageTests(unittest.TestCase):
                 for cue in cues:
                     self.assertIn(cue, prompt)
                 self.assertLess(len(prompt.split()), 65)
+
+    def test_scene_specific_negative_guidance_is_version_bound(self):
+        source = {**article(), "slug": "film-village-all-stars-no-extras",
+                  "scene_prompt": "A director crosses an empty movie street."}
+        with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {source["slug"]: article_fingerprint(source)}):
+            negative = cpu.cpu_negative_prompt(source)
+            self.assertIn("written text", negative)
+            self.assertIn("crowd", negative)
+            self.assertIn("background people", negative)
+            changed = {**source, "scene_prompt": "A director opens a blue umbrella."}
+            self.assertFalse(cpu.reviewed_source_matches(changed, source["slug"]))
+            self.assertNotIn("market crowd", cpu.cpu_negative_prompt(changed))
+            self.assertIn("written text", cpu.cpu_negative_prompt(changed))
 
     def test_current_compact_revisions_use_their_directions_and_edits_expire_them(self):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}

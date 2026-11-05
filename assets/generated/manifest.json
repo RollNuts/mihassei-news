@@ -418,6 +418,18 @@
     }
   },
   "rejected": {
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
+      "reason": "Visual review of regenerated JPEG from free CPU run 41998720390: the image still fills the street and sidewalks with many background pedestrians despite the story requiring the director to be the only person walking the set. The central no-extras joke remains reversed, so keep the safe fallback and retry only with a materially simpler one-person composition.",
+      "rejected_candidate_sha256": "a9321fc347c29ab2e048bdfc5d3b5fa26e26f4d4efbb179fe36b8a0c68d431eb",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
+    },
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+      "reason": "Visual review of regenerated JPEG from free CPU run 41998720390: boxes are now visible, but the key framed long receipt becomes a large poster/collage with prominent pseudo-text and the puzzled child is absent. The spend-more-to-save joke is still not clear enough, so keep the safe fallback and retry as an object-only still life.",
+      "rejected_candidate_sha256": "e31a5108ef0118d28c53f9dc08a4792aec26dcb3efa408eacafc9d03f084caf0",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",

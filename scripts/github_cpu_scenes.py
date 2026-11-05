@@ -20,13 +20,13 @@ from pathlib import Path
 try:
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
-        load_articles, pending_articles, png_to_jpeg, scene_description,
+        NEGATIVE, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 except ImportError:
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
-        load_articles, pending_articles, png_to_jpeg, scene_description,
+        NEGATIVE, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 
@@ -73,16 +73,16 @@ CPU_SCENES = {
         "plate, cropped at the frame edge. Plain blue background."
     ),
     "film-village-all-stars-no-extras": (
-        "A tired film director carrying shopping bags is the ONLY person "
-        "walking across an empty historical street set. Far behind him, a tight "
-        "cluster of costumed lead actors pose beside a tripod camera; no other "
-        "pedestrians are present."
+        "ONE solitary tired film director carrying two shopping bags walks "
+        "across a completely empty historical movie street. A tripod camera "
+        "stands at the curb pointed at him. Empty sidewalks and empty storefronts; "
+        "no other people anywhere in the frame."
     ),
     "sale-discount-savings-receipt-framed": (
-        "A proud father holds a picture frame containing ONE long blank store "
-        "receipt with a single red highlighted band. Behind him, a narrow home "
-        "hallway is blocked by sealed cardboard appliance boxes and shopping bags; "
-        "a puzzled teenage boy points at the pile."
+        "Close-up still life in a home hallway: ONE black picture frame contains "
+        "a very long narrow white cash-register paper strip with one red band. "
+        "Sealed cardboard appliance boxes and shopping bags tower around the frame. "
+        "No people."
     ),
     "office-face-to-face-day-video-call-echo": (
         "Foreground close-up of ONE large computer monitor clearly showing a "
@@ -102,9 +102,19 @@ CPU_SCENE_SOURCE_HASHES = {
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
     "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-    "film-village-all-stars-no-extras": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
-    "sale-discount-savings-receipt-framed": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+    "film-village-all-stars-no-extras": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+    "sale-discount-savings-receipt-framed": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
     "office-face-to-face-day-video-call-echo": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+}
+CPU_NEGATIVES = {
+    "film-village-all-stars-no-extras": (
+        "crowd, spectators, background people, pedestrians, multiple people, "
+        "busy street, market crowd"
+    ),
+    "sale-discount-savings-receipt-framed": (
+        "people, human figure, poster, collage, bulletin board, wall papers, "
+        "magazine cover, flyer"
+    ),
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
@@ -193,6 +203,13 @@ def cpu_prompt(article: dict) -> str:
     core, _ = prompt_parts(article)
     # Preserve the already-tested 75-token TV pilot, including its lighting.
     return core if reviewed_source_matches(article, TV_PILOT_SLUG) else wrap_prompt(core)
+
+
+def cpu_negative_prompt(article: dict) -> str:
+    """Use conservative global exclusions plus version-bound scene exclusions."""
+    slug = article.get("slug")
+    extra = CPU_NEGATIVES.get(slug, "") if isinstance(slug, str) and reviewed_source_matches(article, slug) else ""
+    return NEGATIVE + (", " + extra if extra else "")
 
 
 def compact_core_at_clause_boundaries(core: str, count) -> str:
@@ -354,8 +371,8 @@ def render_one(pipe, torch, article: dict) -> bytes:
     prompt = fit_cpu_prompt(article, tokenizer) if tokenizer is not None else cpu_prompt(article)
     with torch.inference_mode():
         result = pipe(
-            prompt=prompt, num_inference_steps=8,
-            guidance_scale=8.0, width=800, height=448,
+            prompt=prompt, negative_prompt=cpu_negative_prompt(article),
+            num_inference_steps=8, guidance_scale=8.0, width=800, height=448,
             generator=generator, output_type="pil",
         )
     if (getattr(result, "nsfw_content_detected", None)
