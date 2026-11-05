@@ -2,6 +2,15 @@ name: Purge Retired X Experiment Posts
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "inspect = read-only ID/status check; apply = delete exact unsent legacy matches"
+        type: choice
+        required: true
+        default: inspect
+        options:
+          - inspect
+          - apply
 
 permissions:
   contents: write
@@ -26,16 +35,23 @@ jobs:
           python social-bot/purge_retired_x.py
           python -m py_compile social-bot/purge_retired_x.py
 
-      - name: Delete only exact unsent retired experiment Buffer posts
+      - name: Inspect retired posts or delete exact unsent matches (manual only)
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          PURGE_MODE: ${{ inputs.mode }}
         run: |
+          case "$PURGE_MODE" in
+            inspect) purge_arg="--inspect" ;;
+            apply) purge_arg="--apply" ;;
+            *) echo "Invalid cleanup mode"; exit 2 ;;
+          esac
+
           set +e
-          python social-bot/purge_retired_x.py --apply
+          python social-bot/purge_retired_x.py "$purge_arg"
           purge_code=$?
           set -e
 
