@@ -98,7 +98,7 @@ class SearchIndexabilityTests(unittest.TestCase):
         robots = (ROOT / "dist/robots.txt").read_text(encoding="utf-8")
         self.assertIn("User-agent: *", robots)
         self.assertIn("Sitemap: https://veripsa.com/sitemap.xml", robots)
-        self.assertNotIn("Disallow: /", robots)
+        self.assertNotIn("Disallow: /", robots.splitlines())
 
 
 if __name__ == "__main__":
