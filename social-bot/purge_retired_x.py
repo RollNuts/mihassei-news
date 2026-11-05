@@ -112,6 +112,17 @@ def resolve_live_target(target: dict, listing: dict, read_by_id, *,
     return remote, None
 
 
+def deletion_recheck_reason(target: dict, before: dict, current: dict | None) -> str | None:
+    """Fail closed if an exactly identified post changes before deletion."""
+    reason = validate_live(target, current)
+    if reason is not None:
+        return reason
+    if any(current.get(field) != before.get(field)
+           for field in ("status", "dueAt", "sentAt")):
+        return "changed_before_delete"
+    return None
+
+
 def execution_mode(args: list[str], env: dict) -> str:
     """Live inspection and cleanup require an explicit manual main run."""
     if any(arg not in ("--inspect", "--apply") for arg in args):
@@ -269,12 +280,7 @@ def main() -> int:
         # Re-read its exact ID and refuse deletion if state/timing changed.
         try:
             current = fetch_post(bid)
-            reason = validate_live(target, current)
-            if reason is None and any(
-                current.get(field) != before.get(field)
-                for field in ("status", "dueAt", "sentAt")
-            ):
-                reason = "changed_before_delete"
+            reason = deletion_recheck_reason(target, before, current)
         except Exception:
             reason = "direct_id_recheck_failed"
         if reason:
