@@ -594,6 +594,30 @@ class ArticlePickTests(unittest.TestCase):
             picks.save_state(state, target)
             self.assertEqual(picks.read_json(target), state)
 
+    def test_initial_provider_error_evidence_is_bounded_and_display_safe(self):
+        details = picks.initial_provider_error_evidence({
+            "error": {
+                "message": "  X rejected this post.  " + "x" * 600,
+                "supportUrl": "https://support.buffer.com/example",
+                "rawError": "internal-provider-detail-must-not-be-stored",
+            }
+        })
+        self.assertTrue(details["buffer_error_message_at_accept"].startswith(
+            "X rejected this post."
+        ))
+        self.assertLessEqual(len(details["buffer_error_message_at_accept"]), 500)
+        self.assertEqual(
+            details["buffer_error_support_url_at_accept"],
+            "https://support.buffer.com/example",
+        )
+        self.assertNotIn("rawError", str(details))
+        self.assertEqual(
+            picks.initial_provider_error_evidence({
+                "error": {"message": "problem", "supportUrl": "javascript:bad"}
+            }),
+            {"buffer_error_message_at_accept": "problem"},
+        )
+
     def test_recovery_uses_provider_time_and_never_steals_current_slot(self):
         now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
         state = ledger()

@@ -111,7 +111,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode"
+    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl }"
               if include_due_at else "id text status")
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
@@ -245,7 +245,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
-        + "}) { ... on PostActionSuccess { post { id createdAt dueAt status sentAt externalLink sharedNow shareMode } }"
+        + "}) { ... on PostActionSuccess { post { id createdAt dueAt status sentAt externalLink sharedNow shareMode error { message supportUrl } } }"
         + " ... on MutationError { message } } }"
     )
     result = gql(token, mutation).get("createPost") or {}
