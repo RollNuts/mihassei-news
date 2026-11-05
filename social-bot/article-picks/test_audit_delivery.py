@@ -145,7 +145,11 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         }}
         existing = [
             {"id": "buf-error", "status": "error",
-             "text": "https://veripsa.com/articles/error/"},
+             "text": "https://veripsa.com/articles/error/",
+             "error": {
+                 "message": "X rejected this post",
+                 "supportUrl": "https://support.buffer.com/example",
+             }},
             {"id": "buf-sending", "status": "sending",
              "text": "https://veripsa.com/articles/sending/",
              "createdAt": (NOW - timedelta(minutes=5)).isoformat()},
@@ -158,6 +162,13 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(by_slug["error"]["buffer_status"], "error")
         self.assertEqual(
             by_slug["error"]["review_needed"], "provider_not_sent_error"
+        )
+        self.assertEqual(
+            by_slug["error"]["buffer_error_message"], "X rejected this post"
+        )
+        self.assertEqual(
+            by_slug["error"]["buffer_error_support_url"],
+            "https://support.buffer.com/example",
         )
         self.assertEqual(by_slug["sending"]["buffer_status"], "sending")
         self.assertIs(by_slug["sending"]["delivery_in_progress"], True)
@@ -220,6 +231,8 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertIn('post(input: {id: "buf-story"})', query)
         self.assertIn("createdAt", query)
         self.assertIn("externalLink sharedNow shareMode", query)
+        self.assertIn("error { message supportUrl }", query)
+        self.assertNotIn("rawError", query)
         self.assertNotIn("mutation", query)
 
     def test_direct_lookup_failure_stays_unverified_without_retry(self):
