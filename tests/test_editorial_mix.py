@@ -124,6 +124,34 @@ class EditorialMixTests(unittest.TestCase):
         self.assertTrue(any("max is" in error for error in errors))
         self.assertTrue(any("verification_urls" in error for error in errors))
 
+    def test_typography_variants_do_not_bypass_trend_duplicate_guard(self):
+        first = story("first", "trend", term="ＡＩ 規制")
+        second = story(
+            "second",
+            "trend",
+            term="AI・規制！",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(any("duplicate trend term" in error for error in errors))
+
+    def test_typography_variants_do_not_bypass_signature_guard(self):
+        first = story("first", "social_life")
+        second = story(
+            "second",
+            "original_satire",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        second["editorial_signature"] = {
+            "target": "Ｆｉｒｓｔ が効率を重視しすぎる！",
+            "action": "first・が手段を目的にする",
+            "outcome": "first が本来の目的が消える。",
+        }
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(
+            any("editorial_signature duplicates" in error for error in errors)
+        )
+
     def test_same_trend_term_is_blocked_within_seven_days(self):
         first = story("first", "trend", term="通信障害")
         second = story(
