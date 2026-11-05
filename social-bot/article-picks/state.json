@@ -51,6 +51,23 @@
       "text_sha256": "9c8dc6654282f85ff12b1c4a9ad39850f6dbfe9451bd186aec574a3ef052c83c",
       "published_at": "2026-11-05T09:31:45+09:00",
       "primary_topic": "tag:音楽"
+    },
+    "office-face-to-face-day-video-call-echo": {
+      "buffer_id": "6aec5c1d3d04d032a6f638f9",
+      "queued_at_utc": "2026-11-05T10:36:12.560778+00:00",
+      "slot_jst": "2026-11-05T19:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "234cd568a9a92ffe261560a287d41ac6ac42832556ca031514fe26b947b8721c",
+      "published_at": "2026-11-05T17:30:00+09:00",
+      "primary_topic": "tag:働き方",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-05T10:36:13.011Z",
+      "buffer_due_at_at_accept": "2026-11-05T10:36:13.051Z",
+      "buffer_sent_at_at_accept": "2026-11-05T10:36:13.373Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118291286063026215",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
