@@ -263,7 +263,7 @@ class FreeCpuImageTests(unittest.TestCase):
             "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
             "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
-            "film-village-all-stars-no-extras": ("ONLY", "wide empty historical street set", "tripod camera", "no other pedestrians"),
+            "film-village-all-stars-no-extras": ("ONLY", "empty historical street set", "tripod camera", "no other pedestrians"),
             "sale-discount-savings-receipt-framed": ("picture frame", "long blank store receipt", "sealed cardboard appliance boxes", "teenage boy"),
             "office-face-to-face-day-video-call-echo": ("large computer monitor", "three-by-three video-call grid", "empty Japanese open-plan office", "unused desks"),
         }
@@ -291,7 +291,7 @@ class FreeCpuImageTests(unittest.TestCase):
         expected = {
             "film-village-all-stars-no-extras": (
                 "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
-                ("ONLY", "wide empty historical street set", "tripod camera"),
+                ("ONLY", "empty historical street set", "tripod camera"),
             ),
             "sale-discount-savings-receipt-framed": (
                 "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
