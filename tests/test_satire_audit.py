@@ -7,7 +7,7 @@ from pathlib import Path
 
 from scripts.audit_satire import (
     analyze, latest, near_duplicate, final_sentence, next_slot_brief,
-    editorial_tag_counts, reusable_topic_note,
+    editorial_tag_counts, reusable_topic_note, topic_tag_counts, satire_tag_counts,
 )
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -218,13 +218,26 @@ class SatireAuditTests(unittest.TestCase):
         original = copy.deepcopy(articles)
         counts = editorial_tag_counts(articles)
         self.assertEqual(counts["AI"], 4)
-        self.assertIn("AI(4)", reusable_topic_note(articles))
+        self.assertEqual(topic_tag_counts(articles)["AI"], 4)
+        self.assertEqual(satire_tag_counts(articles)["仕事してる感"], 3)
+        self.assertIn("育っているトピック: AI(4)", reusable_topic_note(articles))
+        self.assertIn("風刺タグ: 仕事してる感(3)", reusable_topic_note(articles))
         labels = {entry[0] for entry in analyze(articles)}
         self.assertIn("TOPIC_FRAGMENTATION", labels)
         brief = "\n".join(next_slot_brief(articles))
-        self.assertIn("タグが分散気味", brief)
+        self.assertIn("トピックタグが分散気味", brief)
         self.assertIn("題材や本文を曲げず", brief)
         self.assertEqual(articles, original)
+
+    def test_unique_satire_lenses_do_not_create_false_topic_fragmentation(self):
+        articles = [sample(i) for i in range(1, 21)]
+        for i, article in enumerate(articles):
+            article["tags"] = ["SNS" if i < 10 else "働き方"]
+            article["satire_tags"] = [f"記事固有の言い味{i}"]
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertNotIn("TOPIC_FRAGMENTATION", labels)
+        self.assertEqual(len(satire_tag_counts(articles)), 20)
+        self.assertEqual(len(topic_tag_counts(articles)), 2)
 
     def test_many_different_stories_remain_fully_publishable(self):
         articles=[sample(i) for i in range(1,12)]
