@@ -721,6 +721,108 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(receipt["source"], "fresh_article")
                 self.assertNotIn("metrics_at_queue", receipt)
 
+    def test_fresh_article_ignores_mature_pv_outage(self):
+        """An older article must not make the fresh lane depend on the PV API."""
+        fresh = article("fresh-mixed", age_hours=4)
+        mature = article("mature-mixed", age_hours=36)
+        documents = {HERE / "config.json": CONFIG, HERE / "state.json": ledger()}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(
+                json.dumps([mature, fresh]), encoding="utf-8"
+            )
+            with patch.object(picks, "ROOT", root), \
+                 patch.object(picks, "read_json",
+                              side_effect=lambda path: copy.deepcopy(documents[path])), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(picks, "read_page_view_metrics",
+                              side_effect=RuntimeError("PV unavailable")) as pv_read, \
+                 patch.object(picks, "choose_x_channel",
+                              return_value=("org", CONFIG["channel_id"])), \
+                 patch.object(picks, "list_existing", return_value=[]), \
+                 patch.object(picks, "save_state") as save, \
+                 patch.object(picks, "queue_one", return_value="fresh-receipt") as queue:
+                clock.now.return_value = NOW
+                self.assertEqual(picks.main(), 0)
+                pv_read.assert_not_called()
+                queue.assert_called_once()
+                self.assertIn("fresh-mixed", queue.call_args.args[2]["text"])
+                receipt = save.call_args.args[0]["queued"]["fresh-mixed"]
+                self.assertEqual(receipt["source"], "fresh_article")
+                self.assertNotIn("metrics_at_queue", receipt)
+
+    def test_mature_selection_still_requires_verified_pv_if_fresh_exhausted(self):
+        """A fresh URL in permanent history may not be reused as a PV-free filler."""
+        fresh = article("already-promoted", age_hours=4)
+        mature = article("mature-only", age_hours=36)
+        documents = {
+            HERE / "config.json": CONFIG,
+            HERE / "state.json": ledger(**{
+                "already-promoted": recorded(buf="old-receipt", hours=7)
+            }),
+        }
+        window = picks.page_view_window(pv_payload(["mature-only"]), NOW)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(
+                json.dumps([fresh, mature]), encoding="utf-8"
+            )
+            with patch.object(picks, "ROOT", root), \
+                 patch.object(picks, "read_json",
+                              side_effect=lambda path: copy.deepcopy(documents[path])), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(picks, "read_page_view_metrics",
+                              return_value=({"mature-only": stats()}, window)) as pv_read, \
+                 patch.object(picks, "choose_x_channel",
+                              return_value=("org", CONFIG["channel_id"])), \
+                 patch.object(picks, "list_existing", return_value=[]), \
+                 patch.object(picks, "save_state") as save, \
+                 patch.object(picks, "queue_one", return_value="mature-receipt") as queue:
+                clock.now.return_value = NOW
+                self.assertEqual(picks.main(), 0)
+                pv_read.assert_called_once_with(["mature-only"], NOW)
+                queue.assert_called_once()
+                self.assertIn("mature-only", queue.call_args.args[2]["text"])
+                receipt = save.call_args.args[0]["queued"]["mature-only"]
+                self.assertEqual(receipt["source"], "verified_article_page_views")
+                self.assertEqual(receipt["metrics_at_queue"]["last_7_days_page_views"], 11)
+                self.assertEqual(
+                    save.call_args.args[0]["queued"]["already-promoted"]["buffer_id"],
+                    "old-receipt",
+                )
+
+    def test_mature_pv_failure_never_queues_without_fresh_article(self):
+        """PV failure must remain fail-closed rather than create an unmeasured old post."""
+        mature = article("mature-fail-closed", age_hours=36)
+        documents = {HERE / "config.json": CONFIG, HERE / "state.json": ledger()}
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(
+                json.dumps([mature]), encoding="utf-8"
+            )
+            with patch.object(picks, "ROOT", root), \
+                 patch.object(picks, "read_json",
+                              side_effect=lambda path: copy.deepcopy(documents[path])), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(picks, "read_page_view_metrics",
+                              side_effect=RuntimeError("PV unavailable")) as pv_read, \
+                 patch.object(picks, "choose_x_channel",
+                              return_value=("org", CONFIG["channel_id"])), \
+                 patch.object(picks, "list_existing", return_value=[]), \
+                 patch.object(picks, "save_state"), \
+                 patch.object(picks, "queue_one") as queue:
+                clock.now.return_value = NOW
+                with self.assertRaisesRegex(RuntimeError, "PV unavailable"):
+                    picks.main()
+                pv_read.assert_called_once()
+                queue.assert_not_called()
+
     def test_missing_data_token_or_disabled_never_posts(self):
         with patch.object(picks, "read_json") as read, patch.object(picks, "queue_one") as queue:
             read.side_effect = [
