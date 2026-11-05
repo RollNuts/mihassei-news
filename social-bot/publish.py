@@ -142,8 +142,9 @@ def remote_asset_available(url):
 def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return_post=False):
     """Create one Buffer post. Existing callers receive its immutable ID.
 
-    When return_post=True, the original experiment lane also receives the
-    provider-reported dueAt without spending a separate Buffer API request.
+    shareNow is deliberately narrow: reviewed experiment images and the
+    article-promotion lane may use it. Retired text experiments cannot turn it
+    into an immediate-send escape hatch.
     """
     if type(return_post) is not bool:
         raise ValueError("return_post must be a boolean")
@@ -166,8 +167,23 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         due_field = ", dueAt: " + qstring(due_at_utc)
     elif due_at_utc is not None:
         raise ValueError("dueAt is only accepted with customScheduled")
-    if mode == "shareNow" and post.get("kind") != "image":
-        raise ValueError("Immediate send is reserved for original picture experiment")
+    if mode == "shareNow":
+        post_id = str(post.get("id", ""))
+        original_image = (
+            post.get("kind") == "image"
+            and post_id.startswith("xexp-")
+            and post_id.replace("-", "").isalnum()
+        )
+        article_text = (
+            post.get("kind") == "article"
+            and post_id.startswith("article-")
+            and post_id.replace("-", "").isalnum()
+        )
+        if not (original_image or article_text):
+            raise ValueError(
+                "Immediate send is reserved for reviewed experiment images "
+                "or article promotion"
+            )
     extra = ""
     if post["kind"] in ("comic", "image"):
         if post["kind"] == "image" and (
