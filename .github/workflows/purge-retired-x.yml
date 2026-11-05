@@ -1,4 +1,4 @@
-name: Purge Retired X Experiment Posts
+name: Inspect / Purge Retired X Experiment Posts (manual)
 
 on:
   workflow_dispatch:
@@ -33,6 +33,7 @@ jobs:
       - name: Validate retired experiment boundary
         run: |
           python social-bot/purge_retired_x.py
+          python -m unittest discover -s tests -p 'test_purge_retired_x.py' -v
           python -m py_compile social-bot/purge_retired_x.py
 
       - name: Inspect retired posts or delete exact unsent matches (manual only)
