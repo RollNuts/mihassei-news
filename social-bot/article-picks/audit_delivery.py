@@ -16,7 +16,7 @@ from publish import choose_x_channel, gql, list_existing, qstring  # noqa: E402
 JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
 MAX_ITEMS = 60
-UNDELIVERED_STATUSES = {"draft", "pending", "error", "failed"}
+UNDELIVERED_STATUSES = {"draft", "error", "needs_approval", "sending"}
 
 
 def trigger_allows_provider_read(event_name: str, now: datetime) -> bool:
@@ -174,7 +174,7 @@ def build(state: dict, existing: list[dict], now: datetime,
         },
         "limitations": (
             "Buffer status is provider evidence, not independent X page verification. "
-            "Missing list entries are checked by saved Buffer ID. Error/pending/failed/draft "
+            "Missing list entries are checked by saved Buffer ID. Error/needs_approval/sending/draft "
             "statuses and overdue scheduled posts require investigation, never automatic retry. "
             "Missing provider timestamps are not assumed sent."
         ),
