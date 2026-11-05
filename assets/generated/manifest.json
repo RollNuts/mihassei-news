@@ -418,6 +418,18 @@
     }
   },
   "rejected": {
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "reason": "Visual review of negative-guided CPU retry 42000558053: background people were reduced but several pedestrians still remain, while the director, shopping bags and tripod-camera action are not clearly depicted. The no-extras joke is still not readable enough, so hold the JPEG and keep the safe fallback instead of spending repeated CPU retries.",
+      "rejected_candidate_sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+    },
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+      "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
+      "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
