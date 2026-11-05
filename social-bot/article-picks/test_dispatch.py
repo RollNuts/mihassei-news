@@ -614,6 +614,27 @@ class ArticlePickTests(unittest.TestCase):
         )
         self.assertFalse(picks.slot_already_used(state, now))
 
+    def test_sending_recovery_uses_created_at_and_blocks_same_slot(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        sending = article("sending-story", age_hours=4)
+        existing = [{
+            "id": "buf-sending",
+            "status": "sending",
+            "text": picks.publication_text(sending),
+            "createdAt": "2026-11-05T10:06:00Z",
+        }]
+        state = ledger()
+        selected, _, _ = picks.decide(
+            [sending], {}, state, existing, CONFIG, now
+        )
+        self.assertIsNone(selected)
+        entry = state["queued"]["sending-story"]
+        self.assertEqual(entry["slot_jst"], "2026-11-05T19:05:00+09:00")
+        self.assertEqual(
+            entry["recovered_provider_time_utc"], "2026-11-05T10:06:00+00:00"
+        )
+        self.assertTrue(picks.slot_already_used(state, now))
+
     def test_unsettled_provider_article_is_recovered_and_never_auto_retried(self):
         now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
         errored = article("error-story", age_hours=4)
@@ -818,7 +839,7 @@ class ArticlePickTests(unittest.TestCase):
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=remote) as list_existing, \
                  patch.object(picks, "save_state") as save, \
-                 patch.object(picks, "queue_one", return_value={"id":"article-confirmed","status":"sent","sentAt":"2026-11-05T02:06:00Z","externalLink":"https://x.com/veripsa/status/111","sharedNow":True,"shareMode":"shareNow"}) as queue:
+                 patch.object(picks, "queue_one", return_value={"id":"article-confirmed","status":"sent","createdAt":"2026-11-05T02:05:58Z","sentAt":"2026-11-05T02:06:00Z","externalLink":"https://x.com/veripsa/status/111","sharedNow":True,"shareMode":"shareNow"}) as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
                 list_existing.assert_called_once_with(
@@ -839,6 +860,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["buffer_status_at_accept"], "sent")
+                self.assertEqual(receipt["buffer_created_at_at_accept"], "2026-11-05T02:05:58Z")
                 self.assertEqual(receipt["buffer_sent_at_at_accept"], "2026-11-05T02:06:00Z")
                 self.assertEqual(receipt["buffer_external_link_at_accept"], "https://x.com/veripsa/status/111")
                 self.assertIs(receipt["buffer_shared_now_at_accept"], True)
@@ -878,7 +900,7 @@ class ArticlePickTests(unittest.TestCase):
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=remote), \
                  patch.object(picks, "save_state") as save, \
-                 patch.object(picks, "queue_one", return_value={"id":"article-fresh","status":"sending","sharedNow":True,"shareMode":"shareNow"}) as queue:
+                 patch.object(picks, "queue_one", return_value={"id":"article-fresh","status":"sending","createdAt":"2026-11-05T02:05:58Z","sharedNow":True,"shareMode":"shareNow"}) as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
@@ -891,6 +913,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["buffer_status_at_accept"], "sending")
+                self.assertEqual(receipt["buffer_created_at_at_accept"], "2026-11-05T02:05:58Z")
                 self.assertIs(receipt["buffer_shared_now_at_accept"], True)
                 self.assertEqual(receipt["buffer_share_mode_at_accept"], "shareNow")
                 self.assertNotIn("metrics_at_queue", receipt)
@@ -917,7 +940,7 @@ class ArticlePickTests(unittest.TestCase):
                               return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=[]), \
                  patch.object(picks, "save_state") as save, \
-                 patch.object(picks, "queue_one", return_value={"id":"fresh-receipt","status":"sending","sharedNow":True,"shareMode":"shareNow"}) as queue:
+                 patch.object(picks, "queue_one", return_value={"id":"fresh-receipt","status":"sending","createdAt":"2026-11-05T02:05:58Z","sharedNow":True,"shareMode":"shareNow"}) as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_not_called()
@@ -957,7 +980,7 @@ class ArticlePickTests(unittest.TestCase):
                               return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=[]), \
                  patch.object(picks, "save_state") as save, \
-                 patch.object(picks, "queue_one", return_value={"id":"mature-receipt","status":"scheduled","dueAt":"2026-11-05T02:10:00Z","sharedNow":True,"shareMode":"shareNow"}) as queue:
+                 patch.object(picks, "queue_one", return_value={"id":"mature-receipt","status":"scheduled","createdAt":"2026-11-05T02:05:58Z","dueAt":"2026-11-05T02:10:00Z","sharedNow":True,"shareMode":"shareNow"}) as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_called_once_with(["mature-only"], NOW)
