@@ -38,6 +38,8 @@ METRICS_URL = "https://veripsa.com/api/engagement"
 JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
 MAX_DAILY_X_POSTS = 7
+PROMOTION_SLOT_HOURS = (9, 11, 13, 15, 17, 19, 21)
+PROMOTION_SLOT_MINUTE = 5
 CRISIS_PROMO_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
@@ -48,8 +50,9 @@ def trigger_allows_network(event_name: str, now: datetime) -> bool:
     """Allow cron/manual runs anytime; bound article-push fallback to daytime.
 
     Site publication pushes at 07:30 and 23:30 JST must not touch Buffer.
-    The seven daytime publication slots (roughly 09:30–21:30) may act as a
-    fallback when GitHub's scheduled :05 check is delayed or absent.
+    The seven logical publication slots are 09:05–21:05 JST. Article pushes
+    may act as a fallback when GitHub's scheduled :05 check is delayed or absent.
+    A delayed run still belongs to its logical slot instead of consuming the next one.
     """
     if now.tzinfo is None:
         raise ValueError("Current time must have timezone")
@@ -123,6 +126,8 @@ def validate_config(config: dict) -> None:
         value = config.get(name)
         if type(value) is not int or not lower <= value <= upper:
             raise ValueError(f"Unsafe article promotion config {name}")
+    if config["minimum_interval_hours"] != 2:
+        raise ValueError("Article promotion logical slots must remain two hours apart")
     if config["fresh_minimum_age_hours"] >= config["fresh_maximum_age_hours"]:
         raise ValueError("Fresh article window is inverted")
     if config["fresh_maximum_age_hours"] > config["minimum_article_age_hours"] * 2:
@@ -143,6 +148,15 @@ def validate_state(state: dict) -> None:
         dt = datetime.fromisoformat(stamp)
         if dt.tzinfo is None:
             raise ValueError("Timezone missing in permanent post ledger")
+        slot_stamp = entry.get("slot_jst")
+        if slot_stamp is not None:
+            if not isinstance(slot_stamp, str):
+                raise ValueError("Invalid logical X slot in permanent post ledger")
+            slot = datetime.fromisoformat(slot_stamp)
+            if (slot.tzinfo is None or slot.astimezone(JST).utcoffset() != JST.utcoffset(None)
+                    or slot.astimezone(JST).minute != PROMOTION_SLOT_MINUTE
+                    or slot.astimezone(JST).hour not in PROMOTION_SLOT_HOURS):
+                raise ValueError("Invalid logical X slot in permanent post ledger")
 
 
 def save_state(state: dict, path: Path = HERE / "state.json") -> None:
@@ -161,6 +175,72 @@ def article_slug_in_text(text: str) -> set[str]:
     return set(ARTICLE_URL.findall(text or ""))
 
 
+def promotion_slot(now: datetime) -> datetime | None:
+    """Return the latest logical JST article slot reached on this date.
+
+    GitHub Actions may begin late. A 09:05 run that starts at 09:36 still uses
+    the 09:05 slot, while an 11:05 run that starts at 11:20 uses the 11:05
+    slot. This prevents scheduler delay from creating a rolling cooldown.
+    """
+    if now.tzinfo is None:
+        raise ValueError("Current time must have timezone")
+    local = now.astimezone(JST)
+    for hour in reversed(PROMOTION_SLOT_HOURS):
+        slot = local.replace(
+            hour=hour, minute=PROMOTION_SLOT_MINUTE, second=0, microsecond=0
+        )
+        if local >= slot:
+            return slot
+    return None
+
+
+def entry_promotion_slot(entry: dict) -> datetime | None:
+    """Read a saved logical slot, or infer one for pre-migration receipts."""
+    explicit = entry.get("slot_jst")
+    if isinstance(explicit, str):
+        try:
+            slot = datetime.fromisoformat(explicit)
+        except ValueError:
+            return None
+        return slot.astimezone(JST) if slot.tzinfo else None
+    try:
+        queued = datetime.fromisoformat(entry["queued_at_utc"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if queued.tzinfo is None:
+        return None
+    slot = promotion_slot(queued)
+    if slot is not None:
+        return slot
+    local = queued.astimezone(JST)
+    # Before this migration, article-push fallback was allowed from 09:00.
+    # Preserve 09:00-09:04 receipts as the current day's 09:05 logical slot.
+    if local.hour == PROMOTION_SLOT_HOURS[0]:
+        return local.replace(
+            hour=PROMOTION_SLOT_HOURS[0], minute=PROMOTION_SLOT_MINUTE,
+            second=0, microsecond=0,
+        )
+    # Earlier after-midnight receipts came from a heavily delayed previous-day
+    # run. Attribute them to the previous day's final 21:05 slot so they do not
+    # steal today's quota.
+    previous = local - timedelta(days=1)
+    return previous.replace(
+        hour=PROMOTION_SLOT_HOURS[-1], minute=PROMOTION_SLOT_MINUTE,
+        second=0, microsecond=0,
+    )
+
+
+def slot_already_used(state: dict, now: datetime) -> bool:
+    """Allow one automatic article per logical slot, regardless of run delay."""
+    current = promotion_slot(now)
+    if current is None:
+        return False
+    for entry in state.get("queued", {}).values():
+        if entry_promotion_slot(entry) == current:
+            return True
+    return False
+
+
 def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                         known_slugs: set[str]) -> list[str]:
     """Reserve previously scheduled/sent article URLs before any new send."""
@@ -174,7 +254,7 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
             continue
         for slug in article_slug_in_text(item.get("text", "")) & known_slugs:
             if slug not in state["queued"]:
-                state["queued"][slug] = {
+                recovered_entry = {
                     "buffer_id": post_id,
                     "queued_at_utc": now.astimezone(timezone.utc).isoformat(),
                     "source": "recovered_from_buffer",
@@ -183,6 +263,10 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                         (item.get("text", "") or "").encode("utf-8")
                     ).hexdigest(),
                 }
+                slot = promotion_slot(now)
+                if slot is not None:
+                    recovered_entry["slot_jst"] = slot.isoformat()
+                state["queued"][slug] = recovered_entry
                 recovered.append(slug)
     return recovered
 
@@ -443,11 +527,8 @@ def promoted_topics_today(state: dict, articles: list[dict], now: datetime) -> s
     day = now.astimezone(JST).date()
     result = set()
     for slug, entry in state.get("queued", {}).items():
-        try:
-            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        if not queued_at.tzinfo or queued_at.astimezone(JST).date() != day:
+        slot = entry_promotion_slot(entry)
+        if slot is None or slot.astimezone(JST).date() != day:
             continue
         topic = primary_topic(by_slug.get(slug, {}))
         if topic:
@@ -479,14 +560,12 @@ def prefer_topic_diversity(items: list, used_topics: set[str], *,
 
 
 def promotions_today(state: dict, now: datetime) -> int:
+    """Count logical promotion slots on the JST date, not delayed receipt dates."""
     day = now.astimezone(JST).date()
     count = 0
     for entry in state["queued"].values():
-        try:
-            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        if queued_at.tzinfo and queued_at.astimezone(JST).date() == day:
+        slot = entry_promotion_slot(entry)
+        if slot is not None and slot.astimezone(JST).date() == day:
             count += 1
     return count
 
@@ -512,15 +591,6 @@ def x_posts_today(existing: list[dict], now: datetime) -> int:
     return len(seen)
 
 
-def cooldown_active(state: dict, now: datetime, hours: int) -> bool:
-    """Keep article promotions separated even when several are allowed per day."""
-    for entry in state["queued"].values():
-        t = datetime.fromisoformat(entry["queued_at_utc"])
-        if t.tzinfo and timedelta(0) <= now - t < timedelta(hours=hours):
-            return True
-    return False
-
-
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
            config: dict, now: datetime
            ) -> tuple[dict | None, dict | None, int]:
@@ -533,10 +603,12 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
           if p.get("status") in ("scheduled", "sent"))
     ) if existing else set()
     today_count = promotions_today(state, now)
-    if (x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
+    current_slot = promotion_slot(now)
+    if (current_slot is None
+            or x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
             or len(queued) >= config["max_queue_size"]
             or today_count >= config["max_per_jst_day"]
-            or cooldown_active(state, now, config["minimum_interval_hours"])):
+            or slot_already_used(state, now)):
         return None, None, len(queued)
     used_topics = promoted_topics_today(state, articles, now)
     fresh = rank_fresh(articles, state, remote_slugs, config, now)
@@ -594,7 +666,7 @@ def main() -> int:
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
     # First reconcile Buffer and evaluate fresh posts without depending on
     # mature-article PV. A stale/unavailable PV API must not block a valid
-    # 1–18-hour article, but the same dedupe/cap/cooldown gates still apply.
+    # 1–18-hour article. Dedupe, caps and one-per-logical-slot gates still apply.
     eligible, evidence, scheduled = decide(articles, {}, state, existing,
                                             config, now)
     metrics, window = ({}, None)
@@ -612,9 +684,13 @@ def main() -> int:
         return 0
     text = publication_text(eligible)
     buffer_id = queue_one(token, channel_id, {"kind": "text", "text": text})
+    slot = promotion_slot(now)
+    if slot is None:
+        raise RuntimeError("No logical article promotion slot is active")
     entry = {
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
+        "slot_jst": slot.isoformat(),
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
@@ -627,8 +703,9 @@ def main() -> int:
     state["queued"][eligible["slug"]] = entry
     save_state(state)
     print("Article accepted by Buffer (not verified X publication):",
-          eligible["slug"], buffer_id, "scheduled_before=", scheduled,
-          "selection=", entry["source"], "page_views=", evidence,
+          eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],
+          "scheduled_before=", scheduled, "selection=", entry["source"],
+          "page_views=", evidence,
           "measurement_window=", window)
     return 0
 

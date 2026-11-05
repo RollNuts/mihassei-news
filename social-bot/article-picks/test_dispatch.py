@@ -84,7 +84,9 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(config["fresh_minimum_age_hours"], 1)
         self.assertEqual(config["fresh_maximum_age_hours"], 18)
         self.assertNotIn("min_readers", config)
-        self.assertGreaterEqual(config["minimum_interval_hours"], 2)
+        self.assertEqual(config["minimum_interval_hours"], 2)
+        self.assertEqual(picks.PROMOTION_SLOT_HOURS, (9, 11, 13, 15, 17, 19, 21))
+        self.assertEqual(picks.PROMOTION_SLOT_MINUTE, 5)
 
     def test_push_fallback_network_window_is_exactly_daytime_jst(self):
         cases = (
@@ -561,6 +563,7 @@ class ArticlePickTests(unittest.TestCase):
                              ("max_new_per_run", 2),
                              ("max_per_jst_day", 8),
                              ("minimum_interval_hours", 1),
+                             ("minimum_interval_hours", 3),
                              ("fresh_minimum_age_hours", 0),
                              ("fresh_maximum_age_hours", 25),
                              ("min_page_views", 0),
@@ -582,6 +585,10 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(set(recovered), {"story-a", "story-b"})
         self.assertEqual(state["queued"]["story-a"]["buffer_id"], "remote-1")
         self.assertEqual(state["queued"]["story-b"]["buffer_id"], "remote-2")
+        self.assertEqual(
+            state["queued"]["story-a"]["slot_jst"],
+            "2026-11-05T11:05:00+09:00",
+        )
         self.assertEqual(picks.recover_from_buffer(state, existing, NOW, {"story-a", "story-b"}), [])
         self.assertEqual(picks.rank([a], {"story-a": stats()},
                                     state, set(), CONFIG), [])
@@ -595,32 +602,92 @@ class ArticlePickTests(unittest.TestCase):
         offer = picks.rank([article("story-a")], {"story-a": stats()}, old, set(), CONFIG)
         self.assertEqual(offer, [])
 
-    def test_two_hour_cooldown_and_seven_article_daily_cap(self):
+    def test_logical_two_hour_slots_survive_action_delay_and_block_same_slot(self):
         a = article("new-story", age_hours=36)
         counts = {"new-story": stats()}
         remote = [
             {"id": "short-1", "status": "scheduled", "text": "昔話の短文"},
             {"id": "short-2", "status": "scheduled", "text": "別の短文"},
         ]
-        state = ledger()
-        item, evidence, queued = picks.decide([a], counts, state, remote, CONFIG, NOW)
+        late_11 = datetime.fromisoformat("2026-11-05T11:36:00+09:00")
+        self.assertEqual(
+            picks.promotion_slot(datetime.fromisoformat("2026-11-05T09:36:00+09:00")),
+            datetime.fromisoformat("2026-11-05T09:05:00+09:00"),
+        )
+        self.assertEqual(
+            picks.promotion_slot(late_11),
+            datetime.fromisoformat("2026-11-05T11:05:00+09:00"),
+        )
+        self.assertIsNone(
+            picks.promotion_slot(datetime.fromisoformat("2026-11-05T09:04:59+09:00"))
+        )
+
+        # A delayed 09:05 run accepted at 09:36 must not consume the 11:05 slot.
+        previous_09 = ledger(**{
+            "previous-story": {
+                "buffer_id": "buf-prev",
+                "queued_at_utc": "2026-11-05T00:36:00+00:00",
+                "slot_jst": "2026-11-05T09:05:00+09:00",
+            }
+        })
+        item, evidence, queued = picks.decide(
+            [a], counts, previous_09, remote, CONFIG, late_11
+        )
         self.assertEqual(item["slug"], "new-story")
         self.assertEqual(queued, 2)
         self.assertEqual(evidence, counts["new-story"])
 
-        state = ledger(**{"previous-story": recorded(hours=1)})
-        item, _, _ = picks.decide([a], counts, state, remote, CONFIG, NOW)
+        # A second trigger inside the same logical 11:05 slot remains blocked.
+        same_11 = ledger(**{
+            "previous-story": {
+                "buffer_id": "buf-prev",
+                "queued_at_utc": "2026-11-05T02:20:00+00:00",
+                "slot_jst": "2026-11-05T11:05:00+09:00",
+            }
+        })
+        item, _, _ = picks.decide([a], counts, same_11, remote, CONFIG, late_11)
         self.assertIsNone(item)
-        state = ledger(**{"previous-story": recorded(hours=3)})
-        item, _, _ = picks.decide([a], counts, state, remote, CONFIG, NOW)
+
+        # Pre-migration receipts without slot_jst infer their logical slot.
+        legacy_09 = {
+            "buffer_id": "buf-legacy",
+            "queued_at_utc": "2026-11-05T00:36:00+00:00",
+        }
+        self.assertEqual(
+            picks.entry_promotion_slot(legacy_09),
+            datetime.fromisoformat("2026-11-05T09:05:00+09:00"),
+        )
+        item, _, _ = picks.decide(
+            [a], counts, ledger(**{"legacy-story": legacy_09}), remote, CONFIG, late_11
+        )
         self.assertEqual(item["slug"], "new-story")
+
+        # A heavily delayed previous-day receipt after midnight belongs to the
+        # previous day's last logical slot, not today's seven-post quota.
+        legacy_after_midnight = {
+            "buffer_id": "buf-late",
+            "queued_at_utc": "2026-11-04T17:54:00+00:00",
+        }
+        self.assertEqual(
+            picks.entry_promotion_slot(legacy_after_midnight),
+            datetime.fromisoformat("2026-11-04T21:05:00+09:00"),
+        )
+        self.assertEqual(
+            picks.promotions_today(
+                ledger(**{"previous-day-late": legacy_after_midnight}), NOW
+            ),
+            0,
+        )
 
         same_day = {
             f"story-{i}": {
                 "buffer_id": f"buf-{i}",
-                "queued_at_utc": (NOW - timedelta(hours=3 + i)).isoformat(),
+                "queued_at_utc": datetime.fromisoformat(
+                    f"2026-11-05T{hour:02d}:30:00+09:00"
+                ).isoformat(),
+                "slot_jst": f"2026-11-05T{hour:02d}:05:00+09:00",
             }
-            for i in range(7)
+            for i, hour in enumerate(picks.PROMOTION_SLOT_HOURS)
         }
         self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 7)
         item, _, _ = picks.decide([a], counts, ledger(**same_day),
@@ -687,6 +754,7 @@ class ArticlePickTests(unittest.TestCase):
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
+                self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["metrics_at_queue"], {
                     **window, "last_7_days_page_views": 11, "today_page_views": 1})
         self.assertEqual(documents, original)
@@ -734,6 +802,7 @@ class ArticlePickTests(unittest.TestCase):
                 queue.assert_called_once()
                 receipt = save.call_args.args[0]["queued"]["fresh-story"]
                 self.assertEqual(receipt["source"], "fresh_article")
+                self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertNotIn("metrics_at_queue", receipt)
 
     def test_fresh_article_ignores_mature_pv_outage(self):
