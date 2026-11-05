@@ -28,6 +28,10 @@ FORMULA_FUTURE_INTRO = re.compile(r"20\d{2}年[、，]\s*架空の")
 MECHANICAL_ENDINGS = re.compile(
     r"担当者|広報|謝罪|却下|不合格|新制度|管理職|手続き|承認|申請|通知"
 )
+DIRECT_SPEECH_ENDING = re.compile(
+    r"(?:「[^」]{2,}」\s*$|「[^」]{2,}」(?:と|、)\s*"
+    r"(?:答え|言|説明|案内|告げ|うなず|笑|書き|つぶや|繰り返|話|宣言|認め))"
+)
 # A short burst of similar premises can bore a first-time visitor even when
 # the 20-story average looks diverse. A signal, never an automatic rejection.
 PROCEDURAL_PREMISE = re.compile(
@@ -36,6 +40,7 @@ PROCEDURAL_PREMISE = re.compile(
 SHORT_RUN = 6
 PROCEDURAL_RUN_THRESHOLD = 4
 CATEGORY_RUN_THRESHOLD = 5
+DIALOGUE_ENDING_THRESHOLD = 4
 
 
 def actual_published(article: dict) -> str:
@@ -183,6 +188,16 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 f"直近{SHORT_RUN}本で「2031年、架空の〜」型の書き出しが{future_intros}本。"
                 "次枠は冒頭2文で人物・現場・原因を示す。台詞始まりは必須ではない",
             ))
+        dialogue_endings = sum(
+            bool(DIRECT_SPEECH_ENDING.search(final_sentence(item)))
+            for item in short_run
+        )
+        if dialogue_endings >= DIALOGUE_ENDING_THRESHOLD:
+            warnings.append((
+                "DIALOGUE_PUNCHLINE_LOOP", "-",
+                f"直近{SHORT_RUN}本のうち{dialogue_endings}本が最後のセリフで締まっている。"
+                "次枠は人物の行動、画面に残る物、皮肉な結果など、台詞以外の結末も比較する",
+            ))
     if len(newest) >= 6:
         work = [a for a in newest if WORK_AI.search(a.get("title", ""))]
         if len(work) >= max(5, (len(newest) * 3 + 4) // 5):
@@ -243,6 +258,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append("企業の発表から始まる記事が続く。冒頭2文で誰がどこで何に困るかと、その原因を示す。会話も地の文も理解の早い方を選ぶ。")
     if "FORMULA_PUNCHLINE_LOOP" in labels or "SIMILAR_PUNCHLINE" in labels:
         lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・一言で閉じる。二度目の逆転は不要。本文の追加の笑いは既存の人物と前提から作る。")
+    if "DIALOGUE_PUNCHLINE_LOOP" in labels:
+        lines.append("最後の一言で落とす記事が続いている。次は、人物が実際にしてしまう行動、残った物、数字や光景そのものがオチになる案も比べる。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
     if "TOPIC_FRAGMENTATION" in labels:
