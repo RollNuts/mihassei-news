@@ -263,6 +263,9 @@ class FreeCpuImageTests(unittest.TestCase):
             "stolen-doorbell-returned-by-parcel": ("handbell", "wooden handle", "cardboard", "Close-up"),
             "family-dinner-gacha-243-rejections": ("gumball vending machine", "plastic capsules", "turning handle", "empty plates"),
             "volleyball-team-lunch-plate-merch": ("round white ceramic plate", "yellow measuring tape", "blue-yellow volleyball"),
+            "film-village-all-stars-no-extras": ("ONLY", "wide empty historical street set", "tripod camera", "no other pedestrians"),
+            "sale-discount-savings-receipt-framed": ("picture frame", "long blank store receipt", "sealed cardboard appliance boxes", "teenage boy"),
+            "office-face-to-face-day-video-call-echo": ("large computer monitor", "three-by-three video-call grid", "empty Japanese open-plan office", "unused desks"),
         }
         for slug, objects in expected.items():
             source = {**article(), "slug": slug, "scene_prompt": "An adult holds a toolbox beside a garden gate."}
@@ -282,6 +285,32 @@ class FreeCpuImageTests(unittest.TestCase):
             if slug == "sweet-potato-chorus-starts-too-late":
                 for crowd_context in ("crowd", "referee", "participants", "adults", "rectangles"):
                     self.assertNotIn(crowd_context, prompt.lower())
+
+    def test_latest_rejected_scenes_have_current_compact_punchline_prompts(self):
+        articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
+        expected = {
+            "film-village-all-stars-no-extras": (
+                "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
+                ("ONLY", "wide empty historical street set", "tripod camera"),
+            ),
+            "sale-discount-savings-receipt-framed": (
+                "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
+                ("picture frame", "long blank store receipt", "appliance boxes"),
+            ),
+            "office-face-to-face-day-video-call-echo": (
+                "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
+                ("three-by-three video-call grid", "empty Japanese open-plan office", "unused desks"),
+            ),
+        }
+        for slug, (fingerprint, cues) in expected.items():
+            with self.subTest(slug=slug):
+                source = articles[slug]
+                self.assertEqual(article_fingerprint(source), fingerprint)
+                self.assertTrue(cpu.reviewed_source_matches(source, slug))
+                prompt = cpu.cpu_prompt(source)
+                for cue in cues:
+                    self.assertIn(cue, prompt)
+                self.assertLess(len(prompt.split()), 65)
 
     def test_current_compact_revisions_use_their_directions_and_edits_expire_them(self):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
