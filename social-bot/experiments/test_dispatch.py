@@ -36,7 +36,7 @@ class ExperimentsTests(unittest.TestCase):
         with patch("publish.gql", return_value=receipt) as api:
             value=queue_one("secret","X-ID",{"kind":"text","text":"original joke"})
             self.assertEqual(value,"buf-123")
-            self.assertIn("post { id dueAt }",api.call_args.args[1])
+            self.assertIn("post { id dueAt status sentAt externalLink sharedNow shareMode }",api.call_args.args[1])
         with patch("publish.gql", return_value=receipt):
             obj=queue_one("secret","X-ID",
                           {"kind":"text","text":"another original joke"},
