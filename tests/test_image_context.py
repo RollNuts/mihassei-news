@@ -20,6 +20,7 @@ class ImageContextTests(unittest.TestCase):
 
     def test_image_alt_is_specific_without_pretending_to_know_rendered_pixels(self):
         descriptions = set()
+        non_photo_count = 0
         for article in self.articles:
             generated = build.reviewed_generated_scene(article, root=build.BASE)
             photo_ok = not generated and build.uses_stock_photo(article)
@@ -49,6 +50,7 @@ class ImageContextTests(unittest.TestCase):
                 expected_source = "/images/" + article["slug"] + ".svg"
             self.assertIn('src="' + expected_source + '"', tag)
             if not photo_ok:
+                non_photo_count += 1
                 self.assertNotIn("記事の題材を表現した創作イラスト", expected)
                 descriptions.add(expected)
             if generated or photo_ok:
@@ -60,7 +62,7 @@ class ImageContextTests(unittest.TestCase):
                 )
             else:
                 self.assertNotIn('data-fallback=', tag)
-        self.assertGreaterEqual(len(descriptions), len(self.articles)-1)
+        self.assertGreaterEqual(len(descriptions), non_photo_count-1)
 
     def test_story_hero_prioritized_and_social_alt_describes_selected_asset(self):
         for article in self.articles:
