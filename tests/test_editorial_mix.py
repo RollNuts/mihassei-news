@@ -107,6 +107,25 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
+    def test_official_source_kind_requires_matching_official_host(self):
+        google = story("google-host", "trend")
+        google["trend_observation"]["url"] = "https://example.com/trending"
+        errors, _ = validate_articles([google])
+        self.assertTrue(any("trends.google.com" in error for error in errors))
+
+        x_item = story("x-host", "trend", term="別の話題")
+        x_item["trend_observation"]["source_kind"] = "x_official"
+        x_item["trend_observation"]["url"] = "https://trend.example.com/x"
+        errors, _ = validate_articles([x_item])
+        self.assertTrue(any("x.com or twitter.com" in error for error in errors))
+
+    def test_official_x_host_is_accepted(self):
+        item = story("x-official", "trend")
+        item["trend_observation"]["source_kind"] = "x_official"
+        item["trend_observation"]["url"] = "https://x.com/explore/tabs/trending"
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_public_x_aggregator_is_allowed_but_warned(self):
         item = story("x-public", "trend")
         item["trend_observation"]["source_kind"] = "x_public_aggregator"
