@@ -140,7 +140,10 @@ def _publication_row(article: dict, *, root: Path) -> dict:
     # Match build.editorial_image() and uses_stock_photo() priority, using the
     # same validators. Importing build here would create a publication-gate cycle.
     kind, url = "generic_fallback", "/images/" + article["slug"] + ".svg"
-    if row["status"] == "accepted":
+    if strategy == "illustration":
+        if scene["status"] == "current":
+            kind = "editorial_svg"
+    elif row["status"] == "accepted":
         kind, url = "generated_jpeg", generated_url(article)
     elif scene["status"] == "current":
         kind = "editorial_svg"
@@ -158,7 +161,7 @@ def _attention(row: dict) -> list[dict]:
             row["editorial_scene"]["status"] + "_editorial_scene",
             "現在の本文と専用SVGを実物で再確認し、必要なら修正する。指紋だけで承認しない。",
         ))
-    if row["status"] == "pending":
+    if row["status"] == "pending" and row.get("visual_strategy") != "illustration":
         work.append(("pending_jpeg", "現在のJPEGを本文と目視照合し、採否を記録する。"))
     if row["publication"]["kind"] == "generic_fallback" and not work:
         if row.get("visual_strategy") == "illustration":
