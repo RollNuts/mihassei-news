@@ -32,6 +32,7 @@ class ExperimentsTests(unittest.TestCase):
         # New Buffer field does not break legacy article / comic callers.
         from publish import queue_one
         receipt={"createPost":{"post":{"id":"buf-123",
+                   "createdAt":"2026-11-04T09:29:58Z",
                    "dueAt":"2026-11-04T09:30:00Z",
                    "status":"sent","sentAt":"2026-11-04T09:30:03Z",
                    "externalLink":"https://x.com/veripsa/status/123",
@@ -39,12 +40,13 @@ class ExperimentsTests(unittest.TestCase):
         with patch("publish.gql", return_value=receipt) as api:
             value=queue_one("secret","X-ID",{"kind":"text","text":"original joke"})
             self.assertEqual(value,"buf-123")
-            self.assertIn("post { id dueAt status sentAt externalLink sharedNow shareMode }",api.call_args.args[1])
+            self.assertIn("post { id createdAt dueAt status sentAt externalLink sharedNow shareMode }",api.call_args.args[1])
         with patch("publish.gql", return_value=receipt):
             obj=queue_one("secret","X-ID",
                           {"kind":"text","text":"another original joke"},
                           return_post=True)
         self.assertEqual(obj["id"],"buf-123")
+        self.assertEqual(obj["createdAt"],"2026-11-04T09:29:58Z")
         self.assertEqual(obj["dueAt"],"2026-11-04T09:30:00Z")
         self.assertEqual(obj["status"],"sent")
         self.assertEqual(obj["sentAt"],"2026-11-04T09:30:03Z")
@@ -472,6 +474,7 @@ class ExperimentsTests(unittest.TestCase):
         )
         self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
         self.assertIn("startDate:", api.call_args_list[0].args[1])
+        self.assertIn("createdAt", api.call_args_list[0].args[1])
         self.assertNotIn("dueAt: {start:", api.call_args_list[0].args[1])
         self.assertIn(
             "status: [draft, error, needs_approval, sending]",
