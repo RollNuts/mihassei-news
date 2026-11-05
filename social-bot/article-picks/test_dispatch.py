@@ -693,21 +693,32 @@ class ArticlePickTests(unittest.TestCase):
                                   remote, CONFIG, NOW)
         self.assertIsNone(item)
 
-    def test_shared_seven_post_cap_blocks_article_lane(self):
+    def test_unrelated_x_posts_do_not_consume_article_logical_slots(self):
         fresh = article("fresh-cap", age_hours=4)
-        six = [
-            {"id": f"sent-{i}", "status": "sent", "text": f"post {i}",
-             "sentAt": f"2026-11-05T0{i}:00:00+09:00"}
-            for i in range(6)
+        seven_other_posts = [
+            {"id": f"legacy-{i}", "status": "sent", "text": f"retired post {i}",
+             "sentAt": f"2026-11-05T{9 + i:02d}:00:00+09:00"}
+            for i in range(7)
         ]
-        selected, _, _ = picks.decide([fresh], {}, ledger(), six, CONFIG, NOW)
+        selected, _, _ = picks.decide(
+            [fresh], {}, ledger(), seven_other_posts, CONFIG, NOW
+        )
         self.assertEqual(selected["slug"], "fresh-cap")
-        seven = six + [{
-            "id": "sent-6", "status": "sent", "text": "post 6",
-            "sentAt": "2026-11-05T10:00:00+09:00",
-        }]
-        self.assertEqual(picks.x_posts_today(seven, NOW), 7)
-        selected, _, _ = picks.decide([fresh], {}, ledger(), seven, CONFIG, NOW)
+
+        # The article lane itself is still capped at its seven logical slots.
+        same_day = {
+            f"article-{i}": {
+                "buffer_id": f"article-buf-{i}",
+                "queued_at_utc": datetime.fromisoformat(
+                    f"2026-11-05T{hour:02d}:20:00+09:00"
+                ).isoformat(),
+                "slot_jst": f"2026-11-05T{hour:02d}:05:00+09:00",
+            }
+            for i, hour in enumerate(picks.PROMOTION_SLOT_HOURS)
+        }
+        selected, _, _ = picks.decide(
+            [fresh], {}, ledger(**same_day), seven_other_posts, CONFIG, NOW
+        )
         self.assertIsNone(selected)
 
     def test_third_article_no_longer_requires_a_creative_reservation(self):
