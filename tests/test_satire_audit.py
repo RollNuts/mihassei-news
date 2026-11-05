@@ -157,7 +157,7 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("TOPIC_FRAGMENTATION", labels)
         brief = "\n".join(next_slot_brief(articles))
         self.assertIn("タグが分散気味", brief)
-        self.assertIn("無関係", brief)
+        self.assertIn("題材や本文を曲げず", brief)
         self.assertEqual(articles, original)
 
     def test_many_different_stories_remain_fully_publishable(self):
