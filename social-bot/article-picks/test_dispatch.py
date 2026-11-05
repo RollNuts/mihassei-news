@@ -682,9 +682,12 @@ class ArticlePickTests(unittest.TestCase):
         same_day = {
             f"story-{i}": {
                 "buffer_id": f"buf-{i}",
-                "queued_at_utc": (NOW - timedelta(hours=3 + i)).isoformat(),
+                "queued_at_utc": datetime.fromisoformat(
+                    f"2026-11-05T{hour:02d}:30:00+09:00"
+                ).isoformat(),
+                "slot_jst": f"2026-11-05T{hour:02d}:05:00+09:00",
             }
-            for i in range(7)
+            for i, hour in enumerate(picks.PROMOTION_SLOT_HOURS)
         }
         self.assertEqual(picks.promotions_today(ledger(**same_day), NOW), 7)
         item, _, _ = picks.decide([a], counts, ledger(**same_day),
