@@ -145,6 +145,18 @@ def recent_articles(articles: list[dict]) -> list[dict]:
     )[:MAX_ARTICLES]
 
 
+def article_editorial_metadata(article: dict) -> tuple[str | None, str | None]:
+    """Preserve explicit lane/tone as observed; pre-rollout stories remain null."""
+    lane = article.get("editorial_lane")
+    tone = article.get("editorial_tone")
+    if lane is None and tone is None:
+        return None, None
+    if (not isinstance(lane, str) or not lane.strip()
+            or not isinstance(tone, str) or not tone.strip()):
+        raise ValueError("Partial or invalid editorial lane/tone metadata: " + article["slug"])
+    return lane, tone
+
+
 def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, dict | None]:
     if not slugs:
         raise ValueError("No published article slugs available")
@@ -256,6 +268,14 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         raise ValueError("No trustworthy completed-day audience totals")
     recent = recent_articles(articles)
     published_on_day = [a for a in articles if real_published_date(a) == day]
+    editorial_pairs = [
+        article_editorial_metadata(article)
+        for article in published_on_day
+    ]
+    tracked_editorial = [
+        (lane, tone) for lane, tone in editorial_pairs
+        if lane is not None and tone is not None
+    ]
     for a in recent:
         if a["slug"] not in counts:
             raise ValueError("Missing read-only count: " + a["slug"])
@@ -314,12 +334,26 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "articles_published_total": len(articles),
         "articles_published_on_date": len(published_on_day),
         "published_categories": dict(sorted(Counter(a["category"] for a in published_on_day).items())),
+        "published_editorial_metadata_tracked": len(tracked_editorial),
+        "published_editorial_lanes": dict(sorted(Counter(
+            lane for lane, _ in tracked_editorial
+        ).items())),
+        "published_editorial_tones": dict(sorted(Counter(
+            tone for _, tone in tracked_editorial
+        ).items())),
+        "editorial_metadata_note": (
+            "editorial_lane and editorial_tone are copied from article metadata at "
+            "capture time. Pre-rollout stories remain null and are not backfilled. "
+            "Counts describe published articles, not traffic or quality scores."
+        ),
         "recent_articles_sampled": len(recent),
         "recent_articles": [
             {
                 "slug": a["slug"],
                 "category": a["category"],
                 "published_at": a.get("published_at"),
+                "editorial_lane": article_editorial_metadata(a)[0],
+                "editorial_tone": article_editorial_metadata(a)[1],
                 **counts[a["slug"]],
             }
             for a in recent
@@ -373,10 +407,43 @@ def validate_snapshot(data: dict, day: str) -> None:
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError("Seven-date page-view capture time is missing or invalid") from exc
         validate_page_view_window(window, data["page_views_started_at_utc"], captured_at)
+    editorial_keys = (
+        "published_editorial_metadata_tracked",
+        "published_editorial_lanes",
+        "published_editorial_tones",
+        "editorial_metadata_note",
+    )
+    if any(key in data for key in editorial_keys):
+        if not all(key in data for key in editorial_keys):
+            raise ValueError("Editorial metadata snapshot fields are incomplete")
+        tracked = data["published_editorial_metadata_tracked"]
+        if (not valid_count(tracked)
+                or tracked > data["articles_published_on_date"]
+                or not isinstance(data["published_editorial_lanes"], dict)
+                or not isinstance(data["published_editorial_tones"], dict)
+                or not isinstance(data["editorial_metadata_note"], str)
+                or not data["editorial_metadata_note"].strip()):
+            raise ValueError("Editorial metadata snapshot summary is invalid")
+        for label, counts in (
+            ("lane", data["published_editorial_lanes"]),
+            ("tone", data["published_editorial_tones"]),
+        ):
+            if (any(not isinstance(key, str) or not key.strip() or not valid_count(value)
+                    for key, value in counts.items())
+                    or sum(counts.values()) != tracked):
+                raise ValueError("Editorial " + label + " counts are invalid")
     for item in data.get("recent_articles", []):
         for key in ("page_views_cumulative", "page_views_last_7_days"):
             if key in item and item[key] is not None and not valid_count(item[key]):
                 raise ValueError("Invalid per-article page views in snapshot: " + key)
+        if "editorial_lane" in item or "editorial_tone" in item:
+            lane, tone = item.get("editorial_lane"), item.get("editorial_tone")
+            if (lane is None) != (tone is None):
+                raise ValueError("Recent article editorial lane/tone is partial")
+            if lane is not None and (
+                    not isinstance(lane, str) or not lane.strip()
+                    or not isinstance(tone, str) or not tone.strip()):
+                raise ValueError("Recent article editorial lane/tone is invalid")
 
 
 def main() -> None:
