@@ -166,7 +166,7 @@ def audit(dist: Path = DIST) -> dict:
             except ValueError:
                 errors.append("Invalid <lastmod>: " + url + " " + lastmod)
 
-    for path in ("/", "/archive/", "/issues/", "/serials/"):
+    for path in ("/", "/archive/", "/topics/", "/issues/", "/serials/"):
         if path not in routes:
             errors.append("Missing primary discovery route: " + path)
 
