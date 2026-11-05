@@ -35,6 +35,14 @@
       "text_sha256": "6da8ff027a63500fb4d162345d24bce3e823b3d7ee9dadc85c307e6446fe6f38",
       "published_at": "2026-11-05T07:39:52+09:00",
       "primary_topic": "tag:ai"
+    },
+    "basketball-opening-day-game-seven": {
+      "buffer_id": "6aec06987877e0eab274f125",
+      "queued_at_utc": "2026-11-05T04:31:20.031929+00:00",
+      "source": "fresh_article",
+      "text_sha256": "d845be0cf4b6659e410d0080dc60c45d3c9a92ea732cbeba670ff3d8db9ca161",
+      "published_at": "2026-11-05T11:32:54+09:00",
+      "primary_topic": "tag:スポーツ観戦"
     }
   }
 }
