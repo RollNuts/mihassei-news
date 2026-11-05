@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RECENT_LIMIT = 20
 CLUSTER_LIMIT = 10
 SIMILARITY_THRESHOLD = 0.68
-SIGNATURE_SIMILARITY_THRESHOLD = 0.62
+SIGNATURE_SIMILARITY_THRESHOLD = 0.45
 
 # These patterns intentionally detect only clearly named mechanical premises.
 WORK_AI = re.compile(r"(?<![A-Za-z])AI(?![A-Za-z])|人工知能|ロボット|管理職|上司|稟議|研究所|役員|会議", re.I)
