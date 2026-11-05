@@ -480,6 +480,8 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("python3 scripts/visual_review.py", workflow)
         self.assertIn("Accepted generated JPEG", workflow)
         self.assertIn("Generic SVG fallback", workflow)
+        self.assertIn("Illustration-routed stories", workflow)
+        self.assertIn("CPU-photo stories", workflow)
         self.assertIn("JPEG awaiting visual review", workflow)
         self.assertIn("green CPU job may be intentionally idle", workflow)
         self.assertNotIn("All published articles already have valid local scenes.", workflow)
