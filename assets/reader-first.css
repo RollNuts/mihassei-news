@@ -563,3 +563,21 @@ details.source-context>summary:focus-visible{
   .story-followups li{display:block}
   .story-followups time{display:block;margin-top:3px}
 }
+
+
+/* Static topic-cluster links: useful without JavaScript and compact on article pages. */
+.article-related{margin:34px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+.article-related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+.article-related-heading h2{margin:4px 0 0;font-size:clamp(20px,2.2vw,27px)}
+.article-related-heading>a{font-size:12px;font-weight:800}
+.article-related-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.article-related-item{border:1px solid var(--line);padding:14px;min-width:0}
+.article-related-category{font-size:10px;color:var(--muted);font-weight:800}
+.article-related-item h3{font-size:15px;line-height:1.6;margin:5px 0 10px}
+.article-related-tags{display:flex;flex-wrap:wrap;gap:6px}
+.article-related-tags a{font-size:10px}
+@media(max-width:660px){
+  .article-related-list{grid-template-columns:1fr}
+  .article-related-heading{align-items:flex-start}
+  .article-related-item{padding:12px 13px}
+}
