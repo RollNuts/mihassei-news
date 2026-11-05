@@ -115,7 +115,7 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
             self.target, self.post, dict(self.post)))
         for patch, expected in (
             ({"status": "sent", "sentAt": "2026-11-05T09:30:00Z"}, "already_published"),
-            ({"status": "pending"}, "changed_before_delete"),
+            ({"status": "sending"}, "changed_before_delete"),
             ({"dueAt": "2026-11-05T09:30:00Z"}, "changed_before_delete"),
             ({"text": "edited"}, "text_changed"),
             ({"channelId": "unrelated"}, "channel_mismatch"),
