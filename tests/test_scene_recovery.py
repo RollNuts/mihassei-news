@@ -107,7 +107,7 @@ class SceneStorageTests(unittest.TestCase):
 
     def test_prompt_puts_photo_medium_before_early_article_action_and_varies_camera(self):
         a = {**article(), "scene_prompt":"A solemn actor carries an empty chair through a quiet hallway."}
-        self.assertTrue(photos.scene_prompt(a).startswith("Candid color photograph"))
+        self.assertTrue(photos.scene_prompt(a).startswith("Candid documentary press photograph"))
         self.assertLess(photos.scene_prompt(a).index(a["scene_prompt"]), 100)
         self.assertNotIn("sketch", photos.scene_prompt(a))
         directions = {photos.scene_prompt({**a,"slug":"story-"+str(i)}).split("16:9")[0] for i in range(16)}
