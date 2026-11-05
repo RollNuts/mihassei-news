@@ -441,6 +441,34 @@ class ExperimentsTests(unittest.TestCase):
         self.assertIn('after: "next-page"',gql.call_args_list[1].args[1])
         self.assertIn("dueAt: {start:",gql.call_args_list[0].args[1])
 
+    def test_buffer_unsettled_listing_is_opt_in_for_article_recovery(self):
+        from publish import list_existing
+        responses = [
+            {"posts":{"edges":[{"node":{"id":"sent-a","text":"記事A",
+                                         "status":"sent","sentAt":"2026-11-05T01:00:00Z"}}],
+                      "pageInfo":{"hasNextPage":False,"endCursor":None}}},
+            {"posts":{"edges":[
+                {"node":{"id":"pending-b","text":"記事B","status":"pending"}},
+                {"node":{"id":"failed-c","text":"記事C","status":"failed"}}
+            ],"pageInfo":{"hasNextPage":False,"endCursor":None}}},
+        ]
+        with patch("publish.gql", side_effect=responses) as api:
+            values = list_existing(
+                "token","org","channel",
+                include_due_at=True, include_unsettled=True,
+            )
+        self.assertEqual(
+            [row["id"] for row in values],
+            ["sent-a","pending-b","failed-c"],
+        )
+        self.assertIn("status: [scheduled, sent]", api.call_args_list[0].args[1])
+        self.assertIn("dueAt: {start:", api.call_args_list[0].args[1])
+        self.assertIn(
+            "status: [draft, pending, error, failed]",
+            api.call_args_list[1].args[1],
+        )
+        self.assertNotIn("dueAt: {start:", api.call_args_list[1].args[1])
+
     def test_buffer_missing_pagination_cursor_fails_closed(self):
         from publish import list_existing
         result={"posts":{"edges":[],"pageInfo":{"hasNextPage":True,
