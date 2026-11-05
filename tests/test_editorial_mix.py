@@ -45,6 +45,12 @@ def story(
     }
     if followup_of:
         item["followup_of"] = followup_of
+    if tone == "plausible_future":
+        item["plausibility_basis"] = {
+            "present_signal": f"{slug}で現在すでに確認できる行動が増えている",
+            "continuation_force": f"{slug}では効率化の圧力が今後も続く",
+            "future_result": f"{slug}で5年後にはその行動が日常の標準になる",
+        }
     if lane == "trend":
         item["trend_observation"] = {
             "source_kind": "google_trends",
@@ -118,6 +124,41 @@ class EditorialMixTests(unittest.TestCase):
         item.pop("editorial_tone")
         errors, _ = validate_articles([item])
         self.assertTrue(any("editorial_tone required" in error for error in errors))
+
+    def test_plausible_future_requires_an_explicit_causal_basis(self):
+        item = story("plausible", "social_life", tone="plausible_future")
+        item.pop("plausibility_basis")
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("requires plausibility_basis" in error for error in errors))
+
+    def test_plausible_future_rejects_a_placeholder_basis(self):
+        item = story("thin", "original_satire", tone="plausible_future")
+        item["plausibility_basis"]["continuation_force"] = "AI"
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("continuation_force" in error for error in errors))
+
+    def test_other_tones_do_not_need_plausibility_basis(self):
+        item = story("comic", "social_life", tone="comic_exaggeration")
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("plausibility_basis" in error for error in errors))
+
+    def test_tone_run_detection_crosses_midnight(self):
+        previous = story(
+            "previous",
+            "social_life",
+            tone="plausible_future",
+            published=datetime(2026, 11, 5, 23, 30, tzinfo=JST),
+        )
+        current = story(
+            "current",
+            "trend",
+            tone="plausible_future",
+            published=datetime(2026, 11, 6, 0, 30, tzinfo=JST),
+            term="深夜の話題",
+        )
+        advice = tone_advice([previous, current], "2026-11-06")
+        self.assertIn("last 2 tracked stories are plausible_future", advice)
+        self.assertIn("across midnight", advice)
 
     def test_next_lane_fills_largest_remaining_deficit(self):
         self.assertEqual(next_preferred_lane(Counter()), "trend")
