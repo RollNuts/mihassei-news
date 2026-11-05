@@ -292,6 +292,16 @@
       "seed": 1615501253303699901,
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
+      "bytes": 92862,
+      "generated_at": "2026-11-05T04:33:40.610401+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 4846405115373740905,
+      "sha256": "aebfdad46b1eac690938c1ab6046931109ec67f92b18a675c9045669866d38a9"
+    },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
       "bytes": 82992,
