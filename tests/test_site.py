@@ -599,7 +599,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(actual_tag,markup)
             self.assertIn(fictional_tag,markup)
             self.assertIn("公開 ",markup)
-            self.assertIn("架空 ",markup)
+            self.assertIn("紙面 ",markup)
             compact_markup=category_meta(article, compact=True)
             self.assertIn('class="story-meta story-meta--compact"',compact_markup)
             self.assertIn(actual_tag,compact_markup)
