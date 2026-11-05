@@ -279,6 +279,24 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertIn("visual_strategy", output.getvalue())
 
+    def test_illustration_strategy_overrides_an_accepted_jpeg_in_report_and_build(self):
+        from scripts import build
+
+        self.accept()
+        illustration = {**self.article, "visual_strategy": "illustration"}
+        self.write_editorial_scene(illustration)
+        result = self.report([illustration])
+        row = result["images"][0]
+        self.assertEqual(row["status"], "accepted")
+        self.assertEqual(row["visual_strategy"], "illustration")
+        self.assertEqual(row["publication"]["kind"], "editorial_svg")
+        self.assertEqual(result["strategy_counts"], {"cpu-photo": 0, "illustration": 1})
+        with patch.object(build, "BASE", self.root):
+            self.assertFalse(build.uses_generated_scene(illustration))
+            self.assertEqual(build.editorial_image(illustration),
+                             "/images/" + illustration["slug"] + ".svg")
+            self.assertEqual(build.photo_credit(illustration), "創作イラスト")
+
     def test_article_edit_reports_lost_editorial_scene_without_reapproving_it(self):
         path = self.write_editorial_scene(self.article)
         original_svg = path.read_bytes()
