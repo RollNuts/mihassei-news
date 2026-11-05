@@ -102,8 +102,10 @@ def list_existing(token, orgid, channelid, include_due_at=False,
                   include_unsettled=False):
     """Read recent sent/scheduled posts and, when requested, unsettled posts.
 
-    Normal callers keep the bounded recent scheduled/sent window. The article
-    lane can additionally inspect draft/error/needs_approval/sending entries so a
+    Normal callers keep the bounded recent scheduled/sent window, using
+    Buffer startDate (createdAt OR dueAt) so shareNow sent posts with no dueAt
+    remain recoverable. The article lane can additionally inspect
+    draft/error/needs_approval/sending entries so a
     Buffer-accepted post cannot be duplicated merely because the Git receipt
     failed to persist before the next run.
     """
@@ -142,7 +144,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
 
     recent = collect(
         "scheduled, sent",
-        ", dueAt: {start: " + qstring(since) + "}",
+        ", startDate: " + qstring(since),
         pages=30,
     )
     if not include_unsettled:
