@@ -40,7 +40,8 @@ class EditorialPositioningTests(unittest.TestCase):
         from scripts.build import story
         items = load()
         page = story(items[0], items)
-        self.assertIn('class="story-fiction-context"', page)
+        self.assertIn('class="fiction-mark">創作報道', page)
+        self.assertNotIn('class="story-fiction-context"', page)
         self.assertNotIn('href="#story-source"', page)
         self.assertIn('<summary>着想元を見る</summary>', page)
         self.assertIn('id="story-source"', page)
