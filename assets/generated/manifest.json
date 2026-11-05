@@ -418,6 +418,24 @@
     }
   },
   "rejected": {
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
+      "reason": "Visual review of actual JPEG from free CPU run 41981263116: the frame shows a busy shopping street with many ordinary pedestrians and one foreground man. The article requires ordinary extras and shoppers to be conspicuously absent while about twenty aspiring lead actors pose and the director alone supplies the background movement. The image reverses the central joke, so keep a safe illustration fallback until a genuinely different scene is reviewed.",
+      "rejected_candidate_sha256": "25769f1c47beb9027b5061bfa9236e759ef72e30ec33fa3c7458c41d15f37999",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41981263116"
+    },
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
+      "reason": "Visual review of actual JPEG from free CPU run 41968304038: two adults stand in a nearly empty Japanese room, but the framed long receipt, highlighted discount section, unopened appliance boxes, shopping bags, and puzzled child are absent. The visual cannot convey the spend-more-to-save joke, so reject this JPEG and retain the safe illustration fallback.",
+      "rejected_candidate_sha256": "aebfdad46b1eac690938c1ab6046931109ec67f92b18a675c9045669866d38a9",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41968304038"
+    },
+    "office-face-to-face-day-video-call-echo": {
+      "article_sha256": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
+      "reason": "Visual review of actual JPEG from free CPU run 41995427704: the image shows an empty open-plan office, but the foreground monitor does not visibly show a grid of coworkers in separate meeting booths and no people-on-screen paradox is readable. The story depends on everyone coming to the same office yet meeting only through screens, so reject this JPEG and keep the safe illustration fallback.",
+      "rejected_candidate_sha256": "6e7886e28a46e28ba3b7066fa319d1c2ce23a21c91c63bd947d1fdb6666a0100",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41995427704"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
