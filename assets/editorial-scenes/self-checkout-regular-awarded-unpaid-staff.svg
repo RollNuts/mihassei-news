@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="セルフレジの常連男性が牛乳一本を持ちながら隣客のスキャンを手伝い、同じ男性の顔が月間優秀スタッフの表彰額に飾られている創作イラスト" data-visual-topic="document" data-article-sha256="dfe99daecdb1e7bdf8889502824ef6b1f2ded054a45a1137ed4a3cb11490aab3">
+<title>セルフレジの無給スタッフ、買い物客なのに店内で表彰</title>
+<desc>黄土色の服の男性が牛乳一本を持って別の客の会計を手伝う。背後の壁には同じ眼鏡の男性の肖像と金のリボンを掲げた表彰額。男性自身のレジには牛乳一本だけが残る。</desc>
+<defs>
+  <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#ecf6eb"/><stop offset="1" stop-color="#c9e4de"/></linearGradient>
+  <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#d9d7c7"/><stop offset="1" stop-color="#a7aeae"/></linearGradient>
+  <linearGradient id="screen" x2="0" y2="1"><stop stop-color="#9be7c6"/><stop offset="1" stop-color="#32897d"/></linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#294f47" flood-opacity=".18"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<rect width="1200" height="134" fill="#bad5ce"/>
+<path d="M0 130h1200" stroke="#7b9f99" stroke-width="7"/>
+<g stroke="#567e70" stroke-width="7" stroke-linejoin="round">
+<rect x="22" y="163" width="296" height="263" rx="8" fill="#c7dbca"/>
+<path d="M26 256h287M26 340h287"/>
+</g>
+<g>
+<g fill="#d4694c"><rect x="46" y="202" width="44" height="44" rx="6"/><rect x="125" y="202" width="42" height="44" rx="6"/><rect x="212" y="202" width="45" height="44" rx="6"/></g>
+<g fill="#efb95f"><rect x="51" y="284" width="58" height="45" rx="5"/><rect x="148" y="284" width="40" height="45" rx="5"/><rect x="242" y="284" width="40" height="45" rx="5"/></g>
+<g fill="#6aa7a0"><rect x="49" y="363" width="40" height="48" rx="5"/><rect x="112" y="365" width="50" height="45" rx="5"/><rect x="218" y="365" width="45" height="45" rx="5"/></g>
+</g>
+<rect x="0" y="421" width="1200" height="254" fill="url(#floor)"/>
+<path d="M0 421h1200" stroke="#87a39e" stroke-width="10"/>
+<!-- The award depicts the same glasses and sweater as the unpaid shopper. -->
+<g filter="url(#shadow)" stroke-linejoin="round">
+<rect x="647" y="74" width="292" height="275" rx="9" fill="#f4bd59" stroke="#7a633d" stroke-width="12"/>
+<rect x="662" y="89" width="262" height="246" rx="4" fill="#fff7df" stroke="#d5ad62" stroke-width="5"/>
+<ellipse cx="786" cy="203" rx="60" ry="63" fill="#a8dbd3"/>
+<path d="M724 249q61-45 124 0v47H724z" fill="#d2a34e"/>
+<ellipse cx="786" cy="193" rx="37" ry="43" fill="#e8b28c"/>
+<path d="M750 187q-1-42 36-42 39 0 38 43-19-12-35-18-16 12-39 17z" fill="#394650"/>
+<g fill="none" stroke="#293d45" stroke-width="6"><circle cx="771" cy="193" r="13"/><circle cx="802" cy="193" r="13"/><path d="M784 193h5m-33-5-10-5m73 5 10-5"/></g>
+<path d="M778 217q9 6 18 0" stroke="#8a6658" stroke-width="4" fill="none"/>
+<path d="M697 309h175" stroke="#b8a37e" stroke-width="8" stroke-linecap="round"/>
+<path d="M730 321h110" stroke="#d2c1a3" stroke-width="5" stroke-linecap="round"/>
+<circle cx="885" cy="103" r="26" fill="#e1a63e" stroke="#a56b29" stroke-width="6"/>
+<path d="m872 123-15 55 29-13 27 13-16-55" fill="#ce765a" stroke="#9c5944" stroke-width="4"/>
+<path d="m884 89 6 9 11 3-8 8 1 11-10-5-10 5 2-11-9-8 12-3z" fill="#fff2ae" stroke="none"/>
+</g>
+<g filter="url(#shadow)" stroke="#304b4c" stroke-width="7" stroke-linejoin="round">
+<path d="M330 459h290l-28 142H366z" fill="#548a8c"/>
+<path d="M378 596h180v61H378z" fill="#416c6f"/>
+<rect x="383" y="298" width="175" height="175" rx="13" fill="#34585e"/>
+<rect x="401" y="316" width="140" height="124" rx="6" fill="url(#screen)" stroke="none"/>
+<path d="M419 351h105M419 377h78M419 401h54" stroke="#e4fbef" stroke-width="8" stroke-linecap="round" fill="none"/>
+<rect x="449" y="474" width="108" height="18" rx="4" fill="#263f47"/>
+</g>
+<g filter="url(#shadow)" stroke="#304b4c" stroke-width="7" stroke-linejoin="round">
+<path d="M941 445h258v155H953z" fill="#709da0"/>
+<rect x="981" y="297" width="157" height="151" rx="12" fill="#3b6870"/>
+<rect x="995" y="313" width="128" height="109" rx="6" fill="#a5dccc" stroke="none"/>
+<path d="M1010 347h98M1010 373h67" fill="none" stroke="#effff1" stroke-width="7" stroke-linecap="round"/>
+<rect x="1007" y="450" width="102" height="22" rx="5" fill="#254950"/>
+</g>
+<g stroke="#344753" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+<path d="M1125 450q-12-103-94-115l-58 12-23 103z" fill="#a978a6"/>
+<ellipse cx="1050" cy="285" rx="56" ry="61" fill="#efbd9e"/>
+<path d="M999 274q-11-65 55-65 62 0 60 61l-42-29-36 22-37 11" fill="#4b404f"/>
+<path d="M1027 293h10m45 0h10" stroke-width="5"/>
+<path d="M1043 318q14 12 28 0" fill="none" stroke="#a76c62" stroke-width="4"/>
+<path d="M996 366l-63 30 9 26 69-17" fill="#a978a6"/>
+<path d="M931 395q-14 2-14 15 0 18 20 17l17-7-11-30" fill="#efbd9e"/>
+</g>
+<g stroke="#354752" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" filter="url(#shadow)">
+<path d="M597 580l-14 74h-71l12-88m104 14 25 74h72l-34-99" fill="#455763"/>
+<path d="M526 555q5-90 20-164 17-51 83-50 64 1 89 54l22 157z" fill="#d2a34e"/>
+<ellipse cx="633" cy="304" rx="58" ry="65" fill="#e5b18d"/>
+<path d="M580 293q-8-65 53-66 62 3 59 67l-47-37-65 36" fill="#344751"/>
+<g fill="none" stroke="#293b45" stroke-width="7"><circle cx="609" cy="304" r="18"/><circle cx="650" cy="304" r="18"/><path d="M627 304h5m-42-4-11-4m89 4 11-4"/></g>
+<path d="M612 332q20 8 37-1" fill="none" stroke="#a2705e" stroke-width="4"/>
+<path d="M550 392q-40 27-51 71l35 22 69-74" fill="#d2a34e"/>
+<path d="M704 401q53-15 90-37l40 26-112 66" fill="#d2a34e"/>
+<path d="M821 369q16-3 22 13 9 17-9 25l-22-12" fill="#e5b18d"/>
+<path d="M519 472q-14 13-6 31 10 16 27 5l15-23" fill="#e5b18d"/>
+</g>
+<g stroke="#2e5873" stroke-width="6" stroke-linejoin="round" filter="url(#shadow)">
+<path d="M440 455l33-24h63l20 31v110H440z" fill="#f8faf1"/>
+<path d="M440 455h116l-27-27h-61z" fill="#c9e9f1"/>
+<path d="M473 431v139" stroke="#9cc9d6"/>
+<path d="M481 491h50v43h-50z" fill="#72c8e1" stroke="none"/>
+<path d="M491 504q16-18 28 0" stroke="#efffff" stroke-width="5" fill="none"/>
+</g>
+<path d="M890 339q62 37 57 67" stroke="#d59f4d" stroke-width="10" stroke-dasharray="12 18" fill="none" opacity=".6"/>
+</svg>
