@@ -332,6 +332,16 @@
       "seed": 227822134817257212,
       "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
     },
+    "sns-quit-support-site-hundred-day-login-award": {
+      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "bytes": 89973,
+      "generated_at": "2026-11-05T10:38:36.527560+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 2154012484535384189,
+      "sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
+    },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
       "bytes": 123162,
@@ -418,18 +428,6 @@
     }
   },
   "rejected": {
-    "film-village-all-stars-no-extras": {
-      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "reason": "Visual review of negative-guided CPU retry 42000558053: background people were reduced but several pedestrians still remain, while the director, shopping bags and tripod-camera action are not clearly depicted. The no-extras joke is still not readable enough, so hold the JPEG and keep the safe fallback instead of spending repeated CPU retries.",
-      "rejected_candidate_sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
-    },
-    "sale-discount-savings-receipt-framed": {
-      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
-      "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
-      "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
@@ -466,6 +464,12 @@
       "reason": "Visual review: one hybrid-looking animal replaces the cow and donkey whose relationship is the central subject. Use the article-specific illustration until two recognizably distinct animals are reviewed.",
       "rejected_candidate_sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "reason": "Visual review of negative-guided CPU retry 42000558053: background people were reduced but several pedestrians still remain, while the director, shopping bags and tripod-camera action are not clearly depicted. The no-extras joke is still not readable enough, so hold the JPEG and keep the safe fallback instead of spending repeated CPU retries.",
+      "rejected_candidate_sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+    },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
       "reason": "Visual review: the notebook page has no large see-through hole; the prominent hole belongs to a separate pink ring on the desk. Keep the current story-specific notebook illustration instead of publishing this mismatched JPEG.",
@@ -481,6 +485,12 @@
       "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
       "reason": "Visual review: humans, including masked figures, queue behind a single robot instead of robots waiting for one charging point. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
+    },
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+      "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
+      "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
