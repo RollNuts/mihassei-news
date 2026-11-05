@@ -1,9 +1,21 @@
 """Offline tests for the free Google Trends RSS parser."""
 from __future__ import annotations
 
+import contextlib
+import io
+import sys
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
-from scripts.trend_brief import build_snapshot, parse_google_trends
+from scripts.trend_brief import (
+    MAX_RSS_BYTES,
+    build_snapshot,
+    fetch_bytes,
+    main,
+    parse_google_trends,
+)
 
 
 RSS = """<?xml version="1.0" encoding="UTF-8"?>
@@ -44,6 +56,39 @@ class TrendBriefTests(unittest.TestCase):
         self.assertEqual(snapshot["source"]["source_kind"], "google_trends")
         self.assertEqual(snapshot["source"]["cost"], "free")
         self.assertIn("Verify the underlying event", snapshot["source"]["note"])
+
+    def test_empty_feed_is_not_reported_as_a_successful_snapshot(self):
+        with self.assertRaisesRegex(ValueError, "no usable trend items"):
+            build_snapshot(b"<rss><channel></channel></rss>")
+
+    def test_fetch_refuses_an_unbounded_rss_payload(self):
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self, size):
+                self.read_size = size
+                return b"x" * (MAX_RSS_BYTES + 1)
+
+        response = Response()
+        with patch("scripts.trend_brief.urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(ValueError, "2 MiB"):
+                fetch_bytes("https://trends.google.com/trending/rss?geo=JP")
+        self.assertEqual(response.read_size, MAX_RSS_BYTES + 1)
+
+    def test_cli_returns_clean_nonzero_for_bad_xml(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "bad.xml"
+            path.write_text("<rss><broken>", encoding="utf-8")
+            error = io.StringIO()
+            with patch.object(sys, "argv", ["trend_brief.py", "--input", str(path)]), \
+                 contextlib.redirect_stderr(error):
+                self.assertEqual(main(), 1)
+        self.assertIn("Trend snapshot unavailable", error.getvalue())
+
 
 
 if __name__ == "__main__":
