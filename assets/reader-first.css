@@ -152,7 +152,7 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .source-context{border:1px solid var(--line);background:#f5f3ed;border-radius:4px}
 .source-context h2{font-size:18px}
 .source-context-disclaimer{font-size:11px}
-.article-related{margin-top:55px}
+.topic-related{margin-top:55px}
 .footer{padding:31px 0 18px}
 .footer-brand{font-size:27px}
 .footer-copy{font-size:11px}
@@ -566,18 +566,18 @@ details.source-context>summary:focus-visible{
 
 
 /* Static topic-cluster links: useful without JavaScript and compact on article pages. */
-.article-related{margin:34px 0 0;padding-top:24px;border-top:1px solid var(--line)}
-.article-related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
-.article-related-heading h2{margin:4px 0 0;font-size:clamp(20px,2.2vw,27px)}
-.article-related-heading>a{font-size:12px;font-weight:800}
-.article-related-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.article-related-item{border:1px solid var(--line);padding:14px;min-width:0}
-.article-related-category{font-size:10px;color:var(--muted);font-weight:800}
-.article-related-item h3{font-size:15px;line-height:1.6;margin:5px 0 10px}
-.article-related-tags{display:flex;flex-wrap:wrap;gap:6px}
-.article-related-tags a{font-size:10px}
+.topic-related{margin:34px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+.topic-related-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+.topic-related-heading h2{margin:4px 0 0;font-size:clamp(20px,2.2vw,27px)}
+.topic-related-heading>a{font-size:12px;font-weight:800}
+.topic-related-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.topic-related-item{border:1px solid var(--line);padding:14px;min-width:0}
+.topic-related-category{font-size:10px;color:var(--muted);font-weight:800}
+.topic-related-item h3{font-size:15px;line-height:1.6;margin:5px 0 10px}
+.topic-related-tags{display:flex;flex-wrap:wrap;gap:6px}
+.topic-related-tags a{font-size:10px}
 @media(max-width:660px){
-  .article-related-list{grid-template-columns:1fr}
-  .article-related-heading{align-items:flex-start}
-  .article-related-item{padding:12px 13px}
+  .topic-related-list{grid-template-columns:1fr}
+  .topic-related-heading{align-items:flex-start}
+  .topic-related-item{padding:12px 13px}
 }
