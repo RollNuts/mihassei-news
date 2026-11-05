@@ -35,7 +35,7 @@ permissions:
   contents: read
 # Parallel article/photo pushes cannot publish clips in parallel.
 concurrency:
-  group: free-motion-clips-${{ github.ref }}
+  group: free-motion-clips-v2-${{ github.ref }}
   # PR head updates supersede their own validation run. Main/scheduled publication
   # stays serialized so a newer push never interrupts a clip write in progress.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
