@@ -174,10 +174,15 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
             and post_id.startswith("xexp-")
             and post_id.replace("-", "").isalnum()
         )
+        article_slug = post_id.removeprefix("article-") if post_id.startswith("article-") else ""
         article_text = (
             post.get("kind") == "article"
-            and post_id.startswith("article-")
-            and post_id.replace("-", "").isalnum()
+            and bool(article_slug)
+            and article_slug.replace("-", "").isalnum()
+            and (
+                "https://veripsa.com/articles/" + article_slug + "/"
+                in str(post.get("text", ""))
+            )
         )
         if not (original_image or article_text):
             raise ValueError(
