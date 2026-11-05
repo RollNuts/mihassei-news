@@ -584,10 +584,8 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(set(recovered), {"story-a", "story-b"})
         self.assertEqual(state["queued"]["story-a"]["buffer_id"], "remote-1")
         self.assertEqual(state["queued"]["story-b"]["buffer_id"], "remote-2")
-        self.assertEqual(
-            state["queued"]["story-a"]["slot_jst"],
-            "2026-11-05T11:05:00+09:00",
-        )
+        self.assertNotIn("slot_jst", state["queued"]["story-a"])
+        self.assertIsNone(state["queued"]["story-a"]["recovered_provider_time_utc"])
         self.assertEqual(picks.recover_from_buffer(state, existing, NOW, {"story-a", "story-b"}), [])
         self.assertEqual(picks.rank([a], {"story-a": stats()},
                                     state, set(), CONFIG), [])
@@ -818,7 +816,7 @@ class ArticlePickTests(unittest.TestCase):
                  patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
                  patch.object(picks, "read_page_view_metrics", return_value=({"new-story": stats()}, window)), \
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
-                 patch.object(picks, "list_existing", return_value=remote), \
+                 patch.object(picks, "list_existing", return_value=remote) as list_existing, \
                  patch.object(picks, "save_state") as save, \
                  patch.object(picks, "queue_one", return_value="article-confirmed") as queue:
                 clock.now.return_value = NOW
