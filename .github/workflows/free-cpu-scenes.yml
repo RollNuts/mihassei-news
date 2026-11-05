@@ -91,6 +91,7 @@ jobs:
           report = json.loads(Path(os.environ["IMAGE_HEALTH"]).read_text(encoding="utf-8"))
           counts = report["counts"]
           publication = report["publication_counts"]
+          strategies = report["strategy_counts"]
           attention = report["attention"]
           pending_review = counts.get("pending", 0)
           rejected = counts.get("rejected", 0)
@@ -102,6 +103,8 @@ jobs:
               out.write(f"- Reviewed editorial SVG: {publication.get('editorial_svg', 0)}\n")
               out.write(f"- Approved cached photo: {publication.get('stock_photo', 0)}\n")
               out.write(f"- Generic SVG fallback: {generic}\n")
+              out.write(f"- Illustration-routed stories: {strategies.get('illustration', 0)}\n")
+              out.write(f"- CPU-photo stories: {strategies.get('cpu-photo', 0)}\n")
               out.write(f"- JPEG awaiting visual review: {pending_review}\n")
               out.write(f"- JPEG held/rejected: {rejected}\n")
               out.write("\nA green CPU job may be intentionally idle; reader-visible coverage is reported separately from generation work.\n")
@@ -109,8 +112,15 @@ jobs:
                   out.write("\n#### Image attention queue\n")
                   for item in attention[:12]:
                       out.write(f"- `{item['slug']}`: {item['reason']}\n")
+              illustration_missing = sum(
+                  item.get("reason") == "illustration_strategy_without_reviewed_scene"
+                  for item in attention
+              )
               if generic:
-                  out.write("\n**Attention:** generic fallbacks remain. Keep publishing safely, but route these through image recovery instead of treating idle generation as completed image work.\n")
+                  if illustration_missing:
+                      out.write(f"\n**Attention:** {illustration_missing} illustration-routed story/stories still use a generic fallback; prepare a reviewed story-specific illustration instead of CPU retry.\n")
+                  else:
+                      out.write("\n**Attention:** generic fallbacks remain. Keep publishing safely, but route these through image recovery instead of treating idle generation as completed image work.\n")
               elif pending_review:
                   out.write("\n**Attention:** generated JPEGs exist but are not reader-visible until visual review is recorded.\n")
               else:
