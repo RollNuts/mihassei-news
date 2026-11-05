@@ -38,7 +38,7 @@ class MobileReadingFlowTests(unittest.TestCase):
         self.assertNotIn('class="article-edition"', header)
         self.assertLess(header.index('class="article-dateline"'), header.index('<h1>'))
         self.assertLess(header.index('<h1>'), header.index('class="dek"'))
-        self.assertIn('<strong>創作ニュース</strong>', header)
+        self.assertNotIn('class="story-fiction-context"', header)
         image = html.index('<figure class="article-hero-figure">')
         bookmark = html.index('<div class="article-save-inline">')
         body = html.index('<div class="article-body">')
