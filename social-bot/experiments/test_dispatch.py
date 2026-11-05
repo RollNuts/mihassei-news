@@ -32,7 +32,10 @@ class ExperimentsTests(unittest.TestCase):
         # New Buffer field does not break legacy article / comic callers.
         from publish import queue_one
         receipt={"createPost":{"post":{"id":"buf-123",
-                   "dueAt":"2026-11-04T09:30:00Z"}}}
+                   "dueAt":"2026-11-04T09:30:00Z",
+                   "status":"sent","sentAt":"2026-11-04T09:30:03Z",
+                   "externalLink":"https://x.com/veripsa/status/123",
+                   "sharedNow":True,"shareMode":"shareNow"}}}
         with patch("publish.gql", return_value=receipt) as api:
             value=queue_one("secret","X-ID",{"kind":"text","text":"original joke"})
             self.assertEqual(value,"buf-123")
@@ -43,6 +46,11 @@ class ExperimentsTests(unittest.TestCase):
                           return_post=True)
         self.assertEqual(obj["id"],"buf-123")
         self.assertEqual(obj["dueAt"],"2026-11-04T09:30:00Z")
+        self.assertEqual(obj["status"],"sent")
+        self.assertEqual(obj["sentAt"],"2026-11-04T09:30:03Z")
+        self.assertEqual(obj["externalLink"],"https://x.com/veripsa/status/123")
+        self.assertIs(obj["sharedNow"],True)
+        self.assertEqual(obj["shareMode"],"shareNow")
         with self.assertRaisesRegex(ValueError,"boolean"):
             queue_one("secret","X-ID",{"kind":"text","text":"test"},
                       return_post="yes")
