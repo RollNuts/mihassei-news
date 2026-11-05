@@ -108,7 +108,14 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertTrue(ending < next_story < poll < source)
         self.assertEqual(html.count('class="reader-next"'), 1)
         self.assertIn('<span class="reader-next-kicker">次の記事</span>', html)
-        self.assertIn('<span class="reader-next-meta">続けて読む · ', html)
+        self.assertRegex(
+            html,
+            r'<span class="reader-next-meta">(同じ話題|続けて読む) · ',
+        )
+        self.assertRegex(
+            html,
+            r'data-reader-next-mode="(related-topic|sequential|archive)"',
+        )
         target = re.search(r'<a href="([^"]+)" class="reader-next-title">', html)
         self.assertIsNotNone(target)
         self.assertNotEqual(target.group(1), '/articles/' + item["slug"] + '/')
