@@ -47,7 +47,7 @@ Xの自動送信は記事紹介だけ。日次独自稿、シュール短文、�
 - 同一slug、Bufferのscheduled/sent/draft/error/needs_approval/sendingに同じ正規URLがある記事は再送しない。Git台帳だけ欠けた場合はprovider証拠から復旧するが、その復旧時刻を現在の論理枠として扱わない。
 - 災害・戦争・武力衝突・テロ・大量死傷事故は自動対象外。
 - 記事側の先頭2タグを再利用し、X専用の流行語を足さない。定型の「創作」注記は毎回付けない。
-- Bufferの`shareNow`受付時に同じmutationから返る`status / sentAt / externalLink / sharedNow / shareMode`を初期provider証拠として保存し、後続監査のprovider状態、X実公開とは区別する。受付やproviderリンクだけで独立したX実公開確認と断定しない。旧scheduled記事は監査対象として残すが、新規記事紹介は通常キューへ積まない。
+- Bufferの`shareNow`受付時に同じmutationから返る`status / createdAt / sentAt / externalLink / sharedNow / shareMode`を初期provider証拠として保存し、後続監査のprovider状態、X実公開とは区別する。受付やproviderリンクだけで独立したX実公開確認と断定しない。旧scheduled記事は監査対象として残すが、新規記事紹介は通常キューへ積まない。
 - `useful-posts.json.enabled`、`experiments/config.json.experiment_publishing_enabled`、漫画の新規予約ゲートは停止状態を維持する。
 
 ## オフライン確認
