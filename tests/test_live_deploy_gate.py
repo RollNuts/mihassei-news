@@ -210,7 +210,10 @@ class PVRecommendationDeploymentTests(unittest.TestCase):
         variants = {
             "self link": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-29/"'),
             "skipped fallback": (fallback + panel).replace('href="/articles/story-28/"', 'href="/articles/story-0/"'),
-            "hidden fallback": (fallback + panel).replace("data-popular-fallback>", "data-popular-fallback hidden>"),
+            "hidden fallback": (fallback + panel).replace(
+                'data-reader-next-mode="sequential">',
+                'data-reader-next-mode="sequential" hidden>',
+            ),
             "misleading label": (fallback + panel).replace("次の記事", "一番人気"),
             "self candidate": fallback + pv_recommendations(self.articles),
             "missing fallback": panel,
