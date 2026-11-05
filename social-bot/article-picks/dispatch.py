@@ -683,7 +683,11 @@ def main() -> int:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return 0
     text = publication_text(eligible)
-    buffer_id = queue_one(token, channel_id, {"kind": "text", "text": text})
+    buffer_id = queue_one(
+        token, channel_id,
+        {"kind": "article", "id": "article-" + eligible["slug"], "text": text},
+        mode="shareNow",
+    )
     slot = promotion_slot(now)
     if slot is None:
         raise RuntimeError("No logical article promotion slot is active")
@@ -691,6 +695,7 @@ def main() -> int:
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
         "slot_jst": slot.isoformat(),
+        "submission_mode": "shareNow",
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
@@ -702,7 +707,7 @@ def main() -> int:
                                      "today_page_views": evidence["todayPageViews"]}
     state["queued"][eligible["slug"]] = entry
     save_state(state)
-    print("Article accepted by Buffer (not verified X publication):",
+    print("Article accepted by Buffer for immediate send (X publication still unverified):",
           eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],
           "scheduled_before=", scheduled, "selection=", entry["source"],
           "page_views=", evidence,
