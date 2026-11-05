@@ -120,7 +120,7 @@ class MotionWorkflowTests(unittest.TestCase):
 
     def test_pr_updates_cancel_obsolete_motion_validation_but_main_stays_serialized(self):
         block = re.search(r"(?ms)^concurrency:\n(.*?)(?=^jobs:)", self.video).group(1)
-        self.assertIn("group: free-motion-clips-${{ github.ref }}", block)
+        self.assertIn("group: free-motion-clips-v2-${{ github.ref }}", block)
         self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", block)
 
     def test_no_work_skips_encoders_and_publishing_with_recovery_schedule(self):
