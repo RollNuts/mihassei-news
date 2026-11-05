@@ -8,7 +8,7 @@ JST = timezone(timedelta(hours=9))
 NOW = datetime(2026, 11, 2, 23, 0, tzinfo=JST)
 
 
-def story(slug, published, source, category="社会", title="架空の地方ニュース"):
+def story(slug, published, source, category="社会", title="町のパン屋で珍事件"):
     return {
         "slug": slug,
         "title": title,
