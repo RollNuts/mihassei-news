@@ -53,7 +53,7 @@
       "url": "https://www.reuters.com/business/media-telecom/chinas-hollywood-visitors-become-stars-consumers-spend-more-experiences-2026-11-02/",
       "topic": "2026年11月2日のReuters報道。中国・横店影視城では観光客が映画セットで撮影体験を楽しみ、体験型消費への関心が紹介された。全員が主演を希望する小町映画村の混乱、監督が通行人になる描写や人物の発言は本紙独自の設定であり、実際の撮影事故や運営事実ではない。"
     },
-    "scene_prompt": "A tired middle-aged film director carrying shopping bags is the ONLY person walking across a wide empty historical street set. Far behind him, one tight cluster of brightly costumed aspiring lead actors pose together beside a tripod camera; the street itself has no other pedestrians.",
+    "scene_prompt": "A tired film director carrying shopping bags is the ONLY person walking across an empty historical street set. Far behind him, a tight cluster of costumed lead actors pose beside a tripod camera; no other pedestrians are present.",
     "tags": [
       "体験消費",
       "イベント"
