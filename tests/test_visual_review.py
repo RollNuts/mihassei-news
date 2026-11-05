@@ -221,6 +221,7 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(result["publication_counts"], {
             "generated_jpeg": 1, "editorial_svg": 0, "stock_photo": 0, "generic_fallback": 3,
         })
+        self.assertEqual(result["strategy_counts"], {"cpu-photo": 4, "illustration": 0})
         self.assertIn("本番配信を確認した結果ではありません", result["publication_basis"])
         after = {path.relative_to(self.root): path.read_bytes()
                  for path in self.root.rglob("*") if path.is_file()}
@@ -255,6 +256,28 @@ class VisualReviewTests(unittest.TestCase):
         # Missing/rejected JPEGs do not mandate generation when an approved
         # illustration or stock photo is already selected.
         self.assertEqual([item["slug"] for item in result["attention"]], [generic["slug"]])
+
+    def test_illustration_strategy_is_reported_and_never_treated_as_cpu_backlog(self):
+        illustration = {**self.article, "slug": "illustration-fixture",
+                        "visual_strategy": "illustration"}
+        result = self.report([illustration])
+        row = result["images"][0]
+        self.assertEqual(row["visual_strategy"], "illustration")
+        self.assertEqual(result["strategy_counts"], {"cpu-photo": 0, "illustration": 1})
+        self.assertEqual(row["publication"]["kind"], "generic_fallback")
+        self.assertEqual(result["attention"][0]["reason"],
+                         "illustration_strategy_without_reviewed_scene")
+        self.assertIn("CPU生成へ戻さず", result["attention"][0]["next_action"])
+
+    def test_invalid_visual_strategy_fails_closed(self):
+        invalid = {**self.article, "visual_strategy": "remote-api"}
+        (self.root / "content/articles.json").write_text(
+            json.dumps([invalid], ensure_ascii=False), encoding="utf-8")
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = main(["--root", str(self.root)])
+        self.assertEqual(code, 2)
+        self.assertIn("visual_strategy", output.getvalue())
 
     def test_article_edit_reports_lost_editorial_scene_without_reapproving_it(self):
         path = self.write_editorial_scene(self.article)
