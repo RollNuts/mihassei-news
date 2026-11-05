@@ -97,20 +97,31 @@ def eligible_articles(
         if page_views is None:
             continue
 
+        readers = _count(item.get("readers"))
+        continued = _count(item.get("continued_readers"))
+        continuation_share = (
+            round(continued / readers, 3)
+            if readers and continued is not None and continued <= readers else None
+        )
         output.append({
             "slug": str(item.get("slug") or ""),
             "editorial_lane": lane,
             "editorial_tone": tone,
             "age_hours": round(age_hours, 2),
             "page_views_last_7_days": page_views,
+            # A rough age normalization for early comparisons. It is not a
+            # forecast and does not correct for time-of-day or distribution.
+            "page_views_per_hour": round(page_views / age_hours, 3),
             # Missing attribution/history remains null, never zero.
+            "readers": readers,
             "x_arrivals": _count(item.get("x_arrivals")),
-            "continued_readers": _count(item.get("continued_readers")),
+            "continued_readers": continued,
+            "continuation_share": continuation_share,
         })
     return output
 
 
-def _metric(values: list[int | None]) -> dict:
+def _metric(values: list[int | float | None]) -> dict:
     observed = [value for value in values if value is not None]
     if not observed:
         return {"observed": 0, "median": None, "mean": None, "max": None}
@@ -144,9 +155,15 @@ def group_summary(items: list[dict], field: str, *, min_group: int) -> dict:
             "page_views_last_7_days": _metric(
                 [item.get("page_views_last_7_days") for item in group]
             ),
+            "page_views_per_hour": _metric(
+                [item.get("page_views_per_hour") for item in group]
+            ),
             "x_arrivals": _metric([item.get("x_arrivals") for item in group]),
             "continued_readers": _metric(
                 [item.get("continued_readers") for item in group]
+            ),
+            "continuation_share": _metric(
+                [item.get("continuation_share") for item in group]
             ),
             "slugs": [item["slug"] for item in group],
         }
@@ -180,9 +197,13 @@ def build_report(
         "eligible_articles": len(items),
         "note": (
             "Descriptive comparison only. Match publication age before comparing; "
-            "missing editorial labels and attribution are not backfilled. A group "
-            "below minimum_group_size is an anecdotal sample, not evidence that a "
-            "lane or tone wins or loses."
+            "page_views_per_hour is only a rough age normalization and does not "
+            "correct for time-of-day or distribution. continuation_share is the "
+            "share of measured article-reader browser IDs that later continued from "
+            "that source article when both counters are available. Missing editorial "
+            "labels and attribution are not backfilled. A group below "
+            "minimum_group_size is an anecdotal sample, not evidence that a lane or "
+            "tone wins or loses."
         ),
         "by_lane": group_summary(items, "editorial_lane", min_group=min_group),
         "by_tone": group_summary(items, "editorial_tone", min_group=min_group),
