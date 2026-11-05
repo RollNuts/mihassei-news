@@ -73,7 +73,7 @@ def read_post_by_id(token: str, buffer_id: str):
         raise ValueError("Invalid Buffer post id")
     query = (
         "query { post(input: {id: " + qstring(buffer_id)
-        + "}) { id text status dueAt sentAt } }"
+        + "}) { id text status dueAt sentAt externalLink sharedNow shareMode } }"
     )
     return gql(token, query).get("post")
 
@@ -85,6 +85,17 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         "queued_at_utc": aware(entry["queued_at_utc"]).astimezone(timezone.utc).isoformat(),
         "buffer_status": "unverified",
     }
+    initial_fields = (
+        "buffer_status_at_accept",
+        "buffer_due_at_at_accept",
+        "buffer_sent_at_at_accept",
+        "buffer_external_link_at_accept",
+        "buffer_shared_now_at_accept",
+        "buffer_share_mode_at_accept",
+    )
+    for field in initial_fields:
+        if field in entry:
+            result[field] = entry[field]
     if not isinstance(remote, dict):
         result["reason"] = lookup_error or "not_returned_in_recent_scheduled_or_sent_window"
         return result
@@ -100,6 +111,14 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         result["reason"] = "unexpected_buffer_status"
         return result
     result["buffer_status"] = status
+    external_link = remote.get("externalLink")
+    if isinstance(external_link, str) and external_link:
+        result["buffer_external_link"] = external_link
+    if type(remote.get("sharedNow")) is bool:
+        result["buffer_shared_now"] = remote["sharedNow"]
+    share_mode = remote.get("shareMode")
+    if isinstance(share_mode, str) and share_mode:
+        result["buffer_share_mode"] = share_mode
     if status in UNDELIVERED_STATUSES:
         result["review_needed"] = "provider_not_sent_" + status
     if status == "scheduled":
