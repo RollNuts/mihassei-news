@@ -14,20 +14,6 @@
       "note": "パンが並ぶ店頭と店員・客の場面。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "basketball-opening-day-game-seven": {
-      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
-      "decision": "rejected",
-      "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
-      "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
-      "reviewed_at": "2026-11-05T02:51:28.168Z"
-    },
-    "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
-      "decision": "rejected",
-      "image_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81",
-      "note": "実画像はカフェで2人が座るだけ。予約票、隣席へ予定外に話しかける客、制止する店員が写らず、記事の笑いの中心が再現されていない。黒板の擬似文字も目立つため不採用。安全な記事別イラストを継続する。",
-      "reviewed_at": "2026-11-04T06:44:47.583Z"
-    },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
       "decision": "accepted",
@@ -35,33 +21,12 @@
       "note": "マイクを向けられた人物と笑っていない周囲の人物。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "crosswalk-photo-captcha-human-stuck": {
-      "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-      "decision": "accepted",
-      "image_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
-      "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
-      "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
-    },
-    "datacenter-unbuilt-ribbon-cutting": {
-      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
-      "decision": "rejected",
-      "image_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31",
-      "note": "画像は巨大な屋根付き建造物・廊下と多数の招待客に見える。本文の主役は『何も建っていない砂利の空き地』なので、建物に見える背景が中心の皮肉を壊している。合格にせず代替SVGを使用し、別の現物を再生成後に目視確認する。",
-      "reviewed_at": "2026-11-05T07:49:28+09:00"
-    },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
       "decision": "accepted",
       "image_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
       "note": "食堂の前にエプロン姿の店員と客がいる場面。返金・追跡の動作は未再現だが本文の舞台が判別できる。看板・メニューの擬似文字とロゴはローカルで局所ぼかしし、最終JPEGを再確認した。",
       "reviewed_at": "2026-11-04T11:28:39.902385+09:00"
-    },
-    "double-speed-drama-explainer-marathon": {
-      "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-      "decision": "accepted",
-      "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
-      "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
-      "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
@@ -98,13 +63,6 @@
       "note": "駅で箱を持った旅行者と係員が向き合う場面。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "midterm-prediction-notebook-full-of-holes": {
-      "decision": "rejected",
-      "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
-      "image_sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf",
-      "reviewed_at": "2026-11-04T05:36:49.800111+00:00",
-      "note": "実画像と本文を照合。ノートと鉛筆は分かるが、ページを貫く大きな穴はなく、丸い穴は右側の別のピンクのリング状物体にある。紙面にも擬似文字が残る。記事の主題に合わないためJPEGは不採用とし、確認済みの穴あきノート専用SVGを継続する。"
-    },
     "mortgage-bank-clerk-invited-to-live-in": {
       "article_sha256": "b471407868bb1e2b2e24b169a8e09d0be6ee48686c8f0d00ef3e301c59133359",
       "decision": "accepted",
@@ -125,13 +83,6 @@
       "image_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
       "note": "実画像と現本文を照合。観客席で複数の架空人物が白い練習カードを持ち、驚いた表情を作る場面が記事の「初耳の顔を練習する」主題に合う。カードには擬似文字があるが読める文章・固有名詞・ロゴは見当たらない。ステージマネージャーや歌手、顔の角度を直す動作は未再現で、人物描写は柔らかいが主役の大きな人体破綻は見当たらない。",
       "reviewed_at": "2026-11-05T03:46:29+00:00"
-    },
-    "park-recorded-laughter-real-kids-shushed": {
-      "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "decision": "accepted",
-      "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
-      "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
-      "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
     },
     "pressure-office-mood-forecast": {
       "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
@@ -154,13 +105,6 @@
       "note": "研究所の実験台で資料を確認する研究者。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "self-oseibo-recipient-refuses-own-gift": {
-      "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
-      "decision": "accepted",
-      "image_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
-      "note": "実画像と現本文を照合。室内でひもを掛けた箱を持つ、黒い帽子・服の架空の配送員風男性が写り、荷物の配送という題材が伝わる補助画像として採用。受取人・受取辞退の動作・高級なのし紙・贈り主と受取人が同じというオチは未再現。背景の紙面には小さい擬似文字があるが、目立つ読める見出しやロゴ、主役の顔・手・箱の大きな破綻は見当たらない。",
-      "reviewed_at": "2026-11-04T12:59:04.493426+00:00"
-    },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
       "decision": "accepted",
@@ -175,13 +119,6 @@
       "note": "野球場で応援用メガホンを使う人物。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "sweet-potato-chorus-starts-too-late": {
-      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-      "decision": "accepted",
-      "image_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
-      "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
-      "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
-    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "decision": "accepted",
@@ -195,6 +132,69 @@
       "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
       "note": "皿と球を並べた物撮りで、記事の食器への注目を表す。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "decision": "accepted",
+      "image_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+      "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
+      "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
+    },
+    "double-speed-drama-explainer-marathon": {
+      "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+      "decision": "accepted",
+      "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
+      "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
+      "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
+    },
+    "midterm-prediction-notebook-full-of-holes": {
+      "decision": "rejected",
+      "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+      "image_sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf",
+      "reviewed_at": "2026-11-04T05:36:49.800111+00:00",
+      "note": "実画像と本文を照合。ノートと鉛筆は分かるが、ページを貫く大きな穴はなく、丸い穴は右側の別のピンクのリング状物体にある。紙面にも擬似文字が残る。記事の主題に合わないためJPEGは不採用とし、確認済みの穴あきノート専用SVGを継続する。"
+    },
+    "basketball-opening-day-game-seven": {
+      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "decision": "rejected",
+      "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+      "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
+      "reviewed_at": "2026-11-05T02:51:28.168Z"
+    },
+    "chance-meeting-cafe-reservation-full": {
+      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+      "decision": "rejected",
+      "image_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81",
+      "note": "実画像はカフェで2人が座るだけ。予約票、隣席へ予定外に話しかける客、制止する店員が写らず、記事の笑いの中心が再現されていない。黒板の擬似文字も目立つため不採用。安全な記事別イラストを継続する。",
+      "reviewed_at": "2026-11-04T06:44:47.583Z"
+    },
+    "park-recorded-laughter-real-kids-shushed": {
+      "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+      "decision": "accepted",
+      "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
+      "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
+      "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
+    },
+    "crosswalk-photo-captcha-human-stuck": {
+      "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+      "decision": "accepted",
+      "image_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
+      "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
+      "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
+    },
+    "self-oseibo-recipient-refuses-own-gift": {
+      "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+      "decision": "accepted",
+      "image_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
+      "note": "実画像と現本文を照合。室内でひもを掛けた箱を持つ、黒い帽子・服の架空の配送員風男性が写り、荷物の配送という題材が伝わる補助画像として採用。受取人・受取辞退の動作・高級なのし紙・贈り主と受取人が同じというオチは未再現。背景の紙面には小さい擬似文字があるが、目立つ読める見出しやロゴ、主役の顔・手・箱の大きな破綻は見当たらない。",
+      "reviewed_at": "2026-11-04T12:59:04.493426+00:00"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "decision": "rejected",
+      "image_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31",
+      "note": "画像は巨大な屋根付き建造物・廊下と多数の招待客に見える。本文の主役は『何も建っていない砂利の空き地』なので、建物に見える背景が中心の皮肉を壊している。合格にせず代替SVGを使用し、別の現物を再生成後に目視確認する。",
+      "reviewed_at": "2026-11-05T07:49:28+09:00"
     }
   },
   "version": 1
