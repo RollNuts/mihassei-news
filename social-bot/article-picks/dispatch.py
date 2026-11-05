@@ -23,6 +23,7 @@ sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(ROOT / "scripts"))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length  # noqa: E402
+from editorial_copy import reader_copy  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # Match canonical articles regardless of query parameters, extra prose or
@@ -193,7 +194,7 @@ def publication_text(article: dict) -> str:
         raise ValueError("Unsafe article link")
     if not isinstance(title, str) or not title.strip():
         raise ValueError("Empty article title")
-    tidy = re.sub(r"\s+", " ", title.strip())
+    tidy = re.sub(r"\s+", " ", reader_copy(title.strip()))
     if len(tidy) > 68:
         tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/" + TRACKING_QUERY
@@ -203,7 +204,7 @@ def publication_text(article: dict) -> str:
     rendered = prefix + "\n" + tidy
     summary = article.get("summary")
     if isinstance(summary, str):
-        summary = re.sub(r"\s+", " ", summary.strip())
+        summary = re.sub(r"\s+", " ", reader_copy(summary.strip()))
         if summary:
             separator = "\n\n"
             budget = X_TEXT_LIMIT - x_weighted_length(rendered + separator + suffix)

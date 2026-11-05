@@ -19,6 +19,9 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("冒頭2文", prompt)
         self.assertIn("原因", prompt)
         self.assertIn("二度目の逆転は不要", prompt)
+        self.assertIn("架空の", prompt)
+        self.assertIn("断りを書かない", prompt)
+        self.assertIn("summary", prompt)
         self.assertIn("設定を減らす", prompt)
         for directive in STALE_DIRECTIVES:
             self.assertNotIn(directive, guide)

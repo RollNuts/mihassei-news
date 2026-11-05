@@ -497,7 +497,8 @@ class SiteTests(unittest.TestCase):
             text=page.read_text(encoding="utf-8")
             self.assertIn(a["title"],text)
             self.assertIn(a["source"]["url"],html.unescape(text))
-            self.assertIn(a["source"]["topic"],text)
+            from scripts.editorial_copy import reader_copy
+            self.assertIn(reader_copy(a["source"]["topic"]),text)
             self.assertIn("創作ニュース",text)
             self.assertIn('data-article-pv="'+a["slug"]+'"',text)
             self.assertIn("data-like-slug",text)

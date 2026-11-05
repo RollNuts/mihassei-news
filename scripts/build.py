@@ -29,6 +29,7 @@ if __package__:
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
+    from .editorial_copy import reader_copy
 else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -42,6 +43,7 @@ else:
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
+    from editorial_copy import reader_copy
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -365,7 +367,7 @@ def category_meta(a, compact=False):
         + f'<time class="real-published-at" datetime="{escape(published)}"'
           f' aria-label="実際の掲載日時">{escape(real_label)}</time>'
         + f'<time class="fiction-dateline" datetime="{escape(a["fiction_at"])}"'
-          f' aria-label="5年後の架空のニュース日時">{escape(future_label)}</time>'
+          f' aria-label="紙面上の未来日付">{escape(future_label)}</time>'
         + page_views
         + "</div>"
     )
@@ -381,7 +383,7 @@ def share_url(a):
                             X_TEXT_LIMIT - x_weighted_length(fixed))
     heading = prefix + title
     remaining = X_TEXT_LIMIT - x_weighted_length(heading + ending + "\n\n" + url) - 2
-    teaser = truncate_x_text(" ".join(a["summary"][:75].split()), max(0, remaining))
+    teaser = truncate_x_text(" ".join(reader_copy(a["summary"])[:75].split()), max(0, remaining))
     text = heading + ("\n\n" + teaser if teaser else "") + ending
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
@@ -689,7 +691,7 @@ def card(a, archive=False):
     if archive:
         category = a["category"]
         decade = a["fiction_at"][:3] + "0"
-        searchable = " ".join((a["title"], a["summary"], a["fiction_company"], category, *a.get("tags", [])))
+        searchable = " ".join((a["title"], reader_copy(a["summary"]), a["fiction_company"], category, *a.get("tags", [])))
         attrs = (f' data-archive-card data-category="{escape(category)}" '
                  f'data-decade="{decade}" data-tags="{escape("|".join(a.get("tags", [])))}" '
                  f'data-search="{escape(searchable)}"')
@@ -701,7 +703,7 @@ def card(a, archive=False):
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
-        + f'<p>{escape(a["summary"])}</p>'
+        + f'<p>{escape(reader_copy(a["summary"]))}</p>'
         + tag_links(a, compact=True)
         + '</article>'
     )
@@ -1182,7 +1184,7 @@ def home(articles, serials=None):
 <div class="lead-info">{category_meta(a, compact=True)}</div>
 <h1><a href="{article_url(a)}">{escape(a["title"])}</a></h1>
 <a class="lead-media" href="{article_url(a)}">{image_tag(a, "hero-image", extra='fetchpriority="high" decoding="async"')}</a>
-<p class="dek">{escape(a["summary"])}</p>
+<p class="dek">{escape(reader_copy(a["summary"]))}</p>
 {tag_links(a, compact=True)}
 <div class="hero-actions"><a class="read-more" href="{article_url(a)}">記事を読む</a>{actions(a,compact=True)}</div>
 </article>
@@ -1370,7 +1372,7 @@ def issue_page(day, items, issues):
 
 
 def story(a, articles, issues=None, serials=None):
-    paras = "".join(f'<p>{escape(p)}</p>' for p in a["paragraphs"])
+    paras = "".join(f'<p>{escape(reader_copy(p))}</p>' for p in a["paragraphs"])
     src = a["source"]
     # Continue through the publication stream instead of always jumping back
     # to the newest other story. The previous behavior could create a two-story
@@ -1436,7 +1438,7 @@ def story(a, articles, issues=None, serials=None):
 <nav class="breadcrumbs" aria-label="パンくずリスト"><a href="/">トップ</a><span aria-hidden="true"> / </span><a href="/archive/">記事一覧</a><span aria-hidden="true"> / </span><span aria-current="page">この記事</span></nav>
 <div class="article-dateline">{category_meta(a)}</div>
 <h1>{escape(a["title"])}</h1>
-<p class="dek">{escape(a["summary"])}</p>
+<p class="dek">{escape(reader_copy(a["summary"]))}</p>
 <p class="story-fiction-context"><strong>創作ニュース</strong></p>
 {followup_context}
 <div class="story-meta"><span>未発生新聞 編集部</span><span>読了目安 約{read_minutes}分</span></div>
@@ -1476,7 +1478,7 @@ def story(a, articles, issues=None, serials=None):
 <details class="source-context" id="story-source" aria-label="着想した実際の話題">
 <summary>着想元を見る</summary>
 <div class="source-context-body">
-<p>{escape(src["topic"])}</p>
+<p>{escape(reader_copy(src["topic"]))}</p>
 <p class="source-context-disclaimer">着想元は、記事内の創作内容を裏付けるものではありません。</p>
 <a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
 {escape(src["publisher"])} で着想元を見る ↗</a>
@@ -1503,7 +1505,7 @@ def story(a, articles, issues=None, serials=None):
 </form>
 </section></div>
 </div>'''
-    return layout(a["title"], a["summary"] + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
+    return layout(a["title"], reader_copy(a["summary"]) + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
 def about():
     content = '''<div class="container archive-page">
@@ -1711,7 +1713,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
         entry=ET.SubElement(channel,"item")
         fields=[("title",a["title"]+" | 未発生新聞（創作）"),
                 ("link",SITE+article_url(a)),("guid",SITE+article_url(a)),
-                ("description",a["summary"]+" ※創作記事です。")]
+                ("description",reader_copy(a["summary"])+" ※創作記事です。")]
         posted=publication_date(a)
         if "T" in posted:
             fields.append(("pubDate",format_datetime(datetime.fromisoformat(posted))))
