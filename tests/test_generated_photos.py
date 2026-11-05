@@ -126,10 +126,14 @@ class LocalComedySceneTests(unittest.TestCase):
         direction = local_scene_photos.scene_description(a)
         self.assertIn("capsule lottery machine", direction)
         prompt = local_scene_photos.scene_prompt(a)
-        self.assertTrue(prompt.startswith("Candid color photograph"))
+        self.assertTrue(prompt.startswith("Candid documentary press photograph"))
         self.assertNotIn("sketch", prompt)
         self.assertIn("fictional", prompt)
+        self.assertIn("ordinary local-news assignment", prompt)
+        self.assertIn("realistic skin texture", prompt)
         self.assertIn("No title text", prompt)
+        for forbidden_style in ("anime", "3d render", "plastic skin", "advertising photography"):
+            self.assertIn(forbidden_style, local_scene_photos.NEGATIVE)
         different = {**a, "slug": "silent-show", "title": "スベるほど黒字のお笑い番組"}
         self.assertIn("comedian", local_scene_photos.scene_description(different))
         self.assertNotEqual(local_scene_photos.stable_seed(a),
@@ -223,6 +227,7 @@ class LocalComedySceneTests(unittest.TestCase):
         self.assertEqual(dimensions["width"] * 9, dimensions["height"] * 16)
         self.assertLessEqual(dimensions["width"] * dimensions["height"], 1024**2)
         self.assertEqual(workflow["5"]["class_type"], "KSampler")
+        self.assertEqual(workflow["5"]["inputs"]["cfg"], 5.0)
         self.assertEqual(workflow["7"]["class_type"], "SaveImage")
         self.assertEqual(workflow["5"]["inputs"]["seed"], local_scene_photos.stable_seed(a))
         for filename in ("https://image-api.example/a", "../model.safetensors", "bad.ckpt"):
