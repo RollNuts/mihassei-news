@@ -101,30 +101,54 @@ def signature_text(article: dict) -> str:
     return " ".join(part.strip() for part in parts)
 
 
-def editorial_tag_counts(articles: list[dict]) -> Counter:
-    """Reader-facing topic/satire labels only; categories are a separate axis."""
+def _tag_counts(articles: list[dict], key: str) -> Counter:
     return Counter(
         tag
         for article in articles
-        for tag in [*(article.get("tags") or []), *(article.get("satire_tags") or [])]
+        for tag in (article.get(key) or [])
         if isinstance(tag, str) and tag
     )
 
 
+def topic_tag_counts(articles: list[dict]) -> Counter:
+    """Durable subject labels used for topic pages and discovery."""
+    return _tag_counts(articles, "tags")
+
+
+def satire_tag_counts(articles: list[dict]) -> Counter:
+    """Playful editorial lenses may stay article-specific without SEO pressure."""
+    return _tag_counts(articles, "satire_tags")
+
+
+def editorial_tag_counts(articles: list[dict]) -> Counter:
+    """Backward-compatible combined reader-facing label count."""
+    return topic_tag_counts(articles) + satire_tag_counts(articles)
+
+
 def reusable_topic_note(articles: list[dict]) -> str:
-    counts = editorial_tag_counts(articles)
-    if not counts:
+    topics = topic_tag_counts(articles)
+    satire = satire_tag_counts(articles)
+    if not topics and not satire:
         return ""
-    established = [(tag, count) for tag, count in counts.most_common() if count >= 3][:6]
+    established = [(tag, count) for tag, count in topics.most_common() if count >= 3][:6]
     emerging = sorted(
-        ((tag, count) for tag, count in counts.items() if count == 2),
+        ((tag, count) for tag, count in topics.items() if count == 2),
         key=lambda pair: pair[0],
     )[:6]
+    reusable_satire = [
+        (tag, count) for tag, count in satire.most_common() if count >= 3
+    ][:6]
     parts = []
     if established:
-        parts.append("育っているタグ: " + " / ".join(f"{tag}({count})" for tag, count in established))
+        parts.append("育っているトピック: " + " / ".join(
+            f"{tag}({count})" for tag, count in established
+        ))
     if emerging:
-        parts.append("2本あるタグ: " + " / ".join(tag for tag, _ in emerging))
+        parts.append("2本あるトピック: " + " / ".join(tag for tag, _ in emerging))
+    if reusable_satire:
+        parts.append("繰り返し使える風刺タグ: " + " / ".join(
+            f"{tag}({count})" for tag, count in reusable_satire
+        ))
     return "。".join(parts)
 
 
@@ -180,15 +204,20 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                     "言い換えではなく、別の行動か別の目に見える結果を検討",
                 ))
 
-    counts = editorial_tag_counts(articles)
+    counts = topic_tag_counts(articles)
     if len(articles) >= 10 and counts:
         one_off = sum(count == 1 for count in counts.values())
-        if one_off >= max(12, (len(counts) + 1) // 2):
+        # One-off satire lenses are intentionally expressive; only durable
+        # topic labels participate in fragmentation warnings. Allow a healthy
+        # long tail before warning so niche subjects are not forced into SEO tags.
+        threshold = max(15, (len(counts) * 3 + 4) // 5)
+        if one_off >= threshold:
             warnings.append((
                 "TOPIC_FRAGMENTATION", "-",
-                f"記事{len(articles)}本に対してタグ{len(counts)}種類、うち1回だけが{one_off}種類。"
-                "新作の主題に合う既存タグがあれば同じ表記を再利用し、近い意味の新タグを増やさない。"
-                "無関係なタグをSEO目的で付ける必要はない",
+                f"記事{len(articles)}本に対してトピックタグ{len(counts)}種類、"
+                f"うち1回だけが{one_off}種類。"
+                "新作の主題に合う既存トピックがあれば同じ表記を再利用し、近い意味の新タグを増やさない。"
+                "風刺タグは言い味の軸なので、記事固有でも無理に統合しない",
             ))
 
     newest = recent[:CLUSTER_LIMIT]
@@ -304,8 +333,9 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
     if "TOPIC_FRAGMENTATION" in labels:
         note = reusable_topic_note(articles)
         lines.append(
-            "タグが分散気味。新しい記事に本当に合う既存タグがあれば同じ表記を優先する。"
+            "トピックタグが分散気味。新しい記事に本当に合う既存トピックがあれば同じ表記を優先する。"
             "3本目を作るために題材や本文を曲げず、新しい主題なら新タグでよい。"
+            "風刺タグは記事固有の言い味を残してよい。"
             + ((" " + note + "。") if note else "")
         )
     if len(lines) == 2:
