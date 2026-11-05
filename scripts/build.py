@@ -517,14 +517,25 @@ def illustration_path(a):
     return "/images/" + a["slug"] + ".svg"
 
 
+def illustration_only(a):
+    """Explicit editorial routing wins over previously accepted photographic assets."""
+    return a.get("visual_strategy", "cpu-photo") == "illustration"
+
+
+def uses_generated_scene(a):
+    return not illustration_only(a) and uses_generated_scene(a)
+
+
 def uses_stock_photo(a):
-    """Reviewed story illustrations take precedence over generic stock photos."""
-    return not reviewed_story_scene(a, root=BASE) and usable_cached_photo(a, root=BASE)
+    """Illustration routing and reviewed story scenes both outrank stock photos."""
+    return (not illustration_only(a)
+            and not reviewed_story_scene(a, root=BASE)
+            and usable_cached_photo(a, root=BASE))
 
 
 def editorial_image(a):
     """Prefer verified scenes, then reviewed illustrations, stock and fallback."""
-    if reviewed_generated_scene(a, root=BASE):
+    if uses_generated_scene(a):
         return generated_url(a)
     if uses_stock_photo(a):
         return "/photos/" + a["slug"] + ".jpg"
@@ -549,7 +560,7 @@ def article_image_alt(a, *, generated=False, photo_ok=False):
 
 
 def image_tag(a, cls, extra=""):
-    generated = reviewed_generated_scene(a, root=BASE)
+    generated = uses_generated_scene(a)
     photo_ok = not generated and uses_stock_photo(a)
     url = editorial_image(a)
     alt = article_image_alt(a, generated=generated, photo_ok=photo_ok)
@@ -572,7 +583,7 @@ def image_tag(a, cls, extra=""):
 
 def article_clip(article):
     """Publish reviewed footage with current captions; retain legacy compatibility."""
-    if not reviewed_generated_scene(article, root=BASE):
+    if not uses_generated_scene(article):
         return None
     clip = usable_clip(article, root=BASE)
     if clip and clip.get("motion_style_version") == 3 and not story_cues(article, root=BASE):
@@ -754,7 +765,7 @@ def broadcast_feature(articles, *, exclude_slug=None):
 
 def photo_credit(a):
     """Always disclose AI staging; never mislabel a synthetic scene as real."""
-    if reviewed_generated_scene(a, root=BASE):
+    if uses_generated_scene(a):
         return "再現イメージ（合成）"
     if not uses_stock_photo(a):
         return "創作イラスト"
@@ -777,7 +788,7 @@ def card(a, archive=False):
     clip_label = (f'<span class="story-clip-label">▶ {clip_seconds(clip)}秒映像</span>'
                   if clip else '')
     return (
-        f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if reviewed_generated_scene(a, root=BASE) else ""}" href="{article_url(a)}">'
+        f'<article class="story-card"{attrs}><a class="story-image-link{" story-image-link--generated" if uses_generated_scene(a) else ""}" href="{article_url(a)}">'
         + image_tag(a,"story-thumb",extra='loading="lazy" decoding="async"') + clip_label + '</a>'
         + category_meta(a, compact=True)
         + f'<h3><a href="{article_url(a)}">{escape(a["title"])}</a></h3>'
@@ -789,7 +800,7 @@ def card(a, archive=False):
 def social_image(article):
     """Use verified local JPEG for OGP when present, else deterministic PNG."""
     if article is not None:
-        if reviewed_generated_scene(article, root=BASE):
+        if uses_generated_scene(article):
             return generated_url(article)
         if uses_stock_photo(article):
             return "/photos/" + article["slug"] + ".jpg"
@@ -857,8 +868,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (article_image_alt(
                   article,
-                  generated=reviewed_generated_scene(article, root=BASE),
-                  photo_ok=bool(photo and local_photo and not reviewed_generated_scene(article, root=BASE))
+                  generated=uses_generated_scene(article),
+                  photo_ok=bool(photo and local_photo and not uses_generated_scene(article))
               ) if article else
               ("未発生新聞 " + issue_path.group(1) + "号の架空の新聞表紙"
                if issue_path else "未発生新聞（創作ニュース）"))
@@ -1836,7 +1847,7 @@ def image_review_page(articles):
     """
     cards = []
     for a in articles:
-        generated = reviewed_generated_scene(a, root=BASE)
+        generated = uses_generated_scene(a)
         photo_ok = not generated and uses_stock_photo(a)
         main_src = editorial_image(a)
         social_src = social_image(a)
@@ -2113,7 +2124,7 @@ def make_article_social_images(articles):
     for article in articles:
         # Cached stock images are not auto-approved; always generate a safe
         # topic-specific PNG for anything not explicitly editorially reviewed.
-        if reviewed_generated_scene(article, root=BASE) or uses_stock_photo(article):
+        if uses_generated_scene(article) or uses_stock_photo(article):
             continue
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"))
 
@@ -2146,7 +2157,7 @@ def build():
     # Publish ONLY byte-verified and visually reviewed JPEGs; the provenance manifest
     # itself never needs to be public or requested by a browser.
     for item in articles:
-        if reviewed_generated_scene(item, root=BASE):
+        if uses_generated_scene(item):
             destination = OUT / generated_url(item).lstrip("/")
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(BASE / "assets" / "generated" / (item["slug"] + ".jpg"), destination)
