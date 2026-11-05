@@ -236,6 +236,16 @@
       "seed": 4671421502652190209,
       "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
     },
+    "office-face-to-face-day-video-call-echo": {
+      "article_sha256": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
+      "bytes": 82633,
+      "generated_at": "2026-11-05T08:36:20.938297+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 8296084341754018138,
+      "sha256": "6e7886e28a46e28ba3b7066fa319d1c2ce23a21c91c63bd947d1fdb6666a0100"
+    },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
       "bytes": 136997,
