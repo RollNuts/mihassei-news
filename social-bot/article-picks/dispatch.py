@@ -39,6 +39,7 @@ JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
 PROMOTION_SLOT_HOURS = (9, 11, 13, 15, 17, 19, 21)
 PROMOTION_SLOT_MINUTE = 5
+RECOVERABLE_BUFFER_STATUSES = ("scheduled", "sent", "draft", "pending", "error", "failed")
 CRISIS_PROMO_PATTERN = re.compile(
     r"地震|津波|台風|豪雨|洪水|土砂災害|山火事|戦争|武力衝突|空爆|侵攻|砲撃|"
     r"ミサイル攻撃|テロ|大量死傷|死者|死亡者|負傷者|被災者|避難者|人質"
@@ -274,7 +275,7 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
     validate_state(state)
     recovered = []
     for item in existing:
-        if item.get("status") not in ("scheduled", "sent"):
+        if item.get("status") not in RECOVERABLE_BUFFER_STATUSES:
             continue
         post_id = item.get("id")
         if not isinstance(post_id, str) or not post_id:
@@ -621,7 +622,7 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     queued = [p for p in existing if p.get("status") == "scheduled"]
     remote_slugs = set().union(
         *(article_slug_in_text(p.get("text", "")) for p in existing
-          if p.get("status") in ("scheduled", "sent"))
+          if p.get("status") in RECOVERABLE_BUFFER_STATUSES)
     ) if existing else set()
     today_count = promotions_today(state, now)
     current_slot = promotion_slot(now)
@@ -682,7 +683,10 @@ def main() -> int:
     org_id, channel_id = choose_x_channel(token)
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
-    existing = list_existing(token, org_id, channel_id, include_due_at=True)
+    existing = list_existing(
+        token, org_id, channel_id,
+        include_due_at=True, include_unsettled=True,
+    )
     # First reconcile Buffer and evaluate fresh posts without depending on
     # mature-article PV. A stale/unavailable PV API must not block a valid
     # 1–18-hour article. Dedupe, caps and one-per-logical-slot gates still apply.
