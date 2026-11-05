@@ -85,7 +85,8 @@ class ReaderFlowPolishTests(unittest.TestCase):
         from scripts.editorial_copy import source_reader_copy
         self.assertIn(source_reader_copy(item["source"]["topic"]), page)
         self.assertIn("着想元は、この記事の出来事を報じたものではありません", page)
-        self.assertIn('<strong>創作ニュース</strong>', page)
+        self.assertIn('class="fiction-mark">創作報道', page)
+        self.assertNotIn('class="story-fiction-context"', page)
 
     def test_small_category_still_has_a_relevant_archive_link(self):
         from urllib.parse import quote
