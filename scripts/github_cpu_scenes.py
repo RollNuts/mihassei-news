@@ -102,9 +102,9 @@ CPU_SCENE_SOURCE_HASHES = {
     "stolen-doorbell-returned-by-parcel": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
     "family-dinner-gacha-243-rejections": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
     "volleyball-team-lunch-plate-merch": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-    "film-village-all-stars-no-extras": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
-    "sale-discount-savings-receipt-framed": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
-    "office-face-to-face-day-video-call-echo": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
+    "film-village-all-stars-no-extras": "0b23083f1b6c59827dad35c822955a61467846842146de191130ac0efad83bbd",
+    "sale-discount-savings-receipt-framed": "a59d84b533dfab440fa2fd8e1d867baef4fa16e7f6f229e6f416f2bfdd2c9881",
+    "office-face-to-face-day-video-call-echo": "0c28252627308d5c9dec9d83d9bc7b65c40343f2f34b1b2281b31d39c8201e37",
 }
 FILES = [
     "model_index.json", "scheduler/*.json", "tokenizer/*",
