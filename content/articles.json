@@ -21,11 +21,12 @@
       "url": "https://www.reuters.com/sports/record-33m-tuned-wnbas-first-ever-game-7--flm-2026-11-04/",
       "topic": "Reutersが2026年11月4日02:13 UTC（同日11:13 JST）公開。女子プロバスケットボールWNBA初のファイナル第7戦（10月31日開催）は330万人が視聴し、同リーグのプレーオフ史上最多となった。開幕戦を「決勝第7戦」と呼ぶ架空リーグ・観客・選手・係員の行為と台詞は本紙独自の創作であり、実際のWNBAとは無関係。"
     },
-    "scene_prompt": "A huge freestanding gold number seven prop beside an unopened championship banner dominates a small indoor basketball court; two anonymous basketball teams in clean generic uniforms awkwardly introduce themselves in the middle of an overblown opening ceremony, a staff member holds a folded championship flag and a confused young fan watches from the lower stands, dry photorealistic Japanese sports editorial scene, clearly basketball hoops and hardwood court, no team brands, no real athlete likeness, no legible text.",
+    "scene_prompt": "Two basketball teams in fresh uniforms greet each other beneath an oversized gold number seven, while a staff member offers a championship flag before the opening game. Indoor hardwood basketball court, confused fans in the stands. Photorealistic sports scene, no text or logos.",
     "tags": [
       "スポーツ観戦",
       "バスケットボール"
-    ]
+    ],
+    "modified_at": "2026-11-05T11:42:53+09:00"
   },
   {
     "slug": "music-show-surprise-face-rehearsal",
