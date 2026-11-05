@@ -823,6 +823,10 @@ class ArticlePickTests(unittest.TestCase):
                  patch.object(picks, "queue_one", return_value="article-confirmed") as queue:
                 clock.now.return_value = NOW
                 self.assertEqual(picks.main(), 0)
+                list_existing.assert_called_once_with(
+                    "test-only", "org", CONFIG["channel_id"],
+                    include_due_at=True, include_unsettled=True,
+                )
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.args[1], CONFIG["channel_id"])
                 self.assertEqual(queue.call_args.args[2]["kind"], "article")
