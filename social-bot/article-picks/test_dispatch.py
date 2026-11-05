@@ -29,10 +29,11 @@ CONFIG = {
 }
 
 
-def article(slug: str, age_hours: int = 36, title: str = "人が戸惑う架空ニュース"):
+def article(slug: str, age_hours: int = 36, title: str = "挨拶を短くした会社、最後の挨拶だけ1時間続ける"):
     return {
         "slug": slug,
         "title": title,
+        "summary": "会議を短くするため最後の挨拶を増やした会社で、会議本編よりも挨拶の時間が長くなってしまった。",
         "published_at": (NOW - timedelta(hours=age_hours)).isoformat(),
         "fiction_at": "2031-11-05T00:00:00+09:00",  # Never used for age.
         "source": {"published_at": "2026-11-05T00:00:00+09:00"},
@@ -501,6 +502,34 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(picks.primary_topic(tagged), "tag:ai")
         self.assertEqual(picks.primary_topic(category_only), "category:社会")
         self.assertEqual(picks.primary_topic({}), "")
+
+    def test_first_read_gate_blocks_opaque_or_unreviewed_articles_in_both_lanes(self):
+        clear = article("clear", age_hours=4)
+        self.assertTrue(picks.passes_x_first_read_gate(clear))
+        unclear = article("opaque", age_hours=4, title="この件、ついに大きな動き　詳細は記事に")
+        unclear["summary"] = "これを受け、いよいよ注目を集めた出来事に関する説明が始まったという話が広まった。"
+        missing = article("missing", age_hours=4)
+        missing.pop("summary")
+        held = article("held", age_hours=4)
+        held["x_promotion_skip"] = True
+        too_brief = article("brief", age_hours=4, title="何かが起きた")
+        for item in (unclear, missing, held, too_brief):
+            with self.subTest(slug=item["slug"]):
+                self.assertFalse(picks.passes_x_first_read_gate(item))
+                self.assertEqual(picks.eligible_fresh_articles([item], NOW, CONFIG), [])
+                mature = {**item, "published_at": (NOW - timedelta(hours=40)).isoformat()}
+                self.assertEqual(picks.eligible_articles([mature], NOW, CONFIG), [])
+        selected, _, _ = picks.decide(
+            [unclear, held, clear], {}, ledger(), [], CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], "clear")
+        self.assertIn("https://veripsa.com/articles/clear/", picks.publication_text(clear))
+
+    def test_published_articles_pass_basic_x_first_read_structure(self):
+        articles = json.loads((picks.ROOT / "content/articles.json").read_text(encoding="utf-8"))
+        for item in articles:
+            with self.subTest(slug=item["slug"]):
+                self.assertTrue(picks.passes_x_first_read_gate(item))
 
     def test_crisis_articles_never_enter_automatic_article_promotion(self):
         crisis = article("quake", age_hours=4, title="地震後の避難所で起きた話")
