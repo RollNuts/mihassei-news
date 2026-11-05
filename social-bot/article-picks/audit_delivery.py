@@ -75,7 +75,7 @@ def read_post_by_id(token: str, buffer_id: str):
         raise ValueError("Invalid Buffer post id")
     query = (
         "query { post(input: {id: " + qstring(buffer_id)
-        + "}) { id text status createdAt dueAt sentAt externalLink sharedNow shareMode } }"
+        + "}) { id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl } } }"
     )
     return gql(token, query).get("post")
 
@@ -95,6 +95,8 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         "buffer_external_link_at_accept",
         "buffer_shared_now_at_accept",
         "buffer_share_mode_at_accept",
+        "buffer_error_message_at_accept",
+        "buffer_error_support_url_at_accept",
     )
     for field in initial_fields:
         if field in entry:
@@ -125,6 +127,14 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
     share_mode = remote.get("shareMode")
     if isinstance(share_mode, str) and share_mode:
         result["buffer_share_mode"] = share_mode
+    provider_error = remote.get("error")
+    if isinstance(provider_error, dict):
+        message = provider_error.get("message")
+        if isinstance(message, str) and message.strip():
+            result["buffer_error_message"] = message.strip()[:500]
+        support_url = provider_error.get("supportUrl")
+        if isinstance(support_url, str) and support_url.startswith("https://"):
+            result["buffer_error_support_url"] = support_url[:500]
     if status in IMMEDIATE_PROBLEM_STATUSES:
         result["review_needed"] = "provider_not_sent_" + status
     if status == "scheduled":
