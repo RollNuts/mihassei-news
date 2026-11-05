@@ -616,6 +616,27 @@ class ArticlePickTests(unittest.TestCase):
         )
         self.assertFalse(picks.slot_already_used(state, now))
 
+    def test_unsettled_provider_article_is_recovered_and_never_auto_retried(self):
+        now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
+        failed = article("failed-story", age_hours=4)
+        existing = [{
+            "id": "buf-failed",
+            "status": "failed",
+            "text": picks.publication_text(failed),
+        }]
+        state = ledger()
+        selected, _, _ = picks.decide(
+            [failed], {}, state, existing, CONFIG, now
+        )
+        self.assertIsNone(selected)
+        self.assertIn("failed-story", state["queued"])
+        self.assertEqual(
+            state["queued"]["failed-story"]["buffer_status_when_recovered"],
+            "failed",
+        )
+        self.assertIsNone(picks.entry_promotion_slot(state["queued"]["failed-story"]))
+        self.assertFalse(picks.slot_already_used(state, now))
+
     def test_recovery_without_provider_time_dedupes_but_does_not_consume_slot(self):
         now = datetime.fromisoformat("2026-11-05T19:20:00+09:00")
         state = ledger()
