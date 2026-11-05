@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="SNSをやめるための集まりで100日連続ログインのトロフィーを受け取った人がスマホを確認し、客席もスマホを見る創作イラスト" data-visual-topic="document" data-article-sha256="ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c">
+  <title>やめるためのSNSで100日連続ログイン表彰、授賞式でもスマホを見る人々</title>
+  <defs>
+    <linearGradient id="back" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#142c3b"/><stop offset="1" stop-color="#3f5664"/></linearGradient>
+    <linearGradient id="screen" x2="0" y2="1"><stop stop-color="#7ad6fc"/><stop offset="1" stop-color="#316fbd"/></linearGradient>
+    <linearGradient id="light" x2="0" y2="1"><stop stop-color="#fff5c7" stop-opacity=".40"/><stop offset="1" stop-color="#fff5c7" stop-opacity="0"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#back)"/>
+  <path d="M410 0h300l310 517H95Z" fill="url(#light)"/>
+  <path d="M0 493q600-43 1200 0V675H0Z" fill="#d6cab6"/>
+  <path d="M0 529q600-42 1200 0" fill="none" stroke="#b5a791" stroke-width="5"/>
+  <g opacity=".6" fill="#e8eff0"><circle cx="239" cy="54" r="10"/><circle cx="582" cy="34" r="12"/><circle cx="905" cy="55" r="10"/></g>
+  <g fill="#f4bb72" opacity=".80"><path d="M176 140l11 24-19-3z"/><path d="M350 91l5 19-19 6z"/><path d="M890 168l15-10 9 21z"/><path d="M1120 93l12 25-20-7z"/></g>
+  <!-- The giant phone depicts the habit of returning to the app, not a working UI. -->
+  <g stroke="#263b45" stroke-width="8" stroke-linejoin="round">
+    <rect x="95" y="139" width="294" height="402" rx="37" fill="#dce5e3"/>
+    <rect x="114" y="183" width="256" height="310" rx="11" fill="url(#screen)" stroke="none"/>
+    <path d="M198 163h88" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="243" cy="518" r="10" fill="#b6c6cb"/>
+  </g>
+  <g fill="none" stroke="#effbff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M194 287a70 70 0 0 1 104 13"/>
+    <path d="m282 285 23 21 9-33"/>
+    <path d="M295 368a70 70 0 0 1-103-13"/>
+    <path d="m209 370-24-21-8 33"/>
+  </g>
+  <!-- A striking trophy and three glyph-shaped digits: 100 days. -->
+  <g stroke="#704c2a" stroke-linejoin="round" stroke-width="6">
+    <path d="M420 245h151v68q-2 69-75 74-72-5-76-74z" fill="#f2c15e"/>
+    <path d="M419 257q-61-8-45 49 10 27 50 25M574 257q55-8 40 49-9 26-44 25" fill="none" stroke="#dfab54" stroke-width="14"/>
+    <path d="M483 389h27v27h47v21H438v-21h45z" fill="#f2c15e"/>
+    <rect x="436" y="439" width="121" height="26" rx="5" fill="#d99b49"/>
+  </g>
+  <g fill="none" stroke="#775125" stroke-width="11" stroke-linecap="round">
+    <path d="m465 280-9 13m8-15v59"/>
+    <ellipse cx="496" cy="310" rx="15" ry="30"/>
+    <ellipse cx="534" cy="310" rx="15" ry="30"/>
+  </g>
+  <!-- The winner is still checking the bright phone during the award. -->
+  <g stroke="#293d46" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="711" cy="584" rx="115" ry="18" fill="#716960" opacity=".24" stroke="none"/>
+    <path d="M660 467l-14 94-23 28h55l27-90M730 469l22 97-2 23h54l-17-27-23-99" fill="#293d46"/>
+    <path d="M647 556l-29 32h69l8-27M747 563l-7 25h73l-25-29" fill="#1d2d37"/>
+    <path d="M647 342q59-24 128 10l19 127-162 0z" fill="#e5e6dc"/>
+    <path d="m690 350 19 46 17-42" fill="none" stroke="#dca05c" stroke-width="7"/>
+    <circle cx="706" cy="291" r="48" fill="#edb88f"/>
+    <path d="M662 275q5-46 44-42 46-1 50 38-26-10-42-26-17 20-49 30" fill="#293d46" stroke="none"/>
+    <path d="M683 311q23 12 45 0" fill="none" stroke="#8e6b59" stroke-width="3"/>
+    <path d="M646 367l-53-27-18 22 72 50M777 366l41 57-20 18-61-46" fill="#e5e6dc"/>
+    <path d="M592 346l-20-11-12 20 20 14" fill="#edb88f"/>
+    <path d="M802 423l19 9-14 20-19-7" fill="#edb88f"/>
+  </g>
+  <g transform="rotate(9 814 395)" stroke="#263c4b" stroke-width="6"><rect x="788" y="338" width="65" height="105" rx="9" fill="#263c4b"/><rect x="798" y="351" width="45" height="74" rx="3" fill="#60d4f1" stroke="none"/><circle cx="820" cy="433" r="3" fill="#dfeced" stroke="none"/></g>
+  <path d="M812 371h20m-20 13h15m-15 13h9" stroke="#effcff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Two audience members watch their own lit phones rather than the ceremony. -->
+  <g stroke="#283d49" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="973" cy="401" r="41" fill="#e5ae83"/>
+    <path d="M935 387q-1-39 35-39 36-1 43 30-24-4-40-17-16 26-38 26" fill="#35444b" stroke="none"/>
+    <path d="M926 447q48-26 98-3l35 133H908z" fill="#728b84"/>
+    <path d="M930 473l28 73 28-8-21-76M1013 471l-27 71-30-10 35-79" fill="#728b84"/>
+    <path d="M951 536l27 7" stroke="#e5ae83" stroke-width="15"/>
+    <circle cx="1109" cy="422" r="34" fill="#e8b994"/>
+    <path d="M1080 418q-6-30 25-37 35-3 41 28-25-4-40-17-6 23-26 26" fill="#263d47" stroke="none"/>
+    <path d="M1076 463q34-24 69-2l37 116h-135z" fill="#cf8f79"/>
+    <path d="M1080 490l18 60 20-7-13-62M1142 488l-27 58-26-13 25-59" fill="#cf8f79"/>
+  </g>
+  <g transform="rotate(-14 975 529)"><rect x="951" y="486" width="49" height="86" rx="8" fill="#253b4b"/><rect x="957" y="493" width="37" height="64" rx="3" fill="#64c9e7"/></g>
+  <g transform="rotate(10 1104 549)"><rect x="1081" y="500" width="48" height="82" rx="7" fill="#253b4b"/><rect x="1087" y="507" width="36" height="61" rx="3" fill="#64c9e7"/></g>
+  <path d="M931 591h269" stroke="#243841" stroke-width="10" opacity=".55"/>
+</svg>
