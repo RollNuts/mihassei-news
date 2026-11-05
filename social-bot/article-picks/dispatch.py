@@ -706,11 +706,14 @@ def main() -> int:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return 0
     text = publication_text(eligible)
-    buffer_id = queue_one(
+    buffer_receipt = queue_one(
         token, channel_id,
         {"kind": "article", "id": "article-" + eligible["slug"], "text": text},
-        mode="shareNow",
+        mode="shareNow", return_post=True,
     )
+    if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str):
+        raise RuntimeError("Buffer accepted no auditable article receipt")
+    buffer_id = buffer_receipt["id"]
     slot = promotion_slot(now)
     if slot is None:
         raise RuntimeError("No logical article promotion slot is active")
@@ -724,6 +727,18 @@ def main() -> int:
         "published_at": eligible["published_at"],
         "primary_topic": primary_topic(eligible) or None,
     }
+    receipt_fields = {
+        "status": "buffer_status_at_accept",
+        "dueAt": "buffer_due_at_at_accept",
+        "sentAt": "buffer_sent_at_at_accept",
+        "externalLink": "buffer_external_link_at_accept",
+        "sharedNow": "buffer_shared_now_at_accept",
+        "shareMode": "buffer_share_mode_at_accept",
+    }
+    for provider_key, ledger_key in receipt_fields.items():
+        value = buffer_receipt.get(provider_key)
+        if value is not None:
+            entry[ledger_key] = value
     if evidence is not None:
         entry["metrics_at_queue"] = {**window,
                                      "last_7_days_page_views": evidence["last7DaysPageViews"],
@@ -732,6 +747,8 @@ def main() -> int:
     save_state(state)
     print("Article accepted by Buffer for immediate send (X publication still unverified):",
           eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],
+          "provider_status=", entry.get("buffer_status_at_accept"),
+          "external_link=", entry.get("buffer_external_link_at_accept"),
           "scheduled_before=", scheduled, "selection=", entry["source"],
           "page_views=", evidence,
           "measurement_window=", window)
