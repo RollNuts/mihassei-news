@@ -1,5 +1,55 @@
 [
   {
+    "slug": "buzzword-award-what-does-it-mean-wins",
+    "category": "エンタメ",
+    "flash": "意味を聞く声が大賞",
+    "fiction_company": "ことば観測賞",
+    "art": "cards",
+    "fiction_at": "2031-11-06T07:39:40+09:00",
+    "published_at": "2026-11-06T07:39:40+09:00",
+    "title": "「どういう意味？」が流行語大賞に　候補30語を尋ねる声だけ大流行",
+    "summary": "候補を発表した途端、知らない言葉を調べる人が続出。選考会は候補語よりも繰り返された質問を『最もよく聞いた言葉』として表彰した。",
+    "paragraphs": [
+      "流行語を選ぶ「ことば観測賞」は、候補30語を発表した翌日、年間大賞を「どういう意味？」に決めた。候補語の浸透度を街頭で調べたところ、通行人からその質問が相次いだからだ。",
+      "調査員が候補語を一つ読み上げるたび、通行人はスマホを取り出した。「使ったことはありますか」と尋ねても、「検索したことならあります」と返ってくる。事務局の記録には言葉の使用例より、意味を調べた回数が積み上がった。",
+      "授賞式で司会が大賞を発表すると、客席から「どういう意味？」との声が上がった。司会は少しうれしそうに「はい、今の言葉が受賞しました」と答え、もう一度拍手を求めた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "MANTANWEB",
+      "published_at": "2026-11-05T14:00:00+09:00",
+      "url": "https://mantan-web.jp/article/20261105dog00m200036000a.html",
+      "topic": "2026年11月5日14時に2026年の新語・流行語大賞の候補30語が発表されたという報道。ことば観測賞、候補語を知らない街頭回答、質問への年間大賞授与は記事独自の創作であり、実際の主催者の行為ではない。"
+    },
+    "scene_prompt": "A grounded editorial illustration of a small Japanese word-of-the-year award ceremony: a serious presenter holds a large blank prize certificate on stage, while several audience members seated close to the camera look up unfamiliar words on smartphones with puzzled faces. A single scene with the podium, certificate and smartphones clearly visible, ordinary public hall, no logos, no precise lettering.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "イベント",
+      "メディア"
+    ],
+    "satire_tags": [
+      "流行の後追い",
+      "知ってる前提"
+    ],
+    "editorial_lane": "trend",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_signature": {
+      "target": "流行を選ぶ側が言葉の知名度より選考の権威を重んじ、知らない人の多さを見失う",
+      "action": "候補語を知らない人が尋ねる『どういう意味？』の回数を流行の証拠として数える",
+      "outcome": "候補語ではなく質問の『どういう意味？』が年間大賞を受賞し、授賞式でも客席から同じ質問が飛ぶ"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "流行語大賞",
+      "observed_at": "2026-11-06T07:37:22+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://mantan-web.jp/article/20261105dog00m200036000a.html",
+        "https://news.tv-asahi.co.jp/news_geinou/articles/900203524.html"
+      ]
+    }
+  },
+  {
     "slug": "delivery-locker-zero-redelivery-waiting-line",
     "category": "暮らし",
     "flash": "再配達ゼロ、待機列あり",
