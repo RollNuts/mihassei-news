@@ -154,6 +154,12 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(result["unit"], "anonymous-browser")
         self.assertEqual(result["recent_articles_sampled"], 2)
         self.assertEqual(result["recent_articles"][0]["continued_readers"], 2)
+        self.assertIsNone(result["recent_articles"][0]["editorial_lane"])
+        self.assertIsNone(result["recent_articles"][0]["editorial_tone"])
+        self.assertEqual(result["published_editorial_metadata_tracked"], 0)
+        self.assertEqual(result["published_editorial_lanes"], {})
+        self.assertEqual(result["published_editorial_tones"], {})
+        self.assertIn("not backfilled", result["editorial_metadata_note"])
         self.assertIn("referrer-stripping undercounts", result["continuation_note"])
         self.assertNotIn("channels_cumulative", result)
         with_channels=m.build_snapshot(
@@ -165,6 +171,100 @@ class DailyMetricsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             m.build_snapshot(articles, datetime.fromisoformat(
                 "2026-11-03T01:07:00+09:00"), 15, counts, {"visitors": 7})
+
+
+    def test_snapshot_preserves_editorial_lane_and_tone_for_growth_comparison(self):
+        articles = [
+            {
+                "slug": "trend-story", "category": "社会",
+                "published_at": "2026-11-02T21:00:00+09:00",
+                "editorial_lane": "trend",
+                "editorial_tone": "plausible_future",
+                "source": {"published_at": "2026-11-02T20:00:00+09:00"},
+            },
+            {
+                "slug": "life-story", "category": "暮らし",
+                "published_at": "2026-11-02T19:00:00+09:00",
+                "editorial_lane": "social_life",
+                "editorial_tone": "observational",
+                "source": {"published_at": "2026-11-02T18:00:00+09:00"},
+            },
+            {
+                "slug": "legacy-story", "category": "経済",
+                "published_at": "2026-11-01T18:00:00+09:00",
+                "source": {"published_at": "2026-11-01T17:00:00+09:00"},
+            },
+        ]
+        counts = {
+            article["slug"]: {
+                "readers": 2, "likes": 0, "share_clicks": 0,
+                "continued_readers": 1,
+            }
+            for article in articles
+        }
+        result = m.build_snapshot(
+            articles, datetime.fromisoformat("2026-11-03T01:07:00+09:00"),
+            12, counts, {"visitors": 5, "articleReads": 7},
+        )
+        self.assertEqual(result["published_editorial_metadata_tracked"], 2)
+        self.assertEqual(
+            result["published_editorial_lanes"],
+            {"social_life": 1, "trend": 1},
+        )
+        self.assertEqual(
+            result["published_editorial_tones"],
+            {"observational": 1, "plausible_future": 1},
+        )
+        by_slug = {item["slug"]: item for item in result["recent_articles"]}
+        self.assertEqual(by_slug["trend-story"]["editorial_lane"], "trend")
+        self.assertEqual(
+            by_slug["trend-story"]["editorial_tone"], "plausible_future"
+        )
+        self.assertEqual(by_slug["life-story"]["editorial_lane"], "social_life")
+        self.assertIsNone(by_slug["legacy-story"]["editorial_lane"])
+        m.validate_snapshot(result, "2026-11-02")
+
+    def test_partial_editorial_metadata_is_rejected_instead_of_silently_dropped(self):
+        article = {
+            "slug": "partial", "category": "社会",
+            "published_at": "2026-11-02T21:00:00+09:00",
+            "editorial_lane": "trend",
+            "source": {"published_at": "2026-11-02T20:00:00+09:00"},
+        }
+        counts = {
+            "partial": {
+                "readers": 1, "likes": 0, "share_clicks": 0,
+                "continued_readers": 0,
+            }
+        }
+        with self.assertRaisesRegex(ValueError, "Partial or invalid editorial"):
+            m.build_snapshot(
+                [article],
+                datetime.fromisoformat("2026-11-03T01:07:00+09:00"),
+                1, counts, {"visitors": 1, "articleReads": 1},
+            )
+
+    def test_corrupt_editorial_snapshot_summary_fails_closed(self):
+        articles = [{
+            "slug": "tracked", "category": "社会",
+            "published_at": "2026-11-02T21:00:00+09:00",
+            "editorial_lane": "trend",
+            "editorial_tone": "wildcard",
+            "source": {"published_at": "2026-11-02T20:00:00+09:00"},
+        }]
+        counts = {
+            "tracked": {
+                "readers": 1, "likes": 0, "share_clicks": 0,
+                "continued_readers": 0,
+            }
+        }
+        result = m.build_snapshot(
+            articles, datetime.fromisoformat("2026-11-03T01:07:00+09:00"),
+            1, counts, {"visitors": 1, "articleReads": 1},
+        )
+        result["published_editorial_lanes"] = {"trend": 0}
+        with self.assertRaisesRegex(ValueError, "Editorial lane counts"):
+            m.validate_snapshot(result, "2026-11-02")
 
 
 class ContinuationMetricsValidation(unittest.TestCase):
