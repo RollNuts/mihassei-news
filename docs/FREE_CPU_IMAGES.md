@@ -12,7 +12,7 @@
 - 同ワークフローのSummaryは、`生成対象0件`と`読者向け画像が十分`を同義にしない。`scripts/visual_review.py`の既存判定を使い、承認済みJPEG・専用SVG・承認写真・汎用SVG、未検品JPEG、品質保留JPEGを分けて表示する。Mac停止中でも、CPU生成のidleと画像回収待ちを区別して引き継ぐ。
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
 - 記事の `visual_strategy` が `illustration` の場合は、通常実行・`retry_held`・ローカルの`--force`でもCPU/Mac生成キューへ入れない。文字・数字・不在・厳密な人数や複雑な人物関係が風刺の成立条件で、実生成を繰り返しても意味が崩れる題材に使う。再び写真を試すなら、記事側を `cpu-photo` に戻し、場面指示を変えて新しい記事指紋で扱う。
-- CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。
+- CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。**画風の面白さは足さず、documentary / press photo の共通ラッパーに任せる。** cinematic、anime、3D render、glossy product photo、dramatic lighting など広告・CG寄りの指示を個別sceneへ入れない。
 - モデル: [SimianLuo/LCM_Dreamshaper_v7](https://huggingface.co/SimianLuo/LCM_Dreamshaper_v7)の既存リビジョンを固定して再利用する。LCMのカード記載はMITだが、基盤[DreamShaper 7](https://huggingface.co/Lykon/dreamshaper-7)は[CreativeML Open RAIL-M](https://huggingface.co/spaces/CompVis/stable-diffusion-license/blob/main/license.txt)であり、その利用制限も確認する。モデルは公開・非ゲートで、外部推論APIを呼ばずGitHubのCPU内部で実行する。公開するのは架空人物による風刺JPEGで、モデル重みは配布しない。
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
 - CPUの速度・生成品質はSDXLをMacのGPUで動かす場合に及ばない可能性が高い。**実際の生成成功・本番表示・見栄えはGitHub Actions実行ログと公開URLで確認するまで未証明**。異常な画像を自動公開しないための安全検証はあるが、意味が伝わるかの人間のレビューは自動化していない。
@@ -20,7 +20,7 @@
 ## 初回確認
 
 1. GitHubの [Actions](https://github.com/RollNuts/mihassei-news/actions) → `Free CPU staged-news photos (public repository only)` → `Run workflow` で`limit=1〜3`を選び、`publish`はOFFのまま生成する。必要なら`slug`で記事を限定する。
-2. `cpu-scenes-review-<実行ID>` artifactを開き、記事・小道具・明るさ・文字混入・人物を目視する。保存するのは今回成功したJPEG最大3枚と、対応する記事原本・manifestだけ。モデルやPNGは保存せず、artifactは1日で期限切れになる。
+2. `cpu-scenes-review-<実行ID>` artifactを開き、記事・小道具・明るさ・文字混入・人物に加えて、**実写の報道写真に見えるかを最初に目視する**。アニメ、イラスト、3DCG、プラスチック肌、広告・映画ポスター風の演出が見えるものは、内容が合っていても不採用。保存するのは今回成功したJPEG最大3枚と、対応する記事原本・manifestだけ。モデルやPNGは保存せず、artifactは1日で期限切れになる。
 3. 生成済みJPEGを承認後、最新mainの記事との指紋照合を通して画像とmanifestだけを通常pushする。自動公開を使う場合も同じ照合を実行し、改稿後の古い画像を公開しない。送信競合は最大3回まで再試行し、失敗時もartifactから確認・回収できる。
 4. Cloudflare反映後、公開JPEGのHTTP 200・SHA、記事・一覧・OGP・RSSを確認する。画像の絵作りとオチまで合うかは数値検査だけでは保証しない。
 
