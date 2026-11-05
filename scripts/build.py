@@ -978,12 +978,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     ld = json.dumps(schemas if len(schemas) > 1 else metadata, ensure_ascii=False).replace("</", "<\\/")
     # Non-content utility pages should never compete with actual stories in search.
-    robots_directives = (
-        "noindex,follow,max-image-preview:large"
-        if (path in ("/saved/", "/404.html") or not indexable)
-        else "max-image-preview:large"
-    )
-    robots_tag = f'<meta name="robots" content="{robots_directives}">'
+    noindex_page = path in ("/saved/", "/404.html") or not indexable
+    robots_tag = '<meta name="robots" content="noindex,follow">' if noindex_page else ""
+    image_preview_tag = "" if noindex_page else '<meta name="robots" content="max-image-preview:large">'
     serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -1005,6 +1002,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     page_class = "page-home" if path == "/" else "page-inner"
     return f'''<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+{image_preview_tag}
 {robots_tag}
 <meta name="theme-color" content="#f9f8f3">
 <meta name="google-adsense-account" content="ca-pub-6754575901141756">
@@ -1546,7 +1544,6 @@ def story(a, articles, issues=None, serials=None):
     # Static related-story links strengthen topic clusters even without JS or PV data.
     # Only stories sharing an actual published tag qualify; the existing topic
     # ranker decides order, so this adds no new opaque recommendation system.
-    article_topics = set(article_tags(a))
     ranked_related = suggested_articles(a, articles, limit=max(0, len(articles) - 1))
     related_items = []
     for item in ranked_related:
