@@ -94,6 +94,7 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
             "id": e["buffer_id"],
             "status": "scheduled",
             "text": "【未発生新聞】\n見出し\n\nhttps://veripsa.com/articles/story/",
+            "createdAt": "2026-11-05T04:59:55Z",
             "dueAt": "2026-11-05T05:00:00Z",
             "externalLink": "https://x.com/veripsa/status/123",
             "sharedNow": True,
@@ -102,6 +103,7 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         row = m.reconcile("story", e, remote)
         self.assertEqual(row["buffer_status"], "scheduled")
         self.assertEqual(row["buffer_due_at_utc"], "2026-11-05T05:00:00+00:00")
+        self.assertEqual(row["buffer_created_at_utc"], "2026-11-05T04:59:55+00:00")
         self.assertEqual(row["buffer_status_at_accept"], "sending")
         self.assertIs(row["buffer_shared_now_at_accept"], True)
         self.assertEqual(row["buffer_external_link"], "https://x.com/veripsa/status/123")
@@ -166,6 +168,7 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(row["id"], "buf-story")
         query = api.call_args.args[1]
         self.assertIn('post(input: {id: "buf-story"})', query)
+        self.assertIn("createdAt", query)
         self.assertIn("externalLink sharedNow shareMode", query)
         self.assertNotIn("mutation", query)
 
