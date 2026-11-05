@@ -164,7 +164,7 @@ class EditorialMixTests(unittest.TestCase):
         second["editorial_signature"] = {
             "target": "Ｆｉｒｓｔ が効率を重視しすぎる！",
             "action": "first・が手段を目的にする",
-            "outcome": "first が本来の目的が消える。",
+            "outcome": "ｆｉｒｓｔ・の本来の目的が消える。",
         }
         errors, _ = validate_articles([first, second])
         self.assertTrue(
