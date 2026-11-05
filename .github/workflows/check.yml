@@ -33,6 +33,10 @@ jobs:
         run: python3 scripts/guard_generated_media_history.py "$MEDIA_BASE_SHA"
       - name: Warn about stale news sources and topic concentration (never blocks publishing)
         run: python3 scripts/audit_editorial.py
+      - name: Enforce editorial lane metadata and exact duplicate guards
+        run: python3 scripts/editorial_mix.py --check
+      - name: Validate free trend helper without network access
+        run: python3 -m py_compile scripts/trend_brief.py scripts/editorial_mix.py
       - name: Review repeated satire templates and generic openings (advisory only)
         continue-on-error: true
         run: python3 scripts/audit_satire.py

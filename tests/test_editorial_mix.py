@@ -1,0 +1,173 @@
+"""Tests for editorial 3/2/2 metadata and duplicate guards."""
+from __future__ import annotations
+
+import unittest
+from collections import Counter
+from datetime import datetime, timedelta, timezone
+
+from scripts.editorial_mix import (
+    LANE_TARGETS,
+    lane_counts,
+    next_preferred_lane,
+    report_day,
+    validate_articles,
+)
+
+JST = timezone(timedelta(hours=9))
+BASE_TIME = datetime(2026, 11, 6, 9, 30, tzinfo=JST)
+
+
+def story(
+    slug: str,
+    lane: str,
+    *,
+    published: datetime = BASE_TIME,
+    term: str = "流行語大賞",
+    followup_of: str | None = None,
+) -> dict:
+    item = {
+        "slug": slug,
+        "published_at": published.isoformat(),
+        "editorial_lane": lane,
+        "editorial_signature": {
+            "target": f"{slug}が効率を重視しすぎる",
+            "action": f"{slug}が手段を目的にする",
+            "outcome": f"{slug}の本来の目的が消える",
+        },
+        "source": {
+            "url": f"https://example.com/{slug}",
+        },
+    }
+    if followup_of:
+        item["followup_of"] = followup_of
+    if lane == "trend":
+        item["trend_observation"] = {
+            "source_kind": "google_trends",
+            "term": term,
+            "observed_at": (published - timedelta(hours=1)).isoformat(),
+            "url": "https://trends.google.com/trending?geo=JP",
+            "verification_urls": [f"https://example.com/{slug}"],
+        }
+    return item
+
+
+class EditorialMixTests(unittest.TestCase):
+    def test_target_is_three_two_two(self):
+        self.assertEqual(
+            LANE_TARGETS,
+            {"trend": 3, "social_life": 2, "original_satire": 2},
+        )
+
+    def test_next_lane_fills_largest_remaining_deficit(self):
+        self.assertEqual(next_preferred_lane(Counter()), "trend")
+        self.assertEqual(
+            next_preferred_lane(Counter({"trend": 1})),
+            "trend",
+        )
+        self.assertEqual(
+            next_preferred_lane(Counter({"trend": 2})),
+            "social_life",
+        )
+        self.assertIsNone(
+            next_preferred_lane(
+                Counter({"trend": 3, "social_life": 2, "original_satire": 2})
+            )
+        )
+
+    def test_lane_counts_only_selected_jst_day(self):
+        articles = [
+            story("a", "trend"),
+            story("b", "social_life"),
+            story(
+                "old",
+                "original_satire",
+                published=BASE_TIME - timedelta(days=1),
+            ),
+        ]
+        counts = lane_counts(articles, "2026-11-06")
+        self.assertEqual(counts["trend"], 1)
+        self.assertEqual(counts["social_life"], 1)
+        self.assertEqual(counts["original_satire"], 0)
+
+    def test_rollout_day_does_not_force_backfill_after_seven_legacy_stories(self):
+        articles = [
+            {
+                "slug": f"legacy-{i}",
+                "published_at": f"2026-11-05T{7 + i * 2:02d}:30:00+09:00",
+                "source": {"url": f"https://example.com/legacy-{i}"},
+            }
+            for i in range(7)
+        ]
+        report = report_day(articles, "2026-11-05")
+        self.assertIn("published=7", report)
+        self.assertIn("rollout tracking partial", report)
+
+    def test_valid_trend_metadata_passes(self):
+        errors, warnings = validate_articles([story("fresh", "trend")])
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
+    def test_public_x_aggregator_is_allowed_but_warned(self):
+        item = story("x-public", "trend")
+        item["trend_observation"]["source_kind"] = "x_public_aggregator"
+        errors, warnings = validate_articles([item])
+        self.assertEqual(errors, [])
+        self.assertTrue(any("official X" in warning for warning in warnings))
+
+    def test_trend_requires_recent_observation_and_verification(self):
+        item = story("bad", "trend")
+        item["trend_observation"]["observed_at"] = (
+            BASE_TIME - timedelta(days=2)
+        ).isoformat()
+        item["trend_observation"]["verification_urls"] = []
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("max is" in error for error in errors))
+        self.assertTrue(any("verification_urls" in error for error in errors))
+
+    def test_same_trend_term_is_blocked_within_seven_days(self):
+        first = story("first", "trend", term="通信障害")
+        second = story(
+            "second",
+            "trend",
+            term="通信障害",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(any("duplicate trend term" in error for error in errors))
+
+    def test_followup_can_reuse_trend_term(self):
+        first = story("first", "trend", term="通信障害")
+        second = story(
+            "second",
+            "trend",
+            term="通信障害",
+            published=BASE_TIME + timedelta(hours=2),
+            followup_of="first",
+        )
+        errors, _ = validate_articles([first, second])
+        self.assertFalse(any("duplicate trend term" in error for error in errors))
+
+    def test_exact_satire_signature_reuse_is_blocked(self):
+        first = story("first", "social_life")
+        second = story(
+            "second",
+            "original_satire",
+            published=BASE_TIME + timedelta(hours=2),
+        )
+        second["editorial_signature"] = first["editorial_signature"].copy()
+        errors, _ = validate_articles([first, second])
+        self.assertTrue(
+            any("editorial_signature duplicates" in error for error in errors)
+        )
+
+    def test_pre_rollout_article_is_not_retroactively_required(self):
+        old = {
+            "slug": "legacy",
+            "published_at": "2026-11-05T19:30:00+09:00",
+            "source": {"url": "https://example.com/legacy"},
+        }
+        self.assertEqual(validate_articles([old]), ([], []))
+
+
+if __name__ == "__main__":
+    unittest.main()
