@@ -89,7 +89,54 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(report["observed"]["buffer_sent_today"], 1)
         self.assertEqual(report["observed"]["buffer_scheduled_today"], 1)
         self.assertEqual(report["observed"]["unverified"], 1)
+        self.assertEqual(report["observed"]["delivery_problems"], 0)
         self.assertEqual(report["scope"]["automatic_lane"], "article-picks-only")
+
+    def test_direct_saved_id_read_can_reveal_failed_immediate_delivery(self):
+        state = {"schema_version": 1, "queued": {
+            "failed": entry("failed", 2),
+            "pending": entry("pending", 1),
+        }}
+        existing = [
+            {"id": "buf-failed", "status": "failed",
+             "text": "https://veripsa.com/articles/failed/"},
+            {"id": "buf-pending", "status": "pending",
+             "text": "https://veripsa.com/articles/pending/"},
+        ]
+        report = m.build(state, existing, NOW)
+        self.assertEqual(report["observed"]["delivery_problems"], 2)
+        by_slug = {row["slug"]: row for row in report["items"]}
+        self.assertEqual(by_slug["failed"]["buffer_status"], "failed")
+        self.assertEqual(
+            by_slug["failed"]["review_needed"], "provider_not_sent_failed"
+        )
+        self.assertEqual(by_slug["pending"]["buffer_status"], "pending")
+
+    def test_read_post_by_id_is_read_only_and_uses_saved_id(self):
+        with patch.object(m, "gql", return_value={
+            "post": {
+                "id": "buf-story", "status": "sent",
+                "text": "https://veripsa.com/articles/story/",
+                "sentAt": "2026-11-05T03:00:00Z",
+            }
+        }) as api:
+            row = m.read_post_by_id("secret", "buf-story")
+        self.assertEqual(row["id"], "buf-story")
+        query = api.call_args.args[1]
+        self.assertIn('post(input: {id: "buf-story"})', query)
+        self.assertNotIn("mutation", query)
+
+    def test_direct_lookup_failure_stays_unverified_without_retry(self):
+        state = {"schema_version": 1, "queued": {
+            "missing": entry("missing", 1),
+        }}
+        report = m.build(
+            state, [], NOW,
+            {"buf-missing": "direct_id_lookup_failed:provider unavailable"},
+        )
+        row = report["items"][0]
+        self.assertEqual(row["buffer_status"], "unverified")
+        self.assertTrue(row["reason"].startswith("direct_id_lookup_failed:"))
 
     def test_overdue_reservations_are_flagged_not_counted_as_sent(self):
         state = {"schema_version": 1, "queued": {
