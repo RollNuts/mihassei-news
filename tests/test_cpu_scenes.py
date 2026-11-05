@@ -156,7 +156,7 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(kwargs["num_inference_steps"], 8)
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
         self.assertIn("capsule lottery machine", kwargs["prompt"])
-        self.assertIn("DSLR color photograph", kwargs["prompt"])
+        self.assertIn("documentary press photograph", kwargs["prompt"])
 
     def test_bell_redraw_changes_real_inference_seed_and_records_the_same_integer(self):
         a = {**article(), "slug": "stolen-doorbell-returned-by-parcel", "title": "盗まれた呼び鈴が小包で戻る"}
@@ -201,7 +201,8 @@ class FreeCpuImageTests(unittest.TestCase):
         with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {a["slug"]: article_fingerprint(a)}):
             prompt = cpu.cpu_prompt(a)
         self.assertIn("EMPTY CHAIRS", prompt)
-        self.assertIn("Bright, colorful", prompt)
+        self.assertIn("Candid documentary photograph", prompt)
+        self.assertIn("realistic skin and materials", prompt)
         self.assertLess(len(prompt.split()), 65)
 
     def test_tv_override_cannot_follow_title_alone_or_an_edited_source(self):
@@ -281,9 +282,9 @@ class FreeCpuImageTests(unittest.TestCase):
                 prompt = cpu.cpu_prompt(source)
             for item in objects:
                 self.assertIn(item, prompt)
-            self.assertIn("DSLR color photograph", prompt)
-            self.assertIn("unmarked props", prompt)
-            self.assertLess(len(prompt.split()), 55)
+            self.assertIn("documentary press photograph", prompt)
+            self.assertIn("Ordinary real-world materials", prompt)
+            self.assertLess(len(prompt.split()), 65)
             if slug == "volleyball-team-lunch-plate-merch":
                 for room_context in ("table", "room", "indoor", "dinner", "net"):
                     self.assertNotIn(room_context, prompt.lower())
