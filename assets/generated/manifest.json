@@ -418,6 +418,24 @@
     }
   },
   "rejected": {
+    "sale-discount-savings-receipt-framed": {
+      "article_sha256": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+      "reason": "Actual new CPU JPEG from run 41998720390 shows a man holding a printed product box or advert amid stacks of boxes, but not a framed long receipt displaying the highlighted savings amount or a puzzled teenager. The comic contradiction of spending ten times more to display savings is not visible; there is also noticeable pseudo-text. Reject and retain a purpose-built editorial illustration.",
+      "rejected_candidate_sha256": "e31a5108ef0118d28c53f9dc08a4792aec26dcb3efa408eacafc9d03f084caf0",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
+    },
+    "film-village-all-stars-no-extras": {
+      "article_sha256": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
+      "reason": "Actual new CPU JPEG from run 41998720390 again depicts a crowded street full of ordinary pedestrians and spectators rather than an empty film-set street where only the director carries shopping bags past a cluster of lead actors. It reverses the no-extras premise. Reject and keep dedicated editorial SVG.",
+      "rejected_candidate_sha256": "a9321fc347c29ab2e048bdfc5d3b5fa26e26f4d4efbb179fe36b8a0c68d431eb",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
+    },
+    "office-face-to-face-day-video-call-echo": {
+      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "reason": "Actual new CPU JPEG from run 41998720390 shows three separate monitors each with a suited person and an otherwise plain desk; the required single video-call grid before an unmistakably vacant open-plan office is absent. The visual does not establish that everyone came to the same office but can meet only on screens. Keep a story-specific illustration until a different candidate passes visual review.",
+      "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41998720390"
+    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
