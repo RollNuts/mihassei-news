@@ -4,7 +4,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 配信
 
-[`x-original-experiments.yml`](../../.github/workflows/x-original-experiments.yml)は毎日09:05・11:05・13:05・15:05・17:05・19:05・21:05頃（JST）のcronを基本に候補を判定する。加えて、09:00〜21:59 JSTに`content/articles.json`がmainへ公開されたpushも補助トリガーにする。07:30・23:30枠の公開pushはBufferを読まず書かず終了する。cronはバックアップとして維持し、どちらから起動しても1回最大1本、JST1日最大7本、09:05・11:05・13:05・15:05・17:05・19:05・21:05の**論理7枠につき1本まで**、slug重複防止を同じコードで適用する。GitHub Actionsが遅れて09:05枠の処理が09:36になっても、その受付時刻からさらに2時間待つのではなく、11:05枠は別枠として判定する。同じ論理枠内のcron・公開push重複だけを止める。選ばれた記事はBufferの`shareNow`でその枠の実行時に即時送信を依頼し、一般のBufferキュー待ちで数時間後ろへ流さない。記事レーン自身の論理7枠だけを日次上限として数え、停止済み旧投稿や他のX投稿は記事枠を消費しない。既存Buffer投稿は重複確認のため読み取るが、記事紹介そのものはキューの空き時刻に依存しない。
+[`x-original-experiments.yml`](../../.github/workflows/x-original-experiments.yml)は毎日09:05・11:05・13:05・15:05・17:05・19:05・21:05頃（JST）のcronを基本に候補を判定する。加えて、09:00〜21:59 JSTに`content/articles.json`がmainへ公開されたpushも補助トリガーにする。07:30・23:30枠の公開pushはBufferを読まず書かず終了する。cronはバックアップとして維持し、どちらから起動しても1回最大1本、JST1日最大7本、09:05・11:05・13:05・15:05・17:05・19:05・21:05の**論理7枠につき1本まで**、slug重複防止を同じコードで適用する。GitHub Actionsが遅れて09:05枠の処理が09:36になっても、その受付時刻からさらに2時間待つのではなく、11:05枠は別枠として判定する。同じ論理枠内のcron・公開push重複だけを止める。選ばれた記事はBufferの`shareNow`でその枠の実行時に即時送信を依頼し、一般のBufferキュー待ちで数時間後ろへ流さない。`createPost`成功応答から同じAPI呼び出し内で`status`・`sentAt`・`externalLink`・`sharedNow`・`shareMode`も受け取り、初期送達証拠として台帳へ保存する。記事レーン自身の論理7枠だけを日次上限として数え、停止済み旧投稿や他のX投稿は記事枠を消費しない。既存Buffer投稿は重複確認のため読み取るが、記事紹介そのものはキューの空き時刻に依存しない。
 
 - **新着レーン**: 公開1〜18時間の未紹介記事。続報を優先し、その次に新しい記事を選ぶ。PV蓄積前でも対象にする。新着候補を先に重複・上限・安全性で判定し、成熟記事のPV APIが取得できなくても新着紹介を妨げない。
 - **Xでの初見理解ゲート**: 新着・実測PVのどちらも、見出しと既存summaryを読んで状況が自立して伝わる記事だけを紹介する。見出し・要約が欠落/極端に短い、書き出しが「この件」「例の」「これを受け」等の文脈依存、または記事に`x_promotion_skip: true`の編集判断がある場合は候補から除外する。機械的な短文チェックだけで面白さを判定したと見なさず、執筆段階の[`初見読者の理解ゲート`](../../docs/EDITORIAL_LOOP.md#初見読者の理解ゲート)を優先する。Xで長文解説を追加して救済しない。
@@ -23,6 +23,6 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 `x-delivery-audit.yml`は各論理枠の約30分後（09:35〜21:35）と23:45 JSTに`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLをproviderの現在値へ照合する。scheduled/sent一覧にない保存済みIDは直接読み、pending/error/failed/draftをdelivery problemとして残す。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の記事公開push自身は監査のprovider読み取りをせず、次の定時監査へ渡す。結果は既存の`article-picks/delivery.json`へ保存する。再送・予約編集・X投稿は行わない。
 
-`state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間、`slot_jst`、`submission_mode: shareNow`を保存する。移行前の受理記録は`queued_at_utc`から論理枠を推定する。Bufferの即時送信受付はX実公開の独立確認ではないため、provider上のsentとX実公開を分けて確認し、未確認の公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
+`state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間、`slot_jst`、`submission_mode: shareNow`に加え、Bufferが同じ`createPost`成功応答で返した初期`status`・`sentAt`・`externalLink`・`sharedNow`・`shareMode`を存在する範囲で保存する。移行前の受理記録は`queued_at_utc`から論理枠を推定する。Bufferの即時送信受付はX実公開の独立確認ではないため、provider上のsentとX実公開を分けて確認し、未確認の公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
 
 停止は`article-picks/config.json.enabled: false`だけで行う。旧自動レーンは停止状態を維持し、本人の明示的な再開依頼なしに有効化しない。
