@@ -131,7 +131,7 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
                                        drafts_only=True)
         self.assertIn("status: [draft]", query)
         self.assertIn("channelIds:", query)
-        self.assertIn("after: \\"cursor\\"", query)
+        self.assertIn('after: "cursor"', query)
         self.assertNotIn("dueAt: {start", query)
         ordinary = purge.posts_list_query("org", purge.CHANNEL, None)
         self.assertNotIn("status: [draft]", ordinary)
