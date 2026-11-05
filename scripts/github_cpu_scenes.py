@@ -70,7 +70,7 @@ CPU_SCENES = {
     "volleyball-team-lunch-plate-merch": (
         "Casual overhead news photograph of ONE round white ceramic plate with a yellow "
         "measuring tape across it. A blue-yellow volleyball sits beside the "
-        "plate, cropped at the frame edge. Ordinary blue tabletop."
+        "plate, cropped at the frame edge. Ordinary blue surface."
     ),
     "film-village-all-stars-no-extras": (
         "ONE solitary tired film director carrying two shopping bags walks "
