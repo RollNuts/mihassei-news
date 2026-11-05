@@ -39,7 +39,9 @@ class EditorialReaderCopyTests(unittest.TestCase):
                             if field == "source" else article[field])
                     self.assertNotIn("架空の", reader_copy(text))
                 for paragraph in article["paragraphs"]:
-                    self.assertNotIn("架空の", reader_copy(paragraph))
+                    visible = reader_copy(paragraph)
+                    self.assertNotIn("架空の", visible)
+                    self.assertNotIn("2031年、", visible)
         self.assertEqual(original, (ROOT / "content/articles.json").read_bytes())
 
     def test_rendered_stories_and_shares_do_not_expose_legacy_qualifiers(self):
