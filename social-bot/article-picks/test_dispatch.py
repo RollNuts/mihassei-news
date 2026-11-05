@@ -662,6 +662,23 @@ class ArticlePickTests(unittest.TestCase):
         )
         self.assertEqual(item["slug"], "new-story")
 
+        # A heavily delayed previous-day receipt after midnight belongs to the
+        # previous day's last logical slot, not today's seven-post quota.
+        legacy_after_midnight = {
+            "buffer_id": "buf-late",
+            "queued_at_utc": "2026-11-04T17:54:00+00:00",
+        }
+        self.assertEqual(
+            picks.entry_promotion_slot(legacy_after_midnight),
+            datetime.fromisoformat("2026-11-04T21:05:00+09:00"),
+        )
+        self.assertEqual(
+            picks.promotions_today(
+                ledger(**{"previous-day-late": legacy_after_midnight}), NOW
+            ),
+            0,
+        )
+
         same_day = {
             f"story-{i}": {
                 "buffer_id": f"buf-{i}",
