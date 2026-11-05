@@ -66,7 +66,10 @@ class MotionClipTests(unittest.TestCase):
 
     def test_player_and_video_schema_are_optional_even_without_ffmpeg(self):
         # Static publishing must work on runners that cannot encode a movie.
-        article = self.articles[0]
+        # Illustration-only stories must not enter the JPEG/video pipeline,
+        # even when the photo acceptance gate is mocked to return true.
+        article = next(a for a in self.articles
+                       if a.get("visual_strategy", "cpu-photo") == "cpu-photo")
         with patch.object(build, "reviewed_generated_scene", return_value=True), \
              patch.object(build, "usable_clip", return_value={
             "created_at": "2026-11-03T08:00:00+00:00", "sha256": "a"*64,
