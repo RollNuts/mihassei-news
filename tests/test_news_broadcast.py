@@ -127,7 +127,7 @@ class NewsBroadcastTests(unittest.TestCase):
         archive = build.archive(self.articles)
         self.assertIn('data-category-filter="事件"', archive)
         page = build.story(incidents[0], self.articles)
-        self.assertIn('<strong>創作ニュース</strong>', page)
+        self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("J-CASTニュース", page)
 
 
