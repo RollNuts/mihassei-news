@@ -46,6 +46,14 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("SIMILAR_PUNCHLINE",labels)
         self.assertEqual(articles,original,"Warnings must never mutate or remove new articles")
 
+    def test_vague_headline_warning_is_advisory(self):
+        article = sample(1, title="まさかの新制度、ネット騒然")
+        original = copy.deepcopy(article)
+        flags = analyze([article])
+        self.assertIn("VAGUE_HEADLINE", {item[0] for item in flags})
+        self.assertIn("主語・具体的な行動", "\n".join(next_slot_brief([article])))
+        self.assertEqual(article, original)
+
     def test_near_duplicate_editorial_signatures_are_advisory(self):
         first = sample(1, title="出社したのに画面越し")
         second = sample(2, title="会議室に集まったのに全員オンライン")
@@ -250,7 +258,7 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("直近6本",rendered)
         self.assertIn("確認・申請・認証・拒否",rendered)
         self.assertIn("社会が集中",rendered)
-        self.assertIn("異なる仕組みの見出し2案",rendered)
+        self.assertIn("見出し3案",rendered)
         self.assertIn("警告だけで発行を止めない",rendered)
         self.assertEqual(articles,original)
         self.assertEqual(len(articles),6)
