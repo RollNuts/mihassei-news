@@ -37,7 +37,6 @@ METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
 JST = timezone(timedelta(hours=9))
 MAX_SAFE_INTEGER = 2**53 - 1
-MAX_DAILY_X_POSTS = 7
 PROMOTION_SLOT_HOURS = (9, 11, 13, 15, 17, 19, 21)
 PROMOTION_SLOT_MINUTE = 5
 CRISIS_PROMO_PATTERN = re.compile(
@@ -569,27 +568,6 @@ def promotions_today(state: dict, now: datetime) -> int:
     return count
 
 
-def x_posts_today(existing: list[dict], now: datetime) -> int:
-    """Count all observed Buffer X posts on the JST day, across every lane."""
-    day = now.astimezone(JST).date()
-    seen = set()
-    for row in existing:
-        if row.get("status") not in ("scheduled", "sent"):
-            continue
-        value = row.get("sentAt") if row.get("status") == "sent" else row.get("dueAt")
-        if not value:
-            value = row.get("dueAt") or row.get("sentAt")
-        if not value:
-            continue
-        try:
-            observed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-        except (AttributeError, ValueError):
-            continue
-        if observed.tzinfo and observed.astimezone(JST).date() == day:
-            seen.add(row.get("id") or ("anonymous", row.get("text"), value))
-    return len(seen)
-
-
 def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict],
            config: dict, now: datetime
            ) -> tuple[dict | None, dict | None, int]:
@@ -604,7 +582,6 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     today_count = promotions_today(state, now)
     current_slot = promotion_slot(now)
     if (current_slot is None
-            or x_posts_today(existing, now) >= MAX_DAILY_X_POSTS
             or today_count >= config["max_per_jst_day"]
             or slot_already_used(state, now)):
         return None, None, len(queued)
