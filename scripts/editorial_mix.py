@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Editorial lane metadata, daily 3/2/2 guidance, and duplicate guards.
+"""Editorial lane/tone metadata, daily 3/2/2 guidance, and duplicate guards.
 
 This module is intentionally offline and dependency-free. It validates metadata
 that the publishing automation writes into content/articles.json. It does not
@@ -24,6 +24,18 @@ LANE_TARGETS = {
     "original_satire": 2,
 }
 LANE_PRIORITY = tuple(LANE_TARGETS)
+EDITORIAL_TONES = (
+    "plausible_future",
+    "comic_exaggeration",
+    "observational",
+    "wildcard",
+)
+TONE_LABELS = {
+    "plausible_future": "ありそう",
+    "comic_exaggeration": "誇張",
+    "observational": "観察",
+    "wildcard": "変化球",
+}
 TREND_SOURCE_KINDS = {
     "google_trends",
     "x_official",
@@ -72,8 +84,63 @@ def lane_counts(articles: list[dict], day_jst: str) -> Counter:
     return counts
 
 
+def tone_counts(articles: list[dict], day_jst: str) -> Counter:
+    counts: Counter = Counter()
+    for article in articles:
+        if article_day(article) != day_jst:
+            continue
+        tone = article.get("editorial_tone")
+        if tone in EDITORIAL_TONES:
+            counts[tone] += 1
+    return counts
+
+
 def day_story_count(articles: list[dict], day_jst: str) -> int:
     return sum(article_day(article) == day_jst for article in articles)
+
+
+def tone_advice(articles: list[dict], day_jst: str) -> str:
+    """Suggest a different reader aftertaste without blocking publication."""
+    day_items = sorted(
+        (article for article in articles if article_day(article) == day_jst),
+        key=lambda article: str(article.get("published_at") or ""),
+    )
+    tones = [
+        article.get("editorial_tone")
+        for article in day_items
+        if article.get("editorial_tone") in EDITORIAL_TONES
+    ]
+    counts = Counter(tones)
+
+    if counts["plausible_future"] == 0:
+        return (
+            "plausible_future (today 0; compare one sharp, genuinely plausible "
+            "five-year extension before choosing)"
+        )
+
+    if len(tones) >= 2 and tones[-1] == tones[-2]:
+        repeated = tones[-1]
+        alternatives = [tone for tone in EDITORIAL_TONES if tone != repeated]
+        preferred = min(
+            alternatives,
+            key=lambda tone: (counts.get(tone, 0), EDITORIAL_TONES.index(tone)),
+        )
+        return (
+            f"{preferred} (last 2 are {repeated}; compare a different reader "
+            "aftertaste before a third)"
+        )
+
+    if counts["wildcard"] >= 1:
+        candidates = [
+            "plausible_future", "comic_exaggeration", "observational"
+        ]
+        preferred = min(
+            candidates,
+            key=lambda tone: (counts.get(tone, 0), EDITORIAL_TONES.index(tone)),
+        )
+        return f"{preferred} (wildcard already used today; do not force another)"
+
+    return "free (tone mix is varied; quality decides)"
 
 
 def next_preferred_lane(counts: Counter) -> str | None:
@@ -194,6 +261,13 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             )
             continue
 
+        tone = article.get("editorial_tone")
+        if tone not in EDITORIAL_TONES:
+            errors.append(
+                f"{slug}: editorial_tone required after rollout; expected "
+                + ", ".join(EDITORIAL_TONES)
+            )
+
         errors.extend(_validate_signature(article, slug))
         signature = article.get("editorial_signature")
         if isinstance(signature, dict):
@@ -257,6 +331,11 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         f"{lane}={counts.get(lane, 0)}/{target}"
         for lane, target in LANE_TARGETS.items()
     ]
+    tones = tone_counts(articles, day_jst)
+    tone_parts = [
+        f"{tone}={tones.get(tone, 0)}"
+        for tone in EDITORIAL_TONES
+    ]
     if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
         suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
     else:
@@ -265,7 +344,9 @@ def report_day(articles: list[dict], day_jst: str) -> str:
     return (
         f"{day_jst}: published={published}; tracked={tracked}; "
         + ", ".join(parts)
-        + f"; next={suffix}"
+        + f"; next={suffix}; tones="
+        + ", ".join(tone_parts)
+        + f"; tone_next={tone_advice(articles, day_jst)}"
     )
 
 
