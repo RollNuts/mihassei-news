@@ -1935,7 +1935,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
         for tag in article_tags(a):
             ET.SubElement(entry,"category").text=tag
         image=SITE+social_image(a)
-        generated=reviewed_generated_scene(a,root=BASE)
+        generated=uses_generated_scene(a)
         approved=not generated and uses_stock_photo(a)
         raster=generated or approved
         thumb={"url":image}
