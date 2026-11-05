@@ -157,14 +157,14 @@
       "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
     "film-village-all-stars-no-extras": {
-      "article_sha256": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
-      "bytes": 130698,
-      "generated_at": "2026-11-05T06:36:31.207198+00:00",
+      "article_sha256": "6814db803856eeb4657011e12ba1d9463625a5e1dd2ec8281fc006c9083c85a3",
+      "bytes": 124026,
+      "generated_at": "2026-11-05T09:05:12.556209+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 8989241339850763742,
-      "sha256": "25769f1c47beb9027b5061bfa9236e759ef72e30ec33fa3c7458c41d15f37999"
+      "sha256": "a9321fc347c29ab2e048bdfc5d3b5fa26e26f4d4efbb179fe36b8a0c68d431eb"
     },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
@@ -237,14 +237,14 @@
       "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
     },
     "office-face-to-face-day-video-call-echo": {
-      "article_sha256": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
-      "bytes": 82633,
-      "generated_at": "2026-11-05T08:36:20.938297+00:00",
+      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "bytes": 88367,
+      "generated_at": "2026-11-05T09:05:12.552674+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 8296084341754018138,
-      "sha256": "6e7886e28a46e28ba3b7066fa319d1c2ce23a21c91c63bd947d1fdb6666a0100"
+      "sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
     },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
@@ -313,14 +313,14 @@
       "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
     "sale-discount-savings-receipt-framed": {
-      "article_sha256": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
-      "bytes": 92862,
-      "generated_at": "2026-11-05T04:33:40.610401+00:00",
+      "article_sha256": "816fa54ad9b9f6570ca3c44aad8cf95cc9ace0e81def5c8b7529b79b2a933879",
+      "bytes": 105803,
+      "generated_at": "2026-11-05T09:05:12.559711+00:00",
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
       "seed": 4846405115373740905,
-      "sha256": "aebfdad46b1eac690938c1ab6046931109ec67f92b18a675c9045669866d38a9"
+      "sha256": "e31a5108ef0118d28c53f9dc08a4792aec26dcb3efa408eacafc9d03f084caf0"
     },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
@@ -418,24 +418,6 @@
     }
   },
   "rejected": {
-    "film-village-all-stars-no-extras": {
-      "article_sha256": "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
-      "reason": "Visual review of actual JPEG from free CPU run 41981263116: the frame shows a busy shopping street with many ordinary pedestrians and one foreground man. The article requires ordinary extras and shoppers to be conspicuously absent while about twenty aspiring lead actors pose and the director alone supplies the background movement. The image reverses the central joke, so keep a safe illustration fallback until a genuinely different scene is reviewed.",
-      "rejected_candidate_sha256": "25769f1c47beb9027b5061bfa9236e759ef72e30ec33fa3c7458c41d15f37999",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41981263116"
-    },
-    "sale-discount-savings-receipt-framed": {
-      "article_sha256": "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
-      "reason": "Visual review of actual JPEG from free CPU run 41968304038: two adults stand in a nearly empty Japanese room, but the framed long receipt, highlighted discount section, unopened appliance boxes, shopping bags, and puzzled child are absent. The visual cannot convey the spend-more-to-save joke, so reject this JPEG and retain the safe illustration fallback.",
-      "rejected_candidate_sha256": "aebfdad46b1eac690938c1ab6046931109ec67f92b18a675c9045669866d38a9",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41968304038"
-    },
-    "office-face-to-face-day-video-call-echo": {
-      "article_sha256": "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
-      "reason": "Visual review of actual JPEG from free CPU run 41995427704: the image shows an empty open-plan office, but the foreground monitor does not visibly show a grid of coworkers in separate meeting booths and no people-on-screen paradox is readable. The story depends on everyone coming to the same office yet meeting only through screens, so reject this JPEG and keep the safe illustration fallback.",
-      "rejected_candidate_sha256": "6e7886e28a46e28ba3b7066fa319d1c2ce23a21c91c63bd947d1fdb6666a0100",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41995427704"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
