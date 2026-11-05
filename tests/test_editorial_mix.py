@@ -6,10 +6,13 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 
 from scripts.editorial_mix import (
+    EDITORIAL_TONES,
     LANE_TARGETS,
     lane_counts,
     next_preferred_lane,
     report_day,
+    tone_advice,
+    tone_counts,
     validate_articles,
 )
 
@@ -23,12 +26,14 @@ def story(
     *,
     published: datetime = BASE_TIME,
     term: str = "流行語大賞",
+    tone: str = "comic_exaggeration",
     followup_of: str | None = None,
 ) -> dict:
     item = {
         "slug": slug,
         "published_at": published.isoformat(),
         "editorial_lane": lane,
+        "editorial_tone": tone,
         "editorial_signature": {
             "target": f"{slug}が効率を重視しすぎる",
             "action": f"{slug}が手段を目的にする",
@@ -57,6 +62,62 @@ class EditorialMixTests(unittest.TestCase):
             LANE_TARGETS,
             {"trend": 3, "social_life": 2, "original_satire": 2},
         )
+
+    def test_tones_are_orthogonal_to_topic_lanes(self):
+        self.assertEqual(
+            EDITORIAL_TONES,
+            (
+                "plausible_future",
+                "comic_exaggeration",
+                "observational",
+                "wildcard",
+            ),
+        )
+
+    def test_tone_advice_prioritizes_one_plausible_future_each_day(self):
+        articles = [
+            story("a", "trend", tone="comic_exaggeration"),
+            story(
+                "b",
+                "social_life",
+                tone="observational",
+                published=BASE_TIME + timedelta(hours=2),
+            ),
+        ]
+        self.assertEqual(
+            tone_counts(articles, "2026-11-06")["plausible_future"],
+            0,
+        )
+        self.assertIn(
+            "plausible_future",
+            tone_advice(articles, "2026-11-06"),
+        )
+
+    def test_tone_advice_breaks_a_two_story_run(self):
+        articles = [
+            story("a", "trend", tone="plausible_future"),
+            story(
+                "b",
+                "social_life",
+                tone="comic_exaggeration",
+                published=BASE_TIME + timedelta(hours=2),
+            ),
+            story(
+                "c",
+                "original_satire",
+                tone="comic_exaggeration",
+                published=BASE_TIME + timedelta(hours=4),
+            ),
+        ]
+        advice = tone_advice(articles, "2026-11-06")
+        self.assertIn("last 2 are comic_exaggeration", advice)
+        self.assertNotIn("comic_exaggeration (last 2", advice)
+
+    def test_missing_tone_is_invalid_after_rollout(self):
+        item = story("missing-tone", "social_life")
+        item.pop("editorial_tone")
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("editorial_tone required" in error for error in errors))
 
     def test_next_lane_fills_largest_remaining_deficit(self):
         self.assertEqual(next_preferred_lane(Counter()), "trend")
