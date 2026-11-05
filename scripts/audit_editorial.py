@@ -96,20 +96,24 @@ def audit(articles: list[dict], now: datetime) -> list[tuple[str, str, str]]:
                     f"{field_name}が前の記事・SNS・元ニュースを見ている前提の書き出しです。対象と出来事から単体で書き始めてください",
                 ))
 
-        # A long real-world setup before the first clearly fictional subject is a
-        # useful signal for hot-news explainers that bury the comic scene.
-        # This is deliberately advisory: many strong stories need one short
-        # factual sentence before the fictional action.
+        # A long first sentence followed by another sentence is a useful
+        # advisory signal that the story may be spending too long on background
+        # or setup before the comic scene. Do not depend on words such as
+        # "架空": reader-facing copy intentionally omits those formulaic labels.
         if first_paragraph:
-            first_sentence = re.split(r"(?<=[。！？!?])", first_paragraph, maxsplit=1)[0].strip()
-            fiction_pos = first_paragraph.find("架空")
-            if (fiction_pos >= len(first_sentence)
+            sentence_parts = [
+                part.strip()
+                for part in re.split(r"(?<=[。！？!?])", first_paragraph, maxsplit=1)
+                if part.strip()
+            ]
+            first_sentence = sentence_parts[0] if sentence_parts else ""
+            if (len(sentence_parts) > 1
                     and len(first_sentence) >= BACKGROUND_ONLY_FIRST_SENTENCE_CHARS):
                 warnings.append((
                     "BACKGROUND_LOADED_OPENING",
                     slug,
-                    f"本文1文目が現実背景中心で{len(first_sentence)}字あり、創作の主役が次文以降です。"
-                    "元ニュースの説明を伸ばさず、冒頭2文の早い位置で人物・現場・具体的行動を見せてください",
+                    f"本文1文目が{len(first_sentence)}字あり、場面や具体的行動に入るまでが重い可能性があります。"
+                    "現実背景や設定説明を伸ばさず、冒頭2文の早い位置で人物・現場・具体的行動を見せてください",
                 ))
 
         depth = 1
