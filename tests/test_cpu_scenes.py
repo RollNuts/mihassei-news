@@ -108,6 +108,14 @@ class FreeCpuImageTests(unittest.TestCase):
                 self.assertEqual(build.editorial_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertEqual(build.social_image(a), "/generated/" + a["slug"] + ".jpg")
                 self.assertIn("再現イメージ（合成）", build.photo_credit(a))
+                illustration = {**a, "visual_strategy": "illustration"}
+                self.assertTrue(reviewed_generated_scene(illustration, root=root))
+                self.assertFalse(build.uses_generated_scene(illustration))
+                self.assertEqual(build.editorial_image(illustration),
+                                 "/images/" + a["slug"] + ".svg")
+                self.assertEqual(build.social_image(illustration),
+                                 "/og/articles/" + a["slug"] + ".png?v=20261103-topic2")
+                self.assertEqual(build.photo_credit(illustration), "創作イラスト")
             manifest = root / "assets/generated/manifest.json"
             original = json.loads(manifest.read_text(encoding="utf-8"))
             for origin, model in (
