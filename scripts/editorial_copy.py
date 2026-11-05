@@ -9,13 +9,15 @@ import re
 _SOURCE_BOILERPLATE_SENTENCE = re.compile(
     r"[^。]*(?:本紙独自の創作|本紙独自の設定)[^。]*(?:。|$)"
 )
+_STAGE_YEAR = re.compile(r"(^|[。！？」])\\s*2031年、")
 
 
 def reader_copy(text: str) -> str:
     """Remove only formulaic labels; keep plot, proper names and attribution."""
     if not isinstance(text, str):
         raise TypeError("Article display text must be a string")
-    return text.replace("架空の", "").replace("創作の", "")
+    cleaned = text.replace("架空の", "").replace("創作の", "")
+    return _STAGE_YEAR.sub(r"\\1", cleaned)
 
 
 def source_reader_copy(text: str) -> str:
