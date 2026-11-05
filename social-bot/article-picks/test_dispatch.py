@@ -187,6 +187,21 @@ class ArticlePickTests(unittest.TestCase):
             existing.assert_not_called()
             queue.assert_not_called()
 
+    def test_article_post_removes_legacy_in_story_disclaimer(self):
+        raw = article("legacy-fiction-label", age_hours=4)
+        raw["title"] = "架空の店が客の節約を祝う、会計だけ10万円に"
+        raw["summary"] = (
+            "架空の店舗で創作の制度が始まった。客は割引を増やすため品物を買い続け、"
+            "値引き欄だけを見て大喜びした。"
+        )
+        before = copy.deepcopy(raw)
+        rendered = picks.publication_text(raw)
+        self.assertNotIn("架空の", rendered)
+        self.assertNotIn("創作の", rendered)
+        self.assertIn("会計だけ10万円に", rendered)
+        self.assertIn("値引き欄", rendered)
+        self.assertEqual(before, raw)
+
     def test_article_post_keeps_headline_and_canonical_url_without_boilerplate(self):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
         msg = picks.publication_text(a)
