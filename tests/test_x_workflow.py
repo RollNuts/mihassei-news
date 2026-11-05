@@ -36,7 +36,7 @@ class XWorkflowTests(unittest.TestCase):
         self.assertIn("run: python social-bot/article-picks/dispatch.py", self.article)
         self.assertIn("BUFFER_API_KEY:", self.article)
         self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", self.article)
-        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        queue = step(self.article, "Send at most one eligible Veripsa article now")
         self.assertIn("github.ref == 'refs/heads/main'", queue)
         self.assertIn("github.event_name != 'pull_request'", queue)
 
@@ -65,7 +65,7 @@ class XWorkflowTests(unittest.TestCase):
             self.article,
         ).group(1)
         self.assertIn('"content/articles.json"', push_block)
-        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        queue = step(self.article, "Send at most one eligible Veripsa article now")
         self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", queue)
 
     def test_read_only_delivery_audit_cannot_publish(self):
@@ -89,7 +89,7 @@ class XWorkflowTests(unittest.TestCase):
         self.assertEqual(picks["minimum_interval_hours"], 2)
 
     def test_pr_article_validation_never_calls_buffer(self):
-        queue = step(self.article, "Queue at most one eligible Veripsa article")
+        queue = step(self.article, "Send at most one eligible Veripsa article now")
         persist = step(self.article, "Persist exact Buffer article receipt")
         for block in (queue, persist):
             self.assertIn("github.ref == 'refs/heads/main'", block)
