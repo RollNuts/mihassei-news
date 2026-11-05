@@ -69,6 +69,7 @@ class XWorkflowTests(unittest.TestCase):
         self.assertIn("X_TRIGGER_EVENT: ${{ github.event_name }}", queue)
 
     def test_read_only_delivery_audit_cannot_publish(self):
+        self.assertIn('cron: "35 0,2,4,6,8,10,12 * * *"', self.audit)
         self.assertIn('cron: "45 14 * * *"', self.audit)
         self.assertIn('- "content/articles.json"', self.audit)
         self.assertIn("X_AUDIT_TRIGGER_EVENT: ${{ github.event_name }}", self.audit)

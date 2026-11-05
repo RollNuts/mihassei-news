@@ -16,7 +16,8 @@ on:
       - ".github/workflows/x-delivery-audit.yml"
   workflow_dispatch:
   schedule:
-    # 23:45 JST (14:45 UTC). One bounded read-only audit after daily article promotion.
+    # Read-only checks 30 minutes after each article slot, plus one final 23:45 JST audit.
+    - cron: "35 0,2,4,6,8,10,12 * * *"
     - cron: "45 14 * * *"
 
 permissions:
