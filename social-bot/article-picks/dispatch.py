@@ -209,7 +209,17 @@ def entry_promotion_slot(entry: dict) -> datetime | None:
         return None
     if queued.tzinfo is None:
         return None
-    return promotion_slot(queued)
+    slot = promotion_slot(queued)
+    if slot is not None:
+        return slot
+    # Legacy receipts created after midnight but before the first 09:05 slot
+    # came from a heavily delayed previous-day run. Attribute them to the
+    # previous day's final 21:05 slot so they do not steal today's quota.
+    previous = queued.astimezone(JST) - timedelta(days=1)
+    return previous.replace(
+        hour=PROMOTION_SLOT_HOURS[-1], minute=PROMOTION_SLOT_MINUTE,
+        second=0, microsecond=0,
+    )
 
 
 def slot_already_used(state: dict, now: datetime) -> bool:
@@ -509,11 +519,8 @@ def promoted_topics_today(state: dict, articles: list[dict], now: datetime) -> s
     day = now.astimezone(JST).date()
     result = set()
     for slug, entry in state.get("queued", {}).items():
-        try:
-            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        if not queued_at.tzinfo or queued_at.astimezone(JST).date() != day:
+        slot = entry_promotion_slot(entry)
+        if slot is None or slot.astimezone(JST).date() != day:
             continue
         topic = primary_topic(by_slug.get(slug, {}))
         if topic:
@@ -545,14 +552,12 @@ def prefer_topic_diversity(items: list, used_topics: set[str], *,
 
 
 def promotions_today(state: dict, now: datetime) -> int:
+    """Count logical promotion slots on the JST date, not delayed receipt dates."""
     day = now.astimezone(JST).date()
     count = 0
     for entry in state["queued"].values():
-        try:
-            queued_at = datetime.fromisoformat(entry["queued_at_utc"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        if queued_at.tzinfo and queued_at.astimezone(JST).date() == day:
+        slot = entry_promotion_slot(entry)
+        if slot is not None and slot.astimezone(JST).date() == day:
             count += 1
     return count
 
