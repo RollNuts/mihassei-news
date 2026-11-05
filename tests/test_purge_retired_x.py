@@ -60,6 +60,54 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
                     expected,
                 )
 
+    def test_read_only_inspection_requires_manual_main_dispatch(self):
+        manual = {"GITHUB_REF": "refs/heads/main",
+                  "GITHUB_EVENT_NAME": "workflow_dispatch"}
+        self.assertEqual(purge.execution_mode([], {}), "validate")
+        self.assertEqual(purge.execution_mode(["--inspect"], manual), "inspect")
+        self.assertEqual(purge.execution_mode(["--apply"], manual), "apply")
+        for env in (
+            {"GITHUB_REF": "refs/heads/main", "GITHUB_EVENT_NAME": "push"},
+            {"GITHUB_REF": "refs/heads/feature", "GITHUB_EVENT_NAME": "workflow_dispatch"},
+            {"GITHUB_REF": "refs/heads/main", "GITHUB_EVENT_NAME": "pull_request"},
+        ):
+            for flag in ("--inspect", "--apply"):
+                with self.subTest(env=env, flag=flag):
+                    with self.assertRaises(RuntimeError):
+                        purge.execution_mode([flag], env)
+        with self.assertRaises(ValueError):
+            purge.execution_mode(["--inspect", "--apply"], manual)
+        with self.assertRaises(ValueError):
+            purge.execution_mode(["--delete-all"], manual)
+
+    def test_exact_id_read_overrides_stale_listing(self):
+        stale = {**self.post, "status": "sent"}
+        checked = []
+        remote, problem = purge.resolve_live_target(
+            self.target, {"buffer-id": stale},
+            lambda bid: (checked.append(bid), self.post)[1],
+            always_direct=True,
+        )
+        self.assertEqual(checked, ["buffer-id"])
+        self.assertIsNone(problem)
+        self.assertIs(remote, self.post)
+
+    def test_last_minute_change_blocks_deletion(self):
+        self.assertIsNone(purge.deletion_recheck_reason(
+            self.target, self.post, dict(self.post)))
+        for patch, expected in (
+            ({"status": "sent", "sentAt": "2026-11-05T09:30:00Z"}, "already_published"),
+            ({"status": "pending"}, "changed_before_delete"),
+            ({"dueAt": "2026-11-05T09:30:00Z"}, "changed_before_delete"),
+            ({"text": "edited"}, "text_changed"),
+            ({"channelId": "unrelated"}, "channel_mismatch"),
+        ):
+            with self.subTest(expected=expected):
+                self.assertEqual(purge.deletion_recheck_reason(
+                    self.target, self.post, {**self.post, **patch}), expected)
+        self.assertEqual(purge.deletion_recheck_reason(
+            self.target, self.post, None), "not_in_listing_unverified")
+
     def test_unpublished_matching_status_is_allowed_only_in_manual_purge(self):
         for status in ("draft", "scheduled", "pending", "error", "failed"):
             with self.subTest(status=status):
