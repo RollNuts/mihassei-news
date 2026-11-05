@@ -11,7 +11,7 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 | 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
 | ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
-停止中の経路は、本人の明示的な再開依頼なしに有効化しない。記事一本化前の旧シュール短文・キャラ日常・ネタ画像でBufferに残る**未公開**エントリは、`experiments/state.json` の受付ID・固定Xチャンネル・本文ハッシュがlive Bufferと完全一致するものだけ `purge_retired_x.py` で削除する。対象はdraft/scheduled/pending/error等の未公開状態に限り、sent済み投稿・記事紹介・別レーン・本文変更済みの投稿は触らない。旧シュール、`useful`、漫画はいずれも記事枠の穴埋め目的で再開しない。受付台帳や公開済み履歴は監査証跡として保持し、台帳の`queued`を現在の予約件数に読み替えない。
+停止中の経路は、本人の明示的な再開依頼なしに有効化しない。記事一本化前の旧シュール短文・キャラ日常・ネタ画像でBufferに残る**未公開**エントリは、`experiments/state.json` の受付ID・固定Xチャンネル・本文ハッシュがlive Bufferと完全一致するものだけ `purge_retired_x.py` で削除する。対象はdraft/scheduled/pending/error等の未公開状態に限り、sent済み投稿・記事紹介・別レーン・本文変更済みの投稿は触らない。手動の[旧Buffer投稿確認ワークフロー](../.github/workflows/purge-retired-x.yml)は初期値`inspect`（ID・チャンネル・本文・送信状態の読み取りのみ）。結果を確認した後、未公開で完全一致するものだけ`apply`で削除できる。`apply`は手動起動のみ。安全ワークフロー自体がmainで更新された時だけ`inspect`を読み取り専用で自動実行し、削除・予約編集・再送はしない。旧シュール、`useful`、漫画はいずれも記事枠の穴埋め目的で再開しない。受付台帳や公開済み履歴は監査証跡として保持し、台帳の`queued`を現在の予約件数に読み替えない。
 
 2026-11-04の`queue-cleanup.json`にある`verified_draft`は、削除前の安全な中間退避を確認した履歴であり、現行の配信候補ではない。以後は旧実験の未公開Bufferエントリを残存登録として扱い、上記の完全一致条件で削除する。現在の`x-useful-originals.yml`は検証専用で、定期送信や定期cleanupを行わない。
 
