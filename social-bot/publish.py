@@ -98,36 +98,67 @@ def choose_x_channel(token):
     return orgid, channel["id"]
 
 
-def list_existing(token, orgid, channelid, include_due_at=False):
-    """Paginate scheduled plus recent sent posts using the free Buffer API.
+def list_existing(token, orgid, channelid, include_due_at=False,
+                  include_unsettled=False):
+    """Read recent sent/scheduled posts and, when requested, unsettled posts.
 
-    The permanent posting ledgers protect old content. The recent 30-day
-    provider window is for recovering an interrupted Buffer/Git write.
+    Normal callers keep the bounded recent scheduled/sent window. The article
+    lane can additionally inspect draft/pending/error/failed entries so a
+    Buffer-accepted post cannot be duplicated merely because the Git receipt
+    failed to persist before the next run.
     """
+    if type(include_due_at) is not bool or type(include_unsettled) is not bool:
+        raise ValueError("Buffer listing flags must be boolean")
     fields = "id text status dueAt sentAt" if include_due_at else "id text status"
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
-    cursor = None
-    existing = []
-    seen = set()
-    for _page in range(30):
-        after = ", after: " + qstring(cursor) if cursor else ""
-        result = gql(token, (
-            "query { posts(first: 100" + after + ", input: {organizationId: "
-            + qstring(orgid) + ", filter: {channelIds: [" + qstring(channelid)
-            + "], status: [scheduled, sent], dueAt: {start: " + qstring(since)
-            + "}}}) { edges { node { " + fields + " } }"
-            " pageInfo { hasNextPage endCursor } } }"
-        ))
-        conn = result.get("posts") or {}
-        existing.extend(edge["node"] for edge in conn.get("edges") or [])
-        page = conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            return existing
-        cursor = page.get("endCursor")
-        if not isinstance(cursor,str) or not cursor or cursor in seen:
-            raise RuntimeError("Buffer posts pagination cursor invalid; refusing uncertain dedupe")
-        seen.add(cursor)
-    raise RuntimeError("Buffer posts pagination exceeded safe page limit; refusing uncertain dedupe")
+
+    def collect(statuses: str, due_clause: str, *, pages: int) -> list[dict]:
+        cursor = None
+        rows = []
+        seen = set()
+        for _page in range(pages):
+            after = ", after: " + qstring(cursor) if cursor else ""
+            result = gql(token, (
+                "query { posts(first: 100" + after + ", input: {organizationId: "
+                + qstring(orgid) + ", filter: {channelIds: [" + qstring(channelid)
+                + "], status: [" + statuses + "]" + due_clause
+                + "}}) { edges { node { " + fields + " } }"
+                " pageInfo { hasNextPage endCursor } } }"
+            ))
+            conn = result.get("posts") or {}
+            rows.extend(edge["node"] for edge in conn.get("edges") or [])
+            page = conn.get("pageInfo") or {}
+            if not page.get("hasNextPage"):
+                return rows
+            cursor = page.get("endCursor")
+            if not isinstance(cursor, str) or not cursor or cursor in seen:
+                raise RuntimeError(
+                    "Buffer posts pagination cursor invalid; refusing uncertain dedupe"
+                )
+            seen.add(cursor)
+        raise RuntimeError(
+            "Buffer posts pagination exceeded safe page limit; refusing uncertain dedupe"
+        )
+
+    recent = collect(
+        "scheduled, sent",
+        ", dueAt: {start: " + qstring(since) + "}",
+        pages=30,
+    )
+    if not include_unsettled:
+        return recent
+
+    unsettled = collect("draft, pending, error, failed", "", pages=10)
+    by_id = {}
+    ordered = []
+    for row in [*recent, *unsettled]:
+        key = row.get("id")
+        if isinstance(key, str) and key:
+            if key in by_id:
+                continue
+            by_id[key] = row
+        ordered.append(row)
+    return ordered
 
 
 def remote_asset_available(url):
