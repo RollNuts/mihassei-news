@@ -28,6 +28,8 @@ class EditorialReaderCopyTests(unittest.TestCase):
         self.assertEqual(reader_copy("2031年までに完成予定"), "2031年までに完成予定")
         source = "Reuters報道。体験消費が紹介された。人物の発言は本紙独自の設定であり、実際の出来事ではない。"
         self.assertEqual(source_reader_copy(source), "Reuters報道。体験消費が紹介された。")
+        variants = "調査で節約志向を確認。実際に買い足した家庭がいたとの調査結果ではない。家族の行動は創作。"
+        self.assertEqual(source_reader_copy(variants), "調査で節約志向を確認。")
 
     def test_all_existing_reader_copy_can_omit_disclaimer_without_source_edits(self):
         original = (ROOT / "content/articles.json").read_bytes()
@@ -37,7 +39,13 @@ class EditorialReaderCopyTests(unittest.TestCase):
                 for field in ("title", "summary", "source"):
                     text = (article["source"].get("topic", "")
                             if field == "source" else article[field])
-                    self.assertNotIn("架空の", reader_copy(text))
+                    visible = (source_reader_copy(text) if field == "source" else reader_copy(text))
+                    self.assertNotIn("架空の", visible)
+                    if field == "source":
+                        self.assertTrue(visible, article["slug"])
+                        self.assertNotIn("本紙", visible)
+                        self.assertNotIn("創作", visible)
+                        self.assertNotIn("2031年", visible)
                 for paragraph in article["paragraphs"]:
                     visible = reader_copy(paragraph)
                     self.assertNotIn("架空の", visible)
