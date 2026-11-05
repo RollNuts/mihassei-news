@@ -1,5 +1,33 @@
 [
   {
+    "slug": "basketball-opening-day-game-seven",
+    "category": "スポーツ",
+    "flash": "開幕から第7戦",
+    "fiction_company": "どきどきバスケリーグ",
+    "art": "cards",
+    "fiction_at": "2031-11-04T11:13:00+09:00",
+    "published_at": "2026-11-05T11:32:54+09:00",
+    "title": "開幕戦をいきなり「決勝第7戦」にしたバスケリーグ、観客「第1〜6戦は？」",
+    "summary": "決勝第7戦の高視聴率に目を付けた架空のバスケリーグが、開幕戦から「決勝第7戦」を名乗った。観客が消えた6試合を探す間に、初試合を終えた選手には優勝旗が渡される。",
+    "paragraphs": [
+      "女子プロバスケの決勝第7戦が330万人に視聴された。注目を集めたい架空の「どきどきバスケリーグ」は、開幕戦から「決勝第7戦」を名乗ることにした。試合前の体育館では、今季初めて顔を合わせた選手たちが新品のユニフォームで整列している。",
+      "司会者が「いよいよ運命の第7戦！」と叫ぶと、観客席の子どもが「第1戦から第6戦はどこでやったの？」と尋ねた。係員はパンフレットを開いて答えた。「盛り上がるところだけ見てもらうため、省略しました」。対戦成績の欄は両チームとも0勝0敗。選手は緊迫した入場曲に合わせながら、初対面の相手へ自己紹介していた。",
+      "試合が終わると、初勝利を挙げたチームに優勝旗が運ばれた。主将が「まだ開幕したばかりですが」と戸惑うと、係員は旗を渡したまま来週の予定を告げた。「次も決勝第7戦です」。帰り際、敗れたチームの選手が「次の試合は第8戦ですか」と確かめたが、受付にはもう「次週・運命の第7戦」の予約札が並んでいた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "Reuters",
+      "published_at": "2026-11-04T11:13:00+09:00",
+      "url": "https://www.reuters.com/sports/record-33m-tuned-wnbas-first-ever-game-7--flm-2026-11-04/",
+      "topic": "Reutersが2026年11月4日02:13 UTC（同日11:13 JST）公開。女子プロバスケットボールWNBA初のファイナル第7戦（10月31日開催）は330万人が視聴し、同リーグのプレーオフ史上最多となった。開幕戦を「決勝第7戦」と呼ぶ架空リーグ・観客・選手・係員の行為と台詞は本紙独自の創作であり、実際のWNBAとは無関係。"
+    },
+    "scene_prompt": "A huge freestanding gold number seven prop beside an unopened championship banner dominates a small indoor basketball court; two anonymous basketball teams in clean generic uniforms awkwardly introduce themselves in the middle of an overblown opening ceremony, a staff member holds a folded championship flag and a confused young fan watches from the lower stands, dry photorealistic Japanese sports editorial scene, clearly basketball hoops and hardwood court, no team brands, no real athlete likeness, no legible text.",
+    "tags": [
+      "スポーツ観戦",
+      "バスケットボール"
+    ]
+  },
+  {
     "slug": "music-show-surprise-face-rehearsal",
     "category": "エンタメ",
     "flash": "初耳の練習",
