@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-04T20:56:46.242027+00:00",
-  "source": "buffer_recent_scheduled_sent_readonly",
+  "checked_at_utc": "2026-11-05T10:06:32.267508+00:00",
+  "source": "buffer_recent_list_plus_saved_id_readonly",
   "scope": {
     "ledger_days": 7,
     "max_items": 60,
@@ -9,27 +9,70 @@
   },
   "today_jst": "2026-11-05",
   "observed": {
-    "article_records_checked": 3,
-    "buffer_sent_today": 0,
+    "article_records_checked": 6,
+    "buffer_sent_today": 3,
     "buffer_scheduled_today": 1,
     "unverified": 0,
     "overdue_scheduled": 0,
-    "missing_provider_timestamps": 0
+    "missing_provider_timestamps": 0,
+    "delivery_problems": 0,
+    "delivery_in_progress": 0,
+    "overdue_sending": 0
   },
-  "limitations": "Buffer scheduled/sent is provider evidence, not independent X page verification. Overdue scheduled posts require investigation, not automatic retry. Posts outside the recent provider window and missing timestamps are not assumed sent.",
+  "limitations": "Buffer status is provider evidence, not independent X page verification. Missing list entries are checked by saved Buffer ID. Draft/error/needs_approval require investigation. Sending is normal for up to 15 minutes, then requires review. Overdue scheduled posts also require investigation. Nothing is automatically retried. Missing provider timestamps are not assumed sent.",
   "items": [
+    {
+      "slug": "music-show-surprise-face-rehearsal",
+      "buffer_id": "6aec2364660b2991f15792e5",
+      "queued_at_utc": "2026-11-05T06:34:11.707431+00:00",
+      "buffer_status": "scheduled",
+      "buffer_created_at_utc": "2026-11-05T06:34:12.450000+00:00",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
+      "buffer_due_at_utc": "2026-11-05T10:11:00+00:00"
+    },
+    {
+      "slug": "basketball-opening-day-game-seven",
+      "buffer_id": "6aec06987877e0eab274f125",
+      "queued_at_utc": "2026-11-05T04:31:20.031929+00:00",
+      "buffer_status": "sent",
+      "buffer_created_at_utc": "2026-11-05T04:31:20.861000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2118274648819327084",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
+      "buffer_sent_at_utc": "2026-11-05T09:30:06.838000+00:00"
+    },
+    {
+      "slug": "datacenter-unbuilt-ribbon-cutting",
+      "buffer_id": "6aebcf80e95790cd46a9c664",
+      "queued_at_utc": "2026-11-05T00:36:15.163439+00:00",
+      "buffer_status": "sent",
+      "buffer_created_at_utc": "2026-11-05T00:36:16.256000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2118168942153707694",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
+      "buffer_sent_at_utc": "2026-11-05T02:30:04.328000+00:00"
+    },
     {
       "slug": "stock-rebound-confetti-still-in-red",
       "buffer_id": "6aeb714376b2ba7a5c8f1644",
       "queued_at_utc": "2026-11-04T17:54:09.894548+00:00",
-      "buffer_status": "scheduled",
-      "buffer_due_at_utc": "2026-11-04T22:00:00+00:00"
+      "buffer_status": "sent",
+      "buffer_created_at_utc": "2026-11-04T17:54:11.278000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2118101222854963526",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
+      "buffer_sent_at_utc": "2026-11-04T22:00:58.897000+00:00"
     },
     {
       "slug": "double-speed-drama-explainer-marathon",
       "buffer_id": "6aeabbc4b8d162e0d805346b",
       "queued_at_utc": "2026-11-04T04:59:47.571323+00:00",
       "buffer_status": "sent",
+      "buffer_created_at_utc": "2026-11-04T04:59:48.794000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117927372414431482",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
       "buffer_sent_at_utc": "2026-11-04T10:30:09.747000+00:00"
     },
     {
@@ -37,6 +80,10 @@
       "buffer_id": "6ae9bca88bcf49341df56aee",
       "queued_at_utc": "2026-11-03T10:51:19.139752+00:00",
       "buffer_status": "sent",
+      "buffer_created_at_utc": "2026-11-03T10:51:20.226000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2117806571325382925",
+      "buffer_shared_now": false,
+      "buffer_share_mode": "addToQueue",
       "buffer_sent_at_utc": "2026-11-04T02:30:08.380000+00:00"
     }
   ]
