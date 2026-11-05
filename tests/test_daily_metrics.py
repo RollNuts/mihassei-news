@@ -101,6 +101,83 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertNotIn("page_views_cumulative",metrics["story"])
         self.assertNotIn("page_views_last_7_days",metrics["story"])
 
+    def test_snapshot_preserves_editorial_lane_and_tone_without_backfilling(self):
+        articles = [
+            {
+                "slug": "trend-story",
+                "category": "社会",
+                "published_at": "2026-11-02T21:00:00+09:00",
+                "editorial_lane": "trend",
+                "editorial_tone": "plausible_future",
+                "source": {"published_at": "2026-11-02T20:00:00+09:00"},
+            },
+            {
+                "slug": "legacy-story",
+                "category": "暮らし",
+                "published_at": "2026-11-02T19:00:00+09:00",
+                "source": {"published_at": "2026-11-02T18:00:00+09:00"},
+            },
+        ]
+        counts = {
+            slug: {
+                "readers": 1,
+                "likes": 0,
+                "share_clicks": 0,
+                "continued_readers": 0,
+                "x_arrivals": 0,
+                "search_arrivals": 0,
+                "page_views_cumulative": 3,
+                "page_views_last_7_days": 3,
+            }
+            for slug in ("trend-story", "legacy-story")
+        }
+        result = m.build_snapshot(
+            articles,
+            datetime.fromisoformat("2026-11-03T01:07:00+09:00"),
+            2,
+            counts,
+            {"visitors": 2, "articleReads": 2},
+        )
+        self.assertEqual(result["published_editorial_lanes"], {"trend": 1})
+        self.assertEqual(result["published_editorial_lane_untracked"], 1)
+        self.assertEqual(result["published_editorial_tones"], {"plausible_future": 1})
+        self.assertEqual(result["published_editorial_tone_untracked"], 1)
+        by_slug = {item["slug"]: item for item in result["recent_articles"]}
+        self.assertEqual(by_slug["trend-story"]["editorial_lane"], "trend")
+        self.assertEqual(by_slug["trend-story"]["editorial_tone"], "plausible_future")
+        self.assertIsNone(by_slug["legacy-story"]["editorial_lane"])
+        self.assertIsNone(by_slug["legacy-story"]["editorial_tone"])
+        self.assertIn("do not backfill", result["editorial_metadata_note"])
+
+    def test_snapshot_rejects_inconsistent_editorial_metadata_counts(self):
+        articles = [{
+            "slug": "trend-story",
+            "category": "社会",
+            "published_at": "2026-11-02T21:00:00+09:00",
+            "editorial_lane": "trend",
+            "editorial_tone": "comic_exaggeration",
+            "source": {"published_at": "2026-11-02T20:00:00+09:00"},
+        }]
+        counts = {
+            "trend-story": {
+                "readers": 1,
+                "likes": 0,
+                "share_clicks": 0,
+                "continued_readers": 0,
+            }
+        }
+        result = m.build_snapshot(
+            articles,
+            datetime.fromisoformat("2026-11-03T01:07:00+09:00"),
+            1,
+            counts,
+            {"visitors": 1, "articleReads": 1},
+        )
+        broken = dict(result)
+        broken["published_editorial_lane_untracked"] = 1
+        with self.assertRaises(ValueError):
+            m.validate_snapshot(broken, "2026-11-02")
+
     def test_reject_corrupted_article_arrivals(self):
         for bad in ({"x":-1,"search":0},{"x":"many","search":1},
                     {"x":1},{"x":1,"search":0,"full_referrer":"private"}):
