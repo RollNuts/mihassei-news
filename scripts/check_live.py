@@ -31,6 +31,7 @@ if __package__:
     from .motion_clips import clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
+    from .editorial_copy import reader_copy, source_reader_copy
     from .build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene,
@@ -41,6 +42,7 @@ else:
     from motion_clips import clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
+    from editorial_copy import reader_copy, source_reader_copy
     from build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene,
@@ -292,6 +294,21 @@ def verify_broadcast_delivery(markup, expected_playlist, *, fetch=None, root=ROO
                 raise RuntimeError(slug + ": published native subtitles are stale or invalid")
             tracks += 1
     print("Public broadcast OK:", len(expected_playlist), "verified videos;", tracks, "native subtitle tracks")
+
+
+def article_reader_needles(article: dict) -> tuple[str, ...]:
+    """Material that must be visible after reader-copy cleanup, not raw legacy JSON."""
+    source_context = source_reader_copy(article["source"].get("topic", ""))
+    values = [
+        article["title"],
+        reader_copy(article["summary"]),
+        *(reader_copy(paragraph) for paragraph in article["paragraphs"]),
+        source_context,
+        article["source"]["url"],
+        "創作報道",
+        f'data-like-count="{article["slug"]}"',
+    ]
+    return tuple(value for value in values if value)
 
 
 def latest_articles(articles: list[dict], limit: int | None = 10) -> list[dict]:
@@ -894,10 +911,11 @@ def check():
         data,mime=get("/articles/"+slug+"/")
         page=html.unescape(data.decode("utf-8"))
         require_matching_public_headline(item, page, "article")
-        for needle in (item["title"],item["summary"],*item["paragraphs"],
-                       item["source"]["url"],"創作ニュース",f'data-like-count="{slug}"'):
+        for needle in article_reader_needles(item):
             if needle not in page:
-                raise RuntimeError(slug+": missing published material "+needle[:75])
+                raise RuntimeError(slug+": missing reader-visible material "+needle[:75])
+        if 'class="story-fiction-context"' in page:
+            raise RuntimeError(slug+": redundant per-story fiction badge reached production")
         published=item.get("published_at") or item["source"]["published_at"][:10]
         if f'"datePublished": "{published}"' not in page:
             raise RuntimeError(slug+": real publication timestamp missing")

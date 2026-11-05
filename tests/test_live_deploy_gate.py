@@ -113,6 +113,24 @@ class DeploymentWorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "headline mismatch"):
             require_matching_public_headline(lead, stale, "article")
 
+    def test_live_article_material_uses_reader_visible_copy_not_legacy_boilerplate(self):
+        from scripts.build import load, story
+        from scripts.check_live import article_reader_needles
+
+        article = next(item for item in load()
+                       if item["slug"] == "film-village-all-stars-no-extras")
+        markup = html.unescape(story(article, load()))
+        needles = article_reader_needles(article)
+        for needle in needles:
+            self.assertIn(needle, markup)
+
+        joined = "\n".join(needles)
+        self.assertNotIn("本紙独自の設定", joined)
+        self.assertNotIn("2031年、", joined)
+        self.assertNotIn("架空の", joined)
+        self.assertIn("創作報道", needles)
+        self.assertNotIn('class="story-fiction-context"', markup)
+
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
