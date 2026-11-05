@@ -587,16 +587,22 @@ def main() -> int:
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Buffer secret unavailable; cannot promote articles")
-    metrics, window = ({}, None)
-    if candidates:
-        metrics, window = read_page_view_metrics([a["slug"] for a in candidates], now)
     org_id, channel_id = choose_x_channel(token)
     if channel_id != config["channel_id"]:
         raise RuntimeError("Connected X channel differs from pinned Veripsa account")
     existing = list_existing(token, org_id, channel_id, include_due_at=True)
-    # Automatic X publishing is article-only; retired lanes do not gate slots.
-    eligible, evidence, scheduled = decide(articles, metrics, state, existing,
+    # First reconcile Buffer and evaluate fresh posts without depending on
+    # mature-article PV. A stale/unavailable PV API must not block a valid
+    # 1–18-hour article, but the same dedupe/cap/cooldown gates still apply.
+    eligible, evidence, scheduled = decide(articles, {}, state, existing,
                                             config, now)
+    metrics, window = ({}, None)
+    if eligible is None and candidates:
+        # Save recovered remote receipts even if measured-PV lookup fails.
+        save_state(state)
+        metrics, window = read_page_view_metrics([a["slug"] for a in candidates], now)
+        eligible, evidence, scheduled = decide(articles, metrics, state, existing,
+                                                config, now)
     # Persist remote recovery before any further POST. The workflow also
     # commits both ledgers even after a partial API/network failure.
     save_state(state)
