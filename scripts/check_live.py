@@ -394,9 +394,7 @@ def verify_pv_recommendations(markup: str, articles: list[dict], current_article
     parser.feed(markup)
     parser.close()
     for element in parser.elements:
-        # Static same-topic navigation is allowed beside the measured PV panel;
-        # only the retired hand-picked recommendation shelf is forbidden.
-        if "starter-editorial" in set(element["attrs"].get("class", "").split()):
+        if {"starter-editorial", "article-related"} & set(element["attrs"].get("class", "").split()):
             raise RuntimeError("Old editorial recommendations remain beside the PV panel")
     panels = [element for element in parser.elements
               if "data-popular-section" in element["attrs"]]
