@@ -103,7 +103,7 @@ class EditorialClarityTests(unittest.TestCase):
         self.assertIn("<h1>" + escape(article["title"]) + "</h1>", page)
         self.assertIn('class="article-visual"', page)
         self.assertIn('src="' + safe_image + '"', page)
-        self.assertIn("<strong>創作ニュース</strong>", page)
+        self.assertIn('class="fiction-mark">創作報道', page)
         self.assertNotIn("AI生成の架空ニュース再現画像", page)
 
         if safe_image == generated_url:
