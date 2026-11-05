@@ -66,8 +66,11 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
         self.assertEqual(purge.execution_mode([], {}), "validate")
         self.assertEqual(purge.execution_mode(["--inspect"], manual), "inspect")
         self.assertEqual(purge.execution_mode(["--apply"], manual), "apply")
+        push = {"GITHUB_REF": "refs/heads/main", "GITHUB_EVENT_NAME": "push"}
+        self.assertEqual(purge.execution_mode(["--inspect"], push), "inspect")
+        with self.assertRaises(RuntimeError):
+            purge.execution_mode(["--apply"], push)
         for env in (
-            {"GITHUB_REF": "refs/heads/main", "GITHUB_EVENT_NAME": "push"},
             {"GITHUB_REF": "refs/heads/feature", "GITHUB_EVENT_NAME": "workflow_dispatch"},
             {"GITHUB_REF": "refs/heads/main", "GITHUB_EVENT_NAME": "pull_request"},
         ):
