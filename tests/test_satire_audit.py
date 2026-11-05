@@ -145,7 +145,7 @@ class SatireAuditTests(unittest.TestCase):
                            datetime.fromisoformat(farm["published_at"]))
 
     def test_tag_fragmentation_is_advisory_and_surfaces_reusable_clusters(self):
-        articles = [sample(i) for i in range(1, 13)]
+        articles = [sample(i) for i in range(1, 21)]
         for i, article in enumerate(articles):
             article["tags"] = ["AI" if i < 4 else f"単発{i}"]
             article["satire_tags"] = ["仕事してる感"] if i < 3 else []
