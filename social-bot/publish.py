@@ -175,7 +175,9 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
 
     shareNow is deliberately narrow: reviewed experiment images and the
     article-promotion lane may use it. Retired text experiments cannot turn it
-    into an immediate-send escape hatch.
+    into an immediate-send escape hatch. With return_post=True the caller gets
+    Buffer's same-mutation post evidence (status/timestamps/link/share mode)
+    without an extra provider read.
     """
     if type(return_post) is not bool:
         raise ValueError("return_post must be a boolean")
@@ -240,7 +242,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
-        + "}) { ... on PostActionSuccess { post { id dueAt } }"
+        + "}) { ... on PostActionSuccess { post { id dueAt status sentAt externalLink sharedNow shareMode } }"
         + " ... on MutationError { message } } }"
     )
     result = gql(token, mutation).get("createPost") or {}
