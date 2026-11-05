@@ -43,6 +43,14 @@
       "text_sha256": "d845be0cf4b6659e410d0080dc60c45d3c9a92ea732cbeba670ff3d8db9ca161",
       "published_at": "2026-11-05T11:32:54+09:00",
       "primary_topic": "tag:スポーツ観戦"
+    },
+    "music-show-surprise-face-rehearsal": {
+      "buffer_id": "6aec2364660b2991f15792e5",
+      "queued_at_utc": "2026-11-05T06:34:11.707431+00:00",
+      "source": "fresh_article",
+      "text_sha256": "9c8dc6654282f85ff12b1c4a9ad39850f6dbfe9451bd186aec574a3ef052c83c",
+      "published_at": "2026-11-05T09:31:45+09:00",
+      "primary_topic": "tag:音楽"
     }
   }
 }
