@@ -162,6 +162,29 @@ class EditorialAuditTests(unittest.TestCase):
         codes = {code for code, _, _ in audit([a], NOW)}
         self.assertNotIn("BACKGROUND_LOADED_OPENING", codes)
 
+    def test_redundant_fiction_labels_warn_without_blocking(self):
+        cases = (
+            ("title", "架空の店が値札を額装"),
+            ("summary", "これはフィクションです。店主が額装した。"),
+            ("paragraphs", ["店主がレシートを額装した。", "あくまで創作です。"]),
+        )
+        for field, value in cases:
+            with self.subTest(field=field):
+                a = story("disclaimer", NOW, NOW - timedelta(hours=1),
+                          title="店主、値札を額装")
+                a["summary"] = "店主が値札を額装した。"
+                a[field] = value
+                codes = {code for code, _, _ in audit([a], NOW)}
+                self.assertIn("REDUNDANT_FICTION_DISCLAIMER", codes)
+
+    def test_plot_word_architectural_claim_not_fiction_disclaimer(self):
+        a = story("legitimate", NOW, NOW - timedelta(hours=1),
+                  title="架空請求を防ぐため請求書を全部廃止")
+        a["summary"] = "店主が請求書を廃止した。"
+        a["paragraphs"] = ["請求書を廃止した店主は、支払いも受け取れなくなった。"]
+        codes = {code for code, _, _ in audit([a], NOW)}
+        self.assertNotIn("REDUNDANT_FICTION_DISCLAIMER", codes)
+
     def test_missing_publication_date_is_not_assumed_from_future_dateline(self):
         a = story("undated", NOW, NOW)
         del a["published_at"]
