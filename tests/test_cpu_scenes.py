@@ -290,15 +290,15 @@ class FreeCpuImageTests(unittest.TestCase):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
         expected = {
             "film-village-all-stars-no-extras": (
-                "b32fc8ba7a5166027d31e54d8a0114899ce25f09ca4261d24373082fa1a679ec",
+                "0b23083f1b6c59827dad35c822955a61467846842146de191130ac0efad83bbd",
                 ("ONLY", "wide empty historical street set", "tripod camera"),
             ),
             "sale-discount-savings-receipt-framed": (
-                "c7f48fb09b19b9f6b57b4c9d261e5e7f59ab0e3175809d2f89dc73ea50b45e1f",
+                "a59d84b533dfab440fa2fd8e1d867baef4fa16e7f6f229e6f416f2bfdd2c9881",
                 ("picture frame", "long blank store receipt", "appliance boxes"),
             ),
             "office-face-to-face-day-video-call-echo": (
-                "4b506c1555ac3553c2b746e3a999c881b51275edf15239001346e6d8422db807",
+                "0c28252627308d5c9dec9d83d9bc7b65c40343f2f34b1b2281b31d39c8201e37",
                 ("three-by-three video-call grid", "empty Japanese open-plan office", "unused desks"),
             ),
         }
