@@ -71,7 +71,8 @@ def targets(inventory: dict, ledger: dict, config: dict) -> list[dict]:
     return rows
 
 
-def validate_live(target: dict, remote: dict | None) -> str | None:
+def validate_live_identity(target: dict, remote: dict | None) -> str | None:
+    """Identity and publication state only; never grants deletion permission."""
     if not isinstance(remote, dict):
         return "not_in_listing_unverified"
     if remote.get("id") != target["buffer_id"]:
@@ -86,6 +87,13 @@ def validate_live(target: dict, remote: dict | None) -> str | None:
     status = remote.get("status")
     if status not in DELETABLE_STATUSES:
         return "status_not_deletable"
+    return None
+
+
+def validate_live(target: dict, remote: dict | None) -> str | None:
+    reason = validate_live_identity(target, remote)
+    if reason:
+        return reason
     actions = remote.get("allowedActions") or []
     if "deletePost" not in actions:
         return "delete_action_not_allowed"
@@ -122,6 +130,61 @@ def resolve_live_target(target: dict, listing: dict, read_by_id, *,
     return remote, None
 
 
+def inspect_live_target(target: dict, draft_listing: dict, read_by_id,
+                        error_detail: dict | None = None
+                        ) -> tuple[dict | None, str, str | None]:
+    """Use an explicitly filtered live Buffer draft list before ID fallback.
+
+    A matching draft snapshot is read-only evidence, never deletion permission.
+    Incompatible or missing list entries fall through to an exact-ID lookup;
+    an unavailable ID remains unresolved instead of being assumed deleted.
+    """
+    listed = draft_listing.get(target["buffer_id"])
+    if (isinstance(listed, dict) and listed.get("status") == "draft"
+            and validate_live_identity(target, listed) is None):
+        return listed, "buffer_draft_list", None
+    remote, problem = resolve_live_target(
+        target, {}, read_by_id, always_direct=True, error_detail=error_detail)
+    return remote, "buffer_post_id", problem
+
+
+def last_verified_historical_draft(target: dict, cleanup: dict) -> dict | None:
+    """Only describe exact previous Buffer receipts, never infer live status."""
+    matches = []
+    for section in ("recovery_results", "continuation_results"):
+        rows = cleanup.get(section) or {}
+        if not isinstance(rows, dict):
+            continue
+        row = rows.get(target["post_id"])
+        if not isinstance(row, dict) or row.get("state") != "verified_draft":
+            continue
+        after = row.get("after")
+        if not isinstance(after, dict):
+            continue
+        if (row.get("mutation_receipt_confirmed") is not True
+                or after.get("buffer_id") != target["buffer_id"]
+                or after.get("channel_id") != CHANNEL
+                or after.get("text_sha256") != target["text_sha256"]
+                or after.get("provider_status") != "draft"
+                or after.get("sent_at")):
+            continue
+        try:
+            verified_at = datetime.fromisoformat(row["verified_at"].replace("Z", "+00:00"))
+        except (ValueError, KeyError, TypeError, AttributeError):
+            continue
+        if verified_at.tzinfo is None:
+            continue
+        matches.append(verified_at.astimezone(timezone.utc))
+    if not matches:
+        return None
+    return {
+        "status": "draft",
+        "verified_at_utc": max(matches).isoformat(),
+        "source": "social-bot/queue-cleanup.json",
+        "note": "historical_receipt_not_current_buffer_state",
+    }
+
+
 def deletion_recheck_reason(target: dict, before: dict, current: dict | None) -> str | None:
     """Fail closed if an exactly identified post changes before deletion."""
     reason = validate_live(target, current)
@@ -131,6 +194,22 @@ def deletion_recheck_reason(target: dict, before: dict, current: dict | None) ->
            for field in ("status", "dueAt", "sentAt")):
         return "changed_before_delete"
     return None
+
+
+def posts_list_query(orgid: str, channelid: str, cursor: str | None, *,
+                     drafts_only: bool = False) -> str:
+    """Bounded, channel-pinned Buffer list; draft filter is explicit."""
+    from publish import qstring
+    after = ", after: " + qstring(cursor) if cursor else ""
+    status_clause = ", status: [draft]" if drafts_only else ""
+    return (
+        "query { posts(first: 100" + after
+        + ", input: {organizationId: " + qstring(orgid)
+        + ", filter: {channelIds: [" + qstring(channelid)
+        + "]" + status_clause + "}}) { "
+        "edges { node { id channelId text status dueAt sentAt allowedActions } } "
+        "pageInfo { hasNextPage endCursor } } }"
+    )
 
 
 def execution_mode(args: list[str], env: dict) -> str:
@@ -155,6 +234,13 @@ def main() -> int:
     ledger = read(HERE / "experiments" / "state.json")
     config = read(HERE / "experiments" / "config.json")
     rows = targets(inventory, ledger, config)
+    cleanup_path = HERE / "queue-cleanup.json"
+    cleanup = read(cleanup_path) if cleanup_path.exists() else {}
+    historical_drafts = {
+        row["post_id"]: proof
+        for row in rows
+        if (proof := last_verified_historical_draft(row, cleanup)) is not None
+    }
     print(f"Validated {len(rows)} retired experiment Buffer receipts.")
 
     mode = execution_mode(sys.argv[1:], os.environ)
@@ -174,20 +260,13 @@ def main() -> int:
     if channel != CHANNEL:
         raise RuntimeError("Pinned X account mismatch")
 
-    def list_live_posts():
+    def list_live_posts(*, drafts_only: bool = False):
         cursor = None
         out = {}
         seen = set()
         for _page in range(20):
-            after = ", after: " + qstring(cursor) if cursor else ""
-            query = (
-                "query { posts(first: 100" + after
-                + ", input: {organizationId: " + qstring(orgid)
-                + ", filter: {channelIds: [" + qstring(CHANNEL)
-                + "]}}) { "
-                "edges { node { id channelId text status dueAt sentAt allowedActions } } "
-                "pageInfo { hasNextPage endCursor } } }"
-            )
+            query = posts_list_query(orgid, CHANNEL, cursor,
+                                     drafts_only=drafts_only)
             conn = gql(token, query).get("posts") or {}
             for edge in conn.get("edges") or []:
                 node = edge.get("node") or {}
@@ -224,20 +303,20 @@ def main() -> int:
     held = 0
     outcomes = []
 
-    if mode == "inspect":
-        # A full list can omit old drafts. Inspect by exact immutable ID only;
-        # broad-list failure must not prevent read-only identity checks.
-        live_posts, list_error = {}, None
-    else:
-        try:
-            live_posts = list_live_posts()
-            list_error = None
-        except Exception as exc:
-            live_posts = {}
-            list_error = type(exc).__name__ + ": " + str(exc)[:240]
-            print("Could not list Buffer posts:", list_error, file=sys.stderr)
+    try:
+        # Buffer supports explicit status filtering. Its default listing did
+        # not return the six historical drafts even though their move-to-draft
+        # receipts were verified. Never equate an omitted list ID with deletion.
+        live_posts = list_live_posts(drafts_only=(mode == "inspect"))
+        list_error = None
+    except Exception as exc:
+        live_posts = {}
+        list_error = type(exc).__name__ + ": " + str(exc)[:240]
+        print("Could not list Buffer posts:", list_error, file=sys.stderr)
 
-    if list_error:
+    # Read-only inspection still checks exact IDs if the filtered draft list
+    # is temporarily unavailable. Manual deletion requires a complete list.
+    if list_error and mode == "apply":
         report = {
             "schema_version": 1,
             "mode": mode,
@@ -245,7 +324,9 @@ def main() -> int:
             "scope": "retired_x_experiments_only",
             "article_promotion_untouched": True,
             "counts": {"ledger_receipts_checked": len(rows), "deleted_now": 0, "already_absent": 0, "published_untouched": 0, "verified_unpublished": 0, "held": len(rows)},
-            "remaining_unpublished_legacy_known": len(rows),
+            "remaining_unpublished_legacy_known": 0,
+            "unresolved_legacy_status": len(rows),
+            "historical_draft_receipts": len(historical_drafts),
             "provider_list_error": list_error,
             "outcomes": [],
         }
@@ -255,12 +336,18 @@ def main() -> int:
     for target in rows:
         pid = target["post_id"]
         bid = target["buffer_id"]
-        # Exact-ID reads are mandatory in both modes, even when a broad
-        # listing contains a matching ID that may already be stale.
         lookup_detail = {}
-        before, lookup_issue = resolve_live_target(
-            target, live_posts, fetch_post, always_direct=True,
-            error_detail=lookup_detail)
+        if mode == "inspect":
+            # Draft list is explicit, paginated and read-only. It can resolve
+            # drafts hidden from the single-post API without deleting them.
+            before, observed_via, lookup_issue = inspect_live_target(
+                target, live_posts, fetch_post, error_detail=lookup_detail)
+        else:
+            # Deletion must never rely on the earlier list snapshot.
+            before, lookup_issue = resolve_live_target(
+                target, live_posts, fetch_post, always_direct=True,
+                error_detail=lookup_detail)
+            observed_via = "buffer_post_id"
         if lookup_issue:
             print("HELD", pid, lookup_issue,
                   lookup_detail.get("provider_message", lookup_detail.get("error_class", "")))
@@ -270,7 +357,8 @@ def main() -> int:
             held += 1
             continue
 
-        reason = validate_live(target, before)
+        reason = (validate_live_identity(target, before)
+                  if mode == "inspect" else validate_live(target, before))
         if reason == "already_absent":
             print("ABSENT", pid)
             outcomes.append({"post_id": pid, "buffer_id": bid, "state": "absent"})
@@ -294,6 +382,7 @@ def main() -> int:
                 "state": "verified_unpublished",
                 "provider_status": before.get("status"),
                 "provider_due_at_utc": before.get("dueAt"),
+                "observed_via": observed_via,
             })
             verified_unpublished += 1
             continue
@@ -338,6 +427,10 @@ def main() -> int:
                          "state": "held", "reason": reason})
         held += 1
 
+    for result in outcomes:
+        if result["state"] == "held" and result["post_id"] in historical_drafts:
+            result["last_verified_historical"] = historical_drafts[result["post_id"]]
+
     report = {
         "schema_version": 1,
         "mode": mode,
@@ -351,10 +444,15 @@ def main() -> int:
             "published_untouched": published,
             "verified_unpublished": verified_unpublished,
             "held": held,
+            "historical_draft_receipts": len(historical_drafts),
         },
-        "remaining_unpublished_legacy_known": verified_unpublished + held,
-        "provider_post_count": len(live_posts) if mode == "apply" else None,
-        "provider_lookup": "direct_id_each_target",
+        "remaining_unpublished_legacy_known": verified_unpublished,
+        "unresolved_legacy_status": held,
+        "provider_post_count": len(live_posts) if list_error is None else None,
+        "provider_list_filter": "draft" if mode == "inspect" else "all",
+        "provider_list_error": list_error,
+        "provider_lookup": ("draft_list_with_direct_id_fallback"
+                            if mode == "inspect" else "direct_id_each_target"),
         "outcomes": outcomes,
     }
     RESULT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -365,6 +463,7 @@ def main() -> int:
         f"published_untouched={published}",
         f"verified_unpublished={verified_unpublished}",
         f"held={held}",
+        f"historically_verified_draft={len(historical_drafts)}",
     )
     if held:
         return 2

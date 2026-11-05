@@ -126,6 +126,81 @@ class PurgeRetiredIdentityTest(unittest.TestCase):
         self.assertEqual(purge.deletion_recheck_reason(
             self.target, self.post, None), "not_in_listing_unverified")
 
+    def test_draft_status_is_explicitly_filtered_without_date_cutoff(self):
+        query = purge.posts_list_query("org", purge.CHANNEL, "cursor",
+                                       drafts_only=True)
+        self.assertIn("status: [draft]", query)
+        self.assertIn("channelIds:", query)
+        self.assertIn('after: "cursor"', query)
+        self.assertNotIn("dueAt: {start", query)
+        ordinary = purge.posts_list_query("org", purge.CHANNEL, None)
+        self.assertNotIn("status: [draft]", ordinary)
+
+    def test_live_draft_list_recovers_post_missing_from_single_id_query(self):
+        self.assertIsNone(purge.validate_live_identity(
+            self.target, {**self.post, "allowedActions": []}))
+        self.assertEqual(purge.validate_live(
+            self.target, {**self.post, "allowedActions": []}),
+            "delete_action_not_allowed")
+
+        def cannot_fetch(_bid):
+            self.fail("Exact draft-list match needs no single-post API call")
+
+        remote, source, problem = purge.inspect_live_target(
+            self.target, {"buffer-id": {**self.post, "allowedActions": []}},
+            cannot_fetch)
+        self.assertIsNone(problem)
+        self.assertEqual(source, "buffer_draft_list")
+        self.assertEqual(remote["status"], "draft")
+
+    def test_mismatched_draft_listing_never_establishes_live_identity(self):
+        for patch in (
+            {"id": "different"}, {"text": "edited"},
+            {"channelId": "other"}, {"status": "sent"},
+            {"sentAt": "2026-11-05T01:00:00Z"},
+        ):
+            with self.subTest(patch=patch):
+                detail = {}
+                post, source, reason = purge.inspect_live_target(
+                    self.target, {"buffer-id": {**self.post, **patch}},
+                    lambda _id: (_ for _ in ()).throw(
+                        RuntimeError("Buffer GraphQL error: Post not found")),
+                    error_detail=detail)
+                self.assertIsNone(post)
+                self.assertEqual(source, "buffer_post_id")
+                self.assertEqual(reason, "direct_id_lookup_failed")
+
+    def test_historical_draft_receipt_is_evidence_not_current_state(self):
+        archived = {
+            "state": "verified_draft", "mutation_receipt_confirmed": True,
+            "verified_at": "2026-11-04T03:45:00+00:00",
+            "after": {
+                "buffer_id": self.target["buffer_id"],
+                "channel_id": purge.CHANNEL,
+                "text_sha256": self.target["text_sha256"],
+                "provider_status": "draft",
+                "sent_at": None,
+            },
+        }
+        cleanup = {"recovery_results": {"xexp-test": archived}}
+        prior = purge.last_verified_historical_draft(self.target, cleanup)
+        self.assertEqual(prior["status"], "draft")
+        self.assertEqual(prior["verified_at_utc"], "2026-11-04T03:45:00+00:00")
+        self.assertEqual(prior["note"], "historical_receipt_not_current_buffer_state")
+
+        for changed in (
+            {"mutation_receipt_confirmed": False},
+            {"after": {**archived["after"], "channel_id": "another"}},
+            {"after": {**archived["after"], "text_sha256": "different"}},
+            {"after": {**archived["after"], "provider_status": "scheduled"}},
+            {"after": {**archived["after"], "sent_at": "2026-11-04T03:45:00Z"}},
+            {"verified_at": "not-a-time"},
+        ):
+            with self.subTest(changed=changed):
+                forged = {**archived, **changed}
+                self.assertIsNone(purge.last_verified_historical_draft(
+                    self.target, {"recovery_results": {"xexp-test": forged}}))
+
     def test_unpublished_matching_status_is_allowed_only_in_manual_purge(self):
         for status in ("draft", "scheduled", "pending", "error", "failed"):
             with self.subTest(status=status):
