@@ -144,16 +144,26 @@ class VisualReviewTests(unittest.TestCase):
         self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
 
     def test_current_hold_overrides_acceptance_but_old_hold_does_not(self):
+        from scripts import build
+
         self.accept()
+        self.write_editorial_scene(self.article)
         self.manifest["rejected"][self.article["slug"]] = {
             "article_sha256": article_fingerprint(self.article),
             "reason": "Fixture hold; no real image was reviewed.",
         }
         self.write_manifest()
         self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
+        with patch.object(build, "BASE", self.root):
+            self.assertEqual(build.editorial_image(self.article),
+                             "/images/review-fixture.svg")
+            self.assertEqual(build.photo_credit(self.article), "創作イラスト")
         self.manifest["rejected"][self.article["slug"]]["article_sha256"] = "0" * 64
         self.write_manifest()
         self.assertTrue(reviewed_generated_scene(self.article, root=self.root))
+        with patch.object(build, "BASE", self.root):
+            self.assertEqual(build.editorial_image(self.article),
+                             "/generated/review-fixture.jpg")
 
     def test_malformed_or_incomplete_review_records_fail_closed(self):
         valid = self.accepted_record()
