@@ -75,6 +75,23 @@ class ArticleTagTests(unittest.TestCase):
         thin = build.topic_page("考察沼", groups["考察沼"])
         self.assertIn('name="robots" content="noindex,follow"', thin)
 
+    def test_indexable_topic_pages_link_only_to_established_cooccurring_topics(self):
+        groups = build.topic_groups(self.articles)
+        neighbors = build.related_topics("AI", groups["AI"], self.articles)
+        self.assertTrue(neighbors)
+        established = build.curated_topics(self.articles)
+        self.assertTrue(set(neighbors) <= set(established))
+        ai_slugs = {item["slug"] for item in groups["AI"]}
+        for tag in neighbors:
+            self.assertTrue(any(item["slug"] in ai_slugs for item in established[tag]))
+        page = build.topic_page("AI", groups["AI"], self.articles)
+        self.assertIn('id="topic-neighbors-title"', page)
+        for tag in neighbors:
+            self.assertIn('href="' + build.tag_url(tag) + '"', page)
+
+        thin = build.topic_page("考察沼", groups["考察沼"], self.articles)
+        self.assertNotIn('id="topic-neighbors-title"', thin)
+
     def test_topic_index_explains_satire_axis_without_person_attacks(self):
         page = build.topic_index(self.articles)
         self.assertIn("何を風刺しているか", page)

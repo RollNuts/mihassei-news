@@ -5,7 +5,10 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from scripts.audit_satire import analyze, latest, near_duplicate, final_sentence, next_slot_brief
+from scripts.audit_satire import (
+    analyze, latest, near_duplicate, final_sentence, next_slot_brief,
+    editorial_tag_counts, reusable_topic_note,
+)
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -140,6 +143,22 @@ class SatireAuditTests(unittest.TestCase):
         self.assertEqual(farm["fiction_at"],"2031-11-03T01:53:00+09:00")
         self.assertGreater(datetime.fromisoformat(farm["modified_at"]),
                            datetime.fromisoformat(farm["published_at"]))
+
+    def test_tag_fragmentation_is_advisory_and_surfaces_reusable_clusters(self):
+        articles = [sample(i) for i in range(1, 21)]
+        for i, article in enumerate(articles):
+            article["tags"] = ["AI" if i < 4 else f"単発{i}"]
+            article["satire_tags"] = ["仕事してる感"] if i < 3 else []
+        original = copy.deepcopy(articles)
+        counts = editorial_tag_counts(articles)
+        self.assertEqual(counts["AI"], 4)
+        self.assertIn("AI(4)", reusable_topic_note(articles))
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertIn("TOPIC_FRAGMENTATION", labels)
+        brief = "\n".join(next_slot_brief(articles))
+        self.assertIn("タグが分散気味", brief)
+        self.assertIn("題材や本文を曲げず", brief)
+        self.assertEqual(articles, original)
 
     def test_many_different_stories_remain_fully_publishable(self):
         articles=[sample(i) for i in range(1,12)]

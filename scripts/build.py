@@ -169,6 +169,32 @@ def topic_is_satire(tag, items):
     return any(tag in item.get("satire_tags", []) for item in items)
 
 
+def related_topics(tag, items, articles, limit=6):
+    """Indexable topic hubs that genuinely co-occur with this topic's stories."""
+    if limit <= 0:
+        return []
+    indexable = curated_topics(articles)
+    scores = Counter()
+    item_slugs = {item["slug"] for item in items}
+    for other_tag, other_items in indexable.items():
+        if other_tag == tag:
+            continue
+        overlap = sum(item["slug"] in item_slugs for item in other_items)
+        if overlap:
+            scores[other_tag] = overlap
+    return [
+        other_tag for other_tag, _ in sorted(
+            scores.items(),
+            key=lambda pair: (
+                -pair[1],
+                -len(indexable[pair[0]]),
+                topic_is_satire(pair[0], indexable[pair[0]]),
+                pair[0],
+            ),
+        )[:limit]
+    ]
+
+
 def issue_url(day):
     """Actual publication date in JST, never the fictional year."""
     if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
@@ -1408,9 +1434,23 @@ def topic_index(articles):
     )
 
 
-def topic_page(tag, items):
+def topic_page(tag, items, articles=None):
     satire = topic_is_satire(tag, items)
     indexable = len(items) >= TOPIC_MIN_INDEXABLE_ARTICLES
+    all_articles = items if articles is None else articles
+    neighbors = related_topics(tag, items, all_articles) if indexable else []
+    related = (
+        '<section class="topic-index-section topic-neighbors" aria-labelledby="topic-neighbors-title">'
+        '<h2 id="topic-neighbors-title">関連する話題</h2>'
+        '<div class="tag-filters">'
+        + "".join(
+            f'<a class="topic-index-link" href="{escape(tag_url(other))}">'
+            f'<strong>#{escape(other)}</strong></a>'
+            for other in neighbors
+        )
+        + '</div></section>'
+        if neighbors else ""
+    )
     if satire:
         intro = f'「{tag}」と呼びたくなる行動や空気感を、5年後の架空ニュースで描いた記事。'
         eyebrow = "SATIRE TAG"
@@ -1422,7 +1462,8 @@ def topic_page(tag, items):
         '<div class="container archive-page">'
         f'<header class="page-intro"><span class="eyebrow">{eyebrow}</span>'
         f'<h1>{escape(title)}</h1><p>{escape(intro)}</p></header>'
-        '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
+        + related
+        + '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
         '<p style="margin-top:26px"><a class="read-more" href="/topics/">タグ一覧へ戻る</a></p>'
         '</div>'
     )
@@ -2129,7 +2170,7 @@ def build():
     write("archive/index.html",archive(articles))
     write("topics/index.html",topic_index(articles))
     for tag, items in topic_groups(articles).items():
-        write("topics/"+tag+"/index.html", topic_page(tag, items))
+        write("topics/"+tag+"/index.html", topic_page(tag, items, articles))
     write("saved/index.html",saved_page())
     # Owner-only review helpers remain available as local Python renderers.
     # They are NOT shipped as public website pages: no auth provider or fee.
