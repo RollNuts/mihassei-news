@@ -1,5 +1,75 @@
 [
   {
+    "slug": "lion-king-prequel-watch-order-meeting",
+    "category": "エンタメ",
+    "flash": "見る順番が決まった頃に終了",
+    "fiction_company": "藤野家",
+    "art": "cards",
+    "fiction_at": "2031-11-06T21:57:00+09:00",
+    "published_at": "2026-11-06T21:57:00+09:00",
+    "title": "「ライオンキング」前日譚の見る順番で家族会議2時間24分　決着した瞬間、放送終了",
+    "summary": "今夜の「ライオン・キング：ムファサ」を楽しもうとした家族。前日譚を先に見るか、元の映画から見るかを話し合い、正しい順番が決まった時には放送が終わっていた。",
+    "paragraphs": [
+      "藤野家は、テレビで放送される「ライオン・キング：ムファサ」を見るため、いつもより早く夕食を終えた。放送は21時〜23時24分。ところが父が「前のお話なら、こっちを先に見る方がいいのかな」と口にした途端、家族会議が始まった。",
+      "母は「映画が作られた順番で見た方が驚ける」と主張。娘は「お話の中の時間順なら、ムファサが先でしょ」と譲らない。父は両方の意見を尊重しようと、ノートに矢印を二本描いた。家族は映画の結末を知らずに済む順序を調べ、矢印を書いては消した。テレビではライオンたちが走っていたが、誰も画面を見ていなかった。",
+      "23時24分、放送が終わった。家族はようやく「まず元の映画から見よう」と全会一致で決定。父が満足そうにノートの「視聴順」に丸をつける横で、娘は「じゃあ今日の映画、いつ見るの？」と尋ねた。ノートには完成した視聴順が残り、その下の「映画の感想」だけが一行も埋まっていなかった。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "マイナビニュース",
+      "published_at": "2026-11-06T06:00:00+09:00",
+      "url": "https://news.mynavi.jp/article/20261106-5261830/",
+      "topic": "日本テレビ『金曜ロードショー』で2026年11月6日に『ライオン・キング：ムファサ』を初放送。番組公式情報では放送は21時〜23時24分、30分拡大・本編ノーカット。『ライオン・キング』の始まりを描く前日譚。藤野家、視聴順の家族会議、映画を見逃す行動と会話は本紙独自の創作で、放送局や実在の視聴者の行為ではない。"
+    },
+    "scene_prompt": "A Japanese family of three leaning over a dining table covered with two competing handwritten movie watch-order arrow diagrams, while an unwatched living room television shows a blank end screen in the background. One parent holds a remote, a wall clock near late night, ordinary home interior, natural indoor lighting, no recognizable movie characters, logos or readable text.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "映画",
+      "家族"
+    ],
+    "satire_tags": [
+      "最適化しすぎ",
+      "見る前の準備"
+    ],
+    "x_tags": [
+      "ライオンキング"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "映画の「一番いい見る順番」を調べ始めると、いつから鑑賞が始まるんだろう。",
+    "reader_interest": "fandom_entertainment",
+    "reader_clarity": {
+      "who": "家族",
+      "action": "「ライオンキング」の前日譚をどちらから見るか2時間24分話し合った",
+      "oddity": "映画を楽しむ順番を決める会議だけで放送時間を使い切り、目当ての映画を一秒も見られなかった"
+    },
+    "editorial_lane": "trend",
+    "editorial_tone": "observational",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "target": "前日譚を最高の順番で見て映画を楽しむことを優先する",
+      "action": "テレビが流れている間ずっと公開順か物語の時間順かを議論し、ノートに矢印を書き直す",
+      "outcome": "2時間24分かけて視聴順が決定するが映画の放送は終わり、感想欄だけ白紙で残る"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "ライオンキング",
+      "observed_at": "2026-11-06T21:56:22+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://news.mynavi.jp/article/20261106-5261830/",
+        "https://kinro.ntv.co.jp/lineup/20261106"
+      ]
+    },
+    "trend_bridge": {
+      "why_now": "11月6日夜、金曜ロードショーで「ライオン・キング：ムファサ」が地上波初放送され、Google Trends日本でもライオンキングの検索が急上昇した",
+      "shared_behavior": "作品を一番よい順番で楽しもうと、鑑賞する前に調べすぎて肝心の体験を後回しにする",
+      "satire_gap": "映画を楽しむための順番決めを入念に行うほど、流れている映画そのものを見なくなる",
+      "real_detail": "21時〜23時24分",
+      "unique_hook": "21時〜23時24分という実際の2時間24分の放送枠をそっくり視聴順会議に費やすため、順番が決まった瞬間に見たかった映画が終わる",
+      "x_discovery_term": "ライオンキング"
+    }
+  },
+  {
     "slug": "suica-penguin-eco-bags-stay-sealed",
     "category": "暮らし",
     "flash": "3枚あるのにレジ袋",
