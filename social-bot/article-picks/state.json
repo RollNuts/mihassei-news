@@ -153,6 +153,23 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118586534823661955",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow"
+    },
+    "patrol-teams-mistake-each-other-for-suspects": {
+      "buffer_id": "6aeda96307f945cca9585a3d",
+      "queued_at_utc": "2026-11-06T10:18:10.375569+00:00",
+      "slot_jst": "2026-11-06T19:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "56c33b9cdc3dc08b8eb4ce9872a0a1826c81a8bbb4984ac0a806d1a5df9fdf71",
+      "published_at": "2026-11-06T15:33:43+09:00",
+      "primary_topic": "tag:防犯",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-06T10:18:11.134Z",
+      "buffer_due_at_at_accept": "2026-11-06T10:18:11.286Z",
+      "buffer_sent_at_at_accept": "2026-11-06T10:18:11.588Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118649136622801401",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
