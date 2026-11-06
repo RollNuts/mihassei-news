@@ -67,7 +67,9 @@ TREND_SOURCE_KINDS = {
 ROLLOUT_AT = datetime.fromisoformat("2026-11-05T20:00:00+09:00")
 PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
 TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
+TREND_SPECIFICITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T18:00:00+09:00")
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
+TREND_SPECIFICITY_KEYS = ("real_detail", "unique_hook")
 X_TAG_RE = re.compile(r"\w{1,12}\Z")
 X_TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 GENERIC_X_DISCOVERY_TERMS = {
@@ -531,6 +533,52 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
             f"{slug}: x_discovery_term must match the observed trend term or be "
             "anchored in title, summary, or source.topic"
         )
+    if published >= TREND_SPECIFICITY_ROLLOUT_AT:
+        real_detail = bridge.get("real_detail")
+        unique_hook = bridge.get("unique_hook")
+        if not isinstance(real_detail, str) or not 4 <= len(real_detail.strip()) <= 60:
+            errors.append(f"{slug}: trend_bridge.real_detail must be 4-60 chars")
+            real_detail = ""
+        else:
+            real_detail = real_detail.strip()
+        if not isinstance(unique_hook, str) or not 12 <= len(unique_hook.strip()) <= 240:
+            errors.append(f"{slug}: trend_bridge.unique_hook must be 12-240 chars")
+            unique_hook = ""
+        else:
+            unique_hook = unique_hook.strip()
+
+        detail_norm = _norm(real_detail)
+        source_topic_norm = _norm(source_topic)
+        paragraphs = article.get("paragraphs", [])
+        first_paragraph = (
+            paragraphs[0]
+            if isinstance(paragraphs, list) and paragraphs and isinstance(paragraphs[0], str)
+            else ""
+        )
+        reader_detail_anchor = _norm(
+            " ".join(
+                value
+                for value in (title, summary, first_paragraph)
+                if isinstance(value, str)
+            )
+        )
+        if detail_norm and detail_norm == observed_term:
+            errors.append(
+                f"{slug}: real_detail must be more specific than the trend term itself"
+            )
+        if detail_norm and detail_norm not in source_topic_norm:
+            errors.append(
+                f"{slug}: real_detail must be quoted or closely preserved in source.topic"
+            )
+        if detail_norm and detail_norm not in reader_detail_anchor:
+            errors.append(
+                f"{slug}: real_detail must appear in title, summary, or the first paragraph"
+            )
+        if detail_norm and unique_hook and detail_norm not in _norm(unique_hook):
+            errors.append(
+                f"{slug}: unique_hook must explain why real_detail is essential to this satire"
+            )
+
     if not isinstance(title, str) or len(title.strip()) < 16:
         errors.append(f"{slug}: trend title must be self-contained and at least 16 chars")
     if not isinstance(summary, str) or len(summary.strip()) < 36:
