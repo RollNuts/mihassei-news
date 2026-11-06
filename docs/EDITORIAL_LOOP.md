@@ -246,7 +246,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：11/6 11:30枠は「クリスマス準備を全部おまかせにした家族が、配送用の段ボールを3時間飾る」新作1本を公開。https://veripsa.com/articles/christmas-done-for-you-family-decorates-boxes/（JST 11:38:31／social_life・observational・visible_result）。風刺＝準備を全部省いて一緒に手を動かす時間も省く、笑い＝完成済みツリーは隅で、段ボールの手作りツリーを家族写真の中央に置く。ファミリーマート公式11/5 14:00のクリスマス準備負担調査を確認。見出し3秒、冒頭2文、3段落、禁止表現、過去記事とのオチを照合。記事PR #444はCI2件成功後にmain統合（2b259fbfacc946b0c8b8ceb00ae82d42b36a4b90）。本番公開検証run #42151969683成功（exact revision・記事・OGP・発行号）。タグ『家族』『イベント』で古い記事へのrelated-topic導線、回帰テストとライブ検証合格。イラスト方針で未目視のJPEGは採用せず、動画追加選抜なし。11/6ここまで3枠3本、重複なし。
-- **次枠**：11/6 13:30枠は当日3本（trend 1／social_life 1／original_satire 1）とeditorial_mix、未統合PR・本番revisionを再照合する。最初の7本へ向けてtrend候補を最新実観測から優先比較し、ニッチ・危機・説明過多なら別レーンで良案を採る。流行語の意味質問、移動ポイント、時短クリスマスの段ボール工作を焼き直さない。2026年11月6日の記事はplausible_future／comic_exaggeration／observationalが各1本で読後感が分かれている。今回のchristmas-done-for-you-family-decorates-boxesはvisual_strategy=illustration（専用画像未目視、生成JPEG未採用）、動画未選抜。過去の画像・動画待ちは担当外として維持。
+- **直前**：11/6 13:30枠は「日経平均急落で『100年持つ』と宣言した男性、株価は1分おきに確認」を新作1本公開。https://veripsa.com/articles/nikkei-plunge-hundred-year-hold-minute-check/（JST 13:35／trend・comic_exaggeration・visible_result）。風刺＝長期投資の看板を掲げても短期の数字が気になる、笑い＝100年先の予定は1件だけ、今日の株価記録は16ページ。Google Trends日本版で11/6 13:34に「日経平均」を確認し、同日11:31の株探前場報道で実際の下落を照合。禁止表現なし・本文3段落・直近重複なし。PR #449はCI2件成功後にmain統合（be3f8e47856748c8411788db9b39a04e8bf133c1）、本番検証run #42163579439成功（exact revision・記事URL・発行号・OGP画像）。タグ『投資』『お金』で古い株価記事へのrelated-topic、回帰テスト合格。X向け発見語は『日経平均』『株価暴落』。イラスト方針、未目視JPEGは不採用、動画は未選抜。11/6ここまで4枠4本、重複なし。
+- **次枠**：11/6 15:30枠は最新main・未統合PR・実配信を再確認。11/6のレーンはtrend 2／social_life 1／original_satire 1で、最初の7本へ向けて3レーンの不足が同率。新たな実観測トレンド案を優先比較するが、説明過多なら風潮・暮らしの方を採用。流行語の質問、移動ポイント、時短クリスマス、株価急落と100年保有を焼き直さない。直近2本がvisible_result着地なので別の結末も比較。今回のnikkei-plunge-hundred-year-hold-minute-checkはvisual_strategy=illustration、生成JPEGは未検品、動画未選抜。ほかの記事の画像・X配信は担当外のまま保持。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
