@@ -266,8 +266,97 @@ def read_day_totals(day: str, opener=urlopen) -> dict:
             or any(type(counts.get(key)) is not int or counts[key] < 0
                    for key in ("visitors", "articleReads"))):
         raise ValueError("Day-scoped audience counters missing or invalid for " + day)
-    return {"visitors": counts["visitors"], "articleReads": counts["articleReads"],
-            **read_page_view_totals(payload, counts, day)}
+    result = {"visitors": counts["visitors"], "articleReads": counts["articleReads"],
+              **read_page_view_totals(payload, counts, day)}
+
+    # Optional v2 live-analysis fields are saved only when the whole related
+    # shape is valid. Legacy workers remain readable and are never backfilled.
+    session_fields = ("sessions" in payload, "sessionTracking" in payload,
+                      "sessions" in counts, "sessionsCoverage" in counts)
+    if any(session_fields):
+        if not all(session_fields):
+            raise ValueError("Incomplete session metrics from public API")
+        tracking = payload["sessionTracking"]
+        if (not isinstance(tracking, dict) or tracking.get("unit") != "session"
+                or tracking.get("timezone") != "Asia/Tokyo"
+                or tracking.get("inactivityTimeoutMinutes") != 30):
+            raise ValueError("Invalid session tracking metadata")
+        validate_page_views(day, payload["sessions"], counts["sessions"],
+                            counts["sessionsCoverage"], tracking)
+        result.update({
+            "sessions": counts["sessions"],
+            "sessionsCoverage": counts["sessionsCoverage"],
+            "sessionsCumulative": payload["sessions"],
+            "sessionTracking": tracking,
+        })
+
+    top = payload.get("topArticles")
+    if top is not None:
+        rows = top.get("day") if isinstance(top, dict) else None
+        if not isinstance(rows, list) or len(rows) > 10:
+            raise ValueError("Invalid requested-day top article ranking")
+        seen = set()
+        for row in rows:
+            if (not isinstance(row, dict)
+                    or not isinstance(row.get("article"), str)
+                    or not row["article"]
+                    or row["article"] in seen
+                    or not valid_count(row.get("pageViews"))
+                    or row["pageViews"] == 0):
+                raise ValueError("Invalid requested-day top article row")
+            seen.add(row["article"])
+        if any(rows[i]["pageViews"] < rows[i + 1]["pageViews"]
+               for i in range(len(rows) - 1)):
+            raise ValueError("Requested-day top articles are not ranked")
+        result["topArticles"] = rows
+
+    hourly = payload.get("hourly")
+    if hourly is not None:
+        rows = hourly.get("day") if isinstance(hourly, dict) else None
+        hourly_started = hourly.get("startedAtUtc") if isinstance(hourly, dict) else None
+        if (hourly_started is not None
+                and (not isinstance(hourly_started, str)
+                     or datetime.fromisoformat(hourly_started).tzinfo is None)):
+            raise ValueError("Invalid hourly PV tracking start")
+        if not isinstance(rows, list) or len(rows) != 24:
+            raise ValueError("Invalid requested-day hourly PV series")
+        total = 0
+        coverages = []
+        for hour, row in enumerate(rows):
+            expected = day + "T" + str(hour).zfill(2) + ":00"
+            if (not isinstance(row, dict) or row.get("hourJst") != expected
+                    or row.get("pageViewsCoverage") not in
+                    ("unmeasured", "partial", "complete", "in-progress", "future")):
+                raise ValueError("Invalid requested-day hourly PV bucket")
+            value = row.get("pageViews")
+            coverages.append(row["pageViewsCoverage"])
+            if row["pageViewsCoverage"] in ("unmeasured", "future"):
+                if value is not None:
+                    raise ValueError("Unmeasured/future hourly PV must remain null")
+            elif not valid_count(value):
+                raise ValueError("Measured hourly PV must be a count")
+            else:
+                total += value
+        if "pageViews" in result and result["pageViews"] is not None:
+            if all(value == "complete" for value in coverages):
+                if total != result["pageViews"]:
+                    raise ValueError("Fully covered hourly PV does not sum to requested-day PV")
+            elif total > result["pageViews"]:
+                raise ValueError("Partial hourly PV exceeds requested-day PV")
+        result["hourlyPageViews"] = rows
+        result["hourlyPageViewsStartedAtUtc"] = hourly_started
+
+    if "pageViewSourcesDay" in payload:
+        sources = payload["pageViewSourcesDay"]
+        if sources is not None:
+            if (not isinstance(sources, dict) or set(sources) != set(CHANNELS)
+                    or any(not valid_count(sources[key]) for key in CHANNELS)):
+                raise ValueError("Invalid requested-day page-view sources")
+            if ("pageViews" in result and result["pageViews"] is not None
+                    and sum(sources.values()) > result["pageViews"]):
+                raise ValueError("Attributed page views exceed requested-day PV")
+        result["pageViewSources"] = sources
+    return result
 
 
 def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: dict,
@@ -313,6 +402,15 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "daily_page_views": daily_totals.get("pageViews"),
         "daily_page_views_coverage": daily_totals.get("pageViewsCoverage"),
         "page_views_cumulative": daily_totals.get("pageViewsCumulative"),
+        "daily_sessions": daily_totals.get("sessions"),
+        "daily_sessions_coverage": daily_totals.get("sessionsCoverage"),
+        "sessions_cumulative": daily_totals.get("sessionsCumulative"),
+        "sessions_started_at_utc": daily_totals.get("sessionTracking", {}).get("startedAtUtc"),
+        "session_timeout_minutes": daily_totals.get("sessionTracking", {}).get("inactivityTimeoutMinutes"),
+        "daily_top_articles": daily_totals.get("topArticles"),
+        "daily_hourly_page_views": daily_totals.get("hourlyPageViews"),
+        "hourly_page_views_started_at_utc": daily_totals.get("hourlyPageViewsStartedAtUtc"),
+        "daily_page_view_sources": daily_totals.get("pageViewSources"),
         "page_views_started_at_utc": daily_totals.get("pageViewTracking", {}).get("startedAtUtc"),
         "page_views_timezone": "Asia/Tokyo",
         "page_views_last_7_days_window": daily_totals.get("last7Days"),

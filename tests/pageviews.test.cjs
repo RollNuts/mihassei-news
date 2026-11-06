@@ -57,6 +57,10 @@ function view(clientId,article='story-a',viewId=randomUUID()){
   return {action:'visit',clientId,article,viewId};
 }
 
+function sessionView(clientId,article='story-a',sessionId=randomUUID(),sessionChannel='unattributed',viewId=randomUUID()){
+  return {action:'visit',clientId,article,viewId,sessionId,sessionChannel};
+}
+
 test('PV begins with the first display, never with GETs or legacy distinct readers',async t=>{
   const f=fixture();t.after(()=>f.db.close());
   const browser=randomUUID();
@@ -348,4 +352,81 @@ test('known automated clients and prefetch requests do not initialize or inflate
   const human=await f.post(view(browser),{'user-agent':'Mozilla/5.0 (Android; CUBOT) Chrome/123'});
   assert.equal(human.data.pageViews,1);
   assert.equal(human.data.visitors,1);
+});
+
+
+test('hourly PV and top-article rankings expose a same-day spike without waiting for the daily snapshot',async t=>{
+  const f=fixture('2026-11-06T09:15:00Z');t.after(()=>f.db.close());
+  const browser=randomUUID();
+  for(let i=0;i<3;i++)await f.post(view(browser,'story-a'));
+  await f.post(view(browser,'story-b'));
+  let snapshot=(await f.get('story-a,story-b','2026-11-06')).data;
+  assert.equal(snapshot.version,2);
+  assert.equal(snapshot.hourly.timezone,'Asia/Tokyo');
+  assert.equal(snapshot.hourly.startedAtUtc,'2026-11-06T09:15:00.000Z');
+  assert.equal(snapshot.hourly.today[18].hourJst,'2026-11-06T18:00');
+  assert.equal(snapshot.hourly.today[18].pageViews,4);
+  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'partial');
+  assert.equal(snapshot.hourly.today[19].pageViews,null);
+  assert.equal(snapshot.hourly.today[19].pageViewsCoverage,'future');
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.currentHour)),[
+    {article:'story-a',pageViews:3},{article:'story-b',pageViews:1}
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.today)),[
+    {article:'story-a',pageViews:3},{article:'story-b',pageViews:1}
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.day)),[
+    {article:'story-a',pageViews:3},{article:'story-b',pageViews:1}
+  ]);
+  assert.equal(snapshot.articles['story-a'].requestedDayPageViews,3);
+
+  f.setTime('2026-11-06T10:05:00Z');
+  for(let i=0;i<5;i++)await f.post(view(browser,'story-b'));
+  snapshot=(await f.get('story-a,story-b')).data;
+  assert.equal(snapshot.hourly.today[18].pageViews,4);
+  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'partial');
+  assert.equal(snapshot.hourly.today[19].pageViews,5);
+  assert.equal(snapshot.hourly.today[19].pageViewsCoverage,'in-progress');
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.currentHour)),[
+    {article:'story-b',pageViews:5}
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.today)),[
+    {article:'story-b',pageViews:6},{article:'story-a',pageViews:3}
+  ]);
+});
+
+test('30-minute sessions and session-acquisition page-view sources are counted separately from browsers',async t=>{
+  const f=fixture('2026-11-06T09:15:00Z');t.after(()=>f.db.close());
+  const browser=randomUUID(),session=randomUUID();
+  const first=await f.post(sessionView(browser,'story-a',session,'x'));
+  assert.equal(first.status,200);
+  assert.equal(first.data.sessions,1);
+  assert.equal(first.data.today.sessions,1);
+  assert.equal(first.data.articleEntrances,1);
+  assert.equal(first.data.pageViewSources.x,1);
+  assert.equal(first.data.pageViewSourcesToday.x,1);
+  assert.equal(first.data.pageViewSourcesCurrentHour.x,1);
+
+  await f.post(sessionView(browser,'story-b',session,'x'));
+  let snapshot=(await f.get('story-a,story-b')).data;
+  assert.equal(snapshot.sessions,1,'two page views in one visit are one session');
+  assert.equal(snapshot.visitors,1,'session counting never changes browser de-duplication');
+  assert.equal(snapshot.articles['story-a'].entrances,1);
+  assert.equal(snapshot.articles['story-b'].entrances,0);
+  assert.equal(snapshot.pageViewSources.x,2);
+  assert.equal(snapshot.articles['story-a'].pageViewSources.x,1);
+  assert.equal(snapshot.articles['story-b'].pageViewSources.x,1);
+
+  const secondSession=randomUUID();
+  await f.post(sessionView(browser,'story-b',secondSession,'search'));
+  snapshot=(await f.get('story-a,story-b')).data;
+  assert.equal(snapshot.sessions,2);
+  assert.equal(snapshot.today.sessions,2);
+  assert.equal(snapshot.articles['story-b'].entrances,1);
+  assert.equal(snapshot.pageViewSources.search,1);
+  assert.equal(snapshot.pageViewSourceTracking.attribution,'session-acquisition-channel');
+  assert.equal(snapshot.sessionTracking.inactivityTimeoutMinutes,30);
+
+  const bad=await f.post({...view(browser),sessionId:randomUUID()});
+  assert.equal(bad.status,400,'partial session metadata must fail closed');
 });

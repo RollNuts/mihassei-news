@@ -225,7 +225,8 @@ test('daily browser and article counters stay honest, reset in JST and expire ol
     const empty=(await get('story-a')).result;
     assert.deepEqual(JSON.parse(JSON.stringify(empty.today)),{
       dateJst:'2026-11-03',visitors:0,articleReads:0,
-      pageViews:null,pageViewsCoverage:'unmeasured'
+      pageViews:null,pageViewsCoverage:'unmeasured',
+      sessions:null,sessionsCoverage:'unmeasured'
     });
 
     await api('visit',a,''); // Home page only (no article slug)
@@ -248,14 +249,16 @@ test('daily browser and article counters stay honest, reset in JST and expire ol
     assert.equal(midnight.today.articleReads,0);
     assert.deepEqual(JSON.parse(JSON.stringify(midnight.yesterday)),{
       dateJst:'2026-11-03',visitors:2,articleReads:3,
-      pageViews:null,pageViewsCoverage:'unmeasured'
+      pageViews:null,pageViewsCoverage:'unmeasured',
+      sessions:null,sessionsCoverage:'unmeasured'
     });
     assert.equal(midnight.articles['story-a'].todayReaders,0);
     const historical=await get('story-a','2026-11-03');
     assert.equal(historical.status,200);
     assert.deepEqual(JSON.parse(JSON.stringify(historical.result.day)),{
       dateJst:'2026-11-03',visitors:2,articleReads:3,
-      pageViews:null,pageViewsCoverage:'unmeasured'
+      pageViews:null,pageViewsCoverage:'unmeasured',
+      sessions:null,sessionsCoverage:'unmeasured'
     });
     for(const invalid of ['2026-11-31','2026-11-05','2026-10-01','2026-11-03T00:00','NaN']){
       assert.equal((await get('story-a',invalid)).status,400,
