@@ -340,6 +340,44 @@ class PageViewSnapshotsTests(unittest.TestCase):
         self.assertEqual(result["recent_articles"][0]["page_views_cumulative"], 17)
         self.assertEqual(result["recent_articles"][0]["readers"], 2)
 
+    def test_v2_live_breakdown_is_archived_without_relabeling_units(self):
+        payload = self.payload(start="2026-11-03T15:00:00Z", coverage="complete")
+        payload["sessions"] = 12
+        payload["sessionTracking"] = {
+            "startedAtUtc": "2026-11-03T15:00:00Z",
+            "timezone": "Asia/Tokyo",
+            "unit": "session",
+            "inactivityTimeoutMinutes": 30,
+        }
+        payload["day"]["sessions"] = 5
+        payload["day"]["sessionsCoverage"] = "complete"
+        payload["topArticles"] = {"day": [
+            {"article": "story-a", "pageViews": 25},
+            {"article": "story-b", "pageViews": 10},
+        ]}
+        payload["hourly"] = {"day": [
+            {"hourJst": "2026-11-04T" + str(hour).zfill(2) + ":00",
+             "pageViews": 40 if hour == 12 else 0,
+             "pageViewsCoverage": "complete"}
+            for hour in range(24)
+        ]}
+        payload["pageViewSourcesDay"] = {
+            "x": 10, "search": 5, "external": 3, "unattributed": 2,
+        }
+        daily = self.read(payload)
+        self.assertEqual(daily["sessions"], 5)
+        self.assertEqual(daily["sessionsCumulative"], 12)
+        self.assertEqual(daily["topArticles"][0]["article"], "story-a")
+        self.assertEqual(sum(row["pageViews"] for row in daily["hourlyPageViews"]), 40)
+        self.assertEqual(daily["pageViewSources"]["x"], 10)
+
+        result = self.snapshot(daily)
+        self.assertEqual(result["daily_sessions"], 5)
+        self.assertEqual(result["session_timeout_minutes"], 30)
+        self.assertEqual(result["daily_top_articles"][0]["pageViews"], 25)
+        self.assertEqual(result["daily_hourly_page_views"][12]["pageViews"], 40)
+        self.assertEqual(result["daily_page_view_sources"]["search"], 5)
+
     def test_later_completed_day_including_zero_is_not_missing(self):
         result = self.read(self.payload(day="2026-11-05", daily=0, coverage="complete"))
         self.assertEqual(result["pageViews"], 0)
