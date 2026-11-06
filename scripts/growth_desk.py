@@ -126,6 +126,7 @@ main{{padding:22px 12px 65px}}.panel{{padding:9px 10px}}th,td{{padding:10px 7px}
 </div>
 <div class="panel">
 <p class="footnote" data-growth-peak-sources>ピーク時間の流入元を取得しています。</p>
+<p class="footnote" data-growth-peak-kinds>ピーク時間のページ種別を取得しています。</p>
 <p class="footnote" data-growth-peak-top>ピーク時間の上位記事を取得しています。</p>
 </div>
 </section>
