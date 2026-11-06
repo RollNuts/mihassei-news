@@ -570,6 +570,32 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
                 if isinstance(value, str)
             )
         )
+        secondary_anchor = _norm(
+            " ".join(
+                value
+                for value in (title, summary, source_topic, first_paragraph)
+                if isinstance(value, str)
+            )
+        )
+        explicit_terms: list[str] = []
+        if isinstance(x_tickers, list):
+            explicit_terms.extend(
+                item.strip().upper()
+                for item in x_tickers
+                if isinstance(item, str) and item.strip()
+            )
+        if isinstance(x_tags, list):
+            explicit_terms.extend(
+                item.strip()
+                for item in x_tags
+                if isinstance(item, str) and item.strip()
+            )
+        for secondary in explicit_terms[1:]:
+            if _norm(secondary) not in secondary_anchor:
+                errors.append(
+                    f"{slug}: secondary X discovery term '{secondary}' must be "
+                    "anchored in title, summary, source.topic, or the first paragraph"
+                )
         if detail_norm and detail_norm == observed_term:
             errors.append(
                 f"{slug}: real_detail must be more specific than the trend term itself"
