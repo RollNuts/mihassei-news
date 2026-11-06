@@ -274,7 +274,7 @@ class EditorialMixTests(unittest.TestCase):
             term="生成AI",
         )
         item["title"] = "生成AI会議、要約を読むための会議を新設し時間短縮"
-        item["summary"] = "会議を短くするための要約導入が、要約の確認会議を増やす逆転を扱う記事。"
+        item["summary"] = "会議を短くするための要約導入が、要約の確認会議を増やす逆転を具体的な職場の場面として描く。"
         item["trend_bridge"] = {
             "why_now": "生成AIの業務利用が話題になり、会議や文書の要約用途も広がっている。",
             "shared_behavior": "効率化のための道具を導入すると、その運用確認が新しい仕事になりやすい。",
