@@ -131,26 +131,24 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
+  hourCoverage(stamp, currentHour, startedAt) {
+    if(stamp>currentHour.stamp)return "future";
+    const shiftedStart=Date.parse(stamp+":00:00Z");
+    const actualStart=shiftedStart-JST_OFFSET_MS;
+    const actualEnd=actualStart+HOUR_MS;
+    if(!startedAt || actualEnd<=startedAt)return "unmeasured";
+    if(actualStart<startedAt && startedAt<actualEnd)return "partial";
+    if(stamp===currentHour.stamp)return "in-progress";
+    return "complete";
+  }
   hourlyDaySnapshot(date, currentHour, startedAt) {
     const result=[];
     for(let h=0;h<24;h++){
       const hour=String(h).padStart(2,"0");
       const stamp=date+"T"+hour;
-      let coverage="complete",value=0;
-      if(stamp>currentHour.stamp){
-        coverage="future";value=null;
-      }else{
-        const shiftedStart=Date.parse(stamp+":00:00Z");
-        const actualStart=shiftedStart-JST_OFFSET_MS;
-        const actualEnd=actualStart+HOUR_MS;
-        if(!startedAt || actualEnd<=startedAt){
-          coverage="unmeasured";value=null;
-        }else{
-          if(actualStart<startedAt && startedAt<actualEnd)coverage="partial";
-          else if(stamp===currentHour.stamp)coverage="in-progress";
-          value=this.count("hour:"+date+":"+hour+":pageViews");
-        }
-      }
+      const coverage=this.hourCoverage(stamp,currentHour,startedAt);
+      const value=coverage==="unmeasured" || coverage==="future"
+        ? null : this.count("hour:"+date+":"+hour+":pageViews");
       result.push({hourJst:stamp+":00",pageViews:value,pageViewsCoverage:coverage});
     }
     return result;
@@ -212,6 +210,19 @@ export class NewsroomStats extends DurableObject {
            serial<day.serial-13 || serial>day.serial)
           return json({error:"day outside available JST history"},400);
       }
+      const requestedHour=url.searchParams.get("hour");
+      let selectedHour=null;
+      if(requestedHour!==null){
+        const match=/^(\d{4}-\d{2}-\d{2})T([01]\d|2[0-3])$/.exec(requestedHour);
+        const dayStamp=match ? Date.parse(match[1]+"T00:00:00Z") : NaN;
+        const serial=dayStamp/DAY_MS;
+        if(!match || !Number.isInteger(serial) ||
+           new Date(dayStamp).toISOString().slice(0,10)!==match[1] ||
+           serial<day.serial-13 || serial>day.serial ||
+           requestedHour>hour.stamp)
+          return json({error:"hour outside available JST history"},400);
+        selectedHour={date:match[1],hour:match[2],stamp:requestedHour};
+      }
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
@@ -259,7 +270,11 @@ export class NewsroomStats extends DurableObject {
         currentHour:hourlyStartedAt
           ? this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:") : [],
         today:this.topArticleRows("day:"+day.date+":pageViews:"),
-        last7Days:this.topArticleRowsForWeek(day)
+        last7Days:this.topArticleRowsForWeek(day),
+        ...(selectedHour ? {
+          selectedHour:hourlyStartedAt
+            ? this.topArticleRows("hour:"+selectedHour.date+":"+selectedHour.hour+":pageViews:") : []
+        } : {})
       };
       if(requestedDay!==null)
         topArticles.day=this.topArticleRows("day:"+requestedDay+":pageViews:");
@@ -273,6 +288,23 @@ export class NewsroomStats extends DurableObject {
                 source,this.count("day:"+requestedDay+":pageViewSource:"+source)
               ]))
         }),
+        ...(selectedHour===null ? {} : (()=>{
+          const pvCoverage=this.hourCoverage(selectedHour.stamp,hour,hourlyStartedAt);
+          const sourceCoverage=this.hourCoverage(selectedHour.stamp,hour,sourceStartedAt);
+          return {
+            selectedHour:{
+              hourJst:selectedHour.stamp+":00",
+              pageViews:pvCoverage==="unmeasured" || pvCoverage==="future"
+                ? null : this.count("hour:"+selectedHour.date+":"+selectedHour.hour+":pageViews"),
+              pageViewsCoverage:pvCoverage,
+              pageViewSources:sourceCoverage==="unmeasured" || sourceCoverage==="future"
+                ? null : Object.fromEntries(attributionChannels.map(source=>[
+                    source,this.count("hour:"+selectedHour.date+":"+selectedHour.hour+":pageViewSource:"+source)
+                  ])),
+              pageViewSourcesCoverage:sourceCoverage
+            }
+          };
+        })()),
         hourly:{
           timezone:"Asia/Tokyo",
           startedAtUtc:hourlyStartedAt ? new Date(hourlyStartedAt).toISOString() : null,
