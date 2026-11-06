@@ -46,6 +46,32 @@ def _child_text(item: ET.Element, local_name: str) -> str | None:
     return None
 
 
+def _related_news(item: ET.Element, limit: int = 3) -> list[dict]:
+    """Extract bounded related-news leads already embedded in the Trends RSS."""
+    output: list[dict] = []
+    for child in item:
+        if child.tag.rsplit("}", 1)[-1] != "news_item":
+            continue
+        fields = {
+            grandchild.tag.rsplit("}", 1)[-1]: (grandchild.text or "").strip()
+            for grandchild in child
+            if grandchild.text
+        }
+        title = fields.get("news_item_title", "")
+        url = fields.get("news_item_url", "")
+        source = fields.get("news_item_source", "")
+        if not title or not url.startswith("https://"):
+            continue
+        output.append({
+            "title": title,
+            "source": source or None,
+            "url": url,
+        })
+        if len(output) >= limit:
+            break
+    return output
+
+
 def parse_google_trends(xml_bytes: bytes, *, limit: int = 20) -> list[dict]:
     root = ET.fromstring(xml_bytes)
     output: list[dict] = []
@@ -75,6 +101,7 @@ def parse_google_trends(xml_bytes: bytes, *, limit: int = 20) -> list[dict]:
                 ),
                 "published_at_utc": published_at,
                 "approx_traffic": _child_text(item, "approx_traffic"),
+                "related_news": _related_news(item),
             }
         )
         if len(output) >= limit:
@@ -94,8 +121,8 @@ def build_snapshot(xml_bytes: bytes, *, limit: int = 20) -> dict:
             "url": GOOGLE_TRENDS_RSS,
             "cost": "free",
             "note": (
-                "Search trends are discovery signals, not factual verification. "
-                "Verify the underlying event separately before publication."
+                "Search trends and embedded related-news links are discovery leads, "
+                "not factual verification. Open and verify the underlying source before publication."
             ),
         },
         "items": items,
