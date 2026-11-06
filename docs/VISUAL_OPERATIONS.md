@@ -47,7 +47,9 @@ ChatGPT内蔵の画像生成機能で作った写真を手動で取り込む場�
 
 写真が使えない場合、本文に合う専門SVGを `assets/editorial-scenes/` に用意できる。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
 
-`visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGがまだない場合だけ `illustration_strategy_without_reviewed_scene` を回収対象にする。CPUを再起動して解消しない。
+`visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。2026-11-06 22:00 JST以降の新作では `illustration_reason` も必要で、`readable_text_or_ui / precise_count_or_absence / complex_relationship / comparison_layout / brand_character_safety` のどれかに限る。単一人物・単一物体・単純な行為で成立する場面は写真を既定とし、**写真向けの scene_prompt を書いたまま illustration に振り分けない**。`editorial_mix.py --day` は一日の `cpu-photo / illustration` 件数と `visual_next` を出し、イラストが過半になった日は次の候補で写真向きの場面も比較する。ただし題材の質を落として写真比率を合わせない。
+
+`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGがまだない場合だけ `illustration_strategy_without_reviewed_scene` を回収対象にする。CPUを再起動して解消しない。
 
 ## 選抜動画の確認
 
