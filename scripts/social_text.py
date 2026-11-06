@@ -40,10 +40,12 @@ SLANG_RULES = (
 def article_hashtags(article: dict, limit: int = 2) -> list[str]:
     """Choose up to two human-used X terms, never broad site categories.
 
-    Prefer the exact words people would search on X: x_tickers, explicit
-    x_tags, then an observed trend term such as 流行語大賞. Only after those
-    do we infer slang from the article. Broad site categories such as SNS or
-    アプリ are never used merely to fill the post.
+    Prefer the exact words editors verified people would search on X:
+    x_tickers and explicit x_tags. A raw trend_observation.term is deliberately
+    not promoted to a hashtag: "what is trending" and "what readers search for
+    to find this article" are different editorial decisions. Only after explicit
+    discovery terms do we infer a small set of well-known slang from the article.
+    Broad site categories such as SNS or アプリ are never used merely to fill the post.
     """
     if type(limit) is not int:
         raise ValueError("Hashtag limit must be an integer")
@@ -85,12 +87,6 @@ def article_hashtags(article: dict, limit: int = 2) -> list[str]:
     if isinstance(explicit, list):
         for tag in explicit:
             add(tag)
-        if len(result) >= maximum:
-            return result
-
-    trend = article.get("trend_observation")
-    if isinstance(trend, dict):
-        add(trend.get("term"))
         if len(result) >= maximum:
             return result
 
