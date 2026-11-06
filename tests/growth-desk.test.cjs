@@ -46,6 +46,7 @@ async function run(payload,selectedPayload=payload){
     '[data-growth-peak-hour]':node(),
     '[data-growth-peak-pv]':node(),
     '[data-growth-peak-sources]':node(),
+    '[data-growth-peak-kinds]':node(),
     '[data-growth-peak-top]':node()
   };
   elements['[data-growth-summary]'].hidden=true;
@@ -141,7 +142,9 @@ test('growth desk explains the busiest hour with matching source mix and top art
     selectedHour:{
       hourJst:'2026-11-06T19:00',pageViews:80,pageViewsCoverage:'complete',
       pageViewSourcesCoverage:'complete',
-      pageViewSources:{x:60,search:5,external:5,unattributed:10}
+      pageViewSources:{x:60,search:5,external:5,unattributed:10},
+      pageViewKindsCoverage:'complete',
+      pageViewKinds:{home:5,article:70,archive:3,serial:1,other:1}
     },
     topArticles:{selectedHour:[
       {article:'story-a',pageViews:70},
@@ -157,6 +160,8 @@ test('growth desk explains the busiest hour with matching source mix and top art
   assert.equal(e['[data-growth-peak-pv]'].textContent,'80');
   assert.match(e['[data-growth-peak-sources]'].textContent,/X 60（75%）/);
   assert.match(e['[data-growth-peak-sources]'].textContent,/検索 5/);
+  assert.match(e['[data-growth-peak-kinds]'].textContent,/記事 70（88%）/);
+  assert.match(e['[data-growth-peak-kinds]'].textContent,/トップ 5/);
   assert.match(e['[data-growth-peak-top]'].textContent,/1\. 記事A 70PV・88%/);
   assert.match(e['[data-growth-peak-top]'].textContent,/2\. 記事B 10PV・13%/);
   assert.equal(page.requests.length,2);
@@ -173,7 +178,8 @@ test('past-hour source history stays unknown when attribution was not measured',
   const selected={
     selectedHour:{
       hourJst:'2026-11-06T18:00',pageViews:12,pageViewsCoverage:'partial',
-      pageViewSourcesCoverage:'unmeasured',pageViewSources:null
+      pageViewSourcesCoverage:'unmeasured',pageViewSources:null,
+      pageViewKindsCoverage:'unmeasured',pageViewKinds:null
     },
     topArticles:{selectedHour:[{article:'story-a',pageViews:9}]}
   };
@@ -181,6 +187,8 @@ test('past-hour source history stays unknown when attribution was not measured',
   const e=page.elements;
   assert.match(e['[data-growth-peak-sources]'].textContent,/計測開始前/);
   assert.doesNotMatch(e['[data-growth-peak-sources]'].textContent,/X 0/);
+  assert.match(e['[data-growth-peak-kinds]'].textContent,/計測開始前/);
+  assert.doesNotMatch(e['[data-growth-peak-kinds]'].textContent,/記事 0/);
   assert.match(e['[data-growth-peak-top]'].textContent,/記事A 9PV/);
 });
 
