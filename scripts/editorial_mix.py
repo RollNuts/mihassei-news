@@ -32,6 +32,22 @@ EDITORIAL_TONES = (
     "observational",
     "wildcard",
 )
+EDITORIAL_PAYOFFS = (
+    "dialogue",
+    "action",
+    "visible_result",
+    "ironic_success",
+    "quiet_aftertaste",
+    "wordplay",
+)
+PAYOFF_LABELS = {
+    "dialogue": "一言",
+    "action": "行動",
+    "visible_result": "光景",
+    "ironic_success": "皮肉な成功",
+    "quiet_aftertaste": "余韻",
+    "wordplay": "言葉遊び",
+}
 TONE_LABELS = {
     "plausible_future": "ありそう",
     "comic_exaggeration": "誇張",
@@ -49,6 +65,7 @@ TREND_SOURCE_KINDS = {
     "x_public_aggregator",
 }
 ROLLOUT_AT = datetime.fromisoformat("2026-11-05T20:00:00+09:00")
+PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
 TREND_MAX_AGE = timedelta(hours=30)
 DUPLICATE_WINDOW = timedelta(days=7)
 
@@ -109,6 +126,17 @@ def tone_counts(articles: list[dict], day_jst: str) -> Counter:
     return counts
 
 
+def payoff_counts(articles: list[dict], day_jst: str) -> Counter:
+    counts: Counter = Counter()
+    for article in articles:
+        if article_day(article) != day_jst:
+            continue
+        payoff = article.get("editorial_payoff")
+        if payoff in EDITORIAL_PAYOFFS:
+            counts[payoff] += 1
+    return counts
+
+
 def day_story_count(articles: list[dict], day_jst: str) -> int:
     return sum(article_day(article) == day_jst for article in articles)
 
@@ -165,6 +193,47 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
         return f"{preferred} (wildcard already used today; do not force another)"
 
     return "free (tone mix is varied; quality decides)"
+
+
+def payoff_advice(articles: list[dict], day_jst: str) -> str:
+    """Suggest a different ending shape when the recent payoff is repeating."""
+    counts = payoff_counts(articles, day_jst)
+    tracked_items = sorted(
+        (
+            article for article in articles
+            if _parse_dt(article.get("published_at")) is not None
+            and article.get("editorial_payoff") in EDITORIAL_PAYOFFS
+        ),
+        key=lambda article: str(article.get("published_at") or ""),
+    )
+    recent = [article.get("editorial_payoff") for article in tracked_items]
+
+    if len(recent) >= 2 and recent[-1] == recent[-2]:
+        repeated = recent[-1]
+        alternatives = [payoff for payoff in EDITORIAL_PAYOFFS if payoff != repeated]
+        preferred = min(
+            alternatives,
+            key=lambda payoff: (counts.get(payoff, 0), EDITORIAL_PAYOFFS.index(payoff)),
+        )
+        return (
+            f"{preferred} (last 2 tracked stories end as {repeated}; compare a "
+            "different payoff before a third)"
+        )
+
+    if counts:
+        dominant, number = counts.most_common(1)[0]
+        if number >= 3:
+            alternatives = [payoff for payoff in EDITORIAL_PAYOFFS if payoff != dominant]
+            preferred = min(
+                alternatives,
+                key=lambda payoff: (counts.get(payoff, 0), EDITORIAL_PAYOFFS.index(payoff)),
+            )
+            return (
+                f"{preferred} ({dominant} already used {number} times today; "
+                "compare a different ending shape)"
+            )
+
+    return "free (choose the clearest ending for the story; do not fill a quota)"
 
 
 def next_preferred_lane(counts: Counter) -> str | None:
@@ -303,6 +372,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
     recent_trends: list[tuple[datetime, str, str]] = []
     recent_signatures: list[tuple[datetime, tuple[str, str, str], str]] = []
+    recent_payoffs: list[tuple[datetime, str, str]] = []
 
     for article in articles:
         slug = str(article.get("slug") or "unknown")
@@ -324,6 +394,16 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 f"{slug}: editorial_tone required after rollout; expected "
                 + ", ".join(EDITORIAL_TONES)
             )
+
+        payoff = article.get("editorial_payoff")
+        if published >= PAYOFF_ROLLOUT_AT:
+            if payoff not in EDITORIAL_PAYOFFS:
+                errors.append(
+                    f"{slug}: editorial_payoff required after payoff rollout; expected "
+                    + ", ".join(EDITORIAL_PAYOFFS)
+                )
+            else:
+                recent_payoffs.append((published, payoff, slug))
 
         errors.extend(_validate_signature(article, slug))
         errors.extend(_validate_plausibility(article, slug))
@@ -378,6 +458,17 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 )
                 break
 
+    recent_payoffs.sort(key=lambda item: item[0])
+    if len(recent_payoffs) >= 3:
+        latest_three = recent_payoffs[-3:]
+        if len({payoff for _, payoff, _ in latest_three}) == 1:
+            payoff = latest_three[-1][1]
+            slugs = " / ".join(slug for _, _, slug in latest_three)
+            warnings.append(
+                f"latest 3 tracked stories share editorial_payoff={payoff}: {slugs}; "
+                "compare a different ending shape for the next slot"
+            )
+
     return errors, warnings
 
 
@@ -394,6 +485,11 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         f"{tone}={tones.get(tone, 0)}"
         for tone in EDITORIAL_TONES
     ]
+    payoffs = payoff_counts(articles, day_jst)
+    payoff_parts = [
+        f"{payoff}={payoffs.get(payoff, 0)}"
+        for payoff in EDITORIAL_PAYOFFS
+    ]
     if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
         suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
     else:
@@ -405,6 +501,9 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         + f"; next={suffix}; tones="
         + ", ".join(tone_parts)
         + f"; tone_next={tone_advice(articles, day_jst)}"
+        + "; payoffs="
+        + ", ".join(payoff_parts)
+        + f"; payoff_next={payoff_advice(articles, day_jst)}"
     )
 
 
