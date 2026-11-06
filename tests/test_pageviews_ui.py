@@ -44,6 +44,7 @@ class PageViewPresentationTests(unittest.TestCase):
     def test_privacy_explains_reload_measurement_start_and_local_exclusion(self):
         html = build.privacy()
         for token in ('id="pageviews"', "再読み込みも数え", "計測開始から", "二重計上",
+                      "トップ・記事・アーカイブ・連載・その他", "完全な閲覧URLは保存しません",
                       "data-analytics-opt-out", "data-analytics-status", "このブラウザの閲覧を集計しない"):
             self.assertIn(token, html)
         self.assertIn("未計測の期間は「—」", html)
