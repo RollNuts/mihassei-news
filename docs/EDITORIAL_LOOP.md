@@ -246,7 +246,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：11/6 07:30枠は「流行語大賞の候補30語を発表したら、知らない人の『どういう意味？』が一番流行し大賞になる」1本を発行。https://veripsa.com/articles/buzzword-award-what-does-it-mean-wins/ （JST 2026-11-06 07:39:40／trend・comic_exaggeration／風刺＝世間の言葉の浸透より選考の格付けを優先／笑い＝候補語を知らない質問そのものが受賞）。Google Trends日本「流行語大賞」を11/6 07:37 JST実観測、現実の11/5 14:00候補30語発表をMANTANWEBとテレ朝報道で確認。4行・見出し3秒・冒頭2文・既刊43本との重複・禁止表現を確認。記事PR #433は最新headのCI2件成功後に統合（main 6d35898bc4500a054b074c751b1293a667628580）、本番検証run #42123722526成功（exact revision、記事、発行号、カード画像、既存放送室3本）。記事のイラストは文字関係のため選択、独立したJPEG目視採用はなし。共通タグの古い記事へrelated-topicが成立する設計・テストを確認、実ブラウザでの画像目視は未実施。11/6は計1本、同枠重複なし。
-- **次枠**：11/6 09:30枠は当日既刊・未統合PR・新しいGoogle Trends取得可否とeditorial_mixを再確認し、時事／風潮／暮らしの別入口を比較。今日のtrendは1本・plausible_futureはまだ0本なので静かな未来案を必ず候補に含めるが、品質と出典を優先。流行語・説明要求・検索件数の焼き直しは避け、前日の宅配ロッカー待機・無給レジ表彰も再利用しない。buzzword-award-what-does-it-mean-wins／visual_strategy=illustration・動画選抜なし／画像担当の別在庫には触れない。datacenter-unbuilt-ribbon-cuttingの旧動画画像待ちは既存担当の引き継ぎを維持。
+- **直前**：11/6 09:30枠は「移動ポイントのために自宅前を通り過ぎ、追加特典が出てまた一周する男性」を1本公開。https://veripsa.com/articles/walking-points-past-own-front-door/（JST 09:38:24初刊／original_satire・plausible_future・action）。風刺＝帰宅という目的がポイント達成に取って代わる、笑い＝家族に窓越しで二度手を振って通過。ANA X 11/5 10:00発表とANA Pocket公式案内を確認。4行・見出し3秒・冒頭2文・禁止表現・既刊44本の重複を確認。記事PR #441は最新head CI2件成功後main統合（d8962c1db566133f6067b235e04a7fd6da2756af）。本番検証run #42138631329成功（exact revision、記事・一面・発行号・OGP）。タグ『アプリ』で古い記事へのrelated-topic導線が成立し、回帰テストとライブ検証合格。イラスト表示を選び未目視のJPEGは採用せず、動画追加選抜なし。11/6は2枠2本・重複なし。
+- **次枠**：11/6 11:30枠は当日2本（trend 1／original_satire 1／social_life 0）とeditorial_mix、当日既刊・PRを再照合する。次は最新トレンドを実取得できて風刺が強ければtrend、そうでなければsocial_lifeを優先比較。流行語の意味質問・移動ポイントの数字追い・前日までの再配達ゼロやセルフレジ表彰は焼き直さない。本文の具体行動を冒頭へ置く。walking-points-past-own-front-door／visual_strategy=illustration・動画未選抜／実ブラウザ画像目視は未実施。datacenter-unbuilt-ribbon-cuttingの既存画像・動画待ちは担当外として維持。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
