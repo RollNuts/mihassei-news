@@ -251,7 +251,7 @@ class EditorialMixTests(unittest.TestCase):
             published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
             term="流行語大賞",
         )
-        item["title"] = "流行語を知らない人ほど受賞語の説明係に選ばれる"
+        item["title"] = "流行語大賞、知らない人ほど受賞語の説明係に選ばれる"
         item["summary"] = "知っている人向けの表彰なのに、知らない人ほど説明を求められる逆転をニュース化する。"
         errors, _ = validate_articles([item])
         self.assertTrue(any("trend_bridge" in error for error in errors))
