@@ -70,7 +70,7 @@ async function runPage(options={}){
     addEventListener:(name,callback)=>add('document',name,callback)
   };
   const timers=[],intervals=[],mutations=[],requests=[],seenViewIds=new Set();
-  let clock=Date.UTC(2026,10,4,1),postFailures=options.postFailures||0,getFails=false,releaseGet=null;
+  let clock=options.clock??Date.UTC(2026,10,4,1),postFailures=options.postFailures||0,getFails=false,releaseGet=null;
   const getGate=options.delayFirstGet?new Promise(resolve=>{releaseGet=resolve;}):null;
   let delayed=false;
   let snapshot=options.snapshot||measuredSnapshot();
@@ -183,7 +183,10 @@ test('only visible document displays count; focus, visibility returns and refres
   page.document.visibilityState='visible';page.fire('document','visibilitychange');await settle();
   assert.equal(page.visits().length,1);
   assert.notEqual(page.visits()[0].body.viewId,page.visits()[0].body.clientId);
+  assert.match(page.visits()[0].body.sessionId,/^[a-f0-9-]{36}$/i);
+  assert.equal(page.visits()[0].body.sessionChannel,'unattributed');
   const id=page.visits()[0].body.viewId;
+  const sessionId=page.visits()[0].body.sessionId;
   page.document.visibilityState='hidden';page.advance(180000);page.intervals[0].callback();await settle();
   assert.equal(page.gets().length,1);
   page.document.visibilityState='visible';page.fire('document','visibilitychange');await settle();
@@ -195,9 +198,13 @@ test('only visible document displays count; focus, visibility returns and refres
   page.fire('window','pageshow',{persisted:true});await settle();
   assert.equal(page.visits().length,2);
   assert.notEqual(page.visits()[1].body.viewId,id);
-  const reload=await runPage({storage:page.storage});
+  assert.equal(page.visits()[1].body.sessionId,sessionId,
+    'BFCache redisplay inside 30 minutes stays in the same session');
+  const reload=await runPage({storage:page.storage,clock:Date.UTC(2026,10,4,1)+250000});
   assert.equal(reload.visits()[0].body.clientId,page.visits()[0].body.clientId);
   assert.notEqual(reload.visits()[0].body.viewId,id);
+  assert.equal(reload.visits()[0].body.sessionId,sessionId,
+    'a normal reload inside 30 minutes stays in the same session');
 });
 
 test('a lost response retries the same page-view ID once instead of creating another display',async()=>{
@@ -207,6 +214,7 @@ test('a lost response retries the same page-view ID once instead of creating ano
   assert.ok(retry);retry.callback();await settle();
   assert.equal(page.visits().length,2);
   assert.equal(page.visits()[0].body.viewId,page.visits()[1].body.viewId);
+  assert.equal(page.visits()[0].body.sessionId,page.visits()[1].body.sessionId);
   assert.equal(page.seenViewIds.size,1);
   assert.equal(page.timers.filter(timer=>timer.delay===1500).length,1);
 });
@@ -224,8 +232,12 @@ test('URL, saved and automated-preview opt-outs suppress visits while retaining 
     assert.equal(page.gets().length,1);
     assert.ok(page.requests.every(request=>!request.endpoint.includes('analytics=')));
     if(options.storageFails)assert.match(page.status.textContent,/次のページには引き継がれません/);
-    else assert.equal(page.storage.has('mihassei-anonymous-browser-v1'),false,
-      'read-only opt-out must not create a browser identifier');
+    else {
+      assert.equal(page.storage.has('mihassei-anonymous-browser-v1'),false,
+        'read-only opt-out must not create a browser identifier');
+      assert.equal(page.storage.has('mihassei-session-v1'),false,
+        'read-only opt-out must not create a session identifier');
+    }
   }
   const page=await runPage({url:'https://veripsa.com/privacy/?analytics=off',preference:true});
   assert.equal(page.preference.checked,true);
@@ -267,4 +279,21 @@ test('cards revealed during an in-flight read get a queued read-only follow-up',
   assert.equal(page.gets().length,2);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['7','7']);
   assert.equal(page.visits().length,1);
+});
+
+
+test('session acquisition source persists for 30 minutes and then rotates with a new landing source',async()=>{
+  const start=Date.UTC(2026,10,4,1);
+  const first=await runPage({url:'https://veripsa.com/articles/story-a/?utm_source=x',clock:start});
+  assert.equal(first.visits()[0].body.sessionChannel,'x');
+  const session=first.visits()[0].body.sessionId;
+
+  const internal=await runPage({url:'https://veripsa.com/articles/story-b/',storage:first.storage,clock:start+10*60*1000});
+  assert.equal(internal.visits()[0].body.sessionId,session);
+  assert.equal(internal.visits()[0].body.sessionChannel,'x',
+    'internal navigation keeps the acquisition source of the visit');
+
+  const later=await runPage({url:'https://veripsa.com/articles/story-c/?utm_source=google',storage:first.storage,clock:start+31*60*1000});
+  assert.notEqual(later.visits()[0].body.sessionId,session);
+  assert.equal(later.visits()[0].body.sessionChannel,'search');
 });
