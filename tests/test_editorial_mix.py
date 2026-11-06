@@ -508,6 +508,40 @@ class EditorialMixTests(unittest.TestCase):
         self.assertTrue(any("max is" in error for error in errors))
         self.assertTrue(any("verification_urls" in error for error in errors))
 
+    def test_google_trend_observation_must_be_within_twelve_hours(self):
+        recent = story("google-recent", "trend")
+        recent["trend_observation"]["observed_at"] = (
+            BASE_TIME - timedelta(hours=11)
+        ).isoformat()
+        errors, _ = validate_articles([recent])
+        self.assertFalse(any("trend observation is" in error for error in errors))
+
+        stale = story("google-stale", "trend")
+        stale["trend_observation"]["observed_at"] = (
+            BASE_TIME - timedelta(hours=13)
+        ).isoformat()
+        errors, _ = validate_articles([stale])
+        self.assertTrue(any("max is 12h for google_trends" in error for error in errors))
+
+    def test_x_trend_observation_must_be_within_six_hours(self):
+        recent = story("x-recent", "trend")
+        recent["trend_observation"].update({
+            "source_kind": "x_official",
+            "url": "https://x.com/explore/tabs/trending",
+            "observed_at": (BASE_TIME - timedelta(hours=5)).isoformat(),
+        })
+        errors, _ = validate_articles([recent])
+        self.assertFalse(any("trend observation is" in error for error in errors))
+
+        stale = story("x-stale", "trend")
+        stale["trend_observation"].update({
+            "source_kind": "x_official",
+            "url": "https://x.com/explore/tabs/trending",
+            "observed_at": (BASE_TIME - timedelta(hours=7)).isoformat(),
+        })
+        errors, _ = validate_articles([stale])
+        self.assertTrue(any("max is 6h for x_official" in error for error in errors))
+
     def test_typography_variants_do_not_bypass_trend_duplicate_guard(self):
         first = story("first", "trend", term="ＡＩ 規制")
         second = story(
