@@ -396,6 +396,10 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
     for a in recent:
         if a["slug"] not in counts:
             raise ValueError("Missing read-only count: " + a["slug"])
+        report_day_pv = counts[a["slug"]].get("page_views_report_day")
+        if (report_day_pv is not None and daily_totals.get("pageViews") is not None
+                and report_day_pv > daily_totals["pageViews"]):
+            raise ValueError("Article report-day PV exceeds site report-day PV: " + a["slug"])
     snapshot = {
         "schema_version": 3,
         "date_jst": day,
@@ -432,6 +436,11 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
             "measured_at_utc, through capture time; not seven completed days or the "
             "date_jst end-of-day total. Window/coverage is null when unavailable; "
             "missing/null article values are not zero."
+        ),
+        "page_views_report_day_note": (
+            "recent_articles[].page_views_report_day is that article's PV on date_jst "
+            "only, read from the same completed JST date as daily_page_views. Missing "
+            "pre-activation history stays null/absent and is never reconstructed."
         ),
         "page_views_note": (
             "JavaScript-visible page displays, including repeat loads, with request "
