@@ -44,9 +44,10 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     }));
     return {status:response.status,data:await response.json()};
   };
-  const get=async(articles='story-a,story-b',day)=>{
+  const get=async(articles='story-a,story-b',day,hour)=>{
     const params=new URLSearchParams({articles});
     if(day!==undefined)params.set('day',day);
+    if(hour!==undefined)params.set('hour',hour);
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
@@ -393,6 +394,51 @@ test('hourly PV and top-article rankings expose a same-day spike without waiting
   assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.today)),[
     {article:'story-b',pageViews:6},{article:'story-a',pageViews:3}
   ]);
+
+  const selected=(await f.get('story-a,story-b',undefined,'2026-11-06T18')).data;
+  assert.equal(selected.selectedHour.hourJst,'2026-11-06T18:00');
+  assert.equal(selected.selectedHour.pageViews,4);
+  assert.equal(selected.selectedHour.pageViewsCoverage,'partial');
+  assert.equal(selected.selectedHour.pageViewSources,null);
+  assert.equal(selected.selectedHour.pageViewSourcesCoverage,'unmeasured');
+  assert.deepEqual(JSON.parse(JSON.stringify(selected.topArticles.selectedHour)),[
+    {article:'story-a',pageViews:3},{article:'story-b',pageViews:1}
+  ]);
+});
+
+test('historical hour diagnostics retain the source mix after the spike hour ends',async t=>{
+  const f=fixture('2026-11-06T09:15:00Z');t.after(()=>f.db.close());
+  const browser=randomUUID();
+  await f.post(sessionView(browser,'story-a',randomUUID(),'x'));
+  await f.post(sessionView(browser,'story-a',randomUUID(),'x'));
+  f.setTime('2026-11-06T10:05:00Z');
+  await f.post(sessionView(browser,'story-b',randomUUID(),'search'));
+  f.setTime('2026-11-06T11:05:00Z');
+
+  const first=(await f.get('story-a,story-b',undefined,'2026-11-06T18')).data;
+  assert.equal(first.selectedHour.pageViews,2);
+  assert.equal(first.selectedHour.pageViewsCoverage,'partial');
+  assert.equal(first.selectedHour.pageViewSourcesCoverage,'partial');
+  assert.deepEqual(JSON.parse(JSON.stringify(first.selectedHour.pageViewSources)),{
+    x:2,search:0,external:0,unattributed:0
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(first.topArticles.selectedHour)),[
+    {article:'story-a',pageViews:2}
+  ]);
+
+  const second=(await f.get('story-a,story-b',undefined,'2026-11-06T19')).data;
+  assert.equal(second.selectedHour.pageViews,1);
+  assert.equal(second.selectedHour.pageViewsCoverage,'complete');
+  assert.equal(second.selectedHour.pageViewSourcesCoverage,'complete');
+  assert.deepEqual(JSON.parse(JSON.stringify(second.selectedHour.pageViewSources)),{
+    x:0,search:1,external:0,unattributed:0
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(second.topArticles.selectedHour)),[
+    {article:'story-b',pageViews:1}
+  ]);
+
+  assert.equal((await f.get('story-a',undefined,'2026-11-06T21')).status,400);
+  assert.equal((await f.get('story-a',undefined,'bad-hour')).status,400);
 });
 
 test('30-minute sessions and session-acquisition page-view sources are counted separately from browsers',async t=>{
