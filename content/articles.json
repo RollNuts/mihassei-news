@@ -1,5 +1,50 @@
 [
   {
+    "slug": "black-friday-preparty-budget-gone",
+    "category": "暮らし",
+    "flash": "本番前に予算終了",
+    "fiction_company": "黒金商店街",
+    "art": "cards",
+    "fiction_at": "2031-11-06T19:16:00+09:00",
+    "published_at": "2026-11-06T19:16:00+09:00",
+    "title": "ブラックフライデー前夜祭、3週間前に開幕　客「本番は見学します」",
+    "summary": "本番を待ちきれないセールが3週間前から始まった。架空の商店街では、初日に予算を使い切った客が本番用の買い物リストだけを大事に持ち帰っている。",
+    "paragraphs": [
+      "黒金商店街は、ブラックフライデー本番の3週間前から「前夜祭セール」を始めた。店頭には早く買うほど得だという札が並び、客は「本番まで待つより、今のうちに節約しよう」と次々に商品を抱えた。",
+      "会社員の篠原さんは、本番で買うつもりだった物を書いたメモを手に来店した。「前夜祭の方が安いかもしれない」と炊飯器、毛布、靴を購入し、用意していた予算を初日で使い切った。帰宅後、買い物メモの項目には全部線が引かれていた。",
+      "店員が「本番もお待ちしています」と声をかけると、篠原さんは空になった財布を見せた。「本番は見学します」。商店街は当日用に、買わない人が座れる休憩スペースの増設を検討し始めた。"
+    ],
+    "source": {
+      "kind": "調査・キャンペーン",
+      "publisher": "株式会社くふうカンパニー（PR TIMES）",
+      "published_at": "2026-11-06T15:08:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000559.000046400.html",
+      "topic": "2026年のブラックフライデーは11月27日。くふう トクバイは11月6日から19日まで「ブラックフライデー前夜祭キャンペーン」を開始し、生活者2,283人の調査ではブラックフライデーの認知率が96.6％、買い物意向が55.4％だった。黒金商店街、篠原さん、前夜祭で予算を使い切る行動、当日の休憩スペースは本紙独自の創作であり、同社の実例ではない。"
+    },
+    "scene_prompt": "A grounded editorial illustration of an ordinary Japanese shopping street in early evening: one shopper sits on a bench surrounded by several practical shopping bags and household-item boxes, holding an empty wallet while a cheerful store clerk gestures toward more sale decorations farther down the street. A small crossed-off paper shopping list is visible but has no readable text. Everyday proportions, dry deadpan mood, no logos, no legible signs.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "セール",
+      "買い物"
+    ],
+    "satire_tags": [
+      "前倒ししすぎ",
+      "お得のはずが"
+    ],
+    "x_tags": [
+      "ブラックフライデー"
+    ],
+    "x_tickers": [],
+    "editorial_lane": "social_life",
+    "editorial_tone": "observational",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "target": "買い物客がお得を逃さないことを優先し、セールで支出を抑える本来の目的を見失う",
+      "action": "ブラックフライデー本番用の予算を3週間前の前夜祭で使い切り、買い物リストを先に全消化する",
+      "outcome": "本番当日は買う物も予算も残らず、客が『本番は見学します』と宣言する"
+    }
+  },
+  {
     "slug": "patrol-teams-mistake-each-other-for-suspects",
     "category": "社会",
     "flash": "警戒対象、全員仲間",
