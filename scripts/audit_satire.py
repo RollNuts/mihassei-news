@@ -14,6 +14,8 @@ from datetime import datetime, timezone
 from collections import Counter
 from pathlib import Path
 
+from editorial_mix import EDITORIAL_PAYOFFS, PAYOFF_LABELS
+
 ROOT = Path(__file__).resolve().parents[1]
 RECENT_LIMIT = 20
 CLUSTER_LIMIT = 10
@@ -152,6 +154,30 @@ def reusable_topic_note(articles: list[dict]) -> str:
     return "。".join(parts)
 
 
+def payoff_rotation_note(articles: list[dict]) -> str:
+    """Summarize recent ending shapes so the next slot can compare a different one."""
+    sample = [
+        article for article in latest(articles)[:SHORT_RUN]
+        if article.get("editorial_payoff") in EDITORIAL_PAYOFFS
+    ]
+    if not sample:
+        return "着地タイプはまだ記録なし。企画に合う結末を選び、次回から同じ型の連打を見える化する。"
+
+    recent = [article["editorial_payoff"] for article in sample]
+    counts = Counter(recent)
+    shown = " → ".join(PAYOFF_LABELS.get(payoff, payoff) for payoff in recent[:4])
+    last = recent[0]
+    alternatives = [payoff for payoff in EDITORIAL_PAYOFFS if payoff != last]
+    preferred = min(
+        alternatives,
+        key=lambda payoff: (counts.get(payoff, 0), EDITORIAL_PAYOFFS.index(payoff)),
+    )
+    return (
+        f"最近の着地: {shown}。次枠は「{PAYOFF_LABELS.get(preferred, preferred)}」型も "
+        "候補比較し、本文をその型へ無理に合わせない。"
+    )
+
+
 def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
     """Warn about repetition but never reject or silently delete an article."""
     recent = latest(articles)
@@ -262,6 +288,28 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
                 f"直近{SHORT_RUN}本のうち{dialogue_endings}本が最後のセリフで締まっている。"
                 "次枠は人物の行動、画面に残る物、皮肉な結果など、台詞以外の結末も比較する",
             ))
+
+        tracked_payoffs = [
+            item.get("editorial_payoff")
+            for item in short_run
+            if item.get("editorial_payoff") in EDITORIAL_PAYOFFS
+        ]
+        if len(tracked_payoffs) >= 3 and len(set(tracked_payoffs[:3])) == 1:
+            repeated = tracked_payoffs[0]
+            warnings.append((
+                "PAYOFF_RUN", "-",
+                f"直近の記録済み3本が着地「{PAYOFF_LABELS.get(repeated, repeated)}」で連続。"
+                "次枠は別の着地も候補比較し、同じ読後感の連打を避ける",
+            ))
+        if len(tracked_payoffs) >= 5:
+            dominant, count = Counter(tracked_payoffs).most_common(1)[0]
+            if count >= 4:
+                warnings.append((
+                    "PAYOFF_CLUSTER", "-",
+                    f"直近の記録済み{len(tracked_payoffs)}本中{count}本が着地"
+                    f"「{PAYOFF_LABELS.get(dominant, dominant)}」。"
+                    "題材だけでなく結末の形も回転させる",
+                ))
     if len(newest) >= 6:
         work = [a for a in newest if WORK_AI.search(a.get("title", ""))]
         if len(work) >= max(5, (len(newest) * 3 + 4) // 5):
@@ -308,6 +356,7 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
     labels = {code for code, _, _ in analyze(articles)}
     lines = [f"直近{len(sample)}本から次の1本を考える（機械的助言であり、面白さの採点ではない）。"]
     lines.append("最近の見出し: " + " / ".join(str(a.get("title") or "無題")[:42] for a in sample[:3]))
+    lines.append(payoff_rotation_note(articles))
     if "RECENT_CATEGORY_RUN" in labels:
         counts = Counter(str(a.get("category") or "") for a in sample)
         dominant, _ = counts.most_common(1)[0]
@@ -324,6 +373,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・一言で閉じる。二度目の逆転は不要。本文の追加の笑いは既存の人物と前提から作る。")
     if "DIALOGUE_PUNCHLINE_LOOP" in labels:
         lines.append("最後の一言で落とす記事が続いている。次は、人物が実際にしてしまう行動、残った物、数字や光景そのものがオチになる案も比べる。")
+    if "PAYOFF_RUN" in labels or "PAYOFF_CLUSTER" in labels:
+        lines.append("飽き対策: 題材を変えるだけでなく、着地タイプも変える候補を1案は混ぜる。同じ型が最適なら無理に捨てず、比較した上で採用する。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
         lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
     if "VAGUE_HEADLINE" in labels:
