@@ -1190,6 +1190,44 @@ def check():
         or first_article["todayReaders"]<0):
         raise RuntimeError("Daily per-story browser count missing or invalid")
     verify_pageview_contract(payload, articles[0]["slug"])
+    # Re-read the latest measured hour explicitly. This catches deployments
+    # where the live summary exists but past-hour source/article diagnosis is stale.
+    hourly_today=payload.get("hourly",{}).get("today")
+    measured_hours=[
+        row for row in hourly_today or []
+        if isinstance(row,dict)
+        and row.get("pageViewsCoverage") in {"partial","complete","in-progress"}
+        and type(row.get("pageViews")) is int and row["pageViews"]>=0
+        and isinstance(row.get("hourJst"),str)
+    ]
+    if not measured_hours:
+        raise RuntimeError("Hourly PV diagnostics are not deployed")
+    latest_hour=max(measured_hours,key=lambda row:row["hourJst"])["hourJst"][:13]
+    selected_bytes,_=get(
+        "/api/engagement?articles="+articles[0]["slug"]+"&hour="+latest_hour
+    )
+    selected_payload=json.loads(selected_bytes)
+    selected=selected_payload.get("selectedHour")
+    selected_top=selected_payload.get("topArticles",{}).get("selectedHour")
+    if (not isinstance(selected,dict)
+            or selected.get("hourJst")!=latest_hour+":00"
+            or selected.get("pageViewsCoverage") not in
+               {"partial","complete","in-progress"}
+            or type(selected.get("pageViews")) is not int
+            or selected["pageViews"]<0
+            or not isinstance(selected_top,list)):
+        raise RuntimeError("Historical hour PV/article diagnosis is not deployed")
+    source_coverage=selected.get("pageViewSourcesCoverage")
+    selected_sources=selected.get("pageViewSources")
+    if source_coverage=="unmeasured":
+        if selected_sources is not None:
+            raise RuntimeError("Unmeasured historical source mix must remain null")
+    elif (source_coverage not in {"partial","complete","in-progress"}
+          or not isinstance(selected_sources,dict)
+          or set(selected_sources)!=names
+          or any(type(selected_sources[k]) is not int or selected_sources[k]<0
+                 for k in names)):
+        raise RuntimeError("Historical hour source attribution is missing or invalid")
     votes=payload.get("articles",{}).get(articles[0]["slug"],{}).get("votes")
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
