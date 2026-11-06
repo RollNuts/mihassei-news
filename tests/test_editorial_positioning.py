@@ -71,7 +71,9 @@ class EditorialPositioningTests(unittest.TestCase):
         query = parse_qs(urlparse(share_url(article)).query)
         text = query["text"][0]
         self.assertEqual(text.splitlines()[0], "【未発生新聞】")
-        self.assertEqual(text.splitlines()[-1], " ".join("#" + tag for tag in article["tags"][:2]))
+        from scripts.social_text import article_hashtags
+        expected = " ".join(article_hashtags(article)) or "#未発生新聞"
+        self.assertEqual(text.splitlines()[-1], expected)
         self.assertIn("未発生新聞", text)
         self.assertIn(article["title"], text)
         self.assertIn("utm_campaign=reader_share", query["url"][0])
