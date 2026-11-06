@@ -79,6 +79,7 @@ def eligible_articles(
             continue
         lane = item.get("editorial_lane")
         tone = item.get("editorial_tone")
+        payoff = item.get("editorial_payoff")
         # Do not guess labels for legacy/pre-rollout stories.
         if not isinstance(lane, str) or not lane.strip():
             continue
@@ -107,6 +108,7 @@ def eligible_articles(
             "slug": str(item.get("slug") or ""),
             "editorial_lane": lane,
             "editorial_tone": tone,
+            "editorial_payoff": payoff if isinstance(payoff, str) and payoff.strip() else None,
             "age_hours": round(age_hours, 2),
             "page_views_last_7_days": page_views,
             # A rough age normalization for early comparisons. It is not a
@@ -202,11 +204,12 @@ def build_report(
             "share of measured article-reader browser IDs that later continued from "
             "that source article when both counters are available. Missing editorial "
             "labels and attribution are not backfilled. A group below "
-            "minimum_group_size is an anecdotal sample, not evidence that a lane or "
-            "tone wins or loses."
+            "minimum_group_size is an anecdotal sample, not evidence that a lane, "
+            "tone or payoff wins or loses."
         ),
         "by_lane": group_summary(items, "editorial_lane", min_group=min_group),
         "by_tone": group_summary(items, "editorial_tone", min_group=min_group),
+        "by_payoff": group_summary(items, "editorial_payoff", min_group=min_group),
         "articles": items,
     }
 
