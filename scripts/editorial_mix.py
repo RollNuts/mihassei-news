@@ -40,6 +40,23 @@ EDITORIAL_PAYOFFS = (
     "quiet_aftertaste",
     "wordplay",
 )
+READER_INTERESTS = (
+    "work_money_tech",
+    "beauty_wellness",
+    "relationships_social",
+    "food_travel_shopping",
+    "fandom_entertainment",
+    "family_home",
+    "general_society",
+)
+LIFE_READER_INTERESTS = (
+    "beauty_wellness",
+    "relationships_social",
+    "food_travel_shopping",
+    "fandom_entertainment",
+    "family_home",
+)
+RECURRING_CHARACTERS = ("mina", "nono", "yuu")
 PAYOFF_LABELS = {
     "dialogue": "一言",
     "action": "行動",
@@ -68,6 +85,7 @@ ROLLOUT_AT = datetime.fromisoformat("2026-11-05T20:00:00+09:00")
 PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
 TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
 TREND_SPECIFICITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T18:00:00+09:00")
+READER_INTEREST_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T00:00:00+09:00")
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
 TREND_SPECIFICITY_KEYS = ("real_detail", "unique_hook")
 X_TAG_RE = re.compile(r"\w{1,12}\Z")
@@ -154,6 +172,111 @@ def payoff_counts(articles: list[dict], day_jst: str) -> Counter:
 
 def day_story_count(articles: list[dict], day_jst: str) -> int:
     return sum(article_day(article) == day_jst for article in articles)
+
+
+def reader_interest_counts(articles: list[dict], day_jst: str) -> Counter:
+    counts: Counter = Counter()
+    for article in articles:
+        if article_day(article) != day_jst:
+            continue
+        interest = article.get("reader_interest")
+        if interest in READER_INTERESTS:
+            counts[interest] += 1
+    return counts
+
+
+def reader_interest_advice(articles: list[dict], day_jst: str) -> str:
+    """Nudge candidate generation away from a narrow work/tech-heavy slate."""
+    counts = reader_interest_counts(articles, day_jst)
+    published = day_story_count(articles, day_jst)
+    life_count = sum(counts.get(interest, 0) for interest in LIFE_READER_INTERESTS)
+
+    tracked = sorted(
+        (
+            article for article in articles
+            if _parse_dt(article.get("published_at")) is not None
+            and article.get("reader_interest") in READER_INTERESTS
+        ),
+        key=lambda article: str(article.get("published_at") or ""),
+    )
+    recent = [article.get("reader_interest") for article in tracked]
+    if len(recent) >= 2 and recent[-1] == recent[-2]:
+        repeated = recent[-1]
+        pool = [
+            interest for interest in READER_INTERESTS
+            if interest != repeated
+        ]
+        if repeated in {"work_money_tech", "general_society"}:
+            pool = list(LIFE_READER_INTERESTS)
+        preferred = min(
+            pool,
+            key=lambda interest: (counts.get(interest, 0), READER_INTERESTS.index(interest)),
+        )
+        return (
+            f"{preferred} (last 2 tracked stories share reader_interest={repeated}; "
+            "compare a different everyday-life angle before repeating it)"
+        )
+
+    slots_left = max(0, sum(LANE_TARGETS.values()) - published)
+    life_needed = max(0, 3 - life_count)
+    if life_needed and slots_left <= life_needed:
+        preferred = min(
+            LIFE_READER_INTERESTS,
+            key=lambda interest: (counts.get(interest, 0), LIFE_READER_INTERESTS.index(interest)),
+        )
+        return (
+            f"{preferred} (life-facing interests are {life_count}/3 toward the soft "
+            "7-story balance; compare one without lowering the quality gate)"
+        )
+
+    if counts.get("work_money_tech", 0) >= 2 and life_count < 3:
+        preferred = min(
+            LIFE_READER_INTERESTS,
+            key=lambda interest: (counts.get(interest, 0), LIFE_READER_INTERESTS.index(interest)),
+        )
+        return (
+            f"{preferred} (work/money/tech already appears {counts['work_money_tech']} "
+            "times today; broaden the next candidate set)"
+        )
+
+    return "free (reader-interest mix is varied; quality decides)"
+
+
+def character_advice(articles: list[dict], day_jst: str) -> str:
+    """Keep recurring characters as a light accent, never a quota."""
+    day_chars = [
+        article.get("recurring_character")
+        for article in articles
+        if article_day(article) == day_jst
+        and article.get("recurring_character") in RECURRING_CHARACTERS
+    ]
+    if day_chars:
+        return "standalone preferred (a recurring-character story is already in today's slate)"
+
+    target_day = datetime.fromisoformat(day_jst + "T00:00:00+09:00")
+    window_start = target_day - timedelta(days=6)
+    recent_counts: Counter = Counter()
+    for article in articles:
+        published = _parse_dt(article.get("published_at"))
+        character = article.get("recurring_character")
+        if (
+            published is not None
+            and window_start <= published.astimezone(JST) < target_day + timedelta(days=1)
+            and character in RECURRING_CHARACTERS
+        ):
+            recent_counts[character] += 1
+
+    eligible = [
+        character for character in RECURRING_CHARACTERS
+        if recent_counts.get(character, 0) < 2
+    ]
+    if not eligible:
+        return "standalone preferred (each recurring character already appeared twice in 7 days)"
+    preferred = min(
+        eligible,
+        key=lambda character: (recent_counts.get(character, 0), RECURRING_CHARACTERS.index(character)),
+    )
+    return f"optional {preferred} (only if the story works for a first-time reader)"
 
 
 def tone_advice(articles: list[dict], day_jst: str) -> str:
@@ -646,6 +769,8 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
     recent_trends: list[tuple[datetime, str, str]] = []
     recent_signatures: list[tuple[datetime, tuple[str, str, str], str]] = []
     recent_payoffs: list[tuple[datetime, str, str]] = []
+    recent_interests: list[tuple[datetime, str, str]] = []
+    recent_characters: list[tuple[datetime, str, str]] = []
 
     for article in articles:
         slug = str(article.get("slug") or "unknown")
@@ -667,6 +792,29 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 f"{slug}: editorial_tone required after rollout; expected "
                 + ", ".join(EDITORIAL_TONES)
             )
+
+        interest = article.get("reader_interest")
+        if published >= READER_INTEREST_ROLLOUT_AT and interest not in READER_INTERESTS:
+            errors.append(
+                f"{slug}: reader_interest required after rollout; expected "
+                + ", ".join(READER_INTERESTS)
+            )
+        elif interest is not None and interest not in READER_INTERESTS:
+            errors.append(
+                f"{slug}: invalid reader_interest; expected " + ", ".join(READER_INTERESTS)
+            )
+        elif interest in READER_INTERESTS:
+            recent_interests.append((published, interest, slug))
+
+        character = article.get("recurring_character")
+        if character is not None:
+            if character not in RECURRING_CHARACTERS:
+                errors.append(
+                    f"{slug}: recurring_character must be one of "
+                    + ", ".join(RECURRING_CHARACTERS)
+                )
+            else:
+                recent_characters.append((published, character, slug))
 
         payoff = article.get("editorial_payoff")
         if published >= PAYOFF_ROLLOUT_AT:
@@ -733,6 +881,56 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 )
                 break
 
+    recent_interests.sort(key=lambda item: item[0])
+    if len(recent_interests) >= 3:
+        latest_three = recent_interests[-3:]
+        if len({interest for _, interest, _ in latest_three}) == 1:
+            interest = latest_three[-1][1]
+            slugs = " / ".join(slug for _, _, slug in latest_three)
+            warnings.append(
+                f"latest 3 tracked stories share reader_interest={interest}: {slugs}; "
+                "compare a different reader-interest domain for the next slot"
+            )
+
+    interests_by_day: dict[str, list[str]] = {}
+    for published, interest, _ in recent_interests:
+        day = published.astimezone(JST).date().isoformat()
+        interests_by_day.setdefault(day, []).append(interest)
+    for day, interests in interests_by_day.items():
+        if len(interests) < sum(LANE_TARGETS.values()):
+            continue
+        life_count = sum(interest in LIFE_READER_INTERESTS for interest in interests)
+        if life_count < 3:
+            warnings.append(
+                f"{day}: only {life_count} of {len(interests)} tracked stories are in "
+                "life-facing reader interests; broaden candidate generation next slot"
+            )
+
+    recent_characters.sort(key=lambda item: item[0])
+    characters_by_day: dict[str, list[str]] = {}
+    for published, character, _ in recent_characters:
+        day = published.astimezone(JST).date().isoformat()
+        characters_by_day.setdefault(day, []).append(character)
+    for day, characters in characters_by_day.items():
+        if len(characters) > 1:
+            warnings.append(
+                f"{day}: {len(characters)} recurring-character stories are already present; "
+                "keep character episodes as an accent, not a separate lane"
+            )
+    for i, (published, character, slug) in enumerate(recent_characters):
+        window_start = published - timedelta(days=6)
+        prior_same = [
+            prior_slug
+            for prior_published, prior_character, prior_slug in recent_characters[:i]
+            if prior_character == character and prior_published >= window_start
+        ]
+        if len(prior_same) >= 2:
+            warnings.append(
+                f"{slug}: recurring_character={character} already appeared at least twice "
+                "in the prior 7-day window; rotate or use a standalone cast"
+            )
+            break
+
     recent_payoffs.sort(key=lambda item: item[0])
     if len(recent_payoffs) >= 3:
         latest_three = recent_payoffs[-3:]
@@ -765,6 +963,11 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         f"{payoff}={payoffs.get(payoff, 0)}"
         for payoff in EDITORIAL_PAYOFFS
     ]
+    interests = reader_interest_counts(articles, day_jst)
+    interest_parts = [
+        f"{interest}={interests.get(interest, 0)}"
+        for interest in READER_INTERESTS
+    ]
     if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
         suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
     else:
@@ -779,6 +982,10 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         + "; payoffs="
         + ", ".join(payoff_parts)
         + f"; payoff_next={payoff_advice(articles, day_jst)}"
+        + "; interests="
+        + ", ".join(interest_parts)
+        + f"; interest_next={reader_interest_advice(articles, day_jst)}"
+        + f"; character_next={character_advice(articles, day_jst)}"
     )
 
 
