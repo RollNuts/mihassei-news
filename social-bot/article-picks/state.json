@@ -102,6 +102,23 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118497527225819504",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow"
+    },
+    "walking-points-past-own-front-door": {
+      "buffer_id": "6aed3e857b7e47e8f40248e2",
+      "queued_at_utc": "2026-11-06T02:42:12.615881+00:00",
+      "slot_jst": "2026-11-06T11:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "cdb76d981279e4cb4307ca5e02631a4d05f30b9ac0e91a1b5715c57a704c7c92",
+      "published_at": "2026-11-06T09:38:24+09:00",
+      "primary_topic": "tag:アプリ",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-06T02:42:13.593Z",
+      "buffer_due_at_at_accept": "2026-11-06T02:42:13.638Z",
+      "buffer_sent_at_at_accept": "2026-11-06T02:42:13.986Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118534390439465261",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
