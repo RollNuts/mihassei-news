@@ -77,7 +77,11 @@ GENERIC_X_DISCOVERY_TERMS = {
     "仕事", "働き方", "家族", "技術", "教育", "暮らし", "文化", "旅行",
     "生活", "研究", "社会", "経済",
 }
-TREND_MAX_AGE = timedelta(hours=30)
+TREND_MAX_AGE_BY_SOURCE = {
+    "google_trends": timedelta(hours=12),
+    "x_official": timedelta(hours=6),
+    "x_public_aggregator": timedelta(hours=6),
+}
 DUPLICATE_WINDOW = timedelta(days=7)
 
 _ws = re.compile(r"\s+")
@@ -318,11 +322,15 @@ def _validate_trend(article: dict, slug: str, published: datetime) -> list[str]:
         age = published.astimezone(JST) - observed.astimezone(JST)
         if age < -timedelta(minutes=10):
             errors.append(f"{slug}: trend observation is later than publication")
-        elif age > TREND_MAX_AGE:
-            errors.append(
-                f"{slug}: trend observation is {age.total_seconds()/3600:.1f}h old; "
-                f"max is {TREND_MAX_AGE.total_seconds()/3600:.0f}h"
+        else:
+            max_age = TREND_MAX_AGE_BY_SOURCE.get(
+                source_kind, timedelta(hours=6)
             )
+            if age > max_age:
+                errors.append(
+                    f"{slug}: trend observation is {age.total_seconds()/3600:.1f}h old; "
+                    f"max is {max_age.total_seconds()/3600:.0f}h for {source_kind}"
+                )
 
     trend_url = trend.get("url")
     if not isinstance(trend_url, str) or not trend_url.startswith("https://"):
