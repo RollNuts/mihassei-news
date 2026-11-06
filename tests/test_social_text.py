@@ -144,6 +144,16 @@ class SocialTextTests(unittest.TestCase):
         self.assertEqual(article_hashtags({"x_tags": ["AI_仕事", "3D"]}),
                          ["#AI_仕事", "#3D"])
 
+    def test_raw_trend_term_is_not_automatically_promoted_to_hashtag(self):
+        article = {
+            "trend_observation": {"term": "流行語大賞"},
+            "title": "流行語を知らない人ほど受賞語の説明係に選ばれる",
+            "summary": "話題になっている言葉を知っている前提そのものを風刺する記事。",
+        }
+        self.assertEqual(article_hashtags(article), [])
+        article["x_tags"] = ["流行語大賞"]
+        self.assertEqual(article_hashtags(article), ["#流行語大賞"])
+
     def test_missing_or_malformed_topics_do_not_invent_hashtags(self):
         for article in ({}, {"x_tags": None}, {"x_tags": "ポイ活"}, {"x_tags": {}},
                         {"x_tags": [], "tags": ["SNS", "アプリ"]}):
