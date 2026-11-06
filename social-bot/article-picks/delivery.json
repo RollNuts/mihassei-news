@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-06T11:48:26.527223+00:00",
+  "checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
   "source": "buffer_recent_list_plus_saved_id_readonly",
   "scope": {
     "ledger_days": 7,
@@ -12,7 +12,7 @@
     "article_records_checked": 13,
     "buffer_sent_today": 5,
     "buffer_scheduled_today": 0,
-    "unverified": 0,
+    "unverified": 7,
     "overdue_scheduled": 0,
     "missing_provider_timestamps": 0,
     "delivery_problems": 0,
@@ -133,7 +133,7 @@
       "slug": "office-face-to-face-day-video-call-echo",
       "buffer_id": "6aec5c1d3d04d032a6f638f9",
       "queued_at_utc": "2026-11-05T10:36:12.560778+00:00",
-      "buffer_status": "sent",
+      "buffer_status": "unverified",
       "buffer_status_at_accept": "sent",
       "buffer_created_at_at_accept": "2026-11-05T10:36:13.011Z",
       "buffer_due_at_at_accept": "2026-11-05T10:36:13.051Z",
@@ -141,77 +141,49 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118291286063026215",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow",
-      "buffer_created_at_utc": "2026-11-05T10:36:13.011000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2118291286063026215",
-      "buffer_shared_now": true,
-      "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-05T10:36:13.373000+00:00"
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "music-show-surprise-face-rehearsal",
       "buffer_id": "6aec2364660b2991f15792e5",
       "queued_at_utc": "2026-11-05T06:34:11.707431+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-05T06:34:12.450000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2118284942811492420",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-05T10:11:01.023000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "basketball-opening-day-game-seven",
       "buffer_id": "6aec06987877e0eab274f125",
       "queued_at_utc": "2026-11-05T04:31:20.031929+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-05T04:31:20.861000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2118274648819327084",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-05T09:30:06.838000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "datacenter-unbuilt-ribbon-cutting",
       "buffer_id": "6aebcf80e95790cd46a9c664",
       "queued_at_utc": "2026-11-05T00:36:15.163439+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-05T00:36:16.256000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2118168942153707694",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-05T02:30:04.328000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "stock-rebound-confetti-still-in-red",
       "buffer_id": "6aeb714376b2ba7a5c8f1644",
       "queued_at_utc": "2026-11-04T17:54:09.894548+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-04T17:54:11.278000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2118101222854963526",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-04T22:00:58.897000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "double-speed-drama-explainer-marathon",
       "buffer_id": "6aeabbc4b8d162e0d805346b",
       "queued_at_utc": "2026-11-04T04:59:47.571323+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-04T04:59:48.794000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2117927372414431482",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-04T10:30:09.747000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     },
     {
       "slug": "apology-before-incident",
       "buffer_id": "6ae9bca88bcf49341df56aee",
       "queued_at_utc": "2026-11-03T10:51:19.139752+00:00",
-      "buffer_status": "sent",
-      "buffer_created_at_utc": "2026-11-03T10:51:20.226000+00:00",
-      "buffer_external_link": "https://x.com/2046775749500428288/status/2117806571325382925",
-      "buffer_shared_now": false,
-      "buffer_share_mode": "addToQueue",
-      "buffer_sent_at_utc": "2026-11-04T02:30:08.380000+00:00"
+      "buffer_status": "unverified",
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
     }
   ]
 }
