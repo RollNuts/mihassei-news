@@ -168,6 +168,11 @@ class SocialTextTests(unittest.TestCase):
             if item["slug"] == "walking-points-past-own-front-door"
         )
         self.assertIn("#ポイ活", article_hashtags(walking))
+        buzzword = next(
+            item for item in articles
+            if item["slug"] == "buzzword-award-what-does-it-mean-wins"
+        )
+        self.assertEqual(article_hashtags(buzzword)[0], "#流行語大賞")
 
 
 if __name__ == "__main__":
