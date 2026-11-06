@@ -1,5 +1,70 @@
 [
   {
+    "slug": "suica-penguin-eco-bags-stay-sealed",
+    "category": "暮らし",
+    "flash": "3枚あるのにレジ袋",
+    "fiction_company": "愛好家の岩崎さん",
+    "art": "cards",
+    "fiction_at": "2031-11-06T19:35:08+09:00",
+    "published_at": "2026-11-06T19:35:08+09:00",
+    "title": "「Suicaのペンギン」3羽と買い物、背中のエコバッグは開けずレジ袋購入",
+    "summary": "「Suicaのペンギン」のマスコットを3色そろえた愛好家。背中にエコバッグを収納しているのに、汚すのが惜しくて3羽とも開けず、レジ袋を買って帰った。",
+    "paragraphs": [
+      "「Suicaのペンギン」のマスコットバッグは、背中にエコバッグを収納できる。2031年、最後のコラボグッズを3色そろえて保管してきた岩崎さんは、久しぶりに3羽を肩のバッグにつけてスーパーへ出かけた。",
+      "会計で店員に「袋はお持ちですか」と聞かれ、「3枚あります」と答えた。緑のペンギンの背中のファスナーをつまんだが、「一度開けたら新品じゃなくなる」と手を離した。赤と紺も開けかけては戻し、合計3回、エコバッグの取り出しを見送った。",
+      "岩崎さんは有料レジ袋を1枚買い、3羽を肩につけたまま帰宅した。家ではペンギンを収納ケースへ戻し、レジ袋を丁寧に洗って物干しにかけた。ベランダには再利用待ちのレジ袋が1枚、棚には未使用のエコバッグが3枚残った。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "ORICON NEWS",
+      "published_at": "2026-11-06T17:28:00+09:00",
+      "url": "https://www.oricon.co.jp/news/2491280/full/",
+      "topic": "紀ノ國屋は2026年11月6日、「Suicaのペンギン」最後のコラボ商品「マスコットバッグ」を全3色で発売。マスコットの背中にエコバッグを収納する仕様。前夜20時開始の公式オンライン販売はアクセス集中で一時休止し、同日17:28配信のORICON NEWSは抽選申し込みでの販売再開方針を伝えた。岩崎さん、未使用の3羽、レジ袋を買って洗う行動と会話は本紙独自の創作で、紀ノ國屋や実在の客の行動ではない。"
+    },
+    "scene_prompt": "Three small generic penguin plush charms with closed back zippers hang from an adult shopper's shoulder bag, next to one crinkled plastic shopping bag of groceries. Ordinary Japanese supermarket checkout, natural candid indoor lighting and realistic proportions, no recognizable branded character design, no logos or readable text.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "推し活",
+      "買い物"
+    ],
+    "satire_tags": [
+      "保存用グッズ",
+      "使えないエコバッグ"
+    ],
+    "x_tags": [
+      "Suicaのペンギン"
+    ],
+    "x_tickers": [],
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "trend",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "target": "愛好家が記念グッズを未使用のまま保存することを優先し、買い物で袋を使うという本来の用途を後回しにする",
+      "action": "エコバッグ入りマスコット3羽をスーパーに持参するが、背中のファスナーを開けかけては止める",
+      "outcome": "エコバッグ3枚は未使用のまま、レジ袋を買い、帰宅後にはそのレジ袋だけを洗って干す"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "紀伊國屋 suicaペンギン",
+      "observed_at": "2026-11-06T19:26:50+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://www.oricon.co.jp/news/2491280/full/",
+        "https://travel.watch.impress.co.jp/docs/news/2154209.html",
+        "https://www.super-kinokuniya.jp/c/feature/suica-penguin-mascotbag"
+      ]
+    },
+    "trend_bridge": {
+      "why_now": "11月6日、Suicaのペンギン最後のコラボバッグ発売が話題になり、販売一時休止から抽選申し込みでの再開方針も報じられた",
+      "shared_behavior": "好きなキャラの実用品でも使って傷めるより新品のまま守りたくなる",
+      "satire_gap": "買い物袋を3枚携帯しているのに、大切すぎて開封できずレジ袋を買う",
+      "x_discovery_term": "Suicaのペンギン",
+      "real_detail": "背中にエコバッグを収納",
+      "unique_hook": "背中にエコバッグを収納したマスコットだから、3羽を連れて買い物に来たファンが袋を3枚持ちながら一つも使えず、レジ袋を買う"
+    }
+  },
+  {
     "slug": "black-friday-preparty-budget-gone",
     "category": "暮らし",
     "flash": "本番前に予算終了",
