@@ -127,6 +127,22 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(len(LIFE_READER_INTERESTS), 5)
         self.assertEqual(RECURRING_CHARACTERS, ("mina", "nono", "yuu"))
 
+    def test_reader_clarity_is_required_from_evening_rollout(self):
+        published = datetime(2026, 11, 6, 21, 30, tzinfo=JST)
+        item = story("clear-story", "social_life", published=published)
+        item["title"] = "買い物客、エコバッグ3枚を持参してもレジ袋を購入"
+        item["summary"] = "買い物客がエコバッグを3枚持っているのに、汚したくなくて使わず、有料レジ袋を買う。"
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("reader_clarity is required" in error for error in errors))
+
+        item["reader_clarity"] = {
+            "who": "買い物客",
+            "action": "エコバッグ3枚を持参したまま有料レジ袋を買う",
+            "oddity": "袋を持っているのに保存を優先して、本来の用途では一枚も使わない",
+        }
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("reader_clarity" in error for error in errors))
+
     def test_reader_interest_is_required_from_next_day_rollout(self):
         published = datetime(2026, 11, 7, 9, 30, tzinfo=JST)
         item = story("broad-slate", "social_life", published=published)
