@@ -3,6 +3,7 @@ export { ReaderComments } from "./comments.js";
 
 // Browser-level engagement and page displays, without IP logging or external APIs.
 const attributionChannels = ["x","search","external","unattributed"];
+const pageKinds = ["home","article","archive","serial","other"];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
@@ -192,6 +193,26 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
+  pageKindSummary(day, currentHour, startedAt) {
+    const total={},today={},currentHourCounts={};
+    for(const kind of pageKinds){
+      total[kind]=startedAt ? this.count("pageViewKind:"+kind) : null;
+      today[kind]=startedAt ? this.count("day:"+day.date+":pageViewKind:"+kind) : null;
+      currentHourCounts[kind]=startedAt ? this.count(
+        "hour:"+currentHour.date+":"+currentHour.hour+":pageViewKind:"+kind) : null;
+    }
+    return {
+      pageViewKinds:total,
+      pageViewKindsToday:today,
+      pageViewKindsCurrentHour:currentHourCounts,
+      pageViewKindTracking:{
+        startedAtUtc:startedAt ? new Date(startedAt).toISOString() : null,
+        timezone:"Asia/Tokyo",
+        unit:"page-view",
+        categories:pageKinds
+      }
+    };
+  }
   async fetch(req) {
     const url=new URL(req.url);
     const now=Date.now();
@@ -227,6 +248,7 @@ export class NewsroomStats extends DurableObject {
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
       const sourceStartedAt=this.count("pageViewSources:startedAt");
+      const kindStartedAt=this.count("pageViewKinds:startedAt");
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
@@ -282,10 +304,17 @@ export class NewsroomStats extends DurableObject {
         ...this.pageViewSummary(day,startedAt),
         ...this.sessionSummary(sessionStartedAt),
         ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
+        ...this.pageKindSummary(day,hour,kindStartedAt),
         ...(requestedDay===null ? {} : {
           pageViewSourcesDay:this.dayCoverage({date:requestedDay},day,sourceStartedAt)==="unmeasured"
             ? null : Object.fromEntries(attributionChannels.map(source=>[
                 source,this.count("day:"+requestedDay+":pageViewSource:"+source)
+              ]))
+        }),
+        ...(requestedDay===null ? {} : {
+          pageViewKindsDay:this.dayCoverage({date:requestedDay},day,kindStartedAt)==="unmeasured"
+            ? null : Object.fromEntries(pageKinds.map(kind=>[
+                kind,this.count("day:"+requestedDay+":pageViewKind:"+kind)
               ]))
         }),
         ...(selectedHour===null ? {} : (()=>{
@@ -301,7 +330,15 @@ export class NewsroomStats extends DurableObject {
                 ? null : Object.fromEntries(attributionChannels.map(source=>[
                     source,this.count("hour:"+selectedHour.date+":"+selectedHour.hour+":pageViewSource:"+source)
                   ])),
-              pageViewSourcesCoverage:sourceCoverage
+              pageViewSourcesCoverage:sourceCoverage,
+              pageViewKinds:(()=>{
+                const coverage=this.hourCoverage(selectedHour.stamp,hour,kindStartedAt);
+                return coverage==="unmeasured" || coverage==="future"
+                  ? null : Object.fromEntries(pageKinds.map(kind=>[
+                      kind,this.count("hour:"+selectedHour.date+":"+selectedHour.hour+":pageViewKind:"+kind)
+                    ]));
+              })(),
+              pageViewKindsCoverage:this.hourCoverage(selectedHour.stamp,hour,kindStartedAt)
             }
           };
         })()),
@@ -335,6 +372,9 @@ export class NewsroomStats extends DurableObject {
     if(hasSession && (data.action!=="visit" || typeof data.sessionId!=="string" ||
        !idPattern.test(data.sessionId) || !attributionChannels.includes(data.sessionChannel)))
       return json({error:"invalid session"},400);
+    if(data.pageKind!==undefined &&
+       (data.action!=="visit" || !pageKinds.includes(data.pageKind)))
+      return json({error:"invalid page kind"},400);
     if(data.action==="vote" && !["plausible","unlikely"].includes(data.choice))
       return json({error:"invalid prediction choice"},400);
     const article=data.article||"";
@@ -362,6 +402,7 @@ export class NewsroomStats extends DurableObject {
     );
     const sessionId=sessionHash ? Array.from(new Uint8Array(sessionHash),v=>v.toString(16).padStart(2,"0")).join("") : null;
     const sessionChannel=sessionId ? data.sessionChannel : "";
+    const pageKind=data.action==="visit" ? (data.pageKind||"") : "";
     const purpose=(req.headers.get("sec-purpose")||"")+" "+(req.headers.get("purpose")||"");
     const automated=/Googlebot|bingbot|Baiduspider|YandexBot|DuckDuckBot|Twitterbot|facebookexternalhit|Slackbot|Discordbot|Applebot|HeadlessChrome|Playwright/i.test(req.headers.get("user-agent")||"");
     const ignoredVisit=data.action==="visit" && (/prefetch|prerender/i.test(purpose) || automated);
@@ -388,6 +429,12 @@ export class NewsroomStats extends DurableObject {
             this.increment("pageViews:"+article,1);
             this.increment(dayPrefix+"pageViews:"+article,1);
             this.increment(hourPrefix+"pageViews:"+article,1);
+          }
+          if(pageKind){
+            this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViewKinds:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.increment("pageViewKind:"+pageKind,1);
+            this.increment(dayPrefix+"pageViewKind:"+pageKind,1);
+            this.increment(hourPrefix+"pageViewKind:"+pageKind,1);
           }
           // New clients carry the acquisition channel across their 30-minute
           // session so internal page views keep the landing source instead of
@@ -469,11 +516,13 @@ export class NewsroomStats extends DurableObject {
     const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
     const sessionStartedAt=this.count("sessions:startedAt");
     const sourceStartedAt=this.count("pageViewSources:startedAt");
+    const kindStartedAt=this.count("pageViewKinds:startedAt");
     const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
     return json({version:2,unit:"anonymous-browser",visitors:this.count("visitors"),article,
       ...this.pageViewSummary(day,startedAt),
       ...this.sessionSummary(sessionStartedAt),
       ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
+      ...this.pageKindSummary(day,hour,kindStartedAt),
       hourly:{timezone:"Asia/Tokyo",
         startedAtUtc:hourlyStartedAt ? new Date(hourlyStartedAt).toISOString() : null,
         today:this.hourlyDaySnapshot(day.date,hour,hourlyStartedAt),
