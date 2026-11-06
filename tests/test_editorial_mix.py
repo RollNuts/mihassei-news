@@ -244,6 +244,48 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(warnings, [])
 
+    def test_new_trend_requires_bridge_and_explicit_x_discovery_term(self):
+        item = story(
+            "new-trend",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "流行語を知らない人ほど受賞語の説明係に選ばれる"
+        item["summary"] = "知っている人向けの表彰なのに、知らない人ほど説明を求められる逆転をニュース化する。"
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("trend_bridge" in error for error in errors))
+
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の発表で、受賞語を知らないという反応そのものが話題になる。",
+            "shared_behavior": "みんなが知っている前提の言葉ほど、知らない側に説明責任が回ってくる。",
+            "satire_gap": "流行を表彰する制度なのに、受賞後ほど意味を説明する仕事が増える。",
+            "x_discovery_term": "流行語大賞",
+        }
+        item["x_tags"] = ["流行語大賞"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
+    def test_trend_bridge_rejects_broad_or_unanchored_discovery_term(self):
+        item = story(
+            "bad-discovery",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="生成AI",
+        )
+        item["title"] = "生成AI会議、要約を読むための会議を新設し時間短縮"
+        item["summary"] = "会議を短くするための要約導入が、要約の確認会議を増やす逆転を扱う記事。"
+        item["trend_bridge"] = {
+            "why_now": "生成AIの業務利用が話題になり、会議や文書の要約用途も広がっている。",
+            "shared_behavior": "効率化のための道具を導入すると、その運用確認が新しい仕事になりやすい。",
+            "satire_gap": "時間を減らすための仕組みが、仕組みを確認する時間を増やしてしまう。",
+            "x_discovery_term": "社会",
+        }
+        item["x_tags"] = ["生成AI"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("too broad" in error for error in errors))
+        self.assertTrue(any("explicitly present" in error for error in errors))
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
