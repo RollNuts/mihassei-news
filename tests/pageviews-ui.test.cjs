@@ -282,6 +282,23 @@ test('cards revealed during an in-flight read get a queued read-only follow-up',
 });
 
 
+test('visit payload sends only a coarse page category, never the full path',async()=>{
+  const cases=[
+    ['https://veripsa.com/','home'],
+    ['https://veripsa.com/articles/story-a/','article'],
+    ['https://veripsa.com/archive/','archive'],
+    ['https://veripsa.com/serials/mihassei-jikenbo/episode-1/','serial'],
+    ['https://veripsa.com/privacy/','other']
+  ];
+  for(const [url,expected] of cases){
+    const page=await runPage({url});
+    assert.equal(page.visits().length,1,url);
+    assert.equal(page.visits()[0].body.pageKind,expected,url);
+    assert.ok(!Object.values(page.visits()[0].body).includes(new URL(url).pathname),
+      'full path must not be transmitted');
+  }
+});
+
 test('session acquisition source persists for 30 minutes and then rotates with a new landing source',async()=>{
   const start=Date.UTC(2026,10,4,1);
   const first=await runPage({url:'https://veripsa.com/articles/story-a/?utm_source=x',clock:start});

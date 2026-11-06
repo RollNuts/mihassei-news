@@ -441,6 +441,37 @@ test('historical hour diagnostics retain the source mix after the spike hour end
   assert.equal((await f.get('story-a',undefined,'bad-hour')).status,400);
 });
 
+test('coarse page kinds explain non-article PV without storing full paths',async t=>{
+  const f=fixture('2026-11-06T09:15:00Z');t.after(()=>f.db.close());
+  const browser=randomUUID();
+  await f.post({...view(browser,''),pageKind:'home'});
+  await f.post({...view(browser,'story-a'),pageKind:'article'});
+  await f.post({...view(browser,''),pageKind:'archive'});
+  let snapshot=(await f.get('story-a')).data;
+  assert.equal(snapshot.pageViewKindTracking.unit,'page-view');
+  assert.equal(snapshot.pageViewKindTracking.timezone,'Asia/Tokyo');
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.pageViewKindTracking.categories)),
+    ['home','article','archive','serial','other']);
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.pageViewKindsToday)),{
+    home:1,article:1,archive:1,serial:0,other:0
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.pageViewKindsCurrentHour)),{
+    home:1,article:1,archive:1,serial:0,other:0
+  });
+  assert.equal(Object.values(snapshot.pageViewKindsToday).reduce((a,b)=>a+b,0),3);
+  assert.equal(snapshot.today.pageViews,3);
+
+  f.setTime('2026-11-06T10:05:00Z');
+  const selected=(await f.get('story-a',undefined,'2026-11-06T18')).data;
+  assert.equal(selected.selectedHour.pageViewKindsCoverage,'partial');
+  assert.deepEqual(JSON.parse(JSON.stringify(selected.selectedHour.pageViewKinds)),{
+    home:1,article:1,archive:1,serial:0,other:0
+  });
+
+  const bad=await f.post({...view(browser),pageKind:'full-path:/private'});
+  assert.equal(bad.status,400);
+});
+
 test('30-minute sessions and session-acquisition page-view sources are counted separately from browsers',async t=>{
   const f=fixture('2026-11-06T09:15:00Z');t.after(()=>f.db.close());
   const browser=randomUUID(),session=randomUUID();
