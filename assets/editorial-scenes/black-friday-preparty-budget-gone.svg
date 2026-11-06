@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+ aria-label="セールの前夜祭で買い物を終えた客が空の財布を見せ、店員が遠くの本番セール装飾を指す商店街の創作イラスト"
+ data-visual-topic="document" data-article-sha256="413d16b8114175e029c914f8b4469577de285e345e4dff86b7b0e527fdd407ae">
+<title>前夜祭で予算を使い切り、買い物袋に囲まれて本番を見学する客</title>
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e3e7df"/><stop offset="1" stop-color="#fff0d8"/></linearGradient>
+ <linearGradient id="shop" x2="0" y2="1"><stop stop-color="#a7b9b5"/><stop offset="1" stop-color="#657e7b"/></linearGradient>
+ <linearGradient id="road" x2="0" y2="1"><stop stop-color="#d2c7b5"/><stop offset="1" stop-color="#b4afa5"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-30%" width="150%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#55504b" flood-opacity=".20"/></filter>
+</defs>
+<!-- Quiet neighborhood shopping street in early evening -->
+<rect width="1200" height="675" fill="url(#sky)"/>
+<rect x="0" y="263" width="1200" height="412" fill="url(#road)"/>
+<path d="M0 282H1200" stroke="#c2ad91" stroke-width="10"/>
+<path d="M0 620H1200" stroke="#e6d9c9" stroke-width="6" opacity=".8"/>
+<!-- Stores with gentle early-evening light and blank sale decorations -->
+<g stroke="#6f7976" stroke-width="3">
+ <rect x="0" y="101" width="365" height="174" fill="#d8cab5"/>
+ <rect x="365" y="75" width="443" height="203" fill="#b1beb7"/>
+ <rect x="807" y="109" width="393" height="166" fill="#c5bba8"/>
+ <rect x="37" y="151" width="240" height="118" fill="#e7d9b8"/>
+ <rect x="410" y="131" width="331" height="139" fill="url(#shop)"/>
+ <rect x="850" y="158" width="289" height="112" fill="#d2ba9d"/>
+</g>
+<g fill="#e5e9df" opacity=".82"><path d="M37 152h240v35H37z"/><path d="M410 131h331v41H410z"/><path d="M850 159h289v37H850z"/></g>
+<g fill="none" stroke="#eee8d9" stroke-width="7"><path d="M158 189v79M584 173v96M992 195v75"/></g>
+<!-- Successive flags imply a sale still stretching ahead without any words -->
+<path d="M26 57Q575 144 1172 55" stroke="#a08a77" stroke-width="4" fill="none"/>
+<g fill="#bf7355"><path d="M67 62l34 5-22 37z"/><path d="M224 86l34 5-21 37z"/><path d="M378 101l33 3-17 35z"/><path d="M719 93l34-5-13 39z"/><path d="M1042 65l37-7-12 41z"/></g>
+<g fill="#ead7a7"><path d="M138 73l35 5-19 36z"/><path d="M301 96l35 3-17 37z"/><path d="M556 107l34-1-14 37z"/><path d="M891 78l34-6-13 38z"/></g>
+<!-- Bench: one tired shopper, feet firmly on the ground -->
+<g filter="url(#shadow)"><rect x="167" y="435" width="441" height="24" rx="7" fill="#8b755f"/>
+<rect x="190" y="464" width="16" height="103" fill="#716458"/><rect x="571" y="464" width="16" height="103" fill="#716458"/>
+<rect x="170" y="369" width="435" height="19" rx="9" fill="#9b8169"/><path d="M188 380V444M592 380V444" stroke="#7e6b5a" stroke-width="12"/></g>
+<!-- Shopper torso and face -->
+<ellipse cx="395" cy="566" rx="152" ry="21" fill="#a99a89" opacity=".25"/>
+<path d="M316 399q-14-75 35-91 45-24 96 10l16 94-35 55H350z" fill="#547881" stroke="#3a626c" stroke-width="4"/>
+<path d="M340 453q-18 32-16 100l-22 13-9 17h64l31-104z" fill="#4b575e"/>
+<path d="M401 455q41 48 37 105h39q4 15-1 21h-74l-43-97z" fill="#536167"/>
+<path d="M297 570h59v17h-67q-8-3 8-17M411 567h68v18h-71z" fill="#66524b"/>
+<path d="M345 310q-3-47 46-52 53-4 56 51l-8 29-29 23-40-8-28-20z" fill="#d7a985" stroke="#9c795f" stroke-width="3"/>
+<path d="M341 293q10-57 68-50 36 5 40 46-21 2-42-16-25 20-67 20" fill="#3b4246"/>
+<path d="M371 315l11 2M416 315l10-2" stroke="#604c44" stroke-width="4" stroke-linecap="round"/>
+<path d="M384 339q12 5 24-2" fill="none" stroke="#8b655c" stroke-width="3" stroke-linecap="round"/>
+<!-- Shopper shows an unmistakably empty open wallet -->
+<path d="M339 393q-49 0-53 34l55 28 26-28z" fill="#d5a282" stroke="#94705f" stroke-width="3"/>
+<path d="M435 390q35 7 43 33l-66 27-13-23z" fill="#d5a282" stroke="#94705f" stroke-width="3"/>
+<g filter="url(#shadow)"><path d="M353 421l51 14-10 50-57-15z" fill="#584b42" stroke="#40382f" stroke-width="3"/>
+<path d="M405 433l53-14 18 48-63 21z" fill="#655348" stroke="#40382f" stroke-width="3"/>
+<path d="M404 435l8 48" stroke="#d0b8a0" stroke-width="3"/><path d="M359 433l30 8m26 4l40-12" stroke="#c6aa88" stroke-width="2" opacity=".6"/></g>
+<!-- Checked-off shopping list on bench; no fake readable lettering -->
+<g transform="rotate(-10 210 410)" filter="url(#shadow)"><rect x="175" y="390" width="79" height="61" rx="3" fill="#fff6dc"/><path d="M190 400l7 8 10-15m-16 25l6 7 10-14m-15 24l7 6 10-15" fill="none" stroke="#af6258" stroke-width="3"/><path d="M214 406h29m-29 16h28m-29 16h21" stroke="#8b968c" stroke-width="2"/></g>
+<!-- Purchases on ground: appliance box, blanket, shoe carton and shopping bags -->
+<ellipse cx="170" cy="587" rx="124" ry="17" fill="#a09385" opacity=".25"/>
+<g filter="url(#shadow)"><rect x="29" y="460" width="133" height="109" rx="3" fill="#ba946d" stroke="#84684d" stroke-width="4"/>
+<path d="M31 478l64-24 67 23M95 455v114" stroke="#907254" stroke-width="4" fill="none"/>
+<rect x="44" y="496" width="101" height="47" fill="#dbc4a2"/>
+<path d="M61 521h60m-47-13l39 25m0-25l-39 25" stroke="#9b8d78" stroke-width="3"/>
+<path d="M163 491h84l-6 78h-84z" fill="#e9dbca" stroke="#af997d" stroke-width="3"/>
+<path d="M177 495q0-46 31-44 30 2 26 44" fill="none" stroke="#9b8d77" stroke-width="7"/>
+<path d="M168 539q32-9 72-3" stroke="#c2a886" stroke-width="9"/>
+<path d="M471 521h120l5 53H466z" fill="#b98d6a" stroke="#8e6b52" stroke-width="3"/>
+<path d="M479 521l41-29h64l-34 29z" fill="#d5b18c" stroke="#927257" stroke-width="3"/>
+<path d="M518 499v20" stroke="#927257" stroke-width="6"/>
+<path d="M601 486h74l-8 89h-72z" fill="#ece1cd" stroke="#b4a387" stroke-width="3"/>
+<path d="M611 486q1-37 25-39 24 2 29 39" stroke="#a7957d" stroke-width="7" fill="none"/>
+<path d="M610 532h54" stroke="#c6ac82" stroke-width="15"/>
+</g>
+<!-- Cheerful clerk invites shoppers further on, from a distance -->
+<ellipse cx="926" cy="577" rx="80" ry="17" fill="#a2988c" opacity=".25"/>
+<path d="M887 379q-20 15-23 63l-6 84h124l-8-100q-11-53-60-58z" fill="#aa745f" stroke="#815547" stroke-width="4"/>
+<path d="M898 516l-12 53h33l16-53zM935 516l4 54h34l-5-54z" fill="#5e6b6c"/>
+<path d="M879 567h40v17h-50zM939 569h35l15 15h-51z" fill="#645650"/>
+<path d="M896 308q9-40 42-32 46 10 37 67l-28 28-42-11z" fill="#d6ab89" stroke="#9b795f" stroke-width="3"/>
+<path d="M898 319q-14-50 32-53 29-1 38 25-26 7-44-5-4 18-26 33" fill="#494b4a"/>
+<path d="M921 338h7m27 1h7" stroke="#674e42" stroke-width="4" stroke-linecap="round"/>
+<path d="M929 353q14 11 28 0" stroke="#a0705a" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M968 415q33 7 55-24l74-58" fill="none" stroke="#d6aa89" stroke-width="22" stroke-linecap="round"/>
+<circle cx="1096" cy="333" r="14" fill="#d6aa89"/>
+<path d="M870 420l-15 76" stroke="#d6aa89" stroke-width="20" stroke-linecap="round"/>
+<!-- Distant unspent shopping opportunities remain beneath the flags -->
+<path d="M1105 285h92v87h-92z" fill="#c3d0c3" stroke="#86978b" stroke-width="3"/>
+<path d="M1108 293l22 23 22-23 22 23 22-23" fill="none" stroke="#c77e5f" stroke-width="7"/>
+<circle cx="1155" cy="353" r="18" fill="#c77e5f" opacity=".65"/>
+</svg>
