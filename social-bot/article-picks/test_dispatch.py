@@ -224,13 +224,16 @@ class ArticlePickTests(unittest.TestCase):
             {"story-a"}
         )
         tagged = article("story-tags", title="タグを共通語彙として使う記事")
-        tagged["tags"] = ["AI", "働き方", "3つ目"]
+        tagged["tags"] = ["AI", "働き方", "SNS"]
+        tagged["x_tags"] = ["生成AI", "仕事あるある", "3つ目"]
         tagged_msg = picks.publication_text(tagged)
-        self.assertIn("\n\n#未発生新聞 #AI #働き方\n\n", tagged_msg)
+        self.assertIn("\n\n#未発生新聞 #生成AI #仕事あるある\n\n", tagged_msg)
+        self.assertNotIn("#AI", tagged_msg)
+        self.assertNotIn("#SNS", tagged_msg)
         self.assertNotIn("#3つ目", tagged_msg)
-        self.assertEqual(picks.article_hashtags(tagged), ["#AI", "#働き方"])
-        tagged["tags"] = ["AI", "AI", "bad tag", "#bad", 3]
-        self.assertEqual(picks.article_hashtags(tagged), ["#AI"])
+        self.assertEqual(picks.article_hashtags(tagged), ["#生成AI", "#仕事あるある"])
+        tagged["x_tags"] = ["SNS", "アプリ", "ポイ活", "ポイ活"]
+        self.assertEqual(picks.article_hashtags(tagged), ["#ポイ活"])
         followup = article("followup")
         followup["followup_of"] = "previous-story"
         followup_msg = picks.publication_text(followup)
@@ -242,10 +245,11 @@ class ArticlePickTests(unittest.TestCase):
     def test_article_summary_adds_a_short_reader_teaser_within_budget(self):
         a = article("story-teaser", title="倍速視聴で内容が分からなくなった男性")
         a["summary"] = "時間を節約したはずが、登場人物を確認する解説動画を本編より長く見ることになった。"
-        a["tags"] = ["タイパ", "ドラマ"]
+        a["tags"] = ["メディア", "ドラマ"]
+        a["x_tags"] = ["タイパ", "ドラマ沼"]
         msg = picks.publication_text(a)
         self.assertIn("時間を節約したはずが", msg)
-        self.assertIn("#未発生新聞 #タイパ #ドラマ", msg)
+        self.assertIn("#未発生新聞 #タイパ #ドラマ沼", msg)
         self.assertIn("utm_campaign=article_auto", msg)
         self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
@@ -253,8 +257,9 @@ class ArticlePickTests(unittest.TestCase):
         a = article("story-summary-budget", title="見出し" * 30)
         a["summary"] = "要約" * 200
         a["tags"] = ["働き方", "メディア"]
+        a["x_tags"] = ["会議あるある", "タイパ"]
         msg = picks.publication_text(a)
-        self.assertIn("#未発生新聞 #働き方 #メディア", msg)
+        self.assertIn("#未発生新聞 #会議あるある #タイパ", msg)
         self.assertTrue(msg.endswith(
             "https://veripsa.com/articles/story-summary-budget/"
             + picks.TRACKING_QUERY
@@ -263,11 +268,14 @@ class ArticlePickTests(unittest.TestCase):
 
     def test_long_slug_preserves_the_link_and_topics_within_x_budget(self):
         tagged = article("story-" + "a" * 200, title="見出し" * 40)
-        tagged["tags"] = ["長" * 12, "別" * 12, "AI"]
+        tagged["tags"] = ["AI", "SNS", "アプリ"]
+        tagged["x_tags"] = ["長" * 12, "別" * 12, "ポイ活"]
         msg = picks.publication_text(tagged)
         self.assertIn("…", msg)
         self.assertIn("#未発生新聞 #" + "長" * 12 + " #" + "別" * 12, msg)
         self.assertNotIn("#AI", msg)
+        self.assertNotIn("#SNS", msg)
+        self.assertNotIn("#ポイ活", msg)
         self.assertTrue(msg.endswith(
             "https://veripsa.com/articles/" + tagged["slug"] + "/"
             + picks.TRACKING_QUERY
@@ -275,13 +283,16 @@ class ArticlePickTests(unittest.TestCase):
         self.assertGreater(len(msg), 220)
         self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
-    def test_every_published_article_uses_the_shared_topic_vocabulary(self):
+    def test_every_published_article_uses_context_hashtags_without_category_fill(self):
         articles = json.loads((picks.ROOT / "content/articles.json").read_text(encoding="utf-8"))
+        generic = {"#SNS", "#アプリ", "#社会", "#生活", "#暮らし", "#家族",
+                   "#イベント", "#仕事", "#働き方", "#メディア", "#AI"}
         for item in articles:
             with self.subTest(slug=item["slug"]):
                 msg = picks.publication_text(item)
-                expected_tags = " ".join(["#未発生新聞"] + ["#" + tag for tag in item["tags"][:2]])
+                expected_tags = " ".join(["#未発生新聞"] + picks.article_hashtags(item))
                 self.assertIn("\n\n" + expected_tags + "\n\n", msg)
+                self.assertFalse(generic.intersection(msg.split()))
                 self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
     def test_rank_uses_recent_pv_then_today_then_publication_time(self):
