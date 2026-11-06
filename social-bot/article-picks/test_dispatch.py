@@ -911,7 +911,12 @@ class ArticlePickTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root / "content").mkdir()
-            (root / "content/articles.json").write_text(json.dumps([article("new-story")]))
+            promoted = article("new-story")
+            promoted["x_share_lead"] = (
+                "会議を短くしたかっただけなのに、最後の挨拶だけ1時間。"
+                "これ、効率化した結果の方が長くなってない？"
+            )
+            (root / "content/articles.json").write_text(json.dumps([promoted]))
             with patch.object(picks, "ROOT", root), \
                  patch.object(picks, "read_json", side_effect=lambda path: copy.deepcopy(documents[path])), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
@@ -933,10 +938,14 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(queue.call_args.args[2]["id"], "article-new-story")
                 self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 self.assertIs(queue.call_args.kwargs["return_post"], True)
+                self.assertTrue(queue.call_args.args[2]["text"].startswith(
+                    "会議を短くしたかっただけなのに"
+                ))
                 self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
                 self.assertIn("utm_campaign=article_auto", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
+                self.assertEqual(receipt["copy_mode"], "reader_lead")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
@@ -991,6 +1000,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 receipt = save.call_args.args[0]["queued"]["fresh-story"]
                 self.assertEqual(receipt["source"], "fresh_article")
+                self.assertEqual(receipt["copy_mode"], "headline_summary")
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["buffer_status_at_accept"], "sending")
