@@ -215,10 +215,36 @@ jobs:
                               or datetime.fromisoformat(source_started.replace("Z","+00:00")).tzinfo is None):
                               raise RuntimeError("page-view source start is invalid")
 
+                          kind_tracking=data.get("pageViewKindTracking")
+                          kind_keys=("home","article","archive","serial","other")
+                          if (not isinstance(kind_tracking,dict)
+                              or kind_tracking.get("unit")!="page-view"
+                              or kind_tracking.get("timezone")!="Asia/Tokyo"
+                              or kind_tracking.get("categories")!=list(kind_keys)
+                              or "startedAtUtc" not in kind_tracking):
+                              raise RuntimeError("page-kind PV metadata missing")
+                          kind_started=kind_tracking["startedAtUtc"]
+                          for field in ("pageViewKinds","pageViewKindsToday","pageViewKindsCurrentHour"):
+                              values=data.get(field)
+                              if not isinstance(values,dict) or set(values)!=set(kind_keys):
+                                  raise RuntimeError("page-kind PV counters missing: "+field)
+                              if kind_started is None:
+                                  if any(values[key] is not None for key in kind_keys):
+                                      raise RuntimeError("unstarted page-kind PV must remain null")
+                              elif any(type(values[key]) is not int or values[key]<0 for key in kind_keys):
+                                  raise RuntimeError("page-kind PV counter invalid: "+field)
+                          if kind_started is not None:
+                              if (not isinstance(kind_started,str)
+                                  or datetime.fromisoformat(kind_started.replace("Z","+00:00")).tzinfo is None):
+                                  raise RuntimeError("page-kind PV start is invalid")
+                              if sum(data["pageViewKindsToday"].values())>today["pageViews"]:
+                                  raise RuntimeError("page-kind PV exceeds today's PV")
+
                           if "entrances" not in details or "pageViewSources" not in details:
                               raise RuntimeError("article diagnostics v2 fields missing")
-                          print("VERIFIED diagnostics v2: sessions={} / hourlyMeasured={} / topToday={} / sources={}".format(
-                              data.get("sessions"),measured_hourly,top["today"][:3],data.get("pageViewSourcesToday")))
+                          print("VERIFIED diagnostics v2: sessions={} / hourlyMeasured={} / topToday={} / sources={} / pageKinds={}".format(
+                              data.get("sessions"),measured_hourly,top["today"][:3],
+                              data.get("pageViewSourcesToday"),data.get("pageViewKindsToday")))
                           print("VERIFIED PV API: site={}, article={}, article last7Days={} PV".format(
                               data["pageViews"],details["pageViews"],details["last7DaysPageViews"]))
                           print("VERIFIED daily PV: {} / today={} / yesterday={} / last7Days={} (JST)".format(
