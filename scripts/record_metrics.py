@@ -313,9 +313,15 @@ def read_day_totals(day: str, opener=urlopen) -> dict:
     hourly = payload.get("hourly")
     if hourly is not None:
         rows = hourly.get("day") if isinstance(hourly, dict) else None
+        hourly_started = hourly.get("startedAtUtc") if isinstance(hourly, dict) else None
+        if (hourly_started is not None
+                and (not isinstance(hourly_started, str)
+                     or datetime.fromisoformat(hourly_started).tzinfo is None)):
+            raise ValueError("Invalid hourly PV tracking start")
         if not isinstance(rows, list) or len(rows) != 24:
             raise ValueError("Invalid requested-day hourly PV series")
         total = 0
+        coverages = []
         for hour, row in enumerate(rows):
             expected = day + "T" + str(hour).zfill(2) + ":00"
             if (not isinstance(row, dict) or row.get("hourJst") != expected
@@ -323,6 +329,7 @@ def read_day_totals(day: str, opener=urlopen) -> dict:
                     ("unmeasured", "partial", "complete", "in-progress", "future")):
                 raise ValueError("Invalid requested-day hourly PV bucket")
             value = row.get("pageViews")
+            coverages.append(row["pageViewsCoverage"])
             if row["pageViewsCoverage"] in ("unmeasured", "future"):
                 if value is not None:
                     raise ValueError("Unmeasured/future hourly PV must remain null")
@@ -330,9 +337,14 @@ def read_day_totals(day: str, opener=urlopen) -> dict:
                 raise ValueError("Measured hourly PV must be a count")
             else:
                 total += value
-        if "pageViews" in result and result["pageViews"] is not None and total != result["pageViews"]:
-            raise ValueError("Hourly PV series does not sum to requested-day PV")
+        if "pageViews" in result and result["pageViews"] is not None:
+            if all(value == "complete" for value in coverages):
+                if total != result["pageViews"]:
+                    raise ValueError("Fully covered hourly PV does not sum to requested-day PV")
+            elif total > result["pageViews"]:
+                raise ValueError("Partial hourly PV exceeds requested-day PV")
         result["hourlyPageViews"] = rows
+        result["hourlyPageViewsStartedAtUtc"] = hourly_started
 
     if "pageViewSourcesDay" in payload:
         sources = payload["pageViewSourcesDay"]
@@ -397,6 +409,7 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "session_timeout_minutes": daily_totals.get("sessionTracking", {}).get("inactivityTimeoutMinutes"),
         "daily_top_articles": daily_totals.get("topArticles"),
         "daily_hourly_page_views": daily_totals.get("hourlyPageViews"),
+        "hourly_page_views_started_at_utc": daily_totals.get("hourlyPageViewsStartedAtUtc"),
         "daily_page_view_sources": daily_totals.get("pageViewSources"),
         "page_views_started_at_utc": daily_totals.get("pageViewTracking", {}).get("startedAtUtc"),
         "page_views_timezone": "Asia/Tokyo",
