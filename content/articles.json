@@ -1,5 +1,58 @@
 [
   {
+    "slug": "tori-no-ichi-kumade-blocks-store-entrance",
+    "category": "暮らし",
+    "flash": "行列ができても売上0円",
+    "fiction_company": "角田商店",
+    "art": "cards",
+    "fiction_at": "2031-11-07T07:42:08.164+09:00",
+    "published_at": "2026-11-07T07:42:08.164+09:00",
+    "title": "「商売繁盛」の熊手が店の入口を塞ぐ　写真待ちは大行列、売上は0円",
+    "summary": "酉の市で大きな熊手を買った雑貨店の店主が、目立たせようと正面入口に飾った。写真を撮る人で行列ができても、買い物客は店に入れず、レジには一円も入らなかった。",
+    "paragraphs": [
+      "酉の市で商売繁盛の熊手を買った雑貨店「角田商店」の店主は、今年こそ行列のできる店にしたいと、間口いっぱいの特大熊手を買い込んだ。「通りの向こうからでも見える」と、開店前に正面入口へ立てかけた。だが熊手の向こうには、店に入るための扉がすっかり隠れていた。",
+      "午前中から通行人が立ち止まり、熊手を撮るための列が伸びた。買い物に来た女性が「中に入りたいんですが」と尋ねると、店主は「飾りを傷つけないでください」と両手を広げた。女性は何も買わずに帰ったが、写真待ちの人数は増える一方。店主は列の長さを測って「過去最高の繁盛だ」とうなずいた。",
+      "夕方、店主は大行列の写真を投稿しようとして、並ぶ人が誰も買い物袋を持っていないことに気づいた。そこで店内の商品を袋に詰め、通行人に渡して写真を撮ると、すぐ回収した。投稿には「人気店ですね」と反応が集まった。閉店後、レジの売上は0円。何度も撮影に使われた買い物袋だけが、しわくちゃになっていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "台東区（公式観光案内）",
+      "published_at": "2026-09-24T00:00:00+09:00",
+      "url": "https://www.city.taito.lg.jp/event/kanko/torinoithi.html",
+      "topic": "台東区の2026年9月24日更新の公式案内によると、2026年の酉の市は11月7日・19日、鷲神社と長國寺で開催される。熊手は福運・財をかき込む商売繁盛の縁起物。公式サイトは更新日だけを示し時刻は非掲載のため、published_atの00:00は日付代表値。2031年の雑貨店「角田商店」、巨大な熊手が入口を塞ぐ行為、写真待ちの行列、売上0円と撮影用買い物袋は本紙の創作であり、実在の酉の市や店主の行為ではない。"
+    },
+    "scene_prompt": "Candid photorealistic Japanese small shopping street storefront in autumn daylight. An enormous ornate traditional lucky bamboo rake decorated with gold ornaments stands squarely in front of a narrow shop entrance, visibly blocking the doorway. A few pedestrians line up just to photograph the decoration with their phones; through the side display window, empty shop aisles and an untouched cash register are visible. One shopkeeper watches with awkward pride from inside. Realistic rake scale and gestures, natural reporting scene, no readable text, no recognizable businesses or shrine names, no logos, no watermark.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "店舗",
+      "イベント"
+    ],
+    "satire_tags": [
+      "SNS映え",
+      "見せかけの繁盛"
+    ],
+    "x_tags": [
+      "酉の市"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "『人が集まった』と『お客さんが来た』は、案外別の話なのかもしれない。",
+    "reader_interest": "food_travel_shopping",
+    "reader_clarity": {
+      "who": "雑貨店の店主",
+      "action": "商売繁盛の大きな熊手を目立たせようとして店の入口に飾った",
+      "oddity": "写真待ちで行列ができたのに客は入店できず、売上が0円だった"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "目立つ飾りや行列の写真を繁盛の証拠にして、実際の買い物より見栄えを優先する店やSNSの空気",
+      "target": "商売繁盛の縁起と店が人気に見えることを、本当に客に買ってもらうことより優先する",
+      "action": "入口を塞ぐ特大熊手を写真映えのため動かさず、写真客に買い物袋を持たせて撮影する",
+      "outcome": "写真の行列とSNSの反響は増えるが売上0円で、撮影用の買い物袋だけが使い込まれる"
+    }
+  },
+  {
     "slug": "lion-king-prequel-watch-order-meeting",
     "category": "エンタメ",
     "flash": "見る順番が決まった頃に終了",
