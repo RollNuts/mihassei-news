@@ -7,9 +7,14 @@ const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const HOUR_MS = 60 * 60 * 1000;
 function currentJstDay(now = Date.now()) {
   const serial = Math.floor((now + JST_OFFSET_MS) / DAY_MS);
   return {serial, date: new Date(serial * DAY_MS).toISOString().slice(0,10)};
+}
+function currentJstHour(now = Date.now()) {
+  const shifted=new Date(now+JST_OFFSET_MS).toISOString();
+  return {date:shifted.slice(0,10),hour:shifted.slice(11,13),stamp:shifted.slice(0,13)};
 }
 function validArticle(slug) {
   return typeof slug === "string" && slug.length <= 100 && slugPattern.test(slug);
@@ -34,6 +39,10 @@ export class NewsroomStats extends DurableObject {
     // day as data makes a retry across JST midnight idempotent too.
     this.sql.exec("CREATE TABLE IF NOT EXISTS pageview_events (id TEXT PRIMARY KEY, day TEXT NOT NULL) WITHOUT ROWID;");
     this.sql.exec("CREATE INDEX IF NOT EXISTS pageview_events_day ON pageview_events(day);");
+    // Session IDs are random client-generated UUIDs with a 30-minute inactivity
+    // timeout. They are retained only for retry deduplication, never as identity.
+    this.sql.exec("CREATE TABLE IF NOT EXISTS session_events (id TEXT PRIMARY KEY, day TEXT NOT NULL) WITHOUT ROWID;");
+    this.sql.exec("CREATE INDEX IF NOT EXISTS session_events_day ON session_events(day);");
   }
   count(key) {
     return this.sql.exec("SELECT value FROM counters WHERE key=?", key).toArray()[0]?.value ?? 0;
@@ -54,26 +63,30 @@ export class NewsroomStats extends DurableObject {
     const threshold="day:"+oldest;
     this.sql.exec("DELETE FROM events WHERE kind LIKE 'day:%' AND kind < ?",threshold);
     this.sql.exec("DELETE FROM counters WHERE key LIKE 'day:%' AND key < ?",threshold);
+    this.sql.exec("DELETE FROM counters WHERE key LIKE 'hour:%' AND key < ?","hour:"+oldest);
     this.sql.exec("DELETE FROM pageview_events WHERE day < ?",oldest);
+    this.sql.exec("DELETE FROM session_events WHERE day < ?",oldest);
     this.sql.exec("INSERT INTO counters(key,value) VALUES ('maintenance:daily-pruned',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",serial);
   }
-  dailySnapshot(day, currentDay, startedAt) {
-    const key="day:"+day.date+":";
+  dayCoverage(day, currentDay, startedAt) {
     const startDay=startedAt ? currentJstDay(startedAt) : null;
-    const measured=Boolean(startDay && day.date>=startDay.date);
-    let coverage="unmeasured";
-    if(measured){
-      if(day.date===currentDay.date)coverage="in-progress";
-      else if(day.date===startDay.date && startedAt>startDay.serial*DAY_MS-JST_OFFSET_MS)
-        coverage="partial";
-      else coverage="complete";
-    }
+    if(!startDay || day.date<startDay.date)return "unmeasured";
+    if(day.date===currentDay.date)return "in-progress";
+    if(day.date===startDay.date && startedAt>startDay.serial*DAY_MS-JST_OFFSET_MS)return "partial";
+    return "complete";
+  }
+  dailySnapshot(day, currentDay, pageViewStartedAt, sessionStartedAt) {
+    const key="day:"+day.date+":";
+    const pvCoverage=this.dayCoverage(day,currentDay,pageViewStartedAt);
+    const sessionCoverage=this.dayCoverage(day,currentDay,sessionStartedAt);
     return {
       dateJst:day.date,
       visitors:this.count(key+"visitors"),
       articleReads:this.count(key+"articleReads"),
-      pageViews:measured ? this.count(key+"pageViews") : null,
-      pageViewsCoverage:coverage
+      pageViews:pvCoverage==="unmeasured" ? null : this.count(key+"pageViews"),
+      pageViewsCoverage:pvCoverage,
+      sessions:sessionCoverage==="unmeasured" ? null : this.count(key+"sessions"),
+      sessionsCoverage:sessionCoverage
     };
   }
   last7DaysPageViews(day, startedAt, article="") {
@@ -107,10 +120,85 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
+  sessionSummary(startedAt) {
+    return {
+      sessions:startedAt ? this.count("sessions") : null,
+      sessionTracking:{
+        startedAtUtc:startedAt ? new Date(startedAt).toISOString() : null,
+        timezone:"Asia/Tokyo",
+        unit:"session",
+        inactivityTimeoutMinutes:30
+      }
+    };
+  }
+  hourlyDaySnapshot(date, currentHour, startedAt) {
+    const result=[];
+    for(let h=0;h<24;h++){
+      const hour=String(h).padStart(2,"0");
+      const stamp=date+"T"+hour;
+      let coverage="complete",value=0;
+      if(stamp>currentHour.stamp){
+        coverage="future";value=null;
+      }else{
+        const shiftedStart=Date.parse(stamp+":00:00Z");
+        const actualStart=shiftedStart-JST_OFFSET_MS;
+        const actualEnd=actualStart+HOUR_MS;
+        if(!startedAt || actualEnd<=startedAt){
+          coverage="unmeasured";value=null;
+        }else{
+          if(actualStart<startedAt && startedAt<actualEnd)coverage="partial";
+          else if(stamp===currentHour.stamp)coverage="in-progress";
+          value=this.count("hour:"+date+":"+hour+":pageViews");
+        }
+      }
+      result.push({hourJst:stamp+":00",pageViews:value,pageViewsCoverage:coverage});
+    }
+    return result;
+  }
+  topArticleRows(prefix, limit=10) {
+    return this.sql.exec(
+      "SELECT substr(key,?) AS article,value AS pageViews FROM counters WHERE key LIKE ? AND value>0 ORDER BY value DESC,key ASC LIMIT ?",
+      prefix.length+1,prefix+"%",limit
+    ).toArray().filter(row=>validArticle(row.article) && Number.isInteger(row.pageViews) && row.pageViews>0);
+  }
+  topArticleRowsForWeek(day, limit=10) {
+    const totals=new Map();
+    for(let i=0;i<7;i++){
+      const date=new Date((day.serial-6+i)*DAY_MS).toISOString().slice(0,10);
+      const prefix="day:"+date+":pageViews:";
+      for(const row of this.topArticleRows(prefix,1000))
+        totals.set(row.article,(totals.get(row.article)||0)+row.pageViews);
+    }
+    return [...totals].map(([article,pageViews])=>({article,pageViews}))
+      .sort((a,b)=>b.pageViews-a.pageViews || a.article.localeCompare(b.article)).slice(0,limit);
+  }
+  pageViewSourceSummary(day, currentHour, startedAt) {
+    const channels={};
+    const today={};
+    const currentHourCounts={};
+    for(const source of attributionChannels){
+      channels[source]=startedAt ? this.count("pageViewSource:"+source) : null;
+      today[source]=startedAt ? this.count("day:"+day.date+":pageViewSource:"+source) : null;
+      currentHourCounts[source]=startedAt ? this.count(
+        "hour:"+currentHour.date+":"+currentHour.hour+":pageViewSource:"+source) : null;
+    }
+    return {
+      pageViewSources:channels,
+      pageViewSourcesToday:today,
+      pageViewSourcesCurrentHour:currentHourCounts,
+      pageViewSourceTracking:{
+        startedAtUtc:startedAt ? new Date(startedAt).toISOString() : null,
+        timezone:"Asia/Tokyo",
+        unit:"page-view",
+        attribution:"session-acquisition-channel"
+      }
+    };
+  }
   async fetch(req) {
     const url=new URL(req.url);
     const now=Date.now();
     const day=currentJstDay(now);
+    const hour=currentJstHour(now);
     if(req.method==="GET") {
       // Optional historical read for the completed-day archive. Never accept
       // arbitrary dates: daily deduplication is retained for 14 JST days.
@@ -125,6 +213,8 @@ export class NewsroomStats extends DurableObject {
           return json({error:"day outside available JST history"},400);
       }
       const startedAt=this.count("pageViews:startedAt");
+      const sessionStartedAt=this.count("sessions:startedAt");
+      const sourceStartedAt=this.count("pageViewSources:startedAt");
       const details={};
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
@@ -134,6 +224,14 @@ export class NewsroomStats extends DurableObject {
           todayReaders:this.count("day:"+day.date+":reader:"+slug),
           pageViews:startedAt ? this.count("pageViews:"+slug) : null,
           todayPageViews:startedAt ? this.count("day:"+day.date+":pageViews:"+slug) : null,
+          ...(requestedDay===null ? {} : {
+            requestedDayPageViews:this.dayCoverage({date:requestedDay},day,startedAt)==="unmeasured"
+              ? null : this.count("day:"+requestedDay+":pageViews:"+slug)
+          }),
+          entrances:sessionStartedAt ? this.count("entrances:"+slug) : null,
+          pageViewSources:sourceStartedAt ? Object.fromEntries(attributionChannels.map(source=>[
+            source,this.count("pageViewSource:"+source+":"+slug)
+          ])) : null,
           // Same Japan-date window and coverage as the site's last7Days.
           // Repeated displays count; historical browser IDs never fill gaps.
           last7DaysPageViews:this.last7DaysPageViews(day,startedAt,slug),
@@ -156,11 +254,31 @@ export class NewsroomStats extends DurableObject {
       const channels={};
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
       const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
-      return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
+      const topArticles={
+        currentHour:this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:"),
+        today:this.topArticleRows("day:"+day.date+":pageViews:"),
+        last7Days:this.topArticleRowsForWeek(day)
+      };
+      if(requestedDay!==null)
+        topArticles.day=this.topArticleRows("day:"+requestedDay+":pageViews:");
+      return json({version:2,unit:"anonymous-browser",visitors:this.count("visitors"),articles:details,
         ...this.pageViewSummary(day,startedAt),
-        today:this.dailySnapshot(day,day,startedAt),
-        yesterday:this.dailySnapshot({date:previousDate},day,startedAt),
-        ...(requestedDay===null ? {} : {day:this.dailySnapshot({date:requestedDay},day,startedAt)}),
+        ...this.sessionSummary(sessionStartedAt),
+        ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
+        hourly:{
+          timezone:"Asia/Tokyo",
+          today:this.hourlyDaySnapshot(day.date,hour,startedAt),
+          yesterday:this.hourlyDaySnapshot(previousDate,hour,startedAt),
+          ...(requestedDay===null ? {} : {
+            day:this.hourlyDaySnapshot(requestedDay,hour,startedAt)
+          })
+        },
+        topArticles,
+        today:this.dailySnapshot(day,day,startedAt,sessionStartedAt),
+        yesterday:this.dailySnapshot({date:previousDate},day,startedAt,sessionStartedAt),
+        ...(requestedDay===null ? {} : {
+          day:this.dailySnapshot({date:requestedDay},day,startedAt,sessionStartedAt)
+        }),
         channels,channelScope:"distinct-browser-per-observed-channel-since-activation"});
     }
     if(req.method!=="POST")return json({error:"method not allowed"},405);
@@ -172,6 +290,10 @@ export class NewsroomStats extends DurableObject {
     if(data.viewId!==undefined &&
        (data.action!=="visit" || typeof data.viewId!=="string" || !idPattern.test(data.viewId)))
       return json({error:"invalid page view id"},400);
+    const hasSession=data.sessionId!==undefined || data.sessionChannel!==undefined;
+    if(hasSession && (data.action!=="visit" || typeof data.sessionId!=="string" ||
+       !idPattern.test(data.sessionId) || !attributionChannels.includes(data.sessionChannel)))
+      return json({error:"invalid session"},400);
     if(data.action==="vote" && !["plausible","unlikely"].includes(data.choice))
       return json({error:"invalid prediction choice"},400);
     const article=data.article||"";
@@ -194,6 +316,11 @@ export class NewsroomStats extends DurableObject {
       "SHA-256",new TextEncoder().encode("page-view:"+data.viewId.toLowerCase())
     );
     const pageViewId=viewHash ? Array.from(new Uint8Array(viewHash),v=>v.toString(16).padStart(2,"0")).join("") : null;
+    const sessionHash=data.sessionId===undefined ? null : await crypto.subtle.digest(
+      "SHA-256",new TextEncoder().encode("session:"+data.sessionId.toLowerCase())
+    );
+    const sessionId=sessionHash ? Array.from(new Uint8Array(sessionHash),v=>v.toString(16).padStart(2,"0")).join("") : null;
+    const sessionChannel=sessionId ? data.sessionChannel : "";
     const purpose=(req.headers.get("sec-purpose")||"")+" "+(req.headers.get("purpose")||"");
     const automated=/Googlebot|bingbot|Baiduspider|YandexBot|DuckDuckBot|Twitterbot|facebookexternalhit|Slackbot|Discordbot|Applebot|HeadlessChrome|Playwright/i.test(req.headers.get("user-agent")||"");
     const ignoredVisit=data.action==="visit" && (/prefetch|prerender/i.test(purpose) || automated);
@@ -202,6 +329,7 @@ export class NewsroomStats extends DurableObject {
       if(data.action==="visit" && !ignoredVisit) {
         this.pruneDailyCounts(day.serial);
         const dayPrefix="day:"+day.date+":";
+        const hourPrefix="hour:"+hour.date+":"+hour.hour+":";
         // No reconstruction from old distinct readers. Only new display IDs
         // count, once per event; actual reloads receive different display IDs.
         if(pageViewId){
@@ -213,9 +341,31 @@ export class NewsroomStats extends DurableObject {
           this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
           this.increment("pageViews",1);
           this.increment(dayPrefix+"pageViews",1);
+          this.increment(hourPrefix+"pageViews",1);
           if(article){
             this.increment("pageViews:"+article,1);
             this.increment(dayPrefix+"pageViews:"+article,1);
+            this.increment(hourPrefix+"pageViews:"+article,1);
+          }
+          // New clients carry the acquisition channel across their 30-minute
+          // session so internal page views keep the landing source instead of
+          // being mislabeled as direct/unattributed.
+          if(sessionChannel){
+            this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViewSources:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.increment("pageViewSource:"+sessionChannel,1);
+            this.increment(dayPrefix+"pageViewSource:"+sessionChannel,1);
+            this.increment(hourPrefix+"pageViewSource:"+sessionChannel,1);
+            if(article)this.increment("pageViewSource:"+sessionChannel+":"+article,1);
+          }
+        }
+        if(sessionId){
+          this.sql.exec("INSERT OR IGNORE INTO session_events(id,day) VALUES (?,?)",sessionId,day.date);
+          if(this.sql.exec("SELECT changes() AS n").one().n>0){
+            this.sql.exec("INSERT INTO counters(key,value) VALUES ('sessions:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.increment("sessions",1);
+            this.increment(dayPrefix+"sessions",1);
+            this.increment("sessions:channel:"+sessionChannel,1);
+            if(article)this.increment("entrances:"+article,1);
           }
         }
         // Real daily browser activity: a reload does not inflate the numbers.
@@ -274,13 +424,25 @@ export class NewsroomStats extends DurableObject {
       }
     });
     const startedAt=this.count("pageViews:startedAt");
+    const sessionStartedAt=this.count("sessions:startedAt");
+    const sourceStartedAt=this.count("pageViewSources:startedAt");
     const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
-    return json({version:1,unit:"anonymous-browser",visitors:this.count("visitors"),article,
+    return json({version:2,unit:"anonymous-browser",visitors:this.count("visitors"),article,
       ...this.pageViewSummary(day,startedAt),
-      today:this.dailySnapshot(day,day,startedAt),
-      yesterday:this.dailySnapshot({date:previousDate},day,startedAt),
+      ...this.sessionSummary(sessionStartedAt),
+      ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
+      hourly:{timezone:"Asia/Tokyo",today:this.hourlyDaySnapshot(day.date,hour,startedAt),
+        yesterday:this.hourlyDaySnapshot(previousDate,hour,startedAt)},
+      topArticles:{
+        currentHour:this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:"),
+        today:this.topArticleRows("day:"+day.date+":pageViews:"),
+        last7Days:this.topArticleRowsForWeek(day)
+      },
+      today:this.dailySnapshot(day,day,startedAt,sessionStartedAt),
+      yesterday:this.dailySnapshot({date:previousDate},day,startedAt,sessionStartedAt),
       articlePageViews:article ? (startedAt ? this.count("pageViews:"+article) : null) : undefined,
       todayArticlePageViews:article ? (startedAt ? this.count("day:"+day.date+":pageViews:"+article) : null) : undefined,
+      articleEntrances:article ? (sessionStartedAt ? this.count("entrances:"+article) : null) : undefined,
       ...(ignoredVisit ? {ignored:true} : {}),
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
