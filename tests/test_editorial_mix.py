@@ -472,6 +472,33 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
 
+    def test_secondary_trend_x_term_must_be_article_anchored(self):
+        item = story(
+            "secondary-tag",
+            "trend",
+            published=datetime(2026, 11, 6, 18, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "流行語大賞、候補語を知らない人ほど説明係に選ばれる"
+        item["summary"] = "候補30語を前に、候補語の意味を説明する側まで検索し直す逆転を描く。"
+        item["paragraphs"] = ["候補30語の発表後、候補語の説明会が開かれた。"]
+        item["source"]["topic"] = "流行語大賞の候補30語が発表された。"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表で、候補語への注目が集まっている。",
+            "shared_behavior": "流行していると言われるほど、知らないことを言い出しにくくなる。",
+            "satire_gap": "流行を示すほど、意味を説明する作業が増えてしまう。",
+            "x_discovery_term": "流行語大賞",
+            "real_detail": "候補30語",
+            "unique_hook": "候補30語という多さが、知らない言葉を説明する側の負担を増幅させる。",
+        }
+        item["x_tags"] = ["流行語大賞", "ポイ活"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("secondary X discovery term" in error for error in errors))
+
+        item["x_tags"] = ["流行語大賞", "候補語"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
