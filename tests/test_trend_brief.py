@@ -26,6 +26,16 @@ RSS = """<?xml version="1.0" encoding="UTF-8"?>
       <link>https://trends.google.com/trending?geo=JP</link>
       <pubDate>Thu, 05 Nov 2026 08:00:00 +0000</pubDate>
       <ht:approx_traffic>20,000+</ht:approx_traffic>
+      <ht:news_item>
+        <ht:news_item_title>候補30語を発表</ht:news_item_title>
+        <ht:news_item_url>https://example.com/buzzwords</ht:news_item_url>
+        <ht:news_item_source>Example News</ht:news_item_source>
+      </ht:news_item>
+      <ht:news_item>
+        <ht:news_item_title>無効なURLは除外</ht:news_item_title>
+        <ht:news_item_url>http://example.com/insecure</ht:news_item_url>
+        <ht:news_item_source>Unsafe News</ht:news_item_source>
+      </ht:news_item>
     </item>
     <item>
       <title>無印良品</title>
@@ -45,6 +55,18 @@ class TrendBriefTests(unittest.TestCase):
         self.assertEqual(items[0]["approx_traffic"], "20,000+")
         self.assertTrue(items[0]["published_at_utc"].endswith("+00:00"))
 
+    def test_embedded_related_news_are_bounded_and_https_only(self):
+        items = parse_google_trends(RSS)
+        self.assertEqual(
+            items[0]["related_news"],
+            [{
+                "title": "候補30語を発表",
+                "source": "Example News",
+                "url": "https://example.com/buzzwords",
+            }],
+        )
+        self.assertEqual(items[1]["related_news"], [])
+
     def test_non_https_item_link_falls_back_to_google_source(self):
         items = parse_google_trends(RSS)
         self.assertTrue(items[1]["url"].startswith("https://trends.google.com/"))
@@ -55,7 +77,7 @@ class TrendBriefTests(unittest.TestCase):
         self.assertEqual(len(snapshot["items"]), 1)
         self.assertEqual(snapshot["source"]["source_kind"], "google_trends")
         self.assertEqual(snapshot["source"]["cost"], "free")
-        self.assertIn("Verify the underlying event", snapshot["source"]["note"])
+        self.assertIn("verify the underlying source", snapshot["source"]["note"])
 
     def test_empty_feed_is_not_reported_as_a_successful_snapshot(self):
         with self.assertRaisesRegex(ValueError, "no usable trend items"):

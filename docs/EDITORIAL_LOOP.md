@@ -8,7 +8,7 @@
 
 ### 取得元
 
-- **検索トレンド**：Google Trends「急上昇中」日本（`https://trends.google.com/trending?geo=JP`）。リポジトリには無料・APIキー不要の `python3 scripts/trend_brief.py` を置く。RSS取得不能・空フィード・壊れたXMLは成功扱いせず、ブラウザで同ページを確認する。有料APIへ切り替えない。
+- **検索トレンド**：Google Trends「急上昇中」日本（`https://trends.google.com/trending?geo=JP`）。リポジトリには無料・APIキー不要の `python3 scripts/trend_brief.py` を置く。検索語・概算検索量に加え、RSS内に埋め込まれた関連ニュース見出し・媒体・HTTPS URLを最大3件の**検証候補**として返す。関連ニュースは事実確認済み扱いにせず、実ページを開いて日時・内容を確認してから `source` / `real_detail` に使う。RSS取得不能・空フィード・壊れたXMLは成功扱いせず、ブラウザで同ページを確認する。有料APIへ切り替えない。
 - **Xトレンド**：ログイン済みのX公式「話題を検索」が取得できる場合は `x_official`。取得できなければ、ブラウザ検索で確認できる公開集計を `x_public_aggregator` として補助利用してよいが、**「X公式ランキング」「X公式トレンド」とは書かない**。公開集計だけを事実の根拠にはしない。
 - トレンドは**題材発見のシグナル**。記事の現実部分は、一次資料または独立した信頼できる報道で別途検証する。Google Trendsの検索増加自体を、その話題の内容が真実である根拠にしない。検索トレンドもX側も実際に確認できない枠では `trend_observation` を推測で作らず、品質の通る `social_life` / `original_satire` へ切り替えるか、その枠を見送る。
 
