@@ -12,6 +12,7 @@ import re
 
 URL_RE = re.compile(r"(?<!\S)https://veripsa\.com/[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]*(?=\s|$)")
 HASHTAG_RE = re.compile(r"\w{1,12}\Z")
+TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 X_TEXT_LIMIT = 280
 
 
@@ -39,7 +40,7 @@ SLANG_RULES = (
 def article_hashtags(article: dict, limit: int = 2) -> list[str]:
     """Choose up to two human-used X terms, never broad site categories.
 
-    Explicit x_tags win. Otherwise derive a small set conservatively from the
+    Explicit x_tickers and x_tags win. Otherwise derive a small set conservatively from the
     headline/summary/satire metadata. If there is no natural slang or everyday
     search term, return no extra hashtag rather than filling the post with
     labels such as SNS or アプリ.
@@ -64,6 +65,21 @@ def article_hashtags(article: dict, limit: int = 2) -> list[str]:
             return
         result.append("#" + label)
         seen.add(identity)
+
+    tickers = article.get("x_tickers", [])
+    if isinstance(tickers, list):
+        for ticker in tickers:
+            if len(result) >= maximum:
+                break
+            if not isinstance(ticker, str) or not TICKER_RE.fullmatch(ticker):
+                continue
+            identity = "$" + ticker.casefold()
+            if identity in seen:
+                continue
+            result.append("$" + ticker)
+            seen.add(identity)
+    if len(result) >= maximum:
+        return result
 
     explicit = article.get("x_tags", [])
     if isinstance(explicit, list):
