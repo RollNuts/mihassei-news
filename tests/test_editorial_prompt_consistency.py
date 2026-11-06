@@ -16,6 +16,8 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertEqual(guide.count(heading), 1)
         prompt = guide.split(heading, 1)[1].split("\n### ", 1)[0].strip()
         self.assertLessEqual(len(prompt), 450, "Replace the short prompt; do not append a rule history")
+        self.assertIn("候補3案", prompt)
+        self.assertIn("弱い小ネタ", prompt)
         self.assertIn("冒頭2文", prompt)
         self.assertIn("原因", prompt)
         self.assertIn("二度目の逆転は不要", prompt)
@@ -40,6 +42,19 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("なぜ変", prompt)
         for directive in STALE_DIRECTIVES:
             self.assertNotIn(directive, guide)
+
+    def test_weak_story_gate_rejects_merely_valid_but_dull_premises(self):
+        guide = (ROOT / "docs/EDITORIAL_LOOP.md").read_text(encoding="utf-8")
+        heading = "### 「成立しているだけ」を落とす企画ゲート（採用前必須）"
+        self.assertEqual(guide.count(heading), 1)
+        gate = guide.split(heading, 1)[1].split("\n### ", 1)[0]
+        for phrase in (
+            "候補3案", "変な人が変なこと", "かわいい", "ほっこり",
+            "固有名詞や商品仕様だけの一発小ネタ", "15秒", "別の具体的な二段目",
+            "弱い小ネタを説明・流行語・画像・Xタグで救済して公開しない",
+        ):
+            self.assertIn(phrase, gate)
+        self.assertIn("見送る", gate)
 
     def test_repetition_advice_keeps_the_cause_and_never_rewrites_articles(self):
         # Deliberately repetitive synthetic fixtures exercise all advice branches.
