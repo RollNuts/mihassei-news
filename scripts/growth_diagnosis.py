@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 API = "https://veripsa.com/api/engagement"
 JST = ZoneInfo("Asia/Tokyo")
 SOURCE_KEYS = ("x", "search", "external", "unattributed")
+PAGE_KIND_KEYS = ("home", "article", "archive", "serial", "other")
 MEASURED_COVERAGE = {"partial", "complete", "in-progress"}
 
 
@@ -132,6 +133,35 @@ def _source_summary(value: object) -> dict | None:
     }
 
 
+def _page_kind_summary(value: object) -> dict | None:
+    if not isinstance(value, dict) or set(value) != set(PAGE_KIND_KEYS):
+        return None
+    if any(_count(value[key]) is None for key in PAGE_KIND_KEYS):
+        return None
+    total = sum(value[key] for key in PAGE_KIND_KEYS)
+    return {
+        "counts": {key: value[key] for key in PAGE_KIND_KEYS},
+        "classified_page_views": total,
+        "shares": {
+            key: round(value[key] / total, 3) if total else None
+            for key in PAGE_KIND_KEYS
+        },
+    }
+
+
+def _page_kind_interpretation(summary: dict | None) -> str | None:
+    if summary is None:
+        return None
+    article_share = summary["shares"]["article"]
+    if article_share is None:
+        return "no_classified_page_views"
+    if article_share >= 0.7:
+        return "article_dominant"
+    if article_share <= 0.3:
+        return "navigation_dominant"
+    return "mixed_pages"
+
+
 def build_report(live: dict, selected: dict, state: dict, titles: dict[str, str]) -> dict:
     peak = peak_hour(live)
     hour_jst = peak["hourJst"]
@@ -172,6 +202,8 @@ def build_report(live: dict, selected: dict, state: dict, titles: dict[str, str]
 
     source = _source_summary(selected_hour.get("pageViewSources"))
     x_share = source["shares"]["x"] if source else None
+    page_kind = _page_kind_summary(selected_hour.get("pageViewKinds"))
+    page_kind_interpretation = _page_kind_interpretation(page_kind)
 
     x_posts = sent_x_posts(state, date_jst)
     near_posts = []
@@ -211,7 +243,7 @@ def build_report(live: dict, selected: dict, state: dict, titles: dict[str, str]
     )
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "date_jst": date_jst,
         "today_page_views_so_far": today_pv,
         "today_page_views_coverage": today.get("pageViewsCoverage"),
@@ -224,6 +256,9 @@ def build_report(live: dict, selected: dict, state: dict, titles: dict[str, str]
             "page_views_coverage": selected_hour.get("pageViewsCoverage"),
             "source_coverage": selected_hour.get("pageViewSourcesCoverage"),
             "source_mix": source,
+            "page_kind_coverage": selected_hour.get("pageViewKindsCoverage"),
+            "page_kind_mix": page_kind,
+            "page_kind_interpretation": page_kind_interpretation,
             "top_article_share": top_share,
             "top_articles": top_articles,
         },
@@ -232,8 +267,10 @@ def build_report(live: dict, selected: dict, state: dict, titles: dict[str, str]
         "note": (
             "This is descriptive evidence, not proof of causation. X timing is "
             "stronger evidence only when the peak hour is also X-majority in "
-            "session-acquisition page-view sources. Partial/in-progress hours and "
-            "source tracking that began mid-hour must be interpreted as incomplete."
+            "session-acquisition page-view sources. Page-kind mix distinguishes "
+            "article reading from homepage/archive/serial/other navigation, but does "
+            "not identify people or prove repeated visits by one person. Partial or "
+            "in-progress source/page-kind tracking only describes its measured subset."
         ),
     }
 
