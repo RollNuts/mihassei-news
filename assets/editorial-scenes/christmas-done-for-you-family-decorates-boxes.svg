@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="豪華な完成済みのクリスマスツリーを部屋の隅に置いたまま、家族4人が配送用段ボール箱で小さなツリーを作り星とリボンで飾る創作イラスト" data-visual-topic="parcel" data-article-sha256="4d8bb03db7f085e8ef01c13131999cb4da7de909ba57ee5e2234ffb652d92c51">
+  <title>完成品より段ボール工作に夢中になったクリスマス</title>
+  <desc>午後の家庭の居間。完成済みの大きなクリスマスツリーが右の隅に置かれ、中央では父母と子供2人が配送用の箱を三段に積んで星やリボンを飾っている。完成品に任せたはずの家族が手作りの時間を楽しんでいる。</desc>
+  <defs>
+    <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f7ede0"/><stop offset="1" stop-color="#e7d7c2"/></linearGradient>
+    <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#d6ae86"/><stop offset="1" stop-color="#b98260"/></linearGradient>
+    <linearGradient id="cardboard" x2="1" y2=".5"><stop stop-color="#e2b77e"/><stop offset=".55" stop-color="#bf8d5e"/><stop offset="1" stop-color="#d8a771"/></linearGradient>
+    <linearGradient id="tree" x2="1" y2=".3"><stop stop-color="#537b62"/><stop offset="1" stop-color="#244c46"/></linearGradient>
+    <linearGradient id="window" x2="0" y2="1"><stop stop-color="#a6c8d5"/><stop offset="1" stop-color="#e7d6bb"/></linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#5e4d46" flood-opacity=".20"/></filter>
+  </defs>
+  <rect width="1200" height="675" fill="url(#wall)"/>
+  <rect y="460" width="1200" height="215" fill="url(#floor)"/>
+  <path d="M0 462H1200" stroke="#b89577" stroke-width="12"/>
+  <path d="M0 542H1200M0 621H1200M240 460l-35 215M565 460l-13 215M890 460l32 215" stroke="#cda27c" stroke-width="4" fill="none" opacity=".65"/>
+  <!-- A quiet afternoon window and the delivered dinner, already complete. -->
+  <rect x="64" y="68" width="308" height="241" rx="8" fill="#fbf4e8" stroke="#9e8e81" stroke-width="13" filter="url(#shadow)"/>
+  <rect x="83" y="85" width="269" height="207" fill="url(#window)"/>
+  <path d="M83 245Q155 203 219 236T352 222v70H83z" fill="#aabf9b"/>
+  <path d="M218 85v207M83 186h269" stroke="#f9eee1" stroke-width="12"/>
+  <path d="M48 64q18 98 4 188l-12 83 39-33 8-240M377 64q-18 98-4 188l12 83-39-33-8-240" fill="#bd9c93" opacity=".67"/>
+  <rect x="38" y="338" width="260" height="136" rx="9" fill="#987c6b" stroke="#705d54" stroke-width="6"/>
+  <path d="M53 373h228M86 385v80M196 385v80" stroke="#c0a38d" stroke-width="5"/>
+  <ellipse cx="151" cy="342" rx="92" ry="24" fill="#f9f6ee" stroke="#ad9d8a" stroke-width="6"/>
+  <path d="M102 335q10-58 48-60 40 3 53 61z" fill="#f4e1c1" stroke="#cba777" stroke-width="5"/>
+  <circle cx="151" cy="284" r="16" fill="#c95c56"/><circle cx="139" cy="286" r="6" fill="#eb9b81"/>
+  <rect x="235" y="286" width="48" height="51" rx="7" fill="#f0d2a4" stroke="#b68e63" stroke-width="5"/>
+  <path d="M236 303h46M258 286v51" stroke="#aa6860" stroke-width="6"/>
+  <!-- Purchased, beautifully decorated Christmas tree pushed aside. -->
+  <ellipse cx="1041" cy="520" rx="132" ry="28" fill="#584b43" opacity=".16"/>
+  <path d="M1035 428v88" stroke="#6b4f3d" stroke-width="24"/>
+  <path d="M1014 517h43" stroke="#6b4f3d" stroke-width="13" stroke-linecap="round"/>
+  <path d="M1036 112l-73 126h27l-77 118h35l-61 101h294l-70-101h35l-73-118h27z" fill="url(#tree)" stroke="#2d574b" stroke-width="9" stroke-linejoin="round" filter="url(#shadow)"/>
+  <path d="M1041 160q-61 94-99 136 105-2 190 0M924 381q115 24 226 0" stroke="#73946e" stroke-width="11" fill="none" opacity=".57"/>
+  <path d="M953 263q103 43 168-1M927 362q112-27 221 0M905 431q135 24 255 0" stroke="#e5c77e" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <g fill="#d0a85d" stroke="#fff0cf" stroke-width="3"><circle cx="993" cy="234" r="13"/><circle cx="1096" cy="285" r="14"/><circle cx="953" cy="365" r="13"/><circle cx="1103" cy="423" r="15"/></g>
+  <g fill="#b65d66" stroke="#f7dbc9" stroke-width="3"><circle cx="1062" cy="281" r="15"/><circle cx="1003" cy="345" r="15"/><circle cx="1058" cy="404" r="14"/><circle cx="961" cy="439" r="13"/></g>
+  <g fill="#f9e4b2"><circle cx="1015" cy="201" r="6"/><circle cx="1131" cy="368" r="6"/><circle cx="992" cy="404" r="6"/><circle cx="1095" cy="458" r="6"/></g>
+  <path d="m1037 81 10 22 24 4-18 17 3 24-19-12-22 13 4-25-18-17 25-4z" fill="#f4d081" stroke="#bc9351" stroke-width="5"/>
+  <path d="M1128 454l48 12-13 53-48-12z" fill="#f7f0df" stroke="#bfab90" stroke-width="4"/>
+  <path d="M1139 472h26m-26 13h20" stroke="#c2b0a0" stroke-width="4" opacity=".5"/>
+  <!-- Cardboard construction dominates the family's attention. -->
+  <ellipse cx="570" cy="570" rx="245" ry="29" fill="#6f5545" opacity=".20"/>
+  <g filter="url(#shadow)" stroke="#8f6449" stroke-width="6" stroke-linejoin="round">
+    <path d="M454 429h242v121H454z" fill="url(#cardboard)"/>
+    <path d="M454 429l41-21h243l-42 21z" fill="#edc997"/>
+    <path d="M696 429l42-21v121l-42 21z" fill="#a87651"/>
+    <path d="M491 329h166v100H491z" fill="url(#cardboard)"/>
+    <path d="M491 329l33-17h164l-31 17z" fill="#eacc9f"/>
+    <path d="M657 329l31-17v97l-31 20z" fill="#a87651"/>
+    <path d="M529 252h96v77h-96z" fill="url(#cardboard)"/>
+    <path d="M529 252l18-13h100l-22 13z" fill="#edca97"/>
+    <path d="M625 252l22-13v76l-22 14z" fill="#aa7c55"/>
+  </g>
+  <g stroke="#e9d9b7" stroke-width="8" opacity=".84"><path d="M576 255v71M570 333v94M572 433v113"/></g>
+  <g fill="none" stroke="#b45f62" stroke-width="10" stroke-linecap="round"><path d="M530 293q34-16 65 3t52-4"/><path d="M468 488q55-30 98 1t120-7"/><path d="M499 375q52 18 92-1t70 2"/></g>
+  <g fill="#f5d88b" stroke="#bd8b52" stroke-width="4" stroke-linejoin="round">
+    <path d="m571 214 11 19 22 3-16 15 4 22-21-11-19 11 4-22-16-15 23-3z"/>
+    <path d="m506 348 8 13 16 2-11 11 2 16-15-7-14 7 3-16-11-11 16-2z"/>
+    <path d="m634 450 9 13 16 3-12 11 3 16-16-7-14 7 3-16-11-11 16-3z"/>
+    <path d="m541 499 8 13 16 2-11 12 2 14-15-7-14 7 3-14-12-12 17-2z"/>
+  </g>
+  <path d="M631 375q-31-24-43-6 18 26 43 6 21 18 39 4-14-27-39-4z" fill="#d8e2c5" stroke="#7b987d" stroke-width="5"/>
+  <!-- Mother seated at left helping with paper stars. -->
+  <g stroke-linejoin="round" stroke-linecap="round" filter="url(#shadow)">
+    <path d="M209 527q-39-103 25-147h86q59 51 17 147l-31 30h-69z" fill="#b1747d" stroke="#74545d" stroke-width="7"/>
+    <ellipse cx="266" cy="347" rx="48" ry="58" fill="#e8bb9b" stroke="#846353" stroke-width="5"/>
+    <path d="M219 352q-20-77 47-80 63 0 50 81l-25-33-52 1z" fill="#4c4240"/>
+    <path d="M242 354h8m30 0h8M252 377q13 11 27-2" fill="none" stroke="#6d4f48" stroke-width="4"/>
+    <path d="M225 439l128 39 87-93" stroke="#b1747d" stroke-width="29" fill="none"/>
+    <path d="M434 384l17-22" stroke="#e8bb9b" stroke-width="18"/>
+    <path d="M205 494q-25 80 33 85h105" fill="none" stroke="#596475" stroke-width="34"/>
+    <path d="M314 575h72" stroke="#444954" stroke-width="22"/>
+    <path d="m441 352 9 14 16 2-12 11 3 16-16-7-14 7 3-16-12-11 17-2z" fill="#f4d189" stroke="#ad8959" stroke-width="4"/>
+  </g>
+  <!-- Father kneels at right, fastening the shipping boxes. -->
+  <g stroke-linejoin="round" stroke-linecap="round" filter="url(#shadow)">
+    <path d="M747 391q60-29 103 17l26 119-112 19-36-97z" fill="#5e8790" stroke="#405e69" stroke-width="8"/>
+    <ellipse cx="805" cy="338" rx="46" ry="56" fill="#deae90" stroke="#7e5d4e" stroke-width="5"/>
+    <path d="M757 337q-9-71 52-73 57 5 43 70l-33-25-58 22z" fill="#474342"/>
+    <path d="M785 342h7m29 0h7m-37 23q13 9 25 0" fill="none" stroke="#5a4945" stroke-width="4"/>
+    <path d="M755 418l-35 7-28-47" stroke="#5e8790" stroke-width="27" fill="none"/>
+    <path d="M693 384l-8-23" stroke="#deae90" stroke-width="16"/>
+    <path d="M861 485q36 68-25 99l-111-10" stroke="#4e5b69" stroke-width="35" fill="none"/>
+    <path d="M729 578h-45" stroke="#45454d" stroke-width="23"/>
+    <ellipse cx="684" cy="356" rx="19" ry="21" fill="#eed0a4" stroke="#9a6c51" stroke-width="6"/>
+    <ellipse cx="684" cy="356" rx="9" ry="10" fill="#b58c69"/>
+    <path d="M664 359l-39-15" fill="none" stroke="#e3d6b4" stroke-width="7"/>
+  </g>
+  <!-- Daughter in front, proudly holding her handmade star. -->
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M350 551q8-90 66-91 62 4 70 96v69H345z" fill="#d8a76d" stroke="#946d51" stroke-width="7"/>
+    <ellipse cx="416" cy="430" rx="39" ry="45" fill="#f0c4a0" stroke="#805d4e" stroke-width="5"/>
+    <path d="M378 430q-4-57 41-57 39 1 39 49l-22-21-44 13z" fill="#574444"/>
+    <path d="M398 431h5m21 0h5m-26 21q10 7 20 0" stroke="#705048" stroke-width="3" fill="none"/>
+    <path d="M362 516l-37-30-11-31M472 512l23-33" fill="none" stroke="#d8a76d" stroke-width="20"/>
+    <path d="M315 462l-8-10" stroke="#f0c4a0" stroke-width="15"/>
+    <path d="M343 617l-36 31h70M448 622l33 28h-70" stroke="#555263" stroke-width="22" fill="none"/>
+    <path d="m307 424 8 16 18 3-13 12 3 18-16-9-17 9 4-18-13-12 19-3z" fill="#f2d489" stroke="#b68d55" stroke-width="4"/>
+  </g>
+  <!-- Son arranging ribbon beside the handmade tree. -->
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <path d="M700 547q5-77 58-81 60 3 66 88l-5 73H697z" fill="#8ea8a0" stroke="#5d7f77" stroke-width="7"/>
+    <ellipse cx="758" cy="438" rx="38" ry="44" fill="#ecc09c" stroke="#866353" stroke-width="5"/>
+    <path d="M721 437q0-51 40-50 40 3 36 47l-34-18-39 17z" fill="#414347"/>
+    <path d="M742 437h5m24 0h5m-23 20q10 8 20 0" stroke="#6f5248" stroke-width="3" fill="none"/>
+    <path d="M712 518l-26-45-24-11M809 525l47-37" fill="none" stroke="#8ea8a0" stroke-width="20"/>
+    <path d="M663 461l-13-13M856 485l14-16" stroke="#ecc09c" stroke-width="15"/>
+    <path d="M720 624l-44 28h71M800 624l41 28h-69" stroke="#555263" stroke-width="22" fill="none"/>
+    <path d="M630 448q16-24 35 0 16 27 33-1" fill="none" stroke="#b65d62" stroke-width="7"/>
+  </g>
+  <path d="M0 658h1200" stroke="#987457" stroke-width="12" opacity=".6"/>
+</svg>
