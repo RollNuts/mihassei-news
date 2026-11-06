@@ -33,6 +33,9 @@ ARTICLE_URL = re.compile(
 )
 TEXT_PREFIX = "【未発生新聞】"
 BRAND_HASHTAG = "#未発生新聞"
+SHARE_LEAD_MIN_CHARS = 24
+SHARE_LEAD_FORBIDDEN = re.compile(r"https?://|(?:^|\s)#[^\s]+|【(?:続報｜)?未発生新聞】")
+SHARE_LEAD_LABEL = re.compile(r"^(?:要約|概要|説明|リンク|記事|見出し)\s*[:：]")
 TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
 METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
@@ -331,6 +334,25 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
     return recovered
 
 
+def x_share_lead(article: dict, suffix: str) -> str | None:
+    """Use an editor-written reader entry only when it is safe as standalone X copy."""
+    raw = article.get("x_share_lead")
+    if not isinstance(raw, str):
+        return None
+    lines = [
+        re.sub(r"\s+", " ", reader_copy(line).strip())
+        for line in raw.splitlines()
+    ]
+    cleaned = "\n".join(line for line in lines if line).strip()
+    if len(cleaned) < SHARE_LEAD_MIN_CHARS:
+        return None
+    if SHARE_LEAD_FORBIDDEN.search(cleaned) or SHARE_LEAD_LABEL.match(cleaned):
+        return None
+    if x_weighted_length(cleaned + suffix) > X_TEXT_LIMIT:
+        return None
+    return cleaned
+
+
 def publication_text(article: dict) -> str:
     """No misleading popularity ranking, analytics numbers or AI promo labels."""
     slug, title = article["slug"], article["title"]
@@ -345,23 +367,27 @@ def publication_text(article: dict) -> str:
     hashtags = " ".join([BRAND_HASHTAG, *article_hashtags(article)])
     prefix = "【続報｜未発生新聞】" if article.get("followup_of") else TEXT_PREFIX
     suffix = ("\n\n" + hashtags if hashtags else "") + "\n\n" + url
-    rendered = prefix + "\n" + tidy
-    summary = article.get("summary")
-    if isinstance(summary, str):
-        summary = re.sub(r"\s+", " ", reader_copy(summary.strip()))
-        if summary:
-            separator = "\n\n"
-            budget = X_TEXT_LIMIT - x_weighted_length(rendered + separator + suffix)
-            teaser = truncate_x_text(summary, budget)
-            # Very short scraps do not give a reader enough context to earn
-            # another line. Keep the stable headline/tags/link format instead.
-            if x_weighted_length(teaser) >= 20:
-                rendered += separator + teaser
+
+    lead = x_share_lead(article, suffix)
+    if lead is not None:
+        rendered = lead
+    else:
+        rendered = prefix + "\n" + tidy
+        summary = article.get("summary")
+        if isinstance(summary, str):
+            summary = re.sub(r"\s+", " ", reader_copy(summary.strip()))
+            if summary:
+                separator = "\n\n"
+                budget = X_TEXT_LIMIT - x_weighted_length(rendered + separator + suffix)
+                teaser = truncate_x_text(summary, budget)
+                # Very short scraps do not give a reader enough context to earn
+                # another line. Keep the stable headline/tags/link format instead.
+                if x_weighted_length(teaser) >= 20:
+                    rendered += separator + teaser
     rendered += suffix
     if x_weighted_length(rendered) > X_TEXT_LIMIT:
         raise ValueError("Article X post text exceeds safe length")
     return rendered
-
 
 def article_age(article: dict, now: datetime) -> timedelta | None:
     try:

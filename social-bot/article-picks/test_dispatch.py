@@ -242,6 +242,48 @@ class ArticlePickTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
+    def test_x_share_lead_can_replace_headline_summary_with_reader_first_copy(self):
+        a = article("story-reader-lead", title="移動ポイントを稼ぐ男性、家の前を通り過ぎてもう一周")
+        a["summary"] = "家の前まで戻ったが、目標ポイントに届かず、そのままもう一周した。"
+        a["x_tags"] = ["ポイ活"]
+        a["x_share_lead"] = (
+            "家の前まで来たのに、ポイントが足りなくてもう一周した。\n"
+            "窓から家族が手を振ってるのを見て、さらに遠回りした。\n"
+            "これ、もう似たことやってる人いる？"
+        )
+        msg = picks.publication_text(a)
+        self.assertTrue(msg.startswith("家の前まで来たのに"))
+        self.assertNotIn("【未発生新聞】", msg)
+        self.assertNotIn(a["title"], msg)
+        self.assertIn("#未発生新聞 #ポイ活", msg)
+        self.assertTrue(msg.endswith(
+            "https://veripsa.com/articles/story-reader-lead/"
+            + picks.TRACKING_QUERY
+        ))
+        self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
+
+    def test_invalid_x_share_lead_falls_back_to_existing_headline_summary_copy(self):
+        bad_leads = (
+            "短い",
+            "要約：家の前まで来たのにポイントが足りず、男性はもう一周することにした。",
+            "家の前まで来たのに #ポイ活 のため、もう一周することにした。",
+            "詳しくは https://example.com を見てください。家の前でもう一周した。",
+            "家の前まで来たのにポイントが足りず、もう一周した。" * 20,
+        )
+        for lead in bad_leads:
+            with self.subTest(lead=lead[:24]):
+                a = article("story-reader-fallback", title="移動ポイントを稼ぐ男性、家の前を通り過ぎてもう一周")
+                a["summary"] = "家の前まで戻ったが、目標ポイントに届かず、そのままもう一周した。"
+                a["x_share_lead"] = lead
+                msg = picks.publication_text(a)
+                self.assertTrue(msg.startswith("【未発生新聞】"))
+                self.assertIn("移動ポイントを稼ぐ男性", msg)
+                self.assertIn("#未発生新聞", msg)
+                self.assertTrue(msg.endswith(
+                    "https://veripsa.com/articles/story-reader-fallback/"
+                    + picks.TRACKING_QUERY
+                ))
+
     def test_article_summary_adds_a_short_reader_teaser_within_budget(self):
         a = article("story-teaser", title="倍速視聴で内容が分からなくなった男性")
         a["summary"] = "時間を節約したはずが、登場人物を確認する解説動画を本編より長く見ることになった。"

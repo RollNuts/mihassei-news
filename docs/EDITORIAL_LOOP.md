@@ -20,6 +20,7 @@
 - `editorial_signature`: `target`（何を大事にしすぎるか）／`action`（何をやり過ぎるか）／`outcome`（目に見える逆効果）
 - `editorial_tone`: `plausible_future` / `comic_exaggeration` / `observational` / `wildcard`
 - 2026-11-06 09:00 JST以降は `editorial_payoff`: `dialogue`（最後の一言） / `action`（人物の行動） / `visible_result`（残った物・画面・光景） / `ironic_success`（目的は達成したのにおかしい） / `quiet_aftertaste`（大オチを置かない余韻） / `wordplay`（言葉そのもののズレ）
+- 2026-11-06 20:42 JST以降は、X自動紹介候補の記事で自然に作れる場合だけ`x_share_lead`を1本持たせる。これはsummaryの再掲ではなく、読者が「自分にもありそう」「それ、やってない？」と記事へ入れる短い導入。問いかけ・自分事化・違和感・場面提示のどれかを毎回固定せず、記事ごとに一番自然な形を選ぶ。変になる場合は省略してよく、投稿側が従来文へフォールバックする。詳細な禁止事項と文字数処理は`social-bot/article-picks/README.md`を正本とする。
 - 2026-11-06 21:00 JST以降は `reader_clarity`: `who`（誰の話か）／`action`（何をしたか）／`oddity`（なぜ変なのか）を必須にする。元ニュース・出典・内部メタデータを見ず、見出し＋`summary`だけから3項目を平易に言えない原稿は公開しない。
 - `plausible_future` の場合のみ `plausibility_basis`: `present_signal`（今すでにある兆候）／`continuation_force`（なぜ5年続くか）／`future_result`（5年後に目に見える結果）
 - `trend` の場合のみ `trend_observation`: `source_kind`、`term`、`observed_at`、`url`、`verification_urls`
@@ -116,9 +117,9 @@
 
 ### 毎回の発行で使う短い執筆プロンプト（最優先）
 
-> 候補2案以上を比較し、風刺の的・笑い・`editorial_tone`を1行ずつ。`reader_interest`/`interest_next`、`character_next`、直近2本/`payoff_next`を見て`editorial_payoff`を選ぶ。書く前に主役・場所・原因・行動・結果。
-> 初見テストは元ニュース・出典を隠し、見出し＋`summary`だけで「誰が／何をして／なぜ変か」を言えること。`reader_clarity`のwho/action/oddityへ記録し、1つでも曖昧なら説明を足さず設定を減らすか見出しを直す。冒頭2文で人物・原因・現場、本文は原因→行動→結果。
-> `plausible_future`は現実の兆候→5年続く力→結果を`plausibility_basis`へ。二度目の逆転は不要。見出し・`summary`・本文に「架空の」「創作の」の断りを書かない。
+> 候補2案以上を比較し、風刺の的・笑い・`editorial_tone`。`reader_interest`/`interest_next`、`character_next`、直近2本/`payoff_next`を見て`editorial_payoff`を選ぶ。書く前に主役・場所・原因・行動・結果。
+> 初見テストは元ニュース・出典を隠し、見出し＋`summary`だけで「誰が／何をして／なぜ変か」。`reader_clarity`へ記録し、曖昧なら説明を足さず設定を減らすか見出しを直す。冒頭2文で人物・原因・現場、本文は原因→行動→結果。
+> `plausible_future`は現実の兆候→5年続く力→結果を`plausibility_basis`へ。二度目の逆転は不要。「架空の」「創作の」の断りを書かない。Xは自然に作れる時だけ`x_share_lead`、問いかけ等の型は固定しない。
 
 ### 風刺と笑いを別々に確認する（採用前必須）
 
@@ -246,7 +247,7 @@
 
 ## SNSでは見出しとリンクで紹介する
 
-- 記事をXで紹介する際は、**見出し・必要な短い要約・記事URL**を中心にする。自動投稿、記事・発行号の共有、手動用下書きに「創作」「架空」「フィクション」等の定型注記を毎回付けない。内容上必要な語は削らず、実際の出来事や本人の体験と偽る表現はしない。媒体の性格はサイトの編集方針と記事ページで伝える。
+- 記事をXで紹介する際は、`social-bot/article-picks/README.md`の`x_share_lead`方針を優先し、**要約の再掲より、記事へ入る自然な一言**を使う。問いかけや「自分事化」は有効な選択肢だが毎回の型にはしない。自動投稿、記事・発行号の共有、手動用下書きに「創作」「架空」「フィクション」等の定型注記を毎回付けない。内容上必要な語は削らず、実際の出来事や本人の体験と偽る表現はしない。媒体の性格はサイトの編集方針と記事ページで伝える。
 - 見出しに独自の笑いがあるなら本文から解説を長く引用せず、短い要約とリンクで記事へ誘導する。架空の閲覧数や「バズった」などの根拠のない実績を書かない。
 - **新聞の発行・日次編集担当によるSNS支援は下書きまで**。承認済みの別のX自動投稿タスクは継続し、この記事編集を理由に止めない。その投稿・予約・設定には触れず、有料APIや追加課金を使わない。記事のURL・実際の初回掲載日・出典は変更しない。
 
