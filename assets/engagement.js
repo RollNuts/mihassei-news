@@ -224,6 +224,17 @@
   const buttons = [...document.querySelectorAll("[data-like-slug]")];
   const article = location.pathname.match(/^\/articles\/([a-z0-9-]+)\/?$/)?.[1]||"";
 
+  // Only send a coarse route category. The analytics API never needs the full
+  // pathname to tell whether a spike came from the front page, stories or archive.
+  function currentPageKind(){
+    if(article)return "article";
+    if(location.pathname==="/" || location.pathname==="")return "home";
+    if(/^\/archive\/?$/.test(location.pathname))return "archive";
+    if(/^\/serials(?:\/|$)/.test(location.pathname))return "serial";
+    return "other";
+  }
+  const pageKind=currentPageKind();
+
   // Which story led this browser to read another? Only same-origin article
   // path slugs are retained; never transmit complete referrer URLs or queries.
   function precedingArticle(){
@@ -402,6 +413,7 @@
       const session=sessionContext(visitChannel);
       payload.sessionId=session.id;
       payload.sessionChannel=session.channel;
+      payload.pageKind=pageKind;
       if(visitChannel)payload.channel=visitChannel;
     }
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
