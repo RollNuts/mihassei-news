@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-05T22:42:33.331203+00:00",
+  "checked_at_utc": "2026-11-06T00:15:59.296760+00:00",
   "source": "buffer_recent_list_plus_saved_id_readonly",
   "scope": {
     "ledger_days": 7,
@@ -9,8 +9,8 @@
   },
   "today_jst": "2026-11-06",
   "observed": {
-    "article_records_checked": 8,
-    "buffer_sent_today": 0,
+    "article_records_checked": 9,
+    "buffer_sent_today": 1,
     "buffer_scheduled_today": 0,
     "unverified": 0,
     "overdue_scheduled": 0,
@@ -21,6 +21,24 @@
   },
   "limitations": "Buffer status is provider evidence, not independent X page verification. Missing list entries are checked by saved Buffer ID. Draft/error/needs_approval require investigation. Sending is normal for up to 15 minutes, then requires review. Overdue scheduled posts also require investigation. Nothing is automatically retried. Missing provider timestamps are not assumed sent.",
   "items": [
+    {
+      "slug": "buzzword-award-what-does-it-mean-wins",
+      "buffer_id": "6aed1c30dbada656bee16bbf",
+      "queued_at_utc": "2026-11-06T00:15:43.880425+00:00",
+      "buffer_status": "sent",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-06T00:15:44.720Z",
+      "buffer_due_at_at_accept": "2026-11-06T00:15:44.752Z",
+      "buffer_sent_at_at_accept": "2026-11-06T00:15:45.100Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118497527225819504",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow",
+      "buffer_created_at_utc": "2026-11-06T00:15:44.720000+00:00",
+      "buffer_external_link": "https://x.com/2046775749500428288/status/2118497527225819504",
+      "buffer_shared_now": true,
+      "buffer_share_mode": "shareNow",
+      "buffer_sent_at_utc": "2026-11-06T00:15:45.100000+00:00"
+    },
     {
       "slug": "sns-quit-support-site-hundred-day-login-award",
       "buffer_id": "6aec79bfe971cfdd3056c118",
