@@ -88,7 +88,7 @@ class SocialTextTests(unittest.TestCase):
 
     def test_long_title_budget_preserves_both_topics_and_full_article_url(self):
         prefix = "【未発生新聞】\n"
-        article = {"tags": ["長" * 12, "別" * 12, "AI"]}
+        article = {"tags": ["AI", "働き方"], "x_tags": ["長" * 12, "別" * 12, "ポイ活"]}
         hashtags = " ".join(article_hashtags(article))
         url = "https://veripsa.com/articles/" + "a" * 100 + "/"
         ending = "\n\n" + hashtags + "\n\n" + url
@@ -101,41 +101,73 @@ class SocialTextTests(unittest.TestCase):
         self.assertEqual(article_hashtags(article), ["#" + "長" * 12, "#" + "別" * 12])
 
     def test_topic_order_duplicates_and_two_tag_cap(self):
-        article = {"tags": ["タイパ", "タイパ", "ドラマ", "テレビ"]}
+        article = {
+            "tags": ["SNS", "アプリ"],
+            "x_tags": ["タイパ", "タイパ", "推し活", "炎上"],
+        }
         before = copy.deepcopy(article)
-        self.assertEqual(article_hashtags(article), ["#タイパ", "#ドラマ"])
-        self.assertEqual(article_hashtags(article, limit=8), ["#タイパ", "#ドラマ"])
+        self.assertEqual(article_hashtags(article), ["#タイパ", "#推し活"])
+        self.assertEqual(article_hashtags(article, limit=8), ["#タイパ", "#推し活"])
         self.assertEqual(article_hashtags(article, limit=1), ["#タイパ"])
         self.assertEqual(article_hashtags(article, limit=0), [])
         self.assertEqual(article_hashtags(article, limit=-1), [])
         self.assertEqual(article, before)
-        self.assertEqual(article_hashtags({"tags": ["ＡＩ", "ＡＩ", "働き方"]}),
-                         ["#ＡＩ", "#働き方"])
-        self.assertEqual(article_hashtags({"tags": ["AI", "ai", "働き方"]}),
-                         ["#AI", "#働き方"])
+        self.assertEqual(
+            article_hashtags({"x_tags": ["SNS", "アプリ", "ポイ活"]}),
+            ["#ポイ活"],
+        )
+        self.assertEqual(
+            article_hashtags({"x_tags": ["生成AI", "生成AI", "推し活"]}),
+            ["#生成AI", "#推し活"],
+        )
+        self.assertEqual(
+            article_hashtags({"x_tickers": ["NVDA"], "x_tags": ["AIバブル", "半導体"]}),
+            ["$NVDA", "#AIバブル"],
+        )
+        self.assertEqual(
+            article_hashtags({"x_tickers": ["nvda", "TOO-LONG", "$TSLA"], "x_tags": ["ポイ活"]}),
+            ["#ポイ活"],
+        )
+        self.assertEqual(
+            article_hashtags({"satire_tags": ["家族あるある", "本末転倒"]}),
+            ["#家族あるある"],
+        )
 
     def test_invalid_labels_are_skipped_whole_without_changing_the_topic(self):
         invalid = ["#AI", "＃AI", "AI news", "AI/仕事", "C++", "猫!", "☀",
                    "123", "___", "日" * 13, "AI\n仕事", " AI", "", 3, None, {}]
-        self.assertEqual(article_hashtags({"tags": invalid}), [])
-        self.assertEqual(article_hashtags({"tags": invalid + ["AI", "働き方", "SNS"]}),
-                         ["#AI", "#働き方"])
-        self.assertEqual(article_hashtags({"tags": ["AI_仕事", "3D"]}), ["#AI_仕事", "#3D"])
+        self.assertEqual(article_hashtags({"x_tags": invalid}), [])
+        self.assertEqual(
+            article_hashtags({"x_tags": invalid + ["SNS", "アプリ", "ポイ活", "タイパ"]}),
+            ["#ポイ活", "#タイパ"],
+        )
+        self.assertEqual(article_hashtags({"x_tags": ["AI_仕事", "3D"]}),
+                         ["#AI_仕事", "#3D"])
 
     def test_missing_or_malformed_topics_do_not_invent_hashtags(self):
-        for article in ({}, {"tags": None}, {"tags": "AI"}, {"tags": {}}, {"tags": []}):
+        for article in ({}, {"x_tags": None}, {"x_tags": "ポイ活"}, {"x_tags": {}},
+                        {"x_tags": [], "tags": ["SNS", "アプリ"]}):
             with self.subTest(article=article):
                 self.assertEqual(article_hashtags(article), [])
         for invalid_limit in (True, 1.5, "2"):
             with self.subTest(invalid=invalid_limit), self.assertRaises(ValueError):
-                article_hashtags({"tags": ["AI"]}, limit=invalid_limit)
+                article_hashtags({"x_tags": ["ポイ活"]}, limit=invalid_limit)
 
-    def test_every_current_article_reuses_its_published_topic_labels(self):
+    def test_current_articles_use_context_terms_not_broad_categories(self):
         articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
         self.assertTrue(articles)
+        generic = {"#SNS", "#アプリ", "#社会", "#生活", "#暮らし", "#家族",
+                   "#イベント", "#仕事", "#働き方", "#メディア", "#AI"}
         for article in articles:
             with self.subTest(slug=article["slug"]):
-                self.assertEqual(article_hashtags(article), ["#" + tag for tag in article["tags"][:2]])
+                hashtags = article_hashtags(article)
+                self.assertLessEqual(len(hashtags), 2)
+                self.assertFalse(generic.intersection(hashtags))
+        walking = next(
+            item for item in articles
+            if item["slug"] == "walking-points-past-own-front-door"
+        )
+        self.assertIn("#ポイ活", article_hashtags(walking))
 
 
 if __name__ == "__main__":

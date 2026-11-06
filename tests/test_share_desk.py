@@ -81,19 +81,28 @@ class ShareDeskTests(unittest.TestCase):
         self.assertEqual(params["url"][0].split("?")[0],
                          "https://veripsa.com/articles/very-long-story/")
 
-    def test_copy_and_intent_include_only_the_first_two_published_tags(self):
+    def test_copy_and_intent_use_x_native_discovery_terms(self):
         a = sample("tagged-story", "技術", "2026-11-02",
                    title="倍速にした動画の説明を聞く")
-        a["tags"] = ["タイパ", "AI", "仕事"]
+        a["tags"] = ["メディア", "AI", "仕事"]
+        a["x_tags"] = ["タイパ", "AI"]
         details = draft(a)
-        self.assertEqual(details["text"].splitlines()[-1], "#タイパ #AI")
+        self.assertEqual(details["text"].splitlines()[-1], "#タイパ")
         self.assertEqual(details["copy"].count("#タイパ"), 1)
+        self.assertNotIn("#AI", details["copy"])
         self.assertNotIn("#仕事", details["copy"])
         self.assertNotIn("#未発生新聞", details["copy"])
         self.assertEqual(details["copy"], details["text"] + "\n\n" + details["tagged_url"])
         params = parse_qs(urlparse(details["intent"]).query)
         self.assertEqual(params["text"], [details["text"]])
         self.assertEqual(params["url"], [details["tagged_url"]])
+
+        stock = sample("stock-story", "経済", "2026-11-02",
+                       title="NVIDIA決算後もAI投資が止まらない")
+        stock["x_tickers"] = ["NVDA"]
+        stock["x_tags"] = ["AIバブル"]
+        stock_details = draft(stock)
+        self.assertEqual(stock_details["text"].splitlines()[-1], "$NVDA #AIバブル")
 
     def test_length_budget_shortens_teaser_first_and_keeps_tags_and_long_url(self):
         title = "見出し" * 19  # 57 Japanese characters, below the existing 58-character cap.
