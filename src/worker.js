@@ -213,6 +213,7 @@ export class NewsroomStats extends DurableObject {
           return json({error:"day outside available JST history"},400);
       }
       const startedAt=this.count("pageViews:startedAt");
+      const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
       const sourceStartedAt=this.count("pageViewSources:startedAt");
       const details={};
@@ -255,7 +256,8 @@ export class NewsroomStats extends DurableObject {
       for(const source of attributionChannels)channels[source]=this.count("channel:"+source);
       const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
       const topArticles={
-        currentHour:this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:"),
+        currentHour:hourlyStartedAt
+          ? this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:") : [],
         today:this.topArticleRows("day:"+day.date+":pageViews:"),
         last7Days:this.topArticleRowsForWeek(day)
       };
@@ -273,10 +275,11 @@ export class NewsroomStats extends DurableObject {
         }),
         hourly:{
           timezone:"Asia/Tokyo",
-          today:this.hourlyDaySnapshot(day.date,hour,startedAt),
-          yesterday:this.hourlyDaySnapshot(previousDate,hour,startedAt),
+          startedAtUtc:hourlyStartedAt ? new Date(hourlyStartedAt).toISOString() : null,
+          today:this.hourlyDaySnapshot(day.date,hour,hourlyStartedAt),
+          yesterday:this.hourlyDaySnapshot(previousDate,hour,hourlyStartedAt),
           ...(requestedDay===null ? {} : {
-            day:this.hourlyDaySnapshot(requestedDay,hour,startedAt)
+            day:this.hourlyDaySnapshot(requestedDay,hour,hourlyStartedAt)
           })
         },
         topArticles,
@@ -347,6 +350,7 @@ export class NewsroomStats extends DurableObject {
           this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
           this.increment("pageViews",1);
           this.increment(dayPrefix+"pageViews",1);
+          this.sql.exec("INSERT INTO counters(key,value) VALUES ('hourlyPageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
           this.increment(hourPrefix+"pageViews",1);
           if(article){
             this.increment("pageViews:"+article,1);
@@ -430,6 +434,7 @@ export class NewsroomStats extends DurableObject {
       }
     });
     const startedAt=this.count("pageViews:startedAt");
+    const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
     const sessionStartedAt=this.count("sessions:startedAt");
     const sourceStartedAt=this.count("pageViewSources:startedAt");
     const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
@@ -437,10 +442,13 @@ export class NewsroomStats extends DurableObject {
       ...this.pageViewSummary(day,startedAt),
       ...this.sessionSummary(sessionStartedAt),
       ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
-      hourly:{timezone:"Asia/Tokyo",today:this.hourlyDaySnapshot(day.date,hour,startedAt),
-        yesterday:this.hourlyDaySnapshot(previousDate,hour,startedAt)},
+      hourly:{timezone:"Asia/Tokyo",
+        startedAtUtc:hourlyStartedAt ? new Date(hourlyStartedAt).toISOString() : null,
+        today:this.hourlyDaySnapshot(day.date,hour,hourlyStartedAt),
+        yesterday:this.hourlyDaySnapshot(previousDate,hour,hourlyStartedAt)},
       topArticles:{
-        currentHour:this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:"),
+        currentHour:hourlyStartedAt
+          ? this.topArticleRows("hour:"+hour.date+":"+hour.hour+":pageViews:") : [],
         today:this.topArticleRows("day:"+day.date+":pageViews:"),
         last7Days:this.topArticleRowsForWeek(day)
       },
