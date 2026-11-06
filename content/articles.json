@@ -1,5 +1,51 @@
 [
   {
+    "slug": "patrol-teams-mistake-each-other-for-suspects",
+    "category": "社会",
+    "flash": "警戒対象、全員仲間",
+    "fiction_company": "つづみ台町内会",
+    "art": "notice",
+    "fiction_at": "2031-11-06T15:33:43+09:00",
+    "published_at": "2026-11-06T15:33:43+09:00",
+    "title": "防犯パトロール2班、互いを「怪しい集団」と警戒　町内を3周",
+    "summary": "見慣れない四人組を見張るうち、どちらの班も引き返せなくなった。巡回後の報告書には、仲間の写真が不審者として貼られていた。",
+    "paragraphs": [
+      "夕方、つづみ台町内会は初参加者を交えて防犯パトロールを二班に分けた。別班の顔を知らない隊員たちは、それぞれ腕章を付けて住宅街へ出発した。",
+      "東班は、何度曲がっても後ろにいる四人組を怪しみ、進路を変えて様子を見た。西班は、こちらを振り返っては道を変える四人組を不審に思い、距離を取って追いかけた。東班が歩調を速めると、西班も足を速めた。",
+      "二班は住宅街を三周して同じ公民館に帰着。互いの腕章を見て正体に気づいたが、活動報告書の「不審な集団を発見」欄は双方とも記入済みだった。添付した写真には、町内会がその日に配った腕章が八人分写っていた。"
+    ],
+    "source": {
+      "kind": "行政案内",
+      "publisher": "武蔵野市",
+      "published_at": "2026-07-23T00:00:00+09:00",
+      "url": "https://www.city.musashino.lg.jp/kurashi_tetsuzuki/bosai_anzen/bosai_anzen_center_web/bouhantaisaku_seido/patrol/1005988.html",
+      "topic": "武蔵野市は2026年7月23日更新の案内で、市民安全パトロール隊が専用の上着やベスト、帽子を身に着けて徒歩や自転車で巡回すると説明している。本文の町内会、誤認、追跡、報告書はすべて本紙の創作で、同市の実在の活動を描いたものではない。"
+    },
+    "scene_prompt": "Photorealistic deadpan Japanese neighborhood reporting scene at late afternoon: two groups of four ordinary volunteer adults wearing matching generic neighborhood-watch armbands, one group walking ahead repeatedly looking back while the other follows at a polite distance on a quiet narrow residential street. A small neighborhood community hall in the distance. Natural cloudy daylight, realistic people and proportions, no logos, no police uniforms, no dramatic action, no legible text.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "防犯",
+      "地域"
+    ],
+    "satire_tags": [
+      "警戒しすぎ",
+      "ご近所あるある"
+    ],
+    "x_tags": [
+      "防犯パトロール",
+      "町内会"
+    ],
+    "x_tickers": [],
+    "editorial_lane": "original_satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "target": "町内会の巡回班が怪しい人を見つけることを優先し、地域の仲間を見守る本来の目的を見失う",
+      "action": "互いの顔を知らない二班が相手の進路変更を疑い、見張る側と追う側になって住宅街を三周する",
+      "outcome": "両班の巡回報告が不審者発見となり、添付写真には同じ町内会の腕章をつけた八人が写る"
+    }
+  },
+  {
     "slug": "nikkei-plunge-hundred-year-hold-minute-check",
     "category": "経済",
     "flash": "保有100年、確認1分",
