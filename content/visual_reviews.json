@@ -14,6 +14,13 @@
       "note": "パンが並ぶ店頭と店員・客の場面。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
+    "black-friday-preparty-budget-gone": {
+      "article_sha256": "f0aa523e3caacb88eb9483e4c1cd14f6347d209aa451b64c4c67931b7bbe76ab",
+      "decision": "accepted",
+      "image_sha256": "501922b1be959f82eb167afb88819ee3c5f5ebe27f0aff73910bdf3bdccd5866",
+      "note": "実画像を本文・scene_prompt・オチと照合。満杯の買い物袋と家電箱を抱えた客が空の財布を開き、笑顔の店員がブラックフライデー本番の案内を指している。先行セールで予算を使い切った逆説が明確。店舗照明・肌・服・紙袋・箱の質感は通常の現場スナップとして自然で、アニメ／3DCG／プラスチック肌ではない。商店街の店舗入口を切り取った場面として採用。記事の『3週間前』という期間は写真単独では描写されず本文が補う。",
+      "reviewed_at": "2026-11-06T11:42:56.033Z"
+    },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
       "decision": "accepted",
