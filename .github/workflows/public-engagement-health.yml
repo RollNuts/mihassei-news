@@ -115,6 +115,110 @@ jobs:
                               or not details["todayPageViews"]<=details["last7DaysPageViews"]<=details["pageViews"]
                               or details["last7DaysPageViews"]>week["pageViews"]):
                               raise RuntimeError("PV totals disagree across measurement periods")
+                          if data.get("version") != 2:
+                              raise RuntimeError("engagement diagnostics v2 not deployed")
+
+                          session_tracking=data.get("sessionTracking")
+                          if (not isinstance(session_tracking,dict)
+                              or session_tracking.get("unit")!="session"
+                              or session_tracking.get("timezone")!="Asia/Tokyo"
+                              or session_tracking.get("inactivityTimeoutMinutes")!=30
+                              or "startedAtUtc" not in session_tracking):
+                              raise RuntimeError("session measurement metadata missing")
+                          session_started=session_tracking["startedAtUtc"]
+                          if session_started is None:
+                              if (data.get("sessions") is not None
+                                  or today.get("sessions") is not None
+                                  or today.get("sessionsCoverage")!="unmeasured"):
+                                  raise RuntimeError("unstarted sessions must remain unmeasured")
+                          else:
+                              if (not isinstance(session_started,str)
+                                  or datetime.fromisoformat(session_started.replace("Z","+00:00")).tzinfo is None
+                                  or type(data.get("sessions")) is not int
+                                  or data["sessions"]<0
+                                  or type(today.get("sessions")) is not int
+                                  or today["sessions"]<0
+                                  or today.get("sessionsCoverage")!="in-progress"):
+                                  raise RuntimeError("session counters are invalid")
+
+                          hourly=data.get("hourly")
+                          if (not isinstance(hourly,dict)
+                              or hourly.get("timezone")!="Asia/Tokyo"
+                              or "startedAtUtc" not in hourly
+                              or not isinstance(hourly.get("today"),list)
+                              or len(hourly["today"])!=24):
+                              raise RuntimeError("hourly PV diagnostics missing")
+                          hourly_started=hourly["startedAtUtc"]
+                          if hourly_started is not None and (
+                              not isinstance(hourly_started,str)
+                              or datetime.fromisoformat(hourly_started.replace("Z","+00:00")).tzinfo is None):
+                              raise RuntimeError("hourly PV start is invalid")
+                          allowed_coverage={"unmeasured","partial","complete","in-progress","future"}
+                          measured_hourly=0
+                          for hour,row in enumerate(hourly["today"]):
+                              expected=today["dateJst"]+"T"+str(hour).zfill(2)+":00"
+                              if (not isinstance(row,dict)
+                                  or row.get("hourJst")!=expected
+                                  or row.get("pageViewsCoverage") not in allowed_coverage):
+                                  raise RuntimeError("hourly PV bucket is invalid: "+expected)
+                              value=row.get("pageViews")
+                              if row["pageViewsCoverage"] in ("unmeasured","future"):
+                                  if value is not None:
+                                      raise RuntimeError("unmeasured hourly PV cannot be zero-filled")
+                              elif type(value) is not int or value<0:
+                                  raise RuntimeError("measured hourly PV is invalid")
+                              else:
+                                  measured_hourly+=value
+                          if started is not None and measured_hourly>today["pageViews"]:
+                              raise RuntimeError("hourly PV exceeds today's PV")
+
+                          top=data.get("topArticles")
+                          if not isinstance(top,dict):
+                              raise RuntimeError("top article diagnostics missing")
+                          for period in ("currentHour","today","last7Days"):
+                              rows=top.get(period)
+                              if not isinstance(rows,list) or len(rows)>10:
+                                  raise RuntimeError("top article list invalid: "+period)
+                              previous=None
+                              seen=set()
+                              for row in rows:
+                                  if (not isinstance(row,dict)
+                                      or not isinstance(row.get("article"),str)
+                                      or not row["article"] or row["article"] in seen
+                                      or type(row.get("pageViews")) is not int
+                                      or row["pageViews"]<=0
+                                      or (previous is not None and row["pageViews"]>previous)):
+                                      raise RuntimeError("top article row invalid: "+period)
+                                  seen.add(row["article"])
+                                  previous=row["pageViews"]
+
+                          source_tracking=data.get("pageViewSourceTracking")
+                          source_keys=("x","search","external","unattributed")
+                          if (not isinstance(source_tracking,dict)
+                              or source_tracking.get("unit")!="page-view"
+                              or source_tracking.get("timezone")!="Asia/Tokyo"
+                              or source_tracking.get("attribution")!="session-acquisition-channel"
+                              or "startedAtUtc" not in source_tracking):
+                              raise RuntimeError("page-view source metadata missing")
+                          source_started=source_tracking["startedAtUtc"]
+                          for field in ("pageViewSources","pageViewSourcesToday","pageViewSourcesCurrentHour"):
+                              values=data.get(field)
+                              if not isinstance(values,dict) or set(values)!=set(source_keys):
+                                  raise RuntimeError("page-view source counters missing: "+field)
+                              if source_started is None:
+                                  if any(values[key] is not None for key in source_keys):
+                                      raise RuntimeError("unstarted source PV must remain null")
+                              elif any(type(values[key]) is not int or values[key]<0 for key in source_keys):
+                                  raise RuntimeError("page-view source counter invalid: "+field)
+                          if source_started is not None and (
+                              not isinstance(source_started,str)
+                              or datetime.fromisoformat(source_started.replace("Z","+00:00")).tzinfo is None):
+                              raise RuntimeError("page-view source start is invalid")
+
+                          if "entrances" not in details or "pageViewSources" not in details:
+                              raise RuntimeError("article diagnostics v2 fields missing")
+                          print("VERIFIED diagnostics v2: sessions={} / hourlyMeasured={} / topToday={} / sources={}".format(
+                              data.get("sessions"),measured_hourly,top["today"][:3],data.get("pageViewSourcesToday")))
                           print("VERIFIED PV API: site={}, article={}, article last7Days={} PV".format(
                               data["pageViews"],details["pageViews"],details["last7DaysPageViews"]))
                           print("VERIFIED daily PV: {} / today={} / yesterday={} / last7Days={} (JST)".format(
