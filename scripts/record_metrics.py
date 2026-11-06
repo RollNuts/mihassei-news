@@ -168,7 +168,12 @@ def article_editorial_metadata(
     return lane, tone, payoff
 
 
-def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, dict | None]:
+def read_public_metrics(
+    slugs: list[str],
+    opener=urlopen,
+    *,
+    day: str | None = None,
+) -> tuple[int, dict, dict | None]:
     if not slugs:
         raise ValueError("No published article slugs available")
     unique = list(dict.fromkeys(slugs))
@@ -177,8 +182,15 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
     channels = None
     for index in range(0, len(unique), BATCH):
         batch = unique[index:index + BATCH]
+        query = {"articles": ",".join(batch)}
+        if day is not None:
+            # Ask the same read-only API for the completed report date so every
+            # recent article can be compared on one calendar day, not only by
+            # a rolling seven-date total captured at different publication ages.
+            date.fromisoformat(day)
+            query["day"] = day
         request = Request(
-            API + "?" + urlencode({"articles": ",".join(batch)}),
+            API + "?" + urlencode(query),
             headers={
                 "User-Agent": "MihasseiDailyReadOnlySnapshot/1.0",
                 "Accept": "application/json",
@@ -229,7 +241,8 @@ def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, di
             # Display counters are independent of reader browsers. Legacy fields
             # stay absent, and an explicit unmeasured null must remain null.
             for api_key, saved_key in (("pageViews", "page_views_cumulative"),
-                                       ("last7DaysPageViews", "page_views_last_7_days")):
+                                       ("last7DaysPageViews", "page_views_last_7_days"),
+                                       ("requestedDayPageViews", "page_views_report_day")):
                 if api_key in item:
                     value = item[api_key]
                     if value is not None and not valid_count(value):
@@ -383,6 +396,10 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
     for a in recent:
         if a["slug"] not in counts:
             raise ValueError("Missing read-only count: " + a["slug"])
+        report_day_pv = counts[a["slug"]].get("page_views_report_day")
+        if (report_day_pv is not None and daily_totals.get("pageViews") is not None
+                and report_day_pv > daily_totals["pageViews"]):
+            raise ValueError("Article report-day PV exceeds site report-day PV: " + a["slug"])
     snapshot = {
         "schema_version": 3,
         "date_jst": day,
@@ -419,6 +436,11 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
             "measured_at_utc, through capture time; not seven completed days or the "
             "date_jst end-of-day total. Window/coverage is null when unavailable; "
             "missing/null article values are not zero."
+        ),
+        "page_views_report_day_note": (
+            "recent_articles[].page_views_report_day is that article's PV on date_jst "
+            "only, read from the same completed JST date as daily_page_views. Missing "
+            "pre-activation history stays null/absent and is never reconstructed."
         ),
         "page_views_note": (
             "JavaScript-visible page displays, including repeat loads, with request "
@@ -567,7 +589,8 @@ def validate_snapshot(data: dict, day: str) -> None:
                 or sum(payoff_counts.values()) != payoff_tracked):
             raise ValueError("Editorial payoff counts are invalid")
     for item in data.get("recent_articles", []):
-        for key in ("page_views_cumulative", "page_views_last_7_days"):
+        for key in ("page_views_cumulative", "page_views_last_7_days",
+                    "page_views_report_day"):
             if key in item and item[key] is not None and not valid_count(item[key]):
                 raise ValueError("Invalid per-article page views in snapshot: " + key)
         if ("editorial_lane" in item or "editorial_tone" in item
@@ -612,7 +635,9 @@ def main() -> None:
     if not isinstance(articles, list) or not articles:
         raise ValueError("No article data")
     recent = recent_articles(articles)
-    visitors, counts, channels = read_public_metrics([a["slug"] for a in recent])
+    visitors, counts, channels = read_public_metrics(
+        [a["slug"] for a in recent], day=day
+    )
     daily_totals = read_day_totals(day)
     snapshot = build_snapshot(articles, now, visitors, counts, daily_totals, channels)
     output.parent.mkdir(parents=True, exist_ok=True)

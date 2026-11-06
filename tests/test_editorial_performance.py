@@ -16,6 +16,7 @@ def article(
     published_at: str,
     *,
     pv: int | None = 5,
+    day_pv: int | None = None,
     x: int | None = 1,
     continued: int | None = 1,
     readers: int | None = 5,
@@ -29,6 +30,8 @@ def article(
         "continued_readers": continued,
         "readers": readers,
     }
+    if day_pv is not None:
+        item["page_views_report_day"] = day_pv
     if lane is not None:
         item["editorial_lane"] = lane
     if tone is not None:
@@ -41,13 +44,14 @@ def article(
 class EditorialPerformanceTests(unittest.TestCase):
     def snapshot(self) -> dict:
         return {
+            "date_jst": "2026-11-06",
             "measured_at_utc": "2026-11-07T00:00:00+00:00",
             "recent_articles": [
-                article("t1", "trend", "plausible_future", "2026-11-06T08:00:00+09:00", pv=12, x=3, payoff="quiet_aftertaste"),
-                article("t2", "trend", "comic_exaggeration", "2026-11-06T10:00:00+09:00", pv=8, x=2, payoff="action"),
-                article("t3", "trend", "observational", "2026-11-06T12:00:00+09:00", pv=10, x=None, payoff="action"),
-                article("s1", "social_life", "observational", "2026-11-06T14:00:00+09:00", pv=6, x=1, payoff="visible_result"),
-                article("s2", "social_life", "comic_exaggeration", "2026-11-06T16:00:00+09:00", pv=4, x=0, payoff="visible_result"),
+                article("t1", "trend", "plausible_future", "2026-11-06T08:00:00+09:00", pv=12, day_pv=8, x=3, payoff="quiet_aftertaste"),
+                article("t2", "trend", "comic_exaggeration", "2026-11-06T10:00:00+09:00", pv=8, day_pv=7, x=2, payoff="action"),
+                article("t3", "trend", "observational", "2026-11-06T12:00:00+09:00", pv=10, day_pv=6, x=None, payoff="action"),
+                article("s1", "social_life", "observational", "2026-11-06T14:00:00+09:00", pv=6, day_pv=5, x=1, payoff="visible_result"),
+                article("s2", "social_life", "comic_exaggeration", "2026-11-06T16:00:00+09:00", pv=4, day_pv=4, x=0, payoff="visible_result"),
                 # Too new for the default 6h lower bound.
                 article("new", "original_satire", "wildcard", "2026-11-07T08:00:00+09:00", pv=20, x=4),
                 # Pre-rollout / legacy metadata stays excluded rather than guessed.
@@ -73,6 +77,15 @@ class EditorialPerformanceTests(unittest.TestCase):
             report["by_lane"]["trend"]["page_views_last_7_days"]["median"],
             10,
         )
+        self.assertEqual(
+            report["by_lane"]["trend"]["page_views_report_day"]["median"],
+            7,
+        )
+        self.assertAlmostEqual(
+            report["by_lane"]["trend"]["report_day_page_views_per_hour"]["median"],
+            0.5,
+            places=3,
+        )
         self.assertAlmostEqual(
             report["by_lane"]["trend"]["page_views_per_hour"]["median"],
             0.476,
@@ -87,8 +100,35 @@ class EditorialPerformanceTests(unittest.TestCase):
             report["by_payoff"]["visible_result"]["status"],
             "insufficient_sample",
         )
+        self.assertEqual(report["schema_version"], 2)
         self.assertNotIn("winner", json.dumps(report))
         self.assertIn("not evidence", report["note"])
+
+    def test_completed_day_rate_uses_only_hours_article_was_public_that_day(self):
+        snapshot = {
+            "date_jst": "2026-11-06",
+            "measured_at_utc": "2026-11-07T00:00:00+00:00",
+            "recent_articles": [
+                article("late", "trend", "observational",
+                        "2026-11-06T18:00:00+09:00", pv=10, day_pv=6),
+                article("older", "trend", "observational",
+                        "2026-11-05T18:00:00+09:00", pv=12, day_pv=12),
+            ],
+        }
+        rows = {row["slug"]: row for row in p.eligible_articles(snapshot)}
+        self.assertEqual(rows["late"]["report_day_exposure_hours"], 6.0)
+        self.assertEqual(rows["late"]["report_day_page_views_per_hour"], 1.0)
+        self.assertEqual(rows["older"]["report_day_exposure_hours"], 24.0)
+        self.assertEqual(rows["older"]["report_day_page_views_per_hour"], 0.5)
+
+    def test_legacy_snapshot_without_completed_day_pv_keeps_old_fallback(self):
+        snapshot = self.snapshot()
+        snapshot.pop("date_jst")
+        for row in snapshot["recent_articles"]:
+            row.pop("page_views_report_day", None)
+        report = p.build_report(snapshot, source_name="legacy.json")
+        self.assertEqual(report["by_lane"]["trend"]["page_views_report_day"]["observed"], 0)
+        self.assertEqual(report["by_lane"]["trend"]["page_views_last_7_days"]["median"], 10)
 
     def test_missing_x_arrivals_remain_missing_not_zero(self):
         report = p.build_report(self.snapshot(), source_name="snapshot.json")

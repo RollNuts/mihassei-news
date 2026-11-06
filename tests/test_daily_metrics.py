@@ -78,6 +78,54 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(metrics[names[0]]["x_arrivals"], 1)
         self.assertEqual(metrics[names[0]]["search_arrivals"], 2)
 
+    def test_article_metrics_can_capture_the_same_completed_report_day(self):
+        calls = []
+        def fake_open(request, timeout):
+            query = parse_qs(urlsplit(request.full_url).query)
+            calls.append(query)
+            names = query["articles"][0].split(",")
+            self.assertEqual(query["day"], ["2026-11-06"])
+            return FakeResponse(json.dumps({
+                "unit": "anonymous-browser",
+                "visitors": 8,
+                "channels": {"x": 2, "search": 1, "external": 0, "unattributed": 5},
+                "articles": {
+                    slug: {
+                        "readers": 2, "likes": 0, "shareClicks": 0,
+                        "continuedReaders": 1,
+                        "pageViews": 12,
+                        "last7DaysPageViews": 10,
+                        "requestedDayPageViews": 6,
+                    }
+                    for slug in names
+                },
+            }).encode())
+        _, metrics, _ = m.read_public_metrics(
+            ["story"], opener=fake_open, day="2026-11-06"
+        )
+        self.assertEqual(metrics["story"]["page_views_report_day"], 6)
+        self.assertEqual(metrics["story"]["page_views_last_7_days"], 10)
+        self.assertEqual(len(calls), 1)
+
+    def test_invalid_requested_day_article_pv_is_not_saved(self):
+        for value in (-1, "6", True, 1.5):
+            def fake_open(request, timeout):
+                return FakeResponse(json.dumps({
+                    "unit": "anonymous-browser",
+                    "visitors": 1,
+                    "articles": {
+                        "story": {
+                            "readers": 1, "likes": 0, "shareClicks": 0,
+                            "continuedReaders": 0,
+                            "requestedDayPageViews": value,
+                        }
+                    },
+                }).encode())
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                m.read_public_metrics(
+                    ["story"], opener=fake_open, day="2026-11-06"
+                )
+
     def test_reject_missing_or_invented_metrics(self):
         def fake_open(req, timeout):
             return FakeResponse(json.dumps({
@@ -100,6 +148,7 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertNotIn("search_arrivals",metrics["story"])
         self.assertNotIn("page_views_cumulative",metrics["story"])
         self.assertNotIn("page_views_last_7_days",metrics["story"])
+        self.assertNotIn("page_views_report_day",metrics["story"])
 
     def test_reject_corrupted_article_arrivals(self):
         for bad in ({"x":-1,"search":0},{"x":"many","search":1},

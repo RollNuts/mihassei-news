@@ -14,7 +14,7 @@ import argparse
 import json
 import statistics
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -41,6 +41,23 @@ def _count(value: object) -> int | None:
     if type(value) is int and value >= 0:
         return value
     return None
+
+
+def _report_day_exposure_hours(published: datetime, day_value: object) -> float | None:
+    """Hours the article was actually public during one completed JST date."""
+    if not isinstance(day_value, str):
+        return None
+    try:
+        report_day = date.fromisoformat(day_value)
+    except ValueError:
+        return None
+    start = datetime.combine(report_day, time.min, JST)
+    end = start + timedelta(days=1)
+    published_jst = published.astimezone(JST)
+    if published_jst >= end:
+        return 0.0
+    active_start = max(start, published_jst)
+    return round((end - active_start).total_seconds() / 3600, 3)
 
 
 def latest_snapshot_path(root: Path = ROOT) -> Path:
@@ -94,9 +111,16 @@ def eligible_articles(
             continue
 
         page_views = _count(item.get("page_views_last_7_days"))
-        # Without a measured PV value this story cannot support a PV comparison.
-        if page_views is None:
+        report_day_page_views = _count(item.get("page_views_report_day"))
+        # Prefer the completed calendar-day observation when available. Legacy
+        # snapshots can still use the rolling seven-date figure without pretending
+        # the missing completed-day value was zero.
+        if page_views is None and report_day_page_views is None:
             continue
+        exposure_hours = (
+            _report_day_exposure_hours(published, snapshot.get("date_jst"))
+            if report_day_page_views is not None else None
+        )
 
         readers = _count(item.get("readers"))
         continued = _count(item.get("continued_readers"))
@@ -110,10 +134,20 @@ def eligible_articles(
             "editorial_tone": tone,
             "editorial_payoff": payoff if isinstance(payoff, str) and payoff.strip() else None,
             "age_hours": round(age_hours, 2),
+            "page_views_report_day": report_day_page_views,
+            "report_day_exposure_hours": exposure_hours,
+            "report_day_page_views_per_hour": (
+                round(report_day_page_views / exposure_hours, 3)
+                if report_day_page_views is not None and exposure_hours and exposure_hours > 0
+                else None
+            ),
             "page_views_last_7_days": page_views,
-            # A rough age normalization for early comparisons. It is not a
-            # forecast and does not correct for time-of-day or distribution.
-            "page_views_per_hour": round(page_views / age_hours, 3) if age_hours > 0 else None,
+            # Legacy/secondary normalization retained for older snapshots. The
+            # completed-day rate above is better for same-date editorial comparisons.
+            "page_views_per_hour": (
+                round(page_views / age_hours, 3)
+                if page_views is not None and age_hours > 0 else None
+            ),
             # Missing attribution/history remains null, never zero.
             "readers": readers,
             "x_arrivals": _count(item.get("x_arrivals")),
@@ -154,6 +188,12 @@ def group_summary(items: list[dict], field: str, *, min_group: int) -> dict:
                 "median": round(float(statistics.median(ages)), 2),
                 "max": round(max(ages), 2),
             },
+            "page_views_report_day": _metric(
+                [item.get("page_views_report_day") for item in group]
+            ),
+            "report_day_page_views_per_hour": _metric(
+                [item.get("report_day_page_views_per_hour") for item in group]
+            ),
             "page_views_last_7_days": _metric(
                 [item.get("page_views_last_7_days") for item in group]
             ),
@@ -188,7 +228,7 @@ def build_report(
         max_age_hours=max_age_hours,
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "source_snapshot": source_name,
         "measured_at_utc": snapshot["measured_at_utc"],
         "age_window_hours": {
@@ -198,9 +238,11 @@ def build_report(
         "minimum_group_size": min_group,
         "eligible_articles": len(items),
         "note": (
-            "Descriptive comparison only. Match publication age before comparing; "
-            "page_views_per_hour is only a rough age normalization and does not "
-            "correct for time-of-day or distribution. continuation_share is the "
+            "Descriptive comparison only. When present, page_views_report_day and "
+            "report_day_page_views_per_hour are preferred because they compare one "
+            "completed JST date and account for how many hours the article was public "
+            "on that date. page_views_per_hour remains a legacy rolling-window fallback "
+            "and does not correct for time-of-day or distribution. continuation_share is the "
             "share of measured article-reader browser IDs that later continued from "
             "that source article when both counters are available. Missing editorial "
             "labels and attribution are not backfilled. A group below "
