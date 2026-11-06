@@ -480,8 +480,32 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
         )
     )
     trend = article.get("trend_observation")
-    observed_term = _norm(trend.get("term")) if isinstance(trend, dict) else ""
+    observed_raw = (
+        trend.get("term").strip()
+        if isinstance(trend, dict) and isinstance(trend.get("term"), str)
+        else ""
+    )
+    observed_term = _norm(observed_raw)
     discovery_norm = _norm(discovery)
+    discovery_is_ticker = bool(
+        discovery and discovery.upper() in ticker_terms
+    )
+    observed_is_natural_hashtag = bool(
+        observed_raw
+        and X_TAG_RE.fullmatch(observed_raw)
+        and any(char.isalpha() for char in observed_raw)
+        and observed_raw not in GENERIC_X_DISCOVERY_TERMS
+    )
+    if (
+        observed_is_natural_hashtag
+        and discovery_norm
+        and discovery_norm != observed_term
+        and not discovery_is_ticker
+    ):
+        errors.append(
+            f"{slug}: use the exact observed trend term '{observed_raw}' as the "
+            "primary X discovery term when it is already a natural hashtag"
+        )
     if (
         discovery_norm
         and discovery_norm != observed_term
