@@ -21,7 +21,8 @@ jobs:
           EXPECTED_SHA: ${{ github.sha }}
         run: |
           set -eu
-          endpoint="https://veripsa.com/build-revision.txt?release=${EXPECTED_SHA%????????????????????????????}"
+          short_sha="$(printf '%s' "$EXPECTED_SHA" | cut -c1-12)"
+          endpoint="https://veripsa.com/build-revision.txt?release=$short_sha"
           latest="(not reached)"
           attempt=1
           while [ "$attempt" -le 24 ]; do
@@ -30,7 +31,7 @@ jobs:
               echo "Public site confirmed serving requested commit: $EXPECTED_SHA"
               break
             fi
-            echo "Public revision not updated yet: attempt $attempt expected ${EXPECTED_SHA%????????????????????????????} observed ${latest:-unavailable}"
+            echo "Public revision not updated yet: attempt $attempt expected $short_sha observed ${latest:-unavailable}"
             if [ "$attempt" -eq 24 ]; then
               echo "::error::Public site never served commit $EXPECTED_SHA"
               exit 1
