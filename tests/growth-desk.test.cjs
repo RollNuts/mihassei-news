@@ -19,7 +19,7 @@ function node(dataset={}){
   };
 }
 
-async function run(payload){
+async function run(payload,selectedPayload=payload){
   const stories=[
     {slug:'story-a',title:'記事A',category:'社会',published:'2026-11-05'},
     {slug:'story-b',title:'記事B',category:'暮らし',published:'2026-11-04'}
@@ -39,24 +39,40 @@ async function run(payload){
     '[data-growth-channel-search]':node(),
     '[data-growth-page-views]':node(),
     '[data-growth-week-page-views]':node(),
-    '[data-growth-week-page-views-note]':node()
+    '[data-growth-week-page-views-note]':node(),
+    '[data-growth-spike]':node(),
+    '[data-growth-today-pv]':node(),
+    '[data-growth-yesterday-pv]':node(),
+    '[data-growth-peak-hour]':node(),
+    '[data-growth-peak-pv]':node(),
+    '[data-growth-peak-sources]':node(),
+    '[data-growth-peak-top]':node()
   };
   elements['[data-growth-summary]'].hidden=true;
   elements['[data-growth-details]'].hidden=true;
+  elements['[data-growth-spike]'].hidden=true;
   root.querySelector=selector=>elements[selector]||null;
   const document={
     querySelector:selector=>selector==='[data-growth-desk]'?root:null,
     createElement:()=>node(),
     createTextNode:text=>({textContent:text})
   };
+  const requests=[];
   const context={
     document,Intl,JSON,encodeURIComponent,
-    fetch:async()=>({ok:true,json:async()=>JSON.parse(JSON.stringify(payload))}),
+    fetch:async url=>{
+      requests.push(String(url));
+      const selected=String(url).includes('&hour=');
+      return {ok:true,json:async()=>JSON.parse(JSON.stringify(
+        selected?selectedPayload:payload
+      ))};
+    },
     console
   };
   vm.runInNewContext(source,vm.createContext(context),{timeout:1500});
   await settle();
-  return {root,elements};
+  await settle();
+  return {root,elements,requests};
 }
 
 function measured(){
@@ -110,6 +126,62 @@ test('growth desk keeps browser IDs and PV as separate measured units',async()=>
   assert.equal(articleTitle(sorted[1]),'記事B','unmeasured PV sorts after measured PV');
   assert.match(e['[data-growth-advice]'].textContent,/続報候補/);
   assert.match(e['[data-growth-advice]'].textContent,/新しい現実の事実/);
+});
+
+test('growth desk explains the busiest hour with matching source mix and top articles',async()=>{
+  const payload=measured();
+  payload.today={dateJst:'2026-11-06',pageViews:175,pageViewsCoverage:'in-progress'};
+  payload.yesterday={dateJst:'2026-11-05',pageViews:96,pageViewsCoverage:'complete'};
+  payload.hourly={today:Array.from({length:24},(_,hour)=>({
+    hourJst:'2026-11-06T'+String(hour).padStart(2,'0')+':00',
+    pageViews:hour===19?80:(hour===18?12:(hour<=20?0:null)),
+    pageViewsCoverage:hour<20?'complete':(hour===20?'in-progress':'future')
+  }))};
+  const selected={
+    selectedHour:{
+      hourJst:'2026-11-06T19:00',pageViews:80,pageViewsCoverage:'complete',
+      pageViewSourcesCoverage:'complete',
+      pageViewSources:{x:60,search:5,external:5,unattributed:10}
+    },
+    topArticles:{selectedHour:[
+      {article:'story-a',pageViews:70},
+      {article:'story-b',pageViews:10}
+    ]}
+  };
+  const page=await run(payload,selected);
+  const e=page.elements;
+  assert.equal(e['[data-growth-spike]'].hidden,false);
+  assert.equal(e['[data-growth-today-pv]'].textContent,'175');
+  assert.equal(e['[data-growth-yesterday-pv]'].textContent,'96');
+  assert.equal(e['[data-growth-peak-hour]'].textContent,'19:00台');
+  assert.equal(e['[data-growth-peak-pv]'].textContent,'80');
+  assert.match(e['[data-growth-peak-sources]'].textContent,/X 60（75%）/);
+  assert.match(e['[data-growth-peak-sources]'].textContent,/検索 5/);
+  assert.match(e['[data-growth-peak-top]'].textContent,/1\. 記事A 70PV・88%/);
+  assert.match(e['[data-growth-peak-top]'].textContent,/2\. 記事B 10PV・13%/);
+  assert.equal(page.requests.length,2);
+  assert.match(page.requests[1],/hour=2026-11-06T19/);
+});
+
+test('past-hour source history stays unknown when attribution was not measured',async()=>{
+  const payload=measured();
+  payload.today={pageViews:20,pageViewsCoverage:'in-progress'};
+  payload.yesterday={pageViews:15,pageViewsCoverage:'complete'};
+  payload.hourly={today:[{
+    hourJst:'2026-11-06T18:00',pageViews:12,pageViewsCoverage:'partial'
+  }]};
+  const selected={
+    selectedHour:{
+      hourJst:'2026-11-06T18:00',pageViews:12,pageViewsCoverage:'partial',
+      pageViewSourcesCoverage:'unmeasured',pageViewSources:null
+    },
+    topArticles:{selectedHour:[{article:'story-a',pageViews:9}]}
+  };
+  const page=await run(payload,selected);
+  const e=page.elements;
+  assert.match(e['[data-growth-peak-sources]'].textContent,/計測開始前/);
+  assert.doesNotMatch(e['[data-growth-peak-sources]'].textContent,/X 0/);
+  assert.match(e['[data-growth-peak-top]'].textContent,/記事A 9PV/);
 });
 
 test('legacy API without PV stays unmeasured instead of becoming zero',async()=>{
