@@ -68,6 +68,8 @@ ROLLOUT_AT = datetime.fromisoformat("2026-11-05T20:00:00+09:00")
 PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
 TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
+X_TAG_RE = re.compile(r"\w{1,12}\Z")
+X_TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 GENERIC_X_DISCOVERY_TERMS = {
     "AI", "SNS", "アプリ", "イベント", "お金", "ニュース", "メディア",
     "仕事", "働き方", "家族", "技術", "教育", "暮らし", "文化", "旅行",
@@ -354,6 +356,48 @@ def _validate_trend(article: dict, slug: str, published: datetime) -> list[str]:
     return errors
 
 
+def _validate_x_metadata(article: dict, slug: str, published: datetime) -> list[str]:
+    """Reject explicit X terms that would be silently dropped or never published."""
+    if published < TREND_BRIDGE_ROLLOUT_AT:
+        return []
+
+    errors: list[str] = []
+    tags = article.get("x_tags", [])
+    tickers = article.get("x_tickers", [])
+    if not isinstance(tags, list):
+        return [f"{slug}: x_tags must be a list when present"]
+    if not isinstance(tickers, list):
+        return [f"{slug}: x_tickers must be a list when present"]
+    if len(tags) + len(tickers) > 2:
+        errors.append(f"{slug}: x_tags + x_tickers may contain at most 2 discovery terms")
+
+    seen: set[str] = set()
+    for tag in tags:
+        if (
+            not isinstance(tag, str)
+            or not X_TAG_RE.fullmatch(tag)
+            or not any(char.isalpha() for char in tag)
+        ):
+            errors.append(f"{slug}: invalid x_tags value {tag!r}")
+            continue
+        if tag in GENERIC_X_DISCOVERY_TERMS:
+            errors.append(f"{slug}: generic X tag '{tag}' is too broad")
+        identity = _norm(tag)
+        if identity in seen:
+            errors.append(f"{slug}: duplicate X discovery term '{tag}'")
+        seen.add(identity)
+
+    for ticker in tickers:
+        if not isinstance(ticker, str) or not X_TICKER_RE.fullmatch(ticker):
+            errors.append(f"{slug}: invalid x_tickers value {ticker!r}")
+            continue
+        identity = _norm(ticker)
+        if identity in seen:
+            errors.append(f"{slug}: duplicate X discovery term '{ticker}'")
+        seen.add(identity)
+    return errors
+
+
 def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> list[str]:
     """Require a deliberate bridge from a live trend to the satire and X discovery term."""
     if published < TREND_BRIDGE_ROLLOUT_AT:
@@ -514,6 +558,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
         errors.extend(_validate_signature(article, slug))
         errors.extend(_validate_plausibility(article, slug))
+        errors.extend(_validate_x_metadata(article, slug, published))
         signature = article.get("editorial_signature")
         if isinstance(signature, dict):
             normalized = tuple(
