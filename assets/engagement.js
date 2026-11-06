@@ -364,7 +364,7 @@
     try{
       const saved=JSON.parse(localStorage.getItem(sessionKey)||"null");
       if(saved && typeof saved==="object" &&
-         typeof saved.id==="string" && /^[a-f0-9-]{36}$/i.test(saved.id) &&
+         typeof saved.id==="string" && /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(saved.id) &&
          Number.isFinite(saved.lastSeen) && now>=saved.lastSeen &&
          now-saved.lastSeen<SESSION_TIMEOUT_MS &&
          ["x","search","external","unattributed"].includes(saved.channel)){
