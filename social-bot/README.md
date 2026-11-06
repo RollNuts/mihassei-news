@@ -46,7 +46,7 @@ Xの自動送信は記事紹介だけ。日次独自稿、シュール短文、�
 - 新着1〜18時間を優先し、続報、その次に新しい記事。成熟記事は実測PVで選ぶ。
 - 同一slug、Bufferのscheduled/sent/draft/error/needs_approval/sendingに同じ正規URLがある記事は再送しない。Git台帳だけ欠けた場合はprovider証拠から復旧し、sentAt/dueAtを優先、送信途中ならcreatedAtから元の論理枠へ帰属させる。
 - 災害・戦争・武力衝突・テロ・大量死傷事故は自動対象外。
-- `#未発生新聞`は全ての記事自動投稿に必須。加えて記事側の先頭2タグを再利用し、それ以外のX専用流行語は足さない。定型の「創作」注記は毎回付けない。
+- `#未発生新聞`は全ての記事自動投稿に必須。追加タグは最大2個まで、`x_tags`があればそれを優先し、なければ見出し・summary・`satire_tags`から実際に人が使う生活語・界隈語だけを保守的に拾う。`#アプリ`、`#SNS`、`#社会`のようなサイト分類はXの穴埋めに使わない。例は`#ポイ活`、`#タイパ`、`#推し活`、`#家族あるある`。自然な語がなければ`#未発生新聞`だけでよく、定型の「創作」注記は毎回付けない。
 - Bufferの`shareNow`受付時に同じmutationから返る`status / createdAt / sentAt / externalLink / sharedNow / shareMode`を初期provider証拠として保存し、後続監査のprovider状態、X実公開とは区別する。受付やproviderリンクだけで独立したX実公開確認と断定しない。旧scheduled記事は監査対象として残すが、新規記事紹介は通常キューへ積まない。
 - `useful-posts.json.enabled`、`experiments/config.json.experiment_publishing_enabled`、漫画の新規予約ゲートは停止状態を維持する。
 
