@@ -1,4 +1,4 @@
-"""Conservative X text budgets and hashtags from the site's published topics.
+"""Conservative X text budgets and context-aware hashtags for article sharing.
 
 ASCII counts as one unit and other code points as two. This intentionally
 overcounts some Unicode sequences; it never relies on paid long-post access.
@@ -15,34 +15,84 @@ HASHTAG_RE = re.compile(r"\w{1,12}\Z")
 X_TEXT_LIMIT = 280
 
 
-def article_hashtags(article: dict, limit: int = 2) -> list[str]:
-    """Reuse up to two safe topic labels in source order, without inventing tags.
+GENERIC_X_LABELS = {
+    "AI", "SNS", "アプリ", "イベント", "お金", "ニュース", "メディア",
+    "仕事", "働き方", "家族", "技術", "教育", "暮らし", "文化", "旅行",
+    "生活", "研究", "社会", "経済",
+}
+SLANG_MARKER_RE = re.compile(r"(?:あるある|ガチャ|コスパ|タイパ|バズ|推し|沼|炎上|界隈|疲れ|活)")
+SLANG_RULES = (
+    (("ポイ活", "ポイント"), "ポイ活"),
+    (("タイパ", "時短", "倍速"), "タイパ"),
+    (("コスパ",), "コスパ"),
+    (("推し活", "推し"), "推し活"),
+    (("転売ヤー", "転売"), "転売ヤー"),
+    (("SNS疲れ", "SNS断ち", "デジタルデトックス"), "SNS疲れ"),
+    (("サブスク",), "サブスク"),
+    (("生成AI",), "生成AI"),
+    (("ガチャ",), "ガチャ"),
+    (("炎上",), "炎上"),
+    (("バズ",), "バズ"),
+)
 
-    Invalid labels are skipped whole, never changed by removing punctuation or
-    normalizing their spelling. The published topic limit is twelve characters.
+
+def article_hashtags(article: dict, limit: int = 2) -> list[str]:
+    """Choose up to two human-used X terms, never broad site categories.
+
+    Explicit x_tags win. Otherwise derive a small set conservatively from the
+    headline/summary/satire metadata. If there is no natural slang or everyday
+    search term, return no extra hashtag rather than filling the post with
+    labels such as SNS or アプリ.
     """
     if type(limit) is not int:
         raise ValueError("Hashtag limit must be an integer")
     maximum = min(2, max(0, limit))
-    tags = article.get("tags", [])
-    if not maximum or not isinstance(tags, list):
+    if not maximum:
         return []
-    result, seen = [], set()
-    for tag in tags:
-        if not isinstance(tag, str):
-            continue
-        if (not HASHTAG_RE.fullmatch(tag)
-                or not any(char.isalpha() for char in tag)):
-            continue
-        identity = tag.casefold()
-        if identity in seen:
-            continue
-        result.append("#" + tag)
-        seen.add(identity)
-        if len(result) == maximum:
-            break
-    return result
 
+    result, seen = [], set()
+
+    def add(label) -> None:
+        if len(result) >= maximum or not isinstance(label, str):
+            return
+        if (not HASHTAG_RE.fullmatch(label)
+                or not any(char.isalpha() for char in label)
+                or label in GENERIC_X_LABELS):
+            return
+        identity = label.casefold()
+        if identity in seen:
+            return
+        result.append("#" + label)
+        seen.add(identity)
+
+    explicit = article.get("x_tags", [])
+    if isinstance(explicit, list):
+        for tag in explicit:
+            add(tag)
+        if len(result) >= maximum:
+            return result
+
+    fields = [article.get("title"), article.get("summary")]
+    for key in ("satire_tags", "tags"):
+        values = article.get(key, [])
+        if isinstance(values, list):
+            fields.extend(values)
+    searchable = "\n".join(value for value in fields if isinstance(value, str))
+
+    for needles, label in SLANG_RULES:
+        if any(needle in searchable for needle in needles):
+            add(label)
+            if len(result) >= maximum:
+                return result
+
+    satire_tags = article.get("satire_tags", [])
+    if isinstance(satire_tags, list):
+        for tag in satire_tags:
+            if isinstance(tag, str) and SLANG_MARKER_RE.search(tag):
+                add(tag)
+            if len(result) >= maximum:
+                break
+    return result
 
 def _weighted_tokens(text: str):
     """Keep generated URLs atomic so shortening cannot break a link."""
