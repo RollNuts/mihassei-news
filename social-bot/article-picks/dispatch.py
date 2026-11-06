@@ -766,6 +766,11 @@ def main() -> int:
         "slot_jst": slot.isoformat(),
         "submission_mode": "shareNow",
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
+        "copy_mode": (
+            "headline_summary"
+            if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
+            else "reader_lead"
+        ),
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
         "primary_topic": primary_topic(eligible) or None,
