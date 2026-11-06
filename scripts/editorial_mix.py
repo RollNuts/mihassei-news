@@ -87,6 +87,16 @@ TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
 TREND_SPECIFICITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T18:00:00+09:00")
 READER_INTEREST_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T00:00:00+09:00")
 READER_CLARITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T21:00:00+09:00")
+SATIRE_PRESENT_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
+VISUAL_STRATEGY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
+VISUAL_STRATEGIES = ("cpu-photo", "illustration")
+ILLUSTRATION_REASONS = (
+    "readable_text_or_ui",
+    "precise_count_or_absence",
+    "complex_relationship",
+    "comparison_layout",
+    "brand_character_safety",
+)
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
 TREND_SPECIFICITY_KEYS = ("real_detail", "unique_hook")
 READER_CLARITY_KEYS = ("who", "action", "oddity")
@@ -105,6 +115,15 @@ TREND_MAX_AGE_BY_SOURCE = {
 DUPLICATE_WINDOW = timedelta(days=7)
 
 _ws = re.compile(r"\s+")
+_PHOTO_SCENE_RE = re.compile(
+    r"\b(?:photorealistic|photo(?:graph)?|documentary[- ]style|press photo|reporting scene|"
+    r"candid photograph|editorial photograph)\b",
+    re.IGNORECASE,
+)
+_ILLUSTRATION_SCENE_RE = re.compile(
+    r"\b(?:illustration|anime|cartoon|3d render|digital painting|concept art|vector art)\b",
+    re.IGNORECASE,
+)
 
 
 def _parse_dt(value: object) -> datetime | None:
@@ -185,6 +204,32 @@ def reader_interest_counts(articles: list[dict], day_jst: str) -> Counter:
         if interest in READER_INTERESTS:
             counts[interest] += 1
     return counts
+
+
+def visual_strategy_counts(articles: list[dict], day_jst: str) -> Counter:
+    """Count the requested visual route; legacy omissions use the photo-first default."""
+    counts: Counter = Counter()
+    for article in articles:
+        if article_day(article) != day_jst:
+            continue
+        strategy = article.get("visual_strategy", "cpu-photo")
+        if strategy in VISUAL_STRATEGIES:
+            counts[strategy] += 1
+    return counts
+
+
+def visual_strategy_advice(articles: list[dict], day_jst: str) -> str:
+    """Keep illustration as an exception without turning photos into a quota."""
+    counts = visual_strategy_counts(articles, day_jst)
+    total = sum(counts.values())
+    illustrations = counts.get("illustration", 0)
+    photos = counts.get("cpu-photo", 0)
+    if total >= 4 and illustrations > photos:
+        return (
+            f"cpu-photo preferred (illustration is {illustrations}/{total}; "
+            "use illustration only when an explicit visual constraint is essential)"
+        )
+    return "free (photo-first default; illustration only for a concrete visual constraint)"
 
 
 def reader_interest_advice(articles: list[dict], day_jst: str) -> str:
@@ -388,7 +433,7 @@ def next_preferred_lane(counts: Counter) -> str | None:
     return best_lane
 
 
-def _validate_signature(article: dict, slug: str) -> list[str]:
+def _validate_signature(article: dict, slug: str, published: datetime) -> list[str]:
     errors: list[str] = []
     signature = article.get("editorial_signature")
     if not isinstance(signature, dict):
@@ -397,6 +442,55 @@ def _validate_signature(article: dict, slug: str) -> list[str]:
         value = signature.get(key)
         if not isinstance(value, str) or not 4 <= len(value.strip()) <= 220:
             errors.append(f"{slug}: editorial_signature.{key} must be 4-220 chars")
+    if published >= SATIRE_PRESENT_ROLLOUT_AT:
+        present = signature.get("present")
+        if not isinstance(present, str) or not 8 <= len(present.strip()) <= 220:
+            errors.append(
+                f"{slug}: editorial_signature.present must be 8-220 chars after "
+                "the present-reality rollout"
+            )
+    return errors
+
+
+def _validate_visual_strategy(article: dict, slug: str, published: datetime) -> list[str]:
+    """Make photo-first routing inspectable and reject contradictory scene directions."""
+    if published < VISUAL_STRATEGY_ROLLOUT_AT:
+        return []
+
+    strategy = article.get("visual_strategy", "cpu-photo")
+    if strategy not in VISUAL_STRATEGIES:
+        return [
+            f"{slug}: visual_strategy must be one of " + ", ".join(VISUAL_STRATEGIES)
+        ]
+
+    errors: list[str] = []
+    scene_prompt = article.get("scene_prompt")
+    if not isinstance(scene_prompt, str) or len(scene_prompt.strip()) < 24:
+        errors.append(f"{slug}: scene_prompt must describe a concrete visual scene")
+        scene_prompt = ""
+
+    reason = article.get("illustration_reason")
+    if strategy == "illustration":
+        if reason not in ILLUSTRATION_REASONS:
+            errors.append(
+                f"{slug}: illustration_reason required; expected one of "
+                + ", ".join(ILLUSTRATION_REASONS)
+            )
+        if scene_prompt and _PHOTO_SCENE_RE.search(scene_prompt):
+            errors.append(
+                f"{slug}: visual_strategy=illustration conflicts with a photo-directed "
+                "scene_prompt; either use cpu-photo or rewrite the scene as an illustration"
+            )
+    else:
+        if reason is not None:
+            errors.append(
+                f"{slug}: illustration_reason is only valid with visual_strategy=illustration"
+            )
+        if scene_prompt and _ILLUSTRATION_SCENE_RE.search(scene_prompt):
+            errors.append(
+                f"{slug}: visual_strategy=cpu-photo conflicts with illustration-style "
+                "scene_prompt wording"
+            )
     return errors
 
 
@@ -818,6 +912,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
     recent_payoffs: list[tuple[datetime, str, str]] = []
     recent_interests: list[tuple[datetime, str, str]] = []
     recent_characters: list[tuple[datetime, str, str]] = []
+    visual_by_day: dict[str, list[tuple[str, str]]] = {}
 
     for article in articles:
         slug = str(article.get("slug") or "unknown")
@@ -873,10 +968,15 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             else:
                 recent_payoffs.append((published, payoff, slug))
 
-        errors.extend(_validate_signature(article, slug))
+        errors.extend(_validate_signature(article, slug, published))
         errors.extend(_validate_reader_clarity(article, slug, published))
         errors.extend(_validate_plausibility(article, slug))
         errors.extend(_validate_x_metadata(article, slug, published))
+        errors.extend(_validate_visual_strategy(article, slug, published))
+        strategy = article.get("visual_strategy", "cpu-photo")
+        if strategy in VISUAL_STRATEGIES:
+            day = published.astimezone(JST).date().isoformat()
+            visual_by_day.setdefault(day, []).append((strategy, slug))
         signature = article.get("editorial_signature")
         if isinstance(signature, dict):
             normalized = tuple(
@@ -979,6 +1079,16 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             )
             break
 
+    for day, items in sorted(visual_by_day.items()):
+        if len(items) < 5:
+            continue
+        illustration_slugs = [slug for strategy, slug in items if strategy == "illustration"]
+        if len(illustration_slugs) > len(items) / 2:
+            warnings.append(
+                f"{day}: illustration is {len(illustration_slugs)}/{len(items)} tracked stories; "
+                "compare a photo-feasible scene next, without lowering article quality"
+            )
+
     recent_payoffs.sort(key=lambda item: item[0])
     if len(recent_payoffs) >= 3:
         latest_three = recent_payoffs[-3:]
@@ -1016,6 +1126,11 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         f"{interest}={interests.get(interest, 0)}"
         for interest in READER_INTERESTS
     ]
+    visuals = visual_strategy_counts(articles, day_jst)
+    visual_parts = [
+        f"{strategy}={visuals.get(strategy, 0)}"
+        for strategy in VISUAL_STRATEGIES
+    ]
     if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
         suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
     else:
@@ -1034,6 +1149,9 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         + ", ".join(interest_parts)
         + f"; interest_next={reader_interest_advice(articles, day_jst)}"
         + f"; character_next={character_advice(articles, day_jst)}"
+        + "; visuals="
+        + ", ".join(visual_parts)
+        + f"; visual_next={visual_strategy_advice(articles, day_jst)}"
     )
 
 
