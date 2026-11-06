@@ -79,9 +79,20 @@ def verify_new_images(previous: dict, current: dict, *, root: Path = ROOT) -> li
         if not isinstance(record, dict):
             failures.append(slug + ": malformed new photo record")
             continue
-        if record.get("seed") != stable_seed(article):
-            failures.append(slug + ": generation seed does not match article; "
-                            "avoid rounding large JSON integers")
+        origin = record.get("origin")
+        if origin in {"local-comfyui", "github-cpu-lcm"}:
+            if record.get("seed") != stable_seed(article):
+                failures.append(slug + ": generation seed does not match article; "
+                                "avoid rounding large JSON integers")
+        elif origin == "chatgpt-imagegen":
+            # Native ChatGPT generations have a provider generation receipt
+            # rather than the deterministic local/CPU seed. generated_scene_entry()
+            # validates that receipt, model, bytes and current article fingerprint.
+            if "seed" in record:
+                failures.append(slug + ": chatgpt-imagegen record must use its "
+                                "generation_id receipt, not a synthetic seed")
+        else:
+            failures.append(slug + ": new photo has an unsupported generation origin")
         if record.get("article_sha256") != article_fingerprint(article):
             failures.append(slug + ": image record is not for the current text and scene")
         if not usable_generated_scene(article, root=root):
