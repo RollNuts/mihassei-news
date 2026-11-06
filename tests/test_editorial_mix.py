@@ -413,6 +413,65 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
 
+    def test_new_trend_requires_a_real_detail_and_unique_hook(self):
+        item = story(
+            "specificity",
+            "trend",
+            published=datetime(2026, 11, 6, 18, 30, tzinfo=JST),
+            term="日経平均",
+        )
+        item["title"] = "日経平均急落、長期投資家が売却日を100年後へ変更"
+        item["summary"] = "前場5.27%安を見て短期変動を忘れようとした男性が、逆に値動きを毎分記録する。"
+        item["paragraphs"] = [
+            "前場5.27%安となった日、男性は売却日を100年先へ変更した。",
+            "通知を切ったあとも株価を毎分確認した。",
+        ]
+        item["source"]["topic"] = "日経平均は前場5.27%安となった。"
+        item["trend_bridge"] = {
+            "why_now": "日経平均が大きく下落し、短期の値動きへの注目が急に高まっている。",
+            "shared_behavior": "長期で構えると言うほど、直近の数字を何度も確認したくなることがある。",
+            "satire_gap": "短期変動を気にしないための長期宣言が、短期監視を増やしてしまう。",
+            "x_discovery_term": "日経平均",
+        }
+        item["x_tags"] = ["日経平均"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("real_detail" in error for error in errors))
+        self.assertTrue(any("unique_hook" in error for error in errors))
+
+        item["trend_bridge"]["real_detail"] = "前場5.27%安"
+        item["trend_bridge"]["unique_hook"] = (
+            "前場5.27%安という急な下落幅が、長期保有を宣言しながら短期監視へ走る動機になる。"
+        )
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
+    def test_trend_real_detail_must_be_public_and_source_grounded(self):
+        item = story(
+            "floating-detail",
+            "trend",
+            published=datetime(2026, 11, 6, 18, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "流行語大賞、知らない人ほど説明係が増える"
+        item["summary"] = "候補語を知っている前提が強まるほど、意味を尋ねる人が増える逆転を描く。"
+        item["paragraphs"] = ["候補語の発表後、意味を尋ねる人が増えた。"]
+        item["source"]["topic"] = "流行語大賞の候補30語が発表された。"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表で、候補語そのものへの注目が集まっている。",
+            "shared_behavior": "流行していると言われるほど、知らないことを言い出しにくくなる。",
+            "satire_gap": "流行を表彰する制度なのに、意味を説明する仕事が増えてしまう。",
+            "x_discovery_term": "流行語大賞",
+            "real_detail": "候補30語",
+            "unique_hook": "候補30語という多さが、知らない言葉を説明する側の負担を増幅させる。",
+        }
+        item["x_tags"] = ["流行語大賞"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("must appear in title, summary, or the first paragraph" in error for error in errors))
+
+        item["summary"] += " 実際の候補30語を前に、説明する側も検索し直す。"
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
