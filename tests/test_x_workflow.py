@@ -33,6 +33,7 @@ class XWorkflowTests(unittest.TestCase):
     def test_article_promotion_is_the_only_scheduled_x_sender(self):
         self.assertIn('cron: "5 0,2,4,6,8,10,12 * * *"', self.article)
         self.assertIn('cron: "25 0,2,4,6,8,10,12 * * *"', self.article)
+        self.assertIn('cron: "45 0,2,4,6,8,10,12 * * *"', self.article)
         self.assertIn('- "content/articles.json"', self.article)
         self.assertIn("run: python social-bot/article-picks/dispatch.py", self.article)
         self.assertIn("BUFFER_API_KEY:", self.article)
@@ -60,7 +61,7 @@ class XWorkflowTests(unittest.TestCase):
     def test_article_publication_push_is_only_a_fallback_trigger(self):
         # The workflow may wake on article publication, but dispatch.py owns the
         # JST 09:00-21:59 network gate so 07:30/23:30 publication pushes cannot
-        # touch Buffer. Primary and +20 minute cron checks remain independent.
+        # touch Buffer. Primary and +20/+40 minute cron checks remain independent.
         push_block = re.search(
             r"(?ms)^  push:\n(.*?)(?=^  pull_request:)",
             self.article,

@@ -17,7 +17,7 @@
 | 未発生事件簿 | 火木土19:00 | 全既刊を正史として新話だけ追記 |
 | 未来相場観測室 | 日曜19:00 | 既存予測の検証、新しい根拠のある分析 |
 | X朝 | 毎日08:00 | 本人が手動投稿する原稿。送信・予約はしない |
-| X自動投稿（記事紹介のみ） | cron 09:05〜21:05＋各枠20分後の再確認＋記事公開push 09:00〜21:59 | 新着・続報・実測PV記事から論理7枠（09:05〜21:05、2時間刻み）ごとに最大1本、記事レーンで1日最大7本。同一枠のcron/push重複は防ぐが、Actionsの遅延時刻や停止済み旧レーンの履歴を次の記事枠消費に使わない。選定記事はBuffer `shareNow`で即時送信を依頼し、通常キュー待ちにしない。`createPost`の同一成功応答からstatus・createdAt・sentAt・externalLink等の初期provider証拠を保存する。state保存だけ失敗した復旧ではsentAt/dueAtを優先し、送信途中ならcreatedAtから元の論理枠へ帰属させ、各枠約30分後に読み取り専用の送達監査で再照合する。workflow完了直後の監査ではBuffer `sending`を15分以内なら正常な送信中として扱い、15分超だけ要確認にする。`error`時はBufferの表示用messageとHTTPS supportUrlだけを保存し、rawErrorは扱わない。各論理枠は`:05`を主系、`:25`を同一枠の再確認として起動し、どちらか一方のcronが欠落・遅延しても次枠まで待たない。既存のslot/slug/provider重複防止と同一concurrencyで二重送信を防ぐ。公開pushもcron欠落時の補助で、07:30/23:30枠はBufferへ接続しない。旧シュール・useful・漫画は自動送信しない。危機ニュースは自動除外 |
+| X自動投稿（記事紹介のみ） | cron 09:05〜21:05＋同一枠の複数再確認＋記事公開push 09:00〜21:59 | 新着・続報・実測PV記事から論理7枠（09:05〜21:05、2時間刻み）ごとに最大1本、記事レーンで1日最大7本。同一枠のcron/push重複は防ぐが、Actionsの遅延時刻や停止済み旧レーンの履歴を次の記事枠消費に使わない。選定記事はBuffer `shareNow`で即時送信を依頼し、通常キュー待ちにしない。`createPost`の同一成功応答からstatus・createdAt・sentAt・externalLink等の初期provider証拠を保存する。state保存だけ失敗した復旧ではsentAt/dueAtを優先し、送信途中ならcreatedAtから元の論理枠へ帰属させ、各枠約30分後に読み取り専用の送達監査で再照合する。workflow完了直後の監査ではBuffer `sending`を15分以内なら正常な送信中として扱い、15分超だけ要確認にする。`error`時はBufferの表示用messageとHTTPS supportUrlだけを保存し、rawErrorは扱わない。各論理枠は主チェックに加えて同一枠内で複数回再確認し、定時cronが一部欠落・遅延しても次枠まで待たない。詳細時刻はsocial-bot/README.mdとworkflowを正本とする。既存のslot/slug/provider重複防止と同一concurrencyで二重送信を防ぐ。公開pushもcron欠落時の補助で、07:30/23:30枠はBufferへ接続しない。旧シュール・useful・漫画は自動送信しない。危機ニュースは自動除外 |
 | X夜 | 毎日21:30 | 実配信・反応の読み取りと翌日への編集メモ。日曜は週次比較も実施 |
 
 | 内容 | 正本 |
