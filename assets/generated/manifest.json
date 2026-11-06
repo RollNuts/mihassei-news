@@ -50,16 +50,6 @@
       "seed": 8539460300984130488,
       "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
     },
-    "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
-      "bytes": 93846,
-      "generated_at": "2026-11-04T06:42:17.138029+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 9164180507365929936,
-      "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
-    },
     "black-friday-preparty-budget-gone": {
       "article_sha256": "f0aa523e3caacb88eb9483e4c1cd14f6347d209aa451b64c4c67931b7bbe76ab",
       "bytes": 117814,
@@ -69,6 +59,16 @@
       "origin": "chatgpt-imagegen",
       "prompt_version": 3,
       "sha256": "501922b1be959f82eb167afb88819ee3c5f5ebe27f0aff73910bdf3bdccd5866"
+    },
+    "chance-meeting-cafe-reservation-full": {
+      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+      "bytes": 93846,
+      "generated_at": "2026-11-04T06:42:17.138029+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 2,
+      "seed": 9164180507365929936,
+      "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
@@ -404,6 +404,16 @@
       "seed": 6902181079209608273,
       "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
     },
+    "tori-no-ichi-kumade-blocks-store-entrance": {
+      "article_sha256": "b209097c16e4ac6e56adf5d4704f4925653f60084285071768bb7e64d93315f2",
+      "bytes": 130927,
+      "generated_at": "2026-11-06T22:49:09.075303+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 3,
+      "seed": 5158965642783508988,
+      "sha256": "b38bf71626698047d779d682f38c5110fc0be6e21cfb6d54a299374553e0a34e"
+    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "bytes": 98358,
@@ -438,16 +448,6 @@
     }
   },
   "rejected": {
-    "office-face-to-face-day-video-call-echo": {
-      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
-      "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
-      "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
-    },
-    "sns-quit-support-site-hundred-day-login-award": {
-      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-      "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
-      "rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
-    },
     "ai-chooses-a-managers": {
       "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
@@ -496,6 +496,11 @@
       "rejected_candidate_sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41779864379"
     },
+    "office-face-to-face-day-video-call-echo": {
+      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
+      "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+    },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
@@ -511,6 +516,11 @@
       "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
       "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+    },
+    "sns-quit-support-site-hundred-day-login-award": {
+      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
+      "rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
