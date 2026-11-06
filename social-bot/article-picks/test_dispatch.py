@@ -208,6 +208,7 @@ class ArticlePickTests(unittest.TestCase):
         a = article("story-a", title="家計簿の利息を銀行員に見せた夫婦")
         msg = picks.publication_text(a)
         self.assertTrue(msg.startswith("【未発生新聞】"))
+        self.assertIn("#未発生新聞", msg)
         for label in ("創作", "架空", "フィクション"):
             self.assertNotIn(label, msg)
         self.assertIn("家計簿", msg)
@@ -225,14 +226,16 @@ class ArticlePickTests(unittest.TestCase):
         tagged = article("story-tags", title="タグを共通語彙として使う記事")
         tagged["tags"] = ["AI", "働き方", "3つ目"]
         tagged_msg = picks.publication_text(tagged)
-        self.assertIn("\n\n#AI #働き方\n\n", tagged_msg)
+        self.assertIn("\n\n#未発生新聞 #AI #働き方\n\n", tagged_msg)
         self.assertNotIn("#3つ目", tagged_msg)
         self.assertEqual(picks.article_hashtags(tagged), ["#AI", "#働き方"])
         tagged["tags"] = ["AI", "AI", "bad tag", "#bad", 3]
         self.assertEqual(picks.article_hashtags(tagged), ["#AI"])
         followup = article("followup")
         followup["followup_of"] = "previous-story"
-        self.assertTrue(picks.publication_text(followup).startswith("【続報｜未発生新聞】"))
+        followup_msg = picks.publication_text(followup)
+        self.assertTrue(followup_msg.startswith("【続報｜未発生新聞】"))
+        self.assertIn("#未発生新聞", followup_msg)
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
 
@@ -242,7 +245,7 @@ class ArticlePickTests(unittest.TestCase):
         a["tags"] = ["タイパ", "ドラマ"]
         msg = picks.publication_text(a)
         self.assertIn("時間を節約したはずが", msg)
-        self.assertIn("#タイパ #ドラマ", msg)
+        self.assertIn("#未発生新聞 #タイパ #ドラマ", msg)
         self.assertIn("utm_campaign=article_auto", msg)
         self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
@@ -251,7 +254,7 @@ class ArticlePickTests(unittest.TestCase):
         a["summary"] = "要約" * 200
         a["tags"] = ["働き方", "メディア"]
         msg = picks.publication_text(a)
-        self.assertIn("#働き方 #メディア", msg)
+        self.assertIn("#未発生新聞 #働き方 #メディア", msg)
         self.assertTrue(msg.endswith(
             "https://veripsa.com/articles/story-summary-budget/"
             + picks.TRACKING_QUERY
@@ -263,7 +266,7 @@ class ArticlePickTests(unittest.TestCase):
         tagged["tags"] = ["長" * 12, "別" * 12, "AI"]
         msg = picks.publication_text(tagged)
         self.assertIn("…", msg)
-        self.assertIn("#" + "長" * 12 + " #" + "別" * 12, msg)
+        self.assertIn("#未発生新聞 #" + "長" * 12 + " #" + "別" * 12, msg)
         self.assertNotIn("#AI", msg)
         self.assertTrue(msg.endswith(
             "https://veripsa.com/articles/" + tagged["slug"] + "/"
@@ -277,7 +280,8 @@ class ArticlePickTests(unittest.TestCase):
         for item in articles:
             with self.subTest(slug=item["slug"]):
                 msg = picks.publication_text(item)
-                self.assertIn("\n\n" + " ".join("#" + tag for tag in item["tags"][:2]) + "\n\n", msg)
+                expected_tags = " ".join(["#未発生新聞"] + ["#" + tag for tag in item["tags"][:2]])
+                self.assertIn("\n\n" + expected_tags + "\n\n", msg)
                 self.assertLessEqual(picks.x_weighted_length(msg), picks.X_TEXT_LIMIT)
 
     def test_rank_uses_recent_pv_then_today_then_publication_time(self):

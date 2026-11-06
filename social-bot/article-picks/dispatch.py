@@ -32,6 +32,7 @@ ARTICLE_URL = re.compile(
     r"https?://(?:www\.)?veripsa\.com/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
 )
 TEXT_PREFIX = "【未発生新聞】"
+BRAND_HASHTAG = "#未発生新聞"
 TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
 METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
@@ -341,7 +342,7 @@ def publication_text(article: dict) -> str:
     if len(tidy) > 68:
         tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/" + TRACKING_QUERY
-    hashtags = " ".join(article_hashtags(article))
+    hashtags = " ".join([BRAND_HASHTAG, *article_hashtags(article)])
     prefix = "【続報｜未発生新聞】" if article.get("followup_of") else TEXT_PREFIX
     suffix = ("\n\n" + hashtags if hashtags else "") + "\n\n" + url
     rendered = prefix + "\n" + tidy
