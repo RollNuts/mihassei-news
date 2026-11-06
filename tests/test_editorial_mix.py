@@ -251,7 +251,7 @@ class EditorialMixTests(unittest.TestCase):
             published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
             term="流行語大賞",
         )
-        item["title"] = "流行語を知らない人ほど受賞語の説明係に選ばれる"
+        item["title"] = "流行語大賞、知らない人ほど受賞語の説明係に選ばれる"
         item["summary"] = "知っている人向けの表彰なのに、知らない人ほど説明を求められる逆転をニュース化する。"
         errors, _ = validate_articles([item])
         self.assertTrue(any("trend_bridge" in error for error in errors))
@@ -318,7 +318,7 @@ class EditorialMixTests(unittest.TestCase):
             published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
             term="流行語大賞",
         )
-        item["title"] = "知らない言葉ほど説明係が増える表彰式"
+        item["title"] = "流行語大賞、知らない言葉ほど説明係が増える表彰式"
         item["summary"] = "候補語を知っている前提が強まるほど、意味を尋ねる人が増える逆転を描く記事。"
         item["trend_bridge"] = {
             "why_now": "流行語大賞の候補発表があり、候補語そのものへの注目が集まっている。",
@@ -329,6 +329,26 @@ class EditorialMixTests(unittest.TestCase):
         item["x_tags"] = ["流行語大賞"]
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
+
+    def test_natural_trend_term_must_reach_title_or_summary(self):
+        item = story(
+            "metadata-only-trend",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "知らない言葉ほど説明係が増える表彰式"
+        item["summary"] = "候補語を知っている前提が強まるほど、意味を尋ねる人が増える逆転を描く記事。"
+        item["source"]["topic"] = "流行語大賞の候補発表"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表があり、候補語そのものへの注目が集まっている。",
+            "shared_behavior": "流行していると言われると、知らないことを言い出しにくくなる。",
+            "satire_gap": "流行を示す制度なのに、受賞後ほど意味を確認する人が増える。",
+            "x_discovery_term": "流行語大賞",
+        }
+        item["x_tags"] = ["流行語大賞"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("must appear in the title or summary" in error for error in errors))
 
     def test_new_articles_reject_broad_invalid_or_unpublished_x_terms(self):
         item = story(
