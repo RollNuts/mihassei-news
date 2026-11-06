@@ -767,12 +767,149 @@ class ArticlePickTests(unittest.TestCase):
         offer = picks.rank([article("story-a")], {"story-a": stats()}, old, set(), CONFIG)
         self.assertEqual(offer, [])
 
+    def test_real_buffer_sent_time_blocks_short_gaps_without_spending_a_slot(self):
+        fresh = article("fresh-after-delay", age_hours=4)
+        for minutes in (115, 92):
+            with self.subTest(minutes=minutes):
+                prior = {
+                    "id": "other-x-post",
+                    "status": "sent",
+                    "text": "以前のX投稿",
+                    "sentAt": (NOW - timedelta(minutes=minutes)).isoformat(),
+                }
+                state = ledger()
+                self.assertEqual(
+                    picks.buffer_delivery_spacing_hold([prior], state, NOW, 2),
+                    "recent_buffer_sent",
+                )
+                item, _, _ = picks.decide(
+                    [fresh], {}, state, [prior], CONFIG, NOW
+                )
+                self.assertIsNone(item)
+                self.assertEqual(picks.promotions_today(state, NOW), 0)
+        exactly_two_hours = [{
+            "id": "earlier", "status": "sent", "text": "過去の投稿",
+            "sentAt": (NOW - timedelta(hours=2)).isoformat(),
+        }]
+        self.assertIsNone(
+            picks.buffer_delivery_spacing_hold(exactly_two_hours, ledger(), NOW, 2)
+        )
+        selected, _, _ = picks.decide(
+            [fresh], {}, ledger(), exactly_two_hours, CONFIG, NOW
+        )
+        self.assertEqual(selected["slug"], fresh["slug"])
+
+    def test_near_scheduled_and_unsettled_buffer_posts_prevent_collisions(self):
+        cases = (
+            ({"status": "scheduled", "dueAt": (NOW + timedelta(minutes=90)).isoformat()},
+             "buffer_schedule_near_or_overdue"),
+            ({"status": "scheduled", "dueAt": (NOW - timedelta(hours=4)).isoformat()},
+             "buffer_schedule_near_or_overdue"),
+            ({"status": "scheduled"}, "unverified_buffer_schedule"),
+            ({"status": "sent"}, "unverified_buffer_sent_time"),
+            ({"status": "sent", "sentAt": "invalid"}, "unverified_buffer_sent_time"),
+            ({"status": "sending"}, "buffer_send_in_progress"),
+        )
+        for remote, reason in cases:
+            with self.subTest(remote=remote):
+                remote = {"id": "other-x-post", "text": "過去の投稿", **remote}
+                self.assertEqual(
+                    picks.buffer_delivery_spacing_hold([remote], ledger(), NOW, 2),
+                    reason,
+                )
+                selected, _, _ = picks.decide(
+                    [article("unrelated-fresh", age_hours=4)],
+                    {}, ledger(), [remote], CONFIG, NOW,
+                )
+                self.assertIsNone(selected)
+        future_schedule = [{
+            "id": "other-queue", "status": "scheduled",
+            "dueAt": (NOW + timedelta(hours=4)).isoformat(),
+        }]
+        self.assertIsNone(
+            picks.buffer_delivery_spacing_hold(future_schedule, ledger(), NOW, 2)
+        )
+
+    def test_saved_share_now_receipts_still_protect_when_provider_window_omits_them(self):
+        sent = {
+            "buffer_id": "article-prev", "queued_at_utc": (NOW - timedelta(hours=3)).isoformat(),
+            "slot_jst": "2026-11-05T09:05:00+09:00",
+            "submission_mode": "shareNow",
+            "buffer_sent_at_at_accept": (NOW - timedelta(minutes=90)).isoformat(),
+        }
+        self.assertEqual(
+            picks.buffer_delivery_spacing_hold([], ledger(previous=sent), NOW, 2),
+            "recent_verified_article_sent",
+        )
+        sent["buffer_sent_at_at_accept"] = (NOW - timedelta(hours=2)).isoformat()
+        self.assertIsNone(
+            picks.buffer_delivery_spacing_hold([], ledger(previous=sent), NOW, 2)
+        )
+        sent["buffer_sent_at_at_accept"] = None
+        sent["queued_at_utc"] = (NOW - timedelta(minutes=40)).isoformat()
+        self.assertEqual(
+            picks.buffer_delivery_spacing_hold([], ledger(previous=sent), NOW, 2),
+            "recent_or_unverified_article_submission",
+        )
+        # An absent provider sentAt can use a matching immutable sent receipt.
+        sent["queued_at_utc"] = (NOW - timedelta(hours=3)).isoformat()
+        sent["buffer_sent_at_at_accept"] = (NOW - timedelta(minutes=80)).isoformat()
+        self.assertEqual(
+            picks.buffer_delivery_spacing_hold(
+                [{"id": "article-prev", "status": "sent", "text": "記事紹介"}],
+                ledger(previous=sent), NOW, 2,
+            ), "recent_verified_article_sent"
+        )
+
+    def test_send_spacing_works_across_jst_midnight_and_never_counts_legacy_as_quota(self):
+        now = datetime.fromisoformat("2026-11-06T00:30:00+09:00")
+        old = {"id": "manual", "status": "sent",
+               "sentAt": "2026-11-05T23:00:00+09:00"}
+        self.assertEqual(
+            picks.buffer_delivery_spacing_hold([old], ledger(), now, 2),
+            "recent_buffer_sent",
+        )
+        self.assertEqual(picks.promotions_today(ledger(), now), 0)
+
+    def test_active_spacing_hold_skips_pv_and_buffer_post_but_persists_recovery(self):
+        fresh = article("not-sent-yet", age_hours=4)
+        mature = article("mature-available", age_hours=36)
+        documents = {
+            HERE / "config.json": CONFIG,
+            HERE / "state.json": ledger(),
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(json.dumps([fresh, mature]))
+            remote = [{
+                "id": "external-post", "status": "sent",
+                "text": "他のX投稿",
+                "sentAt": (NOW - timedelta(minutes=92)).isoformat(),
+            }]
+            with patch.object(picks, "ROOT", root), \
+                 patch.object(picks, "read_json", side_effect=lambda p: copy.deepcopy(documents[p])), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(picks, "read_page_view_metrics") as metrics, \
+                 patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
+                 patch.object(picks, "list_existing", return_value=remote), \
+                 patch.object(picks, "save_state") as save, \
+                 patch.object(picks, "queue_one") as queue:
+                clock.now.return_value = NOW
+                self.assertEqual(picks.main(), 0)
+                metrics.assert_not_called()
+                queue.assert_not_called()
+                save.assert_called()
+
     def test_logical_two_hour_slots_survive_action_delay_and_block_same_slot(self):
         a = article("new-story", age_hours=36)
         counts = {"new-story": stats()}
         remote = [
-            {"id": "short-1", "status": "scheduled", "text": "昔話の短文"},
-            {"id": "short-2", "status": "scheduled", "text": "別の短文"},
+            {"id": "short-1", "status": "scheduled", "text": "昔話の短文",
+             "dueAt": "2026-11-05T18:00:00+09:00"},
+            {"id": "short-2", "status": "scheduled", "text": "別の短文",
+             "dueAt": "2026-11-05T20:00:00+09:00"},
         ]
         late_11 = datetime.fromisoformat("2026-11-05T11:36:00+09:00")
         self.assertEqual(
@@ -863,7 +1000,7 @@ class ArticlePickTests(unittest.TestCase):
         fresh = article("fresh-cap", age_hours=4)
         seven_other_posts = [
             {"id": f"legacy-{i}", "status": "sent", "text": f"retired post {i}",
-             "sentAt": f"2026-11-05T{9 + i:02d}:00:00+09:00"}
+             "sentAt": f"2026-11-04T{9 + i:02d}:00:00+09:00"}
             for i in range(7)
         ]
         selected, _, _ = picks.decide(
@@ -895,7 +1032,8 @@ class ArticlePickTests(unittest.TestCase):
                 "two": {"buffer_id": "a2", "queued_at_utc": (NOW - timedelta(hours=7)).isoformat()},
             }
         )
-        remote = [{"id": "article-existing", "status": "scheduled", "text": "記事予約"}]
+        remote = [{"id": "article-existing", "status": "scheduled",
+                   "text": "記事予約", "dueAt": "2026-11-05T18:00:00+09:00"}]
         item, _, _ = picks.decide([fresh], {}, state, remote, CONFIG, NOW)
         self.assertEqual(item["slug"], "fresh")
 
@@ -962,7 +1100,8 @@ class ArticlePickTests(unittest.TestCase):
     def test_queue_fullness_does_not_block_share_now_article_lane(self):
         candidate = article("measured-story", age_hours=36)
         remote = [{"id":f"creative-{i}", "status":"scheduled",
-                   "text":f"異なる短文の予約です{i}"} for i in range(10)]
+                   "text":f"異なる短文の予約です{i}",
+                   "dueAt":"2026-11-05T18:00:00+09:00"} for i in range(10)]
         selected, evidence, count = picks.decide(
             [candidate], {"measured-story":stats()}, ledger(), remote,
             CONFIG, NOW)
