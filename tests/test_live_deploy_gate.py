@@ -254,6 +254,20 @@ class PVAPIDeploymentTests(unittest.TestCase):
                 "startedAtUtc": "2026-11-04T00:00:00.000Z",
                 "attribution": "session-acquisition-channel",
             },
+            "pageViewKinds": {
+                "home": 10, "article": 15, "archive": 3, "serial": 1, "other": 1,
+            },
+            "pageViewKindsToday": {
+                "home": 10, "article": 15, "archive": 3, "serial": 1, "other": 1,
+            },
+            "pageViewKindsCurrentHour": {
+                "home": 1, "article": 2, "archive": 1, "serial": 0, "other": 0,
+            },
+            "pageViewKindTracking": {
+                "unit": "page-view", "timezone": "Asia/Tokyo",
+                "startedAtUtc": "2026-11-04T00:00:00.000Z",
+                "categories": ["home", "article", "archive", "serial", "other"],
+            },
             "today": {"dateJst": "2026-11-04", "visitors": 12, "articleReads": 8,
                       "pageViews": 32, "pageViewsCoverage": "in-progress",
                       "sessions": 12, "sessionsCoverage": "in-progress"},
@@ -364,6 +378,8 @@ class PVAPIDeploymentTests(unittest.TestCase):
         self.assertIn("today=32 / yesterday=None / last7Days=32", output)
         self.assertIn("VERIFIED diagnostics v2", output)
         self.assertIn("'article': 'apology-before-incident'", output)
+        self.assertIn("'home': 10", output)
+        self.assertIn("'article': 15", output)
         self.assertNotIn("900", output)
         self.assertNotIn("500", output)
         workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
@@ -380,6 +396,12 @@ class PVAPIDeploymentTests(unittest.TestCase):
         payload = self.payload("apology-before-incident")
         del payload["hourly"]
         with self.assertRaisesRegex(SystemExit, "hourly PV diagnostics missing"):
+            self.run_health_workflow(payload)
+
+    def test_scheduled_health_workflow_requires_page_kind_breakdown(self):
+        payload = self.payload("apology-before-incident")
+        del payload["pageViewKindTracking"]
+        with self.assertRaisesRegex(SystemExit, "page-kind PV metadata missing"):
             self.run_health_workflow(payload)
 
 if __name__=="__main__":
