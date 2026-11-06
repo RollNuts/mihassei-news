@@ -18,8 +18,9 @@ on:
     # Primary checks for the seven logical JST slots.
     - cron: "5 0,2,4,6,8,10,12 * * *"
     # GitHub scheduled runs can be delayed or skipped. Recheck the same logical
-    # slot 20 minutes later; dispatch.py dedupes by slot/slug/provider evidence.
+    # slot 20 and 40 minutes later; dispatch.py dedupes by slot/slug/provider evidence.
     - cron: "25 0,2,4,6,8,10,12 * * *"
+    - cron: "45 0,2,4,6,8,10,12 * * *"
 
 permissions:
   contents: write
