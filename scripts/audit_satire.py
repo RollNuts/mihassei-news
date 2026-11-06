@@ -14,7 +14,10 @@ from datetime import datetime, timezone
 from collections import Counter
 from pathlib import Path
 
-from editorial_mix import EDITORIAL_PAYOFFS, PAYOFF_LABELS
+try:
+    from scripts.editorial_mix import EDITORIAL_PAYOFFS, PAYOFF_LABELS
+except ModuleNotFoundError:  # Direct execution: python3 scripts/audit_satire.py
+    from editorial_mix import EDITORIAL_PAYOFFS, PAYOFF_LABELS
 
 ROOT = Path(__file__).resolve().parents[1]
 RECENT_LIMIT = 20
