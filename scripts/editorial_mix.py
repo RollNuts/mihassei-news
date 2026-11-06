@@ -66,6 +66,13 @@ TREND_SOURCE_KINDS = {
 }
 ROLLOUT_AT = datetime.fromisoformat("2026-11-05T20:00:00+09:00")
 PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
+TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
+TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
+GENERIC_X_DISCOVERY_TERMS = {
+    "AI", "SNS", "アプリ", "イベント", "お金", "ニュース", "メディア",
+    "仕事", "働き方", "家族", "技術", "教育", "暮らし", "文化", "旅行",
+    "生活", "研究", "社会", "経済",
+}
 TREND_MAX_AGE = timedelta(hours=30)
 DUPLICATE_WINDOW = timedelta(days=7)
 
@@ -347,6 +354,62 @@ def _validate_trend(article: dict, slug: str, published: datetime) -> list[str]:
     return errors
 
 
+def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> list[str]:
+    """Require a deliberate bridge from a live trend to the satire and X discovery term."""
+    if published < TREND_BRIDGE_ROLLOUT_AT:
+        return []
+
+    bridge = article.get("trend_bridge")
+    if not isinstance(bridge, dict):
+        return [f"{slug}: trend lane requires trend_bridge after quality rollout"]
+
+    errors: list[str] = []
+    for key in ("why_now", "shared_behavior", "satire_gap"):
+        value = bridge.get(key)
+        if not isinstance(value, str) or not 8 <= len(value.strip()) <= 240:
+            errors.append(f"{slug}: trend_bridge.{key} must be 8-240 chars")
+
+    discovery = bridge.get("x_discovery_term")
+    if not isinstance(discovery, str) or not 2 <= len(discovery.strip()) <= 40:
+        errors.append(f"{slug}: trend_bridge.x_discovery_term must be 2-40 chars")
+        discovery = ""
+    else:
+        discovery = discovery.strip()
+        if discovery.startswith(("#", "$")) or any(char.isspace() for char in discovery):
+            errors.append(
+                f"{slug}: trend_bridge.x_discovery_term must be a bare hashtag/cashtag term"
+            )
+        if discovery in GENERIC_X_DISCOVERY_TERMS:
+            errors.append(
+                f"{slug}: generic X discovery term '{discovery}' is too broad for trend promotion"
+            )
+
+    x_tags = article.get("x_tags")
+    tag_terms = {
+        item.strip()
+        for item in x_tags
+        if isinstance(item, str) and item.strip()
+    } if isinstance(x_tags, list) else set()
+    x_tickers = article.get("x_tickers")
+    ticker_terms = {
+        item.strip().upper()
+        for item in x_tickers
+        if isinstance(item, str) and item.strip()
+    } if isinstance(x_tickers, list) else set()
+    if discovery and discovery not in tag_terms and discovery.upper() not in ticker_terms:
+        errors.append(
+            f"{slug}: x_discovery_term must be explicitly present in x_tags or x_tickers"
+        )
+
+    title = article.get("title")
+    summary = article.get("summary")
+    if not isinstance(title, str) or len(title.strip()) < 16:
+        errors.append(f"{slug}: trend title must be self-contained and at least 16 chars")
+    if not isinstance(summary, str) or len(summary.strip()) < 36:
+        errors.append(f"{slug}: trend summary must explain the contradiction in at least 36 chars")
+    return errors
+
+
 def _followup_ancestors(slug: str, by_slug: dict[str, dict]) -> set[str]:
     """Return existing parent-chain slugs without trusting malformed/cyclic links."""
     ancestors: set[str] = set()
@@ -418,6 +481,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
         if lane == "trend":
             errors.extend(_validate_trend(article, slug, published))
+            errors.extend(_validate_trend_bridge(article, slug, published))
             trend = article.get("trend_observation")
             if isinstance(trend, dict):
                 term = _norm(trend.get("term"))
