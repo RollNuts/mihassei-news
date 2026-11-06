@@ -119,6 +119,23 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118534390439465261",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow"
+    },
+    "christmas-done-for-you-family-decorates-boxes": {
+      "buffer_id": "6aed597f86fe9b8379721ae2",
+      "queued_at_utc": "2026-11-06T04:37:19.029759+00:00",
+      "slot_jst": "2026-11-06T13:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "a2462abc12e1a3f0c79629b13b8c8b365deb7b392b35747d608f121f55bdf853",
+      "published_at": "2026-11-06T11:38:31+09:00",
+      "primary_topic": "tag:家族",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-06T04:37:19.863Z",
+      "buffer_due_at_at_accept": "2026-11-06T04:37:19.899Z",
+      "buffer_sent_at_at_accept": "2026-11-06T04:37:20.318Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118563357741465914",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
