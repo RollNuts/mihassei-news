@@ -91,6 +91,16 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
         # Model weights run inside a GitHub-hosted CPU job, without image APIs.
         if model != "SimianLuo/LCM_Dreamshaper_v7":
             return None
+    elif origin == "chatgpt-imagegen":
+        # A manually imported ChatGPT-native generation, not a CPU/Mac result.
+        # Require the exact source marker and generation receipt, plus the
+        # independent fingerprint/hash and human-review gates below.
+        generation_id = record.get("generation_id")
+        if (model != "ChatGPT ImageGen"
+                or not isinstance(generation_id, str)
+                or not re.fullmatch(
+                    r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}", generation_id)):
+            return None
     else:
         return None
     if (record.get("article_sha256") != article_fingerprint(article)

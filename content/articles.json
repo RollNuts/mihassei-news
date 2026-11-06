@@ -87,8 +87,8 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000559.000046400.html",
       "topic": "2026年のブラックフライデーは11月27日。くふう トクバイは11月6日から19日まで「ブラックフライデー前夜祭キャンペーン」を開始し、生活者2,283人の調査ではブラックフライデーの認知率が96.6％、買い物意向が55.4％だった。黒金商店街、篠原さん、前夜祭で予算を使い切る行動、当日の休憩スペースは本紙独自の創作であり、同社の実例ではない。"
     },
-    "scene_prompt": "A grounded editorial illustration of an ordinary Japanese shopping street in early evening: one shopper sits on a bench surrounded by several practical shopping bags and household-item boxes, holding an empty wallet while a cheerful store clerk gestures toward more sale decorations farther down the street. A small crossed-off paper shopping list is visible but has no readable text. Everyday proportions, dry deadpan mood, no logos, no legible signs.",
-    "visual_strategy": "illustration",
+    "scene_prompt": "Candid documentary-style photo at the entrance to a busy Japanese shopping arcade: one exhausted shopper stands beside full shopping bags and household-electronics boxes, showing his completely empty wallet. A smiling shop employee points toward a prominent Black Friday main-sale banner just beyond the storefront, while another sign marks the early sale. Natural shop lighting, believable skin, fabric, and cardboard textures; no real brand logos or identifiable public figures.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "セール",
       "買い物"

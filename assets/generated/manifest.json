@@ -60,6 +60,16 @@
       "seed": 9164180507365929936,
       "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
+    "black-friday-preparty-budget-gone": {
+      "article_sha256": "f0aa523e3caacb88eb9483e4c1cd14f6347d209aa451b64c4c67931b7bbe76ab",
+      "bytes": 117814,
+      "generated_at": "2026-11-06T11:42:56.033Z",
+      "generation_id": "4c0beb9e-915d-47bc-8905-da3cc704457a",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "501922b1be959f82eb167afb88819ee3c5f5ebe27f0aff73910bdf3bdccd5866"
+    },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
       "bytes": 88127,

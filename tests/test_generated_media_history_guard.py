@@ -85,6 +85,44 @@ class MediaHistoryGuardTests(unittest.TestCase):
             self.assertEqual(new["images"][ARTICLE["slug"]]["seed"],
                              stable_seed(ARTICLE))
 
+    def test_native_chatgpt_image_uses_generation_receipt_not_local_seed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(
+                json.dumps([ARTICLE], ensure_ascii=False), encoding="utf-8")
+            generated = root / "assets/generated"
+            generated.mkdir(parents=True)
+            photo = JPEG
+            (generated / (ARTICLE["slug"] + ".jpg")).write_bytes(photo)
+            import hashlib
+            record = {
+                "origin": "chatgpt-imagegen",
+                "model": "ChatGPT ImageGen",
+                "generation_id": "4c0beb9e-915d-47bc-8905-da3cc704457a",
+                "article_sha256": article_fingerprint(ARTICLE),
+                "sha256": hashlib.sha256(photo).hexdigest(),
+                "bytes": len(photo),
+                "prompt_version": 3,
+            }
+            current = {"version": 1, "images": {ARTICLE["slug"]: record}, "rejected": {}}
+            (generated / "manifest.json").write_text(
+                json.dumps(current), encoding="utf-8")
+            self.assertEqual(
+                verify_new_images({"version": 1, "images": {}, "rejected": {}},
+                                  current, root=root),
+                [],
+            )
+            with_seed = copy.deepcopy(current)
+            with_seed["images"][ARTICLE["slug"]]["seed"] = stable_seed(ARTICLE)
+            (generated / "manifest.json").write_text(
+                json.dumps(with_seed), encoding="utf-8")
+            self.assertTrue(any(
+                "synthetic seed" in err for err in verify_new_images(
+                    {"version": 1, "images": {}, "rejected": {}},
+                    with_seed, root=root)
+            ))
+
     def test_invalid_manifest_fails_closed(self):
         with self.assertRaises(ValueError):
             images({"version": 1, "images": []})

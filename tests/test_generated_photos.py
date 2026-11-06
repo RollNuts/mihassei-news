@@ -219,6 +219,48 @@ class LocalComedySceneTests(unittest.TestCase):
             self.assertFalse(visually_held_scene(altered, root=root))
             self.assertFalse(usable_generated_scene(altered, root=root))
 
+
+    def test_native_chatgpt_generated_photo_requires_original_receipt_and_review(self):
+        """Imported photo still needs exact model, bytes and an explicit human acceptance."""
+        a = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            photo = fake_jpeg()
+            base = root / "assets/generated"
+            base.mkdir(parents=True)
+            (base / (a["slug"] + ".jpg")).write_bytes(photo)
+            record = {
+                "origin": "chatgpt-imagegen",
+                "model": "ChatGPT ImageGen",
+                "generation_id": "4c0beb9e-915d-47bc-8905-da3cc704457a",
+                "article_sha256": article_fingerprint(a),
+                "sha256": hashlib.sha256(photo).hexdigest(),
+                "bytes": len(photo),
+                "prompt_version": 3,
+            }
+            manifest = base / "manifest.json"
+            def save_rec(obj):
+                manifest.write_text(json.dumps({
+                    "version": 1, "images": {a["slug"]: obj}, "rejected": {}
+                }), encoding="utf-8")
+            save_rec(record)
+            self.assertTrue(usable_generated_scene(a, root=root))
+            self.assertFalse(reviewed_generated_scene(a, root=root))
+            write_review_fixture(root, a)
+            self.assertTrue(reviewed_generated_scene(a, root=root))
+            for change in (
+                {"generation_id": "no-provenance"},
+                {"model": "Unknown billed API"},
+                {"sha256": "0" * 64},
+            ):
+                with self.subTest(change=change):
+                    save_rec({**record, **change})
+                    self.assertFalse(usable_generated_scene(a, root=root))
+                    self.assertFalse(reviewed_generated_scene(a, root=root))
+            save_rec(record)
+            self.assertFalse(reviewed_generated_scene(
+                {**a, "scene_prompt": "New scene after approval"}, root=root))
+
     def test_comfyui_workflow_is_offline_and_uses_only_standard_nodes(self):
         a = fixture()
         workflow = local_scene_photos.workflow(a, "sd_xl_base_1.0.safetensors")

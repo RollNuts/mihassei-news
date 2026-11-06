@@ -43,6 +43,8 @@ JPEGの状態だけで表示を判断しない。同じレポートの `publicat
 
 不合格は `assets/generated/manifest.json` の `rejected` に記事指紋・対象JPEGのSHA・具体的な理由を記録する。同じ変更で `content/visual_reviews.json` の旧acceptedをrejectedへ更新するか削除し、後の再取込でも過去の合格が復活しないようにする。既存JPEGの生成記録、seed、記事指紋を付け替えて再承認しない。再生成は既存無料経路のみで、品質保留の再試験は明示slugのレビュー用生成として扱う。新しい画像を実際に見てから採用を判断する。
 
+ChatGPT内蔵の画像生成機能で作った写真を手動で取り込む場合は、Mac製・GitHub CPU製と出所を取り違えず、`origin: chatgpt-imagegen` と実際の生成IDを保存する。`visual_strategy` を `cpu-photo` にするのは、新規JPEGの実画像・本文・scene_promptの目視一致と現SHAの`accepted`を同じ変更で確認できた場合だけ。失敗時は本文に合う既存の専用SVGを維持する。追加の外部API契約や有料GPUを導入しない。
+
 写真が使えない場合、本文に合う専門SVGを `assets/editorial-scenes/` に用意できる。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
 
 `visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGがまだない場合だけ `illustration_strategy_without_reviewed_scene` を回収対象にする。CPUを再起動して解消しない。
