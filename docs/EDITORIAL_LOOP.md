@@ -24,7 +24,7 @@
 - `trend` の場合のみ `trend_observation`: `source_kind`、`term`、`observed_at`、`url`、`verification_urls`
 - 2026-11-06 16:00 JST以降の `trend` は `trend_bridge`: `why_now`（今なぜ話題か）／`shared_behavior`（元ネタを知らなくても分かる人間の癖）／`satire_gap`（建前と行動・結果の食い違い）／`x_discovery_term`（完成した記事を探す人がXで使う語）。18:00 JST以降はさらに `real_detail`（当日の現実に固有の短い事実・数字・発表内容）／`unique_hook`（なぜその事実だからこの風刺になるか）を必須にする。
 
-`trend_observation.observed_at` は原則30時間以内。検証URLには記事の `source.url` を必ず含める。X公開集計を使った場合も、実際の出来事は別URLで検証する。これらは内部編集メタデータであり、読者向け本文に「トレンドだから選んだ」と説明しない。**トレンド語とX発見語は別物として扱う。** `trend_observation.term` を自動でハッシュタグに昇格させず、`x_discovery_term` は記事の角度を完成させた後で選び、同じ語を `x_tags` または主題銘柄の `x_tickers` に明示する。
+`trend_observation.observed_at` は**Google Trendsなら12時間以内、X系なら6時間以内**。古い観測語を「今日の流行」として持ち越さない。検証URLには記事の `source.url` を必ず含める。X公開集計を使った場合も、実際の出来事は別URLで検証する。これらは内部編集メタデータであり、読者向け本文に「トレンドだから選んだ」と説明しない。**トレンド語とX発見語は別物として扱う。** `trend_observation.term` を自動でハッシュタグに昇格させず、`x_discovery_term` は記事の角度を完成させた後で選び、同じ語を `x_tags` または主題銘柄の `x_tickers` に明示する。
 
 ### トレンド接続ゲート（流行便乗防止）
 
