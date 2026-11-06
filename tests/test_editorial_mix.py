@@ -9,8 +9,14 @@ from scripts.editorial_mix import (
     EDITORIAL_PAYOFFS,
     EDITORIAL_TONES,
     LANE_TARGETS,
+    LIFE_READER_INTERESTS,
+    READER_INTERESTS,
+    RECURRING_CHARACTERS,
+    character_advice,
     lane_counts,
     next_preferred_lane,
+    reader_interest_advice,
+    reader_interest_counts,
     payoff_advice,
     payoff_counts,
     report_day,
@@ -32,6 +38,8 @@ def story(
     tone: str = "comic_exaggeration",
     payoff: str | None = "action",
     followup_of: str | None = None,
+    reader_interest: str | None = None,
+    recurring_character: str | None = None,
 ) -> dict:
     item = {
         "slug": slug,
@@ -51,6 +59,10 @@ def story(
         item["editorial_payoff"] = payoff
     if followup_of:
         item["followup_of"] = followup_of
+    if reader_interest is not None:
+        item["reader_interest"] = reader_interest
+    if recurring_character is not None:
+        item["recurring_character"] = recurring_character
     if tone == "plausible_future":
         item["plausibility_basis"] = {
             "present_signal": f"{slug}で現在すでに確認できる行動が増えている",
@@ -98,6 +110,62 @@ class EditorialMixTests(unittest.TestCase):
                 "wordplay",
             ),
         )
+
+    def test_reader_interests_broaden_the_slate_without_gender_labels(self):
+        self.assertEqual(
+            READER_INTERESTS,
+            (
+                "work_money_tech",
+                "beauty_wellness",
+                "relationships_social",
+                "food_travel_shopping",
+                "fandom_entertainment",
+                "family_home",
+                "general_society",
+            ),
+        )
+        self.assertEqual(len(LIFE_READER_INTERESTS), 5)
+        self.assertEqual(RECURRING_CHARACTERS, ("mina", "nono", "yuu"))
+
+    def test_reader_interest_is_required_from_next_day_rollout(self):
+        published = datetime(2026, 11, 7, 9, 30, tzinfo=JST)
+        item = story("broad-slate", "social_life", published=published)
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("reader_interest required" in error for error in errors))
+
+        item["reader_interest"] = "beauty_wellness"
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("reader_interest" in error for error in errors))
+
+    def test_reader_interest_advice_nudges_life_topics_when_work_dominates(self):
+        articles = [
+            story(
+                f"work-{i}",
+                "social_life",
+                published=BASE_TIME + timedelta(hours=i),
+                reader_interest="work_money_tech",
+            )
+            for i in range(4)
+        ]
+        counts = reader_interest_counts(articles, "2026-11-06")
+        self.assertEqual(counts["work_money_tech"], 4)
+        advice = reader_interest_advice(articles, "2026-11-06")
+        self.assertTrue(any(interest in advice for interest in LIFE_READER_INTERESTS))
+
+    def test_recurring_character_is_optional_but_rotated(self):
+        item = story(
+            "mina-episode",
+            "social_life",
+            reader_interest="food_travel_shopping",
+            recurring_character="mina",
+        )
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("recurring_character" in error for error in errors))
+        self.assertIn("standalone preferred", character_advice([item], "2026-11-06"))
+
+        item["recurring_character"] = "unknown"
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("recurring_character" in error for error in errors))
 
     def test_payoff_advice_breaks_a_two_story_run(self):
         articles = [
