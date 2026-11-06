@@ -145,16 +145,27 @@ def recent_articles(articles: list[dict]) -> list[dict]:
     )[:MAX_ARTICLES]
 
 
-def article_editorial_metadata(article: dict) -> tuple[str | None, str | None]:
-    """Preserve explicit lane/tone as observed; pre-rollout stories remain null."""
+def article_editorial_metadata(
+    article: dict,
+) -> tuple[str | None, str | None, str | None]:
+    """Preserve explicit lane/tone/payoff without backfilling older stories."""
     lane = article.get("editorial_lane")
     tone = article.get("editorial_tone")
+    payoff = article.get("editorial_payoff")
     if lane is None and tone is None:
-        return None, None
+        if payoff is not None:
+            raise ValueError(
+                "Editorial payoff cannot exist without lane/tone metadata: "
+                + article["slug"]
+            )
+        return None, None, None
     if (not isinstance(lane, str) or not lane.strip()
             or not isinstance(tone, str) or not tone.strip()):
         raise ValueError("Partial or invalid editorial lane/tone metadata: " + article["slug"])
-    return lane, tone
+    if payoff is not None and (
+            not isinstance(payoff, str) or not payoff.strip()):
+        raise ValueError("Invalid editorial payoff metadata: " + article["slug"])
+    return lane, tone, payoff
 
 
 def read_public_metrics(slugs: list[str], opener=urlopen) -> tuple[int, dict, dict | None]:
@@ -273,8 +284,12 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         for article in published_on_day
     ]
     tracked_editorial = [
-        (lane, tone) for lane, tone in editorial_pairs
+        (lane, tone, payoff) for lane, tone, payoff in editorial_pairs
         if lane is not None and tone is not None
+    ]
+    tracked_payoffs = [
+        payoff for _, _, payoff in tracked_editorial
+        if payoff is not None
     ]
     for a in recent:
         if a["slug"] not in counts:
@@ -336,14 +351,17 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
         "published_categories": dict(sorted(Counter(a["category"] for a in published_on_day).items())),
         "published_editorial_metadata_tracked": len(tracked_editorial),
         "published_editorial_lanes": dict(sorted(Counter(
-            lane for lane, _ in tracked_editorial
+            lane for lane, _, _ in tracked_editorial
         ).items())),
         "published_editorial_tones": dict(sorted(Counter(
-            tone for _, tone in tracked_editorial
+            tone for _, tone, _ in tracked_editorial
         ).items())),
+        "published_editorial_payoff_tracked": len(tracked_payoffs),
+        "published_editorial_payoffs": dict(sorted(Counter(tracked_payoffs).items())),
         "editorial_metadata_note": (
-            "editorial_lane and editorial_tone are copied from article metadata at "
-            "capture time. Pre-rollout stories remain null and are not backfilled. "
+            "editorial_lane, editorial_tone and optional editorial_payoff are copied "
+            "from article metadata at capture time. Pre-rollout stories remain null "
+            "and are not backfilled. Payoff coverage begins later than lane/tone. "
             "Counts describe published articles, not traffic or quality scores."
         ),
         "recent_articles_sampled": len(recent),
@@ -354,6 +372,7 @@ def build_snapshot(articles: list[dict], now: datetime, visitors: int, counts: d
                 "published_at": a.get("published_at"),
                 "editorial_lane": article_editorial_metadata(a)[0],
                 "editorial_tone": article_editorial_metadata(a)[1],
+                "editorial_payoff": article_editorial_metadata(a)[2],
                 **counts[a["slug"]],
             }
             for a in recent
@@ -432,18 +451,43 @@ def validate_snapshot(data: dict, day: str) -> None:
                     for key, value in counts.items())
                     or sum(counts.values()) != tracked):
                 raise ValueError("Editorial " + label + " counts are invalid")
+
+    payoff_keys = (
+        "published_editorial_payoff_tracked",
+        "published_editorial_payoffs",
+    )
+    if any(key in data for key in payoff_keys):
+        if not all(key in data for key in payoff_keys):
+            raise ValueError("Editorial payoff snapshot fields are incomplete")
+        payoff_tracked = data["published_editorial_payoff_tracked"]
+        payoff_counts = data["published_editorial_payoffs"]
+        if (not valid_count(payoff_tracked)
+                or payoff_tracked > data.get("published_editorial_metadata_tracked", 0)
+                or not isinstance(payoff_counts, dict)
+                or any(not isinstance(key, str) or not key.strip() or not valid_count(value)
+                       for key, value in payoff_counts.items())
+                or sum(payoff_counts.values()) != payoff_tracked):
+            raise ValueError("Editorial payoff counts are invalid")
     for item in data.get("recent_articles", []):
         for key in ("page_views_cumulative", "page_views_last_7_days"):
             if key in item and item[key] is not None and not valid_count(item[key]):
                 raise ValueError("Invalid per-article page views in snapshot: " + key)
-        if "editorial_lane" in item or "editorial_tone" in item:
-            lane, tone = item.get("editorial_lane"), item.get("editorial_tone")
+        if ("editorial_lane" in item or "editorial_tone" in item
+                or "editorial_payoff" in item):
+            lane = item.get("editorial_lane")
+            tone = item.get("editorial_tone")
+            payoff = item.get("editorial_payoff")
             if (lane is None) != (tone is None):
                 raise ValueError("Recent article editorial lane/tone is partial")
             if lane is not None and (
                     not isinstance(lane, str) or not lane.strip()
                     or not isinstance(tone, str) or not tone.strip()):
                 raise ValueError("Recent article editorial lane/tone is invalid")
+            if payoff is not None and (
+                    lane is None
+                    or not isinstance(payoff, str)
+                    or not payoff.strip()):
+                raise ValueError("Recent article editorial payoff is invalid")
 
 
 def main() -> None:

@@ -163,6 +163,19 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("DIALOGUE_PUNCHLINE_LOOP", labels)
         self.assertIn("最後の一言", "\n".join(next_slot_brief(articles)))
 
+    def test_repeated_payoff_metadata_prompts_rotation_without_blocking(self):
+        articles = [sample(i) for i in range(1, 7)]
+        for i, article in enumerate(articles):
+            article["category"] = ("暮らし", "社会", "経済", "技術", "エンタメ", "スポーツ")[i]
+            article["editorial_payoff"] = "dialogue" if i < 4 else "action"
+        original = copy.deepcopy(articles)
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertTrue({"PAYOFF_RUN", "PAYOFF_CLUSTER"} & labels)
+        brief = "\n".join(next_slot_brief(articles))
+        self.assertIn("最近の着地", brief)
+        self.assertIn("飽き対策", brief)
+        self.assertEqual(articles, original)
+
     def test_quotes_used_as_labels_do_not_count_as_dialogue_endings(self):
         endings = (
             "受付には「次週・運命の第7戦」の予約札が並んでいた。",

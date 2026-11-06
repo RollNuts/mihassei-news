@@ -24,6 +24,8 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("summary", prompt)
         self.assertIn("設定を減らす", prompt)
         self.assertIn("editorial_tone", prompt)
+        self.assertIn("editorial_payoff", prompt)
+        self.assertIn("payoff_next", prompt)
         self.assertIn("plausible_future", prompt)
         self.assertIn("plausibility_basis", prompt)
         self.assertIn("現実の兆候", prompt)

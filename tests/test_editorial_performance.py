@@ -19,6 +19,7 @@ def article(
     x: int | None = 1,
     continued: int | None = 1,
     readers: int | None = 5,
+    payoff: str | None = None,
 ) -> dict:
     item = {
         "slug": slug,
@@ -32,6 +33,8 @@ def article(
         item["editorial_lane"] = lane
     if tone is not None:
         item["editorial_tone"] = tone
+    if payoff is not None:
+        item["editorial_payoff"] = payoff
     return item
 
 
@@ -40,11 +43,11 @@ class EditorialPerformanceTests(unittest.TestCase):
         return {
             "measured_at_utc": "2026-11-07T00:00:00+00:00",
             "recent_articles": [
-                article("t1", "trend", "plausible_future", "2026-11-06T08:00:00+09:00", pv=12, x=3),
-                article("t2", "trend", "comic_exaggeration", "2026-11-06T10:00:00+09:00", pv=8, x=2),
-                article("t3", "trend", "observational", "2026-11-06T12:00:00+09:00", pv=10, x=None),
-                article("s1", "social_life", "observational", "2026-11-06T14:00:00+09:00", pv=6, x=1),
-                article("s2", "social_life", "comic_exaggeration", "2026-11-06T16:00:00+09:00", pv=4, x=0),
+                article("t1", "trend", "plausible_future", "2026-11-06T08:00:00+09:00", pv=12, x=3, payoff="quiet_aftertaste"),
+                article("t2", "trend", "comic_exaggeration", "2026-11-06T10:00:00+09:00", pv=8, x=2, payoff="action"),
+                article("t3", "trend", "observational", "2026-11-06T12:00:00+09:00", pv=10, x=None, payoff="action"),
+                article("s1", "social_life", "observational", "2026-11-06T14:00:00+09:00", pv=6, x=1, payoff="visible_result"),
+                article("s2", "social_life", "comic_exaggeration", "2026-11-06T16:00:00+09:00", pv=4, x=0, payoff="visible_result"),
                 # Too new for the default 6h lower bound.
                 article("new", "original_satire", "wildcard", "2026-11-07T08:00:00+09:00", pv=20, x=4),
                 # Pre-rollout / legacy metadata stays excluded rather than guessed.
@@ -78,6 +81,11 @@ class EditorialPerformanceTests(unittest.TestCase):
         self.assertEqual(
             report["by_lane"]["trend"]["continuation_share"]["median"],
             0.2,
+        )
+        self.assertEqual(report["by_payoff"]["action"]["articles"], 2)
+        self.assertEqual(
+            report["by_payoff"]["visible_result"]["status"],
+            "insufficient_sample",
         )
         self.assertNotIn("winner", json.dumps(report))
         self.assertIn("not evidence", report["note"])

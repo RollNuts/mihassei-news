@@ -6,10 +6,13 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 
 from scripts.editorial_mix import (
+    EDITORIAL_PAYOFFS,
     EDITORIAL_TONES,
     LANE_TARGETS,
     lane_counts,
     next_preferred_lane,
+    payoff_advice,
+    payoff_counts,
     report_day,
     tone_advice,
     tone_counts,
@@ -27,6 +30,7 @@ def story(
     published: datetime = BASE_TIME,
     term: str = "流行語大賞",
     tone: str = "comic_exaggeration",
+    payoff: str | None = "action",
     followup_of: str | None = None,
 ) -> dict:
     item = {
@@ -43,6 +47,8 @@ def story(
             "url": f"https://example.com/{slug}",
         },
     }
+    if payoff is not None:
+        item["editorial_payoff"] = payoff
     if followup_of:
         item["followup_of"] = followup_of
     if tone == "plausible_future":
@@ -79,6 +85,39 @@ class EditorialMixTests(unittest.TestCase):
                 "wildcard",
             ),
         )
+
+    def test_payoff_types_are_orthogonal_to_topic_and_tone(self):
+        self.assertEqual(
+            EDITORIAL_PAYOFFS,
+            (
+                "dialogue",
+                "action",
+                "visible_result",
+                "ironic_success",
+                "quiet_aftertaste",
+                "wordplay",
+            ),
+        )
+
+    def test_payoff_advice_breaks_a_two_story_run(self):
+        articles = [
+            story("a", "trend", payoff="dialogue"),
+            story(
+                "b",
+                "social_life",
+                payoff="dialogue",
+                published=BASE_TIME + timedelta(hours=2),
+            ),
+        ]
+        self.assertEqual(payoff_counts(articles, "2026-11-06")["dialogue"], 2)
+        advice = payoff_advice(articles, "2026-11-06")
+        self.assertIn("last 2 tracked stories end as dialogue", advice)
+        self.assertNotIn("dialogue (last 2", advice)
+
+    def test_missing_payoff_is_invalid_after_payoff_rollout(self):
+        item = story("missing-payoff", "social_life", payoff=None)
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("editorial_payoff required" in error for error in errors))
 
     def test_tone_advice_prioritizes_one_plausible_future_each_day(self):
         articles = [
@@ -344,6 +383,16 @@ class EditorialMixTests(unittest.TestCase):
             any("editorial_signature duplicates" in error for error in errors)
         )
         self.assertFalse(any("duplicate trend term" in error for error in errors))
+
+    def test_pre_payoff_rollout_article_keeps_lane_and_tone_without_payoff(self):
+        item = story(
+            "pre-payoff",
+            "social_life",
+            payoff=None,
+            published=datetime(2026, 11, 6, 8, 30, tzinfo=JST),
+        )
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("editorial_payoff required" in error for error in errors))
 
     def test_pre_rollout_article_is_not_retroactively_required(self):
         old = {
