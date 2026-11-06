@@ -163,6 +163,13 @@ class SocialTextTests(unittest.TestCase):
             with self.subTest(invalid=invalid_limit), self.assertRaises(ValueError):
                 article_hashtags({"x_tags": ["ポイ活"]}, limit=invalid_limit)
 
+    def test_editorial_guide_never_uses_site_tag_order_as_x_policy(self):
+        guide = (ROOT / "docs" / "EDITORIAL_LOOP.md").read_text(encoding="utf-8")
+        self.assertNotIn("先頭2個をX", guide)
+        self.assertNotIn("題材タグの先頭2個", guide)
+        self.assertIn("`tags` / `satire_tags` とX向け発見語は別物", guide)
+        self.assertIn("`x_tags` / `x_tickers`", guide)
+
     def test_current_articles_use_context_terms_not_broad_categories(self):
         articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
         self.assertTrue(articles)
