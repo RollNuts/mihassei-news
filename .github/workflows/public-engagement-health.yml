@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '41 23 * * *' # 08:41 JST; read-only verification
   workflow_dispatch:
+concurrency:
+  group: public-pv-health-main
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -12,6 +15,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Wait for the exact public revision on main pushes
+        if: github.event_name == 'push'
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          short_sha="$(printf '%s' "$EXPECTED_SHA" | cut -c1-12)"
+          endpoint="https://veripsa.com/build-revision.txt?release=$short_sha"
+          latest="(not reached)"
+          attempt=1
+          while [ "$attempt" -le 24 ]; do
+            latest="$(curl --fail --silent --show-error --max-time 9               -H 'Cache-Control: no-cache'               -H 'Pragma: no-cache'               "$endpoint" 2>/dev/null | tr -d '\r\n' || true)"
+            if [ "$latest" = "$EXPECTED_SHA" ]; then
+              echo "Public site confirmed serving requested commit: $EXPECTED_SHA"
+              break
+            fi
+            echo "Public revision not updated yet: attempt $attempt expected $short_sha observed ${latest:-unavailable}"
+            if [ "$attempt" -eq 24 ]; then
+              echo "::error::Public site never served commit $EXPECTED_SHA"
+              exit 1
+            fi
+            attempt=$((attempt + 1))
+            sleep 5
+          done
       - name: Verify production site, engagement and public comments APIs
         env:
           PYTHONUNBUFFERED: "1"
