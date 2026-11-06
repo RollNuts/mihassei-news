@@ -159,6 +159,8 @@ class DailyMetricsTests(unittest.TestCase):
         self.assertEqual(result["published_editorial_metadata_tracked"], 0)
         self.assertEqual(result["published_editorial_lanes"], {})
         self.assertEqual(result["published_editorial_tones"], {})
+        self.assertEqual(result["published_editorial_payoff_tracked"], 0)
+        self.assertEqual(result["published_editorial_payoffs"], {})
         self.assertIn("not backfilled", result["editorial_metadata_note"])
         self.assertIn("referrer-stripping undercounts", result["continuation_note"])
         self.assertNotIn("channels_cumulative", result)
@@ -180,6 +182,7 @@ class DailyMetricsTests(unittest.TestCase):
                 "published_at": "2026-11-02T21:00:00+09:00",
                 "editorial_lane": "trend",
                 "editorial_tone": "plausible_future",
+                "editorial_payoff": "quiet_aftertaste",
                 "source": {"published_at": "2026-11-02T20:00:00+09:00"},
             },
             {
@@ -187,6 +190,7 @@ class DailyMetricsTests(unittest.TestCase):
                 "published_at": "2026-11-02T19:00:00+09:00",
                 "editorial_lane": "social_life",
                 "editorial_tone": "observational",
+                "editorial_payoff": "action",
                 "source": {"published_at": "2026-11-02T18:00:00+09:00"},
             },
             {
@@ -215,10 +219,18 @@ class DailyMetricsTests(unittest.TestCase):
             result["published_editorial_tones"],
             {"observational": 1, "plausible_future": 1},
         )
+        self.assertEqual(result["published_editorial_payoff_tracked"], 2)
+        self.assertEqual(
+            result["published_editorial_payoffs"],
+            {"action": 1, "quiet_aftertaste": 1},
+        )
         by_slug = {item["slug"]: item for item in result["recent_articles"]}
         self.assertEqual(by_slug["trend-story"]["editorial_lane"], "trend")
         self.assertEqual(
             by_slug["trend-story"]["editorial_tone"], "plausible_future"
+        )
+        self.assertEqual(
+            by_slug["trend-story"]["editorial_payoff"], "quiet_aftertaste"
         )
         self.assertEqual(by_slug["life-story"]["editorial_lane"], "social_life")
         self.assertIsNone(by_slug["legacy-story"]["editorial_lane"])
