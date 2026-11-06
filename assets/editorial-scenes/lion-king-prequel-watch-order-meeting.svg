@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+ aria-label="夜の居間で映画を見る順番を議論し続ける家族と、放送終了の画面が映るテレビを描いた創作イラスト"
+ data-visual-topic="movie" data-article-sha256="632cf1abff3ed862ded051bc0933ed03d2843c2b1fc94a6031ef7c20f534a1df">
+<title>映画を見る順番の図だけが完成、テレビはすでに放送終了</title>
+<defs>
+ <linearGradient id="wall" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ede9df"/><stop offset="1" stop-color="#d6d2c9"/></linearGradient>
+ <linearGradient id="floor" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#b19d86"/><stop offset="1" stop-color="#806e60"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#293d52"/><stop offset="1" stop-color="#111f31"/></linearGradient>
+ <linearGradient id="screen" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#1f3b47"/><stop offset="1" stop-color="#16242d"/></linearGradient>
+ <linearGradient id="table" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#c6a27b"/><stop offset="1" stop-color="#926b4f"/></linearGradient>
+ <filter id="shade" x="-20%" y="-25%" width="140%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#5b4a40" flood-opacity=".2"/></filter>
+</defs>
+<!-- Ordinary family room at night -->
+<rect width="1200" height="465" fill="url(#wall)"/>
+<rect y="465" width="1200" height="210" fill="url(#floor)"/>
+<path d="M0 457H1200" stroke="#ae9d8d" stroke-width="14"/>
+<rect x="35" y="94" width="233" height="271" rx="8" fill="#f8f5e9" stroke="#958b7e" stroke-width="12"/>
+<rect x="50" y="109" width="203" height="241" fill="url(#glass)"/>
+<path d="M150 108v244M50 231h203" stroke="#9eabb2" stroke-width="10"/>
+<circle cx="88" cy="146" r="18" fill="#ddd6bd" opacity=".85"/>
+<g fill="#e8d9b0" opacity=".65"><circle cx="198" cy="188" r="3"/><circle cx="112" cy="278" r="2"/><circle cx="232" cy="133" r="3"/></g>
+<path d="M52 332q31-64 61-18t65-18q27-23 74 5v49H52z" fill="#223d3e"/>
+<!-- Clock at end-of-broadcast time: no words or numbers -->
+<circle cx="670" cy="154" r="87" fill="#f8f2e8" stroke="#918679" stroke-width="13" filter="url(#shade)"/>
+<circle cx="670" cy="154" r="74" fill="#f8f2e8" stroke="#d5ccc0" stroke-width="3"/>
+<g stroke="#766f65" stroke-width="5" stroke-linecap="round">
+ <path d="M670 93v12M670 204v11M609 154h12M720 154h11"/>
+ <path d="M639 104l5 8M698 199l5 8M617 122l8 5M715 180l8 5"/>
+</g>
+<path d="M670 154l-18-55" stroke="#5c5350" stroke-width="9" stroke-linecap="round"/>
+<path d="M670 154l44 56" stroke="#b65e50" stroke-width="6" stroke-linecap="round"/>
+<circle cx="670" cy="154" r="9" fill="#5c5350"/>
+<!-- Television is already at the closing screen -->
+<rect x="835" y="152" width="325" height="220" rx="17" fill="#30353a" filter="url(#shade)"/>
+<rect x="853" y="170" width="289" height="180" rx="6" fill="url(#screen)"/>
+<g fill="#b5bcc0" opacity=".5">
+ <rect x="963" y="221" width="70" height="5" rx="2"/>
+ <rect x="949" y="237" width="97" height="5" rx="2"/>
+ <rect x="972" y="253" width="54" height="5" rx="2"/>
+ <rect x="962" y="269" width="75" height="5" rx="2"/>
+</g>
+<path d="M898 374h195m-90 0v28m-36 2h72" stroke="#4b4a4b" stroke-width="10" stroke-linecap="round"/>
+<rect x="806" y="405" width="367" height="24" rx="6" fill="#a17e66"/>
+<path d="M820 425v67M1154 425v67" stroke="#786052" stroke-width="15"/>
+<!-- Papers at the heart of the scene, two competing directions -->
+<path d="M252 474h722q51 0 75 34l-17 75H234l-15-70q8-39 33-39z" fill="url(#table)" stroke="#835e47" stroke-width="6" filter="url(#shade)"/>
+<path d="M238 582l-28 77M1012 582l31 77" stroke="#72543f" stroke-width="24" stroke-linecap="round"/>
+<g transform="rotate(-5 608 510)" filter="url(#shade)">
+ <rect x="463" y="468" width="317" height="122" rx="5" fill="#fff9e9" stroke="#b8aa98" stroke-width="3"/>
+ <rect x="483" y="484" width="121" height="27" rx="4" fill="#dce3da" stroke="#7f9c8a" stroke-width="2"/>
+ <rect x="637" y="484" width="122" height="27" rx="4" fill="#e6ded3" stroke="#c3997c" stroke-width="2"/>
+ <path d="M604 498h27m-11-9 11 9-11 9" fill="none" stroke="#749078" stroke-width="5" stroke-linecap="round"/>
+ <path d="M755 530H614m11-9-11 9 11 9" fill="none" stroke="#b87968" stroke-width="5" stroke-linecap="round"/>
+ <path d="M494 551h112M494 564h75M653 554h95M653 566h67" stroke="#c6bdb0" stroke-width="5" stroke-linecap="round"/>
+ <path d="M490 479l264 99" stroke="#ba6a5d" stroke-width="3" stroke-dasharray="9 9" opacity=".75"/>
+</g>
+<g transform="rotate(12 385 531)">
+ <rect x="345" y="493" width="76" height="99" rx="3" fill="#eee6d9" stroke="#b7aa99" stroke-width="3"/>
+ <path d="M359 510h46m-46 16h42m-42 16h46m-46 16h28" stroke="#b5a89a" stroke-width="4"/>
+</g>
+<!-- Three family members, simply portrayed, hands in discussion -->
+<!-- Mother on left, talking with one arm toward the chart -->
+<path d="M181 440q-19-103 37-148 43-34 90-1 47 38 27 150z" fill="#786482" stroke="#554660" stroke-width="4"/>
+<ellipse cx="260" cy="272" rx="56" ry="69" fill="#e0b590" stroke="#926f5d" stroke-width="4"/>
+<path d="M206 248q-2-72 63-69 52 4 57 62-20-15-39-34-23 29-81 41z" fill="#48434a"/>
+<path d="M229 274l12 2M279 273l12-2" stroke="#6c514b" stroke-width="4" stroke-linecap="round"/>
+<path d="M246 305q14 9 27-1" fill="none" stroke="#966d61" stroke-width="3"/>
+<path d="M306 390q32 8 68 55l64 44-13 16-80-35-67-37" fill="#e0b590" stroke="#926f5d" stroke-width="3"/>
+<path d="M440 487l20 10-20 16-27-10z" fill="#e0b590" stroke="#926f5d" stroke-width="2"/>
+<!-- Father on right, remote ready but too late -->
+<path d="M1033 468q19-106-31-155-51-40-100-1-51 53-40 154z" fill="#5b7b73" stroke="#47625a" stroke-width="4"/>
+<ellipse cx="947" cy="279" rx="57" ry="68" fill="#dcb28b" stroke="#92715f" stroke-width="4"/>
+<path d="M888 264q-12-69 52-74 59-4 65 66l-21-29-22-8-31 20-43 25z" fill="#3f4646"/>
+<path d="M920 282l12 2M962 282l12-2" stroke="#615149" stroke-width="4" stroke-linecap="round"/>
+<path d="M932 310q15 4 27-3" fill="none" stroke="#866454" stroke-width="3"/>
+<path d="M894 386q-26 26-23 75l-42 47 15 13 65-42 36-66" fill="#dcb28b" stroke="#92715f" stroke-width="3"/>
+<rect x="812" y="465" width="23" height="62" rx="7" transform="rotate(-21 823 496)" fill="#424c53" stroke="#6c7478" stroke-width="3"/>
+<circle cx="822" cy="474" r="3" fill="#bba09b"/>
+<!-- Child between them, focused on the competing arrows -->
+<path d="M560 448q-18-67 16-105 35-34 76-7 39 25 37 111z" fill="#bc885f" stroke="#926344" stroke-width="4"/>
+<ellipse cx="617" cy="318" rx="48" ry="57" fill="#e7c4a0" stroke="#967d68" stroke-width="3"/>
+<path d="M568 320q-8-63 46-70 43-4 54 45l-22-18-28 18-50 25z" fill="#51443c"/>
+<path d="M592 328h10m31 0h9" stroke="#745a4b" stroke-width="4" stroke-linecap="round"/>
+<path d="M607 349q12-6 21 2" fill="none" stroke="#9b7265" stroke-width="3" stroke-linecap="round"/>
+<path d="M582 413q-8 42 25 62l-21 14q-41-21-38-77M660 410q17 39-7 65l20 13q39-25 28-81" fill="#e7c4a0" stroke="#967d68" stroke-width="3"/>
+<!-- Untouched snacks underline what the family missed -->
+<ellipse cx="1058" cy="544" rx="66" ry="18" fill="#f2e7d3" stroke="#9f8068" stroke-width="4"/>
+<g fill="#cfb16c"><circle cx="1027" cy="534" r="14"/><circle cx="1055" cy="527" r="15"/><circle cx="1080" cy="535" r="13"/></g>
+</svg>
