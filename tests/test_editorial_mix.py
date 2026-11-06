@@ -353,6 +353,46 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
 
+    def test_natural_observed_trend_term_stays_primary_x_tag(self):
+        item = story(
+            "keep-trend-term",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "流行語大賞の発表後、バズ狙いの解説会が町内で乱立"
+        item["summary"] = "話題の言葉を知らない人向けの説明会が増え、説明する側ほど意味を調べ直す逆転を描く。"
+        item["source"]["topic"] = "流行語大賞の候補発表とバズ狙いの反応"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表があり、候補語そのものへの注目が集まっている。",
+            "shared_behavior": "流行に乗り遅れたくないほど、知らない言葉を知っているふりしやすい。",
+            "satire_gap": "流行を説明する人ほど、その言葉の意味を裏で調べ直してしまう。",
+            "x_discovery_term": "バズ",
+        }
+        item["x_tags"] = ["バズ"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("use the exact observed trend term" in error for error in errors))
+
+    def test_stock_cashtag_can_override_a_natural_trend_phrase(self):
+        item = story(
+            "ticker-override",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="NVIDIA決算",
+        )
+        item["title"] = "NVIDIA決算後、長期投資家が1分おきにNVDAを確認"
+        item["summary"] = "長期保有を宣言した投資家ほど値動きを細かく確認し、落ち着くためのルールが監視を増やす。"
+        item["source"]["topic"] = "NVIDIAの決算とNVDA株価への注目"
+        item["trend_bridge"] = {
+            "why_now": "NVIDIA決算を受けてNVDAの値動きが注目されている。",
+            "shared_behavior": "長期投資を口にするほど短期の値動きを確認したくなる人がいる。",
+            "satire_gap": "長期で持つための安心材料が、短期監視の回数を増やしてしまう。",
+            "x_discovery_term": "NVDA",
+        }
+        item["x_tickers"] = ["NVDA"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
