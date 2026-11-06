@@ -85,6 +85,23 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118323106292830408",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow"
+    },
+    "buzzword-award-what-does-it-mean-wins": {
+      "buffer_id": "6aed1c30dbada656bee16bbf",
+      "queued_at_utc": "2026-11-06T00:15:43.880425+00:00",
+      "slot_jst": "2026-11-06T09:05:00+09:00",
+      "submission_mode": "shareNow",
+      "source": "fresh_article",
+      "text_sha256": "c57ee0dedf1bba4975410531baa47c8c1f15654987c6eb2ef218ee41a869e08e",
+      "published_at": "2026-11-06T07:39:40+09:00",
+      "primary_topic": "tag:イベント",
+      "buffer_status_at_accept": "sent",
+      "buffer_created_at_at_accept": "2026-11-06T00:15:44.720Z",
+      "buffer_due_at_at_accept": "2026-11-06T00:15:44.752Z",
+      "buffer_sent_at_at_accept": "2026-11-06T00:15:45.100Z",
+      "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118497527225819504",
+      "buffer_shared_now_at_accept": true,
+      "buffer_share_mode_at_accept": "shareNow"
     }
   }
 }
