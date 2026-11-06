@@ -179,6 +179,8 @@
   // A random browser ID is used only for one-per-browser deduplication.
   // No fingerprinting, user accounts, cookies, or IP-derived identity.
   const idKey = "mihassei-anonymous-browser-v1";
+  const sessionKey = "mihassei-session-v1";
+  const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
   const likesKey = "mihassei-likes-v1";
   const analyticsPreferenceKey="mihassei-analytics-disabled-v1";
   let analyticsDisabled=false,analyticsPreferenceStored=true;
@@ -351,6 +353,34 @@
   }
   const visitChannel=arrivalChannel();
 
+  // Follow the common analytics convention of a visit/session ending after
+  // 30 minutes of inactivity. The session contains only a random UUID, its
+  // last page-view time and one coarse acquisition channel; no referrer URL,
+  // search term, account or fingerprint is stored.
+  let ephemeralSession=null;
+  function sessionContext(initialChannel){
+    const now=Date.now();
+    let state=null;
+    try{
+      const saved=JSON.parse(localStorage.getItem(sessionKey)||"null");
+      if(saved && typeof saved==="object" &&
+         typeof saved.id==="string" && /^[a-f0-9-]{36}$/i.test(saved.id) &&
+         Number.isFinite(saved.lastSeen) && now>=saved.lastSeen &&
+         now-saved.lastSeen<SESSION_TIMEOUT_MS &&
+         ["x","search","external","unattributed"].includes(saved.channel)){
+        state=saved;
+      }
+    }catch(_){state=ephemeralSession;}
+    if(!state){
+      state={id:makeId(),lastSeen:now,channel:initialChannel||"unattributed"};
+    }else{
+      state={...state,lastSeen:now};
+    }
+    ephemeralSession=state;
+    try{localStorage.setItem(sessionKey,JSON.stringify(state));}catch(_){}
+    return {id:state.id,channel:state.channel};
+  }
+
   function heartView() {
     for(const b of buttons){
       const on=likedSet.has(b.dataset.likeSlug);
@@ -368,7 +398,12 @@
   async function apiPost(action,articleSlug="",choice="",viewId=""){
     const payload={action,article:articleSlug,clientId:clientIdentifier()};
     if(action==="vote")payload.choice=choice;
-    if(action==="visit" && visitChannel)payload.channel=visitChannel;
+    if(action==="visit"){
+      const session=sessionContext(visitChannel);
+      payload.sessionId=session.id;
+      payload.sessionChannel=session.channel;
+      if(visitChannel)payload.channel=visitChannel;
+    }
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
     if(action==="visit" && viewId)payload.viewId=viewId;
     const response=await fetch("/api/engagement",{
