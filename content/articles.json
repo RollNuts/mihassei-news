@@ -1,5 +1,60 @@
 [
   {
+    "slug": "nikkei-plunge-hundred-year-hold-minute-check",
+    "category": "経済",
+    "flash": "保有100年、確認1分",
+    "fiction_company": "個人投資家の佐伯さん",
+    "art": "cards",
+    "fiction_at": "2031-11-06T13:35:00+09:00",
+    "published_at": "2026-11-06T13:35:00+09:00",
+    "title": "日経平均急落で「100年持つ」と宣言した男性、株価は1分おきに確認",
+    "summary": "目先の値動きを気にしないため、売却予定を100年先に移した。通知を切っても落ち着かず、今日の株価だけをノートに書き続けている。",
+    "paragraphs": [
+      "日経平均が大きく下がった朝、個人投資家の佐伯さんは「もう短期の値動きには振り回されない」と決めた。来月に入れていた売却予定を100年先に変更し、壁に大きく「長期投資」と書いた紙を貼った。",
+      "株価の通知もすべて切った。しかし通知が来ないことが気になり、自分で1分おきにアプリを開き始めた。表示された価格は、そのたびに机のノートへ一行ずつ書き写した。",
+      "午後3時、100年先の予定表に入った予定は売却の一件だけ。一方、今日の株価を書いたノートは16ページに達した。佐伯さんは売却予定を変えないまま、新しいノートを買いに出かけた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "株探（みんかぶ掲載）",
+      "published_at": "2026-11-06T11:31:00+09:00",
+      "url": "https://minkabu.jp/news/4652230",
+      "topic": "株探の2026年11月6日11:31配信によると、同日前場の日経平均株価は前日比3219.29円（5.27%）安の57858.61円で終了した。佐伯さん、100年先への売却予定変更、分刻みの価格記録は本紙の創作であり、実在の投資家や証券会社の行為ではない。"
+    },
+    "scene_prompt": "A grounded editorial illustration of an ordinary Japanese home workspace: a lone adult man in a plain shirt anxiously tapping his smartphone stock price screen every minute, a growing pile of densely handwritten notebook pages on the desk and an oversized long-term investment wall calendar in the background. The contrast between the thick daily notes and almost empty century plan is clear. Everyday furniture, modest natural daylight, no company logos and no legible writing.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "投資",
+      "お金"
+    ],
+    "satire_tags": [
+      "長期投資あるある",
+      "確認しすぎ"
+    ],
+    "x_tags": [
+      "日経平均",
+      "株価暴落"
+    ],
+    "editorial_lane": "trend",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "target": "投資家が長期保有の宣言を大事にしすぎて、値動きを気にしないという本来の目的を見失う",
+      "action": "売却予定を100年後に変更する一方で、通知を切った株価アプリを毎分開いて価格を手書きで記録する",
+      "outcome": "100年先の予定表は売却予定1件だけなのに、今日の値動きの記録がノート16ページに積み上がる"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "日経平均",
+      "observed_at": "2026-11-06T13:34:00+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://minkabu.jp/news/4652230",
+        "https://minkabu.jp/stock/9983/news/4652095"
+      ]
+    }
+  },
+  {
     "slug": "christmas-done-for-you-family-decorates-boxes",
     "category": "暮らし",
     "flash": "準備ゼロ、工作3時間",
