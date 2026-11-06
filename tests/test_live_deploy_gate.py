@@ -238,17 +238,50 @@ class PVAPIDeploymentTests(unittest.TestCase):
     @staticmethod
     def payload(slug="story-a"):
         return {
+            "version": 2,
             "unit": "anonymous-browser", "visitors": 900, "pageViews": 32,
             "pageViewTracking": {"unit": "page-view", "timezone": "Asia/Tokyo",
                                  "startedAtUtc": "2026-11-04T00:00:00.000Z"},
+            "sessions": 20,
+            "sessionTracking": {"unit": "session", "timezone": "Asia/Tokyo",
+                                "startedAtUtc": "2026-11-04T00:00:00.000Z",
+                                "inactivityTimeoutMinutes": 30},
+            "pageViewSources": {"x": 10, "search": 5, "external": 2, "unattributed": 15},
+            "pageViewSourcesToday": {"x": 10, "search": 5, "external": 2, "unattributed": 15},
+            "pageViewSourcesCurrentHour": {"x": 2, "search": 1, "external": 0, "unattributed": 1},
+            "pageViewSourceTracking": {
+                "unit": "page-view", "timezone": "Asia/Tokyo",
+                "startedAtUtc": "2026-11-04T00:00:00.000Z",
+                "attribution": "session-acquisition-channel",
+            },
             "today": {"dateJst": "2026-11-04", "visitors": 12, "articleReads": 8,
-                      "pageViews": 32, "pageViewsCoverage": "in-progress"},
+                      "pageViews": 32, "pageViewsCoverage": "in-progress",
+                      "sessions": 12, "sessionsCoverage": "in-progress"},
             "yesterday": {"dateJst": "2026-11-03", "visitors": 30, "articleReads": 40,
-                          "pageViews": None, "pageViewsCoverage": "unmeasured"},
+                          "pageViews": None, "pageViewsCoverage": "unmeasured",
+                          "sessions": None, "sessionsCoverage": "unmeasured"},
             "last7Days": {"startDateJst": "2026-10-29", "endDateJst": "2026-11-04",
                           "pageViews": 32, "measuredDays": 1, "complete": False},
+            "hourly": {
+                "timezone": "Asia/Tokyo",
+                "startedAtUtc": "2026-11-04T00:00:00.000Z",
+                "today": [
+                    {"hourJst": "2026-11-04T" + str(hour).zfill(2) + ":00",
+                     "pageViews": 32 if hour == 9 else 0,
+                     "pageViewsCoverage": "complete"}
+                    for hour in range(24)
+                ],
+            },
+            "topArticles": {
+                "currentHour": [{"article": slug, "pageViews": 2}],
+                "today": [{"article": slug, "pageViews": 7}],
+                "last7Days": [{"article": slug, "pageViews": 7}],
+            },
             "articles": {slug: {"likes": 0, "readers": 500, "todayReaders": 200,
                                 "pageViews": 7, "todayPageViews": 7, "last7DaysPageViews": 7,
+                                "entrances": 5,
+                                "pageViewSources": {"x": 3, "search": 1,
+                                                    "external": 0, "unattributed": 3},
                                 "votes": {"plausible": 0, "unlikely": 0}}},
         }
 
@@ -329,6 +362,8 @@ class PVAPIDeploymentTests(unittest.TestCase):
         self.assertEqual(len(requests), 5)
         self.assertIn("site=32, article=7, article last7Days=7 PV", output)
         self.assertIn("today=32 / yesterday=None / last7Days=32", output)
+        self.assertIn("VERIFIED diagnostics v2", output)
+        self.assertIn("'article': 'apology-before-incident'", output)
         self.assertNotIn("900", output)
         self.assertNotIn("500", output)
         workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
@@ -339,6 +374,12 @@ class PVAPIDeploymentTests(unittest.TestCase):
         payload = self.payload("apology-before-incident")
         del payload["articles"]["apology-before-incident"]["last7DaysPageViews"]
         with self.assertRaisesRegex(SystemExit, "last7DaysPageViews"):
+            self.run_health_workflow(payload)
+
+    def test_scheduled_health_workflow_requires_live_diagnostic_v2_fields(self):
+        payload = self.payload("apology-before-incident")
+        del payload["hourly"]
+        with self.assertRaisesRegex(SystemExit, "hourly PV diagnostics missing"):
             self.run_health_workflow(payload)
 
 if __name__=="__main__":
