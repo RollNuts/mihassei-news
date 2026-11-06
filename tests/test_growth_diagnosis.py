@@ -52,7 +52,7 @@ class GrowthDiagnosisTests(unittest.TestCase):
             }
         }
 
-    def selected(self, *, sources=None, top_views=70) -> dict:
+    def selected(self, *, sources=None, page_kinds=None, top_views=70) -> dict:
         return {
             "selectedHour": {
                 "hourJst": "2026-11-06T19:00",
@@ -60,6 +60,8 @@ class GrowthDiagnosisTests(unittest.TestCase):
                 "pageViewsCoverage": "complete",
                 "pageViewSourcesCoverage": "complete" if sources is not None else "unmeasured",
                 "pageViewSources": sources,
+                "pageViewKindsCoverage": "complete" if page_kinds is not None else "unmeasured",
+                "pageViewKinds": page_kinds,
             },
             "topArticles": {
                 "selectedHour": [
@@ -77,12 +79,18 @@ class GrowthDiagnosisTests(unittest.TestCase):
     def test_x_majority_plus_matching_post_is_strong_signal(self):
         report = g.build_report(
             self.live(),
-            self.selected(sources={"x": 60, "search": 5, "external": 5, "unattributed": 10}),
+            self.selected(
+                sources={"x": 60, "search": 5, "external": 5, "unattributed": 10},
+                page_kinds={"home": 5, "article": 70, "archive": 3, "serial": 1, "other": 1},
+            ),
             self.state(),
             {"patrol": "防犯パトロール", "other": "別記事"},
         )
+        self.assertEqual(report["schema_version"], 2)
         self.assertEqual(report["diagnosis"], "x_distribution_strong_signal")
         self.assertEqual(report["peak_hour"]["source_mix"]["shares"]["x"], 0.75)
+        self.assertEqual(report["peak_hour"]["page_kind_mix"]["shares"]["article"], 0.875)
+        self.assertEqual(report["peak_hour"]["page_kind_interpretation"], "article_dominant")
         self.assertEqual(report["peak_hour"]["top_article_share"], 0.875)
         self.assertEqual(len(report["x_posts_near_peak"]), 1)
         self.assertTrue(report["x_posts_near_peak"][0]["is_peak_top_article"])
@@ -109,6 +117,41 @@ class GrowthDiagnosisTests(unittest.TestCase):
         )
         self.assertEqual(report["diagnosis"], "single_article_breakout")
         self.assertEqual(report["x_posts_near_peak"], [])
+
+    def test_navigation_heavy_spike_is_described_without_guessing_people(self):
+        report = g.build_report(
+            self.live(),
+            self.selected(
+                sources={"x": 4, "search": 4, "external": 12, "unattributed": 60},
+                page_kinds={"home": 42, "article": 16, "archive": 14, "serial": 6, "other": 2},
+                top_views=10,
+            ),
+            {"queued": {}},
+            {"patrol": "防犯パトロール"},
+        )
+        self.assertEqual(report["diagnosis"], "mixed_or_unattributed")
+        mix = report["peak_hour"]["page_kind_mix"]
+        self.assertEqual(mix["classified_page_views"], 80)
+        self.assertEqual(mix["shares"]["article"], 0.2)
+        self.assertEqual(
+            report["peak_hour"]["page_kind_interpretation"],
+            "navigation_dominant",
+        )
+        self.assertIn("does not identify people", report["note"])
+
+    def test_unmeasured_page_kind_history_remains_missing(self):
+        report = g.build_report(
+            self.live(),
+            self.selected(
+                sources={"x": 10, "search": 10, "external": 10, "unattributed": 50},
+                page_kinds=None,
+            ),
+            {"queued": {}},
+            {"patrol": "防犯パトロール"},
+        )
+        self.assertIsNone(report["peak_hour"]["page_kind_mix"])
+        self.assertIsNone(report["peak_hour"]["page_kind_interpretation"])
+        self.assertEqual(report["peak_hour"]["page_kind_coverage"], "unmeasured")
 
     def test_selected_hour_must_match_peak(self):
         selected = self.selected(sources=None)
