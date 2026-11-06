@@ -18,6 +18,7 @@
   const peakHourNode=root.querySelector('[data-growth-peak-hour]');
   const peakPvNode=root.querySelector('[data-growth-peak-pv]');
   const peakSourcesNode=root.querySelector('[data-growth-peak-sources]');
+  const peakKindsNode=root.querySelector('[data-growth-peak-kinds]');
   const peakTopNode=root.querySelector('[data-growth-peak-top]');
   const pattern=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const categories=new Set(['社会','経済','技術','政治','暮らし','スポーツ','エンタメ']);
@@ -155,6 +156,7 @@
       if(peakHourNode)peakHourNode.textContent='—';
       if(peakPvNode)peakPvNode.textContent='—';
       if(peakSourcesNode)peakSourcesNode.textContent='時間帯別PVはまだ未計測です。';
+      if(peakKindsNode)peakKindsNode.textContent='ページ種別はまだ判定できません。';
       if(peakTopNode)peakTopNode.textContent='上位記事はまだ判定できません。';
       spike.hidden=false;
       return;
@@ -201,6 +203,27 @@
           '） / 不明 '+count(sources.unattributed)+'（'+percentage(sources.unattributed,total)+'）';
       }
 
+      const kindCoverage=selected.pageViewKindsCoverage;
+      const kinds=selected.pageViewKinds;
+      if(kindCoverage==='unmeasured'){
+        if(kinds!==null)throw new Error('未計測のページ種別に数値があります');
+        if(peakKindsNode)peakKindsNode.textContent=
+          'この時間帯のページ種別は計測開始前のため判定できません。';
+      }else{
+        const kindKeys=['home','article','archive','serial','other'];
+        if(!measuredHourCoverage.has(kindCoverage) ||
+           !kinds || typeof kinds!=='object' ||
+           !kindKeys.every(key=>valid(kinds[key])))
+          throw new Error('ピーク時間のページ種別集計が不完全です');
+        const total=kindKeys.reduce((sum,key)=>sum+kinds[key],0);
+        const coverage=kindCoverage==='partial'?'（一部計測）':'';
+        if(peakKindsNode)peakKindsNode.textContent=
+          'ページ種別'+coverage+'：記事 '+count(kinds.article)+'（'+percentage(kinds.article,total)+
+          '） / トップ '+count(kinds.home)+'（'+percentage(kinds.home,total)+
+          '） / 一覧 '+count(kinds.archive)+' / 連載 '+count(kinds.serial)+
+          ' / その他 '+count(kinds.other);
+      }
+
       const rows=top.filter(row=>row && typeof row.article==='string' &&
         pattern.test(row.article) && valid(row.pageViews)).slice(0,3);
       if(peakTopNode){
@@ -213,6 +236,8 @@
     }catch(error){
       if(peakSourcesNode)peakSourcesNode.textContent=
         'ピーク時間の流入元詳細を表示できません：'+(error?.message||'現在利用できません');
+      if(peakKindsNode)peakKindsNode.textContent=
+        '時間帯別のページ種別は、詳細集計が取得できるまで断定しません。';
       if(peakTopNode)peakTopNode.textContent=
         '時間帯別の上位記事は、詳細集計が取得できるまで断定しません。';
     }
