@@ -246,7 +246,7 @@
 
 ## 次枠の編集引き継ぎ（毎回ここだけ上書き）
 
-- **直前**：11/6 09:30枠は「移動ポイントのために自宅前を通り過ぎ、追加特典が出てまた一周する男性」を1本公開。https://veripsa.com/articles/walking-points-past-own-front-door/（JST 09:38:24初刊／original_satire・plausible_future・action）。風刺＝帰宅という目的がポイント達成に取って代わる、笑い＝家族に窓越しで二度手を振って通過。ANA X 11/5 10:00発表とANA Pocket公式案内を確認。4行・見出し3秒・冒頭2文・禁止表現・既刊44本の重複を確認。記事PR #441は最新head CI2件成功後main統合（d8962c1db566133f6067b235e04a7fd6da2756af）。本番検証run #42138631329成功（exact revision、記事・一面・発行号・OGP）。タグ『アプリ』で古い記事へのrelated-topic導線が成立し、回帰テストとライブ検証合格。イラスト表示を選び未目視のJPEGは採用せず、動画追加選抜なし。11/6は2枠2本・重複なし。
-- **次枠**：11/6 11:30枠は当日2本（trend 1／original_satire 1／social_life 0）とeditorial_mix、当日既刊・PRを再照合する。次は最新トレンドを実取得できて風刺が強ければtrend、そうでなければsocial_lifeを優先比較。流行語の意味質問・移動ポイントの数字追い・前日までの再配達ゼロやセルフレジ表彰は焼き直さない。本文の具体行動を冒頭へ置く。walking-points-past-own-front-door／visual_strategy=illustration・動画未選抜／実ブラウザ画像目視は未実施。datacenter-unbuilt-ribbon-cuttingの既存画像・動画待ちは担当外として維持。
+- **直前**：11/6 11:30枠は「クリスマス準備を全部おまかせにした家族が、配送用の段ボールを3時間飾る」新作1本を公開。https://veripsa.com/articles/christmas-done-for-you-family-decorates-boxes/（JST 11:38:31／social_life・observational・visible_result）。風刺＝準備を全部省いて一緒に手を動かす時間も省く、笑い＝完成済みツリーは隅で、段ボールの手作りツリーを家族写真の中央に置く。ファミリーマート公式11/5 14:00のクリスマス準備負担調査を確認。見出し3秒、冒頭2文、3段落、禁止表現、過去記事とのオチを照合。記事PR #444はCI2件成功後にmain統合（2b259fbfacc946b0c8b8ceb00ae82d42b36a4b90）。本番公開検証run #42151969683成功（exact revision・記事・OGP・発行号）。タグ『家族』『イベント』で古い記事へのrelated-topic導線、回帰テストとライブ検証合格。イラスト方針で未目視のJPEGは採用せず、動画追加選抜なし。11/6ここまで3枠3本、重複なし。
+- **次枠**：11/6 13:30枠は当日3本（trend 1／social_life 1／original_satire 1）とeditorial_mix、未統合PR・本番revisionを再照合する。最初の7本へ向けてtrend候補を最新実観測から優先比較し、ニッチ・危機・説明過多なら別レーンで良案を採る。流行語の意味質問、移動ポイント、時短クリスマスの段ボール工作を焼き直さない。2026年11月6日の記事はplausible_future／comic_exaggeration／observationalが各1本で読後感が分かれている。今回のchristmas-done-for-you-family-decorates-boxesはvisual_strategy=illustration（専用画像未目視、生成JPEG未採用）、動画未選抜。過去の画像・動画待ちは担当外として維持。
 
 この2行は**上書き**し、日時付き改善節を末尾へ追加しない。履歴はGitHubコミットに残す。自動発行プロンプトにも追記で増築しない。
