@@ -268,6 +268,68 @@ def buffer_observed_time(item: dict) -> datetime | None:
     return None
 
 
+def provider_instant(value: object) -> datetime | None:
+    """Parse a provider timestamp without treating absent or invalid data as zero."""
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        instant = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return instant if instant.tzinfo is not None else None
+
+
+def buffer_delivery_spacing_hold(existing: list[dict], state: dict,
+                                 now: datetime, hours: int) -> str | None:
+    """Guard the real X-channel send window, not just two-hour logical slots.
+
+    Buffer's sentAt is stronger evidence than workflow schedule, queue time or
+    logical slot. Include other posts on this *same* X channel for spacing only,
+    not for the article lane's seven-slot quota. Unresolved send/schedule timing
+    fails closed rather than assuming there were zero recent sends. Reuse the
+    already-fetched Buffer rows and immutable receipts; make no extra API call.
+    """
+    if now.tzinfo is None or type(hours) is not int or hours < 2:
+        raise ValueError("Invalid real-send spacing window")
+    minimum = timedelta(hours=hours)
+    accepted_sent_by_id = {}
+    for entry in state["queued"].values():
+        sent = provider_instant(entry.get("buffer_sent_at_at_accept"))
+        if sent is not None:
+            accepted_sent_by_id[entry["buffer_id"]] = sent
+            if now - sent < minimum:
+                return "recent_verified_article_sent"
+        # An accepted shareNow request may still be sending after the receipt
+        # was saved. Never treat that recent attempt as proof of no activity.
+        if entry.get("submission_mode") == "shareNow":
+            accepted = provider_instant(entry.get("queued_at_utc"))
+            if accepted is None or now - accepted < minimum:
+                return "recent_or_unverified_article_submission"
+
+    for row in existing:
+        if not isinstance(row, dict):
+            return "unverified_buffer_post"
+        status = row.get("status")
+        if status == "sent":
+            sent = (provider_instant(row.get("sentAt"))
+                    or accepted_sent_by_id.get(row.get("id")))
+            if sent is None:
+                return "unverified_buffer_sent_time"
+            if now - sent < minimum:
+                return "recent_buffer_sent"
+        elif status == "sending":
+            return "buffer_send_in_progress"
+        elif status == "scheduled":
+            due = provider_instant(row.get("dueAt"))
+            if due is None:
+                return "unverified_buffer_schedule"
+            # Include overdue scheduled posts, which may be released late,
+            # and posts due less than two hours from now.
+            if due - now < minimum:
+                return "buffer_schedule_near_or_overdue"
+    return None
+
+
 def initial_provider_error_evidence(post: dict) -> dict:
     """Keep only bounded, user-facing Buffer publishing error details."""
     error = post.get("error")
@@ -671,7 +733,10 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     current_slot = promotion_slot(now)
     if (current_slot is None
             or today_count >= config["max_per_jst_day"]
-            or slot_already_used(state, now)):
+            or slot_already_used(state, now)
+            or buffer_delivery_spacing_hold(
+                existing, state, now, config["minimum_interval_hours"]
+            ) is not None):
         return None, None, len(queued)
     used_topics = promoted_topics_today(state, articles, now)
     fresh = rank_fresh(articles, state, remote_slugs, config, now)
@@ -735,6 +800,14 @@ def main() -> int:
     # 1–18-hour article. Dedupe, caps and one-per-logical-slot gates still apply.
     eligible, evidence, scheduled = decide(articles, {}, state, existing,
                                             config, now)
+    if eligible is None:
+        spacing_hold = buffer_delivery_spacing_hold(
+            existing, state, now, config["minimum_interval_hours"]
+        )
+        if spacing_hold is not None:
+            save_state(state)
+            print("Article X real-send spacing hold; no Buffer POST:", spacing_hold)
+            return 0
     metrics, window = ({}, None)
     if eligible is None and candidates:
         # Save recovered remote receipts even if measured-PV lookup fails.
