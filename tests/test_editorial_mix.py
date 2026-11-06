@@ -480,7 +480,7 @@ class EditorialMixTests(unittest.TestCase):
             term="流行語大賞",
         )
         item["title"] = "流行語大賞、候補語を知らない人ほど説明係に選ばれる"
-        item["summary"] = "候補30語を前に、候補語の意味を説明する側まで検索し直す逆転を描く。"
+        item["summary"] = "候補30語を前に、候補語の意味を説明する側まで検索し直し、流行を示すほど説明の手間が増える逆転を描く。"
         item["paragraphs"] = ["候補30語の発表後、候補語の説明会が開かれた。"]
         item["source"]["topic"] = "流行語大賞の候補30語が発表された。"
         item["trend_bridge"] = {
