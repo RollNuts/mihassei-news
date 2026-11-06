@@ -48,6 +48,12 @@ class GrowthDeskTests(unittest.TestCase):
         self.assertIn("PVはページの表示回数",output)
         self.assertIn("サイト累計PV",output)
         self.assertIn("直近7暦日PV",output)
+        self.assertIn("今日の伸び方",output)
+        self.assertIn("今日のPV・ここまで",output)
+        self.assertIn("ピーク時間PV",output)
+        self.assertIn("data-growth-peak-sources",output)
+        self.assertIn("data-growth-peak-kinds",output)
+        self.assertIn("ピーク時刻とX投稿時刻が近いだけでは原因と断定せず",output)
         self.assertIn("未計測は0に置き換えず",output)
         self.assertIn('option value="weekPv"',output)
         self.assertIn('option value="pageViews"',output)
@@ -55,6 +61,8 @@ class GrowthDeskTests(unittest.TestCase):
         self.assertIn('href="/share-desk/"',output)
         self.assertNotIn("/api/engagement?articles=",output,
                          "Static HTML must not contain a guessed live counter")
+        self.assertIn("本番サイトには公開しない編集用ビュー",output)
+        self.assertNotIn("本ページは公開URL",output)
         self.assertNotIn("広告を表示",output)
 
     def test_built_site_contains_review_and_noindex_http_header(self):
@@ -73,6 +81,11 @@ class GrowthDeskTests(unittest.TestCase):
         self.assertIn("metric.arrivals.search",js)
         self.assertIn("last7DaysPageViews",js)
         self.assertIn("data-growth-page-views",js)
+        self.assertIn("data-growth-peak-hour",js)
+        self.assertIn("pageViewSourcesCoverage",js)
+        self.assertIn("pageViewKindsCoverage",js)
+        self.assertIn("topArticles",js)
+        self.assertIn("&hour=",js)
         self.assertIn("未計測の記事は0ではなく",js)
         self.assertIn("replaceChildren",js)
         self.assertNotIn(".innerHTML=",js)

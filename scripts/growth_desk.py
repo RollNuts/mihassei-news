@@ -38,7 +38,7 @@ def render(articles: list[dict]) -> str:
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#f8f6f0">
-<meta name="description" content="未発生新聞の集客を匿名の参考値で検証する公開レポートです。">
+<meta name="description" content="未発生新聞の集客を匿名の参考値で検証する編集用ビューです。">
 <title>集客の実測 | 未発生新聞</title>
 <style>
 :root{{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
@@ -110,6 +110,26 @@ main{{padding:22px 12px 65px}}.panel{{padding:9px 10px}}th,td{{padding:10px 7px}
 <div class="stat"><span>直近7暦日PV</span><strong data-growth-week-page-views>—</strong>
 <small data-growth-week-page-views-note>計測範囲を確認中</small></div>
 </section>
+<section data-growth-spike hidden>
+<h2>今日の伸び方</h2>
+<p class="footnote">当日PVの途中経過と、最もPVが多い時間帯を表示します。
+ピーク時刻とX投稿時刻が近いだけでは原因と断定せず、同じ時間帯の流入元と上位記事を一緒に見ます。</p>
+<div class="stats" aria-label="当日のPVとピーク時間">
+<div class="stat"><span>今日のPV・ここまで</span><strong data-growth-today-pv>—</strong>
+<small>当日途中。終了済み1日とは比較条件が違う</small></div>
+<div class="stat"><span>前日のPV</span><strong data-growth-yesterday-pv>—</strong>
+<small>終了済み日の比較用</small></div>
+<div class="stat"><span>今日のピーク時間</span><strong data-growth-peak-hour>—</strong>
+<small>JSTの1時間単位</small></div>
+<div class="stat"><span>ピーク時間PV</span><strong data-growth-peak-pv>—</strong>
+<small>その時間帯のページ表示回数</small></div>
+</div>
+<div class="panel">
+<p class="footnote" data-growth-peak-sources>ピーク時間の流入元を取得しています。</p>
+<p class="footnote" data-growth-peak-kinds>ピーク時間のページ種別を取得しています。</p>
+<p class="footnote" data-growth-peak-top>ピーク時間の上位記事を取得しています。</p>
+</div>
+</section>
 <section data-growth-details hidden>
 <h2>ジャンル別の実測</h2>
 <p class="footnote">対象は直近{len(rows)}本。記事単位の数値を合計しているため、
@@ -139,6 +159,6 @@ PV列だけは表示回数です。未計測は0に置き換えず「—」と�
 <p class="footnote" data-growth-advice>実数の確認後に判断します。</p>
 <a class="action-link" href="/share-desk/">X紹介候補と投稿文を見る</a>
 <p class="footnote">Xへの投稿は手動。外部の有料解析・広告・SNS APIは使用しません。
-本ページは公開URLですが検索登録対象外で、管理者専用の秘密情報は含みません。</p>
+本ページは本番サイトには公開しない編集用ビューで、管理者専用の秘密情報は含みません。</p>
 </section>
 </main></body></html>'''

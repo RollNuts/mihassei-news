@@ -12,6 +12,14 @@
   const sort=root.querySelector('[data-growth-sort]');
   const advice=root.querySelector('[data-growth-advice]');
   const pvCoverage=root.querySelector('[data-growth-pv-coverage]');
+  const spike=root.querySelector('[data-growth-spike]');
+  const todayPvNode=root.querySelector('[data-growth-today-pv]');
+  const yesterdayPvNode=root.querySelector('[data-growth-yesterday-pv]');
+  const peakHourNode=root.querySelector('[data-growth-peak-hour]');
+  const peakPvNode=root.querySelector('[data-growth-peak-pv]');
+  const peakSourcesNode=root.querySelector('[data-growth-peak-sources]');
+  const peakKindsNode=root.querySelector('[data-growth-peak-kinds]');
+  const peakTopNode=root.querySelector('[data-growth-peak-top]');
   const pattern=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const categories=new Set(['社会','経済','技術','政治','暮らし','スポーツ','エンタメ']);
   let stories=[];
@@ -39,6 +47,30 @@
     return object[key];
   }
   const displayCount=n=>n===null?'—':count(n);
+  const measuredHourCoverage=new Set(['partial','complete','in-progress']);
+  function liveDayCount(data,key){
+    const day=data?.[key];
+    if(!day || typeof day!=='object')return null;
+    return optionalCount(day,'pageViews');
+  }
+  function busiestHour(data){
+    const rows=data?.hourly?.today;
+    if(!Array.isArray(rows))return null;
+    const measured=rows.filter(row=>
+      row && typeof row==='object' &&
+      typeof row.hourJst==='string' &&
+      /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):00$/.test(row.hourJst) &&
+      measuredHourCoverage.has(row.pageViewsCoverage) &&
+      valid(row.pageViews)
+    );
+    if(!measured.length)return null;
+    return measured.sort((a,b)=>b.pageViews-a.pageViews ||
+      b.hourJst.localeCompare(a.hourJst))[0];
+  }
+  const percentage=(part,total)=>total>0?Math.round(part*100/total)+'%':'—';
+  function storyLabel(slug){
+    return stories.find(item=>item.slug===slug)?.title || slug;
+  }
   function note(msg){if(status)status.textContent=msg;}
   function cell(row,value){
     const td=document.createElement('td');
@@ -112,8 +144,108 @@
   }
   if(!stories.length){note('公開済みの記事候補がありません。');return;}
 
+  async function renderSpike(data,articleQuery){
+    if(!spike)return;
+    const todayPv=liveDayCount(data,'today');
+    const yesterdayPv=liveDayCount(data,'yesterday');
+    if(todayPvNode)todayPvNode.textContent=displayCount(todayPv);
+    if(yesterdayPvNode)yesterdayPvNode.textContent=displayCount(yesterdayPv);
+
+    const peak=busiestHour(data);
+    if(!peak){
+      if(peakHourNode)peakHourNode.textContent='—';
+      if(peakPvNode)peakPvNode.textContent='—';
+      if(peakSourcesNode)peakSourcesNode.textContent='時間帯別PVはまだ未計測です。';
+      if(peakKindsNode)peakKindsNode.textContent='ページ種別はまだ判定できません。';
+      if(peakTopNode)peakTopNode.textContent='上位記事はまだ判定できません。';
+      spike.hidden=false;
+      return;
+    }
+
+    if(peakHourNode)peakHourNode.textContent=peak.hourJst.slice(11,16)+'台';
+    if(peakPvNode)peakPvNode.textContent=count(peak.pageViews);
+    spike.hidden=false;
+
+    try{
+      const hour=peak.hourJst.slice(0,13);
+      const response=await fetch(
+        '/api/engagement?articles='+articleQuery+'&hour='+encodeURIComponent(hour),
+        {cache:'no-store',credentials:'same-origin'}
+      );
+      if(!response.ok)throw new Error('ピーク時間の詳細APIの応答がありません');
+      const detail=await response.json();
+      const selected=detail.selectedHour;
+      const top=detail?.topArticles?.selectedHour;
+      if(!selected || typeof selected!=='object' ||
+         selected.hourJst!==peak.hourJst ||
+         !measuredHourCoverage.has(selected.pageViewsCoverage) ||
+         !valid(selected.pageViews) || !Array.isArray(top))
+        throw new Error('ピーク時間の詳細集計が不完全です');
+
+      if(peakPvNode)peakPvNode.textContent=count(selected.pageViews);
+      const sourceCoverage=selected.pageViewSourcesCoverage;
+      const sources=selected.pageViewSources;
+      if(sourceCoverage==='unmeasured'){
+        if(sources!==null)throw new Error('未計測の流入元に数値があります');
+        if(peakSourcesNode)peakSourcesNode.textContent=
+          'この時間帯の流入元は計測開始前のため判定できません。';
+      }else{
+        if(!measuredHourCoverage.has(sourceCoverage) ||
+           !sources || typeof sources!=='object' ||
+           !['x','search','external','unattributed'].every(key=>valid(sources[key])))
+          throw new Error('ピーク時間の流入元集計が不完全です');
+        const total=sources.x+sources.search+sources.external+sources.unattributed;
+        const coverage=sourceCoverage==='partial'?'（一部計測）':'';
+        if(peakSourcesNode)peakSourcesNode.textContent=
+          '流入元'+coverage+'：X '+count(sources.x)+'（'+percentage(sources.x,total)+
+          '） / 検索 '+count(sources.search)+'（'+percentage(sources.search,total)+
+          '） / 外部 '+count(sources.external)+'（'+percentage(sources.external,total)+
+          '） / 不明 '+count(sources.unattributed)+'（'+percentage(sources.unattributed,total)+'）';
+      }
+
+      const kindCoverage=selected.pageViewKindsCoverage;
+      const kinds=selected.pageViewKinds;
+      if(kindCoverage==='unmeasured'){
+        if(kinds!==null)throw new Error('未計測のページ種別に数値があります');
+        if(peakKindsNode)peakKindsNode.textContent=
+          'この時間帯のページ種別は計測開始前のため判定できません。';
+      }else{
+        const kindKeys=['home','article','archive','serial','other'];
+        if(!measuredHourCoverage.has(kindCoverage) ||
+           !kinds || typeof kinds!=='object' ||
+           !kindKeys.every(key=>valid(kinds[key])))
+          throw new Error('ピーク時間のページ種別集計が不完全です');
+        const total=kindKeys.reduce((sum,key)=>sum+kinds[key],0);
+        const coverage=kindCoverage==='partial'?'（一部計測）':'';
+        if(peakKindsNode)peakKindsNode.textContent=
+          'ページ種別'+coverage+'：記事 '+count(kinds.article)+'（'+percentage(kinds.article,total)+
+          '） / トップ '+count(kinds.home)+'（'+percentage(kinds.home,total)+
+          '） / 一覧 '+count(kinds.archive)+' / 連載 '+count(kinds.serial)+
+          ' / その他 '+count(kinds.other);
+      }
+
+      const rows=top.filter(row=>row && typeof row.article==='string' &&
+        pattern.test(row.article) && valid(row.pageViews)).slice(0,3);
+      if(peakTopNode){
+        if(!rows.length)peakTopNode.textContent='この時間帯にPVのある記事はありません。';
+        else peakTopNode.textContent='上位記事：'+rows.map((row,index)=>{
+          const share=selected.pageViews>0?'・'+percentage(row.pageViews,selected.pageViews):'';
+          return (index+1)+'. '+storyLabel(row.article)+' '+count(row.pageViews)+'PV'+share;
+        }).join(' / ');
+      }
+    }catch(error){
+      if(peakSourcesNode)peakSourcesNode.textContent=
+        'ピーク時間の流入元詳細を表示できません：'+(error?.message||'現在利用できません');
+      if(peakKindsNode)peakKindsNode.textContent=
+        '時間帯別のページ種別は、詳細集計が取得できるまで断定しません。';
+      if(peakTopNode)peakTopNode.textContent=
+        '時間帯別の上位記事は、詳細集計が取得できるまで断定しません。';
+    }
+  }
+
   async function load(){
-    const url='/api/engagement?articles='+encodeURIComponent(stories.map(a=>a.slug).join(','));
+    const articleQuery=encodeURIComponent(stories.map(a=>a.slug).join(','));
+    const url='/api/engagement?articles='+articleQuery;
     const response=await fetch(url,{cache:'no-store',credentials:'same-origin'});
     if(!response.ok)throw new Error('集計APIの応答がありません');
     const data=await response.json();
@@ -184,6 +316,7 @@
     build(rows);
     summary.hidden=false;
     details.hidden=false;
+    await renderSpike(data,articleQuery);
     const xArticles=rows.filter(item=>item.x>0).length;
     const searchArticles=rows.filter(item=>item.search>0).length;
     const pvRows=rows.filter(item=>item.weekPv!==null);
