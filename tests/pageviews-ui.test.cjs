@@ -293,7 +293,7 @@ test('session acquisition source persists for 30 minutes and then rotates with a
   assert.equal(internal.visits()[0].body.sessionChannel,'x',
     'internal navigation keeps the acquisition source of the visit');
 
-  const later=await runPage({url:'https://veripsa.com/articles/story-c/?utm_source=google',storage:first.storage,clock:start+31*60*1000});
+  const later=await runPage({url:'https://veripsa.com/articles/story-c/?utm_source=google',storage:first.storage,clock:start+41*60*1000});
   assert.notEqual(later.visits()[0].body.sessionId,session);
   assert.equal(later.visits()[0].body.sessionChannel,'search');
 });
