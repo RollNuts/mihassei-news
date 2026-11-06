@@ -86,8 +86,10 @@ PAYOFF_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T09:00:00+09:00")
 TREND_BRIDGE_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T16:00:00+09:00")
 TREND_SPECIFICITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T18:00:00+09:00")
 READER_INTEREST_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T00:00:00+09:00")
+READER_CLARITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T21:00:00+09:00")
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
 TREND_SPECIFICITY_KEYS = ("real_detail", "unique_hook")
+READER_CLARITY_KEYS = ("who", "action", "oddity")
 X_TAG_RE = re.compile(r"\w{1,12}\Z")
 X_TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 GENERIC_X_DISCOVERY_TERMS = {
@@ -397,6 +399,51 @@ def _validate_signature(article: dict, slug: str) -> list[str]:
             errors.append(f"{slug}: editorial_signature.{key} must be 4-220 chars")
     return errors
 
+
+
+def _validate_reader_clarity(article: dict, slug: str, published: datetime) -> list[str]:
+    """Require a blind first-read check for newly published stories."""
+    if published < READER_CLARITY_ROLLOUT_AT:
+        return []
+
+    clarity = article.get("reader_clarity")
+    if not isinstance(clarity, dict):
+        return [f"{slug}: reader_clarity is required after clarity rollout"]
+
+    errors: list[str] = []
+    limits = {
+        "who": (2, 60),
+        "action": (4, 140),
+        "oddity": (8, 180),
+    }
+    for key in READER_CLARITY_KEYS:
+        value = clarity.get(key)
+        low, high = limits[key]
+        if not isinstance(value, str) or not low <= len(value.strip()) <= high:
+            errors.append(
+                f"{slug}: reader_clarity.{key} must be {low}-{high} chars"
+            )
+
+    title = article.get("title")
+    summary = article.get("summary")
+    if not isinstance(title, str) or len(title.strip()) < 12:
+        errors.append(f"{slug}: clarity rollout requires a self-contained title")
+    if not isinstance(summary, str) or len(summary.strip()) < 30:
+        errors.append(f"{slug}: clarity rollout requires a self-contained summary")
+
+    who = clarity.get("who")
+    if (
+        isinstance(who, str)
+        and who.strip()
+        and isinstance(title, str)
+        and isinstance(summary, str)
+        and _norm(who) not in _norm(title + " " + summary)
+    ):
+        errors.append(
+            f"{slug}: reader_clarity.who must appear in the title or summary "
+            "so the subject is explicit on a blind read"
+        )
+    return errors
 
 def _validate_plausibility(article: dict, slug: str) -> list[str]:
     """Require an inspectable causal path only for the deliberately plausible tone."""
@@ -827,6 +874,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
                 recent_payoffs.append((published, payoff, slug))
 
         errors.extend(_validate_signature(article, slug))
+        errors.extend(_validate_reader_clarity(article, slug, published))
         errors.extend(_validate_plausibility(article, slug))
         errors.extend(_validate_x_metadata(article, slug, published))
         signature = article.get("editorial_signature")
