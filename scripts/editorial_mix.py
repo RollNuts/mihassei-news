@@ -364,7 +364,7 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
         return [f"{slug}: trend lane requires trend_bridge after quality rollout"]
 
     errors: list[str] = []
-    for key in ("why_now", "shared_behavior", "satire_gap"):
+    for key in TREND_BRIDGE_KEYS[:3]:
         value = bridge.get(key)
         if not isinstance(value, str) or not 8 <= len(value.strip()) <= 240:
             errors.append(f"{slug}: trend_bridge.{key} must be 8-240 chars")
