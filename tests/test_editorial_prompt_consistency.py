@@ -33,6 +33,11 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("plausibility_basis", prompt)
         self.assertIn("現実の兆候", prompt)
         self.assertIn("直近2本", prompt)
+        self.assertIn("初見テスト", prompt)
+        self.assertIn("reader_clarity", prompt)
+        self.assertIn("誰が", prompt)
+        self.assertIn("何をして", prompt)
+        self.assertIn("なぜ変", prompt)
         for directive in STALE_DIRECTIVES:
             self.assertNotIn(directive, guide)
 
