@@ -363,9 +363,10 @@ test('hourly PV and top-article rankings expose a same-day spike without waiting
   let snapshot=(await f.get('story-a,story-b','2026-11-06')).data;
   assert.equal(snapshot.version,2);
   assert.equal(snapshot.hourly.timezone,'Asia/Tokyo');
+  assert.equal(snapshot.hourly.startedAtUtc,'2026-11-06T09:15:00.000Z');
   assert.equal(snapshot.hourly.today[18].hourJst,'2026-11-06T18:00');
   assert.equal(snapshot.hourly.today[18].pageViews,4);
-  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'in-progress');
+  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'partial');
   assert.equal(snapshot.hourly.today[19].pageViews,null);
   assert.equal(snapshot.hourly.today[19].pageViewsCoverage,'future');
   assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.currentHour)),[
@@ -383,7 +384,7 @@ test('hourly PV and top-article rankings expose a same-day spike without waiting
   for(let i=0;i<5;i++)await f.post(view(browser,'story-b'));
   snapshot=(await f.get('story-a,story-b')).data;
   assert.equal(snapshot.hourly.today[18].pageViews,4);
-  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'complete');
+  assert.equal(snapshot.hourly.today[18].pageViewsCoverage,'partial');
   assert.equal(snapshot.hourly.today[19].pageViews,5);
   assert.equal(snapshot.hourly.today[19].pageViewsCoverage,'in-progress');
   assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.currentHour)),[
