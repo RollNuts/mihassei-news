@@ -47,10 +47,16 @@ def story(
         "editorial_lane": lane,
         "editorial_tone": tone,
         "editorial_signature": {
+            "present": f"{slug}で今も見られる効率優先の行動がある",
             "target": f"{slug}が効率を重視しすぎる",
             "action": f"{slug}が手段を目的にする",
             "outcome": f"{slug}の本来の目的が消える",
         },
+        "visual_strategy": "cpu-photo",
+        "scene_prompt": (
+            "A candid documentary-style photo of one ordinary person using a simple "
+            "everyday object in a normal Japanese room, natural light, no readable text."
+        ),
         "source": {
             "url": f"https://example.com/{slug}",
         },
@@ -142,6 +148,80 @@ class EditorialMixTests(unittest.TestCase):
         }
         errors, _ = validate_articles([item])
         self.assertFalse(any("reader_clarity" in error for error in errors))
+
+    def test_present_reality_anchor_is_required_after_review_rollout(self):
+        published = datetime(2026, 11, 6, 22, 30, tzinfo=JST)
+        item = story("present-anchor", "social_life", published=published)
+        item["title"] = "買い物客、ポイント確認のため店を出たあと入口へ戻る"
+        item["summary"] = "買い物を早く済ませるはずが、獲得ポイントの確認に夢中になり、退店後も入口へ戻ってレシートを見直す。"
+        item["reader_clarity"] = {
+            "who": "買い物客",
+            "action": "退店後も入口へ戻って獲得ポイントを確認する",
+            "oddity": "買い物を終えるための仕組みなのに、確認作業のため店を出られない",
+        }
+        item["editorial_signature"].pop("present")
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("editorial_signature.present" in error for error in errors))
+
+        item["editorial_signature"]["present"] = "買い物後もポイントや特典を細かく確認する行動がすでにある"
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("editorial_signature.present" in error for error in errors))
+
+    def test_illustration_requires_a_concrete_reason_after_photo_first_rollout(self):
+        published = datetime(2026, 11, 6, 22, 30, tzinfo=JST)
+        item = story("illustration-reason", "original_satire", published=published)
+        item["title"] = "家族4人、空席を守るため全員が別々のテーブルに着席"
+        item["summary"] = "混雑を避けるため席を確保した結果、同じ家族なのに全員が離れて食事することになった。"
+        item["reader_clarity"] = {
+            "who": "家族4人",
+            "action": "空席を確保するため全員が別々のテーブルに座る",
+            "oddity": "一緒に食事するため来たのに、席を守るほど家族が離れていく",
+        }
+        item["visual_strategy"] = "illustration"
+        item["scene_prompt"] = (
+            "A simple editorial scene of four family members seated at separate tables "
+            "inside one ordinary food court, no readable text."
+        )
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("illustration_reason required" in error for error in errors))
+
+        item["illustration_reason"] = "complex_relationship"
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("illustration_reason" in error for error in errors))
+
+    def test_photo_wording_cannot_be_routed_to_illustration(self):
+        published = datetime(2026, 11, 6, 22, 30, tzinfo=JST)
+        item = story("visual-mismatch", "original_satire", published=published)
+        item["title"] = "防犯パトロール2班、互いを見張って町内を3周"
+        item["summary"] = "知らない巡回班を不審者だと思い、双方が相手を追ううちに同じ住宅街を何度も回った。"
+        item["reader_clarity"] = {
+            "who": "防犯パトロール2班",
+            "action": "互いを不審者だと思って見張りながら住宅街を回る",
+            "oddity": "地域を守る側同士が相手を怪しみ、防犯活動そのものが追跡を生む",
+        }
+        item["visual_strategy"] = "illustration"
+        item["illustration_reason"] = "precise_count_or_absence"
+        item["scene_prompt"] = (
+            "Photorealistic documentary-style photo of two neighborhood patrol groups "
+            "watching each other on a quiet residential street."
+        )
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("conflicts with a photo-directed" in error for error in errors))
+
+    def test_report_surfaces_photo_first_advice_when_illustrations_dominate(self):
+        articles = []
+        for i in range(5):
+            item = story(
+                f"visual-{i}",
+                "social_life",
+                published=datetime(2026, 11, 6, 12 + i, 0, tzinfo=JST),
+            )
+            if i < 4:
+                item["visual_strategy"] = "illustration"
+            articles.append(item)
+        rendered = report_day(articles, "2026-11-06")
+        self.assertIn("illustration=4", rendered)
+        self.assertIn("cpu-photo preferred", rendered)
 
     def test_reader_interest_is_required_from_next_day_rollout(self):
         published = datetime(2026, 11, 7, 9, 30, tzinfo=JST)
