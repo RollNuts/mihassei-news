@@ -21,7 +21,6 @@ GENERIC_X_LABELS = {
     "仕事", "働き方", "家族", "技術", "教育", "暮らし", "文化", "旅行",
     "生活", "研究", "社会", "経済",
 }
-SLANG_MARKER_RE = re.compile(r"(?:あるある|ガチャ|コスパ|タイパ|バズ|推し|沼|炎上|界隈|疲れ|活)")
 SLANG_RULES = (
     (("ポイ活", "ポイント"), "ポイ活"),
     (("タイパ", "時短", "倍速"), "タイパ"),
@@ -44,7 +43,8 @@ def article_hashtags(article: dict, limit: int = 2) -> list[str]:
     x_tickers and explicit x_tags. A raw trend_observation.term is deliberately
     not promoted to a hashtag: "what is trending" and "what readers search for
     to find this article" are different editorial decisions. Only after explicit
-    discovery terms do we infer a small set of well-known slang from the article.
+    discovery terms do we infer a small set of well-known slang from the public
+    title/summary only. Site `tags` and `satire_tags` never feed X discovery.
     Broad site categories such as SNS or アプリ are never used merely to fill the post.
     """
     if type(limit) is not int:
@@ -91,10 +91,6 @@ def article_hashtags(article: dict, limit: int = 2) -> list[str]:
             return result
 
     fields = [article.get("title"), article.get("summary")]
-    for key in ("satire_tags", "tags"):
-        values = article.get(key, [])
-        if isinstance(values, list):
-            fields.extend(values)
     searchable = "\n".join(value for value in fields if isinstance(value, str))
 
     for needles, label in SLANG_RULES:
@@ -103,13 +99,6 @@ def article_hashtags(article: dict, limit: int = 2) -> list[str]:
             if len(result) >= maximum:
                 return result
 
-    satire_tags = article.get("satire_tags", [])
-    if isinstance(satire_tags, list):
-        for tag in satire_tags:
-            if isinstance(tag, str) and SLANG_MARKER_RE.search(tag):
-                add(tag)
-            if len(result) >= maximum:
-                break
     return result
 
 def _weighted_tokens(text: str):

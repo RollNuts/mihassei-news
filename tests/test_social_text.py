@@ -130,7 +130,7 @@ class SocialTextTests(unittest.TestCase):
         )
         self.assertEqual(
             article_hashtags({"satire_tags": ["家族あるある", "本末転倒"]}),
-            ["#家族あるある"],
+            [],
         )
 
     def test_invalid_labels_are_skipped_whole_without_changing_the_topic(self):
@@ -153,6 +153,18 @@ class SocialTextTests(unittest.TestCase):
         self.assertEqual(article_hashtags(article), [])
         article["x_tags"] = ["流行語大賞"]
         self.assertEqual(article_hashtags(article), ["#流行語大賞"])
+
+    def test_site_tags_never_drive_x_discovery(self):
+        article = {
+            "title": "家族で静かに夕食を食べる",
+            "summary": "特定の界隈語を使わない普通の記事。",
+            "tags": ["ポイ活", "推し活"],
+            "satire_tags": ["家族あるある", "タイパ至上主義"],
+        }
+        self.assertEqual(article_hashtags(article), [])
+
+        article["summary"] = "ポイントを稼ぐため帰宅を遠回りした。"
+        self.assertEqual(article_hashtags(article), ["#ポイ活"])
 
     def test_missing_or_malformed_topics_do_not_invent_hashtags(self):
         for article in ({}, {"x_tags": None}, {"x_tags": "ポイ活"}, {"x_tags": {}},
