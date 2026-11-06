@@ -1,5 +1,51 @@
 [
   {
+    "slug": "walking-points-past-own-front-door",
+    "category": "暮らし",
+    "flash": "家の前をもう一周",
+    "fiction_company": "移動ポイントアプリ",
+    "art": "cards",
+    "fiction_at": "2031-11-06T09:38:24+09:00",
+    "published_at": "2026-11-06T09:38:24+09:00",
+    "title": "移動ポイントを稼ぐ男性、家の前を通り過ぎてもう一周　家族に窓越しで手を振る",
+    "summary": "歩いた距離で特典がもらえるアプリの残り表示を見て、玄関前から帰宅を先延ばしにした。家族は夕食を用意したまま、窓の前を通り過ぎる姿を見送る。",
+    "paragraphs": [
+      "会社員の園田さんは、買い物帰りに歩行ポイントの画面を開いた。「本日の特典まであと420メートル」。目の前は自宅の玄関だったが、鍵をしまい、住宅街をもう一周することにした。",
+      "玄関脇の窓から娘が手を振ると、園田さんも片手を上げて通り過ぎた。食卓には夕飯が並び、娘が「お父さん、帰ってきた？」と聞く。妻は外を見て「まだ家の前を歩いてる」と答えた。",
+      "一周して玄関へ戻ると、ようやく「目標達成」の通知が出た。その下には「あと200メートルで追加特典」。園田さんは鍵を握ったまま家を見上げ、窓の娘にもう一度手を振って歩き出した。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "ANA X株式会社（PR TIMES）",
+      "published_at": "2026-11-05T10:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000460.000029572.html",
+      "topic": "ANA Xが2026年11月5日10時、日常の移動でポイントが貯まる『ANA Pocket』を12月の展示会で紹介すると発表。ANA Pocket公式サイトでも徒歩など日々の移動でポイントが貯まる仕組みを説明。園田さん、架空アプリの追加特典表示、自宅前を通り過ぎる行動や家族の反応は本紙独自の創作であり、同社サービスの実例や仕様を報じるものではない。"
+    },
+    "scene_prompt": "A grounded editorial illustration of a Japanese residential street at early evening: a man in ordinary work clothes carrying a small grocery bag walks past his own front door while looking at a walking points app on his smartphone, gently waving to his daughter visible in the house window; warm home lights and a dinner table in the background, ordinary scale, no logos, no readable text, no caricatures.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "アプリ",
+      "散歩"
+    ],
+    "satire_tags": [
+      "ポイント沼",
+      "本末転倒"
+    ],
+    "editorial_lane": "original_satire",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "target": "歩く目的よりアプリのポイントを増やすことを優先し、自宅に帰る本来の目的を見失う",
+      "action": "帰宅直前に残りポイントを見て自宅の前を通過し、達成後も次の特典のため歩き直す",
+      "outcome": "家族が夕飯を待つ窓の前を手を振って二度通り過ぎ、玄関には入らない"
+    },
+    "plausibility_basis": {
+      "present_signal": "徒歩などの日常の移動でポイントを貯められるサービスが既に提供されている。",
+      "continuation_force": "歩数や移動距離を特典と結びつける習慣が続くと、移動の終点より達成通知を優先する人が現れ得る。",
+      "future_result": "帰宅目前の人がアプリの残り距離を埋めるため玄関を通り過ぎ、家族に窓越しで手を振って歩き続ける。"
+    }
+  },
+  {
     "slug": "buzzword-award-what-does-it-mean-wins",
     "category": "エンタメ",
     "flash": "意味を聞く声が大賞",
