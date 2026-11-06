@@ -401,8 +401,52 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
             f"{slug}: x_discovery_term must be explicitly present in x_tags or x_tickers"
         )
 
+    primary_discovery = ""
+    if isinstance(x_tickers, list):
+        primary_discovery = next(
+            (
+                item.strip().upper()
+                for item in x_tickers
+                if isinstance(item, str) and item.strip()
+            ),
+            "",
+        )
+    if not primary_discovery and isinstance(x_tags, list):
+        primary_discovery = next(
+            (
+                item.strip()
+                for item in x_tags
+                if isinstance(item, str) and item.strip()
+            ),
+            "",
+        )
+    if discovery and primary_discovery and _norm(discovery) != _norm(primary_discovery):
+        errors.append(
+            f"{slug}: x_discovery_term must be the first explicit X discovery term"
+        )
+
     title = article.get("title")
     summary = article.get("summary")
+    source_topic = article.get("source", {}).get("topic")
+    public_anchor = _norm(
+        " ".join(
+            value
+            for value in (title, summary, source_topic)
+            if isinstance(value, str)
+        )
+    )
+    trend = article.get("trend_observation")
+    observed_term = _norm(trend.get("term")) if isinstance(trend, dict) else ""
+    discovery_norm = _norm(discovery)
+    if (
+        discovery_norm
+        and discovery_norm != observed_term
+        and discovery_norm not in public_anchor
+    ):
+        errors.append(
+            f"{slug}: x_discovery_term must match the observed trend term or be "
+            "anchored in title, summary, or source.topic"
+        )
     if not isinstance(title, str) or len(title.strip()) < 16:
         errors.append(f"{slug}: trend title must be self-contained and at least 16 chars")
     if not isinstance(summary, str) or len(summary.strip()) < 36:
