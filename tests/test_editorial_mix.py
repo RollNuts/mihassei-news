@@ -286,6 +286,73 @@ class EditorialMixTests(unittest.TestCase):
         self.assertTrue(any("too broad" in error for error in errors))
         self.assertTrue(any("explicitly present" in error for error in errors))
 
+    def test_trend_discovery_term_must_be_primary_and_article_anchored(self):
+        item = story(
+            "anchored",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "流行語を知らない人ほど受賞語の説明係に選ばれる"
+        item["summary"] = "知っている前提の言葉ほど、知らない側に説明する手間が回ってくる逆転を描く。"
+        item["source"]["topic"] = "2026年の流行語大賞候補発表"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表があり、候補語の意味を尋ねる反応も出ている。",
+            "shared_behavior": "みんなが知っている前提の言葉ほど、知らない側に説明責任が回ってくる。",
+            "satire_gap": "流行を表彰するほど、その言葉の意味を説明する仕事が増えてしまう。",
+            "x_discovery_term": "流行語大賞",
+        }
+        item["x_tags"] = ["バズ", "流行語大賞"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("first explicit X discovery term" in error for error in errors))
+
+        item["x_tags"] = ["ポイ活"]
+        item["trend_bridge"]["x_discovery_term"] = "ポイ活"
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("anchored in title" in error for error in errors))
+
+    def test_exact_observed_trend_term_is_a_valid_discovery_anchor(self):
+        item = story(
+            "observed-anchor",
+            "trend",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+            term="流行語大賞",
+        )
+        item["title"] = "知らない言葉ほど説明係が増える表彰式"
+        item["summary"] = "候補語を知っている前提が強まるほど、意味を尋ねる人が増える逆転を描く記事。"
+        item["trend_bridge"] = {
+            "why_now": "流行語大賞の候補発表があり、候補語そのものへの注目が集まっている。",
+            "shared_behavior": "流行していると言われると、知らないことを言い出しにくくなる。",
+            "satire_gap": "流行を示す制度なのに、受賞後ほど意味を確認する人が増える。",
+            "x_discovery_term": "流行語大賞",
+        }
+        item["x_tags"] = ["流行語大賞"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
+    def test_new_articles_reject_broad_invalid_or_unpublished_x_terms(self):
+        item = story(
+            "x-meta",
+            "social_life",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+        )
+        item["x_tags"] = ["社会"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("generic X tag" in error for error in errors))
+
+        item["x_tags"] = ["ポイ活", "タイパ", "推し活"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("at most 2 discovery terms" in error for error in errors))
+
+        item["x_tags"] = []
+        item["x_tickers"] = ["nvda"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("invalid x_tickers" in error for error in errors))
+
+        item["x_tickers"] = ["NVDA"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
