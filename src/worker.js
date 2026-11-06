@@ -265,6 +265,12 @@ export class NewsroomStats extends DurableObject {
         ...this.pageViewSummary(day,startedAt),
         ...this.sessionSummary(sessionStartedAt),
         ...this.pageViewSourceSummary(day,hour,sourceStartedAt),
+        ...(requestedDay===null ? {} : {
+          pageViewSourcesDay:this.dayCoverage({date:requestedDay},day,sourceStartedAt)==="unmeasured"
+            ? null : Object.fromEntries(attributionChannels.map(source=>[
+                source,this.count("day:"+requestedDay+":pageViewSource:"+source)
+              ]))
+        }),
         hourly:{
           timezone:"Asia/Tokyo",
           today:this.hourlyDaySnapshot(day.date,hour,startedAt),
