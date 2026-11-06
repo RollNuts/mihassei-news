@@ -1,5 +1,46 @@
 [
   {
+    "slug": "christmas-done-for-you-family-decorates-boxes",
+    "category": "暮らし",
+    "flash": "準備ゼロ、工作3時間",
+    "fiction_company": "杉崎家",
+    "art": "cards",
+    "fiction_at": "2031-11-06T11:38:31+09:00",
+    "published_at": "2026-11-06T11:38:31+09:00",
+    "title": "クリスマス準備を全部おまかせにした家族、配送用の段ボールを3時間飾り付け",
+    "summary": "料理もケーキもツリーも完成した状態で届き、夕食まですることがなくなった。娘が空き箱に星を貼り始めると、両親も工作道具を探し出した。",
+    "paragraphs": [
+      "杉崎さん一家は、今年のクリスマスの準備を全部おまかせにした。料理とケーキが届き、飾り付け済みのツリーも設置された。夕食までまだ時間があるのに、家族の仕事は玄関の梱包箱を片付けるだけになった。",
+      "娘が捨てるはずの段ボールに折り紙の星を貼った。息子は小さな箱を重ねて木の形にし、父親がテープで固定する。母親はリボンを探し、家族全員が床に座って飾り付けを始めた。",
+      "3時間後、完成した段ボールのツリーを囲んで記念写真を撮った。業者が飾った立派なツリーは部屋の隅に残り、枝にはまだ「設置完了」の札がぶら下がっていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社ファミリーマート（PR TIMES）",
+      "published_at": "2026-11-05T14:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000002628.000046210.html",
+      "topic": "2026年11月5日14:00のファミリーマート公式発表によると、自宅でクリスマスディナーを楽しむ意向の人の74.6％が平日の準備・片付けの負担を減らしたいと回答。記事中の杉崎家、料理・ツリーの一括手配、空き箱工作と会話は実際の調査対象や同社サービスの実例ではなく独自の創作。"
+    },
+    "scene_prompt": "A natural candid editorial photograph in an ordinary Japanese family living room at Christmas: two parents and two children sit on the floor decorating a small Christmas tree built from stacked plain shipping cardboard boxes with paper stars and ribbons, with a fully decorated professional Christmas tree standing unused at the edge of the room. Afternoon daylight, natural skin and cardboard texture, casual unposed gestures, no logos, no readable writing, no theatrical lighting.",
+    "visual_strategy": "illustration",
+    "tags": [
+      "家族",
+      "イベント"
+    ],
+    "satire_tags": [
+      "時短の行き過ぎ",
+      "家族あるある"
+    ],
+    "editorial_lane": "social_life",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "target": "家族がクリスマスの準備を省くことを優先し、一緒に手を動かして楽しむ時間を見失う",
+      "action": "料理も飾りも全て完成品を頼んだあと、捨てる梱包箱を家族全員で3時間飾り付ける",
+      "outcome": "完成済みの立派なツリーは隅に置かれ、家族写真の中心に手作りの段ボールツリーが残る"
+    }
+  },
+  {
     "slug": "walking-points-past-own-front-door",
     "category": "暮らし",
     "flash": "家の前をもう一周",
