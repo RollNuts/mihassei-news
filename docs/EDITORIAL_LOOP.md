@@ -115,7 +115,7 @@
 
 ### 毎回の発行で使う短い執筆プロンプト（最優先）
 
-> 候補2案以上を比較し、風刺の的・笑い・`editorial_tone`を1行ずつ。当日`reader_interest`と`interest_next`を見て同じ領域の連打を避け、キャラは`character_next`が自然な時だけ比較。trendは`why_now/shared_behavior/satire_gap`→原稿後に`x_discovery_term`を決め`x_tags/x_tickers`へ。直近2本と`payoff_next`を見て`editorial_payoff`を記録。`plausible_future`が0なら現実の兆候→5年続く力→結果を比較。書く前に主役／場所／行動／結果。見出し3秒、冒頭2文で人物・原因・現場。`summary`は言い直さず本文は原因→行動→結果。二度目の逆転は不要。説明で救わず設定を減らす。見出し・summary・本文に「架空の」「創作の」「これはフィクション」の断りを書かない。
+> 候補2案以上を比較し、風刺の的・笑い・`editorial_tone`を1行ずつ。当日`reader_interest`と`interest_next`を見て同じ領域の連打を避け、キャラは`character_next`が自然な時だけ比較。trendは`why_now/shared_behavior/satire_gap`→原稿後に`x_discovery_term`を決め`x_tags/x_tickers`へ。直近2本と`payoff_next`を見て`editorial_payoff`を記録。`plausible_future`が0なら現実の兆候→5年続く力→結果を`plausibility_basis`へ。書く前に主役／場所／行動／結果。見出し3秒、冒頭2文で人物・原因・現場。`summary`は言い直さず本文は原因→行動→結果。二度目の逆転は不要。説明で救わず設定を減らす。見出し・summary・本文に「架空の」「創作の」「これはフィクション」の断りを書かない。
 
 ### 風刺と笑いを別々に確認する（採用前必須）
 
