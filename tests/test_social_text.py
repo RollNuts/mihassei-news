@@ -121,6 +121,14 @@ class SocialTextTests(unittest.TestCase):
             ["#生成AI", "#推し活"],
         )
         self.assertEqual(
+            article_hashtags({"x_tickers": ["NVDA"], "x_tags": ["AIバブル", "半導体"]}),
+            ["$NVDA", "#AIバブル"],
+        )
+        self.assertEqual(
+            article_hashtags({"x_tickers": ["nvda", "TOO-LONG", "$TSLA"], "x_tags": ["ポイ活"]}),
+            ["#ポイ活"],
+        )
+        self.assertEqual(
             article_hashtags({"satire_tags": ["家族あるある", "本末転倒"]}),
             ["#家族あるある"],
         )
