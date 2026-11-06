@@ -472,6 +472,13 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
     title = article.get("title")
     summary = article.get("summary")
     source_topic = article.get("source", {}).get("topic")
+    reader_anchor = _norm(
+        " ".join(
+            value
+            for value in (title, summary)
+            if isinstance(value, str)
+        )
+    )
     public_anchor = _norm(
         " ".join(
             value
@@ -496,6 +503,15 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
         and any(char.isalpha() for char in observed_raw)
         and observed_raw not in GENERIC_X_DISCOVERY_TERMS
     )
+    if (
+        observed_is_natural_hashtag
+        and observed_term
+        and observed_term not in reader_anchor
+    ):
+        errors.append(
+            f"{slug}: natural observed trend term '{observed_raw}' must appear "
+            "in the title or summary, not only in metadata"
+        )
     if (
         observed_is_natural_hashtag
         and discovery_norm
