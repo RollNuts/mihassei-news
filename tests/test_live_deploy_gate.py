@@ -385,6 +385,11 @@ class PVAPIDeploymentTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '41 23 * * *'", workflow)
         self.assertIn("permissions:\n  contents: read", workflow)
+        self.assertIn("group: public-pv-health-main", workflow)
+        self.assertIn("cancel-in-progress: true", workflow)
+        self.assertIn("if: github.event_name == 'push'", workflow)
+        self.assertIn("build-revision.txt?release=$short_sha", workflow)
+        self.assertIn("Public site confirmed serving requested commit", workflow)
 
     def test_scheduled_health_workflow_rejects_old_browser_only_ranking_contract(self):
         payload = self.payload("apology-before-incident")
