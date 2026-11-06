@@ -330,6 +330,29 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
 
+    def test_new_articles_reject_broad_invalid_or_unpublished_x_terms(self):
+        item = story(
+            "x-meta",
+            "social_life",
+            published=datetime(2026, 11, 6, 17, 30, tzinfo=JST),
+        )
+        item["x_tags"] = ["社会"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("generic X tag" in error for error in errors))
+
+        item["x_tags"] = ["ポイ活", "タイパ", "推し活"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("at most 2 discovery terms" in error for error in errors))
+
+        item["x_tags"] = []
+        item["x_tickers"] = ["nvda"]
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("invalid x_tickers" in error for error in errors))
+
+        item["x_tickers"] = ["NVDA"]
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+
     def test_official_source_kind_requires_matching_official_host(self):
         google = story("google-host", "trend")
         google["trend_observation"]["url"] = "https://example.com/trending"
