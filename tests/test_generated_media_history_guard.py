@@ -6,7 +6,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from scripts.cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, ORIGIN as CPU_ORIGIN
 from scripts.guard_generated_media_history import (
     incompatible_rewrites, verify_new_images, images,
 )
@@ -122,6 +124,47 @@ class MediaHistoryGuardTests(unittest.TestCase):
                     {"version": 1, "images": {}, "rejected": {}},
                     with_seed, root=root)
             ))
+
+    def test_new_cpu_origin_and_previous_profiles_keep_verified_provenance(self):
+        for origin, model in ((CPU_ORIGIN, CPU_MODEL),
+                              ("github-cpu-lcm", CPU_MODEL),
+                              ("github-cpu-lcm", LEGACY_MODEL),
+                              ("local-comfyui", "sd_xl_base_1.0.safetensors")):
+            with self.subTest(origin=origin, model=model), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / "content").mkdir()
+                (root / "content/articles.json").write_text(json.dumps([ARTICLE]))
+                write_generated(ARTICLE, JPEG, model, origin=origin, root=root)
+                path = root / "assets/generated/manifest.json"
+                record = path.read_bytes()
+                current = json.loads(record)
+                self.assertEqual(verify_new_images({"version": 1, "images": {}}, current, root=root), [])
+                self.assertEqual(verify_new_images(current, current, root=root), [])
+                self.assertEqual(incompatible_rewrites(current, current), [])
+                self.assertEqual(path.read_bytes(), record)
+
+    def test_sd15_new_image_rejects_noninteger_seed_and_wrong_inference_profile(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "content").mkdir()
+            (root / "content/articles.json").write_text(json.dumps([ARTICLE]))
+            write_generated(ARTICLE, JPEG, CPU_MODEL, origin=CPU_ORIGIN, root=root)
+            path = root / "assets/generated/manifest.json"
+            current = json.loads(path.read_text())
+            before = {"version": 1, "images": {}}
+            # Numeric equality alone accepts 0.0 and False as the integer 0.
+            # Keep that corner case independent of this article's actual hash.
+            with patch("scripts.guard_generated_media_history.stable_seed", return_value=0):
+                for seed in (0.0, False):
+                    with self.subTest(seed=repr(seed)):
+                        invalid = copy.deepcopy(current)
+                        invalid["images"][ARTICLE["slug"]]["seed"] = seed
+                        path.write_text(json.dumps(invalid))
+                        self.assertTrue(any("seed" in error for error in verify_new_images(before, invalid, root=root)))
+            invalid = copy.deepcopy(current)
+            invalid["images"][ARTICLE["slug"]]["inference"]["guidance_scale"] = 0.0
+            path.write_text(json.dumps(invalid))
+            self.assertTrue(any("integrity" in error for error in verify_new_images(before, invalid, root=root)))
 
     def test_invalid_manifest_fails_closed(self):
         with self.assertRaises(ValueError):
