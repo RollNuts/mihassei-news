@@ -2,24 +2,24 @@
   {
     "slug": "family-line-replies-four-different-station-exits",
     "category": "暮らし",
-    "flash": "返信だけは全員集合",
+    "flash": "譲る返事、譲らない出口",
     "fiction_company": "久保田家",
     "art": "cards",
     "fiction_at": "2031-11-07T09:43:00+09:00",
     "published_at": "2026-11-07T09:43:00+09:00",
-    "title": "家族LINE「どの出口？」に3秒で「了解」　4人が別々の駅出口に集合",
-    "summary": "家族4人の待ち合わせで父が「どの出口？」と尋ねると、3人からすぐに「了解」の返信が届いた。誰も出口を決めないまま駅へ向かい、4人は別々の出口で待ち続けた。",
+    "title": "家族LINE、全員「合わせるよ」　4人が別々の駅出口から動かず",
+    "summary": "集合場所を聞かれた家族は、全員「どこでもいい」と返信した。出口を一つ提案するたびに別の希望が届き、最後は父が一人ずつ迎えに歩くことになった。",
     "paragraphs": [
-      "週末の昼、久保田家の4人は駅で待ち合わせて食事に行く予定だった。父が家族LINEに「11時、どの出口がいい？」と送ると、母と長男、長女から3秒以内に「了解」の返信が届いた。父は「うちの家族は返事が早い」と満足してスマホをしまい、自分が使い慣れた東口へ向かった。",
-      "午前11時、母は西口、長男はバス停のある南口、長女はカフェのある北口に着いた。「着いた」と4人が相次いで送り、また「了解」が並んだ。父が「じゃあそこで待ってて」と連絡すると、4つの出口で4人が一歩も動かなくなった。",
-      "しばらくして長女が「何が見える？」と尋ねた。全員が目の前の出口を撮影して送り合うと、写真には違う階段やバス停、店の看板が写っていた。父は4枚を一枚に並べ、「家族集合写真」としてグループに投稿した。食事の予約時間を過ぎても4人は会えず、家族がその日初めて一枚に収まったのはスマホの画面の中だけだった。"
+      "久保田家の4人が駅で待ち合わせる朝、父は家族LINEに「どの出口にする？」と送った。母と長男、長女からは「どこでもいいよ」「みんなに合わせる」と返事が届いた。父が「では東口で」と決めると、母から「西口だと乗り換えが楽なんだけど」と返信が来た。末尾には「でも、合わせるよ」とあった。",
+      "西口に変えようとすると、長男が「バスは南口に着く」と伝えた。長女は「北口ならカフェで待てる」と提案した。誰も「そこは嫌だ」とは書かない。父が出口を変えるたび、別の誰かが「どこでもいいんだけど」と自分に便利な出口を挙げた。集合時刻には、4人がそれぞれ東西南北の出口に着いていた。",
+      "父は「順番に迎えに行くから、そこにいて」と送った。初めて修正のない「了解」が三つ並んだ。父は駅の周りを歩いて家族を一人ずつ拾い、最後の出口でようやく4人がそろった。長女は家族LINEを見返し、「誰もわがまま言わなくてよかったね」と笑った。父の「今からそっちへ行く」だけが、3回続いていた。"
     ],
     "source": {
       "kind": "生活・文化",
       "publisher": "NTTドコモ モバイル社会研究所（2026年一般向けモバイル動向調査）",
       "published_at": "2026-09-17T00:00:00+09:00",
       "url": "https://www.moba-ken.jp/project/lifestyle/20260917.html",
-      "topic": "2026年9月17日公表のNTTドコモ モバイル社会研究所の調査では、別居の家族・親族との日常会話で最も多く使う連絡手段がLINEメッセージという人は2026年に55%。2026年1月調査、全国15〜79歳の6,748人が回答。調査は家族の出口間違いや即時返信を示したものではない。2031年の久保田家、3秒の返信、4出口への分散と家族集合写真は本紙の創作。発表元は日付のみ表示のためpublished_atの00:00は日付代表値。"
+      "topic": "2026年9月17日公表のNTTドコモ モバイル社会研究所の調査では、別居の家族・親族との日常会話で最も多く使う連絡手段がLINEメッセージという人は2026年に55%。2026年1月調査、全国15〜79歳の6,748人が回答。家族の連絡手段についての背景資料であり、集合場所の譲り合いや調整の押しつけを調査したものではない。久保田家、4出口での待機と父の出迎えは本紙の創作。発表元は日付のみ表示のためpublished_atの00:00は日付代表値。"
     },
     "scene_prompt": "Editorial illustration arranged as four equal panels, one Japanese family member waiting alone at each of four different ordinary train station exits: father by stairwell, mother near bicycle parking, teenage son at a bus stop, adult daughter beside a cafe; everyone looks at a smartphone, nobody is together. Restrained everyday proportions, clear 2x2 comparison, no readable words, no brands, no logos, no watermarks.",
     "visual_strategy": "illustration",
@@ -29,29 +29,30 @@
       "待ち合わせ"
     ],
     "satire_tags": [
-      "即レス",
-      "すれ違い"
+      "気遣い",
+      "丸投げ"
     ],
     "x_tags": [
       "家族LINE"
     ],
     "x_tickers": [],
-    "x_share_lead": "グループLINEで全員が返事をした時点で、話が決まった気になっていないだろうか。",
+    "x_share_lead": "「どこでもいいよ」のあとに、条件が三つくらい続くことがある。",
     "reader_interest": "family_home",
     "reader_clarity": {
-      "who": "家族4人",
-      "action": "父の集合出口の質問に3人が出口を決めず「了解」と返信し、4人は別々の出口に向かった",
-      "oddity": "返信はすぐにそろったのに誰も合流できず、違う出口で待った"
+      "who": "家族",
+      "action": "全員が合わせると返信しながら自分に便利な出口を譲らず、父が迎えに歩いた",
+      "oddity": "気遣う言葉は全員が使うのに、実際に合わせて移動したのは父だけだった"
     },
     "editorial_lane": "social_life",
     "editorial_tone": "observational",
-    "editorial_payoff": "visible_result",
+    "editorial_payoff": "dialogue",
     "editorial_signature": {
-      "present": "家族やグループLINEで内容を確かめず素早く「了解」と返し、全員が返せば相談が済んだ気になる習慣",
-      "target": "返信の早さを意思疎通の成功だと思い、実際の集合場所の合意を後回しにする",
-      "action": "出口の質問に選択せず「了解」を返し、別々の駅出口から写真を送り合って家族集合写真にまとめる",
-      "outcome": "スマホには返信と4人の集合写真がそろうが、現実の家族は4出口に離れたまま会えない"
-    }
+      "present": "「どこでもいい」「合わせる」と言いながら条件を後出しし、決定と調整を一人に任せる会話",
+      "target": "気遣っている人に見られたい一方、自分の移動の手間は減らしたい家族",
+      "action": "提案に自分の都合を付け足し続け、父が全員を迎えに回る案だけ修正せず受け入れる",
+      "outcome": "全員が譲り合ったつもりで合流するが、出口を変えて歩いたのは父一人"
+    },
+    "modified_at": "2026-11-07T10:05:54+09:00"
   },
   {
     "slug": "tori-no-ichi-kumade-blocks-store-entrance",
@@ -297,34 +298,34 @@
   {
     "slug": "patrol-teams-mistake-each-other-for-suspects",
     "category": "社会",
-    "flash": "警戒対象、全員仲間",
+    "flash": "不審者も功労者も同じ8人",
     "fiction_company": "つづみ台町内会",
     "art": "notice",
     "fiction_at": "2031-11-06T15:33:43+09:00",
     "published_at": "2026-11-06T15:33:43+09:00",
-    "title": "防犯パトロール2班、互いを「怪しい集団」と警戒　町内を3周",
-    "summary": "見慣れない四人組を見張るうち、どちらの班も引き返せなくなった。巡回後の報告書には、仲間の写真が不審者として貼られていた。",
+    "title": "防犯パトロール、互いを不審者として報告　仲間と分かっても「発見実績」は残す",
+    "summary": "町内会の巡回2班が互いを怪しんで追いかけた。誤解はその日のうちに解けたが、活動報告から発見件数を消すと成果がなくなるため、8人は仲間と不審者を兼ねることになった。",
     "paragraphs": [
-      "夕方、つづみ台町内会は初参加者を交えて防犯パトロールを二班に分けた。別班の顔を知らない隊員たちは、それぞれ腕章を付けて住宅街へ出発した。",
-      "東班は、何度曲がっても後ろにいる四人組を怪しみ、進路を変えて様子を見た。西班は、こちらを振り返っては道を変える四人組を不審に思い、距離を取って追いかけた。東班が歩調を速めると、西班も足を速めた。",
-      "二班は住宅街を三周して同じ公民館に帰着。互いの腕章を見て正体に気づいたが、活動報告書の「不審な集団を発見」欄は双方とも記入済みだった。添付した写真には、町内会がその日に配った腕章が八人分写っていた。"
+      "つづみ台町内会の防犯パトロールで、東班と西班の計8人が互いを不審者として報告した。毎月の報告会では「不審者発見件数」が班ごとの成果として読み上げられ、何も起きなかった班は「異常なし」の一行で終わっていた。",
+      "その夕方、初参加者を交えた東班は、曲がるたびに後ろにいる四人組を警戒した。西班は、何度もこちらを振り返る四人組が気になって後を追った。住宅街を三周して同じ公民館へ戻り、腕章を見せ合うと誤解は解けた。隊員が報告書を「異常なし」に直そうとすると、班長は手を止めた。「それだと、三周した成果がなくなる」",
+      "両班は「正体は分かったが、発見したことに変わりはない」と各4人の実績を残した。翌週の町内会だよりには、「不審者8人を発見」と「地域を守った8人」の記事が並んだ。二枚の写真は、全員同じ顔だった。"
     ],
     "source": {
       "kind": "行政案内",
       "publisher": "武蔵野市",
-      "published_at": "2026-07-23T00:00:00+09:00",
+      "published_at": "2026-10-05T00:00:00+09:00",
       "url": "https://www.city.musashino.lg.jp/kurashi_tetsuzuki/bosai_anzen/bosai_anzen_center_web/bouhantaisaku_seido/patrol/1005988.html",
-      "topic": "武蔵野市は2026年7月23日更新の案内で、市民安全パトロール隊が専用の上着やベスト、帽子を身に着けて徒歩や自転車で巡回すると説明している。本文の町内会、誤認、追跡、報告書はすべて本紙の創作で、同市の実在の活動を描いたものではない。"
+      "topic": "武蔵野市の市民安全パトロール隊の公式案内は、専用の上着やベスト、帽子を身に着けて徒歩や自転車で巡回すると説明している。改稿時にページの更新日2026年10月5日を再確認し、出典日付を訂正。時刻非掲載のため00:00は日付代表値。町内会、互いの誤認、発見件数による評価、誤認判明後も実績を残す判断と町内会だよりは本紙の創作で、同市の実在の活動や評価方法を示すものではない。"
     },
-    "scene_prompt": "Photorealistic deadpan Japanese neighborhood reporting scene at late afternoon: two groups of four ordinary volunteer adults wearing matching generic neighborhood-watch armbands, one group walking ahead repeatedly looking back while the other follows at a polite distance on a quiet narrow residential street. A small neighborhood community hall in the distance. Natural cloudy daylight, realistic people and proportions, no logos, no police uniforms, no dramatic action, no legible text.",
+    "scene_prompt": "Editorial illustration of two neighborhood-watch groups, four ordinary adults in each, wearing matching yellow armbands on a residential street beside a community hall. Two reports in the foreground contain portraits of those same people. Clear mirrored composition, no police uniforms, no readable words, no logos.",
     "visual_strategy": "illustration",
     "tags": [
       "防犯",
       "地域"
     ],
     "satire_tags": [
-      "警戒しすぎ",
-      "ご近所あるある"
+      "やってる感",
+      "数字ありき"
     ],
     "x_tags": [
       "防犯パトロール",
@@ -335,10 +336,19 @@
     "editorial_tone": "comic_exaggeration",
     "editorial_payoff": "ironic_success",
     "editorial_signature": {
-      "target": "町内会の巡回班が怪しい人を見つけることを優先し、地域の仲間を見守る本来の目的を見失う",
-      "action": "互いの顔を知らない二班が相手の進路変更を疑い、見張る側と追う側になって住宅街を三周する",
-      "outcome": "両班の巡回報告が不審者発見となり、添付写真には同じ町内会の腕章をつけた八人が写る"
-    }
+      "present": "トラブルが起きなかったことより、発見や対処の件数で仕事を評価する成果報告",
+      "target": "無事に終わった巡回より、報告できる数字を欲しがる町内会の評価",
+      "action": "仲間を誤認したと判明しても、巡回の成果を失いたくないので発見件数を取り消さない",
+      "outcome": "町内会だよりで不審者8人と防犯の功労者8人が同じ顔ぶれになる"
+    },
+    "illustration_reason": "complex_relationship",
+    "x_share_lead": "何も起きなかった一日ほど、成果報告は書きにくい。",
+    "reader_clarity": {
+      "who": "町内会の防犯パトロール2班",
+      "action": "互いを不審者として報告し、誤解が解けても発見件数を残した",
+      "oddity": "地域の安全を守った8人と、発見された不審者8人が同じ顔ぶれだった"
+    },
+    "modified_at": "2026-11-07T10:05:54+09:00"
   },
   {
     "slug": "nikkei-plunge-hundred-year-hold-minute-check",
