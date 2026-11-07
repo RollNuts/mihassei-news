@@ -1,5 +1,59 @@
 [
   {
+    "slug": "family-line-replies-four-different-station-exits",
+    "category": "暮らし",
+    "flash": "返信だけは全員集合",
+    "fiction_company": "久保田家",
+    "art": "cards",
+    "fiction_at": "2031-11-07T09:43:00+09:00",
+    "published_at": "2026-11-07T09:43:00+09:00",
+    "title": "家族LINE「どの出口？」に3秒で「了解」　4人が別々の駅出口に集合",
+    "summary": "家族4人の待ち合わせで父が「どの出口？」と尋ねると、3人からすぐに「了解」の返信が届いた。誰も出口を決めないまま駅へ向かい、4人は別々の出口で待ち続けた。",
+    "paragraphs": [
+      "週末の昼、久保田家の4人は駅で待ち合わせて食事に行く予定だった。父が家族LINEに「11時、どの出口がいい？」と送ると、母と長男、長女から3秒以内に「了解」の返信が届いた。父は「うちの家族は返事が早い」と満足してスマホをしまい、自分が使い慣れた東口へ向かった。",
+      "午前11時、母は西口、長男はバス停のある南口、長女はカフェのある北口に着いた。「着いた」と4人が相次いで送り、また「了解」が並んだ。父が「じゃあそこで待ってて」と連絡すると、4つの出口で4人が一歩も動かなくなった。",
+      "しばらくして長女が「何が見える？」と尋ねた。全員が目の前の出口を撮影して送り合うと、写真には違う階段やバス停、店の看板が写っていた。父は4枚を一枚に並べ、「家族集合写真」としてグループに投稿した。食事の予約時間を過ぎても4人は会えず、家族がその日初めて一枚に収まったのはスマホの画面の中だけだった。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "NTTドコモ モバイル社会研究所（2026年一般向けモバイル動向調査）",
+      "published_at": "2026-09-17T00:00:00+09:00",
+      "url": "https://www.moba-ken.jp/project/lifestyle/20260917.html",
+      "topic": "2026年9月17日公表のNTTドコモ モバイル社会研究所の調査では、別居の家族・親族との日常会話で最も多く使う連絡手段がLINEメッセージという人は2026年に55%。2026年1月調査、全国15〜79歳の6,748人が回答。調査は家族の出口間違いや即時返信を示したものではない。2031年の久保田家、3秒の返信、4出口への分散と家族集合写真は本紙の創作。発表元は日付のみ表示のためpublished_atの00:00は日付代表値。"
+    },
+    "scene_prompt": "Editorial illustration arranged as four equal panels, one Japanese family member waiting alone at each of four different ordinary train station exits: father by stairwell, mother near bicycle parking, teenage son at a bus stop, adult daughter beside a cafe; everyone looks at a smartphone, nobody is together. Restrained everyday proportions, clear 2x2 comparison, no readable words, no brands, no logos, no watermarks.",
+    "visual_strategy": "illustration",
+    "illustration_reason": "comparison_layout",
+    "tags": [
+      "家族",
+      "待ち合わせ"
+    ],
+    "satire_tags": [
+      "即レス",
+      "すれ違い"
+    ],
+    "x_tags": [
+      "家族LINE"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "グループLINEで全員が返事をした時点で、話が決まった気になっていないだろうか。",
+    "reader_interest": "family_home",
+    "reader_clarity": {
+      "who": "家族4人",
+      "action": "父の集合出口の質問に3人が出口を決めず「了解」と返信し、4人は別々の出口に向かった",
+      "oddity": "返信はすぐにそろったのに誰も合流できず、違う出口で待った"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "家族やグループLINEで内容を確かめず素早く「了解」と返し、全員が返せば相談が済んだ気になる習慣",
+      "target": "返信の早さを意思疎通の成功だと思い、実際の集合場所の合意を後回しにする",
+      "action": "出口の質問に選択せず「了解」を返し、別々の駅出口から写真を送り合って家族集合写真にまとめる",
+      "outcome": "スマホには返信と4人の集合写真がそろうが、現実の家族は4出口に離れたまま会えない"
+    }
+  },
+  {
     "slug": "tori-no-ichi-kumade-blocks-store-entrance",
     "category": "暮らし",
     "flash": "行列ができても売上0円",
