@@ -11,6 +11,7 @@ on:
     paths:
       - "social-bot/article-picks/**"
       - "social-bot/publish.py"
+      - "social-bot/buffer_budget.py"
       - "social-bot/social_text.py"
       - ".github/workflows/x-original-experiments.yml"
   workflow_dispatch:
@@ -43,6 +44,7 @@ jobs:
       - name: Validate article promotion, dedupe and safety gates
         run: |
           python -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
+          python -m unittest discover -s social-bot/article-picks -p 'test_buffer_budget.py' -v
           python -m py_compile social-bot/article-picks/dispatch.py
 
       - name: Send at most one eligible Veripsa article now
@@ -52,6 +54,8 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           X_TRIGGER_EVENT: ${{ github.event_name }}
           X_PUSH_BEFORE: ${{ github.event.before }}
+          BUFFER_BUDGET_PATH: social-bot/article-picks/api-budget.json
+          BUFFER_REQUEST_ROLE: publish
         run: python social-bot/article-picks/dispatch.py
 
       - name: Persist exact Buffer article receipt
@@ -59,7 +63,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/article-picks/state.json
+          git add social-bot/article-picks/state.json social-bot/article-picks/api-budget.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): persist article promotion receipt [skip ci]"
             published=false

@@ -6,6 +6,8 @@ on:
       - "social-bot/article-picks/audit_delivery.py"
       - "social-bot/article-picks/test_audit_delivery.py"
       - "social-bot/article-picks/state.json"
+      - "social-bot/article-picks/test_buffer_budget.py"
+      - "social-bot/buffer_budget.py"
       - ".github/workflows/x-delivery-audit.yml"
   push:
     branches: [main]
@@ -29,7 +31,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: x-article-delivery-audit
+  group: ${{ github.event_name == 'pull_request' && format('x-audit-validation-{0}', github.ref) || 'x-article-promotion' }}
   cancel-in-progress: false
 
 jobs:
@@ -55,6 +57,7 @@ jobs:
       - name: Verify article delivery audit offline
         run: |
           python -m unittest discover -s social-bot/article-picks -p 'test_audit_delivery.py' -v
+          python -m unittest discover -s social-bot/article-picks -p 'test_buffer_budget.py' -v
           python -m py_compile social-bot/article-picks/audit_delivery.py
 
       - name: Audit recent article promotions in Buffer (read-only)
@@ -63,6 +66,8 @@ jobs:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           X_AUDIT_TRIGGER_EVENT: ${{ github.event_name }}
+          BUFFER_BUDGET_PATH: social-bot/article-picks/api-budget.json
+          BUFFER_REQUEST_ROLE: audit
         run: python social-bot/article-picks/audit_delivery.py
 
       - name: Persist article delivery evidence only
@@ -71,7 +76,7 @@ jobs:
           test -f social-bot/article-picks/delivery.json || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-bot/article-picks/delivery.json
+          git add social-bot/article-picks/delivery.json social-bot/article-picks/api-budget.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(x): store article delivery evidence [skip ci]"
             published=false

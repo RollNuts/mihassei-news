@@ -18,6 +18,7 @@ from urllib.parse import parse_qs, urlparse
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import dispatch as picks
+READ_DELIVERY_RETRY_TIME = picks.delivery_retry_time
 
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
@@ -72,6 +73,13 @@ def recorded(buf="buf-old", hours=180):
 
 
 class ArticlePickTests(unittest.TestCase):
+    def setUp(self):
+        # Historical fixtures must not inherit a live provider cooldown committed
+        # after their simulated date. The dedicated test reads its own real file.
+        live_cooldown = patch.object(picks, "delivery_retry_time", return_value=None)
+        live_cooldown.start()
+        self.addCleanup(live_cooldown.stop)
+
     def test_actual_config_and_initial_ledger(self):
         config = picks.read_json(HERE / "config.json")
         picks.validate_config(config)
@@ -215,6 +223,7 @@ class ArticlePickTests(unittest.TestCase):
                 "provider_retry_at_utc": (NOW + timedelta(hours=1)).isoformat(),
             }))
             with patch.object(picks, "HERE", root), \
+                 patch.object(picks, "delivery_retry_time", side_effect=READ_DELIVERY_RETRY_TIME), \
                  patch.object(picks, "read_json", side_effect=[CONFIG, ledger()]), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
                  patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
@@ -223,6 +232,33 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 1)
                 choose.assert_not_called()
                 send.assert_not_called()
+
+    def test_verified_channel_cache_saves_discovery_but_keeps_account_pin(self):
+        state = ledger()
+        with patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])) as choose, \
+             patch.object(picks, "save_state") as save, patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(picks.connected_channel("secret-not-saved", CONFIG, state, NOW), ("org", CONFIG["channel_id"]))
+            self.assertEqual(picks.connected_channel("secret-not-saved", CONFIG, state, NOW + timedelta(hours=2)), ("org", CONFIG["channel_id"]))
+            choose.assert_called_once()
+            self.assertNotIn("secret-not-saved", json.dumps(state))
+            picks.connected_channel("test", CONFIG, state, NOW + timedelta(days=1))
+            self.assertEqual(choose.call_count, 2)
+            save.assert_called()
+        with patch.dict(os.environ, {"BUFFER_CHANNEL_ID": "wrong"}, clear=True), \
+             patch.object(picks, "choose_x_channel") as choose:
+            with self.assertRaisesRegex(RuntimeError, "pinned"):
+                picks.connected_channel("test", CONFIG, state, NOW)
+            choose.assert_not_called()
+
+    def test_changed_or_future_connection_cache_must_be_reverified(self):
+        for changed in ({"channel_id": "other"}, {"verified_at_utc": (NOW + timedelta(hours=1)).isoformat()}):
+            state = ledger()
+            state["provider_connection"] = {"channel_id": CONFIG["channel_id"], "organization_id": "org",
+                                            "verified_at_utc": NOW.isoformat(), **changed}
+            with patch.dict(os.environ, {}, clear=True), patch.object(picks, "choose_x_channel",
+                    return_value=("org", CONFIG["channel_id"])) as choose, patch.object(picks, "save_state"):
+                picks.connected_channel("test", CONFIG, state, NOW)
+                choose.assert_called_once()
 
     def test_article_post_removes_legacy_in_story_disclaimer(self):
         raw = article("legacy-fiction-label", age_hours=4)

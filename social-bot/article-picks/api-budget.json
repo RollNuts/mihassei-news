@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "scope": "article-dispatch-and-delivery-audit-only",
+  "requests": [],
+  "provider_limits": [],
+  "provider_retry_at_utc": "2026-12-03T03:05:19.616397+00:00"
+}
