@@ -1,5 +1,89 @@
 [
   {
+    "slug": "shiroamadai-last-plate-twenty-seven-times",
+    "category": "暮らし",
+    "flash": "希少さを守るため、毎日限定",
+    "fiction_company": "高級すし店「白潮」",
+    "art": "cards",
+    "fiction_at": "2031-11-07T17:34:04.213+09:00",
+    "published_at": "2026-11-07T17:34:04.213+09:00",
+    "title": "「幻の魚」シロアマダイ、養殖で毎日入荷　高級すし店は「最後の一皿」を27回販売",
+    "summary": "陸上養殖が普及した2031年、シロアマダイを毎日仕入れる高級すし店が、年会費を払う常連には希少な一皿として売り続けた。「本日最後」の札は一晩で27回出し直された。",
+    "paragraphs": [
+      "2026年11月、シロアマダイの陸上養殖を目指す5者の共同研究が始まり、2028年の回転ずし店での販売を目標に掲げた。2031年、養殖が普及してこの魚が毎朝届くようになった高級すし店「白潮」には、悩みがあった。店はかつて希少だった一皿を目玉に年会費制の特別席を売り、常連に「めったに入荷しない」と説明していた。",
+      "料理長が「これだけ入るなら通常メニューにしましょう」と進言すると、店主は予約台帳を閉じた。「会費まで払ってくださった方に、いつでも食べられるとは言えない。『幻』を外せば、来年の更新が止まる」。値段を変える代わりに、店主は黒板を一つ用意し、来店客ごとに「本日最後の一皿」と書いた。",
+      "カウンターで一皿が出るたび、店員は黒板をいったん裏返した。次の予約客が座ると、また同じ字を表に向ける。27人目の客まで「運よく最後の一皿」を食べ終えた閉店後、厨房には翌朝分のシロアマダイが箱で積まれていた。魚の鮮度を確かめる料理長の横で、店員は一晩に27回ひっくり返した黒板の蝶番に油を差していた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "株式会社FOOD & LIFE COMPANIES／山口県（共同研究発表）",
+      "published_at": "2026-11-05T16:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000855.000049164.html",
+      "topic": "2026年11月5日、F&LC、安藤建設、山口県水産研究センター、山口県栽培漁業公社、山口県漁協の5者がシロアマダイの全国初の陸上養殖実現に向けて共同研究を開始。2028年の回転ずし店での販売を目標とする。2026年11月7日山口新聞でも報道（https://yama.minato-yamaguchi.co.jp/e-yama/articles/112872）。2031年の養殖普及、店・会員制・販売枚数・発言は創作であり、実在企業の将来の行動ではない。"
+    },
+    "scene_prompt": "A candid documentary photograph inside an ordinary small Japanese high-end sushi restaurant at closing: a tired staff member hinges open a small blank double-sided tabletop specials chalkboard next to the counter, while behind the counter a chef checks many neatly stacked insulated fish delivery boxes. Natural fluorescent and warm ceiling lighting, authentic wooden counter, realistic fish crates and hands, no legible text or logos, no cinematic lighting, no artificial gloss.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "飲食店",
+      "養殖",
+      "限定販売"
+    ],
+    "satire_tags": [
+      "希少価値",
+      "限定商法"
+    ],
+    "x_tags": [
+      "シロアマダイ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「本日限定」が毎日並んでいても、なぜか急いで頼んでしまう。",
+    "reader_interest": "food_travel_shopping",
+    "reader_clarity": {
+      "who": "高級すし店",
+      "action": "シロアマダイを毎日仕入れているのに「最後の一皿」を27回販売した",
+      "oddity": "養殖で珍しくなくなった魚を、年会費の希少価値を守るため品薄のように見せかけた"
+    },
+    "editorial_lane": "trend",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "plausibility_basis": {
+      "present_signal": "2026年11月5日、5者がシロアマダイの陸上養殖の共同研究を開始し、2028年の回転ずし店での販売を目指すと発表した。",
+      "continuation_force": "養殖技術と流通が5年間普及する一方、希少性を理由にした高額会費と常連への説明を変えたくない店の商売上の事情が残る。",
+      "future_result": "2031年、魚は毎日入荷するのに、店員が「最後の一皿」札を客ごとに裏返し続け、黒板の蝶番を手入れする。"
+    },
+    "editorial_signature": {
+      "present": "限定品や希少な食材の看板があると、実際の供給量を知らなくてもつい急いで買ってしまう",
+      "target": "高い会費を正当化する希少性という物語を守るため、安定供給という本来の成果を隠す",
+      "action": "魚は毎朝届くのに「本日最後の一皿」の黒板を客の入替えごとに繰り返し掲げる",
+      "outcome": "27人に最後の一皿を売った店で、厨房の魚は余り、店員が黒板の蝶番を整備している"
+    },
+    "behavior_basis": {
+      "motive": "高い会費を払う常連に希少でなくなったと知らせると、次年度の会員更新と店の信用を失うと恐れている。",
+      "ordinary_alternative": "養殖による安定供給を説明し通常メニューへ変更する。",
+      "why_not": "すでに会費を徴収し、希少性の説明で集めた常連への約束と来年の更新収入を失いたくない。",
+      "evidence_quote": "『幻』を外せば、来年の更新が止まる"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "シロアマダイ",
+      "observed_at": "2026-11-07T17:34:04.213+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://prtimes.jp/main/html/rd/p/000000855.000049164.html",
+        "https://www.pref.yamaguchi.lg.jp/press/369300.html",
+        "https://yama.minato-yamaguchi.co.jp/e-yama/articles/112872"
+      ]
+    },
+    "trend_bridge": {
+      "why_now": "11月5日に陸上養殖の共同研究が発表され、11月7日には山口新聞が報道。Google Trends日本で「シロアマダイ」が急上昇している。",
+      "shared_behavior": "希少・限定という売り文句に価値を感じ、欲しい物の流通が増えても特別感を手放しにくい。",
+      "satire_gap": "誰でも食べられるようにする養殖の成功が、希少性で会費を集める店には隠すべき事実になる。",
+      "real_detail": "2028年の回転ずし店での販売",
+      "unique_hook": "2028年の回転ずし店での販売を目標とするほど希少魚の安定供給を目指しているのに、5年後の店は逆に『希少』を守るため毎日届く魚を隠す。",
+      "x_discovery_term": "シロアマダイ"
+    }
+  },
+  {
     "slug": "surprise-birthday-organized-by-guest-of-honor",
     "category": "暮らし",
     "flash": "驚くタイミングも本人が指定",
