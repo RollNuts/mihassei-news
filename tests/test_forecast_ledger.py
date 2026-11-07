@@ -35,11 +35,18 @@ class MarketForecastLedgerTests(unittest.TestCase):
         just_before=prediction_entries(self.series,today=date(2027,2,3))
         on_review=prediction_entries(self.series,today=date(2027,2,4))
         after=prediction_entries(self.series,today=date(2027,2,5))
-        self.assertEqual(just_before[0]["state"],"upcoming")
-        self.assertEqual(on_review[0]["state"],"due")
-        self.assertEqual(after[0]["state"],"due")
-        self.assertIn("判定待ち",after[0]["state_label"])
-        self.assertNotIn("的中",after[0]["state_label"])
+        original_slug=self.series["episodes"][0]["slug"]
+        before=next(row for row in just_before if row["episode"]["slug"] == original_slug)
+        due=next(row for row in on_review if row["episode"]["slug"] == original_slug)
+        overdue=next(row for row in after if row["episode"]["slug"] == original_slug)
+        self.assertEqual(before["state"],"upcoming")
+        self.assertEqual(due["state"],"due")
+        self.assertEqual(overdue["state"],"due")
+        self.assertIn("判定待ち",overdue["state_label"])
+        self.assertNotIn("的中",overdue["state_label"])
+        for row in after:
+            if row["episode"]["slug"] != original_slug:
+                self.assertEqual(row["state"],"upcoming", "Later forecasts cannot be due early")
 
     def test_claiming_verified_without_cited_outcome_fails_closed(self):
         fc=copy.deepcopy(self.series["episodes"][0]["forecast"])
@@ -61,7 +68,8 @@ class MarketForecastLedgerTests(unittest.TestCase):
             "explanation":"比較期間中の対象3銘柄の騰落率を指数と比較し、条件に届かなかったと確認した。",
             "evidence":[{"title":"検証に使った価格資料","url":"https://example.org/markets/review"}],
         }
-        result=prediction_entries(series,today=date(2027,2,6))[0]
+        result=next(row for row in prediction_entries(series,today=date(2027,2,6))
+                    if row["episode"]["slug"] == series["episodes"][0]["slug"])
         self.assertEqual(result["state"],"verified")
         self.assertEqual(result["result"]["outcome"],"外れ")
         markup=render_forecast_ledger(series,today=date(2027,2,6))
