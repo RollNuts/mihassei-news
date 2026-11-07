@@ -50,7 +50,7 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         gate = guide.split(heading, 1)[1].split("\n### ", 1)[0]
         for phrase in (
             "候補3案", "変な人が変なこと", "かわいい", "ほっこり",
-            "固有名詞や商品仕様だけの一発小ネタ", "15秒", "別の具体的な二段目",
+            "固有名詞や商品仕様だけの一発小ネタ", "15秒", "見出しの反復ではない具体的な行動・台詞",
             "弱い小ネタを説明・流行語・画像・Xタグで救済して公開しない",
         ):
             self.assertIn(phrase, gate)

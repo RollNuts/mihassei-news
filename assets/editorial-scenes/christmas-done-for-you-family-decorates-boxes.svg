@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="豪華な完成済みのクリスマスツリーを部屋の隅に置いたまま、家族4人が配送用段ボール箱で小さなツリーを作り星とリボンで飾る創作イラスト" data-visual-topic="parcel" data-article-sha256="4d8bb03db7f085e8ef01c13131999cb4da7de909ba57ee5e2234ffb652d92c51">
-  <title>完成品より段ボール工作に夢中になったクリスマス</title>
-  <desc>午後の家庭の居間。完成済みの大きなクリスマスツリーが右の隅に置かれ、中央では父母と子供2人が配送用の箱を三段に積んで星やリボンを飾っている。完成品に任せたはずの家族が手作りの時間を楽しんでいる。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="購入したツリーを部屋の隅へよけ、親が子どもの段ボール工作をスマホで撮影する創作イラスト" data-visual-topic="parcel" data-article-sha256="48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349">
+  <title>外注したクリスマスを手作りに見せるための撮影</title>
+  <desc>購入した大きなツリーは画面の外へ。母はスマホを子どもと箱のツリーへ向け、父は次の撮影用の星を手に持つ。手作りの家族時間に見せるため撮り直している。</desc>
   <defs>
     <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f7ede0"/><stop offset="1" stop-color="#e7d7c2"/></linearGradient>
     <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#d6ae86"/><stop offset="1" stop-color="#b98260"/></linearGradient>
@@ -61,7 +61,7 @@
     <path d="m541 499 8 13 16 2-11 12 2 14-15-7-14 7 3-14-12-12 17-2z"/>
   </g>
   <path d="M631 375q-31-24-43-6 18 26 43 6 21 18 39 4-14-27-39-4z" fill="#d8e2c5" stroke="#7b987d" stroke-width="5"/>
-  <!-- Mother seated at left helping with paper stars. -->
+  <!-- Mother points a smartphone at the staged craft scene. -->
   <g stroke-linejoin="round" stroke-linecap="round" filter="url(#shadow)">
     <path d="M209 527q-39-103 25-147h86q59 51 17 147l-31 30h-69z" fill="#b1747d" stroke="#74545d" stroke-width="7"/>
     <ellipse cx="266" cy="347" rx="48" ry="58" fill="#e8bb9b" stroke="#846353" stroke-width="5"/>
@@ -71,9 +71,9 @@
     <path d="M434 384l17-22" stroke="#e8bb9b" stroke-width="18"/>
     <path d="M205 494q-25 80 33 85h105" fill="none" stroke="#596475" stroke-width="34"/>
     <path d="M314 575h72" stroke="#444954" stroke-width="22"/>
-    <path d="m441 352 9 14 16 2-12 11 3 16-16-7-14 7 3-16-12-11 17-2z" fill="#f4d189" stroke="#ad8959" stroke-width="4"/>
+    <g transform="rotate(12 450 345)"><rect x="426" y="306" width="49" height="77" rx="7" fill="#343d46" stroke="#17232c" stroke-width="4"/><rect x="432" y="313" width="37" height="58" rx="3" fill="#b4ccd0"/><circle cx="450" cy="376" r="3" fill="#c7d2d6"/></g>
   </g>
-  <!-- Father kneels at right, fastening the shipping boxes. -->
+  <!-- Father holds the star for another take. -->
   <g stroke-linejoin="round" stroke-linecap="round" filter="url(#shadow)">
     <path d="M747 391q60-29 103 17l26 119-112 19-36-97z" fill="#5e8790" stroke="#405e69" stroke-width="8"/>
     <ellipse cx="805" cy="338" rx="46" ry="56" fill="#deae90" stroke="#7e5d4e" stroke-width="5"/>
@@ -83,9 +83,7 @@
     <path d="M693 384l-8-23" stroke="#deae90" stroke-width="16"/>
     <path d="M861 485q36 68-25 99l-111-10" stroke="#4e5b69" stroke-width="35" fill="none"/>
     <path d="M729 578h-45" stroke="#45454d" stroke-width="23"/>
-    <ellipse cx="684" cy="356" rx="19" ry="21" fill="#eed0a4" stroke="#9a6c51" stroke-width="6"/>
-    <ellipse cx="684" cy="356" rx="9" ry="10" fill="#b58c69"/>
-    <path d="M664 359l-39-15" fill="none" stroke="#e3d6b4" stroke-width="7"/>
+    <path d="m680 329 10 17 20 3-15 14 4 20-19-10-18 10 4-20-15-14 20-3z" fill="#f4d189" stroke="#ad8959" stroke-width="4"/>
   </g>
   <!-- Daughter in front, proudly holding her handmade star. -->
   <g stroke-linejoin="round" stroke-linecap="round">

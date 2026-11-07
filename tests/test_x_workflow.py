@@ -78,7 +78,9 @@ class XWorkflowTests(unittest.TestCase):
         self.assertIn("article-picks/audit_delivery.py", self.audit)
         self.assertNotIn("article-picks/dispatch.py", self.audit)
         self.assertNotIn("experiments/dispatch.py", self.audit)
-        self.assertNotIn("publish.py", self.audit)
+        # A PR path filter can watch publish.py without executing it.
+        # Keep the prohibition on every job, where commands actually run.
+        self.assertNotIn("publish.py", self.audit.split("\njobs:\n", 1)[1])
 
     def test_retired_lane_switches_are_off(self):
         useful = json.loads((ROOT / "social-bot" / "useful-posts.json").read_text())

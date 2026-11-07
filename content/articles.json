@@ -196,19 +196,19 @@
     "art": "cards",
     "fiction_at": "2031-11-06T19:16:00+09:00",
     "published_at": "2026-11-06T19:16:00+09:00",
-    "title": "ブラックフライデー前夜祭、3週間前に開幕　客「本番は見学します」",
-    "summary": "本番を待ちきれないセールが3週間前から始まった。架空の商店街では、初日に予算を使い切った客が本番用の買い物リストだけを大事に持ち帰っている。",
+    "title": "ブラックフライデー前夜祭で予算ゼロ　買う予定だった炊飯器だけ買えず",
+    "summary": "本番3週間前のセールで、炊飯器用の予算を毛布や靴に使い切った客。「今だけ」の札は全部拾ったが、買い物メモの一行だけが残った。",
     "paragraphs": [
-      "黒金商店街は、ブラックフライデー本番の3週間前から「前夜祭セール」を始めた。店頭には早く買うほど得だという札が並び、客は「本番まで待つより、今のうちに節約しよう」と次々に商品を抱えた。",
-      "会社員の篠原さんは、本番で買うつもりだった物を書いたメモを手に来店した。「前夜祭の方が安いかもしれない」と炊飯器、毛布、靴を購入し、用意していた予算を初日で使い切った。帰宅後、買い物メモの項目には全部線が引かれていた。",
-      "店員が「本番もお待ちしています」と声をかけると、篠原さんは空になった財布を見せた。「本番は見学します」。商店街は当日用に、買わない人が座れる休憩スペースの増設を検討し始めた。"
+      "黒金商店街は、ブラックフライデー本番の3週間前から「前夜祭セール」を始めた。会社員の篠原さんは、壊れた炊飯器の買い替え用に取っておいた3万円を財布に入れ、下見に出かけた。",
+      "目当ての炊飯器は本番に値下がりするという。待つつもりだったが、隣の棚には「本日限り」の毛布、その先には「今だけ半額」の靴があった。「こっちは今日買わないと損だ」。予定になかった品を買うたびに袋が増え、炊飯器の売り場へ戻る前に3万円がなくなった。",
+      "店員に「本番もお待ちしています」と言われ、篠原さんは「本番は見学します」と答えた。帰宅後、毛布と靴を並べた横で、買い物メモの「炊飯器」だけを翌年のブラックフライデーの欄へ書き写した。今夜のご飯は、鍋で炊いた。"
     ],
     "source": {
       "kind": "調査・キャンペーン",
       "publisher": "株式会社くふうカンパニー（PR TIMES）",
       "published_at": "2026-11-06T15:08:00+09:00",
       "url": "https://prtimes.jp/main/html/rd/p/000000559.000046400.html",
-      "topic": "2026年のブラックフライデーは11月27日。くふう トクバイは11月6日から19日まで「ブラックフライデー前夜祭キャンペーン」を開始し、生活者2,283人の調査ではブラックフライデーの認知率が96.6％、買い物意向が55.4％だった。黒金商店街、篠原さん、前夜祭で予算を使い切る行動、当日の休憩スペースは本紙独自の創作であり、同社の実例ではない。"
+      "topic": "2026年のブラックフライデーは11月27日。くふう トクバイは11月6日から19日まで「ブラックフライデー前夜祭キャンペーン」を開始し、生活者2,283人の調査ではブラックフライデーの認知率が96.6％、買い物意向が55.4％だった。黒金商店街、篠原さん、前夜祭で炊飯器用の予算を別の商品に使い切る行動、鍋での炊飯は本紙独自の創作であり、同社の実例ではない。"
     },
     "scene_prompt": "Candid documentary-style photo at the entrance to a busy Japanese shopping arcade: one exhausted shopper stands beside full shopping bags and household-electronics boxes, showing his completely empty wallet. A smiling shop employee points toward a prominent Black Friday main-sale banner just beyond the storefront, while another sign marks the early sale. Natural shop lighting, believable skin, fabric, and cardboard textures; no real brand logos or identifiable public figures.",
     "visual_strategy": "cpu-photo",
@@ -226,11 +226,18 @@
     "x_tickers": [],
     "editorial_lane": "social_life",
     "editorial_tone": "observational",
-    "editorial_payoff": "dialogue",
+    "editorial_payoff": "action",
     "editorial_signature": {
-      "target": "買い物客がお得を逃さないことを優先し、セールで支出を抑える本来の目的を見失う",
-      "action": "ブラックフライデー本番用の予算を3週間前の前夜祭で使い切り、買い物リストを先に全消化する",
-      "outcome": "本番当日は買う物も予算も残らず、客が『本番は見学します』と宣言する"
+      "present": "必要な買い物を安く済ませたいのに、期間限定の値引きを逃す方が損に思えて予定外の物を買う。",
+      "target": "客が値引きを逃さないことを優先し、本来必要な買い替えの予算を失う",
+      "action": "炊飯器を本番まで待つ間に、前夜祭の本日限りの商品へ予算を使い切る",
+      "outcome": "毛布と靴は増えたが壊れた炊飯器は買い替えられず、購入予定を翌年へ移して鍋でご飯を炊く"
+    },
+    "modified_at": "2026-11-07T09:45:40+09:00",
+    "reader_clarity": {
+      "who": "炊飯器を買い替える予定だった客",
+      "action": "前夜祭で毛布や靴を買って予算を使い切る",
+      "oddity": "安く買うつもりでセールへ行き、必要だった物だけ買えなくなる"
     }
   },
   {
@@ -337,42 +344,49 @@
   {
     "slug": "christmas-done-for-you-family-decorates-boxes",
     "category": "暮らし",
-    "flash": "準備ゼロ、工作3時間",
+    "flash": "手間を省いて撮影3時間",
     "fiction_company": "杉崎家",
     "art": "cards",
     "fiction_at": "2031-11-06T11:38:31+09:00",
     "published_at": "2026-11-06T11:38:31+09:00",
-    "title": "クリスマス準備を全部おまかせにした家族、配送用の段ボールを3時間飾り付け",
-    "summary": "料理もケーキもツリーも完成した状態で届き、夕食まですることがなくなった。娘が空き箱に星を貼り始めると、両親も工作道具を探し出した。",
+    "title": "クリスマスを全部外注した家族、手作りに見せる写真を3時間撮影",
+    "summary": "料理も飾りも届いたが、写真に買った物しか写らないのが気になった。両親は配送の段ボールでツリーを作り、子どもが星を貼る場面を何度も撮り直した。",
     "paragraphs": [
-      "杉崎さん一家は、今年のクリスマスの準備を全部おまかせにした。料理とケーキが届き、飾り付け済みのツリーも設置された。夕食までまだ時間があるのに、家族の仕事は玄関の梱包箱を片付けるだけになった。",
-      "娘が捨てるはずの段ボールに折り紙の星を貼った。息子は小さな箱を重ねて木の形にし、父親がテープで固定する。母親はリボンを探し、家族全員が床に座って飾り付けを始めた。",
-      "3時間後、完成した段ボールのツリーを囲んで記念写真を撮った。業者が飾った立派なツリーは部屋の隅に残り、枝にはまだ「設置完了」の札がぶら下がっていた。"
+      "杉崎さん一家は、クリスマスの準備を楽にしようと、料理もケーキも飾り付け済みのツリーも注文した。ところが記念写真を見た母が「買った物しか写っていないね」とスマホを下ろし、父が配送用の段ボールを拾い上げた。",
+      "両親は箱を重ねて小さなツリーを作り、子どもたちに折り紙の星を貼ってもらった。「自然に楽しんでる感じで」。母は角度を変えて撮り直し、父はそのたびに星をはがして娘へ戻した。業者が飾った大きなツリーは、写真に入らないよう部屋の隅へ移された。",
+      "3時間後、ようやく家族全員が笑った一枚が撮れた。娘が「もうやらなくていい？」と聞くと、母は「撮れたから、いいよ」と答えた。写真には「準備はほどほどに。子どもと過ごす時間を大切にしました」と添えて投稿した。"
     ],
     "source": {
       "kind": "生活・文化",
       "publisher": "株式会社ファミリーマート（PR TIMES）",
       "published_at": "2026-11-05T14:00:00+09:00",
       "url": "https://prtimes.jp/main/html/rd/p/000002628.000046210.html",
-      "topic": "2026年11月5日14:00のファミリーマート公式発表によると、自宅でクリスマスディナーを楽しむ意向の人の74.6％が平日の準備・片付けの負担を減らしたいと回答。記事中の杉崎家、料理・ツリーの一括手配、空き箱工作と会話は実際の調査対象や同社サービスの実例ではなく独自の創作。"
+      "topic": "2026年11月5日14:00のファミリーマート公式発表によると、自宅でクリスマスディナーを楽しむ意向の人の74.6％が平日の準備・片付けの負担を減らしたいと回答。記事中の杉崎家、料理・ツリーの一括手配、空き箱工作の撮り直しと会話・SNS投稿は実際の調査対象や同社サービスの実例ではなく独自の創作。"
     },
-    "scene_prompt": "A natural candid editorial photograph in an ordinary Japanese family living room at Christmas: two parents and two children sit on the floor decorating a small Christmas tree built from stacked plain shipping cardboard boxes with paper stars and ribbons, with a fully decorated professional Christmas tree standing unused at the edge of the room. Afternoon daylight, natural skin and cardboard texture, casual unposed gestures, no logos, no readable writing, no theatrical lighting.",
-    "visual_strategy": "illustration",
+    "scene_prompt": "A parent holds a smartphone toward a small Christmas tree made from stacked shipping boxes. A child holds a paper star against the tree while another parent peels a star off to repeat the pose. An ordinary Japanese family living room, with a delivered decorated tree set aside. Window light, ordinary clothing, no logos or readable writing.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "家族",
       "イベント"
     ],
     "satire_tags": [
-      "時短の行き過ぎ",
-      "家族あるある"
+      "丁寧な暮らし",
+      "見せるための生活"
     ],
     "editorial_lane": "social_life",
     "editorial_tone": "observational",
-    "editorial_payoff": "visible_result",
+    "editorial_payoff": "dialogue",
     "editorial_signature": {
-      "target": "家族がクリスマスの準備を省くことを優先し、一緒に手を動かして楽しむ時間を見失う",
-      "action": "料理も飾りも全て完成品を頼んだあと、捨てる梱包箱を家族全員で3時間飾り付ける",
-      "outcome": "完成済みの立派なツリーは隅に置かれ、家族写真の中心に手作りの段ボールツリーが残る"
+      "present": "準備の負担は減らしたいが、SNSには家族で丁寧に手作りした写真を載せたくなる。",
+      "target": "親が家族との自然な時間より、丁寧に過ごして見える写真を優先する",
+      "action": "全部外注したあと、配送箱の工作を子どもに何度も再現させて写真を撮る",
+      "outcome": "時短したはずが3時間撮影し、子どもを撮影から解放してから「準備はほどほどに」と投稿する"
+    },
+    "modified_at": "2026-11-07T09:45:40+09:00",
+    "reader_clarity": {
+      "who": "クリスマスの準備を外注した家族",
+      "action": "手作りに見せるため子どもの工作を3時間撮影する",
+      "oddity": "手間を減らしたのに、手間をかけたように見せる撮影で時間を使う"
     }
   },
   {

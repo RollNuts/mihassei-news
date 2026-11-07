@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
- aria-label="セールの前夜祭で買い物を終えた客が空の財布を見せ、店員が遠くの本番セール装飾を指す商店街の創作イラスト"
- data-visual-topic="document" data-article-sha256="f0aa523e3caacb88eb9483e4c1cd14f6347d209aa451b64c4c67931b7bbe76ab">
+ aria-label="セールの前夜祭で買い替え予算を別の商品に使い切った客が空の財布を見せ、店員が遠くの本番セール装飾を指す商店街の創作イラスト"
+ data-visual-topic="document" data-article-sha256="c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d">
 <title>前夜祭で予算を使い切り、買い物袋に囲まれて本番を見学する客</title>
 <defs>
  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e3e7df"/><stop offset="1" stop-color="#fff0d8"/></linearGradient>
@@ -48,14 +48,14 @@
 <g filter="url(#shadow)"><path d="M353 421l51 14-10 50-57-15z" fill="#584b42" stroke="#40382f" stroke-width="3"/>
 <path d="M405 433l53-14 18 48-63 21z" fill="#655348" stroke="#40382f" stroke-width="3"/>
 <path d="M404 435l8 48" stroke="#d0b8a0" stroke-width="3"/><path d="M359 433l30 8m26 4l40-12" stroke="#c6aa88" stroke-width="2" opacity=".6"/></g>
-<!-- Checked-off shopping list on bench; no fake readable lettering -->
-<g transform="rotate(-10 210 410)" filter="url(#shadow)"><rect x="175" y="390" width="79" height="61" rx="3" fill="#fff6dc"/><path d="M190 400l7 8 10-15m-16 25l6 7 10-14m-15 24l7 6 10-15" fill="none" stroke="#af6258" stroke-width="3"/><path d="M214 406h29m-29 16h28m-29 16h21" stroke="#8b968c" stroke-width="2"/></g>
-<!-- Purchases on ground: appliance box, blanket, shoe carton and shopping bags -->
+<!-- Unfulfilled shopping list on bench; empty checkboxes, no lettering -->
+<g transform="rotate(-10 210 410)" filter="url(#shadow)"><rect x="175" y="390" width="79" height="61" rx="3" fill="#fff6dc"/><path d="M190 399h12v12h-12zM190 418h12v12h-12zM190 437h12v12h-12z" fill="none" stroke="#af6258" stroke-width="2"/><path d="M214 406h29m-29 16h28m-29 16h21" stroke="#8b968c" stroke-width="2"/></g>
+<!-- Purchases on ground: blanket carton, shoes and shopping bags -->
 <ellipse cx="170" cy="587" rx="124" ry="17" fill="#a09385" opacity=".25"/>
 <g filter="url(#shadow)"><rect x="29" y="460" width="133" height="109" rx="3" fill="#ba946d" stroke="#84684d" stroke-width="4"/>
 <path d="M31 478l64-24 67 23M95 455v114" stroke="#907254" stroke-width="4" fill="none"/>
 <rect x="44" y="496" width="101" height="47" fill="#dbc4a2"/>
-<path d="M61 521h60m-47-13l39 25m0-25l-39 25" stroke="#9b8d78" stroke-width="3"/>
+<path d="M61 508h62v27H61zM61 516h62M61 526h62" fill="#bfa6c2" stroke="#8f7e99" stroke-width="3"/>
 <path d="M163 491h84l-6 78h-84z" fill="#e9dbca" stroke="#af997d" stroke-width="3"/>
 <path d="M177 495q0-46 31-44 30 2 26 44" fill="none" stroke="#9b8d77" stroke-width="7"/>
 <path d="M168 539q32-9 72-3" stroke="#c2a886" stroke-width="9"/>
