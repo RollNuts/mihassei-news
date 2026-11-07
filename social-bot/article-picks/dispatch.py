@@ -754,6 +754,28 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     return item, metrics, len(queued)
 
 
+def connected_channel(token: str, config: dict, state: dict, now: datetime):
+    """Cache verified connection IDs for one day, never the secret or post list."""
+    configured = os.environ.get("BUFFER_CHANNEL_ID", "").strip()
+    if configured and configured != config["channel_id"]:
+        raise RuntimeError("Configured X channel differs from pinned Veripsa account")
+    cached = state.get("provider_connection", {})
+    checked = provider_instant(cached.get("verified_at_utc"))
+    if (cached.get("channel_id") == config["channel_id"]
+            and isinstance(cached.get("organization_id"), str) and cached["organization_id"]
+            and checked is not None and timedelta(0) <= now - checked < timedelta(days=1)):
+        return cached["organization_id"], cached["channel_id"]
+    org_id, channel_id = choose_x_channel(token)
+    if channel_id != config["channel_id"]:
+        raise RuntimeError("Connected X channel differs from pinned Veripsa account")
+    state["provider_connection"] = {
+        "organization_id": org_id, "channel_id": channel_id,
+        "verified_at_utc": now.astimezone(timezone.utc).isoformat(),
+    }
+    save_state(state)
+    return org_id, channel_id
+
+
 def main() -> int:
     config = read_json(HERE / "config.json")
     validate_config(config)
@@ -807,9 +829,7 @@ def main() -> int:
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Buffer secret unavailable; cannot promote articles")
-    org_id, channel_id = choose_x_channel(token)
-    if channel_id != config["channel_id"]:
-        raise RuntimeError("Connected X channel differs from pinned Veripsa account")
+    org_id, channel_id = connected_channel(token, config, state, now)
     existing = list_existing(
         token, org_id, channel_id,
         include_due_at=True, include_unsettled=True,
