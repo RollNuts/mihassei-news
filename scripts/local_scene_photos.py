@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
+    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
     from .generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -32,7 +32,7 @@ try:
     from .media_policy import MIN_JPEG_BYTES, MAX_JPEG_BYTES, jpeg_dimensions
     from .editorial_covers import story_subject
 except ImportError:
-    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
+    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
     from generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -332,8 +332,9 @@ def png_to_jpeg(png: bytes) -> bytes:
 def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT,
                     origin: str = "local-comfyui") -> Path:
     """Atomic first-party image writes with provenance and a strict storage budget."""
-    if origin == "github-cpu-lcm":
-        if checkpoint not in (LEGACY_MODEL, CPU_MODEL):
+    if origin in ("github-cpu-lcm", CPU_ORIGIN):
+        if (checkpoint not in (LEGACY_MODEL, CPU_MODEL)
+                or (origin == CPU_ORIGIN and checkpoint != CPU_MODEL)):
             raise ValueError("Unreviewed CPU model is forbidden")
     elif origin != "local-comfyui":
         raise ValueError("Unreviewed image origin is forbidden")
@@ -386,8 +387,8 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
         "seed": stable_seed(article),
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
-    if origin == "github-cpu-lcm" and checkpoint == CPU_MODEL:
-        manifest["images"][slug]["inference"] = dict(CPU_INFERENCE)
+    if origin in ("github-cpu-lcm", CPU_ORIGIN) and checkpoint == CPU_MODEL:
+        manifest["images"][slug]["inference"] = dict(CPU_INFERENCE if origin == CPU_ORIGIN else LCM_INFERENCE)
     # A successful deliberate repair replaces that article's visual hold.
     # Preserve holds for every other article when merging new image records.
     if isinstance(manifest.get("rejected"), dict):

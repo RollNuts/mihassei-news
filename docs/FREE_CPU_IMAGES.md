@@ -13,7 +13,7 @@
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
 - 記事の `visual_strategy` が `illustration` の場合は、通常実行・`retry_held`・ローカルの`--force`でもCPU/Mac生成キューへ入れない。2026-11-06 22:00 JST以降の新作では `illustration_reason` を必須とし、文字/UI、厳密な人数や不在、複雑な人物関係、比較レイアウト、実在キャラクター再現を避ける安全上の制約のいずれかが風刺成立に必要な時だけ使う。**写真向けの scene_prompt を書いたまま illustration に振り分けない。** 再び写真を試すなら、記事側を `cpu-photo` に戻し、場面指示を変えて新しい記事指紋で扱う。
 - CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。**画風の面白さは足さず、documentary / press photo の共通ラッパーに任せる。** cinematic、anime、3D render、glossy product photo、dramatic lighting など広告・CG寄りの指示を個別sceneへ入れない。
-- モデルは実写向けの[Realistic Vision 5.1](https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE)に、公式[SD1.5 LCM LoRA](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5)と推奨MSE VAEを組み合わせ、CPU・6ステップ・CFG 2で生成する。各リビジョンと5つの重みSHA256を `scripts/cpu_photo_model.py` に固定し、読み込み前に照合する。基盤のCreativeML Open RAIL-M、LoRAのOpen RAIL++、VAEのMITの本文・制限を確認済み。旧DreamShaperの承認済み写真は維持する。旧native LCMはnegative_promptを無視するが、新経路のStableDiffusionPipelineではCFGによるアニメ・CG・文字の除外指定が有効。除外指定も77トークンを超えれば生成を止める。旧モデルと同じ安全チェッカーを明示的に保持し、拒否された画像は採用しない。
+- モデルは実写向けの[Realistic Vision 5.1](https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE)と推奨MSE VAE。作者推奨のDPM++ 2M Karras・CFG 7を使い、24ステップで場面の再現を試す（速度・画質は実行ごとに確認）。短い高速LCMでは必要な小道具が欠けたため、新規生成にLCMアダプターは使わない。各リビジョンと4つの重みSHA256を `scripts/cpu_photo_model.py` に固定し、読み込み前に照合する。基盤のCreativeML Open RAIL-M、VAEのMITの本文・制限を確認済み。過去の生成記録と承認写真は維持し、新規は `origin: github-cpu-sd15` と正確な推論設定を記録する。CFGのアニメ・CG・文字の除外指定も77トークンを超えれば停止し、従来の安全チェッカーを明示的に保持する。
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
 - CPUの速度・生成品質はSDXLをMacのGPUで動かす場合に及ばない可能性が高い。**実際の生成成功・本番表示・見栄えはGitHub Actions実行ログと公開URLで確認するまで未証明**。異常な画像を自動公開しないための安全検証はあるが、意味が伝わるかの人間のレビューは自動化していない。
 
@@ -31,7 +31,7 @@
 ## 運用上の注意
 
 - 公開標準ランナーの無償利用とプライベートランナーの課金条件はGitHubの規約次第で変更される。公開リポジトリ用ジョブのガードを外さない。
-- 1回ごとに必要な重み約5.6GBを取得する場合がある（旧モデル一式や不要なVAEを重複取得しない）。Macへはモデルを追加せず、使い捨てランナー内だけで取得する。有料ストレージや大容量Actionsキャッシュは使用しない。確認用artifactは最大3枚・1日保持に制限する。
+- 1回ごとに必要な重み約5.5GBを取得する場合がある（旧モデル一式や不要なVAEを重複取得しない）。Macへはモデルを追加せず、使い捨てランナー内だけで取得する。有料ストレージや大容量Actionsキャッシュは使用しない。確認用artifactは最大3枚・1日保持に制限する。
 - 定時生成の中止は `.github/workflows/free-cpu-scenes.yml` の `schedule:` を削除またはワークフローを無効化。既存写真・記事・Mac用画像生成は維持される。
 - **GitHubのCPU方式が失敗しても追加サービスへ自動的に切り替えない。** 推論時は最大55分で停止。画像生成エラーで記事公開を止めない。
 - 毎時の定時処理は1回最大3枚で、新着記事のmain更新時にも不足分だけ処理する。GitHubトークン由来などでpush起動しない更新も、次の定時処理で回収する。Macとの同時生成や記事改稿があっても最新mainと再照合し、有効な既存画像は上書きしない。

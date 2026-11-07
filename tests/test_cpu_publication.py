@@ -45,7 +45,7 @@ class CpuPublicationTests(unittest.TestCase):
         source = self.base / name
         (source / "content").mkdir(parents=True)
         (source / "content/articles.json").write_text(json.dumps([article], ensure_ascii=False))
-        write_generated(article, data or self.jpeg, publish.MODEL, root=source, origin="github-cpu-lcm")
+        write_generated(article, data or self.jpeg, publish.MODEL, root=source, origin=publish.ORIGIN)
         return source
 
     def edit_manifest(self, source, edit):
@@ -76,7 +76,7 @@ class CpuPublicationTests(unittest.TestCase):
         (repo / "assets/generated").mkdir(parents=True)
         (repo / "assets/generated/manifest.json").write_text('{"version":1,"images":{}}')
         if held:
-            write_generated(article, self.jpeg, publish.MODEL, root=repo, origin="github-cpu-lcm")
+            write_generated(article, self.jpeg, publish.MODEL, root=repo, origin=publish.ORIGIN)
             def hold(payload):
                 payload["rejected"] = {article["slug"]: {
                     "article_sha256": payload["images"][article["slug"]]["article_sha256"],
@@ -179,7 +179,7 @@ class CpuPublicationTests(unittest.TestCase):
         self.assertEqual(set(changed), {"assets/generated/manifest.json", "assets/generated/" + self.article["slug"] + ".jpg"})
         manifest = json.loads(self.git("show", "main:assets/generated/manifest.json", cwd=remote))
         record = manifest["images"][self.article["slug"]]
-        self.assertEqual(record["origin"], "github-cpu-lcm")
+        self.assertEqual(record["origin"], publish.ORIGIN)
         self.assertEqual(record["seed"], stable_seed(self.article))
         self.assertEqual(self.git("rev-parse", "HEAD", cwd=repo), local_head)
         self.assertEqual((repo / "keep-user.txt").read_text(), "uncommitted user file")

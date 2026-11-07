@@ -18,14 +18,14 @@ import tempfile
 from pathlib import Path
 
 try:
-    from .cpu_photo_model import MODEL, REVISION, INFERENCE, load_pipeline
+    from .cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
         load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 except ImportError:
-    from cpu_photo_model import MODEL, REVISION, INFERENCE, load_pipeline
+    from cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
         load_articles, pending_articles, png_to_jpeg, scene_description,
@@ -40,6 +40,11 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
+    "sleep-advice-livestream-until-two-am": (
+        "A tired Japanese woman presses a plain concealer stick below one eye "
+        "at a desk beside a lit ring light and a smartphone on a tripod. "
+        "She wears a plain sweatshirt in a small home studio."
+    ),
     "five-star-reviews-of-returned-humidifiers": (
         "A white tabletop humidifier stands half-unpacked amid opened cardboard "
         "return boxes blocking a tiny electronics shop storeroom doorway. "
@@ -99,6 +104,7 @@ CPU_SCENES = {
 # versions. A later body or scene edit must use its current direction rather
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
+    "sleep-advice-livestream-until-two-am": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
     "five-star-reviews-of-returned-humidifiers": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
     "midterm-prediction-notebook-full-of-holes": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
     TV_PILOT_SLUG: "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
@@ -278,7 +284,7 @@ def export_review_bundle(articles: list[dict], destination: Path, *, root: Path 
     for article in articles:
         slug = article["slug"]
         record = records.get(slug)
-        if not usable_generated_scene(article, root=root) or not isinstance(record, dict) or record.get("origin") != "github-cpu-lcm":
+        if not usable_generated_scene(article, root=root) or not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN):
             raise RuntimeError("Unverified CPU image cannot enter a review bundle: " + slug)
         selected[slug] = record
     if not selected:
@@ -346,7 +352,7 @@ def render_one(pipe, torch, article: dict) -> bytes:
     seed = stable_seed(article)
     print(f"CPU scene seed: {seed}", flush=True)
     generator = torch.Generator(device="cpu").manual_seed(seed)
-    # Photo-specialist SD1.5 + official LCM adapter, with effective CFG negatives.
+    # Full photo-specialist SD1.5 sampling prioritises scene adherence over speed.
     # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
     tokenizer = getattr(pipe, "tokenizer", None)
     prompt = fit_cpu_prompt(article, tokenizer) if tokenizer is not None else cpu_prompt(article)
@@ -414,7 +420,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[{index}/{len(selected)}] CPU staging: {article['slug']}", flush=True)
             try:
                 data = render_one(pipe, torch, article)
-                write_generated(article, data, MODEL, root=ROOT, origin="github-cpu-lcm")
+                write_generated(article, data, MODEL, root=ROOT, origin=ORIGIN)
                 successes.append(article)
                 print(f"Saved verified first-party JPEG ({len(data)} bytes)", flush=True)
             except (RuntimeError, ValueError, OSError) as exc:
