@@ -167,6 +167,41 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertFalse(any("editorial_signature.present" in error for error in errors))
 
+    def test_human_behavior_basis_is_required_and_grounded_in_public_text(self):
+        published = datetime(2026, 11, 7, 17, 30, tzinfo=JST)
+        item = story(
+            "human-motive",
+            "social_life",
+            published=published,
+            reader_interest="food_travel_shopping",
+        )
+        item["title"] = "店主、SNS企画の順位維持で正面入口を撮影場所に"
+        item["summary"] = "写真投稿数で競う商店街企画を優先した店主が、買い物客を側面入口へ案内し、投稿数だけを伸ばした。"
+        item["paragraphs"] = [
+            "客に正面を開けてほしいと言われても、店主は「今動かすと順位が落ちるから、夕方までこのまま」と側面入口を指した。"
+        ]
+        item["reader_clarity"] = {
+            "who": "店主",
+            "action": "SNS企画の順位を守るため正面入口を撮影場所にした",
+            "oddity": "集客の順位を上げるほど実際の買い物客が入りづらくなった",
+        }
+
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("behavior_basis is required" in error for error in errors))
+
+        item["behavior_basis"] = {
+            "motive": "商店街のSNS企画で上位に入り、翌月の公式特集に載りたい",
+            "ordinary_alternative": "熊手を脇へ動かして正面入口を買い物客に開ける",
+            "why_not": "熊手を動かすと撮影投稿が減って企画順位を落とすと考えている",
+            "evidence_quote": "本文には存在しない説明だけの動機",
+        }
+        errors, _ = validate_articles([item])
+        self.assertTrue(any("evidence_quote must be a verbatim excerpt" in error for error in errors))
+
+        item["behavior_basis"]["evidence_quote"] = "「今動かすと順位が落ちるから、夕方までこのまま」"
+        errors, _ = validate_articles([item])
+        self.assertFalse(any("behavior_basis" in error for error in errors))
+
     def test_illustration_requires_a_concrete_reason_after_photo_first_rollout(self):
         published = datetime(2026, 11, 6, 22, 30, tzinfo=JST)
         item = story("illustration-reason", "original_satire", published=published)
