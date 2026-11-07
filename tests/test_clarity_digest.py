@@ -58,6 +58,22 @@ class ClarityDigestTests(unittest.TestCase):
         self.assertNotIn("hidden body", rendered)
         self.assertNotIn("editorial_signature", rendered)
 
+    def test_second_pass_exposes_the_story_but_never_the_authors_rationale(self):
+        item = article("blind", datetime(2026, 11, 6, 19, 30, tzinfo=JST))
+        item.update(reader_clarity={"oddity": "author's defense"},
+                    trend_bridge={"unique_hook": "source-based defense"},
+                    x_share_lead="promotional defense")
+        item["paragraphs"] = ["A reasonable purchase.", "Nothing was wasted."]
+        rows = blind_rows([item], full_text=True)
+        rendered = render_text(rows)
+        self.assertIn("BODY 1: A reasonable purchase.", rendered)
+        self.assertIn("BODY 2: Nothing was wasted.", rendered)
+        self.assertEqual(set(rows[0]), {"slug", "published_at", "title", "summary", "paragraphs"})
+        for hidden in ("hidden source detail", "author's defense", "source-based defense", "promotional defense"):
+            self.assertNotIn(hidden, rendered)
+        rows[0]["paragraphs"].append("review note")
+        self.assertEqual(len(item["paragraphs"]), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
