@@ -372,6 +372,31 @@
       "seed": 537466078184489001,
       "sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
     },
+    "sleep-advice-livestream-until-two-am": {
+      "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+      "bytes": 76665,
+      "generated_at": "2026-11-07T15:16:21.705413+00:00",
+      "inference": {
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 2.0,
+        "height": 448,
+        "lora_model": "latent-consistency/lcm-lora-sdv1-5",
+        "lora_revision": "cf2fced511dbe7e26c8d1d397e728fbab875db4b",
+        "num_inference_steps": 6,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "LCMScheduler",
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 3,
+      "seed": 1235078978855229347,
+      "sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df"
+    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "bytes": 89973,
