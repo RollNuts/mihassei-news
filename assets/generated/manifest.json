@@ -504,10 +504,20 @@
       "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
     },
+    "black-friday-preparty-budget-gone": {
+      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "reason": "The JPEG depicts a generic storefront crowd without an empty wallet, purchased bags or the missed rice-cooker purchase. Large fabricated storefront lettering is prominent; keep the reviewed illustration.",
+      "rejected_candidate_sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
+    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
       "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+    },
+    "christmas-done-for-you-family-decorates-boxes": {
+      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+      "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
+      "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
     },
     "datacenter-unbuilt-ribbon-cutting": {
       "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
@@ -529,6 +539,11 @@
       "reason": "Visual review of negative-guided CPU retry 42000558053: background people were reduced but several pedestrians still remain, while the director, shopping bags and tripod-camera action are not clearly depicted. The no-extras joke is still not readable enough, so hold the JPEG and keep the safe fallback instead of spending repeated CPU retries.",
       "rejected_candidate_sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+    },
+    "five-star-reviews-of-returned-humidifiers": {
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "reason": "実JPEGと現本文を照合。箱棚の間を歩く人物がいる普通の倉庫で、加湿器が判別できず、通路も開いている。返品箱で新品を置けない状況や星5評価との対比が伝わらず不採用。本文に合う既存専用SVGを維持し、実写モデルで小道具を手前に絞って再試験する。",
+      "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
     },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
@@ -557,6 +572,11 @@
       "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
     },
+    "shiroamadai-last-plate-twenty-seven-times": {
+      "article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423",
+      "reason": "実JPEGと現本文を照合。一般的な飲食店カウンターで、画面全幅の大きな黒板に擬似文字が目立つ。小さな札を裏返す手元、余った魚の配送箱という記事固有の場面がなく不採用。既存の専用SVGを維持する。",
+      "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
+    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
@@ -574,25 +594,20 @@
       "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970"
     },
+    "surprise-birthday-organized-by-guest-of-honor": {
+      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+      "reason": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。",
+      "rejected_candidate_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
+    },
+    "tori-no-ichi-kumade-blocks-store-entrance": {
+      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+      "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
+      "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
     "variety-700-guests-only-introductions": {
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
-    },
-    "christmas-done-for-you-family-decorates-boxes": {
-      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
-      "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b",
-      "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained."
-    },
-    "black-friday-preparty-budget-gone": {
-      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "rejected_candidate_sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e",
-      "reason": "The JPEG depicts a generic storefront crowd without an empty wallet, purchased bags or the missed rice-cooker purchase. Large fabricated storefront lettering is prominent; keep the reviewed illustration."
-    },
-    "tori-no-ichi-kumade-blocks-store-entrance": {
-      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
-      "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
-      "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story."
     }
   },
   "version": 1

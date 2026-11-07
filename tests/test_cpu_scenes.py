@@ -153,10 +153,43 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(data, jpeg_header_fixture())
         self.assertEqual(gen.manual_seed.call_args.args[0], local_scene_photos.stable_seed(a))
         kwargs = pipeline.call_args.kwargs
-        self.assertEqual(kwargs["num_inference_steps"], 8)
+        self.assertEqual(kwargs["num_inference_steps"], 6)
+        self.assertEqual(kwargs["guidance_scale"], 2.0)
+        self.assertIn("anime", kwargs["negative_prompt"])
+        self.assertIn("written text", kwargs["negative_prompt"])
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
         self.assertIn("capsule lottery machine", kwargs["prompt"])
         self.assertIn("documentary press photograph", kwargs["prompt"])
+
+    def test_photo_model_requires_pinned_inference_and_legacy_records_still_work(self):
+        from scripts.cpu_photo_model import LEGACY_MODEL
+        a = article()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local_scene_photos.write_generated(a, jpeg_header_fixture(), cpu.MODEL,
+                                              origin="github-cpu-lcm", root=root)
+            manifest = root / "assets/generated/manifest.json"
+            payload = json.loads(manifest.read_text())
+            self.assertEqual(payload["images"][a["slug"]]["inference"], cpu.INFERENCE)
+            for altered in (None, {**cpu.INFERENCE, "safety_revision": "unreviewed"},
+                            {**cpu.INFERENCE, "guidance_scale": 0.0}):
+                changed = json.loads(json.dumps(payload))
+                changed["images"][a["slug"]]["inference"] = altered
+                manifest.write_text(json.dumps(changed))
+                self.assertFalse(usable_generated_scene(a, root=root))
+            local_scene_photos.write_generated(a, jpeg_header_fixture(), LEGACY_MODEL,
+                                              origin="github-cpu-lcm", root=root)
+            self.assertTrue(usable_generated_scene(a, root=root))
+
+    def test_negative_prompt_is_not_silently_clipped_by_the_effective_cfg_path(self):
+        pipeline = Mock()
+        # Positive fits, but the negative does not. No model invocation occurs.
+        pipeline.tokenizer.encode.side_effect = lambda text, **kwargs: list(range(78 if "waxy skin" in text else 40))
+        generator = Mock()
+        fake_torch = SimpleNamespace(Generator=Mock(return_value=generator))
+        with self.assertRaisesRegex(ValueError, "negative prompt exceeds CLIP"):
+            cpu.render_one(pipeline, fake_torch, article())
+        pipeline.assert_not_called()
 
     def test_bell_redraw_changes_real_inference_seed_and_records_the_same_integer(self):
         a = {**article(), "slug": "stolen-doorbell-returned-by-parcel", "title": "盗まれた呼び鈴が小包で戻る"}

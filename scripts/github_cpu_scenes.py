@@ -18,21 +18,20 @@ import tempfile
 from pathlib import Path
 
 try:
+    from .cpu_photo_model import MODEL, REVISION, INFERENCE, load_pipeline
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
-        NEGATIVE, load_articles, pending_articles, png_to_jpeg, scene_description,
+        load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 except ImportError:
+    from cpu_photo_model import MODEL, REVISION, INFERENCE, load_pipeline
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
-        NEGATIVE, load_articles, pending_articles, png_to_jpeg, scene_description,
+        load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 
-MODEL = "SimianLuo/LCM_Dreamshaper_v7"
-# Pin the reviewed model snapshot; do not silently pull another model version.
-REVISION = "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5"
 MAX_CPU_BATCH = 3
 MIN_RUNNER_FREE_BYTES = 1_000_000_000
 CLIP_TOKEN_LIMIT = 77
@@ -41,6 +40,11 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
+    "five-star-reviews-of-returned-humidifiers": (
+        "A white tabletop humidifier stands half-unpacked amid opened cardboard "
+        "return boxes blocking a tiny electronics shop storeroom doorway. "
+        "A solemn employee squeezes past the cartons."
+    ),
     "midterm-prediction-notebook-full-of-holes": (
         "A battered open paper notebook has a large ragged circular hole "
         "through its page, revealing the dark desk underneath, with a pink "
@@ -95,6 +99,7 @@ CPU_SCENES = {
 # versions. A later body or scene edit must use its current direction rather
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
+    "five-star-reviews-of-returned-humidifiers": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
     "midterm-prediction-notebook-full-of-holes": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
     TV_PILOT_SLUG: "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
     "sweet-potato-chorus-starts-too-late": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
@@ -116,16 +121,6 @@ CPU_NEGATIVES = {
         "magazine cover, flyer"
     ),
 }
-FILES = [
-    "model_index.json", "scheduler/*.json", "tokenizer/*",
-    "text_encoder/*.json", "text_encoder/*.safetensors",
-    "unet/*.json", "unet/*.safetensors",
-    "vae/*.json", "vae/*.safetensors",
-    "feature_extractor/*",
-    "safety_checker/*.json", "safety_checker/*.safetensors",
-]
-
-
 def permitted_ci() -> bool:
     """Never run a heavy model on a fork, PR, private repo or non-CPU worker."""
     return all((
@@ -141,27 +136,6 @@ def permitted_ci() -> bool:
 def ensure_disk() -> None:
     if shutil.disk_usage(ROOT).free < MIN_RUNNER_FREE_BYTES:
         raise RuntimeError("Runner has less than 1GB free; keeping existing art")
-
-
-def load_pipeline():
-    """Load local weights on CPU; never use HF remote inference/Spaces APIs."""
-    import torch
-    from diffusers import DiffusionPipeline
-    from huggingface_hub import snapshot_download
-
-    torch.set_num_threads(max(1, min(4, os.cpu_count() or 2)))
-    torch.set_num_interop_threads(1)
-    ensure_disk()
-    local_model = snapshot_download(repo_id=MODEL, revision=REVISION,
-                                    allow_patterns=FILES)
-    ensure_disk()
-    pipe = DiffusionPipeline.from_pretrained(
-        local_model, torch_dtype=torch.float32, use_safetensors=True,
-        local_files_only=True,
-    )
-    pipe.to("cpu")
-    pipe.set_progress_bar_config(disable=True)
-    return pipe, torch
 
 
 def reviewed_source_matches(article: dict, slug: str) -> bool:
@@ -210,10 +184,13 @@ def cpu_prompt(article: dict) -> str:
 
 
 def cpu_negative_prompt(article: dict) -> str:
-    """Use conservative global exclusions plus version-bound scene exclusions."""
+    """Short CFG exclusions; native LCM silently ignored the old negative input."""
     slug = article.get("slug")
     extra = CPU_NEGATIVES.get(slug, "") if isinstance(slug, str) and reviewed_source_matches(article, slug) else ""
-    return NEGATIVE + (", " + extra if extra else "")
+    core = ("anime, cartoon, illustration, painting, CGI, 3d render, waxy skin, "
+            "deformed hands, extra fingers, blurry, written text, logo, "
+            "watermark, nudity, nsfw")
+    return core + (", " + extra if extra else "")
 
 
 def compact_core_at_clause_boundaries(core: str, count) -> str:
@@ -369,14 +346,19 @@ def render_one(pipe, torch, article: dict) -> bytes:
     seed = stable_seed(article)
     print(f"CPU scene seed: {seed}", flush=True)
     generator = torch.Generator(device="cpu").manual_seed(seed)
-    # LCM: eight CPU-only steps and enough native pixels for a recognisable prop.
+    # Photo-specialist SD1.5 + official LCM adapter, with effective CFG negatives.
     # Publication upscaling to 1200x675 still enforces the 700 KiB limit.
     tokenizer = getattr(pipe, "tokenizer", None)
     prompt = fit_cpu_prompt(article, tokenizer) if tokenizer is not None else cpu_prompt(article)
+    negative = cpu_negative_prompt(article)
+    if tokenizer is not None and len(tokenizer.encode(negative)) > CLIP_TOKEN_LIMIT:
+        raise ValueError("CPU negative prompt exceeds CLIP budget; refusing silent truncation")
     with torch.inference_mode():
         result = pipe(
-            prompt=prompt, negative_prompt=cpu_negative_prompt(article),
-            num_inference_steps=8, guidance_scale=8.0, width=800, height=448,
+            prompt=prompt, negative_prompt=negative,
+            num_inference_steps=INFERENCE["num_inference_steps"],
+            guidance_scale=INFERENCE["guidance_scale"],
+            width=INFERENCE["width"], height=INFERENCE["height"],
             generator=generator, output_type="pil",
         )
     if (getattr(result, "nsfw_content_detected", None)
@@ -415,7 +397,7 @@ def main(argv: list[str] | None = None) -> int:
         for article in selected:
             print(json.dumps({
                 "slug": article["slug"], "scene": scene_description(article), "cpu_prompt": cpu_prompt(article),
-                "model": MODEL,
+                "model": MODEL, "inference": INFERENCE,
             }, ensure_ascii=False), flush=True)
         return 0
     if not permitted_ci():

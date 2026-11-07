@@ -244,6 +244,27 @@
       "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
       "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
       "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。"
+    },
+    "five-star-reviews-of-returned-humidifiers": {
+      "decision": "rejected",
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "image_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
+      "reviewed_at": "2026-11-07T15:05:19.416840+00:00",
+      "note": "実JPEGと現本文を照合。箱棚の間を歩く人物がいる普通の倉庫で、加湿器が判別できず、通路も開いている。返品箱で新品を置けない状況や星5評価との対比が伝わらず不採用。本文に合う既存専用SVGを維持し、実写モデルで小道具を手前に絞って再試験する。"
+    },
+    "surprise-birthday-organized-by-guest-of-honor": {
+      "decision": "rejected",
+      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+      "image_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a",
+      "reviewed_at": "2026-11-07T15:05:19.416840+00:00",
+      "note": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。"
+    },
+    "shiroamadai-last-plate-twenty-seven-times": {
+      "decision": "rejected",
+      "article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423",
+      "image_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804",
+      "reviewed_at": "2026-11-07T15:05:19.416840+00:00",
+      "note": "実JPEGと現本文を照合。一般的な飲食店カウンターで、画面全幅の大きな黒板に擬似文字が目立つ。小さな札を裏返す手元、余った魚の配送箱という記事固有の場面がなく不採用。既存の専用SVGを維持する。"
     }
   },
   "version": 1
