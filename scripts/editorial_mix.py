@@ -349,6 +349,8 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
     )
     recent_tones = [article.get("editorial_tone") for article in tracked_items]
 
+    published = len(day_items)
+
     if counts["plausible_future"] == 0:
         return (
             "plausible_future (today 0; compare one sharp, genuinely plausible "
@@ -365,6 +367,28 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
         return (
             f"{preferred} (last 2 tracked stories are {repeated}; compare a "
             "different reader aftertaste before a third, even across midnight)"
+        )
+
+    if counts["plausible_future"] >= 3:
+        candidates = ["comic_exaggeration", "observational"]
+        preferred = min(
+            candidates,
+            key=lambda tone: (counts.get(tone, 0), EDITORIAL_TONES.index(tone)),
+        )
+        return (
+            f"{preferred} (plausible_future already appears "
+            f"{counts['plausible_future']} times today; keep the slate from becoming all-future)"
+        )
+
+    if (
+        counts["plausible_future"] == 1
+        and published >= 6
+        and day_tones
+        and day_tones[-1] != "plausible_future"
+    ):
+        return (
+            "plausible_future (only 1 future-specific story after 6 publications; "
+            "compare a second distinct five-year mechanism for the last core slot)"
         )
 
     if counts["wildcard"] >= 1:

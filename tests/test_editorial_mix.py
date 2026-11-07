@@ -302,6 +302,58 @@ class EditorialMixTests(unittest.TestCase):
             tone_advice(articles, "2026-11-06"),
         )
 
+    def test_tone_advice_prioritizes_a_second_future_for_last_core_slot(self):
+        articles = [
+            story("a", "trend", tone="comic_exaggeration"),
+            story(
+                "b", "social_life", tone="observational",
+                published=BASE_TIME + timedelta(hours=2),
+            ),
+            story(
+                "c", "original_satire", tone="plausible_future",
+                published=BASE_TIME + timedelta(hours=4),
+            ),
+            story(
+                "d", "trend", tone="comic_exaggeration",
+                published=BASE_TIME + timedelta(hours=6),
+            ),
+            story(
+                "e", "social_life", tone="observational",
+                published=BASE_TIME + timedelta(hours=8),
+            ),
+            story(
+                "f", "original_satire", tone="comic_exaggeration",
+                published=BASE_TIME + timedelta(hours=10),
+            ),
+        ]
+        advice = tone_advice(articles, "2026-11-06")
+        self.assertIn("plausible_future", advice)
+        self.assertIn("second distinct five-year mechanism", advice)
+
+    def test_tone_advice_rotates_away_after_three_future_stories(self):
+        articles = [
+            story("a", "trend", tone="plausible_future"),
+            story(
+                "b", "social_life", tone="comic_exaggeration",
+                published=BASE_TIME + timedelta(hours=2),
+            ),
+            story(
+                "c", "original_satire", tone="plausible_future",
+                published=BASE_TIME + timedelta(hours=4),
+            ),
+            story(
+                "d", "trend", tone="observational",
+                published=BASE_TIME + timedelta(hours=6),
+            ),
+            story(
+                "e", "social_life", tone="plausible_future",
+                published=BASE_TIME + timedelta(hours=8),
+            ),
+        ]
+        advice = tone_advice(articles, "2026-11-06")
+        self.assertNotIn("plausible_future (", advice)
+        self.assertIn("keep the slate from becoming all-future", advice)
+
     def test_tone_advice_breaks_a_two_story_run(self):
         articles = [
             story("a", "trend", tone="plausible_future"),
