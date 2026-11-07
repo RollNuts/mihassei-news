@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="左の一行のAI要約と、右で上司が積み上げた大量の補足資料を対比した架空の会社の創作イラスト" data-visual-topic="meeting" data-article-sha256="fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf">
+<title>仕事の指示は一行、指導者の気持ちは十八枚の紙になった</title>
+<defs>
+<linearGradient id="room" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ecf0ed"/><stop offset="1" stop-color="#d7ded8"/></linearGradient>
+<linearGradient id="desk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7ac90"/><stop offset="1" stop-color="#a38368"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="#f2f0e8"/>
+<rect x="20" y="20" width="570" height="635" rx="15" fill="url(#room)" stroke="#9baaa6" stroke-width="3"/>
+<rect x="610" y="20" width="570" height="635" rx="15" fill="#eae6df" stroke="#aea9a2" stroke-width="3"/>
+<path d="M600 18V657" stroke="#fafbf8" stroke-width="14"/>
+<rect x="46" y="62" width="512" height="290" rx="10" fill="#c6d5d2" opacity=".5"/>
+<path d="M60 103h480M60 154h480" stroke="#e4ece7" stroke-width="12"/>
+<rect x="65" y="469" width="515" height="135" rx="8" fill="url(#desk)"/>
+<rect x="74" y="583" width="500" height="16" fill="#806752"/>
+<rect x="205" y="238" width="275" height="191" rx="15" fill="#303b40" stroke="#6d8586" stroke-width="9"/>
+<rect x="224" y="257" width="237" height="150" rx="5" fill="#f4f7f3"/>
+<rect x="244" y="282" width="114" height="11" rx="5" fill="#b4c0bd"/>
+<rect x="244" y="316" width="195" height="16" rx="4" fill="#3b6771"/>
+<path d="M244 354h153" stroke="#b4c0bd" stroke-width="5"/>
+<path d="M325 433v27m-63 0h125" stroke="#4d5b5e" stroke-width="13" stroke-linecap="round"/>
+<rect x="374" y="488" width="169" height="97" rx="3" fill="#fcfaf5" stroke="#818d8a" stroke-width="3"/>
+<path d="M395 511h105m-105 25h86" stroke="#96aba9" stroke-width="6"/>
+<g transform="translate(128 265)"><circle r="34" fill="#d2a88d" stroke="#8c6658" stroke-width="3"/><path d="M-40 15q0-57 41-53t41 49Q14-5-40 15" fill="#465c64"/><path d="M-58 151Q-55 60 0 51Q57 62 58 151V233H-58Z" fill="#668c93"/><path d="M-30 120l71 55" stroke="#d2a88d" stroke-width="16" stroke-linecap="round"/><path d="M-14 235v85m48-85v85" stroke="#3c5362" stroke-width="23"/></g>
+<rect x="644" y="469" width="510" height="137" rx="8" fill="url(#desk)"/>
+<rect x="651" y="589" width="496" height="17" fill="#806752"/>
+<rect x="754" y="462" width="95" height="112" rx="3" fill="#fefbf4" stroke="#777c79" stroke-width="3"/>
+<path d="M767 488h64m-64 16h59" stroke="#a6adab" stroke-width="5"/>
+<g transform="translate(710 254)"><circle r="48" fill="#cda287" stroke="#8a5d50" stroke-width="3"/><path d="M-46-13Q-39-74 7-60Q45-55 49-12Q2-35-46-13" fill="#586168"/><path d="M-75 183Q-78 58 0 59Q72 72 80 182V260H-73Z" fill="#9b6661"/><path d="M24 118L122 170" stroke="#cda287" stroke-width="24" stroke-linecap="round"/><path d="M-62 125l-53 65" stroke="#cda287" stroke-width="22" stroke-linecap="round"/><path d="M-30 263v55m70-55v55" stroke="#46535e" stroke-width="28"/><path d="M-17 0h-9m60 0h-10" stroke="#574f4d" stroke-width="4" stroke-linecap="round"/></g>
+<g transform="translate(15 0)"><rect x="827" y="492" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="830" y="482" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="833" y="472" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="836" y="462" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="839" y="452" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="842" y="442" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="845" y="432" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="848" y="422" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="851" y="412" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="854" y="402" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="857" y="392" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="860" y="382" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="863" y="372" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="866" y="362" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="869" y="352" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="872" y="342" width="213" height="17" rx="2" fill="#f5ede1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="875" y="332" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/>
+<rect x="878" y="322" width="213" height="17" rx="2" fill="#faf9f1" stroke="#7c807d" stroke-width="1.6"/></g>
+<path d="M887 454h80" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M901 445h89" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M915 436h98" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M887 427h107" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M901 418h80" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M915 409h89" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M887 400h98" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M901 391h107" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M915 382h80" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M887 373h89" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M901 364h98" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M915 355h107" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M887 346h80" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M901 337h89" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M915 328h98" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M887 319h107" stroke="#b65e54" stroke-width="3" opacity=".58"/>
+<path d="M825 313q100-25 176 1" stroke="#b65e54" stroke-width="10" stroke-linecap="round"/>
+<path d="M1058 338l33-35m-33 0 33 35" stroke="#b65e54" stroke-width="9" stroke-linecap="round"/>
+<rect x="14" y="654" width="1172" height="8" fill="#607d81" opacity=".55"/>
+</svg>
