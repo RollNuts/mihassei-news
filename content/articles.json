@@ -1,5 +1,65 @@
 [
   {
+    "slug": "sleep-advice-livestream-until-two-am",
+    "category": "暮らし",
+    "flash": "早寝を勧めて、配信は深夜2時",
+    "fiction_company": "美容配信番組「ねむりの支度」",
+    "art": "cards",
+    "fiction_at": "2031-11-07T19:49:35+09:00",
+    "published_at": "2026-11-07T19:49:35+09:00",
+    "title": "「睡眠が一番の美容」生配信、午前2時まで延長　寝不足隠しの化粧品が完売",
+    "summary": "美容配信者は早寝を勧めながら、協賛商品の販売目標に届かず番組を延長。視聴者も最後の割引コードを待って眠れず、寝不足を隠すコンシーラーだけが売り切れた。",
+    "paragraphs": [
+      "2031年11月6日午後10時。美容配信者の三浦菜々は、自宅の小さなスタジオから「寝る前はスマホを置いて、まず眠りましょう」と呼びかけた。締めの挨拶をしようとすると、画面の外の担当者が売上表を差し出す。協賛するコンシーラーの販売数が、来月の番組契約を更新できる目標に届いていなかった。「あと15分だけ、美容の質問に答えます」。配信は延長された。",
+      "視聴者も「今日は早く寝る」とコメントしていたが、番組の終了時にだけ使える割引コードを待ってスマホを置けない。質問が増えるたび、三浦は「美容の基本は睡眠です」と答え、その横では担当者が販売数を数えている。午後11時半、午前0時、午前1時。三浦は「次の質問で最後です」を繰り返した。途中で切れば売上が止まり、次の配信もなくなる。視聴者も、ここまで待った割引を手放せなかった。",
+      "11月7日午前2時13分、ようやく目標数に達した。「皆さん、もう寝ましょう」。三浦が手を振ると、終了画面に割引コードが現れた。購入通知が続き、寝不足のクマを隠すコンシーラーは完売。朝、三浦は次回の「早寝のコツ」を収録するため、鏡の前で同じコンシーラーを自分の目の下に塗った。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社クロス・マーケティング「睡眠に関する調査（2026年）実態編」",
+      "published_at": "2026-04-14T16:00:00+09:00",
+      "url": "https://www.cross-m.co.jp/report/20260414sleep",
+      "topic": "2026年4月14日公表の全国20～69歳男女3000人調査では、現在の睡眠時間平均6.4時間に対し理想の平均は7.4時間で約1時間の差があった。生配信者、協賛契約、割引コードと売上は2031年の創作であり、調査対象の実際の行動を示さない。"
+    },
+    "scene_prompt": "A natural candid documentary photograph of an exhausted Japanese female livestream beauty host in her thirties at a small home beauty filming desk late at night, under ordinary warm room lighting with a plain switched-on ring light, holding an unbranded concealer tube near her tired face, with an ordinary laptop displaying unrecognizably blurred chat boxes and a paper sales checklist, realistic skin and hands, neutral domestic background, no text, no logos, no CGI appearance.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "睡眠",
+      "美容",
+      "ライブ配信"
+    ],
+    "satire_tags": [
+      "美容習慣",
+      "商業化"
+    ],
+    "x_tags": [
+      "睡眠不足"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「早く寝よう」と言っている配信を、なぜか最後まで見てしまう。",
+    "reader_interest": "beauty_wellness",
+    "reader_clarity": {
+      "who": "美容配信者",
+      "action": "睡眠を勧める生配信を午前2時まで延長し、化粧品を完売させた",
+      "oddity": "早く寝ることを説く番組が視聴者を寝不足にし、その寝不足を隠す商品まで売ってしまう"
+    },
+    "editorial_lane": "original_satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "睡眠を改善したいのに夜のスマホを手放せず、美容や健康の情報を見続けることがある",
+      "target": "美容のための睡眠を説きながら、販売目標と終了時の割引特典を睡眠そのものより優先する",
+      "action": "協賛目標を達成するまで早寝を呼びかけるライブを延長し、視聴者も割引待ちで見続ける",
+      "outcome": "寝不足を隠すコンシーラーが完売し、配信者本人も翌朝それを目の下に塗る"
+    },
+    "behavior_basis": {
+      "motive": "配信者は協賛商品の販売目標を達成して来月の番組契約を維持したい。視聴者も終了時だけの割引を逃したくない。",
+      "ordinary_alternative": "番組を予定通り終え、視聴者もスマホを閉じて眠る。",
+      "why_not": "来月の契約更新は販売数に依存し、視聴者は配信の最後まで待たなければ割引コードを受け取れない。",
+      "evidence_quote": "協賛するコンシーラーの販売数が、来月の番組契約を更新できる目標に届いていなかった。"
+    }
+  },
+  {
     "slug": "shiroamadai-last-plate-twenty-seven-times",
     "category": "暮らし",
     "flash": "希少さを守るため、毎日限定",
