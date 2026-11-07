@@ -12,10 +12,10 @@ import re
 from pathlib import Path
 
 try:
-    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
+    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 except ImportError:
-    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
+    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -89,11 +89,14 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     if origin == "local-comfyui":
         if not isinstance(model, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+\.safetensors", model):
             return None
-    elif origin == "github-cpu-lcm":
+    elif origin in ("github-cpu-lcm", CPU_ORIGIN):
         # Model weights run inside a GitHub-hosted CPU job, without image APIs.
         if model not in (LEGACY_MODEL, CPU_MODEL):
             return None
-        if model == CPU_MODEL and record.get("inference") != CPU_INFERENCE:
+        if model == LEGACY_MODEL and origin != "github-cpu-lcm":
+            return None
+        expected = CPU_INFERENCE if origin == CPU_ORIGIN else LCM_INFERENCE
+        if model == CPU_MODEL and record.get("inference") != expected:
             return None
     elif origin == "chatgpt-imagegen":
         # A manually imported ChatGPT-native generation, not a CPU/Mac result.

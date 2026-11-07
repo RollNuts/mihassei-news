@@ -75,11 +75,11 @@ class FreeCpuImageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             local_scene_photos.write_generated(
-                a, data, cpu.MODEL, origin="github-cpu-lcm", root=root,
+                a, data, cpu.MODEL, origin=cpu.ORIGIN, root=root,
             )
             self.assertTrue(usable_generated_scene(a, root=root))
             record = generated_scene_entry(a, root=root)
-            self.assertEqual(record["origin"], "github-cpu-lcm")
+            self.assertEqual(record["origin"], cpu.ORIGIN)
             self.assertEqual(record["model"], cpu.MODEL)
             self.assertEqual(record["sha256"], hashlib.sha256(data).hexdigest())
             self.assertEqual(record["article_sha256"], article_fingerprint(a))
@@ -134,7 +134,7 @@ class FreeCpuImageTests(unittest.TestCase):
             self.assertFalse(usable_generated_scene({**a, "summary": "修正済み"}, root=root))
             with self.assertRaises(ValueError):
                 local_scene_photos.write_generated(
-                    a, data, "unauthorized/model", origin="github-cpu-lcm", root=root
+                    a, data, "unauthorized/model", origin=cpu.ORIGIN, root=root
                 )
 
     def test_no_remote_inference_pipe_and_stable_scene_seed(self):
@@ -153,8 +153,8 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(data, jpeg_header_fixture())
         self.assertEqual(gen.manual_seed.call_args.args[0], local_scene_photos.stable_seed(a))
         kwargs = pipeline.call_args.kwargs
-        self.assertEqual(kwargs["num_inference_steps"], 6)
-        self.assertEqual(kwargs["guidance_scale"], 2.0)
+        self.assertEqual(kwargs["num_inference_steps"], 24)
+        self.assertEqual(kwargs["guidance_scale"], 7.0)
         self.assertIn("anime", kwargs["negative_prompt"])
         self.assertIn("written text", kwargs["negative_prompt"])
         self.assertEqual((kwargs["width"], kwargs["height"]), (800, 448))
@@ -162,12 +162,12 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("documentary press photograph", kwargs["prompt"])
 
     def test_photo_model_requires_pinned_inference_and_legacy_records_still_work(self):
-        from scripts.cpu_photo_model import LEGACY_MODEL
+        from scripts.cpu_photo_model import LEGACY_MODEL, LCM_INFERENCE
         a = article()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             local_scene_photos.write_generated(a, jpeg_header_fixture(), cpu.MODEL,
-                                              origin="github-cpu-lcm", root=root)
+                                              origin=cpu.ORIGIN, root=root)
             manifest = root / "assets/generated/manifest.json"
             payload = json.loads(manifest.read_text())
             self.assertEqual(payload["images"][a["slug"]]["inference"], cpu.INFERENCE)
@@ -179,6 +179,10 @@ class FreeCpuImageTests(unittest.TestCase):
                 self.assertFalse(usable_generated_scene(a, root=root))
             local_scene_photos.write_generated(a, jpeg_header_fixture(), LEGACY_MODEL,
                                               origin="github-cpu-lcm", root=root)
+            self.assertTrue(usable_generated_scene(a, root=root))
+            local_scene_photos.write_generated(a, jpeg_header_fixture(), cpu.MODEL,
+                                              origin="github-cpu-lcm", root=root)
+            self.assertEqual(generated_scene_entry(a, root=root)["inference"], LCM_INFERENCE)
             self.assertTrue(usable_generated_scene(a, root=root))
 
     def test_negative_prompt_is_not_silently_clipped_by_the_effective_cfg_path(self):
@@ -214,7 +218,7 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("CPU scene seed: " + str(seed), output.getvalue())
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            local_scene_photos.write_generated(a, data, cpu.MODEL, root=root, origin="github-cpu-lcm")
+            local_scene_photos.write_generated(a, data, cpu.MODEL, root=root, origin=cpu.ORIGIN)
             self.assertEqual(generated_scene_entry(a, root=root)["seed"], seed)
             self.assertTrue(usable_generated_scene(a, root=root))
 
@@ -370,6 +374,12 @@ class FreeCpuImageTests(unittest.TestCase):
     def test_current_compact_revisions_use_their_directions_and_edits_expire_them(self):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
         for slug, fingerprint, props in (
+            ("sleep-advice-livestream-until-two-am",
+             "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+             ("presses a plain concealer stick below one eye", "ring light", "smartphone")),
+            ("five-star-reviews-of-returned-humidifiers",
+             "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+             ("white tabletop humidifier", "return boxes blocking")),
             ("sweet-potato-chorus-starts-too-late",
              "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
              ("deep-purple skin", "golden-yellow flesh")),
@@ -445,7 +455,7 @@ class FreeCpuImageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "explicit --slug"):
                 cpu.select_articles([a], retry_held=True, root=root)
             local_scene_photos.write_generated(a, jpeg_header_fixture(), cpu.MODEL,
-                                              root=root, origin="github-cpu-lcm")
+                                              root=root, origin=cpu.ORIGIN)
             self.assertEqual(cpu.select_articles([a], slug=a["slug"], retry_held=True, root=root), [])
             path = root / "assets/generated/manifest.json"
             payload = json.loads(path.read_text())
@@ -460,7 +470,7 @@ class FreeCpuImageTests(unittest.TestCase):
             root, bundle = Path(folder) / "repo", Path(folder) / "review"
             for item in (a, b):
                 local_scene_photos.write_generated(item, jpeg_header_fixture(), cpu.MODEL,
-                                                  root=root, origin="github-cpu-lcm")
+                                                  root=root, origin=cpu.ORIGIN)
             (root / "assets/generated/intermediate.png").write_bytes(b"not for export")
             cpu.export_review_bundle([a], bundle, root=root)
             files = {str(p.relative_to(bundle)) for p in bundle.rglob("*") if p.is_file()}

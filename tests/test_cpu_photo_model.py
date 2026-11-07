@@ -49,7 +49,7 @@ class CpuPhotoModelTests(unittest.TestCase):
         modules = {
             "torch": self.torch,
             "diffusers": SimpleNamespace(
-                AutoencoderKL=self.vae_class, LCMScheduler=self.scheduler_class,
+                AutoencoderKL=self.vae_class, DPMSolverMultistepScheduler=self.scheduler_class,
                 StableDiffusionPipeline=self.pipeline_class,
             ),
             "diffusers.pipelines": SimpleNamespace(),
@@ -83,9 +83,9 @@ class CpuPhotoModelTests(unittest.TestCase):
     def test_verified_photo_pipeline_retains_safety_and_real_cfg(self):
         with patch.object(photo, "verify_weight", wraps=photo.verify_weight) as verify, \
              patch.object(photo.os, "cpu_count", return_value=32):
-            # Even the first deserializer must wait for all five weight checks.
+            # Even the first deserializer must wait for all four weight checks.
             def load_vae(*args, **kwargs):
-                self.assertEqual(verify.call_count, 5)
+                self.assertEqual(verify.call_count, 4)
                 return self.vae
             self.vae_class.from_pretrained.side_effect = load_vae
             pipe, torch = photo.load_pipeline()
@@ -93,7 +93,7 @@ class CpuPhotoModelTests(unittest.TestCase):
         self.assertIs(torch, self.torch)
         self.torch.set_num_threads.assert_called_once_with(4)
         self.torch.set_num_interop_threads.assert_called_once_with(1)
-        self.assertEqual(verify.call_count, 5)
+        self.assertEqual(verify.call_count, 4)
         base_args, base_kwargs = self.pipeline_class.from_pretrained.call_args
         self.assertEqual(base_args, (str(self.paths["base"]),))
         self.assertIs(base_kwargs["vae"], self.vae)
@@ -103,23 +103,22 @@ class CpuPhotoModelTests(unittest.TestCase):
         self.assertIs(base_kwargs["torch_dtype"], self.torch.float32)
         self.assertTrue(base_kwargs["use_safetensors"])
         self.assertTrue(base_kwargs["local_files_only"])
+        self.scheduler_class.from_config.assert_called_once_with(
+            {"prediction_type": "epsilon"}, algorithm_type="dpmsolver++",
+            solver_order=2, solver_type="midpoint", use_karras_sigmas=True,
+        )
         self.assertIs(self.pipe.scheduler, self.scheduler)
         self.pipe.to.assert_called_once_with("cpu")
         self.pipe.enable_attention_slicing.assert_called_once_with("auto")
-        self.pipe.load_lora_weights.assert_called_once_with(
-            str(self.paths["lora"]), weight_name="pytorch_lora_weights.safetensors",
-            use_safetensors=True, local_files_only=True,
-        )
-        methods = [call[0] for call in self.pipe.method_calls]
-        self.assertLess(methods.index("load_lora_weights"), methods.index("fuse_lora"))
-        self.assertLess(methods.index("fuse_lora"), methods.index("unload_lora_weights"))
-        self.pipe.fuse_lora.assert_called_once_with(safe_fusing=True)
-        self.pipe.unload_lora_weights.assert_called_once_with()
+        self.pipe.load_lora_weights.assert_not_called()
+        self.pipe.fuse_lora.assert_not_called()
+        self.pipe.unload_lora_weights.assert_not_called()
 
     def test_allowlists_download_no_legacy_unet_duplicate_vae_or_pickle(self):
         photo.load_pipeline()
-        self.assertEqual(self.download.call_count, 4)
+        self.assertEqual(self.download.call_count, 3)
         calls = {call.kwargs["repo_id"]: call.kwargs for call in self.download.call_args_list}
+        self.assertNotIn(photo.LCM_INFERENCE["lora_model"], calls)
         base = calls[photo.MODEL]["allow_patterns"]
         self.assertFalse(any("vae/" in pattern for pattern in base))
         legacy = calls[photo.LEGACY_MODEL]["allow_patterns"]
@@ -142,7 +141,7 @@ class CpuPhotoModelTests(unittest.TestCase):
         self.assert_no_components_loaded()
 
     def test_missing_weight_fails_before_deserialization(self):
-        (self.paths["lora"] / "pytorch_lora_weights.safetensors").unlink()
+        (self.paths["vae"] / "diffusion_pytorch_model.safetensors").unlink()
         with self.assertRaises(FileNotFoundError):
             photo.load_pipeline()
         self.assert_no_components_loaded()

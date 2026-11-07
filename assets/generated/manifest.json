@@ -602,6 +602,12 @@
       "reason": "実JPEGと現本文を照合。一般的な飲食店カウンターで、画面全幅の大きな黒板に擬似文字が目立つ。小さな札を裏返す手元、余った魚の配送箱という記事固有の場面がなく不採用。既存の専用SVGを維持する。",
       "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
     },
+    "sleep-advice-livestream-until-two-am": {
+      "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+      "reason": "実JPEGと現本文を照合。髪・服・木机・室内の影は普通の写真に近づいたが、机で頬杖をつく女性と化粧品ジャーの汎用ポートレートで、コンシーラーチューブを持つ行為も配信機材もない。顔・服・手の白飛びも目立つ。画風の改善と記事への採用は分け、主行為の不一致で不採用。既存専用SVGを維持する。",
+      "rejected_candidate_sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385282940"
+    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
@@ -615,9 +621,9 @@
     },
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
-      "reason": "Visual review: repeated CPU candidates depict a valve, telescope or appliance rather than a returned door chime and parcel. Keep the existing SVG until a genuinely correct new image is reviewed.",
-      "rejected_candidate_sha256": "bef600a71baa45f224d8838fd6f62d5dcd5ded64a3d33fec0af5d69e07a3b504",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41747881970"
+      "reason": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。",
+      "rejected_candidate_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385703758"
     },
     "surprise-birthday-organized-by-guest-of-honor": {
       "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
