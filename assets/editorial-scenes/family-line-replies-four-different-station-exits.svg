@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="四つの駅出口で家族四人がばらばらにスマートフォンを確認する創作イラスト" data-visual-topic="telephone" data-article-sha256="0279184ce468df5502ccadc456769e722b6bded7b181a0809a1532977ab1adf2">
+<title>返事だけはそろった4人、駅の4出口に一人ずつ</title>
+<defs><linearGradient id="sky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#d8e2de"/><stop offset="1" stop-color="#ecece3"/></linearGradient></defs>
+<rect width="1200" height="675" fill="#f4f2e8"/>
+<rect x="14" y="14" width="578" height="316" rx="12" fill="url(#sky)" stroke="#7d908a" stroke-width="3"/>
+<rect x="608" y="14" width="578" height="316" rx="12" fill="#dee5dc" stroke="#7d908a" stroke-width="3"/>
+<rect x="14" y="346" width="578" height="315" rx="12" fill="#e8e3d9" stroke="#7d908a" stroke-width="3"/>
+<rect x="608" y="346" width="578" height="315" rx="12" fill="#e3e7e2" stroke="#7d908a" stroke-width="3"/>
+<g fill="#bbbcb1"><rect x="25" y="264" width="557" height="55"/><rect x="619" y="264" width="556" height="55"/><rect x="25" y="598" width="557" height="51"/><rect x="619" y="598" width="556" height="51"/></g>
+<!-- distinct stair exit -->
+<rect x="65" y="107" width="263" height="155" fill="#65818a"/>
+<path d="M78 247h240M100 220h202M123 194h155M144 168h116" stroke="#c1cec8" stroke-width="11"/>
+<path d="M60 106h274" stroke="#364f53" stroke-width="15"/>
+<!-- bicycle exit -->
+<rect x="655" y="103" width="282" height="158" fill="#b0c6b8"/>
+<g fill="none" stroke="#4d686e" stroke-width="6"><circle cx="711" cy="230" r="24"/><circle cx="807" cy="230" r="24"/><path d="M711 230l36-54 60 54-41-73-22 73"/><circle cx="855" cy="230" r="24"/><circle cx="933" cy="230" r="24"/><path d="M855 230l33-54 45 54-22-73-24 73"/></g>
+<!-- bus station -->
+<rect x="53" y="424" width="280" height="169" fill="#b9c7c8"/>
+<path d="M53 424h280M73 424v169M310 424v169" stroke="#4d646b" stroke-width="9"/>
+<rect x="101" y="469" width="146" height="104" fill="#ecece1" stroke="#68828c" stroke-width="6"/>
+<path d="M120 490h106m-106 26h89m-89 26h96" stroke="#9ba9aa" stroke-width="9"/>
+<!-- small café street front -->
+<rect x="651" y="422" width="291" height="171" fill="#d2c7b7"/>
+<rect x="679" y="466" width="238" height="126" fill="#8ca29e"/>
+<path d="M660 430h272v36H660z" fill="#b78372"/>
+<path d="M672 449h246" stroke="#e9ddc6" stroke-width="12" stroke-dasharray="32 24"/>
+<path d="M718 595h131m-102 0v31m72-31v31" stroke="#695f5a" stroke-width="7"/>
+<!-- four people looking at their phones, isolated in panels -->
+<g stroke-linecap="round">
+<g transform="translate(444 145)"><circle r="28" fill="#d8aa86"/><path d="M-38 104Q-32 45 0 39Q35 45 38 104L40 164H-39Z" fill="#466478"/><path d="M-18 161l-7 80m50-80 6 80" stroke="#49525c" stroke-width="18"/><path d="M-31 65L-57 98" stroke="#d8aa86" stroke-width="15"/><rect x="-70" y="87" width="24" height="43" rx="4" fill="#293940" stroke="#c2cec8" stroke-width="2"/></g>
+<g transform="translate(1033 143)"><circle r="29" fill="#d7ae94"/><path d="M-37 105Q-27 47 0 40Q37 47 41 105L51 166H-50Z" fill="#ae7e79"/><path d="M-21 163l-7 76m51-76 12 76" stroke="#546169" stroke-width="17"/><path d="M-21 68L-51 104" stroke="#d7ae94" stroke-width="15"/><rect x="-65" y="92" width="23" height="43" rx="4" fill="#263a3f" stroke="#c2cec8" stroke-width="2"/></g>
+<g transform="translate(441 478)"><circle r="27" fill="#ca9879"/><path d="M-40 100Q-30 41 0 37Q33 41 43 100L40 161H-38Z" fill="#779383"/><path d="M-19 160l-11 75m52-75 9 75" stroke="#556068" stroke-width="17"/><path d="M32 70L57 98" stroke="#ca9879" stroke-width="14"/><rect x="49" y="94" width="23" height="43" rx="4" fill="#28373d" stroke="#c2cec8" stroke-width="2"/></g>
+<g transform="translate(1039 476)"><circle r="27" fill="#dbae90"/><path d="M-42 102Q-29 40 0 38Q34 40 43 102L41 161H-41Z" fill="#a28eac"/><path d="M-20 160l-10 74m52-74 9 74" stroke="#5e5968" stroke-width="17"/><path d="M-30 69L-54 97" stroke="#dbae90" stroke-width="14"/><rect x="-68" y="90" width="23" height="43" rx="4" fill="#263a3f" stroke="#c2cec8" stroke-width="2"/></g>
+</g>
+<path d="M600 8V668M8 338h1184" stroke="#f9f8f1" stroke-width="12"/>
+</svg>
