@@ -9,11 +9,19 @@ from __future__ import annotations
 
 import re
 
+if __package__:
+    from .editorial_copy import reader_copy
+else:
+    from editorial_copy import reader_copy
+
 
 URL_RE = re.compile(r"(?<!\S)https://veripsa\.com/[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=%-]*(?=\s|$)")
 HASHTAG_RE = re.compile(r"\w{1,12}\Z")
 TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 X_TEXT_LIMIT = 280
+SHARE_LEAD_MIN_CHARS = 24
+SHARE_LEAD_FORBIDDEN = re.compile(r"https?://|(?:^|\s)#[^\s]+|【(?:続報｜)?未発生新聞】")
+SHARE_LEAD_LABEL = re.compile(r"^(?:要約|概要|説明|リンク|記事|見出し)\s*[:：]")
 
 
 GENERIC_X_LABELS = {
@@ -150,3 +158,46 @@ def truncate_x_text(text: str, budget: int) -> str:
         parts.pop()
         used -= weight
     return "…"
+
+
+def x_share_lead(article: dict, suffix: str) -> str | None:
+    """Use an editor-written reader entry only when it is safe as standalone X copy."""
+    raw = article.get("x_share_lead")
+    if not isinstance(raw, str):
+        return None
+    lines = [
+        re.sub(r"\s+", " ", reader_copy(line).strip())
+        for line in raw.splitlines()
+    ]
+    cleaned = "\n".join(line for line in lines if line).strip()
+    if len(cleaned) < SHARE_LEAD_MIN_CHARS:
+        return None
+    if SHARE_LEAD_FORBIDDEN.search(cleaned) or SHARE_LEAD_LABEL.match(cleaned):
+        return None
+    if x_weighted_length(cleaned + suffix) > X_TEXT_LIMIT:
+        return None
+    return cleaned
+
+
+def reader_share_text(article: dict, url: str) -> str:
+    """A reader-editable draft: one natural entry or headline, then discovery tags.
+
+    Reserve the complete link and brand before fitting copy. Never cut an
+    editor-written lead mid-thought or append a clipped summary to a headline.
+    """
+    tags = ["#未発生新聞"]
+    tags.extend(tag for tag in article_hashtags(article) if tag not in tags)
+    ending = "\n\n" + " ".join(tags)
+    suffix = ending + "\n\n" + url
+    lead = x_share_lead(article, suffix)
+    if lead is None:
+        title = " ".join(reader_copy(article["title"]).split())
+        if not title:
+            raise ValueError("Empty article title")
+        prefix = "【続報】\n" if article.get("followup_of") else ""
+        lead = prefix + truncate_x_text(
+            title, max(0, X_TEXT_LIMIT - x_weighted_length(prefix + suffix)))
+    text = lead + ending
+    if x_weighted_length(text + "\n\n" + url) > X_TEXT_LIMIT:
+        raise ValueError("Reader X draft exceeds the conservative weighted limit")
+    return text

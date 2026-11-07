@@ -6,7 +6,8 @@ from urllib.parse import parse_qs, urlparse
 from xml.etree import ElementTree as ET
 
 from scripts import build
-from scripts.social_text import X_TEXT_LIMIT, article_hashtags, x_weighted_length
+from scripts.editorial_copy import reader_copy
+from scripts.social_text import X_TEXT_LIMIT, article_hashtags, x_share_lead, x_weighted_length
 
 
 class ArticleTagTests(unittest.TestCase):
@@ -104,15 +105,18 @@ class ArticleTagTests(unittest.TestCase):
             with self.subTest(slug=article["slug"]):
                 params = parse_qs(urlparse(build.share_url(article)).query)
                 text, url = params["text"][0], params["url"][0]
-                expected = " ".join(article_hashtags(article)) or "#未発生新聞"
+                expected = " ".join(["#未発生新聞", *article_hashtags(article)])
                 self.assertEqual(text.splitlines()[-1], expected)
-                self.assertIn(article["title"], text)
+                suffix = "\n\n" + expected + "\n\n" + url
+                lead = x_share_lead(article, suffix)
+                self.assertIn(lead or " ".join(reader_copy(article["title"]).split()), text)
+                self.assertEqual(text.count("#未発生新聞"), 1)
                 self.assertEqual(url.split("?")[0], build.SITE + build.article_url(article))
                 self.assertLessEqual(x_weighted_length(text + "\n\n" + url), X_TEXT_LIMIT)
 
     def test_long_reader_share_preserves_topics_and_url(self):
         article = {**self.articles[0], "title": "長い見出し" * 100,
-                   "summary": "長い要約" * 100, "tags": ["メディア", "ドラマ", "テレビ"],
+                   "x_share_lead": None, "summary": "長い要約" * 100, "tags": ["メディア", "ドラマ", "テレビ"],
                    "x_tags": ["タイパ", "ドラマ沼"]}
         params = parse_qs(urlparse(build.share_url(article)).query)
         text, url = params["text"][0], params["url"][0]
@@ -126,3 +130,4 @@ class ArticleTagTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
