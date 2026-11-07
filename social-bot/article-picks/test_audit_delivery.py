@@ -335,7 +335,8 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
                 report = json.loads((root / "delivery.json").read_text())
                 self.assertEqual(report["provider_retry_at_utc"], retry)
                 self.assertEqual(report["observed"]["unverified"], 3)
-                self.assertEqual(m.main(), 1)
+                # No second request, and a known cooldown is not another failed run.
+                self.assertEqual(m.main(), 0)
                 read.assert_called_once()
                 self.assertEqual(json.loads((root / "state.json").read_text()), state)
 
