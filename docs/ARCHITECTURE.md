@@ -27,6 +27,12 @@ content/serials.json ────┘                │
 - 続報記事は既刊を上書きせず独立した記事として保存し、任意の `followup_of` に直前の関連記事slugを記録します。親記事が存在し、子記事より先に実公開されていることをビルドで検証し、公開ページでは前後を相互リンクします。
 - 詳しい検証基準は[`docs/SERIAL_EDITING_GUIDE.md`](SERIAL_EDITING_GUIDE.md)と[`scripts/forecast_ledger.py`](../scripts/forecast_ledger.py)を参照。
 
+## Xへの読者共有
+
+- 記事の共有ボタンと手動用下書きは `scripts/social_text.py` の `reader_share_text` を共用。検証済みの `x_share_lead` があれば優先し、なければ見出しを使う。要約の断片や定型の問いかけは足さない。紹介文の編集基準は `social-bot/article-picks/README.md` を参照する。
+- `#未発生新聞` を必ず1回残し、発見語は共通の `article_hashtags` で最大2個。本文・タグ・リンクを合わせたXの重み付き文字数を検証し、長すぎる紹介文は途中で切らず見出しへ戻す。
+- 記事ボタンは `reader_share`、手動デスクは `share_desk` の既存UTMを維持。ボタンはXの編集画面を開くだけで、送信は読者が行う。デスクは公開ビルドに含めない。
+
 ## 画像
 
 - 通常の表紙は[`scripts/editorial_covers.py`](../scripts/editorial_covers.py)で生成する記事別SVG。SNS共有用にはPNGを生成します。
@@ -73,3 +79,4 @@ python3 -m unittest discover -s tests -v
 ## Docsの原則
 
 READMEに日々の実装記録、過去の施策や実験日記、デプロイ操作の全手順を追記しないでください。小さな改善はPRに残し、長期間有用な手順だけを該当ドキュメントへ反映してください。
+

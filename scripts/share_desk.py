@@ -11,11 +11,9 @@ from datetime import datetime
 from urllib.parse import urlencode
 
 if __package__:
-    from .social_text import (X_TEXT_LIMIT, article_hashtags, truncate_x_text,
-                              x_weighted_length)
+    from .social_text import reader_share_text
 else:
-    from social_text import (X_TEXT_LIMIT, article_hashtags, truncate_x_text,
-                             x_weighted_length)
+    from social_text import reader_share_text
 
 SITE = "https://veripsa.com"
 TRACKING = "?utm_source=x&utm_medium=social&utm_campaign=share_desk"
@@ -61,31 +59,12 @@ def select_candidates(articles: list[dict], limit: int = 3) -> list[dict]:
     return chosen
 
 
-def _short(value: str, limit: int) -> str:
-    text = " ".join(str(value).split())
-    return text if len(text) <= limit else text[:limit-1].rstrip() + "…"
-
-
 def draft(article: dict, *, site: str = SITE) -> dict:
-    """One bounded, human-editable X draft focused on the headline and link."""
+    """Use the same editable copy as the article's reader share button."""
     href = site + "/articles/" + article["slug"] + "/"
     tagged = href + TRACKING
-    title = _short(article["title"], 58)
-    teaser = _short(article["summary"], 62)
-    prefix = "【未発生新聞】\n"
-    ending = "\n\n" + (" ".join(article_hashtags(article)) or "#未発生新聞")
-    # Keep the URL and published tags complete. Spend the remaining budget
-    # on the headline before the teaser, for both copy and X-intent drafts.
-    title_budget = X_TEXT_LIMIT - x_weighted_length(prefix + ending + "\n\n" + tagged)
-    title = truncate_x_text(title, max(0, title_budget))
-    heading = prefix + title
-    fixed = heading + ending + "\n\n" + tagged
-    available = max(0, X_TEXT_LIMIT - x_weighted_length(fixed) - 2)
-    excerpt = truncate_x_text(teaser, available)
-    text = heading + ("\n\n" + excerpt if excerpt else "") + ending
+    text = reader_share_text(article, tagged)
     copied = text + "\n\n" + tagged
-    if not title or x_weighted_length(copied) > X_TEXT_LIMIT:
-        raise ValueError("X draft exceeds the conservative weighted length limit")
     intent = "https://x.com/intent/tweet?" + urlencode({"text": text, "url": tagged})
     return {"text": text, "copy": copied, "intent": intent,
             "tagged_url": tagged, "article_url": href}
@@ -217,3 +196,4 @@ document.querySelectorAll("[data-copy-post]").forEach(function(button){{
   }});
 }});
 </script></body></html>'''
+

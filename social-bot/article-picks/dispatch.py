@@ -22,7 +22,7 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(ROOT / "scripts"))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
-from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length  # noqa: E402
+from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length, x_share_lead  # noqa: E402
 from editorial_copy import reader_copy  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -33,9 +33,6 @@ ARTICLE_URL = re.compile(
 )
 TEXT_PREFIX = "【未発生新聞】"
 BRAND_HASHTAG = "#未発生新聞"
-SHARE_LEAD_MIN_CHARS = 24
-SHARE_LEAD_FORBIDDEN = re.compile(r"https?://|(?:^|\s)#[^\s]+|【(?:続報｜)?未発生新聞】")
-SHARE_LEAD_LABEL = re.compile(r"^(?:要約|概要|説明|リンク|記事|見出し)\s*[:：]")
 TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
 METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
@@ -394,25 +391,6 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                 state["queued"][slug] = recovered_entry
                 recovered.append(slug)
     return recovered
-
-
-def x_share_lead(article: dict, suffix: str) -> str | None:
-    """Use an editor-written reader entry only when it is safe as standalone X copy."""
-    raw = article.get("x_share_lead")
-    if not isinstance(raw, str):
-        return None
-    lines = [
-        re.sub(r"\s+", " ", reader_copy(line).strip())
-        for line in raw.splitlines()
-    ]
-    cleaned = "\n".join(line for line in lines if line).strip()
-    if len(cleaned) < SHARE_LEAD_MIN_CHARS:
-        return None
-    if SHARE_LEAD_FORBIDDEN.search(cleaned) or SHARE_LEAD_LABEL.match(cleaned):
-        return None
-    if x_weighted_length(cleaned + suffix) > X_TEXT_LIMIT:
-        return None
-    return cleaned
 
 
 def publication_text(article: dict) -> str:
@@ -927,3 +905,4 @@ if __name__ == "__main__":
     except (ValueError, OSError, RuntimeError) as exc:
         print("Safe article promotion skip:", exc, file=sys.stderr)
         sys.exit(1)
+

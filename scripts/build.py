@@ -28,7 +28,7 @@ if __package__:
     from .serial_discovery import render_serial_bridge
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
-    from .social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
+    from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from .editorial_copy import reader_copy, source_reader_copy
     from .reader_paths import suggested_articles
 else:
@@ -43,7 +43,7 @@ else:
     from serial_discovery import render_serial_bridge
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
-    from social_text import article_hashtags, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
+    from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from editorial_copy import reader_copy, source_reader_copy
     from reader_paths import suggested_articles
 from urllib.parse import quote, urlencode
@@ -454,17 +454,8 @@ def category_meta(a, compact=False):
 
 
 def share_url(a):
-    url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=topic_card_v2"
-    # Small standalone hook for the reader's X draft. Does not post automatically.
-    prefix = "【未発生新聞】\n"
-    ending = "\n\n" + (" ".join(article_hashtags(a)) or "#未発生新聞")
-    fixed = prefix + ending + "\n\n" + url
-    title = truncate_x_text(a["title"].strip(),
-                            X_TEXT_LIMIT - x_weighted_length(fixed))
-    heading = prefix + title
-    remaining = X_TEXT_LIMIT - x_weighted_length(heading + ending + "\n\n" + url) - 2
-    teaser = truncate_x_text(" ".join(reader_copy(a["summary"])[:75].split()), max(0, remaining))
-    text = heading + ("\n\n" + teaser if teaser else "") + ending
+    url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=reader_entry_v3"
+    text = reader_share_text(a, url)
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
 
@@ -2229,3 +2220,4 @@ def build():
 
 if __name__ == "__main__":
     build()
+
