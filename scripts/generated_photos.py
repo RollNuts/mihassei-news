@@ -12,8 +12,10 @@ import re
 from pathlib import Path
 
 try:
+    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 except ImportError:
+    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -89,7 +91,9 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
             return None
     elif origin == "github-cpu-lcm":
         # Model weights run inside a GitHub-hosted CPU job, without image APIs.
-        if model != "SimianLuo/LCM_Dreamshaper_v7":
+        if model not in (LEGACY_MODEL, CPU_MODEL):
+            return None
+        if model == CPU_MODEL and record.get("inference") != CPU_INFERENCE:
             return None
     elif origin == "chatgpt-imagegen":
         # A manually imported ChatGPT-native generation, not a CPU/Mac result.

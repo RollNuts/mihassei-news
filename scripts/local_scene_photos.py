@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
+    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
     from .generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -31,6 +32,7 @@ try:
     from .media_policy import MIN_JPEG_BYTES, MAX_JPEG_BYTES, jpeg_dimensions
     from .editorial_covers import story_subject
 except ImportError:
+    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE
     from generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -331,7 +333,7 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
                     origin: str = "local-comfyui") -> Path:
     """Atomic first-party image writes with provenance and a strict storage budget."""
     if origin == "github-cpu-lcm":
-        if checkpoint != "SimianLuo/LCM_Dreamshaper_v7":
+        if checkpoint not in (LEGACY_MODEL, CPU_MODEL):
             raise ValueError("Unreviewed CPU model is forbidden")
     elif origin != "local-comfyui":
         raise ValueError("Unreviewed image origin is forbidden")
@@ -384,6 +386,8 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
         "seed": stable_seed(article),
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
+    if origin == "github-cpu-lcm" and checkpoint == CPU_MODEL:
+        manifest["images"][slug]["inference"] = dict(CPU_INFERENCE)
     # A successful deliberate repair replaces that article's visual hold.
     # Preserve holds for every other article when merging new image records.
     if isinstance(manifest.get("rejected"), dict):

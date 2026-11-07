@@ -16,6 +16,7 @@ import sys
 import tempfile
 
 try:
+    from .cpu_photo_model import MODEL, LEGACY_MODEL
     from . import local_scene_sync as sync
     from .generated_photos import (
         RELATIVE_DIR, SAFE_SLUG, generated_manifest, usable_generated_scene,
@@ -23,6 +24,7 @@ try:
     )
     from .local_scene_photos import stable_seed
 except ImportError:
+    from cpu_photo_model import MODEL, LEGACY_MODEL
     import local_scene_sync as sync
     from generated_photos import (
         RELATIVE_DIR, SAFE_SLUG, generated_manifest, usable_generated_scene,
@@ -31,7 +33,6 @@ except ImportError:
     from local_scene_photos import stable_seed
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL = "SimianLuo/LCM_Dreamshaper_v7"
 MAX_BUNDLE_IMAGES = 3
 MIN_FREE_GIB = 12
 
@@ -74,7 +75,7 @@ def validate_bundle(source: Path) -> list[dict]:
     for article in articles:
         record = manifest["images"][article["slug"]]
         if (not isinstance(record, dict) or record.get("origin") != "github-cpu-lcm"
-                or record.get("model") != MODEL
+                or record.get("model") not in (MODEL, LEGACY_MODEL)
                 or type(record.get("seed")) is not int
                 or record["seed"] != stable_seed(article)
                 or not usable_generated_scene(article, root=source)):

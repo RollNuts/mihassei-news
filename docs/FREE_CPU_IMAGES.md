@@ -4,7 +4,7 @@
 
 生成JPEGがmainへ保存されても、その時点では読者向けの掲載採用を意味しません。`scripts/visual_review.py`で未検品を確認し、実画像と本文を照合して`content/visual_reviews.json`へ現在の記事・画像のSHAを記録します。公開ビルドは一致する合格記録を持つJPEGと派生動画だけを採用し、残りはイラスト等を表示します。生成済みJPEGを再生成し続ける必要はありません。検品と再試験の手順は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を参照。
 
-公開リポジトリ `RollNuts/mihassei-news` の GitHub Actions 標準 Linux CPU ランナーで、公開された軽量LCMモデルの**重みをダウンロードして自前推論**する。外部画像生成API、GPT API、ChatGPT追加クレジット、有料GPU、Hugging Face Inference Endpoint、Cloudflareの追加サービスは使わない。
+公開リポジトリ `RollNuts/mihassei-news` の GitHub Actions 標準 Linux CPU ランナーで、公開された実写向けモデルの**重みをダウンロードして自前推論**する。外部画像生成API、GPT API、ChatGPT追加クレジット、有料GPU、Hugging Face Inference Endpoint、Cloudflareの追加サービスは使わない。
 
 ## できること／できないこと
 
@@ -13,7 +13,7 @@
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
 - 記事の `visual_strategy` が `illustration` の場合は、通常実行・`retry_held`・ローカルの`--force`でもCPU/Mac生成キューへ入れない。2026-11-06 22:00 JST以降の新作では `illustration_reason` を必須とし、文字/UI、厳密な人数や不在、複雑な人物関係、比較レイアウト、実在キャラクター再現を避ける安全上の制約のいずれかが風刺成立に必要な時だけ使う。**写真向けの scene_prompt を書いたまま illustration に振り分けない。** 再び写真を試すなら、記事側を `cpu-photo` に戻し、場面指示を変えて新しい記事指紋で扱う。
 - CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。**画風の面白さは足さず、documentary / press photo の共通ラッパーに任せる。** cinematic、anime、3D render、glossy product photo、dramatic lighting など広告・CG寄りの指示を個別sceneへ入れない。
-- モデル: [SimianLuo/LCM_Dreamshaper_v7](https://huggingface.co/SimianLuo/LCM_Dreamshaper_v7)の既存リビジョンを固定して再利用する。LCMのカード記載はMITだが、基盤[DreamShaper 7](https://huggingface.co/Lykon/dreamshaper-7)は[CreativeML Open RAIL-M](https://huggingface.co/spaces/CompVis/stable-diffusion-license/blob/main/license.txt)であり、その利用制限も確認する。モデルは公開・非ゲートで、外部推論APIを呼ばずGitHubのCPU内部で実行する。公開するのは架空人物による風刺JPEGで、モデル重みは配布しない。
+- モデルは実写向けの[Realistic Vision 5.1](https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE)に、公式[SD1.5 LCM LoRA](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5)と推奨MSE VAEを組み合わせ、CPU・6ステップ・CFG 2で生成する。各リビジョンと5つの重みSHA256を `scripts/cpu_photo_model.py` に固定し、読み込み前に照合する。基盤のCreativeML Open RAIL-M、LoRAのOpen RAIL++、VAEのMITの本文・制限を確認済み。旧DreamShaperの承認済み写真は維持する。旧native LCMはnegative_promptを無視するが、新経路のStableDiffusionPipelineではCFGによるアニメ・CG・文字の除外指定が有効。除外指定も77トークンを超えれば生成を止める。旧モデルと同じ安全チェッカーを明示的に保持し、拒否された画像は採用しない。
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
 - CPUの速度・生成品質はSDXLをMacのGPUで動かす場合に及ばない可能性が高い。**実際の生成成功・本番表示・見栄えはGitHub Actions実行ログと公開URLで確認するまで未証明**。異常な画像を自動公開しないための安全検証はあるが、意味が伝わるかの人間のレビューは自動化していない。
 
@@ -31,7 +31,7 @@
 ## 運用上の注意
 
 - 公開標準ランナーの無償利用とプライベートランナーの課金条件はGitHubの規約次第で変更される。公開リポジトリ用ジョブのガードを外さない。
-- 1回ごとにモデル約数GBを取得する場合がある。Macへはモデルを追加せず、使い捨てランナー内だけで取得する。有料ストレージや大容量Actionsキャッシュは使用しない。確認用artifactは最大3枚・1日保持に制限する。
+- 1回ごとに必要な重み約5.6GBを取得する場合がある（旧モデル一式や不要なVAEを重複取得しない）。Macへはモデルを追加せず、使い捨てランナー内だけで取得する。有料ストレージや大容量Actionsキャッシュは使用しない。確認用artifactは最大3枚・1日保持に制限する。
 - 定時生成の中止は `.github/workflows/free-cpu-scenes.yml` の `schedule:` を削除またはワークフローを無効化。既存写真・記事・Mac用画像生成は維持される。
 - **GitHubのCPU方式が失敗しても追加サービスへ自動的に切り替えない。** 推論時は最大55分で停止。画像生成エラーで記事公開を止めない。
 - 毎時の定時処理は1回最大3枚で、新着記事のmain更新時にも不足分だけ処理する。GitHubトークン由来などでpush起動しない更新も、次の定時処理で回収する。Macとの同時生成や記事改稿があっても最新mainと再照合し、有効な既存画像は上書きしない。
