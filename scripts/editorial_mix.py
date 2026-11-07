@@ -459,6 +459,57 @@ def next_preferred_lane(counts: Counter) -> str | None:
     return best_lane
 
 
+def lane_risk_advice(articles: list[dict], day_jst: str) -> str:
+    """Warn before the soft 3/2/2 mix becomes impossible to recover naturally."""
+    counts = lane_counts(articles, day_jst)
+    published = day_story_count(articles, day_jst)
+    baseline = sum(LANE_TARGETS.values())
+    slots_left = max(0, baseline - published)
+    deficits = {
+        lane: max(0, target - int(counts.get(lane, 0)))
+        for lane, target in LANE_TARGETS.items()
+    }
+
+    if published < 4:
+        return "none (early slate; quality decides)"
+
+    missing = {lane: deficit for lane, deficit in deficits.items() if deficit > 0}
+    if not missing:
+        return "none (3/2/2 soft target already covered)"
+
+    if slots_left == 0:
+        detail = ", ".join(f"{lane} needs {deficit}" for lane, deficit in missing.items())
+        return (
+            f"soft target missed ({detail}); do not use reserve slots as backfill; "
+            "quality decides"
+        )
+
+    urgent = [
+        lane
+        for lane in LANE_PRIORITY
+        if deficits.get(lane, 0) > 0 and deficits[lane] >= slots_left
+    ]
+    if urgent:
+        lane = urgent[0]
+        return (
+            f"compare {lane} now ({lane} needs {deficits[lane]} with "
+            f"{slots_left} core slots left); quality may still reject it"
+        )
+
+    if sum(missing.values()) > slots_left:
+        lane = max(
+            LANE_PRIORITY,
+            key=lambda item: (deficits.get(item, 0), -LANE_PRIORITY.index(item)),
+        )
+        detail = ", ".join(f"{item} needs {deficits[item]}" for item in LANE_PRIORITY)
+        return (
+            f"3/2/2 at risk ({detail}; {slots_left} core slots left); "
+            f"compare {lane} next; quality may still reject it"
+        )
+
+    return "none (mix recoverable; quality decides)"
+
+
 def _validate_signature(article: dict, slug: str, published: datetime) -> list[str]:
     errors: list[str] = []
     signature = article.get("editorial_signature")
@@ -1205,7 +1256,7 @@ def report_day(articles: list[dict], day_jst: str) -> str:
     return (
         f"{day_jst}: published={published}; tracked={tracked}; "
         + ", ".join(parts)
-        + f"; next={suffix}; tones="
+        + f"; next={suffix}; lane_risk={lane_risk_advice(articles, day_jst)}; tones="
         + ", ".join(tone_parts)
         + f"; tone_next={tone_advice(articles, day_jst)}"
         + "; payoffs="
