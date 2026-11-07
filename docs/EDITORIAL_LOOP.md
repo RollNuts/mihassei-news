@@ -144,11 +144,10 @@
 
 ### 毎回の発行で使う短い執筆プロンプト（最優先）
 
-> 候補3案。各案で「本人の欲・得・圧力→普通なら何をする→なぜそれをしない→原因→行動→結果」を1行で作る。普通の選択を捨てる理由が弱い、弱い小ネタ、作者都合の愚行は別案へ。
-> 3案は「一番まし」を選ばず、候補トーナメントで15秒の可笑しさ／自分事の圧力／2031年を使う意味／本文のもう一段を比較する。単独で公開したい理由がない相対1位は採らず、3案ごと作り直す。
-> 初見テストは見出し＋summaryだけで「誰が／何をして／なぜ変か」をreader_clarityへ。曖昧なら設定を減らす。冒頭2文で人物・原因・現場。
-> 本文ではbehavior_basisの動機・ordinary_alternative・why_notが実際に読めるか反証。内部説明だけなら不採用。二度目の逆転は不要。
-> editorial_tone、reader_interest/interest_next、character_next、直近2本/payoff_nextでeditorial_payoffを比較。plausible_futureは現実の兆候→続く力→結果をplausibility_basisへ。「架空の」「創作の」の断りを書かない。
+> 候補3案。「本人の欲・圧力→普通なら何をする→なぜそれをしない→原因→行動→結果」を1行。弱い小ネタ、作者都合の愚行は別案。候補トーナメントで15秒の可笑しさ／自分事／2031年の意味／本文のもう一段を比べ、相対1位だけなら3案ごと作り直す。
+> 初見テストは見出し＋summaryだけで「誰が／何をして／なぜ変」をreader_clarityへ。曖昧なら設定を減らす。冒頭2文で人物・原因・現場。
+> behavior_basisで普通なら何をする／なぜそれをしない理由が公開文にあるか反証。内部説明だけなら不採用。二度目の逆転は不要。
+> editorial_tone、reader_interest/interest_next、character_next、直近2本/payoff_nextでeditorial_payoff比較。plausible_futureは現実の兆候→続く力→結果をplausibility_basisへ。「架空の」「創作の」の断りを書かない。
 
 ### 風刺と笑いを別々に確認する（採用前必須）
 
