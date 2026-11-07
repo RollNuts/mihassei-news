@@ -88,6 +88,7 @@ TREND_SPECIFICITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T18:00:00+09:00
 READER_INTEREST_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T00:00:00+09:00")
 READER_CLARITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T21:00:00+09:00")
 SATIRE_PRESENT_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
+BEHAVIOR_REALISM_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T17:20:00+09:00")
 VISUAL_STRATEGY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
 VISUAL_STRATEGIES = ("cpu-photo", "illustration")
 ILLUSTRATION_REASONS = (
@@ -100,6 +101,7 @@ ILLUSTRATION_REASONS = (
 TREND_BRIDGE_KEYS = ("why_now", "shared_behavior", "satire_gap", "x_discovery_term")
 TREND_SPECIFICITY_KEYS = ("real_detail", "unique_hook")
 READER_CLARITY_KEYS = ("who", "action", "oddity")
+BEHAVIOR_BASIS_KEYS = ("motive", "ordinary_alternative", "why_not", "evidence_quote")
 X_TAG_RE = re.compile(r"\w{1,12}\Z")
 X_TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 GENERIC_X_DISCOVERY_TERMS = {
@@ -563,6 +565,45 @@ def _validate_reader_clarity(article: dict, slug: str, published: datetime) -> l
         )
     return errors
 
+def _validate_behavior_basis(article: dict, slug: str, published: datetime) -> list[str]:
+    """Reject stories whose odd behavior exists only in editorial explanation."""
+    if published < BEHAVIOR_REALISM_ROLLOUT_AT:
+        return []
+
+    basis = article.get("behavior_basis")
+    if not isinstance(basis, dict):
+        return [f"{slug}: behavior_basis is required after human-behavior rollout"]
+
+    errors: list[str] = []
+    limits = {
+        "motive": (8, 220),
+        "ordinary_alternative": (6, 180),
+        "why_not": (8, 220),
+        "evidence_quote": (6, 180),
+    }
+    for key in BEHAVIOR_BASIS_KEYS:
+        value = basis.get(key)
+        low, high = limits[key]
+        if not isinstance(value, str) or not low <= len(value.strip()) <= high:
+            errors.append(f"{slug}: behavior_basis.{key} must be {low}-{high} chars")
+
+    quote = basis.get("evidence_quote")
+    if isinstance(quote, str) and quote.strip():
+        paragraphs = article.get("paragraphs")
+        public_parts = [
+            article.get("title"),
+            article.get("summary"),
+            *(paragraphs if isinstance(paragraphs, list) else []),
+        ]
+        public_text = " ".join(part for part in public_parts if isinstance(part, str))
+        if _norm(quote) not in _norm(public_text):
+            errors.append(
+                f"{slug}: behavior_basis.evidence_quote must be a verbatim excerpt "
+                "from title, summary or paragraphs"
+            )
+    return errors
+
+
 def _validate_plausibility(article: dict, slug: str) -> list[str]:
     """Require an inspectable causal path only for the deliberately plausible tone."""
     if article.get("editorial_tone") != "plausible_future":
@@ -994,6 +1035,7 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
         errors.extend(_validate_signature(article, slug, published))
         errors.extend(_validate_reader_clarity(article, slug, published))
+        errors.extend(_validate_behavior_basis(article, slug, published))
         errors.extend(_validate_plausibility(article, slug))
         errors.extend(_validate_x_metadata(article, slug, published))
         errors.extend(_validate_visual_strategy(article, slug, published))
