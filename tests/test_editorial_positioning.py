@@ -70,12 +70,17 @@ class EditorialPositioningTests(unittest.TestCase):
         article = load()[0]
         query = parse_qs(urlparse(share_url(article)).query)
         text = query["text"][0]
-        self.assertEqual(text.splitlines()[0], "【未発生新聞】")
-        from scripts.social_text import article_hashtags
-        expected = " ".join(article_hashtags(article)) or "#未発生新聞"
+        from scripts.social_text import article_hashtags, x_share_lead
+        from scripts.editorial_copy import reader_copy
+        expected = " ".join(["#未発生新聞", *article_hashtags(article)])
         self.assertEqual(text.splitlines()[-1], expected)
         self.assertIn("未発生新聞", text)
-        self.assertIn(article["title"], text)
+        suffix = "\n\n" + expected + "\n\n" + query["url"][0]
+        lead = x_share_lead(article, suffix)
+        self.assertIn(lead or " ".join(reader_copy(article["title"]).split()), text)
+        self.assertEqual(text.count("#未発生新聞"), 1)
+        for label in ("創作", "架空", "フィクション"):
+            self.assertNotIn(label, text)
         self.assertIn("utm_campaign=reader_share", query["url"][0])
         self.assertNotIn("的中率", text)
 

@@ -2,8 +2,9 @@
 """Render recent articles for a blind first-read clarity review.
 
 Only reader-facing fields needed for the first impression are emitted.
-Sources, editorial metadata, paragraphs, tags, and analytics stay hidden so
-reviewers cannot unconsciously fill in missing context before judging clarity.
+Sources, editorial metadata, tags, and analytics stay hidden so reviewers
+cannot fill in missing context from the author's explanation. --full-text
+reveals the body only for the second, separate review of the actual joke.
 """
 from __future__ import annotations
 
@@ -68,15 +69,18 @@ def select_articles(
     return [article for _, article in dated]
 
 
-def blind_rows(articles: list[dict]) -> list[dict]:
+def blind_rows(articles: list[dict], *, full_text: bool = False) -> list[dict]:
     rows = []
     for article in articles:
-        rows.append({
+        row = {
             "slug": str(article.get("slug") or ""),
             "published_at": str(article.get("published_at") or ""),
             "title": str(article.get("title") or ""),
             "summary": str(article.get("summary") or ""),
-        })
+        }
+        if full_text:
+            row["paragraphs"] = list(article.get("paragraphs") or [])
+        rows.append(row)
     return rows
 
 
@@ -85,11 +89,14 @@ def render_text(rows: list[dict]) -> str:
         return "No articles matched."
     blocks = []
     for row in rows:
+        body = [f"BODY {i}: {paragraph}" for i, paragraph in
+                enumerate(row.get("paragraphs", []), 1)]
         blocks.append(
             "\n".join([
                 f"[{row['published_at']}] {row['slug']}",
                 f"TITLE: {row['title']}",
                 f"SUMMARY: {row['summary']}",
+                *body,
             ])
         )
     return "\n\n".join(blocks)
@@ -102,6 +109,7 @@ def main() -> None:
     group.add_argument("--days", type=int, help="Recent N JST publication days ending on the latest article date")
     parser.add_argument("--limit", type=int, help="Keep only the latest N matched articles")
     parser.add_argument("--json", action="store_true", help="Emit JSON instead of plain text")
+    parser.add_argument("--full-text", action="store_true", help="Second pass: include reader-facing paragraphs, still hiding sources and editorial rationale")
     args = parser.parse_args()
 
     articles = json.loads(
@@ -113,7 +121,7 @@ def main() -> None:
         days=args.days,
         limit=args.limit,
     )
-    rows = blind_rows(selected)
+    rows = blind_rows(selected, full_text=args.full_text)
     if args.json:
         print(json.dumps(rows, ensure_ascii=False, indent=2))
     else:

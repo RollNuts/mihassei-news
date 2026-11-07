@@ -73,7 +73,7 @@ class ShareDeskTests(unittest.TestCase):
             self.assertNotIn(label, details["copy"])
         self.assertIn("#未発生新聞", details["copy"])
         self.assertIn(TRACKING, details["copy"])
-        self.assertTrue(details["text"].startswith("【未発生新聞】"))
+        self.assertTrue(details["text"].startswith("未来の新しいニュース"))
         self.assertNotIn("人気第1位", details["copy"])
         params = parse_qs(urlparse(details["intent"]).query)
         self.assertEqual(params["text"], [details["text"]])
@@ -87,11 +87,11 @@ class ShareDeskTests(unittest.TestCase):
         a["tags"] = ["メディア", "AI", "仕事"]
         a["x_tags"] = ["タイパ", "AI"]
         details = draft(a)
-        self.assertEqual(details["text"].splitlines()[-1], "#タイパ")
+        self.assertEqual(details["text"].splitlines()[-1], "#未発生新聞 #タイパ")
         self.assertEqual(details["copy"].count("#タイパ"), 1)
         self.assertNotIn("#AI", details["copy"])
         self.assertNotIn("#仕事", details["copy"])
-        self.assertNotIn("#未発生新聞", details["copy"])
+        self.assertEqual(details["copy"].count("#未発生新聞"), 1)
         self.assertEqual(details["copy"], details["text"] + "\n\n" + details["tagged_url"])
         params = parse_qs(urlparse(details["intent"]).query)
         self.assertEqual(params["text"], [details["text"]])
@@ -102,16 +102,16 @@ class ShareDeskTests(unittest.TestCase):
         stock["x_tickers"] = ["NVDA"]
         stock["x_tags"] = ["AIバブル"]
         stock_details = draft(stock)
-        self.assertEqual(stock_details["text"].splitlines()[-1], "$NVDA #AIバブル")
+        self.assertEqual(stock_details["text"].splitlines()[-1], "#未発生新聞 $NVDA #AIバブル")
 
-    def test_length_budget_shortens_teaser_first_and_keeps_tags_and_long_url(self):
+    def test_headline_fallback_omits_summary_and_keeps_tags_and_long_url(self):
         title = "見出し" * 19  # 57 Japanese characters, below the existing 58-character cap.
         a = sample("long-" + "a" * 250, "社会", "2026-11-02",
                    title=title, summary="説明文" * 50)
         a["tags"] = ["タイパ", "人間関係"]
         details = draft(a)
-        self.assertEqual(details["text"].splitlines()[1], title)
-        self.assertIn("…", details["text"])
+        self.assertEqual(details["text"].splitlines()[0], title)
+        self.assertNotIn("説明文", details["text"])
         self.assertEqual(article_hashtags(a), [])
         self.assertEqual(details["text"].splitlines()[-1], "#未発生新聞")
         self.assertTrue(details["copy"].endswith(details["tagged_url"]))
@@ -124,7 +124,7 @@ class ShareDeskTests(unittest.TestCase):
         item = sample("fallback", "社会", "2026-11-02", title="家計簿の利息を銀行員に見せた夫婦")
         item["fiction_at"] = "?"
         copied = draft(item)["copy"]
-        self.assertTrue(copied.startswith("【未発生新聞】\n" + item["title"]))
+        self.assertTrue(copied.startswith(item["title"]))
         self.assertIn("https://veripsa.com/articles/fallback/", copied)
         for label in ("創作", "フィクション", "のもしも"):
             self.assertNotIn(label, copied)
@@ -183,3 +183,4 @@ class ShareDeskTests(unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
+
