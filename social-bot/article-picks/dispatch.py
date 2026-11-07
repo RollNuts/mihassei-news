@@ -754,6 +754,13 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     return item, metrics, len(queued)
 
 
+def delivery_retry_time(path: Path):
+    if not path.is_file():
+        return None
+    delivery = json.loads(path.read_text(encoding="utf-8"))
+    return provider_instant(delivery.get("provider_retry_at_utc"))
+
+
 def connected_channel(token: str, config: dict, state: dict, now: datetime):
     """Cache verified connection IDs for one day, never the secret or post list."""
     configured = os.environ.get("BUFFER_CHANNEL_ID", "").strip()
@@ -802,13 +809,10 @@ def main() -> int:
         if sent is not None and now - sent < timedelta(hours=config["minimum_interval_hours"]):
             print("Article X recorded send is too recent; no Buffer read/write.")
             return 0
-    delivery_path = HERE / "delivery.json"
-    if delivery_path.is_file():
-        delivery = json.loads(delivery_path.read_text(encoding="utf-8"))
-        retry_at = provider_instant(delivery.get("provider_retry_at_utc"))
-        if retry_at is not None and now < retry_at:
-            print("Buffer cooldown until", retry_at.isoformat(), "; no provider read/write.")
-            return 1
+    retry_at = delivery_retry_time(HERE / "delivery.json")
+    if retry_at is not None and now < retry_at:
+        print("Buffer cooldown until", retry_at.isoformat(), "; no provider read/write.")
+        return 1
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")

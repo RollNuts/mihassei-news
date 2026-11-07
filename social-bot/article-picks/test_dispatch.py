@@ -18,6 +18,7 @@ from urllib.parse import parse_qs, urlparse
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import dispatch as picks
+READ_DELIVERY_RETRY_TIME = picks.delivery_retry_time
 
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
 CONFIG = {
@@ -72,6 +73,13 @@ def recorded(buf="buf-old", hours=180):
 
 
 class ArticlePickTests(unittest.TestCase):
+    def setUp(self):
+        # Historical fixtures must not inherit a live provider cooldown committed
+        # after their simulated date. The dedicated test reads its own real file.
+        live_cooldown = patch.object(picks, "delivery_retry_time", return_value=None)
+        live_cooldown.start()
+        self.addCleanup(live_cooldown.stop)
+
     def test_actual_config_and_initial_ledger(self):
         config = picks.read_json(HERE / "config.json")
         picks.validate_config(config)
@@ -215,6 +223,7 @@ class ArticlePickTests(unittest.TestCase):
                 "provider_retry_at_utc": (NOW + timedelta(hours=1)).isoformat(),
             }))
             with patch.object(picks, "HERE", root), \
+                 patch.object(picks, "delivery_retry_time", side_effect=READ_DELIVERY_RETRY_TIME), \
                  patch.object(picks, "read_json", side_effect=[CONFIG, ledger()]), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
                  patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
