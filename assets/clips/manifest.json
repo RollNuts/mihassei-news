@@ -65,6 +65,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-04T15:27:28.060908+00:00"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "image_sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2",
+      "sha256": "194083a3e9d3e0f0f78156136ebaea751ed3850d8f479c1f85fd0e3907d031c4",
+      "bytes": 207276,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-07T16:03:40.672833+00:00"
     }
   }
 }
