@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="衣装ケースとコートの残る貸し収納の室内の創作イラスト" data-visual-topic="document" data-article-sha256="e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2">
+<title>売れたコートの後に、空の衣装ケースが残る</title>
+<defs><linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c3c5ba"/><stop offset="1" stop-color="#e7e5da"/></linearGradient><linearGradient id="coat" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#49636b"/><stop offset="1" stop-color="#243d45"/></linearGradient></defs>
+<rect width="1200" height="675" fill="url(#wall)"/><rect x="0" y="0" width="1200" height="78" fill="#8f9b98"/><rect x="20" y="94" width="570" height="560" rx="9" fill="#929d97"/>
+<rect x="45" y="113" width="520" height="519" fill="#c5c4b7" stroke="#657676" stroke-width="12"/>
+<path d="M79 260H535M79 454H535M79 110V635M535 110V635" stroke="#697776" stroke-width="21"/>
+<rect x="115" y="278" width="305" height="162" rx="11" fill="#d5d8d4" stroke="#7a9192" stroke-width="10"/>
+<rect x="125" y="258" width="288" height="28" rx="12" fill="#e8e7de" stroke="#778b87" stroke-width="8"/>
+<rect x="154" y="307" width="235" height="105" rx="8" fill="#c5d0d1" opacity=".75"/>
+<path d="M104 509H324M104 536H324M104 563H304" stroke="#e7e1d1" stroke-width="13" stroke-linecap="round"/>
+<rect x="96" y="478" width="262" height="134" rx="6" fill="none" stroke="#ddd4b9" stroke-width="12"/>
+<g transform="translate(642 95)">
+<path d="M149 42q-48 16-49 86l20 56h149l20-56q-2-68-57-86" fill="#463b33"/>
+<ellipse cx="194" cy="103" rx="74" ry="94" fill="#d3a38a" stroke="#876b63" stroke-width="7"/>
+<path d="M123 103q-16-97 70-100 86-1 80 107-24-12-47-66-25 34-103 59" fill="#403630"/>
+<circle cx="168" cy="106" r="5" fill="#554a45"/><circle cx="220" cy="106" r="5" fill="#554a45"/><path d="M175 139q23 11 41-2" stroke="#966e68" stroke-width="6" fill="none"/>
+<path d="M135 186l56 33 58-33q93 20 125 132l-39 258H50L16 318q17-111 119-132" fill="#71806f" stroke="#566657" stroke-width="10"/>
+<path d="M161 197l32 54 34-54" fill="none" stroke="#dad1c0" stroke-width="12"/>
+<path d="M61 310q40-18 73 21l75 78" fill="none" stroke="#c9977f" stroke-width="30" stroke-linecap="round"/>
+</g>
+<g transform="translate(696 389) rotate(-12)">
+<path d="M30 0l73-43 64 40 83 36-30 114H27z" fill="url(#coat)" stroke="#1f333c" stroke-width="10"/>
+<path d="M103-43l42 63-44 29-36-38z" fill="#69818a"/>
+<path d="M158-6l-28 41 51 42" stroke="#a2b2b0" stroke-width="7" fill="none"/>
+<circle cx="145" cy="77" r="7" fill="#c9c9b2"/>
+</g>
+<path d="M620 627H1172" stroke="#b5b4a6" stroke-width="16" opacity=".9"/>
+<path d="M54 87H1133" stroke="#e9ece5" stroke-width="9" opacity=".5"/>
+</svg>

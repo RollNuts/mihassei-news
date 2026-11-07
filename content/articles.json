@@ -1,5 +1,66 @@
 [
   {
+    "slug": "unsold-coat-storage-fees-exceed-sale",
+    "category": "暮らし",
+    "flash": "高く売るため、置き場所代は18万円",
+    "fiction_company": "フリマに出品する女性と貸し収納",
+    "art": "cards",
+    "fiction_at": "2031-11-08T07:36:00+09:00",
+    "published_at": "2026-11-08T07:36:00+09:00",
+    "title": "売れるまで捨てないコート、倉庫で5年　売値1万2千円、保管料18万円",
+    "summary": "断捨離でフリマに出したコートを安売りしたくない女性が、月3千円の貸し収納で5年間保管した。ようやく1万2千円で売れたものの、置き場所代は18万円に達していた。",
+    "paragraphs": [
+      "2031年11月8日。5年前にフリマアプリへ出品したブランドコートが、ようやく1万2千円で売れた。持ち主の佐野真理さんは、断捨離を始めた当時、4万円で出品していた。買い手から値下げの相談が来るたびに写真を撮り直し、説明文を書き足した。「ここで安くしたら、今までの休日が無駄になる」。交渉を断るうち、季節は五度巡った。",
+      "自宅のクローゼットを空けるため、佐野さんは月3千円の貸し収納にコートを移した。家族から「寄付しても、処分してもいいんじゃない」と言われたが、「捨てたら、売れるはずだったお金まで消える」と契約を更新した。出品ページの「いいね」が一つ増えると、まだ売れると思えた。売れない間も、保管料の引き落としだけは毎月欠かさず続いた。",
+      "この朝、佐野さんは「値下げしなくてよかった」と購入通知を見せた。家族が通帳を開くと、貸し収納の支払いは月3千円が60回、計18万円。佐野さんはコートを箱に詰め、ようやく倉庫の解約届を取り出した。",
+      "ところが、棚にはコートを傷めないように買った衣装ケースが残っていた。捨てようと持ち上げた佐野さんは、ふたの傷が少ないのを見て手を止めた。「これもまだ売れる」。その場で800円の値札を付けて出品し、貸し収納の翌月分3千円を振り込んで帰った。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社 優／粗大ゴミ回収サービス（フリマアプリと不用品処分の調査）",
+      "published_at": "2026-03-05T10:45:00+09:00",
+      "url": "https://www.atpress.ne.jp/news/577588",
+      "topic": "2026年3月5日に発表された全国500人の民間調査では、フリマで売れなかった物の保管や出品の手間を調べている。『今も保管している』との回答は保管期間設問で20.4％。作中の女性、5年間の貸し収納契約、保管料と売却額、衣装ケースの再出品は2031年の創作であり、調査の実例ではない。"
+    },
+    "scene_prompt": "A candid photograph inside a modest Japanese rented self-storage locker: a woman in her thirties holds a folded dark winter coat beside an empty plastic clothes-storage box on a steel shelf; a plain folder of monthly payment papers lies nearby. Everyday fluorescent light, natural clothes and plastic textures, realistic hands and ordinary storage clutter, no readable text or logos.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "フリマ",
+      "断捨離",
+      "収納"
+    ],
+    "satire_tags": [
+      "損切りできない",
+      "節約の逆効果"
+    ],
+    "x_tags": [
+      "断捨離"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「いつか売れるから」で残している物、置いておくお金まで考えたことはあるだろうか。",
+    "reader_interest": "food_travel_shopping",
+    "reader_clarity": {
+      "who": "コートを安売りしたくない女性",
+      "action": "安売りを避けて5年間貸し収納に保管し、1万2千円で売った",
+      "oddity": "保管料が売値の15倍に達しても、安く手放したくない気持ちを優先した"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "不用品を安く売るのは損だと思い、フリマ出品や収納を長く続けてしまう",
+      "target": "高く売りたいという執着のために、手放すための費用を見失う",
+      "action": "売れるまで5年間コートの貸し収納契約を更新し、空いた後も800円の衣装ケースを売ろうと契約を延長する",
+      "outcome": "コートの売却額1万2千円に対し保管料18万円、衣装ケースのためさらに月3千円を払う"
+    },
+    "behavior_basis": {
+      "motive": "値下げするとコートの出品に費やした休日が無駄になり、損が確定すると思っている",
+      "ordinary_alternative": "値下げ・寄付・処分を選び、不要な貸し収納を解約する",
+      "why_not": "写真を撮り直し説明文を書き続けた労力を取り返したく、売れる可能性を捨てられない",
+      "evidence_quote": "「ここで安くしたら、今までの休日が無駄になる」。"
+    }
+  },
+  {
     "slug": "sleep-advice-livestream-until-two-am",
     "category": "暮らし",
     "flash": "早寝を勧めて、配信は深夜2時",
