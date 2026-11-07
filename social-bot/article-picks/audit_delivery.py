@@ -305,8 +305,10 @@ def main() -> int:
     previous = read_json(previous_path) if previous_path.is_file() else {}
     retry_at = aware(previous.get("provider_retry_at_utc"))
     if retry_at is not None and now < retry_at:
+        # An already-known provider cooldown needs no new read or repeated red CI.
+        # The original request that discovered 429 still exits with failure.
         print("Buffer cooldown until", retry_at.isoformat(), "; no provider read.")
-        return 1
+        return 0
     cached = reusable_observations(state, previous, now)
     existing = []
     chosen = selected_entries(state, now)
