@@ -1,16 +1,17 @@
 {
   "schema_version": 1,
-  "checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
-  "source": "buffer_recent_list_plus_saved_id_readonly",
+  "checked_at_utc": "2026-11-07T00:30:47.445172+00:00",
+  "source": "buffer_saved_id_readonly_with_dated_observations",
   "scope": {
     "ledger_days": 7,
     "max_items": 60,
-    "automatic_lane": "article-picks-only"
+    "automatic_lane": "article-picks-only",
+    "max_direct_reads_per_run": 3
   },
-  "today_jst": "2026-11-06",
+  "today_jst": "2026-11-07",
   "observed": {
     "article_records_checked": 13,
-    "buffer_sent_today": 5,
+    "buffer_sent_today": 0,
     "buffer_scheduled_today": 0,
     "unverified": 7,
     "overdue_scheduled": 0,
@@ -19,7 +20,7 @@
     "delivery_in_progress": 0,
     "overdue_sending": 0
   },
-  "limitations": "Buffer status is provider evidence, not independent X page verification. Missing list entries are checked by saved Buffer ID. Draft/error/needs_approval require investigation. Sending is normal for up to 15 minutes, then requires review. Overdue scheduled posts also require investigation. Nothing is automatically retried. Missing provider timestamps are not assumed sent.",
+  "limitations": "Buffer status is provider evidence, not independent X page verification. Only unresolved saved Buffer IDs are read. Reused observations keep their original timestamp; sent evidence is historical, not current X-page existence. Draft/error/needs_approval require investigation. Sending is normal for up to 15 minutes, then requires review. Overdue scheduled posts also require investigation. Nothing is automatically retried. Missing provider timestamps are not assumed sent.",
   "items": [
     {
       "slug": "patrol-teams-mistake-each-other-for-suspects",
@@ -37,7 +38,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118649136622801401",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-06T10:18:11.588000+00:00"
+      "buffer_sent_at_utc": "2026-11-06T10:18:11.588000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "nikkei-plunge-hundred-year-hold-minute-check",
@@ -55,7 +58,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118586534823661955",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-06T06:09:26.165000+00:00"
+      "buffer_sent_at_utc": "2026-11-06T06:09:26.165000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "christmas-done-for-you-family-decorates-boxes",
@@ -73,7 +78,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118563357741465914",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-06T04:37:20.318000+00:00"
+      "buffer_sent_at_utc": "2026-11-06T04:37:20.318000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "walking-points-past-own-front-door",
@@ -91,7 +98,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118534390439465261",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-06T02:42:13.986000+00:00"
+      "buffer_sent_at_utc": "2026-11-06T02:42:13.986000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "buzzword-award-what-does-it-mean-wins",
@@ -109,7 +118,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118497527225819504",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-06T00:15:45.100000+00:00"
+      "buffer_sent_at_utc": "2026-11-06T00:15:45.100000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "sns-quit-support-site-hundred-day-login-award",
@@ -127,7 +138,9 @@
       "buffer_external_link": "https://x.com/2046775749500428288/status/2118323106292830408",
       "buffer_shared_now": true,
       "buffer_share_mode": "shareNow",
-      "buffer_sent_at_utc": "2026-11-05T12:42:39.913000+00:00"
+      "buffer_sent_at_utc": "2026-11-05T12:42:39.913000+00:00",
+      "provider_checked_at_utc": "2026-11-06T13:06:29.672378+00:00",
+      "observation_reused": true
     },
     {
       "slug": "office-face-to-face-day-video-call-echo",
@@ -141,49 +154,51 @@
       "buffer_external_link_at_accept": "https://twitter.com/Veripsa/status/2118291286063026215",
       "buffer_shared_now_at_accept": true,
       "buffer_share_mode_at_accept": "shareNow",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429; retry_after_seconds=2255672; retry_at_utc=2026-12-03T03:05:19.616397+00:00"
     },
     {
       "slug": "music-show-surprise-face-rehearsal",
       "buffer_id": "6aec2364660b2991f15792e5",
       "queued_at_utc": "2026-11-05T06:34:11.707431+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     },
     {
       "slug": "basketball-opening-day-game-seven",
       "buffer_id": "6aec06987877e0eab274f125",
       "queued_at_utc": "2026-11-05T04:31:20.031929+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     },
     {
       "slug": "datacenter-unbuilt-ribbon-cutting",
       "buffer_id": "6aebcf80e95790cd46a9c664",
       "queued_at_utc": "2026-11-05T00:36:15.163439+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     },
     {
       "slug": "stock-rebound-confetti-still-in-red",
       "buffer_id": "6aeb714376b2ba7a5c8f1644",
       "queued_at_utc": "2026-11-04T17:54:09.894548+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     },
     {
       "slug": "double-speed-drama-explainer-marathon",
       "buffer_id": "6aeabbc4b8d162e0d805346b",
       "queued_at_utc": "2026-11-04T04:59:47.571323+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     },
     {
       "slug": "apology-before-incident",
       "buffer_id": "6ae9bca88bcf49341df56aee",
       "queued_at_utc": "2026-11-03T10:51:19.139752+00:00",
       "buffer_status": "unverified",
-      "reason": "direct_id_lookup_failed:Buffer HTTP error: 429"
+      "reason": "deferred_rate_limit"
     }
-  ]
+  ],
+  "provider_rate_limited": true,
+  "provider_retry_at_utc": "2026-12-03T03:05:19.616397+00:00"
 }
