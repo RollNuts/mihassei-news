@@ -51,14 +51,14 @@
       "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
     },
     "black-friday-preparty-budget-gone": {
-      "article_sha256": "f0aa523e3caacb88eb9483e4c1cd14f6347d209aa451b64c4c67931b7bbe76ab",
-      "bytes": 117814,
-      "generated_at": "2026-11-06T11:42:56.033Z",
-      "generation_id": "4c0beb9e-915d-47bc-8905-da3cc704457a",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
+      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "bytes": 149180,
+      "generated_at": "2026-11-07T00:55:49.705593+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
       "prompt_version": 3,
-      "sha256": "501922b1be959f82eb167afb88819ee3c5f5ebe27f0aff73910bdf3bdccd5866"
+      "seed": 1283090034361670628,
+      "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
     },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
@@ -69,6 +69,16 @@
       "prompt_version": 2,
       "seed": 9164180507365929936,
       "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+    },
+    "christmas-done-for-you-family-decorates-boxes": {
+      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+      "bytes": 117886,
+      "generated_at": "2026-11-07T00:55:49.709093+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 3,
+      "seed": 4536841532495456843,
+      "sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
     },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
