@@ -14,6 +14,7 @@ from scripts.editorial_mix import (
     RECURRING_CHARACTERS,
     character_advice,
     lane_counts,
+    lane_risk_advice,
     next_preferred_lane,
     reader_interest_advice,
     reader_interest_counts,
@@ -460,6 +461,32 @@ class EditorialMixTests(unittest.TestCase):
             next_preferred_lane(
                 Counter({"trend": 3, "social_life": 2, "original_satire": 2})
             )
+        )
+
+    def test_lane_risk_warns_before_trend_can_only_fill_remaining_slots(self):
+        articles = [
+            story("social-a", "social_life", published=BASE_TIME),
+            story("social-b", "social_life", published=BASE_TIME + timedelta(hours=2)),
+            story("satire-a", "original_satire", published=BASE_TIME + timedelta(hours=4)),
+            story("satire-b", "original_satire", published=BASE_TIME + timedelta(hours=6)),
+        ]
+        advice = lane_risk_advice(articles, "2026-11-06")
+        self.assertIn("compare trend now", advice)
+        self.assertIn("3 core slots left", advice)
+        self.assertIn("quality may still reject it", advice)
+
+        rendered = report_day(articles, "2026-11-06")
+        self.assertIn("lane_risk=compare trend now", rendered)
+
+    def test_lane_risk_stays_quiet_early_in_the_slate(self):
+        articles = [
+            story("social-a", "social_life", published=BASE_TIME),
+            story("satire-a", "original_satire", published=BASE_TIME + timedelta(hours=2)),
+            story("social-b", "social_life", published=BASE_TIME + timedelta(hours=4)),
+        ]
+        self.assertIn(
+            "early slate",
+            lane_risk_advice(articles, "2026-11-06"),
         )
 
     def test_lane_counts_only_selected_jst_day(self):
