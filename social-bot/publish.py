@@ -16,6 +16,7 @@ from ip.audit import check as validate_canon, payload_hash
 from review_policy import load_manifest, select_next, verify_one
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+import buffer_budget
 
 HERE = Path(__file__).resolve().parent
 QUALITY_GATE = HERE / "ip" / "publication_quality_gate.json"
@@ -65,6 +66,9 @@ def rate_limit_detail(headers):
 
 
 def gql(token, query):
+    budget_path = buffer_budget.active_path()
+    if budget_path:
+        buffer_budget.reserve(budget_path, os.environ.get("BUFFER_REQUEST_ROLE", ""))
     body = json.dumps({"query": query}, ensure_ascii=False).encode("utf-8")
     req = Request(
         BASE_URL, body, method="POST",
@@ -77,7 +81,16 @@ def gql(token, query):
     try:
         with urlopen(req, timeout=30) as response:
             result = json.load(response)
+            if budget_path:
+                try:
+                    buffer_budget.observe(budget_path, response.headers)
+                except (OSError, ValueError, RuntimeError):
+                    # A successful mutation must still return its receipt even
+                    # if quota metadata cannot be saved. Its attempt was reserved.
+                    print("Buffer quota headers could not be saved; reserved request remains counted.")
     except HTTPError as exc:
+        if budget_path:
+            buffer_budget.observe(budget_path, exc.headers, rate_limited=exc.code == 429)
         detail = rate_limit_detail(exc.headers) if exc.code == 429 else ""
         raise RuntimeError("Buffer HTTP error: " + str(exc.code) + detail) from exc
     except URLError as exc:

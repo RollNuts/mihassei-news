@@ -326,6 +326,14 @@ def main() -> int:
             direct = read_post_by_id(token, buffer_id)
         except (RuntimeError, ValueError) as exc:
             message = str(exc).strip().replace("\n", " ")
+            if message.startswith("Buffer budget hold:") or message.startswith("Buffer budget hold until"):
+                print("Article audit deferred to preserve publishing allowance:", message)
+                # Nothing was requested. Keep the last report's real observation
+                # times rather than replacing known delivery with a quota error.
+                if not existing:
+                    return 0
+                lookup_errors[buffer_id] = "deferred_request_budget"
+                break
             lookup_errors[buffer_id] = "direct_id_lookup_failed:" + message[:160]
             if "Buffer HTTP error: 429" in message:
                 print("Article audit rate limited; remaining reads deferred:", message)
