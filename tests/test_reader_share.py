@@ -34,6 +34,7 @@ class ReaderShareTests(unittest.TestCase):
         for lead in (None, {}, "", "短い", "長い紹介文" * 80,
                      "要約：家の前まで来たのに、ポイントのためにもう一周して帰宅できない。",
                      "家の前まで来たのに #ポイ活 のために、もう一周して帰宅できない。",
+                     "家の前まで来たのに#未発生新聞の話と同じように、もう一周して帰宅できない。",
                      "家の前まで来たのに帰宅できない。 https://example.com を見てください。"):
             with self.subTest(lead=lead):
                 self.article["x_share_lead"] = lead

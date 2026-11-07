@@ -20,7 +20,7 @@ HASHTAG_RE = re.compile(r"\w{1,12}\Z")
 TICKER_RE = re.compile(r"[A-Z][A-Z0-9.]{0,5}\Z")
 X_TEXT_LIMIT = 280
 SHARE_LEAD_MIN_CHARS = 24
-SHARE_LEAD_FORBIDDEN = re.compile(r"https?://|(?:^|\s)#[^\s]+|【(?:続報｜)?未発生新聞】")
+SHARE_LEAD_FORBIDDEN = re.compile(r"https?://|[#＃]|【(?:続報｜)?未発生新聞】")
 SHARE_LEAD_LABEL = re.compile(r"^(?:要約|概要|説明|リンク|記事|見出し)\s*[:：]")
 
 
