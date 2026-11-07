@@ -8,6 +8,7 @@ Environment:
 """
 import json
 import os
+import re
 import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -42,6 +43,27 @@ TARGET_QUEUE = 3
 MAX_NEW_PER_RUN = 2
 
 
+def rate_limit_detail(headers):
+    """Expose only numeric retry/quota data, never raw headers or response bodies."""
+    if headers is None:
+        return ""
+    details = []
+    retry = headers.get("Retry-After", "")
+    if re.fullmatch(r"\d{1,9}", retry):
+        seconds = int(retry)
+        details.append("retry_after_seconds=" + str(seconds))
+        details.append("retry_at_utc=" + (
+            datetime.now(timezone.utc) + timedelta(seconds=seconds)
+        ).isoformat())
+    values = headers.get_all("RateLimit", []) if hasattr(headers, "get_all") else [headers.get("RateLimit", "")]
+    for value in values:
+        for policy, remaining, reset in re.findall(
+            r'"([0-9]+-in-[0-9]+(?:min|day|days))";\s*r=(\d+);\s*t=(\d+)', value
+        ):
+            details.append(f"policy={policy},remaining={remaining},reset_seconds={reset}")
+    return ("; " + "; ".join(details)) if details else ""
+
+
 def gql(token, query):
     body = json.dumps({"query": query}, ensure_ascii=False).encode("utf-8")
     req = Request(
@@ -56,7 +78,8 @@ def gql(token, query):
         with urlopen(req, timeout=30) as response:
             result = json.load(response)
     except HTTPError as exc:
-        raise RuntimeError("Buffer HTTP error: " + str(exc.code)) from exc
+        detail = rate_limit_detail(exc.headers) if exc.code == 429 else ""
+        raise RuntimeError("Buffer HTTP error: " + str(exc.code) + detail) from exc
     except URLError as exc:
         raise RuntimeError("Buffer network error: " + str(exc.reason)) from exc
     if result.get("errors"):

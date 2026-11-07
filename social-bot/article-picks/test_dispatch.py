@@ -189,6 +189,41 @@ class ArticlePickTests(unittest.TestCase):
             existing.assert_not_called()
             queue.assert_not_called()
 
+    def test_closed_and_used_slots_do_not_spend_provider_requests(self):
+        used = ledger()
+        used["queued"]["already"] = {
+            "buffer_id": "receipt", "queued_at_utc": NOW.astimezone(timezone.utc).isoformat(),
+            "slot_jst": picks.promotion_slot(NOW).isoformat(),
+        }
+        cases = [(NOW, used), (NOW.replace(hour=3), ledger()), (NOW.replace(hour=23), ledger())]
+        for now, state in cases:
+            with self.subTest(now=now), patch.object(picks, "read_json", side_effect=[CONFIG, state]), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
+                 patch.object(picks, "choose_x_channel") as choose, \
+                 patch.object(picks, "list_existing") as read, patch.object(picks, "queue_one") as send:
+                clock.now.return_value = now
+                self.assertEqual(picks.main(), 0)
+                choose.assert_not_called()
+                read.assert_not_called()
+                send.assert_not_called()
+
+    def test_recorded_provider_backoff_blocks_reads_and_sends(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "delivery.json").write_text(json.dumps({
+                "provider_retry_at_utc": (NOW + timedelta(hours=1)).isoformat(),
+            }))
+            with patch.object(picks, "HERE", root), \
+                 patch.object(picks, "read_json", side_effect=[CONFIG, ledger()]), \
+                 patch.object(picks, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
+                 patch.object(picks, "choose_x_channel") as choose, patch.object(picks, "queue_one") as send:
+                clock.now.return_value = NOW
+                self.assertEqual(picks.main(), 1)
+                choose.assert_not_called()
+                send.assert_not_called()
+
     def test_article_post_removes_legacy_in_story_disclaimer(self):
         raw = article("legacy-fiction-label", age_hours=4)
         raw["title"] = "架空の店が客の節約を祝う、会計だけ10万円に"

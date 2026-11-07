@@ -768,6 +768,25 @@ def main() -> int:
     if not trigger_allows_network(trigger_event, now):
         print("Article X push trigger outside 09:00-21:59 JST; no Buffer read/write.")
         return 0
+    # A known local hold cannot be made publishable by reading Buffer. Keep
+    # provider reconciliation for the next open slot, before any possible POST.
+    if (promotion_slot(now) is None or now.astimezone(JST).hour > 21
+            or slot_already_used(state, now)
+            or promotions_today(state, now) >= config["max_per_jst_day"]):
+        print("Article X slot closed, already used, or daily limit reached; no Buffer read/write.")
+        return 0
+    for receipt in state["queued"].values():
+        sent = provider_instant(receipt.get("buffer_sent_at_at_accept"))
+        if sent is not None and now - sent < timedelta(hours=config["minimum_interval_hours"]):
+            print("Article X recorded send is too recent; no Buffer read/write.")
+            return 0
+    delivery_path = HERE / "delivery.json"
+    if delivery_path.is_file():
+        delivery = json.loads(delivery_path.read_text(encoding="utf-8"))
+        retry_at = provider_instant(delivery.get("provider_retry_at_utc"))
+        if retry_at is not None and now < retry_at:
+            print("Buffer cooldown until", retry_at.isoformat(), "; no provider read/write.")
+            return 1
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
