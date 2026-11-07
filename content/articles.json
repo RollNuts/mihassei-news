@@ -1,5 +1,58 @@
 [
   {
+    "slug": "five-star-reviews-of-returned-humidifiers",
+    "category": "暮らし",
+    "flash": "返品の山を見ず、星だけ見て追加発注",
+    "fiction_company": "青葉電器",
+    "art": "cards",
+    "fiction_at": "2031-11-07T11:38:00+09:00",
+    "published_at": "2026-11-07T11:38:00+09:00",
+    "title": "返品客の星5評価で「大人気」　家電店、故障した加湿器をさらに仕入れる",
+    "summary": "家電店の客は、カスハラ扱いされたくなくて故障の説明を口コミに書かず、親切な店員に星5を付けた。返品が相次ぐのに「高評価の人気商品」と追加発注され、倉庫は戻ってきた加湿器でいっぱいになった。",
+    "paragraphs": [
+      "家電店「青葉電器」で、加湿器の口コミに星5が並んでいる。ところが返品窓口では同じ型の箱が積み上がっていた。水漏れで返品した女性は、レビューに「使えなかった」と入力したあと、対応してくれた店員の顔を思い出して消した。「カスハラと思われたくないし、店員さんは悪くない」。結局、星5と「丁寧に対応してもらえました」だけを投稿した。返品した別の客も、似たような評価を残した。",
+      "仕入れ担当者は、月次報告で星5の多さを見て「次もこの型で」と発注書に丸を付けた。返品担当者が「同じ機種ばかり戻ってきます」と伝えると、「でも低評価が一件もない」と返した。今さら仕入れをやめれば、前月の『顧客満足度トップ』という報告を訂正しなくてはならない。担当者は返品箱を数えず、発注数を増やした。",
+      "週末、追加の加湿器を積んだ車が店に着いた。倉庫では返品箱が通路を塞ぎ、新品を置く場所がない。荷下ろしを手伝う人が「ずいぶん人気なんですね」と聞くと、店員は箱をまたぎながら答えた。「ええ。買ったお客様が、もう一度来てくださるんです」。その頭上には、星5の口コミを印刷した大きな販促ポスターが掛かっていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社Channel Corporation（カスハラ意識調査）",
+      "published_at": "2026-06-25T10:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000169.000029184.html",
+      "topic": "Channel Corporationが2026年6月25日に発表した全国514人の意識調査。店側のミスに遭遇した348人の52.3%が、カスハラやクレーマーと思われることを恐れ指摘・返金請求を断念した経験があると回答した（全体では35.4%）。調査には星5の口コミ、加湿器の返品、家電店の誤発注などの出来事は記載されていない。それらと青葉電器・店員・客は2031年を舞台にした創作。"
+    },
+    "scene_prompt": "Stacked boxes of returned tabletop humidifiers blocking a cramped Japanese electronics shop stockroom aisle. A store worker carefully steps over a large pile of opened return cartons while a new delivery of identical humidifier boxes waits at the doorway. A simple promotional board with five gold star icons hangs above the returning boxes. Natural fluorescent retail light, candid reporting photograph, realistic paper and plastic materials, no legible writing, no logos, no watermark.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "買い物",
+      "口コミ"
+    ],
+    "satire_tags": [
+      "遠慮",
+      "評価のずれ"
+    ],
+    "x_tags": [
+      "カスハラ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "店員さんは親切だった。でも、商品は壊れていた。口コミに星を付けるなら、どっちの話になるんだろう。",
+    "reader_interest": "food_travel_shopping",
+    "reader_clarity": {
+      "who": "家電店",
+      "action": "返品客の星5評価だけを見て、故障して返品が続く加湿器を追加発注した",
+      "oddity": "カスハラと思われたくない客が不具合を書かなかったため、星5と返品の山が同時に増えた"
+    },
+    "editorial_lane": "original_satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "店員に嫌な顔をされないよう指摘をためらい、接客の良さだけを高評価に残す口コミの空気",
+      "target": "評価の星だけで顧客満足を測り、返品や具体的な不具合の声を脇に置く商売",
+      "action": "客が故障内容を伏せて星5を投稿し、仕入れ担当が返品の山を見ずに同じ商品を追加発注する",
+      "outcome": "高評価の販促ポスターの下に返品箱が積み上がり、再来店は買い直しでなく返品のためになる"
+    }
+  },
+  {
     "slug": "family-line-replies-four-different-station-exits",
     "category": "暮らし",
     "flash": "譲る返事、譲らない出口",
