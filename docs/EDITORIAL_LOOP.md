@@ -142,10 +142,10 @@
 
 ### 毎回の発行で使う短い執筆プロンプト（最優先）
 
-> 候補3案。今の欲・得・断りにくさから原因→行動→結果を作る。弱い小ネタは別案へ。簡単にやめれば済むなら、やめない理由が本文にあるか。
+> 候補3案。各案で「本人の欲・得・圧力→普通なら何をする→なぜそれをしない→原因→行動→結果」を1行で作る。普通の選択を捨てる理由が弱い、弱い小ネタ、作者都合の愚行は別案へ。
 > 初見テストは見出し＋summaryだけで「誰が／何をして／なぜ変か」をreader_clarityへ。曖昧なら設定を減らす。冒頭2文で人物・原因・現場。
-> 本文だけで「普通なら何をする？／なぜそれをしない？」を反証。動機・摩擦が公開文になければ不採用。作者都合で愚かに動かさない。二度目の逆転は不要。
-> editorial_tone、reader_interest/interest_next、character_next、直近2本/payoff_nextでeditorial_payoffを比較。tone_nextが未来寄りなら、同じ現実事実から「今を誇張する案」と「5年続いた2031年固有の案」を比べる。plausible_futureは現実の兆候→続く力→結果をplausibility_basisへ。「架空の」「創作の」の断りを書かない。
+> 本文ではbehavior_basisの動機・ordinary_alternative・why_notが実際に読めるか反証。内部説明だけなら不採用。二度目の逆転は不要。
+> editorial_tone、reader_interest/interest_next、character_next、直近2本/payoff_nextでeditorial_payoffを比較。plausible_futureは現実の兆候→続く力→結果をplausibility_basisへ。「架空の」「創作の」の断りを書かない。
 
 ### 風刺と笑いを別々に確認する（採用前必須）
 
