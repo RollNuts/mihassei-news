@@ -102,13 +102,30 @@
     },
     "datacenter-unbuilt-ribbon-cutting": {
       "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
-      "bytes": 117063,
-      "generated_at": "2026-11-04T22:47:11.414344+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
+      "bytes": 197986,
+      "generated_at": "2026-11-07T15:55:13.846980+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
       "seed": 1068116499113448635,
-      "sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
+      "sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2"
     },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
@@ -544,11 +561,6 @@
       "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
       "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
     },
-    "datacenter-unbuilt-ribbon-cutting": {
-      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
-      "reason": "Visual review (2026-11-05 JST): the generated JPEG shows a large built roofed concrete hall/corridor and a crowd behind the ribbon, not the empty gravel lot with no buildings required by the article. The visible building defeats the central unbuilt-data-center joke; use the safe illustration until a genuinely different new JPEG is generated and reviewed.",
-      "rejected_candidate_sha256": "5374d9e20cf54cb34ddde0d1a1e883697fa0f207387e830bd307d60174c1ac31"
-    },
     "fan-theories-write-final": {
       "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
       "reason": "Visual review: loose red cords float through an otherwise empty room without the evidence cards or board they should connect. Use the article-specific illustration until a coherent new scene is reviewed.",
@@ -604,9 +616,9 @@
     },
     "sleep-advice-livestream-until-two-am": {
       "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
-      "reason": "実JPEGと現本文を照合。髪・服・木机・室内の影は普通の写真に近づいたが、机で頬杖をつく女性と化粧品ジャーの汎用ポートレートで、コンシーラーチューブを持つ行為も配信機材もない。顔・服・手の白飛びも目立つ。画風の改善と記事への採用は分け、主行為の不一致で不採用。既存専用SVGを維持する。",
-      "rejected_candidate_sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385282940"
+      "reason": "通常の実写モデル24ステップで新規生成したJPEGを現本文と実表示で照合。肌・髪・パーカー・室内光は写真として自然で、撮影用softboxも見える。一方、顔に当てる物は細く均一な木製棒に見え、化粧ブラシの毛先やコンシーラー容器を識別できない。位置も鼻脇から上唇付近で、目の下への化粧と判別できず不採用。実写画質の改善と本文への採用を分け、専用SVGを維持する。",
+      "rejected_candidate_sha256": "bdb161d12e8df860d1e0d875913c5a6f2e3147dd14cb812bc22a1fcae5bb4c06",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42386914643"
     },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
