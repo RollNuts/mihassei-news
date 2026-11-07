@@ -229,7 +229,8 @@ class ArticlePickTests(unittest.TestCase):
                  patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
                  patch.object(picks, "choose_x_channel") as choose, patch.object(picks, "queue_one") as send:
                 clock.now.return_value = NOW
-                self.assertEqual(picks.main(), 1)
+                # Recorded 429 backoff is a successful no-op, not a fresh failure.
+                self.assertEqual(picks.main(), 0)
                 choose.assert_not_called()
                 send.assert_not_called()
 

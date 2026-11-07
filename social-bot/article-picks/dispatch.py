@@ -789,8 +789,11 @@ def main() -> int:
             return 0
     retry_at = delivery_retry_time(HERE / "delivery.json")
     if retry_at is not None and now < retry_at:
+        # Already-recorded provider backoff is a safe no-op, not a new failed send.
+        # Keep the original 429 as an error on first observation, but do not turn
+        # every scheduled/push check during cooldown into an Actions failure.
         print("Buffer cooldown until", retry_at.isoformat(), "; no provider read/write.")
-        return 1
+        return 0
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
