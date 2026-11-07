@@ -222,26 +222,26 @@
   {
     "slug": "tori-no-ichi-kumade-blocks-store-entrance",
     "category": "暮らし",
-    "flash": "行列ができても売上0円",
+    "flash": "SNS集客1位、会計は3件",
     "fiction_company": "角田商店",
     "art": "cards",
     "fiction_at": "2031-11-07T07:42:08+09:00",
     "published_at": "2026-11-07T07:42:08+09:00",
-    "title": "「商売繁盛」の熊手が店の入口を塞ぐ　写真待ちは大行列、売上は0円",
-    "summary": "酉の市で大きな熊手を買った雑貨店の店主が、目立たせようと正面入口に飾った。写真を撮る人で行列ができても、買い物客は店に入れず、レジには一円も入らなかった。",
+    "title": "「商売繁盛」の熊手でSNS集客1位　正面を撮影場所にして、店の会計は3件",
+    "summary": "商店街のSNS企画で上位を狙った雑貨店が、特大熊手の正面を撮影場所にした。投稿数は1位になったが、買い物客は側面入口へ回され、レジに残った会計は3件だった。",
     "paragraphs": [
-      "酉の市で商売繁盛の熊手を買った雑貨店「角田商店」の店主は、今年こそ行列のできる店にしたいと、間口いっぱいの特大熊手を買い込んだ。「通りの向こうからでも見える」と、開店前に正面入口へ立てかけた。だが熊手の向こうには、店に入るための扉がすっかり隠れていた。",
-      "午前中から通行人が立ち止まり、熊手を撮るための列が伸びた。買い物に来た女性が「中に入りたいんですが」と尋ねると、店主は「飾りを傷つけないでください」と両手を広げた。女性は何も買わずに帰ったが、写真待ちの人数は増える一方。店主は列の長さを測って「過去最高の繁盛だ」とうなずいた。",
-      "夕方、店主は大行列の写真を投稿しようとして、並ぶ人が誰も買い物袋を持っていないことに気づいた。そこで店内の商品を袋に詰め、通行人に渡して写真を撮ると、すぐ回収した。投稿には「人気店ですね」と反応が集まった。閉店後、レジの売上は0円。何度も撮影に使われた買い物袋だけが、しわくちゃになっていた。"
+      "酉の市で商売繁盛の熊手を買った雑貨店「角田商店」は、商店街の「写真投稿数で集客を競う」企画に参加していた。前月は最下位。翌月の公式特集に載れる1位を取ろうと、店主は間口いっぱいの特大熊手を正面に置き、そこを撮影場所にした。買い物客には、建物脇の細い通路にある側面入口を案内した。",
+      "午前中から熊手を撮る人が並び、投稿数は伸びた。買い物に来た女性が「正面から入れませんか」と聞くと、店主はスマホの順位表を見せた。「今動かすと順位が落ちるから、夕方までこのまま」。女性は側面入口を探して一度角を曲がり、そのまま戻ってこなかった。店主は客足を気にしながらも、前月の最下位表示を見て熊手を動かさなかった。",
+      "夕方、角田商店は126件の写真投稿で企画1位になった。商店街の担当者が「集客1位、おめでとうございます」と賞状を持ってきた時、レジ横に残っていたレシートは3枚だった。店主は賞状を熊手の横へ置き、翌月の公式特集用にもう一枚写真を撮った。撮影の後で、ようやく正面入口が開いた。"
     ],
     "source": {
       "kind": "生活・文化",
       "publisher": "台東区（公式観光案内）",
       "published_at": "2026-09-24T00:00:00+09:00",
       "url": "https://www.city.taito.lg.jp/event/kanko/torinoithi.html",
-      "topic": "台東区の2026年9月24日更新の公式案内によると、2026年の酉の市は11月7日・19日、鷲神社と長國寺で開催される。熊手は福運・財をかき込む商売繁盛の縁起物。公式サイトは更新日だけを示し時刻は非掲載のため、published_atの00:00は日付代表値。2031年の雑貨店「角田商店」、巨大な熊手が入口を塞ぐ行為、写真待ちの行列、売上0円と撮影用買い物袋は本紙の創作であり、実在の酉の市や店主の行為ではない。"
+      "topic": "台東区の2026年9月24日更新の公式案内によると、2026年の酉の市は11月7日・19日、鷲神社と長國寺で開催される。熊手は福運・財をかき込む商売繁盛の縁起物。公式サイトは更新日だけを示し時刻は非掲載のため、published_atの00:00は日付代表値。2031年の雑貨店「角田商店」、商店街の写真投稿企画、特大熊手を正面の撮影場所にする行為、SNS集客1位と会計3件は本紙の創作であり、実在の酉の市や店主・商店街の行為ではない。"
     },
-    "scene_prompt": "Candid photorealistic Japanese small shopping street storefront in autumn daylight. An enormous ornate traditional lucky bamboo rake decorated with gold ornaments stands squarely in front of a narrow shop entrance, visibly blocking the doorway. A few pedestrians line up just to photograph the decoration with their phones; through the side display window, empty shop aisles and an untouched cash register are visible. One shopkeeper watches with awkward pride from inside. Realistic rake scale and gestures, natural reporting scene, no readable text, no recognizable businesses or shrine names, no logos, no watermark.",
+    "scene_prompt": "Candid photorealistic Japanese small shopping street storefront in autumn daylight. An enormous ornate traditional lucky bamboo rake is staged across most of the main storefront as a photo spot, with pedestrians photographing it on phones. A narrow side entrance remains technically open around the corner, while an actual shopper hesitates and starts to leave. The shopkeeper checks a simple ranking screen on a phone with no readable text. Natural documentary press-photo look, realistic scale and gestures, no recognizable businesses or shrine names, no logos, no watermark.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "店舗",
@@ -255,22 +255,29 @@
       "酉の市"
     ],
     "x_tickers": [],
-    "x_share_lead": "『人が集まった』と『お客さんが来た』は、案外別の話なのかもしれない。",
+    "x_share_lead": "人が集まった数字が伸びるほど、買い物客は入口から遠ざかる。『集客』って何を数えてるんだろう。",
     "reader_interest": "food_travel_shopping",
     "reader_clarity": {
       "who": "雑貨店の店主",
-      "action": "商売繁盛の大きな熊手を目立たせようとして店の入口に飾った",
-      "oddity": "写真待ちで行列ができたのに客は入店できず、売上が0円だった"
+      "action": "商店街のSNS企画で1位を取るため、正面入口を熊手の撮影場所にした",
+      "oddity": "写真投稿数では集客1位になったのに、実際の会計は3件しか残らなかった"
     },
     "editorial_lane": "social_life",
     "editorial_tone": "comic_exaggeration",
     "editorial_payoff": "visible_result",
     "editorial_signature": {
-      "present": "目立つ飾りや行列の写真を繁盛の証拠にして、実際の買い物より見栄えを優先する店やSNSの空気",
-      "target": "商売繁盛の縁起と店が人気に見えることを、本当に客に買ってもらうことより優先する",
-      "action": "入口を塞ぐ特大熊手を写真映えのため動かさず、写真客に買い物袋を持たせて撮影する",
-      "outcome": "写真の行列とSNSの反響は増えるが売上0円で、撮影用の買い物袋だけが使い込まれる"
-    }
+      "present": "SNSの投稿数や見栄えを「集客」の成果として追い、実際に買う客の動線より指標を優先する店や企画",
+      "target": "写真投稿数という評価指標を、本来の買い物客の入りやすさより優先する",
+      "action": "企画順位を落としたくない店主が特大熊手の撮影場所を正面に固定し、買い物客を側面入口へ迂回させる",
+      "outcome": "写真投稿では集客1位を取る一方、実際のレジに残る会計は3件だけになる"
+    },
+    "behavior_basis": {
+      "motive": "前月最下位で、商店街のSNS企画1位になれば翌月の公式特集に載れるため、店主は写真投稿数を取りにいく",
+      "ordinary_alternative": "熊手を脇へ動かして正面入口を買い物客に開ける",
+      "why_not": "熊手を動かすと撮影投稿が減って順位を落とすと考え、店主は側面入口への迂回を選ぶ",
+      "evidence_quote": "「今動かすと順位が落ちるから、夕方までこのまま」"
+    },
+    "modified_at": "2026-11-07T17:09:00+09:00"
   },
   {
     "slug": "lion-king-prequel-watch-order-meeting",
