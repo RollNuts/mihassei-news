@@ -5,8 +5,8 @@
     "flash": "希少さを守るため、毎日限定",
     "fiction_company": "高級すし店「白潮」",
     "art": "cards",
-    "fiction_at": "2031-11-07T17:34:04.213+09:00",
-    "published_at": "2026-11-07T17:34:04.213+09:00",
+    "fiction_at": "2031-11-07T17:34:04+09:00",
+    "published_at": "2026-11-07T17:34:04+09:00",
     "title": "「幻の魚」シロアマダイ、養殖で毎日入荷　高級すし店は「最後の一皿」を27回販売",
     "summary": "陸上養殖が普及した2031年、シロアマダイを毎日仕入れる高級すし店が、年会費を払う常連には希少な一皿として売り続けた。「本日最後」の札は一晩で27回出し直された。",
     "paragraphs": [
@@ -66,7 +66,7 @@
     "trend_observation": {
       "source_kind": "google_trends",
       "term": "シロアマダイ",
-      "observed_at": "2026-11-07T17:34:04.213+09:00",
+      "observed_at": "2026-11-07T17:34:04+09:00",
       "url": "https://trends.google.com/trending?geo=JP",
       "verification_urls": [
         "https://prtimes.jp/main/html/rd/p/000000855.000049164.html",
