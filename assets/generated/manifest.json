@@ -186,6 +186,16 @@
       "seed": 8989241339850763742,
       "sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd"
     },
+    "five-star-reviews-of-returned-humidifiers": {
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "bytes": 123831,
+      "generated_at": "2026-11-07T02:43:40.038471+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 3,
+      "seed": 5521049100415918610,
+      "sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
+    },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
       "bytes": 110440,
