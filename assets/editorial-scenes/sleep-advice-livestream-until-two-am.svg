@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="夜更けに目の下へコンシーラーを当てながら生配信を続ける美容配信者の創作イラスト" data-visual-topic="document" data-article-sha256="e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54">
+<title>早寝を勧める美容ライブが深夜まで続く</title>
+<defs>
+<linearGradient id="night" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#20283b"/><stop offset="1" stop-color="#493b50"/></linearGradient>
+<linearGradient id="table" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#9d7971"/><stop offset="1" stop-color="#644b4c"/></linearGradient>
+<linearGradient id="skin" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e8bda2"/><stop offset="1" stop-color="#be8979"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#night)"/>
+<rect x="64" y="66" width="328" height="302" rx="10" fill="#292f43" stroke="#9d8ca3" stroke-width="10"/>
+<rect x="85" y="86" width="287" height="261" rx="3" fill="#121b31"/>
+<circle cx="293" cy="154" r="39" fill="#e4e0c7"/><circle cx="312" cy="142" r="39" fill="#121b31"/>
+<path d="M91 296h276M230 92v250" stroke="#586077" stroke-width="13"/>
+<path d="M0 364h1200" stroke="#80696c" stroke-width="11" opacity=".65"/>
+<ellipse cx="655" cy="635" rx="540" ry="100" fill="#1a1c2b" opacity=".45"/>
+<path d="M119 478h985l91 197H25z" fill="url(#table)"/>
+<path d="M119 478h985" stroke="#caa49a" stroke-width="13"/>
+<g transform="translate(883 72)">
+<ellipse cx="110" cy="153" rx="123" ry="138" fill="none" stroke="#f3e2cd" stroke-width="24"/>
+<ellipse cx="110" cy="153" rx="121" ry="136" fill="none" stroke="#fff8ed" stroke-width="5" opacity=".75"/>
+<path d="M110 288v198" stroke="#b1a3a0" stroke-width="14"/>
+<path d="M110 486l-66 90m66-90 66 90" stroke="#b1a3a0" stroke-width="13"/>
+<rect x="74" y="117" width="73" height="61" rx="14" fill="#303447" stroke="#9b948b" stroke-width="6"/>
+<circle cx="110" cy="148" r="15" fill="#67788f"/>
+</g>
+<g>
+<path d="M391 458Q395 368 462 330l83-28 105 22q79 50 92 134l20 114H372z" fill="#a5aeb3" stroke="#4e5261" stroke-width="8"/>
+<path d="M461 345l65 54 86-56" fill="none" stroke="#e5d7c7" stroke-width="12"/>
+<path d="M520 301v70" stroke="url(#skin)" stroke-width="64"/>
+<ellipse cx="532" cy="225" rx="101" ry="121" fill="url(#skin)" stroke="#795a57" stroke-width="7"/>
+<path d="M435 245q-48-143 59-163 116-35 140 91-44-22-55-69-42 46-137 59z" fill="#322c36"/>
+<path d="M441 176q-41 63-17 151l32-38-10-75m170-85q53 65 15 188l-28-41 16-86" fill="#322c36"/>
+<path d="M474 229q19-8 37 1m44 0q18-9 36-1" stroke="#6a4b4a" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M479 246q17 13 29 0m53 0q15 12 29 0" stroke="#876e72" stroke-width="5" fill="none"/>
+<path d="M487 264q8 7 18 0m59 0q8 7 17 0" stroke="#a1777e" stroke-width="9" fill="none" opacity=".66"/>
+<path d="M513 296q18 13 39-1" stroke="#965c60" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M408 390q-35 47 8 102l81 40" fill="none" stroke="#dab09b" stroke-width="29" stroke-linecap="round"/>
+<path d="M649 386q40 50 8 85l-74 31" fill="none" stroke="#d8a88e" stroke-width="31" stroke-linecap="round"/>
+<path d="M579 494l24-75" stroke="#d7a8a4" stroke-width="24" stroke-linecap="round"/>
+<rect x="591" y="405" width="25" height="69" rx="5" transform="rotate(18 591 405)" fill="#d7c1b9" stroke="#947b81" stroke-width="4"/>
+<rect x="596" y="396" width="19" height="20" rx="3" transform="rotate(18 596 396)" fill="#534658"/>
+</g>
+<g transform="translate(710 417)">
+<path d="M0 0h207l27 129H-28z" fill="#303747" stroke="#8e8e96" stroke-width="7"/>
+<rect x="16" y="15" width="172" height="96" rx="5" fill="#5b6670"/>
+<path d="M34 78h128M34 57h107M34 36h72" stroke="#adb7b2" stroke-width="8" stroke-linecap="round"/>
+<circle cx="154" cy="38" r="9" fill="#d6a7a6"/>
+</g>
+<g transform="translate(141 425)">
+<path d="M20 0h133l14 145H0z" fill="#decdbd" stroke="#aa9292" stroke-width="7"/>
+<path d="M44 40h91M44 65h69M44 91h88" stroke="#9ba4a0" stroke-width="9" stroke-linecap="round"/>
+<circle cx="117" cy="121" r="11" fill="#d38c8d"/>
+</g>
+<path d="M315 558h83" stroke="#e8c4b7" stroke-width="17" stroke-linecap="round" opacity=".7"/>
+<circle cx="1030" cy="567" r="33" fill="#daa89c"/><path d="M1021 551v32m20-18h-40" stroke="#f7e5d7" stroke-width="9" stroke-linecap="round"/>
+</svg>
