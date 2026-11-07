@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'pull_request' && github.ref || 'main' }}
           fetch-depth: 0
           persist-credentials: true
 
@@ -65,7 +66,7 @@ jobs:
         run: python social-bot/article-picks/audit_delivery.py
 
       - name: Persist article delivery evidence only
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           test -f social-bot/article-picks/delivery.json || exit 0
           git config user.name "github-actions[bot]"

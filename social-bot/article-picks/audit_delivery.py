@@ -11,7 +11,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from publish import choose_x_channel, gql, list_existing, qstring  # noqa: E402
+from publish import gql, qstring  # noqa: E402
 
 JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
@@ -19,6 +19,30 @@ MAX_ITEMS = 60
 UNDELIVERED_STATUSES = {"draft", "error", "needs_approval", "sending"}
 IMMEDIATE_PROBLEM_STATUSES = {"draft", "error", "needs_approval"}
 SENDING_GRACE = timedelta(minutes=15)
+MAX_DIRECT_READS = 3
+
+
+def reusable_observations(state: dict, previous: dict, now: datetime) -> dict:
+    """Preserve dated evidence; never relabel a cached observation as a fresh read."""
+    previous_items = {row.get("slug"): row for row in previous.get("items", [])
+                      if isinstance(row, dict)}
+    cached = {}
+    for slug, entry, _queued in selected_entries(state, now):
+        row = previous_items.get(slug, {})
+        if str(row.get("reason", "")).startswith("deferred_"):
+            continue
+        observed = aware(row.get("provider_checked_at_utc") or previous.get("checked_at_utc"))
+        if (row.get("buffer_id") != entry["buffer_id"] or observed is None
+                or observed > now):
+            continue
+        status = row.get("buffer_status")
+        # Sent is historical delivery evidence, not proof the X page still exists.
+        confirmed = status == "sent" and aware(row.get("buffer_sent_at_utc")) is not None
+        interval = timedelta(minutes=15) if status in ("sending", "scheduled") else timedelta(hours=6)
+        if confirmed or now - observed < interval:
+            cached[slug] = dict(row, provider_checked_at_utc=observed.isoformat(),
+                                observation_reused=True)
+    return cached
 
 
 def trigger_allows_provider_read(event_name: str, now: datetime) -> bool:
@@ -153,7 +177,8 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
 
 
 def build(state: dict, existing: list[dict], now: datetime,
-          lookup_errors: dict[str, str] | None = None) -> dict:
+          lookup_errors: dict[str, str] | None = None,
+          cached_items: dict[str, dict] | None = None) -> dict:
     chosen = selected_entries(state, now)
     remote = {
         row.get("id"): row
@@ -161,10 +186,17 @@ def build(state: dict, existing: list[dict], now: datetime,
         if isinstance(row, dict) and isinstance(row.get("id"), str)
     }
     lookup_errors = lookup_errors or {}
-    items = [reconcile(
+    cached_items = cached_items or {}
+    items = [dict(cached_items[slug]) if slug in cached_items else reconcile(
         slug, entry, remote.get(entry["buffer_id"]),
         lookup_errors.get(entry["buffer_id"]),
     ) for slug, entry, _queued_at in chosen]
+    for row in items:
+        if row["slug"] not in cached_items and row["buffer_id"] in remote:
+            row["provider_checked_at_utc"] = now.astimezone(timezone.utc).isoformat()
+        # Recompute age-dependent flags even when an observation is reused.
+        for key in ("delivery_in_progress", "review_needed", "sending_age_minutes"):
+            row.pop(key, None)
     today = now.astimezone(JST).date()
     sent_today = 0
     scheduled_today = 0
@@ -180,6 +212,7 @@ def build(state: dict, existing: list[dict], now: datetime,
             missing_provider_timestamps += 1
         if row["buffer_status"] in IMMEDIATE_PROBLEM_STATUSES:
             delivery_problems += 1
+            row["review_needed"] = "provider_not_sent_" + row["buffer_status"]
         if row["buffer_status"] == "sending":
             created = (
                 aware(row.get("buffer_created_at_utc"))
@@ -214,11 +247,12 @@ def build(state: dict, existing: list[dict], now: datetime,
     return {
         "schema_version": 1,
         "checked_at_utc": now.astimezone(timezone.utc).isoformat(),
-        "source": "buffer_recent_list_plus_saved_id_readonly",
+        "source": "buffer_saved_id_readonly_with_dated_observations",
         "scope": {
             "ledger_days": MAX_AUDIT_DAYS,
             "max_items": MAX_ITEMS,
             "automatic_lane": "article-picks-only",
+            "max_direct_reads_per_run": MAX_DIRECT_READS,
         },
         "today_jst": today.isoformat(),
         "observed": {
@@ -234,7 +268,8 @@ def build(state: dict, existing: list[dict], now: datetime,
         },
         "limitations": (
             "Buffer status is provider evidence, not independent X page verification. "
-            "Missing list entries are checked by saved Buffer ID. Draft/error/needs_approval "
+            "Only unresolved saved Buffer IDs are read. Reused observations keep their original timestamp; "
+            "sent evidence is historical, not current X-page existence. Draft/error/needs_approval "
             "require investigation. Sending is normal for up to 15 minutes, then requires review. "
             "Overdue scheduled posts also require investigation. Nothing is automatically retried. "
             "Missing provider timestamps are not assumed sent."
@@ -263,28 +298,52 @@ def main() -> int:
     if not token:
         print("No Buffer key; article delivery audit skipped without changing evidence.")
         return 0
-    org_id, channel_id = choose_x_channel(token)
-    if channel_id != config["channel_id"]:
-        raise RuntimeError("Connected X channel differs from pinned Veripsa account")
-    existing = list_existing(token, org_id, channel_id, include_due_at=True)
+    # IDs were accepted on the pinned channel by dispatch; reconcile also checks
+    # the exact ID and canonical article URL. Auditing them needs no account,
+    # channel discovery, or repeated full-history listing.
+    previous_path = HERE / "delivery.json"
+    previous = read_json(previous_path) if previous_path.is_file() else {}
+    retry_at = aware(previous.get("provider_retry_at_utc"))
+    if retry_at is not None and now < retry_at:
+        print("Buffer cooldown until", retry_at.isoformat(), "; no provider read.")
+        return 1
+    cached = reusable_observations(state, previous, now)
+    existing = []
     chosen = selected_entries(state, now)
-    known = {row.get("id") for row in existing if isinstance(row, dict)}
     lookup_errors = {}
-    for _slug, entry, _queued_at in chosen:
+    reads = 0
+    rate_limited = False
+    retry_at = None
+    for slug, entry, _queued_at in chosen:
         buffer_id = entry["buffer_id"]
-        if buffer_id in known:
+        if slug in cached:
             continue
+        if rate_limited or reads >= MAX_DIRECT_READS:
+            lookup_errors[buffer_id] = "deferred_rate_limit" if rate_limited else "deferred_read_budget"
+            continue
+        reads += 1
         try:
             direct = read_post_by_id(token, buffer_id)
         except (RuntimeError, ValueError) as exc:
             message = str(exc).strip().replace("\n", " ")
             lookup_errors[buffer_id] = "direct_id_lookup_failed:" + message[:160]
+            if "Buffer HTTP error: 429" in message:
+                print("Article audit rate limited; remaining reads deferred:", message)
+                rate_limited = True
+                for part in message.split("; "):
+                    if part.startswith("retry_at_utc="):
+                        retry_at = aware(part.split("=", 1)[1])
             continue
         if isinstance(direct, dict):
             existing.append(direct)
-            known.add(buffer_id)
-    report = build(state, existing, now, lookup_errors)
-    save(report)
+    if not reads:
+        print("No unresolved article delivery checks due; no Buffer read/write.")
+        return 0
+    report = build(state, existing, now, lookup_errors, cached)
+    report["provider_rate_limited"] = rate_limited
+    if retry_at is not None:
+        report["provider_retry_at_utc"] = retry_at.isoformat()
+    save(report, HERE / "delivery.json")
     print(
         "Article delivery audit:",
         report["observed"]["article_records_checked"],
@@ -294,7 +353,7 @@ def main() -> int:
         "sending;", report["observed"]["delivery_problems"],
         "delivery problems.",
     )
-    return 0
+    return 1 if rate_limited else 0
 
 
 if __name__ == "__main__":

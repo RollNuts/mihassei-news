@@ -75,11 +75,9 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
             with patch.object(m, "HERE", root), \
                  patch.object(m, "datetime", wraps=datetime) as clock, \
                  patch.dict(os.environ, {"BUFFER_API_KEY": "test-only", "X_AUDIT_TRIGGER_EVENT": "push"}, clear=True), \
-                 patch.object(m, "choose_x_channel") as channel, \
-                 patch.object(m, "list_existing") as existing:
+                 patch.object(m, "read_post_by_id") as existing:
                 clock.now.return_value = NOW.replace(hour=20)
                 self.assertEqual(m.main(), 0)
-                channel.assert_not_called()
                 existing.assert_not_called()
             self.assertEqual({p.name: p.read_bytes() for p in root.iterdir()}, before)
 
@@ -285,7 +283,7 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
             }))
             before = {p.name: p.read_bytes() for p in root.iterdir()}
             with patch.object(m, "HERE", root), patch.dict(os.environ, {}, clear=True), \
-                 patch.object(m, "choose_x_channel", side_effect=AssertionError("no Buffer read")):
+                 patch.object(m, "read_post_by_id", side_effect=AssertionError("no Buffer read")):
                 self.assertEqual(m.main(), 0)
             self.assertEqual({p.name: p.read_bytes() for p in root.iterdir()}, before)
 
@@ -295,6 +293,70 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
             report = m.build({"schema_version": 1, "queued": {}}, [], NOW)
             m.save(copy.deepcopy(report), path)
             self.assertEqual(json.loads(path.read_text()), report)
+
+    def test_confirmed_delivery_is_reused_without_refreshing_its_observation_time(self):
+        state = {"schema_version": 1, "queued": {"sent": entry("sent")}}
+        before = NOW - timedelta(hours=1)
+        previous = m.build(state, [{"id": "buf-sent", "status": "sent",
+            "text": m.canonical_url("sent"), "sentAt": before.isoformat()}], before)
+        cached = m.reusable_observations(state, previous, NOW)
+        self.assertEqual(cached["sent"]["provider_checked_at_utc"], before.astimezone(timezone.utc).isoformat())
+        report = m.build(state, [], NOW, cached_items=cached)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 1)
+        self.assertTrue(report["items"][0]["observation_reused"])
+        previous["items"][0]["buffer_id"] = "different-receipt"
+        self.assertEqual(m.reusable_observations(state, previous, NOW), {})
+
+    def test_cached_sending_is_still_flagged_when_it_becomes_overdue(self):
+        state = {"schema_version": 1, "queued": {"sending": entry("sending")}}
+        before = NOW - timedelta(minutes=10)
+        previous = m.build(state, [{"id": "buf-sending", "status": "sending",
+            "text": m.canonical_url("sending"),
+            "createdAt": (before - timedelta(minutes=10)).isoformat()}], before)
+        cached = m.reusable_observations(state, previous, NOW)
+        report = m.build(state, [], NOW, cached_items=cached)
+        self.assertEqual(report["observed"]["overdue_sending"], 1)
+        self.assertEqual(report["observed"]["delivery_in_progress"], 0)
+
+    def test_rate_limit_stops_remaining_reads_and_persists_backoff(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            state = {"schema_version": 1, "queued": {s: entry(s) for s in ("a", "b", "c")}}
+            (root / "state.json").write_text(json.dumps(state))
+            (root / "config.json").write_text(json.dumps({"schema_version": 1, "channel_id": "pinned"}))
+            retry = (NOW + timedelta(hours=2)).astimezone(timezone.utc).isoformat()
+            with patch.object(m, "HERE", root), patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(m, "read_post_by_id", side_effect=RuntimeError(
+                     "Buffer HTTP error: 429; retry_at_utc=" + retry)) as read:
+                clock.now.return_value = NOW
+                self.assertEqual(m.main(), 1)
+                read.assert_called_once()
+                report = json.loads((root / "delivery.json").read_text())
+                self.assertEqual(report["provider_retry_at_utc"], retry)
+                self.assertEqual(report["observed"]["unverified"], 3)
+                self.assertEqual(m.main(), 1)
+                read.assert_called_once()
+                self.assertEqual(json.loads((root / "state.json").read_text()), state)
+
+    def test_direct_read_budget_does_not_hide_deferred_records(self):
+        state = {"schema_version": 1, "queued": {s: entry(s) for s in ("a", "b", "c", "d")}}
+        previous = m.build(state, [], NOW, {"buf-a": "deferred_read_budget"})
+        cached = m.reusable_observations(state, previous, NOW)
+        self.assertNotIn("a", cached)
+
+    def test_rate_limit_headers_expose_only_safe_retry_data(self):
+        from email.message import Message
+        from publish import rate_limit_detail
+        headers = Message()
+        headers["Retry-After"] = "900"
+        headers["RateLimit"] = '"150-in-15min"; r=0; t=900'
+        headers["Authorization"] = "must-not-appear"
+        detail = rate_limit_detail(headers)
+        self.assertIn("retry_after_seconds=900", detail)
+        self.assertIn("retry_at_utc=", detail)
+        self.assertIn("remaining=0", detail)
+        self.assertNotIn("must-not-appear", detail)
 
 
 if __name__ == "__main__":
