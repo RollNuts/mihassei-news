@@ -8,7 +8,6 @@ on:
       - "social-bot/article-picks/state.json"
       - "social-bot/article-picks/test_buffer_budget.py"
       - "social-bot/buffer_budget.py"
-      - "social-bot/publish.py"
       - ".github/workflows/x-delivery-audit.yml"
   push:
     branches: [main]
