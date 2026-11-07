@@ -578,6 +578,21 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "christmas-done-for-you-family-decorates-boxes": {
+      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+      "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b",
+      "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained."
+    },
+    "black-friday-preparty-budget-gone": {
+      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "rejected_candidate_sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e",
+      "reason": "The JPEG depicts a generic storefront crowd without an empty wallet, purchased bags or the missed rice-cooker purchase. Large fabricated storefront lettering is prominent; keep the reviewed illustration."
+    },
+    "tori-no-ichi-kumade-blocks-store-entrance": {
+      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+      "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
+      "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story."
     }
   },
   "version": 1
