@@ -1,5 +1,63 @@
 [
   {
+    "slug": "surprise-birthday-organized-by-guest-of-honor",
+    "category": "暮らし",
+    "flash": "驚くタイミングも本人が指定",
+    "fiction_company": "宮原梓さんの友人グループ",
+    "art": "cards",
+    "fiction_at": "2031-11-07T15:47:43+09:00",
+    "published_at": "2026-11-07T15:47:43+09:00",
+    "title": "サプライズ誕生日、主役が店とケーキを手配　「今から驚く」と合図も送信",
+    "summary": "友人の恒例行事を壊したくない女性が、自分へのサプライズ誕生会をこっそり準備した。店もケーキも本人が予約し、当日は照明を消す合図まで自分で送った。",
+    "paragraphs": [
+      "宮原梓さんの誕生日には、友人3人が毎年サプライズ会を開いてきた。最初の年は本当に驚いた。だが5年目になると、友人から「今年もあの写真、撮ろうね」と先に連絡が来る。忙しい友人たちが店を決めかねているのを知り、梓さんは「もう普通に食事しよう」と言いかけてやめた。みんなが大切にしている恒例行事を、自分の一言で終わらせたくなかった。",
+      "梓さんは空いている店を調べ、個室とケーキを自分の名前で予約した。店員から「お祝いする方のお名前は」と聞かれ、少し声を落として自分の名前を答えた。友人には店の候補だけさりげなく伝えたが、ケーキを運ぶ順番や照明を暗くする時刻は本人が店と詰めた。友人から「土曜、空けておいてね」とメッセージが来ると、「えっ、何かあるの？」と知らないふりをした。",
+      "当日、友人たちが個室に入ったのを確かめた梓さんは、店の入口で店員に「今から入ります。照明は私の合図で」と送った。席に着くと電気が消え、友人3人が「サプライズ！」と叫ぶ。梓さんは両手で口元を覆い、予定どおり大きく驚いた。友人が撮った記念写真には、満面の驚き顔と、その膝の上で開いたままの進行表が一緒に写っていた。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "la belle vie株式会社／TREND LAB.（大人の誕生日意識調査）",
+      "published_at": "2026-10-29T15:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000193.000011237.html",
+      "topic": "2026年10月29日公表の大人の誕生日意識調査（2026年9月調査、有効回答3,278）。自分の誕生日を楽しみにしていない人は50.2%、もっとも嬉しいことは「おめでとう」の連絡が32.3%。サプライズ会の自作自演、宮原梓さん、友人3人と店のやりとりはこの調査にはなく、本紙の創作。サプライズの文化自体は2024年4月8日の株式会社しんげんによる成人200人調査でも経験者63%と報告（https://prtimes.jp/main/html/rd/p/000000084.000135215.html）。"
+    },
+    "scene_prompt": "A candid Japanese birthday dinner in a modest restaurant private room: a surprised adult woman at a small cake with candles, one hand hiding a folded event cue sheet on her lap under the table, three smiling friends leaning in with phones. Warm ordinary restaurant ceiling light, realistic faces, hands, cloth and cake, unposed documentary snapshot, no readable writing, no logos or watermark.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "誕生日",
+      "友人"
+    ],
+    "satire_tags": [
+      "気遣い",
+      "サプライズ"
+    ],
+    "x_tags": [
+      "誕生日サプライズ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "毎年の「驚かせたい」に応えているうちに、驚く方にも段取りが必要になったりする。",
+    "reader_interest": "relationships_social",
+    "reader_clarity": {
+      "who": "友人の恒例行事を壊したくない女性",
+      "action": "友人のために自分の誕生会の会場とケーキを手配し、照明を消す合図まで送った",
+      "oddity": "驚かせてもらう本人が進行係を務め、知らなかったふりをして祝われた"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "plausibility_basis": {
+      "present_signal": "大人の誕生日の気持ちは一様ではなく、SNSや友人間で毎年の祝いの演出が期待として残り得る。",
+      "continuation_force": "毎年写真を共有するほど前年の演出を下回りたくない友人と、相手をがっかりさせたくない主役の遠慮が続く。",
+      "future_result": "2031年、祝われる本人が店やケーキと驚く合図を取り仕切り、記念写真にその進行表が写り込む。"
+    },
+    "editorial_signature": {
+      "present": "毎年のサプライズや記念写真の恒例化で、祝う側も祝われる側も本音を言いづらくなる空気",
+      "target": "友人の善意と祝いの思い出を壊さないことを優先し、本人の自然な喜びを後回しにする",
+      "action": "自分が驚かされるための店とケーキを裏で手配し、友人と店員に驚くタイミングまで知らせる",
+      "outcome": "友人は成功したサプライズの写真を撮るが、主役の膝には本人が作った進行表が残る"
+    }
+  },
+  {
     "slug": "scolding-ai-one-line-summary-boss-eighteen-pages",
     "category": "社会",
     "flash": "業務指示一行、怒りの補足十八ページ",
