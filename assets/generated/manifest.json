@@ -496,6 +496,33 @@
       "seed": 8156222012987851626,
       "sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
     },
+    "unsold-coat-storage-fees-exceed-sale": {
+      "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
+      "bytes": 117616,
+      "generated_at": "2026-11-07T22:44:20.253171+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 8151497094600701685,
+      "sha256": "896c6fd6f728d00a86ed0f8451bc5b969c94b5ba4768eb7ddb93e1ff049fd5b3"
+    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "bytes": 98358,
