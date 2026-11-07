@@ -33,7 +33,9 @@ class SerialReadingTests(unittest.TestCase):
         latest = fiction["episodes"][-1]
         self.assertIn('href="/serials/case-files/'+latest["slug"]+'/">' +
                       f'最新の第{latest["number"]}話へ', home)
-        self.assertIn('href="/serials/market-lab/power-grid-after-ai-01/">最新の第1回を読む', home)
+        market_latest = market["episodes"][-1]
+        self.assertIn('href="/serials/market-lab/' + market_latest["slug"] + '/">' +
+                      f'最新の第{market_latest["number"]}回を読む', home)
         series = render_series_page(fiction, identity_layout)
         self.assertIn('class="serial-start-link" href="/serials/case-files/victim-not-yet-dead-01/"', series)
         self.assertIn(f'公開済み {len(fiction["episodes"])}話', series)
