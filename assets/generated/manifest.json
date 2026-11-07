@@ -402,6 +402,16 @@
       "seed": 5748070834390824869,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
+    "surprise-birthday-organized-by-guest-of-honor": {
+      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+      "bytes": 107883,
+      "generated_at": "2026-11-07T06:56:00.257463+00:00",
+      "model": "SimianLuo/LCM_Dreamshaper_v7",
+      "origin": "github-cpu-lcm",
+      "prompt_version": 3,
+      "seed": 8117721195727882487,
+      "sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
+    },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
       "bytes": 109997,
