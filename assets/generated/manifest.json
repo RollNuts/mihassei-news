@@ -632,6 +632,11 @@
       "reason": "The JPEG depicts a generic storefront crowd without an empty wallet, purchased bags or the missed rice-cooker purchase. Large fabricated storefront lettering is prominent; keep the reviewed illustration.",
       "rejected_candidate_sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
     },
+    "cafe-regular-dislikes-usual-cinnamon-latte": {
+      "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
+      "reason": "現本文と実JPEGを照合。木のカウンター・ニット・自然光は写真らしいが、大きく笑う男性が一人でカップを持つ汎用的な場面で、店主から無料券と苦手な一杯を受け取る気まずさが見えない。右上の黒板の擬似文字も目立つ。本文に合う専用SVGへ切り替える。",
+      "rejected_candidate_sha256": "2a6bd82fa70e8ad8518c37b54e5520670981e18b81eb38aa850f946ed15494d1"
+    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
@@ -662,6 +667,11 @@
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
       "reason": "実JPEGと現本文を照合。箱棚の間を歩く人物がいる普通の倉庫で、加湿器が判別できず、通路も開いている。返品箱で新品を置けない状況や星5評価との対比が伝わらず不採用。本文に合う既存専用SVGを維持し、実写モデルで小道具を手前に絞って再試験する。",
       "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
+    },
+    "free-play-event-parents-timetable-children-waiting": {
+      "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
+      "reason": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。",
+      "rejected_candidate_sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9"
     },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",

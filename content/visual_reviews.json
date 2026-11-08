@@ -279,6 +279,27 @@
       "image_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
       "reviewed_at": "2026-11-07T15:25:58.362939+00:00",
       "note": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。"
+    },
+    "unsold-coat-storage-fees-exceed-sale": {
+      "decision": "accepted",
+      "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
+      "image_sha256": "896c6fd6f728d00a86ed0f8451bc5b969c94b5ba4768eb7ddb93e1ff049fd5b3",
+      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
+      "note": "現本文と実JPEGを照合。貸し収納の区画に冬用コートが掛かり、棚と書類が残る。コートの中綿・縫い目・襟、紙、棚、室内光と影は自然で、長期保管中のコートと書類という主要な物と場所が一致する。女性が箱詰めする行為、空のプラスチックケース、正確な保管料を描いたとは扱わず、売却前の保管場面として採用する。"
+    },
+    "cafe-regular-dislikes-usual-cinnamon-latte": {
+      "decision": "rejected",
+      "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
+      "image_sha256": "2a6bd82fa70e8ad8518c37b54e5520670981e18b81eb38aa850f946ed15494d1",
+      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
+      "note": "現本文と実JPEGを照合。木のカウンター・ニット・自然光は写真らしいが、大きく笑う男性が一人でカップを持つ汎用的な場面で、店主から無料券と苦手な一杯を受け取る気まずさが見えない。右上の黒板の擬似文字も目立つ。本文に合う専用SVGへ切り替える。"
+    },
+    "free-play-event-parents-timetable-children-waiting": {
+      "decision": "rejected",
+      "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
+      "image_sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9",
+      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
+      "note": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。"
     }
   },
   "version": 1
