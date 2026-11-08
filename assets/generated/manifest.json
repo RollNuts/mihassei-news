@@ -61,9 +61,9 @@
       "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
-      "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
-      "bytes": 123251,
-      "generated_at": "2026-11-08T04:48:34.080986+00:00",
+      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+      "bytes": 123647,
+      "generated_at": "2026-11-08T12:41:43.239279+00:00",
       "inference": {
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
@@ -84,8 +84,8 @@
       "model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "origin": "github-cpu-sd15",
       "prompt_version": 3,
-      "seed": 9188599765851707791,
-      "sha256": "2a6bd82fa70e8ad8518c37b54e5520670981e18b81eb38aa850f946ed15494d1"
+      "seed": 801802259504878659,
+      "sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86"
     },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
@@ -664,11 +664,6 @@
       "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
       "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
-    "cafe-regular-dislikes-usual-cinnamon-latte": {
-      "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
-      "reason": "現本文と実JPEGを照合。木のカウンター・ニット・自然光は写真らしいが、大きく笑う男性が一人でカップを持つ汎用的な場面で、店主から無料券と苦手な一杯を受け取る気まずさが見えない。右上の黒板の擬似文字も目立つ。本文に合う専用SVGへ切り替える。",
-      "rejected_candidate_sha256": "2a6bd82fa70e8ad8518c37b54e5520670981e18b81eb38aa850f946ed15494d1"
-    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
@@ -703,6 +698,14 @@
       "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
       "reason": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。",
       "rejected_candidate_sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9"
+    },
+    "fridge-checkin-five-years-only-opening-times": {
+      "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
+      "cpu_scene_prompt": "Close-up of a white refrigerator door covered with yellow paper notes beside its large handle. A black smartphone lies face-down on the kitchen counter in the foreground. Daylight.",
+      "reason": "Actual review of short prop-first retry 42467801767: the white refrigerator and handle look photographic, but the paper is a single folded strip instead of several personal notes, and no smartphone or counter is visible. The article-specific contrast is still absent. Keep the verified SVG and move to a different story instead of repeating this scene today.",
+      "rejected_candidate_sha256": "54a265ac0c075491e1e2b07087fe405ab4b5bdc6bd121bf7736d8ba04de34335",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42467801767",
+      "reviewed_at": "2026-11-08T09:46:08.402253+00:00"
     },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
@@ -773,14 +776,6 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
-    },
-    "fridge-checkin-five-years-only-opening-times": {
-      "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
-      "reason": "Actual review of short prop-first retry 42467801767: the white refrigerator and handle look photographic, but the paper is a single folded strip instead of several personal notes, and no smartphone or counter is visible. The article-specific contrast is still absent. Keep the verified SVG and move to a different story instead of repeating this scene today.",
-      "rejected_candidate_sha256": "54a265ac0c075491e1e2b07087fe405ab4b5bdc6bd121bf7736d8ba04de34335",
-      "reviewed_at": "2026-11-08T09:46:08.402253+00:00",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42467801767",
-      "cpu_scene_prompt": "Close-up of a white refrigerator door covered with yellow paper notes beside its large handle. A black smartphone lies face-down on the kitchen counter in the foreground. Daylight."
     }
   },
   "version": 1
