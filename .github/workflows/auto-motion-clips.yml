@@ -67,10 +67,10 @@ jobs:
           health = json.load(open("/tmp/newsroom-health.json", encoding="utf-8"))
           status = health["status"]
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-              summary.write("### Newsroom freshness (read-only)\\n\\n"
-                            "Status: \\u0060" + status + "\\u0060\\n\\n"
-                            "Newest on-air article: " + str(health.get("latest_video_article_published_at")) + "\\n\\n"
-                            "Selected awaiting video: " + str(health.get("selected_pending", 0)) + "\\n\\n")
+              summary.write("### Newsroom freshness (read-only)\n\n"
+                            "Status: \u0060" + status + "\u0060\n\n"
+                            "Newest on-air article: " + str(health.get("latest_video_article_published_at")) + "\n\n"
+                            "Selected awaiting video: " + str(health.get("selected_pending", 0)) + "\n\n")
           if status in ("selection_needed", "awaiting_reviewed_source"):
               print("::warning title=Newsroom stale::On-air articles are stale; editorial selection or reviewed source required. See newsroom health summary.")
           PY
