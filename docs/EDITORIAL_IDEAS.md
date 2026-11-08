@@ -94,6 +94,8 @@
 
 ## 見送り・引き継ぎ
 
+- **11/08 13:30 新規採用｜苦手な「いつもの」カフェ常連客：** 採用済み・2026-11-08 13:31 JST／本番記事：https://veripsa.com/articles/cafe-regular-dislikes-usual-cinnamon-latte/ 。注文の取り違えだけでなく、覚えてもらえた居場所を守りたくて5年間訂正せず、苦手な一杯の生涯無料券を贈られる結末。今回の15:30枠では同型の気まずさ・無料券を避ける。
+
 - **11/07 15:30 新規採用｜本人が進行係を務めるサプライズ誕生日：** 採用済み・2026-11-07 15:47 JST／本番記事：https://veripsa.com/articles/surprise-birthday-organized-by-guest-of-honor/ 。既刊の派生ではなく、善意を壊せない遠慮が5年間の恒例行事を自作自演へ変える角度で採用。
 
 - **11/07 11:30 新規採用｜返品客の星5評価と加湿器の返品：** 採用済み・本番記事：https://veripsa.com/articles/five-star-reviews-of-returned-humidifiers/ 。
