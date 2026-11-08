@@ -700,6 +700,14 @@
       "trial_article_sha256": "16a4591be35652350d9e83445d66558ddefa85be9781634736b8b2f60d6c756e",
       "trial_scene_prompt": "A solitary Japanese film director carries plain grocery bags past a film camera on a tripod on an empty historical film-set lane. Blank wooden walls, daylight, no storefront signs or other people."
     },
+    "five-star-reviews-of-returned-humidifiers": {
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "reason": "2026-11-08 photo-quality re-review of the current LCM JPEG: uniformly hazy synthetic appearance, flat/indistinct people and package marks rather than a believable candid press photo; only a generic warehouse is depicted, without recognizable humidifiers, star-five review signage or returned-versus-new units. Revoke the earlier permissive supporting-photo approval and keep the verified story-specific SVG. The previous prop-first preview was also rejected; no old JPEG or seed was changed.",
+      "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
+      "reviewed_at": "2026-11-08T13:37:17.264Z",
+      "previous_rejected_trial_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
+      "previous_review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42468601719"
+    },
     "free-play-event-parents-timetable-children-waiting": {
       "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
       "reason": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。",
