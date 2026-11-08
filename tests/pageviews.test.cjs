@@ -242,9 +242,9 @@ test('public snapshot can rank the full archive without returning every article 
 
   const snapshot=(await f.getPublic('story-a',true)).data;
   assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.last7Days)),[
-    {article:'story-b',pageViews:4},
-    {article:'story-a',pageViews:2},
-    {article:'story-c',pageViews:1}
+    {article:'story-b',pageViews:4,todayPageViews:4},
+    {article:'story-a',pageViews:2,todayPageViews:2},
+    {article:'story-c',pageViews:1,todayPageViews:1}
   ]);
   assert.deepEqual(Object.keys(snapshot.articles),['story-a'],
     'ranking does not require shipping metrics for every published story');
