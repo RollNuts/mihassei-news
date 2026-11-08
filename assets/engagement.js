@@ -336,8 +336,7 @@
       .filter(node=>!node.closest?.("[hidden]"))
       .map(node=>node.dataset.articlePv);
     return [...new Set([
-      article,...visible,...popularCandidates.map(x=>x.slug),
-      ...buttons.map(b=>b.dataset.likeSlug)
+      article,...visible,...buttons.map(b=>b.dataset.likeSlug)
     ])].filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug));
   }
 
@@ -425,6 +424,7 @@
         .filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
         .sort().slice(0,20);
       if(slugs.length)params.set("articles",slugs.join(","));
+      if(popularSection)params.set("popular","1");
     }else if(action==="share")params.set("response","ack");
     else if(action==="like" || action==="vote")params.set("response","action");
     const endpoint="/api/engagement"+(params.size?"?"+params.toString():"");
@@ -451,28 +451,45 @@
     const windowStart=Number.isFinite(todayStamp)
       ? new Date(todayStamp-6*86400000).toISOString().slice(0,10) : "";
     const measured=value=>Number.isSafeInteger(value) && value>=0;
-    // Every candidate needs an observed value in the same recent window.
-    // Missing batches or pre-PV history cannot silently become zeros, and
-    // legacy unique-browser counts cannot stand in for page displays.
     if(!pvHealthy || !data.pageViewTracking?.startedAtUtc || !week ||
        week.startDateJst!==windowStart || week.endDateJst!==date ||
        !measured(week.pageViews) || typeof week.complete!=="boolean" ||
-       !Number.isInteger(week.measuredDays) || week.measuredDays<1 || week.measuredDays>7 ||
-       popularCandidates.some(candidate=>{
-         const metric=data.articles?.[candidate.slug];
-         return !metric || !measured(metric.last7DaysPageViews) ||
-           !measured(metric.todayPageViews) || metric.todayPageViews>metric.last7DaysPageViews;
-       })){
+       !Number.isInteger(week.measuredDays) || week.measuredDays<1 || week.measuredDays>7){
       hidePopular();
       return;
     }
-    const ranked=popularCandidates.map((candidate,order)=>({
-      ...candidate,order,
-      pageViews:data.articles[candidate.slug].last7DaysPageViews,
-      todayPageViews:data.articles[candidate.slug].todayPageViews
-    })).filter(x=>x.pageViews>0)
-      .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
-      .slice(0,3);
+    const serverRows=data.topArticles?.last7Days;
+    let ranked=[];
+    if(Array.isArray(serverRows)){
+      const candidates=new Map(popularCandidates.map((candidate,order)=>[candidate.slug,{...candidate,order}]));
+      const seen=new Set();
+      for(const row of serverRows){
+        if(!row || typeof row.article!=="string" || !measured(row.pageViews) ||
+           row.pageViews<=0 || seen.has(row.article))continue;
+        seen.add(row.article);
+        const candidate=candidates.get(row.article);
+        if(candidate)ranked.push({...candidate,pageViews:row.pageViews,todayPageViews:0});
+        if(ranked.length>=3)break;
+      }
+    }else{
+      // Compatibility fallback while an older Worker revision is still serving:
+      // only render a ranking if all candidate metrics were actually returned.
+      if(popularCandidates.some(candidate=>{
+        const metric=data.articles?.[candidate.slug];
+        return !metric || !measured(metric.last7DaysPageViews) ||
+          !measured(metric.todayPageViews) || metric.todayPageViews>metric.last7DaysPageViews;
+      })){
+        hidePopular();
+        return;
+      }
+      ranked=popularCandidates.map((candidate,order)=>({
+        ...candidate,order,
+        pageViews:data.articles[candidate.slug].last7DaysPageViews,
+        todayPageViews:data.articles[candidate.slug].todayPageViews
+      })).filter(x=>x.pageViews>0)
+        .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
+        .slice(0,3);
+    }
     if(!ranked.length){
       hidePopular();
       return;
@@ -700,6 +717,7 @@
           const params=new URLSearchParams();
           params.set("view","public");
           if(batch.length)params.set("articles",batch.join(","));
+          if(popularSection)params.set("popular","1");
           const res=await fetch("/api/engagement?"+params.toString(),{
             cache:"no-store",credentials:"same-origin"
           });
