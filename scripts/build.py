@@ -1746,6 +1746,8 @@ def about():
 <p><a href="/archive/" style="text-decoration:underline">記事一覧 ↗</a>　<a href="/serials/" style="text-decoration:underline">連載 ↗</a></p>
 <p><a href="/editorial/" style="text-decoration:underline">編集方針・お問い合わせ ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
+<h2>制作とコード</h2>
+<p><a href="https://github.com/RollNuts/mihassei-news" target="_blank" rel="noopener noreferrer external" style="text-decoration:underline">GitHubで公開コードを見る・Starで保存 ↗</a></p>
 </div></div>'''
     return layout("本紙について","今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞。","/about/",content,"about")
 
