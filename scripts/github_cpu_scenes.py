@@ -258,8 +258,13 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
     return prompt
 
 
-def backfill_run_allowed(runs: list[dict], current_run_id: int, *, now: datetime | None = None) -> bool:
+def backfill_run_allowed(runs: list[dict], current_run_id: int, *, current_run_attempt: int,
+                         now: datetime | None = None) -> bool:
     """The first attempted backfill workflow run per JST day owns that quota."""
+    if type(current_run_attempt) is not int or current_run_attempt < 1:
+        raise ValueError("Backfill requires a positive integer workflow attempt")
+    if current_run_attempt != 1:
+        return False
     if not isinstance(runs, list) or type(current_run_id) is not int:
         raise ValueError("Invalid backfill workflow run inventory")
     jst = timezone(timedelta(hours=9))
