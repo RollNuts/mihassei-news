@@ -20,7 +20,7 @@
       "publisher": "MANTANWEB",
       "published_at": "2026-11-08T05:00:00+09:00",
       "url": "https://mantan-web.jp/article/20261107dog00m200024000a.html",
-      "topic": "2026年11月8日の報道で、日本テレビ系「ベストアーティスト2026」は11月28日に計5時間の生放送を予定し、出演アーティストは約40組、最初の発表は13組と確認された。2031年の番組「年末音の便り」、40日間の分割発表、スポンサーの評価指標、登場人物と視聴者の行動は創作であり、実在番組の運用や評価を述べたものではない。"
+      "topic": "2026年11月8日の報道で、日本テレビ系「ベストアーティスト2026」は11月28日に計5時間の生放送を予定し、出演予定約40組のうち第1弾として13組を発表した。2031年の番組「年末音の便り」、40日間の分割発表、スポンサーの評価指標、登場人物と視聴者の行動は創作であり、実在番組の運用や評価を述べたものではない。"
     },
     "scene_prompt": "A two-panel editorial scene: on the left, forty small calendar squares marked one per day for a long sequence of performer announcements; on the right, a small music television stage with singers performing while an office producer points to a fresh blank forty-day calendar with only the first square circled. Simple studio, calendars and people readable without logos or artist likenesses.",
     "visual_strategy": "illustration",
@@ -41,7 +41,7 @@
     "x_share_lead": "歌っている最中も、スマホにはまだ発表の続きを待つ指が残っていた。",
     "reader_interest": "fandom_entertainment",
     "reader_clarity": {
-      "who": "年末音楽特番の広報担当と、出演者発表を追いかける視聴者",
+      "who": "歌手40組を40日かけて発表した音楽特番",
       "action": "出演歌手40組を40日に分けて発表し、本番当日にも新たな発表を待つ",
       "oddity": "歌を聴くための番組なのに、宣伝の更新を追うことが番組そのものより大切になっている"
     },
@@ -79,8 +79,8 @@
       "shared_behavior": "次に誰が発表されるかが気になって、発表の予想と更新を繰り返してしまう",
       "satire_gap": "歌を聴くための特番が、歌よりも出演者の発表回数と話題継続を重視してしまう",
       "x_discovery_term": "ベストアーティスト",
-      "real_detail": "約40組の出演予定のうち第1弾13組を発表",
-      "unique_hook": "約40組を段階的に公表する現実の出発点を、40組を40日に分ける告知行為へ延長したとき初めて笑いが成立する"
+      "real_detail": "出演予定約40組のうち第1弾として13組を発表",
+      "unique_hook": "出演予定約40組のうち第1弾として13組を発表した実際の段階的な告知を、40組を40日に分ける2031年の別番組に延長するからこそ、宣伝が音楽を食う皮肉になる"
     }
   },
   {
