@@ -172,7 +172,7 @@ test('old API numbers and failed requests cannot become plausible-looking PV',as
   assert.equal(legacy.badges[0].count.textContent,'—');
   assert.match(legacy.note.textContent,/取得できません/);
   const page=await runPage();
-  page.failGets();page.advance(180000);page.intervals[0].callback();await settle();
+  page.failGets();page.advance(600000);page.intervals[0].callback();await settle();
   assert.equal(page.today.textContent,'24');
   assert.match(page.note.textContent,/通信回復待ち/);
   assert.equal(page.visits().length,1);
@@ -190,7 +190,7 @@ test('initial tracking without observations remains unmeasured, and covered week
   complete.pageViewTracking.startedAtUtc='2026-10-28T00:00:00Z';
   complete.yesterday.pageViews=50;complete.yesterday.pageViewsCoverage='complete';
   complete.last7Days.pageViews=500;complete.last7Days.complete=true;complete.last7Days.measuredDays=7;
-  page.setSnapshot(complete);page.advance(180000);page.intervals[0].callback();await settle();
+  page.setSnapshot(complete);page.advance(600000);page.intervals[0].callback();await settle();
   assert.equal(page.period.textContent,'直近7日');assert.equal(page.week.textContent,'500');
 });
 
@@ -204,7 +204,7 @@ test('only visible document displays count; focus, visibility returns and refres
   assert.equal(page.visits()[0].body.sessionChannel,'unattributed');
   const id=page.visits()[0].body.viewId;
   const sessionId=page.visits()[0].body.sessionId;
-  page.document.visibilityState='hidden';page.advance(180000);page.intervals[0].callback();await settle();
+  page.document.visibilityState='hidden';page.advance(600000);page.intervals[0].callback();await settle();
   assert.equal(page.gets().length,0,'successful visit POST already supplied the current metrics');
   page.document.visibilityState='visible';page.fire('document','visibilitychange');await settle();
   page.advance(50000);page.fire('window','focus');await settle();
@@ -217,7 +217,7 @@ test('only visible document displays count; focus, visibility returns and refres
   assert.notEqual(page.visits()[1].body.viewId,id);
   assert.equal(page.visits()[1].body.sessionId,sessionId,
     'BFCache redisplay inside 30 minutes stays in the same session');
-  const reload=await runPage({storage:page.storage,clock:Date.UTC(2026,10,4,1)+250000});
+  const reload=await runPage({storage:page.storage,clock:Date.UTC(2026,10,4,1)+700000});
   assert.equal(reload.visits()[0].body.clientId,page.visits()[0].body.clientId);
   assert.notEqual(reload.visits()[0].body.viewId,id);
   assert.equal(reload.visits()[0].body.sessionId,sessionId,

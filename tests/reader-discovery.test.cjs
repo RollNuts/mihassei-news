@@ -256,11 +256,11 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   assert.equal(yesterdayNumber.textContent,'17');
   assert.equal(yesterdayStat.hidden,false);
   assert.equal(widget.hidden,false);
-  assert.match(note.textContent,/3分ごと更新/);
+  assert.match(note.textContent,/10分ごと更新/);
   assert.equal(timers.length,1);
-  assert.equal(timers[0].delay,180000,'bounded free-tier polling');
+  assert.equal(timers[0].delay,600000,'bounded free-tier polling');
 
-  clock+=180000;
+  clock+=600000;
   timers[0].callback();
   await settle();
   assert.deepEqual(requests,['POST','GET','GET']);
@@ -268,7 +268,7 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   assert.equal(reads.textContent,'36');
 
   document.visibilityState='hidden';
-  clock+=180000;
+  clock+=600000;
   timers[0].callback();
   await settle();
   assert.equal(requests.filter(x=>x==='GET').length,2,'hidden tabs make no API requests');
@@ -281,13 +281,13 @@ test('real browser counters refresh while visible, resume on focus and preserve 
   await settle();
   assert.equal(requests.filter(x=>x==='GET').length,3,'focus is throttled');
 
-  clock+=180000;
+  clock+=600000;
   timers[0].callback();
   await settle();
   assert.equal(number.textContent,'27','do not show a fake zero on API failure');
   assert.match(note.textContent,/通信回復待ち/);
 
-  clock+=180000;
+  clock+=600000;
   timers[0].callback();
   await settle();
   assert.equal(number.textContent,'28');
