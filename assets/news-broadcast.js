@@ -195,7 +195,7 @@
       play();
     };
     video.addEventListener('pause', () => {
-      if (automaticPause || switchingSource) automaticPause = false;
+      if (automaticPause || switchingSource || video.ended) automaticPause = false;
       else if (video.paused) readerPaused = true;
     });
     video.addEventListener('play', () => {
@@ -289,7 +289,14 @@
         // continues only after this explicit click, with the new story at 0s.
         if (!initial && resume && inView && !document.hidden) play();
       };
-      // A broadcast advances to the next story instead of repeating one clip.\n      // Respect an explicit pause and accessibility/data-saving preferences.\n      if (items.length > 1) video.addEventListener('ended', () => {\n        if (readerPaused || document.hidden || !inView || !mayAutoplay) return;\n        choose((selected + 1) % items.length);\n        play();\n      });\n      const seen = readSeen();
+      // Advance only after a completed preview; never override a reader's pause.
+      if (items.length > 1) video.addEventListener('ended', () => {
+        if (readerPaused || document.hidden || !inView || !mayAutoplay
+            || autoplayBlocked || video.hidden) return;
+        choose((selected + 1) % items.length);
+        play();
+      });
+      const seen = readSeen();
       let preferred = items.findIndex(item => !seen.includes(item.key));
       if (preferred < 0) preferred = items.reduce((oldest, item, index) =>
         seen.indexOf(item.key) > seen.indexOf(items[oldest].key) ? index : oldest, 0);
