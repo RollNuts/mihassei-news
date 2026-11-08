@@ -1,5 +1,66 @@
 [
   {
+    "slug": "cafe-regular-dislikes-usual-cinnamon-latte",
+    "category": "生活",
+    "flash": "苦手な「いつもの」が看板メニューに",
+    "fiction_company": "喫茶店「余白珈琲」",
+    "art": "cards",
+    "fiction_at": "2031-11-08T13:31:00+09:00",
+    "published_at": "2026-11-08T13:31:27+09:00",
+    "title": "苦手な「いつもの」を5年注文した常連客　カフェが本人の名を付けて看板メニューに",
+    "summary": "初日に間違って出てきたシナモンラテを、店員が「いつもの」と覚えてくれた。常連客は今さら苦手だと言えず5年間注文し続け、店は本人の名を付けて看板商品に。記念に贈られたのは、その一杯だけの生涯無料券だった。",
+    "paragraphs": [
+      "2031年11月8日、駅前の喫茶店「余白珈琲」が開店5周年を迎えた。記念の新メニューは「吉岡さんのいつもの」。週に2回通う会社員、吉岡浩二さんの名前を付けたシナモンラテだ。だが吉岡さんは、シナモンの香りがどうにも苦手だった。",
+      "始まりは2026年の開店初日。慣れない店員が別の客のシナモンラテを差し出した。後ろに客が並び、店員も緊張していたので、吉岡さんは「それで大丈夫です」と受け取った。翌週、同じ店員が顔を見て「覚えてます、いつものシナモンラテですね」と笑った。転勤したばかりで知り合いの少ない吉岡さんには、顔を覚えてもらえたことがうれしかった。ほかの飲み物を頼もうとして、結局「はい」と答えた。",
+      "半年後には店員同士が「シナモンラテの吉岡さん」と呼ぶようになった。五年の間に店で知り合った人も増えた。「実は最初の一杯が間違いで」と言えば済む。それでも、自分のためにカップを用意する店員を見ていると、この小さな居場所を壊す気がした。吉岡さんは熱いふりをして少し顔をしかめ、毎回きちんと飲み干した。",
+      "店長は5周年の新商品発表で「五年間、変わらず愛してくださった味です」と紹介した。店頭には「吉岡さんのいつもの」と書かれた札が掛かり、試飲した客から注文が入った。拍手の中、吉岡さんには本人限定の生涯無料券が渡された。勇気を出して「今日は紅茶を」と頼むと、店長は笑顔で「もちろん。でも吉岡さんのラテなら、これから何杯でも無料ですよ」とカップを差し出した。吉岡さんは無料券をポケットにしまい、またシナモンの香りを吸い込んだ。"
+    ],
+    "source": {
+      "kind": "調査",
+      "publisher": "株式会社クロス・マーケティング",
+      "published_at": "2026-06-10T00:00:00+09:00",
+      "url": "https://www.cross-m.co.jp/news/release/20260610",
+      "topic": "2026年6月10日公表の「コーヒーに関する調査（2026年）」はコーヒー好きが全体の66％で、飲み方・好みなどを尋ねたもの。店の常連関係や注文の取り違えを扱った調査ではない。余白珈琲・吉岡さん・5年間の注文・本人名の新メニューと無料券は2031年の創作。"
+    },
+    "scene_prompt": "Candid photorealistic Japanese neighborhood coffee shop on a calm afternoon, natural window light: an ordinary middle-aged male regular quietly holding a steaming cinnamon latte with an awkward polite smile while a friendly cafe owner stands nearby offering a small gift coupon; one handwritten menu card on the counter with no legible text, cinnamon shaker and an untouched cup of black tea visible behind the counter; everyday documentary photograph, subdued colors, natural skin and materials, accurate hands, no poster lighting, no slogans, no brand logos, no readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "カフェ",
+      "常連客",
+      "コーヒー"
+    ],
+    "satire_tags": [
+      "気まずさ",
+      "思いやりのすれ違い"
+    ],
+    "x_tags": [
+      "常連客"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「いつものですね」と覚えてもらうのはうれしい。でも、その一杯が苦手だったら、言い直すタイミングはどんどん遠ざかる。",
+    "reader_interest": "food_travel_shopping",
+    "reader_clarity": {
+      "who": "苦手な飲み物を出されても言い直せないカフェの常連客",
+      "action": "5年間シナモンラテを注文し続け、店から本人の名を付けた看板商品にされる",
+      "oddity": "親切に覚えてくれた店員をがっかりさせたくなくて、苦手な味を自分の定番として引き受け続けた"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "observational",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "店員に顔と好みを覚えてもらう喜びと、いったん生まれた『いつもの』を訂正しづらい気まずさ",
+      "target": "客が常連としての居場所を守ろうとするあまり、自分の本当の好みを言えなくなる",
+      "action": "苦手なシナモンラテを5年間訂正せずに飲み続け、店の看板商品にまでしてしまう",
+      "outcome": "本人だけが飲みたいと思っていないメニューの生涯無料券を贈られ、その場でも同じ一杯を受け取る"
+    },
+    "behavior_basis": {
+      "motive": "転勤先で顔を覚えてもらえたうれしさと、5年間築いた店での居場所を失いたくない気持ち",
+      "ordinary_alternative": "最初の注文間違いを訂正し、好きな紅茶に変更する",
+      "why_not": "最初は行列と店員への遠慮、次は顔を覚えてくれた喜び、その後は常連関係を壊したくない気まずさが増えた",
+      "evidence_quote": "転勤したばかりで知り合いの少ない吉岡さんには、顔を覚えてもらえたことがうれしかった。"
+    }
+  },
+  {
     "slug": "employee-survey-free-text-none-299",
     "category": "社会",
     "flash": "本音を集めたら「特になし」299件",
