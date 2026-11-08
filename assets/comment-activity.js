@@ -72,7 +72,7 @@
   }catch(_){}
   if(cached){apply(cached);return;}
 
-  (async()=>{
+  async function load(){
     try{
       const response=await fetch('/api/comments/summary?articles='+encodeURIComponent(slugs.join(',')),
         {cache:'no-store',credentials:'same-origin'});
@@ -85,8 +85,22 @@
         if(!Number.isInteger(n) || n<0)return;
         counts[slug]=n;
       }
-      try{sessionStorage.setItem(cacheKey,JSON.stringify({expires:Date.now()+90000,counts}));}catch(_){}
+      try{sessionStorage.setItem(cacheKey,JSON.stringify({expires:Date.now()+600000,counts}));}catch(_){}
       apply(counts);
     }catch(_){/* The newspaper remains usable without an API response. */}
-  })();
+  }
+
+  // Homepage comment activity is secondary content. Do not spend a Worker/DO
+  // read until the reader approaches that section; cached counts remain instant.
+  if(discussions && 'IntersectionObserver' in window){
+    const observer=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting)){
+        observer.disconnect();
+        void load();
+      }
+    },{rootMargin:'600px'});
+    observer.observe(discussions);
+  }else{
+    void load();
+  }
 })();
