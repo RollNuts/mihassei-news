@@ -147,6 +147,28 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("PROCEDURAL_PREMISE_LOOP", labels)
         self.assertEqual(articles, original, "Advisory quality checks must never rewrite publications")
 
+    def test_many_five_year_headlines_warn_about_thin_premises_without_blocking(self):
+        titles = [
+            "5年間コートを売れず保管した店",
+            "配達の新システムが普及した街",
+            "冷蔵庫の通知を5年確認した家族",
+            "映画館の新しい上映方法",
+            "五年間いつもの味を変えない店",
+            "自由に遊べる校庭が話題に",
+        ]
+        articles = [sample(i, title=title) for i, title in enumerate(titles)]
+        original = copy.deepcopy(articles)
+        labels = {entry[0] for entry in analyze(articles)}
+        self.assertIn("FIVE_YEAR_HEADLINE_RUN", labels)
+        self.assertIn("5年経過の見出し", "\\n".join(next_slot_brief(articles)))
+        self.assertEqual(articles, original)
+
+        articles[4]["title"] = "新しい街の喫茶店"
+        self.assertNotIn(
+            "FIVE_YEAR_HEADLINE_RUN",
+            {entry[0] for entry in analyze(articles)},
+        )
+
     def test_repeated_dialogue_endings_prompt_a_different_kind_of_punchline(self):
         endings = (
             "父は額を指して答えた。「それは節約額に表示されないんだよ。何も買わない方が得だけどね」",
