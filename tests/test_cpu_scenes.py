@@ -719,20 +719,49 @@ class CpuBackfillTests(unittest.TestCase):
             {"id": 12, "display_title": "Free CPU staged-news photos", "created_at": "2026-11-08T01:00:00Z"},
             {"id": 13, "display_title": "Photo backfill: queued", "created_at": "2026-11-08T02:00:00Z", "status": "queued"},
         ]
-        self.assertTrue(cpu.backfill_run_allowed(runs, 11, now=now))
-        self.assertFalse(cpu.backfill_run_allowed(runs, 13, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 11, current_run_attempt=1, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
         with self.assertRaises(ValueError):
-            cpu.backfill_run_allowed(runs, 12, now=now)
+            cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now)
         for malformed in ({"id": 14, "display_title": "Photo backfill: broken"},
                           {"id": 14, "display_title": "Photo backfill: broken", "created_at": "bad time"}):
             with self.assertRaises(ValueError):
-                cpu.backfill_run_allowed([*runs, malformed], 13, now=now)
+                cpu.backfill_run_allowed([*runs, malformed], 13, current_run_attempt=1, now=now)
+
+    def test_same_run_id_cannot_spend_another_backfill_attempt(self):
+        now = datetime(2026, 11, 8, 3, tzinfo=timezone.utc)
+        runs = [{"id": 11, "display_title": "Photo backfill: first",
+                 "created_at": "2026-11-08T01:00:00Z"}]
+        self.assertTrue(cpu.backfill_run_allowed(runs, 11, current_run_attempt=1, now=now))
+        # The API inventory may still describe the first attempt; the runner's
+        # actual attempt counter prevents a rerun from reusing that approval.
+        self.assertFalse(cpu.backfill_run_allowed(runs, 11, current_run_attempt=2, now=now))
+        self.assertFalse(cpu.backfill_run_allowed([], 11, current_run_attempt=2, now=now))
+
+    def test_failed_or_cancelled_attempt_does_not_release_daily_quota(self):
+        now = datetime(2026, 11, 8, 3, tzinfo=timezone.utc)
+        for conclusion in ("failure", "cancelled"):
+            runs = [{"id": 11, "display_title": "Photo backfill: first",
+                     "created_at": "2026-11-08T01:00:00Z", "conclusion": conclusion},
+                    {"id": 12, "display_title": "Photo backfill: later",
+                     "created_at": "2026-11-08T02:00:00Z"}]
+            with self.subTest(conclusion=conclusion):
+                self.assertFalse(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
+                self.assertFalse(cpu.backfill_run_allowed(runs, 11, current_run_attempt=2, now=now))
+
+    def test_workflow_attempt_is_required_and_malformed_values_fail_closed(self):
+        for attempt in (0, -1, True, False, 1.0, "1", None):
+            with self.subTest(attempt=attempt), self.assertRaisesRegex(ValueError, "positive integer workflow attempt"):
+                cpu.backfill_run_allowed([], 11, current_run_attempt=attempt)
+        with self.assertRaises(TypeError):
+            cpu.backfill_run_allowed([], 11)
 
     def test_daily_quota_does_not_guess_when_inventory_may_omit_earlier_attempts(self):
         runs = [{"id": identifier, "display_title": "Photo backfill: story" if identifier == 100 else "Normal",
                  "created_at": "2026-11-08T02:00:00Z"} for identifier in range(1, 101)]
         with self.assertRaisesRegex(ValueError, "complete JST day"):
-            cpu.backfill_run_allowed(runs, 100, now=datetime(2026, 11, 8, 3, tzinfo=timezone.utc))
+            cpu.backfill_run_allowed(runs, 100, current_run_attempt=1,
+                                      now=datetime(2026, 11, 8, 3, tzinfo=timezone.utc))
 
     def test_main_revision_guard_is_read_only_bounded_and_fails_closed(self):
         revision = "a" * 40
@@ -859,6 +888,7 @@ class CpuBackfillTests(unittest.TestCase):
         self.assertIn("format('Photo backfill: {0}', inputs.slug)", workflow)
         self.assertIn("BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}", workflow)
         self.assertIn('args+=(--backfill-scene "$BACKFILL_SCENE")', workflow)
+        self.assertIn("current_run_attempt=int(os.environ['GITHUB_RUN_ATTEMPT'])", workflow)
         self.assertLess(workflow.index("Plan missing images"), workflow.index("Allow only the first photo backfill"))
         self.assertLess(workflow.index("Allow only the first photo backfill"), workflow.index("Install CPU-only"))
         self.assertEqual(workflow.count("&& !inputs.retry_held && !inputs.backfill_scene"), 2)
