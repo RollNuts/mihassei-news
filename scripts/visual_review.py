@@ -144,7 +144,7 @@ def _publication_row(article: dict, *, root: Path) -> dict:
         if scene["status"] == "current":
             kind = "editorial_svg"
     elif row["status"] == "accepted":
-        kind, url = "generated_jpeg", generated_url(article)
+        kind, url = "generated_jpeg", generated_url(article, root=root)
     elif scene["status"] == "current":
         kind = "editorial_svg"
     elif usable_cached_photo(article, root=root):

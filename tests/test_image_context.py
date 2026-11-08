@@ -10,7 +10,7 @@ from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 from scripts import build
-from scripts.generated_photos import article_fingerprint
+from scripts.generated_photos import article_fingerprint, generated_url
 
 
 class ImageContextTests(unittest.TestCase):
@@ -34,7 +34,7 @@ class ImageContextTests(unittest.TestCase):
             if generated:
                 self.assertIn("再現イメージ", expected)
                 self.assertIn(article["title"], expected)
-                expected_source = "/generated/" + article["slug"] + ".jpg"
+                expected_source = generated_url(article, root=build.BASE)
             elif photo_ok:
                 self.assertIn(article["photo"]["alt"], expected)
                 expected_source = "/photos/" + article["slug"] + ".jpg"

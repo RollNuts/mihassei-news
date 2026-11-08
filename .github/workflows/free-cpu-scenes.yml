@@ -1,4 +1,5 @@
 name: Free CPU staged-news photos (public repository only)
+run-name: "${{ inputs.backfill_scene && format('Photo backfill: {0}', inputs.slug) || 'Free CPU staged-news photos' }}"
 
 on:
   # Image-only pushes do not match, so publication cannot recurse.
@@ -27,6 +28,10 @@ on:
         description: 'Publish verified new JPEGs; leave OFF for visual review'
         type: boolean
         default: false
+      backfill_scene:
+        description: 'One review-only scene for an illustration/held story; requires slug, retry_held, limit=1, publish=OFF'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -54,6 +59,8 @@ jobs:
       SCENE_LIMIT: ${{ inputs.limit || '3' }}
       SCENE_SLUG: ${{ inputs.slug || '' }}
       RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
+      BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}
+      SCENE_PUBLISH: ${{ inputs.publish && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,10 +75,13 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, os
+          from pathlib import Path
           from scripts.github_cpu_scenes import load_articles, select_articles, cpu_prompt
           selected = select_articles(load_articles(), slug=os.environ['SCENE_SLUG'],
                                     limit=int(os.environ['SCENE_LIMIT']),
-                                    retry_held=os.environ['RETRY_HELD'] == '1')
+                                    retry_held=os.environ['RETRY_HELD'] == '1',
+                                    backfill_scene=os.environ['BACKFILL_SCENE'],
+                                    review_dir=Path(os.environ['RUNNER_TEMP']) / 'cpu-scenes-review')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'pending={len(selected)}\n')
           for article in selected:
@@ -79,6 +89,24 @@ jobs:
           print('Pending:', len(selected))
           PY
           df -h .
+      - name: Allow only the first photo backfill attempt per JST day
+        id: backfill_quota
+        if: inputs.backfill_scene != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api 'repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml/runs?per_page=100' > "$RUNNER_TEMP/backfill-runs.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.github_cpu_scenes import backfill_run_allowed
+          runs = json.loads((Path(os.environ['RUNNER_TEMP']) / 'backfill-runs.json').read_text())
+          allowed = backfill_run_allowed(runs['workflow_runs'], int(os.environ['GITHUB_RUN_ID']))
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'allowed={int(allowed)}\n')
+          print('Backfill daily attempt allowed.' if allowed else
+                'Backfill skipped: an earlier attempt already owns this JST day; new articles remain independent.')
+          PY
       - name: Summarize reader-visible image coverage
         env:
           IMAGE_HEALTH: ${{ runner.temp }}/image-health.json
@@ -127,13 +155,13 @@ jobs:
                   out.write("\nNo reader-visible image coverage gap is reported by the current build-selection rules.\n")
           PY
       - name: Verify offline image gates before downloading model runtime
-        if: steps.plan.outputs.pending != '0'
+        if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         run: |
           python3 -m pip install --no-cache-dir Pillow==11.1.0
           python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
           python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
       - name: Install CPU-only open-source local model runtime (no cache)
-        if: steps.plan.outputs.pending != '0'
+        if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         run: |
           python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
           python3 -m pip install --no-cache-dir \
@@ -141,16 +169,19 @@ jobs:
             accelerate==1.2.1 safetensors==0.4.5 numpy==1.26.4
           df -h .
       - name: Generate at most three fictional JPEGs and stage only new successes
-        if: steps.plan.outputs.pending != '0'
+        if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
+        env:
+          BACKFILL_QUOTA_ALLOWED: ${{ steps.backfill_quota.outputs.allowed || '0' }}
         run: |
           args=(--limit "$SCENE_LIMIT" --review-dir "$RUNNER_TEMP/cpu-scenes-review")
           if [ -n "$SCENE_SLUG" ]; then args+=(--slug "$SCENE_SLUG"); fi
           if [ "$RETRY_HELD" = 1 ]; then args+=(--retry-held); fi
+          if [ -n "$BACKFILL_SCENE" ]; then args+=(--backfill-scene "$BACKFILL_SCENE"); fi
           python3 scripts/github_cpu_scenes.py "${args[@]}"
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
           python3 scripts/build.py
       - name: Publish only matching images against latest main
-        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held
+        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -158,7 +189,7 @@ jobs:
           # GitHub-token pushes do not trigger ordinary push workflows.
           gh workflow run verify-public-photos.yml --ref main
       - name: Continue selected videos after a successful public image pass
-        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held
+        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -183,7 +214,7 @@ jobs:
             echo "No ready video work; preserve OFF, current and editorial waiting states."
           fi
       - name: Keep only small new JPEGs for visual review or failed-push recovery
-        if: always() && steps.plan.outputs.pending != '0'
+        if: always() && steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         uses: actions/upload-artifact@v4
         with:
           name: cpu-scenes-review-${{ github.run_id }}

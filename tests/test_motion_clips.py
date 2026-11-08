@@ -14,7 +14,7 @@ from unittest.mock import patch
 from scripts import build
 from scripts import motion_clips
 from scripts.broadcast_captions import story_cues
-from scripts.generated_photos import generated_manifest
+from scripts.generated_photos import generated_manifest, generated_url
 from scripts.visual_review import reviewed_generated_scene
 from scripts.motion_clips import (
     MAX_CLIP_BYTES, MAX_TOTAL_BYTES, clip_url, candidates, generate,
@@ -309,9 +309,9 @@ class MotionClipTests(unittest.TestCase):
                 html = build.article_hero_media(suitable)
                 self.assertIn('<video class="article-visual article-video"', html)
                 self.assertIn('controls playsinline muted loop preload="metadata"', html)
-                self.assertIn('poster="/generated/'+slug+'.jpg"', html)
+                self.assertIn('poster="'+generated_url(suitable, root=root)+'"', html)
                 self.assertIn('<source src="/clips/'+slug+'.mp4?v='+verified["sha256"][:12]+'" type="video/mp4">', html)
-                self.assertIn('src="/generated/'+slug+'.jpg"', html)
+                self.assertIn('src="'+generated_url(suitable, root=root)+'"', html)
                 self.assertNotIn("autoplay", html)
                 page = build.layout("記事", "架空", build.article_url(suitable),
                                     "<p>記事</p>", kind="story", article=suitable)

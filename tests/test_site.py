@@ -656,7 +656,8 @@ class SiteTests(unittest.TestCase):
             from scripts.build import uses_stock_photo
             from scripts.visual_review import reviewed_generated_scene
             if reviewed_generated_scene(a,root=ROOT):
-                self.assertIn('src="/generated/'+a["slug"]+'.jpg"',html)
+                from scripts.generated_photos import generated_url
+                self.assertIn('src="'+generated_url(a,root=ROOT)+'"',html)
                 self.assertIn('data-generated-scene="true"',html)
                 self.assertIn("再現イメージ（合成）",html)
                 self.assertIn("<figcaption>再現イメージ（合成）",html)
@@ -970,6 +971,7 @@ class SiteTests(unittest.TestCase):
         """Cached images are not automatically editorially appropriate."""
         from scripts.media_policy import photo_is_approved
         from scripts.visual_review import reviewed_generated_scene
+        from scripts.generated_photos import generated_scene_entry
         from scripts.build import social_image, uses_stock_photo
         import xml.etree.ElementTree as ET
         approved=0
@@ -991,8 +993,12 @@ class SiteTests(unittest.TestCase):
             page=(ROOT/"dist/articles"/slug/"index.html").read_text(encoding="utf-8")
             if reviewed_generated_scene(article,root=ROOT):
                 generated+=1
-                self.assertEqual(social_image(article),"/generated/"+slug+".jpg")
-                self.assertIn('src="/generated/'+slug+'.jpg"',page)
+                record=generated_scene_entry(article,root=ROOT)
+                photo_url="/generated/"+slug+".jpg?v="+record["sha256"][:12]
+                self.assertEqual(social_image(article),photo_url)
+                self.assertIn('src="'+photo_url+'"',page)
+                self.assertIn('property="og:image" content="https://veripsa.com'+photo_url+'"',page)
+                self.assertIn('name="twitter:image" content="https://veripsa.com'+photo_url+'"',page)
                 self.assertIn("再現イメージ（合成）",page)
                 self.assertTrue((ROOT/"dist/generated"/(slug+".jpg")).is_file())
             elif uses_stock_photo(article):

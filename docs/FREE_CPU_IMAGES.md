@@ -11,7 +11,7 @@
 - `.github/workflows/free-cpu-scenes.yml` は新着時・定時・手動とも1回1〜3枚まで。無料GitHub Actionsの**公開リポジトリ用標準CPU**に厳格限定。プライベート化・フォーク・PR からは生成しない。対象が0件ならランタイムやモデルをダウンロードせず終了する。画像だけのpushでは起動せず、生成・公開を再帰させない。
 - 同ワークフローのSummaryは、`生成対象0件`と`読者向け画像が十分`を同義にしない。`scripts/visual_review.py`の既存判定を使い、承認済みJPEG・専用SVG・承認写真・汎用SVG、未検品JPEG、品質保留JPEGを分けて表示する。Mac停止中でも、CPU生成のidleと画像回収待ちを区別して引き継ぐ。
 - `scripts/github_cpu_scenes.py` は最新記事の**画像未生成分だけ**処理。既存のMac製写真を上書きしない。ComfyUI/Macがまだ動かない時だけでも記事に再現画像を付けられる。
-- 記事の `visual_strategy` が `illustration` の場合は、通常実行・`retry_held`・ローカルの`--force`でもCPU/Mac生成キューへ入れない。2026-11-06 22:00 JST以降の新作では `illustration_reason` を必須とし、文字/UI、厳密な人数や不在、複雑な人物関係、比較レイアウト、実在キャラクター再現を避ける安全上の制約のいずれかが風刺成立に必要な時だけ使う。**写真向けの scene_prompt を書いたまま illustration に振り分けない。** 再び写真を試すなら、記事側を `cpu-photo` に戻し、場面指示を変えて新しい記事指紋で扱う。
+- 記事の `visual_strategy` が `illustration` の場合は、通常実行・`retry_held`・ローカルの`--force`でもCPU/Mac生成キューへ入れない。2026-11-06 22:00 JST以降の新作では `illustration_reason` を必須とし、文字/UI、厳密な人数や不在、複雑な人物関係、比較レイアウト、実在キャラクター再現を避ける安全上の制約のいずれかが風刺成立に必要な時だけ使う。**写真向けの scene_prompt を書いたまま illustration に振り分けない。** 既刊を写真化する場合は、下記のプレビューで本当に新しいJPEGを作って目視し、合格した変更と一緒に `cpu-photo` へ戻す。
 - CPU用の場面指示は主役・小道具・動作を最初の短い完全文（目安35語以内）に入れ、背景は後続の別文にする。77トークンに収まる完全文だけを使い、主役の指示そのものが長すぎる場合は生成を見送る。文字の多い店頭や人物が小道具を隠す構図は、無地の背景・小道具の接写へ簡略化する。**画風の面白さは足さず、documentary / press photo の共通ラッパーに任せる。** cinematic、anime、3D render、glossy product photo、dramatic lighting など広告・CG寄りの指示を個別sceneへ入れない。
 - モデルは実写向けの[Realistic Vision 5.1](https://huggingface.co/SG161222/Realistic_Vision_V5.1_noVAE)と推奨MSE VAE。作者推奨のDPM++ 2M Karras・CFG 7を使い、24ステップで場面の再現を試す（速度・画質は実行ごとに確認）。短い高速LCMでは必要な小道具が欠けたため、新規生成にLCMアダプターは使わない。各リビジョンと4つの重みSHA256を `scripts/cpu_photo_model.py` に固定し、読み込み前に照合する。基盤のCreativeML Open RAIL-M、VAEのMITの本文・制限を確認済み。過去の生成記録と承認写真は維持し、新規は `origin: github-cpu-sd15` と正確な推論設定を記録する。CFGのアニメ・CG・文字の除外指定も77トークンを超えれば停止し、従来の安全チェッカーを明示的に保持する。
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
@@ -27,6 +27,10 @@
 目視で記事と違う物体になった画像は、manifestの`rejected`へ記事指紋と理由を記録して保留する。Mac・CPUとも通常の生成対象から外れ、記事はSVGで公開を続ける。現在の呼び鈴の記事はこの保留対象。新しい正しいJPEGを実際に生成・確認するまで、古い画像の指紋やseedを変更して解除しない。
 
 品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用artifactだけを作り自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の定期処理は保留記事を除外する。
+
+既刊の写真化プレビューは、さらに `backfill_scene` に新しい場面指示を渡し、`limit=1`・`publish=false`で手動実行する。通常キューが残る場合や公開を指定した場合は生成せず、日次上限もモデル取得前に判定する。生成物は元の記事を束縛する `source_article_sha256` 付きのartifactだけに保存し、実行中のcheckoutや本番素材は上書きしない。いつ試し、どう採用するかは[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を正本とする。
+
+採用された写真は本文・一覧・OGP・Twitter画像・RSSで同じJPEGを使い、URLには画像SHA由来の版を付ける。同じ画像のURLは変えず、画像が変わる時だけ別URLにする。これはサイト側が新しい画像を参照させるための対策であり、外部SNSがすでに保存したカードを即時更新する保証ではない。
 
 ## 運用上の注意
 

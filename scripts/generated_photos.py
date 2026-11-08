@@ -139,8 +139,11 @@ def usable_generated_scene(article: dict, *, root: Path = ROOT) -> bool:
             and jpeg_dimensions(data) == (1200, 675))
 
 
-def generated_url(article: dict) -> str:
+def generated_url(article: dict, *, root: Path = ROOT) -> str:
+    """Keep image URLs stable until verified generation bytes change."""
     slug = article["slug"]
     if not SAFE_SLUG.fullmatch(slug):
         raise ValueError("Invalid article slug")
-    return "/generated/" + slug + ".jpg"
+    path = "/generated/" + slug + ".jpg"
+    record = generated_scene_entry(article, root=root)
+    return path + ("?v=" + record["sha256"][:12] if record else "")

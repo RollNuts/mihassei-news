@@ -14,7 +14,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts import build
-from scripts.generated_photos import article_fingerprint, usable_generated_scene
+from scripts.generated_photos import article_fingerprint, usable_generated_scene, generated_url as generated_photo_url
 from scripts.media_policy import jpeg_dimensions
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,7 +97,7 @@ class EditorialClarityTests(unittest.TestCase):
 
     def assert_story_image_contract(self, article):
         slug = article["slug"]
-        generated_url = "/generated/" + slug + ".jpg"
+        generated_url = generated_photo_url(article, root=ROOT)
         with patch.object(build, "BASE", ROOT):
             page = build.story(article, list(self.articles.values()))
             safe_image = build.editorial_image(article)

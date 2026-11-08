@@ -6,13 +6,14 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from urllib.parse import urlsplit
 from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 from PIL import Image
 from scripts import build, local_scene_photos as photos
 from scripts.check_live import verify_generated_image
-from scripts.generated_photos import article_fingerprint, generated_scene_entry, usable_generated_scene
+from scripts.generated_photos import article_fingerprint, generated_scene_entry, usable_generated_scene, generated_url
 from scripts.visual_review import reviewed_generated_scene
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,7 +109,8 @@ class ScenePublicationTests(unittest.TestCase):
             entries = {e.findtext("link"): e for e in feed.findall("./channel/item")}
             for article in selected[:2]:
                 slug = article["slug"]
-                url = "/generated/" + slug + ".jpg"
+                url = generated_url(article, root=root)
+                self.assertEqual(url, "/generated/" + slug + ".jpg?v=" + generated_scene_entry(article, root=root)["sha256"][:12])
                 pages = ["archive/index.html", "articles/" + slug + "/index.html"]
                 if article == lead:
                     pages.append("index.html")
@@ -123,9 +125,10 @@ class ScenePublicationTests(unittest.TestCase):
                 media = entries[build.SITE + "/articles/" + slug + "/"].find("{http://search.yahoo.com/mrss/}content")
                 self.assertEqual(media.attrib["url"], build.SITE + url)
                 self.assertEqual(media.attrib["type"], "image/jpeg")
-                with Image.open(output / url.lstrip("/")) as exported:
+                with Image.open(output / urlsplit(url).path.lstrip("/")) as exported:
                     exported.load()
                     self.assertEqual(exported.size, (1200, 675))
+                self.assertFalse(any("?" in path.name for path in (output / "generated").iterdir()))
             broken = selected[-1]["slug"]
             self.assertFalse((output / "generated" / (broken + ".jpg")).exists())
             page = (output / "articles" / broken / "index.html").read_text()
