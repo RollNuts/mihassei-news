@@ -179,6 +179,17 @@ test('public snapshot keeps reader metrics but omits expensive operational diagn
     assert.equal(key in snapshot.articles['story-a'],false,'public article response should omit '+key);
 });
 
+test('public snapshot supports the maximum 20 requested articles with bounded counter reads',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID();
+  const slugs=Array.from({length:20},(_,i)=>'story-'+String.fromCharCode(97+i));
+  for(const slug of slugs)assert.equal((await f.postAck(view(browser,slug))).status,200);
+  const snapshot=(await f.getPublic(slugs.join(','))).data;
+  assert.equal(Object.keys(snapshot.articles).length,20);
+  assert.equal(snapshot.pageViews,20);
+  for(const slug of slugs)assert.equal(snapshot.articles[slug].pageViews,1);
+});
+
 test('ack visit still records a real display without building the full diagnostics response',async t=>{
   const f=fixture();t.after(()=>f.db.close());
   const browser=randomUUID(),event=view(browser,'story-a');
