@@ -468,9 +468,15 @@
            row.pageViews<=0 || seen.has(row.article))continue;
         seen.add(row.article);
         const candidate=candidates.get(row.article);
-        if(candidate)ranked.push({...candidate,pageViews:row.pageViews,todayPageViews:0});
-        if(ranked.length>=3)break;
+        if(candidate)ranked.push({
+          ...candidate,
+          pageViews:row.pageViews,
+          todayPageViews:measured(row.todayPageViews)?row.todayPageViews:0
+        });
       }
+      ranked=ranked
+        .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
+        .slice(0,3);
     }else{
       // Compatibility fallback while an older Worker revision is still serving:
       // only render a ranking if all candidate metrics were actually returned.
