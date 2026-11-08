@@ -51,8 +51,9 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     }));
     return {status:response.status,data:await response.json()};
   };
-  const postPublic=async(payload,articles='story-a,story-b',headers={})=>{
+  const postPublic=async(payload,articles='story-a,story-b',headers={},popular=false)=>{
     const params=new URLSearchParams({response:'public',articles});
+    if(popular)params.set('popular','1');
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params,{
       method:'POST',headers:{'content-type':'application/json',...headers},
       body:JSON.stringify(payload)
@@ -73,8 +74,9 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  const getPublic=async(articles='story-a,story-b')=>{
+  const getPublic=async(articles='story-a,story-b',popular=false)=>{
     const params=new URLSearchParams({articles,view:'public'});
+    if(popular)params.set('popular','1');
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
@@ -229,6 +231,23 @@ test('action response returns only the state needed by like and vote controls',a
   assert.equal(duplicate.data.vote,'plausible');
   assert.equal(duplicate.data.alreadyVoted,true);
   assert.deepEqual(duplicate.data.votes,{plausible:1,unlikely:0});
+});
+
+test('public snapshot can rank the full archive without returning every article metric',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID();
+  for(let i=0;i<4;i++)await f.postAck(view(browser,'story-b'));
+  for(let i=0;i<2;i++)await f.postAck(view(browser,'story-a'));
+  await f.postAck(view(browser,'story-c'));
+
+  const snapshot=(await f.getPublic('story-a',true)).data;
+  assert.deepEqual(JSON.parse(JSON.stringify(snapshot.topArticles.last7Days)),[
+    {article:'story-b',pageViews:4},
+    {article:'story-a',pageViews:2},
+    {article:'story-c',pageViews:1}
+  ]);
+  assert.deepEqual(Object.keys(snapshot.articles),['story-a'],
+    'ranking does not require shipping metrics for every published story');
 });
 
 test('public snapshot supports the maximum 20 requested articles with bounded counter reads',async t=>{
