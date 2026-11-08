@@ -129,6 +129,10 @@ class MotionWorkflowTests(unittest.TestCase):
         publish = self.video.split("\n  publish:\n", 1)[1]
         self.assertIn("github.ref == 'refs/heads/main'", publish)
         self.assertIn("needs.validate.outputs.pending != '0'", publish)
+        freshness = step(self.video, "Report newsroom freshness even when the encoder has no work")
+        self.assertIn("python3 scripts/publish_motion_clips.py --health", freshness)
+        self.assertIn("selection_needed", freshness)
+        self.assertIn("awaiting_reviewed_source", freshness)
         self.assertIn("github.event.repository.private == false", self.video)
         self.assertIn("    - cron: '17 0,6,12,18 * * *'", self.video)
         self.assertIn("cron: '17 * * * *'", self.images)
