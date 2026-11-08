@@ -66,6 +66,17 @@ export class NewsroomStats extends DurableObject {
   increment(key, delta) {
     this.sql.exec("INSERT INTO counters(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=MAX(0,value+excluded.value)",key,delta);
   }
+  rememberEarliest(key, value) {
+    // A normal later event must not rewrite an already-initialized timestamp.
+    // The WHERE keeps rowsWritten at zero on the common conflict path while
+    // still correcting the value if an earlier request finishes out of order.
+    this.sql.exec(
+      "INSERT INTO counters(key,value) VALUES (?,?) "+
+      "ON CONFLICT(key) DO UPDATE SET value=excluded.value "+
+      "WHERE excluded.value < counters.value",
+      key,value
+    );
+  }
   insertOnce(kind, article, visitor) {
     this.sql.exec("INSERT OR IGNORE INTO events(kind,article,visitor) VALUES (?,?,?)",kind,article,visitor);
     return this.sql.exec("SELECT changes() AS n").one().n > 0;
@@ -538,10 +549,10 @@ export class NewsroomStats extends DurableObject {
           if(this.sql.exec("SELECT changes() AS n").one().n===0)return;
           // Request bodies and digests can finish out of order across midnight.
           // Keep the earliest accepted display's arrival, not whichever writes first.
-          this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+          this.rememberEarliest("pageViews:startedAt",now);
           this.increment("pageViews",1);
           this.increment(dayPrefix+"pageViews",1);
-          this.sql.exec("INSERT INTO counters(key,value) VALUES ('hourlyPageViews:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+          this.rememberEarliest("hourlyPageViews:startedAt",now);
           this.increment(hourPrefix+"pageViews",1);
           if(article){
             this.increment("pageViews:"+article,1);
@@ -549,7 +560,7 @@ export class NewsroomStats extends DurableObject {
             this.increment(hourPrefix+"pageViews:"+article,1);
           }
           if(pageKind){
-            this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViewKinds:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.rememberEarliest("pageViewKinds:startedAt",now);
             this.increment("pageViewKind:"+pageKind,1);
             this.increment(dayPrefix+"pageViewKind:"+pageKind,1);
             this.increment(hourPrefix+"pageViewKind:"+pageKind,1);
@@ -558,7 +569,7 @@ export class NewsroomStats extends DurableObject {
           // session so internal page views keep the landing source instead of
           // being mislabeled as direct/unattributed.
           if(sessionChannel){
-            this.sql.exec("INSERT INTO counters(key,value) VALUES ('pageViewSources:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.rememberEarliest("pageViewSources:startedAt",now);
             this.increment("pageViewSource:"+sessionChannel,1);
             this.increment(dayPrefix+"pageViewSource:"+sessionChannel,1);
             this.increment(hourPrefix+"pageViewSource:"+sessionChannel,1);
@@ -568,7 +579,7 @@ export class NewsroomStats extends DurableObject {
         if(sessionId){
           this.sql.exec("INSERT OR IGNORE INTO session_events(id,day) VALUES (?,?)",sessionId,day.date);
           if(this.sql.exec("SELECT changes() AS n").one().n>0){
-            this.sql.exec("INSERT INTO counters(key,value) VALUES ('sessions:startedAt',?) ON CONFLICT(key) DO UPDATE SET value=MIN(value,excluded.value)",now);
+            this.rememberEarliest("sessions:startedAt",now);
             this.increment("sessions",1);
             this.increment(dayPrefix+"sessions",1);
             this.increment("sessions:channel:"+sessionChannel,1);
