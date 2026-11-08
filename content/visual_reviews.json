@@ -289,10 +289,10 @@
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
       "decision": "rejected",
-      "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
-      "image_sha256": "2a6bd82fa70e8ad8518c37b54e5520670981e18b81eb38aa850f946ed15494d1",
-      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
-      "note": "現本文と実JPEGを照合。木のカウンター・ニット・自然光は写真らしいが、大きく笑う男性が一人でカップを持つ汎用的な場面で、店主から無料券と苦手な一杯を受け取る気まずさが見えない。右上の黒板の擬似文字も目立つ。本文に合う専用SVGへ切り替える。"
+      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+      "image_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
+      "reviewed_at": "2026-11-08T13:01:09.486Z",
+      "note": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。"
     },
     "free-play-event-parents-timetable-children-waiting": {
       "decision": "rejected",

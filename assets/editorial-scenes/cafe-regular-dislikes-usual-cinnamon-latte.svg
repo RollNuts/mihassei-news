@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img"
-     aria-label="苦手なシナモンラテを持つ常連客に、カフェ店主が同じラテと無期限の無料券を差し出す創作イラスト"
-     data-visual-topic="document" data-article-sha256="d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638">
-  <title>断れないいつもの一杯と、生涯無料券</title>
-  <desc>木のカウンターに座る常連客は、シナモンの浮かぶラテを手に持ち、肩をすくめて気まずそうに口を結んでいる。エプロン姿の店主は、同じラテをもう一杯と、無限大の記号だけが付いた無料券を差し出す。カウンターの端には手を付けていない紅茶、中央にはシナモンの瓶とスティック。文字、ブランド、実在人物は描かない。</desc>
+     aria-label="シナモンラテを先に出されて戸惑う常連客と、注文を聞かず一杯を準備するカフェ店員の創作イラスト"
+     data-visual-topic="document" data-article-sha256="301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa">
+  <title>聞かれない注文と断れないいつもの一杯</title>
+  <desc>木のカウンターに座る男性常連客は苦手なシナモンラテを前に戸惑う。エプロン姿の店員は注文を聞かずに同じラテをもう一杯用意する。間には文字のない小さなメニューカード、片隅に紅茶のカップ、中央にシナモンの瓶がある。読める文字、ブランド、実在人物は描かない。</desc>
   <defs>
     <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f3e9d9"/><stop offset="1" stop-color="#ddc8ab"/></linearGradient>
     <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#bd8c5c"/><stop offset="1" stop-color="#93653f"/></linearGradient>
@@ -41,7 +41,7 @@
   </g>
   <g fill="#49483f"><circle cx="283" cy="260" r="4"/><circle cx="319" cy="262" r="4"/></g>
   <path d="M349 275l7 9m-90-9-7 7" fill="none" stroke="#bb917b" stroke-width="3" stroke-linecap="round"/>
-  <!-- The owner is pleased to repeat the same drink, with the coupon held clearly above it. -->
+  <!-- The barista prepares the usual drink without asking the regular. -->
   <g stroke="#514e45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M786 336q23-30 77-30 62 0 91 38l27 180H761z" fill="#f3ecdc"/>
     <path d="M825 316l-15 55-8 149h125l-10-149-16-55" fill="#5d7c69"/>
@@ -54,11 +54,9 @@
     <path d="M947 353q37 57-1 93l-192 9" fill="none" stroke="#f3ecdc" stroke-width="36"/>
     <path d="M746 453l-33-8m20 20-26-12" fill="none" stroke="#e9c3a2" stroke-width="18"/>
   </g>
-  <!-- Letter-free ticket: perforations and an infinity icon signal the unlimited offer. -->
-  <path d="M558 313h170v21q-14 6 0 12v47H558v-47q14-6 0-12z" fill="#faf2d8" stroke="#947b51" stroke-width="5"/>
-  <path d="M698 325v57" fill="none" stroke="#b59f78" stroke-width="3" stroke-dasharray="4 5"/>
-  <path d="M630 352c-18-24-46-24-46 0s28 24 46 0c18-24 46-24 46 0s-28 24-46 0z" fill="none" stroke="#66826b" stroke-width="6" stroke-linejoin="round"/>
-  <path d="M725 345l14 2m-14 15 16-2" stroke="#e9c3a2" stroke-width="15" stroke-linecap="round"/>
+  <!-- A plain menu card replaces a loyalty voucher removed from the rewritten article. -->
+  <rect x="555" y="346" width="128" height="118" rx="7" fill="#faf2e7" stroke="#947b51" stroke-width="5"/>
+  <path d="M571 372h94M571 394h78M571 418h96M571 440h65" fill="none" stroke="#b59f78" stroke-width="6" stroke-linecap="round"/>
   <!-- Counter front and cups sit above the same plane, leaving the people unobscured at the shoulders. -->
   <path d="M0 482h1200v193H0z" fill="#795438"/>
   <path d="M0 467h1200v71H0z" fill="url(#wood)" stroke="#805a3c" stroke-width="7"/>
@@ -75,7 +73,7 @@
   <g fill="#9a6c43"><circle cx="386" cy="401" r="2"/><circle cx="399" cy="406" r="2"/><circle cx="414" cy="399" r="2"/><circle cx="429" cy="405" r="2"/><circle cx="663" cy="399" r="2"/><circle cx="679" cy="394" r="2"/><circle cx="695" cy="402" r="2"/><circle cx="705" cy="398" r="2"/></g>
   <path d="M388 376q-13-14 0-28m27 30q-12-16 0-29m249 24q-12-14 0-29m28 28q-12-16 0-29" fill="none" stroke="#fff6df" stroke-width="5" stroke-linecap="round" opacity=".85"/>
   <path d="M352 433l18 8m-21 7 20 6" stroke="#e5bb98" stroke-width="17" stroke-linecap="round"/>
-  <!-- Unserved tea and cinnamon remain secondary to the repeated latte and coupon. -->
+  <!-- Tea and cinnamon remain secondary to the unwanted usual latte. -->
   <ellipse cx="1082" cy="492" rx="60" ry="11" fill="#e9dfc5" stroke="#8a7559" stroke-width="3"/>
   <path d="M1048 437h68l-5 46q-27 13-56-2z" fill="#e9e4d8" stroke="#8a7559" stroke-width="4"/>
   <path d="M1116 448h12q16 20-14 26" fill="none" stroke="#8a7559" stroke-width="4"/>

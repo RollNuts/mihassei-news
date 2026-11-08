@@ -664,6 +664,12 @@
       "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
       "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
+    "cafe-regular-dislikes-usual-cinnamon-latte": {
+      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+      "reason": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。",
+      "rejected_candidate_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
+      "reviewed_at": "2026-11-08T13:01:09.486Z"
+    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
