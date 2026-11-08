@@ -551,8 +551,8 @@
   const observedAtFormat=new Intl.DateTimeFormat("ja-JP",{
     timeZone:"Asia/Tokyo",hour:"2-digit",minute:"2-digit"
   });
-  const LIVE_REFRESH_MS=180000; // 3 minutes, only while a page is visible.
-  const RETURN_REFRESH_COOLDOWN_MS=45000;
+  const LIVE_REFRESH_MS=600000; // 10 minutes, only while a page is visible.
+  const RETURN_REFRESH_COOLDOWN_MS=180000;
   let lastCheckedAt=0,haveSnapshot=false,refreshPromise=null,observedDay="";
   function updateObserverNumber(node,number){
     if(!node)return;
@@ -584,7 +584,7 @@
     observerShell.hidden=false;
     if(!observerHint)return;
     observerHint.textContent=healthy
-      ? "※"+observedDay+"（日本時間）・3分ごと更新・ブラウザ単位"
+      ? "※"+observedDay+"（日本時間）・10分ごと更新・ブラウザ単位"
           +" / 確認 "+observedAtFormat.format(new Date())
       : haveSnapshot ? "※"+observedDay+"の確認値・通信回復待ち"
                      : "※集計を取得できません・自動再試行";
@@ -744,7 +744,7 @@
         // Keep the last confirmed counts and ranking when a transient refresh
         // fails. An initial failure still exposes no popularity claim; once a
         // complete whole-archive ranking was confirmed, do not make it vanish
-        // just because the next three-minute read missed the API.
+        // just because the next periodic read missed the API.
         observerFeedback(false);
         if(!popularHasConfirmedRanking)hidePopular();
         else if(popularPeriod && !popularPeriod.textContent.includes("更新待ち"))
@@ -814,7 +814,7 @@
     renderAnalyticsPreference();
   });
 
-  // Poll no more than once every 3 minutes on visible pages. Paused tabs
+  // Poll no more than once every 10 minutes on visible pages. Paused tabs
   // make no requests. Returning to a tab refreshes stale data immediately.
   if(observerShell && typeof window.setInterval==="function"){
     window.setInterval(()=>{
