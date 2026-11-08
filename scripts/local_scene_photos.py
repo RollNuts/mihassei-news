@@ -24,6 +24,7 @@ from pathlib import Path
 
 try:
     from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
+    from .cpu_photo_model import REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_METADATA_KEYS, reference_metadata_valid
     from .generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -33,6 +34,7 @@ try:
     from .editorial_covers import story_subject
 except ImportError:
     from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
+    from cpu_photo_model import REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_METADATA_KEYS, reference_metadata_valid
     from generated_photos import (
         RELATIVE_DIR, MANIFEST_NAME, PROMPT_VERSION, ROOT, SAFE_SLUG,
         article_fingerprint, usable_generated_scene, MAX_SCENE_BYTES,
@@ -330,9 +332,17 @@ def png_to_jpeg(png: bytes) -> bytes:
 
 
 def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path = ROOT,
-                    origin: str = "local-comfyui") -> Path:
+                    origin: str = "local-comfyui", reference_metadata: dict | None = None) -> Path:
     """Atomic first-party image writes with provenance and a strict storage budget."""
-    if origin in ("github-cpu-lcm", CPU_ORIGIN):
+    fingerprint = article_fingerprint(article)
+    if origin == REFERENCE_ORIGIN:
+        if (checkpoint != CPU_MODEL or not isinstance(reference_metadata, dict)
+                or set(reference_metadata) != REFERENCE_METADATA_KEYS
+                or not reference_metadata_valid(reference_metadata, article_sha256=fingerprint)):
+            raise ValueError("Reference generation requires the exact model and input proof")
+    elif reference_metadata is not None:
+        raise ValueError("Reference proof is permitted only for reference generation")
+    elif origin in ("github-cpu-lcm", CPU_ORIGIN):
         if (checkpoint not in (LEGACY_MODEL, CPU_MODEL)
                 or (origin == CPU_ORIGIN and checkpoint != CPU_MODEL)):
             raise ValueError("Unreviewed CPU model is forbidden")
@@ -363,7 +373,6 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
     else:
         manifest = {"version": 1, "images": {}}
     image_sha256 = hashlib.sha256(data).hexdigest()
-    fingerprint = article_fingerprint(article)
     rejected = manifest.get("rejected")
     hold = rejected.get(slug) if isinstance(rejected, dict) else None
     previous = manifest["images"].get(slug)
@@ -389,6 +398,9 @@ def write_generated(article: dict, data: bytes, checkpoint: str, *, root: Path =
     }
     if origin in ("github-cpu-lcm", CPU_ORIGIN) and checkpoint == CPU_MODEL:
         manifest["images"][slug]["inference"] = dict(CPU_INFERENCE if origin == CPU_ORIGIN else LCM_INFERENCE)
+    elif origin == REFERENCE_ORIGIN:
+        manifest["images"][slug]["inference"] = dict(REFERENCE_INFERENCE)
+        manifest["images"][slug].update(reference_metadata)
     # A successful deliberate repair replaces that article's visual hold.
     # Preserve holds for every other article when merging new image records.
     if isinstance(manifest.get("rejected"), dict):

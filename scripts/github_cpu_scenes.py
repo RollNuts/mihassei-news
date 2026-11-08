@@ -11,6 +11,7 @@ import argparse
 import copy
 from contextlib import nullcontext
 from datetime import datetime, timedelta, timezone
+import hashlib
 import io
 import json
 import os
@@ -23,6 +24,8 @@ from pathlib import Path
 
 try:
     from .cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
+    from .cpu_photo_model import (REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_RENDERER,
+                                  REFERENCE_RENDERER_VERSION, as_reference_pipeline)
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
         MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES, MIN_FREE_GIB, StorageLimitError,
@@ -32,6 +35,8 @@ try:
     )
 except ImportError:
     from cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
+    from cpu_photo_model import (REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_RENDERER,
+                                 REFERENCE_RENDERER_VERSION, as_reference_pipeline)
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
         MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES, MIN_FREE_GIB, StorageLimitError,
@@ -371,10 +376,13 @@ def backfill_step_callback(revision: str, *, review_parent: Path | None = None):
 
 def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CPU_BATCH,
                     retry_held: bool = False, root: Path | None = None,
-                    backfill_scene: str = "", review_dir: Path | None = None) -> list[dict]:
+                    backfill_scene: str = "", review_dir: Path | None = None,
+                    backfill_reference: bool = False) -> list[dict]:
     """Shared offline plan; deliberate hold retries cannot replace valid photos."""
     if not 1 <= limit <= MAX_CPU_BATCH:
         raise ValueError("CPU batch must be 1–3 scenes")
+    if backfill_reference and not backfill_scene:
+        raise ValueError("--backfill-reference requires an explicit --backfill-scene preview")
     if retry_held and not slug:
         raise ValueError("--retry-held requires one explicit --slug")
     if slug and not any(a.get("slug") == slug for a in articles):
@@ -395,6 +403,8 @@ def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CP
             raise ValueError("Backfill preview needs an illustration story or a current visual hold")
         if usable_generated_scene(original, root=base):
             raise ValueError("Backfill cannot replace an existing valid JPEG")
+        if backfill_reference:
+            reviewed_reference_svg(original, root=base)
         candidate = copy.deepcopy(original)
         candidate.update(scene_prompt=scene, visual_strategy="cpu-photo")
         if article_fingerprint(candidate) == article_fingerprint(original):
@@ -414,6 +424,45 @@ def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CP
         return [candidate]
     candidates = pending_articles(articles, root=base, slug=slug, force=retry_held, limit=0)
     return [a for a in candidates if not usable_generated_scene(a, root=base)][:limit]
+
+
+def reviewed_reference_svg(article: dict, *, root: Path | None = None) -> str:
+    """Use only the original article's current, self-contained approved SVG."""
+    try:
+        from .editorial_covers import reviewed_story_scene
+    except ImportError:
+        from editorial_covers import reviewed_story_scene
+    svg = reviewed_story_scene(article, root=ROOT if root is None else root)
+    if svg is None:
+        raise ValueError("Reference preview requires the original article's reviewed SVG")
+    return svg
+
+
+def render_reference_image(article: dict, *, root: Path | None = None):
+    """Rasterize a validated local guide in memory; never write an intermediate."""
+    svg = reviewed_reference_svg(article, root=root).encode("utf-8")
+    try:
+        import cairosvg
+        from PIL import Image
+    except ImportError as exc:
+        raise RuntimeError("Reference preview requires CairoSVG 2.7.1 and Pillow") from exc
+    if cairosvg.__version__ != REFERENCE_RENDERER_VERSION:
+        raise RuntimeError("Reference preview requires the pinned CairoSVG 2.7.1 renderer")
+    png = cairosvg.svg2png(bytestring=svg, unsafe=False, background_color="#ffffff",
+                          output_width=REFERENCE_INFERENCE["width"],
+                          output_height=REFERENCE_INFERENCE["height"])
+    with Image.open(io.BytesIO(png)) as source:
+        source.load()
+        if source.size != (REFERENCE_INFERENCE["width"], REFERENCE_INFERENCE["height"]):
+            raise ValueError("Reference raster has unexpected dimensions")
+        image = source.convert("RGB")
+    return image, {
+        "source_article_sha256": article_fingerprint(article),
+        "init_svg_sha256": hashlib.sha256(svg).hexdigest(),
+        "init_rgb_sha256": hashlib.sha256(image.tobytes()).hexdigest(),
+        "renderer": REFERENCE_RENDERER,
+        "renderer_version": REFERENCE_RENDERER_VERSION,
+    }
 
 
 def validate_review_dir(destination: Path, *, root: Path = ROOT) -> None:
@@ -438,7 +487,7 @@ def export_review_bundle(articles: list[dict], destination: Path, *, root: Path 
     for article in articles:
         slug = article["slug"]
         record = records.get(slug)
-        if not usable_generated_scene(article, root=root) or not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN):
+        if not usable_generated_scene(article, root=root) or not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN, REFERENCE_ORIGIN):
             raise RuntimeError("Unverified CPU image cannot enter a review bundle: " + slug)
         selected[slug] = dict(record)
     if source_article_sha256 is not None:
@@ -449,6 +498,9 @@ def export_review_bundle(articles: list[dict], destination: Path, *, root: Path 
                        for value in [source_article_sha256[article["slug"]]])):
             raise ValueError("Backfill bundle needs the distinct original article fingerprint")
         for slug, fingerprint in source_article_sha256.items():
+            if (selected[slug].get("origin") == REFERENCE_ORIGIN
+                    and selected[slug].get("source_article_sha256") != fingerprint):
+                raise ValueError("Reference bundle cannot change its original guide source")
             selected[slug]["source_article_sha256"] = fingerprint
     if not selected:
         return
@@ -511,7 +563,8 @@ def check_quality(image):
         raise ValueError("Scene too dark/washed out/unreadable for editorial use")
 
 
-def render_one(pipe, torch, article: dict, *, callback_on_step_end=None) -> bytes:
+def render_one(pipe, torch, article: dict, *, callback_on_step_end=None, reference_image=None) -> bytes:
+    profile = REFERENCE_INFERENCE if reference_image is not None else INFERENCE
     seed = stable_seed(article)
     print(f"CPU scene seed: {seed}", flush=True)
     generator = torch.Generator(device="cpu").manual_seed(seed)
@@ -522,15 +575,21 @@ def render_one(pipe, torch, article: dict, *, callback_on_step_end=None) -> byte
     negative = cpu_negative_prompt(article)
     if tokenizer is not None and len(tokenizer.encode(negative)) > CLIP_TOKEN_LIMIT:
         raise ValueError("CPU negative prompt exceeds CLIP budget; refusing silent truncation")
+    if reference_image is not None:
+        if (getattr(reference_image, "mode", None) != "RGB"
+                or getattr(reference_image, "size", None) != (REFERENCE_INFERENCE["width"], REFERENCE_INFERENCE["height"])):
+            raise ValueError("Reference image must be RGB at the fixed inference dimensions")
+        image_options = {"image": reference_image, "strength": REFERENCE_INFERENCE["strength"]}
+    else:
+        image_options = {"width": INFERENCE["width"], "height": INFERENCE["height"]}
     with torch.inference_mode():
         callback = ({"callback_on_step_end": callback_on_step_end}
                     if callback_on_step_end is not None else {})
         result = pipe(
             prompt=prompt, negative_prompt=negative,
-            num_inference_steps=INFERENCE["num_inference_steps"],
-            guidance_scale=INFERENCE["guidance_scale"],
-            width=INFERENCE["width"], height=INFERENCE["height"],
-            generator=generator, output_type="pil", **callback,
+            num_inference_steps=profile["num_inference_steps"],
+            guidance_scale=profile["guidance_scale"],
+            generator=generator, output_type="pil", **image_options, **callback,
         )
     if (getattr(result, "nsfw_content_detected", None)
             and any(result.nsfw_content_detected)):
@@ -559,11 +618,14 @@ def main(argv: list[str] | None = None) -> int:
                         help="New directory outside the repository for successful JPEGs and exact source records")
     parser.add_argument("--backfill-scene", default="",
                         help="Manual review-only photo direction for one illustration story; never edits live sources")
+    parser.add_argument("--backfill-reference", action="store_true",
+                        help="Opt-in: use that original story's reviewed SVG as the manual preview guide")
     args = parser.parse_args(argv)
     articles = load_articles()
     try:
         selected = select_articles(articles, slug=args.slug, limit=args.limit, retry_held=args.retry_held,
-                                   backfill_scene=args.backfill_scene, review_dir=args.review_dir)
+                                   backfill_scene=args.backfill_scene, review_dir=args.review_dir,
+                                   backfill_reference=args.backfill_reference)
     except ValueError as exc:
         parser.error(str(exc))
     print(f"CPU scenes pending in this batch: {len(selected)}", flush=True)
@@ -571,7 +633,7 @@ def main(argv: list[str] | None = None) -> int:
         for article in selected:
             print(json.dumps({
                 "slug": article["slug"], "scene": scene_description(article), "cpu_prompt": cpu_prompt(article),
-                "model": MODEL, "inference": INFERENCE,
+                "model": MODEL, "inference": REFERENCE_INFERENCE if args.backfill_reference else INFERENCE,
             }, ensure_ascii=False), flush=True)
         return 0
     if not permitted_ci():
@@ -594,7 +656,13 @@ def main(argv: list[str] | None = None) -> int:
     successes = []
     with staging as directory:
         generation_root = Path(directory)
+        reference_image, reference_metadata = None, None
+        if args.backfill_reference:
+            original = next(a for a in articles if a["slug"] == args.slug)
+            reference_image, reference_metadata = render_reference_image(original, root=ROOT)
         pipe, torch = load_pipeline()
+        if args.backfill_reference:
+            pipe = as_reference_pipeline(pipe)
         if revision is not None:
             check_main_unchanged(revision, review_parent=args.review_dir.parent)
         try:
@@ -604,10 +672,15 @@ def main(argv: list[str] | None = None) -> int:
                 try:
                     options = ({"callback_on_step_end": backfill_step_callback(revision, review_parent=args.review_dir.parent)}
                                if revision is not None else {})
+                    if args.backfill_reference:
+                        options["reference_image"] = reference_image
                     data = render_one(pipe, torch, article, **options)
                     if revision is not None:
                         check_main_unchanged(revision, review_parent=args.review_dir.parent)
-                    write_generated(article, data, MODEL, root=generation_root, origin=ORIGIN)
+                    write_options = {"reference_metadata": reference_metadata} if args.backfill_reference else {}
+                    write_generated(article, data, MODEL, root=generation_root,
+                                    origin=REFERENCE_ORIGIN if args.backfill_reference else ORIGIN,
+                                    **write_options)
                     successes.append(article)
                     print(f"Saved verified first-party JPEG ({len(data)} bytes)", flush=True)
                 except (RuntimeError, ValueError, OSError) as exc:

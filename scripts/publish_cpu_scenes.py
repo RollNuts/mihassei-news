@@ -16,7 +16,7 @@ import sys
 import tempfile
 
 try:
-    from .cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN
+    from .cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN, REFERENCE_ORIGIN
     from . import local_scene_sync as sync
     from .generated_photos import (
         RELATIVE_DIR, SAFE_SLUG, generated_manifest, usable_generated_scene,
@@ -24,7 +24,7 @@ try:
     )
     from .local_scene_photos import stable_seed
 except ImportError:
-    from cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN
+    from cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN, REFERENCE_ORIGIN
     import local_scene_sync as sync
     from generated_photos import (
         RELATIVE_DIR, SAFE_SLUG, generated_manifest, usable_generated_scene,
@@ -74,12 +74,14 @@ def validate_bundle(source: Path) -> list[dict]:
         raise ValueError("Unexpected or missing files in review bundle")
     for article in articles:
         record = manifest["images"][article["slug"]]
-        if (not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN)
+        if (not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN, REFERENCE_ORIGIN)
                 or record.get("model") not in (MODEL, LEGACY_MODEL)
                 or type(record.get("seed")) is not int
                 or record["seed"] != stable_seed(article)
                 or not usable_generated_scene(article, root=source)):
             raise ValueError("Invalid CPU image, fingerprint or exact integer seed: " + article["slug"])
+        if record["origin"] == REFERENCE_ORIGIN and len(articles) != 1:
+            raise ValueError("SVG-reference preview must contain exactly one article and JPEG")
     return articles
 
 
@@ -135,6 +137,9 @@ def isolated_sync(root: Path, state: Path):
 
 def publish_bundle(source: Path, *, root: Path = ROOT) -> dict:
     articles = validate_bundle(source)
+    if any(record.get("origin") == REFERENCE_ORIGIN
+           for record in generated_manifest(Path(source)).values()):
+        raise ValueError("SVG-reference bundles are preview-only; require actual JPEG review and manual adoption")
     if not trusted_ci():
         raise RuntimeError("CPU publication requires an opt-in public main GitHub CPU job")
     runner_temp = Path(os.getenv("RUNNER_TEMP", ""))

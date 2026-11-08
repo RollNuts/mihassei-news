@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -50,6 +51,45 @@ INFERENCE = {
     "width": 800,
     "height": 448,
 }
+REFERENCE_ORIGIN = "github-cpu-sd15-img2img"
+REFERENCE_INFERENCE = {
+    **INFERENCE,
+    "pipeline": "StableDiffusionImg2ImgPipeline",
+    "strength": 0.65,
+    "init_image_source": "reviewed_editorial_svg",
+}
+REFERENCE_RENDERER = "CairoSVG"
+REFERENCE_RENDERER_VERSION = "2.7.1"
+REFERENCE_METADATA_KEYS = frozenset((
+    "source_article_sha256", "init_svg_sha256", "init_rgb_sha256", "renderer", "renderer_version",
+))
+
+
+def reference_metadata_valid(record: dict, *, article_sha256: str) -> bool:
+    """Proof describes the actual guide for a new render, never old JPEG bytes."""
+    return (isinstance(record, dict)
+            and all(isinstance(record.get(key), str) and re.fullmatch(r"[0-9a-f]{64}", record[key])
+                    for key in ("source_article_sha256", "init_svg_sha256", "init_rgb_sha256"))
+            and record["source_article_sha256"] != article_sha256
+            and record.get("renderer") == REFERENCE_RENDERER
+            and record.get("renderer_version") == REFERENCE_RENDERER_VERSION)
+
+
+def as_reference_pipeline(pipe):
+    """Reuse the verified CPU components without another model load or adapter."""
+    from diffusers import AutoPipelineForImage2Image
+
+    reference = AutoPipelineForImage2Image.from_pipe(pipe, requires_safety_checker=True)
+    for name in ("unet", "vae", "text_encoder", "tokenizer", "scheduler",
+                 "safety_checker", "feature_extractor"):
+        if getattr(reference, name) is not getattr(pipe, name):
+            raise RuntimeError("Reference pipeline must reuse the verified CPU components")
+    if reference.safety_checker is None or reference.feature_extractor is None:
+        raise RuntimeError("Reference pipeline requires the existing safety filter")
+    reference.to("cpu")
+    reference.enable_attention_slicing("auto")
+    reference.set_progress_bar_config(disable=True)
+    return reference
 
 ROOT = Path(__file__).resolve().parents[1]
 MIN_RUNNER_FREE_BYTES = 1_000_000_000

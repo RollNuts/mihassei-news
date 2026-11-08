@@ -32,6 +32,10 @@ on:
         description: 'One review-only scene for an illustration/held story; requires slug, retry_held, limit=1, publish=OFF'
         type: string
         default: ''
+      backfill_reference:
+        description: 'Use the original reviewed SVG as a guide for this manual backfill preview only'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -60,6 +64,7 @@ jobs:
       SCENE_SLUG: ${{ inputs.slug || '' }}
       RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
       BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}
+      BACKFILL_REFERENCE: ${{ inputs.backfill_reference && '1' || '0' }}
       SCENE_PUBLISH: ${{ inputs.publish && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
@@ -81,6 +86,7 @@ jobs:
                                     limit=int(os.environ['SCENE_LIMIT']),
                                     retry_held=os.environ['RETRY_HELD'] == '1',
                                     backfill_scene=os.environ['BACKFILL_SCENE'],
+                                    backfill_reference=os.environ['BACKFILL_REFERENCE'] == '1',
                                     review_dir=Path(os.environ['RUNNER_TEMP']) / 'cpu-scenes-review')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'pending={len(selected)}\n')
@@ -159,6 +165,12 @@ jobs:
         if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         run: |
           python3 -m pip install --no-cache-dir Pillow==11.1.0
+          if [ "$BACKFILL_REFERENCE" = 1 ]; then
+            if ! dpkg -s libcairo2 >/dev/null 2>&1; then
+              sudo apt-get install --no-install-recommends -y libcairo2
+            fi
+            python3 -m pip install --no-cache-dir CairoSVG==2.7.1
+          fi
           python3 -m unittest discover -s tests -p 'test_generated_photos.py' -v
           python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
       - name: Install CPU-only open-source local model runtime (no cache)
@@ -178,11 +190,12 @@ jobs:
           if [ -n "$SCENE_SLUG" ]; then args+=(--slug "$SCENE_SLUG"); fi
           if [ "$RETRY_HELD" = 1 ]; then args+=(--retry-held); fi
           if [ -n "$BACKFILL_SCENE" ]; then args+=(--backfill-scene "$BACKFILL_SCENE"); fi
+          if [ "$BACKFILL_REFERENCE" = 1 ]; then args+=(--backfill-reference); fi
           python3 scripts/github_cpu_scenes.py "${args[@]}"
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
           python3 scripts/build.py
       - name: Publish only matching images against latest main
-        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene
+        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -190,7 +203,7 @@ jobs:
           # GitHub-token pushes do not trigger ordinary push workflows.
           gh workflow run verify-public-photos.yml --ref main
       - name: Continue selected videos after a successful public image pass
-        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene
+        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
