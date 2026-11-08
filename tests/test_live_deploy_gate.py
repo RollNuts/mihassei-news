@@ -246,16 +246,12 @@ class PVAPIDeploymentTests(unittest.TestCase):
             "sessionTracking": {"unit": "session", "timezone": "Asia/Tokyo",
                                 "startedAtUtc": "2026-11-04T00:00:00.000Z",
                                 "inactivityTimeoutMinutes": 30},
-            "pageViewSources": {"x": 10, "search": 5, "external": 2, "unattributed": 15},
             "pageViewSourcesToday": {"x": 10, "search": 5, "external": 2, "unattributed": 15},
             "pageViewSourcesCurrentHour": {"x": 2, "search": 1, "external": 0, "unattributed": 1},
             "pageViewSourceTracking": {
                 "unit": "page-view", "timezone": "Asia/Tokyo",
                 "startedAtUtc": "2026-11-04T00:00:00.000Z",
                 "attribution": "session-acquisition-channel",
-            },
-            "pageViewKinds": {
-                "home": 10, "article": 15, "archive": 3, "serial": 1, "other": 1,
             },
             "pageViewKindsToday": {
                 "home": 10, "article": 15, "archive": 3, "serial": 1, "other": 1,
@@ -293,9 +289,6 @@ class PVAPIDeploymentTests(unittest.TestCase):
             },
             "articles": {slug: {"likes": 0, "readers": 500, "todayReaders": 200,
                                 "pageViews": 7, "todayPageViews": 7, "last7DaysPageViews": 7,
-                                "entrances": 5,
-                                "pageViewSources": {"x": 3, "search": 1,
-                                                    "external": 0, "unattributed": 3},
                                 "votes": {"plausible": 0, "unlikely": 0}}},
         }
 
