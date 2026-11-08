@@ -51,6 +51,9 @@ PROCEDURAL_PREMISE = re.compile(
 )
 SHORT_RUN = 6
 PROCEDURAL_RUN_THRESHOLD = 4
+# Advisory only: the elapsed-time headline may hide a thin personal anecdote.
+FIVE_YEAR_HOOK = re.compile(r"(?:5|五)年間?")
+FIVE_YEAR_RUN_THRESHOLD = 3
 CATEGORY_RUN_THRESHOLD = 5
 DIALOGUE_ENDING_THRESHOLD = 4
 
@@ -253,6 +256,16 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
     short_run = recent[:SHORT_RUN]
     if len(short_run) == SHORT_RUN:
         # A check relevant to the *next* editorial slot. Do not block this one.
+        five_year_count = sum(bool(FIVE_YEAR_HOOK.search(
+            str(a.get("title", ""))
+        )) for a in short_run)
+        if five_year_count >= FIVE_YEAR_RUN_THRESHOLD:
+            warnings.append((
+                "FIVE_YEAR_HEADLINE_RUN", "-",
+                f"直近{SHORT_RUN}本で5年の経過を見出しに使う記事が{five_year_count}本。"
+                "期間を長くしただけの個人の失敗談になっていないか確認。"
+                "世の中・商売・文化の変化を主役にした別案と比べる",
+            ))
         categories = Counter(a.get("category", "") for a in short_run)
         dominant, count = categories.most_common(1)[0]
         if dominant and count >= CATEGORY_RUN_THRESHOLD:
@@ -366,6 +379,8 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         lines.append(f"{dominant}が集中。確認できるニュース・公開投稿・生活や文化の話題から、別ジャンル・別の読者層も探す。")
     if "PROCEDURAL_PREMISE_LOOP" in labels:
         lines.append("確認・申請・認証・拒否の逆効果が続く。誤解、意外な成功、言葉遊び、善意の空回りなど別の笑いを探す。")
+    if "FIVE_YEAR_HEADLINE_RUN" in labels:
+        lines.append("5年経過の見出しが続く。個人が耐えたり損したりするだけの小話ではなく、2031年に何が変わったか分かる具体的な出来事を先に考える。期間の長さ自体をオチにしない。")
     if "FORMULA_FUTURE_INTRO_LOOP" in labels:
         lines.append("「2031年、架空の〜」を連発しない。年代は日付欄に任せ、人物・現場・原因は冒頭2文で示す。社名などの架空設定はその後に必要な分だけ添える。台詞始まりは必須ではない。")
     if "WORK_AI_CLUSTER" in labels:
