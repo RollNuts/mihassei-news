@@ -406,7 +406,7 @@
   }
   heartView();
 
-  async function apiPost(action,articleSlug="",choice="",viewId=""){
+  async function apiPost(action,articleSlug="",choice="",viewId="",publicArticles=[]){
     const payload={action,article:articleSlug,clientId:clientIdentifier()};
     if(action==="vote")payload.choice=choice;
     if(action==="visit"){
@@ -418,8 +418,16 @@
     }
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
     if(action==="visit" && viewId)payload.viewId=viewId;
-    const endpoint=(action==="visit" || action==="share")
-      ? "/api/engagement?response=ack" : "/api/engagement";
+    const params=new URLSearchParams();
+    if(action==="visit"){
+      params.set("response","public");
+      const slugs=[...new Set(publicArticles)]
+        .filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+        .sort().slice(0,20);
+      if(slugs.length)params.set("articles",slugs.join(","));
+    }else if(action==="share")params.set("response","ack");
+    else if(action==="like" || action==="vote")params.set("response","action");
+    const endpoint="/api/engagement"+(params.size?"?"+params.toString():"");
     const response=await fetch(endpoint,{
       method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify(payload),
@@ -675,14 +683,20 @@
     }
     return pvWidget ? pvHealthy : pvHealthy || legacyHealthy;
   }
-  async function refresh(){
+  async function refresh(seedSnapshot=null){
     if(refreshPromise)return refreshPromise; // Avoid overlapping requests.
     refreshPromise=(async()=>{
       try{
-        const slugs=requestedArticleSlugs(),batches=[];
-        for(let offset=0;offset<slugs.length;offset+=20)batches.push(slugs.slice(offset,offset+20));
-        if(!batches.length)batches.push([]);
-        const snapshots=await Promise.all(batches.map(async batch=>{
+        const slugs=requestedArticleSlugs().sort();
+        const seeded=seedSnapshot && typeof seedSnapshot==="object" &&
+          seedSnapshot.articles && typeof seedSnapshot.articles==="object" &&
+          !Array.isArray(seedSnapshot.articles) ? seedSnapshot : null;
+        const seededSlugs=new Set(Object.keys(seeded?.articles||{}));
+        const missing=slugs.filter(slug=>!seededSlugs.has(slug));
+        const batches=[];
+        for(let offset=0;offset<missing.length;offset+=20)batches.push(missing.slice(offset,offset+20));
+        if(!seeded && !batches.length)batches.push([]);
+        const fetched=await Promise.all(batches.map(async batch=>{
           const params=new URLSearchParams();
           params.set("view","public");
           if(batch.length)params.set("articles",batch.join(","));
@@ -692,6 +706,7 @@
           if(!res.ok)throw new Error("audience data unavailable");
           return res.json();
         }));
+        const snapshots=[...(seeded?[seeded]:[]),...fetched];
         const first=snapshots[0];
         if(!first || snapshots.some(item=>!item || !item.articles || typeof item.articles!=="object" ||
              Array.isArray(item.articles) || item.today?.dateJst!==first.today?.dateJst ||
@@ -726,12 +741,15 @@
     if(!visibleDocument() || !trackingAllowed() || view.pending || view.finished || view.attempts>=2)return;
     if(!view.id)view.id=makeId();
     view.pending=true;view.attempts++;
+    let snapshot=null;
     try{
-      await apiPost("visit",article,"",view.id);
+      snapshot=await apiPost("visit",article,"",view.id,requestedArticleSlugs());
       view.finished=true;
     }catch(_){/* A lost response may be retried safely with the same event ID. */}
     finally{view.pending=false;}
-    await refresh();
+    // A successful visit already carries the first compact metrics batch.
+    // During an outage, do not immediately double-hit the same API with GET.
+    if(view.finished)await refresh(snapshot);
     if(!view.finished && view===currentView && view.attempts<2 && typeof window.setTimeout==="function"){
       window.setTimeout(()=>{if(view===currentView)void recordView(view);},1500);
     }
@@ -832,7 +850,14 @@
       const result=await apiPost("like",slug);
       if(result.liked===true)likedSet.add(slug);
       else if(result.liked===false)likedSet.delete(slug);
-      await refresh();
+      if(Number.isSafeInteger(result.likes) && result.likes>=0){
+        document.querySelectorAll("[data-like-count]").forEach(node=>{
+          if(node.dataset.likeCount===slug){
+            node.textContent=Intl.NumberFormat("ja-JP").format(result.likes);
+            node.hidden=false;
+          }
+        });
+      }
     } catch(_){
       // Local personal preference remains available during Free-tier limits.
     } finally {
