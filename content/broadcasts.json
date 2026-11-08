@@ -1,6 +1,26 @@
 {
   "version": 1,
   "stories": {
+    "five-star-reviews-of-returned-humidifiers": {
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "cues": [
+        {
+          "at": 0,
+          "label": "星5の故障品",
+          "text": "故障で返品した客、店員には感謝して星5を付けた"
+        },
+        {
+          "at": 4,
+          "label": "高評価を信じて",
+          "text": "返品が相次いでも「低評価が一件もない」と追加発注"
+        },
+        {
+          "at": 8,
+          "label": "倉庫は返品の山",
+          "text": "箱が通路を塞ぐ。店員「もう一度来てくださる」"
+        }
+      ]
+    },
     "bakery-no-important-announcement-panic": {
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
       "cues": [
