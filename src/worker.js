@@ -176,15 +176,20 @@ export class NewsroomStats extends DurableObject {
     ).toArray().filter(row=>validArticle(row.article) && Number.isInteger(row.pageViews) && row.pageViews>0);
   }
   topArticleRowsForWeek(day, limit=10) {
-    const totals=new Map();
-    for(let i=0;i<7;i++){
+    const patterns=Array.from({length:7},(_,i)=>{
       const date=new Date((day.serial-6+i)*DAY_MS).toISOString().slice(0,10);
-      const prefix="day:"+date+":pageViews:";
-      for(const row of this.topArticleRows(prefix,1000))
-        totals.set(row.article,(totals.get(row.article)||0)+row.pageViews);
-    }
-    return [...totals].map(([article,pageViews])=>({article,pageViews}))
-      .sort((a,b)=>b.pageViews-a.pageViews || a.article.localeCompare(b.article)).slice(0,limit);
+      return "day:"+date+":pageViews:%";
+    });
+    const where=patterns.map(()=>"key LIKE ?").join(" OR ");
+    // Article-counter prefixes are fixed-width ASCII:
+    // "day:YYYY-MM-DD:pageViews:" is 25 characters, so the slug starts at 26.
+    return this.sql.exec(
+      "SELECT substr(key,26) AS article,SUM(value) AS pageViews FROM counters "+
+      "WHERE ("+where+") AND value>0 GROUP BY article "+
+      "ORDER BY pageViews DESC,article ASC LIMIT ?",
+      ...patterns,limit
+    ).toArray().filter(row=>validArticle(row.article) &&
+      Number.isInteger(row.pageViews) && row.pageViews>0);
   }
   pageViewSourceSummary(day, currentHour, startedAt) {
     const channels={};
