@@ -570,6 +570,10 @@ class SiteTests(unittest.TestCase):
         self.assertTrue((ROOT/"dist/assets/comment-activity.js").is_file())
         highlights=(ROOT/"assets/comment-activity.js").read_text(encoding="utf-8")
         self.assertIn("/api/comments/summary?",highlights)
+        self.assertIn("IntersectionObserver",highlights)
+        self.assertIn("rootMargin:'600px'",highlights)
+        self.assertIn("Date.now()+600000",highlights)
+        self.assertNotIn("Date.now()+90000",highlights)
         self.assertNotIn(".innerHTML=",highlights)
 
     def test_real_publication_time_is_not_fictional_dateline(self):
