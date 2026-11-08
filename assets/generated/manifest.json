@@ -659,9 +659,13 @@
     },
     "film-village-all-stars-no-extras": {
       "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "reason": "Visual review of negative-guided CPU retry 42000558053: background people were reduced but several pedestrians still remain, while the director, shopping bags and tripod-camera action are not clearly depicted. The no-extras joke is still not readable enough, so hold the JPEG and keep the safe fallback instead of spending repeated CPU retries.",
-      "rejected_candidate_sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+      "reason": "Actual visual review of full Realistic Vision 24-step preview 42461246270: naturally lit wooden buildings and an empty paved lane look photographic, but no film director, grocery bags or tripod film camera is visible. The article's director acting as the only extra is absent. Reject this candidate, retain the current story-specific SVG, and move to another article on a later free daily backfill slot rather than retry today.",
+      "rejected_candidate_sha256": "d0c7f9b077269d2150b829f857620645145e89144b3d0a3e2138f0b99f59e76b",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42461246270",
+      "reviewed_at": "2026-11-08T08:14:58.356695+00:00",
+      "source_article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "trial_article_sha256": "16a4591be35652350d9e83445d66558ddefa85be9781634736b8b2f60d6c756e",
+      "trial_scene_prompt": "A solitary Japanese film director carries plain grocery bags past a film camera on a tripod on an empty historical film-set lane. Blank wooden walls, daylight, no storefront signs or other people."
     },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",

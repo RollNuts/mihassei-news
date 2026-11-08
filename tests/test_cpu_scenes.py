@@ -511,6 +511,7 @@ class FreeCpuImageTests(unittest.TestCase):
                  patch.object(cpu, "load_pipeline", return_value=(None, None)), \
                  patch.object(cpu, "permitted_ci", return_value=True), \
                  patch.object(cpu, "_git_read", side_effect=AssertionError("normal generation performed a backfill network check")) as git_read, \
+                 patch.object(cpu, "check_backfill_storage", side_effect=AssertionError("normal generation changed its disk policy")) as storage, \
                  patch.object(cpu, "render_one", return_value=jpeg_header_fixture()) as render, \
                  patch.object(cpu, "ensure_disk", side_effect=[None, RuntimeError("disk full")]), \
                  contextlib.redirect_stdout(io.StringIO()):
@@ -519,6 +520,7 @@ class FreeCpuImageTests(unittest.TestCase):
             self.assertEqual(json.loads((bundle / "content/articles.json").read_text()), [a])
             self.assertTrue(usable_generated_scene(a, root=bundle))
             git_read.assert_not_called()
+            storage.assert_not_called()
             self.assertEqual(render.call_args.kwargs, {})
 
     def test_cpu_generator_rejects_model_safety_filter(self):
@@ -754,7 +756,78 @@ class CpuBackfillTests(unittest.TestCase):
                 self.assertIs(callback(None, step, 0, tensors), tensors)
             check.assert_not_called()
             self.assertIs(callback(None, 3, 0, tensors), tensors)
-            check.assert_called_once_with("a" * 40)
+            check.assert_called_once_with("a" * 40, review_parent=None)
+
+    def test_backfill_archive_budget_includes_live_archive_reserved_bytes_and_one_max_jpeg(self):
+        with patch.object(cpu, "check_storage") as check, \
+             patch.object(cpu, "archive_bytes", return_value=cpu.MAX_ARCHIVE_BYTES - cpu.MAX_SCENE_BYTES - 5), \
+             patch.object(cpu, "reserved_jpeg_bytes", return_value=5):
+            cpu.check_backfill_storage(self.root, review_parent=self.directory)
+            check.assert_called_once_with([self.root, self.directory], cpu.MIN_FREE_GIB)
+            with patch.object(cpu, "reserved_jpeg_bytes", return_value=6), \
+                 self.assertRaises(cpu.StorageLimitError):
+                cpu.check_backfill_storage(self.root, review_parent=self.directory)
+
+    def test_source_disk_and_combined_archive_limits_reject_before_loading_or_writing(self):
+        source = self.root / "content/articles.json"
+        source.parent.mkdir()
+        source.write_text(json.dumps([self.original]))
+        original_bytes = source.read_bytes()
+        for free, size in ((cpu.MIN_FREE_GIB * 1024**3 - 1, 0),
+                           (100 * 1024**3, cpu.MAX_ARCHIVE_BYTES - cpu.MAX_SCENE_BYTES + 1)):
+            with self.subTest(free=free, archive=size), \
+                 patch.dict(os.environ, self.env), self.healthy_review(), \
+                 patch.object(cpu, "ROOT", self.root), \
+                 patch.object(cpu, "load_articles", return_value=[self.original]), \
+                 patch.object(cpu.shutil, "disk_usage", return_value=SimpleNamespace(free=free)), \
+                 patch.object(cpu, "archive_bytes", return_value=size), \
+                 patch.object(cpu, "reserved_jpeg_bytes", return_value=0), \
+                 patch.object(cpu, "load_pipeline", side_effect=AssertionError("model loaded")), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(cpu.StorageLimitError):
+                    cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                              "--review-dir", str(self.bundle), "--backfill-scene", self.scene])
+            self.assertEqual(source.read_bytes(), original_bytes)
+            self.assertFalse(self.bundle.exists())
+            self.assertFalse((self.root / "assets/generated").exists())
+            self.assertFalse(any(self.directory.glob(".cpu-backfill-*")))
+
+    def test_storage_drop_after_load_or_before_write_preserves_sources_and_cleans_stage(self):
+        source = self.root / "content/articles.json"
+        source.parent.mkdir()
+        source.write_text(json.dumps([self.original]))
+        original_bytes = source.read_bytes()
+        for failure_check in (3, 4):
+            checks = [None] * (failure_check - 1) + [cpu.StorageLimitError("disk space dropped")]
+            with self.subTest(checkpoint=failure_check), \
+                 patch.dict(os.environ, self.env), self.healthy_review(), \
+                 patch.object(cpu, "ROOT", self.root), \
+                 patch.object(cpu, "load_articles", return_value=[self.original]), \
+                 patch.object(cpu, "permitted_ci", return_value=True), \
+                 patch.object(cpu, "_git_read", side_effect=self.same_main), \
+                 patch.object(cpu, "check_backfill_storage", side_effect=checks), \
+                 patch.object(cpu, "load_pipeline", return_value=(None, None)) as load, \
+                 patch.object(cpu, "render_one", return_value=jpeg_header_fixture()) as render, \
+                 patch.object(cpu, "write_generated", side_effect=AssertionError("source written")), \
+                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(RuntimeError):
+                    cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                              "--review-dir", str(self.bundle), "--backfill-scene", self.scene])
+                load.assert_called_once()
+                self.assertEqual(render.call_count, 0 if failure_check == 3 else 1)
+            self.assertEqual(source.read_bytes(), original_bytes)
+            self.assertFalse(self.bundle.exists())
+            self.assertFalse(any(self.directory.glob(".cpu-backfill-*")))
+
+    def test_step_guard_stops_on_low_storage_before_another_network_check(self):
+        callback = cpu.backfill_step_callback("a" * 40, review_parent=self.directory)
+        with patch.object(cpu, "ROOT", self.root), \
+             patch.object(cpu.shutil, "disk_usage", return_value=SimpleNamespace(free=11 * 1024**3)), \
+             patch.object(cpu, "_git_read", side_effect=AssertionError("network reached before low-space stop")):
+            for step in range(3):
+                self.assertEqual(callback(None, step, 0, {}), {})
+            with self.assertRaises(cpu.StorageLimitError):
+                callback(None, 3, 0, {})
 
     def test_new_main_interrupts_preview_without_changing_live_sources(self):
         source = self.root / "content/articles.json"
