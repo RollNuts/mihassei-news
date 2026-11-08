@@ -17,6 +17,9 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         prompt = guide.split(heading, 1)[1].split("\n### ", 1)[0].strip()
         self.assertLessEqual(len(prompt), 450, "Replace the short prompt; do not append a rule history")
         self.assertIn("候補3案", prompt)
+        self.assertIn("社会・商売・集団の変化", prompt)
+        self.assertIn("5年我慢するだけの弱い小ネタ", prompt)
+        self.assertIn("ニュース性", prompt)
         self.assertIn("弱い小ネタ", prompt)
         self.assertIn("冒頭2文", prompt)
         self.assertIn("原因", prompt)
@@ -45,6 +48,14 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("なぜ変", prompt)
         for directive in STALE_DIRECTIVES:
             self.assertNotIn(directive, guide)
+
+    def test_future_news_premise_is_not_just_a_foolish_character(self):
+        guide = (ROOT / "docs/EDITORIAL_LOOP.md").read_text(encoding="utf-8")
+        self.assertIn("### 先に「ニュースになる変化」を考える", guide)
+        self.assertIn("この人が馬鹿だから起きた", guide)
+        self.assertIn("まともな人でもそうなる", guide)
+        self.assertIn("個人の行動理由が説明できること", guide.replace("人間の行動理由が説明できること", "個人の行動理由が説明できること"))
+        self.assertIn("個人の失敗談にも鋭い観察", guide)
 
     def test_weak_story_gate_rejects_merely_valid_but_dull_premises(self):
         guide = (ROOT / "docs/EDITORIAL_LOOP.md").read_text(encoding="utf-8")
@@ -76,6 +87,8 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
             self.assertNotIn(directive, advice + warnings)
         self.assertIn("人物・現場・原因は冒頭2文", advice)
         self.assertIn("台詞始まりは必須ではない", advice)
+        self.assertIn("今の仕組み・商売・集団の変化", advice)
+        self.assertIn("個人が5年間我慢して損をするだけなら作り直す", advice)
         self.assertIn("二度目の逆転は不要", advice)
         self.assertIn("警告だけで発行を止めない", advice)
         self.assertEqual(articles, before)
