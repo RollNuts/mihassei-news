@@ -667,12 +667,15 @@ test('30-minute sessions and session-acquisition page-view sources are counted s
   assert.equal('entrances' in snapshot.articles['story-a'],false);
   assert.equal('pageViewSources' in snapshot.articles['story-a'],false);
 
+  f.setTime('2026-11-06T10:05:00Z');
   const secondSession=randomUUID();
   await f.post(sessionView(browser,'story-b',secondSession,'search'));
   snapshot=(await f.get('story-a,story-b')).data;
   assert.equal(snapshot.sessions,2);
   assert.equal(snapshot.today.sessions,2);
+  assert.equal(snapshot.pageViewSourcesToday.x,2);
   assert.equal(snapshot.pageViewSourcesToday.search,1);
+  assert.equal(snapshot.pageViewSourcesCurrentHour.x,0);
   assert.equal(snapshot.pageViewSourcesCurrentHour.search,1);
   assert.equal(snapshot.pageViewSourceTracking.attribution,'session-acquisition-channel');
   const historical=(await f.get('story-a,story-b','2026-11-06')).data;
