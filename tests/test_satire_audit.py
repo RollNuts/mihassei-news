@@ -306,7 +306,7 @@ class SatireAuditTests(unittest.TestCase):
         self.assertIn("直近6本",rendered)
         self.assertIn("確認・申請・認証・拒否",rendered)
         self.assertIn("社会が集中",rendered)
-        self.assertIn("見出し3案",rendered)
+        self.assertIn("公開前の6点",rendered)
         self.assertIn("警告だけで発行を止めない",rendered)
         self.assertEqual(articles,original)
         self.assertEqual(len(articles),6)
