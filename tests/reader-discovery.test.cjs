@@ -47,8 +47,33 @@ async function simulate(candidates,counts,options={}){
     },
     querySelectorAll(){return [];},createElement:element,addEventListener(){}
   };
-  let releaseBatch,failed=Boolean(options.apiFails),batchIndex=0;
-  const batchGate=options.delaySecondBatch?new Promise(resolve=>{releaseBatch=resolve;}):null;
+  let failed=Boolean(options.apiFails);
+  const metricFor=slug=>typeof counts[slug]==='number'?metrics(counts[slug]):counts[slug];
+  const ranking=()=>Object.keys(counts)
+    .filter(slug=>/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+    .map(slug=>({slug,metric:metricFor(slug)}))
+    .filter(item=>item.metric && Number.isSafeInteger(item.metric.last7DaysPageViews) &&
+      item.metric.last7DaysPageViews>0 && Number.isSafeInteger(item.metric.todayPageViews) &&
+      item.metric.todayPageViews>=0 && item.metric.todayPageViews<=item.metric.last7DaysPageViews)
+    .map(item=>({article:item.slug,pageViews:item.metric.last7DaysPageViews,
+                 todayPageViews:item.metric.todayPageViews}));
+  const snapshotFor=url=>{
+    const parsed=new URL('https://veripsa.com'+url);
+    const slugs=(parsed.searchParams.get('articles')||'').split(',').filter(Boolean);
+    const articles=Object.fromEntries(slugs.filter(slug=>Object.hasOwn(counts,slug)).map(slug=>[
+      slug,metricFor(slug)
+    ]));
+    if(options.legacy)return {unit:'anonymous-browser',visitors:900,
+      today:{dateJst:'2026-11-04',visitors:500,articleReads:800},articles};
+    const summary=header();
+    if(options.partial){
+      summary.pageViewTracking.startedAtUtc='2026-11-04T00:00:00Z';
+      summary.last7Days.complete=false;summary.last7Days.measuredDays=1;
+    }
+    if(parsed.searchParams.get('popular')==='1' && !options.noServerRanking)
+      summary.topArticles={last7Days:ranking()};
+    return {...summary,articles};
+  };
   const ctx={
     window:{setInterval(callback){intervals.push(callback);},addEventListener(){}},
     document:doc,Date,Intl,URL,URLSearchParams,
@@ -57,28 +82,13 @@ async function simulate(candidates,counts,options={}){
     crypto:{randomUUID:()=>'aabbccdd-eeff-4abb-8ccc-123456789012'},
     fetch:async(url,request={})=>{
       calls.push({url,method:request.method||'GET'});
-      if(request.method==='POST')return {ok:true,json:async()=>({})};
-      const index=batchIndex++;
-      if(batchGate && index===1)await batchGate;
-      if(failed || options.failSecondBatch && index===1)return {ok:false,json:async()=>({})};
-      const slugs=(new URL('https://veripsa.com'+url).searchParams.get('articles')||'').split(',').filter(Boolean);
-      const articles=Object.fromEntries(slugs.filter(slug=>Object.hasOwn(counts,slug)).map(slug=>[
-        slug,typeof counts[slug]==='number'?metrics(counts[slug]):counts[slug]
-      ]));
-      const summary=header();
-      if(options.partial){
-        summary.pageViewTracking.startedAtUtc='2026-11-04T00:00:00Z';
-        summary.last7Days.complete=false;summary.last7Days.measuredDays=1;
-      }
-      if(options.splitDays && index===1)summary.today.dateJst='2026-11-05';
-      if(options.legacy)return {ok:true,json:async()=>({unit:'anonymous-browser',visitors:900,
-        today:{dateJst:'2026-11-04',visitors:500,articleReads:800},articles})};
-      return {ok:true,json:async()=>({...summary,articles})};
+      if(failed)return {ok:false,json:async()=>({})};
+      return {ok:true,json:async()=>snapshotFor(url)};
     }
   };
   vm.runInNewContext(source,vm.createContext(ctx),{timeout:1500});
   await settle();
-  return {popular,period,fallback,rankings,calls,intervals,releaseBatch,fail(){failed=true;}};
+  return {popular,period,fallback,rankings,calls,intervals,fail(){failed=true;}};
 }
 const urls=result=>result.rankings.map(li=>li.children[1].children[1].href);
 
@@ -89,7 +99,7 @@ test('zero, unmeasured and missing PV never create a popularity claim or remove 
     assert.equal(result.popular.hidden,true);
     assert.equal(result.fallback.hidden,false);
     assert.equal(result.rankings.length,0);
-    assert.equal(result.calls.filter(x=>x.method==='GET').length,1);
+    assert.equal(result.calls.filter(x=>x.method==='GET').length,0);
     assert.equal(result.calls.filter(x=>x.method==='POST').length,1);
   }
   const legacy=await simulate(items,{a:{readers:500},b:{readers:300}},{legacy:true});
@@ -111,7 +121,8 @@ test('last-seven-day PV determines the actual top three, regardless of browser o
   assert.equal(result.rankings[0].children[0].textContent,'01');
   assert.equal(result.rankings[0].children[1].children[0].textContent,'経済');
   assert.equal(result.period.textContent,'過去7日間のPV順');
-  assert.equal(result.calls.filter(x=>x.method==='GET').length,1,'reuse the shared statistics request');
+  assert.equal(result.calls.filter(x=>x.method==='GET').length,0,
+    'the visit response already carries the authoritative ranking');
 });
 
 test('ties use today PV and then real-publication candidate order',async()=>{
@@ -128,20 +139,20 @@ test('one observed PV is displayed honestly and partial tracking states its actu
   assert.equal(result.period.textContent,'2026/11/4からのPV順');
 });
 
-test('all published candidates remain eligible beyond twenty and wait for complete batches',async()=>{
-  const items=Array.from({length:25},(_,i)=>candidate('story-'+i,'掲載記事 '+i));
+test('all published candidates remain eligible beyond twenty without client-side metric batches',async()=>{
+  const items=Array.from({length:60},(_,i)=>candidate('story-'+i,'掲載記事 '+i));
   const counts=Object.fromEntries(items.map((v,i)=>[v.slug,i+1]));
-  const result=await simulate(items,counts,{delaySecondBatch:true});
-  assert.equal(result.calls.filter(x=>x.method==='GET').length,2);
-  assert.equal(result.popular.hidden,true,'the first twenty cannot be presented as the whole ranking');
-  assert.equal(result.fallback.hidden,false);
-  result.releaseBatch();await settle();
+  const result=await simulate(items,counts);
+  assert.equal(result.calls.filter(x=>x.method==='POST').length,1);
+  assert.equal(result.calls.filter(x=>x.method==='GET').length,0,
+    'homepage ranking is returned with the visit instead of fetching all sixty stories');
   assert.equal(result.popular.hidden,false);
-  assert.deepEqual(urls(result),['/articles/story-24/','/articles/story-23/','/articles/story-22/']);
-  const batches=result.calls.filter(x=>x.method==='GET').map(call=>
-    new URL('https://veripsa.com'+call.url).searchParams.get('articles').split(','));
-  assert.deepEqual(batches.map(batch=>batch.length),[20,5]);
-  assert.deepEqual(batches.flat(),items.map(item=>item.slug));
+  assert.equal(result.fallback.hidden,true);
+  assert.deepEqual(urls(result),['/articles/story-59/','/articles/story-58/','/articles/story-57/']);
+  const request=new URL('https://veripsa.com'+result.calls[0].url);
+  assert.equal(request.searchParams.get('popular'),'1');
+  assert.equal(request.searchParams.get('articles'),null,
+    'popular candidates do not inflate the per-article metrics query');
 });
 
 test('invalid, duplicate and current-article candidates cannot create unsafe or self recommendations',async()=>{
@@ -153,24 +164,22 @@ test('invalid, duplicate and current-article candidates cannot create unsafe or 
   assert.equal(result.rankings[0].children[1].children[1].textContent,'<img src=x onerror=alert(1)>');
 });
 
-test('a missing candidate or missing recent-period fields cannot be treated as zero',async()=>{
+test('authoritative server ranking may omit zero or malformed candidate rows safely',async()=>{
   const items=[candidate('a','A'),candidate('b','B')];
-  for(const counts of [
-    {a:50},
-    {a:50,b:{readers:100,pageViews:1000,todayPageViews:10}},
-    {a:50,b:{...metrics(20),todayPageViews:undefined}},
-    {a:50,b:{...metrics(20),todayPageViews:21}}
-  ]){
-    const result=await simulate(items,counts);
-    assert.equal(result.popular.hidden,true);
-    assert.equal(result.fallback.hidden,false);
-  }
+  const result=await simulate(items,{a:50,b:0});
+  assert.equal(result.popular.hidden,false);
+  assert.deepEqual(urls(result),['/articles/a/']);
+  assert.equal(result.rankings[0].children[2].textContent,'50 PV');
+
+  const malformed=await simulate(items,{a:{...metrics(20),todayPageViews:21},b:0});
+  assert.equal(malformed.popular.hidden,true,'invalid ranking rows are never promoted');
+  assert.equal(malformed.fallback.hidden,false);
 });
 
-test('failed or mixed-day batches do not expose a partial ranking',async()=>{
+test('failed or non-authoritative initial metrics never expose a partial ranking',async()=>{
   const items=Array.from({length:21},(_,i)=>candidate('story-'+i,'記事'+i));
   const counts=Object.fromEntries(items.map((item,i)=>[item.slug,i+1]));
-  for(const options of [{apiFails:true},{failSecondBatch:true},{splitDays:true}]){
+  for(const options of [{apiFails:true},{noServerRanking:true}]){
     const result=await simulate(items,counts,options);
     assert.equal(result.popular.hidden,true);
     assert.equal(result.fallback.hidden,false);
