@@ -41,7 +41,19 @@ except ImportError:
     )
 
 MAX_CPU_BATCH = 3
+MAX_DAILY_BACKFILLS = 3
 BACKFILL_RUN_PREFIX = "Photo backfill: "
+# New content and image inputs preempt old-photo trials. Publishing metadata,
+# documentation and unrelated site edits do not change this generation queue.
+BACKFILL_PRIORITY_PATHS = (
+    "content/articles.json", "content/visual_reviews.json", "content/approved_photos.json", "assets/generated",
+    "assets/editorial-scenes", "assets/photos", "scripts/github_cpu_scenes.py",
+    "scripts/cpu_photo_model.py", "scripts/generated_photos.py",
+    "scripts/local_scene_photos.py", "scripts/local_scene_sync.py",
+    "scripts/publish_cpu_scenes.py", "scripts/visual_review.py",
+    "scripts/editorial_covers.py", "scripts/media_policy.py",
+    ".github/workflows/free-cpu-scenes.yml",
+)
 MIN_RUNNER_FREE_BYTES = 1_000_000_000
 CLIP_TOKEN_LIMIT = 77
 TV_PILOT_SLUG = "variety-700-guests-only-introductions"
@@ -49,6 +61,11 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
+    "fridge-checkin-five-years-only-opening-times": (
+        "Close-up of a white refrigerator door covered with yellow paper notes "
+        "beside its large handle. A black smartphone lies face-down on the "
+        "kitchen counter in the foreground. Daylight."
+    ),
     "sleep-advice-livestream-until-two-am": (
         "A tired Japanese woman presses a plain concealer stick below one eye "
         "at a desk beside a lit ring light and a smartphone on a tripod. "
@@ -113,6 +130,7 @@ CPU_SCENES = {
 # versions. A later body or scene edit must use its current direction rather
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
+    "fridge-checkin-five-years-only-opening-times": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
     "sleep-advice-livestream-until-two-am": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
     "five-star-reviews-of-returned-humidifiers": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
     "midterm-prediction-notebook-full-of-holes": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
@@ -260,7 +278,7 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
 
 def backfill_run_allowed(runs: list[dict], current_run_id: int, *, current_run_attempt: int,
                          now: datetime | None = None) -> bool:
-    """The first attempted backfill workflow run per JST day owns that quota."""
+    """Bound daily attempts and allow each old story only one trial per JST day."""
     if type(current_run_attempt) is not int or current_run_attempt < 1:
         raise ValueError("Backfill requires a positive integer workflow attempt")
     if current_run_attempt != 1:
@@ -294,10 +312,15 @@ def backfill_run_allowed(runs: list[dict], current_run_id: int, *, current_run_a
         if timestamp.tzinfo is None:
             raise ValueError("Backfill workflow run time must include timezone")
         if timestamp.astimezone(jst).date() == today:
-            candidates.append((timestamp, identifier))
-    if current_run_id not in {identifier for _, identifier in candidates}:
+            candidates.append((timestamp, identifier, title[len(BACKFILL_RUN_PREFIX):]))
+    if current_run_id not in {identifier for _, identifier, _ in candidates}:
         raise ValueError("Current backfill run is absent from today's workflow inventory")
-    return min(candidates)[1] == current_run_id
+    ordered = sorted(candidates)
+    position = next(index for index, (_, identifier, _) in enumerate(ordered)
+                    if identifier == current_run_id)
+    slug = ordered[position][2]
+    return (position < MAX_DAILY_BACKFILLS
+            and all(previous_slug != slug for _, _, previous_slug in ordered[:position]))
 
 
 def _git_read(*arguments: str) -> str:
@@ -318,13 +341,24 @@ def check_backfill_storage(root: Path | None = None, *, review_parent: Path | No
 
 
 def check_main_unchanged(revision: str, *, review_parent: Path | None = None) -> None:
-    """Yield the shared runner to any newer main; never fetch, reset or push."""
+    """Yield to changed article/image inputs; never alter checkout contents."""
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise RuntimeError("Backfill stopped: invalid checkout revision")
     check_backfill_storage(review_parent=review_parent)
     remote = _git_read("ls-remote", "--exit-code", "origin", "refs/heads/main").split()
-    if remote != [revision, "refs/heads/main"]:
-        raise RuntimeError("Backfill stopped: main advanced; current articles take priority")
+    if (len(remote) != 2 or not re.fullmatch(r"[0-9a-f]{40}", remote[0])
+            or remote[1] != "refs/heads/main"):
+        raise RuntimeError("Backfill stopped: invalid remote main revision")
+    if remote[0] == revision:
+        return
+    # Fetch the pinned commit's trees, not model/JPEG blobs. Name-only diff with
+    # rename detection disabled needs no file contents and changes no worktree.
+    _git_read("fetch", "--no-tags", "--depth=1", "--filter=blob:none", "origin", remote[0])
+    check_backfill_storage(review_parent=review_parent)
+    changed = _git_read("diff", "--no-renames", "--name-only", revision, remote[0],
+                        "--", *BACKFILL_PRIORITY_PATHS)
+    if changed:
+        raise RuntimeError("Backfill stopped: main advanced; current article/image inputs take priority")
 
 
 def backfill_step_callback(revision: str, *, review_parent: Path | None = None):

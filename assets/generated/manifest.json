@@ -773,6 +773,13 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "fridge-checkin-five-years-only-opening-times": {
+      "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
+      "reason": "Actual JPEG inspection of run 42464807720: natural-looking kitchen with two adult women, but no elderly father, identifiable refrigerator, paper notes or smartphone. The actor-and-prop sentence was omitted by the CLIP budget while the setting-only opening survived. Reject this image and retain the current story-specific SVG; a short source-bound prop-first scene is required for any new trial.",
+      "rejected_candidate_sha256": "43e53c2879062cebb2271d140f3b483b91bb09e65ebdc08e49c16be815cffa7d",
+      "reviewed_at": "2026-11-08T09:24:04.145319+00:00",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42464807720"
     }
   },
   "version": 1
