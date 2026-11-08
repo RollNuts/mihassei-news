@@ -44,6 +44,13 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     }));
     return {status:response.status,data:await response.json()};
   };
+  const postAck=async(payload,headers={})=>{
+    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?response=ack',{
+      method:'POST',headers:{'content-type':'application/json',...headers},
+      body:JSON.stringify(payload)
+    }));
+    return {status:response.status,data:await response.json()};
+  };
   const get=async(articles='story-a,story-b',day,hour)=>{
     const params=new URLSearchParams({articles});
     if(day!==undefined)params.set('day',day);
@@ -51,7 +58,12 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  return {db,post,get,setTime(value){now=Date.parse(value);}};
+  const getPublic=async(articles='story-a,story-b')=>{
+    const params=new URLSearchParams({articles,view:'public'});
+    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
+    return {status:response.status,data:await response.json()};
+  };
+  return {db,post,postAck,get,getPublic,setTime(value){now=Date.parse(value);}};
 }
 
 function view(clientId,article='story-a',viewId=randomUUID()){
@@ -141,6 +153,43 @@ test('new page loads count PV while retries, widget reads and reactions do not',
   assert.ok(events.every(event=>/^[a-f0-9]{64}$/.test(event.id)));
   assert.ok(events.every(event=>event.id!==browser && event.id!==article.viewId));
   assert.deepEqual(Object.keys(events[0]).sort(),['day','id']);
+});
+
+test('public snapshot keeps reader metrics but omits expensive operational diagnostics',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID();
+  assert.deepEqual((await f.postAck(view(browser,'story-a'))).data,{ok:true});
+  await f.post(view(browser,'story-b'));
+  await f.post({action:'like',clientId:browser,article:'story-a'});
+  await f.post({action:'vote',clientId:browser,article:'story-a',choice:'plausible'});
+
+  const snapshot=(await f.getPublic('story-a,story-b')).data;
+  assert.equal(snapshot.pageViews,2);
+  assert.equal(snapshot.today.pageViews,2);
+  assert.equal(snapshot.last7Days.pageViews,2);
+  assert.equal(snapshot.articles['story-a'].pageViews,1);
+  assert.equal(snapshot.articles['story-a'].todayPageViews,1);
+  assert.equal(snapshot.articles['story-a'].last7DaysPageViews,1);
+  assert.equal(snapshot.articles['story-a'].likes,1);
+  assert.equal(snapshot.articles['story-a'].votes.plausible,1);
+  assert.equal(snapshot.articles['story-a'].votes.unlikely,0);
+  for(const key of ['hourly','topArticles','pageViewSources','pageViewKinds','sessionTracking','channels'])
+    assert.equal(key in snapshot,false,'public response should omit '+key);
+  for(const key of ['entrances','pageViewSources','continuedReaders','arrivals','shareClicks'])
+    assert.equal(key in snapshot.articles['story-a'],false,'public article response should omit '+key);
+});
+
+test('ack visit still records a real display without building the full diagnostics response',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID(),event=view(browser,'story-a');
+  const first=await f.postAck(event);
+  assert.equal(first.status,200);
+  assert.deepEqual(first.data,{ok:true});
+  const retry=await f.postAck(event);
+  assert.deepEqual(retry.data,{ok:true});
+  const full=(await f.get('story-a')).data;
+  assert.equal(full.pageViews,1);
+  assert.equal(full.articles['story-a'].pageViews,1);
 });
 
 test('malformed display IDs and display IDs attached to reactions cannot mutate counts',async t=>{
