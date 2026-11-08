@@ -228,7 +228,7 @@ jobs:
                               or "startedAtUtc" not in source_tracking):
                               raise RuntimeError("page-view source metadata missing")
                           source_started=source_tracking["startedAtUtc"]
-                          for field in ("pageViewSources","pageViewSourcesToday","pageViewSourcesCurrentHour"):
+                          for field in ("pageViewSourcesToday","pageViewSourcesCurrentHour"):
                               values=data.get(field)
                               if not isinstance(values,dict) or set(values)!=set(source_keys):
                                   raise RuntimeError("page-view source counters missing: "+field)
@@ -251,7 +251,7 @@ jobs:
                               or "startedAtUtc" not in kind_tracking):
                               raise RuntimeError("page-kind PV metadata missing")
                           kind_started=kind_tracking["startedAtUtc"]
-                          for field in ("pageViewKinds","pageViewKindsToday","pageViewKindsCurrentHour"):
+                          for field in ("pageViewKindsToday","pageViewKindsCurrentHour"):
                               values=data.get(field)
                               if not isinstance(values,dict) or set(values)!=set(kind_keys):
                                   raise RuntimeError("page-kind PV counters missing: "+field)
@@ -267,8 +267,9 @@ jobs:
                               if sum(data["pageViewKindsToday"].values())>today["pageViews"]:
                                   raise RuntimeError("page-kind PV exceeds today's PV")
 
-                          if "entrances" not in details or "pageViewSources" not in details:
-                              raise RuntimeError("article diagnostics v2 fields missing")
+                          if ("pageViewSources" in data or "pageViewKinds" in data
+                              or "entrances" in details or "pageViewSources" in details):
+                              raise RuntimeError("retired high-write analytics fields are still exposed")
                           print("VERIFIED diagnostics v2: sessions={} / hourlyMeasured={} / topToday={} / sources={} / pageKinds={}".format(
                               data.get("sessions"),measured_hourly,top["today"][:3],
                               data.get("pageViewSourcesToday"),data.get("pageViewKindsToday")))
