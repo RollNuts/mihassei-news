@@ -1,5 +1,67 @@
 [
   {
+    "slug": "employee-survey-free-text-none-299",
+    "category": "社会",
+    "flash": "本音を集めたら「特になし」299件",
+    "fiction_company": "事務会社「波間事務サービス」",
+    "art": "meeting",
+    "fiction_at": "2031-11-08T09:37:00+09:00",
+    "published_at": "2026-11-08T09:37:00+09:00",
+    "title": "「自由記述」必須の社内アンケート、299人が「特になし」　唯一の改善案には追加15問",
+    "summary": "社員の本音を集めたい会社が自由記述を必須にした。空欄だと上司へ通知されるため、300人中299人が「特になし」と入力。残る一人が「アンケートを減らして」と訴えると、理由を問う追加15問が届いた。",
+    "paragraphs": [
+      "2031年11月8日、従業員300人の事務会社「波間事務サービス」が、社内アンケートの回答率100％を発表した。職場の本音を集めるため、今年から「ご意見を自由に」と書かれた記述欄まで必須にした。人事の浜田主任は「役員会で未回答が一人でもいると、私の評価が下がるんです」と話す。",
+      "空欄のまま送信すると、翌日には所属長へ未回答の通知が届く。社員は「本音を書くと後で呼び出されそうだ」と感じ、短い返事を探した。300人のうち299人が選んだのは「特になし」。部署をまたいで同じ五文字が並んだが、回答率は目標の100％を達成した。",
+      "一人だけ、総務の古谷さんが「毎月の調査を減らしてほしい。答えるだけで休憩時間がなくなる」と書いた。人事は真面目に取り上げようとしたものの、上司から「アンケートそのものへの意見は、このアンケートの改善項目ではない」と差し戻された。役員会では「改善要望ゼロ」の報告が拍手を浴びた。",
+      "翌朝、古谷さんには「アンケートの負担について詳しく聞かせてください」という追加15問が届いた。最後の自由記述も必須だった。古谷さんはしばらく画面を見つめ、「特になし」と打ち込んだ。"
+    ],
+    "source": {
+      "kind": "調査",
+      "publisher": "リアルワン株式会社",
+      "published_at": "2026-10-08T10:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000006.000185212.html",
+      "topic": "リアルワンが2026年10月8日に公表した『働く人の仕事と職場に関する意識調査2026』では、従業員満足度42.9％など、働く人の回答を分析している。作中企業、記述欄の強制、回答率100％、299人の同文回答、追加15問はすべて2031年の創作であり、同調査の実例ではない。"
+    },
+    "scene_prompt": "A restrained editorial vector illustration of an ordinary Japanese office survey desk: many identical response cards arranged in aligned rows with repeated checkmarks, one distinct response card set aside, and a human-resources employee seeing a stack of extra questionnaires. Precise comparison layout, flat muted newspaper palette, natural office shapes, no brand logos, no readable lettering.",
+    "visual_strategy": "illustration",
+    "illustration_reason": "comparison_layout",
+    "tags": [
+      "社内アンケート",
+      "働き方",
+      "従業員満足度"
+    ],
+    "satire_tags": [
+      "本音と建前",
+      "数字だけの達成"
+    ],
+    "x_tags": [
+      "社内アンケート"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "無難な「特になし」が並ぶと、誰も困っていないように見えてしまう。言いづらいことほど、書く場所がない。",
+    "reader_interest": "work_money_tech",
+    "reader_clarity": {
+      "who": "社員の本音を集めたい会社",
+      "action": "必須の自由記述欄に299人が「特になし」と回答し、一人の改善提案に追加調査が届いた",
+      "oddity": "本音を集める仕組みが報告用の回答率を優先し、本音を出した人の負担だけを増やした"
+    },
+    "editorial_lane": "original_satire",
+    "editorial_tone": "observational",
+    "editorial_payoff": "quiet_aftertaste",
+    "editorial_signature": {
+      "present": "職場で意見を聞く制度はあっても、面倒や評価への不安から無難な回答が選ばれがち",
+      "target": "本音を集めることよりアンケート回答率を守るために、本当に聞くべき意見を取りこぼす",
+      "action": "人事が自由記述を必須にして299人の定型回答を集め、唯一の不満に追加15問を送る",
+      "outcome": "本音を書いた一人も追加調査の最後には「特になし」としか書かなくなる"
+    },
+    "behavior_basis": {
+      "motive": "人事担当者は役員会で回答率100％を報告して自分の評価を守りたい。社員は未回答通知で目立ちたくない",
+      "ordinary_alternative": "自由記述を任意にし、アンケートを減らしてという改善要望を直接受け取る",
+      "why_not": "人事担当者は未回答で評価が落ち、社員は本音で呼び出されるのを恐れている",
+      "evidence_quote": "「役員会で未回答が一人でもいると、私の評価が下がるんです」"
+    }
+  },
+  {
     "slug": "unsold-coat-storage-fees-exceed-sale",
     "category": "暮らし",
     "flash": "高く売るため、置き場所代は18万円",
