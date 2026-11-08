@@ -449,6 +449,47 @@ test('video and poster failures retain the selected story and ignore detached im
   assert.equal(ui.poster.getAttribute('alt'),playlist[2].poster_fallback_alt);
 });
 
+test('a completed homepage preview advances with its title and subtitle, without looping', async () => {
+  const ui = fixture({ playlist, nativeTrack: true });
+  ui.view(1);
+  await settled();
+  assert.equal(ui.video.playCalls, 1);
+  ui.video.ended = true;
+  ui.video.paused = true;
+  ui.video.emit('pause'); // A natural end is not a reader's explicit stop.
+  ui.video.emit('ended');
+  await settled();
+  assert.equal(ui.mediaSource.src, playlist[1].video_url);
+  assert.equal(ui.headline.textContent, playlist[1].title);
+  assert.equal(ui.articleLink.href, playlist[1].article_url);
+  assert.equal(ui.caption.textContent, playlist[1].cues[0].text);
+  assert.equal(ui.subtitles.getAttribute('src'), playlist[1].track_url);
+  assert.equal(ui.video.playCalls, 2);
+  assert.equal(ui.video.paused, false);
+});
+
+test('a reader stop or accessibility preference cannot trigger automatic next video', async () => {
+  const paused = fixture({ playlist });
+  paused.view(1);
+  await settled();
+  paused.video.pause();
+  paused.video.ended = true;
+  paused.video.emit('ended');
+  await settled();
+  assert.equal(paused.mediaSource.src, playlist[0].video_url);
+  assert.equal(paused.video.playCalls, 1);
+
+  for (const option of [{ reduced: true }, { saveData: true }]) {
+    const ui = fixture({ playlist, ...option });
+    ui.view(1);
+    await ui.video.play();
+    ui.video.ended = true;
+    ui.video.emit('ended');
+    assert.equal(ui.mediaSource.src, playlist[0].video_url);
+    assert.equal(ui.video.playCalls, 1);
+  }
+});
+
 test('return visits prefer unseen videos, then the least recently played; new deliveries win', async () => {
   const storage = new Map();
   for (const index of [0, 1, 2, 0]) {

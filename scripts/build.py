@@ -744,7 +744,7 @@ def broadcast_feature(articles, *, exclude_slug=None):
         f' data-broadcast-poster-fallback="{escape(selected["poster_fallback_url"])}"'
         f' data-broadcast-poster-fallback-alt="{escape(selected["poster_fallback_alt"])}"'
         ' width="1200" height="675" loading="lazy" decoding="async">'
-        '<video class="broadcast-video" controls playsinline muted loop'
+        '<video class="broadcast-video" controls playsinline muted'
         ' preload="none" width="1200" height="675" id="broadcast-player"'
         f' poster="{escape(poster)}"'
         f' aria-label="{escape(chosen["title"])}・{clip_seconds(clip)}秒の無音演出映像">'
