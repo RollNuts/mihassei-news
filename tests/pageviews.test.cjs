@@ -14,7 +14,7 @@ const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
   .replace('export class NewsroomStats','class NewsroomStats')
   .replace('export default {','const serviceHandler = {');
 
-function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
+function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto,legacyCounters=false){
   let now=Date.parse(start);
   class Clock extends Date {static now(){return now;}}
   const context=vm.createContext({
@@ -23,6 +23,10 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
   vm.runInContext(source,context);
   const Stats=vm.runInContext('NewsroomStats',context);
   const db=new DatabaseSync(':memory:');
+  if(legacyCounters){
+    db.exec("CREATE TABLE counters (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0)");
+    db.prepare("INSERT INTO counters(key,value) VALUES (?,?)").run('legacy-probe',42);
+  }
   const sql={exec(query,...args){
     const statement=db.prepare(query);
     if(/^\s*SELECT\b/i.test(query)){
@@ -90,6 +94,25 @@ function view(clientId,article='story-a',viewId=randomUUID()){
 function sessionView(clientId,article='story-a',sessionId=randomUUID(),sessionChannel='unattributed',viewId=randomUUID()){
   return {action:'visit',clientId,article,viewId,sessionId,sessionChannel};
 }
+
+test('hot counter table is WITHOUT ROWID and legacy values survive one-time compaction',t=>{
+  const fresh=fixture();t.after(()=>fresh.db.close());
+  const freshSql=fresh.db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='counters'").get().sql;
+  assert.match(freshSql,/WITHOUT ROWID/i);
+
+  const legacy=fixture('2026-11-04T00:30:00Z',webcrypto,true);t.after(()=>legacy.db.close());
+  const migrated=legacy.db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='counters'").get().sql;
+  assert.match(migrated,/WITHOUT ROWID/i);
+  assert.equal(legacy.db.prepare("SELECT value FROM counters WHERE key='legacy-probe'").get().value,42);
+});
+
+test('dedupe tables keep no secondary day indexes that would double write billing',t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const indexes=f.db.prepare(
+    "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name IN ('pageview_events','session_events')"
+  ).all().map(row=>row.name);
+  assert.deepEqual(indexes,[]);
+});
 
 test('earliest timestamp helper writes only on initialization or a genuinely earlier value',t=>{
   const f=fixture();t.after(()=>f.db.close());
