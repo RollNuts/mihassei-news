@@ -22,7 +22,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000006.000185212.html",
       "topic": "リアルワンが2026年10月8日に公表した『働く人の仕事と職場に関する意識調査2026』では、従業員満足度42.9％など、働く人の回答を分析している。作中企業、記述欄の強制、回答率100％、299人の同文回答、追加15問はすべて2031年の創作であり、同調査の実例ではない。"
     },
-    "scene_prompt": "A restrained editorial vector illustration of an ordinary Japanese office employee-survey desk: multiple anonymous response cards arranged in aligned rows with repeated blank checkmarks, a single distinct response card set aside, and a HR staff member examining a new stack of follow-up questionnaires. Precise comparative layout, flat muted newspaper palette, clear ordinary desk scene, no brand logos and no photorealistic claims.",
+    "scene_prompt": "A restrained editorial vector illustration of an ordinary Japanese office survey desk: many identical response cards arranged in aligned rows with repeated checkmarks, one distinct response card set aside, and a human-resources employee seeing a stack of extra questionnaires. Precise comparison layout, flat muted newspaper palette, natural office shapes, no brand logos, no readable lettering.",
     "visual_strategy": "illustration",
     "illustration_reason": "comparison_layout",
     "tags": [
@@ -41,13 +41,13 @@
     "x_share_lead": "無難な「特になし」が並ぶと、誰も困っていないように見えてしまう。言いづらいことほど、書く場所がない。",
     "reader_interest": "work_money_tech",
     "reader_clarity": {
-      "who": "社内アンケートを運用する人事と回答する社員300人",
+      "who": "社員の本音を集めたい会社",
       "action": "必須の自由記述欄に299人が「特になし」と回答し、一人の改善提案に追加調査が届いた",
       "oddity": "本音を集める仕組みが報告用の回答率を優先し、本音を出した人の負担だけを増やした"
     },
     "editorial_lane": "original_satire",
     "editorial_tone": "observational",
-    "editorial_payoff": "action",
+    "editorial_payoff": "quiet_aftertaste",
     "editorial_signature": {
       "present": "職場で意見を聞く制度はあっても、面倒や評価への不安から無難な回答が選ばれがち",
       "target": "本音を集めることよりアンケート回答率を守るために、本当に聞くべき意見を取りこぼす",
