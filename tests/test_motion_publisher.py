@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from contextlib import redirect_stderr, redirect_stdout
 import io
+from datetime import datetime, timezone
 import json
 import tempfile
 import unittest
@@ -220,6 +221,68 @@ class MotionPublisherTests(unittest.TestCase):
             (folder / "motion-clips.json").symlink_to(original)
             with self.assertRaisesRegex(RuntimeError, "symlink"):
                 publisher.load_settings(root)
+
+
+
+class NewsroomHealthTests(unittest.TestCase):
+    def test_recent_encoding_of_old_article_is_not_fresh_programming(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            folder = root / ".github"
+            folder.mkdir()
+            (folder / "motion-clips.json").write_text(json.dumps(GOOD))
+            (root / "content").mkdir()
+            articles = [
+                {"slug": "older-on-air", "published_at": "2026-11-05T07:39:00+09:00",
+                 "broadcast_feature": True},
+                {"slug": "newer-reviewed", "published_at": "2026-11-08T07:36:00+09:00"},
+            ]
+            (root / "content/articles.json").write_text(json.dumps(articles))
+            def clip(article, *, root):
+                return ({"created_at": "2026-11-08T01:00:00+00:00"}
+                        if article["slug"] == "older-on-air" else None)
+            now = datetime(2026, 11, 8, 12, tzinfo=timezone.utc)
+            with patch.object(publisher, "usable_clip", side_effect=clip), \
+                 patch.object(publisher, "usable_generated_scene", return_value=True), \
+                 patch.object(publisher, "reviewed_generated_scene", return_value=True), \
+                 patch.object(publisher, "candidates", return_value=[]):
+                health = publisher.newsroom_health(root, now=now)
+            self.assertEqual(health["status"], "selection_needed")
+            self.assertEqual(health["reviewed_unselected_newer"], ["newer-reviewed"])
+            self.assertEqual(health["latest_video_generated_at"], "2026-11-08T01:00:00+00:00")
+            self.assertEqual(health["latest_video_article_published_at"], "2026-11-05T07:39:00+09:00")
+            with patch.object(publisher, "usable_clip", side_effect=clip), \
+                 patch.object(publisher, "candidates", return_value=[{"slug": "newer-reviewed"}]):
+                self.assertEqual(publisher.newsroom_health(root, now=now)["status"],
+                                 "selected_waiting_generation")
+            with patch.object(publisher, "usable_clip", side_effect=clip), \
+                 patch.object(publisher, "usable_generated_scene", return_value=False), \
+                 patch.object(publisher, "candidates", return_value=[]):
+                self.assertEqual(publisher.newsroom_health(root, now=now)["status"],
+                                 "awaiting_reviewed_source")
+
+    def test_off_does_not_read_articles_or_probe_clips(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / ".github").mkdir()
+            (root / ".github/motion-clips.json").write_text(
+                json.dumps({**GOOD, "enabled": False}))
+            with patch.object(publisher, "usable_clip") as video, \
+                 patch.object(publisher, "candidates") as queued:
+                self.assertEqual(publisher.newsroom_health(root),
+                                 {"enabled": False, "status": "disabled"})
+                video.assert_not_called()
+                queued.assert_not_called()
+
+    def test_health_cli_only_prints_diagnostic_json(self):
+        expected = {"enabled": True, "status": "selection_needed"}
+        output = io.StringIO()
+        with patch.object(publisher, "newsroom_health", return_value=expected), \
+             patch.object(publisher, "generate") as generate, \
+             redirect_stdout(output):
+            self.assertEqual(publisher.main(["--health"]), 0)
+        self.assertEqual(json.loads(output.getvalue()), expected)
+        generate.assert_not_called()
 
 
 if __name__ == "__main__":
