@@ -51,6 +51,21 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     }));
     return {status:response.status,data:await response.json()};
   };
+  const postPublic=async(payload,articles='story-a,story-b',headers={})=>{
+    const params=new URLSearchParams({response:'public',articles});
+    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params,{
+      method:'POST',headers:{'content-type':'application/json',...headers},
+      body:JSON.stringify(payload)
+    }));
+    return {status:response.status,data:await response.json()};
+  };
+  const postAction=async(payload,headers={})=>{
+    const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?response=action',{
+      method:'POST',headers:{'content-type':'application/json',...headers},
+      body:JSON.stringify(payload)
+    }));
+    return {status:response.status,data:await response.json()};
+  };
   const get=async(articles='story-a,story-b',day,hour)=>{
     const params=new URLSearchParams({articles});
     if(day!==undefined)params.set('day',day);
@@ -63,7 +78,7 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  return {db,post,postAck,get,getPublic,setTime(value){now=Date.parse(value);}};
+  return {db,post,postAck,postPublic,postAction,get,getPublic,setTime(value){now=Date.parse(value);}};
 }
 
 function view(clientId,article='story-a',viewId=randomUUID()){
@@ -177,6 +192,43 @@ test('public snapshot keeps reader metrics but omits expensive operational diagn
     assert.equal(key in snapshot,false,'public response should omit '+key);
   for(const key of ['entrances','pageViewSources','continuedReaders','arrivals','shareClicks'])
     assert.equal(key in snapshot.articles['story-a'],false,'public article response should omit '+key);
+});
+
+test('visit POST can return the compact public snapshot without a follow-up GET',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID(),event=view(browser,'story-a');
+  const first=await f.postPublic(event,'story-a,story-b');
+  assert.equal(first.status,200);
+  assert.equal(first.data.pageViews,1);
+  assert.equal(first.data.today.pageViews,1);
+  assert.equal(first.data.articles['story-a'].pageViews,1);
+  assert.equal(first.data.articles['story-b'].pageViews,0);
+  assert.equal('hourly' in first.data,false);
+  assert.equal('topArticles' in first.data,false);
+
+  const retry=await f.postPublic(event,'story-a,story-b');
+  assert.equal(retry.status,200);
+  assert.equal(retry.data.pageViews,1,'retrying the same display ID stays idempotent');
+  assert.equal(retry.data.articles['story-a'].pageViews,1);
+});
+
+test('action response returns only the state needed by like and vote controls',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const browser=randomUUID();
+  const like=await f.postAction({action:'like',clientId:browser,article:'story-a'});
+  assert.deepEqual(like.data,{ok:true,liked:true,likes:1});
+  const unlike=await f.postAction({action:'like',clientId:browser,article:'story-a'});
+  assert.deepEqual(unlike.data,{ok:true,liked:false,likes:0});
+
+  const vote=await f.postAction({action:'vote',clientId:browser,article:'story-a',choice:'plausible'});
+  assert.equal(vote.data.ok,true);
+  assert.equal(vote.data.vote,'plausible');
+  assert.equal(vote.data.alreadyVoted,false);
+  assert.deepEqual(vote.data.votes,{plausible:1,unlikely:0});
+  const duplicate=await f.postAction({action:'vote',clientId:browser,article:'story-a',choice:'unlikely'});
+  assert.equal(duplicate.data.vote,'plausible');
+  assert.equal(duplicate.data.alreadyVoted,true);
+  assert.deepEqual(duplicate.data.votes,{plausible:1,unlikely:0});
 });
 
 test('public snapshot supports the maximum 20 requested articles with bounded counter reads',async t=>{
