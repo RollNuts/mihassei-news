@@ -403,6 +403,21 @@ class FreeCpuImageTests(unittest.TestCase):
                 self.assertIn(scene, cpu.cpu_prompt(changed))
                 self.assertNotIn(props[0], cpu.cpu_prompt(changed))
 
+    def test_current_fridge_prompt_retains_refrigerator_notes_and_phone_in_one_core(self):
+        slug = "fridge-checkin-five-years-only-opening-times"
+        source = next(a for a in local_scene_photos.load_articles() if a["slug"] == slug)
+        self.assertEqual(article_fingerprint(source), cpu.CPU_SCENE_SOURCE_HASHES[slug])
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        with contextlib.redirect_stdout(io.StringIO()):
+            prompt = cpu.fit_cpu_prompt(source, tokenizer)
+        for prop in ("white refrigerator door", "yellow paper notes", "black smartphone", "face-down"):
+            self.assertIn(prop, prompt)
+        self.assertLessEqual(len(tokenizer.encode(prompt)), cpu.CLIP_TOKEN_LIMIT)
+        for changed in ({**source, "paragraphs": [*source["paragraphs"], "An edited ending."]},
+                        {**source, "scene_prompt": "An adult holds a green toolbox beside a garden gate."}):
+            self.assertFalse(cpu.reviewed_source_matches(changed, slug))
+            self.assertNotIn(cpu.CPU_SCENES[slug], cpu.cpu_prompt(changed))
+
     def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
         source = {**article(), "paragraphs": ["Original fictional scene."],
                   "scene_prompt": "An adult holds a toolbox beside a garden gate."}
@@ -718,9 +733,13 @@ class CpuBackfillTests(unittest.TestCase):
             {"id": 11, "display_title": "Photo backfill: first", "created_at": "2026-11-07T15:00:00Z", "conclusion": "failure"},
             {"id": 12, "display_title": "Free CPU staged-news photos", "created_at": "2026-11-08T01:00:00Z"},
             {"id": 13, "display_title": "Photo backfill: queued", "created_at": "2026-11-08T02:00:00Z", "status": "queued"},
+            {"id": 14, "display_title": "Photo backfill: third", "created_at": "2026-11-08T02:10:00Z"},
+            {"id": 15, "display_title": "Photo backfill: fourth", "created_at": "2026-11-08T02:20:00Z"},
         ]
         self.assertTrue(cpu.backfill_run_allowed(runs, 11, current_run_attempt=1, now=now))
-        self.assertFalse(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 15, current_run_attempt=1, now=now))
         with self.assertRaises(ValueError):
             cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now)
         for malformed in ({"id": 14, "display_title": "Photo backfill: broken"},
@@ -744,10 +763,25 @@ class CpuBackfillTests(unittest.TestCase):
             runs = [{"id": 11, "display_title": "Photo backfill: first",
                      "created_at": "2026-11-08T01:00:00Z", "conclusion": conclusion},
                     {"id": 12, "display_title": "Photo backfill: later",
-                     "created_at": "2026-11-08T02:00:00Z"}]
+                     "created_at": "2026-11-08T02:00:00Z"},
+                    {"id": 13, "display_title": "Photo backfill: third",
+                     "created_at": "2026-11-08T02:10:00Z"},
+                    {"id": 14, "display_title": "Photo backfill: fourth",
+                     "created_at": "2026-11-08T02:20:00Z"}]
             with self.subTest(conclusion=conclusion):
-                self.assertFalse(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
+                self.assertTrue(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
+                self.assertFalse(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
                 self.assertFalse(cpu.backfill_run_allowed(runs, 11, current_run_attempt=2, now=now))
+
+    def test_same_story_repeat_is_denied_and_still_consumes_an_attempt(self):
+        now = datetime(2026, 11, 8, 3, tzinfo=timezone.utc)
+        runs = [{"id": identifier, "display_title": "Photo backfill: " + slug,
+                 "created_at": f"2026-11-08T02:0{index}:00Z"}
+                for index, (identifier, slug) in enumerate(((11, "one"), (12, "one"),
+                                                           (13, "two"), (14, "three")))]
+        self.assertFalse(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
 
     def test_workflow_attempt_is_required_and_malformed_values_fail_closed(self):
         for attempt in (0, -1, True, False, 1.0, "1", None):
@@ -786,6 +820,87 @@ class CpuBackfillTests(unittest.TestCase):
             check.assert_not_called()
             self.assertIs(callback(None, 3, 0, tensors), tensors)
             check.assert_called_once_with("a" * 40, review_parent=None)
+
+    def test_main_advance_reads_only_pinned_metadata_and_priority_paths_with_timeouts(self):
+        revision, remote = "a" * 40, "b" * 40
+        for changed in ("", "content/articles.json\n", "assets/generated/manifest.json\n",
+                        "content/visual_reviews.json\n", "scripts/cpu_photo_model.py\n"):
+            responses = [SimpleNamespace(stdout=remote + "\trefs/heads/main\n"),
+                         SimpleNamespace(stdout=""), SimpleNamespace(stdout=changed)]
+            with self.subTest(changed=changed), patch.object(cpu.subprocess, "run", side_effect=responses) as run:
+                if changed:
+                    with self.assertRaisesRegex(RuntimeError, "current article/image inputs"):
+                        cpu.check_main_unchanged(revision)
+                else:
+                    cpu.check_main_unchanged(revision)
+                commands = [call.args[0][3:] for call in run.call_args_list]
+                self.assertEqual(commands[1], ["fetch", "--no-tags", "--depth=1", "--filter=blob:none", "origin", remote])
+                self.assertEqual(commands[2], ["diff", "--no-renames", "--name-only", revision, remote,
+                                                "--", *cpu.BACKFILL_PRIORITY_PATHS])
+                for call in run.call_args_list:
+                    self.assertEqual(call.kwargs["timeout"], 15)
+                    self.assertTrue(call.kwargs["capture_output"])
+                    self.assertTrue(call.kwargs["check"])
+                self.assertFalse({"checkout", "reset", "push"}.intersection(item for command in commands for item in command))
+
+    def test_main_guard_rejects_malformed_remote_or_fetch_failure(self):
+        for remote in ("", "b" * 39 + "\trefs/heads/main", "b" * 40 + "\trefs/heads/other",
+                       "b" * 40 + "\trefs/heads/main\nextra"):
+            with self.subTest(remote=remote), patch.object(cpu, "_git_read", return_value=remote) as read:
+                with self.assertRaisesRegex(RuntimeError, "invalid remote"):
+                    cpu.check_main_unchanged("a" * 40)
+                self.assertEqual(read.call_count, 1)
+        with patch.object(cpu.subprocess, "run", side_effect=[
+                SimpleNamespace(stdout="b" * 40 + "\trefs/heads/main"),
+                subprocess.TimeoutExpired("git fetch", 15),
+        ]), self.assertRaisesRegex(RuntimeError, "cannot verify latest main"):
+            cpu.check_main_unchanged("a" * 40)
+
+    def test_actual_git_tree_diff_allows_docs_social_state_and_about_edits_but_not_articles(self):
+        repo = self.directory / "metadata-repo"
+        repo.mkdir()
+        def git(*args):
+            return subprocess.run(["git", "-C", str(repo), "-c", "user.name=Fixture",
+                                   "-c", "user.email=fixture@example.invalid", *args],
+                                  check=True, capture_output=True, text=True, timeout=15).stdout.strip()
+        git("init", "-q")
+        origin = self.directory / "metadata-origin.git"
+        subprocess.run(["git", "init", "--bare", "-q", str(origin)], check=True,
+                       capture_output=True, text=True, timeout=15)
+        git("branch", "-M", "main"); git("remote", "add", "origin", str(origin))
+        (repo / "content").mkdir()
+        source = repo / "content/articles.json"
+        source.write_text("[]\n")
+        git("add", "."); git("commit", "-qm", "fixture source")
+        git("push", "-q", "origin", "main")
+        baseline = git("rev-parse", "HEAD")
+        (repo / "docs").mkdir(); (repo / "docs/notes.md").write_text("internal note\n")
+        (repo / "social-bot").mkdir(); (repo / "social-bot/state.json").write_text("{}\n")
+        (repo / "scripts").mkdir(); (repo / "scripts/build.py").write_text("# about text only\n")
+        git("add", "."); git("commit", "-qm", "unrelated publishing metadata")
+        git("push", "-q", "origin", "main")
+        remote = git("rev-parse", "HEAD")
+        def snapshot():
+            return {name: (repo / name).read_bytes() for name in git("ls-files").splitlines()}
+        with patch.object(cpu, "ROOT", repo):
+            before = snapshot()
+            cpu.check_main_unchanged(baseline)
+            self.assertEqual(git("rev-parse", "HEAD"), remote)
+            self.assertEqual(snapshot(), before)
+            for relative in ("content/articles.json", "content/visual_reviews.json",
+                             "content/approved_photos.json", "assets/generated/synthetic-fixture.jpg",
+                             "scripts/cpu_photo_model.py"):
+                baseline = remote
+                path = repo / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("small synthetic priority fixture\n")
+                git("add", "."); git("commit", "-qm", "changed priority input")
+                git("push", "-q", "origin", "main")
+                remote, before = git("rev-parse", "HEAD"), snapshot()
+                with self.subTest(path=relative), self.assertRaisesRegex(RuntimeError, "current article/image inputs"):
+                    cpu.check_main_unchanged(baseline)
+                self.assertEqual(git("rev-parse", "HEAD"), remote)
+                self.assertEqual(snapshot(), before)
 
     def test_backfill_archive_budget_includes_live_archive_reserved_bytes_and_one_max_jpeg(self):
         with patch.object(cpu, "check_storage") as check, \
@@ -889,8 +1004,9 @@ class CpuBackfillTests(unittest.TestCase):
         self.assertIn("BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}", workflow)
         self.assertIn('args+=(--backfill-scene "$BACKFILL_SCENE")', workflow)
         self.assertIn("current_run_attempt=int(os.environ['GITHUB_RUN_ATTEMPT'])", workflow)
-        self.assertLess(workflow.index("Plan missing images"), workflow.index("Allow only the first photo backfill"))
-        self.assertLess(workflow.index("Allow only the first photo backfill"), workflow.index("Install CPU-only"))
+        self.assertLess(workflow.index("Plan missing images"), workflow.index("Bound daily photo backfill"))
+        self.assertLess(workflow.index("Bound daily photo backfill"), workflow.index("Install CPU-only"))
+        self.assertIn("MAX_DAILY_BACKFILLS", workflow)
         self.assertEqual(workflow.count("&& !inputs.retry_held && !inputs.backfill_scene"), 2)
         self.assertEqual(workflow.count("steps.backfill_quota.outputs.allowed == '1'"), 4)
 

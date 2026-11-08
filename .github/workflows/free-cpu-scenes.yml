@@ -89,7 +89,7 @@ jobs:
           print('Pending:', len(selected))
           PY
           df -h .
-      - name: Allow only the first photo backfill attempt per JST day
+      - name: Bound daily photo backfill attempts without repeating a story
         id: backfill_quota
         if: inputs.backfill_scene != ''
         env:
@@ -99,14 +99,14 @@ jobs:
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          from scripts.github_cpu_scenes import backfill_run_allowed
+          from scripts.github_cpu_scenes import MAX_DAILY_BACKFILLS, backfill_run_allowed
           runs = json.loads((Path(os.environ['RUNNER_TEMP']) / 'backfill-runs.json').read_text())
           allowed = backfill_run_allowed(runs['workflow_runs'], int(os.environ['GITHUB_RUN_ID']),
                                          current_run_attempt=int(os.environ['GITHUB_RUN_ATTEMPT']))
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'allowed={int(allowed)}\n')
-          print('Backfill daily attempt allowed.' if allowed else
-                'Backfill skipped: an earlier attempt already owns this JST day; new articles remain independent.')
+          print(f'Backfill allowed within {MAX_DAILY_BACKFILLS} daily attempts, one per story.' if allowed else
+                'Backfill skipped: daily attempt budget or same-story limit reached; new articles remain independent.')
           PY
       - name: Summarize reader-visible image coverage
         env:
