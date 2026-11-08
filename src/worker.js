@@ -50,11 +50,18 @@ export class NewsroomStats extends DurableObject {
   }
   counts(keys) {
     const unique=[...new Set(keys)];
-    if(!unique.length)return new Map();
-    const placeholders=unique.map(()=>"?").join(",");
-    return new Map(this.sql.exec(
-      "SELECT key,value FROM counters WHERE key IN ("+placeholders+")",...unique
-    ).toArray().map(row=>[row.key,row.value]));
+    const result=new Map();
+    // Cloudflare SQLite Durable Objects allow at most 100 bound parameters
+    // per statement. Stay below that limit while still collapsing hundreds of
+    // individual counter reads into a few bounded queries.
+    for(let offset=0;offset<unique.length;offset+=90){
+      const batch=unique.slice(offset,offset+90);
+      const placeholders=batch.map(()=>"?").join(",");
+      for(const row of this.sql.exec(
+        "SELECT key,value FROM counters WHERE key IN ("+placeholders+")",...batch
+      ).toArray())result.set(row.key,row.value);
+    }
+    return result;
   }
   increment(key, delta) {
     this.sql.exec("INSERT INTO counters(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=MAX(0,value+excluded.value)",key,delta);
