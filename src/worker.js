@@ -307,7 +307,12 @@ export class NewsroomStats extends DurableObject {
         complete:Boolean(publicStartedAt && publicStartedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
       },
       today:publicDay(day.date),
-      yesterday:publicDay(previousDate)
+      yesterday:publicDay(previousDate),
+      ...(url.searchParams.get("popular")==="1" ? {
+        // Rank once inside the existing Durable Object instead of making the
+        // browser fetch every published article just to discover the top few.
+        topArticles:{last7Days:this.topArticleRowsForWeek(day)}
+      } : {})
     };
   }
   async fetch(req) {
