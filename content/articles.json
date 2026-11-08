@@ -702,7 +702,8 @@
       "target": "評価の星だけで顧客満足を測り、返品や具体的な不具合の声を脇に置く商売",
       "action": "客が故障内容を伏せて星5を投稿し、仕入れ担当が返品の山を見ずに同じ商品を追加発注する",
       "outcome": "高評価の販促ポスターの下に返品箱が積み上がり、再来店は買い直しでなく返品のためになる"
-    }
+    },
+    "broadcast_feature": true
   },
   {
     "slug": "family-line-replies-four-different-station-exits",
@@ -1542,7 +1543,8 @@
     "satire_tags": [
       "予定調和",
       "リアクション芸"
-    ]
+    ],
+    "broadcast_feature": true
   },
   {
     "slug": "datacenter-unbuilt-ribbon-cutting",
