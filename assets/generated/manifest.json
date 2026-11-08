@@ -817,6 +817,11 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "zero-redelivery-residents-collect-parcels": {
+      "article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
+      "reason": "現本文4段落・scene_promptと本当のJPEG原本を目視照合。集合住宅の通路には人物2人と手押しカート2台があり、壁・床・衣服・光は概ね写真に見える。しかし右の台車は編み籠を入れた買い物用ワイヤーカート、奥も小型の買い物カートで、依頼した段ボール宅配荷物を積んだ折りたたみ台車は識別できない。玄関脇の掲示板もなく、マンションから配送所へ荷物を取りに行き、住民が各部屋へ運ぶという中心場面が映っていない。普通の買い物帰りの写真に誤認され、記事の『再配達ゼロなのに住民が配達する』皮肉を補助できないため不採用。実写らしさだけで採用基準を緩めない。原JPEG・model・seed・記事指紋は変更せず、未採用時の既存汎用SVG/OGPフォールバックを維持する。別構図で宅配段ボール・集合住宅の荷受け当番・手押し台車の関係が目視できる新規実写を作れた場合のみ再検品する。",
+      "rejected_candidate_sha256": "17cd689647ac1eaaa6aef3cbf716bec35469b29fbbee083f92fe956ffb66a7e5"
     }
   },
   "version": 1
