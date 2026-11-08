@@ -2,7 +2,7 @@
      role="img" aria-label="消しすぎて大きな穴が開いたノートと消しゴム、机に散らばる消しかすを描いた創作イラスト"
      data-visual-topic="document" data-article-sha256="605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc">
   <title>予想を消しすぎたノート</title>
-  <desc>開いたノートの右ページは何度もこすられ、大きな丸い穴から茶色の机が見えている。すぐ横の消しゴムはすり減り、消しかすが散らばる。文字や実在人物を含まない、架空の記事のための編集部制作イラスト。</desc>
+  <desc>開いたノートの右ページは何度もこすられ、大きな丸い穴から下のページの薄い鉛筆線が見えている。すぐ横の消しゴムはすり減り、消しかすが散らばる。文字や実在人物を含まない、架空の記事のための編集部制作イラスト。</desc>
   <defs>
     <linearGradient id="desk" x2="0" y2="1"><stop stop-color="#704d3c"/><stop offset="1" stop-color="#4f352d"/></linearGradient>
     <linearGradient id="left-page"><stop stop-color="#fffdf3"/><stop offset="1" stop-color="#e7dfcf"/></linearGradient>
@@ -25,8 +25,8 @@
   <g stroke="#b7b0a1" stroke-width="16" stroke-linecap="round" opacity=".35" fill="none" mask="url(#page-hole)">
     <path d="M648 223l229 151M648 253l213 127M659 377l203-152M674 389l202-124"/>
   </g>
-  <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="#684737"/>
-  <path d="M708 291q68-8 153 3M710 324q66-8 145 2" stroke="#b78e6c" stroke-width="3" opacity=".22" fill="none"/>
+  <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="#eee6d3"/>
+  <path d="M714 287l132 4M715 313l125 2M723 339l101-3" stroke="#99938a" stroke-width="3" opacity=".38" fill="none"/>
   <path d="M700 236l23-16 25 2 21-12 28 9 28-1 15 20 26 11 1 23 16 22-11 23 3 27-22 14-7 25-26 4-23 17-23-10-27 5-15-19-26-8-2-24-18-20 9-25-5-22z" fill="none" stroke="#d8ccb7" stroke-width="10" stroke-linejoin="round"/>
   <g transform="translate(989 446) rotate(20)"><path d="M0 0h86l13 62-75 10L-7 46z" fill="#c17178"/><path d="M0 0h86l-9 40-84 6z" fill="#edb6b7"/><path d="M-7 46l84-6 22 22-75 10z" fill="#a25b63"/></g>
   <g fill="none" stroke="#77716a" stroke-width="5" stroke-linecap="round">

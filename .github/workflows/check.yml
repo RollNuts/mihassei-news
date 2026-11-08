@@ -17,8 +17,14 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install free local image validation dependency
-        run: python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13'
+        run: |
+          if ! dpkg -s libcairo2 >/dev/null 2>&1; then
+            sudo apt-get install --no-install-recommends -y libcairo2
+          fi
+          python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13' CairoSVG==2.7.1
       - run: python3 -m unittest discover -s tests -v
+        env:
+          VERIPSA_TEST_REFERENCE_RENDERER: '1'
       - name: Verify original Buffer X feed and popular-article no-repost logic offline
         run: |
           python3 -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v

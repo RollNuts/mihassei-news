@@ -15,11 +15,11 @@ import sys
 from pathlib import Path
 
 try:
-    from .cpu_photo_model import ORIGIN as CPU_ORIGIN
+    from .cpu_photo_model import ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN
     from .generated_photos import article_fingerprint, usable_generated_scene
     from .local_scene_photos import stable_seed
 except ImportError:
-    from cpu_photo_model import ORIGIN as CPU_ORIGIN
+    from cpu_photo_model import ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN
     from generated_photos import article_fingerprint, usable_generated_scene
     from local_scene_photos import stable_seed
 
@@ -82,7 +82,7 @@ def verify_new_images(previous: dict, current: dict, *, root: Path = ROOT) -> li
             failures.append(slug + ": malformed new photo record")
             continue
         origin = record.get("origin")
-        if origin in {"local-comfyui", "github-cpu-lcm", CPU_ORIGIN}:
+        if origin in {"local-comfyui", "github-cpu-lcm", CPU_ORIGIN, REFERENCE_ORIGIN}:
             if type(record.get("seed")) is not int or record["seed"] != stable_seed(article):
                 failures.append(slug + ": generation seed does not match article; "
                                 "avoid rounding large JSON integers")

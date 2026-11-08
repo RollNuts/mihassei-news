@@ -656,8 +656,13 @@
     },
     "black-friday-preparty-budget-gone": {
       "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "reason": "The JPEG depicts a generic storefront crowd without an empty wallet, purchased bags or the missed rice-cooker purchase. Large fabricated storefront lettering is prominent; keep the reviewed illustration.",
-      "rejected_candidate_sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
+      "reason": "Actual photo review of prop-first preview 42469605928: natural window light and leather loafers, but only shoes are visible. The empty wallet, blanket and shopping bags are absent, so the spent-budget scene is not conveyed. Reject the candidate and keep the story-specific SVG; the daily old-story attempt budget is exhausted.",
+      "rejected_candidate_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42469605928",
+      "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
+      "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
+      "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
       "article_sha256": "d8cf7a83f974daa1d5588d8c1cf13ace6535cfafbafbf4872b917df8b211a638",
@@ -696,8 +701,13 @@
     },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "reason": "実JPEGと現本文を照合。箱棚の間を歩く人物がいる普通の倉庫で、加湿器が判別できず、通路も開いている。返品箱で新品を置けない状況や星5評価との対比が伝わらず不採用。本文に合う既存専用SVGを維持し、実写モデルで小道具を手前に絞って再試験する。",
-      "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
+      "reason": "Actual review of full RV prop-first preview 42468601719: photographic cardboard and light, but the appliance is a black-front box with a separate transparent teardrop-like vessel on top, not an identifiable tabletop humidifier. It sits on a mostly closed carton; the opened return-box context is absent. Reject the candidate and preserve the current story-specific SVG rather than repeat this article today.",
+      "rejected_candidate_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42468601719",
+      "reviewed_at": "2026-11-08T10:00:46.544373+00:00",
+      "source_article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "trial_article_sha256": "432b4bfa86e6b0b193eb0aa0fd5de1dc2ce942b1a388ffc580ee43e530b15ae9",
+      "trial_scene_prompt": "A white tabletop humidifier with a translucent water tank sits half-unpacked inside an open cardboard box. Open cartons fill the cramped electronics shop storeroom behind it. Plain packaging, ordinary daylight."
     },
     "free-play-event-parents-timetable-children-waiting": {
       "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
@@ -776,10 +786,11 @@
     },
     "fridge-checkin-five-years-only-opening-times": {
       "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
-      "reason": "Actual JPEG inspection of run 42464807720: natural-looking kitchen with two adult women, but no elderly father, identifiable refrigerator, paper notes or smartphone. The actor-and-prop sentence was omitted by the CLIP budget while the setting-only opening survived. Reject this image and retain the current story-specific SVG; a short source-bound prop-first scene is required for any new trial.",
-      "rejected_candidate_sha256": "43e53c2879062cebb2271d140f3b483b91bb09e65ebdc08e49c16be815cffa7d",
-      "reviewed_at": "2026-11-08T09:24:04.145319+00:00",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42464807720"
+      "reason": "Actual review of short prop-first retry 42467801767: the white refrigerator and handle look photographic, but the paper is a single folded strip instead of several personal notes, and no smartphone or counter is visible. The article-specific contrast is still absent. Keep the verified SVG and move to a different story instead of repeating this scene today.",
+      "rejected_candidate_sha256": "54a265ac0c075491e1e2b07087fe405ab4b5bdc6bd121bf7736d8ba04de34335",
+      "reviewed_at": "2026-11-08T09:46:08.402253+00:00",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42467801767",
+      "cpu_scene_prompt": "Close-up of a white refrigerator door covered with yellow paper notes beside its large handle. A black smartphone lies face-down on the kitchen counter in the foreground. Daylight."
     }
   },
   "version": 1

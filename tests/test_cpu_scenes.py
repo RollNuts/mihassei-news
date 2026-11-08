@@ -14,7 +14,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from scripts import build, github_cpu_scenes as cpu, local_scene_photos
+from scripts import build, cpu_photo_model as photo, github_cpu_scenes as cpu, local_scene_photos
 from scripts.generated_photos import article_fingerprint, generated_scene_entry, usable_generated_scene
 from scripts.visual_review import reviewed_generated_scene
 
@@ -335,6 +335,16 @@ class FreeCpuImageTests(unittest.TestCase):
                 for crowd_context in ("crowd", "referee", "participants", "adults", "rectangles"):
                     self.assertNotIn(crowd_context, prompt.lower())
 
+    def assert_current_direction_used(self, source):
+        core, _ = cpu.prompt_parts(source)
+        self.assertIn(core, local_scene_photos.scene_description(source))
+        current = cpu.cpu_prompt(source)
+        # A fresh direction may legitimately use the same wording as an old
+        # compact scene. Check that the expired mapping is ignored, not that
+        # its words are absent from the current article's own direction.
+        with patch.dict(cpu.CPU_SCENES, {source["slug"]: "Obsolete source-bound override sentinel."}):
+            self.assertEqual(cpu.cpu_prompt(source), current)
+
     def test_latest_rejected_scenes_have_current_compact_punchline_prompts(self):
         articles = {a["slug"]: a for a in local_scene_photos.load_articles()}
         expected = {
@@ -354,12 +364,15 @@ class FreeCpuImageTests(unittest.TestCase):
         for slug, (fingerprint, cues) in expected.items():
             with self.subTest(slug=slug):
                 source = articles[slug]
-                self.assertEqual(article_fingerprint(source), fingerprint)
-                self.assertTrue(cpu.reviewed_source_matches(source, slug))
-                prompt = cpu.cpu_prompt(source)
-                for cue in cues:
-                    self.assertIn(cue, prompt)
-                self.assertLess(len(prompt.split()), 65)
+                if article_fingerprint(source) == fingerprint:
+                    self.assertTrue(cpu.reviewed_source_matches(source, slug))
+                    prompt = cpu.cpu_prompt(source)
+                    for cue in cues:
+                        self.assertIn(cue, prompt)
+                    self.assertLess(len(prompt.split()), 65)
+                else:
+                    self.assertFalse(cpu.reviewed_source_matches(source, slug))
+                    self.assert_current_direction_used(source)
 
     def test_scene_specific_negative_guidance_is_version_bound(self):
         source = {**article(), "slug": "film-village-all-stars-no-extras",
@@ -406,17 +419,22 @@ class FreeCpuImageTests(unittest.TestCase):
     def test_current_fridge_prompt_retains_refrigerator_notes_and_phone_in_one_core(self):
         slug = "fridge-checkin-five-years-only-opening-times"
         source = next(a for a in local_scene_photos.load_articles() if a["slug"] == slug)
-        self.assertEqual(article_fingerprint(source), cpu.CPU_SCENE_SOURCE_HASHES[slug])
-        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
-        with contextlib.redirect_stdout(io.StringIO()):
-            prompt = cpu.fit_cpu_prompt(source, tokenizer)
-        for prop in ("white refrigerator door", "yellow paper notes", "black smartphone", "face-down"):
-            self.assertIn(prop, prompt)
-        self.assertLessEqual(len(tokenizer.encode(prompt)), cpu.CLIP_TOKEN_LIMIT)
+        fingerprint = "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a"
+        if article_fingerprint(source) == fingerprint:
+            self.assertTrue(cpu.reviewed_source_matches(source, slug))
+            tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+            with contextlib.redirect_stdout(io.StringIO()):
+                prompt = cpu.fit_cpu_prompt(source, tokenizer)
+            for prop in ("white refrigerator door", "yellow paper notes", "black smartphone", "face-down"):
+                self.assertIn(prop, prompt)
+            self.assertLessEqual(len(tokenizer.encode(prompt)), cpu.CLIP_TOKEN_LIMIT)
+        else:
+            self.assertFalse(cpu.reviewed_source_matches(source, slug))
+            self.assert_current_direction_used(source)
         for changed in ({**source, "paragraphs": [*source["paragraphs"], "An edited ending."]},
                         {**source, "scene_prompt": "An adult holds a green toolbox beside a garden gate."}):
             self.assertFalse(cpu.reviewed_source_matches(changed, slug))
-            self.assertNotIn(cpu.CPU_SCENES[slug], cpu.cpu_prompt(changed))
+            self.assert_current_direction_used(changed)
 
     def test_reviewed_override_expires_when_body_or_current_scene_changes(self):
         source = {**article(), "paragraphs": ["Original fictional scene."],
@@ -597,6 +615,211 @@ class CpuBackfillTests(unittest.TestCase):
 
     def same_main(self, *arguments):
         return "a" * 40 if arguments == ("rev-parse", "HEAD") else "a" * 40 + "\trefs/heads/main"
+
+    def write_reference_svg(self):
+        from scripts.editorial_covers import story_subject
+        svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" '
+               'role="img" aria-label="合成テスト用の創作イラスト" '
+               f'data-visual-topic="{story_subject(self.original)}" '
+               f'data-article-sha256="{article_fingerprint(self.original)}">'
+               '<title>Synthetic reference fixture, not an image review</title>'
+               '<rect width="1200" height="675" fill="white"/>'
+               '<rect x="90" y="90" width="300" height="200" fill="#d02020"/></svg>')
+        path = self.root / "assets/editorial-scenes" / (self.original["slug"] + ".svg")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(svg, encoding="utf-8")
+        return svg
+
+    def fake_reference_renderer(self):
+        from PIL import Image
+        image = Image.new("RGB", (800, 448), (12, 34, 56))
+        output = io.BytesIO()
+        image.save(output, format="PNG")
+        return SimpleNamespace(__version__="2.7.1", svg2png=Mock(return_value=output.getvalue()))
+
+    def test_reference_preflight_requires_an_original_reviewed_svg_and_all_preview_flags(self):
+        with patch.dict(os.environ, self.env), self.healthy_review():
+            with self.assertRaisesRegex(ValueError, "requires an explicit --backfill-scene"):
+                self.select(backfill_reference=True, backfill_scene="")
+            with self.assertRaisesRegex(ValueError, "original article's reviewed SVG"):
+                self.select(backfill_reference=True)
+            svg = self.write_reference_svg()
+            clone, = self.select(backfill_reference=True)
+            self.assertEqual(cpu.reviewed_reference_svg(self.original, root=self.root), svg)
+            with self.assertRaises(ValueError):
+                cpu.reviewed_reference_svg(clone, root=self.root)
+            path = self.root / "assets/editorial-scenes" / (self.original["slug"] + ".svg")
+            path.write_text(svg.replace("<rect width=", '<image href="https://invalid.test/remote.png"/><rect width=', 1))
+            with self.assertRaises(ValueError):
+                self.select(backfill_reference=True)
+
+    def test_reference_new_work_and_quota_block_before_renderer_or_model(self):
+        self.write_reference_svg()
+        for articles, quota, error in (([self.original, {**article(), "slug": "new-pending-story"}], "1", SystemExit),
+                                       ([self.original], "0", RuntimeError)):
+            with patch.dict(os.environ, {**self.env, "BACKFILL_QUOTA_ALLOWED": quota}), self.healthy_review(), \
+                 patch.object(cpu, "ROOT", self.root), patch.object(cpu, "load_articles", return_value=articles), \
+                 patch.object(cpu, "permitted_ci", return_value=True), \
+                 patch.object(cpu, "render_reference_image", side_effect=AssertionError("guide rasterized")), \
+                 patch.object(cpu, "load_pipeline", side_effect=AssertionError("model loaded")), \
+                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(error):
+                    cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                              "--review-dir", str(self.bundle), "--backfill-scene", self.scene,
+                              "--backfill-reference"])
+        self.assertFalse(self.bundle.exists())
+
+    def test_reference_raster_records_actual_svg_and_rgb_bytes_without_files(self):
+        svg = self.write_reference_svg()
+        renderer = self.fake_reference_renderer()
+        before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        with patch.dict("sys.modules", {"cairosvg": renderer}):
+            image, proof = cpu.render_reference_image(self.original, root=self.root)
+        self.assertEqual(image.mode, "RGB")
+        self.assertEqual(image.size, (800, 448))
+        self.assertEqual(proof["source_article_sha256"], article_fingerprint(self.original))
+        self.assertEqual(proof["init_svg_sha256"], hashlib.sha256(svg.encode("utf-8")).hexdigest())
+        self.assertEqual(proof["init_rgb_sha256"], hashlib.sha256(image.tobytes()).hexdigest())
+        self.assertEqual(set(proof), photo.REFERENCE_METADATA_KEYS)
+        renderer.svg2png.assert_called_once_with(bytestring=svg.encode("utf-8"), unsafe=False,
+                                                background_color="#ffffff", output_width=800, output_height=448)
+        self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()})
+        renderer.__version__ = "unreviewed-version"
+        with patch.dict("sys.modules", {"cairosvg": renderer}), self.assertRaisesRegex(RuntimeError, "pinned CairoSVG"):
+            cpu.render_reference_image(self.original, root=self.root)
+
+    def test_actual_pinned_reference_renderer_rasterizes_the_reviewed_fixture(self):
+        required = (os.getenv("VERIPSA_TEST_REFERENCE_RENDERER") == "1"
+                    or os.getenv("BACKFILL_REFERENCE") == "1")
+        try:
+            import cairosvg
+        except (ImportError, OSError):
+            if required:
+                raise
+            self.skipTest("CairoSVG is installed only by CI or the opt-in CPU reference job")
+        if cairosvg.__version__ != photo.REFERENCE_RENDERER_VERSION:
+            if required:
+                self.fail("CI must install the pinned CairoSVG 2.7.1")
+            self.skipTest("Actual renderer test requires the CI-pinned CairoSVG 2.7.1")
+        self.write_reference_svg()
+        image, proof = cpu.render_reference_image(self.original, root=self.root)
+        self.assertEqual(image.size, (800, 448))
+        self.assertEqual(image.getpixel((100, 100)), (208, 32, 32))
+        self.assertEqual(image.getpixel((700, 400)), (255, 255, 255))
+        self.assertEqual(proof["init_rgb_sha256"], hashlib.sha256(image.tobytes()).hexdigest())
+        self.assertFalse(any(self.root.rglob("*.png")))
+
+    def test_reference_conversion_reuses_all_verified_components_and_safety(self):
+        names = ("unet", "vae", "text_encoder", "tokenizer", "scheduler", "safety_checker", "feature_extractor")
+        original = SimpleNamespace(**{name: object() for name in names})
+        converted = Mock(**{name: getattr(original, name) for name in names})
+        factory = Mock()
+        factory.from_pipe.return_value = converted
+        with patch.dict("sys.modules", {"diffusers": SimpleNamespace(AutoPipelineForImage2Image=factory)}):
+            self.assertIs(photo.as_reference_pipeline(original), converted)
+            factory.from_pipe.assert_called_once_with(original, requires_safety_checker=True)
+            converted.to.assert_called_once_with("cpu")
+            converted.enable_attention_slicing.assert_called_once_with("auto")
+            converted.safety_checker = None
+            with self.assertRaises(RuntimeError):
+                photo.as_reference_pipeline(original)
+
+    def test_reference_img2img_call_uses_fixed_guide_without_ignored_dimension_kwargs(self):
+        from PIL import Image
+        clone = {**self.original, "scene_prompt": self.scene, "visual_strategy": "cpu-photo"}
+        guide = Image.new("RGB", (800, 448), "white")
+        result_image = SimpleNamespace(save=lambda output, **kwargs: output.write(b"synthetic PNG"))
+        pipe = Mock(return_value=SimpleNamespace(images=[result_image], nsfw_content_detected=[False]))
+        pipe.tokenizer = None
+        generator = Mock()
+        generator.manual_seed.return_value = generator
+        torch = SimpleNamespace(Generator=Mock(return_value=generator), inference_mode=contextlib.nullcontext)
+        callback = Mock()
+        with patch.object(cpu, "normalize_exposure", side_effect=lambda image: image), \
+             patch.object(cpu, "check_quality"), patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()):
+            cpu.render_one(pipe, torch, clone, reference_image=guide, callback_on_step_end=callback)
+        kwargs = pipe.call_args.kwargs
+        self.assertNotIn("width", kwargs)
+        self.assertNotIn("height", kwargs)
+        self.assertIs(kwargs["image"], guide)
+        self.assertEqual(kwargs["strength"], 0.65)
+        self.assertEqual(kwargs["num_inference_steps"], 24)
+        self.assertEqual(kwargs["guidance_scale"], 7.0)
+        self.assertIs(kwargs["callback_on_step_end"], callback)
+        generator.manual_seed.assert_called_once_with(local_scene_photos.stable_seed(clone))
+        pipe.return_value.nsfw_content_detected = [True]
+        with self.assertRaisesRegex(ValueError, "safety filter"):
+            cpu.render_one(pipe, torch, clone, reference_image=guide)
+
+    def test_reference_writer_requires_exact_proof_and_preserves_existing_bytes_on_bad_metadata(self):
+        self.write_reference_svg()
+        with patch.dict("sys.modules", {"cairosvg": self.fake_reference_renderer()}):
+            _image, proof = cpu.render_reference_image(self.original, root=self.root)
+        clone = {**self.original, "scene_prompt": self.scene, "visual_strategy": "cpu-photo"}
+        local_scene_photos.write_generated(clone, jpeg_header_fixture(), cpu.MODEL, root=self.root,
+                                          origin=cpu.REFERENCE_ORIGIN, reference_metadata=proof)
+        record = generated_scene_entry(clone, root=self.root)
+        self.assertEqual(record["inference"], cpu.REFERENCE_INFERENCE)
+        self.assertEqual(record["seed"], local_scene_photos.stable_seed(clone))
+        self.assertIs(type(record["seed"]), int)
+        path = self.root / "assets/generated/manifest.json"
+        before = path.read_bytes()
+        for metadata in (None, {**proof, "renderer_version": "other"},
+                         {**proof, "source_article_sha256": article_fingerprint(clone)},
+                         {**proof, "unexpected": "field"}):
+            with self.assertRaises(ValueError):
+                local_scene_photos.write_generated(clone, jpeg_header_fixture(), cpu.MODEL, root=self.root,
+                                                  origin=cpu.REFERENCE_ORIGIN, reference_metadata=metadata)
+            self.assertEqual(path.read_bytes(), before)
+        with self.assertRaises(ValueError):
+            local_scene_photos.write_generated(clone, jpeg_header_fixture(), cpu.MODEL, root=self.root,
+                                              origin=cpu.ORIGIN, reference_metadata=proof)
+        self.assertTrue(usable_generated_scene(clone, root=self.root))
+        self.assertFalse(reviewed_generated_scene(clone, root=self.root))
+
+    def test_reference_main_exports_only_new_jpeg_clone_and_actual_input_proof(self):
+        self.write_reference_svg()
+        (self.root / "content").mkdir()
+        (self.root / "content/articles.json").write_text(json.dumps([self.original]))
+        before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        renderer = self.fake_reference_renderer()
+        fake_image = SimpleNamespace(save=lambda output, **kwargs: output.write(b"synthetic PNG"))
+        pipe = Mock(return_value=SimpleNamespace(images=[fake_image], nsfw_content_detected=[False]))
+        pipe.tokenizer = None
+        generator = Mock()
+        generator.manual_seed.return_value = generator
+        torch = SimpleNamespace(Generator=Mock(return_value=generator), inference_mode=contextlib.nullcontext)
+        with patch.dict(os.environ, self.env), self.healthy_review(), \
+             patch.dict("sys.modules", {"cairosvg": renderer}), \
+             patch.object(cpu, "ROOT", self.root), patch.object(cpu, "load_articles", return_value=[self.original]), \
+             patch.object(cpu, "permitted_ci", return_value=True), patch.object(cpu, "_git_read", side_effect=self.same_main), \
+             patch.object(cpu, "load_pipeline", return_value=(pipe, torch)) as load, \
+             patch.object(cpu, "as_reference_pipeline", return_value=pipe) as convert, \
+             patch.object(cpu, "normalize_exposure", side_effect=lambda image: image), \
+             patch.object(cpu, "check_quality"), patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()), \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                                       "--review-dir", str(self.bundle), "--backfill-scene", self.scene,
+                                       "--backfill-reference"]), 0)
+        load.assert_called_once()
+        convert.assert_called_once_with(pipe)
+        pipe.assert_called_once()
+        clone, = json.loads((self.bundle / "content/articles.json").read_text())
+        record = generated_scene_entry(clone, root=self.bundle)
+        self.assertEqual(record["origin"], cpu.REFERENCE_ORIGIN)
+        self.assertEqual(record["inference"], cpu.REFERENCE_INFERENCE)
+        self.assertEqual(record["source_article_sha256"], article_fingerprint(self.original))
+        self.assertEqual(record["init_rgb_sha256"], hashlib.sha256(pipe.call_args.kwargs["image"].tobytes()).hexdigest())
+        self.assertIs(type(record["seed"]), int)
+        self.assertGreater(record["seed"], 2**53)
+        generator.manual_seed.assert_called_once_with(record["seed"])
+        self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()})
+        self.assertEqual({p.relative_to(self.bundle).as_posix() for p in self.bundle.rglob("*") if p.is_file()},
+                         {"content/articles.json", "assets/generated/manifest.json",
+                          "assets/generated/" + clone["slug"] + ".jpg"})
+        from scripts.publish_cpu_scenes import validate_bundle
+        self.assertEqual(validate_bundle(self.bundle), [clone])
+        self.assertFalse(reviewed_generated_scene(clone, root=self.bundle))
 
     def test_backfill_clones_only_visual_direction_and_does_not_requeue_illustrations(self):
         snapshot = json.loads(json.dumps(self.original))
@@ -1003,6 +1226,8 @@ class CpuBackfillTests(unittest.TestCase):
         self.assertIn("format('Photo backfill: {0}', inputs.slug)", workflow)
         self.assertIn("BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}", workflow)
         self.assertIn('args+=(--backfill-scene "$BACKFILL_SCENE")', workflow)
+        self.assertIn('args+=(--backfill-reference)', workflow)
+        self.assertIn("&& !inputs.backfill_reference", workflow)
         self.assertIn("current_run_attempt=int(os.environ['GITHUB_RUN_ATTEMPT'])", workflow)
         self.assertLess(workflow.index("Plan missing images"), workflow.index("Bound daily photo backfill"))
         self.assertLess(workflow.index("Bound daily photo backfill"), workflow.index("Install CPU-only"))

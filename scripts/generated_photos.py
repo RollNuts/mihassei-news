@@ -12,10 +12,18 @@ import re
 from pathlib import Path
 
 try:
-    from .cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
+    from .cpu_photo_model import (
+        MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE,
+        LCM_INFERENCE, ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN,
+        REFERENCE_INFERENCE, reference_metadata_valid,
+    )
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 except ImportError:
-    from cpu_photo_model import MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE, LCM_INFERENCE, ORIGIN as CPU_ORIGIN
+    from cpu_photo_model import (
+        MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE,
+        LCM_INFERENCE, ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN,
+        REFERENCE_INFERENCE, reference_metadata_valid,
+    )
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -89,15 +97,28 @@ def generated_scene_entry(article: dict, *, root: Path = ROOT) -> dict | None:
     if origin == "local-comfyui":
         if not isinstance(model, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+\.safetensors", model):
             return None
-    elif origin in ("github-cpu-lcm", CPU_ORIGIN):
+    elif origin in ("github-cpu-lcm", CPU_ORIGIN, REFERENCE_ORIGIN):
         # Model weights run inside a GitHub-hosted CPU job, without image APIs.
         if model not in (LEGACY_MODEL, CPU_MODEL):
             return None
         if model == LEGACY_MODEL and origin != "github-cpu-lcm":
             return None
-        expected = CPU_INFERENCE if origin == CPU_ORIGIN else LCM_INFERENCE
+        expected = (REFERENCE_INFERENCE if origin == REFERENCE_ORIGIN else
+                    CPU_INFERENCE if origin == CPU_ORIGIN else LCM_INFERENCE)
         if model == CPU_MODEL and record.get("inference") != expected:
             return None
+        if origin == REFERENCE_ORIGIN:
+            # Record immutable input provenance; the historical SVG need not
+            # remain current after a reviewed photo replaces its article copy.
+            if not reference_metadata_valid(record, article_sha256=article_fingerprint(article)):
+                return None
+            # Import lazily: the local writer also imports this integrity gate.
+            try:
+                from .local_scene_photos import stable_seed
+            except ImportError:
+                from local_scene_photos import stable_seed
+            if type(record.get("seed")) is not int or record["seed"] != stable_seed(article):
+                return None
     elif origin == "chatgpt-imagegen":
         # A manually imported ChatGPT-native generation, not a CPU/Mac result.
         # Require the exact source marker and generation receipt, plus the
