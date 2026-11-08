@@ -216,18 +216,28 @@ export class NewsroomStats extends DurableObject {
     ).toArray().filter(row=>validArticle(row.article) &&
       Number.isInteger(row.pageViews) && row.pageViews>0);
   }
-  pageViewSourceSummary(day, currentHour, startedAt) {
-    const channels={};
-    const today={};
-    const currentHourCounts={};
-    for(const source of attributionChannels){
-      channels[source]=startedAt ? this.count("pageViewSource:"+source) : null;
-      today[source]=startedAt ? this.count("day:"+day.date+":pageViewSource:"+source) : null;
-      currentHourCounts[source]=startedAt ? this.count(
-        "hour:"+currentHour.date+":"+currentHour.hour+":pageViewSource:"+source) : null;
+  hourlyDimensionTotals(date, marker, dimensions) {
+    const totals=Object.fromEntries(dimensions.map(key=>[key,0]));
+    const prefix="hour:"+date+":";
+    const rows=this.sql.exec(
+      "SELECT key,value FROM counters WHERE key LIKE ? AND value>0",
+      prefix+"%:"+marker+":%"
+    ).toArray();
+    for(const row of rows){
+      const dimension=row.key.slice(row.key.lastIndexOf(":")+1);
+      if(Object.hasOwn(totals,dimension) && Number.isInteger(row.value) && row.value>0)
+        totals[dimension]+=row.value;
     }
+    return totals;
+  }
+  pageViewSourceSummary(day, currentHour, startedAt) {
+    const today=startedAt
+      ? this.hourlyDimensionTotals(day.date,"pageViewSource",attributionChannels)
+      : Object.fromEntries(attributionChannels.map(source=>[source,null]));
+    const currentHourCounts={};
+    for(const source of attributionChannels)currentHourCounts[source]=startedAt ? this.count(
+      "hour:"+currentHour.date+":"+currentHour.hour+":pageViewSource:"+source) : null;
     return {
-      pageViewSources:channels,
       pageViewSourcesToday:today,
       pageViewSourcesCurrentHour:currentHourCounts,
       pageViewSourceTracking:{
@@ -239,15 +249,13 @@ export class NewsroomStats extends DurableObject {
     };
   }
   pageKindSummary(day, currentHour, startedAt) {
-    const total={},today={},currentHourCounts={};
-    for(const kind of pageKinds){
-      total[kind]=startedAt ? this.count("pageViewKind:"+kind) : null;
-      today[kind]=startedAt ? this.count("day:"+day.date+":pageViewKind:"+kind) : null;
-      currentHourCounts[kind]=startedAt ? this.count(
-        "hour:"+currentHour.date+":"+currentHour.hour+":pageViewKind:"+kind) : null;
-    }
+    const today=startedAt
+      ? this.hourlyDimensionTotals(day.date,"pageViewKind",pageKinds)
+      : Object.fromEntries(pageKinds.map(kind=>[kind,null]));
+    const currentHourCounts={};
+    for(const kind of pageKinds)currentHourCounts[kind]=startedAt ? this.count(
+      "hour:"+currentHour.date+":"+currentHour.hour+":pageViewKind:"+kind) : null;
     return {
-      pageViewKinds:total,
       pageViewKindsToday:today,
       pageViewKindsCurrentHour:currentHourCounts,
       pageViewKindTracking:{
@@ -405,10 +413,6 @@ export class NewsroomStats extends DurableObject {
             requestedDayPageViews:this.dayCoverage({date:requestedDay},day,startedAt)==="unmeasured"
               ? null : this.count("day:"+requestedDay+":pageViews:"+slug)
           }),
-          entrances:sessionStartedAt ? this.count("entrances:"+slug) : null,
-          pageViewSources:sourceStartedAt ? Object.fromEntries(attributionChannels.map(source=>[
-            source,this.count("pageViewSource:"+source+":"+slug)
-          ])) : null,
           // Same Japan-date window and coverage as the site's last7Days.
           // Repeated displays count; historical browser IDs never fill gaps.
           last7DaysPageViews:this.last7DaysPageViews(day,startedAt,slug),
@@ -450,15 +454,11 @@ export class NewsroomStats extends DurableObject {
         ...this.pageKindSummary(day,hour,kindStartedAt),
         ...(requestedDay===null ? {} : {
           pageViewSourcesDay:this.dayCoverage({date:requestedDay},day,sourceStartedAt)==="unmeasured"
-            ? null : Object.fromEntries(attributionChannels.map(source=>[
-                source,this.count("day:"+requestedDay+":pageViewSource:"+source)
-              ]))
+            ? null : this.hourlyDimensionTotals(requestedDay,"pageViewSource",attributionChannels)
         }),
         ...(requestedDay===null ? {} : {
           pageViewKindsDay:this.dayCoverage({date:requestedDay},day,kindStartedAt)==="unmeasured"
-            ? null : Object.fromEntries(pageKinds.map(kind=>[
-                kind,this.count("day:"+requestedDay+":pageViewKind:"+kind)
-              ]))
+            ? null : this.hourlyDimensionTotals(requestedDay,"pageViewKind",pageKinds)
         }),
         ...(selectedHour===null ? {} : (()=>{
           const pvCoverage=this.hourCoverage(selectedHour.stamp,hour,hourlyStartedAt);
@@ -575,8 +575,6 @@ export class NewsroomStats extends DurableObject {
           }
           if(pageKind){
             this.rememberEarliest("pageViewKinds:startedAt",now);
-            this.increment("pageViewKind:"+pageKind,1);
-            this.increment(dayPrefix+"pageViewKind:"+pageKind,1);
             this.increment(hourPrefix+"pageViewKind:"+pageKind,1);
           }
           // New clients carry the acquisition channel across their 30-minute
@@ -584,10 +582,7 @@ export class NewsroomStats extends DurableObject {
           // being mislabeled as direct/unattributed.
           if(sessionChannel){
             this.rememberEarliest("pageViewSources:startedAt",now);
-            this.increment("pageViewSource:"+sessionChannel,1);
-            this.increment(dayPrefix+"pageViewSource:"+sessionChannel,1);
             this.increment(hourPrefix+"pageViewSource:"+sessionChannel,1);
-            if(article)this.increment("pageViewSource:"+sessionChannel+":"+article,1);
           }
         }
         if(sessionId){
@@ -596,8 +591,7 @@ export class NewsroomStats extends DurableObject {
             this.rememberEarliest("sessions:startedAt",now);
             this.increment("sessions",1);
             this.increment(dayPrefix+"sessions",1);
-            this.increment("sessions:channel:"+sessionChannel,1);
-            if(article)this.increment("entrances:"+article,1);
+
           }
         }
         // Real daily browser activity: a reload does not inflate the numbers.
@@ -696,7 +690,6 @@ export class NewsroomStats extends DurableObject {
       yesterday:this.dailySnapshot({date:previousDate},day,startedAt,sessionStartedAt),
       articlePageViews:article ? (startedAt ? this.count("pageViews:"+article) : null) : undefined,
       todayArticlePageViews:article ? (startedAt ? this.count("day:"+day.date+":pageViews:"+article) : null) : undefined,
-      articleEntrances:article ? (sessionStartedAt ? this.count("entrances:"+article) : null) : undefined,
       ...(ignoredVisit ? {ignored:true} : {}),
       readers:article?this.count("readers:"+article):undefined,
       likes:article?this.count("likes:"+article):undefined,
