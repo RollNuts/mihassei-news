@@ -1,5 +1,89 @@
 [
   {
+    "slug": "music-special-forty-days-of-lineup-announcements",
+    "category": "エンタメ",
+    "flash": "歌う前に発表しすぎた",
+    "fiction_company": "年末音の便り",
+    "art": "cards",
+    "fiction_at": "2031-11-08T19:52:00+09:00",
+    "published_at": "2026-11-08T19:52:00+09:00",
+    "title": "歌手40組を40日かけて発表した音楽特番、放送当日は「次の発表がない」と惜しむ声",
+    "summary": "2026年の「ベストアーティスト2026」では、出演予定約40組のうち第1弾として13組が発表された。5年後、別の音楽特番が出演者40組を40日に分けて発表。放送当日は歌よりも「今日の新発表は？」という通知待ちが続いた。",
+    "paragraphs": [
+      "2026年11月、音楽特番「ベストアーティスト2026」は出演予定約40組のうち第1弾として13組を発表した。それから5年。2031年の年末音楽番組「年末音の便り」は、出演歌手40組を一日一組ずつ、40日に分けて公表した。毎晩午後8時には次の歌手の名前が明かされ、予想を投稿するファンが告知画面に集まった。",
+      "企画を決めた広報責任者の水島さんには、翌年の協賛契約を獲得するという目標があった。スポンサーへ見せるのは、告知投稿が何日話題になったかという資料だ。制作スタッフが「まとめて発表して、あとは歌を楽しみにしてもらいましょう」と提案しても、水島さんは断った。「一度に40組を発表したら、注目されるのは一日だけ。来年の協賛を取るには、毎日話題になった記録がいる」。出演者名を伏せたまま、発表日だけを先に発表する日もあった。",
+      "40日目に最後の歌手が明かされると、告知への反応はこの年で最も多くなった。迎えた生放送の夜、歌を楽しんでいる視聴者の一方で、毎晩の発表を追いかけていたファンは通知画面を何度も開いた。「今日は誰の発表？」「もう全員出てます」。歌手が熱唱する間にも、番組のコメント欄には「第41弾はまだ？」という投稿が流れた。広報室では、生歌の評判よりも告知の更新を止めた日の数字が気にされていた。",
+      "番組の最後の一曲が終わるころ、広報室では来年の予定を決める会議が始まっていた。壁には来年用の40日分のカレンダーが貼られ、最初の一枠だけに赤丸があった。出演者の名前は、まだ一つも書かれていなかった。水島さんはその空欄を指して言った。「まず、第1弾をいつ発表するか、その発表をしましょう」。"
+    ],
+    "source": {
+      "kind": "報道",
+      "publisher": "MANTANWEB",
+      "published_at": "2026-11-08T05:00:00+09:00",
+      "url": "https://mantan-web.jp/article/20261107dog00m200024000a.html",
+      "topic": "2026年11月8日の報道で、日本テレビ系「ベストアーティスト2026」は11月28日に計5時間の生放送を予定し、出演アーティストは約40組、最初の発表は13組と確認された。2031年の番組「年末音の便り」、40日間の分割発表、スポンサーの評価指標、登場人物と視聴者の行動は創作であり、実在番組の運用や評価を述べたものではない。"
+    },
+    "scene_prompt": "A two-panel editorial scene: on the left, forty small calendar squares marked one per day for a long sequence of performer announcements; on the right, a small music television stage with singers performing while an office producer points to a fresh blank forty-day calendar with only the first square circled. Simple studio, calendars and people readable without logos or artist likenesses.",
+    "visual_strategy": "illustration",
+    "illustration_reason": "comparison_layout",
+    "tags": [
+      "音楽",
+      "テレビ",
+      "ファン文化"
+    ],
+    "satire_tags": [
+      "宣伝が主役",
+      "話題づくり"
+    ],
+    "x_tags": [
+      "ベストアーティスト"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "歌っている最中も、スマホにはまだ発表の続きを待つ指が残っていた。",
+    "reader_interest": "fandom_entertainment",
+    "reader_clarity": {
+      "who": "年末音楽特番の広報担当と、出演者発表を追いかける視聴者",
+      "action": "出演歌手40組を40日に分けて発表し、本番当日にも新たな発表を待つ",
+      "oddity": "歌を聴くための番組なのに、宣伝の更新を追うことが番組そのものより大切になっている"
+    },
+    "editorial_lane": "trend",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "人気音楽番組では出演者を複数回に分けて発表し、ファンが新しい発表を待ち話題にする",
+      "target": "実際の歌を届けるより、告知が何日話題になったかを商売の成果にしすぎる",
+      "action": "スポンサー向けの反応日数を増やすため40組の出演を40日間に分けて発表する",
+      "outcome": "生放送の歌唱中まで新発表を待つ声があり、広報室では次年度の発表日を発表する予定を作り始める"
+    },
+    "behavior_basis": {
+      "motive": "広報責任者は継続する協賛契約を取りたい。ファンは次の出演者発表を毎日楽しみにしている",
+      "ordinary_alternative": "出演者を数回で発表し、放送当日まで歌を楽しみに待ってもらう",
+      "why_not": "一度に発表するとスポンサーへ示せる告知反応の継続日数が短くなるため、一日一組の告知を選ぶ",
+      "evidence_quote": "一度に40組を発表したら、注目されるのは一日だけ。来年の協賛を取るには、毎日話題になった記録がいる"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月8日に、出演予定約40組を持つ音楽特番が第1弾13組を公表した",
+      "continuation_force": "複数回に分けた出演者発表への反応が協賛交渉用の指標になると、告知を細かく分割する誘因が生じる",
+      "future_result": "2031年、出演者発表が40日連続のイベントとなり、歌唱本番でも新しい発表が求められる"
+    },
+    "trend_observation": {
+      "source_kind": "google_trends",
+      "term": "日テレ系音楽の祭典 ベストアーティスト",
+      "observed_at": "2026-11-08T19:46:49+09:00",
+      "url": "https://trends.google.com/trending?geo=JP",
+      "verification_urls": [
+        "https://mantan-web.jp/article/20261107dog00m200024000a.html"
+      ]
+    },
+    "trend_bridge": {
+      "why_now": "2026年11月8日に音楽特番の放送日・出演予定約40組・第1弾13組が発表され、日本のGoogle Trendsにも話題語が現れた",
+      "shared_behavior": "次に誰が発表されるかが気になって、発表の予想と更新を繰り返してしまう",
+      "satire_gap": "歌を聴くための特番が、歌よりも出演者の発表回数と話題継続を重視してしまう",
+      "x_discovery_term": "ベストアーティスト",
+      "real_detail": "約40組の出演予定のうち第1弾13組を発表",
+      "unique_hook": "約40組を段階的に公表する現実の出発点を、40組を40日に分ける告知行為へ延長したとき初めて笑いが成立する"
+    }
+  },
+  {
     "slug": "fridge-checkin-five-years-only-opening-times",
     "category": "暮らし",
     "flash": "元気は確認、近況は不明",
