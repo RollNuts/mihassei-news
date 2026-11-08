@@ -80,7 +80,7 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto){
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  return {db,post,postAck,postPublic,postAction,get,getPublic,setTime(value){now=Date.parse(value);}};
+  return {db,stats,post,postAck,postPublic,postAction,get,getPublic,setTime(value){now=Date.parse(value);}};
 }
 
 function view(clientId,article='story-a',viewId=randomUUID()){
@@ -90,6 +90,26 @@ function view(clientId,article='story-a',viewId=randomUUID()){
 function sessionView(clientId,article='story-a',sessionId=randomUUID(),sessionChannel='unattributed',viewId=randomUUID()){
   return {action:'visit',clientId,article,viewId,sessionId,sessionChannel};
 }
+
+test('earliest timestamp helper writes only on initialization or a genuinely earlier value',t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const changes=()=>f.db.prepare('SELECT total_changes() AS n').get().n;
+  const value=()=>f.db.prepare("SELECT value FROM counters WHERE key='probe:startedAt'").get()?.value;
+
+  const before=changes();
+  f.stats.rememberEarliest('probe:startedAt',200);
+  assert.equal(value(),200);
+  assert.equal(changes()-before,1);
+
+  const afterFirst=changes();
+  f.stats.rememberEarliest('probe:startedAt',300);
+  assert.equal(value(),200);
+  assert.equal(changes()-afterFirst,0,'later timestamps must not consume a row write');
+
+  f.stats.rememberEarliest('probe:startedAt',100);
+  assert.equal(value(),100);
+  assert.equal(changes()-afterFirst,1,'an out-of-order earlier event still corrects the start');
+});
 
 test('PV begins with the first display, never with GETs or legacy distinct readers',async t=>{
   const f=fixture();t.after(()=>f.db.close());
