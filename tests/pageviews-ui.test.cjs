@@ -74,6 +74,15 @@ async function runPage(options={}){
   const getGate=options.delayFirstGet?new Promise(resolve=>{releaseGet=resolve;}):null;
   let delayed=false;
   let snapshot=options.snapshot||measuredSnapshot();
+  const snapshotFor=endpoint=>{
+    const slugs=(new URL('https://veripsa.com'+endpoint).searchParams.get('articles')||'').split(',').filter(Boolean);
+    const articles=Object.fromEntries(slugs.map(slug=>[slug,{
+      likes:0,readers:80,todayReaders:60,
+      ...(options.legacyArticles?{}:{pageViews:options.articleCounts?.[slug]??7,todayPageViews:2,last7DaysPageViews:options.articleCounts?.[slug]??7}),
+      votes:{plausible:0,unlikely:0}
+    }]));
+    return {...JSON.parse(JSON.stringify(snapshot)),articles};
+  };
   class FakeDate extends Date{
     constructor(...args){super(...(args.length?args:[clock]));}
     static now(){return clock;}
@@ -98,16 +107,14 @@ async function runPage(options={}){
         const payload=JSON.parse(request.body);
         if(payload.action==='visit')seenViewIds.add(payload.viewId);
         if(postFailures-->0)throw Error('response lost after server accepted the view');
-        return {ok:true,json:async()=>({})};
+        if(payload.action==='visit')return {ok:true,json:async()=>snapshotFor(endpoint)};
+        if(payload.action==='like')return {ok:true,json:async()=>({ok:true,liked:true,likes:1})};
+        if(payload.action==='vote')return {ok:true,json:async()=>({ok:true,vote:payload.choice,alreadyVoted:false,votes:{plausible:1,unlikely:0}})};
+        return {ok:true,json:async()=>({ok:true})};
       }
       if(getFails)return {ok:false,json:async()=>({})};
-      const slugs=(new URL('https://veripsa.com'+endpoint).searchParams.get('articles')||'').split(',').filter(Boolean);
       if(getGate && !delayed){delayed=true;await getGate;}
-      const articles=Object.fromEntries(slugs.map(slug=>[slug,{
-        likes:0,readers:80,todayReaders:60,
-        ...(options.legacyArticles?{}:{pageViews:options.articleCounts?.[slug]??7,todayPageViews:2})
-      }]));
-      return {ok:true,json:async()=>({...JSON.parse(JSON.stringify(snapshot)),articles})};
+      return {ok:true,json:async()=>snapshotFor(endpoint)};
     }
   };
   vm.runInNewContext(source,vm.createContext(context),{timeout:1500});
@@ -131,6 +138,16 @@ test('PV labels use display counts, retain missing history, and populate every a
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['105','0','105']);
   assert.match(page.badges[0].attributes['aria-label'],/105PV/);
   assert.equal(page.widget.hidden,false);
+});
+
+test('a tracked page display reuses its POST snapshot instead of issuing an immediate GET',async()=>{
+  const page=await runPage({badges:['news-b','news-a']});
+  assert.equal(page.visits().length,1);
+  assert.equal(page.gets().length,0);
+  const endpoint=new URL('https://veripsa.com'+page.visits()[0].endpoint);
+  assert.equal(endpoint.searchParams.get('response'),'public');
+  assert.equal(endpoint.searchParams.get('articles'),'news-a,news-b');
+  assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['7','7']);
 });
 
 test('measured PV rendering does not depend on legacy browser counters',async()=>{
@@ -188,7 +205,7 @@ test('only visible document displays count; focus, visibility returns and refres
   const id=page.visits()[0].body.viewId;
   const sessionId=page.visits()[0].body.sessionId;
   page.document.visibilityState='hidden';page.advance(180000);page.intervals[0].callback();await settle();
-  assert.equal(page.gets().length,1);
+  assert.equal(page.gets().length,0,'successful visit POST already supplied the current metrics');
   page.document.visibilityState='visible';page.fire('document','visibilitychange');await settle();
   page.advance(50000);page.fire('window','focus');await settle();
   assert.equal(page.visits().length,1);
@@ -217,6 +234,7 @@ test('a lost response retries the same page-view ID once instead of creating ano
   assert.equal(page.visits()[0].body.sessionId,page.visits()[1].body.sessionId);
   assert.equal(page.seenViewIds.size,1);
   assert.equal(page.timers.filter(timer=>timer.delay===1500).length,1);
+  assert.equal(page.gets().length,0,'failed visit POST retries directly instead of doubling load with GET');
 });
 
 test('URL, saved and automated-preview opt-outs suppress visits while retaining read-only PV display',async()=>{
@@ -261,7 +279,8 @@ test('prerender activation waits for visibility and counts only one event',async
 
 test('large and dynamically revealed archives populate all visible PVs in batches of at most twenty',async()=>{
   const page=await runPage({archive:true,badges:[...Array.from({length:43},(_,i)=>'story-'+i),{slug:'later-story',hidden:true}]});
-  assert.deepEqual(page.gets().map(request=>new URL('https://veripsa.com'+request.endpoint).searchParams.get('articles').split(',').length),[20,20,3]);
+  assert.deepEqual(page.gets().map(request=>new URL('https://veripsa.com'+request.endpoint).searchParams.get('articles').split(',').length),[20,3],
+    'the visit POST supplies the first twenty visible article metrics');
   assert.ok(page.badges.slice(0,43).every(badge=>badge.count.textContent==='7'));
   assert.equal(page.badges[43].count.textContent,'—');
   page.badges[43].cardHidden=false;page.mutations[0]();
@@ -271,14 +290,14 @@ test('large and dynamically revealed archives populate all visible PVs in batche
 });
 
 test('cards revealed during an in-flight read get a queued read-only follow-up',async()=>{
-  const page=await runPage({archive:true,delayFirstGet:true,badges:['first-story',{slug:'next-story',hidden:true}]});
+  const page=await runPage({archive:true,delayFirstGet:true,webdriver:true,badges:['first-story',{slug:'next-story',hidden:true}]});
   assert.equal(page.gets().length,1);
   page.badges[1].cardHidden=false;page.mutations[0]();
   page.timers.find(timer=>timer.delay===200).callback();
   page.releaseGet();await settle();await settle();
   assert.equal(page.gets().length,2);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['7','7']);
-  assert.equal(page.visits().length,1);
+  assert.equal(page.visits().length,0,'webdriver read-only mode exercises GET queuing without creating a PV');
 });
 
 

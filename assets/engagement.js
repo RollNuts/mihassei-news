@@ -336,8 +336,7 @@
       .filter(node=>!node.closest?.("[hidden]"))
       .map(node=>node.dataset.articlePv);
     return [...new Set([
-      article,...visible,...popularCandidates.map(x=>x.slug),
-      ...buttons.map(b=>b.dataset.likeSlug)
+      article,...visible,...buttons.map(b=>b.dataset.likeSlug)
     ])].filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug));
   }
 
@@ -406,7 +405,7 @@
   }
   heartView();
 
-  async function apiPost(action,articleSlug="",choice="",viewId=""){
+  async function apiPost(action,articleSlug="",choice="",viewId="",publicArticles=[]){
     const payload={action,article:articleSlug,clientId:clientIdentifier()};
     if(action==="vote")payload.choice=choice;
     if(action==="visit"){
@@ -418,8 +417,17 @@
     }
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
     if(action==="visit" && viewId)payload.viewId=viewId;
-    const endpoint=(action==="visit" || action==="share")
-      ? "/api/engagement?response=ack" : "/api/engagement";
+    const params=new URLSearchParams();
+    if(action==="visit"){
+      params.set("response","public");
+      const slugs=[...new Set(publicArticles)]
+        .filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+        .sort().slice(0,20);
+      if(slugs.length)params.set("articles",slugs.join(","));
+      if(popularSection)params.set("popular","1");
+    }else if(action==="share")params.set("response","ack");
+    else if(action==="like" || action==="vote")params.set("response","action");
+    const endpoint="/api/engagement"+(params.size?"?"+params.toString():"");
     const response=await fetch(endpoint,{
       method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify(payload),
@@ -443,28 +451,51 @@
     const windowStart=Number.isFinite(todayStamp)
       ? new Date(todayStamp-6*86400000).toISOString().slice(0,10) : "";
     const measured=value=>Number.isSafeInteger(value) && value>=0;
-    // Every candidate needs an observed value in the same recent window.
-    // Missing batches or pre-PV history cannot silently become zeros, and
-    // legacy unique-browser counts cannot stand in for page displays.
     if(!pvHealthy || !data.pageViewTracking?.startedAtUtc || !week ||
        week.startDateJst!==windowStart || week.endDateJst!==date ||
        !measured(week.pageViews) || typeof week.complete!=="boolean" ||
-       !Number.isInteger(week.measuredDays) || week.measuredDays<1 || week.measuredDays>7 ||
-       popularCandidates.some(candidate=>{
-         const metric=data.articles?.[candidate.slug];
-         return !metric || !measured(metric.last7DaysPageViews) ||
-           !measured(metric.todayPageViews) || metric.todayPageViews>metric.last7DaysPageViews;
-       })){
+       !Number.isInteger(week.measuredDays) || week.measuredDays<1 || week.measuredDays>7){
       hidePopular();
       return;
     }
-    const ranked=popularCandidates.map((candidate,order)=>({
-      ...candidate,order,
-      pageViews:data.articles[candidate.slug].last7DaysPageViews,
-      todayPageViews:data.articles[candidate.slug].todayPageViews
-    })).filter(x=>x.pageViews>0)
-      .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
-      .slice(0,3);
+    const serverRows=data.topArticles?.last7Days;
+    let ranked=[];
+    if(Array.isArray(serverRows)){
+      const candidates=new Map(popularCandidates.map((candidate,order)=>[candidate.slug,{...candidate,order}]));
+      const seen=new Set();
+      for(const row of serverRows){
+        if(!row || typeof row.article!=="string" || !measured(row.pageViews) ||
+           row.pageViews<=0 || seen.has(row.article))continue;
+        seen.add(row.article);
+        const candidate=candidates.get(row.article);
+        if(candidate)ranked.push({
+          ...candidate,
+          pageViews:row.pageViews,
+          todayPageViews:measured(row.todayPageViews)?row.todayPageViews:0
+        });
+      }
+      ranked=ranked
+        .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
+        .slice(0,3);
+    }else{
+      // Compatibility fallback while an older Worker revision is still serving:
+      // only render a ranking if all candidate metrics were actually returned.
+      if(popularCandidates.some(candidate=>{
+        const metric=data.articles?.[candidate.slug];
+        return !metric || !measured(metric.last7DaysPageViews) ||
+          !measured(metric.todayPageViews) || metric.todayPageViews>metric.last7DaysPageViews;
+      })){
+        hidePopular();
+        return;
+      }
+      ranked=popularCandidates.map((candidate,order)=>({
+        ...candidate,order,
+        pageViews:data.articles[candidate.slug].last7DaysPageViews,
+        todayPageViews:data.articles[candidate.slug].todayPageViews
+      })).filter(x=>x.pageViews>0)
+        .sort((a,b)=>b.pageViews-a.pageViews || b.todayPageViews-a.todayPageViews || a.order-b.order)
+        .slice(0,3);
+    }
     if(!ranked.length){
       hidePopular();
       return;
@@ -675,23 +706,31 @@
     }
     return pvWidget ? pvHealthy : pvHealthy || legacyHealthy;
   }
-  async function refresh(){
+  async function refresh(seedSnapshot=null){
     if(refreshPromise)return refreshPromise; // Avoid overlapping requests.
     refreshPromise=(async()=>{
       try{
-        const slugs=requestedArticleSlugs(),batches=[];
-        for(let offset=0;offset<slugs.length;offset+=20)batches.push(slugs.slice(offset,offset+20));
-        if(!batches.length)batches.push([]);
-        const snapshots=await Promise.all(batches.map(async batch=>{
+        const slugs=requestedArticleSlugs().sort();
+        const seeded=seedSnapshot && typeof seedSnapshot==="object" &&
+          seedSnapshot.articles && typeof seedSnapshot.articles==="object" &&
+          !Array.isArray(seedSnapshot.articles) ? seedSnapshot : null;
+        const seededSlugs=new Set(Object.keys(seeded?.articles||{}));
+        const missing=slugs.filter(slug=>!seededSlugs.has(slug));
+        const batches=[];
+        for(let offset=0;offset<missing.length;offset+=20)batches.push(missing.slice(offset,offset+20));
+        if(!seeded && !batches.length)batches.push([]);
+        const fetched=await Promise.all(batches.map(async batch=>{
           const params=new URLSearchParams();
           params.set("view","public");
           if(batch.length)params.set("articles",batch.join(","));
+          if(popularSection)params.set("popular","1");
           const res=await fetch("/api/engagement?"+params.toString(),{
             cache:"no-store",credentials:"same-origin"
           });
           if(!res.ok)throw new Error("audience data unavailable");
           return res.json();
         }));
+        const snapshots=[...(seeded?[seeded]:[]),...fetched];
         const first=snapshots[0];
         if(!first || snapshots.some(item=>!item || !item.articles || typeof item.articles!=="object" ||
              Array.isArray(item.articles) || item.today?.dateJst!==first.today?.dateJst ||
@@ -726,12 +765,15 @@
     if(!visibleDocument() || !trackingAllowed() || view.pending || view.finished || view.attempts>=2)return;
     if(!view.id)view.id=makeId();
     view.pending=true;view.attempts++;
+    let snapshot=null;
     try{
-      await apiPost("visit",article,"",view.id);
+      snapshot=await apiPost("visit",article,"",view.id,requestedArticleSlugs());
       view.finished=true;
     }catch(_){/* A lost response may be retried safely with the same event ID. */}
     finally{view.pending=false;}
-    await refresh();
+    // A successful visit already carries the first compact metrics batch.
+    // During an outage, do not immediately double-hit the same API with GET.
+    if(view.finished)await refresh(snapshot);
     if(!view.finished && view===currentView && view.attempts<2 && typeof window.setTimeout==="function"){
       window.setTimeout(()=>{if(view===currentView)void recordView(view);},1500);
     }
@@ -832,7 +874,14 @@
       const result=await apiPost("like",slug);
       if(result.liked===true)likedSet.add(slug);
       else if(result.liked===false)likedSet.delete(slug);
-      await refresh();
+      if(Number.isSafeInteger(result.likes) && result.likes>=0){
+        document.querySelectorAll("[data-like-count]").forEach(node=>{
+          if(node.dataset.likeCount===slug){
+            node.textContent=Intl.NumberFormat("ja-JP").format(result.likes);
+            node.hidden=false;
+          }
+        });
+      }
     } catch(_){
       // Local personal preference remains available during Free-tier limits.
     } finally {

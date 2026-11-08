@@ -176,15 +176,20 @@ export class NewsroomStats extends DurableObject {
     ).toArray().filter(row=>validArticle(row.article) && Number.isInteger(row.pageViews) && row.pageViews>0);
   }
   topArticleRowsForWeek(day, limit=10) {
-    const totals=new Map();
-    for(let i=0;i<7;i++){
+    const patterns=Array.from({length:7},(_,i)=>{
       const date=new Date((day.serial-6+i)*DAY_MS).toISOString().slice(0,10);
-      const prefix="day:"+date+":pageViews:";
-      for(const row of this.topArticleRows(prefix,1000))
-        totals.set(row.article,(totals.get(row.article)||0)+row.pageViews);
-    }
-    return [...totals].map(([article,pageViews])=>({article,pageViews}))
-      .sort((a,b)=>b.pageViews-a.pageViews || a.article.localeCompare(b.article)).slice(0,limit);
+      return "day:"+date+":pageViews:%";
+    });
+    const where=patterns.map(()=>"key LIKE ?").join(" OR ");
+    // Article-counter prefixes are fixed-width ASCII:
+    // "day:YYYY-MM-DD:pageViews:" is 25 characters, so the slug starts at 26.
+    return this.sql.exec(
+      "SELECT substr(key,26) AS article,SUM(value) AS pageViews FROM counters "+
+      "WHERE ("+where+") AND value>0 GROUP BY article "+
+      "ORDER BY pageViews DESC,article ASC LIMIT ?",
+      ...patterns,limit
+    ).toArray().filter(row=>validArticle(row.article) &&
+      Number.isInteger(row.pageViews) && row.pageViews>0);
   }
   pageViewSourceSummary(day, currentHour, startedAt) {
     const channels={};
@@ -228,6 +233,102 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
+  publicSnapshot(url, day) {
+    // Reader-facing pages need only the counters they actually render. This
+    // compact shape is also returned by successful visit POSTs so a normal
+    // page display does not need an immediate second API request.
+    const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
+    const articleSet=[...new Set(articles)];
+    const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
+    const firstSerial=day.serial-6;
+    const dates=Array.from({length:7},(_,i)=>
+      new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10));
+    const keys=[
+      "pageViews:startedAt","pageViews","visitors",
+      "day:"+day.date+":visitors","day:"+day.date+":articleReads","day:"+day.date+":pageViews",
+      "day:"+previousDate+":visitors","day:"+previousDate+":articleReads","day:"+previousDate+":pageViews",
+      ...dates.map(date=>"day:"+date+":pageViews")
+    ];
+    for(const slug of articleSet)keys.push(
+      "likes:"+slug,
+      "readers:"+slug,
+      "day:"+day.date+":reader:"+slug,
+      "pageViews:"+slug,
+      "day:"+day.date+":pageViews:"+slug,
+      "predictions:plausible:"+slug,
+      "predictions:unlikely:"+slug,
+      ...dates.map(date=>"day:"+date+":pageViews:"+slug)
+    );
+    const values=this.counts(keys);
+    const value=key=>values.get(key)??0;
+    const publicStartedAt=value("pageViews:startedAt");
+    const coverage=date=>this.dayCoverage({date},day,publicStartedAt);
+    const publicDay=date=>{
+      const pageViewsCoverage=coverage(date);
+      return {
+        dateJst:date,
+        visitors:value("day:"+date+":visitors"),
+        articleReads:value("day:"+date+":articleReads"),
+        pageViews:pageViewsCoverage==="unmeasured" ? null : value("day:"+date+":pageViews"),
+        pageViewsCoverage
+      };
+    };
+    const publicArticles=Object.fromEntries(articleSet.map(slug=>[
+      slug,{
+        likes:value("likes:"+slug),
+        readers:value("readers:"+slug),
+        todayReaders:value("day:"+day.date+":reader:"+slug),
+        pageViews:publicStartedAt ? value("pageViews:"+slug) : null,
+        todayPageViews:publicStartedAt ? value("day:"+day.date+":pageViews:"+slug) : null,
+        last7DaysPageViews:publicStartedAt
+          ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews:"+slug),0)
+          : null,
+        votes:{
+          plausible:value("predictions:plausible:"+slug),
+          unlikely:value("predictions:unlikely:"+slug)
+        }
+      }
+    ]));
+    let popularRows=null;
+    if(url.searchParams.get("popular")==="1"){
+      const rows=this.topArticleRowsForWeek(day,1000);
+      const todayValues=this.counts(rows.map(row=>"day:"+day.date+":pageViews:"+row.article));
+      popularRows=rows.map(row=>({
+        ...row,
+        todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
+      }));
+    }
+    return {
+      version:2,
+      unit:"anonymous-browser",
+      visitors:value("visitors"),
+      articles:publicArticles,
+      pageViews:publicStartedAt ? value("pageViews") : null,
+      pageViewTracking:{
+        startedAtUtc:publicStartedAt ? new Date(publicStartedAt).toISOString() : null,
+        timezone:"Asia/Tokyo",
+        unit:"page-view"
+      },
+      last7Days:{
+        startDateJst:dates[0],
+        endDateJst:day.date,
+        pageViews:publicStartedAt
+          ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews"),0)
+          : null,
+        measuredDays:publicStartedAt
+          ? Math.max(0,Math.min(7,day.serial-currentJstDay(publicStartedAt).serial+1))
+          : 0,
+        complete:Boolean(publicStartedAt && publicStartedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
+      },
+      today:publicDay(day.date),
+      yesterday:publicDay(previousDate),
+      ...(popularRows!==null ? {
+        // Rank once inside the existing Durable Object instead of making the
+        // browser fetch every published article just to discover the top few.
+        topArticles:{last7Days:popularRows}
+      } : {})
+    };
+  }
   async fetch(req) {
     const url=new URL(req.url);
     const now=Date.now();
@@ -259,89 +360,9 @@ export class NewsroomStats extends DurableObject {
           return json({error:"hour outside available JST history"},400);
         selectedHour={date:match[1],hour:match[2],stamp:requestedHour};
       }
+      if(url.searchParams.get("view")==="public")
+        return json(this.publicSnapshot(url,day));
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
-      if(url.searchParams.get("view")==="public") {
-        // Reader-facing pages only need the counters they actually render.
-        // Keep the full diagnostics contract as the default for operations,
-        // but avoid dozens of per-key reads, hourly scans and rankings on every
-        // browser refresh.
-        const articleSet=[...new Set(articles)];
-        const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
-        const firstSerial=day.serial-6;
-        const dates=Array.from({length:7},(_,i)=>
-          new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10));
-        const keys=[
-          "pageViews:startedAt","pageViews","visitors",
-          "day:"+day.date+":visitors","day:"+day.date+":articleReads","day:"+day.date+":pageViews",
-          "day:"+previousDate+":visitors","day:"+previousDate+":articleReads","day:"+previousDate+":pageViews",
-          ...dates.map(date=>"day:"+date+":pageViews")
-        ];
-        for(const slug of articleSet)keys.push(
-          "likes:"+slug,
-          "readers:"+slug,
-          "day:"+day.date+":reader:"+slug,
-          "pageViews:"+slug,
-          "day:"+day.date+":pageViews:"+slug,
-          "predictions:plausible:"+slug,
-          "predictions:unlikely:"+slug,
-          ...dates.map(date=>"day:"+date+":pageViews:"+slug)
-        );
-        const values=this.counts(keys);
-        const value=key=>values.get(key)??0;
-        const publicStartedAt=value("pageViews:startedAt");
-        const coverage=date=>this.dayCoverage({date},day,publicStartedAt);
-        const publicDay=date=>{
-          const pageViewsCoverage=coverage(date);
-          return {
-            dateJst:date,
-            visitors:value("day:"+date+":visitors"),
-            articleReads:value("day:"+date+":articleReads"),
-            pageViews:pageViewsCoverage==="unmeasured" ? null : value("day:"+date+":pageViews"),
-            pageViewsCoverage
-          };
-        };
-        const publicArticles=Object.fromEntries(articleSet.map(slug=>[
-          slug,{
-            likes:value("likes:"+slug),
-            readers:value("readers:"+slug),
-            todayReaders:value("day:"+day.date+":reader:"+slug),
-            pageViews:publicStartedAt ? value("pageViews:"+slug) : null,
-            todayPageViews:publicStartedAt ? value("day:"+day.date+":pageViews:"+slug) : null,
-            last7DaysPageViews:publicStartedAt
-              ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews:"+slug),0)
-              : null,
-            votes:{
-              plausible:value("predictions:plausible:"+slug),
-              unlikely:value("predictions:unlikely:"+slug)
-            }
-          }
-        ]));
-        return json({
-          version:2,
-          unit:"anonymous-browser",
-          visitors:value("visitors"),
-          articles:publicArticles,
-          pageViews:publicStartedAt ? value("pageViews") : null,
-          pageViewTracking:{
-            startedAtUtc:publicStartedAt ? new Date(publicStartedAt).toISOString() : null,
-            timezone:"Asia/Tokyo",
-            unit:"page-view"
-          },
-          last7Days:{
-            startDateJst:dates[0],
-            endDateJst:day.date,
-            pageViews:publicStartedAt
-              ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews"),0)
-              : null,
-            measuredDays:publicStartedAt
-              ? Math.max(0,Math.min(7,day.serial-currentJstDay(publicStartedAt).serial+1))
-              : 0,
-            complete:Boolean(publicStartedAt && publicStartedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
-          },
-          today:publicDay(day.date),
-          yesterday:publicDay(previousDate)
-        });
-      }
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
@@ -609,8 +630,21 @@ export class NewsroomStats extends DurableObject {
         }
       }
     });
-    if(url.searchParams.get("response")==="ack" &&
-       (data.action==="visit" || data.action==="share"))
+    const responseMode=url.searchParams.get("response");
+    if(responseMode==="public" && data.action==="visit"){
+      const snapshot=this.publicSnapshot(url,day);
+      if(ignoredVisit)snapshot.ignored=true;
+      return json(snapshot);
+    }
+    if(responseMode==="action" && data.action==="like")
+      return json({ok:true,liked,likes:this.count("likes:"+article)});
+    if(responseMode==="action" && data.action==="vote")
+      return json({ok:true,vote:selectedVote,alreadyVoted,votes:{
+        plausible:this.count("predictions:plausible:"+article),
+        unlikely:this.count("predictions:unlikely:"+article)
+      }});
+    // Backward-compatible ACK for already-deployed clients and cheap shares.
+    if(responseMode==="ack" && (data.action==="visit" || data.action==="share"))
       return json({ok:true,...(ignoredVisit ? {ignored:true} : {})});
     const startedAt=this.count("pageViews:startedAt");
     const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
