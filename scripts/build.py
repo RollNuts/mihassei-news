@@ -530,7 +530,7 @@ def uses_stock_photo(a):
 def editorial_image(a):
     """Prefer verified scenes, then reviewed illustrations, stock and fallback."""
     if uses_generated_scene(a):
-        return generated_url(a)
+        return generated_url(a, root=BASE)
     if uses_stock_photo(a):
         return "/photos/" + a["slug"] + ".jpg"
     return illustration_path(a)
@@ -795,7 +795,7 @@ def social_image(article):
     """Use verified local JPEG for OGP when present, else deterministic PNG."""
     if article is not None:
         if uses_generated_scene(article):
-            return generated_url(article)
+            return generated_url(article, root=BASE)
         if uses_stock_photo(article):
             return "/photos/" + article["slug"] + ".jpg"
         return "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
@@ -2174,9 +2174,10 @@ def build():
     # itself never needs to be public or requested by a browser.
     for item in articles:
         if uses_generated_scene(item):
-            destination = OUT / generated_url(item).lstrip("/")
+            source = BASE / "assets" / "generated" / (item["slug"] + ".jpg")
+            destination = OUT / "generated" / source.name
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(BASE / "assets" / "generated" / (item["slug"] + ".jpg"), destination)
+            shutil.copy2(source, destination)
     # Only validated, fingerprint-matched optional MP4s are ever published.
     # Stale/over-budget files in the source tree do not reach the live site.
     for item in articles:

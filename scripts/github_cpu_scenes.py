@@ -8,11 +8,15 @@ paid services, GPU instances, or additional ChatGPT credits are used.
 from __future__ import annotations
 
 import argparse
+import copy
+from contextlib import nullcontext
+from datetime import datetime, timedelta, timezone
 import io
 import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -21,18 +25,19 @@ try:
     from .cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
-        load_articles, pending_articles, png_to_jpeg, scene_description,
+        held_scene, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 except ImportError:
     from cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
-        load_articles, pending_articles, png_to_jpeg, scene_description,
+        held_scene, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
 
 MAX_CPU_BATCH = 3
+BACKFILL_RUN_PREFIX = "Photo backfill: "
 MIN_RUNNER_FREE_BYTES = 1_000_000_000
 CLIP_TOKEN_LIMIT = 77
 TV_PILOT_SLUG = "variety-700-guests-only-introductions"
@@ -249,8 +254,71 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
     return prompt
 
 
+def backfill_run_allowed(runs: list[dict], current_run_id: int, *, now: datetime | None = None) -> bool:
+    """The first attempted backfill workflow run per JST day owns that quota."""
+    if not isinstance(runs, list) or type(current_run_id) is not int:
+        raise ValueError("Invalid backfill workflow run inventory")
+    jst = timezone(timedelta(hours=9))
+    current = now or datetime.now(timezone.utc)
+    if current.tzinfo is None:
+        raise ValueError("Backfill quota requires a timezone-qualified clock")
+    today, candidates = current.astimezone(jst).date(), []
+    if len(runs) >= 100:
+        try:
+            oldest = min(datetime.fromisoformat(run["created_at"].replace("Z", "+00:00"))
+                         for run in runs)
+            if oldest.tzinfo is None or oldest.astimezone(jst).date() >= today:
+                raise ValueError("Workflow inventory does not cover the complete JST day")
+        except (KeyError, TypeError) as exc:
+            raise ValueError("Incomplete workflow run inventory") from exc
+    for run in runs:
+        if not isinstance(run, dict):
+            raise ValueError("Invalid workflow run entry")
+        title = run.get("display_title", "")
+        if not isinstance(title, str) or not title.startswith(BACKFILL_RUN_PREFIX):
+            continue
+        identifier = run.get("id")
+        created = run.get("created_at")
+        if type(identifier) is not int or not isinstance(created, str):
+            raise ValueError("Backfill workflow run is missing identity or time")
+        timestamp = datetime.fromisoformat(created.replace("Z", "+00:00"))
+        if timestamp.tzinfo is None:
+            raise ValueError("Backfill workflow run time must include timezone")
+        if timestamp.astimezone(jst).date() == today:
+            candidates.append((timestamp, identifier))
+    if current_run_id not in {identifier for _, identifier in candidates}:
+        raise ValueError("Current backfill run is absent from today's workflow inventory")
+    return min(candidates)[1] == current_run_id
+
+
+def _git_read(*arguments: str) -> str:
+    try:
+        return subprocess.run(["git", "-C", str(ROOT), *arguments], check=True,
+                              capture_output=True, text=True, timeout=15).stdout.strip()
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError("Backfill stopped: cannot verify latest main") from exc
+
+
+def check_main_unchanged(revision: str) -> None:
+    """Yield the shared runner to any newer main; never fetch, reset or push."""
+    if not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise RuntimeError("Backfill stopped: invalid checkout revision")
+    remote = _git_read("ls-remote", "--exit-code", "origin", "refs/heads/main").split()
+    if remote != [revision, "refs/heads/main"]:
+        raise RuntimeError("Backfill stopped: main advanced; current articles take priority")
+
+
+def backfill_step_callback(revision: str):
+    def check(_pipeline, step_index, _timestep, callback_kwargs):
+        if (step_index + 1) % 4 == 0:
+            check_main_unchanged(revision)
+        return callback_kwargs
+    return check
+
+
 def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CPU_BATCH,
-                    retry_held: bool = False, root: Path | None = None) -> list[dict]:
+                    retry_held: bool = False, root: Path | None = None,
+                    backfill_scene: str = "", review_dir: Path | None = None) -> list[dict]:
     """Shared offline plan; deliberate hold retries cannot replace valid photos."""
     if not 1 <= limit <= MAX_CPU_BATCH:
         raise ValueError("CPU batch must be 1–3 scenes")
@@ -259,6 +327,37 @@ def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CP
     if slug and not any(a.get("slug") == slug for a in articles):
         raise ValueError("Unknown published article slug")
     base = ROOT if root is None else root
+    if backfill_scene:
+        if (not slug or not retry_held or limit != 1 or review_dir is None
+                or os.getenv("GITHUB_EVENT_NAME") != "workflow_dispatch"
+                or os.getenv("SCENE_PUBLISH") != "0"):
+            raise ValueError("Backfill requires an explicit --slug, --retry-held, --limit 1, "
+                             "--review-dir and manual workflow_dispatch with publish=false")
+        scene = backfill_scene.strip()
+        if not 20 <= len(scene) <= 800 or "\x00" in scene:
+            raise ValueError("Backfill scene must contain 20–800 characters")
+        original = next(a for a in articles if a["slug"] == slug)
+        if (original.get("visual_strategy", "cpu-photo") != "illustration"
+                and not held_scene(original, root=base)):
+            raise ValueError("Backfill preview needs an illustration story or a current visual hold")
+        if usable_generated_scene(original, root=base):
+            raise ValueError("Backfill cannot replace an existing valid JPEG")
+        candidate = copy.deepcopy(original)
+        candidate.update(scene_prompt=scene, visual_strategy="cpu-photo")
+        if article_fingerprint(candidate) == article_fingerprint(original):
+            raise ValueError("Backfill needs a different scene direction, not a restamped source")
+        validate_review_dir(Path(review_dir), root=base)
+        try:
+            from .visual_review import _publication_row, _attention
+        except ImportError:
+            from visual_review import _publication_row, _attention
+        if pending_articles(articles, root=base, limit=0):
+            raise ValueError("New article image generation takes priority over backfill")
+        rows = [_publication_row(article, root=base) for article in articles]
+        if any(row["status"] == "pending" or _attention(row)
+               or row["publication"]["kind"] == "generic_fallback" for row in rows):
+            raise ValueError("Current image review or coverage work takes priority over backfill")
+        return [candidate]
     candidates = pending_articles(articles, root=base, slug=slug, force=retry_held, limit=0)
     return [a for a in candidates if not usable_generated_scene(a, root=base)][:limit]
 
@@ -274,7 +373,8 @@ def validate_review_dir(destination: Path, *, root: Path = ROOT) -> None:
         raise RuntimeError("Review directory needs an existing non-symlink parent")
 
 
-def export_review_bundle(articles: list[dict], destination: Path, *, root: Path = ROOT) -> None:
+def export_review_bundle(articles: list[dict], destination: Path, *, root: Path = ROOT,
+                         source_article_sha256: dict[str, str] | None = None) -> None:
     """Export only genuinely saved successes; exact Python integers stay intact."""
     validate_review_dir(destination, root=root)
     if any(path.is_symlink() for path in (root, root / "assets", root / "assets/generated")):
@@ -286,7 +386,16 @@ def export_review_bundle(articles: list[dict], destination: Path, *, root: Path 
         record = records.get(slug)
         if not usable_generated_scene(article, root=root) or not isinstance(record, dict) or record.get("origin") not in ("github-cpu-lcm", ORIGIN):
             raise RuntimeError("Unverified CPU image cannot enter a review bundle: " + slug)
-        selected[slug] = record
+        selected[slug] = dict(record)
+    if source_article_sha256 is not None:
+        if (set(source_article_sha256) != set(selected)
+                or any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)
+                       or value == article_fingerprint(article)
+                       for article in articles
+                       for value in [source_article_sha256[article["slug"]]])):
+            raise ValueError("Backfill bundle needs the distinct original article fingerprint")
+        for slug, fingerprint in source_article_sha256.items():
+            selected[slug]["source_article_sha256"] = fingerprint
     if not selected:
         return
     stage = Path(tempfile.mkdtemp(prefix=".cpu-review-", dir=destination.parent))
@@ -348,7 +457,7 @@ def check_quality(image):
         raise ValueError("Scene too dark/washed out/unreadable for editorial use")
 
 
-def render_one(pipe, torch, article: dict) -> bytes:
+def render_one(pipe, torch, article: dict, *, callback_on_step_end=None) -> bytes:
     seed = stable_seed(article)
     print(f"CPU scene seed: {seed}", flush=True)
     generator = torch.Generator(device="cpu").manual_seed(seed)
@@ -360,12 +469,14 @@ def render_one(pipe, torch, article: dict) -> bytes:
     if tokenizer is not None and len(tokenizer.encode(negative)) > CLIP_TOKEN_LIMIT:
         raise ValueError("CPU negative prompt exceeds CLIP budget; refusing silent truncation")
     with torch.inference_mode():
+        callback = ({"callback_on_step_end": callback_on_step_end}
+                    if callback_on_step_end is not None else {})
         result = pipe(
             prompt=prompt, negative_prompt=negative,
             num_inference_steps=INFERENCE["num_inference_steps"],
             guidance_scale=INFERENCE["guidance_scale"],
             width=INFERENCE["width"], height=INFERENCE["height"],
-            generator=generator, output_type="pil",
+            generator=generator, output_type="pil", **callback,
         )
     if (getattr(result, "nsfw_content_detected", None)
             and any(result.nsfw_content_detected)):
@@ -392,10 +503,13 @@ def main(argv: list[str] | None = None) -> int:
                         help="Deliberately retry one held scene; requires --slug and never replaces a valid photo")
     parser.add_argument("--review-dir", type=Path,
                         help="New directory outside the repository for successful JPEGs and exact source records")
+    parser.add_argument("--backfill-scene", default="",
+                        help="Manual review-only photo direction for one illustration story; never edits live sources")
     args = parser.parse_args(argv)
     articles = load_articles()
     try:
-        selected = select_articles(articles, slug=args.slug, limit=args.limit, retry_held=args.retry_held)
+        selected = select_articles(articles, slug=args.slug, limit=args.limit, retry_held=args.retry_held,
+                                   backfill_scene=args.backfill_scene, review_dir=args.review_dir)
     except ValueError as exc:
         parser.error(str(exc))
     print(f"CPU scenes pending in this batch: {len(selected)}", flush=True)
@@ -410,25 +524,45 @@ def main(argv: list[str] | None = None) -> int:
         raise RuntimeError("CPU model is limited to opt-in public main GitHub Action runs")
     if not selected:
         return 0
+    if args.backfill_scene and os.getenv("BACKFILL_QUOTA_ALLOWED") != "1":
+        raise RuntimeError("Backfill needs the workflow's successful daily-quota check")
     if args.review_dir:
         validate_review_dir(args.review_dir, root=ROOT)
-    pipe, torch = load_pipeline()
+    original_hashes = ({args.slug: article_fingerprint(next(a for a in articles if a["slug"] == args.slug))}
+                       if args.backfill_scene else None)
+    revision = _git_read("rev-parse", "HEAD") if args.backfill_scene else None
+    if revision is not None:
+        check_main_unchanged(revision)
+    # Backfill candidates never write into the checkout. Only an exported new
+    # JPEG with its exact clone and original source fingerprint leaves staging.
+    staging = (tempfile.TemporaryDirectory(prefix=".cpu-backfill-", dir=args.review_dir.parent)
+               if args.backfill_scene else nullcontext(ROOT))
     successes = []
-    try:
-        for index, article in enumerate(selected, 1):
-            ensure_disk()
-            print(f"[{index}/{len(selected)}] CPU staging: {article['slug']}", flush=True)
-            try:
-                data = render_one(pipe, torch, article)
-                write_generated(article, data, MODEL, root=ROOT, origin=ORIGIN)
-                successes.append(article)
-                print(f"Saved verified first-party JPEG ({len(data)} bytes)", flush=True)
-            except (RuntimeError, ValueError, OSError) as exc:
-                # Keep the usual article's SVG; never let a failed image stop news.
-                print(f"Skipped scene {article['slug']}: {exc}", file=sys.stderr, flush=True)
-    finally:
-        if args.review_dir and successes:
-            export_review_bundle(successes, args.review_dir, root=ROOT)
+    with staging as directory:
+        generation_root = Path(directory)
+        pipe, torch = load_pipeline()
+        if revision is not None:
+            check_main_unchanged(revision)
+        try:
+            for index, article in enumerate(selected, 1):
+                ensure_disk()
+                print(f"[{index}/{len(selected)}] CPU staging: {article['slug']}", flush=True)
+                try:
+                    options = ({"callback_on_step_end": backfill_step_callback(revision)}
+                               if revision is not None else {})
+                    data = render_one(pipe, torch, article, **options)
+                    if revision is not None:
+                        check_main_unchanged(revision)
+                    write_generated(article, data, MODEL, root=generation_root, origin=ORIGIN)
+                    successes.append(article)
+                    print(f"Saved verified first-party JPEG ({len(data)} bytes)", flush=True)
+                except (RuntimeError, ValueError, OSError) as exc:
+                    # Keep the usual article's SVG; never let a failed image stop news.
+                    print(f"Skipped scene {article['slug']}: {exc}", file=sys.stderr, flush=True)
+        finally:
+            if args.review_dir and successes:
+                export_review_bundle(successes, args.review_dir, root=generation_root,
+                                     source_article_sha256=original_hashes)
     if not successes:
         raise RuntimeError("No scenes passed verification; keeping all current images")
     print(f"Generated {len(successes)}/{len(selected)} verifiable images", flush=True)

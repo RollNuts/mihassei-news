@@ -163,7 +163,7 @@ class VisualReviewTests(unittest.TestCase):
         self.assertTrue(reviewed_generated_scene(self.article, root=self.root))
         with patch.object(build, "BASE", self.root):
             self.assertEqual(build.editorial_image(self.article),
-                             "/generated/review-fixture.jpg")
+                             "/generated/review-fixture.jpg?v=" + self.manifest["images"][self.article["slug"]]["sha256"][:12])
 
     def test_malformed_or_incomplete_review_records_fail_closed(self):
         valid = self.accepted_record()

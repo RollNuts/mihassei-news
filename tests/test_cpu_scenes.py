@@ -7,7 +7,9 @@ import io
 import json
 import os
 import tempfile
+import subprocess
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -105,8 +107,9 @@ class FreeCpuImageTests(unittest.TestCase):
             }), encoding="utf-8")
             self.assertTrue(reviewed_generated_scene(a, root=root))
             with patch.object(build, "BASE", root):
-                self.assertEqual(build.editorial_image(a), "/generated/" + a["slug"] + ".jpg")
-                self.assertEqual(build.social_image(a), "/generated/" + a["slug"] + ".jpg")
+                expected = "/generated/" + a["slug"] + ".jpg?v=" + record["sha256"][:12]
+                self.assertEqual(build.editorial_image(a), expected)
+                self.assertEqual(build.social_image(a), expected)
                 self.assertIn("再現イメージ（合成）", build.photo_credit(a))
                 illustration = {**a, "visual_strategy": "illustration"}
                 self.assertTrue(reviewed_generated_scene(illustration, root=root))
@@ -507,13 +510,16 @@ class FreeCpuImageTests(unittest.TestCase):
                  patch.object(cpu, "load_articles", return_value=[a, b]), \
                  patch.object(cpu, "load_pipeline", return_value=(None, None)), \
                  patch.object(cpu, "permitted_ci", return_value=True), \
-                 patch.object(cpu, "render_one", return_value=jpeg_header_fixture()), \
+                 patch.object(cpu, "_git_read", side_effect=AssertionError("normal generation performed a backfill network check")) as git_read, \
+                 patch.object(cpu, "render_one", return_value=jpeg_header_fixture()) as render, \
                  patch.object(cpu, "ensure_disk", side_effect=[None, RuntimeError("disk full")]), \
                  contextlib.redirect_stdout(io.StringIO()):
                 with self.assertRaisesRegex(RuntimeError, "disk full"):
                     cpu.main(["--limit", "2", "--review-dir", str(bundle)])
             self.assertEqual(json.loads((bundle / "content/articles.json").read_text()), [a])
             self.assertTrue(usable_generated_scene(a, root=bundle))
+            git_read.assert_not_called()
+            self.assertEqual(render.call_args.kwargs, {})
 
     def test_cpu_generator_rejects_model_safety_filter(self):
         fake_torch = SimpleNamespace(
@@ -544,6 +550,246 @@ class FreeCpuImageTests(unittest.TestCase):
         with patch.object(cpu, "load_articles", return_value=[article()]), \
              patch.object(cpu, "pending_articles", return_value=[]):
             self.assertEqual(cpu.main(["--dry-run"]), 0)
+
+
+class CpuBackfillTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        self.root, self.bundle = self.directory / "repo", self.directory / "review"
+        self.root.mkdir()
+        self.original = {**article(), "visual_strategy": "illustration",
+                         "scene_prompt": "An old illustrated dinner scene with a capsule machine.",
+                         "paragraphs": ["元の記事本文を維持する。"]}
+        self.scene = "A plain red capsule vending machine stands beside three empty dinner plates."
+        self.healthy = {"slug": self.original["slug"], "status": "missing",
+                        "visual_strategy": "illustration", "editorial_scene": {"status": "current"},
+                        "publication": {"kind": "editorial_svg", "url": "/keep.svg"}}
+        self.env = {"GITHUB_EVENT_NAME": "workflow_dispatch", "SCENE_PUBLISH": "0",
+                    "BACKFILL_QUOTA_ALLOWED": "1"}
+
+    def select(self, articles=None, **options):
+        defaults = {"slug": self.original["slug"], "limit": 1, "retry_held": True,
+                    "backfill_scene": self.scene, "review_dir": self.bundle, "root": self.root}
+        defaults.update(options)
+        return cpu.select_articles(articles or [self.original], **defaults)
+
+    def healthy_review(self):
+        return patch("scripts.visual_review._publication_row", return_value=self.healthy)
+
+    def same_main(self, *arguments):
+        return "a" * 40 if arguments == ("rev-parse", "HEAD") else "a" * 40 + "\trefs/heads/main"
+
+    def test_backfill_clones_only_visual_direction_and_does_not_requeue_illustrations(self):
+        snapshot = json.loads(json.dumps(self.original))
+        with patch.dict(os.environ, self.env), self.healthy_review():
+            clone, = self.select()
+        self.assertEqual(self.original, snapshot)
+        self.assertEqual(set(clone), set(self.original))
+        self.assertEqual({key for key in clone if clone[key] != self.original[key]},
+                         {"scene_prompt", "visual_strategy"})
+        self.assertEqual(clone["visual_strategy"], "cpu-photo")
+        self.assertIsNot(clone["paragraphs"], self.original["paragraphs"])
+        self.assertNotEqual(article_fingerprint(clone), article_fingerprint(self.original))
+        self.assertEqual(local_scene_photos.stable_seed(clone), local_scene_photos.stable_seed(self.original))
+        self.assertEqual(cpu.select_articles([self.original], root=self.root), [])
+        self.assertEqual(cpu.select_articles([self.original], root=self.root,
+                                            slug=self.original["slug"], retry_held=True), [])
+
+    def test_backfill_misuse_fails_before_model_or_source_writes(self):
+        bad_options = ({"slug": ""}, {"retry_held": False}, {"limit": 2}, {"review_dir": None},
+                       {"backfill_scene": "too short"},
+                       {"backfill_scene": self.original["scene_prompt"]})
+        with patch.dict(os.environ, self.env), self.healthy_review(), \
+             patch.object(cpu, "load_pipeline", side_effect=AssertionError("model requested")):
+            for options in bad_options:
+                with self.subTest(options=options), self.assertRaises(ValueError):
+                    self.select(**options)
+            for env in ({"GITHUB_EVENT_NAME": "schedule"}, {"SCENE_PUBLISH": "1"},
+                        {"SCENE_PUBLISH": ""}):
+                with patch.dict(os.environ, env), self.assertRaises(ValueError):
+                    self.select()
+        self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_normal_new_article_generation_blocks_backfill(self):
+        new_article = {**article(), "slug": "a-new-unpictured-story"}
+        with patch.dict(os.environ, self.env), self.healthy_review():
+            with self.assertRaisesRegex(ValueError, "generation takes priority"):
+                self.select([self.original, new_article])
+
+    def test_pending_review_and_generic_fallback_block_backfill(self):
+        for row in (
+            {**self.healthy, "status": "pending"},
+            {**self.healthy, "publication": {"kind": "generic_fallback", "url": "/missing.svg"}},
+            {**self.healthy, "editorial_scene": {"status": "stale"}},
+        ):
+            with patch.dict(os.environ, self.env), \
+                 patch("scripts.visual_review._publication_row", return_value=row), \
+                 self.assertRaisesRegex(ValueError, "review or coverage work takes priority"):
+                self.select()
+
+    def test_existing_valid_photo_cannot_be_overwritten(self):
+        local_scene_photos.write_generated(self.original, jpeg_header_fixture(), cpu.MODEL,
+                                          root=self.root, origin=cpu.ORIGIN)
+        original_bytes = (self.root / "assets/generated/manifest.json").read_bytes()
+        with patch.dict(os.environ, self.env), self.healthy_review():
+            with self.assertRaisesRegex(ValueError, "existing valid JPEG"):
+                self.select()
+        self.assertEqual((self.root / "assets/generated/manifest.json").read_bytes(), original_bytes)
+
+    def test_held_photo_is_eligible_but_unheld_normal_story_is_not(self):
+        original = {**self.original, "visual_strategy": "cpu-photo"}
+        path = self.root / "assets/generated/manifest.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(json.dumps({"version": 1, "images": {}, "rejected": {
+            original["slug"]: {"article_sha256": article_fingerprint(original)},
+        }}))
+        with patch.dict(os.environ, self.env), self.healthy_review():
+            self.assertEqual(len(self.select([original])), 1)
+            path.unlink()
+            with self.assertRaisesRegex(ValueError, "illustration story or a current visual hold"):
+                self.select([original])
+
+    def test_real_render_path_exports_clone_provenance_without_touching_live_files(self):
+        (self.root / "content").mkdir()
+        (self.root / "content/articles.json").write_text(json.dumps([self.original]))
+        svg = self.root / "assets/editorial-scenes" / (self.original["slug"] + ".svg")
+        svg.parent.mkdir(parents=True)
+        svg.write_text("published SVG must remain unchanged")
+        before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        generator = Mock()
+        generator.manual_seed.return_value = generator
+        fake_torch = SimpleNamespace(Generator=Mock(return_value=generator), inference_mode=contextlib.nullcontext)
+        fake_image = SimpleNamespace(save=lambda output, **kwargs: output.write(b"synthetic PNG input"))
+        pipe = Mock(return_value=SimpleNamespace(images=[fake_image], nsfw_content_detected=[False]))
+        pipe.tokenizer = None
+        with patch.dict(os.environ, self.env), self.healthy_review(), \
+             patch.object(cpu, "ROOT", self.root), \
+             patch.object(cpu, "load_articles", return_value=[self.original]), \
+             patch.object(cpu, "permitted_ci", return_value=True), \
+             patch.object(cpu, "_git_read", side_effect=self.same_main), \
+             patch.object(cpu, "load_pipeline", return_value=(pipe, fake_torch)), \
+             patch.object(cpu, "normalize_exposure", side_effect=lambda image: image), \
+             patch.object(cpu, "check_quality"), \
+             patch.object(cpu, "png_to_jpeg", return_value=jpeg_header_fixture()), \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                                       "--review-dir", str(self.bundle), "--backfill-scene", self.scene]), 0)
+        after = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}
+        self.assertEqual(before, after)
+        self.assertEqual(len(pipe.call_args_list), 1)
+        self.assertIn(self.scene, pipe.call_args.kwargs["prompt"])
+        clone, = json.loads((self.bundle / "content/articles.json").read_text())
+        record = json.loads((self.bundle / "assets/generated/manifest.json").read_text())["images"][clone["slug"]]
+        self.assertEqual(record["source_article_sha256"], article_fingerprint(self.original))
+        self.assertEqual(record["article_sha256"], article_fingerprint(clone))
+        self.assertNotEqual(record["article_sha256"], record["source_article_sha256"])
+        self.assertEqual(record["inference"], cpu.INFERENCE)
+        self.assertEqual(record["origin"], cpu.ORIGIN)
+        self.assertIs(type(record["seed"]), int)
+        self.assertGreater(record["seed"], 2**53)
+        generator.manual_seed.assert_called_once_with(record["seed"])
+        self.assertTrue(usable_generated_scene(clone, root=self.bundle))
+        from scripts.publish_cpu_scenes import validate_bundle
+        self.assertEqual(validate_bundle(self.bundle), [clone])
+        self.assertFalse(any(self.directory.glob(".cpu-backfill-*")))
+        self.assertFalse(any(self.bundle.rglob("*.png")))
+
+    def test_missing_daily_quota_permit_aborts_before_staging_or_model(self):
+        with patch.dict(os.environ, {**self.env, "BACKFILL_QUOTA_ALLOWED": "0"}), self.healthy_review(), \
+             patch.object(cpu, "ROOT", self.root), \
+             patch.object(cpu, "load_articles", return_value=[self.original]), \
+             patch.object(cpu, "permitted_ci", return_value=True), \
+             patch.object(cpu, "load_pipeline", side_effect=AssertionError("model loaded")), \
+             contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaisesRegex(RuntimeError, "daily-quota check"):
+                cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                          "--review-dir", str(self.bundle), "--backfill-scene", self.scene])
+        self.assertEqual(list(self.root.iterdir()), [])
+        self.assertFalse(self.bundle.exists())
+
+    def test_daily_quota_counts_queued_and_failed_attempts_in_jst(self):
+        now = datetime(2026, 11, 8, 3, tzinfo=timezone.utc)
+        runs = [
+            {"id": 10, "display_title": "Photo backfill: old", "created_at": "2026-11-07T14:59:00Z"},
+            {"id": 11, "display_title": "Photo backfill: first", "created_at": "2026-11-07T15:00:00Z", "conclusion": "failure"},
+            {"id": 12, "display_title": "Free CPU staged-news photos", "created_at": "2026-11-08T01:00:00Z"},
+            {"id": 13, "display_title": "Photo backfill: queued", "created_at": "2026-11-08T02:00:00Z", "status": "queued"},
+        ]
+        self.assertTrue(cpu.backfill_run_allowed(runs, 11, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 13, now=now))
+        with self.assertRaises(ValueError):
+            cpu.backfill_run_allowed(runs, 12, now=now)
+        for malformed in ({"id": 14, "display_title": "Photo backfill: broken"},
+                          {"id": 14, "display_title": "Photo backfill: broken", "created_at": "bad time"}):
+            with self.assertRaises(ValueError):
+                cpu.backfill_run_allowed([*runs, malformed], 13, now=now)
+
+    def test_daily_quota_does_not_guess_when_inventory_may_omit_earlier_attempts(self):
+        runs = [{"id": identifier, "display_title": "Photo backfill: story" if identifier == 100 else "Normal",
+                 "created_at": "2026-11-08T02:00:00Z"} for identifier in range(1, 101)]
+        with self.assertRaisesRegex(ValueError, "complete JST day"):
+            cpu.backfill_run_allowed(runs, 100, now=datetime(2026, 11, 8, 3, tzinfo=timezone.utc))
+
+    def test_main_revision_guard_is_read_only_bounded_and_fails_closed(self):
+        revision = "a" * 40
+        with patch.object(cpu.subprocess, "run", return_value=SimpleNamespace(stdout=revision + "\trefs/heads/main\n")) as run:
+            cpu.check_main_unchanged(revision)
+        self.assertEqual(run.call_args.args[0][-4:], ["ls-remote", "--exit-code", "origin", "refs/heads/main"])
+        self.assertEqual(run.call_args.kwargs["timeout"], 15)
+        self.assertTrue(run.call_args.kwargs["capture_output"])
+        for failure in (subprocess.TimeoutExpired("git", 15), subprocess.CalledProcessError(1, "git")):
+            with patch.object(cpu.subprocess, "run", side_effect=failure), \
+                 self.assertRaisesRegex(RuntimeError, "cannot verify latest main"):
+                cpu.check_main_unchanged(revision)
+        with patch.object(cpu, "_git_read", return_value="b" * 40 + "\trefs/heads/main"), \
+             self.assertRaisesRegex(RuntimeError, "main advanced"):
+            cpu.check_main_unchanged(revision)
+
+    def test_step_guard_checks_every_four_steps_without_changing_tensors(self):
+        callback, tensors = cpu.backfill_step_callback("a" * 40), {"latents": object()}
+        with patch.object(cpu, "check_main_unchanged") as check:
+            for step in range(3):
+                self.assertIs(callback(None, step, 0, tensors), tensors)
+            check.assert_not_called()
+            self.assertIs(callback(None, 3, 0, tensors), tensors)
+            check.assert_called_once_with("a" * 40)
+
+    def test_new_main_interrupts_preview_without_changing_live_sources(self):
+        source = self.root / "content/articles.json"
+        source.parent.mkdir()
+        source.write_text(json.dumps([self.original]))
+        original_bytes = source.read_bytes()
+        def render(_pipe, _torch, _article, *, callback_on_step_end):
+            callback_on_step_end(None, 3, 0, {})
+            self.fail("New main must abort before writing a JPEG")
+        with patch.dict(os.environ, self.env), self.healthy_review(), \
+             patch.object(cpu, "ROOT", self.root), \
+             patch.object(cpu, "load_articles", return_value=[self.original]), \
+             patch.object(cpu, "permitted_ci", return_value=True), \
+             patch.object(cpu, "_git_read", side_effect=self.same_main), \
+             patch.object(cpu, "check_main_unchanged", side_effect=[None, None, RuntimeError("main advanced")]), \
+             patch.object(cpu, "load_pipeline", return_value=(None, None)), \
+             patch.object(cpu, "render_one", side_effect=render), \
+             contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaisesRegex(RuntimeError, "No scenes passed"):
+                cpu.main(["--slug", self.original["slug"], "--retry-held", "--limit", "1",
+                          "--review-dir", str(self.bundle), "--backfill-scene", self.scene])
+        self.assertEqual(source.read_bytes(), original_bytes)
+        self.assertFalse(self.bundle.exists())
+        self.assertFalse((self.root / "assets/generated").exists())
+        self.assertFalse(any(self.directory.glob(".cpu-backfill-*")))
+
+    def test_workflow_bounds_backfill_before_runtime_and_excludes_publication(self):
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/free-cpu-scenes.yml").read_text()
+        self.assertIn("format('Photo backfill: {0}', inputs.slug)", workflow)
+        self.assertIn("BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}", workflow)
+        self.assertIn('args+=(--backfill-scene "$BACKFILL_SCENE")', workflow)
+        self.assertLess(workflow.index("Plan missing images"), workflow.index("Allow only the first photo backfill"))
+        self.assertLess(workflow.index("Allow only the first photo backfill"), workflow.index("Install CPU-only"))
+        self.assertEqual(workflow.count("&& !inputs.retry_held && !inputs.backfill_scene"), 2)
+        self.assertEqual(workflow.count("steps.backfill_quota.outputs.allowed == '1'"), 4)
 
 
 if __name__ == "__main__":

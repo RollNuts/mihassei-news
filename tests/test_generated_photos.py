@@ -295,7 +295,7 @@ class LocalComedySceneTests(unittest.TestCase):
             path = local_scene_photos.write_generated(a, data, "sd_xl_base_1.0.safetensors", root=root)
             self.assertTrue(path.exists())
             self.assertTrue(usable_generated_scene(a, root=root))
-            self.assertEqual(generated_url(a), "/generated/" + a["slug"] + ".jpg")
+            self.assertEqual(generated_url(a, root=root), "/generated/" + a["slug"] + ".jpg?v=" + hashlib.sha256(data).hexdigest()[:12])
             entry = generated_scene_entry(a, root=root)
             self.assertEqual(entry["sha256"], hashlib.sha256(data).hexdigest())
             self.assertEqual(entry["article_sha256"], article_fingerprint(a))
@@ -316,10 +316,10 @@ class LocalComedySceneTests(unittest.TestCase):
             self.assertTrue(usable_generated_scene(a, root=root))
             self.assertTrue(reviewed_generated_scene(a, root=root))
             with patch.object(build, "BASE", root):
-                self.assertEqual(build.editorial_image(a), generated_url(a))
-                self.assertEqual(build.social_image(a), generated_url(a))
+                self.assertEqual(build.editorial_image(a), generated_url(a, root=root))
+                self.assertEqual(build.social_image(a), generated_url(a, root=root))
                 tag = build.image_tag(a, "story-thumb")
-                self.assertIn('src="'+generated_url(a)+'"', tag)
+                self.assertIn('src="'+generated_url(a, root=root)+'"', tag)
                 self.assertIn('data-generated-scene="true"', tag)
                 self.assertIn('data-fallback="/images/'+a["slug"]+'.svg"', tag)
                 self.assertIn("再現イメージ", tag)
@@ -357,24 +357,24 @@ class LocalComedySceneTests(unittest.TestCase):
                     self.assertEqual(build.social_image(article), social)
                     tag = build.image_tag(article, "article-visual")
                     self.assertIn('src="' + fallback + '"', tag)
-                    self.assertNotIn(generated_url(article), tag)
+                    self.assertNotIn(generated_url(article, root=root), tag)
                     self.assertNotIn("data-generated-scene", tag)
                     self.assertEqual(build.photo_credit(article), "創作イラスト")
                     card = build.card(article)
                     self.assertNotIn("story-image-link--generated", card)
-                    self.assertNotIn(generated_url(article), card)
+                    self.assertNotIn(generated_url(article, root=root), card)
                     page = build.layout(article["title"], article["summary"],
                                         build.article_url(article), tag,
                                         kind="story", article=article)
                     self.assertIn('property="og:image" content="' + build.SITE + social + '"', page)
                     self.assertIn('name="twitter:image" content="' + build.SITE + social + '"', page)
                     self.assertIn('property="og:image:type" content="image/png"', page)
-                    self.assertNotIn(generated_url(article), page)
+                    self.assertNotIn(generated_url(article, root=root), page)
                     rss = build.generate_rss([article], "test", "創作ニュース",
                                              build.SITE + "/", "/feed.xml")
                     self.assertIn(build.SITE + social, rss)
                     self.assertIn('type="image/png"', rss)
-                    self.assertNotIn(generated_url(article), rss)
+                    self.assertNotIn(generated_url(article, root=root), rss)
 
     def test_new_valid_jpeg_does_not_inherit_previous_visual_acceptance(self):
         """Regeneration updates byte provenance but cannot approve new pixels."""
@@ -386,6 +386,9 @@ class LocalComedySceneTests(unittest.TestCase):
             review = write_review_fixture(root, article)
             previous_review = review.read_bytes()
             self.assertTrue(reviewed_generated_scene(article, root=root))
+            original_url = generated_url(article, root=root)
+            self.assertEqual(original_url, generated_url(article, root=root))
+            self.assertTrue(original_url.endswith("?v=" + hashlib.sha256(fake_jpeg()).hexdigest()[:12]))
             # This is still a well-formed header fixture, with a new byte hash.
             replacement = fake_jpeg()[:-2] + b"\x01\x02" + b"\xff\xd9"
             local_scene_photos.write_generated(
@@ -393,9 +396,18 @@ class LocalComedySceneTests(unittest.TestCase):
             self.assertTrue(usable_generated_scene(article, root=root))
             self.assertEqual(review.read_bytes(), previous_review)
             self.assertFalse(reviewed_generated_scene(article, root=root))
+            replacement_url = generated_url(article, root=root)
+            self.assertNotEqual(original_url, replacement_url)
+            self.assertEqual(original_url.split("?")[0], replacement_url.split("?")[0])
+            self.assertTrue(replacement_url.endswith("?v=" + hashlib.sha256(replacement).hexdigest()[:12]))
             with patch.object(build, "BASE", root):
                 self.assertEqual(build.editorial_image(article), build.illustration_path(article))
                 self.assertTrue(build.social_image(article).startswith("/og/articles/"))
+            write_review_fixture(root, article)
+            with patch.object(build, "BASE", root):
+                self.assertEqual(build.editorial_image(article), replacement_url)
+                self.assertEqual(build.social_image(article), replacement_url)
+                self.assertEqual(build.article_url(article), "/articles/" + article["slug"] + "/")
 
     def test_cpu_prompt_compacts_long_single_sentence_at_clause_boundaries(self):
         """Long comma-rich scene directions keep the main visual action under CLIP budget."""
