@@ -418,7 +418,9 @@
     }
     if(action==="visit" && fromArticle)payload.fromArticle=fromArticle;
     if(action==="visit" && viewId)payload.viewId=viewId;
-    const response=await fetch("/api/engagement",{
+    const endpoint=(action==="visit" || action==="share")
+      ? "/api/engagement?response=ack" : "/api/engagement";
+    const response=await fetch(endpoint,{
       method:"POST",headers:{"content-type":"application/json"},
       body:JSON.stringify(payload),
       cache:"no-store",credentials:"same-origin"
@@ -682,6 +684,7 @@
         if(!batches.length)batches.push([]);
         const snapshots=await Promise.all(batches.map(async batch=>{
           const params=new URLSearchParams();
+          params.set("view","public");
           if(batch.length)params.set("articles",batch.join(","));
           const res=await fetch("/api/engagement?"+params.toString(),{
             cache:"no-store",credentials:"same-origin"
@@ -864,9 +867,9 @@
       const body=JSON.stringify({action:"share",article:link.dataset.shareSlug,clientId:clientIdentifier()});
       try {
         if(navigator.sendBeacon){
-          navigator.sendBeacon("/api/engagement",new Blob([body],{type:"application/json"}));
+          navigator.sendBeacon("/api/engagement?response=ack",new Blob([body],{type:"application/json"}));
         } else {
-          fetch("/api/engagement",{method:"POST",headers:{"content-type":"application/json"},
+          fetch("/api/engagement?response=ack",{method:"POST",headers:{"content-type":"application/json"},
                 body,keepalive:true}).catch(()=>{});
         }
       }catch(_){}
