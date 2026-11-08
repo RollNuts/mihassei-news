@@ -47,15 +47,52 @@ export class ReaderComments extends DurableObject {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS comments (
       id TEXT PRIMARY KEY, article TEXT NOT NULL, nickname TEXT NOT NULL,
       body TEXT NOT NULL, visitor TEXT NOT NULL, created_ms INTEGER NOT NULL,
-      status TEXT NOT NULL DEFAULT 'visible');`);
-    this.sql.exec('CREATE INDEX IF NOT EXISTS comments_article ON comments(article,status,created_ms DESC);');
-    this.sql.exec('CREATE INDEX IF NOT EXISTS comments_visitor ON comments(visitor,created_ms DESC);');
-    this.sql.exec('CREATE INDEX IF NOT EXISTS comments_recent ON comments(created_ms DESC);');
+      status TEXT NOT NULL DEFAULT 'visible') WITHOUT ROWID;`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS comment_reports (
       comment_id TEXT NOT NULL, visitor TEXT NOT NULL,
-      PRIMARY KEY(comment_id, visitor));`);
+      PRIMARY KEY(comment_id, visitor)) WITHOUT ROWID;`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS comment_limits (
-      bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_ms INTEGER NOT NULL);`);
+      bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_ms INTEGER NOT NULL) WITHOUT ROWID;`);
+
+    const schema=name=>this.sql.exec(
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name=?",name
+    ).toArray()[0]?.sql||"";
+    const legacyComments=schema('comments') && !/WITHOUT\s+ROWID/i.test(schema('comments'));
+    const legacyReports=schema('comment_reports') && !/WITHOUT\s+ROWID/i.test(schema('comment_reports'));
+    const legacyLimits=schema('comment_limits') && !/WITHOUT\s+ROWID/i.test(schema('comment_limits'));
+    if(legacyComments || legacyReports || legacyLimits){
+      ctx.storage.transactionSync(()=>{
+        if(legacyComments){
+          this.sql.exec(`CREATE TABLE comments_compact (
+            id TEXT PRIMARY KEY, article TEXT NOT NULL, nickname TEXT NOT NULL,
+            body TEXT NOT NULL, visitor TEXT NOT NULL, created_ms INTEGER NOT NULL,
+            status TEXT NOT NULL DEFAULT 'visible') WITHOUT ROWID;`);
+          this.sql.exec('INSERT INTO comments_compact SELECT * FROM comments;');
+          this.sql.exec('DROP TABLE comments;');
+          this.sql.exec('ALTER TABLE comments_compact RENAME TO comments;');
+        }
+        if(legacyReports){
+          this.sql.exec(`CREATE TABLE comment_reports_compact (
+            comment_id TEXT NOT NULL, visitor TEXT NOT NULL,
+            PRIMARY KEY(comment_id,visitor)) WITHOUT ROWID;`);
+          this.sql.exec('INSERT INTO comment_reports_compact SELECT * FROM comment_reports;');
+          this.sql.exec('DROP TABLE comment_reports;');
+          this.sql.exec('ALTER TABLE comment_reports_compact RENAME TO comment_reports;');
+        }
+        if(legacyLimits){
+          this.sql.exec(`CREATE TABLE comment_limits_compact (
+            bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_ms INTEGER NOT NULL) WITHOUT ROWID;`);
+          this.sql.exec('INSERT INTO comment_limits_compact SELECT * FROM comment_limits;');
+          this.sql.exec('DROP TABLE comment_limits;');
+          this.sql.exec('ALTER TABLE comment_limits_compact RENAME TO comment_limits;');
+        }
+      });
+    }
+    this.sql.exec('CREATE INDEX IF NOT EXISTS comments_article ON comments(article,status,created_ms DESC);');
+    this.sql.exec('CREATE INDEX IF NOT EXISTS comments_visitor ON comments(visitor,created_ms DESC);');
+    // Admin listing is rare and bounded to 100 rows. Avoid maintaining a third
+    // secondary index on every public comment write just for that path.
+    this.sql.exec('DROP INDEX IF EXISTS comments_recent;');
   }
 
   countBucket(bucket) {
