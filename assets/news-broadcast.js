@@ -289,7 +289,7 @@
         // continues only after this explicit click, with the new story at 0s.
         if (!initial && resume && inView && !document.hidden) play();
       };
-      const seen = readSeen();
+      // A broadcast advances to the next story instead of repeating one clip.\n      // Respect an explicit pause and accessibility/data-saving preferences.\n      if (items.length > 1) video.addEventListener('ended', () => {\n        if (readerPaused || document.hidden || !inView || !mayAutoplay) return;\n        choose((selected + 1) % items.length);\n        play();\n      });\n      const seen = readSeen();
       let preferred = items.findIndex(item => !seen.includes(item.key));
       if (preferred < 0) preferred = items.reduce((oldest, item, index) =>
         seen.indexOf(item.key) > seen.indexOf(items[oldest].key) ? index : oldest, 0);
