@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+ aria-label="個別アプリの画面が三種類並ぶ職場で、後任が山積みの引き継ぎ手順書を読む一方、本来の仕事は紙一枚になっている創作イラスト"
+ data-visual-topic="work" data-article-sha256="23015542d91e83de27d80ff4f056a7369b4c7cc7c64eff9077d13bc58c5ea171">
+<title>毎日10分の仕事のために積み上がる個人用アプリの引き継ぎ資料</title>
+<defs>
+ <linearGradient id="wall" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#e4ebe7"/><stop offset="1" stop-color="#c9d2ce"/></linearGradient>
+ <linearGradient id="desk" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#b99271"/><stop offset="1" stop-color="#8a6b56"/></linearGradient>
+ <linearGradient id="paper" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fffbef"/><stop offset="1" stop-color="#e7e0d3"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#48515a" flood-opacity=".20"/></filter>
+</defs>
+<rect width="1200" height="675" fill="#e4e9e5"/>
+<rect width="1200" height="465" fill="url(#wall)"/>
+<rect y="465" width="1200" height="210" fill="#c2b4a4"/>
+<path d="M0 461H1200" stroke="#a8aea8" stroke-width="12"/>
+<!-- Ordinary windows and office shelves -->
+<rect x="28" y="74" width="251" height="313" rx="5" fill="#f9f9f3" stroke="#9da8a7" stroke-width="12"/>
+<rect x="43" y="89" width="221" height="283" fill="#d3e4e4"/>
+<path d="M151 90v282M44 238h220" stroke="#e9eeeb" stroke-width="11"/>
+<path d="M44 342q61-36 117-8t104-7v45H44z" fill="#95aba8" opacity=".5"/>
+<path d="M43 320q40-29 95-10t126-1v61H43z" fill="#b2c2be" opacity=".65"/>
+<rect x="303" y="98" width="169" height="229" rx="7" fill="#cfdbd7" stroke="#a4b5b1" stroke-width="6"/>
+<path d="M320 137h136M320 180h136M320 225h136M320 269h136" stroke="#e6e8e0" stroke-width="8"/>
+<g fill="#a2b2af"><rect x="326" y="144" width="31" height="26"/><rect x="370" y="144" width="31" height="26"/><rect x="415" y="144" width="31" height="26"/></g>
+<!-- Three personally designed dashboards disagree about colors -->
+<g filter="url(#shadow)">
+ <rect x="500" y="100" width="188" height="188" rx="10" fill="#38484e"/>
+ <rect x="510" y="111" width="168" height="150" rx="4" fill="#f7f8ef"/>
+ <rect x="707" y="82" width="188" height="206" rx="10" fill="#38484e"/>
+ <rect x="717" y="94" width="168" height="167" rx="4" fill="#f7f8ef"/>
+ <rect x="913" y="105" width="195" height="183" rx="10" fill="#38484e"/>
+ <rect x="923" y="117" width="175" height="144" rx="4" fill="#f7f8ef"/>
+</g>
+<rect x="510" y="111" width="168" height="24" fill="#8ea7b3"/>
+<rect x="717" y="94" width="168" height="25" fill="#d7ad8f"/>
+<rect x="923" y="117" width="175" height="24" fill="#88a39d"/>
+<g fill="#b9c5c1"><rect x="522" y="148" width="64" height="9" rx="2"/><rect x="730" y="133" width="74" height="9" rx="2"/><rect x="936" y="156" width="74" height="9" rx="2"/></g>
+<!-- Green squares same color, different meanings -->
+<g fill="#669d83"><rect x="523" y="172" width="37" height="45" rx="4"/><rect x="730" y="161" width="37" height="45" rx="4"/><rect x="936" y="177" width="37" height="45" rx="4"/></g>
+<g fill="#d6b18a"><rect x="572" y="172" width="82" height="10" rx="3"/><rect x="778" y="161" width="81" height="10" rx="3"/><rect x="983" y="177" width="93" height="10" rx="3"/></g>
+<g stroke="#a4b2ae" stroke-width="5"><path d="M574 195h82m-82 12h65m-116 31h131"/><path d="M781 184h80m-80 13h57m-112 37h135"/><path d="M988 202h85m-85 13h66m-115 23h139"/></g>
+<g fill="#454e51"><path d="M576 286h35v28h-35zM778 285h42v31h-42zM988 286h38v29h-38z"/></g>
+<!-- Office desk -->
+<path d="M115 450H1118q38 0 48 28l-16 43H89l-14-43q7-28 40-28z" fill="url(#desk)" stroke="#806553" stroke-width="5" filter="url(#shadow)"/>
+<path d="M119 519l-27 144M1107 519l24 144" stroke="#7b6556" stroke-width="28" stroke-linecap="round"/>
+<!-- Thick manuals, arranged as a tower, icon labels only -->
+<g filter="url(#shadow)">
+ <path d="M139 421h306v39H139z" fill="#ddd6c8" stroke="#746e65" stroke-width="4"/>
+ <path d="M154 383h296v37H154z" fill="#638d8c" stroke="#4c6a6a" stroke-width="4"/>
+ <path d="M148 344h294v37H148z" fill="#d0a887" stroke="#916f5b" stroke-width="4"/>
+ <path d="M163 306h280v36H163z" fill="#6e8296" stroke="#4e6074" stroke-width="4"/>
+ <path d="M155 266h289v39H155z" fill="#a67f70" stroke="#795d52" stroke-width="4"/>
+ <path d="M159 228h276v37H159z" fill="#6f9384" stroke="#577a6b" stroke-width="4"/>
+</g>
+<g fill="#eae6da" opacity=".95"><rect x="180" y="237" width="95" height="13" rx="2"/><rect x="174" y="278" width="112" height="12" rx="2"/><rect x="187" y="315" width="100" height="12" rx="2"/><rect x="173" y="354" width="99" height="12" rx="2"/><rect x="177" y="393" width="91" height="12" rx="2"/></g>
+<g stroke="#eae6da" stroke-width="5"><path d="M303 241h105M303 281h109M303 320h111M303 359h108M302 398h116"/></g>
+<!-- Actual one-page work instruction, placed next to huge manuals -->
+<g transform="rotate(-9 567 495)" filter="url(#shadow)">
+ <rect x="478" y="460" width="183" height="123" rx="5" fill="url(#paper)" stroke="#bcb5a9" stroke-width="3"/>
+ <path d="M501 489h129" stroke="#99988c" stroke-width="6" stroke-linecap="round"/>
+ <path d="M501 514h113M501 530h70" stroke="#b9b6aa" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="625" cy="560" r="10" fill="none" stroke="#779381" stroke-width="3"/>
+</g>
+<!-- New employee and mouse -->
+<path d="M777 464q-31-126 46-155 70-27 117 47l31 111z" fill="#637a86" stroke="#495d67" stroke-width="5"/>
+<ellipse cx="869" cy="297" rx="64" ry="72" fill="#d9b496" stroke="#907460" stroke-width="4"/>
+<path d="M807 292q-4-73 59-76 62-2 72 66-28-29-63-22-32 17-68 32z" fill="#393d42"/>
+<path d="M836 314h12m43 0h12" stroke="#68564e" stroke-width="4" stroke-linecap="round"/>
+<path d="M850 347q17-5 29 2" stroke="#9a7665" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M816 413q-46 19-78 59l-20 23 18 18 49-29 64-25" fill="#d9b496" stroke="#907460" stroke-width="3"/>
+<path d="M915 410q43 8 66 48l20 21-15 20-40-30-51-18" fill="#d9b496" stroke="#907460" stroke-width="3"/>
+<!-- A pencil ready for yet another private-app manual -->
+<path d="M745 467l-23 77-8 17 18-10 22-79z" fill="#d9b86a" stroke="#856c44" stroke-width="3"/>
+<path d="M714 561l19-13" stroke="#464b4c" stroke-width="5"/>
+<!-- Shelves holding past employees' manuals -->
+<rect x="1009" y="355" width="162" height="15" rx="3" fill="#a08c76"/>
+<rect x="1024" y="309" width="18" height="44" fill="#a3b4ae"/><rect x="1047" y="314" width="17" height="39" fill="#d1ab8b"/><rect x="1071" y="302" width="17" height="51" fill="#89a7b0"/><rect x="1093" y="312" width="18" height="41" fill="#be9a81"/><rect x="1117" y="307" width="17" height="46" fill="#879f91"/>
+<path d="M1018 361v46M1162 361v46" stroke="#998875" stroke-width="9"/>
+</svg>
