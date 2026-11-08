@@ -35,15 +35,29 @@ export class NewsroomStats extends DurableObject {
     super(ctx, env);
     this.sql=ctx.storage.sql;
     this.sql.exec("CREATE TABLE IF NOT EXISTS events (kind TEXT NOT NULL, article TEXT NOT NULL, visitor TEXT NOT NULL, PRIMARY KEY(kind,article,visitor)) WITHOUT ROWID;");
-    this.sql.exec("CREATE TABLE IF NOT EXISTS counters (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0);");
-    // A display's retry token is separate from browser deduplication. Keeping its
-    // day as data makes a retry across JST midnight idempotent too.
+    this.sql.exec("CREATE TABLE IF NOT EXISTS counters (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0) WITHOUT ROWID;");
+    const counterSchema=this.sql.exec(
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name='counters'"
+    ).toArray()[0]?.sql||"";
+    if(counterSchema && !/WITHOUT\s+ROWID/i.test(counterSchema)){
+      // Older deployments used a rowid table plus a PRIMARY KEY index. Rewrite
+      // it once as WITHOUT ROWID so hot counter updates touch only one stored row.
+      ctx.storage.transactionSync(()=>{
+        this.sql.exec("CREATE TABLE counters_compact (key TEXT PRIMARY KEY, value INTEGER NOT NULL DEFAULT 0) WITHOUT ROWID;");
+        this.sql.exec("INSERT INTO counters_compact(key,value) SELECT key,value FROM counters;");
+        this.sql.exec("DROP TABLE counters;");
+        this.sql.exec("ALTER TABLE counters_compact RENAME TO counters;");
+      });
+    }
+    // Display/session IDs already use their PRIMARY KEY as table storage.
+    // Secondary day indexes would add an index-row write on every insert and
+    // again on cleanup. Daily pruning can afford a bounded 14-day scan instead.
     this.sql.exec("CREATE TABLE IF NOT EXISTS pageview_events (id TEXT PRIMARY KEY, day TEXT NOT NULL) WITHOUT ROWID;");
-    this.sql.exec("CREATE INDEX IF NOT EXISTS pageview_events_day ON pageview_events(day);");
+    this.sql.exec("DROP INDEX IF EXISTS pageview_events_day;");
     // Session IDs are random client-generated UUIDs with a 30-minute inactivity
     // timeout. They are retained only for retry deduplication, never as identity.
     this.sql.exec("CREATE TABLE IF NOT EXISTS session_events (id TEXT PRIMARY KEY, day TEXT NOT NULL) WITHOUT ROWID;");
-    this.sql.exec("CREATE INDEX IF NOT EXISTS session_events_day ON session_events(day);");
+    this.sql.exec("DROP INDEX IF EXISTS session_events_day;");
   }
   count(key) {
     return this.sql.exec("SELECT value FROM counters WHERE key=?", key).toArray()[0]?.value ?? 0;
