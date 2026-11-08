@@ -61,6 +61,19 @@ GitHubのCPU画像生成は、正常に終わった公開用の処理で `--plan
 
 実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。GitHub上の自動生成結果とCloudflare本番への反映は**別々に検証**します。
 
+## 放送室の鮮度点検と担当への受け渡し
+
+既存の動画Actionは毎回、**生成待ちが0件でも**読み取り専用の鮮度点検を実行し、ActionsのJob Summaryに結果を表示します。GitHub Actionsが成功していても新しい動画が増えたとは限りません。
+
+```bash
+python3 scripts/publish_motion_clips.py --health
+python3 scripts/publish_motion_clips.py --plan
+```
+
+`--health` の `latest_video_article_published_at` は実際に映像がある記事の公開日時、`latest_video_generated_at` はMP4作成日時です。**古い記事を今日動画化しても、番組のネタが新しくなったとは判定しません。** 新記事が出ていて放送中の記事が24時間以上古いとき、未公開の検品済み画像を持つ記事が見つかれば `selection_needed`、見つからなければ `awaiting_reviewed_source` になります。選抜済みで生成準備が整っていれば `selected_waiting_generation`、OFFなら `disabled` です。
+
+発行担当は日内の選抜状況を確認し、強い記事の画像・字幕がそろい次第、追加費用なしの既存経路に載せます。最新記事が不適格でも、`reviewed_unselected_newer` に出た候補について**記事内容・写真の適合・3字幕を確認し、強いもの1本を優先**して選抜できます。画像の検品記録を増やすための指紋の付け替えは禁止。弱い記事の動画を数合わせで増やさず、選抜できない場合は `slug／選べない理由／次の担当` を既存の発行・日次編集引き継ぎに残します。日次サイト担当は鮮度警告を編集担当へ返し、動画生成設定・配信方式を勝手に変更しません。
+
 ## 待ち理由の確認と引き継ぎ
 
 選抜記事を今回変更した発行・改稿担当と、残る未検品を扱うサイト担当は、既存枠で次の読み取り専用コマンドを使います。発行・改稿担当は今回分を確認し、残りはサイト担当へ渡します。このコマンドは生成・インストール・pushを行いません。
