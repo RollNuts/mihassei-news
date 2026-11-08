@@ -217,7 +217,7 @@ test('only visible document displays count; focus, visibility returns and refres
   assert.notEqual(page.visits()[1].body.viewId,id);
   assert.equal(page.visits()[1].body.sessionId,sessionId,
     'BFCache redisplay inside 30 minutes stays in the same session');
-  const reload=await runPage({storage:page.storage,clock:Date.UTC(2026,10,4,1)+250000});
+  const reload=await runPage({storage:page.storage,clock:Date.UTC(2026,10,4,1)+700000});
   assert.equal(reload.visits()[0].body.clientId,page.visits()[0].body.clientId);
   assert.notEqual(reload.visits()[0].body.viewId,id);
   assert.equal(reload.visits()[0].body.sessionId,sessionId,
