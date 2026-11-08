@@ -15,8 +15,29 @@ const sandbox=vm.createContext({crypto:{...webcrypto,subtle:webcrypto.subtle,ran
 vm.runInContext(backend,sandbox);
 const ReaderComments=vm.runInContext('ReaderComments',sandbox);
 
-function fixture(adminToken){
+function fixture(adminToken,legacy=false){
   const db=new DatabaseSync(':memory:');
+  if(legacy){
+    db.exec(`CREATE TABLE comments (
+      id TEXT PRIMARY KEY, article TEXT NOT NULL, nickname TEXT NOT NULL,
+      body TEXT NOT NULL, visitor TEXT NOT NULL, created_ms INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'visible');
+      CREATE TABLE comment_reports (
+        comment_id TEXT NOT NULL, visitor TEXT NOT NULL,
+        PRIMARY KEY(comment_id,visitor));
+      CREATE TABLE comment_limits (
+        bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_ms INTEGER NOT NULL);
+      CREATE INDEX comments_recent ON comments(created_ms DESC);`);
+    db.prepare(`INSERT INTO comments(id,article,nickname,body,visitor,created_ms,status)
+      VALUES(?,?,?,?,?,?,?)`).run(
+        '11111111-1111-4111-8111-111111111111','legacy-story','旧読者','旧コメント',
+        'legacy-visitor',1,'visible'
+      );
+    db.prepare('INSERT INTO comment_reports(comment_id,visitor) VALUES(?,?)')
+      .run('11111111-1111-4111-8111-111111111111','reporter');
+    db.prepare('INSERT INTO comment_limits(bucket,hits,expires_ms) VALUES(?,?,?)')
+      .run('legacy-limit',2,999999);
+  }
   const sql={exec(query,...args){
     const statement=db.prepare(query);
     if(/^\s*SELECT\b/i.test(query)){
@@ -36,6 +57,21 @@ function fixture(adminToken){
   return {db,api};
 }
 const makePost=(clientId,body='こんなニュースが本当に起きそうで笑った！')=>({action:'post',article:'test-story',clientId,body,nickname:'未来の読者'});
+
+test('comment storage is WITHOUT ROWID and one-time migration preserves legacy data',()=>{
+  const {db}=fixture(undefined,true);
+  for(const name of ['comments','comment_reports','comment_limits']){
+    const sql=db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name=?").get(name).sql;
+    assert.match(sql,/WITHOUT ROWID/i,name);
+  }
+  assert.equal(db.prepare("SELECT body FROM comments WHERE id=?").get(
+    '11111111-1111-4111-8111-111111111111').body,'旧コメント');
+  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM comment_reports").get().n,1);
+  assert.equal(db.prepare("SELECT hits FROM comment_limits WHERE bucket='legacy-limit'").get().hits,2);
+  const indexes=db.prepare("SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='comments' ORDER BY name").all().map(x=>x.name);
+  assert.deepEqual(indexes,['comments_article','comments_visitor']);
+  db.close();
+});
 
 test('post, list, duplicate and abuse rules',async()=>{
   const {db,api}=fixture();
