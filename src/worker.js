@@ -284,6 +284,15 @@ export class NewsroomStats extends DurableObject {
         }
       }
     ]));
+    let popularRows=null;
+    if(url.searchParams.get("popular")==="1"){
+      const rows=this.topArticleRowsForWeek(day,1000);
+      const todayValues=this.counts(rows.map(row=>"day:"+day.date+":pageViews:"+row.article));
+      popularRows=rows.map(row=>({
+        ...row,
+        todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
+      }));
+    }
     return {
       version:2,
       unit:"anonymous-browser",
@@ -308,10 +317,10 @@ export class NewsroomStats extends DurableObject {
       },
       today:publicDay(day.date),
       yesterday:publicDay(previousDate),
-      ...(url.searchParams.get("popular")==="1" ? {
+      ...(popularRows!==null ? {
         // Rank once inside the existing Durable Object instead of making the
         // browser fetch every published article just to discover the top few.
-        topArticles:{last7Days:this.topArticleRowsForWeek(day)}
+        topArticles:{last7Days:popularRows}
       } : {})
     };
   }
