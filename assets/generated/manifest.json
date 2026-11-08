@@ -817,6 +817,13 @@
       "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
       "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
       "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+    },
+    "zero-redelivery-residents-collect-parcels": {
+      "article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
+      "reason": "現本文と実JPEG原本を表示して照合。集合住宅らしい通路、二人の住民と車輪付きカート、自然な外光・衣服・壁・床・影は写真として成立し、大きな人体破綻や偽文字も目立たない。しかし手前のカートは編み籠と黒い買い物袋、奥も布製バッグで、宅配の段ボール箱は識別できず、通常の買い物帰りに見える。本文の主要場面『住民が配送所から宅配荷物を運ぶ』に必要な具体物が欠けるため不採用。CPU run 42531619069 の新JPEGを検品した結果であり、原JPEG・生成指紋・seedは保持し、本文に合う専用SVGで掲載する。",
+      "rejected_candidate_sha256": "17cd689647ac1eaaa6aef3cbf716bec35469b29fbbee083f92fe956ffb66a7e5",
+      "reviewed_at": "2026-11-08T22:55:31.786596+00:00",
+      "run_id": 42531619069
     }
   },
   "version": 1

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="満杯の宅配ロッカーがあるマンションの玄関へ、配送用段ボールを載せた台車で荷物を運ぶ住民の列の創作イラスト" data-visual-topic="parcel" data-article-sha256="17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757">
+<title>再配達の代わりに、住民が運ぶ荷物</title>
+<desc>マンションの玄関前。宅配ロッカーは全ての区画に荷物が入り、赤い使用中ランプが付いている。普段着の住民三人が、梱包テープと無記入の白い配送ラベルが付いた茶色の段ボール箱を折りたたみ台車に積み、建物へ運ぶ列を作る。玄関脇には無記入の用紙を掲示した共用掲示板。買い物袋、文字、数字、企業ロゴ、実在人物は描かない。</desc>
+<defs>
+<linearGradient id="wall" x2="0" y2="1"><stop stop-color="#e5e9df"/><stop offset="1" stop-color="#c8d4cc"/></linearGradient>
+<linearGradient id="ground" x2="0" y2="1"><stop stop-color="#d7d8cc"/><stop offset="1" stop-color="#b1bbb0"/></linearGradient>
+<g id="carton" stroke="#81613d" stroke-width="2.5" stroke-linejoin="round"><path d="M0 0l8-8h100l-8 8z" fill="#dec39a"/><path d="M100 0l8-8v70l-8 8z" fill="#ad8357"/><rect width="100" height="70" fill="#cda777"/><path d="M46 0h13v70H46z" fill="#eddaa8" stroke="none"/><path d="M46 0l8-8h13l-8 8z" fill="#f2dfae" stroke="none"/><rect x="9" y="21" width="25" height="20" rx="1" fill="#f7f0dc" stroke="#b5a280" stroke-width="1"/><path d="M4 66h92" fill="none" stroke="#bd9567" stroke-width="1.5"/></g>
+</defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<rect x="0" y="395" width="1200" height="280" fill="url(#ground)"/>
+<path d="M0 395h1200M0 492h1200M0 612h1200M100 395L20 675M380 395l-15 280M750 395l70 280M1045 395l140 280" fill="none" stroke="#a7b6ac" stroke-width="3" opacity=".6"/>
+<path d="M0 59h1200v56H0z" fill="#8b9f96"/><path d="M0 116h1200" stroke="#b5c5b8" stroke-width="12"/>
+<path d="M17 44h1166" stroke="#f3f4e9" stroke-width="8"/>
+<rect x="37" y="149" width="176" height="196" rx="4" fill="#82998f"/>
+<rect x="47" y="159" width="156" height="176" fill="#bccfc5"/>
+<path d="M125 159v176M47 247h156" stroke="#82998f" stroke-width="8"/>
+<path d="M47 305q45-31 80-9t76-11v50H47z" fill="#9ab2a1"/>
+<rect x="254" y="134" width="354" height="274" rx="5" fill="#657e76"/>
+<path d="M269 149h324v236H269z" fill="#9aafa5"/>
+<path d="M281 158h138v212H281zm149 0h150v212H430z" fill="#d1ddd1" stroke="#7d9388" stroke-width="5"/>
+<path d="M289 325l60-39h62v75H289m149-31 52-36h81v67H438" fill="#b0c1b2"/>
+<path d="M420 151v227" stroke="#657e76" stroke-width="9"/>
+<path d="M401 254v44m39-44v44" stroke="#63766f" stroke-width="8" stroke-linecap="round"/>
+<path d="M244 394h374v22H244z" fill="#8b9d92"/><path d="M231 416h401v12H231z" fill="#c2cdc0"/>
+<rect x="652" y="153" width="278" height="234" rx="7" fill="#839b98" stroke="#596f6c" stroke-width="7"/>
+
+<rect x="666" y="166" width="117" height="100" rx="3" fill="#c7d7d0" stroke="#718b82" stroke-width="4"/>
+<use href="#carton" transform="translate(676 199) scale(0.780 0.786)"/>
+<circle cx="680" cy="181" r="6" fill="#b45e5e"/><path d="M770 204v28" stroke="#637b74" stroke-width="5" stroke-linecap="round"/>
+<rect x="666" y="273" width="117" height="100" rx="3" fill="#c7d7d0" stroke="#718b82" stroke-width="4"/>
+<use href="#carton" transform="translate(676 306) scale(0.780 0.786)"/>
+<circle cx="680" cy="288" r="6" fill="#b45e5e"/><path d="M770 311v28" stroke="#637b74" stroke-width="5" stroke-linecap="round"/>
+<rect x="800" y="166" width="117" height="100" rx="3" fill="#c7d7d0" stroke="#718b82" stroke-width="4"/>
+<use href="#carton" transform="translate(810 199) scale(0.780 0.786)"/>
+<circle cx="814" cy="181" r="6" fill="#b45e5e"/><path d="M904 204v28" stroke="#637b74" stroke-width="5" stroke-linecap="round"/>
+<rect x="800" y="273" width="117" height="100" rx="3" fill="#c7d7d0" stroke="#718b82" stroke-width="4"/>
+<use href="#carton" transform="translate(810 306) scale(0.780 0.786)"/>
+<circle cx="814" cy="288" r="6" fill="#b45e5e"/><path d="M904 311v28" stroke="#637b74" stroke-width="5" stroke-linecap="round"/>
+<rect x="996" y="156" width="160" height="188" rx="5" fill="#738c7a" stroke="#596e61" stroke-width="7"/>
+<rect x="1009" y="171" width="133" height="158" fill="#b0bda2"/>
+<path d="M1020 184h55v61h-55zm61 75h48v56h-48z" fill="#f6f0d9" stroke="#d2c9af" stroke-width="2"/>
+<g fill="#8b967d"><circle cx="1047" cy="190" r="3"/><circle cx="1104" cy="265" r="3"/></g>
+<g transform="translate(441 250) scale(0.66)">
+<ellipse cx="-120" cy="229" rx="164" ry="15" fill="#7c9182" opacity=".18"/>
+<g stroke="#52605a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M-39 172l-7 47-27 17h37l27-46m20-18 14 45 13 20h34l-25-29-8-40" fill="#647979"/>
+<path d="M-72 232h35l-1 12h-51q-5-7 17-12m112 0h29q15 3 16 12H41z" fill="#58605a" stroke-width="3"/>
+<path d="M-40 58q16-23 42-22 33-1 49 25l3 119H-48z" fill="#b59970"/>
+<path d="M-13 27v18l16 12 17-14V25" fill="#e3b997"/>
+<ellipse cx="3" cy="-7" rx="34" ry="43" fill="#e3b997"/>
+<path d="M-30-7q-8-52 30-54 46-1 41 49L23-34-9-23z" fill="#66645a" stroke="#66645a"/>
+<path d="M-29 65l-26 19m88-18-10 32-52-6" fill="none" stroke="#b59970" stroke-width="26"/>
+<path d="M-54 83l-13 1m40 8-15-4" stroke="#e3b997" stroke-width="14"/>
+<path d="M-22-2h8m9 18h14" fill="none" stroke="#68594d" stroke-width="3"/>
+</g>
+<path d="M-64 82h36v107" fill="none" stroke="#637d7b" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-260 187h238v15h-238z" fill="#6b9295" stroke="#4d6e70" stroke-width="4"/>
+<g fill="#536362" stroke="#3f514e" stroke-width="4"><circle cx="-219" cy="214" r="14"/><circle cx="-57" cy="214" r="14"/></g>
+<g fill="#a2b5ab"><circle cx="-219" cy="214" r="5"/><circle cx="-57" cy="214" r="5"/></g>
+<use href="#carton" transform="translate(-244 102) scale(1.740 1.200)"/>
+<use href="#carton" transform="translate(-208 34) scale(1.240 0.957)"/>
+</g>
+<g transform="translate(720 310) scale(0.83)">
+<ellipse cx="-120" cy="229" rx="164" ry="15" fill="#7c9182" opacity=".18"/>
+<g stroke="#52605a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M-39 172l-7 47-27 17h37l27-46m20-18 14 45 13 20h34l-25-29-8-40" fill="#6b6e66"/>
+<path d="M-72 232h35l-1 12h-51q-5-7 17-12m112 0h29q15 3 16 12H41z" fill="#58605a" stroke-width="3"/>
+<path d="M-40 58q16-23 42-22 33-1 49 25l3 119H-48z" fill="#899ba4"/>
+<path d="M-13 27v18l16 12 17-14V25" fill="#e8bea1"/>
+<ellipse cx="3" cy="-7" rx="34" ry="43" fill="#e8bea1"/>
+<path d="M-30-7q-8-52 30-54 46-1 41 49L23-34-9-23z" fill="#544a42" stroke="#544a42"/>
+<path d="M-29 65l-26 19m88-18-10 32-52-6" fill="none" stroke="#899ba4" stroke-width="26"/>
+<path d="M-54 83l-13 1m40 8-15-4" stroke="#e8bea1" stroke-width="14"/>
+<path d="M-22-2h8m9 18h14" fill="none" stroke="#68594d" stroke-width="3"/>
+</g>
+<path d="M-64 82h36v107" fill="none" stroke="#637d7b" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-260 187h238v15h-238z" fill="#6b9295" stroke="#4d6e70" stroke-width="4"/>
+<g fill="#536362" stroke="#3f514e" stroke-width="4"><circle cx="-219" cy="214" r="14"/><circle cx="-57" cy="214" r="14"/></g>
+<g fill="#a2b5ab"><circle cx="-219" cy="214" r="5"/><circle cx="-57" cy="214" r="5"/></g>
+<use href="#carton" transform="translate(-244 102) scale(1.740 1.200)"/>
+<use href="#carton" transform="translate(-208 34) scale(1.240 0.957)"/>
+</g>
+<g transform="translate(1070 390) scale(1.0)">
+<ellipse cx="-120" cy="229" rx="164" ry="15" fill="#7c9182" opacity=".18"/>
+<g stroke="#52605a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M-39 172l-7 47-27 17h37l27-46m20-18 14 45 13 20h34l-25-29-8-40" fill="#77796e"/>
+<path d="M-72 232h35l-1 12h-51q-5-7 17-12m112 0h29q15 3 16 12H41z" fill="#58605a" stroke-width="3"/>
+<path d="M-40 58q16-23 42-22 33-1 49 25l3 119H-48z" fill="#d7d6c3"/>
+<path d="M-13 27v18l16 12 17-14V25" fill="#ddb392"/>
+<ellipse cx="3" cy="-7" rx="34" ry="43" fill="#ddb392"/>
+<path d="M-30-7q-8-52 30-54 46-1 41 49L23-34-9-23z" fill="#484d49" stroke="#484d49"/>
+<path d="M-29 65l-26 19m88-18-10 32-52-6" fill="none" stroke="#d7d6c3" stroke-width="26"/>
+<path d="M-54 83l-13 1m40 8-15-4" stroke="#ddb392" stroke-width="14"/>
+<path d="M-22-2h8m9 18h14" fill="none" stroke="#68594d" stroke-width="3"/>
+</g>
+<path d="M-64 82h36v107" fill="none" stroke="#637d7b" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M-260 187h238v15h-238z" fill="#6b9295" stroke="#4d6e70" stroke-width="4"/>
+<g fill="#536362" stroke="#3f514e" stroke-width="4"><circle cx="-219" cy="214" r="14"/><circle cx="-57" cy="214" r="14"/></g>
+<g fill="#a2b5ab"><circle cx="-219" cy="214" r="5"/><circle cx="-57" cy="214" r="5"/></g>
+<use href="#carton" transform="translate(-244 102) scale(1.740 1.200)"/>
+<use href="#carton" transform="translate(-208 34) scale(1.240 0.957)"/>
+</g>
+</svg>
