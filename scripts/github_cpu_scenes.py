@@ -25,6 +25,8 @@ try:
     from .cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from .generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from .local_scene_photos import (
+        MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES, MIN_FREE_GIB, StorageLimitError,
+        archive_bytes, check_storage, reserved_jpeg_bytes,
         held_scene, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
@@ -32,6 +34,8 @@ except ImportError:
     from cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from generated_photos import ROOT, article_fingerprint, generated_manifest, usable_generated_scene
     from local_scene_photos import (
+        MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES, MIN_FREE_GIB, StorageLimitError,
+        archive_bytes, check_storage, reserved_jpeg_bytes,
         held_scene, load_articles, pending_articles, png_to_jpeg, scene_description,
         stable_seed, write_generated,
     )
@@ -299,19 +303,29 @@ def _git_read(*arguments: str) -> str:
         raise RuntimeError("Backfill stopped: cannot verify latest main") from exc
 
 
-def check_main_unchanged(revision: str) -> None:
+def check_backfill_storage(root: Path | None = None, *, review_parent: Path | None = None) -> None:
+    """Reserve a full new JPEG beside the preserved live archive and outbox."""
+    source = ROOT if root is None else root
+    paths = [source] + ([review_parent] if review_parent is not None else [])
+    check_storage(paths, MIN_FREE_GIB)
+    if archive_bytes(source) + reserved_jpeg_bytes() + MAX_SCENE_BYTES > MAX_ARCHIVE_BYTES:
+        raise StorageLimitError("Live JPEG archive plus backfill candidate would exceed 1.5 GiB")
+
+
+def check_main_unchanged(revision: str, *, review_parent: Path | None = None) -> None:
     """Yield the shared runner to any newer main; never fetch, reset or push."""
     if not re.fullmatch(r"[0-9a-f]{40}", revision):
         raise RuntimeError("Backfill stopped: invalid checkout revision")
+    check_backfill_storage(review_parent=review_parent)
     remote = _git_read("ls-remote", "--exit-code", "origin", "refs/heads/main").split()
     if remote != [revision, "refs/heads/main"]:
         raise RuntimeError("Backfill stopped: main advanced; current articles take priority")
 
 
-def backfill_step_callback(revision: str):
+def backfill_step_callback(revision: str, *, review_parent: Path | None = None):
     def check(_pipeline, step_index, _timestep, callback_kwargs):
         if (step_index + 1) % 4 == 0:
-            check_main_unchanged(revision)
+            check_main_unchanged(revision, review_parent=review_parent)
         return callback_kwargs
     return check
 
@@ -357,6 +371,7 @@ def select_articles(articles: list[dict], *, slug: str = "", limit: int = MAX_CP
         if any(row["status"] == "pending" or _attention(row)
                or row["publication"]["kind"] == "generic_fallback" for row in rows):
             raise ValueError("Current image review or coverage work takes priority over backfill")
+        check_backfill_storage(base, review_parent=Path(review_dir).parent)
         return [candidate]
     candidates = pending_articles(articles, root=base, slug=slug, force=retry_held, limit=0)
     return [a for a in candidates if not usable_generated_scene(a, root=base)][:limit]
@@ -532,7 +547,7 @@ def main(argv: list[str] | None = None) -> int:
                        if args.backfill_scene else None)
     revision = _git_read("rev-parse", "HEAD") if args.backfill_scene else None
     if revision is not None:
-        check_main_unchanged(revision)
+        check_main_unchanged(revision, review_parent=args.review_dir.parent)
     # Backfill candidates never write into the checkout. Only an exported new
     # JPEG with its exact clone and original source fingerprint leaves staging.
     staging = (tempfile.TemporaryDirectory(prefix=".cpu-backfill-", dir=args.review_dir.parent)
@@ -542,17 +557,17 @@ def main(argv: list[str] | None = None) -> int:
         generation_root = Path(directory)
         pipe, torch = load_pipeline()
         if revision is not None:
-            check_main_unchanged(revision)
+            check_main_unchanged(revision, review_parent=args.review_dir.parent)
         try:
             for index, article in enumerate(selected, 1):
                 ensure_disk()
                 print(f"[{index}/{len(selected)}] CPU staging: {article['slug']}", flush=True)
                 try:
-                    options = ({"callback_on_step_end": backfill_step_callback(revision)}
+                    options = ({"callback_on_step_end": backfill_step_callback(revision, review_parent=args.review_dir.parent)}
                                if revision is not None else {})
                     data = render_one(pipe, torch, article, **options)
                     if revision is not None:
-                        check_main_unchanged(revision)
+                        check_main_unchanged(revision, review_parent=args.review_dir.parent)
                     write_generated(article, data, MODEL, root=generation_root, origin=ORIGIN)
                     successes.append(article)
                     print(f"Saved verified first-party JPEG ({len(data)} bytes)", flush=True)
