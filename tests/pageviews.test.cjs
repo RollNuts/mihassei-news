@@ -653,29 +653,39 @@ test('30-minute sessions and session-acquisition page-view sources are counted s
   assert.equal(first.status,200);
   assert.equal(first.data.sessions,1);
   assert.equal(first.data.today.sessions,1);
-  assert.equal(first.data.articleEntrances,1);
-  assert.equal(first.data.pageViewSources.x,1);
   assert.equal(first.data.pageViewSourcesToday.x,1);
   assert.equal(first.data.pageViewSourcesCurrentHour.x,1);
+  assert.equal('pageViewSources' in first.data,false);
+  assert.equal('articleEntrances' in first.data,false);
 
   await f.post(sessionView(browser,'story-b',session,'x'));
   let snapshot=(await f.get('story-a,story-b')).data;
   assert.equal(snapshot.sessions,1,'two page views in one visit are one session');
   assert.equal(snapshot.visitors,1,'session counting never changes browser de-duplication');
-  assert.equal(snapshot.articles['story-a'].entrances,1);
-  assert.equal(snapshot.articles['story-b'].entrances,0);
-  assert.equal(snapshot.pageViewSources.x,2);
-  assert.equal(snapshot.articles['story-a'].pageViewSources.x,1);
-  assert.equal(snapshot.articles['story-b'].pageViewSources.x,1);
+  assert.equal(snapshot.pageViewSourcesToday.x,2);
+  assert.equal(snapshot.pageViewSourcesCurrentHour.x,2);
+  assert.equal('entrances' in snapshot.articles['story-a'],false);
+  assert.equal('pageViewSources' in snapshot.articles['story-a'],false);
 
+  f.setTime('2026-11-06T10:05:00Z');
   const secondSession=randomUUID();
   await f.post(sessionView(browser,'story-b',secondSession,'search'));
   snapshot=(await f.get('story-a,story-b')).data;
   assert.equal(snapshot.sessions,2);
   assert.equal(snapshot.today.sessions,2);
-  assert.equal(snapshot.articles['story-b'].entrances,1);
-  assert.equal(snapshot.pageViewSources.search,1);
+  assert.equal(snapshot.pageViewSourcesToday.x,2);
+  assert.equal(snapshot.pageViewSourcesToday.search,1);
+  assert.equal(snapshot.pageViewSourcesCurrentHour.x,0);
+  assert.equal(snapshot.pageViewSourcesCurrentHour.search,1);
   assert.equal(snapshot.pageViewSourceTracking.attribution,'session-acquisition-channel');
+  const historical=(await f.get('story-a,story-b','2026-11-06')).data;
+  assert.deepEqual(JSON.parse(JSON.stringify(historical.pageViewSourcesDay)),{
+    x:2,search:1,external:0,unattributed:0
+  });
+  assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'pageViewSource:%'").get().n,0);
+  assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'pageViewKind:%'").get().n,0);
+  assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'sessions:channel:%'").get().n,0);
+  assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM counters WHERE key LIKE 'entrances:%'").get().n,0);
   assert.equal(snapshot.sessionTracking.inactivityTimeoutMinutes,30);
 
   const bad=await f.post({...view(browser),sessionId:randomUUID()});
