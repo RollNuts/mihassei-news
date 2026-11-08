@@ -1,5 +1,71 @@
 [
   {
+    "slug": "fridge-checkin-five-years-only-opening-times",
+    "category": "暮らし",
+    "flash": "元気は確認、近況は不明",
+    "fiction_company": "高森家",
+    "art": "cards",
+    "fiction_at": "2031-11-08T17:44:51+09:00",
+    "published_at": "2026-11-08T17:44:51+09:00",
+    "title": "冷蔵庫で父の「元気」を5年確認　娘、久々の帰省で分かるのは開閉時刻だけ",
+    "summary": "離れて暮らす父の安否を、冷蔵庫の開閉通知で確認してきた娘。5年ぶんの「異常なし」があっても、父が最近何を楽しんでいるかは知らなかった。帰省して夕飯の話をすると、娘の答えは「18時02分」だった。",
+    "paragraphs": [
+      "2031年11月8日、離れて暮らす父の家を久しぶりに訪れた高森美咲さんが、スマートフォンに5年分の記録を見せた。台所の冷蔵庫が開くたびに届く見守り通知だ。「ほら、毎日元気なのは分かってたよ」。父の修一さん（74）は笑ったが、娘に最近の好きな料理を尋ねると、答えは出てこなかった。",
+      "導入したのは2026年。独り暮らしになった父を心配して美咲さんが申し込んだ。電話をかけるたびに父が「仕事で疲れてるのに、毎日安否を聞かなくていい。冷蔵庫は毎朝開けるから」と言うので、美咲さんも仕事帰りに届く「異常なし」の通知で安心するようになった。父も心配をかけたくなくて、朝は必ず冷蔵庫を開けた。いつしか二人とも、通知が届けば連絡を済ませた気になっていた。",
+      "帰省した娘が「昨日の晩は何を食べたの？」と尋ねると、修一さんはうれしそうに「何だと思う？」と返した。美咲さんは慣れた手つきで履歴を開いた。「18時02分に一回、18時07分にもう一回」。父は「時刻は正解。献立を聞いてるんだけど」と笑う。娘は五年の記録を持っているのに、父が煮物を覚えたことも、庭でトマトを育て始めたことも初耳だった。",
+      "冷蔵庫の扉には、小さな付箋が何枚も貼られていた。「初めて煮たかぼちゃ」「トマト一つ収穫」「隣の人と将棋」。父が娘に話そうと思った出来事を、忘れないように書いたものだった。美咲さんが「全部、連絡してくれてよかったのに」と言うと、父は首をかしげた。「冷蔵庫を開けるだけで安心するって言うから、そこで話は終わってると思ってた」。娘は初めて画面を伏せ、父のかぼちゃの話を聞いた。"
+    ],
+    "source": {
+      "kind": "発表",
+      "publisher": "合同会社ネコリコ（PR TIMES）",
+      "published_at": "2026-04-15T11:10:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000062.000041432.html",
+      "topic": "2026年4月15日の発表では、冷蔵庫の開閉で高齢者家族を見守る「まもりこ」が2021年から提供されていると説明。父娘の5年間の通知、帰省時の会話、付箋は2031年の創作で、実際の利用例として発表されたものではない。"
+    },
+    "scene_prompt": "A quiet ordinary Japanese family kitchen in natural late-afternoon light. An older father stands beside the refrigerator with a few small handwritten notes pinned on its door, while his adult daughter in casual clothes sits at the table holding a smartphone that shows a simple refrigerator open-close timeline with no readable text. They look toward each other beginning an overdue conversation. Honest documentary photo, natural skin, everyday clothing and modest furnishings, no brand logos or exaggerated lighting.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "親子",
+      "見守り",
+      "家族"
+    ],
+    "satire_tags": [
+      "通知で安心",
+      "つながりの形"
+    ],
+    "x_tags": [
+      "見守り"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「今日も元気」の通知は毎日届く。でも、元気な日に何があったかまでは通知されない。",
+    "reader_interest": "family_home",
+    "reader_clarity": {
+      "who": "離れて暮らす父を見守る娘",
+      "action": "冷蔵庫の開閉記録で5年間安否を確認し、帰省しても近況より開閉時刻を詳しく話す",
+      "oddity": "元気かどうかの記録は残るが、父が何を食べて何を楽しんでいるかという会話は抜け落ちている"
+    },
+    "editorial_lane": "social_life",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "quiet_aftertaste",
+    "editorial_signature": {
+      "present": "離れて暮らす家族の安否を見守り機器で確認できる一方、安心の通知が日常の会話の代わりになりやすい",
+      "target": "安否確認を丁寧にしているつもりで、相手の日常を知ることまで済ませた気になる",
+      "action": "娘は5年間冷蔵庫の開閉記録を確認し、父も心配させないよう毎日必ず扉を開ける",
+      "outcome": "帰省時に娘が言えるのは開閉時刻だけで、父が話すために取っておいた付箋が冷蔵庫に残る"
+    },
+    "behavior_basis": {
+      "motive": "娘は多忙な仕事の中でも父を心配せずにいたい。父も娘に心配や連絡の負担を掛けたくない",
+      "ordinary_alternative": "安否確認とは別に電話をして父の近況を聞く",
+      "why_not": "父自身が毎日の安否確認電話を遠慮し、娘も通知を受けて安心すると連絡を済ませた気持ちになった",
+      "evidence_quote": "いつしか二人とも、通知が届けば連絡を済ませた気になっていた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年時点で冷蔵庫の開閉を使う高齢者見守りサービスが提供されている",
+      "continuation_force": "離れて暮らす家族の安心と、双方が相手の時間を邪魔したくない気遣いが日々の通知確認を習慣化させる",
+      "future_result": "2031年、安否の記録だけは5年分残る一方、家族の近況を会話で聞く機会が減っている"
+    }
+  },
+  {
     "slug": "free-play-event-parents-timetable-children-waiting",
     "category": "暮らし",
     "flash": "自由遊びには14工程の進行表",
