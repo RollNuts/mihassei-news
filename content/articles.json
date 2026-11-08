@@ -1,5 +1,71 @@
 [
   {
+    "slug": "custom-work-apps-four-week-handover",
+    "category": "技術",
+    "flash": "仕事10分、引き継ぎ4週間",
+    "fiction_company": "日々オフィス",
+    "art": "meeting",
+    "fiction_at": "2031-11-08T21:49:27+09:00",
+    "published_at": "2026-11-08T21:49:27+09:00",
+    "title": "社員が自分専用アプリで仕事を10分に短縮　退職時の引き継ぎは4週間",
+    "summary": "一人ひとりが仕事に合わせたアプリを作れるようになった会社。毎朝10分で終わる受注確認なのに、担当者が替わると画面も操作も引き継げず、後任の研修に4週間かかった。",
+    "paragraphs": [
+      "事務代行会社「日々オフィス」は、社員が自分の仕事に合ったアプリを自由に作る働き方を広めた。注文の確認も請求書の整理も、各自が使いやすい画面に変えられる。便利な道具を会社がまとめて開発する必要もなく、受注数を確かめて物流担当へ送る朝の仕事は、ベテランの相原さんなら10分で終わっていた。",
+      "相原さんの退職が決まり、後任の森さんが引き継ぎに入った。実務は初日に覚えた。しかし相原さんの画面では緑が「確認済み」、経理担当の画面では緑が「保留」、物流担当の画面では緑が「本日発送」だった。どれも本人には使いやすい。森さんは注文の数字を送るたび、担当者三人の画面を開いて色の意味を読み替えた。",
+      "総務は、全員で使う共通画面へ戻そうと提案した。ところが各部署は、自分たちのアプリで短縮した作業時間を半期の成果として報告したばかりだった。部長は「今ある画面を統一すると、今期の時短実績を説明し直さなきゃいけない」と首を横に振った。会社は共通化よりも、退職時に個別アプリを教える研修を充実させる方を選んだ。",
+      "4週間後、森さんはようやく引き継ぎ試験に合格した。机には分厚い「アプリ操作手順」が積まれ、別紙の「本来の仕事」には「受注数を確認して物流へ送る」と一行だけ書かれていた。研修が終わると、人事から「自分に使いやすい画面に変更して構いません」と案内が届いた。森さんは古い手順書を棚にしまい、自分用の新しい画面を作り始めた。棚には、歴代担当者の手順書が一冊ずつ並んでいた。"
+    ],
+    "source": {
+      "kind": "報道",
+      "publisher": "Impress Watch",
+      "published_at": "2026-11-07T18:30:00+09:00",
+      "url": "https://www.watch.impress.co.jp/docs/news/2154571.html",
+      "topic": "Metaは2026年11月6日（米国時間）、Muse内で利用者が自然言語から個人用のアプリ風画面「Spaces」を作り、後からカスタマイズできる機能を発表。11月7日18:30のImpress Watchが報道。公式発表は https://about.fb.com/news/2026/11/introducing-spaces-customize-muse-app/amp/ 。記事の事務会社「日々オフィス」、部署ごとに異なる色分け、4週間の引き継ぎ、研修制度、社員の発言は2031年の独自創作で、Metaの実際の法人機能や実在企業の事例ではない。"
+    },
+    "scene_prompt": "An office handover desk where a new employee reads thick binders explaining several incompatible personalized computer dashboard interfaces, while a single short work instruction sheet lies beside them. Neutral everyday office, simple monitors, natural light, ordinary people, no logos or readable text.",
+    "visual_strategy": "illustration",
+    "illustration_reason": "comparison_layout",
+    "tags": [
+      "AI",
+      "業務効率"
+    ],
+    "satire_tags": [
+      "個別最適",
+      "引き継ぎ地獄"
+    ],
+    "x_tags": [
+      "属人化"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "自分には最高に使いやすいツールが、次に座る人にとっても使いやすいとは限らない。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "自然言語で自分の仕事に合ったアプリ風画面を作る技術が登場し、個々人で道具を最適化できる",
+      "target": "個人単位の作業短縮を成果として褒めすぎて、チームで仕事を引き継ぐ費用を見失う",
+      "action": "部署ごとに画面や色の意味が違っても時短実績を守るため共通化せず、後任に個別アプリの使い方を4週間教える",
+      "outcome": "実務は一行で済むのに説明書だけが増え、研修後の後任も自分専用アプリを作り始める"
+    },
+    "behavior_basis": {
+      "motive": "各部署は個人のアプリで短縮した作業時間を半期の成果として評価されたい",
+      "ordinary_alternative": "共通画面を作って後任が同じ手順で仕事できるようにする",
+      "why_not": "部署ごとの時短実績を前提に半期評価を報告済みで、画面を共通化すると成果報告の説明をやり直す必要がある",
+      "evidence_quote": "各部署は、自分たちのアプリで短縮した作業時間を半期の成果として報告したばかりだった。"
+    },
+    "reader_clarity": {
+      "who": "社員",
+      "action": "社員ごとに仕事用アプリを作り、10分の受注確認を後任へ引き継ぐのに4週間かけた",
+      "oddity": "仕事を早くする道具を個人ごとに作った結果、仕事そのものより引き継ぎの方がずっと難しくなっている"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月、Metaが自分専用アプリ風画面を自然言語で作るMuse Spacesを開始した",
+      "continuation_force": "個人の作業時間短縮は評価しやすい一方、引き継ぎ費用は担当者が替わるまで表面化しにくい",
+      "future_result": "2031年、社員別の使いやすさを優先した会社が、10分の業務の引き継ぎに4週間かける"
+    }
+  },
+  {
     "slug": "music-special-forty-days-of-lineup-announcements",
     "category": "エンタメ",
     "flash": "歌う前に発表しすぎた",
