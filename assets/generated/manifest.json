@@ -699,16 +699,6 @@
       "trial_article_sha256": "16a4591be35652350d9e83445d66558ddefa85be9781634736b8b2f60d6c756e",
       "trial_scene_prompt": "A solitary Japanese film director carries plain grocery bags past a film camera on a tripod on an empty historical film-set lane. Blank wooden walls, daylight, no storefront signs or other people."
     },
-    "five-star-reviews-of-returned-humidifiers": {
-      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "reason": "Actual review of full RV prop-first preview 42468601719: photographic cardboard and light, but the appliance is a black-front box with a separate transparent teardrop-like vessel on top, not an identifiable tabletop humidifier. It sits on a mostly closed carton; the opened return-box context is absent. Reject the candidate and preserve the current story-specific SVG rather than repeat this article today.",
-      "rejected_candidate_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42468601719",
-      "reviewed_at": "2026-11-08T10:00:46.544373+00:00",
-      "source_article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "trial_article_sha256": "432b4bfa86e6b0b193eb0aa0fd5de1dc2ce942b1a388ffc580ee43e530b15ae9",
-      "trial_scene_prompt": "A white tabletop humidifier with a translucent water tank sits half-unpacked inside an open cardboard box. Open cartons fill the cramped electronics shop storeroom behind it. Plain packaging, ordinary daylight."
-    },
     "free-play-event-parents-timetable-children-waiting": {
       "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
       "reason": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。",
