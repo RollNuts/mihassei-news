@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="創作イラスト：進行表を囲む保護者の横で、子どもたちは自分たちで鬼ごっこを始めている" data-visual-topic="document" data-article-sha256="6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92">
+<title>自由遊びの進行表に夢中な大人と、すでに自由に走り回る子どもたち</title>
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c9e3eb"/><stop offset="1" stop-color="#e7ede4"/></linearGradient>
+<linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#bdd6a5"/><stop offset="1" stop-color="#91b58e"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#sky)"/>
+<rect x="0" y="310" width="1200" height="365" fill="url(#grass)"/>
+<rect x="42" y="120" width="390" height="260" rx="9" fill="#c7d5ca" stroke="#8dafa1" stroke-width="7"/>
+<rect x="67" y="155" width="340" height="148" rx="7" fill="#f6f6ee" stroke="#acb7af" stroke-width="5"/>
+<path d="M94 185h185M94 219h245M94 253h158" fill="none" stroke="#9eafa9" stroke-width="10" stroke-linecap="round"/>
+<path d="M0 383q220-35 370 7t420-10q260-44 410 10" fill="none" stroke="#d8c3a2" stroke-width="35" opacity=".7"/>
+<!-- children running in spontaneous play, in the open background -->
+<g stroke-linecap="round" stroke-linejoin="round">
+<circle cx="634" cy="285" r="31" fill="#d0a17d" stroke="#967760" stroke-width="3"/><path d="M607 267q25-42 51 0" fill="#4c4546"/>
+<path d="M628 326l-18 69 68 15M624 342l64-28M626 386l-44 69M626 386l63 55" fill="none" stroke="#c75a50" stroke-width="27"/>
+<circle cx="822" cy="249" r="29" fill="#d0ac8d" stroke="#92735f" stroke-width="3"/><path d="M798 241q27-47 50 5" fill="#4a3637"/>
+<path d="M820 291l35 60-30 61M828 320l-56 17M845 402l46 40M827 402l-56 46" fill="none" stroke="#638ca4" stroke-width="25"/>
+<circle cx="1028" cy="300" r="28" fill="#cc9e7d" stroke="#967760" stroke-width="3"/><path d="M1003 295q20-39 50-1" fill="#4f493a"/>
+<path d="M1026 338l-16 59-55 20M1016 353l46 27M1005 389l-50 51M1005 389l43 48" fill="none" stroke="#dcad53" stroke-width="24"/>
+</g>
+<!-- foreground: adult meeting seated around a schedule, back turned to play -->
+<rect x="95" y="474" width="580" height="136" rx="14" fill="#b99068" stroke="#987553" stroke-width="8"/>
+<rect x="171" y="489" width="380" height="96" rx="9" fill="#f9f4e8" stroke="#a4a6a1" stroke-width="5"/>
+<path d="M198 507h327M198 523h327M198 539h327M198 555h327M246 500v76M321 500v76M396 500v76M471 500v76" stroke="#b7c7b8" stroke-width="4"/>
+<g stroke-linecap="round"><circle cx="140" cy="438" r="42" fill="#d8af8e" stroke="#977b68" stroke-width="4"/><path d="M97 425q4-53 64-27l17 32" fill="#4c4a48"/><path d="M81 651q-8-163 47-155h40q65-10 63 155" fill="#5b8389"/><path d="M205 555l75-19" stroke="#d8af8e" stroke-width="22"/><circle cx="613" cy="438" r="42" fill="#d4a585" stroke="#977b68" stroke-width="4"/><path d="M577 426q-2-44 62-32l7 34" fill="#463d3c"/><path d="M545 651q1-160 63-153h34q62-1 66 153" fill="#bf786c"/><path d="M566 542l-94-22" stroke="#d4a585" stroke-width="22"/></g>
+<path d="M80 644h649" stroke="#64866f" stroke-width="9" stroke-linecap="round"/>
+</svg>
