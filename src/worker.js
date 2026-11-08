@@ -48,6 +48,14 @@ export class NewsroomStats extends DurableObject {
   count(key) {
     return this.sql.exec("SELECT value FROM counters WHERE key=?", key).toArray()[0]?.value ?? 0;
   }
+  counts(keys) {
+    const unique=[...new Set(keys)];
+    if(!unique.length)return new Map();
+    const placeholders=unique.map(()=>"?").join(",");
+    return new Map(this.sql.exec(
+      "SELECT key,value FROM counters WHERE key IN ("+placeholders+")",...unique
+    ).toArray().map(row=>[row.key,row.value]));
+  }
   increment(key, delta) {
     this.sql.exec("INSERT INTO counters(key,value) VALUES (?,?) ON CONFLICT(key) DO UPDATE SET value=MAX(0,value+excluded.value)",key,delta);
   }
@@ -244,13 +252,95 @@ export class NewsroomStats extends DurableObject {
           return json({error:"hour outside available JST history"},400);
         selectedHour={date:match[1],hour:match[2],stamp:requestedHour};
       }
+      const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
+      if(url.searchParams.get("view")==="public") {
+        // Reader-facing pages only need the counters they actually render.
+        // Keep the full diagnostics contract as the default for operations,
+        // but avoid dozens of per-key reads, hourly scans and rankings on every
+        // browser refresh.
+        const articleSet=[...new Set(articles)];
+        const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
+        const firstSerial=day.serial-6;
+        const dates=Array.from({length:7},(_,i)=>
+          new Date((firstSerial+i)*DAY_MS).toISOString().slice(0,10));
+        const keys=[
+          "pageViews:startedAt","pageViews","visitors",
+          "day:"+day.date+":visitors","day:"+day.date+":articleReads","day:"+day.date+":pageViews",
+          "day:"+previousDate+":visitors","day:"+previousDate+":articleReads","day:"+previousDate+":pageViews",
+          ...dates.map(date=>"day:"+date+":pageViews")
+        ];
+        for(const slug of articleSet)keys.push(
+          "likes:"+slug,
+          "readers:"+slug,
+          "day:"+day.date+":reader:"+slug,
+          "pageViews:"+slug,
+          "day:"+day.date+":pageViews:"+slug,
+          "predictions:plausible:"+slug,
+          "predictions:unlikely:"+slug,
+          ...dates.map(date=>"day:"+date+":pageViews:"+slug)
+        );
+        const values=this.counts(keys);
+        const value=key=>values.get(key)??0;
+        const publicStartedAt=value("pageViews:startedAt");
+        const coverage=date=>this.dayCoverage({date},day,publicStartedAt);
+        const publicDay=date=>{
+          const pageViewsCoverage=coverage(date);
+          return {
+            dateJst:date,
+            visitors:value("day:"+date+":visitors"),
+            articleReads:value("day:"+date+":articleReads"),
+            pageViews:pageViewsCoverage==="unmeasured" ? null : value("day:"+date+":pageViews"),
+            pageViewsCoverage
+          };
+        };
+        const publicArticles=Object.fromEntries(articleSet.map(slug=>[
+          slug,{
+            likes:value("likes:"+slug),
+            readers:value("readers:"+slug),
+            todayReaders:value("day:"+day.date+":reader:"+slug),
+            pageViews:publicStartedAt ? value("pageViews:"+slug) : null,
+            todayPageViews:publicStartedAt ? value("day:"+day.date+":pageViews:"+slug) : null,
+            last7DaysPageViews:publicStartedAt
+              ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews:"+slug),0)
+              : null,
+            votes:{
+              plausible:value("predictions:plausible:"+slug),
+              unlikely:value("predictions:unlikely:"+slug)
+            }
+          }
+        ]));
+        return json({
+          version:2,
+          unit:"anonymous-browser",
+          visitors:value("visitors"),
+          articles:publicArticles,
+          pageViews:publicStartedAt ? value("pageViews") : null,
+          pageViewTracking:{
+            startedAtUtc:publicStartedAt ? new Date(publicStartedAt).toISOString() : null,
+            timezone:"Asia/Tokyo",
+            unit:"page-view"
+          },
+          last7Days:{
+            startDateJst:dates[0],
+            endDateJst:day.date,
+            pageViews:publicStartedAt
+              ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews"),0)
+              : null,
+            measuredDays:publicStartedAt
+              ? Math.max(0,Math.min(7,day.serial-currentJstDay(publicStartedAt).serial+1))
+              : 0,
+            complete:Boolean(publicStartedAt && publicStartedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
+          },
+          today:publicDay(day.date),
+          yesterday:publicDay(previousDate)
+        });
+      }
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
       const sourceStartedAt=this.count("pageViewSources:startedAt");
       const kindStartedAt=this.count("pageViewKinds:startedAt");
       const details={};
-      const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
       for (const slug of new Set(articles)) {
         details[slug]={
           likes:this.count("likes:"+slug),
@@ -512,6 +602,9 @@ export class NewsroomStats extends DurableObject {
         }
       }
     });
+    if(url.searchParams.get("response")==="ack" &&
+       (data.action==="visit" || data.action==="share"))
+      return json({ok:true,...(ignoredVisit ? {ignored:true} : {})});
     const startedAt=this.count("pageViews:startedAt");
     const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
     const sessionStartedAt=this.count("sessions:startedAt");
