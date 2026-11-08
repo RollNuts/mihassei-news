@@ -653,6 +653,7 @@
   },
   {
     "slug": "five-star-reviews-of-returned-humidifiers",
+    "broadcast_feature": true,
     "category": "暮らし",
     "flash": "返品の山を見ず、星だけ見て追加発注",
     "fiction_company": "青葉電器",
