@@ -55,7 +55,7 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("この人が馬鹿だから起きた", guide)
         self.assertIn("まともな人でもそうなる", guide)
         self.assertIn("人間の行動理由が説明できること", guide)
-        self.assertIn("個人の失敗談にも鋭い観察", guide)
+        self.assertIn("一人の失敗談にも鋭い観察", guide)
 
     def test_weak_story_gate_rejects_merely_valid_but_dull_premises(self):
         guide = (ROOT / "docs/EDITORIAL_LOOP.md").read_text(encoding="utf-8")
