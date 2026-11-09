@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="空の有人レジで待つ店員をよそに、買い物袋を持つ客同士が長ネギを見ながら世間話をする創作イラスト" data-visual-topic="document" data-article-sha256="d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2">
+<title>会話の順番より先に、列の中でネギの話</title>
+<desc>スーパーの有人レジ。店員は商品が一つもないカウンターの内側で客を待っている。会計後の売り場側では、買い物袋を下げた客同士が互いの方へ顔を向けて雑談し、もう一人の客も加わる。一つの袋からは白い茎と緑の葉の長ネギがのぞく。客は品物をレジへ渡さず、商品スキャンも会計も行われていない。画像内に文字、数字、ロゴ、吹き出し、操作画面は描かない。</desc>
+<defs>
+<linearGradient id="wall" x2="0" y2="1"><stop stop-color="#ecebdd"/><stop offset="1" stop-color="#d7dfd0"/></linearGradient>
+<linearGradient id="floor" x2="0" y2="1"><stop stop-color="#e2dfd0"/><stop offset="1" stop-color="#c2cabc"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<rect y="365" width="1200" height="310" fill="url(#floor)"/>
+<path d="M0 366h1200M0 461h1200M0 567h1200M82 366L10 675M356 366l-20 309m351-309 36 309m326-309 89 309" fill="none" stroke="#b7c2b1" stroke-width="2"/>
+<rect x="72" y="34" width="348" height="19" rx="6" fill="#f8f7e9" stroke="#c6cfbd" stroke-width="3"/>
+<rect x="733" y="34" width="350" height="19" rx="6" fill="#f8f7e9" stroke="#c6cfbd" stroke-width="3"/>
+<!-- Plain grocery shelves, with no price labels or packages carrying lettering. -->
+<g stroke="#a3b19e" stroke-width="5" stroke-linejoin="round">
+<path d="M22 140h1156v20H22zm0 112h1156v18H22zm0 103h1156v18H22z" fill="#bdc9b6"/>
+<path d="M38 163v189m1123-189v189" fill="none" stroke-width="11"/>
+</g>
+<g stroke="#9d9f85" stroke-width="2">
+<path d="M57 178h39v66H57zm49 0h39v66h-39zm49 0h39v66h-39z" fill="#d3b79a"/>
+<path d="M57 198h39m10 0h39m10 0h39" fill="none" stroke="#ecddbd" stroke-width="12"/>
+<path d="M380 182h42v62h-42zm52 0h42v62h-42zm52 0h42v62h-42z" fill="#b4c6b0"/>
+<path d="M809 178h37v66h-37zm47 0h37v66h-37zm47 0h37v66h-37z" fill="#c6b7a4"/>
+<path d="M1015 180h40v64h-40zm50 0h40v64h-40zm50 0h40v64h-40z" fill="#bbcab2"/>
+</g>
+<g stroke="#a1b19c" stroke-width="2"><path d="M72 285h31v64H72zm44 0h31v64h-31zm45 0h31v64h-31zm234 0h32v64h-32zm46 0h32v64h-32zm49 0h32v64h-32z" fill="#e2d4bb"/><path d="M812 287h31v62h-31zm44 0h31v62h-31zm45 0h31v62h-31z" fill="#c8cdb5"/></g>
+<!-- Waiting employee stays inside the counter; his hands carry no products. -->
+<g stroke="#52615a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M195 302q35-24 73-4l32 121H170z" fill="#b0b9a7"/>
+<path d="M204 307l-11 101h81l-15-101" fill="#718c7a"/>
+<path d="M220 273v30l18 13 17-17v-28" fill="#dfb997"/>
+<ellipse cx="237" cy="238" rx="34" ry="44" fill="#dfb997"/>
+<path d="M204 239q-6-48 31-52 43-4 41 48l-24-25-47 18" fill="#585f55"/>
+<path d="M251 240h10m-15 21h17" fill="none" stroke-width="3"/>
+<path d="M191 327l-4 48 33 11m57-59 15 45 24 10" fill="none" stroke="#b0b9a7" stroke-width="25"/>
+<path d="M216 385h20m76-1h19" stroke="#dfb997" stroke-width="14"/>
+</g>
+<!-- Empty checkout: a closed register and unoccupied clear counter. -->
+<path d="M24 398h490v151H24z" fill="#96aa9a" stroke="#6e8475" stroke-width="6"/>
+<path d="M15 386h508v40H15z" fill="#d9ddce" stroke="#7d9282" stroke-width="6"/>
+<path d="M39 440h449v84H39z" fill="#b5c4b1"/>
+<path d="M292 397h194v17H292z" fill="#c2cdbd"/>
+<path d="M71 329l109-9 10 67H74z" fill="#768d81" stroke="#566f60" stroke-width="5"/>
+<path d="M88 387h120v10H88z" fill="#5c7567"/>
+<path d="M135 376v14" stroke="#566f60" stroke-width="10"/>
+<!-- A third customer has joined the conversation, away from the employee. -->
+<g stroke="#58645a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1081 446l-6 88-21 25h34l16-23 8-87m13 0 12 85 21 24h-34l-15-23-7-86" fill="#929b87"/>
+<path d="M1070 325q30-18 60 2l24 125h-99z" fill="#bdc0a4"/>
+<path d="M1091 301v24l17 14 14-16v-23" fill="#dfb99c"/>
+<ellipse cx="1106" cy="266" rx="31" ry="40" fill="#dfb99c"/>
+<path d="M1075 270q-12-48 27-50 41-2 38 45l-20-22-43 15" fill="#767365"/>
+<path d="M1089 267h-7m8 19q10 5 18 0" fill="none" stroke-width="2.5"/>
+<path d="M1131 347l10 50-17 36m-51-86-17 36-18-5" fill="none" stroke="#bdc0a4" stroke-width="21"/>
+<path d="M1037 378l-16-7" stroke="#dfb99c" stroke-width="12"/>
+</g>
+<!-- These customers look at each other, not at the register. -->
+<g stroke="#52625a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M654 495l-13 91-19 24h39l16-24 14-88m14 0 11 87 19 25h-39l-15-23-9-88" fill="#76837d"/>
+<path d="M649 350q34-25 68-2l24 154H630z" fill="#8da3a3"/>
+<path d="M671 322v30l18 15 17-21v-25" fill="#e3b99a"/>
+<ellipse cx="687" cy="282" rx="36" ry="46" fill="#e3b99a"/>
+<path d="M653 286q-10-53 31-56 48-2 44 46l-27-24-46 20" fill="#686b61"/>
+<path d="M663 253l-7 25m61-26 8 19" fill="none" stroke="#a0a294" stroke-width="5"/>
+<path d="M703 283h11m-14 24q12 8 22-2" fill="none" stroke-width="3"/>
+<path d="M719 370l24 20 25-5M650 373l-9 66" fill="none" stroke="#8da3a3" stroke-width="27"/>
+<path d="M641 439l-4 11M766 385l18-7 9 3M780 371l5 8" fill="none" stroke="#e3b99a" stroke-width="13"/>
+</g>
+<g stroke="#52625a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M888 498l-12 90-19 23h38l17-23 11-86m14-2 11 87 20 24h-39l-16-24-6-86" fill="#887e72"/>
+<path d="M885 353q34-24 68-2l26 152H865z" fill="#b7a38e"/>
+<path d="M906 325v29l17 14 16-20v-25" fill="#e4bda0"/>
+<ellipse cx="921" cy="284" rx="36" ry="46" fill="#e4bda0"/>
+<path d="M885 291q-8-55 33-59 50-3 45 54l-26-31-50 20" fill="#60574d"/>
+<path d="M905 284h-11m13 25q-11 6-21-2" fill="none" stroke-width="3"/>
+<path d="M883 373l-23 41-19 6M957 377l28 45 26 17" fill="none" stroke="#b7a38e" stroke-width="27"/>
+<path d="M839 420l-18-7M830 414l-4-8M1009 439l15 3" fill="none" stroke="#e4bda0" stroke-width="13"/>
+</g>
+<!-- Long green onions are the shared topic, protruding from a carried bag. -->
+<path d="M617 485l8-82m6 84 7-79" fill="none" stroke="#eee9cb" stroke-width="10" stroke-linecap="round"/>
+<path d="M625 405l-17-50m19 49 7-53m4 61 14-54m-15 49-1-45" fill="none" stroke="#729479" stroke-width="8" stroke-linecap="round"/>
+<path d="M604 477q-2-49 32-49t34 49" fill="none" stroke="#997f5b" stroke-width="7"/>
+<path d="M590 473h94l-7 104h-78z" fill="#c8b18c" stroke="#8c785b" stroke-width="5" stroke-linejoin="round"/>
+<path d="M606 489v72m61-72-5 72" fill="none" stroke="#dfcba7" stroke-width="3"/>
+<path d="M1011 479q-1-51 30-51t31 51" fill="none" stroke="#9a8463" stroke-width="7"/>
+<path d="M1000 477h86l-7 98h-70z" fill="#d3c3a5" stroke="#998465" stroke-width="5" stroke-linejoin="round"/>
+<path d="M1037 475v-41h25v41" fill="#eeeadd" stroke="#b8b7a2" stroke-width="3"/>
+<path d="M1037 434l12-10 13 10" fill="#d7dfcf" stroke="#b8b7a2" stroke-width="3"/>
+<path d="M1124 430v-21" stroke="#dfb99c" stroke-width="12" stroke-linecap="round"/>
+<path d="M1110 454q-2-34 19-34t23 34" fill="none" stroke="#9d8e70" stroke-width="6"/>
+<path d="M1100 452h64l-5 80h-52z" fill="#c1b89c" stroke="#8b8269" stroke-width="4"/>
+</svg>

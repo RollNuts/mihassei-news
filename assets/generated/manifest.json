@@ -951,6 +951,13 @@
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "A resident in everyday clothes pushes a low flat metal platform trolley carrying a large taped brown cardboard shipping carton through an apartment entrance. Daylight, unposed news photograph.",
       "trial_seed": 2437934260822884134
+    },
+    "paid-conversation-checkout-shoppers-chat-in-line": {
+      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
+      "rejected_candidate_sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c",
+      "reviewed_at": "2026-11-09T03:05:38.950340+00:00",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42553345338",
+      "reason": "実JPEGと現本文を照合。肌・髪・衣服・蛍光灯は写真らしいが、手前の客とレジ係による通常の接客に見え、中央の客は背を向けている。客同士の雑談と、そのため係員が待つ関係がない。左上の値札に目立つ崩れた文字、名札にロゴ風表記があり、ネギも袋でなく売場に置かれているため不採用。現本文に合う専用SVGを採用する。"
     }
   },
   "version": 1
