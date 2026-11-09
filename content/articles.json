@@ -1430,8 +1430,8 @@
       "url": "https://www.city.musashino.lg.jp/kurashi_tetsuzuki/bosai_anzen/bosai_anzen_center_web/bouhantaisaku_seido/patrol/1005988.html",
       "topic": "武蔵野市の市民安全パトロール隊の公式案内は、専用の上着やベスト、帽子を身に着けて徒歩や自転車で巡回すると説明している。改稿時にページの更新日2026年10月5日を再確認し、出典日付を訂正。時刻非掲載のため00:00は日付代表値。町内会、互いの誤認、発見件数による評価、誤認判明後も実績を残す判断と町内会だよりは本紙の創作で、同市の実在の活動や評価方法を示すものではない。"
     },
-    "scene_prompt": "Editorial illustration of two neighborhood-watch groups, four ordinary adults in each, wearing matching yellow armbands on a residential street beside a community hall. Two reports in the foreground contain portraits of those same people. Clear mirrored composition, no police uniforms, no readable words, no logos.",
-    "visual_strategy": "illustration",
+    "scene_prompt": "At dusk beside a fictional neighborhood community hall, the two leading members of opposing ordinary patrol groups stop facing each other and point to their matching plain yellow armbands, realizing they are fellow volunteers. One teammate is visible behind each leader. A cropped view of the groups, not all eight members; no police uniforms, reports, readable writing or logos. Natural candid documentary photograph of the article's recognition moment.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "防犯",
       "地域"
@@ -1454,14 +1454,13 @@
       "action": "仲間を誤認したと判明しても、巡回の成果を失いたくないので発見件数を取り消さない",
       "outcome": "町内会だよりで不審者8人と防犯の功労者8人が同じ顔ぶれになる"
     },
-    "illustration_reason": "complex_relationship",
     "x_share_lead": "何も起きなかった一日ほど、成果報告は書きにくい。",
     "reader_clarity": {
       "who": "町内会の防犯パトロール2班",
       "action": "互いを不審者として報告し、誤解が解けても発見件数を残した",
       "oddity": "地域の安全を守った8人と、発見された不審者8人が同じ顔ぶれだった"
     },
-    "modified_at": "2026-11-07T10:05:54+09:00"
+    "modified_at": "2026-11-09T08:41:41.536587+00:00"
   },
   {
     "slug": "nikkei-plunge-hundred-year-hold-minute-check",
@@ -1814,7 +1813,8 @@
     "satire_tags": [
       "仕事してる感",
       "本末転倒"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "film-village-all-stars-no-extras",

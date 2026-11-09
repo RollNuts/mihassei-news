@@ -377,13 +377,34 @@
     },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "bytes": 123831,
-      "generated_at": "2026-11-07T02:43:40.038471+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "bytes": 140501,
+      "generated_at": "2026-11-09T08:37:29.282909+00:00",
+      "generation_id": "5f14efdf-0090-4f73-84a4-1276ff5e05c3",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid documentary newspaper photograph of a staged fictional scene in the cramped stockroom of a small Japanese electronics shop. The absurd situation is five-star customer ratings alongside an overflowing pile of returned faulty humidifiers and yet more new stock arriving. The main foreground is crowded with OPENED RETURN CARTONS in a narrow stockroom aisle. In at least three of the open cartons, clearly show the SAME MODEL of small ordinary tabletop HUMIDIFIER, each roughly 25 cm tall: plain white base, identifiable translucent water tank, water outlet/nozzle at the top, realistic molded plastic, sitting partly in plain protective packing foam. These must be recognizable actual appliances, not just anonymous cardboard boxes, candles, jars or air-purifier towers. No mist streaming from these returned units, no dramatic flood. One deadpan store employee in a plain unbranded apron carefully STEPS OVER a low open return carton, one foot lifted naturally while avoiding the visible humidifier and trying to pass through the blocked aisle. At the stockroom doorway in the middle background a delivery worker waits beside a hand truck carrying several NEW SEALED plain cartons that cannot yet fit inside. Above the returned humidifiers, attached physically to a shelf at normal height, hangs ONE ordinary rectangular cream promotional poster displaying EXACTLY FIVE modest gold star rating icons in a single row and NOTHING ELSE. This is a real printed shop poster, not floating stars, a game interface, neon or an awards ceremony; do not place stars on the appliances. Keep the visible same-model humidifiers, the employee stepping through returns, the extra sealed delivery and the five-star poster identifiable together in one coherent medium-wide eye-level 35mm view. Ordinary slightly worn shelving, cardboard creases, translucent water-tank plastic, realistic hands and limbs, authentic skin and work clothes. Flat ordinary fluorescent shop light with doorway daylight, natural soft shadows, muted colors, unpolished local press photography. Serious matter-of-fact expressions. No readable writing or numerals, labels, brand logos, store names, captions, headlines or watermark anywhere. No illustration, anime, cartoon, 3D rendering, glossy advertising, theatrical oversized props or plastic people. All people, products and the shop are fictional.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+        "bytes": 123831,
+        "generated_at": "2026-11-07T02:43:40.038471+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 5521049100415918610,
+        "sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+        "previous_rejected_trial_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
+        "previous_review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42468601719",
+        "reason": "2026-11-08 photo-quality re-review of the current LCM JPEG: uniformly hazy synthetic appearance, flat/indistinct people and package marks rather than a believable candid press photo; only a generic warehouse is depicted, without recognizable humidifiers, star-five review signage or returned-versus-new units. Revoke the earlier permissive supporting-photo approval and keep the verified story-specific SVG. The previous prop-first preview was also rejected; no old JPEG or seed was changed.",
+        "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
+        "reviewed_at": "2026-11-08T13:37:17.264Z"
+      },
       "prompt_version": 3,
-      "seed": 5521049100415918610,
-      "sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
+      "sha256": "a8985cc5c73b3b2f181129a7ebb8fc804b90d7993c85bf8a84dac1999bb2ca7e",
+      "source_article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "source_png_sha256": "7acda778aacf207e44294bf4a88e5e62264b2c874be820e7a72f15a940edc110"
     },
     "food-rescue-shops-manufacture-leftovers": {
       "article_sha256": "420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f",
@@ -642,13 +663,31 @@
     },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
-      "bytes": 88367,
-      "generated_at": "2026-11-05T09:05:12.552674+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 8296084341754018138,
-      "sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+      "bytes": 138242,
+      "generated_at": "2026-11-09T08:36:05.171465+00:00",
+      "generation_id": "9f77285c-399c-4b2e-b673-8230daf4ec39",
+      "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary documentary local-newspaper photograph of a staged fictional scene in an unoccupied modest Japanese open-plan office on a workday. The quiet joke is a company group photo of everyone at the office, yet every person is only present on a video-conference screen and every real desk is empty. In the left-center foreground, ONE normal large flat computer monitor sits on a desk, at a believable slight angle with the entire display visible and large enough to distinguish the faces. The screen shows a plain THREE BY THREE VIDEO-CALL GRID, nine distinct anonymous fictional adult coworkers, each alone in a different tiny plain office meeting booth or corridor setting, serious restrained expressions, ordinary work clothes, authentic camera-video face texture. The display is a real photographed LCD with modest reflections and pixel detail, not a luminous digital illustration; no names, words, icons, meeting controls or captions on it. Behind and to the right of this monitor are rows of ordinary EMPTY desks and EMPTY office chairs, and a few closed small meeting-room doors, all visibly unoccupied. No physical people in this photo's office, no employee standing by the monitor, no extra faces floating in the room. Keep both the monitor with actual video-call faces and the empty room clearly readable together in an eye-level 35mm photograph with natural office-window daylight and ordinary overhead fluorescent fill. Neutral imperfect everyday office furniture, true fabric and wood/metal/plastic surfaces, real photographic shadows and restrained color, believable depth of field with the empty desks still identifiable. No exaggerated cinematic perspective, 3D render, cartoon, anime, glossy corporate stock advertising, plastic or flat distorted faces. No text, logos, signage, labels, readable writing, headlines or watermark anywhere. All coworkers and the business are fictional.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+        "bytes": 88367,
+        "generated_at": "2026-11-05T09:05:12.552674+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 8296084341754018138,
+        "sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+        "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
+        "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+      },
+      "prompt_version": 3,
+      "sha256": "01f8963256a28ec777fd622452c28b5bcb6a725f99aca505ad01eacd891f3783",
+      "source_article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "source_png_sha256": "61efc67eec6f558d1500584c2bf48b8b9fea1e3e51748696ea5ad506cc06ca70"
     },
     "paid-conversation-checkout-shoppers-chat-in-line": {
       "article_sha256": "aeaff54df2548cbdffa7e488cf4df68b137ec3a875d6f8fcfd5bf370f655e627",
@@ -706,6 +745,19 @@
       "prompt_version": 2,
       "seed": 4713491567798505932,
       "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
+    },
+    "patrol-teams-mistake-each-other-for-suspects": {
+      "article_sha256": "cffac9004fef00b8358bbada3a1d53f4f1c7895fc351d436428d102bc7b1c6cc",
+      "bytes": 137088,
+      "generated_at": "2026-11-09T08:38:38.332685+00:00",
+      "generation_id": "07e3aec2-7b00-4d38-9ecc-0a0911d73500",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid local-newspaper documentary photograph of a staged fictional neighborhood-watch misunderstanding at dusk in a modest Japanese residential street beside a small unbranded community hall. All people are anonymous fictional ordinary adult residents, NOT police or professional security. In the foreground, TWO ORDINARY NEIGHBORHOOD PATROL LEADERS from opposite walking directions have stopped facing one another about a metre apart. Both wear the SAME SIMPLE YELLOW ARMBAND on an everyday jacket sleeve, no writing, no insignia. The man on the left gently turns his upper arm outward and touches/points at his own yellow armband to show it; the woman on the right looks directly at that band while drawing attention to the identical yellow band on her own sleeve with her other hand. They have restrained awkward serious expressions, the quiet moment of realizing the suspicious followers were fellow neighborhood patrol volunteers. Behind EACH leader, ONE other ordinary adult teammate with the same yellow armband stands a step back, looking across at the opposite group, so TWO visible groups of TWO people are clear. This is a cropped part of two larger groups; do not claim a headcount of all eight and do not include reports, printed portraits, arrest gestures, handcuffs, weapons, uniforms, binoculars or invented equipment. Make the mirrored matching armbands and reciprocal checking gestures clearly legible, not just four people posing for a group photo or waving at a camera. A simple community-hall doorway and quiet houses are in the background, no identifiable real location or readable signs. Natural soft early-evening ambient light without theatrical night effects, ordinary worn cotton jackets, realistic skin, hands and subtle facial expressions, true pavement and building materials, an unpolished eye-level 35mm medium-wide camera photograph. Serious deadpan situation, no broad laughter, chase action or staged confrontation. No readable text, logos, insignia, labels, captions, headlines or watermark anywhere. No illustration, anime, cartoon, 3D render, glossy stock advertising, cinematic poster lighting or plastic faces.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "05b150f2061b579f09c78daf7cf5287ac54b0ee703f887f681a1db4600c77352",
+      "source_article_sha256": "6c73d587db0e10e18b836efc60db0b9b12eb77e3d36e2d88678605f790f2305a",
+      "source_png_sha256": "28684ce094fec1e1206b2b65cb0b2d1d6c4924dbae0f222f1bf488574429e3d5"
     },
     "personalized-hidden-harbor-crowded-by-tourists": {
       "article_sha256": "76c8e190023eb39c7eadeb358477d57021f15ba90d9a30d822854adc102023f4",
@@ -1278,14 +1330,6 @@
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
       "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
-    "five-star-reviews-of-returned-humidifiers": {
-      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "previous_rejected_trial_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
-      "previous_review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42468601719",
-      "reason": "2026-11-08 photo-quality re-review of the current LCM JPEG: uniformly hazy synthetic appearance, flat/indistinct people and package marks rather than a believable candid press photo; only a generic warehouse is depicted, without recognizable humidifiers, star-five review signage or returned-versus-new units. Revoke the earlier permissive supporting-photo approval and keep the verified story-specific SVG. The previous prop-first preview was also rejected; no old JPEG or seed was changed.",
-      "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
-      "reviewed_at": "2026-11-08T13:37:17.264Z"
-    },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
       "reason": "CPU試作は肌・衣服・家具が写真らしいが、スマホも歌手もなく、黒画面と白画面のテレビ2台がある普通の居間にとどまるため不採用。原指紋・seedは試作artifactを保持し、採用した別のnative生成画像とは区別する。",
@@ -1315,11 +1359,6 @@
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
       "trial_seed": 8233372666452194521
-    },
-    "office-face-to-face-day-video-call-echo": {
-      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
-      "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
-      "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
     },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
