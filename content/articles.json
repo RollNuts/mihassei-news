@@ -1,5 +1,71 @@
 [
   {
+    "slug": "paid-conversation-checkout-shoppers-chat-in-line",
+    "category": "暮らし",
+    "flash": "雑談だけ別会計",
+    "fiction_company": "ひと声マート",
+    "art": "cards",
+    "fiction_at": "2031-11-09T11:45:45+09:00",
+    "published_at": "2026-11-09T11:45:45+09:00",
+    "title": "セルフレジの店に「会話専用の有人レジ」開設　会計済みの客が再び行列",
+    "summary": "会計をセルフレジに任せたスーパーが、店員と三分話せる月額制の有人レジを開設。買い物を終えた客がもう一度並び、かつて無料だった世間話が別売りになった。",
+    "paragraphs": [
+      "夕方のスーパーで、セルフレジはすいているのに、「有人レジ」の前だけに行列ができた。並んでいる客は全員、会計を終えて買い物袋を下げている。係員は商品を一つも通さず、「今日は寒いですね」と客に話しかけていた。",
+      "食品スーパー「ひと声マート」は、会計をセルフレジに集約した後、店員と三分間だけ世間話ができる「会話専用レジ」を月額制で始めた。2026年の小売調査では、有人とセルフの両方があるとセルフを選ぶ傾向の人が63.5％いた。早く買い物を済ませる店になった結果、急がなくていい雑談だけが別売りになった。",
+      "会社帰りの常連客も、牛乳を買ってから会話の列へ移った。以前はレジで「今夜は何を作りますか」と聞かれるのが楽しみだったが、機械に夕飯を報告するわけにもいかない。売り場の忙しい店員を世間話で止めるわけにもいかない。「会費を払ってるから、気兼ねなく話せます」と順番を待つ。店側も月額会員が増えれば会話係を置けるという。",
+      "待つうちに、常連客の買い物袋からのぞく長ネギを見て、後ろの女性が「焼くと甘いですよ」と声をかけた。別の客も加わり、三人は夕飯の献立を相談し始めた。係員が「次の方、三分どうぞ」と呼ぶと、先頭の常連客は振り返って笑った。「すみません、もう話せてるんで」。会話専用レジの前には誰も立たず、列の中ではネギの話が続いていた。"
+    ],
+    "source": {
+      "kind": "調査",
+      "publisher": "ウェブスペース株式会社",
+      "published_at": "2026-08-26T15:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000001.000187104.html",
+      "topic": "2026年8月26日発表、同8月4〜5日の20〜60代913人調査で、有人・セルフレジが両方ある場合にセルフを選ぶ傾向が63.5％。セルフ派のうち最大の理由が『店員と話さなくて済むから』の人は21.5％。出典は会話の月額販売や2031年の動向を報じていない。ひと声マート、会話専用レジ、会員、人物のやりとりはすべて本紙の創作。"
+    },
+    "scene_prompt": "An ordinary Japanese supermarket worker at a cashier counter waiting to speak with a customer while two customers with grocery bags casually chat with each other beside the checkout queue, one green onion peeking out of a grocery bag. Everyday fluorescent grocery store lighting, candid realistic documentary news photograph, no brand marks, no readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "店舗",
+      "買い物",
+      "接客"
+    ],
+    "satire_tags": [
+      "雑談の別売り",
+      "行列の中で会話"
+    ],
+    "x_tags": [
+      "セルフレジ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "会計の手間が消えたら、レジでの何気ない会話まで消えていた。スーパーは、その三分間を別の商品にした。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "original_satire",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "買い物の会計は速いセルフレジを使いながら、顔なじみの店員と交わす短い世間話も懐かしむ",
+      "target": "人との接点を省いた商売が、同じ雑談を新しい有料商品として売り直す",
+      "action": "会計済みの客が店員と三分話すために月額制の有人レジへ再び並ぶ",
+      "outcome": "待ち行列の客同士が自然に話し始め、会話専用レジの店員だけが客を待つ"
+    },
+    "behavior_basis": {
+      "motive": "常連客は買い物のついでに気兼ねなく店員と話したい。店側は会員料で会話係を置ける",
+      "ordinary_alternative": "売り場の店員やほかの客に無料で話しかける",
+      "why_not": "売り場は忙しく、見知らぬ客に用事もなく声をかけづらいが、会話専用レジなら支払い済みのサービスとして遠慮なく使える",
+      "evidence_quote": "売り場の忙しい店員を世間話で止めるわけにもいかない。"
+    },
+    "reader_clarity": {
+      "who": "スーパー",
+      "action": "店が会話だけをする月額制の有人レジを始め、客がもう一度並ぶ",
+      "oddity": "買い物を速く終わらせたのに、レジで話すためだけに長い列をつくる"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年8月の913人調査ではセルフレジ派が63.5％、その一部は店員と話さない点を選択理由にした",
+      "continuation_force": "店は人件費を抑えるため会計の自動化を進めつつ、接客を求める常連には収益源として話し相手の時間を売る",
+      "future_result": "会計を終えた客が話すために再び並び、列で自然に会話が生まれる"
+    }
+  },
+  {
     "slug": "personalized-hidden-harbor-crowded-by-tourists",
     "category": "暮らし",
     "flash": "穴場が全員同じ",
