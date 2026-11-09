@@ -1516,8 +1516,8 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000460.000029572.html",
       "topic": "ANA Xが2026年11月5日10時、日常の移動でポイントが貯まる『ANA Pocket』を12月の展示会で紹介すると発表。ANA Pocket公式サイトでも徒歩など日々の移動でポイントが貯まる仕組みを説明。園田さん、架空アプリの追加特典表示、自宅前を通り過ぎる行動や家族の反応は本紙独自の創作であり、同社サービスの実例や仕様を報じるものではない。"
     },
-    "scene_prompt": "A grounded editorial illustration of a Japanese residential street at early evening: a man in ordinary work clothes carrying a small grocery bag walks past his own front door while looking at a walking points app on his smartphone, gently waving to his daughter visible in the house window; warm home lights and a dinner table in the background, ordinary scale, no logos, no readable text, no caricatures.",
-    "visual_strategy": "illustration",
+    "scene_prompt": "At dusk, a father holding a smartphone keeps walking along the street in front of his home while waving to his daughter through the window beside the entrance. She waves back from indoors, where dinner is waiting.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "アプリ",
       "散歩"
@@ -1538,7 +1538,8 @@
       "present_signal": "徒歩などの日常の移動でポイントを貯められるサービスが既に提供されている。",
       "continuation_force": "歩数や移動距離を特典と結びつける習慣が続くと、移動の終点より達成通知を優先する人が現れ得る。",
       "future_result": "帰宅目前の人がアプリの残り距離を埋めるため玄関を通り過ぎ、家族に窓越しで手を振って歩き続ける。"
-    }
+    },
+    "modified_at": "2026-11-09T15:26:28.781757+09:00"
   },
   {
     "slug": "buzzword-award-what-does-it-mean-wins",
@@ -2670,8 +2671,8 @@
       "topic": "科学誌掲載の研究を受け、エチオピアで雄牛と雄ロバの間に珍しい親密な交流行動が観察されたと報じた。The Guardianの初公開は2026年11月2日11:53 EST（日本時間11月3日01:53）。"
     },
     "published_at": "2026-11-03T07:40:27+09:00",
-    "modified_at": "2026-11-03T12:08:09.115+09:00",
-    "scene_prompt": "A cow and a donkey calmly graze on opposite sides of a small pasture. Between them a solemn farmer kneels with a measuring tape, carefully measuring the distance between two feed buckets while an onlooker films with a phone.",
+    "modified_at": "2026-11-09T15:26:28.781757+09:00",
+    "scene_prompt": "One cow and one gray long-eared donkey calmly eat grass from separate low troughs at a small farm. Between them, a solemn keeper kneels and measures the gap between the two troughs with a retractable tape.",
     "tags": [
       "動物",
       "SNS"
@@ -2679,7 +2680,8 @@
     "satire_tags": [
       "SNSあるある",
       "深読みしすぎ"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "unwanted-call-protection-calls-back",
@@ -2856,8 +2858,8 @@
       "alt": "映像撮影用のカメラを操作する人のイメージ",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T12:22:20.257+09:00",
-    "scene_prompt": "Two solemn television fans in a living room study a wall of blank cards connected by red strings. One fan turns the television face toward the wall as if rejecting its ending, while the other presents a tiny handmade model of a different ending.",
+    "modified_at": "2026-11-09T15:26:28.781757+09:00",
+    "scene_prompt": "Solemn television fans film their own alternative final episode inside a modest Japanese living room. One fan operates a consumer camera on a tripod while two others perform beside a sofa and a small vase.",
     "tags": [
       "ファン文化",
       "ドラマ"
@@ -2865,7 +2867,8 @@
     "satire_tags": [
       "考察沼",
       "公式より考察"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "apology-before-incident",
