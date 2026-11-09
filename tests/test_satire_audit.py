@@ -70,7 +70,7 @@ class SatireAuditTests(unittest.TestCase):
         original = copy.deepcopy([first, second])
         flags = analyze([first, second])
         self.assertIn("SIMILAR_EDITORIAL_SIGNATURE", {item[0] for item in flags})
-        self.assertIn("風刺の的・行動・逆効果", "\n".join(next_slot_brief([first, second])))
+        self.assertIn("主題・行動・結果", "\n".join(next_slot_brief([first, second])))
         self.assertEqual([first, second], original)
 
     def test_distinct_editorial_signatures_do_not_warn(self):

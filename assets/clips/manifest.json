@@ -83,14 +83,14 @@
       "origin": "verified-still-motion",
       "motion_style_version": 3,
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "image_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
-      "sha256": "cd2d1101a5b8ab392fd750194ab6ccab32f16e96d845afb99628bcb029804bac",
-      "bytes": 107256,
+      "image_sha256": "a8985cc5c73b3b2f181129a7ebb8fc804b90d7993c85bf8a84dac1999bb2ca7e",
+      "sha256": "9ee78edc02f7f0744f347d1e98011803f8e40a99b831886f3977a13ac27ecaa9",
+      "bytes": 128830,
       "width": 640,
       "height": 360,
       "fps": 24,
       "duration_ms": 12000,
-      "created_at": "2026-11-08T12:54:55.399154+00:00"
+      "created_at": "2026-11-09T08:53:03.505230+00:00"
     }
   }
 }
