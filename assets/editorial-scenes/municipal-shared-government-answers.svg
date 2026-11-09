@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="市役所の窓口で職員が親子へノートパソコンの確認済み回答を示し、書類を案内する創作イラスト" data-visual-topic="telephone" data-article-sha256="efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13">
+<title>別の町の確認済み回答を示す市役所の窓口</title>
+<defs><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f3f0"/><stop offset="1" stop-color="#d7e0db"/></linearGradient></defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<rect x="52" y="64" width="1096" height="390" rx="14" fill="#f6f7f1" stroke="#cad4ce" stroke-width="5"/>
+<rect x="75" y="85" width="1050" height="20" rx="3" fill="#94a9a2"/>
+<rect x="88" y="135" width="365" height="235" rx="7" fill="#dfe8e5"/><rect x="108" y="154" width="326" height="186" fill="#f5f6f2"/>
+<path d="M120 315h300M120 280h300" stroke="#c6d5d0" stroke-width="5"/>
+<rect x="0" y="420" width="1200" height="255" fill="#b8c4c0"/><path d="M0 440h1200" stroke="#788d86" stroke-width="13"/>
+<!-- The clerk sits behind the counter, facing the parent and child. -->
+<path d="M210 433v-95q0-64 73-64h67q73 0 73 64v95" fill="#6f8b99"/>
+<circle cx="318" cy="210" r="56" fill="#d5ac91"/>
+<path d="M263 197q-1-58 50-61 63-4 61 64l-19-27q-55 22-92 24z" fill="#454b48"/>
+<path d="M292 221h7m28 0h7m-31 21q14 10 29 0" stroke="#574e45" stroke-width="4" stroke-linecap="round" fill="none"/>
+<path d="M242 345l60 55 57-34" stroke="#d5ac91" stroke-width="24" stroke-linecap="round" fill="none"/>
+<!-- Laptop opens toward the clerk but the neutral response blocks are visible. -->
+<path d="M478 266l279-14 21 171-291 13z" fill="#465b61"/><path d="M495 280l244-13 14 144-254 11z" fill="#f0f3ee"/>
+<rect x="515" y="294" width="106" height="13" rx="5" fill="#85a59a"/><rect x="515" y="321" width="202" height="10" rx="4" fill="#c2d1cb"/><rect x="515" y="346" width="184" height="10" rx="4" fill="#c2d1cb"/><rect x="515" y="372" width="195" height="10" rx="4" fill="#a6b8b2"/>
+<path d="M465 437h324l46 22H426z" fill="#52696c"/><path d="M474 445h307" stroke="#859998" stroke-width="6"/>
+<!-- A plainly dated form and the person's folder; no made-up legible labels. -->
+<rect x="710" y="462" width="218" height="133" rx="3" fill="#fffdf5" transform="rotate(5 710 462)"/>
+<path d="M735 488h161M735 513h145M735 538h156M735 561h85" stroke="#b5c1be" stroke-width="6"/>
+<rect x="950" y="476" width="160" height="109" rx="7" fill="#e0d8b5"/><path d="M969 499h105M969 520h109" stroke="#b5ab89" stroke-width="6"/>
+<!-- Parent and child lean in from the waiting side, looking at the laptop. -->
+<path d="M865 442v-123q0-77 73-77 75 0 75 77v123" fill="#b18d77"/>
+<circle cx="937" cy="194" r="53" fill="#d6ac8d"/><path d="M887 186q-5-56 48-58 55-4 56 58q-32-17-42-30q-30 28-62 30z" fill="#4d403b"/>
+<path d="M915 207h8m29 0h8" stroke="#58483c" stroke-width="4" stroke-linecap="round"/>
+<path d="M810 439v-61q0-45 43-45t43 45v61" fill="#8a9c79"/>
+<circle cx="850" cy="302" r="34" fill="#e0b99a"/><path d="M815 296q1-36 36-36t34 38q-34-13-70-2z" fill="#65594e"/>
+<path d="M904 356l-90 53" stroke="#d6ac8d" stroke-width="20" stroke-linecap="round"/>
+<!-- An unused desk phone makes the changed workflow legible without words. -->
+<rect x="85" y="478" width="190" height="85" rx="18" fill="#657b7d"/>
+<path d="M103 496q60-55 141 0l-20 18H121z" fill="#344e51"/>
+<rect x="127" y="534" width="107" height="13" rx="6" fill="#9baead"/>
+</svg>
