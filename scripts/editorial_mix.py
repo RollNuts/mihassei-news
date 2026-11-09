@@ -26,6 +26,10 @@ LANE_TARGETS = {
     "original_satire": 2,
 }
 LANE_PRIORITY = tuple(LANE_TARGETS)
+EDITORIAL_FORMS = ("satire", "policy_announcement", "product_launch", "feature")
+FORM_MINIMUMS = {"policy_announcement": 1, "product_launch": 1}
+FORM_CORE_STORIES = 7
+MAX_DAILY_SATIRE = 3
 EDITORIAL_TONES = (
     "plausible_future",
     "comic_exaggeration",
@@ -90,6 +94,7 @@ READER_CLARITY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T21:00:00+09:00")
 SATIRE_PRESENT_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
 BEHAVIOR_REALISM_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T17:20:00+09:00")
 VISUAL_STRATEGY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
+EDITORIAL_FORM_ROLLOUT_AT = datetime.fromisoformat("2026-11-10T00:00:00+09:00")
 VISUAL_STRATEGIES = ("cpu-photo", "illustration")
 ILLUSTRATION_REASONS = (
     "readable_text_or_ui",
@@ -169,6 +174,74 @@ def lane_counts(articles: list[dict], day_jst: str) -> Counter:
         if lane in LANE_TARGETS:
             counts[lane] += 1
     return counts
+
+
+def _form_stories(articles: list[dict], day_jst: str) -> list[dict]:
+    rows = []
+    for article in articles:
+        published = _parse_dt(article.get("published_at"))
+        if (published is not None and published >= EDITORIAL_FORM_ROLLOUT_AT
+                and article_day(article) == day_jst):
+            rows.append((published, str(article.get("slug") or "unknown"), article))
+    return [article for _published, _slug, article in sorted(rows, key=lambda row: row[:2])]
+
+
+def form_counts(articles: list[dict], day_jst: str) -> Counter:
+    """Count explicit forms, without guessing classifications for older stories."""
+    return Counter(article["editorial_form"] for article in _form_stories(articles, day_jst)
+                   if article.get("editorial_form") in EDITORIAL_FORMS)
+
+
+def _form_deficits(counts: Counter) -> dict[str, int]:
+    return {form: max(0, minimum - counts.get(form, 0))
+            for form, minimum in FORM_MINIMUMS.items()}
+
+
+def form_advice(articles: list[dict], day_jst: str) -> str:
+    if day_jst < EDITORIAL_FORM_ROLLOUT_AT.date().isoformat():
+        return "not required before 2026-11-10; do not classify old stories"
+    rows = _form_stories(articles, day_jst)
+    core = rows[:FORM_CORE_STORIES]
+    counts = form_counts(core, day_jst)
+    daily = form_counts(rows, day_jst)
+    remaining = max(0, FORM_CORE_STORIES - len(core))
+    missing = {form: number for form, number in _form_deficits(counts).items() if number}
+    detail = ", ".join(f"{form} needs {number}" for form, number in missing.items())
+    usage = f"satire={daily.get('satire', 0)}/{MAX_DAILY_SATIRE}"
+    if daily.get("satire", 0) > MAX_DAILY_SATIRE:
+        return f"blocked ({usage}; daily satire maximum exceeded)"
+    if not missing:
+        return f"covered (policy and product present in first 7 stories; {usage})"
+    if sum(missing.values()) > remaining:
+        return f"blocked ({detail}; {remaining} core slots left; reserve stories cannot repair the first 7)"
+    urgency = "required next" if sum(missing.values()) == remaining else "prepare now"
+    return f"{urgency}: {detail} ({remaining} core slots left; {usage}); review the actual body, not just its label"
+
+
+def _validate_daily_forms(articles: list[dict]) -> list[str]:
+    errors = []
+    days = {article_day(article) for article in articles
+            if (_parse_dt(article.get("published_at")) is not None
+                and _parse_dt(article.get("published_at")) >= EDITORIAL_FORM_ROLLOUT_AT)}
+    for day in sorted(days):
+        counts: Counter = Counter()
+        for number, article in enumerate(_form_stories(articles, day), 1):
+            slug = str(article.get("slug") or "unknown")
+            form = article.get("editorial_form")
+            if form not in EDITORIAL_FORMS:
+                errors.append(f"{slug}: editorial_form required from 2026-11-10 JST; expected "
+                              + ", ".join(EDITORIAL_FORMS))
+            else:
+                counts[form] += 1
+            if counts.get("satire", 0) > MAX_DAILY_SATIRE:
+                errors.append(f"{slug}: editorial_form satire exceeds daily maximum {MAX_DAILY_SATIRE} on {day}")
+            if number <= FORM_CORE_STORIES:
+                remaining = FORM_CORE_STORIES - number
+                missing = {key: value for key, value in _form_deficits(counts).items() if value}
+                if sum(missing.values()) > remaining:
+                    detail = ", ".join(f"{key} needs {value}" for key, value in missing.items())
+                    errors.append(f"{slug}: editorial_form daily mix cannot fit {detail} in {remaining} remaining core slots on {day}")
+    return errors
 
 
 def tone_counts(articles: list[dict], day_jst: str) -> Counter:
@@ -1015,7 +1088,7 @@ def _followup_ancestors(slug: str, by_slug: dict[str, dict]) -> set[str]:
 
 def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
     """Return (errors, warnings). Errors block malformed metadata/duplicates."""
-    errors: list[str] = []
+    errors: list[str] = _validate_daily_forms(articles)
     warnings: list[str] = []
     by_slug = {
         article["slug"]: article
@@ -1224,6 +1297,8 @@ def report_day(articles: list[dict], day_jst: str) -> str:
     counts = lane_counts(articles, day_jst)
     tracked = sum(counts.values())
     published = day_story_count(articles, day_jst)
+    forms = form_counts(articles, day_jst)
+    form_parts = [f"{form}={forms.get(form, 0)}" for form in EDITORIAL_FORMS]
     parts = [
         f"{lane}={counts.get(lane, 0)}/{target}"
         for lane, target in LANE_TARGETS.items()
@@ -1256,6 +1331,8 @@ def report_day(articles: list[dict], day_jst: str) -> str:
     return (
         f"{day_jst}: published={published}; tracked={tracked}; "
         + ", ".join(parts)
+        + "; forms=" + ", ".join(form_parts)
+        + f"; form_next={form_advice(articles, day_jst)}"
         + f"; next={suffix}; lane_risk={lane_risk_advice(articles, day_jst)}; tones="
         + ", ".join(tone_parts)
         + f"; tone_next={tone_advice(articles, day_jst)}"

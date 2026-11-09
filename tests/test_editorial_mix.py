@@ -15,11 +15,14 @@ from scripts import build
 from scripts.editorial_mix import (
     EDITORIAL_PAYOFFS,
     EDITORIAL_TONES,
+    EDITORIAL_FORMS,
     LANE_TARGETS,
     LIFE_READER_INTERESTS,
     READER_INTERESTS,
     RECURRING_CHARACTERS,
     character_advice,
+    form_advice,
+    form_counts,
     lane_counts,
     lane_risk_advice,
     next_preferred_lane,
@@ -94,7 +97,131 @@ def story(
     return item
 
 
+def form_story(slug: str, form: str | None, *, published=None, tone="observational") -> dict:
+    """Complete offline fixtures; body review, not this helper, assigns a form."""
+    published = published or datetime(2026, 11, 10, 7, 30, tzinfo=JST)
+    item = story(slug, "social_life", published=published, tone=tone,
+                 payoff="visible_result", reader_interest="general_society")
+    item.update({
+        "title": f"{slug}、新しい道具を窓口で確かめてから借りる",
+        "summary": f"{slug}は、使い方を確かめてから道具を借りられる窓口を設けた。利用者は机の上で動かし、持ち帰る道具を選べる。",
+        "paragraphs": [f"{slug}は、使い方を確かめてから道具を借りられるようにした。",
+                       "利用者は窓口の机で道具を動かし、係員へ使い方を質問した。"],
+        "fiction_at": published.replace(year=published.year + 5).isoformat(),
+        "category": "技術", "art": "generic", "tags": ["道具"], "satire_tags": [],
+        "source": {"url": f"https://example.test/{slug}",
+                   "published_at": (published - timedelta(hours=1)).isoformat()},
+        "reader_clarity": {"who": slug, "action": "使い方を確かめてから道具を借りられる窓口を設ける",
+                           "oddity": "持ち帰る前に窓口で道具を動かして使い方を確認できる"},
+        "behavior_basis": {"motive": "借りる前に道具の使い方を確認できるようにする",
+                           "ordinary_alternative": "説明だけを読んで道具を借りる",
+                           "why_not": "利用者が道具を実際に動かしてから選べるようにするため",
+                           "evidence_quote": "使い方を確かめてから道具を借りられるようにした"},
+        "editorial_signature": {"present": "道具を借りる前に使い方を質問する利用者がいる",
+                                "target": f"{slug}で道具の使い方を確認する機会",
+                                "action": "窓口の机で道具を試してから借りる",
+                                "outcome": "利用者が係員へ使い方を質問して道具を選ぶ"},
+    })
+    if form is not None:
+        item["editorial_form"] = form
+    return item
+
+
 class EditorialMixTests(unittest.TestCase):
+    def test_form_rollout_is_jst_and_does_not_reclassify_old_stories(self):
+        before = form_story("before-form-rollout", None,
+                            published=datetime(2026, 11, 9, 14, 59, tzinfo=timezone.utc))
+        self.assertEqual(validate_articles([before])[0], [])
+        at_rollout = form_story("at-form-rollout", None,
+                                published=datetime(2026, 11, 9, 15, 0, tzinfo=timezone.utc))
+        self.assertTrue(any("editorial_form required" in e for e in validate_articles([at_rollout])[0]))
+        for invalid in ("announcement", [], {}, True):
+            at_rollout["editorial_form"] = invalid
+            self.assertTrue(any("editorial_form required" in e for e in validate_articles([at_rollout])[0]))
+        self.assertEqual(form_counts([before], "2026-11-09"), Counter())
+        self.assertIn("not required", form_advice([before], "2026-11-09"))
+
+    def test_remaining_core_stories_are_reserved_for_both_missing_forms(self):
+        rows = [form_story(f"feature-{i}", "feature",
+                           published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST)) for i in range(5)]
+        self.assertEqual(validate_articles(rows)[0], [])
+        self.assertIn("required next", form_advice(rows, "2026-11-10"))
+        sixth = form_story("sixth-feature", "feature", published=datetime(2026, 11, 10, 12, 30, tzinfo=JST))
+        self.assertTrue(any("sixth-feature: editorial_form daily mix cannot fit" in e
+                            for e in validate_articles(rows + [sixth])[0]))
+        sixth["editorial_form"] = "policy_announcement"
+        self.assertEqual(validate_articles(rows + [sixth])[0], [])
+        self.assertIn("product_launch needs 1", form_advice(rows + [sixth], "2026-11-10"))
+        seventh = form_story("seventh-product", "product_launch", published=datetime(2026, 11, 10, 13, 30, tzinfo=JST))
+        complete = rows + [sixth, seventh]
+        self.assertEqual(validate_articles(complete)[0], [])
+        self.assertIn("covered", form_advice(complete, "2026-11-10"))
+        report = report_day(complete, "2026-11-10")
+        self.assertIn("policy_announcement=1", report)
+        self.assertIn("product_launch=1", report)
+        self.assertIn("form_next=covered", report)
+
+    def test_satire_maximum_includes_reserve_stories_without_limiting_other_forms(self):
+        self.assertEqual(EDITORIAL_FORMS, ("satire", "policy_announcement", "product_launch", "feature"))
+        forms = ["satire"] * 3 + ["policy_announcement", "product_launch", "feature", "feature"]
+        rows = [form_story(f"balanced-{i}", form, published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST))
+                for i, form in enumerate(forms)]
+        self.assertEqual(validate_articles(rows)[0], [])
+        fourth = form_story("fourth-satire", "satire", published=datetime(2026, 11, 10, 14, 30, tzinfo=JST))
+        self.assertTrue(any("satire exceeds daily maximum 3" in e for e in validate_articles(rows + [fourth])[0]))
+        fourth["editorial_form"] = "feature"
+        ninth = form_story("ninth-feature", "feature", published=datetime(2026, 11, 10, 15, 30, tzinfo=JST))
+        self.assertEqual(validate_articles(rows + [fourth, ninth])[0], [])
+        ninth["editorial_form"] = "satire"
+        self.assertTrue(any("satire exceeds daily maximum 3" in e for e in validate_articles(rows + [fourth, ninth])[0]))
+
+    def test_late_announcements_cannot_hide_an_invalid_chronological_prefix(self):
+        forms = ["feature"] * 6 + ["policy_announcement", "product_launch"]
+        rows = [form_story(f"chronology-{i}", form, published=datetime(2026, 11, 10, 10 + i, 0, tzinfo=JST))
+                for i, form in enumerate(forms)]
+        # These strings sort earlier than the six features, but the instants are later.
+        for row in rows[6:]:
+            row["published_at"] = datetime.fromisoformat(row["published_at"]).astimezone(timezone.utc).isoformat()
+        errors = validate_articles(rows)[0]
+        self.assertTrue(any("chronology-5: editorial_form daily mix cannot fit" in e for e in errors))
+        self.assertEqual(validate_articles(list(reversed(rows)))[0], errors)
+        self.assertIn("blocked", form_advice(rows, "2026-11-10"))
+        self.assertIn("reserve stories cannot repair", form_advice(rows, "2026-11-10"))
+
+    def test_form_days_reset_at_jst_midnight_and_ties_use_a_stable_order(self):
+        rows = [form_story(f"day-{day}-{i}", "satire", published=datetime(2026, 11, day, 0, i, tzinfo=JST))
+                for day in (10, 11) for i in range(3)]
+        self.assertEqual(validate_articles(rows)[0], [])
+        self.assertEqual(form_counts(rows, "2026-11-10"), Counter(satire=3))
+        self.assertEqual(form_counts(rows, "2026-11-11"), Counter(satire=3))
+        tied = [form_story(f"tie-{i}", form) for i, form in enumerate(["feature"] * 6 + ["policy_announcement", "product_launch"])]
+        errors = validate_articles(tied)[0]
+        self.assertTrue(any("tie-5: editorial_form daily mix cannot fit" in e for e in errors))
+        self.assertEqual(validate_articles(list(reversed(tied)))[0], errors)
+
+    def test_wildcard_future_car_counts_as_a_product_without_a_realism_gate(self):
+        item = form_story("floating-family-car", "product_launch", tone="wildcard")
+        item.update({
+            "title": "雲間モーター、車輪を畳んで浮かぶ家族向けの新型車を発表",
+            "summary": "雲間モーターは、停車場で車輪を畳み、地面から浮かんで移動する家族向けの新型車を発表した。乗員は座ったまま離陸できる。",
+            "paragraphs": ["雲間モーターは、車輪を畳んで地面から浮かぶ家族向けの新型車を発表した。",
+                           "乗員が席を替えずに移動できるよう、運転席から離陸を選ぶ仕組みにした。試乗した家族は車窓から屋根を見下ろした。"],
+            "editorial_signature": {"present": "家族が乗り換えずに目的地へ向かいたいという需要がある",
+                                    "target": "家族が同じ座席のまま地上と空を移動する体験",
+                                    "action": "車輪を畳み運転席から離陸を選ぶ新型車を発表する",
+                                    "outcome": "試乗した家族が車窓から屋根を見下ろす"},
+            "reader_clarity": {"who": "雲間モーター", "action": "車輪を畳んで浮かぶ家族向けの新型車を発表する",
+                               "oddity": "同じ座席のまま地上走行から空の移動へ切り替えられる"},
+            "behavior_basis": {"motive": "家族が乗り換えず同じ座席のまま移動できるようにする",
+                               "ordinary_alternative": "車を降りて別の乗り物へ乗り換える",
+                               "why_not": "荷物と家族を移す手間を省ける使い方を試すため",
+                               "evidence_quote": "乗員が席を替えずに移動できるよう"},
+            "scene_prompt": "Natural photo-style fictional scene of a family seated in a compact wheel-folding car hovering above an ordinary rooftop, no readable text or logos.",
+        })
+        self.assertNotIn("plausibility_basis", item)
+        self.assertEqual(form_counts([item], "2026-11-10"), Counter(product_launch=1))
+        self.assert_neutral_report_keeps_existing_gates(item)
+
     def assert_neutral_report_keeps_existing_gates(self, item):
         errors, _ = validate_articles([item])
         self.assertEqual(errors, [])
