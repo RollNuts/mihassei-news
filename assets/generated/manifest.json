@@ -799,6 +799,13 @@
       "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
       "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
     },
+    "personalized-hidden-harbor-crowded-by-tourists": {
+      "article_sha256": "2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff",
+      "reason": "現本文・場面指示・実JPEG原本を表示して照合。ロープ、長靴、衣服、曇天の光は自然で、撮影する人物も見える。しかし背景は高層ビルと多数のヨットがある都市型マリーナで、岸壁には十分な空間があり、撮影客の混雑や漁師の出航を妨げる関係が成立していない。船首に目立つ日本語風の偽文字もある。指示も数人が隣の遊歩道から撮影する場面で、本文の狭い作業動線・撮影客の集中を弱めていた。主要場面に合わないため不採用とし、漁船を撮る旅行者と三脚が縄を運ぶ漁師の道をふさぐ専用SVGで回収する。原JPEG・生成指紋・seedは保持し、同日再試行はしない。",
+      "rejected_candidate_sha256": "ca38a62a240837444213ea6d8a50fa643aeda9b019bbe7edacecd7798ba77f30",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42542467442",
+      "reviewed_at": "2026-11-09T01:06:15.015535+00:00"
+    },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
