@@ -814,7 +814,7 @@
       "url": "https://www.cross-m.co.jp/report/20260414sleep",
       "topic": "2026年4月14日公表の全国20～69歳男女3000人調査では、現在の睡眠時間平均6.4時間に対し理想の平均は7.4時間で約1時間の差があった。生配信者、協賛契約、割引コードと売上は2031年の創作であり、調査対象の実際の行動を示さない。"
     },
-    "scene_prompt": "A natural candid documentary photograph of an exhausted Japanese female livestream beauty host in her thirties at a small home beauty filming desk late at night, under ordinary warm room lighting with a plain switched-on ring light, holding an unbranded concealer tube near her tired face, with an ordinary laptop displaying unrecognizably blurred chat boxes and a paper sales checklist, realistic skin and hands, neutral domestic background, no text, no logos, no CGI appearance.",
+    "scene_prompt": "The morning after a late-night beauty livestream, an exhausted host at her home recording desk applies beige concealer directly below one eye with a cosmetic sponge applicator. She holds the open unbranded tube and looks into a tabletop mirror, with filming equipment behind her and ordinary morning window light.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "睡眠",
@@ -850,7 +850,8 @@
       "ordinary_alternative": "番組を予定通り終え、視聴者もスマホを閉じて眠る。",
       "why_not": "来月の契約更新は販売数に依存し、視聴者は配信の最後まで待たなければ割引コードを受け取れない。",
       "evidence_quote": "協賛するコンシーラーの販売数が、来月の番組契約を更新できる目標に届いていなかった。"
-    }
+    },
+    "modified_at": "2026-11-09T16:17:23.433791+09:00"
   },
   {
     "slug": "shiroamadai-last-plate-twenty-seven-times",
