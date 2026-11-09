@@ -258,7 +258,20 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
   .broadcast-choice{padding:8px 6px;min-height:96px}
   .broadcast-choice small{font-size:10px;line-height:1.55}
   .broadcast-choice strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:12px;line-height:1.6}
-  .broadcast-spotlight .broadcast-lower-third{left:7px;right:7px;bottom:36px;padding:5px 8px 7px}
+  /* Give captions their own row so they cannot cover faces on a small screen. */
+  .broadcast-screen,.article-video-shell{display:grid;grid-template-columns:minmax(0,1fr);aspect-ratio:auto}
+  .broadcast-screen>.broadcast-poster,.broadcast-screen>.broadcast-video,
+  .article-video-shell>.article-video,.article-video-shell>img{
+    position:static;grid-area:1 / 1;width:100%;height:auto;aspect-ratio:16 / 9;align-self:start;
+  }
+  .broadcast-super{position:static;display:contents}
+  .broadcast-mark,.broadcast-counter,.broadcast-progress{position:relative;grid-area:1 / 1;z-index:2}
+  .broadcast-mark{align-self:start;justify-self:start}
+  .broadcast-counter{align-self:start;justify-self:end}
+  .broadcast-progress{align-self:end;width:100%;left:auto;right:auto;bottom:auto}
+  .broadcast-lower-third,.broadcast-spotlight .broadcast-lower-third{
+    position:static;grid-area:2 / 1;min-height:80px;left:auto;right:auto;bottom:auto;margin:0;padding:8px 10px;
+  }
   .broadcast-spotlight .broadcast-lower-third strong{font-size:clamp(12px,3.4vw,15px);line-height:1.45}
 }
 @media(max-width:480px){
