@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675"
-     role="img" aria-label="カフェで隣客に話しかけた男性を真顔の店員が手で制し、予約票とコーヒーの横で次の客が待つ創作イラスト"
-     data-visual-topic="movie" data-article-sha256="6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512">
+     role="img" aria-label="カフェの隣の卓へ話しかけた男性を、間に入った店員が手のひらで穏やかに制止し、二つのコーヒー卓と入口の待ち客が見える創作イラスト"
+     data-visual-topic="movie" data-article-sha256="dc71ac166967d3e3b31cdcd3bf2e7e077f9885ad5479d2edeff3b9d250ce73f6">
   <title>予約された偶然の相席</title>
-  <desc>二人の客が座るカフェ。左の客が隣の客へ手を上げて話しかけると、間に立つエプロン姿の店員が真顔で手のひらを向けて制止する。店員の手には無記入の予約台帳。テーブルには二つのコーヒーと切り取り線のある予約票。入口には次の二人客が待つ。文字・ロゴ・実在人物を含まない架空の場面。</desc>
+  <desc>カフェの別々の小卓に座る二人の客。左の男性が隣の客へ手を上げて話しかけると、間に立つエプロン姿の店員が真顔で手のひらを向けて穏やかに制止する。二人の客は互いの方を向き、それぞれの卓には普通のコーヒーが置かれる。店員は配膳や会計をせず、もう片方の手は腰元へ添えている。入口には次の客が待つ。予約票、台帳、読める文字、ロゴ、実在人物は描かない。</desc>
   <defs>
     <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f3e9d9"/><stop offset="1" stop-color="#d9c4a6"/></linearGradient>
     <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#b68153"/><stop offset="1" stop-color="#845936"/></linearGradient>
@@ -65,10 +65,7 @@
     <path d="M477 274q-12-53 30-55t46 47l-31-29-45 16" fill="#454a43"/>
     <path d="M504 296h17" fill="none" stroke-width="3"/>
     <path d="M506 282l-4 7h8" fill="none" stroke-width="2"/>
-    <path d="M559 404l50 5-10 77-50-6z" fill="#9d7851" stroke-width="4"/>
-    <path d="M565 416l34 3-7 53-34-3z" fill="#faf3df" stroke="none"/>
-    <path d="M571 411l19 2" stroke="#676c64" stroke-width="9"/>
-    <path d="M566 454l16-2" stroke="#e9c4a4" stroke-width="16"/>
+    <path d="M572 461l-12 7" stroke="#e9c4a4" stroke-width="16"/>
   </g>
   <g fill="#3b403b"><circle cx="499" cy="273" r="3.5"/><circle cx="523" cy="273" r="3.5"/></g>
   <!-- The neighbouring guest waits, without an exaggerated expression. -->
@@ -84,7 +81,7 @@
     <path d="M738 329h16" fill="none" stroke-width="3"/>
   </g>
   <circle cx="742" cy="306" r="4" fill="#443e38"/>
-  <!-- Separate tables, blank perforated tickets and untouched cups. -->
+  <!-- Separate tables with ordinary untouched coffee cups. -->
   <g stroke="#745035" stroke-width="6" stroke-linejoin="round">
     <path d="M125 491h276l-18 38H137zM634 491h247l-14 38H646z" fill="url(#wood)"/>
     <path d="M170 531v111m181-111v111m319-111v111m169-111v111" fill="none" stroke-width="15"/>
@@ -93,8 +90,4 @@
     <ellipse cx="276" cy="490" rx="39" ry="9"/><path d="M252 457h49l-4 27q-21 14-41 0z"/><path d="M302 462q23-2 15 17l-19 2" fill="none"/>
     <ellipse cx="716" cy="490" rx="39" ry="9"/><path d="M692 457h49l-4 27q-21 14-41 0z"/><path d="M742 462q23-2 15 17l-19 2" fill="none"/>
   </g>
-  <g fill="#f7dfa8" stroke="#a68b59" stroke-width="2">
-    <path d="M327 482l48-4 4 15-49 4zM790 478l49 3-4 16-49-4z"/>
-  </g>
-  <path d="M363 479l3 16m463-15-5 16" fill="none" stroke="#a68b59" stroke-width="2" stroke-dasharray="3 3"/>
 </svg>

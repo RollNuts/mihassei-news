@@ -190,14 +190,39 @@
       "source_png_sha256": "dfb93c7581b53a81c61d4674a33f225f44a19e2a9438fe8b122297c58efd14b5"
     },
     "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
-      "bytes": 93846,
-      "generated_at": "2026-11-04T06:42:17.138029+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 9164180507365929936,
-      "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+      "article_sha256": "dc71ac166967d3e3b31cdcd3bf2e7e077f9885ad5479d2edeff3b9d250ce73f6",
+      "bytes": 152965,
+      "generated_at": "2026-11-09T10:22:01.184004+00:00",
+      "generation_id": "8eeeddcb-d8f8-415a-bf0d-acd66492d9b8",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid ordinary newspaper photograph of a staged fictional scene in a modest Japanese neighborhood cafe that schedules supposedly chance encounters. The moment is an employee quietly STOPPING an unscheduled greeting between two customers, not taking an order or serving drinks. On one side an anonymous fictional adult male customer in an ordinary casual shirt is seated at a small cafe table with a cup of coffee. He has turned and leaned slightly toward a lone anonymous fictional adult customer seated at the neighboring small table, mouth slightly open as if starting a polite greeting and one hand modestly raised toward that customer. The other customer looks back at him. Between their two tables an anonymous fictional adult employee in a plain everyday apron has stepped directly into their line of conversation, face serious and apologetically matter-of-fact, with one open palm gently held toward the man at shoulder height to ask him to pause. The employee's body and stopping hand form a clear gentle interruption between these two people; no physical aggression or touching. Their eye-lines and gestures should make the customer-to-customer greeting and staff intervention unmistakable in a single coherent medium-wide eye-level photograph, all three people and both coffee tables visible. Two normal ceramic cups on saucers, small wood tables, plain cafe walls and windows, natural soft afternoon window light, worn wood grain, authentic skin and cotton/apron textures, ordinary camera depth of field, muted everyday colors. No other story event, no waiter tray, clipboard, numbered ticket, reservation slip, staged handshake or smiling commercial pose. No readable writing anywhere, no menu boards, logos, brand names, captions, headlines, numerals or watermark. No illustration, anime, cartoon, 3D rendering, plastic skin, cinematic colored lighting or glossy stock advertising. All people, cafe and situation are fictional and not identifiable real people or businesses.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+        "bytes": 93846,
+        "generated_at": "2026-11-04T06:42:17.138029+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 9164180507365929936,
+        "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+        "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
+        "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
+      },
+      "previous_visual_review": {
+        "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+        "decision": "rejected",
+        "image_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81",
+        "note": "実画像はカフェで2人が座るだけ。予約票、隣席へ予定外に話しかける客、制止する店員が写らず、記事の笑いの中心が再現されていない。黒板の擬似文字も目立つため不採用。安全な記事別イラストを継続する。",
+        "reviewed_at": "2026-11-04T06:44:47.583Z"
+      },
+      "prompt_version": 3,
+      "sha256": "2df87a1c2d6d79ff851cd7125fb0be1edf82570e354ccb7164abe9b7a84b82b8",
+      "source_article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+      "source_png_sha256": "6ed83447061c5523ce3a43fc661e74d7a06baa24084cfd6e72b33ba98b9a15bb"
     },
     "christmas-done-for-you-family-decorates-boxes": {
       "article_sha256": "0f4464944249088fe3205981378607788d417224c2ee93647ef2baa74a2de866",
@@ -1248,16 +1273,34 @@
       "sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c"
     },
     "variety-700-guests-only-introductions": {
-      "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
-      "bytes": 62771,
-      "generated_at": "2026-11-03T03:46:10.220796+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
-      "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
-      "seed": 2479731755469378830,
-      "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+      "article_sha256": "419901cadd8ada4513eddb745150e253ff814ffbffa352acea33548212a168da",
+      "bytes": 176078,
+      "generated_at": "2026-11-09T10:19:44.342244+00:00",
+      "generation_id": "19cf8e7e-536c-4b4f-b3b2-96b33ab17e11",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary documentary newspaper photograph of a clearly fictional Japanese television special that has spent all its time introducing a huge cast instead of starting its games. In an ordinary broad television studio, an anonymous fictional middle-aged host in a plain dark suit is in the foreground at one side, concentrating on a NORMAL SMALL STACK OF CUE CARDS held in one hand, speaking into a handheld microphone with the other. He is visibly still reading introductions, not posing for a photograph. Immediately beside him one guest stands waiting to be introduced. Behind them, about twenty anonymous fictional adult guests in varied ordinary neat clothes stand closely together in several rows on low studio risers; the crowded waiting cast continues beyond the side of the frame, showing only part of a much larger ensemble. They wait patiently with serious tired matter-of-fact expressions, a few folded arms, no laughter or cheering. At the near edge of the set are two ordinary CLOSED translucent-lid storage boxes containing simple colorful game props such as foam rings and balls, still inside the closed boxes, no one playing. Keep the relationship of host reading, guests waiting, and untouched game boxes clearly visible in one coherent candid medium-wide eye-level view from slightly to the side. Ordinary soft studio ceiling lighting, realistic skin, cloth, flooring and equipment, restrained natural colors, unpolished local press photography. The people are all invented, with no likeness to actual celebrities and no real television-show identity. No giant scroll, no enormous prop, no readable writing, numerals, show title, signs, labels, brand logos, captions, headlines or watermark. No illustration, anime, cartoon, 3D rendering, waxy faces, cinematic spectacle or glossy publicity poster.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+        "bytes": 62771,
+        "generated_at": "2026-11-03T03:46:10.220796+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
+        "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
+        "seed": 2479731755469378830,
+        "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+        "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
+        "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
+      },
+      "prompt_version": 3,
+      "sha256": "ec04a68a92e6dfa92f2896c685fd12aea0629744b9fc37afcfe41ec748508038",
+      "source_article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
+      "source_png_sha256": "206eb9af1b82991063c7824e1b933e09397cedae8be3770f3ae920660b867dda"
     },
     "volleyball-team-lunch-plate-merch": {
       "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
@@ -1372,11 +1415,6 @@
       "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
       "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
-    "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
-      "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
-      "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
-    },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
       "reason": "CPU試作は肌・衣服・家具が写真らしいが、スマホも歌手もなく、黒画面と白画面のテレビ2台がある普通の居間にとどまるため不採用。原指紋・seedは試作artifactを保持し、採用した別のnative生成画像とは区別する。",
@@ -1453,11 +1491,6 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "variety-700-guests-only-introductions": {
-      "article_sha256": "46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d",
-      "reason": "Visual review: a person seated on the floor in a plain room and a small audience do not establish the TV introductions marathon. Use the article-specific illustration until a clearly matching studio scene is reviewed.",
-      "rejected_candidate_sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
     }
   },
   "version": 1

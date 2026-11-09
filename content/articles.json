@@ -2198,7 +2198,7 @@
       "url": "https://news.tv-asahi.co.jp/news_economy/articles/000545048.html",
       "topic": "2027年ヒット予測で、SNSなどの個人向け推薦が広がる中、思いがけない出会いを楽しむ「偶然ロス」がキーワードとして紹介された。"
     },
-    "scene_prompt": "Two numbered reservation tickets and two untouched coffee cups dominate a small cafe table. An anonymous male guest starts to greet a neighboring customer while a serious cafe employee in a plain apron gently stops him, clipboard in hand. Cozy Japanese neighborhood cafe, clear expressions and props, cinematic photorealistic deadpan comedy, no logos, no lettering, no real people.",
+    "scene_prompt": "A male cafe guest begins greeting another lone customer at a neighboring small table, while an apron-wearing employee steps between the customers and gently raises an open palm to stop the unscheduled conversation. Two ordinary cups of coffee remain on their tables. Natural daylight in a modest Japanese cafe, candid documentary photography, no reservation tickets, readable writing, menus or logos.",
     "tags": [
       "SNS",
       "カフェ"
@@ -2206,7 +2206,8 @@
     "satire_tags": [
       "SNSあるある",
       "予定調和"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "midterm-prediction-notebook-full-of-holes",
@@ -2616,7 +2617,7 @@
       "topic": "2026年11月3日10:00公開。TBSの特番『ゴールデンラヴィット！』の11月26日放送予定と70人以上の有名人の集結を報道。2031年の架空特番と出演者700人の出来事は実在の番組とは無関係。"
     },
     "published_at": "2026-11-03T11:38:33+09:00",
-    "scene_prompt": "A Japanese television host in a plain dark suit holds a handheld microphone and an absurdly long blank paper scroll spilling across the floor. Behind him a long queue of Japanese adult contestants in plain white shirts waits silently in a small television studio, arms folded, bored serious faces. The host is still reading his endless guest list. Wide photograph, blank background.",
+    "scene_prompt": "An anonymous Japanese television host reads ordinary cue cards into a handheld microphone while tightly packed rows of adult guests wait on low studio risers behind him. Unopened transparent-lid boxes containing ordinary game props remain at the edge of the set. This is a cropped part of a much larger fictional cast, not a picture proving the exact number of guests. Natural documentary behind-the-scenes television photograph, no readable writing or logos.",
     "modified_at": "2026-11-03T12:49:41.396+09:00",
     "tags": [
       "テレビ",
@@ -2625,7 +2626,8 @@
     "satire_tags": [
       "タイパ至上主義",
       "詰め込みすぎ"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "family-dinner-gacha-243-rejections",
