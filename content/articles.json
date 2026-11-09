@@ -22,7 +22,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000199.000017141.html",
       "topic": "2026年7月23日11時、TABETE運営会社はファミリーマートとの食品ロス削減実証を発表。消費期限の近い食品等をアプリで注文・決済し、都内6店舗で受け取る仕組み。ファミリーマート公式発表 https://www.family.co.jp/sustainability/topics/2026/s20260723.html と同内容を照合。2031年の「おたすけ食堂」、救出専用の追加製造、予約需要、工場見学、親子の会話は全て本紙の創作であり、実在企業の行為ではない。"
     },
-    "scene_prompt": "An ordinary Japanese lunchbox kitchen worker placing freshly cooked packed bento meals with rice and chicken into a metal pickup rack, while a visiting parent and child watch beside the counter. Clear trays of fresh food prominent in the foreground, ordinary small Japanese food-preparation facility in daylight, candid documentary news photograph, natural hands and skin, no brand marks, no readable text.",
+    "scene_prompt": "A Japanese kitchen worker moves a freshly packed rice-and-chicken bento between adjacent pickup baskets while a visiting parent and child watch through a service opening. Shallow rectangular meal trays on a stainless counter, ordinary morning daylight, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "食",
@@ -63,7 +63,8 @@
       "present_signal": "2026年7月に、期限の近い食品をアプリで注文し店舗で受け取る実証が都内6店舗で始まった",
       "continuation_force": "予約決済で確実に販売できる仕組みと、安く社会貢献に参加したい顧客の需要が商品そのものへ転化する",
       "future_result": "食品ロス救出の名を守るため、余り物が発生する前から救出用の商品を製造する専門店が現れる"
-    }
+    },
+    "modified_at": "2026-11-09T14:43:29+09:00"
   },
   {
     "slug": "paid-conversation-checkout-shoppers-chat-in-line",
@@ -430,7 +431,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000062.000041432.html",
       "topic": "2026年4月15日の発表では、冷蔵庫の開閉で高齢者家族を見守る「まもりこ」が2021年から提供されていると説明。父娘の5年間の通知、帰省時の会話、付箋は2031年の創作で、実際の利用例として発表されたものではない。"
     },
-    "scene_prompt": "A quiet ordinary Japanese family kitchen in natural late-afternoon light. An older father stands beside the refrigerator with a few small handwritten notes pinned on its door, while his adult daughter in casual clothes sits at the table holding a smartphone that shows a simple refrigerator open-close timeline with no readable text. They look toward each other beginning an overdue conversation. Honest documentary photo, natural skin, everyday clothing and modest furnishings, no brand logos or exaggerated lighting.",
+    "scene_prompt": "An elderly Japanese father points at personal notes on a refrigerator while his adult daughter at a kitchen table checks a smartphone. Modest kitchen, natural late-afternoon light, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "親子",
@@ -471,7 +472,8 @@
       "present_signal": "2026年時点で冷蔵庫の開閉を使う高齢者見守りサービスが提供されている",
       "continuation_force": "離れて暮らす家族の安心と、双方が相手の時間を邪魔したくない気遣いが日々の通知確認を習慣化させる",
       "future_result": "2031年、安否の記録だけは5年分残る一方、家族の近況を会話で聞く機会が減っている"
-    }
+    },
+    "modified_at": "2026-11-09T13:47:11+09:00"
   },
   {
     "slug": "free-play-event-parents-timetable-children-waiting",
@@ -532,7 +534,8 @@
       "ordinary_alternative": "必要な安全対策だけをして、子どもに遊び方と仲間を選ばせる",
       "why_not": "自由にさせたことで事故や仲間外れが起きれば自分が責められ、次の役員も引き受けてもらえなくなると恐れた",
       "evidence_quote": "田島さん自身も次の役員を引き受けてもらえなくなるのが怖かった。"
-    }
+    },
+    "modified_at": "2026-11-09T13:47:11+09:00"
   },
   {
     "slug": "cafe-regular-dislikes-usual-cinnamon-latte",
