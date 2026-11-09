@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
- aria-label="個別アプリの画面が三種類並ぶ職場で、後任が山積みの引き継ぎ手順書を読む一方、本来の仕事は紙一枚になっている創作イラスト"
- data-visual-topic="parcel" data-article-sha256="23015542d91e83de27d80ff4f056a7369b4c7cc7c64eff9077d13bc58c5ea171">
+ aria-label="個別アプリの画面が三種類並ぶ職場で、後任が山積みの引き継ぎ手順書を読む一方、本来の仕事は別紙の一行だけになっている創作イラスト"
+ data-visual-topic="parcel" data-article-sha256="37da7a7160b2fcc6d1e6b42f4d431114192a6a3e46db625b273b0fa78d117c8f">
 <title>毎日10分の仕事のために積み上がる個人用アプリの引き継ぎ資料</title>
 <defs>
  <linearGradient id="wall" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#e4ebe7"/><stop offset="1" stop-color="#c9d2ce"/></linearGradient>
@@ -57,8 +57,6 @@
 <g transform="rotate(-9 567 495)" filter="url(#shadow)">
  <rect x="478" y="460" width="183" height="123" rx="5" fill="url(#paper)" stroke="#bcb5a9" stroke-width="3"/>
  <path d="M501 489h129" stroke="#99988c" stroke-width="6" stroke-linecap="round"/>
- <path d="M501 514h113M501 530h70" stroke="#b9b6aa" stroke-width="5" stroke-linecap="round"/>
- <circle cx="625" cy="560" r="10" fill="none" stroke="#779381" stroke-width="3"/>
 </g>
 <!-- New employee and mouse -->
 <path d="M777 464q-31-126 46-155 70-27 117 47l31 111z" fill="#637a86" stroke="#495d67" stroke-width="5"/>

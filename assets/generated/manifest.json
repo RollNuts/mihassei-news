@@ -77,14 +77,61 @@
       "sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db"
     },
     "basketball-opening-day-game-seven": {
-      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
-      "bytes": 174771,
-      "generated_at": "2026-11-05T02:46:58.461209+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 8539460300984130488,
-      "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
+      "article_sha256": "5b48d4a5b3f1dd02bfbb426fdb781c016f07e74516bb7a9ec3141b7e4c32c39a",
+      "bytes": 115010,
+      "generation_id": "79681556-81a6-44c8-a779-7bf4ddc2c0e0",
+      "generation_prompt": "Edit the attached fictional staged sports photograph with one very small cleanup only: remove the tiny isolated white curved emblem at the extreme upper-right edge of the image, and fill that small corner with a seamless continuation of the existing ordinary gym wall and ceiling texture. Preserve the existing photograph, its composition, crop, lighting, colors, camera realism, every person's face and hands, the burgundy fringed championship flag and pole, and the interaction exactly as they are. Do not change or add any people, objects, wording, numbers, logos, signature or watermark. The only intended change is removal of that tiny upper-right white mark.",
+      "sha256": "38886f58003f476c35ec9e8167c1d5cdce74ce325b780f6e098b81dc9da07379",
+      "source_article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "source_png_sha256": "91daa20655fc3021c97e3b6c75d0fa9adcb49df4b88314c3644d9786f24ded25",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T15:42:15.515501+00:00",
+      "generation_steps": [
+        {
+          "generation_id": "ceb1bcfe-7b10-4410-b001-24a7fcb82cb2",
+          "tool_mode": "new_image",
+          "generation_prompt": "Create one ordinary photorealistic 16:9 local sports-news photograph of fictional adult Japanese women basketball players in a modest community gym, shortly after a game has finished. In the foreground, the adult woman team captain in a plain sleeveless basketball jersey and shorts is receiving a ceremonial championship flag from an ordinary event official in a simple jacket. The flag is a real, normal-sized burgundy fabric banner hanging from a wooden pole, with a gold fringe, a small finial and tassel, with absolutely no writing, numbers, emblems or logos. Keep the fabric, fringe, pole and the two people's separate hands clearly visible together so it is unmistakably a flag handover, not a trophy, a handshake or a person just posing with a flag. The captain has one hand on the pole as it is passed across and looks toward the official with mild, restrained puzzlement. The official still supports the pole with a separate hand and is calmly speaking to the captain. Two or three adult teammates in matching unbranded kit stand nearby, looking toward the handover with reserved expressions. Basketball floor markings and one ordinary hoop establish the setting; there is no play, shot, jump or ball contest happening. Natural overhead gym lighting, realistic skin, cloth, wood and hand contact, documentary eye-level composition with the flag and exchange central. No giant numeral seven, no scoreboard, no banners or numbered tickets, no precise score, no brand or sponsor marks, no captions, no readable text. No crowd spectacle, confetti, celebratory advertising pose or theatrical lighting.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ceb1bcfe-7b10-4410-b001-24a7fcb82cb2.png",
+          "source_png_sha256": "7e7937ac18ca457cdf91f5d6f6ef434c4b270182a2ffc15e5991b4524ccbc134",
+          "review": "Scene passed; isolated white corner mark required local cleanup before adoption."
+        },
+        {
+          "generation_id": "79681556-81a6-44c8-a779-7bf4ddc2c0e0",
+          "tool_mode": "edit",
+          "generation_prompt": "Edit the attached fictional staged sports photograph with one very small cleanup only: remove the tiny isolated white curved emblem at the extreme upper-right edge of the image, and fill that small corner with a seamless continuation of the existing ordinary gym wall and ceiling texture. Preserve the existing photograph, its composition, crop, lighting, colors, camera realism, every person's face and hands, the burgundy fringed championship flag and pole, and the interaction exactly as they are. Do not change or add any people, objects, wording, numbers, logos, signature or watermark. The only intended change is removal of that tiny upper-right white mark.",
+          "referenced_image_paths": [
+            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ceb1bcfe-7b10-4410-b001-24a7fcb82cb2.png"
+          ],
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-79681556-81a6-44c8-a779-7bf4ddc2c0e0.png",
+          "source_png_sha256": "91daa20655fc3021c97e3b6c75d0fa9adcb49df4b88314c3644d9786f24ded25",
+          "review": "Corner mark removed; subject, flag, interaction and photographic materials retained."
+        }
+      ],
+      "previous_generation": {
+        "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+        "bytes": 174771,
+        "generated_at": "2026-11-05T02:46:58.461209+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 8539460300984130488,
+        "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
+      },
+      "previous_visual_review": {
+        "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+        "decision": "rejected",
+        "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+        "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
+        "reviewed_at": "2026-11-05T02:51:28.168Z"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+        "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
+        "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
+      }
     },
     "black-friday-preparty-budget-gone": {
       "article_sha256": "d92d8eb811828f5a9c956e5baf90d6b0c383d2d088bd733f47b170e507b8604f",
@@ -1736,6 +1783,19 @@
       "model": "ChatGPT ImageGen",
       "prompt_version": 3,
       "generated_at": "2026-11-09T13:48:49.788010+00:00"
+    },
+    "custom-work-apps-four-week-handover": {
+      "article_sha256": "37da7a7160b2fcc6d1e6b42f4d431114192a6a3e46db625b273b0fa78d117c8f",
+      "bytes": 117905,
+      "generation_id": "a46929c2-59d6-43a4-b274-75e51b0aeedb",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid documentary photograph of a staged, entirely fictional Japanese office scene. Focus on the final result of a difficult handover, not on a meeting or a futuristic app demonstration. One anonymous fictional adult office employee, the successor to a departing worker, sits at an ordinary work desk in plain everyday office clothes with a quietly serious, slightly tired expression. The physical contrast on the desk is the main subject: on one side, THREE thick normal A4 software-operation ring binders lie in a realistic stack, with a FOURTH thick binder open beside them to densely filled paper pages. The visible page edges, rings, dividers and dense but unreadable instruction rows make these recognizable as substantial working manuals rather than a decorative pile of books. Immediately next to that open binder, on the SAME desk and SAME plane of focus, lies ONE separate ordinary white A4 sheet that is almost entirely blank except for ONE very short, faint, deliberately out-of-focus handwritten line near its upper portion. Keep this single sheet clearly visible and separate from the manuals, not buried under them. The employee leans slightly forward, with one hand naturally holding the edge of an open manual page and the other hand resting beside the short sheet, looking down between the two. Use a medium-close diagonal camera view across the desk so the thick manual stack, open dense pages, nearly empty single sheet and employee's face and hands are readable together at thumbnail scale. The paper-volume contrast must dominate; do not show a generic cluttered office. In the soft background, one ordinary computer monitor is angled away with indistinct neutral shapes only, and a modest shelf holds a few older plain binders. Do not add three dashboards, a color-code chart, an instructor, a classroom, a certificate or another employee. Believable paper thickness, cardboard binder covers, skin, fingers, cotton clothes, ordinary furniture and soft daytime window light, natural unglossy colors and contact shadows. All people, businesses and software are fictional. No legible words, letters, numerals, paragraph headings, labels, branded hardware, real app interface, logo, watermark, signature or floating graphic. Do not make a tower taller than the person or scatter mountains of paper. No illustration, anime, 3D render, cinematic lighting or exaggerated promotional pose.",
+      "sha256": "5c7650b786ce65b497693f92ef38210ac09367b572a4dbcbfd13d17fe7aa4b1c",
+      "source_article_sha256": "23015542d91e83de27d80ff4f056a7369b4c7cc7c64eff9077d13bc58c5ea171",
+      "source_png_sha256": "510dbed91a1ed6de24084ad7411658877e2d3d0e37728f1550a2c3554f71ea53",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T15:44:04.908693+00:00"
     }
   },
   "rejected": {
