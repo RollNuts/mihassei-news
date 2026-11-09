@@ -16,11 +16,11 @@
       "夕方、山側の区画を予約した客が、隣の背の高い車で景色が見えないと相談に来た。係員は空きを調べ、「お部屋の変更、承れます」と笑顔で答えた。そして鍵ではなく駐車場の地図を渡す。「お客様のお部屋を、右へ三台分動かしていただけますか」。客は敷いたばかりの布団を畳み、自分の部屋のエンジンをかけた。"
     ],
     "source": {
-      "kind": "企業発表",
-      "publisher": "スズキ株式会社",
-      "published_at": "2026-11-09T12:00:00+09:00",
-      "url": "https://www.suzuki.co.jp/release/a/2026/1109/",
-      "topic": "2026年11月9日、スズキは新型の軽商用車『スペーシア ベース』の先行情報を公開した。2人乗り仕様で、2枚のマルチボードと8本の脚パイプを標準装備とする。具体的な発売日と価格は未発表。2031年のホテル、ミチノヤ、客の言動は創作で、スズキの事業や提携ではない。"
+      "kind": "ニュース",
+      "publisher": "Car Watch（Impress）",
+      "published_at": "2026-11-09T12:18:00+09:00",
+      "url": "https://car.watch.impress.co.jp/docs/news/2154748.html",
+      "topic": "2026年11月9日12:18 JSTのCar Watch記事は、スズキが同日に新型軽商用車『スペーシア ベース』の先行情報を公開し、2人乗りで2枚のマルチボードと8本の脚パイプを備えると報じた。公式発表 https://www.suzuki.co.jp/release/a/2026/1109/ も同じ仕様を示す。2031年のホテルと宿泊方式は創作で、スズキとの提携・事業関係はない。"
     },
     "scene_prompt": "A Japanese traveler unfolds a simple futon in the open rear of a compact unbranded van parked in a small hotel parking bay, while a modestly uniformed receptionist points toward a painted white parking line. Natural daylight, ordinary realistic roadside hotel parking lot, clear human hands and real vehicle materials, documentary photograph, no readable words or logos.",
     "visual_strategy": "cpu-photo",
