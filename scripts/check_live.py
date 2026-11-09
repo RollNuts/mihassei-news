@@ -28,24 +28,26 @@ from xml.etree import ElementTree as ET
 if __package__:
     from .media_policy import jpeg_dimensions
     from .generated_photos import generated_url, generated_scene_entry
+    from .social_cards import reviewed_scene_png
     from .motion_clips import clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_copy import reader_copy, source_reader_copy
     from .build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
-        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags,
+        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 else:
     from media_policy import jpeg_dimensions
     from generated_photos import generated_url, generated_scene_entry
+    from social_cards import reviewed_scene_png
     from motion_clips import clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_copy import reader_copy, source_reader_copy
     from build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
-        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags,
+        article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -92,6 +94,17 @@ def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> No
             or jpeg_dimensions(image) != (1200, 675)
             or hashlib.sha256(image).hexdigest() != record["sha256"]):
         raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
+
+
+def verify_scene_social_image(article, image: bytes, mime: str, *, root=ROOT) -> None:
+    paired = reviewed_scene_png(article, root=root)
+    if "image/png" not in mime or len(image) < 1500:
+        raise RuntimeError(article["slug"] + ": original social PNG unavailable")
+    expected_size = (1200, 675 if paired else 630)
+    if _png_icon_size(image) != expected_size:
+        raise RuntimeError(article["slug"] + ": social PNG dimensions differ from the selected scene")
+    if paired is not None and image != paired:
+        raise RuntimeError(article["slug"] + ": production scene PNG differs from the verified static pair")
 
 
 class _IconLinks(HTMLParser):
@@ -1083,13 +1096,12 @@ def check():
                 raise RuntimeError(slug+": safe original illustration not displayed")
             if "創作イラスト" not in page:
                 raise RuntimeError(slug+": image not clearly marked as fictional artwork")
-            og_url=SITE+"/og/articles/"+slug+".png?v=20261103-topic2"
+            image_path=social_image(item)
+            og_url=SITE+image_path
             if '<meta property="og:image" content="'+og_url+'">' not in page:
                 raise RuntimeError(slug+": original story PNG metadata missing")
-            picture,kind=get("/og/articles/"+slug+".png?v=20261103-topic2")
-            if (not picture.startswith(bytes((137,80,78,71,13,10,26,10)))
-                or "image/png" not in kind or len(picture)<1500):
-                raise RuntimeError(slug+": original social PNG unavailable")
+            picture,kind=get(image_path)
+            verify_scene_social_image(item,picture,kind,root=ROOT)
             cover,kind=get("/images/"+slug+".svg")
             if "image/svg+xml" not in kind:
                 raise RuntimeError(slug+": original SVG has incorrect Content-Type")

@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from scripts.check_share_cards import candidate_paths, image_dimensions, inspect_markup
+from scripts.check_share_cards import candidate_paths, image_dimensions, inspect_markup, png_card_dimensions
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,7 +36,7 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
             self.assertGreaterEqual(width, 600)
             self.assertGreaterEqual(height, 315)
             if mime == "image/png":
-                self.assertEqual((width, height), (1200, 630))
+                self.assertEqual((width, height), png_card_dimensions(image_url))
 
     def test_social_preview_validation_rejects_missing_or_external_image(self):
         doc = (ROOT / "dist/index.html").read_text(encoding="utf-8")

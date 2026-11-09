@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="狭い漁港の岸壁で、漁船を撮る旅行者の三脚に道をふさがれ、縄を運ぶ漁師が立ち止まる創作イラスト" data-visual-topic="document" data-article-sha256="2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff">
+<title>穴場を撮る列が、漁師の仕事道をふさぐ</title>
+<desc>小さな漁港の朝。水に浮く作業用の漁船へ向け、背中をこちらに向けた旅行者がスマートフォンとカメラを構えている。狭いコンクリートの岸壁には三脚が広がり、作業着と長靴の漁師が抱えた漁業用ロープの束を運べず立ち止まる。人物の足と三脚はすべて岸壁上。読める文字、ロゴ、案内画面、数字やカウンターは描かない。</desc>
+<defs>
+<linearGradient id="sky" x2="0" y2="1"><stop stop-color="#d8e1de"/><stop offset="1" stop-color="#f0e9d6"/></linearGradient>
+<linearGradient id="sea" x2="0" y2="1"><stop stop-color="#a8c2bf"/><stop offset="1" stop-color="#809f9b"/></linearGradient>
+<linearGradient id="concrete" x2="0" y2="1"><stop stop-color="#d7d5c5"/><stop offset="1" stop-color="#babdaf"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#sky)"/>
+<path d="M0 143q100-59 204-14t192-8q132-72 241-10t238 4q134-57 325 9v74H0z" fill="#a9b8ac"/>
+<path d="M0 177h1200v30H0z" fill="#839d92"/>
+<g stroke="#8b9b91" stroke-width="3" stroke-linejoin="round">
+<path d="M15 171v-55h117v55m22 0v-36h76v36m32 0v-63h121v63" fill="#e1ded0"/>
+<path d="M4 116l67-35 74 35m109-8 67-39 69 39" fill="#849c94"/>
+<path d="M444 173v-44h98v44m32 0v-66h145v66m40 0v-42h106v42m32 0v-59h114v59m29 0v-37h100v37" fill="#d7d8c9"/>
+<path d="M564 107l83-29 82 29m159 7 65-35 68 35" fill="#8c9f94"/>
+</g>
+<g fill="#acbdb3"><path d="M33 136h25v24H33zm48 0h25v24H81zm199-3h26v27h-26zm49 0h26v27h-26zm259-5h30v32h-30zm48 0h30v32h-30zm276 6h26v27h-26zm45 0h26v27h-26z"/></g>
+<rect y="200" width="1200" height="475" fill="url(#sea)"/>
+<path d="M20 235h171m39 22h106m45-30h129m42 26h130m79-23h113m45 17h163M10 354h143m37 41h128m64-43h109m-7 43h99m35 17h149m49-27h143m51 24h105M0 657h149m61-3h116m67 13h127m58-12h168m65 9h114m56-13h159" fill="none" stroke="#c4d4cb" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+<!-- A working boat floats behind the concrete edge; no one stands in the water. -->
+<g stroke="#526b69" stroke-width="5" stroke-linejoin="round">
+<path d="M567 307h514l-61 74q-197 37-382-14z" fill="#e8e8d8"/>
+<path d="M603 346q214 30 444 0l-27 35q-197 37-382-14z" fill="#789a98"/>
+<path d="M668 245h182v76H668z" fill="#e8e8d8"/>
+<path d="M654 238h209v15H654z" fill="#647f7c"/>
+<path d="M684 260h62v41h-62zm75 0h72v41h-72z" fill="#a9c4c1"/>
+<path d="M692 264l38 32m38-32 42 32" fill="none" stroke="#d5ded2" stroke-width="3"/>
+<path d="M872 307V188m-5 30h104m-98-29 54 89m-54-60 85 60" fill="none" stroke-width="4"/>
+<path d="M894 296h86v21h-86z" fill="#8f9f87"/>
+</g>
+<path d="M622 397q196 34 397-1" fill="none" stroke="#bcd1c6" stroke-width="7" stroke-linecap="round"/>
+<!-- The narrow solid quay separates the people from the harbor. -->
+<path d="M0 425h1200v201H0z" fill="url(#concrete)"/>
+<path d="M0 425h1200M0 626h1200" fill="none" stroke="#8d9e93" stroke-width="7"/>
+<path d="M0 629h1200v17H0z" fill="#7f958b"/>
+<path d="M0 525h1200M0 610h1200M137 426 65 626m310-200-18 200m362-200 36 200m325-200 70 200" fill="none" stroke="#a6b1a1" stroke-width="2"/>
+<path d="M1060 346l76 93" fill="none" stroke="#bbaa7e" stroke-width="5"/>
+<path d="M1102 440h62m-47-10v19m34-19v19" stroke="#62776e" stroke-width="8" stroke-linecap="round"/>
+<!-- Ordinary work clothes and a large, clearly coiled fishing rope. -->
+<g stroke="#4c5e56" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M153 506l-11 77h37l18-79m3 0 13 78h37l-14-83" fill="#607b73"/>
+<path d="M143 577h37v32h-58v-15zm70 0h38l15 18v14h-54z" fill="#5d7167"/>
+<path d="M146 371q34-26 66-4l35 142h-113z" fill="#b89f70"/>
+<path d="M177 348v27l22 16 15-21v-23" fill="#dfb793"/>
+<ellipse cx="192" cy="316" rx="39" ry="48" fill="#dfb793"/>
+<path d="M151 313q-6-55 36-58 47-4 49 52l-33-23-50 19" fill="#626a60"/>
+<path d="M206 317h12m-17 23h17" fill="none" stroke-width="3"/>
+<path d="M155 392l21 62 47 14m0-77 36 8 25-8" fill="none" stroke="#b89f70" stroke-width="29"/>
+<path d="M218 466l21 4m42-76 24-6" stroke="#dfb793" stroke-width="16"/>
+</g>
+<g fill="none" stroke="#a58c5c" stroke-width="7">
+<ellipse cx="257" cy="476" rx="43" ry="54"/><ellipse cx="258" cy="475" rx="34" ry="45"/><ellipse cx="258" cy="475" rx="25" ry="36"/><ellipse cx="259" cy="475" rx="16" ry="27"/>
+<path d="M223 439q28 8 62 0m-61 72q30-8 62 0"/>
+</g>
+<!-- One tourist holds a normal-size phone toward the boat. -->
+<g stroke="#4e5e57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M412 488l-15 93 22 18h26l-15-21 17-83m21-5 7 88-3 21h43l-16-20-3-90" fill="#6d7773"/>
+<path d="M415 354q32-24 67 0l20 139h-100z" fill="#9fa9a6"/>
+<path d="M442 330h27v25h-27z" fill="#e3bd9c"/><path d="M437 355q19 9 39-1" fill="none" stroke="#87948f" stroke-width="5"/>
+<path d="M475 269q19 8 20 24l5 7-9 6-2 20-16 5z" fill="#e3bd9c"/><ellipse cx="452" cy="293" rx="32" ry="43" fill="#685b4d" stroke="#5a5b4e"/><path d="M474 306q10-8 13 2l-3 15-9 1" fill="#e3bd9c" stroke-width="3"/>
+<path d="M481 373l37-17 17-32m-119 52 35 34 77-56" fill="none" stroke="#9fa9a6" stroke-width="25"/>
+<path d="M535 325l5-11m-11 39 14-18" stroke="#e3bd9c" stroke-width="13"/>
+<path d="M531 286h24v43h-24z" fill="#5b6c67" stroke-width="3"/>
+<path d="M535 292h16v28h-16z" fill="#becac0" stroke="none"/>
+</g>
+<!-- A camera tripod spreads across the fisherman's route. -->
+<g stroke="#596c65" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M718 381l-48 220m48-220 56 220m-56-220 2 226" fill="none"/>
+<path d="M695 354h46v29h-46z" fill="#687a71" stroke-width="4"/>
+<path d="M715 354l5-19h14l5 19" fill="#52685f" stroke-width="3"/><rect x="703" y="362" width="23" height="14" rx="1" fill="#b2bfb2" stroke="#485f55" stroke-width="2"/><circle cx="735" cy="370" r="2" fill="#d0d5c3" stroke="none"/>
+<path d="M701 347h18v8h-18z" fill="#687a71" stroke-width="3"/>
+</g>
+<g stroke="#526259" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M591 500l-21 81-21 24h41l18-20 14-78m13-8 13 81 23 26h-40l-15-23-8-77" fill="#7d8173"/>
+<path d="M577 385q30-22 60-2l27 125h-100z" fill="#a28d76"/>
+<path d="M597 353h26v30h-26z" fill="#e5bea0"/><path d="M594 383q17 9 34 0" fill="none" stroke="#887863" stroke-width="5"/><path d="M630 292q19 10 20 25l6 7-9 5-2 18-13 6z" fill="#e5bea0"/><ellipse cx="607" cy="315" rx="33" ry="43" fill="#454f49"/><path d="M631 327q10-8 12 2l-3 15-9 1" fill="#e5bea0" stroke-width="3"/>
+<path d="M637 402l36-11 25-16m-117 29 43 26 66-40" fill="none" stroke="#a28d76" stroke-width="25"/>
+<path d="M695 375l11-3m-13 17 13-2" stroke="#e5bea0" stroke-width="13"/>
+</g>
+<!-- A third visitor also photographs the same boat; nobody looks toward the waiting worker. -->
+<g stroke="#526159" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M919 497l-6 85-22 22h38l18-20 5-84m15 0 14 83 22 21h-38l-13-20-8-82" fill="#879186"/>
+<path d="M905 363q27-24 65-6l23 145h-98z" fill="#82998e"/>
+<path d="M931 336h26v27h-26z" fill="#e2b99a"/><path d="M926 364q18 10 36-1" fill="none" stroke="#6d877a" stroke-width="5"/><path d="M923 278q-17 9-19 24l-5 8 9 5 3 18 15 6z" fill="#e2b99a"/><ellipse cx="948" cy="299" rx="33" ry="43" fill="#625c51"/><path d="M923 311q-10-8-12 2l3 15 9 1" fill="#e2b99a" stroke-width="3"/>
+<path d="M909 382l-30-24-19-24m106 49-31 30-62-55" fill="none" stroke="#82998e" stroke-width="25"/>
+<path d="M859 336l-5-11m18 33-10-17" stroke="#e2b99a" stroke-width="13"/>
+<path d="M844 292h24v44h-24z" fill="#5d6e67" stroke-width="3"/>
+<path d="M848 298h16v29h-16z" fill="#c3ccc2" stroke="none"/>
+</g>
+</svg>

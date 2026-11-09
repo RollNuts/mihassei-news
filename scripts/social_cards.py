@@ -1,23 +1,181 @@
-"""Cost-free, deterministic, first-party raster social previews for new stories.
+"""Static scene PNGs or offline generic social artwork; stdlib-only builds.
 
-No fonts, external assets, network, APIs, or non-standard Python packages.
-The images are clearly fictional editorial illustrations, not event photos.
+Only the explicit preparation CLI invokes the existing local SVG renderer.
+Normal builds validate paired files without models, network or renderers.
 """
 from __future__ import annotations
 
 import hashlib
+import argparse
+import json
 import math
+import os
+import re
 import struct
+import subprocess
 import zlib
 from pathlib import Path
 
 if __package__:
-    from .editorial_covers import story_subject
+    from .editorial_covers import story_subject, reviewed_story_scene
+    from .generated_photos import article_fingerprint
 else:
-    from editorial_covers import story_subject
+    from editorial_covers import story_subject, reviewed_story_scene
+    from generated_photos import article_fingerprint
 
+ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 1200
 HEIGHT = 630
+SCENE_HEIGHT = 675
+SCENE_RENDERER = "rsvg-convert 2.62.1"
+MAX_SCENE_PNG_BYTES = 700 * 1024
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+PROOF_KEYS = frozenset(("article_sha256", "svg_sha256", "renderer"))
+
+
+def _png_chunk(kind: bytes, data: bytes) -> bytes:
+    return (struct.pack(">I", len(data)) + kind + data
+            + struct.pack(">I", zlib.crc32(kind + data) & 0xffffffff))
+
+
+def _scene_png_chunks(data: bytes, proof: dict | None = None) -> tuple[list[tuple[bytes, bytes]], dict]:
+    """Validate bounded complete PNG data, CRCs, pixel budget and input proof."""
+    if not 60 <= len(data) <= MAX_SCENE_PNG_BYTES or not data.startswith(PNG_SIGNATURE):
+        raise ValueError("Invalid or oversized scene PNG")
+    chunks, metadata, compressed = [], {}, []
+    offset = 8
+    while offset < len(data):
+        if offset + 12 > len(data):
+            raise ValueError("Truncated scene PNG chunk")
+        length, kind = struct.unpack_from(">I4s", data, offset)
+        end = offset + 12 + length
+        if end > len(data) or not re.fullmatch(rb"[A-Za-z]{4}", kind):
+            raise ValueError("Invalid scene PNG chunk bounds")
+        payload = data[offset + 8:end - 4]
+        if zlib.crc32(kind + payload) & 0xffffffff != struct.unpack_from(">I", data, end - 4)[0]:
+            raise ValueError("Scene PNG CRC mismatch")
+        if not chunks and kind != b"IHDR":
+            raise ValueError("Scene PNG must start with IHDR")
+        if kind == b"IHDR" and (chunks or length != 13):
+            raise ValueError("Invalid scene PNG IHDR")
+        if kind == b"tEXt":
+            if b"\0" not in payload:
+                raise ValueError("Invalid PNG text proof")
+            key, value = payload.split(b"\0", 1)
+            if key.decode("latin-1") in PROOF_KEYS:
+                name = key.decode("ascii")
+                if name in metadata:
+                    raise ValueError("Duplicate PNG input proof")
+                metadata[name] = value.decode("ascii")
+        elif kind == b"IDAT":
+            compressed.append(payload)
+        elif kind[0] < 97 and kind not in (b"IHDR", b"PLTE", b"IEND"):
+            raise ValueError("Unsupported PNG critical chunk")
+        chunks.append((kind, payload))
+        offset = end
+        if kind == b"IEND":
+            if payload or offset != len(data):
+                raise ValueError("Invalid PNG end or trailing data")
+            break
+    if not chunks or chunks[-1][0] != b"IEND" or not compressed:
+        raise ValueError("Scene PNG is incomplete")
+    width, height, depth, color, compression, filtering, interlace = struct.unpack(">IIBBBBB", chunks[0][1])
+    if ((width, height) != (WIDTH, SCENE_HEIGHT) or depth != 8 or color not in (2, 6)
+            or (compression, filtering, interlace) != (0, 0, 0)):
+        raise ValueError("Scene PNG must be noninterlaced 1200x675 RGB(A)")
+    stride = width * (3 if color == 2 else 4) + 1
+    expected = stride * height
+    decoder = zlib.decompressobj()
+    pixels = decoder.decompress(b"".join(compressed), expected + 1)
+    if (len(pixels) != expected or not decoder.eof or decoder.unused_data or decoder.unconsumed_tail
+            or any(pixels[y * stride] > 4 for y in range(height))):
+        raise ValueError("Scene PNG pixel data is invalid or exceeds its budget")
+    if proof is not None and metadata != proof:
+        raise ValueError("Scene PNG does not match the current article, SVG and renderer")
+    return chunks, metadata
+
+
+def _scene_proof(article: dict, svg: str) -> dict:
+    return {"article_sha256": article_fingerprint(article),
+            "svg_sha256": hashlib.sha256(svg.encode("utf-8")).hexdigest(),
+            "renderer": SCENE_RENDERER}
+
+
+def reviewed_scene_png(article: dict, *, root: Path = ROOT) -> bytes | None:
+    svg = reviewed_story_scene(article, root=root)
+    if not svg:
+        return None
+    path = root / "assets/editorial-scenes" / (article["slug"] + ".png")
+    try:
+        if path.is_symlink() or (root / "assets").is_symlink() or path.stat().st_size > MAX_SCENE_PNG_BYTES:
+            return None
+        data = path.read_bytes()
+        _scene_png_chunks(data, _scene_proof(article, svg))
+        return data
+    except (OSError, ValueError, UnicodeError, struct.error, zlib.error):
+        return None
+
+
+def reviewed_scene_version(article: dict, *, root: Path = ROOT) -> str | None:
+    """Hash only a complete paired PNG bound to the current reviewed SVG."""
+    data = reviewed_scene_png(article, root=root)
+    return hashlib.sha256(data).hexdigest()[:12] if data else None
+
+
+def prepare_scene_png(article: dict, *, root: Path = ROOT) -> bool:
+    """Explicit local preparation; never called by a normal site build."""
+    try:
+        from .visual_review import reviewed_generated_scene
+    except ImportError:
+        from visual_review import reviewed_generated_scene
+    if (article.get("visual_strategy", "cpu-photo") != "illustration"
+            and reviewed_generated_scene(article, root=root)):
+        return False  # Its current OGP already uses the approved JPEG directly.
+    svg = reviewed_story_scene(article, root=root)
+    if not svg or reviewed_scene_png(article, root=root) is not None:
+        return False
+    directory = root / "assets/editorial-scenes"
+    output = directory / (article["slug"] + ".png")
+    temporary = output.with_suffix(".png.tmp")
+    if ((root / "assets").is_symlink() or directory.is_symlink() or output.is_symlink()
+            or temporary.is_symlink() or temporary.exists()):
+        raise RuntimeError("Refusing unsafe derived scene PNG path")
+    if output.exists():
+        try:
+            if output.stat().st_size > MAX_SCENE_PNG_BYTES:
+                raise ValueError("oversized")
+            _chunks, old = _scene_png_chunks(output.read_bytes())
+            if (set(old) != PROOF_KEYS or old.get("renderer") != SCENE_RENDERER
+                    or any(not re.fullmatch(r"[0-9a-f]{64}", old.get(key, ""))
+                           for key in ("article_sha256", "svg_sha256"))):
+                raise ValueError("unrecognized provenance")
+        except (OSError, ValueError, UnicodeError, struct.error, zlib.error) as exc:
+            raise RuntimeError("Refusing to overwrite unmanaged scene PNG: " + str(output)) from exc
+    version = subprocess.run(["rsvg-convert", "--version"], capture_output=True, text=True,
+                             check=True, timeout=5).stdout.splitlines()[0]
+    if version != "rsvg-convert version 2.62.1":
+        raise RuntimeError("Scene preparation requires existing rsvg-convert 2.62.1")
+    result = subprocess.run(["rsvg-convert", "--format=png", "--width=1200", "--height=675",
+                             "--background-color=#f8f6f0"],
+                            input=svg.encode("utf-8"), capture_output=True, check=True, timeout=20)
+    chunks, _metadata = _scene_png_chunks(result.stdout)
+    proof = _scene_proof(article, svg)
+    chunks = [c for c in chunks if c[0] != b"tEXt" or c[1].split(b"\0", 1)[0].decode("latin-1") not in PROOF_KEYS]
+    tags = [(b"tEXt", key.encode("ascii") + b"\0" + value.encode("ascii")) for key, value in proof.items()]
+    data = PNG_SIGNATURE + b"".join(_png_chunk(*chunk) for chunk in chunks[:-1] + tags + chunks[-1:])
+    _scene_png_chunks(data, proof)
+    if reviewed_story_scene(article, root=root) != svg:
+        raise RuntimeError("SVG changed during scene preparation")
+    owned_temporary = False
+    try:
+        with temporary.open("xb") as stream:
+            owned_temporary = True
+            stream.write(data)
+        os.replace(temporary, output)
+    finally:
+        if owned_temporary:
+            temporary.unlink(missing_ok=True)
+    return True
 
 # 5x7 pixel capitals: the English typographic treatment is deliberate.
 # Japanese article headlines remain in the HTML OpenGraph/Twitter title.
@@ -393,10 +551,15 @@ def illustrate(canvas, art, accent, seed):
         canvas.rect(x, y, x + 25, y + 4, accent)
 
 
-def render_social_card(article: dict, output: Path) -> None:
+def render_social_card(article: dict, output: Path, *, root: Path = ROOT) -> None:
     slug = article["slug"]
     if not slug or any(ch not in "abcdefghijklmnopqrstuvwxyz0123456789-" for ch in slug):
         raise ValueError("Invalid article slug for social preview")
+    data = reviewed_scene_png(article, root=root)
+    if data:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(data)
+        return
     seed = hashlib.sha256(slug.encode("utf-8")).digest()
     accent = CATEGORY_COLORS.get(article["category"], (239, 109, 77))
     canvas = Canvas()
@@ -474,3 +637,25 @@ def render_issue_card(day: str, output: Path) -> None:
     canvas.text("VERIPSA.COM", 75, 572, 5, paper)
     canvas.text("5 YEARS LATER", 777, 575, 4, pale)
     canvas.save(output)
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description="Prepare static social PNGs from current reviewed SVGs")
+    parser.add_argument("--prepare-scenes", nargs="*", metavar="SLUG", required=True)
+    parser.add_argument("--root", type=Path, default=ROOT)
+    args = parser.parse_args(argv)
+    articles = json.loads((args.root / "content/articles.json").read_text(encoding="utf-8"))
+    requested = set(args.prepare_scenes)
+    if requested - {a["slug"] for a in articles}:
+        parser.error("Unknown article slug")
+    prepared, skipped = [], []
+    for article in articles:
+        if requested and article["slug"] not in requested:
+            continue
+        (prepared if prepare_scene_png(article, root=args.root) else skipped).append(article["slug"])
+    print(json.dumps({"prepared": prepared, "skipped": skipped}, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

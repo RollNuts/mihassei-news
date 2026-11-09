@@ -5,8 +5,10 @@ import contextlib
 import hashlib
 import io
 import json
+import struct
 import tempfile
 import unittest
+import zlib
 from pathlib import Path
 from unittest.mock import patch
 
@@ -107,6 +109,22 @@ class VisualReviewTests(unittest.TestCase):
         path = self.root / "assets/photos" / (article["slug"] + ".jpg")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(fake_jpeg())
+
+    def write_editorial_social_png(self, article: dict) -> Path:
+        """Independent pixel/proof fixture; no renderer or real approval."""
+        path = self.root / "assets/editorial-scenes" / (article["slug"] + ".png")
+        svg = path.with_suffix(".svg").read_bytes()
+        def chunk(kind, data):
+            return (struct.pack(">I", len(data)) + kind + data
+                    + struct.pack(">I", zlib.crc32(kind + data) & 0xffffffff))
+        data = chunk(b"IHDR", struct.pack(">IIBBBBB", 1200, 675, 8, 2, 0, 0, 0))
+        data += chunk(b"IDAT", zlib.compress((b"\0" + b"\xff" * 3600) * 675))
+        for key, value in {"article_sha256": article_fingerprint(article),
+                           "svg_sha256": hashlib.sha256(svg).hexdigest(),
+                           "renderer": "rsvg-convert 2.62.1"}.items():
+            data += chunk(b"tEXt", key.encode() + b"\0" + value.encode())
+        path.write_bytes(b"\x89PNG\r\n\x1a\n" + data + chunk(b"IEND", b""))
+        return path
 
     def report(self, articles: list[dict]) -> dict:
         (self.root / "content/articles.json").write_text(
@@ -247,6 +265,7 @@ class VisualReviewTests(unittest.TestCase):
         self.accept(generated)
         for article in (generated, editorial):
             self.write_editorial_scene(article)
+        self.write_editorial_social_png(editorial)
         for article in (generated, editorial, stock):
             self.write_stock_photo(article)
         articles = [generated, editorial, stock, generic]
@@ -266,6 +285,40 @@ class VisualReviewTests(unittest.TestCase):
         # Missing/rejected JPEGs do not mandate generation when an approved
         # illustration or stock photo is already selected.
         self.assertEqual([item["slug"] for item in result["attention"]], [generic["slug"]])
+        self.assertEqual(rows[editorial["slug"]]["editorial_social_png"]["status"], "current")
+        for article in (generated, stock, generic):
+            self.assertNotIn("editorial_social_png", rows[article["slug"]])
+
+    def test_selected_svg_reports_missing_stale_and_current_share_png_without_regenerating(self):
+        illustration = {**self.article, "visual_strategy": "illustration"}
+        svg_path = self.write_editorial_scene(illustration)
+        missing = self.report([illustration])
+        self.assertEqual(missing["images"][0]["publication"]["kind"], "editorial_svg")
+        self.assertEqual(missing["images"][0]["editorial_social_png"], {
+            "path": "assets/editorial-scenes/review-fixture.png", "status": "missing",
+        })
+        self.assertEqual([item["reason"] for item in missing["attention"]], ["missing_editorial_social_png"])
+        self.assertIn("--prepare-scenes review-fixture", missing["attention"][0]["next_action"])
+        self.assertIn("CPU再生成は不要", missing["attention"][0]["next_action"])
+
+        png_path = self.write_editorial_social_png(illustration)
+        original_png = png_path.read_bytes()
+        current = self.report([illustration])
+        self.assertEqual(current["images"][0]["editorial_social_png"]["status"], "current")
+        self.assertEqual(current["attention"], [])
+        # A valid current SVG may change without changing the article FP. Its
+        # previous raster must still become actionable, without a CPU retry.
+        svg_path.write_text(svg_path.read_text().replace("#ffffff", "#f8f6f0"))
+        stale = self.report([illustration])
+        self.assertEqual(stale["images"][0]["editorial_scene"]["status"], "current")
+        self.assertEqual(stale["images"][0]["publication"]["kind"], "editorial_svg")
+        self.assertEqual(stale["images"][0]["editorial_social_png"]["status"], "invalid")
+        self.assertEqual([item["reason"] for item in stale["attention"]], ["invalid_editorial_social_png"])
+        self.assertEqual(png_path.read_bytes(), original_png)
+        self.write_editorial_social_png(illustration)
+        restored = self.report([illustration])
+        self.assertEqual(restored["attention"], [])
+        self.assertEqual(restored["images"][0]["editorial_social_png"]["status"], "current")
 
     def test_illustration_strategy_is_reported_and_never_treated_as_cpu_backlog(self):
         illustration = {**self.article, "slug": "illustration-fixture",

@@ -55,11 +55,11 @@ JPEGの状態だけで表示を判断しない。同じレポートの `publicat
 
 ChatGPT内蔵の画像生成機能で作った写真を手動で取り込む場合は、Mac製・GitHub CPU製と出所を取り違えず、`origin: chatgpt-imagegen` と実際の生成IDを保存する。`visual_strategy` を `cpu-photo` にするのは、新規JPEGの実画像・本文・scene_promptの目視一致と現SHAの`accepted`を同じ変更で確認できた場合だけ。失敗時は本文に合う既存の専用SVGを維持する。追加の外部API契約や有料GPUを導入しない。
 
-写真が使えない場合、本文に合う専門SVGを `assets/editorial-scenes/` に用意できる。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
+写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。追加・修正時は `python3 scripts/social_cards.py --prepare-scenes 記事slug` で共有用PNGも用意し、実表示する。既存の `rsvg-convert 2.62.1` で変換し、記事・SVGの指紋をPNG内へ記録する。同じ原本なら再変換を省き、通常ビルドは整合するPNGをコピーするだけで描画ソフトを起動しない。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
 
 `visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。2026-11-06 22:00 JST以降の新作では `illustration_reason` も必要で、`readable_text_or_ui / precise_count_or_absence / complex_relationship / comparison_layout / brand_character_safety` のどれかに限る。単一人物・単一物体・単純な行為で成立する場面は写真を既定とし、**写真向けの scene_prompt を書いたまま illustration に振り分けない**。`editorial_mix.py --day` は一日の `cpu-photo / illustration` 件数と `visual_next` を出し、イラストが過半になった日は次の候補で写真向きの場面も比較する。ただし題材の質を落として写真比率を合わせない。
 
-`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGがまだない場合だけ `illustration_strategy_without_reviewed_scene` を回収対象にする。CPUを再起動して解消しない。
+`visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGの欠落に加え、`editorial_social_png` が示す共有PNGの欠落・失効も `attention` で回収する。CPUを再起動して解消しない。
 
 ## 選抜動画の確認
 

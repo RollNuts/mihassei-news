@@ -1,5 +1,6 @@
 """Decode real JPEG fixtures through build/OGP/RSS; these are not AI photographs."""
 import contextlib
+import hashlib
 import io
 import json
 import shutil
@@ -15,6 +16,7 @@ from scripts import build, local_scene_photos as photos
 from scripts.check_live import verify_generated_image
 from scripts.generated_photos import article_fingerprint, generated_scene_entry, usable_generated_scene, generated_url
 from scripts.visual_review import reviewed_generated_scene
+from scripts.social_cards import reviewed_scene_png
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL = "sd_xl_base_1.0.safetensors"
@@ -60,7 +62,9 @@ class ScenePublicationTests(unittest.TestCase):
             for article in selected:
                 slug = article["slug"]
                 jpeg_url = "/generated/" + slug + ".jpg"
-                social_url = "/og/articles/" + slug + ".png?v=20261103-topic2"
+                paired = reviewed_scene_png(article, root=root)
+                version = hashlib.sha256(paired).hexdigest()[:12] if paired else "20261103-topic2"
+                social_url = "/og/articles/" + slug + ".png?v=" + version
                 self.assertFalse((output / jpeg_url.lstrip("/")).exists())
                 pages = ["archive/index.html", "articles/" + slug + "/index.html"]
                 if article == lead:
@@ -78,7 +82,9 @@ class ScenePublicationTests(unittest.TestCase):
                 self.assertEqual(media.attrib["type"], "image/png")
                 with Image.open(output / "og/articles" / (slug + ".png")) as exported:
                     exported.load()
-                    self.assertEqual(exported.size, (1200, 630))
+                    self.assertEqual(exported.size, (1200, 675 if paired else 630))
+                if paired is not None:
+                    self.assertEqual((output / "og/articles" / (slug + ".png")).read_bytes(), paired)
             # Synthetic reviews belong only to these decoded test fixtures;
             # generation has not automatically accepted the new image bytes.
             for article in selected:
@@ -134,13 +140,18 @@ class ScenePublicationTests(unittest.TestCase):
             page = (output / "articles" / broken / "index.html").read_text()
             self.assertIn('src="/images/' + broken + '.svg"',
                           page)
-            social_url = "/og/articles/" + broken + ".png?v=20261103-topic2"
+            paired = reviewed_scene_png(selected[-1], root=root)
+            version = hashlib.sha256(paired).hexdigest()[:12] if paired else "20261103-topic2"
+            social_url = "/og/articles/" + broken + ".png?v=" + version
             self.assertIn('property="og:image" content="' + build.SITE + social_url + '"', page)
             self.assertIn('name="twitter:image" content="' + build.SITE + social_url + '"', page)
             media = entries[build.SITE + "/articles/" + broken + "/"].find("{http://search.yahoo.com/mrss/}content")
             self.assertEqual(media.attrib["url"], build.SITE + social_url)
             self.assertEqual(media.attrib["type"], "image/png")
-            self.assertTrue((output / "og/articles" / (broken + ".png")).exists())
+            fallback = output / "og/articles" / (broken + ".png")
+            self.assertTrue(fallback.exists())
+            if paired is not None:
+                self.assertEqual(fallback.read_bytes(), paired)
             self.assertFalse((output / "generated/manifest.json").exists())
 
 

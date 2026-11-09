@@ -172,7 +172,7 @@ def generated_url(article: dict, *, root: Path = ROOT) -> str:
 
 
 def share_page_url(article: dict, url: str, *, root: Path = ROOT) -> str:
-    """Version shared pages for the displayed JPEG, keeping their SEO identity."""
+    """Version shared pages for their validated raster, keeping SEO identity."""
     try:
         from .visual_review import reviewed_generated_scene
     except ImportError:
@@ -183,6 +183,12 @@ def share_page_url(article: dict, url: str, *, root: Path = ROOT) -> str:
             and record and reviewed_generated_scene(article, root=root)
             and generated_scene_entry(article, root=root) == record):
         version = record["sha256"][:12]
+    if version is None:
+        try:
+            from .social_cards import reviewed_scene_version
+        except ImportError:
+            from social_cards import reviewed_scene_version
+        version = reviewed_scene_version(article, root=root)
     parts = urlsplit(url)
     query = parse_qsl(parts.query, keep_blank_values=True)
     if not version and not any(key == "image" for key, _value in query):
