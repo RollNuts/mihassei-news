@@ -96,7 +96,7 @@ def final_sentence(article: dict) -> str:
 
 
 def signature_text(article: dict) -> str:
-    """Flatten the explicit satire mechanism metadata for advisory comparison."""
+    """Flatten the explicit story mechanism metadata for advisory comparison."""
     signature = article.get("editorial_signature")
     if not isinstance(signature, dict):
         return ""
@@ -232,7 +232,7 @@ def analyze(articles: list[dict]) -> list[tuple[str, str, str]]:
             if signature_similarity >= SIGNATURE_SIMILARITY_THRESHOLD:
                 warnings.append((
                     "SIMILAR_EDITORIAL_SIGNATURE", a.get("slug", "?"),
-                    f"{b.get('slug')} と風刺の的・行動・逆効果が {signature_similarity:.0%} 近い。"
+                    f"{b.get('slug')} と主題・行動・結果が {signature_similarity:.0%} 近い。"
                     "言い換えではなく、別の行動か別の目に見える結果を検討",
                 ))
 
@@ -378,7 +378,7 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         dominant, _ = counts.most_common(1)[0]
         lines.append(f"{dominant}が集中。確認できるニュース・公開投稿・生活や文化の話題から、別ジャンル・別の読者層も探す。")
     if "PROCEDURAL_PREMISE_LOOP" in labels:
-        lines.append("確認・申請・認証・拒否の逆効果が続く。誤解、意外な成功、言葉遊び、善意の空回りなど別の笑いを探す。")
+        lines.append("確認・申請・認証・拒否の仕組みが続く。政策の導入後の変化、製品の使い心地、個人の観察など別の出来事も比べる。")
     if "FIVE_YEAR_HEADLINE_RUN" in labels:
         lines.append("5年経過の見出しが続く。個人が耐えたり損したりするだけの小話ではなく、2031年に何が変わったか分かる具体的な出来事を先に考える。期間の長さ自体をオチにしない。")
     if "FORMULA_FUTURE_INTRO_LOOP" in labels:
@@ -386,19 +386,19 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
     if "WORK_AI_CLUSTER" in labels:
         lines.append("AI・仕事・会議に偏り気味。食・遊び・家族・スポーツ・趣味など身近な場面を探す。")
     if "PRESS_RELEASE_OPENING_LOOP" in labels:
-        lines.append("企業の発表から始まる記事が続く。冒頭2文で誰がどこで何に困るかと、その原因を示す。会話も地の文も理解の早い方を選ぶ。")
+        lines.append("企業の発表から始まる記事が続く。冒頭2文で誰が何を発表し、仕組みや使う場面がどう変わるかを示す。会話も地の文も理解の早い方を選ぶ。")
     if "FORMULA_PUNCHLINE_LOOP" in labels or "SIMILAR_PUNCHLINE" in labels:
-        lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・一言で閉じる。二度目の逆転は不要。本文の追加の笑いは既存の人物と前提から作る。")
+        lines.append("定型謝罪や担当者コメントの締めを避ける。既に示した原因から、その話に固有の行動・結果で閉じる。二度目の逆転は不要。本文の発見は既存の人物と前提から作る。")
     if "DIALOGUE_PUNCHLINE_LOOP" in labels:
-        lines.append("最後の一言で落とす記事が続いている。次は、人物が実際にしてしまう行動、残った物、数字や光景そのものがオチになる案も比べる。")
+        lines.append("最後の一言で落とす記事が続いている。次は、人物の行動、残った物、数字や光景から変化が分かる案も比べる。")
     if "PAYOFF_RUN" in labels or "PAYOFF_CLUSTER" in labels:
         lines.append("飽き対策: 題材を変えるだけでなく、着地タイプも変える候補を1案は混ぜる。同じ型が最適なら無理に捨てず、比較した上で採用する。")
     if "SIMILAR_HEADLINE" in labels or "REUSED_SOURCE" in labels:
-        lines.append("似た見出し・出典の使い回しを点検。別の実在話題と固有のオチを探す。")
+        lines.append("似た見出し・出典の使い回しを点検。確認済み資料と照合し、その記事に固有の出来事・仕組み・使用場面を探す。")
     if "VAGUE_HEADLINE" in labels:
-        lines.append("抽象煽りで引っ張らず、主語・具体的な行動・見える逆効果をタイトルに置く。")
+        lines.append("抽象煽りで引っ張らず、主語・具体的な行動・結果をタイトルに置く。")
     if "SIMILAR_EDITORIAL_SIGNATURE" in labels:
-        lines.append("風刺の的・行動・逆効果が近い記事がある。単語だけ変えず、主役の行動か目に見える結果を別の仕組みにする。")
+        lines.append("主題・行動・結果が近い記事がある。単語だけ変えず、その記事に固有の仕組みや目に見える変化を確かめる。")
     if "TOPIC_FRAGMENTATION" in labels:
         note = reusable_topic_note(articles)
         lines.append(
@@ -409,7 +409,7 @@ def next_slot_brief(articles: list[dict]) -> list[str]:
         )
     if len(lines) == 3:
         lines.append("目立つ定型警告はなし。新案は直近の見出しと末文を読み比べ、展開の使い回しを防ぐ。")
-    lines.append("掲載前はEDITORIAL_LOOP.md「公開前の6点」を一度確認する。個人の観察も制度の風刺も、具体的な行動と笑いで選ぶ。動機や評価指標の説明を増やして弱い企画を救済せず、冒頭2文→全文→末文で原因と結果を確かめる。")
+    lines.append("掲載前はEDITORIAL_LOOP.md「公開前の6点」を一度確認する。個人の観察、風刺、架空の政策発表・新製品を、具体的な出来事・仕組み・使用場面と結果で選ぶ。暮らし・文化も含め、直近の題材・語り口・結末と異なる読みどころを比べ、同じ形式へ寄せ続けない。動機や評価指標の説明を増やして弱い企画を救済せず、冒頭2文→全文→末文で原因と結果を確かめる。")
     lines.append("出典・公開日時・創作の区別を守り、反応数は捏造しない。警告だけで発行を止めない。")
     return lines
 

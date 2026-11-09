@@ -40,7 +40,12 @@ class EditorialPromptConsistencyTests(unittest.TestCase):
         self.assertIn("人物・現場・原因は冒頭2文", advice)
         self.assertIn("台詞始まりは必須ではない", advice)
         self.assertIn("公開前の6点", advice)
-        self.assertIn("個人の観察も制度の風刺も", advice)
+        self.assertIn("個人の観察、風刺、架空の政策発表・新製品", advice)
+        self.assertIn("具体的な出来事・仕組み・使用場面と結果で選ぶ", advice)
+        self.assertIn("暮らし・文化も含め", advice)
+        self.assertIn("直近の題材・語り口・結末と異なる読みどころを比べ", advice)
+        for directive in ("固有のオチ", "見える逆効果", "行動と笑いで選ぶ", "別の笑いを探す"):
+            self.assertNotIn(directive, advice)
         self.assertNotIn("最低1案", advice)
         self.assertIn("二度目の逆転は不要", advice)
         self.assertIn("警告だけで発行を止めない", advice)
