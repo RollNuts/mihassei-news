@@ -411,19 +411,45 @@
     },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
-      "bytes": 123807,
-      "generated_at": "2026-11-04T02:28:39.901567+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "postprocess": {
-        "operation": "Local Pillow blur of incidental pseudo-signage and paper lettering only; no scene objects added",
-        "result_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
-        "source_run": 41759629485,
-        "source_sha256": "f427b70c803eee2e102fd159ca1867de1fdca19169e63ee6ffbc95b319712c66"
+      "source_article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+      "source_png_sha256": "c76c7b8975388b6aa6adf2c8a7dea3b43e101e32d04125d96948870d610400c5",
+      "bytes": 143432,
+      "sha256": "acef76148662e2fa6f97449b9cdebed6be9fa17a41db7677ad7e998697be2039",
+      "generation_id": "5281aa34-c9fd-4876-b1e5-8bc2ae1fc7f6",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 article image for a clearly fictional Japanese news comedy. Make one ordinary documentary camera photograph, not illustration, 3D render, advertisement, or movie poster. Outside a tiny unnamed Japanese neighborhood diner, an anonymous Japanese adult male customer in an ordinary jacket presses a small silver coin into the open palm of a surprised, serious middle-aged male diner owner in a plain worn apron. Their hands and the visible coin are the foreground focus: this is returning a coin, not a handshake. The owner's other hand still holds a separate small refund coin. Show both natural faces and these distinct hands together, waist-up medium shot from a slight side angle. Through the open doorway, two quietly waiting lunch customers make a short queue. Normal street, modest practical diner interior, warm overcast daylight, natural pores, cloth weave, soft physical shadows, imperfect ordinary surroundings. Understated deadpan comedy comes only from their earnest coin exchange. No real people, celebrities, readable coin denomination, shop name, writing, menus, logos, captions, watermarks, giant props, exaggerated expressions, plastic skin, fused fingers, or luminous CGI. Do not add running or a second action. Leave a little framing room above and below for a 16:9 news crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:18:36.592395+00:00",
+      "previous_generation": {
+        "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+        "bytes": 123807,
+        "generated_at": "2026-11-04T02:28:39.901567+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "postprocess": {
+          "operation": "Local Pillow blur of incidental pseudo-signage and paper lettering only; no scene objects added",
+          "result_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
+          "source_run": 41759629485,
+          "source_sha256": "f427b70c803eee2e102fd159ca1867de1fdca19169e63ee6ffbc95b319712c66"
+        },
+        "prompt_version": 2,
+        "seed": 1135968338982907543,
+        "sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1"
       },
-      "prompt_version": 2,
-      "seed": 1135968338982907543,
-      "sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1"
+      "previous_visual_review": {
+        "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+        "decision": "accepted",
+        "image_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
+        "note": "食堂の前にエプロン姿の店員と客がいる場面。返金・追跡の動作は未再現だが本文の舞台が判別できる。看板・メニューの擬似文字とロゴはローカルで局所ぼかしし、最終JPEGを再確認した。",
+        "reviewed_at": "2026-11-04T11:28:39.902385+09:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+        "rejected_candidate_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
+        "reason": "The old JPEG shows staff and customers outside a diner but omits the coin exchange and chase; its old background-only acceptance does not meet the current principal-action gate."
+      }
     },
     "double-speed-drama-explainer-marathon": {
       "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
@@ -743,13 +769,39 @@
     },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
-      "bytes": 110440,
-      "generated_at": "2026-11-04T02:12:30.618695+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 6861070434247018276,
-      "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
+      "source_article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+      "source_png_sha256": "424c29b57c307e01b30efb67ed8fadcb3593db002fc264f0c7a2fc4f2c31fb9f",
+      "bytes": 160495,
+      "sha256": "d45c4221992cacf476536d42277d1e92d28ef0698b55124e85ab6ebf7a7331f4",
+      "generation_id": "afdc4edf-a3c4-4d99-8f4e-d89b059b7801",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese town festival news comedy. Photograph a small friendly real-looking dog on a modest low wooden community festival stage, wearing an unlettered winner's ribbon rosette on its collar. The dog is walking toward its ordinary adult owner waiting at the right edge of the stage, and gently carries ONE lightweight handheld black microphone in its mouth: recognizable cylindrical handle extending sideways and rounded metal mesh microphone head. Three anonymous adult contestants in generic old-fashioned coats and theatrical fake beards crouch behind and beside a low plain podium, trying to coax the dog into a winner's photograph with tiny treats. The dog delivering the microphone is the clear foreground action; show its entire natural body, the complete microphone, and its owner receiving its attention, with the kneeling costumed adults visible. Ordinary contemporary Japan community event, daytime, practical wood, cloth costumes, natural fur detail and soft daylight shadows, eye-level candid medium-wide camera photograph, restrained serious expressions, mildly awkward deadpan situation. Exactly one dog. Anonymous fictional people, no resemblance to any real historical figure, celebrity, or actual event. No writing, award numerals, logos, signs, banners with lettering, captions or watermarks. No posing group portrait, illustration, cartoon, CGI, waxy faces, floating objects, extra legs, or bone-shaped microphone. Keep enough surrounding frame for a 16:9 news crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:19:14.019044+00:00",
+      "previous_generation": {
+        "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+        "bytes": 110440,
+        "generated_at": "2026-11-04T02:12:30.618695+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 6861070434247018276,
+        "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
+      },
+      "previous_visual_review": {
+        "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+        "decision": "accepted",
+        "image_sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3",
+        "note": "付けひげ・時代衣装の架空の参加者と犬が並ぶ場面。杖を運ぶ動作は未再現だが、犬と偉人そっくり大会の題材が判別できる。目立つ文字や重大な融合はない。",
+        "reviewed_at": "2026-11-04T11:19:31.334619+09:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+        "rejected_candidate_sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
+        "reason": "The old JPEG only poses costumed people and dogs together and shows neither cane nor microphone delivery; its old topic-only acceptance does not meet the current principal-action gate."
+      }
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -1594,25 +1646,51 @@
     },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-      "bytes": 109997,
-      "generated_at": "2026-11-04T02:35:10.035203+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "postprocess": {
-        "crop_box": [
-          128,
-          210,
-          544,
-          444
-        ],
-        "operation": "Local crop to the recognizable purple sweet potato; resize to publication dimensions",
-        "result_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
-        "source_run": 41760525341,
-        "source_sha256": "d347b38796fe853c70f5df337a0d0458cea3021b3893ce3526511dff9b12aa0b"
+      "source_article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8",
+      "bytes": 174092,
+      "sha256": "a5146b5ee1dbfb0817be7cbc19f4e88eef262d383da7ec0f65627efdef13c973",
+      "generation_id": "adc25f9f-f482-4c9a-92f2-6bbfe250ca24",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 camera photograph for a clearly fictional Japanese local news comedy. A modest Japanese school festival courtyard in ordinary natural daylight. A row of THREE participants, one school-age child and two adults in everyday modest clothing, each holds a real half-peeled steamed Japanese sweet potato over a plain paper tray just below the mouth, waiting impatiently without eating. Beside them a solemn adult event referee raises a small real whistle near his face and his other hand makes a clear wait/stop palm. The participants look toward the referee with restrained, slightly puzzled expressions; no cartoon faces. Show the waiting people, their separate natural hands, the potatoes, trays, and referee's whistle clearly together in a candid eye-level medium-wide oblique shot. The potatoes have matte brown-purple skins and normal solid pale yellow flesh, with small peeled skin flaps, no hollow cavities and no steam. Plain school windows and a few unlettered pennants establish a low-budget community festival. It should look like a mundane documentary photograph shot on a real camera: natural skin and cloth texture, subdued colors, plausible light and soft shadows. Anonymous fictional people, not an identifiable real school or real event. No eating demonstration, no potatoes alone as still life, no readable words, numbers, signs, brand names, captions, logos or watermark. No illustration, CGI, plastic food, giant potatoes, fused fingers, extra limbs, unnatural mouths, or frost. Keep enough vertical margin for a 16:9 article crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:19:56.071530+00:00",
+      "previous_generation": {
+        "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+        "bytes": 109997,
+        "generated_at": "2026-11-04T02:35:10.035203+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "postprocess": {
+          "crop_box": [
+            128,
+            210,
+            544,
+            444
+          ],
+          "operation": "Local crop to the recognizable purple sweet potato; resize to publication dimensions",
+          "result_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+          "source_run": 41760525341,
+          "source_sha256": "d347b38796fe853c70f5df337a0d0458cea3021b3893ce3526511dff9b12aa0b"
+        },
+        "prompt_version": 2,
+        "seed": 6902181079209608273,
+        "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
       },
-      "prompt_version": 2,
-      "seed": 6902181079209608273,
-      "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
+      "previous_visual_review": {
+        "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+        "decision": "accepted",
+        "image_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+        "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
+        "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+        "rejected_candidate_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
+        "reason": "The old JPEG is a soft crop of food alone, omitting the festival participants and cue; its old food-image acceptance does not meet the current principal-action gate."
+      }
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "a6b78fa20a29f2640bd8b0b4c063ddac02bb7de2f7f60d505f7b231a4e1f20af",
