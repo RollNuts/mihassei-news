@@ -427,13 +427,39 @@
     },
     "double-speed-drama-explainer-marathon": {
       "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-      "bytes": 84556,
-      "generated_at": "2026-11-04T02:37:44.412291+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 3201759797992626446,
-      "sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25"
+      "source_article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+      "source_png_sha256": "47eb1a073bb194b802a6d909237f94463aed7b92ea24270f805b513acdf6b955",
+      "bytes": 120999,
+      "sha256": "1589e5641ab5a7f08aabf06a9e055f6050d8db11a81d7b42c3ece7e37c8567a1",
+      "generation_id": "84e32ae0-0839-4c7c-8c04-812d50b79a42",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 editorial scene photograph for a Japanese fictional future newspaper. Create one entirely new natural camera photograph, not an illustration, CGI, poster or advertising image.\n\nScene: an ordinary modest Japanese apartment living room after dark. One anonymous fictional adult Japanese man, about 30, in plain home clothes sits at a small table, earnestly trying to understand a drama he watched too fast. The humorous situation is his very serious, excessive study of entertainment.\nEssential subjects must all be clearly visible together: the man, an open unbranded laptop with an explanation video paused, and his large open notebook of hand-drawn character relationship sketches. Show an ordinary presenter with simple anonymous headshot thumbnails and connecting lines within the laptop screen, like a generic video explaining fictional drama characters. There are no readable words or numbers on screen, no recognizable actors and no brand interface. The notebook has a few simple face circles and connecting arrows, scattered illegible pen marks; it is not a page of printed text. He holds exactly one ordinary pencil in his right hand, adding a line to the diagram while looking attentively at the paused laptop. Left hand rests naturally on the notebook. A small unused remote control lies beside it. Loose study pages occupy part of the table. The laptop is large enough to unmistakably read as video viewing in a thumbnail and is not hidden by the man.\n\nComposition: unobtrusive three-quarter view from across the table, candid medium-wide framing with man at right and laptop at left, laptop screen and open notebook both facing the camera at believable angles. Keep essential laptop, hands and notebook within the central safe 16:9 area. Physically plausible screen, paper, ordinary furniture and anatomy.\nPhotographic treatment: plain domestic ceiling/desk light, natural skin pores, subtle uneven shadows, normal cloth and paper texture, realistic camera perspective, quiet mundane colors. Deadpan focused expression. The photograph should look like an ordinary unstaged local newspaper lifestyle snapshot, with only the situation unusual. No theatrical lighting, cinematic grading, glossy plastic skin, CGI softness or exaggerated face. No text overlays, captions, logos, watermarks, legible letters or numbers, giant icons or fantastical objects. No real people or real services.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T18:35:16.011509+00:00",
+      "previous_generation": {
+        "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+        "bytes": 84556,
+        "generated_at": "2026-11-04T02:37:44.412291+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 3201759797992626446,
+        "sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25"
+      },
+      "previous_visual_review": {
+        "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+        "decision": "accepted",
+        "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
+        "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
+        "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+        "rejected_candidate_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
+        "reviewed_at": "2026-11-09T18:37:39.179912+00:00",
+        "reason": "The old JPEG shows a man writing on papers with two pens but omits the laptop and explanatory video. The old supplemental-image acceptance does not meet the current main-action requirement."
+      }
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
