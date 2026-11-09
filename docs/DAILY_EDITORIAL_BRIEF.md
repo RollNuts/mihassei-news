@@ -7,7 +7,7 @@
 - **次候補：** [EDITORIAL_IDEAS.md](EDITORIAL_IDEAS.md)の11/9朝の候補は検討材料。VIVANTの鑑賞順・小出し告知、再配達・当番・数字上の成功を名詞だけ替えて再演しない。各枠では直前と似た既刊を重点確認し、全体の反復点検は日次・週次へ寄せる。
 - **直近の実績：** 11/8は7本公開。保存済み`analytics/daily/2026-11-08.json`は48PV、coverage complete（11/9 05:23 JST取得）。流入別PVはX35／検索8／外部0／不明5。11/9分は未保存で、面白さや改善効果の因果は未判定。計測・比較の定義はOPERATIONSを参照。
 
-- **画像引継ぎ：** 新着 `paid-conversation-checkout-shoppers-chat-in-line` はrun `42553345338` の実JPEGを不採用。記事SHA `d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2`／JPEG SHA `41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c`。自然な質感でも通常の接客に見え、客同士の雑談と待つ係員がなく、値札の偽文字もある。現本文に合う専用SVGと共有PNGを用意し、公開照合は今回タスク結果に残す。
-  11/9の既刊試作run `42533373151`・`42538537711`・`42540783784` と音楽特番run `42560293535` は不採用でCPU試作4/4件消費済み。音楽特番は別途、既存プラン枠内のnative生成 `b7845adc-08be-4053-b448-315b47bd5d31` の写真を実物確認して採用。旧指紋・seedを付け替えず、追加クレジット購入・有料APIは使っていない。
-  このレジ記事を改善試作する時は、手前の買い物客2人を互いに向かせ、奥の係員を会話に参加させず待機させる別構図を検証する。
+- **画像引継ぎ：** 音楽特番はnative写真を実物確認して採用済み。冷蔵庫・自由遊びも新規native JPEGを実表示して採用し、元のCPU生成記録・保留理由・seedはmanifest内に保持した。公開画像・revisionの照合は今回タスク結果へ残す。
+  新着 `food-rescue-shops-manufacture-leftovers` はCPU run `42563368651` のサンドイッチ状の画像を不採用とし、米飯弁当をかご間で移す新native写真を採用。記事SHA `420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f`／JPEG SHA `2d2041fe072ebbe168116746bbd8d13a805082bc954a6a651a4134eef1d8786a`。対応する専用SVGも確認済み。
+  11/9のCPU既刊試作はrun `42533373151`・`42538537711`・`42540783784`・`42560293535` の4/4件消費済み。nativeの生成ID・実指示・原PNG SHA・採否はmanifest/reviewsを正とし、追加購入・APIキー・Mac GPUは使っていない。
 - **動画の未完了：** `publish_motion_clips.py --plan`はpending=0。新着の漁港と加湿器はimage_required、既存6件はcurrent。漁港は画像品質保留のため動画生成・本番配信済みと扱わず、発行担当の選抜・字幕記録を保持する。

@@ -22,7 +22,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000199.000017141.html",
       "topic": "2026年7月23日11時、TABETE運営会社はファミリーマートとの食品ロス削減実証を発表。消費期限の近い食品等をアプリで注文・決済し、都内6店舗で受け取る仕組み。ファミリーマート公式発表 https://www.family.co.jp/sustainability/topics/2026/s20260723.html と同内容を照合。2031年の「おたすけ食堂」、救出専用の追加製造、予約需要、工場見学、親子の会話は全て本紙の創作であり、実在企業の行為ではない。"
     },
-    "scene_prompt": "An ordinary Japanese lunchbox kitchen worker placing freshly cooked packed bento meals with rice and chicken into a metal pickup rack, while a visiting parent and child watch beside the counter. Clear trays of fresh food prominent in the foreground, ordinary small Japanese food-preparation facility in daylight, candid documentary news photograph, natural hands and skin, no brand marks, no readable text.",
+    "scene_prompt": "A Japanese kitchen worker moves a freshly packed rice-and-chicken bento between adjacent pickup baskets while a visiting parent and child watch through a service opening. Shallow rectangular meal trays on a stainless counter, ordinary morning daylight, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "食",
@@ -63,7 +63,8 @@
       "present_signal": "2026年7月に、期限の近い食品をアプリで注文し店舗で受け取る実証が都内6店舗で始まった",
       "continuation_force": "予約決済で確実に販売できる仕組みと、安く社会貢献に参加したい顧客の需要が商品そのものへ転化する",
       "future_result": "食品ロス救出の名を守るため、余り物が発生する前から救出用の商品を製造する専門店が現れる"
-    }
+    },
+    "modified_at": "2026-11-09T14:43:29+09:00"
   },
   {
     "slug": "paid-conversation-checkout-shoppers-chat-in-line",

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="工場で出来たての米と鶏肉の弁当を二つの受取かごの間へ移す作業員と、見学窓から見守る親子の創作イラスト" data-visual-topic="robot" data-article-sha256="420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f">
+<title>出来たての弁当が隣の受取かごへ移される工場</title>
+<defs><g id="bento"><rect width="150" height="72" rx="7" fill="#404b4b"/><rect x="7" y="7" width="78" height="58" rx="4" fill="#f4eedb"/><path d="M94 14h46v44H94z" fill="#b77746"/><path d="M96 15l41 30M96 30l29 29" stroke="#8d5535" stroke-width="5"/><path d="M92 56h45v8H92z" fill="#71875b"/><path d="M18 22l10 3m15 12l9 2m8-15l10 2m-45 25l11 3" stroke="#d8cfb7" stroke-width="3"/></g></defs>
+<rect width="1200" height="675" fill="#e7e7dc"/><rect y="380" width="1200" height="295" fill="#b6b5a6"/>
+<path d="M0 360h1200M0 290h790M0 220h790M0 150h790" stroke="#d0d4cb" stroke-width="3"/>
+<rect x="35" y="98" width="185" height="300" rx="8" fill="#cbd2cb" stroke="#768781" stroke-width="9"/><path d="M45 187h165M45 280h165M45 374h165" stroke="#768781" stroke-width="7"/>
+<use href="#bento" x="52" y="110"/><use href="#bento" x="52" y="204"/><use href="#bento" x="52" y="299"/>
+<rect x="822" y="80" width="340" height="265" rx="7" fill="#b6ced0" stroke="#75867e" stroke-width="12"/>
+<path d="M839 99h306v221H839z" fill="#e0e9dc"/>
+<path d="M861 315v-66q0-25 26-25h61q26 0 26 25v66" fill="#b89e80"/><circle cx="919" cy="181" r="39" fill="#d7ad89"/><path d="M879 176q0-54 42-47q43 0 38 48q-25-8-40-24q-13 22-40 23" fill="#5b4d43"/>
+<path d="M1008 316v-48q0-20 23-20h42q22 0 22 20v48" fill="#738a90"/><circle cx="1052" cy="220" r="30" fill="#dbb28b"/><path d="M1023 214q-3-38 29-36q36 0 31 39l-31-13z" fill="#51483f"/>
+<path d="M908 183h4m20 0h4m-19 20h13m-18-18h4m15 0h4m108 36h4m14 0h4m-17 17h10" stroke="#5b4a3c" stroke-width="4" stroke-linecap="round"/>
+<path d="M821 330h342" stroke="#748680" stroke-width="20"/>
+<path d="M413 420l13-145q6-38 42-38h97q35 0 42 38l13 145" fill="#f1efe6"/><path d="M463 256l-16 165h139l-16-165" fill="#a5aa8e"/>
+<circle cx="518" cy="175" r="47" fill="#d6ad87"/><path d="M465 165q-1-58 53-58q53 0 54 58z" fill="#c7d1c7"/><path d="M502 178h4m21 0h4m-22 21h17" stroke="#625448" stroke-width="4" stroke-linecap="round"/>
+<path d="M442 286l-50 92l104 51M591 286l60 83l-47 58" fill="none" stroke="#d6ad87" stroke-width="27" stroke-linecap="round"/>
+<rect y="431" width="1200" height="244" fill="#b8c6c3"/><path d="M0 436h1200" stroke="#6e8280" stroke-width="10"/>
+<rect x="303" y="457" width="222" height="104" rx="9" fill="#dce2d8" stroke="#788c81" stroke-width="6"/><rect x="650" y="457" width="222" height="104" rx="9" fill="#dce2d8" stroke="#788c81" stroke-width="6"/>
+<path d="M325 479v65m30-65v65m30-65v65m30-65v65m30-65v65m30-65v65m199-65v65m30-65v65m30-65v65m30-65v65m30-65v65m30-65v65" stroke="#a1b1a2" stroke-width="8"/>
+<use href="#bento" x="338" y="424"/><use href="#bento" x="684" y="425"/><g transform="translate(491 378) rotate(3)"><use href="#bento"/></g>
+<circle cx="495" cy="406" r="14" fill="#d6ad87"/><circle cx="637" cy="420" r="14" fill="#d6ad87"/>
+<g transform="translate(34 520) scale(1.4)"><use href="#bento"/></g><g transform="translate(903 527) scale(1.35)"><use href="#bento"/></g>
+</svg>
