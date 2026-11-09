@@ -136,6 +136,52 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertEqual(report["observed"]["overdue_sending"], 0)
         self.assertEqual(report["scope"]["automatic_lane"], "article-picks-only")
 
+    def test_public_x_observations_do_not_become_buffer_receipts_or_delivery_counts(self):
+        public = {
+            "url": "https://x.com/Veripsa/status/123",
+            "posted_at_utc": (NOW - timedelta(hours=1)).astimezone(timezone.utc).isoformat(),
+            "observed_at_utc": NOW.astimezone(timezone.utc).isoformat(),
+        }
+        state = {"schema_version": 1, "queued": {}, "public_posts": {
+            "observed-story": public,
+        }}
+        report = m.build(state, [], NOW)
+        self.assertEqual(m.selected_entries(state, NOW), [])
+        self.assertEqual(report["items"], [])
+        self.assertEqual(report["observed"]["article_records_checked"], 0)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 0)
+        # A real saved Buffer receipt remains auditable even if the same slug
+        # has also been independently seen on X. It is still counted once.
+        state["queued"]["observed-story"] = entry("observed-story")
+        remote = [{"id": "buf-observed-story", "status": "sent",
+                   "text": "https://veripsa.com/articles/observed-story/",
+                   "sentAt": public["posted_at_utc"]}]
+        report = m.build(state, remote, NOW)
+        self.assertEqual(report["observed"]["article_records_checked"], 1)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 1)
+
+    def test_public_only_ledger_never_requests_a_buffer_id_or_writes_delivery(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config.json").write_text(json.dumps({
+                "schema_version": 1, "channel_id": "x-1",
+            }))
+            (root / "state.json").write_text(json.dumps({
+                "schema_version": 1, "queued": {}, "public_posts": {"observed-story": {
+                    "url": "https://x.com/Veripsa/status/123",
+                    "posted_at_utc": "2026-11-05T01:00:00Z",
+                    "observed_at_utc": "2026-11-05T03:00:00Z",
+                }},
+            }))
+            with patch.object(m, "HERE", root), \
+                 patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only", "X_AUDIT_TRIGGER_EVENT": "schedule"}, clear=True), \
+                 patch.object(m, "read_post_by_id") as read, patch.object(m, "save") as save:
+                clock.now.return_value = NOW
+                self.assertEqual(m.main(), 0)
+                read.assert_not_called()
+                save.assert_not_called()
+
     def test_direct_saved_id_distinguishes_short_sending_from_real_problem(self):
         state = {"schema_version": 1, "queued": {
             "error": entry("error", 2),
