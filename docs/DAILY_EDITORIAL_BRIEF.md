@@ -10,4 +10,4 @@
 - **画像引継ぎ：** 音楽特番はnative写真を実物確認して採用済み。冷蔵庫・自由遊びも新規native JPEGを実表示して採用し、元のCPU生成記録・保留理由・seedはmanifest内に保持した。公開画像・revisionの照合は今回タスク結果へ残す。
   新着 `food-rescue-shops-manufacture-leftovers` はCPU run `42563368651` のサンドイッチ状の画像を不採用とし、米飯弁当をかご間で移す新native写真を採用。記事SHA `420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f`／JPEG SHA `2d2041fe072ebbe168116746bbd8d13a805082bc954a6a651a4134eef1d8786a`。対応する専用SVGも確認済み。
   11/9のCPU既刊試作はrun `42533373151`・`42538537711`・`42540783784`・`42560293535` の4/4件消費済み。nativeの生成ID・実指示・原PNG SHA・採否はmanifest/reviewsを正とし、追加購入・APIキー・Mac GPUは使っていない。
-- **動画の未完了：** `publish_motion_clips.py --plan`はpending=0。新着の漁港と加湿器はimage_required、既存6件はcurrent。漁港は画像品質保留のため動画生成・本番配信済みと扱わず、発行担当の選抜・字幕記録を保持する。
+- **動画の未完了：** 漁港 `personalized-hidden-harbor-crowded-by-tourists` は新写真を目視採用し、`captions_required`へ進んだ。発行・改稿担当が現本文と3字幕を再確認し、記事SHA `76c8e190023eb39c7eadeb358477d57021f15ba90d9a30d822854adc102023f4` に対する記録を整えて既存の自動生成へ渡す。静止画の掲載と動画の生成・本番配信は区別する。加湿器はimage_required、既存6件はcurrent。

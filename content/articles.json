@@ -155,7 +155,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000001.000187104.html",
       "topic": "2026年8月26日発表、同8月4〜5日の20〜60代913人調査で、有人・セルフレジが両方ある場合にセルフを選ぶ傾向が63.5％。セルフ派のうち最大の理由が『店員と話さなくて済むから』の人は21.5％。出典は会話の月額販売や2031年の動向を報じていない。ひと声マート、会話専用レジ、会員、人物のやりとりはすべて本紙の創作。"
     },
-    "scene_prompt": "An ordinary Japanese supermarket worker at a cashier counter waiting to speak with a customer while two customers with grocery bags casually chat with each other beside the checkout queue, one green onion peeking out of a grocery bag. Everyday fluorescent grocery store lighting, candid realistic documentary news photograph, no brand marks, no readable text.",
+    "scene_prompt": "Three shoppers with filled grocery bags chat with each other beside a supermarket checkout, one pointing to a long green onion protruding from a bag. At the empty neighboring counter, a cashier waits while the customers continue their own conversation.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "店舗",
@@ -196,7 +196,8 @@
       "present_signal": "2026年8月の913人調査ではセルフレジ派が63.5％、その一部は店員と話さない点を選択理由にした",
       "continuation_force": "店は人件費を抑えるため会計の自動化を進めつつ、接客を求める常連には収益源として話し相手の時間を売る",
       "future_result": "会計を終えた客が話すために再び並び、列で自然に会話が生まれる"
-    }
+    },
+    "modified_at": "2026-11-09T15:48:11.546865+09:00"
   },
   {
     "slug": "personalized-hidden-harbor-crowded-by-tourists",
@@ -221,7 +222,7 @@
       "url": "https://www.tourism.jp/research-reports/lifestyle-2026/",
       "topic": "2026年3月18日公表の「ライフスタイルと旅行に関する調査2026」は、情報源として家族・友人の口コミはなお上位だが、知らない人のSNS投稿や生成AIの利用割合が増加したと報告。参考として2025年12月17日公表のスマートフォンと旅行調査（https://www.tourism.jp/research-reports/smartphone-2025/）は、情報検索への生成AI利用が9.7％から28.8％へ増加したと報告。2031年の波先町、旅行アプリ3社の推薦が同一漁港へ集中した出来事、漁師や旅行者の行動・発言はすべて本紙の創作で、実在アプリや調査対象の実例ではない。"
     },
-    "scene_prompt": "An ordinary Japanese fisherman in work boots carries coiled fishing rope beside a small fishing boat while a few tourists with cameras and phones photograph the morning harbor from the adjacent public walkway. Small coastal fishing port, natural overcast dawn light, everyday candid news photograph, no logos, no readable text.",
+    "scene_prompt": "At dawn in a small working fishing harbor, tourists with cameras and tripods block a narrow quay beside a small fishing boat. A fisherman carrying a fishing net stops before the tripods and raises a hand to ask for passage.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "地域",
@@ -257,7 +258,8 @@
       "action": "別々の旅行アプリが同じ港を個別の穴場として推薦したため、撮影客が集まる",
       "oddity": "秘密の場所のはずが観光客で埋まり、最後には秘密にしておくと漁師へ約束する"
     },
-    "broadcast_feature": true
+    "broadcast_feature": true,
+    "modified_at": "2026-11-09T15:48:11.546865+09:00"
   },
   {
     "slug": "zero-redelivery-residents-collect-parcels",
@@ -282,7 +284,7 @@
       "url": "https://www.mlit.go.jp/report/press/tokatsu01_hh_001025.html",
       "topic": "国土交通省は2026年7月10日、同年4月の大手宅配事業者調査について多様な受取方法の利用率約31.0％、再配達率約7.6％と公表。2026年3月31日閣議決定の総合物流施策大綱に、2030年度までに多様な受取方法の利用率を約50％へ高める目標がある。2031年のマンション「晴れ間レジデンス」、宅配ボックス優先の割引契約、配送所受取への切替、住民当番、館内配達係の求人はすべて創作で、実在企業・国の施策で確認された失敗ではない。"
     },
-    "scene_prompt": "At a modest apartment building entrance in early evening, several ordinary residents pull folding handcarts carrying cardboard delivery parcels, with one resident setting down a full parcel trolley beside a small building bulletin board. Natural daylight, apartment walkway, everyday clothing, no logos or readable text.",
+    "scene_prompt": "At dusk, three ordinary residents in after-work clothes push low folding flatbed handcarts carrying taped cardboard delivery boxes back into a modest apartment entrance. A short queue forms beside the building parcel lockers.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "地域",
@@ -322,7 +324,8 @@
       "present_signal": "2026年7月、国土交通省は多様な宅配受取方法の利用率31.0％と2030年度約50％の目標を公表した",
       "continuation_force": "再配達件数と割引料金を重視する契約が広がると、建物側へ受取負担を移す誘因が生じる",
       "future_result": "2031年、再配達ゼロを達成したマンションで住民が配送所から荷物を運び、館内配達係を募集する"
-    }
+    },
+    "modified_at": "2026-11-09T15:48:11.546865+09:00"
   },
   {
     "slug": "custom-work-apps-four-week-handover",
