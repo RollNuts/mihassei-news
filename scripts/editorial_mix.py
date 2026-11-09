@@ -969,6 +969,7 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
     if (
         observed_is_natural_hashtag
         and observed_term
+        and discovery_norm == observed_term
         and observed_term not in reader_anchor
     ):
         errors.append(
@@ -977,6 +978,7 @@ def _validate_trend_bridge(article: dict, slug: str, published: datetime) -> lis
         )
     if (
         observed_is_natural_hashtag
+        and observed_term in reader_anchor
         and discovery_norm
         and discovery_norm != observed_term
         and not discovery_is_ticker

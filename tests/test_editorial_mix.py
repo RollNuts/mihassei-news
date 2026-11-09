@@ -872,6 +872,43 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertTrue(any("must appear in the title or summary" in error for error in errors))
 
+    def test_generic_public_term_preserves_original_trend_observation(self):
+        for observed, public_term, detail in (
+            ("ライオンキング", "前日譚", "21時〜23時24分"),
+            ("Suicaペンギン", "買い物袋", "累計27枚"),
+        ):
+            with self.subTest(observed=observed):
+                item = story(
+                    "generic-public-term", "trend", term=observed,
+                    published=datetime(2026, 11, 6, 18, 30, tzinfo=JST),
+                )
+                item["title"] = f"{public_term}の準備だけで家族会議が長引き、本来の予定が後回しに"
+                item["summary"] = (
+                    f"{public_term}を楽しむ準備に家族が熱中し、{detail}を前に話し合うほど、"
+                    "肝心の体験が後回しになる家族の場面を描く。"
+                )
+                item["source"]["topic"] = f"{observed}について、{detail}という具体的な情報が発表された。"
+                item["trend_bridge"] = {
+                    "why_now": "新しい発表が話題になり、家族で利用する前の準備にも注目が集まっている。",
+                    "shared_behavior": "一番よい形で体験しようと、準備や相談に時間をかけすぎてしまう。",
+                    "satire_gap": "楽しむための準備を入念にするほど、その体験そのものを後回しにする。",
+                    "x_discovery_term": public_term,
+                    "real_detail": detail,
+                    "unique_hook": f"{detail}という具体的な条件が、家族の準備や相談を長引かせるきっかけになる。",
+                }
+                item["x_tags"] = [public_term]
+                observation = copy.deepcopy(item["trend_observation"])
+
+                errors, _ = validate_articles([item])
+                self.assertEqual(errors, [])
+                self.assertEqual(item["trend_observation"], observation)
+
+                item["x_tags"] = ["新空港"]
+                item["trend_bridge"]["x_discovery_term"] = "新空港"
+                errors, _ = validate_articles([item])
+                self.assertTrue(any("anchored in title" in error for error in errors))
+                self.assertEqual(item["trend_observation"], observation)
+
     def test_new_articles_reject_broad_invalid_or_unpublished_x_terms(self):
         item = story(
             "x-meta",

@@ -1506,6 +1506,19 @@
       "model": "ChatGPT ImageGen",
       "prompt_version": 3,
       "generated_at": "2026-11-09T11:49:48.479036+00:00"
+    },
+    "suica-penguin-eco-bags-stay-sealed": {
+      "article_sha256": "1ef8b8f039c1081d1569ea2e72a9e6ab7faf956733b1aaa1879d44444ce3cea7",
+      "bytes": 143745,
+      "generation_id": "f8ba8596-58ed-4edd-aa83-7324205c3d98",
+      "generation_prompt": "Use case: photorealistic-natural. Generate one horizontal 16:9 candid documentary newspaper photograph for a completely fictional shopping story, with exactly THREE original penguin-shaped plush charms with CLOSED BACK ZIPPERS and exactly ONE plastic grocery shopping bag. An anonymous fictional Japanese adult woman around thirty in ordinary modest everyday clothes is at an unbranded neighborhood supermarket checkout. She lifts a single slightly crinkled translucent white plastic bag containing ordinary groceries from the checkout counter by its handles, while her own plain canvas shoulder bag hangs from her other shoulder. Attached together on the OUTSIDE of this canvas shoulder bag are THREE palm-sized penguin-shaped plush charms, in green, muted red, and navy. All three plush penguins turn their BACKS clearly toward the camera; their separate rounded bodies and simple flippers are identifiable and each has its own small REALISTIC SILVER ZIPPER on its back, fully closed from end to end. No fabric bag is unfolded or pulled from any charm. Their stuffed-fabric shapes are original generic fictional designs with no recognizable commercial mascot face, silhouette details or branding. Frame the woman waist-up in three-quarter side view, with her bag and all THREE closed zippered charms large and unobscured in the foreground and the ONE plastic grocery bag held nearby in the same photograph. It must be easy to count three separate zipped-back charms next to the plastic grocery bag at news-thumbnail size. Her face is calm and serious, not a posed smile; hands are natural and hold the real bag handles. The ordinary checkout counter and shelves are quiet and softly out of focus behind her. Use normal practical supermarket light, realistic skin pores, cotton canvas, fuzzy sewn plush fabric, metal zipper teeth and crinkled thin plastic, believable contact shadows and everyday colors. One coherent camera photograph, not an infographic or collage. All people, shop and products are fictional and unbranded. Absolutely no readable words, numbers, labels, receipts, store signs, logos, headlines, captions or watermark. No recognizable real character design. No illustration, cartoon, anime, 3D render, glossy toy catalog lighting, waxy skin or theatrical expressions. Do not add a fourth plush, a second plastic shopping bag, an open zipper, an unfolded reusable bag, or extra hands.",
+      "sha256": "16ae59074aa6a91821c3da55ebefd03d2c32e19fe68d109629f87433d0b84b07",
+      "source_article_sha256": "ca59d6f0233017e56d41fba0a5b7f3126f042c25d4bd93c81fb76b91363cbffc",
+      "source_png_sha256": "3dac17b4dbe4b8a3e2e0d8b46a74b2901892c3a6d9f79d122d0b283b4e31e55f",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T12:33:14.711046+00:00"
     }
   },
   "rejected": {
