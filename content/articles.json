@@ -1314,7 +1314,7 @@
       "url": "https://www.city.taito.lg.jp/event/kanko/torinoithi.html",
       "topic": "台東区の2026年9月24日更新の公式案内によると、2026年の酉の市は11月7日・19日、鷲神社と長國寺で開催される。熊手は福運・財をかき込む商売繁盛の縁起物。公式サイトは更新日だけを示し時刻は非掲載のため、published_atの00:00は日付代表値。2031年の雑貨店「角田商店」、商店街の写真投稿企画、特大熊手を正面の撮影場所にする行為、SNS集客1位と会計3件は本紙の創作であり、実在の酉の市や店主・商店街の行為ではない。"
     },
-    "scene_prompt": "Candid photorealistic Japanese small shopping street storefront in autumn daylight. An enormous ornate traditional lucky bamboo rake is staged across most of the main storefront as a photo spot, with pedestrians photographing it on phones. A narrow side entrance remains technically open around the corner, while an actual shopper hesitates and starts to leave. The shopkeeper checks a simple ranking screen on a phone with no readable text. Natural documentary press-photo look, realistic scale and gestures, no recognizable businesses or shrine names, no logos, no watermark.",
+    "scene_prompt": "An enormous ornamental kumade rake blocks a small shop doorway while two adults photograph it and a shopper with a shopping bag turns toward the narrow side entrance.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "店舗",
@@ -1350,7 +1350,7 @@
       "why_not": "熊手を動かすと撮影投稿が減って順位を落とすと考え、店主は側面入口への迂回を選ぶ",
       "evidence_quote": "「今動かすと順位が落ちるから、夕方までこのまま」"
     },
-    "modified_at": "2026-11-07T17:09:00+09:00"
+    "modified_at": "2026-11-09T22:52:58+09:00"
   },
   {
     "slug": "lion-king-prequel-watch-order-meeting",
@@ -1617,8 +1617,8 @@
       "url": "https://minkabu.jp/news/4652230",
       "topic": "株探の2026年11月6日11:31配信によると、同日前場の日経平均株価は前日比3219.29円（5.27%）安の57858.61円で終了した。佐伯さん、100年先への売却予定変更、分刻みの価格記録は本紙の創作であり、実在の投資家や証券会社の行為ではない。"
     },
-    "scene_prompt": "A grounded editorial illustration of an ordinary Japanese home workspace: a lone adult man in a plain shirt anxiously tapping his smartphone stock price screen every minute, a growing pile of densely handwritten notebook pages on the desk and an oversized long-term investment wall calendar in the background. The contrast between the thick daily notes and almost empty century plan is clear. Everyday furniture, modest natural daylight, no company logos and no legible writing.",
-    "visual_strategy": "illustration",
+    "scene_prompt": "A fictional adult investor holds a smartphone in one hand and writes another short entry in one densely filled open notebook with the other, at an ordinary home desk. A mostly empty wall planner with one circled cell sits softly behind him. Oblique close view of the phone, pen and notebook, natural daylight, no readable figures or logos.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "投資",
       "お金"
@@ -1648,7 +1648,8 @@
         "https://minkabu.jp/news/4652230",
         "https://minkabu.jp/stock/9983/news/4652095"
       ]
-    }
+    },
+    "modified_at": "2026-11-09T22:52:58+09:00"
   },
   {
     "slug": "christmas-done-for-you-family-decorates-boxes",

@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="100年先の売却予定が一つだけの長期計画表を背に、投資家がスマートフォンの株価を毎分確認し、今日の価格だけで十数冊の記録ノートを埋める創作イラスト" data-visual-topic="document" data-article-sha256="49237e88ac9d3648206ac247cb4ef0aa4184b04a1a34614fffc09ec96b6eb05c">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="100年先の売却予定が一つだけの長期計画表を背に、投資家がスマートフォンの株価を毎分確認し、今日の株価を一冊のノートへ細かく書き留める創作イラスト" data-visual-topic="document" data-article-sha256="70f9071727826b917a52ea97dbe3ada4b6a6b1a238a75343767bed915aa89a92">
 <title>百年保有を決意しながら一分ごとに株価を書き留める投資家</title>
-<desc>昼の室内。男性は不安そうにスマートフォンの下落線を見て、隣のノートへ株価を書き足している。机には今日の記録を詰めた十数冊分のノートが山積み。壁の百年間を表す格子状の予定表には百年後の一か所だけ赤印がある。</desc>
+<desc>昼の室内。男性は不安そうにスマートフォンの下落線を見て、隣のノートへ株価を書き足している。机の右端にあるのは薄いノート一冊で、十数冊の山ではない。壁の百年間を表す格子状の予定表には百年後の一か所だけ赤印がある。</desc>
 <defs>
  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4efe7"/><stop offset="1" stop-color="#deded3"/></linearGradient>
  <linearGradient id="window" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#9cbcc8"/><stop offset="1" stop-color="#e4ddd0"/></linearGradient>
@@ -193,47 +193,13 @@
 <path d="M278 508q14 3 25 20" stroke="#e7bc99" stroke-width="21" stroke-linecap="round" fill="none"/>
 <path d="M308 533l45 40" stroke="#4e5d60" stroke-width="7" stroke-linecap="round"/>
 <path d="M354 574l7 10-13-4z" fill="#333e47"/>
-<g filter="url(#shadow)">
-<rect x="837" y="621" width="270" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M835 620h261v4h-261z" fill="#82999a" stroke="#5e6866" stroke-width="2"/>
-<path d="M852 629h235" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="843" y="605" width="264" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M841 604h255v4h-255z" fill="#a88a7d" stroke="#5e6866" stroke-width="2"/>
-<path d="M858 613h229" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="831" y="589" width="266" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M829 588h257v4h-257z" fill="#779295" stroke="#5e6866" stroke-width="2"/>
-<path d="M846 597h231" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="846" y="573" width="260" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M844 572h251v4h-251z" fill="#9a9182" stroke="#5e6866" stroke-width="2"/>
-<path d="M861 581h225" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="839" y="557" width="270" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M837 556h261v4h-261z" fill="#6c8393" stroke="#5e6866" stroke-width="2"/>
-<path d="M854 565h235" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="827" y="541" width="260" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M825 540h251v4h-251z" fill="#9b8375" stroke="#5e6866" stroke-width="2"/>
-<path d="M842 549h225" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="845" y="525" width="263" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M843 524h254v4h-254z" fill="#668b82" stroke="#5e6866" stroke-width="2"/>
-<path d="M860 533h228" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="835" y="509" width="268" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M833 508h259v4h-259z" fill="#b28d76" stroke="#5e6866" stroke-width="2"/>
-<path d="M850 517h233" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="840" y="493" width="259" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M838 492h250v4h-250z" fill="#758e88" stroke="#5e6866" stroke-width="2"/>
-<path d="M855 501h224" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="834" y="477" width="264" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M832 476h255v4h-255z" fill="#99938a" stroke="#5e6866" stroke-width="2"/>
-<path d="M849 485h229" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="844" y="461" width="260" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M842 460h251v4h-251z" fill="#597989" stroke="#5e6866" stroke-width="2"/>
-<path d="M859 469h225" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-<rect x="838" y="445" width="266" height="17" rx="3" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
-<path d="M836 444h257v4h-257z" fill="#a99a86" stroke="#5e6866" stroke-width="2"/>
-<path d="M853 453h231" stroke="#bdb8aa" stroke-width="1.4" opacity=".8"/>
-</g>
-<g transform="rotate(7 912 445)" filter="url(#smallshadow)">
- <rect x="849" y="390" width="170" height="87" rx="4" fill="#f6efe0" stroke="#837568" stroke-width="4"/>
- <path d="M868 410h129M868 427h123M868 444h128M868 459h120" stroke="#98abb0" stroke-width="4" stroke-dasharray="40 6 10 7 15 4"/>
+<!-- One slim notebook replaces the exaggerated mountain of books. -->
+<g filter="url(#smallshadow)" stroke-linejoin="round">
+ <path d="M847 543l241-3 12 65-241 5z" fill="#8fa6a0" stroke="#637a73" stroke-width="4"/>
+ <path d="M859 610l241-5v11l-241 5z" fill="#eee8d8" stroke="#766b64" stroke-width="2"/>
+ <path d="M847 543l12 67v11l-12-66z" fill="#627d77" stroke="#5e6866" stroke-width="2"/>
+ <path d="M860 614l238-5m-237 9 236-5" stroke="#c4bdac" stroke-width="1.3" fill="none"/>
+ <path d="M860 546l12 59" stroke="#b5c7bc" stroke-width="2" opacity=".8"/>
 </g>
 <ellipse cx="789" cy="620" rx="39" ry="9" fill="#51483f" opacity=".18"/>
 <path d="M750 564h68l-8 51q-23 23-52 0z" fill="#f1e7dc" stroke="#9a9f99" stroke-width="5"/>
