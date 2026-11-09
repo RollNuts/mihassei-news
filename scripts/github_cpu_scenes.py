@@ -46,7 +46,7 @@ except ImportError:
     )
 
 MAX_CPU_BATCH = 3
-MAX_DAILY_BACKFILLS = 3
+MAX_DAILY_BACKFILLS = 4
 BACKFILL_RUN_PREFIX = "Photo backfill: "
 # New content and image inputs preempt old-photo trials. Publishing metadata,
 # documentation and unrelated site edits do not change this generation queue.
