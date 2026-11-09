@@ -312,14 +312,37 @@
       "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
     },
     "film-village-all-stars-no-extras": {
-      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "bytes": 116735,
-      "generated_at": "2026-11-05T09:15:38.773814+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 8989241339850763742,
-      "sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd"
+      "article_sha256": "6a3000734189e1a646a595a87ac2059d54dc4fa096440774ba3a1c5c351335d1",
+      "bytes": 194065,
+      "generated_at": "2026-11-09T08:03:24.048602+00:00",
+      "generation_id": "7482d4bb-5130-42c8-a26c-924646056c00",
+      "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary local newspaper documentary photograph of a staged fictional scene on a modest Japanese tourist movie-making experience set, not any real film or famous actor. A small empty-of-real-shoppers unbranded wooden shopping lane in normal daytime. Near the left foreground a real plain VIDEO CAMERA mounted on an ordinary three-legged tripod points down the lane. Just beyond it in the center-left, TWO anonymous adult visitors in everyday jackets, paid to be protagonists, stand together at a storefront and hold self-important but restrained serious leading-actor poses toward that camera. One has arms folded, the other has a hand resting at a hip. Behind them across the right middle-ground, the DIRECTOR, an ordinary middle-aged adult in a modest cap and casual shirt, is the ONLY PERSON ACTING AS A PASSING SHOPPER: clearly walking sideways across the shot with two normal grocery shopping bags, one hanging from each hand. His body faces across the street while he turns a mildly tired deadpan face toward the camera and posing participants. Make the tripod camera, the two motionless aspiring stars, and this walking director with BOTH grocery bags unmistakably visible at once in a believable diagonal view from beside the filming camera. The bags are medium everyday grocery bags, distinct from his legs, not giant suitcases. No additional pedestrians, store staff, crew or crowd in this visible part of the street. The joke is that the protagonists pose and wait while the director has to supply all background human activity himself. This is a small framed portion of a larger twenty-participant experience; do not try to show twenty people or print reservation tickets. No running, slapstick falls, exaggerated facial comedy, costume drama, famous movie characters or cinematic spectacle. Ordinary believable hands and walking legs, real worn timber and pavement, natural soft daylight and shadows, real fabric and human skin, neutral slightly imperfect documentary photography, 35mm eye-level medium-wide frame. No readable shop signs, written notices, logos, labels, lettering, captions, headlines or watermark. No illustration, anime, 3D render, glossy advertising, dramatic movie-poster lighting or plastic faces.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+        "bytes": 116735,
+        "generated_at": "2026-11-05T09:15:38.773814+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 8989241339850763742,
+        "sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+        "reason": "Actual visual review of full Realistic Vision 24-step preview 42461246270: naturally lit wooden buildings and an empty paved lane look photographic, but no film director, grocery bags or tripod film camera is visible. The article's director acting as the only extra is absent. Reject this candidate, retain the current story-specific SVG, and move to another article on a later free daily backfill slot rather than retry today.",
+        "rejected_candidate_sha256": "d0c7f9b077269d2150b829f857620645145e89144b3d0a3e2138f0b99f59e76b",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42461246270",
+        "reviewed_at": "2026-11-08T08:14:58.356695+00:00",
+        "source_article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+        "trial_article_sha256": "16a4591be35652350d9e83445d66558ddefa85be9781634736b8b2f60d6c756e",
+        "trial_scene_prompt": "A solitary Japanese film director carries plain grocery bags past a film camera on a tripod on an empty historical film-set lane. Blank wooden walls, daylight, no storefront signs or other people."
+      },
+      "prompt_version": 3,
+      "sha256": "b491960596e02c7fb94f4e4bcd8e1b223a9ed076ea3afb1582079ee8a3db2a14",
+      "source_article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "source_png_sha256": "c0d27592060d2b72b41902ed087a80a2e7d5a65de4a3c0a2f909c2346b2ad820"
     },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
@@ -503,13 +526,45 @@
     },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
-      "bytes": 79054,
-      "generated_at": "2026-11-04T05:34:29.389149+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 979487124694735815,
-      "sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf"
+      "bytes": 169095,
+      "generated_at": "2026-11-09T08:02:07.980006+00:00",
+      "generation_id": "38d3a03b-fcea-44bc-936d-d6812f7d590f",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid documentary press photograph of a staged fictional scene in a modest small exhibition room. Anonymous fictional Japanese adults, no real politician or known commentator. The main subject is an ORDINARY worn open paper notebook resting on a wooden exhibition table, seen from a near three-quarter overhead camera angle. The right-hand top sheet is slightly raised at its outer edge by the binding, and near the middle of that sheet there is a clear roughly ROUND 3 cm HOLE made by repeated pencil erasing, with thin frayed paper fibers and gray rubbed edges. Through this actual hole in ONLY THE TOP SHEET, show the intact NEXT PAPER PAGE underneath, with different faint unreadable pencil traces on it. The opening must look like real thin paper worn through by erasing, not a solid black drawn circle, print, a clean decorative cutout, or a hole through the entire book. Tiny realistic gray eraser crumbs are scattered across the notebook and wooden table; a simple small pink eraser and short wooden pencil lie beside it. On the far side of the table, a middle-aged male commentator in a plain everyday blazer proudly but deadpan points one finger CLOSE TO THE FRAYED EDGE OF THE HOLE without covering it. An adult visitor beside him bends slightly forward to examine the hole with a restrained puzzled expression. Keep the real notebook, small physical hole with visible lower page, eraser crumbs and pointing finger large and crisp in the foreground; the two people's faces remain naturally visible in the upper background. The joke is the commentator claiming perfect foresight while pointing at the physical hole erased into his predictions notebook. Natural side-window daylight, actual rough paper fibers and pencil smudges, ordinary imperfect wood, real skin, hands and clothing, believable optical depth of field, muted local-news snapshot, no theatrical expressions or dramatic light. No readable handwriting, text, signs, placards, flags, party symbols, logos, labels, headlines or watermarks anywhere. No illustration, cartoon, anime, 3D rendering, papercraft, glossy advertising or plastic skin.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+        "bytes": 79054,
+        "generated_at": "2026-11-04T05:34:29.389149+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 979487124694735815,
+        "sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+        "previous_rejected_candidate_sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf",
+        "previous_review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41779864379",
+        "reason": "現本文・試作指示・実JPEGを表示して照合。承認済みSVGを参照した初回の無料CPU試作（run 42533373151、strength 0.65）で、開いたノートと木の机の配置は保たれた。しかし右ページはほぼ無傷で、大きな破れ穴も次の紙面の露出もなく、灰色の消しかすも識別できない。右側にはピンクの筆記具・小物が並ぶ。木目や紙は写真寄りだが低精細で、中心の『消しすぎて穴が開いた予想ノート』が欠けるため不採用。現本文に合う専用SVGを維持し、同日再試行はしない。試作元と新指示コピーの指紋は区別し、既存JPEG・生成指紋・seedを変更しない。",
+        "rejected_candidate_sha256": "d2c0d1ef9a9474612a4a672fa112754ac60941091ba9d35339965e7cf8d26df4",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42533373151",
+        "reviewed_at": "2026-11-08T23:14:05.648451+00:00",
+        "source_article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+        "trial_article_sha256": "49b4131a9c476151552811dbc4742cbab538b0048217316764d2648e1c221e9b",
+        "trial_init_rgb_sha256": "efa85fe63870f05ee799bed264f1aa1d32d72200720d8db51be45d3f4b428605",
+        "trial_init_svg_sha256": "2a830b494c52f69c7bcb706cec3299e0270a616f2ed2df0cbcb9006365622743",
+        "trial_origin": "github-cpu-sd15-img2img",
+        "trial_renderer": "CairoSVG",
+        "trial_renderer_version": "2.7.1",
+        "trial_scene_prompt": "An open worn notebook on a wooden desk has a ragged hole rubbed through its right page, exposing the next sheet, beside a pink eraser and gray crumbs, with no legible writing.",
+        "trial_seed": 979487124694735815,
+        "trial_strength": 0.65
+      },
+      "prompt_version": 3,
+      "sha256": "e52e07c59bdec6839481a299444b4e617b7cdd7acaefc058143e3d3bcfbacb7b",
+      "source_article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+      "source_png_sha256": "e6edab9c8847266c49ebcda39fbae2f0243973f76a3688cd09c74f5f6e599f44"
     },
     "mortgage-bank-clerk-invited-to-live-in": {
       "article_sha256": "b471407868bb1e2b2e24b169a8e09d0be6ee48686c8f0d00ef3e301c59133359",
@@ -917,6 +972,25 @@
       "seed": 264982437597800576,
       "sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615"
     },
+    "stolen-doorbell-returned-by-parcel": {
+      "article_sha256": "ecd1cb53929ef2271c2b14273da1a681c275a7e8be1e57bb3b8b332e9489411d",
+      "bytes": 147772,
+      "generated_at": "2026-11-09T08:00:58.830994+00:00",
+      "generation_id": "4665c803-9c15-4c4f-96e6-40bb9289045e",
+      "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 candid local newspaper documentary photograph of a staged fictional comedy scene, anonymous fictional ordinary Japanese adults, no likeness to any real public person. In ordinary daylight at the open doorway of a small unbranded neighborhood stationery and household-goods shop, a middle-aged shopkeeper has just received a redelivered parcel and steps toward a departing courier. The shopkeeper, serious and slightly apologetic rather than broadly smiling, holds up and gently rings a SMALL REAL BRASS DOOR BELL directly by its short metal mounting loop/bracket. This is a portable removed mechanical shop-door bell, about palm size, with one recognizable flared cup-shaped brass body and its little hanging clapper visible inside the opening; NOT a telephone, intercom, electric button, metal receiver or a large wooden-handled service bell. Keep the bell in clear focus near the center, separate from hands and visible against a plain dark shirt. The courier in a plain blue delivery uniform has taken a couple of steps away and turns his head and shoulders back toward the ringing bell, with a restrained deadpan expression. In the open doorway beside the shopkeeper is a low narrow shelf holding the OPEN small corrugated mailing carton with crumpled packing paper and a plain folded apology note with no readable writing; the courier is no longer holding the parcel. An empty little mounting bracket remains beside the open door. The quiet absurdity is that the returned stolen bell finally alerts the departing delivery person after he had failed to deliver it because there was no bell. One coherent moment AFTER successful redelivery, not a montage. Medium-wide eye-level 35mm snapshot, both people's faces and hands, the actual brass bell, open carton and doorway legible together. Authentic skin, ordinary worn cotton clothes, real brass, wood and cardboard, soft natural shadows, restrained realistic colors, no dramatic cinema lighting, no illustration, anime, 3D render, advertising gloss or plastic faces. No signs, labels, logos, letters, captions, headlines, watermarks or text anywhere in the frame.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_visual_hold": {
+        "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
+        "reason": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。",
+        "rejected_candidate_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385703758"
+      },
+      "prompt_version": 3,
+      "sha256": "ca562e0b144a76dd0d0cc4fb36bca321a8efd87001fc43d4c4a060d35af3245b",
+      "source_article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
+      "source_png_sha256": "d0699c8e334f3f354cd1cdc762f2ce1e5f94e9f91157333054ee922128d8c7a2"
+    },
     "supporter-guarantor-contract": {
       "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
       "bytes": 91416,
@@ -1159,16 +1233,6 @@
       "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
       "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
     },
-    "film-village-all-stars-no-extras": {
-      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "reason": "Actual visual review of full Realistic Vision 24-step preview 42461246270: naturally lit wooden buildings and an empty paved lane look photographic, but no film director, grocery bags or tripod film camera is visible. The article's director acting as the only extra is absent. Reject this candidate, retain the current story-specific SVG, and move to another article on a later free daily backfill slot rather than retry today.",
-      "rejected_candidate_sha256": "d0c7f9b077269d2150b829f857620645145e89144b3d0a3e2138f0b99f59e76b",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42461246270",
-      "reviewed_at": "2026-11-08T08:14:58.356695+00:00",
-      "source_article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "trial_article_sha256": "16a4591be35652350d9e83445d66558ddefa85be9781634736b8b2f60d6c756e",
-      "trial_scene_prompt": "A solitary Japanese film director carries plain grocery bags past a film camera on a tripod on an empty historical film-set lane. Blank wooden walls, daylight, no storefront signs or other people."
-    },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
       "previous_rejected_trial_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
@@ -1176,25 +1240,6 @@
       "reason": "2026-11-08 photo-quality re-review of the current LCM JPEG: uniformly hazy synthetic appearance, flat/indistinct people and package marks rather than a believable candid press photo; only a generic warehouse is depicted, without recognizable humidifiers, star-five review signage or returned-versus-new units. Revoke the earlier permissive supporting-photo approval and keep the verified story-specific SVG. The previous prop-first preview was also rejected; no old JPEG or seed was changed.",
       "rejected_candidate_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
       "reviewed_at": "2026-11-08T13:37:17.264Z"
-    },
-    "midterm-prediction-notebook-full-of-holes": {
-      "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
-      "previous_rejected_candidate_sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf",
-      "previous_review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41779864379",
-      "reason": "現本文・試作指示・実JPEGを表示して照合。承認済みSVGを参照した初回の無料CPU試作（run 42533373151、strength 0.65）で、開いたノートと木の机の配置は保たれた。しかし右ページはほぼ無傷で、大きな破れ穴も次の紙面の露出もなく、灰色の消しかすも識別できない。右側にはピンクの筆記具・小物が並ぶ。木目や紙は写真寄りだが低精細で、中心の『消しすぎて穴が開いた予想ノート』が欠けるため不採用。現本文に合う専用SVGを維持し、同日再試行はしない。試作元と新指示コピーの指紋は区別し、既存JPEG・生成指紋・seedを変更しない。",
-      "rejected_candidate_sha256": "d2c0d1ef9a9474612a4a672fa112754ac60941091ba9d35339965e7cf8d26df4",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42533373151",
-      "reviewed_at": "2026-11-08T23:14:05.648451+00:00",
-      "source_article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
-      "trial_article_sha256": "49b4131a9c476151552811dbc4742cbab538b0048217316764d2648e1c221e9b",
-      "trial_init_rgb_sha256": "efa85fe63870f05ee799bed264f1aa1d32d72200720d8db51be45d3f4b428605",
-      "trial_init_svg_sha256": "2a830b494c52f69c7bcb706cec3299e0270a616f2ed2df0cbcb9006365622743",
-      "trial_origin": "github-cpu-sd15-img2img",
-      "trial_renderer": "CairoSVG",
-      "trial_renderer_version": "2.7.1",
-      "trial_scene_prompt": "An open worn notebook on a wooden desk has a ragged hole rubbed through its right page, exposing the next sheet, beside a pink eraser and gray crumbs, with no legible writing.",
-      "trial_seed": 979487124694735815,
-      "trial_strength": 0.65
     },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
@@ -1278,12 +1323,6 @@
       "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
       "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
-    },
-    "stolen-doorbell-returned-by-parcel": {
-      "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
-      "reason": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。",
-      "rejected_candidate_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385703758"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
