@@ -1,5 +1,66 @@
 [
   {
+    "slug": "personalized-hidden-harbor-crowded-by-tourists",
+    "category": "暮らし",
+    "flash": "穴場が全員同じ",
+    "fiction_company": "波先町・みつけた旅",
+    "art": "cards",
+    "fiction_at": "2031-11-09T09:44:40+09:00",
+    "published_at": "2026-11-09T09:44:40+09:00",
+    "title": "「あなただけの穴場」旅行アプリ3社が同じ漁港を推薦　早朝の船着き場は撮影客で満員",
+    "summary": "静かな港を探す旅行者に、別々の旅行アプリが同じ漁港を「あなた専用の穴場」と推薦。誰にも知られていない景色を撮りに来た人が集まり、漁師が船を出すための道を空けてもらうことになった。",
+    "paragraphs": [
+      "海辺の小さな町・波先町で、早朝の漁港にスマートフォンを持った旅行者が集まった。旅行者たちは互いに知り合いではない。ところが三つの旅行アプリが、それぞれの利用者に「あなたにだけ教える、静かな朝の漁港」として同じ防波堤を勧めていた。出航しようとした漁師の前には、三脚を構える人が並んでいた。",
+      "旅行アプリ各社は、好みや予算に合わせて観光地を選ぶことを売りにしている。5年前の旅行調査でも、知らない人のSNS投稿や生成AIで情報を探す人が増えていた。波先町の港は観光地としては無名だったが、各社が参照した朝焼けの写真と好評の口コミはほぼ同じだった。「人気の名所は避けたい」と入力した旅行者ほど、この港を紹介された。",
+      "一人旅の女性が隣の男性と画面を見せ合うと、違うアプリなのに目的地のピンは重なった。「あなただけ、って書いてありますよね」。人混みを見て別の場所へ移ろうにも、朝のバスは少なく、昼には次の町の宿を予約している。せっかく早起きして来たのだからと、皆が順番に朝日を撮ることにした。漁師が「そこは船の通り道です」と頼むと、撮影客は三脚を少し寄せ、今度は出航する漁船へ一斉にカメラを向けた。",
+      "帰り際、一人の旅行者が網を運ぶ漁師に笑顔で言った。「素敵な穴場でした。誰にも教えず、秘密にしておきます」。漁師は背後の防波堤を指さした。まだ写真を撮っている人が何人もいる。「助かる。あの人たちにもそう言っといて」。"
+    ],
+    "source": {
+      "kind": "調査",
+      "publisher": "株式会社JTB総合研究所",
+      "published_at": "2026-03-18T00:00:00+09:00",
+      "url": "https://www.tourism.jp/research-reports/lifestyle-2026/",
+      "topic": "2026年3月18日公表の「ライフスタイルと旅行に関する調査2026」は、情報源として家族・友人の口コミはなお上位だが、知らない人のSNS投稿や生成AIの利用割合が増加したと報告。参考として2025年12月17日公表のスマートフォンと旅行調査（https://www.tourism.jp/research-reports/smartphone-2025/）は、情報検索への生成AI利用が9.7％から28.8％へ増加したと報告。2031年の波先町、旅行アプリ3社の推薦が同一漁港へ集中した出来事、漁師や旅行者の行動・発言はすべて本紙の創作で、実在アプリや調査対象の実例ではない。"
+    },
+    "scene_prompt": "An ordinary Japanese fisherman in work boots carries coiled fishing rope beside a small fishing boat while a few tourists with cameras and phones photograph the morning harbor from the adjacent public walkway. Small coastal fishing port, natural overcast dawn light, everyday candid news photograph, no logos, no readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "地域",
+      "旅行"
+    ],
+    "satire_tags": [
+      "個別最適の同質化",
+      "秘密の大量推薦"
+    ],
+    "x_tags": [
+      "穴場"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "誰にも知られていない場所へ行きたくて、別々のアプリで旅を決めた人たち。着いた港には、同じ理由で来た人がいた。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "旅行先の口コミやアプリの推薦で人混みを避ける旅程を決める",
+      "target": "個別に選んだという実感と、他人も同じ情報を見ている現実のずれ",
+      "action": "旅行アプリ3社が同じ港を別々の旅行者に内緒の穴場として勧める",
+      "outcome": "撮影客に囲まれた漁師が、秘密にしておくという客へほかの撮影客にも伝えるよう頼む"
+    },
+    "behavior_basis": {
+      "motive": "旅行者は有名観光地を避けて静かな景色を撮りたい。先に決めた旅程と移動費を無駄にしたくない",
+      "ordinary_alternative": "混雑した港を諦めて別の景色を探す",
+      "why_not": "早朝の交通手段が限られ、その後の宿も予約済みで、せっかく来た朝日を撮りたい",
+      "evidence_quote": "人混みを見て別の場所へ移ろうにも、朝のバスは少なく、昼には次の町の宿を予約している。"
+    },
+    "reader_clarity": {
+      "who": "旅行者",
+      "action": "別々の旅行アプリが同じ港を個別の穴場として推薦したため、撮影客が集まる",
+      "oddity": "秘密の場所のはずが観光客で埋まり、最後には秘密にしておくと漁師へ約束する"
+    },
+    "broadcast_feature": true
+  },
+  {
     "slug": "zero-redelivery-residents-collect-parcels",
     "category": "暮らし",
     "flash": "再配達ゼロ、住民が配達",
