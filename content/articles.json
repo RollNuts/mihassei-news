@@ -1540,7 +1540,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000002628.000046210.html",
       "topic": "2026年11月5日14:00のファミリーマート公式発表によると、自宅でクリスマスディナーを楽しむ意向の人の74.6％が平日の準備・片付けの負担を減らしたいと回答。記事中の杉崎家、料理・ツリーの一括手配、空き箱工作の撮り直しと会話・SNS投稿は実際の調査対象や同社サービスの実例ではなく独自の創作。"
     },
-    "scene_prompt": "A parent holds a smartphone toward a small Christmas tree made from stacked shipping boxes. A child holds a paper star against the tree while another parent peels a star off to repeat the pose. An ordinary Japanese family living room, with a delivered decorated tree set aside. Window light, ordinary clothing, no logos or readable writing.",
+    "scene_prompt": "In an ordinary family living room, a father kneels beside a small Christmas tree made from stacked plain shipping boxes and peels a folded-paper star off toward his daughter's waiting palm for another take. The mother holds a smartphone aimed at their cardboard-tree scene, while the delivered decorated green tree stands aside in the room corner. Natural window light, ordinary clothing and restrained expressions, no readable writing or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "家族",
@@ -1559,7 +1559,7 @@
       "action": "全部外注したあと、配送箱の工作を子どもに何度も再現させて写真を撮る",
       "outcome": "時短したはずが3時間撮影し、子どもを撮影から解放してから「準備はほどほどに」と投稿する"
     },
-    "modified_at": "2026-11-07T09:45:40+09:00",
+    "modified_at": "2026-11-09T08:24:00.150268+00:00",
     "reader_clarity": {
       "who": "クリスマスの準備を外注した家族",
       "action": "手作りに見せるため子どもの工作を3時間撮影する",
@@ -1688,7 +1688,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000145.000015549.html",
       "topic": "2026年3月26日11時のライナフ調査（マンション居住者441人、2月13〜14日実施）。再配達削減への協力意向が高い一方、オートロックと宅配ボックス満杯が課題とされる。さざなみ館、管理組合の成績表、配達員の待機列や発言はこの調査から着想した独自の創作で、調査対象の実例ではない。"
     },
-    "scene_prompt": "Natural documentary news photograph of a Japanese apartment lobby with a row of fully occupied parcel delivery lockers. Three tired but patient delivery couriers in plain unbranded work clothes wait with cardboard parcels on a bench beside the lockers. Modest fluorescent indoor light, believable building materials, unstaged ordinary expressions, eye-level realistic camera, no readable logos or signs.",
+    "scene_prompt": "In a modest Japanese apartment lobby, a casually dressed resident stands aside holding a parcel just removed from one open metal delivery-locker compartment. A plain-blue-uniformed courier inserts a new box into that single vacated space while two other couriers in different plain work uniforms sit on lobby chairs with undelivered boxes on their laps and wait. Ordinary indoor light, anonymous fictional adults, no readable signs, numbers or logos.",
     "tags": [
       "宅配",
       "人手不足"
@@ -1709,7 +1709,8 @@
       "continuation_force": "非対面の受け取りが広がっても、住民が荷物を取り出すタイミングが遅れれば、宅配ボックスの数だけでは混雑を解消できない。",
       "future_result": "配達員が空きロッカーをロビーで長時間待ち、再配達件数だけゼロになるマンションが現れる。"
     },
-    "visual_strategy": "illustration"
+    "visual_strategy": "cpu-photo",
+    "modified_at": "2026-11-09T08:24:00.151466+00:00"
   },
   {
     "slug": "self-checkout-regular-awarded-unpaid-staff",
@@ -1871,7 +1872,7 @@
       "url": "https://www.hakuhodo.co.jp/news/newsrelease/267437/",
       "topic": "博報堂生活総合研究所が2026年10月30日に公表した11月消費意欲調査では、セール・ブラックフライデーへの期待と、物価高や年末年始に備えた節約・我慢の声が併存する。実際に値引き額を稼ぐために不要品を買い足した家庭がいたとの調査結果ではない。藤村家の買い物・支出額・レシートの額装と発言は本紙独自の創作。"
     },
-    "scene_prompt": "Close-up still life in a home hallway: ONE black picture frame contains a very long narrow white cash-register paper strip with one red band. Sealed cardboard appliance boxes and shopping bags tower around the frame. No people.",
+    "scene_prompt": "In an ordinary cramped home entrance hallway filled with unopened plain appliance cartons and shopping bags, an anonymous father proudly points at a normal small wall frame containing only a short clipped receipt fragment mounted on a plain mat. His son looks skeptically at him beside the boxes. The tiny discount record is treated as a trophy despite the purchases filling the passage. Natural daylight, no readable amounts or words, no logos.",
     "tags": [
       "お金",
       "節約"
@@ -1880,7 +1881,8 @@
       "数字マジック",
       "節約した感"
     ],
-    "visual_strategy": "illustration"
+    "visual_strategy": "cpu-photo",
+    "modified_at": "2026-11-09T08:24:00.152173+00:00"
   },
   {
     "slug": "basketball-opening-day-game-seven",

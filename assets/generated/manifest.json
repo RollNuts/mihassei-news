@@ -153,14 +153,32 @@
       "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
     "christmas-done-for-you-family-decorates-boxes": {
-      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
-      "bytes": 117886,
-      "generated_at": "2026-11-07T00:55:49.709093+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "0f4464944249088fe3205981378607788d417224c2ee93647ef2baa74a2de866",
+      "bytes": 157233,
+      "generated_at": "2026-11-09T08:21:23.203482+00:00",
+      "generation_id": "eaad36d9-847b-4b8e-a5ed-a0970eff1b85",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid ordinary documentary newspaper photograph of a staged fictional scene in a lived-in modest Japanese family living room during Christmas preparation. Anonymous fictional father, mother and school-age daughter, no real-person likeness. In the middle of the room a SMALL makeshift CHRISTMAS TREE is built ONLY from plain reused shipping-cardboard boxes stacked in a roughly tapering pyramid on the floor, with a few simple folded paper decorations attached to brown cardboard. No green branches on this little handmade cardboard tree. At its front the father kneels and is in the exact moment of gently PEELING OFF ONE SMALL YELLOW FOLDED-PAPER STAR from the cardboard with his fingertips and returning that SAME STAR toward his daughter's waiting outstretched palm so she can repeat placing it for another take. The daughter sits beside him and waits with a restrained tired, slightly bored expression, looking at the star. The mother's side/back is visible on the left: she kneels a little farther away and holds a plain smartphone horizontally with both hands, its rear camera aimed at the father, child and handmade box tree, seriously waiting to photograph the repeated placement. A large already-professionally-decorated REALISTIC GREEN CHRISTMAS TREE with a few muted ornaments has been shoved into the far right corner, visible but clearly outside the mother's phone-camera composition. The visual joke is the family who outsourced Christmas now laboriously retakes a fake spontaneous handmade moment using the delivery boxes. Show a single coherent retake, not repeated people, a collage, or hands removing and placing the same star in two locations at once. Keep the father's peeling hand, daughter's waiting palm, mother photographing and actual stacked brown cardboard construction legible in one natural medium-wide frame. No need to show the phone screen or any writing. Plain household clothing, authentic skin and hair, ordinary worn rug and furniture, real cardboard tape and folds, slight everyday clutter, natural window light and soft shadows. Serious restrained faces, no broad festive grin or theatrical acting, no polished holiday advertisement. No readable packaging, writing, labels, logos, signage, captions, headlines or watermark. No illustration, anime, cartoon, 3D render, toy-like plastic people, dramatic cinema lighting or glossy studio setup.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+        "bytes": 117886,
+        "generated_at": "2026-11-07T00:55:49.709093+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 4536841532495456843,
+        "sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+        "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
+        "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
+      },
       "prompt_version": 3,
-      "seed": 4536841532495456843,
-      "sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
+      "sha256": "6fae54590873b8f68f6c8bdcd9a332ad1399d1da12a70155a8d1f806927005fb",
+      "source_article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+      "source_png_sha256": "b8c90409aac9603613d07d7b9ca8a6b1044681f26ac39a93734a0f5804eba310"
     },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
@@ -208,6 +226,19 @@
       "prompt_version": 3,
       "seed": 1068116499113448635,
       "sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2"
+    },
+    "delivery-locker-zero-redelivery-waiting-line": {
+      "article_sha256": "72069bd2b018b6bb8b51cf85376744975e269d4bd86b4f4b7359c0578bbf8d41",
+      "bytes": 166311,
+      "generated_at": "2026-11-09T08:20:11.706263+00:00",
+      "generation_id": "a9b2a0fe-2006-45a6-b33e-773e74510572",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid ordinary newspaper documentary photograph of a staged fictional scene in the lobby of a modest Japanese apartment building. Anonymous fictional ordinary adults, no real building or delivery brands. The story is delivery couriers forced to wait for parcel-locker space, not residents queuing. A wall of realistic small gray metal PARCEL DELIVERY LOCKERS occupies the rear left. Near the center, ONLY ONE MEDIUM compartment is OPEN at comfortable waist-to-chest height. A resident in plain casual home clothing stands just to one side holding the small cardboard parcel they have just removed. A standing delivery courier in a plain blue unbranded work jacket is immediately sliding ONE NEW plain cardboard parcel into that same newly vacated compartment with both hands; its placement and the open door hinge must be mechanically believable, no boxes through metal or overlapping doors. Beside this action, TWO OTHER tired but patient delivery couriers in DIFFERENT plain green and gray work uniforms sit in a line on simple lobby chairs, each holding their own undelivered cardboard parcel on their lap and watching the single free space. They are clearly workers still waiting to deliver, not residents collecting parcels. Exactly four visible people: resident, standing courier, two seated couriers. The visual contrast is one tiny space becoming available while the seated couriers and boxes wait. Most locker doors remain closed; do not pretend readable full/empty indicators or a poster prove occupancy. Plain tile floor and walls, a basic mat near the entrance, flat ordinary fluorescent light with some daylight from the glass entry. Serious restrained faces and natural waiting postures, no broad comic expressions or exaggerated crowd. Show open locker, parcel transfer and both waiting seated couriers clearly together in one eye-level 35mm medium-wide frame. Ordinary true human skin, plausible hands and arms, natural fabric, real cardboard creases and metal door edges. No readable writing, numbers, logos, labels, company names, posters, display text, headlines or watermark. No illustration, anime, 3D render, glossy commercial photography or dramatic cinematic lighting.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "35871fad9a61b32b970bd0039669d3c896361841972d9b9722a1301d32aa7779",
+      "source_article_sha256": "9c2a9b8b9b1424eb080630d9da0dcceced58706d55b46d433ae1428f4fdca39d",
+      "source_png_sha256": "ce691ff97b0c7dfd8e667b9d85682d6d704c991a8f823afabc56a331843fd740"
     },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
@@ -849,14 +880,33 @@
       "source_png_sha256": "10709eb3fec135aaed2630bb1d2cca7de3199bd1073329d88606a7220e1c7149"
     },
     "sale-discount-savings-receipt-framed": {
-      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
-      "bytes": 63354,
-      "generated_at": "2026-11-05T09:15:38.775789+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 4846405115373740905,
-      "sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da"
+      "article_sha256": "81ca078945698e90f2c2c5a3b09662e47da4ae30d12302fbdab299678f99bcf8",
+      "bytes": 118250,
+      "generated_at": "2026-11-09T08:18:40.075465+00:00",
+      "generation_id": "5c178718-00af-453d-959f-214df9a1a4b7",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary newspaper photograph of a staged fictional scene in the narrow entrance hallway of an ordinary modest Japanese family home. Anonymous fictional family, no real-person likeness. The center of the joke is a SMALL BLACK PICTURE FRAME hung at normal eye level near the front door, containing ONLY ONE SHORT THIN CLIPPED STRIP OF CASH-REGISTER RECEIPT PAPER, about 3 cm high and 12 cm wide, neatly mounted on a much larger plain cream mat. The tiny receipt fragment has faint indistinct gray receipt marks, absolutely no legible numbers or words. It is not a photograph, painting, certificate, full long receipt or empty white frame. A serious ordinary father in home clothes stands beside it and points proudly at the tiny framed receipt fragment with one finger. His school-age son stands a step behind him, looking at him skeptically with a natural restrained expression. The hallway floor and wall behind them are clogged with several large UNOPENED plain cardboard appliance cartons and a couple of shopping bags, stacked in a believable slightly inconvenient way with no labels or writing. Show why celebrating the receipt's discount is absurd: the tiny clipped discount record is treated like a trophy while unnecessary purchased appliances fill the passage. Frame, pointing hand, son's questioning look and boxes must all be clearly recognizable in one medium-wide view, with the small framed paper still large enough to be visibly a clipped receipt. Do not put a readable amount anywhere, do not add red sale stickers, money, extra trophies or imaginary giant props. Ordinary natural light coming from the doorway, imperfect wood and wallpaper, real cardboard, normal human skin and fabric, physically plausible hands and body proportions, quiet deadpan comedy without broad smiles. A natural 35mm local-news snapshot, restrained colors and soft shadows, no dramatic cinema or studio lighting. No text, readable numerals, signs, brands, logos, captions, headlines or watermarks. No illustration, anime, cartoon, 3D render, glossy advertising or plastic skin.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+        "bytes": 63354,
+        "generated_at": "2026-11-05T09:15:38.775789+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 4846405115373740905,
+        "sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+        "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
+        "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
+      },
+      "prompt_version": 3,
+      "sha256": "6f4ad0e9fc819a3657bff4a0499c7d18916f47c0a0f0bf950dc2ed39787d2d10",
+      "source_article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+      "source_png_sha256": "48f3e523396b240860a02a6076532463e8dbab4ff90562d5a140d7aa0d9f65ad"
     },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
@@ -1228,11 +1278,6 @@
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
       "rejected_candidate_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
     },
-    "christmas-done-for-you-family-decorates-boxes": {
-      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
-      "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
-      "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
-    },
     "five-star-reviews-of-returned-humidifiers": {
       "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
       "previous_rejected_trial_sha256": "795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5",
@@ -1280,12 +1325,6 @@
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
-    },
-    "sale-discount-savings-receipt-framed": {
-      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
-      "reason": "Visual review of negative-guided CPU retry 42000558053: people were removed, but the output became a generic framed photograph and electronics shelf instead of a long narrow framed receipt surrounded by appliance boxes. The central spending-versus-saving joke is absent, so hold the JPEG and keep the safe fallback rather than retrying the same CPU model again.",
-      "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
     },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
