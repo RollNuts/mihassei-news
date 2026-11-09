@@ -240,6 +240,33 @@
       "seed": 5521049100415918610,
       "sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
     },
+    "food-rescue-shops-manufacture-leftovers": {
+      "article_sha256": "152db0626335c1db3e505171b0fac22c40514995a7b9fd95eb665c6acfd224fc",
+      "bytes": 129416,
+      "generated_at": "2026-11-09T04:53:15.727931+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5845673371714609870,
+      "sha256": "37ae3434ff71fff41989a0b765617aafde13187c255db3feb12ea5d29746026a"
+    },
     "free-play-event-parents-timetable-children-waiting": {
       "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
       "bytes": 191203,
