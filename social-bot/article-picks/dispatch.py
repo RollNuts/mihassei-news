@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
 from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length, x_share_lead  # noqa: E402
 from editorial_copy import reader_copy  # noqa: E402
+from generated_photos import share_page_url  # noqa: E402
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # Match canonical articles regardless of query parameters, extra prose or
@@ -404,6 +405,7 @@ def publication_text(article: dict) -> str:
     if len(tidy) > 68:
         tidy = tidy[:67].rstrip() + "…"
     url = "https://veripsa.com/articles/" + slug + "/" + TRACKING_QUERY
+    url = share_page_url(article, url, root=ROOT)
     hashtags = " ".join([BRAND_HASHTAG, *article_hashtags(article)])
     prefix = "【続報｜未発生新聞】" if article.get("followup_of") else TEXT_PREFIX
     suffix = ("\n\n" + hashtags if hashtags else "") + "\n\n" + url

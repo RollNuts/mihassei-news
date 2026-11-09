@@ -3,17 +3,21 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
+import html
 import io
 import json
+import re
 import shutil
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlparse
 
 from scripts import build, github_cpu_scenes, local_scene_photos
 from scripts.generated_photos import (
     article_fingerprint, usable_generated_scene, generated_scene_entry, generated_url,
+    share_page_url,
 )
 from scripts.visual_review import reviewed_generated_scene
 
@@ -408,6 +412,86 @@ class LocalComedySceneTests(unittest.TestCase):
                 self.assertEqual(build.editorial_image(article), replacement_url)
                 self.assertEqual(build.social_image(article), replacement_url)
                 self.assertEqual(build.article_url(article), "/articles/" + article["slug"] + "/")
+
+    def test_shared_page_versions_follow_reviewed_bytes_without_changing_seo_urls(self):
+        article = fixture()
+        canonical = build.SITE + build.article_url(article)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local_scene_photos.write_generated(
+                article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+            self.assertEqual(share_page_url(article, canonical, root=root), canonical)
+            write_review_fixture(root, article)
+            sha = hashlib.sha256(fake_jpeg()).hexdigest()[:12]
+            first = share_page_url(article, canonical, root=root)
+            self.assertEqual(first, canonical + "?image=" + sha)
+            self.assertEqual(share_page_url(article, canonical, root=root), first)
+            tracked = canonical + "?utm_source=x&utm_medium=social&custom=&image=old#reader-comments"
+            versioned = urlparse(share_page_url(article, tracked, root=root))
+            self.assertEqual(parse_qs(versioned.query, keep_blank_values=True), {
+                "utm_source": ["x"], "utm_medium": ["social"],
+                "custom": [""], "image": [sha],
+            })
+            self.assertEqual(versioned.fragment, "reader-comments")
+            with layout_asset_fixture(root), patch.object(build, "BASE", root), \
+                    patch.object(build, "stylesheet_url", return_value="/assets/newspaper.css?v=test"):
+                reader = parse_qs(urlparse(build.share_url(article)).query)["url"][0]
+                self.assertEqual(parse_qs(urlparse(reader).query), {
+                    "utm_source": ["x"], "utm_medium": ["social"],
+                    "utm_campaign": ["reader_share"], "utm_content": ["reader_entry_v3"],
+                    "image": [sha],
+                })
+                controls = build.actions(article)
+                copied = html.unescape(re.search(r'data-copy-url="([^"]+)"', controls)[1])
+                self.assertEqual(copied, first)
+                self.assertIn('href="' + build.article_url(article) + '#reader-comments"', controls)
+                page = build.layout(article["title"], article["summary"],
+                                    build.article_url(article), controls,
+                                    kind="story", article=article)
+                self.assertIn('<link rel="canonical" href="' + canonical + '">', page)
+                self.assertIn('property="og:url" content="' + canonical + '">', page)
+                rss = build.generate_rss([article], "test", "創作ニュース",
+                                         build.SITE + "/", "/feed.xml")
+                self.assertIn('<link>' + canonical + '</link>', rss)
+                self.assertNotIn("?image=", rss)
+            changed = fake_jpeg()[:-2] + b"\x01\x02\xff\xd9"
+            local_scene_photos.write_generated(
+                article, changed, "sd_xl_base_1.0.safetensors", root=root)
+            # New bytes cannot inherit the previous photo's approval/version.
+            self.assertEqual(share_page_url(article, canonical, root=root), canonical)
+            write_review_fixture(root, article)
+            second = share_page_url(article, canonical, root=root)
+            self.assertNotEqual(first, second)
+            self.assertEqual(second, canonical + "?image=" + hashlib.sha256(changed).hexdigest()[:12])
+
+    def test_unpublished_photos_never_add_a_shared_page_image_version(self):
+        article = fixture()
+        for cause in ("missing review", "rejected", "stale article", "held", "broken bytes", "illustration"):
+            with self.subTest(cause=cause), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                path = local_scene_photos.write_generated(
+                    article, fake_jpeg(), "sd_xl_base_1.0.safetensors", root=root)
+                if cause != "missing review":
+                    write_review_fixture(root, article,
+                                         **({"decision": "rejected"} if cause == "rejected" else {}))
+                candidate = dict(article)
+                if cause == "stale article":
+                    candidate["summary"] = "The story changed after review."
+                elif cause == "illustration":
+                    candidate["visual_strategy"] = "illustration"
+                elif cause == "broken bytes":
+                    path.write_bytes(fake_jpeg() + b"broken")
+                elif cause == "held":
+                    manifest = root / "assets/generated/manifest.json"
+                    data = json.loads(manifest.read_text())
+                    data["rejected"] = {article["slug"]: {"article_sha256": article_fingerprint(article)}}
+                    manifest.write_text(json.dumps(data))
+                canonical = build.SITE + build.article_url(article)
+                self.assertEqual(share_page_url(candidate, canonical + "?image=old", root=root), canonical)
+                with patch.object(build, "BASE", root):
+                    reader = parse_qs(urlparse(build.share_url(candidate)).query)["url"][0]
+                    self.assertNotIn("image", parse_qs(urlparse(reader).query))
+                    self.assertNotIn("?image=", build.actions(candidate))
 
     def test_cpu_prompt_compacts_long_single_sentence_at_clause_boundaries(self):
         """Long comma-rich scene directions keep the main visual action under CLIP budget."""

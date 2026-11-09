@@ -306,6 +306,7 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(picks.article_hashtags(tagged), ["#生成AI", "#仕事あるある"])
         tagged["x_tags"] = ["SNS", "アプリ", "ポイ活", "ポイ活"]
         self.assertEqual(picks.article_hashtags(tagged), ["#ポイ活"])
+
         followup = article("followup")
         followup["followup_of"] = "previous-story"
         followup_msg = picks.publication_text(followup)
@@ -313,6 +314,48 @@ class ArticlePickTests(unittest.TestCase):
         self.assertIn("#未発生新聞", followup_msg)
         with self.assertRaises(ValueError):
             picks.publication_text(article("../unsafe"))
+
+    def test_accepted_photo_share_version_preserves_tracking_and_slug_no_repost(self):
+        from generated_photos import generated_manifest
+        from local_scene_photos import write_generated
+        a = article("reviewed-photo", age_hours=3)
+        # Synthetic header fixture for offline integrity gates, not an actual photo.
+        data = (b"\xff\xd8\xff\xc0\x00\x11\x08"
+                + (675).to_bytes(2, "big") + (1200).to_bytes(2, "big")
+                + b"\x03\x01\x11\x00\x02\x11\x00\x03\x11\x00"
+                + b"\x00" * 17000 + b"\xff\xd9")
+        plain = "https://veripsa.com/articles/" + a["slug"] + "/"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            write_generated(a, data, "sd_xl_base_1.0.safetensors", root=root)
+            record = generated_manifest(root)[a["slug"]]
+            (root / "content").mkdir()
+            review = root / "content/visual_reviews.json"
+            review.write_text(json.dumps({"version": 1, "reviews": {a["slug"]: {
+                "decision": "accepted", "article_sha256": record["article_sha256"],
+                "image_sha256": record["sha256"], "reviewed_at": NOW.isoformat(),
+                "note": "Synthetic test fixture, not a real visual approval.",
+            }}}))
+            with patch.object(picks, "ROOT", root):
+                shared = picks.publication_text(a).splitlines()[-1]
+                self.assertEqual(shared, picks.publication_text(a).splitlines()[-1])
+                self.assertEqual(parse_qs(urlparse(shared).query), {
+                    "utm_source": ["x"], "utm_medium": ["social"],
+                    "utm_campaign": ["article_auto"], "image": [record["sha256"][:12]],
+                })
+                self.assertLessEqual(picks.x_weighted_length(picks.publication_text(a)), picks.X_TEXT_LIMIT)
+                for remote_url in (plain, shared):
+                    # A new image query cannot make a previously sent slug eligible.
+                    remote = [{"id": "prior-receipt", "status": "sent", "text": remote_url,
+                               "sentAt": (NOW - timedelta(days=2)).isoformat()}]
+                    selected, _, _ = picks.decide([a], {}, ledger(), remote, CONFIG, NOW)
+                    self.assertIsNone(selected)
+                selected, _, _ = picks.decide([a], {}, ledger(), [], CONFIG, NOW)
+                self.assertEqual(selected["slug"], a["slug"])
+                rejected = json.loads(review.read_text())
+                rejected["reviews"][a["slug"]]["decision"] = "rejected"
+                review.write_text(json.dumps(rejected))
+                self.assertNotIn("image", parse_qs(urlparse(picks.publication_text(a).splitlines()[-1]).query))
 
     def test_x_share_lead_can_replace_headline_summary_with_reader_first_copy(self):
         a = article("story-reader-lead", title="移動ポイントを稼ぐ男性、家の前を通り過ぎてもう一周")

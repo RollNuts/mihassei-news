@@ -801,8 +801,34 @@
     },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-      "reason": "Actual generated JPEG shows an empty dark ceremony table, glass trophies, bright wall screens and no people. No award recipient, smartphone in use, or audience is visible, so the irony of 100 days of SNS-quit logins is absent. Reject the current JPEG and use the reviewed story-specific SVG without changing the image fingerprint or seed.",
-      "rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
+      "previous_rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
+      "reason": "現本文・試作指示・実JPEGを表示して照合。旧LCMの無人式場から、既存のfull RV24と受賞者中心の構図へ変えた比較。肌、髪、上着、壁、窓光は自然な写真の質感になったが、男性はカメラを見ており、片手は浅い器・受け皿、もう片手は白い両取っ手付きカップ状の物。スマートフォンも反応を確認する動作もなく、表彰トロフィーも識別できないため不採用。本文の主要場面に合う専用SVGを維持し、元JPEG・原生成指紋・seedは変更しない。11/9の既刊試作は3/3件消費済みとし、同記事の同日再試行はしない。",
+      "rejected_candidate_sha256": "f95542bd354fd673746b91a4dbdf9007392c2ff8fa48eb170567d7dcedb94bbf",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42540783784",
+      "reviewed_at": "2026-11-09T00:45:17.315177+00:00",
+      "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "trial_article_sha256": "953644878359d03cda22bab25fe82a230289f938bbc103639a7c2099edeb59b4",
+      "trial_inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "trial_origin": "github-cpu-sd15",
+      "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
+      "trial_seed": 2154012484535384189
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",

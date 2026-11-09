@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 try:
     from .cpu_photo_model import (
@@ -168,3 +169,25 @@ def generated_url(article: dict, *, root: Path = ROOT) -> str:
     path = "/generated/" + slug + ".jpg"
     record = generated_scene_entry(article, root=root)
     return path + ("?v=" + record["sha256"][:12] if record else "")
+
+
+def share_page_url(article: dict, url: str, *, root: Path = ROOT) -> str:
+    """Version shared pages for the displayed JPEG, keeping their SEO identity."""
+    try:
+        from .visual_review import reviewed_generated_scene
+    except ImportError:
+        from visual_review import reviewed_generated_scene
+    record = generated_scene_entry(article, root=root)
+    version = None
+    if (article.get("visual_strategy", "cpu-photo") != "illustration"
+            and record and reviewed_generated_scene(article, root=root)
+            and generated_scene_entry(article, root=root) == record):
+        version = record["sha256"][:12]
+    parts = urlsplit(url)
+    query = parse_qsl(parts.query, keep_blank_values=True)
+    if not version and not any(key == "image" for key, _value in query):
+        return url
+    query = [(key, value) for key, value in query if key != "image"]
+    if version:
+        query.append(("image", version))
+    return urlunsplit((*parts[:3], urlencode(query), parts.fragment))

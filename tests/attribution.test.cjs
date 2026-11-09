@@ -43,6 +43,14 @@ test('X UTM campaigns are observed without sending arbitrary URL data',async()=>
   assert.equal(await classifyArrival('https://veripsa.com/?src=x-launch-20261102-v3'), 'x');
 });
 
+test('shared photo versions preserve article identity and coarse X attribution',async()=>{
+  const visit=await visitPayload('https://veripsa.com/articles/photo-story/?utm_source=x&utm_medium=social&image=896c6fd6f728');
+  assert.equal(visit.article,'photo-story');
+  assert.equal(visit.pageKind,'article');
+  assert.equal(visit.channel,'x');
+  assert.equal(JSON.stringify(visit).includes('896c6fd6f728'),false);
+});
+
 test('common social and search referrers map to coarse categories',async()=>{
   assert.equal(await classifyArrival('https://veripsa.com/','https://t.co/jk3d0Q'), 'x');
   assert.equal(await classifyArrival('https://veripsa.com/','https://www.google.co.jp/search?q=private'), 'search');
