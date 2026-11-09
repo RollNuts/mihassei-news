@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="客室棟のない宿の駐車区画で、客が自分のバンの後部に布団を広げ、係員が駐車場の白線を指して案内する創作イラスト" data-visual-topic="document" data-article-sha256="4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f">
+<title>駐車区画へ持参した、バンの中の客室</title>
+<desc>昼の小さな宿泊施設の駐車場。無地の普通のバンが白線の内側に停まっている。上に開いた後部ハッチから車内の白い敷き布団と枕がはっきり見え、普段着の宿泊客が掛け布団を広げている。少し離れた係員は駐車区画の白線を指す。背景にある建物は受付や共用設備を収めた低い平屋だけで、客室の並ぶ棟はない。実在ホテル名、車ブランド、文字、ロゴは描かない。</desc>
+<defs>
+<linearGradient id="hotel-sky" x2="0" y2="1"><stop stop-color="#dce4dc"/><stop offset="1" stop-color="#eeeadc"/></linearGradient>
+<linearGradient id="hotel-ground" x2="0" y2="1"><stop stop-color="#c5c8bb"/><stop offset="1" stop-color="#aeb9af"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#hotel-sky)"/>
+<path d="M0 265q79-60 166-17 92-79 188-15 98-54 171-8 114-45 213 17 112-57 207-13 124-53 255 9v100H0z" fill="#b6c8b4"/>
+<path d="M0 304h1200v371H0z" fill="url(#hotel-ground)"/>
+<path d="M0 315h1200" stroke="#a4b49f" stroke-width="6"/>
+<!-- A single low shared-facilities building, without guest-room wings. -->
+<path d="M739 141h423v164H739z" fill="#d3cbb7" stroke="#8d9a8a" stroke-width="4"/>
+<path d="M712 127h468v24H712z" fill="#7f9283" stroke="#647a6a" stroke-width="4"/>
+<path d="M749 285h406v20H749z" fill="#b3b7a4"/>
+<path d="M785 175h113v108H785z" fill="#8ea59f" stroke="#6c857a" stroke-width="5"/>
+<path d="M841 176v105m-2-44h5" fill="none" stroke="#d4d9c8" stroke-width="3"/>
+<path d="M931 176h165v72H931z" fill="#b6c5b6" stroke="#8b9d8b" stroke-width="4"/>
+<path d="M986 177v70m55-70v70" stroke="#8b9d8b" stroke-width="3"/>
+<path d="M767 302h146v17H767z" fill="#d8d3bf" stroke="#adb49d" stroke-width="2"/>
+<!-- White parking boundaries are road paint, not a corridor or a bedroom floor. -->
+<path d="M146 337L30 675M718 338l170 337M1140 338l60 138" fill="none" stroke="#f1efdf" stroke-width="10"/>
+<path d="M61 612h797" stroke="#f1efdf" stroke-width="10"/>
+<ellipse cx="440" cy="552" rx="324" ry="39" fill="#5b6e64" opacity=".17"/>
+<!-- The near side and rear of one ordinary, unbranded compact van. -->
+<g stroke="#52645c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M154 361l99-104q23-24 62-27l183-2 211 54v240q-8 24-37 24L208 515l-49-39z" fill="#bac4b3"/>
+<path d="M253 257l-67 106 283 9 14-126-173-1q-33 0-57 12z" fill="#8baba4"/>
+<path d="M279 250l-48 111m138-113-8 117" fill="none" stroke="#bac4b3" stroke-width="10"/>
+<path d="M190 388l277 12v109l-258-18-36-44z" fill="#c9cebd"/>
+<path d="M360 379v123" fill="none" stroke="#98a798" stroke-width="3"/>
+<path d="M390 400h34" stroke="#7a8e7e" stroke-width="6"/>
+<path d="M199 341l-28-6-14 27 32 7" fill="#6e8b7e"/>
+<path d="M180 437l-22-1v28l25 4" fill="#b7c1ac"/>
+<ellipse cx="237" cy="507" rx="43" ry="53" fill="#4e5a58"/>
+<ellipse cx="237" cy="507" rx="21" ry="29" fill="#b8c0b1" stroke="#6f8274" stroke-width="4"/>
+<ellipse cx="461" cy="525" rx="43" ry="52" fill="#4e5a58"/>
+<ellipse cx="461" cy="525" rx="21" ry="28" fill="#b8c0b1" stroke="#6f8274" stroke-width="4"/>
+<path d="M489 278l213 17v231l-213-16z" fill="#a3b29f"/>
+<path d="M507 299l177 17v182l-177-14z" fill="#66756a"/>
+<path d="M525 321l142 12v94l-142-9z" fill="#788578" stroke="none"/>
+<path d="M511 442l165 14 7 42-176-14z" fill="#b6b7a5" stroke="none"/>
+<path d="M490 511l209 15v17l-210-17z" fill="#748d7c"/>
+<path d="M692 393l10 1v66l-10-1" fill="#bb9182" stroke-width="3"/>
+</g>
+<!-- Mattress, pillow and loose quilt are inside the rear cargo opening. -->
+<path d="M522 416l132 11 20 66-164-13z" fill="#eee6d0" stroke="#b1ac95" stroke-width="3" stroke-linejoin="round"/>
+<path d="M523 419l-3 50m-2 10 148 11" fill="none" stroke="#d0c8af" stroke-width="3"/>
+<path d="M535 412l65 5 5 25-70-5q-8-12 0-25z" fill="#f7f0dc" stroke="#c4bba0" stroke-width="2"/>
+<path d="M525 459q45-10 81-3l49-36 41 9-29 64-151-12z" fill="#d5dacc" stroke="#95a998" stroke-width="3" stroke-linejoin="round"/>
+<path d="M562 463l36 7 56-39m-33 51 46-48" fill="none" stroke="#b5c3af" stroke-width="2"/>
+<!-- Raised hatch and struts leave the bed unobscured. -->
+<path d="M500 296l-19-65m197 81 38-78" stroke="#596e61" stroke-width="6" stroke-linecap="round"/>
+<path d="M478 230l237 11 44-67-233-15z" fill="#c9cebd" stroke="#52645c" stroke-width="5" stroke-linejoin="round"/>
+<path d="M512 218l182 9 25-39-179-12z" fill="#88a7a1" stroke="#6d8b7d" stroke-width="3"/>
+<!-- The guest arranges the quilt at his own van. -->
+<g stroke="#58665c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M738 494l-15 101-25 21h41l22-22 16-97m15 1 8 95 23 22h40l-30-24-11-98" fill="#7b877f"/>
+<path d="M733 362q31-28 67-2l31 141H718z" fill="#8ca19a"/>
+<path d="M753 337v27l17 14 18-17v-27" fill="#dcb598"/>
+<ellipse cx="770" cy="299" rx="35" ry="44" fill="#dcb598"/>
+<path d="M735 305q-10-52 31-55 42-2 42 43l-26-21-45 20" fill="#64645a"/>
+<path d="M751 301h-9m12 22q-11 4-20-3" fill="none" stroke-width="3"/>
+<path d="M739 382l-26 30-23 13m89-42-18 46-54 16" fill="none" stroke="#8ca19a" stroke-width="25"/>
+<path d="M690 425l-14 4m29 16-19 6" stroke="#dcb598" stroke-width="12"/>
+</g>
+<!-- The receptionist points down to the painted bay, away from the shared building. -->
+<g stroke="#58665c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1002 493l-12 101-18 20h36l17-20 11-99m18 0 10 99 20 20h35l-25-24-10-96" fill="#71847f"/>
+<path d="M996 355q33-25 70-2l26 146H975z" fill="#d2d5c2"/>
+<path d="M1015 329v28l19 13 18-17v-27" fill="#dbb294"/>
+<ellipse cx="1033" cy="289" rx="34" ry="44" fill="#dbb294"/>
+<path d="M1000 291q-4-48 32-50 42-2 38 45l-24-24-44 18" fill="#585e51"/>
+<path d="M1015 291h-8m11 22q-11 5-19-1" fill="none" stroke-width="3"/>
+<path d="M1019 358l15 30 16-32" fill="none" stroke="#849987" stroke-width="3"/>
+<path d="M1000 378l-45 39-36 39m145-78 14 58-10 27" fill="none" stroke="#d2d5c2" stroke-width="25"/>
+<path d="M919 456l-15 10m4-3-18 18m178-18-3 16" fill="none" stroke="#dbb294" stroke-width="12"/>
+</g>
+</svg>
