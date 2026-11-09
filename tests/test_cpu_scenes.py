@@ -453,6 +453,52 @@ class FreeCpuImageTests(unittest.TestCase):
                 self.assertIn(scene, cpu.cpu_prompt(changed))
                 self.assertNotIn("gumball vending machine", cpu.cpu_prompt(changed))
 
+    def test_short_photograph_openings_keep_the_actual_subject_and_action(self):
+        cases = (
+            "Photograph of a brass bell in an open parcel.",
+            "Documentary photograph of a man carrying a cardboard parcel.",
+            "A man poses for a documentary photograph.",
+            "A photograph.",
+            "Photorealistic Japanese kitchen lighting illuminates a delivery parcel.",
+        )
+        context = "An ordinary apartment entrance is behind it."
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        for core in cases:
+            with self.subTest(core=core):
+                source = {"slug": "new-visual-scene", "scene_prompt": core + " " + context}
+                self.assertEqual(cpu.prompt_parts(source), (core, [context]))
+                with contextlib.redirect_stdout(io.StringIO()):
+                    fitted = cpu.fit_cpu_prompt(source, tokenizer)
+                self.assertIn(core, fitted)
+                self.assertIn(context, fitted)
+
+    def test_unfamiliar_subject_words_are_not_classified_as_style_prefixes(self):
+        # Subject preservation must not depend on a catalog of familiar nouns.
+        for core in ("Photograph of a nyckelharpa.",
+                     "A fennec poses for a photograph."):
+            with self.subTest(core=core):
+                context = "A plain wall is behind it."
+                source = {"slug": "unfamiliar-visual-scene", "scene_prompt": core + " " + context}
+                self.assertEqual(cpu.prompt_parts(source), (core, [context]))
+
+    def test_only_standalone_style_prefixes_are_removed(self):
+        core = "An adult carries a taped cardboard parcel through an apartment entrance."
+        context = "Soft daylight."
+        for prefixes in (
+                "Photorealistic.",
+                "Photorealistic Japanese comedy.",
+                "Candid documentary press photograph.",
+                "Photorealistic staged Japanese news comedy. Natural lighting.",
+                "Photorealistic wide film still from a deadpan Japanese comedy."):
+            with self.subTest(prefixes=prefixes):
+                source = {"slug": "new-visual-scene",
+                          "scene_prompt": prefixes + " " + core + " " + context}
+                self.assertEqual(cpu.prompt_parts(source), (core, [context]))
+        # A style-only description is not removed if there is no scene after it.
+        self.assertEqual(cpu.prompt_parts({"slug": "style-only-scene",
+                                          "scene_prompt": "Candid documentary press photograph."}),
+                         ("Candid documentary press photograph.", []))
+
     def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
         core = "An actor holds a giant spoon beside an empty soup bowl."
         long_context = "A distant skyline " + "tall " * 85 + "with many buildings."

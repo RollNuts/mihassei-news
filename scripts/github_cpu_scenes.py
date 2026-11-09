@@ -195,11 +195,15 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
     if article.get("slug") in CPU_SCENES and reviewed_source_matches(article, article["slug"]):
         return CPU_SCENES[article["slug"]], []
     sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", scene_description(article)) if s.strip()]
-    # A short opening such as "Photorealistic Japanese comedy." is a style
-    # instruction, not the visual action that must survive token fitting.
-    while len(sentences) > 1 and len(sentences[0].split()) <= 10 and any(
-            word in sentences[0].lower() for word in
-            ("photoreal", "photograph", "documentary", "press photo", "comedy", "lighting")):
+    # Remove only complete style phrases. A keyword inside a visual sentence
+    # ("Photograph of a man carrying a parcel.") must not erase its subject.
+    style_only = re.compile(
+        r"(?:(?:candid|photorealistic|photoreal|realistic|documentary|press|"
+        r"staged|deadpan|japanese|sports|news|wide|film|still|natural|from a)\s+)*"
+        r"(?:photo|photograph|photography|comedy|lighting|photorealistic|photoreal|realistic)\.?",
+        flags=re.IGNORECASE,
+    )
+    while len(sentences) > 1 and len(sentences[0].split()) <= 10 and style_only.fullmatch(sentences[0]):
         sentences.pop(0)
     if not sentences:
         raise ValueError("No complete visual scene for CPU generation")
