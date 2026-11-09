@@ -1,9 +1,16 @@
 """Tests for editorial 3/2/2 metadata and duplicate guards."""
 from __future__ import annotations
 
+import copy
+import json
+import tempfile
 import unittest
 from collections import Counter
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from unittest.mock import patch
+
+from scripts import build
 
 from scripts.editorial_mix import (
     EDITORIAL_PAYOFFS,
@@ -88,6 +95,116 @@ def story(
 
 
 class EditorialMixTests(unittest.TestCase):
+    def assert_neutral_report_keeps_existing_gates(self, item):
+        errors, _ = validate_articles([item])
+        self.assertEqual(errors, [])
+        ungrounded = copy.deepcopy(item)
+        ungrounded["behavior_basis"]["evidence_quote"] = "本文には存在しない利用者の発言を編集側だけで補った"
+        errors, _ = validate_articles([ungrounded])
+        self.assertTrue(any("evidence_quote must be a verbatim excerpt" in error for error in errors))
+
+        # Use the real publication loader without building pages or networking.
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "content").mkdir()
+            article_file = root / "content/articles.json"
+            article_file.write_text(json.dumps([item], ensure_ascii=False), encoding="utf-8")
+            with patch.object(build, "BASE", root):
+                self.assertEqual(build.load(), [item])
+                bad_source = copy.deepcopy(item)
+                bad_source["source"]["url"] = "http://example.test/unverified"
+                article_file.write_text(json.dumps([bad_source], ensure_ascii=False), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "Source must use HTTPS"):
+                    build.load()
+
+    def test_policy_announcement_without_a_punchline_keeps_existing_gates(self):
+        item = story(
+            "fictional-library-policy", "social_life",
+            published=datetime(2026, 11, 9, 9, 30, tzinfo=JST),
+            tone="plausible_future", payoff="visible_result", reader_interest="family_home",
+        )
+        item.update({
+            "title": "つづみ野市、図書館の机を15分単位で予約できる制度を発表",
+            "summary": "つづみ野市は図書館の机を15分単位で予約できる制度を始める。短い空き時間にも席を使えるよう、当日の空席を窓口と端末で案内する。",
+            "paragraphs": [
+                "つづみ野市は、図書館の机を15分単位で予約できる制度を発表した。短時間だけ使いたい人が来館前に空席を確かめられるようにする。",
+                "予約は当日分だけで、窓口でも受け付ける。利用者は選んだ時間に席へ向かい、読みかけの本を机に広げた。",
+            ],
+            "fiction_at": "2031-11-09T09:30:00+09:00", "category": "社会",
+            "art": "notice", "tags": ["図書館"], "satire_tags": [],
+            "scene_prompt": "Candid natural photo of one person opening a book at a library desk, bookshelves behind them, no readable writing or logos.",
+            "source": {
+                "url": "https://example.test/library-reservations", "published_at": "2026-11-08T09:00:00+09:00",
+                "topic": "座席予約の背景資料を表すテスト用出典。つづみ野市の制度と利用場面は創作。",
+            },
+            "editorial_signature": {
+                "present": "現在も図書館の空席を来館後に確認する場面がある",
+                "target": "図書館を短時間でも利用したい人の座席確保",
+                "action": "当日の机を15分単位で予約できるようにする",
+                "outcome": "利用者が選んだ時間に席へ向かい本を広げる",
+            },
+            "reader_clarity": {
+                "who": "つづみ野市", "action": "図書館の机を15分単位で予約できる制度を始める",
+                "oddity": "長時間の席確保だけでなく短い空き時間にも予約を使える",
+            },
+            "behavior_basis": {
+                "motive": "短い空き時間にも図書館の机を利用できるようにする",
+                "ordinary_alternative": "来館してから空いている机を探す",
+                "why_not": "来館前に席の見通しを得たい利用者へ対応するため",
+                "evidence_quote": "短時間だけ使いたい人が来館前に空席を確かめられるようにする",
+            },
+            "plausibility_basis": {
+                "present_signal": "現在も公共施設の席を事前予約する仕組みがある",
+                "continuation_force": "短時間の利用を求める人に合わせて予約単位を細かくする",
+                "future_result": "机を短時間予約した利用者が来館して本を読む",
+            },
+        })
+        self.assert_neutral_report_keeps_existing_gates(item)
+
+    def test_product_announcement_without_a_punchline_keeps_existing_gates(self):
+        item = story(
+            "fictional-umbrella-case", "social_life",
+            published=datetime(2026, 11, 9, 11, 30, tzinfo=JST),
+            tone="plausible_future", payoff="action", reader_interest="family_home",
+        )
+        item.update({
+            "title": "雨森道具店、片手で傘の水を切れる持ち歩きケースを発売",
+            "summary": "雨森道具店は、折りたたみ傘を差し込んで片手で水を切れるケースを発売する。外側を押すと底の受け皿へ水が集まり、室内で捨てられる。",
+            "paragraphs": [
+                "雨森道具店は、折りたたみ傘を差し込んで片手で水を切れるケースを発売する。荷物を持ったまま傘の水をまとめられるようにした。",
+                "ケースの外側を押すと、傘に残った水が底の受け皿に集まる。試した利用者は玄関で受け皿を外して水を捨て、傘をケースに戻した。",
+            ],
+            "fiction_at": "2031-11-09T11:30:00+09:00", "category": "技術",
+            "art": "generic", "tags": ["雨具"], "satire_tags": [],
+            "scene_prompt": "Candid natural photo of one person holding a folded umbrella beside its compact case and detached water tray in a home entryway, no text or logos.",
+            "source": {
+                "url": "https://example.test/umbrella-care", "published_at": "2026-11-08T09:00:00+09:00",
+                "topic": "雨具の手入れを扱うテスト用背景資料。雨森道具店の製品と使用場面は創作。",
+            },
+            "editorial_signature": {
+                "present": "雨の日には濡れた傘と荷物を一緒に持ち歩く場面がある",
+                "target": "荷物を持ったまま濡れた傘をしまう時の扱いやすさ",
+                "action": "ケースの外側を片手で押して傘に残る水を集める",
+                "outcome": "玄関で受け皿を外し水を捨てて傘をケースに戻す",
+            },
+            "reader_clarity": {
+                "who": "雨森道具店", "action": "片手で傘の水を切れる持ち歩きケースを発売する",
+                "oddity": "外側を押すと水が受け皿に集まり持ち歩いた後で捨てられる",
+            },
+            "behavior_basis": {
+                "motive": "荷物を持ったまま傘に残った水をまとめたい",
+                "ordinary_alternative": "傘を両手で畳み布で水を拭き取る",
+                "why_not": "荷物で片手がふさがっている時にも傘を扱うため",
+                "evidence_quote": "荷物を持ったまま傘の水をまとめられるようにした",
+            },
+            "plausibility_basis": {
+                "present_signal": "傘に残る水を受ける持ち歩きケースは現在も使われる",
+                "continuation_force": "荷物を持った状態で傘をしまう場面に合わせて形を改良する",
+                "future_result": "利用者が片手でケースを押し玄関で受け皿の水を捨てる",
+            },
+        })
+        self.assert_neutral_report_keeps_existing_gates(item)
+
     def test_target_is_three_two_two(self):
         self.assertEqual(
             LANE_TARGETS,
