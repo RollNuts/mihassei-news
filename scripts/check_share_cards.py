@@ -8,6 +8,7 @@ Never calls engagement endpoints, posts traffic, changes data or uses paid APIs.
 from __future__ import annotations
 
 import json
+import re
 import struct
 import sys
 import urllib.error
@@ -15,13 +16,21 @@ import urllib.request
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 SITE = "https://veripsa.com"
 ROOT = Path(__file__).resolve().parents[1]
 BOT = "Twitterbot/1.0"
 MAX_HTML = 2 * 1024 * 1024
 MAX_IMAGE = 6 * 1024 * 1024
+
+
+def png_card_dimensions(image_url: str) -> tuple[int, int]:
+    parsed = urlsplit(image_url)
+    version = parse_qs(parsed.query).get("v", [""])
+    scene = (parsed.path.startswith("/og/articles/")
+             and len(version) == 1 and re.fullmatch(r"[0-9a-f]{12}", version[0]))
+    return 1200, 675 if scene else 630
 
 
 class CardParser(HTMLParser):
@@ -74,7 +83,8 @@ def inspect_markup(markup: str, path: str) -> tuple[str, str]:
             if path.startswith("/articles/") or path.count("/") > 3:
                 raise RuntimeError(path + ": story/episode must advertise article type")
     if extension == "png":
-        if p.meta.get("og:image:width") != "1200" or p.meta.get("og:image:height") != "630":
+        width, height = png_card_dimensions(image)
+        if p.meta.get("og:image:width") != str(width) or p.meta.get("og:image:height") != str(height):
             raise RuntimeError(path + ": PNG share-card dimensions missing")
     return image, expected_mime
 
@@ -171,7 +181,8 @@ def check():
             if actual_mime != image_mime:
                 raise RuntimeError(path + ": image content-type is " + actual_mime)
             width, height = image_dimensions(image, image_mime)
-            if (width, height) != (1200, 630) and (image_mime != "image/jpeg" or width < 600 or height < 315):
+            if ((image_mime == "image/png" and (width, height) != png_card_dimensions(image_url))
+                    or (image_mime == "image/jpeg" and (width < 600 or height < 315))):
                 raise RuntimeError(path + ": unsupported social raster dimensions " + str((width, height)))
             checked_images.add(image_url)
         print("OK X crawler:", path, "card", image_url)

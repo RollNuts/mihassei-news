@@ -849,7 +849,8 @@ class SiteTests(unittest.TestCase):
             else:
                 self.assertIsNone(credit)
                 self.assertEqual(thumbnail.get("width"),"1200")
-                self.assertEqual(thumbnail.get("height"),"675" if generated else "630")
+                from scripts.social_cards import reviewed_scene_version
+                self.assertEqual(thumbnail.get("height"),"675" if generated or reviewed_scene_version(a,root=ROOT) else "630")
             self.assertTrue((ROOT/"dist"/social_image(a).split("?",1)[0].lstrip("/")).is_file())
 
     def test_visual_review_gallery_is_complete_and_nonindexable(self):
@@ -1008,7 +1009,9 @@ class SiteTests(unittest.TestCase):
                 self.assertIn('src="/photos/'+slug+'.jpg"',page)
             else:
                 rejected+=1
-                self.assertEqual(social_image(article),"/og/articles/"+slug+".png?v=20261103-topic2")
+                from scripts.social_cards import reviewed_scene_version
+                version=reviewed_scene_version(article,root=ROOT) or "20261103-topic2"
+                self.assertEqual(social_image(article),"/og/articles/"+slug+".png?v="+version)
                 self.assertIn('src="/images/'+slug+'.svg"',page)
                 self.assertTrue((ROOT/"dist/og/articles"/(slug+".png")).is_file())
                 self.assertFalse((ROOT/"dist/generated"/(slug+".jpg")).exists())
@@ -1053,7 +1056,7 @@ class SiteTests(unittest.TestCase):
 
     def test_no_photo_articles_have_distinct_offline_png_social_cards(self):
         """Future articles automatically get meaningful, non-identical raster cards."""
-        from scripts.social_cards import render_social_card
+        from scripts.social_cards import render_social_card, reviewed_scene_version
         from scripts.build import social_image, uses_stock_photo
         import struct
         import tempfile
@@ -1066,19 +1069,21 @@ class SiteTests(unittest.TestCase):
             self.assertTrue(path.exists(),a["slug"])
             data=path.read_bytes()
             self.assertEqual(data[:8],b"\x89PNG\r\n\x1a\n")
-            self.assertEqual(struct.unpack(">II",data[16:24]),(1200,630))
+            version=reviewed_scene_version(a,root=ROOT)
+            self.assertEqual(struct.unpack(">II",data[16:24]),(1200,675 if version else 630))
             self.assertGreater(len(data),1500)
             self.assertLess(len(data),200000,"Social card should stay small for free hosting")
             self.assertNotIn(data,images,"Each article should have a unique preview")
             images.add(data)
-            self.assertEqual(social_image(a),"/og/articles/"+a["slug"]+".png?v=20261103-topic2")
+            expected="/og/articles/"+a["slug"]+".png?v="+(version or "20261103-topic2")
+            self.assertEqual(social_image(a),expected)
             with tempfile.TemporaryDirectory() as directory:
                 rerender=Path(directory)/"check.png"
-                render_social_card(a,rerender)
+                render_social_card(a,rerender,root=ROOT)
                 self.assertEqual(data,rerender.read_bytes(),"Cards should render deterministically")
             page=(ROOT/"dist/articles"/a["slug"]/"index.html").read_text(encoding="utf-8")
-            self.assertIn('property="og:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png?v=20261103-topic2"',page)
-            self.assertIn('name="twitter:image" content="https://veripsa.com/og/articles/'+a["slug"]+'.png?v=20261103-topic2"',page)
+            self.assertIn('property="og:image" content="https://veripsa.com'+expected+'"',page)
+            self.assertIn('name="twitter:image" content="https://veripsa.com'+expected+'"',page)
         self.assertEqual(sum(1 for _ in images),len(no_photo))
 
     def test_reader_growth_and_editorial_transparency(self):

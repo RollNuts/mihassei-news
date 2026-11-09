@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build original, clearly labelled fictional-news pages. No third-party packages."""
+"""Build fictional-news pages and verified static local social images with stdlib."""
 from __future__ import annotations
 
 import hashlib
@@ -17,7 +17,7 @@ from functools import lru_cache
 from pathlib import Path
 
 if __package__:
-    from .social_cards import render_social_card, render_issue_card
+    from .social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
     from .generated_photos import generated_url, share_page_url
@@ -32,7 +32,7 @@ if __package__:
     from .editorial_copy import reader_copy, source_reader_copy
     from .reader_paths import suggested_articles
 else:
-    from social_cards import render_social_card, render_issue_card
+    from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
     from generated_photos import generated_url, share_page_url
@@ -799,7 +799,8 @@ def social_image(article):
             return generated_url(article, root=BASE)
         if uses_stock_photo(article):
             return "/photos/" + article["slug"] + ".jpg"
-        return "/og/articles/" + article["slug"] + ".png?v=20261103-topic2"
+        version = reviewed_scene_version(article, root=BASE) or "20261103-topic2"
+        return "/og/articles/" + article["slug"] + ".png?v=" + version
     # Use a physically new raster URL: X caches both page cards and image URLs.
     # The legacy brand.png remains available for previously published links.
     return "/og/brand-launch-20261102-v3.png"
@@ -873,7 +874,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
     og_mime = "image/jpeg" if local_photo else "image/png"
-    og_size = "" if local_photo else '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+    scene_card = (article is not None and og_image.startswith(SITE + "/og/articles/")
+                  and reviewed_scene_version(article, root=BASE) is not None)
+    og_height = 675 if scene_card else 630
+    og_size = "" if local_photo else f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="{og_height}">'
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
@@ -1961,7 +1965,8 @@ def generate_rss(items, title, description, link, self_url, limit=30):
         if generated:
             thumb.update({"width":"1200","height":"675"})
         elif not approved:
-            thumb.update({"width":"1200","height":"630"})
+            thumb.update({"width":"1200","height":
+                          "675" if reviewed_scene_version(a, root=BASE) else "630"})
         ET.SubElement(entry,f"{{{media_ns}}}thumbnail",thumb)
         ET.SubElement(entry,f"{{{media_ns}}}content",{
             "url":image,"medium":"image",
@@ -2145,7 +2150,7 @@ def make_article_social_images(articles):
         # topic-specific PNG for anything not explicitly editorially reviewed.
         if uses_generated_scene(article) or uses_stock_photo(article):
             continue
-        render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"))
+        render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"), root=BASE)
 
 
 def build():
