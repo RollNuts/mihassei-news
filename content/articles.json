@@ -1,5 +1,70 @@
 [
   {
+    "slug": "off-grid-lodge-sells-disconnection",
+    "category": "暮らし",
+    "flash": "新しい宿泊",
+    "fiction_company": "谷陰荘",
+    "art": "cards",
+    "fiction_at": "2031-11-09T19:37:10+09:00",
+    "published_at": "2026-11-09T19:37:10+09:00",
+    "title": "山奥までつながる時代に「圏外の宿」開業　スマホを預けて眠る客が満室",
+    "summary": "衛星通信が山あいまで広がった2031年、宿が「つながらない客室」を発売。仕事の連絡を自分で切るのが気まずい客は、スマホを金属箱へ預けて一晩を過ごす。",
+    "paragraphs": [
+      "山道の先まで携帯の電波が届くようになり、山間部の宿「谷陰荘」が「圏外に泊まる」客室を始めた。窓の外は普通の森だが、フロントには通信を遮る金属製の収納箱があり、客はチェックイン時にスマホを預ける。週末の予約は満室になった。2026年11月、楽天モバイルと米ASTは一般のスマホを衛星につなぐ国内通信網の構築に向け、新会社設立で合意したと発表していた。",
+      "今は山へ行っても仕事のメッセージが届く。普通なら電源を切れば無料だ。それでも客の中には「自分で切った」と言いづらく、物理的につながらない部屋を選ぶ人がいる。緊急の連絡だけは宿の固定電話で受けられる。女将は「休みますと言うより、電波がありませんと言う方が、安心して休める方もいます」と話した。",
+      "夕方、宿泊客は金属箱のふたを閉じる前に、仕事先へ最後の一通を送った。「今夜は電波が届きません」。部屋に戻ると、いつもの通知音はしない。読まずに積んでいた本を開いた男性は、窓の外の鳥を撮ろうとポケットへ手を伸ばし、空の手をそのまま膝へ戻した。",
+      "翌朝、フロントで箱のふたが開くと、預かっていたスマホが一斉に震え始めた。画面を見た客の一人は端末を再び箱へ置き、延泊の空きを尋ねた。受付の机では、宿泊客より先に返されたスマホだけが、しばらく鳴り続けていた。"
+    ],
+    "source": {
+      "kind": "企業発表",
+      "publisher": "楽天モバイル株式会社",
+      "published_at": "2026-11-09T00:00:00+09:00",
+      "url": "https://corp.mobile.rakuten.co.jp/news/press/2026/1109_01/",
+      "topic": "2026年11月9日の楽天モバイル公式発表では、楽天と米ASTが2026年11月6日に低軌道衛星と一般的なスマホの直接通信網構築に向けた新会社設立に合意したと説明。目標は山間部・離島の圏外解消、2029年3月末までの構築・国内運用開始を目指す段階であり、2026年時点の全国サービス完成や2031年の普及実績を示す資料ではない。2031年の谷陰荘、客室、利用者の行動・発言は創作。"
+    },
+    "scene_prompt": "Documentary photograph in an unbranded rural Japanese guesthouse reception area, an ordinary guest in casual hiking clothes carefully placing a powered smartphone into a small open metal-lined storage drawer, while a receptionist offers a simple room key. Wooden counter and mountain forest visible through a window, practical daylight, human-scale realistic materials, no logos, no legible text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "旅行",
+      "働き方"
+    ],
+    "satire_tags": [
+      "つながりすぎ",
+      "圏外の贅沢"
+    ],
+    "x_tags": [
+      "デジタルデトックス"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "山に行っても仕事の通知が届くなら、休むために電波を遮る部屋を借りるしかない。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "一般のスマホが衛星へ直接つながる通信網の整備計画が進み、圏外の縮小が目標となっている",
+      "target": "常に連絡可能であることが休暇中の心理的負担になり、つながらない環境に宿泊料金が生まれる",
+      "action": "宿泊客が通信を遮る宿の金属箱へスマホを預け、圏外の一夜を買う",
+      "outcome": "翌朝スマホの通知が一斉に鳴り、受け取った客が再び箱へ戻して延泊を尋ねる"
+    },
+    "behavior_basis": {
+      "motive": "宿は通信空白が減った観光地で新しい休養価値を提供したい。客は勤務先との連絡を気にせず休みたい",
+      "ordinary_alternative": "無料でスマホの電源を切る、通知を止める、勤務先へ連絡不要を伝える",
+      "why_not": "自分の判断で連絡を拒んだと受け止められることを嫌い、物理的につながらない場所の方が休みやすいと考える人がいる",
+      "evidence_quote": "それでも客の中には「自分で切った」と言いづらく、物理的につながらない部屋を選ぶ人がいる。"
+    },
+    "reader_clarity": {
+      "who": "仕事の連絡を自分で切るのが気まずい客",
+      "action": "宿がスマホの電波を遮る部屋を販売し、客が端末を預けて泊まる",
+      "oddity": "山奥でもつながる時代になり、逆につながらないことが有料の宿泊サービスになった"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月、山間部等の圏外解消を目指し一般スマホ向け衛星通信網を整備する事業について公式発表された",
+      "continuation_force": "地上基地局の届きにくい場所へ通信範囲を伸ばす投資と、いつでも連絡が来る暮らしが併存する",
+      "future_result": "2031年、山間の宿が端末を物理的に遮断する客室を休養商品として提供する"
+    }
+  },
+  {
     "slug": "bring-your-own-room-hotel-parking-spaces",
     "category": "暮らし",
     "flash": "客室は持ち込み",
