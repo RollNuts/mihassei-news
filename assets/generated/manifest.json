@@ -1520,13 +1520,39 @@
     },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
-      "bytes": 82992,
-      "generated_at": "2026-11-04T12:46:18.577727+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 227822134817257212,
-      "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
+      "source_article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+      "source_png_sha256": "10354902f697407145a42ef4004bcc09a2df69c5b08e364e4e7e7d4f297aa437",
+      "bytes": 119036,
+      "sha256": "9a5ff5839ebaafc31d9e23de57455c1087bd7d9755128cb368e34712ffca9653",
+      "generation_id": "9288eb76-69d9-4136-a548-bea350f940da",
+      "generation_prompt": "Use case: photorealistic-natural.\nAsset: horizontal 16:9 editorial photograph for a fictional Japanese future-news comedy story, ordinary camera realism.\nPhotograph one specific quiet scene: at a modest Japanese apartment's open front door in winter daylight, a courteous adult parcel courier offers a large luxurious gift box to a fictional adult office worker in casual home clothes. The recipient has just remembered the expense and politely refuses: leans slightly back and pulls both open hands away from the box, palms toward the courier, clearly not touching or receiving the gift. The courier continues holding the entire box securely. Both adults have ordinary serious faces, no caricature or exaggerated grimace. Show both people, the gap between the recipient's hands and box, and the apartment threshold clearly in a medium-wide three-quarter candid view. The gift is elegantly wrapped in muted gold paper with a plain ivory ceremonial noshi band; every surface is blank, no letters or labels. The scene must be a two-person gift-refusal interaction at a home doorway, not a warehouse or a lone courier portrait.\nNatural lived-in Japanese entryway, soft available daylight, realistic uneven skin texture, believable hands, restrained everyday clothing, tactile folded paper, subtle natural shadows, a normal unpolished 35mm news snapshot. Keep important heads, hands and gift comfortably inside the central 16:9 composition for mobile crops.\nFictional anonymous adults only. No recognizable real person, brand, company, uniform logo, text, readable writing, fake lettering, signs, captions, watermarks, screen UI or extra packages. No illustrations, anime, painted textures, CGI, plastic skin, glossy advertising light or film-poster grading.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T22:40:10.733403+00:00",
+      "previous_generation": {
+        "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+        "bytes": 82992,
+        "generated_at": "2026-11-04T12:46:18.577727+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 227822134817257212,
+        "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
+      },
+      "previous_visual_review": {
+        "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+        "decision": "accepted",
+        "image_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
+        "note": "実画像と現本文を照合。室内でひもを掛けた箱を持つ、黒い帽子・服の架空の配送員風男性が写り、荷物の配送という題材が伝わる補助画像として採用。受取人・受取辞退の動作・高級なのし紙・贈り主と受取人が同じというオチは未再現。背景の紙面には小さい擬似文字があるが、目立つ読める見出しやロゴ、主役の顔・手・箱の大きな破綻は見当たらない。",
+        "reviewed_at": "2026-11-04T12:59:04.493426+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+        "rejected_candidate_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
+        "reviewed_at": "2026-11-09T22:43:41.630741+00:00",
+        "reason": "The old JPEG shows only a lone courier with a plain cardboard parcel in an indoor box-filled room. There is no recipient, gift-refusal gesture, or home-doorstep interaction, and the uniform waxy texture is CG-like. The old supplementary-photo acceptance does not meet the current concrete-scene and photographic-realism gate."
+      }
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "article_sha256": "d5bff8517d97f44e5ec941f7c0f41fc3d08ab236d66816f60d92948060786c6a",
