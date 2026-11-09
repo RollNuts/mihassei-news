@@ -1119,14 +1119,41 @@
       "source_png_sha256": "52167c658e213ad3b4f87ba65f22355506ea66fc59513e238ffceb08d384f583"
     },
     "press-conference-metaphor-viral": {
-      "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
-      "bytes": 140070,
-      "generated_at": "2026-11-03T04:57:58.669426+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 7680700911801401316,
-      "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
+      "article_sha256": "76e17948ce5be27c4bb982fbf3f81667d193763137110e5efc2cfc1bb54d142a",
+      "bytes": 105977,
+      "generation_id": "9bedf8c9-8dff-4859-9fc5-f7b234626822",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid newspaper photograph of a fictional adult at an ordinary Japanese home desk in natural window daylight, trying to obtain information from a network-outage press-conference stream. Frame from a slightly diagonal position beside and behind the seated viewer so their concerned profile, one natural hand held palm-up in mild puzzlement, and the laptop screen are all clearly visible in a single coherent real camera view. On the laptop, the UPPER video area clearly shows an anonymous suited adult speaker seated behind tabletop microphones at a plain press-conference table. The speaker's face and microphones are fully visible, not censored and not covered. Immediately BELOW that video is the separate explanation/details section of the streaming page. A solid opaque grey warning panel covers only this lower explanation section, with one simple small yellow triangular warning icon and no words. The viewer looks toward this obstructed information, not toward the camera. The image should communicate the absurd contrast between a watchable conference and unavailable essential explanatory details. The warning panel belongs inside the physical laptop display, never floating in the room or over the photograph. No readable text, letters, numerals, subtitles, signage, brand, logos, watermarks or real-person likeness. Keep the room plain and lived-in but uncluttered; everyday cotton clothes, believable human skin, hands, laptop geometry and matte materials, restrained colors, soft ordinary daylight and subtle screen reflections. Not a staged product advertisement, illustration, cartoon, 3D render, cinematic scene, poster or collage. Do not replace the streaming conference with men drinking tea, a social video call, an error screen covering the whole display, or a physical conference in the room.",
+      "sha256": "d4350b6baa6140b00d4621a665b4caa3ba4f5a1e85129d0db7c40c611ba8954a",
+      "source_article_sha256": "0ae4893b3843b2c74d75bd33d16badbf39dd2a0ce4b1d9b861ef3166bfb3742c",
+      "source_png_sha256": "d15e7cef14f5feba940becb567b294397da8913ab464bd8edaa120dc038a878b",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T17:07:56.810817+00:00",
+      "generation_steps": [
+        {
+          "generation_id": "9bedf8c9-8dff-4859-9fc5-f7b234626822",
+          "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid newspaper photograph of a fictional adult at an ordinary Japanese home desk in natural window daylight, trying to obtain information from a network-outage press-conference stream. Frame from a slightly diagonal position beside and behind the seated viewer so their concerned profile, one natural hand held palm-up in mild puzzlement, and the laptop screen are all clearly visible in a single coherent real camera view. On the laptop, the UPPER video area clearly shows an anonymous suited adult speaker seated behind tabletop microphones at a plain press-conference table. The speaker's face and microphones are fully visible, not censored and not covered. Immediately BELOW that video is the separate explanation/details section of the streaming page. A solid opaque grey warning panel covers only this lower explanation section, with one simple small yellow triangular warning icon and no words. The viewer looks toward this obstructed information, not toward the camera. The image should communicate the absurd contrast between a watchable conference and unavailable essential explanatory details. The warning panel belongs inside the physical laptop display, never floating in the room or over the photograph. No readable text, letters, numerals, subtitles, signage, brand, logos, watermarks or real-person likeness. Keep the room plain and lived-in but uncluttered; everyday cotton clothes, believable human skin, hands, laptop geometry and matte materials, restrained colors, soft ordinary daylight and subtle screen reflections. Not a staged product advertisement, illustration, cartoon, 3D render, cinematic scene, poster or collage. Do not replace the streaming conference with men drinking tea, a social video call, an error screen covering the whole display, or a physical conference in the room.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-9bedf8c9-8dff-4859-9fc5-f7b234626822.png",
+          "source_png_sha256": "d15e7cef14f5feba940becb567b294397da8913ab464bd8edaa120dc038a878b",
+          "tool_mode": "new_image"
+        }
+      ],
+      "previous_generation": {
+        "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
+        "bytes": 140070,
+        "generated_at": "2026-11-03T04:57:58.669426+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 7680700911801401316,
+        "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
+        "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
+        "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
+      }
     },
     "pressure-office-mood-forecast": {
       "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
@@ -1826,6 +1853,28 @@
           ],
           "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-64849e81-4b83-475e-9325-9d13c5f83214.png",
           "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a"
+        }
+      ]
+    },
+    "family-line-replies-four-different-station-exits": {
+      "article_sha256": "d969e3b7c1c2c31d4dc1e5a762c195cfbe9ec9c66e438266a4de8e6a163ad756",
+      "bytes": 182798,
+      "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
+      "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
+      "sha256": "d27debfec45c6760a76c045320fe7780ca6628bce28b12085dde12ff1e973ee5",
+      "source_article_sha256": "648ca56e313f18dfcd8f81ede792f55bcb8c0a5e0f70d5a8dd43a5f006380505",
+      "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T17:10:38.749848+00:00",
+      "generation_steps": [
+        {
+          "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
+          "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-16345f4d-7ed6-40fc-8bc4-2416afe80589.png",
+          "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f",
+          "tool_mode": "new_image"
         }
       ]
     }

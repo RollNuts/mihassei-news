@@ -1260,9 +1260,8 @@
       "url": "https://www.moba-ken.jp/project/lifestyle/20260917.html",
       "topic": "2026年9月17日公表のNTTドコモ モバイル社会研究所の調査では、別居の家族・親族との日常会話で最も多く使う連絡手段がLINEメッセージという人は2026年に55%。2026年1月調査、全国15〜79歳の6,748人が回答。家族の連絡手段についての背景資料であり、集合場所の譲り合いや調整の押しつけを調査したものではない。久保田家、4出口での待機と父の出迎えは本紙の創作。発表元は日付のみ表示のためpublished_atの00:00は日付代表値。"
     },
-    "scene_prompt": "Editorial illustration arranged as four equal panels, one Japanese family member waiting alone at each of four different ordinary train station exits: father by stairwell, mother near bicycle parking, teenage son at a bus stop, adult daughter beside a cafe; everyone looks at a smartphone, nobody is together. Restrained everyday proportions, clear 2x2 comparison, no readable words, no brands, no logos, no watermarks.",
-    "visual_strategy": "illustration",
-    "illustration_reason": "comparison_layout",
+    "scene_prompt": "A father walks toward his waiting adult daughter at a station-exit cafe, with the mother and adult son following him. The daughter stays by the cafe holding her phone. Ordinary Japanese station exterior, daylight, candid photograph, no readable text or logos.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "家族",
       "待ち合わせ"
@@ -1291,7 +1290,7 @@
       "action": "提案に自分の都合を付け足し続け、父が全員を迎えに回る案だけ修正せず受け入れる",
       "outcome": "全員が譲り合ったつもりで合流するが、出口を変えて歩いたのは父一人"
     },
-    "modified_at": "2026-11-09T21:42:12+09:00"
+    "modified_at": "2026-11-10T02:12:24+09:00"
   },
   {
     "slug": "tori-no-ichi-kumade-blocks-store-entrance",
@@ -2793,8 +2792,8 @@
       "topic": "2026年11月2日20:57公開。企業のセキュリティ問題を巡る説明会で、発言中の比喩がSNSで広く話題となり、会見の内容・意図への反応やツッコミが報じられた。実在企業の未来の行動を予測した記事ではなく、本紙の説明会・企業・発言はすべて架空。"
     },
     "published_at": "2026-11-03T08:08:49+09:00",
-    "modified_at": "2026-11-10T00:47:36+09:00",
-    "scene_prompt": "Editorial illustration of a viewer watching a fictional network-outage press conference in a streaming interface. A suited speaker and microphones remain visible, but an opaque warning panel covers the cause-and-recovery explanation below the video. The viewer looks puzzled. No readable text or logos.",
+    "modified_at": "2026-11-10T02:12:24+09:00",
+    "scene_prompt": "A puzzled adult watches a press-conference stream on a laptop: the suited speaker and microphones are visible, while an opaque warning panel hides only the explanation below. Ordinary home desk, daylight, candid photograph, no readable text or logos.",
     "tags": [
       "通信",
       "コンプラ"
@@ -2803,8 +2802,7 @@
       "仕事してる感",
       "説明した感"
     ],
-    "visual_strategy": "illustration",
-    "illustration_reason": "readable_text_or_ui"
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "idol-ice-kept-in-freezer",
