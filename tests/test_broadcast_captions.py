@@ -148,6 +148,7 @@ class BroadcastCaptionTests(unittest.TestCase):
         with patch.object(build, "BASE", self.root), \
              patch.object(build, "reviewed_generated_scene", return_value=True), \
              patch.object(build, "usable_clip", return_value=record), \
+             patch.object(build, "asset_url", side_effect=lambda name: f"/assets/{name}"), \
              patch.object(build, "stylesheet_url", return_value="/assets/test.css"):
             # Establish a working positive case before removing only the captions.
             self.assertIn("<video", build.article_hero_media(article))
