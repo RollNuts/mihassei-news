@@ -8,6 +8,6 @@
 - **直近の実績：** 11/8は7本公開。保存済み`analytics/daily/2026-11-08.json`は48PV、coverage complete（11/9 05:23 JST取得）。流入別PVはX35／検索8／外部0／不明5。11/9分は未保存で、面白さや改善効果の因果は未判定。計測・比較の定義はOPERATIONSを参照。
 
 - **画像引継ぎ：** 新着 `zero-redelivery-residents-collect-parcels` はrun `42531619069` のJPEGを実検品して不採用とし、専用SVGで本番 `2d881305e49f9510c7383e927df40a99f1dee902`・記事・一覧・共有画像・RSSまで回収済み。回収時点の未検品・汎用代替は0件。
-  ノート参照run `42533373151` は実画像で紙の穴が消えて不採用。原記事・試作指示・画像SHAは `assets/generated/manifest.json` の当該保留記録へ保存済み。専用SVGを維持し、同日再試行はしない。
-  次の既存回収担当は新着を優先する。既刊試作は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)の実験条件に従い、失敗原因を変える具体的な仮説がなければ実行しない。11/9は1/3件消費済み。
+  ノート参照run `42533373151` は紙の穴が消えて不採用。再配達の平台台車比較run `42538537711` も宅配箱が籠・袋になり不採用（元記事SHA `17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757`／候補JPEG SHA `d33889470f0287b6b3df8acbdc5d73fd4349725fafbe14dbb14c6ca3903cdb3e`）。各試作指紋・指示・採否はmanifestへ保存し、専用SVGを維持する。
+  次の既存回収担当は新着を優先する。既刊試作は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)の実験条件に従い、失敗原因を変える具体的な仮説がなければ実行しない。11/9は2/3件消費済み。同日同記事の再試行はしない。
 - **動画の未完了：** `publish_motion_clips.py --plan`の実行結果はpending=0。加湿器はimage_required、ほかの既存選抜6件はcurrent。新着を選抜した状態ではない。発行担当は今後の強い新作で実検品JPEGと本文・3字幕を確認して選抜し、コートの枠埋め選抜や不採用画像の動画化はしない。
