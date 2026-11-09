@@ -87,14 +87,44 @@
       "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
     },
     "black-friday-preparty-budget-gone": {
-      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "bytes": 149180,
-      "generated_at": "2026-11-07T00:55:49.705593+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "d92d8eb811828f5a9c956e5baf90d6b0c383d2d088bd733f47b170e507b8604f",
+      "bytes": 149493,
+      "generation_id": "3fcbc220-6d9d-4b2f-883c-757ce656570a",
+      "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 candid documentary newspaper photograph for a clearly fictional Japanese shopping story. At an ordinary unbranded home-appliance shop display, an anonymous fictional Japanese adult woman in her early thirties has spent the budget for a replacement rice cooker on a blanket and shoes. She is an ordinary shopper in modest autumn clothes, with a naturally approachable face and a serious, rueful everyday expression, not a fashion pose. She stands beside the rice-cooker display, looking down into an OPEN EMPTY LEATHER WALLET held in her two natural hands. The wallet's main banknote compartment is spread open toward the camera and visibly contains no banknotes. At her feet, close enough to be clearly visible in the same medium-wide photograph, are two plain shopping bags: a folded woven blanket protrudes conspicuously from one bag, and a clearly recognizable pair of new casual shoes protrudes from the other. These are already-bought purchases. Nearby on the store's display shelf is one recognizable modern household RICE COOKER with a rounded pot-shaped body, hinged lid and blank dark display; it remains ON THE SHOP SHELF, clearly unpurchased, outside all bags and not carried by the woman. The empty wallet, blanket, pair of shoes, and unpurchased rice cooker must all be present and identifiable within a single coherent eye-level photograph. Compose for small news thumbnails as well as a 1200x675 article image, with the main objects large enough to recognize. Ordinary neutral shop lighting, realistic human skin, finger joints, knitted fabric, worn leather and molded appliance materials, natural contact shadows and restrained everyday colors. All people and places are fictional. No real store or identifiable real person. No extra household-electronics boxes, no employee pointing at signs, no shopping-list insert, no sale banners, no visible cash, no overlay symbols. Absolutely no readable writing, numbers, logos, labels, headlines, captions or watermark. No illustration, cartoon, anime, 3D render, glossy commercial photography, beauty retouching, exaggerated facial expressions or theatrical lighting.",
+      "sha256": "9e9d40aadc8a9c3871528099f0bddda89b7b1f0ca8323632246b53e55af8a766",
+      "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "source_png_sha256": "d53d1f7f0e93c637ae425dbdbf6b68a1fc76233d3533706df02a9963c9600050",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
       "prompt_version": 3,
-      "seed": 1283090034361670628,
-      "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
+      "generated_at": "2026-11-09T11:48:05.085741+00:00",
+      "previous_generation": {
+        "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+        "bytes": 149180,
+        "generated_at": "2026-11-07T00:55:49.705593+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 1283090034361670628,
+        "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+        "reason": "Actual photo review of prop-first preview 42469605928: natural window light and leather loafers, but only shoes are visible. The empty wallet, blanket and shopping bags are absent, so the spent-budget scene is not conveyed. Reject the candidate and keep the story-specific SVG; the daily old-story attempt budget is exhausted.",
+        "rejected_candidate_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42469605928",
+        "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
+        "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+        "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
+        "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
+      },
+      "previous_visual_review": {
+        "decision": "rejected",
+        "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+        "image_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
+        "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
+        "note": "run 42469605928の本文・実JPEGを表示して照合。革靴・窓光・床材は普通の写真に見える一方、写るのは茶色いローファー一組だけで、主役の空財布・毛布・買い物袋がない。予算を使い切って炊飯器を買えなくなった状況を十分示さないため不採用。空財布と買い物の荷物が分かる既存専用SVGを実表示で確認し維持。本日の既刊試作上限を消費したため再生成せず、元JPEG・本文・生成指紋・seedは変更しない。"
+      }
     },
     "bring-your-own-room-hotel-parking-spaces": {
       "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
@@ -734,51 +764,71 @@
       "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
     },
     "off-grid-lodge-sells-disconnection": {
-      "article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
-      "bytes": 154789,
-      "generated_at": "2026-11-09T11:21:17.166459+00:00",
-      "generation_id": "255ab8a6-646a-4bd0-b6ac-fcf86031a392",
-      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid newspaper photograph of a clearly fictional rural Japanese guesthouse that offers a night away from work notifications. The central subject is a GUEST DEPOSITING ONE SMARTPHONE INTO AN OPEN METAL STORAGE BOX, not two people looking at their phones. On a worn wooden reception counter in the center foreground sits an ordinary portable rectangular brushed-silver metal storage box, about 35 cm wide, with a clear hinged lid OPEN and standing upright, visible metal interior, rim and a simple latch. One anonymous fictional adult guest in casual travel clothes stands on the near side of the counter. With one natural hand he lowers his single black smartphone partly INSIDE this open box, fingertips gripping the top edge so both the entire recognizable phone shape and the act of placing it into the box are unmistakable. The softly illuminated glass screen has no readable writing or app symbols. His other hand rests naturally by his side or on the counter. Behind the counter an anonymous fictional Japanese woman receptionist in plain modest everyday guesthouse work clothes watches the box with a calm, serious, matter-of-fact expression; her hands rest on the counter and she holds no device. There is exactly ONE visible phone, in the guest's hand at the box opening. The counter, box, phone and depositing hand must be big and unobscured together in the lower center of one coherent eye-level medium-close documentary photograph, with the two adults' upper bodies still in frame. An ordinary wooden rural inn reception and a modest window showing green mountain forest form the simple background. Soft practical daylight, realistic skin, finger joints, cotton fabric, wood grain and gently scratched metal, natural shadows and muted colors. All people and the guesthouse are fictional, no identifiable real person or business. No phones being shown to one another, no wooden drawer, no key handover, no extra device, no radio-wave graphics, no glowing fantasy effects. No readable text, labels, signs, brand logos, captions, headlines, numerals or watermark. No illustration, anime, cartoon, 3D render, waxy skin, theatrical lighting or glossy hotel advertising.",
-      "model": "ChatGPT ImageGen",
+      "article_sha256": "175fec22fb3ab52ae17df01fd8c2668e27bfb09705cff1aa6989b09acd474578",
+      "bytes": 148330,
+      "generation_id": "5aca6670-1008-4934-bb22-10a19a1ac28f",
+      "generation_prompt": "Use case: photorealistic-natural. Generate a new horizontal 16:9 ordinary candid documentary newspaper photograph for a fictional rural Japanese guesthouse. An anonymous fictional adult Japanese male guest in a plain navy travel overshirt is depositing exactly one black smartphone into an open portable brushed-silver metal storage box on a wooden reception counter. He holds the top of the phone with natural fingertips as its lower half passes clearly inside the box opening; the open hinged metal lid stands upright behind it and the box interior and simple latch are visible. An anonymous fictional adult woman innkeeper in modest plain everyday work clothes stands behind the counter and watches the deposit seriously, with her hands resting naturally on the wood. This is an ordinary check-in, with no real person or business. Medium close view from the guest side of the counter with the box, phone and placing hand large and unobscured in the foreground, both adults upper bodies in frame, and soft window daylight from the mountain forest behind the counter. Show realistic skin pores and finger joints, cotton fabric, scratched brushed metal, worn timber, natural contact shadows and muted everyday colors. The phone has a blank dark screen. There are no other visible phones and no phone handover between people. The building has no sign or brand. No readable text, numbers, labels, logos, signs, headlines, captions, icons or watermark. No illustration, anime, cartoon, 3D render, waxy skin, cinematic or advertisement lighting, theatrical expressions or fantasy effects. The action of placing the phone into the metal box must be unmistakable.",
+      "sha256": "0132f3e5f8aff8af0222a539562686bc144d33c2e0e97cd59426d5bfa4d44ba2",
+      "source_article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
+      "source_png_sha256": "5e5ae413dc307b5796c3b226835ba1fdb976cbfbcf0b38815c5d557aa5df158e",
       "origin": "chatgpt-imagegen",
-      "previous_generation": {
-        "article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
-        "bytes": 112403,
-        "generated_at": "2026-11-09T11:15:52.738836+00:00",
-        "inference": {
-          "algorithm_type": "dpmsolver++",
-          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7.0,
-          "height": 448,
-          "num_inference_steps": 24,
-          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-          "scheduler": "DPMSolverMultistepScheduler",
-          "solver_order": 2,
-          "solver_type": "midpoint",
-          "use_karras_sigmas": true,
-          "vae_model": "stabilityai/sd-vae-ft-mse",
-          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-          "width": 800
-        },
-        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "origin": "github-cpu-sd15",
-        "prompt_version": 3,
-        "seed": 2299536992374349509,
-        "sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f"
-      },
-      "previous_visual_hold": {
-        "article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
-        "reason": "現本文とCPU実JPEGを表示して照合。和室内の2人が各自の端末を見て笑っているだけで、金属箱と預け入れる動作がなく、宿の受付としての関係も識別できない。通信を断つために端末を預ける主場面に一致せず不採用。原生成記録・記事指紋・seedをそのまま保持。",
-        "rejected_candidate_sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f",
-        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42606430366",
-        "reviewed_at": "2026-11-09T11:24:07.485775+00:00"
-      },
+      "model": "ChatGPT ImageGen",
       "prompt_version": 3,
-      "sha256": "7907367020c362208b60533e67f0642cca1b3c418aadc707e2b2930d22581f12",
-      "source_article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
-      "source_png_sha256": "f0d3fef80377276af4dad644354cf258f3b8dfb686d6e5ff207241569ffd30a8"
+      "generated_at": "2026-11-09T11:55:57.991397+00:00",
+      "previous_generation": {
+        "article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
+        "bytes": 154789,
+        "generated_at": "2026-11-09T11:21:17.166459+00:00",
+        "generation_id": "255ab8a6-646a-4bd0-b6ac-fcf86031a392",
+        "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid newspaper photograph of a clearly fictional rural Japanese guesthouse that offers a night away from work notifications. The central subject is a GUEST DEPOSITING ONE SMARTPHONE INTO AN OPEN METAL STORAGE BOX, not two people looking at their phones. On a worn wooden reception counter in the center foreground sits an ordinary portable rectangular brushed-silver metal storage box, about 35 cm wide, with a clear hinged lid OPEN and standing upright, visible metal interior, rim and a simple latch. One anonymous fictional adult guest in casual travel clothes stands on the near side of the counter. With one natural hand he lowers his single black smartphone partly INSIDE this open box, fingertips gripping the top edge so both the entire recognizable phone shape and the act of placing it into the box are unmistakable. The softly illuminated glass screen has no readable writing or app symbols. His other hand rests naturally by his side or on the counter. Behind the counter an anonymous fictional Japanese woman receptionist in plain modest everyday guesthouse work clothes watches the box with a calm, serious, matter-of-fact expression; her hands rest on the counter and she holds no device. There is exactly ONE visible phone, in the guest's hand at the box opening. The counter, box, phone and depositing hand must be big and unobscured together in the lower center of one coherent eye-level medium-close documentary photograph, with the two adults' upper bodies still in frame. An ordinary wooden rural inn reception and a modest window showing green mountain forest form the simple background. Soft practical daylight, realistic skin, finger joints, cotton fabric, wood grain and gently scratched metal, natural shadows and muted colors. All people and the guesthouse are fictional, no identifiable real person or business. No phones being shown to one another, no wooden drawer, no key handover, no extra device, no radio-wave graphics, no glowing fantasy effects. No readable text, labels, signs, brand logos, captions, headlines, numerals or watermark. No illustration, anime, cartoon, 3D render, waxy skin, theatrical lighting or glossy hotel advertising.",
+        "model": "ChatGPT ImageGen",
+        "origin": "chatgpt-imagegen",
+        "previous_generation": {
+          "article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
+          "bytes": 112403,
+          "generated_at": "2026-11-09T11:15:52.738836+00:00",
+          "inference": {
+            "algorithm_type": "dpmsolver++",
+            "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+            "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+            "guidance_scale": 7.0,
+            "height": 448,
+            "num_inference_steps": 24,
+            "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+            "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+            "scheduler": "DPMSolverMultistepScheduler",
+            "solver_order": 2,
+            "solver_type": "midpoint",
+            "use_karras_sigmas": true,
+            "vae_model": "stabilityai/sd-vae-ft-mse",
+            "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+            "width": 800
+          },
+          "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "origin": "github-cpu-sd15",
+          "prompt_version": 3,
+          "seed": 2299536992374349509,
+          "sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f"
+        },
+        "previous_visual_hold": {
+          "article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
+          "reason": "現本文とCPU実JPEGを表示して照合。和室内の2人が各自の端末を見て笑っているだけで、金属箱と預け入れる動作がなく、宿の受付としての関係も識別できない。通信を断つために端末を預ける主場面に一致せず不採用。原生成記録・記事指紋・seedをそのまま保持。",
+          "rejected_candidate_sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f",
+          "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42606430366",
+          "reviewed_at": "2026-11-09T11:24:07.485775+00:00"
+        },
+        "prompt_version": 3,
+        "sha256": "7907367020c362208b60533e67f0642cca1b3c418aadc707e2b2930d22581f12",
+        "source_article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
+        "source_png_sha256": "f0d3fef80377276af4dad644354cf258f3b8dfb686d6e5ff207241569ffd30a8"
+      },
+      "previous_visual_review": {
+        "article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
+        "image_sha256": "7907367020c362208b60533e67f0642cca1b3c418aadc707e2b2930d22581f12",
+        "decision": "accepted",
+        "reviewed_at": "2026-11-09T11:24:07.485775+00:00",
+        "note": "現本文・新原PNG・最終JPEGを実表示して照合。木の受付カウンター上の開いた金属箱へ、旅行客がスマホ1台を下ろす。端末下部は箱の内側に入り、受付担当も預け入れを見るため、スマホを預ける本文の主動作が明確。森の見える宿の環境、肌・指・衣服・金属の縁と内側・木目・自然光は普通の写真質感で、目立つ文字・実在ロゴ・重大な人体破綻はない。通信遮断性能、満室、通知の振動までは写真で証明しない。本文・初回日時・出典は保持し、sceneだけを本文の箱に整合。旧CPU候補の欠落と元の正確なseedは別記録へ保持した。"
+      }
     },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
@@ -1443,6 +1493,19 @@
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
+    },
+    "self-checkout-regular-awarded-unpaid-staff": {
+      "article_sha256": "3bb26389a0bd228ba6b5dd563b0e811e0367c9ab441771140cc37cb085e63e22",
+      "bytes": 135138,
+      "generation_id": "6f5b7851-b6b0-4cfe-bb16-0a614d648ac3",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid Japanese newspaper photograph inside a clearly fictional neighborhood supermarket self-checkout area. A REGULAR CUSTOMER in casual clothes is helping ANOTHER CUSTOMER scan groceries even though he is only shopping for ONE MILK CARTON. The regular is an anonymous fictional Japanese adult man around fifty with slightly graying short hair, thin dark glasses, and an ordinary moss-green casual cardigan over a cream T-shirt. He has no store uniform, apron, name tag or staff lanyard. With his left hand he holds his own single plain unbranded milk carton close to his torso, away from the scanner. With his free right hand he naturally points near one edge of a grocery package held by the other adult shopper, demonstrating how to TILT THAT PACKAGE DOWN toward the fixed scanner. The second shopper, an anonymous fictional adult woman in ordinary everyday clothes, holds her own plain food package at an angle a few centimeters above the scanner and looks attentively at the package. Their hands and the package are distinct and anatomically natural. Both adults have calm serious matter-of-fact faces; this is a helpful everyday interaction, not a joke expression. Crucially, directly beside this checkout, clearly visible on the nearby store wall within the same photograph, is a modest framed color PORTRAIT OF THIS EXACT SAME CASUALLY DRESSED MAN, with the same graying hair, glasses, green cardigan, cream shirt and recognizable face. Beside the portrait hangs a plain cream award certificate with a small gold embossed medallion but absolutely no writing. This is the absurd visual clue that a customer has been treated as an award-winning staff member. The live man's face and the portrait must visibly depict the SAME fictional person. Compose one coherent medium-wide eye-level photograph that includes the regular, his single milk carton, the other shopper's scanning action, the recognizable self-checkout machine and the nearby framed portrait/award. Screen contents and packaging are blank or softly blurred with no readable writing. Ordinary practical supermarket fluorescent lighting, naturally textured skin and hands, knit cotton fabric, scratched plastic checkout surfaces, restrained grocery shelves softly in the background, natural contact shadows. No additional employees or central figures. All people and the store are fictional and unbranded; no real celebrities or identifiable business. Absolutely no readable words, numbers, barcodes, logos, captions, headlines or watermark. No illustration, anime, cartoon, 3D render, waxy skin, glossy advertising, cinematic lighting, presentation ceremony or portrait of a different man.",
+      "sha256": "0a74b1ed20db650c34403b799f57a8ee684d124033cf599ededa5f2eb7f548f5",
+      "source_article_sha256": "dfe99daecdb1e7bdf8889502824ef6b1f2ded054a45a1137ed4a3cb11490aab3",
+      "source_png_sha256": "be79154357e40f813835bb4b9df682066c2b675c60ed1b578c1ba93d402b1bb3",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T11:49:48.479036+00:00"
     }
   },
   "rejected": {
@@ -1451,16 +1514,6 @@
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
       "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
-    },
-    "black-friday-preparty-budget-gone": {
-      "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "reason": "Actual photo review of prop-first preview 42469605928: natural window light and leather loafers, but only shoes are visible. The empty wallet, blanket and shopping bags are absent, so the spent-budget scene is not conveyed. Reject the candidate and keep the story-specific SVG; the daily old-story attempt budget is exhausted.",
-      "rejected_candidate_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42469605928",
-      "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
-      "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
-      "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",

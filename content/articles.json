@@ -10,7 +10,7 @@
     "title": "山奥までつながる時代に「圏外の宿」開業　スマホを預けて眠る客が満室",
     "summary": "衛星通信が山あいまで広がった2031年、宿が「つながらない客室」を発売。仕事の連絡を自分で切るのが気まずい客は、スマホを金属箱へ預けて一晩を過ごす。",
     "paragraphs": [
-      "山道の先まで携帯の電波が届くようになり、山間部の宿「谷陰荘」が「圏外に泊まる」客室を始めた。窓の外は普通の森だが、フロントには通信を遮る金属製の収納箱があり、客はチェックイン時にスマホを預ける。週末の予約は満室になった。2026年11月、楽天モバイルと米ASTは一般のスマホを衛星につなぐ国内通信網の構築に向け、新会社設立で合意したと発表していた。",
+      "山道の先まで携帯の電波が届くようになり、山間部の宿「谷陰荘」が「圏外に泊まる」客室を始めた。窓の外は普通の森だが、フロントには通信を遮る金属製の収納箱があり、客はチェックイン時にスマホを預ける。週末の予約は満室になった。2026年11月、通信関連企業が一般のスマホを衛星につなぐ国内通信網の構築に向け、新会社設立で合意したと発表していた。",
       "今は山へ行っても仕事のメッセージが届く。普通なら電源を切れば無料だ。それでも客の中には「自分で切った」と言いづらく、物理的につながらない部屋を選ぶ人がいる。緊急の連絡だけは宿の固定電話で受けられる。女将は「休みますと言うより、電波がありませんと言う方が、安心して休める方もいます」と話した。",
       "夕方、宿泊客は金属箱のふたを閉じる前に、仕事先へ最後の一通を送った。「今夜は電波が届きません」。部屋に戻ると、いつもの通知音はしない。読まずに積んでいた本を開いた男性は、窓の外の鳥を撮ろうとポケットへ手を伸ばし、空の手をそのまま膝へ戻した。",
       "翌朝、フロントで箱のふたが開くと、預かっていたスマホが一斉に震え始めた。画面を見た客の一人は端末を再び箱へ置き、延泊の空きを尋ねた。受付の机では、宿泊客より先に返されたスマホだけが、しばらく鳴り続けていた。"
@@ -62,7 +62,8 @@
       "present_signal": "2026年11月、山間部等の圏外解消を目指し一般スマホ向け衛星通信網を整備する事業について公式発表された",
       "continuation_force": "地上基地局の届きにくい場所へ通信範囲を伸ばす投資と、いつでも連絡が来る暮らしが併存する",
       "future_result": "2031年、山間の宿が端末を物理的に遮断する客室を休養商品として提供する"
-    }
+    },
+    "modified_at": "2026-11-09T20:55:19+09:00"
   },
   {
     "slug": "bring-your-own-room-hotel-parking-spaces",
@@ -1508,7 +1509,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000559.000046400.html",
       "topic": "2026年のブラックフライデーは11月27日。くふう トクバイは11月6日から19日まで「ブラックフライデー前夜祭キャンペーン」を開始し、生活者2,283人の調査ではブラックフライデーの認知率が96.6％、買い物意向が55.4％だった。黒金商店街、篠原さん、前夜祭で炊飯器用の予算を別の商品に使い切る行動、鍋での炊飯は本紙独自の創作であり、同社の実例ではない。"
     },
-    "scene_prompt": "Candid documentary-style photo at the entrance to a busy Japanese shopping arcade: one exhausted shopper stands beside full shopping bags and household-electronics boxes, showing his completely empty wallet. A smiling shop employee points toward a prominent Black Friday main-sale banner just beyond the storefront, while another sign marks the early sale. Natural shop lighting, believable skin, fabric, and cardboard textures; no real brand logos or identifiable public figures.",
+    "scene_prompt": "An adult shopper opens an empty wallet beside plain shopping bags containing a folded blanket and a pair of new shoes, facing an unpurchased rice cooker on a shop display. Ordinary Japanese appliance shop, natural overhead lighting, realistic hands and materials, candid documentary photograph, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "セール",
@@ -1863,7 +1864,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000045.000080608.html",
       "topic": "2026年1月13日11時公開のStorePro『有人レジとセルフレジの心理・行動』調査。セルフレジ利用者を含む1,008人の回答で、セルフレジ利用時の読み取りエラー経験は39.5%、操作方法が分かりにくいは23.7%。記事中のよりみち市場、田中さん、客による操作説明の実績集計、表彰と台詞は実際の調査事実や同社の行為ではない独自創作。"
     },
-    "scene_prompt": "Bright, sharp realistic photograph inside a Japanese supermarket self-checkout area. One middle-aged shopper holds a single milk carton while helping another customer scan groceries beneath his framed employee-award portrait. Clear fluorescent lighting, colorful grocery shelves, natural gestures, no readable text or logos.",
+    "scene_prompt": "A casually dressed regular customer holds his own single milk carton while showing another shopper how to tilt a grocery package over a supermarket self-checkout scanner. Beside the checkout hangs his recognizable framed portrait with an unlettered award certificate. Ordinary fluorescent light, natural hands and skin, candid documentary photograph, no readable text or logos.",
     "tags": [
       "店舗",
       "接客"
@@ -1879,7 +1880,7 @@
       "action": "会計を手伝う常連客を月間優秀スタッフとして表彰し、店の戦力に組み込む",
       "outcome": "表彰された客がほかの人のレジを回ってから自分の牛乳一本を会計する"
     },
-    "visual_strategy": "illustration"
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "sns-quit-support-site-hundred-day-login-award",
