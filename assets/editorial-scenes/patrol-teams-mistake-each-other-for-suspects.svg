@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
  aria-label="町内会の防犯パトロール二班が互いを怪しみ、同じ黄色い腕章のまま三周する住宅街の創作イラスト"
  data-visual-topic="newspaper"
- data-article-sha256="6c73d587db0e10e18b836efc60db0b9b12eb77e3d36e2d88678605f790f2305a">
+ data-article-sha256="cffac9004fef00b8358bbada3a1d53f4f1c7895fc351d436428d102bc7b1c6cc">
  <title>お互いを不審者だと思う、同じ腕章の防犯パトロール二班</title>
  <defs>
  <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#c6d9df"/><stop offset="1" stop-color="#f1e9d4"/></linearGradient>
@@ -190,19 +190,19 @@
  <path d="M448 219q8-28 29-16 17 13-1 29l-8 14"/><circle cx="467" cy="261" r="4" fill="#cf8765" stroke="none"/>
  <path d="M755 219q-8-28-29-16-17 13 1 29l8 14"/><circle cx="734" cy="261" r="4" fill="#cf8765" stroke="none"/>
  </g>
- <!-- Two opposed reports each feature the same four silhouettes, the visual punchline. -->
+ <!-- Two opposed reports each feature the same eight silhouettes in two rows, the visual punchline. -->
  <g transform="translate(470 508) rotate(-7)" filter="url(#shadow)">
  <rect width="106" height="142" rx="9" fill="#f7f1e5" stroke="#68848a" stroke-width="5"/>
  <rect x="32" y="-6" width="42" height="15" rx="5" fill="#80999a"/>
  <rect x="16" y="28" width="73" height="66" rx="4" fill="#d6dfd8"/>
- <g fill="#6c8282"><circle cx="28" cy="53" r="9"/><circle cx="45" cy="51" r="9"/><circle cx="62" cy="53" r="9"/><circle cx="78" cy="54" r="9"/><path d="M19 74q10-19 20 0M35 74q10-19 20 0M54 74q10-19 20 0M69 74q10-19 20 0" stroke="#6c8282" stroke-width="9"/></g>
+ <g fill="#6c8282"><circle cx="28" cy="43" r="6.2"/><path d="M21 62v-3q0-8 7-8t7 8v3z"/><circle cx="45" cy="43" r="6.2"/><path d="M38 62v-3q0-8 7-8t7 8v3z"/><circle cx="62" cy="43" r="6.2"/><path d="M55 62v-3q0-8 7-8t7 8v3z"/><circle cx="79" cy="43" r="6.2"/><path d="M72 62v-3q0-8 7-8t7 8v3z"/><circle cx="28" cy="72" r="6.2"/><path d="M21 91v-3q0-8 7-8t7 8v3z"/><circle cx="45" cy="72" r="6.2"/><path d="M38 91v-3q0-8 7-8t7 8v3z"/><circle cx="62" cy="72" r="6.2"/><path d="M55 91v-3q0-8 7-8t7 8v3z"/><circle cx="79" cy="72" r="6.2"/><path d="M72 91v-3q0-8 7-8t7 8v3z"/></g>
  <path d="M19 112h68M19 124h53" stroke="#98aaad" stroke-width="5"/>
  </g>
  <g transform="translate(631 496) rotate(7)" filter="url(#shadow)">
  <rect width="105" height="143" rx="9" fill="#f7f1e5" stroke="#a47c69" stroke-width="5"/>
  <rect x="32" y="-6" width="42" height="15" rx="5" fill="#aa9685"/>
  <rect x="16" y="28" width="73" height="66" rx="4" fill="#d6dfd8"/>
- <g fill="#6c8282"><circle cx="28" cy="53" r="9"/><circle cx="45" cy="51" r="9"/><circle cx="62" cy="53" r="9"/><circle cx="78" cy="54" r="9"/><path d="M19 74q10-19 20 0M35 74q10-19 20 0M54 74q10-19 20 0M69 74q10-19 20 0" stroke="#6c8282" stroke-width="9"/></g>
+ <g fill="#6c8282"><circle cx="28" cy="43" r="6.2"/><path d="M21 62v-3q0-8 7-8t7 8v3z"/><circle cx="45" cy="43" r="6.2"/><path d="M38 62v-3q0-8 7-8t7 8v3z"/><circle cx="62" cy="43" r="6.2"/><path d="M55 62v-3q0-8 7-8t7 8v3z"/><circle cx="79" cy="43" r="6.2"/><path d="M72 62v-3q0-8 7-8t7 8v3z"/><circle cx="28" cy="72" r="6.2"/><path d="M21 91v-3q0-8 7-8t7 8v3z"/><circle cx="45" cy="72" r="6.2"/><path d="M38 91v-3q0-8 7-8t7 8v3z"/><circle cx="62" cy="72" r="6.2"/><path d="M55 91v-3q0-8 7-8t7 8v3z"/><circle cx="79" cy="72" r="6.2"/><path d="M72 91v-3q0-8 7-8t7 8v3z"/></g>
  <path d="M19 112h68M19 124h53" stroke="#98aaad" stroke-width="5"/>
  </g>
  <path d="M0 660h1200" stroke="#687d7b" stroke-width="13" opacity=".45"/>
