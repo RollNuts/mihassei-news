@@ -1796,6 +1796,38 @@
       "model": "ChatGPT ImageGen",
       "prompt_version": 3,
       "generated_at": "2026-11-09T15:44:04.908693+00:00"
+    },
+    "buzzword-award-what-does-it-mean-wins": {
+      "article_sha256": "f99c58f2479c24e0ec68d18464580c21ea664c1b7b96e7d521e1a416e540380b",
+      "bytes": 151421,
+      "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
+      "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
+      "sha256": "342e1156ce1cc056dfa56302ca7cd59cbce9750ec0d1248dceadb0fe2f6dda18",
+      "source_article_sha256": "115429c3a034ebadd499bcbc4f14eb7249992b7b5484dfa88cf766aac13c8e38",
+      "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T16:30:29.526028+00:00",
+      "generation_steps": [
+        {
+          "generation_id": "ee467b64-72fa-4a12-aaf9-1887f59e47dd",
+          "tool_mode": "new_image",
+          "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 candid local newspaper photograph of a fictional street word-awareness survey. Two anonymous fictional adults stand safely on the ordinary pedestrian sidewalk of a modest Japanese neighborhood in daylight. The survey worker stands on the left in plain casual work clothes, holding a normal small plain questionnaire at chest height, glancing from the sheet toward the passerby with their mouth slightly open as they read out a word and ask a question. Keep the questionnaire unlettered or with only faint indistinct marks, without a clipboard headline or a large candidate list. The adult passerby on the right has stopped facing the survey worker, but has just lowered their eyes to a smartphone near their chest to look up the meaning instead of giving an immediate answer. One hand holds the phone and the other thumb or fingertip searches on it. A mildly puzzled, matter-of-fact expression, not a posed smile. Show a subtle generic search-bar shape or magnifying-glass icon on the phone if visible, with no readable letters, words, numbers or branded interface. The important relationship is the worker asking a question while the respondent searches for the answer on their own phone. They are not both watching a shared screen, showing each other a video, taking a selfie, buying anything or exchanging the phone. One coherent eye-level medium-wide frame with both adult faces, the small questionnaire, phone, and natural hands clearly visible. Plain pavement, quiet unlettered buildings and a little greenery are background only. Natural soft daylight, ordinary cotton clothes, realistic skin and paper, restrained colors and real camera depth, no cinematic or publicity lighting. No stage, presenter podium, award certificate, trophy, medal, giant list, speech bubble, floating question mark, banner, signs, readable text, signatures, brand logos, real-person likeness or watermark. No illustration, anime, cartoon or 3D render.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png",
+          "source_png_sha256": "98dfa6c1de2196982b349cb3743b886354edc8a90fcde828c928d2d5914d2c2a"
+        },
+        {
+          "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
+          "tool_mode": "edit",
+          "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
+          "referenced_image_paths": [
+            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png"
+          ],
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-64849e81-4b83-475e-9325-9d13c5f83214.png",
+          "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a"
+        }
+      ]
     }
   },
   "rejected": {
@@ -1881,6 +1913,39 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "scolding-ai-one-line-summary-boss-eighteen-pages": {
+      "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+      "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
+      "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+      "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
+      "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
+      "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
+      "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
+      "trial_origin": "chatgpt-imagegen",
+      "trial_model": "ChatGPT ImageGen",
+      "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+      "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
+      "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
+      "trial_generation_steps": [
+        {
+          "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
+          "tool_mode": "new_image",
+          "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
+          "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79"
+        },
+        {
+          "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+          "tool_mode": "edit",
+          "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
+          "referenced_image_paths": [
+            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
+          ],
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
+          "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
+        }
+      ]
     }
   },
   "version": 1

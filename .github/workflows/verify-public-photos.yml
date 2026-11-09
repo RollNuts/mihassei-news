@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 # Each new main push supersedes the previous deployment check.
 # Avoid treating a superseded commit as a production failure.
+# Read-only public-byte verification is the sole deployment wait.
 concurrency:
   group: verify-live-production-main
   cancel-in-progress: true
@@ -13,7 +14,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,51 +23,7 @@ jobs:
       - name: Wait for the exact revision served by the public site
         env:
           EXPECTED_SHA: ${{ github.sha }}
-        run: |
-          python3 - <<'PY'
-          """A deployment is proven by public bytes, not an optional GitHub App check."""
-          import os
-          import re
-          import time
-          import urllib.request
-
-          expected = os.environ["EXPECTED_SHA"].lower()
-          if not re.fullmatch(r"[0-9a-f]{40}", expected):
-              raise SystemExit("Invalid expected GitHub commit hash")
-
-          endpoint = "https://veripsa.com/build-revision.txt?release=" + expected[:12]
-          latest = "(not reached)"
-          # Cloudflare's GitHub status check is optional or may not be installed.
-          # Instead check what anonymous visitors really receive. A newer push
-          # cancels this run via concurrency; only the latest main push waits.
-          for attempt in range(1, 31):
-              try:
-                  request = urllib.request.Request(endpoint, headers={
-                      "User-Agent": "Mihassei-ReadOnly-ReleaseVerifier/1.0",
-                      "Cache-Control": "no-cache",
-                      "Pragma": "no-cache",
-                  })
-                  with urllib.request.urlopen(request, timeout=9) as response:
-                      if response.status != 200:
-                          raise RuntimeError("HTTP " + str(response.status))
-                      latest = response.read(256).decode("utf-8").strip().lower()
-                  if latest == expected:
-                      print("Public site confirmed serving requested commit:", expected)
-                      break
-                  print("Public revision not updated yet: attempt", attempt,
-                        "expected", expected[:12], "observed", latest[:40], flush=True)
-              except Exception as exc:
-                  latest = type(exc).__name__ + ": " + str(exc)[:140]
-                  print("Read-only public revision check", attempt, "failed:", latest,
-                        flush=True)
-              if attempt < 30:
-                  time.sleep(10)
-          else:
-              raise SystemExit(
-                  "Public site never served commit " + expected +
-                  "; last observation: " + latest +
-                  ". Check Cloudflare Workers > Settings > Builds and Git integration.")
-          PY
+        run: python3 scripts/wait_for_live_revision.py
       - name: Verify the published revision and live stories without generating traffic
         run: python3 scripts/check_live.py
       - name: Verify that Twitterbot can fetch each first-party image card
