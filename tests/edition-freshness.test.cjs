@@ -40,7 +40,8 @@ function runEdition(start,latestDay='2026-11-02',count=10) {
     navigator:{},Blob,
     fetch:async()=>{throw new Error('network disabled in test');}
   };
-  vm.runInNewContext(src,ctx,{timeout:1000});
+  // Allow bounded startup headroom on shared CI runners; freshness is checked below.
+  vm.runInNewContext(src,ctx,{timeout:5000});
   return {title,updated,tick:()=>tick(),
     advance(value){current=value;}};
 }
