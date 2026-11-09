@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img"
- aria-label="祝福の紙吹雪が舞う投資アプリのスマートフォンと、資産が減る赤いグラフの明細が並んだ創作イラスト"
+ aria-label="同じ投資アプリの紙吹雪付き祝福画面と、前日より減った資産残高の詳細画面を並べて比べる創作イラスト"
  data-visual-topic="document"
- data-article-sha256="16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4">
-  <title>紙吹雪の上昇画面、隣には赤字の明細</title>
-  <desc>オフィスの机の左に青緑色の上昇線と紙吹雪が踊るスマートフォン、右に赤い下降線の明細書。二つの数字が逆方向を向く矛盾を、文字・実在人物・ブランドを用いずに示した架空ニュースの編集部制作イラスト。</desc>
+ data-article-sha256="8f65ca0bf2e6e58ab863f02700ad5fa4e7c190649333d4a39eb3e0c0f3cd115f">
+  <title>小幅反発を祝う画面と、前日より減った資産の詳細画面</title>
+  <desc>同じ投資アプリの二つの画面を並べた説明図。左のスマートフォンでは、開始時点から大きく下がって少し戻った株価が開始水準より下に残る一方、紙吹雪で反発を祝っている。右には詳細画面を拡大して示し、前日より資産が減ったことを赤い下降線で表す。文字・実在人物・ブランドを使わず、比較する基準の違いを描いた架空ニュースの創作イラスト。</desc>
   <defs>
     <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
       <stop stop-color="#243b50"/><stop offset="1" stop-color="#101e30"/>
@@ -14,7 +14,7 @@
     <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
       <stop stop-color="#1d4157"/><stop offset="1" stop-color="#142b39"/>
     </linearGradient>
-    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="details" x1="0" y1="0" x2="1" y2="1">
       <stop stop-color="#fffdf4"/><stop offset="1" stop-color="#e8e0d4"/>
     </linearGradient>
     <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
@@ -36,9 +36,10 @@
     <g fill="none" stroke="#608597" stroke-width="3" opacity=".26">
       <path d="M67 206h319M67 270h319M67 334h319M67 398h319M67 462h319"/>
     </g>
-    <path d="M87 427L153 403 196 428 258 347 307 375 365 302"
-          fill="none" stroke="#6de2b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M346 303l19-1-5 20" fill="none" stroke="#6de2b4" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M77 270h309" fill="none" stroke="#a3b8bd" stroke-width="3" stroke-dasharray="10 9" opacity=".6"/>
+    <path d="M87 270L142 291 188 360 244 432" fill="none" stroke="#d58083" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M244 432L300 414 365 392" fill="none" stroke="#6de2b4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M345 390l20 2-8 20" fill="none" stroke="#6de2b4" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>
     <g fill="#f4ce70">
       <path d="M218 165l-17-9-17 9 4-19-13-13 20-2 6-18 7 18 20 2-15 13z"/>
       <path d="M313 185l-8-13-15-4 15-8 8-12 7 12 15 8-15 4z"/>
@@ -55,10 +56,11 @@
       <rect x="95" y="505" width="164" height="8" rx="4" opacity=".42"/>
     </g>
   </g>
-  <!-- The actual balance goes the other way: no word labels required. -->
-  <g transform="translate(643 158) rotate(8 229 218)">
-    <path d="M0 0h461v444H0z" fill="#231e20" opacity=".26" transform="translate(15 20)"/>
-    <path d="M0 0h461v444H0z" fill="url(#paper)" stroke="#b5a89c" stroke-width="5"/>
+  <!-- Enlarged detail-screen view from the same app, not a paper statement. -->
+  <g transform="translate(643 158)">
+    <rect x="-8" y="-8" width="477" height="460" rx="26" fill="#303f4b" stroke="#17222d" stroke-width="7"/>
+    <rect x="10" y="10" width="441" height="424" rx="14" fill="url(#details)"/>
+    <rect x="22" y="22" width="417" height="78" rx="8" fill="#d3dfd9"/>
     <rect x="36" y="37" width="106" height="17" rx="8" fill="#536779"/>
     <rect x="36" y="76" width="218" height="10" rx="5" fill="#a6ada9"/>
     <path d="M35 114H423" stroke="#ccc2b5" stroke-width="4"/>
