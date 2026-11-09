@@ -695,6 +695,33 @@
       "seed": 1848290859289303548,
       "sha256": "e8b4f13290e6611091c9baa1f933451540aa97e361d60b301341449995e3a49f"
     },
+    "rest-day-concert-sells-out-without-performers": {
+      "article_sha256": "ca95c0154e3f842cabf6f21fe9817112a951c0eac979b7317a80e8fe3c8bd43f",
+      "bytes": 225716,
+      "generated_at": "2026-11-09T06:59:59.366705+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5803462125139793866,
+      "sha256": "af9037a4f4aefad3730359ed1550785de8012761e41829a3961da40b8b3e2ee0"
+    },
     "robot-job-hopping": {
       "article_sha256": "a814fd02ee0d5ec942b7b90dbbef7df675e388b9421d518e8e2bdcf42c35081e",
       "bytes": 143455,
