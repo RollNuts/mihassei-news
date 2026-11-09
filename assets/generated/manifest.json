@@ -96,6 +96,33 @@
       "seed": 1283090034361670628,
       "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
     },
+    "bring-your-own-room-hotel-parking-spaces": {
+      "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+      "bytes": 116552,
+      "generated_at": "2026-11-09T09:47:53.677690+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 2774198770197416284,
+      "sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520"
+    },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
       "article_sha256": "caa71d955f66af9d174d2a80de9fd5566387b9dd20e1a8a9efa289494c121802",
       "bytes": 143766,
