@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="開幕戦なのに巨大な数字の7と優勝旗が用意され、初対面のバスケ選手が握手する創作イラスト" data-visual-topic="document" data-article-sha256="8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676">
-  <title>初戦から決勝第7戦、握手する選手と早すぎる優勝旗の創作イラスト</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="最初の試合後に優勝旗を受け取った主将が旗竿を両手で持ち、係員が旗の布端を支えて説明し、後方に成人選手二人が立つ創作イラスト" data-visual-topic="document" data-article-sha256="5b48d4a5b3f1dd02bfbb426fdb781c016f07e74516bb7a9ec3141b7e4c32c39a">
+  <title>最初の試合が終わり、優勝旗を受け取って戸惑う主将</title>
+  <desc>普通の体育館のバスケットボールコート。試合後、主将は受け取った優勝旗の竿を両手で持つ。隣の係員は旗の布の端を片手で支え、主将へ説明している。旗には単純な星の飾りだけがあり、文字や数字、ロゴはない。後ろでは普段のユニフォーム姿の成人選手二人が見守る。巨大な数字や試合前の握手は描かない。</desc>
   <defs>
     <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#172e48"/><stop offset="1" stop-color="#354b60"/></linearGradient>
     <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#f6dcaa"/><stop offset="1" stop-color="#dfaa69"/></linearGradient>
@@ -13,43 +14,69 @@
   <path d="M0 342H1200V675H0Z" fill="url(#wood)"/>
   <path d="M0 375H1200M0 455H1200M0 548H1200M180 342L60 675M1020 342L1140 675M600 342V675" fill="none" stroke="#ba874b" stroke-width="4" opacity=".42"/>
   <ellipse cx="600" cy="530" rx="204" ry="103" fill="none" stroke="#fff6dc" stroke-width="7" opacity=".67"/>
-  <path d="M554 66h178v39L634 276h-62l92-155H554Z" fill="#f8d467" stroke="#b48023" stroke-width="9" stroke-linejoin="round"/>
-  <path d="M568 307h165" stroke="#f8d467" stroke-width="7" stroke-linecap="round"/>
+  <!-- Two adult players watch from farther back on the court. -->
+  <g transform="translate(-100 124) scale(.64)">
   <g stroke="#243a4d" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
     <ellipse cx="411" cy="588" rx="90" ry="18" fill="#7b624f" opacity=".30" stroke="none"/>
     <path d="M369 474l-20 89-27 23h46l24-92M425 474l20 86-8 26h50l-14-34-18-91" fill="#f7f1e5"/>
     <path d="M350 558h-19l-27 29h67l7-27M439 557h30l22 30h-66z" fill="#26374b"/>
     <path d="M357 346q55-24 103 6l8 125-107 8z" fill="#e4f0f2"/>
-    <path d="M364 358l-31 89 24 12 42-75M456 365l63 44 20-12-66-67" fill="#e4f0f2"/>
+    <path d="M364 358l-14 82 17 9m89-84 9 73-14 11" fill="#e4f0f2"/>
     <circle cx="414" cy="298" r="39" fill="#edbd92"/>
     <path d="M381 288q9-40 45-31 21 4 26 25-40 0-54-10z" fill="#26374b" stroke="none"/>
     <path d="M404 315h17" stroke="#936e56" stroke-width="3"/>
   </g>
+  </g>
+  <g transform="translate(-125 124) scale(.64)">
   <g stroke="#283c4b" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
     <ellipse cx="663" cy="588" rx="85" ry="18" fill="#7b624f" opacity=".3" stroke="none"/>
     <path d="M616 474l-16 85-23 27h48l26-96M676 479l22 79-7 28h50l-13-31-20-88" fill="#f7f1e5"/>
     <path d="M594 561l-16 25h56l4-24M701 559h26l23 27h-59z" fill="#283c4b"/>
     <path d="M604 350q55-27 102-3l7 133-108 4z" fill="#de7960"/>
-    <path d="M610 367l-81 36 9 24 88-35M700 365l26 74-21 13-37-74" fill="#de7960"/>
+    <path d="M610 367l-10 73 17 10m83-85 14 74-17 10" fill="#de7960"/>
     <circle cx="658" cy="302" r="39" fill="#d79d79"/>
     <path d="M623 291q-1-36 33-38 40-2 43 33-35-10-53-16-8 17-23 21" fill="#283c4b" stroke="none"/>
     <path d="M649 317h17" stroke="#8d6456" stroke-width="3"/>
   </g>
-  <circle cx="532" cy="412" r="15" fill="#d79d79" stroke="#283c4b" stroke-width="5"/>
+  </g>
+  <!-- The captain has received the flag and now holds the pole with both hands. -->
+  <g stroke="#243a4d" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="518" cy="587" rx="86" ry="17" fill="#7b624f" opacity=".23" stroke="none"/>
+    <path d="M478 475l-15 79-24 24h41l20-25 14-78m27 0 17 79 20 24h41l-27-26-16-77" fill="#f7f1e5"/>
+    <path d="M452 566h33l-6 18h-50zm112 0h31l22 18h-54z" fill="#26374b"/>
+    <path d="M463 334q54-29 109-1l12 119H456z" fill="#e4f0f2"/>
+    <path d="M456 451h128v32H456z" fill="#cfdee1"/>
+    <path d="M492 305v30l23 17 24-21v-29" fill="#edbd92"/>
+    <ellipse cx="518" cy="264" rx="41" ry="50" fill="#edbd92"/>
+    <path d="M478 269q-13-57 32-61 51-3 49 49l-27-27-52 25" fill="#26374b"/>
+    <path d="M497 267h9m23 0h9m-31 24h20" fill="none" stroke-width="3"/>
+  </g>
+  <!-- Ordinary event staff supports the cloth edge while speaking to the captain. -->
   <g stroke="#273e4d" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M930 341l-8 195M938 477l-13 108M971 484l28 101" fill="none"/>
-    <circle cx="932" cy="311" r="33" fill="#edbd92"/>
-    <path d="M897 360q36-25 70 0l20 107-104 3z" fill="#e9e3d5"/>
-    <path d="M902 375l-31-64 18-14 47 58" fill="#e9e3d5"/>
-    <path d="M959 377l49-15 12 20-57 22" fill="#e9e3d5"/>
+    <ellipse cx="875" cy="587" rx="76" ry="15" fill="#7b624f" opacity=".22" stroke="none"/>
+    <path d="M840 479l-9 77-20 23h39l17-22 12-76m15 0 10 76 20 22h38l-25-25-12-76" fill="#526a70"/>
+    <path d="M814 571h38v14h-49zm101 0h33l20 14h-52z" fill="#273e4d"/>
+    <path d="M836 351q36-24 77-1l22 135H817z" fill="#e9e3d5"/>
+    <path d="M855 321v30l21 16 19-18v-29" fill="#e1b898"/>
+    <ellipse cx="874" cy="281" rx="37" ry="46" fill="#e1b898"/>
+    <path d="M837 285q-9-54 31-57 44-3 44 43l-24-22-48 23" fill="#515b58"/>
+    <path d="M855 282h-8m8 24h-12" fill="none" stroke-width="3"/>
+    <path d="M853 353l22 29 20-31" fill="none" stroke="#a4b3a7" stroke-width="3"/>
+    <path d="M843 372l-16 22-22 6m105-28 17 55-12 25" fill="none" stroke="#e9e3d5" stroke-width="23"/>
+    <path d="M802 400l-13 3m127 49-3 15" stroke="#e1b898" stroke-width="13"/>
   </g>
-  <path d="M868 233v222" stroke="#f1df9a" stroke-width="9" stroke-linecap="round"/>
-  <path d="M874 241h194l-34 53 34 51H874z" fill="#f9da6c" stroke="#a97c26" stroke-width="6"/>
-  <path d="M971 253l14 29 32 4-23 22 6 31-29-15-29 15 6-31-23-22 32-4z" fill="#fff6d6"/>
-  <g fill="#243a4d" stroke="#fff6dc" stroke-width="5">
-    <circle cx="115" cy="495" r="34" fill="#e8b48c"/>
-    <path d="M75 538q42-27 82 0l10 74H66z" fill="#e06b55"/>
+  <!-- The unlettered championship cloth hangs between the recipient and staff. -->
+  <path d="M620 216v359" stroke="#a97c26" stroke-width="11" stroke-linecap="round"/>
+  <path d="M620 219v354" stroke="#f1df9a" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="620" cy="207" r="10" fill="#e8c665" stroke="#a97c26" stroke-width="4"/>
+  <path d="M628 236l184 15-28 55 25 94-181-16z" fill="#f9da6c" stroke="#a97c26" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M646 253l143 11m-142 98 140 17" fill="none" stroke="#ebc35e" stroke-width="3"/>
+  <path d="M708 273l13 28 31 5-23 21 5 31-27-15-29 14 6-31-22-22 32-3z" fill="#fff6d6"/>
+  <!-- Forearms and visible grips are in front of the received flagpole. -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M568 350l27 28 20-16M472 350l38 50 103 17" fill="none" stroke="#e4f0f2" stroke-width="26"/>
+    <path d="M612 363l9-3m-9 57 10 2" fill="none" stroke="#edbd92" stroke-width="18"/>
+    <path d="M623 353v17m1 40v17" stroke="#bf906c" stroke-width="2"/>
+    <path d="M790 404q12 4 22-5" fill="none" stroke="#e1b898" stroke-width="12"/>
   </g>
-  <path d="M164 480q-7-35 17-42 28-7 23 18-4 15-19 25v11" fill="none" stroke="#fff6dc" stroke-width="10" stroke-linecap="round"/>
-  <circle cx="184" cy="509" r="6" fill="#fff6dc"/>
 </svg>

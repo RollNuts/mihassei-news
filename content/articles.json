@@ -483,9 +483,8 @@
       "url": "https://www.watch.impress.co.jp/docs/news/2154571.html",
       "topic": "Metaは2026年11月6日（米国時間）、Muse内で利用者が自然言語から個人用のアプリ風画面「Spaces」を作り、後からカスタマイズできる機能を発表。11月7日18:30のImpress Watchが報道。公式発表は https://about.fb.com/news/2026/11/introducing-spaces-customize-muse-app/amp/ 。記事の事務会社「日々オフィス」、部署ごとに異なる色分け、4週間の引き継ぎ、研修制度、社員の発言は2031年の独自創作で、Metaの実際の法人機能や実在企業の事例ではない。"
     },
-    "scene_prompt": "An office handover desk where a new employee reads thick binders explaining several incompatible personalized computer dashboard interfaces, while a single short work instruction sheet lies beside them. Neutral everyday office, simple monitors, natural light, ordinary people, no logos or readable text.",
-    "visual_strategy": "illustration",
-    "illustration_reason": "comparison_layout",
+    "scene_prompt": "At an ordinary office handover desk, one anonymous adult successor looks between thick software-operation binders and a separate almost-empty sheet bearing just one short indistinct line. One binder is open to dense pages beside several thick closed binders; a plain computer and a shelf of former employees' manuals stay softly in the background. Natural window-light photograph, no legible writing or logos.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "AI",
       "業務効率"
@@ -524,7 +523,8 @@
       "present_signal": "2026年11月、Metaが自分専用アプリ風画面を自然言語で作るMuse Spacesを開始した",
       "continuation_force": "個人の作業時間短縮は評価しやすい一方、引き継ぎ費用は担当者が替わるまで表面化しにくい",
       "future_result": "2031年、社員別の使いやすさを優先した会社が、10分の業務の引き継ぎに4週間かける"
-    }
+    },
+    "modified_at": "2026-11-10T00:47:36+09:00"
   },
   {
     "slug": "music-special-forty-days-of-lineup-announcements",
@@ -2042,16 +2042,17 @@
       "url": "https://www.reuters.com/sports/record-33m-tuned-wnbas-first-ever-game-7--flm-2026-11-04/",
       "topic": "Reutersが2026年11月4日02:13 UTC（同日11:13 JST）公開。女子プロバスケットボールWNBA初のファイナル第7戦（10月31日開催）は330万人が視聴し、同リーグのプレーオフ史上最多となった。開幕戦を「決勝第7戦」と呼ぶ架空リーグ・観客・選手・係員の行為と台詞は本紙独自の創作であり、実際のWNBAとは無関係。"
     },
-    "scene_prompt": "Two basketball teams in fresh uniforms greet each other beneath an oversized gold number seven, while a staff member offers a championship flag before the opening game. Indoor hardwood basketball court, confused fans in the stands. Photorealistic sports scene, no text or logos.",
+    "scene_prompt": "A basketball captain accepts a fringed ceremonial victory flag from an official after a game on an ordinary gym court, looking puzzled as the official explains something and teammates watch.",
     "tags": [
       "スポーツ観戦",
       "バスケットボール"
     ],
-    "modified_at": "2026-11-05T11:42:53+09:00",
+    "modified_at": "2026-11-10T00:47:36+09:00",
     "satire_tags": [
       "特別感インフレ",
       "盛り上げすぎ"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "music-show-surprise-face-rehearsal",
@@ -2790,8 +2791,8 @@
       "topic": "2026年11月2日20:57公開。企業のセキュリティ問題を巡る説明会で、発言中の比喩がSNSで広く話題となり、会見の内容・意図への反応やツッコミが報じられた。実在企業の未来の行動を予測した記事ではなく、本紙の説明会・企業・発言はすべて架空。"
     },
     "published_at": "2026-11-03T08:08:49+09:00",
-    "modified_at": "2026-11-03T12:17:08.480+09:00",
-    "scene_prompt": "A suited spokesperson at a modest press conference slowly covers a disconnected router with a cloth as though protecting a grand surprise. Two deadpan reporters wait with phones in their hands and empty notebooks on their knees.",
+    "modified_at": "2026-11-10T00:47:36+09:00",
+    "scene_prompt": "Editorial illustration of a viewer watching a fictional network-outage press conference in a streaming interface. A suited speaker and microphones remain visible, but an opaque warning panel covers the cause-and-recovery explanation below the video. The viewer looks puzzled. No readable text or logos.",
     "tags": [
       "通信",
       "コンプラ"
@@ -2799,7 +2800,9 @@
     "satire_tags": [
       "仕事してる感",
       "説明した感"
-    ]
+    ],
+    "visual_strategy": "illustration",
+    "illustration_reason": "readable_text_or_ui"
   },
   {
     "slug": "idol-ice-kept-in-freezer",
