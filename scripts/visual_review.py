@@ -149,12 +149,25 @@ def _publication_row(article: dict, *, root: Path) -> dict:
         kind = "editorial_svg"
     elif usable_cached_photo(article, root=root):
         kind, url = "stock_photo", "/photos/" + article["slug"] + ".jpg"
-    return {**row, "visual_strategy": strategy,
-            "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
+    result = {**row, "visual_strategy": strategy,
+              "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
+    if kind == "editorial_svg":
+        # This is the same byte/proof gate used by the build. Keep the import
+        # local: preparation also consults this module's JPEG approval gate.
+        if __package__:
+            from .social_cards import reviewed_scene_png
+        else:
+            from social_cards import reviewed_scene_png
+        relative = Path("assets/editorial-scenes") / (article["slug"] + ".png")
+        path = root / relative
+        current = reviewed_scene_png(article, root=root) is not None
+        status = "current" if current else "invalid" if path.exists() or path.is_symlink() else "missing"
+        result["editorial_social_png"] = {"path": relative.as_posix(), "status": status}
+    return result
 
 
 def _attention(row: dict) -> list[dict]:
-    """Keep actionable review work separate from acceptable SVG replacements."""
+    """Include incomplete share artwork without treating it as CPU backlog."""
     work = []
     if row["editorial_scene"]["status"] in ("stale", "invalid"):
         work.append((
@@ -163,6 +176,13 @@ def _attention(row: dict) -> list[dict]:
         ))
     if row["status"] == "pending" and row.get("visual_strategy") != "illustration":
         work.append(("pending_jpeg", "現在のJPEGを本文と目視照合し、採否を記録する。"))
+    paired = row.get("editorial_social_png")
+    if paired and paired["status"] != "current":
+        work.append((
+            paired["status"] + "_editorial_social_png",
+            "共有PNGを python3 scripts/social_cards.py --prepare-scenes " + row["slug"]
+            + " で準備し、実表示する。CPU再生成は不要。",
+        ))
     if row["publication"]["kind"] == "generic_fallback" and not work:
         if row.get("visual_strategy") == "illustration":
             work.append((
