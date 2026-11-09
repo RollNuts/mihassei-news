@@ -384,6 +384,33 @@
       "seed": 4713491567798505932,
       "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
     },
+    "personalized-hidden-harbor-crowded-by-tourists": {
+      "article_sha256": "2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff",
+      "bytes": 142847,
+      "generated_at": "2026-11-09T01:01:17.028444+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 6206961962515114222,
+      "sha256": "ca38a62a240837444213ea6d8a50fa643aeda9b019bbe7edacecd7798ba77f30"
+    },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "bytes": 140070,
