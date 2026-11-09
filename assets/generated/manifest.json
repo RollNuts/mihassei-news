@@ -361,13 +361,39 @@
     },
     "crosswalk-photo-captcha-human-stuck": {
       "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-      "bytes": 120355,
-      "generated_at": "2026-11-04T10:36:46.017519+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 2648102085126781280,
-      "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
+      "source_article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+      "source_png_sha256": "bfab335bdbf7a65b5b85244a60ff8b8adc1edf53c829033728b3026c9a37e0c7",
+      "bytes": 174434,
+      "sha256": "0acb3a7c0ef0f8338e2cf9e4c0c1f0f7f04e13cd4dc73a21b82ea65be9f794fd",
+      "generation_id": "ee3cd0ac-68f5-433a-8249-adcc1cb76d6e",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese news article about a future pedestrian-crossing image quiz. Make an ordinary documentary camera photograph, not an illustration or an interface mockup. At a modest anonymous Japanese street corner in morning daylight, a serious adult woman commuter is STOPPED on the sidewalk before a small CLOSED waist-high pedestrian gate. She looks down and taps a real smartphone held near chest height. Her phone screen is clearly visible in the near foreground at a natural oblique angle, displaying a simple THREE-BY-THREE grid of tiny photographic street-image tiles, some containing zebra-crossing white stripes, others ordinary curb or road detail; no words, letters, logos or symbols implying a real service. Frame over her shoulder from slightly to her side so the phone, her hands and partial natural profile are visible without posing toward the camera. Beyond the shut gate is a clearly visible REAL zebra crossing across a quiet road, and a green pedestrian traffic light. Two other anonymous office commuters wait immediately behind her on the sidewalk, with restrained frustrated expressions, not walking through the crossing. Show the physical gate's closed horizontal barrier and hinges clearly, connected to short practical railings on both sides, plausibly human-scale; a single gate at the curb, not a train platform or a whole street blocked by barriers. The visual contrast is real white crossing stripes ahead versus choosing tiny photos on a phone while unable to pass. Natural skin, distinct plausible fingers contacting the phone, glass with mild realistic reflections but visible image tiles, everyday coats, ordinary concrete and metal, soft morning shadows, candid medium-wide camera shot. No readable signage, captions, words, numbers, brand names, watermarks, real identifiable places or people. No hovering AI holograms, futuristic neon, giant phone, sci-fi gate, crowds in the road, illustration, 3D render, waxy faces or fused hands. Keep the phone and gate inside the central 16:9 crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:49:18.468516+00:00",
+      "previous_generation": {
+        "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+        "bytes": 120355,
+        "generated_at": "2026-11-04T10:36:46.017519+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 2648102085126781280,
+        "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
+      },
+      "previous_visual_review": {
+        "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+        "decision": "accepted",
+        "image_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
+        "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
+        "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+        "rejected_candidate_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
+        "reason": "The old JPEG omits the pedestrian gate and recognizable phone/photo quiz and has softened malformed crowd figures. Its old supplemental acceptance does not meet the current realism and principal-action gate."
+      }
     },
     "datacenter-unbuilt-ribbon-cutting": {
       "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
@@ -555,13 +581,39 @@
     },
     "father-tries-own-overpacked-bento": {
       "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
-      "bytes": 98594,
-      "generated_at": "2026-11-04T02:12:30.613223+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 3645685199179627378,
-      "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
+      "source_article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+      "source_png_sha256": "7ed6f23e9ef1744d3052f47e0ea6eef6c40615ac836b215dbcf59e18d4b486f1",
+      "bytes": 148736,
+      "sha256": "817a7440ad76c493bd583407b3545549b0f4b616f655d5e9086b6f3967a11d5e",
+      "generation_id": "71701cd4-9274-40bd-a21c-8b0459ae0e44",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese family news comedy. In a modest lived-in Japanese home kitchen at early evening, an anonymous ordinary father and his school-age son sit beside one another at a wooden dining table. In front of the father is one large, physically plausible rectangular bento lunchbox, about 28 cm wide, with roughly half its area empty and some tamagoyaki slices, fried chicken and a little rice visibly left in the other half. Beside it is the son's much smaller EMPTY lunchbox with a few crumbs. The solemn son points one natural index finger toward his father's leftover food while looking at his father. The father quietly begins to lower the large box's plain lid with one hand, keeping the remaining food visible at this instant, his expression restrained and rueful rather than cartoonish. This is the main action, not a food product still life or a family portrait. Show faces, the pointing hand, the father's hand and BOTH separate open boxes together, candid three-quarter medium shot slightly above tabletop. Real ordinary skin, worn cotton clothes, wood grain, a few natural food irregularities, soft window and domestic room light, plausible shadows, documentary camera texture. Keep all four people-hands anatomically natural and distinct; only two people, not a giant fantasy lunchbox. No writing on lids, packaging, labels, brand names, signs, captions or watermarks. No illustration, 3D render, plastic food, perfect repeated nuggets, luminous surfaces, exaggerated expressions or identifiable real people. Leave enough frame for a 16:9 news crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:47:32.584152+00:00",
+      "previous_generation": {
+        "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+        "bytes": 98594,
+        "generated_at": "2026-11-04T02:12:30.613223+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 3645685199179627378,
+        "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
+      },
+      "previous_visual_review": {
+        "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+        "decision": "accepted",
+        "image_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
+        "note": "詰めすぎた大きな弁当箱とふたが主役。おかずの量が分かり、本文の題材に合う創作イメージ。父子の動作は未再現だが、目立つ読める文字やロゴはない。",
+        "reviewed_at": "2026-11-04T11:19:31.334151+09:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+        "rejected_candidate_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
+        "reason": "The old JPEG is a soft CG-like food still life, omitting the father, child, empty small box and lid-closing action. Its old topic-only acceptance does not meet the current realism and principal-action gate."
+      }
     },
     "film-village-all-stars-no-extras": {
       "article_sha256": "6a3000734189e1a646a595a87ac2059d54dc4fa096440774ba3a1c5c351335d1",
@@ -1154,13 +1206,39 @@
     },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "bytes": 136997,
-      "generated_at": "2026-11-04T08:48:46.326626+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 4713491567798505932,
-      "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
+      "source_article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+      "source_png_sha256": "f13a02141d860e4d1ca68ac93fea67b018449594e53bd6f541868173a0c8fe9c",
+      "bytes": 197959,
+      "sha256": "3a9560d3218df165cb0b375705ee125545de295aaca03ae3db36aca6850fc2a2",
+      "generation_id": "8f953f38-69ef-4f7c-99be-8ed2a6050873",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese neighborhood news comedy. In an ordinary modest neighborhood playground in afternoon daylight, an anonymous school-age girl stands at the bottom of a slide with one hand gently covering her own mouth after laughing. Beside her a serious but calm adult park attendant in plain unbranded work clothes points upward with one hand toward a REAL small gray horn loudspeaker fixed to a pole just above them. The girl looks toward the attendant, whose matter-of-fact expression makes the awkward situation deadpan. Frame girl, attendant's pointing hand, actual loudspeaker and slide all clearly in the same candid medium-wide shot; put the speaker close enough to recognize its horn opening, not a tiny distant speck. Include a bench or swing naturally in the modest park background. No menace, physical restraint or exaggerated child distress. Ordinary contemporary camera photograph, natural skin and fine hair, practical fabric, weathered metal and plastic playground materials, subdued daylight, believable scale and shadows. The joke is the visible relationship between a child suppressing her own voice and the prominently installed speaker, with no drawn sound effects. Anonymous fictional people and an invented park, not a real identifiable authority or event. No words, sound bubbles, musical notes, captions, logos, uniform insignia, readable signs or watermarks. No illustration, CGI, waxy skin, fused hands, doubled faces, oversaturated fantasy lighting, or giant loudspeakers. Leave enough framing margin for a 16:9 news crop.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T20:48:16.059284+00:00",
+      "previous_generation": {
+        "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+        "bytes": 136997,
+        "generated_at": "2026-11-04T08:48:46.326626+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 4713491567798505932,
+        "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
+      },
+      "previous_visual_review": {
+        "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+        "decision": "accepted",
+        "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
+        "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
+        "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+        "rejected_candidate_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
+        "reason": "The old JPEG is a soft distant playground view with a speaker, omitting the child covering her mouth and attendant indicating the speaker. Background-only supplemental acceptance does not meet the current principal-action gate."
+      }
     },
     "patrol-teams-mistake-each-other-for-suspects": {
       "article_sha256": "cffac9004fef00b8358bbada3a1d53f4f1c7895fc351d436428d102bc7b1c6cc",
