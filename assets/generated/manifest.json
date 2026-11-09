@@ -364,6 +364,19 @@
       "seed": 4671421502652190209,
       "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
     },
+    "music-special-forty-days-of-lineup-announcements": {
+      "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+      "bytes": 120404,
+      "generated_at": "2026-11-09T04:25:27.049533+00:00",
+      "generation_id": "b7845adc-08be-4053-b448-315b47bd5d31",
+      "generation_prompt": "Use case: photorealistic-natural. Create ONE photorealistic candid Japanese local-news-style staged photograph for a fictional satirical newspaper, horizontal 16:9. In an ordinary modest Japanese living room in the evening, an anonymous fictional Japanese adult sits on a sofa, seriously looking DOWN AT A SMARTPHONE held visibly in both hands rather than at the television. A single television behind and beside them is clearly switched on and shows an anonymous fictional singer performing into a microphone on a modest music-show stage. The joke is immediately visible: the person is absorbed in waiting for phone notifications while the actual singing continues on TV. Use a side three-quarter camera angle so the viewer's eyes aimed at the phone, the physical phone, and the television performance are all clearly visible in one natural photograph. The phone screen faces its owner and its plain back faces the camera. Natural skin, believable hands, fabric and wood textures, ordinary practical evening room lighting; restrained colors and straight documentary photography. No text, lettering, captions, logos, watermarks, station branding, headlines, multiple panels, illustration, animation, CGI, recognizable real people or celebrities. The image must clearly contain both the smartphone in the person's hands and a singer inside the television screen.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
+      "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+      "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
+    },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
       "bytes": 88367,
@@ -821,10 +834,47 @@
       "trial_seed": 979487124694735815,
       "trial_strength": 0.65
     },
+    "music-special-forty-days-of-lineup-announcements": {
+      "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+      "reason": "CPU試作は肌・衣服・家具が写真らしいが、スマホも歌手もなく、黒画面と白画面のテレビ2台がある普通の居間にとどまるため不採用。原指紋・seedは試作artifactを保持し、採用した別のnative生成画像とは区別する。",
+      "rejected_candidate_sha256": "5953be8d186b520f167ca43aa1028b02466a6bc7a6f4eda4574eee66f2dcbd1c",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42560293535",
+      "reviewed_at": "2026-11-09T04:25:27.049533+00:00",
+      "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+      "trial_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+      "trial_inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "trial_origin": "github-cpu-sd15",
+      "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
+      "trial_seed": 8233372666452194521
+    },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
       "reason": "Live visual re-review 2026-11-06 JST: three monitor portraits have unusually flat, blurred faces and grey plasticky light; desks, screens and shadows look synthetic rather than a candid documentary photograph. The story's irony is recognizable, but the required photo realism is not. Hold this exact JPEG and keep the current reviewed article-specific SVG until a genuinely new photo is seen and accepted.",
       "rejected_candidate_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
+    },
+    "paid-conversation-checkout-shoppers-chat-in-line": {
+      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
+      "reason": "実JPEGと現本文を照合。肌・髪・衣服・蛍光灯は写真らしいが、手前の客とレジ係による通常の接客に見え、中央の客は背を向けている。客同士の雑談と、そのため係員が待つ関係がない。左上の値札に目立つ崩れた文字、名札にロゴ風表記があり、ネギも袋でなく売場に置かれているため不採用。現本文に合う専用SVGを採用する。",
+      "rejected_candidate_sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42553345338",
+      "reviewed_at": "2026-11-09T03:05:38.950340+00:00"
     },
     "personalized-hidden-harbor-crowded-by-tourists": {
       "article_sha256": "2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff",
@@ -951,13 +1001,6 @@
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "A resident in everyday clothes pushes a low flat metal platform trolley carrying a large taped brown cardboard shipping carton through an apartment entrance. Daylight, unposed news photograph.",
       "trial_seed": 2437934260822884134
-    },
-    "paid-conversation-checkout-shoppers-chat-in-line": {
-      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
-      "rejected_candidate_sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c",
-      "reviewed_at": "2026-11-09T03:05:38.950340+00:00",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42553345338",
-      "reason": "実JPEGと現本文を照合。肌・髪・衣服・蛍光灯は写真らしいが、手前の客とレジ係による通常の接客に見え、中央の客は背を向けている。客同士の雑談と、そのため係員が待つ関係がない。左上の値札に目立つ崩れた文字、名札にロゴ風表記があり、ネギも袋でなく売場に置かれているため不採用。現本文に合う専用SVGを採用する。"
     }
   },
   "version": 1

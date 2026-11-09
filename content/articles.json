@@ -280,9 +280,8 @@
       "url": "https://mantan-web.jp/article/20261107dog00m200024000a.html",
       "topic": "2026年11月8日の報道で、日本テレビ系「ベストアーティスト2026」は11月28日に計5時間の生放送を予定し、出演予定約40組のうち第1弾として13組を発表した。2031年の番組「年末音の便り」、40日間の分割発表、スポンサーの評価指標、登場人物と視聴者の行動は創作であり、実在番組の運用や評価を述べたものではない。"
     },
-    "scene_prompt": "A two-panel editorial scene: on the left, forty small calendar squares marked one per day for a long sequence of performer announcements; on the right, a small music television stage with singers performing while an office producer points to a fresh blank forty-day calendar with only the first square circled. Simple studio, calendars and people readable without logos or artist likenesses.",
-    "visual_strategy": "illustration",
-    "illustration_reason": "comparison_layout",
+    "scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "音楽",
       "テレビ",
@@ -340,7 +339,7 @@
       "real_detail": "出演予定約40組のうち第1弾として13組を発表",
       "unique_hook": "出演予定約40組のうち第1弾として13組を発表した実際の段階的な告知を、40組を40日に分ける2031年の別番組に延長するからこそ、宣伝が音楽を食う皮肉になる"
     },
-    "modified_at": "2026-11-09T08:38:37+09:00"
+    "modified_at": "2026-11-09T13:25:27+09:00"
   },
   {
     "slug": "fridge-checkin-five-years-only-opening-times",
