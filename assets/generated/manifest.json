@@ -127,51 +127,71 @@
       }
     },
     "bring-your-own-room-hotel-parking-spaces": {
-      "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-      "bytes": 159107,
-      "generated_at": "2026-11-09T09:58:42.157346+00:00",
-      "generation_id": "20ac7d25-df2f-4401-b496-01c6f5ce90c0",
-      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary local-newspaper documentary photograph for a clearly fictional comedy news story about a hotel whose guests bring their own car as the guestroom. In a small Japanese hotel parking lot in plain natural daylight, an ordinary compact unbranded minivan is parked within WHITE PAINTED PARKING BAY LINES. The camera sees its OPEN REAR HATCH and the inside of its rear cargo compartment at an oblique rear angle. A simple full-length beige FUTON and ordinary pillow are laid flat inside the van on a level bed platform; the bedding is unmistakable and clearly visible. A fictional Japanese adult traveler standing at the rear is pulling the near edge of the futon straight, naturally with both hands. Next to the van, a fictional hotel receptionist in a plain modest work uniform calmly extends one hand toward the white painted parking-bay line at their feet, as if introducing this parking space as the guest's hotel room. Their expressions are matter-of-fact and serious. Both the visible sleeping space inside the vehicle and the receptionist's downward pointing gesture are essential and must share the frame, not be hidden behind a person or shut doors. A modest low front-desk building is unobtrusive in the background, no guestroom tower or other events. Realistic vehicle proportions, fabric folds, worn asphalt, white paint, ordinary skin and realistic hands. Eye-level medium-wide 35mm candid photography, soft everyday shadows, muted natural colors, no glossy car advertisement or cinematic spectacle. No readable text, brand logos, license plate writing, captions, signs, headlines or watermark. No illustration, cartoon, anime, 3D render, plastic skin or smiling commercial pose. All people and businesses are invented, not identifiable real persons or brands.",
-      "model": "ChatGPT ImageGen",
+      "article_sha256": "da7fcb84217a73864b4680d8de9daec4d9c0372d1694477a409ae923e00cc54f",
+      "bytes": 181830,
+      "generation_id": "1e4508a9-2a6d-4495-9a70-2eefe55a35f6",
+      "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 ordinary candid local-newspaper photograph of an entirely fictional Japanese hotel where travelers bring their own vehicle as their guestroom. An anonymous fictional Japanese adult male traveler around forty-five is standing at the OPEN REAR HATCH of a small generic unbranded compact van and straightening an ordinary beige futon with a pillow that is laid flat inside the rear cargo sleeping space. The whole recognizable FUTON AND PILLOW inside the OPEN VAN must be clearly visible, not hidden by the traveler. Beside him a fictional adult hotel receptionist in plain modest everyday work clothes, with no badge or logo, naturally points DOWN at one of the WHITE PAINTED PARKING BAY LINES beside the van, introducing the marked space as the room. Both adults are serious and matter-of-fact. Frame from an oblique rear-side eye-level angle so the open rear, bedding, natural hands, downward pointing gesture and white parking lines all fit clearly within one medium-wide camera photograph. A small quiet unbranded hotel reception building sits softly in the background; the focus stays on the guest arranging his own bed inside his vehicle while the receptionist indicates the parking space. The van is an invented generic vehicle design without recognizable brand features or badges. Ordinary soft afternoon daylight, realistic skin and hands, rumpled cotton bedding, slightly worn vehicle interior, asphalt and painted white lines, natural shadows and muted everyday colors. Nothing theatrical or like a car advertisement. All people and businesses are fictional; no real person or identifiable business. No readable text, words, numbers, signs, logos, license plate writing, headlines, captions or watermark. No keys being handed over, no hotel bed outside the vehicle, no closed hatch, no extra vehicle blocking the main sleeping compartment. No illustration, cartoon, anime, 3D render, waxy skin, glossy cinematic lighting or smiling promotional poses.",
+      "sha256": "044dcabea2388330e12792ffa1c05de84796e29232376dd83f3ca68c9b101edb",
+      "source_article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+      "source_png_sha256": "d1293b254f58e94856ffe6603f0eeba9ceab58f173b82dab30c58eebcd085ead",
       "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T13:10:30.754671+00:00",
       "previous_generation": {
         "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-        "bytes": 116552,
-        "generated_at": "2026-11-09T09:47:53.677690+00:00",
-        "inference": {
-          "algorithm_type": "dpmsolver++",
-          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7.0,
-          "height": 448,
-          "num_inference_steps": 24,
-          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-          "scheduler": "DPMSolverMultistepScheduler",
-          "solver_order": 2,
-          "solver_type": "midpoint",
-          "use_karras_sigmas": true,
-          "vae_model": "stabilityai/sd-vae-ft-mse",
-          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-          "width": 800
+        "bytes": 159107,
+        "generated_at": "2026-11-09T09:58:42.157346+00:00",
+        "generation_id": "20ac7d25-df2f-4401-b496-01c6f5ce90c0",
+        "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary local-newspaper documentary photograph for a clearly fictional comedy news story about a hotel whose guests bring their own car as the guestroom. In a small Japanese hotel parking lot in plain natural daylight, an ordinary compact unbranded minivan is parked within WHITE PAINTED PARKING BAY LINES. The camera sees its OPEN REAR HATCH and the inside of its rear cargo compartment at an oblique rear angle. A simple full-length beige FUTON and ordinary pillow are laid flat inside the van on a level bed platform; the bedding is unmistakable and clearly visible. A fictional Japanese adult traveler standing at the rear is pulling the near edge of the futon straight, naturally with both hands. Next to the van, a fictional hotel receptionist in a plain modest work uniform calmly extends one hand toward the white painted parking-bay line at their feet, as if introducing this parking space as the guest's hotel room. Their expressions are matter-of-fact and serious. Both the visible sleeping space inside the vehicle and the receptionist's downward pointing gesture are essential and must share the frame, not be hidden behind a person or shut doors. A modest low front-desk building is unobtrusive in the background, no guestroom tower or other events. Realistic vehicle proportions, fabric folds, worn asphalt, white paint, ordinary skin and realistic hands. Eye-level medium-wide 35mm candid photography, soft everyday shadows, muted natural colors, no glossy car advertisement or cinematic spectacle. No readable text, brand logos, license plate writing, captions, signs, headlines or watermark. No illustration, cartoon, anime, 3D render, plastic skin or smiling commercial pose. All people and businesses are invented, not identifiable real persons or brands.",
+        "model": "ChatGPT ImageGen",
+        "origin": "chatgpt-imagegen",
+        "previous_generation": {
+          "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+          "bytes": 116552,
+          "generated_at": "2026-11-09T09:47:53.677690+00:00",
+          "inference": {
+            "algorithm_type": "dpmsolver++",
+            "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+            "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+            "guidance_scale": 7.0,
+            "height": 448,
+            "num_inference_steps": 24,
+            "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+            "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+            "scheduler": "DPMSolverMultistepScheduler",
+            "solver_order": 2,
+            "solver_type": "midpoint",
+            "use_karras_sigmas": true,
+            "vae_model": "stabilityai/sd-vae-ft-mse",
+            "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+            "width": 800
+          },
+          "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "origin": "github-cpu-sd15",
+          "prompt_version": 3,
+          "seed": 2774198770197416284,
+          "sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520"
         },
-        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "origin": "github-cpu-sd15",
+        "previous_visual_hold": {
+          "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+          "reason": "現本文とCPU実JPEGを表示して照合。閉じた普通のバンと背を向けた人物が中心で、開いた荷室の布団・枕がなく、係員が白線を客室として案内する動作も見えない。写真質感だけでは客室持参という記事固有の場面を伝えないため不採用。原manifest・seed・推論設定はprevious_generationへそのまま保持。",
+          "rejected_candidate_sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520",
+          "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42594897597",
+          "reviewed_at": "2026-11-09T10:02:19.776876+00:00"
+        },
         "prompt_version": 3,
-        "seed": 2774198770197416284,
-        "sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520"
+        "sha256": "b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e",
+        "source_article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+        "source_png_sha256": "056f241b4c6dc0357dbdbf52b1fd465d3e32c38e960f5012c38e94bb990fa012"
       },
-      "previous_visual_hold": {
+      "previous_visual_review": {
         "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-        "reason": "現本文とCPU実JPEGを表示して照合。閉じた普通のバンと背を向けた人物が中心で、開いた荷室の布団・枕がなく、係員が白線を客室として案内する動作も見えない。写真質感だけでは客室持参という記事固有の場面を伝えないため不採用。原manifest・seed・推論設定はprevious_generationへそのまま保持。",
-        "rejected_candidate_sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520",
-        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42594897597",
-        "reviewed_at": "2026-11-09T10:02:19.776876+00:00"
-      },
-      "prompt_version": 3,
-      "sha256": "b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e",
-      "source_article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-      "source_png_sha256": "056f241b4c6dc0357dbdbf52b1fd465d3e32c38e960f5012c38e94bb990fa012"
+        "image_sha256": "b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e",
+        "decision": "accepted",
+        "reviewed_at": "2026-11-09T10:02:19.776876+00:00",
+        "note": "現本文・新原PNG・最終JPEGを実表示して照合。開いた後部ハッチ内に布団と枕があり、旅行者が寝具の端を両手で整え、制服姿の係員が足元の駐車区画の白線へ片手を向ける。車が客室で駐車区画を案内される本文第2段落を一場面で識別できる。背景は低い受付建物で、皮膚・手足・衣服・寝具・車体・舗装は自然な写真質感、目立つ文字・ロゴ・人体の破綻はない。部屋替え・犬・電源設備まで写っているとは主張しない。本文・scene指示・初回日時は保持し、旧CPUの不足は別記録へ残した。"
+      }
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
       "article_sha256": "caa71d955f66af9d174d2a80de9fd5566387b9dd20e1a8a9efa289494c121802",
@@ -751,17 +771,93 @@
       "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
     },
     "music-special-forty-days-of-lineup-announcements": {
-      "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
-      "bytes": 120404,
-      "generated_at": "2026-11-09T04:25:27.049533+00:00",
-      "generation_id": "b7845adc-08be-4053-b448-315b47bd5d31",
-      "generation_prompt": "Use case: photorealistic-natural. Create ONE photorealistic candid Japanese local-news-style staged photograph for a fictional satirical newspaper, horizontal 16:9. In an ordinary modest Japanese living room in the evening, an anonymous fictional Japanese adult sits on a sofa, seriously looking DOWN AT A SMARTPHONE held visibly in both hands rather than at the television. A single television behind and beside them is clearly switched on and shows an anonymous fictional singer performing into a microphone on a modest music-show stage. The joke is immediately visible: the person is absorbed in waiting for phone notifications while the actual singing continues on TV. Use a side three-quarter camera angle so the viewer's eyes aimed at the phone, the physical phone, and the television performance are all clearly visible in one natural photograph. The phone screen faces its owner and its plain back faces the camera. Natural skin, believable hands, fabric and wood textures, ordinary practical evening room lighting; restrained colors and straight documentary photography. No text, lettering, captions, logos, watermarks, station branding, headlines, multiple panels, illustration, animation, CGI, recognizable real people or celebrities. The image must clearly contain both the smartphone in the person's hands and a singer inside the television screen.",
-      "model": "ChatGPT ImageGen",
+      "article_sha256": "3e6fd6658105c45639e8f3ac161864c79bcbf31feea3dd640385ee42bbe9bb2d",
+      "bytes": 114006,
+      "generation_id": "054a1c69-6173-41df-8099-056d76bf20c3",
+      "generation_prompt": "Make a strictly localized cleanup of this fictional generated photo. On the TELEVISION'S OUTER BLACK FRAME, at the horizontal center of the LOWER BEZEL just below the singer's image, there is a tiny pale manufacturer-brand-like inscription. Remove that inscription completely and replace it with uniform black bezel plastic matching the surrounding frame. Keep the TV screen image, singer, microphone, man, hands, phone, room, tabletop and every other element unchanged. Preserve the clean lower-right wooden-table corner. Inspect all edges: the final photo must contain no brand inscription, letter-shaped logo, signature, watermark or readable text anywhere. Do not crop or add anything.",
+      "sha256": "c103d58d12d7ba7ca15f64d2392512d88a825d4210c3644eba90f1f4fd7a3cf2",
+      "source_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+      "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08",
       "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
       "prompt_version": 3,
-      "sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
-      "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
-      "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
+      "generated_at": "2026-11-09T13:20:51.464677+00:00",
+      "generation_steps": [
+        {
+          "generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-7ac212b6-296c-414c-bd55-e4ec325e5d70.png",
+          "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary candid documentary newspaper photograph for an entirely fictional Japanese entertainment-news story. In a modest Japanese living room in the evening, an anonymous fictional Japanese adult man around forty in a plain casual T-shirt sits on a sofa, seriously looking DOWN at ONE SMARTPHONE held naturally in both hands. His gaze is visibly directed at the phone and away from the television. The phone display faces him and its plain unbranded back faces the camera, with no visible screen writing. A single television behind and beside him is clearly switched on and shows an anonymous fictional adult woman singer performing into a microphone on a modest ordinary television music-show stage. Her outfit is modest and unbranded, her appearance is original and not recognizable as any real celebrity. The actual singer and microphone inside the television screen must be recognizable, while the viewer ignores the performance to check his phone. Compose one coherent eye-level side three-quarter medium-wide camera photograph that includes the viewer eyes aimed down, his two natural hands and physical phone, and the complete television performance behind him; keep both the phone action and the TV singer large enough to recognize at article-thumbnail size. Ordinary warm practical room light, a little natural television glow, realistic skin, finger joints, cotton fabric, sofa upholstery and wood grain, restrained everyday colors and believable shadows. No film-poster lighting, glossy advertising, collage or split panels. All people and the television program are fictional, with no real person, celebrity, broadcaster or service branding. Absolutely no readable words, numbers, captions, headlines, channel bugs, logos, phone text or watermark. No illustration, anime, cartoon, 3D render, plastic skin, exaggerated expression or extra phones.",
+          "decision": "not_published",
+          "reason": "Bottom-right watermark-like mark and TV bezel inscription",
+          "source_png_sha256": "bd8e2b0cba5d55cdbf09ae041a2896ef30427484223c428154bfb6b81c0d83eb"
+        },
+        {
+          "generation_id": "19616545-d5aa-4bf5-b599-058118df2573",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-19616545-d5aa-4bf5-b599-058118df2573.png",
+          "generation_prompt": "Edit this existing generated fictional news photograph with one localized correction only: remove the faint watermark-like tiny symbol and pseudo-lettering at the extreme LOWER RIGHT corner on the wooden tabletop. Reconstruct that small corner with continuous natural wood texture matching the surrounding tabletop. Preserve every other part of the photograph: the adult man's identity, serious downward gaze at one phone, his natural hands, the fictional adult woman singer visible on the TV, the microphone, furniture, lighting, camera composition and exact horizontal framing. The final photograph must have absolutely no logo, signature, watermark, lettering or added symbol anywhere. Do not replace the scene, add new objects, change the people or crop the composition.",
+          "reference_generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
+          "decision": "not_published",
+          "reason": "Bottom-right mark removed; TV bezel inscription remained",
+          "source_png_sha256": "b8dbb8f39bdd81a177652954ea51ff9047c0d9cf1768ffa380edaff53993f999"
+        },
+        {
+          "generation_id": "054a1c69-6173-41df-8099-056d76bf20c3",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-054a1c69-6173-41df-8099-056d76bf20c3.png",
+          "generation_prompt": "Make a strictly localized cleanup of this fictional generated photo. On the TELEVISION'S OUTER BLACK FRAME, at the horizontal center of the LOWER BEZEL just below the singer's image, there is a tiny pale manufacturer-brand-like inscription. Remove that inscription completely and replace it with uniform black bezel plastic matching the surrounding frame. Keep the TV screen image, singer, microphone, man, hands, phone, room, tabletop and every other element unchanged. Preserve the clean lower-right wooden-table corner. Inspect all edges: the final photo must contain no brand inscription, letter-shaped logo, signature, watermark or readable text anywhere. Do not crop or add anything.",
+          "reference_generation_id": "19616545-d5aa-4bf5-b599-058118df2573",
+          "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08"
+        }
+      ],
+      "previous_generation": {
+        "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+        "bytes": 120404,
+        "generated_at": "2026-11-09T04:25:27.049533+00:00",
+        "generation_id": "b7845adc-08be-4053-b448-315b47bd5d31",
+        "generation_prompt": "Use case: photorealistic-natural. Create ONE photorealistic candid Japanese local-news-style staged photograph for a fictional satirical newspaper, horizontal 16:9. In an ordinary modest Japanese living room in the evening, an anonymous fictional Japanese adult sits on a sofa, seriously looking DOWN AT A SMARTPHONE held visibly in both hands rather than at the television. A single television behind and beside them is clearly switched on and shows an anonymous fictional singer performing into a microphone on a modest music-show stage. The joke is immediately visible: the person is absorbed in waiting for phone notifications while the actual singing continues on TV. Use a side three-quarter camera angle so the viewer's eyes aimed at the phone, the physical phone, and the television performance are all clearly visible in one natural photograph. The phone screen faces its owner and its plain back faces the camera. Natural skin, believable hands, fabric and wood textures, ordinary practical evening room lighting; restrained colors and straight documentary photography. No text, lettering, captions, logos, watermarks, station branding, headlines, multiple panels, illustration, animation, CGI, recognizable real people or celebrities. The image must clearly contain both the smartphone in the person's hands and a singer inside the television screen.",
+        "model": "ChatGPT ImageGen",
+        "origin": "chatgpt-imagegen",
+        "prompt_version": 3,
+        "sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
+        "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+        "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
+      },
+      "previous_visual_review": {
+        "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+        "decision": "accepted",
+        "image_sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
+        "note": "現本文とnative生成の実PNG・最終JPEGを表示して照合。手前の視聴者は両手のスマホを真顔で見下ろし、隣のテレビ内ではマイクを持った歌手が歌っている。歌より通知の続きを待つ本文の主要場面に一致する。肌・髪・ニット・木製家具、手元、室内灯とテレビの光が自然な写真として見え、目立つ文字・ロゴや破綻はない。匿名の創作人物で、実在番組の出演者・ロゴの再現として扱わない。",
+        "reviewed_at": "2026-11-09T04:25:27.049533+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+        "reason": "CPU試作は肌・衣服・家具が写真らしいが、スマホも歌手もなく、黒画面と白画面のテレビ2台がある普通の居間にとどまるため不採用。原指紋・seedは試作artifactを保持し、採用した別のnative生成画像とは区別する。",
+        "rejected_candidate_sha256": "5953be8d186b520f167ca43aa1028b02466a6bc7a6f4eda4574eee66f2dcbd1c",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42560293535",
+        "reviewed_at": "2026-11-09T04:25:27.049533+00:00",
+        "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
+        "trial_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+        "trial_inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "trial_origin": "github-cpu-sd15",
+        "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
+        "trial_seed": 8233372666452194521
+      }
     },
     "off-grid-lodge-sells-disconnection": {
       "article_sha256": "175fec22fb3ab52ae17df01fd8c2668e27bfb09705cff1aa6989b09acd474578",
@@ -1519,6 +1615,19 @@
       "model": "ChatGPT ImageGen",
       "prompt_version": 3,
       "generated_at": "2026-11-09T12:33:14.711046+00:00"
+    },
+    "lion-king-prequel-watch-order-meeting": {
+      "article_sha256": "5b32a2b07ac7fd32132912f798e53b8bbb580de32a057c8ff09aa20bd0b75078",
+      "bytes": 125291,
+      "generation_id": "6933e7cc-9336-4894-a4a6-7d7fff204ce8",
+      "generation_prompt": "Create one ordinary, photorealistic 16:9 news-style still of a fictional Japanese family at home, photographed at the end of a long evening. In the lower foreground, a normal A4-sized notebook lies open on the dining table, angled so that its page is clearly visible to the camera. Two simple, boldly pencilled horizontal arrows run in opposite directions on separate rows; there are a few faint erased marks, but no words, letters, titles or numbers. The notebook must be the unmistakable focus of their discussion, not a small background prop. A middle-aged father points directly at one arrow with his right index finger and loosely holds a television remote in his left hand. Across the table, his wife gestures toward the other arrow while their adult daughter leans in and listens seriously. All three look at the notebook or one another, never at the television. Behind them, a single television is visibly switched on but shows only a plain dim blue-black screen without programme images, credits or text. The window is dark; a small ordinary analog wall clock has hands near 11:24, with no numeral labels. Shoot from a seated observer's angle, slightly down toward the notebook, with enough depth of field to retain the three people and the ignored television. Natural warm domestic lighting, ordinary skin, fabric and wood textures, candid expressions. No giant notebook, cinematic lighting, diagrams floating in the room, recognizable movie characters, movie stills, brands, logos, readable writing or captions.",
+      "sha256": "dba476b55acd577f05ba0bf6b6c4b996ca4bac6857d339b8d51fa44148f187f6",
+      "source_article_sha256": "168cc55f67364bbcb08f3cdb59f8834c15c98a9235f470c406d10b09ad47beb6",
+      "source_png_sha256": "e1dd72c04e5bb4ec3bc5a7b47c390354afec61b5c643f230e7af8b9ad8d872d1",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T13:22:17.633236+00:00"
     }
   },
   "rejected": {

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="左側に40日分の出演歌手の発表カレンダー、右側に歌手が歌うテレビの舞台と来年の空白の発表予定表が並ぶ創作イラスト" data-visual-topic="music" data-article-sha256="f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="左側に40日分の出演歌手の発表カレンダー、右側に歌手が歌うテレビの舞台と来年の空白の発表予定表が並ぶ創作イラスト" data-visual-topic="music" data-article-sha256="3e6fd6658105c45639e8f3ac161864c79bcbf31feea3dd640385ee42bbe9bb2d">
 <title>40日間の出演者発表に埋まる暦と、歌の舞台を横にした来年の白紙の予定表</title>
 <defs><linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f7f2e9"/><stop offset="1" stop-color="#e4e7df"/></linearGradient><linearGradient id="stage" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#263750"/><stop offset="1" stop-color="#657f83"/></linearGradient><linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fbe1ad" stop-opacity=".85"/><stop offset="1" stop-color="#fbe1ad" stop-opacity="0"/></linearGradient></defs>
 <rect width="1200" height="675" fill="url(#paper)"/>
