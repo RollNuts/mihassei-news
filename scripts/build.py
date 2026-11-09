@@ -567,9 +567,8 @@ def image_tag(a, cls, extra=""):
     if generated:
         extra += ' data-generated-scene="true"'
     if reviewed_story_scene(a, root=BASE):
-        # Keep the reviewed SVG's full composition in compact cards, including
-        # when a failed JPEG switches to this fallback. CSS also checks src so
-        # the currently displayed photograph keeps its normal crop.
+        # Preserve the reviewed SVG's full composition after a JPEG error.
+        # Generated photos carry their own compact-card framing marker.
         extra += f' data-editorial-scene-src="{escape(illustration_path(a))}"'
     # Keep the existing 16:9 reserved image frame to avoid mobile layout shift.
     return (f'<img class="{cls}" src="{escape(url)}" alt="{escape(alt)}"'
