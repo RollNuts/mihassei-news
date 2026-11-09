@@ -630,7 +630,7 @@
       "url": "https://www.cross-m.co.jp/news/release/20260610",
       "topic": "2026年6月10日公表の「コーヒーに関する調査（2026年）」はコーヒー好きが全体の66％で、飲み方・好みなどを尋ねたもの。店の常連関係や注文の取り違えを扱った調査ではない。余白珈琲・吉岡さん・5年間の注文・本人名の新メニューと無料券は2031年の創作。"
     },
-    "scene_prompt": "An everyday Japanese neighborhood coffee shop counter in natural daylight: a friendly barista has already set down a cinnamon latte while an ordinary male regular politely gestures toward a small menu card, empty stools nearby, modest street cafes seen through a window. Documentary candid photo composition, natural faces and hands, no readable words, no logos.",
+    "scene_prompt": "A male regular at a small cafe starts to order with a hesitant raised hand, but an untouched cinnamon latte is already in front of him and the barista has turned back toward the coffee machine. Natural window light, ordinary faces and hands, no menu text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "カフェ",
@@ -667,7 +667,7 @@
       "why_not": "店側は先回りが常連への親切だと思い込み、客は完成した商品を作り直させるのをためらう",
       "evidence_quote": "客が席に着いた時には、もういつもの一杯が置かれている。"
     },
-    "modified_at": "2026-11-08T21:27:54+09:00"
+    "modified_at": "2026-11-09T16:38:07.330927+09:00"
   },
   {
     "slug": "employee-survey-free-text-none-299",
@@ -875,7 +875,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000855.000049164.html",
       "topic": "2026年11月5日、FOOD AND LIFE COMPANIES、安藤建設、山口県水産研究センター、山口県栽培漁業公社、山口県漁協の5者がシロアマダイの全国初の陸上養殖実現に向けて共同研究を開始。2028年の回転ずし店での販売を目標とする。2026年11月7日山口新聞でも報道（https://yama.minato-yamaguchi.co.jp/e-yama/articles/112872）。2031年の養殖普及、店・会員制・販売枚数・発言は創作であり、実在企業の将来の行動ではない。"
     },
-    "scene_prompt": "A candid documentary photograph inside an ordinary small Japanese high-end sushi restaurant at closing: a tired staff member hinges open a small blank double-sided tabletop specials chalkboard next to the counter, while behind the counter a chef checks many neatly stacked insulated fish delivery boxes. Natural fluorescent and warm ceiling lighting, authentic wooden counter, realistic fish crates and hands, no legible text or logos, no cinematic lighting, no artificial gloss.",
+    "scene_prompt": "At closing time in a small sushi restaurant, a staff member oils the metal hinge of a small double-sided countertop specials chalkboard, showing its unlettered back. Behind him, a chef checks an open fish delivery box beside several stacked insulated fish crates.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "飲食店",
@@ -936,7 +936,7 @@
       "unique_hook": "2028年の回転ずし店での販売を目標とするほど希少魚の安定供給を目指しているのに、5年後の店は逆に『希少』を守るため毎日届く魚を隠す。",
       "x_discovery_term": "シロアマダイ"
     },
-    "modified_at": "2026-11-09T11:10:31+09:00"
+    "modified_at": "2026-11-09T16:38:07.330927+09:00"
   },
   {
     "slug": "surprise-birthday-organized-by-guest-of-honor",
@@ -960,7 +960,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000193.000011237.html",
       "topic": "2026年10月29日公表の大人の誕生日意識調査（2026年9月調査、有効回答3,278）。自分の誕生日を楽しみにしていない人は50.2%、もっとも嬉しいことは「おめでとう」の連絡が32.3%。サプライズ会の自作自演、宮原梓さん、友人3人と店のやりとりはこの調査にはなく、本紙の創作。サプライズの文化自体は2024年4月8日の株式会社しんげんによる成人200人調査でも経験者63%と報告（https://prtimes.jp/main/html/rd/p/000000084.000135215.html）。"
     },
-    "scene_prompt": "A candid Japanese birthday dinner in a modest restaurant private room: a surprised adult woman at a small cake with candles, one hand hiding a folded event cue sheet on her lap under the table, three smiling friends leaning in with phones. Warm ordinary restaurant ceiling light, realistic faces, hands, cloth and cake, unposed documentary snapshot, no readable writing, no logos or watermark.",
+    "scene_prompt": "At a modest restaurant birthday dinner, an adult woman covers her mouth with both hands in surprise while an open running-order sheet remains on her lap. Three friends celebrate around a small candlelit cake, one taking a photo.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "誕生日",
@@ -994,7 +994,8 @@
       "target": "友人の善意と祝いの思い出を壊さないことを優先し、本人の自然な喜びを後回しにする",
       "action": "自分が驚かされるための店とケーキを裏で手配し、友人と店員に驚くタイミングまで知らせる",
       "outcome": "友人は成功したサプライズの写真を撮るが、主役の膝には本人が作った進行表が残る"
-    }
+    },
+    "modified_at": "2026-11-09T16:38:07.330927+09:00"
   },
   {
     "slug": "scolding-ai-one-line-summary-boss-eighteen-pages",

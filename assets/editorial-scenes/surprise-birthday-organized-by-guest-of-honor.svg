@@ -1,16 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="誕生会で驚く主役の女性が膝に進行表を隠し、友人が祝う様子を描いた創作イラスト" data-visual-topic="document" data-article-sha256="c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b">
-<title>祝われる主役が進行係を務める誕生日会</title>
-<defs><linearGradient id="wall" x2="0" y2="1"><stop stop-color="#d6c6b2"/><stop offset="1" stop-color="#f1e8d9"/></linearGradient><linearGradient id="table" x2="0" y2="1"><stop stop-color="#877064"/><stop offset="1" stop-color="#4c3b37"/></linearGradient></defs>
-<rect width="1200" height="675" fill="url(#wall)"/><rect x="0" y="95" width="1200" height="11" fill="#ae9586" opacity=".5"/><rect x="70" y="110" width="130" height="310" rx="12" fill="#b29c87"/><rect x="84" y="127" width="101" height="280" rx="7" fill="#5e594f"/><path d="M96 140h80v110H96z" fill="#d3b78d"/>
-<ellipse cx="600" cy="564" rx="495" ry="122" fill="#58473f" opacity=".28"/>
-<path d="M250 494 Q600 424 953 494 L1040 655 H170Z" fill="url(#table)"/><path d="M250 494 Q600 430 953 494" fill="none" stroke="#e5cfb4" stroke-width="10"/>
-<ellipse cx="610" cy="480" rx="143" ry="36" fill="#eee3d7" stroke="#b7a397" stroke-width="9"/><path d="M511 445h200v32q-100 40-200 0z" fill="#e7a8ae"/><ellipse cx="610" cy="446" rx="99" ry="25" fill="#fff3dc"/><path d="M527 433q52-18 162 0" fill="none" stroke="#e4b3ab" stroke-width="8"/><path d="M580 415v-45m29 40v-48m35 50v-43" stroke="#efe2b3" stroke-width="9" stroke-linecap="round"/><path d="M575 363q6-17 11 0-2 10-11 0m30-8q5-17 10 0-2 10-10 0m35 0q6-17 11 0-2 10-11 0" fill="#d78b40"/>
-<g stroke="#594640" stroke-width="7" stroke-linejoin="round">
-<path d="M443 279q-66 14-91 90l16 113 150 13 17-116q-17-80-92-100z" fill="#9aaca6"/><ellipse cx="438" cy="219" rx="58" ry="74" fill="#d8ad92"/><path d="M372 215q-3-112 73-106 81 10 60 110-8-40-41-55-49 24-91 51z" fill="#42342e"/><circle cx="420" cy="229" r="4" fill="#352c29"/><circle cx="462" cy="230" r="4" fill="#352c29"/><path d="M421 252q19 17 37 1" stroke="#6f443f" fill="none"/><path d="M393 309l-34 86 76 21M488 307l34 90-70 17" fill="none" stroke="#d8ad92" stroke-width="20"/>
-<path d="M742 282q73 0 95 105l-20 106-146 2-20-115q15-80 91-98z" fill="#c6a2a2"/><ellipse cx="742" cy="224" rx="57" ry="72" fill="#d8ab93"/><path d="M689 211q-4-93 53-101 71-7 60 104-21-44-57-50-27 27-56 47z" fill="#3c302c"/><circle cx="727" cy="235" r="4" fill="#352c29"/><circle cx="761" cy="235" r="4" fill="#352c29"/><path d="M720 255q27 20 47-2" stroke="#704640" fill="none"/><path d="M673 327l-40 69M814 329l38 71" fill="none" stroke="#d8ab93" stroke-width="22"/>
-<path d="M576 246q-72 40-90 113l44 135 165-8 38-126q-26-75-96-116z" fill="#b2b6c9"/><ellipse cx="612" cy="194" rx="78" ry="87" fill="#e3b99b"/><path d="M537 194q-12-112 79-118 91 13 79 121l-29-54q-33 34-126 49z" fill="#473634"/><circle cx="588" cy="203" r="5" fill="#43352d"/><circle cx="641" cy="203" r="5" fill="#43352d"/><path d="M594 231q20 16 42-1" stroke="#844a48" fill="none"/><path d="M550 285q-65 20-61 87l67 19M680 284q70 22 65 89l-71 18" fill="none" stroke="#e3b99b" stroke-width="24"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="誕生会の主役が両手で口元を覆って驚く一方、膝には開いた進行表が残り、ケーキを囲む友人の一人が撮影する創作イラスト" data-visual-topic="document" data-article-sha256="7e4845cf4553851c94b7cb7f8df4d0c76e7b9123236b787d5dd6a64c6f4d63de">
+<title>驚く主役の膝に残った、自分の誕生会の進行表</title>
+<desc>普通の飲食店の個室。主役の女性は椅子に座り、両手で口元を覆って大きく目を開いている。その膝の上には紙の進行表が二つ折りを開いたまま置かれ、記念撮影の画角から見えている。小さなろうそく付きケーキが卓上にあり、友人三人が祝う。一人はスマートフォンを主役へ向けて写真を撮っている。ケーキにも紙にも画面にも、読める文字、数字、ロゴは描かない。</desc>
+<defs>
+<linearGradient id="birthday-wall" x2="0" y2="1"><stop stop-color="#e5dccb"/><stop offset="1" stop-color="#c8bba5"/></linearGradient>
+<linearGradient id="birthday-table" x2="0" y2="1"><stop stop-color="#ae9680"/><stop offset="1" stop-color="#8b7564"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#birthday-wall)"/>
+<path d="M0 109h1200M0 429h1200" stroke="#b39d85" stroke-width="8"/>
+<path d="M0 437h1200v238H0z" fill="#c3b49e"/>
+<path d="M0 542h1200M0 639h1200M169 437L91 675m364-238-30 238m322-238 30 238m253-238 90 238" fill="none" stroke="#aea08c" stroke-width="2"/>
+<path d="M63 135h115v231H63z" fill="#ab9984" stroke="#95816d" stroke-width="5"/>
+<path d="M77 149h87v202H77z" fill="#c7bcaa"/>
+<path d="M116 150v200m-39-102h87" fill="none" stroke="#a99884" stroke-width="3"/>
+<path d="M475 116h242v106H475z" fill="#ddd2bc" stroke="#a8947c" stroke-width="5"/>
+<path d="M492 198l53-49 47 28 33-18 75 39" fill="#bbb8a1"/>
+<path d="M1063 132v147m-38 0h76l-11 31h-54z" fill="#d8c6a2" stroke="#ab9479" stroke-width="4"/>
+<!-- Two friends sit across the table. -->
+<g stroke="#5a6159" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M299 383v-94q31-34 79-2l18 103" fill="#849b98"/>
+<path d="M324 265v24l19 13 18-16v-24" fill="#d8b294"/>
+<ellipse cx="343" cy="228" rx="37" ry="45" fill="#d8b294"/>
+<path d="M306 228q-5-55 34-56 48-1 43 52l-22-21-52 17" fill="#62635a"/>
+<path d="M325 230h8m22 0h8m-34 25q16 12 30-1" fill="none" stroke-width="3"/>
+<path d="M308 308l-26 45 37 8m60-52 24 41-34 10" fill="none" stroke="#849b98" stroke-width="24"/>
+<path d="M319 361l21-8m31 7-18-9" stroke="#d8b294" stroke-width="13"/>
+<path d="M552 392l6-96q33-32 74-2l21 98" fill="#b39791"/>
+<path d="M581 266v31l18 13 17-16v-29" fill="#dfb79a"/>
+<ellipse cx="598" cy="231" rx="36" ry="44" fill="#dfb79a"/>
+<path d="M561 237q-10-55 31-61 47-3 47 56l-25-28-49 20" fill="#66534d"/>
+<path d="M581 234h7m20 0h8m-35 21q17 12 31-2" fill="none" stroke-width="3"/>
+<path d="M563 313l-26 39-20-16m112-22 22 35 20-21" fill="none" stroke="#b39791" stroke-width="23"/>
+<path d="M516 336l-9-15m164 7 8-14" stroke="#dfb79a" stroke-width="12"/>
 </g>
-<path d="M490 371l64 36m185-36-65 34" stroke="#d8af90" stroke-width="22" stroke-linecap="round"/>
-<g transform="translate(680 538) rotate(-12)"><rect x="0" y="0" width="175" height="106" rx="10" fill="#e7dec9" stroke="#977c64" stroke-width="5"/><path d="M20 24h135M20 47h116M20 70h135" stroke="#9a8f7b" stroke-width="5" stroke-linecap="round"/><circle cx="157" cy="90" r="8" fill="#bd9585"/></g>
-<g opacity=".9"><path d="M275 162l-21 22m44 11 20 26m621-36 22-19m-5 54 34 17" stroke="#c98362" stroke-width="12" stroke-linecap="round"/><circle cx="305" cy="118" r="14" fill="#b6a9b5"/><circle cx="929" cy="131" r="15" fill="#95ad95"/></g>
+<!-- The table stops to the left of the woman's lap so the paper is visible. -->
+<path d="M78 375q295-39 644 16l-17 131H52z" fill="url(#birthday-table)" stroke="#806958" stroke-width="5" stroke-linejoin="round"/>
+<path d="M52 522h653v20H52z" fill="#786355"/>
+<path d="M88 542l-13 104h21l14-104m557 0 15 104h21l-16-104" fill="#7b6656"/>
+<ellipse cx="543" cy="435" rx="93" ry="24" fill="#ede5d3" stroke="#b8a48a" stroke-width="3"/>
+<path d="M474 404h138v30q-68 27-138 0z" fill="#c6a3a1" stroke="#ab8984" stroke-width="3"/>
+<ellipse cx="543" cy="403" rx="69" ry="17" fill="#f0e4cc" stroke="#c4b297" stroke-width="3"/>
+<path d="M483 414q9 12 19 0t20 0 20 0 20 0 20 0 20 0" fill="none" stroke="#e9cfbd" stroke-width="5"/>
+<path d="M524 395v-26m20 23v-29m20 32v-26" stroke="#d5ba8a" stroke-width="5" stroke-linecap="round"/>
+<path d="M521 362q3-12 6 0-1 7-6 0m20-6q3-12 6 0-1 7-6 0m20 6q3-12 6 0-1 7-6 0" fill="#c68c4e"/>
+<ellipse cx="386" cy="418" rx="30" ry="8" fill="#e0d7c4" stroke="#b5a48d" stroke-width="2"/>
+<path d="M372 389h27l-4 25h-19z" fill="#dccfb3" stroke="#b5a48d" stroke-width="2"/>
+<!-- A third friend photographs the birthday woman, rather than looking at a screen. -->
+<g stroke="#57625a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M114 434l-3-95q24-38 66-19l34 116" fill="#9ba58e"/>
+<path d="M135 299v29l18 15 15-17v-24" fill="#d9b495"/>
+<ellipse cx="151" cy="264" rx="36" ry="46" fill="#d9b495"/>
+<path d="M117 268q-12-55 26-59 45-4 45 45l-22-19-47 20" fill="#625d4e"/>
+<path d="M167 265h8m-11 25q11 7 19-2" fill="none" stroke-width="3"/>
+<path d="M126 349l40 23 65-55m-53 28 37 6 28-36" fill="none" stroke="#9ba58e" stroke-width="23"/>
+<path d="M230 318l14-11m-3 8 12-7" stroke="#d9b495" stroke-width="12"/>
+<path d="M229 261l36-2 5 57-35 3z" fill="#53645c" stroke-width="4"/>
+<path d="M239 272h14v7h-14z" fill="#b6c0b3" stroke="none"/>
+<path d="M238 307l24-1" stroke="#7c8e80" stroke-width="2"/>
+</g>
+<!-- The guest of honor is seated, with both open hands covering her mouth. -->
+<path d="M989 354q37-23 56 4v197h-61z" fill="#927f70" stroke="#776456" stroke-width="5"/>
+<path d="M766 454q101-42 218 5l15 99H754z" fill="#768c8e" stroke="#53656a" stroke-width="5"/>
+<path d="M781 548l-4 74-23 22h43l18-22 18-74m92 0 10 74 21 22h42l-27-24-16-72" fill="#818c89" stroke="#53605d" stroke-width="5" stroke-linejoin="round"/>
+<g stroke="#5c5e55" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M803 322q54-36 108-3l50 152H769z" fill="#b6aa98"/>
+<path d="M840 287v37l22 17 24-21v-34" fill="#e1b99a"/>
+<path d="M810 259q-23-87 24-113 65-34 101 26 14 32 0 103l-24 35H815z" fill="#62564e"/>
+<ellipse cx="863" cy="240" rx="48" ry="58" fill="#e1b99a"/>
+<path d="M816 236q-5-67 44-71 52 4 57 63l-31-36q-22 26-70 33" fill="#62564e"/>
+<path d="M834 223l13-5m31-1 13 5" fill="none" stroke-width="3"/>
+<ellipse cx="844" cy="237" rx="5" ry="7" fill="#4b4f48" stroke="none"/>
+<ellipse cx="883" cy="237" rx="5" ry="7" fill="#4b4f48" stroke="none"/>
+<path d="M862 245l-4 11 7 2" fill="none" stroke-width="2.5"/>
+<path d="M810 343l-25-33 43-32m81 64 28-36-42-29" fill="none" stroke="#b6aa98" stroke-width="29"/>
+<path d="M824 282l18-11m57 11-19-11" fill="none" stroke="#e1b99a" stroke-width="20"/>
+<path d="M837 272l-1-10 5-2 4 13m2-2 1-14 5 1 1 16m24-2 1-14 5-1 1 14m2 2 4-13 5 2-1 10" fill="#e1b99a" stroke="#9e806b" stroke-width="1.5"/>
+<path d="M837 277q13 13 23 7m9 0q13 5 23-9" fill="none" stroke="#b08a72" stroke-width="2"/>
+</g>
+<!-- An opened paper running order rests on her skirt, not on the table. -->
+<path d="M781 492l77-8 12 13 71-7 18 65-83 6-15-8-82 4z" fill="#ede4cf" stroke="#958b76" stroke-width="3" stroke-linejoin="round"/>
+<path d="M858 485l3 68m9-56 6 64" fill="none" stroke="#bcaf91" stroke-width="2"/>
+<path d="M794 508l48-4m-47 15 49-4m-47 15 48-4m39-13 46-4m-43 15 46-4m-43 15 46-4" fill="none" stroke="#aaa18b" stroke-width="2"/>
+<path d="M806 507l3 31m90-31 6 31" fill="none" stroke="#b4a98f" stroke-width="1.5"/>
 </svg>
