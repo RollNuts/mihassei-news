@@ -1,5 +1,71 @@
 [
   {
+    "slug": "food-rescue-shops-manufacture-leftovers",
+    "category": "社会",
+    "flash": "売れ残りを先に製造",
+    "fiction_company": "おたすけ食堂",
+    "art": "cards",
+    "fiction_at": "2031-11-09T13:34:52+09:00",
+    "published_at": "2026-11-09T13:34:52+09:00",
+    "title": "食品ロス救出専門店、「売れ残り」を朝から製造　注文殺到で余り物が品切れ",
+    "summary": "廃棄されそうな弁当を予約して買う「救出便」が人気になった2031年。食品ロス救出専門店では、本当に余った弁当だけでは足りず、朝から「売れ残り予定」の弁当を仕込むようになった。",
+    "paragraphs": [
+      "朝8時、弁当工場の調理員が炊きたてのご飯を詰め、できあがった弁当を「売れ残り予定」の棚に運んだ。まだ開店前なのに、その棚は夕方の受け取り予約分ですでに埋まっている。",
+      "2026年には、消費期限が近い食品をアプリで購入・決済し、店頭で受け取る食品ロス削減の実証実験が、コンビニ6店舗で始まっていた。2031年、各地にできた食品ロス救出専門店の一つ「おたすけ食堂」では、値引きに加え「捨てられそうな食事を助けた」という満足感が人気を集めた。",
+      "最初は本当に余った弁当だけを集めたが、受け取り希望が増えると在庫が足りなくなった。店は「今日は救うものがありません」と販売を止めるより、確実に予約が入る弁当を先に作る方が商売になると判断した。普通の弁当として売る案も出たが、安く救出できる体験を目当てに来る客が多く、予約枠をなくせなかった。",
+      "工場見学に来た親子は、作ったばかりの弁当を「救出待ち」の箱へ積む作業を見ていた。子どもが「これ、何から助けるの？」と尋ねた。案内役が答えを探している間に、調理員は箱を右へ動かし、今度は予約済みの「救出完了」のカゴへ積み直した。その弁当が売れ残りだった時間は、十数秒だった。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "株式会社コークッキング（TABETE）",
+      "published_at": "2026-07-23T11:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000199.000017141.html",
+      "topic": "2026年7月23日11時、TABETE運営会社はファミリーマートとの食品ロス削減実証を発表。消費期限の近い食品等をアプリで注文・決済し、都内6店舗で受け取る仕組み。ファミリーマート公式発表 https://www.family.co.jp/sustainability/topics/2026/s20260723.html と同内容を照合。2031年の「おたすけ食堂」、救出専用の追加製造、予約需要、工場見学、親子の会話は全て本紙の創作であり、実在企業の行為ではない。"
+    },
+    "scene_prompt": "An ordinary Japanese lunchbox kitchen worker placing freshly cooked packed bento meals with rice and chicken into a metal pickup rack, while a visiting parent and child watch beside the counter. Clear trays of fresh food prominent in the foreground, ordinary small Japanese food-preparation facility in daylight, candid documentary news photograph, natural hands and skin, no brand marks, no readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "食",
+      "買い物",
+      "お金"
+    ],
+    "satire_tags": [
+      "余り物の追加生産",
+      "救出を売る"
+    ],
+    "x_tags": [
+      "食品ロス"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「余り物が足りない」から、朝から作り足す。救うはずの弁当が、予約のために新品で用意される時代。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "original_satire",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "値下げ食品を買うと、節約だけでなく廃棄を減らす社会貢献にもなったと感じられる",
+      "target": "食品ロスを減らすという行為そのものを、売り物として安定供給しようとする商売",
+      "action": "店が予約確定済みの救出用弁当を新たに製造し、売れ残り予定の棚へ並べる",
+      "outcome": "調理したばかりの弁当が箱を一度移し替えただけで救出済みの商品になる"
+    },
+    "behavior_basis": {
+      "motive": "店は予約決済で売上が確定する救出弁当を多く売りたい。客は値引きと食べ物を救う満足感を求める",
+      "ordinary_alternative": "本当に売れ残った分だけを安く売るか、普通の弁当を通常販売する",
+      "why_not": "本当の余りだけでは予約需要に足りず、追加で予約の入る弁当を作れば売上を確実に見込める。客も安く救う体験を商品として選ぶ",
+      "evidence_quote": "店は「今日は救うものがありません」と販売を止めるより、確実に予約が入る弁当を先に作る方が商売になると判断した。"
+    },
+    "reader_clarity": {
+      "who": "食品ロス救出専門店",
+      "action": "本当に余った弁当だけでは足りず、朝から売れ残り予定の弁当を作る",
+      "oddity": "捨てられそうな食べ物を救うはずが、救うための余り物を新しく作っている"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年7月に、期限の近い食品をアプリで注文し店舗で受け取る実証が都内6店舗で始まった",
+      "continuation_force": "予約決済で確実に販売できる仕組みと、安く社会貢献に参加したい顧客の需要が商品そのものへ転化する",
+      "future_result": "食品ロス救出の名を守るため、余り物が発生する前から救出用の商品を製造する専門店が現れる"
+    }
+  },
+  {
     "slug": "paid-conversation-checkout-shoppers-chat-in-line",
     "category": "暮らし",
     "flash": "雑談だけ別会計",
