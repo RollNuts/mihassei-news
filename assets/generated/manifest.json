@@ -1349,19 +1349,56 @@
     },
     "quiet-reply-dating-matches": {
       "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
-      "bytes": 104777,
-      "generated_at": "2026-11-04T02:28:39.903240+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "postprocess": {
-        "operation": "Local Pillow median filter on incidental paper lettering only; no scene objects added",
-        "result_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
-        "source_run": 41759629485,
-        "source_sha256": "165651f03aa5585da7b4ff24a1df2bb0305d7557d859f85ac4a2c438ef9cece2"
+      "source_article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+      "source_png_sha256": "9a6112a244371bf0ab7296d91caa40c9c1c2deed49c0eb43bd87ce312ac3ab21",
+      "bytes": 160186,
+      "sha256": "4cedc92dcea19a908651c7d8f742bd920a1ea9d764f1b6c1d88772eee030cac9",
+      "generation_id": "23026cf7-4b3c-4088-8d7e-dac4d3740422",
+      "generation_prompt": "Edit only the supplied fictional couple photograph. Remove all lettering and title-like marks from the books: the reddish book held by the woman, the blue book held by the man, their spines, and the small background bookshelf spines. Replace lettering with continuous natural plain cover material or subtle non-lettered color/texture, maintaining the same folds, page shapes, lighting and perspective. Do not blur a rectangular patch. Preserve the same two anonymous adults, realistic skin and faces, exact calm reading actions, both separate open books, both untouched smartphones on the table with tiny colored dots, table, sofa, clothes, hands, framing, light and ordinary photographic texture. No added words, logos, captions or watermark. Keep this a natural 16:9 camera photograph; make no other scene or narrative changes.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T22:06:21.847790+00:00",
+      "previous_generation": {
+        "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+        "bytes": 104777,
+        "generated_at": "2026-11-04T02:28:39.903240+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "postprocess": {
+          "operation": "Local Pillow median filter on incidental paper lettering only; no scene objects added",
+          "result_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
+          "source_run": 41759629485,
+          "source_sha256": "165651f03aa5585da7b4ff24a1df2bb0305d7557d859f85ac4a2c438ef9cece2"
+        },
+        "prompt_version": 2,
+        "seed": 6903667958466384986,
+        "sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658"
       },
-      "prompt_version": 2,
-      "seed": 6903667958466384986,
-      "sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658"
+      "previous_visual_review": {
+        "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+        "decision": "accepted",
+        "image_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
+        "note": "同じソファで静かに本を読む架空の成人2人が本文の具体的な場面に合う。紙面の不要な文字はローカルで弱め、最終JPEGに読める文章や重大な人体の破綻がないことを再確認した。",
+        "reviewed_at": "2026-11-04T11:28:39.903793+09:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+        "rejected_candidate_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
+        "reviewed_at": "2026-11-09T22:11:03.608812+00:00",
+        "reason": "The old JPEG has doll-like/waxy faces, a small dark handheld object that is not clearly a separate open book, and no two unattended phones on the table. Its old acceptance does not meet the current realism and concrete scene requirement."
+      },
+      "source_generation": {
+        "generation_id": "0cba4cbf-9057-4165-83be-a45a90600b3a",
+        "generation_prompt": "Use case: photorealistic-natural. Horizontal 16:9 camera photograph for a clearly fictional Japanese news article. In a modest lived-in Japanese living room, an anonymous adult couple in their thirties quietly share one sofa while each reads a DIFFERENT open paperback book. Both look at their own books, comfortable in silence, not posing or smiling at the camera. Two separate real smartphones lie unattended face-up on the low wooden coffee table in the foreground. Their dim screens show only small colored unread-notification dots with no words, letters, numbers or recognizable app interface. Neither person holds or touches a phone. The visual story is the quiet real-world couple reading together while the phones are ignored. Candid medium-wide view that clearly includes both natural faces, both open books with normal hand contact, and both phones on the table. Soft ordinary window daylight, natural skin pores and fine hair, cotton casual clothes, slightly worn sofa fabric, paper and wood textures, believable physical shadows. A normal documentary photograph, not an advertisement, romantic poster, illustration, animation or 3D render. No doll-like or waxy faces, fused fingers, strange book shapes, giant phones, readable book print, book-cover titles, logos, brands, captions or watermarks. All people fictional and anonymous, no real celebrities. Keep the objects and faces inside the central 16:9 crop. Do not add a marriage certificate, wedding ceremony, or screens explaining the story.",
+        "source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d",
+        "candidate_jpeg_sha256": "a4e18b185e3b7fbcfcf8e27ff44572046193c4d2c581dffd77051ff85787271a",
+        "reason_for_edit": "Faint title-like lettering on book covers; remove lettering while preserving the same scene.",
+        "origin": "chatgpt-imagegen",
+        "generated_at": "2026-11-09T22:04:36.056576+00:00",
+        "status": "not_adopted_before_lettering_removal"
+      },
+      "edit_source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d"
     },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
