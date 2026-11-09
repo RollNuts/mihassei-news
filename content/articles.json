@@ -1,5 +1,70 @@
 [
   {
+    "slug": "municipal-shared-government-answers",
+    "category": "社会",
+    "flash": "政策発表",
+    "fiction_company": "地域行政連携機構",
+    "art": "meeting",
+    "fiction_at": "2031-11-10T07:34:30+09:00",
+    "published_at": "2026-11-10T07:34:30+09:00",
+    "title": "役所の「国に確認します」、別の町の回答をその場で検索　自治体共通窓口が始動",
+    "summary": "国への照会で確認された回答を自治体間で共有する共通窓口が開設。転入手続きの同じ質問は一から聞き直さず、地域固有の条件だけ職員が確かめる。",
+    "paragraphs": [
+      "転入してきた親子が子育て支援の手続きに必要な書類を尋ねると、市役所の職員は電話ではなく端末を開いた。画面には、先月別の町が国に問い合わせて得た回答が、確認日とともに表示された。地域行政連携機構が、自治体で確認された国の回答を共有する「共通照会窓口」の運用開始を発表した。",
+      "検索できるのは、国の担当部署が回答した共通の制度条件だけ。質問文、回答の根拠、確認日を並べ、制度改正などで古くなった回答には再確認の印が付く。職員は全国で共通する必要書類をその場で案内したうえで、住んでいる市だけの条件を別に照合した。申請を認めるかどうかまで自動で決める仕組みではない。",
+      "従来どおり国へ一件ずつ問い合わせる方法も残る。しかし、同じ質問の回答待ちで住民に何度も来てもらうより、確認済みの根拠を参照する方が早い。2026年にはデジタル庁が、国への照会事務を省力化する生成AI機能の実証に向け、50〜100程度の自治体を募集していた。その時点では試験的な取り組みで、回答共有の全国運用が決まったわけではなかった。",
+      "午後、新人職員が検索しても出てこない質問に出会った。先輩は「それは、うちが最初に聞こう」と国への照会票を開いた。数日後、回答の確認を終えると、その市の名前が共通窓口の検索結果に加わった。朝は別の町に教わった窓口が、今度は別の町の待ち時間を減らす側になった。"
+    ],
+    "source": {
+      "kind": "行政資料",
+      "publisher": "デジタル庁",
+      "published_at": "2026-11-09T00:00:00+09:00",
+      "url": "https://www.digital.go.jp/policies/genai/0ef07948-2f5d-4b45-8ebe-ea974c20a3ac",
+      "topic": "デジタル庁が2026年11月9日に更新した資料。自治体からの国への照会事務の円滑化・省力化を目的に生成AI機能を試験提供する実証事業を案内し、50〜100団体程度を募集。実証予定は2026年11月24日〜2027年2月10日。2031年の回答共有共通窓口・地域行政連携機構・利用者は創作であり、2026年の実施決定ではない。"
+    },
+    "scene_prompt": "Candid photorealistic Japanese municipal service counter. An anonymous adult city-hall worker sits opposite a parent and school-age child and points to an open plain laptop showing only unreadable neutral blocks, beside two ordinary sheets of paperwork and a date stamp. The parent holds a plain folder, leaning forward to look. Modest fluorescent daylight, realistic fabric, hands, paper and wood, no readable words, branding, uniforms or logos. The real scene is an in-person explanation of required documents, not a robot making an automatic eligibility decision.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "地域",
+      "子育て"
+    ],
+    "satire_tags": [
+      "問い合わせの重複"
+    ],
+    "x_tags": [
+      "行政手続き"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "引っ越し先の役所でも、前の町が国に聞いた答えを探せる。窓口で待つ時間の使い方が変わる。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年、国への自治体照会の省力化を目的とした生成AI実証で50〜100団体程度の募集が案内された",
+      "target": "自治体ごとに繰り返していた国への同一照会と、その回答待ちによる住民の再来庁",
+      "action": "共通制度の確認済み回答と根拠・更新日を自治体間で検索し、地域固有の条件は職員が別途確認",
+      "outcome": "転入してきた親子の書類案内がその場で進み、その市自身の照会結果も後日別の町に共有される"
+    },
+    "behavior_basis": {
+      "motive": "自治体は重複照会と住民の再来庁を減らし、職員は出典の確かな案内を迅速にしたい",
+      "ordinary_alternative": "国へ従来どおり電話や照会票で個別に問い合わせる",
+      "why_not": "共通条件の確認済み回答を見れば二度同じ照会を待つ必要がなく、地域固有の例外と最終判断だけ職員が扱える",
+      "evidence_quote": "しかし、同じ質問の回答待ちで住民に何度も来てもらうより、確認済みの根拠を参照する方が早い。"
+    },
+    "reader_clarity": {
+      "who": "自治体の窓口職員と転入手続きに来た親子",
+      "action": "別の自治体が国に確認した回答をその場で検索し、書類を案内する",
+      "oddity": "国への同じ質問を自治体ごとに繰り返す必要が減り、確認済みの回答を共有する窓口ができた"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に国への自治体照会を省力化する生成AI機能の実証参加自治体が募集された",
+      "continuation_force": "自治体間で繰り返す共通照会と限られた職員数が、根拠と更新日を持つ回答の再利用を促す",
+      "future_result": "2031年に自治体連携組織が共通の国の回答を参照できる窓口を開始し住民への案内が早くなる"
+    }
+  },
+  {
     "slug": "off-grid-lodge-sells-disconnection",
     "category": "暮らし",
     "flash": "新しい宿泊",
