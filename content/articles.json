@@ -1907,7 +1907,7 @@
       "url": "https://prtimes.jp/main/html/rd/p/000000790.000004729.html",
       "topic": "2026年7月2日16時公開のクロス・マーケティング「SNSに関する調査（2026年）意識編」。全国20〜69歳男女3,000人を調査し、SNS利用者の45％がSNS疲れを感じ、若年層にはやめたいのに見続けるとの回答傾向もあった。SNS断ちを助ける交流サイト「おやすみ広場」、100日連続ログインの表彰、利用者や式典の台詞は同社の事業・調査事実ではなく独自の創作。"
     },
-    "scene_prompt": "Photorealistic deadpan satire in a small Japanese community award ceremony. Foreground: ONE silver trophy on a table beside ONE smartphone held by a formally dressed award recipient, its blue screen glowing but with no readable text. Background: an audience of a few people still looking at their phones rather than at the stage. One coherent scene, no logos, no text, no famous people.",
+    "scene_prompt": "After a community award ceremony, an adult thumb-types on a smartphone while gripping a silver star trophy with a stem and black base in the other hand. Nearby adults also check their phones.",
     "tags": [
       "SNS",
       "アプリ"
@@ -1915,7 +1915,9 @@
     "satire_tags": [
       "SNSあるある",
       "本末転倒"
-    ]
+    ],
+    "visual_strategy": "cpu-photo",
+    "modified_at": "2026-11-10T00:19:10+09:00"
   },
   {
     "slug": "office-face-to-face-day-video-call-echo",
@@ -2139,7 +2141,7 @@
       "url": "https://s.kabutan.jp/news/n202611041113/",
       "topic": "2026年11月4日、日経平均は一時下げ幅が3000円を超えたが、下げ幅を縮小して前営業日比893円23銭安で終了。架空の証券アプリ・人物・発言・祝福表示は創作。"
     },
-    "scene_prompt": "A photorealistic deadpan Japanese office scene: an office worker raises a smartphone showing an abstract celebration of confetti over a rising intraday stock chart, while a paper account statement on the desk beside it shows a clearly descending red arrow. A coworker looks at the paper skeptically. Phone and statement large in frame, no readable text, no brands, no recognizable real people.",
+    "scene_prompt": "An office worker shows a smartphone whose red chart falls sharply then rebounds slightly, still far below its start, while celebratory confetti fills that same screen. A coworker looks on.",
     "tags": [
       "お金",
       "投資"
@@ -2147,7 +2149,9 @@
     "satire_tags": [
       "数字マジック",
       "演出盛り盛り"
-    ]
+    ],
+    "visual_strategy": "cpu-photo",
+    "modified_at": "2026-11-10T00:19:10+09:00"
   },
   {
     "slug": "self-oseibo-recipient-refuses-own-gift",

@@ -1310,14 +1310,65 @@
       "source_png_sha256": "d6e22aa08964b12c5806810e792d3c742b2247a0a47048a84985f6c84ab42d18"
     },
     "sns-quit-support-site-hundred-day-login-award": {
-      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-      "bytes": 89973,
-      "generated_at": "2026-11-05T10:38:36.527560+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 2154012484535384189,
-      "sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
+      "article_sha256": "96b3fe6f6a0b3f00172e9bac2c09a07e198d67de62d6d2fd3f10ab48cc7635f0",
+      "bytes": 80874,
+      "generation_id": "4aaca6a7-97d7-4320-a732-bca11c96ff9a",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid local-newspaper photograph of a staged, entirely fictional scene in a modest Japanese community hall just after an award ceremony. This is the moment immediately after the closing call, before the hall becomes completely dark. The house lights are being lowered, with enough ordinary low indoor light remaining for a real camera to resolve the people and objects naturally. In the foreground, ONE anonymous fictional adult Japanese award recipient in a plain dark suit stands beside rows of ordinary chairs. He is absorbed in his smartphone, with his gaze down and his right thumb touching the screen. His right hand holds a normal slim black smartphone vertically; the plain unbranded back is visible to the camera and the screen faces him. His left hand still grips the base of a small unmistakable award trophy below chest height. This trophy is a rigid SILVER FIVE-POINTED STAR mounted upright on a slender metal stem above a BLACK SQUARE BASE. Show its complete star, thin stem and rectangular base clearly, separated from the phone by his torso. It has no cup bowl, opening, handles, liquid or saucer. It is an ordinary modest award, not a giant glowing icon or floating graphic. Both hands and their correct contact with their separate objects must be visible and anatomically natural. The recipient does not look at the camera or pose for an award photograph. In the soft background, TWO adult attendees in the same hall remain absorbed in their own ordinary smartphones, looking down rather than toward a low, now-unused stage. Keep the setting small and believable: a few plain chairs and an unlettered low stage are enough. The point is that the ceremony has ended but the recipient is still typing and others are still checking their phones; do not replace this action with people merely holding objects for a camera. Restrained everyday indoor colors, real skin and fingers, cloth suit texture, modest metallic reflections and plausible contact shadows. No readable words, letters, numerals, engraved plaque, banners, award certificate, app interface, logos, brands, signatures or watermarks. No giant phone, numeral 100, floating notification graphics, cinematic spotlight, illustration, anime or 3D render. All people, the organization and the ceremony are fictional.",
+      "sha256": "442464f32854f88291bfe5f6f6ed0b13157b7c9dcbf152158a3782b6a2cbf603",
+      "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "source_png_sha256": "157c701c6cf1054b167062a64e7c2f3c26d176fb72298c6941ff7d394d44ced0",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T15:11:17.843542+00:00",
+      "previous_generation": {
+        "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+        "bytes": 89973,
+        "generated_at": "2026-11-05T10:38:36.527560+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 2154012484535384189,
+        "sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
+      },
+      "previous_visual_review": {
+        "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+        "decision": "rejected",
+        "image_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
+        "note": "実際のJPEGは暗い式場の無人の円卓、ガラス製トロフィー状の器、左右の発光パネルが中心。受賞者、スマホ、SNSに戻り続ける客席の人々は写らず、『やめるSNSの100日連続ログイン表彰』という風刺が視覚化されていないため不採用。記事とオチに合う専用SVGを実描画で確認して採用する。",
+        "reviewed_at": "2026-11-05T10:56:45.097Z"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+        "previous_rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
+        "reason": "現本文・試作指示・実JPEGを表示して照合。旧LCMの無人式場から、既存のfull RV24と受賞者中心の構図へ変えた比較。肌、髪、上着、壁、窓光は自然な写真の質感になったが、男性はカメラを見ており、片手は浅い器・受け皿、もう片手は白い両取っ手付きカップ状の物。スマートフォンも反応を確認する動作もなく、表彰トロフィーも識別できないため不採用。本文の主要場面に合う専用SVGを維持し、元JPEG・原生成指紋・seedは変更しない。11/9の既刊試作は3/3件消費済みとし、同記事の同日再試行はしない。",
+        "rejected_candidate_sha256": "f95542bd354fd673746b91a4dbdf9007392c2ff8fa48eb170567d7dcedb94bbf",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42540783784",
+        "reviewed_at": "2026-11-09T00:45:17.315177+00:00",
+        "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+        "trial_article_sha256": "953644878359d03cda22bab25fe82a230289f938bbc103639a7c2099edeb59b4",
+        "trial_inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "trial_origin": "github-cpu-sd15",
+        "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
+        "trial_seed": 2154012484535384189
+      }
     },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
@@ -1330,14 +1381,33 @@
       "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
     },
     "stock-rebound-confetti-still-in-red": {
-      "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
-      "bytes": 77318,
-      "generated_at": "2026-11-04T14:34:49.413586+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 264982437597800576,
-      "sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615"
+      "article_sha256": "8f65ca0bf2e6e58ab863f02700ad5fa4e7c190649333d4a39eb3e0c0f3cd115f",
+      "bytes": 122204,
+      "generation_id": "1996022d-4c89-4b24-8986-51f37d26ce1a",
+      "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary candid documentary newspaper photograph for an entirely fictional Japanese office story about a financial app celebrating a tiny recovery after a much larger loss. The central subject is ONE real-looking generic smartphone held upright naturally by an anonymous fictional adult office worker, with its FRONT SCREEN large and clearly visible toward the camera. A coworker looks at it from beside the holder, with a restrained skeptical expression. Use a close three-quarter camera angle, plain everyday office clothes and ordinary window light, not a glossy device advertisement. The phone screen is an invented minimalist financial app without a name, text, numbers or logos. Inside that ONE physical screen show ONE dark red line graph: it begins HIGH near the upper left, drops strongly across the screen toward the lower right, reaches a deep low near the right edge, then makes only a SMALL final upward hook. The final point must still be dramatically LOWER than the starting point; most of the loss remains. This high-left to low-right path and the small final rebound must both be unmistakable at thumbnail size. A sparse festive spray of flat colored rectangular confetti appears as a software overlay INSIDE THE SAME PHONE SCREEN, along the top and sides, celebrating that tiny last uptick without obscuring the whole declining line. The confetti must remain entirely within the glass screen; no physical confetti in the room. Keep the clear overall falling graph, the small last rebound and the app celebration legible as shapes, without any writing or value labels. Frame the actual phone bezel, natural holding fingers and part of both ordinary people so it is clearly a camera photograph of a phone being shown to a colleague. Real glass reflections, skin, fabric and office furniture, believable anatomy and soft daylight. The screen graphics are flat app graphics inside a photograph, not a flat illustration of the whole scene. All people, workplaces and apps are fictional, with no recognizable real service or business. Absolutely no readable words, letters, digits, currencies, logos, signatures, watermarks, headlines or captions anywhere. No second phone, no printed account statement, no paper chart, no arrows floating in real space, no confetti outside the phone, no entire rising chart, no stock-photo posing, illustration, anime, cartoon, 3D render, waxy hands or cinematic lighting.",
+      "sha256": "87676a6b81bf2265be6894f42d1b679e2ed3b6d13e3775707992aee91e2bb69a",
+      "source_article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+      "source_png_sha256": "6945644b59f713ad8074c9e9c61915d28b9c1c7484a71faf71a94f02ad891f11",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T15:04:25.822645+00:00",
+      "previous_generation": {
+        "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+        "bytes": 77318,
+        "generated_at": "2026-11-04T14:34:49.413586+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 264982437597800576,
+        "sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+        "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
+        "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
+      }
     },
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "ecd1cb53929ef2271c2b14273da1a681c275a7e8be1e57bb3b8b332e9489411d",
