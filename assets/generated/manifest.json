@@ -97,31 +97,50 @@
       "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
-      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
-      "bytes": 123647,
-      "generated_at": "2026-11-08T12:41:43.239279+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "caa71d955f66af9d174d2a80de9fd5566387b9dd20e1a8a9efa289494c121802",
+      "bytes": 143766,
+      "generated_at": "2026-11-09T07:31:40.872164+00:00",
+      "generation_id": "5df4744f-0a71-4359-910b-a983e24838af",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary press photograph of a staged fictional scene in a modest Japanese neighborhood coffee shop. Anonymous fictional ordinary adults, no celebrity likeness. Focus on a quiet awkward moment: a middle-aged male regular in an ordinary office jacket has JUST sat at the wooden counter and started to order, his mouth slightly open and one hand modestly raised palm-forward as if to politely say 'wait'. But an already finished CINNAMON LATTE in a plain ceramic cup and saucer has already been placed directly in front of him. Clearly show cinnamon dust on the pale milk foam and the customer's untouched cup, with his other hand still holding his folded coat rather than reaching for the drink. He looks with restrained embarrassment toward the cup and departing barista, not smiling. On the opposite side of the counter, a plainly dressed apron-wearing barista has already withdrawn their hand from the saucer and is turning their shoulders back toward a simple espresso machine, acting as if the order was already settled instead of listening to the customer's raised hand. Keep both the customer's face and interrupted gesture, the ready latte and the barista in one believable medium-wide shot. The humor is friendly efficient service that leaves the regular no chance to request what he wants today. No angry confrontation, exaggerated disgust or theatrical comedy expression. Ordinary natural window daylight, authentic skin, plausible hands, plain apron, warm wood and ceramic, realistic unpolished local newspaper snapshot, 35mm eye-level perspective, restrained colors, ordinary slightly worn cafe. No menus, table cards, signs, packaging, writing, lettering, labels, logos, watermarks, captions or headlines in view. No illustration, anime, 3D render, glossy cafe advertising, cinematic poster lighting or artificial skin.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+        "bytes": 123647,
+        "generated_at": "2026-11-08T12:41:43.239279+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 801802259504878659,
+        "sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_visual_hold": {
+        "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+        "reason": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。",
+        "rejected_candidate_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
+        "reviewed_at": "2026-11-08T13:01:09.486Z"
+      },
       "prompt_version": 3,
-      "seed": 801802259504878659,
-      "sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86"
+      "sha256": "33e1d470b945f30cac6b210f7524a30a94ddf4318bddcd0c0a98b67d49ee090f",
+      "source_article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+      "source_png_sha256": "dfb93c7581b53a81c61d4674a33f225f44a19e2a9438fe8b122297c58efd14b5"
     },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
@@ -795,14 +814,34 @@
       "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
     },
     "shiroamadai-last-plate-twenty-seven-times": {
-      "article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423",
-      "bytes": 133160,
-      "generated_at": "2026-11-07T08:45:11.472724+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "d5bff8517d97f44e5ec941f7c0f41fc3d08ab236d66816f60d92948060786c6a",
+      "bytes": 141729,
+      "generated_at": "2026-11-09T07:35:16.324487+00:00",
+      "generation_id": "23ad391c-9c56-4915-83e9-30678c4fcc99",
+      "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid documentary photograph for a fictional Japanese satire newspaper, staged with two anonymous fictional adult restaurant workers. Closing time inside a modest but carefully kept Japanese sushi restaurant with a real wooden counter. The central foreground action is a tired apron-wearing staff member carefully applying ONE DROP OF OIL from a small plain precision squeeze oiler with a narrow metal spout directly onto the METAL HINGE of a small two-sided tabletop specials chalkboard. The staff member steadies the small hinged wooden sign with the other hand. Make the hinge, fine oil-can nozzle and deliberate hand movement clearly visible. The camera sees the sign's plain unlettered BACK and wooden frame, with only a narrow edge of dark chalkboard visible; the written front faces away, so absolutely no writing or fake symbols are in view. It should be recognizable as a reusable small folding counter sign, about 35 centimeters tall, not a giant wall blackboard, not a door, not a suitcase. In the middle background beyond the counter, a chef in an ordinary plain white jacket is checking a fish delivery box, with several white insulated fish-delivery crates neatly stacked right beside him. One open crate has ice and loosely wrapped pale fish inside, enough to establish actual fish stock, without a species identification close-up. Nothing is labeled. The irony is the worker maintaining the overused 'last plate' sign while the kitchen has plentiful boxed fish. Main attention stays on the sign hinge being oiled, but keep the chef and stack of fish boxes recognizable in the same real room. Natural ordinary warm ceiling light mixed with mundane kitchen light, realistic skin and hands, worn wood, metal hinge, oil bottle and foam boxes, unglamorous local press snapshot, eye-level 35mm lens, restrained color, photographic rather than cinematic depth. No customers, no sushi advertising display, no food glamour shot. No letters, numbers, signs facing camera, labels, brands, logos, captions, headlines or watermarks. Not illustration, anime, 3D render, glossy product photo or cinematic poster.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423",
+        "bytes": 133160,
+        "generated_at": "2026-11-07T08:45:11.472724+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 537466078184489001,
+        "sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "d29f0e1ae3b8d689c9ec9ebd34a3d4481e013cee7bea1c67fcead48bef9b91ec",
+        "reason": "本文整理後の実JPEGも再確認。画面の大部分を占める壁面黒板の擬似文字が目立つ一般的な店内で、小さな卓上札を裏返す手元・魚の配送箱・蝶番の手入れが写っていない。現本文でも場面不適合のため保留を継続し、実物確認した専用SVGを維持する。元JPEG・生成記事指紋・seedは変更していない。",
+        "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804",
+        "reviewed_at": "2026-11-09T11:11:58+09:00",
+        "source_article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423"
+      },
       "prompt_version": 3,
-      "seed": 537466078184489001,
-      "sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
+      "sha256": "e8e39e4ce14c0b2f6b9a9941d172d9502bfac4442f6d8d51e921de8907e34721",
+      "source_article_sha256": "d29f0e1ae3b8d689c9ec9ebd34a3d4481e013cee7bea1c67fcead48bef9b91ec",
+      "source_png_sha256": "e278f9532ee1c42a4e03abcd4adea545a6c08b4cb596e114b7b4d658410079a9"
     },
     "sleep-advice-livestream-until-two-am": {
       "article_sha256": "90efe393762c81e19a6a38f8d2e03284a1ddf7dff3d5d62fd7101ef5aba8a861",
@@ -889,14 +928,32 @@
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
     "surprise-birthday-organized-by-guest-of-honor": {
-      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
-      "bytes": 107883,
-      "generated_at": "2026-11-07T06:56:00.257463+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "7e4845cf4553851c94b7cb7f8df4d0c76e7b9123236b787d5dd6a64c6f4d63de",
+      "bytes": 119442,
+      "generated_at": "2026-11-09T07:33:50.864828+00:00",
+      "generation_id": "8ede8e82-0d1c-4594-9e68-36db5206c816",
+      "generation_prompt": "Use case: photorealistic-natural. A horizontal 16:9 candid documentary photograph of a fictional Japanese birthday dinner in a modest restaurant private room. Four entirely fictional ordinary adult friends, no celebrity likeness, not an advertisement. The birthday guest, a woman in her thirties sitting in the near-left foreground in a plain blouse and trousers, is PERFORMING SURPRISE with both hands covering her mouth and eyes widened but not exaggerated; she has secretly organized this celebration herself. Crucial visible clue: an OPEN event cue sheet lies flat across her LAP, BELOW THE TABLE EDGE, clearly visible from this low three-quarter SIDE camera angle. It is an ordinary A4 paper in a slim open folder, with a few understated timetable rows/check boxes and illegible faint pen marks, NOT readable text, NOT a napkin, NOT hidden by her hands. Frame her FACE, BOTH HANDS and her KNEES WITH THE OPEN CUE SHEET together. Use a small table set slightly to her right, not blocking her lap. On the table, a recognizable small round frosted birthday CAKE with three ordinary lit candles, no name plaque, numbers or writing. Her THREE friends sit around the far and right side of the table: one friend is taking her picture with an unbranded phone, the other two smile quietly toward her. Total FOUR people including the birthday guest. No fifth friend. The absurdity must be visible: a convincing 'surprised' guest still has her own running-order plan open on her knees while friends celebrate. Ordinary dimmed room ceiling light with gentle practical spill from the doorway and candles, plausible camera exposure, natural skin and hands, real cloth, paper and cake textures, restrained warm colors, documentary family snapshot, 35mm perspective. No spotlight, glossy waxy faces, fantasy glow, poster design, anime, illustration or 3D-render appearance. Absolutely no legible letters, captions, titles, signs, branding or watermarks. Do not put a giant planning board or chart in the background; the cue sheet must stay on her own lap.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+        "bytes": 107883,
+        "generated_at": "2026-11-07T06:56:00.257463+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 8117721195727882487,
+        "sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+        "reason": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。",
+        "rejected_candidate_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
+      },
       "prompt_version": 3,
-      "seed": 8117721195727882487,
-      "sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
+      "sha256": "b28e5fd53a895305fd7d2200566967dbb631c7535603795e794642a27aba7a34",
+      "source_article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+      "source_png_sha256": "3a01d4327f021bbee5d618703de18ff4246e521e02a07f3fb12b9d4d67465729"
     },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
@@ -1092,12 +1149,6 @@
       "trial_article_sha256": "963c3ce0aab919ec6de88d5884619fda8d67e4eb79dc30d07cdd0094a39698d4",
       "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
     },
-    "cafe-regular-dislikes-usual-cinnamon-latte": {
-      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
-      "reason": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。",
-      "rejected_candidate_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
-      "reviewed_at": "2026-11-08T13:01:09.486Z"
-    },
     "chance-meeting-cafe-reservation-full": {
       "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "reason": "Visual review: the JPEG depicts two seated people with coffee, but no reservation tickets, unscheduled greeting, or employee intervening. Its garbled chalkboard text is prominent; it misses the story's booked-chance punchline. Use the safe article illustration until a new JPEG is actually reviewed.",
@@ -1191,13 +1242,6 @@
       "rejected_candidate_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42000558053"
     },
-    "shiroamadai-last-plate-twenty-seven-times": {
-      "article_sha256": "d29f0e1ae3b8d689c9ec9ebd34a3d4481e013cee7bea1c67fcead48bef9b91ec",
-      "reason": "本文整理後の実JPEGも再確認。画面の大部分を占める壁面黒板の擬似文字が目立つ一般的な店内で、小さな卓上札を裏返す手元・魚の配送箱・蝶番の手入れが写っていない。現本文でも場面不適合のため保留を継続し、実物確認した専用SVGを維持する。元JPEG・生成記事指紋・seedは変更していない。",
-      "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804",
-      "reviewed_at": "2026-11-09T11:11:58+09:00",
-      "source_article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423"
-    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "previous_rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
@@ -1240,11 +1284,6 @@
       "reason": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。",
       "rejected_candidate_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42385703758"
-    },
-    "surprise-birthday-organized-by-guest-of-honor": {
-      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
-      "reason": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。",
-      "rejected_candidate_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
