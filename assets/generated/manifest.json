@@ -79,36 +79,32 @@
     "basketball-opening-day-game-seven": {
       "article_sha256": "5b48d4a5b3f1dd02bfbb426fdb781c016f07e74516bb7a9ec3141b7e4c32c39a",
       "bytes": 115010,
+      "generated_at": "2026-11-09T15:42:15.515501+00:00",
       "generation_id": "79681556-81a6-44c8-a779-7bf4ddc2c0e0",
       "generation_prompt": "Edit the attached fictional staged sports photograph with one very small cleanup only: remove the tiny isolated white curved emblem at the extreme upper-right edge of the image, and fill that small corner with a seamless continuation of the existing ordinary gym wall and ceiling texture. Preserve the existing photograph, its composition, crop, lighting, colors, camera realism, every person's face and hands, the burgundy fringed championship flag and pole, and the interaction exactly as they are. Do not change or add any people, objects, wording, numbers, logos, signature or watermark. The only intended change is removal of that tiny upper-right white mark.",
-      "sha256": "38886f58003f476c35ec9e8167c1d5cdce74ce325b780f6e098b81dc9da07379",
-      "source_article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
-      "source_png_sha256": "91daa20655fc3021c97e3b6c75d0fa9adcb49df4b88314c3644d9786f24ded25",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T15:42:15.515501+00:00",
       "generation_steps": [
         {
           "generation_id": "ceb1bcfe-7b10-4410-b001-24a7fcb82cb2",
-          "tool_mode": "new_image",
           "generation_prompt": "Create one ordinary photorealistic 16:9 local sports-news photograph of fictional adult Japanese women basketball players in a modest community gym, shortly after a game has finished. In the foreground, the adult woman team captain in a plain sleeveless basketball jersey and shorts is receiving a ceremonial championship flag from an ordinary event official in a simple jacket. The flag is a real, normal-sized burgundy fabric banner hanging from a wooden pole, with a gold fringe, a small finial and tassel, with absolutely no writing, numbers, emblems or logos. Keep the fabric, fringe, pole and the two people's separate hands clearly visible together so it is unmistakably a flag handover, not a trophy, a handshake or a person just posing with a flag. The captain has one hand on the pole as it is passed across and looks toward the official with mild, restrained puzzlement. The official still supports the pole with a separate hand and is calmly speaking to the captain. Two or three adult teammates in matching unbranded kit stand nearby, looking toward the handover with reserved expressions. Basketball floor markings and one ordinary hoop establish the setting; there is no play, shot, jump or ball contest happening. Natural overhead gym lighting, realistic skin, cloth, wood and hand contact, documentary eye-level composition with the flag and exchange central. No giant numeral seven, no scoreboard, no banners or numbered tickets, no precise score, no brand or sponsor marks, no captions, no readable text. No crowd spectacle, confetti, celebratory advertising pose or theatrical lighting.",
           "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ceb1bcfe-7b10-4410-b001-24a7fcb82cb2.png",
+          "review": "Scene passed; isolated white corner mark required local cleanup before adoption.",
           "source_png_sha256": "7e7937ac18ca457cdf91f5d6f6ef434c4b270182a2ffc15e5991b4524ccbc134",
-          "review": "Scene passed; isolated white corner mark required local cleanup before adoption."
+          "tool_mode": "new_image"
         },
         {
           "generation_id": "79681556-81a6-44c8-a779-7bf4ddc2c0e0",
-          "tool_mode": "edit",
           "generation_prompt": "Edit the attached fictional staged sports photograph with one very small cleanup only: remove the tiny isolated white curved emblem at the extreme upper-right edge of the image, and fill that small corner with a seamless continuation of the existing ordinary gym wall and ceiling texture. Preserve the existing photograph, its composition, crop, lighting, colors, camera realism, every person's face and hands, the burgundy fringed championship flag and pole, and the interaction exactly as they are. Do not change or add any people, objects, wording, numbers, logos, signature or watermark. The only intended change is removal of that tiny upper-right white mark.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-79681556-81a6-44c8-a779-7bf4ddc2c0e0.png",
           "referenced_image_paths": [
             "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ceb1bcfe-7b10-4410-b001-24a7fcb82cb2.png"
           ],
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-79681556-81a6-44c8-a779-7bf4ddc2c0e0.png",
+          "review": "Corner mark removed; subject, flag, interaction and photographic materials retained.",
           "source_png_sha256": "91daa20655fc3021c97e3b6c75d0fa9adcb49df4b88314c3644d9786f24ded25",
-          "review": "Corner mark removed; subject, flag, interaction and photographic materials retained."
+          "tool_mode": "edit"
         }
       ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
         "bytes": 174771,
@@ -119,6 +115,12 @@
         "seed": 8539460300984130488,
         "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
       },
+      "previous_visual_hold": {
+        "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+        "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
+        "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
+      },
       "previous_visual_review": {
         "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
         "decision": "rejected",
@@ -126,25 +128,19 @@
         "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
         "reviewed_at": "2026-11-05T02:51:28.168Z"
       },
-      "previous_visual_hold": {
-        "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
-        "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
-        "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
-        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
-      }
+      "prompt_version": 3,
+      "sha256": "38886f58003f476c35ec9e8167c1d5cdce74ce325b780f6e098b81dc9da07379",
+      "source_article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "source_png_sha256": "91daa20655fc3021c97e3b6c75d0fa9adcb49df4b88314c3644d9786f24ded25"
     },
     "black-friday-preparty-budget-gone": {
       "article_sha256": "d92d8eb811828f5a9c956e5baf90d6b0c383d2d088bd733f47b170e507b8604f",
       "bytes": 149493,
+      "generated_at": "2026-11-09T11:48:05.085741+00:00",
       "generation_id": "3fcbc220-6d9d-4b2f-883c-757ce656570a",
       "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 candid documentary newspaper photograph for a clearly fictional Japanese shopping story. At an ordinary unbranded home-appliance shop display, an anonymous fictional Japanese adult woman in her early thirties has spent the budget for a replacement rice cooker on a blanket and shoes. She is an ordinary shopper in modest autumn clothes, with a naturally approachable face and a serious, rueful everyday expression, not a fashion pose. She stands beside the rice-cooker display, looking down into an OPEN EMPTY LEATHER WALLET held in her two natural hands. The wallet's main banknote compartment is spread open toward the camera and visibly contains no banknotes. At her feet, close enough to be clearly visible in the same medium-wide photograph, are two plain shopping bags: a folded woven blanket protrudes conspicuously from one bag, and a clearly recognizable pair of new casual shoes protrudes from the other. These are already-bought purchases. Nearby on the store's display shelf is one recognizable modern household RICE COOKER with a rounded pot-shaped body, hinged lid and blank dark display; it remains ON THE SHOP SHELF, clearly unpurchased, outside all bags and not carried by the woman. The empty wallet, blanket, pair of shoes, and unpurchased rice cooker must all be present and identifiable within a single coherent eye-level photograph. Compose for small news thumbnails as well as a 1200x675 article image, with the main objects large enough to recognize. Ordinary neutral shop lighting, realistic human skin, finger joints, knitted fabric, worn leather and molded appliance materials, natural contact shadows and restrained everyday colors. All people and places are fictional. No real store or identifiable real person. No extra household-electronics boxes, no employee pointing at signs, no shopping-list insert, no sale banners, no visible cash, no overlay symbols. Absolutely no readable writing, numbers, logos, labels, headlines, captions or watermark. No illustration, cartoon, anime, 3D render, glossy commercial photography, beauty retouching, exaggerated facial expressions or theatrical lighting.",
-      "sha256": "9e9d40aadc8a9c3871528099f0bddda89b7b1f0ca8323632246b53e55af8a766",
-      "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
-      "source_png_sha256": "d53d1f7f0e93c637ae425dbdbf6b68a1fc76233d3533706df02a9963c9600050",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T11:48:05.085741+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
         "bytes": 149180,
@@ -166,25 +162,25 @@
         "trial_scene_prompt": "An open empty leather wallet lies beside new shoes and a folded blanket spilling from plain shopping bags on an apartment floor. Ordinary window light."
       },
       "previous_visual_review": {
-        "decision": "rejected",
         "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+        "decision": "rejected",
         "image_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
-        "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
-        "note": "run 42469605928の本文・実JPEGを表示して照合。革靴・窓光・床材は普通の写真に見える一方、写るのは茶色いローファー一組だけで、主役の空財布・毛布・買い物袋がない。予算を使い切って炊飯器を買えなくなった状況を十分示さないため不採用。空財布と買い物の荷物が分かる既存専用SVGを実表示で確認し維持。本日の既刊試作上限を消費したため再生成せず、元JPEG・本文・生成指紋・seedは変更しない。"
-      }
+        "note": "run 42469605928の本文・実JPEGを表示して照合。革靴・窓光・床材は普通の写真に見える一方、写るのは茶色いローファー一組だけで、主役の空財布・毛布・買い物袋がない。予算を使い切って炊飯器を買えなくなった状況を十分示さないため不採用。空財布と買い物の荷物が分かる既存専用SVGを実表示で確認し維持。本日の既刊試作上限を消費したため再生成せず、元JPEG・本文・生成指紋・seedは変更しない。",
+        "reviewed_at": "2026-11-08T10:18:03.150988+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "9e9d40aadc8a9c3871528099f0bddda89b7b1f0ca8323632246b53e55af8a766",
+      "source_article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
+      "source_png_sha256": "d53d1f7f0e93c637ae425dbdbf6b68a1fc76233d3533706df02a9963c9600050"
     },
     "bring-your-own-room-hotel-parking-spaces": {
       "article_sha256": "da7fcb84217a73864b4680d8de9daec4d9c0372d1694477a409ae923e00cc54f",
       "bytes": 181830,
+      "generated_at": "2026-11-09T13:10:30.754671+00:00",
       "generation_id": "1e4508a9-2a6d-4495-9a70-2eefe55a35f6",
       "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 ordinary candid local-newspaper photograph of an entirely fictional Japanese hotel where travelers bring their own vehicle as their guestroom. An anonymous fictional Japanese adult male traveler around forty-five is standing at the OPEN REAR HATCH of a small generic unbranded compact van and straightening an ordinary beige futon with a pillow that is laid flat inside the rear cargo sleeping space. The whole recognizable FUTON AND PILLOW inside the OPEN VAN must be clearly visible, not hidden by the traveler. Beside him a fictional adult hotel receptionist in plain modest everyday work clothes, with no badge or logo, naturally points DOWN at one of the WHITE PAINTED PARKING BAY LINES beside the van, introducing the marked space as the room. Both adults are serious and matter-of-fact. Frame from an oblique rear-side eye-level angle so the open rear, bedding, natural hands, downward pointing gesture and white parking lines all fit clearly within one medium-wide camera photograph. A small quiet unbranded hotel reception building sits softly in the background; the focus stays on the guest arranging his own bed inside his vehicle while the receptionist indicates the parking space. The van is an invented generic vehicle design without recognizable brand features or badges. Ordinary soft afternoon daylight, realistic skin and hands, rumpled cotton bedding, slightly worn vehicle interior, asphalt and painted white lines, natural shadows and muted everyday colors. Nothing theatrical or like a car advertisement. All people and businesses are fictional; no real person or identifiable business. No readable text, words, numbers, signs, logos, license plate writing, headlines, captions or watermark. No keys being handed over, no hotel bed outside the vehicle, no closed hatch, no extra vehicle blocking the main sleeping compartment. No illustration, cartoon, anime, 3D render, waxy skin, glossy cinematic lighting or smiling promotional poses.",
-      "sha256": "044dcabea2388330e12792ffa1c05de84796e29232376dd83f3ca68c9b101edb",
-      "source_article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-      "source_png_sha256": "d1293b254f58e94856ffe6603f0eeba9ceab58f173b82dab30c58eebcd085ead",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T13:10:30.754671+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
         "bytes": 159107,
@@ -234,11 +230,47 @@
       },
       "previous_visual_review": {
         "article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
-        "image_sha256": "b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e",
         "decision": "accepted",
-        "reviewed_at": "2026-11-09T10:02:19.776876+00:00",
-        "note": "現本文・新原PNG・最終JPEGを実表示して照合。開いた後部ハッチ内に布団と枕があり、旅行者が寝具の端を両手で整え、制服姿の係員が足元の駐車区画の白線へ片手を向ける。車が客室で駐車区画を案内される本文第2段落を一場面で識別できる。背景は低い受付建物で、皮膚・手足・衣服・寝具・車体・舗装は自然な写真質感、目立つ文字・ロゴ・人体の破綻はない。部屋替え・犬・電源設備まで写っているとは主張しない。本文・scene指示・初回日時は保持し、旧CPUの不足は別記録へ残した。"
-      }
+        "image_sha256": "b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e",
+        "note": "現本文・新原PNG・最終JPEGを実表示して照合。開いた後部ハッチ内に布団と枕があり、旅行者が寝具の端を両手で整え、制服姿の係員が足元の駐車区画の白線へ片手を向ける。車が客室で駐車区画を案内される本文第2段落を一場面で識別できる。背景は低い受付建物で、皮膚・手足・衣服・寝具・車体・舗装は自然な写真質感、目立つ文字・ロゴ・人体の破綻はない。部屋替え・犬・電源設備まで写っているとは主張しない。本文・scene指示・初回日時は保持し、旧CPUの不足は別記録へ残した。",
+        "reviewed_at": "2026-11-09T10:02:19.776876+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "044dcabea2388330e12792ffa1c05de84796e29232376dd83f3ca68c9b101edb",
+      "source_article_sha256": "4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f",
+      "source_png_sha256": "d1293b254f58e94856ffe6603f0eeba9ceab58f173b82dab30c58eebcd085ead"
+    },
+    "buzzword-award-what-does-it-mean-wins": {
+      "article_sha256": "f99c58f2479c24e0ec68d18464580c21ea664c1b7b96e7d521e1a416e540380b",
+      "bytes": 151421,
+      "generated_at": "2026-11-09T16:30:29.526028+00:00",
+      "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
+      "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
+      "generation_steps": [
+        {
+          "generation_id": "ee467b64-72fa-4a12-aaf9-1887f59e47dd",
+          "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 candid local newspaper photograph of a fictional street word-awareness survey. Two anonymous fictional adults stand safely on the ordinary pedestrian sidewalk of a modest Japanese neighborhood in daylight. The survey worker stands on the left in plain casual work clothes, holding a normal small plain questionnaire at chest height, glancing from the sheet toward the passerby with their mouth slightly open as they read out a word and ask a question. Keep the questionnaire unlettered or with only faint indistinct marks, without a clipboard headline or a large candidate list. The adult passerby on the right has stopped facing the survey worker, but has just lowered their eyes to a smartphone near their chest to look up the meaning instead of giving an immediate answer. One hand holds the phone and the other thumb or fingertip searches on it. A mildly puzzled, matter-of-fact expression, not a posed smile. Show a subtle generic search-bar shape or magnifying-glass icon on the phone if visible, with no readable letters, words, numbers or branded interface. The important relationship is the worker asking a question while the respondent searches for the answer on their own phone. They are not both watching a shared screen, showing each other a video, taking a selfie, buying anything or exchanging the phone. One coherent eye-level medium-wide frame with both adult faces, the small questionnaire, phone, and natural hands clearly visible. Plain pavement, quiet unlettered buildings and a little greenery are background only. Natural soft daylight, ordinary cotton clothes, realistic skin and paper, restrained colors and real camera depth, no cinematic or publicity lighting. No stage, presenter podium, award certificate, trophy, medal, giant list, speech bubble, floating question mark, banner, signs, readable text, signatures, brand logos, real-person likeness or watermark. No illustration, anime, cartoon or 3D render.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png",
+          "source_png_sha256": "98dfa6c1de2196982b349cb3743b886354edc8a90fcde828c928d2d5914d2c2a",
+          "tool_mode": "new_image"
+        },
+        {
+          "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
+          "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-64849e81-4b83-475e-9325-9d13c5f83214.png",
+          "referenced_image_paths": [
+            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png"
+          ],
+          "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a",
+          "tool_mode": "edit"
+        }
+      ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "342e1156ce1cc056dfa56302ca7cd59cbce9750ec0d1248dceadb0fe2f6dda18",
+      "source_article_sha256": "115429c3a034ebadd499bcbc4f14eb7249992b7b5484dfa88cf766aac13c8e38",
+      "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a"
     },
     "cafe-regular-dislikes-usual-cinnamon-latte": {
       "article_sha256": "caa71d955f66af9d174d2a80de9fd5566387b9dd20e1a8a9efa289494c121802",
@@ -361,16 +393,12 @@
     },
     "crosswalk-photo-captcha-human-stuck": {
       "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-      "source_article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-      "source_png_sha256": "bfab335bdbf7a65b5b85244a60ff8b8adc1edf53c829033728b3026c9a37e0c7",
       "bytes": 174434,
-      "sha256": "0acb3a7c0ef0f8338e2cf9e4c0c1f0f7f04e13cd4dc73a21b82ea65be9f794fd",
+      "generated_at": "2026-11-09T20:49:18.468516+00:00",
       "generation_id": "ee3cd0ac-68f5-433a-8249-adcc1cb76d6e",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese news article about a future pedestrian-crossing image quiz. Make an ordinary documentary camera photograph, not an illustration or an interface mockup. At a modest anonymous Japanese street corner in morning daylight, a serious adult woman commuter is STOPPED on the sidewalk before a small CLOSED waist-high pedestrian gate. She looks down and taps a real smartphone held near chest height. Her phone screen is clearly visible in the near foreground at a natural oblique angle, displaying a simple THREE-BY-THREE grid of tiny photographic street-image tiles, some containing zebra-crossing white stripes, others ordinary curb or road detail; no words, letters, logos or symbols implying a real service. Frame over her shoulder from slightly to her side so the phone, her hands and partial natural profile are visible without posing toward the camera. Beyond the shut gate is a clearly visible REAL zebra crossing across a quiet road, and a green pedestrian traffic light. Two other anonymous office commuters wait immediately behind her on the sidewalk, with restrained frustrated expressions, not walking through the crossing. Show the physical gate's closed horizontal barrier and hinges clearly, connected to short practical railings on both sides, plausibly human-scale; a single gate at the curb, not a train platform or a whole street blocked by barriers. The visual contrast is real white crossing stripes ahead versus choosing tiny photos on a phone while unable to pass. Natural skin, distinct plausible fingers contacting the phone, glass with mild realistic reflections but visible image tiles, everyday coats, ordinary concrete and metal, soft morning shadows, candid medium-wide camera shot. No readable signage, captions, words, numbers, brand names, watermarks, real identifiable places or people. No hovering AI holograms, futuristic neon, giant phone, sci-fi gate, crowds in the road, illustration, 3D render, waxy faces or fused hands. Keep the phone and gate inside the central 16:9 crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:49:18.468516+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
         "bytes": 120355,
@@ -381,6 +409,12 @@
         "seed": 2648102085126781280,
         "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
       },
+      "previous_visual_hold": {
+        "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+        "reason": "The old JPEG omits the pedestrian gate and recognizable phone/photo quiz and has softened malformed crowd figures. Its old supplemental acceptance does not meet the current realism and principal-action gate.",
+        "rejected_candidate_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
         "decision": "accepted",
@@ -388,12 +422,23 @@
         "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
         "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-        "rejected_candidate_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
-        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
-        "reason": "The old JPEG omits the pedestrian gate and recognizable phone/photo quiz and has softened malformed crowd figures. Its old supplemental acceptance does not meet the current realism and principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "0acb3a7c0ef0f8338e2cf9e4c0c1f0f7f04e13cd4dc73a21b82ea65be9f794fd",
+      "source_article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+      "source_png_sha256": "bfab335bdbf7a65b5b85244a60ff8b8adc1edf53c829033728b3026c9a37e0c7"
+    },
+    "custom-work-apps-four-week-handover": {
+      "article_sha256": "37da7a7160b2fcc6d1e6b42f4d431114192a6a3e46db625b273b0fa78d117c8f",
+      "bytes": 117905,
+      "generated_at": "2026-11-09T15:44:04.908693+00:00",
+      "generation_id": "a46929c2-59d6-43a4-b274-75e51b0aeedb",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid documentary photograph of a staged, entirely fictional Japanese office scene. Focus on the final result of a difficult handover, not on a meeting or a futuristic app demonstration. One anonymous fictional adult office employee, the successor to a departing worker, sits at an ordinary work desk in plain everyday office clothes with a quietly serious, slightly tired expression. The physical contrast on the desk is the main subject: on one side, THREE thick normal A4 software-operation ring binders lie in a realistic stack, with a FOURTH thick binder open beside them to densely filled paper pages. The visible page edges, rings, dividers and dense but unreadable instruction rows make these recognizable as substantial working manuals rather than a decorative pile of books. Immediately next to that open binder, on the SAME desk and SAME plane of focus, lies ONE separate ordinary white A4 sheet that is almost entirely blank except for ONE very short, faint, deliberately out-of-focus handwritten line near its upper portion. Keep this single sheet clearly visible and separate from the manuals, not buried under them. The employee leans slightly forward, with one hand naturally holding the edge of an open manual page and the other hand resting beside the short sheet, looking down between the two. Use a medium-close diagonal camera view across the desk so the thick manual stack, open dense pages, nearly empty single sheet and employee's face and hands are readable together at thumbnail scale. The paper-volume contrast must dominate; do not show a generic cluttered office. In the soft background, one ordinary computer monitor is angled away with indistinct neutral shapes only, and a modest shelf holds a few older plain binders. Do not add three dashboards, a color-code chart, an instructor, a classroom, a certificate or another employee. Believable paper thickness, cardboard binder covers, skin, fingers, cotton clothes, ordinary furniture and soft daytime window light, natural unglossy colors and contact shadows. All people, businesses and software are fictional. No legible words, letters, numerals, paragraph headings, labels, branded hardware, real app interface, logo, watermark, signature or floating graphic. Do not make a tower taller than the person or scatter mountains of paper. No illustration, anime, 3D render, cinematic lighting or exaggerated promotional pose.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "5c7650b786ce65b497693f92ef38210ac09367b572a4dbcbfd13d17fe7aa4b1c",
+      "source_article_sha256": "23015542d91e83de27d80ff4f056a7369b4c7cc7c64eff9077d13bc58c5ea171",
+      "source_png_sha256": "510dbed91a1ed6de24084ad7411658877e2d3d0e37728f1550a2c3554f71ea53"
     },
     "datacenter-unbuilt-ribbon-cutting": {
       "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
@@ -437,16 +482,12 @@
     },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
-      "source_article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
-      "source_png_sha256": "c76c7b8975388b6aa6adf2c8a7dea3b43e101e32d04125d96948870d610400c5",
       "bytes": 143432,
-      "sha256": "acef76148662e2fa6f97449b9cdebed6be9fa17a41db7677ad7e998697be2039",
+      "generated_at": "2026-11-09T20:18:36.592395+00:00",
       "generation_id": "5281aa34-c9fd-4876-b1e5-8bc2ae1fc7f6",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 article image for a clearly fictional Japanese news comedy. Make one ordinary documentary camera photograph, not illustration, 3D render, advertisement, or movie poster. Outside a tiny unnamed Japanese neighborhood diner, an anonymous Japanese adult male customer in an ordinary jacket presses a small silver coin into the open palm of a surprised, serious middle-aged male diner owner in a plain worn apron. Their hands and the visible coin are the foreground focus: this is returning a coin, not a handshake. The owner's other hand still holds a separate small refund coin. Show both natural faces and these distinct hands together, waist-up medium shot from a slight side angle. Through the open doorway, two quietly waiting lunch customers make a short queue. Normal street, modest practical diner interior, warm overcast daylight, natural pores, cloth weave, soft physical shadows, imperfect ordinary surroundings. Understated deadpan comedy comes only from their earnest coin exchange. No real people, celebrities, readable coin denomination, shop name, writing, menus, logos, captions, watermarks, giant props, exaggerated expressions, plastic skin, fused fingers, or luminous CGI. Do not add running or a second action. Leave a little framing room above and below for a 16:9 news crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:18:36.592395+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
         "bytes": 123807,
@@ -463,6 +504,12 @@
         "seed": 1135968338982907543,
         "sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1"
       },
+      "previous_visual_hold": {
+        "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+        "reason": "The old JPEG shows staff and customers outside a diner but omits the coin exchange and chase; its old background-only acceptance does not meet the current principal-action gate.",
+        "rejected_candidate_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
         "decision": "accepted",
@@ -470,25 +517,19 @@
         "note": "食堂の前にエプロン姿の店員と客がいる場面。返金・追跡の動作は未再現だが本文の舞台が判別できる。看板・メニューの擬似文字とロゴはローカルで局所ぼかしし、最終JPEGを再確認した。",
         "reviewed_at": "2026-11-04T11:28:39.902385+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
-        "rejected_candidate_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
-        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
-        "reason": "The old JPEG shows staff and customers outside a diner but omits the coin exchange and chase; its old background-only acceptance does not meet the current principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "acef76148662e2fa6f97449b9cdebed6be9fa17a41db7677ad7e998697be2039",
+      "source_article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
+      "source_png_sha256": "c76c7b8975388b6aa6adf2c8a7dea3b43e101e32d04125d96948870d610400c5"
     },
     "double-speed-drama-explainer-marathon": {
       "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-      "source_article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-      "source_png_sha256": "47eb1a073bb194b802a6d909237f94463aed7b92ea24270f805b513acdf6b955",
       "bytes": 120999,
-      "sha256": "1589e5641ab5a7f08aabf06a9e055f6050d8db11a81d7b42c3ece7e37c8567a1",
+      "generated_at": "2026-11-09T18:35:16.011509+00:00",
       "generation_id": "84e32ae0-0839-4c7c-8c04-812d50b79a42",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 editorial scene photograph for a Japanese fictional future newspaper. Create one entirely new natural camera photograph, not an illustration, CGI, poster or advertising image.\n\nScene: an ordinary modest Japanese apartment living room after dark. One anonymous fictional adult Japanese man, about 30, in plain home clothes sits at a small table, earnestly trying to understand a drama he watched too fast. The humorous situation is his very serious, excessive study of entertainment.\nEssential subjects must all be clearly visible together: the man, an open unbranded laptop with an explanation video paused, and his large open notebook of hand-drawn character relationship sketches. Show an ordinary presenter with simple anonymous headshot thumbnails and connecting lines within the laptop screen, like a generic video explaining fictional drama characters. There are no readable words or numbers on screen, no recognizable actors and no brand interface. The notebook has a few simple face circles and connecting arrows, scattered illegible pen marks; it is not a page of printed text. He holds exactly one ordinary pencil in his right hand, adding a line to the diagram while looking attentively at the paused laptop. Left hand rests naturally on the notebook. A small unused remote control lies beside it. Loose study pages occupy part of the table. The laptop is large enough to unmistakably read as video viewing in a thumbnail and is not hidden by the man.\n\nComposition: unobtrusive three-quarter view from across the table, candid medium-wide framing with man at right and laptop at left, laptop screen and open notebook both facing the camera at believable angles. Keep essential laptop, hands and notebook within the central safe 16:9 area. Physically plausible screen, paper, ordinary furniture and anatomy.\nPhotographic treatment: plain domestic ceiling/desk light, natural skin pores, subtle uneven shadows, normal cloth and paper texture, realistic camera perspective, quiet mundane colors. Deadpan focused expression. The photograph should look like an ordinary unstaged local newspaper lifestyle snapshot, with only the situation unusual. No theatrical lighting, cinematic grading, glossy plastic skin, CGI softness or exaggerated face. No text overlays, captions, logos, watermarks, legible letters or numbers, giant icons or fantastical objects. No real people or real services.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T18:35:16.011509+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
         "bytes": 84556,
@@ -499,19 +540,23 @@
         "seed": 3201759797992626446,
         "sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25"
       },
+      "previous_visual_hold": {
+        "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+        "reason": "The old JPEG shows a man writing on papers with two pens but omits the laptop and explanatory video. The old supplemental-image acceptance does not meet the current main-action requirement.",
+        "rejected_candidate_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
+        "reviewed_at": "2026-11-09T18:37:39.179912+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
         "decision": "accepted",
         "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
-        "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
-        "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
+        "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。",
+        "reviewed_at": "2026-11-04T11:42:05.375093+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-        "rejected_candidate_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
-        "reviewed_at": "2026-11-09T18:37:39.179912+00:00",
-        "reason": "The old JPEG shows a man writing on papers with two pens but omits the laptop and explanatory video. The old supplemental-image acceptance does not meet the current main-action requirement."
-      }
+      "prompt_version": 3,
+      "sha256": "1589e5641ab5a7f08aabf06a9e055f6050d8db11a81d7b42c3ece7e37c8567a1",
+      "source_article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+      "source_png_sha256": "47eb1a073bb194b802a6d909237f94463aed7b92ea24270f805b513acdf6b955"
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
@@ -522,6 +567,28 @@
       "prompt_version": 2,
       "seed": 3792932720945161705,
       "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
+    },
+    "family-line-replies-four-different-station-exits": {
+      "article_sha256": "d969e3b7c1c2c31d4dc1e5a762c195cfbe9ec9c66e438266a4de8e6a163ad756",
+      "bytes": 182798,
+      "generated_at": "2026-11-09T17:10:38.749848+00:00",
+      "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
+      "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
+      "generation_steps": [
+        {
+          "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
+          "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-16345f4d-7ed6-40fc-8bc4-2416afe80589.png",
+          "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f",
+          "tool_mode": "new_image"
+        }
+      ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "d27debfec45c6760a76c045320fe7780ca6628bce28b12085dde12ff1e973ee5",
+      "source_article_sha256": "648ca56e313f18dfcd8f81ede792f55bcb8c0a5e0f70d5a8dd43a5f006380505",
+      "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f"
     },
     "fan-theories-write-final": {
       "article_sha256": "405644be6f2c757f4889e3d889dab35a284f9fb930b8864c4ce4472e7d3f85d5",
@@ -581,16 +648,12 @@
     },
     "father-tries-own-overpacked-bento": {
       "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
-      "source_article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
-      "source_png_sha256": "7ed6f23e9ef1744d3052f47e0ea6eef6c40615ac836b215dbcf59e18d4b486f1",
       "bytes": 148736,
-      "sha256": "817a7440ad76c493bd583407b3545549b0f4b616f655d5e9086b6f3967a11d5e",
+      "generated_at": "2026-11-09T20:47:32.584152+00:00",
       "generation_id": "71701cd4-9274-40bd-a21c-8b0459ae0e44",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese family news comedy. In a modest lived-in Japanese home kitchen at early evening, an anonymous ordinary father and his school-age son sit beside one another at a wooden dining table. In front of the father is one large, physically plausible rectangular bento lunchbox, about 28 cm wide, with roughly half its area empty and some tamagoyaki slices, fried chicken and a little rice visibly left in the other half. Beside it is the son's much smaller EMPTY lunchbox with a few crumbs. The solemn son points one natural index finger toward his father's leftover food while looking at his father. The father quietly begins to lower the large box's plain lid with one hand, keeping the remaining food visible at this instant, his expression restrained and rueful rather than cartoonish. This is the main action, not a food product still life or a family portrait. Show faces, the pointing hand, the father's hand and BOTH separate open boxes together, candid three-quarter medium shot slightly above tabletop. Real ordinary skin, worn cotton clothes, wood grain, a few natural food irregularities, soft window and domestic room light, plausible shadows, documentary camera texture. Keep all four people-hands anatomically natural and distinct; only two people, not a giant fantasy lunchbox. No writing on lids, packaging, labels, brand names, signs, captions or watermarks. No illustration, 3D render, plastic food, perfect repeated nuggets, luminous surfaces, exaggerated expressions or identifiable real people. Leave enough frame for a 16:9 news crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:47:32.584152+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
         "bytes": 98594,
@@ -601,6 +664,12 @@
         "seed": 3645685199179627378,
         "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
       },
+      "previous_visual_hold": {
+        "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+        "reason": "The old JPEG is a soft CG-like food still life, omitting the father, child, empty small box and lid-closing action. Its old topic-only acceptance does not meet the current realism and principal-action gate.",
+        "rejected_candidate_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
         "decision": "accepted",
@@ -608,12 +677,10 @@
         "note": "詰めすぎた大きな弁当箱とふたが主役。おかずの量が分かり、本文の題材に合う創作イメージ。父子の動作は未再現だが、目立つ読める文字やロゴはない。",
         "reviewed_at": "2026-11-04T11:19:31.334151+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
-        "rejected_candidate_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
-        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
-        "reason": "The old JPEG is a soft CG-like food still life, omitting the father, child, empty small box and lid-closing action. Its old topic-only acceptance does not meet the current realism and principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "817a7440ad76c493bd583407b3545549b0f4b616f655d5e9086b6f3967a11d5e",
+      "source_article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
+      "source_png_sha256": "7ed6f23e9ef1744d3052f47e0ea6eef6c40615ac836b215dbcf59e18d4b486f1"
     },
     "film-village-all-stars-no-extras": {
       "article_sha256": "6a3000734189e1a646a595a87ac2059d54dc4fa096440774ba3a1c5c351335d1",
@@ -821,16 +888,12 @@
     },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
-      "source_article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
-      "source_png_sha256": "424c29b57c307e01b30efb67ed8fadcb3593db002fc264f0c7a2fc4f2c31fb9f",
       "bytes": 160495,
-      "sha256": "d45c4221992cacf476536d42277d1e92d28ef0698b55124e85ab6ebf7a7331f4",
+      "generated_at": "2026-11-09T20:19:14.019044+00:00",
       "generation_id": "afdc4edf-a3c4-4d99-8f4e-d89b059b7801",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese town festival news comedy. Photograph a small friendly real-looking dog on a modest low wooden community festival stage, wearing an unlettered winner's ribbon rosette on its collar. The dog is walking toward its ordinary adult owner waiting at the right edge of the stage, and gently carries ONE lightweight handheld black microphone in its mouth: recognizable cylindrical handle extending sideways and rounded metal mesh microphone head. Three anonymous adult contestants in generic old-fashioned coats and theatrical fake beards crouch behind and beside a low plain podium, trying to coax the dog into a winner's photograph with tiny treats. The dog delivering the microphone is the clear foreground action; show its entire natural body, the complete microphone, and its owner receiving its attention, with the kneeling costumed adults visible. Ordinary contemporary Japan community event, daytime, practical wood, cloth costumes, natural fur detail and soft daylight shadows, eye-level candid medium-wide camera photograph, restrained serious expressions, mildly awkward deadpan situation. Exactly one dog. Anonymous fictional people, no resemblance to any real historical figure, celebrity, or actual event. No writing, award numerals, logos, signs, banners with lettering, captions or watermarks. No posing group portrait, illustration, cartoon, CGI, waxy faces, floating objects, extra legs, or bone-shaped microphone. Keep enough surrounding frame for a 16:9 news crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:19:14.019044+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
         "bytes": 110440,
@@ -841,6 +904,12 @@
         "seed": 6861070434247018276,
         "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
       },
+      "previous_visual_hold": {
+        "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+        "reason": "The old JPEG only poses costumed people and dogs together and shows neither cane nor microphone delivery; its old topic-only acceptance does not meet the current principal-action gate.",
+        "rejected_candidate_sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
         "decision": "accepted",
@@ -848,12 +917,10 @@
         "note": "付けひげ・時代衣装の架空の参加者と犬が並ぶ場面。杖を運ぶ動作は未再現だが、犬と偉人そっくり大会の題材が判別できる。目立つ文字や重大な融合はない。",
         "reviewed_at": "2026-11-04T11:19:31.334619+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
-        "rejected_candidate_sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3",
-        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
-        "reason": "The old JPEG only poses costumed people and dogs together and shows neither cane nor microphone delivery; its old topic-only acceptance does not meet the current principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "d45c4221992cacf476536d42277d1e92d28ef0698b55124e85ab6ebf7a7331f4",
+      "source_article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
+      "source_png_sha256": "424c29b57c307e01b30efb67ed8fadcb3593db002fc264f0c7a2fc4f2c31fb9f"
     },
     "idol-ice-kept-in-freezer": {
       "article_sha256": "6c898b3c283fe77c3bb3c25c232eb26e24d8a40d7e419d75285adcdc62f910f3",
@@ -864,6 +931,19 @@
       "prompt_version": 2,
       "seed": 3443340707540981827,
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
+    },
+    "lion-king-prequel-watch-order-meeting": {
+      "article_sha256": "5b32a2b07ac7fd32132912f798e53b8bbb580de32a057c8ff09aa20bd0b75078",
+      "bytes": 125291,
+      "generated_at": "2026-11-09T13:22:17.633236+00:00",
+      "generation_id": "6933e7cc-9336-4894-a4a6-7d7fff204ce8",
+      "generation_prompt": "Create one ordinary, photorealistic 16:9 news-style still of a fictional Japanese family at home, photographed at the end of a long evening. In the lower foreground, a normal A4-sized notebook lies open on the dining table, angled so that its page is clearly visible to the camera. Two simple, boldly pencilled horizontal arrows run in opposite directions on separate rows; there are a few faint erased marks, but no words, letters, titles or numbers. The notebook must be the unmistakable focus of their discussion, not a small background prop. A middle-aged father points directly at one arrow with his right index finger and loosely holds a television remote in his left hand. Across the table, his wife gestures toward the other arrow while their adult daughter leans in and listens seriously. All three look at the notebook or one another, never at the television. Behind them, a single television is visibly switched on but shows only a plain dim blue-black screen without programme images, credits or text. The window is dark; a small ordinary analog wall clock has hands near 11:24, with no numeral labels. Shoot from a seated observer's angle, slightly down toward the notebook, with enough depth of field to retain the three people and the ignored television. Natural warm domestic lighting, ordinary skin, fabric and wood textures, candid expressions. No giant notebook, cinematic lighting, diagrams floating in the room, recognizable movie characters, movie stills, brands, logos, readable writing or captions.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "dba476b55acd577f05ba0bf6b6c4b996ca4bac6857d339b8d51fa44148f187f6",
+      "source_article_sha256": "168cc55f67364bbcb08f3cdb59f8834c15c98a9235f470c406d10b09ad47beb6",
+      "source_png_sha256": "e1dd72c04e5bb4ec3bc5a7b47c390354afec61b5c643f230e7af8b9ad8d872d1"
     },
     "local-souvenir-cannot-leave-town": {
       "article_sha256": "9a4c73400cee12de4f0158729fc62cab51da7350c70f1af6afc1b41468d37cc1",
@@ -927,6 +1007,33 @@
       "seed": 7373647264621116198,
       "sha256": "76d2f68e0804c58ebf17c14a086f0ade278bcb6de77c751aaf8babbfe522ae89"
     },
+    "municipal-shared-government-answers": {
+      "article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
+      "bytes": 99349,
+      "generated_at": "2026-11-09T23:08:14.080779+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 597515152728705382,
+      "sha256": "19292c0169ce29a6506da550ee4855a087bfc1fdefe8429a86cab0bb57387c0f"
+    },
     "music-ai-friends-monopolize-the-song": {
       "article_sha256": "5320edc1126e0a133899c7f0af28eff1a966ae5fc73b8573d4a8059cb40d354f",
       "bytes": 82999,
@@ -939,16 +1046,12 @@
     },
     "music-show-surprise-face-rehearsal": {
       "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
-      "source_article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
-      "source_png_sha256": "07fe0ad997b002b5230ad299840525f3dd42d613edfa6cdf95269f2a3cfc6b47",
       "bytes": 138439,
-      "sha256": "f15e44f07f9585b7fb3c334fff039bb82ae68c061409ca0249f4535ebefc5744",
+      "generated_at": "2026-11-09T19:09:36.774812+00:00",
       "generation_id": "4b55718e-b767-4e96-bb25-9e098caa6f4d",
       "generation_prompt": "Use case: photorealistic-natural. Create one new horizontal 16:9 candid editorial camera photograph for a fictional Japanese future newspaper.\n\nScene: a rehearsal in an ordinary Japanese music television studio, before the performance. Three anonymous fictional Japanese adult audience members in a front row of simple upholstered chairs are earnestly practicing the appearance of hearing a familiar song for the first time. A plainly dressed adult stage manager beside the row holds an unbranded clipboard in one hand and visibly counts two beats with two raised fingers of the other hand, carefully coaching their reaction. One attentive adult woman in the nearest seat glances down at a SMALL plain rehearsal cue card; the other two adults look toward the stage manager with widened eyes and slightly open mouths in deliberately rehearsed surprise. Their reactions must remain physically natural, not cartoonish or screaming. Two or three other adult audience members sit further behind, naturally out of focus. Make the front-row audience, their small cue cards, and the coaching manager clearly visible together. A modest glimpse of a plain stage edge, dark curtains, and ordinary warm studio work lights establishes a television rehearsal. No actual performers or real broadcast branding.\n\nThe small cards have no legible writing; show their blank backs or genuinely indistinct faint marks. They are index-card size rather than giant sheets or placards. The clipboard faces the manager, with no readable labels. This is a rehearsal of facial reactions, not a classroom, protest, paper presentation or concert crowd cheering.\n\nPhotographic treatment: an unpretentious local-newspaper on-location photograph from an aisle at normal seated eye level, medium-wide framing, ordinary broadcast/work light with restrained colors. Real human skin pores, natural individual facial features, normal hair, hands, cotton clothing, chair upholstery and subtle uneven shadows. Everyone wears ordinary casual adult clothing and takes the exercise seriously. Clearly adult people with distinct faces; no children, doll faces or identical generated faces. Keep essential people, cards and counting hand in the central safe 16:9 frame. Believable anatomy, perspective and hand contact.\n\nNo visible words, text overlay, captions, logos, watermarks, real people, real program names, readable lettering or numerals. No illustration, anime, CGI, plastic skin, airbrushed faces, watercolor softness, cinematic grading, theatrical neon, exaggerated fantasy lighting, advertising polish, montage or split panels. The unusual rehearsed situation carries the humor; the image itself must look like a normal camera photograph.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T19:09:36.774812+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
         "bytes": 101314,
@@ -959,6 +1062,12 @@
         "seed": 4671421502652190209,
         "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
       },
+      "previous_visual_hold": {
+        "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+        "reason": "The legacy JPEG has conspicuously soft, doll-like CGI faces and blended outlines, and omits the coaching stage manager. Its old visual acceptance does not satisfy the current ordinary-camera photograph gate.",
+        "rejected_candidate_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
+        "reviewed_at": "2026-11-09T19:20:17.211588+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
         "decision": "accepted",
@@ -966,51 +1075,45 @@
         "note": "実画像と現本文を照合。観客席で複数の架空人物が白い練習カードを持ち、驚いた表情を作る場面が記事の「初耳の顔を練習する」主題に合う。カードには擬似文字があるが読める文章・固有名詞・ロゴは見当たらない。ステージマネージャーや歌手、顔の角度を直す動作は未再現で、人物描写は柔らかいが主役の大きな人体破綻は見当たらない。",
         "reviewed_at": "2026-11-05T03:46:29+00:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
-        "rejected_candidate_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
-        "reviewed_at": "2026-11-09T19:20:17.211588+00:00",
-        "reason": "The legacy JPEG has conspicuously soft, doll-like CGI faces and blended outlines, and omits the coaching stage manager. Its old visual acceptance does not satisfy the current ordinary-camera photograph gate."
-      }
+      "prompt_version": 3,
+      "sha256": "f15e44f07f9585b7fb3c334fff039bb82ae68c061409ca0249f4535ebefc5744",
+      "source_article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+      "source_png_sha256": "07fe0ad997b002b5230ad299840525f3dd42d613edfa6cdf95269f2a3cfc6b47"
     },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "3e6fd6658105c45639e8f3ac161864c79bcbf31feea3dd640385ee42bbe9bb2d",
       "bytes": 114006,
+      "generated_at": "2026-11-09T13:20:51.464677+00:00",
       "generation_id": "054a1c69-6173-41df-8099-056d76bf20c3",
       "generation_prompt": "Make a strictly localized cleanup of this fictional generated photo. On the TELEVISION'S OUTER BLACK FRAME, at the horizontal center of the LOWER BEZEL just below the singer's image, there is a tiny pale manufacturer-brand-like inscription. Remove that inscription completely and replace it with uniform black bezel plastic matching the surrounding frame. Keep the TV screen image, singer, microphone, man, hands, phone, room, tabletop and every other element unchanged. Preserve the clean lower-right wooden-table corner. Inspect all edges: the final photo must contain no brand inscription, letter-shaped logo, signature, watermark or readable text anywhere. Do not crop or add anything.",
-      "sha256": "c103d58d12d7ba7ca15f64d2392512d88a825d4210c3644eba90f1f4fd7a3cf2",
-      "source_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
-      "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T13:20:51.464677+00:00",
       "generation_steps": [
         {
-          "generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-7ac212b6-296c-414c-bd55-e4ec325e5d70.png",
-          "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary candid documentary newspaper photograph for an entirely fictional Japanese entertainment-news story. In a modest Japanese living room in the evening, an anonymous fictional Japanese adult man around forty in a plain casual T-shirt sits on a sofa, seriously looking DOWN at ONE SMARTPHONE held naturally in both hands. His gaze is visibly directed at the phone and away from the television. The phone display faces him and its plain unbranded back faces the camera, with no visible screen writing. A single television behind and beside him is clearly switched on and shows an anonymous fictional adult woman singer performing into a microphone on a modest ordinary television music-show stage. Her outfit is modest and unbranded, her appearance is original and not recognizable as any real celebrity. The actual singer and microphone inside the television screen must be recognizable, while the viewer ignores the performance to check his phone. Compose one coherent eye-level side three-quarter medium-wide camera photograph that includes the viewer eyes aimed down, his two natural hands and physical phone, and the complete television performance behind him; keep both the phone action and the TV singer large enough to recognize at article-thumbnail size. Ordinary warm practical room light, a little natural television glow, realistic skin, finger joints, cotton fabric, sofa upholstery and wood grain, restrained everyday colors and believable shadows. No film-poster lighting, glossy advertising, collage or split panels. All people and the television program are fictional, with no real person, celebrity, broadcaster or service branding. Absolutely no readable words, numbers, captions, headlines, channel bugs, logos, phone text or watermark. No illustration, anime, cartoon, 3D render, plastic skin, exaggerated expression or extra phones.",
           "decision": "not_published",
+          "generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
+          "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary candid documentary newspaper photograph for an entirely fictional Japanese entertainment-news story. In a modest Japanese living room in the evening, an anonymous fictional Japanese adult man around forty in a plain casual T-shirt sits on a sofa, seriously looking DOWN at ONE SMARTPHONE held naturally in both hands. His gaze is visibly directed at the phone and away from the television. The phone display faces him and its plain unbranded back faces the camera, with no visible screen writing. A single television behind and beside him is clearly switched on and shows an anonymous fictional adult woman singer performing into a microphone on a modest ordinary television music-show stage. Her outfit is modest and unbranded, her appearance is original and not recognizable as any real celebrity. The actual singer and microphone inside the television screen must be recognizable, while the viewer ignores the performance to check his phone. Compose one coherent eye-level side three-quarter medium-wide camera photograph that includes the viewer eyes aimed down, his two natural hands and physical phone, and the complete television performance behind him; keep both the phone action and the TV singer large enough to recognize at article-thumbnail size. Ordinary warm practical room light, a little natural television glow, realistic skin, finger joints, cotton fabric, sofa upholstery and wood grain, restrained everyday colors and believable shadows. No film-poster lighting, glossy advertising, collage or split panels. All people and the television program are fictional, with no real person, celebrity, broadcaster or service branding. Absolutely no readable words, numbers, captions, headlines, channel bugs, logos, phone text or watermark. No illustration, anime, cartoon, 3D render, plastic skin, exaggerated expression or extra phones.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-7ac212b6-296c-414c-bd55-e4ec325e5d70.png",
           "reason": "Bottom-right watermark-like mark and TV bezel inscription",
           "source_png_sha256": "bd8e2b0cba5d55cdbf09ae041a2896ef30427484223c428154bfb6b81c0d83eb"
         },
         {
-          "generation_id": "19616545-d5aa-4bf5-b599-058118df2573",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-19616545-d5aa-4bf5-b599-058118df2573.png",
-          "generation_prompt": "Edit this existing generated fictional news photograph with one localized correction only: remove the faint watermark-like tiny symbol and pseudo-lettering at the extreme LOWER RIGHT corner on the wooden tabletop. Reconstruct that small corner with continuous natural wood texture matching the surrounding tabletop. Preserve every other part of the photograph: the adult man's identity, serious downward gaze at one phone, his natural hands, the fictional adult woman singer visible on the TV, the microphone, furniture, lighting, camera composition and exact horizontal framing. The final photograph must have absolutely no logo, signature, watermark, lettering or added symbol anywhere. Do not replace the scene, add new objects, change the people or crop the composition.",
-          "reference_generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
           "decision": "not_published",
+          "generation_id": "19616545-d5aa-4bf5-b599-058118df2573",
+          "generation_prompt": "Edit this existing generated fictional news photograph with one localized correction only: remove the faint watermark-like tiny symbol and pseudo-lettering at the extreme LOWER RIGHT corner on the wooden tabletop. Reconstruct that small corner with continuous natural wood texture matching the surrounding tabletop. Preserve every other part of the photograph: the adult man's identity, serious downward gaze at one phone, his natural hands, the fictional adult woman singer visible on the TV, the microphone, furniture, lighting, camera composition and exact horizontal framing. The final photograph must have absolutely no logo, signature, watermark, lettering or added symbol anywhere. Do not replace the scene, add new objects, change the people or crop the composition.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-19616545-d5aa-4bf5-b599-058118df2573.png",
           "reason": "Bottom-right mark removed; TV bezel inscription remained",
+          "reference_generation_id": "7ac212b6-296c-414c-bd55-e4ec325e5d70",
           "source_png_sha256": "b8dbb8f39bdd81a177652954ea51ff9047c0d9cf1768ffa380edaff53993f999"
         },
         {
           "generation_id": "054a1c69-6173-41df-8099-056d76bf20c3",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-054a1c69-6173-41df-8099-056d76bf20c3.png",
           "generation_prompt": "Make a strictly localized cleanup of this fictional generated photo. On the TELEVISION'S OUTER BLACK FRAME, at the horizontal center of the LOWER BEZEL just below the singer's image, there is a tiny pale manufacturer-brand-like inscription. Remove that inscription completely and replace it with uniform black bezel plastic matching the surrounding frame. Keep the TV screen image, singer, microphone, man, hands, phone, room, tabletop and every other element unchanged. Preserve the clean lower-right wooden-table corner. Inspect all edges: the final photo must contain no brand inscription, letter-shaped logo, signature, watermark or readable text anywhere. Do not crop or add anything.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-054a1c69-6173-41df-8099-056d76bf20c3.png",
           "reference_generation_id": "19616545-d5aa-4bf5-b599-058118df2573",
           "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08"
         }
       ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
         "bytes": 120404,
@@ -1023,13 +1126,6 @@
         "sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
         "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
         "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
-      },
-      "previous_visual_review": {
-        "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
-        "decision": "accepted",
-        "image_sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
-        "note": "現本文とnative生成の実PNG・最終JPEGを表示して照合。手前の視聴者は両手のスマホを真顔で見下ろし、隣のテレビ内ではマイクを持った歌手が歌っている。歌より通知の続きを待つ本文の主要場面に一致する。肌・髪・ニット・木製家具、手元、室内灯とテレビの光が自然な写真として見え、目立つ文字・ロゴや破綻はない。匿名の創作人物で、実在番組の出演者・ロゴの再現として扱わない。",
-        "reviewed_at": "2026-11-09T04:25:27.049533+00:00"
       },
       "previous_visual_hold": {
         "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
@@ -1060,20 +1156,40 @@
         "trial_origin": "github-cpu-sd15",
         "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
         "trial_seed": 8233372666452194521
-      }
+      },
+      "previous_visual_review": {
+        "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+        "decision": "accepted",
+        "image_sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
+        "note": "現本文とnative生成の実PNG・最終JPEGを表示して照合。手前の視聴者は両手のスマホを真顔で見下ろし、隣のテレビ内ではマイクを持った歌手が歌っている。歌より通知の続きを待つ本文の主要場面に一致する。肌・髪・ニット・木製家具、手元、室内灯とテレビの光が自然な写真として見え、目立つ文字・ロゴや破綻はない。匿名の創作人物で、実在番組の出演者・ロゴの再現として扱わない。",
+        "reviewed_at": "2026-11-09T04:25:27.049533+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "c103d58d12d7ba7ca15f64d2392512d88a825d4210c3644eba90f1f4fd7a3cf2",
+      "source_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+      "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08"
+    },
+    "nikkei-plunge-hundred-year-hold-minute-check": {
+      "article_sha256": "70f9071727826b917a52ea97dbe3ada4b6a6b1a238a75343767bed915aa89a92",
+      "bytes": 129739,
+      "generated_at": "2026-11-09T13:48:49.788010+00:00",
+      "generation_id": "d77fd4a2-dd35-4421-a1a4-398d2dba3696",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary photograph of a staged fictional scene in a modest Japanese home workspace. An anonymous fictional adult man in an ordinary plain shirt leans over his desk with a serious, concentrated expression. His left hand holds ONE smartphone while his right hand writes the next short line in ONE ordinary open ruled notebook with a pen. The visible notebook pages are already densely filled with short rows of faint handwriting, showing repeated checking rather than school exercises. The phone shows only a simple downward red price-chart line; it is tilted toward him so no company name, numbers or interface lettering can be read. Use an oblique over-the-shoulder medium-close composition: both hands, the phone, the pen tip touching the notebook and the filled pages are clearly visible together. In the soft background is a normal-sized wall planning sheet with a mostly empty grid and just one circled cell, with no legible date or writing. The priority is the active copying and the crowded notebook, not a generic man looking at his phone. Keep one notebook; do not turn sixteen written pages into sixteen books or a huge paper pile. Ordinary daytime window light, realistic skin and hands, paper texture, cotton clothing, practical domestic furniture and believable contact shadows. All people and businesses are invented. No readable text, numerals, app or phone logos, headlines, watermarks, cartoon, illustration, 3D render or glossy stock-advertising pose.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "46f88b0b031ee8a7e994d474b21b3d5d324932bc0f0d206e98ad3f5bf9e39962",
+      "source_article_sha256": "49237e88ac9d3648206ac247cb4ef0aa4184b04a1a34614fffc09ec96b6eb05c",
+      "source_png_sha256": "ca0860e2e71846b51ab9bcc5599051e207b6ff39dc814f3419c13426d6c26b24"
     },
     "off-grid-lodge-sells-disconnection": {
       "article_sha256": "175fec22fb3ab52ae17df01fd8c2668e27bfb09705cff1aa6989b09acd474578",
       "bytes": 148330,
+      "generated_at": "2026-11-09T11:55:57.991397+00:00",
       "generation_id": "5aca6670-1008-4934-bb22-10a19a1ac28f",
       "generation_prompt": "Use case: photorealistic-natural. Generate a new horizontal 16:9 ordinary candid documentary newspaper photograph for a fictional rural Japanese guesthouse. An anonymous fictional adult Japanese male guest in a plain navy travel overshirt is depositing exactly one black smartphone into an open portable brushed-silver metal storage box on a wooden reception counter. He holds the top of the phone with natural fingertips as its lower half passes clearly inside the box opening; the open hinged metal lid stands upright behind it and the box interior and simple latch are visible. An anonymous fictional adult woman innkeeper in modest plain everyday work clothes stands behind the counter and watches the deposit seriously, with her hands resting naturally on the wood. This is an ordinary check-in, with no real person or business. Medium close view from the guest side of the counter with the box, phone and placing hand large and unobscured in the foreground, both adults upper bodies in frame, and soft window daylight from the mountain forest behind the counter. Show realistic skin pores and finger joints, cotton fabric, scratched brushed metal, worn timber, natural contact shadows and muted everyday colors. The phone has a blank dark screen. There are no other visible phones and no phone handover between people. The building has no sign or brand. No readable text, numbers, labels, logos, signs, headlines, captions, icons or watermark. No illustration, anime, cartoon, 3D render, waxy skin, cinematic or advertisement lighting, theatrical expressions or fantasy effects. The action of placing the phone into the metal box must be unmistakable.",
-      "sha256": "0132f3e5f8aff8af0222a539562686bc144d33c2e0e97cd59426d5bfa4d44ba2",
-      "source_article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
-      "source_png_sha256": "5e5ae413dc307b5796c3b226835ba1fdb976cbfbcf0b38815c5d557aa5df158e",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T11:55:57.991397+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
         "bytes": 154789,
@@ -1123,11 +1239,15 @@
       },
       "previous_visual_review": {
         "article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
-        "image_sha256": "7907367020c362208b60533e67f0642cca1b3c418aadc707e2b2930d22581f12",
         "decision": "accepted",
-        "reviewed_at": "2026-11-09T11:24:07.485775+00:00",
-        "note": "現本文・新原PNG・最終JPEGを実表示して照合。木の受付カウンター上の開いた金属箱へ、旅行客がスマホ1台を下ろす。端末下部は箱の内側に入り、受付担当も預け入れを見るため、スマホを預ける本文の主動作が明確。森の見える宿の環境、肌・指・衣服・金属の縁と内側・木目・自然光は普通の写真質感で、目立つ文字・実在ロゴ・重大な人体破綻はない。通信遮断性能、満室、通知の振動までは写真で証明しない。本文・初回日時・出典は保持し、sceneだけを本文の箱に整合。旧CPU候補の欠落と元の正確なseedは別記録へ保持した。"
-      }
+        "image_sha256": "7907367020c362208b60533e67f0642cca1b3c418aadc707e2b2930d22581f12",
+        "note": "現本文・新原PNG・最終JPEGを実表示して照合。木の受付カウンター上の開いた金属箱へ、旅行客がスマホ1台を下ろす。端末下部は箱の内側に入り、受付担当も預け入れを見るため、スマホを預ける本文の主動作が明確。森の見える宿の環境、肌・指・衣服・金属の縁と内側・木目・自然光は普通の写真質感で、目立つ文字・実在ロゴ・重大な人体破綻はない。通信遮断性能、満室、通知の振動までは写真で証明しない。本文・初回日時・出典は保持し、sceneだけを本文の箱に整合。旧CPU候補の欠落と元の正確なseedは別記録へ保持した。",
+        "reviewed_at": "2026-11-09T11:24:07.485775+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "0132f3e5f8aff8af0222a539562686bc144d33c2e0e97cd59426d5bfa4d44ba2",
+      "source_article_sha256": "3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368",
+      "source_png_sha256": "5e5ae413dc307b5796c3b226835ba1fdb976cbfbcf0b38815c5d557aa5df158e"
     },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
@@ -1206,16 +1326,12 @@
     },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "source_article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "source_png_sha256": "f13a02141d860e4d1ca68ac93fea67b018449594e53bd6f541868173a0c8fe9c",
       "bytes": 197959,
-      "sha256": "3a9560d3218df165cb0b375705ee125545de295aaca03ae3db36aca6850fc2a2",
+      "generated_at": "2026-11-09T20:48:16.059284+00:00",
       "generation_id": "8f953f38-69ef-4f7c-99be-8ed2a6050873",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 photograph for a clearly fictional Japanese neighborhood news comedy. In an ordinary modest neighborhood playground in afternoon daylight, an anonymous school-age girl stands at the bottom of a slide with one hand gently covering her own mouth after laughing. Beside her a serious but calm adult park attendant in plain unbranded work clothes points upward with one hand toward a REAL small gray horn loudspeaker fixed to a pole just above them. The girl looks toward the attendant, whose matter-of-fact expression makes the awkward situation deadpan. Frame girl, attendant's pointing hand, actual loudspeaker and slide all clearly in the same candid medium-wide shot; put the speaker close enough to recognize its horn opening, not a tiny distant speck. Include a bench or swing naturally in the modest park background. No menace, physical restraint or exaggerated child distress. Ordinary contemporary camera photograph, natural skin and fine hair, practical fabric, weathered metal and plastic playground materials, subdued daylight, believable scale and shadows. The joke is the visible relationship between a child suppressing her own voice and the prominently installed speaker, with no drawn sound effects. Anonymous fictional people and an invented park, not a real identifiable authority or event. No words, sound bubbles, musical notes, captions, logos, uniform insignia, readable signs or watermarks. No illustration, CGI, waxy skin, fused hands, doubled faces, oversaturated fantasy lighting, or giant loudspeakers. Leave enough framing margin for a 16:9 news crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:48:16.059284+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
         "bytes": 136997,
@@ -1226,6 +1342,12 @@
         "seed": 4713491567798505932,
         "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
       },
+      "previous_visual_hold": {
+        "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+        "reason": "The old JPEG is a soft distant playground view with a speaker, omitting the child covering her mouth and attendant indicating the speaker. Background-only supplemental acceptance does not meet the current principal-action gate.",
+        "rejected_candidate_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
+        "reviewed_at": "2026-11-09T20:51:36.733098+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
         "decision": "accepted",
@@ -1233,12 +1355,10 @@
         "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
         "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-        "rejected_candidate_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
-        "reviewed_at": "2026-11-09T20:51:36.733098+00:00",
-        "reason": "The old JPEG is a soft distant playground view with a speaker, omitting the child covering her mouth and attendant indicating the speaker. Background-only supplemental acceptance does not meet the current principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "3a9560d3218df165cb0b375705ee125545de295aaca03ae3db36aca6850fc2a2",
+      "source_article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+      "source_png_sha256": "f13a02141d860e4d1ca68ac93fea67b018449594e53bd6f541868173a0c8fe9c"
     },
     "patrol-teams-mistake-each-other-for-suspects": {
       "article_sha256": "cffac9004fef00b8358bbada3a1d53f4f1c7895fc351d436428d102bc7b1c6cc",
@@ -1303,15 +1423,9 @@
     "press-conference-metaphor-viral": {
       "article_sha256": "76e17948ce5be27c4bb982fbf3f81667d193763137110e5efc2cfc1bb54d142a",
       "bytes": 105977,
+      "generated_at": "2026-11-09T17:07:56.810817+00:00",
       "generation_id": "9bedf8c9-8dff-4859-9fc5-f7b234626822",
       "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid newspaper photograph of a fictional adult at an ordinary Japanese home desk in natural window daylight, trying to obtain information from a network-outage press-conference stream. Frame from a slightly diagonal position beside and behind the seated viewer so their concerned profile, one natural hand held palm-up in mild puzzlement, and the laptop screen are all clearly visible in a single coherent real camera view. On the laptop, the UPPER video area clearly shows an anonymous suited adult speaker seated behind tabletop microphones at a plain press-conference table. The speaker's face and microphones are fully visible, not censored and not covered. Immediately BELOW that video is the separate explanation/details section of the streaming page. A solid opaque grey warning panel covers only this lower explanation section, with one simple small yellow triangular warning icon and no words. The viewer looks toward this obstructed information, not toward the camera. The image should communicate the absurd contrast between a watchable conference and unavailable essential explanatory details. The warning panel belongs inside the physical laptop display, never floating in the room or over the photograph. No readable text, letters, numerals, subtitles, signage, brand, logos, watermarks or real-person likeness. Keep the room plain and lived-in but uncluttered; everyday cotton clothes, believable human skin, hands, laptop geometry and matte materials, restrained colors, soft ordinary daylight and subtle screen reflections. Not a staged product advertisement, illustration, cartoon, 3D render, cinematic scene, poster or collage. Do not replace the streaming conference with men drinking tea, a social video call, an error screen covering the whole display, or a physical conference in the room.",
-      "sha256": "d4350b6baa6140b00d4621a665b4caa3ba4f5a1e85129d0db7c40c611ba8954a",
-      "source_article_sha256": "0ae4893b3843b2c74d75bd33d16badbf39dd2a0ce4b1d9b861ef3166bfb3742c",
-      "source_png_sha256": "d15e7cef14f5feba940becb567b294397da8913ab464bd8edaa120dc038a878b",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T17:07:56.810817+00:00",
       "generation_steps": [
         {
           "generation_id": "9bedf8c9-8dff-4859-9fc5-f7b234626822",
@@ -1321,6 +1435,8 @@
           "tool_mode": "new_image"
         }
       ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
         "bytes": 140070,
@@ -1335,7 +1451,11 @@
         "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
         "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
         "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
-      }
+      },
+      "prompt_version": 3,
+      "sha256": "d4350b6baa6140b00d4621a665b4caa3ba4f5a1e85129d0db7c40c611ba8954a",
+      "source_article_sha256": "0ae4893b3843b2c74d75bd33d16badbf39dd2a0ce4b1d9b861ef3166bfb3742c",
+      "source_png_sha256": "d15e7cef14f5feba940becb567b294397da8913ab464bd8edaa120dc038a878b"
     },
     "pressure-office-mood-forecast": {
       "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
@@ -1349,16 +1469,13 @@
     },
     "quiet-reply-dating-matches": {
       "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
-      "source_article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
-      "source_png_sha256": "9a6112a244371bf0ab7296d91caa40c9c1c2deed49c0eb43bd87ce312ac3ab21",
       "bytes": 160186,
-      "sha256": "4cedc92dcea19a908651c7d8f742bd920a1ea9d764f1b6c1d88772eee030cac9",
+      "edit_source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d",
+      "generated_at": "2026-11-09T22:06:21.847790+00:00",
       "generation_id": "23026cf7-4b3c-4088-8d7e-dac4d3740422",
       "generation_prompt": "Edit only the supplied fictional couple photograph. Remove all lettering and title-like marks from the books: the reddish book held by the woman, the blue book held by the man, their spines, and the small background bookshelf spines. Replace lettering with continuous natural plain cover material or subtle non-lettered color/texture, maintaining the same folds, page shapes, lighting and perspective. Do not blur a rectangular patch. Preserve the same two anonymous adults, realistic skin and faces, exact calm reading actions, both separate open books, both untouched smartphones on the table with tiny colored dots, table, sofa, clothes, hands, framing, light and ordinary photographic texture. No added words, logos, captions or watermark. Keep this a natural 16:9 camera photograph; make no other scene or narrative changes.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T22:06:21.847790+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
         "bytes": 104777,
@@ -1375,6 +1492,12 @@
         "seed": 6903667958466384986,
         "sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658"
       },
+      "previous_visual_hold": {
+        "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
+        "reason": "The old JPEG has doll-like/waxy faces, a small dark handheld object that is not clearly a separate open book, and no two unattended phones on the table. Its old acceptance does not meet the current realism and concrete scene requirement.",
+        "rejected_candidate_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
+        "reviewed_at": "2026-11-09T22:11:03.608812+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
         "decision": "accepted",
@@ -1382,23 +1505,20 @@
         "note": "同じソファで静かに本を読む架空の成人2人が本文の具体的な場面に合う。紙面の不要な文字はローカルで弱め、最終JPEGに読める文章や重大な人体の破綻がないことを再確認した。",
         "reviewed_at": "2026-11-04T11:28:39.903793+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
-        "rejected_candidate_sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658",
-        "reviewed_at": "2026-11-09T22:11:03.608812+00:00",
-        "reason": "The old JPEG has doll-like/waxy faces, a small dark handheld object that is not clearly a separate open book, and no two unattended phones on the table. Its old acceptance does not meet the current realism and concrete scene requirement."
-      },
+      "prompt_version": 3,
+      "sha256": "4cedc92dcea19a908651c7d8f742bd920a1ea9d764f1b6c1d88772eee030cac9",
+      "source_article_sha256": "93e6d7711ee4c13133a318933b76826c31ae40dfcd56bd5087b7408e52559b2b",
       "source_generation": {
+        "candidate_jpeg_sha256": "a4e18b185e3b7fbcfcf8e27ff44572046193c4d2c581dffd77051ff85787271a",
+        "generated_at": "2026-11-09T22:04:36.056576+00:00",
         "generation_id": "0cba4cbf-9057-4165-83be-a45a90600b3a",
         "generation_prompt": "Use case: photorealistic-natural. Horizontal 16:9 camera photograph for a clearly fictional Japanese news article. In a modest lived-in Japanese living room, an anonymous adult couple in their thirties quietly share one sofa while each reads a DIFFERENT open paperback book. Both look at their own books, comfortable in silence, not posing or smiling at the camera. Two separate real smartphones lie unattended face-up on the low wooden coffee table in the foreground. Their dim screens show only small colored unread-notification dots with no words, letters, numbers or recognizable app interface. Neither person holds or touches a phone. The visual story is the quiet real-world couple reading together while the phones are ignored. Candid medium-wide view that clearly includes both natural faces, both open books with normal hand contact, and both phones on the table. Soft ordinary window daylight, natural skin pores and fine hair, cotton casual clothes, slightly worn sofa fabric, paper and wood textures, believable physical shadows. A normal documentary photograph, not an advertisement, romantic poster, illustration, animation or 3D render. No doll-like or waxy faces, fused fingers, strange book shapes, giant phones, readable book print, book-cover titles, logos, brands, captions or watermarks. All people fictional and anonymous, no real celebrities. Keep the objects and faces inside the central 16:9 crop. Do not add a marriage certificate, wedding ceremony, or screens explaining the story.",
-        "source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d",
-        "candidate_jpeg_sha256": "a4e18b185e3b7fbcfcf8e27ff44572046193c4d2c581dffd77051ff85787271a",
-        "reason_for_edit": "Faint title-like lettering on book covers; remove lettering while preserving the same scene.",
         "origin": "chatgpt-imagegen",
-        "generated_at": "2026-11-09T22:04:36.056576+00:00",
+        "reason_for_edit": "Faint title-like lettering on book covers; remove lettering while preserving the same scene.",
+        "source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d",
         "status": "not_adopted_before_lettering_removal"
       },
-      "edit_source_png_sha256": "d5a2f577043d065f2cee2240ccf9a019de88893e6fb08cba4bbd803327536a3d"
+      "source_png_sha256": "9a6112a244371bf0ab7296d91caa40c9c1c2deed49c0eb43bd87ce312ac3ab21"
     },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
@@ -1518,18 +1638,80 @@
       "source_article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
       "source_png_sha256": "48f3e523396b240860a02a6076532463e8dbab4ff90562d5a140d7aa0d9f65ad"
     },
+    "scolding-ai-one-line-summary-boss-eighteen-pages": {
+      "article_sha256": "06c78eff0733e721c819b9a3a87db46e79f79e84d3b76e850b804d33902c57ac",
+      "bytes": 132651,
+      "generated_at": "2026-11-09T19:13:08.015528+00:00",
+      "generation_id": "14fb21b5-eba8-47fb-9d8b-2b7326106fce",
+      "generation_prompt": "Use case: photorealistic-natural. Make one new horizontal 16:9 ordinary editorial camera photograph for a fictional Japanese news story. Two entirely fictional adult Japanese male office workers in a modest, contemporary small advertising office at Friday lunchtime. Soft ordinary window daylight, restrained everyday colors, natural skin, cotton office clothes, realistic hands, paper, desk and laptop, an unpolished local newspaper workplace snapshot.\n\nCapture this specific simultaneous action from the story in a single coherent medium view across the desk: a young adult junior employee on the left extends ONE completed A4 estimate sheet to his middle-aged seated manager on the right. The manager receives that one estimate with his LEFT hand while, with his RIGHT hand, setting HIS OWN multi-page explanatory packet on the desk toward the junior. The simple work itself is finished on one sheet, but the manager is returning extra explanation for the junior to absorb. The junior looks mildly puzzled at the returning packet; the manager is completely earnest and matter-of-fact, not grinning or theatrically angry. Clearly show both adults, both paper paths and the contrasting documents within the central safe horizontal frame.\n\nEssential paper distinction: the junior's single A4 estimate has a sparse printed grid/table layout, with no legible letters or numbers. The manager's explanatory packet contains roughly eighteen ordinary A4 sheets, a SMALL THIN packet about two millimeters thick. A few pages are slightly staggered or fanned so the multiple sheets and dense indistinct grey paragraph layouts are visible. It is visibly more paperwork than the one estimate, but must never become a thick book, binder, huge stack or mountain. The explanatory packet is being set DOWN/returned toward the junior, while the separate single estimate is being handed OVER to the manager. The two documents must remain physically distinct, not fused into one bundle. Frame closely enough for that contrast and the hand contacts to read. One plain open laptop may sit unobtrusively at the back of the desk, screen facing away from the camera.\n\nDo not show anybody writing, signing, holding a pen or pointing at a signature field. No handwriting, red correction marks, checkboxes, signatures, readable screen UI, text captions, logos, watermarks, real company names or real-person likenesses. No arrows or explanatory graphics over the photograph. No split panels, collage, illustration, CGI, doll-like faces, glossy advertising, dramatic cinematic lighting, exaggerated gestures or fantasy props. This is the story's moment of an accepted corrected one-page estimate being met with the manager's longer explanation, not a handshake, contract signing or generic meeting presentation. Do not attempt to print the title, AI transcript or the number 18.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_visual_hold": {
+        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+        "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
+        "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
+        "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+        "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
+        "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
+        "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
+        "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+        "trial_generation_steps": [
+          {
+            "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
+            "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
+            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
+            "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79",
+            "tool_mode": "new_image"
+          },
+          {
+            "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+            "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
+            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
+            "referenced_image_paths": [
+              "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
+            ],
+            "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
+            "tool_mode": "edit"
+          }
+        ],
+        "trial_model": "ChatGPT ImageGen",
+        "trial_origin": "chatgpt-imagegen",
+        "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
+        "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
+      },
+      "previous_visual_review": {
+        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+        "decision": "rejected",
+        "image_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+        "note": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。 採用対象の現在の記事本文は不変で、SVG指示だけを実際の薄い紙束/確認欄へ整合した。写真試作のsource記事FPとtrial記事FPは別々に保持。",
+        "reviewed_at": "2026-11-09T16:44:45.699189+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "9d48b7f755067ae78c24902255f2cc2a5ca0b9c13569757021790ab4866bc191",
+      "source_article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+      "source_png_sha256": "8b46944f68c5b8f5d0c28ebf31e7a3c8a63427e88bf3c8bfe222722d85f88435"
+    },
+    "self-checkout-regular-awarded-unpaid-staff": {
+      "article_sha256": "3bb26389a0bd228ba6b5dd563b0e811e0367c9ab441771140cc37cb085e63e22",
+      "bytes": 135138,
+      "generated_at": "2026-11-09T11:49:48.479036+00:00",
+      "generation_id": "6f5b7851-b6b0-4cfe-bb16-0a614d648ac3",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid Japanese newspaper photograph inside a clearly fictional neighborhood supermarket self-checkout area. A REGULAR CUSTOMER in casual clothes is helping ANOTHER CUSTOMER scan groceries even though he is only shopping for ONE MILK CARTON. The regular is an anonymous fictional Japanese adult man around fifty with slightly graying short hair, thin dark glasses, and an ordinary moss-green casual cardigan over a cream T-shirt. He has no store uniform, apron, name tag or staff lanyard. With his left hand he holds his own single plain unbranded milk carton close to his torso, away from the scanner. With his free right hand he naturally points near one edge of a grocery package held by the other adult shopper, demonstrating how to TILT THAT PACKAGE DOWN toward the fixed scanner. The second shopper, an anonymous fictional adult woman in ordinary everyday clothes, holds her own plain food package at an angle a few centimeters above the scanner and looks attentively at the package. Their hands and the package are distinct and anatomically natural. Both adults have calm serious matter-of-fact faces; this is a helpful everyday interaction, not a joke expression. Crucially, directly beside this checkout, clearly visible on the nearby store wall within the same photograph, is a modest framed color PORTRAIT OF THIS EXACT SAME CASUALLY DRESSED MAN, with the same graying hair, glasses, green cardigan, cream shirt and recognizable face. Beside the portrait hangs a plain cream award certificate with a small gold embossed medallion but absolutely no writing. This is the absurd visual clue that a customer has been treated as an award-winning staff member. The live man's face and the portrait must visibly depict the SAME fictional person. Compose one coherent medium-wide eye-level photograph that includes the regular, his single milk carton, the other shopper's scanning action, the recognizable self-checkout machine and the nearby framed portrait/award. Screen contents and packaging are blank or softly blurred with no readable writing. Ordinary practical supermarket fluorescent lighting, naturally textured skin and hands, knit cotton fabric, scratched plastic checkout surfaces, restrained grocery shelves softly in the background, natural contact shadows. No additional employees or central figures. All people and the store are fictional and unbranded; no real celebrities or identifiable business. Absolutely no readable words, numbers, barcodes, logos, captions, headlines or watermark. No illustration, anime, cartoon, 3D render, waxy skin, glossy advertising, cinematic lighting, presentation ceremony or portrait of a different man.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "0a74b1ed20db650c34403b799f57a8ee684d124033cf599ededa5f2eb7f548f5",
+      "source_article_sha256": "dfe99daecdb1e7bdf8889502824ef6b1f2ded054a45a1137ed4a3cb11490aab3",
+      "source_png_sha256": "be79154357e40f813835bb4b9df682066c2b675c60ed1b578c1ba93d402b1bb3"
+    },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
-      "source_article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
-      "source_png_sha256": "10354902f697407145a42ef4004bcc09a2df69c5b08e364e4e7e7d4f297aa437",
       "bytes": 119036,
-      "sha256": "9a5ff5839ebaafc31d9e23de57455c1087bd7d9755128cb368e34712ffca9653",
+      "generated_at": "2026-11-09T22:40:10.733403+00:00",
       "generation_id": "9288eb76-69d9-4136-a548-bea350f940da",
       "generation_prompt": "Use case: photorealistic-natural.\nAsset: horizontal 16:9 editorial photograph for a fictional Japanese future-news comedy story, ordinary camera realism.\nPhotograph one specific quiet scene: at a modest Japanese apartment's open front door in winter daylight, a courteous adult parcel courier offers a large luxurious gift box to a fictional adult office worker in casual home clothes. The recipient has just remembered the expense and politely refuses: leans slightly back and pulls both open hands away from the box, palms toward the courier, clearly not touching or receiving the gift. The courier continues holding the entire box securely. Both adults have ordinary serious faces, no caricature or exaggerated grimace. Show both people, the gap between the recipient's hands and box, and the apartment threshold clearly in a medium-wide three-quarter candid view. The gift is elegantly wrapped in muted gold paper with a plain ivory ceremonial noshi band; every surface is blank, no letters or labels. The scene must be a two-person gift-refusal interaction at a home doorway, not a warehouse or a lone courier portrait.\nNatural lived-in Japanese entryway, soft available daylight, realistic uneven skin texture, believable hands, restrained everyday clothing, tactile folded paper, subtle natural shadows, a normal unpolished 35mm news snapshot. Keep important heads, hands and gift comfortably inside the central 16:9 composition for mobile crops.\nFictional anonymous adults only. No recognizable real person, brand, company, uniform logo, text, readable writing, fake lettering, signs, captions, watermarks, screen UI or extra packages. No illustrations, anime, painted textures, CGI, plastic skin, glossy advertising light or film-poster grading.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T22:40:10.733403+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
         "bytes": 82992,
@@ -1540,6 +1722,12 @@
         "seed": 227822134817257212,
         "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
       },
+      "previous_visual_hold": {
+        "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+        "reason": "The old JPEG shows only a lone courier with a plain cardboard parcel in an indoor box-filled room. There is no recipient, gift-refusal gesture, or home-doorstep interaction, and the uniform waxy texture is CG-like. The old supplementary-photo acceptance does not meet the current concrete-scene and photographic-realism gate.",
+        "rejected_candidate_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
+        "reviewed_at": "2026-11-09T22:43:41.630741+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
         "decision": "accepted",
@@ -1547,12 +1735,10 @@
         "note": "実画像と現本文を照合。室内でひもを掛けた箱を持つ、黒い帽子・服の架空の配送員風男性が写り、荷物の配送という題材が伝わる補助画像として採用。受取人・受取辞退の動作・高級なのし紙・贈り主と受取人が同じというオチは未再現。背景の紙面には小さい擬似文字があるが、目立つ読める見出しやロゴ、主役の顔・手・箱の大きな破綻は見当たらない。",
         "reviewed_at": "2026-11-04T12:59:04.493426+00:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
-        "rejected_candidate_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
-        "reviewed_at": "2026-11-09T22:43:41.630741+00:00",
-        "reason": "The old JPEG shows only a lone courier with a plain cardboard parcel in an indoor box-filled room. There is no recipient, gift-refusal gesture, or home-doorstep interaction, and the uniform waxy texture is CG-like. The old supplementary-photo acceptance does not meet the current concrete-scene and photographic-realism gate."
-      }
+      "prompt_version": 3,
+      "sha256": "9a5ff5839ebaafc31d9e23de57455c1087bd7d9755128cb368e34712ffca9653",
+      "source_article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
+      "source_png_sha256": "10354902f697407145a42ef4004bcc09a2df69c5b08e364e4e7e7d4f297aa437"
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "article_sha256": "d5bff8517d97f44e5ec941f7c0f41fc3d08ab236d66816f60d92948060786c6a",
@@ -1631,15 +1817,11 @@
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "96b3fe6f6a0b3f00172e9bac2c09a07e198d67de62d6d2fd3f10ab48cc7635f0",
       "bytes": 80874,
+      "generated_at": "2026-11-09T15:11:17.843542+00:00",
       "generation_id": "4aaca6a7-97d7-4320-a732-bca11c96ff9a",
       "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid local-newspaper photograph of a staged, entirely fictional scene in a modest Japanese community hall just after an award ceremony. This is the moment immediately after the closing call, before the hall becomes completely dark. The house lights are being lowered, with enough ordinary low indoor light remaining for a real camera to resolve the people and objects naturally. In the foreground, ONE anonymous fictional adult Japanese award recipient in a plain dark suit stands beside rows of ordinary chairs. He is absorbed in his smartphone, with his gaze down and his right thumb touching the screen. His right hand holds a normal slim black smartphone vertically; the plain unbranded back is visible to the camera and the screen faces him. His left hand still grips the base of a small unmistakable award trophy below chest height. This trophy is a rigid SILVER FIVE-POINTED STAR mounted upright on a slender metal stem above a BLACK SQUARE BASE. Show its complete star, thin stem and rectangular base clearly, separated from the phone by his torso. It has no cup bowl, opening, handles, liquid or saucer. It is an ordinary modest award, not a giant glowing icon or floating graphic. Both hands and their correct contact with their separate objects must be visible and anatomically natural. The recipient does not look at the camera or pose for an award photograph. In the soft background, TWO adult attendees in the same hall remain absorbed in their own ordinary smartphones, looking down rather than toward a low, now-unused stage. Keep the setting small and believable: a few plain chairs and an unlettered low stage are enough. The point is that the ceremony has ended but the recipient is still typing and others are still checking their phones; do not replace this action with people merely holding objects for a camera. Restrained everyday indoor colors, real skin and fingers, cloth suit texture, modest metallic reflections and plausible contact shadows. No readable words, letters, numerals, engraved plaque, banners, award certificate, app interface, logos, brands, signatures or watermarks. No giant phone, numeral 100, floating notification graphics, cinematic spotlight, illustration, anime or 3D render. All people, the organization and the ceremony are fictional.",
-      "sha256": "442464f32854f88291bfe5f6f6ed0b13157b7c9dcbf152158a3782b6a2cbf603",
-      "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-      "source_png_sha256": "157c701c6cf1054b167062a64e7c2f3c26d176fb72298c6941ff7d394d44ced0",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T15:11:17.843542+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
         "bytes": 89973,
@@ -1649,13 +1831,6 @@
         "prompt_version": 2,
         "seed": 2154012484535384189,
         "sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
-      },
-      "previous_visual_review": {
-        "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-        "decision": "rejected",
-        "image_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
-        "note": "実際のJPEGは暗い式場の無人の円卓、ガラス製トロフィー状の器、左右の発光パネルが中心。受賞者、スマホ、SNSに戻り続ける客席の人々は写らず、『やめるSNSの100日連続ログイン表彰』という風刺が視覚化されていないため不採用。記事とオチに合う専用SVGを実描画で確認して採用する。",
-        "reviewed_at": "2026-11-05T10:56:45.097Z"
       },
       "previous_visual_hold": {
         "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
@@ -1687,7 +1862,18 @@
         "trial_origin": "github-cpu-sd15",
         "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
         "trial_seed": 2154012484535384189
-      }
+      },
+      "previous_visual_review": {
+        "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+        "decision": "rejected",
+        "image_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
+        "note": "実際のJPEGは暗い式場の無人の円卓、ガラス製トロフィー状の器、左右の発光パネルが中心。受賞者、スマホ、SNSに戻り続ける客席の人々は写らず、『やめるSNSの100日連続ログイン表彰』という風刺が視覚化されていないため不採用。記事とオチに合う専用SVGを実描画で確認して採用する。",
+        "reviewed_at": "2026-11-05T10:56:45.097Z"
+      },
+      "prompt_version": 3,
+      "sha256": "442464f32854f88291bfe5f6f6ed0b13157b7c9dcbf152158a3782b6a2cbf603",
+      "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "source_png_sha256": "157c701c6cf1054b167062a64e7c2f3c26d176fb72298c6941ff7d394d44ced0"
     },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
@@ -1702,15 +1888,11 @@
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "8f65ca0bf2e6e58ab863f02700ad5fa4e7c190649333d4a39eb3e0c0f3cd115f",
       "bytes": 122204,
+      "generated_at": "2026-11-09T15:04:25.822645+00:00",
       "generation_id": "1996022d-4c89-4b24-8986-51f37d26ce1a",
       "generation_prompt": "Use case: photorealistic-natural. Create one horizontal 16:9 ordinary candid documentary newspaper photograph for an entirely fictional Japanese office story about a financial app celebrating a tiny recovery after a much larger loss. The central subject is ONE real-looking generic smartphone held upright naturally by an anonymous fictional adult office worker, with its FRONT SCREEN large and clearly visible toward the camera. A coworker looks at it from beside the holder, with a restrained skeptical expression. Use a close three-quarter camera angle, plain everyday office clothes and ordinary window light, not a glossy device advertisement. The phone screen is an invented minimalist financial app without a name, text, numbers or logos. Inside that ONE physical screen show ONE dark red line graph: it begins HIGH near the upper left, drops strongly across the screen toward the lower right, reaches a deep low near the right edge, then makes only a SMALL final upward hook. The final point must still be dramatically LOWER than the starting point; most of the loss remains. This high-left to low-right path and the small final rebound must both be unmistakable at thumbnail size. A sparse festive spray of flat colored rectangular confetti appears as a software overlay INSIDE THE SAME PHONE SCREEN, along the top and sides, celebrating that tiny last uptick without obscuring the whole declining line. The confetti must remain entirely within the glass screen; no physical confetti in the room. Keep the clear overall falling graph, the small last rebound and the app celebration legible as shapes, without any writing or value labels. Frame the actual phone bezel, natural holding fingers and part of both ordinary people so it is clearly a camera photograph of a phone being shown to a colleague. Real glass reflections, skin, fabric and office furniture, believable anatomy and soft daylight. The screen graphics are flat app graphics inside a photograph, not a flat illustration of the whole scene. All people, workplaces and apps are fictional, with no recognizable real service or business. Absolutely no readable words, letters, digits, currencies, logos, signatures, watermarks, headlines or captions anywhere. No second phone, no printed account statement, no paper chart, no arrows floating in real space, no confetti outside the phone, no entire rising chart, no stock-photo posing, illustration, anime, cartoon, 3D render, waxy hands or cinematic lighting.",
-      "sha256": "87676a6b81bf2265be6894f42d1b679e2ed3b6d13e3775707992aee91e2bb69a",
-      "source_article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
-      "source_png_sha256": "6945644b59f713ad8074c9e9c61915d28b9c1c7484a71faf71a94f02ad891f11",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T15:04:25.822645+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
         "bytes": 77318,
@@ -1726,7 +1908,11 @@
         "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
         "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
         "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
-      }
+      },
+      "prompt_version": 3,
+      "sha256": "87676a6b81bf2265be6894f42d1b679e2ed3b6d13e3775707992aee91e2bb69a",
+      "source_article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
+      "source_png_sha256": "6945644b59f713ad8074c9e9c61915d28b9c1c7484a71faf71a94f02ad891f11"
     },
     "stolen-doorbell-returned-by-parcel": {
       "article_sha256": "ecd1cb53929ef2271c2b14273da1a681c275a7e8be1e57bb3b8b332e9489411d",
@@ -1746,6 +1932,19 @@
       "sha256": "ca562e0b144a76dd0d0cc4fb36bca321a8efd87001fc43d4c4a060d35af3245b",
       "source_article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
       "source_png_sha256": "d0699c8e334f3f354cd1cdc762f2ce1e5f94e9f91157333054ee922128d8c7a2"
+    },
+    "suica-penguin-eco-bags-stay-sealed": {
+      "article_sha256": "1ef8b8f039c1081d1569ea2e72a9e6ab7faf956733b1aaa1879d44444ce3cea7",
+      "bytes": 143745,
+      "generated_at": "2026-11-09T12:33:14.711046+00:00",
+      "generation_id": "f8ba8596-58ed-4edd-aa83-7324205c3d98",
+      "generation_prompt": "Use case: photorealistic-natural. Generate one horizontal 16:9 candid documentary newspaper photograph for a completely fictional shopping story, with exactly THREE original penguin-shaped plush charms with CLOSED BACK ZIPPERS and exactly ONE plastic grocery shopping bag. An anonymous fictional Japanese adult woman around thirty in ordinary modest everyday clothes is at an unbranded neighborhood supermarket checkout. She lifts a single slightly crinkled translucent white plastic bag containing ordinary groceries from the checkout counter by its handles, while her own plain canvas shoulder bag hangs from her other shoulder. Attached together on the OUTSIDE of this canvas shoulder bag are THREE palm-sized penguin-shaped plush charms, in green, muted red, and navy. All three plush penguins turn their BACKS clearly toward the camera; their separate rounded bodies and simple flippers are identifiable and each has its own small REALISTIC SILVER ZIPPER on its back, fully closed from end to end. No fabric bag is unfolded or pulled from any charm. Their stuffed-fabric shapes are original generic fictional designs with no recognizable commercial mascot face, silhouette details or branding. Frame the woman waist-up in three-quarter side view, with her bag and all THREE closed zippered charms large and unobscured in the foreground and the ONE plastic grocery bag held nearby in the same photograph. It must be easy to count three separate zipped-back charms next to the plastic grocery bag at news-thumbnail size. Her face is calm and serious, not a posed smile; hands are natural and hold the real bag handles. The ordinary checkout counter and shelves are quiet and softly out of focus behind her. Use normal practical supermarket light, realistic skin pores, cotton canvas, fuzzy sewn plush fabric, metal zipper teeth and crinkled thin plastic, believable contact shadows and everyday colors. One coherent camera photograph, not an infographic or collage. All people, shop and products are fictional and unbranded. Absolutely no readable words, numbers, labels, receipts, store signs, logos, headlines, captions or watermark. No recognizable real character design. No illustration, cartoon, anime, 3D render, glossy toy catalog lighting, waxy skin or theatrical expressions. Do not add a fourth plush, a second plastic shopping bag, an open zipper, an unfolded reusable bag, or extra hands.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "16ae59074aa6a91821c3da55ebefd03d2c32e19fe68d109629f87433d0b84b07",
+      "source_article_sha256": "ca59d6f0233017e56d41fba0a5b7f3126f042c25d4bd93c81fb76b91363cbffc",
+      "source_png_sha256": "3dac17b4dbe4b8a3e2e0d8b46a74b2901892c3a6d9f79d122d0b283b4e31e55f"
     },
     "supporter-guarantor-contract": {
       "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
@@ -1787,16 +1986,12 @@
     },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-      "source_article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-      "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8",
       "bytes": 174092,
-      "sha256": "a5146b5ee1dbfb0817be7cbc19f4e88eef262d383da7ec0f65627efdef13c973",
+      "generated_at": "2026-11-09T20:19:56.071530+00:00",
       "generation_id": "adc25f9f-f482-4c9a-92f2-6bbfe250ca24",
       "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 camera photograph for a clearly fictional Japanese local news comedy. A modest Japanese school festival courtyard in ordinary natural daylight. A row of THREE participants, one school-age child and two adults in everyday modest clothing, each holds a real half-peeled steamed Japanese sweet potato over a plain paper tray just below the mouth, waiting impatiently without eating. Beside them a solemn adult event referee raises a small real whistle near his face and his other hand makes a clear wait/stop palm. The participants look toward the referee with restrained, slightly puzzled expressions; no cartoon faces. Show the waiting people, their separate natural hands, the potatoes, trays, and referee's whistle clearly together in a candid eye-level medium-wide oblique shot. The potatoes have matte brown-purple skins and normal solid pale yellow flesh, with small peeled skin flaps, no hollow cavities and no steam. Plain school windows and a few unlettered pennants establish a low-budget community festival. It should look like a mundane documentary photograph shot on a real camera: natural skin and cloth texture, subdued colors, plausible light and soft shadows. Anonymous fictional people, not an identifiable real school or real event. No eating demonstration, no potatoes alone as still life, no readable words, numbers, signs, brand names, captions, logos or watermark. No illustration, CGI, plastic food, giant potatoes, fused fingers, extra limbs, unnatural mouths, or frost. Keep enough vertical margin for a 16:9 article crop.",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T20:19:56.071530+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
         "bytes": 109997,
@@ -1819,6 +2014,12 @@
         "seed": 6902181079209608273,
         "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
       },
+      "previous_visual_hold": {
+        "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+        "reason": "The old JPEG is a soft crop of food alone, omitting the festival participants and cue; its old food-image acceptance does not meet the current principal-action gate.",
+        "rejected_candidate_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+        "reviewed_at": "2026-11-09T20:22:48.703776+00:00"
+      },
       "previous_visual_review": {
         "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
         "decision": "accepted",
@@ -1826,25 +2027,19 @@
         "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
         "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
       },
-      "previous_visual_hold": {
-        "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-        "rejected_candidate_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
-        "reviewed_at": "2026-11-09T20:22:48.703776+00:00",
-        "reason": "The old JPEG is a soft crop of food alone, omitting the festival participants and cue; its old food-image acceptance does not meet the current principal-action gate."
-      }
+      "prompt_version": 3,
+      "sha256": "a5146b5ee1dbfb0817be7cbc19f4e88eef262d383da7ec0f65627efdef13c973",
+      "source_article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "a6b78fa20a29f2640bd8b0b4c063ddac02bb7de2f7f60d505f7b231a4e1f20af",
       "bytes": 207825,
+      "generated_at": "2026-11-09T13:47:04.325530+00:00",
       "generation_id": "73763305-cf5a-428d-9870-4f452a74da5a",
       "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 ordinary candid Japanese local-newspaper photograph of an entirely fictional small household-goods shop on a quiet shopping street in autumn daylight. The clear central physical object is a truly enormous traditional Japanese ornamental KUMADE lucky bamboo rake, supported solidly on a simple wooden stand directly across the MAIN FRONT DOOR. Its fan-shaped head of many curved natural bamboo rake tines is wider than a normal doorway and it visibly prevents customers from walking through the front entrance. Decorate this actual handmade bamboo object with modest red-and-gold folded paper fans, small blank oval gold charms and rice ears; NO writing, printed labels or branded characters on any ornament. Make it recognizable as a decorated bamboo rake, not a wheel, umbrella, bouquet, Christmas tree or giant glowing fantasy object. On the sidewalk in front, one ordinary adult man holds a plain smartphone up to photograph the huge rake and a second adult patiently waits behind him to take a photo. Their phones have plain backs, no visible interface. On the other side, an ordinary adult female shopper with an empty reusable shopping bag is turning away from the blocked main doorway toward a narrow side passage around the corner, where a separate small side entrance is visible. Show the blocked FRONT entrance, the physical rake, the photographer and the shopper detour clearly in the same coherent oblique eye-level camera view. The storefront is an invented generic unbranded local shop with a blank fabric awning, simple windows and everyday shelves, with no signage, no readable product labels and no identifiable actual business or shrine. People wear ordinary unbranded autumn clothes and have matter-of-fact expressions, no promotional posing. Natural skin, finger anatomy, worn bamboo, folded paper, wood, glass and pavement; restrained everyday colors, ordinary soft daylight and plausible contact shadows, documentary photograph rather than advertising. All people and the shop are fictional. No readable text, letters, numbers, banners, rankings, receipts, logos, signature, watermark, captions or headlines anywhere. No anime, illustration, 3D render, waxy skin, cinematic glow, huge fake gold reflection or collage. The composition must communicate that photo visitors are accommodated while a shopping customer is sent around the corner, not just a decorated shop.",
-      "sha256": "a9506b661aead3e78b3030c193d9d8b9b60d24814576946fdc3d8f55fa777b9f",
-      "source_article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
-      "source_png_sha256": "301c387e5e268ac5f26fe798bb502d07266380c7e9b8b9c89fe631ea53fb3756",
-      "origin": "chatgpt-imagegen",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T13:47:04.325530+00:00",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
         "bytes": 139782,
@@ -1855,18 +2050,22 @@
         "seed": 8156222012987851626,
         "sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
       },
-      "previous_visual_review": {
-        "decision": "rejected",
-        "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
-        "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
-        "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
-        "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。"
-      },
       "previous_visual_hold": {
         "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
         "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
         "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-      }
+      },
+      "previous_visual_review": {
+        "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+        "decision": "rejected",
+        "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
+        "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。",
+        "reviewed_at": "2026-11-07T14:49:24.816466+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "a9506b661aead3e78b3030c193d9d8b9b60d24814576946fdc3d8f55fa777b9f",
+      "source_article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+      "source_png_sha256": "301c387e5e268ac5f26fe798bb502d07266380c7e9b8b9c89fe631ea53fb3756"
     },
     "unsold-coat-storage-fees-exceed-sale": {
       "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
@@ -2029,178 +2228,6 @@
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
-    },
-    "self-checkout-regular-awarded-unpaid-staff": {
-      "article_sha256": "3bb26389a0bd228ba6b5dd563b0e811e0367c9ab441771140cc37cb085e63e22",
-      "bytes": 135138,
-      "generation_id": "6f5b7851-b6b0-4cfe-bb16-0a614d648ac3",
-      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid Japanese newspaper photograph inside a clearly fictional neighborhood supermarket self-checkout area. A REGULAR CUSTOMER in casual clothes is helping ANOTHER CUSTOMER scan groceries even though he is only shopping for ONE MILK CARTON. The regular is an anonymous fictional Japanese adult man around fifty with slightly graying short hair, thin dark glasses, and an ordinary moss-green casual cardigan over a cream T-shirt. He has no store uniform, apron, name tag or staff lanyard. With his left hand he holds his own single plain unbranded milk carton close to his torso, away from the scanner. With his free right hand he naturally points near one edge of a grocery package held by the other adult shopper, demonstrating how to TILT THAT PACKAGE DOWN toward the fixed scanner. The second shopper, an anonymous fictional adult woman in ordinary everyday clothes, holds her own plain food package at an angle a few centimeters above the scanner and looks attentively at the package. Their hands and the package are distinct and anatomically natural. Both adults have calm serious matter-of-fact faces; this is a helpful everyday interaction, not a joke expression. Crucially, directly beside this checkout, clearly visible on the nearby store wall within the same photograph, is a modest framed color PORTRAIT OF THIS EXACT SAME CASUALLY DRESSED MAN, with the same graying hair, glasses, green cardigan, cream shirt and recognizable face. Beside the portrait hangs a plain cream award certificate with a small gold embossed medallion but absolutely no writing. This is the absurd visual clue that a customer has been treated as an award-winning staff member. The live man's face and the portrait must visibly depict the SAME fictional person. Compose one coherent medium-wide eye-level photograph that includes the regular, his single milk carton, the other shopper's scanning action, the recognizable self-checkout machine and the nearby framed portrait/award. Screen contents and packaging are blank or softly blurred with no readable writing. Ordinary practical supermarket fluorescent lighting, naturally textured skin and hands, knit cotton fabric, scratched plastic checkout surfaces, restrained grocery shelves softly in the background, natural contact shadows. No additional employees or central figures. All people and the store are fictional and unbranded; no real celebrities or identifiable business. Absolutely no readable words, numbers, barcodes, logos, captions, headlines or watermark. No illustration, anime, cartoon, 3D render, waxy skin, glossy advertising, cinematic lighting, presentation ceremony or portrait of a different man.",
-      "sha256": "0a74b1ed20db650c34403b799f57a8ee684d124033cf599ededa5f2eb7f548f5",
-      "source_article_sha256": "dfe99daecdb1e7bdf8889502824ef6b1f2ded054a45a1137ed4a3cb11490aab3",
-      "source_png_sha256": "be79154357e40f813835bb4b9df682066c2b675c60ed1b578c1ba93d402b1bb3",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T11:49:48.479036+00:00"
-    },
-    "suica-penguin-eco-bags-stay-sealed": {
-      "article_sha256": "1ef8b8f039c1081d1569ea2e72a9e6ab7faf956733b1aaa1879d44444ce3cea7",
-      "bytes": 143745,
-      "generation_id": "f8ba8596-58ed-4edd-aa83-7324205c3d98",
-      "generation_prompt": "Use case: photorealistic-natural. Generate one horizontal 16:9 candid documentary newspaper photograph for a completely fictional shopping story, with exactly THREE original penguin-shaped plush charms with CLOSED BACK ZIPPERS and exactly ONE plastic grocery shopping bag. An anonymous fictional Japanese adult woman around thirty in ordinary modest everyday clothes is at an unbranded neighborhood supermarket checkout. She lifts a single slightly crinkled translucent white plastic bag containing ordinary groceries from the checkout counter by its handles, while her own plain canvas shoulder bag hangs from her other shoulder. Attached together on the OUTSIDE of this canvas shoulder bag are THREE palm-sized penguin-shaped plush charms, in green, muted red, and navy. All three plush penguins turn their BACKS clearly toward the camera; their separate rounded bodies and simple flippers are identifiable and each has its own small REALISTIC SILVER ZIPPER on its back, fully closed from end to end. No fabric bag is unfolded or pulled from any charm. Their stuffed-fabric shapes are original generic fictional designs with no recognizable commercial mascot face, silhouette details or branding. Frame the woman waist-up in three-quarter side view, with her bag and all THREE closed zippered charms large and unobscured in the foreground and the ONE plastic grocery bag held nearby in the same photograph. It must be easy to count three separate zipped-back charms next to the plastic grocery bag at news-thumbnail size. Her face is calm and serious, not a posed smile; hands are natural and hold the real bag handles. The ordinary checkout counter and shelves are quiet and softly out of focus behind her. Use normal practical supermarket light, realistic skin pores, cotton canvas, fuzzy sewn plush fabric, metal zipper teeth and crinkled thin plastic, believable contact shadows and everyday colors. One coherent camera photograph, not an infographic or collage. All people, shop and products are fictional and unbranded. Absolutely no readable words, numbers, labels, receipts, store signs, logos, headlines, captions or watermark. No recognizable real character design. No illustration, cartoon, anime, 3D render, glossy toy catalog lighting, waxy skin or theatrical expressions. Do not add a fourth plush, a second plastic shopping bag, an open zipper, an unfolded reusable bag, or extra hands.",
-      "sha256": "16ae59074aa6a91821c3da55ebefd03d2c32e19fe68d109629f87433d0b84b07",
-      "source_article_sha256": "ca59d6f0233017e56d41fba0a5b7f3126f042c25d4bd93c81fb76b91363cbffc",
-      "source_png_sha256": "3dac17b4dbe4b8a3e2e0d8b46a74b2901892c3a6d9f79d122d0b283b4e31e55f",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T12:33:14.711046+00:00"
-    },
-    "lion-king-prequel-watch-order-meeting": {
-      "article_sha256": "5b32a2b07ac7fd32132912f798e53b8bbb580de32a057c8ff09aa20bd0b75078",
-      "bytes": 125291,
-      "generation_id": "6933e7cc-9336-4894-a4a6-7d7fff204ce8",
-      "generation_prompt": "Create one ordinary, photorealistic 16:9 news-style still of a fictional Japanese family at home, photographed at the end of a long evening. In the lower foreground, a normal A4-sized notebook lies open on the dining table, angled so that its page is clearly visible to the camera. Two simple, boldly pencilled horizontal arrows run in opposite directions on separate rows; there are a few faint erased marks, but no words, letters, titles or numbers. The notebook must be the unmistakable focus of their discussion, not a small background prop. A middle-aged father points directly at one arrow with his right index finger and loosely holds a television remote in his left hand. Across the table, his wife gestures toward the other arrow while their adult daughter leans in and listens seriously. All three look at the notebook or one another, never at the television. Behind them, a single television is visibly switched on but shows only a plain dim blue-black screen without programme images, credits or text. The window is dark; a small ordinary analog wall clock has hands near 11:24, with no numeral labels. Shoot from a seated observer's angle, slightly down toward the notebook, with enough depth of field to retain the three people and the ignored television. Natural warm domestic lighting, ordinary skin, fabric and wood textures, candid expressions. No giant notebook, cinematic lighting, diagrams floating in the room, recognizable movie characters, movie stills, brands, logos, readable writing or captions.",
-      "sha256": "dba476b55acd577f05ba0bf6b6c4b996ca4bac6857d339b8d51fa44148f187f6",
-      "source_article_sha256": "168cc55f67364bbcb08f3cdb59f8834c15c98a9235f470c406d10b09ad47beb6",
-      "source_png_sha256": "e1dd72c04e5bb4ec3bc5a7b47c390354afec61b5c643f230e7af8b9ad8d872d1",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T13:22:17.633236+00:00"
-    },
-    "nikkei-plunge-hundred-year-hold-minute-check": {
-      "article_sha256": "70f9071727826b917a52ea97dbe3ada4b6a6b1a238a75343767bed915aa89a92",
-      "bytes": 129739,
-      "generation_id": "d77fd4a2-dd35-4421-a1a4-398d2dba3696",
-      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary photograph of a staged fictional scene in a modest Japanese home workspace. An anonymous fictional adult man in an ordinary plain shirt leans over his desk with a serious, concentrated expression. His left hand holds ONE smartphone while his right hand writes the next short line in ONE ordinary open ruled notebook with a pen. The visible notebook pages are already densely filled with short rows of faint handwriting, showing repeated checking rather than school exercises. The phone shows only a simple downward red price-chart line; it is tilted toward him so no company name, numbers or interface lettering can be read. Use an oblique over-the-shoulder medium-close composition: both hands, the phone, the pen tip touching the notebook and the filled pages are clearly visible together. In the soft background is a normal-sized wall planning sheet with a mostly empty grid and just one circled cell, with no legible date or writing. The priority is the active copying and the crowded notebook, not a generic man looking at his phone. Keep one notebook; do not turn sixteen written pages into sixteen books or a huge paper pile. Ordinary daytime window light, realistic skin and hands, paper texture, cotton clothing, practical domestic furniture and believable contact shadows. All people and businesses are invented. No readable text, numerals, app or phone logos, headlines, watermarks, cartoon, illustration, 3D render or glossy stock-advertising pose.",
-      "sha256": "46f88b0b031ee8a7e994d474b21b3d5d324932bc0f0d206e98ad3f5bf9e39962",
-      "source_article_sha256": "49237e88ac9d3648206ac247cb4ef0aa4184b04a1a34614fffc09ec96b6eb05c",
-      "source_png_sha256": "ca0860e2e71846b51ab9bcc5599051e207b6ff39dc814f3419c13426d6c26b24",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T13:48:49.788010+00:00"
-    },
-    "custom-work-apps-four-week-handover": {
-      "article_sha256": "37da7a7160b2fcc6d1e6b42f4d431114192a6a3e46db625b273b0fa78d117c8f",
-      "bytes": 117905,
-      "generation_id": "a46929c2-59d6-43a4-b274-75e51b0aeedb",
-      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 ordinary candid documentary photograph of a staged, entirely fictional Japanese office scene. Focus on the final result of a difficult handover, not on a meeting or a futuristic app demonstration. One anonymous fictional adult office employee, the successor to a departing worker, sits at an ordinary work desk in plain everyday office clothes with a quietly serious, slightly tired expression. The physical contrast on the desk is the main subject: on one side, THREE thick normal A4 software-operation ring binders lie in a realistic stack, with a FOURTH thick binder open beside them to densely filled paper pages. The visible page edges, rings, dividers and dense but unreadable instruction rows make these recognizable as substantial working manuals rather than a decorative pile of books. Immediately next to that open binder, on the SAME desk and SAME plane of focus, lies ONE separate ordinary white A4 sheet that is almost entirely blank except for ONE very short, faint, deliberately out-of-focus handwritten line near its upper portion. Keep this single sheet clearly visible and separate from the manuals, not buried under them. The employee leans slightly forward, with one hand naturally holding the edge of an open manual page and the other hand resting beside the short sheet, looking down between the two. Use a medium-close diagonal camera view across the desk so the thick manual stack, open dense pages, nearly empty single sheet and employee's face and hands are readable together at thumbnail scale. The paper-volume contrast must dominate; do not show a generic cluttered office. In the soft background, one ordinary computer monitor is angled away with indistinct neutral shapes only, and a modest shelf holds a few older plain binders. Do not add three dashboards, a color-code chart, an instructor, a classroom, a certificate or another employee. Believable paper thickness, cardboard binder covers, skin, fingers, cotton clothes, ordinary furniture and soft daytime window light, natural unglossy colors and contact shadows. All people, businesses and software are fictional. No legible words, letters, numerals, paragraph headings, labels, branded hardware, real app interface, logo, watermark, signature or floating graphic. Do not make a tower taller than the person or scatter mountains of paper. No illustration, anime, 3D render, cinematic lighting or exaggerated promotional pose.",
-      "sha256": "5c7650b786ce65b497693f92ef38210ac09367b572a4dbcbfd13d17fe7aa4b1c",
-      "source_article_sha256": "23015542d91e83de27d80ff4f056a7369b4c7cc7c64eff9077d13bc58c5ea171",
-      "source_png_sha256": "510dbed91a1ed6de24084ad7411658877e2d3d0e37728f1550a2c3554f71ea53",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T15:44:04.908693+00:00"
-    },
-    "buzzword-award-what-does-it-mean-wins": {
-      "article_sha256": "f99c58f2479c24e0ec68d18464580c21ea664c1b7b96e7d521e1a416e540380b",
-      "bytes": 151421,
-      "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
-      "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
-      "sha256": "342e1156ce1cc056dfa56302ca7cd59cbce9750ec0d1248dceadb0fe2f6dda18",
-      "source_article_sha256": "115429c3a034ebadd499bcbc4f14eb7249992b7b5484dfa88cf766aac13c8e38",
-      "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T16:30:29.526028+00:00",
-      "generation_steps": [
-        {
-          "generation_id": "ee467b64-72fa-4a12-aaf9-1887f59e47dd",
-          "tool_mode": "new_image",
-          "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 candid local newspaper photograph of a fictional street word-awareness survey. Two anonymous fictional adults stand safely on the ordinary pedestrian sidewalk of a modest Japanese neighborhood in daylight. The survey worker stands on the left in plain casual work clothes, holding a normal small plain questionnaire at chest height, glancing from the sheet toward the passerby with their mouth slightly open as they read out a word and ask a question. Keep the questionnaire unlettered or with only faint indistinct marks, without a clipboard headline or a large candidate list. The adult passerby on the right has stopped facing the survey worker, but has just lowered their eyes to a smartphone near their chest to look up the meaning instead of giving an immediate answer. One hand holds the phone and the other thumb or fingertip searches on it. A mildly puzzled, matter-of-fact expression, not a posed smile. Show a subtle generic search-bar shape or magnifying-glass icon on the phone if visible, with no readable letters, words, numbers or branded interface. The important relationship is the worker asking a question while the respondent searches for the answer on their own phone. They are not both watching a shared screen, showing each other a video, taking a selfie, buying anything or exchanging the phone. One coherent eye-level medium-wide frame with both adult faces, the small questionnaire, phone, and natural hands clearly visible. Plain pavement, quiet unlettered buildings and a little greenery are background only. Natural soft daylight, ordinary cotton clothes, realistic skin and paper, restrained colors and real camera depth, no cinematic or publicity lighting. No stage, presenter podium, award certificate, trophy, medal, giant list, speech bubble, floating question mark, banner, signs, readable text, signatures, brand logos, real-person likeness or watermark. No illustration, anime, cartoon or 3D render.",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png",
-          "source_png_sha256": "98dfa6c1de2196982b349cb3743b886354edc8a90fcde828c928d2d5914d2c2a"
-        },
-        {
-          "generation_id": "64849e81-4b83-475e-9325-9d13c5f83214",
-          "tool_mode": "edit",
-          "generation_prompt": "Make one localized physical correction to the attached fictional candid street-survey photograph. The camera-facing side of the woman's smartphone is its metallic BACK, with a rear camera lens and flash at the upper left. Remove the erroneous search bar and magnifying-glass graphic from that back surface completely, and fill only that small area with a seamless continuation of the plain unbranded metallic phone back. There must be no screen, search graphic, text or logo on the back of the phone. Its real front screen faces the woman and does not need to be visible to the camera. Preserve the rest of the photograph exactly: both adults, their faces, expressions, eye directions, hands and fingers, phone outline and camera lens, questionnaire, clothing, greenery, pavement, lighting, photographic texture, crop and composition. Do not add a new object or change the interaction. No readable text, logo, signature, watermark, diagram or floating UI.",
-          "referenced_image_paths": [
-            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-ee467b64-72fa-4a12-aaf9-1887f59e47dd.png"
-          ],
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-64849e81-4b83-475e-9325-9d13c5f83214.png",
-          "source_png_sha256": "e01ac750a2ecd6ff19ab3be616d0680a53d59b92ca805a2b890d3d42dd414c5a"
-        }
-      ]
-    },
-    "family-line-replies-four-different-station-exits": {
-      "article_sha256": "d969e3b7c1c2c31d4dc1e5a762c195cfbe9ec9c66e438266a4de8e6a163ad756",
-      "bytes": 182798,
-      "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
-      "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
-      "sha256": "d27debfec45c6760a76c045320fe7780ca6628bce28b12085dde12ff1e973ee5",
-      "source_article_sha256": "648ca56e313f18dfcd8f81ede792f55bcb8c0a5e0f70d5a8dd43a5f006380505",
-      "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T17:10:38.749848+00:00",
-      "generation_steps": [
-        {
-          "generation_id": "16345f4d-7ed6-40fc-8bc4-2416afe80589",
-          "generation_prompt": "Use case: photorealistic-natural. A single horizontal 16:9 candid local newspaper photograph of a fictional Japanese family gathering after confusion about station exits. Depict the specific action of the father going to collect the last waiting family member, not a posed family portrait. Outside a modest ordinary railway station exit with a small unbranded cafe immediately beside it, the middle-aged father is caught MID-STEP walking from the left toward his adult daughter on the right. His body and forward foot clearly carry him toward her; he glances at her and extends one relaxed open hand in a small 'come along, I came to get you' gesture, without grabbing her or pointing at the camera. His wife and their adult son, whom he has already collected, follow a short distance BEHIND him on that same walking path. The adult daughter is stationary by the cafe's small outdoor table near the station-exit wall, one hand holding her phone near her waist; she looks up toward the approaching father, still waiting rather than walking with the group. All four are anonymous fictional adults, ordinary travelers in casual cotton clothes. The important visible contrast is a moving father leading two people versus a fourth person still waiting in place with a smartphone. Keep a little physical distance between father and daughter so they have not yet formed a group. One coherent eye-level medium-wide real camera frame, natural human proportions, relaxed matter-of-fact expressions, believable faces, hands, shoes and contact shadows. Use ordinary daylight and restrained colors. The station entrance canopy and modest cafe furniture provide everyday place context only; no readable station names, shop names, brand marks, advertising, legible phone screen or floating chat graphics. No split panels, map, collage, directional-letter signs, extra family members, cinematic lighting, plastic skin, 3D render, illustration, watermark or posing toward the camera. Do not show all four standing together, all four walking in one line, or four isolated people at different exits.",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-16345f4d-7ed6-40fc-8bc4-2416afe80589.png",
-          "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f",
-          "tool_mode": "new_image"
-        }
-      ]
-    },
-    "scolding-ai-one-line-summary-boss-eighteen-pages": {
-      "article_sha256": "06c78eff0733e721c819b9a3a87db46e79f79e84d3b76e850b804d33902c57ac",
-      "source_article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
-      "source_png_sha256": "8b46944f68c5b8f5d0c28ebf31e7a3c8a63427e88bf3c8bfe222722d85f88435",
-      "bytes": 132651,
-      "sha256": "9d48b7f755067ae78c24902255f2cc2a5ca0b9c13569757021790ab4866bc191",
-      "generation_id": "14fb21b5-eba8-47fb-9d8b-2b7326106fce",
-      "generation_prompt": "Use case: photorealistic-natural. Make one new horizontal 16:9 ordinary editorial camera photograph for a fictional Japanese news story. Two entirely fictional adult Japanese male office workers in a modest, contemporary small advertising office at Friday lunchtime. Soft ordinary window daylight, restrained everyday colors, natural skin, cotton office clothes, realistic hands, paper, desk and laptop, an unpolished local newspaper workplace snapshot.\n\nCapture this specific simultaneous action from the story in a single coherent medium view across the desk: a young adult junior employee on the left extends ONE completed A4 estimate sheet to his middle-aged seated manager on the right. The manager receives that one estimate with his LEFT hand while, with his RIGHT hand, setting HIS OWN multi-page explanatory packet on the desk toward the junior. The simple work itself is finished on one sheet, but the manager is returning extra explanation for the junior to absorb. The junior looks mildly puzzled at the returning packet; the manager is completely earnest and matter-of-fact, not grinning or theatrically angry. Clearly show both adults, both paper paths and the contrasting documents within the central safe horizontal frame.\n\nEssential paper distinction: the junior's single A4 estimate has a sparse printed grid/table layout, with no legible letters or numbers. The manager's explanatory packet contains roughly eighteen ordinary A4 sheets, a SMALL THIN packet about two millimeters thick. A few pages are slightly staggered or fanned so the multiple sheets and dense indistinct grey paragraph layouts are visible. It is visibly more paperwork than the one estimate, but must never become a thick book, binder, huge stack or mountain. The explanatory packet is being set DOWN/returned toward the junior, while the separate single estimate is being handed OVER to the manager. The two documents must remain physically distinct, not fused into one bundle. Frame closely enough for that contrast and the hand contacts to read. One plain open laptop may sit unobtrusively at the back of the desk, screen facing away from the camera.\n\nDo not show anybody writing, signing, holding a pen or pointing at a signature field. No handwriting, red correction marks, checkboxes, signatures, readable screen UI, text captions, logos, watermarks, real company names or real-person likenesses. No arrows or explanatory graphics over the photograph. No split panels, collage, illustration, CGI, doll-like faces, glossy advertising, dramatic cinematic lighting, exaggerated gestures or fantasy props. This is the story's moment of an accepted corrected one-page estimate being met with the manager's longer explanation, not a handshake, contract signing or generic meeting presentation. Do not attempt to print the title, AI transcript or the number 18.",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-09T19:13:08.015528+00:00",
-      "previous_visual_review": {
-        "decision": "rejected",
-        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
-        "image_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
-        "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
-        "note": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。 採用対象の現在の記事本文は不変で、SVG指示だけを実際の薄い紙束/確認欄へ整合した。写真試作のsource記事FPとtrial記事FPは別々に保持。"
-      },
-      "previous_visual_hold": {
-        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
-        "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
-        "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
-        "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
-        "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
-        "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
-        "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
-        "trial_origin": "chatgpt-imagegen",
-        "trial_model": "ChatGPT ImageGen",
-        "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
-        "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
-        "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
-        "trial_generation_steps": [
-          {
-            "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
-            "tool_mode": "new_image",
-            "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
-            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
-            "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79"
-          },
-          {
-            "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
-            "tool_mode": "edit",
-            "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
-            "referenced_image_paths": [
-              "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
-            ],
-            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
-            "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
-          }
-        ]
-      }
     }
   },
   "rejected": {
@@ -2245,6 +2272,39 @@
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
     },
+    "scolding-ai-one-line-summary-boss-eighteen-pages": {
+      "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+      "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
+      "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
+      "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+      "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
+      "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
+      "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
+      "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+      "trial_generation_steps": [
+        {
+          "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
+          "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
+          "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79",
+          "tool_mode": "new_image"
+        },
+        {
+          "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+          "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
+          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
+          "referenced_image_paths": [
+            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
+          ],
+          "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
+          "tool_mode": "edit"
+        }
+      ],
+      "trial_model": "ChatGPT ImageGen",
+      "trial_origin": "chatgpt-imagegen",
+      "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
+      "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
+    },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "previous_rejected_candidate_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
@@ -2286,39 +2346,6 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "scolding-ai-one-line-summary-boss-eighteen-pages": {
-      "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
-      "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
-      "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
-      "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
-      "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
-      "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
-      "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
-      "trial_origin": "chatgpt-imagegen",
-      "trial_model": "ChatGPT ImageGen",
-      "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
-      "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
-      "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
-      "trial_generation_steps": [
-        {
-          "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
-          "tool_mode": "new_image",
-          "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
-          "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79"
-        },
-        {
-          "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
-          "tool_mode": "edit",
-          "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
-          "referenced_image_paths": [
-            "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
-          ],
-          "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
-          "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
-        }
-      ]
     }
   },
   "version": 1
