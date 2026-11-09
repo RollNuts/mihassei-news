@@ -805,29 +805,48 @@
       "sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
     },
     "sleep-advice-livestream-until-two-am": {
-      "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
-      "bytes": 76665,
-      "generated_at": "2026-11-07T15:16:21.705413+00:00",
-      "inference": {
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 2.0,
-        "height": 448,
-        "lora_model": "latent-consistency/lcm-lora-sdv1-5",
-        "lora_revision": "cf2fced511dbe7e26c8d1d397e728fbab875db4b",
-        "num_inference_steps": 6,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "LCMScheduler",
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "90efe393762c81e19a6a38f8d2e03284a1ddf7dff3d5d62fd7101ef5aba8a861",
+      "bytes": 115731,
+      "generated_at": "2026-11-09T07:15:57.894105+00:00",
+      "generation_id": "22161821-749e-4a87-b832-7707704e5673",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary photograph for a fictional Japanese satirical newspaper, staged with an entirely fictional anonymous adult woman in her thirties, no celebrity likeness. The precise scene is the MORNING AFTER an exhausting late-night beauty livestream: the beauty host is preparing to record yet another segment about going to sleep early, while using her own concealer to hide her lack of sleep. At a modest home filming desk in soft ordinary morning window light, show a visibly tired but normal woman with subtle dark circles under her eyes, natural unretouched skin and untidy ordinary hair, wearing a plain cardigan. She looks into a small tabletop vanity mirror on the right and gently DABS TWO SMALL BEIGE CONCEALER DOTS onto the dark area DIRECTLY BELOW ONE EYE with a clearly recognizable soft DOe-FOOT cosmetic applicator attached to a short black cosmetic cap. The sponge tip lightly touches her upper cheek below the eye, NOT her nose, lips or eyeball. Her other hand holds the matching OPEN small plain beige concealer tube, so the applicator and product are unmistakably makeup, not a wooden stick, brush handle, lipstick or medical tool. No brand lettering on the tube. Camera sees her actual face in three-quarter front view and her applying hand clearly; the mirror may reflect only a small side of her face naturally, no doubled full face. A switched-off small filming light and a smartphone on a simple desktop tripod remain behind her as ordinary home-recording equipment, screens turned away. Subtle tired concentration, no glamour pose, no exaggerated expression. Realistic hands, cosmetic texture, hair, cloth, glass and everyday room shadows; unpolished local press snapshot, 50mm eye-level lens, restrained colors, photographic depth of field. No nighttime window, no neon, no clock, no text, logos, captions, subtitles, watermarks, artificial skin smoothing, glossy beauty advertisement, dramatic cinema lighting, anime, illustration or 3D rendering.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+        "bytes": 76665,
+        "generated_at": "2026-11-07T15:16:21.705413+00:00",
+        "inference": {
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 2.0,
+          "height": 448,
+          "lora_model": "latent-consistency/lcm-lora-sdv1-5",
+          "lora_revision": "cf2fced511dbe7e26c8d1d397e728fbab875db4b",
+          "num_inference_steps": 6,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "LCMScheduler",
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 1235078978855229347,
+        "sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-lcm",
+      "previous_visual_hold": {
+        "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+        "reason": "通常の実写モデル24ステップで新規生成したJPEGを現本文と実表示で照合。肌・髪・パーカー・室内光は写真として自然で、撮影用softboxも見える。一方、顔に当てる物は細く均一な木製棒に見え、化粧ブラシの毛先やコンシーラー容器を識別できない。位置も鼻脇から上唇付近で、目の下への化粧と判別できず不採用。実写画質の改善と本文への採用を分け、専用SVGを維持する。",
+        "rejected_candidate_sha256": "bdb161d12e8df860d1e0d875913c5a6f2e3147dd14cb812bc22a1fcae5bb4c06",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42386914643"
+      },
       "prompt_version": 3,
-      "seed": 1235078978855229347,
-      "sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df"
+      "sha256": "51f7ba1b0edd018d369036cad7657e5c7651b72893a3969a8f385aa71a366447",
+      "source_article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
+      "source_png_sha256": "d6e22aa08964b12c5806810e792d3c742b2247a0a47048a84985f6c84ab42d18"
     },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
@@ -1178,12 +1197,6 @@
       "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804",
       "reviewed_at": "2026-11-09T11:11:58+09:00",
       "source_article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423"
-    },
-    "sleep-advice-livestream-until-two-am": {
-      "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
-      "reason": "通常の実写モデル24ステップで新規生成したJPEGを現本文と実表示で照合。肌・髪・パーカー・室内光は写真として自然で、撮影用softboxも見える。一方、顔に当てる物は細く均一な木製棒に見え、化粧ブラシの毛先やコンシーラー容器を識別できない。位置も鼻脇から上唇付近で、目の下への化粧と判別できず不採用。実写画質の改善と本文への採用を分け、専用SVGを維持する。",
-      "rejected_candidate_sha256": "bdb161d12e8df860d1e0d875913c5a6f2e3147dd14cb812bc22a1fcae5bb4c06",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42386914643"
     },
     "sns-quit-support-site-hundred-day-login-award": {
       "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
