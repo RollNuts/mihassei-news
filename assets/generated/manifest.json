@@ -733,6 +733,33 @@
       "source_article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
       "source_png_sha256": "c63cc7d052b3d2d46e1c5cce6677478e0e1ad52f7b54e598533e8f9789e43ea8"
     },
+    "off-grid-lodge-sells-disconnection": {
+      "article_sha256": "28587c7da98e57f2390f3520241a199beff4d0a18373d8275750fdbf541f1d3f",
+      "bytes": 112403,
+      "generated_at": "2026-11-09T11:15:52.738836+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 2299536992374349509,
+      "sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f"
+    },
     "office-face-to-face-day-video-call-echo": {
       "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
       "bytes": 138242,
