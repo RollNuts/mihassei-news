@@ -57,14 +57,14 @@
       "origin": "verified-still-motion",
       "motion_style_version": 3,
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
-      "sha256": "7de67ea2e78a84453d4ad138227ce21fee4b337ec3fd4b1d9d582c5b9a44a9d6",
-      "bytes": 109673,
+      "image_sha256": "3a9560d3218df165cb0b375705ee125545de295aaca03ae3db36aca6850fc2a2",
+      "sha256": "97ee694ee0ff7eb480c39d04d9eb80c6888685a4b63ac98791c7f0b6f5aede9f",
+      "bytes": 197707,
       "width": 640,
       "height": 360,
       "fps": 24,
       "duration_ms": 12000,
-      "created_at": "2026-11-04T15:27:28.060908+00:00"
+      "created_at": "2026-11-09T21:08:09.183667+00:00"
     },
     "datacenter-unbuilt-ribbon-cutting": {
       "origin": "verified-still-motion",
