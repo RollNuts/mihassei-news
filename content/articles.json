@@ -1,5 +1,70 @@
 [
   {
+    "slug": "bring-your-own-room-hotel-parking-spaces",
+    "category": "暮らし",
+    "flash": "客室は持ち込み",
+    "fiction_company": "ミチノヤ",
+    "art": "cards",
+    "fiction_at": "2031-11-09T17:53:20+09:00",
+    "published_at": "2026-11-09T17:53:20+09:00",
+    "title": "客室を持参するホテル開業　フロントが案内するのは駐車場の白線",
+    "summary": "旅行者が自分の車を客室として持ち込み、ホテルはシャワーと朝食、電源付きの駐車区画を提供する。部屋を替えたい客には、車の移動をお願いする。",
+    "paragraphs": [
+      "2031年、宿泊会社「ミチノヤ」が、宿泊客に車を持参してもらう「客室持参ホテル」を駅前に開業した。客室棟はなく、建物にあるのはフロントとシャワー、朝食会場だけだ。2026年11月9日にはスズキが、2人乗りで荷室を2枚のボードで組み替えられる新型軽商用車「スペーシア ベース」の先行情報を公開していた。車内を暮らしの空間にも使う人が増えた2031年、宿泊業まで車を客室として数え始めた。",
+      "チェックインした客に係員が「お部屋へご案内します」と言って指したのは、建物の廊下ではなく駐車場の白線だった。客は自分で車を停め、後部に布団を敷く。ホテル側が用意するのは電源、風呂、朝食と夜間の管理だ。支配人は「部屋を建てたりシーツを取り替えたりする費用が減る分、料金を抑えられます」と話す。",
+      "普通のホテルを予約すれば寝具を持ち運ばずに済む。それでも車中泊に慣れた客は、旅先でも自分の寝床を使え、荷物を積み替えずに済む便利さを選ぶ。犬の寝床を荷室に並べた男性は「車ごと泊まれるなら、いつものように過ごせます」と満足げだ。隣の車からも犬の鳴き声が聞こえ、二匹は窓越しに顔を見合わせていた。",
+      "夕方、山側の区画を予約した客が、隣の背の高い車で景色が見えないと相談に来た。係員は空きを調べ、「お部屋の変更、承れます」と笑顔で答えた。そして鍵ではなく駐車場の地図を渡す。「お客様のお部屋を、右へ三台分動かしていただけますか」。客は敷いたばかりの布団を畳み、自分の部屋のエンジンをかけた。"
+    ],
+    "source": {
+      "kind": "企業発表",
+      "publisher": "スズキ株式会社",
+      "published_at": "2026-11-09T12:00:00+09:00",
+      "url": "https://www.suzuki.co.jp/release/a/2026/1109/",
+      "topic": "2026年11月9日、スズキは新型の軽商用車『スペーシア ベース』の先行情報を公開した。2人乗り仕様で、2枚のマルチボードと8本の脚パイプを標準装備とする。具体的な発売日と価格は未発表。2031年のホテル、ミチノヤ、客の言動は創作で、スズキの事業や提携ではない。"
+    },
+    "scene_prompt": "A Japanese traveler unfolds a simple futon in the open rear of a compact unbranded van parked in a small hotel parking bay, while a modestly uniformed receptionist points toward a painted white parking line. Natural daylight, ordinary realistic roadside hotel parking lot, clear human hands and real vehicle materials, documentary photograph, no readable words or logos.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "旅行",
+      "車中泊"
+    ],
+    "satire_tags": [
+      "客室持参",
+      "身軽な宿泊業"
+    ],
+    "x_tags": [
+      "車中泊"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "ホテルにチェックインしたら、係員が案内したのは駐車場の白線。寝室はもう、車に積んできている。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "荷室を多用途に使う軽商用車や車中泊の工夫が広がり、宿泊施設では利用者が価格や自由さを選び分ける",
+      "target": "ホテルに泊まるという行為を設備と区画に分解し、肝心の客室を客の持ち込み品にする商売",
+      "action": "宿泊客が自分の車を客室として駐車場に持ち込み、ベッドを自分で敷く",
+      "outcome": "景色のよい部屋への変更を頼んだ客が、布団を畳んで自分の部屋を運転し直す"
+    },
+    "behavior_basis": {
+      "motive": "運営者は客室棟を省いて料金を抑えたい。車中泊に慣れた客は自分の寝床と荷物のまま泊まりたい",
+      "ordinary_alternative": "一般的なホテルの部屋を予約し、ベッドと清掃サービスを利用する",
+      "why_not": "自分の寝床の快適さと荷物を積み替えず移動できる便利さ、宿泊料金の安さを優先する",
+      "evidence_quote": "それでも車中泊に慣れた客は、旅先でも自分の寝床を使え、荷物を積み替えずに済む便利さを選ぶ。"
+    },
+    "reader_clarity": {
+      "who": "車で旅する宿泊客と宿泊会社",
+      "action": "客が車をホテルに持ち込み、それを客室として泊まる",
+      "oddity": "ホテルが客室そのものを用意せず、案内するのは駐車区画だけ"
+    },
+    "plausibility_basis": {
+      "present_signal": "スズキが2026年11月9日に2人乗りで可変ボード付きの軽商用車を発表した",
+      "continuation_force": "車内空間を使い分ける旅行者が増え、低料金・手軽さを売る宿泊業が電源やシャワーだけを提供する余地が生まれる",
+      "future_result": "客室棟を持たず、客が持ち込んだ車を部屋として売る駅前ホテルが開業する"
+    }
+  },
+  {
     "slug": "rest-day-concert-sells-out-without-performers",
     "category": "エンタメ",
     "flash": "休みの日も満席",
