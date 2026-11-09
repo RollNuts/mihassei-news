@@ -1,57 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img"
- aria-label="値引き部分だけ赤く囲った長いレシートが額に入り、買いすぎた家電の未開封箱が玄関を埋める創作イラスト" data-visual-topic="document" data-article-sha256="6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5">
-  <title>節約した額を額装し、買った箱で廊下が埋まる</title><desc>額装されたレシートの値引き欄が赤く強調される一方、廊下には未開封の家電箱が山積み。父が額を誇らしげに指し、子が荷物へ向かって手を伸ばす。文字やブランドを含まない。</desc>
-  <defs>
-    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e8ede7"/><stop offset="1" stop-color="#becfd0"/></linearGradient>
-    <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#ead7c3"/><stop offset="1" stop-color="#c29e82"/></linearGradient>
-    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fffdf0"/><stop offset="1" stop-color="#e9e2d1"/></linearGradient>
-    <linearGradient id="screen" x2="0" y2="1"><stop stop-color="#334a57"/><stop offset="1" stop-color="#192c39"/></linearGradient>
-  </defs>
- <rect width="1200" height="675" fill="#e8dac8"/>
- <path d="M0 457h1200v218H0z" fill="url(#floor)"/>
- <path d="M0 453h1200" stroke="#bba38b" stroke-width="9"/>
- <rect x="0" y="80" width="1200" height="20" fill="#c8b096" opacity=".45"/>
- <g transform="translate(73 62) rotate(-5 285 285)" stroke-linejoin="round">
-  <rect x="20" y="22" width="493" height="549" rx="5" fill="#5b4536" opacity=".24" transform="translate(14 16)"/>
-  <rect x="20" y="22" width="493" height="549" rx="6" fill="#ad7b47" stroke="#694e36" stroke-width="15"/>
-  <rect x="54" y="56" width="425" height="481" fill="#e9d6a9" stroke="#d5ab5c" stroke-width="8"/>
-  <path d="M75 80h384v438H75z" fill="url(#paper)" stroke="#8c765b" stroke-width="4"/>
-  <rect x="118" y="102" width="212" height="14" rx="6" fill="#686d69"/>
-  <g fill="#9ca3a1"><rect x="119" y="139" width="253" height="8" rx="3"/><rect x="119" y="161" width="284" height="8" rx="3"/><rect x="119" y="183" width="234" height="8" rx="3"/><rect x="119" y="205" width="260" height="8" rx="3"/><rect x="119" y="227" width="280" height="8" rx="3"/><rect x="119" y="249" width="247" height="8" rx="3"/><rect x="119" y="271" width="279" height="8" rx="3"/><rect x="119" y="293" width="264" height="8" rx="3"/><rect x="119" y="316" width="277" height="8" rx="3"/><rect x="119" y="339" width="240" height="8" rx="3"/><rect x="119" y="362" width="279" height="8" rx="3"/></g>
-  <rect x="110" y="387" width="305" height="68" rx="5" fill="#f5d6c6" stroke="#c75e4b" stroke-width="11"/>
-  <path d="M136 412h139m-139 20h212" stroke="#b65547" stroke-width="12" stroke-linecap="round"/>
-  <path d="M119 479h276" stroke="#b9b3a2" stroke-width="4"/>
- </g>
- <g stroke="#7f705f" stroke-width="6" stroke-linejoin="round">
-  <rect x="656" y="197" width="222" height="268" fill="#b5a692"/>
-  <rect x="881" y="150" width="271" height="316" fill="#d0bea5"/>
-  <rect x="762" y="453" width="237" height="164" fill="#cab09a"/>
-  <rect x="991" y="439" width="181" height="165" fill="#baa38c"/>
-  <path d="M656 244h222M879 196h270M762 496h237M991 479h181" stroke="#e9daca" stroke-width="9"/>
-  <path d="M767 451v165M1003 439v166" stroke="#9e8977" stroke-width="6"/>
-  <rect x="698" y="272" width="115" height="105" rx="5" fill="#e0ddcf" stroke="#757c75"/>
-  <circle cx="757" cy="325" r="35" fill="none" stroke="#758889" stroke-width="8"/>
-  <rect x="946" y="218" width="143" height="128" rx="6" fill="#e8e2d6" stroke="#73796e"/>
-  <rect x="972" y="242" width="90" height="71" rx="4" fill="#9caca9" stroke="#7e9590" stroke-width="4"/>
-  <path d="M795 523h155M795 542h155M1018 515h123M1018 538h123" stroke="#997e6c" stroke-width="7"/>
- </g>
- <g stroke="#53524f" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
-   <ellipse cx="607" cy="354" rx="37" ry="44" fill="#e6bd9b"/>
-   <path d="M573 346q-6-37 35-39t40 36l-25-22-51 15" fill="#3f4040"/>
-   <path d="M571 422q28-31 73 2l26 129-113 9z" fill="#5e7f7a"/>
-   <path d="M573 434l-67-50-14-41" stroke="#5e7f7a" stroke-width="28" fill="none"/>
-   <path d="M495 349l-8-21-4-23m7 41-13-13" stroke="#e5b69b" stroke-width="12" fill="none"/>
-   <path d="M645 432l33 70" stroke="#5e7f7a" stroke-width="26" fill="none"/>
-   <path d="M586 557l-14 90m72-90 15 90" stroke="#525962" stroke-width="19" fill="none"/>
- </g>
- <g stroke="#555153" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-  <ellipse cx="1118" cy="425" rx="29" ry="35" fill="#e6c09f"/>
-  <path d="M1090 414q-5-31 30-31t31 29l-18-16-43 12" fill="#434650"/>
-  <path d="M1086 483q18-30 57 0l14 113h-79z" fill="#a47778"/>
-  <path d="M1090 507l-37-36-24-19" stroke="#a47778" stroke-width="19" fill="none"/>
-  <path d="M1026 453l-15-9m16 11-12 14" stroke="#e6c09f" stroke-width="10" fill="none"/>
-  <path d="M1100 594l-10 69m47-69 10 69" stroke="#66666b" stroke-width="16" fill="none"/>
- </g>
- <path d="M687 556l68-10 15 93-91 8zM697 556q-3-42 37-40t27 37" fill="#b77674" stroke="#765d58" stroke-width="6"/>
- <path d="M34 655h1125" stroke="#c6ad93" stroke-width="5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="未開封の箱で狭くなった自宅の廊下で、父が壁の小さな額に入れた値引き欄の紙片を息子へ指して見せる創作イラスト" data-visual-topic="document" data-article-sha256="81ca078945698e90f2c2c5a3b09662e47da4ae30d12302fbdab299678f99bcf8">
+<title>箱で埋まる廊下に飾った、値引き欄だけの節約成果</title>
+<desc>自宅の玄関近くの廊下。父は息子へ、壁に掛けた普通サイズの小さな額を指して見せる。額の中にあるのはレシート全体ではなく、値引き欄だけを切り取った短い横長の白い紙片。二人のすぐ脇にはテープで封じられた家電の箱が積み上がり、未開封の箱で通り道が狭くなっている。紙片に読める文字や金額は描かず、箱にもロゴや品名はない。</desc>
+<defs>
+<linearGradient id="receipt-floor" x2="0" y2="1"><stop stop-color="#ead7c3"/><stop offset="1" stop-color="#c29e82"/></linearGradient>
+<linearGradient id="receipt-paper" x2="0" y2="1"><stop stop-color="#fffdf0"/><stop offset="1" stop-color="#e9e2d1"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="#e8dac8"/>
+<path d="M0 451h1200v224H0z" fill="url(#receipt-floor)"/>
+<path d="M0 451h1200" stroke="#bba38b" stroke-width="8"/>
+<path d="M0 89h1200v15H0z" fill="#c8b096" opacity=".45"/>
+<path d="M0 539h1200M0 644h1200M200 452L79 675m366-223-27 223m306-223 56 223m221-223 119 223" fill="none" stroke="#b89980" stroke-width="2"/>
+<path d="M557 142h166v306H557z" fill="#b29d86" stroke="#9a826b" stroke-width="6"/>
+<path d="M572 157h136v291H572z" fill="#cbb8a2"/>
+<path d="M687 290v28" stroke="#8f7e69" stroke-width="6" stroke-linecap="round"/>
+<!-- A small wall frame contains only one short cut-out strip, not the full receipt. -->
+<path d="M180 178h150v105H180z" fill="#ad7b47" stroke="#694e36" stroke-width="8"/>
+<path d="M192 191h126v79H192z" fill="#dfd1b4" stroke="#d5ab5c" stroke-width="3"/>
+<path d="M214 217h82v25h-82z" fill="url(#receipt-paper)" stroke="#bcb29a" stroke-width="1.5"/>
+<path d="M223 225h61m-61 10h43" stroke="#b7af9f" stroke-width="2" stroke-linecap="round"/>
+<!-- Sealed, unbranded cartons fill most of the passage at the right. -->
+<g stroke="#7f705f" stroke-width="5" stroke-linejoin="round">
+<path d="M785 256h190v210H785z" fill="#b5a692"/>
+<path d="M785 256l34-20h187l-31 20m31-20v207l-31 23" fill="#c4b39d"/>
+<path d="M869 256v210m-84-165h190" fill="none" stroke="#e5d8c3" stroke-width="9"/>
+<path d="M989 204h168v262H989z" fill="#d0bea5"/>
+<path d="M989 204l21-14h168l-21 14m21-14v261l-21 15" fill="#bda98f"/>
+<path d="M1064 204v262m-75-218h168" fill="none" stroke="#e9daca" stroke-width="9"/>
+<path d="M755 469h215v169H755z" fill="#cab09a"/>
+<path d="M755 469l26-17h214l-25 17m25-17v168l-25 18" fill="#dbc3a9"/>
+<path d="M852 469v169m-97-127h215" fill="none" stroke="#e4d4bd" stroke-width="8"/>
+<path d="M989 479h193v157H989z" fill="#baa38c"/>
+<path d="M989 479l18-15h193l-18 15m18-15v156l-18 16" fill="#ccb69d"/>
+<path d="M1080 479v157m-91-123h193" fill="none" stroke="#e3cfb6" stroke-width="8"/>
+<path d="M16 548h164v112H16z" fill="#c8b29b"/>
+<path d="M16 548l19-15h162l-17 15m17-15v111l-17 16" fill="#d7c1aa"/>
+<path d="M91 548v112m-75-82h164" fill="none" stroke="#eadcc8" stroke-width="7"/>
+</g>
+<!-- Father points his raised index finger toward the small framed paper. -->
+<g stroke="#53524f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M424 513l-13 107-17 20h38l18-20 13-105m25-1 14 106 18 20h38l-25-23-11-104" fill="#6d7676"/>
+<path d="M417 366q35-29 75-3l41 158H398z" fill="#5e7f7a"/>
+<path d="M441 337v30l19 14 17-16v-29" fill="#e0b699"/>
+<ellipse cx="458" cy="296" rx="38" ry="47" fill="#e0b699"/>
+<path d="M420 299q-8-57 35-59 47-1 44 49l-23-26-53 24" fill="#4c4d48"/>
+<path d="M439 296h-9m10 23q-11 7-21-1" fill="none" stroke-width="3"/>
+<path d="M424 386l-54-53-35-54m159 106 25 73-14 23" fill="none" stroke="#5e7f7a" stroke-width="25"/>
+<path d="M336 279l-12-18m2 3-18-13m15 11-4-13" fill="none" stroke="#e0b699" stroke-width="11"/>
+<path d="M505 480l-7 15" stroke="#e0b699" stroke-width="12"/>
+</g>
+<!-- His son looks up at him, with an open hand beside the obstructing cartons. -->
+<g stroke="#555153" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M618 540l-12 79-15 20h29l16-18 10-79m21 0 11 78 17 19h29l-21-22-10-77" fill="#777781"/>
+<path d="M615 439q28-24 61-2l25 112h-108z" fill="#a47778"/>
+<path d="M637 416v23l15 10 15-11v-23" fill="#e6c09f"/>
+<ellipse cx="651" cy="384" rx="30" ry="37" fill="#e6c09f"/>
+<path d="M620 386q-5-43 29-45 36-1 35 36l-18-19-44 19" fill="#434650"/>
+<path d="M635 385h-7m7 19h-12" fill="none" stroke-width="2.5"/>
+<path d="M620 456l-31 30-23-3m113-25 25 21 21-7" fill="none" stroke="#a47778" stroke-width="18"/>
+<path d="M564 483l-14-7m174-4 17-9m-12 9 13 2" fill="none" stroke="#e6c09f" stroke-width="10"/>
+</g>
 </svg>
