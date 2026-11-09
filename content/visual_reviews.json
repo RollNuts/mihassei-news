@@ -14,40 +14,12 @@
       "note": "パンが並ぶ店頭と店員・客の場面。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "basketball-opening-day-game-seven": {
-      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
-      "decision": "rejected",
-      "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
-      "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
-      "reviewed_at": "2026-11-05T02:51:28.168Z"
-    },
     "black-friday-preparty-budget-gone": {
       "decision": "rejected",
       "article_sha256": "c49cb86550679260a2b6b88fcb61207131fa252378fc732e307482b22937992d",
       "image_sha256": "5a6a230b6cedeffe4812e5eb6bd51d013e93310713b2fe5b183bec2a9533e8e6",
       "reviewed_at": "2026-11-08T10:18:03.150988+00:00",
       "note": "run 42469605928の本文・実JPEGを表示して照合。革靴・窓光・床材は普通の写真に見える一方、写るのは茶色いローファー一組だけで、主役の空財布・毛布・買い物袋がない。予算を使い切って炊飯器を買えなくなった状況を十分示さないため不採用。空財布と買い物の荷物が分かる既存専用SVGを実表示で確認し維持。本日の既刊試作上限を消費したため再生成せず、元JPEG・本文・生成指紋・seedは変更しない。"
-    },
-    "cafe-regular-dislikes-usual-cinnamon-latte": {
-      "decision": "rejected",
-      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
-      "image_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
-      "reviewed_at": "2026-11-08T13:01:09.486Z",
-      "note": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。"
-    },
-    "chance-meeting-cafe-reservation-full": {
-      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
-      "decision": "rejected",
-      "image_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81",
-      "note": "実画像はカフェで2人が座るだけ。予約票、隣席へ予定外に話しかける客、制止する店員が写らず、記事の笑いの中心が再現されていない。黒板の擬似文字も目立つため不採用。安全な記事別イラストを継続する。",
-      "reviewed_at": "2026-11-04T06:44:47.583Z"
-    },
-    "christmas-done-for-you-family-decorates-boxes": {
-      "decision": "rejected",
-      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
-      "image_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b",
-      "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
-      "note": "実JPEGと現本文を照合。大きな緑の飾り済みツリーとソファの人物を写した普通のクリスマス風景で、配送箱の工作ツリー、紙の星の貼り直し、親がスマホで撮り続ける場面がない。黄褐色の霞、人物の平滑な描写と箱の発光も不自然なため不採用。現在の本文に合う専用SVGを維持する。"
     },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
@@ -56,33 +28,12 @@
       "note": "マイクを向けられた人物と笑っていない周囲の人物。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "crosswalk-photo-captcha-human-stuck": {
-      "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
-      "decision": "accepted",
-      "image_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
-      "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
-      "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
-    },
-    "datacenter-unbuilt-ribbon-cutting": {
-      "decision": "accepted",
-      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
-      "image_sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2",
-      "reviewed_at": "2026-11-07T15:58:16.879294+00:00",
-      "note": "現本文と新規JPEGを実表示で照合。広い空き地・地面に残る鮮やかな赤い式典用テープ・建物のない中央が見える。砂利の細かな質感、自然な日差し、背景の木立と遠近が通常の屋外写真として自然で、不要な文字やロゴはない。社長・ハサミ・テープカットの動作は写らないため、それを描写したとは扱わず、本文終盤の「中央には空き地だけが残る」記念写真を表す場面として採用する。"
-    },
     "diner-refund-customer-paying-escape": {
       "article_sha256": "6ae496a9ab570c884cbcec7a4d13314b940d3fa9b2ed064a2af000573f23dad0",
       "decision": "accepted",
       "image_sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1",
       "note": "食堂の前にエプロン姿の店員と客がいる場面。返金・追跡の動作は未再現だが本文の舞台が判別できる。看板・メニューの擬似文字とロゴはローカルで局所ぼかしし、最終JPEGを再確認した。",
       "reviewed_at": "2026-11-04T11:28:39.902385+09:00"
-    },
-    "double-speed-drama-explainer-marathon": {
-      "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
-      "decision": "accepted",
-      "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
-      "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
-      "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
@@ -97,34 +48,6 @@
       "image_sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6",
       "note": "詰めすぎた大きな弁当箱とふたが主役。おかずの量が分かり、本文の題材に合う創作イメージ。父子の動作は未再現だが、目立つ読める文字やロゴはない。",
       "reviewed_at": "2026-11-04T11:19:31.334151+09:00"
-    },
-    "film-village-all-stars-no-extras": {
-      "decision": "rejected",
-      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
-      "image_sha256": "d0c7f9b077269d2150b829f857620645145e89144b3d0a3e2138f0b99f59e76b",
-      "reviewed_at": "2026-11-08T08:14:58.356695+00:00",
-      "note": "無料CPUの実写モデル24ステップによる新指示の試作（run 42461246270）を本文・実画像と照合。自然光、木造建物、舗装路は普通のカメラ写真に見えるが、主役の監督・買い物袋・三脚の撮影カメラが一つも写っていない。無人の町並みだけでは「監督が通行人役を兼ねる」オチが伝わらないため不採用。現本文の専用SVGは、主演の集団と袋を持つ監督・撮影カメラの関係を実表示で再確認し維持。記事本文・画像指示・旧JPEG生成記録は変更せず、試作元SHAと試作記事SHAはmanifestの保留記録で区別する。"
-    },
-    "five-star-reviews-of-returned-humidifiers": {
-      "decision": "rejected",
-      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
-      "image_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
-      "reviewed_at": "2026-11-08T13:37:17.264Z",
-      "note": "公開済み原本（origin: github-cpu-lcm、SHA-256: 197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba）をあらためて実表示して採否を撤回。棚や箱は並んでいるが、遠景の人物と箱の形・印字がのっぺりし、灰白色の霧をかけたように全体が不自然なCG／加工画像に見え、現行の報道写真らしさに届かない。加湿器は判別できず、星5の販促も返品対新納品も写っておらず、現在の中心場面と一致しない。背景だけ合えばよいという2026-11-08先行採用は過度に緩い判断だったため撤回し、当該JPEGは表示せず検証済みの倉庫・星5・返品箱の専用SVGへ戻す。原JPEG・seed・現記事指紋は変更しない。別試作の不採用JPEG（SHA-256: 795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5、run 42468601719）も引き続き不採用。"
-    },
-    "free-play-event-parents-timetable-children-waiting": {
-      "decision": "rejected",
-      "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
-      "image_sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9",
-      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
-      "note": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。"
-    },
-    "fridge-checkin-five-years-only-opening-times": {
-      "decision": "rejected",
-      "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
-      "image_sha256": "54a265ac0c075491e1e2b07087fe405ab4b5bdc6bd121bf7736d8ba04de34335",
-      "reviewed_at": "2026-11-08T09:46:08.402253+00:00",
-      "note": "主題を短くした無料CPU再試作run 42467801767の本文・実JPEGを確認。白い冷蔵庫と取っ手は普通の写真らしいが、黄色い紙は細長い折れた1枚に見え、複数の付箋・台所カウンター・伏せたスマホが写っていない。父が話したかった日常と通知の対比を十分に表さないため不採用。父・娘・付箋・スマホが読める既存専用SVGを維持し、同じ記事を今日もう一度生成しない。元JPEGの生成記録と本文は変更しない。"
     },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
@@ -147,13 +70,6 @@
       "note": "駅で箱を持った旅行者と係員が向き合う場面。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "midterm-prediction-notebook-full-of-holes": {
-      "decision": "rejected",
-      "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
-      "image_sha256": "d2c0d1ef9a9474612a4a672fa112754ac60941091ba9d35339965e7cf8d26df4",
-      "reviewed_at": "2026-11-08T23:14:05.648451+00:00",
-      "note": "現本文・試作指示・実JPEGを表示して照合。承認済みSVGを参照した初回の無料CPU試作（run 42533373151、strength 0.65）で、開いたノートと木の机の配置は保たれた。しかし右ページはほぼ無傷で、大きな破れ穴も次の紙面の露出もなく、灰色の消しかすも識別できない。右側にはピンクの筆記具・小物が並ぶ。木目や紙は写真寄りだが低精細で、中心の『消しすぎて穴が開いた予想ノート』が欠けるため不採用。現本文に合う専用SVGを維持し、同日再試行はしない。試作元と新指示コピーの指紋は区別し、既存JPEG・生成指紋・seedを変更しない。"
-    },
     "mortgage-bank-clerk-invited-to-live-in": {
       "article_sha256": "b471407868bb1e2b2e24b169a8e09d0be6ee48686c8f0d00ef3e301c59133359",
       "decision": "accepted",
@@ -174,41 +90,6 @@
       "image_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
       "note": "実画像と現本文を照合。観客席で複数の架空人物が白い練習カードを持ち、驚いた表情を作る場面が記事の「初耳の顔を練習する」主題に合う。カードには擬似文字があるが読める文章・固有名詞・ロゴは見当たらない。ステージマネージャーや歌手、顔の角度を直す動作は未再現で、人物描写は柔らかいが主役の大きな人体破綻は見当たらない。",
       "reviewed_at": "2026-11-05T03:46:29+00:00"
-    },
-    "music-special-forty-days-of-lineup-announcements": {
-      "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
-      "decision": "accepted",
-      "image_sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
-      "note": "現本文とnative生成の実PNG・最終JPEGを表示して照合。手前の視聴者は両手のスマホを真顔で見下ろし、隣のテレビ内ではマイクを持った歌手が歌っている。歌より通知の続きを待つ本文の主要場面に一致する。肌・髪・ニット・木製家具、手元、室内灯とテレビの光が自然な写真として見え、目立つ文字・ロゴや破綻はない。匿名の創作人物で、実在番組の出演者・ロゴの再現として扱わない。",
-      "reviewed_at": "2026-11-09T04:25:27.049533+00:00"
-    },
-    "office-face-to-face-day-video-call-echo": {
-      "decision": "rejected",
-      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
-      "image_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb",
-      "reviewed_at": "2026-11-06T08:10:13+09:00",
-      "note": "実写感の再点検。公開JPEGは3画面の人物の顔や輪郭が均一にぼやけ、灰色でプラスチック風の机・機材と影も人工的。出社して画面越しという記事の逆説は分かるが、報道写真として自然な質感には見えないため不採用。現行の専用SVGを使い、新しい写真は現物を目視してから採否を決める。"
-    },
-    "paid-conversation-checkout-shoppers-chat-in-line": {
-      "decision": "rejected",
-      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
-      "image_sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c",
-      "reviewed_at": "2026-11-09T03:05:38.950340+00:00",
-      "note": "実JPEGと現本文を照合。肌・髪・衣服・蛍光灯は写真らしいが、手前の客とレジ係による通常の接客に見え、中央の客は背を向けている。客同士の雑談と、そのため係員が待つ関係がない。左上の値札に目立つ崩れた文字、名札にロゴ風表記があり、ネギも袋でなく売場に置かれているため不採用。現本文に合う専用SVGを採用する。"
-    },
-    "park-recorded-laughter-real-kids-shushed": {
-      "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
-      "decision": "accepted",
-      "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
-      "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
-      "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
-    },
-    "personalized-hidden-harbor-crowded-by-tourists": {
-      "decision": "rejected",
-      "article_sha256": "2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff",
-      "image_sha256": "ca38a62a240837444213ea6d8a50fa643aeda9b019bbe7edacecd7798ba77f30",
-      "reviewed_at": "2026-11-09T01:06:15.015535+00:00",
-      "note": "現本文・場面指示・実JPEG原本を表示して照合。ロープ、長靴、衣服、曇天の光は自然で、撮影する人物も見える。しかし背景は高層ビルと多数のヨットがある都市型マリーナで、岸壁には十分な空間があり、撮影客の混雑や漁師の出航を妨げる関係が成立していない。船首に目立つ日本語風の偽文字もある。指示も数人が隣の遊歩道から撮影する場面で、本文の狭い作業動線・撮影客の集中を弱めていた。主要場面に合わないため不採用とし、漁船を撮る旅行者と三脚が縄を運ぶ漁師の道をふさぐ専用SVGで回収する。原JPEG・生成指紋・seedは保持し、同日再試行はしない。"
     },
     "pressure-office-mood-forecast": {
       "article_sha256": "f8cdc6e36bef9e41cb7c625ed010b0d4e9302d76ae8ea39dadd994db962bd838",
@@ -231,12 +112,82 @@
       "note": "研究所の実験台で資料を確認する研究者。",
       "reviewed_at": "2026-11-04T01:30:05+00:00"
     },
-    "sale-discount-savings-receipt-framed": {
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "decision": "accepted",
+      "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+      "note": "荒れた隠れ家に入る人物を描いた場面。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "supporter-guarantor-contract": {
+      "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
+      "decision": "accepted",
+      "image_sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350",
+      "note": "野球場で応援用メガホンを使う人物。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "unwanted-call-protection-calls-back": {
+      "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
+      "decision": "accepted",
+      "image_sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c",
+      "note": "家庭の固定電話を前にした二人。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "volleyball-team-lunch-plate-merch": {
+      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
+      "decision": "accepted",
+      "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
+      "note": "皿と球を並べた物撮りで、記事の食器への注目を表す。",
+      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    },
+    "sweet-potato-chorus-starts-too-late": {
+      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
+      "decision": "accepted",
+      "image_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
+      "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
+      "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
+    },
+    "double-speed-drama-explainer-marathon": {
+      "article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
+      "decision": "accepted",
+      "image_sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25",
+      "reviewed_at": "2026-11-04T11:42:05.375093+09:00",
+      "note": "架空の若い男性が紙面に関係図やメモを書きながら没頭する場面。読める文章・固有名詞・目立つロゴは見当たらない。ペンを2本持つ表現はやや不自然だが重大な人体破綻ではない。動画画面や倍速・3時間のオチは未再現の補助イメージ。"
+    },
+    "midterm-prediction-notebook-full-of-holes": {
       "decision": "rejected",
-      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
-      "image_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
-      "reviewed_at": "2026-11-05T09:17:08.936Z",
-      "note": "記事別negativeを加えた再生成を実画像で確認。人物は消えたが、黒い額にはレシートではなく普通の写真が入り、周囲も家電箱の山ではなく棚・電子機器になった。『10万円使って3万円節約を額装』の中心物が存在しないため不採用。無料CPUの同条件再試行は止め、安全な代替画像を維持する。"
+      "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
+      "image_sha256": "d2c0d1ef9a9474612a4a672fa112754ac60941091ba9d35339965e7cf8d26df4",
+      "reviewed_at": "2026-11-08T23:14:05.648451+00:00",
+      "note": "現本文・試作指示・実JPEGを表示して照合。承認済みSVGを参照した初回の無料CPU試作（run 42533373151、strength 0.65）で、開いたノートと木の机の配置は保たれた。しかし右ページはほぼ無傷で、大きな破れ穴も次の紙面の露出もなく、灰色の消しかすも識別できない。右側にはピンクの筆記具・小物が並ぶ。木目や紙は写真寄りだが低精細で、中心の『消しすぎて穴が開いた予想ノート』が欠けるため不採用。現本文に合う専用SVGを維持し、同日再試行はしない。試作元と新指示コピーの指紋は区別し、既存JPEG・生成指紋・seedを変更しない。"
+    },
+    "basketball-opening-day-game-seven": {
+      "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
+      "decision": "rejected",
+      "image_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
+      "note": "実画像を記事と照合。大観衆の前で選手がゴール下でシュートしている試合中の画で、開幕前に初対面の選手が挨拶する場面ではない。巨大な「7」の小道具・初戦の優勝旗・開幕式がなく、記事の風刺を伝えられないためJPEGを不採用。安全な代替画像を維持する。",
+      "reviewed_at": "2026-11-05T02:51:28.168Z"
+    },
+    "chance-meeting-cafe-reservation-full": {
+      "article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
+      "decision": "rejected",
+      "image_sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81",
+      "note": "実画像はカフェで2人が座るだけ。予約票、隣席へ予定外に話しかける客、制止する店員が写らず、記事の笑いの中心が再現されていない。黒板の擬似文字も目立つため不採用。安全な記事別イラストを継続する。",
+      "reviewed_at": "2026-11-04T06:44:47.583Z"
+    },
+    "park-recorded-laughter-real-kids-shushed": {
+      "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
+      "decision": "accepted",
+      "image_sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68",
+      "note": "滑り台のある公園、右上の柱に付いた拡声器、遊具の近くの架空の人物2人を実画像で確認。本文の舞台と音声放送の具体物が判別できる補助イメージとして採用。口を押さえる動作・管理員の制止・録音笑い声のオチは未再現。遠景の人物は柔らかい描写だが、目立つ読める文字・ロゴ・重大な人体の破綻はない。",
+      "reviewed_at": "2026-11-04T08:52:39.146030+00:00"
+    },
+    "crosswalk-photo-captcha-human-stuck": {
+      "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
+      "decision": "accepted",
+      "image_sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5",
+      "note": "実画像と現本文を照合。街中の横断歩道と複数の通勤客が判別できる補助イメージとして採用。手前の人物は淡色の小物を見ているが、スマホとは断定しない。通行ゲート・画像クイズのマス・AIが解くオチは未再現。群衆の顔・手足は柔らかく一部不自然だが、主役の大きな人体破綻や目立つ読める文字・ロゴはない。",
+      "reviewed_at": "2026-11-04T10:55:47.442092+00:00"
     },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
@@ -244,6 +195,69 @@
       "image_sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f",
       "note": "実画像と現本文を照合。室内でひもを掛けた箱を持つ、黒い帽子・服の架空の配送員風男性が写り、荷物の配送という題材が伝わる補助画像として採用。受取人・受取辞退の動作・高級なのし紙・贈り主と受取人が同じというオチは未再現。背景の紙面には小さい擬似文字があるが、目立つ読める見出しやロゴ、主役の顔・手・箱の大きな破綻は見当たらない。",
       "reviewed_at": "2026-11-04T12:59:04.493426+00:00"
+    },
+    "datacenter-unbuilt-ribbon-cutting": {
+      "decision": "accepted",
+      "article_sha256": "263110b8e9d0293a784793664f85d86f8ddaa55c32556ca797f9bc97b08b0e33",
+      "image_sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2",
+      "reviewed_at": "2026-11-07T15:58:16.879294+00:00",
+      "note": "現本文と新規JPEGを実表示で照合。広い空き地・地面に残る鮮やかな赤い式典用テープ・建物のない中央が見える。砂利の細かな質感、自然な日差し、背景の木立と遠近が通常の屋外写真として自然で、不要な文字やロゴはない。社長・ハサミ・テープカットの動作は写らないため、それを描写したとは扱わず、本文終盤の「中央には空き地だけが残る」記念写真を表す場面として採用する。"
+    },
+    "film-village-all-stars-no-extras": {
+      "decision": "rejected",
+      "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
+      "image_sha256": "d0c7f9b077269d2150b829f857620645145e89144b3d0a3e2138f0b99f59e76b",
+      "reviewed_at": "2026-11-08T08:14:58.356695+00:00",
+      "note": "無料CPUの実写モデル24ステップによる新指示の試作（run 42461246270）を本文・実画像と照合。自然光、木造建物、舗装路は普通のカメラ写真に見えるが、主役の監督・買い物袋・三脚の撮影カメラが一つも写っていない。無人の町並みだけでは「監督が通行人役を兼ねる」オチが伝わらないため不採用。現本文の専用SVGは、主演の集団と袋を持つ監督・撮影カメラの関係を実表示で再確認し維持。記事本文・画像指示・旧JPEG生成記録は変更せず、試作元SHAと試作記事SHAはmanifestの保留記録で区別する。"
+    },
+    "sale-discount-savings-receipt-framed": {
+      "decision": "rejected",
+      "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
+      "image_sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da",
+      "reviewed_at": "2026-11-05T09:17:08.936Z",
+      "note": "記事別negativeを加えた再生成を実画像で確認。人物は消えたが、黒い額にはレシートではなく普通の写真が入り、周囲も家電箱の山ではなく棚・電子機器になった。『10万円使って3万円節約を額装』の中心物が存在しないため不採用。無料CPUの同条件再試行は止め、安全な代替画像を維持する。"
+    },
+    "office-face-to-face-day-video-call-echo": {
+      "decision": "rejected",
+      "article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
+      "image_sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb",
+      "reviewed_at": "2026-11-06T08:10:13+09:00",
+      "note": "実写感の再点検。公開JPEGは3画面の人物の顔や輪郭が均一にぼやけ、灰色でプラスチック風の机・機材と影も人工的。出社して画面越しという記事の逆説は分かるが、報道写真として自然な質感には見えないため不採用。現行の専用SVGを使い、新しい写真は現物を目視してから採否を決める。"
+    },
+    "sns-quit-support-site-hundred-day-login-award": {
+      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
+      "decision": "rejected",
+      "image_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
+      "note": "実際のJPEGは暗い式場の無人の円卓、ガラス製トロフィー状の器、左右の発光パネルが中心。受賞者、スマホ、SNSに戻り続ける客席の人々は写らず、『やめるSNSの100日連続ログイン表彰』という風刺が視覚化されていないため不採用。記事とオチに合う専用SVGを実描画で確認して採用する。",
+      "reviewed_at": "2026-11-05T10:56:45.097Z"
+    },
+    "christmas-done-for-you-family-decorates-boxes": {
+      "decision": "rejected",
+      "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
+      "image_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b",
+      "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
+      "note": "実JPEGと現本文を照合。大きな緑の飾り済みツリーとソファの人物を写した普通のクリスマス風景で、配送箱の工作ツリー、紙の星の貼り直し、親がスマホで撮り続ける場面がない。黄褐色の霞、人物の平滑な描写と箱の発光も不自然なため不採用。現在の本文に合う専用SVGを維持する。"
+    },
+    "tori-no-ichi-kumade-blocks-store-entrance": {
+      "decision": "rejected",
+      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+      "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
+      "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
+      "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。"
+    },
+    "five-star-reviews-of-returned-humidifiers": {
+      "decision": "rejected",
+      "article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
+      "image_sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba",
+      "reviewed_at": "2026-11-08T13:37:17.264Z",
+      "note": "公開済み原本（origin: github-cpu-lcm、SHA-256: 197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba）をあらためて実表示して採否を撤回。棚や箱は並んでいるが、遠景の人物と箱の形・印字がのっぺりし、灰白色の霧をかけたように全体が不自然なCG／加工画像に見え、現行の報道写真らしさに届かない。加湿器は判別できず、星5の販促も返品対新納品も写っておらず、現在の中心場面と一致しない。背景だけ合えばよいという2026-11-08先行採用は過度に緩い判断だったため撤回し、当該JPEGは表示せず検証済みの倉庫・星5・返品箱の専用SVGへ戻す。原JPEG・seed・現記事指紋は変更しない。別試作の不採用JPEG（SHA-256: 795a28a8c2b70fad4003632e54578f042dff017fff7561387d74737bf47f62e5、run 42468601719）も引き続き不採用。"
+    },
+    "surprise-birthday-organized-by-guest-of-honor": {
+      "decision": "rejected",
+      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
+      "image_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a",
+      "reviewed_at": "2026-11-07T15:05:19.416840+00:00",
+      "note": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。"
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "decision": "rejected",
@@ -260,54 +274,12 @@
       "reviewed_at": "2026-11-07T15:49:37.062249+00:00",
       "note": "通常の実写モデル24ステップで新規生成したJPEGを現本文と実表示で照合。肌・髪・パーカー・室内光は写真として自然で、撮影用softboxも見える。一方、顔に当てる物は細く均一な木製棒に見え、化粧ブラシの毛先やコンシーラー容器を識別できない。位置も鼻脇から上唇付近で、目の下への化粧と判別できず不採用。実写画質の改善と本文への採用を分け、専用SVGを維持する。"
     },
-    "sns-quit-support-site-hundred-day-login-award": {
-      "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
-      "decision": "rejected",
-      "image_sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34",
-      "note": "実際のJPEGは暗い式場の無人の円卓、ガラス製トロフィー状の器、左右の発光パネルが中心。受賞者、スマホ、SNSに戻り続ける客席の人々は写らず、『やめるSNSの100日連続ログイン表彰』という風刺が視覚化されていないため不採用。記事とオチに合う専用SVGを実描画で確認して採用する。",
-      "reviewed_at": "2026-11-05T10:56:45.097Z"
-    },
-    "spy-captive-escapes-before-rescue": {
-      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-      "decision": "accepted",
-      "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-      "note": "荒れた隠れ家に入る人物を描いた場面。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
-    },
     "stolen-doorbell-returned-by-parcel": {
       "decision": "rejected",
       "article_sha256": "55fd540d2d3a54f47b9efb4187c9008f253dc517f518d491bf6fc4da1c591ae2",
       "image_sha256": "aeeaac6716552ee2a49910eeb70a49ef4735904b387c43b39f8b83107a86c330",
       "reviewed_at": "2026-11-07T15:25:58.362939+00:00",
       "note": "無料CPUの実写モデルで作った新JPEGを現本文と照合。金属・布地の質感は写真らしいが、実物は横につながった電話受話器のような金色の器具で、縦の木製柄と裾が開く鈴、開いた小包の箱が見当たらない。記事の呼び鈴を表さないため不採用。既存専用SVGを維持する。"
-    },
-    "supporter-guarantor-contract": {
-      "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
-      "decision": "accepted",
-      "image_sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350",
-      "note": "野球場で応援用メガホンを使う人物。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
-    },
-    "surprise-birthday-organized-by-guest-of-honor": {
-      "decision": "rejected",
-      "article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
-      "image_sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a",
-      "reviewed_at": "2026-11-07T15:05:19.416840+00:00",
-      "note": "実JPEGと現本文を照合。飲食店で4人の女性と小さなろうそくは見えるが、誕生日ケーキと主役が隠す進行表が判別できず、主役自身の段取りが伝わらない。顔は発光した蝋のようで手も不鮮明なため、実写写真として不採用。既存の専用SVGを維持する。"
-    },
-    "sweet-potato-chorus-starts-too-late": {
-      "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
-      "decision": "accepted",
-      "image_sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8",
-      "note": "新しく生成した紫色のさつまいもを主役に切り抜き、最終1200×675 JPEGを検品。元候補の不自然な空洞の断面は採用範囲から外した。柔らかい画質だが食材は判別でき、文字・ロゴ・重大な形の破綻はない。大会の人物や合図は未再現の食材イメージ。",
-      "reviewed_at": "2026-11-04T11:35:10.037418+09:00"
-    },
-    "tori-no-ichi-kumade-blocks-store-entrance": {
-      "decision": "rejected",
-      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
-      "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
-      "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
-      "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。"
     },
     "unsold-coat-storage-fees-exceed-sale": {
       "decision": "accepted",
@@ -316,19 +288,26 @@
       "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
       "note": "現本文と実JPEGを照合。貸し収納の区画に冬用コートが掛かり、棚と書類が残る。コートの中綿・縫い目・襟、紙、棚、室内光と影は自然で、長期保管中のコートと書類という主要な物と場所が一致する。女性が箱詰めする行為、空のプラスチックケース、正確な保管料を描いたとは扱わず、売却前の保管場面として採用する。"
     },
-    "unwanted-call-protection-calls-back": {
-      "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
-      "decision": "accepted",
-      "image_sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c",
-      "note": "家庭の固定電話を前にした二人。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    "cafe-regular-dislikes-usual-cinnamon-latte": {
+      "decision": "rejected",
+      "article_sha256": "301b8ec73e315101ceee6a19c3ab3447b6e4b5123174d7cbd3937d6dc3d1edfa",
+      "image_sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86",
+      "reviewed_at": "2026-11-08T13:01:09.486Z",
+      "note": "現記事とscene_promptに実JPEGを目視照合。自然光、木材、肌と服は普通の写真に近いが、写るのは満面の笑みのバリスタ一人と白いカップ。苦手なシナモンラテを断れない男性常連、注文を聞かない接客や注文を変えたい気まずさが見えず、左下のカードにも擬似文字がある。中心人物と行為を取り違えるため不採用。記事改稿で消えた無期限無料券を旧SVGから除き、現本文に合う専用SVGで掲載する。元JPEG、seed、生成指紋は維持。"
     },
-    "volleyball-team-lunch-plate-merch": {
-      "article_sha256": "8e2ae39d15cc90145a733319fafdfc4c31c6c8b1111e8fc7db8d695ae79093c6",
-      "decision": "accepted",
-      "image_sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09",
-      "note": "皿と球を並べた物撮りで、記事の食器への注目を表す。",
-      "reviewed_at": "2026-11-04T01:30:05+00:00"
+    "free-play-event-parents-timetable-children-waiting": {
+      "decision": "rejected",
+      "article_sha256": "6a660446990f8098640471464a3c4de435010cd3ddeb3206bb252f937a4b9f92",
+      "image_sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9",
+      "reviewed_at": "2026-11-08T07:21:31.760317+00:00",
+      "note": "現本文と実JPEGを照合。中庭や衣服は概ね写真風だが、大人が進行表を囲む前景がなく、子どもも座る・しゃがむ姿が中心で鬼ごっこの動きは判別しづらい。会議する大人と勝手に遊ぶ子どもの対比が欠けるため不採用。現在の本文に合う専用SVGを維持する。"
+    },
+    "fridge-checkin-five-years-only-opening-times": {
+      "decision": "rejected",
+      "article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
+      "image_sha256": "54a265ac0c075491e1e2b07087fe405ab4b5bdc6bd121bf7736d8ba04de34335",
+      "reviewed_at": "2026-11-08T09:46:08.402253+00:00",
+      "note": "主題を短くした無料CPU再試作run 42467801767の本文・実JPEGを確認。白い冷蔵庫と取っ手は普通の写真らしいが、黄色い紙は細長い折れた1枚に見え、複数の付箋・台所カウンター・伏せたスマホが写っていない。父が話したかった日常と通知の対比を十分に表さないため不採用。父・娘・付箋・スマホが読める既存専用SVGを維持し、同じ記事を今日もう一度生成しない。元JPEGの生成記録と本文は変更しない。"
     },
     "zero-redelivery-residents-collect-parcels": {
       "decision": "rejected",
@@ -336,6 +315,27 @@
       "image_sha256": "17cd689647ac1eaaa6aef3cbf716bec35469b29fbbee083f92fe956ffb66a7e5",
       "reviewed_at": "2026-11-08T22:55:31.786596+00:00",
       "note": "現本文と実JPEG原本を表示して照合。集合住宅らしい通路、二人の住民と車輪付きカート、自然な外光・衣服・壁・床・影は写真として成立し、大きな人体破綻や偽文字も目立たない。しかし手前のカートは編み籠と黒い買い物袋、奥も布製バッグで、宅配の段ボール箱は識別できず、通常の買い物帰りに見える。本文の主要場面『住民が配送所から宅配荷物を運ぶ』に必要な具体物が欠けるため不採用。CPU run 42531619069 の新JPEGを検品した結果であり、原JPEG・生成指紋・seedは保持し、本文に合う専用SVGで掲載する。"
+    },
+    "personalized-hidden-harbor-crowded-by-tourists": {
+      "decision": "rejected",
+      "article_sha256": "2c9933c77b8bb3ee5236f0f03b76a3547f0eec838aa3538b37ebb78df6316cff",
+      "image_sha256": "ca38a62a240837444213ea6d8a50fa643aeda9b019bbe7edacecd7798ba77f30",
+      "reviewed_at": "2026-11-09T01:06:15.015535+00:00",
+      "note": "現本文・場面指示・実JPEG原本を表示して照合。ロープ、長靴、衣服、曇天の光は自然で、撮影する人物も見える。しかし背景は高層ビルと多数のヨットがある都市型マリーナで、岸壁には十分な空間があり、撮影客の混雑や漁師の出航を妨げる関係が成立していない。船首に目立つ日本語風の偽文字もある。指示も数人が隣の遊歩道から撮影する場面で、本文の狭い作業動線・撮影客の集中を弱めていた。主要場面に合わないため不採用とし、漁船を撮る旅行者と三脚が縄を運ぶ漁師の道をふさぐ専用SVGで回収する。原JPEG・生成指紋・seedは保持し、同日再試行はしない。"
+    },
+    "paid-conversation-checkout-shoppers-chat-in-line": {
+      "decision": "rejected",
+      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
+      "image_sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c",
+      "reviewed_at": "2026-11-09T03:05:38.950340+00:00",
+      "note": "実JPEGと現本文を照合。肌・髪・衣服・蛍光灯は写真らしいが、手前の客とレジ係による通常の接客に見え、中央の客は背を向けている。客同士の雑談と、そのため係員が待つ関係がない。左上の値札に目立つ崩れた文字、名札にロゴ風表記があり、ネギも袋でなく売場に置かれているため不採用。現本文に合う専用SVGを採用する。"
+    },
+    "music-special-forty-days-of-lineup-announcements": {
+      "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
+      "decision": "accepted",
+      "image_sha256": "2adc311c4244326e0963f37707e643ef39fcfa0aec6aa562945b7435abfb3616",
+      "note": "現本文とnative生成の実PNG・最終JPEGを表示して照合。手前の視聴者は両手のスマホを真顔で見下ろし、隣のテレビ内ではマイクを持った歌手が歌っている。歌より通知の続きを待つ本文の主要場面に一致する。肌・髪・ニット・木製家具、手元、室内灯とテレビの光が自然な写真として見え、目立つ文字・ロゴや破綻はない。匿名の創作人物で、実在番組の出演者・ロゴの再現として扱わない。",
+      "reviewed_at": "2026-11-09T04:25:27.049533+00:00"
     }
   },
   "version": 1
