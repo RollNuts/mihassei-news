@@ -9,6 +9,7 @@ import textwrap
 from contextlib import redirect_stdout
 from datetime import datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
@@ -136,13 +137,56 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn("concurrency:",markup)
         self.assertIn("cancel-in-progress: true",markup)
         self.assertIn('EXPECTED_SHA: ${{ github.sha }}',markup)
-        self.assertIn('https://veripsa.com/build-revision.txt?release=',markup)
-        self.assertIn('if latest == expected:',markup)
+        self.assertIn('python3 scripts/wait_for_live_revision.py',markup)
+        self.assertIn('timeout-minutes: 15',markup)
         self.assertIn("python3 scripts/check_live.py",markup)
         self.assertIn("python3 scripts/check_share_cards.py",markup)
         self.assertNotIn("Workers Builds: mihassei-news",markup)
         self.assertNotIn("GH_TOKEN:",markup)
         self.assertIn("read-only",markup.lower())
+
+
+class PVHealthTriggerTests(unittest.TestCase):
+    def setUp(self):
+        self.workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
+
+    def allowed(self, event, conclusion="success", repository="RollNuts/mihassei-news", branch="main"):
+        # Evaluate the actual workflow's simple boolean condition rather than
+        # maintaining a second implementation of the event filter in this test.
+        match = re.search(r"(?m)^    if: >-\n((?:      .*\n)+)", self.workflow)
+        self.assertIsNotNone(match)
+        expression = " ".join(line.strip() for line in match.group(1).splitlines())
+        expression = expression.replace("&&", " and ").replace("||", " or ")
+        github = SimpleNamespace(
+            event_name=event, repository="RollNuts/mihassei-news",
+            event=SimpleNamespace(workflow_run=SimpleNamespace(
+                conclusion=conclusion, head_branch=branch,
+                head_repository=SimpleNamespace(full_name=repository))))
+        return eval(expression, {"__builtins__": {}}, {"github": github})
+
+    def test_pv_follows_own_main_release_success_without_another_revision_wait(self):
+        self.assertIn("workflow_run:\n    workflows: [Verify live article delivery and SEO]", self.workflow)
+        self.assertIn("types: [completed]\n    branches: [main]", self.workflow)
+        self.assertNotIn("  push:", self.workflow)
+        self.assertNotIn("build-revision.txt", self.workflow)
+        self.assertNotIn("wait_for_live_revision", self.workflow)
+        self.assertNotIn("EXPECTED_SHA", self.workflow)
+        self.assertNotIn("actions/checkout", self.workflow)
+        self.assertTrue(self.allowed("workflow_run"))
+
+    def test_failed_fork_and_other_branch_runs_cannot_report_pv_health_success(self):
+        for conclusion in ("failure", "cancelled", "skipped", "timed_out", None):
+            with self.subTest(conclusion=conclusion):
+                self.assertFalse(self.allowed("workflow_run", conclusion=conclusion))
+        self.assertFalse(self.allowed("workflow_run", repository="other/fork"))
+        self.assertFalse(self.allowed("workflow_run", branch="feature"))
+        self.assertFalse(self.allowed("push"))
+        self.assertFalse(self.allowed("pull_request"))
+
+    def test_scheduled_and_manual_health_remain_independent_of_release_events(self):
+        for event in ("schedule", "workflow_dispatch"):
+            with self.subTest(event=event):
+                self.assertTrue(self.allowed(event, conclusion=None, repository=None, branch=None))
 
 
 class PVRecommendationDeploymentTests(unittest.TestCase):
@@ -380,9 +424,8 @@ class PVAPIDeploymentTests(unittest.TestCase):
         self.assertIn("permissions:\n  contents: read", workflow)
         self.assertIn("group: public-pv-health-main", workflow)
         self.assertIn("cancel-in-progress: true", workflow)
-        self.assertIn("if: github.event_name == 'push'", workflow)
-        self.assertIn("build-revision.txt?release=$short_sha", workflow)
-        self.assertIn("Public site confirmed serving requested commit", workflow)
+        self.assertIn("workflow_run:", workflow)
+        self.assertIn("workflow_dispatch:", workflow)
 
     def test_scheduled_health_workflow_rejects_old_browser_only_ranking_contract(self):
         payload = self.payload("apology-before-incident")
