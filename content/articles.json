@@ -1837,7 +1837,7 @@
       "url": "https://www.reuters.com/business/media-telecom/chinas-hollywood-visitors-become-stars-consumers-spend-more-experiences-2026-11-02/",
       "topic": "2026年11月2日のReuters報道。中国・横店影視城では観光客が映画セットで撮影体験を楽しみ、体験型消費への関心が紹介された。全員が主演を希望する小町映画村の混乱、監督が通行人になる描写や人物の発言は本紙独自の設定であり、実際の撮影事故や運営事実ではない。"
     },
-    "scene_prompt": "ONE solitary tired film director carrying two shopping bags walks across a completely empty historical movie street. A tripod camera stands at the curb pointed at him. Empty sidewalks and empty storefronts; no other people anywhere in the frame.",
+    "scene_prompt": "On a fictional small movie-experience shopping-street set, two anonymous visitors pose seriously as protagonists toward a tripod video camera. Behind them, the director in a plain cap walks across the scene with two grocery bags, acting as the only passing shopper. Show the camera, posing leads and walking director together in a diagonal medium-wide daylight photograph. No readable signs, logos, known actors or movie characters.",
     "tags": [
       "体験消費",
       "イベント"
@@ -1846,7 +1846,8 @@
       "主役願望",
       "体験消費あるある"
     ],
-    "visual_strategy": "illustration"
+    "visual_strategy": "cpu-photo",
+    "modified_at": "2026-11-09T08:04:20.492498+00:00"
   },
   {
     "slug": "sale-discount-savings-receipt-framed",
@@ -2169,7 +2170,8 @@
     "satire_tags": [
       "後出しじゃんけん",
       "数字マジック"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "double-speed-drama-explainer-marathon",
@@ -2311,7 +2313,7 @@
       "「呼び鈴がありません。ご用の方は声をかけてください」。2031年、商店街の雑貨店『こつこつ堂』の入口に、そんな貼り紙が出た。前の晩、何者かがドアの呼び鈴だけを外して持ち去ったのだ。店主は交番に届け、奥で品出しをしながら、聞こえないはずの鈴の音を何度も気にしていた。",
       "翌日、店に小包が届いた。中身は呼び鈴と「返します。すみません」の手紙。しかし店主は奥にいて、配達員が何度呼んでも気づかなかった。小包はいったん持ち帰られ、不在票には「呼び鈴がなく、お声がけのみ」と書かれていた。再配達でようやく鈴を受け取った店主は、取り付ける前にドアを開け、帰りかけた配達員を追いかけて「すみません、これで次は鳴らせます」と鈴を振ってみせた。"
     ],
-    "scene_prompt": "A small empty mounting hook beside the entrance of a fictional Japanese stationery shop, with a delivery person in plain uniform holding a tiny parcel containing a brass door chime. A baffled anonymous shopkeeper stands at the open doorway, warm street daylight, deadpan photorealistic comedy, no readable signs, no logos, no identifiable real businesses.",
+    "scene_prompt": "After redelivery at an open fictional stationery-shop doorway, a deadpan shopkeeper holds and rings a small removed brass door bell by its metal mounting loop toward a departing plain-uniformed courier who turns back. An open mailing carton with packing paper and an unreadable apology note rests on a shelf beside them, while the door has an empty bell bracket. Natural daylight, fictional ordinary people, no readable text or logos.",
     "source": {
       "kind": "ニュース",
       "publisher": "J-CASTニュース",
@@ -2327,7 +2329,9 @@
     "satire_tags": [
       "防犯あるある",
       "オチが物理"
-    ]
+    ],
+    "modified_at": "2026-11-09T08:04:20.318155+00:00",
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "bakery-no-important-announcement-panic",
