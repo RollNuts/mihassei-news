@@ -499,6 +499,27 @@ class FreeCpuImageTests(unittest.TestCase):
                                           "scene_prompt": "Candid documentary press photograph."}),
                          ("Candid documentary press photograph.", []))
 
+    def test_minimal_style_retains_full_context_that_would_otherwise_be_omitted(self):
+        core = "A fisherman carries coiled rope beside a small fishing boat."
+        context = (
+            "The small coastal fishing port has low unmarked wooden storage sheds, weathered mooring posts, "
+            "simple nets, fishing floats and narrow working quays beside calm water, with "
+            "no city skyline, tall apartment blocks, pleasure yachts, billboards, brand "
+            "logos or readable writing, under flat overcast dawn light with natural wood "
+            "and rope textures and unposed people nearby."
+        )
+        source = {"slug": "new-harbor-scene", "scene_prompt": core + " " + context}
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        full = cpu.wrap_prompt(core, [context])
+        minimal_full = cpu.wrap_prompt(core, [context], minimal=True)
+        self.assertGreater(len(tokenizer.encode(full)), cpu.CLIP_TOKEN_LIMIT)
+        self.assertLessEqual(len(tokenizer.encode(minimal_full)), cpu.CLIP_TOKEN_LIMIT)
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            fitted = cpu.fit_cpu_prompt(source, tokenizer)
+        self.assertEqual(fitted, minimal_full)
+        self.assertNotIn("omitted", output.getvalue())
+
     def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
         core = "An actor holds a giant spoon beside an empty soup bowl."
         long_context = "A distant skyline " + "tall " * 85 + "with many buildings."

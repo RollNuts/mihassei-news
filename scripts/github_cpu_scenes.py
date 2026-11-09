@@ -270,6 +270,11 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
             print("CPU prompt compacted trailing visual clauses; primary action retained", flush=True)
     if count(prompt) > CLIP_TOKEN_LIMIT:
         raise ValueError("Visual core exceeds CLIP budget; refusing truncated staging")
+    # Shorten the existing photo wrapper before dropping a whole scene sentence.
+    if (context and not minimal and not tv_pilot
+            and count(wrap_prompt(core, context)) > CLIP_TOKEN_LIMIT
+            and count(wrap_prompt(core, context, minimal=True)) <= CLIP_TOKEN_LIMIT):
+        minimal = True
     included = []
     omitted = 0
     for sentence in context:
