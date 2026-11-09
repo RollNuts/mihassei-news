@@ -20,7 +20,7 @@ if __package__:
     from .social_cards import render_social_card, render_issue_card
     from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
-    from .generated_photos import generated_url
+    from .generated_photos import generated_url, share_page_url
     from .visual_review import reviewed_generated_scene
     from .broadcast_captions import story_cues
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
@@ -35,7 +35,7 @@ else:
     from social_cards import render_social_card, render_issue_card
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
-    from generated_photos import generated_url
+    from generated_photos import generated_url, share_page_url
     from visual_review import reviewed_generated_scene
     from broadcast_captions import story_cues
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
@@ -455,6 +455,7 @@ def category_meta(a, compact=False):
 
 def share_url(a):
     url = SITE + article_url(a) + "?utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=reader_entry_v3"
+    url = share_page_url(a, url, root=BASE)
     text = reader_share_text(a, url)
     return "https://x.com/intent/tweet?" + urlencode({"text": text, "url": url})
 
@@ -497,7 +498,7 @@ def actions(a, compact=False):
         + f'<span aria-hidden="true">💬</span><span>コメント</span><span class="comment-count" data-comment-count="{slug}" hidden></span></a>'
         + f'<a class="share-control" data-share-slug="{slug}" href="{share}" target="_blank" rel="noopener noreferrer" aria-label="Xで記事を共有">'
         + '<span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
-        + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(SITE + link)}">'
+        + ('' if compact else f'<button class="copy-control" type="button" data-copy-url="{escape(share_page_url(a, SITE + link, root=BASE))}">'
            '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button>')
         + '</div>'
     )
