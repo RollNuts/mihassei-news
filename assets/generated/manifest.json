@@ -227,24 +227,60 @@
       "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
     },
     "fan-theories-write-final": {
-      "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
-      "bytes": 94588,
-      "generated_at": "2026-11-03T05:56:12.792054+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 3110783516514393951,
-      "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
+      "article_sha256": "405644be6f2c757f4889e3d889dab35a284f9fb930b8864c4ce4472e7d3f85d5",
+      "bytes": 154221,
+      "generated_at": "2026-11-09T06:22:59.256713+00:00",
+      "generation_id": "72139e89-8556-4efb-88ed-fb1a32c18638",
+      "generation_prompt": "Create a horizontal 16:9 photorealistic candid documentary photograph for a fictional Japanese satirical newspaper. This is a staged reenactment with entirely fictional ordinary adult people, no celebrity likeness. Scene: obsessive television-drama fans are earnestly filming their own alternate final episode after rejecting the official ending. Inside a modest lived-in Japanese apartment, one serious amateur fan in an ordinary cardigan stands behind a consumer video camera mounted on a practical tripod in the left foreground, carefully recording another deadpan adult fan performing a dramatic conversation beside a small sofa on the right. A third amateur performer sits on the sofa looking gravely at the standing actor; this is a tiny home film set, not a studio, not a commercial production. A simple ceramic vase on the low table is a normal background prop. Show the actual camera pointed toward the two actors and their believable eyelines. The humor is the disproportionate seriousness of these ordinary fans staging their own ending. Natural soft daytime window light, realistic skin pores, ordinary cloth and wood textures, restrained colors, unretouched local newspaper press photo, eye level, 35mm lens, plausible anatomy and hands. Keep all three adults and the recording camera clearly legible in a small article thumbnail. Absolutely no captions, headlines, readable writing, subtitles, logo, watermarks, red-string conspiracy wall, handmade miniature, illustration, anime, painting, 3D-render look, glossy cinematic lighting, or poster composition.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
+        "bytes": 94588,
+        "generated_at": "2026-11-03T05:56:12.792054+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 3110783516514393951,
+        "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
+        "reason": "Visual review: loose red cords float through an otherwise empty room without the evidence cards or board they should connect. Use the article-specific illustration until a coherent new scene is reviewed.",
+        "rejected_candidate_sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
+      },
+      "prompt_version": 3,
+      "sha256": "b27dd7f0b02ed6747ae35b3e38af2ce268ffed49357acc356ce4b2183112bacb",
+      "source_article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
+      "source_png_sha256": "441401026c4e6be078bc5e97a05075de85bf93524b87d070269d20242b23e982"
     },
     "farm-friendship-across-species": {
-      "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
-      "bytes": 109756,
-      "generated_at": "2026-11-03T04:34:29.880437+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 6455747253186509503,
-      "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+      "article_sha256": "da4e026f8caf201b70b3f37d230b9a230bad2053acae74f7b5a6b73066ec7081",
+      "bytes": 217067,
+      "generated_at": "2026-11-09T06:23:49.925258+00:00",
+      "generation_id": "84e9f653-c0d9-4c8d-b994-650ad5d31a75",
+      "generation_prompt": "Horizontal 16:9 realistic documentary news photograph of a staged fictional scene at a small Japanese farm. Exactly one clearly recognizable black-and-white cow on the left and exactly one clearly recognizable gray donkey on the right, the donkey with long upright ears, narrow equine muzzle, natural mane and hooves; separate anatomically believable animals, no hybrids. Both animals calmly lower their heads to eat fresh grass from their own separate low plain feeding troughs. Between the troughs, a solemn middle-aged keeper in ordinary worn work clothes kneels, very carefully checking the distance BETWEEN THE TWO TROUGHS with a yellow retractable measuring tape stretched low along the ground from one trough's nearest edge to the other. Tape visibly taut and attached to realistic reel in the keeper's hand, no readable numbers needed. The keeper's strangely earnest measuring contrasts with the animals ignoring him and simply eating. Both animals' heads, their two troughs, keeper and tape must be clearly visible in the same single frame; keeper should not block either muzzle. Simple fenced paddock and modest farm shed behind, natural early morning overcast light, ordinary damp grass and dirt, realistic fur, fabric, skin, shadows, unpolished local newspaper camera photo, eye-level 35mm lens, gentle photographic depth, authentic rural setting. Entirely fictional people and farm. No crowd or onlookers, no phones, no lettering, numbers, labels, logos, headlines or watermarks. Not illustration, painting, anime, 3D render, waxy skin, glossy advertisement, cinematic poster or neon. Do not add romantic symbols or humanlike facial expressions to the animals.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
+        "bytes": 109756,
+        "generated_at": "2026-11-03T04:34:29.880437+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 6455747253186509503,
+        "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
+        "reason": "Visual review: one hybrid-looking animal replaces the cow and donkey whose relationship is the central subject. Use the article-specific illustration until two recognizably distinct animals are reviewed.",
+        "rejected_candidate_sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
+      },
+      "prompt_version": 3,
+      "sha256": "3e4788a79c229e55d28d4cf47561b11d1c79e5bef8e75939fc66ba14793e3223",
+      "source_article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
+      "source_png_sha256": "32c6a6cde4a76123baeb5e6cd979e98d0b7f931a1ff8bda566c6dd8bd872d389"
     },
     "father-tries-own-overpacked-bento": {
       "article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
@@ -847,6 +883,19 @@
       "seed": 2586442448911147407,
       "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     },
+    "walking-points-past-own-front-door": {
+      "article_sha256": "bb6d680411142ae62a55e62c0a07d58bb5bcc0ef9e4fe2d977b2ba864c728e3e",
+      "bytes": 179720,
+      "generated_at": "2026-11-09T06:24:55.828323+00:00",
+      "generation_id": "4b891f6a-b24e-4bcf-88f6-007af151298a",
+      "generation_prompt": "A horizontal 16:9 photorealistic candid photograph for a fictional Japanese satirical newspaper, staged with fictional ordinary people, no celebrity likeness. Early evening on a quiet Japanese residential street. A father in his forties wearing ordinary office shirt, trousers and a casual jacket is walking ALONG the sidewalk PAST his own front entrance rather than turning into it. His body and one forward step continue to the right, parallel to the house facade. He holds a normal smartphone loosely down in his left hand, its display turned away from camera so there is absolutely no screen writing. While continuing walking past, he turns his head back toward his elementary-school-age daughter and raises his free right hand in a small deadpan wave. The daughter, safely indoors behind a large low window BESIDE the front door, looks at him and waves back. Both are clearly visible in the same frame: father outside in foreground moving away from the entrance, daughter behind the adjacent window in middle ground. The closed ordinary front door is visibly behind the father's walking direction, a short entrance path leads toward it. Inside beyond the daughter, a softly visible dinner table set for the family suggests they are waiting for him. No other pedestrians. The absurdity is a father close enough to wave to his waiting family but carrying on walking instead of going home. Natural dusk light with gentle warm domestic window light, real skin and cotton textures, believable glass reflections and human anatomy, modest lived-in home, ordinary local newspaper street photo, eye-level 35mm lens, restrained color, not dramatic or glossy. No distance arrows, diagrams, points icons, readable text, numbers, labels, signs, brands, captions or watermarks. Absolutely not illustration, cartoon, anime, 3D render, advertising campaign or cinematic poster.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "118cb291b738ed84e6ac84755b835d2ce145269494121de13788a92cf7cbbee2",
+      "source_article_sha256": "e1de0e6c44bbd716d212e86cd5425709c3ba5da8eb39753d17d8f2cbccfa52b9",
+      "source_png_sha256": "d9d847df0d4ef025aa9bcbd8c3926b7438c331c76088d2dd5eda2f8b9b867d2f"
+    },
     "zero-redelivery-residents-collect-parcels": {
       "article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "bytes": 107244,
@@ -907,16 +956,6 @@
       "article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
       "reason": "The JPEG shows a conventional decorated green Christmas tree and seated people, without the cardboard tree, paper-star reset or parent photographing the child. The source-specific illustration is retained.",
       "rejected_candidate_sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
-    },
-    "fan-theories-write-final": {
-      "article_sha256": "577e80444ebe958f60f5f792881e490772976a89e3d2f672bb69b01202e3ca02",
-      "reason": "Visual review: loose red cords float through an otherwise empty room without the evidence cards or board they should connect. Use the article-specific illustration until a coherent new scene is reviewed.",
-      "rejected_candidate_sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
-    },
-    "farm-friendship-across-species": {
-      "article_sha256": "aa65a99efd6a6432578ebebf942487429c1f5a93ac35ec6353e4b9f31d4c2202",
-      "reason": "Visual review: one hybrid-looking animal replaces the cow and donkey whose relationship is the central subject. Use the article-specific illustration until two recognizably distinct animals are reviewed.",
-      "rejected_candidate_sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
     },
     "film-village-all-stars-no-extras": {
       "article_sha256": "2a0c728d342f075fa811a72a0130015cee19e8c6ff7c83c602523d1127132ab3",
