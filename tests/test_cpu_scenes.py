@@ -1025,11 +1025,13 @@ class CpuBackfillTests(unittest.TestCase):
             {"id": 13, "display_title": "Photo backfill: queued", "created_at": "2026-11-08T02:00:00Z", "status": "queued"},
             {"id": 14, "display_title": "Photo backfill: third", "created_at": "2026-11-08T02:10:00Z"},
             {"id": 15, "display_title": "Photo backfill: fourth", "created_at": "2026-11-08T02:20:00Z"},
+            {"id": 16, "display_title": "Photo backfill: fifth", "created_at": "2026-11-08T02:30:00Z"},
         ]
         self.assertTrue(cpu.backfill_run_allowed(runs, 11, current_run_attempt=1, now=now))
         self.assertTrue(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
         self.assertTrue(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
-        self.assertFalse(cpu.backfill_run_allowed(runs, 15, current_run_attempt=1, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 15, current_run_attempt=1, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 16, current_run_attempt=1, now=now))
         with self.assertRaises(ValueError):
             cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now)
         for malformed in ({"id": 14, "display_title": "Photo backfill: broken"},
@@ -1057,10 +1059,13 @@ class CpuBackfillTests(unittest.TestCase):
                     {"id": 13, "display_title": "Photo backfill: third",
                      "created_at": "2026-11-08T02:10:00Z"},
                     {"id": 14, "display_title": "Photo backfill: fourth",
-                     "created_at": "2026-11-08T02:20:00Z"}]
+                     "created_at": "2026-11-08T02:20:00Z"},
+                    {"id": 15, "display_title": "Photo backfill: fifth",
+                     "created_at": "2026-11-08T02:30:00Z"}]
             with self.subTest(conclusion=conclusion):
                 self.assertTrue(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
-                self.assertFalse(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
+                self.assertTrue(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
+                self.assertFalse(cpu.backfill_run_allowed(runs, 15, current_run_attempt=1, now=now))
                 self.assertFalse(cpu.backfill_run_allowed(runs, 11, current_run_attempt=2, now=now))
 
     def test_same_story_repeat_is_denied_and_still_consumes_an_attempt(self):
@@ -1068,10 +1073,11 @@ class CpuBackfillTests(unittest.TestCase):
         runs = [{"id": identifier, "display_title": "Photo backfill: " + slug,
                  "created_at": f"2026-11-08T02:0{index}:00Z"}
                 for index, (identifier, slug) in enumerate(((11, "one"), (12, "one"),
-                                                           (13, "two"), (14, "three")))]
+                                                           (13, "two"), (14, "three"), (15, "four")))]
         self.assertFalse(cpu.backfill_run_allowed(runs, 12, current_run_attempt=1, now=now))
         self.assertTrue(cpu.backfill_run_allowed(runs, 13, current_run_attempt=1, now=now))
-        self.assertFalse(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
+        self.assertTrue(cpu.backfill_run_allowed(runs, 14, current_run_attempt=1, now=now))
+        self.assertFalse(cpu.backfill_run_allowed(runs, 15, current_run_attempt=1, now=now))
 
     def test_workflow_attempt_is_required_and_malformed_values_fail_closed(self):
         for attempt in (0, -1, True, False, 1.0, "1", None):
