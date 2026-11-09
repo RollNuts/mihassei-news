@@ -2896,8 +2896,8 @@
       "alt": "サーバールームのイメージ",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T12:22:20.257+09:00",
-    "scene_prompt": "A suited office employee solemnly hands a sealed apology envelope to a bewildered customer. In the background a second employee is still attaching a large new padlock to an unopened filing cabinet, and nothing has been removed.",
+    "modified_at": "2026-11-09T15:06:55+09:00",
+    "scene_prompt": "A puzzled Japanese customer reads repeated email messages on a laptop at a modest home desk. The email layout and envelope icons are visible but all subject and message text is unreadable, under ordinary morning window light.",
     "tags": [
       "コンプラ",
       "セキュリティ"
@@ -2905,7 +2905,8 @@
     "satire_tags": [
       "先回りしすぎ",
       "コンプラあるある"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "ai-chooses-a-managers",
@@ -2936,8 +2937,8 @@
       "alt": "オフィスのイメージ",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T12:33:16.273+09:00",
-    "scene_prompt": "A solemn manager sits at a bare desk holding an absurdly oversized rubber stamp with a blank face. At the neighboring desk, a tiny desktop robot controls all the keyboards, telephones and folders, leaving the manager with nothing to operate.",
+    "modified_at": "2026-11-09T15:06:55+09:00",
+    "scene_prompt": "A solemn Japanese manager bows to seated customers at a small briefing table beside an open laptop displaying a simple closed-padlock icon. Ordinary office daylight, natural skin and materials, no readable text or logos.",
     "tags": [
       "AI",
       "働き方"
@@ -2945,7 +2946,8 @@
     "satire_tags": [
       "AI任せ",
       "仕事してる感"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "research-completed-opening-day",
@@ -3016,8 +3018,8 @@
       "alt": "産業用ロボットのイメージ",
       "license": "Unsplash"
     },
-    "modified_at": "2026-11-03T09:25:53.838+00:00",
-    "scene_prompt": "Photorealistic deadpan still outside a fictional Japanese industrial warehouse. An exhausted factory employee pulls one powerless small delivery robot on a handcart toward a crowded charging bay; other compact robots queue against the wall. A plain cardboard box sits on the cart. Natural afternoon light, dry workplace comedy, no logos, no readable text, no real people.",
+    "modified_at": "2026-11-09T15:06:55+09:00",
+    "scene_prompt": "A deadpan Japanese factory employee pushes a platform trolley carrying an inactive cargo robot toward three occupied charging stations. More unplugged robots queue beside the wall, while untransported cardboard parcels remain separately on the floor.",
     "tags": [
       "人手不足",
       "働き方"
@@ -3025,7 +3027,8 @@
     "satire_tags": [
       "自動化あるある",
       "仕事してる感"
-    ]
+    ],
+    "visual_strategy": "cpu-photo"
   },
   {
     "slug": "ai-chair-removes-executives",
