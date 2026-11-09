@@ -1151,9 +1151,8 @@
       "url": "https://techcommunity.microsoft.com/blog/microsoftteamsblog/what%E2%80%99s-new-in-microsoft-teams--february-2026/4497206",
       "topic": "Microsoftが2026年2月26日に公表したTeamsの更新案内では、Copilotによる会議内容の要約、要点の抽出、カスタマイズ可能な会議要約テンプレートの提供を説明している。実在の「叱られ代行AI」や説教記録・上司による18ページ追記の事例を示したものではない。2031年の広告制作会社「北窓企画」、水谷と笠原、具体的な発言・行動は創作。公式ページの公開日だけが明記されているためpublished_atの00:00は日付代表値。"
     },
-    "scene_prompt": "Two-panel editorial illustration comparing a brief AI work instruction beside a junior employee with a manager's thin spread of explanatory pages and a very short answer in the final page's confirmation area. Ordinary office, muted colors, no readable lettering, numbers, brands, logos, signatures or red correction marks.",
-    "visual_strategy": "illustration",
-    "illustration_reason": "comparison_layout",
+    "scene_prompt": "A junior office worker hands one estimate sheet to his manager, who receives it while returning a thin multi-page explanatory packet across the desk. Sparse grid versus dense illegible paragraphs, ordinary Japanese office daylight, natural deadpan faces, no pens, signatures, readable text or logos.",
+    "visual_strategy": "cpu-photo",
     "tags": [
       "職場",
       "AI"
@@ -1182,7 +1181,7 @@
       "action": "修正指示を一行に要約された上司が、怒りの意味や自分の経験を18ページにわたって追記する",
       "outcome": "修正された見積書は一枚で完成したのに、上司は確認の一行に不満を持ち、指導文書だけが膨らむ"
     },
-    "modified_at": "2026-11-10T01:44:45+09:00"
+    "modified_at": "2026-11-10T04:20:16+09:00"
   },
   {
     "slug": "five-star-reviews-of-returned-humidifiers",

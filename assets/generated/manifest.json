@@ -835,13 +835,39 @@
     },
     "music-show-surprise-face-rehearsal": {
       "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
-      "bytes": 101314,
-      "generated_at": "2026-11-05T03:45:06.091495+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 4671421502652190209,
-      "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
+      "source_article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+      "source_png_sha256": "07fe0ad997b002b5230ad299840525f3dd42d613edfa6cdf95269f2a3cfc6b47",
+      "bytes": 138439,
+      "sha256": "f15e44f07f9585b7fb3c334fff039bb82ae68c061409ca0249f4535ebefc5744",
+      "generation_id": "4b55718e-b767-4e96-bb25-9e098caa6f4d",
+      "generation_prompt": "Use case: photorealistic-natural. Create one new horizontal 16:9 candid editorial camera photograph for a fictional Japanese future newspaper.\n\nScene: a rehearsal in an ordinary Japanese music television studio, before the performance. Three anonymous fictional Japanese adult audience members in a front row of simple upholstered chairs are earnestly practicing the appearance of hearing a familiar song for the first time. A plainly dressed adult stage manager beside the row holds an unbranded clipboard in one hand and visibly counts two beats with two raised fingers of the other hand, carefully coaching their reaction. One attentive adult woman in the nearest seat glances down at a SMALL plain rehearsal cue card; the other two adults look toward the stage manager with widened eyes and slightly open mouths in deliberately rehearsed surprise. Their reactions must remain physically natural, not cartoonish or screaming. Two or three other adult audience members sit further behind, naturally out of focus. Make the front-row audience, their small cue cards, and the coaching manager clearly visible together. A modest glimpse of a plain stage edge, dark curtains, and ordinary warm studio work lights establishes a television rehearsal. No actual performers or real broadcast branding.\n\nThe small cards have no legible writing; show their blank backs or genuinely indistinct faint marks. They are index-card size rather than giant sheets or placards. The clipboard faces the manager, with no readable labels. This is a rehearsal of facial reactions, not a classroom, protest, paper presentation or concert crowd cheering.\n\nPhotographic treatment: an unpretentious local-newspaper on-location photograph from an aisle at normal seated eye level, medium-wide framing, ordinary broadcast/work light with restrained colors. Real human skin pores, natural individual facial features, normal hair, hands, cotton clothing, chair upholstery and subtle uneven shadows. Everyone wears ordinary casual adult clothing and takes the exercise seriously. Clearly adult people with distinct faces; no children, doll faces or identical generated faces. Keep essential people, cards and counting hand in the central safe 16:9 frame. Believable anatomy, perspective and hand contact.\n\nNo visible words, text overlay, captions, logos, watermarks, real people, real program names, readable lettering or numerals. No illustration, anime, CGI, plastic skin, airbrushed faces, watercolor softness, cinematic grading, theatrical neon, exaggerated fantasy lighting, advertising polish, montage or split panels. The unusual rehearsed situation carries the humor; the image itself must look like a normal camera photograph.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T19:09:36.774812+00:00",
+      "previous_generation": {
+        "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+        "bytes": 101314,
+        "generated_at": "2026-11-05T03:45:06.091495+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 4671421502652190209,
+        "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
+      },
+      "previous_visual_review": {
+        "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+        "decision": "accepted",
+        "image_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
+        "note": "実画像と現本文を照合。観客席で複数の架空人物が白い練習カードを持ち、驚いた表情を作る場面が記事の「初耳の顔を練習する」主題に合う。カードには擬似文字があるが読める文章・固有名詞・ロゴは見当たらない。ステージマネージャーや歌手、顔の角度を直す動作は未再現で、人物描写は柔らかいが主役の大きな人体破綻は見当たらない。",
+        "reviewed_at": "2026-11-05T03:46:29+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "19843064d4d53dfadd72b8600eee0d0fc97f1a3a6407634707f087a9cb5cfc56",
+        "rejected_candidate_sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4",
+        "reviewed_at": "2026-11-09T19:20:17.211588+00:00",
+        "reason": "The legacy JPEG has conspicuously soft, doll-like CGI faces and blended outlines, and omits the coaching stage manager. Its old visual acceptance does not satisfy the current ordinary-camera photograph gate."
+      }
     },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "3e6fd6658105c45639e8f3ac161864c79bcbf31feea3dd640385ee42bbe9bb2d",
@@ -1903,6 +1929,59 @@
           "tool_mode": "new_image"
         }
       ]
+    },
+    "scolding-ai-one-line-summary-boss-eighteen-pages": {
+      "article_sha256": "06c78eff0733e721c819b9a3a87db46e79f79e84d3b76e850b804d33902c57ac",
+      "source_article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+      "source_png_sha256": "8b46944f68c5b8f5d0c28ebf31e7a3c8a63427e88bf3c8bfe222722d85f88435",
+      "bytes": 132651,
+      "sha256": "9d48b7f755067ae78c24902255f2cc2a5ca0b9c13569757021790ab4866bc191",
+      "generation_id": "14fb21b5-eba8-47fb-9d8b-2b7326106fce",
+      "generation_prompt": "Use case: photorealistic-natural. Make one new horizontal 16:9 ordinary editorial camera photograph for a fictional Japanese news story. Two entirely fictional adult Japanese male office workers in a modest, contemporary small advertising office at Friday lunchtime. Soft ordinary window daylight, restrained everyday colors, natural skin, cotton office clothes, realistic hands, paper, desk and laptop, an unpolished local newspaper workplace snapshot.\n\nCapture this specific simultaneous action from the story in a single coherent medium view across the desk: a young adult junior employee on the left extends ONE completed A4 estimate sheet to his middle-aged seated manager on the right. The manager receives that one estimate with his LEFT hand while, with his RIGHT hand, setting HIS OWN multi-page explanatory packet on the desk toward the junior. The simple work itself is finished on one sheet, but the manager is returning extra explanation for the junior to absorb. The junior looks mildly puzzled at the returning packet; the manager is completely earnest and matter-of-fact, not grinning or theatrically angry. Clearly show both adults, both paper paths and the contrasting documents within the central safe horizontal frame.\n\nEssential paper distinction: the junior's single A4 estimate has a sparse printed grid/table layout, with no legible letters or numbers. The manager's explanatory packet contains roughly eighteen ordinary A4 sheets, a SMALL THIN packet about two millimeters thick. A few pages are slightly staggered or fanned so the multiple sheets and dense indistinct grey paragraph layouts are visible. It is visibly more paperwork than the one estimate, but must never become a thick book, binder, huge stack or mountain. The explanatory packet is being set DOWN/returned toward the junior, while the separate single estimate is being handed OVER to the manager. The two documents must remain physically distinct, not fused into one bundle. Frame closely enough for that contrast and the hand contacts to read. One plain open laptop may sit unobtrusively at the back of the desk, screen facing away from the camera.\n\nDo not show anybody writing, signing, holding a pen or pointing at a signature field. No handwriting, red correction marks, checkboxes, signatures, readable screen UI, text captions, logos, watermarks, real company names or real-person likenesses. No arrows or explanatory graphics over the photograph. No split panels, collage, illustration, CGI, doll-like faces, glossy advertising, dramatic cinematic lighting, exaggerated gestures or fantasy props. This is the story's moment of an accepted corrected one-page estimate being met with the manager's longer explanation, not a handshake, contract signing or generic meeting presentation. Do not attempt to print the title, AI transcript or the number 18.",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T19:13:08.015528+00:00",
+      "previous_visual_review": {
+        "decision": "rejected",
+        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+        "image_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+        "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
+        "note": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。 採用対象の現在の記事本文は不変で、SVG指示だけを実際の薄い紙束/確認欄へ整合した。写真試作のsource記事FPとtrial記事FPは別々に保持。"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
+        "reason": "原PNGと局所修正PNGを実表示し、独立検品でも不採用。最初の確認欄は空白に見え、編集後の短い筆跡は返答より署名・サインに見える。肌・手・薄い紙束・窓光は自然でも、長い補足に一行で返す本文の主要な対比は十分識別できず、通常の資料確認場面へ落ちる。現候補を補助写真等に言い換えて採用せず、同記事の追加生成・編集はこの回終了。原source記事FP・試作記事FP・両生成ID/原PNG/指示を保持し、正しい専用SVGを維持する。",
+        "rejected_candidate_sha256": "3c7f334a7a14ee053e7ea0bf3c2362810960b0f12a71ff1cfb8f7f419288399d",
+        "reviewed_at": "2026-11-09T16:44:45.699189+00:00",
+        "source_article_sha256": "fd7aa7d4b8eb7e77daff237e28e8f5bc11ae871c4d7f8a94c97aefb4eea40abf",
+        "trial_article_sha256": "1fcd5452fe592f015a50d9c2c0783224ae980606a0ac67974506209d3a8405ae",
+        "trial_scene_prompt": "An office manager looks puzzled at a tiny reply on his document's final page while a junior employee waits across the desk, the thin supporting pages fanned between them.",
+        "trial_origin": "chatgpt-imagegen",
+        "trial_model": "ChatGPT ImageGen",
+        "trial_generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+        "trial_source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7",
+        "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",
+        "trial_generation_steps": [
+          {
+            "generation_id": "663d78ff-04c9-4aab-9287-aa803fb4f9a7",
+            "tool_mode": "new_image",
+            "generation_prompt": "One horizontal 16:9 ordinary photorealistic documentary photograph of two anonymous fictional adult Japanese office workers at a modest shared desk in daylight. Depict the final paragraph's exchange after the actual work has already been corrected and submitted. A middle-aged manager sits facing a calm junior employee across the desk. The manager has just lifted the FINAL PAGE of his own lengthy explanatory addendum from the desk and looks down at its small answer area with quiet puzzlement, eyebrows slightly drawn together and mouth barely parted, not shouting. He holds that page low and tilted, printed side facing upward, so the camera and manager can both see its layout naturally. It is the final sheet of the same addendum, not a new certificate or a separate reply slip. The page has fine, deliberately unreadable explanatory rows above and a small confirmation area near the bottom containing only ONE very short, faint row of reply marks. No specific word or characters may be legible. Immediately beside and partly beneath that lifted sheet, the remaining pages of an approximately eighteen-sheet addendum form a realistic THIN sheaf of ordinary A4 paper, loosely and modestly fanned across the desk so several separate page edges and dense unreadable rows can be seen. A few millimetres of paper, not books, binders, a tower, or hundreds of pages. The visual relationship is the manager's long explanation versus the junior's extremely brief final answer on its last page. The junior looks calmly toward the manager and the paper, one relaxed hand resting near the desk edge, without holding a new corrected quotation or being scolded. Use one coherent medium-close diagonal camera angle across the same desk, keeping both faces, the lifted answer page, ordinary hands and the thin fanned addendum together in view. Everyday cotton office clothes, unbranded furniture, soft window light, believable skin and paper contact shadows. No legible words, letters, numerals, AI interface, screen text, red correction marks, angry performance, diagram overlay, split panel, brand, logo, watermark or signature. No exaggerated stacks or decorative scattering of documents. The exact reply, AI processing, elapsed time and number of pages do not need to be proved by the photograph.",
+            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png",
+            "source_png_sha256": "9b1e7e71154ace6aeb78d3d34568bc1e59d6995972ad11d90a55287d3d079c79"
+          },
+          {
+            "generation_id": "1c31c90c-b468-4024-ab2e-013f73d1d28c",
+            "tool_mode": "edit",
+            "generation_prompt": "Edit the attached fictional office photograph with one localized change on the document only. The older manager is holding the final page of his long explanatory addendum. Its broad outlined answer area near the lower edge is currently empty. Inside that broad answer area, to the RIGHT of the tiny printed field-label cell, add ONE very short row of dark pen handwriting, just a few small indistinct strokes on a single baseline. It should look unmistakably like an extremely brief handwritten answer entered in an otherwise mostly blank answer box, visually separate from the pale printed field labels and the dense printed explanation above. Make this brief pen entry visible at normal photograph size, but keep it softly indistinct so no actual word, readable letters, numerals or precise characters can be identified. This remains the SAME final page, not a new reply sheet or certificate. Preserve all other pixels and the existing photographic composition as closely as possible: both adults, faces and expressions, gaze down toward the page, hands, thin fanned supporting pages, paper layout and edges, clothes, desk, daylight, crop and natural camera texture. Do not enlarge the paper stack, alter people or add new objects. No extra writing outside that single short answer, no logo, watermark, signature, diagram or floating UI.",
+            "referenced_image_paths": [
+              "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-663d78ff-04c9-4aab-9287-aa803fb4f9a7.png"
+            ],
+            "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-1c31c90c-b468-4024-ab2e-013f73d1d28c.png",
+            "source_png_sha256": "7a73fab178dc026d3a88c7a81a3d36542df2d12541abff44ac43b609e45d9de7"
+          }
+        ]
+      }
     }
   },
   "rejected": {
