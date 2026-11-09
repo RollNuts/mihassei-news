@@ -8,5 +8,7 @@
 - **直近の実績：** 11/8は7本公開。保存済み`analytics/daily/2026-11-08.json`は48PV、coverage complete（11/9 05:23 JST取得）。流入別PVはX35／検索8／外部0／不明5。11/9分は未保存で、面白さや改善効果の因果は未判定。計測・比較の定義はOPERATIONSを参照。
 
 - **画像引継ぎ：** 11/9のCPU既刊試作はrun `42533373151`・`42538537711`・`42540783784`・`42560293535` の4/4件消費済み。原生成記録・正確なseed・採否はmanifest/reviewsを参照する。
+- **実在名の改稿引継ぎ（この画像回収の次回優先）：** `bring-your-own-room-hotel-parking-spaces`の本文、`music-special-forty-days-of-lineup-announcements`の本文・x_tagsを一般名にし、新しいJPEGの実生成・採用と同時に反映する。旧JPEGの指紋は付け替えない。監査基準は`ce9bd6380f570b30f8ee0c278ef8ad60d30a4d55`、記事・画像SHAの正本はmanifest/reviews。
+- **同改稿・専用SVGの3本：** `family-line-replies-four-different-station-exits`・`lion-king-prequel-watch-order-meeting`・`suica-penguin-eco-bags-stay-sealed`は見出し・summary・本文・x_tagsを架空名または一般名へ揃え、実SVGと共有PNGを新本文へ同時に検証する。slug・出典・初回日時を保ち、OGP/Twitter/RSSまで確認する。担当は同じ画像回収。方針はEDITORIAL_LOOPへ集約。
 - **動画の未完了：** 漁港 `personalized-hidden-harbor-crowded-by-tourists` は新写真を目視採用し、`captions_required`へ進んだ。発行・改稿担当が現本文と3字幕を再確認し、記事SHA `76c8e190023eb39c7eadeb358477d57021f15ba90d9a30d822854adc102023f4` に対する記録を整えて既存の自動生成へ渡す。静止画の掲載と動画の生成・本番配信は区別する。加湿器は新写真を採用し、既存自動処理による12秒動画の本番配信まで確認済み。加湿器を含む既存7件はcurrent。
 - **次枠への発行引継ぎ（11/09 19:30→21:30）：** 7本目までで通常発行は完了。21:30・23:30は公開失敗の回収か今日中に出す強い時事企画だけ。`off-grid-lodge-sells-disconnection`の電波遮断・届かないことの有料化・延泊を再演せず、11/10の最初の7本に政策発表と新製品発表が各1本必要な点を優先確認する。
