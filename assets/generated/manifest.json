@@ -1419,14 +1419,39 @@
       "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
-      "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
-      "bytes": 139782,
-      "generated_at": "2026-11-07T08:22:03.182653+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
+      "article_sha256": "a6b78fa20a29f2640bd8b0b4c063ddac02bb7de2f7f60d505f7b231a4e1f20af",
+      "bytes": 207825,
+      "generation_id": "73763305-cf5a-428d-9870-4f452a74da5a",
+      "generation_prompt": "Use case: photorealistic-natural. Make one horizontal 16:9 ordinary candid Japanese local-newspaper photograph of an entirely fictional small household-goods shop on a quiet shopping street in autumn daylight. The clear central physical object is a truly enormous traditional Japanese ornamental KUMADE lucky bamboo rake, supported solidly on a simple wooden stand directly across the MAIN FRONT DOOR. Its fan-shaped head of many curved natural bamboo rake tines is wider than a normal doorway and it visibly prevents customers from walking through the front entrance. Decorate this actual handmade bamboo object with modest red-and-gold folded paper fans, small blank oval gold charms and rice ears; NO writing, printed labels or branded characters on any ornament. Make it recognizable as a decorated bamboo rake, not a wheel, umbrella, bouquet, Christmas tree or giant glowing fantasy object. On the sidewalk in front, one ordinary adult man holds a plain smartphone up to photograph the huge rake and a second adult patiently waits behind him to take a photo. Their phones have plain backs, no visible interface. On the other side, an ordinary adult female shopper with an empty reusable shopping bag is turning away from the blocked main doorway toward a narrow side passage around the corner, where a separate small side entrance is visible. Show the blocked FRONT entrance, the physical rake, the photographer and the shopper detour clearly in the same coherent oblique eye-level camera view. The storefront is an invented generic unbranded local shop with a blank fabric awning, simple windows and everyday shelves, with no signage, no readable product labels and no identifiable actual business or shrine. People wear ordinary unbranded autumn clothes and have matter-of-fact expressions, no promotional posing. Natural skin, finger anatomy, worn bamboo, folded paper, wood, glass and pavement; restrained everyday colors, ordinary soft daylight and plausible contact shadows, documentary photograph rather than advertising. All people and the shop are fictional. No readable text, letters, numbers, banners, rankings, receipts, logos, signature, watermark, captions or headlines anywhere. No anime, illustration, 3D render, waxy skin, cinematic glow, huge fake gold reflection or collage. The composition must communicate that photo visitors are accommodated while a shopping customer is sent around the corner, not just a decorated shop.",
+      "sha256": "a9506b661aead3e78b3030c193d9d8b9b60d24814576946fdc3d8f55fa777b9f",
+      "source_article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+      "source_png_sha256": "301c387e5e268ac5f26fe798bb502d07266380c7e9b8b9c89fe631ea53fb3756",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
       "prompt_version": 3,
-      "seed": 8156222012987851626,
-      "sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+      "generated_at": "2026-11-09T13:47:04.325530+00:00",
+      "previous_generation": {
+        "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+        "bytes": 139782,
+        "generated_at": "2026-11-07T08:22:03.182653+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 3,
+        "seed": 8156222012987851626,
+        "sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+      },
+      "previous_visual_review": {
+        "decision": "rejected",
+        "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+        "image_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8",
+        "reviewed_at": "2026-11-07T14:49:24.816466+00:00",
+        "note": "実JPEGと現本文を照合。正面が開いた一般的な商店で、主役の特大熊手、撮影する人の列、買い物客が狭い側面入口へ回る状況が見当たらない。大きな看板の擬似文字も目立つため不採用。側面入口・立ち去る客・順位を確認する店主を描き直した専用SVGを使う。"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
+        "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
+        "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+      }
     },
     "unsold-coat-storage-fees-exceed-sale": {
       "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
@@ -1628,6 +1653,19 @@
       "model": "ChatGPT ImageGen",
       "prompt_version": 3,
       "generated_at": "2026-11-09T13:22:17.633236+00:00"
+    },
+    "nikkei-plunge-hundred-year-hold-minute-check": {
+      "article_sha256": "70f9071727826b917a52ea97dbe3ada4b6a6b1a238a75343767bed915aa89a92",
+      "bytes": 129739,
+      "generation_id": "d77fd4a2-dd35-4421-a1a4-398d2dba3696",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid documentary photograph of a staged fictional scene in a modest Japanese home workspace. An anonymous fictional adult man in an ordinary plain shirt leans over his desk with a serious, concentrated expression. His left hand holds ONE smartphone while his right hand writes the next short line in ONE ordinary open ruled notebook with a pen. The visible notebook pages are already densely filled with short rows of faint handwriting, showing repeated checking rather than school exercises. The phone shows only a simple downward red price-chart line; it is tilted toward him so no company name, numbers or interface lettering can be read. Use an oblique over-the-shoulder medium-close composition: both hands, the phone, the pen tip touching the notebook and the filled pages are clearly visible together. In the soft background is a normal-sized wall planning sheet with a mostly empty grid and just one circled cell, with no legible date or writing. The priority is the active copying and the crowded notebook, not a generic man looking at his phone. Keep one notebook; do not turn sixteen written pages into sixteen books or a huge paper pile. Ordinary daytime window light, realistic skin and hands, paper texture, cotton clothing, practical domestic furniture and believable contact shadows. All people and businesses are invented. No readable text, numerals, app or phone logos, headlines, watermarks, cartoon, illustration, 3D render or glossy stock-advertising pose.",
+      "sha256": "46f88b0b031ee8a7e994d474b21b3d5d324932bc0f0d206e98ad3f5bf9e39962",
+      "source_article_sha256": "49237e88ac9d3648206ac247cb4ef0aa4184b04a1a34614fffc09ec96b6eb05c",
+      "source_png_sha256": "ca0860e2e71846b51ab9bcc5599051e207b6ff39dc814f3419c13426d6c26b24",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-09T13:48:49.788010+00:00"
     }
   },
   "rejected": {
