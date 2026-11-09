@@ -72,6 +72,15 @@ def recorded(buf="buf-old", hours=180):
             "queued_at_utc": (NOW - timedelta(hours=hours)).isoformat()}
 
 
+def public_record(minutes=180):
+    """Synthetic independent observation; never a Buffer receipt or real post."""
+    return {
+        "url": "https://x.com/Veripsa/status/123",
+        "posted_at_utc": (NOW - timedelta(minutes=minutes)).astimezone(timezone.utc).isoformat(),
+        "observed_at_utc": NOW.astimezone(timezone.utc).isoformat(),
+    }
+
+
 class ArticlePickTests(unittest.TestCase):
     def setUp(self):
         # Historical fixtures must not inherit a live provider cooldown committed
@@ -95,6 +104,81 @@ class ArticlePickTests(unittest.TestCase):
         self.assertEqual(config["minimum_interval_hours"], 2)
         self.assertEqual(picks.PROMOTION_SLOT_HOURS, (9, 11, 13, 15, 17, 19, 21))
         self.assertEqual(picks.PROMOTION_SLOT_MINUTE, 5)
+
+    def test_public_post_observations_validate_without_inventing_provider_receipts(self):
+        picks.validate_state(ledger())  # Existing schema-v1 states need no migration.
+        state = {**ledger(), "public_posts": {"observed-story": public_record()}}
+        picks.validate_state(state)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "state.json"
+            picks.save_state(state, path)
+            self.assertEqual(picks.read_json(path), state)
+        self.assertEqual(state["queued"], {})
+        invalid = (
+            {"url": "https://x.com/another-account/status/123"},
+            {"url": "https://x.com.evil.invalid/Veripsa/status/123"},
+            {"url": "http://x.com/Veripsa/status/123"},
+            {"url": "https://x.com/Veripsa/status/123?redirect=elsewhere"},
+            {"url": "https://x.com/Veripsa/status/not-a-post"},
+            {"posted_at_utc": "2026-11-05T10:00:00"},
+            {"observed_at_utc": "2026-11-05T12:00:00+09:00"},
+            {"posted_at_utc": "invalid"}, {"observed_at_utc": None},
+            {"posted_at_utc": (NOW + timedelta(minutes=1)).astimezone(timezone.utc).isoformat()},
+        )
+        for change in invalid:
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                picks.validate_state({**ledger(), "public_posts": {
+                    "observed-story": {**public_record(), **change},
+                }})
+        for public in (None, [], {"../unsafe": public_record()}, {"observed-story": None}):
+            with self.subTest(public=public), self.assertRaises(ValueError):
+                picks.validate_state({**ledger(), "public_posts": public})
+
+    def test_independently_observed_slugs_are_excluded_from_both_ranks_without_spending_slots(self):
+        fresh, mature = article("public-fresh", 4), article("public-mature", 36)
+        available = article("not-yet-shared", 4)
+        state = {**ledger(), "public_posts": {
+            fresh["slug"]: public_record(180), mature["slug"]: public_record(240),
+        }}
+        before = copy.deepcopy(state)
+        self.assertEqual(picks.rank([mature], {mature["slug"]: stats(99)}, state, set(), CONFIG), [])
+        self.assertEqual([a["slug"] for a in picks.rank_fresh(
+            [fresh, available], state, set(), CONFIG, NOW,
+        )], [available["slug"]])
+        self.assertEqual(picks.promotions_today(state, NOW), 0)
+        self.assertFalse(picks.slot_already_used(state, NOW))
+        self.assertEqual(picks.promoted_topics_today(state, [fresh, mature], NOW), set())
+        selected, _, _ = picks.decide([fresh, mature, available], {}, state, [], CONFIG, NOW)
+        self.assertEqual(selected["slug"], available["slug"])
+        self.assertEqual(state, before)
+
+    def test_public_send_spacing_uses_publication_time_not_observation_time(self):
+        for minutes, held in ((119, True), (120, False), (121, False)):
+            with self.subTest(minutes=minutes):
+                state = {**ledger(), "public_posts": {"observed-story": public_record(minutes)}}
+                self.assertEqual(picks.buffer_delivery_spacing_hold([], state, NOW, 2),
+                                 "recent_verified_public_x_sent" if held else None)
+                selected, _, _ = picks.decide(
+                    [article("other-fresh", 4)], {}, state, [], CONFIG, NOW,
+                )
+                self.assertEqual(selected is None, held)
+                self.assertEqual(picks.promotions_today(state, NOW), 0)
+
+    def test_recent_public_send_stops_before_provider_connection_reads_or_writes(self):
+        state = {**ledger(), "public_posts": {"observed-story": public_record(119)}}
+        with patch.object(picks, "read_json", side_effect=[CONFIG, state]), \
+             patch.object(picks, "datetime", wraps=datetime) as clock, \
+             patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule", "BUFFER_API_KEY": "test-only"}, clear=True), \
+             patch.object(picks, "connected_channel") as connection, \
+             patch.object(picks, "list_existing") as read, patch.object(picks, "queue_one") as send, \
+             patch.object(picks, "read_page_view_metrics") as metrics, patch.object(picks, "save_state") as save:
+            clock.now.return_value = NOW
+            self.assertEqual(picks.main(), 0)
+            connection.assert_not_called()
+            read.assert_not_called()
+            send.assert_not_called()
+            metrics.assert_not_called()
+            save.assert_not_called()
 
     def test_push_fallback_network_window_is_exactly_daytime_jst(self):
         cases = (

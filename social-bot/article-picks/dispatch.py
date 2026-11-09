@@ -32,6 +32,7 @@ SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 ARTICLE_URL = re.compile(
     r"https?://(?:www\.)?veripsa\.com/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
 )
+PUBLIC_POST_URL = re.compile(r"https://x\.com/(?i:Veripsa)/status/[1-9][0-9]*\Z")
 TEXT_PREFIX = "【未発生新聞】"
 BRAND_HASHTAG = "#未発生新聞"
 TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
@@ -158,6 +159,21 @@ def validate_state(state: dict) -> None:
                     or slot.astimezone(JST).minute != PROMOTION_SLOT_MINUTE
                     or slot.astimezone(JST).hour not in PROMOTION_SLOT_HOURS):
                 raise ValueError("Invalid logical X slot in permanent post ledger")
+    public = state.get("public_posts", {})
+    if not isinstance(public, dict):
+        raise ValueError("Invalid independently observed public X posts")
+    for slug, entry in public.items():
+        if (not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
+                or not isinstance(entry, dict)
+                or not isinstance(entry.get("url"), str)
+                or not PUBLIC_POST_URL.fullmatch(entry["url"])):
+            raise ValueError("Invalid public Veripsa X post")
+        posted = provider_instant(entry.get("posted_at_utc"))
+        observed = provider_instant(entry.get("observed_at_utc"))
+        if (posted is None or observed is None
+                or posted.utcoffset() != timedelta(0) or observed.utcoffset() != timedelta(0)
+                or observed < posted):
+            raise ValueError("Invalid UTC public X publication/observation timestamps")
 
 
 def save_state(state: dict, path: Path = HERE / "state.json") -> None:
@@ -277,6 +293,17 @@ def provider_instant(value: object) -> datetime | None:
     return instant if instant.tzinfo is not None else None
 
 
+def _public_post_spacing_hold(state: dict, now: datetime, minimum: timedelta) -> str | None:
+    """Independent X observations protect spacing without implying a Buffer receipt."""
+    for entry in state.get("public_posts", {}).values():
+        sent = provider_instant(entry.get("posted_at_utc"))
+        if sent is None:
+            return "unverified_public_x_sent_time"
+        if now - sent < minimum:
+            return "recent_verified_public_x_sent"
+    return None
+
+
 def buffer_delivery_spacing_hold(existing: list[dict], state: dict,
                                  now: datetime, hours: int) -> str | None:
     """Guard the real X-channel send window, not just two-hour logical slots.
@@ -290,6 +317,9 @@ def buffer_delivery_spacing_hold(existing: list[dict], state: dict,
     if now.tzinfo is None or type(hours) is not int or hours < 2:
         raise ValueError("Invalid real-send spacing window")
     minimum = timedelta(hours=hours)
+    public_hold = _public_post_spacing_hold(state, now, minimum)
+    if public_hold is not None:
+        return public_hold
     accepted_sent_by_id = {}
     for entry in state["queued"].values():
         sent = provider_instant(entry.get("buffer_sent_at_at_accept"))
@@ -599,7 +629,7 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
     result = []
     for article in articles:
         slug = article["slug"]
-        if slug in state["queued"] or slug in blocked:
+        if slug in state["queued"] or slug in state.get("public_posts", {}) or slug in blocked:
             continue
         data = counts.get(slug)
         if (not isinstance(data, dict)
@@ -620,7 +650,7 @@ def rank_fresh(articles: list[dict], state: dict, blocked: set[str],
     result = []
     for article in eligible_fresh_articles(articles, now, config):
         slug = article["slug"]
-        if slug in state["queued"] or slug in blocked:
+        if slug in state["queued"] or slug in state.get("public_posts", {}) or slug in blocked:
             continue
         result.append(article)
     result.sort(
@@ -789,6 +819,9 @@ def main() -> int:
         if sent is not None and now - sent < timedelta(hours=config["minimum_interval_hours"]):
             print("Article X recorded send is too recent; no Buffer read/write.")
             return 0
+    if _public_post_spacing_hold(state, now, timedelta(hours=config["minimum_interval_hours"])) is not None:
+        print("Independently observed X send is too recent; no Buffer read/write.")
+        return 0
     retry_at = delivery_retry_time(HERE / "delivery.json")
     if retry_at is not None and now < retry_at:
         # Already-recorded provider backoff is a safe no-op, not a new failed send.
