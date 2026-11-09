@@ -374,6 +374,33 @@
       "seed": 8296084341754018138,
       "sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
     },
+    "paid-conversation-checkout-shoppers-chat-in-line": {
+      "article_sha256": "d7054eb08bb145bb56c0f12d99bcde4e0369bbad7f4f8eb3bfeb2cd560e112f2",
+      "bytes": 130428,
+      "generated_at": "2026-11-09T02:59:28.220410+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7970335749920712089,
+      "sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c"
+    },
     "park-recorded-laughter-real-kids-shushed": {
       "article_sha256": "74b3d60308908574b466718dabf93b7341e9d41c54dafbc61cad2dc466794eda",
       "bytes": 136997,
@@ -824,10 +851,10 @@
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "article_sha256": "d29f0e1ae3b8d689c9ec9ebd34a3d4481e013cee7bea1c67fcead48bef9b91ec",
-      "source_article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423",
+      "reason": "本文整理後の実JPEGも再確認。画面の大部分を占める壁面黒板の擬似文字が目立つ一般的な店内で、小さな卓上札を裏返す手元・魚の配送箱・蝶番の手入れが写っていない。現本文でも場面不適合のため保留を継続し、実物確認した専用SVGを維持する。元JPEG・生成記事指紋・seedは変更していない。",
       "rejected_candidate_sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804",
       "reviewed_at": "2026-11-09T11:11:58+09:00",
-      "reason": "本文整理後の実JPEGも再確認。画面の大部分を占める壁面黒板の擬似文字が目立つ一般的な店内で、小さな卓上札を裏返す手元・魚の配送箱・蝶番の手入れが写っていない。現本文でも場面不適合のため保留を継続し、実物確認した専用SVGを維持する。元JPEG・生成記事指紋・seedは変更していない。"
+      "source_article_sha256": "b9a26e349733dd3d96885caef162e29e522df334301f37692b955f38420a1423"
     },
     "sleep-advice-livestream-until-two-am": {
       "article_sha256": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
