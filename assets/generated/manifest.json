@@ -11,24 +11,60 @@
       "sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873"
     },
     "ai-chooses-a-managers": {
-      "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
-      "bytes": 86250,
-      "generated_at": "2026-11-03T06:59:06.928320+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 4337816327905069863,
-      "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
+      "article_sha256": "c6e9c568dba31ea3820a15b4a6f76326bcef2aa219ca2a2df2e2469b5fabb2bb",
+      "bytes": 125620,
+      "generated_at": "2026-11-09T06:06:55.343144+00:00",
+      "generation_id": "556dabcd-24e2-490b-82d4-59f959bce758",
+      "generation_prompt": "Use case: photorealistic-natural. One candid documentary news photograph for a fictional Japanese satire newspaper, horizontal 16:9. In a modest ordinary Japanese company meeting room, an anonymous fictional middle-aged manager in an unbranded dark business suit bows solemnly from behind a small customer-briefing table toward two seated anonymous clients, who look puzzled but restrained. Beside the bowing manager, an open laptop facing partly toward the camera shows only a simple closed-padlock icon on an otherwise plain muted-gray access-blocked screen; no letters or words. This illustrates a manager who must apologize to customers for a software decision he has no authority even to inspect. The photograph must clearly show the bowing manager, listening customers, and the small locked laptop screen in one believable real room. Natural office daylight, ordinary skin and hands, realistic suit fabric, wood and laptop materials, straight unglamorous press photography. No embodied robot, giant stamp, seals, logos, text, captions, brand names, watermarks, CGI, anime, illustration, theatrical expressions or identifiable real business leaders.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
+        "bytes": 86250,
+        "generated_at": "2026-11-03T06:59:06.928320+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 4337816327905069863,
+        "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
+        "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
+        "rejected_candidate_sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
+      },
+      "prompt_version": 3,
+      "sha256": "0b6199c24b630d0af9db2691d6dd289153049aeeff579724d800c57901b06096",
+      "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
+      "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
     "apology-before-incident": {
-      "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
-      "bytes": 64365,
-      "generated_at": "2026-11-03T06:59:06.918696+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 9006481694354583717,
-      "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
+      "article_sha256": "bc989735b2fdeddaa0dbfa3c080a51d777104ce6631a25523861b4a66ef6d4aa",
+      "bytes": 153436,
+      "generated_at": "2026-11-09T06:06:55.392257+00:00",
+      "generation_id": "bec4a975-90dc-4261-af30-3c648b727c3a",
+      "generation_prompt": "Use case: photorealistic-natural. Create one candid documentary photograph for a fictional Japanese newspaper, horizontal 16:9. At an ordinary modest home-office desk in Japan, an anonymous fictional adult customer sits reading email on an open laptop, looking quietly puzzled and worried, with one hand lightly at the forehead. The laptop screen is visible at a natural slant and clearly has a normal EMAIL inbox layout: three similar recent message cards with small envelope icons and faint gray subject/body lines, but all text is deliberately out of focus and completely unreadable. The customer is reacting to repeated unexpected company apology emails, even though no actual security incident has occurred. Include the customer's face, the physical laptop and its email-layout screen in one believable medium-wide side view. Use natural morning window light, real skin and hands, ordinary knit clothing, paper-free desktop except a plain coffee mug, restrained press-photo colors and natural materials. No paper envelopes, delivered letters, document exchange, hackers, leaking data imagery, panic, exaggerated comedy faces, logos, readable letters, numbers, captions, watermarks, CGI, anime or illustration; no identifiable real people.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
+        "bytes": 64365,
+        "generated_at": "2026-11-03T06:59:06.918696+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 9006481694354583717,
+        "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
+        "reason": "Visual review: a paper card is handed across a desk, replacing the mistaken mass apology email in the story. Use the article-specific illustration until a new email scene is reviewed.",
+        "rejected_candidate_sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
+      },
+      "prompt_version": 3,
+      "sha256": "9692ff9dbed099dc4de0b2178a619f3b5593ae896880c2a4d21b33cb16288e2d",
+      "source_article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
+      "source_png_sha256": "de6c0ea3b102199ad4163d8484ae33de2fc9665c65d9551da624cace8fc5f9f7"
     },
     "bakery-no-important-announcement-panic": {
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
@@ -584,14 +620,36 @@
       "sha256": "e8b4f13290e6611091c9baa1f933451540aa97e361d60b301341449995e3a49f"
     },
     "robot-job-hopping": {
-      "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
-      "bytes": 90070,
-      "generated_at": "2026-11-03T11:13:20.927172+00:00",
-      "model": "sd_xl_base_1.0.safetensors",
-      "origin": "local-comfyui",
-      "prompt_version": 2,
-      "seed": 1615501253303699901,
-      "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
+      "article_sha256": "a814fd02ee0d5ec942b7b90dbbef7df675e388b9421d518e8e2bdcf42c35081e",
+      "bytes": 143455,
+      "edit_reason": "初案は充電器が3台を超え全機体が接続中に見えたため不採用。手前の社員・台車・運ばれる機体・荷物を保ち、充電器を3台とし未接続の待ち列へ修正した。",
+      "edit_source_generation_id": "49f7e9e9-6035-4259-a31a-47d1623cf9a6",
+      "edit_source_png_sha256": "e7d5dbf17742421e49d6ac19035ad69034394c8c128a22f561bcad309b56b61e",
+      "generated_at": "2026-11-09T06:06:55.442241+00:00",
+      "generation_id": "fe25f37e-c04d-44df-8570-858eca78fedf",
+      "generation_prompt": "Edit the supplied photograph. Preserve the foreground employee, his neutral expression, the steel trolley carrying one inactive wheeled robot, the untouched cardboard parcels, camera angle, warehouse, natural lighting and photorealistic material texture. Change ONLY the charging area along the right wall: there must be EXACTLY THREE wall charging units in the entire visible image, all three occupied with cables plugged into three robots. Remove every other charging unit and its cable from the wall, restoring the ordinary bare factory wall. Behind those three occupied docks, show several additional matching robots queued nose-to-tail waiting, WITHOUT cables or charging connections, so the shortage of chargers is immediately clear. Keep all robots physically on their wheels on the ground except the original inactive one on the employee's trolley. Do not add text, numbers, labels, logos, overlays or exaggerated effects. Maintain an ordinary candid 16:9 documentary factory photograph.",
+      "initial_generation_prompt": "Use case: photorealistic-natural. One candid 16:9 documentary news photograph for a fictional Japanese satire newspaper. Inside a modest ordinary Japanese industrial warehouse, an anonymous fictional adult factory employee in plain work clothes pushes a LOW STEEL PLATFORM TROLLEY carrying ONE inactive knee-high wheeled cargo-delivery robot. The inactive robot is an ordinary compact gray box on small wheels, NOT humanoid, NOT a robot arm and NOT a toy. Several matching compact wheeled cargo robots queue nose-to-tail beside wall charging docks that are already occupied by other robots; charging cables are visible. On the other side of the aisle, cardboard parcels that should have been transported remain piled on the floor, clearly separate from the employee's trolley. The visual joke is the human worker having to transport the labor-saving robot itself while other robots wait for limited chargers. Show the employee, the robot physically resting on the trolley, the charging queue and the untouched parcel pile in one believable wide factory photograph. Ordinary fluorescent daylight, real fabric, metal, rubber and concrete, restrained colors, deadpan employee, natural hands. No readable text, numbers, logos, safety-sign lettering, watermarks, captions, dramatic lighting, futuristic glow, CGI, anime, illustration or recognizable real people. Do not put parcels on the trolley; it is transporting the powered-off robot.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
+        "bytes": 90070,
+        "generated_at": "2026-11-03T11:13:20.927172+00:00",
+        "model": "sd_xl_base_1.0.safetensors",
+        "origin": "local-comfyui",
+        "prompt_version": 2,
+        "seed": 1615501253303699901,
+        "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
+        "reason": "Visual review: humans, including masked figures, queue behind a single robot instead of robots waiting for one charging point. Use the article-specific illustration until a correct new scene is reviewed.",
+        "rejected_candidate_sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
+      },
+      "prompt_version": 3,
+      "sha256": "52872d3cf19ac8e1958f2da4f2dd02b4a5ec00e8abac83f279cf56c82ed8e919",
+      "source_article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
+      "source_png_sha256": "10709eb3fec135aaed2630bb1d2cca7de3199bd1073329d88606a7220e1c7149"
     },
     "sale-discount-savings-receipt-framed": {
       "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
@@ -818,16 +876,6 @@
     }
   },
   "rejected": {
-    "ai-chooses-a-managers": {
-      "article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
-      "reason": "Visual review: a masked robot occupies the managers desk; the story requires a human manager who bears responsibility while AI performs the work. Use the article-specific illustration until a correct new scene is reviewed.",
-      "rejected_candidate_sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
-    },
-    "apology-before-incident": {
-      "article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
-      "reason": "Visual review: a paper card is handed across a desk, replacing the mistaken mass apology email in the story. Use the article-specific illustration until a new email scene is reviewed.",
-      "rejected_candidate_sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
-    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
@@ -960,11 +1008,6 @@
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
-    },
-    "robot-job-hopping": {
-      "article_sha256": "c92a3085328c44d7f8c0421f20134b432b5749e62156b53beca359e64d223c9c",
-      "reason": "Visual review: humans, including masked figures, queue behind a single robot instead of robots waiting for one charging point. Use the article-specific illustration until a correct new scene is reviewed.",
-      "rejected_candidate_sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
     },
     "sale-discount-savings-receipt-framed": {
       "article_sha256": "6a13b26639368d2de4db02f73a0f26de8f1c3772ee9e39030ed47939fb3d15b5",
