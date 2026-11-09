@@ -7,8 +7,7 @@
 - **次候補：** [EDITORIAL_IDEAS.md](EDITORIAL_IDEAS.md)の11/9朝の候補と政策・新製品の3案は検討材料。VIVANTの鑑賞順・小出し告知、再配達・当番・数字上の成功を名詞だけ替えて再演しない。各枠では直前と似た既刊を重点確認し、全体の反復点検は日次・週次へ寄せる。
 - **直近の実績：** 11/8は7本公開。保存済み`analytics/daily/2026-11-08.json`は48PV、coverage complete（11/9 05:23 JST取得）。流入別PVはX35／検索8／外部0／不明5。11/9分は未保存で、面白さや改善効果の因果は未判定。計測・比較の定義はOPERATIONSを参照。
 
-- **画像引継ぎ：** ホテル `bring-your-own-room-hotel-parking-spaces` は記事SHA `4f72aa80f23dc36bcbf312e94806067fd55bb4724ccba0acab711168b4ed160f`／新写真SHA `b58691bce27a7633c2b403753287b4a6e670a451cf0a623e047418846787ac5e` を実表示して採用。CPU run `42594897597` の閉じたバンは不採用理由・原記録・seedを保持した。Cloudflareはmain `935eae2` のsuiteがqueued・本番 `19337b7` でビルド未開始。画像回収担当が今回PR統合後にGit連携の再要求と対象画像・revisionを照合し、次枠も未完なら先に回収する。無料枠不足は未確認で、追加購入しない。
-  新着 `food-rescue-shops-manufacture-leftovers` はCPU run `42563368651` のサンドイッチ状の画像を不採用とし、米飯弁当をかご間で移す新native写真を採用。記事SHA `420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f`／JPEG SHA `2d2041fe072ebbe168116746bbd8d13a805082bc954a6a651a4134eef1d8786a`。対応する専用SVGも確認済み。
-  11/9のCPU既刊試作はrun `42533373151`・`42538537711`・`42540783784`・`42560293535` の4/4件消費済み。nativeの生成ID・実指示・原PNG SHA・採否はmanifest/reviewsを正とし、追加購入・APIキー・Mac GPUは使っていない。
+- **画像引継ぎ：** ホテルの旧反映待ちはPR #595の本番 `f8a98b87cc38ce02d53a42bfac0d1ca5ba9c0345` と公開記事・写真・共有画像の照合で解消済み。原生成記録・大きい整数seed・目視採否はmanifest/reviewsを正とし、完了履歴をここへ重ねない。
+  11/9のCPU既刊試作はrun `42533373151`・`42538537711`・`42540783784`・`42560293535` の4/4件消費済み。nativeは実行前に既存の包含枠を確認し、追加購入・APIキー・Mac GPUは使わない。
 - **動画の未完了：** 漁港 `personalized-hidden-harbor-crowded-by-tourists` は新写真を目視採用し、`captions_required`へ進んだ。発行・改稿担当が現本文と3字幕を再確認し、記事SHA `76c8e190023eb39c7eadeb358477d57021f15ba90d9a30d822854adc102023f4` に対する記録を整えて既存の自動生成へ渡す。静止画の掲載と動画の生成・本番配信は区別する。加湿器は新写真を採用し、既存自動処理による12秒動画の本番配信まで確認済み。加湿器を含む既存7件はcurrent。
 - **次枠への発行引継ぎ（11/09 17:30→19:30）：** `bring-your-own-room-hotel-parking-spaces`の客室持参・車の部屋替えは再演せず、前5本に続く「客へ作業を戻す」だけの逆転も避け、違う2031年の出来事と着地を比較する。

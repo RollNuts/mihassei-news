@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="テレビの収録セットで司会者がマイクを持ち床まで続く長い出演者名簿を読み、後ろの出演者たちが紹介を待つ創作イラスト" data-visual-topic="gaming" data-article-sha256="46177d0fec4d9a01ec699d414b6f378a2e10a70f99ca9b96cfe5350c991c159d">
-  <title>テレビの収録セットで司会者がマイクを持ち床まで続く長い出演者名簿を読み、後ろの出演者たちが紹介を待つ創作イラスト</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="テレビの収録セットで司会者が普通の進行カードを読み、後ろで出演者たちが紹介を待ち、閉じたゲーム道具箱が脇に残る創作イラスト" data-visual-topic="gaming" data-article-sha256="419901cadd8ada4513eddb745150e253ff814ffbffa352acea33548212a168da">
+  <title>進行カードを読み続ける司会者と、紹介を待つ出演者</title>
+  <desc>普通のテレビ収録セットで、司会者が片手のマイクへ話しながら、もう片手に持った小さな進行カードを読む。後ろの出演者たちは腕を組んで紹介を待ち、脇には輪や球を入れた透明なふた付きのゲーム道具箱が閉じたまま置かれる。番組カメラがこの場面を撮っている。巨大な巻紙や看板、読める文字、実在番組名は描かず、大人数の架空の出演者の一部を切り取った創作イラストとする。</desc>
   <rect width="1200" height="675" fill="#f2f1e9"/>
   <path d="M80 473V265c0-96 76-161 182-153 104 7 167 81 267 62 108-20 161-80 281-65 176 23 287 160 287 364z" fill="#243c46" opacity=".045"/>
   <ellipse cx="602" cy="585" rx="518" ry="27" fill="#243c46" opacity=".07"/>
@@ -83,12 +84,12 @@
     <path d="M471 391q-13-11-25-5l-13 12 11 13 24-5z" fill="#f2f1e9" stroke-width="3"/>
   </g>
 
-  <!-- A continuous roll spills from the host's hand all the way across the floor. -->
+  <!-- A normal small stack of cue cards is held at chest height. -->
   <g stroke="#243c46" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M435 345h98q-18 24-15 69l7 87q2 43 43 43h201q28 0 28 20 0 21-28 21H555q-71 0-73-73l-6-103q-2-39-41-37z" fill="#f2f1e9"/>
-    <path d="M435 345q-20 1-20 15 0 13 20 12" fill="#f2f1e9"/>
-    <path d="M435 345q17 0 17 13 0 14-17 14m333 172q-19 1-19 20 0 20 19 21" fill="none"/>
-    <path d="M476 365h34m-29 19h28m-26 19h28m-26 19h28m-26 19h28m-25 19h28m-26 19h29m-23 19h27m-20 19h29m-9 21h34m5 20h46m-14 15h40m14-15h43m-21 15h42m13-15h39m-19 15h28" fill="none" stroke-width="2" opacity=".45"/>
+    <path d="M438 337l76 8-6 55-77-8z" fill="#cbd4c9"/>
+    <path d="M443 330l76 8-6 55-77-8z" fill="#f2f1e9"/>
+    <path d="M444 339l63 7m-64 2 62 7" fill="none" stroke="#b9c7be" stroke-width="1.5"/>
+    <path d="M466 389q3-9 10-5l7 4-5 7-13 2-9-4z" fill="#f2f1e9"/>
   </g>
 
   <!-- The foreground camera, tally light, and tripod make the medium unmistakable. -->
@@ -103,10 +104,15 @@
     <path d="M119 438h69" fill="none" stroke="#f2f1e9" stroke-width="3" opacity=".5"/>
   </g>
 
-  <!-- Unopened game equipment remains at the edge of the stage. -->
+  <!-- A closed transparent-lid box still holds unused game equipment. -->
   <g stroke="#243c46" stroke-width="3" stroke-linejoin="round">
-    <path d="M962 513h103v66H962z" fill="#f2f1e9"/>
-    <path d="M962 513l19-15h101l-17 15m17-15v64l-17 17M1003 513v24h17v-24" fill="none"/>
-    <path d="M978 560h33m-33 9h20" fill="none" opacity=".35"/>
+    <path d="M962 513h103v66H962z" fill="#d9e1d8"/>
+    <ellipse cx="988" cy="548" rx="14" ry="12" fill="none" stroke="#d65e48" stroke-width="5"/>
+    <ellipse cx="1006" cy="558" rx="14" ry="9" fill="none" stroke="#8a9e92" stroke-width="5"/>
+    <circle cx="1038" cy="548" r="13" fill="#91aaab" stroke-width="2"/>
+    <path d="M962 513h103v66H962z" fill="#f2f1e9" fill-opacity=".28"/>
+    <path d="M962 513l19-15h101l-17 15z" fill="#e7ece3" fill-opacity=".8"/>
+    <path d="M1082 498v64l-17 17M962 520h103m-5-7v66" fill="none"/>
+    <path d="M1003 510v14h17v-14" fill="#bdcdc0" stroke-width="2"/>
   </g>
 </svg>
