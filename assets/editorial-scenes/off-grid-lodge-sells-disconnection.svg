@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="森が見える山の宿の受付で、普段着の客がスマートフォンを開いた小さな金属箱へ置き、女将が見守る創作イラスト" data-visual-topic="telephone" data-article-sha256="3961dddb7d9b97a91290a88bf5771dfd88e28c6887118a9adacb50ba9f782368">
+<title>山の宿でスマホを預ける、小さな金属箱</title>
+<desc>木製カウンターのある山の宿の受付。客が片手で持ったスマートフォンを、机上の小さな可搬式の金属箱へ静かに下ろしている。長方形の電話と画面、上に開いた金属製のふた、空いた箱の内側が同時に見える。箱はカウンターに組み込まれた引き出しではない。女将はカウンターの向こうでその手元を見守り、窓から普通の森と山並みが見える。画像内に文字、ロゴ、架空ブランド、通知文は描かない。</desc>
+<defs>
+<linearGradient id="lodge-wall" x2="0" y2="1"><stop stop-color="#ede6d5"/><stop offset="1" stop-color="#d6c7ad"/></linearGradient>
+<linearGradient id="lodge-floor" x2="0" y2="1"><stop stop-color="#c9b99f"/><stop offset="1" stop-color="#b09a7e"/></linearGradient>
+<linearGradient id="lodge-metal" x2="0" y2="1"><stop stop-color="#d9dfd7"/><stop offset="1" stop-color="#b4c1b9"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#lodge-wall)"/>
+<path d="M0 445h1200v230H0z" fill="url(#lodge-floor)"/>
+<path d="M0 445h1200M0 551h1200M0 645h1200M149 445L43 675m334-230-44 230m359-230 44 230m259-230 108 230" fill="none" stroke="#a58d70" stroke-width="3" opacity=".5"/>
+<!-- Ordinary mountain woods through a large, unlettered reception window. -->
+<path d="M47 69h602v273H47z" fill="#9b886d" stroke="#7c725d" stroke-width="6"/>
+<path d="M62 84h572v241H62z" fill="#d6e1d5"/>
+<path d="M62 216l99-81 107 55 104-79 121 83 84-47 57 39v139H62z" fill="#a6bfac"/>
+<path d="M62 252l107-70 105 76 100-55 104 60 95-55 61 38v79H62z" fill="#8fac94"/>
+<g fill="#6f9479"><path d="M80 296l29-73 30 73zm47-11 33-79 32 79zm59 26 29-73 29 73zm298-12 28-79 29 79zm53-10 31-81 32 81zm53 22 29-78 27 78z"/></g>
+<path d="M348 84v241M62 260h572" fill="none" stroke="#9b886d" stroke-width="9"/>
+<path d="M35 342h625" stroke="#9c8264" stroke-width="12" stroke-linecap="round"/>
+<path d="M717 0v445m430-445v445" stroke="#b39c7d" stroke-width="15"/>
+<path d="M0 52h1200" stroke="#bda98a" stroke-width="12"/>
+<!-- The guest's free arm rests naturally; only the phone hand reaches for the box. -->
+<g stroke="#52645a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M365 338q-29 4-34 35v105l24 11 22-140z" fill="#879584"/>
+<path d="M387 490l-10 118-21 26h41l21-25 16-114m15 0 15 113 23 26h40l-29-28-11-111" fill="#7a8882"/>
+<path d="M378 344q43-31 89-1l35 155H355z" fill="#91a69d"/>
+<path d="M406 312v33l22 17 21-21v-31" fill="#dfb99c"/>
+<ellipse cx="428" cy="269" rx="41" ry="51" fill="#dfb99c"/>
+<path d="M388 272q-9-61 36-65 51-2 48 54l-27-29-55 29" fill="#5b6054"/>
+<path d="M446 267h11m-12 26q12 6 22-4" fill="none" stroke-width="3"/>
+<path d="M381 365l-13 77 29 23" fill="none" stroke="#91a69d" stroke-width="29"/>
+<path d="M397 465l17 7" stroke="#dfb99c" stroke-width="15"/>
+<path d="M462 361l65 44 92-13" fill="none" stroke="#91a69d" stroke-width="29"/>
+<path d="M619 392l24-4" fill="none" stroke="#dfb99c" stroke-width="16"/>
+<path d="M385 350l39 32 34-36" fill="none" stroke="#b8c5b3" stroke-width="3"/>
+</g>
+<!-- The innkeeper watches from behind the counter, without handing over another prop. -->
+<g stroke="#596054" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M912 367q37-30 80-3l35 157H882z" fill="#b19b89"/>
+<path d="M928 360l-10 62-8 93h86l-10-94-14-61" fill="#d4d1bc"/>
+<path d="M936 330v34l19 14 18-18v-32" fill="#dfb99d"/>
+<ellipse cx="954" cy="286" rx="38" ry="49" fill="#dfb99d"/>
+<path d="M916 291q-13-58 31-64 47-4 46 53l-25-27-50 26" fill="#656254"/>
+<path d="M935 287h-9m13 25q-11 5-20-2" fill="none" stroke-width="3"/>
+<path d="M916 385l-18 66 30 42m62-110 22 62-28 49" fill="none" stroke="#b19b89" stroke-width="25"/>
+<path d="M929 492h16m39 2h-17" stroke="#dfb99d" stroke-width="14"/>
+</g>
+<!-- Wooden reception desk: no integrated drawer below the metal box. -->
+<path d="M566 495h548l35 43H565z" fill="#b39473" stroke="#836f58" stroke-width="5" stroke-linejoin="round"/>
+<path d="M566 538h583v137H566z" fill="#9c8064" stroke="#7d6a55" stroke-width="5"/>
+<path d="M596 562h523v91H596z" fill="#ae9272"/>
+<path d="M652 563v88m99-88v88m100-88v88m100-88v88m99-88v88" stroke="#9d8265" stroke-width="3"/>
+<!-- A freestanding metal box with its hinged lid opened upright. -->
+<g stroke="#65776b" stroke-width="4" stroke-linejoin="round">
+<path d="M615 320h185v90H615z" fill="url(#lodge-metal)"/>
+<path d="M627 332h161v65H627z" fill="#c3cec4" stroke="#93a799" stroke-width="2"/>
+<path d="M640 341h133m-133 47h133" fill="none" stroke="#e1e6d9" stroke-width="2"/>
+<path d="M615 410h185l35 35H650z" fill="#879b8d"/>
+<path d="M626 416h167l27 25H654z" fill="#60796b" stroke-width="2"/>
+<path d="M615 410l35 35v60l-35-34z" fill="#a6b7aa"/>
+<path d="M650 445h185v60H650z" fill="url(#lodge-metal)"/>
+<path d="M650 452h185m-175 44h165" fill="none" stroke="#e4e8dc" stroke-width="2"/>
+<path d="M727 445v18h23v-18" fill="#a5b7aa" stroke-width="2.5"/>
+<path d="M728 483h28" stroke="#80988a" stroke-width="4" stroke-linecap="round"/>
+<path d="M617 410h181" stroke="#9eafa2" stroke-width="5"/>
+</g>
+<!-- The recognisable smartphone is lowered into the open box by one hand. -->
+<path d="M619 392l24-4" fill="none" stroke="#dfb99c" stroke-width="16" stroke-linecap="round"/>
+<path d="M642 386q12-4 20 3l11 12-5 11-24-4-14-11z" fill="#dfb99c" stroke="#a58a73" stroke-width="2.5" stroke-linejoin="round"/>
+<g transform="rotate(-9 683 407)" stroke-linejoin="round">
+<rect x="665" y="371" width="36" height="72" rx="6" fill="#455b51" stroke="#354c43" stroke-width="3"/>
+<rect x="670" y="379" width="26" height="54" rx="2" fill="#9eb8b1"/>
+<path d="M679 375h8" stroke="#b7c9be" stroke-width="2" stroke-linecap="round"/>
+<path d="M674 385l17 31" stroke="#c0d0c3" stroke-width="2" opacity=".6"/>
+</g>
+<path d="M661 396q11-2 13 5 0 7-9 8" fill="#dfb99c" stroke="#a58a73" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
