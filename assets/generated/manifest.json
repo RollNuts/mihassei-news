@@ -1439,6 +1439,33 @@
       "source_article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
       "source_png_sha256": "db0518cf424d13f10984af9ce0d4b4d6ecb40e41aa313436167e430eeb0d7b08"
     },
+    "night-art-exhibition-thirty-two-shadow-intruders": {
+      "article_sha256": "cc961b9736715a506d69b4af9b8d04166c0e3b47a7cd71fb439d0308975a90ac",
+      "bytes": 174985,
+      "generated_at": "2026-11-10T23:05:33.937910+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5853481159461937668,
+      "sha256": "b315803d517c2c99543bec3e1e6867679e612ca68438086a2dd3cb5dd39902b6"
+    },
     "nikkei-plunge-hundred-year-hold-minute-check": {
       "article_sha256": "70f9071727826b917a52ea97dbe3ada4b6a6b1a238a75343767bed915aa89a92",
       "bytes": 129739,
@@ -1989,11 +2016,11 @@
         },
         {
           "generation_id": "d1150db1-d6e9-4e67-8354-5594dfa3f6b5",
+          "input_generation_id": "369327b3-cf9d-4356-b73b-1245fc069f33",
+          "input_png_sha256": "78a1ea59fba60d53803531d5a49a05066d2b0d19d1c4c1cd166fa570d9d8152d",
           "mode": "edit",
           "prompt": "Edit ONLY recognizable branding and lettering on THREE groups of small objects in this existing street photograph. (1) Remove the large N-shaped brand marks and any other brand lettering from BOTH of the woman's trainers, replacing the marked side panels with plain unbranded gray mesh/fabric that matches the shoes' existing construction, stitching and light. (2) Remove the tiny white/red manufacturer label or marks near the top/front/handle area of the silver suitcase, leaving continuous believable unmarked silver metal and existing ribs. (3) Remove the yellow emblem on the attendant's cap and any identifiable badge, crest, lettering or logo on the vest, leaving plain navy fabric and neutral unlettered patches. Preserve everything else exactly: same invented adult woman and attendant, faces and smiles, smartphone, brick-red jacket, charcoal trousers, natural walking pose and feet, exactly one silver suitcase following unattended on grounded small wheels, same extended handle, welcoming hand wave, doorway, damp sidewalk, trees, soft overcast outdoor light, low diagonal camera perspective, depth and 16:9 crop. Do not change identities, expressions, pose, scene, objects or photographic texture. No replacement logos, writing, watermarks or visible edit patches.",
-          "input_generation_id": "369327b3-cf9d-4356-b73b-1245fc069f33",
-          "source_png_sha256": "1d5a4d6ddbdcaff496d8a41fe0996803b2ac9b8cec6213ffbd9588e2f8b58431",
-          "input_png_sha256": "78a1ea59fba60d53803531d5a49a05066d2b0d19d1c4c1cd166fa570d9d8152d"
+          "source_png_sha256": "1d5a4d6ddbdcaff496d8a41fe0996803b2ac9b8cec6213ffbd9588e2f8b58431"
         }
       ],
       "model": "ChatGPT ImageGen",
@@ -2027,10 +2054,10 @@
       },
       "previous_visual_hold": {
         "article_sha256": "e6a930ceb5e03a1e3156acdacaeab020892df58bb8981c99080d0f7db1f84a68",
+        "reason": "現本文とCPU原JPEGを実表示して照合。女性の背中、木造建物、青い装置を載せた大型ケース状の物体が中心で、普通の銀色かばんの小さな車輪と引き取り後のスマホ確認が伝わらない。壁等に不要な文字様の模様も見える。本文の主要場面を実写として表す写真には不採用。原生成指紋・seed・画像SHAは変更せず保持する。",
         "rejected_candidate_sha256": "5beded992ba45cde3dcba271ace5e98b7feba279c8676971753fba80bb1bb56b",
         "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42805099811",
-        "reviewed_at": "2026-11-10T11:54:44.262218+00:00",
-        "reason": "現本文とCPU原JPEGを実表示して照合。女性の背中、木造建物、青い装置を載せた大型ケース状の物体が中心で、普通の銀色かばんの小さな車輪と引き取り後のスマホ確認が伝わらない。壁等に不要な文字様の模様も見える。本文の主要場面を実写として表す写真には不採用。原生成指紋・seed・画像SHAは変更せず保持する。"
+        "reviewed_at": "2026-11-10T11:54:44.262218+00:00"
       },
       "prompt_version": 3,
       "sha256": "9a709dbc71cc4c2ae0fc0bbae2cf5229920879d4c4aee82c530bbe2f1e36f4a8",
