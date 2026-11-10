@@ -1,5 +1,67 @@
 [
   {
+    "slug": "drama-final-five-minutes-in-cinemas",
+    "category": "エンタメ",
+    "flash": "最終回の別売り",
+    "fiction_company": "七灯映像",
+    "art": "cards",
+    "fiction_at": "2031-11-10T13:40:00+09:00",
+    "published_at": "2026-11-10T13:40:00+09:00",
+    "title": "ドラマ最終回、残り5分は映画館で　結末だけの上映チケット発売",
+    "summary": "連続ドラマの最終回が犯人を明かす直前で終了。制作会社は放送しなかった結末5分を映画館限定で販売し、毎週見てきた視聴者が劇場へ向かった。",
+    "paragraphs": [
+      "連続ドラマ『午後の境界』の最終回で、主人公が「犯人は――」と口を開いた瞬間、画面が暗転した。そこに出たのは「結末は、映画館で」の文字。制作会社「七灯映像」は、放送されなかった最後の5分を翌日から全国の劇場で上映すると発表した。",
+      "2026年には、テレビドラマの最終回の後に完全新作映画を公開する企画が実際に発表されていた。七灯映像が2031年に始めたのは、新しい物語の映画ではなく、テレビ本編から結末を切り出してチケットにする商売だ。普通ならテレビで完結させるか、視聴者が後であらすじを読めばいい。だが制作側は、毎週追ってきた人が「最後の表情を自分で見たい」と考えることに期待した。視聴者も、翌朝の職場で結末を聞く前に座席を予約した。",
+      "翌日、映画館の客席は埋まった。上映時刻になると、通常の映画と同じように広告と予告編が18分続いた。ようやく始まった本編で犯人の名前が明かされ、主人公が短くうなずく。エンドロールを含めて上映時間は5分。照明がついたとき、客が買ったポップコーンはまだほとんど残っていた。",
+      "二日目、先に見た人の書き込みで「最初の18分は予告」と知った客たちが、開演後になってからロビーへ集まった。館内の広告が終わるまで入らずに待つ列を見て、係員が「そろそろ本編です」と声をかける。客が一斉に席へ向かうと、宣伝だけが流れていた客席がようやく満員になった。"
+    ],
+    "source": {
+      "kind": "公式発表",
+      "publisher": "TBSテレビ",
+      "published_at": "2026-11-08T00:00:00+09:00",
+      "url": "https://www.tbs.co.jp/VIVANT_tbs/news/",
+      "topic": "2026年11月8日、TBSは『VIVANT』第2シーズン最終話の放送後、完全新作映画を同年12月4日に公開すると発表した。実在作はテレビ最終回の結末を別料金で販売したわけではない。2031年の『午後の境界』、会社、残り5分の劇場販売、予告時間や客の行動はすべて創作。"
+    },
+    "scene_prompt": "Candid realistic Japanese cinema lobby at evening, a small group of adult moviegoers with ordinary paper tickets and unopened popcorn cups wait beside the door to a dark auditorium. A polite theater attendant gestures toward the still closed door while glowing light from commercials is faintly visible inside, natural documentary photo, plausible ordinary cinema architecture, no legible signs or logos, no recognizable actors.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "ドラマ",
+      "映画",
+      "ファン文化"
+    ],
+    "satire_tags": [
+      "最終回の別売り"
+    ],
+    "x_tags": [
+      "ドラマ",
+      "最終回"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "毎週追ったドラマの最後の5分だけ、劇場で別料金。客席に人が集まったのは、予告が終わる直前だった。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年にテレビ連続ドラマの最終回直後から完全新作映画へつなぐ興行が発表され、作品を劇場まで追いかける楽しみがある",
+      "target": "無料の最終回と称しながら物語の完結だけを別料金にする娯楽ビジネス",
+      "action": "制作会社がドラマ最終回の残り5分をテレビで流さず映画館でチケット販売し、視聴者が結末を見に行く",
+      "outcome": "18分の予告に対して本編が5分しかなく、二日目は客が予告を避けてロビーで本編の始まりを待つ"
+    },
+    "behavior_basis": {
+      "motive": "制作会社はテレビで集めた視聴者の関心を劇場売上に変えたい。視聴者は毎週見た登場人物の結末の表情を自分で確かめたい",
+      "ordinary_alternative": "制作会社は通常どおり最終回までテレビ放送でき、視聴者は後から筋書きや感想を読むこともできる",
+      "why_not": "番組を追ってきた視聴者の感情と翌朝のネタバレを避けたい気持ちを制作側が収益化できるから",
+      "evidence_quote": "だが制作側は、毎週追ってきた人が「最後の表情を自分で見たい」と考えることに期待した。"
+    },
+    "reader_clarity": {
+      "who": "制作会社",
+      "action": "放送しなかった結末の5分を劇場限定で販売し、視聴者が映画館へ行く",
+      "oddity": "最終回と呼んだテレビ放送では犯人が明かされず、結末を知るには劇場チケットが必要になった"
+    }
+  },
+  {
     "slug": "companies-apply-for-jobseeker-final-interview",
     "category": "経済",
     "flash": "面接される企業",
