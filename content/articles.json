@@ -1,5 +1,66 @@
 [
   {
+    "slug": "joint-party-slate-one-vote-three-claims",
+    "category": "政治",
+    "flash": "共同名簿と議員の一票",
+    "fiction_company": "木陰の党・港の会・ひろば党",
+    "art": "meeting",
+    "fiction_at": "2031-11-10T17:42:00+09:00",
+    "published_at": "2026-11-10T17:42:00+09:00",
+    "title": "共同名簿で当選した議員の賛成1票、3党がそれぞれ「成果」発表",
+    "summary": "3党が同じ候補者を載せた共同の比例代表名簿から当選した議員が法案に賛成。3党は一つの票を別々に活動実績として発表し、議会の記録と報告の数が食い違った。",
+    "paragraphs": [
+      "衆議院で地域バスの運行を支える法案が可決された夕方、「木陰の党」「港の会」「ひろば党」の3党は、そろって「わが党の賛成が成立を後押しした」と発表した。三つの発表が指すのは、3党が共同で候補者を出して当選させた、同じ国会議員の賛成票一つだった。",
+      "2031年の比例代表選挙では、複数の政党が候補者名簿を一つにまとめて選挙に臨む方式が使われている。三党は単独では議席を得にくいため支持を合わせ、地域交通の維持を掲げる候補を送り出した。ただし選挙後も党は別々で、それぞれの支持者に活動成果を示すため、広報は三つに分かれた。2026年にも、複数政党による統一名簿方式を盛り込む衆院選挙制度改革案が取りまとめられていた。",
+      "三党の活動報告には同じ議員の名前と顔が載っている。一党は「町の足を守った」、別の党は「支出に上限を付けた」、もう一党は「民間バスにも支援が届いた」と強調した。共同の説明会で住民が「賛成は三票分だったんですか」と尋ねると、事務局は国会の投票記録を映した。賛成欄にあるその議員の名前は、一度だけだった。",
+      "翌日、支援の条件に納得できない住民が三党へ理由を尋ねた。届いた返信は三党とも「採決は議員本人の判断です」。議員事務所には三つの党から問い合わせが転送され、職員は机の上に三色の活動報告を並べた。どの紙にも成果を発表した党の名前があり、問い合わせ先には同じ議員事務所の電話番号が印刷されていた。"
+    ],
+    "source": {
+      "kind": "報道",
+      "publisher": "テレビ朝日",
+      "published_at": "2026-11-09T18:44:00+09:00",
+      "url": "https://news.tv-asahi.co.jp/news_society/articles/000546440.html",
+      "topic": "2026年11月9日18:44のテレビ朝日報道では、自民・維新・国民の3党が衆院比例定数31減と複数政党による統一名簿方式を含む改革法案原案を取りまとめ、週内提出を目指すと伝えた。11月10日9:55の読売新聞報道（https://news.livedoor.com/article/detail/32777136/）も、統一名簿の具体的制度設計は原案では未確定と報じる。原案段階であり制度成立・施行は確認されていない。2031年の共同名簿実施、架空三党、バス法案、3党の実績報告と苦情対応、人物・会話はすべて創作。実在政党の将来の行為を述べない。"
+    },
+    "scene_prompt": "Three fictional political party press officers in ordinary business clothes place three differently colored plain paper activity reports on a small press conference table beside one empty elected member's chair. Quiet Japanese civic press room, one person prominently arranging the documents, natural fluorescent daylight, documentary photograph, no words, no political logos, no recognizable public figures.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "選挙",
+      "地域"
+    ],
+    "satire_tags": [
+      "成果の取り合い"
+    ],
+    "x_tags": [
+      "選挙",
+      "国会"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "国会では一票。でも「わが党の成果」と発表した政党は三つ。採決の理由を尋ねると、問い合わせ先は一人の議員事務所に集まった。",
+    "reader_interest": "general_society",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "2026年に衆院比例代表の議員定数削減と複数政党の統一名簿方式を含む法案原案がまとめられた",
+      "target": "共同名簿で一人を当選させた各政党が、一つの国会議員の投票をそれぞれ自党の実績として宣伝する",
+      "action": "2031年に共同名簿で当選した議員の賛成一票を三党が別々に実績報告し、住民が三党に説明を求める",
+      "outcome": "成果は三党それぞれの名前で発表され、異議への回答は三党とも議員本人に任せたため苦情だけ一つの議員事務所に集まる"
+    },
+    "behavior_basis": {
+      "motive": "小政党同士で票を合わせて議席を得たい。選挙後は各党が自分の支持者に活動成果を示したい",
+      "ordinary_alternative": "議員の一票を共同の広報としてまとめ、各党は一つの統一説明を出す",
+      "why_not": "共同名簿でも党の組織と支持者は別々に残り、各党が自分の成果として伝える方が支持を得やすいから",
+      "evidence_quote": "ただし選挙後も党は別々で、それぞれの支持者に活動成果を示すため、広報は三つに分かれた。"
+    },
+    "reader_clarity": {
+      "who": "共同名簿で議員を当選させた三つの架空政党",
+      "action": "同じ一人の国会議員の賛成一票をそれぞれ自党の活動報告に載せる",
+      "oddity": "成果は三党とも名乗り、反対意見への対応だけ当選議員一人に任せる"
+    }
+  },
+  {
     "slug": "shopping-cart-home-ride-shared-shuttle",
     "category": "暮らし",
     "flash": "買い物カート同行便",
