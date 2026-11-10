@@ -48,6 +48,8 @@ jobs:
       pending: ${{ steps.plan.outputs.pending }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && 'refs/heads/main' || '' }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -97,6 +99,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: refs/heads/main
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
