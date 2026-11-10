@@ -1,5 +1,66 @@
 [
   {
+    "slug": "companies-apply-for-jobseeker-final-interview",
+    "category": "経済",
+    "flash": "面接される企業",
+    "fiction_company": "街灯キャリア協会",
+    "art": "meeting",
+    "fiction_at": "2031-11-10T11:34:31+09:00",
+    "published_at": "2026-11-10T11:34:31+09:00",
+    "title": "最終面接、呼ばれるのは企業側　求職者が3社の残業・研修実績を審査",
+    "summary": "人手不足で採用が難しくなった中堅企業3社が、一人の転職希望者に選んでもらうため合同選考会へ。採用担当者は自社の勤務条件を説明し、翌日、会社が合否通知を受け取った。",
+    "paragraphs": [
+      "都内の合同選考会で、転職希望者の黒川遥さんが面接官の席に座り、企業3社の採用担当から応募票を受け取った。採用支援団体「街灯キャリア協会」が始めた「企業最終面接」では、仕事を探す人が複数の会社を同じ日に審査する。",
+      "企業応募票には給与や休日だけでなく、配属予定部署の直近の残業実績、研修担当者の名前、休日の連絡体制を書く。求人票を出して人を待つ方法も残るが、採用予定を満たせない企業は、求人票を出して待つだけでは人が集まらず、会社の現場を見せて応募者に検討してもらうことを選んだ。",
+      "最初の会社は「若手が成長できる環境です」と説明した。黒川さんが「教えてくれるのは誰ですか」と尋ねると、研修担当者の欄は空白だった。採用担当は「まず採用できれば担当を決めます」と答えかけ、自社の欠員欄を見て言葉を止めた。隣の会社は教える社員の名前と、指導のために確保した勤務時間を示した。黒川さんは3社分を持ち帰り、条件を比べた。",
+      "翌日、各社の人事室に選考結果が届いた。選ばれた会社では採用担当が「採用していただけました」と報告し、落ちた会社には「貴社の今後のご発展をお祈り申し上げます」と記されていた。人事担当は理由を聞こうと返信ボタンを探したが、メールの末尾には「このメールには返信できません」とあった。普段は自分たちが送っている文面だった。"
+    ],
+    "source": {
+      "kind": "調査",
+      "publisher": "株式会社帝国データバンク",
+      "published_at": "2026-03-23T00:00:00+09:00",
+      "url": "https://www.tdb.co.jp/report/economic/20260323-employment2026/",
+      "topic": "帝国データバンクが2026年3月23日公表した2026年度の雇用動向調査で、正社員の採用予定がある企業は60.3%、中途採用予定は52.4%。中小企業は大企業との賃金格差と応募数の少なさを課題として挙げた。企業が求職者の最終面接を受ける2031年の合同選考会、団体、企業、登場人物は創作であり、2026年の実施事実ではない。"
+    },
+    "scene_prompt": "An adult Japanese job seeker seated calmly behind a simple interview desk receives a paper folder from a suited corporate recruiter seated in the visitor chair opposite. One clear exchange, the recruiter is visibly nervous and the job seeker is attentive, a normal modest meeting room in daylight, plain paper without readable text, natural facial expressions and realistic hands, editorial documentary photograph, no logos or real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "働き方",
+      "人手不足"
+    ],
+    "satire_tags": [
+      "採用の立場逆転"
+    ],
+    "x_tags": [
+      "転職",
+      "人手不足"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「若手が成長できる環境です」。ところが、研修担当者の欄は空白だった。面接される側になった企業の話。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年の企業採用調査で正社員の採用予定が増える一方、中小企業には賃金格差と応募数不足の課題がある",
+      "target": "採用の主導権が企業だけにあり、働く条件が入社前に見えにくい求人・面接慣行",
+      "action": "2031年の合同選考会で求職者が企業3社を面接し、残業実績と研修担当者を記した企業応募票を比較する",
+      "outcome": "準備できた企業が選ばれ、落選した人事担当は自社が普段送る返信不可のお祈りメールを受け取る"
+    },
+    "behavior_basis": {
+      "motive": "欠員が埋まらない中堅企業が応募者に自社の条件を比較して選んでほしい",
+      "ordinary_alternative": "企業が通常の求人票を掲示し、応募者を面接して採否を決める",
+      "why_not": "応募を待っても人が集まらないため、企業側が現場の条件や研修計画を持ち寄って選ばれる方法を取る",
+      "evidence_quote": "採用予定を満たせない企業は、求人票を出して待つだけでは人が集まらず、会社の現場を見せて応募者に検討してもらうことを選んだ。"
+    },
+    "reader_clarity": {
+      "who": "中堅企業3社",
+      "action": "求職者が企業側の残業・研修実績を面接で審査し、合否を通知する",
+      "oddity": "応募者が面接されるのでなく、会社の人事担当者が求職者から選考を受ける"
+    }
+  },
+  {
     "slug": "air-purifying-sofa-backrest-filter-drawer",
     "category": "暮らし",
     "flash": "新製品",
