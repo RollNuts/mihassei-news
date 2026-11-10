@@ -83,6 +83,11 @@ def public_record(minutes=180):
 
 class ArticlePickTests(unittest.TestCase):
     def setUp(self):
+        # Offline fixtures must not append their synthetic sends to Actions'
+        # real run summary. Dedicated summary tests supply a temporary file.
+        summary_env = patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": ""})
+        summary_env.start()
+        self.addCleanup(summary_env.stop)
         # Historical fixtures must not inherit a live provider cooldown committed
         # after their simulated date. The dedicated test reads its own real file.
         live_cooldown = patch.object(picks, "delivery_retry_time", return_value=None)
@@ -310,13 +315,40 @@ class ArticlePickTests(unittest.TestCase):
                  patch.object(picks, "delivery_retry_time", side_effect=READ_DELIVERY_RETRY_TIME), \
                  patch.object(picks, "read_json", side_effect=[CONFIG, ledger()]), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
-                 patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule"}, clear=True), \
-                 patch.object(picks, "choose_x_channel") as choose, patch.object(picks, "queue_one") as send:
+                 patch.dict(os.environ, {"X_TRIGGER_EVENT": "schedule", "GITHUB_STEP_SUMMARY": str(root / "summary.md"), "BUFFER_API_KEY": "secret-not-in-summary"}, clear=True), \
+                 patch.object(picks, "choose_x_channel") as choose, \
+                 patch.object(picks, "list_existing") as read, \
+                 patch.object(picks, "read_page_view_metrics") as metrics, \
+                 patch.object(picks, "queue_one") as send:
                 clock.now.return_value = NOW
                 # Recorded 429 backoff is a successful no-op, not a fresh failure.
                 self.assertEqual(picks.main(), 0)
                 choose.assert_not_called()
+                read.assert_not_called()
+                metrics.assert_not_called()
                 send.assert_not_called()
+            summary = (root / "summary.md").read_text()
+            self.assertIn("プロバイダ待機", summary)
+            self.assertIn("未送信・provider通信なし", summary)
+            self.assertIn("2026-11-05 13:00:00 JST", summary)
+            self.assertIn("2026-11-05 04:00:00 UTC", summary)
+            self.assertIn("手動投稿も行っていません", summary)
+            self.assertNotIn("secret-not-in-summary", summary)
+
+    def test_summary_never_copies_unvalidated_provider_or_slug_text(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "summary.md"
+            path.write_text("Existing step summary\n", encoding="utf-8")
+            with patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(path)}, clear=True):
+                picks.report_outcome("accepted", slug="../unsafe\n# injected",
+                                     provider_status="secret raw error\n# injected")
+            summary = path.read_text()
+            self.assertTrue(summary.startswith("Existing step summary\n"))
+            self.assertIn("X実公開は未確認", summary)
+            self.assertIn("Buffer応答の状態：`未確認`", summary)
+            self.assertNotIn("unsafe", summary)
+            self.assertNotIn("secret raw error", summary)
+            self.assertNotIn("# injected", summary)
 
     def test_verified_channel_cache_saves_discovery_but_keeps_account_pin(self):
         state = ledger()
@@ -1257,7 +1289,7 @@ class ArticlePickTests(unittest.TestCase):
             with patch.object(picks, "ROOT", root), \
                  patch.object(picks, "read_json", side_effect=lambda path: copy.deepcopy(documents[path])), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
-                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only", "GITHUB_STEP_SUMMARY": str(root / "summary.md")}), \
                  patch.object(picks, "read_page_view_metrics", return_value=({"new-story": stats()}, window)), \
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=remote) as list_existing, \
@@ -1294,6 +1326,13 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(receipt["buffer_share_mode_at_accept"], "shareNow")
                 self.assertEqual(receipt["metrics_at_queue"], {
                     **window, "last_7_days_page_views": 11, "today_page_views": 1})
+            summary = (root / "summary.md").read_text()
+            self.assertIn("Buffer受付", summary)
+            self.assertIn("Buffer応答の状態：`sent`", summary)
+            self.assertIn("X実公開は未確認", summary)
+            self.assertIn("X実公開の独立確認ではありません", summary)
+            self.assertNotIn("test-only", summary)
+            self.assertNotIn("article-confirmed", summary)
         self.assertEqual(documents, original)
 
     def test_queue_fullness_does_not_block_share_now_article_lane(self):
@@ -1323,7 +1362,7 @@ class ArticlePickTests(unittest.TestCase):
             with patch.object(picks, "ROOT", root), \
                  patch.object(picks, "read_json", side_effect=lambda path: copy.deepcopy(documents[path])), \
                  patch.object(picks, "datetime", wraps=datetime) as clock, \
-                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}), \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only", "GITHUB_STEP_SUMMARY": str(root / "summary.md")}), \
                  patch.object(picks, "read_page_view_metrics") as pv_read, \
                  patch.object(picks, "choose_x_channel", return_value=("org", CONFIG["channel_id"])), \
                  patch.object(picks, "list_existing", return_value=remote), \
@@ -1346,6 +1385,10 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertIs(receipt["buffer_shared_now_at_accept"], True)
                 self.assertEqual(receipt["buffer_share_mode_at_accept"], "shareNow")
                 self.assertNotIn("metrics_at_queue", receipt)
+            summary = (root / "summary.md").read_text()
+            self.assertIn("Buffer応答の状態：`sending`", summary)
+            self.assertIn("X実公開は未確認", summary)
+            self.assertIn("対象記事：`fresh-story`", summary)
 
     def test_fresh_article_ignores_mature_pv_outage(self):
         """An older article must not make the fresh lane depend on the PV API."""
