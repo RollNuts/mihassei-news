@@ -4,12 +4,11 @@ Runs under the existing GitHub Actions tests, with no Google API or paid tools.
 """
 import json
 import re
-import subprocess
-import sys
 import unittest
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
+from tests.site_build_fixture import ensure_site_build
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://veripsa.com"
@@ -22,7 +21,7 @@ NS = {
 class SearchIndexabilityTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.run([sys.executable, str(ROOT / "scripts/build.py")], cwd=ROOT, check=True)
+        ensure_site_build()
         cls.urls = ET.parse(ROOT / "dist/sitemap.xml").getroot().findall("s:url", NS)
         cls.articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
 

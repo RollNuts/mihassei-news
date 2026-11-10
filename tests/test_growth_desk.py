@@ -1,12 +1,11 @@
 """Safe, no-cost tests for a factual browser-level growth review."""
 import html
 import json
-import subprocess
-import sys
 import unittest
 from pathlib import Path
 
 from scripts.growth_desk import MAX_STORIES, listed_articles, render
+from tests.site_build_fixture import ensure_site_build
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -14,9 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 class GrowthDeskTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Independent of unittest discovery order or test_site's setup.
-        subprocess.run([sys.executable,str(ROOT/"scripts/build.py")],
-                       cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+        ensure_site_build()
         cls.articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
 
     def test_bounded_real_article_listing_uses_actual_publication_dates(self):
