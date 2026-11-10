@@ -127,7 +127,9 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertEqual(build.CATEGORY_PATHS["事件"], "incidents")
         archive = build.archive(self.articles)
         self.assertIn('data-category-filter="事件"', archive)
-        page = build.story(incidents[0], self.articles)
+        # The source assertion belongs to the existing reported incident, not any newer incident.
+        source_incident = next(a for a in incidents if a["slug"] == "stolen-doorbell-returned-by-parcel")
+        page = build.story(source_incident, self.articles)
         self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("J-CASTニュース", page)
 
