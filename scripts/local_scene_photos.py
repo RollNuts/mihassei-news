@@ -155,7 +155,7 @@ def scene_prompt(article: dict) -> str:
     # photography, not "AI art". The absurdity comes from the event itself;
     # visual spectacle, ad polish and cinematic styling are explicitly avoided.
     return (
-        "Candid documentary press photograph of anonymous fictional Japanese adults. "
+        "Candid documentary press photograph of a fictional scene in Japan. "
         + scene_description(article) + " "
         "Treat the absurd event as an ordinary local-news assignment, not a poster or advertisement. "
         "Real physical location, natural available light, realistic skin texture, ordinary clothing "
