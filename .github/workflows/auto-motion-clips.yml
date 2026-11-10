@@ -9,7 +9,10 @@ on:
       - 'scripts/publish_motion_clips.py'
       - 'scripts/broadcast_captions.py'
       - 'scripts/visual_review.py'
+      - 'scripts/news_caster_preview.py'
+      - 'assets/casters/**'
       - 'tests/test_broadcast_captions.py'
+      - 'tests/test_news_caster_preview.py'
       - 'tests/test_motion_clips.py'
       - 'tests/test_motion_publisher.py'
       - 'tests/test_motion_workflow.py'
@@ -31,6 +34,11 @@ on:
   schedule:
     - cron: '17 0,6,12,18 * * *'
   workflow_dispatch:
+    inputs:
+      caster_preview:
+        description: 'Render one CPU caster preview artifact without publishing'
+        type: boolean
+        default: false
 permissions:
   contents: read
 # Parallel article/photo pushes cannot publish clips in parallel.
@@ -41,7 +49,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   validate:
-    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && !(github.event_name == 'workflow_dispatch' && inputs.caster_preview)
     runs-on: ubuntu-latest
     timeout-minutes: 12
     outputs:
@@ -87,9 +95,12 @@ jobs:
       - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
         if: github.event_name == 'pull_request'
         run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow tests.test_broadcast_captions
+      - name: Test caster preview guards offline without downloading models
+        if: github.event_name == 'pull_request'
+        run: python3 -m unittest -v tests.test_news_caster_preview
 
   publish:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0' && !(github.event_name == 'workflow_dispatch' && inputs.caster_preview)
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -163,3 +174,42 @@ jobs:
           done
           echo "Main kept changing; no force push or silent overwrite." >&2
           exit 1
+
+  news-caster-preview:
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event_name == 'workflow_dispatch' && inputs.caster_preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Generate one manual caster preview only while image automation is active
+        run: |
+          set -euo pipefail
+          state="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/free-cpu-scenes.yml" --jq '.state')"
+          if [[ "$state" != "active" ]]; then
+            echo "Image automation is not active; refusing the caster preview." >&2
+            exit 1
+          fi
+          python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
+      - name: Keep only bounded preview media and its receipt for one day
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-caster-preview-${{ github.run_id }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/news-caster-preview/presenter-preview.mp4
+            ${{ runner.temp }}/news-caster-preview/narration-full.wav
+            ${{ runner.temp }}/news-caster-preview/narration-three-seconds.wav
+            ${{ runner.temp }}/news-caster-preview/receipt.json
