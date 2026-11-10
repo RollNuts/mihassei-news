@@ -13,10 +13,10 @@ from unittest.mock import patch
 from scripts import build
 
 from scripts.editorial_mix import (
-    CATEGORY_BALANCE_ROLLOUT_AT,
     EDITORIAL_PAYOFFS,
     EDITORIAL_TONES,
     EDITORIAL_FORMS,
+    EDITORIAL_CATEGORIES,
     LANE_TARGETS,
     LIFE_READER_INTERESTS,
     READER_INTERESTS,
@@ -100,7 +100,7 @@ def story(
     return item
 
 
-def form_story(slug: str, form: str | None, *, published=None, tone="observational") -> dict:
+def form_story(slug: str, form: str | None, *, published=None, tone="observational", category="技術") -> dict:
     """Complete offline fixtures; body review, not this helper, assigns a form."""
     published = published or datetime(2026, 11, 10, 7, 30, tzinfo=JST)
     item = story(slug, "social_life", published=published, tone=tone,
@@ -111,7 +111,7 @@ def form_story(slug: str, form: str | None, *, published=None, tone="observation
         "paragraphs": [f"{slug}は、使い方を確かめてから道具を借りられるようにした。",
                        "利用者は窓口の机で道具を動かし、係員へ使い方を質問した。"],
         "fiction_at": published.replace(year=published.year + 5).isoformat(),
-        "category": "技術", "art": "generic", "tags": ["道具"], "satire_tags": [],
+        "category": category, "art": "generic", "tags": ["道具"], "satire_tags": [],
         "source": {"url": f"https://example.test/{slug}",
                    "published_at": (published - timedelta(hours=1)).isoformat()},
         "reader_clarity": {"who": slug, "action": "使い方を確かめてから道具を借りられる窓口を設ける",
@@ -130,123 +130,73 @@ def form_story(slug: str, form: str | None, *, published=None, tone="observation
     return item
 
 
-def category_slate(categories: list[str], *, day: int = 11, hours=None) -> list[dict]:
-    hours = hours or list(range(7, 7 + len(categories)))
-    rows = []
-    for i, category in enumerate(categories):
-        form = ("policy_announcement", "product_launch")[i] if i < 2 else "feature"
-        item = form_story(f"section-{day}-{i}", form,
-                          published=datetime(2026, 11, day, hours[i], 30, tzinfo=JST))
-        item["category"] = category
-        rows.append(item)
-    return rows
+def category_slate(categories, *, day=10):
+    forms = ["policy_announcement", "product_launch"] + ["feature"] * (len(categories) - 2)
+    return [form_story(f"category-{day}-{i}", forms[i], category=category,
+                       published=datetime(2026, 11, day, 7 + i * 2, 30, tzinfo=JST))
+            for i, category in enumerate(categories)]
 
 
 class EditorialMixTests(unittest.TestCase):
-    def test_today_existing_five_require_a_non_lifestyle_actual_subject(self):
-        rows = category_slate(["社会", "暮らし", "経済", "エンタメ", "暮らし"],
-                              day=10, hours=[7, 9, 11, 13, 15])
+    def test_category_rules_use_actual_newspaper_desks(self):
+        self.assertEqual(EDITORIAL_CATEGORIES, build.CATEGORIES[1:])
+        rows = category_slate(["社会", "暮らし", "経済", "エンタメ", "暮らし", "技術", "政治"])
         self.assertEqual(validate_articles(rows)[0], [])
-        self.assertEqual(category_counts(rows, "2026-11-10"),
-                         Counter({"社会": 1, "暮らし": 2, "経済": 1, "エンタメ": 1}))
-        candidate = form_story("third-lifestyle", "feature",
-                               published=datetime(2026, 11, 10, 17, 30, tzinfo=JST))
-        candidate["category"] = "暮らし"
-        self.assertTrue(any("third-lifestyle: category 暮らし exceeds daily maximum 2" in error
-                            for error in validate_articles(rows + [candidate])[0]))
+        self.assertEqual(category_counts(rows, "2026-11-10")["暮らし"], 2)
         report = report_day(rows, "2026-11-10")
-        first_line = report.splitlines()[0]
-        self.assertIn("categories=", first_line)
-        self.assertIn("暮らし=2", first_line)
-        self.assertIn("core_remaining=2", first_line)
-        self.assertIn("担当面=事件", first_line)
-        self.assertIn("実題材", first_line)
-        self.assertIn("カテゴリの付替え不可", first_line)
-        candidate["category"] = "技術"
-        self.assertEqual(validate_articles(rows + [candidate])[0], [])
+        self.assertIn("core_categories=6/5", report)
+        self.assertIn("desk_next=担当面=", report)
+        self.assertIn("暮らし=2/2", report)
 
-    def test_category_prefix_reserves_enough_core_slots_for_five_sections(self):
-        rows = category_slate(["社会", "社会", "経済", "経済", "技術", "社会", "事件"])
-        self.assertEqual(validate_articles(rows[:5])[0], [])
-        self.assertIn("required unseen section", category_advice(rows[:5], "2026-11-11"))
-        errors = validate_articles(rows[:6])[0]
-        self.assertTrue(any("section-11-5: category daily mix cannot fit 5" in error for error in errors))
-        # A later reserve cannot conceal the invalid sixth-story prefix.
-        reserve = form_story("reserve-fifth-section", "feature",
-                             published=datetime(2026, 11, 11, 20, 30, tzinfo=JST))
-        reserve["category"] = "スポーツ"
-        self.assertTrue(any("section-11-5: category daily mix cannot fit" in error
-                            for error in validate_articles(rows + [reserve])[0]))
-        self.assertIn("reserve stories cannot repair", category_advice(rows + [reserve], "2026-11-11"))
+    def test_lifestyle_maximum_blocks_third_story_in_core_and_reserve(self):
+        core = category_slate(["暮らし", "暮らし", "暮らし"])
+        self.assertTrue(any("暮らし exceeds daily maximum 2" in e for e in validate_articles(core)[0]))
+        categories = ["社会", "暮らし", "経済", "エンタメ", "暮らし", "技術", "政治"]
+        for reserves in (["暮らし"], ["事件", "暮らし"]):
+            rows = category_slate(categories + reserves)
+            self.assertTrue(any("暮らし exceeds daily maximum 2" in e for e in validate_articles(rows)[0]))
+        self.assertEqual(validate_articles(category_slate(categories + ["事件", "スポーツ"]))[0], [])
 
-    def test_five_sections_in_first_seven_pass_without_changing_article_data(self):
-        rows = category_slate(["社会", "暮らし", "経済", "技術", "暮らし", "社会", "スポーツ"])
-        before = copy.deepcopy(rows)
+    def test_reserve_category_cannot_repair_the_first_seven(self):
+        rows = category_slate(["社会", "暮らし", "経済", "エンタメ", "暮らし", "社会", "経済", "技術"])
+        # UTC spellings and reverse file order must not move the eighth story into the core.
+        rows[-1]["published_at"] = datetime.fromisoformat(rows[-1]["published_at"]).astimezone(timezone.utc).isoformat()
+        errors = validate_articles(rows)[0]
+        self.assertTrue(any("category-10-6: category daily mix cannot reach 5" in e for e in errors))
+        self.assertEqual(validate_articles(list(reversed(rows)))[0], errors)
+        self.assertIn("blocked", category_advice(rows, "2026-11-10"))
+
+    def test_category_advice_reserves_remaining_capacity_for_missing_desks(self):
+        rows = category_slate(["社会", "暮らし", "経済", "暮らし", "社会"])
         self.assertEqual(validate_articles(rows)[0], [])
-        self.assertEqual(sum(category_counts(rows, "2026-11-11").values()), 7)
-        self.assertIn("core_remaining=0", report_day(rows, "2026-11-11").splitlines()[0])
-        self.assertIn("予備枠の条件を満たす場合のみ", category_advice(rows, "2026-11-11"))
-        self.assertEqual(rows, before)
-        errors = validate_articles(list(reversed(rows)))[0]
-        self.assertEqual(errors, [])
-        self.assertEqual(report_day(list(reversed(rows)), "2026-11-11"), report_day(rows, "2026-11-11"))
+        advice = category_advice(rows, "2026-11-10")
+        eligible = advice.split("候補面=", 1)[1].split(";", 1)[0].split("/")
+        self.assertEqual(set(eligible), {"事件", "技術", "政治", "スポーツ", "エンタメ"})
+        self.assertEqual(category_advice(list(reversed(rows)), "2026-11-10"), advice)
+        sixth = form_story("sixth-repeated", "feature", category="経済",
+                           published=datetime(2026, 11, 10, 17, 30, tzinfo=JST))
+        self.assertTrue(any("category daily mix cannot reach 5" in e for e in validate_articles(rows + [sixth])[0]))
+        sixth["category"] = "技術"
+        self.assertEqual(validate_articles(rows + [sixth])[0], [])
 
-    def test_category_gate_begins_at_the_exact_instant_and_counts_earlier_stories(self):
-        rows = category_slate(["暮らし", "暮らし"], day=10, hours=[7, 9])
-        before = form_story("just-before-category-gate", "feature",
-                            published=CATEGORY_BALANCE_ROLLOUT_AT - timedelta(seconds=1))
-        before["category"] = "暮らし"
-        self.assertEqual(validate_articles(rows + [before])[0], [])
-        at_gate = copy.deepcopy(before)
-        at_gate["slug"] = "at-category-gate"
-        at_gate["published_at"] = CATEGORY_BALANCE_ROLLOUT_AT.astimezone(timezone.utc).isoformat()
-        self.assertTrue(any("at-category-gate: category 暮らし exceeds" in error
-                            for error in validate_articles(rows + [at_gate])[0]))
-        # Grandfathered excess is context, not a reason to reject unrelated new work.
-        other = form_story("non-lifestyle-after-legacy-excess", "feature",
-                           published=CATEGORY_BALANCE_ROLLOUT_AT + timedelta(minutes=30))
-        other["category"] = "技術"
-        self.assertEqual(validate_articles(rows + [before, other])[0], [])
-
-    def test_pre_rollout_category_imbalance_is_not_retroactively_rejected(self):
-        rows = category_slate(["暮らし"] * 7, day=10)
-        before = copy.deepcopy(rows)
-        self.assertEqual(validate_articles(rows)[0], [])
-        self.assertNotIn("blocked", category_advice(rows, "2026-11-10"))
-        self.assertEqual(rows, before)
-        old = category_slate(["暮らし"] * 7, day=9)
-        self.assertFalse(any("category" in error for error in validate_articles(old)[0]))
+    def test_category_rollout_and_daily_limit_follow_jst_dates(self):
+        old = category_slate(["暮らし", "暮らし", "暮らし"], day=9)
+        for row in old:
+            row.pop("editorial_form")
+        self.assertEqual(validate_articles(old)[0], [])
         self.assertIn("not required", category_advice(old, "2026-11-09"))
+        first = category_slate(["暮らし", "暮らし"])
+        next_day = form_story("jst-next-day", "feature", category="暮らし",
+                              published=datetime(2026, 11, 10, 15, 0, tzinfo=timezone.utc))
+        self.assertEqual(validate_articles(first + [next_day])[0], [])
+        self.assertEqual(category_counts(first + [next_day], "2026-11-10")["暮らし"], 2)
+        self.assertEqual(category_counts(first + [next_day], "2026-11-11")["暮らし"], 1)
 
-    def test_lifestyle_limit_includes_both_reserve_slots_and_resets_at_jst_midnight(self):
-        rows = category_slate(["社会", "暮らし", "経済", "技術", "暮らし", "スポーツ", "事件", "エンタメ", "社会"],
-                              hours=[7, 9, 11, 13, 15, 17, 19, 21, 23])
-        self.assertEqual(validate_articles(rows)[0], [])
-        for index in (7, 8):
-            excess = copy.deepcopy(rows)
-            excess[index]["category"] = "暮らし"
-            self.assertTrue(any(f"section-11-{index}: category 暮らし exceeds daily maximum 2" in error
-                                for error in validate_articles(excess)[0]))
-        next_day = category_slate(["暮らし", "暮らし"], day=12, hours=[0, 1])
-        for item in next_day:
-            item["published_at"] = datetime.fromisoformat(item["published_at"]).astimezone(timezone.utc).isoformat()
-        self.assertEqual(validate_articles(rows + next_day)[0], [])
-        self.assertEqual(category_counts(rows + next_day, "2026-11-11")["暮らし"], 2)
-        self.assertEqual(category_counts(rows + next_day, "2026-11-12")["暮らし"], 2)
-
-    def test_existing_public_sections_are_the_source_for_category_guidance(self):
-        # Existing 政治 is valid; invented sections or すべて cannot manufacture diversity.
-        rows = category_slate(["社会", "暮らし", "経済", "技術", "暮らし", "社会", "政治"])
-        self.assertEqual(validate_articles(rows)[0], [])
-        for invalid in ("新しい面", "すべて", [], {}):
-            candidate = copy.deepcopy(rows)
-            candidate[-1]["category"] = invalid
-            errors = validate_articles(candidate)[0]
-            self.assertTrue(any("category must be an existing public section" in error for error in errors))
-            self.assertTrue(any("category daily mix cannot fit 5" in error for error in errors))
-        report = report_day(rows, "2026-11-11").splitlines()[0]
-        for category in build.CATEGORIES[1:]:
-            self.assertIn(f"{category}=", report)
+    def test_unknown_categories_do_not_count_toward_breadth(self):
+        for category in ("暮し", "すべて", "新カテゴリ", [], {}, None):
+            row = form_story("invalid-category", "feature", category=category)
+            self.assertTrue(any("category required" in e for e in validate_articles([row])[0]))
+            self.assertIn("blocked", category_advice([row], "2026-11-10"))
 
     def test_form_rollout_is_jst_and_does_not_reclassify_old_stories(self):
         before = form_story("before-form-rollout", None,
@@ -263,7 +213,8 @@ class EditorialMixTests(unittest.TestCase):
 
     def test_remaining_core_stories_are_reserved_for_both_missing_forms(self):
         rows = [form_story(f"feature-{i}", "feature",
-                           published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST)) for i in range(5)]
+                           published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST),
+                           category=EDITORIAL_CATEGORIES[i]) for i in range(5)]
         self.assertEqual(validate_articles(rows)[0], [])
         self.assertIn("required next", form_advice(rows, "2026-11-10"))
         sixth = form_story("sixth-feature", "feature", published=datetime(2026, 11, 10, 12, 30, tzinfo=JST))
@@ -284,7 +235,8 @@ class EditorialMixTests(unittest.TestCase):
     def test_satire_maximum_includes_reserve_stories_without_limiting_other_forms(self):
         self.assertEqual(EDITORIAL_FORMS, ("satire", "policy_announcement", "product_launch", "feature"))
         forms = ["satire"] * 3 + ["policy_announcement", "product_launch", "feature", "feature"]
-        rows = [form_story(f"balanced-{i}", form, published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST))
+        rows = [form_story(f"balanced-{i}", form, published=datetime(2026, 11, 10, 7 + i, 30, tzinfo=JST),
+                           category=EDITORIAL_CATEGORIES[i])
                 for i, form in enumerate(forms)]
         self.assertEqual(validate_articles(rows)[0], [])
         fourth = form_story("fourth-satire", "satire", published=datetime(2026, 11, 10, 14, 30, tzinfo=JST))
@@ -297,7 +249,8 @@ class EditorialMixTests(unittest.TestCase):
 
     def test_late_announcements_cannot_hide_an_invalid_chronological_prefix(self):
         forms = ["feature"] * 6 + ["policy_announcement", "product_launch"]
-        rows = [form_story(f"chronology-{i}", form, published=datetime(2026, 11, 10, 10 + i, 0, tzinfo=JST))
+        rows = [form_story(f"chronology-{i}", form, published=datetime(2026, 11, 10, 10 + i, 0, tzinfo=JST),
+                           category=EDITORIAL_CATEGORIES[i])
                 for i, form in enumerate(forms)]
         # These strings sort earlier than the six features, but the instants are later.
         for row in rows[6:]:
@@ -314,7 +267,8 @@ class EditorialMixTests(unittest.TestCase):
         self.assertEqual(validate_articles(rows)[0], [])
         self.assertEqual(form_counts(rows, "2026-11-10"), Counter(satire=3))
         self.assertEqual(form_counts(rows, "2026-11-11"), Counter(satire=3))
-        tied = [form_story(f"tie-{i}", form) for i, form in enumerate(["feature"] * 6 + ["policy_announcement", "product_launch"])]
+        tied = [form_story(f"tie-{i}", form, category=EDITORIAL_CATEGORIES[i])
+                for i, form in enumerate(["feature"] * 6 + ["policy_announcement", "product_launch"])]
         errors = validate_articles(tied)[0]
         self.assertTrue(any("tie-5: editorial_form daily mix cannot fit" in e for e in errors))
         self.assertEqual(validate_articles(list(reversed(tied)))[0], errors)
@@ -1373,3 +1327,4 @@ class EditorialMixTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
