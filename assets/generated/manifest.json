@@ -1960,6 +1960,33 @@
       "source_article_sha256": "d29f0e1ae3b8d689c9ec9ebd34a3d4481e013cee7bea1c67fcead48bef9b91ec",
       "source_png_sha256": "e278f9532ee1c42a4e03abcd4adea545a6c08b4cb596e114b7b4d658410079a9"
     },
+    "shopping-cart-home-ride-shared-shuttle": {
+      "article_sha256": "4f0b67188b07b3774780808af95b04b676cb5bc3fb63574d4b3de5b777ea0eb4",
+      "bytes": 140149,
+      "generated_at": "2026-11-10T07:03:10.694518+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 1267369671102777172,
+      "sha256": "735f7274d462de94195ce7f742d66add97d0b64931342952384b9c902d6b458f"
+    },
     "sleep-advice-livestream-until-two-am": {
       "article_sha256": "90efe393762c81e19a6a38f8d2e03284a1ddf7dff3d5d62fd7101ef5aba8a861",
       "bytes": 115731,
