@@ -520,6 +520,49 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(fitted, minimal_full)
         self.assertNotIn("omitted", output.getvalue())
 
+    def test_minimal_style_keeps_earlier_context_when_later_context_cannot_fit(self):
+        core = "A fisherman carries coiled rope beside a small fishing boat."
+        context = (
+            "The small coastal fishing port has low unmarked wooden storage sheds, weathered mooring posts, "
+            "simple nets, fishing floats and narrow working quays beside calm water, with "
+            "no city skyline, tall apartment blocks, pleasure yachts, billboards, brand "
+            "logos or readable writing, under flat overcast dawn light with natural wood "
+            "and rope textures and unposed people nearby."
+        )
+        later = "An unmarked fishing shed stands far behind the boat."
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        count = lambda text: len(tokenizer.encode(text))
+        shorter = context.replace("small coastal fishing port", "fishing port")
+        for leading, detail, tokens, retained in (
+                ([], context, 73, True),
+                (["A small harbor is behind him."], shorter, 77, True),
+                (["A small harbor is behind him."],
+                 shorter.replace("unposed people", "quiet unposed people"), 78, False)):
+            with self.subTest(minimal_candidate_tokens=tokens):
+                prior = [*leading, detail]
+                source = {"slug": "new-harbor-scene",
+                          "scene_prompt": " ".join([core, *prior, later])}
+                self.assertLessEqual(len(source["scene_prompt"]), 800)
+                self.assertEqual(cpu.prompt_parts(source), (core, [*prior, later]))
+                self.assertGreater(count(cpu.wrap_prompt(core, prior)), cpu.CLIP_TOKEN_LIMIT)
+                self.assertEqual(count(cpu.wrap_prompt(core, prior, minimal=True)), tokens)
+                self.assertGreater(count(cpu.wrap_prompt(core, [*prior, later], minimal=True)),
+                                   cpu.CLIP_TOKEN_LIMIT)
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    fitted = cpu.fit_cpu_prompt(source, tokenizer)
+                self.assertIn(core, fitted)
+                for sentence in leading:
+                    self.assertIn(sentence, fitted)
+                if retained:
+                    self.assertIn(detail, fitted)
+                    self.assertNotIn(later, fitted)
+                else:
+                    self.assertNotIn(detail, fitted)
+                    self.assertEqual(fitted, cpu.wrap_prompt(core, [*leading, later]))
+                self.assertLessEqual(count(fitted), cpu.CLIP_TOKEN_LIMIT)
+                self.assertIn("omitted 1 optional context", output.getvalue())
+
     def test_budget_fitting_keeps_complete_primary_action_and_context_that_fits(self):
         core = "An actor holds a giant spoon beside an empty soup bowl."
         long_context = "A distant skyline " + "tall " * 85 + "with many buildings."
