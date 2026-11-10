@@ -56,7 +56,8 @@
       "who": "自走スーツケース",
       "action": "持ち主を見失ったため自分で交番へ向かう",
       "oddity": "人間がかばんを探すはずが、かばんの側が持ち主の迷子を届け出る"
-    }
+    },
+    "broadcast_feature": true
   },
   {
     "slug": "joint-party-slate-one-vote-three-claims",
