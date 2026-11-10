@@ -2389,6 +2389,19 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "rejected_candidate_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+      "reason": "現本文と旧JPEGを実表示して照合。人物は逆光の出入口に背中を向けて立ち、本文の中心である空の人質椅子脇で忘れ物の上着を畳む動作がない。並んだ椅子と壁の衣類は主役との関係を示さず、背景の隠れ家だけの一致では採用できない。旧生成記録・記事指紋・整数seed・JPEGは変更せず、適合する専用SVGへ戻す。",
+      "reviewed_at": "2026-11-10T00:32:17.270507+00:00",
+      "previous_visual_review": {
+        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+        "decision": "accepted",
+        "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+        "note": "荒れた隠れ家に入る人物を描いた場面。",
+        "reviewed_at": "2026-11-04T01:30:05+00:00"
+      }
     }
   },
   "version": 1

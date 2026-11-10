@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="scene-title scene-desc" aria-label="空の木椅子の脇で、成人の主人公が忘れられた上着の袖を両手で畳む創作イラスト。足元には開いた救助道具バッグがある。" data-visual-topic="telephone" data-article-sha256="7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699">
+<title id="scene-title">救出用の道具をしまい、相棒の忘れた上着を畳む主人公</title>
+<desc id="scene-desc">静かな隠れ家。縄のほどけた空の木椅子の隣で、真顔の成人が薄茶色の上着の袖を内側へ折っている。床の開いたバッグから、未使用のロープカッターが見える。</desc>
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#edf0e9"/><stop offset="1" stop-color="#d1dbd5"/></linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c0b49f"/><stop offset="1" stop-color="#a39684"/></linearGradient>
+</defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<rect y="437" width="1200" height="238" fill="url(#floor)"/>
+<path d="M0 437h1200M85 675l120-238m112 238 65-238m176 238 3-238m196 238-69-238m266 238-125-238" fill="none" stroke="#918c7c" stroke-width="3" opacity=".45"/>
+<!-- A quiet, ordinary room rather than a dramatic rescue in progress. -->
+<rect x="66" y="64" width="294" height="212" rx="4" fill="#708b8d"/>
+<rect x="80" y="78" width="266" height="184" fill="#d2e2df"/>
+<path d="M213 78v184M80 170h266" stroke="#91a7a3" stroke-width="9"/>
+<path d="M79 261h270" stroke="#657d7d" stroke-width="12"/>
+<rect x="962" y="79" width="177" height="358" fill="#7c8e87"/>
+<path d="M982 100h134v337H982z" fill="#bbc7bf"/>
+<path d="M1113 99v338m-132-2h135" stroke="#62796e" stroke-width="7"/>
+<path d="M1092 282h12" stroke="#687f73" stroke-width="6" stroke-linecap="round"/>
+<!-- One empty wooden chair, with loose rope still resting on its seat. -->
+<g stroke="#715d49" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M218 303v188m185-188v188" fill="none"/>
+  <rect x="211" y="300" width="199" height="35" rx="5" fill="#a28a6b"/>
+  <path d="M258 339v102m51-102v102m53-102v102" fill="none" stroke="#937b5c" stroke-width="13"/>
+  <path d="M205 444h213l22 44H189z" fill="#ad9270"/>
+  <path d="M202 488l-17 119m238-119 21 119m-216-43h190" fill="none" stroke-width="14"/>
+</g>
+<path d="M252 462c-37-22-39 24-1 13l25-9c24-11 40 15 13 17-25 2-27-25-1-19l55 12c30 9 43-12 20-17m-104 15c-17 46 29 59 0 92" fill="none" stroke="#d6c5a0" stroke-width="7" stroke-linecap="round"/>
+<!-- A serious adult looks down at the clothing in his hands. -->
+<path d="M569 488l-7 121h61l25-121m18 0 22 121h61l-13-121" fill="#4a5860"/>
+<path d="M563 602h61l5 19h-82q-2-12 16-19m126 0h62l18 19h-84z" fill="#35454c"/>
+<path d="M551 497V324q0-75 94-75 98 0 98 75v173z" fill="#4b626c"/>
+<path d="M628 241h37v47h-37z" fill="#cba58a"/>
+<path d="M618 271l28 33 29-33" fill="#d7ded9"/>
+<circle cx="646" cy="190" r="52" fill="#d2ad90"/>
+<path d="M595 181q-4-64 53-62 58 1 52 66l-27-23q-35 24-78 19z" fill="#414b4c"/>
+<path d="M617 194l13 4m30 0 13-4m-44 27h31" fill="none" stroke="#6a564a" stroke-width="4" stroke-linecap="round"/>
+<path d="M571 301l-42 58 19 39m169-96 47 52-21 43" fill="none" stroke="#4b626c" stroke-width="42" stroke-linecap="round"/>
+<!-- The coat's lapels and hem identify clothing; one sleeve is being folded in. -->
+<path d="M552 345l53-27 40 23 39-23 57 27-17 119H568z" fill="#baa58b" stroke="#897c69" stroke-width="3" stroke-linejoin="round"/>
+<path d="M605 320l40 23-20 46-31-40m90-29-39 23 23 46 27-41" fill="#d1bea2" stroke="#92806a" stroke-width="3" stroke-linejoin="round"/>
+<path d="M647 348v101m-57-6h115" fill="none" stroke="#93816d" stroke-width="3"/>
+<circle cx="656" cy="401" r="4" fill="#786b5c"/><circle cx="656" cy="427" r="4" fill="#786b5c"/>
+<path d="M738 345l34 51-108 24-21-35 82-17z" fill="#cab698" stroke="#897c69" stroke-width="3" stroke-linejoin="round"/>
+<path d="M555 346l-29 55 66 20 14-30-49-22z" fill="#b19b80" stroke="#897c69" stroke-width="3" stroke-linejoin="round"/>
+<path d="M547 392l28-2m167 0-30 10" fill="none" stroke="#d2ad90" stroke-width="21" stroke-linecap="round"/>
+<path d="M568 389l13 4m135 7-12 5" fill="none" stroke="#a77e65" stroke-width="3" stroke-linecap="round"/>
+<!-- Open canvas rescue bag, with the cutter put away rather than being used. -->
+<ellipse cx="959" cy="624" rx="145" ry="17" fill="#786f60" opacity=".2"/>
+<path d="M841 550l44-54h176l40 54z" fill="#87918a" stroke="#4d6260" stroke-width="5" stroke-linejoin="round"/>
+<path d="M839 548q130-36 262 0v75H839z" fill="#536d6c" stroke="#3c5556" stroke-width="5" stroke-linejoin="round"/>
+<ellipse cx="971" cy="546" rx="130" ry="26" fill="#314a4d"/>
+<path d="M868 560l25 63m181-63-26 63" stroke="#83948a" stroke-width="10"/>
+<path d="M905 545v-34q0-20 23-20h86q23 0 23 20v34" fill="none" stroke="#526c68" stroke-width="11"/>
+<g transform="rotate(-15 972 529)" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M947 547l17-43m26 43-18-43" fill="none" stroke="#aa715e" stroke-width="13"/>
+  <path d="M964 504l-10-20 12-12m7 32 10-20-12-12" fill="none" stroke="#a4ada6" stroke-width="8"/>
+  <circle cx="968" cy="503" r="6" fill="#647b78"/>
+</g>
+</svg>
