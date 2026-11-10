@@ -1,5 +1,64 @@
 [
   {
+    "slug": "night-art-exhibition-thirty-two-shadow-intruders",
+    "category": "事件",
+    "flash": "夜の美術祭で人影騒ぎ",
+    "fiction_company": "架空の屋外美術祭「余白港」と参加型作品「あとあし」",
+    "art": "robot",
+    "fiction_at": "2031-11-11T07:41:40+09:00",
+    "published_at": "2026-11-11T07:41:40+09:00",
+    "title": "夜の美術展に「侵入者32人」　警備ロボが警告、全員きのうの来場者",
+    "summary": "閉場後の屋外美術展で、巡回中の警備ロボが「侵入者32人」を検出した。警備員が駆けつけると、映っていたのは前日に来た人々の光の影で、本人の見回りまで翌日の作品に加わった。",
+    "paragraphs": [
+      "海辺の屋外美術祭「余白港」が閉場した夜、巡回警備ロボットが、無人の展示区画に「侵入者32人」を検出した。警備員の藤浦航（31）が駆けつけると、通路を歩いていたのは、前日の来場者の動きを映した光の人影だけだった。",
+      "2031年の参加型作品「あとあし」は、来場者が歩いた道筋を光で記録し、翌日に訪れた人の足元へ重ねて投影する展示だ。人影は顔を写さず、曲がり角での足取りや立ち止まるしぐさだけを残す。自分の歩き方が翌日の見知らぬ人に届くことを楽しみに、来場者は入口で参加を選び、光の跡を残す。翌日の客はその跡をたどりながら、知らない誰かと一緒に散歩するように作品を楽しめる。",
+      "事件の原因は、閉場後の試運転だった。展示スタッフが前日分の32人の影をまとめて再生すると、夜間は無人のはずの通路に人型の動きが現れ、警備ロボが警備員へ確認を求めた。藤浦が展示スタッフと照明装置を確かめ、実際の侵入者はいないと判明。主催者は試運転の時間を警備側へ知らせ、投影範囲も安全な展示区画の内側に戻した。",
+      "翌朝、開場した美術祭で子どもが光の人影を追うと、最後尾の一体だけが角の手前で止まり、左右を確かめてから進んだ。前夜、確認に来た藤浦の足取りも記録されていたのだ。巡回中にそれを見つけた藤浦は、自分の影と並んで左右を見回した。後ろの子どももまねをし、三人分の見回りがその日の作品になった。"
+    ],
+    "source": {
+      "kind": "企業発表",
+      "publisher": "セコム株式会社・NTTドコモビジネス株式会社・株式会社アジラ",
+      "published_at": "2026-10-08T00:00:00+09:00",
+      "url": "https://www.secom.co.jp/corporate/release/2026/nr_20261008.html",
+      "topic": "2026年10月8日付の3社共同発表では、屋外美術展でカメラによる行動検知、人流データ解析、巡回警備ロボットと人による最終確認を組み合わせた実証（2026年10月10日〜12月20日）を説明。過去の来場者の歩行を光の影として翌日投影する作品、32人の誤検出、架空の美術祭・警備員・会話・事後対応は2031年の本紙の創作であり、実在企業の実証事実ではない。"
+    },
+    "scene_prompt": "A Japanese male night security guard in a navy jacket walks beside a small wheeled patrol robot in an outdoor art festival passage, looking toward several life-size translucent projected human silhouettes on the pavement. Ordinary coastal evening lighting, natural skin, matte surfaces and realistic shadows, documentary scene, no readable text, no logos or real brands.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "イベント",
+      "防犯"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "美術展",
+      "防犯"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "閉場後の美術展で「侵入者32人」。確認に向かった警備員が、翌日の展示にちょっとだけ出演することに。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "wildcard",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年に屋外美術展で監視カメラによる行動検知と巡回ロボと人による判断を組み合わせる警備の実証が始まった",
+      "target": "来場者が残した足取りを翌日に光の人影として再生する体験型美術展で、夜の警備が人影を侵入者と判断する",
+      "action": "32人の過去の来場者の光の影が閉場後に再生され、警備員が実際に現場へ駆けつけて原因を調べる",
+      "outcome": "誤検知は解消し、現場を見回った警備員のしぐさまで翌日に作品へ取り込まれて子どもがまねをする"
+    },
+    "behavior_basis": {
+      "motive": "来場者は足取りを翌日の誰かに残したく、主催者は参加型作品を運営し、警備員は異常通知の現場を確認する",
+      "ordinary_alternative": "来場者は普通に展示を眺めるだけ、主催者は開場中のみ映像を流し、警備員は無人巡回だけを行う",
+      "why_not": "翌日の客へ自分の足跡を残せる遊びが参加の魅力で、閉場後の試運転があるため巡回ロボによる異常通知は人が確認する必要がある",
+      "evidence_quote": "自分の歩き方が翌日の見知らぬ人に届くことを楽しみに、来場者は入口で参加を選び、光の跡を残す。"
+    },
+    "reader_clarity": {
+      "who": "警備ロボ",
+      "action": "閉場後の美術展で32人の人影を検出し警備員へ警告する",
+      "oddity": "全員が前日の来場者の光の影で、原因を確かめに来た警備員の足取りまで翌日の展示に加わる"
+    }
+  },
+  {
     "slug": "self-driving-suitcase-reports-missing-owner",
     "category": "事件",
     "flash": "駅前の珍事件",
