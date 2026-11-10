@@ -1,5 +1,67 @@
 [
   {
+    "slug": "air-purifying-sofa-backrest-filter-drawer",
+    "category": "暮らし",
+    "flash": "新製品",
+    "fiction_company": "灯庭家具",
+    "art": "cards",
+    "fiction_at": "2031-11-10T09:35:57+09:00",
+    "published_at": "2026-11-10T09:35:57+09:00",
+    "title": "空気清浄機を内蔵したソファ発売　背もたれから送風、フィルターは座面下から交換",
+    "summary": "家具メーカー「灯庭家具」が、小さな居間に床置きの空気清浄機を増やさないソファを発売。座面下に清浄ユニットを組み込み、背もたれの吹出口へ空気を通す。",
+    "paragraphs": [
+      "六畳の居間で、平井紗季さんがソファの前板を開き、薄いフィルターを引き出した。家具メーカー「灯庭家具」が発売した「風座」は、座面下に清浄ユニットを組み込み、背もたれから空気を送り出すソファだ。",
+      "足元の吸込口から入った空気は交換式フィルターを通り、背もたれ内部の通気路へ流れる。フィルターの引き出しはソファの前面にあり、本体を引きずり出さずに手入れできる。家具の中に吸気から送風までの経路を作り込んだ点が、独立型の清浄機をソファの下へ置く方法と異なる。",
+      "ただし、背もたれの吹出口をふさがないため、壁との間に指定のすき間が必要で、電源も使う。専用の座面構造と通気路を備えた製品なので、手持ちのソファへ後付けはできない。2026年には、横に寝かせてソファ下に置ける独立型の空気清浄機が発表されていた。",
+      "以前の紗季さんは、掃除のたびに床置きの清浄機を持ち上げて場所を空けていた。新しい部屋では前面の引き出しからフィルターを交換し、空いた床に掃除機を通す。掃除を終えると、背もたれと壁の間を確かめてから腰を下ろした。"
+    ],
+    "source": {
+      "kind": "メーカー発表",
+      "publisher": "パナソニック株式会社",
+      "published_at": "2026-08-26T00:00:00+09:00",
+      "url": "https://news.panasonic.com/jp/press/jn260826-1",
+      "topic": "パナソニックが2026年8月26日、横置きで約15.5cmの高さがあればソファやベッド下に設置でき、前面からフィルター手入れが可能な独立型空気清浄機F-PX55Dを発表。発売予定は2026年10月下旬。2031年の家具内蔵ソファ・灯庭家具・利用者は創作であり、実在メーカーの発表ではない。"
+    },
+    "scene_prompt": "A young adult woman draws a rectangular pleated filter cartridge out of a narrow front service drawer beneath the seat of a light-gray sofa in a small Japanese living room. The sofa itself has a clearly built-in upper backrest air outlet grille, not a separate appliance underneath. One person and one clear action, visible sofa frame and filter, ordinary indoor daylight, natural materials and anatomy, no readable text, logos, or real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "収納"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "空気清浄機"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "掃除のたびに空気清浄機を持ち上げる。そんな小さな手間を、ソファの構造ごと変える新製品が登場した。",
+    "reader_interest": "family_home",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年、横置きにしてソファ下へ置ける独立型空気清浄機と前面手入れの設計が発表された",
+      "target": "一人暮らしの小さな居間で空気清浄機が占める床面と移動を伴う手入れ",
+      "action": "専用ソファの座面下に交換ユニットを内蔵し、家具内部の通気路を使って背もたれから送風する",
+      "outcome": "利用者がソファを移動せず前面からフィルターを交換して掃除し、必要な壁のすき間も確保して使う"
+    },
+    "behavior_basis": {
+      "motive": "小さな居間で床置きの清浄機を増やさず掃除と手入れをしやすくしたい",
+      "ordinary_alternative": "独立型空気清浄機をソファの下や脇に置く",
+      "why_not": "吸気から送風まで家具内部に一体設計して床置き家電を減らし、前面から本体移動なしでフィルターを交換できる",
+      "evidence_quote": "家具の中に吸気から送風までの経路を作り込んだ点が、独立型の清浄機をソファの下へ置く方法と異なる。"
+    },
+    "reader_clarity": {
+      "who": "家具メーカー",
+      "action": "清浄ユニットを座面下に内蔵したソファを発売し、前面からフィルターを交換する",
+      "oddity": "床に独立型の空気清浄機を追加せず、ソファの背もたれが空気の送出口になる"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に横置きでソファ下に設置できる独立型空気清浄機と前面アクセス式のフィルターが発表された",
+      "continuation_force": "小世帯の狭い居間では床面積と家具・家電の手入れを両立させる需要が続く",
+      "future_result": "2031年、家具と清浄機の通気経路を統合した専用ソファが発売され利用者はソファを動かさずフィルターを交換できる"
+    }
+  },
+  {
     "slug": "municipal-shared-government-answers",
     "category": "社会",
     "flash": "政策発表",
