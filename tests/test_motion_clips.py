@@ -5,11 +5,14 @@ import hashlib
 import json
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
+from contextlib import ExitStack
 from fractions import Fraction
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 from scripts import build
 from scripts import motion_clips
@@ -153,6 +156,7 @@ class MotionClipTests(unittest.TestCase):
                      patch.object(motion_clips, "story_cues", return_value=cues), \
                      patch.object(motion_clips.shutil, "which", return_value="test-encoder"), \
                      patch.object(motion_clips, "require_mac_not_stopped"), \
+                     patch.object(motion_clips, "mac_resource_guard", return_value=None), \
                      patch.object(motion_clips, "encode_clip") as encode:
                     self.assertEqual(generate(root, min_free_gib=0), [])
                     encode.assert_not_called()
@@ -208,6 +212,17 @@ class MotionClipTests(unittest.TestCase):
     def test_real_approved_still_generates_bounded_silent_mp4(self):
         if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
             self.skipTest("No local ffmpeg tools installed; production static build still works.")
+        if sys.platform == "darwin":
+            from scripts.mac_scene_resources import sample
+            snapshot = sample()
+            if not snapshot["allowed"]:
+                self.skipTest("Actual Mac resource guard deferred encoding: " + snapshot["reason"])
+            try:
+                motion_clips.require_mac_not_stopped()
+            except RuntimeError as exc:
+                self.skipTest("Actual Mac stop switch deferred encoding: " + str(exc))
+        if shutil.disk_usage(ROOT).free < motion_clips.MIN_FREE_GIB * 1024**3:
+            self.skipTest("Actual free storage is below the 12 GiB encoding floor.")
         suitable = next((a for a in self.articles
                          if a.get("broadcast_feature") is True
                          and reviewed_generated_scene(a, root=ROOT)
@@ -240,10 +255,9 @@ class MotionClipTests(unittest.TestCase):
             captions = root / "content/broadcasts.json"
             shutil.copyfile(ROOT / "content/broadcasts.json", captions)
             self.assertEqual([a["slug"] for a in candidates(root)], [slug])
-            # Encoding this temporary fixture must not depend on the operator's
-            # real persistent OFF switch, or change it during the test.
-            with patch("scripts.mac_scene_control.APP_DIR", root / "test-control"):
-                self.assertEqual(generate(root, limit=1, slug=slug, min_free_gib=0), [slug])
+            # Real encoding obeys the operator's actual stop/resource policy;
+            # neither the platform nor its guard is mocked to force execution.
+            self.assertEqual(generate(root, limit=1, slug=slug), [slug])
             self.assertEqual(candidates(root), [])
             verified = usable_clip(suitable, root=root)
             self.assertIsNotNone(verified)
@@ -273,9 +287,10 @@ class MotionClipTests(unittest.TestCase):
             frame_numbers = (0, 48, 94, 95, 96, 144, 190, 191, 192, 240, 287)
             selected = "+".join(f"eq(n,{n})" for n in frame_numbers)
             pixels = subprocess.check_output([
-                "ffmpeg", "-nostdin", "-v", "error", "-i", str(movie),
+                "ffmpeg", "-nostdin", "-v", "error", "-threads", "1",
+                "-filter_threads", "1", "-i", str(movie),
                 "-vf", f"select='{selected}',scale=64:36,format=gray",
-                "-vsync", "0", "-an", "-f", "rawvideo", "-pix_fmt", "gray", "pipe:1",
+                "-vsync", "0", "-an", "-threads", "1", "-f", "rawvideo", "-pix_fmt", "gray", "pipe:1",
             ], timeout=15)
             frame_size = 64 * 36
             self.assertEqual(len(pixels), frame_size * len(frame_numbers))
@@ -325,9 +340,8 @@ class MotionClipTests(unittest.TestCase):
             changed_captions["stories"][slug]["cues"][2]["text"] = "字幕だけを修正した確認用の文"
             captions.write_text(json.dumps(changed_captions, ensure_ascii=False), encoding="utf-8")
             self.assertEqual(motion_clips.preparation_state(suitable, root=root), "current")
-            with patch("scripts.mac_scene_control.APP_DIR", root / "test-control"), \
-                 patch.object(motion_clips, "encode_clip") as encode:
-                self.assertEqual(generate(root, limit=1, slug=slug, min_free_gib=0), [])
+            with patch.object(motion_clips, "encode_clip") as encode:
+                self.assertEqual(generate(root, limit=1, slug=slug), [])
                 encode.assert_not_called()
             self.assertEqual(movie.read_bytes(), before_movie)
             self.assertEqual((root / "assets/clips/manifest.json").read_bytes(), before_manifest)
@@ -336,6 +350,223 @@ class MotionClipTests(unittest.TestCase):
             with patch.object(build, "BASE", root):
                 self.assertNotIn("<video", build.article_hero_media(suitable))
             self.assertEqual(manifest_entries(root)[slug]["bytes"], verified["bytes"])
+
+
+class CheckedMotionTests(unittest.TestCase):
+    """Synthetic subprocesses exercise interruption; no encoder is launched."""
+
+    class Child:
+        def __init__(self, *, finish_after=None, code=0, ignore_terminate=False):
+            self.returncode = None
+            self.finish_after = finish_after
+            self.code = code
+            self.ignore_terminate = ignore_terminate
+            self.communications = self.terminations = self.kills = 0
+            self.reaped = False
+
+        def poll(self):
+            return self.returncode
+
+        def communicate(self, timeout=None):
+            self.communications += 1
+            if (self.returncode is None and self.finish_after is not None
+                    and self.communications >= self.finish_after):
+                self.returncode = self.code
+            if self.returncode is None:
+                raise subprocess.TimeoutExpired("synthetic-child", timeout)
+            self.reaped = True
+            return "child stdout", "child stderr"
+
+        def terminate(self):
+            self.terminations += 1
+            if not self.ignore_terminate:
+                self.returncode = -15
+
+        def kill(self):
+            self.kills += 1
+            self.returncode = -9
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.article = {"slug": "guard-fixture", "title": "Fixture", "summary": "Fixture",
+                        "paragraphs": ["Fixture"], "scene_prompt": "Fixture"}
+        self.folder = self.root / "assets/clips"
+        self.folder.mkdir(parents=True)
+        self.movie = self.folder / "guard-fixture.mp4"
+        self.registry = self.folder / "manifest.json"
+        # Preservation sentinels, not a claimed real video or visual approval.
+        self.old_movie = b"existing movie remains unchanged"
+        self.old_registry = json.dumps({"version": 1, "clips": {
+            "guard-fixture": {"bytes": len(self.old_movie)}}}).encode()
+        self.movie.write_bytes(self.old_movie)
+        self.registry.write_bytes(self.old_registry)
+
+    def planning(self, stack, guard):
+        for name, value in (("candidates", [self.article]),
+                            ("generated_scene_entry", {"sha256": "a" * 64}),
+                            ("usable_generated_scene", True),
+                            ("reviewed_generated_scene", True),
+                            ("story_cues", [{"text": "Ready"}]),
+                            ("mac_resource_guard", guard)):
+            stack.enter_context(patch.object(motion_clips, name, return_value=value))
+        stack.enter_context(patch.object(motion_clips.shutil, "which", return_value="fake-encoder"))
+        stack.enter_context(patch.object(motion_clips.shutil, "disk_usage",
+                                         return_value=SimpleNamespace(free=64 * 1024**3)))
+        return stack.enter_context(patch.object(motion_clips, "require_mac_not_stopped"))
+
+    def preserved(self):
+        self.assertEqual(self.movie.read_bytes(), self.old_movie)
+        self.assertEqual(self.registry.read_bytes(), self.old_registry)
+        self.assertEqual(list(self.folder.glob(".clip-*")), [])
+
+    def test_pressure_preflight_starts_no_child_and_preserves_published_files(self):
+        from scripts.mac_scene_resources import ResourceDeferred
+        guard = Mock()
+        guard.check.side_effect = ResourceDeferred("macOS memory pressure warning")
+        with ExitStack() as stack:
+            self.planning(stack, guard)
+            child = stack.enter_context(patch.object(motion_clips.subprocess, "Popen"))
+            with self.assertRaisesRegex(ResourceDeferred, "memory pressure"):
+                generate(self.root)
+            child.assert_not_called()
+            guard.check.assert_called_once_with(force=True)
+        self.preserved()
+
+    def test_mid_encode_stop_pressure_or_low_storage_reaps_only_owned_child(self):
+        from scripts.mac_scene_resources import ResourceDeferred
+        for reason in ("stop", "pressure", "storage"):
+            with self.subTest(reason=reason), ExitStack() as stack:
+                guard = Mock()
+                stop = self.planning(stack, guard)
+                process = self.Child(ignore_terminate=True)
+                started = []
+
+                def spawn(command, **kwargs):
+                    Path(command[-1]).write_bytes(b"partial candidate")
+                    started.append(True)
+                    return process
+
+                if reason == "stop":
+                    def check_stop():
+                        if started:
+                            raise RuntimeError("Image generation is OFF")
+                    stop.side_effect = check_stop
+                elif reason == "pressure":
+                    def check_pressure(**kwargs):
+                        if started:
+                            raise ResourceDeferred("macOS memory pressure warning")
+                    guard.check.side_effect = check_pressure
+                else:
+                    stack.enter_context(patch.object(motion_clips.shutil, "disk_usage",
+                        side_effect=lambda path: SimpleNamespace(free=0 if started else 64 * 1024**3)))
+                popen = stack.enter_context(patch.object(motion_clips.subprocess, "Popen", side_effect=spawn))
+                broad_signal = stack.enter_context(patch.object(motion_clips.os, "killpg"))
+                # A broken callback must fail promptly, rather than spin the
+                # synthetic child until the encoder's real 120-second limit.
+                stack.enter_context(patch.object(motion_clips.time, "monotonic", side_effect=[0, 121]))
+                with self.assertRaises(RuntimeError):
+                    generate(self.root)
+                popen.assert_called_once()
+                broad_signal.assert_not_called()
+                self.assertEqual((process.terminations, process.kills), (1, 1))
+                self.assertTrue(process.reaped)
+            self.preserved()
+
+    def test_guard_rechecks_after_encoding_before_replacing_saved_files(self):
+        from scripts.mac_scene_resources import ResourceDeferred
+        guard = Mock()
+        encoded = []
+
+        def encode(image, output, **kwargs):
+            output.write_bytes(b"candidate bytes" * 200)
+            encoded.append(True)
+
+        def check(**kwargs):
+            if encoded:
+                raise ResourceDeferred("pressure changed before publish")
+
+        guard.check.side_effect = check
+        with ExitStack() as stack:
+            self.planning(stack, guard)
+            stack.enter_context(patch.object(motion_clips, "encode_clip", side_effect=encode))
+            with self.assertRaisesRegex(ResourceDeferred, "before publish"):
+                generate(self.root)
+            self.assertEqual(guard.check.call_args.kwargs, {"force": True})
+        self.preserved()
+
+    def test_idle_never_creates_a_resource_guard_or_encoder_child(self):
+        with patch.object(motion_clips, "require_mac_not_stopped"), \
+             patch.object(motion_clips.shutil, "which", return_value="fake-encoder"), \
+             patch.object(motion_clips.shutil, "disk_usage", return_value=SimpleNamespace(free=64 * 1024**3)), \
+             patch.object(motion_clips, "candidates", return_value=[]), \
+             patch.object(motion_clips, "mac_resource_guard") as guard, \
+             patch.object(motion_clips.subprocess, "Popen") as child:
+            self.assertEqual(generate(self.root), [])
+            guard.assert_not_called()
+            child.assert_not_called()
+        self.preserved()
+
+    def test_checked_child_runs_callbacks_and_unchecked_path_keeps_run_contract(self):
+        process = self.Child(finish_after=2)
+        check = Mock()
+        with patch.object(motion_clips.subprocess, "Popen", return_value=process):
+            result = motion_clips.run_checked(["fake-command"], timeout=3, check=check)
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, "child stdout", "child stderr"))
+        self.assertGreaterEqual(check.call_count, 3)  # Before, during, after.
+        self.assertEqual((process.terminations, process.kills), (0, 0))
+        completed = subprocess.CompletedProcess(["fake-command"], 0, "out", "err")
+        with patch.object(motion_clips.subprocess, "run", return_value=completed) as run, \
+             patch.object(motion_clips.subprocess, "Popen") as popen:
+            self.assertIs(motion_clips.run_checked(["fake-command"], timeout=3), completed)
+            run.assert_called_once_with(["fake-command"], capture_output=True, text=True, timeout=3, check=True)
+            popen.assert_not_called()
+
+    def test_checked_child_timeout_terminates_kills_and_reaps(self):
+        process = self.Child(ignore_terminate=True)
+        with patch.object(motion_clips.subprocess, "Popen", return_value=process), \
+             patch.object(motion_clips.time, "monotonic", side_effect=[0, 0, 2]):
+            with self.assertRaises(subprocess.TimeoutExpired):
+                motion_clips.run_checked(["fake-command"], timeout=1, check=Mock())
+        self.assertEqual((process.terminations, process.kills), (1, 1))
+        self.assertTrue(process.reaped)
+
+    def test_checked_child_nonzero_preserves_error_output_without_signalling_finished_child(self):
+        process = self.Child(finish_after=1, code=7)
+        with patch.object(motion_clips.subprocess, "Popen", return_value=process):
+            with self.assertRaises(subprocess.CalledProcessError) as error:
+                motion_clips.run_checked(["fake-command"], timeout=3, check=Mock())
+        self.assertEqual((error.exception.returncode, error.exception.output, error.exception.stderr),
+                         (7, "child stdout", "child stderr"))
+        self.assertEqual((process.terminations, process.kills), (0, 0))
+
+    def test_encoder_limits_decoder_encoder_and_filters_to_one_thread(self):
+        calls = []
+        output = self.root / "candidate.mp4"
+        check = Mock()
+        probe = {"streams": [{"codec_type": "video", "codec_name": "h264", "width": 640,
+                 "height": 360, "pix_fmt": "yuv420p", "avg_frame_rate": "24/1", "nb_frames": "288"}],
+                 "format": {"duration": "12.0"}}
+
+        def fake_run(command, *, timeout, check=None):
+            calls.append((command, timeout, check))
+            if command[0] == "fake-ffmpeg":
+                output.write_bytes(b"synthetic candidate" * 100)
+            return subprocess.CompletedProcess(command, 0, json.dumps(probe), "")
+
+        with patch.object(motion_clips, "run_checked", side_effect=fake_run):
+            motion_clips.encode_clip(self.root / "input.jpg", output,
+                                     ffmpeg="fake-ffmpeg", ffprobe="fake-ffprobe", check=check)
+        command = calls[0][0]
+        input_position = command.index("-i")
+        thread_positions = [i for i, arg in enumerate(command) if arg == "-threads"]
+        self.assertTrue(any(i < input_position and command[i + 1] == "1" for i in thread_positions))
+        self.assertTrue(any(i > input_position and command[i + 1] == "1" for i in thread_positions))
+        self.assertEqual(command[command.index("-filter_threads") + 1], "1")
+        self.assertEqual(command[command.index("-c:v") + 1], "libx264")
+        self.assertEqual([timeout for _, timeout, _ in calls], [120, 15])
+        self.assertTrue(all(callback is check for _, _, callback in calls))
 
 
 if __name__ == "__main__":

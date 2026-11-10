@@ -43,6 +43,8 @@ python3 scripts/motion_clips.py --generate --slug ARTICLE-SLUG
 
 **ffmpeg／ffprobeが入っていなければ停止するだけ**。自動インストール、brewの追加導入、API利用、有料GPUへの切り替えはしません。動画は `assets/clips/ARTICLE-SLUG.mp4` と `assets/clips/manifest.json` に保存されます。GitHubへの反映には、生成物の目視確認と通常のgitによる明示的なコミット・pushが必要です。スクリプトは勝手にpushしません。
 
+Macで候補を変換する時は、[画像ワーカーと同じ負荷保護](MAC_SCENE_SETUP.md)を開始前・処理中・保存前に確認します。メモリや熱の警告、計測不能、停止操作、容量不足では、この処理が起動した変換子プロセスだけを終了し、既存の動画とmanifestを維持します。FFmpegの画像デコーダー・動画エンコーダー・フィルタのCPU並列数はそれぞれ1に制限します。候補がない時や確認だけの実行は、変換と負荷状態の書き込みを行いません。
+
 ## GitHub Actionsによる自動生成（無料、上限付き）
 
 既存のMac画像生成スケジュールは変更せず、**検証済みJPEGがmainへ届いたとき**、`content/articles.json`・`content/visual_reviews.json`・`content/broadcasts.json`、動画生成処理・設定が更新されたときに `.github/workflows/auto-motion-clips.yml` が動きます。手動実行にも対応します。字幕の追加・修正で準備が整った未生成記事は生成へ進みますが、記事・画像に整合する現在の形式のMP4があれば、字幕修正だけで再生成しません。
