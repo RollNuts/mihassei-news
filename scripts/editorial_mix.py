@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Editorial lane/tone metadata, daily 3/2/2 guidance, and duplicate guards.
+"""Editorial metadata, daily category/form balance, and duplicate guards.
 
 This module is intentionally offline and dependency-free. It validates metadata
 that the publishing automation writes into content/articles.json. It does not
@@ -17,6 +17,11 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 from urllib.parse import urlsplit
 
+if __package__:
+    from .build import CATEGORIES
+else:
+    from build import CATEGORIES
+
 ROOT = Path(__file__).resolve().parents[1]
 JST = ZoneInfo("Asia/Tokyo")
 
@@ -30,6 +35,9 @@ EDITORIAL_FORMS = ("satire", "policy_announcement", "product_launch", "feature")
 FORM_MINIMUMS = {"policy_announcement": 1, "product_launch": 1}
 FORM_CORE_STORIES = 7
 MAX_DAILY_SATIRE = 3
+CATEGORY_BALANCE_ROLLOUT_AT = datetime.fromisoformat("2026-11-10T17:00:00+09:00")
+MIN_CORE_CATEGORIES = 5
+MAX_DAILY_LIFESTYLE = 2
 EDITORIAL_TONES = (
     "plausible_future",
     "comic_exaggeration",
@@ -174,6 +182,80 @@ def lane_counts(articles: list[dict], day_jst: str) -> Counter:
         if lane in LANE_TARGETS:
             counts[lane] += 1
     return counts
+
+
+def _category_stories(articles: list[dict], day_jst: str) -> list[dict]:
+    """Include the day's legacy stories as context, without rewriting them."""
+    rows = []
+    for article in articles:
+        published = _parse_dt(article.get("published_at"))
+        if published is not None and article_day(article) == day_jst:
+            rows.append((published, str(article.get("slug") or "unknown"), article))
+    return [article for _published, _slug, article in sorted(rows, key=lambda row: row[:2])]
+
+
+def category_counts(articles: list[dict], day_jst: str) -> Counter:
+    return Counter(article["category"] for article in _category_stories(articles, day_jst)
+                   if article.get("category") in CATEGORIES[1:])
+
+
+def _validate_daily_categories(articles: list[dict]) -> list[str]:
+    errors = []
+    days = {article_day(article) for article in articles
+            if (_parse_dt(article.get("published_at")) is not None
+                and _parse_dt(article.get("published_at")) >= CATEGORY_BALANCE_ROLLOUT_AT)}
+    for day in sorted(days):
+        counts: Counter = Counter()
+        core_categories = set()
+        for number, article in enumerate(_category_stories(articles, day), 1):
+            category = article.get("category")
+            if category in CATEGORIES[1:]:
+                counts[category] += 1
+                if number <= FORM_CORE_STORIES:
+                    core_categories.add(category)
+            if _parse_dt(article.get("published_at")) < CATEGORY_BALANCE_ROLLOUT_AT:
+                continue
+            slug = str(article.get("slug") or "unknown")
+            if category not in CATEGORIES[1:]:
+                errors.append(f"{slug}: category must be an existing public section: "
+                              + ", ".join(CATEGORIES[1:]))
+            if category == "暮らし" and counts[category] > MAX_DAILY_LIFESTYLE:
+                errors.append(f"{slug}: category 暮らし exceeds daily maximum {MAX_DAILY_LIFESTYLE} on {day}, including reserve stories")
+            if number <= FORM_CORE_STORIES:
+                remaining = FORM_CORE_STORIES - number
+                if len(core_categories) + remaining < MIN_CORE_CATEGORIES:
+                    errors.append(f"{slug}: category daily mix cannot fit {MIN_CORE_CATEGORIES} public sections in the first {FORM_CORE_STORIES} stories on {day} "
+                                  f"({len(core_categories)} sections, {remaining} remaining core slots); choose a different actual subject, not a new label")
+    return errors
+
+
+def category_advice(articles: list[dict], day_jst: str) -> str:
+    if day_jst < CATEGORY_BALANCE_ROLLOUT_AT.date().isoformat():
+        return "not required before 2026-11-10 17:00 JST; do not reclassify old stories"
+    rows = _category_stories(articles, day_jst)
+    counts = category_counts(rows, day_jst)
+    core = rows[:FORM_CORE_STORIES]
+    core_counts = category_counts(core, day_jst)
+    remaining = max(0, FORM_CORE_STORIES - len(core))
+    invalid_new_prefix = any(_parse_dt(article.get("published_at")) >= CATEGORY_BALANCE_ROLLOUT_AT
+                             for article in core)
+    if len(core_counts) + remaining < MIN_CORE_CATEGORIES and invalid_new_prefix:
+        return "blocked: first 7 cannot reach 5 public sections; reserve stories cannot repair the first 7"
+    eligible = [category for category in CATEGORIES[1:]
+                if category != "暮らし" or counts[category] < MAX_DAILY_LIFESTYLE]
+    # Prefer an unseen section, then a subject underrepresented in the past week.
+    # This assigns one section before drafting instead of offering all-life options.
+    week_start = (datetime.fromisoformat(day_jst) - timedelta(days=6)).date().isoformat()
+    recent = Counter(article["category"] for article in articles
+                     if (article.get("category") in CATEGORIES[1:]
+                         and (article_day(article) is not None)
+                         and week_start <= article_day(article) <= day_jst))
+    preferred = min(eligible, key=lambda category: (counts[category], recent[category], CATEGORIES.index(category)))
+    necessity = "required unseen section" if len(core_counts) + remaining == MIN_CORE_CATEGORIES and remaining else "prefer unseen section"
+    limit = "; 暮らしは本日の上限2本に到達" if counts["暮らし"] >= MAX_DAILY_LIFESTYLE else ""
+    core_done = "基本7本終了、予備枠の条件を満たす場合のみ; " if not remaining else ""
+    return (core_done + f"担当面={preferred} ({necessity}); 実題材から候補を作る、カテゴリの付替え不可"
+            + limit + "; 弱い原稿・未確認の流行で本数を埋めない")
 
 
 def _form_stories(articles: list[dict], day_jst: str) -> list[dict]:
@@ -1090,7 +1172,7 @@ def _followup_ancestors(slug: str, by_slug: dict[str, dict]) -> set[str]:
 
 def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
     """Return (errors, warnings). Errors block malformed metadata/duplicates."""
-    errors: list[str] = _validate_daily_forms(articles)
+    errors: list[str] = _validate_daily_forms(articles) + _validate_daily_categories(articles)
     warnings: list[str] = []
     by_slug = {
         article["slug"]: article
@@ -1296,6 +1378,8 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
 
 
 def report_day(articles: list[dict], day_jst: str) -> str:
+    categories = category_counts(articles, day_jst)
+    category_parts = [f"{category}={categories[category]}" for category in CATEGORIES[1:]]
     counts = lane_counts(articles, day_jst)
     tracked = sum(counts.values())
     published = day_story_count(articles, day_jst)
@@ -1331,7 +1415,10 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         preferred = next_preferred_lane(counts)
         suffix = preferred or "quality-only (3/2/2 target filled)"
     return (
-        f"{day_jst}: published={published}; tracked={tracked}; "
+        f"{day_jst}: categories=" + ", ".join(category_parts)
+        + f"; core_remaining={max(0, FORM_CORE_STORIES - published)}"
+        + f"; category_next={category_advice(articles, day_jst)}\n"
+        + f"{day_jst}: published={published}; tracked={tracked}; "
         + ", ".join(parts)
         + "; forms=" + ", ".join(form_parts)
         + f"; form_next={form_advice(articles, day_jst)}"
