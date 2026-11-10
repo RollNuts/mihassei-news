@@ -656,6 +656,55 @@
       "source_article_sha256": "8e2590e1d913d402fef760dc3fccf7f0e63c4889bf3f1f1e30a57ab15ac17a39",
       "source_png_sha256": "47eb1a073bb194b802a6d909237f94463aed7b92ea24270f805b513acdf6b955"
     },
+    "drama-final-five-minutes-in-cinemas": {
+      "article_sha256": "de4791668779b722f391d02bd1e0bc3fd8718f38a71a532cd456b31a7386054b",
+      "bytes": 127753,
+      "generated_at": "2026-11-10T05:15:52.397625+00:00",
+      "generation_id": "6e69a482-ddcd-4006-aa6f-9780a34d744e",
+      "generation_prompt": "Use case: photorealistic-natural.\nAsset type: wide 16:9 editorial photograph for a fictional future Japanese newspaper article. All people and places are invented.\nPrimary request: candid, ordinary camera photograph in a modest Japanese multiplex cinema lobby. A small group of four anonymous adult Japanese moviegoers is deliberately waiting OUTSIDE a closed dark-auditorium entrance, holding ordinary paper admission tickets and still-full plain popcorn cups. A polite adult cinema attendant beside that same entrance gestures toward the closed door as if advising them when to enter. This is a quiet deadpan fictional comedy scene: the audience waits in the lobby until the lengthy trailers finish before a very short drama ending starts.\nComposition: medium-wide eye-level oblique view showing the four patrons in a loose waiting group on one side of the auditorium entrance, and the attendant next to the closed double door. Keep their upper bodies, faces, ticket-holding hands, popcorn cups, and the entrance all clearly inside a 16:9 crop. They are facing the attendant and door, not posing or walking away from the camera. Two patrons visibly hold plain paper tickets; at least two hold simple plain paper cups full of popcorn. Keep the individual hands and props natural and separate. The attendant wears an understated dark unbranded uniform.\nPlace: believable ordinary contemporary cinema carpet, matte acoustic wall panels, a plain dark double auditorium door with sensible handles and a faint warm light line underneath. Modest practical overhead lobby lighting. Avoid concession counters, ticket-purchase windows, reception desks, movie posters and commercial branding. No view of a readable screen is needed; the advert timing is explained in the article, not through added labels.\nPhotographic style: an unposed local-news field photograph, normal neutral available light, natural skin pores and hair, ordinary cotton and suit fabric, matte paper tickets and popcorn cups, plausible scale and architecture, slight everyday wear and believable shadows. All adults have restrained serious or mildly patient expressions. Clear readable action at thumbnail size, not glossy or dramatically cinematic.\nNo text, letters, numerals, logos, signs, company names, movie titles, captions, watermark, recognizable actors or real people. No anime, illustration, 3D rendering, plastic skin, HDR glow, beauty advertising, grand art-deco theater, extra fingers, fused limbs, floating objects, giant popcorn buckets, seated audience, sales transaction, or empty lobby.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "de4791668779b722f391d02bd1e0bc3fd8718f38a71a532cd456b31a7386054b",
+        "bytes": 133778,
+        "generated_at": "2026-11-10T05:10:27.083433+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 9085058054470321494,
+        "sha256": "fa6e49971d895e286e6ca952788038e4edb379472fccb9188e6100e60c7603a2"
+      },
+      "previous_generation_commit": "8b437bf829186246eb344a4082f9e96a41ebe66d",
+      "previous_visual_hold": {
+        "article_sha256": "de4791668779b722f391d02bd1e0bc3fd8718f38a71a532cd456b31a7386054b",
+        "decision": "rejected",
+        "image_sha256": "fa6e49971d895e286e6ca952788038e4edb379472fccb9188e6100e60c7603a2",
+        "note": "現本文とCPU JPEGを実表示して確認。客らしい成人が窓口側へ背中を向けて集まるが、紙の入場券・ポップコーン・扉脇で案内する係員がなく、本文末尾の本編開始を待つ客の主要動作が読み取れない。映画館らしい背景だけでは採用しない。18分や5分の文字の欠落を不採用理由にはしていない。未採用候補の原指紋と整数seedを保持する。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42759684725",
+        "reviewed_at": "2026-11-10T05:17:42.611306+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "639a0f5abc5fbd5e2a5cce006aed35de7d1dd9303042d6d3713410440c35997e",
+      "source_png_sha256": "e2cfada5cdab6bcb0e83a3acbd5101b2b925fe0498249d92dc40e8b99acb02fd",
+      "supersedes_reason": "The unaccepted CPU image showed patrons at a counter without tickets, popcorn or the attendant. A genuinely new native generation depicts four adult moviegoers waiting with tickets and full popcorn beside a closed auditorium entrance while an attendant gestures toward the door. Original CPU provenance and exact integer seed are preserved."
+    },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
       "bytes": 95502,
