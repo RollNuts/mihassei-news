@@ -1080,69 +1080,84 @@
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
     },
     "joint-party-slate-one-vote-three-claims": {
-      "article_sha256": "d4f826a2fbc8bd496b019df14f6aa306157406be11fa0a0aabff2a75b4cf8d99",
-      "bytes": 113601,
-      "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
-      "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
-      "source_article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-      "origin": "chatgpt-imagegen",
+      "article_sha256": "ddc1d01bab18566e67fb8a8fd03c0e40d0143067a0bf8e6a60ce784ec549af1e",
+      "bytes": 120061,
+      "generated_at": "2026-11-10T10:38:29.882969+00:00",
+      "generation_id": "8425cb9f-e628-4d08-a5df-25138b8e4eb7",
+      "generation_prompt": "Edit this supplied photograph to show the next, newly written action in the same fictional Japanese newspaper story: the three parties' inquiries are forwarded to one legislator's office, and the clerk takes a call while consulting the three differently colored reports. Keep the SAME entirely invented adult Japanese woman in her late twenties, same teal cardigan and white blouse, same ordinary civic office, window daylight, photographic skin and woven fabric, wood desk, and 16:9 composition. Change her action clearly: she now holds the BLACK CORDED TELEPHONE RECEIVER to her LEFT EAR with her LEFT HAND (the side toward the phone base at the right of the image), while her RIGHT HAND gently aligns or points to the BLUE report on the left of the desk. She looks down toward the reports with natural focused, mildly puzzled deadpan attention, as if working out which party's inquiry this is. The BLACK TELEPHONE BASE stays on the right of the desk with the receiver visibly lifted off its cradle, a plausible coiled cable connecting it to the receiver. EXACTLY THREE blue, green and yellow thin report booklets all now lie FLAT and separate across the desk, no booklet held aloft, each with the SAME small generic grayscale bust silhouette already present and no lettering. Keep all three covers visible and separate. Preserve natural hand anatomy, grip and contact points; recreate only the necessary arm, hand and upper-body pose for this genuine phone-taking action. Remove no major story prop and add no extra person or extra telephone. Background binder labels remain blank and unlettered. No words, numbers, logos, badges, real politicians, subtitles or watermarks anywhere. Ordinary unembellished camera photograph, not a film still with dramatic lighting, advertisement, CGI or illustration. Keep the candid fictional recreation look and ensure the phone call and three reports read instantly even in a small card.",
+      "input_jpeg_sha256": "91e25be9e659efc468513331b3562309f54716dd21da26cd5205f21ef93cf728",
       "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-10T09:19:13.700683+00:00",
-      "sha256": "91e25be9e659efc468513331b3562309f54716dd21da26cd5205f21ef93cf728",
-      "generation_prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
-      "generation_steps": [
-        {
-          "generation_id": "e957defa-2e6b-437e-a1e1-e2ececa24895",
-          "mode": "generate",
-          "prompt": "Use case: photorealistic-natural. Create a wide 16:9 candid local-news field photograph for a fictional future Japanese newspaper story; all people and organizations invented. Show one clear action from the story's last paragraph: ONE fictional Japanese parliamentary-office staff woman in her late twenties, standing behind an ordinary light wood office desk, is putting down the THIRD of exactly THREE separate thin paper activity-report booklets. One booklet has a muted blue cover, one muted green, one warm yellow. Two lie side-by-side on the desk already; her right hand is lowering the third beside them and her left hand lightly aligns an edge. All three distinct covers are clearly visible and separate, arranged across the foreground. Each cover has the SAME small neutral grayscale bust/portrait silhouette icon of one generic invented person, without letters, words, digits or logos. The story's absurdity is three different parties' reports claiming the same legislator's one action and referring inquiries to the same office. Convey the physical three reports and one office without writing that explanation in the picture. A single unbranded black landline phone sits on the desk next to the three reports. The woman wears a simple light-teal cardigan over an ordinary white blouse, natural everyday hair, normal face and hands, no makeup-advertising look. Her expression is focused with a very slight knowing warmth, calmly busy and alert rather than exhausted or sad; not posing, grinning or giving a thumbs-up. The frame captures the movement of setting down the report, not a seated static committee or people staring at blank papers. Medium-wide view from in front of the desk at a natural camera height. Keep face, both hands, all three reports and the phone visible inside the 16:9 crop. Background is a modest bright Japanese civic office with a window and soft available daytime light; no actual parliament building, flags, badges or identifiable political symbols. Skin pores, paper edges, woven fabric, phone plastic, desk wood, contact shadows and neutral exposure should look like an ordinary camera photograph. No glossy commercial lighting, cinematic color grade, neon, CGI, 3D render, illustration or plastic skin. No extra people, duplicated limbs, unreadable fake writing, legible text, numbers, logos, watermarks or famous/real politicians. Do not use a real person's likeness. Exactly one adult and three colored booklets, with a coherent natural hand action.",
-          "source_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015"
-        },
-        {
-          "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
-          "mode": "edit",
-          "prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
-          "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
-          "input_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015"
-        }
-      ],
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
-        "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-        "bytes": 96402,
-        "generated_at": "2026-11-10T09:09:58.627859+00:00",
-        "inference": {
-          "algorithm_type": "dpmsolver++",
-          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7.0,
-          "height": 448,
-          "num_inference_steps": 24,
-          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-          "scheduler": "DPMSolverMultistepScheduler",
-          "solver_order": 2,
-          "solver_type": "midpoint",
-          "use_karras_sigmas": true,
-          "vae_model": "stabilityai/sd-vae-ft-mse",
-          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-          "width": 800
-        },
-        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "origin": "github-cpu-sd15",
+        "article_sha256": "d4f826a2fbc8bd496b019df14f6aa306157406be11fa0a0aabff2a75b4cf8d99",
+        "bytes": 113601,
+        "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
+        "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
+        "source_article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
+        "origin": "chatgpt-imagegen",
+        "model": "ChatGPT ImageGen",
         "prompt_version": 3,
-        "seed": 5138589272692608039,
-        "sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224"
+        "generated_at": "2026-11-10T09:19:13.700683+00:00",
+        "sha256": "91e25be9e659efc468513331b3562309f54716dd21da26cd5205f21ef93cf728",
+        "generation_prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
+        "generation_steps": [
+          {
+            "generation_id": "e957defa-2e6b-437e-a1e1-e2ececa24895",
+            "mode": "generate",
+            "prompt": "Use case: photorealistic-natural. Create a wide 16:9 candid local-news field photograph for a fictional future Japanese newspaper story; all people and organizations invented. Show one clear action from the story's last paragraph: ONE fictional Japanese parliamentary-office staff woman in her late twenties, standing behind an ordinary light wood office desk, is putting down the THIRD of exactly THREE separate thin paper activity-report booklets. One booklet has a muted blue cover, one muted green, one warm yellow. Two lie side-by-side on the desk already; her right hand is lowering the third beside them and her left hand lightly aligns an edge. All three distinct covers are clearly visible and separate, arranged across the foreground. Each cover has the SAME small neutral grayscale bust/portrait silhouette icon of one generic invented person, without letters, words, digits or logos. The story's absurdity is three different parties' reports claiming the same legislator's one action and referring inquiries to the same office. Convey the physical three reports and one office without writing that explanation in the picture. A single unbranded black landline phone sits on the desk next to the three reports. The woman wears a simple light-teal cardigan over an ordinary white blouse, natural everyday hair, normal face and hands, no makeup-advertising look. Her expression is focused with a very slight knowing warmth, calmly busy and alert rather than exhausted or sad; not posing, grinning or giving a thumbs-up. The frame captures the movement of setting down the report, not a seated static committee or people staring at blank papers. Medium-wide view from in front of the desk at a natural camera height. Keep face, both hands, all three reports and the phone visible inside the 16:9 crop. Background is a modest bright Japanese civic office with a window and soft available daytime light; no actual parliament building, flags, badges or identifiable political symbols. Skin pores, paper edges, woven fabric, phone plastic, desk wood, contact shadows and neutral exposure should look like an ordinary camera photograph. No glossy commercial lighting, cinematic color grade, neon, CGI, 3D render, illustration or plastic skin. No extra people, duplicated limbs, unreadable fake writing, legible text, numbers, logos, watermarks or famous/real politicians. Do not use a real person's likeness. Exactly one adult and three colored booklets, with a coherent natural hand action.",
+            "source_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015"
+          },
+          {
+            "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
+            "mode": "edit",
+            "prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
+            "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
+            "input_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015"
+          }
+        ],
+        "previous_generation": {
+          "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
+          "bytes": 96402,
+          "generated_at": "2026-11-10T09:09:58.627859+00:00",
+          "inference": {
+            "algorithm_type": "dpmsolver++",
+            "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+            "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+            "guidance_scale": 7.0,
+            "height": 448,
+            "num_inference_steps": 24,
+            "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+            "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+            "scheduler": "DPMSolverMultistepScheduler",
+            "solver_order": 2,
+            "solver_type": "midpoint",
+            "use_karras_sigmas": true,
+            "vae_model": "stabilityai/sd-vae-ft-mse",
+            "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+            "width": 800
+          },
+          "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "origin": "github-cpu-sd15",
+          "prompt_version": 3,
+          "seed": 5138589272692608039,
+          "sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224"
+        },
+        "previous_generation_commit": "6d7261f031aa76685c56639cfe3c4ff26521a0a8",
+        "previous_visual_hold": {
+          "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
+          "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
+          "decision": "rejected",
+          "reviewed_at": "2026-11-10T09:22:47.445002+00:00",
+          "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42787109122",
+          "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。"
+        },
+        "supersedes_reason": "The CPU candidate showed four seated people and white sheets. A genuinely new native generation depicts the final paragraph: one fictional adult staff member placing the third of three differently colored activity reports beside one office phone. Its scene direction now describes this actual action. The original CPU record and integer seed remain bound to their original article and image SHA. A single local edit removed background binder lettering before adoption."
       },
-      "previous_generation_commit": "6d7261f031aa76685c56639cfe3c4ff26521a0a8",
-      "previous_visual_hold": {
-        "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-        "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
-        "decision": "rejected",
-        "reviewed_at": "2026-11-10T09:22:47.445002+00:00",
-        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42787109122",
-        "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。"
-      },
-      "supersedes_reason": "The CPU candidate showed four seated people and white sheets. A genuinely new native generation depicts the final paragraph: one fictional adult staff member placing the third of three differently colored activity reports beside one office phone. Its scene direction now describes this actual action. The original CPU record and integer seed remain bound to their original article and image SHA. A single local edit removed background binder lettering before adoption."
+      "prompt_version": 3,
+      "sha256": "7500076f1d81a11a7fd7f501b4cc0aa469bfe0fb373e14b743089132655bc02d",
+      "source_article_sha256": "d4f826a2fbc8bd496b019df14f6aa306157406be11fa0a0aabff2a75b4cf8d99",
+      "source_png_sha256": "5d877ba21669d29a0685de30d78a6d10403250981b69ccd236be50b0d8f1c5ec",
+      "supersedes_reason": "The published article was rewritten for clarity, removing a false comparison between one vote and three publicity announcements. Rather than rebinding the prior JPEG to the changed text, a genuine native edit changes the clerk from placing the third report to taking the forwarded phone call while consulting all three reports, exactly as in the revised final paragraph. The complete previous native/CPU provenance and exact integer seed are preserved."
     },
     "lion-king-prequel-watch-order-meeting": {
       "article_sha256": "5b32a2b07ac7fd32132912f798e53b8bbb580de32a057c8ff09aa20bd0b75078",
