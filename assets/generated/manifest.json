@@ -1961,31 +1961,69 @@
       "source_png_sha256": "e278f9532ee1c42a4e03abcd4adea545a6c08b4cb596e114b7b4d658410079a9"
     },
     "shopping-cart-home-ride-shared-shuttle": {
-      "article_sha256": "4f0b67188b07b3774780808af95b04b676cb5bc3fb63574d4b3de5b777ea0eb4",
-      "bytes": 140149,
-      "generated_at": "2026-11-10T07:03:10.694518+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "cda469e17631fbacdc69f23252fa3453e381a3df37f993f0d4a9a7c2db2747be",
+      "bytes": 172186,
+      "generated_at": "2026-11-10T07:13:36.379364+00:00",
+      "generation_id": "e02ef685-5caf-4826-8319-29b3fc394ab2",
+      "generation_prompt": "Edit only the tiny white embroidered lettering/logo-like mark on the front of the driver's navy vest near his left chest. Remove that small mark completely and replace it with plain navy woven vest fabric matching the existing folds, shading and texture. Keep the entire image otherwise unchanged: same fictional people and faces, natural hands, pose, wire shopping cart and groceries, milk carton, wheel rails and exact wheel contact, fastening strap/buckle and floor anchor, passenger seats, van, ramp, supermarket, camera viewpoint, crop, lighting and photographic quality. Do not change the action or regenerate the scene. No lettering, logos, new marks, blur patches or visible retouching.",
+      "generation_steps": [
+        {
+          "generation_id": "48c63fe0-e174-4760-a5f2-777035f9d4d0",
+          "mode": "generate",
+          "prompt": "Use case: photorealistic-natural.\nAsset type: wide 16:9 editorial still for a fictional future Japanese newspaper story. All people, shop and vehicle are invented and unbranded.\nPrimary request: an ordinary candid camera photograph showing a community-shuttle driver SECURING A LOADED SHOPPING CART INSIDE THE VAN, while an older adult woman holds that same cart's handle. The news is a grocery cart that travels home in the shuttle without the groceries being transferred into bags or separate boxes.\nOne physically coherent action: at the open rear of an ordinary compact high-roof passenger shuttle van, an anonymous adult Japanese driver crouches just inside the rear floor beside a compact wire-mesh supermarket cart. The driver is visibly using both natural hands to tighten a webbing tie-down strap and its ordinary buckle around the cart's LOWER METAL FRAME. The strap connects to an actual metal floor anchor. The cart's small caster wheels are visibly resting in shallow metal guide channels bolted to the solid van floor. Show at least one wheel in its rail and the belt/buckle fastening clearly, large enough to understand. The cart frame, wheels, rail, belt and floor have separate, plausible contact surfaces.\nThe cart remains loaded with a plain paper grocery bag of vegetables and one plain milk carton, with no brand or readable packaging. An anonymous older Japanese woman in everyday clothing stands at the rear threshold and calmly steadies the same cart by its handle, watching the driver, not posing for the camera. Two adults only. A normal passenger seat is visible beside the cart inside the shuttle.\nArchitecture and scale: both rear doors are open; a short modest loading ramp leads from the pavement to the low rear floor. The cart is already on that floor so the driver can fasten it. Preserve a usable passenger-space layout, believable van dimensions, solid floor, consistent door hinges and wheel support. No cart floating through the vehicle, no wheels dangling off the threshold and no car-body/cart fusion.\nComposition: medium-wide rear three-quarter documentary view, at natural camera height, showing the driver, older shopper, the loaded cart and enough of the open passenger van to explain the service. Make the loaded cart and the driver's belt-fastening action the main subject, with the visible wheel rail in the foreground. Keep faces, hands, strap and wheel/rail contact safely inside a 16:9 crop.\nBackdrop: a modest rural Japanese supermarket entrance in the background, subdued and without signs, with soft normal daytime light. Ordinary lived-in vehicle interior, worn matte metal rails and buckle, woven strap texture, wire cart, paper grocery bag, natural skin texture, hair and clothing folds. Real local-news field photograph, neutral available daylight, believable shadows, restrained serious expressions.\nNo readable text, letters, numbers, logos, store names, captions, watermarks, famous people, brand badges, exaggerated future technology, glossy advertising, cinematic lighting, anime, illustration, 3D render, plastic skin, duplicated fingers, extra arms or fused objects. Do not show only a woman and cart on the street; the van, driver, loaded cart, floor rail and actual fastening action must be present in one shot.",
+          "source_png_sha256": "a66ba6de7ac5c3c8a4135346f6a4dcdedda2c95eb0bad14d05669ebde9b5cb03"
+        },
+        {
+          "generation_id": "e02ef685-5caf-4826-8319-29b3fc394ab2",
+          "input_png_sha256": "a66ba6de7ac5c3c8a4135346f6a4dcdedda2c95eb0bad14d05669ebde9b5cb03",
+          "mode": "edit",
+          "prompt": "Edit only the tiny white embroidered lettering/logo-like mark on the front of the driver's navy vest near his left chest. Remove that small mark completely and replace it with plain navy woven vest fabric matching the existing folds, shading and texture. Keep the entire image otherwise unchanged: same fictional people and faces, natural hands, pose, wire shopping cart and groceries, milk carton, wheel rails and exact wheel contact, fastening strap/buckle and floor anchor, passenger seats, van, ramp, supermarket, camera viewpoint, crop, lighting and photographic quality. Do not change the action or regenerate the scene. No lettering, logos, new marks, blur patches or visible retouching.",
+          "source_png_sha256": "836100ba9a879006ff54817490317d22d305aabbb1553ed6b7eab83abd749bc9"
+        }
+      ],
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "4f0b67188b07b3774780808af95b04b676cb5bc3fb63574d4b3de5b777ea0eb4",
+        "bytes": 140149,
+        "generated_at": "2026-11-10T07:03:10.694518+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 1267369671102777172,
+        "sha256": "735f7274d462de94195ce7f742d66add97d0b64931342952384b9c902d6b458f"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "2e4c0b949dcb8379ba6503d3aba31495dc57694c",
+      "previous_visual_hold": {
+        "article_sha256": "4f0b67188b07b3774780808af95b04b676cb5bc3fb63574d4b3de5b777ea0eb4",
+        "decision": "rejected",
+        "image_sha256": "735f7274d462de94195ce7f742d66add97d0b64931342952384b9c902d6b458f",
+        "note": "旧本文とCPU JPEGを実表示して独立確認。女性とカートが道路上の店先にいるが、予約便の車両、運転手、床の固定レール、ベルトの固定動作がない。背景だけの一致のため不採用。既存tokenizerのオフライン確認で、運転手がレールへ固定する文が67/77 tokenの入力から丸ごと省略されることを確認。モデル起動や本文改稿はしていない。原記事指紋と整数seedをそのまま保持する。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42771396798",
+        "reviewed_at": "2026-11-10T07:17:01.229182+00:00"
+      },
       "prompt_version": 3,
-      "seed": 1267369671102777172,
-      "sha256": "735f7274d462de94195ce7f742d66add97d0b64931342952384b9c902d6b458f"
+      "sha256": "4863723a2b39c8e820a6cf2f011f469dcf4d797f2cab7fd279ae86dc50c309b4",
+      "source_article_sha256": "4f0b67188b07b3774780808af95b04b676cb5bc3fb63574d4b3de5b777ea0eb4",
+      "source_png_sha256": "836100ba9a879006ff54817490317d22d305aabbb1553ed6b7eab83abd749bc9",
+      "supersedes_reason": "The unaccepted CPU candidate showed only a woman and cart at a shop with no shuttle or fastening. A genuinely new generation shows the driver fastening the loaded cart inside a passenger shuttle, with wheels in floor rails and the woman holding its handle. The scene direction now keeps this primary action in its first sentence (74/77 CLIP tokens); published prose is unchanged. One local image edit removed the vest mark; both original generation receipts remain preserved."
     },
     "sleep-advice-livestream-until-two-am": {
       "article_sha256": "90efe393762c81e19a6a38f8d2e03284a1ddf7dff3d5d62fd7101ef5aba8a861",

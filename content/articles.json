@@ -22,7 +22,7 @@
       "url": "https://www.city.kyoto.lg.jp/tokei/page/0000358772.html",
       "topic": "京都市が2026年10月8日公表した京北地域のデマンド交通実証運行資料は、運転士不足等を背景に、2026年12月9日開始予定のドアツードア型・電話とLINE予約・住民ドライバーによるマイカー送迎を案内。2027年4月以降は予算成立が条件。2031年の羽澄野町、スーパーとの共通カート・車内固定・玄関先返却・回収運行、人物と行動は本紙の創作であり、京都市の実証内容ではない。"
     },
-    "scene_prompt": "A candid natural daylight documentary photograph at a small rural Japanese supermarket entrance. An older adult Japanese woman gently rolls a compact grocery cart carrying a bag of vegetables and milk toward the wide back door of an ordinary low-floor community shuttle van. A driver carefully secures the cart wheel into a low metal guide rail inside the van; one clear central action, small practical transport vehicle, realistic hands and materials, no readable letters, signs, logos, dramatic lighting or real identifiable people.",
+    "scene_prompt": "A driver straps a grocery cart into floor wheel rails inside an open Japanese shuttle van while an older woman holds its handle. Vegetables and a milk carton remain in the cart beside passenger seats. Rural supermarket entrance in natural daylight, ordinary materials, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "地域",
