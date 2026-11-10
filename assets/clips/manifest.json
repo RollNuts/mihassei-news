@@ -30,15 +30,15 @@
     "spy-captive-escapes-before-rescue": {
       "origin": "verified-still-motion",
       "motion_style_version": 3,
-      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-      "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-      "sha256": "51875c629a8b1b8bb6e9f270bfa5369ac4dfa0e49af60f147f3235480d8f8ba3",
-      "bytes": 116214,
+      "article_sha256": "2930e67327b556e64a6f4c8715c0263cf33c0563e3884134ae1e733617a71b60",
+      "image_sha256": "f020d550c4d778e184365229f57b0bc1ca0cfb78d2cf0285afd244c859538069",
+      "sha256": "27ca9c2912817f89b55bb8ebca8841faf14c0478d7e7812247193ac94e88421b",
+      "bytes": 118240,
       "width": 640,
       "height": 360,
       "fps": 24,
       "duration_ms": 12000,
-      "created_at": "2026-11-04T00:56:49.550378+00:00"
+      "created_at": "2026-11-10T12:31:41.087472+00:00"
     },
     "bakery-no-important-announcement-panic": {
       "origin": "verified-still-motion",
