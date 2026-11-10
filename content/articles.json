@@ -22,7 +22,7 @@
       "url": "https://news.tv-asahi.co.jp/news_society/articles/000546440.html",
       "topic": "2026年11月9日18:44のテレビ朝日報道では、自民・維新・国民の3党が衆院比例定数31減と複数政党による統一名簿方式を含む改革法案原案を取りまとめ、週内提出を目指すと伝えた。11月10日9:55の読売新聞報道（https://news.livedoor.com/article/detail/32777136/）も、統一名簿の具体的制度設計は原案では未確定と報じる。原案段階であり制度成立・施行は確認されていない。2031年の共同名簿実施、架空三党、バス法案、3党の実績報告と苦情対応、人物・会話はすべて創作。実在政党の将来の行為を述べない。"
     },
-    "scene_prompt": "Three fictional political party press officers in ordinary business clothes place three differently colored plain paper activity reports on a small press conference table beside one empty elected member's chair. Quiet Japanese civic press room, one person prominently arranging the documents, natural fluorescent daylight, documentary photograph, no words, no political logos, no recognizable public figures.",
+    "scene_prompt": "A Japanese parliamentary office staffer in her late twenties places the third of three blue, green and yellow activity reports on one desk beside a phone. Each report shows the same small grayscale portrait silhouette. Natural office daylight, focused expression, no readable text or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "選挙",
