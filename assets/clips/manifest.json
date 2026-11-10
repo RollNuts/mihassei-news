@@ -104,6 +104,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-09T14:30:38.463182+00:00"
+    },
+    "self-driving-suitcase-reports-missing-owner": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "84063b065609b62ef1972edc413aa6310728150d0c60dd396fe73001eaf20602",
+      "image_sha256": "9a709dbc71cc4c2ae0fc0bbae2cf5229920879d4c4aee82c530bbe2f1e36f4a8",
+      "sha256": "c8bb1cd74495cf2344b5e7a5050a1b6cc6f46150c80bcf1c078ebd417a89ffe0",
+      "bytes": 127843,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-10T12:59:54.404362+00:00"
     }
   }
 }
