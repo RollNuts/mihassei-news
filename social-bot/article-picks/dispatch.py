@@ -793,12 +793,48 @@ def connected_channel(token: str, config: dict, state: dict, now: datetime):
     return org_id, channel_id
 
 
+def report_outcome(outcome: str, *, retry_at: datetime | None = None,
+                   slug: str | None = None, provider_status: object = None) -> int:
+    """Summarize this check without exposing credentials or implying X delivery."""
+    messages = {
+        "off": "OFF — 未送信・provider通信なし。",
+        "outside": "時間外 — 未送信・provider通信なし。",
+        "slot": "枠上限・重複 — 未送信・provider通信なし。",
+        "spacing_local": "間隔待ち — 未送信・provider通信なし。",
+        "spacing": "間隔・送達状態の確認待ち — 未送信。provider照会後に送信を見送りました。",
+        "cooldown": "プロバイダ待機 — 未送信・provider通信なし。",
+        "no_new": "対象なし — このpushに新しい公開記事はなく、未送信・provider通信なし。",
+        "no_candidates": "対象なし — 公開期間等の条件に合う記事がなく、未送信・provider通信なし。",
+        "no_eligible": "対象なし — 重複防止・選定条件を満たす記事がなく、未送信。provider照会は実施しました。",
+        "accepted": "Buffer受付 — 即時送信を依頼しました。X実公開は未確認です。",
+        "error": "処理失敗 — 送達状態は未確認です。成功扱いせず、実行ログと保存済み台帳を確認してください。",
+    }
+    lines = ["### X記事紹介の実行結果", "", messages[outcome]]
+    if outcome == "cooldown":
+        if retry_at is None or retry_at.tzinfo is None:
+            raise ValueError("Provider retry time must have timezone")
+        lines += ["", "保存済みの待機期限："
+                  + retry_at.astimezone(JST).strftime("%Y-%m-%d %H:%M:%S JST")
+                  + "（" + retry_at.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC") + "）。",
+                  "既存記事のX共有から手動投稿用の原稿を準備できます。この実行では手動投稿も行っていません。"]
+    if outcome == "accepted":
+        if isinstance(slug, str) and SAFE_SLUG.fullmatch(slug):
+            lines += ["", "対象記事：`" + slug + "`。"]
+        status = provider_status if isinstance(provider_status, str) and provider_status in RECOVERABLE_BUFFER_STATUSES else "未確認"
+        lines += ["", "Buffer応答の状態：`" + status + "`。provider上の値であり、X実公開の独立確認ではありません。"]
+    summary = os.environ.get("GITHUB_STEP_SUMMARY", "").strip()
+    if summary:
+        with Path(summary).open("a", encoding="utf-8") as output:
+            output.write("\n".join(lines) + "\n\n")
+    return 0
+
+
 def main() -> int:
     config = read_json(HERE / "config.json")
     validate_config(config)
     if not config["enabled"]:
         print("Article X promotions OFF; no automatic X post is sent.")
-        return 0
+        return report_outcome("off")
 
     state = read_json(HERE / "state.json")
     validate_state(state)
@@ -806,29 +842,31 @@ def main() -> int:
     trigger_event = os.environ.get("X_TRIGGER_EVENT", "").strip()
     if not trigger_allows_network(trigger_event, now):
         print("Article X push trigger outside 09:00-21:59 JST; no Buffer read/write.")
-        return 0
+        return report_outcome("outside")
     # A known local hold cannot be made publishable by reading Buffer. Keep
     # provider reconciliation for the next open slot, before any possible POST.
-    if (promotion_slot(now) is None or now.astimezone(JST).hour > 21
-            or slot_already_used(state, now)
+    if promotion_slot(now) is None or now.astimezone(JST).hour > 21:
+        print("Article X slot outside 09:05-21:59 JST; no Buffer read/write.")
+        return report_outcome("outside")
+    if (slot_already_used(state, now)
             or promotions_today(state, now) >= config["max_per_jst_day"]):
         print("Article X slot closed, already used, or daily limit reached; no Buffer read/write.")
-        return 0
+        return report_outcome("slot")
     for receipt in state["queued"].values():
         sent = provider_instant(receipt.get("buffer_sent_at_at_accept"))
         if sent is not None and now - sent < timedelta(hours=config["minimum_interval_hours"]):
             print("Article X recorded send is too recent; no Buffer read/write.")
-            return 0
+            return report_outcome("spacing_local")
     if _public_post_spacing_hold(state, now, timedelta(hours=config["minimum_interval_hours"])) is not None:
         print("Independently observed X send is too recent; no Buffer read/write.")
-        return 0
+        return report_outcome("spacing_local")
     retry_at = delivery_retry_time(HERE / "delivery.json")
     if retry_at is not None and now < retry_at:
         # Already-recorded provider backoff is a safe no-op, not a new failed send.
         # Keep the original 429 as an error on first observation, but do not turn
         # every scheduled/push check during cooldown into an Actions failure.
         print("Buffer cooldown until", retry_at.isoformat(), "; no provider read/write.")
-        return 0
+        return report_outcome("cooldown", retry_at=retry_at)
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
@@ -836,7 +874,7 @@ def main() -> int:
         os.environ.get("X_PUSH_BEFORE", ""), articles, now
     ):
         print("No new publication in this push; no Buffer read/write.")
-        return 0
+        return report_outcome("no_new")
 
     # Fresh articles can be promoted before PV has had time to accumulate.
     # Mature candidates still use the site's actual PV period, never legacy
@@ -845,7 +883,7 @@ def main() -> int:
     fresh_candidates = eligible_fresh_articles(articles, now, config)
     if not candidates and not fresh_candidates:
         print("No fresh or measured-interest articles; no Buffer write.")
-        return 0
+        return report_outcome("no_candidates")
     token = os.environ.get("BUFFER_API_KEY", "").strip()
     if not token:
         raise RuntimeError("Buffer secret unavailable; cannot promote articles")
@@ -866,7 +904,7 @@ def main() -> int:
         if spacing_hold is not None:
             save_state(state)
             print("Article X real-send spacing hold; no Buffer POST:", spacing_hold)
-            return 0
+            return report_outcome("spacing")
     metrics, window = ({}, None)
     if eligible is None and candidates:
         # Save recovered remote receipts even if measured-PV lookup fails.
@@ -879,7 +917,7 @@ def main() -> int:
     save_state(state)
     if eligible is None:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
-        return 0
+        return report_outcome("no_eligible")
     text = publication_text(eligible)
     buffer_receipt = queue_one(
         token, channel_id,
@@ -934,7 +972,8 @@ def main() -> int:
           "scheduled_before=", scheduled, "selection=", entry["source"],
           "page_views=", evidence,
           "measurement_window=", window)
-    return 0
+    return report_outcome("accepted", slug=eligible["slug"],
+                          provider_status=entry.get("buffer_status_at_accept"))
 
 
 if __name__ == "__main__":
@@ -942,5 +981,6 @@ if __name__ == "__main__":
         sys.exit(main())
     except (ValueError, OSError, RuntimeError) as exc:
         print("Safe article promotion skip:", exc, file=sys.stderr)
+        report_outcome("error")
         sys.exit(1)
 
