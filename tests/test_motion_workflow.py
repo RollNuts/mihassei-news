@@ -124,8 +124,13 @@ class MotionWorkflowTests(unittest.TestCase):
         self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", block)
 
     def test_no_work_skips_encoders_and_publishing_with_recovery_schedule(self):
-        install = step(self.video, "Install only free system FFmpeg on the disposable runner")
-        self.assertIn("github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'", install)
+        for name in (
+            "Install only free system FFmpeg on the disposable runner",
+            "Test real multi-shot encoding, legacy clips, source hashes, and OFF switch",
+        ):
+            condition = re.search(r"(?m)^\s+if: (.+)$", step(self.video, name))
+            self.assertIsNotNone(condition, name)
+            self.assertEqual(condition.group(1), "github.event_name == 'pull_request'", name)
         publish = self.video.split("\n  publish:\n", 1)[1]
         self.assertIn("github.ref == 'refs/heads/main'", publish)
         self.assertIn("needs.validate.outputs.pending != '0'", publish)

@@ -75,7 +75,7 @@ jobs:
               print("::warning title=Newsroom stale::On-air articles are stale; editorial selection or reviewed source required. See newsroom health summary.")
           PY
       - name: Install only free system FFmpeg on the disposable runner
-        if: github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'
+        if: github.event_name == 'pull_request'
         run: |
           if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
             sudo apt-get update -qq
@@ -83,7 +83,7 @@ jobs:
           fi
           ffmpeg -hide_banner -version | head -n 1
       - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
-        if: github.event_name == 'pull_request' || steps.plan.outputs.pending != '0'
+        if: github.event_name == 'pull_request'
         run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow tests.test_broadcast_captions
 
   publish:
