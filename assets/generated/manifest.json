@@ -38,6 +38,33 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "air-purifying-sofa-backrest-filter-drawer": {
+      "article_sha256": "1688a153b983762708a92122905c60614b3940e5193ac27ef0aaa787ed9e855a",
+      "bytes": 138109,
+      "generated_at": "2026-11-10T01:03:25.823994+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5952575583184431126,
+      "sha256": "ad66ae765f8b8d76c2d5e6db51915bf5ee769efb874302a1924e5f73638486f8"
+    },
     "apology-before-incident": {
       "article_sha256": "bc989735b2fdeddaa0dbfa3c080a51d777104ce6631a25523861b4a66ef6d4aa",
       "bytes": 153436,
@@ -1009,31 +1036,24 @@
     },
     "municipal-shared-government-answers": {
       "article_sha256": "e1c2866d8f64306224d4bef32503b45adbec6c292e99d85b5bfcc65586a316d2",
-      "source_png_sha256": "a87b7c6561494b47a3ab9f86e30869b5d745732ef862f670a119130b862fe7dd",
       "bytes": 115778,
-      "sha256": "6e6b7d11cd1f7a39d246205d5f7d696fb07485c1d1c153c75f3fc6410b245e93",
-      "generation_id": "1a722471-4793-482e-beb4-00409c205d3e",
-      "generation_prompt": "Use case: precise-object-edit, preserving a natural editorial photograph.\nEdit this fictional Japanese city-hall photo to match a clarified news scene: a parent asks whether a paper certificate issued in an older form is still accepted after a form change; the clerk checks a confirmed answer on the laptop.\nKeep these three anonymous fictional people, their natural faces, hair, clothing, the parent's folder, the child, the office, unused telephone, open laptop, neutral unlettered screen blocks, daylight/ceiling-light mixture, photographic textures and horizontal 16:9 composition unchanged.\nChange only the clerk's currently resting non-pointing hand and the nearby paper: let that hand hold up ONE plain pale paper certificate beside the laptop at desk height. The form has a few simple grey ruled boxes, with no words, letters, numbers, emblems or logos. The clerk's other hand continues pointing at the laptop. The held paper must not cover any face or the screen. It should make the concrete act of checking the visitor's paper document visible. Keep both hands anatomically believable with natural grip and no fused fingers.\nPreserve ordinary camera realism; no illustration, CGI gloss, additional people, readable or pseudo text, watermarks, brands, official seals or dramatic lighting. Do not imply the exact answer, old-form date or legal eligibility can be read from the picture.",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
+      "edit_source_article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
+      "edit_source_generation_id": "528d4c65-f94b-4672-b770-47c1e9ab5d44",
+      "edit_source_png_sha256": "8b43d9e9a42dc1e08972be4ae52b38fa9b51feafb4cf271e0a19fef0f2759b1e",
       "generated_at": "2026-11-09T23:44:41.269252+00:00",
       "generation_context_article_sha256": "8cc1409fa40590f12091cc53456f144e2d32921d764637e32101e4f445b1c5c9",
-      "edit_source_article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
-      "edit_source_png_sha256": "8b43d9e9a42dc1e08972be4ae52b38fa9b51feafb4cf271e0a19fef0f2759b1e",
-      "edit_source_generation_id": "528d4c65-f94b-4672-b770-47c1e9ab5d44",
+      "generation_id": "1a722471-4793-482e-beb4-00409c205d3e",
+      "generation_prompt": "Use case: precise-object-edit, preserving a natural editorial photograph.\nEdit this fictional Japanese city-hall photo to match a clarified news scene: a parent asks whether a paper certificate issued in an older form is still accepted after a form change; the clerk checks a confirmed answer on the laptop.\nKeep these three anonymous fictional people, their natural faces, hair, clothing, the parent's folder, the child, the office, unused telephone, open laptop, neutral unlettered screen blocks, daylight/ceiling-light mixture, photographic textures and horizontal 16:9 composition unchanged.\nChange only the clerk's currently resting non-pointing hand and the nearby paper: let that hand hold up ONE plain pale paper certificate beside the laptop at desk height. The form has a few simple grey ruled boxes, with no words, letters, numbers, emblems or logos. The clerk's other hand continues pointing at the laptop. The held paper must not cover any face or the screen. It should make the concrete act of checking the visitor's paper document visible. Keep both hands anatomically believable with natural grip and no fused fingers.\nPreserve ordinary camera realism; no illustration, CGI gloss, additional people, readable or pseudo text, watermarks, brands, official seals or dramatic lighting. Do not imply the exact answer, old-form date or legal eligibility can be read from the picture.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
-        "source_article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
-        "source_png_sha256": "8b43d9e9a42dc1e08972be4ae52b38fa9b51feafb4cf271e0a19fef0f2759b1e",
         "bytes": 117695,
-        "sha256": "ba1d34f00fc0b3e86b33f656843b88039d9aca24c1bd3e93529ad478f378132c",
+        "generated_at": "2026-11-09T23:11:51.360586+00:00",
         "generation_id": "528d4c65-f94b-4672-b770-47c1e9ab5d44",
         "generation_prompt": "Use case: photorealistic-natural.\nAsset: horizontal 16:9 editorial photograph illustrating a fictional future-news article about sharing confirmed government answers across Japanese municipalities.\nPhotograph a modest Japanese city-hall service counter. An anonymous adult municipal clerk sits behind the counter and clearly points with one hand at the screen of an open, unbranded laptop angled between the clerk and visitors. Opposite the clerk are an adult parent in everyday clothes holding a plain document folder and a school-age child. All three distinct people must be visible, calmly leaning toward and looking at the same open laptop screen; the child is beside the parent, not hidden. Ordinary loose paperwork and an unused desk telephone are on the counter. This is a helpful face-to-face explanation of required documents, not a medical scene, political meeting or automated eligibility judgment.\nThe screen shows only a few simple neutral grey rectangular blocks, no words, letters or numbers. Plain walls and simple partition behind the clerk; no posters or signs. Wide everyday candid press snapshot at seated eye level, realistic skin variation and hair, believable hands pointing without intersecting the screen, matte cloth, ordinary wood, paper, unglamorous mixed office daylight and ceiling lights. Keep heads, hands and laptop comfortably inside a 16:9 crop.\nAnonymous fictional people only, not a recognizable official or celebrity. No official emblems, badges, logos, brands, labels, readable text, pseudo-lettering, captions, watermarks, 3D rendering, anime, drawing, plastic faces, cinematic lighting or glossy advertising finish. The photograph depicts the in-person explanation, and does not claim the exact shared answer or its confirmation date is legible.",
-        "origin": "chatgpt-imagegen",
         "model": "ChatGPT ImageGen",
-        "prompt_version": 3,
-        "generated_at": "2026-11-09T23:11:51.360586+00:00",
+        "origin": "chatgpt-imagegen",
         "previous_generation": {
           "article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
           "bytes": 99349,
@@ -1063,18 +1083,25 @@
         },
         "previous_visual_hold": {
           "article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
+          "reason": "The CPU JPEG shows two seated adults with paper documents, but no child, open laptop, or clerk pointing at the screen. A large wall poster contains prominent pseudo-lettering. A generic office/counter setting cannot substitute for the article's central face-to-face document explanation; this CPU candidate was visually rejected.",
           "rejected_candidate_sha256": "19292c0169ce29a6506da550ee4855a087bfc1fdefe8429a86cab0bb57387c0f",
-          "reviewed_at": "2026-11-09T23:15:34.429171+00:00",
-          "reason": "The CPU JPEG shows two seated adults with paper documents, but no child, open laptop, or clerk pointing at the screen. A large wall poster contains prominent pseudo-lettering. A generic office/counter setting cannot substitute for the article's central face-to-face document explanation; this CPU candidate was visually rejected."
-        }
+          "reviewed_at": "2026-11-09T23:15:34.429171+00:00"
+        },
+        "prompt_version": 3,
+        "sha256": "ba1d34f00fc0b3e86b33f656843b88039d9aca24c1bd3e93529ad478f378132c",
+        "source_article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
+        "source_png_sha256": "8b43d9e9a42dc1e08972be4ae52b38fa9b51feafb4cf271e0a19fef0f2759b1e"
       },
       "previous_visual_review": {
-        "decision": "accepted",
         "article_sha256": "efd67877b0947f58c8b5694d270c92c2b65bbdac400a7cf20b2ba5ae22933c13",
+        "decision": "accepted",
         "image_sha256": "ba1d34f00fc0b3e86b33f656843b88039d9aca24c1bd3e93529ad478f378132c",
-        "reviewed_at": "2026-11-09T23:15:34.429171+00:00",
-        "note": "原PNGと最終JPEGを現本文全文・scene_promptと照合し、rootと独立担当が両実物を表示して確認。架空の成人市役所職員と、書類フォルダーを持つ親、その横の子どもの3人が同じ窓口で見える。職員は開いた無地のノートパソコン画面を指し、親子が同じ画面を見ており、本文冒頭の必要書類を対面で説明する主要行為が明瞭。肌・髪・指と端末の位置関係、服・紙・木・金属、普通の窓口の光が自然なカメラ写真として成立し、目立つ可読文字・ロゴ・透かしや重大な人体・物体の破綻はない。画面の中立的なブロックから共有回答の内容・根拠・確認日、自治体間の再利用や申請可否が読み取れるとは扱わない。旧CPU候補で未再現だった、職員が開いた端末を指して親子へ説明する行為を、新しい実画像で確認した。"
+        "note": "原PNGと最終JPEGを現本文全文・scene_promptと照合し、rootと独立担当が両実物を表示して確認。架空の成人市役所職員と、書類フォルダーを持つ親、その横の子どもの3人が同じ窓口で見える。職員は開いた無地のノートパソコン画面を指し、親子が同じ画面を見ており、本文冒頭の必要書類を対面で説明する主要行為が明瞭。肌・髪・指と端末の位置関係、服・紙・木・金属、普通の窓口の光が自然なカメラ写真として成立し、目立つ可読文字・ロゴ・透かしや重大な人体・物体の破綻はない。画面の中立的なブロックから共有回答の内容・根拠・確認日、自治体間の再利用や申請可否が読み取れるとは扱わない。旧CPU候補で未再現だった、職員が開いた端末を指して親子へ説明する行為を、新しい実画像で確認した。",
+        "reviewed_at": "2026-11-09T23:15:34.429171+00:00"
       },
+      "prompt_version": 3,
+      "sha256": "6e6b7d11cd1f7a39d246205d5f7d696fb07485c1d1c153c75f3fc6410b245e93",
+      "source_png_sha256": "a87b7c6561494b47a3ab9f86e30869b5d745732ef862f670a119130b862fe7dd",
       "supersedes_reason": "The article text and scene were clarified to show a visitor asking about a paper certificate. The previous accepted photo became stale for the revised article; it was not rejected for image quality. This genuinely new edit adds the held certificate and was first visually reviewed against the final article fingerprint. The generation_context_article_sha256 separately records the unpublished draft context used at edit time."
     },
     "music-ai-friends-monopolize-the-song": {
@@ -2379,6 +2406,19 @@
       "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
       "trial_seed": 2154012484535384189
     },
+    "spy-captive-escapes-before-rescue": {
+      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "previous_visual_review": {
+        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+        "decision": "accepted",
+        "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+        "note": "荒れた隠れ家に入る人物を描いた場面。",
+        "reviewed_at": "2026-11-04T01:30:05+00:00"
+      },
+      "reason": "現本文と旧JPEGを実表示して照合。人物は逆光の出入口に背中を向けて立ち、本文の中心である空の人質椅子脇で忘れ物の上着を畳む動作がない。並んだ椅子と壁の衣類は主役との関係を示さず、背景の隠れ家だけの一致では採用できない。旧生成記録・記事指紋・整数seed・JPEGは変更せず、適合する専用SVGへ戻す。",
+      "rejected_candidate_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+      "reviewed_at": "2026-11-10T00:32:17.270507+00:00"
+    },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
       "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
@@ -2389,19 +2429,6 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "spy-captive-escapes-before-rescue": {
-      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-      "rejected_candidate_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-      "reason": "現本文と旧JPEGを実表示して照合。人物は逆光の出入口に背中を向けて立ち、本文の中心である空の人質椅子脇で忘れ物の上着を畳む動作がない。並んだ椅子と壁の衣類は主役との関係を示さず、背景の隠れ家だけの一致では採用できない。旧生成記録・記事指紋・整数seed・JPEGは変更せず、適合する専用SVGへ戻す。",
-      "reviewed_at": "2026-11-10T00:32:17.270507+00:00",
-      "previous_visual_review": {
-        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-        "decision": "accepted",
-        "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-        "note": "荒れた隠れ家に入る人物を描いた場面。",
-        "reviewed_at": "2026-11-04T01:30:05+00:00"
-      }
     }
   },
   "version": 1
