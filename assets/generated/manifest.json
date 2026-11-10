@@ -1091,14 +1091,8 @@
       "previous_generation": {
         "article_sha256": "d4f826a2fbc8bd496b019df14f6aa306157406be11fa0a0aabff2a75b4cf8d99",
         "bytes": 113601,
-        "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
-        "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
-        "source_article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-        "origin": "chatgpt-imagegen",
-        "model": "ChatGPT ImageGen",
-        "prompt_version": 3,
         "generated_at": "2026-11-10T09:19:13.700683+00:00",
-        "sha256": "91e25be9e659efc468513331b3562309f54716dd21da26cd5205f21ef93cf728",
+        "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
         "generation_prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
         "generation_steps": [
           {
@@ -1109,12 +1103,14 @@
           },
           {
             "generation_id": "0b2c67af-8764-4670-b24d-23ae1df2502e",
+            "input_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015",
             "mode": "edit",
             "prompt": "Edit ONLY the written labels on the file/binder spines in the BACKGROUND shelving at the left and behind the woman. Remove all letters, characters, numbers, pseudo-writing and label text from those spines, leaving plain matte white/light-gray spine labels and the same binders, shelf geometry, blur, shadows and natural texture. Preserve the entire foreground exactly: same fictional young adult woman's identity, face, slight warm focused expression, hair, teal cardigan, natural hands and placing action; exactly three blue, green and yellow reports with the same grayscale silhouette icons; same black telephone, desk, camera, 16:9 crop, daylight, photographic texture and all contact points. No other change. No new lettering, symbols, logos, watermark or visible retouching patches.",
-            "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
-            "input_png_sha256": "66bd7719e7b372ebee6766ccc7259e7f69a6aa77d66ef904abba9e7c26023015"
+            "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5"
           }
         ],
+        "model": "ChatGPT ImageGen",
+        "origin": "chatgpt-imagegen",
         "previous_generation": {
           "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
           "bytes": 96402,
@@ -1145,12 +1141,16 @@
         "previous_generation_commit": "6d7261f031aa76685c56639cfe3c4ff26521a0a8",
         "previous_visual_hold": {
           "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-          "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
           "decision": "rejected",
-          "reviewed_at": "2026-11-10T09:22:47.445002+00:00",
+          "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
+          "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。",
           "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42787109122",
-          "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。"
+          "reviewed_at": "2026-11-10T09:22:47.445002+00:00"
         },
+        "prompt_version": 3,
+        "sha256": "91e25be9e659efc468513331b3562309f54716dd21da26cd5205f21ef93cf728",
+        "source_article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
+        "source_png_sha256": "f8ef9e606b8a5b89c04eee8585d64a180bea36d8326e4a2df7d4ccb37d9dacd5",
         "supersedes_reason": "The CPU candidate showed four seated people and white sheets. A genuinely new native generation depicts the final paragraph: one fictional adult staff member placing the third of three differently colored activity reports beside one office phone. Its scene direction now describes this actual action. The original CPU record and integer seed remain bound to their original article and image SHA. A single local edit removed background binder lettering before adoption."
       },
       "prompt_version": 3,
@@ -1974,6 +1974,33 @@
       "source_article_sha256": "dfe99daecdb1e7bdf8889502824ef6b1f2ded054a45a1137ed4a3cb11490aab3",
       "source_png_sha256": "be79154357e40f813835bb4b9df682066c2b675c60ed1b578c1ba93d402b1bb3"
     },
+    "self-driving-suitcase-reports-missing-owner": {
+      "article_sha256": "e6a930ceb5e03a1e3156acdacaeab020892df58bb8981c99080d0f7db1f84a68",
+      "bytes": 137788,
+      "generated_at": "2026-11-10T11:20:17.818294+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5079191888188597768,
+      "sha256": "5beded992ba45cde3dcba271ace5e98b7feba279c8676971753fba80bb1bb56b"
+    },
     "self-oseibo-recipient-refuses-own-gift": {
       "article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
       "bytes": 119036,
@@ -2642,6 +2669,14 @@
       "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
     },
+    "joint-party-slate-one-vote-three-claims": {
+      "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
+      "decision": "rejected",
+      "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
+      "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42787109122",
+      "reviewed_at": "2026-11-10T09:22:47.445002+00:00"
+    },
     "music-special-forty-days-of-lineup-announcements": {
       "article_sha256": "6202c508ca4a593886b6bd86fc479242c56727dbf70de1b9cdcbb94fe09773b7",
       "reason": "CPU試作は肌・衣服・家具が写真らしいが、スマホも歌手もなく、黒画面と白画面のテレビ2台がある普通の居間にとどまるため不採用。原指紋・seedは試作artifactを保持し、採用した別のnative生成画像とは区別する。",
@@ -2751,14 +2786,6 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "joint-party-slate-one-vote-three-claims": {
-      "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
-      "image_sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224",
-      "decision": "rejected",
-      "reviewed_at": "2026-11-10T09:22:47.445002+00:00",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42787109122",
-      "note": "現本文とCPU JPEGを実表示し独立確認。4人が白い紙を囲んで座り、三色の活動報告、3人の担当者、空の議員席、報告を並べる中心動作が成立しない。本文の仕組みが伝わらず不採用。原画像SHA・記事SHA・整数seedはそのまま保持する。"
     }
   },
   "version": 1
