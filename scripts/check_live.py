@@ -65,6 +65,67 @@ def get(path):
             raise RuntimeError("HTTP "+str(response.status)+" at "+path)
         return response.read(4*1024*1024),response.headers.get("Content-Type","")
 
+
+def public_revision_matches(expected: str, actual: str, *, root=ROOT) -> bool:
+    """Accept an older public commit only after proving the diff is docs-only.
+
+    Missing history, reversed ancestry and changes to any public input fail
+    closed. Use NUL-separated paths and disable rename folding so a move out of
+    docs cannot hide the original or destination path.
+    """
+    if any(not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha)
+           for sha in (expected, actual)):
+        return False
+    if actual == expected:
+        return True
+    try:
+        objects = subprocess.run(
+            ["git", "cat-file", "--batch-check=%(objecttype)"], cwd=root,
+            input=(actual + "\n" + expected + "\n").encode("ascii"),
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            timeout=5, check=False,
+        )
+        if objects.returncode != 0 or objects.stdout != b"commit\ncommit\n":
+            return False
+        ancestor = subprocess.run(
+            ["git", "merge-base", "--is-ancestor", actual, expected], cwd=root,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            timeout=5, check=False,
+        )
+        if ancestor.returncode != 0:
+            return False
+        changed = subprocess.run(
+            ["git", "diff", "--no-ext-diff", "--no-textconv", "--no-renames",
+             "--name-only", "-z", actual, expected, "--"], cwd=root,
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            timeout=5, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    if changed.returncode != 0 or not changed.stdout.endswith(b"\0"):
+        return False
+    paths = changed.stdout[:-1].split(b"\0")
+    return bool(paths) and all(path.startswith(b"docs/") for path in paths)
+
+
+def verify_public_revision(*, root=ROOT) -> str:
+    revision = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=root, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=5, check=False,
+    )
+    expected = revision.stdout.strip()
+    if revision.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}", expected):
+        raise RuntimeError("Cannot determine the checked-out production revision")
+    marker, _ = get("/build-revision.txt?version=" + expected[:12])
+    actual = marker.decode("ascii").strip()
+    if not public_revision_matches(expected, actual, root=root):
+        raise RuntimeError("Cloudflare serving different revision: live=" + actual
+                           + " expected=" + expected)
+    suffix = " (docs-only difference; public files unchanged)" if actual != expected else ""
+    print("Public revision verified: live=" + actual + " expected=" + expected + suffix)
+    return actual
+
+
 def verify_launch_card(markup: str, image_path: str) -> None:
     """Read-only check for the launch card; never use an undefined crawl variable."""
     expected='name="twitter:image" content="'+SITE+image_path+'"'
@@ -581,16 +642,8 @@ def verify_pageview_contract(payload: dict, article_slug: str) -> None:
 
 
 def check():
-    # Verify the exact public deployment, not merely an older set of 200 pages.
-    expected=subprocess.run(
-        ["git","rev-parse","HEAD"],cwd=ROOT,text=True,stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,timeout=5,check=False
-    ).stdout.strip().lower()
-    if re.fullmatch(r"[0-9a-f]{40}", expected):
-        marker,_=get("/build-revision.txt?version="+expected[:12])
-        actual=marker.decode("utf-8").strip().lower()
-        if actual!=expected:
-            raise RuntimeError("Cloudflare serving different revision: live="+actual+" expected="+expected)
+    # A docs-only descendant need not rebuild, but all public-byte checks remain.
+    verify_public_revision()
     articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
     sorted_articles=latest_articles(articles, limit=None)
     recent=sorted_articles[:10]

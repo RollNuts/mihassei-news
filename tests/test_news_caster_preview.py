@@ -118,4 +118,14 @@ class PresenterPreviewTests(unittest.TestCase):
             self.assertFalse((root.parent/"escape").exists())
 
 
+class CasterSourcePublicationTests(unittest.TestCase):
+    def test_preview_portrait_and_receipt_are_excluded_from_public_build(self):
+        from tests.site_build_fixture import ensure_site_build
+
+        ensure_site_build()
+        self.assertTrue((preview.ROOT / "assets/casters/newsreader-preview.jpg").is_file())
+        self.assertTrue((preview.ROOT / "assets/casters/newsreader-preview.json").is_file())
+        self.assertFalse((preview.ROOT / "dist/assets/casters").exists())
+
+
 if __name__ == "__main__":unittest.main()
