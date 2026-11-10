@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import html
 import re
-import subprocess
-import sys
 import unittest
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -12,6 +10,7 @@ from xml.etree import ElementTree as ET
 
 from scripts.share_desk import TRACKING, draft, real_date, render, select_candidates
 from scripts.social_text import X_TEXT_LIMIT, article_hashtags, x_weighted_length
+from tests.site_build_fixture import ensure_site_build
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,9 +30,7 @@ def sample(slug, category, day, title=None, summary=None):
 class ShareDeskTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # CI test discovery can run this file before test_site.py builds dist.
-        subprocess.run([sys.executable,str(ROOT/"scripts/build.py")],
-                       cwd=ROOT,check=True,stdout=subprocess.DEVNULL)
+        ensure_site_build()
 
     def test_newest_publication_day_and_category_diversity(self):
         items = [

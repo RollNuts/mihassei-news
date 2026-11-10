@@ -2,13 +2,12 @@
 from __future__ import annotations
 
 import json
-import subprocess
-import sys
 import unittest
 from pathlib import Path
 from urllib.parse import urlsplit
 
 from scripts.check_share_cards import candidate_paths, image_dimensions, inspect_markup, png_card_dimensions
+from tests.site_build_fixture import ensure_site_build
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,8 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class ShareCardsAndReadingPaths(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.run([sys.executable, str(ROOT / "scripts/build.py")],
-                       cwd=ROOT, check=True)
+        ensure_site_build()
 
     def test_twitter_cards_reference_real_first_party_rasters(self):
         candidates = candidate_paths(ROOT)

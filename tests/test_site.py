@@ -2,18 +2,18 @@
 import json
 import html
 import subprocess
-import sys
 import unittest
 from pathlib import Path
 from datetime import datetime
 from xml.etree import ElementTree as ET
+from tests.site_build_fixture import ensure_site_build
 
 ROOT=Path(__file__).resolve().parents[1]
 
 class SiteTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.run([sys.executable,str(ROOT/"scripts/build.py")],cwd=ROOT,check=True)
+        ensure_site_build()
         cls.articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
 
     def test_core_files(self):

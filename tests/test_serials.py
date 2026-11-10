@@ -5,11 +5,10 @@ import json
 import tempfile
 import re
 import struct
-import subprocess
-import sys
 import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
+from tests.site_build_fixture import ensure_site_build
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,8 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class SerialTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "build.py")],
-                       cwd=ROOT, check=True)
+        ensure_site_build()
         cls.data = json.loads((ROOT / "content" / "serials.json").read_text(encoding="utf-8"))
 
     def test_two_distinct_editorial_types(self):
