@@ -7,6 +7,7 @@ No Search Console credentials, paid APIs, network calls or simulated visits.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import deque
 from datetime import datetime
@@ -139,6 +140,88 @@ def check_internal_links(dist: Path, pages: dict[str, Page]) -> tuple[list[str],
     return errors, checked
 
 
+
+def check_followup_search_paths(
+    dist: Path, articles: list[dict], indexed_paths: set[str]
+) -> tuple[list[str], int]:
+    """Audit real generated follow-up chronology as *ordinary HTML anchors*.
+
+    Sitemap/canonical/noindex checks elsewhere validate each indexed page.
+    This closes the other failure mode: both independent pages remain indexed
+    but their explicit previous/follow-up links or visible badge disappear.
+    No live calls, browser instrumentation, or Search Console assumptions.
+    """
+    errors: list[str] = []
+    by_slug = {a["slug"]: a for a in articles}
+    cache: dict[str, str] = {}
+    checked = 0
+
+    def markup(slug: str) -> str | None:
+        if slug not in cache:
+            path = "/articles/" + slug + "/"
+            if path not in indexed_paths:
+                errors.append("Follow-up article missing from sitemap: " + path)
+                return None
+            try:
+                page = local_page(dist, path)
+                cache[slug] = page.read_text(encoding="utf-8")
+            except (ValueError, OSError):
+                errors.append("Follow-up article HTML missing: " + path)
+                return None
+        return cache[slug]
+
+    def links_in_named_block(page: str, tag: str, class_name: str,
+                             destination: str) -> bool:
+        match = re.search(
+            rf'<{tag}\b[^>]*class="{re.escape(class_name)}"[^>]*>(.*?)</{tag}>',
+            page, re.S,
+        )
+        return bool(match and re.search(
+            r'<a\b[^>]*\bhref="' + re.escape(destination) + r'"',
+            match.group(1),
+        ))
+
+    for child in articles:
+        parent_slug = child.get("followup_of")
+        if not parent_slug:
+            continue
+        checked += 1
+        slug = child["slug"]
+        parent = by_slug.get(parent_slug)
+        if not parent:
+            errors.append("Follow-up parent article missing: " + slug)
+            continue
+        child_html = markup(slug)
+        parent_html = markup(parent_slug)
+        if child_html is None or parent_html is None:
+            continue
+        parent_url = "/articles/" + parent_slug + "/"
+        child_url = "/articles/" + slug + "/"
+
+        if '<span class="followup-label">続報</span>' not in child_html:
+            errors.append("Follow-up visible badge missing: " + slug)
+        if not links_in_named_block(child_html, "aside", "story-followup-context",
+                                    parent_url):
+            errors.append("Follow-up lacks explicit ordinary previous-story link: " + slug)
+        if not links_in_named_block(parent_html, "section", "story-followups",
+                                    child_url):
+            errors.append("Parent lacks explicit ordinary follow-up link: " + parent_slug)
+
+        # A follow-up is a new, substantive article, never a duplicated thin
+        # doorway under a new canonical URL. Check exact content duplication;
+        # editorial judgement about partial thematic overlap remains manual.
+        def normalized(value) -> str:
+            if isinstance(value, list):
+                value = " ".join(str(item) for item in value)
+            return " ".join(str(value or "").split())
+        if (normalized(child.get("title")) == normalized(parent.get("title"))
+                or normalized(child.get("summary")) == normalized(parent.get("summary"))
+                or normalized(child.get("paragraphs")) == normalized(parent.get("paragraphs"))):
+            errors.append("Follow-up duplicates parent title, summary or body: " + slug)
+
+    return errors, checked
+
+
 def audit(dist: Path = DIST) -> dict:
     errors: list[str] = []
     sitemap = ET.parse(dist / "sitemap.xml").getroot()
@@ -245,6 +328,15 @@ def audit(dist: Path = DIST) -> dict:
     link_errors, checked_links = check_internal_links(dist, pages)
     errors.extend(link_errors)
 
+    # Per-article sitemap presence and canonical/noindex are also checked by
+    # test_search_indexability. Explicit relationship navigation must still
+    # survive generated HTML for every 2- or 3-story chain.
+    articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
+    followup_errors, followups_checked = check_followup_search_paths(
+        dist, articles, set(routes)
+    )
+    errors.extend(followup_errors)
+
     robots = (dist / "robots.txt").read_text(encoding="utf-8")
     if "Sitemap: " + SITE + "/sitemap.xml" not in robots:
         errors.append("robots.txt does not expose sitemap.xml")
@@ -265,6 +357,7 @@ def audit(dist: Path = DIST) -> dict:
         "articles": article_count,
         "serial_episodes": serial_episode_count,
         "internal_links_checked": checked_links,
+        "followup_links_checked": followups_checked,
         "index_status": "unknown (requires Google Search Console)",
     }
 
