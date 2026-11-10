@@ -2239,14 +2239,41 @@
       "source_png_sha256": "157c701c6cf1054b167062a64e7c2f3c26d176fb72298c6941ff7d394d44ced0"
     },
     "spy-captive-escapes-before-rescue": {
-      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-      "bytes": 123162,
-      "generated_at": "2026-11-04T00:46:45.939531+00:00",
-      "model": "SimianLuo/LCM_Dreamshaper_v7",
-      "origin": "github-cpu-lcm",
-      "prompt_version": 2,
-      "seed": 6871038269748098871,
-      "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
+      "article_sha256": "2930e67327b556e64a6f4c8715c0263cf33c0563e3884134ae1e733617a71b60",
+      "bytes": 132650,
+      "generated_at": "2026-11-10T10:11:16.173647+00:00",
+      "generation_id": "81028440-3c7d-46a9-87bc-0431cbbf1f4b",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: a 16:9 candid editorial photograph recreating one absurd scene in an entirely fictional Japanese spy television comedy, not a real kidnapping or any real actor. ONE invented Japanese adult woman spy protagonist in her late twenties, wearing an ordinary navy field jacket, uses BOTH HANDS to carefully fold a forgotten light tan coat beside ONE EMPTY wooden chair. Capture the actual folding action: one hand steadies the upper body of the coat and the other is tucking a sleeve inward across it; recognizable collar, sleeve and loosely folded fabric remain visible. Her alert, deadpan concentration makes the joke: she came equipped for a dramatic rescue but is now doing the escaped partner's mundane forgotten-clothes errand. Her face, both hands, the coat, and the empty chair must be clearly seen in a medium-wide front three-quarter view. On the chair seat is a short loose untied length of rope, with no person, restraints in use or violence. An open modest canvas rescue-equipment bag rests ON THE FLOOR by her feet, with an ordinary blunt rope cutter put away inside; she is not holding the bag while folding. The room is a quiet, bare, believable vacant hideout with worn wooden flooring and pale plaster walls. Plain unmarked open back doorway softly visible; no crowd or extra chairs. Soft available daylight from a window outside frame, normal camera exposure and color, candid local-news behind-the-scenes texture. Realistic skin, individual hair, woven jacket and canvas, tan cotton folds and seams, worn chair wood, contact shadows and coherent natural hands. No cinematic spotlight, fog, film-poster grade, glossy fashion photography, CGI, 3D render, illustration, plastic skin or impossible costume. No lingerie or sexual framing, weapons, injury, real-person likeness, identifiable performers, lettering, subtitles, signs, numbers, logos, labels or watermark. Keep all main subjects inside the horizontal crop and make folding the coat the unmistakable central action.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+        "bytes": 123162,
+        "generated_at": "2026-11-04T00:46:45.939531+00:00",
+        "model": "SimianLuo/LCM_Dreamshaper_v7",
+        "origin": "github-cpu-lcm",
+        "prompt_version": 2,
+        "seed": 6871038269748098871,
+        "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+        "previous_visual_review": {
+          "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+          "decision": "accepted",
+          "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+          "note": "荒れた隠れ家に入る人物を描いた場面。",
+          "reviewed_at": "2026-11-04T01:30:05+00:00"
+        },
+        "reason": "現本文と旧JPEGを実表示して照合。人物は逆光の出入口に背中を向けて立ち、本文の中心である空の人質椅子脇で忘れ物の上着を畳む動作がない。並んだ椅子と壁の衣類は主役との関係を示さず、背景の隠れ家だけの一致では採用できない。旧生成記録・記事指紋・整数seed・JPEGは変更せず、適合する専用SVGへ戻す。",
+        "rejected_candidate_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
+        "reviewed_at": "2026-11-10T00:32:17.270507+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "f020d550c4d778e184365229f57b0bc1ca0cfb78d2cf0285afd244c859538069",
+      "source_article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
+      "source_png_sha256": "b1de4d489d1e0b5cdc51bb0b1c89be4891816256b668ee6ea7c3d22b912b490d",
+      "supersedes_reason": "The old LCM candidate showed a back-facing person in a doorway without the main folding action. A genuinely new natural-light native generation gives both hands to folding the forgotten coat and puts the unused rescue bag on the floor, consistent with the current story. The original JPEG record and exact integer seed remain unchanged inside previous_generation."
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "8f65ca0bf2e6e58ab863f02700ad5fa4e7c190649333d4a39eb3e0c0f3cd115f",
@@ -2698,19 +2725,6 @@
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
       "trial_seed": 2154012484535384189
-    },
-    "spy-captive-escapes-before-rescue": {
-      "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-      "previous_visual_review": {
-        "article_sha256": "7699ee199b710b5d43ae3b72ca6d69208e5cbbc7f7ddd46cf969c721e2efa699",
-        "decision": "accepted",
-        "image_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-        "note": "荒れた隠れ家に入る人物を描いた場面。",
-        "reviewed_at": "2026-11-04T01:30:05+00:00"
-      },
-      "reason": "現本文と旧JPEGを実表示して照合。人物は逆光の出入口に背中を向けて立ち、本文の中心である空の人質椅子脇で忘れ物の上着を畳む動作がない。並んだ椅子と壁の衣類は主役との関係を示さず、背景の隠れ家だけの一致では採用できない。旧生成記録・記事指紋・整数seed・JPEGは変更せず、適合する専用SVGへ戻す。",
-      "rejected_candidate_sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f",
-      "reviewed_at": "2026-11-10T00:32:17.270507+00:00"
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
