@@ -16,6 +16,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
+from collections.abc import Callable
 from datetime import datetime, timezone
 from fractions import Fraction
 from pathlib import Path
@@ -194,7 +196,62 @@ def require_mac_not_stopped() -> None:
         mac_scene_control.check_allowed()
 
 
-def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None:
+def mac_resource_guard():
+    if sys.platform != "darwin":
+        return None
+    try:
+        from . import mac_scene_control, mac_scene_resources
+    except ImportError:
+        import mac_scene_control
+        import mac_scene_resources
+    return mac_scene_resources.Guard(mac_scene_control.state_dir())
+
+
+def run_checked(command: list[str], *, timeout: int,
+                check: Callable[[], object] | None = None) -> subprocess.CompletedProcess:
+    """Check stop/resources while supervising only the child we create here."""
+    if check is None:
+        return subprocess.run(command, capture_output=True, text=True,
+                              timeout=timeout, check=True)
+    check()
+    process = subprocess.Popen(command, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, text=True)
+    deadline = time.monotonic() + timeout
+    try:
+        while True:
+            check()
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise subprocess.TimeoutExpired(command, timeout)
+            try:
+                stdout, stderr = process.communicate(timeout=min(1, remaining))
+                break
+            except subprocess.TimeoutExpired:
+                continue
+        check()
+        if process.returncode:
+            raise subprocess.CalledProcessError(process.returncode, command,
+                                                output=stdout, stderr=stderr)
+        return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
+    except BaseException:
+        if process.poll() is None:
+            try:
+                process.terminate()
+            except ProcessLookupError:
+                pass
+            try:
+                process.communicate(timeout=3)
+            except subprocess.TimeoutExpired:
+                try:
+                    process.kill()
+                except ProcessLookupError:
+                    pass
+                process.communicate(timeout=3)
+        raise
+
+
+def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str,
+                check: Callable[[], object] | None = None) -> None:
     """Three four-second camera shots from one verified still, without AI APIs.
 
     Establish the scene, cut to a closer lateral pan, then pull back to the
@@ -227,21 +284,22 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str) -> None
     )
     command = [
         ffmpeg, "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+        "-threads", "1", "-filter_threads", "1",
         "-loop", "1", "-framerate", str(FPS), "-i", str(image),
         "-frames:v", str(FPS * DURATION_SECONDS),
         "-vf", filter_graph, "-an",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
+        "-c:v", "libx264", "-threads", "1", "-preset", "veryfast", "-crf", "30",
         "-maxrate", "240k", "-bufsize", "480k",
         "-pix_fmt", "yuv420p", "-color_range", "tv", "-movflags", "+faststart",
         str(output),
     ]
-    subprocess.run(command, capture_output=True, text=True, timeout=120, check=True)
+    run_checked(command, timeout=120, check=check)
     if not output.is_file() or not 1024 <= output.stat().st_size <= MAX_CLIP_BYTES:
         raise RuntimeError("Clip over 450 KiB or empty; refusing to publish")
-    probe = subprocess.run(
+    probe = run_checked(
         [ffprobe, "-v", "error", "-show_streams", "-show_format",
          "-of", "json", str(output)],
-        capture_output=True, text=True, timeout=15, check=True,
+        timeout=15, check=check,
     )
     info = json.loads(probe.stdout)
     streams = info.get("streams", [])
@@ -285,11 +343,21 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
     current = candidates(root, slug=slug)
     if not current:
         return []
+    guard = mac_resource_guard()
+
+    def check_running(*, force: bool = False) -> None:
+        require_mac_not_stopped()
+        if shutil.disk_usage(root).free < min_free_gib * 1024**3:
+            raise RuntimeError("Free storage reached the safety floor; movie deferred")
+        if guard is not None:
+            guard.check(force=force)
+
+    check_running(force=True)
     folder.mkdir(parents=True, exist_ok=True)
     existing = manifest_entries(root)
     produced = []
     for article in current[:limit]:
-        require_mac_not_stopped()
+        check_running()
         src = generated_scene_entry(article, root=root)
         if (src is None or not usable_generated_scene(article, root=root)
                 or not reviewed_generated_scene(article, root=root)
@@ -303,7 +371,8 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
             break
         with tempfile.TemporaryDirectory(prefix=".clip-", dir=folder) as temp:
             staged = Path(temp) / (article["slug"] + ".mp4")
-            encode_clip(image, staged, ffmpeg=ffmpeg, ffprobe=ffprobe)
+            encode_clip(image, staged, ffmpeg=ffmpeg, ffprobe=ffprobe,
+                        check=check_running)
             old_size = movie.stat().st_size if movie.exists() else 0
             size = staged.stat().st_size
             if movie_bytes(root) - old_size + size > MAX_TOTAL_BYTES:
@@ -324,7 +393,7 @@ def generate(root: Path = ROOT, *, limit: int = 1, slug: str | None = None,
             staged_manifest.write_text(json.dumps({"version": 1, "clips": new_clips},
                                                    ensure_ascii=False, indent=2) + "\n",
                                        encoding="utf-8")
-            require_mac_not_stopped()
+            check_running(force=True)
             os.replace(staged, movie)
             os.replace(staged_manifest, folder / MANIFEST_NAME)
             existing = new_clips
