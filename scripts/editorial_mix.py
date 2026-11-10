@@ -534,7 +534,7 @@ def tone_advice(articles: list[dict], day_jst: str) -> str:
         )
         return (
             f"{preferred} (plausible_future already appears "
-            f"{counts['plausible_future']} times today; keep the slate from becoming all-future)"
+            f"{counts['plausible_future']} times today; vary the tone within future-set news)"
         )
 
     if (

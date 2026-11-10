@@ -22,7 +22,7 @@
       "url": "https://www.globenewswire.com/news-release/2026/09/07/3356945/0/en/airwheel-robot-cabin-suitcase-launched-world-s-first-full-smart-luxury-20inch-electric-carry-on-hand-rideable-ai-wheel-luggage.html",
       "topic": "Airwheelは2026年9月7日発表の電動旅行かばんについて、乗車用の電動車輪、速度調整、専用アプリ、Apple Find Myによる位置確認機能を紹介。利用者を自動追尾して交番へ自走する機能は同発表に記載されず、2031年の架空サービス・駅・人物・届出・操作・会話は本紙の創作。"
     },
-    "scene_prompt": "A compact silver autonomous wheeled travel suitcase rolls on its own into a small fictional Japanese station police kiosk as a Japanese woman traveler aged 29 approaches from the side, holding a small paper pastry bag. A staff member stands inside the doorway. The suitcase wheels and extended handle are prominent, realistic ordinary daytime street photography, natural faces and hands, no legible text, no brand logos.",
+    "scene_prompt": "A fictional Japanese woman traveler checks her smartphone while walking away from a station police kiosk, followed by one unattended upright silver suitcase on small caster wheels. A staff member waves from the doorway. Low diagonal street-level view, brick-red jacket, cool overcast daylight and damp pavement, natural faces and cloth, no writing or logos.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "旅行",

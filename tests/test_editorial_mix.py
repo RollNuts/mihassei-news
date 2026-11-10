@@ -684,7 +684,7 @@ class EditorialMixTests(unittest.TestCase):
         self.assertIn("plausible_future", advice)
         self.assertIn("second distinct five-year mechanism", advice)
 
-    def test_tone_advice_rotates_away_after_three_future_stories(self):
+    def test_tone_advice_varies_tone_after_three_plausible_stories(self):
         articles = [
             story("a", "trend", tone="plausible_future"),
             story(
@@ -706,7 +706,7 @@ class EditorialMixTests(unittest.TestCase):
         ]
         advice = tone_advice(articles, "2026-11-06")
         self.assertNotIn("plausible_future (", advice)
-        self.assertIn("keep the slate from becoming all-future", advice)
+        self.assertIn("vary the tone within future-set news", advice)
 
     def test_tone_advice_breaks_a_two_story_run(self):
         articles = [
