@@ -82,6 +82,7 @@ safetensors==0.4.5
 Pillow==10.4.0
 """
 TTS_CONSTRAINTS = """numpy==1.26.4
+click==8.1.8
 transformers==4.46.3
 spacy==3.7.5
 spacy-curated-transformers==0.2.2
@@ -365,13 +366,16 @@ def execute(portrait: Path, portrait_receipt: Path, output: Path):
             step("install_cpu_sad_torch", [str(sad_python), "-m", "pip", "install", "--quiet", "--index-url", "https://download.pytorch.org/whl/cpu", "torch==1.12.1+cpu", "torchvision==0.13.1+cpu", "torchaudio==0.12.1"])
             for name, text in (("tts-constraints.txt", TTS_CONSTRAINTS), ("sad-constraints.txt", SAD_CONSTRAINTS)):
                 (work / name).write_text(text, encoding="utf-8")
-            step("install_tts", [str(tts_python), "-m", "pip", "install", "--quiet", "-c", str(work / "tts-constraints.txt"), str(sources["hexgrad/misaki"]) + "[ja,en]", str(sources["hexgrad/kokoro"]), "soundfile==0.12.1"])
+            step("install_tts", [str(tts_python), "-m", "pip", "install", "--quiet", "-c", str(work / "tts-constraints.txt"), str(sources["hexgrad/misaki"]) + "[ja,en]", str(sources["hexgrad/kokoro"]), "soundfile==0.12.1", "click==8.1.8"])
             # The upstream gradio dependency serves its web UI; this CLI-only
             # experiment never starts that UI or installs it.
             sad_requirements = work / "sad-cli-requirements.txt"
             sad_requirements.write_text("\n".join(line for line in (sad / "requirements.txt").read_text().splitlines()
                                                    if not line.strip().startswith("gradio"))+"\n", encoding="utf-8")
             step("install_sad", [str(sad_python), "-m", "pip", "install", "--quiet", "-c", str(work / "sad-constraints.txt"), "-r", str(sad_requirements)])
+            # Reject incompatible runtimes before fetching the large model files.
+            step("verify_tts_imports", [str(tts_python), "-c", "from kokoro import KModel; from misaki.ja import JAG2P"])
+            step("verify_sad_imports", [str(sad_python), "-c", "from src.facerender.animate import AnimateFromCoeff; from src.utils.preprocess import CropAndExtract"], cwd=sad)
             for name, interpreter in (("tts", tts_python), ("sadtalker", sad_python)):
                 receipt[name + "_packages"] = step("record_"+name+"_packages", [str(interpreter), "-m", "pip", "freeze"], capture=True).splitlines()
             receipt["current_step"] = "download_models"
