@@ -122,6 +122,49 @@ class LiveRevisionWaitTests(unittest.TestCase):
             with self.subTest(body=body), self.assertRaises(TimeoutError):
                 self.run_wait(lambda request, timeout: Response(body), max_wait_seconds=20)
 
+    def test_proven_equivalent_revision_returns_and_logs_actual_public_sha(self):
+        seen = []
+
+        def equivalent(expected, actual):
+            seen.append((expected, actual))
+            return True
+
+        result, clock, logs = self.run_wait(
+            lambda request, timeout: Response((OLD + "\n").encode()),
+            equivalent_revision=equivalent,
+        )
+        self.assertEqual(result, OLD)
+        self.assertEqual(clock.now, 0)
+        self.assertEqual(seen, [(EXPECTED, OLD)])
+        self.assertIn("serving commit: " + OLD, logs[-1])
+        self.assertIn("requested " + EXPECTED, logs[-1])
+        self.assertNotIn("serving requested commit: " + EXPECTED, logs[-1])
+
+    def test_unproven_revision_still_waits_and_invalid_marker_never_reaches_git(self):
+        for body, expected_calls in ((OLD.encode(), 1), (b"not-a-sha", 0)):
+            with self.subTest(body=body):
+                seen = []
+
+                def reject(expected, actual):
+                    seen.append((expected, actual))
+                    return False
+
+                with self.assertRaises(TimeoutError):
+                    self.run_wait(lambda request, timeout: Response(body),
+                                  max_wait_seconds=20, equivalent_revision=reject)
+                self.assertEqual(len(seen), expected_calls)
+
+    def test_git_proof_finishing_at_deadline_cannot_pass(self):
+        clock = Clock()
+
+        def late_proof(expected, actual):
+            clock.now = 20
+            return True
+
+        with self.assertRaises(TimeoutError):
+            self.run_wait(lambda request, timeout: Response(OLD.encode()), clock,
+                          max_wait_seconds=20, equivalent_revision=late_proof)
+
     def test_invalid_expected_sha_is_rejected_before_network(self):
         for value in (None, "", EXPECTED[:12], "z" * 40, EXPECTED.upper(), " " + EXPECTED, True):
             with self.subTest(value=value), patch.object(gate.urllib.request, "urlopen") as fetch:
@@ -210,6 +253,12 @@ class LiveRevisionWaitTests(unittest.TestCase):
             with patch.dict("os.environ", {"EXPECTED_SHA": EXPECTED}):
                 self.assertEqual(gate.main([]), 0)
             wait.assert_called_once_with(EXPECTED)
+
+    def test_docs_only_cli_reuses_the_same_git_proof_as_final_checks(self):
+        from scripts.check_live import public_revision_matches
+        with patch.object(gate, "wait_for_live_revision", return_value=OLD) as wait:
+            self.assertEqual(gate.main(["--expected-sha", EXPECTED, "--allow-docs-only"]), 0)
+        wait.assert_called_once_with(EXPECTED, equivalent_revision=public_revision_matches)
 
 
 if __name__ == "__main__":

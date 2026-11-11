@@ -2,8 +2,11 @@ name: Verify live article delivery and SEO
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
-# Each new main push supersedes the previous deployment check.
+# Each public-input main push supersedes the previous deployment check.
+# Docs-only pushes must not start a run that cancels that check.
 # Avoid treating a superseded commit as a production failure.
 # Read-only public-byte verification is the sole deployment wait.
 concurrency:
@@ -17,13 +20,15 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Wait for the exact revision served by the public site
+      - name: Wait for the public revision or a proven docs-only ancestor
         env:
           EXPECTED_SHA: ${{ github.sha }}
-        run: python3 scripts/wait_for_live_revision.py
+        run: python3 scripts/wait_for_live_revision.py --allow-docs-only
       - name: Verify the published revision and live stories without generating traffic
         run: python3 scripts/check_live.py
       - name: Verify that Twitterbot can fetch each first-party image card

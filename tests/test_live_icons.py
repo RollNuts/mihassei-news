@@ -109,12 +109,12 @@ class LiveIconTests(unittest.TestCase):
                 self.verify()
 
     def test_full_release_checker_invokes_the_icon_probe(self):
-        with patch.object(check_live.subprocess, "run") as git, \
+        with patch.object(check_live, "verify_public_revision", return_value="a" * 40) as revision, \
              patch.object(check_live, "get", return_value=(self.markup.encode(), "text/html")), \
              patch.object(check_live, "verify_site_icons", side_effect=RuntimeError("icon probe")) as probe:
-            git.return_value.stdout = ""
             with self.assertRaisesRegex(RuntimeError, "icon probe"):
                 check_live.check()
+            revision.assert_called_once_with()
             probe.assert_called_once_with(self.markup)
 
 

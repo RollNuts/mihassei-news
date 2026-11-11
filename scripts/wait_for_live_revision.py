@@ -58,6 +58,7 @@ def wait_for_live_revision(
     clock=None,
     sleep=None,
     log=None,
+    equivalent_revision=None,
 ) -> str:
     """Require the full public SHA before a monotonic, at-most-twelve-minute deadline."""
     if not isinstance(expected_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", expected_sha):
@@ -69,6 +70,8 @@ def wait_for_live_revision(
             raise ValueError(name + " must be a finite positive number")
     if max_wait_seconds > MAX_WAIT_SECONDS:
         raise ValueError("Public revision wait cannot exceed 720 seconds")
+    if equivalent_revision is not None and not callable(equivalent_revision):
+        raise ValueError("equivalent_revision must be callable")
 
     opener = urllib.request.urlopen if opener is None else opener
     clock = time.monotonic if clock is None else clock
@@ -108,9 +111,18 @@ def wait_for_live_revision(
         # release within the allowed wait, even when its contents now match.
         if clock() >= deadline:
             raise expired()
-        if actual == expected_sha:
-            log("Public site confirmed serving requested commit: " + expected_sha)
-            return expected_sha
+        equivalent = (actual != expected_sha and equivalent_revision is not None
+                      and isinstance(actual, str) and re.fullmatch(r"[0-9a-f]{40}", actual)
+                      and equivalent_revision(expected_sha, actual))
+        if clock() >= deadline:
+            raise expired()
+        if actual == expected_sha or equivalent:
+            if actual == expected_sha:
+                log("Public site confirmed serving requested commit: " + actual)
+            else:
+                log("Public site confirmed serving commit: " + actual + "; requested "
+                    + expected_sha + " differs only in docs; public files unchanged")
+            return actual
         if latest != last_logged:
             log("Public revision not updated yet: expected " + expected_sha
                 + "; observed " + latest)
@@ -124,10 +136,19 @@ def wait_for_live_revision(
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--expected-sha", default=os.environ.get("EXPECTED_SHA"))
+    parser.add_argument("--allow-docs-only", action="store_true",
+                        help="Allow a public ancestor only after Git proves a docs-only diff")
     args = parser.parse_args(argv)
+    options = {}
+    if args.allow_docs_only:
+        if __package__:
+            from .check_live import public_revision_matches
+        else:
+            from check_live import public_revision_matches
+        options["equivalent_revision"] = public_revision_matches
     try:
         with _absolute_deadline(MAX_WAIT_SECONDS):
-            wait_for_live_revision(args.expected_sha)
+            wait_for_live_revision(args.expected_sha, **options)
     except (ValueError, TimeoutError, RevisionDeadlineExceeded) as exc:
         print(str(exc), file=sys.stderr)
         return 1
