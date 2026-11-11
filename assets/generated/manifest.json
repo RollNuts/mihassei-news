@@ -3387,6 +3387,14 @@
     }
   },
   "rejected": {
+    "floating-warehouse-vanishes-after-berth-swap": {
+      "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
+      "decision": "rejected",
+      "image_sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048",
+      "reason": "現行記事・scene_promptと無料CPU生成JPEGの実物（1200×675）を独立表示して照合。画像はコンテナの積み上がった岸壁と2隻のタグボートで、記事の中心となる屋根付きの浮き倉庫台船、屋根下の鋼材、岸壁で見送る作業員2名が写っていない。海の雰囲気は写真調でも、倉庫自体が運ばれる事件を表さないため不採用。記事用の安全な代替共有画像を維持し、生成済みChatGPT候補とは区別する。元のCPU JPEG、manifest記事/画像SHA、整数seed 7042297594706420741 を変更しない。",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43116219026",
+      "reviewed_at": "2026-11-11T23:13:14.971Z"
+    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
