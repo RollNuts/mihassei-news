@@ -235,18 +235,24 @@ def stop_child(process):
 
 def command(argv, budget: Budget, *, cwd=None, env=None, capture=False):
     budget.check()
-    process = subprocess.Popen(argv, cwd=cwd, env=env, start_new_session=True,
-                               stdout=subprocess.PIPE if capture else None, text=True)
-    try:
-        while process.poll() is None:
-            budget.check()
-            time.sleep(1)
-        if process.returncode:
-            raise RuntimeError("Preview subprocess failed with exit " + str(process.returncode))
-        return process.stdout.read() if capture else ""
-    except BaseException:
-        stop_child(process)
-        raise
+    # A file avoids pipe-buffer deadlocks for article JSON or package listings
+    # while the parent continues checking the stop switch and resource limits.
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8") as captured:
+        process = subprocess.Popen(argv, cwd=cwd, env=env, start_new_session=True,
+                                   stdout=captured if capture else None, text=True)
+        try:
+            while process.poll() is None:
+                budget.check()
+                time.sleep(1)
+            if process.returncode:
+                raise RuntimeError("Preview subprocess failed with exit " + str(process.returncode))
+            if capture:
+                captured.seek(0)
+                return captured.read()
+            return ""
+        except BaseException:
+            stop_child(process)
+            raise
 
 
 def allowed_url(url):

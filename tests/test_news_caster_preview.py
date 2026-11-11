@@ -7,6 +7,7 @@ import io
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -94,6 +95,13 @@ class PresenterPreviewTests(unittest.TestCase):
         with patch.object(preview.os,"getpgid",return_value=999),patch.object(preview.os,"killpg") as kill:
             preview.stop_child(process)
         kill.assert_not_called()
+
+    def test_large_captured_git_payload_does_not_block_stop_monitoring(self):
+        with tempfile.TemporaryDirectory() as directory:
+            budget = preview.Budget(Path(directory), timeout=8)
+            result = preview.command([sys.executable, "-c", "print('x' * 1048576, end='')"],
+                                     budget, capture=True)
+        self.assertEqual(result, "x" * 1048576)
 
     def test_pinned_hash_rejects_corrupt_download_without_retries(self):
         response=Mock(url="https://huggingface.co/author/model/resolve/revision/weights")

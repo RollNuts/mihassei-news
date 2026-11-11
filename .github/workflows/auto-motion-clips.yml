@@ -10,9 +10,11 @@ on:
       - 'scripts/broadcast_captions.py'
       - 'scripts/visual_review.py'
       - 'scripts/news_caster_preview.py'
+      - 'scripts/compose_caster_preview.py'
       - 'assets/casters/**'
       - 'tests/test_broadcast_captions.py'
       - 'tests/test_news_caster_preview.py'
+      - 'tests/test_compose_caster_preview.py'
       - 'tests/test_motion_clips.py'
       - 'tests/test_motion_publisher.py'
       - 'tests/test_motion_workflow.py'
@@ -39,6 +41,10 @@ on:
         description: 'Render one CPU caster preview artifact without publishing'
         type: boolean
         default: false
+      caster_source_run:
+        description: 'Reuse a successful caster preview run; empty renders a new preview'
+        type: string
+        default: ''
 permissions:
   contents: read
 # Parallel article/photo pushes cannot publish clips in parallel.
@@ -97,7 +103,7 @@ jobs:
         run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow tests.test_broadcast_captions
       - name: Test caster preview guards offline without downloading models
         if: github.event_name == 'pull_request'
-        run: python3 -m unittest -v tests.test_news_caster_preview
+        run: python3 -m unittest -v tests.test_news_caster_preview tests.test_compose_caster_preview
 
   publish:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0' && !(github.event_name == 'workflow_dispatch' && inputs.caster_preview)
@@ -186,6 +192,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
+      CASTER_SOURCE_RUN: ${{ inputs.caster_source_run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -200,6 +207,10 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
+          if [[ -n "$CASTER_SOURCE_RUN" ]] && ! fc-match 'Noto Sans CJK JP' | grep -q 'NotoSansCJK'; then
+            sudo apt-get update -qq
+            sudo apt-get install --yes --no-install-recommends fonts-noto-cjk
+          fi
       - name: Generate one manual caster preview only while image automation is active
         run: |
           set -euo pipefail
@@ -208,9 +219,13 @@ jobs:
             echo "Image automation is not active; refusing the caster preview." >&2
             exit 1
           fi
-          python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
+          if [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
+            python scripts/compose_caster_preview.py --run --source-run "$CASTER_SOURCE_RUN" --output "$RUNNER_TEMP/news-caster-composition"
+          else
+            python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
+          fi
       - name: Keep only bounded preview media and its receipt for one day
-        if: always()
+        if: always() && inputs.caster_source_run == ''
         uses: actions/upload-artifact@v4
         with:
           name: news-caster-preview-${{ github.run_id }}
@@ -221,3 +236,13 @@ jobs:
             ${{ runner.temp }}/news-caster-preview/narration-full.wav
             ${{ runner.temp }}/news-caster-preview/narration-three-seconds.wav
             ${{ runner.temp }}/news-caster-preview/receipt.json
+      - name: Keep only the composed news preview and its receipt for one day
+        if: always() && inputs.caster_source_run != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-caster-composition-${{ github.run_id }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/news-caster-composition/news-preview.mp4
+            ${{ runner.temp }}/news-caster-composition/receipt.json

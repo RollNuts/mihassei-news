@@ -255,9 +255,35 @@ class MotionWorkflowTests(unittest.TestCase):
                                                       "narration-three-seconds.wav", "receipt.json"})
                 self.assertNotIn("*", path)
 
+    def test_composition_reuses_only_explicit_source_and_keeps_output_artifact_only(self):
+        block = step(self.video, "Generate one manual caster preview only while image automation is active")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "gh").write_text('#!/bin/sh\nprintf "active\\n"\n')
+            (root / "gh").chmod(0o755)
+            (root / "python").write_text('#!/bin/sh\nprintf "%s\\n" "$*" > "$CALL_LOG"\n')
+            (root / "python").chmod(0o755)
+            log = root / "calls"
+            env = {**os.environ, "PATH": str(root) + os.pathsep + os.environ.get("PATH", ""),
+                   "GITHUB_REPOSITORY": "RollNuts/mihassei-news", "RUNNER_TEMP": str(root),
+                   "CASTER_SOURCE_RUN": "42928393181", "CALL_LOG": str(log)}
+            result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell(block)],
+                                    env=env, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(log.read_text().strip(),
+                             "scripts/compose_caster_preview.py --run --source-run 42928393181 --output "
+                             + str(root / "news-caster-composition"))
+        artifact = step(self.video, "Keep only the composed news preview and its receipt for one day")
+        self.assertIn("retention-days: 1", artifact)
+        self.assertEqual(re.findall(r"^            (.+)$", artifact, re.M), [
+            "${{ runner.temp }}/news-caster-composition/news-preview.mp4",
+            "${{ runner.temp }}/news-caster-composition/receipt.json",
+        ])
+
     def test_caster_changes_receive_offline_pr_validation_without_running_inference(self):
         filters = event_paths(self.video, "pull_request")
         for path in ("scripts/news_caster_preview.py", "tests/test_news_caster_preview.py",
+                     "scripts/compose_caster_preview.py", "tests/test_compose_caster_preview.py",
                      "assets/casters/newsreader-preview.jpg", "assets/casters/newsreader-preview.json"):
             with self.subTest(path=path):
                 self.assertTrue(any(fnmatch.fnmatchcase(path, rule) for rule in filters))
