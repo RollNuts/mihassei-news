@@ -13,6 +13,7 @@ import os
 import re
 import struct
 import subprocess
+import sys
 import zlib
 from pathlib import Path
 
@@ -28,6 +29,7 @@ WIDTH = 1200
 HEIGHT = 630
 SCENE_HEIGHT = 675
 SCENE_RENDERER = "rsvg-convert 2.62.1"
+SCENE_RENDERERS = {"rsvg": SCENE_RENDERER, "cairosvg": "CairoSVG 2.7.1"}
 MAX_SCENE_PNG_BYTES = 700 * 1024
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PROOF_KEYS = frozenset(("article_sha256", "svg_sha256", "renderer"))
@@ -95,10 +97,12 @@ def _scene_png_chunks(data: bytes, proof: dict | None = None) -> tuple[list[tupl
     return chunks, metadata
 
 
-def _scene_proof(article: dict, svg: str) -> dict:
+def _scene_proof(article: dict, svg: str, *, renderer: str = SCENE_RENDERER) -> dict:
+    if renderer not in SCENE_RENDERERS.values():
+        raise ValueError("Unrecognized scene renderer")
     return {"article_sha256": article_fingerprint(article),
             "svg_sha256": hashlib.sha256(svg.encode("utf-8")).hexdigest(),
-            "renderer": SCENE_RENDERER}
+            "renderer": renderer}
 
 
 def reviewed_scene_png(article: dict, *, root: Path = ROOT) -> bytes | None:
@@ -110,7 +114,9 @@ def reviewed_scene_png(article: dict, *, root: Path = ROOT) -> bytes | None:
         if path.is_symlink() or (root / "assets").is_symlink() or path.stat().st_size > MAX_SCENE_PNG_BYTES:
             return None
         data = path.read_bytes()
-        _scene_png_chunks(data, _scene_proof(article, svg))
+        _chunks, metadata = _scene_png_chunks(data)
+        if metadata != _scene_proof(article, svg, renderer=metadata.get("renderer")):
+            return None
         return data
     except (OSError, ValueError, UnicodeError, struct.error, zlib.error):
         return None
@@ -122,8 +128,10 @@ def reviewed_scene_version(article: dict, *, root: Path = ROOT) -> str | None:
     return hashlib.sha256(data).hexdigest()[:12] if data else None
 
 
-def prepare_scene_png(article: dict, *, root: Path = ROOT) -> bool:
+def prepare_scene_png(article: dict, *, root: Path = ROOT, renderer: str = "rsvg") -> bool:
     """Explicit local preparation; never called by a normal site build."""
+    if renderer not in SCENE_RENDERERS:
+        raise ValueError("Unsupported scene renderer: " + str(renderer))
     try:
         from .visual_review import reviewed_generated_scene
     except ImportError:
@@ -145,21 +153,30 @@ def prepare_scene_png(article: dict, *, root: Path = ROOT) -> bool:
             if output.stat().st_size > MAX_SCENE_PNG_BYTES:
                 raise ValueError("oversized")
             _chunks, old = _scene_png_chunks(output.read_bytes())
-            if (set(old) != PROOF_KEYS or old.get("renderer") != SCENE_RENDERER
+            if (set(old) != PROOF_KEYS or old.get("renderer") not in SCENE_RENDERERS.values()
                     or any(not re.fullmatch(r"[0-9a-f]{64}", old.get(key, ""))
                            for key in ("article_sha256", "svg_sha256"))):
                 raise ValueError("unrecognized provenance")
         except (OSError, ValueError, UnicodeError, struct.error, zlib.error) as exc:
             raise RuntimeError("Refusing to overwrite unmanaged scene PNG: " + str(output)) from exc
-    version = subprocess.run(["rsvg-convert", "--version"], capture_output=True, text=True,
-                             check=True, timeout=5).stdout.splitlines()[0]
-    if version != "rsvg-convert version 2.62.1":
-        raise RuntimeError("Scene preparation requires existing rsvg-convert 2.62.1")
-    result = subprocess.run(["rsvg-convert", "--format=png", "--width=1200", "--height=675",
-                             "--background-color=#f8f6f0"],
+    if renderer == "cairosvg":
+        command = [sys.executable, "-m", "cairosvg"]
+        expected_version = "2.7.1"
+        arguments = ["-", "--format=png", "--output-width=1200", "--output-height=675",
+                     "--background=#f8f6f0"]
+    else:
+        command = ["rsvg-convert"]
+        expected_version = "rsvg-convert version 2.62.1"
+        arguments = ["--format=png", "--width=1200", "--height=675",
+                     "--background-color=#f8f6f0"]
+    version = subprocess.run(command + ["--version"], capture_output=True, text=True,
+                             check=True, timeout=5).stdout.splitlines()
+    if not version or version[0] != expected_version:
+        raise RuntimeError("Scene preparation requires existing " + SCENE_RENDERERS[renderer])
+    result = subprocess.run(command + arguments,
                             input=svg.encode("utf-8"), capture_output=True, check=True, timeout=20)
     chunks, _metadata = _scene_png_chunks(result.stdout)
-    proof = _scene_proof(article, svg)
+    proof = _scene_proof(article, svg, renderer=SCENE_RENDERERS[renderer])
     chunks = [c for c in chunks if c[0] != b"tEXt" or c[1].split(b"\0", 1)[0].decode("latin-1") not in PROOF_KEYS]
     tags = [(b"tEXt", key.encode("ascii") + b"\0" + value.encode("ascii")) for key, value in proof.items()]
     data = PNG_SIGNATURE + b"".join(_png_chunk(*chunk) for chunk in chunks[:-1] + tags + chunks[-1:])
@@ -643,6 +660,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Prepare static social PNGs from current reviewed SVGs")
     parser.add_argument("--prepare-scenes", nargs="*", metavar="SLUG", required=True)
     parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--renderer", choices=SCENE_RENDERERS, default="rsvg",
+                        help="Explicit preparation renderer; current PNGs are reused")
     args = parser.parse_args(argv)
     articles = json.loads((args.root / "content/articles.json").read_text(encoding="utf-8"))
     requested = set(args.prepare_scenes)
@@ -652,7 +671,8 @@ def main(argv=None) -> int:
     for article in articles:
         if requested and article["slug"] not in requested:
             continue
-        (prepared if prepare_scene_png(article, root=args.root) else skipped).append(article["slug"])
+        (prepared if prepare_scene_png(article, root=args.root, renderer=args.renderer)
+         else skipped).append(article["slug"])
     print(json.dumps({"prepared": prepared, "skipped": skipped}, ensure_ascii=False))
     return 0
 

@@ -55,7 +55,7 @@ JPEGの状態だけで表示を判断しない。同じレポートの `publicat
 
 ChatGPT内蔵の画像生成は[既存プランのCodex利用枠](https://learn.chatgpt.com/docs/pricing#how-does-image-generation-count-toward-usage-limits)を消費する。実行前に `get_usage_limits` で `ordinaryUsageAllowed`、該当する利用枠の残量、追加クレジット残高0を確認し、取得不能・枠不足・追加クレジット消費の可能性がある場合は使わない。APIキー方式、追加購入、リセットへ切り替えない。現在の本文に合う撮影可能な一場面を指示し、新着を優先して既存の各回最大3記事内で実物を検品する。取り込む際は `origin: chatgpt-imagegen` と実際の生成ID・原PNG SHA・指示を保存し、旧CPU候補の原記録と区別する。`visual_strategy` を `cpu-photo` にするのは、新規JPEGの実画像・本文・scene_promptの目視一致と現SHAの`accepted`を同じ変更で確認できた場合だけ。失敗時は本文に合う既存の専用SVGを維持する。追加の外部API契約や有料GPUを導入しない。
 
-写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。追加・修正時は `python3 scripts/social_cards.py --prepare-scenes 記事slug` で共有用PNGも用意し、実表示する。既存の `rsvg-convert 2.62.1` で変換し、記事・SVGの指紋をPNG内へ記録する。同じ原本なら再変換を省き、通常ビルドは整合するPNGをコピーするだけで描画ソフトを起動しない。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
+写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。追加・修正時は `python3 scripts/social_cards.py --prepare-scenes 記事slug` で共有用PNGも用意し、実表示する。既定は既存の `rsvg-convert 2.62.1`。同じ版を使えない環境では、導入済みの `CairoSVG 2.7.1` を `--renderer cairosvg` で明示的に選べる。実際の描画ソフト名・版と記事・SVGの指紋をPNG内へ記録し、この2種類以外の描画ソフトや版は採用しない。同じ原本の検証済みPNGはどちらで作ったものも再利用し、通常ビルドは整合するPNGをコピーするだけで描画ソフトを起動・importしない。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
 
 `visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。2026-11-06 22:00 JST以降の新作では `illustration_reason` も必要で、`readable_text_or_ui / precise_count_or_absence / complex_relationship / comparison_layout / brand_character_safety` のどれかに限る。単一人物・単一物体・単純な行為で成立する場面は写真を既定とし、**写真向けの scene_prompt を書いたまま illustration に振り分けない**。`editorial_mix.py --day` は一日の `cpu-photo / illustration` 件数と `visual_next` を出し、イラストが過半になった日は次の候補で写真向きの場面も比較する。ただし題材の質を落として写真比率を合わせない。
 
@@ -76,3 +76,4 @@ ChatGPT内蔵の画像生成は[既存プランのCodex利用枠](https://learn.
 専用の場面イラストは一覧の小さい枠でも構図全体を保ち、左右にいる人物・道具を切り落とさない。ブラウザ用favicon（PNG・ICO）とiPhone用アイコンは記事画像の採否と別に確認する。`scripts/check_live.py` がHTMLの宣言、3つの公開URLの形式・寸法・MIME・原本との一致、公開robotsのGoogle検索クローラー向け許可を検査する。HTTP 200や記事の配信成功だけでアイコン正常と判断しない。Google検索結果への反映は別に確認し、未確認なら復旧済みと報告しない。再取得待ちの間もアイコンURLは固定し、無意味な差替えやインデックス登録リクエストの連打をしない。
 
 公開手順は[OPERATIONS.md](OPERATIONS.md#着手と公開)に従い、今回の対象ページと実画像まで照合する。画面を見られない時は未目視と記す。
+
