@@ -1365,31 +1365,155 @@
       "source_png_sha256": "7acda778aacf207e44294bf4a88e5e62264b2c874be820e7a72f15a940edc110"
     },
     "floating-warehouse-vanishes-after-berth-swap": {
-      "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
-      "bytes": 155544,
-      "generated_at": "2026-11-11T23:08:54.575728+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "355fb50a80b2e5b3b105076ba87cd5f48ab93ba8fe2e14cb85c991bd34498e71",
+      "bytes": 171958,
+      "generated_at": "2026-11-11T22:49:55.703627446Z",
+      "generation_id": "f2d8ea76-9afb-492f-9834-f877188432cd",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt_recovery": "The exact ImageGen tool-input prompt was not retained in PR675/676 and was not retrievable from the available prior-run context. The recorded article scene_prompt is preserved separately and is not asserted to be the verbatim tool input. No replacement prompt or generation was invented.",
+      "generation_receipt": "xmp:iid:f2d8ea76-9afb-492f-9834-f877188432cd",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
+        "bytes": 155544,
+        "generated_at": "2026-11-11T23:08:54.575728+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 7042297594706420741,
+        "sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "8d69dcfafc748396b35c046108056c59e955adec",
+      "previous_rejection": {
+        "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
+        "decision": "rejected",
+        "image_sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048",
+        "reason": "現行記事・scene_promptと無料CPU生成JPEGの実物（1200×675）を独立表示して照合。画像はコンテナの積み上がった岸壁と2隻のタグボートで、記事の中心となる屋根付きの浮き倉庫台船、屋根下の鋼材、岸壁で見送る作業員2名が写っていない。海の雰囲気は写真調でも、倉庫自体が運ばれる事件を表さないため不採用。記事用の安全な代替共有画像を維持し、生成済みChatGPT候補とは区別する。元のCPU JPEG、manifest記事/画像SHA、整数seed 7042297594706420741 を変更しない。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43116219026",
+        "reviewed_at": "2026-11-11T23:13:14.971Z"
+      },
       "prompt_version": 3,
-      "seed": 7042297594706420741,
-      "sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048"
+      "scene_prompt": "Photorealistic documentary port photograph: a small tugboat tows a low roofed floating steel-storage warehouse barge along a concrete berth in a fictional Japanese harbor, while two Japanese adult dockworkers in hard hats and reflective workwear on the quay watch the barge relocate to a nearby pier. Steel bundles under the roof, real working cranes and bollards, ordinary overcast morning light, true-to-life water and metal textures, no legible text, no logos or brands, realistic horizontal 16:9 composition.",
+      "scene_prompt_source": "Article scene instructions preserved from the original publication PR https://github.com/RollNuts/mihassei-news/pull/675",
+      "sha256": "18757c82598a42c1ac3601d6d2e52e85d9e950fe91b3ebdc41cb929c09b3e4be",
+      "source_article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-11T22:49:55.703627446Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-11T22:49:55.703630230Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-11T22:49:55.702039741Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": {
+              "0": 107,
+              "1": 112,
+              "10": 85,
+              "11": 51,
+              "12": 33,
+              "13": 221,
+              "14": 52,
+              "15": 98,
+              "16": 57,
+              "17": 171,
+              "18": 238,
+              "19": 69,
+              "2": 34,
+              "20": 36,
+              "21": 191,
+              "22": 29,
+              "23": 187,
+              "24": 129,
+              "25": 23,
+              "26": 84,
+              "27": 34,
+              "28": 105,
+              "29": 207,
+              "3": 103,
+              "30": 250,
+              "31": 39,
+              "4": 85,
+              "5": 241,
+              "6": 61,
+              "7": 20,
+              "8": 194,
+              "9": 10
+            },
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:f2d8ea76-9afb-492f-9834-f877188432cd",
+        "manifest_uri": "urn:c2pa:ac8750ba-06ea-4844-93b6-7f3ef8e0c113",
+        "signature_validation": "not_performed"
+      },
+      "source_png_sha256": "7f1d8bf7a46b74f27a858abd3b204d5d0ae0d3c24b6db6072f648af84747a7c1",
+      "source_recovery": {
+        "bytes": 2275949,
+        "file_id": "file_0000000000408230bcc7ed63a402fb76",
+        "file_name": "a_realistic_documentary_style_harbor_port_scene_u.png",
+        "height": 941,
+        "jpeg_file_id": "file_00000000855c8230965a7253e7116520",
+        "jpeg_file_name": "floating-warehouse-vanishes-after-berth-swap.jpg",
+        "method": "Recovered the original PNG and already-converted JPEG through exact recorded file IDs. Both byte lengths, dimensions and SHA256 values match PR675. No new generation or re-encoding.",
+        "original_reported_generation_id": "6327d985-14eb-4908-87dc-41399262c3ab",
+        "reference": "https://github.com/RollNuts/mihassei-news/pull/675",
+        "width": 1672
+      },
+      "supersedes_reason": "取り込み待ちだった生成済みPNGとPillow JPEGを実file IDで回収。現本文と両画像を実表示して初採用。旧CPU候補の正確な整数seed、原記事・画像SHA、不採用理由はそのまま履歴へ保持。",
+      "transform": {
+        "encoder": "Pillow",
+        "height": 675,
+        "quality": 84,
+        "resize": "center 16:9 crop, LANCZOS resampling",
+        "settings_source": "Original publisher conversion receipt in PR675; the recovered JPEG is byte-identical.",
+        "subsampling": "4:4:4",
+        "width": 1200
+      }
     },
     "food-rescue-shops-manufacture-leftovers": {
       "article_sha256": "420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f",
@@ -3387,14 +3511,6 @@
     }
   },
   "rejected": {
-    "floating-warehouse-vanishes-after-berth-swap": {
-      "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
-      "decision": "rejected",
-      "image_sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048",
-      "reason": "現行記事・scene_promptと無料CPU生成JPEGの実物（1200×675）を独立表示して照合。画像はコンテナの積み上がった岸壁と2隻のタグボートで、記事の中心となる屋根付きの浮き倉庫台船、屋根下の鋼材、岸壁で見送る作業員2名が写っていない。海の雰囲気は写真調でも、倉庫自体が運ばれる事件を表さないため不採用。記事用の安全な代替共有画像を維持し、生成済みChatGPT候補とは区別する。元のCPU JPEG、manifest記事/画像SHA、整数seed 7042297594706420741 を変更しない。",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43116219026",
-      "reviewed_at": "2026-11-11T23:13:14.971Z"
-    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
