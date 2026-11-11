@@ -1,5 +1,69 @@
 [
   {
+    "slug": "xr-town-letter-changes-next-visitors-story",
+    "category": "エンタメ",
+    "flash": "昨日の客の一通で街が変わる",
+    "fiction_company": "架空の体験施設「継ぎ町」",
+    "art": "cards",
+    "fiction_at": "2031-11-11T17:38:00+09:00",
+    "published_at": "2026-11-11T17:38:00+09:00",
+    "title": "前の客が残した手紙を翌日の客が読む　物語が引き継がれるXR街開業",
+    "summary": "体験施設「継ぎ町」が、来場者の手紙を翌日の物語に引き継ぐ歩行型の仮想商店街を開業。初日の26歳の女性が郵便箱へ入れた手紙を翌日の客が届け、閉まっていた花屋が開いた。",
+    "paragraphs": [
+      "2031年、歩いて物語に参加する体験施設「継ぎ町」が開業した。初日の来場者、水上澪さん（26）が街角の赤い郵便箱へ入れた手紙は、翌日に来た別の客の手に渡り、仮想の商店街で閉まっていた花屋を開かせた。",
+      "来場者は映像を見るゴーグルを着け、会場内に組まれた路地を自分の足で歩く。壁や赤い郵便箱は手で触れられる実物で、ゴーグル越しには架空の店や住民が現れる。初日の花屋は閉まっていて、店先には花束を受け取りに来た人のメモだけが残っていた。澪さんは「花束を待っている人がいます」と店主宛ての手紙を書き、郵便箱へ入れた。",
+      "この施設は一日の体験をその場で終わらせず、来場者が残した手紙のうち一通を翌日の最初の回に引き継ぐ。翌朝、別の来場者、橋本葉月さん（27）が同じ路地の郵便箱を開けると、澪さんの手紙が入っていた。葉月さんは裏通りにいた店主役の案内人へ手紙を届けた。案内人が鍵を回すと、ゴーグルに映る花屋のシャッターが上がり、色とりどりの花が並ぶ通りへ景色が変わった。",
+      "その夜、澪さんの端末には施設から一枚の記念画像が届いた。昨日は閉まっていた花屋が、同じ街角で開いている。澪さんは「知らない人が続きを歩いてくれた」と笑い、今度は自分が誰かの残した手紙を見つけようと、翌週の予約を入れた。"
+    ],
+    "source": {
+      "kind": "企業発表",
+      "publisher": "株式会社アルファコード",
+      "published_at": "2026-09-28T00:00:00+09:00",
+      "url": "https://www.alphacode.co.jp/news-events/news/20260928180000.html",
+      "topic": "アルファコードが2026年9月28日に発表。実在の『Mobilis Frontier』は11月13〜23日に有楽町マルイで開催予定のウォークスルー型XR体験で、VRゴーグルを着けて約20分間、自分の足で異界を探索する、1回最大4人の企画。複数日間の参加者間で手紙・物語の選択が引き継がれる仕様や『継ぎ町』・花屋・登場人物・会話・結果はすべて2031年の創作であり、実在主催者の発表・行為ではない。"
+    },
+    "scene_prompt": "Photorealistic candid press photograph of an invented 26-year-old Japanese woman wearing a plain dark VR headset, actively sliding a white paper envelope into a weathered red physical mailbox in a constructed Japanese shopping-street alley inside a walk-through immersive exhibition. A closed flower shop shutter and some potted flowers behind her, one other adult guest wearing a headset softly out of focus. Ordinary warm indoor lighting, believable skin, hands, fabric, paper, chipped paint and soft shadows. No readable words, brands, floating holograms or fantasy light, landscape 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "XR",
+      "体験型エンタメ"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "XR",
+      "体験型エンタメ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "昨日の客が残した手紙を、今日の知らない客が受け取る。物語が日をまたいで続く2031年のXR商店街。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年にVRゴーグルを着けて20分ほど自分の足で探索するウォークスルー型XR体験が催された",
+      "target": "各参加者の体験時間で物語が完結する没入型エンタメ",
+      "action": "架空のXR街が前日の来場者の手紙を翌日の最初の回へ引き継ぎ、別の客が物語を続ける",
+      "outcome": "翌日の来場者が店主に手紙を届けて花屋を開き、初日の客も変わった街角を後日受け取る"
+    },
+    "reader_clarity": {
+      "who": "体験施設「継ぎ町」",
+      "action": "前日の客が郵便箱へ手紙を入れ、翌日の客が読んで店主へ届ける",
+      "oddity": "来場者が違う日でも一つのXR街の物語が続き、閉店中の花屋が開く"
+    },
+    "behavior_basis": {
+      "motive": "初日の客は物語の中で花束を待つ人を助けたくて手紙を残し、翌日の客は前の客が残した物語を進めたい",
+      "ordinary_alternative": "参加した日の体験だけで完結する展示を楽しむ、または個別に再訪する",
+      "why_not": "自分の行動が見知らぬ次の客の物語へ残り、その変化を自分も受け取れることが体験の楽しみになる",
+      "evidence_quote": "この施設は一日の体験をその場で終わらせず、来場者が残した手紙のうち一通を翌日の最初の回に引き継ぐ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年の20分間のウォークスルー型XRイベントでは参加者がゴーグルを着けて自分の足で仮想空間を探索できる",
+      "continuation_force": "参加者自身が選択して歩く体験型興行では、他の来場者と異なる物語を楽しむ新しい仕掛けが集客価値になる",
+      "future_result": "2031年には来場者の物語内の手紙が翌日の来場者へ引き継がれ、別の日にも街の景色が変わる"
+    }
+  },
+  {
     "slug": "supermarkets-buy-back-empty-pet-bottles",
     "category": "経済",
     "flash": "空容器が店の仕入れ品に",
