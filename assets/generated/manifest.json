@@ -3135,6 +3135,14 @@
     }
   },
   "rejected": {
+    "xr-town-letter-changes-next-visitors-story": {
+      "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
+      "decision": "rejected",
+      "image_sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e",
+      "note": "2026-11-11無料CPU成果物を実表示して現記事本文と照合。架空の成人女性はVRヘッドセットを着けているが、記事の中心である赤い実物郵便箱が写らず、手紙を郵便箱へ投函する動作がない。紙を持って入口に立つだけで、前の客が残した手紙が翌日の客へ届く仕掛けを表現していない。店のシャッター・花屋も見えず、場面の核を欠くため不採用。原JPEG・manifest記録・整数seedは変更せず、安全な代替画像を維持する。",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42990385985",
+      "reviewed_at": "2026-11-11T09:04:30Z"
+    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
