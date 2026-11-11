@@ -1,5 +1,66 @@
 [
   {
+    "slug": "floating-warehouse-vanishes-after-berth-swap",
+    "category": "事件",
+    "flash": "港で浮き倉庫が行方不明",
+    "fiction_company": "架空の潮鷺港、浮き倉庫「波箱4号」",
+    "art": "cards",
+    "fiction_at": "2031-11-12T07:49:00+09:00",
+    "published_at": "2026-11-12T07:49:00+09:00",
+    "title": "港で「倉庫が消えた」騒ぎ　3社の共同配船、鋼材ごと600メートル移動",
+    "summary": "潮鷺港で、朝の作業員が鋼材用の浮き倉庫を見失った。夜に船の運航順が変わり、タグボートが倉庫の台船を別の岸壁へ曳航していたが、陸の案内板だけが昨日の場所を示していた。",
+    "paragraphs": [
+      "潮鷺港の第3岸壁で、朝の荷役班が鋼材を置いていた浮き倉庫「波箱4号」を見失った。運航係が港の船の予定表を確かめると、屋根付きの台船は夜のうちに600メートル東の第2岸壁へ移っていた。",
+      "波箱4号は、鋼材を雨から守る屋根を載せ、船の横に係留できる仮置き倉庫だ。港では3社の内航船が空いている船と岸壁の情報を共有し、荷物の到着順に合わせて出航順を組み替えている。前夜は鋼材を運ぶ船の到着が早まったため、現場の責任者が移動を許可し、タグボートが波箱4号を第2岸壁へ曳いた。鋼材をいったん陸へ降ろして積み直さずに済むよう、倉庫そのものを動かした。",
+      "船団の共通予定表には深夜の移動記録と新しい係留位置が残っていた。一方、朝番が見る第3岸壁の案内板と紙の作業表は前日夕方のまま。運航係が二つを突き合わせて移動先を伝えると、荷役班は移動式クレーンを第2岸壁へ回し、鋼材を予定の船に積み始めた。なくなった貨物は一つもなかった。",
+      "港は翌日、台船の位置を案内板にも表示するようにし、更新を済ませた札を車輪付きの台車に載せた。次の便の変更が告げられると、係員が「倉庫より先に着かないと」と札を押して岸壁を移った。後ろでは、波箱4号がまたタグボートに曳かれてゆっくり動き出していた。"
+    ],
+    "source": {
+      "kind": "官公庁発表",
+      "publisher": "国土交通省海事局",
+      "published_at": "2026-11-10T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/kaiji03_hh_000234.html",
+      "topic": "国土交通省の2026年11月10日発表は、内航海運の船員不足を背景に、複数の船主が運航・船員情報を共有し配船計画を高度化する取り組みへの補助事業の第2次募集を開始したとする（募集期間11月10日〜30日）。2031年の潮鷺港、船団の実運航、浮き倉庫の移動、案内板の食い違い、人物・会話・貨物の結果はすべて創作であり、国の事業実績ではない。"
+    },
+    "scene_prompt": "Photorealistic documentary port photograph: a small tugboat tows a low roofed floating steel-storage warehouse barge along a concrete berth in a fictional Japanese harbor, while two Japanese adult dockworkers in hard hats and reflective workwear on the quay watch the barge relocate to a nearby pier. Steel bundles under the roof, real working cranes and bollards, ordinary overcast morning light, true-to-life water and metal textures, no legible text, no logos or brands, realistic horizontal 16:9 composition.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "物流",
+      "海上輸送"
+    ],
+    "satire_tags": [
+      "情報共有"
+    ],
+    "x_tags": [
+      "港湾物流",
+      "倉庫"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "倉庫が消えた港。盗まれたのではなく、船に合わせて倉庫そのものが隣の岸壁へ引っ越していた。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年、国交省が複数船主の運航情報や船員情報を共有して内航船団の配船を改善する取り組みを公募した",
+      "target": "3社の共同配船で移動する鋼材用の浮き倉庫を、古い岸壁案内だけを見る朝の荷役班が見失う",
+      "action": "予定変更を受けてタグボートが屋根付きの浮き倉庫を600メートル移動し、運航係が古い紙の案内とのずれを解消する",
+      "outcome": "鋼材は新しい岸壁で船に積まれ、位置を知らせる看板まで台車で倉庫を追いかけるようになった"
+    },
+    "behavior_basis": {
+      "motive": "船団は人手と岸壁を無駄なく使い、現場は鋼材を何度も積み替えずに予定船へ載せたい",
+      "ordinary_alternative": "岸壁の固定倉庫からいったん鋼材を陸に降ろし、別の船や岸壁へ積み直す",
+      "why_not": "浮き倉庫ごと台船を移動すれば、船の到着順変更に合わせて鋼材を保管したまま目的の船へ近づけられる",
+      "evidence_quote": "鋼材をいったん陸へ降ろして積み直さずに済むよう、倉庫そのものを動かした。"
+    },
+    "reader_clarity": {
+      "who": "朝の作業員",
+      "action": "第3岸壁から鋼材用の浮き倉庫が消えたと気づき、運航係に位置を調べてもらう",
+      "oddity": "共同配船で倉庫そのものが600メートル移動していたのに、陸の案内板だけ元の位置を示していた"
+    }
+  },
+  {
     "slug": "community-workshop-builds-bookshelf-before-introductions",
     "category": "社会",
     "flash": "名札より先に木の本棚",
