@@ -1,8 +1,7 @@
 name: Inspect / Purge Retired X Experiment Posts
 
 on:
-  # Read-only inspection once when this safety workflow itself changes on main.
-  # Never execute Buffer deletion on push or schedule.
+  # Push validates local history only; Buffer access requires a manual main run.
   push:
     branches: [main]
     paths:
@@ -43,14 +42,14 @@ jobs:
           python -m unittest discover -s tests -p 'test_purge_retired_x.py' -v
           python -m py_compile social-bot/purge_retired_x.py
 
-      - name: Read-only inspection on push; exact cleanup only by manual apply
-        if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'push')
+      - name: Inspect or clean exact legacy matches only by manual request
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ vars.BUFFER_CHANNEL_ID }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          PURGE_MODE: ${{ github.event_name == 'push' && 'inspect' || inputs.mode }}
+          PURGE_MODE: ${{ inputs.mode }}
         run: |
           case "$PURGE_MODE" in
             inspect) purge_arg="--inspect" ;;
