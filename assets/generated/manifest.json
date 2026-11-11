@@ -2621,6 +2621,33 @@
       "source_article_sha256": "ca59d6f0233017e56d41fba0a5b7f3126f042c25d4bd93c81fb76b91363cbffc",
       "source_png_sha256": "3dac17b4dbe4b8a3e2e0d8b46a74b2901892c3a6d9f79d122d0b283b4e31e55f"
     },
+    "supermarkets-buy-back-empty-pet-bottles": {
+      "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
+      "bytes": 137510,
+      "generated_at": "2026-11-11T06:55:32.843777+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7137450690473937251,
+      "sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957"
+    },
     "supporter-guarantor-contract": {
       "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
       "bytes": 91416,
