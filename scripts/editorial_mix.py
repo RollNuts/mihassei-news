@@ -57,13 +57,6 @@ READER_INTERESTS = (
     "family_home",
     "general_society",
 )
-LIFE_READER_INTERESTS = (
-    "beauty_wellness",
-    "relationships_social",
-    "food_travel_shopping",
-    "fandom_entertainment",
-    "family_home",
-)
 RECURRING_CHARACTERS = ("mina", "nono", "yuu")
 PAYOFF_LABELS = {
     "dialogue": "一言",
@@ -168,6 +161,17 @@ def article_day(article: dict) -> str | None:
     if published is None:
         return None
     return published.astimezone(JST).date().isoformat()
+
+
+def _published_through_day(articles: list[dict], day_jst: str) -> list[dict]:
+    """Use publication instants, not fictional dates or input order."""
+    day_end = datetime.fromisoformat(day_jst).replace(tzinfo=JST) + timedelta(days=1)
+    rows = []
+    for article in articles:
+        published = _parse_dt(article.get("published_at"))
+        if published is not None and published < day_end:
+            rows.append((published, str(article.get("slug") or "unknown"), article))
+    return [article for _published, _slug, article in sorted(rows, key=lambda row: row[:2])]
 
 
 def lane_counts(articles: list[dict], day_jst: str) -> Counter:
@@ -390,60 +394,18 @@ def visual_strategy_advice(articles: list[dict], day_jst: str) -> str:
 
 
 def reader_interest_advice(articles: list[dict], day_jst: str) -> str:
-    """Nudge candidate generation away from a narrow work/tech-heavy slate."""
-    counts = reader_interest_counts(articles, day_jst)
-    published = day_story_count(articles, day_jst)
-    life_count = sum(counts.get(interest, 0) for interest in LIFE_READER_INTERESTS)
-
-    tracked = sorted(
-        (
-            article for article in articles
-            if _parse_dt(article.get("published_at")) is not None
-            and article.get("reader_interest") in READER_INTERESTS
-        ),
-        key=lambda article: str(article.get("published_at") or ""),
-    )
-    recent = [article.get("reader_interest") for article in tracked]
+    """Flag repetition without preferring an interest or inventing a quota."""
+    recent = [article.get("reader_interest")
+              for article in _published_through_day(articles, day_jst)
+              if article.get("reader_interest") in READER_INTERESTS]
     if len(recent) >= 2 and recent[-1] == recent[-2]:
         repeated = recent[-1]
-        pool = [
-            interest for interest in READER_INTERESTS
-            if interest != repeated
-        ]
-        if repeated in {"work_money_tech", "general_society"}:
-            pool = list(LIFE_READER_INTERESTS)
-        preferred = min(
-            pool,
-            key=lambda interest: (counts.get(interest, 0), READER_INTERESTS.index(interest)),
-        )
         return (
-            f"{preferred} (last 2 tracked stories share reader_interest={repeated}; "
-            "compare a different everyday-life angle before repeating it)"
+            f"review (last 2 tracked stories share reader_interest={repeated}; "
+            "compare actual subjects, actors, settings and developments in the assigned desk; "
+            "labels alone do not establish variety)"
         )
-
-    slots_left = max(0, sum(LANE_TARGETS.values()) - published)
-    life_needed = max(0, 3 - life_count)
-    if life_needed and slots_left <= life_needed:
-        preferred = min(
-            LIFE_READER_INTERESTS,
-            key=lambda interest: (counts.get(interest, 0), LIFE_READER_INTERESTS.index(interest)),
-        )
-        return (
-            f"{preferred} (life-facing interests are {life_count}/3 toward the soft "
-            "7-story balance; compare one without lowering the quality gate)"
-        )
-
-    if counts.get("work_money_tech", 0) >= 2 and life_count < 3:
-        preferred = min(
-            LIFE_READER_INTERESTS,
-            key=lambda interest: (counts.get(interest, 0), LIFE_READER_INTERESTS.index(interest)),
-        )
-        return (
-            f"{preferred} (work/money/tech already appears {counts['work_money_tech']} "
-            "times today; broaden the next candidate set)"
-        )
-
-    return "free (reader-interest mix is varied; quality decides)"
+    return "free (no reader-interest quota; review the actual stories for variety)"
 
 
 def character_advice(articles: list[dict], day_jst: str) -> str:
@@ -1311,21 +1273,8 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             slugs = " / ".join(slug for _, _, slug in latest_three)
             warnings.append(
                 f"latest 3 tracked stories share reader_interest={interest}: {slugs}; "
-                "compare a different reader-interest domain for the next slot"
-            )
-
-    interests_by_day: dict[str, list[str]] = {}
-    for published, interest, _ in recent_interests:
-        day = published.astimezone(JST).date().isoformat()
-        interests_by_day.setdefault(day, []).append(interest)
-    for day, interests in interests_by_day.items():
-        if len(interests) < sum(LANE_TARGETS.values()):
-            continue
-        life_count = sum(interest in LIFE_READER_INTERESTS for interest in interests)
-        if life_count < 3:
-            warnings.append(
-                f"{day}: only {life_count} of {len(interests)} tracked stories are in "
-                "life-facing reader interests; broaden candidate generation next slot"
+                "review actual subjects, actors, settings and developments; "
+                "changing labels alone does not establish variety"
             )
 
     recent_characters.sort(key=lambda item: item[0])
@@ -1375,6 +1324,28 @@ def validate_articles(articles: list[dict]) -> tuple[list[str], list[str]]:
             )
 
     return errors, warnings
+
+
+def recent_topic_review(articles: list[dict], day_jst: str) -> str:
+    """Surface public copy for editorial judgment; never classify or rewrite it."""
+    rows = _published_through_day(articles, day_jst)[-7:]
+    lines = [
+        "題材比較（指定JST日までの直近7本・公開順）：カテゴリ達成とは別に、"
+        "見出し・summaryと本文で主題・当事者・舞台・展開を確認する。自動合否ではない。"
+    ]
+    if not rows:
+        return lines[0] + "\n- 比較できる公開日時のある記事なし。"
+
+    def public_text(value: object, missing: str) -> str:
+        return " ".join(value.split()) if isinstance(value, str) and value.strip() else missing
+
+    for article in rows:
+        published = _parse_dt(article.get("published_at")).astimezone(JST)
+        category = public_text(article.get("category"), "未分類")
+        title = public_text(article.get("title"), "見出し未記録")
+        summary = public_text(article.get("summary"), "summary未記録")
+        lines.append(f"- {published:%m/%d %H:%M}｜{category}｜{title}｜{summary}")
+    return "\n".join(lines)
 
 
 def report_day(articles: list[dict], day_jst: str) -> str:
@@ -1434,6 +1405,7 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         + "; visuals="
         + ", ".join(visual_parts)
         + f"; visual_next={visual_strategy_advice(articles, day_jst)}"
+        + "\n" + recent_topic_review(articles, day_jst)
     )
 
 
@@ -1470,4 +1442,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 

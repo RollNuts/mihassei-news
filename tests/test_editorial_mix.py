@@ -18,7 +18,6 @@ from scripts.editorial_mix import (
     EDITORIAL_FORMS,
     EDITORIAL_CATEGORIES,
     LANE_TARGETS,
-    LIFE_READER_INTERESTS,
     READER_INTERESTS,
     RECURRING_CHARACTERS,
     character_advice,
@@ -31,6 +30,7 @@ from scripts.editorial_mix import (
     next_preferred_lane,
     reader_interest_advice,
     reader_interest_counts,
+    recent_topic_review,
     payoff_advice,
     payoff_counts,
     report_day,
@@ -449,7 +449,6 @@ class EditorialMixTests(unittest.TestCase):
                 "general_society",
             ),
         )
-        self.assertEqual(len(LIFE_READER_INTERESTS), 5)
         self.assertEqual(RECURRING_CHARACTERS, ("mina", "nono", "yuu"))
 
     def test_reader_clarity_is_required_from_evening_rollout(self):
@@ -587,20 +586,80 @@ class EditorialMixTests(unittest.TestCase):
         errors, _ = validate_articles([item])
         self.assertFalse(any("reader_interest" in error for error in errors))
 
-    def test_reader_interest_advice_nudges_life_topics_when_work_dominates(self):
-        articles = [
-            story(
-                f"work-{i}",
-                "social_life",
-                published=BASE_TIME + timedelta(hours=i),
-                reader_interest="work_money_tech",
-            )
-            for i in range(4)
-        ]
-        counts = reader_interest_counts(articles, "2026-11-06")
-        self.assertEqual(counts["work_money_tech"], 4)
-        advice = reader_interest_advice(articles, "2026-11-06")
-        self.assertTrue(any(interest in advice for interest in LIFE_READER_INTERESTS))
+    def test_repeated_interests_receive_the_same_subject_review_without_a_preferred_tag(self):
+        for interest in READER_INTERESTS:
+            with self.subTest(interest=interest):
+                rows = [story(f"repeat-{i}", "social_life",
+                              published=BASE_TIME + timedelta(hours=i),
+                              reader_interest=interest) for i in range(2)]
+                advice = reader_interest_advice(rows, "2026-11-06")
+                self.assertIn(f"share reader_interest={interest}", advice)
+                self.assertIn("actual subjects, actors, settings and developments", advice)
+                self.assertIn("labels alone do not establish variety", advice)
+                for other in set(READER_INTERESTS) - {interest}:
+                    self.assertNotIn(other, advice)
+
+    def test_complete_non_lifestyle_slate_does_not_trigger_a_minimum_or_directional_nudge(self):
+        rows = [story(f"non-life-{i}", "social_life",
+                      published=BASE_TIME + timedelta(hours=i),
+                      reader_interest=("work_money_tech" if i % 2 else "general_society"))
+                for i in range(7)]
+        before = copy.deepcopy(rows)
+        self.assertEqual(reader_interest_counts(rows, "2026-11-06")["work_money_tech"], 3)
+        advice = reader_interest_advice(rows, "2026-11-06")
+        errors, warnings = validate_articles(rows)
+        self.assertEqual(errors, [])
+        self.assertIn("no reader-interest quota", advice)
+        self.assertFalse(any("life-facing" in message for message in warnings))
+        self.assertEqual(rows, before)
+
+    def test_topic_review_exposes_shared_public_copy_even_when_categories_are_diverse(self):
+        rows = category_slate(["社会", "事件", "経済", "技術", "政治", "スポーツ", "エンタメ"])
+        shared_summary = "利用者が店で道具を試し、友人と一緒に使った。"
+        for row in rows:
+            row["summary"] = shared_summary
+        before = copy.deepcopy(rows)
+        rendered = report_day(rows, "2026-11-10")
+        self.assertIn("暮らし=0/2", rendered)
+        self.assertEqual(rendered.count(shared_summary), 7)
+        self.assertIn("主題・当事者・舞台・展開", rendered)
+        self.assertIn("自動合否ではない", rendered)
+        for row in rows:
+            self.assertIn(row["title"], rendered)
+        self.assertEqual(rows, before)
+
+    def test_topic_review_uses_latest_seven_publication_instants_and_jst_day_cutoff(self):
+        rows = [{"slug": f"entry-{i}", "title": f"headline-{i}",
+                 "summary": f"summary-{i}", "category": "技術",
+                 "published_at": datetime(2026, 11, 10, i, tzinfo=JST).isoformat(),
+                 "fiction_at": "2031-11-10T00:00:00+09:00"}
+                for i in range(9)]
+        # This UTC timestamp is later than 07:00 JST despite its earlier date string.
+        rows[-1]["published_at"] = "2026-11-09T23:00:00+00:00"
+        rows.extend([
+            {"slug": "next-day", "title": "future-headline", "published_at": "2026-11-10T15:00:00Z"},
+            {"slug": "no-time", "title": "unknown-headline"},
+            {"slug": "bad-time", "title": "invalid-headline", "published_at": "invalid"},
+            {"slug": "naive-time", "title": "naive-headline", "published_at": "2026-11-10T09:00:00"},
+        ])
+        before = copy.deepcopy(rows)
+        rendered = recent_topic_review(list(reversed(rows)), "2026-11-10")
+        self.assertEqual(rendered, recent_topic_review(rows, "2026-11-10"))
+        self.assertEqual(len(rendered.splitlines()), 8)
+        for title in ("headline-0", "headline-1", "future-headline", "unknown-headline", "invalid-headline", "naive-headline"):
+            self.assertNotIn(title, rendered)
+        self.assertEqual([line.split("｜")[2] for line in rendered.splitlines()[1:]],
+                         [f"headline-{i}" for i in range(2, 9)])
+        self.assertEqual(rows, before)
+
+    def test_topic_review_preserves_legacy_copy_and_marks_missing_copy_without_inventing_it(self):
+        legacy = {"slug": "legacy", "published_at": "2026-11-01T10:00:00+09:00",
+                  "title": "過去の見出し", "summary": "過去の記事の公開文。"}
+        missing = {"slug": "missing", "published_at": "2026-11-02T10:00:00+09:00"}
+        rendered = recent_topic_review([missing, legacy], "2026-11-03")
+        self.assertIn("未分類｜過去の見出し｜過去の記事の公開文。", rendered)
+        self.assertIn("見出し未記録｜summary未記録", rendered)
+        self.assertIn("比較できる公開日時のある記事なし", recent_topic_review([], "2026-11-03"))
 
     def test_recurring_character_is_optional_but_rotated(self):
         item = story(
@@ -1327,4 +1386,5 @@ class EditorialMixTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
 
