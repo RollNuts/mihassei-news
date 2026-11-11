@@ -1,5 +1,69 @@
 [
   {
+    "slug": "ar-sport-fans-vote-crosswind-finals",
+    "category": "スポーツ",
+    "flash": "客席が風を決める決勝",
+    "fiction_company": "架空のAR球技「光路リーグ」",
+    "art": "cards",
+    "fiction_at": "2031-11-11T11:36:00+09:00",
+    "published_at": "2026-11-11T11:36:00+09:00",
+    "title": "観客が「横風」を選ぶAR球技の決勝　光の球が盾を回り込んで決勝点",
+    "summary": "架空のAR球技リーグが、毎セットの風向きを観客投票で決める決勝戦を開催。実際は無風のコートで光の球だけが曲がり、24歳の選手が横風を使った一投で決勝点を奪った。",
+    "paragraphs": [
+      "2031年、架空の「光路リーグ」決勝で、観客がスマートフォンから「横風」を選んだ。拡張現実（AR）のゴーグルを着けた選手・桐野唯（24）が腕を振ると、平らなコートにはない風に押され、光の球が右へ弧を描いた。",
+      "光路リーグは、3人ずつのチームが光の球を当て合う競技だ。今季から客席の投票で、各セット前に「追い風」「向かい風」「横風」のどれかを選ぶ方式を始めた。実際に風を吹かせるわけではなく、選手のゴーグルと会場の大画面に映る球の軌道だけが変わる。風は両チーム共通。観客は風を選んで戦術に参加でき、選手はいつもと違う球筋を読みながら動く。",
+      "決勝の最終セット、残り9秒で両チームは同点だった。相手選手が正面から来る球を防ごうと光の盾を立てる。桐野はコートの左へ踏み込み、味方が中央へ放つ一球に合わせて斜め前に腕を振った。球は左へ飛び出し、横風で大きく右に曲がって盾の外側から相手に命中。桐野のチームが決勝点を取った。",
+      "試合後、会場の通路では決勝点の映像が繰り返し流れた。球が曲がる瞬間、観客たちは画面につられて体を右へ傾けた。ゴーグルを外した桐野が通路を見上げると、何十人もの肩が一斉に右へ動いている。会場の空気は、最後までまったく動かなかった。"
+    ],
+    "source": {
+      "kind": "政府広報",
+      "publisher": "日本国政府（JapanGov）",
+      "published_at": "2026-07-17T00:00:00+09:00",
+      "url": "https://www.japan.go.jp/topics/2026/07/new_ar_sport.html",
+      "topic": "2026年7月17日の日本政府公式紹介では、AR競技HADOは3人対3人で80秒間、腕の動作を使う光球や盾で得点を競い、大画面で試合を観戦できると説明。観客投票で仮想の風向きと球筋を変更するルール、架空リーグ、選手、決勝結果は2031年の本紙の創作。"
+    },
+    "scene_prompt": "A fictional 24-year-old Japanese female AR sports player lunges sideways across a bright indoor competition court, wearing lightweight augmented-reality goggles and a wrist motion sensor, her arm extended as she throws; two unbranded opposing athletes take defensive positions farther back, natural intense sporting movement, realistic full-body documentary sports photograph with ordinary arena lighting, no text, logos or recognizable real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "ARスポーツ",
+      "観客参加"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "ARスポーツ",
+      "観客参加"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "客席が選んだのは横風。平らなコートで光の球だけが曲がり、決勝点は相手の盾の外側から飛んできた。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年には3対3で光の球と盾を使い、大画面で観戦できるAR球技が実際に行われている",
+      "target": "観客が各セットの仮想の風向きを選び、選手が曲がる光球で戦うAR球技の決勝戦",
+      "action": "客席の横風投票を受けて、桐野がコートの左から曲がる光球を放つ",
+      "outcome": "盾の外側を回り込む決勝点が生まれ、観客も映像につられて同時に体を傾ける"
+    },
+    "reader_clarity": {
+      "who": "観客",
+      "action": "観客投票で各セットの仮想の風を決め、選手が曲がる光球で競う",
+      "oddity": "実際のコートは無風で、横風に曲がる光球が盾を回り込んで決勝点になる"
+    },
+    "behavior_basis": {
+      "motive": "観客は応援だけでなく試合の地形や条件に参加したく、選手は変わる条件で駆け引きを楽しむ",
+      "ordinary_alternative": "観客は観戦のみ、選手は毎セット同じ球筋で戦う",
+      "why_not": "風は両チーム共通の公平な条件で、球の軌道を変える戦術や応援席からの参加を楽しめる",
+      "evidence_quote": "観客は風を選んで戦術に参加でき、選手はいつもと違う球筋を読みながら動く。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年にARゴーグルと腕センサーで光球・盾を表示し3対3で対戦する競技と大画面観戦が存在する",
+      "continuation_force": "競技と観戦を画面でつなぐ仕組みを使って、ファンもルール条件に参加できる試合形式を模索する",
+      "future_result": "2031年に架空リーグが投票で仮想の風を変える公式戦を開催し、球筋と決勝の戦術が変わる"
+    }
+  },
+  {
     "slug": "council-trials-new-sidewalk-before-vote",
     "category": "政治",
     "flash": "歩いて決める市議会",
