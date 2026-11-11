@@ -115,6 +115,33 @@
       "source_article_sha256": "64b72bfff4085b1a0353d30ebe17d85804fd66decaf65229034c7ea72edddd30",
       "source_png_sha256": "de6c0ea3b102199ad4163d8484ae33de2fc9665c65d9551da624cace8fc5f9f7"
     },
+    "ar-sport-fans-vote-crosswind-finals": {
+      "article_sha256": "5ade3118ca127a973d48b9ac2a7d2e9e06853fcc67ac9572f87c95ffd1f121f5",
+      "bytes": 84101,
+      "generated_at": "2026-11-11T03:11:01.382086+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7835573238623994506,
+      "sha256": "0e4a551314bc176f80993dbe4428ba1a63969a6f5d278da9e587c77cda039f02"
+    },
     "bakery-no-important-announcement-panic": {
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
       "bytes": 89714,
@@ -490,19 +517,15 @@
       "supersedes_reason": "The unaccepted CPU candidate contained only one seated man and no application handover. This genuinely new native generation depicts two adults holding the same application folder across an interview desk; the original CPU fingerprint and exact seed remain preserved."
     },
     "council-trials-new-sidewalk-before-vote": {
+      "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
+      "bytes": 232052,
+      "generated_at": "2026-11-11T01:10:37.038253+00:00",
       "generation_id": "c2cb5d12-f413-4f8d-a5e6-e2b4a646b166",
       "generation_id_source": "Actual built-in image tool output filename exec UUID; no backend generation ID was exposed",
-      "source_png_sha256": "fd59835ca4cab57dd2bf574d087726e5c9a0deb1f461436680b7b1f45e22843b",
-      "sha256": "0b7fb409a3ff86cbb07df30bcff5812c0bda661f99d1ca4f3083386f562354eb",
-      "bytes": 232052,
       "generation_prompt": "Use case: photorealistic-natural. Asset: one 16:9 newspaper photograph for a clearly fictional Japanese future-news article. Make a convincing ordinary documentary camera photograph, horizontal 1536x864, of a temporary widened sidewalk trial in a fictional contemporary Japanese city. Show the moment after a movable street bench has been shifted to make room: an invented Japanese female shop worker aged 28, in a muted green work jacket and ordinary trousers, pushes ONE small four-wheel blue metal delivery handcart with two plain closed cardboard boxes, passing an invented adult man seated in a normal manual wheelchair coming the opposite way. Both the seated wheelchair user and delivery handcart must be unmistakable, complete and physically distinct, with a clearly open passage between them. A municipal staff member in simple unbranded work clothes is beside ONE plain wooden park bench on a low flat wheeled transport platform, just finishing moving the bench sideways out of this passage. Show the actual wooden bench with a seat, backrest and metal legs, supported on the low trolley, and the staff member holding its end naturally. This practical movement, rather than people posing, is the scene. Medium-wide diagonal street-level view that includes all three invented adults, the entire wheelchair, delivery cart and relocated bench without overlaps hiding the important objects. A line of orange road cones and a few large plain planter boxes marks the temporary pedestrian area along a station-approach street; restrained modern Japanese shopfronts farther back, with no legible signs. Ordinary soft overcast midday daylight, dry asphalt, natural skin and hands, believable clothing folds, wood grain, metal and rubber, consistent ground contact and shadows, mild real camera texture, natural colors. The people look attentively at the route and one another, candid and purposeful, not smiling for the camera. The wheelchair user is seated, never walking behind an empty chair. No grocery bags replacing the delivery cart. No readable text, letters, brand marks, logos, uniforms with crests, headlines or watermarks. No real people or real organization branding. No illustration, anime, doll skin, 3D render, glossy advertising or cinematic lighting. The photograph represents the practical sidewalk test, not proof of a council vote, exact dimensions or a full one-week trial.",
-      "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
-      "source_article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
-      "origin": "chatgpt-imagegen",
-      "model": "ChatGPT ImageGen",
-      "prompt_version": 3,
-      "generated_at": "2026-11-11T01:10:37.038253+00:00",
       "generation_receipt": "exec-c2cb5d12-f413-4f8d-a5e6-e2b4a646b166.png",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
         "bytes": 167221,
@@ -532,11 +555,15 @@
       },
       "previous_visual_hold": {
         "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
+        "reason": "現本文と原CPU JPEGを実表示して照合。二人の女性が道路を同じ方向へ歩き、空の車いすが押されている。本文の配達台車、移動する木製ベンチと係員が欠落し、仮設歩道の試用場面になっていないため不採用。原生成記録と正確なseedは保持する。",
         "rejected_candidate_sha256": "62dea4b2ca91befb6d487f95bdd5c8c88e8826f2413e752914df56d80d1b6bda",
-        "reviewed_at": "2026-11-11T01:14:11.660602+00:00",
         "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42935135254",
-        "reason": "現本文と原CPU JPEGを実表示して照合。二人の女性が道路を同じ方向へ歩き、空の車いすが押されている。本文の配達台車、移動する木製ベンチと係員が欠落し、仮設歩道の試用場面になっていないため不採用。原生成記録と正確なseedは保持する。"
-      }
+        "reviewed_at": "2026-11-11T01:14:11.660602+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "0b7fb409a3ff86cbb07df30bcff5812c0bda661f99d1ca4f3083386f562354eb",
+      "source_article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
+      "source_png_sha256": "fd59835ca4cab57dd2bf574d087726e5c9a0deb1f461436680b7b1f45e22843b"
     },
     "crosswalk-photo-captcha-human-stuck": {
       "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
