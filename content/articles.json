@@ -1,5 +1,69 @@
 [
   {
+    "slug": "council-trials-new-sidewalk-before-vote",
+    "category": "政治",
+    "flash": "歩いて決める市議会",
+    "fiction_company": "架空の春笠市と春笠市議会",
+    "art": "cards",
+    "fiction_at": "2031-11-11T09:43:00+09:00",
+    "published_at": "2026-11-11T09:43:00+09:00",
+    "title": "市議会、歩道の改修案を1週間試してから採決　ベンチ1脚で図面が変わる",
+    "summary": "春笠市議会が、道路を一時的に広い歩道へ変え、住民が歩いて確かめてから工事案を採決する方式を導入。最初の試用では車いすと配達台車がすれ違えず、市民の提案でベンチと正式な図面の位置が変わった。",
+    "paragraphs": [
+      "春笠市議会が始めた「歩いて決める道路審議」の初日、駅前の車線の一部が仮の歩道になった。商店員の榎本花（28）が配達用の台車を押して歩くと、角に置かれた仮設ベンチの前で車いすの利用者と向かい合い、二人とも立ち止まった。",
+      "2031年、春笠市議会は大きな道路改修の案について、議場で図面を見るだけでなく、工事前に現地を1週間試せるようにした。市の職員が安全な範囲で車線を区切り、動かせるベンチや植栽箱を置く。住民は普段どおりに通り、議員は交通量、店への荷物の搬入、車いすの通りやすさを見てから改修案を審議する。工事後にやり直すより、仮設のうちに不便を見つけるためだ。",
+      "榎本が市の係員に相談すると、係員はベンチを台車で約1メートル移した。二人がすれ違える幅が生まれ、ベビーカーを押す親子もその道を通れた。近くの店主からは「朝の荷下ろしの場所は残してほしい」と別の要望が出た。議員たちは路上で二つの場所を確認し、ベンチの移動と午前中の搬入場所を同じ図面に書き込んだ。",
+      "試用の最終日、市議会は車の流れへの影響も確認し、搬入場所を確保した修正案を賛成多数で可決した。仮設のベンチを片付ける前に、榎本はもう一度台車を押して、車いすの利用者とすれ違った。工事に使う新しい図面では、まっすぐだった歩道の線がベンチ一脚ぶんだけ曲がっていた。"
+    ],
+    "source": {
+      "kind": "自治体公表",
+      "publisher": "名古屋市",
+      "published_at": "2026-11-05T00:00:00+09:00",
+      "url": "https://www.city.nagoya.jp/shisei/keikaku/1009818/1009848/1053566.html",
+      "topic": "名古屋市の2026年11月5日更新の公式案内によると、桜通の道路空間再整備に向け、車線を一時的に減らして芝や家具、モビリティ体験、飲食出店などを設ける社会実験を2026年10月30日〜11月9日に実施し、車線減少の試験は10月26日〜11月20日に実施。仮設道路の試用を議会の工事議案採決に組み込み、住民のベンチ移動案が議決や図面を変更する制度・自治体・人物・発言・結果は2031年の創作であり名古屋市の施策ではない。"
+    },
+    "scene_prompt": "A Japanese woman shop worker in her late twenties pushes a small delivery handcart along a temporarily widened sidewalk as a wheelchair user approaches. A municipal staff member is moving one wooden street bench on a wheeled trolley to clear the route. Temporary road cones, ordinary shopfronts, midday overcast daylight, candid documentary photograph, natural faces and materials, no readable text, no logos or real brands.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "まちづくり",
+      "道路"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "市議会",
+      "まちづくり"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "歩道の広さは図面で決めるもの、と思っていたら。2031年の市議会は工事前の道を1週間歩いて試し、ベンチ一脚の位置から図面を直す。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年には地方自治体が車線を一時的に減らし、実物の家具や植栽を置いて道路の使い方を試す社会実験を行っている",
+      "target": "道路改修の採決を図面と数値だけでなく、実物大の仮設歩道を歩く試用結果に結び付ける議会運営",
+      "action": "春笠市が1週間の仮設歩道を設置し、住民と議員が通行しながらベンチの位置と搬入場所を確認する",
+      "outcome": "車いすと台車がすれ違えない箇所を直し、住民の申し出を反映して改修案を可決し、正式な図面も変更する"
+    },
+    "reader_clarity": {
+      "who": "春笠市議会",
+      "action": "実物大の仮設歩道を1週間試してから道路改修案を採決する",
+      "oddity": "仮設ベンチで車いすと台車がすれ違えず、住民の一言から正式な工事図面が変更される"
+    },
+    "behavior_basis": {
+      "motive": "住民や議員が図面上では気付かない通行の不便を工事前に確かめ、やり直しを減らしたい",
+      "ordinary_alternative": "図面、交通量調査、説明会などを使い、仮設歩道を作らずに議会で審議する",
+      "why_not": "工事前にベンチと車線を仮置きすれば、車いすと台車のすれ違いや搬入場所の不都合を実際に歩いて確認できる",
+      "evidence_quote": "工事後にやり直すより、仮設のうちに不便を見つけるためだ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に名古屋市が車線を減らし、街路家具などを置く道路空間の社会実験を実施",
+      "continuation_force": "公共工事前の住民参加と歩行者空間の実証が広がり、図面だけでは分からない動線を先に検証する必要が続く",
+      "future_result": "2031年に架空の春笠市が仮設歩道の体験を正式な市議会の改修案審議と採決につなげる"
+    }
+  },
+  {
     "slug": "night-art-exhibition-thirty-two-shadow-intruders",
     "category": "事件",
     "flash": "夜の美術祭で人影騒ぎ",
