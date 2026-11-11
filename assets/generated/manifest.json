@@ -489,6 +489,33 @@
       "source_png_sha256": "6c8168781fb5b51dd310d9ee459be3e9f806af7562d7ea2fa642694039458c2e",
       "supersedes_reason": "The unaccepted CPU candidate contained only one seated man and no application handover. This genuinely new native generation depicts two adults holding the same application folder across an interview desk; the original CPU fingerprint and exact seed remain preserved."
     },
+    "council-trials-new-sidewalk-before-vote": {
+      "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
+      "bytes": 167221,
+      "generated_at": "2026-11-11T01:06:07.053627+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7352854856290976236,
+      "sha256": "62dea4b2ca91befb6d487f95bdd5c8c88e8826f2413e752914df56d80d1b6bda"
+    },
     "crosswalk-photo-captcha-human-stuck": {
       "article_sha256": "4253302c2b82a06cf8af0d16b6c261e27bbba471b8a79b61eceaeac19567f523",
       "bytes": 174434,
