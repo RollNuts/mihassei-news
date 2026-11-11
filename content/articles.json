@@ -22,7 +22,7 @@
       "url": "https://scienceteam.jst.go.jp/events/0836/",
       "topic": "JST公式の2026年10月22日付イベント掲載は、2026年11月11日に『日常の「場」と「移動」をリデザインする』をテーマとした、孤独・孤立を生まない社会の連続シンポジウム第1回を開催すると案内した。地域に複数の居場所を作る研究課題が現実の足場。工具を配る交流会、団体「つむぎ手」、読書室の本棚、参加者・発言・実施結果はすべて2031年の創作であり、JSTの実施事業や発表内容ではない。"
     },
-    "scene_prompt": "Photorealistic candid community-workshop press photograph: a fictional 29-year-old Japanese woman in a light knit sweater holds an unfinished light wooden bookshelf steady while another Japanese adult woman drives a screw into the side panel with a cordless screwdriver. A few other adult participants assemble simple shelves in the background of a sunlit ordinary neighborhood meeting room. Clear hands and wood grain, natural skin, realistic tools and shadows, genuine active woodworking rather than posing, no legible writing, logos, brands or illustration, horizontal 16:9.",
+    "scene_prompt": "Photorealistic candid community-workshop press photograph: a fictional 29-year-old Japanese woman in a light knit sweater holds an unfinished light wooden bookshelf steady while another Japanese adult woman drives a screw into the side panel with a cordless screwdriver. A few other adult participants assemble simple shelves in the background of a sunlit ordinary neighborhood meeting room. Clear hands and wood grain, natural skin, realistic tools and shadows, genuine active woodworking rather than posing, no legible writing, logos or brands; natural camera photograph, horizontal 16:9.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "地域交流",
@@ -47,7 +47,7 @@
       "outcome": "初対面の参加者が共同作業で会話を交わし、完成した棚へ本を持ち寄って翌週も交流を続ける"
     },
     "reader_clarity": {
-      "who": "地域交流会を開く架空の市民団体「つむぎ手」と初参加の8人",
+      "who": "市民団体「つむぎ手」",
       "action": "名札による自己紹介の代わりに木の本棚を組み立て、地域の読書室へ運ぶ",
       "oddity": "名前を知らないまま共同作業を終え、翌週に本を持ち寄った後でようやく名乗り合う"
     },
