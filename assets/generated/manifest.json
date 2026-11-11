@@ -2798,30 +2798,74 @@
     },
     "supermarkets-buy-back-empty-pet-bottles": {
       "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
-      "bytes": 137510,
-      "generated_at": "2026-11-11T06:55:32.843777+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 169600,
+      "generated_at": "2026-11-11T08:56:41.422368837Z",
+      "generation_id": "6d0543ad-d2ba-4320-85e5-5b91f2e7e894",
+      "generation_id_source": "UUID from the actual ImageGen output filename; tool artifact identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset type: horizontal editorial photograph for a clearly fictional Japanese newspaper article about a supermarket buying back empty PET bottles. Create an ordinary candid camera photograph, not an illustration or CGI. At the entrance of a modest Japanese supermarket, a fictional 29-year-old Japanese woman is placing one completely empty, clean, transparent plastic drink bottle on a waist-high stainless weighing counter. Several other EMPTY CLEAR plastic bottles stand on the counter and peek out from her open cloth shopping bag. Every bottle has its cap and all labels removed; clearly visible open bottle necks and clear empty interiors, no drink inside. A grocery worker in a plain apron stands beside the counter, watching the weighing. The weighing area is a simple wide flat scale surface with a small display facing away from the camera; no ATM, vending machine, touchscreen kiosk, payment slot or elaborate interface. The woman's hand is naturally touching the bottle as she sets it down. Normal grocery shelves softly out of focus behind them. Natural daylight mixed with ordinary store lighting; realistic skin, hands, cloth, brushed metal and transparent plastic reflections. A believable spontaneous snapshot with subtle imperfections. Medium-wide eye-level 16:9 composition, all main hands, bottle necks, bag and worker visible, suitable for cropping to 1200x675. No legible text, logos, real brands, captions, overlays, watermarks, futuristic effects or dramatic advertising lighting. The essential visible action is returning several clean empty bottles for weighing at a grocery shop.",
+      "generation_receipt": "exec-6d0543ad-d2ba-4320-85e5-5b91f2e7e894.png",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
+        "bytes": 137510,
+        "generated_at": "2026-11-11T06:55:32.843777+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 7137450690473937251,
+        "sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "efb7507c7cedb6a31ed4441ad5f1749c626cbbce",
+      "previous_visual_hold": {
+        "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
+        "decision": "rejected",
+        "image_sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957",
+        "note": "2026-11-11実JPEGを表示し本文と照合。回収機に差し出すボトルには緑の液体または着色物が目立ち、キャップやラベルを外してすすいだ透明な空ボトルを持ち込む本文に合わない。機械上部に大きな不自然な文字列もあり、普通の報道写真として不採用。商品陳列の背景だけでは主要行動を満たさない。原JPEG・生成記録・seedを原値で保持し、別素材が採用されるまでは安全な代替を維持する。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42974860006",
+        "reviewed_at": "2026-11-11T08:40:00Z"
+      },
       "prompt_version": 3,
-      "seed": 7137450690473937251,
-      "sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957"
+      "sha256": "c6ca8d53ae7a325de716734fd0bf7665503b855ee2c9521ffeb783e297960f39",
+      "source_c2pa": {
+        "caBX_sha256": "f84faf87e4d4953e10a1cc66eeb3817499ee6104c5460d6926b1a8cec6ccf65e",
+        "claim_generator": "OpenAI Media Service API",
+        "content_binding_validation": "not_performed",
+        "created_at": "2026-11-11T08:56:41.422368837Z",
+        "instanceID": "xmp:iid:539c5dee-f2cc-4de0-b34e-63ba95db918b",
+        "manifest_uri": "urn:c2pa:4e31caae-3725-48cd-baf6-c0a8158dc3d8",
+        "signature_validation": "not_performed",
+        "software_agent": {
+          "name": "ChatGPT",
+          "version": "gpt-image"
+        }
+      },
+      "source_png_sha256": "6f90470ab78375e3cf9c61bd37b1eb09a13f588002ec9b5418483b62d62d6da0",
+      "supersedes_reason": "旧CPU候補はキャップと緑色ラベルが残る商品ボトルとATM風機械で、透明な空容器を計量する本文に不一致。新しい原PNGと最終JPEGではキャップ・ラベルを外した複数の透明な空ボトル、布袋、計量台、客と店員を実表示で確認した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "supporter-guarantor-contract": {
       "article_sha256": "d98fb8c2d517595897d4b02f7f197b9fd656eb9700266448d8fec395aa04be95",
@@ -3253,14 +3297,6 @@
       "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
       "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
-    },
-    "supermarkets-buy-back-empty-pet-bottles": {
-      "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
-      "decision": "rejected",
-      "image_sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957",
-      "note": "2026-11-11実JPEGを表示し本文と照合。回収機に差し出すボトルには緑の液体または着色物が目立ち、キャップやラベルを外してすすいだ透明な空ボトルを持ち込む本文に合わない。機械上部に大きな不自然な文字列もあり、普通の報道写真として不採用。商品陳列の背景だけでは主要行動を満たさない。原JPEG・生成記録・seedを原値で保持し、別素材が採用されるまでは安全な代替を維持する。",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42974860006",
-      "reviewed_at": "2026-11-11T08:40:00Z"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
