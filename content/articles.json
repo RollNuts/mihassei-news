@@ -1,5 +1,69 @@
 [
   {
+    "slug": "community-workshop-builds-bookshelf-before-introductions",
+    "category": "社会",
+    "flash": "名札より先に木の本棚",
+    "fiction_company": "架空の市民団体「つむぎ手」",
+    "art": "cards",
+    "fiction_at": "2031-11-11T19:39:00+09:00",
+    "published_at": "2026-11-11T19:39:00+09:00",
+    "title": "地域交流会、名札より先に工具を配る　初対面の8人が本棚を街へ",
+    "summary": "市民団体「つむぎ手」が、自己紹介をせず一緒に物を作る地域交流会を開催。会社員の29歳女性ら8人は小さな本棚を組み立てて町の読書室に運び、翌週は自分の本を持って再び集まった。",
+    "paragraphs": [
+      "2031年、架空の市民団体「つむぎ手」が、名札の代わりに工具を渡す地域交流会を始めた。会社員の森原紗季さん（29）ら初対面の8人は、自己紹介をする前に木の板を机に並べ、町の読書室に置く小さな本棚を組み立て始めた。",
+      "会の最初に係員が工具の安全な使い方を説明し、切りそろえた板と組み立て見本を渡す。普段の交流会では順番に名前や仕事を話すことが多いが、今回は参加者が話したい時だけ話せばいい。「何を話せばいいか迷っても、作るものが決まっていれば参加しやすい」と主催者はいう。紗季さんは隣の女性に「この板、支えてもらえますか」と声をかけた。",
+      "紗季さんが板を押さえる間に隣の女性がねじを締め、別の二人が棚板の高さを測った。昼過ぎに小さな本棚が完成すると、参加者は二人ずつ交代で棚を運び、隣の読書室の入口に据えた。通りかかった子どもが「ここに本を置いていいの？」と尋ねると、紗季さんたちは空の棚を指してうなずいた。",
+      "一週間後、紗季さんは読み終えた小説を一冊持って読書室に戻った。先週ねじを締めた女性も別の本を持って現れ、二人は棚に本を並べながら来週作る椅子の話を始めた。帰り際、女性が笑って言った。「そういえば、まだお名前を聞いていませんでした」"
+    ],
+    "source": {
+      "kind": "研究機関のイベント告知",
+      "publisher": "科学技術振興機構（JST）",
+      "published_at": "2026-10-22T00:00:00+09:00",
+      "url": "https://scienceteam.jst.go.jp/events/0836/",
+      "topic": "JST公式の2026年10月22日付イベント掲載は、2026年11月11日に『日常の「場」と「移動」をリデザインする』をテーマとした、孤独・孤立を生まない社会の連続シンポジウム第1回を開催すると案内した。地域に複数の居場所を作る研究課題が現実の足場。工具を配る交流会、団体「つむぎ手」、読書室の本棚、参加者・発言・実施結果はすべて2031年の創作であり、JSTの実施事業や発表内容ではない。"
+    },
+    "scene_prompt": "Photorealistic candid community-workshop press photograph: a fictional 29-year-old Japanese woman in a light knit sweater holds an unfinished light wooden bookshelf steady while another Japanese adult woman drives a screw into the side panel with a cordless screwdriver. A few other adult participants assemble simple shelves in the background of a sunlit ordinary neighborhood meeting room. Clear hands and wood grain, natural skin, realistic tools and shadows, genuine active woodworking rather than posing, no legible writing, logos, brands or illustration, horizontal 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "地域交流",
+      "ものづくり"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "地域交流",
+      "ものづくり"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "初対面の人に何を話すか悩む前に、一緒に本棚を組み立てる。2031年の地域交流会は、名札より先に工具を配り始めた。",
+    "reader_interest": "relationships_social",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "2026年11月、JSTは地域に複数の居場所やつながりを生む仕組みを考える社会的孤立予防の公開シンポジウムを開催",
+      "target": "参加者が初対面で順番に自己紹介することを入口にした地域交流の場",
+      "action": "架空の団体が自己紹介を必須にせず8人で木の本棚を作る交流会を開き、完成品を読書室へ運ぶ",
+      "outcome": "初対面の参加者が共同作業で会話を交わし、完成した棚へ本を持ち寄って翌週も交流を続ける"
+    },
+    "reader_clarity": {
+      "who": "地域交流会を開く架空の市民団体「つむぎ手」と初参加の8人",
+      "action": "名札による自己紹介の代わりに木の本棚を組み立て、地域の読書室へ運ぶ",
+      "oddity": "名前を知らないまま共同作業を終え、翌週に本を持ち寄った後でようやく名乗り合う"
+    },
+    "behavior_basis": {
+      "motive": "主催者は話題が見つからなくても共通の仕事から自然に声をかけられる場を作りたい。参加者は手を動かしながら地域の役に立つ物を作りたい",
+      "ordinary_alternative": "最初に名前や仕事を順番に話す交流会、または一人で工作教室へ通う",
+      "why_not": "完成する本棚が共通の作業目標になり、初対面でも『支えてもらえますか』と具体的な頼みごとから会話が始まる",
+      "evidence_quote": "「何を話せばいいか迷っても、作るものが決まっていれば参加しやすい」と主催者はいう。"
+    },
+    "plausibility_basis": {
+      "present_signal": "JSTが2026年11月に職場や地域など複数の居場所を持つ仕組みや日常の『場』を研究するシンポジウムを開催",
+      "continuation_force": "自己紹介を目的にせず共同作業で人が接する場所を作ることは、初対面の心理的な負担を小さくし、地域の公共物も生む",
+      "future_result": "2031年の架空の市民活動では本棚を一緒に作ることが交流会の入口になり、参加者が読書室で再会して次の工作を約束する"
+    }
+  },
+  {
     "slug": "xr-town-letter-changes-next-visitors-story",
     "category": "エンタメ",
     "flash": "昨日の客の一通で街が変わる",
