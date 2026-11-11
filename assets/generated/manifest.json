@@ -1364,6 +1364,33 @@
       "source_article_sha256": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
       "source_png_sha256": "7acda778aacf207e44294bf4a88e5e62264b2c874be820e7a72f15a940edc110"
     },
+    "floating-warehouse-vanishes-after-berth-swap": {
+      "article_sha256": "26ec8b3e5e586f584b165b79a250185b591e1f439764d2491fa7a69467638024",
+      "bytes": 155544,
+      "generated_at": "2026-11-11T23:08:54.575728+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7042297594706420741,
+      "sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048"
+    },
     "food-rescue-shops-manufacture-leftovers": {
       "article_sha256": "420878503fbc7ec5b44afb688018984f527caecea438d706ca514f1778f1ce3f",
       "bytes": 162626,
