@@ -3108,6 +3108,14 @@
     }
   },
   "rejected": {
+    "supermarkets-buy-back-empty-pet-bottles": {
+      "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
+      "decision": "rejected",
+      "image_sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957",
+      "note": "2026-11-11実JPEGを表示し本文と照合。回収機に差し出すボトルには緑の液体または着色物が目立ち、キャップやラベルを外してすすいだ透明な空ボトルを持ち込む本文に合わない。機械上部に大きな不自然な文字列もあり、普通の報道写真として不採用。商品陳列の背景だけでは主要行動を満たさない。原JPEG・生成記録・seedを原値で保持し、別素材が採用されるまでは安全な代替を維持する。",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42974860006",
+      "reviewed_at": "2026-11-11T08:40:00Z"
+    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
