@@ -177,7 +177,8 @@ jobs:
 
   news-caster-preview:
     if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event_name == 'workflow_dispatch' && inputs.caster_preview
-    runs-on: ubuntu-latest
+    # Legacy CPU torch is incompatible with glibc in the moving latest image.
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     permissions:
       contents: read
