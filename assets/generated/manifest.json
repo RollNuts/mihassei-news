@@ -488,6 +488,33 @@
       "source_article_sha256": "48e6719f9e05fa563bf71772ef9cad263b59c552f468387f53f831345a70b349",
       "source_png_sha256": "b8c90409aac9603613d07d7b9ca8a6b1044681f26ac39a93734a0f5804eba310"
     },
+    "color-changing-coat-one-garment-three-colors": {
+      "article_sha256": "2b7f193a6787477e2b362a7a5236933092b24bbac73ce9edf383d77368d8795f",
+      "bytes": 95172,
+      "generated_at": "2026-11-11T04:50:57.158357+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5879385496131899738,
+      "sha256": "aaa58597ac1acac3ac65a4b96a54f10d579e0d40fee753eeef404a66e57f5916"
+    },
     "comedy-show-profits-from-silence": {
       "article_sha256": "f5a580b80fcb59a0831ba28b95067d168a6cc689e26f1f0f33b943b6892ed50f",
       "bytes": 88127,
