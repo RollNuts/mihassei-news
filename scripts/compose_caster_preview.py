@@ -146,8 +146,11 @@ def check_fresh_main(budget):
     manifest = json.loads(command(["git", "show", "FETCH_HEAD:assets/generated/manifest.json"], budget, cwd=ROOT, capture=True))
     reviews = json.loads(command(["git", "show", "FETCH_HEAD:content/visual_reviews.json"], budget, cwd=ROOT, capture=True))
     review = reviews.get("reviews", {}).get(ARTICLE_SLUG, {})
+    generation = manifest.get("images", {}).get(ARTICLE_SLUG, {})
+    held = manifest.get("rejected", {}).get(ARTICLE_SLUG, {})
     if (not article or article_fingerprint(article) != ARTICLE_SHA
-            or manifest.get("images", {}).get(ARTICLE_SLUG, {}).get("sha256") != PHOTO_SHA
+            or generation.get("sha256") != PHOTO_SHA or generation.get("article_sha256") != ARTICLE_SHA
+            or held.get("article_sha256") == ARTICLE_SHA
             or review.get("article_sha256") != ARTICLE_SHA or review.get("image_sha256") != PHOTO_SHA
             or review.get("decision") != "accepted"):
         raise ValueError("Latest main invalidated the source article or reviewed photo")

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import wave
 from zipfile import ZipFile
 
@@ -82,6 +82,23 @@ class CasterCompositionTests(unittest.TestCase):
         with patch.object(compose,"runner_gate",side_effect=RuntimeError("not a GitHub runner")),patch.object(compose,"binary_command") as download:
             with self.assertRaises(RuntimeError):compose.execute(123,Path("unused"))
         download.assert_not_called()
+
+    def test_fresh_main_rejects_stale_generation_or_current_article_hold(self):
+        def check(generation_article_sha, hold_article_sha=None):
+            generation={"sha256":compose.PHOTO_SHA,"article_sha256":generation_article_sha}
+            manifest={"images":{compose.ARTICLE_SLUG:generation},"rejected":{}}
+            if hold_article_sha:
+                manifest["rejected"][compose.ARTICLE_SLUG]={"article_sha256":hold_article_sha}
+            review={"article_sha256":compose.ARTICLE_SHA,"image_sha256":compose.PHOTO_SHA,"decision":"accepted"}
+            results=["",json.dumps([{"slug":compose.ARTICLE_SLUG}]),json.dumps(manifest),
+                     json.dumps({"reviews":{compose.ARTICLE_SLUG:review}}),"a"*40]
+            with patch.object(compose,"command",side_effect=results), \
+                 patch.object(compose,"article_fingerprint",return_value=compose.ARTICLE_SHA):
+                return compose.check_fresh_main(Mock())
+        self.assertEqual(check(compose.ARTICLE_SHA),"a"*40)
+        self.assertEqual(check(compose.ARTICLE_SHA,"0"*64),"a"*40)
+        with self.assertRaises(ValueError):check("0"*64)
+        with self.assertRaises(ValueError):check(compose.ARTICLE_SHA,compose.ARTICLE_SHA)
 
 
 if __name__=="__main__":unittest.main()
