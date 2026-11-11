@@ -1,5 +1,69 @@
 [
   {
+    "slug": "color-changing-coat-one-garment-three-colors",
+    "category": "技術",
+    "flash": "試着室で三色に変わるコート",
+    "fiction_company": "架空の衣料メーカー「紬灯」",
+    "art": "cards",
+    "fiction_at": "2031-11-11T13:32:00+09:00",
+    "published_at": "2026-11-11T13:32:00+09:00",
+    "title": "色違いを試着し直さないコート発売　電子ペーパーで紺・朱色・若草色に変化",
+    "summary": "架空の衣料メーカー「紬灯」が、着たまま色を切り替えられる電子ペーパーのコートを発売。試着した28歳の女性は一着で三色を比べ、夕方には店で選んだのと別の色で友人に会った。",
+    "paragraphs": [
+      "架空の衣料メーカー「紬灯」が、着たまま紺・朱色・若草色に切り替えられるコート「三景」を発売した。試着した藤村香帆（28）が襟の内側のボタンを押すと、鏡の中のコートが紺から朱色に変わり、隣の色違いを取りに行く必要がなくなった。",
+      "2031年、このコートの身頃と袖には、色を変えられる薄い電子ペーパーの片がうろこ状に並んでいる。ボタンで三つの配色を選ぶと表側の片が順に色を替える。布製の襟や縫い目は変色せず、色を保つために光らせ続ける必要もない。洗濯するときは電子パネルの部分を外す仕様で、普通の布の上着ほど気軽には洗えない。",
+      "店では色別にコートを並べず、サイズ別の一着を試着する。香帆は紺色で一枚写真を撮り、店先の日差しの下で朱色に変えてみた。室内で見たときより鮮やかに感じ、もう一度紺へ戻す。店員は『買った後も変えられます』と説明した。香帆は色で迷うのをやめ、肩の幅が合う一着を選んで店を出た。",
+      "夕方、友人との待ち合わせ前に香帆はコートを若草色に切り替えた。朝に届いた紺色の試着写真を覚えていた友人は『もう着替えたの？』と聞く。香帆がその場で朱色に変えると、友人も『私も着たい』と手を伸ばした。香帆がコートを貸すと、少し大きな袖に手を通した友人は襟のボタンを押し、今度は若草色で駅前の鏡に向かって歩き出した。"
+    ],
+    "source": {
+      "kind": "メーカー発表",
+      "publisher": "E Ink",
+      "published_at": "2026-09-30T00:00:00+09:00",
+      "url": "https://jp.eink.com/news/detail/E-ink-ANREALAGE-color-changing-dress",
+      "topic": "E Inkが2026年9月30日に発表。ANREALAGEは9月29日の2027年春夏ショーでE Ink Prism 3を使った色が変化するドレス6着を披露し、1着あたり約1,000〜2,000枚の素子を使用。反射型の電子ペーパーは色を維持する間の継続通電を必要とせず、切替時に電力を使う。2031年の量産コート、紬灯、三景、色切替ボタン、洗濯仕様、登場人物・販売風景は全て創作であり、実在企業が発売したものではない。"
+    },
+    "scene_prompt": "Photorealistic editorial street-fashion photograph in daylight at the entrance of a small contemporary Japanese fashion shop. An invented Japanese woman aged 28 wearing a well-fitting knee-length coat with small matte flexible color-changing e-paper segments arranged in a subtle overlapping scale pattern on the torso and sleeves. She presses a small discreet button sewn inside the coat collar and looks toward a full-length mirror. The coat has a visible warm vermilion colored segmented body with normal non-changing woven collar and seams. Ordinary cloth texture, realistic hands, fingers, soft natural shadows, ordinary shop and street setting; one coherent person and one action. No glowing holograms, no cyberpunk, no readably branded text, no logo, no real people, a natural 16:9 press photograph.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "電子ペーパー",
+      "ファッション"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "電子ペーパー",
+      "色替えコート"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "服の色を決めるのは試着室だけじゃなくなる。朝は紺、待ち合わせには若草色。同じ一着のコートで三色を試せる未来。",
+    "reader_interest": "beauty_wellness",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年のファッションショーで電子ペーパー素子を用いた色の変わるドレスが実際に披露された",
+      "target": "色ごとに試着と在庫を分ける服選びを、着たまま配色を切り替える製品で変える",
+      "action": "紬灯が襟の内側のボタンで三配色を選べる電子ペーパーのコートを発売し、香帆が試着後に屋外と待ち合わせで色を変える",
+      "outcome": "同じ一着で三色を試し、夕方には別の色で会った友人もコートを借りて新しい色を楽しむ"
+    },
+    "reader_clarity": {
+      "who": "架空の衣料メーカー「紬灯」",
+      "action": "電子ペーパーのコートを発売し、着たままボタンで三色を切り替える",
+      "oddity": "店員に色違いを持ってきてもらわず、同じ一着が待ち合わせでは別の色になる"
+    },
+    "behavior_basis": {
+      "motive": "買う前に色を比べたいし、同じ一着を気分や場面で着分けて楽しみたい",
+      "ordinary_alternative": "色違いを店員に持ってきてもらうか、複数の色の上着を買う",
+      "why_not": "一着のコートの電子ペーパー部分を着たまま三色に切り替えられ、服の形とサイズを決めれば色を一つに固定せずに済む",
+      "evidence_quote": "香帆は色で迷うのをやめ、肩の幅が合う一着を選んで店を出た。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に電子ペーパー片を多数配置した変色ドレスがファッションショーで披露された",
+      "continuation_force": "一着で異なる配色を試したい需要と、反射型で表示維持の消費電力を抑えられる素材研究が続く",
+      "future_result": "2031年に架空の衣料メーカーが色切替ボタンを組み込んだ着用可能なコートを発売し、買った後も一着のまま色を替えて使う"
+    }
+  },
+  {
     "slug": "ar-sport-fans-vote-crosswind-finals",
     "category": "スポーツ",
     "flash": "客席が風を決める決勝",
