@@ -117,6 +117,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-10T12:59:54.404362+00:00"
+    },
+    "night-art-exhibition-thirty-two-shadow-intruders": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "cc961b9736715a506d69b4af9b8d04166c0e3b47a7cd71fb439d0308975a90ac",
+      "image_sha256": "35a6e7c589472b88999a8f52b6ed6325da478b0d2410d3bc10aef5ef7c8bd515",
+      "sha256": "a2e86033e7078eb4f0523ff516dae3c6a5566606d47c2afacd56da388f445978",
+      "bytes": 109081,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-11T21:17:58.401511+00:00"
     }
   }
 }
