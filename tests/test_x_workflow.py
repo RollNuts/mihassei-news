@@ -123,6 +123,23 @@ class XWorkflowTests(unittest.TestCase):
                 self.assertIn("workflow_dispatch", expression)
                 self.assertNotIn("schedule", expression)
 
+    def test_diagnostics_cannot_spend_buffer_quota_on_code_push(self):
+        connection = (WORKFLOWS / "test-buffer-connection.yml").read_text()
+        self.assertRegex(connection, r"(?m)^  workflow_dispatch:\s*$")
+        self.assertNotRegex(connection, r"(?m)^  (push|schedule|pull_request):")
+        manual_main = "github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'"
+        self.assertIn("    if: " + manual_main, connection)
+
+        purge = (WORKFLOWS / "purge-retired-x.yml").read_text()
+        self.assertRegex(purge, r"(?m)^  push:\s*$")
+        validate = step(purge, "Validate retired experiment boundary")
+        self.assertNotIn("BUFFER_API_KEY", validate)
+        self.assertNotRegex(validate, r"--(?:inspect|apply)")
+        network = step(purge, "Inspect or clean exact legacy matches only by manual request")
+        self.assertIn("        if: " + manual_main, network)
+        self.assertIn("PURGE_MODE: ${{ inputs.mode }}", network)
+        self.assertNotIn("github.event_name == 'push'", network)
+
 
 if __name__ == "__main__":
     unittest.main()
