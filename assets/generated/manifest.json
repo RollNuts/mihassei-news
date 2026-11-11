@@ -195,41 +195,41 @@
       "prompt_version": 3,
       "sha256": "3c2a22c363cdbbbd59f7640fb500d88a80a958fee57eab51f910906931645bcd",
       "source_article_sha256": "83bf3cd645076b42868d4e29dce004b3df7336dd8c4334917a0b6aca322cf3b9",
-      "source_png_sha256": "a5acb7e60090edbe1b8130be2ab01dc60585b21c32872af82b6f2940df11a6a9",
       "source_c2pa": {
-        "instance_id": "xmp:iid:7c02c316-25b7-4085-ba34-7f7477a70cda",
-        "manifest_urn": "urn:c2pa:885acd1f-20d8-4502-a6ef-567f3ef2de5b",
-        "created_at": "2026-11-11T06:36:17.417784882Z",
-        "software_agent": {
-          "name": "ChatGPT",
-          "version": "gpt-image"
-        },
-        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "c2pa_chunk_sha256": "b66ce8e3f31eb8e1e91f6981dcf459f23fe71ca6b27db0a42dbce8fb1ae9a3b5",
+        "c2pa_data_binding_verified": true,
+        "c2pa_data_hash_sha256": "b44854045e14aa73dbe630fff15afe7ae8167cf32d2c54704cafb73d71317d1f",
+        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
         "claim_generator": {
           "name": "OpenAI Media Service API",
           "org.contentauth.c2pa_rs": "0.79.2"
         },
-        "source_png_sha256": "a5acb7e60090edbe1b8130be2ab01dc60585b21c32872af82b6f2940df11a6a9",
-        "c2pa_data_hash_sha256": "b44854045e14aa73dbe630fff15afe7ae8167cf32d2c54704cafb73d71317d1f",
-        "c2pa_data_binding_verified": true,
-        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
-        "c2pa_chunk_sha256": "b66ce8e3f31eb8e1e91f6981dcf459f23fe71ca6b27db0a42dbce8fb1ae9a3b5"
+        "created_at": "2026-11-11T06:36:17.417784882Z",
+        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "instance_id": "xmp:iid:7c02c316-25b7-4085-ba34-7f7477a70cda",
+        "manifest_urn": "urn:c2pa:885acd1f-20d8-4502-a6ef-567f3ef2de5b",
+        "software_agent": {
+          "name": "ChatGPT",
+          "version": "gpt-image"
+        },
+        "source_png_sha256": "a5acb7e60090edbe1b8130be2ab01dc60585b21c32872af82b6f2940df11a6a9"
       },
+      "source_png_sha256": "a5acb7e60090edbe1b8130be2ab01dc60585b21c32872af82b6f2940df11a6a9",
+      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved.",
       "transformation": {
+        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature.",
         "decoder": "photopea/UPNG.js",
         "decoder_revision": "88f504b6577b726975f593caa38ba85d327c7c1f",
         "encoder": "jpeg-js/jpeg-js",
         "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
-        "runtime": "pure JavaScript",
-        "resize": "center-cover bilinear; white alpha compositing",
-        "jpeg_quality": 84,
-        "source_width": 1672,
-        "source_height": 941,
-        "width": 1200,
         "height": 675,
-        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature."
-      },
-      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved."
+        "jpeg_quality": 84,
+        "resize": "center-cover bilinear; white alpha compositing",
+        "runtime": "pure JavaScript",
+        "source_height": 941,
+        "source_width": 1672,
+        "width": 1200
+      }
     },
     "bakery-no-important-announcement-panic": {
       "article_sha256": "c8a4c7f5217040c2c21a1c8d110e7aa8465185da69df86fa308e3c546003fffc",
@@ -678,41 +678,41 @@
       "prompt_version": 3,
       "sha256": "896c0a92cbaf43e8957069ad6b51dc7fe3e38350146663a72ad5dd4cfcd58ff3",
       "source_article_sha256": "d68858ff993733d524b8b76eff1f98e6d9feb328cfc843c1a49585dc8fc25e16",
-      "source_png_sha256": "f8e05ffc619c458314e62393bcf913458784b503fd8fd277fe2d222b1ca105a2",
       "source_c2pa": {
-        "instance_id": "xmp:iid:464953b0-a93e-476d-bfcd-17499ce9a178",
-        "manifest_urn": "urn:c2pa:1db71cdb-193a-4e09-841a-cc361d2f5993",
-        "created_at": "2026-11-11T06:35:44.429397885Z",
-        "software_agent": {
-          "name": "ChatGPT",
-          "version": "gpt-image"
-        },
-        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "c2pa_chunk_sha256": "d9a45c00088e7245a2f8acb07c89a597e926b7c7224fd5218c46e7441fbbc10e",
+        "c2pa_data_binding_verified": true,
+        "c2pa_data_hash_sha256": "513a63b7a1c465889b3579f974306676901bf36e82147cb6d8c855af9d3ae7d9",
+        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
         "claim_generator": {
           "name": "OpenAI Media Service API",
           "org.contentauth.c2pa_rs": "0.79.2"
         },
-        "source_png_sha256": "f8e05ffc619c458314e62393bcf913458784b503fd8fd277fe2d222b1ca105a2",
-        "c2pa_data_hash_sha256": "513a63b7a1c465889b3579f974306676901bf36e82147cb6d8c855af9d3ae7d9",
-        "c2pa_data_binding_verified": true,
-        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
-        "c2pa_chunk_sha256": "d9a45c00088e7245a2f8acb07c89a597e926b7c7224fd5218c46e7441fbbc10e"
+        "created_at": "2026-11-11T06:35:44.429397885Z",
+        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "instance_id": "xmp:iid:464953b0-a93e-476d-bfcd-17499ce9a178",
+        "manifest_urn": "urn:c2pa:1db71cdb-193a-4e09-841a-cc361d2f5993",
+        "software_agent": {
+          "name": "ChatGPT",
+          "version": "gpt-image"
+        },
+        "source_png_sha256": "f8e05ffc619c458314e62393bcf913458784b503fd8fd277fe2d222b1ca105a2"
       },
+      "source_png_sha256": "f8e05ffc619c458314e62393bcf913458784b503fd8fd277fe2d222b1ca105a2",
+      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved.",
       "transformation": {
+        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature.",
         "decoder": "photopea/UPNG.js",
         "decoder_revision": "88f504b6577b726975f593caa38ba85d327c7c1f",
         "encoder": "jpeg-js/jpeg-js",
         "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
-        "runtime": "pure JavaScript",
-        "resize": "center-cover bilinear; white alpha compositing",
-        "jpeg_quality": 84,
-        "source_width": 1672,
-        "source_height": 941,
-        "width": 1200,
         "height": 675,
-        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature."
-      },
-      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved."
+        "jpeg_quality": 84,
+        "resize": "center-cover bilinear; white alpha compositing",
+        "runtime": "pure JavaScript",
+        "source_height": 941,
+        "source_width": 1672,
+        "width": 1200
+      }
     },
     "council-trials-new-sidewalk-before-vote": {
       "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
@@ -941,6 +941,7 @@
       "generation_receipt": "xmp:iid:38cb6990-55de-4115-8515-e8fb49e1f7b2",
       "model": "ChatGPT ImageGen",
       "origin": "chatgpt-imagegen",
+      "post_generation_scene_prompt_note": "The original draft scene_prompt described a closed door while also seeing inside. Before publication it was clarified to a partly open auditorium entrance, matching the already executed generation_prompt and the article's attendant inviting waiting patrons to enter. source_article_sha256 preserves the actual draft fingerprint at generation time.",
       "previous_generation": {
         "article_sha256": "de4791668779b722f391d02bd1e0bc3fd8718f38a71a532cd456b31a7386054b",
         "bytes": 127753,
@@ -1001,42 +1002,41 @@
       "prompt_version": 3,
       "sha256": "b29acab6f0a7fab83fc4c455a4a38c8e492d852139ca87441b78dd300f3397ea",
       "source_article_sha256": "0d288a84c346278ae1f5c0123148025fe2af6463d49a967eac8ff5910b7b7a28",
-      "source_png_sha256": "fbd5cf8057982d4d1a873e46ed57ed40c68bf869b120aa60736a9ccba439a0bb",
       "source_c2pa": {
-        "instance_id": "xmp:iid:38cb6990-55de-4115-8515-e8fb49e1f7b2",
-        "manifest_urn": "urn:c2pa:8ff59c5f-f122-44ed-9461-19286dc89beb",
-        "created_at": "2026-11-11T06:30:04.644653836Z",
-        "software_agent": {
-          "name": "ChatGPT",
-          "version": "gpt-image"
-        },
-        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "c2pa_chunk_sha256": "d5f8ee41de5d49fb8fcb413180db34fa19f524c0767c98fc7111da749381b0a1",
+        "c2pa_data_binding_verified": true,
+        "c2pa_data_hash_sha256": "f1f7a4cc888a1a21cf8cf556c02058765b72b26c8a9a6aa1cb2fe8b248d58b5f",
+        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
         "claim_generator": {
           "name": "OpenAI Media Service API",
           "org.contentauth.c2pa_rs": "0.79.2"
         },
-        "source_png_sha256": "fbd5cf8057982d4d1a873e46ed57ed40c68bf869b120aa60736a9ccba439a0bb",
-        "c2pa_data_hash_sha256": "f1f7a4cc888a1a21cf8cf556c02058765b72b26c8a9a6aa1cb2fe8b248d58b5f",
-        "c2pa_data_binding_verified": true,
-        "c2pa_signature_verification": "Not performed; metadata was read directly from the native tool output PNG.",
-        "c2pa_chunk_sha256": "d5f8ee41de5d49fb8fcb413180db34fa19f524c0767c98fc7111da749381b0a1"
+        "created_at": "2026-11-11T06:30:04.644653836Z",
+        "digital_source_type": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+        "instance_id": "xmp:iid:38cb6990-55de-4115-8515-e8fb49e1f7b2",
+        "manifest_urn": "urn:c2pa:8ff59c5f-f122-44ed-9461-19286dc89beb",
+        "software_agent": {
+          "name": "ChatGPT",
+          "version": "gpt-image"
+        },
+        "source_png_sha256": "fbd5cf8057982d4d1a873e46ed57ed40c68bf869b120aa60736a9ccba439a0bb"
       },
+      "source_png_sha256": "fbd5cf8057982d4d1a873e46ed57ed40c68bf869b120aa60736a9ccba439a0bb",
+      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved.",
       "transformation": {
+        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature.",
         "decoder": "photopea/UPNG.js",
         "decoder_revision": "88f504b6577b726975f593caa38ba85d327c7c1f",
         "encoder": "jpeg-js/jpeg-js",
         "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
-        "runtime": "pure JavaScript",
-        "resize": "center-cover bilinear; white alpha compositing",
-        "jpeg_quality": 84,
-        "source_width": 1672,
-        "source_height": 941,
-        "width": 1200,
         "height": 675,
-        "c2pa_transfer": "Source PNG metadata recorded separately; the resized JPEG does not inherit the provider C2PA signature."
-      },
-      "supersedes_reason": "The article was revised for readability, so a genuinely new native photograph was generated and reviewed against the revised article. The previously accepted photo remains accepted historically for its original article version; its complete raw generation and review records, including earlier CPU history and exact integer seeds, are preserved.",
-      "post_generation_scene_prompt_note": "The original draft scene_prompt described a closed door while also seeing inside. Before publication it was clarified to a partly open auditorium entrance, matching the already executed generation_prompt and the article's attendant inviting waiting patrons to enter. source_article_sha256 preserves the actual draft fingerprint at generation time."
+        "jpeg_quality": 84,
+        "resize": "center-cover bilinear; white alpha compositing",
+        "runtime": "pure JavaScript",
+        "source_height": 941,
+        "source_width": 1672,
+        "width": 1200
+      }
     },
     "family-dinner-gacha-243-rejections": {
       "article_sha256": "fb8057560a4f891020ea12c1c12f76249404db37335b5523d319b3c3087d46f8",
@@ -3034,6 +3034,33 @@
       "source_article_sha256": "e1de0e6c44bbd716d212e86cd5425709c3ba5da8eb39753d17d8f2cbccfa52b9",
       "source_png_sha256": "d9d847df0d4ef025aa9bcbd8c3926b7438c331c76088d2dd5eda2f8b9b867d2f"
     },
+    "xr-town-letter-changes-next-visitors-story": {
+      "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
+      "bytes": 90043,
+      "generated_at": "2026-11-11T09:03:29.076669+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 9069564902420558916,
+      "sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e"
+    },
     "zero-redelivery-residents-collect-parcels": {
       "article_sha256": "c86d7056fe45fde4cb47ff65581f5319f98ab816a5413b4d1fa6641dce8ab9f3",
       "bytes": 155549,
@@ -3108,14 +3135,6 @@
     }
   },
   "rejected": {
-    "supermarkets-buy-back-empty-pet-bottles": {
-      "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
-      "decision": "rejected",
-      "image_sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957",
-      "note": "2026-11-11実JPEGを表示し本文と照合。回収機に差し出すボトルには緑の液体または着色物が目立ち、キャップやラベルを外してすすいだ透明な空ボトルを持ち込む本文に合わない。機械上部に大きな不自然な文字列もあり、普通の報道写真として不採用。商品陳列の背景だけでは主要行動を満たさない。原JPEG・生成記録・seedを原値で保持し、別素材が採用されるまでは安全な代替を維持する。",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42974860006",
-      "reviewed_at": "2026-11-11T08:40:00Z"
-    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
@@ -3234,6 +3253,14 @@
       "reason": "Visual review of CPU image bundle 41848633579: the frame shows a suited person waving a hand over scattered papers; it has no legible smartphone, confetti on the phone screen, or visibly falling investment balance. The picture cannot convey the article's comparison. Reject this JPEG and use the reviewed dedicated article SVG until a genuinely accurate new image is inspected.",
       "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
+    },
+    "supermarkets-buy-back-empty-pet-bottles": {
+      "article_sha256": "f0465936b9dd706d5219806ed13590d32e8f8e4451797787c35584b22ef81f6c",
+      "decision": "rejected",
+      "image_sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957",
+      "note": "2026-11-11実JPEGを表示し本文と照合。回収機に差し出すボトルには緑の液体または着色物が目立ち、キャップやラベルを外してすすいだ透明な空ボトルを持ち込む本文に合わない。機械上部に大きな不自然な文字列もあり、普通の報道写真として不採用。商品陳列の背景だけでは主要行動を満たさない。原JPEG・生成記録・seedを原値で保持し、別素材が採用されるまでは安全な代替を維持する。",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42974860006",
+      "reviewed_at": "2026-11-11T08:40:00Z"
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
