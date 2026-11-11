@@ -235,7 +235,7 @@ class MotionWorkflowTests(unittest.TestCase):
         permissions = re.search(r"(?ms)^    permissions:\n(.*?)(?=^    \w)", preview).group(1)
         self.assertEqual(dict(re.findall(r"^      (\w+): (\w+)$", permissions, re.M)),
                          {"contents": "read", "actions": "read"})
-        self.assertIn("    runs-on: ubuntu-22.04", preview)
+        self.assertIn("    runs-on: ubuntu-24.04", preview)
         self.assertIn("    timeout-minutes: 15", preview)
         self.assertIn("          python-version: '3.10'", preview)
         self.assertIn("      GH_TOKEN: ${{ github.token }}", preview)

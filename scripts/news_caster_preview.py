@@ -332,7 +332,8 @@ def execute(portrait: Path, portrait_receipt: Path, output: Path):
     receipt = {"version": 1, "publication": "preview_only", "status": "started", "seconds": SECONDS,
                "full_narration_text": TEXT, "article_slug": ARTICLE_SLUG, "voice": "jf_alpha",
                "article_sha256": article_fingerprint(article), "article_title": article["title"],
-               "portrait": portrait_record, "licenses": LICENSES, "downloads": [], "steps": []}
+               "portrait": portrait_record, "licenses": LICENSES, "downloads": [], "steps": [],
+               "runtime": {"system": platform.platform(), "libc": platform.libc_ver(), "python": platform.python_version()}}
     started = time.monotonic()
     try:
         with tempfile.TemporaryDirectory(prefix="mihassei-caster-", dir=temporary) as folder:
