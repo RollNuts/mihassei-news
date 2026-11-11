@@ -3080,30 +3080,73 @@
     },
     "xr-town-letter-changes-next-visitors-story": {
       "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
-      "bytes": 90043,
-      "generated_at": "2026-11-11T09:03:29.076669+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
-      },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "bytes": 195928,
+      "generated_at": "2026-11-11T09:26:31.720455633Z",
+      "generation_id": "fb5dd88d-d03e-4831-bf6d-3b062f579608",
+      "generation_id_source": "UUID from the actual ImageGen output filename; tool artifact identifier, not an exposed backend generation/job ID.",
+      "generation_receipt": "exec-fb5dd88d-d03e-4831-bf6d-3b062f579608.png",
+      "generation_prompt": "Use case: photorealistic-natural. Asset type: horizontal editorial camera photograph for a clearly fictional Japanese newspaper story. Show a fictional 26-year-old Japanese woman wearing a plain dark VR headset, actively sliding a plain white paper envelope halfway into the horizontal mail slot of a weathered red physical mailbox. The mailbox must be clearly visible in the foreground, at a plausible reachable height, with her fingers naturally holding the edge of the envelope as it enters the slot. The action of posting the letter is the main subject. This is a built Japanese shopping-street alley inside an ordinary walk-through immersive exhibition, with a closed flower-shop shutter and a few potted flowers behind her. One other adult visitor wearing a headset is softly out of focus farther down the constructed alley. Everything photographed outside the goggles is a real physical set: realistic painted walls, chipped red metal paint, paper, fabric and skin. Medium-wide eye-level three-quarter view, the woman's head, hands, envelope and mailbox all comfortably in frame. Ordinary warm indoor lighting, gentle shadows and natural camera colors, a candid documentary press photograph. No illustration, CGI, game screenshot, futuristic floating interface, hologram, fantasy light or cinematic advertising effects. No readable words, logos, real brands, national postal emblems, captions or watermarks. The plain envelope is not a certificate and the red mailbox is not a vending machine. Landscape 16:9 suitable for 1200x675 crop. Preserve the essential visible relationship: a headset-wearing adult visitor physically posts her letter into the red mailbox for a later visitor to receive.",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
       "prompt_version": 3,
-      "seed": 9069564902420558916,
-      "sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e"
+      "sha256": "d01302200dd33ea29ced3d8b06f69d438095fad4a77f42be0b9dc6e60a2be08c",
+      "source_png_sha256": "759e05815caaf1a7691a6c4ffe43ce62bbdec43ba2a1d8ac6c6b2cf3b0cf91bc",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:a581e7b6-ff8b-4ea8-a91d-afd9ffd2f65a",
+        "instanceID": "xmp:iid:805eac90-e86a-4910-bcc9-0cead35a910e",
+        "created_at": "2026-11-11T09:26:31.720455633Z",
+        "software_agent": {
+          "name": "ChatGPT",
+          "version": "gpt-image"
+        },
+        "claim_generator": "OpenAI Media Service API",
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "transform": {
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200,
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white"
+      },
+      "previous_generation_commit": "0c5359759f423ea714ed5061d940bc8fe9146ef6",
+      "supersedes_reason": "旧CPU候補には赤い郵便箱と手紙の投函動作がなく、現在の記事の主要場面に不一致。新規原PNGと最終JPEGではVRゴーグルを着けた女性が白い封筒を赤い実物郵便箱へ差し込む動作、閉じたシャッターと花、屋内の路地を実表示して確認。",
+      "previous_generation": {
+        "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
+        "bytes": 90043,
+        "generated_at": "2026-11-11T09:03:29.076669+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 9069564902420558916,
+        "sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
+        "decision": "rejected",
+        "image_sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e",
+        "note": "2026-11-11無料CPU成果物を実表示して現記事本文と照合。架空の成人女性はVRヘッドセットを着けているが、記事の中心である赤い実物郵便箱が写らず、手紙を郵便箱へ投函する動作がない。紙を持って入口に立つだけで、前の客が残した手紙が翌日の客へ届く仕掛けを表現していない。店のシャッター・花屋も見えず、場面の核を欠くため不採用。原JPEG・manifest記録・整数seedは変更せず、安全な代替画像を維持する。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42990385985",
+        "reviewed_at": "2026-11-11T09:04:30Z"
+      }
     },
     "zero-redelivery-residents-collect-parcels": {
       "article_sha256": "c86d7056fe45fde4cb47ff65581f5319f98ab816a5413b4d1fa6641dce8ab9f3",
@@ -3179,14 +3222,6 @@
     }
   },
   "rejected": {
-    "xr-town-letter-changes-next-visitors-story": {
-      "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
-      "decision": "rejected",
-      "image_sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e",
-      "note": "2026-11-11無料CPU成果物を実表示して現記事本文と照合。架空の成人女性はVRヘッドセットを着けているが、記事の中心である赤い実物郵便箱が写らず、手紙を郵便箱へ投函する動作がない。紙を持って入口に立つだけで、前の客が残した手紙が翌日の客へ届く仕掛けを表現していない。店のシャッター・花屋も見えず、場面の核を欠くため不採用。原JPEG・manifest記録・整数seedは変更せず、安全な代替画像を維持する。",
-      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/42990385985",
-      "reviewed_at": "2026-11-11T09:04:30Z"
-    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
