@@ -1,5 +1,69 @@
 [
   {
+    "slug": "supermarkets-buy-back-empty-pet-bottles",
+    "category": "経済",
+    "flash": "空容器が店の仕入れ品に",
+    "fiction_company": "架空のスーパー共同組合「まわり棚」",
+    "art": "store",
+    "fiction_at": "2031-11-11T15:30:00+09:00",
+    "published_at": "2026-11-11T15:30:00+09:00",
+    "title": "スーパー、空のペットボトルを「仕入れ」　客から買い取り始まる",
+    "summary": "架空のスーパー共同組合が、買い物客の持ち込む空のペットボトルを買い取る仕組みを開始した。重さに応じた買い物券を渡し、飲料を届けた配送車が帰りに回収原料を運ぶ。",
+    "paragraphs": [
+      "2031年、架空のスーパー共同組合「まわり棚」が、飲み終えた透明なペットボトルを店頭で買い取る「空容器仕入れ」を始めた。買い物に来た会社員の島津紗良さん（29）は、入口の回収台へ空のボトルを並べ、機械が重さを量るのを見守った。",
+      "客はキャップとラベルを外し、中をすすいだ透明ボトルを持参する。機械は色つきや汚れの残る容器を返し、受け取った重さに応じて店内で使える買い物券を発行する。紗良さんはその券を使ってパンと牛乳を買った。これまでは資源回収の日まで自宅にためていた空容器が、買い物の前に店へ渡せるようになった。",
+      "共同組合は複数の店舗と再生樹脂の工場を結び、回収した容器を資源の仕入れとしてまとめて売る契約を結んだ。各店へ飲料を届けた配送車が、帰りの便で圧縮した空容器を回収拠点へ運ぶ。別の回収車を手配せずに済む分と再生原料の販売代金を、買い物券の費用に充てる。",
+      "夕方、運転手が飲料のケースを店へ下ろすと、店員は代わりに空ボトルを詰めた大袋を荷台へ運び込んだ。店長はその日の帳簿に、牛乳やパンの仕入れと並べて「空容器・客からの仕入れ」を記入する。「今日は入口からも商品が入ってきましたね」と笑う店長の横で、配送車は透明なボトルの袋を積んで出発した。"
+    ],
+    "source": {
+      "kind": "企業発表",
+      "publisher": "キリンビバレッジ株式会社",
+      "published_at": "2026-11-11T00:00:00+09:00",
+      "url": "https://www.kirinholdings.com/jp/newsroom/release/2026/1111_02.html",
+      "topic": "キリンビバレッジが2026年11月11日に公表。グループ会社から出る事業系ペットボトルを国内循環するため、2026年10月から中国・四国・九州8県21拠点を対象に、回収・選別・再資源化を事業者間で一元管理するモデルを開始した。スーパーの顧客から透明容器を重量買い取りする取引、店内券、店舗と再生樹脂工場の契約、帰りの飲料配送車による共同回収、共同組合・人物・会話・価格設定は全て2031年の創作であり、実在企業の施策ではない。"
+    },
+    "scene_prompt": "Photorealistic documentary press photograph of a fictional 29-year-old Japanese woman placing clean empty transparent plastic drink bottles onto a waist-high bottle return and weighing counter at the entrance of an ordinary Japanese supermarket. Her open cloth shopping bag contains several more clear empty bottles, a modest grocery shop worker stands nearby, normal store shelves behind them. Natural daytime lighting, lifelike hands, skin, clear plastic reflections and textures, credible candid movement. No legible text, no logos or real brands, no holograms, no illustration, horizontal 16:9 camera photo.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "資源循環",
+      "スーパー"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "ペットボトル",
+      "資源循環"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "買い物前に、空のペットボトルをスーパーへ売る。中身を売る店が、回収した容器を原料として仕入れるようになった2031年の商売。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月、飲料企業が8県21拠点の事業系ペットボトル回収・再資源化を一元管理する循環モデルを発表した",
+      "target": "飲料販売と使用済み容器の資源回収を別々の物流・取引として扱う店舗運営",
+      "action": "架空のスーパー共同組合が消費者の透明ボトルを買い取り、帰りの配送車で集めて再生原料として販売する",
+      "outcome": "客は空容器を買い物券に替え、店には販売商品と並んで客から仕入れた空容器の取引が生まれる"
+    },
+    "reader_clarity": {
+      "who": "架空のスーパー共同組合「まわり棚」",
+      "action": "買い物客の空ペットボトルを店頭で買い取り、再生原料として出荷する",
+      "oddity": "商品を売る店が空容器も仕入れ、飲料の納品車が帰りは回収原料を運ぶ"
+    },
+    "behavior_basis": {
+      "motive": "店は回収原料の販売代金と既存配送便を使い顧客の持ち込みを集め、客は家に容器をためず買い物券を受け取りたい",
+      "ordinary_alternative": "客が自治体等の資源回収へ出し、スーパーは飲料の販売と配送だけを行う",
+      "why_not": "複数店・再資源化工場・配送会社を共同化すれば持ち込まれた空容器が原料取引になり、帰り便の共同利用で回収費を抑えられる",
+      "evidence_quote": "別の回収車を手配せずに済む分と再生原料の販売代金を、買い物券の費用に充てる。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に事業系PETの回収・選別・再資源化を8県21拠点で統合する国内循環モデルが始まった",
+      "continuation_force": "再生樹脂需要と回収物流の効率化への商業上の誘因から複数事業者が容器資源を取引する",
+      "future_result": "2031年にはスーパーが顧客の空PETを仕入れ、既存の飲料配送網で集荷する小売の取引へ広がる"
+    }
+  },
+  {
     "slug": "color-changing-coat-one-garment-three-colors",
     "category": "技術",
     "flash": "試着室で三色に変わるコート",
