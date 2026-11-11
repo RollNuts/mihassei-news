@@ -608,31 +608,142 @@
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "community-workshop-builds-bookshelf-before-introductions": {
-      "article_sha256": "05529aabd984196e4c1316755085341c9abc70993ebb75442fbf2c266fa2a47e",
-      "bytes": 115421,
-      "generated_at": "2026-11-11T11:03:40.300386+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "58b90789ad74e4579c194c3e3f35f62e68f7d0e7a3174331aef9fe2322569da2",
+      "bytes": 172158,
+      "generated_at": "2026-11-11T10:37:18.127723345Z",
+      "generation_id": "5e964f68-11ff-46e7-84be-48ac66bc3477",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "In a sunlit community workshop, two smiling East Asian women collaborate at a workbench, assembling a small knotty pine shelf while one steadies the frame and the other drives a screw with a cordless drill. Surrounded by scattered tools, timber, and fellow participants working near large greenery-framed windows, the scene feels warm, candid, and joyfully creative.",
+      "generation_prompt_source": "Actual prompt recorded by the original publisher in https://github.com/RollNuts/mihassei-news/pull/670",
+      "generation_receipt": "xmp:iid:5e964f68-11ff-46e7-84be-48ac66bc3477",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "05529aabd984196e4c1316755085341c9abc70993ebb75442fbf2c266fa2a47e",
+        "bytes": 115421,
+        "generated_at": "2026-11-11T11:03:40.300386+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 4273976635983139098,
+        "sha256": "21868e1c7e6fc47384e7f525b4d6805f8df0ab19add81f2bf9bd0262121b81b6"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "e7aa7747e4fe27b8d60bacdaeea5ae1441ad5068",
       "prompt_version": 3,
-      "seed": 4273976635983139098,
-      "sha256": "21868e1c7e6fc47384e7f525b4d6805f8df0ab19add81f2bf9bd0262121b81b6"
+      "sha256": "c2b812226dd3238f513f47c15a7c5c3e5493baca7fb8ab84030c9b7c88e3f43d",
+      "source_article_sha256": "05529aabd984196e4c1316755085341c9abc70993ebb75442fbf2c266fa2a47e",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-11T10:37:18.127723345Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-11T10:37:18.127725078Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-11T10:37:18.125980781Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": {
+              "0": 178,
+              "1": 228,
+              "10": 148,
+              "11": 154,
+              "12": 53,
+              "13": 225,
+              "14": 142,
+              "15": 104,
+              "16": 201,
+              "17": 130,
+              "18": 47,
+              "19": 220,
+              "2": 52,
+              "20": 204,
+              "21": 80,
+              "22": 48,
+              "23": 78,
+              "24": 106,
+              "25": 218,
+              "26": 227,
+              "27": 208,
+              "28": 34,
+              "29": 189,
+              "3": 126,
+              "30": 31,
+              "31": 5,
+              "4": 13,
+              "5": 68,
+              "6": 93,
+              "7": 248,
+              "8": 76,
+              "9": 1
+            },
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:5e964f68-11ff-46e7-84be-48ac66bc3477",
+        "manifest_uri": "urn:c2pa:c9190c68-97b3-49aa-b92c-1b3c375a1f08",
+        "signature_validation": "not_performed"
+      },
+      "source_png_sha256": "ae2252b392477a096115caca08489bea38546e299a1ee294e58f9f223f8f75dc",
+      "source_recovery": {
+        "bytes": 2271744,
+        "file_id": "file_00000000119081f88b44b3ba0dc77469",
+        "file_name": "a_bright_indoor_workshop_scene_with_a_warm_realis.png",
+        "height": 941,
+        "method": "Recovered the original PNG by its recorded file ID and verified its exact SHA256; no new generation.",
+        "original_reported_generation_id": "40b5dfe5-66f8-4cb9-bc59-0b96dc856583",
+        "reference": "https://github.com/RollNuts/mihassei-news/pull/670",
+        "width": 1672
+      },
+      "supersedes_reason": "発行時に生成済みで取り込み待ちだった原PNGを実file IDから回収し、容量・寸法・SHAを照合した。台詞の動作を明確にした現本文と原PNG・最終JPEGを再照合して初採用。旧CPU候補は未採用の生成記録として元の整数seedを保持する。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "companies-apply-for-jobseeker-final-interview": {
       "article_sha256": "d68858ff993733d524b8b76eff1f98e6d9feb328cfc843c1a49585dc8fc25e16",
