@@ -4,11 +4,11 @@
     "category": "経済",
     "flash": "空容器が店の仕入れ品に",
     "fiction_company": "架空のスーパー共同組合「まわり棚」",
-    "art": "store",
+    "art": "cards",
     "fiction_at": "2031-11-11T15:30:00+09:00",
     "published_at": "2026-11-11T15:30:00+09:00",
     "title": "スーパー、空のペットボトルを「仕入れ」　客から買い取り始まる",
-    "summary": "架空のスーパー共同組合が、買い物客の持ち込む空のペットボトルを買い取る仕組みを開始した。重さに応じた買い物券を渡し、飲料を届けた配送車が帰りに回収原料を運ぶ。",
+    "summary": "架空のスーパー共同組合「まわり棚」が、買い物客の持ち込む空のペットボトルを買い取る仕組みを開始した。重さに応じた買い物券を渡し、飲料を届けた配送車が帰りに回収原料を運ぶ。",
     "paragraphs": [
       "2031年、架空のスーパー共同組合「まわり棚」が、飲み終えた透明なペットボトルを店頭で買い取る「空容器仕入れ」を始めた。買い物に来た会社員の島津紗良さん（29）は、入口の回収台へ空のボトルを並べ、機械が重さを量るのを見守った。",
       "客はキャップとラベルを外し、中をすすいだ透明ボトルを持参する。機械は色つきや汚れの残る容器を返し、受け取った重さに応じて店内で使える買い物券を発行する。紗良さんはその券を使ってパンと牛乳を買った。これまでは資源回収の日まで自宅にためていた空容器が、買い物の前に店へ渡せるようになった。",
@@ -22,7 +22,7 @@
       "url": "https://www.kirinholdings.com/jp/newsroom/release/2026/1111_02.html",
       "topic": "キリンビバレッジが2026年11月11日に公表。グループ会社から出る事業系ペットボトルを国内循環するため、2026年10月から中国・四国・九州8県21拠点を対象に、回収・選別・再資源化を事業者間で一元管理するモデルを開始した。スーパーの顧客から透明容器を重量買い取りする取引、店内券、店舗と再生樹脂工場の契約、帰りの飲料配送車による共同回収、共同組合・人物・会話・価格設定は全て2031年の創作であり、実在企業の施策ではない。"
     },
-    "scene_prompt": "Photorealistic documentary press photograph of a fictional 29-year-old Japanese woman placing clean empty transparent plastic drink bottles onto a waist-high bottle return and weighing counter at the entrance of an ordinary Japanese supermarket. Her open cloth shopping bag contains several more clear empty bottles, a modest grocery shop worker stands nearby, normal store shelves behind them. Natural daytime lighting, lifelike hands, skin, clear plastic reflections and textures, credible candid movement. No legible text, no logos or real brands, no holograms, no illustration, horizontal 16:9 camera photo.",
+    "scene_prompt": "Photorealistic documentary press photograph of a fictional 29-year-old Japanese woman placing clean empty transparent plastic drink bottles onto a waist-high bottle return and weighing counter at the entrance of an ordinary Japanese supermarket. Her open cloth shopping bag contains several more clear empty bottles, a modest grocery shop worker stands nearby, normal store shelves behind them. Natural daytime lighting, lifelike hands, skin, clear plastic reflections and textures, credible candid movement. No legible text, no logos or real brands, no holograms, horizontal 16:9 camera photo.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "資源循環",
