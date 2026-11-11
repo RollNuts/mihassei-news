@@ -4,6 +4,7 @@ import json
 import shutil
 import struct
 import subprocess
+import sys
 import tempfile
 import unittest
 import zlib
@@ -71,6 +72,25 @@ class EditorialSocialCardTests(unittest.TestCase):
             self.assertEqual(image.convert("RGB").getpixel((1190, 665)), (53, 165, 91))
         self.assertEqual(social_cards.reviewed_scene_png(self.article, root=self.root), self.png_path.read_bytes())
 
+    def test_actual_explicit_cairosvg_preserves_scene_pixels_and_own_proof(self):
+        from importlib.metadata import PackageNotFoundError, version
+        try:
+            installed = version("CairoSVG")
+        except PackageNotFoundError:
+            self.skipTest("Normal builds do not need the optional CairoSVG preparer")
+        if installed != "2.7.1":
+            self.skipTest("Optional CairoSVG proof needs the pinned renderer")
+        from PIL import Image
+        self.assertTrue(social_cards.prepare_scene_png(self.article, root=self.root, renderer="cairosvg"))
+        with Image.open(self.png_path) as image:
+            self.assertEqual(image.size, (1200, 675))
+            self.assertEqual(image.convert("RGB").getpixel((10, 10)), (209, 46, 60))
+            self.assertEqual(image.convert("RGB").getpixel((1190, 665)), (53, 165, 91))
+            self.assertEqual(image.info["renderer"], "CairoSVG 2.7.1")
+            self.assertEqual(image.info["article_sha256"], article_fingerprint(self.article))
+            self.assertEqual(image.info["svg_sha256"], hashlib.sha256(self.svg.encode()).hexdigest())
+        self.assertEqual(social_cards.reviewed_scene_png(self.article, root=self.root), self.png_path.read_bytes())
+
     def test_preparation_rejects_a_different_renderer_version_without_writing(self):
         with patch.object(social_cards.subprocess, "run", return_value=
                           subprocess.CompletedProcess([], 0, "rsvg-convert version 2.63.0\n")) as renderer:
@@ -80,14 +100,29 @@ class EditorialSocialCardTests(unittest.TestCase):
         self.assertFalse(self.png_path.exists())
         self.assertFalse(self.png_path.with_suffix(".png.tmp").exists())
 
+    def test_explicit_cairosvg_rejects_other_versions_and_unknown_backend_without_writing(self):
+        with patch.object(social_cards.subprocess, "run", return_value=
+                          subprocess.CompletedProcess([], 0, "2.8.0\n")) as renderer:
+            with self.assertRaisesRegex(RuntimeError, "CairoSVG 2.7.1"):
+                social_cards.prepare_scene_png(self.article, root=self.root, renderer="cairosvg")
+            self.assertEqual(renderer.call_args.args[0], [sys.executable, "-m", "cairosvg", "--version"])
+            renderer.assert_called_once()
+            with self.assertRaisesRegex(ValueError, "Unsupported"):
+                social_cards.prepare_scene_png(self.article, root=self.root, renderer="unrecognized")
+            renderer.assert_called_once()
+        self.assertFalse(self.png_path.exists())
+        self.assertFalse(self.png_path.with_suffix(".png.tmp").exists())
+
     def test_normal_render_never_invokes_a_renderer_and_copies_current_png(self):
-        data = self.png()
-        self.png_path.write_bytes(data)
-        output = self.root / "social.png"
-        with patch.object(social_cards.subprocess, "run") as renderer, patch.dict("sys.modules", {"cairosvg": None}):
-            social_cards.render_social_card(self.article, output, root=self.root)
-            renderer.assert_not_called()
-        self.assertEqual(output.read_bytes(), data)
+        for backend in ("rsvg-convert 2.62.1", "CairoSVG 2.7.1"):
+            with self.subTest(renderer=backend):
+                data = self.png(renderer=backend)
+                self.png_path.write_bytes(data)
+                output = self.root / "social.png"
+                with patch.object(social_cards.subprocess, "run") as renderer, patch.dict("sys.modules", {"cairosvg": None}):
+                    social_cards.render_social_card(self.article, output, root=self.root)
+                    renderer.assert_not_called()
+                self.assertEqual(output.read_bytes(), data)
 
     def test_live_verifier_checks_current_png_bytes_and_dimensions(self):
         data = self.png()
@@ -108,6 +143,9 @@ class EditorialSocialCardTests(unittest.TestCase):
         data = self.png()
         bad = (None, self.png(proof=False), self.png(article_sha256="0" * 64),
                self.png(svg_sha256="0" * 64), self.png(renderer="unrecognized"),
+               self.png(renderer="CairoSVG 2.7.0"),
+               self.png(renderer="CairoSVG 2.7.1", article_sha256="0" * 64),
+               self.png(renderer="CairoSVG 2.7.1", svg_sha256="0" * 64),
                data[:-5], data + b"extra", data[:45] + b"changed" + data[52:])
         for index, candidate in enumerate(bad):
             with self.subTest(index=index):
@@ -133,7 +171,9 @@ class EditorialSocialCardTests(unittest.TestCase):
         original = self.png_path.read_bytes()
         with patch.object(social_cards.subprocess, "run") as renderer:
             self.assertFalse(social_cards.prepare_scene_png(self.article, root=self.root))
+            self.assertFalse(social_cards.prepare_scene_png(self.article, root=self.root, renderer="cairosvg"))
             renderer.assert_not_called()
+        self.assertEqual(self.png_path.read_bytes(), original)
         self.svg = self.svg.replace("#35a55b", "#1040b0")
         self.svg_path.write_text(self.svg)
         self.assertIsNone(social_cards.reviewed_scene_png(self.article, root=self.root))
@@ -145,6 +185,18 @@ class EditorialSocialCardTests(unittest.TestCase):
         with self.renderer():
             self.assertTrue(social_cards.prepare_scene_png(self.article, root=self.root))
         self.assertNotEqual(self.png_path.read_bytes(), original)
+
+    def test_stale_cairosvg_png_can_be_replaced_by_default_renderer(self):
+        original = self.png(renderer="CairoSVG 2.7.1")
+        self.png_path.write_bytes(original)
+        self.svg = self.svg.replace("#35a55b", "#1040b0")
+        self.svg_path.write_text(self.svg)
+        self.assertIsNone(social_cards.reviewed_scene_png(self.article, root=self.root))
+        with self.renderer():
+            self.assertTrue(social_cards.prepare_scene_png(self.article, root=self.root))
+        _chunks, proof = social_cards._scene_png_chunks(self.png_path.read_bytes())
+        self.assertEqual(proof["renderer"], "rsvg-convert 2.62.1")
+        self.assertEqual(social_cards.reviewed_scene_png(self.article, root=self.root), self.png_path.read_bytes())
 
     def test_preparation_refuses_unmanaged_output_and_symlinks_without_touching_other_files(self):
         unmanaged = self.png(proof=False)
@@ -210,3 +262,4 @@ class EditorialSocialCardTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

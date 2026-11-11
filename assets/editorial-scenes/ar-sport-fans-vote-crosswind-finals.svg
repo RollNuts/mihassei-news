@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="観客がスマートフォンで投票するAR球技の決勝。ゴーグルと腕センサーを着けた選手が放った光球が、相手の光の盾の上側を大きく回り込む創作イラスト" data-visual-topic="document" data-article-sha256="5ade3118ca127a973d48b9ac2a7d2e9e06853fcc67ac9572f87c95ffd1f121f5">
+  <title>客席が選ぶ横風、盾を回り込む一球</title>
+  <desc>屋内コートの左側で、青緑のユニフォームの選手が横へ踏み込み、腕のセンサーを前に向けて投げる。右側の赤いユニフォームの相手は半透明の光の盾を正面に立てるが、水色の光球は高い曲線を描いて盾の外側を回り込む。奥の客席では複数の観客がスマートフォンを持つ。光球・軌道・盾はAR越しの競技を表した描写で、現実の風や物理的な球を描いた写真ではない。読み取れる文字・ロゴ・実在人物はない。</desc>
+  <defs>
+    <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#e2e7df"/><stop offset="1" stop-color="#f0eee4"/></linearGradient>
+    <linearGradient id="court" x2="0" y2="1"><stop stop-color="#e4ddcc"/><stop offset="1" stop-color="#f2eadb"/></linearGradient>
+    <linearGradient id="shield" x2="1" y2="0"><stop stop-color="#60bec0" stop-opacity=".12"/><stop offset="1" stop-color="#268c9b" stop-opacity=".3"/></linearGradient>
+    <radialGradient id="ball"><stop stop-color="#fffdf2"/><stop offset=".42" stop-color="#ccf0e3"/><stop offset="1" stop-color="#4fb4ba"/></radialGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#wall)"/>
+  <path d="M0 38h1200M0 98h1200" fill="none" stroke="#bdc9c0" stroke-width="3"/>
+  <path d="M58 0v112m271-112v112m271-112v112m271-112v112m271-112v112" fill="none" stroke="#c9d2c8" stroke-width="7"/>
+  <path d="M0 150h1200v121H0z" fill="#627b73"/>
+  <path d="M0 192h1200m-1200 48h1200" stroke="#7b9186" stroke-width="7"/>
+  <!-- Spectators vote from the seating behind the physical court. -->
+  <g stroke="#3f5550" stroke-width="3" stroke-linejoin="round">
+    <path d="M45 213l7-41q23-17 47 0l9 41" fill="#b9bcab"/><circle cx="77" cy="151" r="17" fill="#d0a88a"/>
+    <path d="M58 177l-13 7-7-35m53 28 18 13 14-30" fill="none" stroke="#d0a88a" stroke-width="11" stroke-linecap="round"/>
+    <rect x="27" y="124" width="19" height="30" rx="3" fill="#263f40" transform="rotate(-9 36 139)"/><path d="M32 132h10v13H32z" fill="#c5ddd2" stroke="none"/>
+    <path d="M136 214l10-39q24-18 45 0l8 39" fill="#c28b63"/><circle cx="167" cy="153" r="17" fill="#ddb998"/>
+    <path d="M143 179l-10-22m50 22 16-10 2-26" fill="none" stroke="#ddb998" stroke-width="11" stroke-linecap="round"/>
+    <rect x="201" y="117" width="18" height="29" rx="3" fill="#263f40"/><path d="M205 124h10v14h-10z" fill="#c5ddd2" stroke="none"/>
+    <path d="M231 214l9-43q23-13 46 2l8 41" fill="#97aca5"/><circle cx="261" cy="150" r="18" fill="#b88769"/>
+    <path d="M244 177l-15-11-3-28m51 40 16 13" fill="none" stroke="#b88769" stroke-width="11" stroke-linecap="round"/>
+    <rect x="215" y="112" width="19" height="29" rx="3" fill="#263f40"/><path d="M220 119h9v14h-9z" fill="#c5ddd2" stroke="none"/>
+    <path d="M327 214l8-39q23-15 44 0l9 39" fill="#bfaa8b"/><circle cx="357" cy="152" r="18" fill="#dfb896"/>
+    <path d="M377 178l18-21 0-20" fill="none" stroke="#dfb896" stroke-width="11" stroke-linecap="round"/>
+    <rect x="386" y="113" width="19" height="29" rx="3" fill="#263f40"/><path d="M391 120h9v14h-9z" fill="#c5ddd2" stroke="none"/>
+    <path d="M1060 215l8-42q25-15 48 1l8 41" fill="#c29e85"/><circle cx="1092" cy="151" r="18" fill="#c99e7f"/>
+    <path d="M1072 179l-19-16-2-23" fill="none" stroke="#c99e7f" stroke-width="11" stroke-linecap="round"/>
+    <rect x="1041" y="115" width="19" height="29" rx="3" fill="#263f40"/><path d="M1046 122h9v14h-9z" fill="#c5ddd2" stroke="none"/>
+    <path d="M1141 216l9-43q21-13 42 0l8 43" fill="#9dafa4"/><circle cx="1171" cy="153" r="17" fill="#dfb998"/>
+  </g>
+  <path d="M0 222h1200v19H0z" fill="#d2d8cc"/>
+  <path d="M0 240h1200v36H0z" fill="#405e57"/>
+  <path d="M0 278h1200v397H0z" fill="url(#court)"/>
+  <path d="M0 330h1200M0 397h1200M0 480h1200M0 586h1200" stroke="#d9cfbc" stroke-width="2"/>
+  <path d="M147 304h904l132 316H20z" fill="none" stroke="#78948a" stroke-width="5"/>
+  <path d="M601 304v316" fill="none" stroke="#78948a" stroke-width="4"/>
+  <path d="M601 386c-114 0-168 31-168 70s54 72 168 72 169-33 169-72-55-70-169-70z" fill="none" stroke="#a2b3a5" stroke-width="4"/>
+  <!-- Two smaller teammates establish the match without crowding the main action. -->
+  <g stroke="#344d47" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="120" cy="408" rx="57" ry="12" fill="#59675b" opacity=".13" stroke="none"/>
+    <path d="M106 342l-14 58-16 8m51-66 20 53 14 7" fill="none" stroke="#355a56" stroke-width="14"/>
+    <path d="M96 285l29-6 18 64-51 3z" fill="#438c85"/><path d="M98 292l-17 24-13-12m62-12 20 14 16-7" fill="none" stroke="#ca9d7e" stroke-width="11"/>
+    <circle cx="108" cy="261" r="20" fill="#ca9d7e"/><path d="M90 251q15-22 34-4" fill="#34413c"/>
+    <rect x="91" y="254" width="35" height="13" rx="4" fill="#244a50"/><path d="M97 258h22" stroke="#a8d5d0" stroke-width="3"/>
+    <ellipse cx="1077" cy="434" rx="57" ry="12" fill="#59675b" opacity=".13" stroke="none"/>
+    <path d="M1066 367l-18 56-15 7m51-65 17 56 14 7" fill="none" stroke="#6d4d44" stroke-width="14"/>
+    <path d="M1047 307l31-6 24 67-55 4z" fill="#b56b54"/><path d="M1050 312l-25 18-17-14m76-7 14 14 21-4" fill="none" stroke="#d5aa87" stroke-width="11"/>
+    <circle cx="1061" cy="282" r="20" fill="#d5aa87"/><path d="M1043 274q13-21 34-5" fill="#3e4037"/>
+    <rect x="1044" y="276" width="35" height="13" rx="4" fill="#244a50"/><path d="M1050 280h22" stroke="#a8d5d0" stroke-width="3"/>
+  </g>
+  <!-- Foreground attacker: distinct front arm, wrist sensor, and side lunge. -->
+  <ellipse cx="329" cy="584" rx="169" ry="21" fill="#677363" opacity=".17"/>
+  <g stroke="#344c47" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M303 442l-52 78-82 44 13 22 104-42 64-78" fill="#375b57"/>
+    <path d="M351 449l50 56 47 69-21 14-66-68-48-45" fill="#31524e"/>
+    <path d="M169 561l24 20-15 18-48-2q-13-9 3-17z" fill="#ececdf"/>
+    <path d="M428 570l29 3 28 22q6 11-12 12h-48l-12-15z" fill="#ececdf"/>
+    <path d="M285 335l43-15 55 97-28 57-74-21-18-58z" fill="#3f8981"/>
+    <path d="M285 344l-38 45-45-16" fill="none" stroke="#d5a381" stroke-width="28"/>
+    <path d="M333 339l51 15 60-37" fill="none" stroke="#d5a381" stroke-width="28"/>
+    <path d="M443 319l23-10 12-14 18 1 0 13-15 13-24 8" fill="#d5a381"/>
+    <path d="M430 316l12 20 18-11-11-20z" fill="#294e53"/>
+    <path d="M439 316l8 13 7-4-8-13z" fill="#9bc9c1" stroke="none"/>
+    <path d="M296 319l-3-18 25-8 11 31" fill="#d5a381"/>
+    <path d="M279 284q-17-32 3-54 27-21 54 4 17 23 2 49l-24 26z" fill="#d5a381"/>
+    <path d="M279 264q-16-20 4-39 32-22 52 8l4 14-28-11-28 13" fill="#34443d"/>
+    <path d="M279 250l55-6 10 25-58 7z" fill="#254e54"/>
+    <path d="M288 256l40-4 6 12-42 5z" fill="#96c9c8" stroke="none"/>
+    <path d="M330 284l-12 4" fill="none" stroke-width="4"/>
+    <path d="M279 236l-17 20-9 26" fill="none" stroke="#34443d" stroke-width="15"/>
+  </g>
+  <!-- Defender faces the attacker; the light shield belongs to the AR view. -->
+  <ellipse cx="883" cy="571" rx="136" ry="20" fill="#677363" opacity=".17"/>
+  <g stroke="#514c41" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M866 434l-39 68-55 55 21 20 64-55 41-64" fill="#765149"/>
+    <path d="M901 440l39 49 25 67-25 11-38-66-35-38" fill="#82594d"/>
+    <path d="M771 555l26 19-11 18h-45q-13-8-2-18z" fill="#f0ebdc"/>
+    <path d="M940 555l26-6 32 24q9 13-7 15h-50l-7-16z" fill="#f0ebdc"/>
+    <path d="M851 328l41-13 31 84-22 62-63-18-15-66z" fill="#b9614e"/>
+    <path d="M855 339l-41 15-30-31" fill="none" stroke="#d0a17f" stroke-width="26"/>
+    <path d="M784 327l-10-28 4-21 14-1 6 19 2 21" fill="#d0a17f"/>
+    <path d="M777 312l23-3 4 15-24 4z" fill="#2b4d51"/>
+    <path d="M891 337l41 24 14 40" fill="none" stroke="#d0a17f" stroke-width="26"/>
+    <path d="M859 318l-3-17 23-9 11 24" fill="#d0a17f"/>
+    <path d="M842 278q-4-29 16-40 26-10 43 14 11 26-13 47l-24 7z" fill="#d0a17f"/>
+    <path d="M844 261q-12-27 13-32 28-4 41 20l-24-8-25 14z" fill="#4b4437"/>
+    <path d="M840 260l52-1 3 24-54 0z" fill="#254e54"/>
+    <path d="M845 266h40l3 10h-43z" fill="#9ac9c5" stroke="none"/>
+    <path d="M851 294l9 3" fill="none" stroke-width="4"/>
+  </g>
+  <path d="M742 238q-73 22-77 104-2 92 77 144l65-27V253z" fill="url(#shield)" stroke="#3b9ca8" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M741 256q-53 21-57 88-1 68 58 112" fill="none" stroke="#d3efdf" stroke-width="6" stroke-linecap="round"/>
+  <path d="M756 259v199m23-192v183" fill="none" stroke="#bce0d6" stroke-width="3" opacity=".7"/>
+  <!-- The same visible trajectory clears the shield, then bends back toward the defender. -->
+  <path d="M493 304C584 179 709 133 843 156S1019 266 968 359" fill="none" stroke="#daeee0" stroke-width="22" stroke-linecap="round" opacity=".8"/>
+  <path d="M493 304C584 179 709 133 843 156S1019 266 968 359" fill="none" stroke="#319ca9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M512 311C602 198 711 153 840 178" fill="none" stroke="#78b7b3" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  <path d="M974 339l-7 24 22-13" fill="none" stroke="#319ca9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="955" cy="380" r="34" fill="#b7e5da" opacity=".55"/>
+  <circle cx="955" cy="380" r="22" fill="url(#ball)" stroke="#2c8c9b" stroke-width="4"/>
+  <circle cx="949" cy="374" r="7" fill="#fffdf1"/>
+  <path d="M919 394l-9 5m59 12 6 11m5-46 13-3" stroke="#51a9ad" stroke-width="4" stroke-linecap="round"/>
+</svg>
