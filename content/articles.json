@@ -1,5 +1,71 @@
 [
   {
+    "slug": "solar-window-glass-factory-first-eight-panels",
+    "category": "経済",
+    "flash": "窓ガラスが発電、出荷検査へ",
+    "fiction_company": "架空の建材メーカー「窓灯」と架空の部品工場「浜野精機」",
+    "art": "cards",
+    "fiction_at": "2031-11-12T15:35:00+09:00",
+    "published_at": "2026-11-12T15:35:00+09:00",
+    "title": "発電する窓ガラス、工場向けに発売　初出荷の8枚を光で検品",
+    "summary": "架空の建材メーカー「窓灯」が、光を通しながら発電する窓ガラス「灯窓」を発売。出荷場で8枚の電線を電力計につないで検品し、部品工場の南壁へ納めた。窓ガラスの代金に加えて、発電した電気を取り出す配線工事も請求書に載った。",
+    "paragraphs": [
+      "2031年、架空の建材メーカー「窓灯」の出荷場で、作業員が透明な窓ガラス8枚を金属の棚に立て、1枚ずつ端の電線を電力計につないだ。検査用のライトを当てると数字が動いた。同社は、外の光を通しながら電気もつくる窓ガラス「灯窓」を発売し、最初の出荷を始めた。",
+      "灯窓は、2枚のガラスの間に光の一部を電気へ変える薄い層を挟んだ建材だ。普通の窓は外の光を室内へ通すが、この窓は電気も取り出せる。出荷場では作業員が同じ距離からライトを当て、8枚それぞれが発電するかを確かめた。検査が済むと、窓枠の内側へ収める電線に番号を付け、ガラスを保護材で包んだ。",
+      "検査済みの8枚は、架空の部品工場「浜野精機」へ運ばれた。工場は明るさを保ちながら電気もつくりたいと考え、窓枠の大きさを測って8枚を注文した。南側の壁に届いたガラスを、窓灯が手配した施工業者が1枚ずつ運び上げた。業者は古い窓を外し、灯窓を窓枠にはめて固定した。その後、窓の端から出る電線を壁沿いに通し、建物の電気設備へ接続した。",
+      "設置後、窓灯の営業担当は、ガラス8枚の代金とは別に、配線と接続工事の費用を請求書へ載せた。従来の窓の商談では明るさや断熱性が中心だったが、新製品では発電した電気を建物のどこへ送るかも確認する。窓を売る会社と、電気設備を取り付ける会社が同じ図面を囲むことになった。",
+      "取り付けを終えた午後、部品工場の窓から日が差し、電気設備の表示にも窓からの発電が現れた。窓灯の出荷伝票には「窓ガラス8枚」。その下には、以前はなかった「電源接続8か所」という行が並んだ。窓が、外を見る以外の仕事を持ち始めた。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "パナソニック ホールディングス株式会社",
+      "published_at": "2026-10-20T00:00:00+09:00",
+      "url": "https://news.panasonic.com/jp/press/jn261020-1",
+      "topic": "2026年10月20日、パナソニックHDはガラス型ペロブスカイト太陽電池の本格量産開始を当初予定より1年前倒しし、2029年4月から長浜拠点で開始する計画を発表した。2026年9月に先行量産品の販売を始め、窓や壁などに用いる建材一体型の発電ガラスの量産・施工技術を開発している。2031年の窓灯・灯窓・浜野精機、8枚の出荷・検査・設置は創作であり、パナソニックの将来発表ではない。"
+    },
+    "scene_prompt": "Photorealistic unposed press photograph inside an ordinary Japanese industrial glass factory shipping area in daytime. A fictional adult Japanese factory technician in safety gloves stands at a metal rack of upright transparent photovoltaic window glass panels, clipping the thin cable from one foreground glass pane to a small practical electricity meter, with an ordinary inspection light nearby. Several other clean glass panels are lined up behind. Concrete floor, realistic reflections and wiring, natural factory lighting, candid documentary composition, 16:9 landscape. Avoid readable text, logos, known people, artificial lighting effects and a promotional advertising look.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "発電ガラス",
+      "建材",
+      "工場"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "発電ガラス",
+      "建材"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "窓ガラスの出荷検査に電力計。2031年、工場向けの窓は『光を通す』だけでなく『電気をつくる』まで確かめてから出荷される。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年10月にガラス型ペロブスカイト太陽電池の2029年4月量産開始計画が公表され、窓や壁を発電場所にする建材技術が先行販売段階にある",
+      "target": "産業用窓ガラスを採光と発電の両方を担う新製品として出荷する建材会社",
+      "action": "窓灯がガラス8枚の発電を検品して浜野精機へ納品し、施工業者が窓枠と電気設備を接続する",
+      "outcome": "工場の南壁に採光と発電をする窓が並び、出荷伝票にはガラス8枚と電源接続8か所が並ぶ"
+    },
+    "reader_clarity": {
+      "who": "建材メーカー「窓灯」",
+      "action": "発電する窓ガラス8枚を検品し、部品工場の壁へ出荷した",
+      "oddity": "窓の明るさだけでなく電力計による発電検査と配線工事まで、建材の売買に加わった"
+    },
+    "behavior_basis": {
+      "motive": "採光する窓面を電力の供給にも使う建材を売りたい",
+      "ordinary_alternative": "通常の窓で採光し、屋根などの別の場所に太陽電池を設ける",
+      "why_not": "窓を取り替える工事と発電設備の導入を組み合わせ、屋根以外の面も発電場所として使えるから",
+      "evidence_quote": "工場は明るさを保ちながら電気もつくりたいと考え、窓枠の大きさを測って8枚を注文した。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年9月にガラス型ペロブスカイト太陽電池が先行量産販売され、10月に2029年4月本格量産計画が公表された",
+      "continuation_force": "発電用ガラスの施工技術と量産が進み、窓・壁の建材市場へ用途が広がる",
+      "future_result": "2031年には発電ガラスの出荷検査と配線工事を含む産業向け製品販売が始まる"
+    }
+  },
+  {
     "slug": "aerobics-final-silent-thirty-seconds-team-comeback",
     "category": "スポーツ",
     "flash": "無音30秒で3人が逆転",
