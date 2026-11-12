@@ -4602,6 +4602,144 @@
       },
       "previous_generation_commit": "e70598ee85fafe49a67b0e79ac5b3201bce6dfb6",
       "previous_generation_publication_status": "unreviewed_main_candidate"
+    },
+    "comedy-live-subtitles-spoil-punchlines-three-seconds": {
+      "article_sha256": "d81be2e8eb20c924161df082343b13c7f4b754ac00b7d6708dfdb0846e784d26",
+      "bytes": 108266,
+      "generated_at": "2026-11-12T12:45:12.368Z",
+      "generation_id": "724ac104-336b-4afe-b5e2-2fb55e3bb685",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Create a horizontal 16:9 candid documentary press photograph inside a small Japanese comedy theater. A fictional Japanese male comedian aged 28 in ordinary dark casual stage clothes is actively holding his handheld wired microphone upward toward the wide electronic subtitle screen suspended above the stage, treating the screen as his comedy partner. Show his face, the natural grip of his hand, the microphone, and the overhead screen together clearly. A second fictional adult Japanese male comedy partner stands beside him, reacting with a spontaneous amused expression while speaking, as audience heads are visible along the lower edge. The overhead screen is physically mounted, with softly blurred white subtitle-like lines on a dark background; no legible wording is needed. Simple theater curtains and an ordinary small stage, realistic warm venue spotlights and natural shadows. Candid eye-level press photography from the audience, believable human anatomy and hands, natural skin pores, hair, cotton fabric, microphone metal and cable, honest unposed expressions. All main action must remain clear in a 1200 by 675 crop. A real camera photograph look, no CGI, no cartoon, no illustrated poster, no logos, no watermark, no readable text, no recognizable real person. The specific news action is a comedian inviting an overhead subtitle board to answer into his microphone while his partner responds aloud.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:724ac104-336b-4afe-b5e2-2fb55e3bb685",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "041e902f687e3f7114d755e6593e44b98abd941819c4843ef9e34d617672f07f",
+      "source_article_sha256": "d81be2e8eb20c924161df082343b13c7f4b754ac00b7d6708dfdb0846e784d26",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:4e620a97-3e4c-4997-bcca-e9cf0b0e6ef2",
+        "instanceID": "xmp:iid:724ac104-336b-4afe-b5e2-2fb55e3bb685",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              110,
+              119,
+              164,
+              227,
+              162,
+              88,
+              172,
+              45,
+              111,
+              11,
+              3,
+              240,
+              186,
+              10,
+              254,
+              179,
+              69,
+              210,
+              227,
+              196,
+              212,
+              138,
+              183,
+              108,
+              189,
+              216,
+              71,
+              74,
+              134,
+              127,
+              214,
+              207
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-12T12:45:06.845342597Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T12:45:06.845348057Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T12:45:06.841200378Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2010269,
+        "caBX_sha256": "1bc34dd6f225ea412563780a11ebafa93c5d80d5a8a328991e11778b63d7186e",
+        "candidate_branch": "native-image-candidate/comedy-live-subtitles-spoil-punchlines-three-seconds/d81be2e8eb20c924-ad20f0ee254a",
+        "candidate_commit": "f880417af0eb67f026d547cc08e43f793e83f025",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "user-review-photo-repair-2026-11-12-4b854b407f1d",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/comedy-live-subtitles-spoil-punchlines-three-seconds/source.png.part000",
+            "bytes": 524288,
+            "sha256": "808e0b052985421bc164242749149fa3c789f853b41717388ff83e17f1dab3c4",
+            "blob_sha": "60eb42b35262ff24c26e5923142c668d21f099ad"
+          },
+          {
+            "path": "maintenance/native-image-candidates/comedy-live-subtitles-spoil-punchlines-three-seconds/source.png.part001",
+            "bytes": 524288,
+            "sha256": "d2fc675604682e7f7ed1610abeff713d268eb96b9a87220df3347f9fe41f334a",
+            "blob_sha": "ae3fea7a0859c9e904aea111932ea12b2cd362eb"
+          },
+          {
+            "path": "maintenance/native-image-candidates/comedy-live-subtitles-spoil-punchlines-three-seconds/source.png.part002",
+            "bytes": 524288,
+            "sha256": "e30610de90bb1b70fbc9968a39720493d30feb0c52e0ddf873a5b2e792d1cf23",
+            "blob_sha": "a7fc818f9c0be40e81d75d450658675f7c6fb093"
+          },
+          {
+            "path": "maintenance/native-image-candidates/comedy-live-subtitles-spoil-punchlines-three-seconds/source.png.part003",
+            "bytes": 437405,
+            "sha256": "c45f64c256378c96cbbd2901d1d2cd8a53faf95281e82d718dee44b2950cc595",
+            "blob_sha": "fc55f43d681408f52f4c0dd392838c71378e9f2e"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/comedy-live-subtitles-spoil-punchlines-three-seconds/receipt.json",
+        "receipt_sha256": "04d5681cd36d930bdbf43ea7aff6ed25c928785f8bbeb9366ef429d4c9d82208",
+        "width": 1672
+      },
+      "source_png_sha256": "2f35e58194331c92c68f901040cfda554cfe078e7877c160f7e761223aace1e6",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     }
   },
   "rejected": {
