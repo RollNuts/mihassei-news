@@ -1,5 +1,68 @@
 [
   {
+    "slug": "comedy-live-subtitles-spoil-punchlines-three-seconds",
+    "category": "エンタメ",
+    "flash": "字幕が先に笑いを取る夜",
+    "fiction_company": "架空の笑路劇場と漫才コンビ『折返し』",
+    "art": "cards",
+    "fiction_at": "2031-11-12T19:43:00+09:00",
+    "published_at": "2026-11-12T19:43:00+09:00",
+    "title": "漫才ライブ、字幕がオチを3秒先取り　芸人が画面へマイクを向けて反撃",
+    "summary": "笑路劇場が、台本のせりふを3秒先に映す「先読み字幕」を試した。オチを先に読んだ客が笑い始めると、出演者は字幕板にマイクを向けて台本にない相づちを求め、客席を沸かせた。",
+    "paragraphs": [
+      "笑路劇場の漫才ライブで、舞台上の字幕板にオチの一文が3秒早く現れた。漫才コンビ「折返し」の早瀬柊（28）が口を開く前に客席が笑い、早瀬は出しかけた声を飲み込んで画面を見上げた。",
+      "劇場はこの日、台本のせりふを舞台の上に吊った横長の画面へ3秒先に出す「先読み字幕」を試験導入した。客が文字を読む時間を取りながら、演者の顔や動きにも目を向けられるようにする狙いだ。字幕係はリハーサルで決めた順番と時刻に合わせ、台本の一行ずつを送る。",
+      "最初のネタで相方が「今日からツッコミを一人増やした」と言うと、字幕板には続きの「この画面です」が先に映った。早瀬が画面を指さすより早く客席から笑いが起きる。早瀬は人差し指を上げたまま「指が遅れた」とつぶやき、今度はその一言で笑いが広がった。",
+      "次のやり取りで早瀬は予定のせりふをやめ、持っていたマイクを字幕板へ向けた。「次のツッコミ、どうぞ」。台本にない呼びかけなので字幕係は送る行を見つけられず、画面には直前の文字が残った。隣の相方が「そっちは台本がないと喋れないぞ」と返すと、客席は画面より先に笑った。",
+      "最後のあいさつになると、字幕板に「ありがとうございました」がまた3秒先に現れた。早瀬はその言葉を口にせず、相方と並んで画面に向かって深く頭を下げた。客席からの拍手は、二人が頭を下げた瞬間に始まった。"
+    ],
+    "source": {
+      "kind": "生活・文化",
+      "publisher": "独立行政法人日本芸術文化振興会",
+      "published_at": "2026-01-07T00:00:00+09:00",
+      "url": "https://www.ntj.jac.go.jp/schedule/nou/2026/85031/",
+      "topic": "日本芸術文化振興会の2026年1月7日掲載の国立能楽堂11月11日定例公演案内には、日本語・英語字幕ありと明示。別途、渋谷区文化総合センター大和田の公式行事案内（https://shibu-cul.jp/event/53098）で2026年11月12日・13日19時30分開演のお笑い単独ライブが予定されていることを確認。いずれも2031年の先読み字幕、3秒先の台本表示、漫才コンビ、台詞、舞台での騒動の事実ではない。"
+    },
+    "scene_prompt": "Photorealistic candid Japanese comedy club press photograph, a fictional 28-year-old adult Japanese male stand-up performer in ordinary dark casual stage clothes on a small theater stage, actively pointing a handheld microphone toward a wide overhead electronic subtitle display, second adult male comedy partner laughing beside him, real wired microphones and simple stage curtains, blurred white unreadable lines on the display, audience heads at the bottom. Natural warm venue lighting, honest expressions and hands, documentary realism, landscape 16:9, no legible text, logos or real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "ライブ",
+      "字幕",
+      "お笑い"
+    ],
+    "satire_tags": [
+      "先回り"
+    ],
+    "x_tags": [
+      "漫才",
+      "字幕"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "オチが3秒先に字幕に出る漫才ライブ。芸人が字幕板にマイクを向けた瞬間、ようやく笑いが舞台へ戻った。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年の国立能楽堂の公演案内には日本語・英語字幕の提供が明示され、11月12日夜には実際のお笑い単独ライブも予定されている",
+      "target": "舞台の台詞を読みやすくする先読み字幕と、生の笑いの間合い",
+      "action": "架空の劇場が台本に沿う3秒早い字幕を試し、漫才師が画面にマイクを向けて台本にない返答を要求する",
+      "outcome": "字幕がオチを先取りして客が笑い、即興の反撃では字幕が止まり、客が演者の動きに合わせて笑う"
+    },
+    "reader_clarity": {
+      "who": "笑路劇場",
+      "action": "台詞を3秒先に出す字幕を導入した舞台で、芸人が画面にマイクを向けて反撃した",
+      "oddity": "字幕がオチを先取りして客を笑わせ、台本外の一言には追い付けなくなった"
+    },
+    "behavior_basis": {
+      "motive": "劇場は文字を読む時間と演者の表情を見る時間を両立させたくて先読み字幕を試した",
+      "ordinary_alternative": "台詞と同時か後から字幕を表示する通常の字幕",
+      "why_not": "文字を先に示せば客は舞台上の表情と動作に目を戻せると考えたが、漫才のオチまで先に伝わった",
+      "evidence_quote": "客が文字を読む時間を取りながら、演者の顔や動きにも目を向けられるようにする狙いだ。"
+    }
+  },
+  {
     "slug": "craft-exhibition-empties-as-works-finish",
     "category": "社会",
     "flash": "完成すると消える工芸展",
