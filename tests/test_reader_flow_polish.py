@@ -4,6 +4,7 @@ All checks are local: no analytics writes, paid APIs, or deployment needed.
 """
 import copy
 import re
+from html import escape as escape_html
 import unittest
 
 from scripts.build import CATEGORIES, archive, load, story
@@ -81,7 +82,7 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertEqual(page.count('data-bookmark-slug="' + item["slug"] + '"'), 1)
         self.assertEqual(page.count('<details class="source-context"'), 1)
         self.assertIn('<summary>着想元を見る</summary>', page)
-        self.assertIn(item["source"]["url"], page)
+        self.assertIn(escape_html(item["source"]["url"], quote=True), page)
         from scripts.editorial_copy import source_reader_copy
         self.assertIn(source_reader_copy(item["source"]["topic"]), page)
         self.assertIn("着想元は、この記事の出来事を報じたものではありません", page)
