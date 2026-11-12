@@ -1,5 +1,12 @@
 {
   "reviews": {
+    "solar-window-glass-factory-first-eight-panels": {
+      "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+      "decision": "rejected",
+      "image_sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838",
+      "reviewed_at": "2026-11-12T08:07:21.895Z",
+      "note": "現公開記事の全文とscene_promptに対して無料CPUの実JPEG（800×448、165057 bytes、SHA 30446d85a5dd）を表示して照合。工場の天井灯と二人の作業服姿の人物・ガラスの仕切りは写るが、主役の棚に立てた発電窓8枚の検品、窓端の電線を電力計へつなぐ手の動作、電力計、検査ライトが確認できない。右の作業員は小さい板状のものを持ち、検品の因果が読めない。背景だけが似る画像では記事の中心場面を伝えられず不採用。原JPEGと元manifest・整数seedは不変で保持し、本文に適合する既存フォールバックを維持する。図：不要（窓端の配線と設置後の接続の順番は本文で追える）。"
+    },
     "aerobics-final-silent-thirty-seconds-team-comeback": {
       "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
       "decision": "rejected",
