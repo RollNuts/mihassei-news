@@ -1,5 +1,70 @@
 [
   {
+    "slug": "aerobics-final-silent-thirty-seconds-team-comeback",
+    "category": "スポーツ",
+    "flash": "無音30秒で3人が逆転",
+    "fiction_company": "架空のエアロビック競技大会「静拍カップ」",
+    "art": "cards",
+    "fiction_at": "2031-11-12T13:33:00+09:00",
+    "published_at": "2026-11-12T13:33:00+09:00",
+    "title": "エアロビ決勝、音楽の止まる30秒で逆転　3人の着地がぴたり",
+    "summary": "架空のエアロビック大会「静拍カップ」の決勝で、3人組「結拍」が音楽の止まる30秒間に動きをそろえ、前半2位から逆転優勝した。最後の跳躍では、3人の靴底が同時に床へ着いた。",
+    "paragraphs": [
+      "架空のエアロビック大会「静拍カップ」の決勝で、3人組「結拍」が音楽の止まる30秒間に跳び上がり、3人同時に床へ着地した。無音区間の動きをそろえた演技が高く評価され、結拍は前半2位から逆転優勝した。",
+      "エアロビックは、音楽に合わせて跳躍や腕・脚の動きを披露し、技と表現を競うスポーツだ。静拍カップでは今季、3人組の演技途中で伴奏を30秒間止める独自ルールを導入した。曲はどのチームも同じ合図で止まり、無音の間も演技は続く。採点するのは3人の動きがそろっているかと、姿勢を崩していないかだ。",
+      "前半の得点発表で結拍は2位。主将の朝霧凛（27）は中央、仲間の2人は左右に立った。曲が流れる間に3人は横へ二歩ずつ踏み、腕を広げた。舞台脇の白いランプが点灯すると伴奏が途切れた。凛は右隣の選手の肩の動きを見て、自分も膝を曲げた。",
+      "3人は呼吸を合わせて小さく踏み込み、腕を順に上げた。最後の動きは、片足を上げてから3人同時に跳び、着地で両手を止めるものだ。右端の選手が半歩前へ出かけたが、凛の肩の高さを見て位置を戻した。3人の靴底が同じ瞬間に床へ着くと、客席から息を吸う音が聞こえた。",
+      "伴奏が再開すると、3人は残りの演技を踊りきった。得点表示では無音区間の動きが高く評価され、結拍が首位に上がった。優勝が告げられた直後、客席は一瞬静かになり、3人が手をつないで跳び上がってから大きな拍手が始まった。今度は観客の方が一拍遅れた。"
+    ],
+    "source": {
+      "kind": "競技団体発表",
+      "publisher": "公益社団法人日本エアロビック連盟",
+      "published_at": "2026-11-11T09:30:00+09:00",
+      "url": "https://www.kyodo.co.jp/pr/2026-11-11_4048437/",
+      "topic": "日本エアロビック連盟が2026年11月11日に発信した大会案内では、第43回全日本総合エアロビック選手権大会『スズキジャパンカップ2026』を11月14・15日に東京都大田区の体育館で開催すると説明。競技としてのエアロビックと全国大会は実在するが、2031年の静拍カップ、無音30秒の独自採点ルール、結拍、朝霧凛、決勝の得点・順位・会話・結果は全て架空であり、実在大会や連盟の発表・記録ではない。"
+    },
+    "scene_prompt": "Photorealistic candid sports press photograph inside an ordinary Japanese indoor arena: three fictional adult Japanese aerobic gymnastics athletes in matching unbranded plain navy-and-white athletic leotards perform a precisely synchronized final landing on a competition floor, arms held firmly to the sides, the 27-year-old female captain in the middle, two other adult teammates on each side. Full-body view, natural movement and athletic tension, no speakers or imaginary visual effects needed to depict the silent music segment, quiet audience in background, realistic skin, hands, fabric, shadows and arena lighting. Landscape 16:9 sports documentary photo; no logos, labels, readable text, or famous people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "エアロビック",
+      "無音演技"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "エアロビック",
+      "演技"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "曲が止まっても演技は止まらない。3人の足が同時に床へ着き、無音の30秒で逆転した2031年のエアロビ決勝。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "wildcard",
+    "editorial_payoff": "wordplay",
+    "editorial_signature": {
+      "present": "2026年11月に日本エアロビック連盟が2日間の全国大会を案内し、技と表現を競う競技が続いている",
+      "target": "音楽のない30秒間の技と同調を採点する架空の3人組エアロビ決勝",
+      "action": "架空のチーム結拍が伴奏停止後、肩の高さと呼吸を合わせて動き、最後に3人同時に着地する",
+      "outcome": "無音区間の演技で前半2位から逆転優勝し、会場の拍手だけが一拍遅れる"
+    },
+    "reader_clarity": {
+      "who": "3人組「結拍」",
+      "action": "伴奏が止まる30秒間に呼吸と肩の動きを合わせて跳躍し、着地をそろえた",
+      "oddity": "無音の演技が逆転優勝を決め、音楽が戻った後の拍手は観客の方が一拍遅れた"
+    },
+    "behavior_basis": {
+      "motive": "音楽に頼らずチームの同調と身体技術を見せ、静かな緊張のある決勝を競いたい",
+      "ordinary_alternative": "全区間を音楽に合わせて演技し、跳躍と表現を競う",
+      "why_not": "伴奏を止めて同調を独立評価すると、選手の目線・呼吸・動きの正確さそのものが勝負になる",
+      "evidence_quote": "曲はどのチームも同じ合図で止まり、無音の間も演技は続く。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月に日本エアロビック連盟が全日本選手権を開催すると発表し、エアロビック競技の全国大会が継続している",
+      "continuation_force": "音楽と身体動作を組み合わせる競技で、チームの動きの一致をより明瞭に見せる独自大会形式への関心が生まれる",
+      "future_result": "2031年の架空大会で無音30秒を競う3人組部門が生まれ、着地をそろえたチームが決勝を逆転する"
+    }
+  },
+  {
     "slug": "three-towns-share-mobile-event-radio",
     "category": "政治",
     "flash": "3町で持ち回る放送局",
