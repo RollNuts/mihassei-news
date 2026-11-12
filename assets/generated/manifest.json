@@ -3277,6 +3277,33 @@
       "source_article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "source_png_sha256": "301c387e5e268ac5f26fe798bb502d07266380c7e9b8b9c89fe631ea53fb3756"
     },
+    "tunnel-robots-pass-concrete-pour-three-sections": {
+      "article_sha256": "87aae1fc3b5fdef9cc77b80607ba6697c3ddc66f242254eaa79b72b1c19a0068",
+      "bytes": 134268,
+      "generated_at": "2026-11-12T01:09:02.083162+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5261942944382346836,
+      "sha256": "fa84df797a01508c6dd865851a4af8f240dcf8a5c3a8753e2d16536e34211b4f"
+    },
     "unsold-coat-storage-fees-exceed-sale": {
       "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
       "bytes": 117616,
