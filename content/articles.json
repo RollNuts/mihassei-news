@@ -12,7 +12,7 @@
     "paragraphs": [
       "丘波町の体育館で、町の広報担当・三嶋沙紀（31）が折りたたみ机に黒い送信機とマイクを並べた。送信機から伸びるケーブルは、体育館の外に立てた小さなアンテナにつながっている。丘波町と隣の2町は、小規模な行事の案内をラジオで流す機材を共同保有する協定と予算をそれぞれの町議会で可決し、最初の放送日を迎えた。",
       "これまでは、催しのたびに各町が放送機材を借り、無線の資格を持つ操作担当者を探していた。新しい協定では、送信機、アンテナ、マイクを一組だけ購入し、3町が日程を調整して使う。放送する催しごとに必要な手続きを取り、実際に電波を出す操作は資格を持つ職員が担当する。機材だけ買って保管庫に眠らせず、各町で扱える職員を育てるのも協定の目的だ。",
-      "午前10時、送信準備を終えた三嶋がマイクの前に座り、体育館に隣接する農産物市の案内を読み上げた。会場の誘導係は手持ちラジオで放送を聞き、西側の駐輪場へ向かう人に入口を指さした。放送を聞き終えた出店者は、台の上の野菜箱を入口側へ一つ動かした。町の職員たちは、声が届く場所と聞こえにくい場所を歩いて確かめ、次回の配置図に書き込んだ。",
+      "午前10時、送信準備を終えた三嶋がマイクの前に座り、体育館に隣接する農産物市の案内を読み上げた。会場の誘導係は手持ちラジオで放送を聞き、西側の駐輪場へ向かう人に入口を指さした。町の職員たちは会場を歩いて放送の聞こえ方を確かめ、よく聞こえる場所と聞こえにくい場所を次回の配置図に書き込んだ。",
       "正午に放送を止めると、三嶋はマイクを箱に戻し、職員がアンテナを畳んだ。ケースに収めた機材は台車に載り、翌週催しを開く隣町の職員へ引き渡された。受け取った職員はマイクの入った箱を抱え、「次はうちの声ですね」と笑った。3町の協定書は体育館に残ったが、放送局の道具は早くも町境を越えた。"
     ],
     "source": {
@@ -20,7 +20,7 @@
       "publisher": "総務省（e-Govパブリック・コメント）",
       "published_at": "2026-11-05T00:00:00+09:00",
       "url": "https://public-comment.e-gov.go.jp/pcm/1040?CLASSNAME=PCM1040&Mode=1&id=145210770",
-      "topic": "2026年11月5日、総務省は電波法施行令の一部を改正する政令案について意見募集結果を公示した。改正は臨時災害放送局・イベント放送局での無線設備操作に必要な資格要件を見直し、同年11月6日に施行された。2031年の町・3町共同保有協定・予算議決・体育館の実放送・人物・発言・効果はすべて架空であり、実在自治体や総務省の事業実績ではない。"
+      "topic": "2026年11月5日、総務省は電波法施行令の一部を改正する政令案について意見募集結果を公示した。改正は臨時災害放送局・イベント放送局での無線設備操作に必要な資格要件を見直すもの。2031年の町・3町共同保有協定・予算議決・体育館の実放送・人物・発言・効果はすべて架空であり、実在自治体や総務省の事業実績ではない。"
     },
     "scene_prompt": "Photorealistic documentary news photograph of a fictional 31-year-old Japanese female municipal staff member operating a compact black FM transmitter and a tabletop microphone on a folding table inside an ordinary Japanese municipal gymnasium at a local produce market event. A second adult municipal radio technician checks a cable that runs toward a small temporary antenna outside the doorway, and a black portable equipment case is on a trolley beside the table. Candid daytime lighting, realistic metal, plastic and skin, believable radio hardware, horizontal 16:9 press photograph, no readable text, no logos or real brands.",
     "visual_strategy": "cpu-photo",
@@ -61,7 +61,8 @@
       "present_signal": "2026年11月、国が臨時放送局の無線設備操作に関する資格要件の一部を見直した",
       "continuation_force": "小規模自治体では催しごとに資格者と機材をそろえる負担が続き、複数自治体で設備と人員を共同運用する動機がある",
       "future_result": "2031年、3町が持ち運べる臨時FM局を共同保有し、必要な手続きと有資格者の操作を守りながら順番に行事を放送する"
-    }
+    },
+    "modified_at": "2026-11-12T03:27:00Z"
   },
   {
     "slug": "tunnel-robots-pass-concrete-pour-three-sections",
