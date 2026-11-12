@@ -2,30 +2,184 @@
   "images": {
     "aerobics-final-silent-thirty-seconds-team-comeback": {
       "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-      "bytes": 160909,
-      "generated_at": "2026-11-12T04:57:21.856074+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 121972,
+      "generated_at": "2026-11-12T08:51:09.275Z",
+      "generation_id": "9a547c42-4700-4a13-b7b3-a5e347e9032f",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: landscape 16:9 candid sports press photograph for a fictional newspaper. Exactly THREE adult Japanese female aerobic gymnastics athletes, all adults around 27 years old, performing one synchronized final landing in an ordinary Japanese indoor competition arena. Only three people are on the performance floor: one captain centrally, one teammate to her left, one teammate to her right. All three complete the same movement at the same instant: both white athletic shoes planted on the floor, knees slightly flexed to absorb landing, upper bodies straight, both arms lowered and held still just out from their sides, realistic intense focused expressions. Their matching modest plain navy-and-white aerobic competition outfits have shorts-length legs, no brands or lettering. All three full bodies and their floor contact points must be visible in one horizontal row with natural spacing. The center captain looks straight ahead while the rightmost teammate glances subtly toward her shoulder for coordination. A small plain white cue lamp is lit at the far side of the performance area; no special sound-wave or silence symbols. Background is a distant softly defocused seated audience well beyond the floor, with no additional athlete, standing person or mirror reflection on the floor. Photograph as a real sports photographer from a low courtside viewpoint, fast shutter, slight natural fabric motion, believable muscles, knees, hands and faces, realistic arena lighting and grounded shadows. Ordinary candid news photograph, not an illustration, CG scene, glossy advertisement, staged studio portrait, or movie poster. No logos, readable text, score overlays, watermarks or identifiable real athlete. The entire visual story is exactly three athletes synchronizing the same landing.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+        "bytes": 160909,
+        "generated_at": "2026-11-12T04:57:21.856074+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 5520453989675686101,
+        "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
+      "previous_visual_hold": {
+        "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+        "reason": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。",
+        "rejected_candidate_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
+        "reviewed_at": "2026-11-12T04:58:27Z",
+        "source_commit": "28b2a47ca295d1d5b08a540cc5a070142ae406f2"
+      },
+      "previous_visual_review": {
+        "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+        "decision": "rejected",
+        "image_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
+        "reviewed_at": "2026-11-12T04:58:27Z",
+        "note": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。"
+      },
       "prompt_version": 3,
-      "seed": 5520453989675686101,
-      "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
+      "sha256": "59efad456c5839ceb4b7cfcb3e44b315287a03398ee9c42763ff015da599e5a3",
+      "source_article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:cbfb09a1-0906-4bfb-afd5-93628488d340",
+        "instanceID": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              55,
+              186,
+              88,
+              28,
+              206,
+              123,
+              154,
+              71,
+              63,
+              10,
+              177,
+              106,
+              199,
+              71,
+              214,
+              132,
+              114,
+              168,
+              18,
+              77,
+              21,
+              10,
+              118,
+              45,
+              34,
+              207,
+              130,
+              55,
+              242,
+              65,
+              144,
+              247
+            ]
+          },
+          "specVersion": "2.2.0",
+          "org.contentauth.c2pa_rs": "0.79.2"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-12T08:51:01.730860858Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T08:51:01.730864014Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T08:51:01.729083457Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 1913585,
+        "caBX_sha256": "bd92de44dc9b034d2920932a143fea0fd875a91886e06b877a3dcf57f5b5ad4b",
+        "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-5a7470aab91c",
+        "candidate_commit": "9e4f55bb9c3db6cc19f2075a5dc766d64ff65aeb",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part000",
+            "bytes": 524288,
+            "sha256": "a57ffd9bf834a7dc5c2928253119e26bd128ef4c03332b02d548924e7e893b46",
+            "blob_sha": "7c52a1c6878bfbeadd78db78dc5bec0975f06a21"
+          },
+          {
+            "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part001",
+            "bytes": 524288,
+            "sha256": "61baa0aa86780004963487a2c449e994622980eef171cfdace9f2cba258a9a8b",
+            "blob_sha": "5b002fdc6d39ca404b7309c57d86b8b46b90c814"
+          },
+          {
+            "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part002",
+            "bytes": 524288,
+            "sha256": "c7096b15eb56f23fd5eb4ccc659f79247baa6eeaca8b93cd93c6847010d0d06a",
+            "blob_sha": "e2332ffe63e4c3b0503aed7bc31ae88c869bf220"
+          },
+          {
+            "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part003",
+            "bytes": 340721,
+            "sha256": "fc5ec39abd7bb1b3d13bf323d5cbd05d4f369e1a095b30315dd55b191105af3f",
+            "blob_sha": "87a44a34f3fc5d102f26845dda8d00189ab00ba5"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/receipt.json",
+        "receipt_sha256": "94caab4821d2cba809282ad62e746a74f275486328d71aecc15bf8b32fd3e083",
+        "width": 1672
+      },
+      "source_png_sha256": "1925a89b0487260dce4dcec51cbb5de2207f1eb621f81078abf0b61d7aacbfa5",
+      "supersedes_reason": "CPU候補は選手4人と異なる姿勢を描き、本文の3人同時の着地と一致しないため不採用。現在の本文を変えず、床上の選手を3人に限定した同じ着地の場面を内蔵画像で生成し、保存した原PNGと最終JPEGを実表示して採用した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "ai-chair-removes-executives": {
       "article_sha256": "debe9196cff8eba02a4055f720b49e5ac16e9ceb1558cb80310fbbc37313efb9",
@@ -3016,30 +3170,190 @@
     },
     "solar-window-glass-factory-first-eight-panels": {
       "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
-      "bytes": 165057,
-      "generated_at": "2026-11-12T07:12:58.841263+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 212117,
+      "generated_at": "2026-11-12T08:49:28.742Z",
+      "generation_id": "b8002ad2-e31e-4469-b81c-f27e13a23fe7",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: landscape 16:9 candid press photograph for a fictional Japanese newspaper article about first shipments of transparent photovoltaic window glass. Photograph a real-looking industrial glass inspection bench in an ordinary Japanese factory in daytime. Main subject in the foreground is ONE large transparent rectangular glazing pane held upright on a practical metal A-frame rack. The glass has a very faint warm grey tint but one can clearly see the factory through it. A small junction tab is physically attached along the lower edge of that pane; TWO thin electrical leads visibly emerge from this tab and connect all the way to the sockets of a handheld digital electrical power meter sitting on the adjacent bench. One fictional adult Japanese technician in plain navy workwear and realistic safety gloves is clipping one lead into the meter. An ordinary portable work inspection lamp on a stand is aimed at this same pane; its realistic white light produces only normal reflections, no visible beam. Several more separate window panes stand behind it on the same rack. Composition is a medium close documentary shot at eye level, with the complete glass edge, real connected wires, meter, technician's hands and lamp all clearly visible and occupying the central image. Natural factory daylight, matte dusty concrete, believable worn tools, subtle glass reflections, real fabric folds and skin texture. Looks like an unposed photograph taken with a normal news camera, not a product render. No logos, readable writing, diagrams, captions, electrical lightning, luminous glass, futuristic interfaces, floating wires, duplicated hands or promotional lighting. The important action is measuring electricity FROM the transparent glass pane, not a generic worker in a warehouse.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:b8002ad2-e31e-4469-b81c-f27e13a23fe7",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+        "bytes": 165057,
+        "generated_at": "2026-11-12T07:12:58.841263+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 2948495426724873814,
+        "sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
+      "previous_visual_hold": {
+        "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+        "reason": "現公開記事の全文とscene_promptに対して無料CPUの実JPEG（800×448、165057 bytes、SHA 30446d85a5dd）を表示して照合。工場の天井灯と二人の作業服姿の人物・ガラスの仕切りは写るが、主役の棚に立てた発電窓8枚の検品、窓端の電線を電力計へつなぐ手の動作、電力計、検査ライトが確認できない。右の作業員は小さい板状のものを持ち、検品の因果が読めない。背景だけが似る画像では記事の中心場面を伝えられず不採用。原JPEGと元manifest・整数seedは不変で保持し、本文に適合する既存フォールバックを維持する。図：不要（窓端の配線と設置後の接続の順番は本文で追える）。",
+        "rejected_candidate_sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838",
+        "reviewed_at": "2026-11-12T08:07:21.895Z",
+        "source_commit": "d427d5441c7827a94fc8471438805115971e1dcb"
+      },
+      "previous_visual_review": {
+        "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+        "decision": "rejected",
+        "image_sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838",
+        "reviewed_at": "2026-11-12T08:07:21.895Z",
+        "note": "現公開記事の全文とscene_promptに対して無料CPUの実JPEG（800×448、165057 bytes、SHA 30446d85a5dd）を表示して照合。工場の天井灯と二人の作業服姿の人物・ガラスの仕切りは写るが、主役の棚に立てた発電窓8枚の検品、窓端の電線を電力計へつなぐ手の動作、電力計、検査ライトが確認できない。右の作業員は小さい板状のものを持ち、検品の因果が読めない。背景だけが似る画像では記事の中心場面を伝えられず不採用。原JPEGと元manifest・整数seedは不変で保持し、本文に適合する既存フォールバックを維持する。図：不要（窓端の配線と設置後の接続の順番は本文で追える）。"
+      },
       "prompt_version": 3,
-      "seed": 2948495426724873814,
-      "sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838"
+      "sha256": "0418be16cd622bf134aa93a0a2c32a525d16416f991bb14dc12440037b4b1e74",
+      "source_article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:7bffc1b0-9d55-4e3a-885d-082e37cdb4b8",
+        "instanceID": "xmp:iid:b8002ad2-e31e-4469-b81c-f27e13a23fe7",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              61,
+              214,
+              179,
+              198,
+              136,
+              165,
+              15,
+              185,
+              186,
+              178,
+              59,
+              137,
+              201,
+              197,
+              177,
+              112,
+              157,
+              132,
+              90,
+              71,
+              96,
+              20,
+              6,
+              238,
+              254,
+              249,
+              208,
+              191,
+              4,
+              194,
+              92,
+              208
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-12T08:49:21.535270621Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T08:49:21.535277725Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T08:49:21.530363331Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2576374,
+        "caBX_sha256": "da75569645757bc98b8bf8733ca6186e61743c33639b024e35209788d9db79d9",
+        "candidate_branch": "native-image-candidate/solar-window-glass-factory-first-eight-panels/4da687973f12c464-5a7470aab91c",
+        "candidate_commit": "324f1afd3815573f1b6264cd4070cbd15b13d3ae",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/source.png.part000",
+            "bytes": 524288,
+            "sha256": "d04bfa475691bfbf2742e70642accb0e251e6123f2ab91474b5f550ee3a93bbc",
+            "blob_sha": "47d81d42fab61d2ef04bcfb0d6d1dd4e7a722f6b"
+          },
+          {
+            "path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/source.png.part001",
+            "bytes": 524288,
+            "sha256": "eeaffaa10793de0b3fdcfa997edfcc6e1aec184d66d8197ec5d212852768102e",
+            "blob_sha": "04398a416dde2a788664927218741d3c585ea137"
+          },
+          {
+            "path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/source.png.part002",
+            "bytes": 524288,
+            "sha256": "8b20ba497e387e9184735c0f6df7dcb00a906f6d7d7ec9f078ed8fbecde511c2",
+            "blob_sha": "ef044f63f20e48ddc706b61b0a4270f526586b12"
+          },
+          {
+            "path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/source.png.part003",
+            "bytes": 524288,
+            "sha256": "36e88335350c4d022cd8c7b01bf2662dd6604491565a4734518eb052e1b12d52",
+            "blob_sha": "e17ec30e2c7c18ed5503a8c6c90841aabc4c33e7"
+          },
+          {
+            "path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/source.png.part004",
+            "bytes": 479222,
+            "sha256": "06a6623d96e906e7e5c98cc04a18c5311a90afb3980ca908c4832ae00c1fcfdc",
+            "blob_sha": "9622d080f6cab48d52567bf803eda0b8901765fe"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/solar-window-glass-factory-first-eight-panels/receipt.json",
+        "receipt_sha256": "2bad180f68be911f4a4c85ccb78b51131060a10f5d63bd0a4bf25491cbbffc46",
+        "width": 1672
+      },
+      "source_png_sha256": "f26370d00839f97e6aa2afe65aecabab775076d006db0ab1f836ea200a7ad976",
+      "supersedes_reason": "CPU候補は主役の発電窓・電力計との配線接続・検査灯を再現していないため不採用。現在の本文を変えず、透明ガラスの端から電力計へ接続して検査する一場面を内蔵画像で生成し、保存した原PNGと最終JPEGを実表示して採用した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "2930e67327b556e64a6f4c8715c0263cf33c0563e3884134ae1e733617a71b60",
@@ -3932,20 +4246,6 @@
     }
   },
   "rejected": {
-    "solar-window-glass-factory-first-eight-panels": {
-      "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
-      "reason": "現公開記事の全文とscene_promptに対して無料CPUの実JPEG（800×448、165057 bytes、SHA 30446d85a5dd）を表示して照合。工場の天井灯と二人の作業服姿の人物・ガラスの仕切りは写るが、主役の棚に立てた発電窓8枚の検品、窓端の電線を電力計へつなぐ手の動作、電力計、検査ライトが確認できない。右の作業員は小さい板状のものを持ち、検品の因果が読めない。背景だけが似る画像では記事の中心場面を伝えられず不採用。原JPEGと元manifest・整数seedは不変で保持し、本文に適合する既存フォールバックを維持する。図：不要（窓端の配線と設置後の接続の順番は本文で追える）。",
-      "rejected_candidate_sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838",
-      "reviewed_at": "2026-11-12T08:07:21.895Z",
-      "source_commit": "d427d5441c7827a94fc8471438805115971e1dcb"
-    },
-    "aerobics-final-silent-thirty-seconds-team-comeback": {
-      "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-      "reason": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。",
-      "rejected_candidate_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
-      "reviewed_at": "2026-11-12T04:58:27Z",
-      "source_commit": "28b2a47ca295d1d5b08a540cc5a070142ae406f2"
-    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
