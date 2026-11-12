@@ -20,7 +20,7 @@
       "publisher": "国土交通省",
       "published_at": "2026-11-11T00:00:00+09:00",
       "url": "https://www.mlit.go.jp/report/press/kanbo08_hh_001372.html",
-      "topic": "国土交通省は2026年11月11日、「第12回ロボット大賞」の国土交通大臣賞が、実在の戸田建設株式会社ほか4社の開発した覆工コンクリート自動打設ロボット「セントルフューチャーズ」に決定したと発表。これは2031年の3台協調運転、岩継工務、トンネル夜間試験、18メートルの結果を示す発表ではない。これらの未来部分は創作。"
+      "topic": "国土交通省は2026年11月11日、第12回ロボット大賞の国土交通大臣賞を、戸田建設株式会社ほか4社が開発した覆工コンクリート自動打設ロボット「セントルフューチャーズ」に決定したと発表した。2031年の岩継工務、3台協調、18メートルの夜間試験結果は創作で、国の表彰実績として認められたものではない。"
     },
     "scene_prompt": "Photorealistic documentary construction site photograph of a large concrete placing robot actively guiding a thick concrete hose into an arched tunnel lining formwork, with two more substantial robot units and arched formwork sections continuing into the distance inside a real unfinished Japanese mountain tunnel. One adult Japanese engineer in hard hat and ordinary reflective work jacket watches the pressure gauge beside the first machine. Concrete pump lines, metal formwork ribs, realistic wet concrete, work lights and rough rock, natural industrial textures, 16:9 horizontal news photograph. No readable text or logos.",
     "visual_strategy": "cpu-photo",
