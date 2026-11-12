@@ -31,6 +31,7 @@ if __package__:
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from .editorial_copy import reader_copy, source_reader_copy
     from .reader_paths import suggested_articles
+    from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
 else:
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -46,6 +47,7 @@ else:
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from editorial_copy import reader_copy, source_reader_copy
     from reader_paths import suggested_articles
+    from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -1551,7 +1553,11 @@ def issue_page(day, items, issues):
 
 
 def story(a, articles, issues=None, serials=None):
-    paras = "".join(f'<p>{escape(reader_copy(p))}</p>' for p in a["paragraphs"])
+    diagram = render_article_diagram(reviewed_article_diagram(a, root=BASE))
+    paras = "".join(
+        f'<p>{escape(reader_copy(p))}</p>' + (diagram if index == 0 else "")
+        for index, p in enumerate(a["paragraphs"])
+    )
     src = a["source"]
     # Continue through the publication stream instead of always jumping back
     # to the newest other story. The previous behavior could create a two-story
@@ -2185,6 +2191,9 @@ def build():
             destination = OUT / "generated" / source.name
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination)
+    # Explanatory drawings supplement the hero photo. Only current, validated
+    # optional SVGs ship; outdated drawings never survive in dist.
+    publish_article_diagrams(articles, OUT, root=BASE)
     # Only validated, fingerprint-matched optional MP4s are ever published.
     # Stale/over-budget files in the source tree do not reach the live site.
     for item in articles:

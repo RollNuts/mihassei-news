@@ -75,6 +75,16 @@ ChatGPT内蔵画像は、本人が依頼した実写風写真の生成・取り�
 
 `visual_review.py` の `strategy_counts` と各行の `visual_strategy` で区別し、専用SVGの欠落に加え、`editorial_social_png` が示す共有PNGの欠落・失効も `attention` で回収する。CPUを再起動して解消しない。
 
+## 本文内の補助解説図
+
+必要性と表現は[EDITORIAL_LOOP](EDITORIAL_LOOP.md#必要な記事には小さな解説図を添える)で判断する。記事の主要写真を保ち、採用した記事では`assets/article-diagrams/<slug>.svg`を1枚だけ本文1段落目の後に表示する。写真用の`visual_strategy`・scene_prompt・生成manifest・acceptedを、図の追加だけで変更しない。既存の写真代替用`editorial-scenes`と、文字付きの補助解説図を取り違えない。
+
+SVGのルートは`xmlns="http://www.w3.org/2000/svg"`、`role="img"`、`viewBox="0 0 幅 高さ"`を持ち、`data-article-sha256`に現在の`generated_photos.article_fingerprint(article)`を記録する。直下の`title`は短い図題、`desc`は見えない場合にも物と関係が伝わる代替説明とする。`title`が図の下、`desc`が画像の代替テキストとして表示される。外部素材・スクリプト・HTML埋め込みを使わず、ラベルと関係を編集できる小さなSVGで作る。
+
+`scripts/article_diagrams.py`が本文指紋・SVGの構造・自己完結性を検証し、現在の本文に対応する図だけをビルドで配布する。URLには実SVGのSHAを付ける。図なし・失効・不正な図では記事本文と写真をそのまま表示し、失効・不正の理由はビルドの診断で確認する。機械的な合格は内容の目視確認の代わりにならない。
+
+発行・改稿・公開後レビューの既存担当が、必要な記事だけ全文と図を照合し、スマホ360/390px程度とPCでラベル・物の位置・矢印・はみ出しを実表示して確認する。公開後は対象記事とSVGの実配信まで確かめる。本文が変われば図は失効するため、実物と新しい本文を再確認し、必要な修正を済ませた場合だけ指紋を更新する。新しい定期タスクや生成API、解説図だけの台帳は作らず、変更のない図を毎回作り直さない。
+
 ## 選抜動画の確認
 
 選抜記事を変更した発行・改稿担当と、画像を検品するサイト担当は、既存の枠で `python3 scripts/publish_motion_clips.py --plan` を確認する。状態と次の作業は[MOTION_CLIPS.md](MOTION_CLIPS.md)に従い、未解決分を既存の結果・引き継ぎへ「slug／待ち理由／次の作業と担当」で残す。OFF時の空一覧は未処理なしを意味しない。
