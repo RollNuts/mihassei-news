@@ -3242,6 +3242,33 @@
       "source_article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
       "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8"
     },
+    "three-towns-share-mobile-event-radio": {
+      "article_sha256": "1396095753bf5f499884f6eecc460af6875cd90d90e02960bc057c0728d141b6",
+      "bytes": 140519,
+      "generated_at": "2026-11-12T03:21:26.014412+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 1446064839368196720,
+      "sha256": "8f1dc26cbd77718e8a98398fbb0de959584357e76da0a9920b6218c3ee240d8e"
+    },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "a6b78fa20a29f2640bd8b0b4c063ddac02bb7de2f7f60d505f7b231a4e1f20af",
       "bytes": 207825,
