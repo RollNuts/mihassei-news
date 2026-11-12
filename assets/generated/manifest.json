@@ -1,5 +1,32 @@
 {
   "images": {
+    "aerobics-final-silent-thirty-seconds-team-comeback": {
+      "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+      "bytes": 160909,
+      "generated_at": "2026-11-12T04:57:21.856074+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5520453989675686101,
+      "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
+    },
     "ai-chair-removes-executives": {
       "article_sha256": "debe9196cff8eba02a4055f720b49e5ac16e9ceb1558cb80310fbbc37313efb9",
       "bytes": 73871,
@@ -3292,13 +3319,36 @@
       "sha256": "621b76b1439c6a1942b2428e9665e9f01499f1eae4c96092a72c7e5a0b427fd0",
       "source_article_sha256": "42e83c6cf1cdba06ec7b0d2252138a8bba9dbe1f9371de1e6bf960d84aad00bd",
       "source_c2pa": {
-        "manifest_uri": "urn:c2pa:9bdaffa2-bd15-4272-9624-279ab01083e7",
-        "instanceID": "xmp:iid:72b80490-d274-4857-abbc-74ff20cc7186",
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-12T03:28:04.832239510Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T03:28:04.832241521Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T03:28:04.831649134Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
         "claim_generator": null,
         "claim_generator_info": {
-          "name": "OpenAI Media Service API",
           "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
             "hash": [
               108,
               106,
@@ -3332,40 +3382,17 @@
               212,
               158,
               55
-            ]
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
           },
-          "specVersion": "2.2.0",
-          "org.contentauth.c2pa_rs": "0.79.2"
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
         },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-12T03:28:04.832239510Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-12T03:28:04.832241521Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-12T03:28:04.831649134Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:72b80490-d274-4857-abbc-74ff20cc7186",
+        "manifest_uri": "urn:c2pa:9bdaffa2-bd15-4272-9624-279ab01083e7",
+        "signature_validation": "not_performed"
       },
       "source_capture": {
         "bytes": 2374178,
@@ -3378,34 +3405,34 @@
         "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
         "original_png_parts": [
           {
+            "blob_sha": "7174587c6c2f4913f5b7d526d531b65978d21ded",
+            "bytes": 524288,
             "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part000",
-            "bytes": 524288,
-            "sha256": "1eca3f2a2f7b6c7cd86b32181a120c6f5c0c0eb2193871bf7f3c56c57fd76bae",
-            "blob_sha": "7174587c6c2f4913f5b7d526d531b65978d21ded"
+            "sha256": "1eca3f2a2f7b6c7cd86b32181a120c6f5c0c0eb2193871bf7f3c56c57fd76bae"
           },
           {
+            "blob_sha": "9d8e03d449a2387546e22f148f488ddc0c6ee3be",
+            "bytes": 524288,
             "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part001",
-            "bytes": 524288,
-            "sha256": "1113dbc166d5080d26b8c5eb4a85efad5fa423e43810af0897a17bb8d23f33fc",
-            "blob_sha": "9d8e03d449a2387546e22f148f488ddc0c6ee3be"
+            "sha256": "1113dbc166d5080d26b8c5eb4a85efad5fa423e43810af0897a17bb8d23f33fc"
           },
           {
+            "blob_sha": "dacb467697f04ede930ae5c533baa76ff5ea0cd1",
+            "bytes": 524288,
             "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part002",
-            "bytes": 524288,
-            "sha256": "0ff7073687d228c8213c09d30e34d6850e59e09a3f289ab04aa1b9bc1b9120d7",
-            "blob_sha": "dacb467697f04ede930ae5c533baa76ff5ea0cd1"
+            "sha256": "0ff7073687d228c8213c09d30e34d6850e59e09a3f289ab04aa1b9bc1b9120d7"
           },
           {
+            "blob_sha": "4fd90b958e6b1e2fa5f9eb68998d95759623fa24",
+            "bytes": 524288,
             "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part003",
-            "bytes": 524288,
-            "sha256": "aa9b092c0fc64b825bc5c01ccb6e5d6989314c7557347bfec01f4a2e0dee46aa",
-            "blob_sha": "4fd90b958e6b1e2fa5f9eb68998d95759623fa24"
+            "sha256": "aa9b092c0fc64b825bc5c01ccb6e5d6989314c7557347bfec01f4a2e0dee46aa"
           },
           {
-            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part004",
+            "blob_sha": "cfcb31c04cafdaacedf1688ff573f0a9ea3b2dc9",
             "bytes": 277026,
-            "sha256": "d1cd95a588bbfd2bdead5b230a58dacfc325fde38753ffc79f23c951ea09e048",
-            "blob_sha": "cfcb31c04cafdaacedf1688ff573f0a9ea3b2dc9"
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part004",
+            "sha256": "d1cd95a588bbfd2bdead5b230a58dacfc325fde38753ffc79f23c951ea09e048"
           }
         ],
         "receipt_path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/receipt.json",
