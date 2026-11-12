@@ -710,6 +710,7 @@ class CpuBackfillTests(unittest.TestCase):
         self.scene = "A plain red capsule vending machine stands beside three empty dinner plates."
         self.healthy = {"slug": self.original["slug"], "status": "missing",
                         "visual_strategy": "illustration", "editorial_scene": {"status": "current"},
+                        "article_diagram": {"status": "absent"},
                         "publication": {"kind": "editorial_svg", "url": "/keep.svg"}}
         self.env = {"GITHUB_EVENT_NAME": "workflow_dispatch", "SCENE_PUBLISH": "0",
                     "BACKFILL_QUOTA_ALLOWED": "1"}
