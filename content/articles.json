@@ -1,5 +1,69 @@
 [
   {
+    "slug": "three-towns-share-mobile-event-radio",
+    "category": "政治",
+    "flash": "3町で持ち回る放送局",
+    "fiction_company": "架空の丘波町と隣接する2町",
+    "art": "cards",
+    "fiction_at": "2031-11-12T11:42:00+09:00",
+    "published_at": "2026-11-12T11:42:00+09:00",
+    "title": "3町議会、臨時FM局の機材を共同購入　放送後は台車で隣町へ",
+    "summary": "架空の丘波町と隣の2町が、行事で使う臨時FM放送の機材を共同保有する協定と予算を可決した。最初の放送を体育館で終えると、職員は送信機とマイクを畳み、次に使う隣町へ引き渡した。",
+    "paragraphs": [
+      "丘波町の体育館で、町の広報担当・三嶋沙紀（31）が折りたたみ机に黒い送信機とマイクを並べた。送信機から伸びるケーブルは、体育館の外に立てた小さなアンテナにつながっている。丘波町と隣の2町は、小規模な行事の案内をラジオで流す機材を共同保有する協定と予算をそれぞれの町議会で可決し、最初の放送日を迎えた。",
+      "これまでは、催しのたびに各町が放送機材を借り、無線の資格を持つ操作担当者を探していた。新しい協定では、送信機、アンテナ、マイクを一組だけ購入し、3町が日程を調整して使う。放送する催しごとに必要な手続きを取り、実際に電波を出す操作は資格を持つ職員が担当する。機材だけ買って保管庫に眠らせず、各町で扱える職員を育てるのも協定の目的だ。",
+      "午前10時、送信準備を終えた三嶋がマイクの前に座り、体育館に隣接する農産物市の案内を読み上げた。会場の誘導係は手持ちラジオで放送を聞き、西側の駐輪場へ向かう人に入口を指さした。放送を聞き終えた出店者は、台の上の野菜箱を入口側へ一つ動かした。町の職員たちは、声が届く場所と聞こえにくい場所を歩いて確かめ、次回の配置図に書き込んだ。",
+      "正午に放送を止めると、三嶋はマイクを箱に戻し、職員がアンテナを畳んだ。ケースに収めた機材は台車に載り、翌週催しを開く隣町の職員へ引き渡された。受け取った職員はマイクの入った箱を抱え、「次はうちの声ですね」と笑った。3町の協定書は体育館に残ったが、放送局の道具は早くも町境を越えた。"
+    ],
+    "source": {
+      "kind": "政府公表",
+      "publisher": "総務省（e-Govパブリック・コメント）",
+      "published_at": "2026-11-05T00:00:00+09:00",
+      "url": "https://public-comment.e-gov.go.jp/pcm/1040?CLASSNAME=PCM1040&Mode=1&id=145210770",
+      "topic": "2026年11月5日、総務省は電波法施行令の一部を改正する政令案について意見募集結果を公示した。改正は臨時災害放送局・イベント放送局での無線設備操作に必要な資格要件を見直し、同年11月6日に施行された。2031年の町・3町共同保有協定・予算議決・体育館の実放送・人物・発言・効果はすべて架空であり、実在自治体や総務省の事業実績ではない。"
+    },
+    "scene_prompt": "Photorealistic documentary news photograph of a fictional 31-year-old Japanese female municipal staff member operating a compact black FM transmitter and a tabletop microphone on a folding table inside an ordinary Japanese school gymnasium at a local produce market event. A second adult municipal radio technician checks a cable that runs toward a small temporary antenna outside the doorway, and a black portable equipment case is on a trolley beside the table. Candid daytime lighting, realistic metal, plastic and skin, believable radio hardware, horizontal 16:9 press photograph, no readable text, no logos or real brands.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "自治体連携",
+      "地域ラジオ"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "町議会",
+      "地域FM"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "ラジオ局を3町で一台。体育館で放送を終えた送信機が、次の町まで台車で引っ越す2031年の自治体協定。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月に臨時災害放送局とイベント放送局の無線操作資格を見直す政令が公表された",
+      "target": "隣接3町が小規模イベント用の臨時FM放送設備を共同購入し、各町の催しで順番に使う協定と予算",
+      "action": "町議会が協定と予算を承認し、資格を持つ町職員が体育館で放送して機材を畳み次の町の職員へ手渡す",
+      "outcome": "農産物市で案内放送が届き、送信機とマイクが共通の台車で翌週の催しを開く隣町へ移動する"
+    },
+    "behavior_basis": {
+      "motive": "イベントごとに機材と無線の資格者を別々に探す手間を減らし、各町で放送を扱える職員を育てたい",
+      "ordinary_alternative": "各町が催しごとに放送機材を借り資格を持つ操作担当者を手配する",
+      "why_not": "3町が一組の設備を共同保有し日程と資格者を調整すれば、保管庫に眠る期間を減らして各町の催しに使える",
+      "evidence_quote": "機材だけ買って保管庫に眠らせず、各町で扱える職員を育てるのも協定の目的だ。"
+    },
+    "reader_clarity": {
+      "who": "架空の丘波町と隣の2町の議会",
+      "action": "行事用臨時FM局の設備を共同購入する協定と予算を可決した",
+      "oddity": "体育館で最初の放送を終えると、ラジオ局の送信機を台車で隣町へ引き渡す"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月、国が臨時放送局の無線設備操作に関する資格要件の一部を見直した",
+      "continuation_force": "小規模自治体では催しごとに資格者と機材をそろえる負担が続き、複数自治体で設備と人員を共同運用する動機がある",
+      "future_result": "2031年、3町が持ち運べる臨時FM局を共同保有し、必要な手続きと有資格者の操作を守りながら順番に行事を放送する"
+    }
+  },
+  {
     "slug": "tunnel-robots-pass-concrete-pour-three-sections",
     "category": "技術",
     "flash": "3台がトンネル打設を引き継ぐ",
