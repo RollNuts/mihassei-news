@@ -1,5 +1,71 @@
 [
   {
+    "slug": "sand-dune-race-radar-reroutes-ridge-final",
+    "category": "スポーツ",
+    "flash": "朝、砂丘のコースが変わる",
+    "fiction_company": "架空の砂環レース運営会",
+    "art": "cards",
+    "fiction_at": "2031-11-13T07:36:00+09:00",
+    "published_at": "2026-11-13T07:36:00+09:00",
+    "title": "砂丘レース、衛星画像を見て朝にコース変更　尾根を回り込んだ選手が逆転",
+    "summary": "砂丘の競技大会「砂環レース」で、運営が夜の衛星画像と現地確認をもとに通過旗を朝から立て直した。決勝では高い尾根を回り込んだ選手が3本目の旗で先頭に出て優勝した。",
+    "paragraphs": [
+      "砂丘を走る「砂環レース」の決勝当日、設営班が午前5時半に赤い通過旗を抜き、砂の尾根の向こう側へ運んだ。前夜の観測画像で尾根の形が変わった可能性が見つかり、走者が必ず通る地点を朝から組み直したのだ。",
+      "通過旗は選手が順番に通る目印で、旗と旗の間は各自が好きな道を選んで走れる。大会運営は、夜でも地表を観測できるレーダー衛星の画像を数日前の画像と比べ、風で砂が集まる高い筋の位置を調べた。ただし画像だけでは足元の状態まで分からない。設営班が実際に斜面を歩くと、昨日まで広かった尾根の上が狭くなっていた。",
+      "運営は細い尾根の上にあった3本目の旗を、安全に踏める低い側へ移した。新しい旗の位置と、砂が崩れやすい場所を記したコース図を全選手に配る。前日の試走では尾根を真っすぐ越えられたが、今日は高い砂山を登るか、その裾を大きく回るかを各自が選ぶことになった。",
+      "決勝の終盤、先頭の選手は高い尾根へ直進し、手を砂について登り始めた。2番手の浅羽凪（29）は山の裾へ走り、傾いた砂地で歩幅を小さくして足を運んだ。二人が3本目の赤旗に近づくころ、尾根を登った選手の足が何度も砂に沈む。浅羽は低い側から旗の横へ駆け込み、先頭を抜いた。そのまま最後の旗を通り、6秒差でゴールした。",
+      "表彰式で浅羽は、朝配られたコース図を広げて「来年もこの道を走りたい」と笑った。運営係は紙の向こうに広がる砂丘を見て、「道が残っていたら、ぜひ」と答えた。設営班は、もう動き始めた砂の上から赤い旗を一本ずつ回収していた。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社Synspective",
+      "published_at": "2026-11-12T00:00:00+09:00",
+      "url": "https://www.synspective.com/jp/news/12th_strix_firstimage/",
+      "topic": "2026年11月12日、Synspectiveは同年9月19日に打ち上げた12機目の小型SAR（合成開口レーダー）衛星について、11月8日の東京、9日のリオデジャネイロとパースを試験撮像した画像を公表。機能試験と調整中の画像であり、実際に砂丘を観測した、毎晩の砂丘更新が可能、競技大会に利用されたという発表ではない。2031年の砂環レース、運営・参加者・尾根の変化・コース変更・順位・発言はすべて創作。"
+    },
+    "scene_prompt": "Photorealistic documentary sports news photograph on a fictional dune-racing course at early morning. An adult Japanese female runner aged 29 in realistic plain race clothing runs fast along the lower flank of a sandy dune toward a clearly visible red route flag planted in the sand, while another adult runner climbs the much steeper dune ridge behind her. A course marshal watches from a safe distance. Real wind-shaped sand, natural foot tracks, realistic athletic movement, neutral morning daylight, unposed press photograph, landscape 16:9. No legible text, logos, brands or famous people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "砂丘",
+      "レース",
+      "衛星観測"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "砂丘レース",
+      "衛星画像"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "昨日の近道が、今日の近道とは限らない。砂丘レースで朝にコース旗が動き、決勝の走り方まで変わった。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "2026年11月12日、小型SAR衛星12機目が地表の試験画像を取得したと公式発表された",
+      "target": "前日の砂丘コースを固定せず、観測と現場確認を使って当朝の通過旗を動かす架空の砂丘競走",
+      "action": "設営班が夜の衛星画像で地形変化の可能性を知り、現場で足場を確認して旗を移し、選手たちが新しい道筋を選んで走る",
+      "outcome": "尾根の裾を回り込んだ浅羽凪が3本目の旗で逆転し、6秒差で優勝した"
+    },
+    "reader_clarity": {
+      "who": "砂環レース",
+      "action": "運営が衛星画像と足元の確認で朝の通過旗を動かし、浅羽が高い尾根を避けて走った",
+      "oddity": "昨日のコースと砂丘の形が変わり、決勝では新しい低い道を選んだ選手が勝った"
+    },
+    "behavior_basis": {
+      "motive": "運営は変わる砂丘でも安全な通過地点と公平な競技条件を作り、選手は自分の読みで勝ちたい",
+      "ordinary_alternative": "前日までに決めた固定コースのままレースを行う、または悪い区間を全面的に閉鎖する",
+      "why_not": "風で砂の尾根の足場が変わるため、実際の斜面を確認し危険な通過点だけ動かせば競技を続けられる",
+      "evidence_quote": "ただし画像だけでは足元の状態まで分からない。設営班が実際に斜面を歩くと、昨日まで広かった尾根の上が狭くなっていた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月の小型SAR衛星の試験画像取得と、夜間に電波で地表を観測できる技術",
+      "continuation_force": "観測衛星の運用数と解析利用が広がれば、競技運営が地形変化の把握を補助資料にする用途が生まれ得る",
+      "future_result": "2031年、架空の砂丘レースが夜間観測と現場確認を組み合わせて朝に通過点を更新し、決勝の戦術が変わる"
+    }
+  },
+  {
     "slug": "comedy-live-subtitles-spoil-punchlines-three-seconds",
     "broadcast_feature": true,
     "modified_at": "2026-11-12T21:33:00+09:00",
