@@ -1,6 +1,14 @@
 {
   "version": 1,
   "stories": {
+    "comedy-live-subtitles-spoil-punchlines-three-seconds": {
+      "article_sha256": "d81be2e8eb20c924161df082343b13c7f4b754ac00b7d6708dfdb0846e784d26",
+      "cues": [
+        {"at": 0, "label": "先読み字幕", "text": "漫才のオチが台本の字幕へ3秒先に現れた"},
+        {"at": 4, "label": "字幕板にマイク", "text": "芸人が画面へマイクを向け、台本にない返答を要求"},
+        {"at": 8, "label": "字幕は沈黙", "text": "字幕係が次の行を止め、相方の即興に客席が笑った"}
+      ]
+    },
     "night-art-exhibition-thirty-two-shadow-intruders": {
       "article_sha256": "cc961b9736715a506d69b4af9b8d04166c0e3b47a7cd71fb439d0308975a90ac",
       "cues": [
