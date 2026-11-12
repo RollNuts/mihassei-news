@@ -3014,6 +3014,33 @@
       "source_article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
       "source_png_sha256": "157c701c6cf1054b167062a64e7c2f3c26d176fb72298c6941ff7d394d44ced0"
     },
+    "solar-window-glass-factory-first-eight-panels": {
+      "article_sha256": "4da687973f12c464c038abca7a2f945c99b39f3019ad3c69e251c5223ede9e77",
+      "bytes": 165057,
+      "generated_at": "2026-11-12T07:12:58.841263+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 2948495426724873814,
+      "sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838"
+    },
     "spy-captive-escapes-before-rescue": {
       "article_sha256": "2930e67327b556e64a6f4c8715c0263cf33c0563e3884134ae1e733617a71b60",
       "bytes": 132650,
