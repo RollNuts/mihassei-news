@@ -3584,30 +3584,189 @@
     },
     "sand-dune-race-radar-reroutes-ridge-final": {
       "article_sha256": "3751f18cf03cf1a3fef696ba91c9d6d2c49b16be784d4ede32fd27b7df878233",
-      "bytes": 196228,
-      "generated_at": "2026-11-12T23:11:54.583558+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 138716,
+      "generated_at": "2026-11-12T22:39:44.470238980Z",
+      "generated_at_source": "Timestamp in the recovered original PNG current C2PA claim; cryptographic validation not performed.",
+      "generation_id": "c1dde917-ac92-4ac2-8816-6a2c81dade80",
+      "generation_id_source": "Actual current C2PA claim instanceID embedded in the recovered original PNG; asset-instance identifier, not a backend generation/job ID.",
+      "generation_prompt": null,
+      "generation_prompt_source": "The original task did not retain the exact imagegen tool input. The article scene_prompt is preserved separately without claiming it was the verbatim tool input.",
+      "generation_receipt": "xmp:iid:c1dde917-ac92-4ac2-8816-6a2c81dade80",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "3751f18cf03cf1a3fef696ba91c9d6d2c49b16be784d4ede32fd27b7df878233",
+        "bytes": 196228,
+        "generated_at": "2026-11-12T23:11:54.583558+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 3600110353471734779,
+        "sha256": "0cea92470dfbc73b22d1684d587fe72ba5aa74e83aa0438afa6d9e5dce1ebce1"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
       "prompt_version": 3,
-      "seed": 3600110353471734779,
-      "sha256": "0cea92470dfbc73b22d1684d587fe72ba5aa74e83aa0438afa6d9e5dce1ebce1"
+      "recorded_scene_prompt": "Photorealistic documentary sports news photograph on a fictional dune-racing course at early morning. An adult Japanese female runner aged 29 in realistic plain race clothing runs fast along the lower flank of a sandy dune toward a clearly visible red route flag planted in the sand, while another adult runner climbs the much steeper dune ridge behind her. A course marshal watches from a safe distance. Real wind-shaped sand, natural foot tracks, realistic athletic movement, neutral morning daylight, unposed press photograph, landscape 16:9. No legible text, logos, brands or famous people.",
+      "recorded_scene_prompt_source": "content/articles.json at 23e0494b48b9b80be8f386c3256bff90549c5566",
+      "rejected_candidate_review": {
+        "article_sha256": "3751f18cf03cf1a3fef696ba91c9d6d2c49b16be784d4ede32fd27b7df878233",
+        "decision": "rejected",
+        "image_sha256": "0cea92470dfbc73b22d1684d587fe72ba5aa74e83aa0438afa6d9e5dce1ebce1",
+        "note": "保存済みCPU JPEGをrootと別担当が実表示。タイヤ跡の道を黒服2名が背を向けて進み、赤い通過旗、裾を走る女性、急斜面を登る競争相手がない。砂の背景だけでは本文の主要場面に一致しないため不採用。元生成記録と整数seedを保持。",
+        "reviewed_at": "2026-11-12T23:34:02.200246+00:00"
+      },
+      "sha256": "99efa6b2de04f61379a00ef4dae5a1866cb867f142e8b8d5d53498bd865571ce",
+      "source_article_sha256": "3751f18cf03cf1a3fef696ba91c9d6d2c49b16be784d4ede32fd27b7df878233",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-12T22:39:44.470238980Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T22:39:44.470256080Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T22:39:44.468123765Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              78,
+              199,
+              119,
+              226,
+              129,
+              110,
+              89,
+              133,
+              122,
+              166,
+              161,
+              236,
+              17,
+              204,
+              66,
+              59,
+              175,
+              90,
+              147,
+              159,
+              27,
+              133,
+              17,
+              105,
+              53,
+              61,
+              223,
+              43,
+              235,
+              186,
+              208,
+              50
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:c1dde917-ac92-4ac2-8816-6a2c81dade80",
+        "manifest_uri": "urn:c2pa:966c3482-d2cb-4658-bf1b-49bee5ab883c",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2305117,
+        "caBX_sha256": "3f9199e4bb7c29da3cdba662d45f6cf11d623d0df99fff28eada8ac23d416c8f",
+        "candidate_branch": "native-image-candidate/sand-dune-race-radar-reroutes-ridge-final/3751f18cf03cf1a3-94c5813da9b9",
+        "candidate_commit": "f735b6e39ec2daa0915435b0a42fd2fc2edbb2fd",
+        "file_id": "file_000000004b0881f586ecc9f6a3726c8c",
+        "height": 1024,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recover-file_000000004b0881f586ecc9f6a3726c8c",
+        "logical_run_id_basis": "Stable recovery identity based on the exact source file ID; the original generation logicalRunId was not retained and is not inferred.",
+        "method": "Official Library prepare_materialize recovered the exact file ID. NativeImageStage saved all original PNG parts, JPEG and receipt; a fresh runtime loaded the saved candidate without local source bytes and verified complete original/JPEG SHA256 and reproducible conversion.",
+        "original_png_parts": [
+          {
+            "blob_sha": "52b3ce33124f31c2252eb5ae7c869beb4ebc99a3",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/source.png.part000",
+            "sha256": "2f90502174ec8c3ae9a21ca14b0c36cd8fb659283110566972b1cfe5ad55f63c"
+          },
+          {
+            "blob_sha": "9cda37dfea6f5ef3d5d8575cb86b70e87d9b5bcf",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/source.png.part001",
+            "sha256": "821d301b7d46adfcd55d93695cb1d4150cff59824e260e09927ee77cb10237ff"
+          },
+          {
+            "blob_sha": "6d28e7b78e7352bbe9a6635c5871f39a2aba7bb5",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/source.png.part002",
+            "sha256": "67e4fa9c2983ae98c12c89b047736ac798bb3fa25dd61bd3239c91cf19b5194f"
+          },
+          {
+            "blob_sha": "ebddd48e9ce6e18871a3c7d019bfba6c452e9f74",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/source.png.part003",
+            "sha256": "3be527f089b9e890b0d6f4473d007110026c071e4ceaa5645051fd5b3e9f771a"
+          },
+          {
+            "blob_sha": "0cd6fe0ff1c19b9dc830f23f58d5e3056a95a0c1",
+            "bytes": 207965,
+            "path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/source.png.part004",
+            "sha256": "8af786e58076a987432987238bf457bdeec55cb0380d0cee70881a1335678588"
+          }
+        ],
+        "prior_task_reported_generation_id": "27dfd25c-f541-4dd6-a883-25ba6c54c708",
+        "prior_task_reported_generation_id_basis": "Identifier retained in the originating task output; not substituted for the current C2PA asset instanceID.",
+        "receipt_path": "maintenance/native-image-candidates/sand-dune-race-radar-reroutes-ridge-final/receipt.json",
+        "receipt_sha256": "cc03f509093511d5fb9a1435604190f19893ad9ca5709f4592955c81724fe8b2",
+        "recovered_at": "2026-11-12T23:30:52.708Z",
+        "width": 1536
+      },
+      "source_png_sha256": "e261edca409fb30035322adb1c35b6c8a0fa5a6a81430c786d8a23a740bc2622",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "scolding-ai-one-line-summary-boss-eighteen-pages": {
       "article_sha256": "06c78eff0733e721c819b9a3a87db46e79f79e84d3b76e850b804d33902c57ac",

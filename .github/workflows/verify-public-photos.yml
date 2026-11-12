@@ -26,10 +26,29 @@ jobs:
         with:
           python-version: "3.12"
       - name: Wait for the public revision or a proven docs-only ancestor
+        id: revision
         env:
           EXPECTED_SHA: ${{ github.sha }}
         run: python3 scripts/wait_for_live_revision.py --allow-docs-only
       - name: Verify the published revision and live stories without generating traffic
+        id: live
         run: python3 scripts/check_live.py
       - name: Verify that Twitterbot can fetch each first-party image card
+        id: cards
         run: python3 scripts/check_share_cards.py
+      - name: Report photograph completion separately from delivery checks
+        id: photo_health
+        if: always() && !cancelled()
+        env:
+          PHOTO_REVISION_CHECK: ${{ steps.revision.outcome }}
+          PHOTO_ARTICLE_CHECK: ${{ steps.live.outcome }}
+          PHOTO_SHARE_CARD_CHECK: ${{ steps.cards.outcome }}
+        run: python3 scripts/report_photo_health.py --output "$RUNNER_TEMP/live-photo-health.json"
+      - name: Keep the revision-bound photograph recovery report
+        if: always() && steps.photo_health.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-photo-health-${{ github.run_id }}
+          path: ${{ runner.temp }}/live-photo-health.json
+          if-no-files-found: error
+          retention-days: 3
