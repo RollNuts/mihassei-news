@@ -130,6 +130,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-11T21:17:58.401511+00:00"
+    },
+    "comedy-live-subtitles-spoil-punchlines-three-seconds": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "d81be2e8eb20c924161df082343b13c7f4b754ac00b7d6708dfdb0846e784d26",
+      "image_sha256": "041e902f687e3f7114d755e6593e44b98abd941819c4843ef9e34d617672f07f",
+      "sha256": "af5fc062e346ffc51f6875b1011981319ca2789d07fb1bc14693bf773e04935b",
+      "bytes": 93586,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-12T21:36:23.879616+00:00"
     }
   }
 }
