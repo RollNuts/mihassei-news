@@ -18,6 +18,7 @@ try:
     from .generated_photos import (
         ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
         usable_generated_scene, visually_held_scene,
+        native_text_revision_review,
     )
     from .media_policy import usable_cached_photo
 except ImportError:
@@ -25,6 +26,7 @@ except ImportError:
     from generated_photos import (
         ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
         usable_generated_scene, visually_held_scene,
+        native_text_revision_review,
     )
     from media_policy import usable_cached_photo
 
@@ -68,6 +70,8 @@ def _matching_review(article: dict, generation: dict, root: Path) -> dict | None
             or review.get("image_sha256") != generation["sha256"]
             or not _timezone_qualified_iso(review.get("reviewed_at"))
             or not isinstance(note, str) or not note.strip()):
+        return None
+    if "reuse" in review and native_text_revision_review(article, generation, root=root) is None:
         return None
     return review
 
@@ -243,3 +247,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
