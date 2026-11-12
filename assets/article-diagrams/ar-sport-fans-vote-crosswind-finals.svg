@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="700" viewBox="0 0 720 700" role="img" aria-labelledby="ar-diagram-title ar-diagram-desc" data-article-sha256="83bf3cd645076b42868d4e29dce004b3df7336dd8c4334917a0b6aca322cf3b9">
+  <title id="ar-diagram-title">横風ルールの仕組み</title>
+  <desc id="ar-diagram-desc">観客が横風を選ぶと、映像の光の球が曲がって光の盾を回り込み、相手に当たる。赤い球と盾は映像で、実際のコートには風が吹いていない。球筋を上から見た模式図。</desc>
+  <rect width="720" height="700" fill="#f7f3e9"/>
+  <g font-family="Noto Sans CJK JP, Hiragino Kaku Gothic ProN, sans-serif" fill="#292a27">
+    <text x="38" y="66" font-size="40" font-weight="700">曲がるのは、光の球。</text>
+    <path d="M38 93 Q356 89 682 94" fill="none" stroke="#292a27" stroke-width="3"/>
+    <text x="40" y="144" font-size="34">観客が「横風」を選択</text>
+    <path d="M42 193 L677 190 L681 570 L39 574 Z" fill="#fffdf7" stroke="#a9a69c" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M42 385 Q350 380 679 384" fill="none" stroke="#d8d3c6" stroke-width="2"/>
+    <text x="410" y="229" font-size="30" fill="#69695f">上から見たコート</text>
+    <path d="M159 449 Q96 335 168 279 C255 211 398 247 513 298" fill="none" stroke="#b6422f" stroke-width="7" stroke-linecap="round"/>
+    <path d="M490 280 L516 300 L485 307" fill="none" stroke="#b6422f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="320" cy="253" r="14" fill="#f7f3e9" stroke="#b6422f" stroke-width="5"/>
+    <path d="M298 243 L286 238 M297 255 L284 256 M300 267 L289 274" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round"/>
+    <text x="76" y="251" font-size="34" font-weight="700" fill="#b6422f">光の球</text>
+    <path d="M406 337 Q440 356 480 407 L496 391 Q467 345 421 322 Z" fill="#f5d8cc" stroke="#b6422f" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M420 343 Q452 366 480 397" fill="none" stroke="#b6422f" stroke-width="2"/>
+    <text x="415" y="477" font-size="34" font-weight="700" fill="#b6422f">光の盾</text>
+    <path d="M457 446 L465 412" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="169" cy="477" r="23" fill="#e5e0d4" stroke="#292a27" stroke-width="4"/>
+    <path d="M143 484 Q169 514 196 484 M147 481 L127 465 M192 472 L213 451" fill="none" stroke="#292a27" stroke-width="6" stroke-linecap="round"/>
+    <path d="M151 464 L176 457" fill="none" stroke="#292a27" stroke-width="6" stroke-linecap="round"/>
+    <text x="118" y="550" font-size="34" font-weight="700">投げ手</text>
+    <circle cx="552" cy="322" r="23" fill="#e5e0d4" stroke="#292a27" stroke-width="4"/>
+    <path d="M528 315 Q528 346 558 349 M531 326 L511 349 M564 340 L581 359" fill="none" stroke="#292a27" stroke-width="6" stroke-linecap="round"/>
+    <path d="M529 310 L544 298" fill="none" stroke="#292a27" stroke-width="6" stroke-linecap="round"/>
+    <text x="579" y="295" font-size="34" font-weight="700">相手</text>
+    <text x="196" y="612" font-size="30" fill="#69695f">赤い球・盾は映像</text>
+    <text x="181" y="666" font-size="40" font-weight="700">会場の風：なし</text>
+    <path d="M181 677 Q358 680 536 676" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="700" viewBox="0 0 720 700" role="img" aria-labelledby="harbor-diagram-title harbor-diagram-desc" data-article-sha256="f7019ce4600ddf72de56639e61fb35c15c6912025562580d0d6d3c02fed8a58e">
+  <title id="harbor-diagram-title">浮き倉庫の移動</title>
+  <desc id="harbor-diagram-desc">屋根付きの平たい船をタグボートが引き、鋼材ごと第3岸壁から東へ600メートル離れた第2岸壁へ移動。案内板だけが元の場所を示している。</desc>
+  <rect width="720" height="700" fill="#f7f3e9"/>
+  <g font-family="Noto Sans CJK JP, Hiragino Kaku Gothic ProN, sans-serif" fill="#292a27">
+    <text x="38" y="66" font-size="38" font-weight="700">倉庫は移動、案内はそのまま。</text>
+    <path d="M38 94 Q356 90 682 94" fill="none" stroke="#292a27" stroke-width="3"/>
+    <path d="M34 142 L686 140 L685 340 L34 342 Z" fill="#e5e0d4"/>
+    <path d="M34 342 Q359 338 686 341" fill="none" stroke="#292a27" stroke-width="4"/>
+    <path d="M63 164 L252 167 L250 232 L61 230 Z" fill="#fffdf7" stroke="#292a27" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M154 232 L155 278 M144 278 L168 278" fill="none" stroke="#292a27" stroke-width="5" stroke-linecap="round"/>
+    <text x="90" y="211" font-size="36" font-weight="700">倉庫 ↓</text>
+    <text x="298" y="205" font-size="32" fill="#b6422f" font-weight="700">案内は前のまま</text>
+    <path d="M293 218 Q268 225 246 216 M252 207 L245 217 L259 220" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="76" y="319" font-size="36" font-weight="700">第3岸壁</text>
+    <text x="478" y="319" font-size="36" font-weight="700">第2岸壁</text>
+    <path d="M65 368 Q89 359 113 368 T161 368 M295 362 Q319 353 343 362 T391 362 M570 367 Q594 358 618 367 T666 367" fill="none" stroke="#d3cfc3" stroke-width="3" stroke-linecap="round"/>
+    <path d="M73 485 L268 485 L253 511 L86 511 Z M92 483 L92 432 L170 404 L248 433 L248 483 M90 434 L249 434" fill="none" stroke="#aaa79e" stroke-width="3" stroke-dasharray="9 9" stroke-linejoin="round"/>
+    <text x="81" y="554" font-size="32" fill="#69695f">元の場所</text>
+    <text x="386" y="397" font-size="32" font-weight="700">屋根付きの船</text>
+    <path d="M380 492 L584 490 L573 518 L391 519 Z" fill="#e1dbcd" stroke="#292a27" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M398 490 L399 442 L480 412 L565 441 L566 491" fill="#fffdf7" stroke="#292a27" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M398 443 L568 441 M478 443 L478 489" fill="none" stroke="#292a27" stroke-width="4"/>
+    <path d="M411 459 L461 459 L461 470 L411 470 Z M412 477 L462 477 L462 488 L412 488 Z M493 460 L550 460 L550 471 L493 471 Z M494 478 L550 478 L550 489 L494 489 Z" fill="#c5c2b8" stroke="#69695f" stroke-width="2"/>
+    <path d="M584 488 L612 487" fill="none" stroke="#292a27" stroke-width="3"/>
+    <path d="M610 481 L682 480 L669 505 L621 505 Z M625 478 L625 455 L658 455 L657 480 M636 455 L635 443 L642 443 L643 455" fill="#e1dbcd" stroke="#292a27" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M633 462 L649 462 L649 472 L633 472 Z" fill="#fffdf7" stroke="#292a27" stroke-width="2"/>
+    <text x="406" y="554" font-size="32">荷物も一緒</text>
+    <path d="M171 587 Q355 601 546 587 M529 577 L549 587 L532 602" fill="none" stroke="#b6422f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="264" y="645" font-size="38" font-weight="700" fill="#b6422f">東へ600m</text>
+  </g>
+</svg>
