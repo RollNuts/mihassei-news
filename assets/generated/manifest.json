@@ -3905,6 +3905,13 @@
     }
   },
   "rejected": {
+    "aerobics-final-silent-thirty-seconds-team-comeback": {
+      "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+      "reason": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。",
+      "rejected_candidate_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
+      "reviewed_at": "2026-11-12T04:58:27Z",
+      "source_commit": "28b2a47ca295d1d5b08a540cc5a070142ae406f2"
+    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
