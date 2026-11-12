@@ -2,6 +2,70 @@
 
 `scripts/native_image_bytes.js` converts an actual ImageGen PNG byte array or base64 data URL to a 1200×675 JPEG at quality 84. It uses a centered, aspect-preserving cover crop, bilinear interpolation, and a white background for transparency. It performs no network requests, file writes, generation, publishing, or approval.
 
+## Preferred path: capture generation and save the candidate in one execution
+
+When the run exposes `tools.image_gen__imagegen` with a PNG `image_url` data URI, call it **inside the same code-mode execution that saves its result**. Do not first call a separate image/Python environment and then try to recover an unrelated local path. This route needs the native image tool and the GitHub connection, but no shell, Node, Python, local checkout or Library transfer.
+
+`scripts/native_image_stage.js` uses the existing byte helper to save an unapproved candidate. It does not generate images, edit published article/image manifests, write an accepted review, create a PR, or deploy. It stores the complete source PNG as ordered parts of at most 512 KiB, plus the JPEG and provenance, together on a candidate branch. It reads the parts back, reconstructs the original PNG, verifies its complete SHA-256, and verifies that the pinned conversion reproduces the saved JPEG. This avoids the GitHub Contents response that can return an empty content string for a binary file larger than 1 MiB even when the request succeeds. The branch is determined before generation from the article and logical run, so a retry checks and reuses the prior candidate first.
+
+Read both helpers from the latest reviewed repository revision and initialize the existing converter. The following assumes the reviewed draft's `slug`, `articleSha256`, `prompt`, `baseCommitSha`, `baseTreeSha` and stable `logicalRunId` are already known. For a new article, first save the reviewed draft to its working commit: `prepare` checks that the target article and its fingerprint exist in `baseCommitSha`. The base tree must belong to that commit. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
+
+```js
+// @exec: {"yield_time_ms": 120000, "max_output_tokens": 1500}
+const repo = "RollNuts/mihassei-news";
+const bytesAPI = new Function(byteHelperSource + "\nreturn NativeImageBytes;")();
+const dependencies = await bytesAPI.fetchSources(args =>
+  tools.mcp__codex_apps__github_fetch_file(args)
+);
+const runtime = bytesAPI.initialize(dependencies);
+const stageAPI = new Function(stageHelperSource + "\nreturn NativeImageStage;")();
+const stager = stageAPI.create({
+  runtime, repository: repo,
+  github: {
+    fetch_file: args => tools.mcp__codex_apps__github_fetch_file(args),
+    create_blob: args => tools.mcp__codex_apps__github_create_blob(args),
+    create_tree: args => tools.mcp__codex_apps__github_create_tree(args),
+    create_commit: args => tools.mcp__codex_apps__github_create_commit(args),
+    create_branch: args => tools.mcp__codex_apps__github_create_branch(args)
+  }
+});
+const plan = await stager.prepare({
+  slug, articleSha256, prompt, baseCommitSha, baseTreeSha, logicalRunId
+});
+const existing = await stager.probe(plan);
+if (existing.status === "saved") {
+  text({status: existing.status, branch: existing.branch,
+        jpegPath: existing.jpegPath, reused: true});
+} else {
+  const generated = await tools.image_gen__imagegen({
+    prompt: plan.prompt, transparent_background: false
+  });
+  const observedAt = new Date().toISOString();
+  try {
+    const saved = await stager.stage(plan, {
+      imageGenResult: generated, observedAt
+    });
+    text({status: saved.status, branch: saved.branch,
+          commitSha: saved.commitSha, jpegPath: saved.jpegPath});
+  } catch (error) {
+    // Transient same-conversation recovery; never print the original data URI.
+    store("native-image-retry-" + plan.identity, {
+      plan, checkpoint: error.checkpoint, imageGenResult: generated, observedAt
+    });
+    text({status: "incomplete", branch: plan.branch, phase: error.stage,
+          message: error.message});
+    // Preserve the compact checkpoint in the existing durable task handoff.
+    // Never call ImageGen again to retry a save.
+  } finally {
+    generatedImage(generated);
+  }
+}
+```
+
+After staging, `const images = await stager.load(plan)` returns verified `sourcePngDataUrl` and `jpegDataUrl`. Pass them directly to `image(images.sourcePngDataUrl)` and `image(images.jpegDataUrl)`; never emit the whole result with `text` or `notify`. Compare both displayed images with the full current article. Only after that review, use the normal publication PR to install the JPEG, its truthful generation record and a current-SHA visual decision. Keep the source candidate retrievable. Existing accepted photos, integer seeds and previous rejections remain unchanged until an actual reviewed replacement is published.
+
+If a save fails, retain its compact checkpoint (including the plan) and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, retain the actual generation result and retry with `stage(plan, {imageGenResult, observedAt, checkpoint, ...})`, preserving any recovery metadata. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
+
 ## Runtime without Node
 
 Read the helper as UTF-8 from the reviewed repository revision. Load it in a plain JavaScript runtime, including `functions.exec`:
@@ -34,7 +98,7 @@ The present chat's tools do not establish what a scheduled worker receives. The 
 | Real conversation/Library file ID and filename | Follow the current Library skill and the exposed materialization/transfer tools to retrieve that exact file, then verify its recorded SHA and dimensions. |
 | A path in a previous run that is absent here | Try its recorded file ID through the exact-ID materialization route. A missing local path or an empty Library search does not establish that the source is unavailable. |
 
-A file ID is an input to the supported file service, not a filesystem path or a URL to construct. In environments exposing Library `prepare_materialize`, supply the actual file ID and filename according to its current schema, then use the official transfer helper. Do not save expiring download URLs in the repository. If retrieval fails, record the exact failed operation and the real source reference; do not report a search miss as a failed download.
+A file ID is an input to the supported file service, not a filesystem path or a URL to construct. In environments exposing Library `prepare_materialize`, supply the actual file ID and filename according to its current schema, then use the official transfer helper. Do not save expiring download URLs in the repository. If retrieval fails, record the exact failed operation and the real source reference; do not report a search miss as a failed download. In particular, `library_read` returning "not visible in the requested files surface" is a read-surface failure, not the result of a `prepare_materialize` call. Record which operation was actually attempted before diagnosing the execution environment.
 
 The helper is one conversion route, not a requirement to discard a valid JPEG produced by Pillow or another existing local encoder. A local conversion can be adopted when the actual original PNG, final 1200×675 JPEG, full prompt, source/final SHA, transformation settings and visual review satisfy `VISUAL_OPERATIONS.md`. Record the encoder actually used. A reference preview is not accepted merely because it exists, but it need not be regenerated or re-encoded solely to use this JavaScript helper.
 
@@ -87,7 +151,7 @@ Save the real JPEG and its generation metadata, including the exact prompt sent 
 
 The actual `xmp:iid:` value is preserved in `generation_receipt`; its existing UUID portion is returned as `generation_id`. This identifies an asset instance, not an exposed backend generation/job ID. `source_c2pa` preserves the manifest URI, generator metadata, and actions with timestamp precision. `caBX_bytes` preserves the original metadata payload. The helper marks signature and content-binding validation as `not_performed`; parsing is not cryptographic validation. The delivered JPEG does not acquire the original PNG's signature.
 
-The calling importer must still record the actual prompt, actual generation/review times, current article fingerprint, final JPEG byte length, and a real visual-review decision, and preserve prior records without rounding their integers. See the existing publication rules in `VISUAL_OPERATIONS.md`.
+The calling importer must still record the actual prompt, actual generation/review times, current article fingerprint, final JPEG byte length, and a real visual-review decision, and preserve prior records without rounding their integers. For historical recoveries, follow the explicit missing-prompt procedure above. See the existing publication rules in `VISUAL_OPERATIONS.md`.
 
 ## Regression fixtures
 
@@ -101,5 +165,15 @@ const report = runTests(api, sources);
 The fixtures test a known PNG-to-JPEG byte digest, original PNG SHA, UTF-8/base64, direct current-claim selection despite old/ingredient decoys, exact timestamp preservation, absent identifiers, duplicate CBOR keys, broken box bounds, PNG CRC corruption, and dependency digest changes. C2PA fixtures are explicitly unsigned synthetic parser data. They do not assert provider provenance.
 
 For an existing Node environment, both files also expose CommonJS exports. Node is optional and the helper itself does not use `Buffer`, `require`, filesystem, networking, `crypto`, `TextEncoder`, `atob`, or `btoa`.
+
+The separate staging fixtures run in the same plain JavaScript runtime:
+
+```js
+const runStageTests = new Function(stageTestSource + "\nreturn NativeImageStageTests;")();
+const report = await runStageTests(stageAPI, runtime);
+```
+
+They use an in-memory GitHub fake and an explicitly synthetic PNG, with no image generation or publication. They cover exact byte readback, a source larger than 1 MiB, reuse without writes, branch/readback interruption, checkpoint recovery in a fresh stager, ambiguous missing-reference errors, fingerprint mismatch, malformed input, and preservation of published files and their exact integer seeds. A live transfer test must use an existing image with truthful recovery provenance; successful current-chat transfer alone does not prove a scheduled worker received the same tools.
+
 
 
