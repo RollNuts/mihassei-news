@@ -1,67 +1,68 @@
 [
   {
-    "slug": "park-path-follows-walkers-not-ruler",
+    "slug": "craft-exhibition-empties-as-works-finish",
     "category": "社会",
-    "flash": "公園の新園路、歩いた跡を採用",
-    "fiction_company": "架空の風森市と架空の市立「南丘公園」",
+    "flash": "完成すると消える工芸展",
+    "fiction_company": "架空の風端工芸館と架空の展覧会「途中展」",
     "art": "cards",
     "fiction_at": "2031-11-12T17:42:00+09:00",
     "published_at": "2026-11-12T17:42:00+09:00",
-    "title": "公園の新しい道、設計図の直線をやめる　住民が歩いた木陰の曲線を採用",
-    "summary": "風森市が、公園の新しい園路を市民の歩き方に合わせて曲線へ変更した。試験開放で人が木陰を回って歩いた跡を職員が調べ、直線の仮案を引き直して新しい道を開いた。",
+    "title": "工芸展、完成した作品から展示室を出る　最終日に残ったのは作業台だけ",
+    "summary": "風端工芸館が、職人が作品を仕上げる途中だけを見せる「途中展」を開催した。竹かごや木皿が完成するたび隣の部屋へ移し、閉幕日には木の作業台6台だけが残った。",
     "paragraphs": [
-      "風森市が、南丘公園の芝生広場に作る新しい歩道を、設計図の直線から木陰を回る緩やかな曲線へ変えた。公園では12日、市の職員が曲がった道の脇で仮設の黄色い杭を回収する横を、利用者が木陰へ歩いていった。",
-      "発端は10月の試験開放だった。市は入口と水飲み場を最短距離で結ぶ真っすぐな道を考え、まだ舗装されていない芝生の端に目印を置いた。ところが歩く人は、日当たりの強い中央を横切らず、木の陰に沿ってゆるく曲がった。子どもの遊び場を避けて歩けることも、そちらを選ぶ理由になった。",
-      "職員は1週間、日中に現場を見て人が通る場所を紙の地図に書き込んだ。歩く人が選んだ曲線に仮の杭を並べ直し、車いすやベビーカーでも通れる幅と傾き、木の根を傷めない位置を確認した。既存の舗装路はそのまま残した。",
-      "市は試験結果を基に新しい歩道の図面を描き直し、今月、曲線のまま舗装した。12日の開通時には、入口から来た人たちが真新しい道を通って木陰へ入り、その先の水飲み場へ抜けていった。芝生に直線を引く予定だった職員も、同じ曲線を歩いた。",
-      "掲示された新旧の図面を見比べると、古い案には定規で引いた一本の線、新しい案には木を避ける柔らかな弧がある。開通式を終えた担当者は定規を図面の横に置き、実物の歩道をもう一度眺めた。今回いちばんよく働いた測量道具は、人の足だった。"
+      "風端工芸館の「途中展」では、完成した作品から順番に展示室を出ていく。12日の閉幕日、会場に残ったのは、職人が使っていた木の作業台6台だけだった。",
+      "2031年、工芸館は、完成品を並べる普通の展覧会とは逆に、作る途中だけを見せる展示を始めた。最初の日には、編みかけの竹かご、削りかけの木皿、彫りかけの木箱など6点がそれぞれの作業台に置かれた。作品を手がける職人も会場に入り、来場者の前で続きを作る。完成した作品は職員が隣の部屋へ運び、そこに並べる決まりだ。",
+      "会期の3日目、竹細工職人の野澤紬（32）が、かごの縁に細い竹を通して編み目を締めた。紬が最後の竹の端を切りそろえてかごを持ち上げると、見ていた人が拍手した。職員はそのかごを受け取り、扉を開けて隣の完成品の部屋へ運んだ。作業台には切り落とした竹の端だけが残った。",
+      "翌日には木皿が磨き上がり、別の日には木箱の模様が彫り終わった。職人が道具を置くたび、職員が出来上がった作品を隣へ運んだ。入口側の部屋では展示が一つずつ減り、隣の部屋では完成品が一つずつ増える。来場者は二つの部屋を行き来し、途中の手仕事と仕上がった形を見比べた。",
+      "最終日の夕方、最後の職人が作業を終えて作品を運び出すと、入口側に並ぶ6台は空になった。館長は隣の部屋に6点の完成品があると案内した。それでも何人かの来場者は、竹の切れ端や道具の擦り跡が残る作業台の前で足を止めていた。作品が全部なくなって、ようやく見えるものもあった。"
     ],
     "source": {
-      "kind": "自治体公式の公園社会実験案内",
-      "publisher": "大阪府吹田市",
-      "published_at": "2026-10-23T00:00:00+09:00",
-      "url": "https://www.city.suita.osaka.jp/sangyo/1018152/1028362/1028625/1045614.html",
-      "topic": "吹田市公式ページは2026年10月23日更新で、2026年11月14日に紫金山公園で社会実験を行い、仮設の公園設備の利用状況と利用者の意見、管理運営上の課題を今後の公園再整備の設計検討に役立てると案内している。既存の公園計画が試験利用から検討される点が現実の足場。2031年の風森市・南丘公園・一週間の通行記録・曲線園路の採用・開通は全て創作で、吹田市の実施結果ではない。"
+      "kind": "政府広報の伝統工芸品月間の案内",
+      "publisher": "政府広報オンライン",
+      "published_at": "2026-11-01T00:00:00+09:00",
+      "url": "https://www.gov-online.go.jp/data_room/calendar/202611/event-4681.html",
+      "topic": "政府広報オンラインの2026年11月の月間行事案内は、伝統的工芸品の普及推進と全国大会・展示・実演の開催を案内。独立した一次資料として岡山県立美術館公式の『第73回 日本伝統工芸展岡山展』案内（https://www.okayama-kenbi.info/topi-denko73/）では、2026年11月12日からの会期、284点の展示、出品作家の技法解説や木工技法の実演予定を確認した。2031年の風端工芸館・途中展・6つの作業台・作品が完成するたび隣室へ移る運営・登場人物と結果はすべて創作であり、実在する展示会の発表ではない。"
     },
-    "scene_prompt": "Photorealistic candid Japanese local-news photograph of a newly opened gently curved pedestrian path through a bright green lawn in a fictional Japanese municipal park. Two adult Japanese municipal park workers in ordinary work jackets are collecting small temporary yellow survey stakes from the grassy edge of the path; a few adult park users walk along the new curving path under mature shady trees toward a drinking fountain. Make the whole curve and walking action recognizable, with realistic daylight, paving texture, grass, hands and shadows, unposed news photography, landscape 16:9. No legible words, signs, logos, brand names, or famous people.",
+    "scene_prompt": "Photorealistic candid press photograph of a fictional adult Japanese craftswoman at a sturdy wooden workshop table inside a modest Japanese crafts museum exhibition room, hands actively weaving the rim of a partly finished natural bamboo basket with thin strips. A few other craft tables with unfinished wooden bowls and small tools in soft focus, ordinary adult visitors watching from a respectful distance; an open doorway to a neighboring room with finished woven baskets on simple plinths. Realistic bamboo fibers, hand anatomy, tools, daylight, museum walls and shadows, ordinary documentary photo, landscape 16:9, no legible text, branding, famous people, anime or CGI.",
     "visual_strategy": "cpu-photo",
     "tags": [
-      "公園再整備",
-      "市民参加"
+      "工芸展",
+      "ものづくり",
+      "展示"
     ],
     "satire_tags": [],
     "x_tags": [
-      "公園再整備",
-      "市民参加"
+      "工芸展",
+      "ものづくり"
     ],
     "x_tickers": [],
-    "x_share_lead": "公園の道を真っすぐ引いたら、住民は木陰を回って歩いた。2031年、採用されたのは設計図の定規より人が歩いた曲線だった。",
-    "reader_interest": "general_society",
+    "x_share_lead": "完成するほど展示が減っていく。2031年の工芸展は、作りかけを見せる部屋が最終日に空っぽになった。",
+    "reader_interest": "fandom_entertainment",
     "editorial_lane": "social_life",
     "editorial_form": "feature",
-    "editorial_tone": "plausible_future",
-    "editorial_payoff": "wordplay",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "quiet_aftertaste",
     "editorial_signature": {
-      "present": "2026年10月23日更新の吹田市公式案内では、公園再整備に向けて仮設設備の利用と市民の意見を調べる11月14日の社会実験が予定されている",
-      "target": "公園の園路の線を設計者が先に決める整備方法",
-      "action": "架空の風森市が芝生広場を試験開放し、歩行者が木陰に沿って通った場所を記録して新園路の設計図を曲線に引き直す",
-      "outcome": "市民の歩いた曲線に沿って道が舗装され、開通した園路が木陰を抜けて水飲み場へつながる"
+      "present": "2026年11月の伝統的工芸品月間で工芸品の展示・実演が案内され、11/12開始の岡山県立美術館の工芸展では作品展示と技法解説が予定されている",
+      "target": "完成品を会期中ずっと展示する工芸展の見せ方",
+      "action": "架空の工芸館が職人6人の制作途中の作品を展示し、会期中に完成するたび隣室の完成品展示へ移す",
+      "outcome": "閉幕日に制作途中の部屋から作品が消え、作業台6台と道具の痕跡だけが残った"
     },
     "reader_clarity": {
-      "who": "風森市",
-      "action": "公園で人が実際に歩いた跡を調べ、新しい道の設計を直線から曲線に変更した",
-      "oddity": "定規で決めた道より、木陰を選ぶ市民の歩き方が正式な園路の形になった"
+      "who": "風端工芸館",
+      "action": "職人が工芸品を制作する途中だけを展示し、完成した作品から隣の部屋へ移した",
+      "oddity": "展覧会が進むほど作業途中の展示品が減り、最後に空の作業台だけが残った"
     },
     "behavior_basis": {
-      "motive": "市は公園を整備する前に、市民が本当に歩きやすい道を確かめたい",
-      "ordinary_alternative": "設計図の直線案に従ってそのまま園路を舗装する",
-      "why_not": "木陰や遊び場から距離を取る実際の歩き方を試験で確認し、幅や傾きの安全も確かめた上で曲線を採用できるから",
-      "evidence_quote": "子どもの遊び場を避けて歩けることも、そちらを選ぶ理由になった。"
+      "motive": "工芸館は完成形だけでなく、手を動かす工程も展示の中心にしたい",
+      "ordinary_alternative": "完成した工芸品だけを会期中ずっと展示し、職人による解説を添える",
+      "why_not": "制作中の現物を目の前で見て、完成品を隣の部屋で比べることで、製作過程そのものの価値を伝えられる",
+      "evidence_quote": "来場者は二つの部屋を行き来し、途中の手仕事と仕上がった形を見比べた。"
     },
     "plausibility_basis": {
-      "present_signal": "公園再整備に向け利用状況や意見を調べる自治体の社会実験が2026年に予定されている",
-      "continuation_force": "利用者の歩く経路を実地で確認してから設計に反映する取り組みが公共空間づくりで発展する",
-      "future_result": "2031年に市民の歩いた曲線をそのまま新しい園路に採用し、完成した道を市民が歩く"
+      "present_signal": "2026年の伝統的工芸品月間では展示販売や実演が実施され、11/12開幕の公立美術館の工芸展では出品作家による技法解説も案内されている",
+      "continuation_force": "完成品中心の展示から制作過程を公開する方式への発展が期待できる",
+      "future_result": "2031年には制作途中の作品だけを見せ、完成順に隣室へ移す展覧会が開かれる"
     }
   },
   {
