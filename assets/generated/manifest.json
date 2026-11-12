@@ -4565,14 +4565,43 @@
         "width": 1672
       },
       "source_png_sha256": "759332861efabdeb12f0cc31d209e667dc9f9f7fc619bd23f5f36f141e338063",
-      "supersedes_reason": "発行時の不採用候補は公園を描き、屋内の工芸実演を描く現記事と不一致だった。旧参照は未取得SHAやpromptを補わず履歴として残し、現本文だけを基に竹かごの縁を編む職人・見学者・隣室の完成品を新規生成。原PNGと公開用JPEGを実表示して本文一致と自然な実写品質を確認した。",
+      "supersedes_reason": "発行時の不採用候補は公園を描き、屋内の工芸実演を描く現記事と不一致だった。旧参照は未取得SHAやpromptを補わず履歴として残し、現本文だけを基に竹かごの縁を編む職人・見学者・隣室の完成品を新規生成。原PNGと公開用JPEGを実表示して本文一致と自然な実写品質を確認した。 並行実行の無料CPU候補が後からmainへ保存されたため、その未検品生成record・正確な整数seed・原JPEGをprevious_generationと元commitで保持し、目視採用済みの内蔵画像を掲載対象として維持する。",
       "transform": {
         "height": 675,
         "quality": 84,
         "resize": "center-cover bilinear, alpha composited on white",
         "script": "scripts/native_image_bytes.js",
         "width": 1200
-      }
+      },
+      "previous_generation": {
+        "article_sha256": "d88112b1d6b8f76bbbaf12fb382e05a8ff615fedb836b1aaa6744300755dd20d",
+        "bytes": 140050,
+        "generated_at": "2026-11-12T09:18:57.730870+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 1771213988705202666,
+        "sha256": "03348e529df56d02489def284339d63276e5ec1b5b6d1dd58a1ff9f0463a9058"
+      },
+      "previous_generation_commit": "e70598ee85fafe49a67b0e79ac5b3201bce6dfb6",
+      "previous_generation_publication_status": "unreviewed_main_candidate"
     }
   },
   "rejected": {
