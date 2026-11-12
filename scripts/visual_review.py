@@ -14,6 +14,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 try:
+    from .article_diagrams import DIAGRAM_STATUSES, article_diagram_state
     from .editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from .generated_photos import (
         ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
@@ -22,6 +23,7 @@ try:
     )
     from .media_policy import usable_cached_photo
 except ImportError:
+    from article_diagrams import DIAGRAM_STATUSES, article_diagram_state
     from editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from generated_photos import (
         ROOT, SAFE_SLUG, SHA256, article_fingerprint, generated_scene_entry, generated_url,
@@ -154,7 +156,8 @@ def _publication_row(article: dict, *, root: Path) -> dict:
     elif usable_cached_photo(article, root=root):
         kind, url = "stock_photo", "/photos/" + article["slug"] + ".jpg"
     result = {**row, "visual_strategy": strategy,
-              "publication": {"kind": kind, "url": url}, "editorial_scene": scene}
+              "publication": {"kind": kind, "url": url}, "editorial_scene": scene,
+              "article_diagram": article_diagram_state(article, root=root)}
     if kind == "editorial_svg":
         # This is the same byte/proof gate used by the build. Keep the import
         # local: preparation also consults this module's JPEG approval gate.
@@ -171,9 +174,12 @@ def _publication_row(article: dict, *, root: Path) -> dict:
 
 
 def _attention(row: dict) -> list[dict]:
-    """Include incomplete share artwork without treating it as CPU backlog."""
+    """Keep active photo, share-artwork and optional-diagram work distinct."""
     work = []
-    if row["editorial_scene"]["status"] in ("stale", "invalid"):
+    # Old photo-replacement scenes remain visible in the report, but do not
+    # require repair while a verified photograph is actually selected instead.
+    if (row["editorial_scene"]["status"] in ("stale", "invalid")
+            and row["publication"]["kind"] not in ("generated_jpeg", "stock_photo")):
         work.append((
             row["editorial_scene"]["status"] + "_editorial_scene",
             "現在の本文と専用SVGを実物で再確認し、必要なら修正する。指紋だけで承認しない。",
@@ -198,6 +204,21 @@ def _attention(row: dict) -> list[dict]:
                 "generic_fallback",
                 "本文の具体的な場面に合う素材を用意し、実物確認する。保留解除だけで復旧しない。",
             ))
+    # Add this after the primary-image fallback check: a broken supplementary
+    # diagram must never hide an independent missing-photo action.
+    diagram = row["article_diagram"]
+    if diagram["status"] == "stale":
+        work.append((
+            "stale_article_diagram",
+            "補助図 " + diagram["path"] + " と現在の本文を実物で照合し、内容を修正する。"
+            "指紋だけ更新しない。不要になった図は削除する。",
+        ))
+    elif diagram["status"] == "invalid":
+        work.append((
+            "invalid_article_diagram",
+            "補助図 " + str(diagram["path"]) + " の検証理由 " + diagram["reason"]
+            + " を確認してSVGを修正し、本文と実表示を照合する。不要になった図は削除する。",
+        ))
     return [{"slug": row["slug"], "publication": row["publication"],
              "reason": reason, "next_action": action} for reason, action in work]
 
@@ -207,6 +228,8 @@ def main(argv: list[str] | None = None) -> int:
         description="保存済みの画像目視レビュー記録を照合する、読み取り専用の一覧。"
     )
     parser.add_argument("--root", type=Path, default=ROOT, help="対象リポジトリのディレクトリ")
+    parser.add_argument("--slug", action="append", default=[], metavar="SLUG",
+                        help="対象記事だけを照合する。複数指定可。省略時は全記事")
     args = parser.parse_args(argv)
     try:
         articles = json.loads((args.root / "content/articles.json").read_text(encoding="utf-8"))
@@ -224,6 +247,14 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"error": "記事データを読み込めません", "detail": str(error)},
                          ensure_ascii=False))
         return 2
+    if args.slug:
+        requested = set(args.slug)
+        unknown = sorted(requested - {article["slug"] for article in articles})
+        if unknown:
+            print(json.dumps({"error": "対象の記事が見つかりません", "slugs": unknown},
+                             ensure_ascii=False))
+            return 2
+        articles = [article for article in articles if article["slug"] in requested]
     rows = [_publication_row(article, root=args.root)
             for article in sorted(articles, key=lambda article: article["slug"])]
     print(json.dumps({
@@ -238,6 +269,10 @@ def main(argv: list[str] | None = None) -> int:
         "strategy_counts": {
             strategy: sum(row["visual_strategy"] == strategy for row in rows)
             for strategy in ("cpu-photo", "illustration")
+        },
+        "article_diagram_counts": {
+            status: sum(row["article_diagram"]["status"] == status for row in rows)
+            for status in DIAGRAM_STATUSES
         },
         "attention": [item for row in rows for item in _attention(row)],
         "images": rows,
