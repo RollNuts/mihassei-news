@@ -22,16 +22,16 @@
       "url": "https://public-comment.e-gov.go.jp/pcm/1040?CLASSNAME=PCM1040&Mode=1&id=145210770",
       "topic": "2026年11月5日、総務省は電波法施行令の一部を改正する政令案について意見募集結果を公示した。改正は臨時災害放送局・イベント放送局での無線設備操作に必要な資格要件を見直し、同年11月6日に施行された。2031年の町・3町共同保有協定・予算議決・体育館の実放送・人物・発言・効果はすべて架空であり、実在自治体や総務省の事業実績ではない。"
     },
-    "scene_prompt": "Photorealistic documentary news photograph of a fictional 31-year-old Japanese female municipal staff member operating a compact black FM transmitter and a tabletop microphone on a folding table inside an ordinary Japanese school gymnasium at a local produce market event. A second adult municipal radio technician checks a cable that runs toward a small temporary antenna outside the doorway, and a black portable equipment case is on a trolley beside the table. Candid daytime lighting, realistic metal, plastic and skin, believable radio hardware, horizontal 16:9 press photograph, no readable text, no logos or real brands.",
+    "scene_prompt": "Photorealistic documentary news photograph of a fictional 31-year-old Japanese female municipal staff member operating a compact black FM transmitter and a tabletop microphone on a folding table inside an ordinary Japanese municipal gymnasium at a local produce market event. A second adult municipal radio technician checks a cable that runs toward a small temporary antenna outside the doorway, and a black portable equipment case is on a trolley beside the table. Candid daytime lighting, realistic metal, plastic and skin, believable radio hardware, horizontal 16:9 press photograph, no readable text, no logos or real brands.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "自治体連携",
-      "地域ラジオ"
+      "臨時FM"
     ],
     "satire_tags": [],
     "x_tags": [
       "町議会",
-      "地域FM"
+      "FM放送"
     ],
     "x_tickers": [],
     "x_share_lead": "ラジオ局を3町で一台。体育館で放送を終えた送信機が、次の町まで台車で引っ越す2031年の自治体協定。",
