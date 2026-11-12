@@ -1,5 +1,69 @@
 [
   {
+    "slug": "tunnel-robots-pass-concrete-pour-three-sections",
+    "category": "技術",
+    "flash": "3台がトンネル打設を引き継ぐ",
+    "fiction_company": "架空の建設会社「岩継工務」",
+    "art": "cards",
+    "fiction_at": "2031-11-12T09:35:00+09:00",
+    "published_at": "2026-11-12T09:35:00+09:00",
+    "title": "トンネルの内壁、ロボ3台で18メートルを打設　夜間試験で作業を引き継ぐ",
+    "summary": "架空の建設会社が、トンネルの内壁にコンクリートを流し込むロボット3台の連続施工を試験した。各機が長さ6メートルの区間を担当し、監督の確認を挟んで次の機械へ引き継ぎ、夜明けまでに18メートル分の打設を終えた。",
+    "paragraphs": [
+      "架空の建設会社「岩継工務」は、山岳トンネルの内壁をつくる現場で、コンクリートを流し込むロボット3台の夜間連続試験を行った。手前の機械が長さ6メートルの型枠を満たすと、次の機械が奥の型枠へホースを向け、最後の機械がさらに奥の区間を受け持った。",
+      "トンネルの内壁は、掘った岩の内側にアーチ形の型枠を据え、型枠と岩の間へ柔らかいコンクリートを流してつくる。今回の3台は、それぞれの型枠にコンクリートが満ちたことをセンサーで確かめ、次の機械に終了信号を送る。一区間が終わるたびに担当者が流し込み順序を指示する代わりに、3台が終了信号を渡し、監督が次の区間を開ける。コンクリートが固まるまで型枠は外さない。",
+      "午後9時、1台目が手前の型枠を満たすと、コンクリートを送り出すポンプが止まった。監督が圧力の記録と型枠の状態を確かめて許可すると、ポンプの送り先が2台目に切り替わった。午前1時には3台目が動き出し、午前4時に3区間、合わせて18メートル分の流し込みが終わった。作業員は機械の移動やホースの取り回しを監視し、区間の切り替えだけを機械任せにしなかった。",
+      "夜明けのトンネルには、流し込んだコンクリートを包む3つの大きな型枠が一直線に並んだ。検査員が18メートルを歩きながら3区間の計測記録と継ぎ目を確かめる。壁を取り出して仕上がりを確認するのは硬化後だが、ひと晩の試験で3台の作業は途切れず次の区間へ渡った。検査員が最後の型枠にライトを当てる横で、3台は静かに止まっていた。"
+    ],
+    "source": {
+      "kind": "官公庁発表",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-11T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/kanbo08_hh_001372.html",
+      "topic": "国土交通省は2026年11月11日、「第12回ロボット大賞」の国土交通大臣賞が、実在の戸田建設株式会社ほか4社の開発した覆工コンクリート自動打設ロボット「セントルフューチャーズ」に決定したと発表。これは2031年の3台協調運転、岩継工務、トンネル夜間試験、18メートルの結果を示す発表ではない。これらの未来部分は創作。"
+    },
+    "scene_prompt": "Photorealistic documentary construction site photograph of a large concrete placing robot actively guiding a thick concrete hose into an arched tunnel lining formwork, with two more substantial robot units and arched formwork sections continuing into the distance inside a real unfinished Japanese mountain tunnel. One adult Japanese engineer in hard hat and ordinary reflective work jacket watches the pressure gauge beside the first machine. Concrete pump lines, metal formwork ribs, realistic wet concrete, work lights and rough rock, natural industrial textures, 16:9 horizontal news photograph. No readable text, logos, drawing, cartoon, illustration, or CG.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "トンネル工事",
+      "建設ロボット"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "建設ロボット",
+      "トンネル"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "トンネルの壁づくりを3台のロボがバトンリレー。固まる前に型枠は外さず、監督の確認を挟んで18メートル分を流し込んだ。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月11日に国土交通省がトンネル覆工コンクリートの自動打設ロボットの受賞を公表した",
+      "target": "山岳トンネルの内壁づくりで3台のロボットが連続する18メートルの打設を担当する夜間試験",
+      "action": "機械が6メートルの区間の完了信号を送り、監督の確認後に隣の機械へポンプの送り先を切り替える",
+      "outcome": "夜明けまでに3区間18メートル分のコンクリートを型枠内へ打設し、型枠を残した状態で検査員が記録を点検する"
+    },
+    "behavior_basis": {
+      "motive": "限られた作業員で夜間に施工を続け、区間の切り替え時も品質と安全を確認したい",
+      "ordinary_alternative": "型枠ごとに作業員が次の機械へ送り先・順序を指示して切り替える",
+      "why_not": "3台が区間の完了を互いに伝え、監督が確認した後にポンプの送り先だけを切り替えれば受け渡しが明確になる",
+      "evidence_quote": "一区間が終わるたびに担当者が流し込み順序を指示する代わりに、3台が終了信号を渡し、監督が次の区間を開ける。"
+    },
+    "reader_clarity": {
+      "who": "架空の建設会社のトンネル施工班",
+      "action": "コンクリートを流し込むロボット3台で6メートルずつ夜間に内壁の打設を引き継ぐ",
+      "oddity": "機械が互いに作業完了を通知し、監督の確認を挟んで一晩に18メートル分の打設を連続させる"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月、トンネル内壁のコンクリート自動打設ロボットが国土交通大臣賞の受賞対象に決定した",
+      "continuation_force": "夜間施工の人員不足と工事品質管理のため機械が作業完了の情報を共有する開発が続く",
+      "future_result": "2031年には3台の自動打設ロボットが互いの終了信号を渡し、監督の承認を受けて18メートルの夜間打設試験を実施した"
+    }
+  },
+  {
     "slug": "floating-warehouse-vanishes-after-berth-swap",
     "category": "事件",
     "flash": "港で浮き倉庫が行方不明",
