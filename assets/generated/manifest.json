@@ -3243,31 +3243,184 @@
       "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8"
     },
     "three-towns-share-mobile-event-radio": {
-      "article_sha256": "1396095753bf5f499884f6eecc460af6875cd90d90e02960bc057c0728d141b6",
-      "bytes": 140519,
-      "generated_at": "2026-11-12T03:21:26.014412+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "42e83c6cf1cdba06ec7b0d2252138a8bba9dbe1f9371de1e6bf960d84aad00bd",
+      "bytes": 202752,
+      "generated_at": "2026-11-12T03:28:08.502Z",
+      "generation_id": "72b80490-d274-4857-abbc-74ff20cc7186",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset type: a single horizontal 16:9 documentary news photograph for an explicitly fictional Japanese newspaper story set in 2031. Create an ordinary believable camera photograph of the article's on-site radio broadcast, with invented people and unbranded equipment.\n\nPhotorealistic documentary news photograph of a fictional 31-year-old Japanese female municipal staff member operating a compact black FM transmitter and a tabletop microphone on a folding table inside an ordinary Japanese municipal gymnasium at a local produce market event. A second adult municipal radio technician checks a cable that runs toward a small temporary antenna outside the doorway, and a black portable equipment case is on a trolley beside the table. Candid daytime lighting, realistic metal, plastic and skin, believable radio hardware, horizontal 16:9 press photograph, no readable text, no logos or real brands.\n\nKeep the main action clear in one candid medium-wide view: the seated woman speaks naturally into a small tabletop microphone while operating a compact black radio transmitter on a folding table. Her colleague stands beside the table, checking the ordinary cable connection; the cable continues through the open doorway toward a small temporary antenna standing OUTSIDE the gym. The local produce market takes place outside and adjacent to the gym, never inside this broadcast room. A sturdy black portable equipment case on a modest low wheeled trolley beside the table explains that the equipment can be moved between towns. Show realistic connectors, a reasonable cable route along the floor, normal human hands and contact with equipment. The nearby case and trolley should be visible but secondary to the woman and microphone. No crowd, conference podium, futuristic control room, radio-wave graphics or giant antenna. Ordinary Japanese municipal gym floor and walls, simple daylight through windows, unpolished press-camera texture, natural adult skin, cotton clothing, matte black plastic and metal, restrained color. Keep faces, microphone, transmitter and trolley within the central 16:9 composition. No readable lettering, signage, logos, brand names, watermark, CGI, illustration, anime, plastic skin, cinematic light or advertising gloss. This image is a synthetic reenactment of a fictional event, not an image of an actual municipality.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:72b80490-d274-4857-abbc-74ff20cc7186",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "1396095753bf5f499884f6eecc460af6875cd90d90e02960bc057c0728d141b6",
+        "bytes": 140519,
+        "generated_at": "2026-11-12T03:21:26.014412+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 1446064839368196720,
+        "sha256": "8f1dc26cbd77718e8a98398fbb0de959584357e76da0a9920b6218c3ee240d8e"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "35d456603ff9682fc7a43968d785bdf25dd56933",
+      "previous_visual_hold": {
+        "article_sha256": "1396095753bf5f499884f6eecc460af6875cd90d90e02960bc057c0728d141b6",
+        "decision": "rejected",
+        "image_sha256": "8f1dc26cbd77718e8a98398fbb0de959584357e76da0a9920b6218c3ee240d8e",
+        "reason": "CPU生成JPEGの実バイトを表示して本文と照合した。農産物が体育館内の机に多数並び、体育館外で開かれる農産物市という本文の場面と一致しない。3町で機材を持ち回るための運搬ケースと台車も判別できないため不採用。原JPEGはprevious_generation_commitの同パスで保持し、原生成記録・整数seed・記事SHA・画像SHAは変更しない。",
+        "reviewed_at": "2026-11-12T03:31:03Z"
+      },
       "prompt_version": 3,
-      "seed": 1446064839368196720,
-      "sha256": "8f1dc26cbd77718e8a98398fbb0de959584357e76da0a9920b6218c3ee240d8e"
+      "sha256": "621b76b1439c6a1942b2428e9665e9f01499f1eae4c96092a72c7e5a0b427fd0",
+      "source_article_sha256": "42e83c6cf1cdba06ec7b0d2252138a8bba9dbe1f9371de1e6bf960d84aad00bd",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:9bdaffa2-bd15-4272-9624-279ab01083e7",
+        "instanceID": "xmp:iid:72b80490-d274-4857-abbc-74ff20cc7186",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              108,
+              106,
+              2,
+              200,
+              238,
+              231,
+              1,
+              217,
+              3,
+              223,
+              223,
+              154,
+              137,
+              81,
+              139,
+              99,
+              235,
+              243,
+              197,
+              132,
+              223,
+              217,
+              69,
+              122,
+              122,
+              224,
+              82,
+              245,
+              27,
+              212,
+              158,
+              55
+            ]
+          },
+          "specVersion": "2.2.0",
+          "org.contentauth.c2pa_rs": "0.79.2"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-12T03:28:04.832239510Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T03:28:04.832241521Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T03:28:04.831649134Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2374178,
+        "caBX_sha256": "3a1f0ebc5f98b45c0d325c536b78e40cef3ad7412d65cf26301c5af4154f83a2",
+        "candidate_branch": "native-image-candidate/three-towns-share-mobile-event-radio/42e83c6cf1cdba06-1264b5ef12a7",
+        "candidate_commit": "7d379523d707400bc5be0f06bca4a540eb767b1a",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "4decf88c-4c78-8323-98e0-c92ba69c41a9",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part000",
+            "bytes": 524288,
+            "sha256": "1eca3f2a2f7b6c7cd86b32181a120c6f5c0c0eb2193871bf7f3c56c57fd76bae",
+            "blob_sha": "7174587c6c2f4913f5b7d526d531b65978d21ded"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part001",
+            "bytes": 524288,
+            "sha256": "1113dbc166d5080d26b8c5eb4a85efad5fa423e43810af0897a17bb8d23f33fc",
+            "blob_sha": "9d8e03d449a2387546e22f148f488ddc0c6ee3be"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part002",
+            "bytes": 524288,
+            "sha256": "0ff7073687d228c8213c09d30e34d6850e59e09a3f289ab04aa1b9bc1b9120d7",
+            "blob_sha": "dacb467697f04ede930ae5c533baa76ff5ea0cd1"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part003",
+            "bytes": 524288,
+            "sha256": "aa9b092c0fc64b825bc5c01ccb6e5d6989314c7557347bfec01f4a2e0dee46aa",
+            "blob_sha": "4fd90b958e6b1e2fa5f9eb68998d95759623fa24"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/source.png.part004",
+            "bytes": 277026,
+            "sha256": "d1cd95a588bbfd2bdead5b230a58dacfc325fde38753ffc79f23c951ea09e048",
+            "blob_sha": "cfcb31c04cafdaacedf1688ff573f0a9ea3b2dc9"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/three-towns-share-mobile-event-radio/receipt.json",
+        "receipt_sha256": "728218cc691f6e8c66c7177f08df8fdf128284887d50e529eaaaa05642748af2",
+        "width": 1672
+      },
+      "source_png_sha256": "b7ce6f6632a82c5e57e09af3c6a9ee152d2a8c1f21ff3484f1f92d9f51bc5be6",
+      "supersedes_reason": "CPU候補は体育館外の市場を室内に描き、持ち回り用の運搬ケースと台車も見えないため不採用。最終本文を先に確定し、その場面で内蔵画像を生成。候補branchから原PNGと最終JPEGを読み戻して照合・実表示し、体育館内の放送作業、扉の外の市場とアンテナ、運搬機材が本文に合うことを確認して初採用した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "a6b78fa20a29f2640bd8b0b4c063ddac02bb7de2f7f60d505f7b231a4e1f20af",
