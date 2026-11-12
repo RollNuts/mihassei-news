@@ -2,105 +2,275 @@
   "images": {
     "aerobics-final-silent-thirty-seconds-team-comeback": {
       "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-      "bytes": 121972,
-      "generated_at": "2026-11-12T08:51:09.275Z",
-      "generation_id": "9a547c42-4700-4a13-b7b3-a5e347e9032f",
+      "bytes": 122450,
+      "generated_at": "2026-11-12T09:05:07.499Z",
+      "generation_id": "cfd08716-a3c6-44af-b267-712a6628942f",
       "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
-      "generation_prompt": "Use case: photorealistic-natural. Asset: landscape 16:9 candid sports press photograph for a fictional newspaper. Exactly THREE adult Japanese female aerobic gymnastics athletes, all adults around 27 years old, performing one synchronized final landing in an ordinary Japanese indoor competition arena. Only three people are on the performance floor: one captain centrally, one teammate to her left, one teammate to her right. All three complete the same movement at the same instant: both white athletic shoes planted on the floor, knees slightly flexed to absorb landing, upper bodies straight, both arms lowered and held still just out from their sides, realistic intense focused expressions. Their matching modest plain navy-and-white aerobic competition outfits have shorts-length legs, no brands or lettering. All three full bodies and their floor contact points must be visible in one horizontal row with natural spacing. The center captain looks straight ahead while the rightmost teammate glances subtly toward her shoulder for coordination. A small plain white cue lamp is lit at the far side of the performance area; no special sound-wave or silence symbols. Background is a distant softly defocused seated audience well beyond the floor, with no additional athlete, standing person or mirror reflection on the floor. Photograph as a real sports photographer from a low courtside viewpoint, fast shutter, slight natural fabric motion, believable muscles, knees, hands and faces, realistic arena lighting and grounded shadows. Ordinary candid news photograph, not an illustration, CG scene, glossy advertisement, staged studio portrait, or movie poster. No logos, readable text, score overlays, watermarks or identifiable real athlete. The entire visual story is exactly three athletes synchronizing the same landing.",
-      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
-      "generation_receipt": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+      "generation_prompt": "Edit the supplied sports photograph. Preserve the believable candid press-photography style and the essential composition: exactly THREE adult Japanese female aerobic gymnastics athletes, the captain in the center, all three full bodies visible on the same arena floor in a synchronized landing with both white shoes on the floor, knees slightly flexed, arms lowered and held still. Preserve the navy-and-white modest unbranded competition outfits, realistic athletic bodies, audience, small white cue lamp and 16:9 landscape framing. The requested change is to recast the faces and expressions so all three women look noticeably more attractive, cute, fresh and charming in a natural contemporary Japanese way. They are clearly ADULTS around 25–29 years old; the captain is 27. Give them distinctive pretty facial features, lively bright eyes, well-groomed natural eyebrows, softly flattering face shapes, fresh clear skin with real pores, and neat tied-back dark hair with soft natural bangs. The center captain has especially engaging, beautiful eyes and a subtle warm confident smile while still focused on the performance. The two teammates also have appealing individual adult faces, not duplicates, with a light energetic expression rather than a stern or exhausted look. Tasteful very light competition makeup is fine. Keep genuine sports-photo realism, ordinary arena lighting, natural skin texture, anatomically convincing hands and legs, realistic fabric and grounded shadows. No childish or teenage appearance, no doll faces, no anime, no beauty-filter skin, no glossy fashion lighting, no sexualized styling, no logos or readable text. Change the adult faces, hair styling and expressions substantially enough that the improvement in natural cuteness and freshness is immediately visible, while retaining the exact three-person sports scene.",
+      "generation_prompt_source": "Exact image_gen edit input captured in the same functions.exec as generation and durable staging.",
+      "generation_reference": {
+        "kind": "actual_native_png_edit_reference",
+        "source_png_sha256": "1925a89b0487260dce4dcec51cbb5de2207f1eb621f81078abf0b61d7aacbfa5",
+        "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-5a7470aab91c",
+        "candidate_commit": "9e4f55bb9c3db6cc19f2075a5dc766d64ff65aeb",
+        "receipt_path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/receipt.json",
+        "receipt_sha256": "94caab4821d2cba809282ad62e746a74f275486328d71aecc15bf8b32fd3e083",
+        "basis": "The actual original PNG of the first native candidate was supplied as the reference image for this user-requested edit; these are source-image identifiers, not backend job IDs."
+      },
+      "generation_receipt": "xmp:iid:cfd08716-a3c6-44af-b267-712a6628942f",
       "model": "ChatGPT ImageGen",
       "origin": "chatgpt-imagegen",
       "previous_generation": {
         "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-        "bytes": 160909,
-        "generated_at": "2026-11-12T04:57:21.856074+00:00",
-        "inference": {
-          "algorithm_type": "dpmsolver++",
-          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7.0,
-          "height": 448,
-          "num_inference_steps": 24,
-          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-          "scheduler": "DPMSolverMultistepScheduler",
-          "solver_order": 2,
-          "solver_type": "midpoint",
-          "use_karras_sigmas": true,
-          "vae_model": "stabilityai/sd-vae-ft-mse",
-          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-          "width": 800
+        "bytes": 121972,
+        "generated_at": "2026-11-12T08:51:09.275Z",
+        "generation_id": "9a547c42-4700-4a13-b7b3-a5e347e9032f",
+        "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+        "generation_prompt": "Use case: photorealistic-natural. Asset: landscape 16:9 candid sports press photograph for a fictional newspaper. Exactly THREE adult Japanese female aerobic gymnastics athletes, all adults around 27 years old, performing one synchronized final landing in an ordinary Japanese indoor competition arena. Only three people are on the performance floor: one captain centrally, one teammate to her left, one teammate to her right. All three complete the same movement at the same instant: both white athletic shoes planted on the floor, knees slightly flexed to absorb landing, upper bodies straight, both arms lowered and held still just out from their sides, realistic intense focused expressions. Their matching modest plain navy-and-white aerobic competition outfits have shorts-length legs, no brands or lettering. All three full bodies and their floor contact points must be visible in one horizontal row with natural spacing. The center captain looks straight ahead while the rightmost teammate glances subtly toward her shoulder for coordination. A small plain white cue lamp is lit at the far side of the performance area; no special sound-wave or silence symbols. Background is a distant softly defocused seated audience well beyond the floor, with no additional athlete, standing person or mirror reflection on the floor. Photograph as a real sports photographer from a low courtside viewpoint, fast shutter, slight natural fabric motion, believable muscles, knees, hands and faces, realistic arena lighting and grounded shadows. Ordinary candid news photograph, not an illustration, CG scene, glossy advertisement, staged studio portrait, or movie poster. No logos, readable text, score overlays, watermarks or identifiable real athlete. The entire visual story is exactly three athletes synchronizing the same landing.",
+        "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+        "generation_receipt": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+        "model": "ChatGPT ImageGen",
+        "origin": "chatgpt-imagegen",
+        "previous_generation": {
+          "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+          "bytes": 160909,
+          "generated_at": "2026-11-12T04:57:21.856074+00:00",
+          "inference": {
+            "algorithm_type": "dpmsolver++",
+            "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+            "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+            "guidance_scale": 7.0,
+            "height": 448,
+            "num_inference_steps": 24,
+            "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+            "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+            "scheduler": "DPMSolverMultistepScheduler",
+            "solver_order": 2,
+            "solver_type": "midpoint",
+            "use_karras_sigmas": true,
+            "vae_model": "stabilityai/sd-vae-ft-mse",
+            "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+            "width": 800
+          },
+          "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "origin": "github-cpu-sd15",
+          "prompt_version": 3,
+          "seed": 5520453989675686101,
+          "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
         },
-        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "origin": "github-cpu-sd15",
+        "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
+        "previous_visual_hold": {
+          "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+          "reason": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。",
+          "rejected_candidate_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
+          "reviewed_at": "2026-11-12T04:58:27Z",
+          "source_commit": "28b2a47ca295d1d5b08a540cc5a070142ae406f2"
+        },
+        "previous_visual_review": {
+          "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+          "decision": "rejected",
+          "image_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
+          "reviewed_at": "2026-11-12T04:58:27Z",
+          "note": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。"
+        },
         "prompt_version": 3,
-        "seed": 5520453989675686101,
-        "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
+        "sha256": "59efad456c5839ceb4b7cfcb3e44b315287a03398ee9c42763ff015da599e5a3",
+        "source_article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
+        "source_c2pa": {
+          "manifest_uri": "urn:c2pa:cbfb09a1-0906-4bfb-afd5-93628488d340",
+          "instanceID": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+          "claim_generator": null,
+          "claim_generator_info": {
+            "name": "OpenAI Media Service API",
+            "icon": {
+              "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+              "hash": [
+                55,
+                186,
+                88,
+                28,
+                206,
+                123,
+                154,
+                71,
+                63,
+                10,
+                177,
+                106,
+                199,
+                71,
+                214,
+                132,
+                114,
+                168,
+                18,
+                77,
+                21,
+                10,
+                118,
+                45,
+                34,
+                207,
+                130,
+                55,
+                242,
+                65,
+                144,
+                247
+              ]
+            },
+            "specVersion": "2.2.0",
+            "org.contentauth.c2pa_rs": "0.79.2"
+          },
+          "actions": [
+            {
+              "label": "c2pa.actions.v2",
+              "value": {
+                "actions": [
+                  {
+                    "action": "c2pa.created",
+                    "when": "2026-11-12T08:51:01.730860858Z",
+                    "softwareAgent": {
+                      "name": "ChatGPT",
+                      "version": "gpt-image"
+                    },
+                    "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                  },
+                  {
+                    "action": "c2pa.converted",
+                    "when": "2026-11-12T08:51:01.730864014Z"
+                  },
+                  {
+                    "action": "c2pa.watermarked.unbound",
+                    "when": "2026-11-12T08:51:01.729083457Z"
+                  }
+                ],
+                "allActionsIncluded": false
+              }
+            }
+          ],
+          "signature_validation": "not_performed",
+          "content_binding_validation": "not_performed"
+        },
+        "source_capture": {
+          "bytes": 1913585,
+          "caBX_sha256": "bd92de44dc9b034d2920932a143fea0fd875a91886e06b877a3dcf57f5b5ad4b",
+          "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-5a7470aab91c",
+          "candidate_commit": "9e4f55bb9c3db6cc19f2075a5dc766d64ff65aeb",
+          "height": 941,
+          "kind": "native_tool_result",
+          "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945",
+          "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+          "original_png_parts": [
+            {
+              "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part000",
+              "bytes": 524288,
+              "sha256": "a57ffd9bf834a7dc5c2928253119e26bd128ef4c03332b02d548924e7e893b46",
+              "blob_sha": "7c52a1c6878bfbeadd78db78dc5bec0975f06a21"
+            },
+            {
+              "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part001",
+              "bytes": 524288,
+              "sha256": "61baa0aa86780004963487a2c449e994622980eef171cfdace9f2cba258a9a8b",
+              "blob_sha": "5b002fdc6d39ca404b7309c57d86b8b46b90c814"
+            },
+            {
+              "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part002",
+              "bytes": 524288,
+              "sha256": "c7096b15eb56f23fd5eb4ccc659f79247baa6eeaca8b93cd93c6847010d0d06a",
+              "blob_sha": "e2332ffe63e4c3b0503aed7bc31ae88c869bf220"
+            },
+            {
+              "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part003",
+              "bytes": 340721,
+              "sha256": "fc5ec39abd7bb1b3d13bf323d5cbd05d4f369e1a095b30315dd55b191105af3f",
+              "blob_sha": "87a44a34f3fc5d102f26845dda8d00189ab00ba5"
+            }
+          ],
+          "receipt_path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/receipt.json",
+          "receipt_sha256": "94caab4821d2cba809282ad62e746a74f275486328d71aecc15bf8b32fd3e083",
+          "width": 1672
+        },
+        "source_png_sha256": "1925a89b0487260dce4dcec51cbb5de2207f1eb621f81078abf0b61d7aacbfa5",
+        "supersedes_reason": "CPU候補は選手4人と異なる姿勢を描き、本文の3人同時の着地と一致しないため不採用。現在の本文を変えず、床上の選手を3人に限定した同じ着地の場面を内蔵画像で生成し、保存した原PNGと最終JPEGを実表示して採用した。",
+        "transform": {
+          "height": 675,
+          "quality": 84,
+          "resize": "center-cover bilinear, alpha composited on white",
+          "script": "scripts/native_image_bytes.js",
+          "width": 1200
+        }
       },
-      "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
+      "previous_generation_commit": "38229456e3eade89bf6f6ef4c0d12c60e40e88df",
+      "previous_generation_publication_status": "unpublished_pr_candidate",
       "previous_visual_hold": {
         "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-        "reason": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。",
-        "rejected_candidate_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
-        "reviewed_at": "2026-11-12T04:58:27Z",
-        "source_commit": "28b2a47ca295d1d5b08a540cc5a070142ae406f2"
+        "decision": "rejected",
+        "image_sha256": "59efad456c5839ceb4b7cfcb3e44b315287a03398ee9c42763ff015da599e5a3",
+        "source_png_sha256": "1925a89b0487260dce4dcec51cbb5de2207f1eb621f81078abf0b61d7aacbfa5",
+        "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-5a7470aab91c",
+        "candidate_commit": "9e4f55bb9c3db6cc19f2075a5dc766d64ff65aeb",
+        "reviewed_at": "2026-11-12T09:08:10Z",
+        "reason": "ユーザーが初回内蔵候補の人物の顔立ちについて「その体操の女の子可愛くないやり直し」と明示したため、本文適合の技術検品後・mainへの公開前に候補を不採用とした。成人3人の同時着地と実写品質を維持し、顔立ち・髪・表情を明るく爽やかにする参照編集へ引き継ぐ。",
+        "publication_status": "unpublished_pr_candidate",
+        "draft_pr_number": 690,
+        "draft_commit": "38229456e3eade89bf6f6ef4c0d12c60e40e88df"
       },
       "previous_visual_review": {
         "article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
-        "decision": "rejected",
-        "image_sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797",
-        "reviewed_at": "2026-11-12T04:58:27Z",
-        "note": "公開済みの現記事全文・scene_promptと新規CPU原JPEG（800×448、160909 bytes、SHA c6556008a542）を実表示して照合。本文の『3人組』に対し画像には選手が4人写り、中央の人物は片腕を上げて片脚で立ち、両脇も脚や腕の姿勢が異なる。『3人同時に跳び、靴底が同時着地し両手を止めた』という主役動作を再現していない。手や顔の形もやや不自然で、屋内競技場の背景だけの一致では実写報道写真として採用できない。画像生成record・正確な整数seed・原JPEGを保持し、新しい検証済み写真まで既存の非承認画像フォールバックを維持する。図：不要（無音区間の位置と動きは本文で追える）。"
+        "decision": "accepted",
+        "image_sha256": "59efad456c5839ceb4b7cfcb3e44b315287a03398ee9c42763ff015da599e5a3",
+        "reviewed_at": "2026-11-12T08:55:49Z",
+        "note": "生成担当が原PNGと公開用1200×675 JPEGを実表示し、取り込み担当も候補commitのJPEGを実表示して現本文全文・scene_promptと照合した。競技床上の選手は3人で、中央主将と左右の選手が足をそろえて両足を床につけ、膝を曲げた同じ着地姿勢で両手を止めている。右の選手の視線、背景の客席と舞台脇の白いランプも本文に合う。肌・衣服・靴・床の反射と影は自然で、目立つ手足の重複やCG調の破綻はない。原PNG分割原本・最終JPEG・receiptのSHAを照合済み。静止写真から無音区間や勝敗を実証したとは扱わない。"
       },
       "prompt_version": 3,
-      "sha256": "59efad456c5839ceb4b7cfcb3e44b315287a03398ee9c42763ff015da599e5a3",
+      "sha256": "01e1664b7e3113be7db3026f3ae9df1a90ca26457d28b92855ee42a7bd87aa3c",
       "source_article_sha256": "adf5f19caaf24fcfb77fe71a701f24c63c03f31e1373e6d27d74573ab4f2ba1d",
       "source_c2pa": {
-        "manifest_uri": "urn:c2pa:cbfb09a1-0906-4bfb-afd5-93628488d340",
-        "instanceID": "xmp:iid:9a547c42-4700-4a13-b7b3-a5e347e9032f",
+        "manifest_uri": "urn:c2pa:3955ded5-f5c2-47bc-9561-d9053555b128",
+        "instanceID": "xmp:iid:cfd08716-a3c6-44af-b267-712a6628942f",
         "claim_generator": null,
         "claim_generator_info": {
           "name": "OpenAI Media Service API",
           "icon": {
             "url": "self#jumbf=c2pa.assertions/c2pa.icon",
             "hash": [
-              55,
-              186,
-              88,
-              28,
-              206,
-              123,
-              154,
-              71,
-              63,
-              10,
-              177,
-              106,
+              35,
               199,
-              71,
-              214,
-              132,
-              114,
-              168,
-              18,
-              77,
-              21,
-              10,
-              118,
-              45,
-              34,
-              207,
+              211,
+              253,
+              116,
+              155,
+              166,
+              249,
+              9,
+              162,
+              152,
+              223,
+              203,
+              153,
+              70,
+              126,
+              0,
+              47,
+              94,
+              161,
+              193,
+              251,
+              146,
+              138,
+              167,
+              176,
+              121,
+              157,
+              211,
+              154,
               130,
-              55,
-              242,
-              65,
-              144,
-              247
+              176
             ]
           },
-          "specVersion": "2.2.0",
-          "org.contentauth.c2pa_rs": "0.79.2"
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
         },
         "actions": [
           {
@@ -109,7 +279,7 @@
               "actions": [
                 {
                   "action": "c2pa.created",
-                  "when": "2026-11-12T08:51:01.730860858Z",
+                  "when": "2026-11-12T09:05:00.532050620Z",
                   "softwareAgent": {
                     "name": "ChatGPT",
                     "version": "gpt-image"
@@ -118,11 +288,11 @@
                 },
                 {
                   "action": "c2pa.converted",
-                  "when": "2026-11-12T08:51:01.730864014Z"
+                  "when": "2026-11-12T09:05:00.532056206Z"
                 },
                 {
                   "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-12T08:51:01.729083457Z"
+                  "when": "2026-11-12T09:05:00.528809693Z"
                 }
               ],
               "allActionsIncluded": false
@@ -133,46 +303,46 @@
         "content_binding_validation": "not_performed"
       },
       "source_capture": {
-        "bytes": 1913585,
-        "caBX_sha256": "bd92de44dc9b034d2920932a143fea0fd875a91886e06b877a3dcf57f5b5ad4b",
-        "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-5a7470aab91c",
-        "candidate_commit": "9e4f55bb9c3db6cc19f2075a5dc766d64ff65aeb",
+        "bytes": 1863261,
+        "caBX_sha256": "a4be6a6546b4cb47f28829fe1f84237bda42801f4707868eb452fdceb2c81f9d",
+        "candidate_branch": "native-image-candidate/aerobics-final-silent-thirty-seconds-team-comeback/adf5f19caaf24fcf-3ed3c5bc4260",
+        "candidate_commit": "a36b7a4db2ada1f7418ee8420a9627fb22fd7898",
         "height": 941,
         "kind": "native_tool_result",
-        "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945",
-        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945-user-revision-2",
+        "method": "Captured the actual native edit PNG tool return in the generating exec; saved all source parts and JPEG to a new revision candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
         "original_png_parts": [
           {
             "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part000",
             "bytes": 524288,
-            "sha256": "a57ffd9bf834a7dc5c2928253119e26bd128ef4c03332b02d548924e7e893b46",
-            "blob_sha": "7c52a1c6878bfbeadd78db78dc5bec0975f06a21"
+            "sha256": "76709f3ccd4a053913b04e2cca34a873f29f7049b4c0ef8a028ccbcfa662204f",
+            "blob_sha": "4f1c1124e69e0a9f0abdb4dad58f05a319f8e900"
           },
           {
             "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part001",
             "bytes": 524288,
-            "sha256": "61baa0aa86780004963487a2c449e994622980eef171cfdace9f2cba258a9a8b",
-            "blob_sha": "5b002fdc6d39ca404b7309c57d86b8b46b90c814"
+            "sha256": "74a9ae5a8cd381f8c7e779d27b97fc5c5f92c176aae6af7d6290cc32de100e5f",
+            "blob_sha": "5c875fc6c4ff720e1406483b5182fa52c9ab2f78"
           },
           {
             "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part002",
             "bytes": 524288,
-            "sha256": "c7096b15eb56f23fd5eb4ccc659f79247baa6eeaca8b93cd93c6847010d0d06a",
-            "blob_sha": "e2332ffe63e4c3b0503aed7bc31ae88c869bf220"
+            "sha256": "c98938d021459bd917cb70cc5ca13ce1fbe03e902147f86e19e49f258eb677bb",
+            "blob_sha": "ffb7a9fe776ae4225b352abe7147ae3ba54edf80"
           },
           {
             "path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/source.png.part003",
-            "bytes": 340721,
-            "sha256": "fc5ec39abd7bb1b3d13bf323d5cbd05d4f369e1a095b30315dd55b191105af3f",
-            "blob_sha": "87a44a34f3fc5d102f26845dda8d00189ab00ba5"
+            "bytes": 290397,
+            "sha256": "a73cefe5543e0e01ae79a3507f392c0b6bd9c50014b6b9100e730ef36785bf39",
+            "blob_sha": "62c0041eb486e5ee7d809c47e3ce4e3a76b59772"
           }
         ],
         "receipt_path": "maintenance/native-image-candidates/aerobics-final-silent-thirty-seconds-team-comeback/receipt.json",
-        "receipt_sha256": "94caab4821d2cba809282ad62e746a74f275486328d71aecc15bf8b32fd3e083",
+        "receipt_sha256": "5de59ed55e6a5d356cc7b5811d03a719a0d39a68ef75fe345bf4d58ced2f9292",
         "width": 1672
       },
-      "source_png_sha256": "1925a89b0487260dce4dcec51cbb5de2207f1eb621f81078abf0b61d7aacbfa5",
-      "supersedes_reason": "CPU候補は選手4人と異なる姿勢を描き、本文の3人同時の着地と一致しないため不採用。現在の本文を変えず、床上の選手を3人に限定した同じ着地の場面を内蔵画像で生成し、保存した原PNGと最終JPEGを実表示して採用した。",
+      "source_png_sha256": "1fbdf9509a34778d318015a11c1d684632846876dc7235dce061f6ae8a0ee5b8",
+      "supersedes_reason": "初回内蔵候補はユーザーが人物の顔立ちをやり直すよう明示したため本番未公開のまま不採用として保存。元PNGを参照編集し、27歳の主将を含む成人3人の同時着地・服装・実写品質を維持して、顔立ち・髪・表情を明るく爽やかにした。新しい原PNGと最終JPEGを実表示し、現本文との一致を確認して採用した。",
       "transform": {
         "height": 675,
         "quality": 84,
@@ -4243,6 +4413,166 @@
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
+    },
+    "craft-exhibition-empties-as-works-finish": {
+      "article_sha256": "d88112b1d6b8f76bbbaf12fb382e05a8ff615fedb836b1aaa6744300755dd20d",
+      "bytes": 199272,
+      "generated_at": "2026-11-12T09:10:38.294Z",
+      "generation_id": "063c9554-eaed-451e-9164-30a4fc58bf3b",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Create a completely new horizontal 16:9 candid documentary news photograph based only on this description. The location is an indoor Japanese crafts museum exhibition room, and the main action is bamboo basket weaving. A fictional Japanese woman craftsperson aged about 32, wearing simple ordinary work clothes and a plain apron, sits at a substantial well-used wooden workbench. Her two natural hands are actively threading and tightening a thin bamboo strip around the rim of a nearly finished hand-woven bamboo basket directly in front of her. The basket, flexible thin bamboo strip, fingers and work surface are large enough to see clearly; a few trimmed bamboo ends and small hand tools lie naturally on the tabletop. In the softer background, two adult visitors quietly watch from a respectful distance and a second workbench holds an unfinished wooden bowl. An open doorway at one side reveals a separate adjacent exhibition room with a finished bamboo basket and wooden bowl resting on simple modest display plinths. This communicates that works being made in the first room move into a finished-works room once complete. Eye-level medium documentary framing, slight oblique angle, ordinary window daylight, realistic wood grain and tool wear, bamboo fibers, skin and cloth texture, natural shadows. It must look like an actual unposed press photograph, not a stylized artwork, CGI, museum advertisement or studio portrait. A quiet practical interior with white museum walls, no readable text, logos, signs, labels, captions, watermarks or identifiable real person. No outdoor scene, no park, no path, no road, no trees, no workers collecting stakes. Main subject: a woman actually finishing the rim of a bamboo basket at an indoor museum workbench.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:063c9554-eaed-451e-9164-30a4fc58bf3b",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_visual_hold": {
+        "decision": "rejected",
+        "reported_target_article_sha256": "d88112b1d6b8f76bbbaf12fb382e05a8ff615fedb836b1aaa6744300755dd20d",
+        "reported_generation_id": "51db1304-1822-403b-a54d-e20fccfeb588",
+        "source_file_id": "file_000000009e60820c8da8951d642bd19b",
+        "source_png_sha256": null,
+        "image_sha256": null,
+        "generation_prompt": null,
+        "recorded_at": "2026-11-12T09:16:52Z",
+        "publication_status": "unpublished_rejected_candidate",
+        "source_handoff_commit": "68de62fdcd870be4bbe5bd3423d3f4695e10c4e4",
+        "source_handoff_path": "docs/DAILY_EDITORIAL_BRIEF.md",
+        "identity_basis": "The generation identifier and file ID were reported by the preceding publication handoff; the original image bytes, C2PA claim, SHA and exact tool input were not available for this recovery. No candidate branch or receipt was recorded.",
+        "reason": "発行担当の引き継ぎでは実返却PNGが公園の曲線園路・杭・職員を写し、現記事の竹かご・職人・工芸展示が欠けるため不採用と記録されている。この旧参照を工芸写真として再承認せず、現本文だけを指示した新しい屋内竹細工写真へ置き換える。"
+      },
+      "prompt_version": 3,
+      "sha256": "3e514bf3e18e803da1447d628b8e5e1ed81059c899536b84695dd5a3df247409",
+      "source_article_sha256": "d88112b1d6b8f76bbbaf12fb382e05a8ff615fedb836b1aaa6744300755dd20d",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:840f7cfe-814e-4979-8866-07323683c6f2",
+        "instanceID": "xmp:iid:063c9554-eaed-451e-9164-30a4fc58bf3b",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              169,
+              158,
+              53,
+              92,
+              20,
+              117,
+              114,
+              233,
+              3,
+              190,
+              96,
+              209,
+              168,
+              39,
+              179,
+              61,
+              183,
+              112,
+              84,
+              33,
+              230,
+              238,
+              99,
+              42,
+              112,
+              254,
+              172,
+              62,
+              144,
+              65,
+              197,
+              199
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-12T09:10:30.429370296Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T09:10:30.429373392Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T09:10:30.428025765Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2521996,
+        "caBX_sha256": "247dc14339ad6c7f6d4a3d1e84468763fbea1ff8261c95cab4d827594c8aa046",
+        "candidate_branch": "native-image-candidate/craft-exhibition-empties-as-works-finish/d88112b1d6b8f76b-5a7470aab91c",
+        "candidate_commit": "5f419f4fba7ba5c8fd5959754ac278cf8cacc48d",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "user-photo-repair-2026-11-12-c1361ddf2945",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values and JPEG reproduction before visual acceptance.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/source.png.part000",
+            "bytes": 524288,
+            "sha256": "78fa512126980b4deb6818c23cf5374229e1dfa5fc8aafccdf888b5da10c92a5",
+            "blob_sha": "66a1a5de493e3007c1019a554b6d7246c5c47076"
+          },
+          {
+            "path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/source.png.part001",
+            "bytes": 524288,
+            "sha256": "d92e9fa2f3fa4686767b90399a350c7c9c60e3a80d945ec7693d85d442716794",
+            "blob_sha": "feb44e4e150ab7ea57cc909664deafbd36185adc"
+          },
+          {
+            "path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/source.png.part002",
+            "bytes": 524288,
+            "sha256": "6afff9be20389e7cbfb8113400f249dc05aeb8a34c8fb388e188ca91e1863e1e",
+            "blob_sha": "6aa46e3a2354688bc050f75a42c410c9d27dfef8"
+          },
+          {
+            "path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/source.png.part003",
+            "bytes": 524288,
+            "sha256": "f60c5676acaf3dafc5179eab843a01cc1bf7bcc703354f546e5ea1f265d79df7",
+            "blob_sha": "16ef5ec7700065e66299301d9323735dc280d624"
+          },
+          {
+            "path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/source.png.part004",
+            "bytes": 424844,
+            "sha256": "e928a57fdb11b061c2fe982aa4cb424dbdb9113dbb5c42780337375af0055156",
+            "blob_sha": "70d7436e6d026b64c7eda5f3a2e428fdb77c0167"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/craft-exhibition-empties-as-works-finish/receipt.json",
+        "receipt_sha256": "211cee8f8e00ba9f33eed83acab9647aea73abfc658ad3786e5097d80d15c71d",
+        "width": 1672
+      },
+      "source_png_sha256": "759332861efabdeb12f0cc31d209e667dc9f9f7fc619bd23f5f36f141e338063",
+      "supersedes_reason": "発行時の不採用候補は公園を描き、屋内の工芸実演を描く現記事と不一致だった。旧参照は未取得SHAやpromptを補わず履歴として残し、現本文だけを基に竹かごの縁を編む職人・見学者・隣室の完成品を新規生成。原PNGと公開用JPEGを実表示して本文一致と自然な実写品質を確認した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     }
   },
   "rejected": {
