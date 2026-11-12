@@ -5,7 +5,7 @@
     "flash": "窓ガラスが発電、出荷検査へ",
     "fiction_company": "架空の建材メーカー「窓灯」と架空の部品工場「浜野精機」",
     "art": "cards",
-    "fiction_at": "2031-11-12T15:30:00+09:00",
+    "fiction_at": "2031-11-12T15:35:00.431+09:00",
     "published_at": "2026-11-12T15:35:00.431+09:00",
     "title": "発電する窓ガラス、工場向けに発売　初出荷の8枚を光で検品",
     "summary": "架空の建材メーカー「窓灯」が、光を通しながら発電する窓ガラス「灯窓」を発売。出荷場で8枚の電線を電力計につないで検品し、部品工場の南壁へ納めた。見積書には窓の代金のほか、電気を取り出す配線工事が加わった。",
@@ -23,7 +23,7 @@
       "url": "https://news.panasonic.com/jp/press/jn261020-1",
       "topic": "2026年10月20日、パナソニックHDはガラス型ペロブスカイト太陽電池の本格量産開始を当初予定より1年前倒しし、2029年4月から長浜拠点で開始する計画を発表した。2026年9月に先行量産品の販売を始め、窓や壁などに用いる建材一体型の発電ガラスの量産・施工技術を開発している。2031年の窓灯・灯窓・浜野精機、8枚の出荷・検査・設置は創作であり、パナソニックの将来発表ではない。"
     },
-    "scene_prompt": "Photorealistic unposed press photograph inside an ordinary Japanese industrial glass factory shipping area in daytime. A fictional adult Japanese factory technician in safety gloves stands at a metal rack of upright transparent photovoltaic window glass panels, clipping the thin cable from one foreground glass pane to a small practical electricity meter, with an ordinary inspection light nearby. Several other clean glass panels are lined up behind. Concrete floor, realistic reflections and wiring, natural factory lighting, candid documentary composition, 16:9 landscape. No readable text, logo, famous person, CGI, illustration, neon, or advertising look.",
+    "scene_prompt": "Photorealistic unposed press photograph inside an ordinary Japanese industrial glass factory shipping area in daytime. A fictional adult Japanese factory technician in safety gloves stands at a metal rack of upright transparent photovoltaic window glass panels, clipping the thin cable from one foreground glass pane to a small practical electricity meter, with an ordinary inspection light nearby. Several other clean glass panels are lined up behind. Concrete floor, realistic reflections and wiring, natural factory lighting, candid documentary composition, 16:9 landscape. Avoid readable text, logos, known people, artificial lighting effects and a promotional advertising look.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "発電ガラス",
