@@ -126,12 +126,12 @@ class VisualReviewTests(unittest.TestCase):
         path.write_bytes(b"\x89PNG\r\n\x1a\n" + data + chunk(b"IEND", b""))
         return path
 
-    def report(self, articles: list[dict]) -> dict:
+    def report(self, articles: list[dict], *args: str) -> dict:
         (self.root / "content/articles.json").write_text(
             json.dumps(articles, ensure_ascii=False), encoding="utf-8")
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
-            self.assertEqual(main(["--root", str(self.root)]), 0)
+            self.assertEqual(main(["--root", str(self.root), *args]), 0)
         return json.loads(output.getvalue())
 
     def test_intact_jpeg_needs_a_matching_explicit_visual_review(self):
@@ -251,6 +251,10 @@ class VisualReviewTests(unittest.TestCase):
         })
         self.assertEqual(result["strategy_counts"], {"cpu-photo": 4, "illustration": 0})
         self.assertIn("本番配信を確認した結果ではありません", result["publication_basis"])
+        self.assertEqual({row["slug"]: row["status"] for row in result["photo_followup"]}, {
+            missing["slug"]: "missing", pending["slug"]: "pending", rejected["slug"]: "rejected",
+        })
+        self.assertIn("生成の指示や本番配信確認ではありません", result["photo_followup_basis"])
         after = {path.relative_to(self.root): path.read_bytes()
                  for path in self.root.rglob("*") if path.is_file()}
         self.assertEqual(after, before)
@@ -285,9 +289,58 @@ class VisualReviewTests(unittest.TestCase):
         # Missing/rejected JPEGs do not mandate generation when an approved
         # illustration or stock photo is already selected.
         self.assertEqual([item["slug"] for item in result["attention"]], [generic["slug"]])
+        self.assertEqual([item["slug"] for item in result["photo_followup"]],
+                         [editorial["slug"], generic["slug"]])
         self.assertEqual(rows[editorial["slug"]]["editorial_social_png"]["status"], "current")
         for article in (generated, stock, generic):
             self.assertNotIn("editorial_social_png", rows[article["slug"]])
+
+    def test_photo_followup_survives_valid_fallbacks_and_tracks_current_article(self):
+        self.accept()
+        # This JPEG exists and was approved, but belongs to the old text. It
+        # must be reported as lacking a current photo, not as never generated.
+        missing = {**self.article, "paragraphs": ["店主が別の呼び鈴を取り付けた。"]}
+        pending = {**self.article, "slug": "pending-fixture"}
+        rejected = {**self.article, "slug": "rejected-fixture"}
+        for article in (pending, rejected):
+            self.write_generation(article)
+        self.accept(rejected)
+        self.manifest["rejected"][rejected["slug"]] = {
+            "article_sha256": article_fingerprint(rejected), "reason": "Fixture hold.",
+        }
+        self.write_manifest()
+        articles = [missing, pending, rejected]
+        for article in articles:
+            self.write_editorial_scene(article)
+            self.write_editorial_social_png(article)
+        result = self.report(articles)
+        self.assertEqual(result["publication_counts"]["editorial_svg"], 3)
+        # The normal SVGs remain valid. Only the existing unreviewed JPEG is
+        # attention-worthy; both other unfinished photos still need follow-up.
+        self.assertEqual([(item["slug"], item["reason"]) for item in result["attention"]],
+                         [(pending["slug"], "pending_jpeg")])
+        by_slug = {item["slug"]: item for item in result["photo_followup"]}
+        self.assertEqual({slug: item["status"] for slug, item in by_slug.items()}, {
+            missing["slug"]: "missing", pending["slug"]: "pending", rejected["slug"]: "rejected",
+        })
+        for article in articles:
+            item = by_slug[article["slug"]]
+            self.assertEqual(item["article_sha256"], article_fingerprint(article))
+            self.assertEqual(item["publication"]["kind"], "editorial_svg")
+        self.assertEqual(by_slug[missing["slug"]]["reason"], "no_current_verified_jpeg")
+        self.assertNotIn("未生成", by_slug[missing["slug"]]["next_action"])
+        self.assertIn("同条件の再生成", by_slug[rejected["slug"]]["next_action"])
+        self.assertFalse(reviewed_generated_scene(missing, root=self.root))
+        self.assertFalse(reviewed_generated_scene(rejected, root=self.root))
+
+    def test_photo_followup_is_limited_to_the_requested_slugs(self):
+        selected = {**self.article, "slug": "selected-fixture"}
+        excluded = {**self.article, "slug": "excluded-fixture"}
+        result = self.report([self.article, selected, excluded],
+                             "--slug", selected["slug"], "--slug", selected["slug"])
+        self.assertEqual([item["slug"] for item in result["photo_followup"]], [selected["slug"]])
+        self.assertEqual(result["photo_followup"][0]["article_sha256"], article_fingerprint(selected))
+        self.assertEqual(result["counts"], {"accepted": 0, "pending": 0, "rejected": 0, "missing": 1})
 
     def test_selected_svg_reports_missing_stale_and_current_share_png_without_regenerating(self):
         illustration = {**self.article, "visual_strategy": "illustration"}
@@ -331,6 +384,7 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(result["attention"][0]["reason"],
                          "illustration_strategy_without_reviewed_scene")
         self.assertIn("CPU生成へ戻さず", result["attention"][0]["next_action"])
+        self.assertEqual(result["photo_followup"], [])
 
     def test_invalid_visual_strategy_fails_closed(self):
         invalid = {**self.article, "visual_strategy": "remote-api"}
@@ -354,6 +408,7 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(row["visual_strategy"], "illustration")
         self.assertEqual(row["publication"]["kind"], "editorial_svg")
         self.assertEqual(result["strategy_counts"], {"cpu-photo": 0, "illustration": 1})
+        self.assertEqual(result["photo_followup"], [])
         with patch.object(build, "BASE", self.root):
             self.assertFalse(build.uses_generated_scene(illustration))
             self.assertEqual(build.editorial_image(illustration),
