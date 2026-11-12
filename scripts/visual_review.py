@@ -155,7 +155,8 @@ def _publication_row(article: dict, *, root: Path) -> dict:
         kind = "editorial_svg"
     elif usable_cached_photo(article, root=root):
         kind, url = "stock_photo", "/photos/" + article["slug"] + ".jpg"
-    result = {**row, "visual_strategy": strategy,
+    result = {**row, "article_sha256": article_fingerprint(article),
+              "visual_strategy": strategy,
               "publication": {"kind": kind, "url": url}, "editorial_scene": scene,
               "article_diagram": article_diagram_state(article, root=root)}
     if kind == "editorial_svg":
@@ -223,6 +224,33 @@ def _attention(row: dict) -> list[dict]:
              "reason": reason, "next_action": action} for reason, action in work]
 
 
+def _photo_followup(row: dict) -> list[dict]:
+    """Keep unfinished photos visible even when a valid fallback is selected.
+
+    This is a recovery report, not a generation queue or publication proof.
+    Intentional illustrations and currently selected photographs need no work.
+    """
+    if (row["visual_strategy"] != "cpu-photo"
+            or row["publication"]["kind"] in ("generated_jpeg", "stock_photo")):
+        return []
+    actions = {
+        "missing": (
+            "現本文に使える検証済み写真がありません。既存の生成物・候補ブランチ・未完了PRを先に確認する。"
+            "取得・検品待ちを再生成で埋めない。"
+        ),
+        "pending": "現在のJPEGを本文と目視照合し、採否を記録する。未検品のまま再生成しない。",
+        "rejected": (
+            "不採用理由と既存候補を確認し、条件が変わった時だけ再検討する。"
+            "同条件の再生成や保留解除だけで完了にしない。"
+        ),
+    }
+    return [{
+        "slug": row["slug"], "article_sha256": row["article_sha256"],
+        "status": row["status"], "reason": row["reason"],
+        "publication": row["publication"], "next_action": actions[row["status"]],
+    }]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="保存済みの画像目視レビュー記録を照合する、読み取り専用の一覧。"
@@ -261,6 +289,7 @@ def main(argv: list[str] | None = None) -> int:
         "version": 1,
         "basis": "保存済みの目視レビュー記録とJPEGの整合性を照合。画像の意味適合は自動判定しません。",
         "publication_basis": "現在のファイルからビルドが選ぶ素材。本番配信を確認した結果ではありません。",
+        "photo_followup_basis": "対象内の写真向け記事で、現在のファイルから写真が選ばれないもの。生成の指示や本番配信確認ではありません。",
         "counts": {status: sum(row["status"] == status for row in rows) for status in STATUSES},
         "publication_counts": {
             kind: sum(row["publication"]["kind"] == kind for row in rows)
@@ -275,6 +304,7 @@ def main(argv: list[str] | None = None) -> int:
             for status in DIAGRAM_STATUSES
         },
         "attention": [item for row in rows for item in _attention(row)],
+        "photo_followup": [item for row in rows for item in _photo_followup(row)],
         "images": rows,
     }, ensure_ascii=False, indent=2))
     return 0
