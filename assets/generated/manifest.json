@@ -3278,31 +3278,191 @@
       "source_png_sha256": "301c387e5e268ac5f26fe798bb502d07266380c7e9b8b9c89fe631ea53fb3756"
     },
     "tunnel-robots-pass-concrete-pour-three-sections": {
-      "article_sha256": "87aae1fc3b5fdef9cc77b80607ba6697c3ddc66f242254eaa79b72b1c19a0068",
-      "bytes": 134268,
-      "generated_at": "2026-11-12T01:09:02.083162+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "c1cd2bc309dc54a4b5fed3a1f9dd9e1b8951556354dccdd6741274524832c138",
+      "bytes": 234861,
+      "generated_at": "2026-11-12T01:12:40Z",
+      "generation_id": "fdded6b0-d912-4db4-a151-4da5217170fb",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset type: a horizontal 16:9 editorial photograph for an explicitly fictional Japanese news article set in 2031.\nPhotorealistic documentary construction site photograph of a large concrete placing robot actively guiding a thick concrete hose into an arched tunnel lining formwork, with two more substantial robot units and arched formwork sections continuing into the distance inside a real unfinished Japanese mountain tunnel. One adult Japanese engineer in hard hat and ordinary reflective work jacket watches the pressure gauge beside the first machine. Concrete pump lines, metal formwork ribs, realistic wet concrete, work lights and rough rock, natural industrial textures, 16:9 horizontal news photograph. No readable text or logos.\nShow the physical operation clearly: inside the unfinished tunnel at night, a substantial industrial concrete-placing robot in the foreground supports a thick pump hose connected to a filling port on a large arched metal lining formwork. The concrete is being delivered into the space between the formwork and the rock behind it, never poured onto the open walking passage. Two further real-sized robot units and their separate formwork sections recede in depth down the tunnel. A Japanese site supervisor wearing a hard hat and ordinary reflective work clothing checks a pressure gauge beside the nearest machine. Keep the main robot, hose connection, formwork ribs and supervisor clearly visible in the central composition. Use believable documentary photography, natural work-light shadows, rough rock, dusty metal, rubber hoses and realistic concrete surfaces. No futuristic glowing effects, no sci-fi humanoids, no illustration, no 3D-render look, no split-screen, no labels, no visible writing, no logos. This is a synthesized re-enactment of a fictional construction trial, not a photograph of an actual reported event.",
+      "generation_prompt_source": "Exact image_gen input captured in the same functions.exec as generation and durable staging.",
+      "generation_receipt": "xmp:iid:fdded6b0-d912-4db4-a151-4da5217170fb",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "87aae1fc3b5fdef9cc77b80607ba6697c3ddc66f242254eaa79b72b1c19a0068",
+        "bytes": 134268,
+        "generated_at": "2026-11-12T01:09:02.083162+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 5261942944382346836,
+        "sha256": "fa84df797a01508c6dd865851a4af8f240dcf8a5c3a8753e2d16536e34211b4f"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_commit": "431169122c55fd51488976fd76b6d7e66899e68b",
+      "previous_visual_hold": {
+        "article_sha256": "87aae1fc3b5fdef9cc77b80607ba6697c3ddc66f242254eaa79b72b1c19a0068",
+        "decision": "rejected",
+        "image_sha256": "fa84df797a01508c6dd865851a4af8f240dcf8a5c3a8753e2d16536e34211b4f",
+        "reason": "CPU生成JPEGの実バイトを表示し、元記事と改稿後の全文の両方に照合した。大きなコンクリートのアーチと遠方の工事車両は見えるが、記事の主役である型枠へ太いホースを接続する施工ロボット、連続する金属型枠、圧力計を確認する監督が判別できない。トンネルの背景が合うだけで中心動作が伝わらないため不採用。原JPEGはこのcommitの同パスで保持し、原生成記録・整数seed・記事SHA・画像SHAは変更しない。",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43131065678",
+        "reviewed_at": "2026-11-12T01:16:44Z"
+      },
       "prompt_version": 3,
-      "seed": 5261942944382346836,
-      "sha256": "fa84df797a01508c6dd865851a4af8f240dcf8a5c3a8753e2d16536e34211b4f"
+      "sha256": "d00457e44e54bac44d1800fd49283d761a968dbeb95eb6301664416a9309b761",
+      "source_article_sha256": "c1cd2bc309dc54a4b5fed3a1f9dd9e1b8951556354dccdd6741274524832c138",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-12T01:12:36.440228471Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-12T01:12:36.440230975Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-12T01:12:36.437695455Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              158,
+              4,
+              154,
+              103,
+              206,
+              197,
+              232,
+              162,
+              42,
+              175,
+              178,
+              62,
+              171,
+              135,
+              212,
+              155,
+              41,
+              221,
+              82,
+              150,
+              185,
+              68,
+              189,
+              103,
+              11,
+              224,
+              49,
+              131,
+              173,
+              114,
+              126,
+              160
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:fdded6b0-d912-4db4-a151-4da5217170fb",
+        "manifest_uri": "urn:c2pa:75987251-01ec-487b-82c8-16fe218d08aa",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2995915,
+        "caBX_sha256": "07595e64b8e2fccda9f29e59069a6c480b4c9668f33da01f90bdeb9a4b84da7b",
+        "candidate_branch": "native-image-candidate/tunnel-robots-pass-concrete-pour-three-sections/c1cd2bc309dc54a4-d05f905198bb",
+        "candidate_commit": "890ab9e67cb1c067b057a347393ea81516d44583",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "9403f0ff-1e90-8321-b383-f54a876b6539",
+        "method": "Captured the actual native PNG tool return in the generating exec; saved all source parts and JPEG to a candidate Git branch; independently loaded the durable branch and verified both SHA256 values before visual acceptance.",
+        "original_png_parts": [
+          {
+            "blob_sha": "baaed8ff60e99b0c55ea01b8044ccf0d01b97610",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part000",
+            "sha256": "137fe4b952886b601bac8b20151f04144ae65cb87e6289a44201b4abb0f478e1"
+          },
+          {
+            "blob_sha": "89f12d22e9b32b9c404e111fd93b131c80d777df",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part001",
+            "sha256": "84f2ab4d31a65bc4a0371c298c9d9164f7d4fb38704a8e55376a1bf5c0f639ef"
+          },
+          {
+            "blob_sha": "20a2ccd7b6ab1d84c7ec77bf50ca7e60a09be8dd",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part002",
+            "sha256": "338470eb257884dd5209be0215a70dc3c8c74a1c9166d973d0f25a43b81c5804"
+          },
+          {
+            "blob_sha": "4d4ba165211eeb49196bc5181ccd5a41ca96306a",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part003",
+            "sha256": "62cfb2c563eb4b84169d2d00322b53e7153653e3801c3e59c842769f46ef0718"
+          },
+          {
+            "blob_sha": "52a8d1b6e185f008ef36803cb4489f7ce6f56016",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part004",
+            "sha256": "ed4c0a0b2180e16b0d610c01e1c3d17969c7c75ed41f97c903c373bfed52d0e6"
+          },
+          {
+            "blob_sha": "3a9493f8024d14adf98451e12edc8ebc24d522d3",
+            "bytes": 374475,
+            "path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/source.png.part005",
+            "sha256": "00f40dca7b901c822ccf98a9db9cbd6bb98397ef14447f23e49f7beaa4e74afc"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/tunnel-robots-pass-concrete-pour-three-sections/receipt.json",
+        "receipt_sha256": "ad6127d0034cc6037459438f7a8690d1f9a3accdf8fdc38f747fef2c7bb8b406",
+        "width": 1672
+      },
+      "source_png_sha256": "9fdbab5fccfb3f637ee24fedfa713588cac632c02b869fa2ec5a67a012ffbd64",
+      "supersedes_reason": "CPU候補は型枠への流し込み動作が写らず不採用。型枠と岩の位置関係、監督の確認、機械の切替を整理した最終本文を先に確定し、その場面で内蔵画像を1回生成。原PNGと最終JPEGを実表示し、主役・動作・材質・光の整合を確認して初採用した。",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "unsold-coat-storage-fees-exceed-sale": {
       "article_sha256": "e064e5fe01b35a65dbd8caafc3ae0d90c0c97fe1698e9d61398c68f6512ac1f2",
