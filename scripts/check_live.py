@@ -33,6 +33,7 @@ if __package__:
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .editorial_copy import reader_copy, source_reader_copy
+    from .article_diagrams import reviewed_article_diagram
     from .build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
@@ -45,6 +46,7 @@ else:
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from editorial_copy import reader_copy, source_reader_copy
+    from article_diagrams import reviewed_article_diagram
     from build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
@@ -456,6 +458,65 @@ def _descendants(element):
     for child in element["children"]:
         yield child
         yield from _descendants(child)
+
+
+def verify_article_diagram(article: dict, markup: str, *, fetch=None, root=ROOT) -> bool:
+    """Verify an optional diagram's reading position and exact published SVG.
+
+    Parse raw HTML so quoted alt text is decoded only once. A missing or
+    invalid local diagram must also be absent from the public article. Only a
+    currently reviewed diagram adds a GET, using its locally validated URL.
+    """
+    expected = reviewed_article_diagram(article, root=root)
+    slug = article["slug"]
+    parser = _RecommendationMarkup()
+    parser.feed(markup)
+    parser.close()
+    figures = [element for element in parser.elements
+               if "article-diagram" in (element["attrs"].get("class") or "").split()]
+    diagram_images = [element for element in parser.elements
+                      if element["tag"] == "img" and "article-diagrams" in
+                      unquote(urlsplit(element["attrs"].get("src") or "").path).split("/")]
+    if expected is None:
+        if figures or diagram_images:
+            raise RuntimeError(slug + ": unexpected or stale article diagram remains public")
+        return False
+    if len(figures) != 1 or figures[0]["tag"] != "figure":
+        raise RuntimeError(slug + ": expected exactly one public article diagram")
+    figure = figures[0]
+    bodies = [element for element in parser.elements
+              if element["tag"] == "div" and
+              "article-body" in (element["attrs"].get("class") or "").split()]
+    if (len(bodies) != 1 or len(bodies[0]["children"]) < 2
+            or bodies[0]["children"][0]["tag"] != "p"
+            or bodies[0]["children"][1] is not figure):
+        raise RuntimeError(slug + ": article diagram must follow the first paragraph")
+    if [child["tag"] for child in figure["children"]] != ["img", "figcaption"]:
+        raise RuntimeError(slug + ": article diagram image or caption is missing or duplicated")
+    picture, caption = figure["children"]
+    if len(diagram_images) != 1 or diagram_images[0] is not picture:
+        raise RuntimeError(slug + ": unexpected public article diagram image")
+    attrs = picture["attrs"]
+    for name, value in (
+        ("src", expected["url"]), ("alt", expected["description"]),
+        ("width", str(expected["width"])), ("height", str(expected["height"])),
+        ("loading", "lazy"), ("decoding", "async"),
+    ):
+        if attrs.get(name) != value:
+            raise RuntimeError(slug + ": public article diagram " + name + " differs from the reviewed SVG")
+    if attrs.get("srcset") or "".join(caption["text"]).strip() != expected["title"]:
+        raise RuntimeError(slug + ": article diagram caption or image selection differs from the reviewed SVG")
+    fetch = fetch or get
+    try:
+        payload, mime = fetch(expected["url"])
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise RuntimeError(slug + ": public article diagram is unreachable") from exc
+    if mime.split(";", 1)[0].strip().lower() != "image/svg+xml":
+        raise RuntimeError(slug + ": public article diagram has incorrect Content-Type")
+    if (len(payload) != len(expected["svg_bytes"])
+            or hashlib.sha256(payload).hexdigest() != expected["svg_sha256"]):
+        raise RuntimeError(slug + ": production article diagram differs from the reviewed SVG")
+    return True
 
 
 def verify_pv_recommendations(markup: str, articles: list[dict], current_article=None) -> None:
@@ -1008,10 +1069,12 @@ def check():
             raise RuntimeError("RSS image is not first-party: "+str(thumb.get("url")))
 
     checked_photos=0
+    checked_diagrams=0
     for item in recent:
         slug=item["slug"]
         data,mime=get("/articles/"+slug+"/")
-        page=html.unescape(data.decode("utf-8"))
+        raw_page=data.decode("utf-8")
+        page=html.unescape(raw_page)
         require_matching_public_headline(item, page, "article")
         for needle in article_reader_needles(item):
             if needle not in page:
@@ -1061,6 +1124,7 @@ def check():
         ]
         if positions != sorted(positions) or len(set(positions)) != len(positions):
             raise RuntimeError(slug+": image, prose, bookmark and source order regressed")
+        checked_diagrams += verify_article_diagram(item, raw_page, root=ROOT)
         if 'href="#story-source"' in page:
             raise RuntimeError(slug+": duplicate source CTA before the article text")
         if 'class="article-visual"' not in page or 'fetchpriority="high"' not in page:
@@ -1297,7 +1361,7 @@ def check():
     if not isinstance(votes,dict) or any(type(votes.get(k)) is not int or votes[k]<0
                                            for k in ("plausible","unlikely")):
         raise RuntimeError("Future verdict counters missing or invalid")
-    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; real SEO dates; whole-archive recent-PV recommendations; separate site/article PV with coverage; free channel attribution; free hosting.")
+    print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; {checked_diagrams} verified article diagrams; real SEO dates; whole-archive recent-PV recommendations; separate site/article PV with coverage; free channel attribution; free hosting.")
 
 def main():
     last=None

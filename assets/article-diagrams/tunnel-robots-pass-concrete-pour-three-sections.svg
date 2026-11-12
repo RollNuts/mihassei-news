@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="700" viewBox="0 0 720 700" role="img" aria-labelledby="tunnel-diagram-title tunnel-diagram-desc" data-article-sha256="c1cd2bc309dc54a4b5fed3a1f9dd9e1b8951556354dccdd6741274524832c138">
+  <title id="tunnel-diagram-title">トンネルの壁ができる場所</title>
+  <desc id="tunnel-diagram-desc">トンネルの断面。外側から掘った岩、コンクリート、アーチ形の型枠が並ぶ。岩と型枠の間にコンクリートを流し込み、固まるまで型枠を残す。内側の通路は空いている。実寸ではない模式図。</desc>
+  <rect width="720" height="700" fill="#f7f3e9"/>
+  <g font-family="Noto Sans CJK JP, Hiragino Kaku Gothic ProN, sans-serif" fill="#292a27">
+    <text x="38" y="66" font-size="38" font-weight="700">すき間に流して、壁をつくる。</text>
+    <path d="M38 94 Q356 90 682 94" fill="none" stroke="#292a27" stroke-width="3"/>
+    <text x="40" y="146" font-size="32" fill="#69695f">トンネルの断面</text>
+    <text x="580" y="146" font-size="32" fill="#69695f">模式図</text>
+
+    <path d="M88 530 L91 487 L105 443 L124 407 L152 364 L182 335 L222 308 L260 290 L311 276 L361 274 L408 281 L455 296 L501 320 L539 355 L576 395 L602 440 L624 488 L632 530 L576 530 A216 216 0 0 0 144 530 Z" fill="#d9d4c7" stroke="#69695f" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M144 530 A216 216 0 0 1 576 530 L538 530 A178 178 0 0 0 182 530 Z" fill="#f5d8cc" stroke="#b6422f" stroke-width="4"/>
+    <path d="M182 530 A178 178 0 0 1 538 530 L524 530 A164 164 0 0 0 196 530 Z" fill="#6f746d" stroke="#292a27" stroke-width="3"/>
+    <path d="M196 530 A164 164 0 0 1 524 530 Z" fill="#fffdf7"/>
+    <path d="M76 533 Q359 529 645 534" fill="none" stroke="#292a27" stroke-width="4" stroke-linecap="round"/>
+
+    <path d="M127 455 L139 441 L132 424 M164 371 L178 374 L192 359 M236 307 L247 321 L266 313 M312 290 L326 302 L340 293 M384 291 L395 308 L412 301 M459 318 L462 334 L479 341 M526 371 L516 383 L531 395 M581 436 L570 447 L584 462 M608 494 L592 503 L599 518" fill="none" stroke="#969286" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M161 493 L172 485 M183 434 L195 428 M224 383 L236 379 M283 346 L295 343 M352 334 L364 335 M411 345 L422 349 M474 385 L485 391 M515 437 L523 448 M549 492 L554 504" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round"/>
+
+    <text x="65" y="222" font-size="36" font-weight="700">掘った岩</text>
+    <path d="M166 236 L166 286 L220 320" fill="none" stroke="#69695f" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="220" cy="320" r="5" fill="#69695f"/>
+    <text x="430" y="222" font-size="34" font-weight="700" fill="#b6422f">コンクリート</text>
+    <path d="M487 236 L487 286 L439 346 M441 331 L439 347 L454 340" fill="none" stroke="#b6422f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="322" y="480" font-size="38" font-weight="700">通路</text>
+    <text x="544" y="590" font-size="36" font-weight="700">型枠</text>
+    <path d="M570 561 L550 546 L532 514" fill="none" stroke="#292a27" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="532" cy="514" r="5" fill="#292a27"/>
+
+    <text x="90" y="658" font-size="36" font-weight="700">固まるまで、型枠はそのまま。</text>
+    <path d="M91 674 Q360 678 629 673" fill="none" stroke="#b6422f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>
