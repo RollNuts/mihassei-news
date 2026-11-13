@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="640" viewBox="0 0 720 640" role="img" data-article-sha256="92b006549526c5fe3e48939f411bdf78e1802cf10af4ad699cac3b05e2fd678f">
+  <title>再生金属が新品の電極になるまで</title>
+  <desc>使用済み電極から貴金属を回収し、別工場で精製、新しい金属板に加工して検査する。回収・精製・再加工の履歴を箱の二次元コードに登録し、購入先がコードを読んで確認する流れ。</desc>
+  <rect width="720" height="640" rx="18" fill="#f4f3ed"/>
+  <g font-family="sans-serif" fill="#233d37" text-anchor="middle">
+    <text x="360" y="42" font-size="30" font-weight="700">金属の流れと、箱から読める履歴</text>
+    <g fill="#ffffff" stroke="#9ab3a9" stroke-width="2">
+      <rect x="28" y="66" width="664" height="82" rx="12"/>
+      <rect x="28" y="170" width="664" height="82" rx="12"/>
+      <rect x="28" y="274" width="664" height="82" rx="12"/>
+      <rect x="28" y="378" width="664" height="82" rx="12"/>
+      <rect x="28" y="482" width="664" height="82" rx="12"/>
+    </g>
+    <g font-size="28">
+      <text x="360" y="100">使い終わった電極から</text>
+      <text x="360" y="134" font-weight="700">貴金属を取り出す</text>
+      <text x="360" y="204">回収した貴金属を</text>
+      <text x="360" y="238" font-weight="700">別の工場で精製する</text>
+      <text x="360" y="308">新しい金属板の表面へ加工・検査</text>
+      <text x="360" y="342" font-weight="700">新品の電極として箱に詰める</text>
+      <text x="360" y="412">回収・精製・再加工の履歴を</text>
+      <text x="360" y="446" font-weight="700">箱の二次元コードに登録する</text>
+      <text x="360" y="516">購入先が箱のコードを読むと</text>
+      <text x="360" y="550" font-weight="700">材料がたどった履歴が分かる</text>
+    </g>
+    <g fill="#497466">
+      <path d="M355 151h10v8h9l-14 10-14-10h9z"/>
+      <path d="M355 255h10v8h9l-14 10-14-10h9z"/>
+      <path d="M355 359h10v8h9l-14 10-14-10h9z"/>
+      <path d="M355 463h10v8h9l-14 10-14-10h9z"/>
+    </g>
+    <text x="360" y="607" font-size="24" fill="#52655e">記事内の架空の製品・工程</text>
+  </g>
+</svg>
