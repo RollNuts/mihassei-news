@@ -11,6 +11,7 @@ on:
     paths:
       - "social-bot/article-picks/**"
       - "social-bot/publish.py"
+      - "social-bot/article_comics.py"
       - "social-bot/buffer_budget.py"
       # Article X copy and share URLs come from shared scripts, not social-bot/.
       - "scripts/social_text.py"

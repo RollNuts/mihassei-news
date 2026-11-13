@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import importlib.util
 import json
 import os
@@ -21,6 +22,14 @@ def entry(slug, hours=2):
         "buffer_id": "buf-" + slug,
         "queued_at_utc": (NOW - timedelta(hours=hours)).astimezone(timezone.utc).isoformat(),
     }
+
+
+def comic_entry(slug="story", *, pending=False):
+    text = "漫画の短い導入。\n\n" + m.canonical_url(slug) + "\n#未発生新聞"
+    return {**entry(slug), "buffer_id": "" if pending else "comic-buffer-" + slug,
+            "source": "approved_comic", "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "comic_attachment": {"path": "social-bot/assets/article-comic-story.png"},
+            **({"submission_pending": True} if pending else {})}, text
 
 
 class ArticleDeliveryAuditTests(unittest.TestCase):
@@ -404,6 +413,139 @@ class ArticleDeliveryAuditTests(unittest.TestCase):
         self.assertIn("retry_at_utc=", detail)
         self.assertIn("remaining=0", detail)
         self.assertNotIn("must-not-appear", detail)
+
+    def test_same_article_and_comic_keep_separate_receipts_and_cached_sent_evidence(self):
+        comic, text = comic_entry()
+        state = {"schema_version": 1, "queued": {"story": entry("story")},
+                 "comic_posts": {"story": comic}}
+        before = NOW - timedelta(hours=1)
+        remote = [{"id": "buf-story", "status": "sent", "text": m.canonical_url("story"),
+                   "sentAt": before.isoformat()},
+                  {"id": comic["buffer_id"], "status": "sent", "text": text,
+                   "sentAt": (before - timedelta(minutes=1)).isoformat()}]
+        previous = m.build(state, remote, before)
+        self.assertEqual({key for key, _entry, _at in m.selected_entries(state, NOW)}, {"story", "comic:story"})
+        cached = m.reusable_observations(state, previous, NOW)
+        self.assertEqual(set(cached), {"story", "comic:story"})
+        report = m.build(state, [], NOW, cached_items=cached)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 2)
+        rows = {row.get("promotion_key", row["slug"]): row for row in report["items"]}
+        self.assertEqual(rows["story"]["buffer_id"], "buf-story")
+        self.assertNotIn("kind", rows["story"])
+        self.assertEqual(rows["comic:story"]["slug"], "story")
+        self.assertEqual(rows["comic:story"]["kind"], "comic")
+        self.assertEqual(rows["comic:story"]["buffer_id"], comic["buffer_id"])
+        for row in rows.values():
+            self.assertTrue(row["observation_reused"])
+            self.assertEqual(row["provider_checked_at_utc"], before.astimezone(timezone.utc).isoformat())
+        changed = copy.deepcopy(state)
+        changed["comic_posts"]["story"]["text_sha256"] = "0" * 64
+        self.assertEqual(set(m.reusable_observations(changed, previous, NOW)), {"story"})
+        # A normal cached receipt cannot masquerade as this comic's proof even
+        # if a corrupt ledger incorrectly reuses that normal Buffer ID.
+        changed["comic_posts"]["story"]["buffer_id"] = "buf-story"
+        self.assertEqual(set(m.reusable_observations(changed, previous, NOW)), {"story"})
+
+    def test_comic_reconcile_requires_exact_saved_id_and_text_not_just_article_url(self):
+        comic, text = comic_entry()
+        remote = {"id": comic["buffer_id"], "status": "sent", "text": text,
+                  "sentAt": NOW.isoformat()}
+        self.assertEqual(m.reconcile("comic:story", comic, remote)["buffer_status"], "sent")
+        for wrong, reason in (({**remote, "text": "違う文面 " + m.canonical_url("story")}, "comic_text_sha256_mismatch"),
+                              ({**remote, "id": "buf-story"}, "buffer_id_mismatch")):
+            with self.subTest(reason=reason):
+                row = m.reconcile("comic:story", comic, wrong)
+                self.assertEqual(row["buffer_status"], "unverified")
+                self.assertEqual(row["reason"], reason)
+                self.assertNotIn("buffer_sent_at_utc", row)
+        report = m.build({"schema_version": 1, "queued": {}, "comic_posts": {"story": comic}},
+                         [{**remote, "text": m.canonical_url("story")}], NOW)
+        self.assertEqual(report["observed"]["unverified"], 1)
+        self.assertEqual(report["observed"]["buffer_sent_today"], 0)
+
+    def test_pending_comic_without_saved_id_is_reported_without_provider_lookup(self):
+        pending, text = comic_entry(pending=True)
+        state = {"schema_version": 1, "queued": {}, "comic_posts": {"story": pending}}
+        report = m.build(state, [{"id": "", "text": text, "status": "sent", "sentAt": NOW.isoformat()}], NOW)
+        row = report["items"][0]
+        self.assertEqual(row["promotion_key"], "comic:story")
+        self.assertIs(row["submission_pending"], True)
+        self.assertEqual(row["reason"], "submission_pending_without_buffer_id")
+        self.assertEqual(row["buffer_status"], "unverified")
+        self.assertEqual(report["observed"]["buffer_sent_today"], 0)
+        self.assertEqual(m.reusable_observations(state, report, NOW), {})
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config.json").write_text(json.dumps({"schema_version": 1, "channel_id": "pinned"}))
+            (root / "state.json").write_text(json.dumps(state))
+            with patch.object(m, "HERE", root), patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(m, "read_post_by_id") as read:
+                clock.now.return_value = NOW
+                self.assertEqual(m.main(), 0)
+                read.assert_not_called()
+            saved = json.loads((root / "delivery.json").read_text())
+            self.assertEqual(saved["observed"]["unverified"], 1)
+            self.assertTrue(saved["items"][0]["submission_pending"])
+            self.assertEqual(json.loads((root / "state.json").read_text()), state)
+
+    def test_comic_pending_and_accepted_records_do_not_change_cooldown_or_read_budget(self):
+        comic, text = comic_entry()
+        pending, _ = comic_entry("pending", pending=True)
+        state = {"schema_version": 1, "queued": {slug: entry(slug) for slug in ("a", "b", "c")},
+                 "comic_posts": {"story": comic, "pending": pending}}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config.json").write_text(json.dumps({"schema_version": 1, "channel_id": "pinned"}))
+            (root / "state.json").write_text(json.dumps(state))
+            hold = {"provider_retry_at_utc": "2026-12-03T03:05:19+00:00"}
+            delivery = root / "delivery.json"
+            delivery.write_text(json.dumps(hold))
+            def observed(_token, buffer_id):
+                return {"id": buffer_id, "text": text if buffer_id == comic["buffer_id"]
+                        else m.canonical_url(buffer_id.removeprefix("buf-")),
+                        "status": "sent", "sentAt": NOW.isoformat()}
+            with patch.object(m, "HERE", root), patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(m, "read_post_by_id", side_effect=observed) as read:
+                clock.now.return_value = NOW
+                self.assertEqual(m.main(), 0)
+                read.assert_not_called()
+                self.assertEqual(json.loads(delivery.read_text()), hold)
+                delivery.unlink()
+                self.assertEqual(m.main(), 0)
+                self.assertEqual(read.call_count, m.MAX_DIRECT_READS)
+                self.assertNotIn("", [call.args[1] for call in read.call_args_list])
+            report = json.loads(delivery.read_text())
+            self.assertEqual(report["observed"]["article_records_checked"], 5)
+            self.assertEqual(report["observed"]["unverified"], 2)
+
+    def test_fourteen_day_pending_comic_stays_visible_without_reading_old_normal_posts(self):
+        pending, _ = comic_entry(pending=True)
+        pending["queued_at_utc"] = (NOW - timedelta(days=14)).isoformat()
+        state = {"schema_version": 1, "queued": {"old": entry("old", 24 * 14)},
+                 "comic_posts": {"story": pending}}
+        selected = m.selected_entries(state, NOW)
+        self.assertEqual([key for key, _entry, _at in selected], ["comic:story"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config.json").write_text(json.dumps({"schema_version": 1, "channel_id": "pinned"}))
+            (root / "state.json").write_text(json.dumps(state))
+            with patch.object(m, "HERE", root), patch.object(m, "datetime", wraps=datetime) as clock, \
+                 patch.dict(os.environ, {"BUFFER_API_KEY": "test-only"}, clear=True), \
+                 patch.object(m, "read_post_by_id") as read:
+                clock.now.return_value = NOW
+                self.assertEqual(m.main(), 0)
+                read.assert_not_called()
+            report = json.loads((root / "delivery.json").read_text())
+            self.assertEqual(report["observed"]["unverified"], 1)
+            self.assertEqual(report["observed"]["buffer_sent_today"], 0)
+            self.assertTrue(report["items"][0]["submission_pending"])
+        # Preserve the existing report bound without hiding the blocking intent.
+        state["queued"] = {"recent-" + str(i): entry("recent-" + str(i)) for i in range(m.MAX_ITEMS)}
+        selected = m.selected_entries(state, NOW)
+        self.assertEqual(len(selected), m.MAX_ITEMS)
+        self.assertEqual(selected[0][0], "comic:story")
 
 
 if __name__ == "__main__":

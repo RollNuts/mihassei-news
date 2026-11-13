@@ -2,6 +2,7 @@
 """Read-only Buffer delivery audit for Veripsa article promotions."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
@@ -24,11 +25,18 @@ MAX_DIRECT_READS = 3
 
 def reusable_observations(state: dict, previous: dict, now: datetime) -> dict:
     """Preserve dated evidence; never relabel a cached observation as a fresh read."""
-    previous_items = {row.get("slug"): row for row in previous.get("items", [])
+    previous_items = {row.get("promotion_key", row.get("slug")): row for row in previous.get("items", [])
                       if isinstance(row, dict)}
     cached = {}
     for slug, entry, _queued in selected_entries(state, now):
+        if not entry["buffer_id"]:
+            continue  # An ambiguous submission intent is never delivery evidence.
         row = previous_items.get(slug, {})
+        if slug.startswith("comic:") and (
+                row.get("kind") != "comic"
+                or not isinstance(entry.get("text_sha256"), str)
+                or row.get("text_sha256") != entry["text_sha256"]):
+            continue
         if str(row.get("reason", "")).startswith("deferred_"):
             continue
         observed = aware(row.get("provider_checked_at_utc") or previous.get("checked_at_utc"))
@@ -80,16 +88,23 @@ def selected_entries(state: dict, now: datetime, days: int = MAX_AUDIT_DAYS):
         raise ValueError("Invalid audit window")
     cutoff = now - timedelta(days=days)
     rows = []
-    for slug, entry in state["queued"].items():
-        if not isinstance(slug, str) or not isinstance(entry, dict):
-            raise ValueError("Invalid article promotion record")
-        queued_at = aware(entry.get("queued_at_utc"))
-        buffer_id = entry.get("buffer_id")
-        if queued_at is None or not isinstance(buffer_id, str) or not buffer_id:
-            raise ValueError("Incomplete article promotion record")
-        if queued_at >= cutoff:
-            rows.append((slug, entry, queued_at))
-    rows.sort(key=lambda row: row[2], reverse=True)
+    for prefix, records in (("", state["queued"]), ("comic:", state.get("comic_posts", {}))):
+        if not isinstance(records, dict):
+            raise ValueError("Invalid article promotion records")
+        for slug, entry in records.items():
+            if not isinstance(slug, str) or ":" in slug or not isinstance(entry, dict):
+                raise ValueError("Invalid article promotion record")
+            queued_at = aware(entry.get("queued_at_utc"))
+            buffer_id = entry.get("buffer_id")
+            pending = (prefix == "comic:" and entry.get("submission_pending") is True
+                       and buffer_id == "")
+            if (queued_at is None or not isinstance(buffer_id, str)
+                    or (not buffer_id and not pending)):
+                raise ValueError("Incomplete article promotion record")
+            if queued_at >= cutoff or pending:
+                rows.append((prefix + slug, entry, queued_at))
+    # Ambiguous submissions never disappear merely through age or a busy ledger.
+    rows.sort(key=lambda row: (not row[1]["buffer_id"], row[2]), reverse=True)
     return rows[:MAX_ITEMS]
 
 
@@ -105,12 +120,22 @@ def read_post_by_id(token: str, buffer_id: str):
 
 
 def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None = None) -> dict:
+    promotion_key = slug
+    is_comic = slug.startswith("comic:")
+    if is_comic:
+        slug = slug.removeprefix("comic:")
     result = {
         "slug": slug,
         "buffer_id": entry["buffer_id"],
         "queued_at_utc": aware(entry["queued_at_utc"]).astimezone(timezone.utc).isoformat(),
         "buffer_status": "unverified",
     }
+    if is_comic:
+        result.update(promotion_key=promotion_key, kind="comic",
+                      text_sha256=entry.get("text_sha256"))
+        if not entry["buffer_id"]:
+            result.update(submission_pending=True, reason="submission_pending_without_buffer_id")
+            return result
     initial_fields = (
         "buffer_status_at_accept",
         "buffer_created_at_at_accept",
@@ -134,6 +159,9 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
     text = remote.get("text")
     if not isinstance(text, str) or canonical_url(slug) not in text:
         result["reason"] = "canonical_article_url_missing_or_text_mismatch"
+        return result
+    if is_comic and hashlib.sha256(text.encode("utf-8")).hexdigest() != entry.get("text_sha256"):
+        result["reason"] = "comic_text_sha256_mismatch"
         return result
     status = remote.get("status")
     if status not in ("scheduled", "sent") and status not in UNDELIVERED_STATUSES:
@@ -192,7 +220,8 @@ def build(state: dict, existing: list[dict], now: datetime,
         lookup_errors.get(entry["buffer_id"]),
     ) for slug, entry, _queued_at in chosen]
     for row in items:
-        if row["slug"] not in cached_items and row["buffer_id"] in remote:
+        if (row.get("promotion_key", row["slug"]) not in cached_items
+                and row["buffer_id"] in remote and row["buffer_id"]):
             row["provider_checked_at_utc"] = now.astimezone(timezone.utc).isoformat()
         # Recompute age-dependent flags even when an observation is reused.
         for key in ("delivery_in_progress", "review_needed", "sending_age_minutes"):
@@ -318,6 +347,8 @@ def main() -> int:
     retry_at = None
     for slug, entry, _queued_at in chosen:
         buffer_id = entry["buffer_id"]
+        if not buffer_id:
+            continue  # No saved ID: report pending, never search or guess a receipt.
         if slug in cached:
             continue
         if rate_limited or reads >= MAX_DIRECT_READS:
@@ -347,8 +378,10 @@ def main() -> int:
         if isinstance(direct, dict):
             existing.append(direct)
     if not reads:
-        print("No unresolved article delivery checks due; no Buffer read/write.")
-        return 0
+        if not any(not entry["buffer_id"] for _key, entry, _stamp in chosen):
+            print("No unresolved article delivery checks due; no Buffer read/write.")
+            return 0
+        print("Comic submission pending without a saved Buffer ID; no provider read.")
     report = build(state, existing, now, lookup_errors, cached)
     report["provider_rate_limited"] = rate_limited
     if retry_at is not None:
