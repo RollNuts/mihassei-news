@@ -460,6 +460,7 @@ class FreeCpuImageTests(unittest.TestCase):
             "A man poses for a documentary photograph.",
             "A photograph.",
             "Photorealistic Japanese kitchen lighting illuminates a delivery parcel.",
+            "Photorealistic Japanese local-news photograph, landscape 16:9, of a woman carrying soup.",
         )
         context = "An ordinary apartment entrance is behind it."
         tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
@@ -489,7 +490,9 @@ class FreeCpuImageTests(unittest.TestCase):
                 "Photorealistic Japanese comedy.",
                 "Candid documentary press photograph.",
                 "Photorealistic staged Japanese news comedy. Natural lighting.",
-                "Photorealistic wide film still from a deadpan Japanese comedy."):
+                "Photorealistic wide film still from a deadpan Japanese comedy.",
+                "Photorealistic candid Japanese local-news photograph, landscape 16:9.",
+                "Candid Japanese news photo, horizontal 16:9."):
             with self.subTest(prefixes=prefixes):
                 source = {"slug": "new-visual-scene",
                           "scene_prompt": prefixes + " " + core + " " + context}
@@ -498,6 +501,50 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertEqual(cpu.prompt_parts({"slug": "style-only-scene",
                                           "scene_prompt": "Candid documentary press photograph."}),
                          ("Candid documentary press photograph.", []))
+
+    def test_kitchen_scene_keeps_people_and_serving_when_optional_context_is_trimmed(self):
+        # Exact scene structure from the rejected run 43401903097. These
+        # word-count tokenizers test retention, not real CLIP token counts.
+        header = "Photorealistic candid Japanese local-news photograph, landscape 16:9."
+        core = (
+            "In a fictional community lunch kitchen, a Japanese adult female volunteer aged 36 "
+            "in a simple apron serves steaming soup at a counter, while a Japanese adult male "
+            "award organizer in his forties, wearing a plain jacket and borrowed apron, "
+            "hands clean meal trays to customers waiting at a safe distance."
+        )
+        context = [
+            "A modest folded award certificate rests on a small folding table near a wall.",
+            "Natural faces, hands, dishes, steam, kitchen lighting and soft shadows, "
+            "unstaged documentary press photography, no visible brand marks or legible writing.",
+        ]
+        source = {"slug": "kitchen-regression", "scene_prompt": " ".join([header, core, *context])}
+        self.assertEqual(cpu.prompt_parts(source), (core, context))
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            fitted = cpu.fit_cpu_prompt(source, tokenizer)
+        self.assertIn(core, fitted)
+        self.assertNotIn(header, fitted)
+        self.assertIn("serves steaming soup", fitted)
+        self.assertIn("hands clean meal trays", fitted)
+        self.assertLessEqual(len(tokenizer.encode(fitted)), cpu.CLIP_TOKEN_LIMIT)
+        self.assertIn("optional context", output.getvalue())
+        # If the same required content does not fit, do not retain only the
+        # kitchen/location or silently drop the second actor and tray handoff.
+        larger = SimpleNamespace(encode=lambda text, **kwargs: text.split() * 2 + ["BOS", "EOS"])
+        with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
+            cpu.fit_cpu_prompt(source, larger)
+
+    def test_mixed_style_and_action_cannot_be_trimmed_to_camera_words(self):
+        core = (
+            "Photorealistic Japanese local-news photograph, landscape 16:9, "
+            "of a woman carrying " + "large " * 90 + "soup bowls."
+        )
+        source = {"slug": "mixed-style-action", "scene_prompt": core + " A plain wall behind her."}
+        self.assertEqual(cpu.prompt_parts(source)[0], core)
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
+            cpu.fit_cpu_prompt(source, tokenizer)
 
     def test_minimal_style_retains_full_context_that_would_otherwise_be_omitted(self):
         core = "A fisherman carries coiled rope beside a small fishing boat."

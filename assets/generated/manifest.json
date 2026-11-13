@@ -5438,30 +5438,72 @@
     },
     "volunteer-award-ceremony-visits-community-kitchen": {
       "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
-      "bytes": 109400,
-      "generated_at": "2026-11-13T09:38:57.962057+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 175627,
+      "generated_at": "2026-11-13T09:44:14.762Z",
+      "generation_id": "36376dd4-7e80-4b59-9ef8-7cc37596133e",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "One photorealistic candid Japanese local newspaper photograph, horizontal 16:9. The clear foreground action is TWO REAL ADULT PEOPLE WORKING AT A COMMUNITY LUNCH SERVING COUNTER, not an empty table or a still life. At left, a fictional Japanese woman aged 36 in a blue apron is ladling hot vegetable soup from a large stainless-steel pot into a bowl. At right, a fictional Japanese male award organizer about 43 in a modest charcoal suit jacket with a borrowed pale apron over it is handing ONE CLEAN EMPTY MEAL TRAY to an adult customer across the counter. The customer is partly visible at the right edge, reaching for the tray. Show the organizer's hand on one edge and the customer's hand on the other edge naturally; all arms belong to the correct person. Their serious, slightly busy faces and the steaming soup are visible. In the background on a wall-side narrow shelf is one plain cream award certificate in a simple folder with a decorative border, no readable lettering; it is a secondary detail, not a framed landscape painting. This illustrates an entirely fictional 2031 award program in which award organizers help with the recipient's real volunteer work before presenting the certificate. Medium-wide eye-level documentary photograph from the diners' side of the counter. People, serving counter, soup pot and tray occupy most of the frame. Modest lived-in Japanese community kitchen, a few stacks of dishes, warm ordinary window light and ceiling lamps, realistic skin, natural anatomy, practical clothes and candid gestures. Not a glossy advertisement, no empty tea-table scene, no tea set, no anime, illustration, painting or CGI. No readable words, logos, brands, captions, headline or watermark. Entirely fictional adults, no public figure likeness. Focus on soup service and the formally dressed award official doing practical work, with a little understated situational comedy.",
+      "generation_receipt": "xmp:iid:36376dd4-7e80-4b59-9ef8-7cc37596133e",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/volunteer-award-ceremony-visits-community-kitchen/7ef0b44c8c7d6fa5-d3aa2f6f10b8",
+        "commit_sha": "b92db6cf40032d3877911e5c2d614f4c5f15e202",
+        "receipt_path": "maintenance/native-image-candidates/volunteer-award-ceremony-visits-community-kitchen/receipt.json",
+        "receipt_sha256": "b8c1d18b65b43748ce532d11cd6eaa87edbe373f80ac581875e5bee4b0f077e6"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+        "bytes": 109400,
+        "generated_at": "2026-11-13T09:38:57.962057+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 1268806400882745347,
+        "sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12"
+      },
+      "previous_rejection": {
+        "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+        "reason": "rootが最新本文全文とCPU run43401903097の実JPEGを表示して照合。無人の木製テーブルに茶器と額が並ぶ写真で、36歳の受賞者が汁物をよそう動作、エプロン姿の表彰担当者がお盆を渡す動作、地域食堂の配膳口と客がすべて欠けているため不採用。原生成記録・本文指紋・整数seedは書き換えない。",
+        "rejected_candidate_sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12",
+        "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43401903097",
+        "reviewed_at": "2026-11-13T09:41:36.336690+00:00"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+        "decision": "rejected",
+        "image_sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12",
+        "note": "rootが最新本文全文とCPU run43401903097の実JPEGを表示して照合。無人の木製テーブルに茶器と額が並ぶ写真で、36歳の受賞者が汁物をよそう動作、エプロン姿の表彰担当者がお盆を渡す動作、地域食堂の配膳口と客がすべて欠けているため不採用。原生成記録・本文指紋・整数seedは書き換えない。",
+        "reviewed_at": "2026-11-13T09:41:36.336690+00:00"
+      },
       "prompt_version": 3,
-      "seed": 1268806400882745347,
-      "sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12"
+      "sha256": "489a5dd224f4f3a4d7b10ffb698cdd3492e4b9c897c5fef664ea55e4e4abbeb0",
+      "source_png_sha256": "6d81ced9d4fa87cea0e125a54156457dadd6db8fc0399cd9c4a63ebd6bbcdfca",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "walking-points-past-own-front-door": {
       "article_sha256": "bb6d680411142ae62a55e62c0a07d58bb5bcc0ef9e4fe2d977b2ba864c728e3e",

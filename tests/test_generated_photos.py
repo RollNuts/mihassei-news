@@ -493,8 +493,8 @@ class LocalComedySceneTests(unittest.TestCase):
                     self.assertNotIn("image", parse_qs(urlparse(reader).query))
                     self.assertNotIn("?image=", build.actions(candidate))
 
-    def test_cpu_prompt_compacts_long_single_sentence_at_clause_boundaries(self):
-        """Long comma-rich scene directions keep the main visual action under CLIP budget."""
+    def test_cpu_prompt_refuses_to_cut_clauses_from_an_oversized_required_sentence(self):
+        """A long required scene must fail rather than lose an actor or action."""
         article = {
             **fixture(),
             "slug": "music-show-surprise-face-rehearsal",
@@ -513,11 +513,15 @@ class LocalComedySceneTests(unittest.TestCase):
             def encode(self, text, add_special_tokens=True):
                 return text.split()
 
-        prompt = github_cpu_scenes.fit_cpu_prompt(article, WordTokenizer())
-        self.assertLessEqual(len(WordTokenizer().encode(prompt)), github_cpu_scenes.CLIP_TOKEN_LIMIT)
-        self.assertIn("rehearsal cue cards", prompt)
-        self.assertIn("exaggerated surprised facial expressions", prompt)
-        self.assertNotIn("no writing or logos", prompt)
+        core, context = github_cpu_scenes.prompt_parts(article)
+        self.assertEqual(core, article["scene_prompt"])
+        self.assertEqual(context, [])
+        self.assertGreater(
+            len(WordTokenizer().encode(github_cpu_scenes.wrap_prompt(core, minimal=True))),
+            github_cpu_scenes.CLIP_TOKEN_LIMIT,
+        )
+        with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
+            github_cpu_scenes.fit_cpu_prompt(article, WordTokenizer())
 
     def test_dry_run_never_connects_or_generates_assets(self):
         a = fixture()

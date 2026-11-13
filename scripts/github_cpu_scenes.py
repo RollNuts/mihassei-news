@@ -199,8 +199,9 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
     # ("Photograph of a man carrying a parcel.") must not erase its subject.
     style_only = re.compile(
         r"(?:(?:candid|photorealistic|photoreal|realistic|documentary|press|"
-        r"staged|deadpan|japanese|sports|news|wide|film|still|natural|from a)\s+)*"
-        r"(?:photo|photograph|photography|comedy|lighting|photorealistic|photoreal|realistic)\.?",
+        r"staged|deadpan|japanese|local-news|sports|news|wide|film|still|natural|from a)\s+)*"
+        r"(?:photo|photograph|photography|comedy|lighting|photorealistic|photoreal|realistic)"
+        r"(?:,\s*(?:landscape|horizontal)\s+16:9)?\.?",
         flags=re.IGNORECASE,
     )
     while len(sentences) > 1 and len(sentences[0].split()) <= 10 and style_only.fullmatch(sentences[0]):
@@ -235,23 +236,6 @@ def cpu_negative_prompt(article: dict) -> str:
     return core + (", " + extra if extra else "")
 
 
-def compact_core_at_clause_boundaries(core: str, count) -> str:
-    """Shorten only trailing comma/semicolon clauses, preserving the primary action."""
-    clauses = [part.strip() for part in re.split(r"[,;]\s*", core) if part.strip()]
-    if len(clauses) <= 1:
-        return core
-    kept = [clauses[0]]
-    if count(wrap_prompt(kept[0], minimal=True)) > CLIP_TOKEN_LIMIT:
-        return core
-    for clause in clauses[1:]:
-        candidate_core = ", ".join([*kept, clause]).rstrip(".") + "."
-        if count(wrap_prompt(candidate_core, minimal=True)) > CLIP_TOKEN_LIMIT:
-            break
-        kept.append(clause)
-    compact = ", ".join(kept).rstrip(".") + "."
-    return compact if len(kept) < len(clauses) else core
-
-
 def fit_cpu_prompt(article: dict, tokenizer) -> str:
     """Fit complete visual clauses without letting CLIP silently truncate the joke."""
     core, context = prompt_parts(article)
@@ -262,12 +246,8 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
     if count(prompt) > CLIP_TOKEN_LIMIT and not tv_pilot:
         minimal = True
         prompt = wrap_prompt(core, minimal=True)
-    if count(prompt) > CLIP_TOKEN_LIMIT and not tv_pilot:
-        compact_core = compact_core_at_clause_boundaries(core, count)
-        if compact_core != core:
-            core = compact_core
-            prompt = wrap_prompt(core, minimal=True)
-            print("CPU prompt compacted trailing visual clauses; primary action retained", flush=True)
+    # The first content sentence is required as a whole. A comma can introduce
+    # its only actor/action after a location, so clause trimming is not safe.
     if count(prompt) > CLIP_TOKEN_LIMIT:
         raise ValueError("Visual core exceeds CLIP budget; refusing truncated staging")
     included = []
