@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import copy
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import gc
 import hashlib
 import io
@@ -159,6 +159,13 @@ def check_daily_quota(*, now=None):
     attempt = int(os.environ["GITHUB_RUN_ATTEMPT"])
     if attempt != 1:
         raise RuntimeError("SDXL workflow reruns are forbidden; one attempt per story and JST day")
+    requested = os.environ.get("USER_REQUESTED_RETRY_AFTER", "")
+    clock = now or datetime.now(timezone.utc)
+    if clock.tzinfo is None:
+        raise ValueError("SDXL quota requires a timezone-qualified clock")
+    today = clock.astimezone(timezone(timedelta(hours=9))).date().isoformat()
+    if requested and (requested != str(LEGACY_SDXL_TRIAL["id"]) or today != "2026-11-14"):
+        raise ValueError("User-requested retry is limited to the fixed failed trial on JST 2026-11-14")
     inventory = json.loads(subprocess.check_output([
         "gh", "api", f"repos/{REPOSITORY}/actions/workflows/free-cpu-scenes.yml/runs?per_page=100"
     ], cwd=ROOT, text=True, timeout=15))["workflow_runs"]
@@ -171,15 +178,25 @@ def check_daily_quota(*, now=None):
             if any(run.get(key) != value for key, value in LEGACY_SDXL_TRIAL.items()):
                 raise ValueError("Known legacy SDXL trial provenance does not match")
             # Quota-only classification: preserve the actual API title and receipt.
-            legacy = {**LEGACY_SDXL_TRIAL, "quota_slug":SLUG}
-            run["display_title"] = BACKFILL_RUN_PREFIX + SLUG
+            quota_slug = SLUG
+            if requested:
+                if legacy is not None or run.get("status") != "completed" or run.get("conclusion") != "failure":
+                    raise ValueError("User-requested retry requires one verified completed failed legacy trial")
+                quota_slug = SLUG + "-prior-request-" + requested
+            legacy = {**LEGACY_SDXL_TRIAL, "quota_slug":quota_slug}
+            if requested:
+                legacy.update(status=run["status"], conclusion=run["conclusion"])
+            run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
         classified.append(run)
+    if requested and legacy is None:
+        raise ValueError("User-requested retry is missing its verified failed legacy trial")
     matches = [run for run in classified if run.get("id") == current]
     if len(matches) != 1 or matches[0].get("display_title") != BACKFILL_RUN_PREFIX + SLUG:
         raise ValueError("Current SDXL run is absent from the bounded story inventory")
-    if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=now):
+    if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=clock):
         raise RuntimeError("SDXL daily attempt budget or same-story limit reached; new articles take priority")
-    return {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy}
+    return {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy,
+            "user_requested_retry_after":requested}
 
 
 def initial_priority_gate(revision, articles, *, review_parent):

@@ -22,4 +22,4 @@
 - **発行引継ぎ（11/13 09:30→11:30）：** 事件面 `airport-baggage-robot-leaves-upper-shelves-empty` をこの発行PRに追加。空港の2段台車で安全設定が上段を使わず通路を塞ぎ、固定条件を追加して荷物を3台にまとめる。写真は内蔵ImageGenを1回生成しPNG/JPEGを同実行で実表示したがGitHub blob未転送のため、採用・本番実写化は未完了、公開後画像回収担当へ同一素材の回収を渡す。次は11:30に新カテゴリを比較し、政策・製品発表の残枠を確保。公開可否とrevisionは本発行結果を正とする。
 
 - **画像引継ぎ（11/14 W1）:** `indoor-beach-friends-exchange-ripples`／元記事FP `0e2a45ebc481758a`／portrait候補FP `38d4f8dc730ac6af`。JuggernautXL [run 43458459270](https://github.com/RollNuts/mihassei-news/actions/runs/43458459270)は13GiB RSS上限で停止、JPEGなし・未採用。旧生成・不採用記録は保持し、専用SVGを維持。
-  [PR #722](https://github.com/RollNuts/mihassei-news/pull/722)はdraft。次は新着優先・全CPU共通のnative BF16対応を確認できる時だけ条件付き試験へ。11/14の追加生成残0、同日再試行なし。`66d301c`のCIは全pass、新headのCIはpush後に確認し、実画像QA・採用は別工程とする。
+  [PR #722](https://github.com/RollNuts/mihassei-news/pull/722)はdraft。本人の11/14 06時台の「今やって」という新しい修正指示により、今回だけ`user_requested_retry_after=43458459270`を明示した手動試作を最大1回引き継ぐ。新着優先・全CPU共通native BF16・既存資源/安全上限を全て維持し、非対応なら停止する。旧失敗receiptは保持し、実行・実画像QA・採用/差し替えの完了は別途確認する。

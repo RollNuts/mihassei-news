@@ -25,6 +25,7 @@ def environment(temporary, ref="refs/heads/main"):
             "RUNNER_ENVIRONMENT":"github-hosted", "RUNNER_TEMP":str(temporary), "GITHUB_RUN_ID":"123",
             "GITHUB_RUN_ATTEMPT":"1",
             "SDXL_PUBLIC_REPOSITORY":"true", "PREVIEW_MODEL":"sdxl", "VERIPSA_ENABLE_FREE_CPU":"1",
+            "USER_REQUESTED_RETRY_AFTER":"",
             "SCENE_SLUG":preview.SLUG, "SCENE_LIMIT":"1", "RETRY_HELD":"1", "SCENE_PUBLISH":"0",
             "BACKFILL_SCENE":"", "BACKFILL_REFERENCE":"0"}
 
@@ -169,6 +170,62 @@ sdxl_scene_preview.main([])
                  patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1"}), \
                  patch.object(preview.subprocess,"check_output",return_value=json.dumps({"workflow_runs":inventory})):
                 with self.assertRaises(ValueError):preview.check_daily_quota()
+
+    def test_user_requested_retry_allows_one_new_request_without_erasing_old_global_budget(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T21:01:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        runs=[legacy,current];original=[dict(run) for run in runs]
+        now=preview.datetime.fromisoformat("2026-11-13T21:02:00+00:00")
+        with patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+                                   "USER_REQUESTED_RETRY_AFTER":str(legacy["id"])}), \
+             patch.object(preview.subprocess,"check_output",return_value="inventory"), \
+             patch.object(preview.json,"loads",return_value={"workflow_runs":runs}):
+            evidence=preview.check_daily_quota(now=now)
+            self.assertEqual(evidence["user_requested_retry_after"],str(legacy["id"]))
+            self.assertNotEqual(evidence["known_legacy_trial"]["quota_slug"],preview.SLUG)
+            self.assertEqual(evidence["known_legacy_trial"]["conclusion"],"failure")
+            self.assertEqual(runs,original)
+            with patch.dict(os.environ,{"USER_REQUESTED_RETRY_AFTER":""}), \
+                 self.assertRaisesRegex(RuntimeError,"same-story"):
+                preview.check_daily_quota(now=now)
+            prior={**current,"id":122,"created_at":"2026-11-13T20:59:00Z"}
+            runs.append(prior)
+            with self.assertRaisesRegex(RuntimeError,"same-story"):preview.check_daily_quota(now=now)
+            runs.remove(prior)
+            # Old failure + two other stories + this request still occupy four slots.
+            for index in range(2):
+                runs.append({"id":200+index,"created_at":f"2026-11-13T18:0{index}:00Z",
+                             "display_title":preview.BACKFILL_RUN_PREFIX+f"other-{index}"})
+            self.assertTrue(preview.check_daily_quota(now=now)["allowed"])
+            runs.append({"id":202,"created_at":"2026-11-13T18:02:00Z",
+                         "display_title":preview.BACKFILL_RUN_PREFIX+"third-other"})
+            with self.assertRaisesRegex(RuntimeError,"daily attempt budget"):preview.check_daily_quota(now=now)
+            self.assertEqual(legacy,original[0])
+
+    def test_user_requested_retry_rejects_wrong_id_day_attempt_or_unverified_failure(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T21:01:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        env={"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+             "USER_REQUESTED_RETRY_AFTER":str(legacy["id"])}
+        now=preview.datetime.fromisoformat("2026-11-13T21:02:00+00:00")
+        for changes,clock in (({"USER_REQUESTED_RETRY_AFTER":"43458459271"},now),
+                              ({},preview.datetime.fromisoformat("2026-11-13T14:59:59+00:00")),
+                              ({},preview.datetime.fromisoformat("2026-11-14T15:00:00+00:00")),
+                              ({"GITHUB_RUN_ATTEMPT":"2"},now)):
+            with self.subTest(changes=changes,clock=clock),patch.dict(os.environ,{**env,**changes}), \
+                 patch.object(preview.subprocess,"check_output") as api:
+                with self.assertRaises((RuntimeError,ValueError)):preview.check_daily_quota(now=clock)
+                api.assert_not_called()
+        for inventory in ([current],[legacy,legacy,current],
+                          [{**legacy,"status":"in_progress"},current],
+                          [{**legacy,"conclusion":"success"},current],
+                          [{**legacy,"conclusion":"cancelled"},current],
+                          [{**legacy,"head_sha":"b"*40},current]):
+            with self.subTest(inventory=inventory),patch.dict(os.environ,env), \
+                 patch.object(preview.subprocess,"check_output",return_value=json.dumps({"workflow_runs":inventory})):
+                with self.assertRaises(ValueError):preview.check_daily_quota(now=now)
 
     def test_exhausted_quota_fails_before_any_download_or_model_execution(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -527,6 +584,8 @@ class SdxlWorkflowTests(unittest.TestCase):
             with self.subTest(change=change):self.assertFalse(applies(condition,{**values,**change}))
         self.assertIn("ref: ${{ github.sha }}",block);self.assertIn("persist-credentials: false",block)
         self.assertIn("contents: read",block);self.assertIn("actions: read",block)
+        self.assertIn("      user_requested_retry_after:\n",document)
+        self.assertIn("      USER_REQUESTED_RETRY_AFTER: ${{ inputs.user_requested_retry_after || '' }}",block)
         for forbidden in ("contents: write","actions: write","secrets.","git push","publish_cpu_scenes.py"):
             self.assertNotIn(forbidden,block)
         artifact=block.split("name: Keep only the SDXL candidate",1)[1]
@@ -534,6 +593,7 @@ class SdxlWorkflowTests(unittest.TestCase):
         self.assertEqual(len(paths),3);self.assertFalse(any("*" in path for path in paths))
         self.assertIn("retention-days: 1",artifact)
         normal=job(document,"render")
+        self.assertNotIn("USER_REQUESTED_RETRY_AFTER",normal)
         normal_condition=next(line.strip()[4:] for line in normal.splitlines() if line.startswith("    if: "))
         self.assertFalse(applies(normal_condition,values))
         self.assertFalse(applies(normal_condition,{**values,"inputs.preview_model":"unknown"}))

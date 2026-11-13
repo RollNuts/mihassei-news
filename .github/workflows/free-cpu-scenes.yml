@@ -16,6 +16,10 @@ on:
         type: choice
         options: ['default', 'sdxl']
         default: 'default'
+      user_requested_retry_after:
+        description: 'Explicit one-time user retry after a fixed failed preview; leave empty normally'
+        type: string
+        default: ''
       limit:
         description: 'Number of missing story images (max 3)'
         type: choice
@@ -253,6 +257,7 @@ jobs:
       SDXL_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
       VERIPSA_ENABLE_FREE_CPU: '1'
       PREVIEW_MODEL: ${{ inputs.preview_model }}
+      USER_REQUESTED_RETRY_AFTER: ${{ inputs.user_requested_retry_after || '' }}
       SCENE_SLUG: ${{ inputs.slug }}
       SCENE_LIMIT: ${{ inputs.limit }}
       RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
