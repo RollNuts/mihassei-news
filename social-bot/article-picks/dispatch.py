@@ -929,6 +929,9 @@ def main() -> int:
     )
     if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str):
         raise RuntimeError("Buffer accepted no auditable article receipt")
+    comic = buffer_receipt.get("_article_comic")
+    if isinstance(comic, dict):
+        text = comic["text"]
     buffer_id = buffer_receipt["id"]
     slot = promotion_slot(now)
     if slot is None:
@@ -940,14 +943,17 @@ def main() -> int:
         "submission_mode": "shareNow",
         "source": "fresh_article" if evidence is None else "verified_article_page_views",
         "copy_mode": (
-            "headline_summary"
-            if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
-            else "reader_lead"
+            "comic_caption" if isinstance(comic, dict) else (
+                "headline_summary" if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
+                else "reader_lead"
+            )
         ),
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
         "primary_topic": primary_topic(eligible) or None,
     }
+    if isinstance(comic, dict):
+        entry["comic_attachment"] = {key: value for key, value in comic.items() if key != "text"}
     receipt_fields = {
         "status": "buffer_status_at_accept",
         "createdAt": "buffer_created_at_at_accept",

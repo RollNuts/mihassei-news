@@ -1531,9 +1531,12 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         self.git("-c", "user.name=Offline test", "-c", "user.email=test@example.invalid",
                  "-c", "commit.gpgsign=false", "commit", "-qm", "Synthetic fixture")
         self.revision = self.git("rev-parse", "HEAD").strip()
+        self.caption = "便利にしたら、手順が増えました。"
         self.review = {"approved_by": "owner", "reviewed_at": NOW.isoformat(),
                        "article_sha256": comics.article_fingerprint(self.story),
                        "image_sha256": hashlib.sha256(self.image.read_bytes()).hexdigest(),
+                       "caption": self.caption,
+                       "caption_sha256": hashlib.sha256(self.caption.encode("utf-8")).hexdigest(),
                        "path": self.relative}
         self.config = {**CONFIG, "comic_attachments": {"comic-story": self.review}}
 
@@ -1549,12 +1552,13 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         return subprocess.run(["git", *args], cwd=self.root, check=True,
                               capture_output=True, text=True).stdout
 
-    def submit(self, review=None, *, available=True, include_review=True, story=None):
+    def submit(self, review=None, *, available=True, include_review=True, story=None, post_overrides=None):
         story = self.story if story is None else story
         post = {"kind": "article", "id": "article-" + story["slug"],
                 "text": "記事はこちら https://veripsa.com/articles/" + story["slug"] + "/"}
         if include_review:
             post.update(article=story, comic_approval=self.review if review is None else review)
+        post.update(post_overrides or {})
         with patch.object(publish, "HERE", self.root / "social-bot"), \
              patch.object(publish, "remote_asset_available", return_value=available,
                           side_effect=available if isinstance(available, Exception) else None) as remote, \
@@ -1565,7 +1569,7 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         return send.call_args.args[1], remote
 
     @contextmanager
-    def main_context(self, *, config=None, state=None, retry=None):
+    def main_context(self, *, config=None, state=None, retry=None, available=True):
         (self.root / "content").mkdir(exist_ok=True)
         (self.root / "content/articles.json").write_text(json.dumps([self.story]))
         documents = {HERE / "config.json": self.config if config is None else config,
@@ -1575,7 +1579,9 @@ class ArticleComicAttachmentTests(unittest.TestCase):
             stack.enter_context(patch.object(publish, "HERE", self.root / "social-bot"))
             stack.enter_context(patch.object(picks, "read_json", side_effect=lambda p: copy.deepcopy(documents[p])))
             stack.enter_context(patch.object(picks, "delivery_retry_time", return_value=retry))
-            stack.enter_context(patch.dict(os.environ, {"BUFFER_API_KEY": "mock-only"}, clear=True))
+            stack.enter_context(patch.dict(os.environ, {
+                "BUFFER_API_KEY": "mock-only", "PATH": os.environ.get("PATH", ""),
+            }, clear=True))
             for module in (picks, comics):
                 clock = stack.enter_context(patch.object(module, "datetime", wraps=datetime))
                 clock.now.return_value = NOW
@@ -1583,7 +1589,7 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                 "channel": stack.enter_context(patch.object(picks, "connected_channel", return_value=("org", CONFIG["channel_id"]))),
                 "existing": stack.enter_context(patch.object(picks, "list_existing", return_value=[])),
                 "save": stack.enter_context(patch.object(picks, "save_state")),
-                "remote": stack.enter_context(patch.object(publish, "remote_asset_available", return_value=True)),
+                "remote": stack.enter_context(patch.object(publish, "remote_asset_available", return_value=available)),
                 "gql": stack.enter_context(patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "mock-post"}}})),
                 "queue": stack.enter_context(patch.object(picks, "queue_one", wraps=publish.queue_one)),
             }
@@ -1596,6 +1602,55 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         self.assertIn('assets: [{image: {url: "' + expected + '"}}]', query)
         self.assertEqual(query.count("assets:"), 1)
         self.assertIn("mode: shareNow", query)
+        expected_text = self.caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"
+        self.assertIn("text: " + publish.qstring(expected_text), query)
+
+    def test_caption_requires_plain_short_reviewed_text_and_exact_utf8_hash(self):
+        baseline, _ = self.submit(include_review=False)
+        missing = {k: v for k, v in self.review.items() if not k.startswith("caption")}
+        for caption in (None, "", " ", "あ" * 101, "一文。二文。三文。",
+                        "詳しくは https://example.invalid/a", "詳しくは example.com",
+                        "説明 #未発生新聞", "説明\n次", "説明\u2028次", "説明\u2029次",
+                        "説明\x00", "<b>説明</b>"):
+            review = {**self.review, "caption": caption,
+                      "caption_sha256": hashlib.sha256(str(caption).encode("utf-8")).hexdigest()}
+            with self.subTest(caption=caption):
+                query, remote = self.submit(review)
+                self.assertEqual(query, baseline)
+                remote.assert_not_called()
+        for review in (missing, {**self.review, "caption_sha256": "0" * 64},
+                       {**self.review, "caption": self.caption + "変更。"}):
+            query, remote = self.submit(review)
+            self.assertEqual(query, baseline)
+            remote.assert_not_called()
+        for caption in ("会議は短く。挨拶は長く。", "あ" * 99 + "。"):
+            review = {**self.review, "caption": caption,
+                      "caption_sha256": hashlib.sha256(caption.encode("utf-8")).hexdigest()}
+            query, remote = self.submit(review)
+            remote.assert_called_once()
+            self.assertIn("text: " + publish.qstring(caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"), query)
+
+    def test_png_cap_boundary_and_structural_corruption(self):
+        valid = self.png()
+        def store(data):
+            self.image.write_bytes(data)
+            self.git("add", self.relative)
+            self.git("-c", "user.name=Offline test", "-c", "user.email=test@example.invalid",
+                     "-c", "commit.gpgsign=false", "commit", "-qm", "Synthetic boundary fixture")
+            return {**self.review, "image_sha256": hashlib.sha256(data).hexdigest()}
+        for size in (4_000_000, 4_000_001):
+            padding = b"padding\0" + b"x" * (size - len(valid) - 20)
+            chunk = struct.pack(">I", len(padding)) + b"tEXt" + padding + struct.pack(">I", zlib.crc32(b"tEXt" + padding))
+            data = valid[:-12] + chunk + valid[-12:]
+            self.assertEqual(len(data), size)
+            review = store(data)
+            with self.subTest(size=size):
+                result = comics.approved_comic_asset(self.story, review, self.root, NOW)
+                self.assertEqual(result is not None, size == 4_000_000)
+        bad_crc = valid[:-1] + bytes((valid[-1] ^ 1,))
+        for data in (valid[:24], bad_crc, valid[:-3], valid + b"x", valid[:33] + valid[-12:]):
+            with self.subTest(data=data):
+                self.assertIsNone(comics.approved_comic_asset(self.story, store(data), self.root, NOW))
 
     def test_missing_unapproved_stale_and_future_reviews_leave_legacy_payload(self):
         baseline, remote = self.submit(include_review=False)
@@ -1671,6 +1726,33 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                 if config is not self.config:
                     self.assertEqual(set(post), {"kind", "id", "text"})
                     mocks["remote"].assert_not_called()
+                    self.assertNotIn("comic_attachment", receipt)
+                else:
+                    actual_text = self.caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"
+                    self.assertEqual(receipt["copy_mode"], "comic_caption")
+                    self.assertEqual(receipt["text_sha256"], hashlib.sha256(actual_text.encode("utf-8")).hexdigest())
+                    self.assertIn("text: " + publish.qstring(actual_text), mocks["gql"].call_args.args[1])
+                    self.assertNotIn("text", receipt["comic_attachment"])
+                    for key in ("caption_sha256", "article_sha256", "image_sha256", "path"):
+                        self.assertEqual(receipt["comic_attachment"][key], self.review[key])
+                    self.assertEqual(receipt["comic_attachment"]["revision"], self.revision)
+
+    def test_unavailable_or_stale_media_keeps_original_caption_and_ledger_hash(self):
+        stale = {**self.config, "comic_attachments": {"comic-story": {**self.review, "caption_sha256": "0" * 64}}}
+        for config, available in ((self.config, False), (stale, True)):
+            with self.subTest(available=available), self.main_context(config=config, available=available) as mocks:
+                self.assertEqual(picks.main(), 0)
+                original = mocks["queue"].call_args.args[2]["text"]
+                receipt = mocks["save"].call_args.args[0]["queued"]["comic-story"]
+                self.assertEqual(receipt["text_sha256"], hashlib.sha256(original.encode("utf-8")).hexdigest())
+                self.assertNotEqual(receipt["copy_mode"], "comic_caption")
+                self.assertNotIn("comic_attachment", receipt)
+                self.assertIn("text: " + publish.qstring(original), mocks["gql"].call_args.args[1])
+        mismatch = {"id": "article-other-story", "text": "https://veripsa.com/articles/other-story/"}
+        baseline, _ = self.submit(include_review=False, post_overrides=mismatch)
+        query, remote = self.submit(post_overrides=mismatch)
+        self.assertEqual(query, baseline)
+        remote.assert_not_called()
 
     def test_approved_art_cannot_bypass_slug_slot_daily_spacing_or_cooldown(self):
         used = {**recorded(hours=1), "slot_jst": picks.promotion_slot(NOW).isoformat()}

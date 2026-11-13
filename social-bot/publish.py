@@ -263,6 +263,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 "or article promotion"
             )
     media_url = None
+    text = post["text"]
     article_asset = None
     if post.get("kind") == "article" and "comic_approval" in post:
         article = post.get("article")
@@ -272,11 +273,13 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 in str(post.get("text", ""))):
             article_asset = approved_comic_asset(article, post["comic_approval"], HERE.parent)
         if article_asset is not None:
-            filename, revision = article_asset
-            url = ASSET_BASE_URL.replace("/main/", "/" + revision + "/", 1) + "/" + filename
+            url = (ASSET_BASE_URL.replace("/main/", "/" + article_asset["revision"] + "/", 1)
+                   + "/" + article_asset["filename"])
             try:
                 if remote_asset_available(url):
                     media_url = url
+                    text = (article_asset["caption"] + "\n\nhttps://veripsa.com/articles/"
+                            + article["slug"] + "/\n#未発生新聞")
             except (OSError, ValueError):
                 pass  # Optional media must not block the normal article post.
     # Article comics reuse the same image attachment and mutation as historical
@@ -298,7 +301,7 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
     extra = (", assets: [{image: {url: " + qstring(media_url) + "}}]"
              if media_url is not None else "")
     mutation = (
-        "mutation { createPost(input: {text: " + qstring(post["text"])
+        "mutation { createPost(input: {text: " + qstring(text)
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
@@ -308,7 +311,13 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
     result = gql(token, mutation).get("createPost") or {}
     if not result.get("post", {}).get("id"):
         raise RuntimeError("Buffer did not accept post: " + str(result.get("message","unknown")))
-    return dict(result["post"]) if return_post else result["post"]["id"]
+    if return_post:
+        receipt = dict(result["post"])
+        receipt.pop("_article_comic", None)  # Local evidence, never a provider field.
+        if article_asset is not None and media_url is not None:
+            receipt["_article_comic"] = {**article_asset, "text": text}
+        return receipt
+    return result["post"]["id"]
 
 
 def main():

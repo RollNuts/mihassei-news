@@ -2,7 +2,7 @@
 
 Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール短文、キャラ日常、`useful`独自稿、旧連載漫画は自動送信しない。既存のBuffer FreeチャンネルとGitHub Actionsだけを使い、追加費用は0円を維持する。
 
-記事紹介には、明示承認された縦長PNG漫画1枚を同じ既存枠で任意添付できる。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`がそろい、本文・実画像・同じ画像を含むgit revisionが一致するまで添付しない。欠測・失効・公開画像未到達なら通常の記事紹介を続け、旧漫画の停止設定は維持する。
+記事紹介には、明示承認された縦長PNG漫画1枚（内部上限4,000,000bytes）を同じ既存枠で任意添付できる。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`を束縛し、画像と短い`caption`も見てownerが承認する。captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像と同じgit revisionの画像が一致し、実際に添付できる時だけ「caption→元記事の直接URL→#未発生新聞」で紹介する。欠測・失効・公開画像未到達なら従来の記事文面を保ち、旧漫画の停止設定も維持する。
 
 ## 配信
 
@@ -23,7 +23,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 ## 改善ループ
 
-X文面は投稿ごとに勝ち型を固定しない。送信時に`state.json`へ実際に使った`copy_mode`（`reader_lead` / `headline_summary`）と既存の本文指紋・slug・論理枠を残し、後から「どの文面で送ったか」を再現できるようにする。既存記録に`copy_mode`が無い場合は推測で埋めない。
+X文面は投稿ごとに勝ち型を固定しない。送信時に`state.json`へ実際に使った`copy_mode`（`reader_lead` / `headline_summary` / `comic_caption`）と既存の本文指紋・slug・論理枠を残し、後から「どの文面で送ったか」を再現できるようにする。既存記録に`copy_mode`が無い場合は推測で埋めない。
 
 日次の監視では、実公開を確認できた記事について実際の投稿文、`copy_mode`、公開時刻、取得できるX公開反応、サイト側の`x_arrivals`・`page_views_per_hour`・`continuation_share`を照合する。未取得の反応を0にせず、1投稿だけの好反応・不調で文面規則を書き換えない。日次は「入口が要約へ戻っていないか」「問いかけ等が反復していないか」「記事内容と入口がずれていないか」を観察し、明確な回帰だけ修復する。
 
