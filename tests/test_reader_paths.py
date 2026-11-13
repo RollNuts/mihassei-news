@@ -95,13 +95,12 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(set(slugs), available - {item["slug"]})
             self.assertIn('aria-labelledby="readers-choice-title" hidden', page)
 
-        # Every article CTA points strictly backward in publication order, so
-        # topic relevance can never create a two-story loop.
-        for index, item in enumerate(ordered[:-1]):
-            page = build.story(item, self.articles)
-            target = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
-            self.assertIsNotNone(target, item["slug"])
-            self.assertGreater(order_index[target.group(1)], index)
+            # Check the same rendered CTA points strictly backward, so topic
+            # relevance can never create a two-story loop.
+            if index < len(ordered) - 1:
+                target = re.search(r'<a href="/articles/([^/]+)/" class="reader-next-title">', page)
+                self.assertIsNotNone(target, item["slug"])
+                self.assertGreater(order_index[target.group(1)], index)
 
     def test_related_topic_links_use_existing_shared_tags(self):
         source = next(
