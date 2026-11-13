@@ -18,9 +18,10 @@ SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 JSON_PATHS = {
     "content/articles.json": None,
     "content/visual_reviews.json": ("reviews",),
+    "content/approved_photos.json": ("approved",),
     "assets/generated/manifest.json": ("images", "rejected"),
 }
-ASSET = re.compile(r"assets/(?:generated|editorial-scenes)/([a-z0-9]+(?:-[a-z0-9]+)*)\.(?:jpg|jpeg|png|svg)")
+ASSET = re.compile(r"assets/(?:generated|editorial-scenes|article-diagrams|photos)/([a-z0-9]+(?:-[a-z0-9]+)*)\.(?:jpg|jpeg|png|svg)")
 
 
 def require(condition: bool, message: str) -> None:
@@ -176,9 +177,13 @@ def photo_check(report: dict, expected_sha: str) -> dict:
     require(isinstance(counts, dict) and set(counts) == set(counted)
             and all(type(v) is int and v >= 0 for v in counts.values()) and counts == counted,
             "Recovery counts disagree with inventory")
-    for key in ("publication_counts", "counts"):
+    required_counts = {
+        "publication_counts": {"generated_jpeg", "editorial_svg", "stock_photo", "generic_fallback"},
+        "counts": {"accepted", "pending", "missing", "rejected"},
+    }
+    for key, required in required_counts.items():
         values = report.get(key)
-        require(isinstance(values, dict) and bool(values)
+        require(isinstance(values, dict) and required <= values.keys()
                 and all(type(v) is int and v >= 0 for v in values.values()), "Material counts unavailable")
     require(sum(report["publication_counts"].values()) == sum(report["counts"].values()),
             "Material totals disagree")
