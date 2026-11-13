@@ -1,5 +1,70 @@
 [
   {
+    "slug": "airport-baggage-robot-leaves-upper-shelves-empty",
+    "category": "事件",
+    "flash": "上段は空、台車だけ増える",
+    "fiction_company": "架空の潮灯空港・荷物運送会社",
+    "art": "cards",
+    "fiction_at": "2031-11-13T09:38:00+09:00",
+    "published_at": "2026-11-13T09:38:00+09:00",
+    "title": "空港で手荷物台車6台が渋滞　荷崩れゼロのロボ、上段を一度も使わず",
+    "summary": "潮灯空港で、荷崩れを避ける積み込みロボットが、二段棚の下段だけを使って台車6台を埋めた。搬送口が塞がれ、係員が転倒防止の仕切りと固定ベルトを付けると、荷物は3台に収まった。",
+    "paragraphs": [
+      "潮灯空港の手荷物室で13日朝、上下二段の棚が付いた台車6台が、搬送口の通路を埋めた。積み込みロボットはスーツケースを下段にだけ載せ、上段には一個も置かなかった。ロボットの横で「次の台車」のランプが点き、係員がいったん搬送を止めた。",
+      "ロボットはカメラで荷物の形を見て、持ち上げる前に重さや傾きから落下の可能性を計算する。朝の担当者は、荷崩れを減らそうと「少しでも倒れる恐れがある置き方は選ばない」という設定を有効にしていた。ロボットは上段に載せる案を選ばず、下段が埋まるたびに新しい台車を求めた。まだ載せていない出発便の荷物も残っていた。",
+      "係員が6台を見回すと、どの下段にもスーツケースが収まり、上段には照明が差していた。台車を押して通路を空けようにも、空いている台車はもうなく、次の荷物を搬送口へ運べない。ロボットの画面には「転倒予測0件」と表示されていた。",
+      "現場主任はロボットを止め、台車の上段に横倒れを防ぐ仕切りを取り付けた。係員が上段の荷物をベルトで固定できることを確かめてから、「仕切りとベルトで固定する場合は上段を使う」という条件を追加。ロボットがスーツケースを上段へ持ち上げると、係員が固定ベルトを締めた。これを繰り返すうちに、6台に分かれていた荷物は3台に収まり、搬送口の通路が空いた。",
+      "「次の台車」のランプは消えた。余った3台を係員が押して戻す横で、主任はランプの下に小さく「上の棚も見よう」と書いた紙を貼った。"
+    ],
+    "source": {
+      "kind": "企業公式技術発表",
+      "publisher": "NTT株式会社",
+      "published_at": "2026-11-11T00:00:00+09:00",
+      "url": "https://group.ntt/jp/newsrelease/2026/11/11/261111b.html",
+      "topic": "2026年11月11日、NTTは物体の重さや向きなど物理量を用いて荷崩れ・落下を予測し、ロボットが置き方を選ぶフィジカルAI技術を発表した。小型ロボットの棚積み模擬タスクでは成功率が73.1%から92.3%に向上。空港手荷物への適用は今後の想定であって実導入の発表ではない。2031年の潮灯空港、極端な安全設定、台車6台の滞留、係員の対応と会話はすべて創作。実在企業の製品や運用失敗ではない。"
+    },
+    "scene_prompt": "Photorealistic candid Japanese airport baggage-room press photograph, landscape 16:9. In a fictional airport logistics room, an adult Japanese baggage handler aged about 32 in neutral workwear stands beside a real-looking industrial robot arm and six realistic two-tier metal luggage carts lined up along a bright concrete floor. Their LOWER shelves are filled with a mix of ordinary unbranded suitcases while all UPPER shelves are visibly and conspicuously empty. The worker points upward toward an empty shelf; an ordinary amber request lamp glows next to the robot. Physically plausible steel carts, wheels, luggage handles, depth and shadows, natural fluorescent work lighting, real documentary photography, unposed and humane. No legible text, no logos or identifiable brands, no illustration, no synthetic plastic CGI.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "空港",
+      "手荷物",
+      "ロボット",
+      "荷崩れ"
+    ],
+    "satire_tags": [
+      "安全最優先",
+      "上段ゼロ"
+    ],
+    "x_tags": [
+      "空港手荷物",
+      "荷崩れ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "荷物の事故はゼロ。でも空港の台車が足りなくなる。原因は、ロボットが一度も上の棚を使わなかったこと。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月11日、ロボットが荷物の落下や荷崩れを事前予測して置き方を選ぶ技術がNTTから公表された",
+      "target": "空港で荷崩れゼロを最優先にした結果、手荷物台車の上段が空のまま運用が止まる事件",
+      "action": "係員が安全設定を強め、ロボが上下二段の台車の下段だけを埋めて6台を占め、主任が固定具と条件を追加する",
+      "outcome": "荷物が3台に収まり搬送が再開し、主任がランプの下に『上の棚も見よう』と紙を貼った"
+    },
+    "reader_clarity": {
+      "who": "潮灯空港の手荷物積み込みロボットと係員",
+      "action": "ロボットが下段だけに荷物を積んで6台を埋め、係員が仕切りとベルトで上段も使えるようにした",
+      "oddity": "荷崩れを防ぎすぎて空の上段が増え、搬送口が塞がれた"
+    },
+    "behavior_basis": {
+      "motive": "手荷物室で荷崩れや落下を避け、安全に出発便の荷物を積みたい",
+      "ordinary_alternative": "台車の上段にも安全に固定できる荷物を積み、台車数を節約する",
+      "why_not": "ロボットの安全側設定が上段への配置候補を一律に避け、下段だけの積み方を選んだ",
+      "evidence_quote": "ロボットは上段に載せる案を選ばず、下段が埋まるたびに新しい台車を求めた。"
+    }
+  },
+  {
     "slug": "sand-dune-race-radar-reroutes-ridge-final",
     "category": "スポーツ",
     "flash": "朝、砂丘のコースが変わる",
