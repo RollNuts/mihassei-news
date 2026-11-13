@@ -282,8 +282,10 @@ def fit_cpu_prompt(article: dict, tokenizer) -> str:
 
 
 def backfill_run_allowed(runs: list[dict], current_run_id: int, *, current_run_attempt: int,
-                         now: datetime | None = None) -> bool:
+                         now: datetime | None = None, daily_limit: int = MAX_DAILY_BACKFILLS) -> bool:
     """Bound daily attempts and allow each old story only one trial per JST day."""
+    if type(daily_limit) is not int or daily_limit not in (MAX_DAILY_BACKFILLS, 5):
+        raise ValueError("Backfill daily limit must be four, or five for the fixed save-loss recovery")
     if type(current_run_attempt) is not int or current_run_attempt < 1:
         raise ValueError("Backfill requires a positive integer workflow attempt")
     if current_run_attempt != 1:
@@ -324,7 +326,7 @@ def backfill_run_allowed(runs: list[dict], current_run_id: int, *, current_run_a
     position = next(index for index, (_, identifier, _) in enumerate(ordered)
                     if identifier == current_run_id)
     slug = ordered[position][2]
-    return (position < MAX_DAILY_BACKFILLS
+    return (position < daily_limit
             and all(previous_slug != slug for _, _, previous_slug in ordered[:position]))
 
 

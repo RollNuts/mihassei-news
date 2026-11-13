@@ -104,6 +104,22 @@ REJECTED_FILES = {
     JPEG:(58651, "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf"),
 }
 REJECTED_CANDIDATE_SHA = "38d4f8dc730ac6afcb3f261d840813b070dfbe1614052f39c5bdb6e9fdb58717"
+QUALITY_FAILURE = "Scene too dark/washed out/unreadable for editorial use"
+SAVE_LOSS_TRIAL = {
+    "id":43514129860, "created_at":"2026-11-13T21:49:49Z", "event":"workflow_dispatch",
+    "path":".github/workflows/free-cpu-scenes.yml",
+    "head_sha":"a1bcf8cbfbd2889862469874de680e563be9bc15",
+    "display_title":BACKFILL_RUN_PREFIX + SLUG, "run_attempt":1,
+    "status":"completed", "conclusion":"failure",
+}
+SAVE_LOSS_ARTIFACT_ID = 14080846044
+SAVE_LOSS_ZIP_BYTES = 7455
+SAVE_LOSS_ZIP_SHA = "c6028a5c1e2725962d9d1afd18fc4ccd435e00af0e39885e9b1cab331bf0d430"
+SAVE_LOSS_CANDIDATE_SHA = "54de652fa345f1dbf24ed1795aea65e3418515fd6f4be0fa7d97453cfdba302d"
+SAVE_LOSS_FILES = {
+    "receipt.json":(11976, "891f0436d4eb19c30f7dd167eb4612cd6825960e6f4215649aafe7910a4d6596"),
+    "articles.json":(6512, "88f9c272e8255d7a199eec31ea6688047acbfdbc95b2aa97fe8241d3a64ed482"),
+}
 
 
 def atomic_json(path, value):
@@ -285,6 +301,53 @@ def verify_rejected_trial():
         return validate_rejected_archive(archive.read_bytes())
 
 
+def validate_save_loss_archive(data):
+    if len(data) != SAVE_LOSS_ZIP_BYTES or hashlib.sha256(data).hexdigest() != SAVE_LOSS_ZIP_SHA:
+        raise ValueError("Save-loss recovery differs from its pinned ZIP")
+    files = {}
+    with ZipFile(io.BytesIO(data)) as archive:
+        members = archive.infolist()
+        if len(members) != 2 or {member.filename for member in members} != set(SAVE_LOSS_FILES):
+            raise ValueError("Save-loss proof must contain exactly the original receipt and article, no JPEG")
+        for member in members:
+            size, sha = SAVE_LOSS_FILES[member.filename]
+            if member.file_size != size or member.flag_bits & 1:
+                raise ValueError("Unexpected save-loss proof member size")
+            raw = archive.read(member)
+            if hashlib.sha256(raw).hexdigest() != sha:
+                raise ValueError("Save-loss proof file SHA mismatch")
+            files[member.filename] = raw
+    receipt = json.loads(files["receipt.json"]); articles = json.loads(files["articles.json"])
+    worker = receipt.get("worker", {})
+    if (receipt.get("run_id") != str(SAVE_LOSS_TRIAL["id"]) or receipt.get("status") != "failed"
+            or receipt.get("publication") != "preview_only" or receipt.get("source_article_sha256") != SOURCE_SHA
+            or receipt.get("candidate_article_sha256") != SAVE_LOSS_CANDIDATE_SHA
+            or receipt.get("prompt") != PROMPT or receipt.get("prompt_2") != PROMPT_2
+            or receipt.get("inference") != model.INFERENCE or receipt.get("seed") != 1832143180332967231
+            or receipt.get("model_generation_completed") is not True
+            or receipt.get("failure") != "SDXL worker failed with exit 1"
+            or worker.get("stage") != "worker_failed" or worker.get("failure_type") != "ValueError"
+            or worker.get("failure") != QUALITY_FAILURE or worker.get("model_generation_completed") is not True
+            or not verified_safety_flags(worker.get("safety_flags")) or worker.get("safety_checked") is not False
+            or any(key.startswith("jpeg_") for key in receipt)
+            or not isinstance(articles, list) or len(articles) != 1
+            or article_fingerprint(articles[0]) != SAVE_LOSS_CANDIDATE_SHA):
+        raise ValueError("Recovery requires the exact safety-false numeric-quality save-loss failure")
+    return {"artifact_id":SAVE_LOSS_ARTIFACT_ID, "artifact_sha256":SAVE_LOSS_ZIP_SHA,
+            "receipt_sha256":SAVE_LOSS_FILES["receipt.json"][1], "failure":QUALITY_FAILURE,
+            "candidate_article_sha256":SAVE_LOSS_CANDIDATE_SHA, "jpeg_members":[]}
+
+
+def verify_save_loss_trial():
+    temporary = runner_gate()
+    with tempfile.TemporaryDirectory(prefix="sdxl-save-loss-proof-", dir=temporary) as directory:
+        work = Path(directory); archive = work / "save-loss.zip"
+        budget = ArtifactBudget(work, timeout=30, remote=RemoteStopGate())
+        binary_command(["gh", "api", f"repos/{REPOSITORY}/actions/artifacts/{SAVE_LOSS_ARTIFACT_ID}/zip"],
+                       archive, budget, max_bytes=SAVE_LOSS_ZIP_BYTES)
+        return validate_save_loss_archive(archive.read_bytes())
+
+
 def check_daily_quota(*, now=None):
     current = int(os.environ["GITHUB_RUN_ID"])
     attempt = int(os.environ["GITHUB_RUN_ATTEMPT"])
@@ -295,9 +358,11 @@ def check_daily_quota(*, now=None):
     if clock.tzinfo is None:
         raise ValueError("SDXL quota requires a timezone-qualified clock")
     today = clock.astimezone(timezone(timedelta(hours=9))).date().isoformat()
-    face_revision = requested == str(REJECTED_TRIAL["id"])
+    save_loss = requested == str(SAVE_LOSS_TRIAL["id"])
+    face_revision = requested == str(REJECTED_TRIAL["id"]) or save_loss
     continuation = requested == str(PREFLIGHT_TRIAL["id"]) or face_revision
-    if requested and (requested not in {str(LEGACY_SDXL_TRIAL["id"]), str(PREFLIGHT_TRIAL["id"]), str(REJECTED_TRIAL["id"])}
+    if requested and (requested not in {str(trial["id"]) for trial in
+                                       (LEGACY_SDXL_TRIAL, PREFLIGHT_TRIAL, REJECTED_TRIAL, SAVE_LOSS_TRIAL)}
                       or today != "2026-11-14"):
         raise ValueError("User-requested retry is limited to the fixed failed trial on JST 2026-11-14")
     inventory = json.loads(subprocess.check_output([
@@ -305,7 +370,7 @@ def check_daily_quota(*, now=None):
     ], cwd=ROOT, text=True, timeout=15))["workflow_runs"]
     if not isinstance(inventory, list) or any(not isinstance(run, dict) for run in inventory):
         raise ValueError("Invalid SDXL workflow run inventory")
-    classified, legacy, preflight, rejected = [], None, None, None
+    classified, legacy, preflight, rejected, lost = [], None, None, None, None
     for raw in inventory:
         run = dict(raw)
         if run.get("id") == LEGACY_SDXL_TRIAL["id"]:
@@ -330,8 +395,14 @@ def check_daily_quota(*, now=None):
         elif face_revision and run.get("id") == REJECTED_TRIAL["id"]:
             if rejected is not None or any(run.get(key) != value for key, value in REJECTED_TRIAL.items()):
                 raise ValueError("User-rejected predecessor provenance does not match its nine pinned fields")
-            quota_slug = SLUG + "-user-rejected-" + requested
+            quota_slug = SLUG + "-user-rejected-" + str(REJECTED_TRIAL["id"])
             rejected = {**REJECTED_TRIAL, "quota_slug":quota_slug}
+            run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
+        elif save_loss and run.get("id") == SAVE_LOSS_TRIAL["id"]:
+            if lost is not None or any(run.get(key) != value for key, value in SAVE_LOSS_TRIAL.items()):
+                raise ValueError("Save-loss trial provenance does not match its nine pinned fields")
+            quota_slug = SLUG + "-save-loss-" + requested
+            lost = {**SAVE_LOSS_TRIAL, "quota_slug":quota_slug}
             run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
         classified.append(run)
     if requested and legacy is None:
@@ -340,10 +411,14 @@ def check_daily_quota(*, now=None):
         raise ValueError("Technical continuation is missing its fixed metadata-only trial")
     if face_revision and rejected is None:
         raise ValueError("Face revision is missing its fixed user-rejected predecessor")
+    if save_loss and lost is None:
+        raise ValueError("Recovery is missing its fixed save-loss predecessor")
     matches = [run for run in classified if run.get("id") == current]
     if len(matches) != 1 or matches[0].get("display_title") != BACKFILL_RUN_PREFIX + SLUG:
         raise ValueError("Current SDXL run is absent from the bounded story inventory")
-    if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=clock):
+    loss_proof = verify_save_loss_trial() if save_loss else None
+    allowance = {"daily_limit":5} if save_loss else {}
+    if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=clock, **allowance):
         raise RuntimeError("SDXL daily attempt budget or same-story limit reached; new articles take priority")
     evidence = {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy,
                 "user_requested_retry_after":requested}
@@ -351,6 +426,8 @@ def check_daily_quota(*, now=None):
         evidence.update(metadata_only_trial=preflight, metadata_only_proof=verify_preflight_trial())
     if face_revision:
         evidence.update(user_rejected_trial=rejected, user_rejected_proof=verify_rejected_trial())
+    if save_loss:
+        evidence.update(save_loss_trial=lost, save_loss_proof=loss_proof, daily_limit=5)
     return evidence
 
 
@@ -654,6 +731,32 @@ def worker(work):
         raise
 
 
+def save_unreviewed_output(checked, flags, np, image_type, work, quality_check):
+    observed = flags if isinstance(flags, list) and all(type(flag) is bool for flag in flags) else None
+    try:
+        safety_result(checked, flags, np)
+    except BaseException:
+        progress(work, "safety_checked", safety_flags=observed, safety_checked=False)
+        raise
+    progress(work, "safety_checked", safety_flags=flags, safety_checked=True)
+    image = image_type.fromarray((checked[0] * 255).round().astype("uint8"), mode="RGB")
+    png = io.BytesIO(); image.save(png, format="PNG")
+    jpeg = png_to_jpeg(png.getvalue())
+    if not MIN_JPEG_BYTES <= len(jpeg) <= MAX_SCENE_BYTES or jpeg_dimensions(jpeg) != (1200,675):
+        raise ValueError("Safety-checked candidate failed JPEG size or dimension limits")
+    (work / "rendered.jpg").write_bytes(jpeg)
+    warning = {}
+    try:
+        quality_check(image)
+    except ValueError as error:
+        if str(error) != QUALITY_FAILURE:
+            raise
+        warning["quality_warning"] = str(error)
+    progress(work, "worker_succeeded", safety_flags=flags, safety_checked=True, **warning)
+    atomic_json(work / "result.json", {"status":"generated_unreviewed", "safety_flags":flags,
+                                       "sha256":hashlib.sha256(jpeg).hexdigest(), "bytes":len(jpeg), **warning})
+
+
 def render_worker(work, request, candidate):
     runner_gate()
     native = native_bf16_features()
@@ -700,17 +803,7 @@ def render_worker(work, request, candidate):
     pixels = extractor(images=images, return_tensors="pt").pixel_values.to(device="cpu", dtype=torch.float32)
     with torch.inference_mode():
         checked, flags = checked_safety_call(checker, pixels, rgb, torch)
-    observed = flags if isinstance(flags, list) and all(type(flag) is bool for flag in flags) else None
-    progress(work, "safety_checked", safety_flags=observed, safety_checked=False)
-    safety_result(checked, flags, np)
-    image = Image.fromarray((checked[0] * 255).round().astype("uint8"), mode="RGB")
-    check_quality(image)
-    png = io.BytesIO(); image.save(png, format="PNG")
-    jpeg = png_to_jpeg(png.getvalue())
-    (work / "rendered.jpg").write_bytes(jpeg)
-    progress(work, "worker_succeeded", safety_flags=flags, safety_checked=True)
-    atomic_json(work / "result.json", {"status":"generated_unreviewed", "safety_flags":flags,
-                                       "sha256":hashlib.sha256(jpeg).hexdigest(), "bytes":len(jpeg)})
+    save_unreviewed_output(checked, flags, np, Image, work, check_quality)
 
 
 def execute(output, *, check_only=False):
@@ -770,6 +863,7 @@ def execute(output, *, check_only=False):
                 result = json.loads((work / "result.json").read_text())
                 image = (work / "rendered.jpg").read_bytes()
                 if (result.get("status") != "generated_unreviewed" or not verified_safety_flags(result.get("safety_flags"))
+                        or ("quality_warning" in result and result["quality_warning"] != QUALITY_FAILURE)
                         or not MIN_JPEG_BYTES <= len(image) <= MAX_SCENE_BYTES
                         or jpeg_dimensions(image) != (1200,675)
                         or result.get("sha256") != hashlib.sha256(image).hexdigest() or result.get("bytes") != len(image)):
@@ -780,6 +874,8 @@ def execute(output, *, check_only=False):
                 receipt["final_priority_clear"] = True
                 stage = output / (JPEG + ".tmp"); stage.write_bytes(image); os.replace(stage, output / JPEG)
                 receipt.update(status="generated_unreviewed", jpeg_sha256=result["sha256"], jpeg_bytes=len(image))
+                if "quality_warning" in result:
+                    receipt["quality_warning"] = result["quality_warning"]
             finally:
                 path = work / "progress.json"
                 if path.is_file():

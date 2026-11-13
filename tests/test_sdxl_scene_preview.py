@@ -54,6 +54,60 @@ class SdxlPreviewTests(unittest.TestCase):
     def source(self):
         return next(a for a in json.loads((preview.ROOT / "content/articles.json").read_text()) if a["slug"]==preview.SLUG)
 
+    def output_fixture(self):
+        class RGB:
+            shape=(1,576,1024,3);finite=True
+            def min(self):return 0
+            def max(self):return 1
+            def __getitem__(self,key):return self
+            def __mul__(self,value):return self
+            def round(self):return self
+            def astype(self,value):return self
+        np=SimpleNamespace(ndarray=RGB,isfinite=lambda value:SimpleNamespace(all=lambda:value.finite))
+        image=SimpleNamespace(save=lambda output,**options:output.write(b"synthetic PNG fixture"))
+        return RGB(),np,SimpleNamespace(fromarray=lambda *args,**options:image)
+
+    def test_safe_numeric_quality_failure_preserves_unreviewed_jpeg_and_warning(self):
+        rgb,np,image_type=self.output_fixture();jpeg=jpeg_fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            work=Path(directory)
+            def quality(image):
+                self.assertEqual((work/"rendered.jpg").read_bytes(),jpeg)
+                self.assertTrue(json.loads((work/"progress.json").read_text())["safety_checked"])
+                raise ValueError(preview.QUALITY_FAILURE)
+            with patch.object(preview,"png_to_jpeg",return_value=jpeg):
+                preview.save_unreviewed_output(rgb,[False],np,image_type,work,quality)
+            result=json.loads((work/"result.json").read_text());worker=json.loads((work/"progress.json").read_text())
+            self.assertEqual(result["status"],"generated_unreviewed")
+            self.assertEqual(result["quality_warning"],preview.QUALITY_FAILURE)
+            self.assertEqual(worker["quality_warning"],result["quality_warning"])
+            self.assertEqual(result["safety_flags"],[False]);self.assertTrue(worker["safety_checked"])
+            self.assertEqual(result["sha256"],preview.hashlib.sha256(jpeg).hexdigest())
+            self.assertEqual(worker["stage"],"worker_succeeded")
+
+    def test_unsafe_or_nonfinite_pixels_never_reach_jpeg_and_other_errors_still_fail(self):
+        for flags,finite in (([True],True),(None,True),([False],False)):
+            rgb,np,image_type=self.output_fixture();rgb.finite=finite
+            with tempfile.TemporaryDirectory() as directory,patch.object(preview,"png_to_jpeg") as encode:
+                work=Path(directory)
+                with self.assertRaises(ValueError):preview.save_unreviewed_output(rgb,flags,np,image_type,work,Mock())
+                encode.assert_not_called();self.assertFalse((work/"rendered.jpg").exists())
+                self.assertFalse(json.loads((work/"progress.json").read_text())["safety_checked"])
+        for error in (RuntimeError("runtime failure"),ValueError("unexpected quality failure")):
+            rgb,np,image_type=self.output_fixture()
+            with tempfile.TemporaryDirectory() as directory,patch.object(preview,"png_to_jpeg",return_value=jpeg_fixture()):
+                work=Path(directory)
+                with self.assertRaises(type(error)):
+                    preview.save_unreviewed_output(rgb,[False],np,image_type,work,Mock(side_effect=error))
+                self.assertFalse((work/"result.json").exists())
+        rgb,np,image_type=self.output_fixture()
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(preview,"png_to_jpeg",return_value=b"x"*(preview.MAX_SCENE_BYTES+1)):
+            work=Path(directory)
+            with self.assertRaisesRegex(ValueError,"JPEG size"):
+                preview.save_unreviewed_output(rgb,[False],np,image_type,work,Mock())
+            self.assertFalse((work/"rendered.jpg").exists())
+
     def test_default_plan_never_downloads_spawns_or_imports_models(self):
         with patch.object(preview,"download") as download,patch.object(preview.subprocess,"Popen") as child, \
              patch.object(preview,"worker") as worker,contextlib.redirect_stdout(io.StringIO()) as output:
@@ -387,6 +441,67 @@ sdxl_scene_preview.main([])
              patch.object(preview,"verify_rejected_trial",side_effect=ValueError("predecessor hash mismatch")):
             with self.assertRaisesRegex(ValueError,"hash mismatch"):preview.check_daily_quota(now=now)
 
+    def test_fixed_save_loss_proof_alone_allows_fifth_and_never_sixth_or_default_override(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T22:10:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        runs=[legacy,dict(preview.PREFLIGHT_TRIAL),dict(preview.REJECTED_TRIAL),dict(preview.SAVE_LOSS_TRIAL),current]
+        original=[dict(run) for run in runs];now=preview.datetime.fromisoformat("2026-11-13T22:11:00+00:00")
+        env={"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+             "USER_REQUESTED_RETRY_AFTER":str(preview.SAVE_LOSS_TRIAL["id"])}
+        order=[];actual=preview.backfill_run_allowed
+        def quota(*args,**options):order.append("limit-"+str(options.get("daily_limit",4)));return actual(*args,**options)
+        def proof():order.append("fixed-proof");return {"verified":True}
+        with patch.dict(os.environ,env),patch.object(preview.subprocess,"check_output",return_value="inventory"), \
+             patch.object(preview.json,"loads",return_value={"workflow_runs":runs}), \
+             patch.object(preview,"verify_save_loss_trial",side_effect=proof) as verify, \
+             patch.object(preview,"verify_preflight_trial",return_value={"verified":True}), \
+             patch.object(preview,"verify_rejected_trial",return_value={"verified":True}), \
+             patch.object(preview,"backfill_run_allowed",side_effect=quota):
+            self.assertEqual(preview.check_daily_quota(now=now)["daily_limit"],5)
+            self.assertEqual(order,["fixed-proof","limit-5"]);self.assertEqual(runs,original)
+            for old in ("",str(preview.REJECTED_TRIAL["id"])):
+                with patch.dict(os.environ,{"USER_REQUESTED_RETRY_AFTER":old}),self.assertRaises(RuntimeError):
+                    preview.check_daily_quota(now=now)
+            verify.side_effect=ValueError("unverified save-loss proof")
+            with self.assertRaisesRegex(ValueError,"unverified"):preview.check_daily_quota(now=now)
+            verify.side_effect=proof
+            runs.append({**current,"id":122,"created_at":"2026-11-13T22:09:00Z"})
+            with self.assertRaises(RuntimeError):preview.check_daily_quota(now=now)
+            with patch.dict(os.environ,{"GITHUB_RUN_ATTEMPT":"2"}),self.assertRaises(RuntimeError):
+                preview.check_daily_quota(now=now)
+            with self.assertRaises(ValueError):
+                preview.check_daily_quota(now=preview.datetime.fromisoformat("2026-11-14T15:00:00+00:00"))
+        classified=[{**run,"display_title":preview.BACKFILL_RUN_PREFIX+str(run["id"])} for run in original]
+        self.assertFalse(actual(classified,123,current_run_attempt=1,now=now))
+        self.assertTrue(actual(classified,123,current_run_attempt=1,now=now,daily_limit=5))
+        for limit in (True,3,6,5.0):
+            with self.assertRaises(ValueError):actual(classified,123,current_run_attempt=1,now=now,daily_limit=limit)
+
+    def test_save_loss_proof_is_exact_quality_failure_without_any_jpeg(self):
+        article=preview.candidate_article([self.source()])
+        receipt={"run_id":str(preview.SAVE_LOSS_TRIAL["id"]),"status":"failed","publication":"preview_only",
+                 "source_article_sha256":preview.SOURCE_SHA,"candidate_article_sha256":preview.article_fingerprint(article),
+                 "prompt":preview.PROMPT,"prompt_2":preview.PROMPT_2,"inference":preview.model.INFERENCE,
+                 "seed":1832143180332967231,"model_generation_completed":True,"failure":"SDXL worker failed with exit 1",
+                 "worker":{"stage":"worker_failed","failure_type":"ValueError","failure":preview.QUALITY_FAILURE,
+                           "model_generation_completed":True,"safety_flags":[False],"safety_checked":False}}
+        def validate(value,extra=False):
+            files={"receipt.json":json.dumps(value).encode(),"articles.json":json.dumps([article]).encode()}
+            stream=io.BytesIO()
+            with preview.ZipFile(stream,"w") as archive:
+                for name,raw in files.items():archive.writestr(name,raw)
+                if extra:archive.writestr("candidate.jpg",b"not allowed")
+            data=stream.getvalue();specs={name:(len(raw),preview.hashlib.sha256(raw).hexdigest()) for name,raw in files.items()}
+            with patch.object(preview,"SAVE_LOSS_FILES",specs),patch.object(preview,"SAVE_LOSS_ZIP_BYTES",len(data)), \
+                 patch.object(preview,"SAVE_LOSS_ZIP_SHA",preview.hashlib.sha256(data).hexdigest()):
+                return preview.validate_save_loss_archive(data)
+        self.assertEqual(validate(receipt)["failure"],preview.QUALITY_FAILURE)
+        for changed in ({**receipt,"worker":{**receipt["worker"],"failure":"different exception"}},
+                        {**receipt,"worker":{**receipt["worker"],"safety_flags":[True]}},
+                        {**receipt,"model_generation_completed":False},{**receipt,"seed":5839915426731334261}):
+            with self.assertRaises(ValueError):validate(changed)
+        with self.assertRaisesRegex(ValueError,"no JPEG"):validate(receipt,extra=True)
     def test_rejected_predecessor_proof_binds_original_candidate_jpeg_receipt_and_safety(self):
         with self.assertRaisesRegex(ValueError,"pinned ZIP"):
             preview.validate_rejected_archive(b"0"*preview.REJECTED_ZIP_BYTES)
@@ -766,6 +881,36 @@ sdxl_scene_preview.main([])
             self.assertEqual(receipt["status"],"failed")
             self.assertTrue(receipt["model_generation_completed"])
             self.assertFalse((output/preview.JPEG).exists())
+
+    def test_parent_exports_safe_quality_warning_as_unreviewed_without_accepting(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);output=root/"preview";rgb,np,image_type=self.output_fixture();jpeg=jpeg_fixture()
+            def generated(work,budget):
+                preview.progress(work,"safety_load",model_import_started=True,model_execution_started=True,
+                                 model_generation_completed=True)
+                preview.save_unreviewed_output(rgb,[False],np,image_type,work,
+                                               Mock(side_effect=ValueError(preview.QUALITY_FAILURE)))
+            fake_budget=SimpleNamespace(check=lambda:None,finish_priority=lambda:None,close=lambda:None,
+                                        max_rss=10*1024**3,minimum_available=2*1024**3)
+            with patch.dict(os.environ,environment(root)),patch.object(preview,"runner_gate",return_value=root.resolve()), \
+                 patch.object(preview.RemoteStopGate,"check"),patch.object(preview,"check_disk_reservation"), \
+                 patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":[]}), \
+                 patch.object(preview,"check_daily_quota",return_value={"allowed":True}), \
+                 patch.object(preview,"initial_priority_gate"),patch.object(preview,"final_priority_gate"), \
+                 patch.object(preview,"fresh_source",return_value="a"*40), \
+                 patch.object(preview.subprocess,"check_output",return_value="a"*40+"\n"), \
+                 patch.object(preview,"Budget",return_value=fake_budget),patch.object(preview,"download_files"), \
+                 patch.object(preview,"png_to_jpeg",return_value=jpeg), \
+                 patch.object(preview,"run_owned_worker",side_effect=generated):
+                preview.execute(output)
+            receipt=json.loads((output/"receipt.json").read_text())
+            self.assertEqual(receipt["publication"],"preview_only")
+            self.assertEqual(receipt["status"],"generated_unreviewed")
+            self.assertEqual(receipt["quality_warning"],preview.QUALITY_FAILURE)
+            self.assertEqual(receipt["worker"]["quality_warning"],receipt["quality_warning"])
+            self.assertTrue(receipt["worker"]["safety_checked"])
+            self.assertEqual((output/preview.JPEG).read_bytes(),jpeg)
+            self.assertNotIn("accepted",receipt)
 
 
 class SdxlWorkflowTests(unittest.TestCase):
