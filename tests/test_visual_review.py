@@ -342,6 +342,59 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(result["photo_followup"][0]["article_sha256"], article_fingerprint(selected))
         self.assertEqual(result["counts"], {"accepted": 0, "pending": 0, "rejected": 0, "missing": 1})
 
+    def test_compact_preserves_alerts_followup_counts_and_explanatory_basis(self):
+        self.accept()
+        pending = {**self.article, "slug": "pending-fixture"}
+        rejected = {**self.article, "slug": "rejected-fixture"}
+        missing = {**self.article, "slug": "missing-fixture"}
+        illustration = {**self.article, "slug": "illustration-fixture",
+                        "visual_strategy": "illustration"}
+        self.write_generation(pending)
+        self.write_generation(rejected)
+        self.manifest["rejected"][rejected["slug"]] = {
+            "article_sha256": article_fingerprint(rejected), "reason": "Fixture hold.",
+        }
+        self.write_manifest()
+        self.write_editorial_scene(missing)
+        missing = {**missing, "paragraphs": ["別の呼び鈴が届いた。"]}
+        articles = [self.article, pending, rejected, missing, illustration]
+
+        detailed = self.report(articles)
+        compact = self.report(articles, "--compact")
+        self.assertTrue(detailed["attention"])
+        self.assertTrue(detailed["photo_followup"])
+        self.assertIn("stale_editorial_scene", {row["reason"] for row in detailed["attention"]})
+        self.assertEqual(compact, {key: value for key, value in detailed.items() if key != "images"})
+
+    def test_compact_preserves_the_requested_slug_scope(self):
+        selected = {**self.article, "slug": "selected-fixture"}
+        excluded = {**self.article, "slug": "excluded-fixture"}
+        articles = [self.article, selected, excluded]
+        detailed = self.report(articles, "--slug", selected["slug"])
+        compact = self.report(articles, "--compact", "--slug", selected["slug"])
+        self.assertEqual(compact, {key: value for key, value in detailed.items() if key != "images"})
+        self.assertEqual([row["slug"] for row in compact["photo_followup"]], [selected["slug"]])
+        self.assertEqual(sum(compact["counts"].values()), 1)
+
+    def test_compact_never_turns_input_errors_into_an_empty_healthy_report(self):
+        cases = [
+            ("malformed_json", "{", []),
+            ("unknown_slug", json.dumps([self.article]), ["--slug", "not-present"]),
+            ("invalid_strategy", json.dumps([{**self.article, "visual_strategy": "remote-api"}]), []),
+        ]
+        for name, data, args in cases:
+            with self.subTest(case=name):
+                (self.root / "content/articles.json").write_text(data, encoding="utf-8")
+                results = []
+                for flags in ([], ["--compact"]):
+                    output = io.StringIO()
+                    with contextlib.redirect_stdout(output):
+                        code = main(["--root", str(self.root), *args, *flags])
+                    self.assertEqual(code, 2)
+                    results.append(json.loads(output.getvalue()))
+                self.assertEqual(results[0], results[1])
+                self.assertIn("error", results[1])
+
     def test_selected_svg_reports_missing_stale_and_current_share_png_without_regenerating(self):
         illustration = {**self.article, "visual_strategy": "illustration"}
         svg_path = self.write_editorial_scene(illustration)

@@ -21,7 +21,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(ROOT / "scripts"))
-from publish import choose_x_channel, list_existing, queue_one  # noqa: E402
+from publish import (choose_x_channel, list_existing, queue_one, ready_article_comic,
+                     comic_publication_text, ComicUnavailable)  # noqa: E402
+from article_comics import approved_comic_asset, valid_caption, COMIC_PATH
 from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length, x_share_lead  # noqa: E402
 from editorial_copy import reader_copy  # noqa: E402
 from generated_photos import share_page_url  # noqa: E402
@@ -136,14 +138,36 @@ def validate_config(config: dict) -> None:
         raise ValueError("Fresh article window overlaps too broadly with measured-PV lane")
 
 
+def promotion_records(state):
+    for kind in ("queued", "comic_posts"):
+        for slug, entry in state.get(kind, {}).items():
+            yield kind, slug, entry
+
+
 def validate_state(state: dict) -> None:
     if state.get("schema_version") != 1 or not isinstance(state.get("queued"), dict):
         raise ValueError("Unsafe article post ledger")
-    for slug, entry in state["queued"].items():
-        if not SAFE_SLUG.fullmatch(slug) or not isinstance(entry, dict):
+    if not isinstance(state.get("comic_posts", {}), dict):
+        raise ValueError("Unsafe comic post ledger")
+    for kind, slug, entry in promotion_records(state):
+        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or not isinstance(entry, dict):
             raise ValueError("Unsafe article ID in permanent post ledger")
-        if not isinstance(entry.get("buffer_id"), str) or not entry["buffer_id"]:
+        pending = kind == "comic_posts" and entry.get("submission_pending") is True
+        if (not isinstance(entry.get("buffer_id"), str)
+                or (not entry["buffer_id"] and not pending)):
             raise ValueError("Incomplete Buffer ID in permanent post ledger")
+        if kind == "comic_posts" and (not isinstance(entry.get("comic_attachment"), dict)
+                                      or not re.fullmatch(r"[0-9a-f]{64}", str(entry.get("text_sha256", "")))):
+            raise ValueError("Incomplete comic work evidence")
+        if kind == "comic_posts":
+            asset = entry["comic_attachment"]
+            if (any(not re.fullmatch(r"[0-9a-f]{64}", str(asset.get(key, "")))
+                    for key in ("article_sha256", "image_sha256", "caption_sha256"))
+                    or not valid_caption(asset.get("caption"), asset.get("caption_sha256"))
+                    or not COMIC_PATH.fullmatch(str(asset.get("path", "")))
+                    or hashlib.sha256(comic_publication_text({"slug": slug}, asset).encode("utf-8")).hexdigest()
+                    != entry["text_sha256"]):
+                raise ValueError("Invalid comic work binding")
         stamp = entry.get("queued_at_utc")
         if not isinstance(stamp, str):
             raise ValueError("Missing UTC timestamp in permanent post ledger")
@@ -220,7 +244,7 @@ def entry_promotion_slot(entry: dict) -> datetime | None:
         except ValueError:
             return None
         return slot.astimezone(JST) if slot.tzinfo else None
-    if entry.get("source") == "recovered_from_buffer":
+    if entry.get("source") in ("recovered_from_buffer", "comic_recovery_unverified"):
         # A recovered receipt without provider timing is valid permanent dedupe
         # evidence, but its recovery time is not evidence of a promotion slot.
         return None
@@ -256,7 +280,7 @@ def slot_already_used(state: dict, now: datetime) -> bool:
     current = promotion_slot(now)
     if current is None:
         return False
-    for entry in state.get("queued", {}).values():
+    for _kind, _slug, entry in promotion_records(state):
         if entry_promotion_slot(entry) == current:
             return True
     return False
@@ -321,7 +345,9 @@ def buffer_delivery_spacing_hold(existing: list[dict], state: dict,
     if public_hold is not None:
         return public_hold
     accepted_sent_by_id = {}
-    for entry in state["queued"].values():
+    for kind, _slug, entry in promotion_records(state):
+        if kind == "comic_posts" and entry.get("submission_pending") is True:
+            return "unverified_comic_submission"
         sent = provider_instant(entry.get("buffer_sent_at_at_accept"))
         if sent is not None:
             accepted_sent_by_id[entry["buffer_id"]] = sent
@@ -374,7 +400,7 @@ def initial_provider_error_evidence(post: dict) -> dict:
 
 
 def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
-                        known_slugs: set[str]) -> list[str]:
+                        known_slugs: set[str], comic_texts_to_ignore=()) -> list[str]:
     """Reserve remote article URLs without stealing the current logical slot.
 
     Recovery can happen long after Buffer accepted or sent the post. Attribute
@@ -384,11 +410,17 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
     """
     validate_state(state)
     recovered = []
+    comic_ids = {entry.get("buffer_id") for entry in state.get("comic_posts", {}).values()}
+    comic_texts = {entry.get("text_sha256") for entry in state.get("comic_posts", {}).values()}
+    comic_texts.update(comic_texts_to_ignore)
     for item in existing:
         if item.get("status") not in RECOVERABLE_BUFFER_STATUSES:
             continue
         post_id = item.get("id")
         if not isinstance(post_id, str) or not post_id:
+            continue
+        if (post_id in comic_ids or hashlib.sha256((item.get("text", "") or "").encode("utf-8")).hexdigest()
+                in comic_texts):
             continue
         for slug in article_slug_in_text(item.get("text", "")) & known_slugs:
             if slug not in state["queued"]:
@@ -629,7 +661,8 @@ def rank(articles: list[dict], counts: dict, state: dict, blocked: set[str],
     result = []
     for article in articles:
         slug = article["slug"]
-        if slug in state["queued"] or slug in state.get("public_posts", {}) or slug in blocked:
+        if (slug in state["queued"] or slug in state.get("comic_posts", {})
+                or slug in state.get("public_posts", {}) or slug in blocked):
             continue
         data = counts.get(slug)
         if (not isinstance(data, dict)
@@ -650,7 +683,8 @@ def rank_fresh(articles: list[dict], state: dict, blocked: set[str],
     result = []
     for article in eligible_fresh_articles(articles, now, config):
         slug = article["slug"]
-        if slug in state["queued"] or slug in state.get("public_posts", {}) or slug in blocked:
+        if (slug in state["queued"] or slug in state.get("comic_posts", {})
+                or slug in state.get("public_posts", {}) or slug in blocked):
             continue
         result.append(article)
     result.sort(
@@ -684,7 +718,7 @@ def promoted_topics_today(state: dict, articles: list[dict], now: datetime) -> s
     }
     day = now.astimezone(JST).date()
     result = set()
-    for slug, entry in state.get("queued", {}).items():
+    for _kind, slug, entry in promotion_records(state):
         slot = entry_promotion_slot(entry)
         if slot is None or slot.astimezone(JST).date() != day:
             continue
@@ -721,7 +755,7 @@ def promotions_today(state: dict, now: datetime) -> int:
     """Count logical promotion slots on the JST date, not delayed receipt dates."""
     day = now.astimezone(JST).date()
     count = 0
-    for entry in state["queued"].values():
+    for _kind, _slug, entry in promotion_records(state):
         slot = entry_promotion_slot(entry)
         if slot is not None and slot.astimezone(JST).date() == day:
             count += 1
@@ -733,12 +767,21 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
            ) -> tuple[dict | None, dict | None, int]:
     """Evaluate only after recovering remote article URLs and saved Buffer IDs."""
     known = {a["slug"] for a in articles if isinstance(a.get("slug"), str)}
-    recover_from_buffer(state, existing, now, known)
+    configured = config.get("comic_attachments", {})
+    configured = configured if isinstance(configured, dict) else {}
+    comic_texts = {
+        hashlib.sha256(comic_publication_text({"slug": slug}, review).encode("utf-8")).hexdigest()
+        for slug, review in configured.items()
+        if isinstance(slug, str) and SAFE_SLUG.fullmatch(slug)
+        and isinstance(review, dict) and valid_caption(review.get("caption"), review.get("caption_sha256"))
+    }
+    recover_from_buffer(state, existing, now, known, comic_texts)
     queued = [p for p in existing if p.get("status") == "scheduled"]
     remote_slugs = set().union(
         *(article_slug_in_text(p.get("text", "")) for p in existing
           if p.get("status") in RECOVERABLE_BUFFER_STATUSES)
     ) if existing else set()
+    remote_slugs.update(configured)
     today_count = promotions_today(state, now)
     current_slot = promotion_slot(now)
     if (current_slot is None
@@ -762,6 +805,78 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
     )
     item, metrics, _score = selected
     return item, metrics, len(queued)
+
+
+def comic_candidates(articles, state, config, now):
+    """One owner-reviewed work per source; only this work may bypass URL age/dedupe."""
+    reviews = config.get("comic_attachments", {})
+    if not isinstance(reviews, dict):
+        return []
+    used_images = {entry["comic_attachment"].get("image_sha256")
+                   for _kind, _slug, entry in promotion_records(state)
+                   if isinstance(entry.get("comic_attachment"), dict)}
+    result = []
+    for article in articles:
+        slug = article.get("slug")
+        if (slug not in reviews or slug in state.get("comic_posts", {})
+                or isinstance(state["queued"].get(slug, {}).get("comic_attachment"), dict)
+                or is_crisis_article(article) or article.get("x_promotion_skip") is True):
+            continue
+        age = article_age(article, now)
+        if age is None or age < timedelta(0):
+            continue
+        asset = approved_comic_asset(article, reviews[slug], ROOT, now)
+        if asset is not None and asset["image_sha256"] not in used_images:
+            result.append((article, reviews[slug], asset))
+    return result
+
+
+def add_provider_receipt(entry, post):
+    fields = {"status": "buffer_status_at_accept", "createdAt": "buffer_created_at_at_accept",
+              "dueAt": "buffer_due_at_at_accept", "sentAt": "buffer_sent_at_at_accept",
+              "externalLink": "buffer_external_link_at_accept", "sharedNow": "buffer_shared_now_at_accept",
+              "shareMode": "buffer_share_mode_at_accept"}
+    for key, target in fields.items():
+        if post.get(key) is not None:
+            entry[target] = post[key]
+    entry.update(initial_provider_error_evidence(post))
+
+
+def recover_comic_posts(state, existing, now, candidates=()):
+    """Never turn an old matching URL into evidence for a new comic work.
+
+    A saved pre-send intent plus one exact, later-created provider text can
+    recover an acceptance. Without that intent, matching text is ambiguous and
+    remains pending for review; it never authorizes a retry or claims delivery.
+    """
+    normal_ids = {entry.get("buffer_id") for entry in state["queued"].values()}
+    for _slug, entry in state.get("comic_posts", {}).items():
+        if not entry.get("submission_pending") or entry.get("source") == "comic_recovery_unverified":
+            continue
+        attempted = provider_instant(entry.get("queued_at_utc"))
+        matches = [post for post in existing
+                   if isinstance(post, dict) and post.get("status") in RECOVERABLE_BUFFER_STATUSES
+                   and isinstance(post.get("id"), str) and post["id"] and post["id"] not in normal_ids
+                   and isinstance(post.get("text"), str)
+                   and hashlib.sha256(post["text"].encode("utf-8")).hexdigest() == entry["text_sha256"]
+                   and provider_instant(post.get("createdAt")) is not None
+                   and attempted is not None and attempted <= provider_instant(post["createdAt"]) <= now]
+        if len(matches) == 1:
+            entry.update(buffer_id=matches[0]["id"], submission_pending=False)
+            add_provider_receipt(entry, matches[0])
+    for article, _review, asset in candidates:
+        slug = article["slug"]
+        if slug in state.get("comic_posts", {}):
+            continue
+        text = comic_publication_text(article, asset)
+        if any(isinstance(post, dict) and post.get("status") in RECOVERABLE_BUFFER_STATUSES
+               and post.get("id") not in normal_ids and post.get("text") == text for post in existing):
+            state.setdefault("comic_posts", {})[slug] = {
+                "buffer_id": "", "submission_pending": True,
+                "queued_at_utc": now.isoformat(), "source": "comic_recovery_unverified",
+                "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+                "comic_attachment": {key: value for key, value in asset.items() if key != "text"},
+            }
 
 
 def delivery_retry_time(path: Path):
@@ -852,7 +967,7 @@ def main() -> int:
             or promotions_today(state, now) >= config["max_per_jst_day"]):
         print("Article X slot closed, already used, or daily limit reached; no Buffer read/write.")
         return report_outcome("slot")
-    for receipt in state["queued"].values():
+    for _kind, _slug, receipt in promotion_records(state):
         sent = provider_instant(receipt.get("buffer_sent_at_at_accept"))
         if sent is not None and now - sent < timedelta(hours=config["minimum_interval_hours"]):
             print("Article X recorded send is too recent; no Buffer read/write.")
@@ -879,9 +994,13 @@ def main() -> int:
     # Fresh articles can be promoted before PV has had time to accumulate.
     # Mature candidates still use the site's actual PV period, never legacy
     # browser counts, cumulative reactions or estimated snapshot changes.
-    candidates = eligible_articles(articles, now, config)
-    fresh_candidates = eligible_fresh_articles(articles, now, config)
-    if not candidates and not fresh_candidates:
+    configured_comics = config.get("comic_attachments", {})
+    configured_comics = configured_comics if isinstance(configured_comics, dict) else {}
+    candidates = [a for a in eligible_articles(articles, now, config) if a["slug"] not in configured_comics]
+    fresh_candidates = [a for a in eligible_fresh_articles(articles, now, config) if a["slug"] not in configured_comics]
+    comics = comic_candidates(articles, state, config, now)
+    if (not candidates and not fresh_candidates and not comics
+            and not any(entry.get("submission_pending") for entry in state.get("comic_posts", {}).values())):
         print("No fresh or measured-interest articles; no Buffer write.")
         return report_outcome("no_candidates")
     token = os.environ.get("BUFFER_API_KEY", "").strip()
@@ -892,19 +1011,32 @@ def main() -> int:
         token, org_id, channel_id,
         include_due_at=True, include_unsettled=True,
     )
+    recover_comic_posts(state, existing, now)
     # First reconcile Buffer and evaluate fresh posts without depending on
     # mature-article PV. A stale/unavailable PV API must not block a valid
     # 1–18-hour article. Dedupe, caps and one-per-logical-slot gates still apply.
     eligible, evidence, scheduled = decide(articles, {}, state, existing,
                                             config, now)
-    if eligible is None:
-        spacing_hold = buffer_delivery_spacing_hold(
-            existing, state, now, config["minimum_interval_hours"]
-        )
-        if spacing_hold is not None:
-            save_state(state)
-            print("Article X real-send spacing hold; no Buffer POST:", spacing_hold)
-            return report_outcome("spacing")
+    spacing_hold = buffer_delivery_spacing_hold(existing, state, now, config["minimum_interval_hours"])
+    if spacing_hold is not None:
+        save_state(state)
+        print("Article X real-send spacing hold; no Buffer POST:", spacing_hold)
+        return report_outcome("spacing")
+    if slot_already_used(state, now) or promotions_today(state, now) >= config["max_per_jst_day"]:
+        save_state(state)
+        return report_outcome("slot")
+    selected_comic = None
+    for article, review, _asset in comics:
+        if article["slug"] in state.get("comic_posts", {}):
+            continue
+        ready = ready_article_comic(article, review, ROOT)
+        if ready is not None:
+            recover_comic_posts(state, existing, now, [(article, review, ready)])
+            if article["slug"] in state.get("comic_posts", {}):
+                save_state(state)
+                return report_outcome("spacing")
+            selected_comic, eligible, evidence = (article, review, ready), article, None
+            break
     metrics, window = ({}, None)
     if eligible is None and candidates:
         # Save recovered remote receipts even if measured-PV lookup fails.
@@ -918,14 +1050,33 @@ def main() -> int:
     if eligible is None:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return report_outcome("no_eligible")
-    text = publication_text(eligible)
-    buffer_receipt = queue_one(
-        token, channel_id,
-        {"kind": "article", "id": "article-" + eligible["slug"], "text": text},
-        mode="shareNow", return_post=True,
-    )
+    text = selected_comic[2]["text"] if selected_comic else publication_text(eligible)
+    post = {"kind": "article", "id": "article-" + eligible["slug"], "text": text}
+    if selected_comic:
+        post.update(article=eligible, comic_approval=selected_comic[1], comic_required=True)
+        state.setdefault("comic_posts", {})[eligible["slug"]] = {
+            "buffer_id": "", "submission_pending": True, "queued_at_utc": now.isoformat(),
+            "slot_jst": promotion_slot(now).isoformat(), "submission_mode": "shareNow",
+            "source": "approved_comic", "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "comic_attachment": {key: value for key, value in selected_comic[2].items() if key != "text"},
+        }
+        save_state(state)  # If this fails, no provider mutation is permitted.
+    try:
+        buffer_receipt = queue_one(token, channel_id, post, mode="shareNow", return_post=True)
+    except (ComicUnavailable, RuntimeError) as exc:
+        if selected_comic and (isinstance(exc, ComicUnavailable) or str(exc).startswith("Buffer budget hold")):
+            del state["comic_posts"][eligible["slug"]]
+            save_state(state)
+            if isinstance(exc, ComicUnavailable):
+                return report_outcome("no_eligible")
+        raise  # Unknown acceptance remains pending; never automatically retry.
     if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str):
         raise RuntimeError("Buffer accepted no auditable article receipt")
+    comic = buffer_receipt.get("_article_comic")
+    if selected_comic and not isinstance(comic, dict):
+        raise RuntimeError("Comic acceptance lacks exact work evidence; pending review")
+    if isinstance(comic, dict):
+        text = comic["text"]
     buffer_id = buffer_receipt["id"]
     slot = promotion_slot(now)
     if slot is None:
@@ -935,35 +1086,26 @@ def main() -> int:
         "queued_at_utc": now.isoformat(),
         "slot_jst": slot.isoformat(),
         "submission_mode": "shareNow",
-        "source": "fresh_article" if evidence is None else "verified_article_page_views",
+        "source": "approved_comic" if selected_comic else (
+            "fresh_article" if evidence is None else "verified_article_page_views"),
         "copy_mode": (
-            "headline_summary"
-            if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
-            else "reader_lead"
+            "comic_caption" if isinstance(comic, dict) else (
+                "headline_summary" if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
+                else "reader_lead"
+            )
         ),
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
         "primary_topic": primary_topic(eligible) or None,
     }
-    receipt_fields = {
-        "status": "buffer_status_at_accept",
-        "createdAt": "buffer_created_at_at_accept",
-        "dueAt": "buffer_due_at_at_accept",
-        "sentAt": "buffer_sent_at_at_accept",
-        "externalLink": "buffer_external_link_at_accept",
-        "sharedNow": "buffer_shared_now_at_accept",
-        "shareMode": "buffer_share_mode_at_accept",
-    }
-    for provider_key, ledger_key in receipt_fields.items():
-        value = buffer_receipt.get(provider_key)
-        if value is not None:
-            entry[ledger_key] = value
-    entry.update(initial_provider_error_evidence(buffer_receipt))
+    if isinstance(comic, dict):
+        entry["comic_attachment"] = {key: value for key, value in comic.items() if key != "text"}
+    add_provider_receipt(entry, buffer_receipt)
     if evidence is not None:
         entry["metrics_at_queue"] = {**window,
                                      "last_7_days_page_views": evidence["last7DaysPageViews"],
                                      "today_page_views": evidence["todayPageViews"]}
-    state["queued"][eligible["slug"]] = entry
+    state.setdefault("comic_posts" if selected_comic else "queued", {})[eligible["slug"]] = entry
     save_state(state)
     print("Article accepted by Buffer for immediate send (X publication still unverified):",
           eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],

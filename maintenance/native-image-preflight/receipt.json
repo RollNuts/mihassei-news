@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "9b52b06416f98afdddf2a6b13948ef2750c4cd2354ee866100e4c54069a422e9",
-  "logical_run_id": "rice-voucher-body-repair-20261113",
-  "observed_at": "2026-11-13T08:23:06.118Z",
+  "candidate_identity": "bc16f9d75bf584fb1b05afb078c3e8ab561f888dc71786b9c94379f384bdf091",
+  "logical_run_id": "volunteer-award-20261113-1730-photo-recovery",
+  "observed_at": "2026-11-13T09:43:17.679Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,11 +17,11 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "04adf50ec980504b701a00998ae131548949322b",
+    "commit_sha": "1b5b31442e260e1d6984378d9cacb72c274d64ec",
     "protected_hashes": {
-      "content/articles.json": "214950f51180853fe95882cd11d726134b976578f7b0397d8d53ce91d3549de4",
-      "assets/generated/manifest.json": "2e8dab908e62e6b3cba4ea84ad3545cefb79ca81ce7db9852a11f11aaf5e2887",
-      "content/visual_reviews.json": "0efd1e28a39d2ad28fba0ba88c5654c9c7a1a589c873202aef25c187a19f632b"
+      "content/articles.json": "553d40d545d86db0f7c3afa7c3edebe2a5017e75f5b4da625983d264e77bfb47",
+      "assets/generated/manifest.json": "9fb3e2fc0b10350c74b1fd8f58f01d4a856f6f0c6c8c70ac3322e2c960e373b5",
+      "content/visual_reviews.json": "b905bab2599ede1cd69f115f011f47d5e186abebc9a7627931e0ccdb7a144165"
     }
   }
 }

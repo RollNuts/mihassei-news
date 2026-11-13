@@ -258,6 +258,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT, help="対象リポジトリのディレクトリ")
     parser.add_argument("--slug", action="append", default=[], metavar="SLUG",
                         help="対象記事だけを照合する。複数指定可。省略時は全記事")
+    parser.add_argument("--compact", action="store_true",
+                        help="images詳細配列を省略し、集計・attention・photo_followup・エラーは保持する")
     args = parser.parse_args(argv)
     try:
         articles = json.loads((args.root / "content/articles.json").read_text(encoding="utf-8"))
@@ -285,7 +287,7 @@ def main(argv: list[str] | None = None) -> int:
         articles = [article for article in articles if article["slug"] in requested]
     rows = [_publication_row(article, root=args.root)
             for article in sorted(articles, key=lambda article: article["slug"])]
-    print(json.dumps({
+    report = {
         "version": 1,
         "basis": "保存済みの目視レビュー記録とJPEGの整合性を照合。画像の意味適合は自動判定しません。",
         "publication_basis": "現在のファイルからビルドが選ぶ素材。本番配信を確認した結果ではありません。",
@@ -306,7 +308,10 @@ def main(argv: list[str] | None = None) -> int:
         "attention": [item for row in rows for item in _attention(row)],
         "photo_followup": [item for row in rows for item in _photo_followup(row)],
         "images": rows,
-    }, ensure_ascii=False, indent=2))
+    }
+    if args.compact:
+        del report["images"]
+    print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 
 

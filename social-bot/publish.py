@@ -14,6 +14,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from ip.audit import check as validate_canon, payload_hash
 from review_policy import load_manifest, select_next, verify_one
+from article_comics import approved_comic_asset
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 import buffer_budget
@@ -42,6 +43,29 @@ ASSET_BASE_URL = (
 )
 TARGET_QUEUE = 3
 MAX_NEW_PER_RUN = 2
+
+
+class ComicUnavailable(RuntimeError):
+    """A required comic was rejected before any Buffer submission."""
+
+
+def ready_article_comic(article, review, root=None):
+    asset = approved_comic_asset(article, review, root or HERE.parent)
+    if asset is None:
+        return None
+    url = (ASSET_BASE_URL.replace("/main/", "/" + asset["revision"] + "/", 1)
+           + "/" + asset["filename"])
+    try:
+        if not remote_asset_available(url):
+            return None
+    except (OSError, ValueError):
+        return None
+    return {**asset, "text": comic_publication_text(article, asset), "url": url}
+
+
+def comic_publication_text(article, asset):
+    return (asset["caption"] + "\n\nhttps://veripsa.com/articles/"
+            + article["slug"] + "/\n#未発生新聞")
 
 
 def rate_limit_detail(headers):
@@ -261,7 +285,22 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 "Immediate send is reserved for reviewed experiment images "
                 "or article promotion"
             )
-    extra = ""
+    media_url = None
+    text = post["text"]
+    article_asset = None
+    if post.get("kind") == "article" and "comic_approval" in post:
+        article = post.get("article")
+        if (isinstance(article, dict)
+                and post.get("id") == "article-" + str(article.get("slug", ""))
+                and "https://veripsa.com/articles/" + str(article.get("slug", "")) + "/"
+                in str(post.get("text", ""))):
+            article_asset = ready_article_comic(article, post["comic_approval"])
+        if article_asset is not None:
+            media_url, text = article_asset["url"], article_asset["text"]
+    if post.get("comic_required") is True and article_asset is None:
+        raise ComicUnavailable("Required reviewed comic is unavailable; nothing submitted")
+    # Article comics reuse the same image attachment and mutation as historical
+    # image posts; invalid optional media never blocks an ordinary article.
     if post["kind"] in ("comic", "image"):
         if post["kind"] == "image" and (
             not post.get("id", "").startswith("xexp-") or
@@ -275,9 +314,11 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         url = ASSET_BASE_URL + "/" + filename
         if not remote_asset_available(url):
             raise RuntimeError("Comic asset not publicly available yet: " + filename)
-        extra = ", assets: [{image: {url: " + qstring(url) + "}}]"
+        media_url = url
+    extra = (", assets: [{image: {url: " + qstring(media_url) + "}}]"
+             if media_url is not None else "")
     mutation = (
-        "mutation { createPost(input: {text: " + qstring(post["text"])
+        "mutation { createPost(input: {text: " + qstring(text)
         + ", channelId: " + qstring(channelid)
         + ", schedulingType: automatic, mode: " + mode
         + due_field + extra
@@ -287,7 +328,13 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
     result = gql(token, mutation).get("createPost") or {}
     if not result.get("post", {}).get("id"):
         raise RuntimeError("Buffer did not accept post: " + str(result.get("message","unknown")))
-    return dict(result["post"]) if return_post else result["post"]["id"]
+    if return_post:
+        receipt = dict(result["post"])
+        receipt.pop("_article_comic", None)  # Local evidence, never a provider field.
+        if article_asset is not None and media_url is not None:
+            receipt["_article_comic"] = {**article_asset, "text": text}
+        return receipt
+    return result["post"]["id"]
 
 
 def main():
