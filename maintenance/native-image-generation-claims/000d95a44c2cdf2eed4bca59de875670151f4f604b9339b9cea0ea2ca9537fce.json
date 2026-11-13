@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "000d95a44c2cdf2eed4bca59de875670151f4f604b9339b9cea0ea2ca9537fce",
+  "slug": "cherry-tree-stethoscope-municipal-inspection",
+  "article_sha256": "0a30e0c60b5c9bcb1519e339ca16556e818c4a36be66a3998f7f5ac5734210fe",
+  "logical_run_id": "photo-recovery-20261113-cherry-v1",
+  "prompt_sha256": "510b81113b616ed3d06a8d56ea2c53987bcd79f3ea022b09c630d61eba051d01",
+  "reserved_at": "2026-11-13T05:17:27.593Z",
+  "baseline": {
+    "commit_sha": "ebfc34312053a9ef478f90c09140cdc184eab357",
+    "tree_sha": "590ec76c9c1f75af45984e14f78893e105790a99",
+    "protected_hashes": {
+      "content/articles.json": "46d05c45cf1d29aa65fe642b34400dca8e356406fe2c7b7372a74848dc2f4461",
+      "assets/generated/manifest.json": "00d6bf9ccb722a836805513365f88ac01ef87629015394be88337419b86281d5",
+      "content/visual_reviews.json": "fe9dea24308b75f36b6c97b20142e34d87d58bc6f9ad7598dc6c9ead8740f58f"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "a98da859b125873e5a10f5e0c3fe242a24ab683d",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "1b3e3d54208b4a3f252ca5e1f8baeecb2e46db32eed38b3019501d60e13aa811",
+    "observed_at": "2026-11-13T05:17:12.796Z",
+    "route": "PNG data URL in current functions runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
