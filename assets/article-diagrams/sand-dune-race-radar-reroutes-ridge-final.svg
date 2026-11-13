@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="600" viewBox="0 0 720 600" role="img" aria-labelledby="dune-diagram-title dune-diagram-desc" data-article-sha256="f5a9081c2c62a4f9c7d6b097c78bb5cf4b85ac30fb7c5885909f472e2aa0091a">
+  <title id="dune-diagram-title">同じ旗へ、2つの道</title>
+  <desc id="dune-diagram-desc">3本目の赤旗は砂丘の低い側にある。灰色の矢印は高い尾根を登って旗へ向かう道、青緑の矢印は砂丘の裾を回って同じ旗へ向かう道を示す。位置関係の模式図。</desc>
+  <rect width="720" height="600" fill="#f7f3e9"/>
+  <defs>
+    <marker id="ridge-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="3.2" markerHeight="3.2" orient="auto">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#61635a"/>
+    </marker>
+    <marker id="foot-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="3.2" markerHeight="3.2" orient="auto">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#346b66"/>
+    </marker>
+  </defs>
+  <g font-family="Noto Sans CJK JP, Hiragino Kaku Gothic ProN, sans-serif" fill="#292a27">
+    <text x="38" y="66" font-size="38" font-weight="700">同じ旗へ、2つの道</text>
+    <path d="M38 94 Q356 90 682 94" fill="none" stroke="#292a27" stroke-width="3"/>
+
+    <path d="M108 386 Q169 356 221 297 Q278 238 342 220 Q371 264 425 291 Q502 327 570 386 Q349 449 108 386 Z" fill="#e7d7b6" stroke="#a89878" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M342 220 Q339 286 367 337 Q393 380 444 415 Q508 403 570 386 Q502 327 425 291 Q371 264 342 220 Z" fill="#d6c5a0"/>
+    <path d="M342 220 Q339 286 367 337 Q393 380 444 415" fill="none" stroke="#ad9c79" stroke-width="3" stroke-linecap="round"/>
+    <path d="M171 370 Q211 348 248 313 M217 384 Q255 358 286 324 M430 332 Q470 350 503 374" fill="none" stroke="#c4b38e" stroke-width="3" stroke-linecap="round"/>
+    <text x="311" y="390" font-size="32" fill="#76694f">砂丘</text>
+
+    <path d="M83 380 Q163 354 218 286 Q278 213 342 209 Q405 227 466 293 Q522 346 601 369" fill="none" stroke="#f7f3e9" stroke-width="13" stroke-linecap="round"/>
+    <path d="M83 380 Q163 354 218 286 Q278 213 342 209 Q405 227 466 293 Q522 346 601 369" fill="none" stroke="#61635a" stroke-width="6" stroke-linecap="round" marker-end="url(#ridge-arrow)"/>
+    <text x="120" y="166" font-size="36" font-weight="700" fill="#61635a">尾根を登る</text>
+
+    <path d="M83 401 C119 476 247 504 380 476 C474 456 532 417 601 390" fill="none" stroke="#346b66" stroke-width="7" stroke-linecap="round" marker-end="url(#foot-arrow)"/>
+    <text x="244" y="552" font-size="36" font-weight="700" fill="#346b66">裾を回る</text>
+
+    <ellipse cx="620" cy="387" rx="24" ry="7" fill="#ded4bf"/>
+    <path d="M620 273 L620 387" fill="none" stroke="#292a27" stroke-width="4" stroke-linecap="round"/>
+    <path d="M622 274 L674 287 L622 307 Z" fill="#b6422f" stroke="#b6422f" stroke-width="3" stroke-linejoin="round"/>
+    <text x="486" y="250" font-size="34" font-weight="700" fill="#b6422f">3本目の旗</text>
+  </g>
+</svg>
