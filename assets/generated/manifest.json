@@ -3799,31 +3799,66 @@
       "source_png_sha256": "05ac9e57a0fdd53545d54595afc407aec08bc37be0e03f6f88f3adc438fd80b9"
     },
     "rice-cooker-price-reservation-vouchers-sell-first": {
-      "article_sha256": "8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd",
-      "bytes": 123610,
-      "generated_at": "2026-11-13T07:35:23.798972+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "7a081629fa4ff1591ba7a047ba67d84a49405a8755afe09b4f325e9df1da7d67",
+      "bytes": 165519,
+      "generated_at": "2026-11-13T08:24:14.327Z",
+      "generation_id": "9103ef6f-d6dc-483e-a264-50ce8f55b9e0",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Create one photorealistic Japanese regional business-news photograph, horizontal 16:9, inside an entirely fictional consumer electronics shop in November 2031 just before closing. One specific understated comedy scene: an adult Japanese woman store employee about 34 in a plain dark green cardigan stands at a small retail counter, one hand naturally resting beside an electronic terminal for digital price reservation vouchers, her deadpan attention turned toward the neighbouring shelf still crowded with boxed rice cookers. Include a clearly recognizable real rice cooker on the near shelf, lid closed, ordinary brushed metal and white plastic, and several unbranded appliance cartons underneath. Farther in the aisle, a single adult Japanese man about 27 carries one actual rice cooker carton toward checkout. The electronic screen is angled away and contains only small indistinct blocks, absolutely no readable text. This illustrates an article where household shopping AIs trade digital rights to lock future appliance prices, but the physical goods remain unsold until separately ordered. Depict real people and physical store equipment, no robot mascots, no floating futuristic holograms, no paper coupons, no crowd of phone users. Candid unposed full-frame local press photography, roughly 35mm lens, medium-wide diagonal aisle composition, documentary mixed fluorescent and dusk light, realistic skin and hands, restrained colours, slightly imperfect lived-in shop. Employees have a serious natural expression; the absurdity is the quiet stock left behind, not exaggerated faces. These are entirely fictional ordinary adults, not any recognizable public person. No lettering, prices, logos, company brands, watermark, graphic overlay, illustration, painting, CGI or cartoon. Keep the appliance and employee readable in a 16:9 crop.",
+      "generation_receipt": "xmp:iid:9103ef6f-d6dc-483e-a264-50ce8f55b9e0",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/rice-cooker-price-reservation-vouchers-sell-first/7a081629fa4ff159-51745c74aca7",
+        "commit_sha": "50ee9f18d5ef5751e5ecf8c8dd32df06c29fec44",
+        "receipt_path": "maintenance/native-image-candidates/rice-cooker-price-reservation-vouchers-sell-first/receipt.json",
+        "receipt_sha256": "263436262fb25bda9edc130aeb3bd7cb1212c61abcf61be44812b13f6d9eca76"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd",
+        "bytes": 123610,
+        "generated_at": "2026-11-13T07:35:23.798972+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 5318895560765377914,
+        "sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd",
+        "decision": "rejected",
+        "image_sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308",
+        "note": "公開後reviewerが元本文と実JPEGを表示して不採用とした既存検品を保持。一般的な量販店で端末を見る人物の写真で、売れ残った炊飯器や実物を持ち帰る客が判別できず主題不一致。rootが同じ素材を再検品したという記録ではない。元コメント: https://github.com/RollNuts/mihassei-news/pull/708#issuecomment-6847571379",
+        "reviewed_at": "2026-11-13T08:06:16Z"
+      },
       "prompt_version": 3,
-      "seed": 5318895560765377914,
-      "sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308"
+      "sha256": "770d4d7552f229ef2d84401b0177556eb352f9d5d4b6c25870f40070dc3bf4a2",
+      "source_png_sha256": "c1d856ff73288119bfb7b1502cd4d4dcc9605c952e4d193e1b9e124a72c51932",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "robot-job-hopping": {
       "article_sha256": "a814fd02ee0d5ec942b7b90dbbef7df675e388b9421d518e8e2bdcf42c35081e",
