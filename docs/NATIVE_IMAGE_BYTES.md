@@ -4,9 +4,15 @@
 
 ## Preferred path: capture generation and save the candidate in one execution
 
-When the run exposes `tools.image_gen__imagegen` with a PNG `image_url` data URI, call it **inside the same code-mode execution that saves its result**. Do not first call a separate image/Python environment and then try to recover an unrelated local path. This route needs the native image tool and the GitHub connection, but no shell, Node, Python, local checkout or Library transfer.
+Use `generateAndStage` for new generation. It calls the supplied generator only after the current execution reads an existing PNG through the configured byte-transfer callback, converts it, saves a GitHub tree/commit/branch, reads back matching PNG/JPEG hashes, and acquires the plan's durable generation reservation. It then uses that same callback for the generated result and saves the real candidate in the same execution. If the byte bridge, save/readback or reservation fails, generation is not called. Existing saved candidates are recovered first, without generation or another preflight.
 
-`scripts/native_image_stage.js` uses the existing byte helper to save an unapproved candidate. It does not generate images, edit published article/image manifests, write an accepted review, create a PR, or deploy. It stores the complete source PNG as ordered parts of at most 512 KiB, plus the JPEG and provenance, together on a candidate branch. It reads the parts back, reconstructs the original PNG, verifies its complete SHA-256, and verifies that the pinned conversion reproduces the saved JPEG. This avoids the GitHub Contents response that can return an empty content string for a binary file larger than 1 MiB even when the request succeeds. The branch is determined before generation from the article and logical run, so a retry checks and reuses the prior candidate first.
+`scripts/native_image_stage.js` uses one isolated `native-image-preflight/transport` branch for the transport sample. Each generating invocation repeats the actual transfer and advances that branch with an expected-head, non-forced update; it never uses an earlier pass to authorize a different worker. Concurrent changes stop the check. The sample receipt has kind `native_image_transport_preflight`, never an article candidate, generation claim or visual approval. Its PNG is at most 512 KiB. This checks the tested route and size, not unlimited future transfers. The actual generated image still receives all ordinary integrity and readback checks.
+
+After the preflight, the entry point checks the candidate again, then atomically creates `native-image-generation-claim/<plan.identity>` before calling the generator. Ownership requires a successful create response naming that branch, the exact commit SHA from the subsequent Git ref lookup, and matching file readback. An existing reservation blocks another worker or a fresh runtime from generating the same plan; a candidate completed during the check is recovered instead. A lost or malformed creation response does not establish ownership. The receipt's `reserved_generation_unconfirmed` status does not prove that the generator was called or completed. Reservations have no automatic expiry, replacement or deletion; use the recorded source/checkpoint for recovery, without changing the originating identity to bypass the reservation. Candidate and reservation branches remain separate, so recovery with `stage/resume/load` does not require creating a new claim.
+
+For a transport-only diagnostic, `checkTransport(plan, options)` takes the same probe and `readBytes` options without a `generate` callback. It performs the actual transfer/save/readback and creates no generation claim or article candidate. Its returned proof cannot be supplied to bypass `generateAndStage`, which repeats the check in its own execution.
+
+The ordinary `stage/resume/load` methods remain available for recovery without generation. They store the complete source PNG as ordered parts of at most 512 KiB, plus the JPEG and provenance, together on the article's candidate branch; they do not edit published article/image manifests, write an accepted review, create a PR or deploy. Readback reconstructs the original PNG, verifies its complete SHA-256, and checks that the pinned conversion reproduces the saved JPEG. This avoids the GitHub Contents response that can return an empty content string for a binary file larger than 1 MiB even when the request succeeds. A generated result or failed-save checkpoint must be recovered, not replaced by another generation.
 
 Read both helpers from the latest reviewed repository revision and initialize the existing converter. The following assumes the reviewed draft's `slug`, `articleSha256`, `prompt`, `baseCommitSha`, `baseTreeSha` and stable `logicalRunId` are already known. For a new article, first save the reviewed draft to its working commit: `prepare` checks that the target article and its fingerprint exist in `baseCommitSha`. The base tree must belong to that commit. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
 
@@ -28,45 +34,69 @@ const stager = stageAPI.create({
     create_blob: args => tools.mcp__codex_apps__github_create_blob(args),
     create_tree: args => tools.mcp__codex_apps__github_create_tree(args),
     create_commit: args => tools.mcp__codex_apps__github_create_commit(args),
-    create_branch: args => tools.mcp__codex_apps__github_create_branch(args)
+    create_branch: args => tools.mcp__codex_apps__github_create_branch(args),
+    fetch: args => tools.mcp__codex_apps__github_fetch(args),
+    update_ref: args => tools.mcp__codex_apps__github_update_ref(args)
   }
 });
 const plan = await stager.prepare({
   slug, articleSha256, prompt, baseCommitSha, baseTreeSha, logicalRunId
 });
-const existing = await stager.probe(plan);
-if (existing.status === "saved") {
-  text({status: existing.status, branch: existing.branch,
-        jpegPath: existing.jpegPath, reused: true});
-} else {
-  const generated = await tools.image_gen__imagegen({
-    prompt: plan.prompt, transparent_background: false
-  });
-  const observedAt = new Date().toISOString();
-  try {
-    const saved = await stager.stage(plan, {
-      imageGenResult: generated, observedAt
+// This example checks the actual PNG-data-URL route exposed in this runtime.
+// It does not establish a Python/local-file or Library-to-connector byte bridge.
+const probeRef = "3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d";
+const probePath = "assets/editorial-scenes/robot-job-hopping.png";
+const probeSource = {kind: "existing-github-png", ref: probeRef, path: probePath};
+const readBytes = async source => {
+  if (source === probeSource) {
+    const actual = await tools.mcp__codex_apps__github_fetch_file({
+      repository_full_name: repo, path: source.path, ref: source.ref, encoding: "base64"
     });
-    text({status: saved.status, branch: saved.branch,
-          commitSha: saved.commitSha, jpegPath: saved.jpegPath});
-  } catch (error) {
-    // Transient same-conversation recovery; never print the original data URI.
-    store("native-image-retry-" + plan.identity, {
-      plan, checkpoint: error.checkpoint, imageGenResult: generated, observedAt
-    });
-    text({status: "incomplete", branch: plan.branch, phase: error.stage,
-          message: error.message});
-    // Preserve the compact checkpoint in the existing durable task handoff.
-    // Never call ImageGen again to retry a save.
-  } finally {
-    generatedImage(generated);
+    const file = actual.structuredContent;
+    if (actual.isError || file?.encoding !== "base64" || typeof file.content !== "string")
+      throw Error("Existing probe PNG could not be read");
+    return {image_url: "data:image/png;base64," + file.content};
   }
+  if (typeof source?.image_url === "string" && source.image_url.startsWith("data:image/png;base64,"))
+    return source;
+  throw Error("This runtime has not established a byte bridge for the returned file/path");
+};
+let actualGeneration;
+try {
+  const saved = await stager.generateAndStage(plan, {
+    probeSource,
+    probeSourceRef: repo + "@" + probeRef + ":" + probePath,
+    expectedProbeSha256: "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    route: "PNG data URL in this code runtime to GitHub candidate storage",
+    readBytes,
+    generate: args => tools.image_gen__imagegen(args)
+  });
+  actualGeneration = saved.imageGenResult;
+  text({status: saved.status, branch: saved.branch, commitSha: saved.commitSha,
+        jpegPath: saved.jpegPath, reused: saved.reused,
+        preflightCommit: saved.transportPreflight?.commit_sha});
+} catch (error) {
+  actualGeneration = error.imageGenResult;
+  // Transient same-conversation recovery only; never print this payload.
+  store("native-image-retry-" + plan.identity, {
+    plan, checkpoint: error.checkpoint, imageGenResult: error.imageGenResult,
+    transferredImage: error.transferredImage, observedAt: error.observedAt,
+    transportPreflight: error.transportPreflight, generationClaim: error.generationClaim
+  });
+  text({status: "incomplete", branch: plan.branch, phase: error.stage,
+        generationClaim: error.generationClaim?.branch, message: error.message});
+  // Preserve real file references/checkpoint in the existing durable handoff.
+  // Never invoke generation again to retry a save or a byte transfer.
+} finally {
+  if (actualGeneration?.image_url?.startsWith("data:")) generatedImage(actualGeneration);
 }
 ```
 
+For a local-file or file-ID generator, use an existing PNG in that actual execution environment as `probeSource`, and make `readBytes` return bytes through an available execution/materialization tool. Use the same function to acquire the eventual generated output. Reusing the GitHub/data-URL sample above does not test that different bridge. Inspect the exposed tool schemas before selecting the callback; if the generator or byte-returning callback is unavailable, do not replace the entry point with a direct generation call. A repository helper cannot add tools to a scheduled worker or prevent a caller from bypassing it.
+
 After staging, `const images = await stager.load(plan)` returns verified `sourcePngDataUrl` and `jpegDataUrl`. Pass them directly to `image(images.sourcePngDataUrl)` and `image(images.jpegDataUrl)`; never emit the whole result with `text` or `notify`. Compare both displayed images with the full current article. Only after that review, use the normal publication PR to install the JPEG, its truthful generation record and a current-SHA visual decision. Keep the source candidate retrievable. Existing accepted photos, integer seeds and previous rejections remain unchanged until an actual reviewed replacement is published.
 
-If a save fails, retain its compact checkpoint (including the plan) and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, retain the actual generation result and retry with `stage(plan, {imageGenResult, observedAt, checkpoint, ...})`, preserving any recovery metadata. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
+If a save fails, retain its compact checkpoint (including the plan), reservation reference and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, the error's `imageGenResult` is the raw tool result, which may contain only a file ID or local path. Pass `error.transferredImage ?? await readBytes(error.imageGenResult)` as `stage`'s `imageGenResult`, with the retained `observedAt`, `checkpoint`, `transportPreflight`, `generationClaim` and any recovery metadata. This retries byte acquisition or saving, without calling the generator. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
 
 ## Runtime without Node
 
@@ -89,7 +119,7 @@ The returned fields include `bytes` (JPEG Uint8Array), `base64`, `sha256` (final
 
 Verify a usable byte-transfer route before calling ImageGen. Read the schema of the image tool actually exposed in this run; do not infer its return type from another chat. A `data:` URL captured inside code mode can use this helper without a shell. A file ID or local path additionally requires an available tool that can return the actual bytes to the same runtime as the GitHub connector. Library materialization alone is not that bridge.
 
-For a local-file route, first read and hash a small existing file through the actual execution tool inside code mode. Do not generate an image merely to test tool availability. If no byte-returning route is exposed, do not start a new generation: retain the existing article fallback and record the specific missing capability once. Continue text review and inspection of already-accessible candidates. Retry the import when the tool/source availability changes, not every hour under identical conditions. Do not invent tools, use paths owned by another executor, or treat an uncalled materialization operation as a failed download.
+For a local-file route, pass a small existing PNG through the real execution tool inside the generating entry point's `readBytes` callback. Do not generate an image merely to test tool availability. If no byte-returning route is exposed, retain the existing article fallback and record the specific missing capability once. Continue text review and inspection of already-accessible candidates. Retry the import when the tool/source availability changes, not every hour under identical conditions. Do not invent tools, use paths owned by another executor, or treat an uncalled materialization operation as a failed download.
 
 The present chat's tools do not establish what a scheduled worker receives. The Automation response fields `environment_selection` and `environments` describe saved selection, not proof of a previous run's capabilities. If environment selection is not an exposed update input, a prompt change does not attach an executor. Keep this limitation distinct from successfully importing an individual photo.
 
@@ -181,7 +211,7 @@ const runStageTests = new Function(stageTestSource + "\nreturn NativeImageStageT
 const report = await runStageTests(stageAPI, runtime);
 ```
 
-They use an in-memory GitHub fake and an explicitly synthetic PNG, with no image generation or publication. They cover exact byte readback, a source larger than 1 MiB, reuse without writes, branch/readback interruption, checkpoint recovery in a fresh stager, ambiguous missing-reference errors, fingerprint mismatch, malformed input, and preservation of published files and their exact integer seeds. A live transfer test must use an existing image with truthful recovery provenance; successful current-chat transfer alone does not prove a scheduled worker received the same tools.
+They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real image generation or publication. They cover exact byte readback, a source larger than 1 MiB, reuse without writes, branch/readback interruption, checkpoint recovery, ambiguous lookup failures, article binding and exact integer seeds. The generating entry point also checks zero generator calls after acquisition/save/readback failures, a standalone transport diagnostic without claims, distinct probe/reservation/candidate receipts, repeated real checks on the fixed branch, recovery of candidates saved during the preflight, and at most one generator call across independent workers and fresh-runtime retries. Lost or malformed claim responses cannot authorize generation, and lookup failures retain the reservation reference. A live transport check must use the actual worker's callbacks; successful current-chat transfer alone does not prove a scheduled worker received the same tools.
 
 
 
