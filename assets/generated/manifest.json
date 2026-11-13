@@ -5436,6 +5436,33 @@
       "seed": 2586442448911147407,
       "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     },
+    "volunteer-award-ceremony-visits-community-kitchen": {
+      "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+      "bytes": 109400,
+      "generated_at": "2026-11-13T09:38:57.962057+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 1268806400882745347,
+      "sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12"
+    },
     "walking-points-past-own-front-door": {
       "article_sha256": "bb6d680411142ae62a55e62c0a07d58bb5bcc0ef9e4fe2d977b2ba864c728e3e",
       "bytes": 179720,
