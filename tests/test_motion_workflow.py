@@ -280,6 +280,33 @@ class MotionWorkflowTests(unittest.TestCase):
             "${{ runner.temp }}/news-caster-composition/receipt.json",
         ])
 
+    def test_retained_pilot_input_is_passed_as_one_argument_and_never_starts_new_inference(self):
+        block = step(self.video, "Generate one manual caster preview only while image automation is active")
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);log=root/"calls"
+            (root/"gh").write_text('#!/bin/sh\nprintf "%s\\n" "$CPU_STATE"\n')
+            (root/"gh").chmod(0o755)
+            (root/"python").write_text('#!/bin/sh\nfor arg do printf "<%s>\\n" "$arg"; done > "$CALL_LOG"\n')
+            (root/"python").chmod(0o755)
+            source="a"*40+":drafts/caster-review/night-art-20261113/manifest.json:"+"b"*64
+            for state,run,value in (("active","",source),("active","",source+";touch injected"),
+                                    ("active","123",source),("disabled_manually","",source),("null","",source)):
+                log.unlink(missing_ok=True)
+                env={**os.environ,"PATH":str(root)+os.pathsep+os.environ.get("PATH",""),
+                     "GITHUB_REPOSITORY":"RollNuts/mihassei-news","RUNNER_TEMP":str(root),"CALL_LOG":str(log),
+                     "CASTER_SOURCE_RUN":run,"CASTER_SOURCE_MANIFEST":value,"CPU_STATE":state}
+                result=subprocess.run(["bash","-e","-o","pipefail","-c",shell(block)],cwd=root,
+                                      env=env,capture_output=True,text=True)
+                allowed=state=="active" and not run
+                with self.subTest(state=state,run=run,value=value):
+                    self.assertEqual(result.returncode==0,allowed,result.stderr)
+                    if allowed:
+                        self.assertEqual(log.read_text().splitlines(),[
+                            "<scripts/compose_caster_preview.py>","<--run>","<--source-manifest>","<"+value+">",
+                            "<--output>","<"+str(root/"news-caster-composition")+">"])
+                    else:self.assertFalse(log.exists())
+                    self.assertFalse((root/"injected").exists())
+
     def test_caster_changes_receive_offline_pr_validation_without_running_inference(self):
         filters = event_paths(self.video, "pull_request")
         for path in ("scripts/news_caster_preview.py", "tests/test_news_caster_preview.py",

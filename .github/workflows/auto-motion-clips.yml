@@ -45,6 +45,10 @@ on:
         description: 'Reuse a successful caster preview run; empty renders a new preview'
         type: string
         default: ''
+      caster_source_manifest:
+        description: 'Re-edit retained pilot: commit:review-manifest-path:manifest-sha256 (source run must be empty)'
+        type: string
+        default: ''
 permissions:
   contents: read
 # Parallel article/photo pushes cannot publish clips in parallel.
@@ -97,12 +101,16 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends fonts-noto-cjk
           ffmpeg -hide_banner -version | head -n 1
       - name: Test real multi-shot encoding, legacy clips, source hashes, and OFF switch
         if: github.event_name == 'pull_request'
         run: python3 -m unittest -v tests.test_motion_clips tests.test_motion_publisher tests.test_motion_workflow tests.test_broadcast_captions
       - name: Test caster preview guards offline without downloading models
         if: github.event_name == 'pull_request'
+        env:
+          NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
         run: python3 -m unittest -v tests.test_news_caster_preview tests.test_compose_caster_preview
 
   publish:
@@ -193,6 +201,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
       CASTER_SOURCE_RUN: ${{ inputs.caster_source_run }}
+      CASTER_SOURCE_MANIFEST: ${{ inputs.caster_source_manifest }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -207,7 +216,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
-          if [[ -n "$CASTER_SOURCE_RUN" ]] && ! fc-match 'Noto Sans CJK JP' | grep -q 'NotoSansCJK'; then
+          if [[ -n "$CASTER_SOURCE_RUN" || -n "$CASTER_SOURCE_MANIFEST" ]] && ! fc-match 'Noto Sans CJK JP' | grep -q 'NotoSansCJK'; then
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends fonts-noto-cjk
           fi
@@ -219,13 +228,19 @@ jobs:
             echo "Image automation is not active; refusing the caster preview." >&2
             exit 1
           fi
-          if [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
+          if [[ -n "${CASTER_SOURCE_MANIFEST:-}" ]]; then
+            if [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
+              echo "Supply only one caster source." >&2
+              exit 1
+            fi
+            python scripts/compose_caster_preview.py --run --source-manifest "$CASTER_SOURCE_MANIFEST" --output "$RUNNER_TEMP/news-caster-composition"
+          elif [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
             python scripts/compose_caster_preview.py --run --source-run "$CASTER_SOURCE_RUN" --output "$RUNNER_TEMP/news-caster-composition"
           else
             python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
           fi
       - name: Keep only bounded preview media and its receipt for one day
-        if: always() && inputs.caster_source_run == ''
+        if: always() && inputs.caster_source_run == '' && inputs.caster_source_manifest == ''
         uses: actions/upload-artifact@v4
         with:
           name: news-caster-preview-${{ github.run_id }}
@@ -237,7 +252,7 @@ jobs:
             ${{ runner.temp }}/news-caster-preview/narration-three-seconds.wav
             ${{ runner.temp }}/news-caster-preview/receipt.json
       - name: Keep only the composed news preview and its receipt for one day
-        if: always() && inputs.caster_source_run != ''
+        if: always() && (inputs.caster_source_run != '' || inputs.caster_source_manifest != '')
         uses: actions/upload-artifact@v4
         with:
           name: news-caster-composition-${{ github.run_id }}
