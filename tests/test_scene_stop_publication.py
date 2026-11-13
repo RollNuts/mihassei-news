@@ -153,6 +153,25 @@ class StopPublicationTests(unittest.TestCase):
         self.assertEqual(list(self.app.glob("sync-*")), [])
         self.assertTrue(generated.usable_generated_scene(fixture.article(), root=self.checkout_remote("stage-recovered")))
 
+    def test_clean_published_snapshot_is_not_replayed_through_generation_writer(self):
+        self.generate_one(self.args, self.repo)
+        self.run_git("add", "assets/generated", cwd=self.repo)
+        self.run_git("commit", "-m", "published photograph", cwd=self.repo)
+        self.run_git("push", "origin", "main", cwd=self.repo)
+        published = self.run_git("rev-parse", "HEAD", cwd=self.repo).stdout.strip()
+        job = self.app / "sync-clean-snapshot"
+        job.mkdir(parents=True)
+        (job / ".veripsa-scene-job").write_text("veripsa-local-scenes-v2\n")
+        self.run_git("worktree", "add", "--detach", str(job / "checkout"), "HEAD", cwd=self.repo)
+        self.args.prepare_only = True
+        # Published snapshots can contain origins the local generation writer
+        # cannot recreate. They must never be enqueued or rewritten on recovery.
+        with patch.object(sync, "write_generated", side_effect=AssertionError("published image rewritten")), \
+             patch.object(sync, "generate", side_effect=AssertionError("GPU generation started")):
+            self.assertEqual(sync.sync(self.args), 0)
+        self.assertFalse((self.outbox / "assets/generated/one-story.jpg").exists())
+        self.assertEqual(self.run_git("rev-parse", "HEAD", cwd=self.checkout_remote("unchanged")).stdout.strip(), published)
+
 
 if __name__ == "__main__":
     unittest.main()

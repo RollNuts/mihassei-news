@@ -139,6 +139,25 @@ def transfer_scenes(source: Path, target: Path, articles: list[dict], *, missing
     return copied
 
 
+def interrupted_scenes(checkout: Path) -> list[dict]:
+    """Recover new work, never replay an unchanged published snapshot."""
+    changed = set(git("diff", "--name-only", "-z", "HEAD", "--", str(RELATIVE_DIR),
+                      cwd=checkout).stdout.split("\0"))
+    changed.update(git("ls-files", "--others", "--exclude-standard", "-z", "--",
+                       str(RELATIVE_DIR), cwd=checkout).stdout.split("\0"))
+    changed.discard("")
+    if not changed:
+        return []
+    manifest = str(RELATIVE_DIR / "manifest.json")
+    previous = {}
+    if git("ls-tree", "--name-only", "HEAD", "--", manifest, cwd=checkout).stdout.strip():
+        previous = json.loads(git("show", "HEAD:" + manifest, cwd=checkout).stdout)["images"]
+    current = generated_manifest(checkout)
+    return [article for article in load_articles(checkout)
+            if str(RELATIVE_DIR / (article["slug"] + ".jpg")) in changed
+            or current.get(article["slug"]) != previous.get(article["slug"])]
+
+
 def retire_published(outbox: Path, published: Path, articles: list[dict]) -> None:
     """Remove only disposable outbox copies proven to be on remote main."""
     manifest = outbox / RELATIVE_DIR / "manifest.json"
@@ -262,7 +281,7 @@ def sync(args) -> int:
             if not marker.is_file() or marker.read_text() != "veripsa-local-scenes-v2\n":
                 continue
             if abandoned.is_dir():
-                transfer_scenes(abandoned, OUTBOX, load_articles(abandoned), missing_only=True,
+                transfer_scenes(abandoned, OUTBOX, interrupted_scenes(abandoned), missing_only=True,
                                 min_free_gb=args.min_free_gb)
                 git("worktree", "remove", "--force", str(abandoned))
             marker.unlink()
