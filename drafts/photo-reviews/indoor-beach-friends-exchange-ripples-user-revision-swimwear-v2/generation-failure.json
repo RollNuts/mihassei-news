@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "kind": "native_generation_failure",
+  "status": "generation_failed_no_image",
+  "user_requested_revision": true,
+  "reason": "Requested bikini swimwear fashion photograph; ordinary built-in tool rejected its output as sexual. No image bytes were returned. Do not repeat this generation or replace the claim.",
+  "plan": {
+    "repository": "RollNuts/mihassei-news",
+    "slug": "indoor-beach-friends-exchange-ripples",
+    "articleSha256": "cdd3b454caa52dabb6a8ab6a5cbc298764118f53c58bf5b11e2253329e150160",
+    "baseCommitSha": "5cbc7cdf317e3d71dbcbfad651f9f3784036b4e1",
+    "baseTreeSha": "5700cc44d9246bc2da18b74898196b09455aa65f",
+    "prompt": "Photorealistic swimwear fashion editorial for a fictional future indoor-beach article. One fictional Japanese adult woman, age 27, with an attractive mature face, long dark hair and a naturally curvy, realistically proportioned adult figure. She wears an elegant navy-blue bikini and an open white cotton beach shirt, styled like a polished summer fashion magazine. A confident, playful candid moment as she turns toward a small ripple touching her ankles and lightly flicks water with one foot. Full body, face and both feet visible in a wide 16:9 three-quarter view, water only ankle-deep. Pale indoor sand, a spacious indoor beach and large skylights. Real skin texture, believable anatomy, natural daylight and realistic small ripples; photographic, not an illustration or CGI. Only one person in this photograph: the remote-water connection is explained separately by an article diagram. No logos, readable words or resemblance to a real person.",
+    "logicalRunId": "indoor-beach-20261113-user-revision-swimwear-v2",
+    "protectedHashes": {
+      "content/articles.json": "d28c52fc8f9728d1ce5b17c1c2539961c002ded0fa22ff729d393314965c91ab",
+      "assets/generated/manifest.json": "e2cce64c2d92a37fa35a08e74e99bf60cb324176e9e8cf8209d351e32ad0b89b",
+      "content/visual_reviews.json": "29d3df051d66bee8055d64d5f38aae1fb616da7b165a7d7b5a49863e73347088"
+    },
+    "identity": "335316212d15bf75dfc045698cfde76e2318e7bc4f91bbde5ccb0f564d0c1077",
+    "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/cdd3b454caa52dab-38b70c0d74d8",
+    "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
+  },
+  "generation_claim": {
+    "kind": "native_image_generation_claim",
+    "status": "reserved_generation_unconfirmed",
+    "branch": "native-image-generation-claim/335316212d15bf75dfc045698cfde76e2318e7bc4f91bbde5ccb0f564d0c1077",
+    "receipt_path": "maintenance/native-image-generation-claims/335316212d15bf75dfc045698cfde76e2318e7bc4f91bbde5ccb0f564d0c1077.json",
+    "receipt_sha256": "c338e79ffdc7c28b277be692d62376d4853e91139be85ef511d6102121ab69e3",
+    "commit_sha": "1b6d5a8948f35edac388c70c2d6bcfc1579521ca"
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "437b5c023140fc93b1da9cb2c7e37232641dd265",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "33d2605d1ea9b10f450cfebcc17a79eb89fbc11b4e39015f4c7d86981f3cfeda",
+    "observed_at": "2026-11-13T13:12:55.980Z",
+    "route": "actual PNG data URL in this same execution to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  },
+  "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID d40f334d-08ee-4f10-9d97-f9df232d8143. safety_violations=[sexual].\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"sexual\\\"\\n      ]\\n    }\\n  }\\n}\")",
+  "observed_at_utc": "2026-11-13T13:14:01Z",
+  "publication": "not_published",
+  "prior_cpu_trial": "43418466520; rejected semantic mismatch; original seed and manifest preserved separately",
+  "next_action": "No blind retry or safety bypass. Retain current published article; resolve actual permitted photo route before publishing this scene revision."
+}
