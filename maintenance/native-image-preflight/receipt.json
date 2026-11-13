@@ -5,9 +5,9 @@
   "repository": "RollNuts/mihassei-news",
   "candidate_identity": "94e9b7ab4db9289166e29370bad80b4a96f915e47b0175865576eea46ba2e3f9",
   "logical_run_id": "transport-validation-20261113-root-no-generation",
-  "observed_at": "2026-11-13T01:22:28.882Z",
-  "route": "PNG data URL captured in the current functions.exec and GitHub connector; root interactive environment only",
-  "probe_source_ref": "GitHub assets/editorial-scenes/robot-job-hopping.png at 3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d; existing editorial PNG, no generation",
+  "observed_at": "2026-11-13T01:30:53.195Z",
+  "route": "PNG data URL captured in current functions.exec and GitHub connector; root interactive environment only, no image generation",
+  "probe_source_ref": "Existing assets/editorial-scenes/robot-job-hopping.png at 3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d; final helper check of existing preflight-branch update",
   "source": {
     "sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
     "bytes": 50570
