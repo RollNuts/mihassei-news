@@ -42,8 +42,10 @@
     "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
   },
   "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID d40f334d-08ee-4f10-9d97-f9df232d8143. safety_violations=[sexual].\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"output\\\",\\n      \\\"categories\\\": [\\n        \\\"sexual\\\"\\n      ]\\n    }\\n  }\\n}\")",
-  "observed_at_utc": "2026-11-13T13:14:01Z",
+  "observed_at_utc": null,
   "publication": "not_published",
   "prior_cpu_trial": "43418466520; rejected semantic mismatch; original seed and manifest preserved separately",
-  "next_action": "No blind retry or safety bypass. Retain current published article; resolve actual permitted photo route before publishing this scene revision."
+  "next_action": "No blind retry or safety bypass. Retain current published article; resolve actual permitted photo route before publishing this scene revision.",
+  "recorded_at_utc": "2026-11-13T13:17:20.946875+00:00",
+  "time_note": "Exact failure observation timestamp was not captured; transport and claim retain their own actual timestamps."
 }
