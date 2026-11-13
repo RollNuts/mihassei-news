@@ -244,7 +244,7 @@ class CasterCompositionTests(unittest.TestCase):
             compose.validate_retained_probe(source_probe)
             proof=compose.compare_packet_timing(compose.packet_timing(source,source_probe,Mock()),
                                                 compose.packet_timing(edited,probe,Mock()))
-            self.assertTrue(proof["audio_timing_matches_within_one_sample"])
+            self.assertTrue(proof["audio_first_packet_timing_matches_within_one_sample"])
             def audio_hash(path):
                 return subprocess.check_output(["ffmpeg","-v","error","-i",str(path),"-map","0:a:0","-c:a","copy","-f","hash","-hash","sha256","-"])
             self.assertEqual(audio_hash(source),audio_hash(edited))

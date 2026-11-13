@@ -286,7 +286,7 @@ def compare_packet_timing(source, edited):
             "cut_frame_times_seconds": [float(edited["video_pts"][74]), float(edited["video_pts"][75])],
             "audio_first_pts_seconds": str(edited["audio_pts"]), "audio_first_dts_seconds": str(edited["audio_dts"]),
             "audio_skip_samples": edited["skip_samples"], "audio_discard_padding": edited["discard_padding"],
-            "audio_timing_matches_within_one_sample": True}
+            "audio_first_packet_timing_matches_within_one_sample": True}
 
 
 def readable_labels(work):
