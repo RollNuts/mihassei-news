@@ -191,7 +191,7 @@ def repository_file(ref, path, sha256, destination, budget, max_bytes):
     if (metadata.get("type") != "file" or metadata.get("path") != path
             or type(metadata.get("size")) is not int or not 1 <= metadata["size"] <= max_bytes):
         raise ValueError("Pinned source must be a bounded regular file at its exact repository path")
-    binary_command(["gh", "api", "-H", "Accept: application/vnd.github.raw+json", endpoint],
+    binary_command(["gh", "api", "-H", "Accept: application/vnd.github.raw", endpoint],
                    destination, budget, max_bytes=max_bytes)
     if destination.stat().st_size != metadata["size"] or digest(destination) != sha256:
         raise ValueError("Pinned repository source differs from its exact size or SHA-256")
