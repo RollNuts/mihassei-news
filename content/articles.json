@@ -24,7 +24,7 @@
       "url": "https://www.mhlw.go.jp/stf/newpage_77269.html",
       "topic": "2026年11月13日、厚生労働省が令和8年度の社会福祉功労者・ボランティア功労者の厚生労働大臣表彰対象を個人894名・273団体と公表し、11月20日の全国社会福祉大会で授与予定とした。現実の授賞は大会であり、現場へ出張する方式は発表されていない。2031年のまち結び表彰会、ひだまり台所、人物、食堂での出張表彰・配膳・会話はすべて創作。"
     },
-    "scene_prompt": "Photorealistic candid Japanese local-news photo, landscape 16:9. In a fictional community lunch kitchen, a fictional Japanese adult female volunteer aged 36 in a simple apron is serving steaming soup at a counter, while a fictional Japanese adult male award organizer in his forties, wearing a plain jacket and borrowed apron, hands clean meal trays to customers waiting at a safe distance. A modest folded award certificate rests on a small folding table near a wall. Realistic facial expressions, hand anatomy, dishes, food, steam, kitchen light and shadows, spontaneous documentary press photograph, no staged pose, logos, readable writing, CGI or illustration.",
+    "scene_prompt": "Photorealistic candid Japanese local-news photograph, landscape 16:9. In a fictional community lunch kitchen, a Japanese adult female volunteer aged 36 in a simple apron serves steaming soup at a counter, while a Japanese adult male award organizer in his forties, wearing a plain jacket and borrowed apron, hands clean meal trays to customers waiting at a safe distance. A modest folded award certificate rests on a small folding table near a wall. Natural faces, hands, dishes, steam, kitchen lighting and soft shadows, unstaged documentary press photography, no visible brand marks or legible writing.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "ボランティア",
@@ -51,7 +51,7 @@
       "outcome": "受賞者は食事の提供を中断せずに表彰され、主催者の仕事が式典の進行から継続する現場の手伝いへ広がる"
     },
     "reader_clarity": {
-      "who": "架空のまち結び表彰会",
+      "who": "まち結び表彰会",
       "action": "受賞者を式場へ呼ぶ方式をやめ、食堂で必要な配膳を手伝ってから賞状を渡し、翌週の当番にも入った",
       "oddity": "表彰する担当者が受賞者に仕事を教わり、賞状を渡した後も食堂の人手になる"
     },
