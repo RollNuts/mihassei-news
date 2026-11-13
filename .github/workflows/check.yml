@@ -56,7 +56,7 @@ jobs:
       - name: Build the static site with all image fallback routes
         run: python3 scripts/build.py
       - name: Report selected images and stale illustration reviews
-        run: python3 scripts/visual_review.py
+        run: python3 scripts/visual_review.py --compact
       - name: Audit all sitemap URLs and crawlable internal links (no APIs)
         run: python3 scripts/audit_search_index.py
       - name: Verify cached and late image failures recover without broken layouts

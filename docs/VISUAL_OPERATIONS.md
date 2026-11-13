@@ -85,7 +85,7 @@ SVGのルートは`xmlns="http://www.w3.org/2000/svg"`、`role="img"`、`viewBox
 
 `scripts/article_diagrams.py`が本文指紋・SVGの構造・自己完結性を検証し、現在の本文に対応する図だけをビルドで配布する。URLには実SVGのSHAを付ける。図なし・失効・不正な図では記事本文と写真をそのまま表示する。`visual_review.py`の`article_diagram`と`article_diagram_counts`で`absent / current / stale / invalid`を区別し、`stale / invalid`だけを既存の`attention`で回収する。`absent`は図がないという意味であり、図の必要性を自動判定した結果ではない。機械的な合格も内容の目視確認の代わりにならない。
 
-通常のレビューは、今回の対象だけを`python3 scripts/visual_review.py --slug 記事slug`で確認する。複数なら`--slug`を繰り返し、対象はOPERATIONSの上限内に収める。未知のslugは正常な空一覧とせずエラーにする。引数なしの全件一覧は既存の横断確認で使う。補助図の失効は現在の全文と実図を再確認して直し、指紋だけを更新しない。正常な主写真が採用されている記事の古い写真代替SVGは、状態を残したまま通常の修復対象から外す。補助図の不具合は主写真が正常でも別に回収する。
+全体の未完確認は`python3 scripts/visual_review.py --compact`で集計・`attention`・`photo_followup`を読む。省略するのは`images`詳細配列だけで、検出対象やエラーは減らさない。対象を決めたら`python3 scripts/visual_review.py --slug 記事slug`で詳細を取り、公開文全文と実画像を照合する。複数なら`--slug`を繰り返し、対象はOPERATIONSの上限内に収める。未知のslugは正常な空一覧とせずエラーにする。引数なしの全件一覧は既存の横断確認で使う。補助図の失効は現在の全文と実図を再確認して直し、指紋だけを更新しない。正常な主写真が採用されている記事の古い写真代替SVGは、状態を残したまま通常の修復対象から外す。補助図の不具合は主写真が正常でも別に回収する。
 
 公開時は、既存の`check_live.py`が確認対象の記事について、本文内の図の有無・URL・説明・配置と、実配信SVGの内容を現素材と照合する。HTTP成功だけ、図のファイル保存だけで公開完了にしない。通常の公開検証の対象外にある既刊を変更した場合も、変更した記事と図の実配信は担当が直接確認する。
 
