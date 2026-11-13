@@ -227,7 +227,7 @@ sdxl_scene_preview.main([])
         preview.resource_limits(preview.MAX_RSS,preview.MIN_AVAILABLE)
         for rss,available in ((preview.MAX_RSS+1,preview.MIN_AVAILABLE),(0,preview.MIN_AVAILABLE-1)):
             with self.assertRaises(RuntimeError):preview.resource_limits(rss,available)
-        need=preview.MIN_FREE+preview.model.TOTAL_DOWNLOAD_BYTES+preview.model.SAFETY_BYTES+64*1024**2
+        need=preview.MIN_FREE+preview.model.TOTAL_DOWNLOAD_BYTES+preview.model.SAFETY_BYTES+preview.model.LICENSE_TEXT_BYTES+64*1024**2
         with patch.object(preview.shutil,"disk_usage",return_value=SimpleNamespace(free=need-1)):
             with self.assertRaisesRegex(RuntimeError,"reserve"):
                 preview.check_disk_reservation(Path("scratch"))
@@ -264,9 +264,23 @@ sdxl_scene_preview.main([])
             with patch.object(preview,"download",side_effect=download):
                 preview.download_files(root,Mock(),receipt,root)
             self.assertTrue(receipt["models_downloaded"])
-            self.assertEqual(len(calls),len(preview.model.FILE_SPECS)+len(preview.model.SAFETY_FILE_SPECS))
+            self.assertEqual(len(calls),len(preview.model.FILE_SPECS)+len(preview.model.SAFETY_FILE_SPECS)+1)
             self.assertTrue(all(url.startswith("https://huggingface.co/") and len(options["sha256"])==64 for url,options in calls))
             self.assertFalse(any("Realistic_Vision" in url for url,options in calls))
+            self.assertEqual(calls[0][0],preview.model.LICENSE_TEXT_URL)
+            self.assertEqual(receipt["verified_files"]["license/canonical-license.txt"],preview.model.LICENSE_TEXT_FILE_SPEC)
+
+    def test_selected_photo_finetune_keeps_profile_and_binds_both_license_sources(self):
+        data=preview.model
+        self.assertIn("juggernaut",data.MODEL.lower())
+        self.assertEqual(data.REVISION,"cf419233522daa0b9ea36c3aff98fa2cab1fb0fb")
+        self.assertEqual(data.LICENSE_SHA256,data.FILE_SPECS["README.md"]["sha256"])
+        self.assertEqual(data.MODEL_CARD_URL,data.LICENSE_URL)
+        self.assertEqual(data.LICENSE_TEXT_FILE_SPEC,{"bytes":data.LICENSE_TEXT_BYTES,"sha256":data.LICENSE_TEXT_SHA256})
+        self.assertIn(data.LICENSE_TEXT_REVISION,data.LICENSE_TEXT_URL)
+        self.assertEqual(data.INFERENCE["num_inference_steps"],20)
+        self.assertEqual(data.INFERENCE["guidance_scale"],6.0)
+        self.assertEqual(data.INFERENCE["unet_compute_dtype"],"float32")
 
     def test_pinned_hash_rejects_corrupt_bytes_before_a_model_can_load(self):
         with tempfile.TemporaryDirectory() as directory:

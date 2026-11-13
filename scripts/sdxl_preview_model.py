@@ -1,68 +1,79 @@
-"""Pinned data-only SDXL preview profile; importing never downloads or loads weights.
+"""Pinned data-only SDXL-family preview; importing never downloads or loads weights.
 
-Weight digests and sizes are the official Hugging Face LFS metadata at REVISION.
-Small-file digests cover the exact response bytes, each bounded to 2 MiB. The
-allowlist excludes full checkpoints, fp32 copies, ONNX/Flax exports and refiner.
-The existing pinned safety checker is retained as a separate component.
+Weight digests/sizes are official Hugging Face LFS metadata at REVISION. Small
+file digests cover exact response bytes, each bounded to 2 MiB. The allowlist
+excludes monolithic checkpoints, fp32 copies, ONNX/Flax exports and refiner.
+The existing pinned safety checker remains a separate component.
 """
 
-REPO = 'stabilityai/stable-diffusion-xl-base-1.0'
+REPO = 'RunDiffusion/Juggernaut-XL-v9'
 MODEL = REPO
-REVISION = '462165984030d82259a11f4367a4eed129e94a7b'
-SOURCE_METADATA_URL = 'https://huggingface.co/api/models/stabilityai/stable-diffusion-xl-base-1.0/revision/462165984030d82259a11f4367a4eed129e94a7b?blobs=true'
-LICENSE_NAME = "CreativeML Open RAIL++-M (July 26, 2023)"
-LICENSE_URL = 'https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/462165984030d82259a11f4367a4eed129e94a7b/LICENSE.md'
-LICENSE_SHA256 = '19b6998b569b53ac1fc2158a8a3202c8699a9a4605b47075715d9c96be7fb6d0'
-# Reviewed sections II.2 and III.5-6 / Attachment A: no-charge, royalty-free;
-# no licensor claim to outputs, subject to use restrictions. Ordinary fictional
-# adult fashion is not prohibited. The card's intended scope is research,
-# including art/design; this is not an unrestricted commercial-use assertion.
-# Keep unlawful uses, minor exploitation/harm, harmful falsehoods, personal-data
-# harm and discrimination excluded. The caller still reviews every preview.
+REVISION = 'cf419233522daa0b9ea36c3aff98fa2cab1fb0fb'
+SOURCE_METADATA_URL = 'https://huggingface.co/api/models/RunDiffusion/Juggernaut-XL-v9/revision/cf419233522daa0b9ea36c3aff98fa2cab1fb0fb?blobs=true'
+MODEL_CARD_URL = 'https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/blob/cf419233522daa0b9ea36c3aff98fa2cab1fb0fb/README.md'
+MODEL_CARD_SHA256 = '4c6b45288fcc4b08739d7a2eb12e930e1d91ad1ed485c841007c98b83d01c803'
+# The model card adds its paid-API condition to the canonical license below.
+LICENSE_NAME = "CreativeML Open RAIL-M + Juggernaut model-card conditions"
+LICENSE_URL = MODEL_CARD_URL
+LICENSE_SHA256 = MODEL_CARD_SHA256
+LICENSE_TEXT_REPO = 'CompVis/stable-diffusion-license'
+LICENSE_TEXT_REVISION = '14d42d09bffd871b1666a084fc954a50cff72ac0'
+LICENSE_TEXT_PATH = "license.txt"
+LICENSE_TEXT_URL = 'https://huggingface.co/spaces/CompVis/stable-diffusion-license/resolve/14d42d09bffd871b1666a084fc954a50cff72ac0/license.txt'
+LICENSE_TEXT_BYTES = 14_385
+LICENSE_TEXT_SHA256 = 'be351ebe7ac01bcdbb018639aadcfd38f136b7dc3f2a3d4d3a24db51d1b210ef'
+LICENSE_TEXT_FILE_SPEC = {'bytes': 14385, 'sha256': 'be351ebe7ac01bcdbb018639aadcfd38f136b7dc3f2a3d4d3a24db51d1b210ef'}
+# Scope reviewed: one free evaluation JPEG for a fictional newspaper, using a
+# wholly fictional adult in ordinary swimwear/fashion. No paid API is offered,
+# no new service contract is opened, and no model weights are redistributed.
+# The model card permits personal/creative work and separately requires a
+# license for paid-API deployment. Canonical sections 5-6 / Attachment A retain
+# lawful-use restrictions; the licensor claims no rights to compliant outputs.
+# This records this creative scope, not unconditional commercial permission.
+# Author recommends 30-40 steps; the fixed 20-step trial has unverified quality.
+RECOMMENDED_STEPS = (30, 40)
 SMALL_FILE_MAX_BYTES = 2_097_152
 MODEL_BYTES = 6_938_011_430
-TOTAL_DOWNLOAD_BYTES = 6_941_210_313
+TOTAL_DOWNLOAD_BYTES = 6_941_198_427
 
-FILE_SPECS = {'LICENSE.md': {'bytes': 14109,
-                'sha256': '19b6998b569b53ac1fc2158a8a3202c8699a9a4605b47075715d9c96be7fb6d0'},
- 'README.md': {'bytes': 8668,
-               'sha256': '40d263065b8a3e9a41996c257e11463fd97ae956ebf4e3f8b9625e0d78183893'},
- 'model_index.json': {'bytes': 609,
-                      'sha256': '6d7b93508390ab91ac5bfbe4aeb4dc2d83f7bb1b05fb069d714b5b0c75f70d44'},
- 'scheduler/scheduler_config.json': {'bytes': 479,
-                                     'sha256': 'af3e45a949aff8b8341ab8b811429ec03fee857a700a1d9477363e4fff9666e2'},
+FILE_SPECS = {'README.md': {'bytes': 10536,
+               'sha256': '4c6b45288fcc4b08739d7a2eb12e930e1d91ad1ed485c841007c98b83d01c803'},
+ 'model_index.json': {'bytes': 667,
+                      'sha256': '153b1da39e7cc780003d5b25eb8d07b9c84b08cc20fd05b95652e780a15c8011'},
+ 'scheduler/scheduler_config.json': {'bytes': 496,
+                                     'sha256': 'db6b4739b5e23285a9552ec7c59de7ce40f6a4a3562fc1eccbd843f6444e5102'},
  'text_encoder/config.json': {'bytes': 565,
-                              'sha256': '39b8b2e4b1949e36969caa425b6c81c68bace99198dd9078ce05d16ad401fe7f'},
+                              'sha256': '47ced7a4ab2ecec78818ac4e8e1578c66253c2b93861c67c0b6d6c33ce3ff829'},
  'text_encoder/model.fp16.safetensors': {'bytes': 246144152,
-                                         'sha256': '660c6f5b1abae9dc498ac2d21e1347d2abdb0cf6c0c0c8576cd796491d9a6cdd'},
+                                         'sha256': '698656aa4f452e1f8f38287240054a9b8d339b3051ec17d77d63bdb5605db01a'},
  'text_encoder_2/config.json': {'bytes': 575,
-                                'sha256': 'a892d1c3a69a7e9247a24de2bc1d5891e3109a54696e53be20093af671072c34'},
+                                'sha256': 'd9f7e7eb1e2d162908ecf7925234425c4f1c978152fd60e18e4af2c67ccebb19'},
  'text_encoder_2/model.fp16.safetensors': {'bytes': 1389382176,
-                                           'sha256': 'ec310df2af79c318e24d20511b601a591ca8cd4f1fce1d8dff822a356bcdb1f4'},
+                                           'sha256': '9962c194f50a9c580ebe573f2a4756d76dcd29abe15bffb0a5905509eb6a8dda'},
  'tokenizer/merges.txt': {'bytes': 524619,
                           'sha256': '9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a'},
- 'tokenizer/special_tokens_map.json': {'bytes': 472,
-                                       'sha256': 'c4864a9376a8401918425bed71fc14fc0e81f9b59ec45c1cf96cccb2df508eac'},
- 'tokenizer/tokenizer_config.json': {'bytes': 737,
-                                     'sha256': '19d7b034cb0cc3ce9766c2231373ab8aa8991fc72e2c8f76558bfaae3de0d563'},
+ 'tokenizer/special_tokens_map.json': {'bytes': 588,
+                                       'sha256': '2cdb3b8331a60c92fc1e55a13e9fd61fd2293c5a51275fdcccd62b780052530e'},
+ 'tokenizer/tokenizer_config.json': {'bytes': 705,
+                                     'sha256': '6bdcee9ccce2a16ca2b4c0c5ed00b42c50ea225f4472a8c4c1e963a2902c2881'},
  'tokenizer/vocab.json': {'bytes': 1059962,
                           'sha256': 'e089ad92ba36837a0d31433e555c8f45fe601ab5c221d4f607ded32d9f7a4349'},
  'tokenizer_2/merges.txt': {'bytes': 524619,
                             'sha256': '9fd691f7c8039210e0fced15865466c65820d09b63988b0174bfe25de299051a'},
- 'tokenizer_2/special_tokens_map.json': {'bytes': 460,
-                                         'sha256': 'f118ab3a983206e4f32583448de6bd6aae4ee21869135cef1f5848a753cdaab6'},
- 'tokenizer_2/tokenizer_config.json': {'bytes': 725,
-                                       'sha256': 'c9d23941f76a41cbd50eda9290f57be7828f0a7a677939e9ef181f7e12bd1bdf'},
+ 'tokenizer_2/special_tokens_map.json': {'bytes': 462,
+                                         'sha256': 'c934044566ac411c4739e9cec969e061e8dcdf2bd108196a66ce917376d4d68e'},
+ 'tokenizer_2/tokenizer_config.json': {'bytes': 856,
+                                       'sha256': 'e70eb3e2b85a508e32bb81c32c13fc3f2b015548ca469b94627c2f32e445cba1'},
  'tokenizer_2/vocab.json': {'bytes': 1059962,
                             'sha256': 'e089ad92ba36837a0d31433e555c8f45fe601ab5c221d4f607ded32d9f7a4349'},
- 'unet/config.json': {'bytes': 1680,
-                      'sha256': '30ebc70750223e59006f7f2b4e1e6c102570aa19a9c4ae3e1fbe7591332dbae6'},
+ 'unet/config.json': {'bytes': 1778,
+                      'sha256': '73cd3f7bd618835b6d09eefd5155b84ccdeea07c32a4d201574af19bd405a5bc'},
  'unet/diffusion_pytorch_model.fp16.safetensors': {'bytes': 5135149760,
-                                                   'sha256': '83e012a805b84c7ca28e5646747c90a243c65c8ba4f070e2d7ddc9d74661e139'},
- 'vae/config.json': {'bytes': 642,
-                     'sha256': '0b331c8ac22ded5f9997a144a575c1d113d6169aff262c353f39015bd24a6264'},
+                                                   'sha256': 'cf1ee18eb36712683f50c1e674634875e2adf7413d7492d5f9aa7e69e1a8c17a'},
+ 'vae/config.json': {'bytes': 607,
+                     'sha256': 'bcbed358bb80da88bc8b61785b7d14c39b5be5745d813e4c6a56e9084d4dc9d2'},
  'vae/diffusion_pytorch_model.fp16.safetensors': {'bytes': 167335342,
-                                                  'sha256': 'bcb60880a46b63dea58e9bc591abe15f8350bde47b405f9c38f4be70c6161e68'}}
+                                                  'sha256': '6353737672c94b96174cb590f711eac6edf2fcce5b6e91aa9d73c5adc589ee48'}}
 
 SAFETY_MODEL = 'SimianLuo/LCM_Dreamshaper_v7'
 SAFETY_REVISION = 'a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5'
@@ -74,8 +85,8 @@ SAFETY_FILE_SPECS = {'safety_checker/config.json': {'bytes': 726,
  'feature_extractor/preprocessor_config.json': {'bytes': 518,
                                                 'sha256': '4db495644e3e5bd8fcac52f70e7fc0b413c911086021acf73ac30e5911166e95'}}
 
-INFERENCE = {'base_model': 'stabilityai/stable-diffusion-xl-base-1.0',
- 'base_revision': '462165984030d82259a11f4367a4eed129e94a7b',
+INFERENCE = {'base_model': 'RunDiffusion/Juggernaut-XL-v9',
+ 'base_revision': 'cf419233522daa0b9ea36c3aff98fa2cab1fb0fb',
  'pipeline': 'StableDiffusionXLPipeline',
  'device': 'cpu',
  'dtype': 'mixed',

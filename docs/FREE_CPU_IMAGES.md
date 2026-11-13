@@ -28,7 +28,7 @@
 
 品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用artifactだけを作り自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の定期処理は保留記事を除外する。
 
-別モデルの成人ポートレート試作は、同じ手動Actionの`preview_model=sdxl`を使う限定経路とする。対象は`indoor-beach-friends-exchange-ripples`の固定原稿だけで、`limit=1`・`retry_held=true`・`publish=false`・backfill空を必須とし、mainまたは指定の`codex/sdxl-preview-20261114`ブランチの正確なcommitで実行する。元本文を保ち写真指示だけを頭から太もも中央までの構図へ置き換えた候補記事と、元記事・候補それぞれの指紋、JPEG、実行receiptだけを1日保持する。固定モデル・ライセンス・部品ごとのSHAは`scripts/sdxl_preview_model.py`、メモリ・容量・停止保護は`scripts/sdxl_scene_preview.py`を正とする。通常モデルや採用manifestへ接続せず、所要時間・RAM・写真品質は実runと実画像QAで確認してから採用を判断する。
+別モデルの成人ポートレート試作は、同じ手動Actionの`preview_model=sdxl`で写真向けfine-tuneのJuggernautXL v9（SDXL系）を使う限定経路とする。対象は`indoor-beach-friends-exchange-ripples`の固定原稿だけで、`limit=1`・`retry_held=true`・`publish=false`・backfill空を必須とし、mainまたは指定の`codex/sdxl-preview-20261114`ブランチの正確なcommitで実行する。元本文を保ち写真指示だけを頭から太もも中央までの構図へ置き換えた候補記事と、元記事・候補それぞれの指紋、JPEG、実行receiptだけを1日保持する。固定モデル・モデルカード条件とライセンス本文・部品ごとのSHAは`scripts/sdxl_preview_model.py`、メモリ・容量・停止保護は`scripts/sdxl_scene_preview.py`を正とする。初回20ステップはモデルカードの30〜40推奨より少ない限定試験で、実品質は未確認。通常モデルや採用manifestへ接続せず、所要時間・RAM・写真品質は実runと実画像QAで確認してから採用を判断する。
 
 既刊の写真化プレビューは、さらに `backfill_scene` に新しい場面指示を渡し、`limit=1`・`publish=false`で手動実行する。通常キューが残る場合や公開を指定した場合は生成せず、日次上限もモデル取得前に判定する。生成物は元の記事を束縛する `source_article_sha256` 付きのartifactだけに保存し、実行中のcheckoutや本番素材は上書きしない。いつ試し、どう採用するかは[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を正本とする。
 

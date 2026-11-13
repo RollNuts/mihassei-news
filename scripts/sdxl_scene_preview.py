@@ -176,22 +176,26 @@ class Budget:
 
 
 def check_disk_reservation(path):
-    required = MIN_FREE + model.TOTAL_DOWNLOAD_BYTES + model.SAFETY_BYTES + 64 * 1024**2
+    required = MIN_FREE + model.TOTAL_DOWNLOAD_BYTES + model.SAFETY_BYTES + model.LICENSE_TEXT_BYTES + 64 * 1024**2
     if shutil.disk_usage(path).free < required:
         raise RuntimeError("Need 12 GiB reserve plus all pinned SDXL/checker bytes before downloading")
 
 
 def download_files(work, budget, receipt, output):
+    def pinned_file(key, url, destination, spec):
+        receipt["download_started"] = True
+        atomic_json(output / "receipt.json", receipt)
+        record = download(url, destination, budget, size=spec["bytes"], sha256=spec["sha256"])
+        receipt["verified_files"][key] = {"bytes":record["bytes"], "sha256":record["sha256"]}
+        atomic_json(output / "receipt.json", receipt)
+    pinned_file("license/canonical-license.txt", model.LICENSE_TEXT_URL,
+                work / "licenses/canonical-license.txt", model.LICENSE_TEXT_FILE_SPEC)
     for component, repo, revision, specs in (
             ("base", model.MODEL, model.REVISION, model.FILE_SPECS),
             ("safety", model.SAFETY_MODEL, model.SAFETY_REVISION, model.SAFETY_FILE_SPECS)):
         for relative, spec in specs.items():
-            receipt["download_started"] = True
-            atomic_json(output / "receipt.json", receipt)
-            record = download(f"https://huggingface.co/{repo}/resolve/{revision}/{relative}",
-                              work / component / relative, budget, size=spec["bytes"], sha256=spec["sha256"])
-            receipt["verified_files"][component + "/" + relative] = {"bytes":record["bytes"], "sha256":record["sha256"]}
-            atomic_json(output / "receipt.json", receipt)
+            pinned_file(component + "/" + relative, f"https://huggingface.co/{repo}/resolve/{revision}/{relative}",
+                        work / component / relative, spec)
     receipt["models_downloaded"] = True
 
 
@@ -427,7 +431,10 @@ def execute(output, *, check_only=False):
     receipt = {"version":1, "publication":"preview_only", "status":"started",
                "run_id":os.environ.get("GITHUB_RUN_ID"), "source_article_sha256":SOURCE_SHA,
                "article_slug":SLUG, "model":model.MODEL, "model_revision":model.REVISION,
-               "license":model.LICENSE_URL, "inference":model.INFERENCE,
+               "license":model.LICENSE_URL, "license_sha256":model.LICENSE_SHA256,
+               "model_card":model.MODEL_CARD_URL, "model_card_sha256":model.MODEL_CARD_SHA256,
+               "license_text_url":model.LICENSE_TEXT_URL, "license_text_revision":model.LICENSE_TEXT_REVISION,
+               "license_text_sha256":model.LICENSE_TEXT_SHA256, "inference":model.INFERENCE,
                "prompt":PROMPT, "prompt_2":PROMPT_2, "download_started":False,
                "models_downloaded":False, "model_import_started":False,
                "model_execution_started":False, "model_generation_completed":False, "verified_files":{}}
