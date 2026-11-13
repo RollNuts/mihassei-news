@@ -49,6 +49,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify native image bytes and retry-safe candidate staging
+        run: node scripts/native_image_ci_test.js
       - name: Validate read-only public health checker
         run: python3 -m py_compile scripts/check_live.py
       - name: Build the static site with all image fallback routes
