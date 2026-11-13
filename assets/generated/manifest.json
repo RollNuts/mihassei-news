@@ -763,6 +763,159 @@
       "source_png_sha256": "d3eb0e47a8096a079e3389f61fa000a6e9b2b7573db4cac9359477957a98ab5b",
       "supersedes_reason": "The unaccepted CPU candidate showed an unattached white frame over an ordinary sofa seat. This genuinely new native generation depicts the built-in front service drawer, pleated filter and backrest outlet together; no old article fingerprint or seed was rebound."
     },
+    "airport-baggage-robot-leaves-upper-shelves-empty": {
+      "adoption_note": "First adoption after a clarity edit. The native source was generated for the source_article_sha256; the current article preserves the exact scene_prompt and the scene of empty upper shelves before repacking. article_sha256 binds the actual adoption review to the current text, not a claim of regeneration.",
+      "article_sha256": "155f87733c3cbf8d70c5c2496eca7f469ac0f18782acb707a633e91a4a2675d2",
+      "bytes": 177043,
+      "generated_at": "2026-11-13T00:39:05.598343196Z",
+      "generated_at_source": "Timestamp in the recovered original PNG current C2PA claim; cryptographic validation not performed.",
+      "generation_id": "e5f0e61c-e1b3-44f1-b238-21ff1a7d8106",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": null,
+      "generation_prompt_source": "The originating task did not retain the exact ImageGen tool input. The article scene_prompt is preserved separately without claiming it was the verbatim tool input.",
+      "generation_receipt": "xmp:iid:e5f0e61c-e1b3-44f1-b238-21ff1a7d8106",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "recorded_scene_prompt": "Photorealistic candid Japanese airport baggage-room press photograph, landscape 16:9. Six realistic two-tier metal luggage carts line a concrete aisle, their LOWER shelves filled with ordinary unbranded wheeled suitcases while ALL UPPER shelves are visibly empty. A fictional 32-year-old adult Japanese airport baggage handler in plain safety workwear points toward one empty upper shelf. In foreground, a plausible industrial robotic gripper faces a suitcase on the lower shelf. Natural fluorescent facility light, physical steel carts, suitcase handles and wheels, documentary camera realism, correct shadows and materials, unposed news photography. No legible text, logos, famous people, painted art or glossy CGI.",
+      "recorded_scene_prompt_source": "content/articles.json at 3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d; unchanged during the clarity revision",
+      "sha256": "aabd9a7219d65e8b75c69c97b0e7f17d8b4d27d9d664eba0fd33a94b706beb21",
+      "source_article_sha256": "a984dc96ded13e74860ae56cfc0096bb34cc883bb9a9683a211f34d631b976c2",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-13T00:39:05.598343196Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-13T00:39:05.598346862Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-13T00:39:05.596398499Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              125,
+              212,
+              101,
+              225,
+              59,
+              163,
+              164,
+              249,
+              63,
+              0,
+              118,
+              200,
+              69,
+              223,
+              73,
+              112,
+              211,
+              91,
+              82,
+              226,
+              13,
+              241,
+              158,
+              39,
+              26,
+              19,
+              103,
+              84,
+              189,
+              74,
+              200,
+              77
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:e5f0e61c-e1b3-44f1-b238-21ff1a7d8106",
+        "manifest_uri": "urn:c2pa:179903d3-fc84-4a4e-b4ac-5207eb1458c2",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2166662,
+        "caBX_sha256": "6bb55d596ecd0d1a9b22410791ee8dbf0eb7811282fa1c59bdb3d3dbf23bb27c",
+        "candidate_branch": "native-image-candidate/airport-baggage-robot-leaves-upper-shelves-empty/4c6dcc7d866d507e-1d72ec1c3fdf",
+        "candidate_commit": "7ab0701b3641154e98820705c6685ca0c3afe544",
+        "file_id": "file_000000006f1081f5a36affb34867fcce",
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recover-file_000000006f1081f5a36affb34867fcce",
+        "logical_run_id_basis": "Stable recovery identity based on the exact source file ID; the original generation logicalRunId was not retained and is not inferred.",
+        "method": "Official Library prepare_materialize recovered the exact original PNG and its SHA matched the publisher record. NativeImageStage saved all original PNG parts, a newly encoded JPEG and receipt. A fresh runtime loaded the candidate without local source bytes and verified complete source/JPEG SHA256 and reproducible conversion.",
+        "original_png_parts": [
+          {
+            "blob_sha": "6886d6475fc0557db2ad5b9aebb30bd0ca6feb67",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/source.png.part000",
+            "sha256": "ab04d336705a9fded4cca38920c9db7d5ac8df56e04c253ddb119a9435814139"
+          },
+          {
+            "blob_sha": "d00aa9c4b144dcb9695ad13bb5fe4a919c8e5a7d",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/source.png.part001",
+            "sha256": "2b49b80bb5f10a99c8a83085a5755950675d630809fa26bfd14afa97006c4177"
+          },
+          {
+            "blob_sha": "7bd9bf1f211696fee9dc37a9052e340dc5e35a32",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/source.png.part002",
+            "sha256": "1355f754c8845c3e630d9cdd6f36fdd976dc1d3bc32cb5ffdd52421a41bf42b9"
+          },
+          {
+            "blob_sha": "3ba2abd3f3431fb8a8224e8ee03dc8f1288d8111",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/source.png.part003",
+            "sha256": "62800d5946d444a935182b868615f59a31ac25ad31805d8614ef382e8376aea3"
+          },
+          {
+            "blob_sha": "ec5c8b44d064ac803a98edc7424da3c64119c83f",
+            "bytes": 69510,
+            "path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/source.png.part004",
+            "sha256": "a6f9121814fbcab43b1d37b2ca33b2f475c362320749d8d49e53d9e4448940aa"
+          }
+        ],
+        "prior_task_reported_generation_id": "6d29bdae-77f9-4940-aa00-e909b20675ef",
+        "prior_task_reported_generation_id_basis": "Identifier retained in publisher PR #700; not substituted for the observed C2PA asset instanceID.",
+        "receipt_path": "maintenance/native-image-candidates/airport-baggage-robot-leaves-upper-shelves-empty/receipt.json",
+        "receipt_sha256": "845af2ff08dda4472a3d3a4f420a5bb8fd927ab7d26da26391e858cfdd54b58a",
+        "recovered_at": "2026-11-13T01:00:43.309Z",
+        "width": 1672
+      },
+      "source_png_sha256": "3162c947e58b948c1d189484f51f4f1016c6846b8fa1c1e91d4952a0bd6afb10",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "apology-before-incident": {
       "article_sha256": "bc989735b2fdeddaa0dbfa3c080a51d777104ce6631a25523861b4a66ef6d4aa",
       "bytes": 153436,
