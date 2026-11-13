@@ -1,0 +1,118 @@
+name: One-shot PR708 content repair
+on:
+  pull_request:
+    types: [opened]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  apply:
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'fix/pr708-publication-repair-20261113'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPAIR_BRANCH: fix/pr708-publication-repair-20261113
+      EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Verify branch lease and free image route without changing it
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)" = "$EXPECTED_HEAD"
+          test "$(gh api repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml --jq .state)" = active
+          python3 - <<'PY'
+          import shutil
+          assert shutil.disk_usage('.').free >= 12 * 1024**3, 'Preserve 12 GiB free-space guard'
+          PY
+      - name: Apply only the reviewed article correction and exact old-image rejection
+        run: |
+          python3 - <<'PY'
+          import copy, hashlib, json
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+          slug = 'rice-cooker-price-reservation-vouchers-sell-first'
+          path = Path('content/articles.json')
+          raw = path.read_bytes()
+          blob = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+          assert blob == '3385620fc13e7b8d2b683daed35a96411100d92f', 'Article baseline moved; stop rather than overwrite'
+          articles = json.loads(raw)
+          before = copy.deepcopy(articles)
+          article = next(a for a in articles if a['slug'] == slug)
+          def fingerprint(a):
+              fields = {k: a.get(k, '') for k in ('slug', 'title', 'summary', 'category', 'paragraphs', 'scene_prompt')}
+              return hashlib.sha256(json.dumps(fields, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+          old_article_sha = fingerprint(article)
+          assert old_article_sha == '8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd'
+          stamp = datetime.now(timezone(timedelta(hours=9))).isoformat(timespec='seconds')
+          article['title'] = '炊飯器は1台、値段予約券は100枚　家電店が「値上げしない約束」を別売り'
+          article['summary'] = '値札が仕入れ価格に連動して変わる家電店で、年末まで同じ金額で買える約束が500円の別売りになった。券は他人へ売ることもでき、売り場では炊飯器の機能より券の出品価格を見比べる客が増えた。'
+          article['paragraphs'] = [
+              '家電チェーン「先棚電機」が13日、後日も同じ値段で商品を買える保証を、家電本体とは別に売り始めた。炊飯器売り場では、1枚500円の「値段予約券」100枚が開店から数時間で完売した。店員が「予約券完売」の札を掛けた隣で、対象の炊飯器は棚に積まれたままだった。',
+              '同店は、仕入れ価格に連動して値札を一日に何度も更新する販売方式へ移っていた。以前は見積書に無料で付けていた価格の有効期間も、今回から有料になった。来月買い替えるために予算を決めたい客は、券を買えば、そこに記された炊飯器本体の金額で12月末までに1台買える。500円は価格を固定するための料金で、本体代金からは引かれず、使わなくても戻らない。',
+              '予約券は店のアプリで他人へ売ることもでき、売買が成立するたび店に手数料が入る。午後には、朝500円で買った券に1200円の売り希望額を付け、買い手を待つ客も現れた。買い替え時期を決めるために来た人まで、炊飯器の機能表ではなく、券の出品画面を見比べていた。',
+              '炊飯器が壊れたという客は、棚から実物の箱を抱えてレジに来た。予約券がなくても、その時の店頭価格で購入できる。店員が券の売買機能を説明し始めると、客は「値段を売り買いするより、今日ご飯を炊きたいんです」と答え、通常の代金を払って箱を持ち帰った。',
+              '閉店時の販売表は「値段予約券100枚、炊飯器1台」だった。店長は炊飯器の追加発注を見送り、翌日も券を販売することにした。「券なら売れても、倉庫から運ばなくていい」。売り場の炊飯器には、朝から変わらず「本日お持ち帰りできます」の札が付いていた。'
+          ]
+          article['modified_at'] = stamp
+          article['scene_prompt'] = 'A white rice cooker with its lid open sits on a shop counter beside a stack of small paper voucher tickets and a smartphone. Plain boxed rice cookers remain on the shelf behind it. Ordinary Japanese electronics shop, natural indoor light, documentary photograph, realistic plastic, paper and metal, no readable lettering or logos.'
+          article['reader_clarity'] = {
+              'who': '先棚電機',
+              'action': '後日も同じ値段で商品を買える保証を、家電本体とは別に売り始めた',
+              'oddity': '値上げしない約束を別売りした結果、価格を固定する券100枚に対して炊飯器本体は1台だけ売れた'
+          }
+          article['editorial_signature']['target'] = '価格変動の不安そのものを、固定価格の保証とその転売手数料として売り物にする家電小売'
+          article['editorial_signature']['action'] = '無料だった見積価格の有効期間を有料の値段予約券へ切り離し、券をアプリで売買できるようにした'
+          article['editorial_signature']['outcome'] = '券100枚は完売し1200円の売り希望も出たが、現物は1台しか売れず、店は炊飯器の追加発注を見送った'
+          article['behavior_basis'] = {
+              'motive': '客は翌月の買い替え予算を確定したい。店は仕入れ価格の変動を値札へ反映しつつ、価格保証の発行料と券の売買手数料を収入にしたい',
+              'ordinary_alternative': '店が見積価格の有効期間を無料で示すか、客が必要な日に本体をその時の店頭価格で買う',
+              'why_not': '店が無料の価格保証をやめて別売りにし、客は後日の価格を確保するため券を買う。譲渡可能な券には現物を買わず売却を待つ客も集まる',
+              'evidence_quote': '以前は見積書に無料で付けていた価格の有効期間も、今回から有料になった。'
+          }
+          assert len(before) == len(articles)
+          assert [a['slug'] for a in before] == [a['slug'] for a in articles]
+          assert [a for a in before if a['slug'] != slug] == [a for a in articles if a['slug'] != slug]
+          original = next(a for a in before if a['slug'] == slug)
+          for key in ('slug', 'source', 'published_at', 'fiction_at', 'category', 'tags', 'satire_tags', 'editorial_lane', 'editorial_form', 'editorial_tone', 'x_tags', 'x_tickers', 'x_share_lead'):
+              assert article.get(key) == original.get(key), f'Protected field changed: {key}'
+          assert '発売日の店頭価格' not in json.dumps(article['paragraphs'], ensure_ascii=False)
+          assert article['behavior_basis']['evidence_quote'] in ''.join(article['paragraphs'])
+          manifest_path = Path('assets/generated/manifest.json')
+          manifest = json.loads(manifest_path.read_text())
+          original_images = copy.deepcopy(manifest['images'])
+          image_record = manifest['images'][slug]
+          image_data = Path(f'assets/generated/{slug}.jpg').read_bytes()
+          image_sha = hashlib.sha256(image_data).hexdigest()
+          assert image_sha == image_record['sha256'] and image_sha.startswith('8390dd49a486')
+          assert image_record['article_sha256'] == old_article_sha
+          reason = 'Current original CPU JPEG was already visually reviewed: an electronics-store crowd looks at phones, but the rice cooker and paper price-lock vouchers are not identifiable. It does not depict the principal objects or the price-guarantee-versus-appliance contrast. Preserve the original JPEG, generation record and exact integer seed; do not republish it after the text revision.'
+          previous_hold = manifest.get('rejected', {}).get(slug)
+          assert previous_hold is None or previous_hold.get('rejected_candidate_sha256') == image_sha, 'Another candidate decision appeared'
+          manifest.setdefault('rejected', {})[slug] = {'article_sha256': old_article_sha, 'rejected_candidate_sha256': image_sha, 'reason': reason, 'reviewed_at': stamp, 'review_reference': 'https://github.com/RollNuts/mihassei-news/pull/708#issuecomment-6847571379'}
+          reviews_path = Path('content/visual_reviews.json')
+          reviews = json.loads(reviews_path.read_text())
+          previous_review = reviews.get('reviews', {}).get(slug)
+          assert previous_review is None or previous_review.get('decision') == 'rejected', 'Do not overwrite a new acceptance'
+          reviews.setdefault('reviews', {})[slug] = {'decision': 'rejected', 'article_sha256': old_article_sha, 'image_sha256': image_sha, 'reviewed_at': stamp, 'note': reason + ' Original visual observation is recorded in PR708 comment 6847571379; this record formalizes that observation and is not a new independent image inspection.'}
+          assert manifest['images'] == original_images
+          for target, value in ((path, articles), (manifest_path, manifest), (reviews_path, reviews)):
+              target.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          Path('.github/workflows/temporary-pr708-repair.yml').unlink()
+          print(json.dumps({'slug': slug, 'old_article_sha256': old_article_sha, 'new_article_sha256': fingerprint(article), 'rejected_image_sha256': image_sha, 'other_articles_unchanged': True, 'generation_records_unchanged': True, 'temporary_workflow_removed': True}, ensure_ascii=False))
+          PY
+          python3 scripts/editorial_mix.py --check --day 2026-11-13
+          python3 scripts/guard_generated_media_history.py 90b78faeeca0829615ef2fb249f0b8f7ac5d18af
+          git diff --check
+      - name: Save the correction on this PR branch only, without forcing
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin "refs/heads/$REPAIR_BRANCH" | cut -f1)" = "$EXPECTED_HEAD"
+          git config user.name 'Veripsa scoped content repair'
+          git config user.email '277724446+RollNuts@users.noreply.github.com'
+          git add content/articles.json assets/generated/manifest.json content/visual_reviews.json .github/workflows/temporary-pr708-repair.yml
+          git commit -m 'editorial: separate price certainty from appliances and preserve rejected JPEG history'
+          git push origin "HEAD:refs/heads/$REPAIR_BRANCH"
