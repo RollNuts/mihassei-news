@@ -5,6 +5,7 @@ on:
   pull_request:
 permissions:
   contents: read
+  pull-requests: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,6 +17,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Refuse a later PR that overlaps an existing article owner
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/review_release_guard.py owner --pr "$PR_NUMBER" --expected-head "$EXPECTED_HEAD"
       - name: Enforce editorial lane metadata and exact duplicate guards
         run: python3 scripts/editorial_mix.py --check
       - name: Install free local image validation dependency
