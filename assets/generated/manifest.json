@@ -3619,30 +3619,65 @@
     },
     "recycled-metal-electrodes-carry-previous-work-history": {
       "article_sha256": "92b006549526c5fe3e48939f411bdf78e1802cf10af4ad699cac3b05e2fd678f",
-      "bytes": 112764,
-      "generated_at": "2026-11-13T04:00:39.742195+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 167602,
+      "generated_at": "2026-11-13T04:33:47.504Z",
+      "generation_id": "c79c778a-6fae-4c0b-80e4-e37e0161b39b",
+      "generation_id_source": "Actual built-in output exec filename UUID; no backend generation ID exposed.",
+      "generation_prompt": "Photorealistic candid industrial newspaper photograph, landscape 16:9. Fictional Japanese factory dispatch area. The unmistakable main object is a thin flat silver-gray rectangular METAL ELECTRODE PLATE, about 40 by 30 cm, with realistic brushed-metal texture and a crisp thin metal edge, NOT a wooden board, not cardboard. A fictional Japanese shipping worker age 32 in plain navy work clothes and work gloves is carefully lowering this metal plate into a visibly OPEN corrugated cardboard shipping box lined with white protective foam. The plate remains fully visible above the open box. A second fictional adult worker age 35 in light-gray work clothes points at the metal plate. A handheld industrial code scanner lies on the workbench beside the box, and a small generic square black-and-white matrix-pattern label without lettering is on the box. Show natural hands and safe handling. A used darker metal electrode sheet rests flat on a separate part of the bench, suggesting reuse of metal. Ordinary factory daylight, documentary camera photograph, natural skin and fabric, physically credible shadows, slight workbench wear, mundane background. Medium close view prioritizing the electrode, open box and scanner rather than faces or stacks of boxes. No readable words, typography, captions, logos, brand names, watermarks, collage, illustration, anime, CGI, advertising lighting or glamour. This is a staged fictional future-news scene, not a real company or real person.",
+      "generation_receipt": "exec-c79c778a-6fae-4c0b-80e4-e37e0161b39b.png",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/recycled-metal-electrodes-carry-previous-work-history/92b006549526c5fe-33c4f1761ad7",
+        "commit_sha": "eb31a3daf4d74f85f49d27940e7a599740025170",
+        "receipt_path": "maintenance/native-image-candidates/recycled-metal-electrodes-carry-previous-work-history/receipt.json",
+        "receipt_sha256": "ca097f544c64686101930dc3f48eafc921fbac538664a8d471a423551b0864bb"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "92b006549526c5fe3e48939f411bdf78e1802cf10af4ad699cac3b05e2fd678f",
+        "bytes": 112764,
+        "generated_at": "2026-11-13T04:00:39.742195+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 3748272256141770558,
+        "sha256": "c97b2ecc7bb2739c0a66e65a9b99789f32bb21dee1221e36a9dec650b5143c93"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "92b006549526c5fe3e48939f411bdf78e1802cf10af4ad699cac3b05e2fd678f",
+        "decision": "rejected",
+        "image_sha256": "c97b2ecc7bb2739c0a66e65a9b99789f32bb21dee1221e36a9dec650b5143c93",
+        "note": "原CPU JPEGを本文全文と実表示して照合。主役が茶色い板で金属電極の薄い銀色板に見えず、閉じた大箱と疑似文字が目立つ。開いた梱包箱・電極・読取端末の対応が伝わらないため不採用。",
+        "reviewed_at": "2026-11-13T04:45:53.280479+00:00"
+      },
       "prompt_version": 3,
-      "seed": 3748272256141770558,
-      "sha256": "c97b2ecc7bb2739c0a66e65a9b99789f32bb21dee1221e36a9dec650b5143c93"
+      "sha256": "219a300df15acfcac0730999dd613b4d8b9f2b3b47de8c46f0a10f2c8722b8e0",
+      "source_png_sha256": "ee817f707649f1817df618e4f89bd55fd1b90e10ae96dbcd39f96c5cacd925c0",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
