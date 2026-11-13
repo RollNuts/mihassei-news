@@ -14,7 +14,6 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
-  checks: write
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -53,15 +52,55 @@ jobs:
           path: ${{ runner.temp }}/live-photo-health.json
           if-no-files-found: error
           retention-days: 3
-      - name: Publish a separate photograph-completion check without changing delivery success
-        if: ${{ !cancelled() && steps.photo_health.outcome == 'success' && github.ref == 'refs/heads/main' && github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false }}
+
+  photo_completion:
+    # The public-byte verifier above remains read-only. Only this isolated job
+    # may record check metadata; it never writes articles, assets or deployment.
+    needs: check
+    if: ${{ !cancelled() && needs.check.result == 'success' && github.ref == 'refs/heads/main' && github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: live-photo-health-${{ github.run_id }}
+          path: ${{ runner.temp }}/photo-health
+      - name: Validate this run's revision-bound photograph report
         env:
-          GH_TOKEN: ${{ github.token }}
           EXPECTED_SHA: ${{ github.sha }}
           DETAILS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           python3 scripts/review_release_guard.py photo-check-payload \
-            --report "$RUNNER_TEMP/live-photo-health.json" --expected-sha "$EXPECTED_SHA" \
+            --report "$RUNNER_TEMP/photo-health/live-photo-health.json" --expected-sha "$EXPECTED_SHA" \
             --details-url "$DETAILS_URL" --output "$RUNNER_TEMP/photo-completion-check.json"
-          gh api --method POST repos/RollNuts/mihassei-news/check-runs \
-            --input "$RUNNER_TEMP/photo-completion-check.json" --jq '{id, name, conclusion, head_sha}'
+      - name: Record photograph completion separately from delivery
+        uses: actions/github-script@v8
+        with:
+          retries: 0
+          script: |
+            const fs = require('node:fs');
+            const path = require('node:path');
+            const payload = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'photo-completion-check.json'), 'utf8'));
+            const expectedUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            if (context.repo.owner !== 'RollNuts' || context.repo.repo !== 'mihassei-news' ||
+                context.ref !== 'refs/heads/main' || payload.head_sha !== context.sha ||
+                payload.name !== 'Photograph completion' || payload.status !== 'completed' ||
+                !['success', 'failure'].includes(payload.conclusion) || payload.details_url !== expectedUrl) {
+              throw new Error('Photo check is not bound to this public-main verification run');
+            }
+            const {data} = await github.rest.checks.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              name: payload.name, head_sha: context.sha, status: payload.status,
+              conclusion: payload.conclusion, details_url: expectedUrl, output: payload.output
+            });
+            core.info(JSON.stringify({id: data.id, name: data.name, conclusion: data.conclusion, head_sha: data.head_sha}));
