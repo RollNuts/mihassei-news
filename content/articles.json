@@ -1,5 +1,70 @@
 [
   {
+    "slug": "cherry-tree-stethoscope-municipal-inspection",
+    "category": "政治",
+    "flash": "桜の幹から小さな音",
+    "fiction_company": "架空の枝音市",
+    "art": "cards",
+    "fiction_at": "2031-11-13T13:40:00+09:00",
+    "published_at": "2026-11-13T13:40:00+09:00",
+    "title": "桜並木に聴診器、市議会が「樹木健診」を制度化　最初の一本からカリカリ音",
+    "summary": "枝音市が、桜並木の幹に小型集音器を当てる定期健診制度を開始した。職員が一本ずつ音を記録し、異音のあった木を専門員が追加調査する。市議会は機材と巡回費用を予算化した。",
+    "paragraphs": [
+      "枝音市の駅前の桜並木で13日、市の樹木管理員・倉橋紗季（32）が黒い円盤形の集音器を一本目の幹に押し当てた。手元の端末に小さな波形が現れ、イヤホンから「カリ、カリ」と乾いた音が聞こえた。市議会が予算と点検手順を可決した「樹木健診」の初日だ。",
+      "サクラなどを傷める外来カミキリムシへの対策として、市は街路樹の検査を定期化した。これまでは職員が根元の木くずや枝の傷を目で確かめていた。新制度では幹の中の音も記録し、異音がある木を専門員が詳しく調べる。音だけで虫がいると決めず、現物を調べる順番を決めるために使う。市議会は集音器の購入と専門員の巡回費用を認め、検査日を木ごとに残すことにした。",
+      "倉橋はイヤホンを外し、最初の幹に検査日を書いた黄色い札を付けた。呼ばれた専門員は根元の木くずと樹皮の小さな穴を調べ、写真を撮って詳しい調査の対象にした。隣のサクラから同じ音は拾えなかったが、倉橋は「異音なし」も端末に記録し、円盤を次の幹へ運んだ。",
+      "午後、市議たちが現場を視察した。議長が「木の声を聞く市政です」と話す横で、倉橋はまた幹に集音器を当てた。「今は何と言っていますか」と議長が尋ねると、倉橋はイヤホンを外して答えた。「この木は静かです。もう一本、聞いてきます」。議長の挨拶が続く中、倉橋は次のサクラへ歩いていった。"
+    ],
+    "source": {
+      "kind": "政府公表",
+      "publisher": "環境省",
+      "published_at": "2026-11-12T00:00:00+09:00",
+      "url": "https://www.env.go.jp/press/press_05847.html",
+      "topic": "2026年11月12日、環境省はサクラ・モモ・ウメなどを加害する特定外来生物クビアカツヤカミキリへの対策について、地方公共団体向け交付金の追加公募を開始した（募集は12月25日まで）。現実の発表は自治体の対策への支援であり、樹幹に集音器を使う検診制度や特定の市の議決・検査成績を示さない。2031年の枝音市、議会の決定、集音器の運用、職員・専門員・議長の行為と発言はすべて創作。"
+    },
+    "scene_prompt": "Photorealistic candid horizontal 16:9 Japanese local-news photograph in a fictional city streetside cherry tree avenue in November. A fictional adult 32-year-old Japanese female municipal tree-care worker in simple navy work jacket presses a small round black acoustic contact sensor gently against a mature cherry tree trunk. She wears a single ordinary wired earbud connected to a handheld checking tablet, while a second adult arborist examines the base of the same tree with a small inspection torch. Natural late-autumn daylight, believable bark, leaves, realistic people, hands, sensor cable, tools and shadows. Real unposed press photo, no logos, readable text, CGI or illustrations.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "桜並木",
+      "外来生物",
+      "地方議会"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "桜並木",
+      "樹木健診"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "花見より先に、桜の健康診断。2031年の市議会は木の幹に耳を当てる定期検査を制度にした。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "2026年11月12日、環境省がサクラなどを傷める外来カミキリムシ対策の自治体向け支援公募を追加で開始した",
+      "target": "市議会がサクラ並木を守るため、幹の音と現物を併せて確かめる定期検査と予算を制度化",
+      "action": "樹木管理員が幹に集音器を当てて記録し、異音のあった木を専門員が確認して調査対象とする",
+      "outcome": "最初の木を追加調査に回し、職員は異音がない木も記録しながら次の幹へ検査を進めた"
+    },
+    "reader_clarity": {
+      "who": "枝音市議会と樹木管理員",
+      "action": "桜並木の幹の音を記録して専門員の追加点検につなぐ定期健診を始めた",
+      "oddity": "人の健康診断のようにサクラの幹に集音器を当て、木ごとに検査日を残す"
+    },
+    "behavior_basis": {
+      "motive": "サクラを傷める外来カミキリムシの兆候を早めに見つけ、被害の確認と適切な管理につなげたい",
+      "ordinary_alternative": "職員が根元の木くずや樹皮の傷を巡回時に目視点検する",
+      "why_not": "目視に加えて幹の音を記録し、異音のある木を専門員が追加点検する順番の判断材料にするため",
+      "evidence_quote": "音だけで虫がいると決めず、現物を調べる順番を決めるために使う。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月12日の外来カミキリムシ対策交付金の追加公募",
+      "continuation_force": "樹木への害虫被害が続けば自治体は街路樹の点検と防除に予算を割き、検査手段の改良を試す動機がある",
+      "future_result": "2031年、架空の市が幹の音も使う樹木健診を制度化し、異音のあったサクラの追加調査を始める"
+    }
+  },
+  {
     "slug": "recycled-metal-electrodes-carry-previous-work-history",
     "category": "技術",
     "flash": "新品の金属には使用歴",
