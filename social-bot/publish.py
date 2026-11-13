@@ -14,6 +14,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from ip.audit import check as validate_canon, payload_hash
 from review_policy import load_manifest, select_next, verify_one
+from article_comics import approved_comic_asset
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 import buffer_budget
@@ -261,7 +262,25 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 "Immediate send is reserved for reviewed experiment images "
                 "or article promotion"
             )
-    extra = ""
+    media_url = None
+    article_asset = None
+    if post.get("kind") == "article" and "comic_approval" in post:
+        article = post.get("article")
+        if (isinstance(article, dict)
+                and post.get("id") == "article-" + str(article.get("slug", ""))
+                and "https://veripsa.com/articles/" + str(article.get("slug", "")) + "/"
+                in str(post.get("text", ""))):
+            article_asset = approved_comic_asset(article, post["comic_approval"], HERE.parent)
+        if article_asset is not None:
+            filename, revision = article_asset
+            url = ASSET_BASE_URL.replace("/main/", "/" + revision + "/", 1) + "/" + filename
+            try:
+                if remote_asset_available(url):
+                    media_url = url
+            except (OSError, ValueError):
+                pass  # Optional media must not block the normal article post.
+    # Article comics reuse the same image attachment and mutation as historical
+    # image posts; invalid optional media never blocks an ordinary article.
     if post["kind"] in ("comic", "image"):
         if post["kind"] == "image" and (
             not post.get("id", "").startswith("xexp-") or
@@ -275,7 +294,9 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
         url = ASSET_BASE_URL + "/" + filename
         if not remote_asset_available(url):
             raise RuntimeError("Comic asset not publicly available yet: " + filename)
-        extra = ", assets: [{image: {url: " + qstring(url) + "}}]"
+        media_url = url
+    extra = (", assets: [{image: {url: " + qstring(media_url) + "}}]"
+             if media_url is not None else "")
     mutation = (
         "mutation { createPost(input: {text: " + qstring(post["text"])
         + ", channelId: " + qstring(channelid)

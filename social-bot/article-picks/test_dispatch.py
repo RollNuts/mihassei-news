@@ -9,6 +9,10 @@ import os
 import sys
 import tempfile
 import unittest
+import struct
+import subprocess
+import zlib
+from contextlib import ExitStack, contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -18,6 +22,9 @@ from urllib.parse import parse_qs, urlparse
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import dispatch as picks
+import article_comics as comics
+import buffer_budget as budget
+import publish
 READ_DELIVERY_RETRY_TIME = picks.delivery_retry_time
 
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
@@ -1505,6 +1512,200 @@ class ArticlePickTests(unittest.TestCase):
             picks.validate_state({"schema_version": 1, "queued": {
                 "slug": {"queued_at_utc": NOW.isoformat()}
             }})
+
+
+class ArticleComicAttachmentTests(unittest.TestCase):
+    """Use committed synthetic art and mocked providers, never production assets."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.story = {**article("comic-story", age_hours=4), "paragraphs": ["本文の一段落。"]}
+        self.relative = "social-bot/assets/article-comic-story.png"
+        self.image = self.root / self.relative
+        self.image.parent.mkdir(parents=True)
+        self.image.write_bytes(self.png())
+        self.git("init", "-q", "--template=", ".")
+        self.git("add", self.relative)
+        self.git("-c", "user.name=Offline test", "-c", "user.email=test@example.invalid",
+                 "-c", "commit.gpgsign=false", "commit", "-qm", "Synthetic fixture")
+        self.revision = self.git("rev-parse", "HEAD").strip()
+        self.review = {"approved_by": "owner", "reviewed_at": NOW.isoformat(),
+                       "article_sha256": comics.article_fingerprint(self.story),
+                       "image_sha256": hashlib.sha256(self.image.read_bytes()).hexdigest(),
+                       "path": self.relative}
+        self.config = {**CONFIG, "comic_attachments": {"comic-story": self.review}}
+
+    @staticmethod
+    def png(red=120):
+        def chunk(kind, data):
+            return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+        return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 2, 3, 8, 2, 0, 0, 0))
+                + chunk(b"IDAT", zlib.compress((b"\0" + bytes((red, 140, 160)) * 2) * 3))
+                + chunk(b"IEND", b""))
+
+    def git(self, *args):
+        return subprocess.run(["git", *args], cwd=self.root, check=True,
+                              capture_output=True, text=True).stdout
+
+    def submit(self, review=None, *, available=True, include_review=True, story=None):
+        story = self.story if story is None else story
+        post = {"kind": "article", "id": "article-" + story["slug"],
+                "text": "記事はこちら https://veripsa.com/articles/" + story["slug"] + "/"}
+        if include_review:
+            post.update(article=story, comic_approval=self.review if review is None else review)
+        with patch.object(publish, "HERE", self.root / "social-bot"), \
+             patch.object(publish, "remote_asset_available", return_value=available,
+                          side_effect=available if isinstance(available, Exception) else None) as remote, \
+             patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "mock-post"}}}) as send, \
+             patch.object(comics, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = NOW
+            self.assertEqual(publish.queue_one("mock-only", "mock-channel", post, mode="shareNow"), "mock-post")
+        return send.call_args.args[1], remote
+
+    @contextmanager
+    def main_context(self, *, config=None, state=None, retry=None):
+        (self.root / "content").mkdir(exist_ok=True)
+        (self.root / "content/articles.json").write_text(json.dumps([self.story]))
+        documents = {HERE / "config.json": self.config if config is None else config,
+                     HERE / "state.json": ledger() if state is None else state}
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(picks, "ROOT", self.root))
+            stack.enter_context(patch.object(publish, "HERE", self.root / "social-bot"))
+            stack.enter_context(patch.object(picks, "read_json", side_effect=lambda p: copy.deepcopy(documents[p])))
+            stack.enter_context(patch.object(picks, "delivery_retry_time", return_value=retry))
+            stack.enter_context(patch.dict(os.environ, {"BUFFER_API_KEY": "mock-only"}, clear=True))
+            for module in (picks, comics):
+                clock = stack.enter_context(patch.object(module, "datetime", wraps=datetime))
+                clock.now.return_value = NOW
+            mocks = {
+                "channel": stack.enter_context(patch.object(picks, "connected_channel", return_value=("org", CONFIG["channel_id"]))),
+                "existing": stack.enter_context(patch.object(picks, "list_existing", return_value=[])),
+                "save": stack.enter_context(patch.object(picks, "save_state")),
+                "remote": stack.enter_context(patch.object(publish, "remote_asset_available", return_value=True)),
+                "gql": stack.enter_context(patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "mock-post"}}})),
+                "queue": stack.enter_context(patch.object(picks, "queue_one", wraps=publish.queue_one)),
+            }
+            yield mocks
+
+    def test_committed_owner_review_attaches_one_image_at_exact_revision(self):
+        query, remote = self.submit()
+        expected = publish.ASSET_BASE_URL.replace("/main/", "/" + self.revision + "/") + "/article-comic-story.png"
+        remote.assert_called_once_with(expected)
+        self.assertIn('assets: [{image: {url: "' + expected + '"}}]', query)
+        self.assertEqual(query.count("assets:"), 1)
+        self.assertIn("mode: shareNow", query)
+
+    def test_missing_unapproved_stale_and_future_reviews_leave_legacy_payload(self):
+        baseline, remote = self.submit(include_review=False)
+        remote.assert_not_called()
+        for change in ({}, {"approved_by": "agent"}, {"reviewed_at": ""},
+                       {"reviewed_at": (NOW + timedelta(minutes=1)).isoformat()},
+                       {"article_sha256": "0" * 64}, {"image_sha256": "0" * 64}):
+            review = {} if not change else {**self.review, **change}
+            with self.subTest(review=review):
+                query, remote = self.submit(review)
+                self.assertEqual(query, baseline)
+                remote.assert_not_called()
+        query, remote = self.submit(story={**self.story, "paragraphs": ["変更された本文。"]})
+        self.assertEqual(query, baseline)
+        remote.assert_not_called()
+        self.image.write_bytes(self.png(121))
+        query, remote = self.submit()
+        self.assertEqual(query, baseline)
+        remote.assert_not_called()
+
+    def test_unsafe_paths_and_paused_legacy_manga_are_never_read_or_attached(self):
+        for path in ("../article-comic-story.png", "/tmp/article-comic-story.png",
+                     "https://example.invalid/art.png", "social-bot/assets/../article-comic-story.png",
+                     "social-bot\\assets\\article-comic-story.png", "social-bot/assets/nejimachi-006-big-shadow.png"):
+            with self.subTest(path=path), patch.object(Path, "read_bytes") as read:
+                self.assertIsNone(comics.approved_comic_asset(self.story, {**self.review, "path": path}, self.root, NOW))
+                read.assert_not_called()
+
+    def test_symlinks_missing_and_uncommitted_or_changed_head_art_are_rejected(self):
+        data = self.image.read_bytes()
+        other = self.root / "other.png"
+        other.write_bytes(data)
+        self.image.unlink()
+        self.assertIsNone(comics.approved_comic_asset(self.story, self.review, self.root, NOW))
+        self.image.symlink_to(other)
+        self.assertIsNone(comics.approved_comic_asset(self.story, self.review, self.root, NOW))
+        self.image.unlink()
+        self.image.write_bytes(data)
+        assets = self.image.parent
+        backup = assets.with_name("saved-assets")
+        assets.rename(backup)
+        assets.symlink_to(backup, target_is_directory=True)
+        self.assertIsNone(comics.approved_comic_asset(self.story, self.review, self.root, NOW))
+        assets.unlink()
+        backup.rename(assets)
+        untracked = assets / "article-comic-new.png"
+        untracked.write_bytes(data)
+        self.assertIsNone(comics.approved_comic_asset(self.story, {**self.review, "path": str(untracked.relative_to(self.root))}, self.root, NOW))
+        self.image.write_bytes(self.png(121))
+        updated = {**self.review, "image_sha256": hashlib.sha256(self.image.read_bytes()).hexdigest()}
+        self.assertIsNone(comics.approved_comic_asset(self.story, updated, self.root, NOW))
+
+    def test_unavailable_remote_art_falls_back_to_identical_text_payload(self):
+        baseline, _ = self.submit(include_review=False)
+        for available in (False, TimeoutError("offline simulated timeout")):
+            with self.subTest(available=available):
+                query, remote = self.submit(available=available)
+                remote.assert_called_once()
+                self.assertEqual(query, baseline)
+
+    def test_optional_media_keeps_article_identity_slot_and_default_payload(self):
+        for config in (CONFIG, {**CONFIG, "comic_attachments": {}},
+                       {**CONFIG, "comic_attachments": None},
+                       {**CONFIG, "comic_attachments": []}, self.config):
+            with self.subTest(config=config), self.main_context(config=config) as mocks:
+                self.assertEqual(picks.main(), 0)
+                post = mocks["queue"].call_args.args[2]
+                self.assertEqual(post["kind"], "article")
+                self.assertEqual(post["id"], "article-comic-story")
+                self.assertEqual(mocks["queue"].call_args.kwargs, {"mode": "shareNow", "return_post": True})
+                receipt = mocks["save"].call_args.args[0]["queued"]["comic-story"]
+                self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
+                if config is not self.config:
+                    self.assertEqual(set(post), {"kind", "id", "text"})
+                    mocks["remote"].assert_not_called()
+
+    def test_approved_art_cannot_bypass_slug_slot_daily_spacing_or_cooldown(self):
+        used = {**recorded(hours=1), "slot_jst": picks.promotion_slot(NOW).isoformat()}
+        earlier = {**recorded(hours=3), "slot_jst": "2026-11-05T09:05:00+09:00"}
+        recent = {**earlier, "buffer_sent_at_at_accept": (NOW - timedelta(minutes=30)).isoformat()}
+        cases = [(self.config, ledger(**{"comic-story": recorded()}), None, False),
+                 (self.config, ledger(used=used), None, True),
+                 ({**self.config, "max_per_jst_day": 1}, ledger(earlier=earlier), None, True),
+                 (self.config, ledger(recent=recent), None, True),
+                 (self.config, ledger(), datetime.fromisoformat("2026-12-03T03:05:19+00:00"), True)]
+        for config, state, retry, before_network in cases:
+            with self.subTest(state=state, retry=retry), self.main_context(config=config, state=state, retry=retry) as mocks:
+                self.assertEqual(picks.main(), 0)
+                for name in ("queue", "remote", "gql"):
+                    mocks[name].assert_not_called()
+                if before_network:
+                    mocks["channel"].assert_not_called()
+                    mocks["existing"].assert_not_called()
+
+    def test_article_comic_still_obeys_shared_buffer_budget_hold_before_http(self):
+        path = self.root / "api-budget.json"
+        budget.write(path, {"schema_version": 1, "requests": [], "provider_limits": [],
+                            "provider_retry_at_utc": "2026-12-03T03:05:19+00:00"})
+        post = {"kind": "article", "id": "article-comic-story", "article": self.story,
+                "comic_approval": self.review, "text": "https://veripsa.com/articles/comic-story/"}
+        with patch.object(publish, "HERE", self.root / "social-bot"), \
+             patch.object(publish, "remote_asset_available", return_value=True), \
+             patch.object(publish, "urlopen") as http, \
+             patch.dict(os.environ, {"BUFFER_BUDGET_PATH": str(path), "BUFFER_REQUEST_ROLE": "publish"}), \
+             patch.object(budget, "datetime", wraps=datetime) as clock:
+            clock.now.return_value = NOW
+            with self.assertRaisesRegex(RuntimeError, "hold until"):
+                publish.queue_one("mock-only", "mock-channel", post, mode="shareNow")
+            http.assert_not_called()
+        self.assertEqual(budget.read(path)["requests"], [])
 
 
 if __name__ == "__main__":

@@ -919,9 +919,12 @@ def main() -> int:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return report_outcome("no_eligible")
     text = publication_text(eligible)
+    post = {"kind": "article", "id": "article-" + eligible["slug"], "text": text}
+    comics = config.get("comic_attachments", {})
+    if isinstance(comics, dict) and eligible["slug"] in comics:
+        post.update(article=eligible, comic_approval=comics[eligible["slug"]])
     buffer_receipt = queue_one(
-        token, channel_id,
-        {"kind": "article", "id": "article-" + eligible["slug"], "text": text},
+        token, channel_id, post,
         mode="shareNow", return_post=True,
     )
     if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str):

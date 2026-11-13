@@ -9,5 +9,6 @@
   "minimum_interval_hours": 2,
   "max_per_jst_day": 7,
   "fresh_minimum_age_hours": 1,
-  "fresh_maximum_age_hours": 18
+  "fresh_maximum_age_hours": 18,
+  "comic_attachments": {}
 }

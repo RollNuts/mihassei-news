@@ -1,6 +1,8 @@
 # 未発生新聞の記事をXへ自動紹介する
 
-Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール短文、キャラ日常、`useful`独自稿、漫画は自動送信しない。既存のBuffer FreeチャンネルとGitHub Actionsだけを使い、追加費用は0円を維持する。
+Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール短文、キャラ日常、`useful`独自稿、旧連載漫画は自動送信しない。既存のBuffer FreeチャンネルとGitHub Actionsだけを使い、追加費用は0円を維持する。
+
+記事紹介には、明示承認された縦長PNG漫画1枚を同じ既存枠で任意添付できる。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`がそろい、本文・実画像・同じ画像を含むgit revisionが一致するまで添付しない。欠測・失効・公開画像未到達なら通常の記事紹介を続け、旧漫画の停止設定は維持する。
 
 ## 配信
 
