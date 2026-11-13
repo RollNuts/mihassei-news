@@ -30,6 +30,24 @@ class AssetOwnershipTests(unittest.TestCase):
                     return [{"filename": path}]
             self.assertEqual(g.touched(API(), {"number": 714}), set(), path)
 
+    def test_branch_only_repair_declares_its_existing_article_target(self):
+        class API:
+            def pages(self, route):
+                return [{"filename": ".github/workflows/temporary-pr708-repair.yml"}]
+        body = "## 対象\n既に統合されたPR #708の公開記事 `rice` だけを修正する。\n\n## 検証\n別記事 `other` は触らない。"
+        self.assertEqual(g.touched(API(), {"number": 711, "body": body}), {"rice"})
+
+    def test_existing_handoff_slug_fields_are_read_without_incidental_mentions(self):
+        for line in ("- 対象slug: `rice`", "- slug：rice", "**slug**: `rice`"):
+            self.assertEqual(g.declared_slugs({"body": line + "\n比較記事 `other`"}), {"rice"})
+        self.assertEqual(g.declared_slugs({"body": "炊飯器 `rice` は別PRで完了。"}), set())
+
+    def test_handoff_target_change_invalidates_the_ownership_snapshot(self):
+        before = {"number": 714, "state": "open", "head": {"sha": "a" * 40},
+                  "base": {"sha": "b" * 40, "ref": "main"}, "body": "slug: rice"}
+        after = {**before, "body": "slug: kitchen"}
+        self.assertNotEqual(g.signature(before), g.signature(after))
+
     def test_matching_but_incomplete_material_count_objects_fail_closed(self):
         value = {"checkout_sha": "a" * 40,
                  "live_checks": {k: "success" for k in ("revision", "articles", "share_cards")},

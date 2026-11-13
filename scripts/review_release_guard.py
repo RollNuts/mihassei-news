@@ -104,8 +104,26 @@ class GitHub:
         return self.cache[key]
 
 
+def declared_slugs(pr: dict) -> set[str]:
+    """Honor exact existing handoff targets, not incidental mentions elsewhere."""
+    body = pr.get("body") or ""
+    require(isinstance(body, str), "Malformed PR handoff")
+    result = set()
+    for line in body.splitlines():
+        line = line.strip().lstrip("-* ").replace("**", "")
+        match = re.fullmatch(r"(?:対象\s*slug|slug)\s*[:：]\s*`?([a-z0-9]+(?:-[a-z0-9]+)*)`?\s*", line, re.I)
+        if match:
+            result.add(match.group(1))
+    # A branch-only repair can already own an article before its workflow edits
+    # articles.json. Read the existing target section used by PR711 as well.
+    for section in re.findall(r"(?ms)^##[ \t]+対象[ \t]*\n(.*?)(?=^##[ \t]|\Z)", body):
+        result.update(re.findall(r"公開記事\s+`([a-z0-9]+(?:-[a-z0-9]+)*)`", section))
+    return result
+
+
 def signature(pr: dict) -> tuple:
-    return pr["number"], pr["state"], sha(pr["head"]["sha"]), sha(pr["base"]["sha"]), pr["base"]["ref"]
+    return (pr["number"], pr["state"], sha(pr["head"]["sha"]), sha(pr["base"]["sha"]),
+            pr["base"]["ref"], tuple(sorted(declared_slugs(pr))))
 
 
 def touched(api, pr: dict) -> set[str]:
@@ -113,7 +131,7 @@ def touched(api, pr: dict) -> set[str]:
     require(all(isinstance(row, dict) and isinstance(row.get("filename"), str) for row in files),
             "Malformed changed-file listing")
     paths = {name for row in files for name in (row["filename"], row.get("previous_filename", ""))}
-    result = {match.group(1) for path in paths if (match := ASSET.fullmatch(path))}
+    result = declared_slugs(pr) | {match.group(1) for path in paths if (match := ASSET.fullmatch(path))}
     selected = paths & JSON_PATHS.keys()
     if not selected:
         return result

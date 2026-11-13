@@ -820,14 +820,15 @@ class SiteTests(unittest.TestCase):
 
     def test_rss_contains_licensed_first_party_preview_images(self):
         """Feed clients can find safe image previews with the Media RSS standard."""
-        from scripts.build import social_image, uses_stock_photo
+        from scripts.build import load, social_image, uses_stock_photo
         from scripts.visual_review import reviewed_generated_scene
         namespace={"media":"http://search.yahoo.com/mrss/"}
         root=ET.parse(ROOT/"dist/feed.xml").getroot()
         entries=root.findall("./channel/item")
         self.assertEqual(len(entries),min(90,len(self.articles)))
         by_url={n.findtext("link"):n for n in entries}
-        for a in self.articles[:90]:
+        # RSS uses the publication-time ordering from build.load(), including tied dates.
+        for a in load()[:90]:
             url="https://veripsa.com/articles/"+a["slug"]+"/"
             self.assertIn(url,by_url)
             item=by_url[url]
