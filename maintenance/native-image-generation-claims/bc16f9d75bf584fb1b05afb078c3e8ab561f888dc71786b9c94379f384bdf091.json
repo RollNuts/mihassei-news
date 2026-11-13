@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "bc16f9d75bf584fb1b05afb078c3e8ab561f888dc71786b9c94379f384bdf091",
+  "slug": "volunteer-award-ceremony-visits-community-kitchen",
+  "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+  "logical_run_id": "volunteer-award-20261113-1730-photo-recovery",
+  "prompt_sha256": "0f3df4796af775b9f10ffbf08bfe07e104bd3261febcbe4e9e2962020c059d0e",
+  "reserved_at": "2026-11-13T09:43:33.256Z",
+  "baseline": {
+    "commit_sha": "1b5b31442e260e1d6984378d9cacb72c274d64ec",
+    "tree_sha": "94f163d08297ed0dc11c103cf46416af79bd52b0",
+    "protected_hashes": {
+      "content/articles.json": "553d40d545d86db0f7c3afa7c3edebe2a5017e75f5b4da625983d264e77bfb47",
+      "assets/generated/manifest.json": "9fb3e2fc0b10350c74b1fd8f58f01d4a856f6f0c6c8c70ac3322e2c960e373b5",
+      "content/visual_reviews.json": "b905bab2599ede1cd69f115f011f47d5e186abebc9a7627931e0ccdb7a144165"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "e7a385dfc40b7a5bab1930b81d8f18a9d03436b9",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "c9e9db48288e14716fd4067b68b4a61c42fcd30553e0052ca44d1c5b05ff5d6a",
+    "observed_at": "2026-11-13T09:43:17.679Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
