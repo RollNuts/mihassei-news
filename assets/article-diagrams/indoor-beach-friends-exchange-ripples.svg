@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" width="720" height="840" viewBox="0 0 720 840" data-article-sha256="ad688da6be2dbd5407d8dc2c6d87b29ce020f5e8ed323767ce4fece8a2ac3aac">
+  <title>離れた浅瀬へ、小波の返事</title>
+  <desc>さやが浅瀬で足を動かすと、動きの合図が通信で離れた町へ届き、友人側の装置が小波を起こす。反対向きにも送り返せる。水そのものが二つの場所を移動するわけではない。</desc>
+  <defs>
+    <marker id="signal-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M1 1 11 6 1 11" fill="none" stroke="#b56c42" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>
+  <rect width="720" height="840" rx="24" fill="#faf6ee"/>
+  <g font-family="Hiragino Sans, Noto Sans CJK JP, sans-serif" fill="#293e41">
+    <rect x="32" y="28" width="656" height="278" rx="22" fill="#fffdf8" stroke="#dbd5c8" stroke-width="2"/>
+    <text x="60" y="78" font-size="32" font-weight="700">さやの浅瀬</text>
+    <text x="60" y="125" font-size="30">① 足で水を払う</text>
+    <path d="M56 216 Q178 201 300 216 T544 216 T664 216 L664 282 56 282Z" fill="#d8eceb"/>
+    <path d="M56 216 Q178 201 300 216 T544 216 T664 216" fill="none" stroke="#70a6aa" stroke-width="4"/>
+    <path d="M198 151 198 221 Q208 236 242 225 L265 218 Q270 209 257 209 L236 210 233 151" fill="#e7ba9d" stroke="#566969" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M165 240 Q207 254 264 238 M150 256 Q213 274 283 251" fill="none" stroke="#4c8f98" stroke-width="4" stroke-linecap="round"/>
+    <path d="m281 209 12-12 m-4 35 17 2 m-112-13-10-11" fill="none" stroke="#4c8f98" stroke-width="4" stroke-linecap="round"/>
+    <rect x="551" y="173" width="64" height="77" rx="10" fill="#f1e3cc" stroke="#6f7971" stroke-width="3"/>
+    <circle cx="583" cy="194" r="6" fill="#b56c42"/>
+    <path d="M566 220 H600 M566 232 H600" stroke="#6f7971" stroke-width="3" stroke-linecap="round"/>
+    <path d="M301 338 V468" fill="none" stroke="#b56c42" stroke-width="5" stroke-dasharray="8 9" marker-end="url(#signal-arrow)"/>
+    <path d="M351 468 V338" fill="none" stroke="#b56c42" stroke-width="5" stroke-dasharray="8 9" marker-end="url(#signal-arrow)"/>
+    <text x="390" y="383" font-size="30" font-weight="700">② 動きの合図</text>
+    <text x="390" y="425" font-size="30">を通信</text>
+    <text x="390" y="467" font-size="25" fill="#716c60">水は移動しない</text>
+    <rect x="32" y="508" width="656" height="278" rx="22" fill="#fffdf8" stroke="#dbd5c8" stroke-width="2"/>
+    <text x="60" y="558" font-size="32" font-weight="700">離れた町の友人の浅瀬</text>
+    <text x="60" y="605" font-size="30">③ 装置が小波をつくる</text>
+    <path d="M56 696 Q178 681 300 696 T544 696 T664 696 L664 762 56 762Z" fill="#d8eceb"/>
+    <path d="M56 696 Q178 681 300 696 T544 696 T664 696" fill="none" stroke="#70a6aa" stroke-width="4"/>
+    <rect x="120" y="653" width="64" height="77" rx="10" fill="#f1e3cc" stroke="#6f7971" stroke-width="3"/>
+    <circle cx="152" cy="674" r="6" fill="#b56c42"/>
+    <path d="M135 700 H169 M135 712 H169" stroke="#6f7971" stroke-width="3" stroke-linecap="round"/>
+    <path d="M203 712 Q235 693 267 712 T331 712 T395 712 M203 736 Q235 717 267 736 T331 736 T395 736" fill="none" stroke="#4c8f98" stroke-width="4" stroke-linecap="round"/>
+    <path d="M472 631 472 703 Q482 718 516 707 L539 700 Q544 691 531 691 L510 692 507 631" fill="#e7ba9d" stroke="#566969" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M433 732 Q482 747 542 729" fill="none" stroke="#4c8f98" stroke-width="4" stroke-linecap="round"/>
+    <text x="360" y="823" text-anchor="middle" font-size="27" fill="#716c60">友人からも、小波を送り返せる</text>
+  </g>
+</svg>
