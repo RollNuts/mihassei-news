@@ -66,6 +66,10 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # published scene direction. They avoid spending the small CLIP budget on
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
+    "indoor-beach-friends-exchange-ripples": (
+        "A Japanese adult woman, age 27, wearing a navy bikini and open white "
+        "beach shirt, flicks ankle-deep water with one foot at an indoor sandy beach."
+    ),
     "fridge-checkin-five-years-only-opening-times": (
         "Close-up of a white refrigerator door covered with yellow paper notes "
         "beside its large handle. A black smartphone lies face-down on the "
@@ -135,6 +139,7 @@ CPU_SCENES = {
 # versions. A later body or scene edit must use its current direction rather
 # than silently repeating an old compact scene with the unchanged stable seed.
 CPU_SCENE_SOURCE_HASHES = {
+    "indoor-beach-friends-exchange-ripples": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
     "fridge-checkin-five-years-only-opening-times": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
     "sleep-advice-livestream-until-two-am": "e9f39c0ae20625806fcd70f392a8fc966b91b44e9720e03900c40a3b93fbaa54",
     "five-star-reviews-of-returned-humidifiers": "146c413d5edb2298e0d923589c18ae800ed4f5390b4c37a1410a2002155ee963",
@@ -182,6 +187,7 @@ def reviewed_source_matches(article: dict, slug: str) -> bool:
 
 def prompt_parts(article: dict) -> tuple[str, list[str]]:
     """Keep a complete primary action; optional sentences are scene context."""
+    description = scene_description(article)
     if reviewed_source_matches(article, TV_PILOT_SLUG):
         # Show the punchline (everyone already left), not anonymous grim crowds.
         return (
@@ -194,7 +200,7 @@ def prompt_parts(article: dict) -> tuple[str, list[str]]:
         ), []
     if article.get("slug") in CPU_SCENES and reviewed_source_matches(article, article["slug"]):
         return CPU_SCENES[article["slug"]], []
-    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", scene_description(article)) if s.strip()]
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", description) if s.strip()]
     # Remove only complete style phrases. A keyword inside a visual sentence
     # ("Photograph of a man carrying a parcel.") must not erase its subject.
     style_only = re.compile(

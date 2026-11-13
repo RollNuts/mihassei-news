@@ -133,8 +133,11 @@ def cpu_generation_allowed(article: dict) -> bool:
 
 
 def scene_description(article: dict) -> str:
-    override = article.get("scene_prompt")
-    if isinstance(override, str) and 20 <= len(override) <= 800:
+    if "scene_prompt" in article:
+        override = article["scene_prompt"]
+        if not isinstance(override, str) or not 20 <= len(override.strip()) <= 4000:
+            raise ValueError("Explicit scene_prompt must contain 20–4000 characters: "
+                             + str(article.get("slug", "<unknown>")))
         return override.strip()
     source = " ".join(str(article.get(key, "")) for key in ("title", "summary"))
     for keywords, direction in SCENES:
