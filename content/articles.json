@@ -1,5 +1,71 @@
 [
   {
+    "slug": "indoor-beach-friends-exchange-ripples",
+    "category": "エンタメ",
+    "flash": "離れた友人から水の返事",
+    "fiction_company": "架空の屋内ビーチ「夕波ドーム」、架空の人物・凪野さや（27）と友人（28）",
+    "art": "cards",
+    "fiction_at": "2031-11-13T19:30:00+09:00",
+    "published_at": "2026-11-13T19:30:00+09:00",
+    "title": "遠くの友人が足元へ小波　屋内ビーチで「水の返事」送り合う",
+    "summary": "屋内ビーチ「夕波ドーム」が、離れた二つの浅瀬で小波を送り合う遊びを始めた。凪野さや（27）は、画面の向こうで友人が水を払うと自分の足元に小波が届く仕組みで遊び、帰り際にも一波を返した。",
+    "paragraphs": [
+      "2031年11月13日、屋内ビーチ「夕波ドーム」で、凪野さや（27）の足首に小さな波が触れた。壁の大きな画面には離れた町の友人（28）が映り、友人が水を払った瞬間に、さやの浅瀬にも波が生まれた。",
+      "この施設は二つの屋内浅瀬を通信でつなぎ、片方で足元の水を動かすと、もう片方の装置が同じ合図で小波を起こす。水そのものを遠くへ運ぶわけではない。これまでビデオ通話で顔を見ていた二人は、離れた場所にいながら相手の動きを足元の波で感じて遊べるようになった。",
+      "濃紺のビキニに白いビーチシャツを羽織ったさやは、画面の友人を見ながら片足で水を軽く払った。今度は友人の足首に波が寄せる。友人は笑って水を返し、さやはシャツの裾を押さえて足首へ届いた波に向き直り、足元のしぶきを軽く払った。",
+      "最初は互いの顔ばかり見ていた二人も、やがて水面に目を落とし、言葉より先に足を動かすようになった。友人が二度続けて送れば、さやも二度。画面の中では離れているのに、波が届くたびに二人の笑い声が重なった。",
+      "帰り支度でさやが砂浜のタオルを取ろうとした時、足首へもう一つ小波が寄せた。画面の友人は帰り支度を終えて片手を振っている。さやは振り返り、最後に水を一度だけ払った。画面の向こうの水面が揺れるのを見届けてから、二人は手を振り合った。"
+    ],
+    "source": {
+      "kind": "研究プレプリント（現実の水面表現の実験）",
+      "publisher": "arXiv / Ruipeng Wangほか",
+      "published_at": "2026-01-26T20:12:53Z",
+      "url": "https://arxiv.org/abs/2601.18934",
+      "topic": "2026年1月26日に初回公開された研究『Whispering Water』は小型水槽を6台の低音スピーカーで振動させ、音声に応じた水面模様を生成する実験。遠隔二地点の有人プールを接続したものではない。2011年のDavid Bowen作品『tele-present water』（https://www.dwbowen.com/telepresentwater）は遠隔波データで機械グリッドを動かした作品。2031年の夕波ドーム、凪野さや、友人、遠隔浅瀬の双方向水遊び・波の動作・会話とすべての運営・性能設定は創作。"
+    },
+    "scene_prompt": "An attractive adult Japanese woman, age 27, turns to a small ripple touching her ankle in a fictional indoor beach pool. Photorealistic candid lifestyle press photograph, wide 16:9 three-quarter angle. Naturally beautiful adult face, friendly delighted expression, long dark hair, full but realistically proportionate bust and natural adult body. She wears an elegant navy-blue bikini and an open white lightweight beach shirt, with tasteful non-explicit styling; she is lightly flicking water and turning toward the ripple. Show her face, full upper body, feet and visible water motion. Behind her is pale indoor sand and a clear wall-mounted screen showing a DIFFERENT adult Japanese female friend age 28 in ANOTHER shallow indoor beach, separated by distance, with little ripples at her feet. Natural indoor skylight, realistic skin and water reflections, candid unposed documentary photograph, accurate anatomy, unbranded surroundings, and a screen with no readable lettering.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "屋内ビーチ",
+      "遠隔体験",
+      "水遊び"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "屋内ビーチ",
+      "水遊び"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "離れた友人の返事が、通知音ではなく足元の小波で届く。2031年の屋内ビーチには、水で会話する遊びがある。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年の小型水槽と低音スピーカーによる水面模様の研究と、遠隔の波データを動きに変えるメディアアート",
+      "target": "離れた二つの屋内浅瀬で相手の動きを足元の小波として受け取り、遊びを共有する",
+      "action": "凪野さやと友人が別々の浅瀬で水を払う動作を通信し、小波を交互に作り合う",
+      "outcome": "離れていた二人が足元の小波で遊び、帰り際にも一波を返して手を振り合う"
+    },
+    "reader_clarity": {
+      "who": "凪野さや（27）",
+      "action": "それぞれの浅瀬で水を払うと、通信の先にある相手側の浅瀬で小波が起こる遊びをした",
+      "oddity": "離れた友人の返事を画面や音声だけでなく、足元の小波として感じられる"
+    },
+    "behavior_basis": {
+      "motive": "離れて暮らす友人と、画面越しだけではない一緒の水遊びをしたい",
+      "ordinary_alternative": "ビデオ通話で相手の顔や動作を眺める",
+      "why_not": "相手が水を払った合図が自分の足元の小波になる新しい触れ合いを楽しめるため",
+      "evidence_quote": "これまでビデオ通話で顔を見ていた二人は、離れた場所にいながら相手の動きを足元の波で感じて遊べるようになった。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年の水槽と6台の低音スピーカーで水面模様を制御する研究、2011年の遠隔波データを動きにする作品",
+      "continuation_force": "水の動きを信号に置き換える表現と水面を振動させる装置を、双方向の遊びへ応用する可能性",
+      "future_result": "2031年、架空の屋内ビーチが離れた浅瀬を通信で結び、小波を相互に起こす水遊びを提供する"
+    }
+  },
+  {
     "slug": "volunteer-award-ceremony-visits-community-kitchen",
     "category": "社会",
     "flash": "式場のないボランティア表彰",
