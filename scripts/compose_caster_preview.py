@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+from fractions import Fraction
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -42,6 +44,12 @@ WORKFLOW = ".github/workflows/auto-motion-clips.yml"
 FILES = {"presenter-preview.mp4", "narration-full.wav", "narration-three-seconds.wav", "receipt.json"}
 FONT = Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc")
 MOVIE = "news-preview.mp4"
+# The retained pilot is the sole repository-file reuse source. These are the
+# original bytes and original receipt, never a repaired/relabelled provenance.
+COMPOSITION_RUN = 42930964897
+COMPOSITION_SHA = "31141a1037699f24552ffe16f60d17ac835e304fa13c620a70d5b1a793406b93"
+COMPOSITION_RECEIPT_SHA = "90daefade03c8f89bcb1d4ad25714dce38b50d24b1f800a289253f82c5864444"
+SOURCE_MANIFEST = re.compile(r"([0-9a-f]{40}):(drafts/caster-review/[a-z0-9]+(?:-[a-z0-9]+)*/manifest\.json):([0-9a-f]{64})")
 
 
 def validate_source_run(data, run_id):
@@ -157,7 +165,7 @@ def check_fresh_main(budget):
     return command(["git", "rev-parse", "FETCH_HEAD"], budget, cwd=ROOT, capture=True).strip()
 
 
-def binary_command(argv, target: Path, budget):
+def binary_command(argv, target: Path, budget, max_bytes=MAX_ARTIFACT):
     """GitHub CLI handles authenticated redirects; never forward a token ourselves."""
     budget.check()
     with target.open("xb") as output:
@@ -165,7 +173,7 @@ def binary_command(argv, target: Path, budget):
         try:
             while process.poll() is None:
                 budget.check()
-                if target.stat().st_size > MAX_ARTIFACT:
+                if target.stat().st_size > max_bytes:
                     raise ValueError("Downloaded source artifact is oversized")
                 time.sleep(.25)
             if process.returncode:
@@ -173,8 +181,144 @@ def binary_command(argv, target: Path, budget):
         except BaseException:
             stop_child(process)
             raise
-    if target.stat().st_size > MAX_ARTIFACT:
+    if target.stat().st_size > max_bytes:
         raise ValueError("Downloaded source artifact is oversized")
+
+
+def repository_file(ref, path, sha256, destination, budget, max_bytes):
+    endpoint = f"repos/{REPOSITORY}/contents/{path}?ref={ref}"
+    metadata = json.loads(command(["gh", "api", endpoint, "--jq", "{type,path,size}"], budget, capture=True))
+    if (metadata.get("type") != "file" or metadata.get("path") != path
+            or type(metadata.get("size")) is not int or not 1 <= metadata["size"] <= max_bytes):
+        raise ValueError("Pinned source must be a bounded regular file at its exact repository path")
+    binary_command(["gh", "api", "-H", "Accept: application/vnd.github.raw+json", endpoint],
+                   destination, budget, max_bytes=max_bytes)
+    if destination.stat().st_size != metadata["size"] or digest(destination) != sha256:
+        raise ValueError("Pinned repository source differs from its exact size or SHA-256")
+
+
+def retained_composition(source, work, budget):
+    match = SOURCE_MANIFEST.fullmatch(source)
+    if not match:
+        raise ValueError("Source manifest requires a pinned 40-hex commit, strict review path and SHA-256")
+    ref, path, manifest_sha = match.groups()
+    manifest_path = work / "source-manifest.json"
+    repository_file(ref, path, manifest_sha, manifest_path, budget, 4096)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if (not isinstance(manifest, dict) or type(manifest.get("version")) is not int
+            or type(manifest.get("composition_run_id")) is not int or manifest != {"version": 1, "composition_run_id": COMPOSITION_RUN,
+                    "movie_sha256": COMPOSITION_SHA, "receipt_sha256": COMPOSITION_RECEIPT_SHA}):
+        raise ValueError("Manifest must identify the unchanged retained pilot and its original receipt")
+    folder = work / "retained"; folder.mkdir()
+    parent = path.rsplit("/", 1)[0]
+    repository_file(ref, parent + "/" + MOVIE, COMPOSITION_SHA, folder / MOVIE, budget, MAX_ARTIFACT)
+    repository_file(ref, parent + "/receipt.json", COMPOSITION_RECEIPT_SHA, folder / "receipt.json", budget, 64 * 1024)
+    original = json.loads((folder / "receipt.json").read_text(encoding="utf-8"))
+    if (original.get("version") != 1 or original.get("publication") != "preview_only"
+            or original.get("status") != "composed_unreviewed" or original.get("source_run_id") != 42928393181
+            or original.get("article_slug") != ARTICLE_SLUG or original.get("article_sha256") != ARTICLE_SHA
+            or original.get("photo_sha256") != PHOTO_SHA or original.get("portrait_sha256") != PORTRAIT_SHA
+            or original.get("narration") != TEXT or original.get("duration_seconds") != 8
+            or original.get("sha256") != COMPOSITION_SHA
+            or original.get("models_downloaded") is not False or original.get("models_executed") is not False):
+        raise ValueError("Retained receipt does not bind the unchanged pilot, article, photo, presenter and narration")
+    for run_id in (COMPOSITION_RUN, original["source_run_id"]):
+        run = json.loads(command(["gh", "api", f"repos/{REPOSITORY}/actions/runs/{run_id}"], budget, capture=True))
+        validate_source_run(run, run_id)
+        if run_id == original["source_run_id"] and run["head_sha"] != original.get("source_head_sha"):
+            raise ValueError("Retained receipt differs from the original producer run")
+    return folder / MOVIE, original, {"source_manifest": source, "source_composition_run_id": COMPOSITION_RUN,
+                                    "source_composition_sha256": COMPOSITION_SHA,
+                                    "source_original_receipt_sha256": COMPOSITION_RECEIPT_SHA}
+
+
+def validate_retained_probe(probe):
+    streams = probe.get("streams", [])
+    video = [s for s in streams if s.get("codec_type") == "video"]
+    audio = [s for s in streams if s.get("codec_type") == "audio"]
+    duration = float(probe.get("format", {}).get("duration", 0))
+    if (len(streams) != 2 or len(video) != 1 or len(audio) != 1
+            or video[0].get("codec_name") != "h264" or audio[0].get("codec_name") != "aac"
+            or (video[0].get("width"), video[0].get("height")) != (1280, 720)
+            or video[0].get("avg_frame_rate") != "25/1" or video[0].get("nb_frames") != "200"
+            or not math.isfinite(duration) or abs(duration - 8) > .001
+            or audio[0].get("channels") != 1 or audio[0].get("sample_rate") != "24000"):
+        raise ValueError("Retained pilot must be exactly eight seconds of 25fps H.264 and original mono AAC")
+    for stream in (video[0], audio[0]):
+        start = float(stream.get("start_time", "nan"))
+        seconds = float(stream.get("duration", "nan"))
+        if not all(math.isfinite(value) for value in (start, seconds)) or abs(start) > 1 / 25 or abs(seconds - 8) > 1 / 25:
+            raise ValueError("Each retained stream must start at zero and last eight seconds within one frame")
+
+
+def packet_timing(movie, probe, budget):
+    packets = json.loads(command(["ffprobe", "-v", "error", "-show_packets", "-show_entries",
+                                  "packet=stream_index,pts,dts:packet_side_data=side_data_type,skip_samples,discard_padding",
+                                  "-of", "json", str(movie)], budget, capture=True)).get("packets", [])
+    video = next(s for s in probe["streams"] if s["codec_type"] == "video")
+    audio = next(s for s in probe["streams"] if s["codec_type"] == "audio")
+    video_base, audio_base = Fraction(video["time_base"]), Fraction(audio["time_base"])
+    if video_base <= 0 or audio_base <= 0 or not 200 <= len(packets) <= 500:
+        raise ValueError("Unexpected retained packet count or time base")
+    video_packets = [p for p in packets if p.get("stream_index") == video["index"]]
+    audio_packets = [p for p in packets if p.get("stream_index") == audio["index"]]
+    if (len(video_packets) != 200 or not audio_packets
+            or any(type(p.get("pts")) is not int for p in video_packets)
+            or any(type(audio_packets[0].get(field)) is not int for field in ("pts", "dts"))):
+        raise ValueError("Retained presentation times must be explicit integer packet timestamps")
+    video_pts = tuple(sorted(p["pts"] * video_base for p in video_packets))
+    if video_pts != tuple(Fraction(frame, 25) for frame in range(200)):
+        raise ValueError("Retained video presentation sequence changed, including the three-second cut")
+    skip = [s for s in audio_packets[0].get("side_data_list", []) if s.get("side_data_type") == "Skip Samples"]
+    if len(skip) != 1 or any(type(skip[0].get(key)) is not int or skip[0][key] < 0 for key in ("skip_samples", "discard_padding")):
+        raise ValueError("Original AAC priming/skip sample evidence is required")
+    return {"video_pts": video_pts, "audio_pts": audio_packets[0]["pts"] * audio_base,
+            "audio_dts": audio_packets[0]["dts"] * audio_base,
+            "skip_samples": skip[0]["skip_samples"], "discard_padding": skip[0]["discard_padding"]}
+
+
+def compare_packet_timing(source, edited):
+    if (source["video_pts"] != edited["video_pts"]
+            or any(abs(source[key] - edited[key]) > Fraction(1, 24000) for key in ("audio_pts", "audio_dts"))
+            or any(source[key] != edited[key] for key in ("skip_samples", "discard_padding"))):
+        raise ValueError("Re-edit changed video presentation timing or AAC priming/synchronization")
+    return {"video_packets": 200, "video_presentation_sequence_unchanged": True,
+            "cut_frame_times_seconds": [float(edited["video_pts"][74]), float(edited["video_pts"][75])],
+            "audio_first_pts_seconds": str(edited["audio_pts"]), "audio_first_dts_seconds": str(edited["audio_dts"]),
+            "audio_skip_samples": edited["skip_samples"], "audio_discard_padding": edited["discard_padding"],
+            "audio_first_packet_timing_matches_within_one_sample": True}
+
+
+def readable_labels(work):
+    labels = {"fiction": "創作ニュース", "headline": "警備ロボ「侵入者32人」",
+              "detail": "正体は、前日の来場者の光の人影"}
+    for name, value in labels.items():
+        (work / (name + ".txt")).write_text(value, encoding="utf-8")
+    graph = ("drawbox=x=1000:y=0:w=280:h=64:color=0x183b40:t=fill,"
+             "drawbox=x=0:y=600:w=iw:h=120:color=white:t=fill")
+    # The fixed Japanese lines fit inside 1216px at these sizes; the disclosure
+    # fits its 248px header region. No part of the presenter/photo is replaced.
+    for name, x, y, size, color in (("fiction", 1008, 8, 40, "white"),
+                                   ("headline", 32, 604, 56, "0x17393d"),
+                                   ("detail", 34, 666, 44, "0x31545a")):
+        graph += f",drawtext=fontfile='{FONT}':textfile='{work / (name + '.txt')}':expansion=none:x={x}:y={y}:fontsize={size}:fontcolor={color}"
+    return graph
+
+
+def reedit_command(source, output, work):
+    return ["ffmpeg", "-nostdin", "-v", "error", "-threads", "1", "-filter_threads", "1",
+            "-i", str(source), "-vf", readable_labels(work), "-map", "0:v:0", "-map", "0:a:0",
+            "-c:v", "libx264", "-threads", "1", "-preset", "veryfast", "-crf", "25",
+            "-maxrate", "2000k", "-bufsize", "4000k", "-pix_fmt", "yuv420p",
+            "-c:a", "copy", "-movflags", "+faststart", str(output)]
+
+
+def aac_packet_hash(movie, budget):
+    value = command(["ffmpeg", "-nostdin", "-v", "error", "-i", str(movie), "-map", "0:a:0",
+                     "-c:a", "copy", "-f", "hash", "-hash", "sha256", "-"], budget, capture=True).strip()
+    if not re.fullmatch(r"SHA256=[0-9a-f]{64}", value):
+        raise ValueError("Could not verify the original encoded AAC packets")
+    return value[7:]
 
 
 def filter_graph(work, duration):
@@ -202,9 +346,12 @@ def filter_graph(work, duration):
     return graph + "[video]"
 
 
-def execute(source_run: int, output: Path):
+def execute(source_run: int | None, output: Path, source_manifest=None):
     temporary = runner_gate()
-    if type(source_run) is not int or source_run <= 0:
+    if source_manifest is not None:
+        if source_run is not None or not SOURCE_MANIFEST.fullmatch(source_manifest):
+            raise ValueError("Supply only one strict pinned source manifest")
+    elif type(source_run) is not int or source_run <= 0:
         raise ValueError("A positive source run ID is required")
     remote = RemoteStopGate(); remote.check()
     if shutil.disk_usage(temporary).free < MIN_FREE:
@@ -224,37 +371,50 @@ def execute(source_run: int, output: Path):
         with tempfile.TemporaryDirectory(prefix="mihassei-caster-compose-",dir=temporary) as directory:
             work = Path(directory); budget = Budget(work, timeout=180, remote=remote)
             receipt["fresh_main_sha_before"] = check_fresh_main(budget)
-            run = json.loads(command(["gh","api",f"repos/{REPOSITORY}/actions/runs/{source_run}"],budget,capture=True))
-            validate_source_run(run,source_run)
-            artifact_list = json.loads(command(["gh","api",f"repos/{REPOSITORY}/actions/runs/{source_run}/artifacts?per_page=100"],budget,capture=True))
-            artifact = select_artifact(artifact_list,source_run)
-            archive = work / "source.zip"
-            binary_command(["gh","api",f"repos/{REPOSITORY}/actions/artifacts/{artifact['id']}/zip"],archive,budget)
-            bundle = work / "source";bundle.mkdir();unpack_artifact(archive,bundle,artifact)
-            original, duration = validate_bundle(bundle,portrait)
-            receipt.update(source_artifact_id=artifact["id"],source_artifact_digest=artifact["digest"],
-                           source_head_sha=run["head_sha"],source_preview_sha256=original["preview_sha256"],
-                           source_narration_full_sha256=digest(bundle/"narration-full.wav"),
-                           source_narration_three_seconds_sha256=digest(bundle/"narration-three-seconds.wav"),
-                           source_audio_hash_evidence="Observed within authenticated immutable source artifact; source producer receipt supplied no per-audio hashes.",
-                           duration_seconds=duration)
-            raw_probe=json.loads(command(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(bundle/"presenter-preview.mp4")],budget,capture=True))
-            streams=raw_probe.get("streams",[])
-            if (len([s for s in streams if s.get("codec_type")=="video" and s.get("codec_name")=="h264"])!=1
-                    or len([s for s in streams if s.get("codec_type")=="audio" and s.get("codec_name")=="aac"])!=1
-                    or not 2.9<=float(raw_probe["format"]["duration"])<=3.2):
-                raise ValueError("Source preview streams/duration do not match its receipt")
-            derived = work / "derived-driving.wav"
-            command(["ffmpeg","-nostdin","-v","error","-i",str(bundle/"narration-full.wav"),"-af","apad,afade=t=out:st=2.9:d=0.1","-t","3","-ar","16000","-ac","1",str(derived)],budget)
-            if pcm(derived,16000)[1] != pcm(bundle/"narration-three-seconds.wav",16000)[1]:
-                raise ValueError("Full narration does not reproduce the source driving audio")
-            command(["ffmpeg","-nostdin","-v","error","-threads","1","-filter_complex_threads","1",
-                     "-i",str(bundle/"presenter-preview.mp4"),"-loop","1","-framerate","25","-i",str(photo),
-                     "-i",str(bundle/"narration-full.wav"),"-filter_complex",filter_graph(work,duration),
-                     "-map","[video]","-map","2:a:0","-af",f"apad,afade=t=out:st={duration-.1}:d=0.1",
-                     "-t",str(duration),"-r","25","-c:v","libx264","-threads","1","-preset","veryfast","-crf","25",
-                     "-maxrate","2000k","-bufsize","4000k","-pix_fmt","yuv420p","-c:a","aac","-b:a","80k",
-                     "-movflags","+faststart",str(output/MOVIE)],budget)
+            if source_manifest is not None:
+                source_movie, original, provenance = retained_composition(source_manifest, work, budget)
+                receipt.update({key: value for key, value in original.items() if key.startswith("source_")})
+                receipt.update(provenance, duration_seconds=8.0, audio_stream_copied=True,
+                               edit="Readable lower third and fiction disclosure only; original framing and three-second cut retained")
+                duration = 8.0
+                raw_probe = json.loads(command(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(source_movie)], budget, capture=True))
+                validate_retained_probe(raw_probe)
+                receipt["source_ffprobe"] = raw_probe
+                source_timing = packet_timing(source_movie, raw_probe, budget)
+                receipt["source_aac_packet_sha256"] = aac_packet_hash(source_movie, budget)
+                command(reedit_command(source_movie, output / MOVIE, work), budget)
+            else:
+                run = json.loads(command(["gh","api",f"repos/{REPOSITORY}/actions/runs/{source_run}"],budget,capture=True))
+                validate_source_run(run,source_run)
+                artifact_list = json.loads(command(["gh","api",f"repos/{REPOSITORY}/actions/runs/{source_run}/artifacts?per_page=100"],budget,capture=True))
+                artifact = select_artifact(artifact_list,source_run)
+                archive = work / "source.zip"
+                binary_command(["gh","api",f"repos/{REPOSITORY}/actions/artifacts/{artifact['id']}/zip"],archive,budget)
+                bundle = work / "source";bundle.mkdir();unpack_artifact(archive,bundle,artifact)
+                original, duration = validate_bundle(bundle,portrait)
+                receipt.update(source_artifact_id=artifact["id"],source_artifact_digest=artifact["digest"],
+                               source_head_sha=run["head_sha"],source_preview_sha256=original["preview_sha256"],
+                               source_narration_full_sha256=digest(bundle/"narration-full.wav"),
+                               source_narration_three_seconds_sha256=digest(bundle/"narration-three-seconds.wav"),
+                               source_audio_hash_evidence="Observed within authenticated immutable source artifact; source producer receipt supplied no per-audio hashes.",
+                               duration_seconds=duration)
+                raw_probe=json.loads(command(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(bundle/"presenter-preview.mp4")],budget,capture=True))
+                streams=raw_probe.get("streams",[])
+                if (len([s for s in streams if s.get("codec_type")=="video" and s.get("codec_name")=="h264"])!=1
+                        or len([s for s in streams if s.get("codec_type")=="audio" and s.get("codec_name")=="aac"])!=1
+                        or not 2.9<=float(raw_probe["format"]["duration"])<=3.2):
+                    raise ValueError("Source preview streams/duration do not match its receipt")
+                derived = work / "derived-driving.wav"
+                command(["ffmpeg","-nostdin","-v","error","-i",str(bundle/"narration-full.wav"),"-af","apad,afade=t=out:st=2.9:d=0.1","-t","3","-ar","16000","-ac","1",str(derived)],budget)
+                if pcm(derived,16000)[1] != pcm(bundle/"narration-three-seconds.wav",16000)[1]:
+                    raise ValueError("Full narration does not reproduce the source driving audio")
+                command(["ffmpeg","-nostdin","-v","error","-threads","1","-filter_complex_threads","1",
+                         "-i",str(bundle/"presenter-preview.mp4"),"-loop","1","-framerate","25","-i",str(photo),
+                         "-i",str(bundle/"narration-full.wav"),"-filter_complex",filter_graph(work,duration),
+                         "-map","[video]","-map","2:a:0","-af",f"apad,afade=t=out:st={duration-.1}:d=0.1",
+                         "-t",str(duration),"-r","25","-c:v","libx264","-threads","1","-preset","veryfast","-crf","25",
+                         "-maxrate","2000k","-bufsize","4000k","-pix_fmt","yuv420p","-c:a","aac","-b:a","80k",
+                         "-movflags","+faststart",str(output/MOVIE)],budget)
             probe=json.loads(command(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(output/MOVIE)],budget,capture=True))
             video=[s for s in probe.get("streams",[]) if s.get("codec_type")=="video"]
             audio=[s for s in probe.get("streams",[]) if s.get("codec_type")=="audio"]
@@ -263,6 +423,12 @@ def execute(source_run: int, output: Path):
                     or abs(float(probe["format"]["duration"])-duration)>.2
                     or not 1024<=(output/MOVIE).stat().st_size<=MAX_ARTIFACT-128*1024):
                 raise ValueError("Composed bulletin failed format, duration or size validation")
+            if source_manifest is not None:
+                validate_retained_probe(probe)
+                receipt["timing_verification"] = compare_packet_timing(source_timing, packet_timing(output / MOVIE, probe, budget))
+                receipt["aac_packet_sha256"] = aac_packet_hash(output / MOVIE, budget)
+                if receipt["aac_packet_sha256"] != receipt["source_aac_packet_sha256"]:
+                    raise ValueError("Re-edit changed the original encoded narration")
             receipt["fresh_main_sha_after"] = check_fresh_main(budget)
             receipt.update(status="composed_unreviewed",sha256=digest(output/MOVIE),ffprobe=probe,
                            narration=TEXT,notice="Original presenter appears once for three seconds; scene remains a still photograph. Audio/visual review required before publication.")
@@ -280,16 +446,18 @@ def execute(source_run: int, output: Path):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run",action="store_true")
-    parser.add_argument("--source-run",type=int)
+    sources=parser.add_mutually_exclusive_group()
+    sources.add_argument("--source-run",type=int)
+    sources.add_argument("--source-manifest")
     parser.add_argument("--output",type=Path)
     args=parser.parse_args(argv)
     if not args.run:
         print(json.dumps({"publication":"preview_only","models_downloaded":False,"models_executed":False,
-                          "source_run":args.source_run,"seconds":"8–12","presenter_seconds":3,"downloads":"none in plan mode"},ensure_ascii=False))
+                          "source_run":args.source_run,"source_manifest":args.source_manifest,"seconds":"8–12","presenter_seconds":3,"downloads":"none in plan mode"},ensure_ascii=False))
         return 0
-    if args.source_run is None or args.output is None:
-        parser.error("--run requires --source-run and --output")
-    execute(args.source_run,args.output)
+    if (args.source_run is None and args.source_manifest is None) or args.output is None:
+        parser.error("--run requires a source and --output")
+    execute(args.source_run,args.output,args.source_manifest)
     return 0
 
 

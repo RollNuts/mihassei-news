@@ -3,10 +3,10 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
-  "logical_run_id": "indoor-beach-20261113-1930",
-  "observed_at": "2026-11-13T10:50:25.200Z",
-  "route": "actual PNG data URL returned in this same Codex execution to GitHub candidate storage",
+  "candidate_identity": "335316212d15bf75dfc045698cfde76e2318e7bc4f91bbde5ccb0f564d0c1077",
+  "logical_run_id": "indoor-beach-20261113-user-revision-swimwear-v2",
+  "observed_at": "2026-11-13T13:12:55.980Z",
+  "route": "actual PNG data URL in this same execution to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
     "sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
@@ -17,10 +17,10 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "a0283898995f9f6cbc0e954f08fe717e0eb9f837",
+    "commit_sha": "5cbc7cdf317e3d71dbcbfad651f9f3784036b4e1",
     "protected_hashes": {
-      "content/articles.json": "993343bb78a9e3230b7ea7c3c9b2a9369e9d4daacd3d39212c71e50246bf7432",
-      "assets/generated/manifest.json": "1659720cf5a2224a6ec7b58b1c3016eaff53637a9d24fa587a3cf78479923cfc",
+      "content/articles.json": "d28c52fc8f9728d1ce5b17c1c2539961c002ded0fa22ff729d393314965c91ab",
+      "assets/generated/manifest.json": "e2cce64c2d92a37fa35a08e74e99bf60cb324176e9e8cf8209d351e32ad0b89b",
       "content/visual_reviews.json": "29d3df051d66bee8055d64d5f38aae1fb616da7b165a7d7b5a49863e73347088"
     }
   }
