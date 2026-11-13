@@ -3841,6 +3841,13 @@
         "seed": 5318895560765377914,
         "sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308"
       },
+      "previous_visual_hold": {
+        "article_sha256": "8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd",
+        "decision": "rejected",
+        "image_sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308",
+        "note": "公開後reviewerが元本文と実JPEGを表示して不採用とした既存検品を保持。一般的な量販店で端末を見る人物の写真で、売れ残った炊飯器や実物を持ち帰る客が判別できず主題不一致。rootが同じ素材を再検品したという記録ではない。元コメント: https://github.com/RollNuts/mihassei-news/pull/708#issuecomment-6847571379",
+        "reviewed_at": "2026-11-13T08:06:16Z"
+      },
       "prompt_version": 3,
       "sha256": "770d4d7552f229ef2d84401b0177556eb352f9d5d4b6c25870f40070dc3bf4a2",
       "source_png_sha256": "c1d856ff73288119bfb7b1502cd4d4dcc9605c952e4d193e1b9e124a72c51932",
