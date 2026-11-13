@@ -23,6 +23,7 @@ def environment(temporary, ref="refs/heads/main"):
             "GITHUB_WORKFLOW_REF":f"{preview.REPOSITORY}/.github/workflows/free-cpu-scenes.yml@{ref}",
             "GITHUB_SHA":"a"*40, "GITHUB_EVENT_NAME":"workflow_dispatch", "RUNNER_OS":"Linux",
             "RUNNER_ENVIRONMENT":"github-hosted", "RUNNER_TEMP":str(temporary), "GITHUB_RUN_ID":"123",
+            "GITHUB_RUN_ATTEMPT":"1",
             "SDXL_PUBLIC_REPOSITORY":"true", "PREVIEW_MODEL":"sdxl", "VERIPSA_ENABLE_FREE_CPU":"1",
             "SCENE_SLUG":preview.SLUG, "SCENE_LIMIT":"1", "RETRY_HELD":"1", "SCENE_PUBLISH":"0",
             "BACKFILL_SCENE":"", "BACKFILL_REFERENCE":"0"}
@@ -44,7 +45,7 @@ def tensor_api():
     return SimpleNamespace(is_tensor=lambda v:isinstance(v,TensorFixture),
         isfinite=lambda v:SimpleNamespace(all=lambda:all(math.isfinite(x) for x in v.flat())),
         linalg=SimpleNamespace(vector_norm=lambda v,dim:TensorFixture([math.hypot(*row) for row in v.data])),
-        float32="float32",device=lambda name:name,inference_mode=contextlib.nullcontext,
+        float32="float32",bfloat16="bfloat16",device=lambda name:name,inference_mode=contextlib.nullcontext,
         Generator=lambda **kwargs:SimpleNamespace(manual_seed=lambda seed:seed))
 
 
@@ -92,6 +93,96 @@ sdxl_scene_preview.main([])
                 with self.assertRaises(RuntimeError):preview.execute(root/"output")
                 self.assertFalse((root/"output").exists())
             download.assert_not_called();child.assert_not_called()
+
+    def test_native_cpu_gate_uses_exact_common_flags_and_rejects_unknown_reports(self):
+        def report(first,second):
+            return f"processor: 0\nflags: {first}\n\nprocessor: 1\nflags: {second}\n"
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/"cpuinfo"
+            for text,expected in ((report("sse avx512_bf16 amx_bf16","amx_bf16 sse"),["amx_bf16"]),
+                                  (report("avx512_bf16 sse","sse avx512_bf16"),["avx512_bf16"])):
+                path.write_text(text);data=preview.native_bf16_features(path)
+                self.assertEqual(data,{"cpu_count":2,"common_native_flags":expected})
+                preview.require_native_bf16(data)
+            for text in (report("avx512_bf16_extra","avx512_bf16_extra"),
+                         report("avx512_bf16","amx_bf16"),report("avx2","avx2")):
+                path.write_text(text)
+                with self.assertRaisesRegex(RuntimeError,"No shared exact"):
+                    preview.require_native_bf16(preview.native_bf16_features(path))
+            for text in ("", "processor: 0\n", report("avx512_bf16","avx512_bf16").replace("processor: 1","processor: 0")):
+                path.write_text(text)
+                with self.assertRaisesRegex(RuntimeError,"every logical CPU"):
+                    preview.native_bf16_features(path)
+
+    def test_non_native_cpu_stops_before_download_and_preserves_failed_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);output=root/"preview"
+            with patch.dict(os.environ,environment(root)),patch.object(preview,"runner_gate",return_value=root.resolve()), \
+                 patch.object(preview.RemoteStopGate,"check"), \
+                 patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":[]}), \
+                 patch.object(preview,"check_daily_quota") as quota, \
+                 patch.object(preview,"download_files") as download,patch.object(preview,"run_owned_worker") as child:
+                with self.assertRaisesRegex(RuntimeError,"No shared exact"):preview.execute(output)
+            quota.assert_not_called();download.assert_not_called();child.assert_not_called()
+            record=json.loads((output/"receipt.json").read_text())
+            self.assertEqual(record["native_bf16_features"]["common_native_flags"],[])
+            self.assertEqual(record["status"],"failed")
+            self.assertFalse(record["download_started"]);self.assertFalse(record["model_import_started"])
+
+    def test_quota_counts_immutable_legacy_trial_and_existing_story_and_daily_limits(self):
+        legacy=dict(preview.LEGACY_SDXL_TRIAL)
+        current={"id":123,"created_at":"2026-11-13T17:00:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        runs=[legacy,current];original=[dict(run) for run in runs]
+        with patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1"}), \
+             patch.object(preview.subprocess,"check_output",return_value="inventory") as api, \
+             patch.object(preview.json,"loads",return_value={"workflow_runs":runs}):
+            with self.assertRaisesRegex(RuntimeError,"same-story"):
+                preview.check_daily_quota(now=preview.datetime.fromisoformat("2026-11-13T20:00:00+00:00"))
+            self.assertEqual(runs,original)
+            # The JST date changes at 15:00 UTC, not at UTC midnight.
+            current["created_at"]="2026-11-14T16:00:00Z"
+            next_day=preview.datetime.fromisoformat("2026-11-14T17:00:00+00:00")
+            evidence=preview.check_daily_quota(now=next_day)
+            self.assertEqual(evidence["known_legacy_trial"],{**preview.LEGACY_SDXL_TRIAL,"quota_slug":preview.SLUG})
+            self.assertEqual(legacy,preview.LEGACY_SDXL_TRIAL)
+            for index in range(4):
+                runs.append({"id":200+index,"created_at":f"2026-11-14T15:0{index}:00Z",
+                             "display_title":preview.BACKFILL_RUN_PREFIX+f"other-{index}"})
+            with self.assertRaisesRegex(RuntimeError,"daily attempt budget"):
+                preview.check_daily_quota(now=next_day)
+            self.assertEqual(api.call_args.args[0],["gh","api",
+                f"repos/{preview.REPOSITORY}/actions/workflows/free-cpu-scenes.yml/runs?per_page=100"])
+            self.assertEqual(api.call_args.kwargs["timeout"],15)
+
+    def test_quota_rejects_reruns_unverifiable_legacy_and_missing_current_inventory(self):
+        current={"id":123,"created_at":"2026-11-14T16:00:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        with patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"2"}), \
+             patch.object(preview.subprocess,"check_output") as api:
+            with self.assertRaisesRegex(RuntimeError,"reruns"):preview.check_daily_quota()
+            api.assert_not_called()
+        for inventory in ([{**preview.LEGACY_SDXL_TRIAL,"head_sha":"f"*40},current],
+                          [{**preview.LEGACY_SDXL_TRIAL,"created_at":"2026-11-14T16:01:26Z"},current],
+                          [],[{**current,"display_title":"Free CPU staged-news photos"}]):
+            with self.subTest(inventory=inventory), \
+                 patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1"}), \
+                 patch.object(preview.subprocess,"check_output",return_value=json.dumps({"workflow_runs":inventory})):
+                with self.assertRaises(ValueError):preview.check_daily_quota()
+
+    def test_exhausted_quota_fails_before_any_download_or_model_execution(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);output=root/"preview"
+            with patch.dict(os.environ,environment(root)),patch.object(preview,"runner_gate",return_value=root.resolve()), \
+                 patch.object(preview.RemoteStopGate,"check"), \
+                 patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":["avx512_bf16"]}), \
+                 patch.object(preview,"check_daily_quota",side_effect=RuntimeError("same-story limit reached")), \
+                 patch.object(preview,"download_files") as download,patch.object(preview,"run_owned_worker") as child:
+                with self.assertRaisesRegex(RuntimeError,"same-story"):preview.execute(output)
+            download.assert_not_called();child.assert_not_called()
+            record=json.loads((output/"receipt.json").read_text())
+            self.assertEqual(record["status"],"failed")
+            self.assertFalse(record["download_started"]);self.assertFalse(record["model_import_started"])
 
     def test_candidate_changes_only_scene_keeps_body_and_has_new_fingerprint(self):
         source=self.source();candidate=preview.candidate_article([source])
@@ -187,14 +278,15 @@ sdxl_scene_preview.main([])
         with self.assertRaisesRegex(ValueError,"norms"):
             preview.require_features(TensorFixture([[1.,2.]]),api,batch=1)
 
-    def test_fixed_f32_phase_order_releases_both_encoder_holders_and_unet_before_decode(self):
+    def test_native_bf16_unet_and_embeddings_stay_bf16_until_unet_release_then_f32_decode(self):
         api=tensor_api();events=[];components={}
+        class Embedding(TensorFixture):
+            def to(self,**kwargs):self_outer.assertEqual(kwargs["dtype"],"bfloat16");return self
         class Component:
-            def __init__(self,name):self.name=name;self.config=SimpleNamespace(scaling_factor=.13025)
+            def __init__(self,name):self.name=name;self.dtype="bfloat16";self.config=SimpleNamespace(scaling_factor=.13025)
             def to(self,**kwargs):
                 if self.name=="unet":
-                    self_outer.assertIsNone(pipe.text_encoder);self_outer.assertIsNone(pipe.text_encoder_2)
-                    self_outer.assertNotIn("text_encoder",components);self_outer.assertNotIn("text_encoder_2",components)
+                    self_outer.fail("Native BF16 UNet must never be upcast")
                 if self.name=="vae":
                     self_outer.assertIsNone(pipe.unet);self_outer.assertNotIn("unet",components)
                 events.append(self.name+"_float32");return self
@@ -203,9 +295,12 @@ sdxl_scene_preview.main([])
             watermark=None
             def encode_prompt(self,**kwargs):
                 events.append("encode");self_outer.assertIn("negative_prompt_2",kwargs)
-                return tuple(TensorFixture([[1.]]) for _ in range(4))
+                return tuple(Embedding([[1.]]) for _ in range(4))
             def __call__(self,**kwargs):
                 events.append("denoise")
+                self_outer.assertIsNone(pipe.text_encoder);self_outer.assertIsNone(pipe.text_encoder_2)
+                self_outer.assertNotIn("text_encoder",components);self_outer.assertNotIn("text_encoder_2",components)
+                self_outer.assertEqual(self.unet.dtype,"bfloat16")
                 self_outer.assertEqual(kwargs["output_type"],"latent")
                 self_outer.assertEqual(kwargs["num_inference_steps"],20)
                 self_outer.assertIn("negative_prompt_embeds",kwargs)
@@ -218,10 +313,81 @@ sdxl_scene_preview.main([])
         with tempfile.TemporaryDirectory() as directory:
             result=preview.render_phased(pipe,components,api,"nsfw, nudity",123,Path(directory))
         self.assertEqual(result,"synthetic RGB")
-        self.assertEqual(events,["encode","unet_float32","denoise","vae_float32","decode"])
+        self.assertEqual(events,["encode","denoise","vae_float32","decode"])
         self.assertEqual(set(components),{"vae"})
-        self.assertEqual(preview.model.INFERENCE["unet_compute_dtype"],"float32")
+        self.assertEqual(preview.model.INFERENCE["unet_compute_dtype"],"bfloat16")
         self.assertEqual(preview.model.INFERENCE["text_encoder_dtype"],"bfloat16")
+        self.assertTrue(preview.model.INFERENCE["native_bf16_required"])
+
+    def test_initial_priority_blocks_snapshot_drift_other_pending_or_unreviewed_images(self):
+        target=self.source();other={**target,"slug":"other-story"}
+        row={"status":"accepted","publication":{"kind":"generated_jpeg"}}
+        with patch.object(preview.subprocess,"check_output",return_value=""), \
+             patch.object(preview,"pending_articles",return_value=[]) as pending, \
+             patch("scripts.visual_review._publication_row",return_value=row), \
+             patch("scripts.visual_review._attention",return_value=[]), \
+             patch.object(preview,"check_main_unchanged") as current:
+            preview.initial_priority_gate("a"*40,[target,other],review_parent=Path("scratch"))
+            self.assertEqual(pending.call_args.args[0],[other])
+            current.assert_called_once_with("a"*40,review_parent=Path("scratch"))
+        for changed,pending_rows,publication in (("content/articles.json",[],row),("",[other],row),
+                ("",[],{"status":"pending","publication":{"kind":"editorial_svg"}}),
+                ("",[],{"status":"missing","publication":{"kind":"generic_fallback"}})):
+            with patch.object(preview.subprocess,"check_output",return_value=changed), \
+                 patch.object(preview,"pending_articles",return_value=pending_rows), \
+                 patch("scripts.visual_review._publication_row",return_value=publication), \
+                 patch("scripts.visual_review._attention",return_value=[]), \
+                 patch.object(preview,"check_main_unchanged"):
+                with self.assertRaisesRegex(RuntimeError,"priority|rebase"):
+                    preview.initial_priority_gate("a"*40,[target,other],review_parent=Path("scratch"))
+
+    def test_priority_lookup_stays_asynchronous_and_changed_main_stops_only_owned_child(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work=Path(directory);preview.atomic_json(work/"request.json",{"nonce":"owned"})
+            budget=preview.Budget(work,Mock(),revision="a"*40)
+            future=Mock();future.done.return_value=False
+            pool=Mock();pool.submit.return_value=future
+            budget.next_priority_check=0
+            with patch.object(preview,"ThreadPoolExecutor",return_value=pool), \
+                 patch.object(preview.time,"monotonic",return_value=100):
+                budget.priority_check()
+            pool.submit.assert_called_once_with(preview.check_main_unchanged,"a"*40,review_parent=work)
+            future.result.assert_not_called()
+            with patch.object(preview.time,"monotonic",return_value=131):
+                with self.assertRaisesRegex(RuntimeError,"within 30 seconds"):budget.priority_check()
+            # A docs-only successful lookup is allowed; a priority-input change
+            # propagates to the same owned-process stop path as memory failures.
+            future.done.return_value=True;future.result.return_value=None
+            budget.next_priority_check=200
+            with patch.object(preview.time,"monotonic",return_value=110):budget.priority_check()
+            changed=Mock();changed.done.return_value=True;changed.result.side_effect=RuntimeError("main advanced")
+            budget.priority_future=changed
+            child=Mock(pid=123);child.poll.return_value=None
+            with patch.object(preview.subprocess,"Popen",return_value=child),patch.object(preview,"stop_child") as stop, \
+                 patch.object(preview.shutil,"disk_usage",return_value=SimpleNamespace(free=preview.MIN_FREE+1)), \
+                 patch.object(preview,"archive_bytes",return_value=0),patch.object(preview,"mem_available",return_value=2*1024**3), \
+                 patch.object(preview,"group_rss",return_value=1024),patch.object(preview.time,"monotonic",return_value=120):
+                with self.assertRaisesRegex(RuntimeError,"main advanced"):preview.run_owned_worker(work,budget)
+            stop.assert_called_once_with(child)
+            self.assertEqual(budget.max_rss,1024)
+            budget.close()
+
+    def test_final_priority_boundary_allows_docs_only_but_rejects_new_article_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);(root/"content").mkdir();(root/"docs").mkdir()
+            def git(*args):
+                return subprocess.check_output(["git",*args],cwd=root,text=True).strip()
+            def commit():
+                git("add",".");git("-c","user.name=Fixture","-c","user.email=fixture@example.invalid",
+                                     "commit","--quiet","-m","priority fixture")
+                return git("rev-parse","HEAD")
+            git("init","--quiet")
+            (root/"content/articles.json").write_text("[]\n");before=commit()
+            (root/"docs/note.md").write_text("documentation only\n");docs=commit()
+            with patch.object(preview,"ROOT",root):preview.final_priority_gate(before,docs)
+            (root/"content/articles.json").write_text('[{"slug":"new-story"}]\n');article=commit()
+            with patch.object(preview,"ROOT",root),self.assertRaisesRegex(RuntimeError,"before export"):
+                preview.final_priority_gate(before,article)
 
     def test_resource_limits_and_exact_download_disk_reservation(self):
         preview.resource_limits(preview.MAX_RSS,preview.MIN_AVAILABLE)
@@ -280,7 +446,7 @@ sdxl_scene_preview.main([])
         self.assertIn(data.LICENSE_TEXT_REVISION,data.LICENSE_TEXT_URL)
         self.assertEqual(data.INFERENCE["num_inference_steps"],20)
         self.assertEqual(data.INFERENCE["guidance_scale"],6.0)
-        self.assertEqual(data.INFERENCE["unet_compute_dtype"],"float32")
+        self.assertEqual(data.INFERENCE["unet_compute_dtype"],"bfloat16")
 
     def test_pinned_hash_rejects_corrupt_bytes_before_a_model_can_load(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -296,9 +462,12 @@ sdxl_scene_preview.main([])
             def fail(work,budget):
                 preview.progress(work,"generation_started",model_import_started=True,model_execution_started=True)
                 raise RuntimeError("worker RSS limit")
-            fake_budget=SimpleNamespace(check=lambda:None,max_rss=preview.MAX_RSS+1,minimum_available=2*1024**3)
+            fake_budget=SimpleNamespace(check=lambda:None,close=lambda:None,max_rss=preview.MAX_RSS+1,minimum_available=2*1024**3)
             with patch.dict(os.environ,env),patch.object(preview,"runner_gate",return_value=root.resolve()), \
                  patch.object(preview.RemoteStopGate,"check"),patch.object(preview,"check_disk_reservation"), \
+                 patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":["avx512_bf16"]}), \
+                 patch.object(preview,"check_daily_quota",return_value={"allowed":True}), \
+                 patch.object(preview,"initial_priority_gate"), \
                  patch.object(preview,"fresh_source",return_value="a"*40), \
                  patch.object(preview.subprocess,"check_output",return_value="a"*40+"\n"), \
                  patch.object(preview,"Budget",return_value=fake_budget),patch.object(preview,"download_files"), \
@@ -320,9 +489,13 @@ sdxl_scene_preview.main([])
                     "sha256":preview.hashlib.sha256(data).hexdigest(),"bytes":len(data)})
                 preview.progress(work,"worker_succeeded",model_import_started=True,model_execution_started=True,
                                  model_generation_completed=True,safety_flags=[False])
-            fake_budget=SimpleNamespace(check=lambda:None,max_rss=10*1024**3,minimum_available=2*1024**3)
+            fake_budget=SimpleNamespace(check=lambda:None,finish_priority=lambda:None,close=lambda:None,
+                                        max_rss=10*1024**3,minimum_available=2*1024**3)
             with patch.dict(os.environ,env),patch.object(preview,"runner_gate",return_value=root.resolve()), \
                  patch.object(preview.RemoteStopGate,"check"),patch.object(preview,"check_disk_reservation"), \
+                 patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":["avx512_bf16"]}), \
+                 patch.object(preview,"check_daily_quota",return_value={"allowed":True}), \
+                 patch.object(preview,"initial_priority_gate"), \
                  patch.object(preview,"fresh_source",side_effect=["a"*40,ValueError("adopted photo")]), \
                  patch.object(preview.subprocess,"check_output",return_value="a"*40+"\n"), \
                  patch.object(preview,"Budget",return_value=fake_budget),patch.object(preview,"download_files"), \
@@ -366,6 +539,10 @@ class SdxlWorkflowTests(unittest.TestCase):
         self.assertFalse(applies(normal_condition,{**values,"inputs.preview_model":"unknown"}))
         self.assertTrue(applies(normal_condition,{**values,"inputs.preview_model":"default"}))
         self.assertIn("group: first-party-cpu-scenes",document)
+        named_as_backfill=document.split("run-name: \"${{ ",1)[1].split(" && format",1)[0]
+        for scene,model,expected in (("","default",False),("scene","default",True),
+                                     ("","sdxl",True),("","unknown",False)):
+            self.assertEqual(applies(named_as_backfill,{"inputs.backfill_scene":scene,"inputs.preview_model":model}),expected)
 
 
 if __name__=="__main__":unittest.main()

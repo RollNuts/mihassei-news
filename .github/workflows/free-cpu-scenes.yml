@@ -1,5 +1,5 @@
 name: Free CPU staged-news photos (public repository only)
-run-name: "${{ inputs.backfill_scene && format('Photo backfill: {0}', inputs.slug) || 'Free CPU staged-news photos' }}"
+run-name: "${{ (inputs.backfill_scene || inputs.preview_model == 'sdxl') && format('Photo backfill: {0}', inputs.slug) || 'Free CPU staged-news photos' }}"
 
 on:
   # Image-only pushes do not match, so publication cannot recurse.

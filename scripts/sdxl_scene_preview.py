@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import gc
 import hashlib
@@ -23,13 +24,17 @@ import uuid
 if __package__:
     from . import sdxl_preview_model as model
     from .generated_photos import article_fingerprint, MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES
-    from .local_scene_photos import archive_bytes, stable_seed, png_to_jpeg
+    from .local_scene_photos import archive_bytes, stable_seed, png_to_jpeg, pending_articles
+    from .github_cpu_scenes import (check_main_unchanged, BACKFILL_PRIORITY_PATHS,
+                                    backfill_run_allowed, BACKFILL_RUN_PREFIX)
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from .news_caster_preview import RemoteStopGate, download, stop_child
 else:
     import sdxl_preview_model as model
     from generated_photos import article_fingerprint, MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES
-    from local_scene_photos import archive_bytes, stable_seed, png_to_jpeg
+    from local_scene_photos import archive_bytes, stable_seed, png_to_jpeg, pending_articles
+    from github_cpu_scenes import (check_main_unchanged, BACKFILL_PRIORITY_PATHS,
+                                   backfill_run_allowed, BACKFILL_RUN_PREFIX)
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from news_caster_preview import RemoteStopGate, download, stop_child
 
@@ -55,6 +60,13 @@ PROMPT_2 = (
     "navy bikini top visible, white shirt on arms. Soft skylight, realistic skin and water."
 )
 BRIEF = PROMPT + " " + PROMPT_2
+NATIVE_BF16_FLAGS = frozenset(("avx512_bf16", "amx_bf16"))
+LEGACY_SDXL_TRIAL = {
+    "id":43458459270, "created_at":"2026-11-13T16:01:26Z", "event":"workflow_dispatch",
+    "path":".github/workflows/free-cpu-scenes.yml",
+    "head_sha":"66d301c674965ca49673ccf3a30c4929abfebff6",
+    "display_title":"Free CPU staged-news photos", "run_attempt":1,
+}
 
 
 def atomic_json(path, value):
@@ -123,6 +135,85 @@ def fresh_source():
     return subprocess.check_output(["git", "rev-parse", "FETCH_HEAD"], cwd=ROOT, text=True, timeout=10).strip()
 
 
+def native_bf16_features(path=Path("/proc/cpuinfo")):
+    """Exact-token common intersection across every reported logical CPU."""
+    blocks = re.split(r"\n[ \t]*\n", path.read_text(encoding="utf-8").strip())
+    identifiers, flag_sets = set(), []
+    for block in blocks:
+        ids = re.findall(r"^processor[ \t]*:[ \t]*(\d+)[ \t]*$", block, re.M)
+        flags = re.findall(r"^flags[ \t]*:[ \t]*(.*)$", block, re.M)
+        if len(ids) != 1 or len(flags) != 1 or ids[0] in identifiers or not flags[0].split():
+            raise RuntimeError("Cannot verify native BF16 flags for every logical CPU")
+        identifiers.add(ids[0]); flag_sets.append(set(flags[0].split()))
+    common = set.intersection(*flag_sets)
+    return {"cpu_count":len(flag_sets), "common_native_flags":sorted(common & NATIVE_BF16_FLAGS)}
+
+
+def require_native_bf16(evidence):
+    if not evidence.get("common_native_flags"):
+        raise RuntimeError("No shared exact avx512_bf16 or amx_bf16 CPU flag; no model download or F32 fallback")
+
+
+def check_daily_quota(*, now=None):
+    current = int(os.environ["GITHUB_RUN_ID"])
+    attempt = int(os.environ["GITHUB_RUN_ATTEMPT"])
+    if attempt != 1:
+        raise RuntimeError("SDXL workflow reruns are forbidden; one attempt per story and JST day")
+    inventory = json.loads(subprocess.check_output([
+        "gh", "api", f"repos/{REPOSITORY}/actions/workflows/free-cpu-scenes.yml/runs?per_page=100"
+    ], cwd=ROOT, text=True, timeout=15))["workflow_runs"]
+    if not isinstance(inventory, list) or any(not isinstance(run, dict) for run in inventory):
+        raise ValueError("Invalid SDXL workflow run inventory")
+    classified, legacy = [], None
+    for raw in inventory:
+        run = dict(raw)
+        if run.get("id") == LEGACY_SDXL_TRIAL["id"]:
+            if any(run.get(key) != value for key, value in LEGACY_SDXL_TRIAL.items()):
+                raise ValueError("Known legacy SDXL trial provenance does not match")
+            # Quota-only classification: preserve the actual API title and receipt.
+            legacy = {**LEGACY_SDXL_TRIAL, "quota_slug":SLUG}
+            run["display_title"] = BACKFILL_RUN_PREFIX + SLUG
+        classified.append(run)
+    matches = [run for run in classified if run.get("id") == current]
+    if len(matches) != 1 or matches[0].get("display_title") != BACKFILL_RUN_PREFIX + SLUG:
+        raise ValueError("Current SDXL run is absent from the bounded story inventory")
+    if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=now):
+        raise RuntimeError("SDXL daily attempt budget or same-story limit reached; new articles take priority")
+    return {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy}
+
+
+def initial_priority_gate(revision, articles, *, review_parent):
+    """Use the existing input scope and publication gate; never repair other work."""
+    paths = [path for path in BACKFILL_PRIORITY_PATHS if path.startswith(("content/", "assets/"))]
+    changed = subprocess.check_output(["git", "diff", "--no-renames", "--name-only", revision,
+                                       "--", *paths], cwd=ROOT, text=True, timeout=15).strip()
+    unknown = subprocess.check_output(["git", "ls-files", "--others", "--exclude-standard", "--", *paths],
+                                       cwd=ROOT, text=True, timeout=15).strip()
+    if changed or unknown:
+        raise RuntimeError("Checkout article/image inputs differ from fresh main; rebase before preview")
+    if __package__:
+        from .visual_review import _publication_row, _attention
+    else:
+        from visual_review import _publication_row, _attention
+    others = [article for article in articles if article.get("slug") != SLUG]
+    if pending_articles(others, root=ROOT, limit=0):
+        raise RuntimeError("Other article images take priority over this portrait preview")
+    rows = [_publication_row(article, root=ROOT) for article in others]
+    if any(row["status"] == "pending" or _attention(row)
+           or row["publication"]["kind"] == "generic_fallback" for row in rows):
+        raise RuntimeError("Other image review/publication work takes priority over this portrait preview")
+    check_main_unchanged(revision, review_parent=review_parent)
+
+
+def final_priority_gate(before, after):
+    if any(not re.fullmatch(r"[0-9a-f]{40}", value) for value in (before, after)):
+        raise ValueError("Cannot verify final main priority revisions")
+    changed = subprocess.check_output(["git", "diff", "--no-renames", "--name-only", before, after,
+                                       "--", *BACKFILL_PRIORITY_PATHS], cwd=ROOT, text=True, timeout=15).strip()
+    if changed:
+        raise RuntimeError("Main article/image inputs advanced before export; current work takes priority")
+
+
 def mem_available(proc=Path("/proc")):
     match = re.search(r"^MemAvailable:\s+(\d+) kB$", (proc / "meminfo").read_text(), re.M)
     if not match:
@@ -155,10 +246,38 @@ def resource_limits(rss, available):
 
 
 class Budget:
-    def __init__(self, work, remote):
+    def __init__(self, work, remote, *, revision):
         self.work, self.remote = work, remote
         self.deadline = time.monotonic() + TIMEOUT
         self.max_rss, self.minimum_available = 0, None
+        self.revision = revision
+        self.next_priority_check = time.monotonic() + 30
+        self.priority_future, self.priority_pool = None, None
+
+    def priority_check(self):
+        now = time.monotonic()
+        if self.priority_future is not None:
+            if self.priority_future.done():
+                self.priority_future.result()
+                self.priority_future = None
+            elif now >= self.priority_started + 30:
+                raise RuntimeError("Main priority could not be verified within 30 seconds")
+        if now >= self.next_priority_check and self.priority_future is None:
+            if self.priority_pool is None:
+                self.priority_pool = ThreadPoolExecutor(max_workers=1)
+            self.priority_started = now
+            self.next_priority_check = now + 30
+            self.priority_future = self.priority_pool.submit(check_main_unchanged, self.revision,
+                                                              review_parent=self.work)
+
+    def finish_priority(self):
+        if self.priority_future is not None:
+            self.priority_future.result(timeout=max(0, self.priority_started + 30 - time.monotonic()))
+            self.priority_future = None
+
+    def close(self):
+        if self.priority_pool is not None:
+            self.priority_pool.shutdown(wait=False, cancel_futures=True)
 
     def check(self, group=None):
         if time.monotonic() >= self.deadline:
@@ -173,6 +292,7 @@ class Budget:
         self.max_rss = max(self.max_rss, rss)
         self.minimum_available = min(self.minimum_available or available, available)
         resource_limits(rss, available)
+        self.priority_check()
 
 
 def check_disk_reservation(path):
@@ -299,7 +419,7 @@ def checked_safety_call(checker, pixels, rgb, torch):
 
 
 def render_phased(pipe, components, torch, negative, seed, work):
-    """Release encoders before only UNet grows to F32; release UNet before decode."""
+    """Keep native-BF16 UNet/embeddings; release UNet before explicit F32 decode."""
     settings = model.INFERENCE
     with torch.inference_mode():
         progress(work, "prompt_encoding", pipeline_loaded=True, model_execution_started=True)
@@ -310,10 +430,11 @@ def render_phased(pipe, components, torch, negative, seed, work):
             setattr(pipe, name, None)
             components.pop(name)
         gc.collect()
-        progress(work, "unet_float32", text_encoders_released=True)
-        pipe.unet.to(dtype=torch.float32)
-        positive, negative_embeds, pooled, negative_pooled = [value.to(dtype=torch.float32) for value in encoded]
-        progress(work, "denoising_started", unet_compute_dtype="float32")
+        if pipe.unet.dtype != torch.bfloat16:
+            raise ValueError("UNet must retain native BF16 weights; no F32 fallback")
+        progress(work, "unet_bfloat16", text_encoders_released=True)
+        positive, negative_embeds, pooled, negative_pooled = [value.to(dtype=torch.bfloat16) for value in encoded]
+        progress(work, "denoising_started", unet_compute_dtype="bfloat16")
         latents = pipe(prompt_embeds=positive, negative_prompt_embeds=negative_embeds,
                        pooled_prompt_embeds=pooled, negative_pooled_prompt_embeds=negative_pooled,
                        width=settings["width"], height=settings["height"],
@@ -352,7 +473,6 @@ def worker(work):
     if (candidate.get("slug") != SLUG or candidate.get("scene_prompt") != BRIEF
             or article_fingerprint(candidate) != request["candidate_article_sha256"]):
         raise ValueError("Worker candidate differs from its source-bound portrait brief")
-    progress(work, "import_started", model_import_started=True)
     try:
         render_worker(work, request, candidate)
     except BaseException as error:
@@ -362,6 +482,9 @@ def worker(work):
 
 def render_worker(work, request, candidate):
     runner_gate()
+    native = native_bf16_features(); require_native_bf16(native)
+    progress(work, "native_bf16_verified", native_bf16_features=native)
+    progress(work, "import_started", model_import_started=True)
     import torch
     import numpy as np
     from PIL import Image
@@ -442,18 +565,24 @@ def execute(output, *, check_only=False):
     atomic_json(output / "receipt.json", receipt)
     try:
         remote.check()
+        receipt["native_bf16_features"] = native_bf16_features()
+        require_native_bf16(receipt["native_bf16_features"])
+        receipt["daily_quota"] = check_daily_quota()
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, timeout=10).strip()
         if head != os.environ["GITHUB_SHA"]:
             raise ValueError("Checkout must equal the exact dispatched github.sha")
         receipt["checkout_sha"] = head
         receipt["workflow_ref"] = os.environ["GITHUB_WORKFLOW_REF"]
         check_disk_reservation(temporary)
-        candidate = candidate_article(json.loads((ROOT / "content/articles.json").read_text()))
+        articles = json.loads((ROOT / "content/articles.json").read_text())
+        candidate = candidate_article(articles)
         receipt.update(candidate_article_sha256=article_fingerprint(candidate), seed=stable_seed(candidate),
                        fresh_main_sha_before=fresh_source())
+        initial_priority_gate(receipt["fresh_main_sha_before"], articles, review_parent=temporary)
+        receipt["initial_other_priority_clear"] = True
         atomic_json(output / "articles.json", [candidate])
         with tempfile.TemporaryDirectory(prefix="sdxl-preview-", dir=temporary) as directory:
-            work = Path(directory); budget = Budget(work, remote); budget.check()
+            work = Path(directory); budget = Budget(work, remote, revision=receipt["fresh_main_sha_before"]); budget.check()
             if check_only:
                 receipt["status"] = "ready_unexecuted"
                 return
@@ -469,8 +598,10 @@ def execute(output, *, check_only=False):
                         or jpeg_dimensions(image) != (1200,675)
                         or result.get("sha256") != hashlib.sha256(image).hexdigest() or result.get("bytes") != len(image)):
                     raise ValueError("Worker output failed safety, source, JPEG or size verification")
-                budget.check(); remote.next_check = 0; remote.check()
+                budget.check(); budget.finish_priority(); remote.next_check = 0; remote.check()
                 receipt["fresh_main_sha_after"] = fresh_source()
+                final_priority_gate(receipt["fresh_main_sha_before"], receipt["fresh_main_sha_after"])
+                receipt["final_priority_clear"] = True
                 stage = output / (JPEG + ".tmp"); stage.write_bytes(image); os.replace(stage, output / JPEG)
                 receipt.update(status="generated_unreviewed", jpeg_sha256=result["sha256"], jpeg_bytes=len(image))
             finally:
@@ -487,6 +618,7 @@ def execute(output, *, check_only=False):
         receipt.update(elapsed_seconds=round(time.monotonic()-started,3), checked_at_utc=datetime.now(timezone.utc).isoformat())
         if budget:
             receipt.update(max_child_rss_bytes=budget.max_rss, minimum_mem_available_bytes=budget.minimum_available)
+            budget.close()
         atomic_json(output / "receipt.json", receipt)
 
 
