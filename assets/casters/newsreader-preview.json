@@ -11,6 +11,19 @@
   "fictional_person": true,
   "intended_age": 29,
   "publication": "preview_only",
+  "character": {
+    "id": "shioba_rio",
+    "name": "汐羽りお",
+    "reading": "しおば りお",
+    "age": 29,
+    "role": "未発生新聞の架空アナウンサー・取材者",
+    "appearance_continuity": {
+      "face_master": "assets/casters/newsreader-preview.jpg",
+      "features": "成人らしい柔らかな顔立ち、暗い茶色の瞳、薄い前髪と長い暗色髪、親しみやすい微笑み、豊かなバストと自然な体型",
+      "reference_outfit": "不透明なアイボリーの体に沿う長袖リブニット、高い襟、胸元の露出なし",
+      "verification": "同一人物の生成は顔masterを参照画像に使い、顔立ち・髪・成人設定・体型を実画像で照合する。衣装は記事と場面に合わせる。"
+    }
+  },
   "input_generation_id": "10443127-92d5-47fb-93b5-af18aeeb3438",
   "input_png_sha256": "6c515b614417c6bc4be6986262c79d23bf07f89db2e6311cbab53144530f59ad",
   "previous_generation": {
