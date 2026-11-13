@@ -1,5 +1,5 @@
-/* Capture → candidate commit/branch using explicit, caller-supplied GitHub tools.
- * Pure JavaScript. Image generation and visual acceptance are NEVER performed here.
+/* Verify transport → invoke the supplied generator once → save its candidate.
+ * Pure JavaScript with explicit callbacks; visual acceptance is NEVER performed here.
  * Load with new Function(source + '\nreturn NativeImageStage;')().
  */
 var NativeImageStage = (function () {
@@ -7,11 +7,16 @@ var NativeImageStage = (function () {
   const SHA=/^[0-9a-f]{64}$/, GIT=/^[0-9a-f]{40}$/, SLUG=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const PROTECTED=["content/articles.json","assets/generated/manifest.json","content/visual_reviews.json"];
   const PART_SIZE=512*1024;
+  const PREFLIGHT_BRANCH="native-image-preflight/transport";
+  const PREFLIGHT_DIR="maintenance/native-image-preflight";
+  const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
+  const CLAIM_DIR="maintenance/native-image-generation-claims";
   function create({runtime,github,repository}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
     for(const name of ["convert","sha256","fromBase64","toBase64","utf8"])if(typeof runtime[name]!=="function")throw Error("Missing byte runtime: "+name);
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
+    const activeGenerations=new Set(), generationAttempts=new Map();
     function payload(r) {
       const p=r?.structuredContent??r;
       if(!p||r?.isError||p.error_code||p.error){const e=Error(p?.error||"GitHub operation failed");e.provider=p;throw e;}
@@ -83,7 +88,7 @@ var NativeImageStage = (function () {
     }
     function capture(input){
       const result=input?.imageGenResult;
-      if(!result||typeof result!=="object"||typeof result.image_url!=="string"||!result.image_url.startsWith("data:image/png;base64,"))throw Error("Expected actual ImageGen PNG data URL; this helper never invokes image generation");
+      if(!result||typeof result!=="object"||typeof result.image_url!=="string"||!result.image_url.startsWith("data:image/png;base64,"))throw Error("Expected actual PNG bytes returned by the configured transfer callback");
       if(typeof input.observedAt!=="string"||!/(Z|[+-]\d\d:\d\d)$/.test(input.observedAt)||!Number.isFinite(Date.parse(input.observedAt)))throw Error("An actual timezone-qualified observation time is required");
       if(result.output_hint!==undefined&&typeof result.output_hint!=="string")throw Error("Invalid actual ImageGen output_hint");
       const source=runtime.fromBase64(result.image_url),converted=runtime.convert(source),sourceSha=runtime.sha256(source);
@@ -141,7 +146,7 @@ var NativeImageStage = (function () {
         state.paths=[...files.map(f=>f.path),plan.directory+"/receipt.json"];
         state.phase="upload_blobs";
         for(const file of files){if(!state.blobs[file.path])state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:file.encoding}),"blob");}
-        const receipt={version:1,kind:"native_image_candidate",status:"awaiting_visual_review",identity:plan.identity,repository,slug:plan.slug,article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},generation:{capture_kind:input.recovery?"recovered_native_output":"native_tool_result",prompt:plan.prompt,prompt_sha256:hashText(plan.prompt),observed_at:input.observedAt,actual_output_hint:input.imageGenResult.output_hint??null,recovery:input.recovery??null},source:{sha256:sourceSha,bytes:source.length,width:converted.sourceWidth,height:converted.sourceHeight,parts:parts.map(({base64,...p})=>({...p,blob_sha:state.blobs[p.path]})),c2pa:serialReceipt(converted.receipt)},jpeg:{...jpeg,blob_sha:state.blobs[jpeg.path]},transform:{helper:"scripts/native_image_bytes.js",resize:"center-cover-bilinear",alpha_background:"white",width:1200,height:675,jpeg_quality:84}};
+        const receipt={version:1,kind:"native_image_candidate",status:"awaiting_visual_review",identity:plan.identity,repository,slug:plan.slug,article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},generation:{capture_kind:input.recovery?"recovered_native_output":"native_tool_result",prompt:plan.prompt,prompt_sha256:hashText(plan.prompt),observed_at:input.observedAt,actual_output_hint:input.imageGenResult.output_hint??null,recovery:input.recovery??null,transport_preflight:input.transportPreflight??null,generation_claim:input.generationClaim??null},source:{sha256:sourceSha,bytes:source.length,width:converted.sourceWidth,height:converted.sourceHeight,parts:parts.map(({base64,...p})=>({...p,blob_sha:state.blobs[p.path]})),c2pa:serialReceipt(converted.receipt)},jpeg:{...jpeg,blob_sha:state.blobs[jpeg.path]},transform:{helper:"scripts/native_image_bytes.js",resize:"center-cover-bilinear",alpha_background:"white",width:1200,height:675,jpeg_quality:84}};
         const receiptPath=plan.directory+"/receipt.json",receiptText=JSON.stringify(receipt,null,2)+"\n";
         if(runtime.utf8(receiptText).length>=PART_SIZE)throw Error("Candidate receipt is too large for reliable readback");
         if(!state.blobs[receiptPath])state.blobs[receiptPath]=gitSha(await call("create_blob",{content:receiptText,encoding:"utf-8"}),"blob");
@@ -161,7 +166,167 @@ var NativeImageStage = (function () {
         return await stage(plan,{...retained,checkpoint:state});
       }catch(e){if(e.checkpoint)throw e;throw attachFailure(e,state);}
     }
-    return {prepare,probe,stage,resume,load};
+    async function branchHead(branch) {
+      const raw=payload(await github.fetch({url:"https://api.github.com/repos/"+repository+"/git/ref/heads/"+branch}));
+      const ref=typeof raw.content==="string"?JSON.parse(raw.content):raw;
+      if(ref.ref!=="refs/heads/"+branch||!GIT.test(ref.object?.sha||""))throw Error("Invalid branch response: "+branch);
+      return ref.object.sha;
+    }
+    async function transportPreflight(plan,options) {
+      let phase="preflight_read";
+      try {
+        // Use the very same callback for this existing image and the eventual
+        // tool result. A local path or file ID alone is not a byte transfer.
+        const transferred=await options.readBytes(options.probeSource);
+        const observedAt=new Date().toISOString();
+        const {source,converted,sourceSha}=capture({imageGenResult:transferred,observedAt,
+          expectedSourcePngSha256:options.expectedProbeSha256});
+        if(source.length>PART_SIZE)throw Error("Use an existing probe PNG no larger than 512 KiB");
+        phase="preflight_branch_lookup";
+        let previousSha=null;
+        try {await read(PREFLIGHT_DIR+"/receipt.json",PREFLIGHT_BRANCH);}
+        catch(error) {if(!absentRef(error,PREFLIGHT_BRANCH))throw error;previousSha=false;}
+        if(previousSha!==false) {
+          previousSha=await branchHead(PREFLIGHT_BRANCH);
+          const previous=JSON.parse((await read(PREFLIGHT_DIR+"/receipt.json",previousSha)).content);
+          if(previous.version!==1||previous.kind!=="native_image_transport_preflight"||previous.repository!==repository)
+            throw Error("The preflight branch is not an owned transport probe");
+        }
+        const receipt={version:1,kind:"native_image_transport_preflight",status:"probe_only_not_an_article_candidate",
+          repository,candidate_identity:plan.identity,logical_run_id:plan.logicalRunId,observed_at:observedAt,
+          route:options.route,probe_source_ref:options.probeSourceRef,
+          source:{sha256:sourceSha,bytes:source.length},jpeg:{sha256:converted.sha256,bytes:converted.bytes.length},
+          baseline:{commit_sha:plan.baseCommitSha,protected_hashes:plan.protectedHashes}};
+        const receiptText=JSON.stringify(receipt,null,2)+"\n";
+        const files=[{path:PREFLIGHT_DIR+"/probe.png",content:runtime.toBase64(source),encoding:"base64"},
+          {path:PREFLIGHT_DIR+"/probe.jpg",content:converted.base64,encoding:"base64"},
+          {path:PREFLIGHT_DIR+"/receipt.json",content:receiptText,encoding:"utf-8"}];
+        phase="preflight_save";
+        const entries=[];
+        for(const file of files)entries.push({path:file.path,mode:"100644",type:"blob",
+          sha:gitSha(await call("create_blob",{content:file.content,encoding:file.encoding}),"blob")});
+        const treeSha=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,tree_elements:entries}),"tree");
+        const commitSha=gitSha(await call("create_commit",{parent_sha:previousSha||plan.baseCommitSha,tree_sha:treeSha,
+          message:"Check native image transport: "+plan.logicalRunId}),"commit");
+        async function verify(ref) {
+          const results=await Promise.allSettled(files.map(file=>read(file.path,ref,file.encoding)));
+          for(let i=0;i<results.length;i++) {
+            const item=results[i];if(item.status!=="fulfilled")throw item.reason;
+            const bytes=i<2?runtime.fromBase64(item.value.content):runtime.utf8(item.value.content);
+            const expected=i===0?sourceSha:i===1?converted.sha256:hashText(receiptText);
+            if(runtime.sha256(bytes)!==expected)throw Error("Preflight readback SHA mismatch: "+files[i].path);
+          }
+          await verifyProtected(ref,plan.protectedHashes);
+        }
+        phase="preflight_commit_readback";await verify(commitSha);
+        phase="preflight_branch_save";
+        try {
+          if(previousSha)await call("update_ref",{branch_name:PREFLIGHT_BRANCH,sha:commitSha,expected_sha:previousSha,force:false});
+          else await call("create_branch",{branch_name:PREFLIGHT_BRANCH,sha:commitSha});
+        } catch(error) {
+          // Recover only a lost successful response, never overwrite a competing run.
+          if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw error;
+        }
+        phase="preflight_branch_readback";
+        if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw Error("Concurrent transport check changed the preflight branch");
+        await verify(PREFLIGHT_BRANCH);
+        return {kind:"native_image_transport_preflight",status:"passed",branch:PREFLIGHT_BRANCH,commit_sha:commitSha,
+          receipt_path:PREFLIGHT_DIR+"/receipt.json",receipt_sha256:hashText(receiptText),observed_at:observedAt,
+          route:options.route,source_sha256:sourceSha,jpeg_sha256:converted.sha256};
+      } catch(error) {
+        const e=error instanceof Error?error:Error(String(error));e.stage=phase;
+        e.message="Image generation not started ("+phase+"): "+e.message;throw e;
+      }
+    }
+    async function checkTransport(plan,options) {
+      checkPlan(plan);
+      if(typeof options?.readBytes!=="function"||!SHA.test(options.expectedProbeSha256||"")
+        ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
+        ||typeof options.probeSourceRef!=="string"||!options.probeSourceRef.trim()||options.probeSourceRef.length>1000)
+        throw Error("Provide the actual byte-transfer callback and existing probe PNG reference/SHA");
+      for(const name of ["fetch","update_ref"])if(typeof github[name]!=="function")throw Error("Missing preflight GitHub callback: "+name);
+      return await transportPreflight(plan,options);
+    }
+    async function reserveGeneration(plan,proof,claim) {
+      try {
+        const raw=await read(claim.receipt_path,claim.branch),r=JSON.parse(raw.content);
+        if(r.version!==1||r.kind!==claim.kind||r.status!==claim.status||r.repository!==repository
+          ||r.identity!==plan.identity||r.slug!==plan.slug||r.article_sha256!==plan.articleSha256
+          ||r.logical_run_id!==plan.logicalRunId||r.prompt_sha256!==hashText(plan.prompt))
+          throw Error("Generation claim identity conflict; refusing another generation");
+        claim.receipt_sha256=hashText(raw.content);
+        return false;
+      } catch(error) {if(!absentRef(error,claim.branch))throw error;}
+      const receipt={version:1,kind:claim.kind,status:claim.status,repository,identity:plan.identity,
+        slug:plan.slug,article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,
+        prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
+        baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},
+        transport_preflight:proof};
+      const content=JSON.stringify(receipt,null,2)+"\n";
+      claim.receipt_sha256=hashText(content);
+      const blobSha=gitSha(await call("create_blob",{content,encoding:"utf-8"}),"blob");
+      const treeSha=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
+        tree_elements:[{path:claim.receipt_path,mode:"100644",type:"blob",sha:blobSha}]}),"tree");
+      claim.commit_sha=gitSha(await call("create_commit",{parent_sha:plan.baseCommitSha,tree_sha:treeSha,
+        message:"Reserve native image generation: "+plan.slug}),"commit");
+      async function verify(ref) {
+        if(hashText((await read(claim.receipt_path,ref)).content)!==claim.receipt_sha256)
+          throw Error("Generation claim readback mismatch");
+        await verifyProtected(ref,plan.protectedHashes);
+      }
+      await verify(claim.commit_sha);
+      // Atomic create-only reference ownership spans workers and fresh runtimes.
+      // A lost/invalid response never proves ownership, even if our ref exists.
+      const created=await call("create_branch",{branch_name:claim.branch,sha:claim.commit_sha});
+      if(created.branch!==claim.branch)
+        throw Error("Generation claim creation did not confirm ownership; recover without generating");
+      if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation claim branch SHA mismatch");
+      await verify(claim.branch);
+      return true;
+    }
+    async function generateAndStage(plan,options) {
+      checkPlan(plan);
+      if(activeGenerations.has(plan.identity))throw Error("Generation is already running for this candidate");
+      activeGenerations.add(plan.identity);
+      let phase="candidate_lookup",attempt,proof,generationClaim;
+      try {
+        const existing=await probe(plan);
+        if(existing.status==="saved")return {...existing,imageGenResult:null,transportPreflight:null};
+        attempt=generationAttempts.get(plan.identity);
+        if(attempt)throw Error("This execution already requested this image; recover its output instead of generating again");
+        if(typeof options?.generate!=="function")throw Error("Provide the actual generator callback");
+        // There is no cached preflight pass: every generating invocation performs
+        // the real read → convert → GitHub save → readback above in this execution.
+        phase="preflight";proof=await checkTransport(plan,options);
+        phase="candidate_lookup_after_preflight";const completed=await probe(plan);
+        if(completed.status==="saved")return {...completed,imageGenResult:null,transportPreflight:proof};
+        phase="generation_claim";
+        generationClaim={kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
+          branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
+        const acquired=await reserveGeneration(plan,proof,generationClaim);
+        // A candidate can finish during reservation, including a legacy recovery.
+        // Even a losing worker may recover it; neither worker replaces the claim.
+        phase="candidate_lookup_after_claim";const afterClaim=await probe(plan);
+        if(afterClaim.status==="saved")return {...afterClaim,imageGenResult:null,transportPreflight:proof,generationClaim};
+        if(!acquired)throw Error("Generation is already reserved at "+generationClaim.branch+"; recover the original output instead of generating again");
+        phase="generation";attempt={transportPreflight:proof,generationClaim};generationAttempts.set(plan.identity,attempt);
+        attempt.imageGenResult=await options.generate({prompt:plan.prompt,transparent_background:false});
+        attempt.observedAt=new Date().toISOString();
+        phase="generated_byte_transfer";const transferred=await options.readBytes(attempt.imageGenResult);
+        attempt.transferredImage=transferred;
+        const saved=await stage(plan,{imageGenResult:transferred,observedAt:attempt.observedAt,transportPreflight:proof,generationClaim});
+        return {...saved,imageGenResult:attempt.imageGenResult,transportPreflight:proof,generationClaim};
+      } catch(error) {
+        const e=error instanceof Error?error:Error(String(error));if(!e.stage)e.stage=phase;
+        // Carry real output/checkpoint to the caller without printing it. The
+        // caller must retain references on failure and must not retry generation.
+        if(proof)e.transportPreflight=proof;
+        if(generationClaim)e.generationClaim=generationClaim;
+        if(attempt){if(e.checkpoint)attempt.checkpoint=e.checkpoint;Object.assign(e,attempt);}
+        throw e;
+      } finally {activeGenerations.delete(plan.identity);}
+    }
+    return {prepare,probe,stage,resume,load,checkTransport,generateAndStage};
   }
   return {create,PART_SIZE};
 })();

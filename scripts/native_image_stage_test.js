@@ -67,6 +67,10 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   const prefix = "maintenance/native-image-candidates/" + slug + "/";
   const receiptPath = prefix + "receipt.json";
   const jpegPath = prefix + "candidate.jpg";
+  const preflightBranch = "native-image-preflight/transport";
+  const preflightPrefix = "maintenance/native-image-preflight/";
+  const claimBranchPrefix = "native-image-generation-claim/";
+  const claimPrefix = "maintenance/native-image-generation-claims/";
 
   function makeMock(options) {
     const faults = Object.assign({}, options || {});
@@ -91,7 +95,10 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     trees.set(baseTreeSha, files);
     commits.set(baseCommitSha, {tree: baseTreeSha, parent: null});
     function log(name, args) {
-      demand(args.repository_full_name === repository, "repository must be explicit");
+      demand(args.repository_full_name === repository || (name === "fetch" &&
+        (args.url === "https://api.github.com/repos/" + repository + "/git/ref/heads/" + preflightBranch ||
+        args.url.startsWith("https://api.github.com/repos/" + repository + "/git/ref/heads/" + claimBranchPrefix))),
+        "repository must be explicit");
       calls.push({name, args});
     }
     function resolve(ref) {
@@ -115,6 +122,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         const blob = tree.get(args.path);
         if (!blob) return apiError("NOT_FOUND", "Repository path does not exist");
         const encoding = args.encoding || "utf-8";
+        if (faults.preflightCorrupt && args.ref === preflightBranch && args.path === preflightPrefix + "probe.png")
+          return ok({content: "AAAA", encoding, sha: blob.sha});
         // Reproduce the Contents API/connector's observed large-file empty result.
         if (encoding === "base64" && blob.bytes.length > 1024 * 1024)
           return ok({content: "", encoding, sha: blob.sha, size: blob.bytes.length});
@@ -142,7 +151,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         }
         const tree = new Map(trees.get(args.base_tree_sha));
         for (const entry of args.tree_elements) {
-          demand(entry.path.startsWith(prefix), "tree must only add candidate files");
+          demand(entry.path.startsWith(prefix) || entry.path.startsWith(preflightPrefix) || entry.path.startsWith(claimPrefix),
+            "tree must only add isolated candidate, transport-probe or generation-claim files");
           demand(entry.mode === "100644" && entry.type === "blob", "regular file entries only");
           demand(blobs.has(entry.sha), "tree must reference a created blob SHA");
           tree.set(entry.path, blobs.get(entry.sha));
@@ -153,7 +163,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       },
       async create_commit(args) {
         log("create_commit", args);
-        demand(args.parent_sha === baseCommitSha, "commit must parent the immutable base commit");
+        demand(args.parent_sha === baseCommitSha || args.parent_sha === branches.get(preflightBranch),
+          "commit must parent the immutable base or advance the isolated preflight branch");
         demand(trees.has(args.tree_sha), "commit must reference a created tree");
         demand(!args.additional_parent_shas || args.additional_parent_shas.length === 0,
           "candidate commit must not introduce unrelated parents");
@@ -163,8 +174,9 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       },
       async create_branch(args) {
         log("create_branch", args);
-        demand(typeof args.branch_name === "string" && args.branch_name.startsWith("native-image-candidate/"),
-          "only the isolated candidate branch may be created");
+        demand(typeof args.branch_name === "string" && (args.branch_name.startsWith("native-image-candidate/")
+          || args.branch_name === preflightBranch || args.branch_name.startsWith(claimBranchPrefix)),
+          "only isolated candidate/preflight/claim branches may be created");
         demand(commits.has(args.sha), "branch must point to an existing commit SHA");
         if (faults.branchOnce) {
           faults.branchOnce = false;
@@ -172,16 +184,38 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         }
         if (branches.has(args.branch_name)) return apiError("ALREADY_EXISTS", "Reference already exists");
         branches.set(args.branch_name, args.sha);
+        if (args.branch_name.startsWith(claimBranchPrefix) && faults.claimLostResponse)
+          return apiError("SERVICE_UNAVAILABLE", "Injected lost generation-claim response");
+        if (args.branch_name.startsWith(claimBranchPrefix) && faults.claimBadResponse)
+          return ok({branch: "unrelated-claim"});
         if (faults.lostBranchResponseOnce) {
           faults.lostBranchResponseOnce = false;
           return apiError("SERVICE_UNAVAILABLE", "Injected lost response after branch was created");
         }
+        // The real connector confirms only the branch name; GET ref supplies SHA.
+        return ok({branch: args.branch_name});
+      },
+      async fetch(args) {
+        log("fetch", args);
+        const branch = args.url.split("/git/ref/heads/")[1];
+        let sha = branches.get(branch);
+        if (!sha) return apiError("NOT_FOUND", "Not Found");
+        if (branch.startsWith(claimBranchPrefix) && faults.claimWrongHead) sha = "f".repeat(40);
+        return ok({content: JSON.stringify({ref: "refs/heads/" + branch, object: {sha}})});
+      },
+      async update_ref(args) {
+        log("update_ref", args);
+        demand(args.branch_name === preflightBranch && args.force === false,
+          "only the transport probe may be advanced, never force pushed");
+        demand(branches.get(args.branch_name) === args.expected_sha, "preflight update needs the observed head");
+        demand(commits.get(args.sha)?.parent === args.expected_sha, "preflight update must fast-forward");
+        branches.set(args.branch_name, args.sha);
         return ok({ref: "refs/heads/" + args.branch_name, object: {sha: args.sha}});
       }
     };
     return {
       github, calls, branches, resolve,
-      writes: () => calls.filter(call => call.name.startsWith("create_")),
+      writes: () => calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref"),
       count: name => calls.filter(call => call.name === name).length,
       readText: (ref, path) => utf8Text(resolve(ref).get(path).bytes)
     };
@@ -373,6 +407,165 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   assert((await multipart.service.probe(multipart.plan)).status === "saved", "multipart probe verifies saved candidate");
   assert(multipart.mock.writes().length === largeWrites, "multipart probe is read-only");
   protectedUnchanged(multipart, "multipart stage");
+
+  // The new entry point tests the real configured transport before invoking its
+  // generator. This source remains explicitly synthetic test data in the fake.
+  function gateOptions(context, counters) {
+    const existingFile = {path: "/synthetic-existing/probe.png"};
+    return {
+      probeSource: existingFile, probeSourceRef: existingFile.path,
+      expectedProbeSha256: runtime.sha256(pngBytes), route: "fixture file callback → code runtime → fake GitHub",
+      async readBytes(source) {
+        counters.reads++;
+        if (source === existingFile) return {image_url: pngDataURL};
+        demand(source === context.input.imageGenResult, "both sources must use the same actual transfer callback");
+        return source;
+      },
+      async generate(args) {
+        counters.generated++;
+        demand(args.prompt === context.plan.prompt && args.transparent_background === false,
+          "generator must receive the planned prompt");
+        const receipt = JSON.parse(context.mock.readText(preflightBranch, preflightPrefix + "receipt.json"));
+        demand(receipt.kind === "native_image_transport_preflight", "generation follows a saved isolated preflight");
+        return context.input.imageGenResult;
+      }
+    };
+  }
+  for (const [label, faults, brokenReader] of [
+    ["unavailable byte bridge", {}, true],
+    ["failed GitHub save", {treeOnce: true}, false],
+    ["mismatched branch readback", {preflightCorrupt: true}, false]
+  ]) {
+    const context = await scenario("gate-" + label, faults);
+    const counters = {reads: 0, generated: 0}, options = gateOptions(context, counters);
+    if (brokenReader) options.readBytes = async () => { throw Error("No executor-to-connector byte bridge"); };
+    await failure(() => context.service.generateAndStage(context.plan, options), label + " blocks the generating entry point");
+    assert(counters.generated === 0, label + " leaves generator calls at zero");
+    assert(!context.mock.branches.has(context.branch), label + " cannot create an article candidate");
+  }
+  const gated = await scenario("gated-save"), counters = {reads: 0, generated: 0};
+  const gatedSaved = await gated.service.generateAndStage(gated.plan, gateOptions(gated, counters));
+  assert(gatedSaved.status === "saved" && counters.generated === 1 && counters.reads === 2,
+    "successful gate reads probe and generated output through one callback and generates once");
+  const probeReceipt = JSON.parse(gated.mock.readText(preflightBranch, preflightPrefix + "receipt.json"));
+  const gatedReceipt = JSON.parse(gated.mock.readText(gated.branch, receiptPath));
+  const claimBranch = claimBranchPrefix + gated.plan.identity;
+  const claimReceipt = JSON.parse(gated.mock.readText(claimBranch, claimPrefix + gated.plan.identity + ".json"));
+  assert(probeReceipt.kind === "native_image_transport_preflight" &&
+    probeReceipt.status === "probe_only_not_an_article_candidate" && !probeReceipt.generation,
+    "preflight fixture is never labelled a generated article image");
+  assert(gatedReceipt.kind === "native_image_candidate" && gatedReceipt.status === "awaiting_visual_review" &&
+    gatedReceipt.generation.transport_preflight.status === "passed" &&
+    gatedReceipt.generation.generation_claim.branch === claimBranch,
+    "actual candidate remains unapproved and records its transport check and durable generation claim");
+  assert(claimReceipt.kind === "native_image_generation_claim" &&
+    claimReceipt.status === "reserved_generation_unconfirmed" && !claimReceipt.generation,
+    "reservation is not a generated image or proof of generation completion");
+  assert(!gated.mock.resolve(gated.branch).has(preflightPrefix + "probe.png") &&
+    !gated.mock.resolve(gated.branch).has(claimPrefix + gated.plan.identity + ".json"),
+    "transport fixture and claim remain outside the article candidate tree");
+  protectedUnchanged(gated, "gated save");
+  const beforeReuse = gated.mock.writes().length;
+  const reusedGate = await gated.service.generateAndStage(gated.plan, {});
+  assert(reusedGate.status === "saved" && counters.generated === 1 && gated.mock.writes().length === beforeReuse,
+    "saved candidate reuse does not need capabilities or generate a second image");
+
+  const secondPlan = await gated.service.prepare({...gated.args, logicalRunId: "another-generating-invocation"});
+  const nextContext = {...gated, plan: secondPlan}, secondCounters = {reads: 0, generated: 0};
+  await gated.service.generateAndStage(secondPlan, gateOptions(nextContext, secondCounters));
+  assert(secondCounters.reads === 2 && secondCounters.generated === 1 && gated.mock.count("update_ref") === 1,
+    "next invocation repeats real transport rather than caching the earlier pass");
+  assert([...gated.mock.branches.keys()].filter(name => name.startsWith("native-image-preflight/")).length === 1,
+    "repeated transport checks advance one preflight branch without branch proliferation");
+
+  const transportOnly = await scenario("transport-only"), transportCounters = {reads: 0, generated: 0};
+  const transportOptions = gateOptions(transportOnly, transportCounters);
+  delete transportOptions.generate;
+  const transportProof = await transportOnly.service.checkTransport(transportOnly.plan, transportOptions);
+  assert(transportProof.status === "passed" && transportCounters.reads === 1 && transportCounters.generated === 0 &&
+    [...transportOnly.mock.branches.keys()].join() === preflightBranch,
+    "standalone transport check requires no generator and creates neither a claim nor an article candidate");
+
+  const completedDuringProbe = await scenario("candidate-saved-during-preflight"), completedCounters = {reads: 0, generated: 0};
+  const completedOptions = gateOptions(completedDuringProbe, completedCounters), completedRead = completedOptions.readBytes;
+  completedOptions.readBytes = async source => {
+    await completedDuringProbe.service.stage(completedDuringProbe.plan, completedDuringProbe.input);
+    return await completedRead(source);
+  };
+  const completed = await completedDuringProbe.service.generateAndStage(completedDuringProbe.plan, completedOptions);
+  assert(completed.status === "saved" && completed.reused && completedCounters.generated === 0 &&
+    !completedDuringProbe.mock.branches.has(claimBranchPrefix + completedDuringProbe.plan.identity),
+    "candidate completed during preflight is re-probed and recovered without generation or reservation");
+
+  const parallel = await scenario("two-workers-one-plan"), firstCounters = {reads: 0, generated: 0}, otherCounters = {reads: 0, generated: 0};
+  const firstOptions = gateOptions(parallel, firstCounters), firstGenerate = firstOptions.generate;
+  let announceGeneration, releaseGeneration;
+  const generationStarted = new Promise(resolve => { announceGeneration = resolve; });
+  const generationHeld = new Promise(resolve => { releaseGeneration = resolve; });
+  firstOptions.generate = async args => {
+    const output = await firstGenerate(args);
+    announceGeneration();
+    await generationHeld;
+    return output;
+  };
+  const firstWorker = parallel.service.generateAndStage(parallel.plan, firstOptions);
+  await Promise.race([generationStarted, firstWorker.then(() => { throw Error("First worker unexpectedly completed before release"); })]);
+  const otherWorker = stageAPI.create({runtime: parallel.measuredRuntime, github: parallel.mock.github, repository});
+  let conflict;
+  try {
+    conflict = await failure(() => otherWorker.generateAndStage(parallel.plan, gateOptions(parallel, otherCounters)),
+      "independent worker cannot generate while the owner is generating the same plan");
+  } finally { releaseGeneration(); }
+  const parallelSaved = await firstWorker;
+  assert(parallelSaved.status === "saved" && firstCounters.generated + otherCounters.generated === 1 &&
+    conflict.generationClaim.branch === claimBranchPrefix + parallel.plan.identity,
+    "durable create-only claim permits exactly one generator across independent workers");
+
+  for (const [label, faults] of [
+    ["lost claim response", {claimLostResponse: true}],
+    ["invalid claim response", {claimBadResponse: true}],
+    ["mismatched claim ref SHA", {claimWrongHead: true}]
+  ]) {
+    const context = await scenario(label, faults), counts = {reads: 0, generated: 0};
+    const error = await failure(() => context.service.generateAndStage(context.plan, gateOptions(context, counts)),
+      label + " cannot establish generation ownership");
+    assert(counts.generated === 0 && error.generationClaim.branch === claimBranchPrefix + context.plan.identity &&
+      context.mock.branches.has(error.generationClaim.branch) && !context.mock.branches.has(context.branch),
+      label + " keeps its reservation reference without generating or creating a candidate");
+  }
+
+  const interruptedGate = await scenario("generated-transfer-interruption"), interruptedCounters = {reads: 0, generated: 0};
+  const interruptedOptions = gateOptions(interruptedGate, interruptedCounters), readNormally = interruptedOptions.readBytes;
+  interruptedOptions.readBytes = async source => {
+    if (source === interruptedGate.input.imageGenResult) throw Error("Generated result transfer interrupted");
+    return await readNormally(source);
+  };
+  const interruption = await failure(() => interruptedGate.service.generateAndStage(interruptedGate.plan, interruptedOptions),
+    "post-generation transfer interruption retains recovery evidence");
+  assert(interruption.imageGenResult === interruptedGate.input.imageGenResult && interruption.transportPreflight.status === "passed",
+    "failed save exposes the actual generated result without relabelling the fixture");
+  await failure(() => interruptedGate.service.generateAndStage(interruptedGate.plan, interruptedOptions),
+    "same-execution retry must recover the prior output");
+  assert(interruptedCounters.generated === 1, "transfer failure cannot cause a duplicate generation in the same execution");
+  const freshInterrupted = stageAPI.create({runtime: interruptedGate.measuredRuntime, github: interruptedGate.mock.github, repository});
+  await failure(() => freshInterrupted.generateAndStage(interruptedGate.plan, interruptedOptions),
+    "fresh runtime must recover a failed generated transfer instead of claiming it again");
+  assert(interruptedCounters.generated === 1, "durable reservation prevents regeneration after a fresh runtime loses transient state");
+
+  let claimRead = false;
+  const lookupFailure = stageAPI.create({runtime: interruptedGate.measuredRuntime, repository,
+    github: {...interruptedGate.mock.github, async fetch_file(args) {
+      if (claimRead && args.ref === interruptedGate.branch)
+        throw Error("Candidate lookup interrupted after observing the existing claim");
+      if (args.ref === claimBranchPrefix + interruptedGate.plan.identity) claimRead = true;
+      return await interruptedGate.mock.github.fetch_file(args);
+    }}
+  });
+  const lookupError = await failure(() => lookupFailure.generateAndStage(interruptedGate.plan, interruptedOptions),
+    "lookup failure after an existing claim stops generation");
+  assert(interruptedCounters.generated === 1 &&
+    lookupError.generationClaim.branch === claimBranchPrefix + interruptedGate.plan.identity,
+    "claim reference survives a candidate-recovery lookup failure");
 
   return {passed: checks.length, checks};
 };
