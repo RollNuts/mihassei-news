@@ -45,6 +45,29 @@ TARGET_QUEUE = 3
 MAX_NEW_PER_RUN = 2
 
 
+class ComicUnavailable(RuntimeError):
+    """A required comic was rejected before any Buffer submission."""
+
+
+def ready_article_comic(article, review, root=None):
+    asset = approved_comic_asset(article, review, root or HERE.parent)
+    if asset is None:
+        return None
+    url = (ASSET_BASE_URL.replace("/main/", "/" + asset["revision"] + "/", 1)
+           + "/" + asset["filename"])
+    try:
+        if not remote_asset_available(url):
+            return None
+    except (OSError, ValueError):
+        return None
+    return {**asset, "text": comic_publication_text(article, asset), "url": url}
+
+
+def comic_publication_text(article, asset):
+    return (asset["caption"] + "\n\nhttps://veripsa.com/articles/"
+            + article["slug"] + "/\n#未発生新聞")
+
+
 def rate_limit_detail(headers):
     """Expose only numeric retry/quota data, never raw headers or response bodies."""
     if headers is None:
@@ -271,17 +294,11 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 and post.get("id") == "article-" + str(article.get("slug", ""))
                 and "https://veripsa.com/articles/" + str(article.get("slug", "")) + "/"
                 in str(post.get("text", ""))):
-            article_asset = approved_comic_asset(article, post["comic_approval"], HERE.parent)
+            article_asset = ready_article_comic(article, post["comic_approval"])
         if article_asset is not None:
-            url = (ASSET_BASE_URL.replace("/main/", "/" + article_asset["revision"] + "/", 1)
-                   + "/" + article_asset["filename"])
-            try:
-                if remote_asset_available(url):
-                    media_url = url
-                    text = (article_asset["caption"] + "\n\nhttps://veripsa.com/articles/"
-                            + article["slug"] + "/\n#未発生新聞")
-            except (OSError, ValueError):
-                pass  # Optional media must not block the normal article post.
+            media_url, text = article_asset["url"], article_asset["text"]
+    if post.get("comic_required") is True and article_asset is None:
+        raise ComicUnavailable("Required reviewed comic is unavailable; nothing submitted")
     # Article comics reuse the same image attachment and mutation as historical
     # image posts; invalid optional media never blocks an ordinary article.
     if post["kind"] in ("comic", "image"):

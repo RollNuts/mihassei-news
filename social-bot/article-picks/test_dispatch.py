@@ -1532,7 +1532,7 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                  "-c", "commit.gpgsign=false", "commit", "-qm", "Synthetic fixture")
         self.revision = self.git("rev-parse", "HEAD").strip()
         self.caption = "便利にしたら、手順が増えました。"
-        self.review = {"approved_by": "owner", "reviewed_at": NOW.isoformat(),
+        self.review = {"approved_by": "owner", "reviewed_at": (NOW - timedelta(days=1)).isoformat(),
                        "article_sha256": comics.article_fingerprint(self.story),
                        "image_sha256": hashlib.sha256(self.image.read_bytes()).hexdigest(),
                        "caption": self.caption,
@@ -1569,9 +1569,11 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         return send.call_args.args[1], remote
 
     @contextmanager
-    def main_context(self, *, config=None, state=None, retry=None, available=True):
+    def main_context(self, *, config=None, state=None, retry=None, available=True,
+                     articles=None, existing=None, now=NOW):
         (self.root / "content").mkdir(exist_ok=True)
-        (self.root / "content/articles.json").write_text(json.dumps([self.story]))
+        (self.root / "content/articles.json").write_text(json.dumps(
+            [self.story] if articles is None else articles))
         documents = {HERE / "config.json": self.config if config is None else config,
                      HERE / "state.json": ledger() if state is None else state}
         with ExitStack() as stack:
@@ -1584,16 +1586,27 @@ class ArticleComicAttachmentTests(unittest.TestCase):
             }, clear=True))
             for module in (picks, comics):
                 clock = stack.enter_context(patch.object(module, "datetime", wraps=datetime))
-                clock.now.return_value = NOW
+                clock.now.return_value = now
             mocks = {
                 "channel": stack.enter_context(patch.object(picks, "connected_channel", return_value=("org", CONFIG["channel_id"]))),
-                "existing": stack.enter_context(patch.object(picks, "list_existing", return_value=[])),
+                "existing": stack.enter_context(patch.object(picks, "list_existing", return_value=[] if existing is None else existing)),
                 "save": stack.enter_context(patch.object(picks, "save_state")),
                 "remote": stack.enter_context(patch.object(publish, "remote_asset_available", return_value=available)),
                 "gql": stack.enter_context(patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "mock-post"}}})),
                 "queue": stack.enter_context(patch.object(picks, "queue_one", wraps=publish.queue_one)),
             }
             yield mocks
+
+    def comic_record(self, *, slug=None, hours=180, pending=False):
+        slug = slug or self.story["slug"]
+        asset = comics.approved_comic_asset(self.story, self.review, self.root, NOW)
+        text = publish.comic_publication_text({"slug": slug}, asset)
+        return {"buffer_id": "" if pending else "saved-comic",
+                "queued_at_utc": (NOW - timedelta(hours=hours)).isoformat(),
+                "source": "approved_comic", "submission_mode": "shareNow",
+                "submission_pending": pending, "copy_mode": "comic_caption",
+                "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+                "comic_attachment": asset}
 
     def test_committed_owner_review_attaches_one_image_at_exact_revision(self):
         query, remote = self.submit()
@@ -1721,13 +1734,16 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                 self.assertEqual(post["kind"], "article")
                 self.assertEqual(post["id"], "article-comic-story")
                 self.assertEqual(mocks["queue"].call_args.kwargs, {"mode": "shareNow", "return_post": True})
-                receipt = mocks["save"].call_args.args[0]["queued"]["comic-story"]
+                saved = mocks["save"].call_args.args[0]
+                receipt = saved["comic_posts" if config is self.config else "queued"]["comic-story"]
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 if config is not self.config:
                     self.assertEqual(set(post), {"kind", "id", "text"})
                     mocks["remote"].assert_not_called()
                     self.assertNotIn("comic_attachment", receipt)
                 else:
+                    self.assertTrue(post["comic_required"])
+                    self.assertNotIn("comic-story", saved["queued"])
                     actual_text = self.caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"
                     self.assertEqual(receipt["copy_mode"], "comic_caption")
                     self.assertEqual(receipt["text_sha256"], hashlib.sha256(actual_text.encode("utf-8")).hexdigest())
@@ -1737,13 +1753,17 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                         self.assertEqual(receipt["comic_attachment"][key], self.review[key])
                     self.assertEqual(receipt["comic_attachment"]["revision"], self.revision)
 
-    def test_unavailable_or_stale_media_keeps_original_caption_and_ledger_hash(self):
+    def test_unavailable_or_stale_comic_uses_another_ordinary_article_without_consuming_work(self):
         stale = {**self.config, "comic_attachments": {"comic-story": {**self.review, "caption_sha256": "0" * 64}}}
+        ordinary = article("ordinary-other", age_hours=4)
         for config, available in ((self.config, False), (stale, True)):
-            with self.subTest(available=available), self.main_context(config=config, available=available) as mocks:
+            with self.subTest(available=available), self.main_context(
+                    config=config, available=available, articles=[self.story, ordinary]) as mocks:
                 self.assertEqual(picks.main(), 0)
                 original = mocks["queue"].call_args.args[2]["text"]
-                receipt = mocks["save"].call_args.args[0]["queued"]["comic-story"]
+                saved = mocks["save"].call_args.args[0]
+                receipt = saved["queued"]["ordinary-other"]
+                self.assertNotIn("comic-story", saved.get("comic_posts", {}))
                 self.assertEqual(receipt["text_sha256"], hashlib.sha256(original.encode("utf-8")).hexdigest())
                 self.assertNotEqual(receipt["copy_mode"], "comic_caption")
                 self.assertNotIn("comic_attachment", receipt)
@@ -1754,12 +1774,63 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         self.assertEqual(query, baseline)
         remote.assert_not_called()
 
+    def test_required_comic_never_sends_a_text_only_fallback(self):
+        post = {"kind": "article", "id": "article-comic-story", "article": self.story,
+                "comic_approval": self.review, "comic_required": True,
+                "text": "https://veripsa.com/articles/comic-story/"}
+        for override in ({}, {"id": "article-other-story", "text": "https://veripsa.com/articles/other-story/"}):
+            with self.subTest(override=override), \
+                 patch.object(publish, "HERE", self.root / "social-bot"), \
+                 patch.object(publish, "remote_asset_available", return_value=False), \
+                 patch.object(publish, "gql") as provider:
+                with self.assertRaises(publish.ComicUnavailable):
+                    publish.queue_one("mock-only", "mock-channel", {**post, **override}, mode="shareNow")
+                provider.assert_not_called()
+
+    def test_old_previously_promoted_source_gets_one_comic_and_preserves_original_receipt(self):
+        self.story["published_at"] = (NOW - timedelta(days=40)).isoformat()
+        old = {**recorded(hours=39 * 24), "copy_mode": "reader_lead", "text_sha256": "a" * 64}
+        state = {**ledger(**{"comic-story": old}), "public_posts": {"comic-story": public_record()}}
+        original = copy.deepcopy(state)
+        self.assertEqual(picks.eligible_articles([self.story], NOW, CONFIG), [])
+        with self.main_context(state=state) as mocks:
+            self.assertEqual(picks.main(), 0)
+            mocks["gql"].assert_called_once()
+            saved = copy.deepcopy(mocks["save"].call_args.args[0])
+        self.assertEqual(saved["queued"], original["queued"])
+        self.assertEqual(saved["public_posts"], original["public_posts"])
+        self.assertEqual(saved["comic_posts"]["comic-story"]["buffer_id"], "mock-post")
+        self.assertEqual(saved["comic_posts"]["comic-story"]["source"], "approved_comic")
+        self.assertFalse(saved["comic_posts"]["comic-story"].get("submission_pending", False))
+        # A replacement image cannot turn the same source into another work.
+        self.image.write_bytes(self.png(121))
+        self.git("add", self.relative)
+        self.git("-c", "user.name=Offline test", "-c", "user.email=test@example.invalid",
+                 "-c", "commit.gpgsign=false", "commit", "-qm", "Replacement synthetic fixture")
+        self.review["image_sha256"] = hashlib.sha256(self.image.read_bytes()).hexdigest()
+        saved["comic_posts"]["comic-story"].update(
+            queued_at_utc=(NOW - timedelta(hours=3)).isoformat(),
+            slot_jst="2026-11-05T09:05:00+09:00")
+        self.assertFalse(picks.slot_already_used(saved, NOW))
+        with self.main_context(state=saved) as mocks:
+            self.assertEqual(picks.main(), 0)
+            mocks["gql"].assert_not_called()
+            mocks["queue"].assert_not_called()
+
+    def test_same_approved_image_is_not_reused_as_a_second_article_comic(self):
+        state = {**ledger(), "comic_posts": {"another-source": self.comic_record(slug="another-source")}}
+        with self.main_context(state=state) as mocks:
+            self.assertEqual(picks.main(), 0)
+            mocks["gql"].assert_not_called()
+            mocks["queue"].assert_not_called()
+        fresh_comic = {**ledger(), "comic_posts": {"comic-story": self.comic_record(hours=3)}}
+        self.assertIsNone(picks.decide([self.story], {}, fresh_comic, [], CONFIG, NOW)[0])
+
     def test_approved_art_cannot_bypass_slug_slot_daily_spacing_or_cooldown(self):
         used = {**recorded(hours=1), "slot_jst": picks.promotion_slot(NOW).isoformat()}
         earlier = {**recorded(hours=3), "slot_jst": "2026-11-05T09:05:00+09:00"}
         recent = {**earlier, "buffer_sent_at_at_accept": (NOW - timedelta(minutes=30)).isoformat()}
-        cases = [(self.config, ledger(**{"comic-story": recorded()}), None, False),
-                 (self.config, ledger(used=used), None, True),
+        cases = [(self.config, ledger(used=used), None, True),
                  ({**self.config, "max_per_jst_day": 1}, ledger(earlier=earlier), None, True),
                  (self.config, ledger(recent=recent), None, True),
                  (self.config, ledger(), datetime.fromisoformat("2026-12-03T03:05:19+00:00"), True)]
@@ -1771,6 +1842,107 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                 if before_network:
                     mocks["channel"].assert_not_called()
                     mocks["existing"].assert_not_called()
+
+    def test_comic_receipts_share_slots_day_cap_and_real_send_spacing_with_ordinary_posts(self):
+        for reason in ("slot", "day", "spacing"):
+            entry = self.comic_record(slug="earlier-comic", hours=3)
+            config = CONFIG
+            if reason == "slot":
+                entry["slot_jst"] = picks.promotion_slot(NOW).isoformat()
+            elif reason == "day":
+                entry["slot_jst"] = "2026-11-05T09:05:00+09:00"
+                config = {**CONFIG, "max_per_jst_day": 1}
+            else:
+                entry["buffer_sent_at_at_accept"] = (NOW - timedelta(minutes=30)).isoformat()
+            state = {**ledger(), "comic_posts": {"earlier-comic": entry}}
+            with self.subTest(reason=reason), self.main_context(config=config, state=state) as mocks:
+                self.assertEqual(picks.main(), 0)
+                mocks["channel"].assert_not_called()
+                mocks["gql"].assert_not_called()
+
+    def test_pending_comic_recovers_only_exact_unique_new_provider_evidence(self):
+        pending = self.comic_record(hours=3, pending=True)
+        attempted = datetime.fromisoformat(pending["queued_at_utc"])
+        text = publish.comic_publication_text(self.story, pending["comic_attachment"])
+        remote = {"id": "recovered-comic", "status": "sent", "text": text,
+                  "createdAt": (attempted + timedelta(seconds=1)).isoformat(),
+                  "sentAt": (attempted + timedelta(seconds=2)).isoformat()}
+        old = recorded(hours=180)
+        state = {**ledger(**{"comic-story": old}), "comic_posts": {"comic-story": pending}}
+        asset = comics.approved_comic_asset(self.story, self.review, self.root, NOW)
+        picks.recover_comic_posts(state, [remote], NOW, [(self.story, self.review, asset)])
+        self.assertEqual(state["queued"]["comic-story"], old)
+        comic = state["comic_posts"]["comic-story"]
+        self.assertEqual(comic["buffer_id"], "recovered-comic")
+        self.assertFalse(comic.get("submission_pending", False))
+        self.assertEqual(comic["queued_at_utc"], pending["queued_at_utc"])
+        picks.recover_from_buffer(state, [remote], NOW, {"comic-story"})
+        self.assertEqual(state["queued"]["comic-story"], old)
+        comic_only = {**ledger(), "comic_posts": {"comic-story": copy.deepcopy(comic)}}
+        picks.recover_from_buffer(comic_only, [remote], NOW, {"comic-story"})
+        self.assertEqual(comic_only["queued"], {})
+
+    def test_failed_receipt_save_recovers_durable_intent_without_reposting(self):
+        original = ledger(**{"comic-story": recorded(hours=180)})
+        persisted = {}
+        def save(state):
+            comic = state.get("comic_posts", {}).get("comic-story", {})
+            if comic.get("buffer_id"):
+                raise OSError("simulated receipt persistence failure")
+            persisted.clear()
+            persisted.update(copy.deepcopy(state))
+        with self.main_context(state=original) as mocks:
+            mocks["save"].side_effect = save
+            with self.assertRaisesRegex(OSError, "persistence failure"):
+                picks.main()
+            mocks["gql"].assert_called_once()
+        pending = persisted["comic_posts"]["comic-story"]
+        self.assertTrue(pending["submission_pending"])
+        self.assertFalse(pending["buffer_id"])
+        text = publish.comic_publication_text(self.story, pending["comic_attachment"])
+        remote = {"id": "mock-post", "status": "sent", "text": text,
+                  "createdAt": (NOW + timedelta(seconds=1)).isoformat(),
+                  "sentAt": (NOW + timedelta(seconds=2)).isoformat()}
+        with self.main_context(state=persisted, existing=[remote], now=NOW + timedelta(hours=3)) as mocks:
+            self.assertEqual(picks.main(), 0)
+            mocks["queue"].assert_not_called()
+            mocks["gql"].assert_not_called()
+            recovered = mocks["save"].call_args.args[0]
+        self.assertEqual(recovered["queued"], original["queued"])
+        comic = recovered["comic_posts"]["comic-story"]
+        self.assertEqual(comic["buffer_id"], "mock-post")
+        self.assertEqual(comic["slot_jst"], pending["slot_jst"])
+
+    def test_ambiguous_or_old_normal_evidence_never_completes_or_resends_a_comic(self):
+        pending = self.comic_record(hours=3, pending=True)
+        attempted = datetime.fromisoformat(pending["queued_at_utc"])
+        text = publish.comic_publication_text(self.story, pending["comic_attachment"])
+        remote = {"id": "new-provider-id", "status": "sent", "text": text,
+                  "createdAt": (attempted + timedelta(seconds=1)).isoformat()}
+        old = recorded(hours=180)
+        asset = comics.approved_comic_asset(self.story, self.review, self.root, NOW)
+        cases = [[{**remote, "id": old["buffer_id"]}],
+                 [{**remote, "id": 123}], [{**remote, "id": ""}],
+                 [{**remote, "createdAt": (attempted - timedelta(seconds=1)).isoformat()}],
+                 [{**remote, "createdAt": (NOW + timedelta(seconds=1)).isoformat()}],
+                 [{**remote, "createdAt": None}],
+                 [remote, {**remote, "id": "another-provider-id"}]]
+        for existing in cases:
+            state = {**ledger(**{"comic-story": copy.deepcopy(old)}),
+                     "comic_posts": {"comic-story": copy.deepcopy(pending)}}
+            with self.subTest(existing=existing):
+                picks.recover_comic_posts(state, existing, NOW, [(self.story, self.review, asset)])
+                self.assertTrue(state["comic_posts"]["comic-story"]["submission_pending"])
+                self.assertFalse(state["comic_posts"]["comic-story"]["buffer_id"])
+                self.assertEqual(state["queued"]["comic-story"], old)
+        state = ledger(**{"comic-story": copy.deepcopy(old)})
+        picks.recover_comic_posts(state, [remote], NOW, [(self.story, self.review, asset)])
+        self.assertFalse(state.get("comic_posts", {}).get("comic-story", {}).get("buffer_id"))
+        self.assertEqual(state["queued"]["comic-story"], old)
+        with self.main_context(state=ledger(**{"comic-story": old}), existing=[remote]) as mocks:
+            self.assertEqual(picks.main(), 0)
+            mocks["queue"].assert_not_called()
+            mocks["gql"].assert_not_called()
 
     def test_article_comic_still_obeys_shared_buffer_budget_hold_before_http(self):
         path = self.root / "api-budget.json"

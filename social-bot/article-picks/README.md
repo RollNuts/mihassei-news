@@ -2,7 +2,9 @@
 
 Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール短文、キャラ日常、`useful`独自稿、旧連載漫画は自動送信しない。既存のBuffer FreeチャンネルとGitHub Actionsだけを使い、追加費用は0円を維持する。
 
-記事紹介には、明示承認された縦長PNG漫画1枚（内部上限4,000,000bytes）を同じ既存枠で任意添付できる。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`を束縛し、画像と短い`caption`も見てownerが承認する。captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像と同じgit revisionの画像が一致し、実際に添付できる時だけ「caption→元記事の直接URL→#未発生新聞」で紹介する。欠測・失効・公開画像未到達なら従来の記事文面を保ち、旧漫画の停止設定も維持する。
+記事から制作した縦長PNG漫画1枚（内部上限4,000,000bytes）は、ownerが明示承認した新しい作品だけ同じ既存枠で1記事につき1回紹介できる。この漫画だけは元記事の紹介済み・公開年齢を問わず、通常紹介の重複防止・年齢条件は維持する。画像差替による繰返し紹介や同素材の再送はしない。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`を束縛し、画像と短い`caption`も見てownerが承認する。
+
+captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像・同じgit revisionの画像が一致し、公開画像も利用可能な時だけ「caption→元記事の直接URL→#未発生新聞」で紹介する。欠測・失効・画像未公開ならその漫画は送らず、別の通常記事を選ぶか見送る。通常履歴は`state.json.queued`、漫画作品は`comic_posts`へ別々に残し、枠・日上限・実送信間隔・送達監査は両方を集計する。受理状態が曖昧な漫画はpendingのまま確認へ渡し、自動再送しない。例外後も既存workflowでpending保存を試みるが、強制中断や保存push失敗時の永続化と厳密な一度だけの配信は保証しない。旧漫画の停止設定も維持する。
 
 ## 配信
 
