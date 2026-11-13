@@ -1,4 +1,6 @@
 """Regression tests for outbox preservation and remote-checkout storage gates."""
+import contextlib
+import io
 import json
 import subprocess
 import tempfile
@@ -8,6 +10,8 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from scripts import local_scene_photos as photos, local_scene_sync as sync
+from scripts import generated_photos as generated
+from tests import test_scene_recovery as fixture
 
 
 ARTICLE = {"slug": "test-scene", "title": "A fictional scene", "summary": "An absurd prop",
@@ -106,6 +110,116 @@ class SceneSyncHardeningTests(unittest.TestCase):
                  patch.object(sync.shutil, "disk_usage", return_value=SimpleNamespace(free=remaining)):
                 with self.assertRaisesRegex(RuntimeError, "materialize remote JPEGs"):
                     sync.check_checkout_budget(checkout, "FETCH_HEAD", 12)
+
+
+class AbandonedCheckoutTests(unittest.TestCase):
+    # All Git writes/publication below stay in disposable local fixture repos.
+    setUp = fixture.SceneGitIntegrationTests.setUp
+    tearDown = fixture.SceneGitIntegrationTests.tearDown
+    run_git = fixture.SceneGitIntegrationTests.run_git
+    checkout_remote = fixture.SceneGitIntegrationTests.checkout_remote
+
+    def job(self, name, *, worktree=True):
+        job = self.app / ("sync-" + name)
+        job.mkdir(parents=True)
+        (job / ".veripsa-scene-job").write_text("veripsa-local-scenes-v2\n")
+        checkout = job / "checkout"
+        if worktree:
+            self.run_git("worktree", "add", "--detach", str(checkout), "HEAD", cwd=self.repo)
+        else:
+            checkout.mkdir()
+        return job, checkout
+
+    def snapshot(self, job):
+        return {str(p.relative_to(job)): ("link", str(p.readlink())) if p.is_symlink() else
+                ("file", p.read_bytes()) if p.is_file() else ("directory", b"")
+                for p in job.rglob("*")}
+
+    def prepare(self):
+        self.args.prepare_only = True
+        calls = []
+        actual = sync.git
+        def observe(*args, **kwargs):
+            calls.append((args, kwargs.get("cwd")))
+            return actual(*args, **kwargs)
+        with patch.object(sync, "git", side_effect=observe), \
+             patch.object(sync, "generate", side_effect=AssertionError("generation started")), \
+             contextlib.redirect_stderr(io.StringIO()) as warning:
+            result = sync.sync(self.args)
+        return result, calls, warning.getvalue()
+
+    def assert_quarantined(self, job, checkout, before, calls, warning):
+        self.assertEqual(self.snapshot(job), before)
+        self.assertIn(str(checkout), warning)
+        self.assertIn("quarantined in place", warning)
+        self.assertIn("JPEG candidates preserved; manual recovery pending", warning)
+        self.assertFalse(any(args[0] == "diff" and cwd == checkout for args, cwd in calls))
+        self.assertFalse(any(args[:2] == ("worktree", "remove") and str(checkout) in args for args, cwd in calls))
+        self.assertTrue(any(args[:2] == ("worktree", "add") for args, cwd in calls))
+        self.assertEqual(self.run_git("rev-parse", "HEAD", cwd=self.repo).stdout.strip(), self.initial)
+
+    def test_missing_git_file_preserves_candidates_marker_and_unknown_data_then_continues(self):
+        job, checkout = self.job("missing-git")
+        photos.write_generated(fixture.article(), jpeg(), MODEL, root=checkout)
+        (checkout / ".git").unlink()
+        (checkout / "unknown.data").write_bytes(b"unclassified recovery data")
+        before = self.snapshot(job)
+        result, calls, warning = self.prepare()
+        self.assertEqual(result, sync.PREPARE_NEEDS_GPU)
+        self.assert_quarantined(job, checkout, before, calls, warning)
+        self.assertFalse((self.outbox / "assets/generated/one-story.jpg").exists())
+
+    def test_missing_private_head_is_preserved_without_diff_or_forced_removal(self):
+        job, checkout = self.job("missing-head")
+        metadata = Path(self.run_git("rev-parse", "--absolute-git-dir", cwd=checkout).stdout.strip())
+        (metadata / "HEAD").unlink()
+        (checkout / "candidate.jpg").write_bytes(b"unknown JPEG candidate")
+        before = self.snapshot(job)
+        result, calls, warning = self.prepare()
+        self.assertEqual(result, sync.PREPARE_NEEDS_GPU)
+        self.assert_quarantined(job, checkout, before, calls, warning)
+        self.assertFalse((metadata / "HEAD").exists())
+
+    def test_parent_repository_cannot_be_mistaken_for_candidate_top_level(self):
+        # Git discovery succeeds here, but discovers the user's parent repo.
+        self.app = self.repo / "state"
+        self.outbox = self.app / "pending"
+        with patch.object(sync, "APP_DIR", self.app), patch.object(sync, "OUTBOX", self.outbox):
+            job, checkout = self.job("nested", worktree=False)
+            (checkout / "unknown.txt").write_text("keep")
+            discovered = Path(self.run_git("rev-parse", "--show-toplevel", cwd=checkout).stdout.strip())
+            self.assertEqual(discovered.resolve(), self.repo.resolve())
+            before = self.snapshot(job)
+            result, calls, warning = self.prepare()
+            self.assertEqual(result, sync.PREPARE_NEEDS_GPU)
+            self.assert_quarantined(job, checkout, before, calls, warning)
+            self.assertIn("Git top-level differs", warning)
+
+    def test_valid_worktree_still_recovers_verified_photo_to_local_fixture_remote(self):
+        job, checkout = self.job("valid")
+        photos.write_generated(fixture.article(), jpeg(), MODEL, root=checkout)
+        result, calls, warning = self.prepare()
+        self.assertEqual(result, 0)
+        self.assertEqual(warning, "")
+        self.assertFalse(job.exists())
+        published = self.checkout_remote("recovered")
+        self.assertTrue(generated.usable_generated_scene(fixture.article(), root=published))
+        self.assertEqual((published / "assets/generated/one-story.jpg").read_bytes(), jpeg())
+
+    def test_unknown_marker_and_missing_checkout_keep_all_unknown_files(self):
+        unknown, checkout = self.job("unknown-owner", worktree=False)
+        (unknown / ".veripsa-scene-job").write_text("not our ownership marker\n")
+        (checkout / "candidate.jpg").write_bytes(b"unknown")
+        missing = self.app / "sync-missing-checkout"
+        missing.mkdir()
+        (missing / ".veripsa-scene-job").write_text("veripsa-local-scenes-v2\n")
+        (missing / "notes.txt").write_text("unknown data")
+        snapshots = {path: self.snapshot(path) for path in (unknown, missing)}
+        result, calls, warning = self.prepare()
+        self.assertEqual(result, sync.PREPARE_NEEDS_GPU)
+        self.assertEqual(self.snapshot(unknown), snapshots[unknown])
+        self.assert_quarantined(missing, missing / "checkout", snapshots[missing], calls, warning)
+        self.assertFalse(any(cwd == checkout for args, cwd in calls))
 
 
 if __name__ == "__main__":

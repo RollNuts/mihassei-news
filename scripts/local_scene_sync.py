@@ -158,6 +158,22 @@ def interrupted_scenes(checkout: Path) -> list[dict]:
             or current.get(article["slug"]) != previous.get(article["slug"])]
 
 
+def recovery_checkout_problem(checkout: Path) -> str | None:
+    """Inspect only: an ownership marker cannot prove a checkout survived."""
+    if not checkout.is_dir():
+        return "checkout directory missing"
+    try:
+        top = git("rev-parse", "--show-toplevel", cwd=checkout).stdout.strip()
+        if Path(top).resolve() != checkout.resolve():
+            return "Git top-level differs from the recovery checkout"
+        if not (checkout / ".git").exists() or (checkout / ".git").is_symlink():
+            return "checkout Git metadata missing or unsafe"
+        git("rev-parse", "--verify", "HEAD^{commit}", cwd=checkout)
+    except (OSError, subprocess.SubprocessError):
+        return "checkout Git metadata or HEAD unavailable"
+    return None
+
+
 def retire_published(outbox: Path, published: Path, articles: list[dict]) -> None:
     """Remove only disposable outbox copies proven to be on remote main."""
     manifest = outbox / RELATIVE_DIR / "manifest.json"
@@ -280,10 +296,15 @@ def sync(args) -> int:
                 continue
             if not marker.is_file() or marker.read_text() != "veripsa-local-scenes-v2\n":
                 continue
-            if abandoned.is_dir():
-                transfer_scenes(abandoned, OUTBOX, interrupted_scenes(abandoned), missing_only=True,
-                                min_free_gb=args.min_free_gb)
-                git("worktree", "remove", "--force", str(abandoned))
+            problem = recovery_checkout_problem(abandoned)
+            if problem:
+                print(f"Scene recovery quarantined in place: {abandoned}: {problem}; "
+                      "all files, marker and JPEG candidates preserved; manual recovery pending.",
+                      file=sys.stderr, flush=True)
+                continue
+            transfer_scenes(abandoned, OUTBOX, interrupted_scenes(abandoned), missing_only=True,
+                            min_free_gb=args.min_free_gb)
+            git("worktree", "remove", "--force", str(abandoned))
             marker.unlink()
             job.rmdir()
         require_running()

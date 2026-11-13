@@ -71,6 +71,47 @@ class FreeCpuImageTests(unittest.TestCase):
         self.assertIn("family-dinner", output.getvalue())
         self.assertIn("capsule lottery machine", output.getvalue())
 
+    def test_current_beach_dry_run_keeps_woman_bikini_ankle_water_without_office_fallback(self):
+        slug = "indoor-beach-friends-exchange-ripples"
+        source = next(a for a in local_scene_photos.load_articles() if a["slug"] == slug)
+        if not cpu.reviewed_source_matches(source, slug):
+            # A later article revision must use its own direction, not this pilot.
+            self.assertNotEqual(cpu.prompt_parts(source)[0], cpu.CPU_SCENES[slug])
+            return
+        self.assertGreater(len(source["scene_prompt"]), 800)
+        self.assertEqual(local_scene_photos.scene_description(source), source["scene_prompt"].strip())
+        self.assertEqual(article_fingerprint(source), "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84")
+        output = io.StringIO()
+        with tempfile.TemporaryDirectory() as directory, patch.object(cpu, "ROOT", Path(directory)), \
+             patch.object(cpu, "load_articles", return_value=[source]), \
+             patch.object(cpu, "load_pipeline", side_effect=AssertionError("model download attempted")), \
+             patch.object(cpu, "write_generated", side_effect=AssertionError("image write attempted")), \
+             contextlib.redirect_stdout(output):
+            self.assertEqual(cpu.main(["--dry-run", "--slug", slug, "--retry-held", "--limit", "1"]), 0)
+        record = json.loads(output.getvalue().splitlines()[-1])
+        for cue in ("Japanese adult woman", "age 27", "navy bikini", "open white beach shirt",
+                    "ankle-deep water", "one foot", "indoor sandy beach"):
+            self.assertIn(cue, record["cpu_prompt"])
+        for unwanted in ("office worker", "takes a call", "screen", "friend"):
+            self.assertNotIn(unwanted, record["cpu_prompt"])
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: text.split() + ["BOS", "EOS"])
+        with contextlib.redirect_stdout(io.StringIO()):
+            fitted = cpu.fit_cpu_prompt(source, tokenizer)
+        self.assertIn(cpu.CPU_SCENES[slug], fitted)
+        for changed in ({**source, "paragraphs": [*source["paragraphs"], "An edited ending."]},
+                        {**source, "scene_prompt": "An adult woman carries a blue towel beside an indoor beach."}):
+            self.assertFalse(cpu.reviewed_source_matches(changed, slug))
+            self.assertNotEqual(cpu.prompt_parts(changed)[0], cpu.CPU_SCENES[slug])
+        with patch.dict(cpu.CPU_SCENES, {slug: "A woman in a navy bikini " + "water " * 90 + "."}):
+            with self.assertRaisesRegex(ValueError, "Visual core exceeds CLIP budget"):
+                cpu.fit_cpu_prompt(source, tokenizer)
+
+    def test_reviewed_compact_override_cannot_bypass_invalid_explicit_scene(self):
+        source = {**article(), "scene_prompt": None}
+        with patch.dict(cpu.CPU_SCENE_SOURCE_HASHES, {source["slug"]: article_fingerprint(source)}):
+            with self.assertRaisesRegex(ValueError, "Explicit scene_prompt"):
+                cpu.prompt_parts(source)
+
     def test_cpu_scene_verified_by_actual_site_builder_and_source_restricted(self):
         a = article()
         data = jpeg_header_fixture()
