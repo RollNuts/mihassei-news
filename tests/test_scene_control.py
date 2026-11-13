@@ -1,14 +1,17 @@
 """Persistent OFF, scoped process ownership, launchd and exact workflow controls."""
 import contextlib
+import hashlib
 import io
 import json
 import os
 from pathlib import Path
 import signal
+import struct
 import subprocess
 import sys
 import tempfile
 import unittest
+import zlib
 from unittest.mock import patch, Mock
 
 from scripts import mac_scene_control as control
@@ -442,6 +445,47 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(result['pending_generation_articles'], 1)
         self.assertEqual(git('rev-parse', 'origin/main'), original)
 
+    def test_status_uses_remote_illustration_pair_instead_of_local_assets(self):
+        git, original, _ = self.status_repository()
+        publisher = self.base / 'publisher'
+        articles = json.loads((publisher / 'content/articles.json').read_text())
+        illustration = {**articles[0], 'visual_strategy': 'illustration'}
+        articles[0] = illustration
+        (publisher / 'content/articles.json').write_text(json.dumps(articles))
+        self.write_count_illustration(publisher, illustration)
+        git('add', '.', cwd=publisher); git('commit', '-m', 'complete illustration pair', cwd=publisher)
+        latest = git('rev-parse', 'HEAD', cwd=publisher)
+        git('push', 'origin', 'main', cwd=publisher)
+        with patch.object(control, 'launch_loaded', return_value=False), \
+             patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+            result = control.status()
+        self.assertEqual(result['generated_images'], 1)
+        self.assertEqual(result['pending_generation_articles'], 0)
+        self.assertEqual(result['pending_articles'], 0)
+        self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
+        self.assertIsNone(result['counts_error'])
+        self.assertEqual(git('rev-parse', 'HEAD'), original)
+        self.assertFalse((self.root / 'assets/editorial-scenes').exists())
+
+        # A local complete pair must not hide a missing asset on remote main.
+        local_svg, local_png = self.write_count_illustration(self.root, illustration)
+        original_pair = (local_svg.read_bytes(), local_png.read_bytes())
+        for missing in ('one.svg', 'one.png'):
+            with self.subTest(missing=missing):
+                self.write_count_illustration(publisher, illustration)
+                (publisher / 'assets/editorial-scenes' / missing).unlink()
+                git('add', '.', cwd=publisher); git('commit', '-m', 'missing remote ' + missing, cwd=publisher)
+                latest = git('rev-parse', 'HEAD', cwd=publisher)
+                git('push', 'origin', 'main', cwd=publisher)
+                with patch.object(control, 'launch_loaded', return_value=False), \
+                     patch.object(control, 'cpu_state', return_value={'state': 'active'}):
+                    result = control.status()
+                self.assertEqual(result['pending_generation_articles'], 1)
+                self.assertEqual(result['pending_articles'], 1)
+                self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
+                self.assertIsNone(result['counts_error'])
+                self.assertEqual((local_svg.read_bytes(), local_png.read_bytes()), original_pair)
+
     def test_cpu_latest_job_reports_metadata_without_claiming_new_images(self):
         self.status_repository()
         latest = {'id': 42, 'workflow_id': 7, 'status': 'completed', 'conclusion': 'success',
@@ -493,12 +537,91 @@ class ControlTests(unittest.TestCase):
         write_generated(article, jpeg, 'sd_xl_base_1.0.safetensors', root=self.root)
         return article, jpeg
 
+    def write_count_illustration(self, root, article):
+        """Independent SVG/PNG fixture; no renderer or actual image approval."""
+        from scripts.editorial_covers import story_subject
+        from scripts.generated_photos import article_fingerprint
+        svg = root / 'assets/editorial-scenes' / (article['slug'] + '.svg')
+        svg.parent.mkdir(parents=True, exist_ok=True)
+        svg.write_text(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" '
+            'role="img" aria-label="Synthetic test-only 創作イラスト" '
+            f'data-visual-topic="{story_subject(article)}" '
+            f'data-article-sha256="{article_fingerprint(article)}">'
+            '<title>Synthetic fixture, not an actual visual approval</title>'
+            '<rect width="1200" height="675" fill="#ffffff"/></svg>', encoding='utf-8')
+        def chunk(kind, data):
+            return (struct.pack('>I', len(data)) + kind + data
+                    + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff))
+        data = chunk(b'IHDR', struct.pack('>IIBBBBB', 1200, 675, 8, 2, 0, 0, 0))
+        data += chunk(b'IDAT', zlib.compress((b'\0' + b'\xff' * 3600) * 675))
+        for key, value in {'article_sha256': article_fingerprint(article),
+                           'svg_sha256': hashlib.sha256(svg.read_bytes()).hexdigest(),
+                           'renderer': 'rsvg-convert 2.62.1'}.items():
+            data += chunk(b'tEXt', key.encode() + b'\0' + value.encode())
+        png = svg.with_suffix('.png')
+        png.write_bytes(b'\x89PNG\r\n\x1a\n' + data + chunk(b'IEND', b''))
+        return svg, png
+
+    def test_current_illustration_is_complete_without_a_generated_jpeg(self):
+        from scripts.editorial_covers import reviewed_story_scene
+        article = {'slug': 'illustration-count', 'title': 'Illustration fixture',
+                   'paragraphs': ['Original ending'], 'visual_strategy': 'illustration'}
+        svg, png = self.write_count_illustration(self.root, article)
+        original_pair = (svg.read_bytes(), png.read_bytes())
+        counts = control.image_status_counts([article], self.root)
+        self.assertEqual(counts, {'generated_images': 0, 'published_images': 0,
+                                 'pending_review_images': 0, 'pending_generation_articles': 0,
+                                 'held_articles': 0, 'pending_articles': 0})
+        self.assertEqual((svg.read_bytes(), png.read_bytes()), original_pair)
+        self.assertIsNotNone(reviewed_story_scene(article, root=str(self.root)))
+        # A complete fallback must not disguise a real photo backlog.
+        photo = {**article, 'visual_strategy': 'cpu-photo'}
+        counts = control.image_status_counts([photo], self.root)
+        self.assertEqual(counts['pending_generation_articles'], 1)
+        self.assertEqual(counts['pending_articles'], 1)
+
+    def test_incomplete_or_stale_illustration_assets_remain_pending(self):
+        article = {'slug': 'illustration-count', 'title': 'Illustration fixture',
+                   'paragraphs': ['Original ending'], 'visual_strategy': 'illustration'}
+        for cause in ('missing SVG', 'stale article', 'invalid SVG', 'missing PNG', 'stale PNG', 'broken PNG'):
+            with self.subTest(cause=cause):
+                svg, png = self.write_count_illustration(self.root, article)
+                current = article
+                if cause == 'missing SVG':
+                    svg.unlink()
+                elif cause == 'stale article':
+                    current = {**article, 'paragraphs': ['A different ending']}
+                elif cause == 'invalid SVG':
+                    svg.write_text(svg.read_text().replace('role="img"', 'role="none"'))
+                elif cause == 'missing PNG':
+                    png.unlink()
+                elif cause == 'stale PNG':
+                    svg.write_text(svg.read_text().replace('#ffffff', '#f8f6f0'))
+                else:
+                    png.write_bytes(png.read_bytes()[:-10])
+                counts = control.image_status_counts([current], self.root)
+                self.assertEqual(counts['generated_images'], 0)
+                self.assertEqual(counts['pending_generation_articles'], 1)
+                self.assertEqual(counts['pending_articles'], 1)
+
+    def test_old_accepted_jpeg_does_not_hide_an_illustration_defect(self):
+        article, _ = self.count_fixture()
+        self.write_count_review(self.root, article)
+        illustration = {**article, 'visual_strategy': 'illustration'}
+        counts = control.image_status_counts([illustration], self.root)
+        self.assertEqual(counts['generated_images'], 1)
+        self.assertEqual(counts['published_images'], 1)  # Preserve raw JPEG review semantics.
+        self.assertEqual(counts['pending_articles'], 1)
+        self.write_count_illustration(self.root, illustration)
+        self.assertEqual(control.image_status_counts([illustration], self.root)['pending_articles'], 0)
+
     def test_verified_jpeg_waits_for_exact_visual_review_before_published_count(self):
         article, _ = self.count_fixture()
         initial = control.image_status_counts([article], self.root)
         self.assertEqual(initial, {'generated_images': 1, 'published_images': 0,
                                   'pending_review_images': 1, 'pending_generation_articles': 0,
-                                  'held_articles': 0})
+                                  'held_articles': 0, 'pending_articles': 0})
         self.write_count_review(self.root, article)
         adopted = control.image_status_counts([article], self.root)
         self.assertEqual(adopted['generated_images'], 1)
@@ -573,6 +696,7 @@ class ControlTests(unittest.TestCase):
         self.assertIn('スワップ5GiB', output.getvalue())
         self.assertIn('生成JPEG：1枚 ／ 掲載採用：0枚', output.getvalue())
         self.assertIn('目視待ち：1枚 ／ 要生成：2記事 ／ 品質保留：0件', output.getvalue())
+        self.assertIn('素材未完了：2記事', output.getvalue())
 
 
 if __name__ == '__main__': unittest.main()
