@@ -476,19 +476,30 @@ def record_publish_result(status: str, detail: str, sha: str = '', app_dir=None)
 
 
 def image_status_counts(articles: list[dict], root) -> dict:
-    """Use the publication gate without treating an intact JPEG as approval."""
+    """Preserve JPEG states while recognizing complete, intentional illustrations."""
     try:
         from .generated_photos import usable_generated_scene
+        from .social_cards import reviewed_scene_png
         from .visual_review import _scene_state
     except ImportError:
         from generated_photos import usable_generated_scene
+        from social_cards import reviewed_scene_png
         from visual_review import _scene_state
     states = [_scene_state(article, root=root)['status'] for article in articles]
-    return {'generated_images': sum(usable_generated_scene(article, root=root) for article in articles),
+    generated = [usable_generated_scene(article, root=root) for article in articles]
+    illustrations = [article.get('visual_strategy') == 'illustration' for article in articles]
+    # This existing gate requires both the current reviewed SVG and its intact,
+    # matching share PNG. A photo article's fallback never completes its queue.
+    complete = [illustration and reviewed_scene_png(article, root=root) is not None
+                for article, illustration in zip(articles, illustrations)]
+    return {'generated_images': sum(generated),
             'published_images': states.count('accepted'),
             'pending_review_images': states.count('pending'),
-            'pending_generation_articles': states.count('missing'),
-            'held_articles': states.count('rejected')}
+            'pending_generation_articles': sum(state == 'missing' and not ready
+                                               for state, ready in zip(states, complete)),
+            'held_articles': states.count('rejected'),
+            'pending_articles': sum(not ready if illustration else not jpeg
+                                    for illustration, ready, jpeg in zip(illustrations, complete, generated))}
 
 
 def status() -> dict:
@@ -537,9 +548,10 @@ def status() -> dict:
             if path in missing:
                 raise FileNotFoundError(path)
             if path not in blobs:
-                if path == 'content/visual_reviews.json':
-                    # Old snapshots may legitimately predate visual reviews.
-                    # Missing review records mean pending, not local fallback.
+                if (path == 'content/visual_reviews.json'
+                        or path.startswith('assets/editorial-scenes/') and path.endswith(('.svg', '.png'))):
+                    # Missing optional reviews or illustration assets mean
+                    # unfinished work in this snapshot, not local fallback.
                     listing = subprocess.run(['git', 'ls-tree', revision, '--', path], cwd=ROOT,
                                              capture_output=True, check=True, timeout=10, env=command_env())
                     if not listing.stdout:
@@ -593,7 +605,7 @@ def status() -> dict:
             'last_run': last, 'publish': read_json(APP_DIR / 'publish-result.json'),
             'resource_guard': read_json(APP_DIR / 'resources.json'),
             'quality_pilot_passed': quality_ready(), **counts,
-            'pending_articles': len(articles) - counts['generated_images'], 'counts_source': source, 'counts_error': counts_error, 'cpu': cpu,
+            'counts_source': source, 'counts_error': counts_error, 'cpu': cpu,
             'jpeg_bytes': byte_count, 'jpeg_cap_bytes': 1536 * 1024**2,
             'free_gib': round(shutil.disk_usage(ROOT).free / 1024**3, 2),
             'app_gib': round(sum(p.stat().st_size for p in APP_DIR.rglob('*') if p.is_file() and not p.is_symlink()) / 1024**3, 2)}
@@ -658,7 +670,7 @@ def main(argv=None) -> int:
             print('Mac最後の成功日時：' + display_time(result.get('last_success_at')))
             print('Mac最後のエラー：' + (json.dumps(error, ensure_ascii=False) if isinstance(error, dict) else error))
             print(f"生成JPEG：{result['generated_images']}枚 ／ 掲載採用：{result.get('published_images', '未確認')}枚")
-            print(f"目視待ち：{result.get('pending_review_images', '未確認')}枚 ／ 要生成：{result.get('pending_generation_articles', '未確認')}記事 ／ 品質保留：{result.get('held_articles', 0)}件")
+            print(f"目視待ち：{result.get('pending_review_images', '未確認')}枚 ／ 要生成：{result.get('pending_generation_articles', '未確認')}記事 ／ 品質保留：{result.get('held_articles', 0)}件 ／ 素材未完了：{result.get('pending_articles', '未確認')}記事")
             print(f"ストレージ：空き{result['free_gib']}GiB ／ 専用領域{result['app_gib']}GiB ／ JPEG {result['jpeg_bytes']/1024**2:.2f}MiB（上限1536MiB）")
             print('MacからGitHubへの最終反映：' + json.dumps(publish, ensure_ascii=False))
             print('画像数の参照元：' + result['counts_source'])

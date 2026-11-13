@@ -10,6 +10,7 @@ import hashlib
 import html
 import re
 import unicodedata
+from os import PathLike
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -229,7 +230,9 @@ def reviewed_story_scene(article: dict, *, root: Path = ROOT) -> str | None:
     slug = article.get("slug")
     if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
         return None
-    directory = Path(root) / "assets" / "editorial-scenes"
+    # Keep filesystem callers compatible and allow read-only git snapshots to
+    # use the exact same SVG gate without materializing or changing local files.
+    directory = (Path(root) if isinstance(root, (str, PathLike)) else root) / "assets" / "editorial-scenes"
     path = directory / (slug + ".svg")
     try:
         if directory.is_symlink() or path.is_symlink():
