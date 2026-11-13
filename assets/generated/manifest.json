@@ -1347,6 +1347,33 @@
       "source_article_sha256": "6529de94c6a289298aa4e74771690c18c0c871bb337c0a0fc777e2f6499aa512",
       "source_png_sha256": "6ed83447061c5523ce3a43fc661e74d7a06baa24084cfd6e72b33ba98b9a15bb"
     },
+    "cherry-tree-stethoscope-municipal-inspection": {
+      "article_sha256": "0a30e0c60b5c9bcb1519e339ca16556e818c4a36be66a3998f7f5ac5734210fe",
+      "bytes": 206889,
+      "generated_at": "2026-11-13T05:13:03.922686+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 8989333895446710189,
+      "sha256": "b42141b6ad3c31a41da1b98b49fb4b8649a03ad4ad624c20094c056550ca55fd"
+    },
     "christmas-done-for-you-family-decorates-boxes": {
       "article_sha256": "0f4464944249088fe3205981378607788d417224c2ee93647ef2baa74a2de866",
       "bytes": 157233,
