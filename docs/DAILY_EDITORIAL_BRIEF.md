@@ -21,6 +21,6 @@
 - **発行引継ぎ（11/13 07:30→09:30）：** 07:36 JSTのスポーツ面 `sand-dune-race-radar-reroutes-ridge-final` はPR #698で公開済み。09:30は事件面で、同日暮らし0本・最初の7本で残り5面中4面を増やす必要あり。砂丘レースの経路選択を焼き直さない。
 - **発行引継ぎ（11/13 09:30→11:30）：** 事件面 `airport-baggage-robot-leaves-upper-shelves-empty` をこの発行PRに追加。空港の2段台車で安全設定が上段を使わず通路を塞ぎ、固定条件を追加して荷物を3台にまとめる。写真は内蔵ImageGenを1回生成しPNG/JPEGを同実行で実表示したがGitHub blob未転送のため、採用・本番実写化は未完了、公開後画像回収担当へ同一素材の回収を渡す。次は11:30に新カテゴリを比較し、政策・製品発表の残枠を確保。公開可否とrevisionは本発行結果を正とする。
 
-- **画像引継ぎ（11/14 W1）:** `indoor-beach-friends-exchange-ripples`／元記事FP `0e2a45ebc481758a`／portrait候補FP `38d4f8dc730ac6af`。JuggernautXL [run 43458459270](https://github.com/RollNuts/mihassei-news/actions/runs/43458459270)は13GiB RSS上限で停止、JPEGなし・未採用。旧生成・不採用記録は保持し、専用SVGを維持。
-  本人の「今やって」の同じ修正依頼による[run 43507608306](https://github.com/RollNuts/mihassei-news/actions/runs/43507608306)は過剰なnative flags条件で0.503秒停止し、モデル取得/import/計算は全てfalse・JPEGなし。元receiptとartifactを固定SHAで保全する。
-  [PR #722](https://github.com/RollNuts/mihassei-news/pull/722)はdraft。今回だけ`user_requested_retry_after=43507608306`で技術的続行を最大1回引き継ぐ。CPU flagsは観測とし、BF16のまま・新着優先・既存資源/安全上限を全て維持する。速度・完走は未検証で、実行・実画像QA・採用/差し替えの完了は別途確認する。
+- **画像引継ぎ（11/14 W1）:** `indoor-beach-friends-exchange-ripples`／元記事FP `0e2a45ebc481758a`。成功した[run 43509702255](https://github.com/RollNuts/mihassei-news/actions/runs/43509702255)の旧候補`38d4f8dc730ac6af`・JPEG`02e409eab9ff0f22`は本人が顔・構図を不採用。旧JPEG・receipt・前2試行の記録を保持し、専用SVGを維持する。
+  本人の最終修正は屋内構造を先頭に、丸顔・丸目・ボブ前髪の架空成人27歳、紺の不透明ビキニ上下、頭から膝までの前向きの歩行動作。新候補FP `54de652fa345f1db`／revision `beach-user-face-revision-20261114-v2`／新seed `1832143180332967231`。実画像は未生成・未採用。
+  [PR #722](https://github.com/RollNuts/mihassei-news/pull/722)はdraft。JST11/14の`user_requested_retry_after=43509702255`で最終1回だけを引き継ぎ、旧3件を含む全体4枠・新着優先・BF16・既存資源/安全上限を維持する。以後の再実行を認めず、実画像QAと採用/差し替えの完了は別途確認する。

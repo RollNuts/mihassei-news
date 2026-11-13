@@ -85,6 +85,9 @@ SAFETY_FILE_SPECS = {'safety_checker/config.json': {'bytes': 726,
  'feature_extractor/preprocessor_config.json': {'bytes': 518,
                                                 'sha256': '4db495644e3e5bd8fcac52f70e7fc0b413c911086021acf73ac30e5911166e95'}}
 
+USER_REVISION_ID = 'beach-user-face-revision-20261114-v2'
+SEED_SCHEME = 'sha256(slug|title|user_revision_id)[:8]-big-endian-mod-2**63'
+
 INFERENCE = {'base_model': 'RunDiffusion/Juggernaut-XL-v9',
  'base_revision': 'cf419233522daa0b9ea36c3aff98fa2cab1fb0fb',
  'pipeline': 'StableDiffusionXLPipeline',
@@ -109,7 +112,9 @@ INFERENCE = {'base_model': 'RunDiffusion/Juggernaut-XL-v9',
  'height': 576,
  'num_inference_steps': 20,
  'guidance_scale': 6.0,
- 'prompt_version': 1,
+ 'prompt_version': 2,
+ 'user_revision_id': USER_REVISION_ID,
+ 'seed_scheme': SEED_SCHEME,
  'publication': 'preview_only',
  'refiner': False,
  'safety_model': 'SimianLuo/LCM_Dreamshaper_v7',

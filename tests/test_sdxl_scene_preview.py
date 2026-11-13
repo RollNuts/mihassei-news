@@ -336,16 +336,121 @@ sdxl_scene_preview.main([])
             self.assertEqual(fetch.call_args.kwargs["max_bytes"],1531)
             verify.assert_called_once_with(b"bounded metadata fixture")
 
+    def test_final_face_revision_keeps_three_prior_attempts_and_allows_only_fourth_slot(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T21:40:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        runs=[legacy,dict(preview.PREFLIGHT_TRIAL),dict(preview.REJECTED_TRIAL),current]
+        original=[dict(run) for run in runs]
+        now=preview.datetime.fromisoformat("2026-11-13T21:41:00+00:00")
+        env={"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+             "USER_REQUESTED_RETRY_AFTER":str(preview.REJECTED_TRIAL["id"])}
+        with patch.dict(os.environ,env),patch.object(preview.subprocess,"check_output",return_value="inventory"), \
+             patch.object(preview.json,"loads",return_value={"workflow_runs":runs}), \
+             patch.object(preview,"verify_preflight_trial",return_value={"verified":True}) as preflight, \
+             patch.object(preview,"verify_rejected_trial",return_value={"decision":"user_rejected_quality"}) as rejected:
+            evidence=preview.check_daily_quota(now=now)
+            self.assertEqual(runs,original);preflight.assert_called_once();rejected.assert_called_once()
+            for key in ("known_legacy_trial","metadata_only_trial","user_rejected_trial"):
+                self.assertNotEqual(evidence[key]["quota_slug"],preview.SLUG)
+            for old_input in ("",str(legacy["id"]),str(preview.PREFLIGHT_TRIAL["id"])):
+                with patch.dict(os.environ,{"USER_REQUESTED_RETRY_AFTER":old_input}),self.assertRaises(RuntimeError):
+                    preview.check_daily_quota(now=now)
+            for title in (preview.SLUG,"another-story"):
+                extra={"id":122,"created_at":"2026-11-13T21:35:00Z",
+                       "display_title":preview.BACKFILL_RUN_PREFIX+title}
+                runs.append(extra)
+                with self.assertRaisesRegex(RuntimeError,"daily attempt budget"):preview.check_daily_quota(now=now)
+                runs.remove(extra)
+            for changes,clock in (({"GITHUB_RUN_ATTEMPT":"2"},now),
+                                  ({},preview.datetime.fromisoformat("2026-11-14T15:00:00+00:00"))):
+                with patch.dict(os.environ,{**env,**changes}),self.assertRaises((RuntimeError,ValueError)):
+                    preview.check_daily_quota(now=clock)
+
+    def test_face_revision_requires_exact_successful_predecessor_and_pinned_quality_proof(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T21:40:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        env={"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+             "USER_REQUESTED_RETRY_AFTER":str(preview.REJECTED_TRIAL["id"])}
+        now=preview.datetime.fromisoformat("2026-11-13T21:41:00+00:00")
+        for field in preview.REJECTED_TRIAL:
+            inventory=[legacy,preview.PREFLIGHT_TRIAL,{**preview.REJECTED_TRIAL,field:"changed"},current]
+            with self.subTest(field=field),patch.dict(os.environ,env), \
+                 patch.object(preview.subprocess,"check_output",return_value=json.dumps({"workflow_runs":inventory})), \
+                 patch.object(preview,"verify_rejected_trial") as proof:
+                with self.assertRaises(ValueError):preview.check_daily_quota(now=now)
+                proof.assert_not_called()
+        with patch.dict(os.environ,env),patch.object(preview.subprocess,"check_output",
+                return_value=json.dumps({"workflow_runs":[legacy,preview.PREFLIGHT_TRIAL,preview.REJECTED_TRIAL,current]})), \
+             patch.object(preview,"verify_preflight_trial",return_value={"verified":True}), \
+             patch.object(preview,"verify_rejected_trial",side_effect=ValueError("predecessor hash mismatch")):
+            with self.assertRaisesRegex(ValueError,"hash mismatch"):preview.check_daily_quota(now=now)
+
+    def test_rejected_predecessor_proof_binds_original_candidate_jpeg_receipt_and_safety(self):
+        with self.assertRaisesRegex(ValueError,"pinned ZIP"):
+            preview.validate_rejected_archive(b"0"*preview.REJECTED_ZIP_BYTES)
+        article={**self.source(),"scene_prompt":"Previously generated adult pool scene"}
+        candidate_sha=preview.article_fingerprint(article);jpeg=jpeg_fixture()
+        receipt={"run_id":str(preview.REJECTED_TRIAL["id"]),"status":"generated_unreviewed",
+                 "publication":"preview_only","article_slug":preview.SLUG,"source_article_sha256":preview.SOURCE_SHA,
+                 "candidate_article_sha256":candidate_sha,"seed":preview.stable_seed(article),
+                 "model":preview.model.MODEL,"model_revision":preview.model.REVISION,
+                 **{key:True for key in ("download_started","models_downloaded","model_import_started",
+                                        "model_execution_started","model_generation_completed")},
+                 "worker":{"model_generation_completed":True,"safety_checked":True,"safety_flags":[False]},
+                 "jpeg_sha256":preview.hashlib.sha256(jpeg).hexdigest(),"jpeg_bytes":len(jpeg)}
+        def validate(value,*,bad_file=False):
+            files={"receipt.json":json.dumps(value).encode(),"articles.json":json.dumps([article]).encode(),preview.JPEG:jpeg}
+            specs={name:(len(raw),preview.hashlib.sha256(raw).hexdigest()) for name,raw in files.items()}
+            if bad_file:specs[preview.JPEG]=(len(jpeg),"0"*64)
+            stream=io.BytesIO()
+            with preview.ZipFile(stream,"w") as archive:
+                for name,raw in files.items():archive.writestr(name,raw)
+            data=stream.getvalue()
+            with patch.object(preview,"REJECTED_CANDIDATE_SHA",candidate_sha),patch.object(preview,"REJECTED_FILES",specs), \
+                 patch.object(preview,"REJECTED_ZIP_BYTES",len(data)), \
+                 patch.object(preview,"REJECTED_ZIP_SHA",preview.hashlib.sha256(data).hexdigest()):
+                return preview.validate_rejected_archive(data)
+        self.assertEqual(validate(receipt)["decision"],"user_rejected_quality")
+        for changed in ({**receipt,"candidate_article_sha256":"0"*64},{**receipt,"model_generation_completed":False},
+                        {**receipt,"jpeg_sha256":"0"*64},{**receipt,"worker":{**receipt["worker"],"safety_flags":[True]}}):
+            with self.assertRaisesRegex(ValueError,"matching candidate"):validate(changed)
+        with self.assertRaisesRegex(ValueError,"file SHA mismatch"):validate(receipt,bad_file=True)
+
     def test_candidate_changes_only_scene_keeps_body_and_has_new_fingerprint(self):
         source=self.source();candidate=preview.candidate_article([source])
         self.assertEqual({k:v for k,v in candidate.items() if k!="scene_prompt"},
                          {k:v for k,v in source.items() if k!="scene_prompt"})
         self.assertNotEqual(preview.article_fingerprint(candidate),preview.SOURCE_SHA)
         self.assertEqual(preview.stable_seed(candidate),preview.stable_seed(source))
-        self.assertIn("Head-to-mid-thigh",candidate["scene_prompt"])
-        self.assertIn("Opaque navy bikini",candidate["scene_prompt"])
-        self.assertIn("away from bikini top and hips",candidate["scene_prompt"])
+        self.assertNotEqual(preview.article_fingerprint(candidate),preview.REJECTED_CANDIDATE_SHA)
+        self.assertIn("Head-to-knees",candidate["scene_prompt"])
+        self.assertIn("Opaque navy blue bikini top and matching bottoms fully visible",preview.PROMPT)
+        self.assertNotIn("shirt",preview.PROMPT);self.assertNotIn("portrait",candidate["scene_prompt"].lower())
+        self.assertIn("white shirt draped only on arms",preview.PROMPT_2)
+        self.assertIn("Candid photograph, natural light",preview.PROMPT)
+        self.assertIn("slight turn toward camera",preview.PROMPT)
+        self.assertIn("Three-quarter front view",preview.PROMPT_2)
+        self.assertNotIn("turning back",candidate["scene_prompt"])
+        for trait in ("rounded face","warm round eyes","small nose","dark brown bob with bangs","closed-mouth smile"):
+            self.assertIn(trait,preview.PROMPT_2)
+        self.assertTrue(preview.preview_negative_prompt(candidate).startswith(preview.cpu_negative_prompt(candidate)+", "))
+        for term in ("outdoor","ocean","horizon","white bikini","cropped hips","nudity","nsfw"):
+            self.assertIn(term,preview.preview_negative_prompt(candidate))
         with self.assertRaises(ValueError):preview.candidate_article([{**source,"paragraphs":["edited"]}])
+
+    def test_user_revision_seed_is_deterministic_new_and_does_not_change_legacy_seed(self):
+        candidate=preview.candidate_article([self.source()])
+        self.assertEqual(preview.stable_seed(candidate),5839915426731334261)
+        self.assertEqual(preview.preview_seed(candidate),1832143180332967231)
+        self.assertEqual(preview.preview_seed(candidate),preview.preview_seed(dict(candidate)))
+        self.assertNotEqual(preview.preview_seed(candidate),preview.stable_seed(candidate))
+        with patch.object(preview,"USER_REVISION_ID","a different explicit user revision"):
+            self.assertNotEqual(preview.preview_seed(candidate),1832143180332967231)
+        self.assertEqual(preview.model.INFERENCE["user_revision_id"],preview.USER_REVISION_ID)
+        self.assertEqual(preview.model.INFERENCE["seed_scheme"],preview.SEED_SCHEME)
+        self.assertEqual(preview.model.INFERENCE["prompt_version"],2)
 
     def test_latest_main_adopted_photo_blocks_another_trial(self):
         preview.reject_adopted_photo({}, {"reviews":{preview.SLUG:{"decision":"rejected","article_sha256":preview.SOURCE_SHA}}}, {})
@@ -612,6 +717,10 @@ sdxl_scene_preview.main([])
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);output=root/"preview";env=environment(root)
             def fail(work,budget):
+                request=json.loads((work/"request.json").read_text())
+                self.assertEqual(request["seed"],preview.preview_seed(self.source()))
+                self.assertEqual(request["user_revision_id"],preview.USER_REVISION_ID)
+                self.assertEqual(request["seed_scheme"],preview.SEED_SCHEME)
                 preview.progress(work,"generation_started",model_import_started=True,model_execution_started=True)
                 raise RuntimeError("worker RSS limit")
             fake_budget=SimpleNamespace(check=lambda:None,close=lambda:None,max_rss=preview.MAX_RSS+1,minimum_available=2*1024**3)
@@ -630,7 +739,7 @@ sdxl_scene_preview.main([])
             self.assertTrue(receipt["model_import_started"]);self.assertTrue(receipt["model_execution_started"])
             self.assertFalse(receipt["model_generation_completed"])
             self.assertFalse((output/preview.JPEG).exists())
-            self.assertEqual(receipt["seed"],preview.stable_seed(self.source()))
+            self.assertEqual(receipt["seed"],preview.preview_seed(self.source()))
 
     def test_photo_adopted_during_generation_keeps_new_jpeg_out_of_the_artifact(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -27,7 +27,7 @@ if __package__:
     from .generated_photos import article_fingerprint, MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES
     from .local_scene_photos import archive_bytes, stable_seed, png_to_jpeg, pending_articles
     from .github_cpu_scenes import (check_main_unchanged, BACKFILL_PRIORITY_PATHS,
-                                    backfill_run_allowed, BACKFILL_RUN_PREFIX)
+                                    backfill_run_allowed, BACKFILL_RUN_PREFIX, cpu_negative_prompt)
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from .news_caster_preview import RemoteStopGate, download, stop_child
     from .news_caster_preview import Budget as ArtifactBudget
@@ -37,7 +37,7 @@ else:
     from generated_photos import article_fingerprint, MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES
     from local_scene_photos import archive_bytes, stable_seed, png_to_jpeg, pending_articles
     from github_cpu_scenes import (check_main_unchanged, BACKFILL_PRIORITY_PATHS,
-                                   backfill_run_allowed, BACKFILL_RUN_PREFIX)
+                                   backfill_run_allowed, BACKFILL_RUN_PREFIX, cpu_negative_prompt)
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from news_caster_preview import RemoteStopGate, download, stop_child
     from news_caster_preview import Budget as ArtifactBudget
@@ -53,16 +53,20 @@ MAX_RSS = 13 * 1024**3
 MIN_AVAILABLE = 1024**3
 TIMEOUT = 48 * 60
 JPEG = SLUG + ".jpg"
+USER_REVISION_ID = model.USER_REVISION_ID
+SEED_SCHEME = model.SEED_SCHEME
+NEGATIVE_SCENE = "outdoor, ocean, horizon, white bikini, cropped hips"
 PROMPT = (
-    "Head-to-mid-thigh portrait: one cute smiling Japanese adult woman, age 27, "
-    "naturally full bust, standing in shallow indoor water. Opaque navy bikini "
-    "top and bottoms fully visible; white shirt draped only on upper arms, "
-    "away from bikini top and hips."
+    "Indoors under a glass roof, tiled walls and pillars. Head-to-knees view of a "
+    "Japanese adult woman, 27, mid-stride through a shallow pool, small splash, slight "
+    "turn toward camera. Opaque navy blue bikini top and matching bottoms fully visible, "
+    "full coverage. Natural fuller bust. Candid photograph, natural light."
 )
 PROMPT_2 = (
-    "Photorealistic three-quarter fashion portrait at an indoor sandy beach. "
-    "One fictional Japanese adult woman age 27, cute smiling face, natural proportions, "
-    "navy bikini top visible, white shirt on arms. Soft skylight, realistic skin and water."
+    "Indoor pool, glass roof, tiled walls, pillars. Fictional Japanese adult woman, 27: "
+    "softly rounded face and cheeks, warm round eyes, small nose, naturally bright skin, "
+    "gentle closed-mouth smile, straight dark brown bob with bangs. Three-quarter front view, "
+    "mid-stride, navy bikini, white shirt draped only on arms."
 )
 BRIEF = PROMPT + " " + PROMPT_2
 NATIVE_BF16_FLAGS = frozenset(("avx512_bf16", "amx_bf16"))
@@ -84,6 +88,22 @@ PREFLIGHT_ZIP_BYTES = 1531
 PREFLIGHT_ZIP_SHA = "36f67881c73e3614eb1e8af5669d85fda87b3dfd9da8cbacc277c9232b60abc6"
 PREFLIGHT_RECEIPT_BYTES = 3221
 PREFLIGHT_RECEIPT_SHA = "cc949ee38d4b4e183a43bfbcf88d4dac814e86294bfc03e8359e9498754d26f5"
+REJECTED_TRIAL = {
+    "id":43509702255, "created_at":"2026-11-13T21:19:47Z", "event":"workflow_dispatch",
+    "path":".github/workflows/free-cpu-scenes.yml",
+    "head_sha":"9d08f0e3334433754db8d9ec30fd56d7af76a454",
+    "display_title":BACKFILL_RUN_PREFIX + SLUG, "run_attempt":1,
+    "status":"completed", "conclusion":"success",
+}
+REJECTED_ARTIFACT_ID = 14077947730
+REJECTED_ZIP_BYTES = 65356
+REJECTED_ZIP_SHA = "c21e4ab02da26f6bd35791080f8ee96643c0178bd024a451540fff68f2acc7aa"
+REJECTED_FILES = {
+    "receipt.json":(10362, "eaf06c7957734833b5c9255984aeec2bd8315d5cba92fa84617e5e9f2903e4d7"),
+    "articles.json":(6377, "d7d2e0796efc7218ade102458d9fc864c9fa4fa04f3d4da002a8f6191f292316"),
+    JPEG:(58651, "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf"),
+}
+REJECTED_CANDIDATE_SHA = "38d4f8dc730ac6afcb3f261d840813b070dfbe1614052f39c5bdb6e9fdb58717"
 
 
 def atomic_json(path, value):
@@ -129,6 +149,15 @@ def candidate_article(articles):
     if article_fingerprint(candidate) == SOURCE_SHA:
         raise ValueError("Preview must have its own portrait-scene fingerprint")
     return candidate
+
+
+def preview_seed(article):
+    identity = f"{article['slug']}|{article['title']}|{USER_REVISION_ID}"
+    return int.from_bytes(hashlib.sha256(identity.encode("utf-8")).digest()[:8], "big") % 2**63
+
+
+def preview_negative_prompt(article):
+    return cpu_negative_prompt(article) + ", " + NEGATIVE_SCENE
 
 
 def reject_adopted_photo(manifest, reviews, approved):
@@ -206,6 +235,56 @@ def verify_preflight_trial():
         return validate_preflight_archive(archive.read_bytes())
 
 
+def validate_rejected_archive(data):
+    if len(data) != REJECTED_ZIP_BYTES or hashlib.sha256(data).hexdigest() != REJECTED_ZIP_SHA:
+        raise ValueError("User-rejected predecessor differs from its pinned ZIP")
+    files = {}
+    with ZipFile(io.BytesIO(data)) as archive:
+        members = archive.infolist()
+        if len(members) != 3 or {member.filename for member in members} != set(REJECTED_FILES):
+            raise ValueError("User-rejected predecessor must have exactly its three original files")
+        for member in members:
+            size, sha = REJECTED_FILES[member.filename]
+            if member.file_size != size or member.flag_bits & 1:
+                raise ValueError("Unexpected user-rejected predecessor member size")
+            raw = archive.read(member)
+            if hashlib.sha256(raw).hexdigest() != sha:
+                raise ValueError("User-rejected predecessor file SHA mismatch")
+            files[member.filename] = raw
+    receipt = json.loads(files["receipt.json"])
+    articles = json.loads(files["articles.json"])
+    worker = receipt.get("worker", {})
+    if (receipt.get("run_id") != str(REJECTED_TRIAL["id"]) or receipt.get("status") != "generated_unreviewed"
+            or receipt.get("publication") != "preview_only" or receipt.get("article_slug") != SLUG
+            or receipt.get("source_article_sha256") != SOURCE_SHA
+            or receipt.get("candidate_article_sha256") != REJECTED_CANDIDATE_SHA
+            or receipt.get("model") != model.MODEL or receipt.get("model_revision") != model.REVISION
+            or any(receipt.get(key) is not True for key in ("download_started", "models_downloaded",
+                "model_import_started", "model_execution_started", "model_generation_completed"))
+            or worker.get("model_generation_completed") is not True
+            or worker.get("safety_checked") is not True or not verified_safety_flags(worker.get("safety_flags"))
+            or receipt.get("jpeg_sha256") != REJECTED_FILES[JPEG][1]
+            or receipt.get("jpeg_bytes") != REJECTED_FILES[JPEG][0]
+            or not isinstance(articles, list) or len(articles) != 1
+            or article_fingerprint(articles[0]) != REJECTED_CANDIDATE_SHA
+            or receipt.get("seed") != stable_seed(articles[0])
+            or jpeg_dimensions(files[JPEG]) != (1200,675)):
+        raise ValueError("User-rejected predecessor lacks its matching candidate, JPEG or safety evidence")
+    return {"artifact_id":REJECTED_ARTIFACT_ID, "artifact_sha256":REJECTED_ZIP_SHA,
+            "receipt_sha256":REJECTED_FILES["receipt.json"][1], "jpeg_sha256":REJECTED_FILES[JPEG][1],
+            "candidate_article_sha256":REJECTED_CANDIDATE_SHA, "decision":"user_rejected_quality"}
+
+
+def verify_rejected_trial():
+    temporary = runner_gate()
+    with tempfile.TemporaryDirectory(prefix="sdxl-rejected-proof-", dir=temporary) as directory:
+        work = Path(directory); archive = work / "predecessor.zip"
+        budget = ArtifactBudget(work, timeout=30, remote=RemoteStopGate())
+        binary_command(["gh", "api", f"repos/{REPOSITORY}/actions/artifacts/{REJECTED_ARTIFACT_ID}/zip"],
+                       archive, budget, max_bytes=REJECTED_ZIP_BYTES)
+        return validate_rejected_archive(archive.read_bytes())
+
+
 def check_daily_quota(*, now=None):
     current = int(os.environ["GITHUB_RUN_ID"])
     attempt = int(os.environ["GITHUB_RUN_ATTEMPT"])
@@ -216,8 +295,9 @@ def check_daily_quota(*, now=None):
     if clock.tzinfo is None:
         raise ValueError("SDXL quota requires a timezone-qualified clock")
     today = clock.astimezone(timezone(timedelta(hours=9))).date().isoformat()
-    continuation = requested == str(PREFLIGHT_TRIAL["id"])
-    if requested and (requested not in {str(LEGACY_SDXL_TRIAL["id"]), str(PREFLIGHT_TRIAL["id"])}
+    face_revision = requested == str(REJECTED_TRIAL["id"])
+    continuation = requested == str(PREFLIGHT_TRIAL["id"]) or face_revision
+    if requested and (requested not in {str(LEGACY_SDXL_TRIAL["id"]), str(PREFLIGHT_TRIAL["id"]), str(REJECTED_TRIAL["id"])}
                       or today != "2026-11-14"):
         raise ValueError("User-requested retry is limited to the fixed failed trial on JST 2026-11-14")
     inventory = json.loads(subprocess.check_output([
@@ -225,7 +305,7 @@ def check_daily_quota(*, now=None):
     ], cwd=ROOT, text=True, timeout=15))["workflow_runs"]
     if not isinstance(inventory, list) or any(not isinstance(run, dict) for run in inventory):
         raise ValueError("Invalid SDXL workflow run inventory")
-    classified, legacy, preflight = [], None, None
+    classified, legacy, preflight, rejected = [], None, None, None
     for raw in inventory:
         run = dict(raw)
         if run.get("id") == LEGACY_SDXL_TRIAL["id"]:
@@ -244,14 +324,22 @@ def check_daily_quota(*, now=None):
         elif continuation and run.get("id") == PREFLIGHT_TRIAL["id"]:
             if preflight is not None or any(run.get(key) != value for key, value in PREFLIGHT_TRIAL.items()):
                 raise ValueError("Metadata-only trial provenance does not match its nine pinned fields")
-            quota_slug = SLUG + "-preflight-" + requested
+            quota_slug = SLUG + "-preflight-" + str(PREFLIGHT_TRIAL["id"])
             preflight = {**PREFLIGHT_TRIAL, "quota_slug":quota_slug}
+            run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
+        elif face_revision and run.get("id") == REJECTED_TRIAL["id"]:
+            if rejected is not None or any(run.get(key) != value for key, value in REJECTED_TRIAL.items()):
+                raise ValueError("User-rejected predecessor provenance does not match its nine pinned fields")
+            quota_slug = SLUG + "-user-rejected-" + requested
+            rejected = {**REJECTED_TRIAL, "quota_slug":quota_slug}
             run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
         classified.append(run)
     if requested and legacy is None:
         raise ValueError("User-requested retry is missing its verified failed legacy trial")
     if continuation and preflight is None:
         raise ValueError("Technical continuation is missing its fixed metadata-only trial")
+    if face_revision and rejected is None:
+        raise ValueError("Face revision is missing its fixed user-rejected predecessor")
     matches = [run for run in classified if run.get("id") == current]
     if len(matches) != 1 or matches[0].get("display_title") != BACKFILL_RUN_PREFIX + SLUG:
         raise ValueError("Current SDXL run is absent from the bounded story inventory")
@@ -261,6 +349,8 @@ def check_daily_quota(*, now=None):
                 "user_requested_retry_after":requested}
     if continuation:
         evidence.update(metadata_only_trial=preflight, metadata_only_proof=verify_preflight_trial())
+    if face_revision:
+        evidence.update(user_rejected_trial=rejected, user_rejected_proof=verify_rejected_trial())
     return evidence
 
 
@@ -553,7 +643,9 @@ def worker(work):
         raise RuntimeError("Worker requires its owning stdlib controller")
     candidate = request["candidate"]
     if (candidate.get("slug") != SLUG or candidate.get("scene_prompt") != BRIEF
-            or article_fingerprint(candidate) != request["candidate_article_sha256"]):
+            or article_fingerprint(candidate) != request["candidate_article_sha256"]
+            or request.get("seed") != preview_seed(candidate)
+            or request.get("user_revision_id") != USER_REVISION_ID or request.get("seed_scheme") != SEED_SCHEME):
         raise ValueError("Worker candidate differs from its source-bound portrait brief")
     try:
         render_worker(work, request, candidate)
@@ -565,7 +657,8 @@ def worker(work):
 def render_worker(work, request, candidate):
     runner_gate()
     native = native_bf16_features()
-    progress(work, "cpu_bf16_observed", native_bf16_features=native)
+    progress(work, "cpu_bf16_observed", native_bf16_features=native,
+             user_revision_id=USER_REVISION_ID, seed_scheme=SEED_SCHEME, seed=request["seed"])
     progress(work, "import_started", model_import_started=True)
     import torch
     import numpy as np
@@ -579,10 +672,10 @@ def render_worker(work, request, candidate):
     tokenizer = CLIPTokenizer.from_pretrained(str(base), subfolder="tokenizer", local_files_only=True)
     tokenizer_2 = CLIPTokenizer.from_pretrained(str(base), subfolder="tokenizer_2", local_files_only=True)
     if __package__:
-        from .github_cpu_scenes import cpu_negative_prompt, check_quality
+        from .github_cpu_scenes import check_quality
     else:
-        from github_cpu_scenes import cpu_negative_prompt, check_quality
-    negative = cpu_negative_prompt(candidate)
+        from github_cpu_scenes import check_quality
+    negative = preview_negative_prompt(candidate)
     counts = token_counts(tokenizer, tokenizer_2, negative)
     progress(work, "tokens_verified", token_counts=counts, negative_prompt=negative,
              packages={name:version(name) for name in ("torch","diffusers","transformers","accelerate","safetensors")})
@@ -640,6 +733,7 @@ def execute(output, *, check_only=False):
                "model_card":model.MODEL_CARD_URL, "model_card_sha256":model.MODEL_CARD_SHA256,
                "license_text_url":model.LICENSE_TEXT_URL, "license_text_revision":model.LICENSE_TEXT_REVISION,
                "license_text_sha256":model.LICENSE_TEXT_SHA256, "inference":model.INFERENCE,
+               "user_revision_id":USER_REVISION_ID, "seed_scheme":SEED_SCHEME,
                "prompt":PROMPT, "prompt_2":PROMPT_2, "download_started":False,
                "models_downloaded":False, "model_import_started":False,
                "model_execution_started":False, "model_generation_completed":False, "verified_files":{}}
@@ -657,7 +751,7 @@ def execute(output, *, check_only=False):
         check_disk_reservation(temporary)
         articles = json.loads((ROOT / "content/articles.json").read_text())
         candidate = candidate_article(articles)
-        receipt.update(candidate_article_sha256=article_fingerprint(candidate), seed=stable_seed(candidate),
+        receipt.update(candidate_article_sha256=article_fingerprint(candidate), seed=preview_seed(candidate),
                        fresh_main_sha_before=fresh_source())
         initial_priority_gate(receipt["fresh_main_sha_before"], articles, review_parent=temporary)
         receipt["initial_other_priority_clear"] = True
@@ -670,7 +764,8 @@ def execute(output, *, check_only=False):
             try:
                 download_files(work, budget, receipt, output)
                 atomic_json(work / "request.json", {"nonce":uuid.uuid4().hex, "candidate":candidate,
-                            "candidate_article_sha256":receipt["candidate_article_sha256"], "seed":receipt["seed"]})
+                            "candidate_article_sha256":receipt["candidate_article_sha256"], "seed":receipt["seed"],
+                            "user_revision_id":USER_REVISION_ID, "seed_scheme":SEED_SCHEME})
                 run_owned_worker(work, budget)
                 result = json.loads((work / "result.json").read_text())
                 image = (work / "rendered.jpg").read_bytes()
