@@ -1349,30 +1349,65 @@
     },
     "cherry-tree-stethoscope-municipal-inspection": {
       "article_sha256": "0a30e0c60b5c9bcb1519e339ca16556e818c4a36be66a3998f7f5ac5734210fe",
-      "bytes": 206889,
-      "generated_at": "2026-11-13T05:13:03.922686+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 246711,
+      "generated_at": "2026-11-13T05:18:06.149Z",
+      "generation_id": "a8a7fbc9-bffd-43e9-ad9a-bb3bbb1afb3e",
+      "generation_id_source": "Actual built-in output exec filename UUID; no backend generation ID exposed.",
+      "generation_prompt": "Photorealistic candid Japanese local newspaper photograph, horizontal 16:9. A fictional adult Japanese female municipal tree-care worker aged 32 in a plain navy work jacket examines a mature cherry tree beside a Japanese city sidewalk in NOVEMBER. Medium close side view: the tree trunk fills the right third of the picture. Her right hand holds a clearly visible small round BLACK contact microphone disc FLAT AGAINST THE BARK at chest height. A thin cable leads from this contact sensor to a small handheld checking tablet in her other hand, screen angled away with no readable text. She wears one ordinary wired earbud, listening seriously to the tree. The hand, round sensor touching bark, cable and handheld device are the clear focal points. Behind her, a second fictional adult arborist crouches near the same tree's roots inspecting bark with a small torch. Ordinary late-autumn daylight, realistic bark, a few yellow and brown leaves, mostly bare branches, mundane pavement and street. NO cherry blossoms or spring flowers. Natural anatomy, believable fingers and cable, understated unposed press-camera realism, natural skin, fabric and shadows. No posing, no telephone held to ear, no readable words, logos, typography, diagram, illustration, anime or CGI. Staged fictional future news with fictional people and city, not a real news event.",
+      "generation_receipt": "exec-a8a7fbc9-bffd-43e9-ad9a-bb3bbb1afb3e.png",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/cherry-tree-stethoscope-municipal-inspection/0a30e0c60b5c9bcb-adaa1bdc7a82",
+        "commit_sha": "c83479dcb4493e085438001ea4c1471bc1414315",
+        "receipt_path": "maintenance/native-image-candidates/cherry-tree-stethoscope-municipal-inspection/receipt.json",
+        "receipt_sha256": "33ee93793dbe5692f31cfe91a8e2bd379a196d7a918e4f85350b7d8d4e891c6e"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "0a30e0c60b5c9bcb1519e339ca16556e818c4a36be66a3998f7f5ac5734210fe",
+        "bytes": 206889,
+        "generated_at": "2026-11-13T05:13:03.922686+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 8989333895446710189,
+        "sha256": "b42141b6ad3c31a41da1b98b49fb4b8649a03ad4ad624c20094c056550ca55fd"
+      },
+      "previous_visual_hold": {
+        "article_sha256": "0a30e0c60b5c9bcb1519e339ca16556e818c4a36be66a3998f7f5ac5734210fe",
+        "decision": "rejected",
+        "image_sha256": "b42141b6ad3c31a41da1b98b49fb4b8649a03ad4ad624c20094c056550ca55fd",
+        "note": "CPU run 43369591686の実JPEGを最新本文全文と照合。満開の春の桜並木を電話らしき物を持って歩く人物で、11月の樹木検査と異なり、幹に集音器を当てる主動作・確認端末・根元を調べる専門員が見えないため不採用。",
+        "reviewed_at": "2026-11-13T05:20:13.266013+00:00"
+      },
       "prompt_version": 3,
-      "seed": 8989333895446710189,
-      "sha256": "b42141b6ad3c31a41da1b98b49fb4b8649a03ad4ad624c20094c056550ca55fd"
+      "sha256": "e728cd4f58e4c6043c8463de784a80d81253cb9713a1f2ac125a0e2f981e45ba",
+      "source_png_sha256": "87fe90faa6cc10b608654133e101e2741f782d83465807502a290a96cd44dbbe",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "christmas-done-for-you-family-decorates-boxes": {
       "article_sha256": "0f4464944249088fe3205981378607788d417224c2ee93647ef2baa74a2de866",
