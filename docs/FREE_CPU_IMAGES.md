@@ -28,6 +28,8 @@
 
 品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用artifactだけを作り自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の定期処理は保留記事を除外する。
 
+別モデルの成人ポートレート試作は、同じ手動Actionの`preview_model=sdxl`を使う限定経路とする。対象は`indoor-beach-friends-exchange-ripples`の固定原稿だけで、`limit=1`・`retry_held=true`・`publish=false`・backfill空を必須とし、mainまたは指定の`codex/sdxl-preview-20261114`ブランチの正確なcommitで実行する。元本文を保ち写真指示だけを頭から太もも中央までの構図へ置き換えた候補記事と、元記事・候補それぞれの指紋、JPEG、実行receiptだけを1日保持する。固定モデル・ライセンス・部品ごとのSHAは`scripts/sdxl_preview_model.py`、メモリ・容量・停止保護は`scripts/sdxl_scene_preview.py`を正とする。通常モデルや採用manifestへ接続せず、所要時間・RAM・写真品質は実runと実画像QAで確認してから採用を判断する。
+
 既刊の写真化プレビューは、さらに `backfill_scene` に新しい場面指示を渡し、`limit=1`・`publish=false`で手動実行する。通常キューが残る場合や公開を指定した場合は生成せず、日次上限もモデル取得前に判定する。生成物は元の記事を束縛する `source_article_sha256` 付きのartifactだけに保存し、実行中のcheckoutや本番素材は上書きしない。いつ試し、どう採用するかは[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を正本とする。
 
 文章だけの試作で必要な物が消える場合は、同じプレビューに `backfill_reference=true`（CLIでは`--backfill-reference`）を加え、現在の記事に合う専用SVGを構図の参照にできる。原記事の承認済みSVGを先に検証し、CairoSVG 2.7.1でメモリ内の800×448 RGBへ変換する。既存RVパイプラインの部品・4つの重み・安全フィルターを再利用し、追加モデルやControlNetは取得しない。初期画像の強さは0.65、指定24ステップのうち実際の変換は15ステップ。GitHub標準CPUで生成・形式検証まで確認済み。ただし初回のノート試作は参照SVGの穴が消えて不採用となり、形状の維持や品質改善は未確認。処理速度の一般化とメモリ使用量の評価もまだ行っていない。

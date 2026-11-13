@@ -11,6 +11,11 @@ on:
     - cron: '17 * * * *'
   workflow_dispatch:
     inputs:
+      preview_model:
+        description: 'Default image route, or one source-bound SDXL portrait preview only'
+        type: choice
+        options: ['default', 'sdxl']
+        default: 'default'
       limit:
         description: 'Number of missing story images (max 3)'
         type: choice
@@ -49,7 +54,7 @@ jobs:
   render:
     # Standard CPU runners are free on a public GitHub repository. Never bill
     # a private fork or execute image generation from an untrusted pull request.
-    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && (github.event_name != 'workflow_dispatch' || inputs.preview_model == '' || inputs.preview_model == 'default')
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     env:
@@ -235,3 +240,71 @@ jobs:
           path: ${{ runner.temp }}/cpu-scenes-review/
           if-no-files-found: ignore
           retention-days: 1
+
+  sdxl-preview:
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/sdxl-preview-20261114') && inputs.preview_model == 'sdxl' && inputs.slug == 'indoor-beach-friends-exchange-ripples' && inputs.limit == '1' && inputs.retry_held && !inputs.publish && inputs.backfill_scene == '' && !inputs.backfill_reference
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SDXL_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
+      VERIPSA_ENABLE_FREE_CPU: '1'
+      PREVIEW_MODEL: ${{ inputs.preview_model }}
+      SCENE_SLUG: ${{ inputs.slug }}
+      SCENE_LIMIT: ${{ inputs.limit }}
+      RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
+      SCENE_PUBLISH: ${{ inputs.publish && '1' || '0' }}
+      BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}
+      BACKFILL_REFERENCE: ${{ inputs.backfill_reference && '1' || '0' }}
+      HF_HUB_DISABLE_TELEMETRY: '1'
+      HF_HUB_DISABLE_PROGRESS_BARS: '1'
+      PYTHONUNBUFFERED: '1'
+      OMP_NUM_THREADS: '4'
+      MKL_NUM_THREADS: '4'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate the exact source and reserve memory/disk before installing models
+        run: python3 scripts/sdxl_scene_preview.py --check --output "$RUNNER_TEMP/sdxl-scene-preview"
+      - name: Install the existing pinned CPU-only runtime for this preview
+        run: |
+          python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
+          python3 -m pip install --no-cache-dir Pillow==11.1.0 \
+            diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
+            accelerate==1.2.1 safetensors==0.4.5 numpy==1.26.4
+      - name: Run one monitored SDXL preview without publication
+        run: python3 scripts/sdxl_scene_preview.py --run --output "$RUNNER_TEMP/sdxl-scene-preview"
+      - name: Record runtime preparation failures without loading any model
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.sdxl_scene_preview import atomic_json
+          path = Path(os.environ['RUNNER_TEMP']) / 'sdxl-scene-preview/receipt.json'
+          if path.is_file():
+              receipt = json.loads(path.read_text())
+              if receipt.get('status') == 'ready_unexecuted':
+                  receipt.update(status='failed', failure_type='WorkflowPreparationFailure')
+                  atomic_json(path, receipt)
+          PY
+      - name: Keep only the SDXL candidate JPEG, article and receipt for one day
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdxl-scene-preview-${{ github.run_id }}
+          retention-days: 1
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/sdxl-scene-preview/indoor-beach-friends-exchange-ripples.jpg
+            ${{ runner.temp }}/sdxl-scene-preview/articles.json
+            ${{ runner.temp }}/sdxl-scene-preview/receipt.json
