@@ -23,7 +23,7 @@
       "url": "https://group.ntt/jp/newsrelease/2026/11/11/261111b.html",
       "topic": "2026年11月11日、NTTは物体の重さや向きなど物理量を用いて荷崩れ・落下を予測し、ロボットが置き方を選ぶフィジカルAI技術を発表した。小型ロボットの棚積み模擬タスクでは成功率が73.1%から92.3%に向上。空港手荷物への適用は今後の想定であって実導入の発表ではない。2031年の潮灯空港、極端な安全設定、台車6台の滞留、係員の対応と会話はすべて創作。実在企業の製品や運用失敗ではない。"
     },
-    "scene_prompt": "Photorealistic candid Japanese airport baggage-room press photograph, landscape 16:9. Six realistic two-tier metal luggage carts line a concrete aisle, their LOWER shelves filled with ordinary unbranded wheeled suitcases while ALL UPPER shelves are visibly empty. A fictional 32-year-old adult Japanese airport baggage handler in plain safety workwear points toward one empty upper shelf. In foreground, a plausible industrial robotic gripper faces a suitcase on the lower shelf. Natural fluorescent facility light, physical steel carts, suitcase handles and wheels, documentary camera realism, correct shadows and materials, unposed news photography. No legible text, logos, famous people, illustration or glossy CGI.",
+    "scene_prompt": "Photorealistic candid Japanese airport baggage-room press photograph, landscape 16:9. Six realistic two-tier metal luggage carts line a concrete aisle, their LOWER shelves filled with ordinary unbranded wheeled suitcases while ALL UPPER shelves are visibly empty. A fictional 32-year-old adult Japanese airport baggage handler in plain safety workwear points toward one empty upper shelf. In foreground, a plausible industrial robotic gripper faces a suitcase on the lower shelf. Natural fluorescent facility light, physical steel carts, suitcase handles and wheels, documentary camera realism, correct shadows and materials, unposed news photography. No legible text, logos, famous people, painted art or glossy CGI.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "空港",
@@ -52,7 +52,7 @@
       "outcome": "荷物が3台に収まり搬送が再開し、主任がランプの下に『上の棚も見よう』と紙を貼った"
     },
     "reader_clarity": {
-      "who": "潮灯空港の手荷物積み込みロボットと係員",
+      "who": "積み込みロボット",
       "action": "ロボットが下段だけに荷物を積んで6台を埋め、係員が仕切りとベルトで上段も使えるようにした",
       "oddity": "荷崩れを防ぎすぎて空の上段が増え、搬送口が塞がれた"
     },
