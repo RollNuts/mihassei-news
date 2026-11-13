@@ -95,7 +95,7 @@ sdxl_scene_preview.main([])
                 self.assertFalse((root/"output").exists())
             download.assert_not_called();child.assert_not_called()
 
-    def test_native_cpu_gate_uses_exact_common_flags_and_rejects_unknown_reports(self):
+    def test_cpu_performance_observation_uses_exact_common_flags_without_gating_bf16(self):
         def report(first,second):
             return f"processor: 0\nflags: {first}\n\nprocessor: 1\nflags: {second}\n"
         with tempfile.TemporaryDirectory() as directory:
@@ -104,30 +104,33 @@ sdxl_scene_preview.main([])
                                   (report("avx512_bf16 sse","sse avx512_bf16"),["avx512_bf16"])):
                 path.write_text(text);data=preview.native_bf16_features(path)
                 self.assertEqual(data,{"cpu_count":2,"common_native_flags":expected})
-                preview.require_native_bf16(data)
             for text in (report("avx512_bf16_extra","avx512_bf16_extra"),
                          report("avx512_bf16","amx_bf16"),report("avx2","avx2")):
                 path.write_text(text)
-                with self.assertRaisesRegex(RuntimeError,"No shared exact"):
-                    preview.require_native_bf16(preview.native_bf16_features(path))
+                self.assertEqual(preview.native_bf16_features(path)["common_native_flags"],[])
             for text in ("", "processor: 0\n", report("avx512_bf16","avx512_bf16").replace("processor: 1","processor: 0")):
                 path.write_text(text)
-                with self.assertRaisesRegex(RuntimeError,"every logical CPU"):
-                    preview.native_bf16_features(path)
+                self.assertIn("observation_error",preview.native_bf16_features(path))
 
-    def test_non_native_cpu_stops_before_download_and_preserves_failed_evidence(self):
+    def test_non_native_cpu_can_prepare_bf16_preview_without_importing_or_downloading_models(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);output=root/"preview"
+            fake_budget=SimpleNamespace(check=lambda:None,close=lambda:None,max_rss=0,minimum_available=2*1024**3)
             with patch.dict(os.environ,environment(root)),patch.object(preview,"runner_gate",return_value=root.resolve()), \
                  patch.object(preview.RemoteStopGate,"check"), \
                  patch.object(preview,"native_bf16_features",return_value={"cpu_count":4,"common_native_flags":[]}), \
-                 patch.object(preview,"check_daily_quota") as quota, \
+                 patch.object(preview,"check_daily_quota",return_value={"allowed":True}) as quota, \
+                 patch.object(preview,"check_disk_reservation"),patch.object(preview,"initial_priority_gate"), \
+                 patch.object(preview,"fresh_source",return_value="a"*40), \
+                 patch.object(preview.subprocess,"check_output",return_value="a"*40+"\n"), \
+                 patch.object(preview,"Budget",return_value=fake_budget), \
                  patch.object(preview,"download_files") as download,patch.object(preview,"run_owned_worker") as child:
-                with self.assertRaisesRegex(RuntimeError,"No shared exact"):preview.execute(output)
-            quota.assert_not_called();download.assert_not_called();child.assert_not_called()
+                preview.execute(output,check_only=True)
+            quota.assert_called_once();download.assert_not_called();child.assert_not_called()
             record=json.loads((output/"receipt.json").read_text())
             self.assertEqual(record["native_bf16_features"]["common_native_flags"],[])
-            self.assertEqual(record["status"],"failed")
+            self.assertEqual(record["status"],"ready_unexecuted")
+            self.assertFalse(record["inference"]["native_bf16_required"])
             self.assertFalse(record["download_started"]);self.assertFalse(record["model_import_started"])
 
     def test_quota_counts_immutable_legacy_trial_and_existing_story_and_daily_limits(self):
@@ -241,6 +244,98 @@ sdxl_scene_preview.main([])
             self.assertEqual(record["status"],"failed")
             self.assertFalse(record["download_started"]);self.assertFalse(record["model_import_started"])
 
+    def test_technical_continuation_keeps_both_prior_attempts_in_global_budget_and_cannot_repeat(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        metadata=dict(preview.PREFLIGHT_TRIAL)
+        current={"id":123,"created_at":"2026-11-13T21:10:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        runs=[legacy,metadata,current];original=[dict(run) for run in runs]
+        now=preview.datetime.fromisoformat("2026-11-13T21:11:00+00:00")
+        with patch.dict(os.environ,{"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+                                   "USER_REQUESTED_RETRY_AFTER":str(metadata["id"])}), \
+             patch.object(preview.subprocess,"check_output",return_value="inventory"), \
+             patch.object(preview.json,"loads",return_value={"workflow_runs":runs}), \
+             patch.object(preview,"verify_preflight_trial",return_value={"receipt_sha256":preview.PREFLIGHT_RECEIPT_SHA}) as proof:
+            evidence=preview.check_daily_quota(now=now)
+            self.assertEqual(runs,original);proof.assert_called_once()
+            self.assertEqual(evidence["metadata_only_proof"]["receipt_sha256"],preview.PREFLIGHT_RECEIPT_SHA)
+            for prior in (evidence["known_legacy_trial"],evidence["metadata_only_trial"]):
+                self.assertNotEqual(prior["quota_slug"],preview.SLUG)
+            for old_input in ("",str(legacy["id"])):
+                with patch.dict(os.environ,{"USER_REQUESTED_RETRY_AFTER":old_input}), \
+                     self.assertRaisesRegex(RuntimeError,"same-story"):preview.check_daily_quota(now=now)
+            prior={**current,"id":122,"created_at":"2026-11-13T21:09:00Z"};runs.append(prior)
+            with self.assertRaisesRegex(RuntimeError,"same-story"):preview.check_daily_quota(now=now)
+            runs.remove(prior)
+            runs.append({"id":200,"created_at":"2026-11-13T18:00:00Z",
+                         "display_title":preview.BACKFILL_RUN_PREFIX+"other-story"})
+            self.assertTrue(preview.check_daily_quota(now=now)["allowed"])
+            runs.append({"id":201,"created_at":"2026-11-13T19:00:00Z",
+                         "display_title":preview.BACKFILL_RUN_PREFIX+"second-other"})
+            with self.assertRaisesRegex(RuntimeError,"daily attempt budget"):preview.check_daily_quota(now=now)
+
+    def test_technical_continuation_requires_nine_exact_fields_and_verified_receipt(self):
+        legacy={**preview.LEGACY_SDXL_TRIAL,"status":"completed","conclusion":"failure"}
+        current={"id":123,"created_at":"2026-11-13T21:10:00Z",
+                 "display_title":preview.BACKFILL_RUN_PREFIX+preview.SLUG}
+        env={"GITHUB_RUN_ID":"123","GITHUB_RUN_ATTEMPT":"1",
+             "USER_REQUESTED_RETRY_AFTER":str(preview.PREFLIGHT_TRIAL["id"])}
+        now=preview.datetime.fromisoformat("2026-11-13T21:11:00+00:00")
+        for field in preview.PREFLIGHT_TRIAL:
+            changed={**preview.PREFLIGHT_TRIAL,field:"changed"}
+            with self.subTest(field=field),patch.dict(os.environ,env), \
+                 patch.object(preview.subprocess,"check_output",return_value=json.dumps({"workflow_runs":[legacy,changed,current]})), \
+                 patch.object(preview,"verify_preflight_trial") as proof:
+                with self.assertRaises(ValueError):preview.check_daily_quota(now=now)
+                proof.assert_not_called()
+        with patch.dict(os.environ,env),patch.object(preview.subprocess,"check_output",
+                return_value=json.dumps({"workflow_runs":[legacy,preview.PREFLIGHT_TRIAL,current]})), \
+             patch.object(preview,"verify_preflight_trial",side_effect=ValueError("receipt mismatch")):
+            with self.assertRaisesRegex(ValueError,"receipt mismatch"):preview.check_daily_quota(now=now)
+
+    def test_metadata_proof_checks_both_hashes_and_rejects_lifecycle_activity_or_extra_jpeg(self):
+        fields=("download_started","models_downloaded","model_import_started",
+                "model_execution_started","model_generation_completed")
+        receipt={"run_id":str(preview.PREFLIGHT_TRIAL["id"]),"status":"failed","publication":"preview_only",
+                 "article_slug":preview.SLUG,"source_article_sha256":preview.SOURCE_SHA,
+                 "model":preview.model.MODEL,"model_revision":preview.model.REVISION,"verified_files":{},
+                 **{key:False for key in fields}}
+        def packed(value,extra=False):
+            raw=json.dumps(value).encode();output=io.BytesIO()
+            with preview.ZipFile(output,"w") as archive:
+                archive.writestr("receipt.json",raw)
+                if extra:archive.writestr("candidate.jpg",b"not an allowed image")
+            return raw,output.getvalue()
+        def validate(value,*,extra=False,wrong_inner=False,wrong_zip=False):
+            raw,data=packed(value,extra)
+            with patch.object(preview,"PREFLIGHT_ZIP_BYTES",len(data)), \
+                 patch.object(preview,"PREFLIGHT_ZIP_SHA","0"*64 if wrong_zip else preview.hashlib.sha256(data).hexdigest()), \
+                 patch.object(preview,"PREFLIGHT_RECEIPT_BYTES",len(raw)), \
+                 patch.object(preview,"PREFLIGHT_RECEIPT_SHA","0"*64 if wrong_inner else preview.hashlib.sha256(raw).hexdigest()):
+                return preview.validate_preflight_archive(data)
+        self.assertEqual(validate(receipt)["model_lifecycle"],{key:False for key in fields})
+        for options in ({"extra":True},{"wrong_inner":True},{"wrong_zip":True}):
+            with self.subTest(options=options),self.assertRaises(ValueError):validate(receipt,**options)
+        for field in fields:
+            with self.subTest(field=field),self.assertRaisesRegex(ValueError,"no model lifecycle"):
+                validate({**receipt,field:True})
+
+    def test_metadata_artifact_fetch_is_hosted_only_and_uses_fixed_bounded_endpoint(self):
+        with patch.object(preview,"runner_gate",side_effect=RuntimeError("not hosted")), \
+             patch.object(preview,"binary_command") as fetch:
+            with self.assertRaisesRegex(RuntimeError,"not hosted"):preview.verify_preflight_trial()
+            fetch.assert_not_called()
+        with tempfile.TemporaryDirectory() as directory:
+            def fixture(argv,target,budget,**options):target.write_bytes(b"bounded metadata fixture")
+            with patch.object(preview,"runner_gate",return_value=Path(directory)), \
+                 patch.object(preview,"binary_command",side_effect=fixture) as fetch, \
+                 patch.object(preview,"validate_preflight_archive",return_value={"verified":True}) as verify:
+                self.assertEqual(preview.verify_preflight_trial(),{"verified":True})
+            self.assertEqual(fetch.call_args.args[0],["gh","api",
+                f"repos/{preview.REPOSITORY}/actions/artifacts/{preview.PREFLIGHT_ARTIFACT_ID}/zip"])
+            self.assertEqual(fetch.call_args.kwargs["max_bytes"],1531)
+            verify.assert_called_once_with(b"bounded metadata fixture")
+
     def test_candidate_changes_only_scene_keeps_body_and_has_new_fingerprint(self):
         source=self.source();candidate=preview.candidate_article([source])
         self.assertEqual({k:v for k,v in candidate.items() if k!="scene_prompt"},
@@ -335,7 +430,7 @@ sdxl_scene_preview.main([])
         with self.assertRaisesRegex(ValueError,"norms"):
             preview.require_features(TensorFixture([[1.,2.]]),api,batch=1)
 
-    def test_native_bf16_unet_and_embeddings_stay_bf16_until_unet_release_then_f32_decode(self):
+    def test_cpu_bf16_unet_and_embeddings_stay_bf16_until_unet_release_then_f32_decode(self):
         api=tensor_api();events=[];components={}
         class Embedding(TensorFixture):
             def to(self,**kwargs):self_outer.assertEqual(kwargs["dtype"],"bfloat16");return self
@@ -343,7 +438,7 @@ sdxl_scene_preview.main([])
             def __init__(self,name):self.name=name;self.dtype="bfloat16";self.config=SimpleNamespace(scaling_factor=.13025)
             def to(self,**kwargs):
                 if self.name=="unet":
-                    self_outer.fail("Native BF16 UNet must never be upcast")
+                    self_outer.fail("BF16 UNet must never be upcast")
                 if self.name=="vae":
                     self_outer.assertIsNone(pipe.unet);self_outer.assertNotIn("unet",components)
                 events.append(self.name+"_float32");return self
@@ -374,7 +469,7 @@ sdxl_scene_preview.main([])
         self.assertEqual(set(components),{"vae"})
         self.assertEqual(preview.model.INFERENCE["unet_compute_dtype"],"bfloat16")
         self.assertEqual(preview.model.INFERENCE["text_encoder_dtype"],"bfloat16")
-        self.assertTrue(preview.model.INFERENCE["native_bf16_required"])
+        self.assertFalse(preview.model.INFERENCE["native_bf16_required"])
 
     def test_initial_priority_blocks_snapshot_drift_other_pending_or_unreviewed_images(self):
         target=self.source();other={**target,"slug":"other-story"}

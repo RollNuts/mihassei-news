@@ -20,6 +20,7 @@ import sys
 import tempfile
 import time
 import uuid
+from zipfile import ZipFile
 
 if __package__:
     from . import sdxl_preview_model as model
@@ -29,6 +30,8 @@ if __package__:
                                     backfill_run_allowed, BACKFILL_RUN_PREFIX)
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from .news_caster_preview import RemoteStopGate, download, stop_child
+    from .news_caster_preview import Budget as ArtifactBudget
+    from .compose_caster_preview import binary_command
 else:
     import sdxl_preview_model as model
     from generated_photos import article_fingerprint, MAX_ARCHIVE_BYTES, MAX_SCENE_BYTES
@@ -37,6 +40,8 @@ else:
                                    backfill_run_allowed, BACKFILL_RUN_PREFIX)
     from media_policy import jpeg_dimensions, MIN_JPEG_BYTES
     from news_caster_preview import RemoteStopGate, download, stop_child
+    from news_caster_preview import Budget as ArtifactBudget
+    from compose_caster_preview import binary_command
 
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "RollNuts/mihassei-news"
@@ -67,6 +72,18 @@ LEGACY_SDXL_TRIAL = {
     "head_sha":"66d301c674965ca49673ccf3a30c4929abfebff6",
     "display_title":"Free CPU staged-news photos", "run_attempt":1,
 }
+PREFLIGHT_TRIAL = {
+    "id":43507608306, "created_at":"2026-11-13T21:06:04Z", "event":"workflow_dispatch",
+    "path":".github/workflows/free-cpu-scenes.yml",
+    "head_sha":"10b3e6cb1e12f5cfb2659fb4ae5ca65ad9891b86",
+    "display_title":BACKFILL_RUN_PREFIX + SLUG, "run_attempt":1,
+    "status":"completed", "conclusion":"failure",
+}
+PREFLIGHT_ARTIFACT_ID = 14077650200
+PREFLIGHT_ZIP_BYTES = 1531
+PREFLIGHT_ZIP_SHA = "36f67881c73e3614eb1e8af5669d85fda87b3dfd9da8cbacc277c9232b60abc6"
+PREFLIGHT_RECEIPT_BYTES = 3221
+PREFLIGHT_RECEIPT_SHA = "cc949ee38d4b4e183a43bfbcf88d4dac814e86294bfc03e8359e9498754d26f5"
 
 
 def atomic_json(path, value):
@@ -136,22 +153,57 @@ def fresh_source():
 
 
 def native_bf16_features(path=Path("/proc/cpuinfo")):
-    """Exact-token common intersection across every reported logical CPU."""
-    blocks = re.split(r"\n[ \t]*\n", path.read_text(encoding="utf-8").strip())
-    identifiers, flag_sets = set(), []
-    for block in blocks:
-        ids = re.findall(r"^processor[ \t]*:[ \t]*(\d+)[ \t]*$", block, re.M)
-        flags = re.findall(r"^flags[ \t]*:[ \t]*(.*)$", block, re.M)
-        if len(ids) != 1 or len(flags) != 1 or ids[0] in identifiers or not flags[0].split():
-            raise RuntimeError("Cannot verify native BF16 flags for every logical CPU")
-        identifiers.add(ids[0]); flag_sets.append(set(flags[0].split()))
-    common = set.intersection(*flag_sets)
-    return {"cpu_count":len(flag_sets), "common_native_flags":sorted(common & NATIVE_BF16_FLAGS)}
+    """Performance evidence only; PyTorch also has generic CPU BF16 dispatch."""
+    try:
+        blocks = re.split(r"\n[ \t]*\n", path.read_text(encoding="utf-8").strip())
+        identifiers, flag_sets = set(), []
+        for block in blocks:
+            ids = re.findall(r"^processor[ \t]*:[ \t]*(\d+)[ \t]*$", block, re.M)
+            flags = re.findall(r"^flags[ \t]*:[ \t]*(.*)$", block, re.M)
+            if len(ids) != 1 or len(flags) != 1 or ids[0] in identifiers or not flags[0].split():
+                raise ValueError("Incomplete or duplicate logical CPU report")
+            identifiers.add(ids[0]); flag_sets.append(set(flags[0].split()))
+        common = set.intersection(*flag_sets)
+        return {"cpu_count":len(flag_sets), "common_native_flags":sorted(common & NATIVE_BF16_FLAGS)}
+    except (OSError, UnicodeError, ValueError) as error:
+        return {"cpu_count":None, "common_native_flags":[], "observation_error":type(error).__name__}
 
 
-def require_native_bf16(evidence):
-    if not evidence.get("common_native_flags"):
-        raise RuntimeError("No shared exact avx512_bf16 or amx_bf16 CPU flag; no model download or F32 fallback")
+def validate_preflight_archive(data):
+    if len(data) != PREFLIGHT_ZIP_BYTES or hashlib.sha256(data).hexdigest() != PREFLIGHT_ZIP_SHA:
+        raise ValueError("Metadata-only trial artifact differs from its pinned ZIP")
+    with ZipFile(io.BytesIO(data)) as archive:
+        members = archive.infolist()
+        if (len(members) != 1 or members[0].filename != "receipt.json"
+                or members[0].file_size != PREFLIGHT_RECEIPT_BYTES or members[0].flag_bits & 1):
+            raise ValueError("Metadata-only trial must contain only its bounded receipt, no JPEG")
+        raw = archive.read(members[0])
+    if hashlib.sha256(raw).hexdigest() != PREFLIGHT_RECEIPT_SHA:
+        raise ValueError("Metadata-only trial receipt differs from its pinned SHA")
+    receipt = json.loads(raw)
+    lifecycle = ("download_started", "models_downloaded", "model_import_started",
+                 "model_execution_started", "model_generation_completed")
+    if (receipt.get("run_id") != str(PREFLIGHT_TRIAL["id"]) or receipt.get("status") != "failed"
+            or receipt.get("publication") != "preview_only" or receipt.get("article_slug") != SLUG
+            or receipt.get("source_article_sha256") != SOURCE_SHA
+            or receipt.get("model") != model.MODEL or receipt.get("model_revision") != model.REVISION
+            or any(receipt.get(key) is not False for key in lifecycle)
+            or receipt.get("verified_files") != {} or "worker" in receipt
+            or any(key.startswith("jpeg_") for key in receipt)):
+        raise ValueError("Technical continuation requires a failed preflight with no model lifecycle or JPEG")
+    return {"artifact_id":PREFLIGHT_ARTIFACT_ID, "artifact_sha256":PREFLIGHT_ZIP_SHA,
+            "receipt_sha256":PREFLIGHT_RECEIPT_SHA, "model_lifecycle":{key:False for key in lifecycle},
+            "jpeg_members":[]}
+
+
+def verify_preflight_trial():
+    temporary = runner_gate()  # Metadata ZIP is fetched only on the trusted hosted CPU runner.
+    with tempfile.TemporaryDirectory(prefix="sdxl-preflight-proof-", dir=temporary) as directory:
+        work = Path(directory); archive = work / "metadata.zip"
+        budget = ArtifactBudget(work, timeout=30, remote=RemoteStopGate())
+        binary_command(["gh", "api", f"repos/{REPOSITORY}/actions/artifacts/{PREFLIGHT_ARTIFACT_ID}/zip"],
+                       archive, budget, max_bytes=PREFLIGHT_ZIP_BYTES)
+        return validate_preflight_archive(archive.read_bytes())
 
 
 def check_daily_quota(*, now=None):
@@ -164,14 +216,16 @@ def check_daily_quota(*, now=None):
     if clock.tzinfo is None:
         raise ValueError("SDXL quota requires a timezone-qualified clock")
     today = clock.astimezone(timezone(timedelta(hours=9))).date().isoformat()
-    if requested and (requested != str(LEGACY_SDXL_TRIAL["id"]) or today != "2026-11-14"):
+    continuation = requested == str(PREFLIGHT_TRIAL["id"])
+    if requested and (requested not in {str(LEGACY_SDXL_TRIAL["id"]), str(PREFLIGHT_TRIAL["id"])}
+                      or today != "2026-11-14"):
         raise ValueError("User-requested retry is limited to the fixed failed trial on JST 2026-11-14")
     inventory = json.loads(subprocess.check_output([
         "gh", "api", f"repos/{REPOSITORY}/actions/workflows/free-cpu-scenes.yml/runs?per_page=100"
     ], cwd=ROOT, text=True, timeout=15))["workflow_runs"]
     if not isinstance(inventory, list) or any(not isinstance(run, dict) for run in inventory):
         raise ValueError("Invalid SDXL workflow run inventory")
-    classified, legacy = [], None
+    classified, legacy, preflight = [], None, None
     for raw in inventory:
         run = dict(raw)
         if run.get("id") == LEGACY_SDXL_TRIAL["id"]:
@@ -182,21 +236,32 @@ def check_daily_quota(*, now=None):
             if requested:
                 if legacy is not None or run.get("status") != "completed" or run.get("conclusion") != "failure":
                     raise ValueError("User-requested retry requires one verified completed failed legacy trial")
-                quota_slug = SLUG + "-prior-request-" + requested
+                quota_slug = SLUG + "-prior-request-" + str(LEGACY_SDXL_TRIAL["id"])
             legacy = {**LEGACY_SDXL_TRIAL, "quota_slug":quota_slug}
             if requested:
                 legacy.update(status=run["status"], conclusion=run["conclusion"])
             run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
+        elif continuation and run.get("id") == PREFLIGHT_TRIAL["id"]:
+            if preflight is not None or any(run.get(key) != value for key, value in PREFLIGHT_TRIAL.items()):
+                raise ValueError("Metadata-only trial provenance does not match its nine pinned fields")
+            quota_slug = SLUG + "-preflight-" + requested
+            preflight = {**PREFLIGHT_TRIAL, "quota_slug":quota_slug}
+            run["display_title"] = BACKFILL_RUN_PREFIX + quota_slug
         classified.append(run)
     if requested and legacy is None:
         raise ValueError("User-requested retry is missing its verified failed legacy trial")
+    if continuation and preflight is None:
+        raise ValueError("Technical continuation is missing its fixed metadata-only trial")
     matches = [run for run in classified if run.get("id") == current]
     if len(matches) != 1 or matches[0].get("display_title") != BACKFILL_RUN_PREFIX + SLUG:
         raise ValueError("Current SDXL run is absent from the bounded story inventory")
     if not backfill_run_allowed(classified, current, current_run_attempt=attempt, now=clock):
         raise RuntimeError("SDXL daily attempt budget or same-story limit reached; new articles take priority")
-    return {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy,
-            "user_requested_retry_after":requested}
+    evidence = {"allowed":True, "run_id":current, "run_attempt":attempt, "known_legacy_trial":legacy,
+                "user_requested_retry_after":requested}
+    if continuation:
+        evidence.update(metadata_only_trial=preflight, metadata_only_proof=verify_preflight_trial())
+    return evidence
 
 
 def initial_priority_gate(revision, articles, *, review_parent):
@@ -436,7 +501,7 @@ def checked_safety_call(checker, pixels, rgb, torch):
 
 
 def render_phased(pipe, components, torch, negative, seed, work):
-    """Keep native-BF16 UNet/embeddings; release UNet before explicit F32 decode."""
+    """Keep CPU BF16 UNet/embeddings; release UNet before explicit F32 decode."""
     settings = model.INFERENCE
     with torch.inference_mode():
         progress(work, "prompt_encoding", pipeline_loaded=True, model_execution_started=True)
@@ -448,7 +513,7 @@ def render_phased(pipe, components, torch, negative, seed, work):
             components.pop(name)
         gc.collect()
         if pipe.unet.dtype != torch.bfloat16:
-            raise ValueError("UNet must retain native BF16 weights; no F32 fallback")
+            raise ValueError("UNet must retain BF16 weights; no F32 fallback")
         progress(work, "unet_bfloat16", text_encoders_released=True)
         positive, negative_embeds, pooled, negative_pooled = [value.to(dtype=torch.bfloat16) for value in encoded]
         progress(work, "denoising_started", unet_compute_dtype="bfloat16")
@@ -499,8 +564,8 @@ def worker(work):
 
 def render_worker(work, request, candidate):
     runner_gate()
-    native = native_bf16_features(); require_native_bf16(native)
-    progress(work, "native_bf16_verified", native_bf16_features=native)
+    native = native_bf16_features()
+    progress(work, "cpu_bf16_observed", native_bf16_features=native)
     progress(work, "import_started", model_import_started=True)
     import torch
     import numpy as np
@@ -583,7 +648,6 @@ def execute(output, *, check_only=False):
     try:
         remote.check()
         receipt["native_bf16_features"] = native_bf16_features()
-        require_native_bf16(receipt["native_bf16_features"])
         receipt["daily_quota"] = check_daily_quota()
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, timeout=10).strip()
         if head != os.environ["GITHUB_SHA"]:
