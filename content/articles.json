@@ -1,5 +1,69 @@
 [
   {
+    "slug": "rice-cooker-price-reservation-vouchers-sell-first",
+    "category": "経済",
+    "flash": "炊飯器は売り場、券は完売",
+    "fiction_company": "架空の家電チェーン「先棚電機」",
+    "art": "cards",
+    "fiction_at": "2031-11-13T15:43:00+09:00",
+    "published_at": "2026-11-13T15:43:00+09:00",
+    "modified_at": "2026-11-13T16:04:16.843+09:00",
+    "title": "炊飯器より先に「値段予約券」が完売　500円券に1200円の売り希望",
+    "summary": "家電チェーン「先棚電機」が、炊飯器を年末まで現在の価格で買える「値段予約券」を発売した。券100枚は完売し、交換欄には500円券に1200円の売り希望も登場。一方、同じ炊飯器は店頭に残り、実際に持ち帰る客は少なかった。",
+    "paragraphs": [
+      "家電チェーン「先棚電機」が13日、炊飯器を年末まで今の値段で買える「値段予約券」を発売した。開店から数時間で券100枚が完売。店員が売り場に「予約券完売」の札を掛けた横で、同じ型の炊飯器は棚に積まれたままだった。",
+      "部品などの仕入れ価格が動くたび、店は商品の値段を見直していた。客は今買えば現在の値段で持ち帰れるが、来月買うなら高くなるかもしれない。予約券は1枚500円。券を持つ人は、指定の炊飯器1台を12月末まで発売日の店頭価格で買える。炊飯器の代金は受け取るときに別に払い、券を使わなければ500円は戻らない。",
+      "店は買う時期が決まっていない人のために券を用意した。ところが、券を店のアプリで他人へ譲れる仕組みが別の人気を呼んだ。午前中に券を買った客が午後には交換欄へ出品し、1枚500円だった券に1200円の希望価格を付ける人も現れた。売り場では炊飯器の機能表より、券の値段を表示した画面をのぞく人が多くなった。",
+      "午後、炊飯器が壊れたという客が棚から実物の箱を抱えてレジに来た。店員が「予約券はお持ちですか」と尋ねると、客は「今日買うなら予約しなくていいでしょう」と答え、通常の代金を払って持ち帰った。店員はその箱を見送ったあと、券の交換欄にまた新しい希望価格が付くのを見た。",
+      "閉店前の販売表には「値段予約券100枚、炊飯器1台」。券を買った客は、明日の相場を確かめようとまだ画面を開いていた。展示棚の炊飯器には、朝から変わらず「本日お持ち帰りできます」の札が付いていた。"
+    ],
+    "source": {
+      "kind": "中央銀行公式統計",
+      "publisher": "日本銀行",
+      "published_at": "2026-11-12T08:50:00+09:00",
+      "url": "https://www.stat-search.boj.or.jp/ssi/mtshtml/pr01_m_1.html",
+      "topic": "日本銀行が2026年11月12日に公表した2026年10月の国内企業物価指数は、2020年平均=100の指数で136.8、前年同月比7.1%上昇（前月比0.7%上昇）。これは企業間の取引価格に関する統計であり、炊飯器の店頭値上がりや引換券の実績を示すものではない。家電チェーン先棚電機、値段予約券の500円・100枚・1200円希望価格、人物の行動と発言、2031年の販売制度はすべて創作。"
+    },
+    "scene_prompt": "Photorealistic candid horizontal 16:9 Japanese local business-news photograph inside a fictional ordinary consumer electronics store in November, 2031. Adult Japanese store employee in plain work clothes attaches a small sold-out card to a countertop display of paper voucher cards, with normal boxed rice cookers visibly stacked on the adjacent retail shelf. Two adult customers stand a few steps away comparing small coupon trading screens on their smartphones, not admiring the real rice cookers. One other adult shopper carries an actual rice-cooker cardboard box toward checkout. Realistic indoor shop lighting, genuine paper and appliance materials, natural human hands and faces, unposed documentary press photo, no logos, readable words, CGI, illustrated style, or fake branded text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "物価",
+      "家電",
+      "予約券"
+    ],
+    "satire_tags": [
+      "先物ごっこ"
+    ],
+    "x_tags": [
+      "物価",
+      "炊飯器"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "炊飯器の値上げを心配して500円の『買う権利』を買ったら、交換欄には1200円で売りたい人が。実物の炊飯器はまだ棚にある。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月12日の日本銀行統計で、10月の国内企業物価が前年比7.1%上昇した",
+      "target": "価格変動に備える購入権が、実際の商品と別に売買される家電小売市場",
+      "action": "先棚電機が価格を固定できる炊飯器予約券を100枚販売し、買い手がアプリで券に値段を付けて出品した",
+      "outcome": "券は完売して希望価格が上がる一方、現物の炊飯器を持ち帰った客は1人だけだった"
+    },
+    "reader_clarity": {
+      "who": "先棚電機",
+      "action": "年末まで価格を固定できる炊飯器の予約券を売り出した",
+      "oddity": "実物の炊飯器より先に券が完売し、券の売買希望価格だけが値上がりした"
+    },
+    "behavior_basis": {
+      "motive": "仕入れ価格の変動を心配する客が、購入日を決める前に今の価格を確保したい",
+      "ordinary_alternative": "必要なときに炊飯器をその日の値段で買うか、すぐ現物を買って持ち帰る",
+      "why_not": "買う時期が未定の人も価格だけ先に固定でき、譲渡可能なため相場上昇を見込む買い手も集まった",
+      "evidence_quote": "客は今買えば現在の値段で持ち帰れるが、来月買うなら高くなるかもしれない。"
+    }
+  },
+  {
     "slug": "cherry-tree-stethoscope-municipal-inspection",
     "category": "政治",
     "flash": "桜の幹から小さな音",

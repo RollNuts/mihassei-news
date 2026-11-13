@@ -3798,6 +3798,33 @@
       "source_article_sha256": "ca95c0154e3f842cabf6f21fe9817112a951c0eac979b7317a80e8fe3c8bd43f",
       "source_png_sha256": "05ac9e57a0fdd53545d54595afc407aec08bc37be0e03f6f88f3adc438fd80b9"
     },
+    "rice-cooker-price-reservation-vouchers-sell-first": {
+      "article_sha256": "8a0326968e93c800d39da103ad0427d31d8f2ef1600ce122cb7adda8cce25cdd",
+      "bytes": 123610,
+      "generated_at": "2026-11-13T07:35:23.798972+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 5318895560765377914,
+      "sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308"
+    },
     "robot-job-hopping": {
       "article_sha256": "a814fd02ee0d5ec942b7b90dbbef7df675e388b9421d518e8e2bdcf42c35081e",
       "bytes": 143455,
