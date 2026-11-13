@@ -67,6 +67,7 @@
   },
   {
     "slug": "volunteer-award-ceremony-visits-community-kitchen",
+    "broadcast_feature": true,
     "category": "社会",
     "flash": "式場のないボランティア表彰",
     "fiction_company": "架空のまち結び表彰会、架空の地域食堂「ひだまり台所」",
