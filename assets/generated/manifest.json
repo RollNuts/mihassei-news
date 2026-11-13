@@ -5743,6 +5743,13 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "volunteer-award-ceremony-visits-community-kitchen": {
+      "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+      "reason": "rootが最新本文全文とCPU run43401903097の実JPEGを表示して照合。無人の木製テーブルに茶器と額が並ぶ写真で、36歳の受賞者が汁物をよそう動作、エプロン姿の表彰担当者がお盆を渡す動作、地域食堂の配膳口と客がすべて欠けているため不採用。原生成記録・本文指紋・整数seedは書き換えない。",
+      "rejected_candidate_sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43401903097",
+      "reviewed_at": "2026-11-13T09:41:36.336690+00:00"
     }
   },
   "version": 1
