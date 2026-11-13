@@ -1,5 +1,72 @@
 [
   {
+    "slug": "volunteer-award-ceremony-visits-community-kitchen",
+    "category": "社会",
+    "flash": "式場のないボランティア表彰",
+    "fiction_company": "架空のまち結び表彰会、架空の地域食堂「ひだまり台所」",
+    "art": "cards",
+    "fiction_at": "2031-11-13T17:44:00+09:00",
+    "published_at": "2026-11-13T17:44:00+09:00",
+    "title": "ボランティア表彰、式場をやめて食堂へ　賞状より先に配膳を手伝う",
+    "summary": "まち結び表彰会が、受賞者を式場に呼ぶ代わりに地域食堂を訪ねた。昼食の列を止められず、担当者は賞状を置いてお盆を運ぶ。受賞者の活動を見せる新方式は、表彰する側まで手伝い手にした。",
+    "paragraphs": [
+      "2031年11月13日、地域食堂「ひだまり台所」で、ボランティア表彰の担当者が賞状を差し出そうとした。その横では昼食の列が伸び、受賞者の倉田真由（36）は大鍋から温かい汁物をよそっていた。",
+      "架空の「まち結び表彰会」は今年、受賞者を式場に呼ぶのをやめ、活動場所で賞状を渡す「出張表彰」を始めた。食堂を利用する人は、いつもの食事を支える人が誰なのかその場で知ることができる。受賞者は食事の提供を休まずに済み、主催者も壇上では見えなかった現場の忙しさを見ることになった。",
+      "午前11時半、担当者2人は入口近くの壁際に小さな折り畳み台を置き、持参した賞状を載せた。ところが食堂の配膳口では、洗い終えたお盆を客へ渡す人手が足りなくなった。倉田が「そこのお盆をこちらへお願いします」と声をかけると、担当者の一人が台を離れ、お盆を一枚ずつ客へ手渡し始めた。",
+      "列が一度途切れたところで、もう一人の担当者が賞状を読み上げた。倉田は手を拭いて賞状を受け取り、厨房の棚に立てかけると、追加のご飯をよそうため配膳口に戻った。記念写真を撮ろうとした担当者は、壇上の代わりに食堂の配膳台を背景に選んだ。倉田はお盆を運んでいた担当者も隣に呼び、二人で写真に収まった。",
+      "閉店後、担当者がお借りしたエプロンを返そうとすると、倉田は「来週の土曜日も手伝いに来られますか」と尋ねた。担当者は空になった食堂と棚の賞状を見比べ、「式場を予約するより難しいですね」と笑って、来週の予定表を開いた。"
+    ],
+    "source": {
+      "kind": "厚生労働省報道発表",
+      "publisher": "厚生労働省",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.mhlw.go.jp/stf/newpage_77269.html",
+      "topic": "2026年11月13日、厚生労働省が令和8年度の社会福祉功労者・ボランティア功労者の厚生労働大臣表彰対象を個人894名・273団体と公表し、11月20日の全国社会福祉大会で授与予定とした。現実の授賞は大会であり、現場へ出張する方式は発表されていない。2031年のまち結び表彰会、ひだまり台所、人物、食堂での出張表彰・配膳・会話はすべて創作。"
+    },
+    "scene_prompt": "Photorealistic candid Japanese local-news photo, landscape 16:9. In a fictional community lunch kitchen, a fictional Japanese adult female volunteer aged 36 in a simple apron is serving steaming soup at a counter, while a fictional Japanese adult male award organizer in his forties, wearing a plain jacket and borrowed apron, hands clean meal trays to customers waiting at a safe distance. A modest folded award certificate rests on a small folding table near a wall. Realistic facial expressions, hand anatomy, dishes, food, steam, kitchen light and shadows, spontaneous documentary press photograph, no staged pose, logos, readable writing, CGI or illustration.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "ボランティア",
+      "地域食堂",
+      "表彰"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "ボランティア",
+      "地域食堂"
+    ],
+    "x_tickers": [],
+    "x_discovery_term": "ボランティア",
+    "x_share_lead": "賞状を渡すはずが、先にお盆を配ることに。2031年のボランティア表彰は、式場ではなく活動の現場で行われた。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月13日、厚生労働省が社会福祉・ボランティア功労者の表彰対象と大会での授与予定を公表した",
+      "target": "活動を休んで式場へ行く代わりに、ボランティアが活動している現場そのものを表彰の場にする",
+      "action": "架空の表彰会が地域食堂へ出向き、受賞者の調理・配膳に立ち会いながら賞状を手渡そうとして、人手不足の配膳にも加わる",
+      "outcome": "受賞者は活動を止めずに賞状を受け取り、表彰担当者が現場の手伝い手になって次週の参加まで誘われる"
+    },
+    "reader_clarity": {
+      "who": "架空のまち結び表彰会",
+      "action": "受賞者を式場に呼ばず食堂へ出向いて賞状を渡し、食事の配膳も手伝った",
+      "oddity": "式典の主役が壇上ではなく鍋の前にいて、表彰担当者が先にお盆を配り始めた"
+    },
+    "behavior_basis": {
+      "motive": "表彰会は受賞者が続ける活動を止めずに功績を伝え、来訪者にも活動の現場を見てほしい",
+      "ordinary_alternative": "受賞者を大会の会場へ招き、壇上で賞状を授与する",
+      "why_not": "活動場所で渡す方式なら食事を提供する時間を守り、来賓も表彰する行為の意味をその場で知れる",
+      "evidence_quote": "受賞者は食事の提供を休まずに済み、主催者も壇上では見えなかった現場の忙しさを見ることになった。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月13日、社会福祉・ボランティア功労者の表彰対象と大会授与予定が公式に公表された",
+      "continuation_force": "現場の活動を中断せずに功績を伝えたい動機から、表彰自体を活動場所へ移す催しが考えられる",
+      "future_result": "2031年、架空の表彰団体が地域食堂へ直接出向き、受賞者の普段の仕事の最中に表彰し、来訪者も活動へ参加する"
+    }
+  },
+  {
     "slug": "rice-cooker-price-reservation-vouchers-sell-first",
     "category": "経済",
     "flash": "炊飯器は売り場、券は完売",
