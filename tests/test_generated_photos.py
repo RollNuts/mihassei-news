@@ -125,6 +125,30 @@ class SceneQualityHoldTests(unittest.TestCase):
 
 
 class LocalComedySceneTests(unittest.TestCase):
+    def test_explicit_scene_is_trimmed_and_preserved_instead_of_generic_fallback(self):
+        core = "An adult woman in a navy bikini flicks ankle-deep water at an indoor beach."
+        scene = core + " " + "The visible ripple remains around her ankles. " * 20
+        self.assertGreater(len(scene), 800)
+        source = {**fixture(), "title": "ビデオ通話で水遊び", "scene_prompt": " \n" + scene + "\t "}
+        self.assertEqual(local_scene_photos.scene_description(source), scene.rstrip())
+        self.assertIn(scene.rstrip(), local_scene_photos.scene_prompt(source))
+        self.assertNotIn("office worker", local_scene_photos.scene_description(source))
+        for length in (20, 4000):
+            text = "A woman holds a bell" + "x" * (length - 20)
+            self.assertEqual(len(text), length)
+            self.assertEqual(local_scene_photos.scene_description({**fixture(), "scene_prompt": " " + text + " "}), text)
+
+    def test_invalid_explicit_scene_never_silently_uses_legacy_direction(self):
+        for value in (None, 1, True, [], {}, "", " " * 40, "x" * 19, "x" * 4001):
+            source = {**fixture(), "scene_prompt": value}
+            with self.subTest(value=value):
+                for describe in (local_scene_photos.scene_description, local_scene_photos.scene_prompt,
+                                 github_cpu_scenes.cpu_prompt):
+                    with self.assertRaisesRegex(ValueError, "Explicit scene_prompt"):
+                        describe(source)
+        # Old articles without an explicit direction retain the existing path.
+        self.assertIn("capsule lottery machine", local_scene_photos.scene_description(fixture()))
+
     def test_a_story_gets_specific_deadpan_photo_direction(self):
         a = fixture()
         direction = local_scene_photos.scene_description(a)
