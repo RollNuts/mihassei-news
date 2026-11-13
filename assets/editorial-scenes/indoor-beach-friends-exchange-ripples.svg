@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+  aria-label="創作イラスト：屋内の浅瀬で白いビーチシャツの成人女性が水を払い、壁の画面に映る別の浅瀬の成人の友人と小波を送り合う"
+  data-visual-topic="telephone" data-article-sha256="0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84">
+  <title>離れた二つの屋内浅瀬で送り合う、水の返事</title>
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f1e8"/>
+      <stop offset="1" stop-color="#e9dfcf"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bcdfdc"/>
+      <stop offset="1" stop-color="#86c8ca"/>
+    </linearGradient>
+    <clipPath id="screen-clip"><rect x="683" y="128" width="444" height="336" rx="9"/></clipPath>
+  </defs>
+
+  <!-- A clearly illustrated indoor pool; the framed view is a separate place. -->
+  <rect width="1200" height="675" fill="url(#room)"/>
+  <path d="M0 0h1200v81H0z" fill="#d4e3df"/>
+  <path d="M30 0l85 81M267 0l47 81M504 0l9 81M741 0l-29 81M978 0l-67 81"
+    fill="none" stroke="#f8faf4" stroke-width="18"/>
+  <path d="M0 82h1200" stroke="#c0d1cc" stroke-width="7"/>
+  <path d="M71 88v278M593 88v292M1173 88v316" stroke="#d4cbbb" stroke-width="9"/>
+  <path d="M0 433Q183 355 376 388t318 78 506-15v224H0z" fill="#e4d1b0"/>
+  <path d="M0 460q179-56 338-35t314 71" fill="none" stroke="#cfb98e" stroke-width="4" opacity=".65"/>
+  <path d="M36 390q64-19 123-11M70 417l20-5M493 407l22 3M105 627l38-7M1025 588l34-5"
+    fill="none" stroke="#c5ac7f" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Wall-mounted screen with its own room, sand and shallow water. -->
+  <rect x="659" y="108" width="492" height="383" rx="20" fill="#b4b3a7" opacity=".28"/>
+  <rect x="650" y="98" width="492" height="383" rx="20" fill="#253b45"/>
+  <rect x="661" y="109" width="470" height="361" rx="13" fill="#526d73"/>
+  <g clip-path="url(#screen-clip)">
+    <rect x="683" y="128" width="444" height="336" fill="#e4eee7"/>
+    <path d="M683 128h444v45H683z" fill="#c7dcd5"/>
+    <path d="M708 128l32 45M869 128v45M1023 128l-32 45" stroke="#f4f6e9" stroke-width="9"/>
+    <path d="M731 174v169M1081 174v168" stroke="#becfc5" stroke-width="6"/>
+    <path d="M683 354q147-31 279-12t165 14v108H683z" fill="#ddcda7"/>
+    <path d="M683 394q158-18 277-6t167-2v78H683z" fill="#8ec9c7"/>
+    <path d="M683 394q158-18 277-6t167-2" fill="none" stroke="#e4f4e8" stroke-width="5"/>
+    <path d="M719 432q23-5 50 0M1014 420q36-5 69 0M984 448q27-4 57 0"
+      fill="none" stroke="#d9f2e9" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- A different adult friend: short hair, coral top, raised greeting hand. -->
+    <path d="M852 217q-2-35 31-38 39-2 42 39l-3 36-68-1z" fill="#624940"/>
+    <path d="M874 244v24h26v-25" fill="#d99b78"/>
+    <ellipse cx="886" cy="218" rx="26" ry="31" fill="#e8af8b"/>
+    <path d="M858 209q8-35 37-25 26 5 29 31-19-1-30-22-9 17-36 16" fill="#624940"/>
+    <path d="M874 221h1M898 221h1" stroke="#493e36" stroke-width="4" stroke-linecap="round"/>
+    <path d="M879 234q8 7 15-1" fill="none" stroke="#8f5548" stroke-width="3" stroke-linecap="round"/>
+    <path d="M866 265q19-10 39 0l12 72h-65z" fill="#c9755d"/>
+    <path d="M866 265l-25 45-17 20" fill="none" stroke="#e8af8b" stroke-width="15" stroke-linecap="round"/>
+    <path d="M905 268l25-23 8-23" fill="none" stroke="#e8af8b" stroke-width="15" stroke-linecap="round"/>
+    <path d="M938 224l-1-13M939 223l9-10M937 223l-8-11" fill="none"
+      stroke="#e8af8b" stroke-width="7" stroke-linecap="round"/>
+    <path d="M853 331h63l-5 29h-23l-4-15-6 15h-22z" fill="#314f67"/>
+    <path d="M866 357l-5 46 5 22M900 357l4 43 19 21" fill="none"
+      stroke="#e8af8b" stroke-width="16" stroke-linecap="round"/>
+    <path d="M863 426l-15 2M923 421l13-2" stroke="#e8af8b" stroke-width="10" stroke-linecap="round"/>
+    <path d="M829 429q22-11 49 0M824 439q32-15 64-1M900 427q22-11 48-1M893 440q31-15 63-5"
+      fill="none" stroke="#f2fbf5" stroke-width="4" stroke-linecap="round"/>
+    <path d="M941 409l5-8M950 416l9-4M936 407l-1-9" stroke="#f2fbf5" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <circle cx="1108" cy="455" r="4" fill="#a4c5b4"/>
+  <path d="M828 484h137" stroke="#a49f8e" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- The near pool ends well before the screen; no water crosses the distance. -->
+  <path d="M0 508q154-53 344-40 138 9 240 66l-16 104H0z" fill="url(#water)"/>
+  <path d="M0 508q154-53 344-40 138 9 240 66" fill="none" stroke="#eef6e9" stroke-width="9"/>
+  <path d="M18 583q58-10 106-3M421 589q66-10 112 5M56 546q35-6 70-2M141 617q58-8 114 0"
+    fill="none" stroke="#d7efdf" stroke-width="4" stroke-linecap="round"/>
+  <path d="M0 647q219-10 383 5t242 23H0z" fill="#d7c69f"/>
+
+  <!-- Adult at the near pool: loose white beach shirt and navy swimwear. -->
+  <path d="M253 248q2-56 45-59 45 3 49 58l9 92-108 9z" fill="#343e47"/>
+  <path d="M283 283v35h31v-35" fill="#dca986"/>
+  <ellipse cx="299" cy="252" rx="33" ry="40" fill="#edbd98"/>
+  <path d="M266 247q-4-40 29-43 40-2 42 43-21-7-34-32-8 19-37 32" fill="#343e47"/>
+  <path d="M285 254h1M313 254h1" stroke="#3e4345" stroke-width="4" stroke-linecap="round"/>
+  <path d="M291 272q10 8 18-2" fill="none" stroke="#9e6855" stroke-width="3" stroke-linecap="round"/>
+  <path d="M279 314q20-11 39 1l17 91-76 1z" fill="#2e4c68"/>
+  <path d="M259 400h76l-4 46h-28l-5-21-7 21h-30z" fill="#2e4c68"/>
+  <path d="M274 441l-3 48 8 43M317 441l8 45 30 34" fill="none"
+    stroke="#edbd98" stroke-width="23" stroke-linecap="round"/>
+  <path d="M279 533l-18 7M355 521l20-5" stroke="#edbd98" stroke-width="14" stroke-linecap="round"/>
+  <path d="M269 313l-15 13-23 47 28 17 25-50-5 104-34-13 9-68"
+    fill="#fafaf0" stroke="#d5dbd4" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M318 312l25 15 33 28-17 26-26-20 19 71-31 12-10-106"
+    fill="#fafaf0" stroke="#d5dbd4" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M241 383l-16 31 12 9M369 368l29-9 12-15" fill="none"
+    stroke="#edbd98" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M285 314l10 21-13 14M313 314l-13 21 15 17" fill="none"
+    stroke="#d5dbd4" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M258 409l18 4M329 410l13-4" stroke="#d5dbd4" stroke-width="3"/>
+
+  <!-- Small ankle ripples and a light foot splash make the reply visible. -->
+  <path d="M237 540q25-12 52-2M225 553q38-16 75-3M214 566q52-21 97-3"
+    fill="none" stroke="#f6fcf2" stroke-width="5" stroke-linecap="round"/>
+  <path d="M327 535q22-15 49-8M320 548q34-21 71-12M310 562q47-27 94-15"
+    fill="none" stroke="#f6fcf2" stroke-width="5" stroke-linecap="round"/>
+  <path d="M375 518l16-15M384 526l21-5M366 510l5-16" fill="none"
+    stroke="#f6fcf2" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="395" cy="494" r="4" fill="#f6fcf2"/>
+  <circle cx="414" cy="515" r="3" fill="#f6fcf2"/>
+
+  <!-- Two separate dotted signals show the exchange, not transported water. -->
+  <path d="M442 341q95-72 185-21" fill="none" stroke="#c2765b" stroke-width="7"
+    stroke-dasharray="2 17" stroke-linecap="round"/>
+  <path d="M611 299l23 24-31 4" fill="none" stroke="#c2765b" stroke-width="7"
+    stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M719 527q-83 71-193 32" fill="none" stroke="#438f93" stroke-width="7"
+    stroke-dasharray="2 17" stroke-linecap="round"/>
+  <path d="M541 578l-24-23 32-5" fill="none" stroke="#438f93" stroke-width="7"
+    stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- A folded towel belongs to the indoor sand, away from the water. -->
+  <path d="M861 555l112-11 47 37-113 14z" fill="#eeeadd" stroke="#c0b699" stroke-width="3"/>
+  <path d="M882 556l41 36M903 553l41 36M924 551l41 35" stroke="#7fa9a3" stroke-width="8"/>
+</svg>

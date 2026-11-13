@@ -5785,6 +5785,23 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "indoor-beach-friends-exchange-ripples": {
+      "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+      "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
+      "rejected_at": "2026-11-13T10:56:07+00:00",
+      "generation_failure": {
+        "origin": "chatgpt-imagegen",
+        "code": "moderation_blocked",
+        "phase": "output",
+        "returned_image": false,
+        "attempts_in_run": 1,
+        "logical_run_id": "indoor-beach-20261113-1930",
+        "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+        "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+        "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
+        "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
+      }
     }
   },
   "version": 1
