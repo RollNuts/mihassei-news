@@ -1,5 +1,70 @@
 [
   {
+    "slug": "rice-cooker-price-reservation-vouchers-sell-first",
+    "category": "経済",
+    "flash": "炊飯器は売り場、券は完売",
+    "fiction_company": "架空の家電チェーン「先棚電機」",
+    "art": "cards",
+    "fiction_at": "2031-11-13T15:43:00+09:00",
+    "published_at": "2026-11-13T15:43:00+09:00",
+    "modified_at": "2026-11-13T17:10:44+09:00",
+    "title": "炊飯器より「値段予約券」が先に完売　家計を預かるAI同士が売買",
+    "summary": "先棚電機で、家庭の買い替え予算を預かる購買代行AIが炊飯器の「値段予約券」を買い集めた。不要になった券を別の家庭のAIへ売り、売却代金を家電予算へ戻す取引が始まったが、券の売買だけでは本体は注文されない。",
+    "paragraphs": [
+      "家電チェーン「先棚電機」が13日、炊飯器を年末まで今の値段で買える「値段予約券」を発売した。家庭から家電予算の管理を任された購買代行AIが券を買い集め、100枚が完売。同じ型の炊飯器は棚に積まれたままだった。",
+      "利用する家庭は家電の買い替え予算を決め、機種選びや注文をAIに任せている。AIは使用年数や修理履歴から買い替え時期を見込み、まだ使える炊飯器の分も券を確保した。今すぐ代金全額を払わずに、将来の値上がりに備えるためだ。",
+      "券は1枚500円で、券の発売日の店頭価格で同じ型の炊飯器1台を12月末までに買える。券代は本体代から引かれない。本体の代金は受け取り時に別に払い、券を使わなければ500円は戻らない。券は店のアプリで他人へ譲ることもできる。",
+      "午後には、他店の値下げを見つけて機種を変えたAIが、不要になった券を交換欄へ出品した。年末の値上がりに備える別の家庭のAIが1200円で買い取り、売却代金は売り手の家電予算に戻った。その後もAI同士の売買は続き、同じ券の持ち主が次々に変わった。",
+      "店は券の売れ行きから年末の販売台数を見込む予定だった。ところが、券を買ったAIが炊飯器の購入まで進むとは限らず、券の売買だけでは本体の注文は入らない。店は発注を増やさず、券の持ち主から引き取りの申込みが届くのを待つことにした。",
+      "閉店前の販売表には「値段予約券100枚、炊飯器1台」。券を売った家庭にはAIから売却の報告が届き、売り場の炊飯器には「本日お持ち帰りできます」の札が残った。"
+    ],
+    "source": {
+      "kind": "中央銀行公式統計",
+      "publisher": "日本銀行",
+      "published_at": "2026-11-12T08:50:00+09:00",
+      "url": "https://www.stat-search.boj.or.jp/ssi/mtshtml/pr01_m_1.html",
+      "topic": "日本銀行の主要時系列統計データ表では、2026年10月の国内企業物価指数・総平均は136.8（2020年＝100）、前年同月比7.1%。当該系列の最終更新日は2026年11月12日。企業間の価格動向を示す着想元であり、炊飯器の小売価格や購買AIの実績を示す資料ではない。先棚電機、2031年の購買代行AIと価格予約券、売買・販売実績・人物の行動はすべて創作。"
+    },
+    "scene_prompt": "Photorealistic candid horizontal 16:9 Japanese local business-news photograph inside a fictional ordinary consumer electronics store in November, 2031. An adult Japanese store employee in plain work clothes stands beside a small counter terminal used for electronic price-voucher trading, with normal boxed rice cookers visibly stacked on the adjacent retail shelf. The employee compares the active terminal with the unsold boxes; one adult shopper farther away carries a real rice-cooker box toward checkout. Realistic indoor shop lighting, genuine appliance materials, natural human hands and faces, unposed documentary press photo, no logos, readable words, CGI, illustrated style, or fake branded text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "物価",
+      "家電",
+      "予約券"
+    ],
+    "satire_tags": [
+      "先物ごっこ"
+    ],
+    "x_tags": [
+      "物価",
+      "炊飯器"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "炊飯器を買い替える前に、家計を任せたAIが「今の値段で買う権利」を確保。不要になれば別の家庭のAIへ売り、家電予算に戻します。店の棚には炊飯器が残った。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "日本銀行の主要時系列統計データ表では2026年10月の国内企業物価指数・総平均が136.8、前年同月比7.1%で、企業間の価格変動が確認できる",
+      "target": "家庭の家電予算を預かる購買代行AIが、現物の購入前から価格を据え置く権利を売買する家電小売市場",
+      "action": "先棚電機の値段予約券を各家庭のAIが確保し、機種を変えて不要になった券を別の家庭のAIへ売り、売却代金を家電予算へ戻す",
+      "outcome": "同じ券の持ち主は次々に変わるが本体の注文は別に必要で、店は券の売買件数を見ても発注を増やせない"
+    },
+    "reader_clarity": {
+      "who": "購買代行AI",
+      "action": "炊飯器の価格を年末まで据え置く券をAIが買い、不要になれば別の家庭のAIへ売る",
+      "oddity": "家庭が実物を買う前から家電予算の一部が券の売買に回り、券だけが動いて本体の注文は別に必要になる"
+    },
+    "behavior_basis": {
+      "motive": "家電を買い替える家庭が、予算内に収める判断と注文をAIに任せ、値上がり前の価格も確保したい",
+      "ordinary_alternative": "必要になってから機種と値段を選ぶか、今すぐ炊飯器の代金全額を払って持ち帰る",
+      "why_not": "買い替え前に少額で将来の価格を確保でき、別機種へ変更したらAIが券を売って代金を家電予算へ戻せる",
+      "evidence_quote": "今すぐ代金全額を払わずに、将来の値上がりに備えるためだ。"
+    }
+  },
+  {
     "slug": "cherry-tree-stethoscope-municipal-inspection",
     "category": "政治",
     "flash": "桜の幹から小さな音",
