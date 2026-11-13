@@ -3617,6 +3617,33 @@
       },
       "source_png_sha256": "9a6112a244371bf0ab7296d91caa40c9c1c2deed49c0eb43bd87ce312ac3ab21"
     },
+    "recycled-metal-electrodes-carry-previous-work-history": {
+      "article_sha256": "92b006549526c5fe3e48939f411bdf78e1802cf10af4ad699cac3b05e2fd678f",
+      "bytes": 112764,
+      "generated_at": "2026-11-13T04:00:39.742195+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 3748272256141770558,
+      "sha256": "c97b2ecc7bb2739c0a66e65a9b99789f32bb21dee1221e36a9dec650b5143c93"
+    },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
       "bytes": 82959,
