@@ -130,11 +130,13 @@ class CasterCompositionTests(unittest.TestCase):
 
     def test_repository_source_requires_size_regular_path_and_exact_bytes(self):
         with tempfile.TemporaryDirectory() as directory:
-            path=Path(directory)/"source";payload=b"original source"
+            path=Path(directory)/"source";payload=b"\x00\xfforiginal binary source\x80"
             def download(argv,target,budget,**kwargs):target.write_bytes(payload)
             metadata={"type":"file","path":"drafts/source","size":len(payload)}
-            with patch.object(compose,"command",return_value=json.dumps(metadata)),patch.object(compose,"binary_command",side_effect=download):
+            with patch.object(compose,"command",return_value=json.dumps(metadata)),patch.object(compose,"binary_command",side_effect=download) as binary:
                 compose.repository_file("a"*40,"drafts/source",hashlib.sha256(payload).hexdigest(),path,Mock(),100)
+                self.assertEqual(path.read_bytes(),payload)
+                self.assertEqual(binary.call_args.args[0][3],"Accept: application/vnd.github.raw")
                 with self.assertRaises(ValueError):compose.repository_file("a"*40,"drafts/source","0"*64,path,Mock(),100)
             for change in ({"type":"symlink"},{"path":"other"},{"size":101},{"size":0},{"size":True}):
                 with self.subTest(change=change),patch.object(compose,"command",return_value=json.dumps({**metadata,**change})),patch.object(compose,"binary_command") as download:
