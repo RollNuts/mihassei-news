@@ -12,7 +12,7 @@
     "paragraphs": [
       "2031年11月13日、屋内ビーチ「夕波ドーム」で、凪野さや（27）の足首に小さな波が触れた。壁の大きな画面には離れた町の友人（28）が映り、友人が水を払った瞬間に、さやの浅瀬にも波が生まれた。",
       "この施設は二つの屋内浅瀬を通信でつなぎ、片方で足元の水を動かすと、もう片方の装置が同じ合図で小波を起こす。水そのものを遠くへ運ぶわけではない。これまでビデオ通話で顔を見ていた二人は、離れた場所にいながら相手の動きを足元の波で感じて遊べるようになった。",
-      "濃紺のビキニに白いビーチシャツを羽織ったさやは、画面の友人を見ながら片足で水を軽く払った。今度は友人の足首に波が寄せる。友人は笑って水を返し、さやはシャツの裾を押さえてくるりと振り向き、足元のしぶきを軽く払った。",
+      "濃紺のビキニに白いビーチシャツを羽織ったさやは、画面の友人を見ながら片足で水を軽く払った。今度は友人の足首に波が寄せる。友人は笑って水を返し、さやはシャツの裾を押さえて足首へ届いた波に向き直り、足元のしぶきを軽く払った。",
       "最初は互いの顔ばかり見ていた二人も、やがて水面に目を落とし、言葉より先に足を動かすようになった。友人が二度続けて送れば、さやも二度。画面の中では離れているのに、波が届くたびに二人の笑い声が重なった。",
       "帰り支度でさやが砂浜のタオルを取ろうとした時、足首へもう一つ小波が寄せた。画面の友人は帰り支度を終えて片手を振っている。さやは振り返り、最後に水を一度だけ払った。画面の向こうの水面が揺れるのを見届けてから、二人は手を振り合った。"
     ],
@@ -23,7 +23,7 @@
       "url": "https://arxiv.org/abs/2601.18934",
       "topic": "2026年1月26日に初回公開された研究『Whispering Water』は小型水槽を6台の低音スピーカーで振動させ、音声に応じた水面模様を生成する実験。遠隔二地点の有人プールを接続したものではない。2011年のDavid Bowen作品『tele-present water』（https://www.dwbowen.com/telepresentwater）は遠隔波データで機械グリッドを動かした作品。2031年の夕波ドーム、凪野さや、友人、遠隔浅瀬の双方向水遊び・波の動作・会話とすべての運営・性能設定は創作。"
     },
-    "scene_prompt": "An attractive adult Japanese woman, age 27, turns to a small ripple touching her ankle in a fictional indoor beach pool. Photorealistic candid lifestyle press photograph, wide 16:9 three-quarter angle. Naturally beautiful adult face, friendly delighted expression, long dark hair, full but realistically proportionate bust and natural adult body. She wears an elegant navy-blue bikini and an open white lightweight beach shirt, with tasteful non-explicit styling; she is lightly flicking water and turning toward the ripple. Show her face, full upper body, feet and visible water motion. Behind her is pale indoor sand and a clear wall-mounted screen showing a DIFFERENT adult Japanese female friend age 28 in ANOTHER shallow indoor beach, separated by distance, with little ripples at her feet. Natural indoor skylight, realistic skin and water reflections, candid unposed moment, no logos, legible text, distortion, illustration or CGI.",
+    "scene_prompt": "An attractive adult Japanese woman, age 27, turns to a small ripple touching her ankle in a fictional indoor beach pool. Photorealistic candid lifestyle press photograph, wide 16:9 three-quarter angle. Naturally beautiful adult face, friendly delighted expression, long dark hair, full but realistically proportionate bust and natural adult body. She wears an elegant navy-blue bikini and an open white lightweight beach shirt, with tasteful non-explicit styling; she is lightly flicking water and turning toward the ripple. Show her face, full upper body, feet and visible water motion. Behind her is pale indoor sand and a clear wall-mounted screen showing a DIFFERENT adult Japanese female friend age 28 in ANOTHER shallow indoor beach, separated by distance, with little ripples at her feet. Natural indoor skylight, realistic skin and water reflections, candid unposed documentary photograph, accurate anatomy, unbranded surroundings, and a screen with no readable lettering.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "屋内ビーチ",
@@ -49,7 +49,7 @@
       "outcome": "離れていた二人が足元の小波で遊び、帰り際にも一波を返して手を振り合う"
     },
     "reader_clarity": {
-      "who": "凪野さや（27）と離れた場所の友人（28）",
+      "who": "凪野さや（27）",
       "action": "それぞれの浅瀬で水を払うと、通信の先にある相手側の浅瀬で小波が起こる遊びをした",
       "oddity": "離れた友人の返事を画面や音声だけでなく、足元の小波として感じられる"
     },
