@@ -94,7 +94,8 @@ def _photo_figure(issue, shot, *, cover=False):
 def render_photo_issue(issue, model, layout):
     """Render photographs and the model's column without exposing production data."""
     setting = issue["setting"]
-    first, *remaining = issue["shots"]
+    first = cover_shot(issue)
+    remaining = [shot for shot in issue["shots"] if shot["id"] != first["id"]]
     column = "".join(f'<p>{h(paragraph)}</p>' for paragraph in issue["column"])
     opening = "".join(_photo_figure(issue, shot) for shot in remaining[:4])
     closing = "".join(_photo_figure(issue, shot) for shot in remaining[4:])
