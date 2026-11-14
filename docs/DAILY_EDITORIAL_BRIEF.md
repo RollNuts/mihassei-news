@@ -31,3 +31,6 @@
 
 - **画像引継ぎ（屋内ビーチ、完了）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／写真SHA `c3552d3b1fad` はPR #728で実配信済み。原生成claim・失敗は保持し、同じ写真を再生成しない。週刊用の別撮影は下記の担当PRへ分離。
 - **週刊画像引継ぎ:** 第1号 `winter-coat-swimsuit-saya-001`／号SHA `d1de2152b14f4676`／担当PR #735。10枚採用・水着6枚。03温泉と04ビキニ座位は本人提供の原本を保持し、縦横比を変えず掲載する。旧03/04・失敗claim・原生成は履歴保管。今後は本人が写真を用意し、既存週刊担当が撮影リスト・検品・コラム・公開を担当。実配信の照合は同PRの公開結果を参照する。
+
+- **発行引継ぎ（11/15 07:30→09:30）：** スポーツ面 `remote-basketball-final-fans-walk-behind-hoop` は同じPR #744で独立初読を保持し、主語メタデータのみ修正。実公開へ進めるJST時刻へpublished_at/fiction_atを更新し、元の07:30枠を保持。親子がMR眼鏡で青い外周帯を歩く写真を原PNG/JPEG目視で採用。通常統合と本番の確定状態はこのPRの公開結果を正とする。
+- **次担当：** 次の通常発行枠は最新mainから配分を再計算（現時点は事件面、当日スポーツ1本・product_launch1本、政策発表は未充足）。原生成candidate `native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d`・記事SHA `7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16` を保持し、同写真を再生成しない。図：不要（実会場と遠隔体育館の違い、眼鏡・外周帯・壁面中継を本文と写真で追える）。
