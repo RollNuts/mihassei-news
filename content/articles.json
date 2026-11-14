@@ -66,6 +66,69 @@
     }
   },
   {
+    "slug": "friendly-cup-no-standings-four-fan-trophies",
+    "category": "スポーツ",
+    "flash": "順位はないのに優勝杯が4つ",
+    "fiction_company": "架空の四帆親善杯運営会",
+    "art": "cards",
+    "fiction_at": "2031-11-14T09:28:59+09:00",
+    "published_at": "2026-11-14T09:28:59+09:00",
+    "title": "順位なしのサッカー親善杯、客席から手作りの「優勝杯」4つ",
+    "summary": "総合順位を決めない交流大会「四帆親善杯」で、4チームの応援団が試合後に独自の「一番」を表彰。選手がそれぞれ紙製の金色カップを受け取り、全員集合写真には4つの優勝杯が並んだ。",
+    "paragraphs": [
+      "順位を決めないサッカー交流大会「四帆親善杯」で14日、試合を終えた選手たちに、客席から金色の手作り優勝杯が4つ差し出された。大会の公式表彰はなかったが、4チームの応援団がそれぞれ自分のチームの「一番」を決めていた。",
+      "四帆親善杯は4チームが対戦するものの、勝敗を記録するだけで勝ち点を合算せず、総合王者も選ばない。主催者は順位を追うことより、違う攻め方や守り方を試す場にしたかった。試合後に予定していたのは全員集合写真だけで、優勝杯は用意していなかった。",
+      "一方、客席では試合の途中から勝手な表彰が始まっていた。青い応援席では「一番走った」、赤い応援席では「一番守った」、ほかの応援席では「一番いいパス」「一番大きな声」と、比べる対象さえそれぞれ違う。応援団は持参した紙のカップにその場で賞名を書き、選手が来るのを待った。",
+      "最終戦を引き分けで終えた青組のFW、春野陸（24）は、客席から渡されたカップを抱えて笑った。「勝っていないけど、もらっていいの」。応援団長は「走ったのは見てた」と返した。少し離れた赤い席では、守備を続けたGKも別の「優勝杯」を掲げ、同じ時刻に歓声が上がった。",
+      "集合写真の時間になると、4チームの選手は互いの紙カップを見せ合ってから横一列に並び、足元の中央に4つを置いた。撮影係に「結局、どこが1位ですか」と聞かれた主催者は、説明する代わりに指を4本立てた。シャッターの直前、4つの客席からまた拍手が起きた。"
+    ],
+    "source": {
+      "kind": "競技団体公式情報",
+      "publisher": "公益財団法人日本サッカー協会",
+      "published_at": "2026-09-03T00:00:00+09:00",
+      "url": "https://www.jfa.jp/samuraiblue/20261117/about.html",
+      "topic": "日本サッカー協会は2026年9月3日に11月13〜17日のシンガポール国際サッカー大会への日本代表参加を発表した（https://www.jfa.jp/news/00036701/）。同協会の大会概要には、4代表が参加し、各試合は90分で終了・引き分けあり、最終的な順位は決めないとある。2026年11月14日の日本対ブラジル戦は開催予定として記載されており、結果は未確認。2031年の四帆親善杯、4チーム、観客による独自表彰、選手や発言、金色カップはすべて創作。"
+    },
+    "scene_prompt": "A fictional adult 24-year-old male football player receives a handmade gold-painted cardboard cup from an adult fan beside stadium seating after a friendly match. Realistic unposed sports press photograph, the player in plain blue football kit smiling, fan handing the paper cup across a safe low barrier, playing field and a few other supporters softly visible. Natural morning daylight, believable face, hands, jersey fabric and cardboard texture, horizontal 16:9. No readable writing, logos, branding or real personalities.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "サッカー",
+      "親善試合",
+      "応援"
+    ],
+    "satire_tags": [
+      "順位表"
+    ],
+    "x_tags": [
+      "サッカー",
+      "親善試合"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "順位を決めない親善杯なのに、客席には優勝杯が4つ。何を一番と呼ぶかまで自由になった。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年の4代表参加の国際サッカー大会で、各試合の勝敗は決めても総合順位は付けない方式が公式大会概要に示されている",
+      "target": "勝敗は記録するが大会総合順位を付けない架空のサッカー親善杯",
+      "action": "4つの応援団が別々の良いプレーを選び、試合後に自分のチームへ手作りの金色カップを手渡す",
+      "outcome": "選手が持ち寄った4つの金色カップが、総合王者のいない全員集合写真の中央に並ぶ"
+    },
+    "reader_clarity": {
+      "who": "4チームの応援団",
+      "action": "順位のない大会で各自が好きなプレーを表彰し、紙の優勝杯を選手に渡した",
+      "oddity": "公式の総合1位はいないのに、集合写真には4つの優勝杯が並んだ"
+    },
+    "behavior_basis": {
+      "motive": "主催者は親善戦で多様なプレーを試し、応援団は自分が見た良いプレーをたたえたい",
+      "ordinary_alternative": "勝ち点を合計して1チームだけ優勝とする大会と公式表彰式",
+      "why_not": "総合順位よりプレーの実験と交流を優先した結果、観客が勝手に独自の表彰を始めた",
+      "evidence_quote": "主催者は順位を追うことより、違う攻め方や守り方を試す場にしたかった。"
+    }
+  },
+  {
     "slug": "indoor-beach-friends-exchange-ripples",
     "category": "エンタメ",
     "flash": "離れた友人から水の返事",
