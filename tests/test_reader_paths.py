@@ -45,7 +45,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
 
     def test_unique_recency_and_fictional_date_never_controls_recommendation(self):
         article = self.articles[0]
-        choices = suggested_articles(article, self.articles + [article], limit=99)
+        choices = suggested_articles(article, self.articles + [article], limit=len(self.articles))
         slugs = [item["slug"] for item in choices]
         self.assertNotIn(article["slug"], slugs)
         self.assertEqual(len(slugs), len(set(slugs)))

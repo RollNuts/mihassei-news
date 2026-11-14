@@ -5659,6 +5659,119 @@
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
+    },
+    "friendly-cup-no-standings-four-fan-trophies": {
+      "article_sha256": "cb1a3bc3917d54f2cbc88adf92679ce1fa8b1ecc6bd0a6bc19f67428f8f6e231",
+      "bytes": 173458,
+      "conversion": {
+        "background": "white",
+        "encoder": "jpeg-js",
+        "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "quality": 84,
+        "resize": "centered aspect-preserving cover with bilinear interpolation"
+      },
+      "generated_at": "2026-11-14T00:24:56.608Z",
+      "generation_id": "31200877-efda-422d-bc53-07817fa6954b",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "A fictional adult 24-year-old male football player receives a handmade gold-painted cardboard cup from an adult fan beside stadium seating after a friendly match. Realistic unposed sports press photograph, the player in plain blue football kit smiling, fan handing the paper cup across a safe low barrier, playing field and a few other supporters softly visible. Natural morning daylight, believable face, hands, jersey fabric and cardboard texture, horizontal 16:9. No readable writing, logos, branding or real personalities.",
+      "generation_prompt_source": "Exact image_gen prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
+      "generation_receipt": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
+      "height": 675,
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/friendly-cup-no-standings-four-fan-trophies/cb1a3bc3917d54f2-722b8303f48d",
+        "commit": "e9bdcb85178b342f73355add3f18d472887d15ab",
+        "identity": "ec3252b56b3b80db070086928b562e4d5311295399b7b9cf22355595dc10ad41",
+        "logical_run_id": "publisher-20261114-0730-friendly-cup-four-trophies",
+        "receipt_path": "maintenance/native-image-candidates/friendly-cup-no-standings-four-fan-trophies/receipt.json",
+        "receipt_sha256": "8cb00e8ad49cae080f72d0db3184b1f1befb15fda89925174a428237d5872137"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "0cdfd96e851eea2597e7bcbc23bd3f3bfe23c93d696446d48bfad87ebdebf67a",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T00:24:54.730140795Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T00:24:54.730144118Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T00:24:54.725796423Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              163,
+              238,
+              133,
+              193,
+              142,
+              158,
+              204,
+              233,
+              137,
+              56,
+              219,
+              17,
+              179,
+              130,
+              4,
+              152,
+              155,
+              206,
+              182,
+              23,
+              64,
+              215,
+              29,
+              42,
+              108,
+              206,
+              1,
+              26,
+              95,
+              101,
+              209,
+              113
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
+        "manifest_uri": "urn:c2pa:db86ed17-04c4-4e49-855c-4c6fd66e3e1c",
+        "signature_validation": "not_performed"
+      },
+      "source_png_bytes": 2283612,
+      "source_png_sha256": "d16eeccfcae470b855285d20b3e29632260f88a8ae9fa093cbcc19f1202303e6",
+      "source_size": [
+        1672,
+        941
+      ],
+      "width": 1200
     }
   },
   "rejected": {

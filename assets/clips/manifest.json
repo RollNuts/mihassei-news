@@ -143,6 +143,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-12T21:36:23.879616+00:00"
+    },
+    "volunteer-award-ceremony-visits-community-kitchen": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+      "image_sha256": "489a5dd224f4f3a4d7b10ffb698cdd3492e4b9c897c5fef664ea55e4e4abbeb0",
+      "sha256": "e6d2b594bdc0e563f800bc34de79d0d91ae06e70f41956df65f5cfb1fa82a1e3",
+      "bytes": 137554,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-13T23:05:26.014473+00:00"
     }
   }
 }
