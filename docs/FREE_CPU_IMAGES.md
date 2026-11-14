@@ -17,6 +17,10 @@
 - JPEGは1枚700KiB以下、1200×675、アーカイブ1.5GiB上限。ハッシュ、記事本文・見出し・画像指示の指紋、モデル名、生成元の一致を確認して初めて記事やOGPに表示する。
 - CPUの速度・生成品質はSDXLをMacのGPUで動かす場合に及ばない可能性が高い。**実際の生成成功・本番表示・見栄えはGitHub Actions実行ログと公開URLで確認するまで未証明**。異常な画像を自動公開しないための安全検証はあるが、意味が伝わるかの人間のレビューは自動化していない。
 
+### 手動の単発モデル評価
+
+`preview_model=ssd1b`は[SSD-1B](https://huggingface.co/segmind/SSD-1B)をF32で評価するレビュー専用経路。既存workflowの手動入力だけを使い、指定ref・既刊source・`limit=1`・`retry_held=true`・`publish=false`に限定する。旧PR722のJuggernaut再試行特例は継承しない。新しい依頼によるJST2026-11-14の1実行だけを、固定した旧5runの原記録・終了と新profileの全履歴初回を照合して許可する。通常日次上限4の超過と今回追加1件をreceiptに明示し、旧履歴・通常経路の上限・新着優先は変えない。原記事・画像・manifestへ書かず、既存安全判定を通った未検品JPEGと記事候補・receiptだけを1日artifactへ残す。モデル重みは使い捨て標準公開CPU runner内のみで取得し、Macへ追加しない。13GiB RSS、1GiB available、12GiB空き、48分のcontroller上限は維持する。F32のCPU時間・実RSS・水着の品質は未測定で、完了や採用を保証しない。実行前に差分・固定モデルデータ・入力をrootがレビューする。
+
 ## 初回確認
 
 1. GitHubの [Actions](https://github.com/RollNuts/mihassei-news/actions) → `Free CPU staged-news photos (public repository only)` → `Run workflow` で`limit=1〜3`を選び、`publish`はOFFのまま生成する。必要なら`slug`で記事を限定する。
