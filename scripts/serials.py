@@ -17,9 +17,11 @@ from urllib.parse import urlencode, urlsplit
 if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
     from .forecast_ledger import render_forecast_ledger
+    from .market_figures import load_market_figures, render_market_figure, write_market_figures
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
+    from market_figures import load_market_figures, render_market_figure, write_market_figures
 
 
 # Publication retirement is separate from immutable editorial source/history.
@@ -250,12 +252,16 @@ def render_serials_index(serials, layout):
     return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
-def render_series_page(series, layout):
+def render_series_page(series, layout, figures=None):
     _require_public(series)
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
+    figures = figures or {}
     items = "".join(
         f'<li><a href="{episode_url(series, ep)}"><span>{episode_label(series,ep["number"])} <time datetime="{ep["published_at"]}">{ep["published_at"]}</time></span>'
-        f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small>'f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small></a></li>'
+        f'<strong>{h(ep["title"])}</strong><small>{h(ep["summary"])}</small>'
+        + (f'<small class="market-figure-count">図解 {len(figures.get(ep["slug"], []))} 点</small>'
+           if series["kind"] == "analysis" and figures.get(ep["slug"]) else '')
+        + f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small></a></li>'
         for ep in episodes
     )
     disclosure = ('<p class="serials-disclosure">投資助言・売買推奨ではありません。</p>'
@@ -288,16 +294,26 @@ def _share_link(series, ep):
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
-def render_episode_page(series, ep, layout):
+def render_episode_page(series, ep, layout, figures=None):
     _require_public(series)
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
     next_ep = series["episodes"][idx + 1] if idx + 1 < len(series["episodes"]) else None
-    narrative = "".join(
-        f'<section class="serial-prose-section"><h2>{h(s["heading"])}</h2>'
-        + "".join(f'<p>{h(p)}</p>' for p in s["paragraphs"]) + '</section>'
-        for s in ep["sections"]
-    )
+    # Figures belong to the presentation layer; published text and forecasts
+    # remain immutable. Drawings follow the relevant passage, not the cover.
+    figures = figures or []
+    narrative_parts = []
+    for section_number, section in enumerate(ep["sections"], 1):
+        narrative_parts.append(
+            f'<section class="serial-prose-section"><h2>{h(section["heading"])}</h2>'
+            + "".join(f'<p>{h(p)}</p>' for p in section["paragraphs"]) + '</section>'
+        )
+        if series["kind"] == "analysis":
+            narrative_parts.extend(
+                render_market_figure(series, ep, figure)
+                for figure in figures if figure["after_section"] == section_number
+            )
+    narrative = "".join(narrative_parts)
     extras = ""
     if series["kind"] == "fiction":
         clues = "".join(f"<li>{h(clue)}</li>" for clue in ep["clues"])
@@ -444,15 +460,17 @@ def build_serials(serials, layout, write, output):
     serials = public_serials(serials)
     if not serials:
         return
+    figures = load_market_figures(Path(__file__).resolve().parents[1], serials)
     write("serials/index.html", render_serials_index(serials, layout))
     for series in serials:
         prefix = f'serials/{series["slug"]}'
-        write(prefix + "/index.html", render_series_page(series, layout))
+        write(prefix + "/index.html", render_series_page(series, layout, figures))
         write(serial_feed_url(series).lstrip("/"), serial_feed_xml(series))
         write(prefix + "/cover.svg", render_cover_svg(series))
         render_social_preview(series, output / "og" / "serials" / (series["slug"]+".png"))
         for ep in series["episodes"]:
             write(prefix + "/" + ep["slug"] + "/index.html",
-                  render_episode_page(series, ep, layout))
+                  render_episode_page(series, ep, layout, figures.get(ep["slug"], [])))
+            write_market_figures(series, ep, figures.get(ep["slug"], []), write)
             render_social_preview(series, output / "og" / "serials" /
                                   (series["slug"]+"-"+ep["slug"]+".png"), episode=ep)
