@@ -54,9 +54,9 @@ class PhotoCastTests(unittest.TestCase):
         self.assertEqual(model["reference_state"], "unprepared")
         report = self.read_cast(model["id"])
         self.assertEqual(set(report), {"id", "name", "age", "fictional", "occupation",
-                                       "personality", "voice", "likes", "weakness"})
+                                       "casting_specialty", "first_person", "personality", "voice", "likes", "weakness"})
         self.assertEqual((report["id"], report["age"], report["fictional"]), (model["id"], 23, True))
-        for field in ("occupation", "personality", "voice", "likes", "weakness"):
+        for field in ("occupation", "casting_specialty", "first_person", "personality", "voice", "likes", "weakness"):
             self.assertEqual(report[field], model["character"][field])
 
     def test_unknown_model_and_conflicting_cli_modes_fail_without_output(self):

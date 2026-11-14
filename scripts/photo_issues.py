@@ -785,7 +785,7 @@ def cast_report(data, model_id=""):
         _text(character.get("occupation"), "cast occupation")
         return {"id": model["id"], "name": model["name"], "age": model["age"],
                 "fictional": True,
-                **{key: character[key] for key in ("occupation", "personality", "voice", "likes", "weakness")}}
+                **{key: character[key] for key in ("occupation", "casting_specialty", "first_person", "personality", "voice", "likes", "weakness")}}
     for model in models:
         _text(model["character"].get("occupation"), "cast occupation")
     return {"cast": [{"id": model["id"], "name": model["name"], "age": model["age"],
