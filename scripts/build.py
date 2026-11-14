@@ -861,8 +861,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     nav = [
         ("/", "一面", "home"),
         ("/archive/", "記事一覧", "archive"),
-        ("/photo/weekly/" if PHOTO_ISSUES_AVAILABLE or photo_page else GRAVURE_SOURCE_URL, "グラビア誌", "photos"),
-        ("/serials/market-lab/", "未来相場観測室", "serials"),
+        ("/photo/weekly/" if PHOTO_ISSUES_AVAILABLE or photo_page else GRAVURE_SOURCE_URL, "グラビア", "photos"),
+        ("/serials/market-lab/", "相場分析", "serials"),
         ("/issues/", "発行号", "issues"),
     ]
     navhtml = "".join(f'<a href="{escape(u)}"{" aria-current=page" if key == active and key else ""}>{escape(text)}</a>'
