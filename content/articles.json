@@ -6,7 +6,7 @@
     "fiction_company": "潮結航運",
     "art": "cards",
     "fiction_at": "2031-11-14T11:30:00+09:00",
-    "published_at": "2026-11-14T11:30:00+09:00",
+    "published_at": "2026-11-14T20:18:48+09:00",
     "title": "船会社3社が空き枠を共有　点検で止まった船の鋼材、別会社が出荷",
     "summary": "配船会社「潮結航運」が、3社の船の空きスペースと行き先を共有するサービスを開始。点検で出港できない船に積む予定だった鋼材を、同じ目的港へ向かう別会社の午後便に載せ、翌日の納入を守った。",
     "paragraphs": [
@@ -58,7 +58,8 @@
       "ordinary_alternative": "船会社ごとに予定を管理し、故障した船の荷物は修理後に運ぶか電話で代船を探す",
       "why_not": "船ごとの空きと同じ目的港への航路を共同で見られ、荷主と運航側の安全確認を経て早く振替を決められるため",
       "evidence_quote": "以前なら各社に電話して空きと行き先を聞き直すところを、今回は共有画面に同じ工業港へ向かう2号船の空きが表示された。"
-    }
+    },
+    "publication_slot": "2026-11-14T11:30:00+09:00"
   },
   {
     "slug": "offline-tape-restores-missing-contract-revision",
@@ -4772,6 +4773,39 @@
     ]
   },
   {
+    "slug": "idol-ice-kept-in-freezer",
+    "category": "エンタメ",
+    "flash": "推し活",
+    "fiction_company": "ふたつ星乳菓",
+    "art": "cards",
+    "fiction_at": "2031-11-03T08:08:49+09:00",
+    "title": "推しの限定アイス、売れるのに誰も食べない　メーカー「味を教えて」",
+    "summary": "推しの限定アイスは大ヒット。でもファンは記念品として冷凍保存し、メーカーに味の感想が届かない。とうとう公式の試食まで騒ぎになった。",
+    "paragraphs": [
+      "「もったいなくて食べられない」。2031年、架空の菓子会社「ふたつ星乳菓」が人気歌手とのコラボアイスを発売すると、ファンが次々に買い求めた。しかし大半は未開封のまま冷凍庫へ。会社に届くのは「パッケージが最高」という感想ばかりで、味については何も分からなかった。",
+      "会社は味を知ってもらおうと、ライブ会場で無料試食を配った。ところがファンは「会場限定の無料配布品はもっと貴重」と袋ごと持ち帰り、冷凍保存。社員が「お願いですから一口だけ」と呼びかけると、そのお願いの画像まで「公式からのメッセージ」として保存された。",
+      "ついに開発担当者が、商品の味を紹介するライブ配信を始めた。ふたを開けた途端、コメント欄は「初回限定品を開封した！」「保存用はどうした」で埋まった。担当者はスプーンを持ったまま固まり、配信終了後、まだ食べていないカップを冷凍庫に戻した。翌朝、社内の試食室にも「開封は慎重に」の貼り紙が増えていた。"
+    ],
+    "source": {
+      "kind": "公式発表",
+      "publisher": "株式会社ロッテ（PR TIMES）",
+      "published_at": "2026-11-03T00:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000097.000086324.html",
+      "topic": "2026年11月3日0:00にロッテが、音楽アーティストが雪見だいふくの新アンバサダーに就任したことを発表。『2個あるとうれしい。』を掲げたキービジュアルなど、ファン文化と食品コラボの話題から着想。架空の菓子会社やアイス3種は実在しない。"
+    },
+    "published_at": "2026-11-03T08:08:49+09:00",
+    "modified_at": "2026-11-03T12:17:08.480+09:00",
+    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face.",
+    "tags": [
+      "ファン文化",
+      "食"
+    ],
+    "satire_tags": [
+      "推し活あるある",
+      "保存用"
+    ]
+  },
+  {
     "slug": "press-conference-metaphor-viral",
     "category": "社会",
     "flash": "ネットで話題",
@@ -4804,39 +4838,6 @@
       "説明した感"
     ],
     "visual_strategy": "cpu-photo"
-  },
-  {
-    "slug": "idol-ice-kept-in-freezer",
-    "category": "エンタメ",
-    "flash": "推し活",
-    "fiction_company": "ふたつ星乳菓",
-    "art": "cards",
-    "fiction_at": "2031-11-03T08:08:49+09:00",
-    "title": "推しの限定アイス、売れるのに誰も食べない　メーカー「味を教えて」",
-    "summary": "推しの限定アイスは大ヒット。でもファンは記念品として冷凍保存し、メーカーに味の感想が届かない。とうとう公式の試食まで騒ぎになった。",
-    "paragraphs": [
-      "「もったいなくて食べられない」。2031年、架空の菓子会社「ふたつ星乳菓」が人気歌手とのコラボアイスを発売すると、ファンが次々に買い求めた。しかし大半は未開封のまま冷凍庫へ。会社に届くのは「パッケージが最高」という感想ばかりで、味については何も分からなかった。",
-      "会社は味を知ってもらおうと、ライブ会場で無料試食を配った。ところがファンは「会場限定の無料配布品はもっと貴重」と袋ごと持ち帰り、冷凍保存。社員が「お願いですから一口だけ」と呼びかけると、そのお願いの画像まで「公式からのメッセージ」として保存された。",
-      "ついに開発担当者が、商品の味を紹介するライブ配信を始めた。ふたを開けた途端、コメント欄は「初回限定品を開封した！」「保存用はどうした」で埋まった。担当者はスプーンを持ったまま固まり、配信終了後、まだ食べていないカップを冷凍庫に戻した。翌朝、社内の試食室にも「開封は慎重に」の貼り紙が増えていた。"
-    ],
-    "source": {
-      "kind": "公式発表",
-      "publisher": "株式会社ロッテ（PR TIMES）",
-      "published_at": "2026-11-03T00:00:00+09:00",
-      "url": "https://prtimes.jp/main/html/rd/p/000000097.000086324.html",
-      "topic": "2026年11月3日0:00にロッテが、音楽アーティストが雪見だいふくの新アンバサダーに就任したことを発表。『2個あるとうれしい。』を掲げたキービジュアルなど、ファン文化と食品コラボの話題から着想。架空の菓子会社やアイス3種は実在しない。"
-    },
-    "published_at": "2026-11-03T08:08:49+09:00",
-    "modified_at": "2026-11-03T12:17:08.480+09:00",
-    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face.",
-    "tags": [
-      "ファン文化",
-      "食"
-    ],
-    "satire_tags": [
-      "推し活あるある",
-      "保存用"
-    ]
   },
   {
     "slug": "quiet-reply-dating-matches",
@@ -4906,39 +4907,6 @@
     "visual_strategy": "cpu-photo"
   },
   {
-    "slug": "unwanted-call-protection-calls-back",
-    "category": "社会",
-    "flash": "社会面",
-    "fiction_company": "シズカ電信",
-    "art": "notice",
-    "fiction_at": "2031-11-02T21:21:04+09:00",
-    "title": "迷惑電話防止の案内電話が迷惑に　止めるには電話に出る必要",
-    "summary": "電話を減らす新サービスなのに、利用確認の電話が毎日かかってくる。出なかった人には『まだ確認できません』と翌日も連絡。",
-    "paragraphs": [
-      "「迷惑な電話にお困りではありませんか」。2031年、夕食中にかかってきた電話に、ある利用者は「今、困っています」と答えた。電話をかけてきたのは、架空の通信会社「シズカ電信」。迷惑電話を減らす新サービスの利用意思を確認する案内だった。",
-      "このサービスは、案内電話に出て「今後の連絡は不要」と伝えると着信が止まる。一方、電話に出なければ「意思を確認できていない」として翌日もかかる。5回無視した人には6回目の案内が届き、会社は『丁寧に確認している』と説明した。",
-      "苦情が殺到したため、会社は迷惑な番号を自動遮断する機能を導入した。すると利用者の端末は、会社自身の案内番号を一斉に遮断。ようやく静かな夕食が戻ったが、満足度調査の電話にも誰も出なくなった。"
-    ],
-    "source": {
-      "kind": "ニュース",
-      "publisher": "共同通信（熊本日日新聞配信）",
-      "published_at": "2026-11-02T18:33:00+09:00",
-      "url": "https://www.kumanichi.com/articles/2053480",
-      "topic": "特殊詐欺対策をめぐり、国際電話の利用サービスを希望制にする案について2日に検討が始まった。"
-    },
-    "published_at": "2026-11-02T21:21:04+09:00",
-    "modified_at": "2026-11-03T11:19:54.205+09:00",
-    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea.",
-    "tags": [
-      "防犯",
-      "通信"
-    ],
-    "satire_tags": [
-      "ルール増し増し",
-      "本末転倒"
-    ]
-  },
-  {
     "slug": "local-souvenir-cannot-leave-town",
     "category": "暮らし",
     "flash": "地域面",
@@ -4969,6 +4937,39 @@
     "satire_tags": [
       "ルール増し増し",
       "地産地消極振り"
+    ]
+  },
+  {
+    "slug": "unwanted-call-protection-calls-back",
+    "category": "社会",
+    "flash": "社会面",
+    "fiction_company": "シズカ電信",
+    "art": "notice",
+    "fiction_at": "2031-11-02T21:21:04+09:00",
+    "title": "迷惑電話防止の案内電話が迷惑に　止めるには電話に出る必要",
+    "summary": "電話を減らす新サービスなのに、利用確認の電話が毎日かかってくる。出なかった人には『まだ確認できません』と翌日も連絡。",
+    "paragraphs": [
+      "「迷惑な電話にお困りではありませんか」。2031年、夕食中にかかってきた電話に、ある利用者は「今、困っています」と答えた。電話をかけてきたのは、架空の通信会社「シズカ電信」。迷惑電話を減らす新サービスの利用意思を確認する案内だった。",
+      "このサービスは、案内電話に出て「今後の連絡は不要」と伝えると着信が止まる。一方、電話に出なければ「意思を確認できていない」として翌日もかかる。5回無視した人には6回目の案内が届き、会社は『丁寧に確認している』と説明した。",
+      "苦情が殺到したため、会社は迷惑な番号を自動遮断する機能を導入した。すると利用者の端末は、会社自身の案内番号を一斉に遮断。ようやく静かな夕食が戻ったが、満足度調査の電話にも誰も出なくなった。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "共同通信（熊本日日新聞配信）",
+      "published_at": "2026-11-02T18:33:00+09:00",
+      "url": "https://www.kumanichi.com/articles/2053480",
+      "topic": "特殊詐欺対策をめぐり、国際電話の利用サービスを希望制にする案について2日に検討が始まった。"
+    },
+    "published_at": "2026-11-02T21:21:04+09:00",
+    "modified_at": "2026-11-03T11:19:54.205+09:00",
+    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea.",
+    "tags": [
+      "防犯",
+      "通信"
+    ],
+    "satire_tags": [
+      "ルール増し増し",
+      "本末転倒"
     ]
   },
   {
