@@ -223,6 +223,16 @@
   const pending = new Set();
   const buttons = [...document.querySelectorAll("[data-like-slug]")];
   const article = location.pathname.match(/^\/articles\/([a-z0-9-]+)\/?$/)?.[1]||"";
+  const photoRoute=location.pathname.match(/^\/photo\/weekly\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/)?.[1]||"";
+  const photoKey=document.querySelector("[data-engagement-key]")?.dataset.engagementKey||"";
+  // Photo issues have their own identity, independent of their source story.
+  const engagementKey=article || (photoRoute && photoRoute.length<=100 &&
+    photoKey==="photo-issue:"+photoRoute ? photoKey : "");
+  const issueEngagementStatus=document.querySelector("[data-engagement-status]");
+  function validEngagementKey(value){
+    return typeof value==="string" && (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) ||
+      /^photo-issue:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) && value.length<=112);
+  }
 
   // Only send a coarse route category. The analytics API never needs the full
   // pathname to tell whether a spike came from the front page, stories or archive.
@@ -336,8 +346,8 @@
       .filter(node=>!node.closest?.("[hidden]"))
       .map(node=>node.dataset.articlePv);
     return [...new Set([
-      article,...visible,...buttons.map(b=>b.dataset.likeSlug)
-    ])].filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug));
+      engagementKey,...visible,...buttons.map(b=>b.dataset.likeSlug)
+    ])].filter(validEngagementKey);
   }
 
   // Approximate, privacy-minimal traffic sources: never transmit a referrer URL.
@@ -396,7 +406,7 @@
       const on=likedSet.has(b.dataset.likeSlug);
       b.classList.toggle("liked",on);
       b.setAttribute("aria-pressed",String(on));
-      b.setAttribute("aria-label",on?"いいねを取り消す":"この記事にいいね");
+      b.setAttribute("aria-label",on?"いいねを取り消す":b.dataset.likeLabel||"この記事にいいね");
       b.disabled=pending.has(b.dataset.likeSlug);
       const heart=b.querySelector("span[aria-hidden]");
       if(heart)heart.textContent=on?"♥":"♡";
@@ -421,7 +431,7 @@
     if(action==="visit"){
       params.set("response","public");
       const slugs=[...new Set(publicArticles)]
-        .filter(slug=>typeof slug==="string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+        .filter(validEngagementKey)
         .sort().slice(0,20);
       if(slugs.length)params.set("articles",slugs.join(","));
       if(popularSection)params.set("popular","1");
@@ -641,10 +651,12 @@
       if(node.dataset.articlePv!==slug)return;
       const count=node.querySelector("[data-article-pv-count]");
       showPageViewNumber(count,metric.pageViews);
-      const label=metric.pageViews===null ? "この記事のPVは未計測" :
-        "この記事のページ表示回数 "+Intl.NumberFormat("ja-JP").format(metric.pageViews)+"PV";
+      const subject=node.dataset.pvLabel||"この記事";
+      const label=metric.pageViews===null ? subject+"のPVは未計測" :
+        subject+"のページ表示回数 "+Intl.NumberFormat("ja-JP").format(metric.pageViews)+"PV";
       node.setAttribute("aria-label",label);
-      node.setAttribute("title",pvStartLabel ? pvStartLabel+"からの表示回数" : "計測開始後の表示回数");
+      node.setAttribute("title",slug.startsWith("photo-issue:") ? "この号の計測開始後の表示回数" :
+        pvStartLabel ? pvStartLabel+"からの表示回数" : "計測開始後の表示回数");
     });
   }
 
@@ -740,12 +752,15 @@
            !showMetrics({...first,articles:Object.assign({},...snapshots.map(item=>item.articles))}))
           throw new Error("audience data unavailable");
         haveSnapshot=true;
+        if(issueEngagementStatus)issueEngagementStatus.textContent="";
       }catch(_){
         // Keep the last confirmed counts and ranking when a transient refresh
         // fails. An initial failure still exposes no popularity claim; once a
         // complete whole-archive ranking was confirmed, do not make it vanish
         // just because the next periodic read missed the API.
         observerFeedback(false);
+        if(issueEngagementStatus)issueEngagementStatus.textContent=
+          "PV・いいねを取得できませんでした。時間をおいて再度お試しください。";
         if(!popularHasConfirmedRanking)hidePopular();
         else if(popularPeriod && !popularPeriod.textContent.includes("更新待ち"))
           popularPeriod.textContent+=" · 更新待ち";
@@ -767,9 +782,13 @@
     view.pending=true;view.attempts++;
     let snapshot=null;
     try{
-      snapshot=await apiPost("visit",article,"",view.id,requestedArticleSlugs());
+      snapshot=await apiPost("visit",engagementKey,"",view.id,requestedArticleSlugs());
       view.finished=true;
-    }catch(_){/* A lost response may be retried safely with the same event ID. */}
+    }catch(_){
+      // A lost response may be retried safely with the same event ID.
+      if(issueEngagementStatus)issueEngagementStatus.textContent=
+        "PV・いいねを取得できませんでした。時間をおいて再度お試しください。";
+    }
     finally{view.pending=false;}
     // A successful visit already carries the first compact metrics batch.
     // During an outage, do not immediately double-hit the same API with GET.
@@ -866,6 +885,7 @@
     const b=e.target.closest("[data-like-slug]");
     if(!b || pending.has(b.dataset.likeSlug))return;
     const slug=b.dataset.likeSlug;
+    const wasLiked=likedSet.has(slug);
     if(likedSet.has(slug))likedSet.delete(slug);
     else likedSet.add(slug);
     pending.add(slug);
@@ -882,8 +902,13 @@
           }
         });
       }
+      if(issueEngagementStatus)issueEngagementStatus.textContent="";
     } catch(_){
-      // Local personal preference remains available during Free-tier limits.
+      if(slug===engagementKey && issueEngagementStatus){
+        if(wasLiked)likedSet.add(slug);else likedSet.delete(slug);
+        issueEngagementStatus.textContent="いいねを送信できませんでした。もう一度お試しください。";
+      }
+      // Legacy story likes retain their local preference during API outages.
     } finally {
       pending.delete(slug);
       heartView();

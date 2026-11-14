@@ -22,6 +22,19 @@ else:
     from forecast_ledger import render_forecast_ledger
 
 
+# Publication retirement is separate from immutable editorial source/history.
+WITHDRAWN_SERIES = frozenset({"case-files"})
+
+
+def public_serials(serials):
+    return [series for series in serials if series.get("slug") not in WITHDRAWN_SERIES]
+
+
+def _require_public(series):
+    if series.get("slug") in WITHDRAWN_SERIES:
+        raise ValueError("Serial has been withdrawn from publication")
+
+
 def h(value):
     return html.escape(str(value), quote=True)
 
@@ -36,7 +49,7 @@ def _check_day(value):
         raise ValueError("Invalid serial publication date")
 
 
-def load_serials(base: Path):
+def load_serials(base: Path, *, include_withdrawn=False):
     """Fail closed on broken editorial data, wrong labels, and unsafe outbound links."""
     serials = json.loads((base / "content/serials.json").read_text(encoding="utf-8"))
     if not isinstance(serials, list) or not serials:
@@ -89,7 +102,7 @@ def load_serials(base: Path):
                         raise ValueError("Untrusted analysis reference")
             elif not ep.get("clues") or not ep.get("reader_prompt"):
                 raise ValueError("Mystery episodes need fair clues and a reader prompt")
-    return serials
+    return serials if include_withdrawn else public_serials(serials)
 
 
 def series_url(series):
@@ -107,6 +120,7 @@ def serial_feed_url(series):
 
 def serial_feed_xml(series):
     """Release-only RSS. Date-only metadata never fabricates an exact publish time."""
+    _require_public(series)
     atom_ns = "http://www.w3.org/2005/Atom"
     media_ns = "http://search.yahoo.com/mrss/"
     ET.register_namespace("atom", atom_ns)
@@ -147,6 +161,9 @@ def serial_feed_xml(series):
 
 
 def serial_routes(serials):
+    serials = public_serials(serials)
+    if not serials:
+        return []
     latest = max(e["published_at"] for s in serials for e in s["episodes"])
     routes = [("/serials/", latest)]
     for s in serials:
@@ -211,24 +228,30 @@ def _series_card(series):
             f'</div></article>')
 
 
-def render_serials_feature(serials):
-    return ('''<section class="serials-feature" aria-labelledby="serials-home-heading">
+def render_serials_feature(serials, leading_card=""):
+    serials = public_serials(serials)
+    heading = "コーナー" if leading_card else "連載"
+    more_link = ('<a href="/serials/market-lab/">未来相場観測室を見る ↗</a>' if leading_card else
+                 '<a href="/serials/">連載一覧を見る ↗</a>')
+    return (f'''<section class="serials-feature" aria-labelledby="serials-home-heading">
       <div class="section-head"><div>
-      <h2 id="serials-home-heading">連載</h2></div>
-      <a href="/serials/">連載一覧を見る ↗</a></div>
+      <h2 id="serials-home-heading">{heading}</h2></div>
+      {more_link}</div>
       <div class="serial-grid">''' +
-            "".join(_series_card(s) for s in serials) + "</div></section>")
+            leading_card + "".join(_series_card(s) for s in serials) + "</div></section>")
 
 
 def render_serials_index(serials, layout):
+    serials = public_serials(serials)
     main = ('''<div class="container serials-page"><header class="serials-intro">
       <h1>連載</h1></header>
       <div class="serial-grid serial-grid--archive">''' +
       "".join(_series_card(s) for s in serials) + "</div></div>")
-    return layout("連載一覧", "未発生事件簿の連載推理小説と、未来相場観測室の市場予測・検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
+    return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
 def render_series_page(series, layout):
+    _require_public(series)
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     items = "".join(
         f'<li><a href="{episode_url(series, ep)}"><span>{episode_label(series,ep["number"])} <time datetime="{ep["published_at"]}">{ep["published_at"]}</time></span>'
@@ -258,6 +281,7 @@ def render_series_page(series, layout):
 
 
 def _share_link(series, ep):
+    _require_public(series)
     url = "https://veripsa.com" + episode_url(series, ep)
     label = "創作推理小説" if series["kind"]=="fiction" else "出典付き市場シナリオ（投資助言ではありません）"
     subject = f'{ep["title"]}｜未発生新聞 {label}'
@@ -265,6 +289,7 @@ def _share_link(series, ep):
 
 
 def render_episode_page(series, ep, layout):
+    _require_public(series)
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
     next_ep = series["episodes"][idx + 1] if idx + 1 < len(series["episodes"]) else None
@@ -344,6 +369,7 @@ def render_episode_page(series, ep, layout):
 
 def render_cover_svg(series):
     """True vector original art with no hotlinked third-party images."""
+    _require_public(series)
     fiction = series["kind"] == "fiction"
     ink = "#101e25" if fiction else "#132d31"
     accent = "#e56e61" if fiction else "#d3a963"
@@ -376,6 +402,7 @@ def render_cover_svg(series):
 
 def render_social_preview(series, path: Path, episode=None):
     """Distinct 1200x630 PNG for share previews; stdlib Canvas, zero image APIs."""
+    _require_public(series)
     fiction = series["kind"] == "fiction"
     ink = (15, 30, 38) if fiction else (17, 43, 45)
     accent = (229, 110, 97) if fiction else (211, 169, 99)
@@ -414,6 +441,9 @@ def render_social_preview(series, path: Path, episode=None):
 
 
 def build_serials(serials, layout, write, output):
+    serials = public_serials(serials)
+    if not serials:
+        return
     write("serials/index.html", render_serials_index(serials, layout))
     for series in serials:
         prefix = f'serials/{series["slug"]}'

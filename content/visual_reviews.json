@@ -906,6 +906,20 @@
       "note": "原PNGと保存済み1200×675 JPEGを実表示し、公開本文全段落と照合。草と根を含む厚い土塊を道路脇の斜面へ据える動作、緑のパッチと完成した道路が第4段落に一致。紅葉・曇天・作業着は11月に合い、手袋・吊具・土・草・道路の材質と光に目立つ破綻なし。可読文字・ブランド・ロゴは見当たらない。別担当も原PNG/JPEGと本文を独立照合し採用可。原PNG・JPEG・receiptの全SHAを確認。",
       "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
       "image_sha256": "50f803b225d7f5c1e8deb08fec70ef0c36d5e71567b5e13d5bd3cd6d78ef0ed5"
+    },
+    "autumn-ridge-path-rests-riverside-trail-opens": {
+      "decision": "accepted",
+      "reviewed_at": "2026-11-14T12:53:42.671Z",
+      "note": "現本文の案内人・29歳のカメラ客・木道の手すり・川に映る11月の紅葉を原PNGと変換JPEGで確認。案内する手と顔、秋服、木・水面の質感に目立つ破綻なし。カメラと上着に小さな英字状のマークはあるが、読める実在企業名・特定可能な実在ロゴは確認できない。独立検品も採用可。",
+      "article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+      "image_sha256": "bc542bd345adf40fe973d21952893799890e9d8f3d17bfd14b6fd1a4445f40a7"
+    },
+    "matchmaking-ai-bios-same-hobbies-handwritten-line": {
+      "decision": "accepted",
+      "reviewed_at": "2026-11-14T12:54:18.446Z",
+      "note": "確定本文の27歳女性が自分の紹介カードへペンで追記し、29歳男性が向かいで笑って見守る場面に原PNG・変換JPEGが一致。背景の同形式カードはぼけており読める不要な文字・ロゴなし。両者の指・ペン・紙・秋冬のニットと室内光に目立つ破綻なし。",
+      "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "image_sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca"
     }
   },
   "version": 1

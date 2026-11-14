@@ -156,6 +156,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-13T23:05:26.014473+00:00"
+    },
+    "matchmaking-ai-bios-same-hobbies-handwritten-line": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "image_sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca",
+      "sha256": "e4f437d1185a6c252a459eb99293d7a13187ed179995c9231e690a9f5d4950f5",
+      "bytes": 120538,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-14T22:00:11.163680+00:00"
     }
   }
 }

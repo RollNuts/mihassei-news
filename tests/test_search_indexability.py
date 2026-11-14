@@ -57,9 +57,12 @@ class SearchIndexabilityTests(unittest.TestCase):
             self.assertNotIn(SITE + excluded, seen)
 
     def test_image_sitemap_uses_existing_first_party_raster_cards(self):
-        """Each article, edition and serial exposes its own public raster preview."""
+        """News/serial previews and photo covers lead to the exact published bytes."""
+        import hashlib
+        import html
         from scripts.build import daily_issues, issue_url, article_url, social_image
         from scripts.serials import load_serials, series_url, episode_url
+        from scripts import photo_issues as photo
 
         published = sorted(self.articles, key=lambda a: (
             a.get("published_at") or a["source"]["published_at"],
@@ -73,6 +76,33 @@ class SearchIndexabilityTests(unittest.TestCase):
             for episode in series["episodes"]:
                 expected[SITE + episode_url(series, episode)] = (
                     SITE + f'/og/serials/{series["slug"]}-{episode["slug"]}.png')
+
+        photos = photo.published_issues(photo.load_photo_issues(ROOT), root=ROOT)
+        photo_expected = {}
+        if photos:
+            newest = max(photos, key=lambda issue: issue["published_at"])
+            photo_expected[photo.index_url()] = photo.cover_url(newest)
+        for issue in photos:
+            photo_expected[photo.issue_url(issue)] = photo.cover_url(issue)
+            page = (ROOT / "dist" / photo.issue_url(issue).lstrip("/") / "index.html").read_text(encoding="utf-8")
+            figures = re.findall(r'<figure class="photo-issue-shot[^\"]*" id="photo-([^\"]+)">(.*?)</figure>', page, re.S)
+            self.assertEqual(len(figures), len(issue["shots"]))
+            self.assertEqual({cut for cut, _figure in figures}, {shot["id"] for shot in issue["shots"]})
+            by_cut = dict(figures)
+            for shot in issue["shots"]:
+                image = issue["images"][shot["id"]]
+                image_url = photo.issue_url(issue) + shot["id"] + ".jpg?v=" + image["sha256"][:12]
+                self.assertEqual(photo.photo_image_url(issue, shot["id"]), image_url)
+                figure = by_cut[shot["id"]]
+                self.assertEqual([html.unescape(src) for src in re.findall(r'<img\b[^>]*\bsrc="([^\"]+)"', figure)], [image_url])
+                self.assertIn('alt="' + html.escape(shot["alt"], quote=True) + '"', figure)
+                self.assertIn('<span>' + html.escape(shot["caption"], quote=True) + '</span></figcaption>', figure)
+                image_file = ROOT / "dist" / urlsplit(image_url).path.lstrip("/")
+                self.assertEqual(hashlib.sha256(image_file.read_bytes()).hexdigest(), image["sha256"])
+            cover = issue["images"][photo.cover_shot(issue)["id"]]
+            self.assertEqual(photo.cover_url(issue), photo.issue_url(issue) + photo.cover_shot(issue)["id"] + ".jpg?v=" + cover["sha256"][:12])
+        self.assertEqual({url: image for url, _stamp, image in photo.photo_sitemap_entries(photos)}, photo_expected)
+        expected.update({SITE + url: SITE + image for url, image in photo_expected.items()})
 
         actual = {}
         for entry in self.urls:

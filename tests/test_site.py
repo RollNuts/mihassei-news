@@ -81,7 +81,7 @@ class SiteTests(unittest.TestCase):
                      "投稿・返信は公開されます", "個人情報や非公開の契約条件",
                      "github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml"):
             self.assertIn(item,html.unescape(commercial))
-        for prohibited in ("adsbygoogle.js", "data-ad-client=", "広告を表示中"):
+        for prohibited in ("data-ad-slot=", "広告を表示中"):
             self.assertNotIn(prohibited, commercial)
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         editorial=(ROOT/"dist/editorial/index.html").read_text(encoding="utf-8")
@@ -456,12 +456,13 @@ class SiteTests(unittest.TestCase):
         self.assertIn("showPopular(data,pvHealthy)",script)
         self.assertNotIn("innerHTML=",script)
 
-    def test_adsense_ownership_without_running_ads(self):
+    def test_adsense_connection_uses_existing_publisher(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
         self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
         html=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('<meta name="google-adsense-account" content="ca-pub-6754575901141756">',html)
-        self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",html)
+        self.assertIn('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754575901141756" crossorigin="anonymous"></script>',html)
+        self.assertNotIn('data-ad-slot=',html)
 
     def test_continuation_metrics_ride_existing_visit_api_only(self):
         script=(ROOT/"assets/engagement.js").read_text(encoding="utf-8")
@@ -758,6 +759,7 @@ class SiteTests(unittest.TestCase):
                                    curated_categories, generate_rss)
         from scripts.build import uses_stock_photo
         from scripts.visual_review import reviewed_generated_scene
+        from scripts import photo_issues as photo
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -766,6 +768,39 @@ class SiteTests(unittest.TestCase):
         created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")
                  if not p.name.startswith("series-")}
         expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
+        photos=photo.published_issues(photo.load_photo_issues(ROOT),root=ROOT)
+        if photos:
+            expected.add(Path(photo.feed_url()).name)
+            channel=ET.parse(ROOT/"dist"/photo.feed_url().lstrip("/")).getroot().find("channel")
+            self.assertEqual(channel.findtext("title"),"週刊グラビア | 未発生新聞（創作写真コラム）")
+            self.assertEqual(channel.findtext("description"),"架空の成人モデルの写真と、5年後を暮らす短いコラム。")
+            self.assertEqual(channel.findtext("link"),SITE+photo.index_url())
+            self.assertEqual(channel.findtext("language"),"ja")
+            self.assertEqual(channel.find("atom:link",ns).attrib,
+                             {"href":SITE+photo.feed_url(),"rel":"self","type":"application/rss+xml"})
+            releases=sorted(photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)
+            entries=channel.findall("item")
+            self.assertEqual([item.findtext("link") for item in entries],
+                             [SITE+photo.issue_url(issue) for issue in releases])
+            for item,issue in zip(entries,releases):
+                self.assertEqual(item.findtext("guid"),SITE+photo.issue_url(issue))
+                self.assertEqual(item.findtext("title"),issue["title"]+" | 週刊グラビア（創作写真コラム）")
+                self.assertEqual(item.findtext("description"),issue["summary"])
+                self.assertEqual(parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
+                                 datetime.fromisoformat(issue["published_at"]).replace(microsecond=0).isoformat())
+                cover=photo.cover_shot(issue)
+                image=SITE+photo.cover_url(issue)
+                self.assertEqual(item.find("enclosure").attrib,{"url":image,
+                    "length":str(issue["images"][cover["id"]]["bytes"]),"type":"image/jpeg"})
+                self.assertEqual(item.find("media:thumbnail",ns).get("url"),image)
+                self.assertEqual(item.find("media:content",ns).get("url"),image)
+                self.assertEqual(item.find("media:content",ns).get("type"),"image/jpeg")
+                self.assertEqual(item.findtext("media:description",namespaces=ns),cover["alt"])
+            for path,title in [(photo.index_url(),"週刊グラビア")]+[
+                    (photo.issue_url(issue),issue["title"]) for issue in photos]:
+                page=(ROOT/"dist"/path.lstrip("/")/"index.html").read_text(encoding="utf-8")
+                self.assertIn('<link rel="alternate" type="application/rss+xml" title="'
+                              +html.escape(title,quote=True)+' RSS" href="'+photo.feed_url()+'">',page)
         self.assertEqual(created,expected)
         homepage=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
@@ -1116,7 +1151,7 @@ class SiteTests(unittest.TestCase):
             match=re.search(r'<a href="(/articles/[^"]+|/archive/)" class="reader-next-title">',page)
             self.assertIsNotNone(match,a["slug"])
             self.assertNotEqual(match.group(1),"/articles/"+a["slug"]+"/")
-            self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",page)
+            self.assertIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754575901141756",page)
 
     def test_unique_article_png_cards(self):
         from scripts.build import social_image

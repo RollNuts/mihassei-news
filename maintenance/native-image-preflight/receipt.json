@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
-  "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
-  "observed_at": "2026-11-14T12:47:49.350Z",
+  "candidate_identity": "29ed4b62b2ec38cd6761e3fb63e0e723e050a251c9f5792fa4a1badb9089d75c",
+  "logical_run_id": "recovery-pr-744-2026-11-15-0730",
+  "observed_at": "2026-11-14T23:15:09.529Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,11 +17,11 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "af4bdd990d65fe98b7c3b15998a0c73482999038",
+    "commit_sha": "75eb08803a03565665c01a96fe70d32bb866dded",
     "protected_hashes": {
-      "content/articles.json": "8439c9197a4eac431340f59344665dca28f8022b076a58b59a20fd107e72dde2",
-      "assets/generated/manifest.json": "5c771ca60d1916c489fc1620e2c59dcbb58772fa60e69901301b84c5ac9e2f9c",
-      "content/visual_reviews.json": "3feb524ef9b81d79da7e2d72238267806dd52c2395fbdade63390f201173117a"
+      "content/articles.json": "e36e4a801c82dd8b062a5b2a4724764faeabda48a93fd7a17e95ea62046afddb",
+      "assets/generated/manifest.json": "4d039b7a1079c6e4fe09dd11899e8f67cb0341c1e71e0e5c5cc04996d5404996",
+      "content/visual_reviews.json": "7482f29a3eb526865cac8886b0a8ced998b68d4cfcd8032fbede6ec2af146555"
     }
   }
 }

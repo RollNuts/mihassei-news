@@ -45,9 +45,17 @@ async function runPage(options={}){
   const widget=element(),note=element(),today=element(),yesterday=element(),week=element(),period=element();
   widget.hidden=true;widget.querySelector=selector=>selector==='small'?note:null;
   const preference=element(),status=element();
+  const issue=element({engagementKey:options.issueKey||''}),issueStatus=element();
+  issueStatus.textContent='';
+  const likeButtons=(options.likes||[]).map(key=>{
+    const node=element({likeSlug:key,likeLabel:'この号にいいね'});
+    node.heart=element();node.querySelector=()=>node.heart;
+    return node;
+  });
+  const likeCounts=(options.likes||[]).map(key=>element({likeCount:key}));
   const badges=(options.badges||[]).map((item,index)=>{
     const slug=typeof item==='string'?item:item.slug;
-    const node=element({articlePv:slug}),count=element();
+    const node=element({articlePv:slug,...(slug.startsWith('photo-issue:')?{pvLabel:'この号'}:{})}),count=element();
     node.cardHidden=Boolean(item.hidden);
     node.count=count;
     node.querySelector=selector=>selector==='[data-article-pv-count]'?count:null;
@@ -60,12 +68,15 @@ async function runPage(options={}){
     ['[data-site-pv-week]',week],['[data-site-pv-period-label]',period],
     ['[data-pv-tracking-note]',note],
     ['[data-analytics-status]',options.preference?status:null],
+    ['[data-engagement-key]',options.issueKey?issue:null],
+    ['[data-engagement-status]',options.issueKey?issueStatus:null],
     ['.archive-list',options.archive?{}:null]
   ]);
   const document={
-    referrer:'',visibilityState:options.hidden?'hidden':'visible',prerendering:Boolean(options.prerendering),
+    referrer:options.referrer||'',visibilityState:options.hidden?'hidden':'visible',prerendering:Boolean(options.prerendering),
     querySelector:selector=>selectors.get(selector)||null,
     querySelectorAll:selector=>selector==='[data-article-pv]'?badges:
+      selector==='[data-like-slug]'?likeButtons:selector==='[data-like-count]'?likeCounts:
       selector==='[data-analytics-opt-out]'&&options.preference?[preference]:[],
     addEventListener:(name,callback)=>add('document',name,callback)
   };
@@ -108,7 +119,7 @@ async function runPage(options={}){
         if(payload.action==='visit')seenViewIds.add(payload.viewId);
         if(postFailures-->0)throw Error('response lost after server accepted the view');
         if(payload.action==='visit')return {ok:true,json:async()=>snapshotFor(endpoint)};
-        if(payload.action==='like')return {ok:true,json:async()=>({ok:true,liked:true,likes:1})};
+        if(payload.action==='like')return {ok:!options.likeFails,json:async()=>({ok:true,liked:true,likes:1})};
         if(payload.action==='vote')return {ok:true,json:async()=>({ok:true,vote:payload.choice,alreadyVoted:false,votes:{plausible:1,unlikely:0}})};
         return {ok:true,json:async()=>({ok:true})};
       }
@@ -120,7 +131,7 @@ async function runPage(options={}){
   vm.runInNewContext(source,vm.createContext(context),{timeout:1500});
   await settle();
   return {
-    document,widget,note,today,yesterday,week,period,badges,preference,status,storage,
+    document,widget,note,today,yesterday,week,period,badges,preference,status,storage,issueStatus,likeButtons,likeCounts,
     requests,timers,intervals,mutations,seenViewIds,fire,releaseGet,
     advance(ms){clock+=ms;},setSnapshot(value){snapshot=value;},failGets(){getFails=true;},
     visits:()=>requests.filter(request=>request.body?.action==='visit'),
@@ -137,6 +148,7 @@ test('PV labels use display counts, retain missing history, and populate every a
   assert.match(page.note.textContent,/2026\/11\/4.*昨日は未計測/);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['105','0','105']);
   assert.match(page.badges[0].attributes['aria-label'],/105PV/);
+  assert.equal(page.badges[0].attributes.title,'2026/11/4からの表示回数');
   assert.equal(page.widget.hidden,false);
 });
 
@@ -332,4 +344,53 @@ test('session acquisition source persists for 30 minutes and then rotates with a
   const later=await runPage({url:'https://veripsa.com/articles/story-c/?utm_source=google',storage:first.storage,clock:start+41*60*1000});
   assert.notEqual(later.visits()[0].body.sessionId,session);
   assert.equal(later.visits()[0].body.sessionChannel,'search');
+});
+
+test('photo issue PV and likes use the explicit issue key without a news continuation or poll',async()=>{
+  const key='photo-issue:winter-coat-swimsuit-saya-001';
+  const page=await runPage({url:'https://veripsa.com/photo/weekly/winter-coat-swimsuit-saya-001/',
+    issueKey:key,badges:[key],likes:[key],referrer:'https://veripsa.com/articles/source-story/'});
+  assert.equal(page.visits().length,1);
+  assert.equal(page.visits()[0].body.article,key);
+  assert.equal(page.visits()[0].body.pageKind,'other');
+  assert.equal(page.visits()[0].body.fromArticle,undefined);
+  assert.equal(new URL('https://veripsa.com'+page.visits()[0].endpoint).searchParams.get('articles'),key);
+  assert.equal(page.badges[0].count.textContent,'7');
+  assert.equal(page.badges[0].attributes['aria-label'],'この号のページ表示回数 7PV');
+  assert.equal(page.badges[0].attributes.title,'この号の計測開始後の表示回数',
+    'an issue must not inherit the earlier site-wide tracking start date');
+  assert.equal(page.likeCounts[0].textContent,'0');
+  assert.equal(page.likeButtons[0].attributes['aria-label'],'この号にいいね');
+  page.fire('document','click',{target:{closest:selector=>selector==='[data-like-slug]'?page.likeButtons[0]:null}});
+  await settle();
+  assert.equal(page.requests.find(request=>request.body?.action==='like').body.article,key);
+  assert.equal(page.likeCounts[0].textContent,'1');
+  assert.equal(page.likeButtons[0].attributes['aria-pressed'],'true');
+  assert.ok(!page.requests.some(request=>request.body?.action==='vote'));
+});
+
+test('photo issue analytics opt-out and malformed metadata retain read-only behavior',async()=>{
+  const key='photo-issue:winter-coat-swimsuit-saya-001';
+  const page=await runPage({url:'https://veripsa.com/photo/weekly/winter-coat-swimsuit-saya-001/?analytics=off',
+    issueKey:key,badges:[key]});
+  assert.equal(page.visits().length,0);
+  assert.equal(page.gets().length,1);
+  assert.equal(page.badges[0].count.textContent,'7');
+  assert.equal(page.storage.has('mihassei-anonymous-browser-v1'),false);
+  const wrong=await runPage({url:'https://veripsa.com/photo/weekly/different-issue/',issueKey:key});
+  assert.equal(wrong.visits()[0].body.article,'','a mismatched issue key cannot count the wrong issue');
+});
+
+test('failed photo issue likes restore the confirmed preference and show a retry message',async()=>{
+  const key='photo-issue:issue-001';
+  const page=await runPage({url:'https://veripsa.com/photo/weekly/issue-001/',issueKey:key,likes:[key],likeFails:true});
+  page.fire('document','click',{target:{closest:()=>page.likeButtons[0]}});
+  await settle();
+  assert.equal(page.likeButtons[0].attributes['aria-pressed'],'false');
+  assert.equal(page.likeCounts[0].textContent,'0');
+  assert.match(page.issueStatus.textContent,/送信できませんでした/);
+  page.failGets();page.advance(600000);page.intervals[0].callback();await settle();
+  assert.match(page.issueStatus.textContent,/PV・いいねを取得できませんでした/);
+  const unavailable=await runPage({url:'https://veripsa.com/photo/weekly/issue-001/',issueKey:key,postFailures:2});
+  assert.match(unavailable.issueStatus.textContent,/PV・いいねを取得できませんでした/);
 });

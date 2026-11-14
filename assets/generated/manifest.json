@@ -6614,6 +6614,356 @@
       "generation_id": "b3655073-1215-41be-87ea-5e44fa7e950a",
       "generation_receipt": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
       "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
+    },
+    "autumn-ridge-path-rests-riverside-trail-opens": {
+      "article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+      "source_article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+      "bytes": 269526,
+      "sha256": "bc542bd345adf40fe973d21952893799890e9d8f3d17bfd14b6fd1a4445f40a7",
+      "generated_at": "2026-11-14T12:41:49.275Z",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "generation_prompt": "A fictional Japanese female nature tour guide, age 34, leads adult hikers along a wooden riverside walkway as red autumn leaves reflect in the water. Photorealistic candid environmental news photograph in a fictional Japanese town nature park in November; autumn jackets, an adult male visitor age 29 holding a camera, a wooden handrail, river reflections and fall foliage visible together, natural overcast daylight, natural faces and hands, textured autumn jackets, weathered wood and realistic water reflections. Horizontal 16:9, documentary realism, no readable signs, brands, logos or recognizable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "source_png_sha256": "7848a702a8055029525351b7829c7c7b1df2121305368ce5d7dd66e71261df03",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:67884e3e-0883-4155-a680-ea5b51125b87",
+        "instanceID": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              14,
+              253,
+              252,
+              217,
+              1,
+              162,
+              181,
+              220,
+              13,
+              19,
+              126,
+              134,
+              139,
+              178,
+              73,
+              216,
+              51,
+              220,
+              117,
+              173,
+              148,
+              76,
+              140,
+              137,
+              127,
+              144,
+              63,
+              115,
+              67,
+              104,
+              46,
+              184
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-14T12:41:46.819890067Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T12:41:46.819892669Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T12:41:46.815845399Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
+        "candidate_branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
+        "candidate_commit": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
+        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
+        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407",
+        "bytes": 2887922,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "73685fdc2a00ded85551a18b68ca74f7d7360fb30e7dbf7403674cdb9a4f10e4",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part000",
+            "bytes": 524288,
+            "sha256": "57f650c20e7dec3e9b6fca20e42b0403a9e97cf09fc46ae0ca55de656a396b61",
+            "blob_sha": "2c4a1cb072947fb74d0f4fcb15d2a5898c17f76b"
+          },
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part001",
+            "bytes": 524288,
+            "sha256": "2bd280567aac91e0046ff69a0370fe5c61da34a196c3aab03744bcad5b94aefb",
+            "blob_sha": "50af1b1a85681990b849344e37576db17c66326d"
+          },
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part002",
+            "bytes": 524288,
+            "sha256": "8b7572246206ac2982bb45282af1104f9d82df9c6d9ec82cf8f80fc1a5cc83c5",
+            "blob_sha": "7584c36cf84fb1b8a9c4cd0dc69cee23c16ba9db"
+          },
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part003",
+            "bytes": 524288,
+            "sha256": "8bcc6e60d63448963c7e1777c9ec35546bf1516e2039b8bc8e70744eb24756e4",
+            "blob_sha": "86ed9473e96d01deb053e8bea4d2d938009e56f2"
+          },
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part004",
+            "bytes": 524288,
+            "sha256": "6670d8b4c8fb401f9d4208ac0238eee0dd63ce7bc0e7a8b9eece45706ecdb99d",
+            "blob_sha": "02bfcc195be699ddb004a6f42176ac208e0cc899"
+          },
+          {
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part005",
+            "bytes": 266482,
+            "sha256": "78937697641d7f1d818f967fc9ff98d9c07d6626f160f859455c23cc27f703d5",
+            "blob_sha": "07b3c78f7df7e6d5d863f310c162dccdeaad4a44"
+          }
+        ],
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "bcd0e5b58e7cd03d1402e8ddecf2a9978cce4f0b",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "8cae2d9c59bd54e8971727071fed3844809ea6b65b4179c39f2ecec33d5d943d",
+          "observed_at": "2026-11-14T12:40:53.828Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
+          "receipt_path": "maintenance/native-image-generation-claims/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3.json",
+          "receipt_sha256": "2934bdc2804200cb1124f6254bf056c2cf3b7d9afa35e2d3063794a79dc639df",
+          "commit_sha": "5bf9977760cbd51eb69ee9fc460a40f6fde52865"
+        }
+      },
+      "native_candidate": {
+        "branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
+        "commit_sha": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
+        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
+        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407",
+        "identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3"
+      },
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      },
+      "generation_id": "ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+      "generation_receipt": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
+    },
+    "matchmaking-ai-bios-same-hobbies-handwritten-line": {
+      "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "source_article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "bytes": 170606,
+      "sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca",
+      "generated_at": "2026-11-14T12:48:40.227Z",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "generation_prompt": "An adult Japanese woman, age 27, writes a short handwritten addition on her own matchmaking introduction card. Candid photorealistic press photograph at a fictional social event, a friendly adult male participant age 29 smiling across the table, softly blurred pinboard with indistinct cards behind them, warm ordinary indoor lighting, realistic casual November attire, natural hands and expressions, horizontal 16:9. No readable text, logos, brand marks, or real-person likeness.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "source_png_sha256": "c2efe0f5d02b11ef3c03d48170771929d942466dbaa34e63c58bf004ee466808",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:9e806982-0bc8-4132-8c94-41b87fbf231e",
+        "instanceID": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              230,
+              29,
+              82,
+              22,
+              189,
+              33,
+              209,
+              213,
+              214,
+              76,
+              199,
+              130,
+              142,
+              195,
+              47,
+              5,
+              4,
+              225,
+              137,
+              155,
+              92,
+              72,
+              115,
+              214,
+              138,
+              222,
+              69,
+              132,
+              248,
+              123,
+              69,
+              136
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-14T12:48:38.004425170Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T12:48:38.004429236Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T12:48:38.002764334Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
+        "candidate_branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
+        "candidate_commit": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
+        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
+        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25",
+        "bytes": 2514672,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "85c89192a7d32857b4b21a51d7d19b21aaddb19d4a46b1957dd680f8a4d59713",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part000",
+            "bytes": 524288,
+            "sha256": "6d3a7a5b2df118bbcef44d4a152f90417446bfa146a2c3a7ab9c07cb41938ca3",
+            "blob_sha": "3471634f248262bd84930a7841a8a702aa3f256c"
+          },
+          {
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part001",
+            "bytes": 524288,
+            "sha256": "5900ec9c9428931a2de48faa9ad3947595f51ad542ae226a0595143ccd6ac05c",
+            "blob_sha": "53b8ccffc1c89b6bdac63c0b9969b25b0f249686"
+          },
+          {
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part002",
+            "bytes": 524288,
+            "sha256": "80085a511793678e4454e43092912bde12cc8df6fef3feb9cfba538cf32cee5a",
+            "blob_sha": "6411ba8720493d5153d84689ef4071cc698a35f6"
+          },
+          {
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part003",
+            "bytes": 524288,
+            "sha256": "98e32e263f8d6b1d6d439ae5fbd254efe2bffbc12b2113e02f9ec65887748b77",
+            "blob_sha": "a40b1193e9be4bb162a91c17291d466722bfc749"
+          },
+          {
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part004",
+            "bytes": 417520,
+            "sha256": "c5ea82c0a4703f3f83eff0cc2ff110eee3bdd95704c922ceabce7226acb55b5e",
+            "blob_sha": "6a3d9941aebb6c91d262d303fba3ab39be30a372"
+          }
+        ],
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "5921449b0d2dc2f1d19f7cc46fe0a77dabf2bbde",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "2499905e762617fd5f196fce90d41faa7e1e3832ff2fe8c8589e974dc9b3efa4",
+          "observed_at": "2026-11-14T12:47:49.350Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
+          "receipt_path": "maintenance/native-image-generation-claims/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9.json",
+          "receipt_sha256": "a784b8347f3f7bd18c7e43a736ab0d3a38a6f39e14f754b81f8ca50bf0b48ca8",
+          "commit_sha": "6d7927277fee2cfdd32350f0a33eac64e5a4433e"
+        }
+      },
+      "native_candidate": {
+        "branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
+        "commit_sha": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
+        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
+        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25",
+        "identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9"
+      },
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      },
+      "generation_id": "95a60531-c31d-49be-8c03-9f2ed7436305",
+      "generation_receipt": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
     }
   },
   "rejected": {

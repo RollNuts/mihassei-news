@@ -1,6 +1,7 @@
 [
   {
     "slug": "matchmaking-ai-bios-same-hobbies-handwritten-line",
+    "broadcast_feature": true,
     "category": "社会",
     "flash": "AI自己紹介18枚の続きは手書き",
     "fiction_company": "架空の婚活交流サービス「本音日和」",
@@ -5560,5 +5561,72 @@
       "AI任せ",
       "会議無限編"
     ]
+  },
+  {
+    "slug": "remote-basketball-final-fans-walk-behind-hoop",
+    "category": "スポーツ",
+    "flash": "遠くの体育館でゴール裏観戦",
+    "fiction_company": "架空のバスケットボールリーグ「空輪リーグ」",
+    "art": "cards",
+    "fiction_at": "2031-11-15T07:30:48+09:00",
+    "published_at": "2026-11-15T07:30:48+09:00",
+    "title": "バスケ決勝、遠くの体育館でも観客がゴール裏へ　「歩く観戦席」が登場",
+    "summary": "架空のバスケットボールリーグが、離れた町の体育館で選手の動きを立体映像として見る観戦サービスを開始。観客は専用の眼鏡を掛けてコート外周を歩き、終盤の3点シュートをゴール裏から見上げた。",
+    "paragraphs": [
+      "2031年11月15日、架空のバスケットボール「空輪リーグ」の決勝戦が行われた。試合会場から離れた南波市の体育館では、観客が専用の眼鏡を掛け、ゴール裏へ歩いていた。眼鏡越しに見えるのは、別の町でプレーする選手とボールの等身大の立体映像だ。",
+      "リーグがこの日から始めたのは、離れた体育館を観戦会場にする「歩く観戦席」。従来の大画面中継と違い、観客は床に設けたコート外周の歩行帯を移動し、ベンチ側やゴール裏など好きな角度から試合を見る。遠征先の入場券を取れなかった家族も、選手の位置関係を自分の足で確かめながら応援できる。",
+      "試合会場の複数のカメラが捉えた動きは立体データに変換され、観客の眼鏡へ送られる。実際の床には選手もボールもいない。係員は「青い線より内側には入らないでください」と案内した。接触を避けるため観客の通路はコートの外側だけで、映像も現地から数秒遅れて届く。眼鏡を使わない人向けには、壁の画面にも通常の中継が流れた。",
+      "終盤、1点を追うチームがゴールから遠い位置でボールを受けると、守備の選手が両手を上げた。娘の紬（28）は「ここからだと手で隠れる」と言い、歩行帯を二歩横へ移った。父も後を追ってゴール裏へ回る。二人の眼鏡には、守備の手を越えた3点シュートがリングへ向かって飛んでくるように見えた。",
+      "ボールがリングを抜けると、離れた体育館でも歓声が起きた。紬と父は顔を見合わせ、互いに違う場所から見た最後の一投について話し始めた。終了後、眼鏡を外した父は空っぽのゴールを見上げ、「次もゴール裏で見たい」と笑った。試合後の体育館に残ったのは、青い歩行帯と空のゴールだけだった。"
+    ],
+    "source": {
+      "kind": "企業公式技術実証発表",
+      "publisher": "キヤノン株式会社",
+      "published_at": "2026-10-15T00:00:00+09:00",
+      "url": "https://global.canon/ja/news/2026/20261015-2.html",
+      "topic": "キヤノンは2026年10月15日、同年9月下旬のバスケットボール競技映像を3D空間データ化し、約750台の端末へ自由視点で同時ライブ配信する実証を発表。別途9月25日公表の実証では、MR装置を用いた遠隔地での3Dバスケット観戦を試験した。2031年の空輪リーグ、等身大の体育館観戦サービス、自由歩行する観客、南波市、人物、試合の得点と結果はすべて創作。実在会社の将来事業や大会成績ではない。"
+    },
+    "scene_prompt": "An adult Japanese daughter age 28 and her father walk together behind a basketball hoop inside a fictional remote-viewing gym while watching a match through mixed-reality glasses. Photorealistic candid press photograph, small indoor sports hall with clearly marked safe sideline walking lane, other adult spectators in November casual jackets, a large wall screen showing indistinct basketball play, believable ordinary sports lighting and natural expressions. Realistic human hands, athletic floor, basketball equipment and perspective; landscape 16:9; no readable text, logos, recognizable real people or fantasy effects.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "バスケットボール",
+      "遠隔観戦",
+      "立体映像"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "バスケットボール",
+      "スポーツ観戦"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "現地にいないのに、ゴール裏まで歩いていける。バスケ決勝の最後の3点を、別の町の体育館で見上げた観客たち。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年10月15日、キヤノンがバスケットボールの自由視点3D映像を約750端末へ同時ライブ配信した実証を公表",
+      "target": "遠隔地の体育館を観客が歩きながら観戦できる立体中継会場へ変えるサービス",
+      "action": "架空のリーグが観客の位置に応じて試合の立体映像を見られる眼鏡と歩行帯を導入し、親子がゴール裏へ回る",
+      "outcome": "3点シュートをそれぞれの角度から見た観客が歓声を上げ、眼鏡を外した後も空のゴール裏に立つ"
+    },
+    "reader_clarity": {
+      "who": "架空のバスケットボールリーグの遠隔観戦会場の観客",
+      "action": "専用眼鏡で選手とボールの立体映像を見ながらゴール裏へ移動する",
+      "oddity": "会場から離れた町の体育館で、席に座る代わりに歩いてシュートの角度を変えられる"
+    },
+    "behavior_basis": {
+      "motive": "現地の入場券が取れない人にも好きな角度から競技の動きと距離感を楽しんでもらう",
+      "ordinary_alternative": "テレビや大画面に映る固定のカメラ映像を椅子から観戦する",
+      "why_not": "観客が移動して見る角度を変えられ、守備選手の後ろに隠れたボールも見られるため",
+      "evidence_quote": "従来の大画面中継と違い、観客は床に設けたコート外周の歩行帯を移動し、ベンチ側やゴール裏など好きな角度から試合を見る。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に3D競技映像の自由視点配信とMR遠隔観戦が技術実証された",
+      "continuation_force": "自由視点でスポーツを体感したい需要と、現地会場へ行けない観客のための地域拠点づくりが続く可能性",
+      "future_result": "2031年、架空リーグが一般客向けに遠隔体育館の歩行型立体観戦を開始し、観客が自分の位置を変えて決勝点を見届ける"
+    },
+    "publication_slot": "2026-11-15T07:30:00+09:00"
   }
 ]

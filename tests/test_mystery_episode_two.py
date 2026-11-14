@@ -33,18 +33,15 @@ class MysterySecondChapterTests(unittest.TestCase):
             self.assertIn(fact, body)
         self.assertNotIn("二十四時間も不気味", body)
 
-    def test_first_chapter_points_to_actual_sequel_not_coming_soon(self):
-        first = render_episode_page(self.fiction, self.fiction["episodes"][0], plain_layout)
-        self.assertIn('/serials/case-files/victim-not-yet-dead-02/', first)
-        self.assertIn('第2話が公開されています', first)
-        self.assertNotIn("第2話は準備中です", first)
-        second = render_episode_page(self.fiction, self.fiction["episodes"][1], plain_layout)
-        self.assertIn('/serials/case-files/victim-not-yet-dead-01/', second)
-        self.assertIn('第2話・消された四桁', second)
-        self.assertNotIn('data-mystery-notebook', second)
-        overview = render_series_page(self.fiction, plain_layout)
-        self.assertIn('公開済み '+str(len(self.fiction["episodes"]))+'話', overview)
-        self.assertIn('第1話から読む', overview)
+    def test_original_chapters_remain_source_only_after_withdrawal(self):
+        first, second = self.fiction["episodes"][:2]
+        self.assertEqual(first["slug"], "victim-not-yet-dead-01")
+        self.assertEqual(second["slug"], "victim-not-yet-dead-02")
+        for chapter in (first, second):
+            with self.assertRaisesRegex(ValueError, "withdrawn"):
+                render_episode_page(self.fiction, chapter, plain_layout)
+        with self.assertRaisesRegex(ValueError, "withdrawn"):
+            render_series_page(self.fiction, plain_layout)
 
     def test_episode_two_does_not_present_unverified_alibi_as_a_fact(self):
         clue = self.fiction["episodes"][1]["clues"][0]

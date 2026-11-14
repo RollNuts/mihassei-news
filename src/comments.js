@@ -16,7 +16,13 @@ function reply(value, status=200) {
     }
   });
 }
-function validSlug(s) { return typeof s==='string' && s.length<=100 && SLUG.test(s); }
+function validSlug(s) {
+  if(typeof s!=='string')return false;
+  // A colon reserves a separate namespace from news slugs. Public photo posts
+  // are checked against the build's published-issue allowlist by the Worker.
+  const slug=s.startsWith('photo-issue:') ? s.slice('photo-issue:'.length) : s;
+  return slug.length<=100 && SLUG.test(slug);
+}
 function validId(s) { return typeof s==='string' && UUID.test(s); }
 function publicComment(row) {
   return {id:row.id, nickname:row.nickname, body:row.body,

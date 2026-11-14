@@ -2,7 +2,7 @@
   'use strict';
   const root=document.querySelector('[data-comments]');
   if(!root)return;
-  const article=root.dataset.article;
+  const article=root.dataset.commentsKey||root.dataset.article;
   const list=root.querySelector('[data-comments-list]');
   const status=root.querySelector('[data-comments-status]');
   const count=root.querySelector('[data-comments-count]');
