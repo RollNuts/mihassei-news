@@ -796,6 +796,13 @@
             "identity": "8ad0a09c06ba6573d4ec8954ae0f583cc43d63383a13fa4fffaa2bf0d509c33b",
             "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-5f5f97c465e1",
             "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
+          },
+          "candidate": {
+            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-4d0640c63c73",
+            "commit": "617c3041aceaf5505181385c2aee2f376386d0be",
+            "jpeg_sha256": "7115d2bdadd6042a6d1c74f1809da96eccc3838fbdcf79319116c1faa0dfed37",
+            "decision": "hold",
+            "reason": "Generated one-piece photograph is technically sound, but reader rejected the onsen-like location and requests dedicated bikini fashion. No visual acceptance or publication."
           }
         }
       },
@@ -1599,7 +1606,7 @@
         "path": "assets/generated/photo-master-nagino-saya-c3552d3b1fad.jpg",
         "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94"
       },
-      "cover_cut_id": "04"
+      "cover_cut_id": "01"
     }
   ]
 }
