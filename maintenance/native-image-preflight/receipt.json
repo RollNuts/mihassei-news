@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "5aa6acb12e0d23559fd6ab0150086b9a0afebf5f2f031f148456b5f2b75afc23",
-  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-07",
-  "observed_at": "2026-11-14T06:53:03.120Z",
+  "candidate_identity": "c2a720dcf3c12e65ad8b9cd6c28ded521c483d8d170a88120ae8dbd7e9e2af48",
+  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-08",
+  "observed_at": "2026-11-14T06:55:56.316Z",
   "route": "Actual PNG data URL to GitHub candidate storage in this execution",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
