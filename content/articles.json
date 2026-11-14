@@ -1,5 +1,71 @@
 [
   {
+    "slug": "autumn-ridge-path-rests-riverside-trail-opens",
+    "category": "政治",
+    "flash": "紅葉の一番人気が秋休み",
+    "fiction_company": "架空の砂灯町",
+    "art": "cards",
+    "fiction_at": "2031-11-14T17:35:05+09:00",
+    "published_at": "2026-11-14T17:35:05+09:00",
+    "title": "紅葉の人気遊歩道、11月は「お休み」　町議会が川沿いの代替コースを可決",
+    "summary": "架空の砂灯町は、紅葉客が集中する尾根の遊歩道を11月だけ休ませ、川沿いの木道をガイド付きで開く観光保全策を決めた。尾根から紅葉を見ようと来た旅行者は、水面に映る赤い木々を撮って帰った。",
+    "paragraphs": [
+      "2031年11月14日、架空の砂灯町議会は、町の自然公園で最も人気のある紅葉の尾根道を毎年11月だけ休ませ、その間は川沿いの木道をガイド付きで開く「秋道の交代制」を可決した。旅行者の散策を全面禁止するのではなく、秋の間だけ歩く場所を入れ替える。",
+      "町の観光協議会が調べると、尾根の写真スポット周辺は人が集中し、道の脇まで踏まれて土が露出していた。従来は注意札を増やして通行を続けていたが、町は道を一時的に休ませることにした。「一方の道を休ませても、旅行そのものは休ませない」というのが新しい方針だ。11月は尾根、春は川沿いの一部を順番に閉じる。川の増水時は案内を中止し、町中の散策に切り替える。",
+      "可決を受けた最初の案内日、観光客の広瀬航（29）が尾根道の入口まで歩くと、木柵と通行休止の案内が立っていた。案内人の江藤結衣（34）は川へ下る道を指し、「上から見る紅葉は来月に。今日は水に映る方をご案内します」と声を掛けた。広瀬は尾根から撮るつもりだったカメラを持ち直し、ほかの客と木道へ向かった。",
+      "木道に着くと、流れの緩やかな川面に赤いカエデと黄色い葉が重なって映っていた。江藤が歩く速度を落とすと、一行は手すりの内側から水面へカメラを向けた。尾根から見下ろす山全体の写真とは違い、川辺の紅葉が上下に二つ並ぶ景色になった。",
+      "夕方、観光案内所の写真コーナーには、広瀬がその日に撮った「川の中の紅葉」が一枚加わった。窓口では翌週の川沿いツアーの予約が入り、休止中の尾根道の地図は横に置かれたまま。町は通行人数と道の傷みを毎月記録し、次の季節に休ませる区間を見直すという。"
+    ],
+    "source": {
+      "kind": "環境省公式報道発表（エコツーリズム推進支援）",
+      "publisher": "環境省",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.env.go.jp/press/110930_00007.html",
+      "topic": "環境省は2026年11月13日、令和8年度国立公園等資源整備事業費補助金の三次公募でエコツーリズム事業1件の採択を発表した。地域協議会による自然観光資源の持続的利用やモニタリング調査手法の検討などを支援する。2031年の砂灯町、尾根道を11月に休ませる交代制、議会可決、川沿い木道のツアー、個々の登場人物と写真はすべて創作であり、環境省が特定の遊歩道閉鎖を決めた事実ではない。"
+    },
+    "scene_prompt": "A fictional Japanese female nature tour guide, age 34, leads adult hikers along a wooden riverside walkway as red autumn leaves reflect in the water. Photorealistic candid environmental news photograph in a fictional Japanese town nature park in November; autumn jackets, an adult male visitor age 29 holding a camera, a wooden handrail, river reflections and fall foliage visible together, natural overcast daylight, human-scale scene and realistic anatomy. Horizontal 16:9, documentary realism, no readable signs, real brands, logos, celebrity likenesses, illustration or synthetic CGI styling.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "紅葉",
+      "自然公園",
+      "エコツーリズム"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "紅葉",
+      "エコツーリズム"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "紅葉の見頃に、いちばん人気の遊歩道を休ませる町。代わりに案内された川辺には、もう一つの紅葉が映っていた。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月13日、環境省が自然観光資源の保全と観光活用を両立するエコツーリズム事業の採択を公表",
+      "target": "架空の町議会が紅葉期の尾根道を休ませ、川沿いの代替散策コースを案内する季節別の観光保全策を決める",
+      "action": "ガイドが尾根を目指した旅行者を川沿いの木道へ案内し、旅行者は水面の紅葉を撮影する",
+      "outcome": "観光案内所に川面の紅葉写真が加わり、翌週の散策予約が入る"
+    },
+    "reader_clarity": {
+      "who": "砂灯町議会と自然公園を訪れる観光客",
+      "action": "紅葉の尾根道を11月だけ休ませ、川沿いの木道を代替の散策コースとして開く",
+      "oddity": "最も人気のある紅葉道を見頃の季節に休ませ、別の景色を見せる"
+    },
+    "behavior_basis": {
+      "motive": "踏まれて傷んだ尾根道を休ませながら、秋に訪れる客も楽しめる景色を残したい",
+      "ordinary_alternative": "通行を続けて注意札を増やすか、紅葉シーズンに公園を全面閉鎖する",
+      "why_not": "尾根を休止しても川沿いの木道を安全に案内できる日だけ開き、保全と来訪を両立するため",
+      "evidence_quote": "一方の道を休ませても、旅行そのものは休ませない"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月13日、環境省が地域のエコツーリズム推進とモニタリングへの支援事業1件の採択を発表",
+      "continuation_force": "自然観光資源の保全と観光の継続を両立するには利用状況を見ながら遊歩道の使い方を見直す必要がある",
+      "future_result": "2031年、架空の町で季節ごとに休ませる散策路を変え、観光客を別の紅葉の景色へ案内する"
+    }
+  },
+  {
     "slug": "offline-tape-restores-missing-contract-revision",
     "category": "事件",
     "flash": "AI検索の外に残った1件",
