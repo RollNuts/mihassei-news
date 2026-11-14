@@ -5909,6 +5909,171 @@
         941
       ],
       "width": 1200
+    },
+    "offline-tape-restores-missing-contract-revision": {
+      "article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
+      "bytes": 123989,
+      "generated_at": "2026-11-14T06:36:00.993Z",
+      "generation_id": "6bd14824-7c28-4f15-843c-2b15483c27b8",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "An adult Japanese female archive worker, age 35, takes one magnetic tape data cartridge from a secure metal storage shelf. Photorealistic candid press photograph in a fictional company records vault, ordinary professional office attire, natural face and hand anatomy, visible tape cartridge and cabinet shelving, restrained fluorescent lighting, realistic surfaces and shadows, horizontal 16:9. No logos, readable writing, weapons, security incident graphics, brands, or real-person likeness.\nShow the practical action clearly: a rectangular archival data-tape cartridge is partly withdrawn from its shelf slot in the worker's hand. An authentic unposed workplace feature photo, entirely fictional scene. Keep clothing ordinary and professional. Frame the worker and hand-held cartridge together; realistic face, fingers, metal shelving, and subdued light. No visual labels, signs, writing or graphics. Landscape 16:9.",
+      "generation_prompt_source": "Exact built-in image_gen input captured by generateAndStage in the same generating execution.",
+      "generation_receipt": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "4ea139464842ca8965575392b77f9a597b4f701e309bf11422d120ab7f7919cb",
+      "source_article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T06:35:58.361229763Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T06:35:58.361232958Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T06:35:58.359453318Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              192,
+              175,
+              194,
+              194,
+              23,
+              59,
+              36,
+              71,
+              156,
+              153,
+              121,
+              144,
+              231,
+              21,
+              189,
+              105,
+              223,
+              61,
+              214,
+              171,
+              79,
+              197,
+              146,
+              244,
+              193,
+              255,
+              175,
+              175,
+              171,
+              129,
+              56,
+              83
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
+        "manifest_uri": "urn:c2pa:b11078c0-8377-4099-8010-3be610efe327",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2272838,
+        "caBX_sha256": "442754e80850d27f2b988ce5d241c514299791794a98f5bee6e939565f00dc21",
+        "candidate_branch": "native-image-candidate/offline-tape-restores-missing-contract-revision/67f70881b03ea8cc-c9adcd00e5d4",
+        "candidate_commit": "81bb8354fcf82a9d313f512e8e05801679798b7d",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e",
+          "commit_sha": "817a965896ca0dc9a2d4b767f9926765cc7802e7",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e.json",
+          "receipt_sha256": "324c0806b0a48ddb36bb43fc8cc19226fb232382369aca8c21527289c26a7508",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-0930-offline-tape-reviewed-first-photo",
+        "method": "Same-execution generateAndStage captured the actual PNG and exact prompt, saved the full original PNG parts, JPEG and receipt, and verified SHA readback. The generating task displayed the original PNG and final JPEG against the full article; a separate read-only reviewer independently checked the original PNG against the article.",
+        "original_png_parts": [
+          {
+            "blob_sha": "c183844779012eb4ddf43cf80ae41b06c97e1e7b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part000",
+            "sha256": "a385a73114aefa479d0b9f6e0e812ef42976a5001d97a3d2c78ed798eb1ad313"
+          },
+          {
+            "blob_sha": "c966813528ff25ca470a8a66296ba590a9d1f08f",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part001",
+            "sha256": "a826823c29ade5baf06aadd6d32386338acdab9e926a981546c69e067327456f"
+          },
+          {
+            "blob_sha": "c741f7c17e4da24dff48f286abee6c165ab14ff5",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part002",
+            "sha256": "115a4598687343ffc6ec63e17acd723e979e612ad668fa5ea3ea95c6e10a6376"
+          },
+          {
+            "blob_sha": "0c7deeaa3dd8a29681b46a929b2b186c4d1c589b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part003",
+            "sha256": "e340f3a8adba6bdcf72156477c37418740adf7cc9827d6c117078a5c43706955"
+          },
+          {
+            "blob_sha": "25ed3ac19acd352f5f39810a26d2a678f70c0f3a",
+            "bytes": 175686,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part004",
+            "sha256": "ecf9f85b7714fb70a7f2703cc966d1d54736c5ac350a41e00ee1840922f6a8c9"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/receipt.json",
+        "receipt_sha256": "7090ecf4601d428edc2a4b43e21b6af88a62da6052244c971ac4961b512911a3",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "76e00ee6d8bda423fc8bea4361598ed840189049",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T06:35:12.404Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "73f922ad46d94dc78172d2d60f413404bc1ba035742b8825d5be460f3636b5c3",
+          "route": "Actual PNG data URL to GitHub candidate storage in this execution",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "7ea9ff1c3090049a99f3c15bcc75bc5a3239d8ec289585ef1832142720a53c29",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     }
   },
   "rejected": {
