@@ -127,7 +127,7 @@ def generation_inputs(issue, cut):
     setting = issue.get("setting")
     if (not isinstance(setting, dict) or type(setting.get("year")) is not int
             or setting["year"] < 2031 or type(setting.get("month")) is not int
-            or not 1 <= setting["month"] <= 12 or setting.get("aspect_ratio") != "16:9"):
+            or not 1 <= setting["month"] <= 12 or setting.get("aspect_ratio") not in ("16:9", "original")):
         raise ValueError("Invalid photo plan setting")
     location = _text(setting.get("location"), "location")
     dimensions = "、".join(f"{label}{profile[key]:g}{unit}" for key, label, unit in (
@@ -135,12 +135,13 @@ def generation_inputs(issue, cut):
         ("waist_cm", "ウエスト", "cm"), ("hip_cm", "ヒップ", "cm"),
         ("shoulder_width_cm", "肩幅", "cm"), ("inseam_cm", "股下", "cm"),
         ("heads_tall", "頭身", "")))
+    framing = "横長16:9。" if setting["aspect_ratio"] == "16:9" else "写真ごとの元の縦横比を保つ。"
     prompt = (
         f"架空の成人モデル・{snapshot['name']}（{snapshot['age']}歳）の自然な雑誌写真。"
         f"人物設定: {snapshot['appearance']}\n"
         "顔と髪はface参照、全身の自然な比例はbody参照を使い、同じ成人として維持する。\n"
         f"創作上の体型設計: {dimensions}。写真からの実測値ではなく、一致は実画像で確認する。\n"
-        f"舞台は{setting['year']}年{setting['month']}月、{location}。横長16:9。\n"
+        f"舞台は{setting['year']}年{setting['month']}月、{location}。{framing}\n"
         f"このカット: {shot}\n"
         "通常の衣服・水着のファッション写真として自然な姿勢と表情で撮る。"
     )

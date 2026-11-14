@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
+import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -265,10 +267,56 @@ def _generation_source(issue, image, cut):
             raise ValueError("Photo adoption changed original provenance/review history")
     if not original_acceptance:
         study = entry.get("studies", {}).get(logical)
-        if (not isinstance(study, dict) or reviews != []
+        if (not isinstance(study, dict)
                 or any(study.get(key) != image.get(key) for key in
                        ("sha256", "bytes", "source_png_sha256", "provenance"))):
             raise ValueError("Photo adoption is not a registered unaccepted native study")
+        # A study may have been accepted in a later, retained editorial version.
+        # Preserve that chain instead of erasing its true generation identity.
+        history = _editorial_history(issue)
+        current_stamp = _stamp(image["review"].get("reviewed_at"))
+        for version in history.values():
+            for original in version["images"].values():
+                if not isinstance(original, dict):
+                    continue
+                old_adoption = original.get("adoption", {})
+                if (all(original.get(key) == image.get(key) for key in
+                        ("sha256", "bytes", "source_png_sha256", "provenance"))
+                        and old_adoption.get("source_issue_sha256") == source_fp
+                        and original.get("review", {}).get("decision") == "accepted"
+                        and original["review"] not in reviews):
+                    raise ValueError("Photo study lost its retained acceptance review")
+        earlier = False
+        for review in reviews:
+            version = history.get(review.get("issue_sha256"), {})
+            matched = False
+            for old_cut, original in version.get("images", {}).items():
+                old_adoption = original.get("adoption", {})
+                if (original.get("review") == review and review.get("decision") == "accepted"
+                        and review.get("cut_id") == old_cut and review.get("image_sha256") == image["sha256"]
+                        and review.get("master_sha256") == issue["model_snapshot"]["master"]["sha256"]
+                        and version.get("editorial", {}).get("model_snapshot") == issue["model_snapshot"]
+                        and all(original.get(key) == image.get(key) for key in
+                                ("sha256", "bytes", "source_png_sha256", "provenance"))
+                        and old_adoption.get("source_issue_sha256") == source_fp
+                        and old_adoption.get("target_issue_sha256") == review.get("issue_sha256")
+                        and old_adoption.get("target_cut_id") == old_cut
+                        and _stamp(review.get("reviewed_at")) <= current_stamp):
+                    if _stamp(review["reviewed_at"]) == current_stamp:
+                        current_shot = next(shot for shot in issue["shots"] if shot["id"] == cut)
+                        old_shot = next(shot for shot in version["editorial"]["shots"] if shot["id"] == old_cut)
+                        observed = ("decision", "image_sha256", "master_sha256", "cut_id",
+                                    "swimwear_visible", "framing", "body_profile_sha256")
+                        if (current_shot != old_shot or any(image["review"].get(key) != review.get(key)
+                                                          for key in observed)):
+                            raise ValueError("Photo study changed its observation without a new visual review")
+                    matched = True
+                    earlier |= _stamp(review["reviewed_at"]) < current_stamp
+                    break
+            if not matched:
+                raise ValueError("Photo study review lacks its retained acceptance snapshot")
+        if reviews and not earlier:
+            raise ValueError("Photo study adoption reuses its original acceptance time")
     return entry["editorial"]["source_article"]
 
 
@@ -334,7 +382,7 @@ def validate_catalog(data):
         setting = issue.get("setting")
         if (not isinstance(setting, dict) or type(setting.get("year")) is not int
                 or setting["year"] < 2031 or type(setting.get("month")) is not int
-                or not 1 <= setting["month"] <= 12 or setting.get("aspect_ratio") != "16:9"):
+                or not 1 <= setting["month"] <= 12 or setting.get("aspect_ratio") not in ("16:9", "original")):
             raise ValueError("Invalid fictional photo issue setting")
         _text(setting.get("location"), "location")
         _text(setting.get("visual_direction"), "visual direction")
@@ -387,6 +435,103 @@ def receipt_path(issue, cut_id):
     return "maintenance/photo-issues/" + issue["slug"] + "/" + cut_id + "/receipt.json"
 
 
+def _supplied_png_dimensions(data):
+    """Check the retained original, including every PNG chunk CRC."""
+    if not 33 <= len(data) <= 32 * 1024 * 1024 or data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError("Invalid supplied photo PNG")
+    offset, dimensions, ended = 8, None, False
+    while offset + 12 <= len(data):
+        size = int.from_bytes(data[offset:offset + 4], "big")
+        end = offset + 12 + size
+        if end > len(data):
+            raise ValueError("Truncated supplied photo PNG")
+        kind, body = data[offset + 4:offset + 8], data[offset + 8:end - 4]
+        if zlib.crc32(kind + body) & 0xffffffff != int.from_bytes(data[end - 4:end], "big"):
+            raise ValueError("Supplied photo PNG CRC mismatch")
+        if dimensions is None:
+            if kind != b"IHDR" or size != 13:
+                raise ValueError("Supplied PNG needs its original IHDR")
+            dimensions = struct.unpack(">II", body[:8])
+            if min(dimensions) < 1 or max(dimensions) > 8192 or dimensions[0] * dimensions[1] > 32_000_000:
+                raise ValueError("Supplied PNG dimensions exceed import bounds")
+        elif kind == b"IHDR":
+            raise ValueError("Duplicate supplied PNG IHDR")
+        if kind == b"IEND":
+            ended = size == 0 and end == len(data)
+            break
+        offset = end
+    if not ended:
+        raise ValueError("Supplied photo PNG has no complete IEND")
+    return dimensions
+
+
+def _validate_supplied_photo(issue, cut, image, data, *, root, now):
+    """Validate an owner-supplied asset without inventing generation provenance."""
+    provenance, review = image["provenance"], image["review"]
+    original_sha = image.get("source_sha256", "")
+    if not SHA.fullmatch(str(original_sha)):
+        raise ValueError("Supplied photo needs its actual original SHA")
+    directory = "maintenance/photo-issues/" + issue["slug"] + "/" + cut
+    expected_receipt = directory + "/receipt-supplied-" + original_sha[:12] + "-" + image["sha256"][:12] + ".json"
+    if (provenance.get("receipt_path") != expected_receipt
+            or not SHA.fullmatch(str(provenance.get("receipt_sha256", "")))):
+        raise ValueError("Invalid supplied photo receipt reference")
+    raw = _local(root, expected_receipt).read_bytes()
+    if len(raw) > 64 * 1024 or hashlib.sha256(raw).hexdigest() != provenance["receipt_sha256"]:
+        raise ValueError("Supplied photo receipt SHA mismatch")
+    receipt = json.loads(raw)
+    source, jpeg = receipt.get("source", {}), receipt.get("jpeg", {})
+    source_format = source.get("format", "png") if isinstance(source, dict) else None
+    extension = {"png": ".png", "jpeg": ".jpg"}.get(source_format) if isinstance(source_format, str) else None
+    if (receipt.get("version") != 1 or receipt.get("kind") != "user_supplied_photo"
+            or receipt.get("issue_slug") != issue["slug"] or receipt.get("cut_id") != cut
+            or receipt.get("model_id") != issue["model_id"]
+            or receipt.get("review_reference_sha256") != issue["model_snapshot"]["master"]["sha256"]
+            or not isinstance(source, dict) or not isinstance(jpeg, dict)
+            or extension is None
+            or source.get("path") != directory + "/source-" + original_sha + extension
+            or source.get("sha256") != original_sha
+            or not re.fullmatch(r"https://chatgpt\.com/library/share/libfile_[A-Za-z0-9_-]+(?:\?account_id=personal)?", str(source.get("url", "")))
+            or source.get("generation_prompt_status") != "not_retained"
+            or source.get("generation_prompt") is not None
+            or receipt.get("transform") != {"encoder": "macOS sips", "max_edge": 1200,
+                                            "jpeg_quality": 84, "geometry": "preserve-aspect"}):
+        raise ValueError("Invalid owner-supplied photo provenance")
+    original = _local(root, source["path"]).read_bytes()
+    if source_format == "png":
+        dimensions = _supplied_png_dimensions(original)
+    else:
+        dimensions = jpeg_dimensions(original)
+        if (not 33 <= len(original) <= 32 * 1024 * 1024 or dimensions is None
+                or min(dimensions) < 1 or max(dimensions) > 8192
+                or dimensions[0] * dimensions[1] > 32_000_000):
+            raise ValueError("Invalid supplied photo JPEG bytes/dimensions")
+    actual = jpeg_dimensions(data)
+    if (hashlib.sha256(original).hexdigest() != original_sha or source.get("bytes") != len(original)
+            or (source.get("width"), source.get("height")) != dimensions
+            or jpeg.get("path") != image["path"] or jpeg.get("sha256") != image["sha256"]
+            or jpeg.get("bytes") != len(data) or (jpeg.get("width"), jpeg.get("height")) != actual
+            or (image.get("width"), image.get("height")) != actual
+            or min(actual) < 320 or max(actual) != min(1200, max(dimensions))
+            or abs(dimensions[0] * actual[1] - dimensions[1] * actual[0]) > max(dimensions)):
+        raise ValueError("Supplied photo bytes/dimensions/aspect mismatch")
+    reviewed_at, imported_at = _stamp(review.get("reviewed_at")), _stamp(receipt.get("imported_at"))
+    if (review.get("decision") != "accepted" or review.get("issue_sha256") != issue["issue_sha256"]
+            or review.get("image_sha256") != image["sha256"] or review.get("cut_id") != cut
+            or review.get("master_sha256") != issue["model_snapshot"]["master"]["sha256"]
+            or not imported_at <= reviewed_at <= now or reviewed_at > _stamp(issue["published_at"])):
+        raise ValueError("Supplied photo has no current observed visual acceptance")
+    _text(review.get("note"), "supplied photo visual note")
+    if "body_profile" in issue["model_snapshot"]:
+        design = generation_inputs(issue, cut)["body_profile_sha256"]
+        if review.get("body_profile_sha256") != design or provenance.get("target_design_sha256") != design:
+            raise ValueError("Supplied photo review targets a different character design")
+    if (type(review.get("swimwear_visible")) is not bool
+            or review.get("framing") not in ("face", "upper_body", "three_quarter", "full_body", "profile", "wide")):
+        raise ValueError("Supplied photo needs observed wardrobe and framing")
+    return review["framing"], review["swimwear_visible"]
+
+
 def validate_published_issue(issue, *, root=ROOT, now=None):
     """Verify recorded acceptance and bytes, never manufacture visual approval."""
     now = now or datetime.now(timezone.utc)
@@ -428,13 +573,20 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
             raise ValueError("Photo issue cut exceeds the JPEG size limit")
         data = path.read_bytes()
         sha = hashlib.sha256(data).hexdigest()
+        supplied = (isinstance(image.get("provenance"), dict)
+                    and image["provenance"].get("kind") == "user_supplied_photo")
         if (image.get("sha256") != sha or image.get("bytes") != len(data)
-                or sha in seen_hashes or jpeg_dimensions(data) != (1200, 675)):
+                or sha in seen_hashes or (not supplied and jpeg_dimensions(data) != (1200, 675))):
             raise ValueError("Photo issue JPEG hash/dimensions/uniqueness mismatch")
         seen_hashes.add(sha)
         provenance, review = image.get("provenance"), image.get("review")
         if not isinstance(provenance, dict) or not isinstance(review, dict):
             raise ValueError("Photo issue cut needs provenance and visual review")
+        if supplied:
+            framing, swimwear = _validate_supplied_photo(issue, cut, image, data, root=root, now=now)
+            framings.add(framing)
+            swimwear_count += int(swimwear)
+            continue
         source = _generation_source(issue, image, cut)
         logical = provenance.get("logical_run_id", "")
         if (provenance.get("receipt_path") != receipt_path(issue, cut)

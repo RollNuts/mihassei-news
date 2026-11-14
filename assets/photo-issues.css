@@ -46,6 +46,8 @@
 .photo-issue-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:46px 28px}
 .photo-issue-gallery>.photo-issue-shot:nth-of-type(3n){grid-column:1/-1;width:100%}
 .photo-issue-gallery>.photo-issue-shot:last-child:nth-of-type(3n + 1){grid-column:1/-1;width:100%}
+.photo-issue-shot--original-ratio img,.photo-issue-card--original-ratio img{height:auto;object-fit:contain}
+.photo-issue-gallery>.photo-issue-shot--portrait{width:100%;max-width:620px;margin-inline:auto}
 .photo-issue-shot figcaption{display:flex;gap:13px;align-items:baseline;padding:11px 0 0;color:var(--muted);font-size:12px;line-height:1.85;overflow-wrap:anywhere}
 .photo-issue-shot-number{flex:none;font-family:var(--sans);font-size:11px;font-variant-numeric:tabular-nums;letter-spacing:.07em;color:var(--photo-accent)}
 .photo-issue-column{max-width:680px;margin:76px auto;padding:34px 0 12px;border-top:3px double var(--photo-rule);border-bottom:1px solid var(--photo-rule)}

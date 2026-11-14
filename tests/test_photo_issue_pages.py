@@ -98,6 +98,35 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertIn("公開時の名前（27歳）", markup)
         self.assertNotIn("現在の名前", markup)
 
+    def test_supplied_original_ratios_preserve_native_cover_and_lazy_gallery(self):
+        value = issue()
+        value["cover_cut_id"] = "02"
+        for cut, width, height in (("03", 1200, 800), ("04", 1077, 1460)):
+            value["images"][cut].update(width=width, height=height,
+                                       provenance={"kind": "user_supplied_photo"})
+        before = copy.deepcopy(value)
+        parsed = self.parse(self.pages.render_photo_issue(value, MODEL, self.layout))
+        by_cut = {figure["id"]: (figure, image) for figure, image in zip(parsed.figures, parsed.images)}
+        for cut, width, height in (("03", "1200", "800"), ("04", "1077", "1460")):
+            figure, image = by_cut["photo-" + cut]
+            self.assertEqual((image["width"], image["height"]), (width, height))
+            self.assertEqual(image["style"], f"aspect-ratio:{width}/{height}")
+            self.assertEqual(image["loading"], "lazy")
+            self.assertIn("photo-issue-shot--original-ratio", figure["class"].split())
+        self.assertIn("photo-issue-shot--portrait", by_cut["photo-04"][0]["class"].split())
+        cover = by_cut["photo-02"][1]
+        self.assertEqual((cover["width"], cover["height"], cover["loading"]), ("1200", "675", "eager"))
+        self.assertNotIn("style", cover)
+        index = self.parse(self.pages.render_photo_index([value], [MODEL], self.layout))
+        self.assertEqual((index.images[0]["width"], index.images[0]["height"]), ("1200", "675"))
+        self.assertEqual(value, before)
+
+    def test_supplied_photo_never_silently_assumes_native_dimensions(self):
+        value = issue()
+        value["images"]["03"]["provenance"] = {"kind": "user_supplied_photo"}
+        with self.assertRaisesRegex(ValueError, "actual JPEG width and height"):
+            self.pages.render_photo_issue(value, MODEL, self.layout)
+
     def test_selected_cover_leads_the_issue_and_index_without_duplicating_a_photo(self):
         value = issue()
         value["cover_cut_id"] = "04"

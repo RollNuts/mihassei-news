@@ -33,13 +33,27 @@ def _model_name(model):
     return f'{h(model["name"])}（{h(model["age"])}歳）'
 
 
+def _image_size(issue, cut):
+    image = issue["images"][cut]
+    supplied = image.get("provenance", {}).get("kind") == "user_supplied_photo"
+    if not supplied:
+        return 1200, 675, False
+    width, height = image.get("width"), image.get("height")
+    if type(width) is not int or type(height) is not int or min(width, height) <= 0:
+        raise ValueError("A supplied photo needs its actual JPEG width and height")
+    return width, height, True
+
+
 def _issue_card(issue, model):
     shot = cover_shot(issue)
+    width, height, supplied = _image_size(issue, shot["id"])
+    modifier = " photo-issue-card--original-ratio" if supplied else ""
+    ratio = f' style="aspect-ratio:{width}/{height}"' if supplied else ""
     return (
-        '<li><article class="photo-issue-card">'
+        f'<li><article class="photo-issue-card{modifier}">'
         f'<a class="photo-issue-card-link" href="{h(issue_url(issue))}">'
         f'<img src="{h(cover_url(issue))}" alt="{h(shot["alt"])}" '
-        'width="1200" height="675" loading="lazy" decoding="async">'
+        f'width="{width}" height="{height}"{ratio} loading="lazy" decoding="async">'
         '<div class="photo-issue-card-copy">'
         f'<p class="photo-issue-number">第{h(issue["number"])}号 · {_model_name(model)}</p>'
         f'<p class="photo-issue-cover-name" aria-hidden="true">{h(model["name"])}</p>'
@@ -80,11 +94,17 @@ def render_photo_index(published_issues, models, layout):
 
 def _photo_figure(issue, shot, *, cover=False):
     modifier = " photo-issue-shot--cover" if cover else ""
+    width, height, supplied = _image_size(issue, shot["id"])
+    if supplied:
+        modifier += " photo-issue-shot--original-ratio"
+        if height > width:
+            modifier += " photo-issue-shot--portrait"
+    ratio = f' style="aspect-ratio:{width}/{height}"' if supplied else ""
     loading = 'loading="eager" fetchpriority="high"' if cover else 'loading="lazy"'
     return (
         f'<figure class="photo-issue-shot{modifier}" id="photo-{h(shot["id"])}">'
         f'<img src="{h(photo_image_url(issue, shot["id"]))}" alt="{h(shot["alt"])}" '
-        f'width="1200" height="675" {loading} decoding="async">'
+        f'width="{width}" height="{height}"{ratio} {loading} decoding="async">'
         '<figcaption>'
         f'<span class="photo-issue-shot-number" aria-hidden="true">{h(shot["id"])}</span>'
         f'<span>{h(shot["caption"])}</span></figcaption></figure>'

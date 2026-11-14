@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "winter-coat-swimsuit-saya-001",
+  "cut_id": "04",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-14T13:21:16.153207+00:00",
+  "source": {
+    "url": "https://chatgpt.com/library/share/libfile_fde3_f-733da2ec886c81918cdf8f0981659acd_3e0ce6a2e8348191be296e0419d0b8cc",
+    "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/04/source-12aa2bc5e5d4f87ab3bb85f713e4caeaa9b835e7bbb9a8e5079009e88d673831.png",
+    "file_name": "夏のプールサイド、白シャツの彼女.png",
+    "sha256": "12aa2bc5e5d4f87ab3bb85f713e4caeaa9b835e7bbb9a8e5079009e88d673831",
+    "bytes": 1992258,
+    "width": 1077,
+    "height": 1460,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg",
+    "sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c",
+    "bytes": 238006,
+    "width": 885,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}
