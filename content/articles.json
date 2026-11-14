@@ -5490,5 +5490,71 @@
       "AI任せ",
       "会議無限編"
     ]
+  },
+  {
+    "slug": "matchmaking-ai-bios-same-hobbies-handwritten-line",
+    "category": "社会",
+    "flash": "AI自己紹介18枚の続きは手書き",
+    "fiction_company": "架空の婚活交流サービス「本音日和」",
+    "art": "cards",
+    "fiction_at": "2031-11-14T19:30:00+09:00",
+    "published_at": "2026-11-14T19:30:00+09:00",
+    "title": "婚活会のAI自己紹介18人が「旅行とカフェ」　最後の一行だけ手書きに",
+    "summary": "婚活交流サービス「本音日和」が、AIで整えた自己紹介に本人の一行を足す交流会を開始。婚活会の参加者32人のうち18人の文章に「旅行とカフェ」が並んだが、「昼まで寝たい」と書いた男女は、初デートを午後3時からに決めた。",
+    "paragraphs": [
+      "2031年11月14日、架空の婚活交流サービス「本音日和」が開いた交流会で、壁に並んだ自己紹介32枚のうち18枚に「旅行とカフェ」の文字があった。参加者は会う前にAIで紹介文を整えていたが、受付係がその数を伝えると会場から笑いが起きた。",
+      "今回から始めたのは、AIの文章を消さず、その下に「本当の休日は」と一行だけ自分で書き足す方式だ。AIの文を使うと初対面の言葉選びが楽になる。一方、同じ表現が並ぶと誰と話したいのか決めにくい。手書き欄は会場の参加者にだけ見せ、書きたくなければ空欄にもできる。",
+      "会社員の美里（27）は「海外旅行に憧れます」の下に「だいたい昼まで寝ています」と書いた。前の席の悠人（29）も「休日はカフェ巡り」の下に「午前中は外に出ません」。二人は互いのカードを見せ、「旅行は年に一回でもいいですか」と笑った。",
+      "別のテーブルでは「料理好き」に「食べる側です」、「アウトドア派」に「ベランダで日なたぼっこ」と追記する人がいた。紹介文の共通点を探していた参加者たちも、手書きの一行を指して「それ、私も」と話し始めた。会場の掲示板には、似た文章の下に違う筆跡が増えていった。",
+      "終了後、美里と悠人は次の休みの待ち合わせを駅前の喫茶店に決めた。結局、AIの紹介文にあった「カフェ」へ行くことにはなった。ただし二人が書いた約束の紙には、店名より大きな字で「午後3時集合」と記されていた。"
+    ],
+    "source": {
+      "kind": "企業公式調査（AIと恋愛）",
+      "publisher": "GMO NIKKO株式会社",
+      "published_at": "2026-10-06T00:00:00+09:00",
+      "url": "https://group.gmo/news/article/10223/",
+      "topic": "GMO NIKKOが2026年10月6日に公表した国内Z世代16〜28歳500名の調査では、恋愛で生成AIを積極的に使いたい意向34.6%、アプローチ相談への利用許容43.4%、告白のセリフ考案23.4%。AIを積極利用したくない327人の理由では「自分の言葉で伝えたいから」36.7%。2031年の架空サービス「本音日和」、32名・18枚の紹介文の一致、手書き一行方式、人物とその会話、初デートの結果は創作であり、実際の調査がその事例を示したわけではない。"
+    },
+    "scene_prompt": "An adult Japanese woman, age 27, writes a short handwritten addition on her own matchmaking introduction card. Candid photorealistic press photograph at a fictional social event, a friendly adult male participant age 29 smiling across the table, softly blurred pinboard with indistinct cards behind them, warm ordinary indoor lighting, realistic casual November attire, natural hands and expressions, horizontal 16:9. No readable text, logos, brand marks, or real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "婚活",
+      "生成AI",
+      "自己紹介"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "婚活",
+      "AI恋愛"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "婚活会でAIに整えてもらった自己紹介。18人が「旅行とカフェ」、でも手書きの一行には「昼まで寝たい」。",
+    "reader_interest": "relationships_social",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年10月6日のGMO NIKKO調査では、Z世代500人の34.6%が恋愛で生成AIを使いたいと回答し、言葉を自分で伝えたいという回答も見られた",
+      "target": "AIで整えた婚活自己紹介に似た趣味が並ぶ架空の交流会",
+      "action": "婚活交流サービスがAIの文章を残して本人の休日を手書き一行で加える新方式を開始する",
+      "outcome": "同じような紹介文の下で違う人柄が見え、参加者二人は午後3時の初デートを約束した"
+    },
+    "reader_clarity": {
+      "who": "婚活会の参加者",
+      "action": "AIで整えた自己紹介の下に本人の休日を一行手書きし、会話のきっかけにした",
+      "oddity": "18人が似た趣味を書いていたが、手書きした「昼まで寝たい」をきっかけに初デートの時刻が決まった"
+    },
+    "behavior_basis": {
+      "motive": "初対面の文章作りはAIで助け、本人の日常や好みも会った相手に伝えたいから",
+      "ordinary_alternative": "AIで整えた自己紹介だけを事前に交換し、趣味の一致から交流する",
+      "why_not": "似た趣味表現が集まり、会場で誰と話すか決めにくくなったため、本人の一行を任意で加えられるようにした",
+      "evidence_quote": "一方、同じ表現が並ぶと誰と話したいのか決めにくい。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年10月のGMO NIKKO調査は恋愛へのAI相談需要と、本人の言葉を重視する意識の双方を示している",
+      "continuation_force": "AIによる言葉の補助が身近になるほど、本人の違いを示す自己紹介が交流のきっかけになる",
+      "future_result": "2031年、AI自己紹介の下へ本人が一行だけ書く婚活交流方式が始まり、参加者の次の約束が決まった"
+    }
   }
 ]
