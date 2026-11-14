@@ -1,5 +1,196 @@
 [
   {
+    "slug": "mountain-road-transplants-meadow-topsoil-blocks",
+    "category": "技術",
+    "flash": "野原を土ごと引っ越し",
+    "fiction_company": "架空の道路施工会社「みどり架道」",
+    "art": "cards",
+    "fiction_at": "2031-11-14T20:46:43+09:00",
+    "published_at": "2026-11-14T20:46:43+09:00",
+    "title": "道路工事で草地を「土ごと引っ越し」　完成した斜面に緑の四角い島",
+    "summary": "道路施工会社「みどり架道」の作業員が、工事前の草地を根や種の残る土ごと切り出し、道路脇の斜面へ戻した。完成した道の横には、茶色い地面の上に四角い草地が並び、前年の試験区ではその継ぎ目を越えて草が伸び始めている。",
+    "paragraphs": [
+      "14日、山あいの新しい道路の脇に、緑色の四角い草地が次々と並んだ。架空の道路施工会社「みどり架道」の作業員が、工事前に取り分けていた草の生えた土を、完成した道路の斜面へ戻している。傾斜に沿って並べられた土の塊は、少し隙間のある大きなパッチワークのように見えた。",
+      "同社が始めたのは、道路を通す前の草地を表面だけ削って捨てるのではなく、根や種が入った土を塊のまま一時保管し、工事後の斜面へ移す施工だ。工事後に新しく草の種をまく方法もあるが、元の地域の植物を残したい区間では別の手段が必要になる。担当者は「根や種まで残して元の地域の草地を戻すためだ」と話す。",
+      "工事の始まる前、作業員は草が生えた土を四角く切り分け、崩れないよう板で支えて保管場所へ運んだ。どの場所から取ったものかを記録し、乾きすぎないよう状態を見ながら道路の完成を待った。道路本体の工事と土の保管を別々に行わず、一つの工程表で進めたのが今回の取り組みだ。",
+      "午後には小型の作業機が土の塊を斜面へ運び、作業員が向きを直しながら一枚ずつ据えた。運んだのは草の葉だけではない。根が絡む土と、その中に残る種も一緒だ。作業員の足元では、まだ茶色い地面の間に鮮やかな緑の区画が点々と続き、道路のカーブに沿って延びていった。",
+      "現場の隣には、前年に同じ方法で移した試験区がある。そちらでは土の四角い境目を越えて草が伸び、今年置いたばかりの区画とは色も形も違っていた。担当者は二つの斜面を一枚の写真に収め、来年も植物の種類と広がり方を調べるという。新しい道路の脇には、引っ越してきた草地がまず一列、残った。"
+    ],
+    "source": {
+      "kind": "大学研究機関の公式研究発表",
+      "publisher": "北海道大学",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.hokudai.ac.jp/news/2026/11/10-19.html",
+      "topic": "北海道大学は2026年11月13日、道路盛土法面での表土ブロック移植について、根・埋土種子・土壌生物を含む表土を塊のまま移し、施工後10年間にわたる植物群集を追跡した研究を発表。ブロック移植区は移植元に近い植物群集を長く維持した。2031年の架空会社による道路工事への施工導入、現場、人物、前年の試験区と草地の様子は創作。"
+    },
+    "scene_prompt": "Two adult road construction workers use a small site lift to place intact rectangular grassy topsoil blocks on a new roadside slope. Photorealistic documentary press photograph at a fictional Japanese mountain road construction site in November, natural overcast daylight, safety helmets and work vests, workers checking the grassy soil block in a realistic brown-and-green patchwork embankment, curved finished road visible behind them. Believable earth texture, roots, grass, tools, hands and shadows, horizontal 16:9, no readable signs, text, logos, brands or identifiable real persons.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "道路工事",
+      "草地",
+      "生態系"
+    ],
+    "x_tags": [
+      "道路工事",
+      "緑化"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "道路を造る前に、まず草地を土ごと引っ越しさせる。2031年の工事現場では、元の野原が道路脇に並んでいた。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月13日、道路法面で表土ブロック移植を10年間追跡し地域の植物群集の維持を示した北海道大学の公式研究発表",
+      "target": "道路建設時に地域の草地を失わないよう土壌ごと保全して再設置する施工",
+      "action": "道路工事の作業員が工事前に草地を根や種ごと切り分けて保管し、完成後の斜面へ敷き直す",
+      "outcome": "新しい道路の脇に緑の四角い区画が並び、前年の試験区では境目を越えて草が伸びる"
+    },
+    "reader_clarity": {
+      "who": "道路施工会社「みどり架道」の作業員",
+      "action": "工事前の草地を土ごと切り出し、完成した道路脇へ戻した",
+      "oddity": "道路脇に草地の四角い区画が並び、前年の区画には草が広がっている"
+    },
+    "behavior_basis": {
+      "motive": "道路の造成後もその土地の草地をできるだけ残したい",
+      "ordinary_alternative": "工事後の斜面に新たな草の種をまく施工",
+      "why_not": "地域にもともとあった草や根と土の中の種をできるだけ一緒に移すため、追加の保管工程を選んだ",
+      "evidence_quote": "根や種まで残して元の地域の草地を戻すためだ"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月13日の北海道大学発表で、表土ブロック移植後10年間の地域植物群集の維持を示した",
+      "continuation_force": "造成で草地を失う現場と地域本来の植生を維持したい需要が続き、工事工程と保管を一体化する動機がある",
+      "future_result": "2031年、架空会社が新設道路の施工工程に表土の退避と再設置を組み込み、道路の斜面に草地を戻す"
+    },
+    "publication_slot": "2026-11-14T15:30:00+09:00"
+  },
+  {
+    "slug": "fan-kumade-tours-concert-halls-before-audience",
+    "category": "エンタメ",
+    "flash": "推し熊手が先に会場入り",
+    "fiction_company": "架空のライブ企画会社「縁音ステージ」、架空の音楽ユニット「巡星」",
+    "art": "cards",
+    "fiction_at": "2031-11-14T20:46:42+09:00",
+    "published_at": "2026-11-14T20:46:42+09:00",
+    "title": "巨大「推し熊手」が客より先に会場入り　願い札も全国ツアーへ",
+    "summary": "ライブ企画会社「縁音ステージ」が、ファンの願い札を付けた高さ2メートルの応援熊手を各地の公演へ運ぶ巡回サービスを開始。初日の会場では観客より先に熊手が搬入され、終演後は新しい札を載せて次の町へ出発した。",
+    "paragraphs": [
+      "14日、ライブホール「星灯館」の機材口から、高さ2メートルの飾り熊手が台車に載って入ってきた。客席の開場まではまだ1時間。正面には架空の音楽ユニット「巡星」を応援する星形の飾りが並び、枝には色とりどりの小さな願い札が結ばれていた。",
+      "ライブ企画会社「縁音ステージ」が始めた「応援熊手巡回便」は、一つの飾り熊手を5会場で引き継ぐ新サービスだ。ファンは各会場で応援の札を一枚ずつ結び、運営が次の公演まで保管して運ぶ。次の会場に行けないファンも、自分の札だけなら次の町のライブに連れていってもらえる。大きな飾りは通路を塞がないよう指定された展示場所に置き、客席や舞台には持ち込まない。",
+      "初日の開場後、青いリボンを持って来た相川紬（27）は、熊手の低い枝に札を結び付けた。紬はこの日の公演には来られたが、次の町へは行けない。「次は札だけ先乗りだね」。札を見える位置に直すと、隣の友人が次会場で写真を撮って送ると約束した。",
+      "開演前の展示場所では、客が熊手の前で足を止め、古い札の横に新しい札が増えていった。舞台の演奏が始まると熊手は照明を落としたロビーに残り、終演後に戻ったファンは、来た時より枝がにぎやかになっているのを見つけた。係員は札を外さずに全体を薄い保護布で包んだ。",
+      "最後の客が帰った後、搬入口には47枚の札を揺らす熊手が再び姿を見せた。出演者の衣装や楽器と一緒にトラックへ積まれ、次の町へ先に出発する。次会場のスタッフ用予定表には、公演開始時刻より上の行に「応援熊手、午前9時搬入」と記されていた。"
+    ],
+    "source": {
+      "kind": "音楽レーベル公式発表",
+      "publisher": "ユニバーサル ミュージック ジャパン",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.universal-music.co.jp/u2/news/2026-11-13-2/",
+      "topic": "レーベルの2026年11月13日公式発表では、U2の新作発売を記念し、約2メートルの特注「U2熊手」が11月13〜26日にタワーレコード渋谷店で展示される。実在の熊手の全国巡回、ファンの札預かり、公演搬入は発表されていない。2031年の縁音ステージ・巡星・星灯館・相川紬・熊手巡回便・札47枚と場面は全て創作。実在するアーティストや店舗が架空サービスを運営したことにはしない。"
+    },
+    "scene_prompt": "A fictional stylish Japanese woman aged 27 ties a small colored paper wish tag to a huge decorative good-luck rake on a wheeled stand in an indoor concert venue foyer. Photorealistic candid entertainment press photograph, adult woman with a charming natural face in a fashionable cropped dark jacket and elegant blue skirt, full natural adult proportions, tasteful styling. Ornate original two-meter-tall fan celebration rake and colorful small blank tags clearly visible, music hall lights and entryway softly visible, main action of attaching one tag easy to understand. Horizontal 16:9, realistic hands, lighting and textile texture, no readable text, no logos, no real celebrities, no brand designs.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "推し活",
+      "ライブ",
+      "縁起物"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "推し活",
+      "ライブ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "自分が遠征できなくても、応援の札だけは次のライブ会場へ。2031年の『推し熊手』は客より先に会場入りする。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "wildcard",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月13日に音楽レーベルが新作発売を記念した約2メートルの特注熊手展示を発表",
+      "target": "ライブ会場で応援札を集める巨大熊手を5会場へ運ぶ架空の巡回サービス",
+      "action": "企画会社が熊手を会場間で運搬し、観客が応援の札を追加する",
+      "outcome": "初日終演後、47枚の札を結んだ熊手が出演者より先に次会場へ出発する"
+    },
+    "reader_clarity": {
+      "who": "ライブ企画会社「縁音ステージ」",
+      "action": "ファンの願い札を付けた高さ2メートルの応援熊手を各地の公演へ運ぶ巡回サービスを開始",
+      "oddity": "初日の会場では観客より先に熊手が搬入され、終演後は新しい札を載せて次の町へ出発した"
+    },
+    "behavior_basis": {
+      "motive": "自分が行けない次の町の公演にも応援を届けたいファンの気持ちと、各会場に残る思い出をつなぐ運営の狙い",
+      "ordinary_alternative": "ファンが各会場で別々に寄せ書きし、飾りをその場限りで展示する",
+      "why_not": "各会場で札を追加した同じ熊手を運ぶことで、同行できないファンの願いも次公演へ継続して届けられる",
+      "evidence_quote": "次の会場に行けないファンも、自分の札だけなら次の町のライブに連れていってもらえる。"
+    },
+    "modified_at": "2026-11-14T20:46:42+09:00",
+    "publication_slot": "2026-11-14T13:30:00+09:00"
+  },
+  {
+    "slug": "three-shipping-firms-share-space-steel-sails",
+    "category": "経済",
+    "flash": "別会社の船が鋼材を運ぶ",
+    "fiction_company": "潮結航運",
+    "art": "cards",
+    "fiction_at": "2031-11-14T20:46:40+09:00",
+    "published_at": "2026-11-14T20:46:40+09:00",
+    "title": "船会社3社が空き枠を共有　点検で止まった船の鋼材、別会社が出荷",
+    "summary": "配船会社「潮結航運」が、3社の船の空きスペースと行き先を共有するサービスを開始。点検で出港できない船に積む予定だった鋼材を、同じ目的港へ向かう別会社の午後便に載せ、翌日の納入を守った。",
+    "paragraphs": [
+      "出港できない船に積むはずだった鋼材を、隣の会社の船が運んだ。14日、架空の配船会社「潮結航運」が内航船3社の空きスペースと行き先を共有するサービスを始め、初日から港の出荷予定が書き換わった。",
+      "この港では午前に1号船が鋼材を積み、別の工業港へ向かう予定だった。ところが出港前の機関点検で修理が必要となり、1号船は翌日まで岸壁を離れられなくなった。荷主は翌日中の納入を希望しており、鋼材はまだ岸壁に積まれたままだった。",
+      "以前なら各社に電話して空きと行き先を聞き直すところを、今回は共有画面に同じ工業港へ向かう2号船の空きが表示された。2号船は別会社の午後便で、自社の荷物を積んでも鋼材を載せる余裕があった。配船担当は両社と荷主、船長、港の荷役責任者に積載条件と行き先を確認し、午後便への振替を決めた。",
+      "昼過ぎ、クレーンが1号船用に岸壁へ置かれていた鋼材を吊り上げ、隣の岸壁に停泊する2号船の船倉へ降ろした。港の作業員は鋼材の束に付いた荷札を照合し、送り先が変わっていないことを確かめた。船の空きスペースが会社を越えて使われる一方、各船の安全確認はそれぞれの乗組員が担った。",
+      "夕方、2号船が鋼材を積んで港を離れ、点検中の1号船だけが岸壁に残った。翌朝には2号船から鋼材が荷下ろしされ、工場への納入に間に合った。港の出航予定表では1号船の名前が翌日の欄へ移っていたが、鋼材の到着予定は書き換えずに済んだ。"
+    ],
+    "source": {
+      "kind": "国土交通省公式発表",
+      "publisher": "国土交通省 海事局",
+      "published_at": "2026-11-10T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/kaiji03_hh_000234.html",
+      "topic": "2026年11月10日、国土交通省海事局は船員不足に対応してオペレーターが複数の内航船オーナーと連携し、配船効率化に資するシステム導入や船員育成等を支援する「船団の輸送力向上事業」の2次募集を開始した。2031年の架空会社「潮結航運」、3社の共同システム、1号・2号船、機関点検、鋼材の振替、納入実績はすべて創作であり、実在する事業の実績ではない。"
+    },
+    "scene_prompt": "Two adult Japanese port workers guide a crane lowering bundled steel beams into a small coastal cargo ship at a busy industrial harbor. Another cargo ship stays at the neighboring berth for engine inspection. Realistic horizontal 16:9 editorial press photograph, natural daylight, steel cables and safety helmets physically believable, dock and water in view, no legible text, no logos, no branded vessels, no recognizable real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "内航海運",
+      "共同配船",
+      "物流"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "内航海運",
+      "共同配船"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "船は止まっても鋼材は出港。別会社の船に積み替えた港で、先に動いたのは積み荷の予定でした。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月10日、国土交通省が内航船の複数船主連携・配船効率化を支援する2次募集を開始した",
+      "target": "3社の船の積載余力と行き先を共有する架空の共同配船サービス",
+      "action": "修理で止まった1号船の鋼材を、同じ工業港へ向かう別会社の2号船に載せ替える",
+      "outcome": "午後便の2号船が鋼材を運び、翌朝の工場納入に間に合った"
+    },
+    "reader_clarity": {
+      "who": "配船会社「潮結航運」",
+      "action": "3社の船の空きスペースを共有し、止まった船の鋼材を別会社の午後便に載せた",
+      "oddity": "船を増やさず他社の積載余力を使い、翌日の鋼材納入を守った"
+    },
+    "behavior_basis": {
+      "motive": "船員や船をすぐに増やせない中、空いている他社船の輸送力を使って荷主への納入を守りたい",
+      "ordinary_alternative": "船会社ごとに予定を管理し、故障した船の荷物は修理後に運ぶか電話で代船を探す",
+      "why_not": "船ごとの空きと同じ目的港への航路を共同で見られ、荷主と運航側の安全確認を経て早く振替を決められるため",
+      "evidence_quote": "以前なら各社に電話して空きと行き先を聞き直すところを、今回は共有画面に同じ工業港へ向かう2号船の空きが表示された。"
+    },
+    "publication_slot": "2026-11-14T11:30:00+09:00"
+  },
+  {
     "slug": "offline-tape-restores-missing-contract-revision",
     "category": "事件",
     "flash": "AI検索の外に残った1件",
@@ -4711,6 +4902,39 @@
     ]
   },
   {
+    "slug": "idol-ice-kept-in-freezer",
+    "category": "エンタメ",
+    "flash": "推し活",
+    "fiction_company": "ふたつ星乳菓",
+    "art": "cards",
+    "fiction_at": "2031-11-03T08:08:49+09:00",
+    "title": "推しの限定アイス、売れるのに誰も食べない　メーカー「味を教えて」",
+    "summary": "推しの限定アイスは大ヒット。でもファンは記念品として冷凍保存し、メーカーに味の感想が届かない。とうとう公式の試食まで騒ぎになった。",
+    "paragraphs": [
+      "「もったいなくて食べられない」。2031年、架空の菓子会社「ふたつ星乳菓」が人気歌手とのコラボアイスを発売すると、ファンが次々に買い求めた。しかし大半は未開封のまま冷凍庫へ。会社に届くのは「パッケージが最高」という感想ばかりで、味については何も分からなかった。",
+      "会社は味を知ってもらおうと、ライブ会場で無料試食を配った。ところがファンは「会場限定の無料配布品はもっと貴重」と袋ごと持ち帰り、冷凍保存。社員が「お願いですから一口だけ」と呼びかけると、そのお願いの画像まで「公式からのメッセージ」として保存された。",
+      "ついに開発担当者が、商品の味を紹介するライブ配信を始めた。ふたを開けた途端、コメント欄は「初回限定品を開封した！」「保存用はどうした」で埋まった。担当者はスプーンを持ったまま固まり、配信終了後、まだ食べていないカップを冷凍庫に戻した。翌朝、社内の試食室にも「開封は慎重に」の貼り紙が増えていた。"
+    ],
+    "source": {
+      "kind": "公式発表",
+      "publisher": "株式会社ロッテ（PR TIMES）",
+      "published_at": "2026-11-03T00:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000097.000086324.html",
+      "topic": "2026年11月3日0:00にロッテが、音楽アーティストが雪見だいふくの新アンバサダーに就任したことを発表。『2個あるとうれしい。』を掲げたキービジュアルなど、ファン文化と食品コラボの話題から着想。架空の菓子会社やアイス3種は実在しない。"
+    },
+    "published_at": "2026-11-03T08:08:49+09:00",
+    "modified_at": "2026-11-03T12:17:08.480+09:00",
+    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face.",
+    "tags": [
+      "ファン文化",
+      "食"
+    ],
+    "satire_tags": [
+      "推し活あるある",
+      "保存用"
+    ]
+  },
+  {
     "slug": "press-conference-metaphor-viral",
     "category": "社会",
     "flash": "ネットで話題",
@@ -4743,39 +4967,6 @@
       "説明した感"
     ],
     "visual_strategy": "cpu-photo"
-  },
-  {
-    "slug": "idol-ice-kept-in-freezer",
-    "category": "エンタメ",
-    "flash": "推し活",
-    "fiction_company": "ふたつ星乳菓",
-    "art": "cards",
-    "fiction_at": "2031-11-03T08:08:49+09:00",
-    "title": "推しの限定アイス、売れるのに誰も食べない　メーカー「味を教えて」",
-    "summary": "推しの限定アイスは大ヒット。でもファンは記念品として冷凍保存し、メーカーに味の感想が届かない。とうとう公式の試食まで騒ぎになった。",
-    "paragraphs": [
-      "「もったいなくて食べられない」。2031年、架空の菓子会社「ふたつ星乳菓」が人気歌手とのコラボアイスを発売すると、ファンが次々に買い求めた。しかし大半は未開封のまま冷凍庫へ。会社に届くのは「パッケージが最高」という感想ばかりで、味については何も分からなかった。",
-      "会社は味を知ってもらおうと、ライブ会場で無料試食を配った。ところがファンは「会場限定の無料配布品はもっと貴重」と袋ごと持ち帰り、冷凍保存。社員が「お願いですから一口だけ」と呼びかけると、そのお願いの画像まで「公式からのメッセージ」として保存された。",
-      "ついに開発担当者が、商品の味を紹介するライブ配信を始めた。ふたを開けた途端、コメント欄は「初回限定品を開封した！」「保存用はどうした」で埋まった。担当者はスプーンを持ったまま固まり、配信終了後、まだ食べていないカップを冷凍庫に戻した。翌朝、社内の試食室にも「開封は慎重に」の貼り紙が増えていた。"
-    ],
-    "source": {
-      "kind": "公式発表",
-      "publisher": "株式会社ロッテ（PR TIMES）",
-      "published_at": "2026-11-03T00:00:00+09:00",
-      "url": "https://prtimes.jp/main/html/rd/p/000000097.000086324.html",
-      "topic": "2026年11月3日0:00にロッテが、音楽アーティストが雪見だいふくの新アンバサダーに就任したことを発表。『2個あるとうれしい。』を掲げたキービジュアルなど、ファン文化と食品コラボの話題から着想。架空の菓子会社やアイス3種は実在しない。"
-    },
-    "published_at": "2026-11-03T08:08:49+09:00",
-    "modified_at": "2026-11-03T12:17:08.480+09:00",
-    "scene_prompt": "Close-up product photograph of a pink strawberry popsicle on a wooden stick. The single frozen popsicle fills most of the frame, held upright by a white cotton museum glove, carefully preserved instead of eaten. Behind it is an open frosty freezer drawer. Ice crystals, realistic frozen dessert texture, plain kitchen background. No wrapper, no writing, no face.",
-    "tags": [
-      "ファン文化",
-      "食"
-    ],
-    "satire_tags": [
-      "推し活あるある",
-      "保存用"
-    ]
   },
   {
     "slug": "quiet-reply-dating-matches",
@@ -4845,39 +5036,6 @@
     "visual_strategy": "cpu-photo"
   },
   {
-    "slug": "unwanted-call-protection-calls-back",
-    "category": "社会",
-    "flash": "社会面",
-    "fiction_company": "シズカ電信",
-    "art": "notice",
-    "fiction_at": "2031-11-02T21:21:04+09:00",
-    "title": "迷惑電話防止の案内電話が迷惑に　止めるには電話に出る必要",
-    "summary": "電話を減らす新サービスなのに、利用確認の電話が毎日かかってくる。出なかった人には『まだ確認できません』と翌日も連絡。",
-    "paragraphs": [
-      "「迷惑な電話にお困りではありませんか」。2031年、夕食中にかかってきた電話に、ある利用者は「今、困っています」と答えた。電話をかけてきたのは、架空の通信会社「シズカ電信」。迷惑電話を減らす新サービスの利用意思を確認する案内だった。",
-      "このサービスは、案内電話に出て「今後の連絡は不要」と伝えると着信が止まる。一方、電話に出なければ「意思を確認できていない」として翌日もかかる。5回無視した人には6回目の案内が届き、会社は『丁寧に確認している』と説明した。",
-      "苦情が殺到したため、会社は迷惑な番号を自動遮断する機能を導入した。すると利用者の端末は、会社自身の案内番号を一斉に遮断。ようやく静かな夕食が戻ったが、満足度調査の電話にも誰も出なくなった。"
-    ],
-    "source": {
-      "kind": "ニュース",
-      "publisher": "共同通信（熊本日日新聞配信）",
-      "published_at": "2026-11-02T18:33:00+09:00",
-      "url": "https://www.kumanichi.com/articles/2053480",
-      "topic": "特殊詐欺対策をめぐり、国際電話の利用サービスを希望制にする案について2日に検討が始まった。"
-    },
-    "published_at": "2026-11-02T21:21:04+09:00",
-    "modified_at": "2026-11-03T11:19:54.205+09:00",
-    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea.",
-    "tags": [
-      "防犯",
-      "通信"
-    ],
-    "satire_tags": [
-      "ルール増し増し",
-      "本末転倒"
-    ]
-  },
-  {
     "slug": "local-souvenir-cannot-leave-town",
     "category": "暮らし",
     "flash": "地域面",
@@ -4908,6 +5066,39 @@
     "satire_tags": [
       "ルール増し増し",
       "地産地消極振り"
+    ]
+  },
+  {
+    "slug": "unwanted-call-protection-calls-back",
+    "category": "社会",
+    "flash": "社会面",
+    "fiction_company": "シズカ電信",
+    "art": "notice",
+    "fiction_at": "2031-11-02T21:21:04+09:00",
+    "title": "迷惑電話防止の案内電話が迷惑に　止めるには電話に出る必要",
+    "summary": "電話を減らす新サービスなのに、利用確認の電話が毎日かかってくる。出なかった人には『まだ確認できません』と翌日も連絡。",
+    "paragraphs": [
+      "「迷惑な電話にお困りではありませんか」。2031年、夕食中にかかってきた電話に、ある利用者は「今、困っています」と答えた。電話をかけてきたのは、架空の通信会社「シズカ電信」。迷惑電話を減らす新サービスの利用意思を確認する案内だった。",
+      "このサービスは、案内電話に出て「今後の連絡は不要」と伝えると着信が止まる。一方、電話に出なければ「意思を確認できていない」として翌日もかかる。5回無視した人には6回目の案内が届き、会社は『丁寧に確認している』と説明した。",
+      "苦情が殺到したため、会社は迷惑な番号を自動遮断する機能を導入した。すると利用者の端末は、会社自身の案内番号を一斉に遮断。ようやく静かな夕食が戻ったが、満足度調査の電話にも誰も出なくなった。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "共同通信（熊本日日新聞配信）",
+      "published_at": "2026-11-02T18:33:00+09:00",
+      "url": "https://www.kumanichi.com/articles/2053480",
+      "topic": "特殊詐欺対策をめぐり、国際電話の利用サービスを希望制にする案について2日に検討が始まった。"
+    },
+    "published_at": "2026-11-02T21:21:04+09:00",
+    "modified_at": "2026-11-03T11:19:54.205+09:00",
+    "scene_prompt": "A solemn adult sits at a kitchen table holding one ringing landline handset. A second telephone is clamped gently over the first telephone as though trying to protect it, while a third phone waits beside a cold cup of tea.",
+    "tags": [
+      "防犯",
+      "通信"
+    ],
+    "satire_tags": [
+      "ルール増し増し",
+      "本末転倒"
     ]
   },
   {
