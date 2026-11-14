@@ -7,8 +7,10 @@ from urllib.parse import urlencode
 
 if __package__:
     from .photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
+    from .reader_comments import render_reader_comments
 else:
     from photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
+    from reader_comments import render_reader_comments
 
 
 CREDIT = "登場人物とコラムは創作、写真はAI生成です。"
@@ -128,6 +130,25 @@ def _share_controls(issue):
     )
 
 
+def _issue_engagement(issue):
+    key = h("photo-issue:" + issue["slug"])
+    return (
+        '<div class="photo-issue-engagement">'
+        f'<span class="article-pv" data-article-pv="{key}" data-pv-label="この号" '
+        'title="計測開始後のページ表示回数" aria-label="この号のPVを取得中">'
+        '<strong data-article-pv-count>—</strong><span>PV</span></span>'
+        '<div class="engagement-actions">'
+        f'<button class="like-control" type="button" data-like-slug="{key}" '
+        'data-like-label="この号にいいね" aria-label="この号にいいね" aria-pressed="false">'
+        '<span aria-hidden="true">♡</span><span class="like-label">いいね</span>'
+        f'<span class="like-count" data-like-count="{key}" hidden></span></button>'
+        '<a class="comment-control" href="#reader-comments" aria-label="この号のコメント欄へ">'
+        '<span aria-hidden="true">✎</span><span>コメント</span>'
+        f'<span class="comment-count" data-comment-count="{key}" hidden></span></a>'
+        '</div><p class="photo-issue-engagement-status" data-engagement-status role="status"></p></div>'
+    )
+
+
 def render_photo_issue(issue, model, layout):
     """Render photographs and the model's column without exposing production data."""
     setting = issue["setting"]
@@ -141,7 +162,8 @@ def render_photo_issue(issue, model, layout):
                f'{h(model["name"])}が登場する記事を読む <span aria-hidden="true">↗</span></a></p>'
                if source else "")
     main = (
-        '<article class="container photo-issues-page photo-issue-page">'
+        '<article class="container photo-issues-page photo-issue-page" '
+        f'data-engagement-key="{h("photo-issue:" + issue["slug"])}">'
         '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
         f'<a href="/">トップ</a> / <a href="{h(index_url())}">週刊グラビア</a>'
         f' / <span aria-current="page">第{h(issue["number"])}号</span></nav>'
@@ -159,7 +181,8 @@ def render_photo_issue(issue, model, layout):
         f'<p class="photo-issue-date">公開日 {_publication_date(issue)}</p></div>'
         f'<p class="photo-issue-setting">舞台：{h(setting["year"])}年{h(setting["month"])}月、'
         f'{h(setting["location"])}</p>'
-        f'<p class="photo-issue-credit">{CREDIT}</p></header></div>'
+        f'<p class="photo-issue-credit">{CREDIT}</p>'
+        f'{_issue_engagement(issue)}</header></div>'
         '<nav class="photo-issue-contents" aria-label="この号の目次">'
         '<a href="#photo-issue-gallery-title">写真を見る <span aria-hidden="true">↓</span></a>'
         '<a href="#photo-issue-column-title">本人コラム <span aria-hidden="true">↓</span></a></nav>'
@@ -174,6 +197,7 @@ def render_photo_issue(issue, model, layout):
         f'{closing}</section>'
         f'{related}'
         f'{_share_controls(issue)}'
+        f'{render_reader_comments("photo-issue:" + issue["slug"], heading="この号へのコメント", placeholder="写真やコラムへの感想をひとこと…")}'
         '<nav class="photo-issue-footer" aria-label="週刊グラビアの案内">'
         f'<a href="{h(index_url())}">号一覧に戻る <span aria-hidden="true">→</span></a>'
         '</nav></article>'

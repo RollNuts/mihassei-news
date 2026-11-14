@@ -31,6 +31,7 @@ if __package__:
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from .editorial_copy import reader_copy, source_reader_copy
     from .reader_paths import suggested_articles
+    from .reader_comments import render_reader_comments
     from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
 else:
@@ -48,6 +49,7 @@ else:
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from editorial_copy import reader_copy, source_reader_copy
     from reader_paths import suggested_articles
+    from reader_comments import render_reader_comments
     from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
 from urllib.parse import quote, urlencode
@@ -1062,7 +1064,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind == "story" else ""
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
@@ -1794,22 +1796,7 @@ def story(a, articles, issues=None, serials=None):
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 </article>
-<section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
-<div class="reader-comments-heading">
-<h2 id="comments-heading">読者のツッコミ <small data-comments-count></small></h2>
-<p>投稿内容は公開されます。</p>
-</div>
-<div class="reader-comments-list" data-comments-list></div>
-<p class="reader-comments-status" data-comments-status role="status">コメントを読み込み中…</p>
-<form class="reader-comments-form" data-comments-form>
-<label for="reader-nickname">ニックネーム <span>（任意・16文字以内）</span></label>
-<input id="reader-nickname" name="nickname" type="text" maxlength="16" autocomplete="nickname" placeholder="匿名の未来人">
-<label for="reader-body">コメント</label>
-<textarea id="reader-body" name="body" minlength="2" maxlength="180" rows="3" required placeholder="未来のニュースにひとこと…"></textarea>
-<div class="comment-form-footer"><span>2〜180文字。URL・個人情報・誹謗中傷は投稿できません。</span>
-<button type="submit">コメントを投稿</button></div>
-</form>
-</section></div>
+{render_reader_comments(a["slug"])}</div>
 </div>'''
     return layout(a["title"], reader_copy(a["summary"]) + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
@@ -2306,6 +2293,10 @@ def build():
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
     build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE)
+    # The Worker may accept engagement writes only for these validated releases.
+    write("photo/weekly/engagement.json", json.dumps({
+        "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),
+    }, ensure_ascii=False) + "\n")
     other_files(articles, issues, serials, photo_issues)
     make_brand_image()
     make_issue_social_images(issues)
