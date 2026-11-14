@@ -32,6 +32,7 @@ if __package__:
     from .motion_clips import clip_url
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
+    from .serials import public_serials
     from .editorial_copy import reader_copy, source_reader_copy
     from .article_diagrams import reviewed_article_diagram
     from .build import (
@@ -45,6 +46,7 @@ else:
     from motion_clips import clip_url
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
+    from serials import public_serials
     from editorial_copy import reader_copy, source_reader_copy
     from article_diagrams import reviewed_article_diagram
     from build import (
@@ -771,14 +773,14 @@ def check():
 
     # Serial long-form reading, links and share cards must ship alongside the news.
     # Static GETs only; do not generate visits, votes or any paid API traffic.
-    serials=json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8"))
-    if 'class="serials-feature"' not in body or 'href="/serials/"' not in body:
+    serials=public_serials(json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8")))
+    if 'class="serials-feature"' not in body or 'href="/serials/market-lab/"' not in body:
         raise RuntimeError("New serials not discoverable on published homepage")
     serial_hub, serial_type=get("/serials/")
     serial_index=serial_hub.decode("utf-8")
     if "text/html" not in serial_type:
         raise RuntimeError("Live serial index was not deployed")
-    if ('<title>連載一覧 | 未発生新聞（創作と市場分析の連載）</title>' not in serial_index or
+    if ('<title>連載一覧 | 未発生新聞（市場分析の連載）</title>' not in serial_index or
         '"@type": "ItemList"' not in serial_index or
         '"@type": "BreadcrumbList"' not in serial_index):
         raise RuntimeError("Serial index lacks clear non-fiction/fiction SEO labels")
