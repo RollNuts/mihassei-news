@@ -27,7 +27,8 @@ class FooterFocusTests(unittest.TestCase):
     def test_fiction_and_market_disclosures_remain_concise_and_distinct(self):
         page = layout("未発生新聞", "説明", "/", "<p>テスト</p>")
         footer = page.split('<footer class="footer">', 1)[1]
-        self.assertIn("創作記事・推理小説はフィクションです。", footer)
+        self.assertIn("創作記事はフィクションです。", footer)
+        self.assertNotIn("推理小説", footer)
         self.assertIn("市場分析は投資助言ではありません。", footer)
         item = load()[0]
         story_page = story(item, [item])

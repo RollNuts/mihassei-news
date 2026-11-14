@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "ac03a8c5a9875de36e0c1feb73ebd4af2d0d8c35b24d1c7feb50db71f265efa9",
-  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-d1c2282bf620a6124e41be18ceba034b10150c12979b9da47bea616b65de2c9b-cut-04",
-  "observed_at": "2026-11-14T07:42:07.412Z",
+  "candidate_identity": "472872906f895f750236fd5c770bc24da039a24447e89d6ee04c0b95a8ace456",
+  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d-cut-04-ssd1b-reference-face-edit",
+  "observed_at": "2026-11-14T08:55:20.125Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,7 +17,7 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "af9cbad82a6435b40d06504f11c75b5698f7c8ce",
+    "commit_sha": "19881ac124ac38c02ec6ac2b0c945d9e32044f35",
     "protected_hashes": {
       "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
       "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",

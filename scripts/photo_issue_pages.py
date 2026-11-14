@@ -94,10 +94,15 @@ def _photo_figure(issue, shot, *, cover=False):
 def render_photo_issue(issue, model, layout):
     """Render photographs and the model's column without exposing production data."""
     setting = issue["setting"]
-    first, *remaining = issue["shots"]
+    first = cover_shot(issue)
+    remaining = [shot for shot in issue["shots"] if shot["id"] != first["id"]]
     column = "".join(f'<p>{h(paragraph)}</p>' for paragraph in issue["column"])
     opening = "".join(_photo_figure(issue, shot) for shot in remaining[:4])
     closing = "".join(_photo_figure(issue, shot) for shot in remaining[4:])
+    source = issue.get("source_article", {}).get("slug")
+    related = (f'<p class="photo-issue-related"><a href="/articles/{h(source)}/">'
+               f'{h(model["name"])}が登場する記事を読む <span aria-hidden="true">↗</span></a></p>'
+               if source else "")
     main = (
         '<article class="container photo-issues-page photo-issue-page">'
         '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
@@ -130,6 +135,7 @@ def render_photo_issue(issue, model, layout):
         f'{column}</section>'
         '<section class="photo-issue-gallery" aria-label="写真の続き">'
         f'{closing}</section>'
+        f'{related}'
         '<nav class="photo-issue-footer" aria-label="週刊グラビアの案内">'
         f'<a href="{h(index_url())}">号一覧に戻る <span aria-hidden="true">→</span></a>'
         '</nav></article>'

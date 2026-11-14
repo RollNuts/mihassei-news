@@ -98,6 +98,17 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertIn("公開時の名前（27歳）", markup)
         self.assertNotIn("現在の名前", markup)
 
+    def test_selected_cover_leads_the_issue_and_index_without_duplicating_a_photo(self):
+        value = issue()
+        value["cover_cut_id"] = "04"
+        page = self.parse(self.pages.render_photo_issue(value, MODEL, self.layout))
+        index = self.parse(self.pages.render_photo_index([value], [MODEL], self.layout))
+        self.assertEqual(len(page.images), 10)
+        self.assertEqual(page.images[0]["src"], index.images[0]["src"])
+        self.assertEqual(page.images[0]["alt"], value["shots"][3]["alt"])
+        self.assertEqual(page.figures[0]["id"], "photo-04")
+        self.assertEqual(len({figure["id"] for figure in page.figures}), 10)
+
     def test_index_shows_latest_first_with_model_names_and_issue_links(self):
         other = {"id": "other-model", "name": "別のモデル", "age": 28}
         first, second = issue(), issue(2, other["id"])

@@ -43,8 +43,8 @@ class GravureCornerTests(unittest.TestCase):
         self.assertNotIn('href="/serials/case-files/', page)
         with patch.object(build, "PHOTO_ISSUES_AVAILABLE", False):
             nav = build.layout("Page", "Description", "/example/", "body")
-        self.assertIn('href="' + build.GRAVURE_SOURCE_URL + '">グラビア誌</a>', nav)
-        self.assertIn('href="/serials/market-lab/">未来相場観測室</a>', nav)
+        self.assertIn('href="' + build.GRAVURE_SOURCE_URL + '">グラビア</a>', nav)
+        self.assertIn('href="/serials/market-lab/">相場分析</a>', nav)
         self.assertNotIn('href="/photo/weekly/"', nav)
 
     def test_published_issue_promotes_latest_and_weekly_index(self):
@@ -60,7 +60,7 @@ class GravureCornerTests(unittest.TestCase):
         self.assertNotIn(build.GRAVURE_SOURCE_URL, card)
         with patch.object(build, "PHOTO_ISSUES_AVAILABLE", True):
             nav = build.layout("Page", "Description", "/example/", "body")
-        self.assertIn('href="/photo/weekly/">グラビア誌</a>', nav)
+        self.assertIn('href="/photo/weekly/">グラビア</a>', nav)
 
     def test_withdrawn_mystery_leaves_the_public_corner_and_market_stays(self):
         source = serials.load_serials(ROOT, include_withdrawn=True)
