@@ -81,7 +81,7 @@ class SiteTests(unittest.TestCase):
                      "投稿・返信は公開されます", "個人情報や非公開の契約条件",
                      "github.com/RollNuts/mihassei-news/issues/new?template=sponsorship.yml"):
             self.assertIn(item,html.unescape(commercial))
-        for prohibited in ("adsbygoogle.js", "data-ad-client=", "広告を表示中"):
+        for prohibited in ("data-ad-slot=", "広告を表示中"):
             self.assertNotIn(prohibited, commercial)
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         editorial=(ROOT/"dist/editorial/index.html").read_text(encoding="utf-8")
@@ -456,12 +456,13 @@ class SiteTests(unittest.TestCase):
         self.assertIn("showPopular(data,pvHealthy)",script)
         self.assertNotIn("innerHTML=",script)
 
-    def test_adsense_ownership_without_running_ads(self):
+    def test_adsense_connection_uses_existing_publisher(self):
         line="google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0"
         self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
         html=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('<meta name="google-adsense-account" content="ca-pub-6754575901141756">',html)
-        self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",html)
+        self.assertIn('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754575901141756" crossorigin="anonymous"></script>',html)
+        self.assertNotIn('data-ad-slot=',html)
 
     def test_continuation_metrics_ride_existing_visit_api_only(self):
         script=(ROOT/"assets/engagement.js").read_text(encoding="utf-8")
@@ -1150,7 +1151,7 @@ class SiteTests(unittest.TestCase):
             match=re.search(r'<a href="(/articles/[^"]+|/archive/)" class="reader-next-title">',page)
             self.assertIsNotNone(match,a["slug"])
             self.assertNotEqual(match.group(1),"/articles/"+a["slug"]+"/")
-            self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",page)
+            self.assertIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754575901141756",page)
 
     def test_unique_article_png_cards(self):
         from scripts.build import social_image
