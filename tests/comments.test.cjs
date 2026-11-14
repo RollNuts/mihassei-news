@@ -213,3 +213,45 @@ test('reading comments does not create a browser id until the reader writes',asy
   assert.equal(post.payload.clientId,'11111111-1111-4111-8111-111111111111');
   assert.equal(storage.get('mihassei-anonymous-browser-v1'),post.payload.clientId);
 });
+
+
+test('photo comments share news posting quotas and never store raw browser identifiers',async t=>{
+  const {db,api}=fixture();t.after(()=>db.close());
+  const article='photo-issue:winter-coat-swimsuit-saya-001',clientId=randomUUID();
+  const posted=await api('POST','/api/comments',{...makePost(clientId,'写真とコラムを楽しみました'),article});
+  assert.equal(posted.status,201);
+  assert.equal((await api('GET','/api/comments?article='+article)).data.total,1);
+  const summary=await api('GET','/api/comments/summary?articles='+article+',test-story');
+  assert.equal(summary.data.counts[article],1);assert.equal(summary.data.counts['test-story'],0);
+  assert.equal((await api('POST','/api/comments',makePost(clientId,'ニュースの感想です'))).status,429,
+    'the five-minute browser cooldown is shared across photo and news pages');
+  const saved=db.prepare('SELECT visitor FROM comments WHERE id=?').get(posted.data.comment.id);
+  assert.notEqual(saved.visitor,clientId);assert.match(saved.visitor,/^[a-f0-9]{64}$/);
+  const hour='hour:'+new Date().toISOString().slice(0,13);
+  db.prepare('UPDATE comment_limits SET hits=19 WHERE bucket=?').run(hour);
+  assert.equal((await api('POST','/api/comments',{...makePost(randomUUID(),'別の読者の感想です'),article})).status,201);
+  assert.equal((await api('POST','/api/comments',makePost(randomUUID(),'ニュースにも感想を残します'))).status,429,
+    'photo posts consume the same global 20-post hourly cap');
+  assert.equal((await api('POST','/api/comments',{...makePost(randomUUID()),article:'photo-issue:../../bad'})).status,400);
+});
+
+test('photo comments retain report, moderator and owner removal controls',async t=>{
+  const token='p'.repeat(40),{db,api}=fixture(token);t.after(()=>db.close());
+  const article='photo-issue:winter-coat-swimsuit-saya-001',author=randomUUID();
+  const posted=await api('POST','/api/comments',{...makePost(author,'次の号のコラムも読みたいです'),article});
+  const commentId=posted.data.comment.id;
+  assert.equal(posted.status,201);
+  for(let i=0;i<3;i++){
+    const reported=await api('POST','/api/comments',{action:'report',article,clientId:randomUUID(),commentId});
+    assert.equal(reported.status,200);assert.equal(reported.data.hidden,i===2);
+  }
+  assert.equal((await api('GET','/api/comments?article='+article)).data.total,0);
+  const headers={authorization:'Bearer '+token};
+  const admin=await api('GET','/api/comments/admin',undefined,headers);
+  assert.equal(admin.data.comments[0].article,article);assert.equal(admin.data.comments[0].reports,3);
+  assert.equal((await api('POST','/api/comments/admin',{action:'restore',commentId},headers)).status,200);
+  assert.equal((await api('GET','/api/comments?article='+article)).data.total,1);
+  assert.equal((await api('POST','/api/comments',{action:'remove',article,clientId:randomUUID(),commentId})).status,403);
+  assert.equal((await api('POST','/api/comments',{action:'remove',article,clientId:author,commentId})).status,200);
+  assert.equal(db.prepare('SELECT COUNT(*) AS n FROM comment_reports').get().n,0);
+});

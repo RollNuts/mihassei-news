@@ -84,7 +84,7 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto,leg
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  return {db,stats,post,postAck,postPublic,postAction,get,getPublic,setTime(value){now=Date.parse(value);}};
+  return {db,stats,handler:vm.runInContext('serviceHandler',context),post,postAck,postPublic,postAction,get,getPublic,setTime(value){now=Date.parse(value);}};
 }
 
 function view(clientId,article='story-a',viewId=randomUUID()){
@@ -690,4 +690,98 @@ test('30-minute sessions and session-acquisition page-view sources are counted s
 
   const bad=await f.post({...view(browser),sessionId:randomUUID()});
   assert.equal(bad.status,400,'partial session metadata must fail closed');
+});
+
+
+test('photo issue displays and likes are isolated from news rankings, reads and votes',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const key='photo-issue:winter-coat-swimsuit-saya-001',browser=randomUUID();
+  const first={...view(browser,key),pageKind:'other'};
+  assert.equal((await f.post(first)).status,200);
+  await f.post(first);
+  await f.post({...view(browser,key),pageKind:'other'});
+  await f.post(view(browser,'story-a'));
+  const liked=await f.postAction({action:'like',article:key,clientId:browser});
+  assert.equal(liked.status,200);
+  assert.equal(liked.data.likes,1);
+  assert.equal(liked.data.liked,true);
+  const snapshot=(await f.get(key+',story-a')).data;
+  assert.equal(snapshot.pageViews,3,'retry does not count as another display');
+  assert.equal(snapshot.articles[key].pageViews,2);
+  assert.equal(snapshot.articles[key].todayPageViews,2);
+  assert.equal(snapshot.articles[key].last7DaysPageViews,2);
+  assert.equal(snapshot.articles[key].readers,1);
+  assert.equal(snapshot.articles[key].likes,1);
+  assert.equal(snapshot.articles['story-a'].pageViews,1);
+  assert.equal(snapshot.today.articleReads,1,'photo readership is not a news-article read');
+  assert.equal(snapshot.pageViewKindsToday.other,2);
+  for(const rows of Object.values(snapshot.topArticles)){
+    assert.deepEqual(rows.map(row=>row.article),['story-a']);
+  }
+  const top=f.stats.topArticleRows('day:2026-11-04:pageViews:',1);
+  assert.equal(top[0].article,'story-a','exclude photos before applying the ranking limit');
+  const weekly=f.stats.topArticleRowsForWeek({serial:Math.floor(Date.parse('2026-11-04')/86400000)},1);
+  assert.equal(weekly[0].article,'story-a');
+  const publicSnapshot=(await f.getPublic(key+',story-a',true)).data;
+  assert.equal(publicSnapshot.articles[key].pageViews,2);
+  assert.deepEqual(publicSnapshot.topArticles.last7Days.map(row=>row.article),['story-a']);
+  const unliked=await f.postAction({action:'like',article:key,clientId:browser});
+  assert.equal(unliked.data.likes,0);
+  assert.equal(unliked.data.liked,false);
+  assert.equal((await f.post({action:'vote',article:key,clientId:browser,choice:'plausible'})).status,400);
+  assert.equal((await f.post({...view(browser,key),fromArticle:'story-a'})).status,400);
+  assert.equal((await f.post({...view(browser,'story-a'),fromArticle:key})).status,400);
+  assert.equal(f.db.prepare("SELECT COUNT(*) AS n FROM events WHERE kind LIKE 'prediction:%' OR kind='continued'").get().n,0);
+  assert.equal((await f.post({action:'like',article:'photo-issue:../../private',clientId:browser})).status,400);
+});
+
+test('Worker admits only published photo issue writes and keeps existing namespaces and origin checks',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const slug='winter-coat-swimsuit-saya-001',key='photo-issue:'+slug;
+  const assetRequests=[],statsNames=[],commentNames=[],commentRequests=[];
+  let manifest={version:1,issues:[slug]},manifestStatus=200;
+  const env={
+    ASSETS:{async fetch(req){
+      const pathname=new URL(req.url).pathname;assetRequests.push(pathname);
+      if(pathname==='/photo/weekly/engagement.json')return new Response(JSON.stringify(manifest),{status:manifestStatus});
+      return new Response('page',{status:pathname==='/articles/story-a/'?200:404});
+    }},
+    NEWSROOM_STATS:{idFromName(name){statsNames.push(name);return name;},get(){return f.stats;}},
+    READER_COMMENTS:{idFromName(name){commentNames.push(name);return name;},get(){return {
+      async fetch(req){commentRequests.push(await req.json());return new Response('{"ok":true}');}
+    };}}
+  };
+  const post=async(pathname,payload,headers={})=>{
+    const response=await f.handler.fetch(new Request('https://veripsa.com'+pathname,{
+      method:'POST',headers:{origin:'https://veripsa.com','content-type':'application/json',...headers},
+      body:JSON.stringify(payload)
+    }),env);
+    return {status:response.status,data:await response.json()};
+  };
+  for(const article of ['photo-issue:unknown-issue','photo-issue:unpublished-draft']){
+    assert.equal((await post('/api/engagement',view(randomUUID(),article))).status,404);
+    assert.equal((await post('/api/comments',{action:'post',article,clientId:randomUUID(),body:'感想です'})).status,404);
+  }
+  assert.equal(statsNames.length,0);assert.equal(commentNames.length,0);
+  assert.equal(f.stats.count('pageViews'),0,'phantom issues never reach storage');
+  assert.equal((await post('/api/engagement',view(randomUUID(),key),{origin:'https://elsewhere.example'})).status,403);
+  assert.equal((await post('/api/engagement',view(randomUUID(),key))).status,200);
+  assert.equal((await post('/api/engagement',{action:'like',article:key,clientId:randomUUID()})).status,200);
+  assert.equal((await post('/api/engagement',{action:'vote',article:key,clientId:randomUUID(),choice:'plausible'})).status,400);
+  assert.equal((await post('/api/comments',{action:'post',article:key,clientId:randomUUID(),body:'感想です'})).status,200);
+  assert.equal(commentRequests[0].article,key);
+  assert.ok(statsNames.every(name=>name==='mihassei-main-v1'));
+  assert.ok(commentNames.every(name=>name==='mihassei-comments-main-v1'));
+  assert.ok(assetRequests.every(path=>path==='/photo/weekly/engagement.json'));
+  manifest={version:1,issues:[]};
+  assert.equal((await post('/api/engagement',view(randomUUID(),key))).status,404);
+  // Owners and moderators can still act on stored comments after withdrawal.
+  assert.equal((await post('/api/comments',{action:'remove',article:key,clientId:randomUUID(),commentId:randomUUID()})).status,200);
+  manifest={version:1,issues:['../bad',slug]};
+  assert.equal((await post('/api/engagement',view(randomUUID(),key))).status,404);
+  manifestStatus=404;
+  assert.equal((await post('/api/comments',{action:'post',article:key,clientId:randomUUID(),body:'感想です'})).status,404);
+  assert.equal((await post('/api/comments',{action:'post',article:'story-a',clientId:randomUUID(),body:'感想です'})).status,200);
+  assert.equal(assetRequests.at(-1),'/articles/story-a/','news-page verification is unchanged');
+  assert.equal((await post('/api/comments',{action:'post',article:'missing-news',clientId:randomUUID(),body:'感想です'})).status,404);
 });

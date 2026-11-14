@@ -5,6 +5,7 @@ export { ReaderComments } from "./comments.js";
 const attributionChannels = ["x","search","external","unattributed"];
 const pageKinds = ["home","article","archive","serial","other"];
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const PHOTO_ISSUE_PREFIX = "photo-issue:";
 const idPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -19,6 +20,25 @@ function currentJstHour(now = Date.now()) {
 }
 function validArticle(slug) {
   return typeof slug === "string" && slug.length <= 100 && slugPattern.test(slug);
+}
+function photoIssueSlug(key) {
+  if(typeof key!=="string" || !key.startsWith(PHOTO_ISSUE_PREFIX))return null;
+  const slug=key.slice(PHOTO_ISSUE_PREFIX.length);
+  return validArticle(slug) ? slug : null;
+}
+function validContentKey(key) {
+  return validArticle(key) || photoIssueSlug(key)!==null;
+}
+async function publishedPhotoIssue(key, origin, assets) {
+  const slug=photoIssueSlug(key);
+  if(slug===null)return false;
+  // The build emits only fully validated, published issues. Static assets do
+  // not add a database, namespace, external API or persistent allowlist cache.
+  const response=await assets.fetch(new Request(new URL("/photo/weekly/engagement.json",origin)));
+  if(!response.ok)return false;
+  const manifest=await response.json();
+  return manifest?.version===1 && Array.isArray(manifest.issues) &&
+    manifest.issues.every(validArticle) && manifest.issues.includes(slug);
 }
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -196,8 +216,8 @@ export class NewsroomStats extends DurableObject {
   }
   topArticleRows(prefix, limit=10) {
     return this.sql.exec(
-      "SELECT substr(key,?) AS article,value AS pageViews FROM counters WHERE key LIKE ? AND value>0 ORDER BY value DESC,key ASC LIMIT ?",
-      prefix.length+1,prefix+"%",limit
+      "SELECT substr(key,?) AS article,value AS pageViews FROM counters WHERE key LIKE ? AND key NOT LIKE ? AND value>0 ORDER BY value DESC,key ASC LIMIT ?",
+      prefix.length+1,prefix+"%",prefix+PHOTO_ISSUE_PREFIX+"%",limit
     ).toArray().filter(row=>validArticle(row.article) && Number.isInteger(row.pageViews) && row.pageViews>0);
   }
   topArticleRowsForWeek(day, limit=10) {
@@ -210,7 +230,7 @@ export class NewsroomStats extends DurableObject {
     // "day:YYYY-MM-DD:pageViews:" is 25 characters, so the slug starts at 26.
     return this.sql.exec(
       "SELECT substr(key,26) AS article,SUM(value) AS pageViews FROM counters "+
-      "WHERE ("+where+") AND value>0 GROUP BY article "+
+      "WHERE ("+where+") AND substr(key,26) NOT LIKE 'photo-issue:%' AND value>0 GROUP BY article "+
       "ORDER BY pageViews DESC,article ASC LIMIT ?",
       ...patterns,limit
     ).toArray().filter(row=>validArticle(row.article) &&
@@ -270,7 +290,7 @@ export class NewsroomStats extends DurableObject {
     // Reader-facing pages need only the counters they actually render. This
     // compact shape is also returned by successful visit POSTs so a normal
     // page display does not need an immediate second API request.
-    const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
+    const articles=(url.searchParams.get("articles")||"").split(",").filter(validContentKey).slice(0,20);
     const articleSet=[...new Set(articles)];
     const previousDate=new Date((day.serial-1)*DAY_MS).toISOString().slice(0,10);
     const firstSerial=day.serial-6;
@@ -395,7 +415,7 @@ export class NewsroomStats extends DurableObject {
       }
       if(url.searchParams.get("view")==="public")
         return json(this.publicSnapshot(url,day));
-      const articles=(url.searchParams.get("articles")||"").split(",").filter(validArticle).slice(0,20);
+      const articles=(url.searchParams.get("articles")||"").split(",").filter(validContentKey).slice(0,20);
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
       const sessionStartedAt=this.count("sessions:startedAt");
@@ -521,13 +541,15 @@ export class NewsroomStats extends DurableObject {
     if(data.action==="vote" && !["plausible","unlikely"].includes(data.choice))
       return json({error:"invalid prediction choice"},400);
     const article=data.article||"";
-    if(article && !validArticle(article))return json({error:"invalid article"},400);
+    if(article && !validContentKey(article))return json({error:"invalid article"},400);
+    if(data.action==="vote" && photoIssueSlug(article)!==null)
+      return json({error:"voting unavailable for photo issues"},400);
     if(data.action!=="visit" && !article)return json({error:"article required"},400);
     // Accept only a same-site article slug sent on normal article visits.
     // The client derives this from document.referrer without transmitting URLs.
     // Never accept arbitrary text or count a reload as article continuation.
     if(data.fromArticle!==undefined &&
-       (data.action!=="visit" || !article || !validArticle(data.fromArticle) ||
+       (data.action!=="visit" || !validArticle(article) || !validArticle(data.fromArticle) ||
         data.fromArticle===article))
       return json({error:"invalid previous article"},400);
     const previousArticle=data.action==="visit" ? (data.fromArticle||"") : "";
@@ -600,7 +622,7 @@ export class NewsroomStats extends DurableObject {
         if(this.insertOnce(dayPrefix+"site","",visitor))
           this.increment(dayPrefix+"visitors",1);
         if(article && this.insertOnce(dayPrefix+"reader",article,visitor)){
-          this.increment(dayPrefix+"articleReads",1);
+          if(validArticle(article))this.increment(dayPrefix+"articleReads",1);
           this.increment(dayPrefix+"reader:"+article,1);
         }
         if(this.insertOnce("site","",visitor))this.increment("visitors",1);
@@ -717,15 +739,25 @@ export default {
       if(!(req.headers.get("content-type")||"").startsWith("application/json"))return json({error:"JSON required"},415);
     }
     try {
+      let payload=null;
+      if(req.method==="POST" && ["/api/engagement","/api/comments"].includes(url.pathname)){
+        payload=await req.clone().json().catch(()=>null);
+        const photo=photoIssueSlug(payload?.article);
+        if(photo!==null && (!isComments || payload.action==="post")){
+          if(!isComments && payload.action==="vote")
+            return json({error:"voting unavailable for photo issues"},400);
+          if(!await publishedPhotoIssue(payload.article,url.origin,env.ASSETS))
+            return json({error:"掲載号が見つかりません"},404);
+        }
+      }
       if(isComments){
-        // Ignore requests to comment on non-existent pages.
-        if(req.method==="POST" && url.pathname==="/api/comments"){
-          const payload=await req.clone().json().catch(()=>null);
-          if(payload?.action==="post" && validArticle(payload.article)){
-            const page=new URL("/articles/"+payload.article+"/",url);
-            const exists=await env.ASSETS.fetch(new Request(page.toString()));
-            if(!exists.ok)return json({error:"記事が見つかりません"},404);
-          }
+        // Keep news-page verification; photo posts use the generated published
+        // allowlist above. Reports/removals still work after an issue is retired.
+        if(req.method==="POST" && url.pathname==="/api/comments" &&
+           payload?.action==="post" && validArticle(payload.article)){
+          const page=new URL("/articles/"+payload.article+"/",url);
+          const exists=await env.ASSETS.fetch(new Request(page.toString()));
+          if(!exists.ok)return json({error:"記事が見つかりません"},404);
         }
         const comments=env.READER_COMMENTS.get(env.READER_COMMENTS.idFromName("mihassei-comments-main-v1"));
         return await comments.fetch(req);
