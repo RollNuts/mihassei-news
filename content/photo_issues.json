@@ -1016,11 +1016,13 @@
             }
           },
           "latest_failed_edit": {
-            "request_id": "86ffbc9a-eada-49a6-95e0-9654f54f2c34",
-            "claim": "native-image-generation-claim/d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
-            "status": "output_moderation_blocked_no_image"
+            "status": "generation_failed_no_image",
+            "request_id": "05ca7a1f-a92d-4f9c-b979-0e46061371c1",
+            "claim": "native-image-generation-claim/2d727f781ff7248f051c97350c6f3f8cd775e5a8e90ffbbb59073a4fe002c0d6"
           },
-          "next_action": "Same-person full-body standing poolside photograph with ordinary opaque two-piece swimwear; use established blue/body and coat/face references, one new scene trial. Preserve the seated candidates and failed output history; no retries of those editing requests."
+          "next_action": "本人は体型が揃うまで公開を待つと明示。体型差のある候補の採用・新聞写真の使い回し・数値設定だけの一致扱いはしない。元の全身基準を維持し、同条件再試行はせず、適切な新しい入力や具体的な改善条件が得られるまで初号draftを保持する。担当Codex総括／PR735。",
+          "publication_constraint": "hold_until_body_consistent",
+          "user_instruction": "体型が揃うまで公開を待つ"
         }
       },
       "editorial_history": [
@@ -2610,6 +2612,31 @@
             },
             "identity": "d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
             "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-b3197b00ce99",
+            "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
+          }
+        },
+        {
+          "status": "generation_failed_no_image",
+          "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+          "cut": "04",
+          "request_id": "05ca7a1f-a92d-4f9c-b979-0e46061371c1",
+          "reason": "Image tool input moderation returned sexual; no image bytes returned. This standing scene must not be retried or moved to another route.",
+          "claim": "native-image-generation-claim/2d727f781ff7248f051c97350c6f3f8cd775e5a8e90ffbbb59073a4fe002c0d6",
+          "plan": {
+            "repository": "RollNuts/mihassei-news",
+            "slug": "indoor-beach-friends-exchange-ripples",
+            "articleSha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "baseCommitSha": "8f79e0e810fa0dd345eafe013417af013fc05c28",
+            "baseTreeSha": "dc813e52002c7b2f1eae5df3e1af6803ecda4168",
+            "prompt": "Create a new natural swimwear catalogue photograph of the same fictional adult woman, age 27. Use image 1 for her established whole-body shape and image 2 for her face and short hairstyle. She stands comfortably on a dry stone deck beside a glass-roofed resort pool, holding a neatly folded towel at her side. She wears an opaque terracotta two-piece swimsuit with standard-coverage bikini briefs. Show her full body and both feet, with natural proportions matching image 1. Eye-level camera at a comfortable distance, soft daylight, realistic skin and fabric. A different photograph from the supplied reference scenes. Horizontal 16:9. No text or logos.",
+            "logicalRunId": "weekly-photo-winter-coat-swimsuit-saya-001-adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658-cut-04-standing-poolside-photo",
+            "protectedHashes": {
+              "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
+              "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
+              "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+            },
+            "identity": "2d727f781ff7248f051c97350c6f3f8cd775e5a8e90ffbbb59073a4fe002c0d6",
+            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c64f37c8e174",
             "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
           }
         }
