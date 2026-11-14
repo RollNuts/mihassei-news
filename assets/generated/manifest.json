@@ -5772,6 +5772,143 @@
         941
       ],
       "width": 1200
+    },
+    "indoor-beach-friends-exchange-ripples": {
+      "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+      "bytes": 228371,
+      "conversion": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      },
+      "edit_reference": {
+        "github_run_id": "43509702255",
+        "image_sha256": "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf",
+        "kind": "user_requested_edit_of_rejected_candidate",
+        "status": "rejected_reference_only"
+      },
+      "generated_at": "2026-11-14T01:52:12.846Z",
+      "generation_id": "0b98b60a-4c19-43be-8b93-bb9270c18c14",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Edit the supplied AI-generated photograph into a realistic ordinary indoor-beach feature photograph. The reference is the edit target, not a real person. Keep the photographic skin and water texture and the relaxed friendly mood. Replace the face with a distinctly different, completely fictional Japanese adult woman age 27: a soft oval face, warm brown eyes, a short dark bob with a light fringe, natural eyebrows, and a small relaxed smile. Make only subtle natural posture and anatomy refinements, with realistic adult proportions and conventional swimsuit coverage. Change the existing swimsuit color to navy blue and add a loose white beach shirt. Widen the camera composition to include the entire standing figure and both feet at ankle depth. She is turning slightly to look at a little ripple arriving at her ankle and lightly moves one foot through the water. Set this clearly inside a glass-roofed indoor beach with pale sand. A small part of the background includes a clearly framed wall screen showing a different adult woman in a separate indoor pool on a remote video call; no words on the screen. A single coherent candid 16:9 photograph, natural skylight, realistic hands and feet, visible ankle ripple. This is ordinary recreational swimwear and a water-play activity. No real celebrity likeness, no text, no logos, no exaggerated anatomy.",
+      "generation_prompt_source": "Exact image_gen edit prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
+      "generation_receipt": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+      "height": 675,
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-da2fb0adf05a",
+        "commit": "18891d7b06618f56f4dc721df1b62152798e7c3f",
+        "identity": "7702e447a8b1c1fc3c983f5effee906dc00e3c3bb6ed858234647d331dd200d9",
+        "logical_run_id": "indoor-beach-user-requested-existing-image-edit-20261114",
+        "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
+        "receipt_sha256": "bd487a74a1cd3a1a10d895090477eb802c4212e328e379a995bc38f22fa2187a"
+      },
+      "origin": "chatgpt-imagegen",
+      "previous_visual_hold": {
+        "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+        "generation_failure": {
+          "attempts_in_run": 1,
+          "code": "moderation_blocked",
+          "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+          "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
+          "logical_run_id": "indoor-beach-20261113-1930",
+          "origin": "chatgpt-imagegen",
+          "phase": "output",
+          "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+          "returned_image": false,
+          "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
+        },
+        "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
+        "rejected_at": "2026-11-13T10:56:07+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T01:52:09.995011685Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T01:52:09.995014996Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T01:52:09.992012821Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              210,
+              171,
+              62,
+              237,
+              207,
+              32,
+              115,
+              112,
+              243,
+              149,
+              219,
+              212,
+              57,
+              208,
+              147,
+              243,
+              69,
+              112,
+              157,
+              45,
+              181,
+              200,
+              248,
+              208,
+              89,
+              12,
+              12,
+              177,
+              6,
+              169,
+              96,
+              87
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+        "manifest_uri": "urn:c2pa:68f4f58d-1eb5-450f-a222-ce8ea878f616",
+        "signature_validation": "not_performed"
+      },
+      "source_png_bytes": 2753385,
+      "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+      "source_size": [
+        1672,
+        941
+      ],
+      "width": 1200
     }
   },
   "rejected": {
@@ -5898,23 +6035,6 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "indoor-beach-friends-exchange-ripples": {
-      "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
-      "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
-      "rejected_at": "2026-11-13T10:56:07+00:00",
-      "generation_failure": {
-        "origin": "chatgpt-imagegen",
-        "code": "moderation_blocked",
-        "phase": "output",
-        "returned_image": false,
-        "attempts_in_run": 1,
-        "logical_run_id": "indoor-beach-20261113-1930",
-        "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
-        "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
-        "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
-        "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
-      }
     }
   },
   "version": 1
