@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "ec3252b56b3b80db070086928b562e4d5311295399b7b9cf22355595dc10ad41",
+  "slug": "friendly-cup-no-standings-four-fan-trophies",
+  "article_sha256": "cb1a3bc3917d54f2cbc88adf92679ce1fa8b1ecc6bd0a6bc19f67428f8f6e231",
+  "logical_run_id": "publisher-20261114-0730-friendly-cup-four-trophies",
+  "prompt_sha256": "19a0a1223294ea9dd19d356462bfb58f4b3870f5ffacd0937174836e207d0424",
+  "reserved_at": "2026-11-14T00:24:23.966Z",
+  "baseline": {
+    "commit_sha": "0e247b38535896ea7971da0649b0ced0d7918cef",
+    "tree_sha": "70f513b37d5dd8b8ec44cd00d6c6ea53eb850582",
+    "protected_hashes": {
+      "content/articles.json": "0018d0abdc336ad2a4fbdbcb73fc71dc6623db72068fa5d97b5239004e779fa6",
+      "assets/generated/manifest.json": "e2cce64c2d92a37fa35a08e74e99bf60cb324176e9e8cf8209d351e32ad0b89b",
+      "content/visual_reviews.json": "29d3df051d66bee8055d64d5f38aae1fb616da7b165a7d7b5a49863e73347088"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "18b104a66a0065bc2bfe3266f72463bf772362be",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "eb162f43b3a48f8ffc77b15fd7420666ff185459f844abb3ac39bea6e43ab764",
+    "observed_at": "2026-11-14T00:24:11.199Z",
+    "route": "PNG data URL in this functions execution to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
