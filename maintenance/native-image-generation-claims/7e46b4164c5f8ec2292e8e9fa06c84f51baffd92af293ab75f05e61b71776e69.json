@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69",
+  "slug": "mountain-road-transplants-meadow-topsoil-blocks",
+  "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+  "logical_run_id": "article-20261114-pr734-reviewer-handoff-first-photo",
+  "prompt_sha256": "9bede1396ed1513f288f38f86a43fde8159cb482f862369aea1cc37ff1bc6cf1",
+  "reserved_at": "2026-11-14T10:51:44.082Z",
+  "baseline": {
+    "commit_sha": "19d319f35cb4e90a5b451dc6400ef95e89556dd7",
+    "tree_sha": "92dad3a47dc8353377d027f4c5209e85a32a2c8c",
+    "protected_hashes": {
+      "content/articles.json": "8e21957206f16e44cbb5a6e6d3882b3152a3236f9a4b3e757b6664b5a4016c95",
+      "assets/generated/manifest.json": "e46bd5736653082700f19c5a64342c0c4ae236507b31117e9f95765beecad6c1",
+      "content/visual_reviews.json": "6c156e074b32cd3367c55f204e64964b8323d19297906d00751c3bf93dd54590"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "4efeb3e615d95f7c77ac7759dba9171d5de088ba",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "22be773f756b2993c654c9d0c39efeccd66d11e03288ff36f1c0ee70532c493e",
+    "observed_at": "2026-11-14T10:51:31.515Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
