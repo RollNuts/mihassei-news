@@ -955,8 +955,17 @@ def check():
             "/editorial/", "/advertise/", "/privacy/", "/feed.xml"
         ))):
         raise RuntimeError("Footer has lost a utility link or gained duplicated navigation")
-    if "adsbygoogle.js" in commercial_html:
-        raise RuntimeError("Unapproved advertising script unexpectedly enabled")
+    # The AdSense account registered in ads.txt is now explicitly connected
+    # by the public layout. Detect missing, duplicated or unknown ad scripts,
+    # rather than treating the approved script as a failed deployment.
+    adsense_url = (
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+        "?client=ca-pub-6754575901141756"
+    )
+    if (commercial_html.count(f'src="{adsense_url}"') != 1 or
+        commercial_html.count("adsbygoogle.js") != 1 or
+        '<meta name="google-adsense-account" content="ca-pub-6754575901141756">' not in commercial_html):
+        raise RuntimeError("Approved AdSense account script missing, duplicated or changed")
 
     # Check the growth path against the live deployment, not just the local
     # generator. All archived article links must remain accessible without JS.
