@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
+  "slug": "autumn-ridge-path-rests-riverside-trail-opens",
+  "article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+  "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
+  "prompt_sha256": "1cf13522666e1634b6f820f70405a057706ca6df6700e23f305ef9031b2ab6e6",
+  "reserved_at": "2026-11-14T12:41:12.020Z",
+  "baseline": {
+    "commit_sha": "af4bdd990d65fe98b7c3b15998a0c73482999038",
+    "tree_sha": "63732c611960017e43de10c66cf95555262360d5",
+    "protected_hashes": {
+      "content/articles.json": "8439c9197a4eac431340f59344665dca28f8022b076a58b59a20fd107e72dde2",
+      "assets/generated/manifest.json": "5c771ca60d1916c489fc1620e2c59dcbb58772fa60e69901301b84c5ac9e2f9c",
+      "content/visual_reviews.json": "3feb524ef9b81d79da7e2d72238267806dd52c2395fbdade63390f201173117a"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "bcd0e5b58e7cd03d1402e8ddecf2a9978cce4f0b",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "8cae2d9c59bd54e8971727071fed3844809ea6b65b4179c39f2ecec33d5d943d",
+    "observed_at": "2026-11-14T12:40:53.828Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
