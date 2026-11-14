@@ -6074,6 +6074,190 @@
         "resize": "center-cover-bilinear",
         "width": 1200
       }
+    },
+    "mountain-road-transplants-meadow-topsoil-blocks": {
+      "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+      "source_article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+      "bytes": 321239,
+      "sha256": "50f803b225d7f5c1e8deb08fec70ef0c36d5e71567b5e13d5bd3cd6d78ef0ed5",
+      "generated_at": "2026-11-14T10:52:25.167Z",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "generation_prompt": "Documentary press photograph beside a newly completed fictional Japanese mountain road in November: a small construction lift lowers a thick rectangular block of grassy topsoil onto a brown roadside slope. Two helmeted adult workers guide its placement from the sides at a safe distance. Root-bound earth is clearly visible beneath the grass; other green soil blocks form a patchwork along the curving finished road. Natural overcast daylight, believable earth and root texture, horizontal 16:9. No readable signs, text, logos, brands or identifiable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "source_png_sha256": "f784201f3b9a58bec8676e36c0bb144196cdbba95519dd226a705f11e1e2cdc0",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:36f23fd4-c8e8-43ce-8444-fa204c863d64",
+        "instanceID": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              209,
+              44,
+              105,
+              207,
+              107,
+              91,
+              80,
+              149,
+              211,
+              217,
+              14,
+              116,
+              124,
+              246,
+              147,
+              86,
+              227,
+              150,
+              158,
+              188,
+              116,
+              116,
+              161,
+              240,
+              219,
+              1,
+              225,
+              251,
+              166,
+              53,
+              58,
+              210
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-14T10:52:22.708834425Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:52:22.708838702Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:52:22.707221412Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr734-reviewer-handoff-first-photo",
+        "candidate_branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
+        "candidate_commit": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
+        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
+        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f",
+        "bytes": 3655590,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "82389bf613bf48a5ec2352cefdd74d314962020bc284d3d97775614a856ad6fd",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part000",
+            "bytes": 524288,
+            "sha256": "3e09228256bc8e374c0494a3c31509073de00be7027e7406ed6ad1dab526224d",
+            "blob_sha": "c390243fac06ce0bde99c3de06c3f6b8ef951c87"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part001",
+            "bytes": 524288,
+            "sha256": "72401a423d0d3c016ca6ced56f21471773ed53be3ae00ccda77c8b931def278d",
+            "blob_sha": "4d484522872ec5727e490584a1bb52bb4a467166"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part002",
+            "bytes": 524288,
+            "sha256": "e1664a50084e9f5736f0d30d815a8d9eceece913e8996656629b67e32929c22b",
+            "blob_sha": "cce8a104ee8e7a65b9894b18746d0eab199d5868"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part003",
+            "bytes": 524288,
+            "sha256": "d145a28f51cd370f82181fa5b2c550423918f59f810bfaee5895efafc7b7abd5",
+            "blob_sha": "8501d3ddfe291e28c3ba14ff9dafbd72ef75afca"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part004",
+            "bytes": 524288,
+            "sha256": "9af4633aa9b594b13b638d7e5ab15fd487a4ee3853120fb2b002cab28e2eb15f",
+            "blob_sha": "a2855303f6b2da384690f651141d3417c7b1d906"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part005",
+            "bytes": 524288,
+            "sha256": "627083b5e591269ad2906e8e88b68fa32b8a965468d0991daccfd0bfa9e22b0f",
+            "blob_sha": "1f3dbcfb6c1245b021d798627e824a5d1f0cb056"
+          },
+          {
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part006",
+            "bytes": 509862,
+            "sha256": "d1fbe6891651ebbcb999e129e0283ec66630f0dadc367d2942a6bc4244af1572",
+            "blob_sha": "b8dd4a633689b1ab783106f3d7b65e5d7b0e5de7"
+          }
+        ],
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "4efeb3e615d95f7c77ac7759dba9171d5de088ba",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "22be773f756b2993c654c9d0c39efeccd66d11e03288ff36f1c0ee70532c493e",
+          "observed_at": "2026-11-14T10:51:31.515Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69",
+          "receipt_path": "maintenance/native-image-generation-claims/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69.json",
+          "receipt_sha256": "f1242e02d724cc95f02a26a91d5cdbbdae2c6f86e304c3d05815d3f382ffc909",
+          "commit_sha": "60bb91d95e4039a5da5e5ccf50491be7e67ac2e4"
+        }
+      },
+      "native_candidate": {
+        "branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
+        "commit_sha": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
+        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
+        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f",
+        "identity": "7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69"
+      },
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      },
+      "generation_id": "b3655073-1215-41be-87ea-5e44fa7e950a",
+      "generation_receipt": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
     }
   },
   "rejected": {
