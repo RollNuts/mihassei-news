@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "ac03a8c5a9875de36e0c1feb73ebd4af2d0d8c35b24d1c7feb50db71f265efa9",
+  "slug": "indoor-beach-friends-exchange-ripples",
+  "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-d1c2282bf620a6124e41be18ceba034b10150c12979b9da47bea616b65de2c9b-cut-04",
+  "prompt_sha256": "e0fcc8071a59e72081d87b4f6cf11c47446d7abedda82925f7a454c675d07c27",
+  "reserved_at": "2026-11-14T07:42:21.332Z",
+  "baseline": {
+    "commit_sha": "af9cbad82a6435b40d06504f11c75b5698f7c8ce",
+    "tree_sha": "52feb858cb7605222824f336873d1f55296fba87",
+    "protected_hashes": {
+      "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
+      "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
+      "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "54ca583ac7075b7ddb0e67d64052b0d7b313ff59",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "870d74baac3f42641f4cc67c2385ad3da91dc22bf5a506b6e4fcb382783fa872",
+    "observed_at": "2026-11-14T07:42:07.412Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
