@@ -6252,6 +6252,184 @@
       "generation_id": "ed196ad5-85ee-40d1-9d49-46f86840e7b5",
       "generation_receipt": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
       "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
+    },
+    "fan-kumade-tours-concert-halls-before-audience": {
+      "article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
+      "source_article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
+      "bytes": 247993,
+      "sha256": "289155a716b9a830ac27839b25dc7796c9f543cb426287bce1c1780d9a77b29a",
+      "generated_at": "2026-11-14T10:42:19.442Z",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "generation_prompt": "Medium-wide candid press photograph in a concert-hall foyer: a fictional Japanese woman aged 27, wearing a dark cropped jacket and an elegant blue skirt, ties a small paper wish tag with a blue ribbon onto a low branch of a two-metre-tall decorative Japanese kumade good-luck rake. The entire ornate rake, star ornaments, colorful small tags and wheeled stand are clearly visible beside her, away from the walkway. Natural expression, realistic hands, fabric and warm venue lighting, horizontal 16:9. No readable writing, logos, brand designs or real performers.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "source_png_sha256": "cd652d7fd7eaf982c5b9b9659a51cfb75886850b1ba34742849598090bd34a4d",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:c4a183a3-1872-4987-97bb-940f505ad9b6",
+        "instanceID": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              183,
+              27,
+              1,
+              57,
+              45,
+              59,
+              96,
+              46,
+              228,
+              76,
+              162,
+              199,
+              157,
+              216,
+              223,
+              252,
+              197,
+              162,
+              207,
+              9,
+              31,
+              6,
+              240,
+              124,
+              215,
+              209,
+              166,
+              46,
+              233,
+              158,
+              221,
+              185
+            ]
+          },
+          "specVersion": "2.2.0",
+          "org.contentauth.c2pa_rs": "0.79.2"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-14T10:42:16.636834210Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:42:16.636837216Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:42:16.632372885Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr732-reviewer-handoff-first-photo",
+        "candidate_branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
+        "candidate_commit": "08fc204947c0072f53103c56ccaaab058cf400c6",
+        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
+        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7",
+        "bytes": 2800810,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "0c6588c3a1d1d975446f0f234a597e8d9343f117d347b0c5013426a8f1ac523d",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part000",
+            "bytes": 524288,
+            "sha256": "783b1a49e07360f4930639178f15da47f27e9aa0006a98779378b028f0fccaa6",
+            "blob_sha": "f12dc5dbf4b082f8d1850f48ed6d763bc1c4b8a2"
+          },
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part001",
+            "bytes": 524288,
+            "sha256": "833e3a55e9d9eb5406f29e5a3f3c3c51d7de2884077809c8d66bf06838b93420",
+            "blob_sha": "181f3640f438d96f40ae6a727abbdc9cdfe82c47"
+          },
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part002",
+            "bytes": 524288,
+            "sha256": "137cb60df8af0c41420131c813925e44993030e5cd5d1694ff627baf155af481",
+            "blob_sha": "71756353999c8eb73ab8b87a25be0e4be28a771a"
+          },
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part003",
+            "bytes": 524288,
+            "sha256": "235e8e8d75ab0b6cd91b3d9fa27115e1bb3dfe065d8ad06719682c6c39eede73",
+            "blob_sha": "4096245ff0a3f7e577ffb62ff1930746d0185ca1"
+          },
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part004",
+            "bytes": 524288,
+            "sha256": "133c274f809e36adea8b8989c4f8291920f81e10d87378772f9d1a53fbb83f6e",
+            "blob_sha": "0c44dfc62df53dfae1d0acf460c2c08f25fc1410"
+          },
+          {
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part005",
+            "bytes": 179370,
+            "sha256": "16d65607987f9eed3684e3576b60061a496d172c351e720660db4209f1136108",
+            "blob_sha": "5f82ea2d2e356fb1e533f4cbd46bc2762d969de4"
+          }
+        ],
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "864d0acdc6832c037e9cd176c15cb78e7c0dfb4a",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "02b631f9214b2e4666bf5fda03d641be15aeb285c6d2ec3f6a65268e60889039",
+          "observed_at": "2026-11-14T10:41:16.798Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
+          "receipt_path": "maintenance/native-image-generation-claims/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5.json",
+          "receipt_sha256": "ef0d091a8cbfae0722f71032ed919eb81e58e7f2335b1dd89cdbfe022fedb37c",
+          "commit_sha": "920cad83d1d97228dee57cc2ee8663d41bef97e3"
+        }
+      },
+      "native_candidate": {
+        "branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
+        "commit_sha": "08fc204947c0072f53103c56ccaaab058cf400c6",
+        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
+        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7",
+        "identity": "d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5"
+      },
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      },
+      "generation_id": "ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+      "generation_receipt": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
     }
   },
   "rejected": {
