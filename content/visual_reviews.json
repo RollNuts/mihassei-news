@@ -899,6 +899,13 @@
       "note": "原PNGと保存済み1200×675 JPEGを実表示し、修正済み本文全段落と照合。27歳の架空の成人女性が青いリボンで願い札を大きな熊手へ結ぶ場面が第3段落に一致。星飾り・多数の札・支柱・台車の車輪と通路が見え、手指・布・竹・金属・館内の光が自然。可読文字・ブランド・ロゴや目立つ破綻は見当たらない。別担当も原PNG/JPEGと本文を独立照合し採用可。原PNG・JPEG・receiptの全SHAを確認。",
       "article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
       "image_sha256": "289155a716b9a830ac27839b25dc7796c9f543cb426287bce1c1780d9a77b29a"
+    },
+    "mountain-road-transplants-meadow-topsoil-blocks": {
+      "decision": "accepted",
+      "reviewed_at": "2026-11-14T10:56:00.631Z",
+      "note": "原PNGと保存済み1200×675 JPEGを実表示し、公開本文全段落と照合。草と根を含む厚い土塊を道路脇の斜面へ据える動作、緑のパッチと完成した道路が第4段落に一致。紅葉・曇天・作業着は11月に合い、手袋・吊具・土・草・道路の材質と光に目立つ破綻なし。可読文字・ブランド・ロゴは見当たらない。別担当も原PNG/JPEGと本文を独立照合し採用可。原PNG・JPEG・receiptの全SHAを確認。",
+      "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+      "image_sha256": "50f803b225d7f5c1e8deb08fec70ef0c36d5e71567b5e13d5bd3cd6d78ef0ed5"
     }
   },
   "version": 1
