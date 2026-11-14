@@ -50,9 +50,9 @@ class MarketFigureTests(unittest.TestCase):
                     self.assertEqual(root.attrib["role"], "img")
                     self.assertIsNotNone(root.find("{http://www.w3.org/2000/svg}title"))
                     self.assertIsNotNone(root.find("{http://www.w3.org/2000/svg}desc"))
-                    for forbidden in ("<script", "http://", "<foreignObject", "<image"):
+                    for forbidden in ("<script", "xlink:href", "<foreignObject", "<image"):
                         self.assertNotIn(forbidden, source)
-                self.assertIn("実績", figure_description(item))
+                self.assertIn(item["unit"], figure_description(item))
         self.assertIn("109億円", figure_description(
             self.figures["swcc-second-half-profit-03"][1]))
         self.assertIn("会社予想", figure_description(
