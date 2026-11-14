@@ -25,9 +25,8 @@ def choose_serial(article: dict, serials: list[dict]):
     if not isinstance(article, dict) or not isinstance(serials, list):
         return None
     category = article.get("category")
-    if category in ("社会", "暮らし", "エンタメ"):
-        slug = "case-files"
-    elif category in ("経済", "技術"):
+    # Withdrawn fiction has no public discovery surface.
+    if category in ("経済", "技術"):
         headline = str(article.get("title", ""))
         abstract = str(article.get("summary", ""))
         if not MARKET_THEME.search(headline + " " + abstract):

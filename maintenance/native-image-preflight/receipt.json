@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
-  "logical_run_id": "article-20261114-pr732-reviewer-handoff-first-photo",
-  "observed_at": "2026-11-14T10:41:16.798Z",
+  "candidate_identity": "2d727f781ff7248f051c97350c6f3f8cd775e5a8e90ffbbb59073a4fe002c0d6",
+  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658-cut-04-standing-poolside-photo",
+  "observed_at": "2026-11-14T10:48:56.886Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,9 +17,9 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "c16097eb1b9f426c80c18c46071bc4a4b894c13b",
+    "commit_sha": "8f79e0e810fa0dd345eafe013417af013fc05c28",
     "protected_hashes": {
-      "content/articles.json": "20b07bd024d42649144175b397c6941410fcc502d6ce86966868eb713e4f0a98",
+      "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
       "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
       "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
     }

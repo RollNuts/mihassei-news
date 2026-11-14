@@ -65,13 +65,13 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
         sports = {"title": "野球の引退", "summary": "野球", "category": "スポーツ"}
         generic_tech = {"title": "道具の展示", "summary": "絵の展示", "category": "技術"}
         self.assertEqual(choose_serial(finance, self.serials)["kind"], "analysis")
-        self.assertEqual(choose_serial(mystery, self.serials)["kind"], "fiction")
+        self.assertIsNone(choose_serial(mystery, self.serials))
         self.assertIsNone(choose_serial(sports, self.serials))
         self.assertIsNone(choose_serial(generic_tech, self.serials))
         self.assertEqual(render_serial_bridge(sports, self.serials), "")
 
     def test_bridge_is_real_html_not_a_script_or_fake_popularity(self):
-        article = next(a for a in self.articles if a["category"] == "社会")
+        article = next(a for a in self.articles if choose_serial(a, self.serials) is not None)
         page = story(article, self.articles, serials=self.serials)
         self.assertEqual(page.count('class="article-serial-bridge"'), 1)
         self.assertLess(page.index('class="reader-next"'), page.index('class="article-serial-bridge"'))
@@ -80,11 +80,11 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
         self.assertNotIn("閲覧数ランキング", page)
 
     def test_missing_series_and_hostile_input_fail_safely(self):
-        article = {"category": "社会", "title": "職場", "summary": ""}
+        article = {"category": "経済", "title": "電力市場", "summary": ""}
         self.assertIsNone(choose_serial(article, []))
         self.assertEqual(render_serial_bridge(article, []), "")
         altered = deepcopy(self.serials)
-        mystery = next(s for s in altered if s["kind"] == "fiction")
+        mystery = next(s for s in altered if s["kind"] == "analysis")
         mystery["title"] = '<img src=x onerror=alert(1)>'
         mystery["episodes"][-1]["title"] = '<script>alert(1)</script>'
         promo = render_serial_bridge(article, altered)
@@ -95,10 +95,10 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
 
     def test_serial_index_has_correct_editorial_title_and_itemlist(self):
         markup = render_serials_index(self.serials, layout)
-        self.assertIn("<title>連載一覧 | 未発生新聞（創作と市場分析の連載）</title>", markup)
+        self.assertIn("<title>連載一覧 | 未発生新聞（市場分析の連載）</title>", markup)
         schemas = structured(markup)
         page = next(x for x in schemas if x["@type"] == "CollectionPage")
-        self.assertEqual(page["genre"], "創作小説・市場分析")
+        self.assertEqual(page["genre"], "市場分析")
         items = next(x for x in schemas if x["@type"] == "ItemList")
         self.assertEqual(items["numberOfItems"], len(self.serials))
         self.assertEqual(
@@ -138,7 +138,7 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
                 self.assertIn('rel="canonical"', page)
 
     def test_shared_reader_entry_policy_is_stable(self):
-        fiction = next(s for s in self.serials if s["kind"]=="fiction")
+        fiction = next(s for s in load_serials(ROOT, include_withdrawn=True) if s["kind"]=="fiction")
         market = next(s for s in self.serials if s["kind"]=="analysis")
         self.assertEqual(primary_episode(fiction)["slug"], fiction["episodes"][0]["slug"])
         self.assertEqual(primary_episode(market)["slug"], market["episodes"][-1]["slug"])
@@ -147,7 +147,7 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
 
     def test_bridge_uses_current_episode_as_serial_grows(self):
         article = {"category": "社会", "title": "推理事件", "summary": ""}
-        expanded = deepcopy(self.serials)
+        expanded = deepcopy(load_serials(ROOT, include_withdrawn=True))
         mystery = next(s for s in expanded if s["kind"] == "fiction")
         e = deepcopy(mystery["episodes"][0])
         e["number"] = 2
@@ -155,10 +155,7 @@ class SerialReaderDiscoveryTests(unittest.TestCase):
         e["title"] = "新たな事件の続編"
         mystery["episodes"].append(e)
         promo = render_serial_bridge(article, expanded)
-        self.assertIn("/victim-not-yet-dead-01/", promo)
-        self.assertNotIn("/second-real-episode/", promo)
-        self.assertIn("最新の第2話", promo)
-        self.assertIn("第1話から読む", promo)
+        self.assertEqual(promo, "")
         market = next(s for s in expanded if s["kind"] == "analysis")
         forecast = deepcopy(market["episodes"][0])
         forecast["number"] = 2
