@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
-  "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
-  "observed_at": "2026-11-14T12:40:53.828Z",
+  "candidate_identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
+  "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
+  "observed_at": "2026-11-14T12:47:49.350Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
