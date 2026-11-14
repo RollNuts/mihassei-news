@@ -50,8 +50,6 @@ COMPOSITION_RUN = 42930964897
 COMPOSITION_SHA = "31141a1037699f24552ffe16f60d17ac835e304fa13c620a70d5b1a793406b93"
 COMPOSITION_RECEIPT_SHA = "90daefade03c8f89bcb1d4ad25714dce38b50d24b1f800a289253f82c5864444"
 SOURCE_MANIFEST = re.compile(r"([0-9a-f]{40}):(drafts/caster-review/[a-z0-9]+(?:-[a-z0-9]+)*/manifest\.json):([0-9a-f]{64})")
-REEDIT_NOTICE = ("Original presenter appears once for three seconds; the existing scene photograph pushes in by 5% from three to eight seconds. "
-                 "Voice and lip-sync remain unverified; audio/visual review required before publication.")
 
 
 def validate_source_run(data, run_id):
@@ -307,17 +305,9 @@ def readable_labels(work):
     return graph
 
 
-def reedit_command(source, photo, output, work):
-    # One still yields exactly 125 frames. Delay that branch to the original
-    # three-second cut; fit/pad only the photo, then redraw the fixed labels.
-    graph = ("[1:v]zoompan=z='1+0.05*min(on,124)/124':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':"
-             "d=125:s=1200x675:fps=25,scale=1216:500:force_original_aspect_ratio=decrease,"
-             "pad=1216:500:(ow-iw)/2:(oh-ih)/2:color=0xdce5e7,setpts=PTS+3/TB[photo];"
-             "[0:v][photo]overlay=32:80:enable='gte(t,3)':eof_action=pass:repeatlast=0,"
-             + readable_labels(work) + "[video]")
-    return ["ffmpeg", "-nostdin", "-v", "error", "-threads", "1", "-filter_complex_threads", "1",
-            "-i", str(source), "-threads", "1", "-i", str(photo), "-filter_complex", graph,
-            "-map", "[video]", "-map", "0:a:0",
+def reedit_command(source, output, work):
+    return ["ffmpeg", "-nostdin", "-v", "error", "-threads", "1", "-filter_threads", "1",
+            "-i", str(source), "-vf", readable_labels(work), "-map", "0:v:0", "-map", "0:a:0",
             "-c:v", "libx264", "-threads", "1", "-preset", "veryfast", "-crf", "25",
             "-maxrate", "2000k", "-bufsize", "4000k", "-pix_fmt", "yuv420p",
             "-c:a", "copy", "-movflags", "+faststart", str(output)]
@@ -385,15 +375,14 @@ def execute(source_run: int | None, output: Path, source_manifest=None):
                 source_movie, original, provenance = retained_composition(source_manifest, work, budget)
                 receipt.update({key: value for key, value in original.items() if key.startswith("source_")})
                 receipt.update(provenance, duration_seconds=8.0, audio_stream_copied=True,
-                               edit="Existing photograph only: centered 1.00-to-1.05 push-in from three to eight seconds; readable fixed labels and original three-second cut retained",
-                               voice_review="unverified", lipsync_review="unverified", notice=REEDIT_NOTICE)
+                               edit="Readable lower third and fiction disclosure only; original framing and three-second cut retained")
                 duration = 8.0
                 raw_probe = json.loads(command(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(source_movie)], budget, capture=True))
                 validate_retained_probe(raw_probe)
                 receipt["source_ffprobe"] = raw_probe
                 source_timing = packet_timing(source_movie, raw_probe, budget)
                 receipt["source_aac_packet_sha256"] = aac_packet_hash(source_movie, budget)
-                command(reedit_command(source_movie, photo, output / MOVIE, work), budget)
+                command(reedit_command(source_movie, output / MOVIE, work), budget)
             else:
                 run = json.loads(command(["gh","api",f"repos/{REPOSITORY}/actions/runs/{source_run}"],budget,capture=True))
                 validate_source_run(run,source_run)
@@ -442,7 +431,7 @@ def execute(source_run: int | None, output: Path, source_manifest=None):
                     raise ValueError("Re-edit changed the original encoded narration")
             receipt["fresh_main_sha_after"] = check_fresh_main(budget)
             receipt.update(status="composed_unreviewed",sha256=digest(output/MOVIE),ffprobe=probe,
-                           narration=TEXT,notice=receipt.get("notice", "Original presenter appears once for three seconds; scene remains a still photograph. Audio/visual review required before publication."))
+                           narration=TEXT,notice="Original presenter appears once for three seconds; scene remains a still photograph. Audio/visual review required before publication.")
     except BaseException as error:
         receipt.update(status="failed",failure_type=type(error).__name__)
         raise

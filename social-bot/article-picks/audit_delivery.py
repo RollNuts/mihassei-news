@@ -13,8 +13,6 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
 from publish import gql, qstring  # noqa: E402
-from article_thread import (THREAD_FIELDS, post_texts, thread_items, remote_thread_mismatch,
-                            thread_digest, digest, validate_thread)
 
 JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
@@ -39,8 +37,6 @@ def reusable_observations(state: dict, previous: dict, now: datetime) -> dict:
                 or not isinstance(entry.get("text_sha256"), str)
                 or row.get("text_sha256") != entry["text_sha256"]):
             continue
-        if entry.get("article_thread") is not None and row.get("thread_sha256") != entry.get("thread_sha256"):
-            continue
         if str(row.get("reason", "")).startswith("deferred_"):
             continue
         observed = aware(row.get("provider_checked_at_utc") or previous.get("checked_at_utc"))
@@ -50,8 +46,6 @@ def reusable_observations(state: dict, previous: dict, now: datetime) -> dict:
         status = row.get("buffer_status")
         # Sent is historical delivery evidence, not proof the X page still exists.
         confirmed = status == "sent" and aware(row.get("buffer_sent_at_utc")) is not None
-        if entry.get("article_thread") is not None or row.get("thread_publication") == "unverified":
-            confirmed = confirmed and row.get("thread_configuration") == "matched"
         interval = timedelta(minutes=15) if status in ("sending", "scheduled") else timedelta(hours=6)
         if confirmed or now - observed < interval:
             cached[slug] = dict(row, provider_checked_at_utc=observed.isoformat(),
@@ -102,8 +96,8 @@ def selected_entries(state: dict, now: datetime, days: int = MAX_AUDIT_DAYS):
                 raise ValueError("Invalid article promotion record")
             queued_at = aware(entry.get("queued_at_utc"))
             buffer_id = entry.get("buffer_id")
-            pending = ((prefix == "comic:" or entry.get("article_thread") is not None)
-                       and entry.get("submission_pending") is True and buffer_id == "")
+            pending = (prefix == "comic:" and entry.get("submission_pending") is True
+                       and buffer_id == "")
             if (queued_at is None or not isinstance(buffer_id, str)
                     or (not buffer_id and not pending)):
                 raise ValueError("Incomplete article promotion record")
@@ -120,7 +114,7 @@ def read_post_by_id(token: str, buffer_id: str):
         raise ValueError("Invalid Buffer post id")
     query = (
         "query { post(input: {id: " + qstring(buffer_id)
-        + "}) { id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl } " + THREAD_FIELDS + " } }"
+        + "}) { id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl } } }"
     )
     return gql(token, query).get("post")
 
@@ -136,15 +130,6 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         "queued_at_utc": aware(entry["queued_at_utc"]).astimezone(timezone.utc).isoformat(),
         "buffer_status": "unverified",
     }
-    thread = entry.get("article_thread")
-    if thread is not None:
-        result.update(thread_sha256=entry.get("thread_sha256"), text_sha256=entry.get("text_sha256"),
-                      thread_publication="unverified")
-    if not entry["buffer_id"] and entry.get("submission_pending"):
-        if is_comic:
-            result.update(promotion_key=promotion_key, kind="comic", text_sha256=entry.get("text_sha256"))
-        result.update(submission_pending=True, reason="submission_pending_without_buffer_id")
-        return result
     if is_comic:
         result.update(promotion_key=promotion_key, kind="comic",
                       text_sha256=entry.get("text_sha256"))
@@ -172,30 +157,10 @@ def reconcile(slug: str, entry: dict, remote: object, lookup_error: str | None =
         result["reason"] = "buffer_id_mismatch"
         return result
     text = remote.get("text")
-    if thread is not None:
-        try:
-            validate_thread(thread, slug)
-        except ValueError:
-            mismatch = "invalid_saved_thread_evidence"
-        else:
-            mismatch = remote_thread_mismatch(remote, thread)
-            if (entry.get("thread_sha256") != thread_digest(thread)
-                    or entry.get("text_sha256") != digest(thread["parent_text"])):
-                mismatch = "saved_thread_fingerprint_mismatch"
-        if mismatch:
-            result["reason"] = mismatch
-            result["provider_status_observed"] = remote.get("status")
-            # Preserve this ID's safe provider errors and timing even when a
-            # reply or image is missing; parent status is not thread delivery.
-        else:
-            result["thread_configuration"] = "matched"
-            result["reason"] = "reply_publication_not_independently_verified"
-    elif not isinstance(text, str) or canonical_url(slug) not in "\n".join(post_texts(remote)):
+    if not isinstance(text, str) or canonical_url(slug) not in text:
         result["reason"] = "canonical_article_url_missing_or_text_mismatch"
         return result
-    elif thread_items(remote):
-        result.update(thread_publication="unverified", reason="recovered_thread_without_original_image_proof")
-    if is_comic and thread is None and hashlib.sha256(text.encode("utf-8")).hexdigest() != entry.get("text_sha256"):
+    if is_comic and hashlib.sha256(text.encode("utf-8")).hexdigest() != entry.get("text_sha256"):
         result["reason"] = "comic_text_sha256_mismatch"
         return result
     status = remote.get("status")
@@ -272,10 +237,6 @@ def build(state: dict, existing: list[dict], now: datetime,
     for row in items:
         sent = aware(row.get("buffer_sent_at_utc"))
         due = aware(row.get("buffer_due_at_utc"))
-        previous_problems = delivery_problems
-        thread_problem = row.get("thread_publication") == "unverified" and row.get("thread_configuration") != "matched"
-        if thread_problem:
-            row["review_needed"] = row.get("reason", "thread_delivery_unknown")
         if row["buffer_status"] == "sent" and sent is None:
             missing_provider_timestamps += 1
         if row["buffer_status"] in IMMEDIATE_PROBLEM_STATUSES:
@@ -308,8 +269,6 @@ def build(state: dict, existing: list[dict], now: datetime,
             elif now - due > timedelta(hours=2):
                 overdue_scheduled += 1
                 row["review_needed"] = "scheduled_more_than_two_hours_past_due"
-        if thread_problem and delivery_problems == previous_problems:
-            delivery_problems += 1
         if sent is not None and sent.astimezone(JST).date() == today:
             sent_today += 1
         if due is not None and due.astimezone(JST).date() == today:
@@ -335,7 +294,6 @@ def build(state: dict, existing: list[dict], now: datetime,
             "delivery_problems": delivery_problems,
             "delivery_in_progress": delivery_in_progress,
             "overdue_sending": overdue_sending,
-            "thread_publication_unverified": sum(row.get("thread_publication") == "unverified" for row in items),
         },
         "limitations": (
             "Buffer status is provider evidence, not independent X page verification. "
@@ -343,8 +301,7 @@ def build(state: dict, existing: list[dict], now: datetime,
             "sent evidence is historical, not current X-page existence. Draft/error/needs_approval "
             "require investigation. Sending is normal for up to 15 minutes, then requires review. "
             "Overdue scheduled posts also require investigation. Nothing is automatically retried. "
-            "Missing provider timestamps are not assumed sent. Thread configuration and parent-level status "
-            "do not independently verify publication of the first reply; no partial thread is retried."
+            "Missing provider timestamps are not assumed sent."
         ),
         "items": items,
     }
@@ -424,7 +381,7 @@ def main() -> int:
         if not any(not entry["buffer_id"] for _key, entry, _stamp in chosen):
             print("No unresolved article delivery checks due; no Buffer read/write.")
             return 0
-        print("Article/comic submission pending without a saved Buffer ID; no provider read.")
+        print("Comic submission pending without a saved Buffer ID; no provider read.")
     report = build(state, existing, now, lookup_errors, cached)
     report["provider_rate_limited"] = rate_limited
     if retry_at is not None:

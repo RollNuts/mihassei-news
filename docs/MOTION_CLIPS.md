@@ -110,7 +110,7 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 生成済み素材の編集には同じ手動入力へ`caster_source_run`を指定する。成功runのartifactと現行の記事・承認写真を照合し、3秒のキャスターから現場写真へ切り替える8〜12秒の試作だけを保存する。モデルの再取得・再生成は行わず、声と映像の確認前は公開しない。
 
-artifact失効後に保持済みの8秒試作を再編集する場合は、同じActionの`caster_source_manifest`へ`完全なcommit SHA:drafts/caster-review/<bundle>/manifest.json:manifestのSHA-256`を指定し、`caster_source_run`は空にする。対象はスクリプトが固定した元試作と未変更の元receiptだけ。manifestは`version: 1`、`composition_run_id`、`movie_sha256`、`receipt_sha256`の4項目とし、同じフォルダーの`news-preview.mp4`・`receipt.json`を照合する。元の声・最初3秒のキャスター・切り替えを保ち、字幕と創作表示を拡大し、3〜8秒の写真層だけを5%寄せた`preview_only`／`composed_unreviewed`のartifactを返す。声と口同期は未検証のまま記録する。
+artifact失効後に保持済みの8秒試作の文字だけを読みやすくする場合は、同じActionの`caster_source_manifest`へ`完全なcommit SHA:drafts/caster-review/<bundle>/manifest.json:manifestのSHA-256`を指定し、`caster_source_run`は空にする。対象はスクリプトが固定した元試作と未変更の元receiptだけ。manifestは`version: 1`、`composition_run_id`、`movie_sha256`、`receipt_sha256`の4項目とし、同じフォルダーの`news-preview.mp4`・`receipt.json`を照合する。元の声・映像・3秒の切り替えを保ち、字幕と創作表示だけを拡大した`preview_only`／`composed_unreviewed`のartifactを返す。
 
 ## 容量と安全
 

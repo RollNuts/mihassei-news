@@ -18,15 +18,6 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
-if __package__:
-    from .serials import public_serials
-    from .photo_issues import (load_photo_issues, published_issues,
-                              index_url as photo_index_url, issue_url as photo_issue_url)
-else:
-    from serials import public_serials
-    from photo_issues import (load_photo_issues, published_issues,
-                             index_url as photo_index_url, issue_url as photo_issue_url)
-
 SITE = "https://veripsa.com"
 ROOT = Path(__file__).resolve().parents[1]
 BOT = "Twitterbot/1.0"
@@ -79,20 +70,13 @@ def inspect_markup(markup: str, path: str) -> tuple[str, str]:
     if image != p.meta["og:image:secure_url"] or image != p.meta["twitter:image"]:
         raise RuntimeError(path + ": X and OpenGraph images disagree")
     parsed = urlsplit(image)
-    weekly_image = (re.fullmatch(r"/photo/weekly/[a-z0-9]+(?:-[a-z0-9]+)*/(?:0[1-9]|10)\.jpg", parsed.path)
-                    and re.fullmatch(r"v=[0-9a-f]{12}", parsed.query) and not parsed.fragment)
     if (parsed.scheme != "https" or parsed.netloc != "veripsa.com"
-            or not (parsed.path.startswith(("/og/", "/photos/", "/generated/")) or weekly_image)):
+            or not parsed.path.startswith(("/og/", "/photos/", "/generated/"))):
         raise RuntimeError(path + ": image must be first-party raster: " + image)
     extension = parsed.path.rsplit(".", 1)[-1].lower()
     expected_mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg"}.get(extension)
     if not expected_mime or p.meta["og:image:type"] != expected_mime:
         raise RuntimeError(path + ": wrong image MIME for " + image)
-    weekly_issue = re.fullmatch(r"/photo/weekly/[a-z0-9]+(?:-[a-z0-9]+)*/", path)
-    if weekly_issue and p.meta.get("og:type") != "article":
-        raise RuntimeError(path + ": weekly photo issue must advertise article type")
-    if path == photo_index_url() and p.meta.get("og:type") == "article":
-        raise RuntimeError(path + ": weekly photo collection must not advertise article type")
     if path.startswith(("/articles/", "/serials/")) and path.count("/") > 2:
         if p.meta.get("og:type") != "article":
             # /serials/<series>/ is a collection page, not an episode.
@@ -154,16 +138,13 @@ def candidate_paths(root: Path = ROOT) -> list[str]:
     substantial = sorted((day for day, n in groups.items() if n >= 3), reverse=True)
     if substantial:
         paths.append("/issues/" + substantial[0] + "/")
-    series = public_serials(json.loads((root / "content/serials.json").read_text(encoding="utf-8")))
+    series = json.loads((root / "content/serials.json").read_text(encoding="utf-8"))
     if series:
         paths.append("/serials/")
     for serial in series:
         if serial["episodes"]:
             ep = serial["episodes"][-1]
             paths.append("/serials/" + serial["slug"] + "/" + ep["slug"] + "/")
-    photos = published_issues(load_photo_issues(root), root=root)
-    if photos:
-        paths.extend((photo_index_url(), photo_issue_url(photos[0])))
     return paths
 
 

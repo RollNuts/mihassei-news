@@ -278,37 +278,7 @@ class MotionWorkflowTests(unittest.TestCase):
         self.assertEqual(re.findall(r"^            (.+)$", artifact, re.M), [
             "${{ runner.temp }}/news-caster-composition/news-preview.mp4",
             "${{ runner.temp }}/news-caster-composition/receipt.json",
-            "${{ runner.temp }}/news-caster-composition/qa-contact-sheet.jpg",
         ])
-
-    def test_composition_contact_sheet_is_source_only_and_reads_existing_movie_without_modifying_it(self):
-        block=step(self.video,"Make one small contact sheet from the composed preview for visual QA")
-        condition=re.search(r"^        if: (.+)$",block,re.M).group(1)
-        for source_run,manifest,expected in (("","",False),("123","",True),("","pinned",True)):
-            self.assertEqual(applies(condition,{"inputs.caster_source_run":source_run,
-                                               "inputs.caster_source_manifest":manifest}),expected)
-        self.assertLess(self.video.index("Generate one manual caster preview only"),self.video.index("Make one small contact sheet"))
-        with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);folder=root/"news-caster-composition";folder.mkdir()
-            movie=folder/"news-preview.mp4";receipt=folder/"receipt.json";receipt.write_bytes(b"original receipt")
-            log=root/"ffmpeg-calls";encoder=root/"ffmpeg"
-            encoder.write_text('#!/bin/sh\nfor arg do printf "%s\\n" "$arg"; done > "$CALL_LOG"\n')
-            encoder.chmod(0o755)
-            env={**os.environ,"PATH":str(root)+os.pathsep+os.environ.get("PATH",""),
-                 "RUNNER_TEMP":str(root),"CALL_LOG":str(log)}
-            for exists in (False,True):
-                if exists:movie.write_bytes(b"original movie")
-                result=subprocess.run(["bash","-e","-o","pipefail","-c",shell(block)],env=env,capture_output=True,text=True)
-                self.assertEqual(result.returncode,0,result.stderr)
-                if not exists:self.assertFalse(log.exists());continue
-                argv=log.read_text().splitlines()
-                self.assertEqual(argv[argv.index("-i")+1],str(movie))
-                self.assertEqual(argv[argv.index("-vf")+1],"fps=2,scale=480:270,tile=4x4")
-                self.assertEqual(argv[argv.index("-frames:v")+1],"1")
-                self.assertEqual([argv[i+1] for i,arg in enumerate(argv) if arg in ("-threads","-filter_threads")],["1","1","1"])
-                self.assertEqual(argv[-1],str(folder/"qa-contact-sheet.jpg"));self.assertIn("-n",argv)
-                self.assertEqual(movie.read_bytes(),b"original movie")
-                self.assertEqual(receipt.read_bytes(),b"original receipt")
 
     def test_retained_pilot_input_is_passed_as_one_argument_and_never_starts_new_inference(self):
         block = step(self.video, "Generate one manual caster preview only while image automation is active")

@@ -10,12 +10,12 @@ from scripts.serials import (
     render_series_page,
     render_episode_page,
     progress_attributes,
-    render_completed_reading, public_serials,
+    render_completed_reading,
 )
 from scripts.build import asset_url, layout, privacy
 
 ROOT = Path(__file__).resolve().parents[1]
-SERIALS = public_serials(json.loads((ROOT / "content" / "serials.json").read_text(encoding="utf-8")))
+SERIALS = json.loads((ROOT / "content" / "serials.json").read_text(encoding="utf-8"))
 
 
 def identity_layout(title, desc, path, main, **kwargs):
@@ -63,7 +63,7 @@ class SerialReadingProgressTests(unittest.TestCase):
             self.assertIn("このブラウザに保存します", rendered)
             self.assertIn('role="status"', rendered)
             last = render_episode_page(series, series["episodes"][-1], identity_layout)
-            self.assertIn("連載終了" if series["slug"] == "case-files" else "次回は未公開", last)
+            self.assertIn("次回は未公開", last)
             if series["kind"] == "analysis":
                 self.assertIn("投資助言", rendered)
                 self.assertNotIn('data-mystery-notebook', rendered)
@@ -79,13 +79,15 @@ class SerialReadingProgressTests(unittest.TestCase):
             self.assertIn('data-serial-progress-summary', markup)
             self.assertIn('data-serial-progress-complete', markup)
             self.assertIn("エピソード一覧", markup)
-            self.assertIn("既刊をRSSで読む" if series["slug"] == "case-files" else "連載をRSS購読", markup)
+            self.assertIn("連載をRSS購読", markup)
             for ep in series["episodes"]:
                 self.assertIn('/serials/'+series["slug"]+'/'+ep["slug"]+'/', markup)
 
     def test_script_only_on_relevant_pages_and_privacy_is_explicit(self):
         relevant = [
             layout("連載", "desc", "/serials/", "main"),
+            layout("第1話", "desc", "/serials/case-files/victim-not-yet-dead-01/",
+                   "main", serial={"slug":"case-files","kind":"fiction","episode":"victim-not-yet-dead-01"}),
             layout("第1回", "desc", "/serials/market-lab/power-grid-after-ai-01/",
                    "main", serial={"slug":"market-lab","kind":"analysis","episode":"power-grid-after-ai-01"}),
         ]

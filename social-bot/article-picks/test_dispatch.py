@@ -25,7 +25,6 @@ import dispatch as picks
 import article_comics as comics
 import buffer_budget as budget
 import publish
-import article_thread as threads
 READ_DELIVERY_RETRY_TIME = picks.delivery_retry_time
 
 NOW = datetime.fromisoformat("2026-11-05T12:00:00+09:00")
@@ -89,22 +88,6 @@ def public_record(minutes=180):
     }
 
 
-def synthetic_thread(story, caption=None):
-    image = {"path": "assets/generated/" + story["slug"] + ".jpg", "sha256": "a" * 64,
-             "revision": "b" * 40}
-    image["url"] = threads.RAW_BASE + image["revision"] + "/" + image["path"]
-    return {"schema_version": 1, "article_sha256": threads.article_fingerprint(story),
-            "parent_text": threads.parent_text(story, caption),
-            "reply_text": threads.canonical_url(story["slug"]) + threads.TRACKING_QUERY, "image": image}
-
-
-def remote_thread(thread, **fields):
-    return {"id": "mock-post", "status": "sent", "text": thread["parent_text"],
-            "metadata": {"thread": [
-                {"text": thread["parent_text"], "assets": [{"source": thread["image"]["url"], "mimeType": "image/png"}]},
-                {"text": thread["reply_text"], "assets": []}]}, **fields}
-
-
 class ArticlePickTests(unittest.TestCase):
     def setUp(self):
         # Offline fixtures must not append their synthetic sends to Actions'
@@ -117,11 +100,6 @@ class ArticlePickTests(unittest.TestCase):
         live_cooldown = patch.object(picks, "delivery_retry_time", return_value=None)
         live_cooldown.start()
         self.addCleanup(live_cooldown.stop)
-        # Ranking/slot tests use synthetic verified-image proof. Separate
-        # image/transport tests exercise the actual preparation and mutation.
-        image = patch.object(picks, "prepare_article_thread", side_effect=lambda a, review=None, **kw: synthetic_thread(a))
-        image.start()
-        self.addCleanup(image.stop)
 
     def test_actual_config_and_initial_ledger(self):
         config = picks.read_json(HERE / "config.json")
@@ -1336,13 +1314,14 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(queue.call_args.args[2]["id"], "article-new-story")
                 self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 self.assertIs(queue.call_args.kwargs["return_post"], True)
-                self.assertTrue(queue.call_args.args[2]["text"].startswith(promoted["title"]))
-                self.assertIn("会議を短くしたかっただけなのに", queue.call_args.args[2]["text"])
-                self.assertNotIn("https://", queue.call_args.args[2]["text"])
-                self.assertEqual(queue.call_args.args[2]["article_thread"]["reply_text"], threads.canonical_url("new-story") + threads.TRACKING_QUERY)
+                self.assertTrue(queue.call_args.args[2]["text"].startswith(
+                    "会議を短くしたかっただけなのに"
+                ))
+                self.assertIn("https://veripsa.com/articles/new-story/", queue.call_args.args[2]["text"])
+                self.assertIn("utm_campaign=article_auto", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["new-story"]
                 self.assertEqual(receipt["buffer_id"], "article-confirmed")
-                self.assertEqual(receipt["copy_mode"], "title_hook_image_thread")
+                self.assertEqual(receipt["copy_mode"], "reader_lead")
                 self.assertEqual(receipt["source"], "verified_article_page_views")
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
@@ -1405,7 +1384,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 receipt = save.call_args.args[0]["queued"]["fresh-story"]
                 self.assertEqual(receipt["source"], "fresh_article")
-                self.assertEqual(receipt["copy_mode"], "title_hook_image_thread")
+                self.assertEqual(receipt["copy_mode"], "headline_summary")
                 self.assertEqual(receipt["submission_mode"], "shareNow")
                 self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
                 self.assertEqual(receipt["buffer_status_at_accept"], "sending")
@@ -1447,7 +1426,7 @@ class ArticlePickTests(unittest.TestCase):
                 queue.assert_called_once()
                 self.assertEqual(queue.call_args.kwargs["mode"], "shareNow")
                 self.assertEqual(queue.call_args.args[2]["kind"], "article")
-                self.assertEqual(queue.call_args.args[2]["article_thread"]["reply_text"], threads.canonical_url("fresh-mixed") + threads.TRACKING_QUERY)
+                self.assertIn("fresh-mixed", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["fresh-mixed"]
                 self.assertEqual(receipt["source"], "fresh_article")
                 self.assertNotIn("metrics_at_queue", receipt)
@@ -1485,7 +1464,7 @@ class ArticlePickTests(unittest.TestCase):
                 self.assertEqual(picks.main(), 0)
                 pv_read.assert_called_once_with(["mature-only"], NOW)
                 queue.assert_called_once()
-                self.assertEqual(queue.call_args.args[2]["article_thread"]["reply_text"], threads.canonical_url("mature-only") + threads.TRACKING_QUERY)
+                self.assertIn("mature-only", queue.call_args.args[2]["text"])
                 receipt = save.call_args.args[0]["queued"]["mature-only"]
                 self.assertEqual(receipt["source"], "verified_article_page_views")
                 self.assertEqual(receipt["metrics_at_queue"]["last_7_days_page_views"], 11)
@@ -1575,29 +1554,19 @@ class ArticleComicAttachmentTests(unittest.TestCase):
 
     def submit(self, review=None, *, available=True, include_review=True, story=None, post_overrides=None):
         story = self.story if story is None else story
-        post = {"kind": "article", "id": "article-" + story["slug"], "article": story,
+        post = {"kind": "article", "id": "article-" + story["slug"],
                 "text": "記事はこちら https://veripsa.com/articles/" + story["slug"] + "/"}
         if include_review:
             post.update(article=story, comic_approval=self.review if review is None else review)
         post.update(post_overrides or {})
         with patch.object(publish, "HERE", self.root / "social-bot"), \
-             patch.object(threads, "urlopen", side_effect=lambda *a, **k: self.download(available)) as remote, \
+             patch.object(publish, "remote_asset_available", return_value=available,
+                          side_effect=available if isinstance(available, Exception) else None) as remote, \
              patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "mock-post"}}}) as send, \
              patch.object(comics, "datetime", wraps=datetime) as clock:
             clock.now.return_value = NOW
-            try:
-                self.assertEqual(publish.queue_one("mock-only", "mock-channel", post, mode="shareNow"), "mock-post")
-            except threads.ArticleImageUnavailable:
-                send.assert_not_called()
-        return send.call_args.args[1] if send.called else None, remote
-
-    def download(self, available=True):
-        if available is not True:
-            raise available if isinstance(available, Exception) else OSError("synthetic image unavailable")
-        response = io.BytesIO(self.image.read_bytes())
-        response.status = 200
-        response.headers = {"Content-Type": "image/png"}
-        return response
+            self.assertEqual(publish.queue_one("mock-only", "mock-channel", post, mode="shareNow"), "mock-post")
+        return send.call_args.args[1], remote
 
     @contextmanager
     def main_context(self, *, config=None, state=None, retry=None, available=True,
@@ -1610,7 +1579,6 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         with ExitStack() as stack:
             stack.enter_context(patch.object(picks, "ROOT", self.root))
             stack.enter_context(patch.object(publish, "HERE", self.root / "social-bot"))
-            stack.enter_context(patch.object(threads, "urlopen", side_effect=lambda *a, **k: self.download(available)))
             stack.enter_context(patch.object(picks, "read_json", side_effect=lambda p: copy.deepcopy(documents[p])))
             stack.enter_context(patch.object(picks, "delivery_retry_time", return_value=retry))
             stack.enter_context(patch.dict(os.environ, {
@@ -1643,16 +1611,12 @@ class ArticleComicAttachmentTests(unittest.TestCase):
     def test_committed_owner_review_attaches_one_image_at_exact_revision(self):
         query, remote = self.submit()
         expected = publish.ASSET_BASE_URL.replace("/main/", "/" + self.revision + "/") + "/article-comic-story.png"
-        remote.assert_called_once()
-        self.assertEqual(remote.call_args.args[0].full_url, expected)
+        remote.assert_called_once_with(expected)
         self.assertIn('assets: [{image: {url: "' + expected + '"}}]', query)
-        self.assertEqual(query.count("assets:"), 2)
-        self.assertIn("metadata: {twitter: {thread:", query)
+        self.assertEqual(query.count("assets:"), 1)
         self.assertIn("mode: shareNow", query)
-        expected_text = threads.parent_text(self.story, self.caption)
+        expected_text = self.caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"
         self.assertIn("text: " + publish.qstring(expected_text), query)
-        self.assertNotIn("https://", expected_text)
-        self.assertIn("text: " + publish.qstring(threads.canonical_url("comic-story") + threads.TRACKING_QUERY) + ", assets: []", query)
 
     def test_caption_requires_plain_short_reviewed_text_and_exact_utf8_hash(self):
         baseline, _ = self.submit(include_review=False)
@@ -1677,7 +1641,7 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                       "caption_sha256": hashlib.sha256(caption.encode("utf-8")).hexdigest()}
             query, remote = self.submit(review)
             remote.assert_called_once()
-            self.assertIn("text: " + publish.qstring(threads.parent_text(self.story, caption)), query)
+            self.assertIn("text: " + publish.qstring(caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"), query)
 
     def test_png_cap_boundary_and_structural_corruption(self):
         valid = self.png()
@@ -1760,40 +1724,54 @@ class ArticleComicAttachmentTests(unittest.TestCase):
                 remote.assert_called_once()
                 self.assertEqual(query, baseline)
 
-    def test_parent_image_is_required_for_every_article_and_comic(self):
+    def test_optional_media_keeps_article_identity_slot_and_default_payload(self):
         for config in (CONFIG, {**CONFIG, "comic_attachments": {}},
-                       {**CONFIG, "comic_attachments": None}, {**CONFIG, "comic_attachments": []}):
+                       {**CONFIG, "comic_attachments": None},
+                       {**CONFIG, "comic_attachments": []}, self.config):
             with self.subTest(config=config), self.main_context(config=config) as mocks:
                 self.assertEqual(picks.main(), 0)
-                mocks["queue"].assert_not_called()
-                mocks["gql"].assert_not_called()
-        with self.main_context() as mocks:
-            self.assertEqual(picks.main(), 0)
-            saved = mocks["save"].call_args.args[0]
-            receipt = saved["comic_posts"]["comic-story"]
-            self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
-            self.assertEqual(receipt["copy_mode"], "title_hook_image_thread")
-            self.assertEqual(receipt["text_sha256"], threads.digest(threads.parent_text(self.story, self.caption)))
-            self.assertEqual(receipt["article_thread"]["reply_text"], threads.canonical_url("comic-story") + threads.TRACKING_QUERY)
-            self.assertEqual(receipt["article_thread"]["image"]["sha256"], self.review["image_sha256"])
-            self.assertEqual(receipt["thread_delivery"], "unverified")
-            self.assertEqual(receipt["comic_attachment"]["revision"], self.revision)
-            mocks["gql"].assert_called_once()
+                post = mocks["queue"].call_args.args[2]
+                self.assertEqual(post["kind"], "article")
+                self.assertEqual(post["id"], "article-comic-story")
+                self.assertEqual(mocks["queue"].call_args.kwargs, {"mode": "shareNow", "return_post": True})
+                saved = mocks["save"].call_args.args[0]
+                receipt = saved["comic_posts" if config is self.config else "queued"]["comic-story"]
+                self.assertEqual(receipt["slot_jst"], "2026-11-05T11:05:00+09:00")
+                if config is not self.config:
+                    self.assertEqual(set(post), {"kind", "id", "text"})
+                    mocks["remote"].assert_not_called()
+                    self.assertNotIn("comic_attachment", receipt)
+                else:
+                    self.assertTrue(post["comic_required"])
+                    self.assertNotIn("comic-story", saved["queued"])
+                    actual_text = self.caption + "\n\nhttps://veripsa.com/articles/comic-story/\n#未発生新聞"
+                    self.assertEqual(receipt["copy_mode"], "comic_caption")
+                    self.assertEqual(receipt["text_sha256"], hashlib.sha256(actual_text.encode("utf-8")).hexdigest())
+                    self.assertIn("text: " + publish.qstring(actual_text), mocks["gql"].call_args.args[1])
+                    self.assertNotIn("text", receipt["comic_attachment"])
+                    for key in ("caption_sha256", "article_sha256", "image_sha256", "path"):
+                        self.assertEqual(receipt["comic_attachment"][key], self.review[key])
+                    self.assertEqual(receipt["comic_attachment"]["revision"], self.revision)
 
-    def test_unavailable_or_stale_comic_never_falls_back_to_unverified_ordinary_image(self):
+    def test_unavailable_or_stale_comic_uses_another_ordinary_article_without_consuming_work(self):
         stale = {**self.config, "comic_attachments": {"comic-story": {**self.review, "caption_sha256": "0" * 64}}}
         ordinary = article("ordinary-other", age_hours=4)
         for config, available in ((self.config, False), (stale, True)):
             with self.subTest(available=available), self.main_context(
                     config=config, available=available, articles=[self.story, ordinary]) as mocks:
                 self.assertEqual(picks.main(), 0)
-                mocks["queue"].assert_not_called()
-                mocks["gql"].assert_not_called()
+                original = mocks["queue"].call_args.args[2]["text"]
                 saved = mocks["save"].call_args.args[0]
+                receipt = saved["queued"]["ordinary-other"]
                 self.assertNotIn("comic-story", saved.get("comic_posts", {}))
-                self.assertNotIn("ordinary-other", saved["queued"])
-        query, remote = self.submit(post_overrides={"id": "article-other-story", "text": "https://veripsa.com/articles/other-story/"})
-        self.assertIsNone(query)
+                self.assertEqual(receipt["text_sha256"], hashlib.sha256(original.encode("utf-8")).hexdigest())
+                self.assertNotEqual(receipt["copy_mode"], "comic_caption")
+                self.assertNotIn("comic_attachment", receipt)
+                self.assertIn("text: " + publish.qstring(original), mocks["gql"].call_args.args[1])
+        mismatch = {"id": "article-other-story", "text": "https://veripsa.com/articles/other-story/"}
+        baseline, _ = self.submit(include_review=False, post_overrides=mismatch)
+        query, remote = self.submit(post_overrides=mismatch)
+        self.assertEqual(query, baseline)
         remote.assert_not_called()
 
     def test_required_comic_never_sends_a_text_only_fallback(self):
@@ -1803,25 +1781,11 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         for override in ({}, {"id": "article-other-story", "text": "https://veripsa.com/articles/other-story/"}):
             with self.subTest(override=override), \
                  patch.object(publish, "HERE", self.root / "social-bot"), \
-                 patch.object(threads, "urlopen", side_effect=OSError("synthetic unavailable")), \
+                 patch.object(publish, "remote_asset_available", return_value=False), \
                  patch.object(publish, "gql") as provider:
-                with self.assertRaises(threads.ArticleImageUnavailable):
+                with self.assertRaises(publish.ComicUnavailable):
                     publish.queue_one("mock-only", "mock-channel", {**post, **override}, mode="shareNow")
                 provider.assert_not_called()
-
-    def test_required_comic_missing_approval_cannot_use_valid_normal_photo(self):
-        normal = synthetic_thread(self.story)
-        post = {"kind": "article", "id": "article-comic-story", "article": self.story,
-                "text": normal["parent_text"], "article_thread": normal, "comic_required": True}
-        for mode in ("shareNow", "addToQueue"):
-            for approval in ({}, {"comic_approval": None}):
-                with self.subTest(mode=mode, approval=approval), \
-                     patch.object(publish, "prepare_article_thread", return_value=normal) as photo, \
-                     patch.object(publish, "gql", return_value={"createPost": {"post": {"id": "must-not-send"}}}) as provider:
-                    with self.assertRaises(publish.ComicUnavailable):
-                        publish.queue_one("mock-only", "mock-channel", {**post, **approval}, mode=mode)
-                    photo.assert_not_called()
-                    provider.assert_not_called()
 
     def test_old_previously_promoted_source_gets_one_comic_and_preserves_original_receipt(self):
         self.story["published_at"] = (NOW - timedelta(days=40)).isoformat()
@@ -1935,9 +1899,10 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         pending = persisted["comic_posts"]["comic-story"]
         self.assertTrue(pending["submission_pending"])
         self.assertFalse(pending["buffer_id"])
-        remote = remote_thread(pending["article_thread"],
-                  createdAt=(NOW + timedelta(seconds=1)).isoformat(),
-                  sentAt=(NOW + timedelta(seconds=2)).isoformat())
+        text = publish.comic_publication_text(self.story, pending["comic_attachment"])
+        remote = {"id": "mock-post", "status": "sent", "text": text,
+                  "createdAt": (NOW + timedelta(seconds=1)).isoformat(),
+                  "sentAt": (NOW + timedelta(seconds=2)).isoformat()}
         with self.main_context(state=persisted, existing=[remote], now=NOW + timedelta(hours=3)) as mocks:
             self.assertEqual(picks.main(), 0)
             mocks["queue"].assert_not_called()
@@ -1986,7 +1951,7 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         post = {"kind": "article", "id": "article-comic-story", "article": self.story,
                 "comic_approval": self.review, "text": "https://veripsa.com/articles/comic-story/"}
         with patch.object(publish, "HERE", self.root / "social-bot"), \
-             patch.object(threads, "urlopen", side_effect=lambda *a, **k: self.download()), \
+             patch.object(publish, "remote_asset_available", return_value=True), \
              patch.object(publish, "urlopen") as http, \
              patch.dict(os.environ, {"BUFFER_BUDGET_PATH": str(path), "BUFFER_REQUEST_ROLE": "publish"}), \
              patch.object(budget, "datetime", wraps=datetime) as clock:

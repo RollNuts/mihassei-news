@@ -239,15 +239,6 @@ jobs:
           else
             python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
           fi
-      - name: Make one small contact sheet from the composed preview for visual QA
-        if: inputs.caster_source_run != '' || inputs.caster_source_manifest != ''
-        run: |
-          movie="$RUNNER_TEMP/news-caster-composition/news-preview.mp4"
-          if [[ -f "$movie" ]]; then
-            ffmpeg -nostdin -v error -threads 1 -filter_threads 1 -i "$movie" \
-              -vf 'fps=2,scale=480:270,tile=4x4' -frames:v 1 -threads 1 -an -q:v 5 -n \
-              "$RUNNER_TEMP/news-caster-composition/qa-contact-sheet.jpg"
-          fi
       - name: Keep only bounded preview media and its receipt for one day
         if: always() && inputs.caster_source_run == '' && inputs.caster_source_manifest == ''
         uses: actions/upload-artifact@v4
@@ -270,4 +261,3 @@ jobs:
           path: |
             ${{ runner.temp }}/news-caster-composition/news-preview.mp4
             ${{ runner.temp }}/news-caster-composition/receipt.json
-            ${{ runner.temp }}/news-caster-composition/qa-contact-sheet.jpg

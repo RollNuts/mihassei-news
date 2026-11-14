@@ -208,64 +208,15 @@ class CasterCompositionTests(unittest.TestCase):
         with patch.object(compose,"command",return_value=json.dumps(packets)),self.assertRaises(ValueError):
             compose.packet_timing(Path("source.mp4"),retained_probe(),Mock())
 
-    def test_reedit_moves_only_the_bound_photo_after_the_cut_and_copies_original_audio(self):
+    def test_reedit_only_replaces_labels_and_copies_original_audio_without_retiming(self):
         with tempfile.TemporaryDirectory() as directory:
-            work=Path(directory);source=work/"source.mp4";photo=work/"approved.jpg"
-            argv=compose.reedit_command(source,photo,work/"edited.mp4",work)
-            self.assertEqual([argv[i+1] for i,arg in enumerate(argv) if arg=="-i"],[str(source),str(photo)])
-            self.assertEqual(argv[argv.index("-c:a")+1],"copy")
-            self.assertEqual([argv[i+1] for i,arg in enumerate(argv) if arg=="-map"],["[video]","0:a:0"])
+            work=Path(directory);argv=compose.reedit_command(work/"source.mp4",work/"edited.mp4",work)
+            self.assertEqual(argv.count("-i"),1);self.assertEqual(argv[argv.index("-c:a")+1],"copy")
             self.assertNotIn("-af",argv);self.assertNotIn("-t",argv);self.assertNotIn("-r",argv)
-            graph=argv[argv.index("-filter_complex")+1]
-            self.assertTrue(graph.startswith("[1:v]zoompan=z='1+0.05*min(on,124)/124'"))
-            self.assertIn("d=125:s=1200x675:fps=25",graph)
-            self.assertIn("pad=1216:500:(ow-iw)/2:(oh-ih)/2:color=0xdce5e7",graph)
-            self.assertIn("setpts=PTS+3/TB[photo];[0:v][photo]overlay=32:80:enable='gte(t,3)'",graph)
-            self.assertNotIn("[0:v]zoompan",graph);self.assertNotIn("[0:v]scale",graph)
-            self.assertLess(graph.index("overlay="),graph.index("drawbox="))
-            self.assertLess(graph.index("drawbox="),graph.index("drawtext="))
+            graph=argv[argv.index("-vf")+1]
             for size in (56,44,40):self.assertIn("fontsize="+str(size),graph)
+            for forbidden in ("scale=","crop=","setpts=","overlay=","fps="):self.assertNotIn(forbidden,graph)
             self.assertEqual((work/"detail.txt").read_text(),"正体は、前日の来場者の光の人影")
-
-    def test_retained_execution_binds_current_photo_and_keeps_unreviewed_voice_and_provenance(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);source=root/"source.mp4";source.write_bytes(b"original movie")
-            original_receipt=root/"receipt.json";original_receipt.write_bytes(b'{"original":true}')
-            originals={p:p.read_bytes() for p in (source,original_receipt)}
-            photo=root/"approved.jpg";font=root/"font.ttc";font.touch()
-            output=root/"output";probe=retained_probe()
-            timing={"video_pts":tuple(Fraction(frame,25) for frame in range(200)),
-                    "audio_pts":Fraction(-1024,24000),"audio_dts":Fraction(-1024,24000),
-                    "skip_samples":1024,"discard_padding":0}
-            provenance={"source_composition_sha256":compose.COMPOSITION_SHA,
-                        "source_original_receipt_sha256":compose.COMPOSITION_RECEIPT_SHA}
-            encoded=[]
-            def command(argv,budget,**kwargs):
-                if argv[0]=="ffprobe":return json.dumps(probe)
-                self.assertEqual(argv[0],"ffmpeg");encoded.append(argv)
-                Path(argv[-1]).write_bytes(b"edited movie"*128)
-            with patch.object(compose,"runner_gate",return_value=root.resolve()), \
-                 patch.object(compose.RemoteStopGate,"check"),patch.object(compose,"FONT",font), \
-                 patch.object(compose.shutil,"which",side_effect=lambda name: "/mock/"+name), \
-                 patch.object(compose,"current_assets",return_value=({},photo,{})), \
-                 patch.object(compose,"check_fresh_main",return_value="a"*40), \
-                 patch.object(compose,"retained_composition",return_value=(source,{},provenance)), \
-                 patch.object(compose,"command",side_effect=command), \
-                 patch.object(compose,"packet_timing",return_value=timing), \
-                 patch.object(compose,"aac_packet_hash",return_value="e"*64):
-                compose.execute(None,output,PINNED)
-            self.assertEqual(len(encoded),1)
-            self.assertEqual([encoded[0][i+1] for i,arg in enumerate(encoded[0]) if arg=="-i"],[str(source),str(photo)])
-            receipt=json.loads((output/"receipt.json").read_text())
-            for field in ("voice_review","lipsync_review"):self.assertEqual(receipt[field],"unverified")
-            self.assertEqual(receipt["notice"],compose.REEDIT_NOTICE)
-            self.assertIn("Voice and lip-sync remain unverified",receipt["notice"])
-            self.assertEqual(receipt["publication"],"preview_only");self.assertEqual(receipt["status"],"composed_unreviewed")
-            self.assertFalse(receipt["models_downloaded"]);self.assertFalse(receipt["models_executed"])
-            for field,value in provenance.items():self.assertEqual(receipt[field],value)
-            self.assertEqual(receipt["source_aac_packet_sha256"],receipt["aac_packet_sha256"])
-            self.assertTrue(receipt["timing_verification"]["video_presentation_sequence_unchanged"])
-            for path,data in originals.items():self.assertEqual(path.read_bytes(),data)
 
     def test_aac_proof_hashes_encoded_packets_without_decoding_or_encoding(self):
         with patch.object(compose,"command",return_value="SHA256="+"a"*64+"\n") as command:
@@ -285,13 +236,10 @@ class CasterCompositionTests(unittest.TestCase):
         self.assertTrue(compose.FONT.is_file());self.assertIsNotNone(shutil.which("ffmpeg"))
         with tempfile.TemporaryDirectory() as directory:
             work=Path(directory);source=work/"source.mp4";edited=work/"edited.mp4"
-            photo=work/"scene.ppm"
-            row=b"".join(bytes((x*255//1199,80,255-x*255//1199)) for x in range(1200))
-            photo.write_bytes(b"P6\n1200 675\n255\n"+row*675)
             subprocess.run(["ffmpeg","-nostdin","-v","error","-f","lavfi","-i","color=c=gray:s=1280x720:r=25:d=8",
                             "-f","lavfi","-i","sine=frequency=440:sample_rate=24000:duration=8","-c:v","libx264",
                             "-threads","1","-pix_fmt","yuv420p","-c:a","aac","-ac","1",str(source)],check=True,timeout=60)
-            subprocess.run(compose.reedit_command(source,photo,edited,work),check=True,timeout=60)
+            subprocess.run(compose.reedit_command(source,edited,work),check=True,timeout=60)
             probe=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(edited)]))
             compose.validate_retained_probe(probe)
             source_probe=json.loads(subprocess.check_output(["ffprobe","-v","error","-show_streams","-show_format","-of","json",str(source)]))
@@ -302,13 +250,6 @@ class CasterCompositionTests(unittest.TestCase):
             def audio_hash(path):
                 return subprocess.check_output(["ffmpeg","-v","error","-i",str(path),"-map","0:a:0","-c:a","copy","-f","hash","-hash","sha256","-"])
             self.assertEqual(audio_hash(source),audio_hash(edited))
-            tiles=subprocess.check_output(["ffmpeg","-nostdin","-v","error","-threads","1","-i",str(edited),
-                                           "-vf",r"select=eq(n\,74)+eq(n\,75)+eq(n\,199),crop=16:16:208:200",
-                                           "-vsync","0","-pix_fmt","rgb24","-f","rawvideo","-"],timeout=30)
-            size=16*16*3;self.assertEqual(len(tiles),size*3)
-            self.assertLess(max(abs(value-128) for value in tiles[:size]),10)
-            self.assertNotEqual(tiles[:size],tiles[size:2*size])
-            self.assertNotEqual(tiles[size:2*size],tiles[2*size:])
 
     def test_fresh_main_rejects_stale_generation_or_current_article_hold(self):
         def check(generation_article_sha, hold_article_sha=None):

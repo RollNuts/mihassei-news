@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
-  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7-cut-04-saya-body-reference-edit",
-  "observed_at": "2026-11-14T10:04:45.669Z",
+  "candidate_identity": "65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
+  "logical_run_id": "article-20261114-pr729-reviewer-handoff-first-photo",
+  "observed_at": "2026-11-14T10:38:38.414Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,11 +17,11 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "71de32fd3a8fa111b721eae447386699bcee6c76",
+    "commit_sha": "1e06f5b902291796ea372d15d863e264c0a60d9b",
     "protected_hashes": {
-      "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
-      "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
-      "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+      "content/articles.json": "43ae8935fb242eea0d6821789eb7a3a3928b6348e76a08a0fd4469dc697dcedc",
+      "assets/generated/manifest.json": "e46bd5736653082700f19c5a64342c0c4ae236507b31117e9f95765beecad6c1",
+      "content/visual_reviews.json": "6c156e074b32cd3367c55f204e64964b8323d19297906d00751c3bf93dd54590"
     }
   }
 }
