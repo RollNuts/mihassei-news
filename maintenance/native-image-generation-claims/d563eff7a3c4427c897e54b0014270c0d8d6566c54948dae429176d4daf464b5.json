@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
+  "slug": "fan-kumade-tours-concert-halls-before-audience",
+  "article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
+  "logical_run_id": "article-20261114-pr732-reviewer-handoff-first-photo",
+  "prompt_sha256": "c61c8f7d7f826bc4eb9bcd57488d705d9ef3a459c50792976079924530d40684",
+  "reserved_at": "2026-11-14T10:41:29.023Z",
+  "baseline": {
+    "commit_sha": "c16097eb1b9f426c80c18c46071bc4a4b894c13b",
+    "tree_sha": "84afe84ff32170913bc4564e5c246cc26d030067",
+    "protected_hashes": {
+      "content/articles.json": "20b07bd024d42649144175b397c6941410fcc502d6ce86966868eb713e4f0a98",
+      "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
+      "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "864d0acdc6832c037e9cd176c15cb78e7c0dfb4a",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "02b631f9214b2e4666bf5fda03d641be15aeb285c6d2ec3f6a65268e60889039",
+    "observed_at": "2026-11-14T10:41:16.798Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
