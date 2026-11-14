@@ -40,6 +40,25 @@ async function publishedPhotoIssue(key, origin, assets) {
   return manifest?.version===1 && Array.isArray(manifest.issues) &&
     manifest.issues.every(validArticle) && manifest.issues.includes(slug);
 }
+async function boundedBody(req, limit) {
+  if(Number(req.headers.get("content-length")||0)>limit)return null;
+  const body=new Uint8Array(limit),reader=req.body?.getReader();
+  if(!reader)return body.subarray(0,0);
+  let length=0;
+  try {
+    while(true){
+      const {done,value}=await reader.read();
+      if(done)break;
+      if(length+value.byteLength>limit){
+        void reader.cancel().catch(()=>{});
+        return null;
+      }
+      body.set(value,length);
+      length+=value.byteLength;
+    }
+  } finally { reader.releaseLock(); }
+  return body.subarray(0,length);
+}
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status, headers:{
@@ -741,6 +760,11 @@ export default {
     try {
       let payload=null;
       if(req.method==="POST" && ["/api/engagement","/api/comments"].includes(url.pathname)){
+        // Preserve the existing service caps before probing JSON or assets,
+        // including chunked requests without a trustworthy Content-Length.
+        const body=await boundedBody(req,isComments ? 2048 : 512);
+        if(body===null)return json({error:"payload too large"},413);
+        req=new Request(req,{body});
         payload=await req.clone().json().catch(()=>null);
         const photo=photoIssueSlug(payload?.article);
         if(photo!==null && (!isComments || payload.action==="post")){

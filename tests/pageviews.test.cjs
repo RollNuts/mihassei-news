@@ -785,3 +785,32 @@ test('Worker admits only published photo issue writes and keeps existing namespa
   assert.equal(assetRequests.at(-1),'/articles/story-a/','news-page verification is unchanged');
   assert.equal((await post('/api/comments',{action:'post',article:'missing-news',clientId:randomUUID(),body:'感想です'})).status,404);
 });
+
+
+test('Worker bounds engagement and comment bodies before parsing, asset lookups or storage',async t=>{
+  const f=fixture();t.after(()=>f.db.close());
+  const calls=[];
+  const env=new Proxy({}, {get(_target,key){calls.push(key);throw new Error('service must not be reached');}});
+  for(const [pathname,limit] of [['/api/engagement',512],['/api/comments',2048]]){
+    const headers={origin:'https://veripsa.com','content-type':'application/json'};
+    const declared=new Request('https://veripsa.com'+pathname,{
+      method:'POST',headers:{...headers,'content-length':String(limit+1)},body:'{}'
+    });
+    declared.body.getReader=()=>{throw new Error('oversized declared body must not be read');};
+    assert.equal((await f.handler.fetch(declared,env)).status,413);
+    // The first chunk crosses the cap; no JSON parse or remaining body read is
+    // needed even when the sender omits Content-Length and never closes.
+    let cancelled=false;
+    const body=new ReadableStream({
+      start(controller){controller.enqueue(new Uint8Array(limit+1).fill(32));},
+      cancel(){cancelled=true;}
+    });
+    const chunked=new Request('https://veripsa.com'+pathname,{
+      method:'POST',headers,body,duplex:'half'
+    });
+    assert.equal(chunked.headers.has('content-length'),false);
+    assert.equal((await f.handler.fetch(chunked,env)).status,413);
+    assert.equal(cancelled,true,'stop reading immediately when the cap is exceeded');
+  }
+  assert.deepEqual(calls,[],'oversized requests never consult ASSETS or a Durable Object');
+});
