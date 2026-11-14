@@ -110,6 +110,34 @@ class SuppliedPhotoTests(unittest.TestCase):
                     self.validate()
                 self.image["review"][key] = original
 
+    def test_observed_conversation_original_needs_its_canonical_turn_and_image_number(self):
+        source = self.receipt["source"]
+        source.update(url="https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+                      turn_key="4c0a07b0-c1c9-4faf-8cf8-9af807531370", image_number=2)
+        self.save()
+        self.assertEqual(self.validate(), ("upper_body", False))
+        baseline = copy.deepcopy(source)
+        for field, value in [("url", baseline["url"] + "?fake=share"),
+                             ("url", "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028908"),
+                             ("turn_key", None), ("turn_key", "not-a-dom-uuid"),
+                             ("turn_key", "00000000-0000-0000-0000-000000000000"),
+                             ("image_number", None), ("image_number", 0),
+                             ("image_number", True), ("image_number", "2"),
+                             ("generation_prompt", "An unobserved generation prompt")]:
+            with self.subTest(field=field, value=value):
+                source.clear()
+                source.update(baseline)
+                source[field] = value
+                self.save()
+                with self.assertRaisesRegex(ValueError, "provenance"):
+                    self.validate()
+
+    def test_library_reference_cannot_be_invented_for_a_conversation_turn(self):
+        self.receipt["source"].update(turn_key="4c0a07b0-c1c9-4faf-8cf8-9af807531370", image_number=2)
+        self.save()
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            self.validate()
+
     def test_a_later_acceptance_of_a_native_study_needs_its_retained_snapshot(self):
         image = self.issue["images"]["02"]
         self.assertTrue(image["review_history"])

@@ -465,6 +465,19 @@ def _supplied_png_dimensions(data):
     return dimensions
 
 
+def _supplied_source_reference(source):
+    """Retain an observed library link or the owner's concrete conversation turn."""
+    if not isinstance(source, dict):
+        return False
+    url = source.get("url")
+    if re.fullmatch(r"https://chatgpt\.com/library/share/libfile_[A-Za-z0-9_-]+(?:\?account_id=personal)?", str(url)):
+        return not ({"turn_key", "image_number"} & source.keys())
+    return (url == "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909"
+            and bool(re.fullmatch(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}", str(source.get("turn_key", ""))))
+            and source["turn_key"] != "00000000-0000-0000-0000-000000000000"
+            and type(source.get("image_number")) is int and source["image_number"] >= 1)
+
+
 def _validate_supplied_photo(issue, cut, image, data, *, root, now):
     """Validate an owner-supplied asset without inventing generation provenance."""
     provenance, review = image["provenance"], image["review"]
@@ -491,7 +504,7 @@ def _validate_supplied_photo(issue, cut, image, data, *, root, now):
             or extension is None
             or source.get("path") != directory + "/source-" + original_sha + extension
             or source.get("sha256") != original_sha
-            or not re.fullmatch(r"https://chatgpt\.com/library/share/libfile_[A-Za-z0-9_-]+(?:\?account_id=personal)?", str(source.get("url", "")))
+            or not _supplied_source_reference(source)
             or source.get("generation_prompt_status") != "not_retained"
             or source.get("generation_prompt") is not None
             or receipt.get("transform") != {"encoder": "macOS sips", "max_edge": 1200,
