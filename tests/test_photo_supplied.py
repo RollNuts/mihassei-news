@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import shutil
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -10,18 +11,42 @@ from scripts import photo_issues as p
 
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 11, 15, tzinfo=timezone.utc)
+RETAINED_FP = "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e"
 
 class SuppliedPhotoTests(unittest.TestCase):
     def setUp(self):
         self.issue = copy.deepcopy(p.load_photo_issues(ROOT)["issues"][0])
+        retained = next(entry for entry in self.issue["editorial_history"]
+                        if entry["issue_sha256"] == RETAINED_FP)
+        self.assertEqual(p.issue_fingerprint(retained["editorial"]), RETAINED_FP)
+        self.issue.update(copy.deepcopy(retained["editorial"]), issue_sha256=RETAINED_FP,
+                          images=copy.deepcopy(retained["images"]),
+                          editorial_history=[entry for entry in self.issue["editorial_history"]
+                                             if entry["issue_sha256"] != RETAINED_FP])
         self.issue.update(state="published", published_at=NOW.isoformat(), generation_holds={})
-        self.image = copy.deepcopy(self.issue["images"]["03"])
-        self.data = (ROOT / self.image["path"]).read_bytes()
-        self.receipt = json.loads((ROOT / self.image["provenance"]["receipt_path"]).read_bytes())
-        self.original = (ROOT / self.receipt["source"]["path"]).read_bytes()
         self.folder = tempfile.TemporaryDirectory()
         self.addCleanup(self.folder.cleanup)
         self.root = Path(self.folder.name)
+        def copy_into(path, source=None):
+            target = self.root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / (source or path), target)
+        master = self.issue.get("master_archive", self.issue["model_snapshot"]["master"])
+        copy_into(master["path"])
+        for image in self.issue["images"].values():
+            asset = retained["retained_assets"][image["path"]]
+            self.assertEqual(asset["sha256"], image["sha256"])
+            self.assertEqual(hashlib.sha256((ROOT / asset["path"]).read_bytes()).hexdigest(), image["sha256"])
+            copy_into(image["path"], asset["path"])
+            receipt_path = image["provenance"]["receipt_path"]
+            copy_into(receipt_path)
+            receipt = json.loads((self.root / receipt_path).read_bytes())
+            if receipt["kind"] == "user_supplied_photo":
+                copy_into(receipt["source"]["path"])
+        self.image = copy.deepcopy(self.issue["images"]["03"])
+        self.data = (self.root / self.image["path"]).read_bytes()
+        self.receipt = json.loads((self.root / self.image["provenance"]["receipt_path"]).read_bytes())
+        self.original = (self.root / self.receipt["source"]["path"]).read_bytes()
         self.save()
 
     def save(self):
@@ -45,7 +70,7 @@ class SuppliedPhotoTests(unittest.TestCase):
 
     def test_supplied_portrait_keeps_original_aspect_and_towel_is_not_swimwear(self):
         self.assertEqual(self.validate(), ("upper_body", False))
-        p.validate_published_issue(self.issue, root=ROOT, now=NOW)
+        p.validate_published_issue(self.issue, root=self.root, now=NOW)
         image = self.issue["images"]["04"]
         self.assertGreater(image["height"], image["width"])
         self.assertTrue(image["review"]["swimwear_visible"])
