@@ -148,6 +148,7 @@ test('PV labels use display counts, retain missing history, and populate every a
   assert.match(page.note.textContent,/2026\/11\/4.*昨日は未計測/);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['105','0','105']);
   assert.match(page.badges[0].attributes['aria-label'],/105PV/);
+  assert.equal(page.badges[0].attributes.title,'2026/11/4からの表示回数');
   assert.equal(page.widget.hidden,false);
 });
 
@@ -356,6 +357,8 @@ test('photo issue PV and likes use the explicit issue key without a news continu
   assert.equal(new URL('https://veripsa.com'+page.visits()[0].endpoint).searchParams.get('articles'),key);
   assert.equal(page.badges[0].count.textContent,'7');
   assert.equal(page.badges[0].attributes['aria-label'],'この号のページ表示回数 7PV');
+  assert.equal(page.badges[0].attributes.title,'この号の計測開始後の表示回数',
+    'an issue must not inherit the earlier site-wide tracking start date');
   assert.equal(page.likeCounts[0].textContent,'0');
   assert.equal(page.likeButtons[0].attributes['aria-label'],'この号にいいね');
   page.fire('document','click',{target:{closest:selector=>selector==='[data-like-slug]'?page.likeButtons[0]:null}});
