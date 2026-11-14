@@ -920,6 +920,13 @@
       "note": "確定本文の27歳女性が自分の紹介カードへペンで追記し、29歳男性が向かいで笑って見守る場面に原PNG・変換JPEGが一致。背景の同形式カードはぼけており読める不要な文字・ロゴなし。両者の指・ペン・紙・秋冬のニットと室内光に目立つ破綻なし。",
       "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
       "image_sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca"
+    },
+    "remote-basketball-final-fans-walk-behind-hoop": {
+      "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
+      "image_sha256": "75d1ebf58dc8bc7d4d360030fe24b52f7262b261424c6f1427b783d7def5ee68",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T08:19:34+09:00",
+      "note": "生成担当と取り込み担当rootが原PNGと1200×675 JPEGをそれぞれ実表示し、現在の全文・scene_promptと照合。MR眼鏡を掛けた成人の娘と父が青い外周歩行帯を歩き、実コートには選手もボールもなく、物理ゴールと奥の壁面中継が見える。体育館で角度を変えて観戦する本文に一致する。普通の室内光、肌、フリースとジャケットの布、手、木床の反射と影が自然な現場スナップで、可読文字・ロゴ・目立つ破綻やCGの発光は見えない。立体映像は眼鏡の利用者だけが見るため、撮影写真に投影選手を足していない。原PNG・JPEG・receipt SHAと候補commit読み戻しを確認。"
     }
   },
   "version": 1

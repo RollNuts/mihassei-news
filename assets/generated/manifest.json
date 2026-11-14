@@ -6964,6 +6964,33 @@
       "generation_id": "95a60531-c31d-49be-8c03-9f2ed7436305",
       "generation_receipt": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
       "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
+    },
+    "remote-basketball-final-fans-walk-behind-hoop": {
+      "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
+      "origin": "chatgpt-imagegen",
+      "model": "ChatGPT ImageGen",
+      "prompt_version": 3,
+      "generated_at": "2026-11-14T23:15:51.834Z",
+      "generation_id": "06090441-969c-466b-be5f-b4d0b0bc7b7d",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID. Signature not independently verified.",
+      "generation_receipt": "xmp:iid:06090441-969c-466b-be5f-b4d0b0bc7b7d",
+      "generation_prompt": "An adult Japanese daughter age 28 and her father walk together behind a basketball hoop inside a fictional remote-viewing gym while watching a match through mixed-reality glasses. Photorealistic candid press photograph, small indoor sports hall with clearly marked safe sideline walking lane, other adult spectators in November casual jackets, a large wall screen showing indistinct basketball play, believable ordinary sports lighting and natural expressions. Realistic human hands, athletic floor, basketball equipment and perspective; landscape 16:9; no readable text, logos, recognizable real people or fantasy effects.\n\nClarification of the photographed physical scene: the match is taking place in a different town. The actual physical basketball court here is EMPTY of real players and balls. No real basketball players or basketballs anywhere on this floor; no visible holographic/CG players, projected figures or fantasy effects. The distant wall display is the only place where an indistinct basketball game is visible. An adult Japanese daughter aged 28 and her Japanese father about 58 are the clearly recognizable main pair, both wearing understated mixed-reality glasses while walking naturally together on the BLUE safe walking lane OUTSIDE and BEHIND an ordinary physical basketball hoop. Photograph them mid-step from a natural press photographer's position with the ordinary empty court and hoop giving clear context. Their faces, hands, glasses, clothing folds and walking feet must look anatomically natural. A few other ADULT spectators may remain farther along the outer lane only. Natural modest November casual jackets, everyday trousers and ordinary shoes; no costume, fashion advertising or sexualized styling. Believable local community sports hall with wood sports floor, realistic ordinary gym lighting and candid restrained expressions. Wide landscape 16:9 composition; faithful documentary-style photorealism, natural skin and material textures. No readable words, numbers, logos or watermarks. No recognizable real people, celebrities, children, unrelated foreground people, staged glamour or illustrations.\n",
+      "generation_prompt_source": "Exact image_gen input captured by generateAndStage in the same execution as generation, byte transfer and durable candidate save.",
+      "generation_reference": {
+        "kind": "native_image_candidate",
+        "candidate_branch": "native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d",
+        "candidate_commit": "f728a094803b4fa6f8b5eaf650a8643ae4f804cb",
+        "receipt_path": "maintenance/native-image-candidates/remote-basketball-final-fans-walk-behind-hoop/receipt.json",
+        "receipt_sha256": "3bc40989ae56c4b7dc833abafb5fc9e203227e53687dbeb4092e1f52c8b7ab25",
+        "logical_run_id": "recovery-pr-744-2026-11-15-0730",
+        "identity": "29ed4b62b2ec38cd6761e3fb63e0e723e050a251c9f5792fa4a1badb9089d75c"
+      },
+      "source_png_sha256": "2627d19b15011b15eb837a2cd327685579374e1b0118348d070632d163d8b76c",
+      "source_png_bytes": 2188227,
+      "sha256": "75d1ebf58dc8bc7d4d360030fe24b52f7262b261424c6f1427b783d7def5ee68",
+      "bytes": 163536,
+      "width": 1200,
+      "height": 675
     }
   },
   "rejected": {
