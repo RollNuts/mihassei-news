@@ -22,4 +22,4 @@
 - **発行引継ぎ（11/13 09:30→11:30）：** 事件面 `airport-baggage-robot-leaves-upper-shelves-empty` をこの発行PRに追加。空港の2段台車で安全設定が上段を使わず通路を塞ぎ、固定条件を追加して荷物を3台にまとめる。写真は内蔵ImageGenを1回生成しPNG/JPEGを同実行で実表示したがGitHub blob未転送のため、採用・本番実写化は未完了、公開後画像回収担当へ同一素材の回収を渡す。次は11:30に新カテゴリを比較し、政策・製品発表の残枠を確保。公開可否とrevisionは本発行結果を正とする。
 
 - **画像引継ぎ（屋内ビーチ、完了）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／写真SHA `c3552d3b1fad` はPR #728で実配信済み。原生成claim・失敗は保持し、同じ写真を再生成しない。週刊用の別撮影は下記の担当PRへ分離。
-- **週刊画像引継ぎ:** `winter-coat-swimsuit-saya-001`／最新計画号SHA `adff7e84947f080b`／担当Codex総括・PR #735。9枚採用、体型差のある04候補 `724fd88d7609` は保留。立ち姿の新案も `05ca7a1f-a92d-4f9c-b979-0e46061371c1` で画像なし。本人は「体型が揃うまで公開を待つ」と明示。原全身基準を維持し、同条件再生成や数値だけの再承認をせず、次の具体的な入力改善までdraft保持。最新来歴は `codex/weekly-photo-release-plan-20261114` の `generation_holds.04`。
+- **週刊画像引継ぎ:** `winter-coat-swimsuit-saya-001`／計画号SHA `f477fdcee708ae3d`／担当Codex総括・draft PR #735。9枚採用、04は体型一致待ち。週刊02の単一参照から人物不変の衣装編集も入力判定 `acd98ce8-c1b3-4663-ba98-8973094e1a57` で画像なし。本人の「体型が揃うまで公開を待つ」を維持し、同条件再試行・判定迂回・旧写真流用をしない。claim `1c35a52aac73dbe0` と全失敗来歴は `codex/weekly-photo-release-plan-20261114` の `generation_holds.04`。
