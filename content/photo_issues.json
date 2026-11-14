@@ -264,7 +264,7 @@
         },
         {
           "id": "04",
-          "description": "架空の成人・凪野さや27歳。赤茶色のビキニで、青いタイルとガラス屋根があるリゾートプールのデッキチェアに腰掛ける。自然な笑顔の三分身。",
+          "description": "架空の成人・凪野さや27歳。既存の人物設定と同じ自然な体型。赤茶色の標準的なビキニ上下（通常のローライズのビキニボトム、巻き布・スカート・ショートパンツなし）で、青いタイルとガラス屋根のリゾートプールのデッキチェアに腰掛ける。自然な笑顔の三分身。",
           "caption": "プールサイドで、ひと休み",
           "alt": "凪野さや（27歳、架空の成人）。赤茶色のビキニで、青いタイルの屋根付きプールのデッキチェアに座る。"
         },
@@ -327,7 +327,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "01",
@@ -362,7 +362,7 @@
           ],
           "adoption": {
             "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "01",
             "reason": "水着と他cutの場面を改訂したが01の人物・冬服・入口・本文の意味は不変。原画像と原acceptedを保持して今号の適合性だけ再確認。"
           }
@@ -381,7 +381,7 @@
           },
           "adoption": {
             "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "02",
             "reason": "原来歴は別衣装の成功studyとして保持。実物に合わせた新shot02の紺ワンピース水着・室内プール・タオル・同じ成人の顔に一致。"
           },
@@ -400,7 +400,7 @@
           ],
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "02",
@@ -430,7 +430,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "40449c8d78b4c0f80d05f12e403901602a091fb3230d599d47245bd814ed20bf",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "03",
@@ -441,7 +441,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "03",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -483,7 +483,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "05",
@@ -494,7 +494,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "05",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -536,7 +536,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "06",
@@ -547,7 +547,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "06",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -589,7 +589,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "07",
@@ -600,7 +600,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "07",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -642,7 +642,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "08",
@@ -653,7 +653,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "08",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -691,7 +691,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "09",
@@ -702,7 +702,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "09",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -740,7 +740,7 @@
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "10",
@@ -751,7 +751,7 @@
           },
           "adoption": {
             "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "target_issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "target_cut_id": "10",
             "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
           },
@@ -770,7 +770,7 @@
           ]
         }
       },
-      "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+      "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
       "generation_holds": {
         "04": {
           "issue_slug": "winter-coat-swimsuit-saya-001",
@@ -803,6 +803,27 @@
             "jpeg_sha256": "7115d2bdadd6042a6d1c74f1809da96eccc3838fbdcf79319116c1faa0dfed37",
             "decision": "hold",
             "reason": "Generated one-piece photograph is technically sound, but reader rejected the onsen-like location and requests dedicated bikini fashion. No visual acceptance or publication."
+          },
+          "latest_candidate": {
+            "issue_slug": "winter-coat-swimsuit-saya-001",
+            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "cut": "04",
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-93a845994b4a",
+            "candidate_commit": "7b6baf693003ef464feb53be41f9d7fda07fbd06",
+            "receipt_sha256": "ea10d4fde342dc5ba488558aa5cb8635e5c1e252f87d5def48e49cf48f75b01b",
+            "jpeg": {
+              "path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/candidate.jpg",
+              "bytes": 229699,
+              "sha256": "cc8b52982012a5ebabc1566e06fbbcd9d79d02e27f6202193b14b573d5e0bdbc",
+              "width": 1200,
+              "height": 675,
+              "quality": 84,
+              "blob_sha": "3bee6d52fbb60dd232103258cd22081299a97551"
+            },
+            "source_png_sha256": "1d879151776605b5e1f03d42e10c56c3ed9b0d971eb2e3d4c7bdababea979a47",
+            "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-90054a2b-a606-4d35-bf2e-2d67dafaa921.png",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d-cut-04-ssd1b-reference-face-edit",
+            "status": "held_user_requested_figure_and_bikini_fit_edit"
           }
         }
       },
@@ -1649,6 +1670,37 @@
               "reason": "Generated one-piece photograph is technically sound, but reader rejected the onsen-like location and requests dedicated bikini fashion. No visual acceptance or publication."
             }
           }
+        },
+        {
+          "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+          "shot": {
+            "id": "04",
+            "description": "架空の成人・凪野さや27歳。赤茶色のビキニで、青いタイルとガラス屋根があるリゾートプールのデッキチェアに腰掛ける。自然な笑顔の三分身。",
+            "caption": "プールサイドで、ひと休み",
+            "alt": "凪野さや（27歳、架空の成人）。赤茶色のビキニで、青いタイルの屋根付きプールのデッキチェアに座る。"
+          },
+          "candidate": {
+            "issue_slug": "winter-coat-swimsuit-saya-001",
+            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "cut": "04",
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-93a845994b4a",
+            "candidate_commit": "7b6baf693003ef464feb53be41f9d7fda07fbd06",
+            "receipt_sha256": "ea10d4fde342dc5ba488558aa5cb8635e5c1e252f87d5def48e49cf48f75b01b",
+            "jpeg": {
+              "path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/candidate.jpg",
+              "bytes": 229699,
+              "sha256": "cc8b52982012a5ebabc1566e06fbbcd9d79d02e27f6202193b14b573d5e0bdbc",
+              "width": 1200,
+              "height": 675,
+              "quality": 84,
+              "blob_sha": "3bee6d52fbb60dd232103258cd22081299a97551"
+            },
+            "source_png_sha256": "1d879151776605b5e1f03d42e10c56c3ed9b0d971eb2e3d4c7bdababea979a47",
+            "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-90054a2b-a606-4d35-bf2e-2d67dafaa921.png",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d-cut-04-ssd1b-reference-face-edit",
+            "status": "held_user_requested_figure_and_bikini_fit_edit"
+          },
+          "note": "Face/pool editing succeeded; reader requests the same figure as the established model and standard bikini briefs instead of a high-waisted wrap."
         }
       ],
       "preparation_sources": {
