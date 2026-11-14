@@ -1116,10 +1116,44 @@
           },
           "latest_failed_edit": {
             "status": "generation_failed_no_image",
-            "request_id": "05ca7a1f-a92d-4f9c-b979-0e46061371c1",
-            "claim": "native-image-generation-claim/2d727f781ff7248f051c97350c6f3f8cd775e5a8e90ffbbb59073a4fe002c0d6"
+            "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+            "cut_id": "04",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba-cut-04-single-source-wardrobe-edit",
+            "prompt": "Edit this fictional 27-year-old adult woman's swimwear catalogue photo. Change only the garment into a simple opaque terracotta two-piece swimsuit, with a scoop-neck top, ordinary shoulder straps, and matching standard-coverage bikini briefs. Preserve this exact adult woman: unchanged face, short bob, natural body outline and proportions, posture, arms, hands, towel, framing, pool setting and light. Natural fabric and skin texture. No body reshaping, no added people, no text or logos.",
+            "identity": "1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0",
+            "edit_references": [
+              {
+                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+                "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+              }
+            ],
+            "failed_at": "2026-11-14T12:10:13.435Z",
+            "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID acd98ce8-c1b3-4663-ba98-8973094e1a57. safety_violations=[sexual].\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"input\\\",\\n      \\\"categories\\\": [\\n        \\\"sexual\\\"\\n      ]\\n    }\\n  }\\n}\")",
+            "stage": "generation",
+            "transport_preflight": {
+              "kind": "native_image_transport_preflight",
+              "status": "passed",
+              "branch": "native-image-preflight/transport",
+              "commit_sha": "41c50138d1a7c1d8b9ac7fd871ec1e32ed574227",
+              "receipt_path": "maintenance/native-image-preflight/receipt.json",
+              "receipt_sha256": "440db5f62b1f8735128a01948ec3ffba7c4c801cc0e309bf31f0be1291b734b0",
+              "observed_at": "2026-11-14T12:08:59.602Z",
+              "route": "PNG data URL in this code runtime to GitHub candidate storage",
+              "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+              "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+            },
+            "generation_claim": {
+              "kind": "native_image_generation_claim",
+              "status": "reserved_generation_unconfirmed",
+              "branch": "native-image-generation-claim/1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0",
+              "receipt_path": "maintenance/native-image-generation-claims/1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0.json",
+              "receipt_sha256": "f3cd4c73beff32bb054e30daadc34cbb798a47b688bee64535195233dd07f4b2",
+              "commit_sha": "4046b7cdad850aaba6f88fc7211dcff391bc4d6b"
+            },
+            "hypothesis": "週刊専用02の単一参照から、人物を変えず通常水着の衣装だけ変更する。二参照の体型合成を行わない。",
+            "image_generated": false
           },
-          "next_action": "週刊02の単一写真を元に、人物の顔・体型・姿勢は変更せず通常の水着デザインだけを編集。異なる2参照から体型を合成せず、PNG/JPEGを元写真と表示比較して一致を判定。",
+          "next_action": "単一の採用済み週刊02からの衣装変更も入力判定で画像なし。原9枚・基準体型・本人の公開保留を保持。同条件再生成、別プロバイダによる判定回避、体型不一致候補の採用はしない。",
           "publication_constraint": "hold_until_body_consistent",
           "user_instruction": "体型が揃うまで公開を待つ"
         }
@@ -3459,6 +3493,45 @@
             "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c64f37c8e174",
             "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
           }
+        },
+        {
+          "status": "generation_failed_no_image",
+          "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+          "cut_id": "04",
+          "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba-cut-04-single-source-wardrobe-edit",
+          "prompt": "Edit this fictional 27-year-old adult woman's swimwear catalogue photo. Change only the garment into a simple opaque terracotta two-piece swimsuit, with a scoop-neck top, ordinary shoulder straps, and matching standard-coverage bikini briefs. Preserve this exact adult woman: unchanged face, short bob, natural body outline and proportions, posture, arms, hands, towel, framing, pool setting and light. Natural fabric and skin texture. No body reshaping, no added people, no text or logos.",
+          "identity": "1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0",
+          "edit_references": [
+            {
+              "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+              "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+            }
+          ],
+          "failed_at": "2026-11-14T12:10:13.435Z",
+          "error": "image generation failed: http 400 Bad Request: Some(\"{\\n  \\\"error\\\": {\\n    \\\"message\\\": \\\"Your request was rejected by the safety system. If you believe this is an error, contact us at help.openai.com and include the request ID acd98ce8-c1b3-4663-ba98-8973094e1a57. safety_violations=[sexual].\\\",\\n    \\\"type\\\": \\\"image_generation_user_error\\\",\\n    \\\"param\\\": null,\\n    \\\"code\\\": \\\"moderation_blocked\\\",\\n    \\\"moderation_details\\\": {\\n      \\\"moderation_stage\\\": \\\"input\\\",\\n      \\\"categories\\\": [\\n        \\\"sexual\\\"\\n      ]\\n    }\\n  }\\n}\")",
+          "stage": "generation",
+          "transport_preflight": {
+            "kind": "native_image_transport_preflight",
+            "status": "passed",
+            "branch": "native-image-preflight/transport",
+            "commit_sha": "41c50138d1a7c1d8b9ac7fd871ec1e32ed574227",
+            "receipt_path": "maintenance/native-image-preflight/receipt.json",
+            "receipt_sha256": "440db5f62b1f8735128a01948ec3ffba7c4c801cc0e309bf31f0be1291b734b0",
+            "observed_at": "2026-11-14T12:08:59.602Z",
+            "route": "PNG data URL in this code runtime to GitHub candidate storage",
+            "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+            "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+          },
+          "generation_claim": {
+            "kind": "native_image_generation_claim",
+            "status": "reserved_generation_unconfirmed",
+            "branch": "native-image-generation-claim/1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0",
+            "receipt_path": "maintenance/native-image-generation-claims/1c35a52aac73dbe00d2ad9f542ccb11cd224c64eaf3a4f0aaf2dc7ec62e5dcc0.json",
+            "receipt_sha256": "f3cd4c73beff32bb054e30daadc34cbb798a47b688bee64535195233dd07f4b2",
+            "commit_sha": "4046b7cdad850aaba6f88fc7211dcff391bc4d6b"
+          },
+          "hypothesis": "週刊専用02の単一参照から、人物を変えず通常水着の衣装だけ変更する。二参照の体型合成を行わない。",
+          "image_generated": false
         }
       ],
       "preparation_sources": {
