@@ -18,6 +18,9 @@ class PageParser(HTMLParser):
         self.paragraphs = []
         self.buttons = []
         self.scripts = []
+        self.sections = []
+        self.articles = []
+        self.spans = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -35,6 +38,12 @@ class PageParser(HTMLParser):
             self.buttons.append(attrs)
         elif tag == "script":
             self.scripts.append(attrs)
+        elif tag == "section":
+            self.sections.append(attrs)
+        elif tag == "article":
+            self.articles.append(attrs)
+        elif tag == "span":
+            self.spans.append(attrs)
 
 
 def issue(number=1, model_id="nagino-saya"):
@@ -161,7 +170,7 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertEqual(page.figures[0]["id"], "photo-04")
         self.assertEqual(len({figure["id"] for figure in page.figures}), 10)
 
-    def test_issue_reuses_x_and_copy_controls_without_news_api_metadata(self):
+    def test_issue_reuses_x_and_copy_controls_without_news_source_metadata(self):
         from urllib.parse import parse_qs, urlsplit
         from scripts import build
         value = issue()
@@ -187,9 +196,48 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertIn('<link rel="canonical" href="' + canonical + '">', markup)
         self.assertIn('property="og:image" content="' + canonical + "04.jpg?v=" + version + '"', markup)
         self.assertTrue(any(script.get("src", "").startswith("/assets/engagement.js?") for script in parsed.scripts))
-        for news_token in ("data-share-slug", "data-like-slug", "data-comment-count", "data-bookmark-slug", "data-native-share"):
+        for news_token in ("data-share-slug", "data-bookmark-slug", "data-native-share", "data-future-poll"):
             self.assertNotIn(news_token, markup)
         self.assertEqual(value, before)
+
+    def test_issue_has_independent_pv_likes_and_shared_comment_form(self):
+        from scripts import build
+        value = issue()
+        value["source_article"] = {"slug": "source-news-story"}
+        before = copy.deepcopy(value)
+        markup = self.pages.render_photo_issue(value, MODEL, build.layout)
+        parsed = self.parse(markup)
+        key = "photo-issue:issue-001"
+        self.assertEqual(parsed.articles[0]["data-engagement-key"], key)
+        pv = next(span for span in parsed.spans if "data-article-pv" in span)
+        self.assertEqual(pv["data-article-pv"], key)
+        self.assertEqual(pv["aria-label"], "この号のPVを取得中")
+        like = next(button for button in parsed.buttons if "data-like-slug" in button)
+        self.assertEqual((like["data-like-slug"], like["aria-pressed"]), (key, "false"))
+        self.assertEqual(like["aria-label"], "この号にいいね")
+        self.assertLess(markup.index('data-like-slug='), markup.index('id="photo-issue-gallery-title"'))
+        comments = next(section for section in parsed.sections if "data-comments" in section)
+        self.assertEqual(comments["data-comments-key"], key)
+        self.assertLess(markup.index('id="photo-10"'), markup.index('id="reader-comments"'))
+        self.assertIn('href="#reader-comments"', markup)
+        self.assertIn("投稿内容は公開されます。", markup)
+        self.assertIn('minlength="2" maxlength="180"', markup)
+        self.assertIn("この号へのコメント", markup)
+        self.assertIn('data-engagement-status role="status"', markup)
+        self.assertTrue(any(script.get("src", "").startswith("/assets/comments.js?") for script in parsed.scripts))
+        self.assertFalse(any(script.get("src", "").startswith("/assets/bookmarks.js?") for script in parsed.scripts))
+        self.assertNotIn('data-article="source-news-story"', markup)
+        self.assertNotIn('data-like-slug="source-news-story"', markup)
+        self.assertNotIn("data-future-poll", markup)
+        self.assertEqual(value, before)
+
+    def test_photo_collection_does_not_load_issue_comment_form(self):
+        from scripts import build
+        markup = self.pages.render_photo_index([issue()], [MODEL], build.layout)
+        self.assertNotIn("data-engagement-key", markup)
+        self.assertNotIn("data-comments-key", markup)
+        self.assertFalse(any(script.get("src", "").startswith("/assets/comments.js?")
+                             for script in self.parse(markup).scripts))
 
     def test_index_shows_latest_first_with_model_names_and_issue_links(self):
         other = {"id": "other-model", "name": "別のモデル", "age": 28}

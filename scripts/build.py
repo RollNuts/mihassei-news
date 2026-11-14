@@ -31,6 +31,7 @@ if __package__:
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from .editorial_copy import reader_copy, source_reader_copy
     from .reader_paths import suggested_articles
+    from .reader_comments import render_reader_comments
     from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
 else:
@@ -48,6 +49,7 @@ else:
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
     from editorial_copy import reader_copy, source_reader_copy
     from reader_paths import suggested_articles
+    from reader_comments import render_reader_comments
     from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
 from urllib.parse import quote, urlencode
@@ -56,6 +58,7 @@ from xml.etree import ElementTree as ET
 BASE = Path(__file__).resolve().parent.parent
 OUT = BASE / "dist"
 SITE = "https://veripsa.com"
+ADSENSE_CLIENT = "ca-pub-6754575901141756"
 PHOTO_ISSUES_AVAILABLE = False
 GRAVURE_SOURCE_SLUG = "indoor-beach-friends-exchange-ripples"
 GRAVURE_SOURCE_URL = "/articles/" + GRAVURE_SOURCE_SLUG + "/"
@@ -1054,6 +1057,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     noindex_page = path in ("/saved/", "/404.html") or not indexable
     robots_tag = '<meta name="robots" content="noindex,follow">' if noindex_page else ""
     image_preview_tag = "" if noindex_page else '<meta name="robots" content="max-image-preview:large">'
+    adsense_script = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}" '
+                      'crossorigin="anonymous"></script>' if not noindex_page else "")
     serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -1062,7 +1067,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind == "story" else ""
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
@@ -1078,7 +1083,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 {image_preview_tag}
 {robots_tag}
 <meta name="theme-color" content="#f9f8f3">
-<meta name="google-adsense-account" content="ca-pub-6754575901141756">
+<meta name="google-adsense-account" content="{ADSENSE_CLIENT}">
+{adsense_script}
 <meta name="description" content="{escape(desc)}">
 <meta property="og:title" content="{escape(complete)}">
 <meta property="og:description" content="{escape(desc)}">
@@ -1794,22 +1800,7 @@ def story(a, articles, issues=None, serials=None):
 {bridge}
 <div class="article-end"><span class="reporter">未発生新聞</span>{issue_link}{category_link}<a href="/archive/">記事一覧へ ↗</a></div>
 </article>
-<section class="reader-comments" id="reader-comments" data-comments data-article="{escape(a["slug"])}" aria-labelledby="comments-heading">
-<div class="reader-comments-heading">
-<h2 id="comments-heading">読者のツッコミ <small data-comments-count></small></h2>
-<p>投稿内容は公開されます。</p>
-</div>
-<div class="reader-comments-list" data-comments-list></div>
-<p class="reader-comments-status" data-comments-status role="status">コメントを読み込み中…</p>
-<form class="reader-comments-form" data-comments-form>
-<label for="reader-nickname">ニックネーム <span>（任意・16文字以内）</span></label>
-<input id="reader-nickname" name="nickname" type="text" maxlength="16" autocomplete="nickname" placeholder="匿名の未来人">
-<label for="reader-body">コメント</label>
-<textarea id="reader-body" name="body" minlength="2" maxlength="180" rows="3" required placeholder="未来のニュースにひとこと…"></textarea>
-<div class="comment-form-footer"><span>2〜180文字。URL・個人情報・誹謗中傷は投稿できません。</span>
-<button type="submit">コメントを投稿</button></div>
-</form>
-</section></div>
+{render_reader_comments(a["slug"])}</div>
 </div>'''
     return layout(a["title"], reader_copy(a["summary"]) + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
@@ -1851,7 +1842,7 @@ def editorial_policy():
 
 
 def advertise():
-    """Public, unambiguous commercial inquiry policy; no active advertising."""
+    """Public, unambiguous commercial inquiry policy."""
     content = '''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">ADVERTISING &amp; PARTNERSHIPS</span>
 <h1>広告・協賛</h1></header>
@@ -1905,7 +1896,8 @@ def privacy():
 <p>再生した映像の識別子も、このブラウザに最大12件保存し、次に表示する映像の選択に使います。サーバーには送信しません。</p>
 <h2>外部サービス・広告</h2>
 <p>公開・集計にCloudflareを使用します。一部の写真にはUnsplashを使用し、表示時に通信する場合があります。Xで共有するとXのページへ移動します。</p>
-<p>広告を掲載する際は、使用する事業者とプライバシー情報をこのページに記載します。</p>
+<p>Google AdSenseを利用します。Googleとその広告配信パートナーはCookieを使用し、このサイトや他のサイトへの過去のアクセス情報に基づく広告を配信する場合があります。Googleには閲覧ページのURLやIPアドレスなどが送信される場合があります。</p>
+<p>パーソナライズド広告は<a href="https://www.google.com/settings/ads" rel="noopener noreferrer external">Googleの広告設定</a>で無効にできます。第三者配信事業者については<a href="https://www.aboutads.info/choices/" rel="noopener noreferrer external">WebChoices</a>で設定できます。詳しくは<a href="https://policies.google.com/technologies/partner-sites?hl=ja" rel="noopener noreferrer external">Googleによる情報の利用</a>をご確認ください。このページの閲覧集計の除外設定は、広告の設定とは別です。</p>
 <h2>お問い合わせ</h2>
 <p><a href="https://github.com/RollNuts/mihassei-news/issues" rel="noopener noreferrer external">公開GitHub Issues</a>へお知らせください。投稿は公開されるため、個人情報は記入しないでください。</p>
 </div></div>'''
@@ -2306,6 +2298,10 @@ def build():
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
     build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE)
+    # The Worker may accept engagement writes only for these validated releases.
+    write("photo/weekly/engagement.json", json.dumps({
+        "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),
+    }, ensure_ascii=False) + "\n")
     other_files(articles, issues, serials, photo_issues)
     make_brand_image()
     make_issue_social_images(issues)

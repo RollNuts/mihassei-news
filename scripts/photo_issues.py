@@ -340,6 +340,9 @@ def validate_catalog(data):
             raise ValueError("Photo model needs a character definition")
         for key in ("first_person", "voice", "weakness"):
             _text(character.get(key), "character " + key)
+        for key in ("occupation", "casting_specialty"):
+            if key in character:
+                _text(character[key], "character " + key)
         personality = character.get("personality")
         if isinstance(personality, str):
             _text(personality, "character personality")
@@ -771,6 +774,24 @@ def photo_sitemap_entries(issues):
         (issue_url(issue), issue["published_at"], cover_url(issue)) for issue in issues]
 
 
+def cast_report(data, model_id=""):
+    """Return editorial identities only; visual preparation is irrelevant here."""
+    models = data["models"]
+    if model_id:
+        model = next((model for model in models if model["id"] == model_id), None)
+        if model is None:
+            raise ValueError("Unknown cast model: " + model_id)
+        character = model["character"]
+        _text(character.get("occupation"), "cast occupation")
+        return {"id": model["id"], "name": model["name"], "age": model["age"],
+                "fictional": True,
+                **{key: character[key] for key in ("occupation", "casting_specialty", "first_person", "personality", "voice", "likes", "weakness")}}
+    for model in models:
+        _text(model["character"].get("occupation"), "cast occupation")
+    return {"cast": [{"id": model["id"], "name": model["name"], "age": model["age"],
+                      "occupation": model["character"]["occupation"]} for model in models]}
+
+
 def status_report(data):
     """Compact metadata only: accepted rows are not a byte/visual verification."""
     rows = []
@@ -815,9 +836,10 @@ def _verify_plan_references(references, root):
 
 def main(argv=None):
     import argparse
-    parser = argparse.ArgumentParser(description="Read-only weekly-photo metadata status; no generation or build.")
+    parser = argparse.ArgumentParser(description="Read-only cast and weekly-photo metadata; no generation or build.")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--status", action="store_true", help="Read local issue metadata only")
+    mode.add_argument("--cast", nargs="?", const="", metavar="MODEL_ID", help="List the cast or read one editorial persona without visual inputs")
     mode.add_argument("--model-plan", metavar="MODEL_ID", help="Freeze a prepared model for a new issue")
     mode.add_argument("--cut-plan", metavar="ISSUE_SLUG", help="Read inputs from a new-format frozen issue")
     parser.add_argument("--cut", metavar="01..10", help="Required with --cut-plan")
@@ -827,7 +849,9 @@ def main(argv=None):
         parser.error("--cut-plan requires --cut, and --cut is only valid with --cut-plan")
     data = load_photo_issues()
     try:
-        if args.model_plan:
+        if args.cast is not None:
+            report = cast_report(data, args.cast)
+        elif args.model_plan:
             model = next((model for model in data["models"] if model["id"] == args.model_plan), None)
             snapshot = freeze_model_plan(model)
             references = [snapshot["face_reference"], snapshot["body_reference"]]

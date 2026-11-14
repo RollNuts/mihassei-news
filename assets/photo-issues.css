@@ -3,6 +3,12 @@
 .photo-issue-breadcrumb{margin-bottom:25px;color:var(--muted);font-size:12px;line-height:1.8;overflow-wrap:anywhere}
 .photo-issue-breadcrumb a{text-decoration:underline;text-underline-offset:3px}
 .photo-issue-credit{margin:18px 0 0;color:var(--muted);font-size:12px;line-height:1.9}
+.photo-issue-engagement{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin-top:24px}
+.photo-issue-engagement .article-pv{font-size:12px}
+.photo-issue-engagement .engagement-actions a,.photo-issue-engagement .engagement-actions button{min-height:44px;box-sizing:border-box}
+.photo-issue-engagement .engagement-actions a:focus-visible,.photo-issue-engagement .engagement-actions button:focus-visible{outline:3px solid var(--photo-accent);outline-offset:3px}
+.photo-issue-engagement-status{flex-basis:100%;margin:0;color:var(--muted);font-size:12px;line-height:1.8}
+.photo-issue-engagement-status:empty{display:none}
 .photo-issues-grid>li{min-width:0}
 .photo-issue-card{height:100%;border-bottom:1px solid var(--line)}
 .photo-issue-number{margin:0 0 8px;color:var(--muted);font-size:12px;font-weight:700;line-height:1.8}

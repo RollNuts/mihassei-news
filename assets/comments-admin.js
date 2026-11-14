@@ -24,7 +24,10 @@
         const item=document.createElement('article');
         const head=el('strong',c.nickname+' / '+c.article+' / '+c.status+' / 報告'+c.reports+'件');
         item.append(head,el('p',c.body),el('small',new Date(c.createdAt).toLocaleString('ja-JP')));
-        const link=el('a','記事を見る ↗');link.href='/articles/'+encodeURIComponent(c.article)+'/';
+        const photoIssue=/^photo-issue:([a-z0-9]+(?:-[a-z0-9]+)*)$/.exec(c.article);
+        const link=el('a',photoIssue?'この号を見る ↗':'記事を見る ↗');
+        link.href=photoIssue?'/photo/weekly/'+encodeURIComponent(photoIssue[1])+'/':
+          '/articles/'+encodeURIComponent(c.article)+'/';
         link.target='_blank';link.rel='noopener noreferrer';item.append(link,el('p','ID: '+c.id));
         for(const [action,label] of [['hide','非表示'],['restore','再表示'],['delete','完全削除']]){
           const b=el('button',label);b.type='button';
