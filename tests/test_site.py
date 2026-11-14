@@ -786,7 +786,7 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(item.findtext("title"),issue["title"]+" | 週刊グラビア（創作写真コラム）")
                 self.assertEqual(item.findtext("description"),issue["summary"])
                 self.assertEqual(parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
-                                 datetime.fromisoformat(issue["published_at"]).isoformat())
+                                 datetime.fromisoformat(issue["published_at"]).replace(microsecond=0).isoformat())
                 cover=photo.cover_shot(issue)
                 image=SITE+photo.cover_url(issue)
                 self.assertEqual(item.find("enclosure").attrib,{"url":image,
