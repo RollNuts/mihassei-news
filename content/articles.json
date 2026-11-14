@@ -1,68 +1,67 @@
 [
   {
-    "slug": "offline-tape-restores-missing-contract-revision",
-    "category": "事件",
-    "flash": "AI検索の外に残った1件",
-    "fiction_company": "架空の業務AI運営会社「棚守データ」",
+    "slug": "mountain-road-transplants-meadow-topsoil-blocks",
+    "category": "技術",
+    "flash": "野原を土ごと引っ越し",
+    "fiction_company": "架空の道路施工会社「みどり架道」",
     "art": "cards",
-    "fiction_at": "2031-11-14T15:41:45+09:00",
-    "published_at": "2026-11-14T15:41:45+09:00",
-    "title": "検索から消えた契約の修正版、地下のテープ1巻で発見　AIの外で保管",
-    "summary": "業務AI会社「棚守データ」で、契約担当が取引先への通知に必要な旧契約の修正版を検索できなくなった。保管係がネットワークから切り離したテープを読み取り装置に戻すと、発送前に重要な納期変更を確認できた。",
+    "fiction_at": "2031-11-14T15:30:00+09:00",
+    "published_at": "2026-11-14T15:30:00+09:00",
+    "title": "道路工事で草地を「土ごと引っ越し」　完成した斜面に緑の四角い島",
+    "summary": "道路施工会社「みどり架道」の作業員が、工事前の草地を根や種の残る土ごと切り出し、道路脇の斜面へ戻した。完成した道の横には、茶色い地面の上に四角い草地が並び、前年の試験区ではその継ぎ目を越えて草が伸び始めている。",
     "paragraphs": [
-      "2031年11月14日、架空の業務AI運営会社「棚守データ」で、契約担当の三野真帆（31）は取引先への更新通知を送る手を止めた。AIの検索画面に、前年の契約の修正版だけ「該当なし」と出た。手元の通知案は、修正前の納品日を記したままだった。",
-      "同社は誤削除や改ざんが起きても原本を確かめられるよう、重要な契約の保存用コピーを磁気テープに入れ、社内ネットワークから切り離している。保管台帳には対象のテープ番号が残っていた。通常のオンライン検索ならすぐ開けるが、隔離中の記録は保管係が実物を戻さなければ読めない。",
-      "真帆が復元を頼むと、保管係の佐和（35）は同僚と地下の保管室を開け、棚から一巻を取り出した。二人で番号を照合して専用の読み取り装置にセットする。上階の画面には「復元準備中」とだけ表示され、真帆は契約先へ送る通知を保留にした。",
-      "復元された修正版には、納品日を一週間後へ繰り延べる追記があった。真帆は古い日付の通知を取り消し、変更履歴を確認してから正しい日付の案内を送った。戻したファイルは一つだけだったが、取引先へ誤った予定を知らせずに済んだ。",
-      "佐和は作業後にテープを保管棚へ戻し、切り離した状態を確かめて鍵を掛けた。会議室のモニターには「検索0件／復元1件」が残り、その横の出庫票には保管係二人の確認印が並んでいた。"
+      "14日、山あいの新しい道路の脇に、緑色の四角い草地が次々と並んだ。架空の道路施工会社「みどり架道」の作業員が、工事前に取り分けていた草の生えた土を、完成した道路の斜面へ戻している。傾斜に沿って並べられた土の塊は、少し隙間のある大きなパッチワークのように見えた。",
+      "同社が始めたのは、道路を通す前の草地を表面だけ削って捨てるのではなく、根や種が入った土を塊のまま一時保管し、工事後の斜面へ移す施工だ。工事後に新しく草の種をまく方法もあるが、元の地域の植物を残したい区間では別の手段が必要になる。担当者は「根や種まで残して元の地域の草地を戻すためだ」と話す。",
+      "工事の始まる前、作業員は草が生えた土を四角く切り分け、崩れないよう板で支えて保管場所へ運んだ。どの場所から取ったものかを記録し、乾きすぎないよう状態を見ながら道路の完成を待った。道路本体の工事と土の保管を別々に行わず、一つの工程表で進めたのが今回の取り組みだ。",
+      "午後には小型の作業機が土の塊を斜面へ運び、作業員が向きを直しながら一枚ずつ据えた。運んだのは草の葉だけではない。根が絡む土と、その中に残る種も一緒だ。作業員の足元では、まだ茶色い地面の間に鮮やかな緑の区画が点々と続き、道路のカーブに沿って延びていった。",
+      "現場の隣には、前年に同じ方法で移した試験区がある。そちらでは土の四角い境目を越えて草が伸び、今年置いたばかりの区画とは色も形も違っていた。担当者は二つの斜面を一枚の写真に収め、来年も植物の種類と広がり方を調べるという。新しい道路の脇には、引っ越してきた草地がまず一列、残った。"
     ],
     "source": {
-      "kind": "企業公式発表（テープストレージ）",
-      "publisher": "NEC（日本電気株式会社）",
-      "published_at": "2026-11-13T11:00:00+09:00",
-      "url": "https://jpn.nec.com/istorage/press/t560_20261113.html",
-      "topic": "NECは2026年11月13日、前世代比で最大容量を2倍の10.08PBとしたテープストレージiStorage T560の販売開始を発表。保管先をバックアップシステムから認識させないドライブレス論理ライブラリと、テープを物理的に切り離すエアギャップ機能を説明した。2031年の架空企業「棚守データ」、オンライン検索の欠落、契約の修正内容、架空の人物、保管係による復元と結果はすべて創作。NEC製品で実際に契約記録が消失・復元された事実を意味しない。"
+      "kind": "大学研究機関の公式研究発表",
+      "publisher": "北海道大学",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.hokudai.ac.jp/news/2026/11/10-19.html",
+      "topic": "北海道大学は2026年11月13日、道路盛土法面での表土ブロック移植について、根・埋土種子・土壌生物を含む表土を塊のまま移し、施工後10年間にわたる植物群集を追跡した研究を発表。ブロック移植区は移植元に近い植物群集を長く維持した。2031年の架空会社による道路工事への施工導入、現場、人物、前年の試験区と草地の様子は創作。"
     },
-    "scene_prompt": "An adult Japanese female archive worker, age 35, takes one magnetic tape data cartridge from a secure metal storage shelf. Photorealistic candid press photograph in a fictional company records vault, ordinary professional office attire, natural face and hand anatomy, visible tape cartridge and cabinet shelving, restrained fluorescent lighting, realistic surfaces and shadows, horizontal 16:9. No logos, readable writing, weapons, security incident graphics, brands, or real-person likeness.",
+    "scene_prompt": "Two adult road construction workers use a small site lift to place intact rectangular grassy topsoil blocks on a new roadside slope. Photorealistic documentary press photograph at a fictional Japanese mountain road construction site in November, natural overcast daylight, safety helmets and work vests, workers checking the grassy soil block in a realistic brown-and-green patchwork embankment, curved finished road visible behind them. Believable earth texture, roots, grass, tools, hands and shadows, horizontal 16:9, no readable signs, text, logos, brands or identifiable real persons.",
     "visual_strategy": "cpu-photo",
     "tags": [
-      "データ保管",
-      "契約書",
-      "復旧"
+      "道路工事",
+      "草地",
+      "生態系"
     ],
-    "satire_tags": [],
     "x_tags": [
-      "データ保管",
-      "復旧"
+      "道路工事",
+      "緑化"
     ],
     "x_tickers": [],
-    "x_share_lead": "AIが見つけられなかった契約の修正版。最後の1件は、ネットにつながらない保管室にあった。",
-    "reader_interest": "work_money_tech",
+    "x_share_lead": "道路を造る前に、まず草地を土ごと引っ越しさせる。2031年の工事現場では、元の野原が道路脇に並んでいた。",
+    "reader_interest": "general_society",
     "editorial_lane": "social_life",
     "editorial_form": "feature",
     "editorial_tone": "plausible_future",
     "editorial_payoff": "visible_result",
     "editorial_signature": {
-      "present": "2026年11月13日、NECがテープストレージの容量拡張と物理的エアギャップ保管を公式発表した",
-      "target": "架空の業務AI運営会社で旧契約の修正版がオンライン検索に出ず、更新通知が止まる",
-      "action": "保管係二人が隔離された保管室からテープを取り出して読取装置へ戻し、契約担当が変更履歴を確かめる",
-      "outcome": "納期の誤案内を防ぎ、モニターの復元1件表示と出庫票に二人の確認印が残る"
+      "present": "2026年11月13日、道路法面で表土ブロック移植を10年間追跡し地域の植物群集の維持を示した北海道大学の公式研究発表",
+      "target": "道路建設時に地域の草地を失わないよう土壌ごと保全して再設置する施工",
+      "action": "道路工事の作業員が工事前に草地を根や種ごと切り分けて保管し、完成後の斜面へ敷き直す",
+      "outcome": "新しい道路の脇に緑の四角い区画が並び、前年の試験区では境目を越えて草が伸びる"
     },
     "reader_clarity": {
-      "who": "契約担当",
-      "action": "検索できない旧契約の修正版を、隔離して保管したテープから復元した",
-      "oddity": "AIが検索できない記録を、人がネットの外にあるテープを運んで取り戻した"
+      "who": "道路施工会社「みどり架道」の作業員",
+      "action": "工事前の草地を土ごと切り出し、完成した道路脇へ戻した",
+      "oddity": "道路脇に草地の四角い区画が並び、前年の区画には草が広がっている"
     },
     "behavior_basis": {
-      "motive": "契約の改ざんや削除に備えて元の記録を残し、取引先へ誤った納期を通知しないため",
-      "ordinary_alternative": "オンライン保存のままAI検索で旧契約を探し、検索で見つからなければ当初案の通知を送る",
-      "why_not": "原本の独立した保存を優先したので、即時検索ができなくてもネットワークから隔離したテープを保持している",
-      "evidence_quote": "同社は誤削除や改ざんが起きても原本を確かめられるよう、重要な契約の保存用コピーを磁気テープに入れ、社内ネットワークから切り離している。"
+      "motive": "道路の造成後もその土地の草地をできるだけ残したい",
+      "ordinary_alternative": "工事後の斜面に新たな草の種をまく施工",
+      "why_not": "地域にもともとあった草や根と土の中の種をできるだけ一緒に移すため、追加の保管工程を選んだ",
+      "evidence_quote": "根や種まで残して元の地域の草地を戻すためだ"
     },
     "plausibility_basis": {
-      "present_signal": "2026年11月13日のNECによるテープストレージ新製品発表に物理的エアギャップとネットワークからの分離保管がある",
-      "continuation_force": "機密記録の保全と改ざん・誤削除対策でオンラインと分離した長期保管の需要が続く",
-      "future_result": "2031年の架空AI運営会社で契約検索の欠落を隔離テープから復元し、誤通知を防ぐ"
+      "present_signal": "2026年11月13日の北海道大学発表で、表土ブロック移植後10年間の地域植物群集の維持を示した",
+      "continuation_force": "造成で草地を失う現場と地域本来の植生を維持したい需要が続き、工事工程と保管を一体化する動機がある",
+      "future_result": "2031年、架空会社が新設道路の施工工程に表土の退避と再設置を組み込み、道路の斜面に草地を戻す"
     }
   },
   {

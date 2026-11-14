@@ -21,5 +21,4 @@
 - **発行引継ぎ（11/13 07:30→09:30）：** 07:36 JSTのスポーツ面 `sand-dune-race-radar-reroutes-ridge-final` はPR #698で公開済み。09:30は事件面で、同日暮らし0本・最初の7本で残り5面中4面を増やす必要あり。砂丘レースの経路選択を焼き直さない。
 - **発行引継ぎ（11/13 09:30→11:30）：** 事件面 `airport-baggage-robot-leaves-upper-shelves-empty` をこの発行PRに追加。空港の2段台車で安全設定が上段を使わず通路を塞ぎ、固定条件を追加して荷物を3台にまとめる。写真は内蔵ImageGenを1回生成しPNG/JPEGを同実行で実表示したがGitHub blob未転送のため、採用・本番実写化は未完了、公開後画像回収担当へ同一素材の回収を渡す。次は11:30に新カテゴリを比較し、政策・製品発表の残枠を確保。公開可否とrevisionは本発行結果を正とする。
 
-- **画像引継ぎ（屋内ビーチ、完了）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／写真SHA `c3552d3b1fad` はPR #728で実配信済み。原生成claim・失敗は保持し、同じ写真を再生成しない。週刊用の別撮影は下記の担当PRへ分離。
-- **週刊画像引継ぎ:** `winter-coat-swimsuit-saya-001`／号SHA `882bc9186164de86`／担当Codex総括・PR #735。9枚採用、04候補 `724fd88d7609` は体型差で保留、再編集 `86ffbc9a-eada-49a6-95e0-9654f54f2c34` は出力拒否・画像なし。次の既存週刊制作枠は `content/photo_issues.json` の `generation_holds.04` と7人の `body_profile/body_reference` を読み、同条件再試行をせず場面案を判断する。号公開・本番検証は未完了。
+- **画像引継ぎ（11/13 19:30枠）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／PR #716・画像/公開担当Codex総括。内蔵生成1回がoutput `moderation_blocked`、画像バイトなし・未採用。元run `indoor-beach-20261113-1930`、claim `2de2b676349ea7d2` を保持し再生成しない。専用SVGで記事公開、写真は未完了。次の既存回収枠で、白シャツを閉じた通常の取材構図という別の安全な場面指示を具体化できる時だけ単発検討し、同じ失敗プロンプトを繰り返さない。
