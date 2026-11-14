@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e",
+  "slug": "offline-tape-restores-missing-contract-revision",
+  "article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
+  "logical_run_id": "article-20261114-0930-offline-tape-reviewed-first-photo",
+  "prompt_sha256": "e3f9ea7442b6e569c7190a520092e52dbd6d0f02c75c935ff57bc5712f0d1961",
+  "reserved_at": "2026-11-14T06:35:27.898Z",
+  "baseline": {
+    "commit_sha": "bd2f5024d1384a7fd11998af794728df6d8e1cdf",
+    "tree_sha": "b226bb95a49e90bd7b0b3e88ff11b63d357b3891",
+    "protected_hashes": {
+      "content/articles.json": "816a7de83b23b6b521c48eb549fe9fe814c9ccd36caa2b8f02f01f7d363ec12c",
+      "assets/generated/manifest.json": "d6ffd6e1650ef0e5d3e081d66716265f3164c915b005df67b8f0630b7194a23f",
+      "content/visual_reviews.json": "fc5b1c84f08d0b3f14527fd88154ae742722805af24c431cea4f71cfa746d057"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "76e00ee6d8bda423fc8bea4361598ed840189049",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "73f922ad46d94dc78172d2d60f413404bc1ba035742b8825d5be460f3636b5c3",
+    "observed_at": "2026-11-14T06:35:12.404Z",
+    "route": "Actual PNG data URL to GitHub candidate storage in this execution",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
