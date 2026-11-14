@@ -26,6 +26,7 @@ if __package__:
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from .serial_discovery import render_serial_bridge
+    from .market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -44,6 +45,7 @@ else:
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from serial_discovery import render_serial_bridge
+    from market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -881,6 +883,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
         og_image = SITE + "/og/serials/" + name + ".png"
+    if kind == "market_bulletin":
+        # Bulletins use the existing actual 1200x630 series image rather
+        # than promising a per-dispatch PNG that is never generated.
+        og_image = SITE + "/og/serials/market-lab.png"
     if photo_issue is not None:
         og_image = SITE + photo_cover_url(photo_issue)
     photo = article.get("photo") if article else None
@@ -917,7 +923,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         metadata["@type"] = "CollectionPage" if not serial.get("episode") else metadata["@type"]
         metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
-    if kind == "serial_episode" and serial is not None:
+    if kind in ("serial_episode", "market_bulletin") and serial is not None:
         metadata.update({
             "@type": "Article",
             "headline": title,
@@ -928,7 +934,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "publisher": {"@type": "Organization", "name": "未発生新聞", "url": SITE},
             "isAccessibleForFree": True,
             "image": [og_image],
-            "articleSection": "推理小説" if serial["kind"] == "fiction" else "株式市場予測"
+            "articleSection": "推理小説" if serial["kind"] == "fiction" else (
+                "実データの日次市況" if kind == "market_bulletin" else "株式市場予測")
         })
         if serial.get("title"):
             metadata["isPartOf"] = {
@@ -1090,7 +1097,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:site_name" content="未発生新聞">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "photo_issue") else "website"}">
+<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "market_bulletin", "photo_issue") else "website"}">
 {article_time_meta}
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
@@ -2066,6 +2073,8 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
+    dispatches = load_market_bulletins(BASE)
+    routes.extend(market_bulletin_routes(dispatches))
     photo_entries = photo_sitemap_entries(photo_issues)
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -2085,6 +2094,7 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
             sitemap_images["/serials/" + slug + "/" + episode["slug"] + "/"] = (
                 SITE + "/og/serials/" + slug + "-" + episode["slug"] + ".png"
             )
+    sitemap_images.update({bulletin_url(item): SITE + "/og/serials/market-lab.png" for item in dispatches})
     sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries})
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
