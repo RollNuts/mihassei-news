@@ -13,12 +13,19 @@ from xml.etree import ElementTree as ET
 
 from scripts import build
 from scripts.reader_paths import suggested_articles, topic_score
+from tests.site_build_fixture import ensure_site_build
 
 
 class ReaderPathsAndSEOTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        ensure_site_build()
         cls.articles = build.load()
+        cls.dist = Path(__file__).resolve().parents[1] / "dist"
+
+    def built_page(self, url):
+        """Read fixed-input pages from this process's shared fresh build."""
+        return (self.dist / url.lstrip("/") / "index.html").read_text(encoding="utf-8")
 
     def test_similar_subject_beats_unrelated_recent_same_category(self):
         article = {
@@ -60,7 +67,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
         ), reverse=True)
         order_index = {item["slug"]: index for index, item in enumerate(ordered)}
         for index, item in enumerate(ordered):
-            page = build.story(item, self.articles)
+            page = self.built_page(build.article_url(item))
             lead = re.search(r'<a href="([^"]+)" class="reader-next-title">', page)
             self.assertIsNotNone(lead, item["slug"])
             self.assertIn('data-popular-fallback', page)
@@ -117,7 +124,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             if set(build.article_tags(source)) & set(build.article_tags(item))
         ][:3]
         self.assertTrue(expected)
-        page = build.story(source, self.articles)
+        page = self.built_page(build.article_url(source))
         self.assertIn('class="topic-related"', page)
         related = page.split('<section class="topic-related"', 1)[1].split('</section>', 1)[0]
         links = re.findall(r'<h3><a href="([^"]+)">', related)
@@ -127,7 +134,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertTrue(source_tags & set(build.article_tags(item)))
 
     def test_home_topic_navigation_only_links_indexable_clusters(self):
-        page = build.home(self.articles)
+        page = self.built_page("/")
         section = page.split('<section class="topic-explore genre-explore"', 1)[1].split('</section>', 1)[0]
         links = re.findall(r'href="([^"]+)"', section)
         indexable = {build.tag_url(tag) for tag in build.curated_topics(self.articles)}
@@ -136,7 +143,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
 
     def test_article_structured_data_uses_real_dates_and_canonical(self):
         item = self.articles[0]
-        page = build.story(item, self.articles)
+        page = self.built_page(build.article_url(item))
         script = re.search(r'<script type="application/ld\+json">(.+?)</script>', page)
         self.assertIsNotNone(script)
         schemas = json.loads(script.group(1))
@@ -151,10 +158,10 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
     def test_issue_and_category_itemlist_is_only_real_published_stories(self):
         issues = build.daily_issues(self.articles)
         day, items = next(iter(issues.items()))
-        samples = [(build.issue_page(day, items, issues), items)]
+        samples = [(self.built_page(build.issue_url(day)), items)]
         cats = build.curated_categories(self.articles)
         for cat, entries in cats.items():
-            samples.append((build.category_page(cat, entries), entries))
+            samples.append((self.built_page(build.category_url(cat)), entries))
         for markup, entries in samples:
             script = re.search(r'<script type="application/ld\+json">(.+?)</script>', markup)
             self.assertIsNotNone(script)
@@ -191,7 +198,7 @@ class ReaderPathsAndSEOTests(unittest.TestCase):
             self.assertEqual(entries[-1].findtext("title"), "テスト創作記事89 | 未発生新聞（創作）")
 
     def test_rss_remains_discoverable_without_a_large_follow_banner(self):
-        home = build.home(self.articles)
+        home = self.built_page("/")
         self.assertNotIn('class="free-follow"', home)
         self.assertIn('rel="alternate" type="application/rss+xml"', home)
         self.assertIn('<a href="/feed.xml">RSS</a>', home)
