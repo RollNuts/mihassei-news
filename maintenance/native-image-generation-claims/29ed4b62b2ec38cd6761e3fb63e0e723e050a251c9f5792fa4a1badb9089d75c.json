@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "29ed4b62b2ec38cd6761e3fb63e0e723e050a251c9f5792fa4a1badb9089d75c",
+  "slug": "remote-basketball-final-fans-walk-behind-hoop",
+  "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
+  "logical_run_id": "recovery-pr-744-2026-11-15-0730",
+  "prompt_sha256": "976b8e87ff52e93d6fb7f1d09ff3362ea5586b66a2103abc1975506fa10ebdef",
+  "reserved_at": "2026-11-14T23:15:21.213Z",
+  "baseline": {
+    "commit_sha": "75eb08803a03565665c01a96fe70d32bb866dded",
+    "tree_sha": "4bb2b4803a84f0cfeef9cb6d9afd8ea2b3be029e",
+    "protected_hashes": {
+      "content/articles.json": "e36e4a801c82dd8b062a5b2a4724764faeabda48a93fd7a17e95ea62046afddb",
+      "assets/generated/manifest.json": "4d039b7a1079c6e4fe09dd11899e8f67cb0341c1e71e0e5c5cc04996d5404996",
+      "content/visual_reviews.json": "7482f29a3eb526865cac8886b0a8ced998b68d4cfcd8032fbede6ec2af146555"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "97027a4b1f7359776028e7b0354b743e13289d43",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "89d5902f6240ceed0b7fd554b126cee0c96790614d156f15634cd2b3d3e40fc7",
+    "observed_at": "2026-11-14T23:15:09.529Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
