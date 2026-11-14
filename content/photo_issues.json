@@ -15,66 +15,166 @@
         "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
         "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
       },
-      "reference_state": "accepted_reference"
+      "reference_state": "accepted_reference",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "少しマイペースで、人とのやり取りを楽しむ。",
+        "voice": "柔らかな短い文。体験から話し、最後に小さな本音を置く。",
+        "likes": [
+          "水辺",
+          "服の組合せ",
+          "手触りのある遊び"
+        ],
+        "weakness": "帰り際の誘いに弱く、つい寄り道する。"
+      },
+      "preferred_face_reference": {
+        "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+        "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+        "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
+        "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
+        "candidate_commit": "f7895056679d18f7c123a573f1e960bc8a565e3c",
+        "reason": "本人がコート姿の顔を継続モデルとして明示採用。既存beach masterも保持。"
+      }
     },
     {
       "id": "shioba-rio",
       "name": "汐羽りお",
       "age": 29,
       "fictional": true,
-      "appearance": "既存の架空アナウンサーの顔、薄い前髪と長い暗色髪、自然な成人の体型を維持する。",
+      "appearance": "既存masterの顔、薄い前髪と長い暗色髪を維持。自然に豊かなバストの成人体型。",
       "master": {
         "path": "assets/casters/newsreader-preview.jpg",
         "sha256": "771380a1e1eb9037c3f1c00b3bf4c47303fd2c42e2a6ced4a628d4783e242a66",
         "source_png_sha256": "fce4507ef84dad0a1e33a9edb602415464394bc19a764d905adbe56bed7b105a",
         "provenance": "assets/casters/newsreader-preview.json"
       },
-      "reference_state": "preview_only"
+      "reference_state": "preview_only",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "落ち着いた観察役だが、休日には抜けたところがある。",
+        "voice": "端正な文章に、ふと仕事を忘れた率直なひとことが混じる。",
+        "likes": [
+          "取材先の風景",
+          "朝の散歩",
+          "きれいなニット"
+        ],
+        "weakness": "時刻や段取りを気にするのに、自分の休日だけ予定がずれる。"
+      }
     },
     {
       "id": "tsukishiro-rena",
       "name": "月城れな",
-      "age": 26,
+      "age": 23,
       "fictional": true,
-      "appearance": "",
+      "appearance": "23歳の架空の成人。涼しげで上品な表情、長い黒髪。顔はさや・ひかりと異なる独自の設計にする。",
       "master": null,
-      "reference_state": "unprepared"
+      "reference_state": "unprepared",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "静かで観察好き。見た目はクールだが好きなものには素直。",
+        "voice": "短く具体的で、少し乾いたユーモア。説教や冷笑にしない。",
+        "likes": [
+          "夜の街",
+          "服の形",
+          "一人で聴く音楽"
+        ],
+        "weakness": "迷っていない顔をして、実は服選びに時間をかける。"
+      },
+      "creative_reference": {
+        "url": "https://asukasaito.jp/s/m15/",
+        "scope": "洗練された落ち着きと表情の幅を参考にする。顔と名前はオリジナル。"
+      }
     },
     {
       "id": "hanase-mio",
       "name": "花瀬みお",
-      "age": 28,
+      "age": 20,
       "fictional": true,
-      "appearance": "",
+      "appearance": "20歳の架空の成人。活発な雰囲気、肩までの髪。さやと異なる顔立ち。",
       "master": null,
-      "reference_state": "unprepared"
+      "reference_state": "unprepared",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "好奇心でまず体を動かす。失敗も楽しんで話す。",
+        "voice": "動作から始める率直な文章。元気でも過剰な感嘆符を並べない。",
+        "likes": [
+          "海",
+          "遠出",
+          "初めての乗り物"
+        ],
+        "weakness": "勢いで出かけて、帰りの支度を忘れがち。"
+      }
     },
     {
       "id": "shiramine-yuki",
       "name": "白峰ゆき",
-      "age": 30,
+      "age": 24,
       "fictional": true,
-      "appearance": "",
+      "appearance": "24歳の架空の成人。柔らかな雰囲気と暗めの長い髪。独自の顔立ち。",
       "master": null,
-      "reference_state": "unprepared"
+      "reference_state": "unprepared",
+      "character": {
+        "version": 1,
+        "first_person": "わたし",
+        "personality": "穏やかで気配り上手。居心地のよさには意外と頑固。",
+        "voice": "ゆっくりした語り口。温度や手触りを身近な言葉で語る。",
+        "likes": [
+          "温かい飲み物",
+          "柔らかな服",
+          "静かな旅"
+        ],
+        "weakness": "気に入った場所を見つけると長居する。"
+      }
     },
     {
       "id": "amane-hikari",
       "name": "天音ひかり",
-      "age": 25,
+      "age": 21,
       "fictional": true,
-      "appearance": "",
+      "appearance": "21歳の架空の成人。明るく親しみやすい表情。長めの栗色の髪と柔らかな毛流れ。顔は独自に設計する。",
       "master": null,
-      "reference_state": "unprepared"
+      "reference_state": "unprepared",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "明るく人懐っこい。小さな挑戦にも負けず嫌い。",
+        "voice": "会話に近い軽快な文。喜びも失敗も隠さず、決め台詞は連発しない。",
+        "likes": [
+          "舞台衣装",
+          "新しい遊び",
+          "甘いおやつ"
+        ],
+        "weakness": "楽しみな予定を詰め込みすぎる。"
+      },
+      "creative_reference": {
+        "url": "https://www.grajapa.shueisha.co.jp/post/fujishima_kaho_1st/",
+        "scope": "明るい表情、光、カメラとの距離感、服装と場面の変化を参考にする。顔と名前はオリジナル。"
+      }
     },
     {
       "id": "kiritani-sumire",
       "name": "桐谷すみれ",
-      "age": 31,
+      "age": 26,
       "fictional": true,
-      "appearance": "",
+      "appearance": "26歳の架空の成人。上品な服が似合う落ち着いた顔立ち。独自の髪形と表情。",
       "master": null,
-      "reference_state": "unprepared"
+      "reference_state": "unprepared",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "personality": "美意識があり、古いものと新しいものを合わせるのが好き。",
+        "voice": "上品だが気取らず、自分のこだわりを少し笑える言葉で話す。",
+        "likes": [
+          "美術",
+          "古い街並み",
+          "小物の配色"
+        ],
+        "weakness": "気になる組合せを比べすぎて決めるのが遅い。"
+      }
     }
   ],
   "issues": [
@@ -82,7 +182,7 @@
       "slug": "winter-coat-swimsuit-saya-001",
       "number": 1,
       "title": "冬のコートの下に、水着。",
-      "summary": "11月の夕波ドームで、凪野さやが遠くの友達と足元の小波を送り合う一日。",
+      "summary": "11月、凪野さやの水辺の休日。離れた友達とは、足元の小波で返事を交わす。",
       "state": "draft",
       "published_at": null,
       "model_id": "nagino-saya",
@@ -102,9 +202,10 @@
       "setting": {
         "year": 2031,
         "month": 11,
-        "location": "夕波ドーム",
+        "location": "夕波ドーム、水辺のホテル、秋の街",
         "aspect_ratio": "16:9",
-        "visual_direction": "架空の27歳の成人。非露骨な通常のファッションと水着。自然な肌・布・光・動作。横長16:9。露出や胸のアップで埋めない。短いボブを維持し、髪を結ばない。"
+        "visual_direction": "架空の27歳の成人。非露骨な通常のファッションと水着。自然な肌・布・光・動作。横長16:9。露出や胸のアップで埋めない。短いボブを維持し、髪を結ばない。",
+        "wardrobe": "02・05〜08は紺のワンピース水着。04は採用済みの紺ビキニと白いシャツ。冬服はコートとニット。"
       },
       "source_article": {
         "slug": "indoor-beach-friends-exchange-ripples",
@@ -125,15 +226,15 @@
         },
         {
           "id": "02",
-          "description": "更衣後、紺のビキニと白いシャツで袖をまくる。鏡は写さない。",
-          "caption": "袖をまくる",
-          "alt": "凪野さや（27歳、架空の成人）。更衣後、紺のビキニと白いシャツで袖をまくる。鏡は写さない。"
+          "description": "更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。",
+          "caption": "泳ぐ前のひと息",
+          "alt": "凪野さや（27歳、架空の成人）。更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。"
         },
         {
           "id": "03",
-          "description": "屋内ビーチの窓辺で、短いボブの顔を自然な距離からアップで写す。",
+          "description": "ホテルの窓辺で、白いシャツを着た短いボブの顔をアップで写す。",
           "caption": "窓辺のひと息",
-          "alt": "凪野さや（27歳、架空の成人）。屋内ビーチの窓辺で、短いボブの顔を自然な距離からアップで写す。"
+          "alt": "凪野さや（27歳、架空の成人）。ホテルの窓辺で、白いシャツを着た短いボブの顔をアップで写す。"
         },
         {
           "id": "04",
@@ -143,33 +244,33 @@
         },
         {
           "id": "05",
-          "description": "足元に届いた小波を見て、軽く振り返る。",
-          "caption": "足首に返事",
-          "alt": "凪野さや（27歳、架空の成人）。足元に届いた小波を見て、軽く振り返る。"
+          "description": "街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。",
+          "caption": "街の灯りを水面から",
+          "alt": "凪野さや（27歳、架空の成人）。街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。"
         },
         {
           "id": "06",
-          "description": "デッキチェアで、飲み物のそばに座る横顔を写す。",
-          "caption": "飲み物のそばで",
-          "alt": "凪野さや（27歳、架空の成人）。デッキチェアで、飲み物のそばに座る横顔を写す。"
+          "description": "木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。",
+          "caption": "風の通るひと休み",
+          "alt": "凪野さや（27歳、架空の成人）。木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。"
         },
         {
           "id": "07",
-          "description": "白いシャツ姿で、短いボブの髪を耳に掛ける3/4の構図。",
+          "description": "ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。",
           "caption": "髪を耳にかけて",
-          "alt": "凪野さや（27歳、架空の成人）。白いシャツ姿で、短いボブの髪を耳に掛ける3/4の構図。"
+          "alt": "凪野さや（27歳、架空の成人）。ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。"
         },
         {
           "id": "08",
-          "description": "人工の夕暮れになった屋内ビーチで、人物と場を引きで写す。",
-          "caption": "ドームの夕暮れ",
-          "alt": "凪野さや（27歳、架空の成人）。人工の夕暮れになった屋内ビーチで、人物と場を引きで写す。"
+          "description": "海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。",
+          "caption": "海のそばの温水",
+          "alt": "凪野さや（27歳、架空の成人）。海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。"
         },
         {
           "id": "09",
-          "description": "ニットに着替え、ベンチで帰り支度をする。",
+          "description": "カフェでニット姿になり、コートを膝に置いて帰り支度をする。",
           "caption": "ニットに戻って",
-          "alt": "凪野さや（27歳、架空の成人）。ニットに着替え、ベンチで帰り支度をする。"
+          "alt": "凪野さや（27歳、架空の成人）。カフェでニット姿になり、コートを膝に置いて帰り支度をする。"
         },
         {
           "id": "10",
@@ -178,8 +279,461 @@
           "alt": "凪野さや（27歳、架空の成人）。夜の街で、温かい飲み物を手にする。"
         }
       ],
-      "images": {},
-      "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960"
+      "images": {
+        "01": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+          "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+          "bytes": 211797,
+          "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
+          "provenance": {
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
+            "candidate_commit": "f7895056679d18f7c123a573f1e960bc8a565e3c",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-cut-01",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/01/receipt.json",
+            "receipt_sha256": "2669733255094095663aed3567aa3a10aee698552ee207c42777ac1b1bd6228a",
+            "edit_references": [
+              {
+                "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-a956028d-aae4-40b3-9c91-01879b1b62f9.png",
+                "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+                "master_jpeg_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94"
+              }
+            ]
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "01",
+            "reviewed_at": "2026-11-14T06:34:25+00:00",
+            "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。",
+            "swimwear_visible": false,
+            "framing": "full_body"
+          },
+          "review_history": [
+            {
+              "decision": "accepted",
+              "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+              "cut_id": "01",
+              "reviewed_at": "2026-11-14T05:39:13+00:00",
+              "note": "原PNGと変換JPEGを実表示し独立検品。短いボブ・前髪・顔立ちと笑い方は元masterに大きな不一致なし。秋冬のコート/ニット/スカートと屋内ビーチ入口がcut01に合う。見える手指・両足・ブーツ・布に目立つ破綻、不要な文字やロゴなし。片手は自然にポケット内。本人もこの顔を継続モデルとして指定。",
+              "swimwear_visible": false,
+              "framing": "full_body"
+            }
+          ],
+          "adoption": {
+            "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+            "target_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "target_cut_id": "01",
+            "reason": "水着と他cutの場面を改訂したが01の人物・冬服・入口・本文の意味は不変。原画像と原acceptedを保持して今号の適合性だけ再確認。"
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg",
+          "sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+          "bytes": 206587,
+          "source_png_sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38",
+          "provenance": {
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c4dbd211b16c",
+            "candidate_commit": "5a05e24f33c8d12b03359464be9e0dd47a6d1958",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-onepiece-wardrobe-study",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/02/receipt.json",
+            "receipt_sha256": "e69a43cb9ebd891f26aa7451968d5341f7d7365457b4518e8740593bfdcb4057"
+          },
+          "adoption": {
+            "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+            "target_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "target_cut_id": "02",
+            "reason": "原来歴は別衣装の成功studyとして保持。実物に合わせた新shot02の紺ワンピース水着・室内プール・タオル・同じ成人の顔に一致。"
+          },
+          "review_history": [],
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "02",
+            "reviewed_at": "2026-11-14T06:34:25+00:00",
+            "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。",
+            "swimwear_visible": true,
+            "framing": "three_quarter"
+          }
+        },
+        "04": {
+          "path": "assets/generated/indoor-beach-friends-exchange-ripples.jpg",
+          "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+          "bytes": 228371,
+          "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+          "provenance": {
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-da2fb0adf05a",
+            "candidate_commit": "18891d7b06618f56f4dc721df1b62152798e7c3f",
+            "logical_run_id": "indoor-beach-user-requested-existing-image-edit-20261114",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/04/receipt.json",
+            "receipt_sha256": "bd487a74a1cd3a1a10d895090477eb802c4212e328e379a995bc38f22fa2187a"
+          },
+          "adoption": {
+            "kind": "accepted_article_photo",
+            "source_article_slug": "indoor-beach-friends-exchange-ripples",
+            "source_article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "target_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "target_cut_id": "04",
+            "reason": "本人希望の採用済みビキニ写真を原bytes/原生成/元記事acceptedのまま再利用。今号04の同人物・紺ビキニ/白シャツ・浅瀬・全身の場面に一致。"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+            "image_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "04",
+            "reviewed_at": "2026-11-14T06:34:25+00:00",
+            "note": "元記事の実表示済みaccepted写真を引き継ぎ、今号04との一致だけ確認。27歳の同じ架空人物、紺ビキニと白シャツ、足首の浅瀬と小波が今号本文・shot04に合う。原JPEG/PNG/生成指紋と元acceptedは保持し、再生成や品質の再承認と混同しない。",
+            "swimwear_visible": true,
+            "framing": "full_body"
+          }
+        }
+      },
+      "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+      "generation_holds": {
+        "03": {
+          "reason": "image_tool_output_safety_rejection",
+          "request_id": "1d51b2f7-dc26-48f3-9d11-b559512745c3",
+          "claim": "native-image-generation-claim/2ecccafc641aa1009039bbd992d650d6f7c819fc5492562f290908bb1842be96",
+          "image_produced": false,
+          "proposed_change": "白いシャツのホテル窓辺の顔アップへ場面/衣装を変更し、本人採用のコート顔だけを参照する新計画。原拒否は履歴に保持し、新しい実出力が検品されるまで解決扱いにしない。"
+        }
+      },
+      "editorial_history": [
+        {
+          "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+          "editorial": {
+            "slug": "winter-coat-swimsuit-saya-001",
+            "number": 1,
+            "title": "冬のコートの下に、水着。",
+            "summary": "11月の夕波ドームで、凪野さやが遠くの友達と足元の小波を送り合う一日。",
+            "setting": {
+              "year": 2031,
+              "month": 11,
+              "location": "夕波ドーム",
+              "aspect_ratio": "16:9",
+              "visual_direction": "架空の27歳の成人。非露骨な通常のファッションと水着。自然な肌・布・光・動作。横長16:9。露出や胸のアップで埋めない。短いボブを維持し、髪を結ばない。"
+            },
+            "column": [
+              "コートと水着を同じ日に着る11月、けっこう気に入っています。",
+              "夕波ドームで友達と待ち合わせ。といっても、友達がいるのは隣の町の浅瀬です。画面の友達が足で水を払うと、こちらの足首にも小さな波。今日は挨拶より先に、靴下を脱いで正解でした。",
+              "私が二回水を払うと、向こうも二回。話していないのに、相づちだけちゃんと届くのが好き。帰るつもりで白いシャツの袖を下ろしたら、もう一波来てしまって。こういう「ちょっと待って」には、返信が遅くなります。",
+              "帰り道はまたニット。熱い飲み物を持ったら、ようやく冬に戻りました。"
+            ],
+            "model_id": "nagino-saya",
+            "model_snapshot": {
+              "id": "nagino-saya",
+              "name": "凪野さや",
+              "age": 27,
+              "fictional": true,
+              "appearance": "短い暗色のボブと軽い前髪。既存の顔と自然な成人の体型を維持し、髪を結ばない。",
+              "master": {
+                "path": "assets/generated/indoor-beach-friends-exchange-ripples.jpg",
+                "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+                "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
+              }
+            },
+            "source_article": {
+              "slug": "indoor-beach-friends-exchange-ripples",
+              "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84"
+            },
+            "shots": [
+              {
+                "id": "01",
+                "description": "秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。",
+                "caption": "コートで待ち合わせ",
+                "alt": "凪野さや（27歳、架空の成人）。秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。"
+              },
+              {
+                "id": "02",
+                "description": "更衣後、紺のビキニと白いシャツで袖をまくる。鏡は写さない。",
+                "caption": "袖をまくる",
+                "alt": "凪野さや（27歳、架空の成人）。更衣後、紺のビキニと白いシャツで袖をまくる。鏡は写さない。"
+              },
+              {
+                "id": "03",
+                "description": "屋内ビーチの窓辺で、短いボブの顔を自然な距離からアップで写す。",
+                "caption": "窓辺のひと息",
+                "alt": "凪野さや（27歳、架空の成人）。屋内ビーチの窓辺で、短いボブの顔を自然な距離からアップで写す。"
+              },
+              {
+                "id": "04",
+                "description": "紺のビキニと白いシャツで、浅瀬へ歩く全身を写す。",
+                "caption": "浅瀬まで",
+                "alt": "凪野さや（27歳、架空の成人）。紺のビキニと白いシャツで、浅瀬へ歩く全身を写す。"
+              },
+              {
+                "id": "05",
+                "description": "足元に届いた小波を見て、軽く振り返る。",
+                "caption": "足首に返事",
+                "alt": "凪野さや（27歳、架空の成人）。足元に届いた小波を見て、軽く振り返る。"
+              },
+              {
+                "id": "06",
+                "description": "デッキチェアで、飲み物のそばに座る横顔を写す。",
+                "caption": "飲み物のそばで",
+                "alt": "凪野さや（27歳、架空の成人）。デッキチェアで、飲み物のそばに座る横顔を写す。"
+              },
+              {
+                "id": "07",
+                "description": "白いシャツ姿で、短いボブの髪を耳に掛ける3/4の構図。",
+                "caption": "髪を耳にかけて",
+                "alt": "凪野さや（27歳、架空の成人）。白いシャツ姿で、短いボブの髪を耳に掛ける3/4の構図。"
+              },
+              {
+                "id": "08",
+                "description": "人工の夕暮れになった屋内ビーチで、人物と場を引きで写す。",
+                "caption": "ドームの夕暮れ",
+                "alt": "凪野さや（27歳、架空の成人）。人工の夕暮れになった屋内ビーチで、人物と場を引きで写す。"
+              },
+              {
+                "id": "09",
+                "description": "ニットに着替え、ベンチで帰り支度をする。",
+                "caption": "ニットに戻って",
+                "alt": "凪野さや（27歳、架空の成人）。ニットに着替え、ベンチで帰り支度をする。"
+              },
+              {
+                "id": "10",
+                "description": "夜の街で、温かい飲み物を手にする。",
+                "caption": "夜の温かい一杯",
+                "alt": "凪野さや（27歳、架空の成人）。夜の街で、温かい飲み物を手にする。"
+              }
+            ]
+          },
+          "images": {
+            "01": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+              "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+              "bytes": 211797,
+              "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
+                "candidate_commit": "f7895056679d18f7c123a573f1e960bc8a565e3c",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-cut-01",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/01/receipt.json",
+                "receipt_sha256": "2669733255094095663aed3567aa3a10aee698552ee207c42777ac1b1bd6228a",
+                "edit_references": [
+                  {
+                    "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-a956028d-aae4-40b3-9c91-01879b1b62f9.png",
+                    "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+                    "master_jpeg_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+                "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "01",
+                "reviewed_at": "2026-11-14T05:39:13+00:00",
+                "note": "原PNGと変換JPEGを実表示し独立検品。短いボブ・前髪・顔立ちと笑い方は元masterに大きな不一致なし。秋冬のコート/ニット/スカートと屋内ビーチ入口がcut01に合う。見える手指・両足・ブーツ・布に目立つ破綻、不要な文字やロゴなし。片手は自然にポケット内。本人もこの顔を継続モデルとして指定。",
+                "swimwear_visible": false,
+                "framing": "full_body"
+              }
+            }
+          },
+          "generation_holds": {
+            "03": {
+              "reason": "image_tool_output_safety_rejection",
+              "request_id": "1d51b2f7-dc26-48f3-9d11-b559512745c3",
+              "claim": "native-image-generation-claim/2ecccafc641aa1009039bbd992d650d6f7c819fc5492562f290908bb1842be96",
+              "image_produced": false
+            },
+            "04": {
+              "reason": "image_tool_input_safety_rejection",
+              "request_id": "60824108-c55b-404f-97d4-5893f7a35499",
+              "claim": "native-image-generation-claim/3b11d72ffcc114fd4c85837b0dfb88262fb1b098ed1140e79fb65b7450c318dd",
+              "image_produced": false
+            }
+          },
+          "reason": "ビキニ参照の新生成が停止した来歴を残し、成功した通常のワンピース水着の実写真と採用済みビキニを使う構成へ改訂。本人の異なる撮影場所の要望を反映。原生成情報を付け替えず新しい号の採用を別記録する。",
+          "studies": {
+            "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-onepiece-wardrobe-study": {
+              "sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+              "bytes": 206587,
+              "source_png_sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c4dbd211b16c",
+                "candidate_commit": "5a05e24f33c8d12b03359464be9e0dd47a6d1958",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-onepiece-wardrobe-study",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/02/receipt.json",
+                "receipt_sha256": "e69a43cb9ebd891f26aa7451968d5341f7d7365457b4518e8740593bfdcb4057"
+              }
+            }
+          }
+        }
+      ],
+      "article_photo_sources": {
+        "indoor-beach-friends-exchange-ripples": {
+          "article": {
+            "slug": "indoor-beach-friends-exchange-ripples",
+            "title": "遠くの友人が足元へ小波　屋内ビーチで「水の返事」送り合う",
+            "summary": "屋内ビーチ「夕波ドーム」が、離れた二つの浅瀬で小波を送り合う遊びを始めた。凪野さや（27）は、画面の向こうで友人が水を払うと自分の足元に小波が届く仕組みで遊び、帰り際にも一波を返した。",
+            "category": "エンタメ",
+            "paragraphs": [
+              "2031年11月13日、屋内ビーチ「夕波ドーム」で、凪野さや（27）の足首に小さな波が触れた。壁の大きな画面には離れた町の友人（28）が映り、友人が水を払った瞬間に、さやの浅瀬にも波が生まれた。",
+              "この施設は二つの屋内浅瀬を通信でつなぎ、片方で足元の水を動かすと、もう片方の装置が同じ合図で小波を起こす。水そのものを遠くへ運ぶわけではない。これまでビデオ通話で顔を見ていた二人は、離れた場所にいながら相手の動きを足元の波で感じて遊べるようになった。",
+              "濃紺のビキニに白いビーチシャツを羽織ったさやは、画面の友人を見ながら片足で水を軽く払った。今度は友人の足首に波が寄せる。友人は笑って水を返し、さやはシャツの裾を押さえて足首へ届いた波に向き直り、足元のしぶきを軽く払った。",
+              "最初は互いの顔ばかり見ていた二人も、やがて水面に目を落とし、言葉より先に足を動かすようになった。友人が二度続けて送れば、さやも二度。画面の中では離れているのに、波が届くたびに二人の笑い声が重なった。",
+              "帰り支度でさやが砂浜のタオルを取ろうとした時、足首へもう一つ小波が寄せた。画面の友人は帰り支度を終えて片手を振っている。さやは振り返り、最後に水を一度だけ払った。画面の向こうの水面が揺れるのを見届けてから、二人は手を振り合った。"
+            ],
+            "scene_prompt": "An attractive adult Japanese woman, age 27, turns to a small ripple touching her ankle in a fictional indoor beach pool. Photorealistic candid lifestyle press photograph, wide 16:9 three-quarter angle. Naturally beautiful adult face, friendly delighted expression, long dark hair, full but realistically proportionate bust and natural adult body. She wears an elegant navy-blue bikini and an open white lightweight beach shirt, with tasteful non-explicit styling; she is lightly flicking water and turning toward the ripple. Show her face, full upper body, feet and visible water motion. Behind her is pale indoor sand and a clear wall-mounted screen showing a DIFFERENT adult Japanese female friend age 28 in ANOTHER shallow indoor beach, separated by distance, with little ripples at her feet. Natural indoor skylight, realistic skin and water reflections, candid unposed documentary photograph, accurate anatomy, unbranded surroundings, and a screen with no readable lettering."
+          },
+          "manifest": {
+            "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "bytes": 228371,
+            "conversion": {
+              "alpha_background": "white",
+              "height": 675,
+              "helper": "scripts/native_image_bytes.js",
+              "jpeg_quality": 84,
+              "resize": "center-cover-bilinear",
+              "width": 1200
+            },
+            "edit_reference": {
+              "github_run_id": "43509702255",
+              "image_sha256": "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf",
+              "kind": "user_requested_edit_of_rejected_candidate",
+              "status": "rejected_reference_only"
+            },
+            "generated_at": "2026-11-14T01:52:12.846Z",
+            "generation_id": "0b98b60a-4c19-43be-8b93-bb9270c18c14",
+            "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+            "generation_prompt": "Edit the supplied AI-generated photograph into a realistic ordinary indoor-beach feature photograph. The reference is the edit target, not a real person. Keep the photographic skin and water texture and the relaxed friendly mood. Replace the face with a distinctly different, completely fictional Japanese adult woman age 27: a soft oval face, warm brown eyes, a short dark bob with a light fringe, natural eyebrows, and a small relaxed smile. Make only subtle natural posture and anatomy refinements, with realistic adult proportions and conventional swimsuit coverage. Change the existing swimsuit color to navy blue and add a loose white beach shirt. Widen the camera composition to include the entire standing figure and both feet at ankle depth. She is turning slightly to look at a little ripple arriving at her ankle and lightly moves one foot through the water. Set this clearly inside a glass-roofed indoor beach with pale sand. A small part of the background includes a clearly framed wall screen showing a different adult woman in a separate indoor pool on a remote video call; no words on the screen. A single coherent candid 16:9 photograph, natural skylight, realistic hands and feet, visible ankle ripple. This is ordinary recreational swimwear and a water-play activity. No real celebrity likeness, no text, no logos, no exaggerated anatomy.",
+            "generation_prompt_source": "Exact image_gen edit prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
+            "generation_receipt": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+            "height": 675,
+            "model": "ChatGPT ImageGen",
+            "native_candidate": {
+              "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-da2fb0adf05a",
+              "commit": "18891d7b06618f56f4dc721df1b62152798e7c3f",
+              "identity": "7702e447a8b1c1fc3c983f5effee906dc00e3c3bb6ed858234647d331dd200d9",
+              "logical_run_id": "indoor-beach-user-requested-existing-image-edit-20261114",
+              "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
+              "receipt_sha256": "bd487a74a1cd3a1a10d895090477eb802c4212e328e379a995bc38f22fa2187a"
+            },
+            "origin": "chatgpt-imagegen",
+            "previous_visual_hold": {
+              "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+              "generation_failure": {
+                "attempts_in_run": 1,
+                "code": "moderation_blocked",
+                "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+                "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
+                "logical_run_id": "indoor-beach-20261113-1930",
+                "origin": "chatgpt-imagegen",
+                "phase": "output",
+                "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+                "returned_image": false,
+                "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
+              },
+              "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
+              "rejected_at": "2026-11-13T10:56:07+00:00"
+            },
+            "prompt_version": 3,
+            "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "source_c2pa": {
+              "actions": [
+                {
+                  "label": "c2pa.actions.v2",
+                  "value": {
+                    "actions": [
+                      {
+                        "action": "c2pa.created",
+                        "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                        "softwareAgent": {
+                          "name": "ChatGPT",
+                          "version": "gpt-image"
+                        },
+                        "when": "2026-11-14T01:52:09.995011685Z"
+                      },
+                      {
+                        "action": "c2pa.converted",
+                        "when": "2026-11-14T01:52:09.995014996Z"
+                      },
+                      {
+                        "action": "c2pa.watermarked.unbound",
+                        "when": "2026-11-14T01:52:09.992012821Z"
+                      }
+                    ],
+                    "allActionsIncluded": false
+                  }
+                }
+              ],
+              "claim_generator": null,
+              "claim_generator_info": {
+                "icon": {
+                  "hash": [
+                    210,
+                    171,
+                    62,
+                    237,
+                    207,
+                    32,
+                    115,
+                    112,
+                    243,
+                    149,
+                    219,
+                    212,
+                    57,
+                    208,
+                    147,
+                    243,
+                    69,
+                    112,
+                    157,
+                    45,
+                    181,
+                    200,
+                    248,
+                    208,
+                    89,
+                    12,
+                    12,
+                    177,
+                    6,
+                    169,
+                    96,
+                    87
+                  ],
+                  "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+                },
+                "name": "OpenAI Media Service API",
+                "org.contentauth.c2pa_rs": "0.79.2",
+                "specVersion": "2.2.0"
+              },
+              "content_binding_validation": "not_performed",
+              "instanceID": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+              "manifest_uri": "urn:c2pa:68f4f58d-1eb5-450f-a222-ce8ea878f616",
+              "signature_validation": "not_performed"
+            },
+            "source_png_bytes": 2753385,
+            "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+            "source_size": [
+              1672,
+              941
+            ],
+            "width": 1200
+          },
+          "accepted_review": {
+            "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "decision": "accepted",
+            "generation_record_sha256": "e868e20dae57ba8caa24d8434fde0dc28147b8ecbfc8a51e41e054be811378f4",
+            "image_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "note": "rootが原PNGと1200×675 JPEGを実表示し、公開中の記事全文と照合。独立reviewerも採用可と判断。旧参照画像とは異なる架空の27歳成人の顔と自然な表情、濃紺の水着と白シャツ、ガラス屋根の室内浅瀬、主役の足元の小さな波、画面内の友人が本文の主要場面に合う。肌・水・衣服・自然光が写真として自然で、目立つ破綻や不要な文字はない。友人側は上半身だけで水深は画像から不明であり、両者とも足首の深さまでを1枚で説明した写真とは扱わない。参照のrun43509702255のJPEGは不採用の旧素材で、新しい内蔵編集出力とは別。",
+            "reviewed_at": "2026-11-14T02:00:41.394641+00:00"
+          },
+          "snapshot_sha256": "ac8afdbdaa8fa8bf359d24d70229c684c82ea14f539d913fab3b6778efb08bcf"
+        }
+      }
     }
   ]
 }
