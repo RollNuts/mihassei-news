@@ -1,6 +1,14 @@
 {
   "version": 1,
   "stories": {
+    "volunteer-award-ceremony-visits-community-kitchen": {
+      "article_sha256": "7ef0b44c8c7d6fa58b36f217ec39958aaa4514112f85cda7406b886ed71dbb8d",
+      "cues": [
+        {"at": 0, "label": "表彰は食堂へ", "text": "表彰担当者が賞状を持って活動先の食堂へ来た"},
+        {"at": 4, "label": "賞状より先にお盆", "text": "エプロンを借り、列の客へお盆を一枚ずつ渡した"},
+        {"at": 8, "label": "次週も配膳係", "text": "表彰が終わると来週の当番表にも名前を書いた"}
+      ]
+    },
     "comedy-live-subtitles-spoil-punchlines-three-seconds": {
       "article_sha256": "d81be2e8eb20c924161df082343b13c7f4b754ac00b7d6708dfdb0846e784d26",
       "cues": [

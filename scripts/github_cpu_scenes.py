@@ -67,8 +67,10 @@ TV_PILOT_SLUG = "variety-700-guests-only-introductions"
 # repeated photography adjectives before the article's joke.
 CPU_SCENES = {
     "indoor-beach-friends-exchange-ripples": (
-        "A Japanese adult woman, age 27, wearing a navy bikini and open white "
-        "beach shirt, flicks ankle-deep water with one foot at an indoor sandy beach."
+        "Full-body view: a cute smiling Japanese adult woman, age 27, with a "
+        "naturally full bust stands upright in a navy bikini top and bottoms, "
+        "both visible, white beach shirt draped on her arms, flicking "
+        "ankle-deep water with one foot at an indoor sandy beach."
     ),
     "fridge-checkin-five-years-only-opening-times": (
         "Close-up of a white refrigerator door covered with yellow paper notes "

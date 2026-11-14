@@ -89,8 +89,13 @@ class FreeCpuImageTests(unittest.TestCase):
              contextlib.redirect_stdout(output):
             self.assertEqual(cpu.main(["--dry-run", "--slug", slug, "--retry-held", "--limit", "1"]), 0)
         record = json.loads(output.getvalue().splitlines()[-1])
-        for cue in ("Japanese adult woman", "age 27", "navy bikini", "open white beach shirt",
+        core, context = cpu.prompt_parts(source)
+        self.assertEqual(context, [])
+        for cue in ("Full-body view", "cute smiling Japanese adult woman", "age 27",
+                    "naturally full bust", "stands upright", "navy bikini top and bottoms",
+                    "both visible", "white beach shirt draped on her arms",
                     "ankle-deep water", "one foot", "indoor sandy beach"):
+            self.assertIn(cue, core)
             self.assertIn(cue, record["cpu_prompt"])
         for unwanted in ("office worker", "takes a call", "screen", "friend"):
             self.assertNotIn(unwanted, record["cpu_prompt"])

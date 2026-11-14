@@ -14,9 +14,10 @@ class ReaderFlowPolishTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.articles = load()
+        cls.archive_html = archive(cls.articles)
 
     def test_archive_does_not_offer_empty_categories_or_one_choice_decade(self):
-        html = archive(self.articles)
+        html = self.archive_html
         present = {a["category"] for a in self.articles}
         for category in CATEGORIES[1:]:
             self.assertEqual(
@@ -32,18 +33,19 @@ class ReaderFlowPolishTests(unittest.TestCase):
         # The filter becomes available again automatically if content spans decades.
         multi = copy.deepcopy(self.articles)
         multi[0]["fiction_at"] = "2041-11-03T08:20:00+09:00"
+        multi_html = archive(multi)
         self.assertRegex(
-            archive(multi),
+            multi_html,
             r'<select class="decade-select" data-decade-filter[^>]*>',
         )
         self.assertNotRegex(
-            archive(multi), r'<select class="decade-select" data-decade-filter[^>]* hidden>'
+            multi_html, r'<select class="decade-select" data-decade-filter[^>]* hidden>'
         )
 
     def test_archive_filters_have_an_accessible_group_name(self):
         # A plain div has the implicit generic role: aria-label alone is
         # ignored. Screen-reader users need a named group for these toggles.
-        markup = archive(self.articles)
+        markup = self.archive_html
         group = re.search(
             r'<div class="filters" role="group" aria-label="記事のカテゴリー">(.*?)</div>',
             markup, re.S,
@@ -59,7 +61,7 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertEqual(group.group(1).count('type="button"'), len(buttons))
 
     def test_no_results_can_be_cleared_without_scrolling_past_rss(self):
-        html = archive(self.articles)
+        html = self.archive_html
         start = html.index('id="archive-results"')
         empty = html.index('data-no-results hidden')
         reset = html.index('data-reset-filters')
