@@ -4,7 +4,7 @@ Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール�
 
 記事から制作した縦長PNG漫画1枚（内部上限4,000,000bytes）は、ownerが明示承認した新しい作品だけ同じ既存枠で1記事につき1回紹介できる。この漫画だけは元記事の紹介済み・公開年齢を問わず、通常紹介の重複防止・年齢条件は維持する。画像差替による繰返し紹介や同素材の再送はしない。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`を束縛し、画像と短い`caption`も見てownerが承認する。
 
-captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像・同じgit revision・公開取得バイトが一致した時だけ、見出し＋captionを親本文とする下記の2投稿スレッドで紹介する。欠測・失効・画像未公開ならその漫画は送らず、別の通常記事を選ぶか見送る。通常履歴は`state.json.queued`、漫画作品は`comic_posts`へ別々に残し、枠・日上限・実送信間隔・送達監査は両方を集計する。受理状態が曖昧な漫画はpendingのまま確認へ渡し、自動再送しない。例外後も既存workflowでpending保存を試みるが、強制中断や保存push失敗時の永続化と厳密な一度だけの配信は保証しない。旧漫画の停止設定も維持する。
+captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像・同じgit revisionの画像が一致し、公開画像も利用可能な時だけ「caption→元記事の直接URL→#未発生新聞」で紹介する。欠測・失効・画像未公開ならその漫画は送らず、別の通常記事を選ぶか見送る。通常履歴は`state.json.queued`、漫画作品は`comic_posts`へ別々に残し、枠・日上限・実送信間隔・送達監査は両方を集計する。受理状態が曖昧な漫画はpendingのまま確認へ渡し、自動再送しない。例外後も既存workflowでpending保存を試みるが、強制中断や保存push失敗時の永続化と厳密な一度だけの配信は保証しない。旧漫画の停止設定も維持する。
 
 ## 配信
 
@@ -16,8 +16,8 @@ captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュ�
 - **実測レーン**: 公開12時間以上・21日以内から、サイトと同じ`/api/engagement`の実測PVで選ぶ。直近7日PV、当日PV、実際の公開日時の順で比較する。
 - 同じslugは一度しか自動紹介しない。Bufferのscheduled/sentに加え、draft/error/needs_approval/sendingも読み、正規記事URLが残っていればGit台帳の保存失敗後でも復旧して再送を防ぐ。復旧時はproviderのsentAt/dueAtを優先し、まだ送信途中などで両方が無ければcreatedAtから論理枠を推定する。provider時刻が本当に取得不能な場合だけ、重複防止のみ行って現在の論理枠を消費しない。失敗状態を見つけても自動再送しない。独立に実確認したX投稿は同じ台帳の `public_posts` にURL・UTC公開日時・観測日時を保持し、由来やBuffer IDを推測せずslug重複防止と実送信間隔だけに使い、記事の論理枠・Buffer送達件数には数えない。
 - 災害・戦争・武力衝突・テロ・大量死傷事故に該当する記事は自動紹介しない。
-- 親投稿は**タイトル＋短いフック＋画像1枚**。URL・ハッシュタグは付けない。安全な既存`x_share_lead`を短く使い、不適合なら既存summaryを使う。新しいLLM/APIは呼ばず、X重み付き280文字以内に収める。最初の返信には`https://veripsa.com/articles/<slug>/`の直接URLだけを入れ、既存の`utm_source=x&utm_medium=social&utm_campaign=article_auto`と`share_page_url`が選ぶ記事画像版の`image`を保持する。漫画を添付する場合も画像版は記事本体に従い、別ドメインや短縮リンクへ置き換えない。
-- 画像は現本文と再照合済みの既存JPEG、検品済みSVGから既に作られたPNG、承認済み写真、またはowner承認済み記事漫画を使う。ローカル検品・固定Git revision・公開URLからの取得バイトを照合し、取得・検証・添付準備に失敗したら保留する。画像なし本文へのフォールバックはしない。生成・承認・既存画像変更はこの経路で行わない。
+- 本文は、記事に安全な`x_share_lead`があれば**それを先頭の読者向け入口文として使い、見出し＋summaryの定型紹介は省く**。`x_share_lead`は記事単体で意味が通る自然文で、要約の言い換えではなく、読者の生活へ引き寄せる一言、問い、矛盾を一歩だけ強める観察、目に浮かぶ場面などから**その記事に自然な入口を1つだけ選ぶ**。毎回問いかける、「これ5年後の話として書いたんだけど」「正直に言って」等を反復する、といったフォーマット化はしない。運営者本人が体験したと誤認させる一人称の実話風表現、ハッシュタグ、URL、`要約：`等のラベルは入れない。文字数超過・不正なタグ/URL・短すぎる入口文は自動で不採用にし、従来の通常記事`【未発生新聞】`／続報`【続報｜未発生新聞】`＋見出し＋入る場合は既存summaryの短い1行へフォールバックする。どちらの経路でも固定の`#未発生新聞`、最大2個のX向け発見語、追跡付き記事URLを付ける。追加語は「元ニュースが流行っている語」ではなく、**この記事の中心テーマを探す人が実際に入力する語**を使う。特定銘柄は`x_tickers`のCashtag、残りは編集時に確認した`x_tags`を優先する。生の`trend_observation.term`は自動採用しない。trend記事は`trend_bridge.x_discovery_term`と同じ語を`x_tags`または主題銘柄の`x_tickers`へ明示してから候補にする。非trend記事で明示語がない時だけ、**見出し・summaryに実際にある語**から`#ポイ活`、`#タイパ`、`#推し活`等の既知語を保守的に拾う。サイト内`tags` / `satire_tags`はX発見語の推測元にしない。`#アプリ`、`#SNS`、`#社会`など回遊用カテゴリは流用せず、自然な語がなければ追加しない。`#未発生新聞`は全自動記事紹介で必須とする。毎回の「創作」「架空」「フィクション」定型注記は付けない。
+- 自動画像添付は行わず、リンク先OGPの公開画像を使う。記事URLには `utm_source=x&utm_medium=social&utm_campaign=article_auto` を付け、サイト既存の匿名・粗粒度な流入計測でX経由を取りこぼしにくくする。完全な参照URLや個人情報は保存しない。
 
 ## 発行本数との関係
 
@@ -25,7 +25,7 @@ captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュ�
 
 ## 改善ループ
 
-X文面は投稿ごとに勝ち型を固定しない。新規記録の`copy_mode`は`title_hook_image_thread`。送信前に既存`state.json.queued`または`comic_posts`へ親本文・返信URL・画像SHA/固定URL・記事指紋を束ねたintentを保存し、受付後に同じBuffer IDへ結び付ける。既存の`reader_lead` / `headline_summary` / `comic_caption`記録は変更せず、欠けた指紋も推測で埋めない。
+X文面は投稿ごとに勝ち型を固定しない。送信時に`state.json`へ実際に使った`copy_mode`（`reader_lead` / `headline_summary` / `comic_caption`）と既存の本文指紋・slug・論理枠を残し、後から「どの文面で送ったか」を再現できるようにする。既存記録に`copy_mode`が無い場合は推測で埋めない。
 
 日次の監視では、実公開を確認できた記事について実際の投稿文、`copy_mode`、公開時刻、取得できるX公開反応、サイト側の`x_arrivals`・`page_views_per_hour`・`continuation_share`を照合する。未取得の反応を0にせず、1投稿だけの好反応・不調で文面規則を書き換えない。日次は「入口が要約へ戻っていないか」「問いかけ等が反復していないか」「記事内容と入口がずれていないか」を観察し、明確な回帰だけ修復する。
 
@@ -46,6 +46,6 @@ X文面は投稿ごとに勝ち型を固定しない。新規記録の`copy_mode
 
 `x-delivery-audit.yml`は各論理枠の約30分後（09:35〜21:35）と23:45 JSTに`article-picks/state.json`の直近7日分を読み、保存済みBuffer IDと正規記事URLを照合する。送信済みの確認記録は元の観測日時を保持して再利用し、未確認IDだけを1回最大3件直接読む。アカウント探索や全投稿一覧の取得を監査ごとに繰り返さない。sending/scheduledは15分、その他の未確認・エラーは6時間以内の同一照会を抑制し、読取予算で後回しにしたIDは次回へ渡す。再利用したsentは過去の送達証拠であり、現在のXページ存在確認ではない。draft/error/needs_approvalはdelivery problemとして残し、sendingはcreatedAt等から15分以内なら正常な送信中として分離、15分を超えて残る場合だけdelivery problemに上げる。Bufferが`error`を返した場合は表示用`error.message`とHTTPSの`supportUrl`だけを最大500文字で証拠に残し、内部用`rawError`は取得・保存しない。定時起動の欠落に備え、21:00〜23:59 JSTの`content/articles.json`公開pushでも同じ読み取り専用監査を補助起動する。昼間の記事公開push自身は監査のprovider読み取りをしない。GitHubが定時監査を取りこぼしても、記事投稿workflowの**同一リポジトリ・mainでの完了**を補助トリガーとして監査を実行する（PR・fork由来は除外）。これは投稿処理の完了後に保存済みIDを照会する読み取り専用の補助経路であり、新規送信・再送・旧投稿削除はしない。結果は既存の`article-picks/delivery.json`へ保存する。429を受けたらその実行の残りの照会を止め、取得できた`Retry-After`の解除時刻を同じファイルへ保存する。投稿・監査ともその時刻まではBufferへ接続せず、制限中を成功にしない。解除時刻が返らなければ復旧時刻は未確認のまま扱う。再送・予約編集・X投稿は行わない。
 
-`createPost`成功応答のID・status・時刻・externalLink等は存在する範囲で保存する。親と返信は[公式の`metadata.twitter.thread`](https://developers.buffer.com/examples/create-threaded-post.html)の2要素を1回で作り、画像は`thread[0].assets`だけに添付する。復旧・監査も親/返信本文と画像sourceを同じ受付IDで照合する。返信が欠け、元intentも失われた場合は、再現した親本文や既知repoの固定画像sourceから保守的に再送を止める。元intentが失われた場合はproviderの本文・画像sourceだけを観測証拠として残し、元画像SHAは創作しない。受付・親のsent・スレッド構成一致は返信のX実公開完了を意味しない。返信個別IDがないため未確認を明記し、部分状態・error・sending・不明な受付を自動再送しない。
+`state.json`に記事slug、Buffer受理ID、本文指紋、選定根拠、必要なPV期間、`slot_jst`、`submission_mode: shareNow`に加え、Bufferが同じ`createPost`成功応答で返した初期`status`・`createdAt`・`sentAt`・`externalLink`・`sharedNow`・`shareMode`を存在する範囲で保存する。移行前の受理記録は`queued_at_utc`から論理枠を推定する。Bufferの即時送信受付はX実公開の独立確認ではないため、provider上のsentとX実公開を分けて確認し、未確認の公開や反応を0扱いしない。台帳を削除して同じ記事を再送しない。
 
 停止は`article-picks/config.json.enabled: false`だけで行う。旧自動レーンは停止状態を維持し、本人の明示的な再開依頼なしに有効化しない。

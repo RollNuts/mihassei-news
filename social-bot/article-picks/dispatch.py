@@ -24,9 +24,6 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from publish import (choose_x_channel, list_existing, queue_one, ready_article_comic,
                      comic_publication_text, ComicUnavailable)  # noqa: E402
 from article_comics import approved_comic_asset, valid_caption, COMIC_PATH
-from article_thread import (prepare_article_thread, ArticleImageUnavailable, validate_thread,
-                            thread_digest, digest, post_texts, thread_items, remote_thread_mismatch,
-                            parent_text as thread_parent_text, image_sources, image_article_slugs, TRACKING_QUERY)
 from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length, x_share_lead  # noqa: E402
 from editorial_copy import reader_copy  # noqa: E402
 from generated_photos import share_page_url  # noqa: E402
@@ -40,6 +37,7 @@ ARTICLE_URL = re.compile(
 PUBLIC_POST_URL = re.compile(r"https://x\.com/(?i:Veripsa)/status/[1-9][0-9]*\Z")
 TEXT_PREFIX = "【未発生新聞】"
 BRAND_HASHTAG = "#未発生新聞"
+TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
 METRIC_FIELDS = ("last7DaysPageViews", "todayPageViews")
 METRICS_URL = "https://veripsa.com/api/engagement"
 JST = timezone(timedelta(hours=9))
@@ -154,13 +152,7 @@ def validate_state(state: dict) -> None:
     for kind, slug, entry in promotion_records(state):
         if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug) or not isinstance(entry, dict):
             raise ValueError("Unsafe article ID in permanent post ledger")
-        thread = entry.get("article_thread")
-        if thread is not None:
-            validate_thread(thread, slug)
-            if (entry.get("thread_sha256") != thread_digest(thread)
-                    or entry.get("text_sha256") != digest(thread["parent_text"])):
-                raise ValueError("Invalid saved article thread fingerprint")
-        pending = (kind == "comic_posts" or thread is not None) and entry.get("submission_pending") is True
+        pending = kind == "comic_posts" and entry.get("submission_pending") is True
         if (not isinstance(entry.get("buffer_id"), str)
                 or (not entry["buffer_id"] and not pending)):
             raise ValueError("Incomplete Buffer ID in permanent post ledger")
@@ -173,8 +165,8 @@ def validate_state(state: dict) -> None:
                     for key in ("article_sha256", "image_sha256", "caption_sha256"))
                     or not valid_caption(asset.get("caption"), asset.get("caption_sha256"))
                     or not COMIC_PATH.fullmatch(str(asset.get("path", "")))
-                    or (thread is None and hashlib.sha256(comic_publication_text({"slug": slug}, asset).encode("utf-8")).hexdigest()
-                        != entry["text_sha256"])):
+                    or hashlib.sha256(comic_publication_text({"slug": slug}, asset).encode("utf-8")).hexdigest()
+                    != entry["text_sha256"]):
                 raise ValueError("Invalid comic work binding")
         stamp = entry.get("queued_at_utc")
         if not isinstance(stamp, str):
@@ -354,8 +346,8 @@ def buffer_delivery_spacing_hold(existing: list[dict], state: dict,
         return public_hold
     accepted_sent_by_id = {}
     for kind, _slug, entry in promotion_records(state):
-        if entry.get("submission_pending") is True:
-            return "unverified_comic_submission" if kind == "comic_posts" else "unverified_article_submission"
+        if kind == "comic_posts" and entry.get("submission_pending") is True:
+            return "unverified_comic_submission"
         sent = provider_instant(entry.get("buffer_sent_at_at_accept"))
         if sent is not None:
             accepted_sent_by_id[entry["buffer_id"]] = sent
@@ -408,7 +400,7 @@ def initial_provider_error_evidence(post: dict) -> dict:
 
 
 def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
-                        known_slugs: set[str], comic_texts_to_ignore=(), parent_slugs=None) -> list[str]:
+                        known_slugs: set[str], comic_texts_to_ignore=()) -> list[str]:
     """Reserve remote article URLs without stealing the current logical slot.
 
     Recovery can happen long after Buffer accepted or sent the post. Attribute
@@ -430,12 +422,7 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
         if (post_id in comic_ids or hashlib.sha256((item.get("text", "") or "").encode("utf-8")).hexdigest()
                 in comic_texts):
             continue
-        url_slugs = article_slug_in_text("\n".join(post_texts(item)))
-        observed_slugs = url_slugs | image_article_slugs(item)
-        if parent_slugs:
-            for text in post_texts(item):
-                observed_slugs.update(parent_slugs.get(digest(text), set()))
-        for slug in observed_slugs & known_slugs:
+        for slug in article_slug_in_text(item.get("text", "")) & known_slugs:
             if slug not in state["queued"]:
                 recovered_entry = {
                     "buffer_id": post_id,
@@ -464,14 +451,6 @@ def recover_from_buffer(state: dict, existing: list[dict], now: datetime,
                     observed.astimezone(timezone.utc).isoformat()
                     if observed is not None else None
                 )
-                if slug not in url_slugs:
-                    recovered_entry["recovery_binding"] = "observed_parent_or_fixed_image_source"
-                    recovered_entry["thread_delivery"] = "unverified"
-                if thread_items(item):
-                    # No saved intent means no claim about original image bytes.
-                    # Preserve provider text/asset observations on this same ID.
-                    recovered_entry["buffer_thread_at_recovery"] = thread_items(item)
-                    recovered_entry["thread_delivery"] = "unverified"
                 state["queued"][slug] = recovered_entry
                 recovered.append(slug)
     return recovered
@@ -796,20 +775,10 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
         if isinstance(slug, str) and SAFE_SLUG.fullmatch(slug)
         and isinstance(review, dict) and valid_caption(review.get("caption"), review.get("caption_sha256"))
     }
-    parent_slugs = {}
-    for article in articles:
-        try:
-            review = configured.get(article["slug"])
-            if isinstance(review, dict) and valid_caption(review.get("caption"), review.get("caption_sha256")):
-                comic_texts.add(digest(thread_parent_text(article, review["caption"])))
-            elif article["slug"] not in configured:
-                parent_slugs.setdefault(digest(thread_parent_text(article)), set()).add(article["slug"])
-        except (ValueError, TypeError, KeyError):
-            continue
-    recover_from_buffer(state, existing, now, known, comic_texts, parent_slugs)
+    recover_from_buffer(state, existing, now, known, comic_texts)
     queued = [p for p in existing if p.get("status") == "scheduled"]
     remote_slugs = set().union(
-        *(article_slug_in_text("\n".join(post_texts(p))) for p in existing
+        *(article_slug_in_text(p.get("text", "")) for p in existing
           if p.get("status") in RECOVERABLE_BUFFER_STATUSES)
     ) if existing else set()
     remote_slugs.update(configured)
@@ -871,29 +840,6 @@ def add_provider_receipt(entry, post):
         if post.get(key) is not None:
             entry[target] = post[key]
     entry.update(initial_provider_error_evidence(post))
-    if entry.get("article_thread") is not None:
-        entry["buffer_thread_match_at_accept"] = remote_thread_mismatch(post, entry["article_thread"]) or "matched"
-        entry["thread_delivery"] = "unverified"  # No individual X reply delivery IDs in Buffer's schema.
-
-
-def recover_article_threads(state, existing, now):
-    """A durable exact intent may recover one receipt; never resend a partial thread."""
-    known_ids = {entry.get("buffer_id") for _kind, _slug, entry in promotion_records(state) if entry.get("buffer_id")}
-    for _kind, _slug, entry in promotion_records(state):
-        thread = entry.get("article_thread")
-        if thread is None or not entry.get("submission_pending"):
-            continue
-        attempted = provider_instant(entry.get("queued_at_utc"))
-        matches = [post for post in existing
-                   if isinstance(post, dict) and post.get("status") in RECOVERABLE_BUFFER_STATUSES
-                   and isinstance(post.get("id"), str) and post["id"] and post["id"] not in known_ids
-                   and remote_thread_mismatch(post, thread) is None
-                   and attempted is not None and provider_instant(post.get("createdAt")) is not None
-                   and attempted <= provider_instant(post["createdAt"]) <= now]
-        if len(matches) == 1:
-            entry.update(buffer_id=matches[0]["id"], submission_pending=False)
-            add_provider_receipt(entry, matches[0])
-            known_ids.add(matches[0]["id"])
 
 
 def recover_comic_posts(state, existing, now, candidates=()):
@@ -905,8 +851,7 @@ def recover_comic_posts(state, existing, now, candidates=()):
     """
     normal_ids = {entry.get("buffer_id") for entry in state["queued"].values()}
     for _slug, entry in state.get("comic_posts", {}).items():
-        if (entry.get("article_thread") is not None or not entry.get("submission_pending")
-                or entry.get("source") == "comic_recovery_unverified"):
+        if not entry.get("submission_pending") or entry.get("source") == "comic_recovery_unverified":
             continue
         attempted = provider_instant(entry.get("queued_at_utc"))
         matches = [post for post in existing
@@ -924,25 +869,11 @@ def recover_comic_posts(state, existing, now, candidates=()):
         if slug in state.get("comic_posts", {}):
             continue
         text = comic_publication_text(article, asset)
-        parent = thread_parent_text(article, asset["caption"])
-        # A provider thread can have been recovered into ordinary queued after
-        # Git lost the comic intent. Its fixed image source / deterministic
-        # parent still forbids resending the same comic, including partials.
-        observations = [post for post in existing
-                        if isinstance(post, dict) and post.get("status") in RECOVERABLE_BUFFER_STATUSES
-                        and isinstance(post.get("id"), str) and post["id"]
-                        and ((post["id"] not in normal_ids and post.get("text") == text)
-                             or parent in post_texts(post)
-                             or any(re.fullmatch(r"https://raw\.githubusercontent\.com/RollNuts/mihassei-news/[0-9a-f]{40}/" + re.escape(asset["path"]), source)
-                                    for source in image_sources(post)))]
-        if observations:
+        if any(isinstance(post, dict) and post.get("status") in RECOVERABLE_BUFFER_STATUSES
+               and post.get("id") not in normal_ids and post.get("text") == text for post in existing):
             state.setdefault("comic_posts", {})[slug] = {
                 "buffer_id": "", "submission_pending": True,
                 "queued_at_utc": now.isoformat(), "source": "comic_recovery_unverified",
-                "observed_buffer_ids": sorted({post["id"] for post in observations}),
-                "expected_parent_sha256": digest(parent),
-                "observed_parent_sha256_by_buffer_id": {post["id"]: digest(post["text"]) for post in observations
-                                                        if isinstance(post.get("text"), str)},
                 "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
                 "comic_attachment": {key: value for key, value in asset.items() if key != "text"},
             }
@@ -1069,7 +1000,7 @@ def main() -> int:
     fresh_candidates = [a for a in eligible_fresh_articles(articles, now, config) if a["slug"] not in configured_comics]
     comics = comic_candidates(articles, state, config, now)
     if (not candidates and not fresh_candidates and not comics
-            and not any(entry.get("submission_pending") for _kind, _slug, entry in promotion_records(state))):
+            and not any(entry.get("submission_pending") for entry in state.get("comic_posts", {}).values())):
         print("No fresh or measured-interest articles; no Buffer write.")
         return report_outcome("no_candidates")
     token = os.environ.get("BUFFER_API_KEY", "").strip()
@@ -1080,7 +1011,6 @@ def main() -> int:
         token, org_id, channel_id,
         include_due_at=True, include_unsettled=True,
     )
-    recover_article_threads(state, existing, now)
     recover_comic_posts(state, existing, now)
     # First reconcile Buffer and evaluate fresh posts without depending on
     # mature-article PV. A stale/unavailable PV API must not block a valid
@@ -1120,58 +1050,51 @@ def main() -> int:
     if eligible is None:
         print("No eligible article for this check; Buffer scheduled:", scheduled)
         return report_outcome("no_eligible")
-    post = {"kind": "article", "id": "article-" + eligible["slug"], "article": eligible}
+    text = selected_comic[2]["text"] if selected_comic else publication_text(eligible)
+    post = {"kind": "article", "id": "article-" + eligible["slug"], "text": text}
     if selected_comic:
-        post.update(comic_approval=selected_comic[1], comic_required=True)
-    try:
-        thread = prepare_article_thread(eligible, selected_comic[1] if selected_comic else None, root=ROOT)
-    except ArticleImageUnavailable:
-        print("Required parent image unavailable; no Buffer POST.")
-        return report_outcome("no_eligible")
-    post.update(article_thread=thread, text=thread["parent_text"])
-    record_kind = "comic_posts" if selected_comic else "queued"
-    intent = {
-        "buffer_id": "", "submission_pending": True, "queued_at_utc": now.isoformat(),
-        "slot_jst": promotion_slot(now).isoformat(), "submission_mode": "shareNow",
-        "source": "approved_comic" if selected_comic else (
-            "fresh_article" if evidence is None else "verified_article_page_views"),
-        "text_sha256": digest(thread["parent_text"]), "article_thread": thread,
-        "thread_sha256": thread_digest(thread), "thread_delivery": "unverified",
-    }
-    if selected_comic:
-        intent["comic_attachment"] = {key: value for key, value in selected_comic[2].items() if key != "text"}
-    state.setdefault(record_kind, {})[eligible["slug"]] = intent
-    save_state(state)  # A failed durable intent save forbids any provider mutation.
+        post.update(article=eligible, comic_approval=selected_comic[1], comic_required=True)
+        state.setdefault("comic_posts", {})[eligible["slug"]] = {
+            "buffer_id": "", "submission_pending": True, "queued_at_utc": now.isoformat(),
+            "slot_jst": promotion_slot(now).isoformat(), "submission_mode": "shareNow",
+            "source": "approved_comic", "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            "comic_attachment": {key: value for key, value in selected_comic[2].items() if key != "text"},
+        }
+        save_state(state)  # If this fails, no provider mutation is permitted.
     try:
         buffer_receipt = queue_one(token, channel_id, post, mode="shareNow", return_post=True)
-    except (ArticleImageUnavailable, ComicUnavailable, RuntimeError) as exc:
-        if isinstance(exc, (ArticleImageUnavailable, ComicUnavailable)) or str(exc).startswith("Buffer budget hold"):
-            del state[record_kind][eligible["slug"]]
+    except (ComicUnavailable, RuntimeError) as exc:
+        if selected_comic and (isinstance(exc, ComicUnavailable) or str(exc).startswith("Buffer budget hold")):
+            del state["comic_posts"][eligible["slug"]]
             save_state(state)
-            if isinstance(exc, (ArticleImageUnavailable, ComicUnavailable)):
+            if isinstance(exc, ComicUnavailable):
                 return report_outcome("no_eligible")
         raise  # Unknown acceptance remains pending; never automatically retry.
-    if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str) or not buffer_receipt["id"]:
+    if not isinstance(buffer_receipt, dict) or not isinstance(buffer_receipt.get("id"), str):
         raise RuntimeError("Buffer accepted no auditable article receipt")
-    if buffer_receipt.get("_article_thread", thread) != thread:
-        raise RuntimeError("Article acceptance differs from its durable intent; pending review")
     comic = buffer_receipt.get("_article_comic")
     if selected_comic and not isinstance(comic, dict):
         raise RuntimeError("Comic acceptance lacks exact work evidence; pending review")
+    if isinstance(comic, dict):
+        text = comic["text"]
     buffer_id = buffer_receipt["id"]
     slot = promotion_slot(now)
     if slot is None:
         raise RuntimeError("No logical article promotion slot is active")
     entry = {
-        **intent, "submission_pending": False,
         "buffer_id": buffer_id,
         "queued_at_utc": now.isoformat(),
         "slot_jst": slot.isoformat(),
         "submission_mode": "shareNow",
         "source": "approved_comic" if selected_comic else (
             "fresh_article" if evidence is None else "verified_article_page_views"),
-        "copy_mode": "title_hook_image_thread",
-        "text_sha256": digest(thread["parent_text"]),
+        "copy_mode": (
+            "comic_caption" if isinstance(comic, dict) else (
+                "headline_summary" if text.startswith((TEXT_PREFIX, "【続報｜未発生新聞】"))
+                else "reader_lead"
+            )
+        ),
+        "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "published_at": eligible["published_at"],
         "primary_topic": primary_topic(eligible) or None,
     }
@@ -1182,7 +1105,7 @@ def main() -> int:
         entry["metrics_at_queue"] = {**window,
                                      "last_7_days_page_views": evidence["last7DaysPageViews"],
                                      "today_page_views": evidence["todayPageViews"]}
-    state.setdefault(record_kind, {})[eligible["slug"]] = entry
+    state.setdefault("comic_posts" if selected_comic else "queued", {})[eligible["slug"]] = entry
     save_state(state)
     print("Article accepted by Buffer for immediate send (X publication still unverified):",
           eligible["slug"], buffer_id, "slot_jst=", entry["slot_jst"],

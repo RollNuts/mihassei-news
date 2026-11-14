@@ -14,7 +14,7 @@ from generated_photos import article_fingerprint, review_timestamp, SAFE_SLUG, S
 MAX_COMIC_BYTES = 4_000_000
 MAX_CAPTION_CHARACTERS = 100
 COMIC_PATH = re.compile(r"social-bot/assets/article-comic-[a-z0-9]+(?:-[a-z0-9]+)*\.png\Z")
-CAPTION_LINK = re.compile(r"[a-z][a-z0-9+.-]*://|www\.|[a-z0-9-]+\.[a-z]{2,}(?:(?a:\b)|/)", re.I)
+CAPTION_LINK = re.compile(r"[a-z][a-z0-9+.-]*://|www\.|[a-z0-9-]+\.[a-z]{2,}(?:\b|/)", re.I)
 
 
 def valid_caption(caption, digest):
