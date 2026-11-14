@@ -17,28 +17,35 @@ class SerialTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         ensure_site_build()
-        cls.data = json.loads((ROOT / "content" / "serials.json").read_text(encoding="utf-8"))
+        from scripts.serials import load_serials
+        cls.data = load_serials(ROOT)
 
     def test_two_distinct_editorial_types(self):
         from scripts.serials import load_serials
         series = load_serials(ROOT)
-        self.assertEqual({s["kind"] for s in series}, {"fiction", "analysis"})
+        self.assertEqual({s["kind"] for s in series}, {"analysis"})
         self.assertEqual(len({s["slug"] for s in series}), len(series))
-        self.assertEqual(len(series), 2)
+        self.assertEqual(len(series), 1)
+        private = load_serials(ROOT, include_withdrawn=True)
+        self.assertEqual({s["kind"] for s in private}, {"fiction", "analysis"})
+        self.assertEqual(len(private), 2)
 
     def test_hub_and_navigation_are_readable_without_js(self):
         home = (ROOT / "dist/index.html").read_text(encoding="utf-8")
         hub = (ROOT / "dist/serials/index.html").read_text(encoding="utf-8")
-        self.assertIn('href="/serials/"', home)
+        self.assertIn('href="/serials/market-lab/"', home)
         self.assertIn('class="serials-feature"', home)
         self.assertIn('class="serial-grid"', home)
         self.assertIn('href="/assets/newspaper.css?v=', hub)
         self.assertIn("/* SOURCE serials.css */", (ROOT/"dist/assets/newspaper.css").read_text(encoding="utf-8"))
         self.assertIn("市場", hub)
-        self.assertIn("推理", hub)
+        self.assertNotIn("未発生事件簿", hub)
         for s in self.data:
             self.assertIn('href="/serials/'+s["slug"]+'/"', hub)
-            self.assertIn(s["title"], home)
+            if s["slug"] == "case-files":
+                self.assertNotIn('data-series-id="case-files"', home)
+            else:
+                self.assertIn(s["title"], home)
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
             self.assertIn("公開済み "+str(len(s["episodes"]))+("話" if s["kind"]=="fiction" else "回"), series_html)
@@ -49,12 +56,13 @@ class SerialTests(unittest.TestCase):
         from scripts.serials import episode_label, render_social_preview
         from pathlib import Path
 
-        mystery=next(x for x in self.data if x["kind"]=="fiction")
+        from scripts.serials import load_serials
+        mystery=next(x for x in load_serials(ROOT, include_withdrawn=True) if x["kind"]=="fiction")
         market=next(x for x in self.data if x["kind"]=="analysis")
         self.assertEqual(episode_label(mystery,2),"第2話")
         self.assertEqual(episode_label(market,2),"第2回")
 
-        for serial,expected in ((mystery,"第1話"),(market,"第1回")):
+        for serial,expected in ((market,"第1回"),):
             html=(ROOT/"dist/serials"/serial["slug"]/serial["episodes"][0]["slug"]/"index.html").read_text(encoding="utf-8")
             self.assertIn(expected,html)
             from urllib.parse import urlsplit, parse_qs
@@ -77,7 +85,7 @@ class SerialTests(unittest.TestCase):
             def save(self,*args):
                 pass
 
-        for serial in (mystery,market):
+        for serial in (market,):
             canvas=RecordingCanvas()
             with patch("scripts.serials.Canvas",return_value=canvas):
                 render_social_preview(serial,Path("/tmp/ignored-serial-preview.png"),episode={"number":2})
@@ -102,7 +110,7 @@ class SerialTests(unittest.TestCase):
                 self.assertIn('href="/serials/'+s["slug"]+'/"', page)
                 self.assertIn('src="/serials/'+s["slug"]+'/cover.svg"', page)
                 if e is s["episodes"][-1]:
-                    self.assertIn("次回は未公開", page)
+                    self.assertIn("連載終了" if s["slug"] == "case-files" else "次回は未公開", page)
                 else:
                     next_ep=s["episodes"][s["episodes"].index(e)+1]
                     self.assertIn('href="/serials/'+s["slug"]+'/'+next_ep["slug"]+'/"',page)
@@ -129,16 +137,10 @@ class SerialTests(unittest.TestCase):
         self.assertIn("株式市場のシナリオ分析", page)
         self.assertNotIn("架空ニュースはすべて創作です", page)
 
-    def test_mystery_clues_are_fair_and_no_fake_episodes(self):
-        s = next(x for x in self.data if x["kind"] == "fiction")
-        e = s["episodes"][0]
-        page = (ROOT / "dist/serials" / s["slug"] / e["slug"] / "index.html").read_text(encoding="utf-8")
-        self.assertIn("読了後に伏線を振り返る", page)
-        self.assertIn('<details class="serial-clues">', page)
-        self.assertIn("考えるヒント", page)
-        for clue in e["clues"]:
-            self.assertIn(clue, page)
-        self.assertIn("すべて創作", page)
+    def test_withdrawn_mystery_has_no_public_episode_feed_or_artwork(self):
+        self.assertFalse((ROOT / "dist/serials/case-files").exists())
+        self.assertFalse((ROOT / "dist/feeds/series-case-files.xml").exists())
+        self.assertFalse(list((ROOT / "dist/og/serials").glob("case-files*.png")))
 
     def test_og_and_site_map_include_live_serial_routes_only(self):
         from scripts.serials import serial_routes
@@ -233,7 +235,7 @@ class SerialTests(unittest.TestCase):
         about = (ROOT / "dist/about/index.html").read_text(encoding="utf-8")
         policy = (ROOT / "dist/editorial/index.html").read_text(encoding="utf-8")
         for page in (about, policy):
-            self.assertIn("推理小説", page)
+            self.assertNotIn("推理小説", page)
             self.assertIn("市場", page)
             self.assertIn("創作", page)
         css = (ROOT / "dist/assets/serials.css").read_text(encoding="utf-8")
