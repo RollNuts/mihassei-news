@@ -246,6 +246,7 @@ class CasterCompositionTests(unittest.TestCase):
                 Path(argv[-1]).write_bytes(b"edited movie"*128)
             with patch.object(compose,"runner_gate",return_value=root.resolve()), \
                  patch.object(compose.RemoteStopGate,"check"),patch.object(compose,"FONT",font), \
+                 patch.object(compose.shutil,"which",side_effect=lambda name: "/mock/"+name), \
                  patch.object(compose,"current_assets",return_value=({},photo,{})), \
                  patch.object(compose,"check_fresh_main",return_value="a"*40), \
                  patch.object(compose,"retained_composition",return_value=(source,{},provenance)), \
