@@ -19,12 +19,12 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("風刺とユーモアの新聞", page)
         self.assertIn("今のニュースや身近な出来事", page)
         self.assertIn("5年後にふくらませて楽しむ", page)
-        self.assertIn("ニュース記事と推理小説はフィクションです", page)
+        self.assertIn("ニュース記事はフィクションです", page)
         self.assertIn("現実の公開資料に基づく市場分析", page)
 
     def test_policy_preserves_separation_from_source_backed_market_analysis(self):
         page = editorial_policy()
-        self.assertIn("ニュース記事と「未発生事件簿」はフィクションです", page)
+        self.assertIn("ニュース記事はフィクションです", page)
         self.assertIn("投資助言や売買の勧誘ではありません", page)
         self.assertIn("「未来相場観測室」は現実の公開資料に基づく市場分析", page)
         self.assertIn("出典・予測日・検証条件を示します", page)
