@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "8dd05302166ff983d1af3b3a3a18b1419296b315a42cba3dc9b1f1b5db97a363",
-  "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba-background-only-study",
-  "observed_at": "2026-11-14T12:23:35.313Z",
+  "candidate_identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
+  "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
+  "observed_at": "2026-11-14T12:40:53.828Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,11 +17,11 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "acbcbfe4aa705591695209d5bde4ca2028b58dff",
+    "commit_sha": "af4bdd990d65fe98b7c3b15998a0c73482999038",
     "protected_hashes": {
-      "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
-      "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
-      "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+      "content/articles.json": "8439c9197a4eac431340f59344665dca28f8022b076a58b59a20fd107e72dde2",
+      "assets/generated/manifest.json": "5c771ca60d1916c489fc1620e2c59dcbb58772fa60e69901301b84c5ac9e2f9c",
+      "content/visual_reviews.json": "3feb524ef9b81d79da7e2d72238267806dd52c2395fbdade63390f201173117a"
     }
   }
 }
