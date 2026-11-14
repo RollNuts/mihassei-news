@@ -655,7 +655,8 @@
       const label=metric.pageViews===null ? subject+"のPVは未計測" :
         subject+"のページ表示回数 "+Intl.NumberFormat("ja-JP").format(metric.pageViews)+"PV";
       node.setAttribute("aria-label",label);
-      node.setAttribute("title",pvStartLabel ? pvStartLabel+"からの表示回数" : "計測開始後の表示回数");
+      node.setAttribute("title",slug.startsWith("photo-issue:") ? "この号の計測開始後の表示回数" :
+        pvStartLabel ? pvStartLabel+"からの表示回数" : "計測開始後の表示回数");
     });
   }
 
