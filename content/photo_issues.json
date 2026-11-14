@@ -19,6 +19,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "体験ロケ担当レポーター兼ファッションモデル",
+        "casting_specialty": "現地ロケで遊びや衣服の変化を体験し、人とのやり取りを伝える。",
         "personality": "少しマイペースで、人とのやり取りを楽しむ。",
         "voice": "柔らかな短い文。体験から話し、最後に小さな本音を置く。",
         "likes": [
@@ -97,6 +99,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "報道アナウンサー兼キャスター",
+        "casting_specialty": "報道番組の進行と取材。制度や産業の変化を現場の具体例で伝える。",
         "personality": "落ち着いた観察役だが、休日には抜けたところがある。",
         "voice": "端正な文章に、ふと仕事を忘れた率直なひとことが混じる。",
         "likes": [
@@ -132,6 +136,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "俳優兼モデル",
+        "casting_specialty": "ドラマや映画への出演、衣服や街の変化を静かな観察から描く企画。",
         "personality": "静かで観察好き。見た目はクールだが好きなものには素直。",
         "voice": "短く具体的で、少し乾いたユーモア。説教や冷笑にしない。",
         "likes": [
@@ -171,6 +177,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "体験型バラエティアイドル",
+        "casting_specialty": "体を動かす体験ロケや実験企画。失敗も含めて動作と結果を伝える。",
         "personality": "好奇心でまず体を動かす。失敗も楽しんで話す。",
         "voice": "動作から始める率直な文章。元気でも過剰な感嘆符を並べない。",
         "likes": [
@@ -206,6 +214,8 @@
       "character": {
         "version": 1,
         "first_person": "わたし",
+        "occupation": "旅・衣服担当モデル兼リポーター",
+        "casting_specialty": "旅先の居心地や衣服の温度・手触りを、落ち着いて確かめる企画。",
         "personality": "穏やかで気配り上手。居心地のよさには意外と頑固。",
         "voice": "ゆっくりした語り口。温度や手触りを身近な言葉で語る。",
         "likes": [
@@ -241,6 +251,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "歌とダンスのアイドル",
+        "casting_specialty": "架空の音楽番組やステージでの歌とダンス、舞台衣装を使った表現。",
         "personality": "明るく人懐っこい。小さな挑戦にも負けず嫌い。",
         "voice": "会話に近い軽快な文。喜びも失敗も隠さず、決め台詞は連発しない。",
         "likes": [
@@ -280,6 +292,8 @@
       "character": {
         "version": 1,
         "first_person": "私",
+        "occupation": "俳優兼ファッション企画ナビゲーター",
+        "casting_specialty": "演技と美術・装いをつなぐ企画。配色や素材の組合せを案内する。",
         "personality": "美意識があり、古いものと新しいものを合わせるのが好き。",
         "voice": "上品だが気取らず、自分のこだわりを少し笑える言葉で話す。",
         "likes": [
