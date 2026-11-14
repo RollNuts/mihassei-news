@@ -18,6 +18,8 @@ from article_comics import approved_comic_asset
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 import buffer_budget
+from article_thread import (prepare_article_thread, ArticleImageUnavailable, THREAD_FIELDS,
+                            is_article_reply_url, validate_thread)
 
 HERE = Path(__file__).resolve().parent
 QUALITY_GATE = HERE / "ip" / "publication_quality_gate.json"
@@ -171,7 +173,7 @@ def list_existing(token, orgid, channelid, include_due_at=False,
     """
     if type(include_due_at) is not bool or type(include_unsettled) is not bool:
         raise ValueError("Buffer listing flags must be boolean")
-    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl }"
+    fields = ("id text status createdAt dueAt sentAt externalLink sharedNow shareMode error { message supportUrl } " + THREAD_FIELDS
               if include_due_at else "id text status")
     since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
 
@@ -278,6 +280,8 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
             and (
                 "https://veripsa.com/articles/" + article_slug + "/"
                 in str(post.get("text", ""))
+                or (isinstance(post.get("article_thread"), dict)
+                    and is_article_reply_url(post["article_thread"].get("reply_text"), article_slug, allow_legacy=True))
             )
         )
         if not (original_image or article_text):
@@ -285,22 +289,42 @@ def queue_one(token, channelid, post, mode="addToQueue", due_at_utc=None, return
                 "Immediate send is reserved for reviewed experiment images "
                 "or article promotion"
             )
+    if post.get("kind") == "article":
+        article = post.get("article")
+        if not isinstance(article, dict) or post.get("id") != "article-" + str(article.get("slug", "")):
+            raise ArticleImageUnavailable("Article and required parent image are missing")
+        if post.get("comic_required") is True and not isinstance(post.get("comic_approval"), dict):
+            raise ComicUnavailable("Required reviewed comic approval is missing; nothing submitted")
+        # Revalidate/download immediately before the mutation. A changed image
+        # or a failed download cannot turn the durable intent into text-only X.
+        thread = prepare_article_thread(article, post.get("comic_approval"), root=HERE.parent)
+        if post.get("article_thread") is not None and post["article_thread"] != thread:
+            raise ArticleImageUnavailable("Article thread changed after its submission intent")
+        validate_thread(thread, article["slug"])
+        text, image_url = thread["parent_text"], thread["image"]["url"]
+        mutation = (
+            "mutation { createPost(input: {text: " + qstring(text)
+            + ", channelId: " + qstring(channelid)
+            + ", schedulingType: automatic, mode: " + mode + due_field
+            + ", metadata: {twitter: {thread: [{text: " + qstring(text)
+            + ", assets: [{image: {url: " + qstring(image_url) + "}}]}, {text: "
+            + qstring(thread["reply_text"]) + ", assets: []}]}}"
+            + "}) { ... on PostActionSuccess { post { id createdAt dueAt status sentAt externalLink sharedNow shareMode error { message supportUrl } "
+            + THREAD_FIELDS + " } } ... on MutationError { message } } }"
+        )
+        result = gql(token, mutation).get("createPost") or {}
+        if not isinstance(result.get("post", {}).get("id"), str) or not result["post"]["id"]:
+            raise RuntimeError("Buffer did not return an auditable article thread receipt: " + str(result.get("message", "unknown")))
+        if return_post:
+            receipt = dict(result["post"])
+            receipt["_article_thread"] = thread
+            if post.get("comic_approval") is not None:
+                receipt["_article_comic"] = approved_comic_asset(article, post["comic_approval"], HERE.parent)
+            return receipt
+        return result["post"]["id"]
     media_url = None
     text = post["text"]
     article_asset = None
-    if post.get("kind") == "article" and "comic_approval" in post:
-        article = post.get("article")
-        if (isinstance(article, dict)
-                and post.get("id") == "article-" + str(article.get("slug", ""))
-                and "https://veripsa.com/articles/" + str(article.get("slug", "")) + "/"
-                in str(post.get("text", ""))):
-            article_asset = ready_article_comic(article, post["comic_approval"])
-        if article_asset is not None:
-            media_url, text = article_asset["url"], article_asset["text"]
-    if post.get("comic_required") is True and article_asset is None:
-        raise ComicUnavailable("Required reviewed comic is unavailable; nothing submitted")
-    # Article comics reuse the same image attachment and mutation as historical
-    # image posts; invalid optional media never blocks an ordinary article.
     if post["kind"] in ("comic", "image"):
         if post["kind"] == "image" and (
             not post.get("id", "").startswith("xexp-") or

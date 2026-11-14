@@ -60,12 +60,24 @@ class ExperimentsTests(unittest.TestCase):
     def test_share_now_is_limited_to_article_lane_or_reviewed_images(self):
         from publish import queue_one
         receipt={"createPost":{"post":{"id":"buf-now","dueAt":None}}}
-        with patch("publish.gql", return_value=receipt) as api:
+        from article_thread import RAW_BASE, ArticleImageUnavailable, TRACKING_QUERY
+        story = {"slug": "clear-story", "title": "明確な記事のタイトル", "summary": "短いフックが入った記事の紹介です。"}
+        thread = {"schema_version": 1, "article_sha256": "a" * 64,
+                  "parent_text": story["title"] + "\n\n" + story["summary"],
+                  "reply_text": "https://veripsa.com/articles/clear-story/" + TRACKING_QUERY,
+                  "image": {"path": "assets/generated/clear-story.jpg", "sha256": "b" * 64,
+                            "revision": "c" * 40, "url": RAW_BASE + "c" * 40 + "/assets/generated/clear-story.jpg"}}
+        with patch("publish.gql", return_value=receipt) as api, \
+             patch("publish.prepare_article_thread", return_value=thread):
             value=queue_one(
                 "secret","X-ID",
-                {"kind":"article","id":"article-clear-story","text":"https://veripsa.com/articles/clear-story/"},
-                mode="shareNow",
+                {"kind":"article","id":"article-clear-story","text":thread["parent_text"],
+                 "article": story, "article_thread": thread}, mode="shareNow",
             )
+        with patch("publish.gql") as no_send, self.assertRaises(ArticleImageUnavailable):
+            queue_one("secret", "X-ID", {"kind":"article", "id":"article-clear-story",
+                      "text":"https://veripsa.com/articles/clear-story/"}, mode="shareNow")
+        no_send.assert_not_called()
         self.assertEqual(value,"buf-now")
         self.assertIn("mode: shareNow", api.call_args.args[1])
         with self.assertRaisesRegex(ValueError,"reserved"):
