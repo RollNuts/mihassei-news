@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
+  "slug": "matchmaking-ai-bios-same-hobbies-handwritten-line",
+  "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+  "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
+  "prompt_sha256": "3d3cc4cbfe279d715aa61b77f450170e08dbc68a1809a2b4783b9decd09803dd",
+  "reserved_at": "2026-11-14T12:48:03.816Z",
+  "baseline": {
+    "commit_sha": "af4bdd990d65fe98b7c3b15998a0c73482999038",
+    "tree_sha": "63732c611960017e43de10c66cf95555262360d5",
+    "protected_hashes": {
+      "content/articles.json": "8439c9197a4eac431340f59344665dca28f8022b076a58b59a20fd107e72dde2",
+      "assets/generated/manifest.json": "5c771ca60d1916c489fc1620e2c59dcbb58772fa60e69901301b84c5ac9e2f9c",
+      "content/visual_reviews.json": "3feb524ef9b81d79da7e2d72238267806dd52c2395fbdade63390f201173117a"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "5921449b0d2dc2f1d19f7cc46fe0a77dabf2bbde",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "2499905e762617fd5f196fce90d41faa7e1e3832ff2fe8c8589e974dc9b3efa4",
+    "observed_at": "2026-11-14T12:47:49.350Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
