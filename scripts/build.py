@@ -900,6 +900,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                   and reviewed_scene_version(article, root=BASE) is not None)
     og_height = 675 if scene_card else 630
     og_size = "" if local_photo else f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="{og_height}">'
+    if photo_issue is not None:
+        cover_image = photo_issue["images"][photo_cover_shot(photo_issue)["id"]]
+        og_size = (f'<meta property="og:image:width" content="{cover_image.get("width", 1200)}">'
+                   f'<meta property="og:image:height" content="{cover_image.get("height", 675)}">')
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
@@ -1167,12 +1171,15 @@ def pv_recommendations(articles, excluded_slug=""):
 
 def gravure_feature_card(articles, photo_issues=()):
     """Offer a published issue, or the existing reviewed beach photo article."""
+    width, height = 1200, 675
     if photo_issues:
         issue = max(photo_issues, key=lambda item: datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")))
         prefix = "/photo/weekly/" + issue["slug"] + "/"
         target, image = prefix, photo_cover_url(issue)
         title, description, alt = issue["title"], issue["summary"], photo_cover_shot(issue)["alt"]
         label, action = f'第{issue["number"]}号', "最新号を読む"
+        cover_image = issue["images"][photo_cover_shot(issue)["id"]]
+        width, height = cover_image.get("width", 1200), cover_image.get("height", 675)
         archive = '<a class="serial-feed-link" href="/photo/weekly/">号一覧を見る ↗</a>'
     else:
         source = next((item for item in articles if item.get("slug") == GRAVURE_SOURCE_SLUG), None)
@@ -1186,7 +1193,7 @@ def gravure_feature_card(articles, photo_issues=()):
         '<article class="serial-card serial-card--fiction gravure-feature-card">'
         f'<a class="serial-card-image" href="{escape(target)}">'
         f'<img class="serial-cover" src="{escape(image)}" alt="{escape(alt)}" '
-        'width="1200" height="675" loading="lazy" decoding="async"></a>'
+        f'width="{width}" height="{height}" loading="lazy" decoding="async"></a>'
         '<div class="serial-card-content"><span class="serial-type">グラビア誌</span>'
         f'<h3><a href="{escape(target)}">{escape(title)}</a></h3>'
         f'<p>{escape(description)}</p><span class="serial-latest">{escape(label)}</span>'

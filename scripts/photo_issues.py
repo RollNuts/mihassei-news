@@ -729,7 +729,10 @@ def generate_photo_rss(issues):
         ET.SubElement(entry, "description").text = issue["summary"]
         ET.SubElement(entry, "enclosure", url=image,
                       length=str(issue["images"][cover["id"]]["bytes"]), type="image/jpeg")
-        ET.SubElement(entry, f"{{{media}}}thumbnail", url=image, width="1200", height="675")
+        cover_image = issue["images"][cover["id"]]
+        ET.SubElement(entry, f"{{{media}}}thumbnail", url=image,
+                      width=str(cover_image.get("width", 1200)),
+                      height=str(cover_image.get("height", 675)))
         ET.SubElement(entry, f"{{{media}}}content", url=image, medium="image", type="image/jpeg")
         ET.SubElement(entry, f"{{{media}}}description", type="plain").text = cover["alt"]
     return ET.tostring(rss, encoding="unicode")

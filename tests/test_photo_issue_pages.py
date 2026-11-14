@@ -127,6 +127,23 @@ class PhotoIssuePageTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "actual JPEG width and height"):
             self.pages.render_photo_issue(value, MODEL, self.layout)
 
+    def test_supplied_cover_uses_actual_dimensions_in_home_og_and_rss(self):
+        from scripts import build, photo_issues
+        from xml.etree import ElementTree as ET
+        value = issue()
+        value["cover_cut_id"] = "02"
+        value["images"]["02"].update(width=1200, height=800, bytes=174039,
+                                      provenance={"kind": "user_supplied_photo"})
+        page = self.pages.render_photo_issue(value, MODEL, build.layout)
+        self.assertIn('property="og:image:type" content="image/jpeg"', page)
+        self.assertIn('property="og:image:width" content="1200"', page)
+        self.assertIn('property="og:image:height" content="800"', page)
+        card = self.parse(build.gravure_feature_card([], [value]))
+        self.assertEqual((card.images[0]["width"], card.images[0]["height"]), ("1200", "800"))
+        feed = ET.fromstring(photo_issues.generate_photo_rss([value]))
+        thumb = feed.find("channel/item/{http://search.yahoo.com/mrss/}thumbnail")
+        self.assertEqual((thumb.get("width"), thumb.get("height")), ("1200", "800"))
+
     def test_selected_cover_leads_the_issue_and_index_without_duplicating_a_photo(self):
         value = issue()
         value["cover_cut_id"] = "04"
