@@ -63,12 +63,14 @@ import re
 from datetime import datetime, timezone
 if __package__:
     from .photo_body_profiles import validate_body_profile, validate_body_reference
+    from .photo_issue_plan import freeze_model_plan, generation_inputs
     from .generated_photos import (MAX_SCENE_BYTES, MAX_ARCHIVE_BYTES, article_fingerprint,
                                    generation_record_fingerprint, accepted_review_matches)
     from .local_scene_photos import archive_bytes
     from .media_policy import jpeg_dimensions
 else:
     from photo_body_profiles import validate_body_profile, validate_body_reference
+    from photo_issue_plan import freeze_model_plan, generation_inputs
     from generated_photos import (MAX_SCENE_BYTES, MAX_ARCHIVE_BYTES, article_fingerprint,
                                  generation_record_fingerprint, accepted_review_matches)
     from local_scene_photos import archive_bytes
@@ -352,6 +354,9 @@ def validate_catalog(data):
                 raise ValueError("Photo cuts must be ordered 01 through 10")
             for key in ("description", "caption", "alt"):
                 _text(shot.get(key), "cut " + key)
+        if any(key in snapshot for key in
+               ("body_profile", "body_profile_sha256", "face_reference", "body_reference")):
+            generation_inputs(issue, "01")
         public_text = [issue["title"], issue["summary"], snapshot["name"], setting["location"], *issue["column"],
                        *(shot[key] for shot in shots for key in ("caption", "alt"))]
         if any(name in text for text in public_text for name in INTERNAL_REFERENCE_NAMES):
@@ -404,6 +409,8 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
         master_source = archive["path"]
     if hashlib.sha256(_local(root, master_source).read_bytes()).hexdigest() != master["sha256"]:
         raise ValueError("Photo model master bytes changed")
+    if "body_profile" in issue["model_snapshot"]:
+        _verify_plan_references(generation_inputs(issue, "01")["references"], root)
     seen_hashes = set()
     published_at = _stamp(issue["published_at"])
     framings, swimwear_count = set(), 0
@@ -499,6 +506,12 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
                 or review.get("cut_id") != cut or _stamp(review.get("reviewed_at")) > now):
             raise ValueError("Photo issue cut has no matching accepted visual review")
         _text(review.get("note"), "visual review note")
+        if "body_profile" in issue["model_snapshot"]:
+            plan = generation_inputs(issue, cut)
+            if (review.get("body_profile_sha256") != plan["body_profile_sha256"]
+                    or provenance.get("body_profile_sha256") != plan["body_profile_sha256"]
+                    or provenance.get("reference_images") != plan["references"]):
+                raise ValueError("Photo issue body plan lacks matching generation/reference/visual review")
         framing = review.get("framing")
         if (type(review.get("swimwear_visible")) is not bool
                 or framing not in ("face", "upper_body", "three_quarter", "full_body", "profile", "wide")):
@@ -622,24 +635,57 @@ def status_report(data):
     return {"schema_version": 1, "verification": "metadata_only", "fully_verified": False, "issues": rows}
 
 
+def _verify_plan_references(references, root):
+    """Verify the exact face/body JPEGs before returning usable generation inputs."""
+    for reference in references:
+        data = _local(root, reference["path"]).read_bytes()
+        if (not 16_000 <= len(data) <= MAX_SCENE_BYTES
+                or hashlib.sha256(data).hexdigest() != reference["sha256"]
+                or jpeg_dimensions(data) is None):
+            raise ValueError("Photo plan reference JPEG hash/format/size mismatch")
+
+
 def main(argv=None):
     import argparse
     parser = argparse.ArgumentParser(description="Read-only weekly-photo metadata status; no generation or build.")
-    parser.add_argument("--status", action="store_true", help="Read local issue metadata only")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--status", action="store_true", help="Read local issue metadata only")
+    mode.add_argument("--model-plan", metavar="MODEL_ID", help="Freeze a prepared model for a new issue")
+    mode.add_argument("--cut-plan", metavar="ISSUE_SLUG", help="Read inputs from a new-format frozen issue")
+    parser.add_argument("--cut", metavar="01..10", help="Required with --cut-plan")
     parser.add_argument("--json", action="store_true", help="Print compact JSON")
     args = parser.parse_args(argv)
-    if not args.status:
-        parser.error("Use --status; this command does not generate or publish")
-    report = status_report(load_photo_issues())
+    if bool(args.cut_plan) != bool(args.cut):
+        parser.error("--cut-plan requires --cut, and --cut is only valid with --cut-plan")
+    data = load_photo_issues()
+    try:
+        if args.model_plan:
+            model = next((model for model in data["models"] if model["id"] == args.model_plan), None)
+            snapshot = freeze_model_plan(model)
+            references = [snapshot["face_reference"], snapshot["body_reference"]]
+            _verify_plan_references(references, ROOT)
+            report = {"verification": "metadata_only", "reference_bytes_verified": True,
+                      "requires_visual_review": True, "model_snapshot": snapshot}
+        elif args.cut_plan:
+            issue = next((issue for issue in data["issues"] if issue["slug"] == args.cut_plan), None)
+            report = generation_inputs(issue, args.cut)
+            _verify_plan_references(report["references"], ROOT)
+            report["reference_bytes_verified"] = True
+        else:
+            report = status_report(data)
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
     if args.json:
         print(json.dumps(report, ensure_ascii=False, separators=(",", ":")))
-    else:
+    elif args.status:
         print("Metadata only; not fully verified.")
         for row in report["issues"]:
             print(row["slug"], row["issue_sha256"], row["state"], row["status"],
                   "recorded accepted=" + str(row["recorded_accepted_count"]) + "/" + str(row["planned_count"]),
                   "missing=" + ",".join(row["missing_cut_ids"]), "held=" + ",".join(row["held_cut_ids"]),
                   row["next_action"])
+    else:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 
 
