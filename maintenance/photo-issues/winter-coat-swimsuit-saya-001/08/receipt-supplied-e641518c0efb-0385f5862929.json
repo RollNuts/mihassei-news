@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "winter-coat-swimsuit-saya-001",
+  "cut_id": "08",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-14T14:27:04.888827+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "6170078a-8b0c-467a-9949-68ca244aeab2",
+    "image_number": 1,
+    "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/08/source-e641518c0efb4092d90459e3e881905240395884814b9b7d701e322d5f88e365.png",
+    "file_name": "0d6db232-739f-4c80-8dae-70545afe9cbe.png",
+    "sha256": "e641518c0efb4092d90459e3e881905240395884814b9b7d701e322d5f88e365",
+    "bytes": 2007009,
+    "width": 1536,
+    "height": 1024,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+    "sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6",
+    "bytes": 205561,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

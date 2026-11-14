@@ -29,7 +29,7 @@
         "weakness": "帰り際の誘いに弱く、つい寄り道する。"
       },
       "preferred_face_reference": {
-        "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+        "path": "assets/generated/photo-face-nagino-saya-5061e180b75b.jpg",
         "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
         "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
         "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
@@ -309,10 +309,10 @@
     {
       "slug": "winter-coat-swimsuit-saya-001",
       "number": 1,
-      "title": "冬のコートの下に、水着。",
-      "summary": "11月、凪野さやの水辺の休日。プールと紅葉の露天風呂をはしごして、帰り道はまたニット。",
+      "title": "寄り道は、まだ終わらない。",
+      "summary": "11月の小旅行から、部屋で過ごす休日へ。凪野さやが秋服と水着で過ごす、寄り道の10枚。",
       "state": "published",
-      "published_at": "2026-11-14T22:38:56+09:00",
+      "published_at": "2026-11-14T23:30:33.293629+09:00",
       "model_id": "nagino-saya",
       "model_snapshot": {
         "id": "nagino-saya",
@@ -330,813 +330,327 @@
       "setting": {
         "year": 2031,
         "month": 11,
-        "location": "夕波ドーム、水辺のホテル、紅葉の露天風呂、秋の街",
+        "location": "紅葉の小道、水辺のホテルとプール、旅館、休日の部屋",
         "aspect_ratio": "original",
-        "visual_direction": "架空の27歳の成人。同じ顔立ちと自然な体型を保った、通常のファッションと水着写真。肌・布・光・動作を自然に。本人提供の03は温泉の上半身portrait、04のみ軽いまとめ髪のアレンジを用いる。写真ごとの元の縦横比を保つ。",
-        "wardrobe": "02・05〜08は紺のワンピース水着。03は温泉の白いタオルで水着枚数には数えない。04は紺のビキニと白いシャツ。街では秋冬のコートとニット。"
+        "visual_direction": "27歳の架空の成人。短い暗色のボブと同じ顔立ち・自然な体型の連続性を実画像で確認する。本人がモデル別GPTチャットで用意した未掲載の原写真から選定。背景だけの差替え、同じ写真の再掲、複数カットをまとめたコラージュは使わず、元の縦横比を保つ。",
+        "wardrobe": "02・04〜07は水色・紺・赤茶のビキニ、03は紺のワンピース水着。01は秋のニットとスカート、08はニット、09は浴衣、10はパジャマ。屋外の雪景色で水着姿の写真は選ばない。"
       },
       "source_article": {
         "slug": "indoor-beach-friends-exchange-ripples",
         "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84"
       },
       "column": [
-        "コートと水着を同じ日に着る11月、けっこう気に入っています。",
-        "夕波ドームで友達と待ち合わせ。といっても、友達がいるのは隣の町の浅瀬です。画面の友達が足で水を払うと、こちらの足首にも小さな波。今日は挨拶より先に、靴下を脱いで正解でした。",
-        "私が二回水を払うと、向こうも二回。話していないのに、相づちだけちゃんと届くのが好き。帰るつもりで白いシャツの袖を下ろしたら、もう一波来てしまって。こういう「ちょっと待って」には、返信が遅くなります。",
-        "夕方は紅葉の露天風呂へ。ここでは、小波のお返事もお休み。湯上がりの待ち合わせには、また少し遅くなりました。",
-        "帰り道はまたニット。熱い飲み物を持ったら、ようやく冬に戻りました。"
+        "11月の小旅行は、コートを置いてからが本番です。葉っぱの色を見て、プールに寄って、部屋で本を開く。今日は、ちゃんと寄り道する日。",
+        "2031年の旅の予定表には、「まだ帰りたくない」というボタンがあります。押すと、帰りの電車とチェックアウトを一緒にずらしてくれる。便利なので、触る前にちょっと考えました。",
+        "泳いだあと、羽織ったニットの袖だけ少し冷たくて。着替えに戻るつもりが、水面を眺めているうちに、また座ってしまいました。急いで帰る理由は、今のところありません。",
+        "旅館で浴衣を着ると、歩幅までゆっくりになります。帰ってからもその調子で、料理をして、本を読んで。遠出の続きは、自分の部屋にもあるんですね。",
+        "予定表は、今夜も「明日の支度」をすすめてきます。私は先に、もう一ページ。"
       ],
       "shots": [
         {
           "id": "01",
-          "description": "秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。",
-          "caption": "コートで待ち合わせ",
-          "alt": "凪野さや（27歳、架空の成人）。秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。"
+          "description": "紅葉の小道で、白いニットと茶色のスカート姿で振り返る全身。",
+          "caption": "秋の道草",
+          "alt": "凪野さや（27歳、架空の成人）。紅葉の小道で、白いニットと茶色のスカート姿で振り返る全身。"
         },
         {
           "id": "02",
-          "description": "更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。",
-          "caption": "泳ぐ前のひと息",
-          "alt": "凪野さや（27歳、架空の成人）。更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。"
+          "description": "海が見える明るい室内。水色のビキニに白いバスローブを羽織り、近くへ顔を向ける。",
+          "caption": "窓の向こうは、海",
+          "alt": "凪野さや（27歳、架空の成人）。海が見える明るい室内。水色のビキニに白いバスローブを羽織り、近くへ顔を向ける。"
         },
         {
           "id": "03",
-          "description": "紅葉の露天風呂で白いタオルを巻き、近くへ笑顔を向ける上半身。",
-          "caption": "紅葉の湯でひと休み",
-          "alt": "凪野さや（27歳、架空の成人）。紅葉の露天風呂で白いタオルを巻き、笑顔を見せる。"
+          "description": "紺のワンピース水着でプールの縁に手をつき、水面から顔を向ける。",
+          "caption": "水から上がる、その前に",
+          "alt": "凪野さや（27歳、架空の成人）。紺のワンピース水着でプールの縁に手をつき、水面から顔を向ける。"
         },
         {
           "id": "04",
-          "description": "プールサイドの木のベンチに紺のビキニと白いシャツで自然に座る、顔から膝までの縦長写真。このカットでは髪を軽くまとめている。",
-          "caption": "プールサイドの午後",
-          "alt": "凪野さや（27歳、架空の成人）。プールサイドのベンチに、紺のビキニと白いシャツで座る。"
+          "description": "プールサイドの椅子に、紺のビキニと白いカーディガンで横向きに座り、頬に手を添える。",
+          "caption": "袖を通して、もう少し",
+          "alt": "凪野さや（27歳、架空の成人）。プールサイドの椅子に、紺のビキニと白いカーディガンで横向きに座り、頬に手を添える。"
         },
         {
           "id": "05",
-          "description": "街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。",
-          "caption": "街の灯りを水面から",
-          "alt": "凪野さや（27歳、架空の成人）。街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。"
+          "description": "青いビキニに白いバスローブを羽織り、鏡の前で襟元を整える。",
+          "caption": "鏡の前で、ひと息",
+          "alt": "凪野さや（27歳、架空の成人）。青いビキニに白いバスローブを羽織り、鏡の前で襟元を整える。"
         },
         {
           "id": "06",
-          "description": "木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。",
-          "caption": "風の通るひと休み",
-          "alt": "凪野さや（27歳、架空の成人）。木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。"
+          "description": "暖かな室内の窓辺で、赤茶のビキニ姿で横座りする。窓の外には雪景色。",
+          "caption": "窓の外だけ、冬",
+          "alt": "凪野さや（27歳、架空の成人）。暖かな室内の窓辺で、赤茶のビキニ姿で横座りする。窓の外には雪景色。"
         },
         {
           "id": "07",
-          "description": "ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。",
-          "caption": "髪を耳にかけて",
-          "alt": "凪野さや（27歳、架空の成人）。ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。"
+          "description": "木の棚がある旅館の室内。青いビキニに花柄の浴衣を羽織って立つ。",
+          "caption": "着替えの途中で、ひと息",
+          "alt": "凪野さや（27歳、架空の成人）。木の棚がある旅館の室内。青いビキニに花柄の浴衣を羽織って立つ。"
         },
         {
           "id": "08",
-          "description": "海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。",
-          "caption": "海のそばの温水",
-          "alt": "凪野さや（27歳、架空の成人）。海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。"
+          "description": "休日の台所で、ニット姿のままフライパンの料理を木べらで混ぜる。",
+          "caption": "帰った日の台所",
+          "alt": "凪野さや（27歳、架空の成人）。休日の台所で、ニット姿のままフライパンの料理を木べらで混ぜる。"
         },
         {
           "id": "09",
-          "description": "カフェでニット姿になり、コートを膝に置いて帰り支度をする。",
-          "caption": "ニットに戻って",
-          "alt": "凪野さや（27歳、架空の成人）。カフェでニット姿になり、コートを膝に置いて帰り支度をする。"
+          "description": "花柄の浴衣とえんじ色の帯で、旅館の廊下から振り返る。",
+          "caption": "歩幅まで、ゆっくり",
+          "alt": "凪野さや（27歳、架空の成人）。花柄の浴衣とえんじ色の帯で、旅館の廊下から振り返る。"
         },
         {
           "id": "10",
-          "description": "夜の街で、温かい飲み物を手にする。",
-          "caption": "夜の温かい一杯",
-          "alt": "凪野さや（27歳、架空の成人）。夜の街で、温かい飲み物を手にする。"
+          "description": "窓辺の部屋で、花柄のパジャマ姿で膝を抱え、本を読む。",
+          "caption": "もう一ページだけ",
+          "alt": "凪野さや（27歳、架空の成人）。窓辺の部屋で、花柄のパジャマ姿で膝を抱え、本を読む。"
         }
       ],
       "images": {
         "01": {
           "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
-          "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-          "bytes": 211797,
-          "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
+          "sha256": "7d6077a0f2ef923fee0793ac3da51350a58c0d614c173756822eada2c3da7939",
+          "source_sha256": "abd28cf0bead69bd431661fcc37deb20b63175695492f78fbf8d4b5471bd0193",
+          "bytes": 339775,
+          "width": 800,
+          "height": 1200,
           "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
-            "candidate_commit": "f7895056679d18f7c123a573f1e960bc8a565e3c",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-cut-01",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/01/receipt.json",
-            "receipt_sha256": "2669733255094095663aed3567aa3a10aee698552ee207c42777ac1b1bd6228a",
-            "edit_references": [
-              {
-                "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-a956028d-aae4-40b3-9c91-01879b1b62f9.png",
-                "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
-                "master_jpeg_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94"
-              }
-            ]
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/01/receipt-supplied-abd28cf0bead-7d6077a0f2ef.json",
+            "receipt_sha256": "c16b3107c3a51e7c62a2da8581132e7fe95421700462478fdb6048e85d57f900"
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "7d6077a0f2ef923fee0793ac3da51350a58c0d614c173756822eada2c3da7939",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "01",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+            "note": "紅葉の道で振り返る全身。短いボブ、目鼻・輪郭は基準人物と連続。白ニットとロングスカートで体型の多くは覆われる。両手は背後に重なり、靴と地面の接触に目立つ破綻なし。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
             "swimwear_visible": false,
-            "framing": "full_body"
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
-              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "01",
-              "reviewed_at": "2026-11-14T05:39:13+00:00",
-              "note": "原PNGと変換JPEGを実表示し独立検品。短いボブ・前髪・顔立ちと笑い方は元masterに大きな不一致なし。秋冬のコート/ニット/スカートと屋内ビーチ入口がcut01に合う。見える手指・両足・ブーツ・布に目立つ破綻、不要な文字やロゴなし。片手は自然にポケット内。本人もこの顔を継続モデルとして指定。",
-              "swimwear_visible": false,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "01",
-              "reviewed_at": "2026-11-14T06:34:25+00:00",
-              "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。",
-              "swimwear_visible": false,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "01",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": false,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "01",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": false,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "01",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": false,
-              "framing": "full_body"
-            }
-          ],
-          "adoption": {
-            "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "01",
-            "reason": "水着と他cutの場面を改訂したが01の人物・冬服・入口・本文の意味は不変。原画像と原acceptedを保持して今号の適合性だけ再確認。"
+            "framing": "full_body",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
           }
         },
         "02": {
           "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg",
-          "sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-          "bytes": 206587,
-          "source_png_sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c4dbd211b16c",
-            "candidate_commit": "5a05e24f33c8d12b03359464be9e0dd47a6d1958",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-onepiece-wardrobe-study",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/02/receipt.json",
-            "receipt_sha256": "e69a43cb9ebd891f26aa7451968d5341f7d7365457b4518e8740593bfdcb4057"
-          },
-          "adoption": {
-            "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "02",
-            "reason": "原来歴は別衣装の成功studyとして保持。実物に合わせた新shot02の紺ワンピース水着・室内プール・タオル・同じ成人の顔に一致。"
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "02",
-              "reviewed_at": "2026-11-14T06:34:25+00:00",
-              "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "02",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "02",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "02",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            }
-          ],
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "02",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": true,
-            "framing": "three_quarter"
-          }
-        },
-        "05": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
-          "sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-          "bytes": 150349,
-          "source_png_sha256": "3f2dfb7c5cea95fa23f0460b39d1fb8711c72463f7395ae9817172403368f8a4",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-bfaf74d856f0",
-            "candidate_commit": "b389fa067fd99c6e71acaf118200beb8e2e8c88c",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-05",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/05/receipt.json",
-            "receipt_sha256": "c20b45ac3b77f9ff6131b5201e7c6f842d5752b14198aa10b473b51d30b49284",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              },
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
-                "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "05",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": true,
-            "framing": "upper_body"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "05",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "05",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。",
-              "swimwear_visible": true,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "05",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": true,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "05",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": true,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "05",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": true,
-              "framing": "upper_body"
-            }
-          ]
-        },
-        "06": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg",
-          "sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-          "bytes": 196243,
-          "source_png_sha256": "ab2e086ba0a55f51447795e6b865fedeaccfee62c805f3eb289d312c1827f82e",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-bbe35576d97b",
-            "candidate_commit": "729bf3a8b31784052f5a0ec53b3491de4068ebbb",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-06",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/06/receipt.json",
-            "receipt_sha256": "5429e07f87c69aae67124b08c2865fbfeb0dd789540462251d161c9e9642cdb6",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              },
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
-                "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "06",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": true,
-            "framing": "full_body"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "06",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "06",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。",
-              "swimwear_visible": true,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "06",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": true,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "06",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": true,
-              "framing": "full_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "06",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": true,
-              "framing": "full_body"
-            }
-          ]
-        },
-        "07": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
-          "sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-          "bytes": 104478,
-          "source_png_sha256": "0d38b0fb5227adfb85a580f7b1c7fa7c455f0481e6e16255fc0341319f125ca0",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ee7d94e45f53",
-            "candidate_commit": "24b31083c26e883b7ba67a070ad85bc63a0efbff",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-07",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/07/receipt.json",
-            "receipt_sha256": "40556c6c33a7fe9dae395ee79bc4a672480a09a08cc2bcc1f6b75a93ba2e7553",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              },
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
-                "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "07",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": true,
-            "framing": "three_quarter"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "07",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "07",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "07",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "07",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "07",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": true,
-              "framing": "three_quarter"
-            }
-          ]
-        },
-        "08": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
-          "sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-          "bytes": 195022,
-          "source_png_sha256": "680988fd67b6d47084644aaadb7e7bc46bcfa85e244b692de81002ea38865d9f",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-808ab8bc477b",
-            "candidate_commit": "adb095020bfa03aa00ff86d0a5664a4266c58b26",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-08",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/08/receipt.json",
-            "receipt_sha256": "2df29b26508c59f9440fa5b3d0d79bbc7dc7ce256a7e44dd58f33ae1f7a6ae3d",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              },
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
-                "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "08",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": true,
-            "framing": "wide"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "08",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "08",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。",
-              "swimwear_visible": true,
-              "framing": "wide"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "08",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": true,
-              "framing": "wide"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "08",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": true,
-              "framing": "wide"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "08",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": true,
-              "framing": "wide"
-            }
-          ]
-        },
-        "09": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
-          "sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-          "bytes": 148935,
-          "source_png_sha256": "f7517b2fbe2860a0cbe8c7159d7b24ca68f98456072a74a62397c84dcc848fd2",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-f1b5c6550dc7",
-            "candidate_commit": "af9af3301d85258e087bfc1cf1e829e2a0c60b3c",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-09",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/09/receipt.json",
-            "receipt_sha256": "2b6e28ce8d3ee0ca9ebec2c4696d737f02f812e7189c24cf22b264dc5ca033e8",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "09",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": false,
-            "framing": "upper_body"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "09",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "09",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "09",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "09",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "09",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            }
-          ]
-        },
-        "10": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
-          "sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-          "bytes": 124748,
-          "source_png_sha256": "30d51a8de4123e198cc5cde147ef773bdf20f5ade73a0192a9e9248e68a2eb0a",
-          "provenance": {
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-8216e03f0d8b",
-            "candidate_commit": "b446c80ef0829f4a25891c8d714c61a0e1912b86",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-10",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/10/receipt.json",
-            "receipt_sha256": "66f09fad0e661a487f4c169bad278fc04535c8b4433e3a2281dd5c15b2594b19",
-            "edit_references": [
-              {
-                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
-                "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
-              }
-            ]
-          },
-          "review": {
-            "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "10",
-            "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-            "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
-            "swimwear_visible": false,
-            "framing": "upper_body"
-          },
-          "adoption": {
-            "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-            "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "target_cut_id": "10",
-            "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
-          },
-          "review_history": [
-            {
-              "decision": "accepted",
-              "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
-              "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "10",
-              "reviewed_at": "2026-11-14T07:14:23+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
-              "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "10",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
-              "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "10",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            },
-            {
-              "decision": "accepted",
-              "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
-              "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
-              "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-              "cut_id": "10",
-              "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
-              "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
-              "swimwear_visible": false,
-              "framing": "upper_body"
-            }
-          ]
-        },
-        "03": {
-          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
-          "sha256": "e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52",
-          "bytes": 284407,
+          "sha256": "4597b0bed795f04986d44b7e98d9979ac4e5d0c717d28c2ca1c54edfccf3af0d",
+          "source_sha256": "973bc909274fc5b0ea368ce60964ba7816d8ddd858c88c227f78501c68c323d0",
+          "bytes": 174039,
           "width": 1200,
           "height": 800,
           "provenance": {
             "kind": "user_supplied_photo",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/03/receipt-supplied-8d62bc357aec-e36627a40cfc.json",
-            "receipt_sha256": "416397bb64f05c5a2baf89aeb9a90b9835b4aa549a5a668e4c5edad64dbba25c"
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/02/receipt-supplied-973bc909274f-4597b0bed795.json",
+            "receipt_sha256": "8053a41d8a851ab6d764dd63c5a3015484c468f1c3d1a81a24d33a262f616529"
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "4597b0bed795f04986d44b7e98d9979ac4e5d0c717d28c2ca1c54edfccf3af0d",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "02",
+            "note": "水色のビキニと白いローブ、海の見える室内の近景。顔・短いボブ・見える肩腰の比例が基準と連続。服の色だけでなく場面と距離が異なる。手足の先は画角外。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": true,
+            "framing": "upper_body",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
+          "sha256": "78072c206e69ab7103b07d860a3c6606aefbce7d5fd7eedb861fd5488b550c5b",
+          "source_sha256": "318bf16b85d67a68874530eb96662c51fccc619514aafad52de9f2c5dd7fa98d",
+          "bytes": 263765,
+          "width": 895,
+          "height": 1200,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/03/receipt-supplied-318bf16b85d6-78072c206e69.json",
+            "receipt_sha256": "dfaff0fa93dc4eb74ed3c63248b841103e41efd98d1bc7244641380bc42bc91d"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "78072c206e69ab7103b07d860a3c6606aefbce7d5fd7eedb861fd5488b550c5b",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
             "cut_id": "03",
-            "reviewed_at": "2026-11-14T13:25:16.194097+00:00",
-            "note": "本人提供Libraryの原PNGと元比率1200×800のJPEGを実表示。27歳の架空モデルの顔立ち・短いボブ・笑顔がcoat01と連続し、見える肩・胸・膝に基準と明確な矛盾なし。タオルで覆われた通常の温泉写真。岩・湯面・湯気・紅葉に目立つ破綻なし。手足の先は画角外。独立検品も合格。水着枚数には数えない。",
-            "swimwear_visible": false,
-            "framing": "upper_body"
-          },
-          "source_sha256": "8d62bc357aec9b6009173d8fa11a82f547bde1025d820badf04f1c36db7c0bf5"
+            "note": "紺のワンピース水着でプールの縁に両手をつく。ボブ、顔、肩腰のつながりが同一人物として自然。手指・縁・水面との接触、濡れた肌と布に目立つ破綻なし。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
         },
         "04": {
           "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg",
-          "sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c",
-          "bytes": 238006,
+          "sha256": "8197550fb0dad0ef792b5eca77bba30e7067226802dbde887ca3d5c953b49e30",
+          "source_sha256": "0b35ce166c5ade21378f72d2fcb451e74f990072d4671659ecea1cf27b708210",
+          "bytes": 233923,
+          "width": 900,
+          "height": 1200,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/04/receipt-supplied-0b35ce166c5a-8197550fb0da.json",
+            "receipt_sha256": "dcc495eca59e23313ad738ddc1313c491b4d4c68a789f99cf11d606dc29c08cf"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "8197550fb0dad0ef792b5eca77bba30e7067226802dbde887ca3d5c953b49e30",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "04",
+            "note": "紺のビキニと白いカーディガンで、椅子に横座りして頬に手を添える。03・05とは腕・脚・撮影距離が異なる。顔・肩・腰の連続性、座面と身体の接触を確認。足先は画角外。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
+          "sha256": "147a18cd325ebfcb3714adab6240388182422ab588a607b5db6d216676f6a0bf",
+          "source_sha256": "8160d107d24c6404f0c8fc5b0915d562abae27cfb29351df8e63fd0cea29758e",
+          "bytes": 211375,
+          "width": 800,
+          "height": 1200,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/05/receipt-supplied-8160d107d24c-147a18cd325e.json",
+            "receipt_sha256": "5aa4368c277f8f66d3bf690c64707e84f2740b35bcf29037447b6a54f9386cb7"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "147a18cd325ebfcb3714adab6240388182422ab588a607b5db6d216676f6a0bf",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "05",
+            "note": "鏡前で青いビキニに白いローブを羽織り、両手で襟を整える上半身。手指・布の重なりと鏡・前景の後頭部の関係が成立。顔・短いボブ・肩の比例が他カットと連続し、プール正面の近似写真を減らす別の場面。水着上部は実際に見え、ローブだけを水着と数えたものではない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg",
+          "sha256": "aff27bceb7762b9a9ce2f65715035776aadc3c47c75416d4e0364a71988cb068",
+          "source_sha256": "35470cf19311732fae7ae2e3c7cd3f02e6a1e3264de858aa65a64b7c379717e7",
+          "bytes": 214961,
           "width": 885,
           "height": 1200,
           "provenance": {
             "kind": "user_supplied_photo",
-            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/04/receipt-supplied-12aa2bc5e5d4-059225e2d0aa.json",
-            "receipt_sha256": "51accf16d8f1eaf178dd8d48e8aa4dc5d40e51e00f8e324e7b5dbe5ed3a3e5f8"
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/06/receipt-supplied-35470cf19311-aff27bceb776.json",
+            "receipt_sha256": "ad3a26138d3613a560ea61d90169313d0b93855427d07f3dcc59a504ce6fc9fc"
           },
           "review": {
             "decision": "accepted",
-            "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
-            "image_sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "aff27bceb7762b9a9ce2f65715035776aadc3c47c75416d4e0364a71988cb068",
             "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-            "cut_id": "04",
-            "reviewed_at": "2026-11-14T13:25:16.194397+00:00",
-            "note": "本人提供Libraryの原PNGと元比率885×1200のJPEGを実表示。紺ビキニと白シャツでベンチに前傾して座る別カット。まとめ髪は今回の提供写真に合わせた明示的なアレンジ。目鼻・輪郭は基準と連続し、前傾座位による見え方を含め自然な成人の比例。見える両手・交差した脚・布・ベンチとプールに目立つ破綻なし。数値体型の写真実測は行わず、原基準との連続性を目視確認。独立検品も合格。足指は画角外。",
+            "cut_id": "06",
+            "note": "赤茶のビキニで窓辺に横座り。雪は室外で本人は室内。基準と同じ顔・ボブ、肩から腰の比例が連続。布と脚・座面の接触に目立つ破綻なし。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
             "swimwear_visible": true,
-            "framing": "three_quarter"
+            "framing": "three_quarter",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
+          "sha256": "97457536022d662b302633a38f62bffe989da111d48203c22560d8cb5d361088",
+          "source_sha256": "2f3b25ad6d4bf8117044c13ce34ce62d208c498caed049104cebd92ba0adbb18",
+          "bytes": 236477,
+          "width": 800,
+          "height": 1200,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/07/receipt-supplied-2f3b25ad6d4b-97457536022d.json",
+            "receipt_sha256": "54fbac1d330bfc321189c379e4116a44d936315189b70120694c12f7a5bd524c"
           },
-          "source_sha256": "12aa2bc5e5d4f87ab3bb85f713e4caeaa9b835e7bbb9a8e5079009e88d673831"
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "97457536022d662b302633a38f62bffe989da111d48203c22560d8cb5d361088",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "07",
+            "note": "青いビキニに花柄の浴衣を羽織る室内。温泉入浴場面とは記さない。顔・ボブ・肩腰の比例が他の水着カットと連続。見える手指と帯のない浴衣の垂れ方を確認。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+          "sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6",
+          "source_sha256": "e641518c0efb4092d90459e3e881905240395884814b9b7d701e322d5f88e365",
+          "bytes": 205561,
+          "width": 1200,
+          "height": 800,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/08/receipt-supplied-e641518c0efb-0385f5862929.json",
+            "receipt_sha256": "23197f4931b0980ef6afea5137bb9aedd78d66db6831c79b493261cfca2a5743"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "08",
+            "note": "ニット姿で木べらを持ち、フライパンの料理を混ぜる。顔と短い髪が連続し、腕・手・道具の接触が成立。容器の小さなラベルは読めず、識別可能な企業名やロゴとして扱わない。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": false,
+            "framing": "wide",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
+          "sha256": "1a9d95e05ff0b3269645f428e920dac3c223ce6e240e430b896162a0e4b2eff8",
+          "source_sha256": "1103430f4546e6ec547dd36f6c795777542a052c51f27a21a1a9c48e9bf9a064",
+          "bytes": 253096,
+          "width": 800,
+          "height": 1200,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/09/receipt-supplied-1103430f4546-1a9d95e05ff0.json",
+            "receipt_sha256": "5af2d3e3ba5a541af091e2053204466349979c5859f492e8acc44f43a0a1539a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "1a9d95e05ff0b3269645f428e920dac3c223ce6e240e430b896162a0e4b2eff8",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "09",
+            "note": "浴衣とえんじ帯、廊下で振り返る後ろ姿。顔と短いボブは他カットと連続。07とは衣装の着方・背面・場所が違い、背景だけの置換ではない。衣服で体型は大部分が覆われる。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": false,
+            "framing": "profile",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
+        },
+        "10": {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
+          "sha256": "fdb288d9628a08efd4ad56c64ab39dd8edca21e296e31bd7dca4056a122bb65a",
+          "source_sha256": "5abe91c1c01f5d150c37cf1b2385fc6387b1387073f554fc0422ec475cb8fcfe",
+          "bytes": 211108,
+          "width": 1200,
+          "height": 800,
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/10/receipt-supplied-5abe91c1c01f-fdb288d9628a.json",
+            "receipt_sha256": "b23130437eee608e8e30fc216ec2e82659e1814e3ef1990f0fe3f69e16ae9d02"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
+            "image_sha256": "fdb288d9628a08efd4ad56c64ab39dd8edca21e296e31bd7dca4056a122bb65a",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "cut_id": "10",
+            "note": "花柄のパジャマで窓辺の本を読む。短い髪と見える横顔は基準と連続し、膝・腕・本のつながりが成立。本の題字は判読できず特定の作品名として扱わない。 肌・布・光と影は通常の写真として成立し、不要な大きい文字や実在ロゴは見当たらない。原PNGと掲載JPEGをroot実表示し、独立検品も同じ原本を確認して採用。写真からの体型数値の実測・保証ではない。",
+            "swimwear_visible": false,
+            "framing": "wide",
+            "reviewed_at": "2026-11-14T14:30:33.293629+00:00"
+          }
         }
       },
-      "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+      "issue_sha256": "bfbbacd8d24148daa7701b2c56270bb475cfcf68d272d0b5b22158e7eb991e49",
       "generation_holds": {},
       "editorial_history": [
         {
@@ -3957,6 +3471,882 @@
             "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg": {
               "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/04-7115d2bdadd6042a6d1c74f1809da96eccc3838fbdcf79319116c1faa0dfed37.jpg",
               "sha256": "7115d2bdadd6042a6d1c74f1809da96eccc3838fbdcf79319116c1faa0dfed37"
+            }
+          }
+        },
+        {
+          "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+          "editorial": {
+            "slug": "winter-coat-swimsuit-saya-001",
+            "number": 1,
+            "title": "冬のコートの下に、水着。",
+            "summary": "11月、凪野さやの水辺の休日。プールと紅葉の露天風呂をはしごして、帰り道はまたニット。",
+            "setting": {
+              "year": 2031,
+              "month": 11,
+              "location": "夕波ドーム、水辺のホテル、紅葉の露天風呂、秋の街",
+              "aspect_ratio": "original",
+              "visual_direction": "架空の27歳の成人。同じ顔立ちと自然な体型を保った、通常のファッションと水着写真。肌・布・光・動作を自然に。本人提供の03は温泉の上半身portrait、04のみ軽いまとめ髪のアレンジを用いる。写真ごとの元の縦横比を保つ。",
+              "wardrobe": "02・05〜08は紺のワンピース水着。03は温泉の白いタオルで水着枚数には数えない。04は紺のビキニと白いシャツ。街では秋冬のコートとニット。"
+            },
+            "column": [
+              "コートと水着を同じ日に着る11月、けっこう気に入っています。",
+              "夕波ドームで友達と待ち合わせ。といっても、友達がいるのは隣の町の浅瀬です。画面の友達が足で水を払うと、こちらの足首にも小さな波。今日は挨拶より先に、靴下を脱いで正解でした。",
+              "私が二回水を払うと、向こうも二回。話していないのに、相づちだけちゃんと届くのが好き。帰るつもりで白いシャツの袖を下ろしたら、もう一波来てしまって。こういう「ちょっと待って」には、返信が遅くなります。",
+              "夕方は紅葉の露天風呂へ。ここでは、小波のお返事もお休み。湯上がりの待ち合わせには、また少し遅くなりました。",
+              "帰り道はまたニット。熱い飲み物を持ったら、ようやく冬に戻りました。"
+            ],
+            "model_id": "nagino-saya",
+            "model_snapshot": {
+              "id": "nagino-saya",
+              "name": "凪野さや",
+              "age": 27,
+              "fictional": true,
+              "appearance": "短い暗色のボブと軽い前髪。既存の顔と自然な成人の体型を維持し、髪を結ばない。",
+              "master": {
+                "path": "assets/generated/indoor-beach-friends-exchange-ripples.jpg",
+                "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+                "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
+              }
+            },
+            "source_article": {
+              "slug": "indoor-beach-friends-exchange-ripples",
+              "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84"
+            },
+            "shots": [
+              {
+                "id": "01",
+                "description": "秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。",
+                "caption": "コートで待ち合わせ",
+                "alt": "凪野さや（27歳、架空の成人）。秋冬のニットとコートを着て、夕波ドームの屋内ビーチ入口で待つ。"
+              },
+              {
+                "id": "02",
+                "description": "更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。",
+                "caption": "泳ぐ前のひと息",
+                "alt": "凪野さや（27歳、架空の成人）。更衣後、紺のワンピース水着でタオルを手にプールサイドに立つ。"
+              },
+              {
+                "id": "03",
+                "description": "紅葉の露天風呂で白いタオルを巻き、近くへ笑顔を向ける上半身。",
+                "caption": "紅葉の湯でひと休み",
+                "alt": "凪野さや（27歳、架空の成人）。紅葉の露天風呂で白いタオルを巻き、笑顔を見せる。"
+              },
+              {
+                "id": "04",
+                "description": "プールサイドの木のベンチに紺のビキニと白いシャツで自然に座る、顔から膝までの縦長写真。このカットでは髪を軽くまとめている。",
+                "caption": "プールサイドの午後",
+                "alt": "凪野さや（27歳、架空の成人）。プールサイドのベンチに、紺のビキニと白いシャツで座る。"
+              },
+              {
+                "id": "05",
+                "description": "街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。",
+                "caption": "街の灯りを水面から",
+                "alt": "凪野さや（27歳、架空の成人）。街を見渡す温水の屋上プールで、紺のワンピース水着を着て水面から顔を向ける。"
+              },
+              {
+                "id": "06",
+                "description": "木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。",
+                "caption": "風の通るひと休み",
+                "alt": "凪野さや（27歳、架空の成人）。木のテラスのデッキチェアに紺のワンピース水着で座り、飲み物とくつろぐ横顔。"
+              },
+              {
+                "id": "07",
+                "description": "ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。",
+                "caption": "髪を耳にかけて",
+                "alt": "凪野さや（27歳、架空の成人）。ホテルの明るい室内で、紺のワンピース水着に白いシャツを羽織り、短い髪を耳に掛ける上半身。"
+              },
+              {
+                "id": "08",
+                "description": "海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。",
+                "caption": "海のそばの温水",
+                "alt": "凪野さや（27歳、架空の成人）。海辺の屋外温水プールで、紺のワンピース水着の人物と海の景色を引きで写す。"
+              },
+              {
+                "id": "09",
+                "description": "カフェでニット姿になり、コートを膝に置いて帰り支度をする。",
+                "caption": "ニットに戻って",
+                "alt": "凪野さや（27歳、架空の成人）。カフェでニット姿になり、コートを膝に置いて帰り支度をする。"
+              },
+              {
+                "id": "10",
+                "description": "夜の街で、温かい飲み物を手にする。",
+                "caption": "夜の温かい一杯",
+                "alt": "凪野さや（27歳、架空の成人）。夜の街で、温かい飲み物を手にする。"
+              }
+            ]
+          },
+          "images": {
+            "01": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+              "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+              "bytes": 211797,
+              "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ba3151801ba6",
+                "candidate_commit": "f7895056679d18f7c123a573f1e960bc8a565e3c",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-cut-01",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/01/receipt.json",
+                "receipt_sha256": "2669733255094095663aed3567aa3a10aee698552ee207c42777ac1b1bd6228a",
+                "edit_references": [
+                  {
+                    "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-a956028d-aae4-40b3-9c91-01879b1b62f9.png",
+                    "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+                    "master_jpeg_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "01",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": false,
+                "framing": "full_body"
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+                  "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "01",
+                  "reviewed_at": "2026-11-14T05:39:13+00:00",
+                  "note": "原PNGと変換JPEGを実表示し独立検品。短いボブ・前髪・顔立ちと笑い方は元masterに大きな不一致なし。秋冬のコート/ニット/スカートと屋内ビーチ入口がcut01に合う。見える手指・両足・ブーツ・布に目立つ破綻、不要な文字やロゴなし。片手は自然にポケット内。本人もこの顔を継続モデルとして指定。",
+                  "swimwear_visible": false,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "01",
+                  "reviewed_at": "2026-11-14T06:34:25+00:00",
+                  "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。",
+                  "swimwear_visible": false,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "01",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "01",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": false,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "01",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "本人が継続採用したコート姿。新号の01は元と同じ人物・衣装・入口で、PNG/JPEG実表示と独立検品を引き継ぎ、他cutの衣装・場所変更とも矛盾なし。元reviewを別に保持。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "full_body"
+                }
+              ],
+              "adoption": {
+                "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "01",
+                "reason": "水着と他cutの場面を改訂したが01の人物・冬服・入口・本文の意味は不変。原画像と原acceptedを保持して今号の適合性だけ再確認。"
+              }
+            },
+            "02": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg",
+              "sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+              "bytes": 206587,
+              "source_png_sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-c4dbd211b16c",
+                "candidate_commit": "5a05e24f33c8d12b03359464be9e0dd47a6d1958",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960-onepiece-wardrobe-study",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/02/receipt.json",
+                "receipt_sha256": "e69a43cb9ebd891f26aa7451968d5341f7d7365457b4518e8740593bfdcb4057"
+              },
+              "adoption": {
+                "source_issue_sha256": "730ff0ada307460fb161775bdb7cf0bb8992258b334760e27ad33f939b9e2960",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "02",
+                "reason": "原来歴は別衣装の成功studyとして保持。実物に合わせた新shot02の紺ワンピース水着・室内プール・タオル・同じ成人の顔に一致。"
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "02",
+                  "reviewed_at": "2026-11-14T06:34:25+00:00",
+                  "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "02",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "02",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "02",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                }
+              ],
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "02",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNGと変換JPEGを実表示し独立検品。コートmasterと顔立ち・短いボブ・笑い方が連続する27歳の架空成人。紺のワンピース水着が明確に見える。タオルを持つ両手、肌・布・体形に目立つ破綻や不要な文字/ロゴなし。頭から膝付近で衣装と室内プールが伝わる。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": true,
+                "framing": "three_quarter"
+              }
+            },
+            "05": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
+              "sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+              "bytes": 150349,
+              "source_png_sha256": "3f2dfb7c5cea95fa23f0460b39d1fb8711c72463f7395ae9817172403368f8a4",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-bfaf74d856f0",
+                "candidate_commit": "b389fa067fd99c6e71acaf118200beb8e2e8c88c",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-05",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/05/receipt.json",
+                "receipt_sha256": "c20b45ac3b77f9ff6131b5201e7c6f842d5752b14198aa10b473b51d30b49284",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  },
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+                    "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "05",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": true,
+                "framing": "upper_body"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "05",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "05",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。",
+                  "swimwear_visible": true,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "05",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "05",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": true,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "05",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01の顔/短ボブ、study02の紺ワンピースと整合。屋上プールと街夕景、手指・布・水際に目立つ破綻や不要文字なし。頭から腰の構図で水着が明確。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "upper_body"
+                }
+              ]
+            },
+            "06": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg",
+              "sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+              "bytes": 196243,
+              "source_png_sha256": "ab2e086ba0a55f51447795e6b865fedeaccfee62c805f3eb289d312c1827f82e",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-bbe35576d97b",
+                "candidate_commit": "729bf3a8b31784052f5a0ec53b3491de4068ebbb",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-06",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/06/receipt.json",
+                "receipt_sha256": "5429e07f87c69aae67124b08c2865fbfeb0dd789540462251d161c9e9642cdb6",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  },
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+                    "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "06",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": true,
+                "framing": "full_body"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "06",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "06",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。",
+                  "swimwear_visible": true,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "06",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "06",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": true,
+                  "framing": "full_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "06",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。同人物の横顔で座位全身、紺ワンピースが明確。木テラス/デッキチェア/飲み物がcaptionに合い、手指・両足・椅子・布は自然。不要文字/ロゴなし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "full_body"
+                }
+              ]
+            },
+            "07": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
+              "sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+              "bytes": 104478,
+              "source_png_sha256": "0d38b0fb5227adfb85a580f7b1c7fa7c455f0481e6e16255fc0341319f125ca0",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-ee7d94e45f53",
+                "candidate_commit": "24b31083c26e883b7ba67a070ad85bc63a0efbff",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-07",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/07/receipt.json",
+                "receipt_sha256": "40556c6c33a7fe9dae395ee79bc4a672480a09a08cc2bcc1f6b75a93ba2e7553",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  },
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+                    "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "07",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": true,
+                "framing": "three_quarter"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "07",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "07",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "07",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "07",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "07",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。顔と短ボブ、紺ワンピース＋白シャツが一致。耳へ髪を掛ける手は自然、頭から上腿の近景、足は画角外。水着は明確で不要文字や目立つ破綻なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "three_quarter"
+                }
+              ]
+            },
+            "08": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+              "sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+              "bytes": 195022,
+              "source_png_sha256": "680988fd67b6d47084644aaadb7e7bc46bcfa85e244b692de81002ea38865d9f",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-808ab8bc477b",
+                "candidate_commit": "adb095020bfa03aa00ff86d0a5664a4266c58b26",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-08",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/08/receipt.json",
+                "receipt_sha256": "2df29b26508c59f9440fa5b3d0d79bbc7dc7ce256a7e44dd58f33ae1f7a6ae3d",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  },
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3338647e-c8fe-43e6-98e0-d34a73b13bc5.png",
+                    "sha256": "09955e5fe098c754c023fa10b3c50ef24ae8715ff370c17622f8284521ed2e38"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "08",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": true,
+                "framing": "wide"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "08",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "08",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。",
+                  "swimwear_visible": true,
+                  "framing": "wide"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "08",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "wide"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "08",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": true,
+                  "framing": "wide"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "08",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。海辺の温水プールの引きと同人物の全身/紺ワンピースが一致。手足・タオル・設備に目立つ破綻、文字、ロゴはなく、captionに合う。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": true,
+                  "framing": "wide"
+                }
+              ]
+            },
+            "09": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
+              "sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+              "bytes": 148935,
+              "source_png_sha256": "f7517b2fbe2860a0cbe8c7159d7b24ca68f98456072a74a62397c84dcc848fd2",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-f1b5c6550dc7",
+                "candidate_commit": "af9af3301d85258e087bfc1cf1e829e2a0c60b3c",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-09",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/09/receipt.json",
+                "receipt_sha256": "2b6e28ce8d3ee0ca9ebec2c4696d737f02f812e7189c24cf22b264dc5ca033e8",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "09",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": false,
+                "framing": "upper_body"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "09",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "09",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "09",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "09",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "09",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。カフェ、ニット、膝のコート、バッグとcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                }
+              ]
+            },
+            "10": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
+              "sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+              "bytes": 124748,
+              "source_png_sha256": "30d51a8de4123e198cc5cde147ef773bdf20f5ade73a0192a9e9248e68a2eb0a",
+              "provenance": {
+                "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-8216e03f0d8b",
+                "candidate_commit": "b446c80ef0829f4a25891c8d714c61a0e1912b86",
+                "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed-cut-10",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/10/receipt.json",
+                "receipt_sha256": "66f09fad0e661a487f4c169bad278fc04535c8b4433e3a2281dd5c15b2594b19",
+                "edit_references": [
+                  {
+                    "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-c4226dba-22f3-4d65-9779-807b4d9de9fd.png",
+                    "sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+                  }
+                ]
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "10",
+                "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。 03/04の本人提供写真に伴う号改訂。当カットと人物の固定snapshotは不変、実見日時・原生成を保持。",
+                "swimwear_visible": false,
+                "framing": "upper_body"
+              },
+              "adoption": {
+                "source_issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                "target_issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "target_cut_id": "10",
+                "reason": "Only cut 04 and the cover selection change; this dedicated weekly photograph and its scene remain unchanged."
+              },
+              "review_history": [
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "b6c27262ae78f90c6d3bfde4e9cb75ced475a3145d62c56234572c0e8b71c5ed",
+                  "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "10",
+                  "reviewed_at": "2026-11-14T07:14:23+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+                  "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "10",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "adff7e84947f080b75cacb32dc9b5e8584efe5c1a2c84ecb801067d7f3fad658",
+                  "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "10",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                },
+                {
+                  "decision": "accepted",
+                  "issue_sha256": "f477fdcee708ae3d7f1d7947ff50246acf9fa18a315ec7252ae58e345ec161ba",
+                  "image_sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4",
+                  "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                  "cut_id": "10",
+                  "reviewed_at": "2026-11-14T08:53:18.050536+00:00",
+                  "note": "原PNG/JPEGを実表示し独立検品。coatsaya01と顔/短ボブが整合。夜街、コート、温かい飲み物の上半身とcaptionが一致。手指・衣服・背景に目立つ破綻や不要文字なし。 04の差替えに伴う号改訂。本文・当カットの場面・実画像は変更なく、元の実見記録を保持。 04のみ立ち姿へ改訂。当写真と本文・場面は変更せず、原実見日時と来歴を保持。 04の編集元を週刊02の単一写真へ変更。他カット・本文は不変、実見日時と原生成記録を保持。",
+                  "swimwear_visible": false,
+                  "framing": "upper_body"
+                }
+              ]
+            },
+            "03": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
+              "sha256": "e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52",
+              "bytes": 284407,
+              "width": 1200,
+              "height": 800,
+              "provenance": {
+                "kind": "user_supplied_photo",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/03/receipt-supplied-8d62bc357aec-e36627a40cfc.json",
+                "receipt_sha256": "416397bb64f05c5a2baf89aeb9a90b9835b4aa549a5a668e4c5edad64dbba25c"
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "03",
+                "reviewed_at": "2026-11-14T13:25:16.194097+00:00",
+                "note": "本人提供Libraryの原PNGと元比率1200×800のJPEGを実表示。27歳の架空モデルの顔立ち・短いボブ・笑顔がcoat01と連続し、見える肩・胸・膝に基準と明確な矛盾なし。タオルで覆われた通常の温泉写真。岩・湯面・湯気・紅葉に目立つ破綻なし。手足の先は画角外。独立検品も合格。水着枚数には数えない。",
+                "swimwear_visible": false,
+                "framing": "upper_body"
+              },
+              "source_sha256": "8d62bc357aec9b6009173d8fa11a82f547bde1025d820badf04f1c36db7c0bf5"
+            },
+            "04": {
+              "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg",
+              "sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c",
+              "bytes": 238006,
+              "width": 885,
+              "height": 1200,
+              "provenance": {
+                "kind": "user_supplied_photo",
+                "receipt_path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/04/receipt-supplied-12aa2bc5e5d4-059225e2d0aa.json",
+                "receipt_sha256": "51accf16d8f1eaf178dd8d48e8aa4dc5d40e51e00f8e324e7b5dbe5ed3a3e5f8"
+              },
+              "review": {
+                "decision": "accepted",
+                "issue_sha256": "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e",
+                "image_sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c",
+                "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+                "cut_id": "04",
+                "reviewed_at": "2026-11-14T13:25:16.194397+00:00",
+                "note": "本人提供Libraryの原PNGと元比率885×1200のJPEGを実表示。紺ビキニと白シャツでベンチに前傾して座る別カット。まとめ髪は今回の提供写真に合わせた明示的なアレンジ。目鼻・輪郭は基準と連続し、前傾座位による見え方を含め自然な成人の比例。見える両手・交差した脚・布・ベンチとプールに目立つ破綻なし。数値体型の写真実測は行わず、原基準との連続性を目視確認。独立検品も合格。足指は画角外。",
+                "swimwear_visible": true,
+                "framing": "three_quarter"
+              },
+              "source_sha256": "12aa2bc5e5d4f87ab3bb85f713e4caeaa9b835e7bbb9a8e5079009e88d673831"
+            }
+          },
+          "generation_holds": {},
+          "reason": "本人の新しい指示により、未公開の旧8枚＋提供2枚の選定を取り下げ、モデル別GPT会話の新しい未掲載候補10枚へ総入替。旧画像・来歴・採否は改変せず保存。",
+          "retained_assets": {
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/01-5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a.jpg",
+              "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/02-64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971.jpg",
+              "sha256": "64e0ff1e0650b6d98ed14126b1378669074b68b21d4d79caaeda54382cadf971"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/05-260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b.jpg",
+              "sha256": "260097937d222aba92a7c3082f03623dfdfbd7242c3777c47e44577c8f2df91b"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/06-c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca.jpg",
+              "sha256": "c7561a9690ce35804828ed294aa2f718261c630b2e16881f6c4e6455ab3615ca"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/07-6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed.jpg",
+              "sha256": "6fb0c282af38926fbec0c6305b9715fb1a3c9f10f96d5ee1e2b03a1ae40e86ed"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/08-cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f.jpg",
+              "sha256": "cf66e7e04ec68df60f6ecbf106d0f2052c05ba89e5dc0b7cfc2f31d63e4eb47f"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/09-238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205.jpg",
+              "sha256": "238a6e5907e20433ebef0561fa9bb08108d73d1e48b9201004aceda7d7cea205"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/10-73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4.jpg",
+              "sha256": "73835989c6872d73e39fd4469a3e141523bba89c152a7fec6dc8f4ab8d0c27b4"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/03-e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52.jpg",
+              "sha256": "e36627a40cfc93504d9e7d53826b8d309a2787687f0b7909138ef0d7cbf04a52"
+            },
+            "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg": {
+              "path": "maintenance/photo-issues/winter-coat-swimsuit-saya-001/retired/04-059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c.jpg",
+              "sha256": "059225e2d0aa1bbfc8fbd01375ce086c0b90c69df84632069aabb6cf51c09f0c"
             }
           }
         }
