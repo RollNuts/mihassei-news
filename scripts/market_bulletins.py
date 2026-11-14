@@ -11,6 +11,7 @@ from email.utils import format_datetime
 from hashlib import sha256
 from html import escape
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 import json
@@ -90,7 +91,7 @@ def load_market_bulletins(root, *, now=None):
     reports = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(reports, list):
         raise ValueError("Market dispatch archive must be a list")
-    present = now or datetime.now().astimezone().date()
+    present = now or datetime.now(ZoneInfo('Asia/Tokyo')).date()
     seen = set()
     previous = None
     for report in reports:
@@ -163,7 +164,7 @@ def load_market_bulletins(root, *, now=None):
             if not isinstance(values, list) or len(values) != 2:
                 raise ValueError("Chart requires two comparable sourced numbers")
             for value in values:
-                _txt(value.get("label") if isinstance(value, dict) else None, "chart label", maximum=34)
+                _txt(value.get("label") if isinstance(value, dict) else None, "chart label", maximum=18)
                 _amount(value.get("value"))
                 if value.get("state") not in STATES:
                     raise ValueError("Chart must label actual, forecast or derived numbers")
@@ -294,7 +295,7 @@ def render_market_bulletin(report, layout):
                   main, active="serials", kind="market_bulletin",
                   serial={"slug": "market-lab", "kind": "analysis",
                           "episode_title": report["title"], "episode": report["slug"],
-                          "published_at": report["day"]})
+                          "published_at": report["published_at"]})
 
 
 def render_market_bulletins_index(reports):
