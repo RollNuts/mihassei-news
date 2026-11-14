@@ -16,6 +16,8 @@ class PageParser(HTMLParser):
         self.times = []
         self.figures = []
         self.paragraphs = []
+        self.buttons = []
+        self.scripts = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -29,6 +31,10 @@ class PageParser(HTMLParser):
             self.figures.append(attrs)
         elif tag == "p":
             self.paragraphs.append(attrs)
+        elif tag == "button":
+            self.buttons.append(attrs)
+        elif tag == "script":
+            self.scripts.append(attrs)
 
 
 def issue(number=1, model_id="nagino-saya"):
@@ -154,6 +160,36 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertEqual(page.images[0]["alt"], value["shots"][3]["alt"])
         self.assertEqual(page.figures[0]["id"], "photo-04")
         self.assertEqual(len({figure["id"] for figure in page.figures}), 10)
+
+    def test_issue_reuses_x_and_copy_controls_without_news_api_metadata(self):
+        from urllib.parse import parse_qs, urlsplit
+        from scripts import build
+        value = issue()
+        value["cover_cut_id"] = "04"
+        before = copy.deepcopy(value)
+        markup = self.pages.render_photo_issue(value, MODEL, build.layout)
+        parsed = self.parse(markup)
+        canonical = "https://veripsa.com/photo/weekly/issue-001/"
+        version = value["images"]["04"]["sha256"][:12]
+        share = next(link for link in parsed.links if link.get("class") == "share-control")
+        intent = urlsplit(share["href"])
+        self.assertEqual((intent.scheme, intent.netloc, intent.path), ("https", "x.com", "/intent/tweet"))
+        payload = parse_qs(intent.query)
+        self.assertEqual(payload["text"], ["【週刊グラビア】" + value["title"] + "\n#未発生新聞"])
+        target = urlsplit(payload["url"][0])
+        self.assertEqual(target._replace(query="").geturl(), canonical)
+        self.assertEqual(parse_qs(target.query), {"v": [version], "utm_source": ["x"],
+                         "utm_medium": ["social"], "utm_campaign": ["reader_share"],
+                         "utm_content": ["reader_entry_v3"]})
+        copy_button = next(button for button in parsed.buttons if button.get("class") == "copy-control")
+        self.assertEqual(copy_button["data-copy-url"], canonical + "?v=" + version)
+        self.assertEqual(copy_button["type"], "button")
+        self.assertIn('<link rel="canonical" href="' + canonical + '">', markup)
+        self.assertIn('property="og:image" content="' + canonical + "04.jpg?v=" + version + '"', markup)
+        self.assertTrue(any(script.get("src", "").startswith("/assets/engagement.js?") for script in parsed.scripts))
+        for news_token in ("data-share-slug", "data-like-slug", "data-comment-count", "data-bookmark-slug", "data-native-share"):
+            self.assertNotIn(news_token, markup)
+        self.assertEqual(value, before)
 
     def test_index_shows_latest_first_with_model_names_and_issue_links(self):
         other = {"id": "other-model", "name": "別のモデル", "age": 28}

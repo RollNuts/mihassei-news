@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode
 
 if __package__:
     from .photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
@@ -111,6 +112,22 @@ def _photo_figure(issue, shot, *, cover=False):
     )
 
 
+def _share_controls(issue):
+    cover = issue["images"][cover_shot(issue)["id"]]
+    url = "https://veripsa.com" + issue_url(issue) + "?v=" + cover["sha256"][:12]
+    intent = "https://x.com/intent/tweet?" + urlencode({
+        "text": "【週刊グラビア】" + issue["title"] + "\n#未発生新聞",
+        "url": url + "&utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=reader_entry_v3",
+    })
+    return (
+        '<nav class="engagement-actions" aria-label="この号を共有">'
+        f'<a class="share-control" href="{h(intent)}" target="_blank" rel="noopener noreferrer" '
+        'aria-label="Xでこの号を共有"><span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
+        f'<button class="copy-control" type="button" data-copy-url="{h(url)}">'
+        '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button></nav>'
+    )
+
+
 def render_photo_issue(issue, model, layout):
     """Render photographs and the model's column without exposing production data."""
     setting = issue["setting"]
@@ -156,6 +173,7 @@ def render_photo_issue(issue, model, layout):
         '<section class="photo-issue-gallery" aria-label="写真の続き">'
         f'{closing}</section>'
         f'{related}'
+        f'{_share_controls(issue)}'
         '<nav class="photo-issue-footer" aria-label="週刊グラビアの案内">'
         f'<a href="{h(index_url())}">号一覧に戻る <span aria-hidden="true">→</span></a>'
         '</nav></article>'
