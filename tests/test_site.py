@@ -758,6 +758,7 @@ class SiteTests(unittest.TestCase):
                                    curated_categories, generate_rss)
         from scripts.build import uses_stock_photo
         from scripts.visual_review import reviewed_generated_scene
+        from scripts import photo_issues as photo
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -766,6 +767,39 @@ class SiteTests(unittest.TestCase):
         created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")
                  if not p.name.startswith("series-")}
         expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
+        photos=photo.published_issues(photo.load_photo_issues(ROOT),root=ROOT)
+        if photos:
+            expected.add(Path(photo.feed_url()).name)
+            channel=ET.parse(ROOT/"dist"/photo.feed_url().lstrip("/")).getroot().find("channel")
+            self.assertEqual(channel.findtext("title"),"週刊グラビア | 未発生新聞（創作写真コラム）")
+            self.assertEqual(channel.findtext("description"),"架空の成人モデルの写真と、5年後を暮らす短いコラム。")
+            self.assertEqual(channel.findtext("link"),SITE+photo.index_url())
+            self.assertEqual(channel.findtext("language"),"ja")
+            self.assertEqual(channel.find("atom:link",ns).attrib,
+                             {"href":SITE+photo.feed_url(),"rel":"self","type":"application/rss+xml"})
+            releases=sorted(photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)
+            entries=channel.findall("item")
+            self.assertEqual([item.findtext("link") for item in entries],
+                             [SITE+photo.issue_url(issue) for issue in releases])
+            for item,issue in zip(entries,releases):
+                self.assertEqual(item.findtext("guid"),SITE+photo.issue_url(issue))
+                self.assertEqual(item.findtext("title"),issue["title"]+" | 週刊グラビア（創作写真コラム）")
+                self.assertEqual(item.findtext("description"),issue["summary"])
+                self.assertEqual(parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
+                                 datetime.fromisoformat(issue["published_at"]).isoformat())
+                cover=photo.cover_shot(issue)
+                image=SITE+photo.cover_url(issue)
+                self.assertEqual(item.find("enclosure").attrib,{"url":image,
+                    "length":str(issue["images"][cover["id"]]["bytes"]),"type":"image/jpeg"})
+                self.assertEqual(item.find("media:thumbnail",ns).get("url"),image)
+                self.assertEqual(item.find("media:content",ns).get("url"),image)
+                self.assertEqual(item.find("media:content",ns).get("type"),"image/jpeg")
+                self.assertEqual(item.findtext("media:description",namespaces=ns),cover["alt"])
+            for path,title in [(photo.index_url(),"週刊グラビア")]+[
+                    (photo.issue_url(issue),issue["title"]) for issue in photos]:
+                page=(ROOT/"dist"/path.lstrip("/")/"index.html").read_text(encoding="utf-8")
+                self.assertIn('<link rel="alternate" type="application/rss+xml" title="'
+                              +html.escape(title,quote=True)+' RSS" href="'+photo.feed_url()+'">',page)
         self.assertEqual(created,expected)
         homepage=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
