@@ -6074,6 +6074,184 @@
         "resize": "center-cover-bilinear",
         "width": 1200
       }
+    },
+    "three-shipping-firms-share-space-steel-sails": {
+      "article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
+      "source_article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
+      "bytes": 239943,
+      "sha256": "2c3ea3d0373c67d6618b0b25df72ba39d69606884426fa9067b3a713465b0bbb",
+      "generated_at": "2026-11-14T10:39:33.198Z",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "generation_prompt": "Wide editorial photograph from a quay at a fictional Japanese industrial harbor: a crane lowers bundled steel beams into the open hold of a coastal cargo ship. Two helmeted adult port workers stand safely clear, checking a cargo tag. A second ship remains moored at the neighboring berth for inspection. Natural daylight, believable lifting cables, metal and water textures, dock and water visible, horizontal 16:9. No readable writing, logos, branded vessels or recognizable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "source_png_sha256": "3f15788ec350a6802d34b730d24095edd962ddc4e2ee1faf8f679aba42f5e464",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:24078e87-961f-4c5c-928b-7b3ce58ec7a8",
+        "instanceID": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              13,
+              13,
+              232,
+              144,
+              86,
+              205,
+              66,
+              1,
+              200,
+              16,
+              43,
+              81,
+              173,
+              244,
+              19,
+              210,
+              142,
+              114,
+              252,
+              222,
+              150,
+              165,
+              69,
+              248,
+              253,
+              139,
+              172,
+              188,
+              204,
+              91,
+              121,
+              2
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-14T10:39:30.812393364Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:39:30.812401616Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:39:30.810068206Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr729-reviewer-handoff-first-photo",
+        "candidate_branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
+        "candidate_commit": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
+        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
+        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf",
+        "bytes": 2660184,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "cc5eabf1654b29017997a1d5421202796a8bfd279d8d1dfeca6f97152539276b",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part000",
+            "bytes": 524288,
+            "sha256": "79e12df9a82aeaea8100607cd8cab0746cc6515ff97f332252e6d405c0724e33",
+            "blob_sha": "b4b0558d5a30c95902217c5f1b035cf43d4b0c04"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part001",
+            "bytes": 524288,
+            "sha256": "6d6955b3be443e46edd43abc5be5aaea5cf73fe7185f9cc7f5658b2a22e95481",
+            "blob_sha": "be3d4bba6fc514eda526b6ccd771bf2eb9c15159"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part002",
+            "bytes": 524288,
+            "sha256": "3b95b1177badd0cb283016963479ac222fb71c182fcb83a87482e19493e5ca40",
+            "blob_sha": "2bee677dbc69fd41661c34e90deb737241daf48d"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part003",
+            "bytes": 524288,
+            "sha256": "10e7309b724d2228381471d944147b11cb13cefa4ebb84b3aade664a524b8aef",
+            "blob_sha": "260e3257e3eb464f8df32f2a99c00753c2b47e5e"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part004",
+            "bytes": 524288,
+            "sha256": "4922516613fa1f3023c1f2e26107f75dbf12f204eac03fbd15b027b09bdd662d",
+            "blob_sha": "5e0d1d81952763c82d093ddfdaefeecdbecfe22f"
+          },
+          {
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part005",
+            "bytes": 38744,
+            "sha256": "a4d8000bd091e3e440813028c0d810ff44548f67a26604dbb2c3a689afdfed38",
+            "blob_sha": "382b8136dd6d1da462d0ec00d9fea32bdfbd2bcc"
+          }
+        ],
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "9d49badea92736069fd6a857366c41bf94c98be8",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "63d4e74da4a707fb9d8e2d556db242030c6e4021831c643bb3e7ca5b049683df",
+          "observed_at": "2026-11-14T10:38:38.414Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
+          "receipt_path": "maintenance/native-image-generation-claims/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a.json",
+          "receipt_sha256": "87a7bde814f778cac227609a08e0c4e35b00de925f59d3735af5b0618b11e511",
+          "commit_sha": "94e510f5c941ba70339913d5785a84b847a8b720"
+        }
+      },
+      "native_candidate": {
+        "branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
+        "commit_sha": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
+        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
+        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf",
+        "identity": "65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a"
+      },
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      },
+      "generation_id": "ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+      "generation_receipt": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
     }
   },
   "rejected": {
