@@ -61,6 +61,24 @@
             "receipt_sha256": "e69a43cb9ebd891f26aa7451968d5341f7d7365457b4518e8740593bfdcb4057"
           }
         }
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 164,
+        "bust_cm": 91,
+        "waist_cm": 61,
+        "hip_cm": 91,
+        "shoulder_width_cm": 37,
+        "inseam_cm": 76,
+        "heads_tall": 7.3
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-master-nagino-saya-c3552d3b1fad.jpg",
+        "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+        "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+        "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
       }
     },
     {
@@ -87,6 +105,20 @@
           "きれいなニット"
         ],
         "weakness": "時刻や段取りを気にするのに、自分の休日だけ予定がずれる。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 166,
+        "bust_cm": 95,
+        "waist_cm": 63,
+        "hip_cm": 94,
+        "shoulder_width_cm": 38,
+        "inseam_cm": 77,
+        "heads_tall": 7.4
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     },
     {
@@ -112,6 +144,20 @@
       "creative_reference": {
         "url": "https://asukasaito.jp/s/m15/",
         "scope": "洗練された落ち着きと表情の幅を参考にする。顔と名前はオリジナル。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 158,
+        "bust_cm": 82,
+        "waist_cm": 58,
+        "hip_cm": 85,
+        "shoulder_width_cm": 35,
+        "inseam_cm": 73,
+        "heads_tall": 7.2
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     },
     {
@@ -133,6 +179,20 @@
           "初めての乗り物"
         ],
         "weakness": "勢いで出かけて、帰りの支度を忘れがち。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 160,
+        "bust_cm": 85,
+        "waist_cm": 60,
+        "hip_cm": 88,
+        "shoulder_width_cm": 37,
+        "inseam_cm": 74,
+        "heads_tall": 7.2
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     },
     {
@@ -154,6 +214,20 @@
           "静かな旅"
         ],
         "weakness": "気に入った場所を見つけると長居する。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 167,
+        "bust_cm": 89,
+        "waist_cm": 63,
+        "hip_cm": 92,
+        "shoulder_width_cm": 38,
+        "inseam_cm": 78,
+        "heads_tall": 7.4
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     },
     {
@@ -179,6 +253,20 @@
       "creative_reference": {
         "url": "https://www.grajapa.shueisha.co.jp/post/fujishima_kaho_1st/",
         "scope": "明るい表情、光、カメラとの距離感、服装と場面の変化を参考にする。顔と名前はオリジナル。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 156,
+        "bust_cm": 84,
+        "waist_cm": 58,
+        "hip_cm": 86,
+        "shoulder_width_cm": 35,
+        "inseam_cm": 71,
+        "heads_tall": 7.1
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     },
     {
@@ -200,6 +288,20 @@
           "小物の配色"
         ],
         "weakness": "気になる組合せを比べすぎて決めるのが遅い。"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 170,
+        "bust_cm": 87,
+        "waist_cm": 62,
+        "hip_cm": 91,
+        "shoulder_width_cm": 39,
+        "inseam_cm": 81,
+        "heads_tall": 7.6
+      },
+      "body_reference": {
+        "state": "unprepared"
       }
     }
   ],
@@ -773,58 +875,53 @@
       "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
       "generation_holds": {
         "04": {
-          "issue_slug": "winter-coat-swimsuit-saya-001",
-          "issue_sha256": "0ca1eadb47026a9afa8934a506cd219e09295eea9cf83d58961a35094258ca54",
-          "cut": "04",
-          "status": "generation_failed_no_image",
-          "reason": "image tool input safety moderation sexual",
-          "request_id": "b463f7d9-31ec-48bb-90a0-19414379f13b",
-          "claim": "native-image-generation-claim/8ad0a09c06ba6573d4ec8954ae0f583cc43d63383a13fa4fffaa2bf0d509c33b",
-          "plan": {
-            "repository": "RollNuts/mihassei-news",
-            "slug": "indoor-beach-friends-exchange-ripples",
-            "articleSha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
-            "baseCommitSha": "ef9dd3b1d258d81250ce05621c66dc280d4d2c18",
-            "baseTreeSha": "55e94f5c182ddc1bc9696bf9cc56b3d3cc2d879d",
-            "prompt": "Create a new editorial sports-swimwear photograph featuring the same original fictional Japanese adult woman, age 27, in the two reference photographs. These references establish only her face: short dark bob, light fringe, dark eyes and individual natural features. New dedicated magazine scene: she is sitting sideways on a broad pool step at a quiet outdoor heated pool overlooking the sea, one hand resting on the metal handrail, looking out over the water with an easy small smile. She wears an ordinary opaque terracotta sports bikini: a well-fitted, supportive high-coverage swim top with broad shoulder straps and matching normal swim bottoms. Natural everyday posture after swimming. Three-quarter framing from head to knees at eye level, with enough space to see the stair, handrail and sea. Crisp late-autumn daylight, a little steam on the warm water, simple pale stone architecture. Realistic editorial photography, natural skin texture, believable hands and water, accurate fabric. The setting, wardrobe, angle and pose must all be newly composed for this weekly photo feature, rather than reusing the existing newspaper photograph. Horizontal 16:9. No text, logos, brands, other people, collage, exaggerated anatomy or celebrity likeness.",
-            "logicalRunId": "weekly-photo-winter-coat-swimsuit-saya-001-0ca1eadb47026a9afa8934a506cd219e09295eea9cf83d58961a35094258ca54-cut-04",
-            "protectedHashes": {
-              "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
-              "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
-              "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
-            },
-            "identity": "8ad0a09c06ba6573d4ec8954ae0f583cc43d63383a13fa4fffaa2bf0d509c33b",
-            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-5f5f97c465e1",
-            "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
-          },
-          "candidate": {
-            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-4d0640c63c73",
-            "commit": "617c3041aceaf5505181385c2aee2f376386d0be",
-            "jpeg_sha256": "7115d2bdadd6042a6d1c74f1809da96eccc3838fbdcf79319116c1faa0dfed37",
-            "decision": "hold",
-            "reason": "Generated one-piece photograph is technically sound, but reader rejected the onsen-like location and requests dedicated bikini fashion. No visual acceptance or publication."
-          },
+          "status": "character_body_consistency_pending",
           "latest_candidate": {
             "issue_slug": "winter-coat-swimsuit-saya-001",
-            "issue_sha256": "669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
             "cut": "04",
-            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-93a845994b4a",
-            "candidate_commit": "7b6baf693003ef464feb53be41f9d7fda07fbd06",
-            "receipt_sha256": "ea10d4fde342dc5ba488558aa5cb8635e5c1e252f87d5def48e49cf48f75b01b",
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-046430a83ae6",
+            "candidate_commit": "ba6609fcad611b460a25857a839caeac7d71329a",
+            "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
+            "receipt_sha256": "dd5064e1f26c88d7a5352cde42880ac01f0fcf1bba621efd4f881a3f61e71bd1",
             "jpeg": {
               "path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/candidate.jpg",
-              "bytes": 229699,
-              "sha256": "cc8b52982012a5ebabc1566e06fbbcd9d79d02e27f6202193b14b573d5e0bdbc",
+              "bytes": 235076,
+              "sha256": "724fd88d76091082deb2fc28ab428fb24830dd802650a687c2dcad0f8de2fee3",
               "width": 1200,
               "height": 675,
               "quality": 84,
-              "blob_sha": "3bee6d52fbb60dd232103258cd22081299a97551"
+              "blob_sha": "68a630ee4c683b3c07e44e7f837818ab2f7f79e6"
             },
-            "source_png_sha256": "1d879151776605b5e1f03d42e10c56c3ed9b0d971eb2e3d4c7bdababea979a47",
-            "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-90054a2b-a606-4d35-bf2e-2d67dafaa921.png",
-            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-669b43fab9b9df0f8c4d3b9e4a06aa741743ec3c2cb82c828ad0e51d9dc1695d-cut-04-ssd1b-reference-face-edit",
-            "status": "held_user_requested_figure_and_bikini_fit_edit"
-          }
+            "source_png_sha256": "2c148013ce6c0294b11a803d4d17598138c675599644b6d426871b50f2495af9",
+            "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-d214b424-f69b-459b-a1a8-517e598fef7c.png",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7-cut-04-catalog-reference-edit",
+            "edit_references": [
+              {
+                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-90054a2b-a606-4d35-bf2e-2d67dafaa921.png",
+                "sha256": "1d879151776605b5e1f03d42e10c56c3ed9b0d971eb2e3d4c7bdababea979a47"
+              },
+              {
+                "path": "/Users/murakaminaoya/未発生新聞/drafts/photo-reviews/weekly-winter-coat-swimsuit-saya-001/gpt-success-reference-201edd889fa2.png",
+                "sha256": "201edd889fa2bf093a04292233a9f15e9f14d37e39daa4a9cece4f3ba6c1db37"
+              }
+            ],
+            "status": "held_character_body_consistency",
+            "body_review": {
+              "decision": "hold",
+              "reviewed_at": "2026-11-14T10:10:55.354445+00:00",
+              "image_sha256": "724fd88d76091082deb2fc28ab428fb24830dd802650a687c2dcad0f8de2fee3",
+              "body_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+              "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+              "note": "原PNGと1200x675 JPEGを実表示。ビキニ上下・顔・髪・poolは良好。元blue/c355と既存02より上半身の前方ボリュームと胸腰比が変わり、同一人物の体型を維持できていないためrootと独立QAで保留。写真から数値を実測した記録ではない。"
+            }
+          },
+          "latest_failed_edit": {
+            "request_id": "86ffbc9a-eada-49a6-95e0-9654f54f2c34",
+            "claim": "native-image-generation-claim/d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
+            "status": "output_moderation_blocked_no_image"
+          },
+          "next_action": "既存の週刊制作担当がc355全身基準と7人のbody_profileを先に参照し、04の未解消の体型差を確認する。同条件の生成・再検品は繰り返さず、具体的に異なる適切な撮影案を作れる場合だけ検討する。担当Codex総括／PR735。通常ニュースは継続。"
         }
       },
       "editorial_history": [
@@ -1701,6 +1798,101 @@
             "status": "held_user_requested_figure_and_bikini_fit_edit"
           },
           "note": "Face/pool editing succeeded; reader requests the same figure as the established model and standard bikini briefs instead of a high-waisted wrap."
+        },
+        {
+          "status": "generation_failed_no_image",
+          "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+          "cut": "04",
+          "request_id": "8bbdc1a9-41f5-4f8d-b532-4d10887d9aeb",
+          "reason": "Image tool input moderation returned sexual; no image bytes returned.",
+          "claim": "native-image-generation-claim/982e4b1b358bcf6858e76a9fa56b68a47c9f1665a29586063420a73dcc386d5a",
+          "plan": {
+            "repository": "RollNuts/mihassei-news",
+            "slug": "indoor-beach-friends-exchange-ripples",
+            "articleSha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "baseCommitSha": "71de32fd3a8fa111b721eae447386699bcee6c76",
+            "baseTreeSha": "7fec8cf7e88fd77c6b943b843d472038f6df3f23",
+            "prompt": "Edit image 1. Keep her face, hair, seated pose, pool and camera framing. Use the foreground fictional adult woman, age 27, in image 2 as the reference for her established natural figure and swimsuit fit. Replace the wrap-like high-waisted bottom with standard bikini briefs in the cut of image 2, keeping the terracotta fabric and colour. Match the top's triangle-bikini design and the natural proportions to image 2. The swimsuit is opaque. No skirt, shorts or wrap panel.",
+            "logicalRunId": "weekly-photo-winter-coat-swimsuit-saya-001-882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7-cut-04-wardrobe-fit-edit",
+            "protectedHashes": {
+              "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
+              "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
+              "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+            },
+            "identity": "982e4b1b358bcf6858e76a9fa56b68a47c9f1665a29586063420a73dcc386d5a",
+            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-921760b4af0e",
+            "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
+          }
+        },
+        {
+          "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+          "cut": "04",
+          "candidate": {
+            "issue_slug": "winter-coat-swimsuit-saya-001",
+            "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+            "cut": "04",
+            "candidate_branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-046430a83ae6",
+            "candidate_commit": "ba6609fcad611b460a25857a839caeac7d71329a",
+            "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
+            "receipt_sha256": "dd5064e1f26c88d7a5352cde42880ac01f0fcf1bba621efd4f881a3f61e71bd1",
+            "jpeg": {
+              "path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/candidate.jpg",
+              "bytes": 235076,
+              "sha256": "724fd88d76091082deb2fc28ab428fb24830dd802650a687c2dcad0f8de2fee3",
+              "width": 1200,
+              "height": 675,
+              "quality": 84,
+              "blob_sha": "68a630ee4c683b3c07e44e7f837818ab2f7f79e6"
+            },
+            "source_png_sha256": "2c148013ce6c0294b11a803d4d17598138c675599644b6d426871b50f2495af9",
+            "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-d214b424-f69b-459b-a1a8-517e598fef7c.png",
+            "logical_run_id": "weekly-photo-winter-coat-swimsuit-saya-001-882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7-cut-04-catalog-reference-edit",
+            "edit_references": [
+              {
+                "path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-90054a2b-a606-4d35-bf2e-2d67dafaa921.png",
+                "sha256": "1d879151776605b5e1f03d42e10c56c3ed9b0d971eb2e3d4c7bdababea979a47"
+              },
+              {
+                "path": "/Users/murakaminaoya/未発生新聞/drafts/photo-reviews/weekly-winter-coat-swimsuit-saya-001/gpt-success-reference-201edd889fa2.png",
+                "sha256": "201edd889fa2bf093a04292233a9f15e9f14d37e39daa4a9cece4f3ba6c1db37"
+              }
+            ],
+            "status": "held_character_body_consistency",
+            "body_review": {
+              "decision": "hold",
+              "reviewed_at": "2026-11-14T10:10:55.354445+00:00",
+              "image_sha256": "724fd88d76091082deb2fc28ab428fb24830dd802650a687c2dcad0f8de2fee3",
+              "body_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+              "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+              "note": "原PNGと1200x675 JPEGを実表示。ビキニ上下・顔・髪・poolは良好。元blue/c355と既存02より上半身の前方ボリュームと胸腰比が変わり、同一人物の体型を維持できていないためrootと独立QAで保留。写真から数値を実測した記録ではない。"
+            }
+          },
+          "note": "New user-provided successful GPT swimwear reference; bikini edit succeeded but body consistency held. Source and current native identities are preserved."
+        },
+        {
+          "status": "generation_failed_no_image",
+          "issue_sha256": "882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7",
+          "cut": "04",
+          "request_id": "86ffbc9a-eada-49a6-95e0-9654f54f2c34",
+          "reason": "Image tool output moderation returned sexual; no image bytes returned. Do not retry the same request or move it to another generation route.",
+          "claim": "native-image-generation-claim/d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
+          "plan": {
+            "repository": "RollNuts/mihassei-news",
+            "slug": "indoor-beach-friends-exchange-ripples",
+            "articleSha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+            "baseCommitSha": "71de32fd3a8fa111b721eae447386699bcee6c76",
+            "baseTreeSha": "7fec8cf7e88fd77c6b943b843d472038f6df3f23",
+            "prompt": "Edit image 1 into another natural swimwear catalogue photograph of the same fictional adult woman, age 27, shown in image 2. Preserve the face, short hair, terracotta two-piece bikini, seated pose and pool environment from image 1. Match her whole-body proportions to the established character reference in image 2 so the two photographs depict the same person's physique. Natural daylight and realistic skin texture. Opaque swimsuit fabric, no text or logos.",
+            "logicalRunId": "weekly-photo-winter-coat-swimsuit-saya-001-882bc9186164de86a4994fc9c2669280e0a24f6a909f2200789fdd48cc6079e7-cut-04-saya-body-reference-edit",
+            "protectedHashes": {
+              "content/articles.json": "f74e82aa36820621a40c094b166da54cca7fe3418e3e4638473c9aea9cb49555",
+              "assets/generated/manifest.json": "090e0a87646fa9787c13ae2042f83deb7da8f0ad6bae0d334ef6d57cb69ae1b9",
+              "content/visual_reviews.json": "a5d2fe58454cde7f40d8aabe2615f12578a5543e71e44a2fdc0c341e73f6bc07"
+            },
+            "identity": "d7b2f811455b94b350cc2f34497c9c96d25743a279dcd87e33057f6993fa384d",
+            "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-b3197b00ce99",
+            "directory": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples"
+          }
         }
       ],
       "preparation_sources": {

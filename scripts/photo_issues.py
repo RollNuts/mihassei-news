@@ -62,11 +62,13 @@ def cover_url(issue):
 import re
 from datetime import datetime, timezone
 if __package__:
+    from .photo_body_profiles import validate_body_profile, validate_body_reference
     from .generated_photos import (MAX_SCENE_BYTES, MAX_ARCHIVE_BYTES, article_fingerprint,
                                    generation_record_fingerprint, accepted_review_matches)
     from .local_scene_photos import archive_bytes
     from .media_policy import jpeg_dimensions
 else:
+    from photo_body_profiles import validate_body_profile, validate_body_reference
     from generated_photos import (MAX_SCENE_BYTES, MAX_ARCHIVE_BYTES, article_fingerprint,
                                  generation_record_fingerprint, accepted_review_matches)
     from local_scene_photos import archive_bytes
@@ -307,6 +309,8 @@ def validate_catalog(data):
             _master(model["master"])
         elif model.get("reference_state") != "unprepared":
             raise ValueError("Prepared photo model lacks a master")
+        validate_body_profile(model.get("body_profile"))
+        validate_body_reference(model.get("body_reference"))
         model_ids.add(model["id"])
     seen, numbers = set(), set()
     for issue in issues:
