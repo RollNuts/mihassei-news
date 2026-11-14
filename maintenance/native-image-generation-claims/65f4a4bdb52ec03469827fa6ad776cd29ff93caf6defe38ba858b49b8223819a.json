@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
+  "slug": "three-shipping-firms-share-space-steel-sails",
+  "article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
+  "logical_run_id": "article-20261114-pr729-reviewer-handoff-first-photo",
+  "prompt_sha256": "da1102aab101cdfd0e8a76599003f1282cf1a52b15e2254d8fd03b0eb70aba0f",
+  "reserved_at": "2026-11-14T10:38:50.978Z",
+  "baseline": {
+    "commit_sha": "1e06f5b902291796ea372d15d863e264c0a60d9b",
+    "tree_sha": "9ae94929db026bf6a452c2f0ce174cafaab8f098",
+    "protected_hashes": {
+      "content/articles.json": "43ae8935fb242eea0d6821789eb7a3a3928b6348e76a08a0fd4469dc697dcedc",
+      "assets/generated/manifest.json": "e46bd5736653082700f19c5a64342c0c4ae236507b31117e9f95765beecad6c1",
+      "content/visual_reviews.json": "6c156e074b32cd3367c55f204e64964b8323d19297906d00751c3bf93dd54590"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "9d49badea92736069fd6a857366c41bf94c98be8",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "63d4e74da4a707fb9d8e2d556db242030c6e4021831c643bb3e7ca5b049683df",
+    "observed_at": "2026-11-14T10:38:38.414Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
