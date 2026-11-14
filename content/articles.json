@@ -1,5 +1,66 @@
 [
   {
+    "slug": "three-shipping-firms-share-space-steel-sails",
+    "category": "経済",
+    "flash": "別会社の船が鋼材を運ぶ",
+    "fiction_company": "潮結航運",
+    "art": "cards",
+    "fiction_at": "2031-11-14T11:30:00+09:00",
+    "published_at": "2026-11-14T11:30:00+09:00",
+    "title": "船会社3社が空き枠を共有　点検で止まった船の鋼材、別会社が出荷",
+    "summary": "配船会社「潮結航運」が、3社の船の空きスペースと行き先を共有するサービスを開始。点検で出港できない船に積む予定だった鋼材を、同じ目的港へ向かう別会社の午後便に載せ、翌日の納入を守った。",
+    "paragraphs": [
+      "出港できない船に積むはずだった鋼材を、隣の会社の船が運んだ。14日、架空の配船会社「潮結航運」が内航船3社の空きスペースと行き先を共有するサービスを始め、初日から港の出荷予定が書き換わった。",
+      "この港では午前に1号船が鋼材を積み、別の工業港へ向かう予定だった。ところが出港前の機関点検で修理が必要となり、1号船は翌日まで岸壁を離れられなくなった。荷主は翌日中の納入を希望しており、鋼材はまだ岸壁に積まれたままだった。",
+      "以前なら各社に電話して空きと行き先を聞き直すところを、今回は共有画面に同じ工業港へ向かう2号船の空きが表示された。2号船は別会社の午後便で、自社の荷物を積んでも鋼材を載せる余裕があった。配船担当は両社と荷主、船長、港の荷役責任者に積載条件と行き先を確認し、午後便への振替を決めた。",
+      "昼過ぎ、クレーンが1号船用に岸壁へ置かれていた鋼材を吊り上げ、隣の岸壁に停泊する2号船の船倉へ降ろした。港の作業員は鋼材の束に付いた荷札を照合し、送り先が変わっていないことを確かめた。船の空きスペースが会社を越えて使われる一方、各船の安全確認はそれぞれの乗組員が担った。",
+      "夕方、2号船が鋼材を積んで港を離れ、点検中の1号船だけが岸壁に残った。翌朝には2号船から鋼材が荷下ろしされ、工場への納入に間に合った。港の出航予定表では1号船の名前が翌日の欄へ移っていたが、鋼材の到着予定は書き換えずに済んだ。"
+    ],
+    "source": {
+      "kind": "国土交通省公式発表",
+      "publisher": "国土交通省 海事局",
+      "published_at": "2026-11-10T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/kaiji03_hh_000234.html",
+      "topic": "2026年11月10日、国土交通省海事局は船員不足に対応してオペレーターが複数の内航船オーナーと連携し、配船効率化に資するシステム導入や船員育成等を支援する「船団の輸送力向上事業」の2次募集を開始した。2031年の架空会社「潮結航運」、3社の共同システム、1号・2号船、機関点検、鋼材の振替、納入実績はすべて創作であり、実在する事業の実績ではない。"
+    },
+    "scene_prompt": "Two adult Japanese port workers guide a crane lowering bundled steel beams into a small coastal cargo ship at a busy industrial harbor. Another cargo ship stays at the neighboring berth for engine inspection. Realistic horizontal 16:9 editorial press photograph, natural daylight, steel cables and safety helmets physically believable, dock and water in view, no legible text, no logos, no branded vessels, no recognizable real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "内航海運",
+      "共同配船",
+      "物流"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "内航海運",
+      "共同配船"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "船は止まっても鋼材は出港。別会社の船に積み替えた港で、先に動いたのは積み荷の予定でした。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月10日、国土交通省が内航船の複数船主連携・配船効率化を支援する2次募集を開始した",
+      "target": "3社の船の積載余力と行き先を共有する架空の共同配船サービス",
+      "action": "修理で止まった1号船の鋼材を、同じ工業港へ向かう別会社の2号船に載せ替える",
+      "outcome": "午後便の2号船が鋼材を運び、翌朝の工場納入に間に合った"
+    },
+    "reader_clarity": {
+      "who": "配船会社「潮結航運」",
+      "action": "3社の船の空きスペースを共有し、止まった船の鋼材を別会社の午後便に載せた",
+      "oddity": "船を増やさず他社の積載余力を使い、翌日の鋼材納入を守った"
+    },
+    "behavior_basis": {
+      "motive": "船員や船をすぐに増やせない中、空いている他社船の輸送力を使って荷主への納入を守りたい",
+      "ordinary_alternative": "船会社ごとに予定を管理し、故障した船の荷物は修理後に運ぶか電話で代船を探す",
+      "why_not": "船ごとの空きと同じ目的港への航路を共同で見られ、荷主と運航側の安全確認を経て早く振替を決められるため",
+      "evidence_quote": "以前なら各社に電話して空きと行き先を聞き直すところを、今回は共有画面に同じ工業港へ向かう2号船の空きが表示された。"
+    }
+  },
+  {
     "slug": "friendly-cup-no-standings-four-fan-trophies",
     "category": "スポーツ",
     "flash": "順位はないのに優勝杯が4つ",
