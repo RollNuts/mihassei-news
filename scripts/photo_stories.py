@@ -14,9 +14,11 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 if __package__:
+    from .photo_story_motion import validate_story_motion
     from .photo_issues import (ROOT, image_path, issue_url, load_photo_issues,
                                photo_image_url, published_issues)
 else:
+    from photo_story_motion import validate_story_motion
     from photo_issues import (ROOT, image_path, issue_url, load_photo_issues,
                              photo_image_url, published_issues)
 
@@ -65,7 +67,7 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
     releases = {issue["slug"]: issue for issue in published if issue.get("state") == "published"}
     seen, result = set(), []
     for story in data["stories"]:
-        if (not isinstance(story, dict) or set(story) != FIELDS
+        if (not isinstance(story, dict) or set(story) not in (FIELDS, FIELDS | {"motion"})
                 or not isinstance(story.get("id"), str) or len(story["id"]) > 100
                 or not SLUG.fullmatch(story["id"]) or story["id"] in seen):
             raise ValueError("Invalid photo story identity")
@@ -120,13 +122,17 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
             continue
         date = stamp.astimezone(JST)
         rate, pitch = VOICE_PROFILES[model["id"]]
+        motion = (validate_story_motion(story["motion"], story_id=story["id"],
+                                        image_sha256=sha, root=root) if "motion" in story else None)
         result.append({"id": story["id"], "modelId": model["id"], "name": _text(model["name"], 50, "model name"),
                        "text": text, "publishedAt": story["published_at"],
                        "dateLabel": f"{date.year}年{date.month}月{date.day}日",
                        "settingLabel": f'舞台：{setting["year"]}年{setting["month"]}月',
                        "image": photo_image_url(issue, cut), "alt": _text(shot["alt"], 300, "image alt"),
                        "sourceUrl": issue_url(issue) + "#photo-" + cut,
+                       "profileUrl": "/photo/models/" + model["id"] + "/",
                        "width": width, "height": height,
+                       **({"motion": motion} if motion else {}),
                        "voice": {"rate": rate, "pitch": pitch}})
     return tuple(sorted(result, key=lambda story: _stamp(story["publishedAt"]), reverse=True))
 
@@ -191,3 +197,35 @@ def render_model_stories(model_id, stories=None, *, root=ROOT):
         raise ValueError("Invalid photo story model id")
     stories = load_photo_stories(root) if stories is None else stories
     return render_story_strip(tuple(story for story in stories if story["modelId"] == model_id))
+
+
+def render_photo_timeline(stories):
+    """Static, dated posts remain readable without JavaScript or speech support."""
+    if not stories:
+        return ""
+    cards = []
+    for story in stories[:7]:
+        image = (f'<img src="{_h(story["image"])}" alt="{_h(story["alt"])}" '
+                 f'width="{story["width"]}" height="{story["height"]}" loading="lazy" decoding="async">')
+        motion = story.get("motion")
+        media = (f'<a class="photo-post-image" href="{_h(story["sourceUrl"])}">{image}</a>')
+        if motion:
+            media = ('<figure class="photo-post-motion" data-story-motion>'
+                     f'<video controls playsinline muted preload="none" poster="{_h(story["image"])}" '
+                     f'width="{motion["width"]}" height="{motion["height"]}" aria-label="{_h(story["name"])}の写真モーション">'
+                     f'<source src="{_h(motion["url"])}" type="video/mp4">{image}</video>'
+                     f'<a class="photo-post-image" href="{_h(story["sourceUrl"])}" data-story-motion-fallback hidden>{image}</a>'
+                     '<figcaption>写真モーション · 12秒・音声なし</figcaption></figure>')
+        cards.append('<li><article class="photo-post">'
+                     f'<header><a class="photo-post-person" href="{_h(story["profileUrl"])}">'
+                     f'<img src="{_h(story["image"])}" alt="" width="44" height="44" loading="lazy">'
+                     f'<strong>{_h(story["name"])}</strong></a>'
+                     f'<time datetime="{_h(story["publishedAt"])}">{_h(story["dateLabel"])}</time></header>'
+                     f'<p class="photo-post-text">{_h(story["text"])}</p>{media}'
+                     f'<footer><span>{_h(story["settingLabel"])}</span>'
+                     f'<a href="{_h(story["sourceUrl"])}">写真の掲載特集 ↗</a></footer></article></li>')
+    return ('<section class="cast-timeline" aria-labelledby="cast-timeline-title">'
+            '<div class="section-head"><h2 id="cast-timeline-title">7人の近況</h2>'
+            '<a href="/photo/models/">プロフィール一覧 ↗</a></div>'
+            '<p class="photo-story-label">架空の7人による創作投稿・写真は掲載特集から</p>'
+            + render_story_strip(stories) + '<ol class="photo-post-list">' + ''.join(cards) + '</ol></section>')

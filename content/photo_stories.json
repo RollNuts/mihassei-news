@@ -5,12 +5,134 @@
       "id": "nagino-saya-autumn-detour-20261115",
       "model_id": "nagino-saya",
       "published_at": "2026-11-15T09:40:00+09:00",
-      "setting": {"year": 2031, "month": 11},
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
       "text": "今日、取材メモをまとめたら、AIに「寄り道の時間が足りません」って言われました。そこは私が決めます。じゃ、行ってきます。",
       "source": {
         "issue_slug": "winter-coat-swimsuit-saya-001",
         "cut_id": "01",
         "image_sha256": "7d6077a0f2ef923fee0793ac3da51350a58c0d614c173756822eada2c3da7939"
+      }
+    },
+    {
+      "id": "nagino-saya-introduction-20261115",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は凪野さや。体験ロケと服の仕事をしています。今日は台所でひと休み。料理の途中で、明日の寄り道まで考えてしまいました。",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "08",
+        "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6"
+      },
+      "motion": {
+        "kind": "photo-motion",
+        "path": "assets/photo-story-clips/nagino-saya-introduction-20261115.mp4",
+        "sha256": "a3408b617dabbc3f9b676976d4fedef8130e4c11aea0040b4aff5549a2198821",
+        "bytes": 57302,
+        "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6",
+        "created_at": "2026-11-15T04:26:22.342744+00:00",
+        "width": 640,
+        "height": 360,
+        "duration_ms": 12000,
+        "fps": 24,
+        "codec": "h264",
+        "pixel_format": "yuv420p"
+      }
+    },
+    {
+      "id": "shioba-rio-introduction-20261115",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は汐羽りお。取材先では時刻と段取りを確認する係です。休日のカフェでは、その時計を少し忘れてみようと思っています。",
+      "source": {
+        "issue_slug": "november-off-clock-rio-002",
+        "cut_id": "01",
+        "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4"
+      }
+    },
+    {
+      "id": "tsukishiro-rena-introduction-20261115",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は月城れな。演技とモデルの仕事をしています。服はすぐ決まるように見えるそうですが、今日も最後に最初の一着へ戻りました。",
+      "source": {
+        "issue_slug": "november-sea-and-city-rena-003",
+        "cut_id": "01",
+        "image_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313"
+      }
+    },
+    {
+      "id": "hanase-mio-introduction-20261115",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は花瀬みお。初めての体験を伝える仕事が好きです。今日はテラスで休憩中。じっとしている練習は、まだ少し苦手です。",
+      "source": {
+        "issue_slug": "november-first-detour-mio-004",
+        "cut_id": "01",
+        "image_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad"
+      }
+    },
+    {
+      "id": "shiramine-yuki-introduction-20261115",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "わたしは白峰ゆき。旅先の居心地や服の手触りを確かめています。食事のあとは温かいお茶を。座り心地がよくて、もう少しだけ。",
+      "source": {
+        "issue_slug": "november-a-longer-breath-yuki-005",
+        "cut_id": "01",
+        "image_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705"
+      }
+    },
+    {
+      "id": "amane-hikari-introduction-20261115",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は天音ひかり。歌って踊ることが仕事です。夜の散歩でも、足音がそろうと少し踊りたくなります。今日は歩いて帰る予定です。",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "01",
+        "image_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd"
+      }
+    },
+    {
+      "id": "kiritani-sumire-introduction-20261115",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "私は桐谷すみれ。演技と装いの企画をしています。朝はコーヒーから。カップと服の色を合わせ始めると、お湯が先に待っています。",
+      "source": {
+        "issue_slug": "november-favorite-colors-sumire-007",
+        "cut_id": "01",
+        "image_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc"
       }
     }
   ]

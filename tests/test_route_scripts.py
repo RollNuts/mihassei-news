@@ -17,7 +17,7 @@ class RouteScriptsTests(unittest.TestCase):
             "/": {
                 js("engagement.js"), js("comment-activity.js"),
                 js("serial-progress.js"), js("returning-shelf.js"),
-                js("news-broadcast.js"),
+                js("photo-stories.js"),
             },
             "/archive/": {js("engagement.js"), js("site.js")},
             "/saved/": {js("engagement.js"), js("bookmarks.js")},

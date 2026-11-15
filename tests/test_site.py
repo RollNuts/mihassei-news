@@ -147,15 +147,15 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(home.count('data-issue-picker data-issue-options='),1)
         self.assertNotIn('<div class="news-wire"',home)
 
-    def test_activity_rail_excludes_all_video_choices_when_a_new_clip_leads(self):
-        """A newly delivered clip must not repeat a story in the discovery rail."""
+    def test_activity_rail_is_independent_of_the_replaced_broadcast_choices(self):
+        """The home cast timeline does not consume any news-article slots."""
         import re
         from unittest.mock import patch
         from scripts import build
         articles=build.load()
         playlist=build.broadcast_playlist(articles)
         self.assertGreater(len(playlist),1)
-        broadcast_slugs={item["slug"] for item in playlist}
+        expected=None
         for offset in range(len(playlist)):
             reordered=playlist[offset:]+playlist[:offset]
             with self.subTest(first=reordered[0]["slug"]), \
@@ -164,8 +164,8 @@ class SiteTests(unittest.TestCase):
                 rail=home.split('<section class="press-timeline"',1)[1].split('</section>',1)[0]
                 links=re.findall(r'<li><a href="/articles/([^/]+)/">',rail)
                 self.assertEqual(len(links),3,"fill the rail with different published stories")
-                self.assertTrue(broadcast_slugs.isdisjoint(links),
-                                "all selectable videos are already shown above the rail")
+                if expected is None: expected=links
+                self.assertEqual(links,expected)
 
     def test_homepage_does_not_repeat_lead_or_sidebar_news(self):
         """News grid fills with different headlines rather than showing the same story twice."""
@@ -349,7 +349,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(marker,styles)
         for unsafe in ("@import", "fonts.googleapis.com", "display:none!important"):
             self.assertNotIn(unsafe,styles)
-        from scripts.build import bundled_stylesheets, stylesheet_url, SITE_STYLESHEETS
+        from scripts.build import bundled_stylesheets, stylesheet_url, asset_url, SITE_STYLESHEETS
         import re
         import hashlib
         stylesheet=(ROOT/"dist/assets/newspaper.css").read_text(encoding="utf-8")
@@ -371,7 +371,11 @@ class SiteTests(unittest.TestCase):
         pages += tuple("articles/"+a["slug"]+"/index.html" for a in self.articles)
         for name in pages:
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
-            self.assertEqual(page.count('rel="stylesheet"'),1,name)
+            expected_styles = [stylesheet_url()]
+            if name == "index.html":
+                expected_styles.append(asset_url("photo-stories.css"))
+            self.assertCountEqual(re.findall(r'<link rel="stylesheet" href="([^"]+)"', page),
+                                  expected_styles, name)
             self.assertIn('href="'+stylesheet_url()+'"',page)
             self.assertNotIn('href="/assets/editorial-polish.css"',page)
             self.assertIn('まだ起きていないニュースを、真顔で。',page)

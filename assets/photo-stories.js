@@ -1,6 +1,13 @@
 /* Fictional photo posts: user-initiated, device-local Japanese speech only. */
 (()=>{
   "use strict";
+  for(const shell of document.querySelectorAll("[data-story-motion]")){
+    const video=shell.querySelector("video"),fallback=shell.querySelector("[data-story-motion-fallback]");
+    if(!video || !fallback)continue;
+    const fail=()=>{video.hidden=true;fallback.hidden=false;};
+    video.addEventListener("error",fail);
+    for(const source of video.querySelectorAll("source"))source.addEventListener("error",fail);
+  }
   const roots=[...document.querySelectorAll("[data-photo-stories]")];
   if(!roots.length)return;
   const synth=window.speechSynthesis;

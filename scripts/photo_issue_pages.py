@@ -8,11 +8,13 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import urlencode
 
 if __package__:
+    from .photo_biographies import public_biography
     from .photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from .reader_comments import render_reader_comments
     from .photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
     from .photo_editions import edition_url
 else:
+    from photo_biographies import public_biography
     from photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from reader_comments import render_reader_comments
     from photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
@@ -272,6 +274,7 @@ def _public_model(model):
     if isinstance(personality, list):
         personality = "、".join(personality)
     return {"id": model["id"], "name": model["name"], "age": model["age"],
+            "biography": public_biography(model),
             "occupation": character.get("occupation", ""),
             "personality": personality,
             "likes": list(character.get("likes", [])), "quirk": character.get("weakness", "")}
@@ -360,6 +363,19 @@ def _model_photo_grid(released, parents=None):
 
 def render_model_profile(model, published_issues, layout, *, stories_markup="", root=ROOT, portrait=None, editions=None):
     public = _public_model(model)
+    biography = public["biography"]
+    biography_markup = ""
+    if biography:
+        careers = ''.join(f'<li><time datetime="{h(row["month"])}">{h(row["month"])}</time>'
+                          f'<span>{h(row["text"])}</span></li>' for row in biography["career"])
+        biography_markup = ('<section class="photo-model-biography" aria-labelledby="model-biography-title">'
+                            '<h2 id="model-biography-title">これまでと、ふだん</h2>'
+                            '<p class="photo-story-label">2031年11月時点の架空の経歴</p>'
+                            f'<dl><div><dt>出身</dt><dd>{h(biography["hometown"])}</dd></div>'
+                            f'<div><dt>得意なこと</dt><dd>{h(biography["strength"])}</dd></div>'
+                            f'<div><dt>苦手なこと</dt><dd>{h(biography["difficulty"])}</dd></div>'
+                            f'<div><dt>ふだんの癖</dt><dd>{h(biography["habit"])}</dd></div></dl>'
+                            f'<ol class="photo-model-career">{careers}</ol></section>')
     portrait = validate_profile_portrait(model, root=root) if portrait is None else portrait
     released = [issue for issue in _released_issues(published_issues) if issue["model_id"] == public["id"]]
     latest = released[0] if released else None
@@ -402,7 +418,7 @@ def render_model_profile(model, published_issues, layout, *, stories_markup="", 
             f'<p><strong>{photo_count}</strong><span>掲載カット</span></p>'
             f'<p><strong>{len(parent_ids)}</strong><span>掲載号</span></p></div>'
             f'<dl>{"".join(facts)}</dl>{photo_credit}{_model_share_controls(public, latest, portrait)}</div></header>'
-            f'{stories_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
+            f'{biography_markup}{stories_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
             f'<h2 id="model-photos-title">写真</h2>{grid}</section>'
             f'{issue_section}</article>')
     description = f'{public["name"]}（{public["age"]}歳）のプロフィール。{public["occupation"]}。{public["personality"]}'

@@ -37,7 +37,8 @@ if __package__:
     from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
     from .photo_issue_pages import build_photo_models, model_sitemap_entries
-    from .photo_stories import load_photo_stories, render_story_strip, render_model_stories
+    from .photo_story_motion import copy_story_motion
+    from .photo_stories import load_photo_stories, render_story_strip, render_model_stories, render_photo_timeline
     from .photo_editions import load_photo_editions, edition_url
     from .photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 else:
@@ -61,7 +62,8 @@ else:
     from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
     from photo_issue_pages import build_photo_models, model_sitemap_entries
-    from photo_stories import load_photo_stories, render_story_strip, render_model_stories
+    from photo_story_motion import copy_story_motion
+    from photo_stories import load_photo_stories, render_story_strip, render_model_stories, render_photo_timeline
     from photo_editions import load_photo_editions, edition_url
     from photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 from urllib.parse import quote, urlencode
@@ -1104,8 +1106,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     # real audience counts; these links work without JavaScript.
     archive_script = script_tag("site.js") if path == "/archive/" else ""
     broadcast_script = (script_tag("news-broadcast.js")
-                        if path == "/" or (kind == "story" and article is not None
-                                           and article_clip(article)) else "")
+                        if kind == "story" and article is not None and article_clip(article) else "")
     comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "photo_edition", "serial_episode", "market_bulletin") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
@@ -1118,7 +1119,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                              + script_tag("photo-rankings.js") if path == "/photo/weekly/" else "")
     photo_story_assets = (f'<link rel="stylesheet" href="{asset_url("photo-stories.css")}">\n'
                           + script_tag("photo-stories.js")
-                          if path == "/photo/weekly/" or re.fullmatch(r"/photo/models/[a-z0-9-]+/", path) else "")
+                          if path in ("/", "/photo/weekly/") or re.fullmatch(r"/photo/models/[a-z0-9-]+/", path) else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     page_class = "page-home" if path == "/" else "page-inner"
@@ -1251,7 +1252,8 @@ def gravure_feature_card(articles, photo_issues=(), photo_editions=()):
     )
 
 
-def home(articles, serials=None, photo_issues=(), photo_editions=()):
+def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stories=None):
+    photo_stories = load_photo_stories(BASE) if photo_stories is None else photo_stories
     # The newest published story must lead, even if a caller supplies an
     # unsorted list (e.g. a scheduled content edit or a local preview).
     # Use actual site publication time, never the source date alone or 2031.
@@ -1283,9 +1285,6 @@ def home(articles, serials=None, photo_issues=(), photo_editions=()):
     # the lead, sidebar, or visible story grid.
     front_slugs = {a["slug"], *(x["slug"] for x in remaining[:3]),
                    *(x["slug"] for x in recent_articles)}
-    # Rotating video choices also appear above the history rail, including
-    # older stories whose newly delivered clips move them to the foreground.
-    front_slugs.update(item["slug"] for item in broadcast_playlist(articles))
     more_recent = [x for x in articles if x["slug"] not in front_slugs][:3]
     timeline_links = []
     for item in more_recent:
@@ -1415,7 +1414,7 @@ def home(articles, serials=None, photo_issues=(), photo_editions=()):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着記事</h2></div>{side}</aside>
 </section>
-{broadcast_feature(articles)}
+{render_photo_timeline(photo_stories)}
 <section class="section-block"><div class="section-head"><h2>さらに読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
@@ -2350,7 +2349,8 @@ def build():
             if subtitles:
                 write(clip_url(item).lstrip("/")[:-4] + ".vtt", subtitles)
     write("build-revision.txt", build_revision() + "\n")
-    write("index.html",home(articles,serials,photo_issues,photo_editions))
+    copy_story_motion(story_data, OUT, root=BASE)
+    write("index.html",home(articles,serials,photo_issues,photo_editions,story_data))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
     write("advertise/index.html",advertise())

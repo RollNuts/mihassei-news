@@ -34,6 +34,7 @@ class PhotoStoryTests(unittest.TestCase):
     def setUp(self):
         self.catalog = copy.deepcopy(self.current)
         self.data = copy.deepcopy(self.initial)
+        self.data["stories"] = self.data["stories"][:1]
         self.issue = next(issue for issue in self.catalog["issues"]
                           if issue["slug"] == self.data["stories"][0]["source"]["issue_slug"])
         self.published = [self.issue]
@@ -59,8 +60,32 @@ class PhotoStoryTests(unittest.TestCase):
 
     def test_default_loader_validates_current_published_catalog(self):
         result = stories.load_photo_stories(ROOT, now=NOW)
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result), 8)
         self.assertEqual(result[0]["modelId"], "nagino-saya")
+        self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
+        self.assertEqual(sum("motion" in post for post in result), 1)
+
+    def test_home_timeline_has_seven_readable_posts_and_source_bound_video(self):
+        result = stories.load_photo_stories(ROOT, now=NOW)
+        page = stories.render_photo_timeline(result)
+        parser = Tags(); parser.feed(page)
+        self.assertEqual(sum(tag == "article" for tag, _ in parser.tags), 7)
+        self.assertEqual(sum(tag == "video" for tag, _ in parser.tags), 1)
+        video = next(attrs for tag, attrs in parser.tags if tag == "video")
+        self.assertEqual(video["preload"], "none")
+        self.assertIn("playsinline", video)
+        self.assertIn("muted", video)
+        self.assertNotIn("autoplay", video)
+        self.assertTrue(video["poster"].startswith("/photo/weekly/"))
+        self.assertIn("写真モーション · 12秒・音声なし", page)
+        for post in result[:7]:
+            self.assertIn(post["name"], page)
+            self.assertIn(post["text"], page)
+            self.assertIn(post["profileUrl"], page)
+            self.assertIn(post["sourceUrl"], page)
+        self.assertNotIn("assets/generated/", page)
+        self.assertNotIn("article_sha256", page)
+        self.assertNotIn("assets/photo-story-clips", page)
 
     def test_unpublished_unlisted_and_cross_model_sources_are_rejected(self):
         self.issue["state"] = "draft"

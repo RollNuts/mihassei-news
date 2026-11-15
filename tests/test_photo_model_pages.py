@@ -14,6 +14,18 @@ from tests.test_photo_issue_pages import PageParser, issue
 
 
 class PhotoModelPageTests(unittest.TestCase):
+    def test_all_live_biographies_reach_profiles_without_changing_issue_snapshots(self):
+        catalog = photo_issues.load_photo_issues(build.BASE)
+        before = copy.deepcopy(catalog["issues"])
+        for model in catalog["models"]:
+            markup = pages.render_model_profile(model, [], self.main_only)
+            biography = model["biography"]
+            self.assertIn("2031年11月時点の架空の経歴", markup)
+            for value in (biography["hometown"], biography["strength"], biography["difficulty"],
+                          biography["habit"], *(row["text"] for row in biography["career"])):
+                self.assertIn(value, markup)
+        self.assertEqual(catalog["issues"], before)
+
     def setUp(self):
         self.models = copy.deepcopy(photo_issues.load_photo_issues(build.BASE)["models"])
         for model in self.models:
@@ -190,12 +202,12 @@ class PhotoModelPageTests(unittest.TestCase):
             self.assertIn(build.asset_url(name), weekly)
             self.assertRegex(build.asset_url(name), r"\?v=[0-9a-f]{12}$")
 
-    def test_story_assets_load_only_on_weekly_index_and_individual_profiles(self):
-        for path in ("/", "/archive/", "/photo/weekly/issue-001/", pages.MODEL_INDEX_URL):
+    def test_story_assets_load_only_on_home_weekly_index_and_individual_profiles(self):
+        for path in ("/archive/", "/photo/weekly/issue-001/", pages.MODEL_INDEX_URL):
             page = build.layout("テスト", "説明", path, "本文")
             self.assertNotIn("/assets/photo-stories.js", page)
             self.assertNotIn("/assets/photo-stories.css", page)
-        for path in ("/photo/weekly/", pages.model_url(self.models[0]), pages.model_url(self.models[1])):
+        for path in ("/", "/photo/weekly/", pages.model_url(self.models[0]), pages.model_url(self.models[1])):
             page = build.layout("テスト", "説明", path, "本文")
             for name in ("photo-stories.js", "photo-stories.css"):
                 self.assertIn(build.asset_url(name), page)
