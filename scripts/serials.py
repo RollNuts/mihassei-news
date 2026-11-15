@@ -18,11 +18,13 @@ if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
     from .forecast_ledger import render_forecast_ledger
     from .market_figures import load_market_figures, render_market_figure, write_market_figures
+    from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
     from market_figures import load_market_figures, render_market_figure, write_market_figures
+    from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
 
 
@@ -254,7 +256,7 @@ def render_serials_index(serials, layout):
     return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
-def render_series_page(series, layout, figures=None, bulletins=None):
+def render_series_page(series, layout, figures=None, bulletins=None, outlook=None):
     _require_public(series)
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     figures = figures or {}
@@ -279,6 +281,7 @@ def render_series_page(series, layout, figures=None, bulletins=None):
                if series["kind"] == "fiction" else '') +
             f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span></div></div></header>{disclosure}'
             f'{render_market_bulletins_index(bulletins or []) if series["slug"] == "market-lab" else ""}'
+            f'{render_market_outlook_index(series, outlook or {}) if series["kind"] == "analysis" else ""}'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">連載をRSS購読 ↗</a></div>'
             f'<ol>{items}</ol></section>{render_forecast_ledger(series)}</div>')
@@ -297,7 +300,7 @@ def _share_link(series, ep):
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
 
-def render_episode_page(series, ep, layout, figures=None):
+def render_episode_page(series, ep, layout, figures=None, outlook=None):
     _require_public(series)
     idx = series["episodes"].index(ep)
     prev_ep = series["episodes"][idx - 1] if idx else None
@@ -340,7 +343,9 @@ def render_episode_page(series, ep, layout, figures=None):
                   f'<p><strong>検証日：</strong><time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time>'
                   f'／ 判定状況：{h(fc["status"])}</p>'
                   f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
-                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">検証一覧を見る ↗</a></p><section class="serial-references"><h2>参照した公開資料</h2>'
+                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">検証一覧を見る ↗</a></p>'
+                  f'{render_market_outlook_episode(ep, outlook or [])}'
+                  f'<section class="serial-references"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol></section>')
     # Publishing a sequel must not leave an old "next chapter in preparation"
     # message in the first chapter. Preserve immutable editorial source data.
@@ -465,16 +470,17 @@ def build_serials(serials, layout, write, output):
         return
     figures = load_market_figures(Path(__file__).resolve().parents[1], serials)
     bulletins = load_market_bulletins(Path(__file__).resolve().parents[1])
+    outlook = load_market_outlook(Path(__file__).resolve().parents[1], serials)
     write("serials/index.html", render_serials_index(serials, layout))
     for series in serials:
         prefix = f'serials/{series["slug"]}'
-        write(prefix + "/index.html", render_series_page(series, layout, figures, bulletins))
+        write(prefix + "/index.html", render_series_page(series, layout, figures, bulletins, outlook))
         write(serial_feed_url(series).lstrip("/"), serial_feed_xml(series))
         write(prefix + "/cover.svg", render_cover_svg(series))
         render_social_preview(series, output / "og" / "serials" / (series["slug"]+".png"))
         for ep in series["episodes"]:
             write(prefix + "/" + ep["slug"] + "/index.html",
-                  render_episode_page(series, ep, layout, figures.get(ep["slug"], [])))
+                  render_episode_page(series, ep, layout, figures.get(ep["slug"], []), outlook.get(ep["slug"], [])))
             write_market_figures(series, ep, figures.get(ep["slug"], []), write)
             render_social_preview(series, output / "og" / "serials" /
                                   (series["slug"]+"-"+ep["slug"]+".png"), episode=ep)
