@@ -52,7 +52,8 @@ class MobileReadingFlowTests(unittest.TestCase):
         self.assertIn('id="story-source"', html)
 
     def test_discovery_links_keep_their_routes_without_double_spacing(self):
-        html = build.home(self.articles)
+        with patch.object(build, "PHOTO_ISSUES_AVAILABLE", True):
+            html = build.home(self.articles)
         topic = html.index('<section class="topic-explore genre-explore"')
         category = html.index('<section class="genre-explore"', topic)
         photo = html.index('class="serials-feature"', category)
