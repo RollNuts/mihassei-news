@@ -248,7 +248,7 @@ class EditorialSocialCardTests(unittest.TestCase):
         with patch.object(build, "BASE", self.root), patch.object(build, "OUT", self.root / "dist"), \
                 patch.object(build, "render_social_card") as render:
             build.make_article_social_images([self.article])
-            render.assert_not_called()
+            render.assert_called_once_with(self.article, self.root / "dist/og/articles" / (self.article["slug"] + ".png"), root=self.root)
             self.assertEqual(build.social_image(self.article), generated_url(self.article, root=self.root))
         with patch.object(social_cards.subprocess, "run") as renderer:
             self.assertFalse(social_cards.prepare_scene_png(self.article, root=self.root))
@@ -258,6 +258,49 @@ class EditorialSocialCardTests(unittest.TestCase):
         review.write_text(json.dumps(payload))
         canonical = build.SITE + build.article_url(self.article)
         self.assertEqual(share_page_url(self.article, canonical, root=self.root), canonical + "?image=" + digest)
+
+
+class ArticlePngCompatibilityTests(unittest.TestCase):
+    def test_current_photos_keep_historical_pngs_without_changing_primary_jpeg_ogp(self):
+        root = Path(__file__).resolve().parents[1]
+        articles = {article["slug"]: article for article in json.loads((root / "content/articles.json").read_text())}
+        selected = [articles[slug] for slug in (
+            "swapped-suitcases-drive-themselves-to-lost-property",
+            "water-main-repair-priority-dry-street-first",
+            "concert-audience-voice-rights-cheers-not-free")]
+        with tempfile.TemporaryDirectory() as folder, patch.object(build, "OUT", Path(folder)), \
+                patch.object(social_cards.subprocess, "run", side_effect=AssertionError("No external renderer")):
+            before = [build.social_image(article) for article in selected]
+            self.assertTrue(all(url.startswith("/generated/") and ".jpg?v=" in url for url in before))
+            build.make_article_social_images(selected)
+            for article, image_url in zip(selected, before):
+                with self.subTest(slug=article["slug"]):
+                    data = (Path(folder) / "og/articles" / (article["slug"] + ".png")).read_bytes()
+                    self.assertTrue(data.startswith(social_cards.PNG_SIGNATURE))
+                    offset, compressed = 8, []
+                    while offset < len(data):
+                        size, kind = struct.unpack_from(">I4s", data, offset)
+                        body = data[offset + 8:offset + 8 + size]
+                        self.assertEqual(zlib.crc32(kind + body) & 0xffffffff,
+                                         struct.unpack_from(">I", data, offset + 8 + size)[0])
+                        if kind == b"IDAT": compressed.append(body)
+                        offset += size + 12
+                    width, height, depth, color = struct.unpack_from(">IIBB", data, 16)
+                    self.assertEqual(width, 1200)
+                    self.assertIn(height, (630, 675))
+                    self.assertEqual(depth, 8)
+                    self.assertIn(color, (2, 6))
+                    self.assertEqual(len(zlib.decompress(b"".join(compressed))), (width * (3 if color == 2 else 4) + 1) * height)
+                    maintained = root / "assets/editorial-scenes" / (article["slug"] + ".png")
+                    if article["slug"] != selected[-1]["slug"]:
+                        self.assertEqual(data, maintained.read_bytes())
+                    else:
+                        self.assertFalse(maintained.exists(), "This case must exercise the generic compatibility PNG")
+                    page = build.layout(article["title"], article["summary"], build.article_url(article), "",
+                                        kind="story", article=article)
+                    self.assertEqual(inspect_markup(page, build.article_url(article)),
+                                     (build.SITE + image_url, "image/jpeg"))
+            self.assertEqual([build.social_image(article) for article in selected], before)
 
 
 if __name__ == "__main__":
