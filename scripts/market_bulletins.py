@@ -338,7 +338,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
-          'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a></p>'
+          'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a>'
+          + f'<button class="market-share-copy" type="button" data-copy-url="{SITE+bulletin_url(report)}"><span aria-hidden="true">↗</span><span>リンクをコピー</span></button></p>'
         + render_reader_comments('market-briefing-' + report['slug'],
              heading='この市況へのコメント', placeholder='今日の相場についてひとこと…')
         + '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
