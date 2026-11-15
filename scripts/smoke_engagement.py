@@ -6,7 +6,7 @@ import sys
 import time
 import uuid
 from urllib.request import Request, urlopen
-from urllib.error import URLError
+from urllib.error import URLError, HTTPError
 from urllib.parse import urlsplit
 
 url = sys.argv[1].rstrip("/") if len(sys.argv)>1 else "http://127.0.0.1:8788"
@@ -122,5 +122,40 @@ check(page_code==200 and b'data-future-poll' in page and b'data-poll-choice="pla
       "article page must include voting controls")
 code,_,body=req("GET","/")
 check(code==200 and b"<!doctype html>" in body,"static site fallback")
+# The same free comment storage also serves real, published market episodes.
+# Never send these tests to production; this script accepts only loopback URLs.
+market_key="market-episode-power-grid-after-ai-01"
+market_slug="power-grid-after-ai-01"
+code,_,market_page=req("GET","/serials/market-lab/"+market_slug+"/")
+check(code==200 and ('data-comments data-article="'+market_key+'"').encode() in market_page,
+      "market article exposes a namespaced comment form")
+comment_visitor=str(uuid.uuid4())
+comment_input={"action":"post","article":market_key,"clientId":comment_visitor,
+               "nickname":"相場読者","body":"公開資料と予測条件が分かりやすいです。"}
+code,_,created=req("POST","/api/comments",comment_input)
+created=json.loads(created)
+check(code==201 and created.get("comment",{}).get("id"),
+      "market comment can be posted to an existing episode")
+comment_id=created["comment"]["id"]
+code,_,payload=req("GET","/api/comments?article="+market_key)
+check(code==200 and any(row["id"]==comment_id for row in json.loads(payload)["comments"]),
+      "market comment is readable after posting")
+code,_,payload=req("GET","/api/comments/summary?articles="+market_key)
+check(json.loads(payload)["counts"][market_key]>=1,
+      "market comment count can be loaded for the page")
+code,_,removed=req("POST","/api/comments",{"action":"remove","article":market_key,
+                                          "clientId":comment_visitor,"commentId":comment_id})
+check(code==200 and json.loads(removed).get("ok"),"market comment owner can remove a post")
+try:
+    req("POST","/api/comments",{
+        "action":"post","article":"market-briefing-2026-11-16-am",
+        "clientId":str(uuid.uuid4()),"body":"未公開の市況には投稿できないはずです。"
+    })
+except HTTPError as exc:
+    check(exc.code==404,"unknown market briefing must return 404")
+else:
+    raise AssertionError("unpublished market briefings must not accept comments")
+print("PASS: market comment form, published-page guard, post, list, count and removal")
+
 print("PASS: real site/article PV, retry dedupe, browser dedupe, X attribution, likes, votes, static assets")
 

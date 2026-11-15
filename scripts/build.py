@@ -26,6 +26,8 @@ if __package__:
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from .serial_discovery import render_serial_bridge
+    from .market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from .market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -46,6 +48,8 @@ else:
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from serial_discovery import render_serial_bridge
+    from market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -886,6 +890,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
         og_image = SITE + "/og/serials/" + name + ".png"
+    if kind == "market_bulletin":
+        # Bulletins reuse the existing series image.
+        og_image = SITE + "/og/serials/market-lab.png"
     if photo_cover is not None:
         og_image = SITE + photo_cover_url(photo_cover)
     elif photo_model_image is not None:
@@ -932,7 +939,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         metadata["@type"] = "CollectionPage" if not serial.get("episode") else metadata["@type"]
         metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
-    if kind == "serial_episode" and serial is not None:
+    if kind in ("serial_episode", "market_bulletin") and serial is not None:
         metadata.update({
             "@type": "Article",
             "headline": title,
@@ -943,7 +950,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "publisher": {"@type": "Organization", "name": "未発生新聞", "url": SITE},
             "isAccessibleForFree": True,
             "image": [og_image],
-            "articleSection": "推理小説" if serial["kind"] == "fiction" else "株式市場予測"
+            "articleSection": "推理小説" if serial["kind"] == "fiction" else (
+                "実データの日次市況" if kind == "market_bulletin" else "株式市場予測")
         })
         if serial.get("title"):
             metadata["isPartOf"] = {
@@ -1088,7 +1096,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue") else ""
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "serial_episode", "market_bulletin") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
@@ -1116,7 +1124,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:site_name" content="未発生新聞">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "photo_issue") else "website"}">
+<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "market_bulletin", "photo_issue") else "website"}">
 {article_time_meta}
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
@@ -2094,6 +2102,10 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
+    dispatches = load_market_bulletins(BASE)
+    routes.extend(market_bulletin_routes(dispatches))
+    outlooks = load_market_outlooks(BASE)
+    routes.append((MARKET_OUTLOOK_URL, outlooks[-1]["at"][:10] if outlooks else None))
     photo_entries = [*photo_sitemap_entries(photo_issues), *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -2113,6 +2125,7 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
             sitemap_images["/serials/" + slug + "/" + episode["slug"] + "/"] = (
                 SITE + "/og/serials/" + slug + "-" + episode["slug"] + ".png"
             )
+    sitemap_images.update({bulletin_url(item): SITE + "/og/serials/market-lab.png" for item in dispatches})
     sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries if image})
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
