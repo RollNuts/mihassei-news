@@ -4,17 +4,21 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
 if __package__:
     from .motion_clips import (WIDTH, HEIGHT, FPS, DURATION_SECONDS, MAX_CLIP_BYTES,
-                               encode_clip, require_mac_not_stopped)
+                               encode_clip, require_mac_not_stopped, mac_resource_guard,
+                               MIN_FREE_GIB, MAX_TOTAL_BYTES, movie_bytes)
 else:
     from motion_clips import (WIDTH, HEIGHT, FPS, DURATION_SECONDS, MAX_CLIP_BYTES,
-                              encode_clip, require_mac_not_stopped)
+                              encode_clip, require_mac_not_stopped, mac_resource_guard,
+                              MIN_FREE_GIB, MAX_TOTAL_BYTES, movie_bytes)
 
 FIELDS = {"kind", "path", "sha256", "bytes", "image_sha256", "created_at",
           "width", "height", "duration_ms", "fps", "codec", "pixel_format"}
@@ -80,7 +84,8 @@ def generate(story_id, *, root):
     selected = next(story for story in stories if story["id"] == story_id)
     catalog = load_photo_issues(root)
     document_path = root / "content/photo_stories.json"
-    document = json.loads(document_path.read_text())
+    original = document_path.read_bytes()
+    document = json.loads(original)
     raw = next(story for story in document["stories"] if story["id"] == story_id)
     if "motion" in raw:
         raise ValueError("Existing story motion must not be overwritten")
@@ -93,19 +98,40 @@ def generate(story_id, *, root):
     ffmpeg, ffprobe = shutil.which("ffmpeg"), shutil.which("ffprobe")
     if not ffmpeg or not ffprobe:
         raise RuntimeError("Existing local FFmpeg and ffprobe required")
-    require_mac_not_stopped()
+    guard = mac_resource_guard()
+
+    def check_running(*, force=False):
+        require_mac_not_stopped()
+        if shutil.disk_usage(root).free < MIN_FREE_GIB * 1024**3:
+            raise RuntimeError("Free storage reached the safety floor; movie deferred")
+        if guard is not None:
+            guard.check(force=force)
+
+    check_running(force=True)
     target.parent.mkdir(parents=True, exist_ok=True)
-    encode_clip(image, target, ffmpeg=ffmpeg, ffprobe=ffprobe, check=require_mac_not_stopped,
-                preserve_frame=True)
-    raw["motion"] = {"kind": "photo-motion", "path": relative,
-                     "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
-                     "bytes": target.stat().st_size, "image_sha256": raw["source"]["image_sha256"],
-                     "created_at": datetime.now(timezone.utc).isoformat(),
-                     "width": WIDTH, "height": HEIGHT, "duration_ms": DURATION_SECONDS * 1000,
-                     "fps": FPS, "codec": "h264", "pixel_format": "yuv420p"}
-    validate_story_motion(raw["motion"], story_id=selected["id"],
-                          image_sha256=raw["source"]["image_sha256"], root=root)
-    document_path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n")
+    with tempfile.TemporaryDirectory(prefix=".story-motion-", dir=target.parent) as folder:
+        staged = Path(folder) / target.name
+        encode_clip(image, staged, ffmpeg=ffmpeg, ffprobe=ffprobe, check=check_running,
+                    preserve_frame=True)
+        size = staged.stat().st_size
+        existing = movie_bytes(root) + sum(p.stat().st_size for p in target.parent.glob("*.mp4"))
+        if existing + size > MAX_TOTAL_BYTES:
+            raise RuntimeError("Total video budget reached; no clips deleted")
+        raw["motion"] = {"kind": "photo-motion", "path": relative,
+                         "sha256": hashlib.sha256(staged.read_bytes()).hexdigest(),
+                         "bytes": size, "image_sha256": raw["source"]["image_sha256"],
+                         "created_at": datetime.now(timezone.utc).isoformat(),
+                         "width": WIDTH, "height": HEIGHT, "duration_ms": DURATION_SECONDS * 1000,
+                         "fps": FPS, "codec": "h264", "pixel_format": "yuv420p"}
+        staged_document = Path(folder) / "photo_stories.json"
+        staged_document.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n")
+        check_running(force=True)
+        if document_path.read_bytes() != original or target.exists():
+            raise RuntimeError("Story changed during encoding; preserved newer data")
+        os.replace(staged, target)
+        validate_story_motion(raw["motion"], story_id=selected["id"],
+                              image_sha256=raw["source"]["image_sha256"], root=root)
+        os.replace(staged_document, document_path)
     return raw["motion"]
 
 
