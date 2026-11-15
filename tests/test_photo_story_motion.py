@@ -58,7 +58,7 @@ class StoryMotionTests(unittest.TestCase):
             source["cut_id"]: {"path": "source.jpg"}}}]}
         for failure in ("disk", "interrupt", "budget"):
             with self.subTest(failure=failure), tempfile.TemporaryDirectory() as folder:
-                root = Path(folder)
+                root = Path(folder).resolve()
                 document = root / "content/photo_stories.json"
                 document.parent.mkdir()
                 document.write_text(json.dumps({"schema_version": 1, "stories": [post]}))
