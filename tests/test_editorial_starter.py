@@ -62,7 +62,7 @@ class EditorialStarterTests(unittest.TestCase):
         self.assertEqual(selected,starter_picks(self.articles,excluded,base=BASE))
         source=(BASE/"scripts/build.py").read_text(encoding="utf-8")
         self.assertNotIn("homepage_starter_picks(articles",source)
-        self.assertIn("popular_section = pv_recommendations(articles)",source)
+        self.assertIn("popular_section = pv_recommendations(articles, illustrated=True)",source)
 
     def test_curation_never_makes_the_publisher_skip_a_daily_build(self):
         with tempfile.TemporaryDirectory() as temp:

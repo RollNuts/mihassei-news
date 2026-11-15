@@ -42,6 +42,7 @@ class HomepageVisualTests(unittest.TestCase):
             content.index('class="hero-grid"'),
             content.index('<section class="section-block">'),
             content.index('data-popular-section'),
+            content.index('class="newsroom-snapshot"'),
             content.index('class="press-timeline"'),
             content.index('class="daily-issues-section"'),
             content.index('class="genre-explore"'),
@@ -51,8 +52,8 @@ class HomepageVisualTests(unittest.TestCase):
         ]
         self.assertEqual(positions, sorted(positions))
         self.assertIn('<summary><strong>号外・コメント</strong>', content)
-        self.assertIn('今日の未発生新聞', content)
-        self.assertNotIn('class="special-edition"', content[:positions[6]])
+        self.assertIn('最近の発行号', content)
+        self.assertNotIn('class="special-edition"', content[:content.index('<details class="extras-shelf">')])
         self.assertEqual(content.count('data-popular-section'), 1)
         self.assertEqual(content.count('data-issue-picker'), 1)
 
