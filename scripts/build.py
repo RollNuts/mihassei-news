@@ -38,6 +38,8 @@ if __package__:
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
     from .photo_issue_pages import build_photo_models, model_sitemap_entries
     from .photo_stories import load_photo_stories, render_story_strip, render_model_stories
+    from .photo_editions import load_photo_editions, edition_url
+    from .photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 else:
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -60,6 +62,8 @@ else:
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
     from photo_issue_pages import build_photo_models, model_sitemap_entries
     from photo_stories import load_photo_stories, render_story_strip, render_model_stories
+    from photo_editions import load_photo_editions, edition_url
+    from photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -824,12 +828,12 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None, photo_edition=None, photo_parent=None):
     if serial is not None and not public_serials([serial]):
         raise ValueError("Serial has been withdrawn from publication")
     if serial_collection is not None:
         serial_collection = public_serials(serial_collection)
-    photo_page = kind in ("photo_issue", "photo_collection", "photo_model")
+    photo_page = kind in ("photo_issue", "photo_collection", "photo_model", "photo_edition")
     photo_cover = photo_issue or photo_cover_issue
     if photo_page:
         complete = title + " | 未発生新聞（創作写真コラム）"
@@ -992,6 +996,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                          "isPartOf": {"@type": "CreativeWorkSeries", "name": "週刊グラビア",
                                       "url": SITE + "/photo/weekly/"},
                          "isAccessibleForFree": True})
+        if photo_parent:
+            metadata["isPartOf"] = {"@type":"CollectionPage","name":photo_parent["name"],"url":SITE+photo_parent["url"]}
+    if photo_edition is not None:
+        metadata.update({"@type":"CollectionPage","datePublished":photo_edition["published_at"],
+                         "isPartOf":{"@type":"CreativeWorkSeries","name":"週刊グラビア","url":SITE+"/photo/weekly/"},
+                         "isAccessibleForFree":True})
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
     # footage. Only publish structured video data for a verified local MP4.
@@ -1096,7 +1106,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "serial_episode", "market_bulletin") else ""
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "photo_edition", "serial_episode", "market_bulletin") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
@@ -1211,15 +1221,19 @@ def pv_recommendations(articles, excluded_slug=""):
 </section>'''
 
 
-def gravure_feature_card(articles, photo_issues=()):
+def gravure_feature_card(articles, photo_issues=(), photo_editions=()):
     """Offer a published issue, or the existing reviewed beach photo article."""
     width, height = 1200, 675
-    if photo_issues:
-        issue = max(photo_issues, key=lambda item: datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")))
+    if photo_issues or photo_editions:
+        edition = photo_editions[0] if photo_editions else None
+        issue = edition_cover(edition) if edition else max(photo_issues, key=lambda item: datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")))
         prefix = "/photo/weekly/" + issue["slug"] + "/"
         target, image = prefix, photo_cover_url(issue)
         title, description, alt = issue["title"], issue["summary"], photo_cover_shot(issue)["alt"]
         label, action = f'第{issue["number"]}号', "最新号を読む"
+        if edition:
+            target,title,description = edition_url(edition),edition["title"],edition["summary"]
+            label = f'第{edition["number"]}号 · {len(edition["ordered_features"])}人・{sum(len(feature["shots"]) for feature in edition["ordered_features"])}枚'
         cover_image = issue["images"][photo_cover_shot(issue)["id"]]
         width, height = cover_image.get("width", 1200), cover_image.get("height", 675)
         archive = '<a class="serial-feed-link" href="/photo/weekly/">号一覧を見る ↗</a>'
@@ -1244,7 +1258,7 @@ def gravure_feature_card(articles, photo_issues=()):
     )
 
 
-def home(articles, serials=None, photo_issues=()):
+def home(articles, serials=None, photo_issues=(), photo_editions=()):
     # The newest published story must lead, even if a caller supplies an
     # unsorted list (e.g. a scheduled content edit or a local preview).
     # Use actual site publication time, never the source date alone or 2031.
@@ -1403,7 +1417,7 @@ def home(articles, serials=None, photo_issues=()):
 <div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
-{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues))}
+{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues, photo_editions))}
 <details class="extras-shelf">
 <summary><strong>号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">
@@ -2079,7 +2093,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
-def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=()):
+def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=(), photo_editions=()):
     serials = load_serials(BASE) if serials is None else public_serials(serials)
     latest = max(
         list(modification_date(a) for a in articles) +
@@ -2106,7 +2120,11 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
     routes.extend(market_bulletin_routes(dispatches))
     outlooks = load_market_outlooks(BASE)
     routes.append((MARKET_OUTLOOK_URL, outlooks[-1]["at"][:10] if outlooks else None))
-    photo_entries = [*photo_sitemap_entries(photo_issues), *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
+    feature_entries = photo_sitemap_entries(photo_issues)
+    if photo_editions:
+        feature_entries = [entry for entry in feature_entries if entry[0] != "/photo/weekly/"]
+    photo_entries = [*edition_sitemap_entries(photo_editions), *feature_entries,
+                     *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -2268,6 +2286,7 @@ def build():
     global PHOTO_ISSUES_AVAILABLE
     photo_data = load_photo_issues(BASE)
     photo_issues = published_issues(photo_data, root=BASE)
+    photo_editions = load_photo_editions(BASE, catalog=photo_data, published=photo_issues)
     story_data = load_photo_stories(BASE, catalog=photo_data, published=photo_issues)
     PHOTO_ISSUES_AVAILABLE = bool(photo_issues)
     articles = load()
@@ -2317,7 +2336,7 @@ def build():
             if subtitles:
                 write(clip_url(item).lstrip("/")[:-4] + ".vtt", subtitles)
     write("build-revision.txt", build_revision() + "\n")
-    write("index.html",home(articles,serials,photo_issues))
+    write("index.html",home(articles,serials,photo_issues,photo_editions))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
     write("advertise/index.html",advertise())
@@ -2340,15 +2359,17 @@ def build():
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
     build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE,
-                       stories_markup=render_story_strip(story_data))
+                       stories_markup=render_story_strip(story_data), editions=photo_editions)
+    build_photo_editions(photo_editions, photo_data["models"], layout, write,
+                         stories_markup=render_story_strip(story_data))
     build_photo_models(photo_data["models"], photo_issues, layout, write,
                        stories_renderer=lambda model_id: render_model_stories(model_id, story_data),
-                       root=BASE, output=OUT)
+                       root=BASE, output=OUT, editions=photo_editions)
     # The Worker may accept engagement writes only for these validated releases.
     write("photo/weekly/engagement.json", json.dumps({
-        "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),
+        "version": 1, "issues": sorted({issue["slug"] for issue in photo_issues} | {edition["slug"] for edition in photo_editions}),
     }, ensure_ascii=False) + "\n")
-    other_files(articles, issues, serials, photo_issues, photo_data["models"])
+    other_files(articles, issues, serials, photo_issues, photo_data["models"], photo_editions)
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)

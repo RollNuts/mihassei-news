@@ -11,10 +11,12 @@ if __package__:
     from .photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from .reader_comments import render_reader_comments
     from .photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
+    from .photo_editions import edition_url
 else:
     from photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from reader_comments import render_reader_comments
     from photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
+    from photo_editions import edition_url
 
 
 CREDIT = "登場人物とコラムは創作、写真はAI生成です。"
@@ -151,7 +153,7 @@ def _photo_figure(issue, shot, *, cover=False):
     )
 
 
-def _share_controls(issue):
+def _share_controls(issue, label="この号"):
     cover = issue["images"][cover_shot(issue)["id"]]
     url = "https://veripsa.com" + issue_url(issue) + "?v=" + cover["sha256"][:12]
     intent = "https://x.com/intent/tweet?" + urlencode({
@@ -159,34 +161,34 @@ def _share_controls(issue):
         "url": url + "&utm_source=x&utm_medium=social&utm_campaign=reader_share&utm_content=reader_entry_v3",
     })
     return (
-        '<nav class="engagement-actions" aria-label="この号を共有">'
+        f'<nav class="engagement-actions" aria-label="{h(label)}を共有">'
         f'<a class="share-control" href="{h(intent)}" target="_blank" rel="noopener noreferrer" '
-        'aria-label="Xでこの号を共有"><span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
+        f'aria-label="Xで{h(label)}を共有"><span aria-hidden="true">𝕏</span><span>Xで共有</span></a>'
         f'<button class="copy-control" type="button" data-copy-url="{h(url)}">'
         '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button></nav>'
     )
 
 
-def _issue_engagement(issue):
+def _issue_engagement(issue, label="この号"):
     key = h("photo-issue:" + issue["slug"])
     return (
         '<div class="photo-issue-engagement">'
-        f'<span class="article-pv" data-article-pv="{key}" data-pv-label="この号" '
-        'title="計測開始後のページ表示回数" aria-label="この号のPVを取得中">'
+        f'<span class="article-pv" data-article-pv="{key}" data-pv-label="{h(label)}" '
+        f'title="計測開始後のページ表示回数" aria-label="{h(label)}のPVを取得中">'
         '<strong data-article-pv-count>—</strong><span>PV</span></span>'
         '<div class="engagement-actions">'
         f'<button class="like-control" type="button" data-like-slug="{key}" '
-        'data-like-label="この号にいいね" aria-label="この号にいいね" aria-pressed="false">'
+        f'data-like-label="{h(label)}にいいね" aria-label="{h(label)}にいいね" aria-pressed="false">'
         '<span aria-hidden="true">♡</span><span class="like-label">いいね</span>'
         f'<span class="like-count" data-like-count="{key}" hidden></span></button>'
-        '<a class="comment-control" href="#reader-comments" aria-label="この号のコメント欄へ">'
+        f'<a class="comment-control" href="#reader-comments" aria-label="{h(label)}のコメント欄へ">'
         '<span aria-hidden="true">✎</span><span>コメント</span>'
         f'<span class="comment-count" data-comment-count="{key}" hidden></span></a>'
         '</div><p class="photo-issue-engagement-status" data-engagement-status role="status"></p></div>'
     )
 
 
-def render_photo_issue(issue, model, layout):
+def render_photo_issue(issue, model, layout, *, edition=None):
     """Render photographs and the model's column without exposing production data."""
     setting = issue["setting"]
     first = cover_shot(issue)
@@ -198,15 +200,31 @@ def render_photo_issue(issue, model, layout):
     related = (f'<p class="photo-issue-related"><a href="/articles/{h(source)}/">'
                f'{h(model["name"])}が登場する記事を読む <span aria-hidden="true">↗</span></a></p>'
                if source else "")
+    label = "この特集" if edition else "この号"
+    place = h(model["name"]) + "特集" if edition else f'第{h(issue["number"])}号'
+    parent_crumb = (f' / <a href="{h(edition_url(edition))}">第{h(edition["number"])}号</a>' if edition else "")
+    masthead = (f'<a href="{h(edition_url(edition))}">週刊グラビア 第{h(edition["number"])}号</a><span>特集</span>'
+                if edition else f'<a href="{h(index_url())}">週刊グラビア</a><span>{place}</span>')
+    adjacent = ""
+    if edition:
+        ordered = edition["ordered_features"]
+        position = next(index for index, feature in enumerate(ordered) if feature["slug"] == issue["slug"])
+        links = []
+        for offset, text in ((-1,"前の特集"),(1,"次の特集")):
+            if 0 <= position + offset < len(ordered):
+                feature = ordered[position + offset]
+                name = feature["model_snapshot"]["name"]
+                links.append(f'<a href="{h(issue_url(feature))}">{text}：{h(name)}</a>')
+        adjacent = '<nav class="photo-feature-adjacent" aria-label="前後の特集">' + "".join(links) + '</nav>'
+    parent_link = (f'<a href="{h(edition_url(edition))}#contents">第{h(edition["number"])}号の目次へ</a>' if edition else "")
     main = (
         '<article class="container photo-issues-page photo-issue-page" '
         f'data-engagement-key="{h("photo-issue:" + issue["slug"])}">'
         '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
         f'<a href="/">トップ</a> / <a href="{h(index_url())}">週刊グラビア</a>'
-        f' / <span aria-current="page">第{h(issue["number"])}号</span></nav>'
+        f'{parent_crumb} / <span aria-current="page">{place}</span></nav>'
         '<div class="photo-issue-masthead">'
-        f'<a href="{h(index_url())}">週刊グラビア</a>'
-        f'<span>第{h(issue["number"])}号</span></div>'
+        f'{masthead}</div>'
         '<div class="photo-issue-cover-spread">'
         f'{_photo_figure(issue, first, cover=True)}'
         '<header class="photo-issue-header">'
@@ -219,8 +237,8 @@ def render_photo_issue(issue, model, layout):
         f'<p class="photo-issue-setting">舞台：{h(setting["year"])}年{h(setting["month"])}月、'
         f'{h(setting["location"])}</p>'
         f'<p class="photo-issue-credit">{CREDIT}</p>'
-        f'{_issue_engagement(issue)}</header></div>'
-        '<nav class="photo-issue-contents" aria-label="この号の目次">'
+        f'{_issue_engagement(issue,label)}</header></div>'
+        f'<nav class="photo-issue-contents" aria-label="{label}の目次">'
         '<a href="#photo-issue-gallery-title">写真を見る <span aria-hidden="true">↓</span></a>'
         '<a href="#photo-issue-column-title">本人コラム <span aria-hidden="true">↓</span></a></nav>'
         '<section class="photo-issue-gallery" aria-labelledby="photo-issue-gallery-title">'
@@ -233,16 +251,18 @@ def render_photo_issue(issue, model, layout):
         '<section class="photo-issue-gallery" aria-label="写真の続き">'
         f'{closing}</section>'
         f'{related}'
-        f'{_share_controls(issue)}'
-        f'{render_reader_comments("photo-issue:" + issue["slug"], heading="この号へのコメント", placeholder="写真やコラムへの感想をひとこと…")}'
+        f'{_share_controls(issue,label)}'
+        f'{render_reader_comments("photo-issue:" + issue["slug"], heading=label+"へのコメント", placeholder="写真やコラムへの感想をひとこと…")}'
+        f'{adjacent}'
         '<nav class="photo-issue-footer" aria-label="週刊グラビアの案内">'
-        f'<a href="{h(model_url(model))}">{h(model["name"])}のプロフィール</a>'
+        f'{parent_link}<a href="{h(model_url(model))}">{h(model["name"])}のプロフィール</a>'
         f'<a href="{MODEL_INDEX_URL}">モデル一覧</a>'
         f'<a href="{h(index_url())}">号一覧に戻る <span aria-hidden="true">→</span></a>'
         '</nav></article>'
     )
+    parent = {"photo_parent":{"url":edition_url(edition),"name":f'週刊グラビア 第{edition["number"]}号'}} if edition else {}
     return layout(issue["title"], issue["summary"], issue_url(issue), main,
-                  active="photos", kind="photo_issue", photo_issue=issue, feed_url=feed_url())
+                  active="photos", kind="photo_issue", photo_issue=issue, feed_url=feed_url(), **parent)
 
 
 def _public_model(model):
@@ -322,43 +342,53 @@ def render_model_index(models, published_issues, layout, *, root=ROOT, portraits
                   MODEL_INDEX_URL, main, active="photos", kind="photo_collection", **cover)
 
 
-def _model_photo_grid(released):
+def _model_photo_grid(released, parents=None):
     photos = []
     for issue in released:
         for shot in issue["shots"]:
             width, height, _supplied = _image_size(issue, shot["id"])
+            number = parents[issue["slug"]]["number"] if parents and issue["slug"] in parents else issue["number"]
             photos.append('<li><a class="photo-model-grid-link" '
                           f'href="{h(issue_url(issue))}#photo-{h(shot["id"])}">'
                           f'<img src="{h(photo_image_url(issue, shot["id"]))}" '
                           f'alt="{h(shot["alt"])}" width="{width}" height="{height}" '
                           'loading="lazy" decoding="async">'
-                          f'<span class="photo-issue-visually-hidden">第{h(issue["number"])}号・写真{h(shot["id"])}</span>'
+                          f'<span class="photo-issue-visually-hidden">第{h(number)}号・写真{h(shot["id"])}</span>'
                           '</a></li>')
     return f'<ul class="photo-model-photo-grid">{"".join(photos)}</ul>'
 
 
-def render_model_profile(model, published_issues, layout, *, stories_markup="", root=ROOT, portrait=None):
+def render_model_profile(model, published_issues, layout, *, stories_markup="", root=ROOT, portrait=None, editions=None):
     public = _public_model(model)
     portrait = validate_profile_portrait(model, root=root) if portrait is None else portrait
     released = [issue for issue in _released_issues(published_issues) if issue["model_id"] == public["id"]]
     latest = released[0] if released else None
+    parents = {feature["slug"]:edition for edition in (editions or []) for feature in edition["ordered_features"]}
+    latest_number = parents[latest["slug"]]["number"] if latest and latest["slug"] in parents else latest["number"] if latest else None
     facts = []
     for label, value in (("仕事", public["occupation"]), ("人柄", public["personality"]),
                          ("好きなもの", "、".join(public["likes"])), ("ちょっとした癖", public["quirk"])):
         if value:
             facts.append(f'<div><dt>{label}</dt><dd>{h(value)}</dd></div>')
     photo_credit = (f'<p class="photo-model-photo-source">プロフィール写真：<a href="{h(issue_url(latest))}">'
-                    f'第{h(latest["number"])}号</a> · AI生成</p>'
+                    f'第{h(latest_number)}号掲載特集</a> · AI生成</p>'
                     if latest else f'<p class="photo-model-photo-source"><a href="{h(portrait["url"])}">'
                     'プロフィール写真を見る</a> · AI生成</p>' if portrait else "")
-    issue_links = "".join(f'<li><a href="{h(issue_url(issue))}">第{h(issue["number"])}号 · {h(issue["title"])}</a>'
-                          f'<span>公開日 {_publication_date(issue)}</span></li>' for issue in released)
+    issue_links, parent_ids = [], set()
+    for issue in released:
+        parent = parents.get(issue["slug"])
+        parent_ids.add(edition_url(parent) if parent else issue_url(issue))
+        parent_anchor = (f'<a href="{h(edition_url(parent))}">第{h(parent["number"])}号</a> · ' if parent else f'第{h(issue["number"])}号 · ')
+        date_label = "特集公開日" if parent else "公開日"
+        issue_links.append(f'<li><div>{parent_anchor}<a href="{h(issue_url(issue))}">{h(issue["title"])} 特集</a></div>'
+                           f'<span>{date_label} {_publication_date(issue)}</span></li>')
+    issue_links = "".join(issue_links)
     archive = f'<ol class="photo-model-issue-list">{issue_links}</ol>' if released else ""
     issue_section = ('<section class="photo-model-issues" aria-labelledby="model-issues-title">'
                      f'<h2 id="model-issues-title">{h(public["name"])}の掲載号</h2>{archive}</section>'
                      if released else "")
     photo_count = sum(len(issue["shots"]) for issue in released)
-    grid = (_model_photo_grid(released) if released else
+    grid = (_model_photo_grid(released,parents) if released else
             '<p class="photo-issues-empty">掲載号はまだありません。</p>')
     main = ('<article class="container photo-issues-page photo-model-page">'
             '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
@@ -370,7 +400,7 @@ def render_model_profile(model, published_issues, layout, *, stories_markup="", 
             f'<h1>{h(public["name"])}</h1><p class="photo-model-age">{h(public["age"])}歳 · 架空の成人モデル</p>'
             '<div class="photo-model-stats" aria-label="公開中の写真と掲載号">'
             f'<p><strong>{photo_count}</strong><span>掲載カット</span></p>'
-            f'<p><strong>{len(released)}</strong><span>掲載号</span></p></div>'
+            f'<p><strong>{len(parent_ids)}</strong><span>掲載号</span></p></div>'
             f'<dl>{"".join(facts)}</dl>{photo_credit}{_model_share_controls(public, latest, portrait)}</div></header>'
             f'{stories_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
             f'<h2 id="model-photos-title">写真</h2>{grid}</section>'
@@ -382,7 +412,7 @@ def render_model_profile(model, published_issues, layout, *, stories_markup="", 
                   indexable=bool(released or portrait))
 
 
-def build_photo_models(models, published_issues, layout, write, *, stories_renderer=None, root=ROOT, output=None):
+def build_photo_models(models, published_issues, layout, write, *, stories_renderer=None, root=ROOT, output=None, editions=None):
     if not models:
         return
     portraits = {model["id"]: validate_profile_portrait(model, root=root) for model in models}
@@ -397,7 +427,7 @@ def build_photo_models(models, published_issues, layout, write, *, stories_rende
         stories_markup = stories_renderer(model["id"]) if stories_renderer else ""
         write(model_url(model).lstrip("/") + "index.html",
               render_model_profile(model, published_issues, layout, stories_markup=stories_markup,
-                                   root=root, portrait=portraits[model["id"]]))
+                                   root=root, portrait=portraits[model["id"]], editions=editions))
 
 
 def model_sitemap_entries(models, published_issues, *, root=ROOT):

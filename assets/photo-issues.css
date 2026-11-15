@@ -153,3 +153,29 @@
 }
 
 .photo-issue-related{margin:38px 0 0;font-size:13px;line-height:1.9}.photo-issue-related a{text-decoration:underline;text-underline-offset:4px}
+
+.photo-edition-cover{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(28px,6vw,72px);align-items:center;margin:35px 0 60px}
+.photo-edition-cover>img{display:block;width:100%;height:auto}
+.photo-edition-cover h1{margin:18px 0;font-family:var(--serif);font-size:clamp(32px,4vw,52px);line-height:1.5;letter-spacing:-.04em;text-wrap:balance;word-break:keep-all;overflow-wrap:anywhere}
+.photo-edition-cover header>p:not(.photo-issue-eyebrow):not(.photo-edition-number){line-height:1.95}
+.photo-edition-number{margin:10px 0;font-family:var(--serif);font-size:23px}
+.photo-edition-count{font-weight:800;font-size:15px}
+.photo-edition-cover .engagement-actions{margin-top:20px}
+.photo-edition-contents>h2{margin:0;padding:18px 0;border-top:3px double var(--ink);border-bottom:1px solid var(--photo-rule);font-family:var(--serif);font-size:27px;line-height:1.7}
+.photo-edition-features{padding:0;margin:0;list-style:none}
+.photo-edition-feature{display:grid;grid-template-columns:200px minmax(0,1fr);gap:30px;padding:30px 0;border-bottom:1px solid var(--photo-rule)}
+.photo-edition-feature-image img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 25%}
+.photo-edition-model{margin:12px 0;font-family:var(--serif);font-size:19px;font-weight:800}
+.photo-edition-feature h3{margin:0 0 12px;font-family:var(--serif);font-size:26px;line-height:1.7}
+.photo-edition-feature-copy>p:not(.photo-issue-eyebrow):not(.photo-edition-model){font-size:13px;line-height:1.95;color:var(--muted)}
+.photo-edition-read{display:inline-flex;align-items:center;gap:26px;min-height:44px;font-size:12px;font-weight:800;color:var(--photo-accent)}
+.photo-feature-adjacent{display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-top:40px;padding-top:24px;border-top:1px solid var(--photo-rule)}
+.photo-feature-adjacent a{display:inline-flex;min-height:44px;align-items:center;font-size:13px;font-weight:800}
+.photo-edition-feature a:focus-visible,.photo-feature-adjacent a:focus-visible{outline:3px solid var(--photo-accent);outline-offset:5px}
+@media(max-width:700px){
+ .photo-edition-cover{grid-template-columns:1fr;gap:25px;margin:25px 0 40px}
+ .photo-edition-feature{grid-template-columns:110px minmax(0,1fr);gap:18px;padding:24px 0}
+ .photo-edition-model{font-size:16px;margin:8px 0}
+ .photo-edition-feature h3{font-size:21px;line-height:1.6}
+ .photo-edition-feature-copy>p:not(.photo-issue-eyebrow):not(.photo-edition-model){font-size:12px}
+}

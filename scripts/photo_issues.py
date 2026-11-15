@@ -813,20 +813,26 @@ def generate_photo_rss(issues):
     return ET.tostring(rss, encoding="unicode")
 
 
-def build_photo_issues(issues, models, layout, write, output, *, root=ROOT, stories_markup=""):
+def build_photo_issues(issues, models, layout, write, output, *, root=ROOT, stories_markup="", editions=None):
     """Copy only already-validated published JPEGs, never receipts/source PNGs."""
     if not issues:
         return
     import shutil
     if __package__:
         from .photo_issue_pages import render_photo_index, render_photo_issue
+        from .photo_edition_pages import feature_edition_map
     else:
         from photo_issue_pages import render_photo_index, render_photo_issue
-    write(index_url().lstrip("/") + "index.html",
-          render_photo_index(issues, models, layout, stories_markup=stories_markup))
+        from photo_edition_pages import feature_edition_map
+    parents = feature_edition_map(editions or [])
+    if editions is not None and set(parents) != {issue["slug"] for issue in issues}:
+        raise ValueError("Every published photo feature needs its magazine edition")
+    if editions is None:
+        write(index_url().lstrip("/") + "index.html",
+              render_photo_index(issues, models, layout, stories_markup=stories_markup))
     for issue in issues:
         write(issue_url(issue).lstrip("/") + "index.html",
-              render_photo_issue(issue, issue["model_snapshot"], layout))
+              render_photo_issue(issue, issue["model_snapshot"], layout, edition=parents.get(issue["slug"])))
         for shot in issue["shots"]:
             image = issue["images"][shot["id"]]
             destination = Path(output) / photo_image_url(issue, shot["id"]).split("?", 1)[0].lstrip("/")
@@ -836,7 +842,8 @@ def build_photo_issues(issues, models, layout, write, output, *, root=ROOT, stor
                     raise ValueError("Photo output conflicts with its accepted source bytes")
             else:
                 shutil.copy2(_local(root, image["path"]), destination)
-    write(feed_url().lstrip("/"), generate_photo_rss(issues))
+    if editions is None:
+        write(feed_url().lstrip("/"), generate_photo_rss(issues))
 
 
 def photo_sitemap_entries(issues):
