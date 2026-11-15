@@ -1,5 +1,67 @@
 [
   {
+    "slug": "seven-venues-compose-one-live-song",
+    "category": "エンタメ",
+    "flash": "七つのライブ会場で一曲を共作",
+    "fiction_company": "渋谷に設けられた架空の七会場共同音楽企画",
+    "art": "cards",
+    "fiction_at": "2031-11-15T19:30:00+09:00",
+    "published_at": "2026-11-15T19:30:00+09:00",
+    "title": "7会場の演奏家が一曲を共作　離れた舞台から楽器が加わり、最後のサビで合奏",
+    "summary": "2031年、渋谷の架空の7会場を結び、別々の演奏家が一曲に楽器を重ねるライブが開かれた。演奏音を拍ごとにそろえて届ける仕組みで、次の会場は前の音を聴いて参加。最後のサビは7会場の音が混ざった合奏になり、発案した編曲者も自分のパートを休んでその音を聴いた。",
+    "paragraphs": [
+      "2031年11月15日、渋谷の架空の七つのライブ会場で、離れた演奏家が一曲を共同で演奏する公演が開かれた。最初の会場でドラムが四小節を刻み、別の会場のベースが加わる。さらに鍵盤、ギター、管楽器、コーラス、歌声が順番に重なり、最後のサビは七つの会場から集まった音で鳴った。出演者は同じ舞台に一度も並ばなかった。",
+      "主催した音楽家たちが用意したのは、各会場の音を共通の拍に合わせて送り返す演奏回線だ。従来の複数会場イベントは、客が会場を回るか、別の舞台の映像を中継して楽しむものが中心だった。今回は演奏そのものをつなぐ。通信の遅れを無理に消そうとはせず、各パートが入るまでに二小節の余裕を設け、客席には時間をそろえた合奏音を流す。演奏者は耳のモニターに届く共通の拍を基準に、自分の出番を待つ。",
+      "一曲の骨組みを作った編曲者の女性（54）は、最初の会場でドラムを担当した。自分たちだけで演奏を完成させることもできたが、普段は同じ公演に立てない小会場の奏者と曲を作りたかった。二つ目の会場のベースが入ると、客席から低音に合わせた手拍子が起こる。五つ目の会場では管楽器奏者が予定より短いフレーズを吹き、次の会場のコーラスに一小節分の空間を空けた。",
+      "終盤、七つ目の会場の歌手（39）がサビに入る。舞台には歌手と伴奏者しかいないのに、スピーカーからは離れた六会場の演奏が重なって流れた。編曲者は最後の繰り返しで自分のドラムを止め、ほかの奏者の音に任せた。客席で聴く人も、演奏者本人も、曲の終わり方を一つの舞台だけでは決められない。",
+      "終演後、編曲者が持っていた譜面には、七会場から提案された演奏の入り方と休み方が追記されていた。最初はドラムだけだった曲に、誰がどこで音を足したかが残る。「次は、私が最後に参加する側になりたい」。客席で鳴ったのは中継映像の拍手ではなく、離れた演奏家がその日に一緒に作った一曲だった。"
+    ],
+    "source": {
+      "kind": "主催者公式発表",
+      "publisher": "NiEW",
+      "published_at": "2026-07-14T12:00:00+09:00",
+      "url": "https://niewmedia.com/news/2607expopsaikai2026/",
+      "topic": "主催者の2026年7月14日発表では、2026年11月15日に渋谷の7会場で音楽フェスを開催する予定と案内された。実際の7会場を結ぶ同時共同演奏の実施や技術実証を公表したものではない。2031年の架空の音楽企画、人物、拍同期の仕組み、七会場の演奏内容と結果はすべて創作。現実の主催者や出演者に架空の将来行動を帰属させない。"
+    },
+    "scene_prompt": "An adult Japanese woman musician aged 54 sits at a drum kit and stops playing to listen to a live ensemble arriving through a modest speaker system, with a second adult musician checking a small timing monitor. Photorealistic press photograph inside a compact live house in Shibuya on a November night, warm stage lights, natural candid facial expressions, one visible drum kit and concert crowd, restrained realistic setup, no readable text, no logos, no recognizable real people, no collage, 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "ライブ",
+      "共同演奏",
+      "音楽"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "ライブ",
+      "音楽"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "ライブハウスを7つ回る代わりに、音楽の方が会場を渡る。2031年、一度も同じ舞台に立たない演奏家が一曲を完成させました。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "wildcard",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月15日、渋谷の7会場を使う音楽フェスが実際に開催予定として発表されている",
+      "target": "別々の小会場の奏者が共通の拍に沿って一曲を完成させる共同公演",
+      "action": "演奏家が別会場から音を順番に重ね、編曲者は最後の繰り返しで自身のドラムを休んでほかの音を聴く",
+      "outcome": "最後のサビで7会場の音が合奏となり、譜面に各会場の参加方法が残る"
+    },
+    "reader_clarity": {
+      "who": "7会場の演奏家",
+      "action": "別々の会場から楽器を重ねて一曲を共同演奏する",
+      "oddity": "同じ舞台に一度も並ばず最後のサビを合奏する"
+    },
+    "behavior_basis": {
+      "motive": "普段同じ公演に立てない小会場の演奏家が、その場で互いの音に参加して曲を作りたい",
+      "ordinary_alternative": "一会場に出演者が集まって演奏するか、別会場の演奏映像を中継して見る",
+      "why_not": "客が場所を移動するより、各会場で奏者が共通の拍に乗って楽器を加える形なら共同制作の手応えを作れるため",
+      "evidence_quote": "自分たちだけで演奏を完成させることもできたが、普段は同じ公演に立てない小会場の奏者と曲を作りたかった。"
+    },
+    "publication_slot": "2026-11-15T19:30:00+09:00"
+  },
+  {
     "slug": "concert-audience-voice-rights-cheers-not-free",
     "category": "社会",
     "flash": "歓声は無料素材ではなかった",
