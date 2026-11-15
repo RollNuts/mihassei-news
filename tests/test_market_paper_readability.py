@@ -60,6 +60,21 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         for episode in self.market["episodes"]:
             self.assertIn('/serials/market-lab/' + episode["slug"] + '/', rendered)
 
+    def test_fresh_real_day_bulletin_leads_when_daily_publications_exist(self):
+        bulletin = {
+            "slug": "2026-11-16-am", "slot": "am", "day": "2026-11-16",
+            "title": "当日の市況を読み解く",
+            "summary": "実際に確認した市場の値動きをもとにした解説。",
+        }
+        markup = render_series_page(self.market, passthrough, self.figure_data,
+                                    [bulletin], self.outlook, [])
+        self.assertIn('<h2 id="market-focus-heading"><a href="/serials/market-lab/briefings/2026-11-16-am/">当日の市況を読み解く</a></h2>', markup)
+        self.assertIn("2026-11-16", markup)
+        # The serial latest is still available in the older-analysis list.
+        self.assertIn(self.market["episodes"][-1]["title"], markup)
+        self.assertIn("これまでの分析", markup)
+        self.assertNotIn("確認済みの日次市況記事はまだありません", markup)
+
     def test_article_explains_evidence_before_outlook_and_leaves_math_inspectable(self):
         episode = self.market["episodes"][-1]
         page = render_episode_page(self.market, episode, passthrough,
