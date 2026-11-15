@@ -768,6 +768,14 @@ class SiteTests(unittest.TestCase):
         created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")
                  if not p.name.startswith("series-")}
         expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
+        # The independent, non-fiction daily market feed is not a topic feed.
+        # Confirm it is published, then retain strict set equality for the
+        # fictional category and weekly photo feeds.
+        expected.add("market-bulletins.xml")
+        market_channel=ET.parse(ROOT/"dist/feeds/market-bulletins.xml").getroot().find("channel")
+        self.assertEqual(market_channel.findtext("title"),"未来相場観測室｜日次市況")
+        self.assertIn("現実の公開資料",market_channel.findtext("description"))
+        self.assertEqual(market_channel.findtext("link"),SITE+"/serials/market-lab/briefings/")
         photos=photo.published_issues(photo.load_photo_issues(ROOT),root=ROOT)
         if photos:
             expected.add(Path(photo.feed_url()).name)
