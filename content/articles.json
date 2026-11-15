@@ -128,6 +128,7 @@
   },
   {
     "slug": "ai-royalties-retirees-operators-left-out",
+    "broadcast_feature": true,
     "category": "技術",
     "flash": "AIの配当、今の修正係は対象外",
     "fiction_company": "架空の桐浜市の業務支援会社",
