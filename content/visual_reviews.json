@@ -948,6 +948,13 @@
       "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
       "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
       "reviewed_at": "2026-11-15T14:47:15+09:00"
+    },
+    "ai-royalties-retirees-operators-left-out": {
+      "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
+      "decision": "accepted",
+      "image_sha256": "02e94ce89495940da3fae905c7c331a8e2f3d38350c536eba15595c12430f08d",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現本文全文と新scene_promptに照合した。成人女性1人が右手に黒ペンを持ち、机上の別紙へ書き起こす姿勢で、左手に赤い修正跡を含む別の資料を持つ。紺のカーディガンと白いブラウス、集中する横顔、暖かい卓上灯、青みのある窓光と秋色の木、奥のぼけたPCと無地ファイルが自然。退職者を同室へ加えず、本文末段の現役担当者の動作に絞った場面である。手・ペン・紙の接触に目立つ融合や余分な指はなく、読める文言・企業ロゴ・UI文字・透かしも見えない。配当額やAIの承認結果、正確な年齢を写真で実証したとは扱わない。原PNG分割原本と最終JPEG、変換再現・receipt SHAを検証。C2PA asset instanceIDは実PNGから抽出した値で、実ツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。",
+      "reviewed_at": "2026-11-15T07:56:45.093387+00:00"
     }
   },
   "version": 1
