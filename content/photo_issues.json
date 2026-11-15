@@ -81,6 +81,22 @@
         "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
         "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
         "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
+      },
+      "biography": {
+        "hometown": "神奈川県藤沢市",
+        "career": [
+          {
+            "month": "2028-04",
+            "text": "衣服の動きや着心地を伝える撮影モデルとして仕事を始める。"
+          },
+          {
+            "month": "2030-06",
+            "text": "架空の体験番組「さやの寄り道手帖」で、水辺や街歩きのロケを担当するようになる。"
+          }
+        ],
+        "strength": "初めての道具でも、触った時の感覚を身近な言葉で伝えられる。",
+        "difficulty": "誘いを断りそびれ、帰り道に寄り道が増える。",
+        "habit": "ロケで気に入った布や水面を、帰りに一枚だけ写真に残す。"
       }
     },
     {
@@ -132,6 +148,22 @@
         "path": "assets/generated/photo-master-shioba-rio-101edc530c7f.jpg",
         "sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
         "source_png_sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece"
+      },
+      "biography": {
+        "hometown": "静岡県静岡市",
+        "career": [
+          {
+            "month": "2026-04",
+            "text": "取材リポーターとして、街の交通や工場で働く人への取材を始める。"
+          },
+          {
+            "month": "2029-10",
+            "text": "架空の報道番組「きょうの潮目線」のキャスターを担当。現場取材とスタジオの進行を受け持つ。"
+          }
+        ],
+        "strength": "取材相手の話から、生活が変わる具体的な一場面を拾う。",
+        "difficulty": "休日にも出発時刻を細かく決めるのに、散歩を始めると予定がずれる。",
+        "habit": "朝の散歩で気になった景色を、手帳に短く書き留める。"
       }
     },
     {
@@ -187,6 +219,22 @@
         "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
         "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
         "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed"
+      },
+      "biography": {
+        "hometown": "石川県金沢市",
+        "career": [
+          {
+            "month": "2029-06",
+            "text": "架空の短編映画「閉店前の青い糸」で、仕立て直し店に通う客の役を演じる。"
+          },
+          {
+            "month": "2031-03",
+            "text": "夜の街を歩く衣服カタログの撮影で、歩き方と表情を変えた連続カットに取り組む。"
+          }
+        ],
+        "strength": "せりふがない場面でも、目線や姿勢で気持ちを見せられる。",
+        "difficulty": "出掛ける前の服選びに時間をかけ、最後に最初の服へ戻ることがある。",
+        "habit": "帰宅したら、着た服の襟と袖を整えてから音楽を一曲聴く。"
       }
     },
     {
@@ -238,6 +286,22 @@
         "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
         "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
         "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50"
+      },
+      "biography": {
+        "hometown": "千葉県館山市",
+        "career": [
+          {
+            "month": "2031-01",
+            "text": "体験型企画への出演を始め、海辺の道具や初めて乗る乗り物を自分で試すロケを担当。"
+          },
+          {
+            "month": "2031-07",
+            "text": "架空の体験番組「みおの一歩目」で、練習から本番までを見せる挑戦コーナーを担当する。"
+          }
+        ],
+        "strength": "初めての遊びでもまず動き、失敗した動作も隠さず伝えられる。",
+        "difficulty": "出掛ける支度を急ぐと、帰りに使う上着や充電器を忘れがち。",
+        "habit": "初めて乗る乗り物の前では、足元を軽く二回踏んで気持ちを整える。"
       }
     },
     {
@@ -289,6 +353,22 @@
         "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
         "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
         "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766"
+      },
+      "biography": {
+        "hometown": "長野県松本市",
+        "career": [
+          {
+            "month": "2028-10",
+            "text": "衣服撮影のモデルとして、秋冬のニットやコートの着心地を伝える仕事を始める。"
+          },
+          {
+            "month": "2030-05",
+            "text": "架空の旅番組「ぬくもりの道草」で、宿や街を歩き、居心地を確かめるリポーターを担当する。"
+          }
+        ],
+        "strength": "温かさや肌触りの違いを、自分の言葉で穏やかに伝えられる。",
+        "difficulty": "居心地のよい席を見つけると、次の予定へ移るのが遅くなる。",
+        "habit": "旅先では荷物を置く前に、窓からの光と湯飲みの置き場所を確かめる。"
       }
     },
     {
@@ -344,6 +424,22 @@
         "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
         "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
         "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558"
+      },
+      "biography": {
+        "hometown": "福岡県福岡市",
+        "career": [
+          {
+            "month": "2030-04",
+            "text": "歌とダンスのライブ活動を始め、衣装を替えたステージにも出演する。"
+          },
+          {
+            "month": "2031-08",
+            "text": "架空の音楽番組「ひかり、開演五分前」で、歌唱とダンスを披露する短いステージを担当する。"
+          }
+        ],
+        "strength": "練習でつまずいた部分を覚え、できるまで小さく区切って繰り返せる。",
+        "difficulty": "楽しみな予定を同じ日に集めて、休む時間を取りそびれる。",
+        "habit": "出番の前に靴ひもと衣装の裾を確かめ、つま先で小さく拍子を取る。"
       }
     },
     {
@@ -395,6 +491,22 @@
         "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
         "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
         "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39"
+      },
+      "biography": {
+        "hometown": "岡山県倉敷市",
+        "career": [
+          {
+            "month": "2027-09",
+            "text": "舞台への出演を始め、衣装の重さや小物の持ち方を役の動きに生かす稽古を重ねる。"
+          },
+          {
+            "month": "2030-09",
+            "text": "架空の衣服企画「すみれの色合わせ帖」で、古い小物と新しい服の組合せを案内する。"
+          }
+        ],
+        "strength": "色や素材の違いを見比べ、手持ちの服に合う小物を選べる。",
+        "difficulty": "二つの組合せを比べ続け、決めるまでに時間がかかる。",
+        "habit": "外へ出る前に、小物を一つだけ鏡の前で入れ替えてみる。"
       }
     }
   ],
