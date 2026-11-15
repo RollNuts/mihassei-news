@@ -62,6 +62,7 @@ class SearchIndexabilityTests(unittest.TestCase):
         import html
         from scripts.build import daily_issues, issue_url, article_url, social_image
         from scripts.serials import load_serials, series_url, episode_url
+        from scripts.market_bulletins import load_market_bulletins, bulletin_url
         from scripts import photo_issues as photo
         from scripts.photo_editions import load_photo_editions, edition_url
         from scripts.photo_issue_pages import model_sitemap_entries
@@ -78,6 +79,9 @@ class SearchIndexabilityTests(unittest.TestCase):
             for episode in series["episodes"]:
                 expected[SITE + episode_url(series, episode)] = (
                     SITE + f'/og/serials/{series["slug"]}-{episode["slug"]}.png')
+
+        expected.update({SITE + bulletin_url(item): SITE + "/og/serials/market-lab.png"
+                         for item in load_market_bulletins(ROOT)})
 
         photo_catalog = photo.load_photo_issues(ROOT)
         photos = photo.published_issues(photo_catalog, root=ROOT)
