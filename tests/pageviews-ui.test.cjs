@@ -238,6 +238,12 @@ test('only visible document displays count; focus, visibility returns and refres
     'a normal reload inside 30 minutes stays in the same session');
 });
 
+test('archive without PV badges skips redundant mutation observation',async()=>{
+  const page=await runPage({url:'https://veripsa.com/archive/',archive:true,noWidget:true});
+  assert.equal(page.mutations.length,0,'the actual archive has no PV badges to watch');
+  assert.equal(page.intervals.length,0,'no reader controls means no polling');
+});
+
 test('article reactions still refresh without the removed sitewide PV header',async()=>{
   const page=await runPage({
     url:'https://veripsa.com/articles/news-one/',
