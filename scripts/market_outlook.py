@@ -64,7 +64,7 @@ def validate_outlook_records(entries, series, *, today=None):
         checked = _date(item.get("checked_on"))
         source_day = _date(item.get("source_published_on"))
         episode_day = _date(published[slug]["published_at"])
-        if not episode_day <= source_day <= checked <= day <= today:
+        if not (episode_day <= day <= today and source_day <= checked <= day):
             raise ValueError("Market observation outside source or publication window")
         if slug in last_day and day <= last_day[slug]:
             raise ValueError("Market outlook history must be chronologically appended")
@@ -119,9 +119,10 @@ def _stance_scale(stance):
     labels = []
     for name in ("強気", "中立", "弱気"):
         active = stance == name
+        current_class = " is-current" if active else ""
+        current_attr = ' aria-current="true"' if active else ""
         labels.append(
-            f'<span class="market-stance-option{" is-current" if active else ""}"'
-            f'{" aria-current=\"true\"" if active else ""}>{escape(name)}</span>'
+            f'<span class="market-stance-option{current_class}"{current_attr}>{escape(name)}</span>'
         )
     return '<div class="market-stance-scale" aria-label="見方（確率ではありません）">' + "".join(labels) + "</div>"
 
