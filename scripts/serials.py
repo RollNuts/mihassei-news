@@ -334,7 +334,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<nav class="market-paper-nav" aria-label="このページの案内">'
         '<a href="#market-focus">最新の分析</a>'
         '<a href="#market-stories">過去の記事</a>'
-        '<a href="#forecast-ledger">予測と検証</a>'
+        '<a href="#market-proof">予測と検証</a>'
         '</nav></header>'
         '<div class="market-paper-content">'
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
