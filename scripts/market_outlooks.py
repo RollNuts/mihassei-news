@@ -221,7 +221,7 @@ def _status(row):
     last = updates[-1] if updates else None
     if last and last.get("result"):
         return "判定済み：" + last["result"]["outcome"]
-    return "未検証（途中評価）" if last else "未検証"
+    return "結果待ち"
 
 
 def render_market_outlook_board(events, *, limit=12, before=None):
@@ -287,14 +287,13 @@ def render_market_outlook_board(events, *, limit=12, before=None):
             + '</ul></div></details></article>'
         )
     lead = (
-        '<p class="daily-forecast-intro">日付・基準・判定条件を公開時に固定します。'
-        '判定前の「暫定的に整合／逆行」は的中・外れではありません。'
-        '見通し変更は元の予測を消さず、理由と資料を履歴へ追記します。</p>'
+        '<p class="daily-forecast-intro">公表時点の見通しと、その後に分かった材料を日付順に掲載します。'
+        '結果は当初決めた日に、確認できる実際の数字で判断します。</p>'
     )
-    empty = '<p class="market-desk-empty">まだ出典と基準値を確認した日次予測はありません。数値を推測して補いません。</p>'
+    empty = '<p class="market-desk-empty">新しい市場見通しの記事はまだありません。<a href="/serials/market-lab/">企業分析を読む</a></p>'
     return (
         '<section class="daily-forecast-board" id="daily-forecasts" aria-labelledby="daily-forecasts-title">'
-        '<div class="section-head"><h2 id="daily-forecasts-title">日々の予測と判断の変化</h2></div>'
+        '<div class="market-paper-heading"><h2 id="daily-forecasts-title">日々の見通し</h2></div>'
         + lead + ('<div class="daily-forecast-grid">' + "".join(cards) + '</div>' if cards else empty)
         + f'<p><a class="serial-feed-link" href="{BASE_URL}">予測・判断履歴を一覧で確認</a></p>'
         '</section>'
