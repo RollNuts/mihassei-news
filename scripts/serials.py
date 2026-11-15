@@ -319,7 +319,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<a href="/">トップ</a> / <a href="/serials/">連載</a> / 未来相場観測室</nav>'
         '<header class="market-paper-masthead">'
         '<p class="market-paper-topline"><span>株式・企業分析</span>'
-        f'<span>最終掲載 <time datetime="{day}">{day}</time></span></p>'
+        f'<span>最終掲載 <time datetime="{day}">{day}</time> ／ 公開済み {len(series["episodes"])}回</span></p>'
         '<div class="market-paper-brand">'
         '<div><p class="market-paper-brand-kicker">MARKET INSIGHT</p>'
         f'<h1>{h(series["title"])}</h1>'
