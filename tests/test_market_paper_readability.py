@@ -31,6 +31,8 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('class="container serials-page market-paper"', rendered)
         self.assertIn('id="market-focus"', rendered)
         self.assertIn('id="market-stories"', rendered)
+        self.assertIn('href="/serials/market-lab/briefings/"', rendered)
+        self.assertIn('href="/serials/market-lab/outlooks/"', rendered)
         self.assertIn('id="market-outlook"', rendered)
         self.assertIn('id="forecast-ledger"', rendered)
         self.assertLess(rendered.index('id="market-focus"'),
