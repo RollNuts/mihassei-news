@@ -40,8 +40,9 @@ class HomepageVisualTests(unittest.TestCase):
         content = markup.split('<div class="container index-main">', 1)[1]
         positions = [
             content.index('class="hero-grid"'),
-            content.index('<section class="section-block">'),
             content.index('data-popular-section'),
+            content.index('<section class="section-block">'),
+            content.index('class="newsroom-snapshot"'),
             content.index('class="press-timeline"'),
             content.index('class="daily-issues-section"'),
             content.index('class="genre-explore"'),
