@@ -11,6 +11,9 @@ from xml.etree import ElementTree as ET
 
 from scripts import build
 from scripts.generated_photos import article_fingerprint, generated_url
+from tests.site_build_fixture import ensure_site_build
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class ImageContextTests(unittest.TestCase):
@@ -63,8 +66,11 @@ class ImageContextTests(unittest.TestCase):
         self.assertGreaterEqual(len(descriptions), len(self.articles)-1)
 
     def test_story_hero_prioritized_and_social_alt_describes_selected_asset(self):
+        ensure_site_build()
         for article in self.articles:
-            story = build.story(article, self.articles)
+            story_path = ROOT / "dist/articles" / article["slug"] / "index.html"
+            self.assertTrue(story_path.is_file(), f"Missing built article: {story_path}")
+            story = story_path.read_text(encoding="utf-8")
             figure = story.split('<figure class="article-hero-figure">', 1)[1].split('</figure>', 1)[0]
             self.assertIn('class="article-visual"', figure)
             self.assertIn('loading="eager" fetchpriority="high" decoding="async"', figure)
