@@ -527,7 +527,9 @@
       link.className="readers-choice-link";
       content.append(category,link);
       // Rankings are measured; the headline takes visual priority over small counts.
-      link.title="計測された表示回数 "+Intl.NumberFormat("ja-JP").format(item.pageViews)+" PV";
+      const measuredCount=Intl.NumberFormat("ja-JP").format(item.pageViews);
+      link.title="計測された表示回数 "+measuredCount+" PV";
+      link.setAttribute("aria-label",item.title+"、"+(week.complete?"過去7日間":pvStartLabel+"から")+"のページ表示回数 "+measuredCount+"PV");
       if(typeof item.image==="string" &&
          /^\/(?:images\/|photos\/|generated\/)/.test(item.image)){
         li.className+=" readers-choice-item--with-image";
