@@ -529,7 +529,7 @@
       // Rankings are measured; the headline takes visual priority over small counts.
       link.title="計測された表示回数 "+Intl.NumberFormat("ja-JP").format(item.pageViews)+" PV";
       if(typeof item.image==="string" &&
-         /^\/(?:images\/|photos\/|assets\/generated\/)/.test(item.image)){
+         /^\/(?:images\/|photos\/|generated\/)/.test(item.image)){
         const media=document.createElement("a");
         media.className="readers-choice-image";
         media.href=link.href;
