@@ -436,7 +436,7 @@ def category_meta(a, compact=False):
     page_views = (
         f'<span class="article-pv" data-article-pv="{escape(a["slug"])}"'
         ' title="計測開始後のページ表示回数" aria-label="この記事のPVを取得中">'
-        '<strong data-article-pv-count>—</strong><span>PV</span></span>'
+        '<strong data-article-pv-count></strong><span>PV</span></span>'
     )
     followup_badge = '<span class="followup-label">続報</span>' if a.get("followup_of") else ""
     if compact:
@@ -451,7 +451,6 @@ def category_meta(a, compact=False):
             + followup_badge
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
-            + page_views
             + "</div>"
         )
     return (
@@ -1139,17 +1138,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
 <p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
-<div class="container observer-shell">
-<div class="observer-widget pv-widget" data-observer-widget hidden data-pv-widget role="group" aria-label="サイトのページ閲覧数">
-<span class="observer-eye" aria-hidden="true">◉</span>
-<span class="observer-stat"><span class="observer-label">今日のPV</span>
-<strong data-site-pv-today>—</strong><span class="observer-suffix">PV</span></span>
-<span class="observer-stat"><span class="observer-label">昨日のPV</span>
-<strong data-site-pv-yesterday>—</strong><span class="observer-suffix">PV</span></span>
-<span class="observer-stat"><span class="observer-label" data-site-pv-period-label>直近7日</span>
-<strong data-site-pv-week>—</strong><span class="observer-suffix">PV</span></span>
-<small><span data-pv-tracking-note>PVを読み込み中</span> · <a href="/privacy/#pageviews">集計について</a></small>
-</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
+<nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
@@ -1171,7 +1160,8 @@ def pv_recommendations(articles, excluded_slug=""):
         publication_date(a), a["source"]["published_at"]
     ), reverse=True)
     options = escape(json.dumps(
-        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
+        [{"slug": x["slug"], "title": x["title"], "category": x["category"],
+          "image": editorial_image(x), "fallback": illustration_path(x)}
          for x in candidates if x["slug"] != excluded_slug],
         ensure_ascii=False, separators=(",", ":")))
     return f'''<section class="readers-choice" data-popular-section
@@ -1334,6 +1324,24 @@ def home(articles, serials=None, photo_issues=()):
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
     popular_section = pv_recommendations(articles)
+    newsroom_activity = (
+        '<section class="newsroom-snapshot" aria-label="本紙の掲載記録">'
+        '<div class="newsroom-snapshot-heading"><span class="eyebrow">THE PAPER IN NUMBERS</span>'
+        '<h2>紙面の記録</h2></div>'
+        '<div class="newsroom-snapshot-stats">'
+        f'<div class="newsroom-snapshot-stat"><span>掲載記事</span><strong>{len(articles):,}<small>本</small></strong></div>'
+        f'<div class="newsroom-snapshot-stat"><span>発行号</span><strong>{len(issues_for_home):,}<small>号</small></strong></div>'
+        '</div>'
+        '<div class="observer-widget pv-widget" data-observer-widget data-pv-widget hidden'
+        ' aria-label="計測開始後の実測PV">'
+        '<span class="observer-stat"><span class="observer-label">累計PV</span>'
+        '<strong data-site-pv-total></strong><span class="observer-suffix">PV</span></span>'
+        '<span class="observer-stat" data-site-pv-week-stat hidden>'
+        '<span class="observer-label" data-site-pv-period-label>直近7日</span>'
+        '<strong data-site-pv-week></strong><span class="observer-suffix">PV</span></span>'
+        '<small><span data-pv-tracking-note></span> · <a href="/privacy/#pageviews">集計方法</a></small>'
+        '</div></section>'
+    )
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
@@ -1365,10 +1373,11 @@ def home(articles, serials=None, photo_issues=()):
 <aside class="side-brief"><div class="side-title"><h2>新着記事</h2></div>{side}</aside>
 </section>
 {broadcast_feature(articles)}
+{popular_section}
 <section class="section-block"><div class="section-head"><h2>さらに読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
-{popular_section}
+{newsroom_activity}
 {timeline_section}
 {issue_section}
 {topic_section}
@@ -1876,8 +1885,8 @@ def privacy():
 <h2>アクセスの集計</h2>
 <p>閲覧・いいね・投票などの集計に、ブラウザ内のランダムな識別子を使います。識別子はハッシュ化してCloudflareに保存します。氏名やメールアドレスの登録は不要です。</p>
 <h2 id="pageviews">PV（ページ閲覧数）</h2>
-<p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。トップはサイト全体、記事の見出し横はその記事の累計PVです。運営上の分析では、日本時間の時間帯別PVと「現在の時間・今日・直近7日」の記事別PV順位に加え、流入増がトップ・記事・アーカイブ・連載・その他のどこで起きたかを大分類だけで集計します。完全な閲覧URLは保存しません。</p>
-<p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」、未計測の期間は「—」と表示します。</p>
+<p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。一面の累計PVは計測開始後のサイト全体の表示回数で、記事ページのPVはその記事の累計表示回数です。記事一覧ではPVを並べず、週間の人気記事は実測順位で紹介します。運営上の分析では、日本時間の時間帯別PVと「現在の時間・今日・直近7日」の記事別PV順位に加え、流入増がトップ・記事・アーカイブ・連載・その他のどこで起きたかを大分類だけで集計します。完全な閲覧URLは保存しません。</p>
+<p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」と明記し、未取得や未計測の値は公開画面に表示しません。</p>
 <p>「よく読まれている記事」は、公開済みの全記事を過去7日間のPV順に並べています。計測期間が短い場合は、表示した開始日以降のPVを使います。</p>
 <p>通信の再送による二重計上を防ぎ、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが無効な場合や通信に失敗した場合は計測できません。自動アクセスを完全に除外した数字ではありません。</p>
 <div class="analytics-preference">
