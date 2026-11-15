@@ -237,7 +237,7 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("今日の未発生新聞",home)
+        self.assertIn("最近の発行号",home)
         self.assertIn("号外・コメント",home)
         self.assertTrue(home.index('class="daily-issues-section"') <
                         home.index('<details class="extras-shelf">'))
