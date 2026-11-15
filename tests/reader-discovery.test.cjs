@@ -159,13 +159,13 @@ test('all published candidates remain eligible beyond twenty without client-side
 
 test('measured popular stories can use their own reviewed thumbnails',async()=>{
   const result=await simulate([
-    {...candidate('a','見出しA'),image:'/images/a.svg',fallback:'/images/a.svg'}
+    {...candidate('a','見出しA'),image:'/generated/a.jpg?v=123abc',fallback:'/images/a.svg'}
   ],{a:12});
   assert.equal(result.popular.hidden,false);
   const li=result.rankings[0];
   assert.equal(li.children.length,3);
   assert.equal(li.children[1].href,'/articles/a/');
-  assert.equal(li.children[1].children[0].src,'/images/a.svg');
+  assert.equal(li.children[1].children[0].src,'/generated/a.jpg?v=123abc');
   assert.equal(li.children[1].children[0].attributes['data-fallback'],'/images/a.svg');
   assert.equal(li.children[2].children[1].textContent,'見出しA');
 });
