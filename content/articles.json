@@ -1,5 +1,70 @@
 [
   {
+    "slug": "ai-royalties-retirees-operators-left-out",
+    "category": "技術",
+    "flash": "AIの配当、今の修正係は対象外",
+    "fiction_company": "架空の桐浜市の業務支援会社",
+    "art": "cards",
+    "fiction_at": "2031-11-15T15:32:28+09:00",
+    "published_at": "2026-11-15T15:32:28+09:00",
+    "title": "AIの売上を手順書の執筆者に分配　退職者に入金、現役の修正係は0円",
+    "summary": "2031年、架空の桐浜市の業務支援会社が、AIの有料処理に使った手順書の執筆者へ売上の一部を分配し始めた。退職した元社員も受け取る一方、手順書にない例外を修正した現役担当者の配当は0円。現場では自分の仕事をAIに渡すための手順書作りが始まった。",
+    "paragraphs": [
+      "2031年11月15日、架空の桐浜市にある業務支援会社が、AIの有料問い合わせ処理で得た売上の一部を、仕事の手順書を書いた人へ分ける制度を始めた。AIが回答に使った承認済みの手順書を案件ごとに記録し、その執筆者へ分配する。初回の振込では退職した元社員にも配当が届いたが、今もAIの誤回答を直している社員の一部には配当がなかった。",
+      "会社は「仕事がAIに移っても、教えた人の取り分を残す」と説明する。顧客対応をAIへ引き継ぐため、社員が蓄積した知識を提出しやすくするのが狙いだ。分配は会社が契約した執筆者に限り、売上のうち一定割合を、AIが参照した手順書の記録に応じて割り当てる。AIの学習全体に誰が何割貢献したかを推定するのではなく、承認された手順書の利用記録だけを数える方式だ。",
+      "かつて返金処理の手順書を書いた元担当者（62）は、退職後の端末で入金明細を開いた。「私が辞めたあとも、あの説明が働いていたんですね」。元担当者の文章を使った問い合わせ処理が続く限り、契約に基づく分配も続く。人が退職しても、記録した仕事には買い手が付くことになった。",
+      "一方、現役の運用担当者（46）は、この日もAIが取り違えた契約条件を修正し、誤った回答が取引先へ届くのを止めた。だが、今回の対応は承認済み手順書に載っていない例外だった。担当者の配当明細は0円。担当部門は「日々の修正作業には給与を払っている。今回の分配は登録された手順の使用料です」と説明した。会社にはAI導入で減らせた定型作業の利益が残り、手順書の執筆者には分配金が入る。例外を直す現場の仕事は、その計算の外にあった。",
+      "午後、運用担当者らは、例外対応を手順書として登録できるよう審査を求めた。担当者（46）は修正した契約条件と判断の順番を書き起こし、AIへ渡す新しい手順書を提出する。承認され、AIがその仕事を処理するようになれば、次の分配の対象になるという。今の仕事で配当を得るには、まずその仕事をAIに任せられる形にしなければならない。"
+    ],
+    "source": {
+      "kind": "就業者調査",
+      "publisher": "NIRA総合研究開発機構",
+      "published_at": "2026-05-01T00:00:00+09:00",
+      "url": "https://www.nira.or.jp/paper/research-report/2026/032605.html",
+      "topic": "2026年5月1日公表の第4回デジタル経済・社会に関する就業者実態調査（速報）は、2026年2月から3月にかけた8,215件の回答に基づき、仕事で生成AIを定期利用する人が2026年2月時点で27%、その定期利用者の74%が仕事の効率向上を回答したと報告した。AIの業務利用拡大が現実の着想元であり、2031年の架空の桐浜市、手順書参照記録に基づく売上分配契約、退職者の入金、現役社員の配当0円、登場人物と会社の対応はすべて創作。調査がAI収益分配制度の実施を報じたものではない。"
+    },
+    "scene_prompt": "A Japanese female operations worker, age 46, writes a corrected business procedure on paper while a retired male colleague, age 62, examines a payment statement at a nearby office table. Photorealistic documentary press photograph inside a modest fictional workplace, everyday business casual clothing, natural faces and hands, ordinary daylight, believable paperwork and one computer monitor, no readable text, brand logos, recognizable real people, or graphics, horizontal 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "AI",
+      "雇用",
+      "利益分配"
+    ],
+    "satire_tags": [
+      "AIの利益",
+      "仕事の権利"
+    ],
+    "x_tags": [
+      "AI収益分配",
+      "業務手順書"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "AIの仕事に配当が付く未来。誤回答を直した現役の担当者には、なぜ配当が出なかったのか。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "2026年5月1日のNIRA総合研究開発機構の就業者調査で、仕事で生成AIを定期利用する人が27%、利用者の74%が効率向上と回答",
+      "target": "AIの有料業務で承認済み手順書に基づき売上の一部を元社員にも配分する会社独自の仕組み",
+      "action": "会社が手順書の参照記録で元社員に配当し、現役の運用担当者は例外処理を手順書へ変えて登録を申請する",
+      "outcome": "退職者に分配金が入り、例外を修正する現役社員の配当は0円。社員は配当を得るため自分の仕事をAIへ渡し始める"
+    },
+    "reader_clarity": {
+      "who": "業務支援会社",
+      "action": "AIの有料処理に使った手順書の執筆者へ売上の一部を分配し始めた",
+      "oddity": "退職した元社員には配当される一方、手順書にない例外を直した現役担当者の配当は0円"
+    },
+    "behavior_basis": {
+      "motive": "AIへ業務知識を引き継ぐ社員の貢献へ利益を還元して、手順書を登録する動機を作りたい",
+      "ordinary_alternative": "AIの売上は会社が受け取り、元社員は退職後に手順書が使われても配当を受けない。現役社員は例外を給与の範囲で処理する",
+      "why_not": "承認済み手順書と有料AI処理の参照記録を結び、登録した元社員へも分配できれば、仕事の知識を提出する動機になるため",
+      "evidence_quote": "仕事がAIに移っても、教えた人の取り分を残す"
+    },
+    "publication_slot": "2026-11-15T15:30:00+09:00"
+  },
+  {
     "slug": "recycling-robot-reserves-washer-parts-before-dismantling",
     "category": "経済",
     "flash": "廃洗濯機のモーター、解体前に予約",
