@@ -530,20 +530,29 @@
       link.title="計測された表示回数 "+Intl.NumberFormat("ja-JP").format(item.pageViews)+" PV";
       if(typeof item.image==="string" &&
          /^\/(?:images\/|photos\/|generated\/)/.test(item.image)){
+        li.className+=" readers-choice-item--with-image";
         const media=document.createElement("a");
         media.className="readers-choice-image";
         media.href=link.href;
         media.setAttribute("aria-label",item.title+"の記事へ");
         const thumb=document.createElement("img");
         thumb.className="readers-choice-thumb";
-        thumb.src=item.image;
         thumb.alt="";
         thumb.loading="lazy";
         thumb.decoding="async";
         thumb.width=160;
         thumb.height=90;
-        if(typeof item.fallback==="string" && /^\/images\/[a-z0-9-]+\.svg$/.test(item.fallback))
+        // These thumbnails are inserted after startup, so the initial
+        // img[data-fallback] scan cannot attach their error handlers.
+        if(typeof item.fallback==="string" && /^\/images\/[a-z0-9-]+\.svg$/.test(item.fallback) &&
+           item.fallback!==item.image){
           thumb.setAttribute("data-fallback",item.fallback);
+          thumb.onerror=()=>{
+            thumb.onerror=null;
+            thumb.src=item.fallback;
+          };
+        }
+        thumb.src=item.image;
         media.append(thumb);
         li.append(rank,media,content);
       }else{
