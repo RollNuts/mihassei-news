@@ -719,9 +719,9 @@ def check():
     # PV is measured separately from the legacy distinct-browser counters.
     # Missing pre-activation history must remain unmeasured, never backfilled.
     for token in ("data-observer-widget","data-pv-widget",
-                  "data-site-pv-today","data-site-pv-yesterday",
-                  "data-site-pv-week","data-pv-tracking-note",
-                  "今日のPV","昨日のPV","data-article-pv="):
+                  "data-site-pv-total","data-site-pv-week",
+                  "data-pv-tracking-note","newsroom-snapshot",
+                  "累計PV","掲載記事"):
         if token not in body:
             raise RuntimeError("PV display missing: "+token)
     if "未来を見にきた人" in body:
