@@ -476,6 +476,6 @@ def build_serials(serials, layout, write, output):
             write(prefix + "/" + ep["slug"] + "/index.html",
                   render_episode_page(series, ep, layout, figures.get(ep["slug"], [])))
             write_market_figures(series, ep, figures.get(ep["slug"], []), write)
-    build_market_bulletins(bulletins, layout, write)
             render_social_preview(series, output / "og" / "serials" /
                                   (series["slug"]+"-"+ep["slug"]+".png"), episode=ep)
+    build_market_bulletins(bulletins, layout, write)
