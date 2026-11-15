@@ -18,6 +18,7 @@ if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
     from .forecast_ledger import render_forecast_ledger
     from .market_figures import load_market_figures, render_market_figure, write_market_figures
+    from .reader_comments import render_reader_comments
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from .market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
@@ -25,6 +26,7 @@ else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
     from market_figures import load_market_figures, render_market_figure, write_market_figures
+    from reader_comments import render_reader_comments
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
@@ -385,7 +387,11 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             f'<div class="serial-epilogue"><p>{h(followup)}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
-            f'{render_completed_reading(series, ep)}{navigation}<a class="serial-back-link" href="{series_url(series)}">目次に戻る →</a>'
+            f'{render_completed_reading(series, ep)}'
+            + (render_reader_comments('market-episode-' + ep['slug'],
+                heading='この市場分析へのコメント', placeholder='データや予測について感じたこと…')
+               if series['kind'] == 'analysis' else '')
+            + f'{navigation}<a class="serial-back-link" href="{series_url(series)}">目次に戻る →</a>'
             f'</div></div>')
     return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
