@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "6d8e4246306692f834f5311026b50355d5e29a1c2ab5e6f9d6ba076aa61466c2",
-  "logical_run_id": "nov15-seven-venues-native-recovery-20261115",
-  "observed_at": "2026-11-15T11:35:35.483Z",
+  "candidate_identity": "14e14e494596689a71ddb9f5619f2b96994e9d5a99b562e0a70cac568787373d",
+  "logical_run_id": "nov15-washer-native-recovery-20261115",
+  "observed_at": "2026-11-15T11:38:26.355Z",
   "route": "PNG data URL in functions.exec to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
