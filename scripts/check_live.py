@@ -30,6 +30,7 @@ if __package__:
     from .generated_photos import generated_url, generated_scene_entry
     from .social_cards import reviewed_scene_png
     from .motion_clips import clip_url
+    from .photo_stories import load_photo_stories
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .serials import public_serials
@@ -44,6 +45,7 @@ else:
     from generated_photos import generated_url, generated_scene_entry
     from social_cards import reviewed_scene_png
     from motion_clips import clip_url
+    from photo_stories import load_photo_stories
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from serials import public_serials
@@ -732,7 +734,20 @@ def check():
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")
     require_matching_public_headline(chosen_lead, body, "home")
-    verify_broadcast_delivery(home.decode("utf-8"), broadcast_playlist(sorted_articles))
+    # The homepage shelf now contains cast posts; article video players remain.
+    verify_broadcast_delivery(home.decode("utf-8"), [])
+    cast_posts = load_photo_stories(ROOT)
+    for post in cast_posts[:7]:
+        if html.escape(post["text"]) not in body or post["profileUrl"] not in body:
+            raise RuntimeError("Published cast post is missing: " + post["id"])
+        motion = post.get("motion")
+        if motion:
+            if motion["url"] not in body:
+                raise RuntimeError("Published cast photo-motion is missing")
+            movie, movie_mime = get(motion["url"])
+            expected = (ROOT / "assets/photo-story-clips" / (post["id"] + ".mp4")).read_bytes()
+            if "video/mp4" not in movie_mime or movie != expected:
+                raise RuntimeError("Published cast photo-motion differs from the verified clip")
     verify_pv_recommendations(home.decode("utf-8"), sorted_articles)
     # Verify the already-shipped topic navigation rather than adding more UI.
     # This also catches a successful main merge whose public deploy is stale.

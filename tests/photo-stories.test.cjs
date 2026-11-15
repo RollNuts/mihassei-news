@@ -13,6 +13,18 @@ const fixture=(id='saya-one')=>({id,modelId:'nagino-saya',name:'凪野さや',
   sourceUrl:'/photo/weekly/autumn-saya-001/#photo-01',alt:'秋の小道の凪野さや。',
   width:800,height:1200,voice:{rate:0.98,pitch:1.02}});
 
+test('photo-motion errors expose the actual still-photo link without autoplay',()=>{
+  const media=element(),fallback=element(),sourceElement=element();
+  fallback.hidden=true;media.querySelectorAll=()=>[sourceElement];
+  const shell={querySelector:selector=>selector==='video'?media:fallback};
+  vm.runInNewContext(source,{document:{querySelectorAll:selector=>
+    selector==='[data-story-motion]'?[shell]:[]},window:{},Date,Intl});
+  assert.equal(fallback.hidden,true);
+  sourceElement.listeners.error();
+  assert.equal(media.hidden,true);
+  assert.equal(fallback.hidden,false);
+});
+
 function element(){
   return {listeners:{},dataset:{},textContent:'',disabled:false,hidden:false,focused:0,
     addEventListener(name,fn){this.listeners[name]=fn;},focus(){this.focused++;}};

@@ -22,3 +22,27 @@
 .photo-story-status{min-height:1.85em;margin:12px 0 0}
 .photo-story-open:focus-visible,.photo-story-dialog button:focus-visible,.photo-story-actions a:focus-visible{outline:3px solid var(--photo-accent,#863549);outline-offset:4px}
 @media(max-width:600px){.photo-story-dialog{padding:18px}.photo-story-image{max-height:50dvh}.photo-story-text{font-size:15px}}
+.cast-timeline{margin:34px 0 42px;padding-top:24px;border-top:2px solid var(--line)}
+.cast-timeline>.photo-stories{margin-bottom:22px;padding:4px 0 20px}
+.cast-timeline .photo-stories h2{font:inherit;font-size:13px;font-weight:800}
+.cast-timeline .photo-stories-list{flex-wrap:nowrap;overflow-x:auto;gap:18px;padding:2px 2px 8px}
+.cast-timeline .photo-stories-list li{flex:0 0 84px}
+.cast-timeline .photo-story-open{width:84px}
+.photo-post-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.photo-post-list>li{min-width:0}
+.photo-post{height:100%;box-sizing:border-box;border:1px solid var(--line);background:var(--paper);padding:16px}
+.photo-post header{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.photo-post-person{display:flex;gap:9px;align-items:center;font-size:14px}
+.photo-post-person img{width:44px;height:44px;object-fit:cover;object-position:50% 28%;border-radius:50%}
+.photo-post time,.photo-post footer{font-size:11px;color:var(--muted);line-height:1.8}
+.photo-post-text{font-size:14px;line-height:1.9;margin:15px 0}
+.photo-post-image{display:block}
+.photo-post-image img{display:block;width:100%;height:260px;object-fit:contain;background:#ece7dd}
+.photo-post-motion{margin:0}
+.photo-post-motion video{display:block;width:100%;height:260px;background:#ece7dd;object-fit:contain}
+.photo-post-motion figcaption{font-size:11px;line-height:1.8;color:var(--muted);margin-top:5px}
+.photo-post footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;margin-top:12px}
+.photo-post footer a{text-decoration:underline;text-underline-offset:3px}
+.photo-post [hidden]{display:none!important}
+@media(max-width:900px){.photo-post-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.photo-post-list{grid-template-columns:minmax(0,1fr);gap:18px}.photo-post-image img,.photo-post-motion video{height:auto;max-height:460px}.photo-post{padding:14px}}

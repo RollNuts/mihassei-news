@@ -381,6 +381,10 @@ def _generation_source(issue, image, cut):
 
 
 def validate_catalog(data):
+    if __package__:
+        from .photo_biographies import public_biography
+    else:
+        from photo_biographies import public_biography
     if not isinstance(data, dict) or data.get("schema_version") != 1:
         raise ValueError("Invalid photo issue catalog")
     models, issues = data.get("models"), data.get("issues")
@@ -393,6 +397,7 @@ def validate_catalog(data):
                 or type(model.get("age")) is not int or not 20 <= model["age"] <= 99):
             raise ValueError("Invalid fictional adult photo model")
         _text(model.get("name"), "model name")
+        public_biography(model)
         if any(name in model["name"] for name in INTERNAL_REFERENCE_NAMES):
             raise ValueError("Internal reference name used as a public photo model")
         character = model.get("character")

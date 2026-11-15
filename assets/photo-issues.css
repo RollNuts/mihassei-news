@@ -1,4 +1,12 @@
 @charset "UTF-8";
+.photo-model-biography{margin:30px 0 38px;padding-top:24px;border-top:1px solid var(--photo-rule)}
+.photo-model-biography h2{font-family:var(--serif);font-size:24px;line-height:1.5}
+.photo-model-biography dl{margin:18px 0;display:grid;gap:12px}
+.photo-model-biography dl>div{display:grid;grid-template-columns:7em minmax(0,1fr);gap:14px;line-height:1.9;font-size:14px}
+.photo-model-biography dt{font-weight:800}.photo-model-biography dd{margin:0}
+.photo-model-career{list-style:none;padding:0;margin:22px 0;display:grid;gap:14px}
+.photo-model-career li{display:grid;grid-template-columns:7em minmax(0,1fr);gap:14px;font-size:14px;line-height:1.9}
+.photo-model-career time{font-variant-numeric:tabular-nums;color:var(--muted)}
 
 .photo-issue-breadcrumb{margin-bottom:25px;color:var(--muted);font-size:12px;line-height:1.8;overflow-wrap:anywhere}
 .photo-issue-breadcrumb a{text-decoration:underline;text-underline-offset:3px}
