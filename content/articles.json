@@ -1,5 +1,67 @@
 [
   {
+    "slug": "recycling-robot-reserves-washer-parts-before-dismantling",
+    "category": "経済",
+    "flash": "廃洗濯機のモーター、解体前に予約",
+    "fiction_company": "架空の波灯市の家電回収センター",
+    "art": "cards",
+    "fiction_at": "2031-11-15T13:37:00+09:00",
+    "published_at": "2026-11-15T13:37:00+09:00",
+    "title": "廃洗濯機、解体前に「モーターだけ売れる」　注文でロボットの作業順が変わる",
+    "summary": "2031年、架空の波灯市の家電回収センターが、廃洗濯機の部品を分解前に予約購入できる市場を開始。修理店から注文が入ると解体ロボットがその部品を優先して外し、検査に通ったものだけ売買が成立する。初日はモーターを購入した修理店が、別の洗濯機を直した。",
+    "paragraphs": [
+      "2031年11月15日、架空の波灯市の家電回収センターで、捨てられた洗濯機を解体する前にモーターなどの部品を予約購入できる取引が始まった。買い手が付いた部品は解体ロボットが先に取り外す。初日の午前には、市内の修理店から注文を受けた一台の解体順が変更された。",
+      "これまでも中古の家電や取り外した部品は流通していたが、修理店が必要な型式を探すには、すでに分解・検査された部品の在庫を探す必要があった。新しい仕組みでは、回収センターが洗濯機の型式と簡易点検の結果を登録し、まだ中に残っている部品を仮予約の対象にする。取り外し後の安全検査に通るまで代金は確定しない。センターの担当者は「注文のある部品を先に外せれば、使えるものを金属として砕かずに済む」と話す。",
+      "午前、修理店の店主（58）が画面で探していたのは、修理を預かっている洗濯機と同じ型式のモーターだった。表示された候補は「回収機の内部・取り外し待ち」。店主が3,200円で条件付きの注文を入れると、センター側の解体予定にその部品が割り込んだ。完成した中古部品を棚から買うのではなく、まだ洗濯機の中にある部品を先に指名した格好だ。",
+      "センターでは作業員が電源の遮断と固定状態を確認し、解体ロボットが外装を開いてモーターを取り出した。技術者は取り外した部品の絶縁と回転を検査し、使用に適すると判定した分だけ注文を確定する。同じ列に並んだ別の洗濯機のポンプは検査で不合格となり、こちらの仮予約は取り消された。売り手は使えない部品まで発送せず、買い手も検査前に代金を支払わない仕組みだ。",
+      "昼前、修理店は合格したモーターを受け取り、預かっていた洗濯機に取り付けた。試運転で槽が回るのを確かめると、店主は買い替えの見積書をしまい、依頼主へ修理完了を知らせた。回収センターではモーターを外した本体の残りを素材別に分ける作業が続く。機械を一台売るのではなく、中でまだ働ける部品に買い手を付ける市場が動き出した。"
+    ],
+    "source": {
+      "kind": "環境省報道発表",
+      "publisher": "環境省",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.env.go.jp/press/press_05819.html",
+      "topic": "2026年11月13日、環境省は廃棄物・資源循環分野のフィジカルAIコンソーシアムを設立し、参加者間で社会実装上の課題や期待を共有する方針と会員募集を公表した。これはロボットによる中古部品売買の実用化発表ではない。2031年の架空の波灯市、部品の仮予約市場、ロボットが注文に応じて解体順を変更する仕組み、3,200円の取引、検査結果、修理店と修理成果はすべて創作である。"
+    },
+    "scene_prompt": "A middle-aged Japanese recycling technician examines a washing-machine motor carefully removed by an industrial disassembly robot. Photorealistic editorial press photograph inside a clean Japanese appliance recycling facility, an open washing machine in foreground, robot gripper and sorted metal parts clearly visible, safety gloves and guarded work cell, natural industrial lighting, realistic materials, no readable text, brand marks, logos, or recognizable real people, horizontal 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "家電リサイクル",
+      "中古部品",
+      "修理"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "家電リサイクル",
+      "リユース"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "まだ解体していない廃洗濯機のモーターに、先に買い手が付く。2031年、部品の注文でロボットの仕事の順番まで変わりました。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "wildcard",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月13日、環境省が廃棄物・資源循環分野のフィジカルAI社会実装に向けたコンソーシアムの設立と会員募集を発表",
+      "target": "回収した廃家電の部品を解体前から仮予約で取引し注文に応じてロボットの作業順を変える架空の市場",
+      "action": "修理店が洗濯機のモーターを条件付きで注文し、センターが先に外して安全検査を行う",
+      "outcome": "検査を通ったモーターだけが売買成立し、市内の修理店が預かった洗濯機を修理する"
+    },
+    "reader_clarity": {
+      "who": "家電回収センター",
+      "action": "廃洗濯機の部品を分解前に予約購入できる市場を始め、注文に応じてロボットの解体順を変える",
+      "oddity": "捨てる予定の洗濯機の中でまだ取り外していないモーターを先に注文できる"
+    },
+    "behavior_basis": {
+      "motive": "中古部品の買い手を見つけ、使える部品を金属として砕く前に再利用したい",
+      "ordinary_alternative": "分解・検査済みの中古部品の在庫を修理店が探し、回収センターは通常順で家電を分別する",
+      "why_not": "注文のある型式を優先して取り出し検査後に取引を成立させれば、在庫探しと使える部品の破砕を減らせる可能性があるから",
+      "evidence_quote": "注文のある部品を先に外せれば、使えるものを金属として砕かずに済む"
+    },
+    "publication_slot": "2026-11-15T13:30:00+09:00"
+  },
+  {
     "slug": "water-main-repair-priority-dry-street-first",
     "category": "政治",
     "flash": "漏れる前に水道工事",
