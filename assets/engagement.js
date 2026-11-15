@@ -889,7 +889,8 @@
   // Archive filters reveal existing cards. Load newly visible PVs once, using
   // GET-only batches rather than turning a filter action into a page view.
   const archiveList=document.querySelector(".archive-list");
-  if(archiveList && typeof window.MutationObserver==="function" && typeof window.setTimeout==="function"){
+  if(archiveList && document.querySelectorAll("[data-article-pv]").length &&
+     typeof window.MutationObserver==="function" && typeof window.setTimeout==="function"){
     let queued=false;
     const watchCards=new window.MutationObserver(()=>{
       if(queued)return;
