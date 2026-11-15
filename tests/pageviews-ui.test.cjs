@@ -63,7 +63,8 @@ async function runPage(options={}){
     return node;
   });
   const selectors=new Map([
-    ['[data-observer-widget]',widget],['[data-pv-widget]',widget],
+    ['[data-observer-widget]',options.noWidget?null:widget],
+    ['[data-pv-widget]',options.noWidget?null:widget],
     ['[data-site-pv-total]',total],['[data-site-pv-week-stat]',weekStat],
     ['[data-site-pv-week]',week],['[data-site-pv-period-label]',period],
     ['[data-pv-tracking-note]',note],
@@ -235,6 +236,23 @@ test('only visible document displays count; focus, visibility returns and refres
   assert.notEqual(reload.visits()[0].body.viewId,id);
   assert.equal(reload.visits()[0].body.sessionId,sessionId,
     'a normal reload inside 30 minutes stays in the same session');
+});
+
+test('article reactions still refresh without the removed sitewide PV header',async()=>{
+  const page=await runPage({
+    url:'https://veripsa.com/articles/news-one/',
+    noWidget:true, badges:['news-one']
+  });
+  assert.equal(page.visits().length,1);
+  assert.equal(page.intervals.length,1,'article reaction widgets keep their ten-minute refresh');
+  page.advance(600000);
+  page.intervals[0].callback();
+  await settle();
+  assert.equal(page.gets().length,1,'a periodic refresh is read-only');
+  assert.equal(page.visits().length,1,'refresh never adds another page view');
+
+  const quiet=await runPage({url:'https://veripsa.com/privacy/',noWidget:true});
+  assert.equal(quiet.intervals.length,0,'static pages do not poll without controls');
 });
 
 test('a lost response retries the same page-view ID once instead of creating another display',async()=>{
