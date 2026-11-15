@@ -16,6 +16,8 @@ from tests.test_photo_issue_pages import PageParser, issue
 class PhotoModelPageTests(unittest.TestCase):
     def setUp(self):
         self.models = copy.deepcopy(photo_issues.load_photo_issues(build.BASE)["models"])
+        for model in self.models:
+            model.pop("profile_portrait", None)
         self.release = issue(model_id=self.models[0]["id"])
         self.release["images"]["01"]["sha256"] = "a" * 64
         self.release["model_snapshot"] = copy.deepcopy(self.models[0])
@@ -105,7 +107,7 @@ class PhotoModelPageTests(unittest.TestCase):
         grid_links = [link["href"] for link in parsed.links if link.get("class") == "photo-model-grid-link"]
         self.assertEqual(grid_links, expected)
         self.assertEqual(len(parsed.images), 21)  # Own cover avatar plus twenty released grid entries.
-        self.assertIn('<strong>20</strong><span>写真</span>', markup)
+        self.assertIn('<strong>20</strong><span>掲載カット</span>', markup)
         self.assertIn('<strong>2</strong><span>掲載号</span>', markup)
         self.assertIn('class="photo-model-avatar"', markup)
         self.assertNotIn(photo_issues.issue_url(foreign), markup)

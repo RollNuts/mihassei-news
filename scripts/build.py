@@ -820,7 +820,7 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None):
     if serial is not None and not public_serials([serial]):
         raise ValueError("Serial has been withdrawn from publication")
     if serial_collection is not None:
@@ -888,6 +888,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         og_image = SITE + "/og/serials/" + name + ".png"
     if photo_cover is not None:
         og_image = SITE + photo_cover_url(photo_cover)
+    elif photo_model_image is not None:
+        og_image = SITE + photo_model_image["url"]
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (article_image_alt(
@@ -906,6 +908,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                   if photo_model else "週刊グラビア — 架空の成人モデルの写真とコラム")
     if photo_cover is not None:
         og_alt = photo_cover_shot(photo_cover)["alt"]
+    elif photo_model_image is not None:
+        og_alt = photo_model_image["alt"]
     og_mime = "image/jpeg" if local_photo else "image/png"
     scene_card = (article is not None and og_image.startswith(SITE + "/og/articles/")
                   and reviewed_scene_version(article, root=BASE) is not None)
@@ -915,6 +919,9 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         cover_image = photo_cover["images"][photo_cover_shot(photo_cover)["id"]]
         og_size = (f'<meta property="og:image:width" content="{cover_image.get("width", 1200)}">'
                    f'<meta property="og:image:height" content="{cover_image.get("height", 675)}">')
+    elif photo_model_image is not None:
+        og_size = (f'<meta property="og:image:width" content="{photo_model_image["width"]}">'
+                   f'<meta property="og:image:height" content="{photo_model_image["height"]}">')
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
@@ -964,7 +971,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         metadata["genre"] = "創作写真コラム"
         metadata["@type"] = ("ProfilePage" if photo_model else
                              "CollectionPage" if photo_issue is None else "Article")
-        if photo_cover is not None:
+        if photo_cover is not None or photo_model_image is not None:
             metadata["image"] = [og_image]
     if photo_model is not None:
         metadata["about"] = {"@type": "Thing", "name": photo_model["name"],
@@ -2087,7 +2094,7 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
-    photo_entries = [*photo_sitemap_entries(photo_issues), *model_sitemap_entries(photo_models, photo_issues)]
+    photo_entries = [*photo_sitemap_entries(photo_issues), *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -2322,7 +2329,8 @@ def build():
     build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE,
                        stories_markup=render_story_strip(story_data))
     build_photo_models(photo_data["models"], photo_issues, layout, write,
-                       stories_renderer=lambda model_id: render_model_stories(model_id, story_data))
+                       stories_renderer=lambda model_id: render_model_stories(model_id, story_data),
+                       root=BASE, output=OUT)
     # The Worker may accept engagement writes only for these validated releases.
     write("photo/weekly/engagement.json", json.dumps({
         "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),

@@ -10,9 +10,11 @@ from urllib.parse import urlencode
 if __package__:
     from .photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from .reader_comments import render_reader_comments
+    from .photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
 else:
     from photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from reader_comments import render_reader_comments
+    from photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
 
 
 CREDIT = "登場人物とコラムは創作、写真はAI生成です。"
@@ -255,20 +257,26 @@ def _public_model(model):
             "likes": list(character.get("likes", [])), "quirk": character.get("weakness", "")}
 
 
-def _model_photo(model, issue, *, eager=False):
-    if issue is None:
+def _model_photo(model, issue, *, eager=False, portrait=None):
+    if issue is None and portrait is None:
         return ('<div class="photo-model-nameplate" aria-hidden="true">'
                 f'<span>{h(model["name"])}</span></div>')
-    shot = cover_shot(issue)
-    width, height, _supplied = _image_size(issue, shot["id"])
+    if issue is not None:
+        shot = cover_shot(issue)
+        width, height, _supplied = _image_size(issue, shot["id"])
+        url, alt = cover_url(issue), shot["alt"]
+    else:
+        width, height = portrait["width"], portrait["height"]
+        url, alt = portrait["url"], portrait["alt"]
     loading = 'loading="eager" fetchpriority="high"' if eager else 'loading="lazy"'
-    return (f'<img class="photo-model-image" src="{h(cover_url(issue))}" '
-            f'alt="{h(shot["alt"])}" width="{width}" height="{height}" '
+    return (f'<img class="photo-model-image" src="{h(url)}" '
+            f'alt="{h(alt)}" width="{width}" height="{height}" '
             f'{loading} decoding="async">')
 
 
-def _model_share_controls(model, latest):
-    cover_hash = latest["images"][cover_shot(latest)["id"]]["sha256"] if latest else ""
+def _model_share_controls(model, latest, portrait=None):
+    cover_hash = (latest["images"][cover_shot(latest)["id"]]["sha256"] if latest else
+                  portrait["sha256"] if portrait else "")
     version = hashlib.sha256(json.dumps([model, cover_hash], ensure_ascii=False,
                                        sort_keys=True).encode("utf-8")).hexdigest()[:12]
     url = "https://veripsa.com" + model_url(model) + "?v=" + version
@@ -282,15 +290,17 @@ def _model_share_controls(model, latest):
             '<span aria-hidden="true">↗</span><span>リンクをコピー</span></button></nav>')
 
 
-def render_model_index(models, published_issues, layout):
+def render_model_index(models, published_issues, layout, *, root=ROOT, portraits=None):
     released = _released_issues(published_issues)
+    portraits = ({model["id"]: validate_profile_portrait(model, root=root) for model in models}
+                 if portraits is None else portraits)
     cards = []
     for model in models:
         public = _public_model(model)
         latest = next((issue for issue in released if issue["model_id"] == public["id"]), None)
         cards.append('<li><article class="photo-model-card">'
                      f'<a href="{h(model_url(public))}" class="photo-model-card-link">'
-                     f'{_model_photo(public, latest)}<div class="photo-model-card-copy">'
+                     f'{_model_photo(public, latest, portrait=portraits.get(public["id"]))}<div class="photo-model-card-copy">'
                      f'<h2>{_model_name(public)}</h2>'
                      f'<p class="photo-model-occupation">{h(public["occupation"])}</p>'
                      f'<p>{h(public["personality"])}</p>'
@@ -301,9 +311,13 @@ def render_model_index(models, published_issues, layout):
             f'<a href="/">トップ</a> / <a href="{h(index_url())}">週刊グラビア</a>'
             ' / <span aria-current="page">モデル一覧</span></nav>'
             '<header class="photo-issues-intro"><p class="photo-issue-eyebrow">PHOTO & COLUMN</p>'
-            '<h1>モデル一覧</h1><p class="photo-issue-credit">登場するモデルはすべて架空の成人です。</p></header>'
+            '<h1>モデル一覧</h1><p class="photo-issue-credit">登場するモデルはすべて架空の成人です。写真はAI生成です。</p></header>'
             f'{_photo_navigation("models")}<ul class="photo-models-grid">{"".join(cards)}</ul></div>')
     cover = {"photo_cover_issue": released[0]} if released else {}
+    if not released:
+        portrait = next((value for value in portraits.values() if value), None)
+        if portrait:
+            cover["photo_model_image"] = portrait
     return layout("モデル一覧", "週刊グラビアに登場する架空の成人モデルのプロフィールと掲載号。",
                   MODEL_INDEX_URL, main, active="photos", kind="photo_collection", **cover)
 
@@ -323,8 +337,9 @@ def _model_photo_grid(released):
     return f'<ul class="photo-model-photo-grid">{"".join(photos)}</ul>'
 
 
-def render_model_profile(model, published_issues, layout, *, stories_markup=""):
+def render_model_profile(model, published_issues, layout, *, stories_markup="", root=ROOT, portrait=None):
     public = _public_model(model)
+    portrait = validate_profile_portrait(model, root=root) if portrait is None else portrait
     released = [issue for issue in _released_issues(published_issues) if issue["model_id"] == public["id"]]
     latest = released[0] if released else None
     facts = []
@@ -334,7 +349,8 @@ def render_model_profile(model, published_issues, layout, *, stories_markup=""):
             facts.append(f'<div><dt>{label}</dt><dd>{h(value)}</dd></div>')
     photo_credit = (f'<p class="photo-model-photo-source">プロフィール写真：<a href="{h(issue_url(latest))}">'
                     f'第{h(latest["number"])}号</a> · AI生成</p>'
-                    if latest else "")
+                    if latest else f'<p class="photo-model-photo-source"><a href="{h(portrait["url"])}">'
+                    'プロフィール写真を見る</a> · AI生成</p>' if portrait else "")
     issue_links = "".join(f'<li><a href="{h(issue_url(issue))}">第{h(issue["number"])}号 · {h(issue["title"])}</a>'
                           f'<span>公開日 {_publication_date(issue)}</span></li>' for issue in released)
     archive = f'<ol class="photo-model-issue-list">{issue_links}</ol>' if released else ""
@@ -349,42 +365,57 @@ def render_model_profile(model, published_issues, layout, *, stories_markup=""):
             f'<a href="/">トップ</a> / <a href="{h(index_url())}">週刊グラビア</a>'
             f' / <a href="{MODEL_INDEX_URL}">モデル一覧</a> / <span aria-current="page">{h(public["name"])}</span></nav>'
             f'{_photo_navigation("models")}<header class="photo-model-profile">'
-            f'<div class="photo-model-avatar">{_model_photo(public, latest, eager=True)}</div>'
+            f'<div class="photo-model-avatar">{_model_photo(public, latest, eager=True, portrait=portrait)}</div>'
             '<div class="photo-model-bio"><p class="photo-issue-eyebrow">PROFILE</p>'
             f'<h1>{h(public["name"])}</h1><p class="photo-model-age">{h(public["age"])}歳 · 架空の成人モデル</p>'
             '<div class="photo-model-stats" aria-label="公開中の写真と掲載号">'
-            f'<p><strong>{photo_count}</strong><span>写真</span></p>'
+            f'<p><strong>{photo_count}</strong><span>掲載カット</span></p>'
             f'<p><strong>{len(released)}</strong><span>掲載号</span></p></div>'
-            f'<dl>{"".join(facts)}</dl>{photo_credit}{_model_share_controls(public, latest)}</div></header>'
+            f'<dl>{"".join(facts)}</dl>{photo_credit}{_model_share_controls(public, latest, portrait)}</div></header>'
             f'{stories_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
             f'<h2 id="model-photos-title">写真</h2>{grid}</section>'
             f'{issue_section}</article>')
     description = f'{public["name"]}（{public["age"]}歳）のプロフィール。{public["occupation"]}。{public["personality"]}'
     return layout(public["name"] + "のプロフィール", description, model_url(public), main,
                   active="photos", kind="photo_model", photo_model=public,
-                  photo_cover_issue=latest, indexable=bool(released))
+                  photo_cover_issue=latest, photo_model_image=portrait if latest is None else None,
+                  indexable=bool(released or portrait))
 
 
-def build_photo_models(models, published_issues, layout, write, *, stories_renderer=None):
+def build_photo_models(models, published_issues, layout, write, *, stories_renderer=None, root=ROOT, output=None):
     if not models:
         return
-    write(MODEL_INDEX_URL.lstrip("/") + "index.html", render_model_index(models, published_issues, layout))
+    portraits = {model["id"]: validate_profile_portrait(model, root=root) for model in models}
+    if output is not None:
+        released_ids = {issue["model_id"] for issue in _released_issues(published_issues)}
+        for model_id, portrait in portraits.items():
+            if portrait and model_id not in released_ids:
+                copy_profile_portrait(portrait, output, root=root)
+    write(MODEL_INDEX_URL.lstrip("/") + "index.html",
+          render_model_index(models, published_issues, layout, root=root, portraits=portraits))
     for model in models:
         stories_markup = stories_renderer(model["id"]) if stories_renderer else ""
         write(model_url(model).lstrip("/") + "index.html",
-              render_model_profile(model, published_issues, layout, stories_markup=stories_markup))
+              render_model_profile(model, published_issues, layout, stories_markup=stories_markup,
+                                   root=root, portrait=portraits[model["id"]]))
 
 
-def model_sitemap_entries(models, published_issues):
-    """Profiles without a released photograph remain readable, but noindex."""
+def model_sitemap_entries(models, published_issues, *, root=ROOT):
+    """Only a released cover or validated portrait makes a profile indexable."""
     released = _released_issues(published_issues)
     if not models:
         return []
+    portraits = {model["id"]: validate_profile_portrait(model, root=root) for model in models}
     latest = released[0] if released else None
-    entries = [(MODEL_INDEX_URL, latest["published_at"] if latest else None,
-                cover_url(latest) if latest else None)]
+    first_portrait = next((value for value in portraits.values() if value), None)
+    entries = [(MODEL_INDEX_URL, latest["published_at"] if latest else
+                first_portrait["reviewed_at"] if first_portrait else None,
+                cover_url(latest) if latest else first_portrait["url"] if first_portrait else None)]
     for model in models:
         latest = next((issue for issue in released if issue["model_id"] == model["id"]), None)
         if latest:
             entries.append((model_url(model), latest["published_at"], cover_url(latest)))
+        elif portraits[model["id"]]:
+            portrait = portraits[model["id"]]
+            entries.append((model_url(model), portrait["reviewed_at"], portrait["url"]))
     return entries
