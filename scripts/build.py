@@ -2286,12 +2286,10 @@ def make_issue_social_images(issues):
 
 
 def make_article_social_images(articles):
-    """Create article-specific, clearly fictional PNGs without external services."""
+    """Keep historical PNG share URLs available after a JPEG becomes primary."""
     for article in articles:
-        # Cached stock images are not auto-approved; always generate a safe
-        # topic-specific PNG for anything not explicitly editorially reviewed.
-        if uses_generated_scene(article) or uses_stock_photo(article):
-            continue
+        # Reuse an intact maintained scene PNG or the safe stdlib artwork.
+        # social_image() still selects the approved JPEG for current shares.
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"), root=BASE)
 
 
