@@ -132,15 +132,22 @@ CATEGORY_PATHS = {
     "スポーツ":"sports", "エンタメ":"entertainment"
 }
 # Editorial category descriptions help readers choose without keyword stuffing.
+NEWS_DESCRIPTION = "未発生新聞は、今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞です。AIと仕事、発明、遊びの変化を描きます。"
+HOME_DESCRIPTION = NEWS_DESCRIPTION + "創作ニュース、グラビア誌コーナー、市場分析を読む。"
 CATEGORY_INTROS = {
-    "社会":"親切な制度ほど、なぜか不便。暮らしの矛盾を切り取る社会風刺。",
+    "社会":"暮らしを変える制度、人のつながり、働く人の取り分。5年後の社会を創作ニュースで読む。",
     "事件":"架空の事件とまちの珍事。小さな謎を現場の行動とオチで読む。",
-    "経済":"値上げ、節約、働き方。数字の理屈が少し暴走した世界のニュース。",
-    "技術":"便利になるほど増える手間。AIと技術の奇妙な日常を描く。",
-    "政治":"会議も説明も立派なのに、なぜか話が進まない。政治の風刺。",
-    "暮らし":"家族、買い物、毎日の小さな面倒。笑えるほど身近な出来事。",
-    "スポーツ":"勝つこと、応援すること。熱すぎるルールと期待をニュースに。",
-    "エンタメ":"推し活、配信、考察。好きが行きすぎた世界のニュース。",
+    "経済":"働き方、お金、物流や買い物。仕事と暮らしの仕組みが変わる5年後の経済ニュース。",
+    "技術":"AIの働き方から新しい発明まで。仕事や暮らしを変える5年後の技術を描く。",
+    "政治":"政策の決まり方と、その先で変わる暮らし。5年後の政治を風刺と創作で読む。",
+    "暮らし":"家族、食、買い物、恋愛。身近な楽しみと小さな矛盾から、5年後の毎日を描く。",
+    "スポーツ":"競技のルール、選手の挑戦、応援の楽しみ方。5年後のスポーツを描く。",
+    "エンタメ":"音楽、配信、推し活。作る人と楽しむ人の行動が変わる、5年後の娯楽を描く。",
+}
+TOPIC_INTROS = {
+    "AI":"仕事を任せた後の責任、教えた人への報酬、AIとの付き合い方。AIが身近になった5年後を、架空ニュースで描く。",
+    "働き方":"AIに任せても残る責任、出社や会議の決まり、人手不足への工夫。働く人の役割と職場の矛盾を、5年後の架空ニュースで読む。",
+    "ファン文化":"出演者を休ませるライブに集まる人、公式の結末を作り直す視聴者。応援や考察が興行と日常を動かす5年後を描く。",
 }
 
 
@@ -1457,7 +1464,7 @@ def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stori
 </section>
 </div></details>
 </div>'''
-    return layout("未発生新聞", "未発生新聞は、社会の矛盾や日常の理不尽を5年後の架空ニュースにして笑う風刺メディア。創作ニュース、グラビア誌コーナー、市場分析を読む。", "/", content,"home")
+    return layout("未発生新聞", HOME_DESCRIPTION, "/", content,"home")
 
 def archive(articles):
     # Only offer categories with actual published articles; the list grows with
@@ -1606,9 +1613,9 @@ def topic_page(tag, items, articles=None):
         intro = f'「{tag}」と呼びたくなる行動や空気感を、5年後の架空ニュースで描いた記事。'
         eyebrow = "SATIRE TAG"
     else:
-        intro = f'{tag}を題材に、今の生活や社会のズレを5年後の架空ニュースへ広げた記事。'
+        intro = TOPIC_INTROS.get(tag, f'{tag}を題材に、今の話題や身近な出来事を5年後の架空ニュースへ広げた記事。')
         eyebrow = "TOPIC"
-    title = f"#{tag}の記事"
+    title = f"{tag}の創作ニュース・風刺"
     content = (
         '<div class="container archive-page">'
         f'<header class="page-intro"><span class="eyebrow">{eyebrow}</span>'
@@ -1870,12 +1877,12 @@ def story(a, articles, issues=None, serials=None):
     return layout(a["title"], reader_copy(a["summary"]) + " ※創作ニュースです。", article_url(a), content,kind="story",article=a)
 
 def about():
-    content = '''<div class="container archive-page">
+    content = f'''<div class="container archive-page">
 <header class="page-intro"><span class="eyebrow">ABOUT US</span>
 <h1>未発生新聞について</h1>
 <p>まだ起きていないニュースを、真顔で。</p></header>
 <div class="about-copy">
-<p>未発生新聞は、今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞です。</p>
+<p>{escape(NEWS_DESCRIPTION)}</p>
 <h2>掲載内容</h2>
 <p>ニュース記事はフィクションです。「未来相場観測室」では、現実の公開資料に基づく市場分析を掲載しています。</p>
 <p><a href="/archive/" style="text-decoration:underline">記事一覧 ↗</a>　<a href="/serials/" style="text-decoration:underline">連載 ↗</a></p>
@@ -1884,7 +1891,7 @@ def about():
 <h2>制作とコード</h2>
 <p><a href="https://github.com/RollNuts/mihassei-news" target="_blank" rel="noopener noreferrer external" style="text-decoration:underline">GitHubで公開コードを見る・Starで保存 ↗</a></p>
 </div></div>'''
-    return layout("本紙について","今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞。","/about/",content,"about")
+    return layout("本紙について",NEWS_DESCRIPTION,"/about/",content,"about")
 
 def editorial_policy():
     """Public disclosure of the creative process and commercial independence."""
@@ -2108,12 +2115,19 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
+def _sitemap_timestamp(value):
+    """Compare legacy date-only publication dates as midnight in Japan."""
+    stamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    return stamp if stamp.tzinfo is not None else stamp.replace(tzinfo=timezone(timedelta(hours=9)))
+
+
 def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=(), photo_editions=()):
     serials = load_serials(BASE) if serials is None else public_serials(serials)
     latest = max(
         list(modification_date(a) for a in articles) +
         list(e["published_at"] for s in serials for e in s["episodes"]) +
         list(issue["published_at"] for issue in photo_issues),
+        key=_sitemap_timestamp,
         default=None
     )
     issues = daily_issues(articles) if issues is None else issues

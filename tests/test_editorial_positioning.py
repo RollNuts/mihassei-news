@@ -1,5 +1,6 @@
 """The newspaper promises playful five-year fiction, not a prediction service."""
 import unittest
+import re
 from pathlib import Path
 
 from scripts.build import about, editorial_policy, home, layout, load
@@ -11,7 +12,9 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn('class="fiction-mark">創作報道', page)
         self.assertIn("まだ起きていないニュースを、真顔で。", page)
         self.assertIn("data-edition-title>最新記事", page)
-        self.assertIn("社会の矛盾や日常の理不尽", page)
+        description = re.search(r'<meta name="description" content="([^"]+)"', page).group(1)
+        for meaning in ("5年後", "創作", "風刺"):
+            self.assertIn(meaning, description)
         self.assertNotIn("この新聞の読み方", page)
 
     def test_about_identifies_satire_without_claiming_accuracy(self):
