@@ -1,0 +1,49 @@
+{
+  "active_hold": {
+    "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+    "reason": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+    "rejected_candidate_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+  },
+  "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+  "baseline_commit": "9be2805defd3253001c47b11ddd3f535caa4c9b6",
+  "disposition": "Original rejected CPU generation, visual review and active hold retained unchanged; replaced only after a genuinely new native JPEG was actually reviewed against the same article fingerprint.",
+  "generation": {
+    "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+    "bytes": 117628,
+    "generated_at": "2026-11-15T04:06:20.660447+00:00",
+    "inference": {
+      "algorithm_type": "dpmsolver++",
+      "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+      "guidance_scale": 7.0,
+      "height": 448,
+      "num_inference_steps": 24,
+      "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+      "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+      "scheduler": "DPMSolverMultistepScheduler",
+      "solver_order": 2,
+      "solver_type": "midpoint",
+      "use_karras_sigmas": true,
+      "vae_model": "stabilityai/sd-vae-ft-mse",
+      "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "width": 800
+    },
+    "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "origin": "github-cpu-sd15",
+    "prompt_version": 3,
+    "seed": 2361868401886373721,
+    "sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+  },
+  "retained_jpeg_bytes": 117628,
+  "retained_jpeg_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/previous-cpu-f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011.jpg",
+  "retained_jpeg_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011",
+  "schema_version": 1,
+  "slug": "swapped-suitcases-drive-themselves-to-lost-property",
+  "visual_review": {
+    "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+    "decision": "rejected",
+    "image_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011",
+    "note": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+    "reviewed_at": "2026-11-15T13:19:22+09:00"
+  }
+}

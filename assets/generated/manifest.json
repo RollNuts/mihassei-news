@@ -6458,30 +6458,201 @@
     },
     "swapped-suitcases-drive-themselves-to-lost-property": {
       "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
-      "bytes": 117628,
-      "generated_at": "2026-11-15T04:06:20.660447+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 164774,
+      "generated_at": "2026-11-15T10:18:07.134022969Z",
+      "generation_id": "a107af56-8882-4427-8c15-d9adaa5c0208",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One candid horizontal 16:9 Japanese news photograph, fictional people at a fictional train station in November 2031. The visual joke must be instantly clear: TWO matching silver hard-shell suitcases on their own little powered wheels have reached a service counter ahead of their two owners; nobody is holding or pulling the luggage. Wide three-quarter SIDE view of an ordinary indoor station return lane marked by TWO plain yellow floor boundary stripes. Two silver suitcases stand in a neat short line toward the counter on the right. Both telescopic towing handles are FULLY RETRACTED, wheels touch the floor and there is no hand, leash or cable attached. A Japanese woman age 27 and man age 31, in normal November travel coats, follow a full metre behind, hands visibly empty and each wearing a small plain wristband. Their faces show mild puzzled concentration, not broad comic mugging. A uniformed middle-aged station attendant stands safely beside the counter at right, observing the luggage rather than pulling it. The lane is separated from the normal pedestrian area. Plausible human and luggage scale, believable station floor and light, natural skin and hands, subtle real photograph texture. Low waist-height camera emphasizes the dignified little line of luggage and the gap to the humans. No visible readable signs, ticket text, logos, brands, robot faces, real celebrities, special effects, illustration or CGI. Do not add extra suitcases. One coherent full-bleed photograph.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:a107af56-8882-4427-8c15-d9adaa5c0208",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "bytes": 117628,
+        "generated_at": "2026-11-15T04:06:20.660447+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 2361868401886373721,
+        "sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_history_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/previous-generation.json",
+      "previous_rejection": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "reason": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+        "rejected_candidate_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+      },
+      "previous_scene_prompt": "Two adult Japanese travelers, a woman age 27 and a man age 31, walk behind two small self-driving silver suitcases toward a lost-property counter at a fictional train station. Photorealistic candid news photograph, a separated indoor return lane marked by plain yellow floor stripes, a middle-aged station attendant guiding the safe movement, natural November coats, plausible luggage wheels and handles, ordinary station lighting, natural faces and hands, sense of a slightly amusing situation, horizontal 16:9 documentary realism, no readable text, logos, brand marks, or recognizable real people.",
+      "previous_visual_review": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "decision": "rejected",
+        "image_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011",
+        "note": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+        "reviewed_at": "2026-11-15T13:19:22+09:00"
+      },
       "prompt_version": 3,
-      "seed": 2361868401886373721,
-      "sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+      "sha256": "5db5e6db656e8894ab2e61122f34ca6148269e5c374698824f46c26ae0774c6a",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T10:18:07.134022969Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T10:18:07.134030947Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T10:18:07.131878876Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              208,
+              165,
+              163,
+              149,
+              138,
+              177,
+              79,
+              41,
+              18,
+              142,
+              197,
+              221,
+              228,
+              198,
+              245,
+              124,
+              22,
+              195,
+              249,
+              189,
+              185,
+              183,
+              60,
+              225,
+              59,
+              80,
+              194,
+              91,
+              205,
+              164,
+              17,
+              20
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:a107af56-8882-4427-8c15-d9adaa5c0208",
+        "manifest_uri": "urn:c2pa:f3133578-4074-4af2-9f4b-bb4df9fe35a6",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2381290,
+        "caBX_sha256": "93d8a68afb99fc3caebdbe0432135278ede6720aee80843452c4df30676118c6",
+        "candidate_branch": "native-image-candidate/swapped-suitcases-drive-themselves-to-lost-property/3616f0f7de319f3a-0415bee6ce7d",
+        "candidate_commit": "b5cc5b50be9eaf8b5738ddb207836b71afbd4db3",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-f8e4d150-123a-490b-bb66-ed3fb94fec69",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "d9a555cfc0efbf9b58275de2202840fd71c6ca94",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part000",
+            "sha256": "da7299737e71784d50f54f9ee7245c37d000f167963826212848957de4a3d5d3"
+          },
+          {
+            "blob_sha": "a08165e98f1227faaaad178959952caf2a411d91",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part001",
+            "sha256": "54436fb4e932c7095e29b7ad3ee51e63f144999f34debf82d703b80537dec711"
+          },
+          {
+            "blob_sha": "a9572feb6ba89c2cf42a9c5450776e4393a637c2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part002",
+            "sha256": "30786afc32233c08a5517096563d1964e02f68eb7cb25c986e23ecb349fcffd4"
+          },
+          {
+            "blob_sha": "6d97dff0b8a501cf2774e419bb564bbccb52ef03",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part003",
+            "sha256": "f1bcd9b72311cd57808ea1d66eda2088d3562ff3da976471f9834b87160e84b0"
+          },
+          {
+            "blob_sha": "18407e712869548d4ff490bb696a426226bf4aad",
+            "bytes": 284138,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part004",
+            "sha256": "c15122fa689ed4aac30d380834afaad576723fdb478cb74641d89234d0b82405"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/receipt.json",
+        "receipt_sha256": "073e8e4bab8b9544069680a0765ae7eb502012c8b92f548ab7f98691372d1fe9",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "894796fc1fb2b464423f8dcd600e40b7fe06bc0ea6b90ec3821a6b1f69d50f28",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "96ee3fde758cb7c6f3b75282b483eef011f60d4b38c5e87f67a94c394f78c730",
+      "supersedes_reason": "A genuinely new native photograph shows two unheld silver suitcases ahead of their two owners at the marked station return lane and counter. It replaces the rejected ordinary luggage photograph without changing the article or scene fingerprint.",
+      "tool_execution": {
+        "execution_id": "f8e4d150-123a-490b-bb66-ed3fb94fec69",
+        "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
@@ -7272,30 +7443,207 @@
     },
     "water-main-repair-priority-dry-street-first": {
       "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
-      "bytes": 215513,
-      "generated_at": "2026-11-15T04:15:44.551806+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 209461,
+      "generated_at": "2026-11-15T10:18:37.640434790Z",
+      "generation_id": "40e01451-29b2-4909-aa33-25caa8d32883",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One realistic horizontal 16:9 editorial news photograph of preventive water-main repair on a DRY Japanese residential street at NIGHT in November, entirely fictional people and location. The EXPOSED WATER PIPE AND ITS WORN JOINT must be the clear foreground subject, not merely a hole or a worker portrait. A small safely cordoned road opening reveals a horizontal dark cast-iron water pipe roughly 20 centimetres in diameter running along the shallow trench, with one clearly visible old bolted coupling joining two pipe sections. Close enough to see rust and wear at the coupling, no spraying water or leak. A municipal worker in ordinary blue work clothes and plain safety helmet kneels OUTSIDE the trench and points with one gloved hand toward the worn coupling. An adult Japanese woman aged 42 in an autumn coat watches from behind the low work barrier on the dry pavement, a small part of the background. A practical portable work light illuminates the pipe, hands and dry cut asphalt edges; modest houses and an unlit drain sit behind, restrained cool autumn night colors with natural light falloff. Downward three-quarter camera angle makes the continuous cylindrical pipe and joint unmistakable while retaining enough of the street to show there is no flooding. Serious matter-of-fact expressions, plausible tools and excavation scale, realistic hands, no worker inside an unsafe deep pit. No readable noticeboard, lettering, numbers, logos, company marks, diagrams, text overlays, celebrity likeness, illustration, 3D render or excessive dramatic lighting. This is a single believable press photograph of work before a visible leak.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:40e01451-29b2-4909-aa33-25caa8d32883",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "bytes": 215513,
+        "generated_at": "2026-11-15T04:15:44.551806+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 8188002557133167108,
+        "sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation_history_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/previous-generation.json",
+      "previous_rejection": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "reason": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
+        "rejected_candidate_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
+      },
+      "previous_scene_prompt": "A Japanese municipal waterworks crew inspects a weathered pipe joint in a shallow trench on a dry residential street at night. Photorealistic documentary press photograph, an adult female resident aged 42 watching from behind a safe work barrier and an adult worker pointing toward the exposed metal joint, temporary work lights, modest Japanese suburban houses in autumn, dry asphalt and no street flooding, credible pipe scale and excavation safety. Horizontal 16:9, realistic hands, natural faces, no readable words, brands, logos or recognizable real people.",
+      "previous_visual_review": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "decision": "rejected",
+        "image_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150",
+        "note": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
+        "reviewed_at": "2026-11-15T13:19:22+09:00"
+      },
       "prompt_version": 3,
-      "seed": 8188002557133167108,
-      "sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
+      "sha256": "b6f12bcc6df9668d2796814c902ef4f87a7389ccf0a5a0b15e7717ad74d356cb",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T10:18:37.640434790Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T10:18:37.640438186Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T10:18:37.638655570Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              137,
+              161,
+              238,
+              211,
+              98,
+              97,
+              171,
+              187,
+              125,
+              240,
+              126,
+              48,
+              69,
+              234,
+              216,
+              137,
+              253,
+              93,
+              74,
+              231,
+              120,
+              4,
+              221,
+              45,
+              195,
+              13,
+              108,
+              162,
+              125,
+              0,
+              170,
+              11
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:40e01451-29b2-4909-aa33-25caa8d32883",
+        "manifest_uri": "urn:c2pa:359a6ff5-7789-4079-a2c5-00cfa6147e53",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2759036,
+        "caBX_sha256": "f48564218dc05d80d09d29b52ee854f5f70ebfc2cceca461bb178b54f3563ee0",
+        "candidate_branch": "native-image-candidate/water-main-repair-priority-dry-street-first/7b2e7cdf51a68eac-86447a6c0193",
+        "candidate_commit": "954595a6c361f59c06d9ec358eb8d9f3a11c5888",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "06ada9e272d0c07937baa509b938b068901bd520",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part000",
+            "sha256": "49f0dd7929bf456aac7e0b2ad20234d554547ab42689f382127ff99697d91d0f"
+          },
+          {
+            "blob_sha": "347a98c07509e6a5db9a00dbf912f578c338b4cd",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part001",
+            "sha256": "578a38642e5d5d0798f6249c6ea597ab6f31a49508a73e4a8df1038ac4207f2e"
+          },
+          {
+            "blob_sha": "80f33ae81b7e1ddf02cdac9f38e24639c6cceb95",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part002",
+            "sha256": "31498bfce5125ecdad258fdf70c94e7c55d630905d34ebb486cb75587371c093"
+          },
+          {
+            "blob_sha": "ff9daaf7491327401e91ed192911ab7a924150d1",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part003",
+            "sha256": "f2688a5a76d65bea5473c884127d28e090d9e10d45299416fb497e650831020c"
+          },
+          {
+            "blob_sha": "5b594070895b323c7e0a30af25f8a94b783b2553",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part004",
+            "sha256": "d5283460996b148b00de21c641684159acc329249761470b63f080383a29bbc3"
+          },
+          {
+            "blob_sha": "bc06e307102dccf04cbc9cccf18c7cb2ccb65e18",
+            "bytes": 137596,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part005",
+            "sha256": "6b354d4adbef6fc966938f3266e3a24f3a0a367ec6b114f681d529ba0b251440"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/receipt.json",
+        "receipt_sha256": "946b4a61a230615f37d7e876609dfce1aa8339bd428224b14c978ad4e8779767",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "78b4f68fa0727db4176d283f050d5d5a9f830801beba7125aa598b692498f55f",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "67a1e87f9bb9c13b5ecbb9f96874d298f360a1de9301b8033c1279e34dce3f7d",
+      "supersedes_reason": "A genuinely new native photograph makes the exposed worn pipe coupling and gloved inspection on a dry residential road at night explicit. It replaces the rejected trench-only photograph without changing the article or scene fingerprint.",
+      "tool_execution": {
+        "execution_id": "3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+        "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "xr-town-letter-changes-next-visitors-story": {
       "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
@@ -7644,20 +7992,10 @@
       "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
     },
-    "swapped-suitcases-drive-themselves-to-lost-property": {
-      "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
-      "reason": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
-      "rejected_candidate_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
-    },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
-    },
-    "water-main-repair-priority-dry-street-first": {
-      "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
-      "reason": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
-      "rejected_candidate_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
     }
   },
   "version": 1
