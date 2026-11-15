@@ -33,7 +33,7 @@ class MarketShareTests(unittest.TestCase):
         self.assertEqual(q["url"], ["https://veripsa.com/serials/market-lab/briefings/2026-11-16-am/"])
         self.assertIn("TOPIX", q["text"][0])
         self.assertIn('target="_blank" rel="noopener noreferrer external"', output)
-        self.assertNotIn("data-comments", output)  # no fictitious comments action
+        self.assertIn('data-comments data-article="market-briefing-2026-11-16-am"', output)  # real moderated comments
 
 
 if __name__ == "__main__":
