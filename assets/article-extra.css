@@ -21,3 +21,57 @@
 .seed-label{font-size:11px;color:var(--muted)}
 .primary-disclaimer{background:#fbe7de;color:#7a3327;padding:9px 14px;font-size:12px;font-weight:800;margin:24px 0}
 @media(max-width:600px){.banner-source{padding:16px}.primary-disclaimer{font-size:11px}.lead-media .overlay{bottom:12px}}
+
+/* Shared reading shell: existing routes, content and media remain unchanged.
+   These selectors also win when the compact reader stylesheet follows them. */
+.nav-bar .nav-inner a[aria-current="page"]{
+  color:var(--ink);background:#efeee6;
+  box-shadow:inset 0 -3px 0 var(--accent);text-decoration:none;
+}
+.nav-bar .nav-inner a:focus-visible{
+  outline:2px solid var(--accent);outline-offset:-3px;
+}
+.index-main .section-head,.archive-page .section-head,
+.market-paper .market-paper-heading{
+  flex-wrap:wrap;align-items:baseline;row-gap:8px;
+}
+.index-main .section-head h2,.archive-page .section-head h2,
+.market-paper .market-paper-heading h2{
+  min-width:0;overflow-wrap:anywhere;
+}
+.page-inner .page-intro h1,.article-page .article-header h1{
+  overflow-wrap:anywhere;
+}
+.footer .footer-nav a{
+  display:inline-flex;align-items:center;min-height:44px;padding:4px 0;
+}
+/* Tags follow the headline and summary instead of falling into the photo column. */
+.index-main>.section-block>.story-grid>.story-card>.story-tags,
+.archive-list>.story-card>.story-tags{
+  grid-column:1 / -1;grid-row:4;min-width:0;margin:3px 0 0;
+}
+@media(min-width:1000px){
+  /* Match the DOM: headline, photograph, summary, topics, then reading actions. */
+  .index-main .lead>.story-tags{grid-column:1;grid-row:5;min-width:0;margin:0 0 12px}
+  .index-main .lead>.hero-actions{grid-column:1;grid-row:6}
+  .index-main .lead>.lead-media{grid-row:1 / span 6}
+}
+@media(max-width:660px){
+  /* Keep the full masthead on the front page, not on every reading page. */
+  .page-inner .masthead{padding:11px 0 10px}
+  .page-inner .mast-kicker{display:none}
+  .page-inner .masthead .brand{font-size:32px;line-height:1.18}
+  .page-inner .masthead .mast-sub{font-size:11px;line-height:1.5;margin-top:4px}
+  .page-home .index-main .lead .dek{font-size:15px;line-height:1.8}
+  .archive-page .search-row .search-input{min-width:0;font-size:16px}
+  .page-home .index-main>.section-block>.story-grid>.story-card p,
+  .archive-page .archive-list .story-card p{font-size:14px;line-height:1.8}
+}
+@media(max-width:360px){
+  .page-home .index-main>.section-block>.story-grid>.story-card,
+  .archive-page .archive-list .story-card{
+    grid-template-columns:88px minmax(0,1fr);column-gap:12px;
+  }
+  .page-home .index-main>.section-block>.story-grid>.story-card .story-image-link,
+  .archive-page .archive-list .story-card .story-image-link{height:96px}
+}
