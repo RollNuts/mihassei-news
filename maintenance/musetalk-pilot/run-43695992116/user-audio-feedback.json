@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "run_id": 43695992116,
+  "audio_sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+  "decision": "rejected",
+  "scope": "voice delivery and character appeal",
+  "user_audio_listened": true,
+  "root_audio_listened": false,
+  "recording_agent_audio_listened": false,
+  "user_feedback_exact": [
+    "棒読みだが聞こえた",
+    "シンプルに可愛くない"
+  ],
+  "source": "Exact user feedback relayed by parent root in the current session. No listening by root or this recording agent is claimed.",
+  "recorded_at": "2026-11-15T09:11:11.070190+00:00",
+  "reviewed_at": null,
+  "note": "The user reported hearing the WAV and rejected the voice. Prior visual rejection and earlier not-listened records retain their original meaning and remain unchanged."
+}
