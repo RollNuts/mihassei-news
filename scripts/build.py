@@ -1149,19 +1149,21 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span>創作記事はフィクションです。市場分析は投資助言ではありません。</span></div></div></footer>
 </body></html>'''
 
-def pv_recommendations(articles, excluded_slug=""):
+def pv_recommendations(articles, excluded_slug="", illustrated=False):
     """Only publish eligibility metadata; runtime PVs determine the ranking.
 
     Include the whole published archive, not just the newest twenty stories.
-    The browser fetches metrics in twenty-article batches and keeps this panel
-    hidden until all candidates have a measured value for the same JST period.
+    Server-owned metrics decide all ranks, and the panel starts hidden.
+    Only the front page carries thumbnail metadata; article-page links stay
+    text-only to avoid loading more images inside an already long article.
     """
     candidates = sorted(articles, key=lambda a: (
         publication_date(a), a["source"]["published_at"]
     ), reverse=True)
     options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"],
-          "image": editorial_image(x), "fallback": illustration_path(x)}
+          **({"image": editorial_image(x), "fallback": illustration_path(x)}
+             if illustrated else {})}
          for x in candidates if x["slug"] != excluded_slug],
         ensure_ascii=False, separators=(",", ":")))
     return f'''<section class="readers-choice" data-popular-section
@@ -1323,11 +1325,10 @@ def home(articles, serials=None, photo_issues=()):
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
-    popular_section = pv_recommendations(articles)
+    popular_section = pv_recommendations(articles, illustrated=True)
     newsroom_activity = (
         '<section class="newsroom-snapshot" aria-label="本紙の掲載記録">'
-        '<div class="newsroom-snapshot-heading"><span class="eyebrow">THE PAPER IN NUMBERS</span>'
-        '<h2>紙面の記録</h2></div>'
+        '<div class="newsroom-snapshot-heading"><h2>紙面の記録</h2></div>'
         '<div class="newsroom-snapshot-stats">'
         f'<div class="newsroom-snapshot-stat"><span>掲載記事</span><strong>{len(articles):,}<small>本</small></strong></div>'
         f'<div class="newsroom-snapshot-stat"><span>発行号</span><strong>{len(issues_for_home):,}<small>号</small></strong></div>'
