@@ -62,6 +62,34 @@ class MuseTalkProfilePreviewTests(unittest.TestCase):
                                        Mock(), log, env=os.environ.copy())
             self.assertIn("small fixture error", log.read_text())
 
+    def test_click_is_explicitly_installed_before_kokoro_import_without_model_download(self):
+        commands, downloads = [], []
+
+        def download(url, destination, budget, **options):
+            downloads.append(url)
+            return {"url": url, "bytes": options["size"], "sha256": options["sha256"]}
+
+        def archive(repo, revision, work, budget):
+            return work / repo.split("/")[-1], {"sha256": preview.ARCHIVES[repo][1]}
+
+        with tempfile.TemporaryDirectory() as folder, \
+             patch.object(preview.runtime, "runner_gate", return_value=Path(folder).resolve()), \
+             patch.object(preview.runtime, "RemoteStopGate"), \
+             patch.object(preview.shutil, "which", return_value="/fixture/encoder"), \
+             patch.object(preview.runtime, "download", side_effect=download), \
+             patch.object(preview.runtime, "source_archive", side_effect=archive), \
+             patch.object(preview, "logged_command", side_effect=lambda argv, *a, **k: commands.append(argv)), \
+             patch.object(preview.runtime, "command", side_effect=RuntimeError("fixture stop before weights")), \
+             contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaisesRegex(RuntimeError, "fixture stop before weights"):
+                preview.execute(Path(folder) / "preview")
+        install = next(i for i, argv in enumerate(commands) if "soundfile==0.12.1" in argv)
+        imports = next(i for i, argv in enumerate(commands) if any("from kokoro import KModel" in arg for arg in argv))
+        self.assertIn("click==8.1.8", commands[install])
+        self.assertIn("click==8.1.8", preview.runtime.TTS_CONSTRAINTS)
+        self.assertLess(install, imports)
+        self.assertEqual(downloads, [record["url"] for record in preview.SRC_FILES])
+
     def test_core_child_has_no_detector_parser_or_legacy_model_import(self):
         import ast
         source = (preview.ROOT / "scripts/musetalk_cpu_inference.py").read_text()

@@ -146,7 +146,7 @@ def execute(output, *, root=ROOT, spoken_line=SPOKEN_LINE):
             step("install_core_and_existing_tts", [str(interpreter), "-m", "pip", "install", "--quiet",
                  "-c", str(constraints), str(sources["hexgrad/misaki"]) + "[ja,en]", str(sources["hexgrad/kokoro"]),
                  "soundfile==0.12.1", "diffusers==0.30.2", "accelerate==0.28.0", "opencv-python-headless==4.9.0.80",
-                 "librosa==0.11.0", "einops==0.8.1"])
+                 "librosa==0.11.0", "einops==0.8.1", "click==8.1.8"])
             step("verify_cpu_core_imports", [str(interpreter), "-c",
                  "import torch,cv2;from diffusers import AutoencoderKL,UNet2DConditionModel;"
                  "from transformers import WhisperModel;from kokoro import KModel;from misaki.ja import JAG2P;"
