@@ -53,7 +53,7 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
         self.assertIn('<summary><strong>号外・コメント</strong>', content)
         self.assertIn('今日の未発生新聞', content)
-        self.assertNotIn('class="special-edition"', content[:positions[6]])
+        self.assertNotIn('class="special-edition"', content[:content.index('<details class="extras-shelf">')])
         self.assertEqual(content.count('data-popular-section'), 1)
         self.assertEqual(content.count('data-issue-picker'), 1)
 
