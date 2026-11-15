@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "stories": [
+    {
+      "id": "nagino-saya-autumn-detour-20261115",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-15T09:40:00+09:00",
+      "setting": {"year": 2031, "month": 11},
+      "text": "今日、取材メモをまとめたら、AIに「寄り道の時間が足りません」って言われました。そこは私が決めます。じゃ、行ってきます。",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "01",
+        "image_sha256": "7d6077a0f2ef923fee0793ac3da51350a58c0d614c173756822eada2c3da7939"
+      }
+    }
+  ]
+}
