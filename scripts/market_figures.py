@@ -140,14 +140,27 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
     right = width - left
     bar_width = right - left
     unit = escape(figure["unit"])
+    # Newspaper figures must tell the reader *what* is being compared.
+    # Wrap Japanese titles for the narrow layout without relying on script,
+    # foreignObject or a web font.
+    title = figure["title"]
+    chunks = [title[i:i+15] for i in range(0, len(title), 15)] if mobile else [title]
+    if len(chunks) > 2:
+        chunks = [chunks[0], "".join(chunks[1:])]
+    title_lines = "".join(
+        f'<text x="{left}" y="{49 + i*27}" fill="#202629" '
+        f'font-size="{20 if mobile else 26}" font-weight="700" '
+        f'font-family="sans-serif">{escape(line)}</text>'
+        for i, line in enumerate(chunks)
+    )
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" role="img" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         f'<title>{escape(figure["title"])}</title>',
         f'<desc>{escape(figure_description(figure))}</desc>',
-        f'<rect width="{width}" height="{height}" rx="12" fill="#f6f8f3"/>',
-        f'<rect x="0" y="0" width="8" height="{height}" fill="#2c6d64"/>',
-        f'<text x="{left}" y="51" fill="#163934" font-size="{24 if mobile else 30}" font-weight="700" font-family="sans-serif">公開資料の数値比較</text>',
-        f'<text x="{left}" y="83" fill="#53635f" font-size="{15 if mobile else 18}" font-family="sans-serif">単位：{unit} ／ ゼロ起点</text>',
+        f'<rect width="{width}" height="{height}" rx="6" fill="#f8f8f5"/>',
+        f'<rect x="0" y="0" width="5" height="{height}" fill="#495862"/>',
+        title_lines,
+        f'<text x="{left}" y="{104 if mobile else 87}" fill="#495660" font-size="{14 if mobile else 16}" font-family="sans-serif">単位：{unit} ／ 0を基準に比較</text>',
     ]
     if figure["kind"] == "bars":
         maximum = max(v["value"] for v in figure["values"])
@@ -182,7 +195,7 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
                 f'<rect x="{x0}" y="{y0-18}" width="18" height="18" fill="{STATES[value["state"]]}"/>',
                 f'<text x="{x0+28}" y="{y0-3}" font-family="sans-serif" fill="#253a36" font-size="{17 if mobile else 18}">{escape(value["label"])}：{escape(_amount(value["value"]))}{unit}</text>',
             ])
-    parts.append(f'<text x="{left}" y="{height-17}" font-size="{13 if mobile else 15}" fill="#4c6059" font-family="sans-serif">実績・会社予想・計算値の区別は本文と図注を参照</text>')
+    parts.append(f'<text x="{left}" y="{height-17}" font-size="{12 if mobile else 14}" fill="#495660" font-family="sans-serif">出典と数値の区分は図の下に記載</text>')
     parts.append("</svg>")
     return "".join(parts)
 
