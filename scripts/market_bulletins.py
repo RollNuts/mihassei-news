@@ -21,11 +21,11 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import render_market_outlook_board, view_models
+    from .market_outlooks import view_models
 except ImportError:
     from market_figures import render_market_svg, figure_description, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import render_market_outlook_board, view_models
+    from market_outlooks import view_models
 
 FILE = Path("content/market_bulletins.json")
 MARKET_URL = "/serials/market-lab/"
