@@ -1,0 +1,28 @@
+[
+  {
+    "episode_slug": "gs-yuasa-margin-test-02",
+    "observed_on": "2026-11-15",
+    "checked_on": "2026-11-15",
+    "stance": "判断保留",
+    "signal": "unavailable",
+    "summary": "11月6日のGSユアサ会社予想は第2回公開時に使った根拠と同一です。11月15日時点で新しい通期実績の確認はなく、当初予測が的中へ近づいたとは評価できません。",
+    "reason": "同じ会社予想を再確認しても独立した進捗とはなりません。2027年3月期の産業電池電源セグメントの実際の売上高と営業利益は、今回の出典にはまだありません。",
+    "next_trigger": "同事業の利益予想が199億円以上へ改善する、売上予想が1,600億円以下へ修正される、または通期実績が公表された場合に見方を再評価します。",
+    "source_title": "GSユアサ：2027年3月期通期業績予想（産業電池電源）",
+    "source_url": "https://ir.gs-yuasa.com/jp/ir/finance/forecast.html",
+    "source_published_on": "2026-11-06"
+  },
+  {
+    "episode_slug": "swcc-second-half-profit-03",
+    "observed_on": "2026-11-15",
+    "checked_on": "2026-11-15",
+    "stance": "判断保留",
+    "signal": "unavailable",
+    "summary": "11月11日SWCC決算と通期会社予想36,000百万円は、第3回公開時点で織り込まれた資料です。新しい下期実績は公表前のため、11月15日時点の途中評価は判定材料不足とします。",
+    "reason": "上期実績17,901百万円と会社の通期予想だけでは、まだ終わっていない下期の連結営業利益を確認できません。既刊時点の前提を新しい支持材料として二重計上しません。",
+    "next_trigger": "通期会社予想の下方修正、銅価影響・費用増の拡大、または2027年3月期通期実績の公表で見方を更新。2027年5月31日に当初方法で判定します。",
+    "source_title": "SWCC：2027年3月期第2四半期（中間期）決算短信",
+    "source_url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20261111/20261111572733.pdf",
+    "source_published_on": "2026-11-11"
+  }
+]

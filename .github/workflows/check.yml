@@ -43,6 +43,10 @@ jobs:
         env:
           SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: python3 scripts/guard_serial_history.py "$SERIAL_BASE_SHA"
+      - name: Protect dated market outlook updates from retrospective edits
+        env:
+          SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/guard_market_outlook_history.py "$SERIAL_BASE_SHA"
       - name: Guard generated JPEG provenance and exact integer seeds
         env:
           MEDIA_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

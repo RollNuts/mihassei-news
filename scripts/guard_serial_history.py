@@ -116,6 +116,23 @@ def main():
     after = json.loads((repo / "content/serials.json").read_text(encoding="utf-8"))
     checked = guard_serial_history(before, after)
     print(f"Serial history guard: {checked} earlier episodes unchanged or validly reviewed")
+    # Market dispatches, daily short-horizon forecasts, and intermediate
+    # long-horizon outlooks are append-only. Old records can never be silently
+    # rewritten when the conclusion or sentiment changes.
+    for name in ("market_bulletins.json", "market_outlooks.json", "market_outlook.json"):
+        path = "content/" + name
+        old = subprocess.run(
+            ["git", "show", sys.argv[1] + ":" + path],
+            cwd=repo, capture_output=True, text=True,
+        )
+        older = json.loads(old.stdout) if old.returncode == 0 else []
+        current_path = repo / path
+        newer = json.loads(current_path.read_text(encoding="utf-8")) if current_path.exists() else []
+        if not isinstance(older, list) or not isinstance(newer, list):
+            raise ValueError(path + ": historical archive must be an array")
+        if newer[:len(older)] != older:
+            raise ValueError(path + ": published history cannot be rewritten or removed")
+        print(f"Market history guard: {path}, {len(older)} existing entries preserved")
 
 
 if __name__ == "__main__":

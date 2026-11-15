@@ -298,10 +298,22 @@ def audit(dist: Path = DIST) -> dict:
                   or matching[0].get("dateModified") != lastmod):
                 errors.append("Article publication/update date differs from sitemap: " + path)
         elif path.startswith("/serials/") and path.count("/") >= 4:
-            serial_episode_count += 1
-            matching = [schema for schema in page.schemas if schema.get("@type") == "Article"]
-            if not matching or matching[0].get("datePublished") != lastmod:
-                errors.append("Serial episode publication date differs from sitemap: " + path)
+            # Factual-market briefing and outlook *indexes* live one path
+            # segment deeper than the series hub. Unlike an episode, neither
+            # announces a publication date when the corresponding feed is empty.
+            # Check the CollectionPage contract instead of a fake Article date.
+            market_indexes = {
+                "/serials/market-lab/briefings/",
+                "/serials/market-lab/outlooks/",
+            }
+            if path in market_indexes:
+                if not any(schema.get("@type") == "CollectionPage" for schema in page.schemas):
+                    errors.append("Market archive lacks collection metadata: " + path)
+            else:
+                serial_episode_count += 1
+                matching = [schema for schema in page.schemas if schema.get("@type") == "Article"]
+                if not matching or matching[0].get("datePublished") != lastmod:
+                    errors.append("Serial episode publication date differs from sitemap: " + path)
 
     # A sitemap alone does not supply a reader or crawler navigation route.
     # Require every public indexed page to be reachable by HTML anchors from /.
