@@ -51,6 +51,28 @@ class MobileReadingFlowTests(unittest.TestCase):
         self.assertEqual(html.count('data-bookmark-slug="' + article["slug"] + '"'), 1)
         self.assertIn('id="story-source"', html)
 
+    def test_discovery_links_keep_their_routes_without_double_spacing(self):
+        html = build.home(self.articles)
+        topic = html.index('<section class="topic-explore genre-explore"')
+        category = html.index('<section class="genre-explore"', topic)
+        photo = html.index('class="serials-feature"', category)
+        self.assertLess(topic, category)
+        self.assertLess(category, photo)
+        self.assertIn('href="/archive/"', html)
+        self.assertIn('href="/photo/weekly/"', html)
+        self.assertIn('href="/serials/market-lab/"', html)
+        css = (ROOT / 'assets/reader-first.css').read_text(encoding='utf-8')
+        self.assertIn('.index-main>.topic-explore.genre-explore+.genre-explore', css)
+        self.assertIn('border-top:0;margin-top:0;padding-top:11px', css)
+        # Mobile archive gets concise results; article-page topic navigation remains.
+        self.assertIn('.archive-list .story-card>.story-tags{display:none}', css)
+        self.assertIn('.article-header>.story-tags{margin-top:10px}', css)
+        self.assertIn('font-size:14px;line-height:1.7', css)
+        self.assertIn('.serial-article--analysis .serial-prose-section p{font-size:16px}', css)
+        self.assertIn('.story-card h3 a,.section-head a,.footer-nav a):focus-visible', css)
+        self.assertNotIn('@import', css)
+        self.assertEqual(css.count('{'), css.count('}'))
+
     def test_mobile_nav_has_real_touch_targets_and_article_images_keep_fallback(self):
         css = (ROOT / 'assets/editorial-polish.css').read_text(encoding='utf-8')
         responsive_css = (ROOT / 'assets/reader-first.css').read_text(encoding='utf-8')
