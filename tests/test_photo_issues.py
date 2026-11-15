@@ -462,6 +462,67 @@ class PhotoIssueTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "history fingerprint"):
             p.validate_catalog(self.catalog)
 
+    def test_independent_draft_source_is_explicit_and_allows_only_supplied_image_records(self):
+        self.issue["source_article"] = None
+        self.issue.pop("article_photo_sources", None)
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        p.validate_catalog(self.catalog)
+        self.assertEqual(p._article_photo_sources(self.issue), {})
+        for image in ({"provenance": {}},
+                      {"provenance": {"kind": "native_image_candidate"}},
+                      {"provenance": {"kind": "user_supplied_photo", "logical_run_id": "borrowed"}},
+                      {"provenance": {"kind": "user_supplied_photo"}, "adoption": {}},
+                      {"provenance": {"kind": "user_supplied_photo"}, "source_png_sha256": "a" * 64}):
+            self.issue["images"] = {"01": image}
+            with self.subTest(image=image), self.assertRaisesRegex(ValueError, "independent.*user-supplied"):
+                p.validate_catalog(self.catalog)
+            with self.assertRaisesRegex(ValueError, "independent.*user-supplied"):
+                p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        self.issue["images"] = {}
+        for sources in ({"borrowed-story": {}}, [], None):
+            self.issue["article_photo_sources"] = sources
+            with self.subTest(sources=sources), self.assertRaises(ValueError):
+                p.validate_catalog(self.catalog)
+            with self.assertRaisesRegex(ValueError, "independent.*article-photo sources"):
+                p._article_photo_sources(self.issue)
+        self.issue.pop("article_photo_sources")
+        self.issue["studies"] = {"native-study": {}}
+        with self.assertRaisesRegex(ValueError, "independent.*user-supplied"):
+            p.validate_catalog(self.catalog)
+        self.issue.pop("studies")
+        self.issue.pop("source_article")
+        with self.assertRaisesRegex(ValueError, "explicit source_article"):
+            p.validate_catalog(self.catalog)
+
+    def test_native_and_article_adoption_reject_an_independent_source_clearly(self):
+        self.release_fixture()
+        image = self.issue["images"]["01"]
+        self.issue["source_article"] = None
+        with self.assertRaisesRegex(ValueError, "Native.*requires a source article"):
+            p._generation_source(self.issue, image, "01")
+        with self.assertRaisesRegex(ValueError, "article-photo adoption requires a source article"):
+            p._article_generation_source(self.issue, image, "01")
+
+    def test_independent_history_retains_null_and_refuses_native_studies_or_article_evidence(self):
+        self.issue["source_article"] = None
+        self.issue.pop("article_photo_sources", None)
+        prior = p.issue_fingerprint(self.issue)
+        history = {"issue_sha256": prior, "editorial": p.editorial_snapshot(self.issue),
+                   "images": {}, "generation_holds": {}, "reason": "Retain the independent supplied draft."}
+        self.issue["title"] += " 続き"
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        self.issue["editorial_history"] = [history]
+        p.validate_catalog(self.catalog)
+        self.assertIsNone(history["editorial"]["source_article"])
+        for field, value in (("images", {"01": {"provenance": {"kind": "native_image_candidate"}}}),
+                             ("studies", {"native": {}}), ("article_photo_sources", {"story": {}})):
+            original = copy.deepcopy(history)
+            history[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                p.validate_catalog(self.catalog)
+            history.clear()
+            history.update(original)
+
     def test_release_cannot_precede_visual_review(self):
         self.release_fixture()
         self.issue["published_at"] = "2026-11-14T13:30:00+09:00"

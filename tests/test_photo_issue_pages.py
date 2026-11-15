@@ -231,6 +231,19 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertNotIn("data-future-poll", markup)
         self.assertEqual(value, before)
 
+    def test_independent_supplied_issue_has_no_fabricated_source_article_link(self):
+        from scripts import build
+        value = issue()
+        value["source_article"] = None
+        before = copy.deepcopy(value)
+        markup = self.pages.render_photo_issue(value, MODEL, build.layout)
+        parsed = self.parse(markup)
+        self.assertNotIn("photo-issue-related", markup)
+        self.assertFalse(any(link.get("href", "").startswith("/articles/") for link in parsed.links))
+        self.assertIn('data-engagement-key="photo-issue:issue-001"', markup)
+        self.assertEqual(len(parsed.images), 10)
+        self.assertEqual(value, before)
+
     def test_photo_collection_does_not_load_issue_comment_form(self):
         from scripts import build
         markup = self.pages.render_photo_index([issue()], [MODEL], build.layout)

@@ -194,7 +194,7 @@ def render_photo_issue(issue, model, layout):
     column = "".join(f'<p>{h(paragraph)}</p>' for paragraph in issue["column"])
     opening = "".join(_photo_figure(issue, shot) for shot in remaining[:4])
     closing = "".join(_photo_figure(issue, shot) for shot in remaining[4:])
-    source = issue.get("source_article", {}).get("slug")
+    source = (issue.get("source_article") or {}).get("slug")
     related = (f'<p class="photo-issue-related"><a href="/articles/{h(source)}/">'
                f'{h(model["name"])}が登場する記事を読む <span aria-hidden="true">↗</span></a></p>'
                if source else "")
