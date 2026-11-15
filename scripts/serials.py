@@ -428,8 +428,9 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
     figures = figures or []
     narrative_parts = []
     for section_number, section in enumerate(ep["sections"], 1):
+        anchor = ' id="article-evidence"' if section_number == 1 and series["kind"] == "analysis" else ""
         narrative_parts.append(
-            f'<section class="serial-prose-section"><h2>{h(section["heading"])}</h2>'
+            f'<section class="serial-prose-section"{anchor}><h2>{h(section["heading"])}</h2>'
             + "".join(f'<p>{h(p)}</p>' for p in section["paragraphs"]) + '</section>'
         )
         if series["kind"] == "analysis":
@@ -454,17 +455,25 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
         refs = "".join(
             f'<li><a href="{h(ref["url"])}" target="_blank" rel="noopener noreferrer external">'
             f'{h(ref["title"])}</a></li>' for ref in ep["sources"])
-        extras = (f'<section class="serial-scenario-section"><h2>3つのシナリオ</h2>'
+        extras = (
+                  '<section class="market-article-outlook" id="article-outlook">'
+                  '<p class="market-paper-eyebrow">今後の焦点</p>'
+                  '<h2>これからどうなるか</h2>'
+                  f'<p class="market-article-thesis">{h(fc["statement"])}</p>'
+                  f'<p class="market-article-review-date">結果を確かめる日：'
+                  f'<time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time></p>'
+                  f'<details class="market-article-method" id="forecast-detail">'
+                  '<summary>予測の判定方法と基準値を読む</summary>'
+                  f'<p><strong>判定状況：</strong>{h(fc["status"])}</p>'
+                  f'<p><strong>当初の検証方法：</strong>{h(fc["method"])}</p>'
+                  '</details></section>'
+                  f'<section class="serial-scenario-section"><h2>3つの見通し</h2>'
                   f'<div class="serial-scenarios">{scenarios}</div></section>'
-                  f'<aside class="serial-reader-box serial-forecast"><span class="small-label">PUBLIC FORECAST LOG</span>'
-                  f'<h2>予想と検証条件</h2><p><strong>予想：</strong>{h(fc["statement"])}</p>'
-                  f'<p><strong>検証日：</strong><time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time>'
-                  f'／ 判定状況：{h(fc["status"])}</p>'
-                  f'<p><strong>判定方法：</strong>{h(fc["method"])}</p>'
-                  f'</aside><p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">検証一覧を見る ↗</a></p>'
                   f'{render_market_outlook_episode(ep, outlook or [])}'
-                  f'<section class="serial-references"><h2>参照した公開資料</h2>'
-                  f'<ol>{refs}</ol></section>')
+                  f'<section class="serial-references" id="article-sources"><h2>参照した公開資料</h2>'
+                  f'<ol>{refs}</ol></section>'
+                  f'<p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">ほかの予測と判定日を見る →</a></p>'
+                  )
     # Publishing a sequel must not leave an old "next chapter in preparation"
     # message in the first chapter. Preserve immutable editorial source data.
     followup = ep.get("followup_note", "")
@@ -496,7 +505,12 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             f'<p class="serial-article-warning">{marker}</p></header>'
             f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
             f'<div class="serial-article-body">{kicker_html}'
-            f'{narrative}{extras}'
+            + ('<nav class="market-article-jump" aria-label="この記事の目次">'
+               '<a href="#article-evidence">数字と背景</a>'
+               '<a href="#article-outlook">今後の見通し</a>'
+               '<a href="#article-sources">参照資料</a>'
+               '</nav>' if series["kind"] == "analysis" else '')
+            + f'{narrative}{extras}'
             f'<div class="serial-epilogue"><p>{h(followup)}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
             + (f'<button class="market-share-copy" type="button" data-copy-url="https://veripsa.com{episode_url(series, ep)}"><span aria-hidden="true">↗</span><span>リンクをコピー</span></button>'
