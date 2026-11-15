@@ -19,12 +19,14 @@ if __package__:
     from .forecast_ledger import render_forecast_ledger
     from .market_figures import load_market_figures, render_market_figure, write_market_figures
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
+    from .market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
     from market_figures import load_market_figures, render_market_figure, write_market_figures
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
+    from market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
 
 
@@ -256,7 +258,7 @@ def render_serials_index(serials, layout):
     return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
-def render_series_page(series, layout, figures=None, bulletins=None, outlook=None):
+def render_series_page(series, layout, figures=None, bulletins=None, outlook=None, daily_outlooks=None):
     _require_public(series)
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     figures = figures or {}
@@ -280,6 +282,7 @@ def render_series_page(series, layout, figures=None, bulletins=None, outlook=Non
             + (f'<a class="serial-start-link" href="{episode_url(series, series["episodes"][0])}">第1話から読む →</a>'
                if series["kind"] == "fiction" else '') +
             f'<div class="serial-progress-inline"><p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span></div></div></header>{disclosure}'
+            f'{render_market_outlook_board(daily_outlooks or []) if series["slug"] == "market-lab" else ""}'
             f'{render_market_bulletins_index(bulletins or []) if series["slug"] == "market-lab" else ""}'
             f'{render_market_outlook_index(series, outlook or {}) if series["kind"] == "analysis" else ""}'
             f'<section class="serial-episode-index"><div class="section-head"><h2>エピソード一覧</h2>'
@@ -471,10 +474,11 @@ def build_serials(serials, layout, write, output):
     figures = load_market_figures(Path(__file__).resolve().parents[1], serials)
     bulletins = load_market_bulletins(Path(__file__).resolve().parents[1])
     outlook = load_market_outlook(Path(__file__).resolve().parents[1], serials)
+    daily_outlooks = load_market_outlooks(Path(__file__).resolve().parents[1])
     write("serials/index.html", render_serials_index(serials, layout))
     for series in serials:
         prefix = f'serials/{series["slug"]}'
-        write(prefix + "/index.html", render_series_page(series, layout, figures, bulletins, outlook))
+        write(prefix + "/index.html", render_series_page(series, layout, figures, bulletins, outlook, daily_outlooks))
         write(serial_feed_url(series).lstrip("/"), serial_feed_xml(series))
         write(prefix + "/cover.svg", render_cover_svg(series))
         render_social_preview(series, output / "og" / "serials" / (series["slug"]+".png"))
@@ -484,4 +488,5 @@ def build_serials(serials, layout, write, output):
             write_market_figures(series, ep, figures.get(ep["slug"], []), write)
             render_social_preview(series, output / "og" / "serials" /
                                   (series["slug"]+"-"+ep["slug"]+".png"), episode=ep)
-    build_market_bulletins(bulletins, layout, write)
+    build_market_outlooks(daily_outlooks, layout, write)
+    build_market_bulletins(bulletins, layout, write, outlooks=daily_outlooks)
