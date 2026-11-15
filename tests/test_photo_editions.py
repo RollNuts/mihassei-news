@@ -261,5 +261,81 @@ class PhotoEditionCatalogTests(unittest.TestCase):
             self.load(edition)
 
 
+class DailyPhotoScheduleTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        (self.root / "content").mkdir()
+        self.catalog = catalog()
+        self.schedule = p.freeze_daily_schedule(self.catalog, DAY, seed=SEED, now=NOW)
+        self.features = [{"slug": "daily-" + str(i), "model_id": model_id, "state": "published",
+                          "published_at": f"2026-11-{15+i:02d}T14:00:00+09:00"}
+                         for i, model_id in enumerate(self.schedule["order"])]
+        self.catalog["issues"].extend(self.features)
+        self.edition = {"number": 2, "slug": "issue-002", "state": "published", "legacy": False,
+                        "release_mode": "daily", "title": "11月の一週間", "summary": "写真とコラム。",
+                        "published_at": self.features[0]["published_at"], "schedule": self.schedule,
+                        "features": [feature["slug"] for feature in self.features[:2]]}
+
+    def load(self, now=None):
+        (self.root / "content/photo_editions.json").write_text(json.dumps({
+            "schema_version": 1, "editions": [self.edition]}))
+        return p.load_photo_editions(self.root, catalog=self.catalog, published=self.features,
+                                     now=now or datetime(2026, 11, 22, tzinfo=timezone.utc))
+
+    def test_whole_roster_shuffles_once_in_catalog_order_without_pv_reads(self):
+        import random
+        expected = IDS.copy()
+        random.Random(int(SEED, 16)).shuffle(expected)
+        with patch.object(p, "_get_json", side_effect=AssertionError("daily order needs no PVs")):
+            self.assertEqual(self.schedule["order"], expected)
+            self.assertEqual(p.freeze_daily_schedule(self.catalog, DAY, seed=SEED, now=NOW), self.schedule)
+        with self.assertRaises(ValueError):
+            p.freeze_daily_schedule(self.catalog, "2026-11-16", seed=SEED, now=NOW)
+        changed = copy.deepcopy(self.schedule)
+        changed["order"].reverse()
+        with self.assertRaisesRegex(ValueError, "frozen shuffle"):
+            p.validate_daily_schedule(changed, IDS)
+
+    def test_only_published_prefix_enters_contents_and_updated_timestamp(self):
+        result = self.load()[0]
+        self.assertEqual([feature["slug"] for feature in result["ordered_features"]], self.edition["features"])
+        self.assertEqual(result["modified_at"], self.features[1]["published_at"])
+        self.assertEqual(result["published_at"], self.features[0]["published_at"])
+        self.edition["features"] = self.edition["features"][:1]
+        self.assertEqual(len(self.load(now=datetime(2026, 11, 15, 6, tzinfo=timezone.utc))[0]["ordered_features"]), 1)
+
+    def test_future_early_duplicate_day_and_wrong_order_cannot_publish(self):
+        with self.assertRaisesRegex(ValueError, "unpublished features"):
+            self.load(now=datetime(2026, 11, 15, 6, tzinfo=timezone.utc))
+        self.features[1]["published_at"] = "2026-11-15T15:00:00+09:00"
+        with self.assertRaisesRegex(ValueError, "one due model"):
+            self.load()
+        self.features[1]["published_at"] = "2026-11-16T14:00:00+09:00"
+        self.edition["features"].reverse()
+        with self.assertRaisesRegex(ValueError, "frozen model order"):
+            self.load()
+
+    def test_late_release_keeps_actual_dates_and_still_allows_only_one_per_day(self):
+        self.features[0]["published_at"] = "2026-11-16T14:00:00+09:00"
+        self.features[1]["published_at"] = "2026-11-17T14:00:00+09:00"
+        self.edition["published_at"] = self.features[0]["published_at"]
+        result = self.load()[0]
+        self.assertEqual(result["published_at"], "2026-11-16T14:00:00+09:00")
+        self.assertEqual(result["modified_at"], "2026-11-17T14:00:00+09:00")
+
+    def test_cli_reuses_saved_week_without_drawing_again(self):
+        source, target = self.root / "catalog.json", self.root / "schedule.json"
+        source.write_text(json.dumps(self.catalog))
+        args = ["--catalog", str(source), "--publication-date", DAY, "--output", str(target), "--daily", "--seed", SEED]
+        with redirect_stdout(io.StringIO()):
+            p.main(args)
+        original = target.read_bytes()
+        with patch.object(p.secrets, "token_hex", side_effect=AssertionError("must not redraw")), redirect_stdout(io.StringIO()):
+            p.main(args[:-2])
+        self.assertEqual(target.read_bytes(), original)
+
+
 if __name__ == "__main__":
     unittest.main()

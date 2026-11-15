@@ -17,9 +17,12 @@ class PhotoEditionPageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.catalog = photo_issues.load_photo_issues(build.BASE)
-        cls.released = photo_issues.published_issues(cls.catalog,root=build.BASE)
-        cls.editions = load_photo_editions(build.BASE,catalog=cls.catalog,published=cls.released)
+        released = photo_issues.published_issues(cls.catalog,root=build.BASE)
+        editions = load_photo_editions(build.BASE,catalog=cls.catalog,published=released)
+        # Keep the published first issue as a regression fixture as daily issues grow.
+        cls.editions = [edition for edition in editions if edition["slug"] == "issue-001"]
         cls.edition = cls.editions[0]
+        cls.released = cls.edition["ordered_features"]
         cls.models = cls.catalog["models"]
 
     @staticmethod
@@ -132,6 +135,30 @@ class PhotoEditionPageTests(unittest.TestCase):
             self.assertFalse((output/"assets/generated").exists())
             self.assertTrue((output/"photo/weekly/issue-001/index.html").is_file())
             self.assertEqual(len(ET.parse(output/"feeds/weekly-photo.xml").findall("channel/item")),1)
+
+    def test_daily_contents_latest_cover_home_rss_and_seo_expose_only_released_features(self):
+        daily = copy.deepcopy(self.edition)
+        daily.update(number=2, slug="issue-002", release_mode="daily", title="11月の一週間",
+                     summary="写真とコラム。", modified_at="2026-11-16T14:00:00+09:00")
+        daily["ordered_features"] = daily["ordered_features"][:2]
+        daily["features"] = [feature["slug"] for feature in daily["ordered_features"]]
+        daily["ordered_features"][1]["published_at"] = daily["modified_at"]
+        first, latest = daily["ordered_features"]
+        self.assertEqual(pages.edition_cover(daily), latest)
+        page = pages.render_photo_edition(daily, self.models, build.layout)
+        self.assertIn("2人・20枚", page)
+        self.assertIn('"dateModified": "2026-11-16T14:00:00+09:00"', page)
+        self.assertEqual([link["href"] for link in self.parse(page).links if link.get("class")=="photo-edition-feature-image"],
+                         [photo_issues.issue_url(first), photo_issues.issue_url(latest)])
+        card = build.gravure_feature_card([], daily["ordered_features"], [daily])
+        self.assertIn('href="'+photo_issues.issue_url(latest)+'"', card)
+        self.assertIn(latest["title"], card)
+        rss = ET.fromstring(pages.generate_edition_rss([daily, self.edition]))
+        self.assertEqual([item.findtext("guid") for item in rss.findall("channel/item")],
+                         [build.SITE+photo_issues.issue_url(latest), build.SITE+photo_issues.issue_url(first),
+                          build.SITE+edition_url(self.edition)])
+        self.assertIn((edition_url(daily), daily["modified_at"], photo_issues.cover_url(latest)),
+                      pages.edition_sitemap_entries([daily, self.edition]))
 
 
 if __name__=="__main__":
