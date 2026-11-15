@@ -38,7 +38,7 @@ function page(options={}){
   dialog.showModal=()=>{dialog.open=true;};
   dialog.close=()=>{dialog.open=false;dialog.listeners.close?.();};
   const data={textContent:JSON.stringify(options.stories||[fixture()])};
-  const link=element();link.dataset.storyOpen='nagino-saya';
+  const link=element();link.dataset.storyOpen=options.modelId||'nagino-saya';
   const root={querySelector:selector=>({'[data-photo-story-data]':data,'[data-story-dialog]':dialog})[selector],
     querySelectorAll:selector=>selector==='[data-story-open]'?[link]:[]};
   const spoken=[],timers=new Map(),windowEvents={};let nextTimer=0;
@@ -67,6 +67,41 @@ test('opening a photo story and voice-list changes never autoplay',()=>{
   p.synth.listeners.voiceschanged();
   assert.equal(p.spoken.length,0);
   assert.match(p.fields.status.textContent,/端末により異なります/);
+});
+
+test('the complete current catalog starts and each model dialog keeps original multiline posts',()=>{
+  const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_issues.json'),'utf8'));
+  const raw=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_stories.json'),'utf8')).stories;
+  const posts=raw.map(post=>{
+    const model=catalog.models.find(model=>model.id===post.model_id);
+    const issue=catalog.issues.find(issue=>issue.slug===post.source.issue_slug);
+    const image=issue.images[post.source.cut_id],shot=issue.shots.find(shot=>shot.id===post.source.cut_id);
+    const base='/photo/weekly/'+issue.slug+'/';
+    return {...fixture(post.id),modelId:model.id,name:model.name,text:post.text,publishedAt:post.published_at,
+      image:base+post.source.cut_id+'.jpg?v='+post.source.image_sha256.slice(0,12),
+      sourceUrl:base+'#photo-'+post.source.cut_id,alt:shot.alt,width:image.width,height:image.height};
+  }).sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
+  assert.equal(new Set(posts.map(post=>post.modelId)).size,7);
+  assert.ok(posts.some(post=>post.text.includes('\n')),'fixture must include actual paragraph breaks');
+  for(const modelId of new Set(posts.map(post=>post.modelId))){
+    const p=page({stories:posts,modelId});
+    assert.equal(p.open(),true,modelId+' opens after whole-gallery validation');
+    assert.equal(p.dialog.open,true);
+    assert.equal(p.fields.text.textContent,posts.find(post=>post.modelId===modelId).text);
+    assert.equal(p.spoken.length,0,'opening never starts speech');
+  }
+});
+
+test('LF is allowed only in post text; identity, links and other controls stay rejected',()=>{
+  for(const key of ['id','modelId','name','alt','dateLabel','settingLabel','publishedAt','image','sourceUrl']){
+    const post=fixture();post[key]+='\n';const p=page({stories:[post]});
+    assert.equal(p.open(),false,key+' must reject LF');
+    assert.equal(p.dialog.open,false);
+  }
+  for(const control of ['\r','\t','\x01','\x7f']){
+    const post=fixture();post.text='寄り道'+control+'しました。';const p=page({stories:[post]});
+    assert.equal(p.open(),false,'text must reject control '+JSON.stringify(control));
+  }
 });
 
 test('audio action uses only an explicit local Japanese voice and reports actual playback events',()=>{

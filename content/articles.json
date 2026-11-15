@@ -23,7 +23,7 @@
       "url": "https://www.moj.go.jp/MINJI/minji05_00778",
       "topic": "法務省は2026年8月7日、肖像・声等の無断利用に関する民事責任について、生成AIによるパブリシティ権侵害等の解釈指針を公表。現行法・判例法理を踏まえた検討結果で、2031年のライブ観客全員の声に新しい法定権利が生じたと述べたものではない。藍波市の配信事業者、無償再利用の提案、観客の拒否、専用収録停止、収益分配契約案はすべて創作。"
     },
-    "scene_prompt": "A 48-year-old Japanese woman sings passionately among adult concertgoers as the audience-recording microphone stands switched off nearby. Photorealistic editorial press photograph at a modest indoor music venue in November, ordinary concert clothing, a distant unidentifiable singer on stage, natural faces, realistic stage lights and crowd, horizontal 16:9, no logos, signage, legible text, watermarks, recognizable real people or illustrated elements.",
+    "scene_prompt": "An adult sound technician's hands hold the audience-recording microphone on its short stand and its unplugged XLR cable clearly separated from the microphone socket in the foreground. A varied group of adult Japanese concertgoers, including a middle-aged woman, continue singing and clapping toward a modest distant stage. Photorealistic documentary press photograph at an indoor concert in November, ordinary coats and knits, natural skin and hands, restrained stage lighting, realistic microphone and cable, nobody singing into the recording microphone, no logos, signage, readable text, watermarks or recognizable real people, horizontal 16:9.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "生成AI",

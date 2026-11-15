@@ -1,0 +1,610 @@
+{
+  "backend": "musetalk-core",
+  "publication": "preview_only",
+  "publish": false,
+  "status": "generated_unreviewed",
+  "cpu_only": true,
+  "spoken_line": "え、もうこんな時間？",
+  "repository_revision": "df0f0d013b30378bc790728b1886b70a7f8e406b",
+  "recipe": {
+    "source_dimensions": [
+      1200,
+      800
+    ],
+    "face_box": [
+      540,
+      88,
+      820,
+      428
+    ],
+    "mask": {
+      "shape": "ellipse",
+      "center": [
+        0.6214285714285714,
+        0.6764705882352942
+      ],
+      "radii": [
+        0.25,
+        0.15
+      ],
+      "blur_sigma_px": 8,
+      "right_edge": 0.9,
+      "right_feather": 0.055714285714285716
+    },
+    "fps": 10,
+    "frames": 30,
+    "seconds": 3,
+    "seed": 0,
+    "dtype": "float32",
+    "batch_size": 1
+  },
+  "inputs": {
+    "source_files": [
+      {
+        "path": "MuseTalk/musetalk/models/vae.py",
+        "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/models/vae.py",
+        "bytes": 5419,
+        "sha256": "6ecde3f4417178d8a9de5ed6045e2a4832efa65189b10b0672cab68efe529d32",
+        "license": "MIT"
+      },
+      {
+        "path": "MuseTalk/musetalk/models/unet.py",
+        "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/models/unet.py",
+        "bytes": 1686,
+        "sha256": "05d5dadfde2e726b61d8387a4876336d4dcacc696636e8dcfec69863ce819256",
+        "license": "MIT"
+      },
+      {
+        "path": "MuseTalk/musetalk/utils/audio_processor.py",
+        "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/utils/audio_processor.py",
+        "bytes": 4227,
+        "sha256": "b7b62f3daa99678576138bf581a6394a10d346571a2530a760d1299ffd622b81",
+        "license": "MIT"
+      },
+      {
+        "path": "MuseTalk/LICENSE",
+        "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/LICENSE",
+        "bytes": 13427,
+        "sha256": "992ec5fd1dd4964cfa003665196cd0c0c10a7a5aa10109991e964eebd2c7f116",
+        "license": "MIT"
+      }
+    ],
+    "weights": [
+      {
+        "path": "models/musetalkV15/unet.pth",
+        "url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/musetalkV15/unet.pth",
+        "bytes": 3400074924,
+        "sha256": "7ebf6c98c181e20838e4c0054e96e944ac60d5d692cc01db42839fe11b787007",
+        "license": "MIT",
+        "license_url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/LICENSE.txt",
+        "revision": "2bcb936e2fddb4d86db4c62fd45b387d0c061571"
+      },
+      {
+        "path": "models/musetalkV15/musetalk.json",
+        "url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/musetalkV15/musetalk.json",
+        "bytes": 748,
+        "sha256": "5b6923aee04d71692e0e9846c471e0a4ea07a4f686d39545e472bd4ba17e1b47",
+        "license": "MIT",
+        "license_url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/LICENSE.txt",
+        "revision": "2bcb936e2fddb4d86db4c62fd45b387d0c061571"
+      },
+      {
+        "path": "models/sd-vae/config.json",
+        "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/config.json",
+        "bytes": 547,
+        "sha256": "92d3dfb746fca211a2c9e019e285f8597412211728dce3c5bcf4eda0f2d62e7e",
+        "license": "MIT",
+        "license_url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/README.md",
+        "revision": "31f26fdeee1355a5c34592e401dd41e45d25a493"
+      },
+      {
+        "path": "models/sd-vae/diffusion_pytorch_model.bin",
+        "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/diffusion_pytorch_model.bin",
+        "bytes": 334707217,
+        "sha256": "1b4889b6b1d4ce7ae320a02dedaeff1780ad77d415ea0d744b476155c6377ddc",
+        "license": "MIT",
+        "license_url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/README.md",
+        "revision": "31f26fdeee1355a5c34592e401dd41e45d25a493"
+      },
+      {
+        "path": "models/whisper/config.json",
+        "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/config.json",
+        "bytes": 1983,
+        "sha256": "ffdccec4f3211f4c63310f2b7098f309fe70f3952cedc5e4d11e43f5b2379b98",
+        "license": "Apache-2.0",
+        "license_url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/README.md",
+        "revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af"
+      },
+      {
+        "path": "models/whisper/pytorch_model.bin",
+        "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/pytorch_model.bin",
+        "bytes": 151095027,
+        "sha256": "9607f98a2b22d9e229ae43c52ecea79dcede9e0c5cfae67e8da6eda86d8aac1d",
+        "license": "Apache-2.0",
+        "license_url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/README.md",
+        "revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af"
+      },
+      {
+        "path": "models/whisper/preprocessor_config.json",
+        "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/preprocessor_config.json",
+        "bytes": 184990,
+        "sha256": "9b5cd03a36fbb8a627c64d98a5b5b126ead95a77720723944487311f0110b666",
+        "license": "Apache-2.0",
+        "license_url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/README.md",
+        "revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af"
+      }
+    ],
+    "model_licenses": {
+      "musetalk": {
+        "license": "MIT",
+        "revision": "2bcb936e2fddb4d86db4c62fd45b387d0c061571",
+        "license_url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/LICENSE.txt",
+        "license_sha256": "992ec5fd1dd4964cfa003665196cd0c0c10a7a5aa10109991e964eebd2c7f116",
+        "model_card_url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/README.md",
+        "model_card_sha256": "1e005ec9c3bfc7313714e714abea62205098299139db5cccb884a19a46e2a579",
+        "code_revision": "0a89dec45a0192b824e3cf4daf96c239440c5ed8",
+        "code_license_url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/LICENSE",
+        "note": "The pinned official card permits academic and commercial use of its code and trained model. Other models keep their own licenses. Its non-commercial internet testdata are excluded."
+      },
+      "sd-vae-ft-mse": {
+        "license": "MIT",
+        "revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "license_url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/README.md",
+        "model_card_url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/README.md",
+        "model_card_sha256": "8ac69483c18a45d0fee531e08b6ede97ee9b4c79e875659c1b0e6a5903ca3400",
+        "note": "The fixed official model card labels these autoencoder files MIT."
+      },
+      "whisper-tiny": {
+        "license": "Apache-2.0",
+        "revision": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af",
+        "license_url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/README.md",
+        "model_card_url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/README.md",
+        "model_card_sha256": "57a3bbbbf1e79369e4d1ced790812a1723b43a256c1b43fc70cc2f3339ae9881",
+        "note": "Use Apache-2.0 from this pinned Hugging Face model card. MuseTalk's bundled license separately describes upstream OpenAI Whisper as MIT; that upstream label is not substituted for this selected artifact's model card."
+      }
+    },
+    "file_count": 11,
+    "source_bytes": 24759,
+    "weight_bytes": 3886065436,
+    "total_bytes": 3886090195
+  },
+  "source_kind": "photo_profile",
+  "profile_id": "shioba-rio",
+  "profile_name": "汐羽りお",
+  "story_id": "shioba-rio-introduction-20261115",
+  "source_issue_slug": "november-off-clock-rio-002",
+  "source_issue_sha256": "e36b17f887ac141feb569008e521203857a142acc536d9150fb386476dda96f8",
+  "source_cut_id": "01",
+  "source_image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "portrait": {
+    "source_kind": "photo_profile",
+    "profile_id": "shioba-rio",
+    "name": "汐羽りお",
+    "fictional": true,
+    "intended_age": 29,
+    "story_id": "shioba-rio-introduction-20261115",
+    "issue_slug": "november-off-clock-rio-002",
+    "issue_sha256": "e36b17f887ac141feb569008e521203857a142acc536d9150fb386476dda96f8",
+    "cut_id": "01",
+    "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+    "path": "assets/generated/photo-issue-november-off-clock-rio-002-01.jpg",
+    "bytes": 229357,
+    "dimensions": [
+      1200,
+      800
+    ],
+    "source_png_sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece"
+  },
+  "audio_source": {
+    "kind": "saved-pilot-audio",
+    "run_id": 43691031221,
+    "status": "generated_unreviewed",
+    "audio_review": "not_listened",
+    "source_video_decision": "rejected",
+    "files": {
+      "narration-three-seconds.wav": {
+        "path": "maintenance/musetalk-pilot/run-43691031221/narration-three-seconds.wav",
+        "bytes": 96078,
+        "sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa"
+      },
+      "receipt.json": {
+        "path": "maintenance/musetalk-pilot/run-43691031221/receipt.json",
+        "bytes": 24278,
+        "sha256": "e9cfd71918a4df2355369350e5693bbda5887a87d75ec17d4919eeb2f01d564d"
+      },
+      "presenter-preview.mp4": {
+        "path": "maintenance/musetalk-pilot/run-43691031221/presenter-preview.mp4",
+        "bytes": 70535,
+        "sha256": "b180230cddb1dd06ff79d9a105f2664f9677a79c649484d8456fcbe8233e78b7"
+      },
+      "artifact-source.json": {
+        "path": "maintenance/musetalk-pilot/run-43691031221/artifact-source.json",
+        "bytes": 2714,
+        "sha256": "99e1fa9cd6ff6a10e32107dfa4b599bf91f14033683709b988b5676ac3809e6a"
+      },
+      "rejected-review.json": {
+        "path": "maintenance/musetalk-pilot/run-43691031221/rejected-review.json",
+        "bytes": 1666,
+        "sha256": "0086af5faca103ad4ad463d54a3069811289fe6372037284a2356e69a861af80"
+      }
+    },
+    "format": {
+      "channels": 1,
+      "sample_rate": 16000,
+      "sample_width": 2,
+      "frames": 48000
+    },
+    "origin": {
+      "voice": "jf_alpha",
+      "kokoro_revision": "f3ff3571791e39611d31c381e3a41a3af07b4987",
+      "kokoro_license": "https://huggingface.co/hexgrad/Kokoro-82M/tree/f3ff3571791e39611d31c381e3a41a3af07b4987",
+      "kokoro_code_license": "https://github.com/hexgrad/kokoro/blob/dfb907a02bba8152ca444717ca5d78747ccb4bec/LICENSE",
+      "misaki_code_license": "https://github.com/hexgrad/misaki/blob/fba1236595f2d2bf21d414ba6e57d25256afada3/LICENSE"
+    }
+  },
+  "comparison": {
+    "baseline_run_id": 43691031221,
+    "original_face_box": [
+      480,
+      80,
+      870,
+      470
+    ],
+    "change": "manual face bbox only; audio bytes and physical mouth mask retained",
+    "bbox_method": "visual estimate from nose bridge, face edges and chin; not DWPose landmarks",
+    "preserved_mask_image_coordinates": {
+      "center": [
+        714,
+        318
+      ],
+      "radii": [
+        70,
+        51
+      ],
+      "blur_sigma_px": 8,
+      "right_edge": 792,
+      "right_feather": 15.6
+    },
+    "quality": "unreviewed hypothesis; improvement is not established"
+  },
+  "core_packages": [
+    "numpy==1.26.4",
+    "transformers==4.46.3",
+    "huggingface-hub==0.26.5",
+    "soundfile==0.12.1",
+    "diffusers==0.30.2",
+    "accelerate==0.28.0",
+    "opencv-python-headless==4.9.0.80",
+    "librosa==0.11.0",
+    "einops==0.8.1"
+  ],
+  "limits": {
+    "cpu_threads": 2,
+    "minimum_free_disk_gib": 12,
+    "minimum_available_ram_gib": 2,
+    "maximum_work_gib": 8,
+    "maximum_artifact_bytes": 4194304,
+    "maximum_log_bytes": 524288
+  },
+  "timeout_seconds": 720,
+  "downloads": [
+    {
+      "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/models/vae.py",
+      "bytes": 5419,
+      "sha256": "6ecde3f4417178d8a9de5ed6045e2a4832efa65189b10b0672cab68efe529d32",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "MuseTalk/musetalk/models/vae.py",
+      "license": "MIT"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/models/unet.py",
+      "bytes": 1686,
+      "sha256": "05d5dadfde2e726b61d8387a4876336d4dcacc696636e8dcfec69863ce819256",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "MuseTalk/musetalk/models/unet.py",
+      "license": "MIT"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/musetalk/utils/audio_processor.py",
+      "bytes": 4227,
+      "sha256": "b7b62f3daa99678576138bf581a6394a10d346571a2530a760d1299ffd622b81",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "MuseTalk/musetalk/utils/audio_processor.py",
+      "license": "MIT"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TMElyralab/MuseTalk/0a89dec45a0192b824e3cf4daf96c239440c5ed8/LICENSE",
+      "bytes": 13427,
+      "sha256": "992ec5fd1dd4964cfa003665196cd0c0c10a7a5aa10109991e964eebd2c7f116",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "MuseTalk/LICENSE",
+      "license": "MIT"
+    },
+    {
+      "url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/musetalkV15/unet.pth",
+      "bytes": 3400074924,
+      "sha256": "7ebf6c98c181e20838e4c0054e96e944ac60d5d692cc01db42839fe11b787007",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/musetalkV15/unet.pth",
+      "license": "MIT"
+    },
+    {
+      "url": "https://huggingface.co/TMElyralab/MuseTalk/resolve/2bcb936e2fddb4d86db4c62fd45b387d0c061571/musetalkV15/musetalk.json",
+      "bytes": 748,
+      "sha256": "5b6923aee04d71692e0e9846c471e0a4ea07a4f686d39545e472bd4ba17e1b47",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/musetalkV15/musetalk.json",
+      "license": "MIT"
+    },
+    {
+      "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/config.json",
+      "bytes": 547,
+      "sha256": "92d3dfb746fca211a2c9e019e285f8597412211728dce3c5bcf4eda0f2d62e7e",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/sd-vae/config.json",
+      "license": "MIT"
+    },
+    {
+      "url": "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/31f26fdeee1355a5c34592e401dd41e45d25a493/diffusion_pytorch_model.bin",
+      "bytes": 334707217,
+      "sha256": "1b4889b6b1d4ce7ae320a02dedaeff1780ad77d415ea0d744b476155c6377ddc",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/sd-vae/diffusion_pytorch_model.bin",
+      "license": "MIT"
+    },
+    {
+      "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/config.json",
+      "bytes": 1983,
+      "sha256": "ffdccec4f3211f4c63310f2b7098f309fe70f3952cedc5e4d11e43f5b2379b98",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/whisper/config.json",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/pytorch_model.bin",
+      "bytes": 151095027,
+      "sha256": "9607f98a2b22d9e229ae43c52ecea79dcede9e0c5cfae67e8da6eda86d8aac1d",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/whisper/pytorch_model.bin",
+      "license": "Apache-2.0"
+    },
+    {
+      "url": "https://huggingface.co/openai/whisper-tiny/resolve/169d4a4341b33bc18d8881c4b69c2e104e1cc0af/preprocessor_config.json",
+      "bytes": 184990,
+      "sha256": "9b5cd03a36fbb8a627c64d98a5b5b126ead95a77720723944487311f0110b666",
+      "sha256_evidence": "pinned_publisher_lfs_sha256",
+      "path": "models/whisper/preprocessor_config.json",
+      "license": "Apache-2.0"
+    }
+  ],
+  "steps": [
+    {
+      "name": "create_cpu_environment",
+      "seconds": 3.004
+    },
+    {
+      "name": "pin_pip",
+      "seconds": 4.03
+    },
+    {
+      "name": "install_cpu_torch",
+      "seconds": 15.405
+    },
+    {
+      "name": "install_core_only",
+      "seconds": 18.902
+    },
+    {
+      "name": "verify_cpu_core_imports",
+      "seconds": 3.414
+    },
+    {
+      "name": "animate_rio_mouth_cpu_30_frames",
+      "seconds": 102.564
+    },
+    {
+      "name": "encode_preview",
+      "seconds": 1.204
+    }
+  ],
+  "runtime": {
+    "system": "Linux-7.0.0-1014-aws-x86_64-with-glibc2.39",
+    "python": "3.10.22"
+  },
+  "current_step": "verify_preview",
+  "packages": [
+    "accelerate==0.28.0",
+    "audioread==3.1.0",
+    "certifi==2026.10.23",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "cloudpickle==3.1.2",
+    "decorator==5.3.1",
+    "diffusers==0.30.2",
+    "einops==0.8.1",
+    "filelock==4.1.0",
+    "fsspec==2026.9.0",
+    "huggingface-hub==0.26.5",
+    "idna==3.20",
+    "importlib_metadata==9.0.1",
+    "Jinja2==3.1.6",
+    "joblib==1.6.0",
+    "lazy-loader==0.6",
+    "librosa==0.11.0",
+    "llvmlite==0.50.0",
+    "MarkupSafe==3.0.3",
+    "mpmath==1.3.0",
+    "msgpack==1.2.4",
+    "networkx==3.4.2",
+    "numba==0.68.1",
+    "numpy==1.26.4",
+    "opencv-python-headless==4.9.0.80",
+    "packaging==26.3",
+    "pillow==12.3.0",
+    "platformdirs==4.12.4",
+    "pooch==1.9.0",
+    "psutil==7.2.2",
+    "pycparser==3.11",
+    "PyYAML==6.0.3",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "safetensors==0.8.0",
+    "scikit-learn==1.7.2",
+    "scipy==1.15.3",
+    "soundfile==0.12.1",
+    "soxr==1.1.0",
+    "sympy==1.13.1",
+    "threadpoolctl==3.8.0",
+    "tokenizers==0.20.3",
+    "torch==2.5.1+cpu",
+    "torchvision==0.20.1+cpu",
+    "tqdm==4.70.1",
+    "transformers==4.46.3",
+    "typing_extensions==4.16.0",
+    "urllib3==2.8.0",
+    "zipp==4.1.2"
+  ],
+  "motion_check": {
+    "generated_frames": 30,
+    "changed_mouth_frames": 29,
+    "maximum_mouth_pixel_change": 5.235928535461426,
+    "meaning": "Pixel variation only; actual identity and lip-sync still require review."
+  },
+  "preview_sha256": "4ac7c9767aff66fce991e587a3d3607b9ac11a6817073de7fd439112599a38e9",
+  "ffprobe": {
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+        "profile": "High",
+        "codec_type": "video",
+        "codec_tag_string": "avc1",
+        "codec_tag": "0x31637661",
+        "width": 640,
+        "height": 426,
+        "coded_width": 640,
+        "coded_height": 426,
+        "closed_captions": 0,
+        "film_grain": 0,
+        "has_b_frames": 2,
+        "pix_fmt": "yuv420p",
+        "level": 22,
+        "chroma_location": "left",
+        "field_order": "progressive",
+        "refs": 1,
+        "is_avc": "true",
+        "nal_length_size": "4",
+        "id": "0x1",
+        "r_frame_rate": "10/1",
+        "avg_frame_rate": "10/1",
+        "time_base": "1/10240",
+        "start_pts": 0,
+        "start_time": "0.000000",
+        "duration_ts": 30720,
+        "duration": "3.000000",
+        "bit_rate": "136968",
+        "bits_per_raw_sample": "8",
+        "nb_frames": "30",
+        "extradata_size": 46,
+        "disposition": {
+          "default": 1,
+          "dub": 0,
+          "original": 0,
+          "comment": 0,
+          "lyrics": 0,
+          "karaoke": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "visual_impaired": 0,
+          "clean_effects": 0,
+          "attached_pic": 0,
+          "timed_thumbnails": 0,
+          "non_diegetic": 0,
+          "captions": 0,
+          "descriptions": 0,
+          "metadata": 0,
+          "dependent": 0,
+          "still_image": 0
+        },
+        "tags": {
+          "language": "und",
+          "handler_name": "VideoHandler",
+          "vendor_id": "[0][0][0][0]",
+          "encoder": "Lavc60.31.102 libx264"
+        }
+      },
+      {
+        "index": 1,
+        "codec_name": "aac",
+        "codec_long_name": "AAC (Advanced Audio Coding)",
+        "profile": "LC",
+        "codec_type": "audio",
+        "codec_tag_string": "mp4a",
+        "codec_tag": "0x6134706d",
+        "sample_fmt": "fltp",
+        "sample_rate": "16000",
+        "channels": 1,
+        "channel_layout": "mono",
+        "bits_per_sample": 0,
+        "initial_padding": 0,
+        "id": "0x2",
+        "r_frame_rate": "0/0",
+        "avg_frame_rate": "0/0",
+        "time_base": "1/16000",
+        "start_pts": 0,
+        "start_time": "0.000000",
+        "duration_ts": 48000,
+        "duration": "3.000000",
+        "bit_rate": "46253",
+        "nb_frames": "48",
+        "extradata_size": 5,
+        "disposition": {
+          "default": 1,
+          "dub": 0,
+          "original": 0,
+          "comment": 0,
+          "lyrics": 0,
+          "karaoke": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "visual_impaired": 0,
+          "clean_effects": 0,
+          "attached_pic": 0,
+          "timed_thumbnails": 0,
+          "non_diegetic": 0,
+          "captions": 0,
+          "descriptions": 0,
+          "metadata": 0,
+          "dependent": 0,
+          "still_image": 0
+        },
+        "tags": {
+          "language": "und",
+          "handler_name": "SoundHandler",
+          "vendor_id": "[0][0][0][0]"
+        }
+      }
+    ],
+    "format": {
+      "filename": "/home/runner/work/_temp/news-caster-preview/presenter-preview.mp4",
+      "nb_streams": 2,
+      "nb_programs": 0,
+      "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+      "format_long_name": "QuickTime / MOV",
+      "start_time": "0.000000",
+      "duration": "3.000000",
+      "size": "71582",
+      "bit_rate": "190885",
+      "probe_score": 100,
+      "tags": {
+        "major_brand": "isom",
+        "minor_version": "512",
+        "compatible_brands": "isomiso2avc1mp41",
+        "encoder": "Lavf60.16.100"
+      }
+    }
+  },
+  "notice": "Mouth animation only. Identity, lip-sync and voice require actual review; never auto-publish.",
+  "elapsed_seconds": 185.605
+}

@@ -1,0 +1,14 @@
+{
+  "tool": "image_gen.imagegen",
+  "mode": "built-in tool; no CLI/API key",
+  "execution_id": "b1b637c5-605c-4a6b-a69e-d464c26790d0",
+  "execution_id_source": "actual exec UUID in the built-in output filename; provider generation ID not exposed",
+  "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-b1b637c5-605c-4a6b-a69e-d464c26790d0.png",
+  "source_png_sha256": "72bf77dc74a529ffcf90eddbae302f4d4176b8d7d40424d86851a1b3b62b4e23",
+  "source_png_bytes": 2150359,
+  "observed_file_mtime": "2026-11-15T09:24:03.113302+00:00",
+  "generation_prompt": "Create one realistic horizontal 16:9 documentary photograph for a fictional Japanese future-news story. The central visual contradiction: the crowd keeps singing happily, while its dedicated recording microphone has just been disconnected. A close foreground view of a plain black audience-recording microphone on a short stand at the side of an indoor concert audience; an ordinary adult sound technician's hands hold the microphone steady and hold its unplugged XLR cable a clear few centimetres away from the bottom socket. Make the separation physically unambiguous and mechanically plausible: one microphone, one cable, realistic correctly articulated hands and connector, no duplicate objects. The microphone points toward the audience, not toward the stage, and nobody is singing into it. In the middle distance a small varied group of entirely fictional adult Japanese concertgoers, women and men roughly 25 to 55, continue singing or clapping toward a modest distant stage, with one middle-aged woman visible among them. Cool and warm practical concert lights, natural skin texture, restrained exposure with visible facial details, no blown-out faces. November indoor evening, contemporary everyday coats and knits, unposed press-photo feel rather than a glamour portrait or advertising. Focus on the separated microphone connector and working hands, with the continuing crowd still recognizable as a live audience. No text, subtitles, labels, screen UI, logos, signs, watermarks, real people or celebrity likeness. Full-bleed single photograph, no collage, no illustration, no 3D render.",
+  "transparent_background": false,
+  "vendor_model_version": null,
+  "vendor_seed": null
+}
