@@ -175,6 +175,22 @@ def load_market_bulletins(root, *, now=None):
                 if not total or abs(total - sum(v["value"] for v in values)) > 1e-6:
                     raise ValueError("Chart composition must add to verified total")
                 _txt(fig.get("total_label"), "chart total label")
+        # A compact, auditable situation map. Each claimed tailwind/headwind
+        # must point to a source in the current issue and a real observation time.
+        conditions = report.get("conditions", [])
+        if not isinstance(conditions, list) or len(conditions) > 3:
+            raise ValueError("Market conditions must be at most three")
+        for condition in conditions:
+            if not isinstance(condition, dict):
+                raise ValueError("Invalid situation signal")
+            _txt(condition.get("name"), "situation name", maximum=25)
+            _txt(condition.get("meaning"), "situation interpretation", minimum=25, maximum=280)
+            if condition.get("signal") not in ("追い風", "逆風", "中立", "未確認"):
+                raise ValueError("Unlabelled market situation")
+            if condition.get("source_url") not in source_urls:
+                raise ValueError("Situation requires checked public source")
+            if _timestamp(condition.get("observed_at")) > pub:
+                raise ValueError("Situation may not use later information")
         picks = report.get("picks", [])
         if slot in ("am", "noon"):
             if picks:
@@ -240,6 +256,26 @@ def chart_html(report, fig):
     )
 
 
+def _market_conditions(report):
+    conditions = report.get("conditions", [])
+    if not conditions:
+        return ""
+    cards = []
+    for item in conditions:
+        cards.append(
+            '<article class="market-condition">'
+            f'<h3>{escape(item["name"])}</h3><span>{escape(item["signal"])}</span>'
+            f'<p>{escape(item["meaning"])}</p>'
+            f'<a href="{escape(item["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">'
+            f'観測 {_timestamp(item["observed_at"]).strftime("%m/%d %H:%M")}・出典を確認</a>'
+            '</article>'
+        )
+    return (
+        '<section class="market-conditions"><h2>相場を動かす情勢</h2>'
+        '<div class="market-conditions-grid">' + "".join(cards) + '</div></section>'
+    )
+
+
 def _picks(report):
     if not report.get("picks"):
         return ""
@@ -292,7 +328,7 @@ def render_market_bulletin(report, layout, outlooks=()):
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + forecast_section + "".join(parts)
+        + forecast_section + _market_conditions(report) + "".join(parts)
         + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
