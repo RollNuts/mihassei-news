@@ -46,9 +46,10 @@ def _stamp(value):
     return stamp
 
 
-def _text(value, limit, label):
+def _text(value, limit, label, *, multiline=False):
+    controls = r"[<>\x00-\x09\x0b-\x1f\x7f]" if multiline else r"[<>\x00-\x1f\x7f]"
     if (not isinstance(value, str) or not value.strip() or value != value.strip()
-            or len(value) > limit or re.search(r"[<>\x00-\x1f\x7f]", value)):
+            or len(value) > limit or re.search(controls, value)):
         raise ValueError("Invalid photo story " + label)
     return value
 
@@ -76,9 +77,11 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
         if (not model or model["id"] not in VOICE_PROFILES or model.get("fictional") is not True
                 or type(model.get("age")) is not int or not 20 <= model["age"] <= 99):
             raise ValueError("Photo story needs a fictional adult model")
-        text = _text(story["text"], 180, "text")
-        if len(text) < 12 or model["character"]["first_person"] not in text:
-            raise ValueError("Photo story needs a short first-person text")
+        text = _text(story["text"], 180, "text", multiline=True)
+        # Japanese personal posts naturally omit pronouns. Authorship comes
+        # from the model/source binding, never the literal word 私 or わたし.
+        if len(text) < 3:
+            raise ValueError("Photo story needs a short personal text")
         source = story["source"]
         if (not isinstance(source, dict) or set(source) != {"issue_slug", "cut_id", "image_sha256"}
                 or not isinstance(source["issue_slug"], str) or not SLUG.fullmatch(source["issue_slug"])

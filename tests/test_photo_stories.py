@@ -141,13 +141,20 @@ class PhotoStoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "fictional source setting"):
             self.validate()
 
-    def test_invalid_plaintext_and_missing_character_first_person_are_rejected(self):
-        for text in ("", "私", "私の<script>alert(1)</script>です", "私の投稿\nです", "私" * 181,
-                     "今日は道草をして帰ることにしました。"):
+    def test_unsafe_or_empty_plaintext_is_rejected(self):
+        for text in ("", "私", "私の<script>alert(1)</script>です", "投稿\rです", "私" * 181):
             with self.subTest(text=text):
                 self.data["stories"][0]["text"] = text
                 with self.assertRaisesRegex(ValueError, "text"):
                     self.validate()
+
+    def test_personal_posts_can_omit_pronouns_and_keep_natural_line_breaks(self):
+        for text in ("今日は道草をして帰ることにしました。", "焦げそう。\n味見ばかりしてる。", "おつかれさま。"):
+            with self.subTest(text=text):
+                self.data["stories"][0]["text"] = text
+                result = self.validate()
+                self.assertEqual(result[0]["text"], text)
+                self.assertEqual(result[0]["modelId"], "nagino-saya")
 
     def test_render_has_only_posted_models_and_safe_json_html_with_no_audio_autoplay(self):
         self.data["stories"][0]["text"] = '私のメモは「散歩 & お茶」。寄り道の予定は、まだ内緒です。'
