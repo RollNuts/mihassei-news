@@ -255,6 +255,20 @@ export class NewsroomStats extends DurableObject {
     ).toArray().filter(row=>validArticle(row.article) &&
       Number.isInteger(row.pageViews) && row.pageViews>0);
   }
+  topPhotoIssueRowsForWeek(day) {
+    const patterns=Array.from({length:7},(_,i)=>{
+      const date=new Date((day.serial-6+i)*DAY_MS).toISOString().slice(0,10);
+      return "day:"+date+":pageViews:"+PHOTO_ISSUE_PREFIX+"%";
+    });
+    // Read the existing display counters only. Photos stay outside the news
+    // ranking, and no browser, like or vote counter contributes to this list.
+    return this.sql.exec(
+      "SELECT substr(key,26) AS article,SUM(value) AS pageViews FROM counters "+
+      "WHERE ("+patterns.map(()=>"key LIKE ?").join(" OR ")+") AND value>0 GROUP BY article "+
+      "ORDER BY pageViews DESC,article ASC LIMIT 20",...patterns
+    ).toArray().filter(row=>photoIssueSlug(row.article)!==null &&
+      Number.isSafeInteger(row.pageViews) && row.pageViews>0);
+  }
   hourlyDimensionTotals(date, marker, dimensions) {
     const totals=Object.fromEntries(dimensions.map(key=>[key,0]));
     const prefix="hour:"+date+":";
@@ -370,6 +384,15 @@ export class NewsroomStats extends DurableObject {
         todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
       }));
     }
+    let photoPopularRows=null;
+    if(url.searchParams.get("photoPopular")==="1"){
+      const rows=publicStartedAt ? this.topPhotoIssueRowsForWeek(day) : [];
+      const todayValues=this.counts(rows.map(row=>"day:"+day.date+":pageViews:"+row.article));
+      photoPopularRows=rows.map(row=>({
+        ...row,
+        todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
+      }));
+    }
     return {
       version:2,
       unit:"anonymous-browser",
@@ -398,6 +421,9 @@ export class NewsroomStats extends DurableObject {
         // Rank once inside the existing Durable Object instead of making the
         // browser fetch every published article just to discover the top few.
         topArticles:{last7Days:popularRows}
+      } : {}),
+      ...(photoPopularRows!==null ? {
+        topPhotoIssues:{last7Days:photoPopularRows}
       } : {})
     };
   }
