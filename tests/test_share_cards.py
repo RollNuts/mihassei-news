@@ -110,8 +110,8 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
         self.assertEqual(doc.count('data-popular-section'), 1)
         self.assertLess(doc.index('<section class="hero-grid">'),
                         doc.index('data-popular-section'))
-        self.assertLess(doc.index('data-popular-section'),
-                        doc.index('<section class="section-block">'))
+        self.assertLess(doc.index('<section class="section-block">'),
+                        doc.index('data-popular-section'))
         self.assertIn('aria-labelledby="readers-choice-title" hidden', doc)
         self.assertIn('data-popular-period>過去7日間のPV順', doc)
         self.assertNotIn('class="reading-ways"', doc)
