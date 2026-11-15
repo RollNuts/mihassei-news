@@ -104,6 +104,43 @@ def guard_serial_history(before, after, *, today=None):
     return checked
 
 
+def guard_photo_edition_history(before, after):
+    """Freeze published contents and their PV evidence; reader typos may change."""
+    def editions(data):
+        if data is None:
+            return {}
+        if (not isinstance(data, dict) or data.get("schema_version") != 1
+                or not isinstance(data.get("editions"), list)):
+            raise ValueError("Invalid photo editions history")
+        result, numbers = {}, set()
+        for edition in data["editions"]:
+            if (not isinstance(edition, dict) or not isinstance(edition.get("slug"), str)
+                    or edition["slug"] in result or type(edition.get("number")) is not int
+                    or edition["number"] in numbers):
+                raise ValueError("Invalid/duplicate photo edition history identity")
+            result[edition["slug"]] = edition
+            numbers.add(edition["number"])
+        return result
+
+    old, new = editions(before), editions(after)
+    fixed = ("number", "slug", "state", "legacy", "published_at", "features", "ranking")
+    checked = 0
+    for slug, original in old.items():
+        if original.get("state") != "published":
+            continue
+        if slug not in new:
+            raise ValueError(f"{slug}: published photo edition was removed or renamed")
+        # Canonical JSON preserves numeric/boolean types and list order while
+        # ignoring harmless object-key formatting changes.
+        canonical = lambda edition: json.dumps({key: edition.get(key) for key in fixed},
+                                               sort_keys=True, ensure_ascii=False,
+                                               separators=(",", ":"), allow_nan=False)
+        if canonical(original) != canonical(new[slug]):
+            raise ValueError(f"{slug}: published photo contents or ranking evidence changed")
+        checked += 1
+    return checked
+
+
 def main():
     if len(sys.argv) != 2 or not re.fullmatch(r"[a-f0-9]{40}", sys.argv[1]):
         raise SystemExit("Usage: guard_serial_history.py <40-char-base-commit-sha>")
@@ -116,6 +153,32 @@ def main():
     after = json.loads((repo / "content/serials.json").read_text(encoding="utf-8"))
     checked = guard_serial_history(before, after)
     print(f"Serial history guard: {checked} earlier episodes unchanged or validly reviewed")
+    # Market dispatches, daily short-horizon forecasts, and intermediate
+    # long-horizon outlooks are append-only. Old records can never be silently
+    # rewritten when the conclusion or sentiment changes.
+    for name in ("market_bulletins.json", "market_outlooks.json", "market_outlook.json"):
+        path = "content/" + name
+        old = subprocess.run(
+            ["git", "show", sys.argv[1] + ":" + path],
+            cwd=repo, capture_output=True, text=True,
+        )
+        older = json.loads(old.stdout) if old.returncode == 0 else []
+        current_path = repo / path
+        newer = json.loads(current_path.read_text(encoding="utf-8")) if current_path.exists() else []
+        if not isinstance(older, list) or not isinstance(newer, list):
+            raise ValueError(path + ": historical archive must be an array")
+        if newer[:len(older)] != older:
+            raise ValueError(path + ": published history cannot be rewritten or removed")
+        print(f"Market history guard: {path}, {len(older)} existing entries preserved")
+    # Use this existing CI history entrypoint; no additional job or service.
+    path = "content/photo_editions.json"
+    old = subprocess.run(["git", "show", sys.argv[1] + ":" + path],
+                         cwd=repo, capture_output=True, text=True)
+    previous = json.loads(old.stdout) if old.returncode == 0 else None
+    current_path = repo / path
+    current = json.loads(current_path.read_text(encoding="utf-8")) if current_path.exists() else None
+    checked = guard_photo_edition_history(previous, current)
+    print(f"Photo edition history guard: {checked} published contents and ranking snapshots preserved")
 
 
 if __name__ == "__main__":

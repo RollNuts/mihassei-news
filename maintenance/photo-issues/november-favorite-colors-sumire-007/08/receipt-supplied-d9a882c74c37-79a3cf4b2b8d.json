@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-favorite-colors-sumire-007",
+  "cut_id": "08",
+  "model_id": "kiritani-sumire",
+  "review_reference_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+  "imported_at": "2026-11-15T02:02:22.679744+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "turn_key": "9e090e7a-2bb3-4ad9-9c4b-857358b2b5e2",
+    "image_number": 4,
+    "path": "maintenance/photo-issues/november-favorite-colors-sumire-007/08/source-d9a882c74c37bdd73ed3095c65fe9f67d96ded149154e583d17ce4b7394b670d.png",
+    "sha256": "d9a882c74c37bdd73ed3095c65fe9f67d96ded149154e583d17ce4b7394b670d",
+    "bytes": 2080071,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-08.jpg",
+    "sha256": "79a3cf4b2b8dc464511f6918c80f23c4efb3deaa356daefade8f02542f6011fc",
+    "bytes": 217322,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

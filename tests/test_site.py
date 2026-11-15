@@ -69,9 +69,9 @@ class SiteTests(unittest.TestCase):
         from scripts.build import social_image
         from scripts.check_live import verify_launch_card
         root_page=(ROOT/"dist/index.html").read_text(encoding="utf-8")
-        verify_launch_card(root_page,social_image(None))
+        verify_launch_card(root_page,"/og/brand-home-20261115-v4.png")
         with self.assertRaises(RuntimeError):
-            verify_launch_card('<html><head></head></html>',social_image(None))
+            verify_launch_card('<html><head></head></html>',"/og/brand-home-20261115-v4.png")
 
     def test_public_sponsorship_contact_with_no_premature_ad_placement(self):
         import html
@@ -237,7 +237,7 @@ class SiteTests(unittest.TestCase):
         css=(ROOT/"dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         self.assertNotIn('<div class="news-wire"',home)
         self.assertIn('<details class="extras-shelf">',home)
-        self.assertIn("今日の未発生新聞",home)
+        self.assertIn("最近の発行号",home)
         self.assertIn("号外・コメント",home)
         self.assertTrue(home.index('class="daily-issues-section"') <
                         home.index('<details class="extras-shelf">'))
@@ -482,9 +482,13 @@ class SiteTests(unittest.TestCase):
         self.assertNotIn("紙面の架空時計",home)
         self.assertIn("data-observer-widget",home)
         self.assertIn("data-pv-widget",home)
-        self.assertIn("今日のPV",home)
-        self.assertIn("昨日のPV",home)
+        self.assertIn("掲載記事",home)
+        self.assertIn("newsroom-snapshot",home)
+        self.assertIn("累計PV",home)
+        self.assertIn("data-site-pv-total",home)
         self.assertIn("data-site-pv-week",home)
+        self.assertNotIn("今日のPV",home)
+        self.assertNotIn("昨日のPV",home)
         self.assertIn("data-pv-tracking-note",home)
         self.assertIn("hidden",home)
         self.assertIn("創作報道",home)
@@ -760,6 +764,8 @@ class SiteTests(unittest.TestCase):
         from scripts.build import uses_stock_photo
         from scripts.visual_review import reviewed_generated_scene
         from scripts import photo_issues as photo
+        from scripts.photo_editions import load_photo_editions, edition_url
+        from scripts.photo_edition_pages import edition_cover
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -768,30 +774,43 @@ class SiteTests(unittest.TestCase):
         created={p.name for p in (ROOT/"dist/feeds").glob("*.xml")
                  if not p.name.startswith("series-")}
         expected={CATEGORY_PATHS[cat]+".xml" for cat in populated}
-        photos=photo.published_issues(photo.load_photo_issues(ROOT),root=ROOT)
+        # The independent, non-fiction daily market feed is not a topic feed.
+        # Confirm it is published, then retain strict set equality for the
+        # fictional category and weekly photo feeds.
+        expected.add("market-bulletins.xml")
+        market_channel=ET.parse(ROOT/"dist/feeds/market-bulletins.xml").getroot().find("channel")
+        self.assertEqual(market_channel.findtext("title"),"未来相場観測室｜日次市況")
+        self.assertIn("現実の公開資料",market_channel.findtext("description"))
+        self.assertEqual(market_channel.findtext("link"),SITE+"/serials/market-lab/briefings/")
+        photo_catalog=photo.load_photo_issues(ROOT)
+        photos=photo.published_issues(photo_catalog,root=ROOT)
+        editions=load_photo_editions(ROOT,catalog=photo_catalog,published=photos)
         if photos:
             expected.add(Path(photo.feed_url()).name)
             channel=ET.parse(ROOT/"dist"/photo.feed_url().lstrip("/")).getroot().find("channel")
             self.assertEqual(channel.findtext("title"),"週刊グラビア | 未発生新聞（創作写真コラム）")
-            self.assertEqual(channel.findtext("description"),"架空の成人モデルの写真と、5年後を暮らす短いコラム。")
+            self.assertEqual(channel.findtext("description"),"架空の成人モデル7人の写真と未来コラム。" if editions else "架空の成人モデルの写真と、5年後を暮らす短いコラム。")
             self.assertEqual(channel.findtext("link"),SITE+photo.index_url())
             self.assertEqual(channel.findtext("language"),"ja")
             self.assertEqual(channel.find("atom:link",ns).attrib,
                              {"href":SITE+photo.feed_url(),"rel":"self","type":"application/rss+xml"})
-            releases=sorted(photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)
+            releases=sorted(editions or photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)
+            release_url=edition_url if editions else photo.issue_url
             entries=channel.findall("item")
             self.assertEqual([item.findtext("link") for item in entries],
-                             [SITE+photo.issue_url(issue) for issue in releases])
+                             [SITE+release_url(issue) for issue in releases])
             for item,issue in zip(entries,releases):
-                self.assertEqual(item.findtext("guid"),SITE+photo.issue_url(issue))
-                self.assertEqual(item.findtext("title"),issue["title"]+" | 週刊グラビア（創作写真コラム）")
+                self.assertEqual(item.findtext("guid"),SITE+release_url(issue))
+                prefix=f'第{issue["number"]}号 ' if editions else ""
+                self.assertEqual(item.findtext("title"),prefix+issue["title"]+" | 週刊グラビア（創作写真コラム）")
                 self.assertEqual(item.findtext("description"),issue["summary"])
                 self.assertEqual(parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
                                  datetime.fromisoformat(issue["published_at"]).replace(microsecond=0).isoformat())
-                cover=photo.cover_shot(issue)
-                image=SITE+photo.cover_url(issue)
+                feature=edition_cover(issue) if editions else issue
+                cover=photo.cover_shot(feature)
+                image=SITE+photo.cover_url(feature)
                 self.assertEqual(item.find("enclosure").attrib,{"url":image,
-                    "length":str(issue["images"][cover["id"]]["bytes"]),"type":"image/jpeg"})
+                    "length":str(feature["images"][cover["id"]]["bytes"]),"type":"image/jpeg"})
                 self.assertEqual(item.find("media:thumbnail",ns).get("url"),image)
                 self.assertEqual(item.find("media:content",ns).get("url"),image)
                 self.assertEqual(item.find("media:content",ns).get("type"),"image/jpeg")
@@ -950,6 +969,9 @@ class SiteTests(unittest.TestCase):
         import re
         from scripts.build import social_image
         self.assertEqual(social_image(None),"/og/brand-launch-20261102-v3.png")
+        # Non-home collection pages keep their existing card URL and cache.
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',archive)
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
@@ -977,7 +999,9 @@ class SiteTests(unittest.TestCase):
         import struct
         import zlib
         old_image=ROOT/"dist/og/brand.png"
-        new_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
+        legacy_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
+        new_image=ROOT/"dist/og/brand-home-20261115-v4.png"
+        self.assertTrue(legacy_image.is_file())
         self.assertTrue(old_image.is_file())
         self.assertTrue(new_image.is_file())
         data=new_image.read_bytes()
@@ -1000,9 +1024,9 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(size,(1200,630))
         self.assertEqual(len(zlib.decompress(raw_idat)),(1200*3+1)*630)
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
-        self.assertIn('content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
         # The footer share intent passes a distinct URL, not the cached plain root.
-        self.assertIn("src%3Dx-launch-20261102-v3",home)
+        self.assertIn("src%3Dx-launch-20261115-v4",home)
 
     def test_image_review_gate_applies_to_cached_photos_and_ogp(self):
         """Cached images are not automatically editorially appropriate."""
@@ -1172,9 +1196,9 @@ class SiteTests(unittest.TestCase):
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
-        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
-        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
-        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
+        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
+        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
         self.assertIn('name="twitter:title" content="未発生新聞｜5年後を勝手に想像する風刺ニュース"',home)
         self.assertNotIn('未発生新聞 | 未発生新聞',home)
         for a in self.articles:

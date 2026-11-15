@@ -42,7 +42,7 @@ async function runPage(options={}){
   const fire=(scope,name,event={})=>{
     for(const callback of listeners[scope].get(name)||[])callback(event);
   };
-  const widget=element(),note=element(),today=element(),yesterday=element(),week=element(),period=element();
+  const widget=element(),note=element(),total=element(),week=element(),period=element(),weekStat=element();
   widget.hidden=true;widget.querySelector=selector=>selector==='small'?note:null;
   const preference=element(),status=element();
   const issue=element({engagementKey:options.issueKey||''}),issueStatus=element();
@@ -63,8 +63,9 @@ async function runPage(options={}){
     return node;
   });
   const selectors=new Map([
-    ['[data-observer-widget]',widget],['[data-pv-widget]',widget],
-    ['[data-site-pv-today]',today],['[data-site-pv-yesterday]',yesterday],
+    ['[data-observer-widget]',options.noWidget?null:widget],
+    ['[data-pv-widget]',options.noWidget?null:widget],
+    ['[data-site-pv-total]',total],['[data-site-pv-week-stat]',weekStat],
     ['[data-site-pv-week]',week],['[data-site-pv-period-label]',period],
     ['[data-pv-tracking-note]',note],
     ['[data-analytics-status]',options.preference?status:null],
@@ -131,7 +132,7 @@ async function runPage(options={}){
   vm.runInNewContext(source,vm.createContext(context),{timeout:1500});
   await settle();
   return {
-    document,widget,note,today,yesterday,week,period,badges,preference,status,storage,issueStatus,likeButtons,likeCounts,
+    document,widget,note,total,week,period,weekStat,badges,preference,status,storage,issueStatus,likeButtons,likeCounts,
     requests,timers,intervals,mutations,seenViewIds,fire,releaseGet,
     advance(ms){clock+=ms;},setSnapshot(value){snapshot=value;},failGets(){getFails=true;},
     visits:()=>requests.filter(request=>request.body?.action==='visit'),
@@ -141,15 +142,16 @@ async function runPage(options={}){
 
 test('PV labels use display counts, retain missing history, and populate every article badge',async()=>{
   const page=await runPage({badges:['news-one','news-two','news-one'],articleCounts:{'news-one':105,'news-two':0}});
-  assert.equal(page.today.textContent,'24');
-  assert.equal(page.yesterday.textContent,'—');
+  assert.equal(page.total.textContent,'24');
   assert.equal(page.week.textContent,'24');
   assert.equal(page.period.textContent,'計測開始から');
-  assert.match(page.note.textContent,/2026\/11\/4.*昨日は未計測/);
+  assert.match(page.note.textContent,/2026\/11\/4から計測/);
   assert.deepEqual(page.badges.map(badge=>badge.count.textContent),['105','0','105']);
   assert.match(page.badges[0].attributes['aria-label'],/105PV/);
   assert.equal(page.badges[0].attributes.title,'2026/11/4からの表示回数');
   assert.equal(page.widget.hidden,false);
+  assert.equal(page.badges[0].dataset.pvReady,'true');
+  assert.equal(page.badges[1].dataset.pvReady,'false');
 });
 
 test('a tracked page display reuses its POST snapshot instead of issuing an immediate GET',async()=>{
@@ -169,7 +171,7 @@ test('measured PV rendering does not depend on legacy browser counters',async()=
     delete day.visitors;delete day.articleReads;
   }
   const page=await runPage({snapshot,badges:['news']});
-  assert.equal(page.today.textContent,'24');
+  assert.equal(page.total.textContent,'24');
   assert.equal(page.week.textContent,'24');
   assert.equal(page.badges[0].count.textContent,'7');
   assert.equal(page.widget.hidden,false);
@@ -180,12 +182,12 @@ test('old API numbers and failed requests cannot become plausible-looking PV',as
   delete old.pageViewTracking;delete old.pageViews;
   delete old.today.pageViews;delete old.yesterday.pageViews;delete old.last7Days;
   const legacy=await runPage({snapshot:old,badges:['news'],legacyArticles:true});
-  assert.equal(legacy.today.textContent,'—');
+  assert.equal(legacy.total.textContent,'—');
   assert.equal(legacy.badges[0].count.textContent,'—');
-  assert.match(legacy.note.textContent,/取得できません/);
+  assert.equal(legacy.widget.hidden,true,'an old API cannot display PV');
   const page=await runPage();
   page.failGets();page.advance(600000);page.intervals[0].callback();await settle();
-  assert.equal(page.today.textContent,'24');
+  assert.equal(page.total.textContent,'24');
   assert.match(page.note.textContent,/通信回復待ち/);
   assert.equal(page.visits().length,1);
 });
@@ -195,9 +197,9 @@ test('initial tracking without observations remains unmeasured, and covered week
   empty.pageViewTracking.startedAtUtc=null;empty.pageViews=null;empty.today.pageViews=null;
   empty.last7Days.pageViews=null;empty.last7Days.measuredDays=0;
   const page=await runPage({snapshot:empty,webdriver:true});
-  assert.equal(page.today.textContent,'—');
+  assert.equal(page.total.textContent,'—');
   assert.equal(page.week.textContent,'—');
-  assert.match(page.note.textContent,/計測開始待ち/);
+  assert.equal(page.widget.hidden,true,'unmeasured counts should not show a counter');
   const complete=measuredSnapshot();
   complete.pageViewTracking.startedAtUtc='2026-10-28T00:00:00Z';
   complete.yesterday.pageViews=50;complete.yesterday.pageViewsCoverage='complete';
@@ -236,6 +238,29 @@ test('only visible document displays count; focus, visibility returns and refres
     'a normal reload inside 30 minutes stays in the same session');
 });
 
+test('archive without PV badges skips redundant mutation observation',async()=>{
+  const page=await runPage({url:'https://veripsa.com/archive/',archive:true,noWidget:true});
+  assert.equal(page.mutations.length,0,'the actual archive has no PV badges to watch');
+  assert.equal(page.intervals.length,0,'no reader controls means no polling');
+});
+
+test('article reactions still refresh without the removed sitewide PV header',async()=>{
+  const page=await runPage({
+    url:'https://veripsa.com/articles/news-one/',
+    noWidget:true, badges:['news-one']
+  });
+  assert.equal(page.visits().length,1);
+  assert.equal(page.intervals.length,1,'article reaction widgets keep their ten-minute refresh');
+  page.advance(600000);
+  page.intervals[0].callback();
+  await settle();
+  assert.equal(page.gets().length,1,'a periodic refresh is read-only');
+  assert.equal(page.visits().length,1,'refresh never adds another page view');
+
+  const quiet=await runPage({url:'https://veripsa.com/privacy/',noWidget:true});
+  assert.equal(quiet.intervals.length,0,'static pages do not poll without controls');
+});
+
 test('a lost response retries the same page-view ID once instead of creating another display',async()=>{
   const page=await runPage({postFailures:1});
   assert.equal(page.visits().length,1);
@@ -258,7 +283,7 @@ test('URL, saved and automated-preview opt-outs suppress visits while retaining 
   ]){
     const page=await runPage(options);
     assert.equal(page.visits().length,0);
-    assert.equal(page.today.textContent,'24');
+    assert.equal(page.total.textContent,'24');
     assert.equal(page.gets().length,1);
     assert.ok(page.requests.every(request=>!request.endpoint.includes('analytics=')));
     if(options.storageFails)assert.match(page.status.textContent,/次のページには引き継がれません/);

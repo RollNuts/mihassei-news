@@ -1,0 +1,102 @@
+[
+  {
+    "filename": "candidate-01.png",
+    "sha256": "f0d8a1e49f18ec3444d8539c5684dc913a12421371a6431c42c06c4138dee6cc",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2095327,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-02.png",
+    "sha256": "0ffe5b5676fe48791ac8ce7cc5a4f3338db23fa02518a5db9352ca5be6954838",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2110200,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-03.png",
+    "sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2284849,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-04.png",
+    "sha256": "942feee24527ba493dc1cf0a6aaae363081c6e00c77a436e93e3f500b13cc967",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2077096,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-05.png",
+    "sha256": "65a662a2dcc12ff057891769a209c8096a77f8adcaecb34d25eae0126c386f63",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2066591,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-06.png",
+    "sha256": "35b7e8cb3544f749c71f460ff4016d0943e31d3a1e4a046eaad26e8ed7b31195",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1991507,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-07.png",
+    "sha256": "94b084503dd1101b6fe4b0a9c7c7d66f58e66f911ba295d4b17b41ccd5ef469c",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1199,
+    "height": 1312,
+    "bytes": 2156080,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-08.png",
+    "sha256": "c3511b34a27aa7db91dd13205acb6d1c4c52699441e53fd92ad42beba728ce8a",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2501176,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-09.png",
+    "sha256": "2400113e7d7b5d4249ed89bab9f23b48d8c776dccb7ff55b81803978e760458f",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2604549,
+    "existing_record_exact_sha_matches": []
+  },
+  {
+    "filename": "candidate-10.png",
+    "sha256": "7d4715bfb05a8cccb2a6f4ed52428bf72f0d6756791f8e41d122ddc845559c87",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2154150,
+    "existing_record_exact_sha_matches": []
+  }
+]

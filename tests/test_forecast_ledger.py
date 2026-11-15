@@ -94,7 +94,7 @@ class MarketForecastLedgerTests(unittest.TestCase):
         article=render_episode_page(self.series,self.series["episodes"][0],html_only)
         self.assertIn('id="forecast-ledger"',hub)
         self.assertIn("予想の検証一覧",hub)
-        self.assertIn('href="/serials/market-lab/#forecast-ledger"',article)
+        self.assertIn('href="/serials/market-lab/#market-proof"',article)
         self.assertNotIn("判定済み：的中",hub)
 
     def test_fiction_never_has_market_ledger(self):

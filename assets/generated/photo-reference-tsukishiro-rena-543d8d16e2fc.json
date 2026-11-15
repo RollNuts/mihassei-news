@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "tsukishiro-rena",
+  "role": "body",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "turn_key": "7c7d5ea4-981a-4ea8-9476-974b1f03cacd",
+    "image_number": 9,
+    "path": "maintenance/photo-issues/november-sea-and-city-rena-003/02/source-668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09.png",
+    "sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+    "bytes": 2268408,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-02.jpg",
+    "sha256": "543d8d16e2fcfa53c5ce6ad70417f88631809fb4a6530790509e04db2447dc28",
+    "bytes": 246110,
+    "width": 800,
+    "height": 1200
+  },
+  "reference_path": "assets/generated/photo-body-tsukishiro-rena-543d8d16e2fc.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 158,
+    "bust_cm": 82,
+    "waist_cm": 58,
+    "hip_cm": 85,
+    "shoulder_width_cm": 35,
+    "inseam_cm": 73,
+    "heads_tall": 7.2
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Lavender-bikini beach JPEG shows coherent head-to-feet adult proportions, plausible walking step and hands/feet, natural surf/shadows/skin. Long straight dark hair/fringe and face agree qualitatively with dinner reference. No compression/crop/anatomy defect observed; authored158/82/58/85cm remain design metadata, not measured.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-sea-and-city-rena-003/reference-jpeg-qa.json",
+    "sha256": "533ef3cf19300409875b8062e8b74d246ba6fab7add9d78dfb03efdffa8d798f"
+  }
+}

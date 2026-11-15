@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "model_id": "kiritani-sumire",
+  "reviewed_at_utc": "2026-11-15T02:14:42.952838+00:00",
+  "scope": "Actual four face/body JPEG references displayed full by root; original PNGs previously displayed. Not final feature adoption.",
+  "live_authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 170,
+    "bust_cm": 87,
+    "waist_cm": 62,
+    "hip_cm": 91,
+    "shoulder_width_cm": 39,
+    "inseam_cm": 81,
+    "heads_tall": 7.6
+  },
+  "numeric_body_values": "Authored fictional design values, not measured or proven centimeter compliance.",
+  "references": [
+    {
+      "kind": "face",
+      "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+      "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+      "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39",
+      "cut_id": "01",
+      "source_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/01/source-a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39.png",
+      "provenance": "assets/generated/photo-reference-kiritani-sumire-b666b4105c64.json",
+      "reviewed_at_utc": "2026-11-15T02:14:42.952838+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "朝の台所でコーヒーを注ぐ実JPEGを全表示。原PNGと同じ結い髪、薄い前髪、小さな鼻と穏やかな目元を確認。ポットの持ち手、手指、湯、肌・服に目立つ幾何破綻や文字ロゴはない。成人の顔基準として採用。"
+    },
+    {
+      "kind": "body",
+      "path": "assets/generated/photo-body-kiritani-sumire-3c91ce3a1b37.jpg",
+      "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+      "source_png_sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+      "cut_id": "10",
+      "source_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/10/source-ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059.png",
+      "provenance": "assets/generated/photo-reference-kiritani-sumire-3c91ce3a1b37.json",
+      "reviewed_at_utc": "2026-11-15T02:14:42.952838+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "花柄のワンピースで砂浜を歩く実JPEGを全表示。横長の遠景に頭から足先まで全身が入り、腕脚と歩行の接続は自然。後ろ姿なので顔の同一性をこの写真だけで証明しない。本人チャットの出典と長髪・シルエットを照合した定性的な全身参照で、cm値の実測一致は主張しない。"
+    }
+  ]
+}

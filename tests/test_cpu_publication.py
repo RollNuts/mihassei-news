@@ -14,6 +14,8 @@ from unittest.mock import patch
 from scripts import publish_cpu_scenes as publish
 from scripts import local_scene_sync as sync
 from scripts.local_scene_photos import write_generated, stable_seed
+from scripts.generated_photos import MAX_SCENE_BYTES
+from scripts.media_policy import MIN_JPEG_BYTES, jpeg_dimensions
 
 ROOT = Path(__file__).resolve().parents[1]
 GIT = "/Library/Developer/CommandLineTools/usr/bin/git"
@@ -24,10 +26,19 @@ if not Path(GIT).is_file():
 class CpuPublicationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        images = list((ROOT / "assets/generated").glob("*.jpg"))
-        cls.jpeg = images[0].read_bytes()
-        cls.other_jpeg = next(path.read_bytes() for path in images[1:]
-                              if path.read_bytes() != cls.jpeg)
+        candidates, hashes = [], set()
+        for path in sorted((ROOT / "assets/generated").glob("*.jpg")):
+            data = path.read_bytes()
+            sha = hashlib.sha256(data).hexdigest()
+            if (MIN_JPEG_BYTES <= len(data) <= MAX_SCENE_BYTES
+                    and jpeg_dimensions(data) == (1200, 675) and sha not in hashes):
+                candidates.append(data)
+                hashes.add(sha)
+                if len(candidates) == 2:
+                    break
+        if len(candidates) != 2:
+            raise AssertionError("CPU fixture needs two distinct conforming 1200x675 JPEGs")
+        cls.jpeg, cls.other_jpeg = candidates
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="cpu-bundle-test-")

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "shiramine-yuki",
+  "role": "body",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "observed_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "turn_key": "b174824a-8c95-4a37-8e03-8948ed8563d7",
+    "image_number": 1,
+    "path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/02/source-5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b.png",
+    "sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+    "bytes": 1925239,
+    "width": 1672,
+    "height": 941,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-02.jpg",
+    "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+    "bytes": 177359,
+    "width": 1200,
+    "height": 675
+  },
+  "reference_path": "assets/generated/photo-body-shiramine-yuki-f2ba9bb76565.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 167,
+    "bust_cm": 89,
+    "waist_cm": 63,
+    "hip_cm": 92,
+    "shoulder_width_cm": 38,
+    "inseam_cm": 78,
+    "heads_tall": 7.4
+  },
+  "numeric_body_values": "Authored fictional design values, not measured or proven centimeter compliance.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T02:14:42.948204+00:00",
+    "note": "海の桟橋を白いワンピース水着で歩く実JPEGを全表示。頭から両足先まで入り、腕脚の接続と歩行姿勢は自然。長髪と横顔の印象は顔基準と矛盾しない。体型は定性的な確認で、創作cm値の実測一致を主張しない。",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/reference-jpeg-qa.json",
+    "sha256": "9b4790db45c91fa948deb9a125707d3f60dc3963d56c25653a5d9c8e07038c72"
+  }
+}

@@ -1,0 +1,24 @@
+@charset "UTF-8";
+.photo-stories{margin:0 0 38px;padding:22px 0 26px;border-bottom:1px solid var(--photo-rule,var(--line))}
+.photo-stories h2{margin:0 0 8px;font-family:var(--serif);font-size:22px;line-height:1.5}
+.photo-story-label{margin:0 0 18px;color:var(--muted);font-size:11px;line-height:1.8}
+.photo-stories-list{display:flex;flex-wrap:wrap;gap:20px;padding:0;margin:0;list-style:none}
+.photo-story-open{display:flex;flex-direction:column;align-items:center;gap:9px;max-width:110px;font-size:12px;line-height:1.8;text-decoration:none}
+.photo-story-circle{display:block;width:84px;height:84px;box-sizing:border-box;padding:4px;border:2px solid var(--photo-accent,#863549);border-radius:50%}
+.photo-story-circle img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 28%}
+.photo-story-dialog{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 36px);box-sizing:border-box;overflow:auto;padding:24px;border:1px solid var(--line);color:var(--ink,#27241f);background:var(--paper,#faf8f1)}
+.photo-story-dialog::backdrop{background:rgb(0 0 0 / .65)}
+.photo-story-dialog-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px}
+.photo-story-dialog h3{margin:0;font-family:var(--serif);font-size:24px;line-height:1.5}
+.photo-story-image{display:block;width:100%;height:auto;max-height:56dvh;object-fit:contain;background:#ece7dd}
+.photo-story-image[hidden]{display:none}
+.photo-story-text{margin:20px 0 16px;font-family:var(--serif);font-size:16px;line-height:2}
+.photo-story-meta,.photo-story-status{color:var(--muted);font-size:12px;line-height:1.85}
+.photo-story-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+.photo-story-dialog button,.photo-story-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;font:inherit;font-size:12px;line-height:1.5}
+.photo-story-dialog button{padding:9px 14px;border:1px solid var(--photo-rule,#cbbab4);border-radius:0;background:transparent;color:inherit;cursor:pointer}
+.photo-story-dialog button:disabled{cursor:default;opacity:.65}
+.photo-story-dialog button[hidden]{display:none}
+.photo-story-status{min-height:1.85em;margin:12px 0 0}
+.photo-story-open:focus-visible,.photo-story-dialog button:focus-visible,.photo-story-actions a:focus-visible{outline:3px solid var(--photo-accent,#863549);outline-offset:4px}
+@media(max-width:600px){.photo-story-dialog{padding:18px}.photo-story-image{max-height:50dvh}.photo-story-text{font-size:15px}}

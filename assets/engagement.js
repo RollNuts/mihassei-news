@@ -526,11 +526,40 @@
       link.textContent=item.title;
       link.className="readers-choice-link";
       content.append(category,link);
-      const count=document.createElement("span");
-      count.className="readers-choice-count";
-      count.textContent=Intl.NumberFormat("ja-JP").format(item.pageViews)+" PV";
-      count.setAttribute("aria-label","過去7日間のページ表示回数 "+item.pageViews+"PV");
-      li.append(rank,content,count);
+      // Rankings are measured; the headline takes visual priority over small counts.
+      const measuredCount=Intl.NumberFormat("ja-JP").format(item.pageViews);
+      link.title="計測された表示回数 "+measuredCount+" PV";
+      link.setAttribute("aria-label",item.title+"、"+(week.complete?"過去7日間":pvStartLabel+"から")+"のページ表示回数 "+measuredCount+"PV");
+      if(typeof item.image==="string" &&
+         /^\/(?:images\/|photos\/|generated\/)/.test(item.image)){
+        li.className+=" readers-choice-item--with-image";
+        const media=document.createElement("a");
+        media.className="readers-choice-image";
+        media.href=link.href;
+        media.setAttribute("aria-label",item.title+"の記事へ");
+        const thumb=document.createElement("img");
+        thumb.className="readers-choice-thumb";
+        thumb.alt="";
+        thumb.loading="lazy";
+        thumb.decoding="async";
+        thumb.width=160;
+        thumb.height=90;
+        // These thumbnails are inserted after startup, so the initial
+        // img[data-fallback] scan cannot attach their error handlers.
+        if(typeof item.fallback==="string" && /^\/images\/[a-z0-9-]+\.svg$/.test(item.fallback) &&
+           item.fallback!==item.image){
+          thumb.setAttribute("data-fallback",item.fallback);
+          thumb.onerror=()=>{
+            thumb.onerror=null;
+            thumb.src=item.fallback;
+          };
+        }
+        thumb.src=item.image;
+        media.append(thumb);
+        li.append(rank,media,content);
+      }else{
+        li.append(rank,content);
+      }
       return li;
     });
     popularList.replaceChildren(...rows);
@@ -551,13 +580,13 @@
   const observerReads=document.querySelector("[data-observer-reads]");
   const observerHint=observerShell?.querySelector("small");
   const pvWidget=document.querySelector("[data-pv-widget]");
-  const pvToday=document.querySelector("[data-site-pv-today]");
-  const pvYesterday=document.querySelector("[data-site-pv-yesterday]");
+  const pvTotal=document.querySelector("[data-site-pv-total]");
   const pvWeek=document.querySelector("[data-site-pv-week]");
+  const pvWeekStat=document.querySelector("[data-site-pv-week-stat]");
   const pvPeriodLabel=document.querySelector("[data-site-pv-period-label]");
   const pvTrackingNote=document.querySelector("[data-pv-tracking-note]");
   const knownArticlePvs=new Set();
-  let pvMeasurementNote="",pvStartLabel="";
+  let pvMeasurementNote="",pvStartLabel="",hasVisiblePv=false;
   const observedAtFormat=new Intl.DateTimeFormat("ja-JP",{
     timeZone:"Asia/Tokyo",hour:"2-digit",minute:"2-digit"
   });
@@ -579,7 +608,9 @@
   function observerFeedback(healthy){
     if(!observerShell)return;
     if(pvWidget){
-      observerShell.hidden=false;
+      // No verified positive PV means no public counter, not a dash or zero.
+      observerShell.hidden=!hasVisiblePv;
+      if(!hasVisiblePv)return;
       if(pvTrackingNote)pvTrackingNote.textContent=healthy ? pvMeasurementNote :
         haveSnapshot ? pvMeasurementNote+" · 通信回復待ち" : "PVを取得できません・自動再試行";
       return;
@@ -623,24 +654,17 @@
     pvStartLabel=tracking.startedAtUtc===null ? "" : new Intl.DateTimeFormat("ja-JP",{
       timeZone:"Asia/Tokyo",year:"numeric",month:"numeric",day:"numeric"
     }).format(new Date(tracking.startedAtUtc));
-    showPageViewNumber(pvToday,today.pageViews);
-    const expectedPrevious=new Date(todayStamp-86400000).toISOString().slice(0,10);
-    const yesterday=data.yesterday;
-    const validYesterday=Boolean(yesterday && yesterday.dateJst===expectedPrevious &&
-      validPageViews(yesterday.pageViews));
-    showPageViewNumber(pvYesterday,validYesterday ? yesterday.pageViews : null);
+    showPageViewNumber(pvTotal,data.pageViews);
+    hasVisiblePv=Number.isSafeInteger(data.pageViews) && data.pageViews>0;
     const windowStart=new Date(todayStamp-6*86400000).toISOString().slice(0,10);
     const week=data.last7Days;
     const validWeek=Boolean(week && week.startDateJst===windowStart && week.endDateJst===today.dateJst &&
       validPageViews(week.pageViews) && typeof week.complete==="boolean" &&
       Number.isInteger(week.measuredDays) && week.measuredDays>=0 && week.measuredDays<=7);
     showPageViewNumber(pvWeek,validWeek ? week.pageViews : null);
+    if(pvWeekStat)pvWeekStat.hidden=!(validWeek && Number.isSafeInteger(week.pageViews) && week.pageViews>0);
     if(pvPeriodLabel)pvPeriodLabel.textContent=validWeek && !week.complete ? "計測開始から" : "直近7日";
     pvMeasurementNote=pvStartLabel ? pvStartLabel+"から計測・日本時間" : "PVの計測開始待ち";
-    if(pvStartLabel && validYesterday){
-      if(yesterday.pageViews===null)pvMeasurementNote+=" · 昨日は未計測";
-      else if(yesterday.pageViewsCoverage==="partial")pvMeasurementNote+=" · 昨日は途中から";
-    }
     observerFeedback(true);
     return true;
   }
@@ -651,6 +675,7 @@
       if(node.dataset.articlePv!==slug)return;
       const count=node.querySelector("[data-article-pv-count]");
       showPageViewNumber(count,metric.pageViews);
+      node.dataset.pvReady=metric.pageViews>0?"true":"false";
       const subject=node.dataset.pvLabel||"この記事";
       const label=metric.pageViews===null ? subject+"のPVは未計測" :
         subject+"のページ表示回数 "+Intl.NumberFormat("ja-JP").format(metric.pageViews)+"PV";
@@ -835,7 +860,11 @@
 
   // Poll no more than once every 10 minutes on visible pages. Paused tabs
   // make no requests. Returning to a tab refreshes stale data immediately.
-  if(observerShell && typeof window.setInterval==="function"){
+  // The old site-wide PV strip used to keep article reactions fresh.
+  // Removing it must not stop live updates on pages with reader controls.
+  // Static utility/archive pages without reader controls need no polling.
+  if((observerShell || popularSection || buttons.length || engagementKey) &&
+     typeof window.setInterval==="function"){
     window.setInterval(()=>{
       if(visibleDocument() && !refreshPromise && !currentView.pending)void refresh();
     },LIVE_REFRESH_MS);
@@ -862,7 +891,8 @@
   // Archive filters reveal existing cards. Load newly visible PVs once, using
   // GET-only batches rather than turning a filter action into a page view.
   const archiveList=document.querySelector(".archive-list");
-  if(archiveList && typeof window.MutationObserver==="function" && typeof window.setTimeout==="function"){
+  if(archiveList && document.querySelectorAll("[data-article-pv]").length &&
+     typeof window.MutationObserver==="function" && typeof window.setTimeout==="function"){
     let queued=false;
     const watchCards=new window.MutationObserver(()=>{
       if(queued)return;
