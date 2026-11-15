@@ -164,10 +164,23 @@ test('measured popular stories can use their own reviewed thumbnails',async()=>{
   assert.equal(result.popular.hidden,false);
   const li=result.rankings[0];
   assert.equal(li.children.length,3);
+  assert.equal(li.className,'readers-choice-item readers-choice-item--with-image');
   assert.equal(li.children[1].href,'/articles/a/');
-  assert.equal(li.children[1].children[0].src,'/generated/a.jpg?v=123abc');
-  assert.equal(li.children[1].children[0].attributes['data-fallback'],'/images/a.svg');
+  const thumbnail=li.children[1].children[0];
+  assert.equal(thumbnail.src,'/generated/a.jpg?v=123abc');
+  assert.equal(thumbnail.attributes['data-fallback'],'/images/a.svg');
+  assert.equal(typeof thumbnail.onerror,'function');
+  thumbnail.onerror();
+  assert.equal(thumbnail.src,'/images/a.svg','failed late JPEG must recover without an empty ranking');
+  assert.equal(thumbnail.onerror,null,'failed fallback must not cause repeated requests');
   assert.equal(li.children[2].children[1].textContent,'見出しA');
+});
+
+test('text-only article recommendations do not add image requests',async()=>{
+  const result=await simulate([candidate('a','A')],{a:8},{pathname:'/articles/current/'});
+  assert.equal(result.popular.hidden,false);
+  assert.equal(result.rankings[0].children.length,2);
+  assert.equal(result.rankings[0].className,'readers-choice-item');
 });
 
 test('invalid, duplicate and current-article candidates cannot create unsafe or self recommendations',async()=>{
