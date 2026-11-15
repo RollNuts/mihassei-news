@@ -94,7 +94,7 @@ class PhotoModelPageTests(unittest.TestCase):
         self.assertNotIn("準備中", page)
         self.assertNotIn("PRIVATE DRAFT", page)
         self.assertNotIn("newsreader-preview", page)
-        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"', page)
+        self.assertIn('property="og:image" content="' + build.SITE + build.social_image(None) + '"', page)
 
     def test_profile_photo_grid_and_counts_cover_only_own_released_shots(self):
         older = copy.deepcopy(self.release)
