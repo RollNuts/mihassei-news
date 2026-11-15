@@ -37,10 +37,11 @@ class MarketOutlookTests(unittest.TestCase):
             self.assertEqual(item["observed_on"], "2026-11-15")
             self.assertTrue(item["source_url"].startswith("https://"))
         hub = render_market_outlook_index(self.market, self.outlook)
-        self.assertIn("予測は今、どう見える？", hub)
-        self.assertIn("判定材料不足", hub)
+        self.assertIn("見通しの変化", hub)
+        self.assertIn("当初の見通しを変える新たな公表資料", hub)
+        self.assertNotIn("判定材料不足", hub)
         self.assertNotIn("支持材料あり", hub)  # Original disclosures are not new proof.
-        self.assertIn("判断保留", hub)
+        self.assertNotIn("判断保留", hub)  # Internal state is not front-page news.
         self.assertNotIn("的中率", hub)
         for episode in self.market["episodes"]:
             timeline = render_market_outlook_episode(episode, self.outlook.get(episode["slug"], []))

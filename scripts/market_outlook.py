@@ -128,47 +128,38 @@ def _stance_scale(stance):
 
 
 def render_market_outlook_index(series, observations):
+    """Public editorial update strip, never a wall of empty signal cards."""
     if series.get("kind") != "analysis":
         return ""
-    items = []
+    updates = []
     for episode in reversed(series["episodes"]):
         history = observations.get(episode["slug"], [])
+        if not history:
+            continue
+        recent = history[-1]
+        # The original IR deck used to write the forecast is not a new
+        # development just because an editor checked it again yesterday.
+        if (recent["source_published_on"] <= episode["published_at"]
+                or recent["signal"] == "unavailable"):
+            continue
         href = f'/serials/{escape(series["slug"])}/{escape(episode["slug"])}/#forecast-progress'
-        if history:
-            latest = history[-1]
-            tag = SIGNALS[latest["signal"]]
-            mode = latest["signal"]
-            statement = escape(latest["summary"])
-            stamped = (f'<time datetime="{latest["observed_on"]}">'
-                       f'{latest["observed_on"]}</time>')
-            stance = escape(latest["stance"])
-            scale = _stance_scale(latest["stance"])
-            switch = escape(_stance_change(history, len(history)-1))
-        else:
-            tag = "資料確認待ち"
-            mode = "unavailable"
-            statement = "途中経過の確認済み記録はありません。判定条件は公開時のままです。"
-            stamped = "更新記録なし"
-            stance = "判断保留"
-            scale = _stance_scale("判断保留")
-            switch = "更新待ち"
-        items.append(
-            f'<article class="market-outlook-card market-outlook--{mode}">'
-            f'<div class="market-outlook-top"><span>予測 #{episode["number"]:02d}</span>'
-            f'<span class="market-signal-label">{tag}</span></div>'
+        updates.append(
+            '<li><div class="market-paper-update-meta">'
+            f'<time datetime="{escape(recent["observed_on"])}">{escape(recent["observed_on"])}</time>'
+            f' ／ {escape(SIGNALS[recent["signal"]])}</div>'
             f'<h3><a href="{href}">{escape(episode["title"])}</a></h3>'
-            f'<p class="market-outlook-stance"><strong>現在の見方：{stance}</strong> ／ {stamped}</p>'
-            f'{scale}<p>{statement}</p><p class="market-outlook-change">{switch}</p>'
-            f'<a class="market-outlook-more" href="{href}">情勢の変化と根拠を見る →</a>'
-            f'</article>'
+            f'<p>{escape(recent["summary"])}</p>'
+            f'<a href="{href}">資料と見方の変化を見る →</a></li>'
         )
     return (
-        '<section class="market-outlook-section" id="market-outlook"'
+        '<section class="market-outlook-section market-paper-updates" id="market-outlook"'
         ' aria-labelledby="market-outlook-heading">'
-        '<div class="section-head"><h2 id="market-outlook-heading">予測は今、どう見える？</h2></div>'
-        '<p class="market-outlook-lead">途中経過は「追い風・逆風」などの確認材料と、強気・中立・弱気の見方を記録したものです。'
-        '的中・外れを確定する判定とは別です。過去の予測は変更しません。</p>'
-        '<div class="market-outlook-grid">' + "".join(items) + '</div></section>'
+        '<div class="market-paper-heading"><h2 id="market-outlook-heading">見通しの変化</h2></div>'
+        + ('<ol class="market-paper-update-list">' + "".join(updates) + '</ol>'
+           if updates else
+           '<p class="market-paper-section-intro">当初の見通しを変える新たな公表資料は、'
+           'まだありません。各記事で今後の確認点を読むことができます。</p>')
+        + '</section>'
     )
 
 
@@ -176,8 +167,8 @@ def render_market_outlook_episode(episode, history):
     if not history:
         return (
             '<section class="market-outlook-timeline" id="forecast-progress">'
-            '<h2>その後の情勢と見方</h2>'
-            '<p>確認済みの途中経過はまだありません。予測の的中・外れは判定日の資料で確認します。</p>'
+            '<h2>その後の動き</h2>'
+            '<p>この予測を見直す新しい発表はまだありません。結果は記事に記した期日に確認します。</p>'
             '</section>'
         )
     rows = []
@@ -199,10 +190,22 @@ def render_market_outlook_episode(episode, history):
             f'<a href="{escape(entry["source_url"], quote=True)}" target="_blank" rel="noopener noreferrer external">'
             f'{escape(entry["source_title"])}</a></p></li>'
         )
+    has_new_evidence = (
+        episode is not None and any(
+            entry["source_published_on"] > episode["published_at"]
+            and entry["signal"] != "unavailable"
+            for entry in history
+        )
+    )
+    intro = (
+        "新しい資料をもとに見通しを見直しています。"
+        if has_new_evidence else
+        "掲載後に見通しを変える新しい確定材料はありません。"
+    )
     return (
         '<section class="market-outlook-timeline" id="forecast-progress">'
-        '<h2>その後の情勢と見方</h2>'
-        '<p class="market-outlook-lead">強気・中立・弱気は公開時の予測を変更するものではありません。'
-        '予測の判定前は「未検証」です。途中の支持材料があっても的中とは数えません。</p>'
-        '<ol class="market-outlook-events">' + "".join(rows) + '</ol></section>'
+        '<h2>その後の動き</h2>'
+        f'<p class="market-outlook-lead">{intro}</p>'
+        '<details class="market-paper-history"><summary>資料の確認日と見方の履歴を見る</summary>'
+        '<ol class="market-outlook-events">' + "".join(rows) + '</ol></details></section>'
     )

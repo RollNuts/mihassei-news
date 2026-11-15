@@ -21,11 +21,11 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import render_market_outlook_board, view_models
+    from .market_outlooks import view_models
 except ImportError:
     from market_figures import render_market_svg, figure_description, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import render_market_outlook_board, view_models
+    from market_outlooks import view_models
 
 FILE = Path("content/market_bulletins.json")
 MARKET_URL = "/serials/market-lab/"
@@ -309,8 +309,26 @@ def render_market_bulletin(report, layout, outlooks=()):
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
-    forecast_section = (render_market_outlook_board(outlooks, limit=1, before=published_at)
-                        if latest_forecast else '<p class="daily-forecast-link"><a href="/serials/market-lab/outlooks/">毎日の予測と検証履歴を見る</a></p>')
+    if latest_forecast:
+        current = latest_forecast[0]
+        forecast = current["forecast"]
+        changes = current["updates"]
+        current_stance = changes[-1]["stance"] if changes else forecast["stance"]
+        forecast_section = (
+            '<section class="market-briefing-outlook" id="daily-forecasts">'
+            '<h2>この日の市場見通し</h2>'
+            f'<p>{escape(forecast["statement"])}</p>'
+            f'<p class="market-briefing-forecast-meta">当初：{escape(forecast["stance"])} ／ '
+            f'直近の見方：{escape(current_stance)} ／ '
+            f'確かめる日：<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
+            '<a href="/serials/market-lab/outlooks/">予測の根拠と、その後の変更を読む →</a>'
+            '</section>'
+        )
+    else:
+        forecast_section = (
+            '<p class="market-briefing-more"><a href="/serials/market-lab/outlooks/">'
+            '市場の見通しと検証記録を読む →</a></p>'
+        )
     parts = []
     for i, section in enumerate(report["sections"]):
         parts.append(f'<section class="serial-prose-section"><h2>{escape(section["heading"])}</h2>')
@@ -334,8 +352,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + forecast_section + _market_conditions(report) + "".join(parts)
-        + _picks(report)
+        + _market_conditions(report) + "".join(parts)
+        + _picks(report) + forecast_section
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
           'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a>'
@@ -352,21 +370,28 @@ def render_market_bulletin(report, layout, outlooks=()):
                           "published_at": report["published_at"]})
 
 
-def render_market_bulletins_index(reports):
+def render_market_bulletins_index(reports, *, limit=12):
+    """Keep the front page compact, but never truncate the full archive."""
     cards = "".join(
-        f'<li><a href="{bulletin_url(item)}"><span>{escape(item["day"])} ｜ {SLOTS[item["slot"]][0]} ｜ {escape(SLOTS[item["slot"]][1])}</span>'
-        f'<strong>{escape(item["title"])}</strong><small>{escape(item["summary"])}</small></a></li>'
-        for item in reversed(reports[-60:])
+        f'<li><a href="{bulletin_url(item)}">'
+        f'<span class="market-paper-story-date"><time datetime="{item["day"]}">{item["day"]}</time>'
+        f' ／ {escape(SLOTS[item["slot"]][1])}</span>'
+        f'<strong>{escape(item["title"])}</strong>'
+        f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
+        '</a></li>'
+        for item in reversed(reports if limit is None else reports[-limit:])
     )
     return (
-        '<section class="market-desk" id="market-desk">'
-        '<div class="section-head"><h2>日次の市場観測</h2>'
-        '<a href="/feeds/market-bulletins.xml" class="serial-feed-link" type="application/rss+xml">市況RSS</a></div>'
-        '<p>8:30 寄り付き前の全体市況 ／ 12:40 後場の全体市況 ／ 夕方 日本株の急騰・急落。'
-        '市場が休場、確かな数値が取得できない場合は、その枠を見送ります。</p>'
-        + (f'<ol class="market-desk-list">{cards}</ol>' if cards else '<p class="market-desk-empty">確認済みの日次市況記事はまだありません。既刊の予測分析は下に掲載しています。</p>')
-        + '<p><a class="serial-feed-link" href="/serials/market-lab/outlooks/">毎日の予測・方針変更の履歴</a></p>'
-        + '<p><a class="serial-feed-link" href="/serials/market-lab/briefings/">日次市況を一覧で読む</a></p></section>'
+        '<section class="market-desk market-paper-bulletins" id="market-desk">'
+        '<div class="market-paper-heading"><h2>日々の市況</h2>'
+        '<a href="/feeds/market-bulletins.xml" type="application/rss+xml">市況RSS</a></div>'
+        + ('<ol class="market-paper-story-list">' + cards + '</ol>'
+           if cards else
+           '<p class="market-paper-section-intro">現在、掲載中の市況記事はありません。'
+           '<a href="/serials/market-lab/">最新の企業分析を読む</a></p>')
+        + ('<p class="market-paper-see-all"><a href="/serials/market-lab/briefings/">市況記事をすべて読む →</a></p>'
+           if cards and limit is not None else '')
+        + '</section>'
     )
 
 
@@ -375,7 +400,7 @@ def render_market_bulletins_archive(reports, layout):
         '<div class="container serials-page market-desk-archive">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a></nav>'
         '<header class="serials-intro"><h1>日次市況</h1><p>現実の公開資料を使った市場の動き。米国の個別株は掲載しません。</p></header>'
-        + render_market_bulletins_index(reports)
+        + render_market_bulletins_index(reports, limit=None)
         + '</div>'
     )
     return layout("日次市況 | 未来相場観測室",

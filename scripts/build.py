@@ -825,7 +825,7 @@ def social_image(article):
         return "/og/articles/" + article["slug"] + ".png?v=" + version
     # Use a physically new raster URL: X caches both page cards and image URLs.
     # The legacy brand.png remains available for previously published links.
-    return "/og/brand-launch-20261102-v3.png"
+    return "/og/brand-home-20261115-v4.png"
 
 
 def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None, photo_edition=None, photo_parent=None):
@@ -886,7 +886,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
         "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞",
-        "url": SITE + "/?src=x-launch-20261102-v3",
+        "url": SITE + "/?src=x-launch-20261115-v4",
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
     og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
@@ -2247,7 +2247,10 @@ def make_brand_image():
     filename.parent.mkdir(parents=True,exist_ok=True)
     filename.write_bytes(png)
     # New path, not just a query parameter, to avoid the older image cache.
+    # Preserve the previous card URL for existing X posts; switch homepage
+    # metadata to a new path so the image is fetched afresh on the next crawl.
     (OUT/"og/brand-launch-20261102-v3.png").write_bytes(png)
+    (OUT/"og/brand-home-20261115-v4.png").write_bytes(png)
 
 
 def build_revision():
