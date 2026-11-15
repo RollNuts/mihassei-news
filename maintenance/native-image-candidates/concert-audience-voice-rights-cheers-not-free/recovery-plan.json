@@ -1,0 +1,26 @@
+{
+  "plan": {
+    "repository": "RollNuts/mihassei-news",
+    "slug": "concert-audience-voice-rights-cheers-not-free",
+    "articleSha256": "2917fd96c244b7b4f08fff070250e583689e24bc9d072851f1653e210c05ef86",
+    "baseCommitSha": "c6e685f09434ea9b6404bade146fc3a5f5cbc75d",
+    "baseTreeSha": "c9f79ac2ec037fcba03f6453ccd7c7f924a5dcff",
+    "prompt": "Create one realistic horizontal 16:9 documentary photograph for a fictional Japanese future-news story. The central visual contradiction: the crowd keeps singing happily, while its dedicated recording microphone has just been disconnected. A close foreground view of a plain black audience-recording microphone on a short stand at the side of an indoor concert audience; an ordinary adult sound technician's hands hold the microphone steady and hold its unplugged XLR cable a clear few centimetres away from the bottom socket. Make the separation physically unambiguous and mechanically plausible: one microphone, one cable, realistic correctly articulated hands and connector, no duplicate objects. The microphone points toward the audience, not toward the stage, and nobody is singing into it. In the middle distance a small varied group of entirely fictional adult Japanese concertgoers, women and men roughly 25 to 55, continue singing or clapping toward a modest distant stage, with one middle-aged woman visible among them. Cool and warm practical concert lights, natural skin texture, restrained exposure with visible facial details, no blown-out faces. November indoor evening, contemporary everyday coats and knits, unposed press-photo feel rather than a glamour portrait or advertising. Focus on the separated microphone connector and working hands, with the continuing crowd still recognizable as a live audience. No text, subtitles, labels, screen UI, logos, signs, watermarks, real people or celebrity likeness. Full-bleed single photograph, no collage, no illustration, no 3D render.",
+    "logicalRunId": "recovery-existing-imagegen-exec-b1b637c5-605c-4a6b-a69e-d464c26790d0",
+    "protectedHashes": {
+      "content/articles.json": "57b0e7a67502a679b796c9ffcf5626693b767c88c2483f01ed3245f8debf65f7",
+      "assets/generated/manifest.json": "469d501ce0c7123ef630f52537e0e99496e9234c37ee5c87e100f693e28ff1a4",
+      "content/visual_reviews.json": "89de976b0a5125273090241b03164218b43a86d48ef04a582d29dc236be486cd"
+    },
+    "identity": "a891d2d873ab1d7b57f4952f77c72eac9a9fd91160e74d7d4fed92e1413863b9",
+    "branch": "native-image-candidate/concert-audience-voice-rights-cheers-not-free/2917fd96c244b7b4-3fb75e8c0505",
+    "directory": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free"
+  },
+  "storage": "Local Git candidate branch and commit; no remote branch, upload, generation or reservation was performed by this recovery.",
+  "local_candidate_commit": "1d44bd6f4606f043ff2d60f97473e1f4d1d6c033",
+  "receipt_sha256": "97cad3f4cea0f26cea954355da52ac80532757b789e804b98c1971f0199aa0f2",
+  "observed_at": "2026-11-15T09:29:12.608Z",
+  "original_tool_execution_id": "b1b637c5-605c-4a6b-a69e-d464c26790d0",
+  "generation_claim": null,
+  "transport_preflight": null
+}
