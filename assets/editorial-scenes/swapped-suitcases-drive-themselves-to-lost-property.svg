@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="忘れ物窓口へ自走する2台のスーツケースを旅行者2人が追う創作イラスト" data-visual-topic="document" data-article-sha256="3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1">
+<title>人より先に忘れ物窓口へ向かうスーツケース</title>
+<desc>駅構内の黄色い返却レーンを銀色のスーツケース2台が進む。後ろを成人の旅行者2人が歩き、前方の窓口には駅員がいる。</desc>
+<rect width="1200" height="675" fill="#f8f6f0"/>
+<path d="M60 235H1140M110 235V75H1090V235M400 75V235M750 75V235" fill="none" stroke="#d7ddd9" stroke-width="7"/>
+<path d="M0 540L1200 410V675H0Z" fill="#e3e6df"/>
+<path d="M290 590L1100 445M290 550L1100 405" stroke="#d0a83b" stroke-width="12" fill="none"/>
+<g stroke="#293e48" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<g fill="#e1b9a1"><circle cx="342" cy="289" r="26"/><circle cx="475" cy="278" r="26"/></g>
+<path d="M319 315H365L383 418H309Z" fill="#a86f59"/>
+<path d="M319 418L309 520M365 418L390 513M318 337L290 398M366 337L411 380" fill="none"/>
+<path d="M451 308H500L519 407H442Z" fill="#708991"/>
+<path d="M451 407L438 507M500 407L524 495M451 329L422 378M500 329L546 365" fill="none"/>
+<g fill="#bdc8cc"><rect x="652" y="358" width="98" height="131" rx="12"/><rect x="808" y="337" width="98" height="131" rx="12"/></g>
+<g fill="none"><path d="M680 357V328H722V357M835 336V307H877V336M678 382V466M703 382V466M728 382V466M834 360V445M859 360V445M884 360V445"/></g>
+<g fill="#293e48"><circle cx="671" cy="499" r="8"/><circle cx="733" cy="499" r="8"/><circle cx="827" cy="478" r="8"/><circle cx="889" cy="478" r="8"/></g>
+<path d="M570 442H607L592 428M607 442L592 456M931 397H963L951 385M963 397L951 409" fill="none" stroke="#b58c24"/>
+<circle cx="1052" cy="259" r="23" fill="#e1b9a1"/>
+<path d="M1025 241H1080L1067 223H1039Z" fill="#293e48"/>
+<path d="M1032 287H1071L1087 351H1011Z" fill="#708991"/>
+<path d="M1032 303L991 325M1071 302L1103 326" fill="none"/>
+<path d="M979 348H1141V472H979Z" fill="#9d7660"/>
+<path d="M964 346H1155V367H964Z" fill="#b69b85"/>
+</g>
+</svg>
