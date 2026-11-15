@@ -714,6 +714,33 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "ai-royalties-retirees-operators-left-out": {
+      "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+      "bytes": 97206,
+      "generated_at": "2026-11-15T07:23:26.948948+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 937335361030604073,
+      "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
+    },
     "air-purifying-sofa-backrest-filter-drawer": {
       "article_sha256": "1688a153b983762708a92122905c60614b3940e5193ac27ef0aaa787ed9e855a",
       "bytes": 181192,
