@@ -349,7 +349,7 @@ class SiteTests(unittest.TestCase):
             self.assertIn(marker,styles)
         for unsafe in ("@import", "fonts.googleapis.com", "display:none!important"):
             self.assertNotIn(unsafe,styles)
-        from scripts.build import bundled_stylesheets, stylesheet_url, SITE_STYLESHEETS
+        from scripts.build import bundled_stylesheets, stylesheet_url, asset_url, SITE_STYLESHEETS
         import re
         import hashlib
         stylesheet=(ROOT/"dist/assets/newspaper.css").read_text(encoding="utf-8")
@@ -371,7 +371,11 @@ class SiteTests(unittest.TestCase):
         pages += tuple("articles/"+a["slug"]+"/index.html" for a in self.articles)
         for name in pages:
             page=(ROOT/"dist"/name).read_text(encoding="utf-8")
-            self.assertEqual(page.count('rel="stylesheet"'),1,name)
+            expected_styles = [stylesheet_url()]
+            if name == "index.html":
+                expected_styles.append(asset_url("photo-stories.css"))
+            self.assertCountEqual(re.findall(r'<link rel="stylesheet" href="([^"]+)"', page),
+                                  expected_styles, name)
             self.assertIn('href="'+stylesheet_url()+'"',page)
             self.assertNotIn('href="/assets/editorial-polish.css"',page)
             self.assertIn('まだ起きていないニュースを、真顔で。',page)
