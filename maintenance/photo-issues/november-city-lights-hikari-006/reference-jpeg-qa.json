@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "model_id": "amane-hikari",
+  "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+  "scope": "Actual converted face/body JPEG references only; all8fullJPEGs displayed acrossfourmodels. Sourceoriginals already displayed. No finalissue/adoption claim.",
+  "live_authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 156,
+    "bust_cm": 84,
+    "waist_cm": 58,
+    "hip_cm": 86,
+    "shoulder_width_cm": 35,
+    "inseam_cm": 71,
+    "heads_tall": 7.1
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "references": [
+    {
+      "kind": "face",
+      "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+      "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+      "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558",
+      "cut_id": "01",
+      "source_path": "maintenance/photo-issues/november-city-lights-hikari-006/01/source-a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558.png",
+      "provenance": "assets/generated/photo-reference-amane-hikari-59fe6776110d.json",
+      "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "Night-street coat/cream-knit JPEG retains clear three-quarter adult face, long chestnut softly waved hair, fine fringe, almond brown eyes and soft oval jaw. Natural skin/hair/knit/light; no visible readablelogo, conversion defect or anatomical issue. Suitable first reviewed face for fictional21-year-old."
+    },
+    {
+      "kind": "body",
+      "path": "assets/generated/photo-body-amane-hikari-6cff85d64828.jpg",
+      "sha256": "6cff85d6482860355defcb90af5cb85d7974f5d4a46437d3b91dfc9c8802c149",
+      "source_png_sha256": "efc5afa04569b656d348b20344847118e8460dd448676dba99d941b7af6844cc",
+      "cut_id": "04",
+      "source_path": "maintenance/photo-issues/november-city-lights-hikari-006/04/source-efc5afa04569b656d348b20344847118e8460dd448676dba99d941b7af6844cc.png",
+      "provenance": "assets/generated/photo-reference-amane-hikari-6cff85d64828.json",
+      "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "Black-gown window JPEG shows head-to-shoes adult silhouette with coherent shoulders/waist/hip/legs, plausible fingers held at waist, natural satin folds and shadow. Chestnut long hair and facial design agree with street reference despite changed arrangement/lighting. No conversion/crop/anatomy defect observed; authored156/84/58/86cm are not measured."
+    }
+  ]
+}

@@ -110,6 +110,7 @@ class PhotoIssuePlanIntegrationTests(unittest.TestCase):
         from scripts import photo_issues as p
         catalog = copy.deepcopy(p.load_photo_issues())
         issue = catalog["issues"][0]
+        catalog["issues"] = [issue]
         original = issue["issue_sha256"]
         issue.update(slug="new-body-design-test-issue", images={})
         issue.pop("editorial_history", None)

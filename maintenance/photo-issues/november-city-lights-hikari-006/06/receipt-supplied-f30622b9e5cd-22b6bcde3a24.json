@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-city-lights-hikari-006",
+  "cut_id": "06",
+  "model_id": "amane-hikari",
+  "review_reference_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+  "imported_at": "2026-11-15T01:42:26.627652+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "turn_key": "51b8fb3a-20b9-453e-a082-f9b149c8b43d",
+    "image_number": 12,
+    "path": "maintenance/photo-issues/november-city-lights-hikari-006/06/source-f30622b9e5cd806190789aee5ba7d2921b6bbc40523835b4acc00f218fad47a3.png",
+    "sha256": "f30622b9e5cd806190789aee5ba7d2921b6bbc40523835b4acc00f218fad47a3",
+    "bytes": 2695712,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-city-lights-hikari-006-06.jpg",
+    "sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb",
+    "bytes": 385868,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

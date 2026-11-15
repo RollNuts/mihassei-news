@@ -163,6 +163,65 @@ class SuppliedPhotoTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "provenance"):
             self.validate()
 
+    def test_conversation_references_are_bound_to_each_known_models_canonical_chat(self):
+        baseline = {"turn_key": "4c0a07b0-c1c9-4faf-8cf8-9af807531370", "image_number": 2}
+        self.assertEqual(len(p.MODEL_CHAT_URLS), 7)
+        for model_id, url in p.MODEL_CHAT_URLS.items():
+            with self.subTest(model_id=model_id):
+                source = {**baseline, "url": url,
+                          "observed_url": url.replace("/c/", "/g/project/c/")}
+                self.assertTrue(p._supplied_source_reference(source, model_id))
+                for wrong_model in [other for other in p.MODEL_CHAT_URLS if other != model_id]:
+                    self.assertFalse(p._supplied_source_reference(source, wrong_model))
+                self.assertFalse(p._supplied_source_reference(source, "unknown-model"))
+                for changed in ({"url": url + "?share=1"},
+                                {"url": url.replace("/c/", "/g/project/c/")},
+                                {"url": "https://chatgpt.com/c/00000000-0000-0000-0000-000000000000"},
+                                {"turn_key": "00000000-0000-0000-0000-000000000000"},
+                                {"turn_key": "not-a-turn"}, {"image_number": 0},
+                                {"image_number": True}, {"image_number": "1"}):
+                    self.assertFalse(p._supplied_source_reference({**source, **changed}, model_id))
+        library = {"url": "https://chatgpt.com/library/share/libfile_real-reference?account_id=personal"}
+        self.assertTrue(p._supplied_source_reference(library, "unknown-model"),
+                        "existing Library references stay independent of conversation routing")
+
+    def test_receipt_validator_rejects_another_models_otherwise_valid_conversation(self):
+        self.receipt["source"].update(url=p.MODEL_CHAT_URLS["shioba-rio"],
+                                      turn_key="4c0a07b0-c1c9-4faf-8cf8-9af807531370", image_number=2)
+        self.save()
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            self.validate()
+
+    def test_independent_supplied_issue_validates_without_inventing_article_identity(self):
+        catalog = p.load_photo_issues(ROOT)
+        independent = copy.deepcopy(catalog["issues"][0])
+        independent.update(source_article=None, editorial_history=[], article_photo_sources={})
+        independent["issue_sha256"] = p.issue_fingerprint(independent)
+        independent["published_at"] = NOW.isoformat()
+        master = independent.get("master_archive", independent["model_snapshot"]["master"])
+        paths = {master["path"]}
+        for image in independent["images"].values():
+            self.assertEqual(image["provenance"]["kind"], "user_supplied_photo")
+            image["review"]["issue_sha256"] = independent["issue_sha256"]
+            paths.add(image["path"])
+            receipt_path = image["provenance"]["receipt_path"]
+            paths.add(receipt_path)
+            receipt = json.loads((ROOT / receipt_path).read_bytes())
+            paths.add(receipt["source"]["path"])
+        for relative in paths:
+            target = self.root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / relative, target)
+        local = {"schema_version": 1, "models": catalog["models"], "issues": [independent]}
+        p.validate_catalog(local)
+        self.assertEqual(p.published_issues(local, root=self.root, now=NOW), [independent])
+        self.assertIsNone(independent["source_article"])
+        self.assertEqual(p._article_photo_sources(independent), {})
+        original = p.issue_fingerprint(independent)
+        independent["source_article"] = catalog["issues"][0]["source_article"]
+        self.assertNotEqual(p.issue_fingerprint(independent), original,
+                            "the explicit null remains part of the editorial fingerprint")
+
     def test_a_later_acceptance_of_a_native_study_needs_its_retained_snapshot(self):
         image = self.issue["images"]["02"]
         self.assertTrue(image["review_history"])
