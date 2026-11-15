@@ -5,6 +5,9 @@ on:
     paths:
       - "social-bot/article-picks/audit_delivery.py"
       - "social-bot/article-picks/test_audit_delivery.py"
+      - "social-bot/article_thread.py"
+      - "social-bot/market_promotions.py"
+      - "social-bot/article-picks/test_market_promotion.py"
       - "social-bot/article-picks/state.json"
       - "social-bot/article-picks/test_buffer_budget.py"
       - "social-bot/buffer_budget.py"

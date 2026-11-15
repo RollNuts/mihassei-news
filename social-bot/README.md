@@ -7,7 +7,7 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 | 経路 | 状態と入口 | 範囲 |
 | --- | --- | --- |
 | 旧独自コンテンツ `useful` | `useful-posts.json.enabled: false`、[`x-useful-originals.yml`](../.github/workflows/x-useful-originals.yml) | 自動送信は停止。履歴とオフライン検証だけ保持 |
-| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | **唯一のX自動投稿経路**。新着・続報・実測PV記事から1日最大7本、09:05〜21:05の2時間刻み論理7枠につき1本、記事slugで重複防止。詳細は[記事紹介](article-picks/README.md) |
+| 記事紹介 | `article-picks/config.json.enabled: true`、[`x-original-experiments.yml`](../.github/workflows/x-original-experiments.yml) | **唯一のX自動投稿経路**。通常ニュースと株連載を合計1日最大7本、既存の論理7枠につき1本。株連載は日1件以内。詳細は[記事紹介](article-picks/README.md) |
 | 旧シュール短文・キャラ日常・ネタ画像 | `experiments/config.json.experiment_publishing_enabled: false` | 新規制作・補充・予約は停止。[旧実験と配信記録](experiments/README.md)は履歴参照用 |
 | ネジまち漫画 | `ip/publication_quality_gate.json.new_reservations_enabled: false`、漫画workflowも停止 | 新規制作・予約は停止。正史・既存画像・下書き・台帳は保持 |
 
@@ -40,7 +40,7 @@ Xの編集・配信・確認の共通手順。開発と本番反映は[共通運
 
 ## X自動投稿の登録と配信
 
-Xの自動送信は記事紹介だけ。日次独自稿、シュール短文、キャラ日常、漫画を空き枠の穴埋めに使わない。サイト側は07:30〜19:30のコア7本を通常運用とし、21:30・23:30は公開失敗・遅延の回収または明確に強い時事企画だけの予備枠とする。Xは最大7本で、予備枠の記事まで含めて全記事を流すノルマにせず、弱い記事を無理に流さない。
+Xの自動送信は通常ニュースと株連載の記事紹介だけ。日次独自稿、シュール短文、キャラ日常、漫画を空き枠の穴埋めに使わない。サイト側は07:30〜19:30のコア7本を通常運用とし、21:30・23:30は公開失敗・遅延の回収または明確に強い時事企画だけの予備枠とする。Xは合計最大7本で、予備枠の記事まで含めて全記事を流すノルマにせず、弱い記事を無理に流さない。
 
 - 記事紹介は09:05〜21:05の2時間ごと7回を論理枠として候補判定し、1枠最大1本・1日最大7本。各枠は`:05`の主チェックに加えて`:25`と`:45`にも同じ論理枠を再確認し、GitHub cronの欠落・遅延を吸収する。同じ枠の複数cronと記事公開pushはslot/slug/provider証拠で重複させず、Actionsの開始遅延を次枠のクールダウンへ持ち越さない。選定後はBuffer `shareNow`で即時送信を依頼し、通常キューの空き時刻待ちで記事を後ろへ流さない。
 - 新着1〜18時間を優先し、続報、その次に新しい記事。成熟記事は実測PVで選ぶ。

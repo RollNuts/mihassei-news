@@ -2,6 +2,14 @@
 
 Xの自動投稿はこの`article-picks`経路だけを使う。旧シュール短文、キャラ日常、`useful`独自稿、旧連載漫画は自動送信しない。既存のBuffer FreeチャンネルとGitHub Actionsだけを使い、追加費用は0円を維持する。
 
+### 株連載の紹介
+
+`market_series_enabled: true`では、`content/serials.json`の「未来相場観測室」（`market-lab`・`analysis`）も既存の定期チェックで選ぶ。直近7日以内の未紹介回から新しいものを1日最大1件、通常ニュースに先行して選び、合計7枠の内数とする。新しいタスク・cron・LLM呼び出しは増やさない。日付のみの公開日はJSTの日単位で判断し、時刻や最新株価を補完しない。市況の途中レビューや同じ回の更新だけでは再紹介しない。
+
+親は市場分析・記事の公開日と既存見出し・summary、画像1枚。画像は既存の連載表紙と同じ`social-bot/assets/market-series-cover.png`を固定Git revisionと公開バイトで照合して使い、最初の返信に該当回の直接URLを置く。本文・予測条件は変更せず、未検証の的中や売買推奨を追加しない。市場用の永続キー`market-lab-<episode-slug>`を予約し、ニュースslugとの衝突を拒否する。元episode全体のSHAを送信intentへ束縛し、BufferからのURL復旧・送達監査も同じキーを使う。
+
+通常ニュースと同じ上限・実送信間隔・OFF・API予算・Buffer待機期限を適用する。待機中は送信せず、枠の追加・履歴削除・上限の回復・有料広告への切替をしない。株連載だけ外す場合は`market_series_enabled: false`にする。
+
 記事から制作した縦長PNG漫画1枚（内部上限4,000,000bytes）は、ownerが明示承認した新しい作品だけ同じ既存枠で1記事につき1回紹介できる。この漫画だけは元記事の紹介済み・公開年齢を問わず、通常紹介の重複防止・年齢条件は維持する。画像差替による繰返し紹介や同素材の再送はしない。制作だけでは送信・承認にならず、`config.json`の`comic_attachments`は既定で空。記事slugごとに`approved_by: owner`・`reviewed_at`・現本文の`article_sha256`・実PNGの`image_sha256`・`social-bot/assets/article-comic-名前.png`形式の`path`を束縛し、画像と短い`caption`も見てownerが承認する。
 
 captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュタグを含めず、UTF-8の`caption_sha256`も一致させる。実画像・同じgit revision・公開取得バイトが一致した時だけ、見出し＋captionを親本文とする下記の2投稿スレッドで紹介する。欠測・失効・画像未公開ならその漫画は送らず、別の通常記事を選ぶか見送る。通常履歴は`state.json.queued`、漫画作品は`comic_posts`へ別々に残し、枠・日上限・実送信間隔・送達監査は両方を集計する。受理状態が曖昧な漫画はpendingのまま確認へ渡し、自動再送しない。例外後も既存workflowでpending保存を試みるが、強制中断や保存push失敗時の永続化と厳密な一度だけの配信は保証しない。旧漫画の停止設定も維持する。
@@ -16,7 +24,7 @@ captionは100文字以内の1〜2文のplain textで、URL・追加ハッシュ�
 - **実測レーン**: 公開12時間以上・21日以内から、サイトと同じ`/api/engagement`の実測PVで選ぶ。直近7日PV、当日PV、実際の公開日時の順で比較する。
 - 同じslugは一度しか自動紹介しない。Bufferのscheduled/sentに加え、draft/error/needs_approval/sendingも読み、正規記事URLが残っていればGit台帳の保存失敗後でも復旧して再送を防ぐ。復旧時はproviderのsentAt/dueAtを優先し、まだ送信途中などで両方が無ければcreatedAtから論理枠を推定する。provider時刻が本当に取得不能な場合だけ、重複防止のみ行って現在の論理枠を消費しない。失敗状態を見つけても自動再送しない。独立に実確認したX投稿は同じ台帳の `public_posts` にURL・UTC公開日時・観測日時を保持し、由来やBuffer IDを推測せずslug重複防止と実送信間隔だけに使い、記事の論理枠・Buffer送達件数には数えない。
 - 災害・戦争・武力衝突・テロ・大量死傷事故に該当する記事は自動紹介しない。
-- 親投稿は**タイトル＋短いフック＋画像1枚**。URL・ハッシュタグは付けない。安全な既存`x_share_lead`を短く使い、不適合なら既存summaryを使う。新しいLLM/APIは呼ばず、X重み付き280文字以内に収める。最初の返信には`https://veripsa.com/articles/<slug>/`の直接URLだけを入れ、既存の`utm_source=x&utm_medium=social&utm_campaign=article_auto`と`share_page_url`が選ぶ記事画像版の`image`を保持する。漫画を添付する場合も画像版は記事本体に従い、別ドメインや短縮リンクへ置き換えない。
+- 親投稿は**タイトル＋短いフック＋画像1枚**。URL・ハッシュタグは付けない。安全な既存`x_share_lead`を短く使い、不適合なら既存summaryを使う。新しいLLM/APIは呼ばず、X重み付き280文字以内に収める。通常ニュースの最初の返信には`https://veripsa.com/articles/<slug>/`の直接URLだけを入れ、既存の`utm_source=x&utm_medium=social&utm_campaign=article_auto`と`share_page_url`が選ぶ記事画像版の`image`を保持する。漫画を添付する場合も画像版は記事本体に従い、別ドメインや短縮リンクへ置き換えない。
 - 画像は現本文と再照合済みの既存JPEG、検品済みSVGから既に作られたPNG、承認済み写真、またはowner承認済み記事漫画を使う。ローカル検品・固定Git revision・公開URLからの取得バイトを照合し、取得・検証・添付準備に失敗したら保留する。画像なし本文へのフォールバックはしない。生成・承認・既存画像変更はこの経路で行わない。
 
 ## 発行本数との関係

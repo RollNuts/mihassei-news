@@ -30,12 +30,16 @@ from article_thread import (prepare_article_thread, ArticleImageUnavailable, val
 from social_text import article_hashtags, truncate_x_text, X_TEXT_LIMIT, x_weighted_length, x_share_lead  # noqa: E402
 from editorial_copy import reader_copy  # noqa: E402
 from generated_photos import share_page_url  # noqa: E402
+from market_promotions import load_market_articles, market_candidates, market_key, is_market_key
 
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # Match canonical articles regardless of query parameters, extra prose or
 # UTM links. Do not touch unknown external/shortened/manual-X URLs.
 ARTICLE_URL = re.compile(
     r"https?://(?:www\.)?veripsa\.com/articles/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
+)
+MARKET_URL = re.compile(
+    r"https?://(?:www\.)?veripsa\.com/serials/market-lab/([a-z0-9]+(?:-[a-z0-9]+)*)/?"
 )
 PUBLIC_POST_URL = re.compile(r"https://x\.com/(?i:Veripsa)/status/[1-9][0-9]*\Z")
 TEXT_PREFIX = "【未発生新聞】"
@@ -118,6 +122,8 @@ def validate_config(config: dict) -> None:
         raise ValueError("Invalid article promotion switch")
     if not isinstance(config.get("channel_id"), str) or not config["channel_id"]:
         raise ValueError("Article X channel must be a pinned nonempty channel ID")
+    if type(config.get("market_series_enabled", False)) is not bool:
+        raise ValueError("Invalid market series promotion switch")
     caps = (
         ("max_new_per_run", 1, 1),
         ("max_per_jst_day", 1, 7),
@@ -221,7 +227,8 @@ def save_state(state: dict, path: Path = HERE / "state.json") -> None:
 
 
 def article_slug_in_text(text: str) -> set[str]:
-    return set(ARTICLE_URL.findall(text or ""))
+    return (set(ARTICLE_URL.findall(text or ""))
+            | {market_key(slug) for slug in MARKET_URL.findall(text or "")})
 
 
 def promotion_slot(now: datetime) -> datetime | None:
@@ -567,6 +574,8 @@ def eligible_articles(articles: list[dict], now: datetime, config: dict) -> list
         raise ValueError("Current time must have timezone")
     eligible = []
     for article in articles:
+        if is_market_key(article.get("slug")):
+            continue  # Market dates and selection never use the news PV API.
         slug = article.get("slug")
         if (not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
                 or is_crisis_article(article) or not passes_x_first_read_gate(article)):
@@ -586,6 +595,8 @@ def eligible_fresh_articles(articles: list[dict], now: datetime, config: dict) -
         raise ValueError("Current time must have timezone")
     result = []
     for article in articles:
+        if is_market_key(article.get("slug")):
+            continue
         slug = article.get("slug")
         if (not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug)
                 or is_crisis_article(article) or not passes_x_first_read_gate(article)):
@@ -823,6 +834,10 @@ def decide(articles: list[dict], counts: dict, state: dict, existing: list[dict]
             ) is not None):
         return None, None, len(queued)
     used_topics = promoted_topics_today(state, articles, now)
+    if config.get("market_series_enabled", False):
+        markets = market_candidates(articles, state, remote_slugs, now)
+        if markets:
+            return markets[0], None, len(queued)
     fresh = rank_fresh(articles, state, remote_slugs, config, now)
     if fresh:
         selected = prefer_topic_diversity(fresh, used_topics)
@@ -1054,11 +1069,16 @@ def main() -> int:
     articles = json.loads((ROOT / "content" / "articles.json").read_text(encoding="utf-8"))
     if not isinstance(articles, list):
         raise ValueError("Invalid article archive")
+    if any(is_market_key(a.get("slug")) for a in articles if isinstance(a, dict)):
+        raise ValueError("News slug conflicts with the reserved market promotion namespace")
     if trigger_event == "push" and not push_has_new_article(
         os.environ.get("X_PUSH_BEFORE", ""), articles, now
     ):
         print("No new publication in this push; no Buffer read/write.")
         return report_outcome("no_new")
+
+    if config.get("market_series_enabled", False):
+        articles += load_market_articles(ROOT)
 
     # Fresh articles can be promoted before PV has had time to accumulate.
     # Mature candidates still use the site's actual PV period, never legacy
@@ -1068,7 +1088,8 @@ def main() -> int:
     candidates = [a for a in eligible_articles(articles, now, config) if a["slug"] not in configured_comics]
     fresh_candidates = [a for a in eligible_fresh_articles(articles, now, config) if a["slug"] not in configured_comics]
     comics = comic_candidates(articles, state, config, now)
-    if (not candidates and not fresh_candidates and not comics
+    markets = market_candidates(articles, state, set(), now) if config.get("market_series_enabled", False) else []
+    if (not candidates and not fresh_candidates and not comics and not markets
             and not any(entry.get("submission_pending") for _kind, _slug, entry in promotion_records(state))):
         print("No fresh or measured-interest articles; no Buffer write.")
         return report_outcome("no_candidates")
@@ -1130,11 +1151,16 @@ def main() -> int:
         return report_outcome("no_eligible")
     post.update(article_thread=thread, text=thread["parent_text"])
     record_kind = "comic_posts" if selected_comic else "queued"
+    if selected_comic:
+        selection_source = "approved_comic"
+    elif is_market_key(eligible["slug"]):
+        selection_source = "market_analysis"
+    else:
+        selection_source = "fresh_article" if evidence is None else "verified_article_page_views"
     intent = {
         "buffer_id": "", "submission_pending": True, "queued_at_utc": now.isoformat(),
         "slot_jst": promotion_slot(now).isoformat(), "submission_mode": "shareNow",
-        "source": "approved_comic" if selected_comic else (
-            "fresh_article" if evidence is None else "verified_article_page_views"),
+        "source": selection_source,
         "text_sha256": digest(thread["parent_text"]), "article_thread": thread,
         "thread_sha256": thread_digest(thread), "thread_delivery": "unverified",
     }
@@ -1168,8 +1194,7 @@ def main() -> int:
         "queued_at_utc": now.isoformat(),
         "slot_jst": slot.isoformat(),
         "submission_mode": "shareNow",
-        "source": "approved_comic" if selected_comic else (
-            "fresh_article" if evidence is None else "verified_article_page_views"),
+        "source": selection_source,
         "copy_mode": "title_hook_image_thread",
         "text_sha256": digest(thread["parent_text"]),
         "published_at": eligible["published_at"],

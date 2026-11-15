@@ -45,6 +45,7 @@ jobs:
         run: |
           python3 -m unittest discover -s social-bot/experiments -p 'test_dispatch.py' -v
           python3 -m unittest discover -s social-bot/article-picks -p 'test_dispatch.py' -v
+          python3 -m unittest discover -s social-bot/article-picks -p 'test_market_promotion.py' -v
       - name: Protect published mysteries and original market forecasts
         env:
           SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}

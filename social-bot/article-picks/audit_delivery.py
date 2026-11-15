@@ -14,7 +14,7 @@ sys.path.insert(0, str(HERE.parent))
 
 from publish import gql, qstring  # noqa: E402
 from article_thread import (THREAD_FIELDS, post_texts, thread_items, remote_thread_mismatch,
-                            thread_digest, digest, validate_thread)
+                            thread_digest, digest, validate_thread, canonical_url)
 
 JST = timezone(timedelta(hours=9))
 MAX_AUDIT_DAYS = 7
@@ -81,10 +81,6 @@ def aware(value: object):
     except ValueError:
         return None
     return dt if dt.tzinfo is not None else None
-
-
-def canonical_url(slug: str) -> str:
-    return f"https://veripsa.com/articles/{slug}/"
 
 
 def selected_entries(state: dict, now: datetime, days: int = MAX_AUDIT_DAYS):
