@@ -100,9 +100,11 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 ## 音声付きキャスターの手動試験
 
+**人物の発話動画と別音声の追加試作は現在停止中。** 口元のにじみと音声の棒読みが残り、無料で品質を揃える確認負担が大きいため、写真・本人らしい短文・記事の品質と安定公開を優先する。本人から再開依頼があるまで新しい試作・音声比較・モデル導入を行わない。以下の経路と原記録は保持するが、既定OFFを維持し、通常運用へ接続しない。
+
 既存Action `auto-motion-clips.yml` の `caster_preview=true` と `caster_backend=musetalk-core` を明示した場合だけ、公開GitHub Linux CPUで汐羽りおの3秒試作を1本作る。既定はOFF、定期処理と公開manifestへは接続しない。`caster_source_run`・`caster_source_manifest`は空にする。旧SadTalker試作とその再合成は第三者データ・重みの商用条件が未解決のため、インストール・ダウンロード前に拒否する。原記録や過去artifactを合格へ変更しない。
 
-本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。元制作チャットの「え、もうこんな時間？」とrun `43691031221`の既存3秒WAV（SHA `5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa`）を固定する。原receipt・MP4・GitHub取得証拠・別不採用記録は`maintenance/musetalk-pilot/run-43691031221/`で保持し、音声は未聴取のまま。次の比較は顔bboxだけを`[540,88,820,428]`へ寄せる仮説で、鼻梁・顔左右端・顎の目視推定でありDWPose実測ではない。旧maskの画像上の中心714/318・半径70/51・blur8・右fade境界792/幅15.6を保持する。改善や自然な発話を確認した経路ではない。
+本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。元制作チャットの「え、もうこんな時間？」とrun `43691031221`の既存3秒WAV（SHA `5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa`）を固定した比較run `43695992116`は生成に成功したが、圧縮前から唇と顎がにじむため不採用。音声は本人が実際に聴き、棒読みで声も好みに合わないと評価した。総括と制作GPTは音声を聴取できておらず、本人の評価と混同しない。原receipt・MP4・WAV・取得証拠・当時の未聴取記録・別の不採用記録・本人の音声評価は`maintenance/musetalk-pilot/`で保持し、原生成を後付けで合格へ変更しない。
 
 `python3 scripts/musetalk_profile_preview.py`はオフラインplanのみ。実生成は`--run`を付けてもpublic GitHub-hosted Linux Python 3.10以外では開始しない。MuseTalkのUNet・VAE・Whisper coreの固定ファイルだけを取得し、DWPose・顔検出・顔解析・SyncNet・GFPGAN・InsightFace・BFMを読み込まない。この比較ではKokoro/Misaki/G2Pと音声モデルの再導入・再取得・再合成をせず、原WAVをSHA確認後にそのままコピーする。個別の出典・版・バイト数・SHA・商用条件は`musetalk_preview_sources.py`と保存した原音声receiptを正本として残す。モデルと環境は使い捨てランナー内だけに置き、Macへ導入しない。
 
