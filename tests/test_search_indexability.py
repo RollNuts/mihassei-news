@@ -113,14 +113,20 @@ class SearchIndexabilityTests(unittest.TestCase):
         if editions:
             by_slug = {feature["slug"]: feature for feature in photos}
             for edition in editions:
-                # The frozen first feature supplies the existing cover bytes;
-                # a different feature's later publication cannot reorder it.
-                first = by_slug[edition["features"][0]]
-                if not edition["legacy"]:
-                    self.assertEqual(first["model_id"], edition["ranking"]["order"][0])
-                photo_expected[edition_url(edition)] = photo.cover_url(first)
-                cover = first["images"][photo.cover_shot(first)["id"]]
-                cover_file = ROOT / "dist" / urlsplit(photo.cover_url(first)).path.lstrip("/")
+                ordered = [by_slug[slug] for slug in edition["features"]]
+                if edition.get("release_mode") == "daily":
+                    self.assertEqual([feature["model_id"] for feature in ordered],
+                                     edition["schedule"]["order"][:len(ordered)])
+                    # New daily releases update the cover while preserving the fixed contents order.
+                    cover_feature = ordered[-1]
+                else:
+                    # Joint editions retain their first frozen feature as the cover.
+                    cover_feature = ordered[0]
+                    if not edition["legacy"]:
+                        self.assertEqual(cover_feature["model_id"], edition["ranking"]["order"][0])
+                photo_expected[edition_url(edition)] = photo.cover_url(cover_feature)
+                cover = cover_feature["images"][photo.cover_shot(cover_feature)["id"]]
+                cover_file = ROOT / "dist" / urlsplit(photo.cover_url(cover_feature)).path.lstrip("/")
                 self.assertEqual(hashlib.sha256(cover_file.read_bytes()).hexdigest(), cover["sha256"])
             photo_expected[photo.index_url()] = photo_expected[edition_url(editions[0])]
         # Reader profiles expose only their validated cover/portrait. Profiles
