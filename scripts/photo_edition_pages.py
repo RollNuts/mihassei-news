@@ -51,29 +51,36 @@ def _counts(edition):
     return f'{len(features)}人・{sum(len(feature["shots"]) for feature in features)}枚'
 
 
-def _edition_card(edition):
+def _edition_card(edition, *, featured=False):
+    daily_latest = featured and edition.get("release_mode") == "daily"
+    publication = edition_cover(edition) if daily_latest else edition
+    target = issue_url(publication) if daily_latest else edition_url(edition)
+    action = "最新の特集を読む" if daily_latest else "この号の目次へ"
     return ('<li><article class="photo-issue-card photo-edition-card">'
-            f'<a class="photo-issue-card-link" href="{h(edition_url(edition))}">{_cover_image(edition)}'
+            f'<a class="photo-issue-card-link" href="{h(target)}">{_cover_image(edition,eager=featured)}'
             '<div class="photo-issue-card-copy">'
             f'<p class="photo-issue-number">第{h(edition["number"])}号 · {_counts(edition)}</p>'
-            f'<h2>{h(edition["title"])}</h2><p class="photo-issue-card-summary">{h(edition["summary"])}</p>'
-            f'<p class="photo-issue-card-date">公開日 {_publication_date(edition)}</p>'
-            '<span class="photo-issue-open">この号の目次へ <span aria-hidden="true">↗</span></span>'
+            f'<h2>{h(publication["title"])}</h2><p class="photo-issue-card-summary">{h(publication["summary"])}</p>'
+            f'<p class="photo-issue-card-date">公開日 {_publication_date(publication)}</p>'
+            f'<span class="photo-issue-open">{action} <span aria-hidden="true">↗</span></span>'
             '</div></a></article></li>')
 
 
 def render_edition_index(editions, models, layout, *, stories_markup=""):
     features = list(feature_edition_map(editions))
     by_slug = {feature["slug"]: feature for edition in editions for feature in edition["ordered_features"]}
-    main = ('<div class="container photo-issues-page">'
+    older = (f'<ol class="photo-issues-grid" start="2">{"".join(_edition_card(edition) for edition in editions[1:])}</ol>'
+             if len(editions) > 1 else "")
+    main = ('<div class="container photo-issues-page photo-edition-index">'
             '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
             '<a href="/">トップ</a> / <span aria-current="page">週刊グラビア</span></nav>'
             '<header class="photo-issues-intro"><p class="photo-issue-eyebrow">未発生新聞 / PHOTO & COLUMN</p>'
             f'<h1>週刊グラビア</h1><p class="photo-issue-credit">{CREDIT}</p>'
             f'<p><a href="{h(feed_url())}" type="application/rss+xml">RSSで購読</a></p></header>'
-            f'{_photo_navigation("issues")}{stories_markup}'
+            f'{_photo_navigation("issues")}'
+            f'<ol class="photo-issues-grid">{_edition_card(editions[0],featured=True)}</ol>{stories_markup}'
             f'{_rankings([by_slug[slug] for slug in features], {model["id"]:model for model in models})}'
-            f'<ol class="photo-issues-grid">{"".join(_edition_card(edition) for edition in editions)}</ol></div>')
+            f'{older}</div>')
     return layout("週刊グラビア", "架空の成人モデルの写真と、短い未来コラム。",
                   index_url(), main, active="photos", kind="photo_collection", feed_url=feed_url(),
                   photo_cover_issue=edition_cover(editions[0]))

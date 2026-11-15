@@ -160,6 +160,26 @@ class PhotoEditionPageTests(unittest.TestCase):
         self.assertIn((edition_url(daily), daily["modified_at"], photo_issues.cover_url(latest)),
                       pages.edition_sitemap_entries([daily, self.edition]))
 
+    def test_latest_card_precedes_stories_and_ranking_and_links_to_daily_feature(self):
+        daily = copy.deepcopy(self.edition)
+        daily.update(number=2, slug="issue-002", release_mode="daily")
+        daily["ordered_features"] = daily["ordered_features"][:1]
+        daily["features"] = [daily["ordered_features"][0]["slug"]]
+        # Use a separate old-issue member so the fixture also enforces no republishing.
+        old = copy.deepcopy(self.edition)
+        old["ordered_features"] = old["ordered_features"][1:]
+        stories = '<section class="photo-stories"><h2>ストーリーズ</h2></section>'
+        page = pages.render_edition_index([daily,old],self.models,build.layout,stories_markup=stories)
+        main = page.split('<div class="container photo-issues-page photo-edition-index">',1)[1]
+        self.assertLess(main.index('class="photo-issue-card-link"'),main.index('class="photo-stories"'))
+        self.assertLess(main.index('class="photo-issue-card-link"'),main.index('data-photo-rankings'))
+        parsed = self.parse(page)
+        self.assertEqual([link["href"] for link in parsed.links if link.get("class")=="photo-issue-card-link"],
+                         [photo_issues.issue_url(daily["ordered_features"][0]),edition_url(old)])
+        self.assertEqual(parsed.images[0]["loading"],"eager")
+        self.assertEqual(parsed.images[0]["fetchpriority"],"high")
+        self.assertIn('最新の特集を読む',page)
+
 
 if __name__=="__main__":
     unittest.main()
