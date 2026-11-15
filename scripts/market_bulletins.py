@@ -334,8 +334,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + forecast_section + _market_conditions(report) + "".join(parts)
-        + _picks(report)
+        + _market_conditions(report) + "".join(parts)
+        + _picks(report) + forecast_section
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
           'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a>'
@@ -353,20 +353,27 @@ def render_market_bulletin(report, layout, outlooks=()):
 
 
 def render_market_bulletins_index(reports):
+    """Show actual market editions only, never an empty publication schedule."""
     cards = "".join(
-        f'<li><a href="{bulletin_url(item)}"><span>{escape(item["day"])} ｜ {SLOTS[item["slot"]][0]} ｜ {escape(SLOTS[item["slot"]][1])}</span>'
-        f'<strong>{escape(item["title"])}</strong><small>{escape(item["summary"])}</small></a></li>'
-        for item in reversed(reports[-60:])
+        f'<li><a href="{bulletin_url(item)}">'
+        f'<span class="market-paper-story-date"><time datetime="{item["day"]}">{item["day"]}</time>'
+        f' ／ {escape(SLOTS[item["slot"]][1])}</span>'
+        f'<strong>{escape(item["title"])}</strong>'
+        f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
+        '</a></li>'
+        for item in reversed(reports[-12:])
     )
     return (
-        '<section class="market-desk" id="market-desk">'
-        '<div class="section-head"><h2>日次の市場観測</h2>'
-        '<a href="/feeds/market-bulletins.xml" class="serial-feed-link" type="application/rss+xml">市況RSS</a></div>'
-        '<p>8:30 寄り付き前の全体市況 ／ 12:40 後場の全体市況 ／ 夕方 日本株の急騰・急落。'
-        '市場が休場、確かな数値が取得できない場合は、その枠を見送ります。</p>'
-        + (f'<ol class="market-desk-list">{cards}</ol>' if cards else '<p class="market-desk-empty">確認済みの日次市況記事はまだありません。既刊の予測分析は下に掲載しています。</p>')
-        + '<p><a class="serial-feed-link" href="/serials/market-lab/outlooks/">毎日の予測・方針変更の履歴</a></p>'
-        + '<p><a class="serial-feed-link" href="/serials/market-lab/briefings/">日次市況を一覧で読む</a></p></section>'
+        '<section class="market-desk market-paper-bulletins" id="market-desk">'
+        '<div class="market-paper-heading"><h2>日々の市況</h2>'
+        '<a href="/feeds/market-bulletins.xml" type="application/rss+xml">市況RSS</a></div>'
+        + ('<ol class="market-paper-story-list">' + cards + '</ol>'
+           if cards else
+           '<p class="market-paper-section-intro">現在、掲載中の市況記事はありません。'
+           '<a href="/serials/market-lab/">最新の企業分析を読む</a></p>')
+        + ('<p class="market-paper-see-all"><a href="/serials/market-lab/briefings/">市況記事をすべて読む →</a></p>'
+           if cards else '')
+        + '</section>'
     )
 
 
