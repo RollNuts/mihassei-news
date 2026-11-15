@@ -28,7 +28,7 @@ class MarketPaperReadabilityTests(unittest.TestCase):
     def test_front_page_starts_with_a_real_article_not_empty_data_panels(self):
         rendered = render_series_page(self.market, passthrough, self.figure_data, [], self.outlook, [])
         latest = self.market["episodes"][-1]
-        self.assertIn('class="market-paper"', rendered)
+        self.assertIn('class="container serials-page market-paper"', rendered)
         self.assertIn('id="market-focus"', rendered)
         self.assertIn('id="market-stories"', rendered)
         self.assertIn('id="market-outlook"', rendered)
