@@ -22,6 +22,7 @@ class MarketCommentsTests(unittest.TestCase):
                 self.assertIn("/assets/comments.js?v=", markup)
                 self.assertIn("この市場分析へのコメント", markup)
                 self.assertIn("Xで共有する", markup)
+                self.assertIn('data-copy-url="https://veripsa.com/serials/market-lab/' + ep["slug"] + '/"', markup)
                 self.assertNotIn("投票フォーム", markup)
 
     def test_daily_bulletin_has_comments_and_its_own_x_share(self):
@@ -38,6 +39,7 @@ class MarketCommentsTests(unittest.TestCase):
         self.assertIn("/assets/comments.js?v=", markup)
         self.assertIn("この市況へのコメント", markup)
         self.assertIn('https://x.com/intent/tweet?', markup.replace("&amp;", "&"))
+        self.assertIn('data-copy-url="https://veripsa.com/serials/market-lab/briefings/2026-11-16-am/"', markup)
         self.assertIn("架空ニュースではありません", markup)
 
     def test_shared_comment_form_preserves_original_news_behavior(self):
