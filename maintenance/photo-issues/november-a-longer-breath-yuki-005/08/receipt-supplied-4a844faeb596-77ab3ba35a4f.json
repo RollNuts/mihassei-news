@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-a-longer-breath-yuki-005",
+  "cut_id": "08",
+  "model_id": "shiramine-yuki",
+  "review_reference_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+  "imported_at": "2026-11-15T01:56:04.692181+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "turn_key": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+    "image_number": 10,
+    "path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/08/source-4a844faeb596bdbe6d0eb793bdf570ba61519911edb82f98fd7f34b090c62e42.png",
+    "sha256": "4a844faeb596bdbe6d0eb793bdf570ba61519911edb82f98fd7f34b090c62e42",
+    "bytes": 2110686,
+    "width": 1086,
+    "height": 1448,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-08.jpg",
+    "sha256": "77ab3ba35a4f6dd72f7d5f338d5b06603134c00a09e0087f0825d64e7c1110b1",
+    "bytes": 254362,
+    "width": 900,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

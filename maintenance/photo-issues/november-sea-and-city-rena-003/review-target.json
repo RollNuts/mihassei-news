@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-sea-and-city-rena-003",
+    "number": 3,
+    "title": "潮風と、夜の余白。",
+    "summary": "海辺の昼と、街明かりの夜。月城れなが少しだけ予定をほどく、旅先の10枚。",
+    "column": [
+      "2031年11月の小旅行。服を選ぶ鏡には「いつもより迷っています」と表示されました。知っています、と返してから、結局いちばん最初のドレスを選びました。こういうところは、便利になっても変わらない気がします。",
+      "昼は暖かな海へ。波の端を歩いていると、靴のことも、次の場面のことも考えなくてよくなります。足元に来る水だけ見ていればいい時間は、思っていたより短く感じました。",
+      "街へ戻るころには、窓の外が夜景に変わっていました。席に着いてからも、しばらく外を眺めていました。話し始めるまでの間を、急いで埋めなくていいのが休日の好きなところです。",
+      "帰る前に、もう一度だけ海を見ました。昼とは違う色なのに、同じ場所だと分かる。不思議なことではないけれど、そういう変化を見つけると、少し得をした気分になります。"
+    ],
+    "model_id": "tsukishiro-rena",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "暖かな海辺と夜の街",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した海辺の小旅行と夜の街の独立写真10枚で構成する。明瞭なビキニは3枚で、白い羽織りで衣装が隠れた写真やドレスを水着へ数え替えず、衣服中心の場面を含む既存セットを採用する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "月城れな（23歳、架空の成人）。夜のレストランで、ワイン色のドレス姿で頬に手を添える。",
+        "caption": "夜のレストランで、ワイン色のドレス姿で頬に手を添える。",
+        "alt": "月城れな（23歳、架空の成人）。夜のレストランで、ワイン色のドレス姿で頬に手を添える。"
+      },
+      {
+        "id": "02",
+        "description": "月城れな（23歳、架空の成人）。薄紫のビキニで、浅い波の中をゆっくり歩く。",
+        "caption": "薄紫のビキニで、浅い波の中をゆっくり歩く。",
+        "alt": "月城れな（23歳、架空の成人）。薄紫のビキニで、浅い波の中をゆっくり歩く。"
+      },
+      {
+        "id": "03",
+        "description": "月城れな（23歳、架空の成人）。黒いドレスで窓辺の椅子に座り、肩越しに振り返る。",
+        "caption": "黒いドレスで窓辺の椅子に座り、肩越しに振り返る。",
+        "alt": "月城れな（23歳、架空の成人）。黒いドレスで窓辺の椅子に座り、肩越しに振り返る。"
+      },
+      {
+        "id": "04",
+        "description": "月城れな（23歳、架空の成人）。明るいプールサイドで、白い羽織りをまとって膝を抱える。",
+        "caption": "明るいプールサイドで、白い羽織りをまとって膝を抱える。",
+        "alt": "月城れな（23歳、架空の成人）。明るいプールサイドで、白い羽織りをまとって膝を抱える。"
+      },
+      {
+        "id": "05",
+        "description": "月城れな（23歳、架空の成人）。紺のサテンドレスで、テーブルに少し身を寄せる。",
+        "caption": "紺のサテンドレスで、テーブルに少し身を寄せる。",
+        "alt": "月城れな（23歳、架空の成人）。紺のサテンドレスで、テーブルに少し身を寄せる。"
+      },
+      {
+        "id": "06",
+        "description": "月城れな（23歳、架空の成人）。夕暮れの海辺で、ニットと白いスカート姿で海を眺める。",
+        "caption": "夕暮れの海辺で、ニットと白いスカート姿で海を眺める。",
+        "alt": "月城れな（23歳、架空の成人）。夕暮れの海辺で、ニットと白いスカート姿で海を眺める。"
+      },
+      {
+        "id": "07",
+        "description": "月城れな（23歳、架空の成人）。小さな波の届く砂浜を、薄紫のビキニで歩く。",
+        "caption": "小さな波の届く砂浜を、薄紫のビキニで歩く。",
+        "alt": "月城れな（23歳、架空の成人）。小さな波の届く砂浜を、薄紫のビキニで歩く。"
+      },
+      {
+        "id": "08",
+        "description": "月城れな（23歳、架空の成人）。ワイン色のドレスで、食卓から静かに視線を向ける。",
+        "caption": "ワイン色のドレスで、食卓から静かに視線を向ける。",
+        "alt": "月城れな（23歳、架空の成人）。ワイン色のドレスで、食卓から静かに視線を向ける。"
+      },
+      {
+        "id": "09",
+        "description": "月城れな（23歳、架空の成人）。夜のカウンターに座り、頬に手を添えてひと休み。",
+        "caption": "夜のカウンターに座り、頬に手を添えてひと休み。",
+        "alt": "月城れな（23歳、架空の成人）。夜のカウンターに座り、頬に手を添えてひと休み。"
+      },
+      {
+        "id": "10",
+        "description": "月城れな（23歳、架空の成人）。明るい窓辺で、淡い青のビキニ姿で少し前かがみになる。",
+        "caption": "明るい窓辺で、淡い青のビキニ姿で少し前かがみになる。",
+        "alt": "月城れな（23歳、架空の成人）。明るい窓辺で、淡い青のビキニ姿で少し前かがみになる。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "tsukishiro-rena",
+      "name": "月城れな",
+      "age": 23,
+      "fictional": true,
+      "appearance": "23歳の架空の成人。涼しげで上品な表情、長い黒髪。顔はさや・ひかりと異なる独自の設計にする。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "俳優兼モデル",
+        "casting_specialty": "ドラマや映画への出演、衣服や街の変化を静かな観察から描く企画。",
+        "personality": "静かで観察好き。見た目はクールだが好きなものには素直。",
+        "voice": "短く具体的で、少し乾いたユーモア。説教や冷笑にしない。",
+        "likes": [
+          "夜の街",
+          "服の形",
+          "一人で聴く音楽"
+        ],
+        "weakness": "迷っていない顔をして、実は服選びに時間をかける。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+        "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+        "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+        "provenance": "assets/generated/photo-reference-tsukishiro-rena-aec46a830a8a.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 158,
+        "bust_cm": 82,
+        "waist_cm": 58,
+        "hip_cm": 85,
+        "shoulder_width_cm": 35,
+        "inseam_cm": 73,
+        "heads_tall": 7.2
+      },
+      "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+      "face_reference": {
+        "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+        "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+        "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-tsukishiro-rena-543d8d16e2fc.jpg",
+        "sha256": "543d8d16e2fcfa53c5ce6ad70417f88631809fb4a6530790509e04db2447dc28",
+        "source_png_sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+        "provenance": "assets/generated/photo-reference-tsukishiro-rena-543d8d16e2fc.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-01.jpg",
+        "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+        "bytes": 226192,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/01/receipt-supplied-445bdb053af8-aec46a830a8a.json",
+          "receipt_sha256": "cd0624ab26d96763a9350534ded1f61116f81b3df8294dfc4319f2488f6b3187",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-02.jpg",
+        "sha256": "543d8d16e2fcfa53c5ce6ad70417f88631809fb4a6530790509e04db2447dc28",
+        "bytes": 246110,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/02/receipt-supplied-668099e85e83-543d8d16e2fc.json",
+          "receipt_sha256": "ee273a89eacd3e59768c0bb6bcae1e46ee67d9f02a8eedfeae1e9bf0e2bf430e",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-03.jpg",
+        "sha256": "6d33243fdb7bc4c5c3194d94ecae5a4aff6752f3dc961b5ba696d63a44b90f91",
+        "bytes": 230094,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "31372133d54e7d7a332f8791356ebc2c7e5992aaf70d1ff4fc3b0244205ff815",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/03/receipt-supplied-31372133d54e-6d33243fdb7b.json",
+          "receipt_sha256": "eeb147990f53f463f5d838060aa84bf79cad0e9ffd684e4016fdf53aa205d49e",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-04.jpg",
+        "sha256": "c3cd246a5a4ea528056b559b76abe27a145ab91d2036203f2279f8e13fa24c2e",
+        "bytes": 244994,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "eed6506bed2a912a0f249e75e25a7c5d55f9b464131e1cec58c7b064fd61966d",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/04/receipt-supplied-eed6506bed2a-c3cd246a5a4e.json",
+          "receipt_sha256": "a1b348bb419bb6d46ac768dbede0d574d4d4bea39487623a7d38a03062b3f221",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-05.jpg",
+        "sha256": "49e19241d819cc4d1dc9ee37b71129026efd409a4162333bab733ef5edcf7480",
+        "bytes": 189045,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "20eaef5a5b8719912f73e7409703ee6018c2d42c565b851cb6dc7a71118c872b",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/05/receipt-supplied-20eaef5a5b87-49e19241d819.json",
+          "receipt_sha256": "95540585052742e7a42f8452c060eeaf65f7a284f354fb6b73f7bc9b48f50d4c",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-06.jpg",
+        "sha256": "f727f735b32d61efd56a395f1928a7fe32e8e2d0b7913e04f4f172c52e9c11ef",
+        "bytes": 252377,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "fce0973ca04972e01ed299809b338fd8ad96bca132d7a25dd5f383a18c09d85b",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/06/receipt-supplied-fce0973ca049-f727f735b32d.json",
+          "receipt_sha256": "2ac1a6c7505f1576bd45dcc948fb1f2938eca7fee4637ce75e755ae9d1d533b3",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-07.jpg",
+        "sha256": "a8b89c29414127edf91fa443b44deaf70d4872e204351f4484bf12578aa042f4",
+        "bytes": 227601,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "846cd4bbd197dfe5947bf3b3a1139e9b0f670c784ee26b204c38bfed4f3a3d30",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/07/receipt-supplied-846cd4bbd197-a8b89c294141.json",
+          "receipt_sha256": "37492c3d7525da29f50ff8f0cd4ceb73c9fa834847ccc0b9673420abc99ee308",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-08.jpg",
+        "sha256": "76452ec0b4796456b65128ae4f58dc4871f18c02f329ff3cf365c284039e7f07",
+        "bytes": 208645,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "99e234bd7395b01b6cf5c30d2adda43b0233dbb6040cbf53b22df540ace339d0",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/08/receipt-supplied-99e234bd7395-76452ec0b479.json",
+          "receipt_sha256": "de4abcaf91541274f15f377ff63389a1dc3bc65dba53ba6d784dadbce7f9d33b",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-09.jpg",
+        "sha256": "3b42aae17c54715b0476966ce6c097274fd502cd387f648fe561e5b9970816dc",
+        "bytes": 190249,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "859825c99426ff5a8db5e4867cb7740682f6d0c1b90f5fc331167484753bf849",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/09/receipt-supplied-859825c99426-3b42aae17c54.json",
+          "receipt_sha256": "5be48ef73201d7f5c6bc3450cf3c9c1117702d7fd6975e8ab36964e0f62db29c",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-10.jpg",
+        "sha256": "7cfb137eceda99b315e55b2ff6238e0d376a61b0633318823bc0969e327368a9",
+        "bytes": 192486,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "c153a9473431bd105a63c41a0445522689dd0c126602a8707c0632b5f38abae1",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-sea-and-city-rena-003/10/receipt-supplied-c153a9473431-7cfb137eceda.json",
+          "receipt_sha256": "686e8cce8b9e03930799659c787ebcb919f420af21b130baadd83a7953df8c99",
+          "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "32d90e04c346c8ab833329b1bb3d49b4e83020633a365105e8380f7018ab4520"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": true,
+      "framing": "full_body"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "wide"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": true,
+      "framing": "full_body"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": true,
+      "framing": "three_quarter"
+    }
+  ]
+}

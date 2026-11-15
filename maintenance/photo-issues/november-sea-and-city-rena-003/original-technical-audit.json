@@ -1,0 +1,119 @@
+[
+  {
+    "filename": "candidate-01.png",
+    "sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1086,
+    "height": 1448,
+    "bytes": 2051306
+  },
+  {
+    "filename": "candidate-02.png",
+    "sha256": "e9d69d6d31f1714de7b87d9916ed1e9f145a5b89243527856bdad26623f8cb38",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2135058
+  },
+  {
+    "filename": "candidate-03.png",
+    "sha256": "bc2bced31a80b7c743e201436a1e41adf6dd910c8382ee562e187563519342f9",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2392100
+  },
+  {
+    "filename": "candidate-04.png",
+    "sha256": "20eaef5a5b8719912f73e7409703ee6018c2d42c565b851cb6dc7a71118c872b",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2017505
+  },
+  {
+    "filename": "candidate-05.png",
+    "sha256": "8022ce146b2ceac40237901dd2cb05d02663c8bed1db0ef92b764879657a9c69",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2383238
+  },
+  {
+    "filename": "candidate-06.png",
+    "sha256": "c0eff2d1711cbe6df6e978642657bd2fd67fb42533aa6baeffbb5ae734df5e29",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2310984
+  },
+  {
+    "filename": "candidate-07.png",
+    "sha256": "99e234bd7395b01b6cf5c30d2adda43b0233dbb6040cbf53b22df540ace339d0",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2052852
+  },
+  {
+    "filename": "candidate-08.png",
+    "sha256": "846cd4bbd197dfe5947bf3b3a1139e9b0f670c784ee26b204c38bfed4f3a3d30",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2163825
+  },
+  {
+    "filename": "candidate-09.png",
+    "sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2268408
+  },
+  {
+    "filename": "candidate-10.png",
+    "sha256": "31372133d54e7d7a332f8791356ebc2c7e5992aaf70d1ff4fc3b0244205ff815",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2197764
+  },
+  {
+    "filename": "candidate-11.png",
+    "sha256": "eed6506bed2a912a0f249e75e25a7c5d55f9b464131e1cec58c7b064fd61966d",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1086,
+    "height": 1448,
+    "bytes": 2126373
+  },
+  {
+    "filename": "candidate-12.png",
+    "sha256": "859825c99426ff5a8db5e4867cb7740682f6d0c1b90f5fc331167484753bf849",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 2006673
+  },
+  {
+    "filename": "candidate-13.png",
+    "sha256": "fce0973ca04972e01ed299809b338fd8ad96bca132d7a25dd5f383a18c09d85b",
+    "format": "PNG",
+    "mode": "RGB",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2251847
+  }
+]

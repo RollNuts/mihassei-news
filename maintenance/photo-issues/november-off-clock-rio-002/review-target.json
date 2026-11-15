@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-off-clock-rio-002",
+    "number": 2,
+    "title": "休日だけ、時刻表を閉じて。",
+    "summary": "汐羽りおの短い休暇。カフェから古書店、雨上がりの街と暖かな海辺を巡る10枚。",
+    "column": [
+      "2031年11月。休みの日まで腕時計に表示した時刻表を見ている、と友人に笑われました。移動の案内は便利なのに、画面を閉じる時刻だけは教えてくれません。今日は時計の通知を静かにして、海辺のカフェへ入りました。",
+      "席を選ぶとき、いつもなら光の向きと取材の段取りを考えます。でも今日は、窓の外を眺められれば十分。カップを持ったまま話を聞いていたら、飲み頃を少し逃しました。仕事中ならしないことです。",
+      "古書店で手に取ったのは、乗り換え案内の載っていない旅の本。暖かな海辺では、予定も上着もいったん置きました。行き先を細かく決めないと、気付かなかった小さな道が見つかります。",
+      "夕方には雨が上がり、畳んだ傘をしばらく手放せませんでした。明日の支度は帰ってから。そう決めたのに、帰り道の店の灯りには、もう少しだけ寄り道したくなりました。"
+    ],
+    "model_id": "shioba-rio",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "海辺の街、古書店とカフェ",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した街歩き・古書店・カフェと暖かな海辺の独立写真10枚で構成する。水着が明瞭に見える写真は1枚で、衣服の場面を水着として数えず、この既存セットの構成を採用する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "汐羽りお（29歳、架空の成人）。日中のカフェで、頬に手を添えて笑顔を向ける。",
+        "caption": "日中のカフェで、頬に手を添えて笑顔を向ける。",
+        "alt": "汐羽りお（29歳、架空の成人）。日中のカフェで、頬に手を添えて笑顔を向ける。"
+      },
+      {
+        "id": "02",
+        "description": "汐羽りお（29歳、架空の成人）。夕暮れの海沿いで、ニットと白いスカート姿で水面を眺める。",
+        "caption": "夕暮れの海沿いで、ニットと白いスカート姿で水面を眺める。",
+        "alt": "汐羽りお（29歳、架空の成人）。夕暮れの海沿いで、ニットと白いスカート姿で水面を眺める。"
+      },
+      {
+        "id": "03",
+        "description": "汐羽りお（29歳、架空の成人）。暖かな砂浜で、紺のビキニ姿でひと休み。",
+        "caption": "暖かな砂浜で、紺のビキニ姿でひと休み。",
+        "alt": "汐羽りお（29歳、架空の成人）。暖かな砂浜で、紺のビキニ姿でひと休み。"
+      },
+      {
+        "id": "04",
+        "description": "汐羽りお（29歳、架空の成人）。古書店でしゃがみ、本棚へ手を伸ばす。",
+        "caption": "古書店でしゃがみ、本棚へ手を伸ばす。",
+        "alt": "汐羽りお（29歳、架空の成人）。古書店でしゃがみ、本棚へ手を伸ばす。"
+      },
+      {
+        "id": "05",
+        "description": "汐羽りお（29歳、架空の成人）。濡れた路地で、畳んだ透明の傘を手に立つ。",
+        "caption": "濡れた路地で、畳んだ透明の傘を手に立つ。",
+        "alt": "汐羽りお（29歳、架空の成人）。濡れた路地で、畳んだ透明の傘を手に立つ。"
+      },
+      {
+        "id": "06",
+        "description": "汐羽りお（29歳、架空の成人）。夜のレストランで、ワイン色のドレス姿で頬に手を添える。",
+        "caption": "夜のレストランで、ワイン色のドレス姿で頬に手を添える。",
+        "alt": "汐羽りお（29歳、架空の成人）。夜のレストランで、ワイン色のドレス姿で頬に手を添える。"
+      },
+      {
+        "id": "07",
+        "description": "汐羽りお（29歳、架空の成人）。温室の葉に触れ、ふと後ろへ振り返る。",
+        "caption": "温室の葉に触れ、ふと後ろへ振り返る。",
+        "alt": "汐羽りお（29歳、架空の成人）。温室の葉に触れ、ふと後ろへ振り返る。"
+      },
+      {
+        "id": "08",
+        "description": "汐羽りお（29歳、架空の成人）。白いパンツスーツで、カップを手に窓の外を眺める。",
+        "caption": "白いパンツスーツで、カップを手に窓の外を眺める。",
+        "alt": "汐羽りお（29歳、架空の成人）。白いパンツスーツで、カップを手に窓の外を眺める。"
+      },
+      {
+        "id": "09",
+        "description": "汐羽りお（29歳、架空の成人）。茶色のサテンドレスで、食卓へ少し身を乗り出す。",
+        "caption": "茶色のサテンドレスで、食卓へ少し身を乗り出す。",
+        "alt": "汐羽りお（29歳、架空の成人）。茶色のサテンドレスで、食卓へ少し身を乗り出す。"
+      },
+      {
+        "id": "10",
+        "description": "汐羽りお（29歳、架空の成人）。夜のカウンターで、グラスを眺めながらひと息つく。",
+        "caption": "夜のカウンターで、グラスを眺めながらひと息つく。",
+        "alt": "汐羽りお（29歳、架空の成人）。夜のカウンターで、グラスを眺めながらひと息つく。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "shioba-rio",
+      "name": "汐羽りお",
+      "age": 29,
+      "fictional": true,
+      "appearance": "既存masterの顔、薄い前髪と長い暗色髪を維持。自然に豊かなバストの成人体型。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "報道アナウンサー兼キャスター",
+        "casting_specialty": "報道番組の進行と取材。制度や産業の変化を現場の具体例で伝える。",
+        "personality": "落ち着いた観察役だが、休日には抜けたところがある。",
+        "voice": "端正な文章に、ふと仕事を忘れた率直なひとことが混じる。",
+        "likes": [
+          "取材先の風景",
+          "朝の散歩",
+          "きれいなニット"
+        ],
+        "weakness": "時刻や段取りを気にするのに、自分の休日だけ予定がずれる。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-shioba-rio-101edc530c7f.jpg",
+        "sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+        "source_png_sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece",
+        "provenance": "assets/generated/photo-reference-shioba-rio-101edc530c7f.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 166,
+        "bust_cm": 95,
+        "waist_cm": 63,
+        "hip_cm": 94,
+        "shoulder_width_cm": 38,
+        "inseam_cm": 77,
+        "heads_tall": 7.4
+      },
+      "body_profile_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5",
+      "face_reference": {
+        "path": "assets/generated/photo-master-shioba-rio-101edc530c7f.jpg",
+        "sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+        "source_png_sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-shioba-rio-478b66fdad4f.jpg",
+        "sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a",
+        "source_png_sha256": "c3511b34a27aa7db91dd13205acb6d1c4c52699441e53fd92ad42beba728ce8a",
+        "provenance": "assets/generated/photo-reference-shioba-rio-478b66fdad4f.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-01.jpg",
+        "sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+        "bytes": 229357,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/01/receipt-supplied-134062c27a14-101edc530c7f.json",
+          "receipt_sha256": "38db0c8625906b624565e8c8aa71a38bd45c23ce9fb1641e9c24351321d111a2",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-02.jpg",
+        "sha256": "7ecae4d543d2a5b00bb47ec2cd2b32f46446b07de31dccd3af9ea4c6e558c641",
+        "bytes": 207382,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "f0d8a1e49f18ec3444d8539c5684dc913a12421371a6431c42c06c4138dee6cc",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/02/receipt-supplied-f0d8a1e49f18-7ecae4d543d2.json",
+          "receipt_sha256": "29ebaf80aadbdacab494edb4aa4f012e22b3c0c909464de86e4314d9daac39ac",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-03.jpg",
+        "sha256": "13f90cd7096d18655a4d106ee5b6170a611cf97473c47c15ba761b7994e13047",
+        "bytes": 203024,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "65a662a2dcc12ff057891769a209c8096a77f8adcaecb34d25eae0126c386f63",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/03/receipt-supplied-65a662a2dcc1-13f90cd7096d.json",
+          "receipt_sha256": "17a3e2dfc5a86241a59bcbdf873648076530f5fdb522894bf813e7956458a476",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-04.jpg",
+        "sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a",
+        "bytes": 295159,
+        "width": 1096,
+        "height": 1200,
+        "source_sha256": "94b084503dd1101b6fe4b0a9c7c7d66f58e66f911ba295d4b17b41ccd5ef469c",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/04/receipt-supplied-94b084503dd1-7c5454b0b39e.json",
+          "receipt_sha256": "c7157bc6d4cb01bff4b20e55eb11cd8b7dcf5a8b5073348051c6263b44c5c920",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-05.jpg",
+        "sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a",
+        "bytes": 312983,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "c3511b34a27aa7db91dd13205acb6d1c4c52699441e53fd92ad42beba728ce8a",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/05/receipt-supplied-c3511b34a27a-478b66fdad4f.json",
+          "receipt_sha256": "30f9d35c6e0bbf6d38a7366a10ec585042b134d994eeb13927f5d9dfcfe209ef",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-06.jpg",
+        "sha256": "9cb1c4448c327db12c045547c35c28a262e899265fd0a554fce62ee19f44d0b6",
+        "bytes": 196700,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "0ffe5b5676fe48791ac8ce7cc5a4f3338db23fa02518a5db9352ca5be6954838",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/06/receipt-supplied-0ffe5b5676fe-9cb1c4448c32.json",
+          "receipt_sha256": "8b7ced675c90a22784cb6957554ba6839bccfccc5549299bbc96580d9b4710ef",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-07.jpg",
+        "sha256": "4bf65213b6322e65144f079e73e33d4d18e20b9a2416aa2dc4f351d7eb83c167",
+        "bytes": 344820,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "2400113e7d7b5d4249ed89bab9f23b48d8c776dccb7ff55b81803978e760458f",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/07/receipt-supplied-2400113e7d7b-4bf65213b632.json",
+          "receipt_sha256": "ce1cccfd410cda17d288eec6c2314ed544698308d9e49399859d65bb4b292b95",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-08.jpg",
+        "sha256": "f5b6e07657d573d11079c937d078ec1ab6c5951a90e61ae43ea094d7d82d6c1a",
+        "bytes": 178963,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "35b7e8cb3544f749c71f460ff4016d0943e31d3a1e4a046eaad26e8ed7b31195",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/08/receipt-supplied-35b7e8cb3544-f5b6e07657d5.json",
+          "receipt_sha256": "dc12b8e228ab6b0cd6ed606f144ae350ab1f89bf085724834c586fd2a738262e",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-09.jpg",
+        "sha256": "014f20a7461672cf486252576c0f68be789964f8e9a8485772b49a761c0dba69",
+        "bytes": 210619,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "942feee24527ba493dc1cf0a6aaae363081c6e00c77a436e93e3f500b13cc967",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/09/receipt-supplied-942feee24527-014f20a74616.json",
+          "receipt_sha256": "38eed5f03137275a51ad183ecc1366f99042eaf428f3afb99055a9a2cfc1cbc5",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-off-clock-rio-002-10.jpg",
+        "sha256": "76775ea7ba45066c0aea1cd5071fa464645dcbc88306039581fbcd8a0ba04ff3",
+        "bytes": 227062,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "7d4715bfb05a8cccb2a6f4ed52428bf72f0d6756791f8e41d122ddc845559c87",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-off-clock-rio-002/10/receipt-supplied-7d4715bfb05a-76775ea7ba45.json",
+          "receipt_sha256": "cc3378109f751a9e6d59ad42e0d79a83cd8d4518e47ea5b59cab6fc9f2dbf233",
+          "target_design_sha256": "a4aaf9a2fd600a07e5cd2c757e990d6d05bf8a5b30fbf898d3d30d89e7517fe5"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "e36b17f887ac141feb569008e521203857a142acc536d9150fb386476dda96f8"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": true,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    }
+  ]
+}

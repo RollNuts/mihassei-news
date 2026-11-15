@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "model_id": "shiramine-yuki",
+  "reviewed_at_utc": "2026-11-15T02:14:42.948204+00:00",
+  "scope": "Actual four face/body JPEG references displayed full by root; original PNGs previously displayed. Not final feature adoption.",
+  "live_authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 167,
+    "bust_cm": 89,
+    "waist_cm": 63,
+    "hip_cm": 92,
+    "shoulder_width_cm": 38,
+    "inseam_cm": 78,
+    "heads_tall": 7.4
+  },
+  "numeric_body_values": "Authored fictional design values, not measured or proven centimeter compliance.",
+  "references": [
+    {
+      "kind": "face",
+      "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+      "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+      "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+      "cut_id": "01",
+      "source_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/01/source-61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766.png",
+      "provenance": "assets/generated/photo-reference-shiramine-yuki-b5705a94502f.json",
+      "reviewed_at_utc": "2026-11-15T02:14:42.948204+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "白いブラウスでグラスを持つ実JPEGを全表示。原PNGと同じ暗い長髪、薄い前髪、柔らかい目元と輪郭を確認。ガラスを持つ指・肌・髪・服の質感に目立つ破綻や圧縮崩れはなく、架空の成人の顔基準として採用。"
+    },
+    {
+      "kind": "body",
+      "path": "assets/generated/photo-body-shiramine-yuki-f2ba9bb76565.jpg",
+      "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+      "source_png_sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+      "cut_id": "02",
+      "source_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/02/source-5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b.png",
+      "provenance": "assets/generated/photo-reference-shiramine-yuki-f2ba9bb76565.json",
+      "reviewed_at_utc": "2026-11-15T02:14:42.948204+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "海の桟橋を白いワンピース水着で歩く実JPEGを全表示。頭から両足先まで入り、腕脚の接続と歩行姿勢は自然。長髪と横顔の印象は顔基準と矛盾しない。体型は定性的な確認で、創作cm値の実測一致を主張しない。"
+    }
+  ]
+}

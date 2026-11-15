@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "amane-hikari",
+  "role": "face",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "turn_key": "51b8fb3a-20b9-453e-a082-f9b149c8b43d",
+    "image_number": 5,
+    "path": "maintenance/photo-issues/november-city-lights-hikari-006/01/source-a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558.png",
+    "sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558",
+    "bytes": 2190551,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-city-lights-hikari-006-01.jpg",
+    "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+    "bytes": 227358,
+    "width": 800,
+    "height": 1200
+  },
+  "reference_path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 156,
+    "bust_cm": 84,
+    "waist_cm": 58,
+    "hip_cm": 86,
+    "shoulder_width_cm": 35,
+    "inseam_cm": 71,
+    "heads_tall": 7.1
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Night-street coat/cream-knit JPEG retains clear three-quarter adult face, long chestnut softly waved hair, fine fringe, almond brown eyes and soft oval jaw. Natural skin/hair/knit/light; no visible readablelogo, conversion defect or anatomical issue. Suitable first reviewed face for fictional21-year-old.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-city-lights-hikari-006/reference-jpeg-qa.json",
+    "sha256": "8f3b12190ad4ce48ee094794eb49ea65c30120bc67a729dd168978ed28429da1"
+  }
+}

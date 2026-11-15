@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "hanase-mio",
+  "role": "body",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+    "image_number": 2,
+    "path": "maintenance/photo-issues/november-first-detour-mio-004/04/source-489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec.png",
+    "sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+    "bytes": 2604194,
+    "width": 1122,
+    "height": 1402,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-first-detour-mio-004-04.jpg",
+    "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+    "bytes": 410902,
+    "width": 960,
+    "height": 1200
+  },
+  "reference_path": "assets/generated/photo-body-hanase-mio-17a677d5988e.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 160,
+    "bust_cm": 85,
+    "waist_cm": 60,
+    "hip_cm": 88,
+    "shoulder_width_cm": 37,
+    "inseam_cm": 74,
+    "heads_tall": 7.2
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Hotel car-entry JPEG shows coherent head-to-shoes adult silhouette, natural raised/bent and extended legs, believable coat/dress folds and attached hands on coat. Shoulder-length hair and oval face agree with terrace reference under night makeup/light. No obvious anatomy/crop/conversion defect; coat and dress limit body precision, authored160/85/60/88cm are not measured.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-first-detour-mio-004/reference-jpeg-qa.json",
+    "sha256": "5cab3d67fad47df46ab2e16e08cb8417ac0369376a0b5adfb3ab85037ccafc53"
+  }
+}

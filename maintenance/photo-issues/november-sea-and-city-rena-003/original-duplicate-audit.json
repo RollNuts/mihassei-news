@@ -1,0 +1,862 @@
+{
+  "checked_at": "2026-11-15T01:06:33.918304+00:00",
+  "scope": {
+    "caster_preview_files": 1,
+    "newspaper_approved_files": 8,
+    "newspaper_generated_files": 107,
+    "weekly_files": 10,
+    "candidate_files": 13,
+    "public_comparison_total": 126,
+    "rio_comparison_files": 10
+  },
+  "method": "Exact SHA-256 bytes/declared source hashes and decoded RGB pixels; pHash64 via grayscale32x32 Lanczos low-frequency8x8 DCT. pHash is screening only; not semantic/identity evidence.",
+  "candidates": [
+    {
+      "path": "candidate-01.png",
+      "sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+      "pixel_sha256": "1e54a193ec4a853db5370663fdd7191ff9fa97e3ab1c585a770c6ca468782e8f",
+      "phash64": "4ea91909de367cc3",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "bytes": 2051306,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/ar-sport-fans-vote-crosswind-finals.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 18
+        },
+        {
+          "path": "assets/generated/variety-700-guests-only-introductions.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/community-workshop-builds-bookshelf-before-introductions.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-04.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        }
+      ]
+    },
+    {
+      "path": "candidate-02.png",
+      "sha256": "e9d69d6d31f1714de7b87d9916ed1e9f145a5b89243527856bdad26623f8cb38",
+      "pixel_sha256": "80c057f9fff3c9e53b0e2e1916f8727d842f8f61d6a0d6d2aa72d190bbdde0f5",
+      "phash64": "16b075ecec1e906b",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2135058,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/supermarkets-buy-back-empty-pet-bottles.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/ar-sport-fans-vote-crosswind-finals.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/cafe-regular-dislikes-usual-cinnamon-latte.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 26
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-04.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 20
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        }
+      ]
+    },
+    {
+      "path": "candidate-03.png",
+      "sha256": "bc2bced31a80b7c743e201436a1e41adf6dd910c8382ee562e187563519342f9",
+      "pixel_sha256": "5b0b2a5605bbbf59d8d97a2790848759f6c62d9d0e7bbb13e7fd95d89b83ed95",
+      "phash64": "68e5d5b6ec80d4c3",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2392100,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/remote-basketball-final-fans-walk-behind-hoop.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/council-trials-new-sidewalk-before-vote.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/music-ai-friends-monopolize-the-song.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-06.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-04.png",
+      "sha256": "20eaef5a5b8719912f73e7409703ee6018c2d42c565b851cb6dc7a71118c872b",
+      "pixel_sha256": "5e100698be9c80ede7d20170e973bd35b8f7341628342112e40cc824573eacbf",
+      "phash64": "8ecbacb332a50e69",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2017505,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/datacenter-unbuilt-ribbon-cutting.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/music-special-forty-days-of-lineup-announcements.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/apology-before-incident.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-03.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        }
+      ]
+    },
+    {
+      "path": "candidate-05.png",
+      "sha256": "8022ce146b2ceac40237901dd2cb05d02663c8bed1db0ef92b764879657a9c69",
+      "pixel_sha256": "7b6a2f167c84d6dc803b64bd4bb0f4b5c07869ef15de23dc572921db04868e4d",
+      "phash64": "48c6f538ea45b4e3",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2383238,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/basketball-opening-day-game-seven.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/lion-king-prequel-watch-order-meeting.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/park-recorded-laughter-real-kids-shushed.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-06.png",
+      "sha256": "c0eff2d1711cbe6df6e978642657bd2fd67fb42533aa6baeffbb5ae734df5e29",
+      "pixel_sha256": "9bd152a4fac8d64db6d24c129c3e2eb739cae8d731efff9ed0ec423bfb85af48",
+      "phash64": "78b383a2586fb4d1",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2310984,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/family-dinner-gacha-243-rejections.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/family-line-replies-four-different-station-exits.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/local-souvenir-cannot-leave-town.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-05.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-07.png",
+      "sha256": "99e234bd7395b01b6cf5c30d2adda43b0233dbb6040cbf53b22df540ace339d0",
+      "pixel_sha256": "7a50f418cdd5212a7ca24359884682aa83c7373f2b39028625a8a3d00ee60bfb",
+      "phash64": "118dde3162a4de79",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2052852,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/office-face-to-face-day-video-call-echo.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/rest-day-concert-sells-out-without-performers.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-03.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        }
+      ]
+    },
+    {
+      "path": "candidate-08.png",
+      "sha256": "846cd4bbd197dfe5947bf3b3a1139e9b0f670c784ee26b204c38bfed4f3a3d30",
+      "pixel_sha256": "fa936b5f514bb65ccf20b00681cbe67c8f7de2efd8eeb05be402009e23f42bf1",
+      "phash64": "c347070e9d3a783d",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "bytes": 2163825,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/apology-before-incident.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/bakery-no-important-announcement-panic.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-04.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-07.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-09.png",
+      "sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+      "pixel_sha256": "ad8bbbbe175f866edc8ba24c39f15701642b46cb41603a208883b2c7ec2e6804",
+      "phash64": "94a52531339b8bcf",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "bytes": 2268408,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/basketball-opening-day-game-seven.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/five-star-reviews-of-returned-humidifiers.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/zero-redelivery-residents-collect-parcels.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-05.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-09.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-10.png",
+      "sha256": "31372133d54e7d7a332f8791356ebc2c7e5992aaf70d1ff4fc3b0244205ff815",
+      "pixel_sha256": "acc1e452b5a2fa16802735dae1b8cb3cc81e77beb3e91a006b5f1593d5c70d61",
+      "phash64": "e4dc42ee1f4c261b",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2197764,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/tunnel-robots-pass-concrete-pour-three-sections.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/comedy-live-subtitles-spoil-punchlines-three-seconds.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/family-dinner-gacha-243-rejections.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-04.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 32
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-07.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 32
+        }
+      ]
+    },
+    {
+      "path": "candidate-11.png",
+      "sha256": "eed6506bed2a912a0f249e75e25a7c5d55f9b464131e1cec58c7b064fd61966d",
+      "pixel_sha256": "8dfbce8a33af09c7b41cacf423ceabb7fd53b774f78b956095449a0b3b2c6f05",
+      "phash64": "d94ee6868a8e3c2d",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "bytes": 2126373,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/custom-work-apps-four-week-handover.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/five-star-reviews-of-returned-humidifiers.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        }
+      ]
+    },
+    {
+      "path": "candidate-12.png",
+      "sha256": "859825c99426ff5a8db5e4867cb7740682f6d0c1b90f5fc331167484753bf849",
+      "pixel_sha256": "4ade0613979d9ec1005299fa8e1cb34ab742390c9d6ffa552ae9af46f2d2477a",
+      "phash64": "8c2eb3b5ce5a0cb1",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "bytes": 2006673,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/lion-king-prequel-watch-order-meeting.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 18
+        },
+        {
+          "path": "assets/generated/family-line-replies-four-different-station-exits.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-02.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 30
+        }
+      ]
+    },
+    {
+      "path": "candidate-13.png",
+      "sha256": "fce0973ca04972e01ed299809b338fd8ad96bca132d7a25dd5f383a18c09d85b",
+      "pixel_sha256": "f9199bd4ce7544af014abc3c5d1d300be990440ce996568d02e963d563c14044",
+      "phash64": "07e2e538cac6db15",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "bytes": 2251847,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/craft-exhibition-empties-as-works-finish.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/crosswalk-photo-captcha-human-stuck.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/sns-quit-support-site-hundred-day-login-award.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_rio": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 20
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-06.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "recovered_rio",
+          "phash64_distance": 28
+        }
+      ]
+    }
+  ],
+  "nearest_candidate_pairs": [
+    {
+      "a": "candidate-03.png",
+      "b": "candidate-05.png",
+      "phash64_distance": 18,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-04.png",
+      "b": "candidate-07.png",
+      "phash64_distance": 22,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-08.png",
+      "b": "candidate-11.png",
+      "phash64_distance": 22,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-05.png",
+      "b": "candidate-13.png",
+      "phash64_distance": 24,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-02.png",
+      "b": "candidate-03.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-02.png",
+      "b": "candidate-05.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-03.png",
+      "b": "candidate-06.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-04.png",
+      "b": "candidate-09.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-05.png",
+      "b": "candidate-06.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-11.png",
+      "b": "candidate-12.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-01.png",
+      "b": "candidate-02.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-01.png",
+      "b": "candidate-03.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-01.png",
+      "b": "candidate-05.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-01.png",
+      "b": "candidate-06.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "candidate-01.png",
+      "b": "candidate-12.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    }
+  ],
+  "all_exact_internal_duplicates": [],
+  "existing_files": [
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
+    "assets/generated/aerobics-final-silent-thirty-seconds-team-comeback.jpg",
+    "assets/generated/ai-chair-removes-executives.jpg",
+    "assets/generated/ai-chooses-a-managers.jpg",
+    "assets/generated/air-purifying-sofa-backrest-filter-drawer.jpg",
+    "assets/generated/airport-baggage-robot-leaves-upper-shelves-empty.jpg",
+    "assets/generated/apology-before-incident.jpg",
+    "assets/generated/ar-sport-fans-vote-crosswind-finals.jpg",
+    "assets/generated/bakery-no-important-announcement-panic.jpg",
+    "assets/generated/basketball-opening-day-game-seven.jpg",
+    "assets/generated/black-friday-preparty-budget-gone.jpg",
+    "assets/generated/bring-your-own-room-hotel-parking-spaces.jpg",
+    "assets/generated/buzzword-award-what-does-it-mean-wins.jpg",
+    "assets/generated/cafe-regular-dislikes-usual-cinnamon-latte.jpg",
+    "assets/generated/chance-meeting-cafe-reservation-full.jpg",
+    "assets/generated/cherry-tree-stethoscope-municipal-inspection.jpg",
+    "assets/generated/christmas-done-for-you-family-decorates-boxes.jpg",
+    "assets/generated/color-changing-coat-one-garment-three-colors.jpg",
+    "assets/generated/comedy-live-subtitles-spoil-punchlines-three-seconds.jpg",
+    "assets/generated/comedy-show-profits-from-silence.jpg",
+    "assets/generated/community-workshop-builds-bookshelf-before-introductions.jpg",
+    "assets/generated/companies-apply-for-jobseeker-final-interview.jpg",
+    "assets/generated/council-trials-new-sidewalk-before-vote.jpg",
+    "assets/generated/craft-exhibition-empties-as-works-finish.jpg",
+    "assets/generated/crosswalk-photo-captcha-human-stuck.jpg",
+    "assets/generated/custom-work-apps-four-week-handover.jpg",
+    "assets/generated/datacenter-unbuilt-ribbon-cutting.jpg",
+    "assets/generated/delivery-locker-zero-redelivery-waiting-line.jpg",
+    "assets/generated/diner-refund-customer-paying-escape.jpg",
+    "assets/generated/double-speed-drama-explainer-marathon.jpg",
+    "assets/generated/drama-final-five-minutes-in-cinemas.jpg",
+    "assets/generated/family-dinner-gacha-243-rejections.jpg",
+    "assets/generated/family-line-replies-four-different-station-exits.jpg",
+    "assets/generated/fan-theories-write-final.jpg",
+    "assets/generated/farm-friendship-across-species.jpg",
+    "assets/generated/father-tries-own-overpacked-bento.jpg",
+    "assets/generated/film-village-all-stars-no-extras.jpg",
+    "assets/generated/five-star-reviews-of-returned-humidifiers.jpg",
+    "assets/generated/floating-warehouse-vanishes-after-berth-swap.jpg",
+    "assets/generated/food-rescue-shops-manufacture-leftovers.jpg",
+    "assets/generated/free-play-event-parents-timetable-children-waiting.jpg",
+    "assets/generated/fridge-checkin-five-years-only-opening-times.jpg",
+    "assets/generated/historical-lookalike-contest-dog-wins.jpg",
+    "assets/generated/idol-ice-kept-in-freezer.jpg",
+    "assets/generated/joint-party-slate-one-vote-three-claims.jpg",
+    "assets/generated/lion-king-prequel-watch-order-meeting.jpg",
+    "assets/generated/local-souvenir-cannot-leave-town.jpg",
+    "assets/generated/midterm-prediction-notebook-full-of-holes.jpg",
+    "assets/generated/mortgage-bank-clerk-invited-to-live-in.jpg",
+    "assets/generated/municipal-shared-government-answers.jpg",
+    "assets/generated/music-ai-friends-monopolize-the-song.jpg",
+    "assets/generated/music-show-surprise-face-rehearsal.jpg",
+    "assets/generated/music-special-forty-days-of-lineup-announcements.jpg",
+    "assets/generated/night-art-exhibition-thirty-two-shadow-intruders.jpg",
+    "assets/generated/nikkei-plunge-hundred-year-hold-minute-check.jpg",
+    "assets/generated/off-grid-lodge-sells-disconnection.jpg",
+    "assets/generated/office-face-to-face-day-video-call-echo.jpg",
+    "assets/generated/paid-conversation-checkout-shoppers-chat-in-line.jpg",
+    "assets/generated/park-recorded-laughter-real-kids-shushed.jpg",
+    "assets/generated/patrol-teams-mistake-each-other-for-suspects.jpg",
+    "assets/generated/personalized-hidden-harbor-crowded-by-tourists.jpg",
+    "assets/generated/press-conference-metaphor-viral.jpg",
+    "assets/generated/pressure-office-mood-forecast.jpg",
+    "assets/generated/quiet-reply-dating-matches.jpg",
+    "assets/generated/recycled-metal-electrodes-carry-previous-work-history.jpg",
+    "assets/generated/research-completed-opening-day.jpg",
+    "assets/generated/rest-day-concert-sells-out-without-performers.jpg",
+    "assets/generated/rice-cooker-price-reservation-vouchers-sell-first.jpg",
+    "assets/generated/robot-job-hopping.jpg",
+    "assets/generated/sale-discount-savings-receipt-framed.jpg",
+    "assets/generated/sand-dune-race-radar-reroutes-ridge-final.jpg",
+    "assets/generated/scolding-ai-one-line-summary-boss-eighteen-pages.jpg",
+    "assets/generated/self-checkout-regular-awarded-unpaid-staff.jpg",
+    "assets/generated/self-driving-suitcase-reports-missing-owner.jpg",
+    "assets/generated/self-oseibo-recipient-refuses-own-gift.jpg",
+    "assets/generated/shiroamadai-last-plate-twenty-seven-times.jpg",
+    "assets/generated/shopping-cart-home-ride-shared-shuttle.jpg",
+    "assets/generated/sleep-advice-livestream-until-two-am.jpg",
+    "assets/generated/sns-quit-support-site-hundred-day-login-award.jpg",
+    "assets/generated/solar-window-glass-factory-first-eight-panels.jpg",
+    "assets/generated/spy-captive-escapes-before-rescue.jpg",
+    "assets/generated/stock-rebound-confetti-still-in-red.jpg",
+    "assets/generated/stolen-doorbell-returned-by-parcel.jpg",
+    "assets/generated/suica-penguin-eco-bags-stay-sealed.jpg",
+    "assets/generated/supermarkets-buy-back-empty-pet-bottles.jpg",
+    "assets/generated/supporter-guarantor-contract.jpg",
+    "assets/generated/surprise-birthday-organized-by-guest-of-honor.jpg",
+    "assets/generated/sweet-potato-chorus-starts-too-late.jpg",
+    "assets/generated/three-towns-share-mobile-event-radio.jpg",
+    "assets/generated/tori-no-ichi-kumade-blocks-store-entrance.jpg",
+    "assets/generated/tunnel-robots-pass-concrete-pour-three-sections.jpg",
+    "assets/generated/unsold-coat-storage-fees-exceed-sale.jpg",
+    "assets/generated/unwanted-call-protection-calls-back.jpg",
+    "assets/generated/variety-700-guests-only-introductions.jpg",
+    "assets/generated/volleyball-team-lunch-plate-merch.jpg",
+    "assets/generated/volunteer-award-ceremony-visits-community-kitchen.jpg",
+    "assets/generated/walking-points-past-own-front-door.jpg",
+    "assets/generated/xr-town-letter-changes-next-visitors-story.jpg",
+    "assets/generated/zero-redelivery-residents-collect-parcels.jpg",
+    "assets/generated/friendly-cup-no-standings-four-fan-trophies.jpg",
+    "assets/generated/indoor-beach-friends-exchange-ripples.jpg",
+    "assets/generated/offline-tape-restores-missing-contract-revision.jpg",
+    "assets/generated/three-shipping-firms-share-space-steel-sails.jpg",
+    "assets/generated/fan-kumade-tours-concert-halls-before-audience.jpg",
+    "assets/generated/mountain-road-transplants-meadow-topsoil-blocks.jpg",
+    "assets/generated/autumn-ridge-path-rests-riverside-trail-opens.jpg",
+    "assets/generated/matchmaking-ai-bios-same-hobbies-handwritten-line.jpg",
+    "assets/generated/remote-basketball-final-fans-walk-behind-hoop.jpg",
+    "assets/photos/ai-chooses-a-managers.jpg",
+    "assets/photos/pressure-office-mood-forecast.jpg",
+    "assets/photos/ai-chair-removes-executives.jpg",
+    "assets/photos/robot-job-hopping.jpg",
+    "assets/photos/supporter-guarantor-contract.jpg",
+    "assets/photos/apology-before-incident.jpg",
+    "assets/photos/research-completed-opening-day.jpg",
+    "assets/photos/fan-theories-write-final.jpg",
+    "assets/casters/newsreader-preview.jpg"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "checked_at_utc": "2026-11-15T01:47:48.331967+00:00",
+  "method": "ExactSHA and decodedRGBpixels, plus32x32gray low8x8DCTpHash64screening. Notvisualidentityproof.",
+  "public_files": 126,
+  "all_source_candidate_files": 77,
+  "candidates": [
+    {
+      "path": "drafts/weekly-six-20261115/shiramine-yuki/b174824a/candidate-01.png",
+      "sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+      "pixel_sha256": "6f3f6a769c6f114c4c700bfa0a9a9cf7f18995194443b46a5708e68176711ca1",
+      "phash64": "f3c49bcc32447f03",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 1925239,
+      "comparison_files": 202,
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_comparisons": [
+        {
+          "path": "assets/generated/comedy-live-subtitles-spoil-punchlines-three-seconds.jpg",
+          "distance": 22
+        },
+        {
+          "path": "assets/photos/supporter-guarantor-contract.jpg",
+          "distance": 22
+        },
+        {
+          "path": "assets/generated/bring-your-own-room-hotel-parking-spaces.jpg",
+          "distance": 24
+        },
+        {
+          "path": "assets/generated/family-dinner-gacha-243-rejections.jpg",
+          "distance": 24
+        }
+      ],
+      "full_original_displayed": true
+    },
+    {
+      "path": "drafts/weekly-six-20261115/shiramine-yuki/b174824a/candidate-02.png",
+      "sha256": "1092cddf3903bd5b4b02398a7a33f52cefd934e19978f530a48ec8ef96d1a2c2",
+      "pixel_sha256": "b0aa0e64489ae0d59c0e782feace8a4266d163cd23b5814a0a578b24eff456f5",
+      "phash64": "76b626b2e5547489",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2270676,
+      "comparison_files": 202,
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_comparisons": [
+        {
+          "path": "assets/generated/ar-sport-fans-vote-crosswind-finals.jpg",
+          "distance": 24
+        },
+        {
+          "path": "assets/generated/bring-your-own-room-hotel-parking-spaces.jpg",
+          "distance": 24
+        },
+        {
+          "path": "assets/generated/delivery-locker-zero-redelivery-waiting-line.jpg",
+          "distance": 24
+        },
+        {
+          "path": "assets/generated/sand-dune-race-radar-reroutes-ridge-final.jpg",
+          "distance": 24
+        }
+      ],
+      "full_original_displayed": true
+    }
+  ]
+}

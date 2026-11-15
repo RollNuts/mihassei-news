@@ -922,7 +922,7 @@ def check():
             raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
     image, image_mime=get("/og/brand-home-20261115-v4.png")
     # A clean launch URL forces a new card fetch instead of reusing old cached metadata.
-    share,mime=get("/?src=x-launch-20261102-v3")
+    share,mime=get("/?src=x-launch-20261115-v4")
     if "text/html" not in mime:
         raise RuntimeError("Launch X share URL has unexpected Content-Type")
     verify_launch_card(share.decode("utf-8"), "/og/brand-home-20261115-v4.png")

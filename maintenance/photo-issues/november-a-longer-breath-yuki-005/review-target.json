@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-a-longer-breath-yuki-005",
+    "number": 5,
+    "title": "ひと息ぶん、長く。",
+    "summary": "白峰ゆきが選ぶ、居心地のよい場所。窓辺の読書から暖かな海辺まで、旅先でひと息つく10枚。",
+    "column": [
+      "2031年11月。宿の部屋は、入る前からわたしの好きな温度になっていました。ありがたいけれど、椅子の座り心地までは画面では分かりません。窓辺に腰を下ろして、ようやく「ここなら長居できそう」と思いました。",
+      "柔らかな服に着替えて、本を一冊。本のページをめくり、カップから上がる湯気を眺めていると、いつの間にか予定の時間を過ぎていました。次の場所も気になるのに、気に入った椅子から立つのは少し苦手です。",
+      "暖かな海辺では、シャツを羽織って風に当たりました。日差しの強さより、風が袖を通る感じを覚えています。旅先で選ぶ服は、写真に残る色と同じくらい、肌に触れる柔らかさが大切です。",
+      "夕方のテラスでひと息ついてから、ようやく帰り支度。居心地のよさは、短い時間では決められないこともあります。今日の寄り道は少し長め。でも、のんびり過ごせた日は、そのくらいでいいですよね。"
+    ],
+    "model_id": "shiramine-yuki",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "旅先の窓辺と暖かな海辺",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した旅先の読書・テラス・海辺の独立写真10枚から、居心地と衣服の手触りをたどる構成を選ぶ。水着が明瞭な写真はワンピース水着とビキニの2枚で、パジャマやドレスを水着として数えず、衣服の場面を含む既存セットを採用する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "白峰ゆき（24歳、架空の成人）。白いブラウス姿で、グラスを手に食卓から笑顔を向ける。",
+        "caption": "白いブラウス姿で、グラスを手に食卓から笑顔を向ける。",
+        "alt": "白峰ゆき（24歳、架空の成人）。白いブラウス姿で、グラスを手に食卓から笑顔を向ける。"
+      },
+      {
+        "id": "02",
+        "description": "白峰ゆき（24歳、架空の成人）。暖かな海辺の桟橋を、白いワンピース水着で裸足で歩く。",
+        "caption": "暖かな海辺の桟橋を、白いワンピース水着で裸足で歩く。",
+        "alt": "白峰ゆき（24歳、架空の成人）。暖かな海辺の桟橋を、白いワンピース水着で裸足で歩く。"
+      },
+      {
+        "id": "03",
+        "description": "白峰ゆき（24歳、架空の成人）。紺のパジャマ姿で窓辺の椅子に座り、本を読む。",
+        "caption": "紺のパジャマ姿で窓辺の椅子に座り、本を読む。",
+        "alt": "白峰ゆき（24歳、架空の成人）。紺のパジャマ姿で窓辺の椅子に座り、本を読む。"
+      },
+      {
+        "id": "04",
+        "description": "白峰ゆき（24歳、架空の成人）。夕暮れのテラスで、ベージュのジャケット姿で手すりにもたれる。",
+        "caption": "夕暮れのテラスで、ベージュのジャケット姿で手すりにもたれる。",
+        "alt": "白峰ゆき（24歳、架空の成人）。夕暮れのテラスで、ベージュのジャケット姿で手すりにもたれる。"
+      },
+      {
+        "id": "05",
+        "description": "白峰ゆき（24歳、架空の成人）。白いビキニにシャツを羽織り、ヤシのある海辺に立つ。",
+        "caption": "白いビキニにシャツを羽織り、ヤシのある海辺に立つ。",
+        "alt": "白峰ゆき（24歳、架空の成人）。白いビキニにシャツを羽織り、ヤシのある海辺に立つ。"
+      },
+      {
+        "id": "06",
+        "description": "白峰ゆき（24歳、架空の成人）。夜景の見える窓辺で、黒いロングドレス姿で両手を重ねる。",
+        "caption": "夜景の見える窓辺で、黒いロングドレス姿で両手を重ねる。",
+        "alt": "白峰ゆき（24歳、架空の成人）。夜景の見える窓辺で、黒いロングドレス姿で両手を重ねる。"
+      },
+      {
+        "id": "07",
+        "description": "白峰ゆき（24歳、架空の成人）。淡い青のパジャマでベッドに横になり、ひと息つく。",
+        "caption": "淡い青のパジャマでベッドに横になり、ひと息つく。",
+        "alt": "白峰ゆき（24歳、架空の成人）。淡い青のパジャマでベッドに横になり、ひと息つく。"
+      },
+      {
+        "id": "08",
+        "description": "白峰ゆき（24歳、架空の成人）。麦わら帽子と白いワンピースで、海辺のテラスから振り返る。",
+        "caption": "麦わら帽子と白いワンピースで、海辺のテラスから振り返る。",
+        "alt": "白峰ゆき（24歳、架空の成人）。麦わら帽子と白いワンピースで、海辺のテラスから振り返る。"
+      },
+      {
+        "id": "09",
+        "description": "白峰ゆき（24歳、架空の成人）。赤いドレスでグラスを持ち、肩越しに視線を向ける。",
+        "caption": "赤いドレスでグラスを持ち、肩越しに視線を向ける。",
+        "alt": "白峰ゆき（24歳、架空の成人）。赤いドレスでグラスを持ち、肩越しに視線を向ける。"
+      },
+      {
+        "id": "10",
+        "description": "白峰ゆき（24歳、架空の成人）。窓枠に手を添え、黒いドレス姿でこちらを見る。",
+        "caption": "窓枠に手を添え、黒いドレス姿でこちらを見る。",
+        "alt": "白峰ゆき（24歳、架空の成人）。窓枠に手を添え、黒いドレス姿でこちらを見る。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "shiramine-yuki",
+      "name": "白峰ゆき",
+      "age": 24,
+      "fictional": true,
+      "appearance": "24歳の架空の成人。柔らかな雰囲気と暗めの長い髪。独自の顔立ち。",
+      "character": {
+        "version": 1,
+        "first_person": "わたし",
+        "occupation": "旅・衣服担当モデル兼リポーター",
+        "casting_specialty": "旅先の居心地や衣服の温度・手触りを、落ち着いて確かめる企画。",
+        "personality": "穏やかで気配り上手。居心地のよさには意外と頑固。",
+        "voice": "ゆっくりした語り口。温度や手触りを身近な言葉で語る。",
+        "likes": [
+          "温かい飲み物",
+          "柔らかな服",
+          "静かな旅"
+        ],
+        "weakness": "気に入った場所を見つけると長居する。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+        "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+        "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+        "provenance": "assets/generated/photo-reference-shiramine-yuki-b5705a94502f.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 167,
+        "bust_cm": 89,
+        "waist_cm": 63,
+        "hip_cm": 92,
+        "shoulder_width_cm": 38,
+        "inseam_cm": 78,
+        "heads_tall": 7.4
+      },
+      "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+      "face_reference": {
+        "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+        "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+        "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-shiramine-yuki-f2ba9bb76565.jpg",
+        "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+        "source_png_sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+        "provenance": "assets/generated/photo-reference-shiramine-yuki-f2ba9bb76565.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-01.jpg",
+        "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+        "bytes": 249465,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/01/receipt-supplied-61f0d767493a-b5705a94502f.json",
+          "receipt_sha256": "5c4d2678f8141bfce232cf07eed8a36be957ae2fe2b82a16ef3b5a249e18995c",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-02.jpg",
+        "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+        "bytes": 177359,
+        "width": 1200,
+        "height": 675,
+        "source_sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/02/receipt-supplied-5a9a331cb621-f2ba9bb76565.json",
+          "receipt_sha256": "5f29edd3c523e9463da8c7de982063458015046b3cb6f0f2af47749a18ededda",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-03.jpg",
+        "sha256": "27f49d3f0f1674e7568699fabf914ffa08476bb4d97d19b94d8fa7d2ddf38f8b",
+        "bytes": 269593,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "7e73e061c22265a454595dd9729f2cdf8acd77fd2a6fee32e1d759bbb4641e07",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/03/receipt-supplied-7e73e061c222-27f49d3f0f16.json",
+          "receipt_sha256": "3a9eb162bd68d8ac49ac77f23b3c84974bfe7197917cafa29ba3d6bf4541a919",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-04.jpg",
+        "sha256": "115c694a398df1d070feb34a4bd8b0019ace9d78ce51d08cffdfc69b79b6fce2",
+        "bytes": 217388,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "fbae8beae5959a8f9572132543b8803746a707b3f9d897f2f4f8515e09ceb60a",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/04/receipt-supplied-fbae8beae595-115c694a398d.json",
+          "receipt_sha256": "f934855f463dcd55e9c0b79ea2010ca4642379027ee360a4f3fd302b7ab1a56e",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-05.jpg",
+        "sha256": "53270bc45fcee5fc405b1a63d43a093713236663f54613460ef9d2df6043b723",
+        "bytes": 204905,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "105928affa798c0426c034783f6e618f2802bd657f650e064a9ca2211a3fe3f5",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/05/receipt-supplied-105928affa79-53270bc45fce.json",
+          "receipt_sha256": "0d51ab19a1063898cace928b0dc3cc2e4c4c2dc8ba4a527909c5a5c55cde61f8",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-06.jpg",
+        "sha256": "a50c72cc84f197f1921a088597cddba56b2c97dd3e7c1af1eecc7aff2291d8e5",
+        "bytes": 184931,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "e29d4096ce7208313be9e8d7e85911274a551e4812d6baf2912e0590c2be9bfe",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/06/receipt-supplied-e29d4096ce72-a50c72cc84f1.json",
+          "receipt_sha256": "3f70b492b70898407ffda1acf788a61b58912cbf5913e791874cfe830435ea10",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-07.jpg",
+        "sha256": "1be7d67f641d89f2e658c9ba1160c32e8c28bfd1725602a99551d32590646a02",
+        "bytes": 268972,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "1092cddf3903bd5b4b02398a7a33f52cefd934e19978f530a48ec8ef96d1a2c2",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/07/receipt-supplied-1092cddf3903-1be7d67f641d.json",
+          "receipt_sha256": "e18d514e3a2e6945136f91414c0a53c03e802daa9b8b04543ec08b0697420645",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-08.jpg",
+        "sha256": "77ab3ba35a4f6dd72f7d5f338d5b06603134c00a09e0087f0825d64e7c1110b1",
+        "bytes": 254362,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "4a844faeb596bdbe6d0eb793bdf570ba61519911edb82f98fd7f34b090c62e42",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/08/receipt-supplied-4a844faeb596-77ab3ba35a4f.json",
+          "receipt_sha256": "4f645df58bdefdb80bc2ff0c24bc941f2272f797740d730c7e52a0711e81eeb9",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-09.jpg",
+        "sha256": "f49c5219b06bb08d774b26fc09b42d18f851c4cfa5d8448d9e0b58c9bccd9e52",
+        "bytes": 203228,
+        "width": 900,
+        "height": 1200,
+        "source_sha256": "0b72250301042b6524053eb91451fbaa20cff154b09ab668c367649897f2df54",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/09/receipt-supplied-0b7225030104-f49c5219b06b.json",
+          "receipt_sha256": "01050e0423118a50c667b859d2eee1b45280ffb93d9329687e86eae98eefb032",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-a-longer-breath-yuki-005-10.jpg",
+        "sha256": "32efeea7b7d966795332014a55709d69fce54d04b2a280bed7cee74338c7ec98",
+        "bytes": 185253,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "41ec27bc26ad70befa22a209098ac5c14326db7544782bca5e6360ff4cebd30a",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-a-longer-breath-yuki-005/10/receipt-supplied-41ec27bc26ad-32efeea7b7d9.json",
+          "receipt_sha256": "dbfa944657e41f58642b3c496841eb35f8a0becce3bae6582bb0dad2f911d9d5",
+          "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "d4525c8db70991d6d55cbf75918d0c4fb616a3a010d6283010837a4107e8219f"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": true,
+      "framing": "wide"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": true,
+      "framing": "full_body"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    }
+  ]
+}

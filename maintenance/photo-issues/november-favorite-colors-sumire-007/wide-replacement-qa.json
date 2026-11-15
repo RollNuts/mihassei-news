@@ -1,0 +1,44 @@
+{
+  "source": {
+    "index": 2,
+    "download_path": "/Users/murakaminaoya/Downloads/74b0dcca-defb-4df3-aafe-97821d6568a6.png",
+    "path": "/tmp/mihassei-weekly-seven-profiles-20261115/drafts/weekly-six-20261115/kiritani-sumire/d614f613/candidate-02.png",
+    "source_turn_id": "d614f613-1a3a-4b10-a133-dbf93749801d",
+    "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+    "bytes": 2077829
+  },
+  "reviewed_at_utc": "2026-11-15T01:59:50.636483+00:00",
+  "actual_full_original_displayed": true,
+  "sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+  "format": "PNG",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "decision": "accepted_for_selection",
+  "framing": "wide",
+  "swimwear_visible": false,
+  "note": "True environmental wide: small rear-view adult figure head-to-feet in frame, long dark hair and blue-floral dress, walking barefoot on sand with sea/sky occupying mostframe. Distinct action/scale from originalclose shoulderturn coastalportraits; natural gait/limbs/hem/shadow/surf, no text/logo or dominant defect. Face is not visible, so identity continuity relies on same providedmodelchat plus consistent hair/dress/silhouette, not face match. Warm-coast November context; no numericmeasurementclaim.",
+  "comparison_scope": 209,
+  "exact_byte_matches": [],
+  "exact_pixel_matches": [],
+  "nearest_comparisons": [
+    {
+      "path": "drafts/weekly-six-20261115/shioba-rio/candidate-04.png",
+      "phash_distance": 20
+    },
+    {
+      "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-01.png",
+      "phash_distance": 22
+    },
+    {
+      "path": "assets/generated/cafe-regular-dislikes-usual-cinnamon-latte.jpg",
+      "phash_distance": 24
+    },
+    {
+      "path": "assets/generated/custom-work-apps-four-week-handover.jpg",
+      "phash_distance": 24
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-first-detour-mio-004",
+  "cut_id": "03",
+  "model_id": "hanase-mio",
+  "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+  "imported_at": "2026-11-15T01:42:26.075375+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+    "image_number": 5,
+    "path": "maintenance/photo-issues/november-first-detour-mio-004/03/source-e1203208bf72d6a94c1ae725f968f023ca2e6416b8c3d2b8472476c535df4cbf.png",
+    "sha256": "e1203208bf72d6a94c1ae725f968f023ca2e6416b8c3d2b8472476c535df4cbf",
+    "bytes": 2222627,
+    "width": 1122,
+    "height": 1402,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-first-detour-mio-004-03.jpg",
+    "sha256": "9be88c05dbf1243896a6f4e36c4e3335e44f2b5f7c5fa7de8e1267417f3824d7",
+    "bytes": 299668,
+    "width": 960,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}
