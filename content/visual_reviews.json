@@ -930,17 +930,17 @@
     },
     "swapped-suitcases-drive-themselves-to-lost-property": {
       "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
-      "decision": "rejected",
-      "image_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011",
-      "note": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
-      "reviewed_at": "2026-11-15T13:19:22+09:00"
+      "image_sha256": "5db5e6db656e8894ab2e61122f34ca6148269e5c374698824f46c26ae0774c6a",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T10:26:17.449602+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。屋内駅構内の窓口前に銀色ケースが2台あり、伸縮式持ち手は収納され、旅行者の手やひもで引かれていない。後方の成人男女は両手が空でケースとの間隔があり、床の黄色い区分線と仕切り、右の制服姿の係員と窓口が見える。荷物が先に窓口へ着き、人が後ろから追う本文の主要場面に合う。冬物のコートや靴、金属ケースの反射、床の材質、自然な顔と手、駅の蛍光灯の陰影は一貫し、目立つ融合・余分な指・不要な可読文字・ロゴ・透かしは見えない。静止画から認証処理や正確な年齢を実証したとは扱わない。原PNG分割原本、JPEG、変換再現とreceipt SHAを照合。元の不採用JPEG・整数seed・review・active holdは履歴に原形保存し、今回は同じ記事FPに対する別SHAの新写真を採用する。 C2PA asset instanceIDは実PNGから抽出した値でツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
     },
     "water-main-repair-priority-dry-street-first": {
       "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
-      "decision": "rejected",
-      "image_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150",
-      "note": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
-      "reviewed_at": "2026-11-15T13:19:22+09:00"
+      "image_sha256": "b6f12bcc6df9668d2796814c902ef4f87a7389ccf0a5a0b15e7717ad74d356cb",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T10:26:17.458120+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。夜の乾いた住宅街で、開いた舗装下に連続する金属水道管と錆びたボルト継ぎ目が手前の主役として写る。青い作業服とヘルメットの成人作業員が溝の外側で膝をつき、手袋の指で接続部を示している。コート姿の成人女性はコーンと横棒の向こうから見ており、作業灯が乾いた舗装縁・土・管を照らす。道路や側溝に噴水・冠水はなく、本文の予防補修の場面に合う。管の円筒形、金属・錆・土の材質、手と衣服、作業灯の減衰が自然で、目立つ融合・余分な指・不要な可読文字・ロゴ・透かしは見えない。写真だけで検査結果や漏水時期を実証したとは扱わない。原PNG分割原本、JPEG、変換再現とreceipt SHAを照合。元の不採用JPEG・整数seed・review・active holdは履歴に原形保存し、今回は同じ記事FPに対する別SHAの新写真を採用する。 C2PA asset instanceIDは実PNGから抽出した値でツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
     },
     "recycling-robot-reserves-washer-parts-before-dismantling": {
       "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",

@@ -1,0 +1,14 @@
+{
+  "tool": "image_gen.imagegen",
+  "mode": "built-in tool; no CLI/API key",
+  "execution_id": "3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+  "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+  "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-3d198d93-e7af-4bc5-841d-e9e67331dfc1.png",
+  "source_png_sha256": "67a1e87f9bb9c13b5ecbb9f96874d298f360a1de9301b8033c1279e34dce3f7d",
+  "source_png_bytes": 2759036,
+  "observed_file_mtime": "2026-11-15T10:18:39.422826+00:00",
+  "generation_prompt": "Use case: photorealistic-natural. One realistic horizontal 16:9 editorial news photograph of preventive water-main repair on a DRY Japanese residential street at NIGHT in November, entirely fictional people and location. The EXPOSED WATER PIPE AND ITS WORN JOINT must be the clear foreground subject, not merely a hole or a worker portrait. A small safely cordoned road opening reveals a horizontal dark cast-iron water pipe roughly 20 centimetres in diameter running along the shallow trench, with one clearly visible old bolted coupling joining two pipe sections. Close enough to see rust and wear at the coupling, no spraying water or leak. A municipal worker in ordinary blue work clothes and plain safety helmet kneels OUTSIDE the trench and points with one gloved hand toward the worn coupling. An adult Japanese woman aged 42 in an autumn coat watches from behind the low work barrier on the dry pavement, a small part of the background. A practical portable work light illuminates the pipe, hands and dry cut asphalt edges; modest houses and an unlit drain sit behind, restrained cool autumn night colors with natural light falloff. Downward three-quarter camera angle makes the continuous cylindrical pipe and joint unmistakable while retaining enough of the street to show there is no flooding. Serious matter-of-fact expressions, plausible tools and excavation scale, realistic hands, no worker inside an unsafe deep pit. No readable noticeboard, lettering, numbers, logos, company marks, diagrams, text overlays, celebrity likeness, illustration, 3D render or excessive dramatic lighting. This is a single believable press photograph of work before a visible leak.",
+  "transparent_background": false,
+  "vendor_model_version": null,
+  "vendor_seed": null
+}
