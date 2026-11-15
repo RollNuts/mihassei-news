@@ -613,7 +613,8 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
     _validate_source_article(issue, issue.get("images"),
                              studies=issue.get("studies"),
                              article_sources=issue.get("article_photo_sources"))
-    _article_photo_sources(issue)
+    if issue.get("source_article") is None:
+        _article_photo_sources(issue)
     reduced_swimwear = _reduced_swimwear_exception(issue)
     shots = issue.get("shots")
     if (not isinstance(shots, list) or len(shots) != 10

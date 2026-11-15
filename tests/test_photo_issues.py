@@ -28,6 +28,9 @@ class PhotoIssueTests(unittest.TestCase):
     def setUp(self):
         self.catalog = copy.deepcopy(p.load_photo_issues(ROOT))
         self.issue = self.catalog["issues"][0]
+        # This temporary repo contains only the first issue's synthetic assets.
+        # Later production releases have their own timestamps and image files.
+        self.catalog["issues"] = [self.issue]
         if self.issue["issue_sha256"] != INITIAL_FP:
             original = next(entry for entry in self.issue["editorial_history"]
                             if entry["issue_sha256"] == INITIAL_FP)

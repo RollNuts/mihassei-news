@@ -51,6 +51,9 @@ class PhotoCastTests(unittest.TestCase):
 
     def test_one_unprepared_model_returns_only_editorial_persona(self):
         model = next(model for model in self.catalog["models"] if model["id"] == "tsukishiro-rena")
+        # Cast lookup must work before photo preparation, independently of the
+        # current production registry's later accepted references.
+        model.update(reference_state="unprepared", master=None, body_reference={"state": "unprepared"})
         self.assertEqual(model["reference_state"], "unprepared")
         report = self.read_cast(model["id"])
         self.assertEqual(set(report), {"id", "name", "age", "fictional", "occupation",

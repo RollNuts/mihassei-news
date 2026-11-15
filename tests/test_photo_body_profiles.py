@@ -1,5 +1,6 @@
 """Small offline checks for authored designs; no image measurement or generation."""
 import copy
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -39,8 +40,26 @@ class PhotoBodyProfileTests(unittest.TestCase):
         self.assertEqual(saya["body_reference"], {"state": "accepted_reference", **saya["master"]})
         self.assertNotEqual(saya["body_reference"]["sha256"], saya["preferred_face_reference"]["sha256"])
         for model_id in set(DESIGNS) - {"nagino-saya"}:
-            self.assertEqual(self.models[model_id]["body_reference"], {"state": "unprepared"})
-        self.assertEqual(self.models["shioba-rio"]["reference_state"], "preview_only")
+            model = self.models[model_id]
+            reference = p.validate_body_reference(model["body_reference"])
+            if reference["state"] == "unprepared":
+                self.assertEqual(reference, {"state": "unprepared"})
+                continue
+            self.assertEqual(model["reference_state"], "accepted_reference")
+            self.assertEqual(reference["path"],
+                             f'assets/generated/photo-body-{model_id}-{reference["sha256"][:12]}.jpg')
+            self.assertNotEqual(reference["sha256"], model["master"]["sha256"],
+                                "the new face and full-body references use distinct reviewed photographs")
+            self.assertEqual(reference["provenance"],
+                             f'assets/generated/photo-reference-{model_id}-{reference["sha256"][:12]}.json')
+            receipt = json.loads((ROOT / reference["provenance"]).read_text())
+            self.assertEqual((receipt["model_id"], receipt["role"]), (model_id, "body"))
+            self.assertEqual(receipt["reference_path"], reference["path"])
+            self.assertEqual(receipt["jpeg"]["sha256"], reference["sha256"])
+            self.assertEqual(receipt["source"]["sha256"], reference["source_png_sha256"])
+            self.assertEqual(receipt["review"]["decision"], "accepted")
+            self.assertIs(receipt["review"]["actual_converted_jpeg_displayed_full"], True)
+            self.assertEqual(hashlib.sha256((ROOT / reference["path"]).read_bytes()).hexdigest(), reference["sha256"])
 
     def test_fingerprint_is_pure_order_independent_and_changes_with_design(self):
         original = copy.deepcopy(self.profile)
