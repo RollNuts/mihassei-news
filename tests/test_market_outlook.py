@@ -38,7 +38,8 @@ class MarketOutlookTests(unittest.TestCase):
             self.assertTrue(item["source_url"].startswith("https://"))
         hub = render_market_outlook_index(self.market, self.outlook)
         self.assertIn("予測は今、どう見える？", hub)
-        self.assertIn("支持材料あり", hub)
+        self.assertIn("判定材料不足", hub)
+        self.assertNotIn("支持材料あり", hub)  # Original disclosures are not new proof.
         self.assertIn("判断保留", hub)
         self.assertNotIn("的中率", hub)
         for episode in self.market["episodes"]:
@@ -65,7 +66,7 @@ class MarketOutlookTests(unittest.TestCase):
         series.append(update)
         validate_outlook_records(series, self.all_series, today=date(2026, 11, 16))
         title = render_market_outlook_episode(None, [series[1], series[2]])
-        self.assertIn("見方を変更：中立 → 弱気", title)
+        self.assertIn("見方を変更：判断保留 → 弱気", title)
         self.assertIn("2026-11-15", title)
         self.assertIn("2026-11-16", title)
         self.assertNotIn("的中率", title)
