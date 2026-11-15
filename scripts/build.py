@@ -1004,6 +1004,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         metadata.update({"@type":"CollectionPage","datePublished":photo_edition["published_at"],
                          "isPartOf":{"@type":"CreativeWorkSeries","name":"週刊グラビア","url":SITE+"/photo/weekly/"},
                          "isAccessibleForFree":True})
+        if photo_edition.get("modified_at"):
+            metadata["dateModified"] = photo_edition["modified_at"]
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
     # footage. Only publish structured video data for a verified local MP4.
@@ -1228,6 +1230,9 @@ def gravure_feature_card(articles, photo_issues=(), photo_editions=()):
         if edition:
             target,title,description = edition_url(edition),edition["title"],edition["summary"]
             label = f'第{edition["number"]}号 · {len(edition["ordered_features"])}人・{sum(len(feature["shots"]) for feature in edition["ordered_features"])}枚'
+            if edition.get("release_mode") == "daily":
+                target,title,description = prefix,issue["title"],issue["summary"]
+                action = "最新の特集を読む"
         cover_image = issue["images"][photo_cover_shot(issue)["id"]]
         width, height = cover_image.get("width", 1200), cover_image.get("height", 675)
         archive = '<a class="serial-feed-link" href="/photo/weekly/">号一覧を見る ↗</a>'

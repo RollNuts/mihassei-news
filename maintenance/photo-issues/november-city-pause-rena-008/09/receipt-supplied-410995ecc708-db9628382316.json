@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-city-pause-rena-008",
+  "cut_id": "09",
+  "model_id": "tsukishiro-rena",
+  "review_reference_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+  "imported_at": "2026-11-15T13:32:38.534871+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "turn_key": "218561fe-ee64-48f3-a531-8b6211b78e12",
+    "image_number": 9,
+    "format": "png",
+    "sha256": "410995ecc7083d2cbdee6cc1c6cbfcc19f101ff2435d4873582ac5fcba1d0ecc",
+    "bytes": 2088928,
+    "width": 1024,
+    "height": 1536,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-city-pause-rena-008/09/source-410995ecc7083d2cbdee6cc1c6cbfcc19f101ff2435d4873582ac5fcba1d0ecc.png",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8675f-49b8-83e8-881e-b31a8ee1f481"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-city-pause-rena-008-09.jpg",
+    "sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300",
+    "bytes": 209835,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

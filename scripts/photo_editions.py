@@ -1,4 +1,4 @@
-"""Frozen weekly photo contents, using observed PVs or an explicit fallback."""
+"""Frozen weekly photo contents and one-person-per-day release schedules."""
 from __future__ import annotations
 
 import argparse
@@ -266,6 +266,35 @@ def edition_url(edition):
     return "/photo/weekly/" + edition["slug"] + "/"
 
 
+def freeze_daily_schedule(catalog, week_start, *, seed=None, now=None):
+    """Shuffle all seven models once, without PV reads or changing a catalog."""
+    seed = secrets.token_hex(16) if seed is None else seed
+    order = [model["id"] for model in catalog["models"]]
+    if not isinstance(seed, str) or not SEED.fullmatch(seed):
+        raise ValueError("A shuffle seed must be a 32-character hexadecimal string")
+    random.Random(int(seed, 16)).shuffle(order)
+    return validate_daily_schedule({"schema_version": 1, "week_start_date_jst": week_start,
+                                    "seed": seed, "order": order,
+                                    "frozen_at_utc": (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat()},
+                                   [model["id"] for model in catalog["models"]])
+
+
+def validate_daily_schedule(schedule, model_ids):
+    if (not isinstance(schedule, dict) or schedule.get("schema_version") != 1
+            or _date(schedule.get("week_start_date_jst")).weekday() != 6
+            or not isinstance(schedule.get("seed"), str) or not SEED.fullmatch(schedule["seed"])
+            or not isinstance(schedule.get("order"), list) or len(schedule["order"]) != 7
+            or any(not isinstance(model_id, str) or not SLUG.fullmatch(model_id) for model_id in model_ids)
+            or len(model_ids) != 7 or len(set(model_ids)) != 7):
+        raise ValueError("A daily photo schedule needs a Sunday and seven registered models")
+    expected = list(model_ids)
+    random.Random(int(schedule["seed"], 16)).shuffle(expected)
+    if schedule["order"] != expected:
+        raise ValueError("Daily photo order differs from its frozen shuffle")
+    _stamp(schedule.get("frozen_at_utc"))
+    return schedule
+
+
 def load_photo_editions(root=ROOT, *, catalog, published, now=None):
     path = Path(root) / "content/photo_editions.json"
     if not path.exists():
@@ -278,25 +307,36 @@ def load_photo_editions(root=ROOT, *, catalog, published, now=None):
     clock = now or datetime.now(timezone.utc)
     released = {feature["slug"]: feature for feature in published if feature.get("state") == "published"
                 and _stamp(feature["published_at"]) <= clock}
-    result, numbers, slugs, claimed_features = [], set(), set(), {}
+    result, numbers, slugs, claimed_features, weeks, release_days = [], set(), set(), {}, set(), set()
     for edition in data["editions"]:
         number, slug = edition.get("number"), edition.get("slug")
         legacy, state = edition.get("legacy"), edition.get("state")
+        daily = edition.get("release_mode") == "daily"
         if (type(number) is not int or number < 1 or number in numbers or not isinstance(slug, str)
                 or not SLUG.fullmatch(slug) or slug in slugs or type(legacy) is not bool
-                or state not in ("draft", "published") or (not legacy and slug != f"issue-{number:03d}")):
+                or state not in ("draft", "published") or (not legacy and slug != f"issue-{number:03d}")
+                or edition.get("release_mode", "joint") not in ("joint", "daily") or (daily and legacy)):
             raise ValueError("Invalid photo edition identity/state")
         for field in ("title", "summary"):
             value = edition.get(field)
             if not isinstance(value, str) or not value.strip() or len(value) > 500:
                 raise ValueError("Photo edition needs reader title/summary")
         members = edition.get("features")
-        if (not isinstance(members, list) or len(members) != (1 if legacy else 7)
+        if (not isinstance(members, list)
+                or (len(members) > 7 if daily else len(members) != (1 if legacy else 7))
                 or any(not isinstance(member, str) or member not in features for member in members)
                 or len(set(members)) != len(members)):
-            raise ValueError("A joint photo edition needs seven distinct known features")
+            raise ValueError("Photo edition needs distinct known features within its release size")
         ordered = [features[member] for member in members]
-        if legacy:
+        if daily:
+            schedule = validate_daily_schedule(edition.get("schedule"), roster)
+            week_start = schedule["week_start_date_jst"]
+            if week_start in weeks or edition.get("ranking") is not None:
+                raise ValueError("A daily photo week is unique and does not use PV ordering")
+            weeks.add(week_start)
+            if [feature["model_id"] for feature in ordered] != schedule["order"][:len(members)]:
+                raise ValueError("Daily photo features must append in the frozen model order")
+        elif legacy:
             if number != 1 or slug != members[0] or edition.get("ranking") is not None:
                 raise ValueError("Legacy photo edition must retain its original feature URL")
         else:
@@ -317,15 +357,33 @@ def load_photo_editions(root=ROOT, *, catalog, published, now=None):
                         raise ValueError("Frozen PV evidence is not an earlier published feature of this model")
         if state == "published":
             stamp = _stamp(edition.get("published_at"))
-            if stamp > clock or any(member not in released for member in members):
+            if stamp > clock or not members or any(member not in released for member in members):
                 raise ValueError("Photo edition has unpublished features or a future publication")
-            if not legacy and stamp.astimezone(JST).date().isoformat() != edition["ranking"]["publication_date_jst"]:
+            if daily:
+                first = _date(week_start)
+                if (stamp.astimezone(JST).date() < first
+                        or _stamp(schedule["frozen_at_utc"]) > stamp):
+                    raise ValueError("Daily photo publication cannot precede its frozen week")
+                for position, feature in enumerate(ordered):
+                    actual_day = _stamp(feature["published_at"]).astimezone(JST).date()
+                    if actual_day < first + timedelta(days=position) or actual_day in release_days:
+                        raise ValueError("Daily photo releases require at most one due model per actual JST day")
+                    release_days.add(actual_day)
+                    if position == 0 and actual_day != stamp.astimezone(JST).date():
+                        raise ValueError("Daily edition must retain its first feature's actual publication date")
+                    if position and _stamp(feature["published_at"]) <= _stamp(ordered[position - 1]["published_at"]):
+                        raise ValueError("Daily photo publication must follow its frozen order")
+            elif not legacy and stamp.astimezone(JST).date().isoformat() != edition["ranking"]["publication_date_jst"]:
                 raise ValueError("Photo edition actual publication date differs from its frozen PV window")
             for member in members:
                 if member in claimed_features:
                     raise ValueError("A published feature cannot belong to two photo editions: " + member)
                 claimed_features[member] = slug
-            result.append({**edition, "ordered_features": [released[member] for member in members]})
+            public = {**edition, "ordered_features": [released[member] for member in members]}
+            if daily:
+                public["modified_at"] = max((item.get("modified_at") or item["published_at"]
+                                              for item in [edition, *public["ordered_features"]]), key=_stamp)
+            result.append(public)
         numbers.add(number)
         slugs.add(slug)
     return sorted(result, key=lambda edition: edition["number"], reverse=True)
@@ -339,24 +397,30 @@ def main(argv=None):
     parser.add_argument("--previous", type=Path)
     parser.add_argument("--seed")
     parser.add_argument("--daily-bootstrap", action="store_true")
+    parser.add_argument("--daily", action="store_true", help="Freeze a Sunday-start daily schedule without PV reads")
     args = parser.parse_args(argv)
     catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
     roster = [model["id"] for model in catalog["models"]]
+    if args.daily and (args.daily_bootstrap or args.previous):
+        raise ValueError("A daily shuffle uses neither PV bootstrap nor a previous order")
     if args.output.is_symlink():
         raise ValueError("A frozen order output cannot be a symlink")
     if args.output.exists():
-        snapshot = validate_order_snapshot(json.loads(args.output.read_text(encoding="utf-8")), roster)
-        if snapshot["publication_date_jst"] != args.publication_date:
+        snapshot = (validate_daily_schedule if args.daily else validate_order_snapshot)(
+            json.loads(args.output.read_text(encoding="utf-8")), roster)
+        if snapshot["week_start_date_jst" if args.daily else "publication_date_jst"] != args.publication_date:
             raise ValueError("Existing frozen order belongs to another publication date")
     else:
         previous = json.loads(args.previous.read_text(encoding="utf-8"))["order"] if args.previous else []
-        snapshot = freeze_order(catalog, publication_day=args.publication_date, previous_order=previous,
-                                seed=args.seed, daily_bootstrap=args.daily_bootstrap)
+        snapshot = (freeze_daily_schedule(catalog, args.publication_date, seed=args.seed) if args.daily else
+                    freeze_order(catalog, publication_day=args.publication_date, previous_order=previous,
+                                 seed=args.seed, daily_bootstrap=args.daily_bootstrap))
         args.output.parent.mkdir(parents=True, exist_ok=True)
         with args.output.open("x", encoding="utf-8") as stream:
             stream.write(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n")
-    print(json.dumps({"output": str(args.output), "status": snapshot["status"],
-                      "order": snapshot["order"], "window": snapshot["window"]}, ensure_ascii=False))
+    print(json.dumps({"output": str(args.output), "status": snapshot.get("status", "shuffled"),
+                      "order": snapshot["order"], "window": snapshot.get("window"),
+                      "week_start_date_jst": snapshot.get("week_start_date_jst")}, ensure_ascii=False))
     return 0
 
 
