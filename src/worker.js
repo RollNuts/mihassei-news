@@ -271,7 +271,7 @@ export class NewsroomStats extends DurableObject {
     ).toArray().filter(row=>validArticle(row.article) &&
       Number.isInteger(row.pageViews) && row.pageViews>0);
   }
-  topPhotoIssueRowsForWeek(day) {
+  photoIssueRowsForWeek(day, limit) {
     const patterns=Array.from({length:7},(_,i)=>{
       const date=new Date((day.serial-6+i)*DAY_MS).toISOString().slice(0,10);
       return "day:"+date+":pageViews:"+PHOTO_ISSUE_PREFIX+"%";
@@ -281,8 +281,11 @@ export class NewsroomStats extends DurableObject {
     return this.sql.exec(
       "SELECT substr(key,26) AS article,SUM(value) AS pageViews FROM counters "+
       "WHERE ("+patterns.map(()=>"key LIKE ?").join(" OR ")+") AND value>0 GROUP BY article "+
-      "ORDER BY pageViews DESC,article ASC LIMIT 20",...patterns
-    ).toArray().filter(row=>photoIssueSlug(row.article)!==null &&
+      "ORDER BY pageViews DESC,article ASC LIMIT ?",...patterns,limit
+    ).toArray();
+  }
+  topPhotoIssueRowsForWeek(day) {
+    return this.photoIssueRowsForWeek(day,20).filter(row=>photoIssueSlug(row.article)!==null &&
       Number.isSafeInteger(row.pageViews) && row.pageViews>0);
   }
   hourlyDimensionTotals(date, marker, dimensions) {
@@ -335,7 +338,7 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
-  publicSnapshot(url, day) {
+  publicSnapshot(url, day, photoEndDay=null) {
     // Reader-facing pages need only the counters they actually render. This
     // compact shape is also returned by successful visit POSTs so a normal
     // page display does not need an immediate second API request.
@@ -400,14 +403,39 @@ export class NewsroomStats extends DurableObject {
         todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
       }));
     }
-    let photoPopularRows=null;
+    let photoPopular=null;
     if(url.searchParams.get("photoPopular")==="1"){
-      const rows=publicStartedAt ? this.topPhotoIssueRowsForWeek(day) : [];
-      const todayValues=this.counts(rows.map(row=>"day:"+day.date+":pageViews:"+row.article));
-      photoPopularRows=rows.map(row=>({
-        ...row,
-        todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
-      }));
+      if(photoEndDay){
+        // Editorial reads use a closed seven-date window. Return every observed
+        // issue up to a fixed cap and make truncation explicit; a top-20 list
+        // cannot safely supply per-model totals across an expanding archive.
+        const firstSerial=photoEndDay.serial-6;
+        const rows=publicStartedAt ? this.photoIssueRowsForWeek(photoEndDay,1001) : [];
+        const bounded=rows.slice(0,1000);
+        const issues=bounded.filter(row=>photoIssueSlug(row.article)!==null &&
+          Number.isSafeInteger(row.pageViews) && row.pageViews>0);
+        photoPopular={
+          version:1,
+          window:{
+            startDateJst:new Date(firstSerial*DAY_MS).toISOString().slice(0,10),
+            endDateJst:photoEndDay.date,timezone:"Asia/Tokyo",unit:"page-view",
+            measuredDays:publicStartedAt ? Math.max(0,Math.min(7,
+              photoEndDay.serial-Math.max(firstSerial,currentJstDay(publicStartedAt).serial)+1)) : 0,
+            complete:Boolean(publicStartedAt && publicStartedAt<=firstSerial*DAY_MS-JST_OFFSET_MS)
+          },
+          issues,
+          // Omitted corrupt/unsafe counters also prevent an editorial client
+          // from interpreting a missing issue as an observed zero.
+          truncated:rows.length>1000 || issues.length!==bounded.length
+        };
+      }else{
+        const rows=publicStartedAt ? this.topPhotoIssueRowsForWeek(day) : [];
+        const todayValues=this.counts(rows.map(row=>"day:"+day.date+":pageViews:"+row.article));
+        photoPopular={last7Days:rows.map(row=>({
+          ...row,
+          todayPageViews:todayValues.get("day:"+day.date+":pageViews:"+row.article)??0
+        }))};
+      }
     }
     return {
       version:2,
@@ -438,8 +466,8 @@ export class NewsroomStats extends DurableObject {
         // browser fetch every published article just to discover the top few.
         topArticles:{last7Days:popularRows}
       } : {}),
-      ...(photoPopularRows!==null ? {
-        topPhotoIssues:{last7Days:photoPopularRows}
+      ...(photoPopular!==null ? {
+        topPhotoIssues:photoPopular
       } : {})
     };
   }
@@ -449,6 +477,18 @@ export class NewsroomStats extends DurableObject {
     const day=currentJstDay(now);
     const hour=currentJstHour(now);
     if(req.method==="GET") {
+      let photoEndDay=null;
+      const photoEnd=url.searchParams.get("photoEnd");
+      if(photoEnd!==null){
+        const stamp=/^\d{4}-\d{2}-\d{2}$/.test(photoEnd) ? Date.parse(photoEnd+"T00:00:00Z") : NaN;
+        const serial=stamp/DAY_MS;
+        // Seven whole dates must fit within the existing 14-date retention.
+        if(url.searchParams.get("view")!=="public" || url.searchParams.get("photoPopular")!=="1" ||
+           !Number.isInteger(serial) || new Date(stamp).toISOString().slice(0,10)!==photoEnd ||
+           serial<day.serial-7 || serial>=day.serial)
+          return json({error:"photoEnd outside complete retained JST weeks"},400);
+        photoEndDay={serial,date:photoEnd};
+      }
       // Optional historical read for the completed-day archive. Never accept
       // arbitrary dates: daily deduplication is retained for 14 JST days.
       const requestedDay=url.searchParams.get("day");
@@ -475,7 +515,7 @@ export class NewsroomStats extends DurableObject {
         selectedHour={date:match[1],hour:match[2],stamp:requestedHour};
       }
       if(url.searchParams.get("view")==="public")
-        return json(this.publicSnapshot(url,day));
+        return json(this.publicSnapshot(url,day,photoEndDay));
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validContentKey).slice(0,20);
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");

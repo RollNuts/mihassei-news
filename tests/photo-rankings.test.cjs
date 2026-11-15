@@ -131,9 +131,74 @@ test('photo aggregate is prefix-only and capped at twenty before unrelated news 
   assert.equal(rows[0].article,key('issue-29'));
   assert.equal(rows.at(-1).article,key('issue-10'));
   assert.ok(rows.every(row=>row.article.startsWith('photo-issue:') && row.pageViews>0));
-  const aggregate=f.queries.find(q=>q.query.includes('LIMIT 20'));
-  assert.equal(aggregate.args.length,7);
-  assert.ok(aggregate.args.every(pattern=>pattern.endsWith(':pageViews:photo-issue:%')));
+  const aggregate=f.queries.find(q=>q.query.includes('GROUP BY article') && q.args.at(-1)===20);
+  assert.equal(aggregate.args.length,8);
+  assert.ok(aggregate.args.slice(0,7).every(pattern=>pattern.endsWith(':pageViews:photo-issue:%')));
+});
+
+test('closed photo window returns exact prior seven JST dates and all observed issue keys',async t=>{
+  const f=fixture(t);
+  f.setTime('2026-11-07T15:00:00Z'); // Nov 8 at 00:00 JST, the first complete date.
+  await f.visit(key('issue-a'));
+  f.setTime('2026-11-14T00:00:00Z');await f.visit(key('issue-b'));
+  f.setTime('2026-11-15T01:00:00Z');await f.visit(key('today-only'));
+  f.put('day:2026-11-07:pageViews:'+key('too-old'),99);
+  for(let i=0;i<25;i++)f.put('day:2026-11-14:pageViews:'+key('archive-'+i),i+1);
+  f.put('day:2026-11-14:pageViews:news-story',10000);
+  const before=f.db.prepare('SELECT total_changes() AS n').get().n;
+  const {status,data}=await f.get('view=public&photoPopular=1&photoEnd=2026-11-14');
+  assert.equal(status,200);
+  assert.deepEqual(data.topPhotoIssues.window,{startDateJst:'2026-11-08',endDateJst:'2026-11-14',
+    timezone:'Asia/Tokyo',unit:'page-view',measuredDays:7,complete:true});
+  assert.equal(data.topPhotoIssues.version,1);
+  assert.equal(data.topPhotoIssues.truncated,false);
+  assert.equal(data.topPhotoIssues.issues.length,27,'editorial model totals are not limited to top twenty');
+  assert.equal(data.topPhotoIssues.issues.some(row=>row.article===key('today-only')),false);
+  assert.equal(data.topPhotoIssues.issues.some(row=>row.article===key('too-old')),false);
+  assert.equal(data.topPhotoIssues.issues.some(row=>row.article==='news-story'),false);
+  assert.equal('last7Days' in data.topPhotoIssues,false,'closed weeks cannot masquerade as rolling rankings');
+  assert.equal(f.db.prepare('SELECT total_changes() AS n').get().n,before);
+});
+
+test('historical photo window rejects future, noncalendar, retained-range and non-opt-in requests',async t=>{
+  const f=fixture(t);
+  for(const end of ['2026-11-15','2026-11-16','2026-11-07','2026-02-30','2026-1-14','garbage'])
+    assert.equal((await f.get('view=public&photoPopular=1&photoEnd='+end)).status,400,end);
+  for(const params of ['photoEnd=2026-11-14','view=public&photoEnd=2026-11-14',
+    'photoPopular=1&photoEnd=2026-11-14'])assert.equal((await f.get(params)).status,400);
+  assert.equal((await f.get('view=public&photoPopular=1&photoEnd=2026-11-08')).status,200,
+    'oldest complete retained seven-date window remains readable');
+});
+
+test('historical coverage never labels partial or absent tracking as a complete observed zero',async t=>{
+  const f=fixture(t);
+  const params='view=public&photoPopular=1&photoEnd=2026-11-14';
+  let data=(await f.get(params)).data;
+  assert.equal(data.topPhotoIssues.window.complete,false);
+  assert.equal(data.topPhotoIssues.window.measuredDays,0);
+  f.setTime('2026-11-08T00:01:00Z');await f.visit(key('issue-a'));
+  f.setTime('2026-11-15T01:00:00Z');
+  data=(await f.get(params)).data;
+  assert.equal(data.topPhotoIssues.window.measuredDays,7);
+  assert.equal(data.topPhotoIssues.window.complete,false,'a partial first date is not full seven-day coverage');
+});
+
+test('historical response flags its hard cap rather than making omitted issue keys look like zero',async t=>{
+  const f=fixture(t);
+  f.put('pageViews:startedAt',Date.parse('2026-11-07T15:00:00Z'));
+  for(let i=0;i<1001;i++)f.put('day:2026-11-14:pageViews:'+key('issue-'+i),1);
+  const data=(await f.get('view=public&photoPopular=1&photoEnd=2026-11-14')).data;
+  assert.equal(data.topPhotoIssues.issues.length,1000);
+  assert.equal(data.topPhotoIssues.truncated,true);
+});
+
+test('historical response marks omitted malformed counters instead of claiming a complete zero',async t=>{
+  const f=fixture(t);
+  f.put('pageViews:startedAt',Date.parse('2026-11-07T15:00:00Z'));
+  f.put('day:2026-11-14:pageViews:photo-issue:../invalid',10);
+  const data=(await f.get('view=public&photoPopular=1&photoEnd=2026-11-14')).data;
+  assert.deepEqual(data.topPhotoIssues.issues,[]);
+  assert.equal(data.topPhotoIssues.truncated,true);
 });
 
 test('zero, absent and unmeasured counters never create a photo rank',async t=>{
