@@ -48,8 +48,14 @@ MISAKI_REV = "fba1236595f2d2bf21d414ba6e57d25256afada3"
 MODEL_REV = "f3ff3571791e39611d31c381e3a41a3af07b4987"
 HF = "https://huggingface.co/hexgrad/Kokoro-82M/resolve/" + MODEL_REV + "/"
 
-# Upstream Apache-2.0 project explicitly removed its non-commercial restriction.
-# The detector/alignment dependencies are upstream MIT/Apache-2.0 components.
+# The project's Apache license does not clear its BFM-derived template and
+# borrowed third-party components for this advertising-supported publication.
+SADTALKER_LICENSE_CLEARED = False
+SADTALKER_LICENSE_BLOCK = (
+    "SadTalker preview paused: commercial permission for the BFM-derived "
+    "landmark template and third-party components is not established. "
+    "No agreement, downloads or inference will be performed."
+)
 # These 2023 release assets expose no publisher SHA256: size/id are pinned,
 # and their *observed* download hashes are recorded, never labelled vendor proof.
 RELEASES = (
@@ -320,6 +326,8 @@ def source_archive(repo, revision, work, budget):
 
 def execute(portrait: Path, portrait_receipt: Path, output: Path):
     temporary = runner_gate()
+    if not SADTALKER_LICENSE_CLEARED:
+        raise RuntimeError(SADTALKER_LICENSE_BLOCK)
     portrait_record = validate_portrait(portrait, portrait_receipt)
     remote_stop = RemoteStopGate()
     remote_stop.check()
@@ -438,7 +446,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if not args.run:
         print(json.dumps({"publication": "preview_only", "seconds": SECONDS, "timeout_seconds": TIMEOUT,
-                          "cpu_only": True, "downloads": "none in plan mode", "licenses": LICENSES}, ensure_ascii=False, indent=2))
+                          "cpu_only": True, "downloads": "none in plan mode", "licenses": LICENSES,
+                          "commercial_use_cleared": SADTALKER_LICENSE_CLEARED,
+                          "blocked_reason": SADTALKER_LICENSE_BLOCK}, ensure_ascii=False, indent=2))
         return 0
     if args.output is None:
         parser.error("--run requires --output inside RUNNER_TEMP")
