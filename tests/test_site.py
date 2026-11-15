@@ -69,9 +69,9 @@ class SiteTests(unittest.TestCase):
         from scripts.build import social_image
         from scripts.check_live import verify_launch_card
         root_page=(ROOT/"dist/index.html").read_text(encoding="utf-8")
-        verify_launch_card(root_page,social_image(None))
+        verify_launch_card(root_page,"/og/brand-home-20261115-v4.png")
         with self.assertRaises(RuntimeError):
-            verify_launch_card('<html><head></head></html>',social_image(None))
+            verify_launch_card('<html><head></head></html>',"/og/brand-home-20261115-v4.png")
 
     def test_public_sponsorship_contact_with_no_premature_ad_placement(self):
         import html
@@ -957,7 +957,10 @@ class SiteTests(unittest.TestCase):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
         from scripts.build import social_image
-        self.assertEqual(social_image(None),"/og/brand-home-20261115-v4.png")
+        self.assertEqual(social_image(None),"/og/brand-launch-20261102-v3.png")
+        # Non-home collection pages keep their existing card URL and cache.
+        archive=(ROOT/"dist/archive/index.html").read_text(encoding="utf-8")
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',archive)
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
