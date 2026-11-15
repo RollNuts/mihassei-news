@@ -102,11 +102,11 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 既存Action `auto-motion-clips.yml` の `caster_preview=true` と `caster_backend=musetalk-core` を明示した場合だけ、公開GitHub Linux CPUで汐羽りおの3秒試作を1本作る。既定はOFF、定期処理と公開manifestへは接続しない。`caster_source_run`・`caster_source_manifest`は空にする。旧SadTalker試作とその再合成は第三者データ・重みの商用条件が未解決のため、インストール・ダウンロード前に拒否する。原記録や過去artifactを合格へ変更しない。
 
-本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。手動で確認した顔範囲とぼかしマスク、元制作チャットから受領した「え、もうこんな時間？」を固定し、写真のパンではなく口の領域だけを合成する。顔・身体全体の自然な動きを確認した経路ではない。
+本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。元制作チャットの「え、もうこんな時間？」とrun `43691031221`の既存3秒WAV（SHA `5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa`）を固定する。原receipt・MP4・GitHub取得証拠・別不採用記録は`maintenance/musetalk-pilot/run-43691031221/`で保持し、音声は未聴取のまま。次の比較は顔bboxだけを`[540,88,820,428]`へ寄せる仮説で、鼻梁・顔左右端・顎の目視推定でありDWPose実測ではない。旧maskの画像上の中心714/318・半径70/51・blur8・右fade境界792/幅15.6を保持する。改善や自然な発話を確認した経路ではない。
 
-`python3 scripts/musetalk_profile_preview.py`はオフラインplanのみ。実生成は`--run`を付けてもpublic GitHub-hosted Linux Python 3.10以外では開始しない。MuseTalkのUNet・VAE・Whisper coreの固定ファイルだけを取得し、DWPose・顔検出・顔解析・SyncNet・GFPGAN・InsightFace・BFMを読み込まない。個別の出典・版・バイト数・SHA・商用条件は`musetalk_preview_sources.py`を正本としてreceiptへ残し、Kokoroの既存固定日本語音声を使う。モデルと環境は使い捨てランナー内だけに置き、Macへ導入しない。
+`python3 scripts/musetalk_profile_preview.py`はオフラインplanのみ。実生成は`--run`を付けてもpublic GitHub-hosted Linux Python 3.10以外では開始しない。MuseTalkのUNet・VAE・Whisper coreの固定ファイルだけを取得し、DWPose・顔検出・顔解析・SyncNet・GFPGAN・InsightFace・BFMを読み込まない。この比較ではKokoro/Misaki/G2Pと音声モデルの再導入・再取得・再合成をせず、原WAVをSHA確認後にそのままコピーする。個別の出典・版・バイト数・SHA・商用条件は`musetalk_preview_sources.py`と保存した原音声receiptを正本として残す。モデルと環境は使い捨てランナー内だけに置き、Macへ導入しない。
 
-試作はfloat32・batch1・10fpsで30枚／3秒、15分のjob内に実処理12分の上限を設ける。12GiBの空きディスク、2GiBの空きRAM、作業8GiB、停止スイッチを監視し、完走を約束しない。失敗時も`receipt.json`の`current_step`・エラー、最大512KiBの`preview.log`と途中進捗を残す。`news-caster-preview-<run_id>`を1日以内に回収し、`publish: false`・`preview_only`のまま声・口・歯・同期・本人性を実確認する。生成成功だけで公開採用しない。
+試作はfloat32・batch1・10fpsで30枚／3秒、15分のjob内に実処理12分の上限を設ける。12GiBの空きディスク、2GiBの空きRAM、作業8GiB、停止スイッチを監視し、完走を約束しない。失敗時も`receipt.json`の`current_step`・エラー、最大512KiBの`preview.log`と途中進捗を残す。artifactへ手動bboxの`source-face-crop.png`と実際の256px入力`model-face-input.png`も加える。`news-caster-preview-<run_id>`を1日以内に回収し、`publish: false`・`preview_only`のまま声・口・歯・同期・本人性を実確認する。生成成功やpixel変化だけで公開採用しない。
 
 
 ### 手動試作の引継ぎ

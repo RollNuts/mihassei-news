@@ -1,0 +1,40 @@
+{
+  "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+  "decision": "rejected",
+  "image_sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd",
+  "rejected_candidate_sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd",
+  "reviewed_at": "2026-11-15T07:56:45.093387+00:00",
+  "reason": "旧CPU JPEGを現本文と実表示で照合。事務所で女性1人が大きな紙を両手で読むだけで、ペンで新しい手順書を書き起こす動作がない。旧scene_promptの退職者と入金明細も描かれていないため不採用。形式・SHAだけで採用せず、原生成記録・整数seed・JPEGを変更せず履歴へ保持する。",
+  "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43688766372",
+  "artifact_id": 14151613554,
+  "raw_generation_commit": "93fd0b9f4c985be267e54f4faa0c70c6ea895a00",
+  "retained_jpeg_path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/previous-cpu-51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd.jpg",
+  "generation": {
+    "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+    "bytes": 97206,
+    "generated_at": "2026-11-15T07:23:26.948948+00:00",
+    "inference": {
+      "algorithm_type": "dpmsolver++",
+      "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+      "guidance_scale": 7.0,
+      "height": 448,
+      "num_inference_steps": 24,
+      "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+      "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+      "scheduler": "DPMSolverMultistepScheduler",
+      "solver_order": 2,
+      "solver_type": "midpoint",
+      "use_karras_sigmas": true,
+      "vae_model": "stabilityai/sd-vae-ft-mse",
+      "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "width": 800
+    },
+    "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "origin": "github-cpu-sd15",
+    "prompt_version": 3,
+    "seed": 937335361030604073,
+    "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
+  },
+  "previous_visual_review": null
+}

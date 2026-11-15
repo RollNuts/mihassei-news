@@ -48,7 +48,9 @@ def run(work, portrait, audio, output, recipe):
     if frame is None or list(frame.shape[:2][::-1]) != recipe["source_dimensions"]:
         raise ValueError("Preview source dimensions changed")
     x1, y1, x2, y2 = recipe["face_box"]
+    cv2.imwrite(str(output / "source-face-crop.png"), frame[y1:y2, x1:x2])
     face = cv2.resize(frame[y1:y2, x1:x2], (256, 256), interpolation=cv2.INTER_LANCZOS4)
+    cv2.imwrite(str(output / "model-face-input.png"), face)
     width, height = x2 - x1, y2 - y1
     mask = np.zeros((height, width), np.float32)
     center, radii = recipe["mask"]["center"], recipe["mask"]["radii"]
