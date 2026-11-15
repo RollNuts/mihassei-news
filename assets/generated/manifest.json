@@ -6877,6 +6877,33 @@
       "source_article_sha256": "e1de0e6c44bbd716d212e86cd5425709c3ba5da8eb39753d17d8f2cbccfa52b9",
       "source_png_sha256": "d9d847df0d4ef025aa9bcbd8c3926b7438c331c76088d2dd5eda2f8b9b867d2f"
     },
+    "water-main-repair-priority-dry-street-first": {
+      "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+      "bytes": 215513,
+      "generated_at": "2026-11-15T04:15:44.551806+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 8188002557133167108,
+      "sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
+    },
     "xr-town-letter-changes-next-visitors-story": {
       "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
       "bytes": 195928,
