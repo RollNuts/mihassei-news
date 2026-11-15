@@ -31,7 +31,10 @@ class HeadParser(HTMLParser):
 class AdSenseTests(unittest.TestCase):
     def test_public_pages_connect_once_to_the_ads_txt_publisher_in_head(self):
         publisher = (build.BASE / "ads.txt").read_text(encoding="utf-8").split(",")[1].strip()
-        for path in ("/", "/archive/", "/articles/reader-story/", "/photo/weekly/"):
+        for path in ("/", "/archive/", "/articles/reader-story/", "/photo/weekly/",
+                     "/serials/market-lab/", "/serials/market-lab/briefings/",
+                     "/serials/market-lab/outlooks/",
+                     "/serials/market-lab/briefings/2026-11-16-am/"):
             with self.subTest(path=path):
                 markup = build.layout("見出し", "概要", path, "<h1>見出し</h1>")
                 scripts = [(attrs, in_head) for attrs, in_head in HeadParser(markup).scripts
