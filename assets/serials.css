@@ -256,3 +256,43 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
   .market-stock-grid{grid-template-columns:1fr}
   .market-dispatch-lead{padding-left:12px}
 }
+
+
+/* Intermediate market outlooks: editorial state, not a prediction score. */
+.market-outlook-section{margin:35px 0 48px}
+.market-outlook-section .section-head h2{font-family:var(--serif);font-size:clamp(23px,3vw,31px)}
+.market-outlook-lead{font-size:13px;line-height:1.9;max-width:80ch;color:#4d6059;margin:9px 0 22px}
+.market-outlook-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.market-outlook-card{padding:21px;border:1px solid #d1d8ca;background:#fffef9;min-width:0;box-shadow:0 6px 15px #22342b0c}
+.market-outlook-top,.market-outlook-event-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#536b61;font-size:12px;font-weight:800}
+.market-signal-label{font-size:11px;background:#ecf2ed;color:#2e6255;padding:4px 9px}
+.market-outlook--challenging .market-signal-label{background:#f5eae7;color:#984e49}
+.market-outlook--mixed .market-signal-label{background:#f4efe3;color:#866436}
+.market-outlook--unavailable .market-signal-label{background:#eff0ee;color:#626d67}
+.market-outlook-card h3{font-family:var(--serif);font-size:clamp(17px,2.1vw,21px);line-height:1.5;margin:13px 0}
+.market-outlook-card h3 a{text-decoration:underline;text-decoration-color:#c8cfc5;text-underline-offset:4px}
+.market-outlook-card p{font-size:12px;line-height:1.9;margin:11px 0;color:#4a5c55}
+.market-outlook-card p.market-outlook-stance{font-size:12px;color:#243c34}
+.market-outlook-change{font-weight:750}
+.market-outlook-more{display:inline-block;font-size:12px;font-weight:900;margin-top:7px;text-decoration:underline;text-underline-offset:4px;color:#2e6656}
+.market-stance-scale{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;max-width:420px;margin:12px 0}
+.market-stance-option{display:block;text-align:center;border:1px solid #d4ddd6;background:#eef1ec;color:#60736a;font-size:12px;line-height:1.5;padding:7px 3px;white-space:nowrap}
+.market-stance-option.is-current{background:#274f44;border-color:#274f44;color:white;font-weight:900}
+.market-outlook-timeline{margin:35px 0 45px;padding-top:23px;border-top:2px solid #738d7d}
+.market-outlook-timeline h2{font-family:var(--serif);font-size:clamp(22px,2.5vw,28px);line-height:1.45}
+.market-outlook-events{list-style:none;margin:18px 0;padding:0;display:grid;gap:14px}
+.market-outlook-event{padding:19px 20px;border:1px solid #d1dad0;border-left:5px solid #7d9d8b;background:#fbfcf7;min-width:0;overflow-wrap:anywhere}
+.market-outlook--challenging.market-outlook-event{border-left-color:#ad716c}
+.market-outlook--mixed.market-outlook-event{border-left-color:#ad945e}
+.market-outlook--unavailable.market-outlook-event{border-left-color:#98a09b}
+.market-outlook-event h3{font-size:16px;margin:12px 0}
+.market-outlook-event p{margin:12px 0;font-size:13px;line-height:1.9;color:#465a50}
+.market-outlook-event p.market-outlook-source{font-size:11px;color:#61766c}
+.market-outlook-source a{text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+@media(max-width:700px){
+  .market-outlook-grid{grid-template-columns:1fr}
+  .market-outlook-card{padding:17px}
+  .market-outlook-section{margin-top:24px}
+  .market-outlook-event{padding:16px 15px}
+  .market-outlook-event p{font-size:12px}
+}
