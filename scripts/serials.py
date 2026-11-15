@@ -308,6 +308,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         f'<span class="market-paper-story-summary">{h(ep["summary"])}</span>'
         + (f'<span class="market-paper-story-figure">図解 {len((figures or {}).get(ep["slug"], []))} 点</span>'
            if (figures or {}).get(ep["slug"]) else '')
+        + f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small>'
         + '</a></li>'
         for ep in older
     )
@@ -325,6 +326,11 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         f'<h1>{h(series["title"])}</h1>'
         '<p>決算資料の数字を読み、これからの市場を考える。</p></div>'
         f'<div class="market-paper-symbol">{_cover_img(series, loading="eager")}</div></div>'
+        '<div class="market-paper-reading-progress">'
+        '<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'
+        f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, latest)}">続きを読む →</a>'
+        '<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
+        '</div>'
         '<nav class="market-paper-nav" aria-label="このページの案内">'
         '<a href="#market-focus">最新の分析</a>'
         '<a href="#market-stories">過去の記事</a>'
@@ -338,6 +344,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         f'<h2 id="market-focus-heading"><a href="{latest_url}">{h(latest["title"])}</a></h2>'
         f'<p class="market-paper-dek">{h(latest["summary"])}</p>'
         f'<a class="market-paper-read" href="{latest_url}">記事と図解を読む →</a>'
+        f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(latest["slug"])}"></small>'
         '</div>'
         '<aside class="market-paper-follow" aria-label="この分析の注目点">'
         '<p class="market-paper-eyebrow">今後の焦点</p>'
@@ -352,6 +359,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         + bulletins_html
         + '<section class="market-paper-stories" id="market-stories">'
         '<div class="market-paper-heading"><h2>これまでの分析</h2>'
+        '<span class="market-paper-visually-hidden">エピソード一覧</span>'
         f'<a href="{serial_feed_url(series)}">連載をRSS購読</a></div>'
         f'<p class="market-paper-section-intro">過去の公表資料をもとにした分析です。掲載時点の見通しはそのまま残しています。</p>'
         f'<ol class="market-paper-story-list">{older_rows}</ol></section>'
@@ -472,7 +480,7 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
                   f'{render_market_outlook_episode(ep, outlook or [])}'
                   f'<section class="serial-references" id="article-sources"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol></section>'
-                  f'<p class="forecast-ledger-link"><a href="{series_url(series)}#forecast-ledger">ほかの予測と判定日を見る →</a></p>'
+                  f'<p class="forecast-ledger-link"><a href="{series_url(series)}#market-proof">ほかの予測と判定日を見る →</a></p>'
                   )
     # Publishing a sequel must not leave an old "next chapter in preparation"
     # message in the first chapter. Preserve immutable editorial source data.
