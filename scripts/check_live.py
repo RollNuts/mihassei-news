@@ -886,19 +886,24 @@ def check():
             raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
 
-    # The browser now requests ONE fingerprinted CSS bundle. Verify both the
-    # content digest (cache busting) and the preserved styles in production.
+    # The main bundle and homepage photo-story stylesheet are both fingerprinted.
+    # Validate the exact two links and their served bytes before checking the bundle.
     style_tags = re.findall(r'<link rel="stylesheet" href="([^"]+)"', body)
-    match = (re.fullmatch(r'/assets/newspaper\.css\?v=([0-9a-f]{12})', style_tags[0])
-             if len(style_tags) == 1 else None)
-    if not match:
-        raise RuntimeError("Expected one versioned first-party stylesheet: " + str(style_tags))
+    bundle_match = (re.fullmatch(r'/assets/newspaper\.css\?v=([0-9a-f]{12})', style_tags[0])
+                    if len(style_tags) == 2 else None)
+    photo_match = (re.fullmatch(r'/assets/photo-stories\.css\?v=([0-9a-f]{12})', style_tags[1])
+                   if len(style_tags) == 2 else None)
+    if not bundle_match or not photo_match:
+        raise RuntimeError("Expected bundled and photo-story stylesheets: " + str(style_tags))
     style_data, style_mime = get(style_tags[0])
-    if "text/css" not in style_mime:
-        raise RuntimeError("Bundled CSS served with an invalid MIME")
+    photo_data, photo_mime = get(style_tags[1])
+    if "text/css" not in style_mime or "text/css" not in photo_mime:
+        raise RuntimeError("First-party CSS served with an invalid MIME")
     style_text = style_data.decode("utf-8")
-    if hashlib.sha256(style_data).hexdigest()[:12] != match.group(1):
+    if hashlib.sha256(style_data).hexdigest()[:12] != bundle_match.group(1):
         raise RuntimeError("Bundled CSS body and version hash disagree (stale cache)")
+    if hashlib.sha256(photo_data).hexdigest()[:12] != photo_match.group(1):
+        raise RuntimeError("Photo-story CSS body and version hash disagree (stale cache)")
     for name in ("style.css", "article-extra.css", "newsroom.css",
                  "future-poll.css", "comments.css", "editorial-polish.css",
                  "serials.css", "reader-first.css"):
