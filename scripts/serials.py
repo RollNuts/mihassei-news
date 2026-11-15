@@ -349,9 +349,10 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '</div>'
         '<nav class="market-paper-nav" aria-label="このページの案内">'
         '<a href="#market-focus">新着記事</a>'
-        + ('<a href="/serials/market-lab/briefings/">日々の市況</a>' if bulletins else '')
-        + '<a href="#market-stories">企業分析</a>'
-        '<a href="#market-proof">予測と検証</a>'
+        '<a href="/serials/market-lab/briefings/">市況一覧</a>'
+        '<a href="/serials/market-lab/outlooks/">毎日の予測</a>'
+        '<a href="#market-stories">企業分析</a>'
+        '<a href="#market-proof">判定記録</a>'
         '</nav></header>'
         '<div class="market-paper-content">'
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
