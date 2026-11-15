@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "repository": "RollNuts/mihassei-news",
+  "run_id": 43695992116,
+  "artifact_id": 14153879013,
+  "decision": "rejected",
+  "scope": "visual adoption only; audio could not be listened to",
+  "picture_viewed": true,
+  "audio_listened": false,
+  "observation_basis": "reported observations from root and independent actual-frame reviewer; not an independent review by this preservation agent",
+  "preview_sha256": "4ac7c9767aff66fce991e587a3d3607b9ac11a6817073de7fd439112599a38e9",
+  "narration_sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+  "receipt_sha256": "0c399386995e308bbb96b5b76b87d8958628d9f363ff8bf2c9397b0b4cc2bc35",
+  "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "recorded_at": "2026-11-15T08:59:51.411661+00:00",
+  "source_report": {
+    "observers": [
+      "parent root",
+      "independent actual-frame reviewer"
+    ],
+    "reported_reviewed_at": null,
+    "reported_displays": [
+      "actual generated frames",
+      "pre-encode first-frame.jpg"
+    ],
+    "reported_findings": "Both root and the independent actual-frame reviewer reject the clip: lip edges/corners are blurred and a reddish soft patch extends across lower lip/chin. It is visible in pre-encode first-frame.jpg, so this is not a CRF-only explanation.",
+    "audio_listened": false,
+    "audio_intelligibility": "Not judged; actual listening is unavailable."
+  },
+  "original_rio_chat_audio_report": {
+    "input_sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+    "reported_response": "聴取不可",
+    "audio_listened": false
+  },
+  "recording_agent_independent_visual_review": false,
+  "recording_agent_audio_listening": false,
+  "note": "Preserved root/independent reported visual rejection without claiming own viewing or hearing. Exact attached WAV was reported unlistenable by the original Rio GPT. The original generated_unreviewed/preview_only/publish=false receipt and prior baseline rejection remain unchanged. Frame count, numeric variation, codec validity and PCM inspection are not quality acceptance."
+}

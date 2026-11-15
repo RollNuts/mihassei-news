@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "repository": "RollNuts/mihassei-news",
+  "run_id": 43691031221,
+  "artifact_id": 14152143323,
+  "decision": "rejected",
+  "scope": "pilot video visual adoption; original audio quality remains unreviewed",
+  "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "preview_sha256": "b180230cddb1dd06ff79d9a105f2664f9677a79c649484d8456fcbe8233e78b7",
+  "narration_sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+  "receipt_sha256": "e9cfd71918a4df2355369350e5693bbda5887a87d75ec17d4919eeb2f01d564d",
+  "recorded_at": "2026-11-15T08:11:26.092834+00:00",
+  "source_report": {
+    "observer": "parent root",
+    "relayed_by": "/root/weekly_profiles_frontend",
+    "reported_reviewed_at": null,
+    "reported_displays": [
+      "three extracted video frames",
+      "original source photograph"
+    ],
+    "reported_findings": "口ぼけ／発話不明瞭で不採用、音声は未聴取だったというroot報告。",
+    "audio_listened": false,
+    "audio_intelligibility": "未聴取のため聴覚上の明瞭さは判定なし。発話不明瞭という語はroot報告を保持したもので、実聴取した証拠ではない。"
+  },
+  "recording_agent_independent_visual_review": false,
+  "recording_agent_audio_listening": false,
+  "note": "This record preserves the root-reported visual rejection. The recording agent did not display frames, play the video or listen to the audio. Original generated_unreviewed/preview_only/publish=false receipt remains unchanged. Pixel variation, ffprobe and PCM measurements do not establish identity, lip-sync or voice quality."
+}

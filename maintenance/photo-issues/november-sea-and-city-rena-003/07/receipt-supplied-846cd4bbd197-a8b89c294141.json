@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-sea-and-city-rena-003",
+  "cut_id": "07",
+  "model_id": "tsukishiro-rena",
+  "review_reference_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+  "imported_at": "2026-11-15T02:06:04.543481+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "turn_key": "7c7d5ea4-981a-4ea8-9476-974b1f03cacd",
+    "image_number": 8,
+    "path": "maintenance/photo-issues/november-sea-and-city-rena-003/07/source-846cd4bbd197dfe5947bf3b3a1139e9b0f670c784ee26b204c38bfed4f3a3d30.png",
+    "sha256": "846cd4bbd197dfe5947bf3b3a1139e9b0f670c784ee26b204c38bfed4f3a3d30",
+    "bytes": 2163825,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-sea-and-city-rena-003-07.jpg",
+    "sha256": "a8b89c29414127edf91fa443b44deaf70d4872e204351f4484bf12578aa042f4",
+    "bytes": 227601,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

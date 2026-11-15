@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "repository": "RollNuts/mihassei-news",
+  "run_id": 43695992116,
+  "head_sha": "df0f0d013b30378bc790728b1886b70a7f8e406b",
+  "artifact_id": 14153879013,
+  "artifact_name": "news-caster-preview-43695992116",
+  "files": {
+    "presenter-preview.mp4": {
+      "sha256": "4ac7c9767aff66fce991e587a3d3607b9ac11a6817073de7fd439112599a38e9",
+      "bytes": 71582
+    },
+    "narration-three-seconds.wav": {
+      "sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+      "bytes": 96078
+    },
+    "receipt.json": {
+      "sha256": "0c399386995e308bbb96b5b76b87d8958628d9f363ff8bf2c9397b0b4cc2bc35",
+      "bytes": 22856
+    },
+    "first-frame.jpg": {
+      "sha256": "1b30faf21eaf6ed3223ba86707c83f3731dae53077b6868ee42de21f52830180",
+      "bytes": 84653
+    },
+    "source-face-crop.png": {
+      "sha256": "de6d3add24eff150e6f5f5ad358047d42b7b9f4da635df90d16e5e736063d2ea",
+      "bytes": 172078
+    },
+    "model-face-input.png": {
+      "sha256": "8bf6ba6d58b41b1f0e72aa5b9648c611645ddf8a52b647c8c18b26a5114f300b",
+      "bytes": 122526
+    }
+  },
+  "run_url": "https://github.com/RollNuts/mihassei-news/actions/runs/43695992116",
+  "run_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/runs/43695992116",
+  "workflow_path": ".github/workflows/auto-motion-clips.yml",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "artifact_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/artifacts/14153879013",
+  "artifact_archive_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/artifacts/14153879013/zip",
+  "artifact_archive_digest": "sha256:d1e416d8d2328a619d3adbc2c71336c14327c4d0a1f4b553559afabe8abe92b7",
+  "artifact_size_in_bytes": 506634,
+  "artifact_expired_at_metadata_read": false,
+  "artifact_created_at": "2026-11-15T08:49:49Z",
+  "evidence_preserved_at": "2026-11-15T08:59:51.411661+00:00",
+  "api_metadata_retrieved_at": {
+    "run": "2026-11-15T08:58:33.523Z",
+    "artifact": "2026-11-15T08:58:44.627Z"
+  },
+  "original_downloaded_at": null,
+  "local_source_directory": "/private/tmp/mihassei-musetalk-preview-43695992116",
+  "transfer_note": "Root supplied an already extracted artifact directory. Six original files were copied byte-for-byte. Current official GitHub run/artifact API responses were saved verbatim; original download time/downloader is not asserted.",
+  "archive_digest_verification": "not_performed; no archive was downloaded in this preservation step",
+  "raw_metadata_files": {
+    "github-run-metadata.raw.json": {
+      "sha256": "6781a13fddd4c6e8c903d8a37312ce5df945bfe1d9fb2ffd6ac15ed2848c5b62",
+      "bytes": 12626
+    },
+    "github-artifact-metadata.raw.json": {
+      "sha256": "d7ad6fb710a2ff93c8fca9fe736182c732c8656cc914680d3e0845255cc0c722",
+      "bytes": 703
+    }
+  },
+  "wav_inspection": {
+    "channels": 1,
+    "sample_rate_hz": 16000,
+    "sample_width_bytes": 2,
+    "sample_format": "PCM16",
+    "frames": 48000,
+    "compression": "NONE",
+    "duration_seconds": 3.0
+  },
+  "receipt_preserved_status": "generated_unreviewed",
+  "receipt_preserved_publish": false
+}

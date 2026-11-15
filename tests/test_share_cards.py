@@ -104,7 +104,7 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
             inspect_markup(doc, "/articles/unpublished/")
 
     def test_first_reader_gets_one_measured_recommendation_area(self):
-        """Keep real story navigation before a PV panel, without hand-picked ranks."""
+        """Keep the lead first, followed by a measured image-rich reading route."""
         doc = (ROOT / "dist/index.html").read_text(encoding="utf-8")
         self.assertNotIn('class="starter-editorial"', doc)
         self.assertEqual(doc.count('data-popular-section'), 1)
@@ -124,7 +124,7 @@ class ShareCardsAndReadingPaths(unittest.TestCase):
         self.assertNotIn('href="/serials/case-files/"', doc)
         css = (ROOT / "dist/assets/editorial-polish.css").read_text(encoding="utf-8")
         for token in (".readers-choice-list", ".readers-choice-item",
-                      ".readers-choice-count", "@media(max-width:660px)"):
+                      "@media(max-width:660px)"):
             self.assertIn(token, css)
         self.assertEqual(css.count("{"), css.count("}"))
 

@@ -25,18 +25,20 @@ class NewsBroadcastTests(unittest.TestCase):
     def setUpClass(cls):
         cls.articles = build.load()
 
-    def test_broadcast_is_single_and_not_a_live_news_claim(self):
+    def test_home_replaces_broadcast_with_cast_posts_and_keeps_news_players(self):
         marked = [a for a in self.articles if a.get("broadcast_feature") is True]
         self.assertTrue(marked)
         self.assertLessEqual(len(build.broadcast_playlist(self.articles)), 3)
         home = build.home(self.articles)
-        self.assertEqual(home.count('class="broadcast-spotlight"'), 1)
-        self.assertEqual(home.count('class="broadcast-video"'), 1)
-        self.assertIn('UNHAPPENED TV', home)
-        self.assertIn('<p class="broadcast-note">再現映像・音声なし</p>', home)
+        self.assertNotIn('class="broadcast-spotlight"', home)
+        self.assertNotIn('class="broadcast-video"', home)
+        self.assertIn('class="cast-timeline"', home)
+        self.assertEqual(home.count('class="photo-post"'), 7)
+        self.assertEqual(home.count('data-story-open='), 7)
         self.assertIn('controls playsinline muted preload="none"', home)
         self.assertNotIn('controls playsinline muted loop preload="none"', home)
-        self.assertIn('src="' + build.asset_url("news-broadcast.js") + '"', home)
+        self.assertNotIn('src="' + build.asset_url("news-broadcast.js") + '"', home)
+        self.assertIn('src="' + build.asset_url("photo-stories.js") + '"', home)
         self.assertNotIn('autoplay', home)
         self.assertIn('架空ニュース', home)
         self.assertNotIn("<small>FICTION</small>", home)

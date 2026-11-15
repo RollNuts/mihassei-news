@@ -26,6 +26,8 @@ if __package__:
     from .motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from .serial_discovery import render_serial_bridge
+    from .market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from .market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -34,6 +36,11 @@ if __package__:
     from .reader_comments import render_reader_comments
     from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
+    from .photo_issue_pages import build_photo_models, model_sitemap_entries
+    from .photo_story_motion import copy_story_motion
+    from .photo_stories import load_photo_stories, render_story_strip, render_model_stories, render_photo_timeline
+    from .photo_editions import load_photo_editions, edition_url
+    from .photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 else:
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -44,6 +51,8 @@ else:
     from motion_clips import usable_clip, clip_url, RELATIVE_DIR as CLIP_DIR
     from serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from serial_discovery import render_serial_bridge
+    from market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -52,6 +61,11 @@ else:
     from reader_comments import render_reader_comments
     from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
+    from photo_issue_pages import build_photo_models, model_sitemap_entries
+    from photo_story_motion import copy_story_motion
+    from photo_stories import load_photo_stories, render_story_strip, render_model_stories, render_photo_timeline
+    from photo_editions import load_photo_editions, edition_url
+    from photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -100,8 +114,8 @@ def stylesheet_url():
 
 @lru_cache(maxsize=None)
 def asset_url(name):
-    """Fingerprint reader JavaScript so new HTML never points at stale behavior."""
-    if not re.fullmatch(r"[a-z0-9-]+\.js", name):
+    """Fingerprint reader assets so new HTML never points at stale resources."""
+    if not re.fullmatch(r"[a-z0-9-]+\.(?:js|css)", name):
         raise ValueError("Invalid reader asset name")
     source = (BASE / "assets" / name).read_bytes()
     digest = hashlib.sha256(source).hexdigest()[:12]
@@ -432,7 +446,7 @@ def category_meta(a, compact=False):
     page_views = (
         f'<span class="article-pv" data-article-pv="{escape(a["slug"])}"'
         ' title="計測開始後のページ表示回数" aria-label="この記事のPVを取得中">'
-        '<strong data-article-pv-count>—</strong><span>PV</span></span>'
+        '<strong data-article-pv-count></strong><span>PV</span></span>'
     )
     followup_badge = '<span class="followup-label">続報</span>' if a.get("followup_of") else ""
     if compact:
@@ -447,7 +461,6 @@ def category_meta(a, compact=False):
             + followup_badge
             + f'<time class="real-published-at" datetime="{escape(published)}"'
               f' aria-label="実際の掲載日時">{escape(compact_date)}</time>'
-            + page_views
             + "</div>"
         )
     return (
@@ -811,17 +824,18 @@ def social_image(article):
             return "/photos/" + article["slug"] + ".jpg"
         version = reviewed_scene_version(article, root=BASE) or "20261103-topic2"
         return "/og/articles/" + article["slug"] + ".png?v=" + version
-    # Use a physically new raster URL: X caches both page cards and image URLs.
-    # The legacy brand.png remains available for previously published links.
+    # Preserve the existing shared card URL on non-home pages.
+    # Only the homepage gets the refreshed URL in layout().
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None, photo_edition=None, photo_parent=None):
     if serial is not None and not public_serials([serial]):
         raise ValueError("Serial has been withdrawn from publication")
     if serial_collection is not None:
         serial_collection = public_serials(serial_collection)
-    photo_page = kind in ("photo_issue", "photo_collection")
+    photo_page = kind in ("photo_issue", "photo_collection", "photo_model", "photo_edition")
+    photo_cover = photo_issue or photo_cover_issue
     if photo_page:
         complete = title + " | 未発生新聞（創作写真コラム）"
     elif path == "/":
@@ -873,16 +887,22 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     # Use a share-intent link without assuming ownership of an X account.
     site_share = escape("https://x.com/intent/tweet?" + urlencode({
         "text": "5年後は、こうなってるかも。今の話題をちょっと大げさに描く未発生新聞。#未発生新聞",
-        "url": SITE + "/?src=x-launch-20261102-v3",
+        "url": SITE + "/?src=x-launch-20261115-v4",
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
     og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
-                       if issue_path else social_image(article))
+                       if issue_path else
+                       ("/og/brand-home-20261115-v4.png" if path == "/" else social_image(article)))
     if serial is not None:
         name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
         og_image = SITE + "/og/serials/" + name + ".png"
-    if photo_issue is not None:
-        og_image = SITE + photo_cover_url(photo_issue)
+    if kind == "market_bulletin":
+        # Bulletins reuse the existing series image.
+        og_image = SITE + "/og/serials/market-lab.png"
+    if photo_cover is not None:
+        og_image = SITE + photo_cover_url(photo_cover)
+    elif photo_model_image is not None:
+        og_image = SITE + photo_model_image["url"]
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (article_image_alt(
@@ -896,17 +916,25 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         og_alt = "創作ニュース「" + article["title"] + "」のテーマを表した共有イラスト"
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
-    if photo_issue is not None:
-        og_alt = photo_cover_shot(photo_issue)["alt"]
+    if photo_page:
+        og_alt = ("架空の成人モデル「" + photo_model["name"] + "」のプロフィール"
+                  if photo_model else "週刊グラビア — 架空の成人モデルの写真とコラム")
+    if photo_cover is not None:
+        og_alt = photo_cover_shot(photo_cover)["alt"]
+    elif photo_model_image is not None:
+        og_alt = photo_model_image["alt"]
     og_mime = "image/jpeg" if local_photo else "image/png"
     scene_card = (article is not None and og_image.startswith(SITE + "/og/articles/")
                   and reviewed_scene_version(article, root=BASE) is not None)
     og_height = 675 if scene_card else 630
     og_size = "" if local_photo else f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="{og_height}">'
-    if photo_issue is not None:
-        cover_image = photo_issue["images"][photo_cover_shot(photo_issue)["id"]]
+    if photo_cover is not None:
+        cover_image = photo_cover["images"][photo_cover_shot(photo_cover)["id"]]
         og_size = (f'<meta property="og:image:width" content="{cover_image.get("width", 1200)}">'
                    f'<meta property="og:image:height" content="{cover_image.get("height", 675)}">')
+    elif photo_model_image is not None:
+        og_size = (f'<meta property="og:image:width" content="{photo_model_image["width"]}">'
+                   f'<meta property="og:image:height" content="{photo_model_image["height"]}">')
     metadata = {"@context":"https://schema.org",
                 "@type":"WebSite" if path=="/" else ("CollectionPage" if issue_path else "WebPage"),
                 "name":title,"url":SITE+path,"description":desc,
@@ -917,7 +945,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         metadata["@type"] = "CollectionPage" if not serial.get("episode") else metadata["@type"]
         metadata["genre"] = "推理小説・フィクション" if serial["kind"] == "fiction" else "金融・市場分析（編集部の見解）"
-    if kind == "serial_episode" and serial is not None:
+    if kind in ("serial_episode", "market_bulletin") and serial is not None:
         metadata.update({
             "@type": "Article",
             "headline": title,
@@ -928,7 +956,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "publisher": {"@type": "Organization", "name": "未発生新聞", "url": SITE},
             "isAccessibleForFree": True,
             "image": [og_image],
-            "articleSection": "推理小説" if serial["kind"] == "fiction" else "株式市場予測"
+            "articleSection": "推理小説" if serial["kind"] == "fiction" else (
+                "実データの日次市況" if kind == "market_bulletin" else "株式市場予測")
         })
         if serial.get("title"):
             metadata["isPartOf"] = {
@@ -954,7 +983,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     if photo_page:
         metadata["genre"] = "創作写真コラム"
-        metadata["@type"] = "CollectionPage" if photo_issue is None else "Article"
+        metadata["@type"] = ("ProfilePage" if photo_model else
+                             "CollectionPage" if photo_issue is None else "Article")
+        if photo_cover is not None or photo_model_image is not None:
+            metadata["image"] = [og_image]
+    if photo_model is not None:
+        metadata["about"] = {"@type": "Thing", "name": photo_model["name"],
+                             "description": "架空の成人モデル"}
     if photo_issue is not None:
         metadata.update({"headline": title, "datePublished": photo_issue["published_at"],
                          "dateModified": photo_issue.get("modified_at") or photo_issue["published_at"],
@@ -963,6 +998,12 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
                          "isPartOf": {"@type": "CreativeWorkSeries", "name": "週刊グラビア",
                                       "url": SITE + "/photo/weekly/"},
                          "isAccessibleForFree": True})
+        if photo_parent:
+            metadata["isPartOf"] = {"@type":"CollectionPage","name":photo_parent["name"],"url":SITE+photo_parent["url"]}
+    if photo_edition is not None:
+        metadata.update({"@type":"CollectionPage","datePublished":photo_edition["published_at"],
+                         "isPartOf":{"@type":"CreativeWorkSeries","name":"週刊グラビア","url":SITE+"/photo/weekly/"},
+                         "isAccessibleForFree":True})
     schemas = [metadata]
     # Video is an optional, first-party photo-motion extra, not fabricated
     # footage. Only publish structured video data for a verified local MP4.
@@ -1065,9 +1106,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     # real audience counts; these links work without JavaScript.
     archive_script = script_tag("site.js") if path == "/archive/" else ""
     broadcast_script = (script_tag("news-broadcast.js")
-                        if path == "/" or (kind == "story" and article is not None
-                                           and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue") else ""
+                        if kind == "story" and article is not None and article_clip(article) else "")
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "photo_edition", "serial_episode", "market_bulletin") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
@@ -1075,6 +1115,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     resume_script = (script_tag("returning-shelf.js")
                      if path == "/" else "")
     engagement_script = script_tag("engagement.js")
+    photo_rankings_assets = (f'<link rel="stylesheet" href="{asset_url("photo-rankings.css")}">\n'
+                             + script_tag("photo-rankings.js") if path == "/photo/weekly/" else "")
+    photo_story_assets = (f'<link rel="stylesheet" href="{asset_url("photo-stories.css")}">\n'
+                          + script_tag("photo-stories.js")
+                          if path in ("/", "/photo/weekly/") or re.fullmatch(r"/photo/models/[a-z0-9-]+/", path) else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     page_class = "page-home" if path == "/" else "page-inner"
@@ -1090,7 +1135,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <meta property="og:description" content="{escape(desc)}">
 <meta property="og:site_name" content="未発生新聞">
 <meta property="og:locale" content="ja_JP">
-<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "photo_issue") else "website"}">
+<meta property="og:type" content="{"article" if kind in ("story", "serial_episode", "market_bulletin", "photo_issue") else "website"}">
 {article_time_meta}
 <meta property="og:url" content="{SITE+path}">
 <meta property="og:image" content="{escape(og_image)}">
@@ -1110,6 +1155,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
 {topic_rss}
 <link rel="stylesheet" href="{stylesheet_url()}">
+{photo_rankings_assets}
+{photo_story_assets}
 {archive_script}
 {broadcast_script}
 {engagement_script}
@@ -1130,17 +1177,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <a class="brand" href="/" aria-label="未発生新聞トップへ">未発生<span class="brand-last">新聞</span></a>
 <p class="mast-sub">{escape(mast_subtitle)}</p>
 </div></header>
-<div class="container observer-shell">
-<div class="observer-widget pv-widget" data-observer-widget hidden data-pv-widget role="group" aria-label="サイトのページ閲覧数">
-<span class="observer-eye" aria-hidden="true">◉</span>
-<span class="observer-stat"><span class="observer-label">今日のPV</span>
-<strong data-site-pv-today>—</strong><span class="observer-suffix">PV</span></span>
-<span class="observer-stat"><span class="observer-label">昨日のPV</span>
-<strong data-site-pv-yesterday>—</strong><span class="observer-suffix">PV</span></span>
-<span class="observer-stat"><span class="observer-label" data-site-pv-period-label>直近7日</span>
-<strong data-site-pv-week>—</strong><span class="observer-suffix">PV</span></span>
-<small><span data-pv-tracking-note>PVを読み込み中</span> · <a href="/privacy/#pageviews">集計について</a></small>
-</div></div><nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
+<nav class="nav-bar" aria-label="メインナビゲーション"><div class="container nav-inner">{navhtml}</div></nav>
 <main id="main">{main}</main>
 <footer class="footer"><div class="container"><div class="footer-grid">
 <div><a class="footer-brand" href="/">未発生新聞</a>
@@ -1151,18 +1188,21 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <span>創作記事はフィクションです。市場分析は投資助言ではありません。</span></div></div></footer>
 </body></html>'''
 
-def pv_recommendations(articles, excluded_slug=""):
+def pv_recommendations(articles, excluded_slug="", illustrated=False):
     """Only publish eligibility metadata; runtime PVs determine the ranking.
 
     Include the whole published archive, not just the newest twenty stories.
-    The browser fetches metrics in twenty-article batches and keeps this panel
-    hidden until all candidates have a measured value for the same JST period.
+    Server-owned metrics decide all ranks, and the panel starts hidden.
+    Only the front page carries thumbnail metadata; article-page links stay
+    text-only to avoid loading more images inside an already long article.
     """
     candidates = sorted(articles, key=lambda a: (
         publication_date(a), a["source"]["published_at"]
     ), reverse=True)
     options = escape(json.dumps(
-        [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
+        [{"slug": x["slug"], "title": x["title"], "category": x["category"],
+          **({"image": editorial_image(x), "fallback": illustration_path(x)}
+             if illustrated else {})}
          for x in candidates if x["slug"] != excluded_slug],
         ensure_ascii=False, separators=(",", ":")))
     return f'''<section class="readers-choice" data-popular-section
@@ -1175,15 +1215,19 @@ def pv_recommendations(articles, excluded_slug=""):
 </section>'''
 
 
-def gravure_feature_card(articles, photo_issues=()):
+def gravure_feature_card(articles, photo_issues=(), photo_editions=()):
     """Offer a published issue, or the existing reviewed beach photo article."""
     width, height = 1200, 675
-    if photo_issues:
-        issue = max(photo_issues, key=lambda item: datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")))
+    if photo_issues or photo_editions:
+        edition = photo_editions[0] if photo_editions else None
+        issue = edition_cover(edition) if edition else max(photo_issues, key=lambda item: datetime.fromisoformat(item["published_at"].replace("Z", "+00:00")))
         prefix = "/photo/weekly/" + issue["slug"] + "/"
         target, image = prefix, photo_cover_url(issue)
         title, description, alt = issue["title"], issue["summary"], photo_cover_shot(issue)["alt"]
         label, action = f'第{issue["number"]}号', "最新号を読む"
+        if edition:
+            target,title,description = edition_url(edition),edition["title"],edition["summary"]
+            label = f'第{edition["number"]}号 · {len(edition["ordered_features"])}人・{sum(len(feature["shots"]) for feature in edition["ordered_features"])}枚'
         cover_image = issue["images"][photo_cover_shot(issue)["id"]]
         width, height = cover_image.get("width", 1200), cover_image.get("height", 675)
         archive = '<a class="serial-feed-link" href="/photo/weekly/">号一覧を見る ↗</a>'
@@ -1208,7 +1252,8 @@ def gravure_feature_card(articles, photo_issues=()):
     )
 
 
-def home(articles, serials=None, photo_issues=()):
+def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stories=None):
+    photo_stories = load_photo_stories(BASE) if photo_stories is None else photo_stories
     # The newest published story must lead, even if a caller supplies an
     # unsorted list (e.g. a scheduled content edit or a local preview).
     # Use actual site publication time, never the source date alone or 2031.
@@ -1240,9 +1285,6 @@ def home(articles, serials=None, photo_issues=()):
     # the lead, sidebar, or visible story grid.
     front_slugs = {a["slug"], *(x["slug"] for x in remaining[:3]),
                    *(x["slug"] for x in recent_articles)}
-    # Rotating video choices also appear above the history rail, including
-    # older stories whose newly delivered clips move them to the foreground.
-    front_slugs.update(item["slug"] for item in broadcast_playlist(articles))
     more_recent = [x for x in articles if x["slug"] not in front_slugs][:3]
     timeline_links = []
     for item in more_recent:
@@ -1314,7 +1356,7 @@ def home(articles, serials=None, photo_issues=()):
         )
     issue_section = (
         '<section class="daily-issues-section" aria-labelledby="daily-issues-heading">'
-        '<div class="section-head"><h2 id="daily-issues-heading">今日の未発生新聞</h2>'
+        '<div class="section-head"><h2 id="daily-issues-heading">最近の発行号</h2>'
         '<a href="/issues/">発行号をすべて見る ↗</a></div>'
         '<div class="daily-issues-grid">' + issue_cards + '</div>'
         + latest_issue_share + '</section>'
@@ -1324,7 +1366,24 @@ def home(articles, serials=None, photo_issues=()):
     issue_options = escape(json.dumps(
         [{"url": article_url(x), "headline": x["title"], "category": x["category"]}
          for x in articles[:40]], ensure_ascii=False, separators=(",", ":")))
-    popular_section = pv_recommendations(articles)
+    popular_section = pv_recommendations(articles, illustrated=True)
+    newsroom_activity = (
+        '<section class="newsroom-snapshot" aria-label="本紙の掲載記録">'
+        '<div class="newsroom-snapshot-heading"><h2>紙面の記録</h2></div>'
+        '<div class="newsroom-snapshot-stats">'
+        f'<a class="newsroom-snapshot-stat" href="/archive/"><span>掲載記事</span><strong>{len(articles):,}<small>本</small></strong></a>'
+        f'<a class="newsroom-snapshot-stat" href="/issues/"><span>発行号</span><strong>{len(issues_for_home):,}<small>号</small></strong></a>'
+        '</div>'
+        '<div class="observer-widget pv-widget" data-observer-widget data-pv-widget hidden'
+        ' aria-label="計測開始後の実測PV">'
+        '<span class="observer-stat"><span class="observer-label">累計PV</span>'
+        '<strong data-site-pv-total></strong><span class="observer-suffix">PV</span></span>'
+        '<span class="observer-stat" data-site-pv-week-stat hidden>'
+        '<span class="observer-label" data-site-pv-period-label>直近7日</span>'
+        '<strong data-site-pv-week></strong><span class="observer-suffix">PV</span></span>'
+        '<small><span data-pv-tracking-note></span> · <a href="/privacy/#pageviews">集計方法</a></small>'
+        '</div></section>'
+    )
     discussion_options = escape(json.dumps(
         [{"slug": x["slug"], "title": x["title"], "category": x["category"]}
          for x in articles[:20]], ensure_ascii=False, separators=(",", ":")))
@@ -1355,11 +1414,12 @@ def home(articles, serials=None, photo_issues=()):
 </article>
 <aside class="side-brief"><div class="side-title"><h2>新着記事</h2></div>{side}</aside>
 </section>
-{broadcast_feature(articles)}
+{render_photo_timeline(photo_stories)}
 <section class="section-block"><div class="section-head"><h2>さらに読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
 {popular_section}
+{newsroom_activity}
 {timeline_section}
 {issue_section}
 {topic_section}
@@ -1367,7 +1427,7 @@ def home(articles, serials=None, photo_issues=()):
 <div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
-{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues))}
+{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues, photo_editions))}
 <details class="extras-shelf">
 <summary><strong>号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">
@@ -1867,8 +1927,8 @@ def privacy():
 <h2>アクセスの集計</h2>
 <p>閲覧・いいね・投票などの集計に、ブラウザ内のランダムな識別子を使います。識別子はハッシュ化してCloudflareに保存します。氏名やメールアドレスの登録は不要です。</p>
 <h2 id="pageviews">PV（ページ閲覧数）</h2>
-<p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。トップはサイト全体、記事の見出し横はその記事の累計PVです。運営上の分析では、日本時間の時間帯別PVと「現在の時間・今日・直近7日」の記事別PV順位に加え、流入増がトップ・記事・アーカイブ・連載・その他のどこで起きたかを大分類だけで集計します。完全な閲覧URLは保存しません。</p>
-<p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」、未計測の期間は「—」と表示します。</p>
+<p>PVは、ページを表示し、閲覧通知を受信した回数です。再読み込みも数え、人数・読了数とは区別します。一面の累計PVは計測開始後のサイト全体の表示回数で、記事ページのPVはその記事の累計表示回数です。記事一覧ではPVを並べず、週間の人気記事は実測順位で紹介します。運営上の分析では、日本時間の時間帯別PVと「現在の時間・今日・直近7日」の記事別PV順位に加え、流入増がトップ・記事・アーカイブ・連載・その他のどこで起きたかを大分類だけで集計します。完全な閲覧URLは保存しません。</p>
+<p>日別の区切りは日本時間の0時。「直近7日」は今日を含む7日間です。計測期間が7日に満たない間は「計測開始から」と明記し、未取得や未計測の値は公開画面に表示しません。</p>
 <p>「よく読まれている記事」は、公開済みの全記事を過去7日間のPV順に並べています。計測期間が短い場合は、表示した開始日以降のPVを使います。</p>
 <p>通信の再送による二重計上を防ぎ、タブへの復帰や集計の自動更新だけではPVを増やしません。JavaScriptが無効な場合や通信に失敗した場合は計測できません。自動アクセスを完全に除外した数字ではありません。</p>
 <div class="analytics-preference">
@@ -2043,7 +2103,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
-def other_files(articles, issues=None, serials=None, photo_issues=()):
+def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=(), photo_editions=()):
     serials = load_serials(BASE) if serials is None else public_serials(serials)
     latest = max(
         list(modification_date(a) for a in articles) +
@@ -2066,7 +2126,15 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
-    photo_entries = photo_sitemap_entries(photo_issues)
+    dispatches = load_market_bulletins(BASE)
+    routes.extend(market_bulletin_routes(dispatches))
+    outlooks = load_market_outlooks(BASE)
+    routes.append((MARKET_OUTLOOK_URL, outlooks[-1]["at"][:10] if outlooks else None))
+    feature_entries = photo_sitemap_entries(photo_issues)
+    if photo_editions:
+        feature_entries = [entry for entry in feature_entries if entry[0] != "/photo/weekly/"]
+    photo_entries = [*edition_sitemap_entries(photo_editions), *feature_entries,
+                     *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -2085,7 +2153,8 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
             sitemap_images["/serials/" + slug + "/" + episode["slug"] + "/"] = (
                 SITE + "/og/serials/" + slug + "-" + episode["slug"] + ".png"
             )
-    sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries})
+    sitemap_images.update({bulletin_url(item): SITE + "/og/serials/market-lab.png" for item in dispatches})
+    sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries if image})
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
         node = ET.SubElement(root, "url")
@@ -2188,7 +2257,10 @@ def make_brand_image():
     filename.parent.mkdir(parents=True,exist_ok=True)
     filename.write_bytes(png)
     # New path, not just a query parameter, to avoid the older image cache.
+    # Preserve the previous card URL for existing X posts; switch homepage
+    # metadata to a new path so the image is fetched afresh on the next crawl.
     (OUT/"og/brand-launch-20261102-v3.png").write_bytes(png)
+    (OUT/"og/brand-home-20261115-v4.png").write_bytes(png)
 
 
 def build_revision():
@@ -2214,12 +2286,10 @@ def make_issue_social_images(issues):
 
 
 def make_article_social_images(articles):
-    """Create article-specific, clearly fictional PNGs without external services."""
+    """Keep historical PNG share URLs available after a JPEG becomes primary."""
     for article in articles:
-        # Cached stock images are not auto-approved; always generate a safe
-        # topic-specific PNG for anything not explicitly editorially reviewed.
-        if uses_generated_scene(article) or uses_stock_photo(article):
-            continue
+        # Reuse an intact maintained scene PNG or the safe stdlib artwork.
+        # social_image() still selects the approved JPEG for current shares.
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"), root=BASE)
 
 
@@ -2227,6 +2297,8 @@ def build():
     global PHOTO_ISSUES_AVAILABLE
     photo_data = load_photo_issues(BASE)
     photo_issues = published_issues(photo_data, root=BASE)
+    photo_editions = load_photo_editions(BASE, catalog=photo_data, published=photo_issues)
+    story_data = load_photo_stories(BASE, catalog=photo_data, published=photo_issues)
     PHOTO_ISSUES_AVAILABLE = bool(photo_issues)
     articles = load()
     serials = load_serials(BASE)
@@ -2275,7 +2347,8 @@ def build():
             if subtitles:
                 write(clip_url(item).lstrip("/")[:-4] + ".vtt", subtitles)
     write("build-revision.txt", build_revision() + "\n")
-    write("index.html",home(articles,serials,photo_issues))
+    copy_story_motion(story_data, OUT, root=BASE)
+    write("index.html",home(articles,serials,photo_issues,photo_editions,story_data))
     write("about/index.html",about())
     write("editorial/index.html",editorial_policy())
     write("advertise/index.html",advertise())
@@ -2297,12 +2370,18 @@ def build():
         write("articles/"+a["slug"]+"/index.html",story(a,articles,issues,serials))
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
-    build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE)
+    build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE,
+                       stories_markup=render_story_strip(story_data), editions=photo_editions)
+    build_photo_editions(photo_editions, photo_data["models"], layout, write,
+                         stories_markup=render_story_strip(story_data))
+    build_photo_models(photo_data["models"], photo_issues, layout, write,
+                       stories_renderer=lambda model_id: render_model_stories(model_id, story_data),
+                       root=BASE, output=OUT, editions=photo_editions)
     # The Worker may accept engagement writes only for these validated releases.
     write("photo/weekly/engagement.json", json.dumps({
-        "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),
+        "version": 1, "issues": sorted({issue["slug"] for issue in photo_issues} | {edition["slug"] for edition in photo_editions}),
     }, ensure_ascii=False) + "\n")
-    other_files(articles, issues, serials, photo_issues)
+    other_files(articles, issues, serials, photo_issues, photo_data["models"], photo_editions)
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)

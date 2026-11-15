@@ -1,0 +1,26 @@
+{
+  "plan": {
+    "repository": "RollNuts/mihassei-news",
+    "slug": "water-main-repair-priority-dry-street-first",
+    "articleSha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+    "baseCommitSha": "b5cc5b50be9eaf8b5738ddb207836b71afbd4db3",
+    "baseTreeSha": "5621397f1076f7da9897b59520671fbf5761e47e",
+    "prompt": "Use case: photorealistic-natural. One realistic horizontal 16:9 editorial news photograph of preventive water-main repair on a DRY Japanese residential street at NIGHT in November, entirely fictional people and location. The EXPOSED WATER PIPE AND ITS WORN JOINT must be the clear foreground subject, not merely a hole or a worker portrait. A small safely cordoned road opening reveals a horizontal dark cast-iron water pipe roughly 20 centimetres in diameter running along the shallow trench, with one clearly visible old bolted coupling joining two pipe sections. Close enough to see rust and wear at the coupling, no spraying water or leak. A municipal worker in ordinary blue work clothes and plain safety helmet kneels OUTSIDE the trench and points with one gloved hand toward the worn coupling. An adult Japanese woman aged 42 in an autumn coat watches from behind the low work barrier on the dry pavement, a small part of the background. A practical portable work light illuminates the pipe, hands and dry cut asphalt edges; modest houses and an unlit drain sit behind, restrained cool autumn night colors with natural light falloff. Downward three-quarter camera angle makes the continuous cylindrical pipe and joint unmistakable while retaining enough of the street to show there is no flooding. Serious matter-of-fact expressions, plausible tools and excavation scale, realistic hands, no worker inside an unsafe deep pit. No readable noticeboard, lettering, numbers, logos, company marks, diagrams, text overlays, celebrity likeness, illustration, 3D render or excessive dramatic lighting. This is a single believable press photograph of work before a visible leak.",
+    "logicalRunId": "recovery-existing-imagegen-exec-3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+    "protectedHashes": {
+      "content/articles.json": "57b0e7a67502a679b796c9ffcf5626693b767c88c2483f01ed3245f8debf65f7",
+      "assets/generated/manifest.json": "d5ed64aaea88cf44d43d43a4b419274a95a848bc7b109074ca43a33e023fd2fe",
+      "content/visual_reviews.json": "004f5741db356edaf5076b31f8ff29e0cfb442111c68875ab253c0aed929e614"
+    },
+    "identity": "f5eb7eff7313c064d04cfe2561f89d410bd6311bc5f3754b218a62dff78ab393",
+    "branch": "native-image-candidate/water-main-repair-priority-dry-street-first/7b2e7cdf51a68eac-86447a6c0193",
+    "directory": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first"
+  },
+  "storage": "Local Git candidate branch and commit; no remote branch, upload, generation or reservation was performed by this recovery.",
+  "local_candidate_commit": "954595a6c361f59c06d9ec358eb8d9f3a11c5888",
+  "receipt_sha256": "946b4a61a230615f37d7e876609dfce1aa8339bd428224b14c978ad4e8779767",
+  "observed_at": "2026-11-15T10:23:51.071Z",
+  "original_tool_execution_id": "3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+  "generation_claim": null,
+  "transport_preflight": null
+}

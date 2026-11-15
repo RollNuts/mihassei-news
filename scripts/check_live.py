@@ -30,6 +30,7 @@ if __package__:
     from .generated_photos import generated_url, generated_scene_entry
     from .social_cards import reviewed_scene_png
     from .motion_clips import clip_url
+    from .photo_stories import load_photo_stories
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .serials import public_serials
@@ -44,6 +45,7 @@ else:
     from generated_photos import generated_url, generated_scene_entry
     from social_cards import reviewed_scene_png
     from motion_clips import clip_url
+    from photo_stories import load_photo_stories
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from serials import public_serials
@@ -719,9 +721,9 @@ def check():
     # PV is measured separately from the legacy distinct-browser counters.
     # Missing pre-activation history must remain unmeasured, never backfilled.
     for token in ("data-observer-widget","data-pv-widget",
-                  "data-site-pv-today","data-site-pv-yesterday",
-                  "data-site-pv-week","data-pv-tracking-note",
-                  "今日のPV","昨日のPV","data-article-pv="):
+                  "data-site-pv-total","data-site-pv-week",
+                  "data-pv-tracking-note","newsroom-snapshot",
+                  "累計PV","掲載記事"):
         if token not in body:
             raise RuntimeError("PV display missing: "+token)
     if "未来を見にきた人" in body:
@@ -732,7 +734,20 @@ def check():
     if not chosen_lead or chosen_lead["slug"] != sorted_articles[0]["slug"]:
         raise RuntimeError("Latest publication is not the front-page lead")
     require_matching_public_headline(chosen_lead, body, "home")
-    verify_broadcast_delivery(home.decode("utf-8"), broadcast_playlist(sorted_articles))
+    # The homepage shelf now contains cast posts; article video players remain.
+    verify_broadcast_delivery(home.decode("utf-8"), [])
+    cast_posts = load_photo_stories(ROOT)
+    for post in cast_posts[:7]:
+        if html.escape(post["text"]) not in body or post["profileUrl"] not in body:
+            raise RuntimeError("Published cast post is missing: " + post["id"])
+        motion = post.get("motion")
+        if motion:
+            if motion["url"] not in body:
+                raise RuntimeError("Published cast photo-motion is missing")
+            movie, movie_mime = get(motion["url"])
+            expected = (ROOT / "assets/photo-story-clips" / (post["id"] + ".mp4")).read_bytes()
+            if "video/mp4" not in movie_mime or movie != expected:
+                raise RuntimeError("Published cast photo-motion differs from the verified clip")
     verify_pv_recommendations(home.decode("utf-8"), sorted_articles)
     # Verify the already-shipped topic navigation rather than adding more UI.
     # This also catches a successful main merge whose public deploy is stale.
@@ -871,19 +886,24 @@ def check():
             raise RuntimeError("Internal-only page is exposed: "+internal_path)
 
 
-    # The browser now requests ONE fingerprinted CSS bundle. Verify both the
-    # content digest (cache busting) and the preserved styles in production.
+    # The main bundle and homepage photo-story stylesheet are both fingerprinted.
+    # Validate the exact two links and their served bytes before checking the bundle.
     style_tags = re.findall(r'<link rel="stylesheet" href="([^"]+)"', body)
-    match = (re.fullmatch(r'/assets/newspaper\.css\?v=([0-9a-f]{12})', style_tags[0])
-             if len(style_tags) == 1 else None)
-    if not match:
-        raise RuntimeError("Expected one versioned first-party stylesheet: " + str(style_tags))
+    bundle_match = (re.fullmatch(r'/assets/newspaper\.css\?v=([0-9a-f]{12})', style_tags[0])
+                    if len(style_tags) == 2 else None)
+    photo_match = (re.fullmatch(r'/assets/photo-stories\.css\?v=([0-9a-f]{12})', style_tags[1])
+                   if len(style_tags) == 2 else None)
+    if not bundle_match or not photo_match:
+        raise RuntimeError("Expected bundled and photo-story stylesheets: " + str(style_tags))
     style_data, style_mime = get(style_tags[0])
-    if "text/css" not in style_mime:
-        raise RuntimeError("Bundled CSS served with an invalid MIME")
+    photo_data, photo_mime = get(style_tags[1])
+    if "text/css" not in style_mime or "text/css" not in photo_mime:
+        raise RuntimeError("First-party CSS served with an invalid MIME")
     style_text = style_data.decode("utf-8")
-    if hashlib.sha256(style_data).hexdigest()[:12] != match.group(1):
+    if hashlib.sha256(style_data).hexdigest()[:12] != bundle_match.group(1):
         raise RuntimeError("Bundled CSS body and version hash disagree (stale cache)")
+    if hashlib.sha256(photo_data).hexdigest()[:12] != photo_match.group(1):
+        raise RuntimeError("Photo-story CSS body and version hash disagree (stale cache)")
     for name in ("style.css", "article-extra.css", "newsroom.css",
                  "future-poll.css", "comments.css", "editorial-polish.css",
                  "serials.css", "reader-first.css"):
@@ -915,17 +935,17 @@ def check():
     # image. The first published social preview may be cached by X.
     for tag in (
         'name="twitter:card" content="summary_large_image"',
-        'name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
-        'property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',
+        'name="twitter:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',
+        'property="og:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',
     ):
         if tag not in body:
             raise RuntimeError("X card metadata missing or not yet deployed: " + tag)
-    image, image_mime=get("/og/brand-launch-20261102-v3.png")
+    image, image_mime=get("/og/brand-home-20261115-v4.png")
     # A clean launch URL forces a new card fetch instead of reusing old cached metadata.
-    share,mime=get("/?src=x-launch-20261102-v3")
+    share,mime=get("/?src=x-launch-20261115-v4")
     if "text/html" not in mime:
         raise RuntimeError("Launch X share URL has unexpected Content-Type")
-    verify_launch_card(share.decode("utf-8"), "/og/brand-launch-20261102-v3.png")
+    verify_launch_card(share.decode("utf-8"), "/og/brand-home-20261115-v4.png")
     if not image.startswith(bytes((137, 80, 78, 71, 13, 10, 26, 10))) or "image/png" not in image_mime or len(image) < 1024:
         raise RuntimeError("X card brand image missing or invalid PNG")
 

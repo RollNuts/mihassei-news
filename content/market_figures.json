@@ -1,0 +1,154 @@
+[
+  {
+    "episode_slug": "gs-yuasa-margin-test-02",
+    "kind": "bars",
+    "source_title": "GSユアサ・通期業績予想（産業電池電源）",
+    "source_url": "https://ir.gs-yuasa.com/jp/ir/finance/forecast.html",
+    "source_published_on": "2026-11-06",
+    "checked_on": "2026-11-15",
+    "id": "01-segment-sales",
+    "after_section": 1,
+    "title": "産業電池電源の売上高：300億円増の予想",
+    "note": "2026年3月期は実績、2027年3月期は2026年11月6日時点の会社予想。売上予想は受注・需要の増加や利益拡大を直接示しません。",
+    "unit": "億円",
+    "values": [
+      {
+        "label": "2026年3月期",
+        "value": 1600,
+        "state": "実績"
+      },
+      {
+        "label": "2027年3月期",
+        "value": 1900,
+        "state": "会社予想"
+      }
+    ]
+  },
+  {
+    "episode_slug": "gs-yuasa-margin-test-02",
+    "kind": "bars",
+    "source_title": "GSユアサ・通期業績予想（産業電池電源）",
+    "source_url": "https://ir.gs-yuasa.com/jp/ir/finance/forecast.html",
+    "source_published_on": "2026-11-06",
+    "checked_on": "2026-11-15",
+    "id": "02-segment-profit",
+    "after_section": 2,
+    "title": "営業利益：増収でも19億円減の予想",
+    "note": "産業電池電源セグメントの営業利益。2027年3月期は会社予想であり、確定実績ではありません。売上とは異なる指標です。",
+    "unit": "億円",
+    "values": [
+      {
+        "label": "2026年3月期",
+        "value": 199,
+        "state": "実績"
+      },
+      {
+        "label": "2027年3月期",
+        "value": 180,
+        "state": "会社予想"
+      }
+    ]
+  },
+  {
+    "episode_slug": "gs-yuasa-margin-test-02",
+    "kind": "bars",
+    "source_title": "GSユアサ・通期業績予想（産業電池電源）",
+    "source_url": "https://ir.gs-yuasa.com/jp/ir/finance/forecast.html",
+    "source_published_on": "2026-11-06",
+    "checked_on": "2026-11-15",
+    "id": "03-segment-margin",
+    "after_section": 3,
+    "title": "営業利益率：12.4％から9.5％へ",
+    "note": "産業電池電源セグメントの売上高営業利益率。表示値は会社資料の億円・小数1桁の公表値で、2027年3月期は予想です。",
+    "unit": "％",
+    "values": [
+      {
+        "label": "2026年3月期",
+        "value": 12.4,
+        "state": "実績"
+      },
+      {
+        "label": "2027年3月期",
+        "value": 9.5,
+        "state": "会社予想"
+      }
+    ]
+  },
+  {
+    "episode_slug": "swcc-second-half-profit-03",
+    "kind": "bars",
+    "source_title": "SWCC・2027年3月期中間決算短信",
+    "source_url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20261111/20261111572733.pdf",
+    "source_published_on": "2026-11-11",
+    "checked_on": "2026-11-15",
+    "id": "01-first-half-profit",
+    "after_section": 1,
+    "title": "中間期の営業利益：前年から増加",
+    "note": "連結営業利益の中間期実績同士を比較。比較期間はそれぞれ2025年4〜9月と2026年4〜9月。株価やFCFの増加を意味しません。",
+    "unit": "百万円",
+    "values": [
+      {
+        "label": "2026年3月期 中間",
+        "value": 11651,
+        "state": "実績"
+      },
+      {
+        "label": "2027年3月期 中間",
+        "value": 17901,
+        "state": "実績"
+      }
+    ]
+  },
+  {
+    "episode_slug": "swcc-second-half-profit-03",
+    "id": "02-copper-sales-bridge",
+    "after_section": 2,
+    "kind": "composition",
+    "title": "上期売上の増加312億円を分ける",
+    "note": "銅価格変動の影響203億円は会社の説明資料に基づきます。残り109億円は312−203の差分であり、すべてを販売数量増や新規需要とみなすことはできません。",
+    "unit": "億円",
+    "total": 312,
+    "total_label": "上期売上の増加額",
+    "values": [
+      {
+        "label": "銅価格変動の影響",
+        "value": 203,
+        "state": "資料記載の要因"
+      },
+      {
+        "label": "その他の差分",
+        "value": 109,
+        "state": "差分（計算）"
+      }
+    ],
+    "source_title": "SWCC・2027年3月期中間決算補足説明資料",
+    "source_url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20261111/20261111572774.pdf",
+    "source_published_on": "2026-11-11",
+    "checked_on": "2026-11-15"
+  },
+  {
+    "episode_slug": "swcc-second-half-profit-03",
+    "kind": "bars",
+    "source_title": "SWCC・2027年3月期中間決算短信",
+    "source_url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20261111/20261111572733.pdf",
+    "source_published_on": "2026-11-11",
+    "checked_on": "2026-11-15",
+    "id": "03-first-second-half",
+    "after_section": 3,
+    "title": "下期は上期を1億98百万円上回る計算",
+    "note": "上期17,901百万円は確定実績。下期18,099百万円は会社通期予想36,000百万円から上期実績を差し引いた計算値で、会社が独立して示した下期予想ではありません。",
+    "unit": "百万円",
+    "values": [
+      {
+        "label": "上期（2026年4〜9月）",
+        "value": 17901,
+        "state": "実績"
+      },
+      {
+        "label": "下期（逆算値）",
+        "value": 18099,
+        "state": "公開資料から計算"
+      }
+    ]
+  }
+]

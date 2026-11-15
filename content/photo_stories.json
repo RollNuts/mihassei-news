@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "stories": [
+    {
+      "id": "nagino-saya-autumn-detour-20261115",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-15T09:40:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "今日、取材メモをまとめたら、AIに「寄り道の時間が足りません」って言われました。そこは私が決めます。じゃ、行ってきます。",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "01",
+        "image_sha256": "7d6077a0f2ef923fee0793ac3da51350a58c0d614c173756822eada2c3da7939"
+      }
+    },
+    {
+      "id": "nagino-saya-introduction-20261115",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "今日はなんだか温かいものが食べたい気分。\n\n味付けをちょっと変えてみたけど、これでいいのかまだ迷ってる。笑",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "08",
+        "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6"
+      },
+      "motion": {
+        "kind": "photo-motion",
+        "path": "assets/photo-story-clips/nagino-saya-introduction-20261115.mp4",
+        "sha256": "a3408b617dabbc3f9b676976d4fedef8130e4c11aea0040b4aff5549a2198821",
+        "bytes": 57302,
+        "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6",
+        "created_at": "2026-11-15T04:26:22.342744+00:00",
+        "width": 640,
+        "height": 360,
+        "duration_ms": 12000,
+        "fps": 24,
+        "codec": "h264",
+        "pixel_format": "yuv420p"
+      }
+    },
+    {
+      "id": "shioba-rio-introduction-20261115",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "手帳ではもう帰っている時間なのに、まだコーヒーを飲んでいます。\n\n帰りに見たいニットもあったんですけど……今日は寄れるかな。",
+      "source": {
+        "issue_slug": "november-off-clock-rio-002",
+        "cut_id": "01",
+        "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4"
+      }
+    },
+    {
+      "id": "tsukishiro-rena-introduction-20261115",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "出かける前に服を3回替えた。迷ってない顔で家を出たけど、部屋には候補がまだ2着ある。帰ったら片づけよう。",
+      "source": {
+        "issue_slug": "november-sea-and-city-rena-003",
+        "cut_id": "01",
+        "image_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313"
+      }
+    },
+    {
+      "id": "hanase-mio-introduction-20261115",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "飛び出してきたのはいいけど、帰りの電車まだ調べてない。",
+      "source": {
+        "issue_slug": "november-first-detour-mio-004",
+        "cut_id": "01",
+        "image_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad"
+      }
+    },
+    {
+      "id": "shiramine-yuki-introduction-20261115",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "もう帰ろうと思ってたのに、椅子が心地よくて。\nあと少しだけ、ここにいようかな。",
+      "source": {
+        "issue_slug": "november-a-longer-breath-yuki-005",
+        "cut_id": "01",
+        "image_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705"
+      }
+    },
+    {
+      "id": "amane-hikari-introduction-20261115",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "今日の練習、最後の振りだけどうしても揃わなくて居残りしてた😂\n\n気づいたら外がすっかり寒い！\n帰ったらあったかいもの食べよ🧣",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "01",
+        "image_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd"
+      }
+    },
+    {
+      "id": "kiritani-sumire-introduction-20261115",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-15T13:19:00+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "カップを選ぶのに10分かかったのは内緒です。☕️",
+      "source": {
+        "issue_slug": "november-favorite-colors-sumire-007",
+        "cut_id": "01",
+        "image_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc"
+      }
+    }
+  ]
+}

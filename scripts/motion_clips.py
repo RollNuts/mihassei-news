@@ -251,7 +251,7 @@ def run_checked(command: list[str], *, timeout: int,
 
 
 def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str,
-                check: Callable[[], object] | None = None) -> None:
+                check: Callable[[], object] | None = None, preserve_frame: bool = False) -> None:
     """Three four-second camera shots from one verified still, without AI APIs.
 
     Establish the scene, cut to a closer lateral pan, then pull back to the
@@ -282,6 +282,14 @@ def encode_clip(image: Path, output: Path, *, ffmpeg: str, ffprobe: str,
         f"zoompan=z='{zoom}':x='{horizontal}':y='(ih-ih/zoom)/2':"
         f"d=1:s={WIDTH}x{HEIGHT}:fps={FPS},format=yuv420p"
     )
+    if preserve_frame:
+        # A gentle pull-in inside a padded canvas keeps the entire cast photo
+        # visible, including the face; news clips retain their existing shots.
+        filter_graph = (
+            f"scale={WIDTH * 4 - 160}:{HEIGHT * 4 - 90}:force_original_aspect_ratio=decrease:out_range=tv,"
+            f"pad={WIDTH * 4}:{HEIGHT * 4}:(ow-iw)/2:(oh-ih)/2,"
+            f"zoompan=z='1+0.04*on/{FPS * DURATION_SECONDS - 1}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':"
+            f"d=1:s={WIDTH}x{HEIGHT}:fps={FPS},format=yuv420p")
     command = [
         ffmpeg, "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
         "-threads", "1", "-filter_threads", "1",

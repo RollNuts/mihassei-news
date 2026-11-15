@@ -117,8 +117,11 @@ test('last-seven-day PV determines the actual top three, regardless of browser o
   assert.equal(result.popular.hidden,false);
   assert.equal(result.fallback.hidden,true);
   assert.deepEqual(urls(result),['/articles/b/','/articles/c/','/articles/a/']);
-  assert.deepEqual(result.rankings.map(li=>li.children[2].textContent),['11 PV','7 PV','6 PV']);
+  assert.deepEqual(result.rankings.map(li=>li.children[1].children[1].title),
+    ['計測された表示回数 11 PV','計測された表示回数 7 PV','計測された表示回数 6 PV']);
+  assert.ok(result.rankings.every(li=>li.children.length===2),'no small public PV label');
   assert.equal(result.rankings[0].children[0].textContent,'01');
+  assert.match(result.rankings[0].children[1].children[1].attributes['aria-label'],/過去7日間のページ表示回数 11PV/);
   assert.equal(result.rankings[0].children[1].children[0].textContent,'経済');
   assert.equal(result.period.textContent,'過去7日間のPV順');
   assert.equal(result.calls.filter(x=>x.method==='GET').length,0,
@@ -131,12 +134,13 @@ test('ties use today PV and then real-publication candidate order',async()=>{
   assert.deepEqual(urls(result),['/articles/old/','/articles/older/','/articles/new/']);
 });
 
-test('one observed PV is displayed honestly and partial tracking states its actual start',async()=>{
+test('one observed PV can rank an article without an exaggerated visible count',async()=>{
   const result=await simulate([candidate('a','A'),candidate('b','B')],{a:1,b:0},{partial:true});
   assert.equal(result.popular.hidden,false);
   assert.deepEqual(urls(result),['/articles/a/']);
-  assert.equal(result.rankings[0].children[2].textContent,'1 PV');
+  assert.equal(result.rankings[0].children[1].children[1].title,'計測された表示回数 1 PV');
   assert.equal(result.period.textContent,'2026/11/4からのPV順');
+  assert.match(result.rankings[0].children[1].children[1].attributes['aria-label'],/2026\/11\/4からのページ表示回数 1PV/);
 });
 
 test('all published candidates remain eligible beyond twenty without client-side metric batches',async()=>{
@@ -155,6 +159,32 @@ test('all published candidates remain eligible beyond twenty without client-side
     'popular candidates do not inflate the per-article metrics query');
 });
 
+test('measured popular stories can use their own reviewed thumbnails',async()=>{
+  const result=await simulate([
+    {...candidate('a','見出しA'),image:'/generated/a.jpg?v=123abc',fallback:'/images/a.svg'}
+  ],{a:12});
+  assert.equal(result.popular.hidden,false);
+  const li=result.rankings[0];
+  assert.equal(li.children.length,3);
+  assert.equal(li.className,'readers-choice-item readers-choice-item--with-image');
+  assert.equal(li.children[1].href,'/articles/a/');
+  const thumbnail=li.children[1].children[0];
+  assert.equal(thumbnail.src,'/generated/a.jpg?v=123abc');
+  assert.equal(thumbnail.attributes['data-fallback'],'/images/a.svg');
+  assert.equal(typeof thumbnail.onerror,'function');
+  thumbnail.onerror();
+  assert.equal(thumbnail.src,'/images/a.svg','failed late JPEG must recover without an empty ranking');
+  assert.equal(thumbnail.onerror,null,'failed fallback must not cause repeated requests');
+  assert.equal(li.children[2].children[1].textContent,'見出しA');
+});
+
+test('text-only article recommendations do not add image requests',async()=>{
+  const result=await simulate([candidate('a','A')],{a:8},{pathname:'/articles/current/'});
+  assert.equal(result.popular.hidden,false);
+  assert.equal(result.rankings[0].children.length,2);
+  assert.equal(result.rankings[0].className,'readers-choice-item');
+});
+
 test('invalid, duplicate and current-article candidates cannot create unsafe or self recommendations',async()=>{
   const result=await simulate([
     candidate('../invalid','unsafe'),candidate('a',''),candidate('current','読んでいる記事'),
@@ -169,7 +199,7 @@ test('authoritative server ranking may omit zero or malformed candidate rows saf
   const result=await simulate(items,{a:50,b:0});
   assert.equal(result.popular.hidden,false);
   assert.deepEqual(urls(result),['/articles/a/']);
-  assert.equal(result.rankings[0].children[2].textContent,'50 PV');
+  assert.equal(result.rankings[0].children[1].children[1].title,'計測された表示回数 50 PV');
 
   const malformed=await simulate(items,{a:{...metrics(20),todayPageViews:21},b:0});
   assert.equal(malformed.popular.hidden,true,'invalid ranking rows are never promoted');

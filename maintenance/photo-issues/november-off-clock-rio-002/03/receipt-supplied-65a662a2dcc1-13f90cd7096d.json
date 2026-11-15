@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-off-clock-rio-002",
+  "cut_id": "03",
+  "model_id": "shioba-rio",
+  "review_reference_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "imported_at": "2026-11-15T01:42:24.511267+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "turn_key": "79a257d3-1f0c-4e7d-ac8e-a636249f0590",
+    "image_number": 5,
+    "path": "maintenance/photo-issues/november-off-clock-rio-002/03/source-65a662a2dcc12ff057891769a209c8096a77f8adcaecb34d25eae0126c386f63.png",
+    "sha256": "65a662a2dcc12ff057891769a209c8096a77f8adcaecb34d25eae0126c386f63",
+    "bytes": 2066591,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-off-clock-rio-002-03.jpg",
+    "sha256": "13f90cd7096d18655a4d106ee5b6170a611cf97473c47c15ba761b7994e13047",
+    "bytes": 203024,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

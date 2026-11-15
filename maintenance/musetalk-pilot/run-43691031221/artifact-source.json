@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "repository": "RollNuts/mihassei-news",
+  "run_id": 43691031221,
+  "head_sha": "261f52a6fb1c68da408b35e61259a25e2a43038b",
+  "artifact_id": 14152143323,
+  "artifact_name": "news-caster-preview-43691031221",
+  "files": {
+    "narration-three-seconds.wav": {
+      "sha256": "5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa",
+      "bytes": 96078
+    },
+    "receipt.json": {
+      "sha256": "e9cfd71918a4df2355369350e5693bbda5887a87d75ec17d4919eeb2f01d564d",
+      "bytes": 24278
+    },
+    "presenter-preview.mp4": {
+      "sha256": "b180230cddb1dd06ff79d9a105f2664f9677a79c649484d8456fcbe8233e78b7",
+      "bytes": 70535
+    }
+  },
+  "run_url": "https://github.com/RollNuts/mihassei-news/actions/runs/43691031221",
+  "run_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/runs/43691031221",
+  "workflow_path": ".github/workflows/auto-motion-clips.yml",
+  "run_status": "completed",
+  "run_conclusion": "success",
+  "artifact_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/artifacts/14152143323",
+  "artifact_archive_api_url": "https://api.github.com/repos/RollNuts/mihassei-news/actions/artifacts/14152143323/zip",
+  "artifact_archive_digest": "sha256:fc46445dc1aa1765aefe09de5aea4208f025143a2ff8f94698dda02d97db9305",
+  "artifact_size_in_bytes": 285477,
+  "artifact_expired_at_metadata_read": false,
+  "artifact_created_at": "2026-11-15T07:47:36Z",
+  "evidence_preserved_at": "2026-11-15T08:11:26.092834+00:00",
+  "api_metadata_retrieved_at": {"run":"2026-11-15T08:10:04.069Z","artifacts":"2026-11-15T08:10:04.074Z"},
+  "original_downloaded_at": null,
+  "local_source_directory": "/tmp/mihassei-musetalk-preview-43691031221",
+  "transfer_note": "The parent supplied an already extracted artifact directory. This step copied its three original files byte-for-byte and read current official run/artifact API metadata. The original download timestamp and downloader are not asserted.",
+  "archive_digest_verification": "not_performed; no archive was downloaded in this preservation step",
+  "raw_metadata_files": {
+    "github-run-metadata.raw.json": {
+      "sha256": "77725b0e4efa5044d95bdbbb8f54e9fc0b02ed7b675d3d30b4c847e270dd2196",
+      "bytes": 12642
+    },
+    "github-artifacts-metadata.raw.json": {
+      "sha256": "f6f4626a70159ee5cb617a3455cc8b7a1e5faa9f16cddbe183490b0eef9834d4",
+      "bytes": 736
+    }
+  },
+  "wav_inspection": {
+    "channels": 1,
+    "sample_rate_hz": 16000,
+    "sample_width_bytes": 2,
+    "sample_format": "PCM16",
+    "frames": 48000,
+    "compression": "NONE",
+    "duration_seconds": 3.0
+  },
+  "receipt_preserved_status": "generated_unreviewed",
+  "receipt_preserved_publish": false
+}

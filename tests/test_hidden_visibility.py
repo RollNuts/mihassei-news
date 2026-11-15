@@ -16,13 +16,14 @@ class HiddenVisibilityTests(unittest.TestCase):
         css = (ROOT / "assets" / "editorial-polish.css").read_text(encoding="utf-8")
         js = (ROOT / "assets" / "engagement.js").read_text(encoding="utf-8")
         for marker in (
-            'data-observer-widget hidden',
+            'data-observer-widget data-pv-widget hidden',
             'data-popular-section',
         ):
             self.assertIn(marker, build)
         self.assertIn('aria-labelledby="readers-choice-title" hidden', build)
         self.assertRegex(css, r"body\s+\[hidden\]\s*\{\s*display:\s*none\s*;")
-        self.assertIn('observerShell.hidden=false', js)
+        self.assertIn('observerShell.hidden=!hasVisiblePv', js)
+        self.assertIn('.pv-widget[hidden]', (ROOT / "assets" / "reader-first.css").read_text(encoding="utf-8"))
         self.assertIn('popularSection.hidden=false', js)
         # No fake traffic is generated just to fill an empty widget.
         self.assertIn('tracking.unit!=="page-view"', js)

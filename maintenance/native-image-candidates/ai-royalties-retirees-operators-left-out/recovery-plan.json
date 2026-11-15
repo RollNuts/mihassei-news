@@ -1,0 +1,26 @@
+{
+  "plan": {
+    "repository": "RollNuts/mihassei-news",
+    "slug": "ai-royalties-retirees-operators-left-out",
+    "articleSha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
+    "baseCommitSha": "7f70fb4da0c1d87358409fbaa50be378ee0847ff",
+    "baseTreeSha": "c5a1e6fac4987eabc1fc3c7e882d77a26bd129f2",
+    "prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 editorial photograph for an explicitly fictional Japanese news article set in November 2031. Photograph one entirely fictional Japanese female operations specialist, age 46, in a modest office in the late afternoon. The article's pivotal action: she is actively writing a NEW work procedure from corrected contract notes so that her formerly unregistered exception handling can be registered for an AI system. Make the actual writing unmistakable: her right hand visibly holds a normal black pen, its tip touching the fresh sheet on the desk; her left hand holds a separate corrected contract sheet next to it. Natural over-the-shoulder three-quarter high-angle view, enough of her face in profile to show serious concentration, hands and pen in the foreground, a few ordinary folders and a softly defocused computer in the background. It must look like a candid real news photograph, with believable skin, fingers, sleeves, paper, warm desk-lamp light and cool November window light. Restrained deadpan atmosphere. This is a single coherent camera photograph, not a collage or graphic. No retired colleague in the room. No readable letters, numbers, UI text, brand, logo, headline, caption, watermark or infographic. Paper may have tiny unfocused neutral strokes, not legible writing. No real person or identifiable real company. No animation, illustration, CGI, overly smooth skin or staged beauty portrait. Landscape 16:9 composition.",
+    "logicalRunId": "recovery-existing-imagegen-exec-b5387038-af84-4804-9ac4-b8d455221b44",
+    "protectedHashes": {
+      "content/articles.json": "2942e4fefdd5fb76482f6ff2d363bb1c364eb8aa10698cdad1d479a1f3ca4874",
+      "assets/generated/manifest.json": "d18a8d6ec43702cddef888a1ea082ddbd863cb68bba45112b5e7f691bf68ac84",
+      "content/visual_reviews.json": "54466a7c895a683dd0f0ac15e13080619270ce7c3012e671b6ab6d434d0daa8a"
+    },
+    "identity": "1e4abf1716c99b77eb2ef9e0b80ee34e1bb0118e2156e8d8719f7f9c5ca18b91",
+    "branch": "native-image-candidate/ai-royalties-retirees-operators-left-out/fa654bf23be70f58-b768301fd92a",
+    "directory": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out"
+  },
+  "storage": "Local Git candidate branch and commit; no remote branch, upload, generation or reservation was performed by this recovery.",
+  "local_candidate_commit": "c575032f545df1fea280daf85e13f85d894900ae",
+  "receipt_sha256": "96bcd1d24c35a03c7a87fe60392464c5b3a49ad9286628b46c3d98579eedefc2",
+  "observed_at": "2026-11-15T07:54:17.675Z",
+  "original_tool_execution_id": "b5387038-af84-4804-9ac4-b8d455221b44",
+  "generation_claim": null,
+  "transport_preflight": null
+}

@@ -1,0 +1,14 @@
+{
+  "tool": "image_gen.imagegen",
+  "mode": "built-in tool; no CLI/API key",
+  "execution_id": "b5387038-af84-4804-9ac4-b8d455221b44",
+  "execution_id_source": "actual exec UUID in the built-in output filename; provider generation ID not exposed",
+  "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-b5387038-af84-4804-9ac4-b8d455221b44.png",
+  "source_png_sha256": "32e20fe63f096a26886b2ded3d1dd8426f661abcdaa48dc9a8b8feb2fa48af1e",
+  "source_png_bytes": 2058024,
+  "observed_file_mtime": "2026-11-15T07:47:05.375808+00:00",
+  "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 editorial photograph for an explicitly fictional Japanese news article set in November 2031. Photograph one entirely fictional Japanese female operations specialist, age 46, in a modest office in the late afternoon. The article's pivotal action: she is actively writing a NEW work procedure from corrected contract notes so that her formerly unregistered exception handling can be registered for an AI system. Make the actual writing unmistakable: her right hand visibly holds a normal black pen, its tip touching the fresh sheet on the desk; her left hand holds a separate corrected contract sheet next to it. Natural over-the-shoulder three-quarter high-angle view, enough of her face in profile to show serious concentration, hands and pen in the foreground, a few ordinary folders and a softly defocused computer in the background. It must look like a candid real news photograph, with believable skin, fingers, sleeves, paper, warm desk-lamp light and cool November window light. Restrained deadpan atmosphere. This is a single coherent camera photograph, not a collage or graphic. No retired colleague in the room. No readable letters, numbers, UI text, brand, logo, headline, caption, watermark or infographic. Paper may have tiny unfocused neutral strokes, not legible writing. No real person or identifiable real company. No animation, illustration, CGI, overly smooth skin or staged beauty portrait. Landscape 16:9 composition.",
+  "transparent_background": false,
+  "vendor_model_version": null,
+  "vendor_seed": null
+}

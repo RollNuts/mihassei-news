@@ -23,7 +23,10 @@ content/serials.json ────┘                │
 
 - 架空ニュースは`content/articles.json`。`published_at`が実際の初回掲載日時で、演出上の`fiction_at`はその年だけを5年進め、月日・時刻・タイムゾーンを一致させます。`source.published_at`は着想元資料の日時であり、紙面日時の基準には使いません。
 - 連載は`content/serials.json`。実在の市場データに基づく考察は`kind: analysis`。`scripts/serials.py`の`WITHDRAWN_SERIES`に指定した連載は公開loader・生成から除外し、原JSONと履歴保護は保持する。
-- 独立した週刊写真コラムは`content/photo_issues.json`から`/photo/weekly/`へ生成。`scripts/photo_issues.py`が号の固定指紋と画像・採否を検証し、draftは公開出力しない。担当枠・人物設定・編集の正本は[EDITORIAL_LOOPの成人企画](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠)を参照する。 号改訂は`editorial_history`に固定項目の完全snapshot・旧採用/拒否・登録studyを残し、`images[cut].adoption`で移す元/先の号FPとcutを指定する。元native来歴・旧reviewは保持し、同じ固定モデル、原receiptの検証、現号への新しい実画像reviewを要求する。 `accepted_article_photo`はsource記事かつ固定masterの既存JPEGだけを、`article_photo_sources`の本文指紋・生成record・元acceptedのsnapshotと原receiptで照合し、原生成記録を保つ。`master_archive`は同SHAの固定JPEGを指し、通常記事の将来の写真更新から号を独立させる。公開写真は号固有の版付きURLへコピーする。 試作の固定計画はPR外の計画branchへ先に保存し、採用素材を揃えてから公開PRへまとめる。必要な最終CIを保ち、画像途中ごとの全CI・本番buildを増やさない。
+- 週刊内の各人の写真特集は`content/photo_issues.json`から既存の`/photo/weekly/<slug>/`へ生成。`scripts/photo_issues.py`が号の固定指紋と画像・採否を検証し、draftは公開出力しない。担当枠・人物設定・編集の正本は[EDITORIAL_LOOPの成人企画](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠)を参照する。 号改訂は`editorial_history`に固定項目の完全snapshot・旧採用/拒否・登録studyを残し、`images[cut].adoption`で移す元/先の号FPとcutを指定する。元native来歴・旧reviewは保持し、同じ固定モデル、原receiptの検証、現号への新しい実画像reviewを要求する。 `accepted_article_photo`はsource記事かつ固定masterの既存JPEGだけを、`article_photo_sources`の本文指紋・生成record・元acceptedのsnapshotと原receiptで照合し、原生成記録を保つ。`master_archive`は同SHAの固定JPEGを指し、通常記事の将来の写真更新から号を独立させる。公開写真は号固有の版付きURLへコピーする。 試作の固定計画はPR外の計画branchへ先に保存し、採用素材を揃えてから公開PRへまとめる。必要な最終CIを保ち、画像途中ごとの全CI・本番buildを増やさない。
+- 合同の週刊号は`content/photo_editions.json`から`/photo/weekly/issue-NNN/`へ生成し、7人の検証済み特集slugを目次で束ねる。既存の特集URL・画像・固定指紋・PVキーを維持し、号単位の一覧・RSSと特集間の前後リンクを出力する。`scripts/photo_editions.py`が発行日前日までの完全7JST暦日のPVと同点用文字列seed・固定順を扱う。履歴窓のAPIは`photoPopular=1&photoEnd=YYYY-MM-DD`でversion・窓・coverage・truncationを照合し、旧rolling応答を流用しない。
+- 写真の人物紹介は`/photo/models/`と各モデルのプロフィールへ生成し、検証済み公開号だけの枚数・写真グリッドを表示する。公開号の表紙を優先し、独立プロフィール写真は`photo_profile_portraits.py`で原本・採否・SHAを検証する。未掲載・写真なしのプロフィールはnoindexとし、非公開の容姿指示や体型値は出力しない。
+- 週刊ランキングは`/api/engagement?view=public&photoPopular=1`の7日実測PVを既存DOから読み、公開号だけを表示する。ストーリーは`content/photo_stories.json`を`photo_stories.py`が掲載号・人物・画像SHAと照合し、検品済みの写真を参照する。音声は操作後に日本語の端末内SpeechSynthesisだけを使い、外部音声通信・自動再生・音声ファイルの追加保存は行わない。
 - 市場分析は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
 - RSS、構造化データ、サイトマップでは架空の未来日時を実際の掲載日時として扱いません。
 - 続報記事は既刊を上書きせず独立した記事として保存し、任意の `followup_of` に直前の関連記事slugを記録します。親記事が存在し、子記事より先に実公開されていることをビルドで検証し、公開ページでは前後を相互リンクします。
@@ -72,7 +75,7 @@ python3 scripts/build.py
 python3 -m unittest discover -s tests -v
 ```
 
-- CIの正本は[`.github/workflows/check.yml`](../.github/workflows/check.yml)。Pythonテスト、Nodeテスト、Workerのdry-runを含みます。
+- CIの正本は[`.github/workflows/check.yml`](../.github/workflows/check.yml)。全体テスト前にビルドと同じ記事loaderで必須項目・タグ等を検証し、形式不正のまま各テストからビルドを繰り返さないようにします。Pythonテスト、Nodeテスト、Workerのdry-runを含みます。
 - Cloudflare Buildsは本番`main`の自動デプロイを有効にし、非本番のプレビューブランチビルドはOFFにします。ブランチごとの`wrangler preview`がDurable Objectの無料namespace枠を使い切るためです。既存namespaceは削除せず、PRは上記CIで検証し、統合後の本番revisionと実配信を確認します。プレビュー停止を画像・記事発行や本番ビルドの停止と混同しません。再有効化する場合は無料枠と実行コマンドを確認し、本番のbindings・migrationsを変更したり、検証失敗時に本番deployへ切り替えたりしません。
 - 本番の公開確認は[`.github/workflows/verify-public-photos.yml`](../.github/workflows/verify-public-photos.yml)を参照。公開revisionの完全SHA一致を最大12分待つ処理はここへ集約し、同一リポジトリのmainの公開確認が成功してからPV/API診断を実行します（定時・手動診断は維持）。PR・CIの成功と、公開URLの到達・画像表示の成功を混同しません。
 - 記事の編集方針と引き継ぎは[`EDITORIAL_LOOP.md`](EDITORIAL_LOOP.md)、検索インデックスは[`SEARCH_INDEX_REFRESH.md`](SEARCH_INDEX_REFRESH.md)を参照。

@@ -714,6 +714,186 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "ai-royalties-retirees-operators-left-out": {
+      "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
+      "bytes": 113156,
+      "generated_at": "2026-11-15T07:47:03.524340927Z",
+      "generation_id": "a41146ad-5162-4564-8ec2-1286f80943d4",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: horizontal 16:9 editorial photograph for an explicitly fictional Japanese news article set in November 2031. Photograph one entirely fictional Japanese female operations specialist, age 46, in a modest office in the late afternoon. The article's pivotal action: she is actively writing a NEW work procedure from corrected contract notes so that her formerly unregistered exception handling can be registered for an AI system. Make the actual writing unmistakable: her right hand visibly holds a normal black pen, its tip touching the fresh sheet on the desk; her left hand holds a separate corrected contract sheet next to it. Natural over-the-shoulder three-quarter high-angle view, enough of her face in profile to show serious concentration, hands and pen in the foreground, a few ordinary folders and a softly defocused computer in the background. It must look like a candid real news photograph, with believable skin, fingers, sleeves, paper, warm desk-lamp light and cool November window light. Restrained deadpan atmosphere. This is a single coherent camera photograph, not a collage or graphic. No retired colleague in the room. No readable letters, numbers, UI text, brand, logo, headline, caption, watermark or infographic. Paper may have tiny unfocused neutral strokes, not legible writing. No real person or identifiable real company. No animation, illustration, CGI, overly smooth skin or staged beauty portrait. Landscape 16:9 composition.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:a41146ad-5162-4564-8ec2-1286f80943d4",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+        "bytes": 97206,
+        "generated_at": "2026-11-15T07:23:26.948948+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 937335361030604073,
+        "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
+      },
+      "previous_scene_prompt": "A Japanese female operations worker, age 46, writes a corrected business procedure on paper while a retired male colleague, age 62, examines a payment statement at a nearby office table. Photorealistic documentary press photograph inside a modest fictional workplace, everyday business casual clothing, natural faces and hands, ordinary daylight, believable paperwork and one computer monitor, no readable text, brand logos, recognizable real people, or graphics, horizontal 16:9.",
+      "previous_visual_review": null,
+      "prompt_version": 3,
+      "sha256": "02e94ce89495940da3fae905c7c331a8e2f3d38350c536eba15595c12430f08d",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T07:47:03.524340927Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T07:47:03.524344514Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T07:47:03.521368392Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              85,
+              0,
+              26,
+              202,
+              206,
+              188,
+              96,
+              97,
+              79,
+              4,
+              154,
+              222,
+              178,
+              88,
+              139,
+              148,
+              234,
+              31,
+              81,
+              46,
+              207,
+              148,
+              88,
+              167,
+              205,
+              249,
+              147,
+              252,
+              143,
+              252,
+              63,
+              124
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:a41146ad-5162-4564-8ec2-1286f80943d4",
+        "manifest_uri": "urn:c2pa:8cbbe0fc-ed10-47fe-bed6-1d6923ed2f2b",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2058024,
+        "caBX_sha256": "0448b05cd2cd3f6e8043e0e31595081cb6eacb452aae51700ac713df20c6ff09",
+        "candidate_branch": "native-image-candidate/ai-royalties-retirees-operators-left-out/fa654bf23be70f58-b768301fd92a",
+        "candidate_commit": "c575032f545df1fea280daf85e13f85d894900ae",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-b5387038-af84-4804-9ac4-b8d455221b44",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "f2d74047154e360e46821f939d0015817c72695e",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/source.png.part000",
+            "sha256": "e16bb2144162d12f41f977af4f4b692c4062f0d2b9f98aaee88903732067ba01"
+          },
+          {
+            "blob_sha": "4fc3c662bbf46db690c229eafe04953bf81fc4e4",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/source.png.part001",
+            "sha256": "c085a6282e6422ab5fd7dec8d557b133b94d5512a5acdd2239e76ebe17ca60bf"
+          },
+          {
+            "blob_sha": "aff12a68f3c1155a5161c5f3b0fcb89547b76aff",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/source.png.part002",
+            "sha256": "439eba7f2fe1859d34063670d995615322128f098aff8288cd0b1b04d3750c84"
+          },
+          {
+            "blob_sha": "9972b9da01b190a8689f8e1353f46582aa6d3bdc",
+            "bytes": 485160,
+            "path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/source.png.part003",
+            "sha256": "decebc296938ffc4b913cb372310759e2329eb2bbeb635798ef60372098aa8d4"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/receipt.json",
+        "receipt_sha256": "96bcd1d24c35a03c7a87fe60392464c5b3a49ad9286628b46c3d98579eedefc2",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "1575560f88310ae2421350a2252d926fa6799e98a902b002cc91ee4527e21adc",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "32e20fe63f096a26886b2ded3d1dd8426f661abcdaa48dc9a8b8feb2fa48af1e",
+      "supersedes_reason": "A genuinely new native photograph depicts one current operations worker actively writing the new procedure from corrected notes. The old unmatched CPU JPEG, original generation fingerprint/seed and explicit rejection remain retained; the old image was never visually accepted.",
+      "tool_execution": {
+        "execution_id": "b5387038-af84-4804-9ac4-b8d455221b44",
+        "execution_id_source": "actual exec UUID in the built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "air-purifying-sofa-backrest-filter-drawer": {
       "article_sha256": "1688a153b983762708a92122905c60614b3940e5193ac27ef0aaa787ed9e855a",
       "bytes": 181192,
@@ -1057,6 +1237,184 @@
         "runtime": "pure JavaScript",
         "source_height": 941,
         "source_width": 1672,
+        "width": 1200
+      }
+    },
+    "autumn-ridge-path-rests-riverside-trail-opens": {
+      "article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+      "bytes": 269526,
+      "generated_at": "2026-11-14T12:41:49.275Z",
+      "generation_id": "ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "A fictional Japanese female nature tour guide, age 34, leads adult hikers along a wooden riverside walkway as red autumn leaves reflect in the water. Photorealistic candid environmental news photograph in a fictional Japanese town nature park in November; autumn jackets, an adult male visitor age 29 holding a camera, a wooden handrail, river reflections and fall foliage visible together, natural overcast daylight, natural faces and hands, textured autumn jackets, weathered wood and realistic water reflections. Horizontal 16:9, documentary realism, no readable signs, brands, logos or recognizable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "generation_receipt": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
+        "commit_sha": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
+        "identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
+        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
+        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "bc542bd345adf40fe973d21952893799890e9d8f3d17bfd14b6fd1a4445f40a7",
+      "source_article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T12:41:46.819890067Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T12:41:46.819892669Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T12:41:46.815845399Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              14,
+              253,
+              252,
+              217,
+              1,
+              162,
+              181,
+              220,
+              13,
+              19,
+              126,
+              134,
+              139,
+              178,
+              73,
+              216,
+              51,
+              220,
+              117,
+              173,
+              148,
+              76,
+              140,
+              137,
+              127,
+              144,
+              63,
+              115,
+              67,
+              104,
+              46,
+              184
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
+        "manifest_uri": "urn:c2pa:67884e3e-0883-4155-a680-ea5b51125b87",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2887922,
+        "caBX_sha256": "73685fdc2a00ded85551a18b68ca74f7d7360fb30e7dbf7403674cdb9a4f10e4",
+        "candidate_branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
+        "candidate_commit": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
+          "commit_sha": "5bf9977760cbd51eb69ee9fc460a40f6fde52865",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3.json",
+          "receipt_sha256": "2934bdc2804200cb1124f6254bf056c2cf3b7d9afa35e2d3063794a79dc639df",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "original_png_parts": [
+          {
+            "blob_sha": "2c4a1cb072947fb74d0f4fcb15d2a5898c17f76b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part000",
+            "sha256": "57f650c20e7dec3e9b6fca20e42b0403a9e97cf09fc46ae0ca55de656a396b61"
+          },
+          {
+            "blob_sha": "50af1b1a85681990b849344e37576db17c66326d",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part001",
+            "sha256": "2bd280567aac91e0046ff69a0370fe5c61da34a196c3aab03744bcad5b94aefb"
+          },
+          {
+            "blob_sha": "7584c36cf84fb1b8a9c4cd0dc69cee23c16ba9db",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part002",
+            "sha256": "8b7572246206ac2982bb45282af1104f9d82df9c6d9ec82cf8f80fc1a5cc83c5"
+          },
+          {
+            "blob_sha": "86ed9473e96d01deb053e8bea4d2d938009e56f2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part003",
+            "sha256": "8bcc6e60d63448963c7e1777c9ec35546bf1516e2039b8bc8e70744eb24756e4"
+          },
+          {
+            "blob_sha": "02bfcc195be699ddb004a6f42176ac208e0cc899",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part004",
+            "sha256": "6670d8b4c8fb401f9d4208ac0238eee0dd63ce7bc0e7a8b9eece45706ecdb99d"
+          },
+          {
+            "blob_sha": "07b3c78f7df7e6d5d863f310c162dccdeaad4a44",
+            "bytes": 266482,
+            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part005",
+            "sha256": "78937697641d7f1d818f967fc9ff98d9c07d6626f160f859455c23cc27f703d5"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
+        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "bcd0e5b58e7cd03d1402e8ddecf2a9978cce4f0b",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T12:40:53.828Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "8cae2d9c59bd54e8971727071fed3844809ea6b65b4179c39f2ecec33d5d943d",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "7848a702a8055029525351b7829c7c7b1df2121305368ce5d7dd66e71261df03",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
         "width": 1200
       }
     },
@@ -1881,6 +2239,192 @@
         "width": 1200
       }
     },
+    "concert-audience-voice-rights-cheers-not-free": {
+      "article_sha256": "2917fd96c244b7b4f08fff070250e583689e24bc9d072851f1653e210c05ef86",
+      "bytes": 143101,
+      "generated_at": "2026-11-15T09:24:01.620460242Z",
+      "generation_id": "8de59334-fe92-4d79-93ed-1e8a5517517c",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Create one realistic horizontal 16:9 documentary photograph for a fictional Japanese future-news story. The central visual contradiction: the crowd keeps singing happily, while its dedicated recording microphone has just been disconnected. A close foreground view of a plain black audience-recording microphone on a short stand at the side of an indoor concert audience; an ordinary adult sound technician's hands hold the microphone steady and hold its unplugged XLR cable a clear few centimetres away from the bottom socket. Make the separation physically unambiguous and mechanically plausible: one microphone, one cable, realistic correctly articulated hands and connector, no duplicate objects. The microphone points toward the audience, not toward the stage, and nobody is singing into it. In the middle distance a small varied group of entirely fictional adult Japanese concertgoers, women and men roughly 25 to 55, continue singing or clapping toward a modest distant stage, with one middle-aged woman visible among them. Cool and warm practical concert lights, natural skin texture, restrained exposure with visible facial details, no blown-out faces. November indoor evening, contemporary everyday coats and knits, unposed press-photo feel rather than a glamour portrait or advertising. Focus on the separated microphone connector and working hands, with the continuing crowd still recognizable as a live audience. No text, subtitles, labels, screen UI, logos, signs, watermarks, real people or celebrity likeness. Full-bleed single photograph, no collage, no illustration, no 3D render.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:8de59334-fe92-4d79-93ed-1e8a5517517c",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+        "bytes": 159063,
+        "generated_at": "2026-11-15T09:20:27.935074+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 4016510582796096107,
+        "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
+      },
+      "previous_scene_prompt": "A 48-year-old Japanese woman sings passionately among adult concertgoers as the audience-recording microphone stands switched off nearby. Photorealistic editorial press photograph at a modest indoor music venue in November, ordinary concert clothing, a distant unidentifiable singer on stage, natural faces, realistic stage lights and crowd, horizontal 16:9, no logos, signage, legible text, watermarks, recognizable real people or illustrated elements.",
+      "previous_visual_review": null,
+      "prompt_version": 3,
+      "sha256": "af62cea6dc9ebc93fe824a1ba3294f3b27303621ba3528d201aceb8ba0e86633",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T09:24:01.620460242Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T09:24:01.620462286Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T09:24:01.618439340Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              53,
+              223,
+              251,
+              87,
+              221,
+              20,
+              3,
+              31,
+              115,
+              156,
+              18,
+              227,
+              100,
+              102,
+              26,
+              113,
+              32,
+              121,
+              254,
+              91,
+              226,
+              240,
+              220,
+              197,
+              61,
+              199,
+              238,
+              232,
+              226,
+              3,
+              236,
+              101
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:8de59334-fe92-4d79-93ed-1e8a5517517c",
+        "manifest_uri": "urn:c2pa:2b913db7-9b84-43a9-a7d0-539c9a5ff4ff",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2150359,
+        "caBX_sha256": "d43332e905527c713f2281cb739301e625f68d4efd45cbd501f4279314f3b58e",
+        "candidate_branch": "native-image-candidate/concert-audience-voice-rights-cheers-not-free/2917fd96c244b7b4-3fb75e8c0505",
+        "candidate_commit": "1d44bd6f4606f043ff2d60f97473e1f4d1d6c033",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-b1b637c5-605c-4a6b-a69e-d464c26790d0",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "f7f45b82cbe832be0cff00d12996902569689294",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part000",
+            "sha256": "323e50b18acb185aa627e222b867a5da437aaab7f9015ed81282955cb703c29b"
+          },
+          {
+            "blob_sha": "2f494666f941a408276727b0da69a3a53f7b8fcf",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part001",
+            "sha256": "3a70965547a879439b3b7a71afb3f41e2c8e17f822d56f54b6149696bf2109f8"
+          },
+          {
+            "blob_sha": "1314b7445bb259ded6dc7dd7987e0dd1593161d2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part002",
+            "sha256": "c511feba17fcdc4c240084495fabcfb3a05b90f483fc7ad35c9629696c71244b"
+          },
+          {
+            "blob_sha": "55a25f72c257500061b1e2b0b9ebee2a552dffc1",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part003",
+            "sha256": "29e68691269ea0af0cde228f2f176e41af7c8f02bf39f31a11ef6888921c85e5"
+          },
+          {
+            "blob_sha": "c8dbe906733e29b169f48592248707272b948733",
+            "bytes": 53207,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part004",
+            "sha256": "33a47a96a74ae9f88d56e1e2f57ec00f7197f4e539203eb8327fd03c71cb0bc3"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/receipt.json",
+        "receipt_sha256": "97cad3f4cea0f26cea954355da52ac80532757b789e804b98c1971f0199aa0f2",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "090d7e30592ec0f3ea08ae37c7382f5051e15c9eb9b9ba65dbf81fde3bbdb1d9",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "72bf77dc74a529ffcf90eddbae302f4d4176b8d7d40424d86851a1b3b62b4e23",
+      "supersedes_reason": "A genuinely new native photograph shows the dedicated audience-recording microphone disconnected while the crowd continues singing and clapping. The old performer-like CPU JPEG, original generation fingerprint/integer seed and explicit rejection remain retained; the old image was never visually accepted.",
+      "tool_execution": {
+        "execution_id": "b1b637c5-605c-4a6b-a69e-d464c26790d0",
+        "execution_id_source": "actual exec UUID in the built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "council-trials-new-sidewalk-before-vote": {
       "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
       "bytes": 232052,
@@ -2426,6 +2970,184 @@
       "source_article_sha256": "648ca56e313f18dfcd8f81ede792f55bcb8c0a5e0f70d5a8dd43a5f006380505",
       "source_png_sha256": "4e2e7c969643a455cb19605a3b652009c89eb8e579ada8548a678dd5cb698c1f"
     },
+    "fan-kumade-tours-concert-halls-before-audience": {
+      "article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
+      "bytes": 247993,
+      "generated_at": "2026-11-14T10:42:19.442Z",
+      "generation_id": "ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Medium-wide candid press photograph in a concert-hall foyer: a fictional Japanese woman aged 27, wearing a dark cropped jacket and an elegant blue skirt, ties a small paper wish tag with a blue ribbon onto a low branch of a two-metre-tall decorative Japanese kumade good-luck rake. The entire ornate rake, star ornaments, colorful small tags and wheeled stand are clearly visible beside her, away from the walkway. Natural expression, realistic hands, fabric and warm venue lighting, horizontal 16:9. No readable writing, logos, brand designs or real performers.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "generation_receipt": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
+        "commit_sha": "08fc204947c0072f53103c56ccaaab058cf400c6",
+        "identity": "d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
+        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
+        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "289155a716b9a830ac27839b25dc7796c9f543cb426287bce1c1780d9a77b29a",
+      "source_article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T10:42:16.636834210Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:42:16.636837216Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:42:16.632372885Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              183,
+              27,
+              1,
+              57,
+              45,
+              59,
+              96,
+              46,
+              228,
+              76,
+              162,
+              199,
+              157,
+              216,
+              223,
+              252,
+              197,
+              162,
+              207,
+              9,
+              31,
+              6,
+              240,
+              124,
+              215,
+              209,
+              166,
+              46,
+              233,
+              158,
+              221,
+              185
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
+        "manifest_uri": "urn:c2pa:c4a183a3-1872-4987-97bb-940f505ad9b6",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2800810,
+        "caBX_sha256": "0c6588c3a1d1d975446f0f234a597e8d9343f117d347b0c5013426a8f1ac523d",
+        "candidate_branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
+        "candidate_commit": "08fc204947c0072f53103c56ccaaab058cf400c6",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
+          "commit_sha": "920cad83d1d97228dee57cc2ee8663d41bef97e3",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5.json",
+          "receipt_sha256": "ef0d091a8cbfae0722f71032ed919eb81e58e7f2335b1dd89cdbfe022fedb37c",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr732-reviewer-handoff-first-photo",
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "original_png_parts": [
+          {
+            "blob_sha": "f12dc5dbf4b082f8d1850f48ed6d763bc1c4b8a2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part000",
+            "sha256": "783b1a49e07360f4930639178f15da47f27e9aa0006a98779378b028f0fccaa6"
+          },
+          {
+            "blob_sha": "181f3640f438d96f40ae6a727abbdc9cdfe82c47",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part001",
+            "sha256": "833e3a55e9d9eb5406f29e5a3f3c3c51d7de2884077809c8d66bf06838b93420"
+          },
+          {
+            "blob_sha": "71756353999c8eb73ab8b87a25be0e4be28a771a",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part002",
+            "sha256": "137cb60df8af0c41420131c813925e44993030e5cd5d1694ff627baf155af481"
+          },
+          {
+            "blob_sha": "4096245ff0a3f7e577ffb62ff1930746d0185ca1",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part003",
+            "sha256": "235e8e8d75ab0b6cd91b3d9fa27115e1bb3dfe065d8ad06719682c6c39eede73"
+          },
+          {
+            "blob_sha": "0c44dfc62df53dfae1d0acf460c2c08f25fc1410",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part004",
+            "sha256": "133c274f809e36adea8b8989c4f8291920f81e10d87378772f9d1a53fbb83f6e"
+          },
+          {
+            "blob_sha": "5f82ea2d2e356fb1e533f4cbd46bc2762d969de4",
+            "bytes": 179370,
+            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part005",
+            "sha256": "16d65607987f9eed3684e3576b60061a496d172c351e720660db4209f1136108"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
+        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "864d0acdc6832c037e9cd176c15cb78e7c0dfb4a",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T10:41:16.798Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "02b631f9214b2e4666bf5fda03d641be15aeb285c6d2ec3f6a65268e60889039",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "cd652d7fd7eaf982c5b9b9659a51cfb75886850b1ba34742849598090bd34a4d",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
+    },
     "fan-theories-write-final": {
       "article_sha256": "405644be6f2c757f4889e3d889dab35a284f9fb930b8864c4ce4472e7d3f85d5",
       "bytes": 154221,
@@ -2873,6 +3595,119 @@
       "source_article_sha256": "3f677d6bc13705adf10d04e453bb23a6634192c118f75976708d28dfee34897a",
       "source_png_sha256": "e1cc00f8f32f688b163124c308ebb1fa995697b2e79572c7745644e79f4f9a43"
     },
+    "friendly-cup-no-standings-four-fan-trophies": {
+      "article_sha256": "cb1a3bc3917d54f2cbc88adf92679ce1fa8b1ecc6bd0a6bc19f67428f8f6e231",
+      "bytes": 173458,
+      "conversion": {
+        "background": "white",
+        "encoder": "jpeg-js",
+        "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "quality": 84,
+        "resize": "centered aspect-preserving cover with bilinear interpolation"
+      },
+      "generated_at": "2026-11-14T00:24:56.608Z",
+      "generation_id": "31200877-efda-422d-bc53-07817fa6954b",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "A fictional adult 24-year-old male football player receives a handmade gold-painted cardboard cup from an adult fan beside stadium seating after a friendly match. Realistic unposed sports press photograph, the player in plain blue football kit smiling, fan handing the paper cup across a safe low barrier, playing field and a few other supporters softly visible. Natural morning daylight, believable face, hands, jersey fabric and cardboard texture, horizontal 16:9. No readable writing, logos, branding or real personalities.",
+      "generation_prompt_source": "Exact image_gen prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
+      "generation_receipt": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
+      "height": 675,
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/friendly-cup-no-standings-four-fan-trophies/cb1a3bc3917d54f2-722b8303f48d",
+        "commit": "e9bdcb85178b342f73355add3f18d472887d15ab",
+        "identity": "ec3252b56b3b80db070086928b562e4d5311295399b7b9cf22355595dc10ad41",
+        "logical_run_id": "publisher-20261114-0730-friendly-cup-four-trophies",
+        "receipt_path": "maintenance/native-image-candidates/friendly-cup-no-standings-four-fan-trophies/receipt.json",
+        "receipt_sha256": "8cb00e8ad49cae080f72d0db3184b1f1befb15fda89925174a428237d5872137"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "0cdfd96e851eea2597e7bcbc23bd3f3bfe23c93d696446d48bfad87ebdebf67a",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T00:24:54.730140795Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T00:24:54.730144118Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T00:24:54.725796423Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              163,
+              238,
+              133,
+              193,
+              142,
+              158,
+              204,
+              233,
+              137,
+              56,
+              219,
+              17,
+              179,
+              130,
+              4,
+              152,
+              155,
+              206,
+              182,
+              23,
+              64,
+              215,
+              29,
+              42,
+              108,
+              206,
+              1,
+              26,
+              95,
+              101,
+              209,
+              113
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
+        "manifest_uri": "urn:c2pa:db86ed17-04c4-4e49-855c-4c6fd66e3e1c",
+        "signature_validation": "not_performed"
+      },
+      "source_png_bytes": 2283612,
+      "source_png_sha256": "d16eeccfcae470b855285d20b3e29632260f88a8ae9fa093cbcc19f1202303e6",
+      "source_size": [
+        1672,
+        941
+      ],
+      "width": 1200
+    },
     "historical-lookalike-contest-dog-wins": {
       "article_sha256": "3b0816fc2ea96dc4158b34110f43df841f7962fd657e2faba94befa666c7e3a4",
       "bytes": 160495,
@@ -2918,6 +3753,143 @@
       "prompt_version": 2,
       "seed": 3443340707540981827,
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
+    },
+    "indoor-beach-friends-exchange-ripples": {
+      "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+      "bytes": 228371,
+      "conversion": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      },
+      "edit_reference": {
+        "github_run_id": "43509702255",
+        "image_sha256": "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf",
+        "kind": "user_requested_edit_of_rejected_candidate",
+        "status": "rejected_reference_only"
+      },
+      "generated_at": "2026-11-14T01:52:12.846Z",
+      "generation_id": "0b98b60a-4c19-43be-8b93-bb9270c18c14",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Edit the supplied AI-generated photograph into a realistic ordinary indoor-beach feature photograph. The reference is the edit target, not a real person. Keep the photographic skin and water texture and the relaxed friendly mood. Replace the face with a distinctly different, completely fictional Japanese adult woman age 27: a soft oval face, warm brown eyes, a short dark bob with a light fringe, natural eyebrows, and a small relaxed smile. Make only subtle natural posture and anatomy refinements, with realistic adult proportions and conventional swimsuit coverage. Change the existing swimsuit color to navy blue and add a loose white beach shirt. Widen the camera composition to include the entire standing figure and both feet at ankle depth. She is turning slightly to look at a little ripple arriving at her ankle and lightly moves one foot through the water. Set this clearly inside a glass-roofed indoor beach with pale sand. A small part of the background includes a clearly framed wall screen showing a different adult woman in a separate indoor pool on a remote video call; no words on the screen. A single coherent candid 16:9 photograph, natural skylight, realistic hands and feet, visible ankle ripple. This is ordinary recreational swimwear and a water-play activity. No real celebrity likeness, no text, no logos, no exaggerated anatomy.",
+      "generation_prompt_source": "Exact image_gen edit prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
+      "generation_receipt": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+      "height": 675,
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-da2fb0adf05a",
+        "commit": "18891d7b06618f56f4dc721df1b62152798e7c3f",
+        "identity": "7702e447a8b1c1fc3c983f5effee906dc00e3c3bb6ed858234647d331dd200d9",
+        "logical_run_id": "indoor-beach-user-requested-existing-image-edit-20261114",
+        "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
+        "receipt_sha256": "bd487a74a1cd3a1a10d895090477eb802c4212e328e379a995bc38f22fa2187a"
+      },
+      "origin": "chatgpt-imagegen",
+      "previous_visual_hold": {
+        "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
+        "generation_failure": {
+          "attempts_in_run": 1,
+          "code": "moderation_blocked",
+          "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+          "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
+          "logical_run_id": "indoor-beach-20261113-1930",
+          "origin": "chatgpt-imagegen",
+          "phase": "output",
+          "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
+          "returned_image": false,
+          "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
+        },
+        "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
+        "rejected_at": "2026-11-13T10:56:07+00:00"
+      },
+      "prompt_version": 3,
+      "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T01:52:09.995011685Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T01:52:09.995014996Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T01:52:09.992012821Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              210,
+              171,
+              62,
+              237,
+              207,
+              32,
+              115,
+              112,
+              243,
+              149,
+              219,
+              212,
+              57,
+              208,
+              147,
+              243,
+              69,
+              112,
+              157,
+              45,
+              181,
+              200,
+              248,
+              208,
+              89,
+              12,
+              12,
+              177,
+              6,
+              169,
+              96,
+              87
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
+        "manifest_uri": "urn:c2pa:68f4f58d-1eb5-450f-a222-ce8ea878f616",
+        "signature_validation": "not_performed"
+      },
+      "source_png_bytes": 2753385,
+      "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+      "source_size": [
+        1672,
+        941
+      ],
+      "width": 1200
     },
     "joint-party-slate-one-vote-three-claims": {
       "article_sha256": "ddc1d01bab18566e67fb8a8fd03c0e40d0143067a0bf8e6a60ce784ec549af1e",
@@ -3022,6 +3994,178 @@
       "seed": 6500820507977045750,
       "sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b"
     },
+    "matchmaking-ai-bios-same-hobbies-handwritten-line": {
+      "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "bytes": 170606,
+      "generated_at": "2026-11-14T12:48:40.227Z",
+      "generation_id": "95a60531-c31d-49be-8c03-9f2ed7436305",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "An adult Japanese woman, age 27, writes a short handwritten addition on her own matchmaking introduction card. Candid photorealistic press photograph at a fictional social event, a friendly adult male participant age 29 smiling across the table, softly blurred pinboard with indistinct cards behind them, warm ordinary indoor lighting, realistic casual November attire, natural hands and expressions, horizontal 16:9. No readable text, logos, brand marks, or real-person likeness.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "generation_receipt": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
+        "commit_sha": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
+        "identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
+        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
+        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca",
+      "source_article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T12:48:38.004425170Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T12:48:38.004429236Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T12:48:38.002764334Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              230,
+              29,
+              82,
+              22,
+              189,
+              33,
+              209,
+              213,
+              214,
+              76,
+              199,
+              130,
+              142,
+              195,
+              47,
+              5,
+              4,
+              225,
+              137,
+              155,
+              92,
+              72,
+              115,
+              214,
+              138,
+              222,
+              69,
+              132,
+              248,
+              123,
+              69,
+              136
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
+        "manifest_uri": "urn:c2pa:9e806982-0bc8-4132-8c94-41b87fbf231e",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2514672,
+        "caBX_sha256": "85c89192a7d32857b4b21a51d7d19b21aaddb19d4a46b1957dd680f8a4d59713",
+        "candidate_branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
+        "candidate_commit": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
+          "commit_sha": "6d7927277fee2cfdd32350f0a33eac64e5a4433e",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9.json",
+          "receipt_sha256": "a784b8347f3f7bd18c7e43a736ab0d3a38a6f39e14f754b81f8ca50bf0b48ca8",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "original_png_parts": [
+          {
+            "blob_sha": "3471634f248262bd84930a7841a8a702aa3f256c",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part000",
+            "sha256": "6d3a7a5b2df118bbcef44d4a152f90417446bfa146a2c3a7ab9c07cb41938ca3"
+          },
+          {
+            "blob_sha": "53b8ccffc1c89b6bdac63c0b9969b25b0f249686",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part001",
+            "sha256": "5900ec9c9428931a2de48faa9ad3947595f51ad542ae226a0595143ccd6ac05c"
+          },
+          {
+            "blob_sha": "6411ba8720493d5153d84689ef4071cc698a35f6",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part002",
+            "sha256": "80085a511793678e4454e43092912bde12cc8df6fef3feb9cfba538cf32cee5a"
+          },
+          {
+            "blob_sha": "a40b1193e9be4bb162a91c17291d466722bfc749",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part003",
+            "sha256": "98e32e263f8d6b1d6d439ae5fbd254efe2bffbc12b2113e02f9ec65887748b77"
+          },
+          {
+            "blob_sha": "6a3d9941aebb6c91d262d303fba3ab39be30a372",
+            "bytes": 417520,
+            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part004",
+            "sha256": "c5ea82c0a4703f3f83eff0cc2ff110eee3bdd95704c922ceabce7226acb55b5e"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
+        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "5921449b0d2dc2f1d19f7cc46fe0a77dabf2bbde",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T12:47:49.350Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "2499905e762617fd5f196fce90d41faa7e1e3832ff2fe8c8589e974dc9b3efa4",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "c2efe0f5d02b11ef3c03d48170771929d942466dbaa34e63c58bf004ee466808",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
+    },
     "midterm-prediction-notebook-full-of-holes": {
       "article_sha256": "605ceb59eb496cf65bf4927489aaa8a9fc2dc157e82c14a7a29ca2bc720f58bc",
       "bytes": 169095,
@@ -3073,6 +4217,190 @@
       "prompt_version": 2,
       "seed": 7373647264621116198,
       "sha256": "76d2f68e0804c58ebf17c14a086f0ade278bcb6de77c751aaf8babbfe522ae89"
+    },
+    "mountain-road-transplants-meadow-topsoil-blocks": {
+      "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+      "bytes": 321239,
+      "generated_at": "2026-11-14T10:52:25.167Z",
+      "generation_id": "b3655073-1215-41be-87ea-5e44fa7e950a",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Documentary press photograph beside a newly completed fictional Japanese mountain road in November: a small construction lift lowers a thick rectangular block of grassy topsoil onto a brown roadside slope. Two helmeted adult workers guide its placement from the sides at a safe distance. Root-bound earth is clearly visible beneath the grass; other green soil blocks form a patchwork along the curving finished road. Natural overcast daylight, believable earth and root texture, horizontal 16:9. No readable signs, text, logos, brands or identifiable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "generation_receipt": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
+        "commit_sha": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
+        "identity": "7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69",
+        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
+        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "50f803b225d7f5c1e8deb08fec70ef0c36d5e71567b5e13d5bd3cd6d78ef0ed5",
+      "source_article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T10:52:22.708834425Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:52:22.708838702Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:52:22.707221412Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              209,
+              44,
+              105,
+              207,
+              107,
+              91,
+              80,
+              149,
+              211,
+              217,
+              14,
+              116,
+              124,
+              246,
+              147,
+              86,
+              227,
+              150,
+              158,
+              188,
+              116,
+              116,
+              161,
+              240,
+              219,
+              1,
+              225,
+              251,
+              166,
+              53,
+              58,
+              210
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
+        "manifest_uri": "urn:c2pa:36f23fd4-c8e8-43ce-8444-fa204c863d64",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 3655590,
+        "caBX_sha256": "82389bf613bf48a5ec2352cefdd74d314962020bc284d3d97775614a856ad6fd",
+        "candidate_branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
+        "candidate_commit": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69",
+          "commit_sha": "60bb91d95e4039a5da5e5ccf50491be7e67ac2e4",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69.json",
+          "receipt_sha256": "f1242e02d724cc95f02a26a91d5cdbbdae2c6f86e304c3d05815d3f382ffc909",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr734-reviewer-handoff-first-photo",
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "original_png_parts": [
+          {
+            "blob_sha": "c390243fac06ce0bde99c3de06c3f6b8ef951c87",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part000",
+            "sha256": "3e09228256bc8e374c0494a3c31509073de00be7027e7406ed6ad1dab526224d"
+          },
+          {
+            "blob_sha": "4d484522872ec5727e490584a1bb52bb4a467166",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part001",
+            "sha256": "72401a423d0d3c016ca6ced56f21471773ed53be3ae00ccda77c8b931def278d"
+          },
+          {
+            "blob_sha": "cce8a104ee8e7a65b9894b18746d0eab199d5868",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part002",
+            "sha256": "e1664a50084e9f5736f0d30d815a8d9eceece913e8996656629b67e32929c22b"
+          },
+          {
+            "blob_sha": "8501d3ddfe291e28c3ba14ff9dafbd72ef75afca",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part003",
+            "sha256": "d145a28f51cd370f82181fa5b2c550423918f59f810bfaee5895efafc7b7abd5"
+          },
+          {
+            "blob_sha": "a2855303f6b2da384690f651141d3417c7b1d906",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part004",
+            "sha256": "9af4633aa9b594b13b638d7e5ab15fd487a4ee3853120fb2b002cab28e2eb15f"
+          },
+          {
+            "blob_sha": "1f3dbcfb6c1245b021d798627e824a5d1f0cb056",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part005",
+            "sha256": "627083b5e591269ad2906e8e88b68fa32b8a965468d0991daccfd0bfa9e22b0f"
+          },
+          {
+            "blob_sha": "b8dd4a633689b1ab783106f3d7b65e5d7b0e5de7",
+            "bytes": 509862,
+            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part006",
+            "sha256": "d1fbe6891651ebbcb999e129e0283ec66630f0dadc367d2942a6bc4244af1572"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
+        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "4efeb3e615d95f7c77ac7759dba9171d5de088ba",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T10:51:31.515Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "22be773f756b2993c654c9d0c39efeccd66d11e03288ff36f1c0ee70532c493e",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "f784201f3b9a58bec8676e36c0bb144196cdbba95519dd226a705f11e1e2cdc0",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "municipal-shared-government-answers": {
       "article_sha256": "e1c2866d8f64306224d4bef32503b45adbec6c292e99d85b5bfcc65586a316d2",
@@ -3436,6 +4764,171 @@
       "source_article_sha256": "634c2087a7f3abd01f3e093a12908177a2463697d675beae374df576b1423a37",
       "source_png_sha256": "61efc67eec6f558d1500584c2bf48b8b9fea1e3e51748696ea5ad506cc06ca70"
     },
+    "offline-tape-restores-missing-contract-revision": {
+      "article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
+      "bytes": 123989,
+      "generated_at": "2026-11-14T06:36:00.993Z",
+      "generation_id": "6bd14824-7c28-4f15-843c-2b15483c27b8",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "An adult Japanese female archive worker, age 35, takes one magnetic tape data cartridge from a secure metal storage shelf. Photorealistic candid press photograph in a fictional company records vault, ordinary professional office attire, natural face and hand anatomy, visible tape cartridge and cabinet shelving, restrained fluorescent lighting, realistic surfaces and shadows, horizontal 16:9. No logos, readable writing, weapons, security incident graphics, brands, or real-person likeness.\nShow the practical action clearly: a rectangular archival data-tape cartridge is partly withdrawn from its shelf slot in the worker's hand. An authentic unposed workplace feature photo, entirely fictional scene. Keep clothing ordinary and professional. Frame the worker and hand-held cartridge together; realistic face, fingers, metal shelving, and subdued light. No visual labels, signs, writing or graphics. Landscape 16:9.",
+      "generation_prompt_source": "Exact built-in image_gen input captured by generateAndStage in the same generating execution.",
+      "generation_receipt": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "4ea139464842ca8965575392b77f9a597b4f701e309bf11422d120ab7f7919cb",
+      "source_article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T06:35:58.361229763Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T06:35:58.361232958Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T06:35:58.359453318Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              192,
+              175,
+              194,
+              194,
+              23,
+              59,
+              36,
+              71,
+              156,
+              153,
+              121,
+              144,
+              231,
+              21,
+              189,
+              105,
+              223,
+              61,
+              214,
+              171,
+              79,
+              197,
+              146,
+              244,
+              193,
+              255,
+              175,
+              175,
+              171,
+              129,
+              56,
+              83
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
+        "manifest_uri": "urn:c2pa:b11078c0-8377-4099-8010-3be610efe327",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2272838,
+        "caBX_sha256": "442754e80850d27f2b988ce5d241c514299791794a98f5bee6e939565f00dc21",
+        "candidate_branch": "native-image-candidate/offline-tape-restores-missing-contract-revision/67f70881b03ea8cc-c9adcd00e5d4",
+        "candidate_commit": "81bb8354fcf82a9d313f512e8e05801679798b7d",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e",
+          "commit_sha": "817a965896ca0dc9a2d4b767f9926765cc7802e7",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e.json",
+          "receipt_sha256": "324c0806b0a48ddb36bb43fc8cc19226fb232382369aca8c21527289c26a7508",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-0930-offline-tape-reviewed-first-photo",
+        "method": "Same-execution generateAndStage captured the actual PNG and exact prompt, saved the full original PNG parts, JPEG and receipt, and verified SHA readback. The generating task displayed the original PNG and final JPEG against the full article; a separate read-only reviewer independently checked the original PNG against the article.",
+        "original_png_parts": [
+          {
+            "blob_sha": "c183844779012eb4ddf43cf80ae41b06c97e1e7b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part000",
+            "sha256": "a385a73114aefa479d0b9f6e0e812ef42976a5001d97a3d2c78ed798eb1ad313"
+          },
+          {
+            "blob_sha": "c966813528ff25ca470a8a66296ba590a9d1f08f",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part001",
+            "sha256": "a826823c29ade5baf06aadd6d32386338acdab9e926a981546c69e067327456f"
+          },
+          {
+            "blob_sha": "c741f7c17e4da24dff48f286abee6c165ab14ff5",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part002",
+            "sha256": "115a4598687343ffc6ec63e17acd723e979e612ad668fa5ea3ea95c6e10a6376"
+          },
+          {
+            "blob_sha": "0c7deeaa3dd8a29681b46a929b2b186c4d1c589b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part003",
+            "sha256": "e340f3a8adba6bdcf72156477c37418740adf7cc9827d6c117078a5c43706955"
+          },
+          {
+            "blob_sha": "25ed3ac19acd352f5f39810a26d2a678f70c0f3a",
+            "bytes": 175686,
+            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part004",
+            "sha256": "ecf9f85b7714fb70a7f2703cc966d1d54736c5ac350a41e00ee1840922f6a8c9"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/receipt.json",
+        "receipt_sha256": "7090ecf4601d428edc2a4b43e21b6af88a62da6052244c971ac4961b512911a3",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "76e00ee6d8bda423fc8bea4361598ed840189049",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T06:35:12.404Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "73f922ad46d94dc78172d2d60f413404bc1ba035742b8825d5be460f3636b5c3",
+          "route": "Actual PNG data URL to GitHub candidate storage in this execution",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "7ea9ff1c3090049a99f3c15bcc75bc5a3239d8ec289585ef1832142720a53c29",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
+    },
     "paid-conversation-checkout-shoppers-chat-in-line": {
       "article_sha256": "aeaff54df2548cbdffa7e488cf4df68b137ec3a875d6f8fcfd5bf370f655e627",
       "bytes": 136227,
@@ -3740,6 +5233,60 @@
         "resize": "center-cover-bilinear",
         "width": 1200
       }
+    },
+    "recycling-robot-reserves-washer-parts-before-dismantling": {
+      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+      "bytes": 139248,
+      "generated_at": "2026-11-15T05:17:20.084741+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 3074401136884208640,
+      "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+    },
+    "remote-basketball-final-fans-walk-behind-hoop": {
+      "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
+      "bytes": 163536,
+      "generated_at": "2026-11-14T23:15:51.834Z",
+      "generation_id": "06090441-969c-466b-be5f-b4d0b0bc7b7d",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID. Signature not independently verified.",
+      "generation_prompt": "An adult Japanese daughter age 28 and her father walk together behind a basketball hoop inside a fictional remote-viewing gym while watching a match through mixed-reality glasses. Photorealistic candid press photograph, small indoor sports hall with clearly marked safe sideline walking lane, other adult spectators in November casual jackets, a large wall screen showing indistinct basketball play, believable ordinary sports lighting and natural expressions. Realistic human hands, athletic floor, basketball equipment and perspective; landscape 16:9; no readable text, logos, recognizable real people or fantasy effects.\n\nClarification of the photographed physical scene: the match is taking place in a different town. The actual physical basketball court here is EMPTY of real players and balls. No real basketball players or basketballs anywhere on this floor; no visible holographic/CG players, projected figures or fantasy effects. The distant wall display is the only place where an indistinct basketball game is visible. An adult Japanese daughter aged 28 and her Japanese father about 58 are the clearly recognizable main pair, both wearing understated mixed-reality glasses while walking naturally together on the BLUE safe walking lane OUTSIDE and BEHIND an ordinary physical basketball hoop. Photograph them mid-step from a natural press photographer's position with the ordinary empty court and hoop giving clear context. Their faces, hands, glasses, clothing folds and walking feet must look anatomically natural. A few other ADULT spectators may remain farther along the outer lane only. Natural modest November casual jackets, everyday trousers and ordinary shoes; no costume, fashion advertising or sexualized styling. Believable local community sports hall with wood sports floor, realistic ordinary gym lighting and candid restrained expressions. Wide landscape 16:9 composition; faithful documentary-style photorealism, natural skin and material textures. No readable words, numbers, logos or watermarks. No recognizable real people, celebrities, children, unrelated foreground people, staged glamour or illustrations.",
+      "generation_prompt_source": "Exact image_gen input captured by generateAndStage in the same execution as generation, byte transfer and durable candidate save.",
+      "generation_receipt": "xmp:iid:06090441-969c-466b-be5f-b4d0b0bc7b7d",
+      "generation_reference": {
+        "candidate_branch": "native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d",
+        "candidate_commit": "f728a094803b4fa6f8b5eaf650a8643ae4f804cb",
+        "identity": "29ed4b62b2ec38cd6761e3fb63e0e723e050a251c9f5792fa4a1badb9089d75c",
+        "kind": "native_image_candidate",
+        "logical_run_id": "recovery-pr-744-2026-11-15-0730",
+        "receipt_path": "maintenance/native-image-candidates/remote-basketball-final-fans-walk-behind-hoop/receipt.json",
+        "receipt_sha256": "3bc40989ae56c4b7dc833abafb5fc9e203227e53687dbeb4092e1f52c8b7ab25"
+      },
+      "height": 675,
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "75d1ebf58dc8bc7d4d360030fe24b52f7262b261424c6f1427b783d7def5ee68",
+      "source_png_bytes": 2188227,
+      "source_png_sha256": "2627d19b15011b15eb837a2cd327685579374e1b0118348d070632d163d8b76c",
+      "width": 1200
     },
     "research-completed-opening-day": {
       "article_sha256": "bd78f522f9ca6e47e4d711fa2695dae4be74b3e8406dbb2842bdead6ef3703ff",
@@ -4271,6 +5818,33 @@
       "sha256": "9a5ff5839ebaafc31d9e23de57455c1087bd7d9755128cb368e34712ffca9653",
       "source_article_sha256": "8c179bd5c7feee7fa845cc2df9cd93668686215a575e6a0062c086f532179669",
       "source_png_sha256": "10354902f697407145a42ef4004bcc09a2df69c5b08e364e4e7e7d4f297aa437"
+    },
+    "seven-venues-compose-one-live-song": {
+      "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+      "bytes": 149801,
+      "generated_at": "2026-11-15T11:25:35.637819+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 7956126009343851850,
+      "sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76"
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "article_sha256": "d5bff8517d97f44e5ec941f7c0f41fc3d08ab236d66816f60d92948060786c6a",
@@ -4909,6 +6483,204 @@
       "source_article_sha256": "c977a45af8b04b7281616529f73e20a901d49e89c62e0ff9d8e76290a95d255b",
       "source_png_sha256": "3a01d4327f021bbee5d618703de18ff4246e521e02a07f3fb12b9d4d67465729"
     },
+    "swapped-suitcases-drive-themselves-to-lost-property": {
+      "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+      "bytes": 164774,
+      "generated_at": "2026-11-15T10:18:07.134022969Z",
+      "generation_id": "a107af56-8882-4427-8c15-d9adaa5c0208",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One candid horizontal 16:9 Japanese news photograph, fictional people at a fictional train station in November 2031. The visual joke must be instantly clear: TWO matching silver hard-shell suitcases on their own little powered wheels have reached a service counter ahead of their two owners; nobody is holding or pulling the luggage. Wide three-quarter SIDE view of an ordinary indoor station return lane marked by TWO plain yellow floor boundary stripes. Two silver suitcases stand in a neat short line toward the counter on the right. Both telescopic towing handles are FULLY RETRACTED, wheels touch the floor and there is no hand, leash or cable attached. A Japanese woman age 27 and man age 31, in normal November travel coats, follow a full metre behind, hands visibly empty and each wearing a small plain wristband. Their faces show mild puzzled concentration, not broad comic mugging. A uniformed middle-aged station attendant stands safely beside the counter at right, observing the luggage rather than pulling it. The lane is separated from the normal pedestrian area. Plausible human and luggage scale, believable station floor and light, natural skin and hands, subtle real photograph texture. Low waist-height camera emphasizes the dignified little line of luggage and the gap to the humans. No visible readable signs, ticket text, logos, brands, robot faces, real celebrities, special effects, illustration or CGI. Do not add extra suitcases. One coherent full-bleed photograph.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:a107af56-8882-4427-8c15-d9adaa5c0208",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "bytes": 117628,
+        "generated_at": "2026-11-15T04:06:20.660447+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 2361868401886373721,
+        "sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+      },
+      "previous_generation_history_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/previous-generation.json",
+      "previous_rejection": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "reason": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+        "rejected_candidate_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+      },
+      "previous_scene_prompt": "Two adult Japanese travelers, a woman age 27 and a man age 31, walk behind two small self-driving silver suitcases toward a lost-property counter at a fictional train station. Photorealistic candid news photograph, a separated indoor return lane marked by plain yellow floor stripes, a middle-aged station attendant guiding the safe movement, natural November coats, plausible luggage wheels and handles, ordinary station lighting, natural faces and hands, sense of a slightly amusing situation, horizontal 16:9 documentary realism, no readable text, logos, brand marks, or recognizable real people.",
+      "previous_visual_review": {
+        "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+        "decision": "rejected",
+        "image_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011",
+        "note": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+        "reviewed_at": "2026-11-15T13:19:22+09:00"
+      },
+      "prompt_version": 3,
+      "sha256": "5db5e6db656e8894ab2e61122f34ca6148269e5c374698824f46c26ae0774c6a",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T10:18:07.134022969Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T10:18:07.134030947Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T10:18:07.131878876Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              208,
+              165,
+              163,
+              149,
+              138,
+              177,
+              79,
+              41,
+              18,
+              142,
+              197,
+              221,
+              228,
+              198,
+              245,
+              124,
+              22,
+              195,
+              249,
+              189,
+              185,
+              183,
+              60,
+              225,
+              59,
+              80,
+              194,
+              91,
+              205,
+              164,
+              17,
+              20
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:a107af56-8882-4427-8c15-d9adaa5c0208",
+        "manifest_uri": "urn:c2pa:f3133578-4074-4af2-9f4b-bb4df9fe35a6",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2381290,
+        "caBX_sha256": "93d8a68afb99fc3caebdbe0432135278ede6720aee80843452c4df30676118c6",
+        "candidate_branch": "native-image-candidate/swapped-suitcases-drive-themselves-to-lost-property/3616f0f7de319f3a-0415bee6ce7d",
+        "candidate_commit": "b5cc5b50be9eaf8b5738ddb207836b71afbd4db3",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-f8e4d150-123a-490b-bb66-ed3fb94fec69",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "d9a555cfc0efbf9b58275de2202840fd71c6ca94",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part000",
+            "sha256": "da7299737e71784d50f54f9ee7245c37d000f167963826212848957de4a3d5d3"
+          },
+          {
+            "blob_sha": "a08165e98f1227faaaad178959952caf2a411d91",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part001",
+            "sha256": "54436fb4e932c7095e29b7ad3ee51e63f144999f34debf82d703b80537dec711"
+          },
+          {
+            "blob_sha": "a9572feb6ba89c2cf42a9c5450776e4393a637c2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part002",
+            "sha256": "30786afc32233c08a5517096563d1964e02f68eb7cb25c986e23ecb349fcffd4"
+          },
+          {
+            "blob_sha": "6d97dff0b8a501cf2774e419bb564bbccb52ef03",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part003",
+            "sha256": "f1bcd9b72311cd57808ea1d66eda2088d3562ff3da976471f9834b87160e84b0"
+          },
+          {
+            "blob_sha": "18407e712869548d4ff490bb696a426226bf4aad",
+            "bytes": 284138,
+            "path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/source.png.part004",
+            "sha256": "c15122fa689ed4aac30d380834afaad576723fdb478cb74641d89234d0b82405"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/receipt.json",
+        "receipt_sha256": "073e8e4bab8b9544069680a0765ae7eb502012c8b92f548ab7f98691372d1fe9",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "894796fc1fb2b464423f8dcd600e40b7fe06bc0ea6b90ec3821a6b1f69d50f28",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "96ee3fde758cb7c6f3b75282b483eef011f60d4b38c5e87f67a94c394f78c730",
+      "supersedes_reason": "A genuinely new native photograph shows two unheld silver suitcases ahead of their two owners at the marked station return lane and counter. It replaces the rejected ordinary luggage photograph without changing the article or scene fingerprint.",
+      "tool_execution": {
+        "execution_id": "f8e4d150-123a-490b-bb66-ed3fb94fec69",
+        "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "sweet-potato-chorus-starts-too-late": {
       "article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
       "bytes": 174092,
@@ -4956,6 +6728,184 @@
       "sha256": "a5146b5ee1dbfb0817be7cbc19f4e88eef262d383da7ec0f65627efdef13c973",
       "source_article_sha256": "77213239def3618b2c997b3349ba4f95ba036604ebc312f084379698caef5008",
       "source_png_sha256": "19abf391dee744fba176502275a285f74b0a56c4933a6d360203bffd57df6ab8"
+    },
+    "three-shipping-firms-share-space-steel-sails": {
+      "article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
+      "bytes": 239943,
+      "generated_at": "2026-11-14T10:39:33.198Z",
+      "generation_id": "ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Wide editorial photograph from a quay at a fictional Japanese industrial harbor: a crane lowers bundled steel beams into the open hold of a coastal cargo ship. Two helmeted adult port workers stand safely clear, checking a cargo tag. A second ship remains moored at the neighboring berth for inspection. Natural daylight, believable lifting cables, metal and water textures, dock and water visible, horizontal 16:9. No readable writing, logos, branded vessels or recognizable real people.",
+      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
+      "generation_receipt": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+      "model": "ChatGPT ImageGen",
+      "native_candidate": {
+        "branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
+        "commit_sha": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
+        "identity": "65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
+        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
+        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf"
+      },
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "2c3ea3d0373c67d6618b0b25df72ba39d69606884426fa9067b3a713465b0bbb",
+      "source_article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-14T10:39:30.812393364Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-14T10:39:30.812401616Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-14T10:39:30.810068206Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              13,
+              13,
+              232,
+              144,
+              86,
+              205,
+              66,
+              1,
+              200,
+              16,
+              43,
+              81,
+              173,
+              244,
+              19,
+              210,
+              142,
+              114,
+              252,
+              222,
+              150,
+              165,
+              69,
+              248,
+              253,
+              139,
+              172,
+              188,
+              204,
+              91,
+              121,
+              2
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
+        "manifest_uri": "urn:c2pa:24078e87-961f-4c5c-928b-7b3ce58ec7a8",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2660184,
+        "caBX_sha256": "cc5eabf1654b29017997a1d5421202796a8bfd279d8d1dfeca6f97152539276b",
+        "candidate_branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
+        "candidate_commit": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
+          "commit_sha": "94e510f5c941ba70339913d5785a84b847a8b720",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a.json",
+          "receipt_sha256": "87a7bde814f778cac227609a08e0c4e35b00de925f59d3735af5b0618b11e511",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "article-20261114-pr729-reviewer-handoff-first-photo",
+        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
+        "original_png_parts": [
+          {
+            "blob_sha": "b4b0558d5a30c95902217c5f1b035cf43d4b0c04",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part000",
+            "sha256": "79e12df9a82aeaea8100607cd8cab0746cc6515ff97f332252e6d405c0724e33"
+          },
+          {
+            "blob_sha": "be3d4bba6fc514eda526b6ccd771bf2eb9c15159",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part001",
+            "sha256": "6d6955b3be443e46edd43abc5be5aaea5cf73fe7185f9cc7f5658b2a22e95481"
+          },
+          {
+            "blob_sha": "2bee677dbc69fd41661c34e90deb737241daf48d",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part002",
+            "sha256": "3b95b1177badd0cb283016963479ac222fb71c182fcb83a87482e19493e5ca40"
+          },
+          {
+            "blob_sha": "260e3257e3eb464f8df32f2a99c00753c2b47e5e",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part003",
+            "sha256": "10e7309b724d2228381471d944147b11cb13cefa4ebb84b3aade664a524b8aef"
+          },
+          {
+            "blob_sha": "5e0d1d81952763c82d093ddfdaefeecdbecfe22f",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part004",
+            "sha256": "4922516613fa1f3023c1f2e26107f75dbf12f204eac03fbd15b027b09bdd662d"
+          },
+          {
+            "blob_sha": "382b8136dd6d1da462d0ec00d9fea32bdfbd2bcc",
+            "bytes": 38744,
+            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part005",
+            "sha256": "a4d8000bd091e3e440813028c0d810ff44548f67a26604dbb2c3a689afdfed38"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
+        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "9d49badea92736069fd6a857366c41bf94c98be8",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-14T10:38:38.414Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "63d4e74da4a707fb9d8e2d556db242030c6e4021831c643bb3e7ca5b049683df",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "3f15788ec350a6802d34b730d24095edd962ddc4e2ee1faf8f679aba42f5e464",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
     },
     "three-towns-share-mobile-event-radio": {
       "article_sha256": "42e83c6cf1cdba06ec7b0d2252138a8bba9dbe1f9371de1e6bf960d84aad00bd",
@@ -5518,6 +7468,210 @@
       "source_article_sha256": "e1de0e6c44bbd716d212e86cd5425709c3ba5da8eb39753d17d8f2cbccfa52b9",
       "source_png_sha256": "d9d847df0d4ef025aa9bcbd8c3926b7438c331c76088d2dd5eda2f8b9b867d2f"
     },
+    "water-main-repair-priority-dry-street-first": {
+      "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+      "bytes": 209461,
+      "generated_at": "2026-11-15T10:18:37.640434790Z",
+      "generation_id": "40e01451-29b2-4909-aa33-25caa8d32883",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One realistic horizontal 16:9 editorial news photograph of preventive water-main repair on a DRY Japanese residential street at NIGHT in November, entirely fictional people and location. The EXPOSED WATER PIPE AND ITS WORN JOINT must be the clear foreground subject, not merely a hole or a worker portrait. A small safely cordoned road opening reveals a horizontal dark cast-iron water pipe roughly 20 centimetres in diameter running along the shallow trench, with one clearly visible old bolted coupling joining two pipe sections. Close enough to see rust and wear at the coupling, no spraying water or leak. A municipal worker in ordinary blue work clothes and plain safety helmet kneels OUTSIDE the trench and points with one gloved hand toward the worn coupling. An adult Japanese woman aged 42 in an autumn coat watches from behind the low work barrier on the dry pavement, a small part of the background. A practical portable work light illuminates the pipe, hands and dry cut asphalt edges; modest houses and an unlit drain sit behind, restrained cool autumn night colors with natural light falloff. Downward three-quarter camera angle makes the continuous cylindrical pipe and joint unmistakable while retaining enough of the street to show there is no flooding. Serious matter-of-fact expressions, plausible tools and excavation scale, realistic hands, no worker inside an unsafe deep pit. No readable noticeboard, lettering, numbers, logos, company marks, diagrams, text overlays, celebrity likeness, illustration, 3D render or excessive dramatic lighting. This is a single believable press photograph of work before a visible leak.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:40e01451-29b2-4909-aa33-25caa8d32883",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "bytes": 215513,
+        "generated_at": "2026-11-15T04:15:44.551806+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 8188002557133167108,
+        "sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
+      },
+      "previous_generation_history_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/previous-generation.json",
+      "previous_rejection": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "reason": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
+        "rejected_candidate_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
+      },
+      "previous_scene_prompt": "A Japanese municipal waterworks crew inspects a weathered pipe joint in a shallow trench on a dry residential street at night. Photorealistic documentary press photograph, an adult female resident aged 42 watching from behind a safe work barrier and an adult worker pointing toward the exposed metal joint, temporary work lights, modest Japanese suburban houses in autumn, dry asphalt and no street flooding, credible pipe scale and excavation safety. Horizontal 16:9, realistic hands, natural faces, no readable words, brands, logos or recognizable real people.",
+      "previous_visual_review": {
+        "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+        "decision": "rejected",
+        "image_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150",
+        "note": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
+        "reviewed_at": "2026-11-15T13:19:22+09:00"
+      },
+      "prompt_version": 3,
+      "sha256": "b6f12bcc6df9668d2796814c902ef4f87a7389ccf0a5a0b15e7717ad74d356cb",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T10:18:37.640434790Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T10:18:37.640438186Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T10:18:37.638655570Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              137,
+              161,
+              238,
+              211,
+              98,
+              97,
+              171,
+              187,
+              125,
+              240,
+              126,
+              48,
+              69,
+              234,
+              216,
+              137,
+              253,
+              93,
+              74,
+              231,
+              120,
+              4,
+              221,
+              45,
+              195,
+              13,
+              108,
+              162,
+              125,
+              0,
+              170,
+              11
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:40e01451-29b2-4909-aa33-25caa8d32883",
+        "manifest_uri": "urn:c2pa:359a6ff5-7789-4079-a2c5-00cfa6147e53",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2759036,
+        "caBX_sha256": "f48564218dc05d80d09d29b52ee854f5f70ebfc2cceca461bb178b54f3563ee0",
+        "candidate_branch": "native-image-candidate/water-main-repair-priority-dry-street-first/7b2e7cdf51a68eac-86447a6c0193",
+        "candidate_commit": "954595a6c361f59c06d9ec358eb8d9f3a11c5888",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "06ada9e272d0c07937baa509b938b068901bd520",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part000",
+            "sha256": "49f0dd7929bf456aac7e0b2ad20234d554547ab42689f382127ff99697d91d0f"
+          },
+          {
+            "blob_sha": "347a98c07509e6a5db9a00dbf912f578c338b4cd",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part001",
+            "sha256": "578a38642e5d5d0798f6249c6ea597ab6f31a49508a73e4a8df1038ac4207f2e"
+          },
+          {
+            "blob_sha": "80f33ae81b7e1ddf02cdac9f38e24639c6cceb95",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part002",
+            "sha256": "31498bfce5125ecdad258fdf70c94e7c55d630905d34ebb486cb75587371c093"
+          },
+          {
+            "blob_sha": "ff9daaf7491327401e91ed192911ab7a924150d1",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part003",
+            "sha256": "f2688a5a76d65bea5473c884127d28e090d9e10d45299416fb497e650831020c"
+          },
+          {
+            "blob_sha": "5b594070895b323c7e0a30af25f8a94b783b2553",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part004",
+            "sha256": "d5283460996b148b00de21c641684159acc329249761470b63f080383a29bbc3"
+          },
+          {
+            "blob_sha": "bc06e307102dccf04cbc9cccf18c7cb2ccb65e18",
+            "bytes": 137596,
+            "path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/source.png.part005",
+            "sha256": "6b354d4adbef6fc966938f3266e3a24f3a0a367ec6b114f681d529ba0b251440"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/receipt.json",
+        "receipt_sha256": "946b4a61a230615f37d7e876609dfce1aa8339bd428224b14c978ad4e8779767",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "78b4f68fa0727db4176d283f050d5d5a9f830801beba7125aa598b692498f55f",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "67a1e87f9bb9c13b5ecbb9f96874d298f360a1de9301b8033c1279e34dce3f7d",
+      "supersedes_reason": "A genuinely new native photograph makes the exposed worn pipe coupling and gloved inspection on a dry residential road at night explicit. It replaces the rejected trench-only photograph without changing the article or scene fingerprint.",
+      "tool_execution": {
+        "execution_id": "3d198d93-e7af-4bc5-841d-e9e67331dfc1",
+        "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "xr-town-letter-changes-next-visitors-story": {
       "article_sha256": "4775650da7576e54c354177a1ad943086af6586730dbb637acbfe29fbe1d6a64",
       "bytes": 195928,
@@ -5659,1319 +7813,93 @@
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
-    },
-    "friendly-cup-no-standings-four-fan-trophies": {
-      "article_sha256": "cb1a3bc3917d54f2cbc88adf92679ce1fa8b1ecc6bd0a6bc19f67428f8f6e231",
-      "bytes": 173458,
-      "conversion": {
-        "background": "white",
-        "encoder": "jpeg-js",
-        "encoder_revision": "1031ccd7a63c641c16afb2430279d1598530a85c",
-        "quality": 84,
-        "resize": "centered aspect-preserving cover with bilinear interpolation"
-      },
-      "generated_at": "2026-11-14T00:24:56.608Z",
-      "generation_id": "31200877-efda-422d-bc53-07817fa6954b",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
-      "generation_prompt": "A fictional adult 24-year-old male football player receives a handmade gold-painted cardboard cup from an adult fan beside stadium seating after a friendly match. Realistic unposed sports press photograph, the player in plain blue football kit smiling, fan handing the paper cup across a safe low barrier, playing field and a few other supporters softly visible. Natural morning daylight, believable face, hands, jersey fabric and cardboard texture, horizontal 16:9. No readable writing, logos, branding or real personalities.",
-      "generation_prompt_source": "Exact image_gen prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
-      "generation_receipt": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
-      "height": 675,
-      "model": "ChatGPT ImageGen",
-      "native_candidate": {
-        "branch": "native-image-candidate/friendly-cup-no-standings-four-fan-trophies/cb1a3bc3917d54f2-722b8303f48d",
-        "commit": "e9bdcb85178b342f73355add3f18d472887d15ab",
-        "identity": "ec3252b56b3b80db070086928b562e4d5311295399b7b9cf22355595dc10ad41",
-        "logical_run_id": "publisher-20261114-0730-friendly-cup-four-trophies",
-        "receipt_path": "maintenance/native-image-candidates/friendly-cup-no-standings-four-fan-trophies/receipt.json",
-        "receipt_sha256": "8cb00e8ad49cae080f72d0db3184b1f1befb15fda89925174a428237d5872137"
-      },
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "sha256": "0cdfd96e851eea2597e7bcbc23bd3f3bfe23c93d696446d48bfad87ebdebf67a",
-      "source_c2pa": {
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "when": "2026-11-14T00:24:54.730140795Z"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T00:24:54.730144118Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T00:24:54.725796423Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "claim_generator": null,
-        "claim_generator_info": {
-          "icon": {
-            "hash": [
-              163,
-              238,
-              133,
-              193,
-              142,
-              158,
-              204,
-              233,
-              137,
-              56,
-              219,
-              17,
-              179,
-              130,
-              4,
-              152,
-              155,
-              206,
-              182,
-              23,
-              64,
-              215,
-              29,
-              42,
-              108,
-              206,
-              1,
-              26,
-              95,
-              101,
-              209,
-              113
-            ],
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
-          },
-          "name": "OpenAI Media Service API",
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "content_binding_validation": "not_performed",
-        "instanceID": "xmp:iid:31200877-efda-422d-bc53-07817fa6954b",
-        "manifest_uri": "urn:c2pa:db86ed17-04c4-4e49-855c-4c6fd66e3e1c",
-        "signature_validation": "not_performed"
-      },
-      "source_png_bytes": 2283612,
-      "source_png_sha256": "d16eeccfcae470b855285d20b3e29632260f88a8ae9fa093cbcc19f1202303e6",
-      "source_size": [
-        1672,
-        941
-      ],
-      "width": 1200
-    },
-    "indoor-beach-friends-exchange-ripples": {
-      "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
-      "bytes": 228371,
-      "conversion": {
-        "alpha_background": "white",
-        "height": 675,
-        "helper": "scripts/native_image_bytes.js",
-        "jpeg_quality": 84,
-        "resize": "center-cover-bilinear",
-        "width": 1200
-      },
-      "edit_reference": {
-        "github_run_id": "43509702255",
-        "image_sha256": "02e409eab9ff0f22984b382edc4c685475b95deacd4d0ec85e0116beab646edf",
-        "kind": "user_requested_edit_of_rejected_candidate",
-        "status": "rejected_reference_only"
-      },
-      "generated_at": "2026-11-14T01:52:12.846Z",
-      "generation_id": "0b98b60a-4c19-43be-8b93-bb9270c18c14",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
-      "generation_prompt": "Edit the supplied AI-generated photograph into a realistic ordinary indoor-beach feature photograph. The reference is the edit target, not a real person. Keep the photographic skin and water texture and the relaxed friendly mood. Replace the face with a distinctly different, completely fictional Japanese adult woman age 27: a soft oval face, warm brown eyes, a short dark bob with a light fringe, natural eyebrows, and a small relaxed smile. Make only subtle natural posture and anatomy refinements, with realistic adult proportions and conventional swimsuit coverage. Change the existing swimsuit color to navy blue and add a loose white beach shirt. Widen the camera composition to include the entire standing figure and both feet at ankle depth. She is turning slightly to look at a little ripple arriving at her ankle and lightly moves one foot through the water. Set this clearly inside a glass-roofed indoor beach with pale sand. A small part of the background includes a clearly framed wall screen showing a different adult woman in a separate indoor pool on a remote video call; no words on the screen. A single coherent candid 16:9 photograph, natural skylight, realistic hands and feet, visible ankle ripple. This is ordinary recreational swimwear and a water-play activity. No real celebrity likeness, no text, no logos, no exaggerated anatomy.",
-      "generation_prompt_source": "Exact image_gen edit prompt captured by generateAndStage in the same functions execution, with source/JPEG byte readback.",
-      "generation_receipt": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
-      "height": 675,
-      "model": "ChatGPT ImageGen",
-      "native_candidate": {
-        "branch": "native-image-candidate/indoor-beach-friends-exchange-ripples/0e2a45ebc481758a-da2fb0adf05a",
-        "commit": "18891d7b06618f56f4dc721df1b62152798e7c3f",
-        "identity": "7702e447a8b1c1fc3c983f5effee906dc00e3c3bb6ed858234647d331dd200d9",
-        "logical_run_id": "indoor-beach-user-requested-existing-image-edit-20261114",
-        "receipt_path": "maintenance/native-image-candidates/indoor-beach-friends-exchange-ripples/receipt.json",
-        "receipt_sha256": "bd487a74a1cd3a1a10d895090477eb802c4212e328e379a995bc38f22fa2187a"
-      },
-      "origin": "chatgpt-imagegen",
-      "previous_visual_hold": {
-        "article_sha256": "0e2a45ebc481758adc8779d9f624d3c76c6fdc318c228cd0018ed1e3fed1bf84",
-        "generation_failure": {
-          "attempts_in_run": 1,
-          "code": "moderation_blocked",
-          "generation_claim_branch": "native-image-generation-claim/2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
-          "generation_claim_commit": "a5d4d7871bc94815725e83b254729806989523b8",
-          "logical_run_id": "indoor-beach-20261113-1930",
-          "origin": "chatgpt-imagegen",
-          "phase": "output",
-          "plan_identity": "2de2b676349ea7d22ce96d45c9682a7bac6fbef289512083906c88ffc4a564b4",
-          "returned_image": false,
-          "transport_preflight_commit": "f14b1ed673380cf17e94495c8b68164078e4030f"
-        },
-        "reason": "内蔵生成のoutput安全判定でmoderation_blocked。画像バイトは返らず、目視採否は未実施。今回の再生成と他バックエンドへの切替はせず、専用SVGで本文公開を継続。写真置換は未完了。",
-        "rejected_at": "2026-11-13T10:56:07+00:00"
-      },
-      "prompt_version": 3,
-      "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
-      "source_c2pa": {
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "when": "2026-11-14T01:52:09.995011685Z"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T01:52:09.995014996Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T01:52:09.992012821Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "claim_generator": null,
-        "claim_generator_info": {
-          "icon": {
-            "hash": [
-              210,
-              171,
-              62,
-              237,
-              207,
-              32,
-              115,
-              112,
-              243,
-              149,
-              219,
-              212,
-              57,
-              208,
-              147,
-              243,
-              69,
-              112,
-              157,
-              45,
-              181,
-              200,
-              248,
-              208,
-              89,
-              12,
-              12,
-              177,
-              6,
-              169,
-              96,
-              87
-            ],
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
-          },
-          "name": "OpenAI Media Service API",
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "content_binding_validation": "not_performed",
-        "instanceID": "xmp:iid:0b98b60a-4c19-43be-8b93-bb9270c18c14",
-        "manifest_uri": "urn:c2pa:68f4f58d-1eb5-450f-a222-ce8ea878f616",
-        "signature_validation": "not_performed"
-      },
-      "source_png_bytes": 2753385,
-      "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
-      "source_size": [
-        1672,
-        941
-      ],
-      "width": 1200
-    },
-    "offline-tape-restores-missing-contract-revision": {
-      "article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
-      "bytes": 123989,
-      "generated_at": "2026-11-14T06:36:00.993Z",
-      "generation_id": "6bd14824-7c28-4f15-843c-2b15483c27b8",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
-      "generation_prompt": "An adult Japanese female archive worker, age 35, takes one magnetic tape data cartridge from a secure metal storage shelf. Photorealistic candid press photograph in a fictional company records vault, ordinary professional office attire, natural face and hand anatomy, visible tape cartridge and cabinet shelving, restrained fluorescent lighting, realistic surfaces and shadows, horizontal 16:9. No logos, readable writing, weapons, security incident graphics, brands, or real-person likeness.\nShow the practical action clearly: a rectangular archival data-tape cartridge is partly withdrawn from its shelf slot in the worker's hand. An authentic unposed workplace feature photo, entirely fictional scene. Keep clothing ordinary and professional. Frame the worker and hand-held cartridge together; realistic face, fingers, metal shelving, and subdued light. No visual labels, signs, writing or graphics. Landscape 16:9.",
-      "generation_prompt_source": "Exact built-in image_gen input captured by generateAndStage in the same generating execution.",
-      "generation_receipt": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "sha256": "4ea139464842ca8965575392b77f9a597b4f701e309bf11422d120ab7f7919cb",
-      "source_article_sha256": "67f70881b03ea8ccfda262b9b1ade984b3aaa3e0be3dd5669d50fedf26854ff8",
-      "source_c2pa": {
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "when": "2026-11-14T06:35:58.361229763Z"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T06:35:58.361232958Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T06:35:58.359453318Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "claim_generator": null,
-        "claim_generator_info": {
-          "icon": {
-            "hash": [
-              192,
-              175,
-              194,
-              194,
-              23,
-              59,
-              36,
-              71,
-              156,
-              153,
-              121,
-              144,
-              231,
-              21,
-              189,
-              105,
-              223,
-              61,
-              214,
-              171,
-              79,
-              197,
-              146,
-              244,
-              193,
-              255,
-              175,
-              175,
-              171,
-              129,
-              56,
-              83
-            ],
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
-          },
-          "name": "OpenAI Media Service API",
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "content_binding_validation": "not_performed",
-        "instanceID": "xmp:iid:6bd14824-7c28-4f15-843c-2b15483c27b8",
-        "manifest_uri": "urn:c2pa:b11078c0-8377-4099-8010-3be610efe327",
-        "signature_validation": "not_performed"
-      },
-      "source_capture": {
-        "bytes": 2272838,
-        "caBX_sha256": "442754e80850d27f2b988ce5d241c514299791794a98f5bee6e939565f00dc21",
-        "candidate_branch": "native-image-candidate/offline-tape-restores-missing-contract-revision/67f70881b03ea8cc-c9adcd00e5d4",
-        "candidate_commit": "81bb8354fcf82a9d313f512e8e05801679798b7d",
-        "generation_claim": {
-          "branch": "native-image-generation-claim/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e",
-          "commit_sha": "817a965896ca0dc9a2d4b767f9926765cc7802e7",
-          "kind": "native_image_generation_claim",
-          "receipt_path": "maintenance/native-image-generation-claims/431ce435c9156d0f63c844f9a6b6a6d6379f075849a2589a77a3bca3180f306e.json",
-          "receipt_sha256": "324c0806b0a48ddb36bb43fc8cc19226fb232382369aca8c21527289c26a7508",
-          "status": "reserved_generation_unconfirmed"
-        },
-        "height": 941,
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-0930-offline-tape-reviewed-first-photo",
-        "method": "Same-execution generateAndStage captured the actual PNG and exact prompt, saved the full original PNG parts, JPEG and receipt, and verified SHA readback. The generating task displayed the original PNG and final JPEG against the full article; a separate read-only reviewer independently checked the original PNG against the article.",
-        "original_png_parts": [
-          {
-            "blob_sha": "c183844779012eb4ddf43cf80ae41b06c97e1e7b",
-            "bytes": 524288,
-            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part000",
-            "sha256": "a385a73114aefa479d0b9f6e0e812ef42976a5001d97a3d2c78ed798eb1ad313"
-          },
-          {
-            "blob_sha": "c966813528ff25ca470a8a66296ba590a9d1f08f",
-            "bytes": 524288,
-            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part001",
-            "sha256": "a826823c29ade5baf06aadd6d32386338acdab9e926a981546c69e067327456f"
-          },
-          {
-            "blob_sha": "c741f7c17e4da24dff48f286abee6c165ab14ff5",
-            "bytes": 524288,
-            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part002",
-            "sha256": "115a4598687343ffc6ec63e17acd723e979e612ad668fa5ea3ea95c6e10a6376"
-          },
-          {
-            "blob_sha": "0c7deeaa3dd8a29681b46a929b2b186c4d1c589b",
-            "bytes": 524288,
-            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part003",
-            "sha256": "e340f3a8adba6bdcf72156477c37418740adf7cc9827d6c117078a5c43706955"
-          },
-          {
-            "blob_sha": "25ed3ac19acd352f5f39810a26d2a678f70c0f3a",
-            "bytes": 175686,
-            "path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/source.png.part004",
-            "sha256": "ecf9f85b7714fb70a7f2703cc966d1d54736c5ac350a41e00ee1840922f6a8c9"
-          }
-        ],
-        "receipt_path": "maintenance/native-image-candidates/offline-tape-restores-missing-contract-revision/receipt.json",
-        "receipt_sha256": "7090ecf4601d428edc2a4b43e21b6af88a62da6052244c971ac4961b512911a3",
-        "transport_preflight": {
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "76e00ee6d8bda423fc8bea4361598ed840189049",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
-          "kind": "native_image_transport_preflight",
-          "observed_at": "2026-11-14T06:35:12.404Z",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "73f922ad46d94dc78172d2d60f413404bc1ba035742b8825d5be460f3636b5c3",
-          "route": "Actual PNG data URL to GitHub candidate storage in this execution",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "status": "passed"
-        },
-        "width": 1672
-      },
-      "source_png_sha256": "7ea9ff1c3090049a99f3c15bcc75bc5a3239d8ec289585ef1832142720a53c29",
-      "transform": {
-        "alpha_background": "white",
-        "height": 675,
-        "helper": "scripts/native_image_bytes.js",
-        "jpeg_quality": 84,
-        "resize": "center-cover-bilinear",
-        "width": 1200
-      }
-    },
-    "three-shipping-firms-share-space-steel-sails": {
-      "article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
-      "source_article_sha256": "94f05c9124f6145b8bc98b3a441596c5854d0c918beebc7e18d2a5fe2624577f",
-      "bytes": 239943,
-      "sha256": "2c3ea3d0373c67d6618b0b25df72ba39d69606884426fa9067b3a713465b0bbb",
-      "generated_at": "2026-11-14T10:39:33.198Z",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "generation_prompt": "Wide editorial photograph from a quay at a fictional Japanese industrial harbor: a crane lowers bundled steel beams into the open hold of a coastal cargo ship. Two helmeted adult port workers stand safely clear, checking a cargo tag. A second ship remains moored at the neighboring berth for inspection. Natural daylight, believable lifting cables, metal and water textures, dock and water visible, horizontal 16:9. No readable writing, logos, branded vessels or recognizable real people.",
-      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
-      "source_png_sha256": "3f15788ec350a6802d34b730d24095edd962ddc4e2ee1faf8f679aba42f5e464",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:24078e87-961f-4c5c-928b-7b3ce58ec7a8",
-        "instanceID": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              13,
-              13,
-              232,
-              144,
-              86,
-              205,
-              66,
-              1,
-              200,
-              16,
-              43,
-              81,
-              173,
-              244,
-              19,
-              210,
-              142,
-              114,
-              252,
-              222,
-              150,
-              165,
-              69,
-              248,
-              253,
-              139,
-              172,
-              188,
-              204,
-              91,
-              121,
-              2
-            ]
-          },
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-14T10:39:30.812393364Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T10:39:30.812401616Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T10:39:30.810068206Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-pr729-reviewer-handoff-first-photo",
-        "candidate_branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
-        "candidate_commit": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
-        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
-        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf",
-        "bytes": 2660184,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "cc5eabf1654b29017997a1d5421202796a8bfd279d8d1dfeca6f97152539276b",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part000",
-            "bytes": 524288,
-            "sha256": "79e12df9a82aeaea8100607cd8cab0746cc6515ff97f332252e6d405c0724e33",
-            "blob_sha": "b4b0558d5a30c95902217c5f1b035cf43d4b0c04"
-          },
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part001",
-            "bytes": 524288,
-            "sha256": "6d6955b3be443e46edd43abc5be5aaea5cf73fe7185f9cc7f5658b2a22e95481",
-            "blob_sha": "be3d4bba6fc514eda526b6ccd771bf2eb9c15159"
-          },
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part002",
-            "bytes": 524288,
-            "sha256": "3b95b1177badd0cb283016963479ac222fb71c182fcb83a87482e19493e5ca40",
-            "blob_sha": "2bee677dbc69fd41661c34e90deb737241daf48d"
-          },
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part003",
-            "bytes": 524288,
-            "sha256": "10e7309b724d2228381471d944147b11cb13cefa4ebb84b3aade664a524b8aef",
-            "blob_sha": "260e3257e3eb464f8df32f2a99c00753c2b47e5e"
-          },
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part004",
-            "bytes": 524288,
-            "sha256": "4922516613fa1f3023c1f2e26107f75dbf12f204eac03fbd15b027b09bdd662d",
-            "blob_sha": "5e0d1d81952763c82d093ddfdaefeecdbecfe22f"
-          },
-          {
-            "path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/source.png.part005",
-            "bytes": 38744,
-            "sha256": "a4d8000bd091e3e440813028c0d810ff44548f67a26604dbb2c3a689afdfed38",
-            "blob_sha": "382b8136dd6d1da462d0ec00d9fea32bdfbd2bcc"
-          }
-        ],
-        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "9d49badea92736069fd6a857366c41bf94c98be8",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "63d4e74da4a707fb9d8e2d556db242030c6e4021831c643bb3e7ca5b049683df",
-          "observed_at": "2026-11-14T10:38:38.414Z",
-          "route": "PNG data URL in this code runtime to GitHub candidate storage",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a",
-          "receipt_path": "maintenance/native-image-generation-claims/65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a.json",
-          "receipt_sha256": "87a7bde814f778cac227609a08e0c4e35b00de925f59d3735af5b0618b11e511",
-          "commit_sha": "94e510f5c941ba70339913d5785a84b847a8b720"
-        }
-      },
-      "native_candidate": {
-        "branch": "native-image-candidate/three-shipping-firms-share-space-steel-sails/94f05c9124f6145b-795347e428da",
-        "commit_sha": "f5e1f4939553ed5aa9f8c98857b12c921d1893db",
-        "receipt_path": "maintenance/native-image-candidates/three-shipping-firms-share-space-steel-sails/receipt.json",
-        "receipt_sha256": "229b9f08572fd520d18bf5e8cc7590734ba8e097baa5d1064828549d898cffaf",
-        "identity": "65f4a4bdb52ec03469827fa6ad776cd29ff93caf6defe38ba858b49b8223819a"
-      },
-      "transform": {
-        "helper": "scripts/native_image_bytes.js",
-        "resize": "center-cover-bilinear",
-        "alpha_background": "white",
-        "width": 1200,
-        "height": 675,
-        "jpeg_quality": 84
-      },
-      "generation_id": "ed196ad5-85ee-40d1-9d49-46f86840e7b5",
-      "generation_receipt": "xmp:iid:ed196ad5-85ee-40d1-9d49-46f86840e7b5",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
-    },
-    "fan-kumade-tours-concert-halls-before-audience": {
-      "article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
-      "source_article_sha256": "0fa6bde51123d59fe99936aa2aca270fcf17deb0d4c865bb10e30b4e19381f73",
-      "bytes": 247993,
-      "sha256": "289155a716b9a830ac27839b25dc7796c9f543cb426287bce1c1780d9a77b29a",
-      "generated_at": "2026-11-14T10:42:19.442Z",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "generation_prompt": "Medium-wide candid press photograph in a concert-hall foyer: a fictional Japanese woman aged 27, wearing a dark cropped jacket and an elegant blue skirt, ties a small paper wish tag with a blue ribbon onto a low branch of a two-metre-tall decorative Japanese kumade good-luck rake. The entire ornate rake, star ornaments, colorful small tags and wheeled stand are clearly visible beside her, away from the walkway. Natural expression, realistic hands, fabric and warm venue lighting, horizontal 16:9. No readable writing, logos, brand designs or real performers.",
-      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
-      "source_png_sha256": "cd652d7fd7eaf982c5b9b9659a51cfb75886850b1ba34742849598090bd34a4d",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:c4a183a3-1872-4987-97bb-940f505ad9b6",
-        "instanceID": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              183,
-              27,
-              1,
-              57,
-              45,
-              59,
-              96,
-              46,
-              228,
-              76,
-              162,
-              199,
-              157,
-              216,
-              223,
-              252,
-              197,
-              162,
-              207,
-              9,
-              31,
-              6,
-              240,
-              124,
-              215,
-              209,
-              166,
-              46,
-              233,
-              158,
-              221,
-              185
-            ]
-          },
-          "specVersion": "2.2.0",
-          "org.contentauth.c2pa_rs": "0.79.2"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-14T10:42:16.636834210Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T10:42:16.636837216Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T10:42:16.632372885Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-pr732-reviewer-handoff-first-photo",
-        "candidate_branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
-        "candidate_commit": "08fc204947c0072f53103c56ccaaab058cf400c6",
-        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
-        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7",
-        "bytes": 2800810,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "0c6588c3a1d1d975446f0f234a597e8d9343f117d347b0c5013426a8f1ac523d",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part000",
-            "bytes": 524288,
-            "sha256": "783b1a49e07360f4930639178f15da47f27e9aa0006a98779378b028f0fccaa6",
-            "blob_sha": "f12dc5dbf4b082f8d1850f48ed6d763bc1c4b8a2"
-          },
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part001",
-            "bytes": 524288,
-            "sha256": "833e3a55e9d9eb5406f29e5a3f3c3c51d7de2884077809c8d66bf06838b93420",
-            "blob_sha": "181f3640f438d96f40ae6a727abbdc9cdfe82c47"
-          },
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part002",
-            "bytes": 524288,
-            "sha256": "137cb60df8af0c41420131c813925e44993030e5cd5d1694ff627baf155af481",
-            "blob_sha": "71756353999c8eb73ab8b87a25be0e4be28a771a"
-          },
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part003",
-            "bytes": 524288,
-            "sha256": "235e8e8d75ab0b6cd91b3d9fa27115e1bb3dfe065d8ad06719682c6c39eede73",
-            "blob_sha": "4096245ff0a3f7e577ffb62ff1930746d0185ca1"
-          },
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part004",
-            "bytes": 524288,
-            "sha256": "133c274f809e36adea8b8989c4f8291920f81e10d87378772f9d1a53fbb83f6e",
-            "blob_sha": "0c44dfc62df53dfae1d0acf460c2c08f25fc1410"
-          },
-          {
-            "path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/source.png.part005",
-            "bytes": 179370,
-            "sha256": "16d65607987f9eed3684e3576b60061a496d172c351e720660db4209f1136108",
-            "blob_sha": "5f82ea2d2e356fb1e533f4cbd46bc2762d969de4"
-          }
-        ],
-        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "864d0acdc6832c037e9cd176c15cb78e7c0dfb4a",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "02b631f9214b2e4666bf5fda03d641be15aeb285c6d2ec3f6a65268e60889039",
-          "observed_at": "2026-11-14T10:41:16.798Z",
-          "route": "PNG data URL in this code runtime to GitHub candidate storage",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5",
-          "receipt_path": "maintenance/native-image-generation-claims/d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5.json",
-          "receipt_sha256": "ef0d091a8cbfae0722f71032ed919eb81e58e7f2335b1dd89cdbfe022fedb37c",
-          "commit_sha": "920cad83d1d97228dee57cc2ee8663d41bef97e3"
-        }
-      },
-      "native_candidate": {
-        "branch": "native-image-candidate/fan-kumade-tours-concert-halls-before-audience/0fa6bde51123d59f-62b784431a90",
-        "commit_sha": "08fc204947c0072f53103c56ccaaab058cf400c6",
-        "receipt_path": "maintenance/native-image-candidates/fan-kumade-tours-concert-halls-before-audience/receipt.json",
-        "receipt_sha256": "7f9549ece04e1a9dd6b968588e430b31b10717d2df58d06d8899ba071d4473d7",
-        "identity": "d563eff7a3c4427c897e54b0014270c0d8d6566c54948dae429176d4daf464b5"
-      },
-      "transform": {
-        "helper": "scripts/native_image_bytes.js",
-        "resize": "center-cover-bilinear",
-        "alpha_background": "white",
-        "width": 1200,
-        "height": 675,
-        "jpeg_quality": 84
-      },
-      "generation_id": "ec276e91-c17a-49a3-857f-e6c6dbf9984c",
-      "generation_receipt": "xmp:iid:ec276e91-c17a-49a3-857f-e6c6dbf9984c",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
-    },
-    "mountain-road-transplants-meadow-topsoil-blocks": {
-      "article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
-      "source_article_sha256": "efaf65b980265dd3e135a72ab5b3e3f160b4860eb385dba64384c599865484e1",
-      "bytes": 321239,
-      "sha256": "50f803b225d7f5c1e8deb08fec70ef0c36d5e71567b5e13d5bd3cd6d78ef0ed5",
-      "generated_at": "2026-11-14T10:52:25.167Z",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "generation_prompt": "Documentary press photograph beside a newly completed fictional Japanese mountain road in November: a small construction lift lowers a thick rectangular block of grassy topsoil onto a brown roadside slope. Two helmeted adult workers guide its placement from the sides at a safe distance. Root-bound earth is clearly visible beneath the grass; other green soil blocks form a patchwork along the curving finished road. Natural overcast daylight, believable earth and root texture, horizontal 16:9. No readable signs, text, logos, brands or identifiable real people.",
-      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
-      "source_png_sha256": "f784201f3b9a58bec8676e36c0bb144196cdbba95519dd226a705f11e1e2cdc0",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:36f23fd4-c8e8-43ce-8444-fa204c863d64",
-        "instanceID": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              209,
-              44,
-              105,
-              207,
-              107,
-              91,
-              80,
-              149,
-              211,
-              217,
-              14,
-              116,
-              124,
-              246,
-              147,
-              86,
-              227,
-              150,
-              158,
-              188,
-              116,
-              116,
-              161,
-              240,
-              219,
-              1,
-              225,
-              251,
-              166,
-              53,
-              58,
-              210
-            ]
-          },
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-14T10:52:22.708834425Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T10:52:22.708838702Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T10:52:22.707221412Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-pr734-reviewer-handoff-first-photo",
-        "candidate_branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
-        "candidate_commit": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
-        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
-        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f",
-        "bytes": 3655590,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "82389bf613bf48a5ec2352cefdd74d314962020bc284d3d97775614a856ad6fd",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part000",
-            "bytes": 524288,
-            "sha256": "3e09228256bc8e374c0494a3c31509073de00be7027e7406ed6ad1dab526224d",
-            "blob_sha": "c390243fac06ce0bde99c3de06c3f6b8ef951c87"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part001",
-            "bytes": 524288,
-            "sha256": "72401a423d0d3c016ca6ced56f21471773ed53be3ae00ccda77c8b931def278d",
-            "blob_sha": "4d484522872ec5727e490584a1bb52bb4a467166"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part002",
-            "bytes": 524288,
-            "sha256": "e1664a50084e9f5736f0d30d815a8d9eceece913e8996656629b67e32929c22b",
-            "blob_sha": "cce8a104ee8e7a65b9894b18746d0eab199d5868"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part003",
-            "bytes": 524288,
-            "sha256": "d145a28f51cd370f82181fa5b2c550423918f59f810bfaee5895efafc7b7abd5",
-            "blob_sha": "8501d3ddfe291e28c3ba14ff9dafbd72ef75afca"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part004",
-            "bytes": 524288,
-            "sha256": "9af4633aa9b594b13b638d7e5ab15fd487a4ee3853120fb2b002cab28e2eb15f",
-            "blob_sha": "a2855303f6b2da384690f651141d3417c7b1d906"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part005",
-            "bytes": 524288,
-            "sha256": "627083b5e591269ad2906e8e88b68fa32b8a965468d0991daccfd0bfa9e22b0f",
-            "blob_sha": "1f3dbcfb6c1245b021d798627e824a5d1f0cb056"
-          },
-          {
-            "path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/source.png.part006",
-            "bytes": 509862,
-            "sha256": "d1fbe6891651ebbcb999e129e0283ec66630f0dadc367d2942a6bc4244af1572",
-            "blob_sha": "b8dd4a633689b1ab783106f3d7b65e5d7b0e5de7"
-          }
-        ],
-        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "4efeb3e615d95f7c77ac7759dba9171d5de088ba",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "22be773f756b2993c654c9d0c39efeccd66d11e03288ff36f1c0ee70532c493e",
-          "observed_at": "2026-11-14T10:51:31.515Z",
-          "route": "PNG data URL in this code runtime to GitHub candidate storage",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69",
-          "receipt_path": "maintenance/native-image-generation-claims/7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69.json",
-          "receipt_sha256": "f1242e02d724cc95f02a26a91d5cdbbdae2c6f86e304c3d05815d3f382ffc909",
-          "commit_sha": "60bb91d95e4039a5da5e5ccf50491be7e67ac2e4"
-        }
-      },
-      "native_candidate": {
-        "branch": "native-image-candidate/mountain-road-transplants-meadow-topsoil-blocks/efaf65b980265dd3-a14949fb0a2d",
-        "commit_sha": "3aa5521d362ac04ac3a5aae89a27345a9fd096a0",
-        "receipt_path": "maintenance/native-image-candidates/mountain-road-transplants-meadow-topsoil-blocks/receipt.json",
-        "receipt_sha256": "7bd0ac0814c693fafeb6cad00534a76350f6886a664a6bd13334c97c1bf3657f",
-        "identity": "7e46b4164c5f8ec2292e8e9fa06c84f51baffd92af293ab75f05e61b71776e69"
-      },
-      "transform": {
-        "helper": "scripts/native_image_bytes.js",
-        "resize": "center-cover-bilinear",
-        "alpha_background": "white",
-        "width": 1200,
-        "height": 675,
-        "jpeg_quality": 84
-      },
-      "generation_id": "b3655073-1215-41be-87ea-5e44fa7e950a",
-      "generation_receipt": "xmp:iid:b3655073-1215-41be-87ea-5e44fa7e950a",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
-    },
-    "autumn-ridge-path-rests-riverside-trail-opens": {
-      "article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
-      "source_article_sha256": "e3954e20a4b139288334d89787bc803384b43b594be1a958af937e0ca83a51b8",
-      "bytes": 269526,
-      "sha256": "bc542bd345adf40fe973d21952893799890e9d8f3d17bfd14b6fd1a4445f40a7",
-      "generated_at": "2026-11-14T12:41:49.275Z",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "generation_prompt": "A fictional Japanese female nature tour guide, age 34, leads adult hikers along a wooden riverside walkway as red autumn leaves reflect in the water. Photorealistic candid environmental news photograph in a fictional Japanese town nature park in November; autumn jackets, an adult male visitor age 29 holding a camera, a wooden handrail, river reflections and fall foliage visible together, natural overcast daylight, natural faces and hands, textured autumn jackets, weathered wood and realistic water reflections. Horizontal 16:9, documentary realism, no readable signs, brands, logos or recognizable real people.",
-      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
-      "source_png_sha256": "7848a702a8055029525351b7829c7c7b1df2121305368ce5d7dd66e71261df03",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:67884e3e-0883-4155-a680-ea5b51125b87",
-        "instanceID": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              14,
-              253,
-              252,
-              217,
-              1,
-              162,
-              181,
-              220,
-              13,
-              19,
-              126,
-              134,
-              139,
-              178,
-              73,
-              216,
-              51,
-              220,
-              117,
-              173,
-              148,
-              76,
-              140,
-              137,
-              127,
-              144,
-              63,
-              115,
-              67,
-              104,
-              46,
-              184
-            ]
-          },
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-14T12:41:46.819890067Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T12:41:46.819892669Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T12:41:46.815845399Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-1730-autumn-ridge-reviewed-first-photo",
-        "candidate_branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
-        "candidate_commit": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
-        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
-        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407",
-        "bytes": 2887922,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "73685fdc2a00ded85551a18b68ca74f7d7360fb30e7dbf7403674cdb9a4f10e4",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part000",
-            "bytes": 524288,
-            "sha256": "57f650c20e7dec3e9b6fca20e42b0403a9e97cf09fc46ae0ca55de656a396b61",
-            "blob_sha": "2c4a1cb072947fb74d0f4fcb15d2a5898c17f76b"
-          },
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part001",
-            "bytes": 524288,
-            "sha256": "2bd280567aac91e0046ff69a0370fe5c61da34a196c3aab03744bcad5b94aefb",
-            "blob_sha": "50af1b1a85681990b849344e37576db17c66326d"
-          },
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part002",
-            "bytes": 524288,
-            "sha256": "8b7572246206ac2982bb45282af1104f9d82df9c6d9ec82cf8f80fc1a5cc83c5",
-            "blob_sha": "7584c36cf84fb1b8a9c4cd0dc69cee23c16ba9db"
-          },
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part003",
-            "bytes": 524288,
-            "sha256": "8bcc6e60d63448963c7e1777c9ec35546bf1516e2039b8bc8e70744eb24756e4",
-            "blob_sha": "86ed9473e96d01deb053e8bea4d2d938009e56f2"
-          },
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part004",
-            "bytes": 524288,
-            "sha256": "6670d8b4c8fb401f9d4208ac0238eee0dd63ce7bc0e7a8b9eece45706ecdb99d",
-            "blob_sha": "02bfcc195be699ddb004a6f42176ac208e0cc899"
-          },
-          {
-            "path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/source.png.part005",
-            "bytes": 266482,
-            "sha256": "78937697641d7f1d818f967fc9ff98d9c07d6626f160f859455c23cc27f703d5",
-            "blob_sha": "07b3c78f7df7e6d5d863f310c162dccdeaad4a44"
-          }
-        ],
-        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "bcd0e5b58e7cd03d1402e8ddecf2a9978cce4f0b",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "8cae2d9c59bd54e8971727071fed3844809ea6b65b4179c39f2ecec33d5d943d",
-          "observed_at": "2026-11-14T12:40:53.828Z",
-          "route": "PNG data URL in this code runtime to GitHub candidate storage",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3",
-          "receipt_path": "maintenance/native-image-generation-claims/3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3.json",
-          "receipt_sha256": "2934bdc2804200cb1124f6254bf056c2cf3b7d9afa35e2d3063794a79dc639df",
-          "commit_sha": "5bf9977760cbd51eb69ee9fc460a40f6fde52865"
-        }
-      },
-      "native_candidate": {
-        "branch": "native-image-candidate/autumn-ridge-path-rests-riverside-trail-opens/e3954e20a4b13928-5b2ac8b765be",
-        "commit_sha": "9b0bde79d88208b2193bb6d9a60b5698e39372c3",
-        "receipt_path": "maintenance/native-image-candidates/autumn-ridge-path-rests-riverside-trail-opens/receipt.json",
-        "receipt_sha256": "7dcb960d20bb3fb1da8bdac9eacb6e2732856267a60151f0d5a2ff46dbaba407",
-        "identity": "3b92ccb17eaf23297795dde5541bf631031595941e65a326d555122822bd88d3"
-      },
-      "transform": {
-        "helper": "scripts/native_image_bytes.js",
-        "resize": "center-cover-bilinear",
-        "alpha_background": "white",
-        "width": 1200,
-        "height": 675,
-        "jpeg_quality": 84
-      },
-      "generation_id": "ef6b46d2-085d-41e9-991b-fe7d21a6374e",
-      "generation_receipt": "xmp:iid:ef6b46d2-085d-41e9-991b-fe7d21a6374e",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
-    },
-    "matchmaking-ai-bios-same-hobbies-handwritten-line": {
-      "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
-      "source_article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
-      "bytes": 170606,
-      "sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca",
-      "generated_at": "2026-11-14T12:48:40.227Z",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "generation_prompt": "An adult Japanese woman, age 27, writes a short handwritten addition on her own matchmaking introduction card. Candid photorealistic press photograph at a fictional social event, a friendly adult male participant age 29 smiling across the table, softly blurred pinboard with indistinct cards behind them, warm ordinary indoor lighting, realistic casual November attire, natural hands and expressions, horizontal 16:9. No readable text, logos, brand marks, or real-person likeness.",
-      "generation_prompt_source": "Exact built-in image_gen input retained in the original native candidate receipt.",
-      "source_png_sha256": "c2efe0f5d02b11ef3c03d48170771929d942466dbaa34e63c58bf004ee466808",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:9e806982-0bc8-4132-8c94-41b87fbf231e",
-        "instanceID": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              230,
-              29,
-              82,
-              22,
-              189,
-              33,
-              209,
-              213,
-              214,
-              76,
-              199,
-              130,
-              142,
-              195,
-              47,
-              5,
-              4,
-              225,
-              137,
-              155,
-              92,
-              72,
-              115,
-              214,
-              138,
-              222,
-              69,
-              132,
-              248,
-              123,
-              69,
-              136
-            ]
-          },
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-14T12:48:38.004425170Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-14T12:48:38.004429236Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-14T12:48:38.002764334Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "logical_run_id": "article-20261114-1930-matchmaking-handwritten-reviewed-first-photo",
-        "candidate_branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
-        "candidate_commit": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
-        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
-        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25",
-        "bytes": 2514672,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "85c89192a7d32857b4b21a51d7d19b21aaddb19d4a46b1957dd680f8a4d59713",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part000",
-            "bytes": 524288,
-            "sha256": "6d3a7a5b2df118bbcef44d4a152f90417446bfa146a2c3a7ab9c07cb41938ca3",
-            "blob_sha": "3471634f248262bd84930a7841a8a702aa3f256c"
-          },
-          {
-            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part001",
-            "bytes": 524288,
-            "sha256": "5900ec9c9428931a2de48faa9ad3947595f51ad542ae226a0595143ccd6ac05c",
-            "blob_sha": "53b8ccffc1c89b6bdac63c0b9969b25b0f249686"
-          },
-          {
-            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part002",
-            "bytes": 524288,
-            "sha256": "80085a511793678e4454e43092912bde12cc8df6fef3feb9cfba538cf32cee5a",
-            "blob_sha": "6411ba8720493d5153d84689ef4071cc698a35f6"
-          },
-          {
-            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part003",
-            "bytes": 524288,
-            "sha256": "98e32e263f8d6b1d6d439ae5fbd254efe2bffbc12b2113e02f9ec65887748b77",
-            "blob_sha": "a40b1193e9be4bb162a91c17291d466722bfc749"
-          },
-          {
-            "path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/source.png.part004",
-            "bytes": 417520,
-            "sha256": "c5ea82c0a4703f3f83eff0cc2ff110eee3bdd95704c922ceabce7226acb55b5e",
-            "blob_sha": "6a3d9941aebb6c91d262d303fba3ab39be30a372"
-          }
-        ],
-        "method": "Exact-commit native receipt/JPEG and original PNG/parts verified by importer; visual acceptance supplied explicitly in metadata.review.",
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "commit_sha": "5921449b0d2dc2f1d19f7cc46fe0a77dabf2bbde",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "2499905e762617fd5f196fce90d41faa7e1e3832ff2fe8c8589e974dc9b3efa4",
-          "observed_at": "2026-11-14T12:47:49.350Z",
-          "route": "PNG data URL in this code runtime to GitHub candidate storage",
-          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
-          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9",
-          "receipt_path": "maintenance/native-image-generation-claims/05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9.json",
-          "receipt_sha256": "a784b8347f3f7bd18c7e43a736ab0d3a38a6f39e14f754b81f8ca50bf0b48ca8",
-          "commit_sha": "6d7927277fee2cfdd32350f0a33eac64e5a4433e"
-        }
-      },
-      "native_candidate": {
-        "branch": "native-image-candidate/matchmaking-ai-bios-same-hobbies-handwritten-line/773cadc522f0e8d4-f90d555a0007",
-        "commit_sha": "5177980ed5d645dd85b64052ce0058d082ffa2f3",
-        "receipt_path": "maintenance/native-image-candidates/matchmaking-ai-bios-same-hobbies-handwritten-line/receipt.json",
-        "receipt_sha256": "05d874c0e55818ca566ed9cf6716f80dc89ffaa98a423e1d229127ca046b9e25",
-        "identity": "05637031dd280057de37e8e9452c8ddbf42c5700413d720d2f5e11e8f1afe8b9"
-      },
-      "transform": {
-        "helper": "scripts/native_image_bytes.js",
-        "resize": "center-cover-bilinear",
-        "alpha_background": "white",
-        "width": 1200,
-        "height": 675,
-        "jpeg_quality": 84
-      },
-      "generation_id": "95a60531-c31d-49be-8c03-9f2ed7436305",
-      "generation_receipt": "xmp:iid:95a60531-c31d-49be-8c03-9f2ed7436305",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID."
     }
   },
   "rejected": {
+    "ai-royalties-retirees-operators-left-out": {
+      "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+      "artifact_id": 14151613554,
+      "decision": "rejected",
+      "generation": {
+        "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
+        "bytes": 97206,
+        "generated_at": "2026-11-15T07:23:26.948948+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 937335361030604073,
+        "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
+      },
+      "image_sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd",
+      "previous_visual_review": null,
+      "raw_generation_commit": "93fd0b9f4c985be267e54f4faa0c70c6ea895a00",
+      "reason": "旧CPU JPEGを現本文と実表示で照合。事務所で女性1人が大きな紙を両手で読むだけで、ペンで新しい手順書を書き起こす動作がない。旧scene_promptの退職者と入金明細も描かれていないため不採用。形式・SHAだけで採用せず、原生成記録・整数seed・JPEGを変更せず履歴へ保持する。",
+      "rejected_candidate_sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd",
+      "retained_jpeg_path": "maintenance/native-image-candidates/ai-royalties-retirees-operators-left-out/previous-cpu-51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd.jpg",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43688766372",
+      "reviewed_at": "2026-11-15T07:56:45.093387+00:00"
+    },
     "basketball-opening-day-game-seven": {
       "article_sha256": "8a504e95caa3fc7f485a3b823e6ba722e668716dd97b8c04999d237e4b1a7676",
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
       "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
+    },
+    "concert-audience-voice-rights-cheers-not-free": {
+      "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+      "decision": "rejected",
+      "generation": {
+        "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+        "bytes": 159063,
+        "generated_at": "2026-11-15T09:20:27.935074+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 4016510582796096107,
+        "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
+      },
+      "image_sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e",
+      "previous_visual_review": null,
+      "raw_generation_commit": "8f60fb476acd9847b60274e85b5f8d42537e8812",
+      "reason": "旧CPU JPEGと現本文全文を実表示で照合。最前景の女性が口元のマイクへ歌いかけ、出演者のように見える。客席専用の収録を止めた行為は写らず、女性や奥の観客の顔には白飛びが目立つため不採用。原JPEG・原生成記事SHA・正確な整数seed・生成記録を変更せず履歴へ保持する。",
+      "rejected_candidate_sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e",
+      "retained_jpeg_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/previous-cpu-bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e.jpg",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43698146762",
+      "reviewed_at": "2026-11-15T09:31:57.328128+00:00"
     },
     "joint-party-slate-one-vote-three-claims": {
       "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
@@ -7015,6 +7943,11 @@
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
+    },
+    "recycling-robot-reserves-washer-parts-before-dismantling": {
+      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+      "reason": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+      "rejected_candidate_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
     },
     "scolding-ai-one-line-summary-boss-eighteen-pages": {
       "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",

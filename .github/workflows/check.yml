@@ -3,6 +3,10 @@ on:
   push:
     branches: [main]
   pull_request:
+# New PR pushes supersede the previous revision's CI; main pushes remain independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions:
   contents: read
   pull-requests: read
@@ -24,8 +28,10 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: python3 scripts/review_release_guard.py owner --pr "$PR_NUMBER" --expected-head "$EXPECTED_HEAD"
-      - name: Enforce editorial lane metadata and exact duplicate guards
-        run: python3 scripts/editorial_mix.py --check
+      - name: Validate article fields, editorial lanes and exact duplicate guards
+        run: |
+          python3 -c "from scripts.build import load; load()"
+          python3 scripts/editorial_mix.py --check
       - name: Install free local image validation dependency
         run: |
           if ! dpkg -s libcairo2 >/dev/null 2>&1; then
@@ -43,6 +49,10 @@ jobs:
         env:
           SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: python3 scripts/guard_serial_history.py "$SERIAL_BASE_SHA"
+      - name: Protect dated market outlook updates from retrospective edits
+        env:
+          SERIAL_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/guard_market_outlook_history.py "$SERIAL_BASE_SHA"
       - name: Guard generated JPEG provenance and exact integer seeds
         env:
           MEDIA_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -61,8 +71,18 @@ jobs:
         run: node scripts/native_image_ci_test.js
       - name: Validate read-only public health checker
         run: python3 -m py_compile scripts/check_live.py
-      - name: Build the static site with all image fallback routes
-        run: python3 scripts/build.py
+      # tests/site_build_fixture.py runs a clean full build once during the
+      # Python suite. Keep its exact public output for the remaining checks;
+      # rebuilding the same 108 articles here wasted over two runner minutes.
+      - name: Verify the fresh, fully tested site build (no duplicate build)
+        run: |
+          test -s dist/index.html
+          test -s dist/archive/index.html
+          test -s dist/sitemap.xml
+          test -s dist/feed.xml
+          test -s dist/og/brand.png
+          test -s dist/_headers
+          test "$(cat dist/build-revision.txt)" = "$(git rev-parse HEAD)"
       - name: Report selected images and stale illustration reviews
         run: python3 scripts/visual_review.py --compact
       - name: Audit all sitemap URLs and crawlable internal links (no APIs)
@@ -102,7 +122,7 @@ jobs:
       - name: Test genuine reader discovery without additional API calls
         run: node --test tests/reader-discovery.test.cjs
       - name: Test PV event deduplication, coverage and browser display
-        run: node --test tests/pageviews.test.cjs tests/pageviews-ui.test.cjs
+        run: node --test tests/pageviews.test.cjs tests/pageviews-ui.test.cjs tests/photo-rankings.test.cjs tests/photo-stories.test.cjs
       - name: Test anonymous comments in SQLite without network access
         run: node --test tests/comments.test.cjs
       - name: Test future prediction voting with local SQLite (no paid API)

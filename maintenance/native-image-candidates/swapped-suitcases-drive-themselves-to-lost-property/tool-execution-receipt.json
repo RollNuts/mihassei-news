@@ -1,0 +1,14 @@
+{
+  "tool": "image_gen.imagegen",
+  "mode": "built-in tool; no CLI/API key",
+  "execution_id": "f8e4d150-123a-490b-bb66-ed3fb94fec69",
+  "execution_id_source": "actual exec UUID in built-in output filename; provider generation ID not exposed",
+  "source_png_path": "/Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-f8e4d150-123a-490b-bb66-ed3fb94fec69.png",
+  "source_png_sha256": "96ee3fde758cb7c6f3b75282b483eef011f60d4b38c5e87f67a94c394f78c730",
+  "source_png_bytes": 2381290,
+  "observed_file_mtime": "2026-11-15T10:18:08.989181+00:00",
+  "generation_prompt": "Use case: photorealistic-natural. One candid horizontal 16:9 Japanese news photograph, fictional people at a fictional train station in November 2031. The visual joke must be instantly clear: TWO matching silver hard-shell suitcases on their own little powered wheels have reached a service counter ahead of their two owners; nobody is holding or pulling the luggage. Wide three-quarter SIDE view of an ordinary indoor station return lane marked by TWO plain yellow floor boundary stripes. Two silver suitcases stand in a neat short line toward the counter on the right. Both telescopic towing handles are FULLY RETRACTED, wheels touch the floor and there is no hand, leash or cable attached. A Japanese woman age 27 and man age 31, in normal November travel coats, follow a full metre behind, hands visibly empty and each wearing a small plain wristband. Their faces show mild puzzled concentration, not broad comic mugging. A uniformed middle-aged station attendant stands safely beside the counter at right, observing the luggage rather than pulling it. The lane is separated from the normal pedestrian area. Plausible human and luggage scale, believable station floor and light, natural skin and hands, subtle real photograph texture. Low waist-height camera emphasizes the dignified little line of luggage and the gap to the humans. No visible readable signs, ticket text, logos, brands, robot faces, real celebrities, special effects, illustration or CGI. Do not add extra suitcases. One coherent full-bleed photograph.",
+  "transparent_background": false,
+  "vendor_model_version": null,
+  "vendor_seed": null
+}

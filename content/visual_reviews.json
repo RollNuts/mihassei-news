@@ -920,6 +920,48 @@
       "note": "確定本文の27歳女性が自分の紹介カードへペンで追記し、29歳男性が向かいで笑って見守る場面に原PNG・変換JPEGが一致。背景の同形式カードはぼけており読める不要な文字・ロゴなし。両者の指・ペン・紙・秋冬のニットと室内光に目立つ破綻なし。",
       "article_sha256": "773cadc522f0e8d43c5c93ffc0dec47edccc1ea891ad2a87d30d91c44ab79528",
       "image_sha256": "eccd6409e400e95fe9f052de3c4a60251f2173254063b7b3ed56bbb6a44f9aca"
+    },
+    "remote-basketball-final-fans-walk-behind-hoop": {
+      "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
+      "image_sha256": "75d1ebf58dc8bc7d4d360030fe24b52f7262b261424c6f1427b783d7def5ee68",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T08:19:34+09:00",
+      "note": "生成担当と取り込み担当rootが原PNGと1200×675 JPEGをそれぞれ実表示し、現在の全文・scene_promptと照合。MR眼鏡を掛けた成人の娘と父が青い外周歩行帯を歩き、実コートには選手もボールもなく、物理ゴールと奥の壁面中継が見える。体育館で角度を変えて観戦する本文に一致する。普通の室内光、肌、フリースとジャケットの布、手、木床の反射と影が自然な現場スナップで、可読文字・ロゴ・目立つ破綻やCGの発光は見えない。立体映像は眼鏡の利用者だけが見るため、撮影写真に投影選手を足していない。原PNG・JPEG・receipt SHAと候補commit読み戻しを確認。"
+    },
+    "swapped-suitcases-drive-themselves-to-lost-property": {
+      "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+      "image_sha256": "5db5e6db656e8894ab2e61122f34ca6148269e5c374698824f46c26ae0774c6a",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T10:26:17.449602+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。屋内駅構内の窓口前に銀色ケースが2台あり、伸縮式持ち手は収納され、旅行者の手やひもで引かれていない。後方の成人男女は両手が空でケースとの間隔があり、床の黄色い区分線と仕切り、右の制服姿の係員と窓口が見える。荷物が先に窓口へ着き、人が後ろから追う本文の主要場面に合う。冬物のコートや靴、金属ケースの反射、床の材質、自然な顔と手、駅の蛍光灯の陰影は一貫し、目立つ融合・余分な指・不要な可読文字・ロゴ・透かしは見えない。静止画から認証処理や正確な年齢を実証したとは扱わない。原PNG分割原本、JPEG、変換再現とreceipt SHAを照合。元の不採用JPEG・整数seed・review・active holdは履歴に原形保存し、今回は同じ記事FPに対する別SHAの新写真を採用する。 C2PA asset instanceIDは実PNGから抽出した値でツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
+    },
+    "water-main-repair-priority-dry-street-first": {
+      "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+      "image_sha256": "b6f12bcc6df9668d2796814c902ef4f87a7389ccf0a5a0b15e7717ad74d356cb",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T10:26:17.458120+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。夜の乾いた住宅街で、開いた舗装下に連続する金属水道管と錆びたボルト継ぎ目が手前の主役として写る。青い作業服とヘルメットの成人作業員が溝の外側で膝をつき、手袋の指で接続部を示している。コート姿の成人女性はコーンと横棒の向こうから見ており、作業灯が乾いた舗装縁・土・管を照らす。道路や側溝に噴水・冠水はなく、本文の予防補修の場面に合う。管の円筒形、金属・錆・土の材質、手と衣服、作業灯の減衰が自然で、目立つ融合・余分な指・不要な可読文字・ロゴ・透かしは見えない。写真だけで検査結果や漏水時期を実証したとは扱わない。原PNG分割原本、JPEG、変換再現とreceipt SHAを照合。元の不採用JPEG・整数seed・review・active holdは履歴に原形保存し、今回は同じ記事FPに対する別SHAの新写真を採用する。 C2PA asset instanceIDは実PNGから抽出した値でツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
+    },
+    "recycling-robot-reserves-washer-parts-before-dismantling": {
+      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+      "decision": "rejected",
+      "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+      "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+      "reviewed_at": "2026-11-15T14:47:15+09:00"
+    },
+    "ai-royalties-retirees-operators-left-out": {
+      "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
+      "decision": "accepted",
+      "image_sha256": "02e94ce89495940da3fae905c7c331a8e2f3d38350c536eba15595c12430f08d",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現本文全文と新scene_promptに照合した。成人女性1人が右手に黒ペンを持ち、机上の別紙へ書き起こす姿勢で、左手に赤い修正跡を含む別の資料を持つ。紺のカーディガンと白いブラウス、集中する横顔、暖かい卓上灯、青みのある窓光と秋色の木、奥のぼけたPCと無地ファイルが自然。退職者を同室へ加えず、本文末段の現役担当者の動作に絞った場面である。手・ペン・紙の接触に目立つ融合や余分な指はなく、読める文言・企業ロゴ・UI文字・透かしも見えない。配当額やAIの承認結果、正確な年齢を写真で実証したとは扱わない。原PNG分割原本と最終JPEG、変換再現・receipt SHAを検証。C2PA asset instanceIDは実PNGから抽出した値で、実ツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。",
+      "reviewed_at": "2026-11-15T07:56:45.093387+00:00"
+    },
+    "concert-audience-voice-rights-cheers-not-free": {
+      "article_sha256": "2917fd96c244b7b4f08fff070250e583689e24bc9d072851f1653e210c05ef86",
+      "image_sha256": "af62cea6dc9ebc93fe824a1ba3294f3b27303621ba3528d201aceb8ba0e86633",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T09:31:57.328128+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現本文全文と新scene_promptに照合した。手前で技術者の両手が短いスタンド上の黒い客席用マイクとケーブルを持ち、マイク底部とケーブル端が明瞭に離れている。誰もこのマイクへ歌いかけていない。奥ではニットやコート姿の成人男女の客席が舞台を向いて歌い、拍手しており、応援は続くが専用収録は止めるという本文の主要な対比に一致する。手と肌、衣服、椅子、黒いマイクの材質と陰影が自然で、手前と奥の被写界深度も一貫する。客席の顔に目立つ白飛びや融合はなく、不要な可読文字、ロゴ、UI、透かしも見えない。契約同意やAIへの保存状態、正確な年齢を写真で実証したとは扱わない。原PNG分割原本・最終JPEG・変換再現とreceipt SHAを照合した。C2PA asset instanceIDは実PNGから抽出した識別子で、実ツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
     }
   },
   "version": 1

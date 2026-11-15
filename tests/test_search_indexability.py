@@ -62,7 +62,10 @@ class SearchIndexabilityTests(unittest.TestCase):
         import html
         from scripts.build import daily_issues, issue_url, article_url, social_image
         from scripts.serials import load_serials, series_url, episode_url
+        from scripts.market_bulletins import load_market_bulletins, bulletin_url
         from scripts import photo_issues as photo
+        from scripts.photo_editions import load_photo_editions, edition_url
+        from scripts.photo_issue_pages import model_sitemap_entries
 
         published = sorted(self.articles, key=lambda a: (
             a.get("published_at") or a["source"]["published_at"],
@@ -77,7 +80,12 @@ class SearchIndexabilityTests(unittest.TestCase):
                 expected[SITE + episode_url(series, episode)] = (
                     SITE + f'/og/serials/{series["slug"]}-{episode["slug"]}.png')
 
-        photos = photo.published_issues(photo.load_photo_issues(ROOT), root=ROOT)
+        expected.update({SITE + bulletin_url(item): SITE + "/og/serials/market-lab.png"
+                         for item in load_market_bulletins(ROOT)})
+
+        photo_catalog = photo.load_photo_issues(ROOT)
+        photos = photo.published_issues(photo_catalog, root=ROOT)
+        editions = load_photo_editions(ROOT, catalog=photo_catalog, published=photos)
         photo_expected = {}
         if photos:
             newest = max(photos, key=lambda issue: issue["published_at"])
@@ -102,6 +110,23 @@ class SearchIndexabilityTests(unittest.TestCase):
             cover = issue["images"][photo.cover_shot(issue)["id"]]
             self.assertEqual(photo.cover_url(issue), photo.issue_url(issue) + photo.cover_shot(issue)["id"] + ".jpg?v=" + cover["sha256"][:12])
         self.assertEqual({url: image for url, _stamp, image in photo.photo_sitemap_entries(photos)}, photo_expected)
+        if editions:
+            by_slug = {feature["slug"]: feature for feature in photos}
+            for edition in editions:
+                # The frozen first feature supplies the existing cover bytes;
+                # a different feature's later publication cannot reorder it.
+                first = by_slug[edition["features"][0]]
+                if not edition["legacy"]:
+                    self.assertEqual(first["model_id"], edition["ranking"]["order"][0])
+                photo_expected[edition_url(edition)] = photo.cover_url(first)
+                cover = first["images"][photo.cover_shot(first)["id"]]
+                cover_file = ROOT / "dist" / urlsplit(photo.cover_url(first)).path.lstrip("/")
+                self.assertEqual(hashlib.sha256(cover_file.read_bytes()).hexdigest(), cover["sha256"])
+            photo_expected[photo.index_url()] = photo_expected[edition_url(editions[0])]
+        # Reader profiles expose only their validated cover/portrait. Profiles
+        # without an accepted photo stay noindex and contribute no image URL.
+        photo_expected.update({url: image for url, _stamp, image in
+                               model_sitemap_entries(photo_catalog["models"], photos, root=ROOT) if image})
         expected.update({SITE + url: SITE + image for url, image in photo_expected.items()})
 
         actual = {}

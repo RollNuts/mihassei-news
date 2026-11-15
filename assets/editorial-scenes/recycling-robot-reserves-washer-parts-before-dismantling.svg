@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+ aria-label="廃洗濯機からモーターを取り出すロボットと、受け渡し台で部品を点検する作業員の創作イラスト"
+ data-visual-topic="robot" data-article-sha256="43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f">
+ <title>取り外したモーターを、点検して次の修理へ</title>
+ <desc>安全柵で区切られた家電回収センター。前面を開いた廃洗濯機、モーターを受け渡し台へ運ぶ解体ロボット、検査器具を持つ成人の作業員を同じ場面に描いた、編集部制作の創作イラスト。</desc>
+ <defs>
+  <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f3f2e9"/><stop offset="1" stop-color="#e7ece5"/></linearGradient>
+  <linearGradient id="metal" x2="1" y2="1"><stop stop-color="#f9faf2"/><stop offset="1" stop-color="#baccc5"/></linearGradient>
+  <linearGradient id="motor" x2="0" y2="1"><stop stop-color="#719c96"/><stop offset="1" stop-color="#335b5b"/></linearGradient>
+  <pattern id="mesh" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M0 0H22V22" fill="none" stroke="#8daba4" stroke-width="1" opacity=".38"/></pattern>
+ </defs>
+ <rect width="1200" height="675" fill="url(#wall)"/>
+ <path d="M0 488 1200 453V675H0Z" fill="#d8dfd5"/>
+ <path d="M0 581 1200 537M292 675 602 471M846 675 850 467" fill="none" stroke="#bbc9bf" stroke-width="2"/>
+ <g fill="#c7dbd4" stroke="#a6bfb6" stroke-width="3">
+  <rect x="86" y="65" width="354" height="118" rx="4"/>
+  <path d="M204 66V183M322 66V183M87 125H440" fill="none"/>
+  <rect x="905" y="70" width="205" height="118" rx="4"/>
+  <path d="M1008 70V188M905 128H1110" fill="none"/>
+ </g>
+ <path d="M0 214H1200M65 0V485M1141 0V455" fill="none" stroke="#d1dad1" stroke-width="8"/>
+ <path d="M511 103H817L846 132V217" fill="none" stroke="#c0cdc4" stroke-width="17" stroke-linejoin="round"/>
+ <path d="M511 103H817L846 132V217" fill="none" stroke="#e6ebe2" stroke-width="8" stroke-linejoin="round"/>
+ <ellipse cx="550" cy="570" rx="430" ry="40" fill="#94aaa0" opacity=".20"/>
+ <ellipse cx="1002" cy="606" rx="116" ry="19" fill="#94aaa0" opacity=".23"/>
+ <!-- The rear and side guards establish a dedicated industrial work cell. -->
+ <g stroke-linejoin="round">
+  <path d="M106 244 477 227 681 257V495L477 466 106 487Z" fill="url(#mesh)" stroke="#8fa89f" stroke-width="3"/>
+  <path d="M106 244V506M477 227V476M681 257V512" fill="none" stroke="#c69d4e" stroke-width="13"/>
+  <path d="M106 244 477 227 681 257M106 478 477 458 681 486" fill="none" stroke="#d7b269" stroke-width="11"/>
+ </g>
+ <!-- Open appliance: intact drum above, exposed lower mounting bay below. -->
+ <g stroke="#38585a" stroke-width="3" stroke-linejoin="round">
+  <path d="M172 293 204 263H417L448 292V530L417 553H172Z" fill="#9fb6ae"/>
+  <path d="M172 293H417V553H172Z" fill="url(#metal)"/>
+  <path d="M172 293 204 263H417L448 292H417Z" fill="#e7ede4"/>
+  <path d="M417 293 448 292V530L417 553Z" fill="#8ba8a0"/>
+  <rect x="188" y="308" width="213" height="35" rx="5" fill="#c3d3ca"/>
+  <circle cx="366" cy="325" r="10" fill="#526f70"/>
+  <path d="M207 324H248" stroke="#78938c" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="291" cy="404" r="64" fill="#6c8984"/>
+  <circle cx="291" cy="404" r="51" fill="#aec1b8"/>
+  <circle cx="291" cy="404" r="40" fill="#587575"/>
+  <path d="M270 374Q252 402 273 430M309 373Q327 400 310 430" fill="none" stroke="#91aaa2" stroke-width="5"/>
+  <path d="M197 476H391V533H197Z" fill="#324e51"/>
+  <path d="M213 485V521H373V485M237 488V515M351 488V515" fill="none" stroke="#8fa69e" stroke-width="5"/>
+  <path d="M281 489H308M294 489V519" stroke="#c6b478" stroke-width="4"/>
+  <path d="M178 490 137 483 117 550 174 561Z" fill="#b9cbc1"/>
+  <path d="M142 500 130 540M158 504 148 544" stroke="#829e94"/>
+  <path d="M199 554V567M394 554V567" stroke-width="9"/>
+ </g>
+ <!-- Articulated arm and open gripper carry a single, visible finned motor. -->
+ <g stroke="#38585a" stroke-width="4" stroke-linejoin="round">
+  <path d="M514 511H625L642 535H501Z" fill="#778f87"/>
+  <path d="M532 437H610V513H532Z" fill="#c8a559"/>
+  <path d="M546 434 580 309 626 321 591 449Z" fill="#dfbc75"/>
+  <path d="M583 301 642 231 676 265 627 329Z" fill="#d3a859"/>
+  <path d="M651 226 771 306 748 342 636 271Z" fill="#e3c17c"/>
+  <path d="M760 316 816 346 802 375 748 344Z" fill="#b69757"/>
+  <circle cx="570" cy="441" r="28" fill="#547472"/>
+  <circle cx="570" cy="441" r="12" fill="#b7c9be"/>
+  <circle cx="608" cy="313" r="29" fill="#587773"/>
+  <circle cx="608" cy="313" r="12" fill="#dce5da"/>
+  <circle cx="655" cy="247" r="27" fill="#587773"/>
+  <circle cx="655" cy="247" r="11" fill="#dce5da"/>
+  <circle cx="760" cy="327" r="20" fill="#587773"/>
+  <path d="M624 252Q571 243 563 318L541 402" fill="none" stroke="#667f78" stroke-width="9"/>
+  <path d="M790 365 780 386V410M819 365 831 386V408" fill="none" stroke="#39585a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M779 407H790M831 407H820" stroke-width="8" stroke-linecap="round"/>
+ </g>
+ <!-- Pass-through bench, with a fixed protective screen behind the motor. -->
+ <g stroke="#496563" stroke-width="3" stroke-linejoin="round">
+  <path d="M700 452 868 446 918 466 747 479Z" fill="#b8cac0"/>
+  <path d="M700 452V468L747 492 918 480V466L747 479Z" fill="#7c9890"/>
+  <path d="M718 474V575M887 485V578M749 494V590" stroke="#617e76" stroke-width="12"/>
+  <path d="M721 551 887 556" stroke-width="7"/>
+  <path d="M861 295 893 302V415L861 407Z" fill="#c7ded5" opacity=".72"/>
+  <path d="M861 295V421M893 302V423" stroke="#b79b60" stroke-width="8"/>
+ </g>
+ <g stroke="#304e51" stroke-width="3" stroke-linejoin="round">
+  <path d="M758 420 827 414 851 429V455L779 465 754 449Z" fill="url(#motor)"/>
+  <ellipse cx="767" cy="440" rx="21" ry="25" fill="#bd8055"/>
+  <ellipse cx="767" cy="440" rx="12" ry="16" fill="#759890"/>
+  <path d="M744 441H728" stroke="#6c8680" stroke-width="12" stroke-linecap="round"/>
+  <path d="M785 425V456M798 422V454M811 420V452M824 419V450M838 426V448" fill="none" stroke="#b5c5ac" stroke-width="4"/>
+  <path d="M787 416V403H815V414" fill="#6b8982"/>
+  <path d="M779 462 772 472H797L801 459M828 456 831 466H853L845 453" fill="#4c706b"/>
+  <path d="M847 432 866 428 870 441" fill="none" stroke="#bc775b" stroke-width="4"/>
+ </g>
+ <!-- Technician outside the cell, inspecting the delivered part with probes. -->
+ <g stroke="#3b5353" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M970 451 956 573 981 579 1002 483 1009 575 1038 575 1042 451Z" fill="#496b70"/>
+  <path d="M956 569 952 590 987 594 990 582 979 574M1010 573 1011 594H1050V583L1035 575" fill="#314c50"/>
+  <path d="M964 313 940 334 950 438 964 472 1041 469 1048 343 1021 315Z" fill="#c47b55"/>
+  <path d="M976 317 989 340 1004 316" fill="#f2e5cc"/>
+  <path d="M985 340V465M1000 361H1030V392H1000Z" fill="none" stroke="#8b5d49"/>
+  <path d="M946 341 923 369 870 407 883 425 946 392 971 360" fill="#c47b55"/>
+  <path d="M1032 338 1064 383 1032 429 1012 417 1036 382 1017 358" fill="#c47b55"/>
+  <path d="M871 406 856 411 851 424 862 431 884 423Z" fill="#e4d1ae"/>
+  <path d="M1013 416 993 419 985 435 1000 446 1034 429Z" fill="#e4d1ae"/>
+  <path d="M985 431Q953 477 915 457T850 434" fill="none" stroke="#b95e4a" stroke-width="3"/>
+  <path d="M860 419 848 432" stroke="#444e4e" stroke-width="5"/>
+  <path d="M974 302V320Q986 336 1007 317V300" fill="#d8ae89"/>
+  <path d="M961 265Q958 232 985 224 1018 220 1031 249L1027 286Q1019 315 997 316 976 314 967 291Z" fill="#deb997"/>
+  <path d="M962 269 958 246Q963 218 990 217 1020 216 1033 240L1031 264 1018 252 1006 235 986 245 969 248 971 271Z" fill="#40534f"/>
+  <path d="M969 270 991 267 1011 271 1028 267" fill="none" stroke="#627e78" stroke-width="5"/>
+  <path d="M975 268V282H992V268M1004 270V283H1020V270" fill="#d6e1d4" fill-opacity=".6" stroke="#506c68" stroke-width="2"/>
+  <path d="M996 279 991 291H999M986 301Q995 305 1004 299" fill="none" stroke="#9f7d63" stroke-width="2"/>
+  <path d="M979 443 1002 437 1013 466 989 474Z" fill="#d9b25f"/>
+  <path d="M984 447 997 444 1001 454 988 458Z" fill="#54756c"/>
+  <path d="M995 463 998 463" stroke="#405b55" stroke-width="5"/>
+ </g>
+ <g fill="#b8c9bf" stroke="#708e83" stroke-width="3" stroke-linejoin="round">
+  <path d="M458 551 488 538 519 550 488 565Z"/>
+  <path d="M458 551V579L488 593 519 578V550L488 565Z"/>
+  <path d="M482 545 488 538 501 545 497 554Z" fill="#7b958a"/>
+ </g>
+ <path d="M89 589H686" fill="none" stroke="#c8a559" stroke-width="6" stroke-dasharray="22 16" opacity=".75"/>
+</svg>

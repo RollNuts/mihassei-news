@@ -2,6 +2,8 @@
 
 承認済みの生成JPEGを、**12秒・24fps・3カットの無音ニュース映像**に編集する仕組みです。全景→注目箇所→引きの順に構図を切り替え、パンやズームと短い字幕で記事の展開を伝えます。処理は無料のローカルCPUとFFmpegで行い、人物そのものを動かすAI動画生成や実際の報道映像ではありません。
 
+人物の近況投稿は`content/photo_stories.json`を正本とし、homeのタイムラインと丸いストーリー入口で同じ投稿を使います。写真は本人の検品済み掲載特集から参照し、新しい撮影カットに数えません。任意の写真モーションは`python3 -m scripts.photo_story_motion STORY_ID`で既存FFmpegを1スレッドで実行し、全景を残す穏やかな寄りを12秒作ります。記事用のIDや来歴は借りず、投稿の元JPEG SHA・MP4 SHA・codec・尺・容量を同じ投稿へ保存し、静止画リンクと「写真モーション」の表示を添えます。追加タスクや自動再生は設けません。
+
 ## 読者への配信
 
 - 記事ごとの動画は、**検証済みMP4が存在する場合だけ**ネイティブHTML `<video>` で表示。動画がない記事は従来の写真／SVGのまま。
@@ -98,19 +100,22 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 ## 音声付きキャスターの手動試験
 
-既存Actionの手動入力`caster_preview=true`だけで、架空の成人キャスターの口パクを確認する試験を実行する。既定はOFFで、定期実行・既存の無音クリップ生成・公開manifestへは接続しない。原画と来歴は`assets/casters/`に置き、このディレクトリはサイトの公開ビルドへ含めない。
+**人物の発話動画と別音声の追加試作は現在停止中。** 口元のにじみと音声の棒読みが残り、無料で品質を揃える確認負担が大きいため、写真・本人らしい短文・記事の品質と安定公開を優先する。本人から再開依頼があるまで新しい試作・音声比較・モデル導入を行わない。以下の経路と原記録は保持するが、既定OFFを維持し、通常運用へ接続しない。
 
-成人企画・継続キャスターの起用と容姿の継続は、[EDITORIAL_LOOPの成人の軽い未来企画](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠)を正本とする。
+既存Action `auto-motion-clips.yml` の `caster_preview=true` と `caster_backend=musetalk-core` を明示した場合だけ、公開GitHub Linux CPUで汐羽りおの3秒試作を1本作る。既定はOFF、定期処理と公開manifestへは接続しない。`caster_source_run`・`caster_source_manifest`は空にする。旧SadTalker試作とその再合成は第三者データ・重みの商用条件が未解決のため、インストール・ダウンロード前に拒否する。原記録や過去artifactを合格へ変更しない。
 
-既存の口パク試作は顔を中心とした検証で、歩行・水泳などの自然な全身動作を確認した結果ではない。衣装や場面を変えても、口・顔・手足の破綻、服のちらつき、同一人物の連続性を実動画で確認する。未検証の全身動作を公開可能と報告せず、既存の無料経路で検証できない場合は静止画や現在の承認済み表現で扱う。
+本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。元制作チャットの「え、もうこんな時間？」とrun `43691031221`の既存3秒WAV（SHA `5920ac75800aeafd4d745656569a59ccfca6f05b1cba9c9cbba93ddd7e728dfa`）を固定した比較run `43695992116`は生成に成功したが、圧縮前から唇と顎がにじむため不採用。音声は本人が実際に聴き、棒読みで声も好みに合わないと評価した。総括と制作GPTは音声を聴取できておらず、本人の評価と混同しない。原receipt・MP4・WAV・取得証拠・当時の未聴取記録・別の不採用記録・本人の音声評価は`maintenance/musetalk-pilot/`で保持し、原生成を後付けで合格へ変更しない。
 
-`scripts/news_caster_preview.py`は通常起動では計画の表示だけを行う。実生成は公開リポジトリの標準GitHub Linux CPUに限定し、Kokoroの日本語音声とSadTalkerを別の仮想環境で処理する。モデルは使い捨てランナー内だけに置き、Macへ取得しない。固定版・来歴・ライセンスの参照先は同スクリプトを正本とする。
+`python3 scripts/musetalk_profile_preview.py`はオフラインplanのみ。実生成は`--run`を付けてもpublic GitHub-hosted Linux Python 3.10以外では開始しない。MuseTalkのUNet・VAE・Whisper coreの固定ファイルだけを取得し、DWPose・顔検出・顔解析・SyncNet・GFPGAN・InsightFace・BFMを読み込まない。この比較ではKokoro/Misaki/G2Pと音声モデルの再導入・再取得・再合成をせず、原WAVをSHA確認後にそのままコピーする。個別の出典・版・バイト数・SHA・商用条件は`musetalk_preview_sources.py`と保存した原音声receiptを正本として残す。モデルと環境は使い捨てランナー内だけに置き、Macへ導入しない。
 
-最初は3秒の抜粋と元の音声を、容量制限付き・1日保持のartifactだけに保存する。声・口・歯・顎・瞬き・同期と実行時間を実確認してから次を判断し、生成成功だけで完成ニュースや公開採用としない。
+試作はfloat32・batch1・10fpsで30枚／3秒、15分のjob内に実処理12分の上限を設ける。12GiBの空きディスク、2GiBの空きRAM、作業8GiB、停止スイッチを監視し、完走を約束しない。失敗時も`receipt.json`の`current_step`・エラー、最大512KiBの`preview.log`と途中進捗を残す。artifactへ手動bboxの`source-face-crop.png`と実際の256px入力`model-face-input.png`も加える。`news-caster-preview-<run_id>`を1日以内に回収し、`publish: false`・`preview_only`のまま声・口・歯・同期・本人性を実確認する。生成成功やpixel変化だけで公開採用しない。
 
-生成済み素材の編集には同じ手動入力へ`caster_source_run`を指定する。成功runのartifactと現行の記事・承認写真を照合し、3秒のキャスターから現場写真へ切り替える8〜12秒の試作だけを保存する。モデルの再取得・再生成は行わず、声と映像の確認前は公開しない。
 
-artifact失効後に保持済みの8秒試作を再編集する場合は、同じActionの`caster_source_manifest`へ`完全なcommit SHA:drafts/caster-review/<bundle>/manifest.json:manifestのSHA-256`を指定し、`caster_source_run`は空にする。対象はスクリプトが固定した元試作と未変更の元receiptだけ。manifestは`version: 1`、`composition_run_id`、`movie_sha256`、`receipt_sha256`の4項目とし、同じフォルダーの`news-preview.mp4`・`receipt.json`を照合する。元の声・最初3秒のキャスター・切り替えを保ち、字幕と創作表示を拡大し、3〜8秒の写真層だけを5%寄せた`preview_only`／`composed_unreviewed`のartifactを返す。声と口同期は未検証のまま記録する。
+### 手動試作の引継ぎ
+
+- run `43686674871` はモデル取得前にclick不足で停止。次のrun `43687182219` は170秒で固定モデル取得と日本語音声生成まで進み、Whisperの2次元frame特徴を3次元batch入力へ渡す箇所で停止した。音声生成と動画完成を区別し、MP4は未生成。
+- 対象は `shioba-rio-introduction-20261115`、写真SHA `101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4`。後者の1日保持artifactを回収済みで、Macの `/tmp/mihassei-musetalk-preview-43687182219` に原receipt・WAV・mask・logを保持。発話の実聴取、本人性・口・歯・同期は未確認で、採用記録を作らない。
+- 次担当は既存のCodex例外担当。clickの明示installとbatch1の入力修正をCIで確認後、停止・容量を再確認して次の確認枠で1本だけ手動再試験する。同じ失敗runの再実行はせず、実MP4と音声の検品・採用・本番確認まで終わる前に定期公開へ接続しない。
 
 ## 容量と安全
 
