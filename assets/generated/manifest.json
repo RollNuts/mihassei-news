@@ -2240,31 +2240,190 @@
       }
     },
     "concert-audience-voice-rights-cheers-not-free": {
-      "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
-      "bytes": 159063,
-      "generated_at": "2026-11-15T09:20:27.935074+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "article_sha256": "2917fd96c244b7b4f08fff070250e583689e24bc9d072851f1653e210c05ef86",
+      "bytes": 143101,
+      "generated_at": "2026-11-15T09:24:01.620460242Z",
+      "generation_id": "8de59334-fe92-4d79-93ed-1e8a5517517c",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Create one realistic horizontal 16:9 documentary photograph for a fictional Japanese future-news story. The central visual contradiction: the crowd keeps singing happily, while its dedicated recording microphone has just been disconnected. A close foreground view of a plain black audience-recording microphone on a short stand at the side of an indoor concert audience; an ordinary adult sound technician's hands hold the microphone steady and hold its unplugged XLR cable a clear few centimetres away from the bottom socket. Make the separation physically unambiguous and mechanically plausible: one microphone, one cable, realistic correctly articulated hands and connector, no duplicate objects. The microphone points toward the audience, not toward the stage, and nobody is singing into it. In the middle distance a small varied group of entirely fictional adult Japanese concertgoers, women and men roughly 25 to 55, continue singing or clapping toward a modest distant stage, with one middle-aged woman visible among them. Cool and warm practical concert lights, natural skin texture, restrained exposure with visible facial details, no blown-out faces. November indoor evening, contemporary everyday coats and knits, unposed press-photo feel rather than a glamour portrait or advertising. Focus on the separated microphone connector and working hands, with the continuing crowd still recognizable as a live audience. No text, subtitles, labels, screen UI, logos, signs, watermarks, real people or celebrity likeness. Full-bleed single photograph, no collage, no illustration, no 3D render.",
+      "generation_prompt_source": "Exact input preserved in the actual built-in image_gen.imagegen execution receipt; the tool execution UUID is separately recorded and is not an exposed provider job ID.",
+      "generation_receipt": "xmp:iid:8de59334-fe92-4d79-93ed-1e8a5517517c",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_generation": {
+        "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+        "bytes": 159063,
+        "generated_at": "2026-11-15T09:20:27.935074+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 4016510582796096107,
+        "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_scene_prompt": "A 48-year-old Japanese woman sings passionately among adult concertgoers as the audience-recording microphone stands switched off nearby. Photorealistic editorial press photograph at a modest indoor music venue in November, ordinary concert clothing, a distant unidentifiable singer on stage, natural faces, realistic stage lights and crowd, horizontal 16:9, no logos, signage, legible text, watermarks, recognizable real people or illustrated elements.",
+      "previous_visual_review": null,
       "prompt_version": 3,
-      "seed": 4016510582796096107,
-      "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
+      "sha256": "af62cea6dc9ebc93fe824a1ba3294f3b27303621ba3528d201aceb8ba0e86633",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T09:24:01.620460242Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T09:24:01.620462286Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T09:24:01.618439340Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              53,
+              223,
+              251,
+              87,
+              221,
+              20,
+              3,
+              31,
+              115,
+              156,
+              18,
+              227,
+              100,
+              102,
+              26,
+              113,
+              32,
+              121,
+              254,
+              91,
+              226,
+              240,
+              220,
+              197,
+              61,
+              199,
+              238,
+              232,
+              226,
+              3,
+              236,
+              101
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:8de59334-fe92-4d79-93ed-1e8a5517517c",
+        "manifest_uri": "urn:c2pa:2b913db7-9b84-43a9-a7d0-539c9a5ff4ff",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "bytes": 2150359,
+        "caBX_sha256": "d43332e905527c713f2281cb739301e625f68d4efd45cbd501f4279314f3b58e",
+        "candidate_branch": "native-image-candidate/concert-audience-voice-rights-cheers-not-free/2917fd96c244b7b4-3fb75e8c0505",
+        "candidate_commit": "1d44bd6f4606f043ff2d60f97473e1f4d1d6c033",
+        "generation_claim": null,
+        "height": 941,
+        "kind": "recovered_native_output",
+        "logical_run_id": "recovery-existing-imagegen-exec-b1b637c5-605c-4a6b-a69e-d464c26790d0",
+        "method": "Recovered the exact local PNG returned by the earlier built-in tool execution. Existing native_image_stage.js stage/load verified original parts, complete PNG SHA, pinned conversion and final JPEG by local Git blob/commit/branch readback. This recovery made no remote writes, new generation, pre-generation reservation or transport preflight.",
+        "original_png_parts": [
+          {
+            "blob_sha": "f7f45b82cbe832be0cff00d12996902569689294",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part000",
+            "sha256": "323e50b18acb185aa627e222b867a5da437aaab7f9015ed81282955cb703c29b"
+          },
+          {
+            "blob_sha": "2f494666f941a408276727b0da69a3a53f7b8fcf",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part001",
+            "sha256": "3a70965547a879439b3b7a71afb3f41e2c8e17f822d56f54b6149696bf2109f8"
+          },
+          {
+            "blob_sha": "1314b7445bb259ded6dc7dd7987e0dd1593161d2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part002",
+            "sha256": "c511feba17fcdc4c240084495fabcfb3a05b90f483fc7ad35c9629696c71244b"
+          },
+          {
+            "blob_sha": "55a25f72c257500061b1e2b0b9ebee2a552dffc1",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part003",
+            "sha256": "29e68691269ea0af0cde228f2f176e41af7c8f02bf39f31a11ef6888921c85e5"
+          },
+          {
+            "blob_sha": "c8dbe906733e29b169f48592248707272b948733",
+            "bytes": 53207,
+            "path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/source.png.part004",
+            "sha256": "33a47a96a74ae9f88d56e1e2f57ec00f7197f4e539203eb8327fd03c71cb0bc3"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/receipt.json",
+        "receipt_sha256": "97cad3f4cea0f26cea954355da52ac80532757b789e804b98c1971f0199aa0f2",
+        "storage": "local_git_candidate_pending_root_publication",
+        "tool_execution_receipt_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/tool-execution-receipt.json",
+        "tool_execution_receipt_sha256": "090d7e30592ec0f3ea08ae37c7382f5051e15c9eb9b9ba65dbf81fde3bbdb1d9",
+        "transport_preflight": null,
+        "width": 1672
+      },
+      "source_png_sha256": "72bf77dc74a529ffcf90eddbae302f4d4176b8d7d40424d86851a1b3b62b4e23",
+      "supersedes_reason": "A genuinely new native photograph shows the dedicated audience-recording microphone disconnected while the crowd continues singing and clapping. The old performer-like CPU JPEG, original generation fingerprint/integer seed and explicit rejection remain retained; the old image was never visually accepted.",
+      "tool_execution": {
+        "execution_id": "b1b637c5-605c-4a6b-a69e-d464c26790d0",
+        "execution_id_source": "actual exec UUID in the built-in output filename; provider generation ID not exposed",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "council-trials-new-sidewalk-before-vote": {
       "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
@@ -7327,6 +7486,45 @@
       "reason": "Visual review of actual JPEG from free CPU run 41957134133: picture shows a live basketball shot with players leaping toward the hoop and cheering spectators, not teams meeting before their first game. The oversized number seven, championship flag and opening ceremony are absent; it does not depict the article's core joke. Reject generated JPEG and keep safe illustration fallback. No seed or fingerprint rewrite.",
       "rejected_candidate_sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41957134133"
+    },
+    "concert-audience-voice-rights-cheers-not-free": {
+      "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+      "decision": "rejected",
+      "generation": {
+        "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+        "bytes": 159063,
+        "generated_at": "2026-11-15T09:20:27.935074+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 4016510582796096107,
+        "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
+      },
+      "image_sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e",
+      "previous_visual_review": null,
+      "raw_generation_commit": "8f60fb476acd9847b60274e85b5f8d42537e8812",
+      "reason": "旧CPU JPEGと現本文全文を実表示で照合。最前景の女性が口元のマイクへ歌いかけ、出演者のように見える。客席専用の収録を止めた行為は写らず、女性や奥の観客の顔には白飛びが目立つため不採用。原JPEG・原生成記事SHA・正確な整数seed・生成記録を変更せず履歴へ保持する。",
+      "rejected_candidate_sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e",
+      "retained_jpeg_path": "maintenance/native-image-candidates/concert-audience-voice-rights-cheers-not-free/previous-cpu-bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e.jpg",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43698146762",
+      "reviewed_at": "2026-11-15T09:31:57.328128+00:00"
     },
     "joint-party-slate-one-vote-three-claims": {
       "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
