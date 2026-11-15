@@ -370,6 +370,7 @@ def render_market_bulletins_archive(reports, layout):
     return layout("日次市況 | 未来相場観測室",
                   "寄り付き前・後場の全体市況と夕方の日本株急騰・急落を出典付きで記録。",
                   MARKET_URL + "briefings/", content, active="serials",
+                  serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"},
                   feed_url=FEED_URL)
 
 
