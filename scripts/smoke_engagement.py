@@ -148,7 +148,7 @@ code,_,removed=req("POST","/api/comments",{"action":"remove","article":market_ke
 check(code==200 and json.loads(removed).get("ok"),"market comment owner can remove a post")
 try:
     req("POST","/api/comments",{
-        "action":"post","article":"market-briefing-2026-11-16-am",
+        "action":"post","article":"market-briefing-2099-12-31-am",
         "clientId":str(uuid.uuid4()),"body":"未公開の市況には投稿できないはずです。"
     })
 except HTTPError as exc:
