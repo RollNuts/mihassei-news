@@ -1210,7 +1210,7 @@ body [hidden] {
 .press-timeline-list li{min-width:0}
 .press-timeline-list a{
   display:grid;grid-template-columns:auto 1fr;gap:2px 8px;
-  align-content:center;min-height:79px;padding:12px 14px;
+  align-content:center;min-height:90px;padding:12px 14px;
   border:1px solid #d5d8d0;border-radius:8px;background:#fdfcf7;
   color:var(--ink);text-decoration:none
 }
@@ -1225,7 +1225,7 @@ body [hidden] {
 .press-timeline-category{font-size:10px;font-weight:800;color:#536c59}
 .press-timeline-headline{
   grid-column:1/-1;display:-webkit-box;-webkit-box-orient:vertical;
-  -webkit-line-clamp:1;overflow:hidden;line-height:1.6;font-size:12px;
+  -webkit-line-clamp:2;overflow:hidden;line-height:1.55;font-size:13px;
   font-weight:800;letter-spacing:-.015em
 }
 /* The existing random-edition machine is no longer hidden in a details menu. */
