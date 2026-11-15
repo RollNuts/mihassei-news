@@ -386,7 +386,9 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             f'{narrative}{extras}'
             f'<div class="serial-epilogue"><p>{h(followup)}</p>'
             f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
-            f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
+            + (f'<button class="market-share-copy" type="button" data-copy-url="https://veripsa.com{episode_url(series, ep)}"><span aria-hidden="true">↗</span><span>リンクをコピー</span></button>'
+               if series["kind"] == "analysis" else "")
+            + f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
             f'{render_completed_reading(series, ep)}'
             + (render_reader_comments('market-episode-' + ep['slug'],
                 heading='この市場分析へのコメント', placeholder='データや予測について感じたこと…')
