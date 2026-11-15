@@ -40,8 +40,8 @@ class HomepageVisualTests(unittest.TestCase):
         content = markup.split('<div class="container index-main">', 1)[1]
         positions = [
             content.index('class="hero-grid"'),
-            content.index('data-popular-section'),
             content.index('<section class="section-block">'),
+            content.index('data-popular-section'),
             content.index('class="newsroom-snapshot"'),
             content.index('class="press-timeline"'),
             content.index('class="daily-issues-section"'),
@@ -52,7 +52,7 @@ class HomepageVisualTests(unittest.TestCase):
         ]
         self.assertEqual(positions, sorted(positions))
         self.assertIn('<summary><strong>号外・コメント</strong>', content)
-        self.assertIn('今日の未発生新聞', content)
+        self.assertIn('最近の発行号', content)
         self.assertNotIn('class="special-edition"', content[:content.index('<details class="extras-shelf">')])
         self.assertEqual(content.count('data-popular-section'), 1)
         self.assertEqual(content.count('data-issue-picker'), 1)
