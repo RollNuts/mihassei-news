@@ -278,7 +278,7 @@ def load_photo_editions(root=ROOT, *, catalog, published, now=None):
     clock = now or datetime.now(timezone.utc)
     released = {feature["slug"]: feature for feature in published if feature.get("state") == "published"
                 and _stamp(feature["published_at"]) <= clock}
-    result, numbers, slugs = [], set(), set()
+    result, numbers, slugs, claimed_features = [], set(), set(), {}
     for edition in data["editions"]:
         number, slug = edition.get("number"), edition.get("slug")
         legacy, state = edition.get("legacy"), edition.get("state")
@@ -321,6 +321,10 @@ def load_photo_editions(root=ROOT, *, catalog, published, now=None):
                 raise ValueError("Photo edition has unpublished features or a future publication")
             if not legacy and stamp.astimezone(JST).date().isoformat() != edition["ranking"]["publication_date_jst"]:
                 raise ValueError("Photo edition actual publication date differs from its frozen PV window")
+            for member in members:
+                if member in claimed_features:
+                    raise ValueError("A published feature cannot belong to two photo editions: " + member)
+                claimed_features[member] = slug
             result.append({**edition, "ordered_features": [released[member] for member in members]})
         numbers.add(number)
         slugs.add(slug)

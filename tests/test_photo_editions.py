@@ -52,7 +52,8 @@ class PhotoEditionOrderTests(unittest.TestCase):
         data = catalog()
         before = copy.deepcopy(data)
         result = freeze(data, payload([("photo-issue:old-a", 3), ("photo-issue:older-a", 2),
-                                      ("photo-issue:old-b", 7), ("photo-issue:unlisted", 999)]))
+                                      ("photo-issue:old-b", 7), ("photo-issue:unlisted", 999),
+                                      ("photo-issue:issue-001", 10000)]))
         rows = {row["model_id"]: row for row in result["models"]}
         self.assertEqual(result["status"], "measured")
         self.assertEqual(rows[IDS[0]]["page_views"], 5)
@@ -229,6 +230,18 @@ class PhotoEditionCatalogTests(unittest.TestCase):
         before = copy.deepcopy(feature)
         self.assertEqual(p.edition_url(self.load(legacy)[0]), "/photo/weekly/old-a/")
         self.assertEqual(feature, before)
+
+    def test_later_published_editions_need_new_feature_slugs_but_draft_planning_is_allowed(self):
+        second = copy.deepcopy(self.edition)
+        second.update(number=2, slug="issue-002", state="draft", published_at=None)
+        def load():
+            (self.root / "content/photo_editions.json").write_text(json.dumps({
+                "schema_version": 1, "editions": [self.edition, second]}))
+            return p.load_photo_editions(self.root, catalog=self.catalog, published=self.catalog["issues"], now=NOW)
+        self.assertEqual(len(load()), 1)
+        second.update(state="published", published_at="2026-11-15T12:30:00+09:00")
+        with self.assertRaisesRegex(ValueError, "cannot belong to two photo editions"):
+            load()
 
     def test_snapshot_cannot_turn_an_existing_feature_into_a_debut_or_change_count_order(self):
         edition = copy.deepcopy(self.edition)
