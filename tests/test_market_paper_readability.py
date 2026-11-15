@@ -92,7 +92,7 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn(episode["forecast"]["statement"], page)
         self.assertIn(episode["forecast"]["reviewed_on"], page)
         self.assertIn("予測の判定方法と基準値を読む", page)
-        self.assertIn("この回をXで共有する", page)
+        self.assertIn("Xで共有", page)
         self.assertNotIn("PUBLIC FORECAST LOG", page)
         self.assertEqual(page.count('<figure class="market-figure">'), 3)
 

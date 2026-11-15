@@ -12,7 +12,7 @@ from hashlib import sha256
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from urllib.parse import urlsplit, urlencode
+from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 import json
 import math
@@ -22,10 +22,12 @@ try:
     from .market_figures import render_market_svg, figure_description, STATES
     from .reader_comments import render_reader_comments
     from .market_outlooks import view_models
+    from .market_sharing import render_market_share
 except ImportError:
     from market_figures import render_market_svg, figure_description, STATES
     from reader_comments import render_reader_comments
     from market_outlooks import view_models
+    from market_sharing import render_market_share
 
 FILE = Path("content/market_bulletins.json")
 MARKET_URL = "/serials/market-lab/"
@@ -302,10 +304,6 @@ def _picks(report):
 
 def render_market_bulletin(report, layout, outlooks=()):
     slot_time, slot_name = SLOTS[report["slot"]]
-    share_url = "https://x.com/intent/tweet?" + urlencode({
-        "text": f'{report["title"]}｜未来相場観測室（実データの市場分析）',
-        "url": SITE + bulletin_url(report),
-    })
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
@@ -350,14 +348,12 @@ def render_market_bulletin(report, layout, outlooks=()):
         f'<h1>{escape(report["title"])}</h1><p class="serial-article-dek">{escape(report["summary"])}</p>'
         f'<p class="serial-pub">実公開：<time datetime="{report["published_at"]}">{escape(report["published_at"])}</time></p>'
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
-        '</header><div class="serial-article-body">'
+        + render_market_share(bulletin_url(report), report["title"])
+        + '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
         + _market_conditions(report) + "".join(parts)
         + _picks(report) + forecast_section
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
-        + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
-          'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a>'
-          + f'<button class="market-share-copy" type="button" data-copy-url="{SITE+bulletin_url(report)}"><span aria-hidden="true">↗</span><span>リンクをコピー</span></button></p>'
         + render_reader_comments('market-briefing-' + report['slug'],
              heading='この市況へのコメント', placeholder='今日の相場についてひとこと…')
         + '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
@@ -399,7 +395,8 @@ def render_market_bulletins_archive(reports, layout):
     content = (
         '<div class="container serials-page market-desk-archive">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a></nav>'
-        '<header class="serials-intro"><h1>日次市況</h1><p>現実の公開資料を使った市場の動き。米国の個別株は掲載しません。</p></header>'
+        '<header class="serials-intro"><h1>日次市況</h1><p>現実の公開資料を使った市場の動き。米国の個別株は掲載しません。</p>'
+        + render_market_share(MARKET_URL + "briefings/", "日次市況") + '</header>'
         + render_market_bulletins_index(reports, limit=None)
         + '</div>'
     )
