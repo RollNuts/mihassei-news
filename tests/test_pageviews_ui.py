@@ -32,6 +32,8 @@ class PageViewPresentationTests(unittest.TestCase):
                       "data-site-pv-week", "data-pv-tracking-note"):
             self.assertIn(token, section)
         self.assertIn('href="/privacy/#pageviews"', section)
+        self.assertIn('href="/archive/"', section)
+        self.assertIn('href="/issues/"', section)
         self.assertIn("hidden", section)
         self.assertIn(f"{len(articles):,}<small>本", section)
         self.assertNotIn("今日のPV", html)
