@@ -20,8 +20,10 @@ import re
 
 try:
     from .market_figures import render_market_svg, figure_description, STATES
+    from .market_outlooks import render_market_outlook_board, view_models
 except ImportError:
     from market_figures import render_market_svg, figure_description, STATES
+    from market_outlooks import render_market_outlook_board, view_models
 
 FILE = Path("content/market_bulletins.json")
 MARKET_URL = "/serials/market-lab/"
@@ -260,8 +262,13 @@ def _picks(report):
     return '<section class="market-stock-picks"><h2>急騰と急落：日本株の注目例</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
 
 
-def render_market_bulletin(report, layout):
+def render_market_bulletin(report, layout, outlooks=()):
     slot_time, slot_name = SLOTS[report["slot"]]
+    # Never render a later forecast/update as though it existed at publication.
+    published_at = _timestamp(report["published_at"])
+    latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
+    forecast_section = (render_market_outlook_board(outlooks, limit=1, before=published_at)
+                        if latest_forecast else '<p class="daily-forecast-link"><a href="/serials/market-lab/outlooks/">毎日の予測と検証履歴を見る</a></p>')
     parts = []
     for i, section in enumerate(report["sections"]):
         parts.append(f'<section class="serial-prose-section"><h2>{escape(section["heading"])}</h2>')
@@ -285,7 +292,7 @@ def render_market_bulletin(report, layout):
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + "".join(parts)
+        + forecast_section + "".join(parts)
         + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
@@ -311,6 +318,7 @@ def render_market_bulletins_index(reports):
         '<p>8:30 寄り付き前の全体市況 ／ 12:40 後場の全体市況 ／ 夕方 日本株の急騰・急落。'
         '市場が休場、確かな数値が取得できない場合は、その枠を見送ります。</p>'
         + (f'<ol class="market-desk-list">{cards}</ol>' if cards else '<p class="market-desk-empty">確認済みの日次市況記事はまだありません。既刊の予測分析は下に掲載しています。</p>')
+        + '<p><a class="serial-feed-link" href="/serials/market-lab/outlooks/">毎日の予測・方針変更の履歴</a></p>'
         + '<p><a class="serial-feed-link" href="/serials/market-lab/briefings/">日次市況を一覧で読む</a></p></section>'
     )
 
@@ -359,13 +367,13 @@ def market_bulletin_routes(reports):
     ]
 
 
-def build_market_bulletins(reports, layout, write):
+def build_market_bulletins(reports, layout, write, *, outlooks=()):
     write(MARKET_URL.lstrip("/") + "briefings/index.html",
           render_market_bulletins_archive(reports, layout))
     write(FEED_URL.lstrip("/"), market_bulletin_feed_xml(reports))
     for item in reports:
         write(bulletin_url(item).lstrip("/") + "index.html",
-              render_market_bulletin(item, layout))
+              render_market_bulletin(item, layout, outlooks=outlooks))
         for fig in item["figures"]:
             for small in (False, True):
                 write(figure_url(item, fig, mobile=small),
