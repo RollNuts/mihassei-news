@@ -1,5 +1,70 @@
 [
   {
+    "slug": "concert-audience-voice-rights-cheers-not-free",
+    "category": "社会",
+    "flash": "歓声は無料素材ではなかった",
+    "fiction_company": "架空の藍波市のライブ配信事業者",
+    "art": "cards",
+    "fiction_at": "2031-11-15T17:31:54+09:00",
+    "published_at": "2026-11-15T17:31:54+09:00",
+    "title": "AIで歓声を再利用するライブ、観客が無償提供を拒否　主催者は分配契約を提示",
+    "summary": "2031年、架空の藍波市でライブの観客の声をAIで再現し、後日の配信にも使う企画が始まった。主催者は歓声の無償再利用を求めたが、観客の多くが拒否し、専用の収録を停止。最後には主催者が、声を提供する観客にも配信収入を分ける契約案を提示した。",
+    "paragraphs": [
+      "2031年11月15日、架空の藍波市のライブ会場で、主催者が観客の歓声をAIで再現し、次回以降の配信に再利用する企画を始めた。出演者の声だけでなく、客席の「もう一曲」や合唱まで保存して、客を入れない配信でも満員の熱気を流せる仕組みだ。ただし開演前、観客の多くが無償の再利用許諾を拒否した。主催者は客席専用の収録マイクを止めることになった。",
+      "主催者は「配信を盛り上げる客席の音は、公演全体の演出として使いたい」と説明していた。歌手の録音や映像には契約で対価を払う一方、観客には「無料で声を提供する」同意を任意で求めた。許諾しなくても入場や声援は自由だが、同意しなかった人の声を切り分けられないため、客席の合唱をAI学習用に収録する計画そのものを止めた。",
+      "再利用を拒んだ観客の一人、48歳の女性は「応援はしたい。でも、私たちの『もう一曲』が、行っていない公演で何度も流れるのは違う」と話した。仲間と相談して同意欄を空欄にしたのは、声を出したくないからではない。自分がその場で歌った声を、本人抜きで売ってほしくなかったからだ。",
+      "アンコールでは歌手が演奏を止めて客席へ耳を向けた。観客はいつもどおり大きな声で歌い返したが、その声は後日のAI配信素材にはならない。主催者は現場の拍手と合唱を聴きながら、客席を無償の音源と見込んだ宣伝計画を取り下げた。音楽は予定どおり続き、足りなくなったのは盛り上がりではなく、配信のために保存する歓声だった。",
+      "終演後、主催者は次回公演向けに、希望する観客の声を利用記録と結び付け、配信収入の一部を許諾者へ分ける契約案を示した。個別の同意を取れる仕組みは、歓声を好きなだけ使うために用意したものだったが、観客はその同じ仕組みで値段を付け直した。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "法務省",
+      "published_at": "2026-08-07T00:00:00+09:00",
+      "url": "https://www.moj.go.jp/MINJI/minji05_00778",
+      "topic": "法務省は2026年8月7日、肖像・声等の無断利用に関する民事責任について、生成AIによるパブリシティ権侵害等の解釈指針を公表。現行法・判例法理を踏まえた検討結果で、2031年のライブ観客全員の声に新しい法定権利が生じたと述べたものではない。藍波市の配信事業者、無償再利用の提案、観客の拒否、専用収録停止、収益分配契約案はすべて創作。"
+    },
+    "scene_prompt": "A 48-year-old Japanese woman sings passionately among adult concertgoers as the audience-recording microphone stands switched off nearby. Photorealistic editorial press photograph at a modest indoor music venue in November, ordinary concert clothing, a distant unidentifiable singer on stage, natural faces, realistic stage lights and crowd, horizontal 16:9, no logos, signage, legible text, watermarks, recognizable real people or illustrated elements.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "生成AI",
+      "声の権利",
+      "ライブ"
+    ],
+    "satire_tags": [
+      "声の権利",
+      "観客の価値"
+    ],
+    "x_tags": [
+      "声の権利",
+      "ライブ配信"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "ライブの歓声、あとでAIが何度でも使うなら誰のもの？　2031年の客席が、無償の熱狂に値段を付けました。",
+    "reader_interest": "general_society",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "2026年8月7日に法務省が肖像や声の無断利用について現行法・判例を踏まえた生成AI時代の民事責任の解釈指針を公表した",
+      "target": "ライブ観客の歓声をAIで再現して別公演の配信素材へ再利用する試みと、利用する側と声の提供者の利益の違い",
+      "action": "主催者が客席の歓声を無料で集めようとし、観客が無償再利用の同意を拒んで専用収録を止めさせ、主催者が配信収入の分配案を提示する",
+      "outcome": "公演中の合唱は続いたがAI用の客席音源は収録できず、無料扱いだった観客の声に収益分配の契約案が示された"
+    },
+    "reader_clarity": {
+      "who": "ライブの観客",
+      "action": "声の無償再利用を拒否した",
+      "oddity": "主催者が声を提供する観客にも配信収入を分ける契約案を提示した"
+    },
+    "behavior_basis": {
+      "motive": "主催者は客席の音で後日の無観客配信を盛り上げたいが、観客は行っていない別公演で自身の声が売られるのを望まない",
+      "ordinary_alternative": "毎回の観客が出す歓声をその場だけ使うか、後日の配信用に人の声を再利用しない",
+      "why_not": "AIで再利用できる声を配信の価値にしたい主催者が無償利用を求めたが、許諾を選べる観客が拒否し、分配を条件にする余地が生まれた",
+      "evidence_quote": "応援はしたい。でも、私たちの『もう一曲』が、行っていない公演で何度も流れるのは違う"
+    },
+    "publication_slot": "2026-11-15T17:30:00+09:00"
+  },
+  {
     "slug": "ai-royalties-retirees-operators-left-out",
     "category": "技術",
     "flash": "AIの配当、今の修正係は対象外",
