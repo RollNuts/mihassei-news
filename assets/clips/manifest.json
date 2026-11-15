@@ -169,6 +169,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-14T22:00:11.163680+00:00"
+    },
+    "ai-royalties-retirees-operators-left-out": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
+      "image_sha256": "02e94ce89495940da3fae905c7c331a8e2f3d38350c536eba15595c12430f08d",
+      "sha256": "b26a4f106b4eb9e4cca8c83bd7f63d5463b6d2f92b1be207bc032f84a1f964d7",
+      "bytes": 83506,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-15T21:58:08.968702+00:00"
     }
   }
 }
