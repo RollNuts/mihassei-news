@@ -1,5 +1,72 @@
 [
   {
+    "slug": "water-main-repair-priority-dry-street-first",
+    "category": "政治",
+    "flash": "漏れる前に水道工事",
+    "fiction_company": "架空の自治体「石澄市」",
+    "art": "cards",
+    "fiction_at": "2031-11-15T12:53:58+09:00",
+    "published_at": "2026-11-15T12:53:58+09:00",
+    "title": "水道工事、漏れていない道路が先に　市が「壊れる前」の補修順を公表",
+    "summary": "石澄市は水道管の古さに加え、水圧の変化と修理履歴、職員の現場確認から計画補修の順番を毎週見直す新方式を発表。発表前の試行では、路面に異常のない住宅街で傷んだ継ぎ目を交換した。",
+    "paragraphs": [
+      "2031年11月15日、架空の石澄市は、水道管の計画補修を行う順番を毎週見直す新方式を発表した。発表前には住宅街で試行工事を終え、その結果も公表した。水が漏れた場所へ駆け付ける緊急修理とは別に、まだ道路に異常が出ていない管でも、水圧の変化や過去の補修歴、職員の現場確認を合わせて優先順位を決める。",
+      "これまでは古い管を地区ごとに順番に交換し、途中で漏水が起きればその現場を先に直していた。新方式では、管路地図の候補を担当者が確認してから、週ごとの工事予定へ反映する。緊急の漏水が起こればそちらを優先し、計画工事の場所は周辺の住民に事前に知らせる。市は、事故が起きてから作業を組み直す回数を減らしたいとしている。",
+      "発表前の試行で最初の対象に選ばれたのは、住宅街の白藤通りだった。舗装は乾き、排水溝にも水は流れていない。工事予定を見た住民の佐和子（42）は「どこも漏れていないのに、ここからですか」と水道局の職員に聞いた。職員は地図上の水圧記録と過去の接続部の修理箇所を示し、「見えていないところを、先に確かめます」と答えた。",
+      "その数日後の夜、作業班が区間を囲って舗装を開くと、古い管の継ぎ目に傷みが見つかった。班長は接続部分を記録して交換したが、いつ漏水につながったかまでは分からないと説明する。掘る前に地表の水たまりがなかったことも、検査に異常がないことを意味しない。工事の翌朝、白藤通りは通行を再開した。",
+      "道路には新しい舗装が細く残った。佐和子が工事前と同じ場所を通ると、歩道も側溝も乾いたままだった。市の工事記録には、初回の補修先として白藤通りの名が載る。町内掲示板には、漏水の知らせではなく工事完了の知らせが貼られた。"
+    ],
+    "source": {
+      "kind": "ニュース",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/mizukokudo13_hh_000769.html",
+      "topic": "国土交通省は2026年11月13日、老朽化と熟練職員の減少を背景に、上下水道DX技術カタログへの新技術情報の募集を開始。カタログの拡充・技術導入支援が現実の発表であり、2031年の石澄市、毎週の計画補修順位の改定、白藤通りの掘削、継ぎ目の傷み発見、登場人物および具体的な運用効果はすべて創作。国交省がこの市の優先順位制度を決定した事実はない。"
+    },
+    "scene_prompt": "A Japanese municipal waterworks crew inspects a weathered pipe joint in a shallow trench on a dry residential street at night. Photorealistic documentary press photograph, an adult female resident aged 42 watching from behind a safe work barrier and an adult worker pointing toward the exposed metal joint, temporary work lights, modest Japanese suburban houses in autumn, dry asphalt and no street flooding, credible pipe scale and excavation safety. Horizontal 16:9, realistic hands, natural faces, no readable words, brands, logos or recognizable real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "水道",
+      "老朽管",
+      "予防保全"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "水道",
+      "インフラ"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "水が漏れていない道を、先に掘る。2031年の市が変えたのは、補修工事の順番だった。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月13日、国土交通省が老朽上下水道の保全へDX技術カタログの新技術募集を開始",
+      "target": "架空の自治体が漏水発生前に計画補修の優先順位を毎週見直す保全方式",
+      "action": "市水道局が水圧・修理記録と現場確認で白藤通りを先行補修先に選び、作業班が管の継ぎ目を交換する",
+      "outcome": "路面に漏水のない白藤通りで先行工事が終わり、掲示板には漏水ではなく完了の知らせが貼られる"
+    },
+    "reader_clarity": {
+      "who": "石澄市",
+      "action": "まだ漏れていない管も記録と現場点検で計画補修の順番を決める",
+      "oddity": "水が漏れた道路を待つのではなく、乾いた路面の下を先に補修する"
+    },
+    "behavior_basis": {
+      "motive": "漏水後に緊急の工事を組み直す回数を減らし、老朽化した水道管を計画的に補修したい",
+      "ordinary_alternative": "古い管を地区順に計画交換し、漏水が起きた場所を緊急で修理する",
+      "why_not": "管路の状態を示す記録と現場確認で傷みが疑われる場所を先に補修できる可能性があるため",
+      "evidence_quote": "市は、事故が起きてから作業を組み直す回数を減らしたいとしている。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月13日の国土交通省発表で、老朽化する上下水道の保全効率化へDX技術を募集",
+      "continuation_force": "熟練職員の減少と施設の老朽化を背景に、計画補修の優先順位づけを支える記録・検査技術の需要がある",
+      "future_result": "2031年、架空の市が週次の補修順位を公表し、漏水前の住宅街の配管を先行交換する"
+    },
+    "publication_slot": "2026-11-15T11:30:00+09:00"
+  },
+  {
     "slug": "swapped-suitcases-drive-themselves-to-lost-property",
     "category": "事件",
     "flash": "自走スーツケースが忘れ物窓口へ",
