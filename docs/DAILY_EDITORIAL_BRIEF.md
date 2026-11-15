@@ -35,5 +35,5 @@
 - **発行引継ぎ（11/15 07:30→09:30）：** スポーツ面 `remote-basketball-final-fans-walk-behind-hoop` は同じPR #744で独立初読を保持し、主語メタデータのみ修正。実公開へ進めるJST時刻へpublished_at/fiction_atを更新し、元の07:30枠を保持。親子がMR眼鏡で青い外周帯を歩く写真を原PNG/JPEG目視で採用。通常統合と本番の確定状態はこのPRの公開結果を正とする。
 - **次担当：** 次の通常発行枠は最新mainから配分を再計算（現時点は事件面、当日スポーツ1本・product_launch1本、政策発表は未充足）。原生成candidate `native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d`・記事SHA `7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16` を保持し、同写真を再生成しない。図：不要（実会場と遠隔体育館の違い、眼鏡・外周帯・壁面中継を本文と写真で追える）。
 
-- **画像引継ぎ（11/15新着2件、品質保留）:** `swapped-suitcases-drive-themselves-to-lost-property`／記事`3616f0f7de319f3a`／JPEG`f3e4a14df7c40172`は2台の自走・返却レーンが欠落。`water-main-repair-priority-dry-street-first`／記事`7b2e7cdf51a68eac`／JPEG`07902de29bb4cab6`は管と継ぎ目が欠落。現JPEGを実表示して不採用、原生成・整数seedを保持。
-- **次の画像操作:** CPU run `43675344096`は成功済みで再実行しない。両記事の専用SVGと共有PNGを掲載し、汎用代替・未検品を解消する。既存画像回収担当は、必要物を確実に写す別手段と保存経路が利用可能になった時だけ写真化を再検討する。
+- **画像引継ぎ（11/15）：** スーツケースと水道工事の写真待ちは[#771](https://github.com/RollNuts/mihassei-news/pull/771)で解消し、本番revision `cd6064d8`・実JPEG・記事・一覧・OGP/Twitter・RSSまで確認済み。旧CPU素材・不採用判断・整数seedは履歴に保持。
+- **今回の写真回収：** `seven-venues-compose-one-live-song`（記事`cc2cc8901e8758ce`／新JPEG`6e3463130b6e67e2`）と`recycling-robot-reserves-washer-parts-before-dismantling`（記事`43b8c0e4411cdbc8`／新JPEG`1ce6986b920105cd`）を、現本文と元PNG・JPEGの実表示で採用。原生成・旧CPU候補・採否・実保存証跡はmanifest/reviews/maintenanceに保持。統合・本番確認の確定状態は今回の回収PR結果を正とし、保存済み写真を重複生成しない。
