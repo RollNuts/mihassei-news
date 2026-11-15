@@ -330,7 +330,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<a href="#market-stories">過去の記事</a>'
         '<a href="#forecast-ledger">予測と検証</a>'
         '</nav></header>'
-        '<main class="market-paper-content">'
+        '<div class="market-paper-content">'
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
         '<div class="market-paper-lead-story">'
         f'<p class="market-paper-eyebrow">最新の分析 ／ 第{latest["number"]}回 '
@@ -362,7 +362,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         + '</details>'
         '<p class="market-paper-disclosure">実際に公表された資料をもとにした分析です。'
         '架空ニュースではありません。投資助言・売買推奨ではありません。</p>'
-        '</main></div>'
+        '</div></div>'
     )
     return layout(series["title"], series["description"], series_url(series), main, active="serials",
                   serial={"slug": series["slug"], "kind": series["kind"], "title": series["title"],
