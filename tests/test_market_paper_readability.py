@@ -7,7 +7,7 @@ import unittest
 from scripts.serials import render_series_page, render_episode_page
 from scripts.market_figures import load_market_figures, render_market_svg
 from scripts.market_outlook import load_market_outlook
-from scripts.market_bulletins import render_market_bulletins_index
+from scripts.market_bulletins import render_market_bulletins_index, render_market_bulletin
 from scripts.market_outlooks import render_market_outlook_board
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,6 +103,29 @@ class MarketPaperReadabilityTests(unittest.TestCase):
                 self.assertNotIn("公開資料の数値比較", src)
                 self.assertIn("単位：", src)
                 self.assertIn("<desc>", src)
+
+    def test_intraday_story_keeps_evidence_before_a_small_outlook_inset(self):
+        bulletin = {
+            "slug": "2026-11-16-noon", "slot": "noon", "day": "2026-11-16",
+            "published_at": "2026-11-16T12:40:00+09:00",
+            "title": "後場の市場動向を読む", "summary": "公開資料で確かめた市場動向。",
+            "lead": "前場の情勢を説明します。",
+            "sections": [{"heading": "何が動いたか", "paragraphs": ["確認済みの数値について説明します。"]}],
+            "sources": [], "figures": [], "picks": [],
+        }
+        prior = [{
+            "type": "forecast", "id": "2026-11-16-topix",
+            "at": "2026-11-16T08:10:00+09:00",
+            "statement": "TOPIXの将来の方向を資料に基づき検討する。",
+            "stance": "中立", "reviewed_on": "2026-11-17",
+        }]
+        result = render_market_bulletin(bulletin, passthrough, outlooks=prior)
+        self.assertIn("何が動いたか", result)
+        self.assertIn('class="market-briefing-outlook"', result)
+        self.assertIn("この日の市場見通し", result)
+        self.assertLess(result.index("何が動いたか"), result.index("この日の市場見通し"))
+        self.assertNotIn("daily-forecast-card", result)
+        self.assertNotIn("PUBLIC FORECAST LOG", result)
 
     def test_empty_bulletin_archive_does_not_expose_the_internal_publish_schedule(self):
         output = render_market_bulletins_index([])
