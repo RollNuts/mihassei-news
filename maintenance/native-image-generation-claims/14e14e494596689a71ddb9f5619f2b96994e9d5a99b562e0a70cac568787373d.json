@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "14e14e494596689a71ddb9f5619f2b96994e9d5a99b562e0a70cac568787373d",
+  "slug": "recycling-robot-reserves-washer-parts-before-dismantling",
+  "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+  "logical_run_id": "nov15-washer-native-recovery-20261115",
+  "prompt_sha256": "5ea8017f8e65aceca0fd3dd7c0d378d6ad767ea803321ce638e63434453c3fa1",
+  "reserved_at": "2026-11-15T11:38:40.552Z",
+  "baseline": {
+    "commit_sha": "8a451c6519e8150748768683346a520bbb878476",
+    "tree_sha": "6e3366a6f9801125d167ae77990b31c36a74822c",
+    "protected_hashes": {
+      "content/articles.json": "099812bba4d25176b9247a14eaf1c828872f27218cfb68cdc97a8f94cf9f753e",
+      "assets/generated/manifest.json": "8cf2bd910147e931590650cc315448facebe2fe0c151e76ed17a8d26db6af86a",
+      "content/visual_reviews.json": "da23d1d93d72709372ea7a8bc1f77afc38c94ac7c4431e0e5d1800d98340ecb3"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "a726f8454081124ca271f7e3977a15fd0add8379",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "4d5cf591d7bda891fa274311a1ec3c014f6d8427b1bae5ad12410690835e40e0",
+    "observed_at": "2026-11-15T11:38:26.355Z",
+    "route": "PNG data URL in functions.exec to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
