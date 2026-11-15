@@ -121,6 +121,7 @@ test('last-seven-day PV determines the actual top three, regardless of browser o
     ['計測された表示回数 11 PV','計測された表示回数 7 PV','計測された表示回数 6 PV']);
   assert.ok(result.rankings.every(li=>li.children.length===2),'no small public PV label');
   assert.equal(result.rankings[0].children[0].textContent,'01');
+  assert.match(result.rankings[0].children[1].children[1].attributes['aria-label'],/過去7日間のページ表示回数 11PV/);
   assert.equal(result.rankings[0].children[1].children[0].textContent,'経済');
   assert.equal(result.period.textContent,'過去7日間のPV順');
   assert.equal(result.calls.filter(x=>x.method==='GET').length,0,
@@ -139,6 +140,7 @@ test('one observed PV can rank an article without an exaggerated visible count',
   assert.deepEqual(urls(result),['/articles/a/']);
   assert.equal(result.rankings[0].children[1].children[1].title,'計測された表示回数 1 PV');
   assert.equal(result.period.textContent,'2026/11/4からのPV順');
+  assert.match(result.rankings[0].children[1].children[1].attributes['aria-label'],/2026\/11\/4からのページ表示回数 1PV/);
 });
 
 test('all published candidates remain eligible beyond twenty without client-side metric batches',async()=>{
