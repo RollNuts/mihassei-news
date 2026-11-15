@@ -16,12 +16,12 @@
     typeof window.SpeechSynthesisUtterance==="function";
   const slug=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const imagePattern=/^\/photo\/weekly\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(0[1-9]|10)\.jpg\?v=[a-f0-9]{12}$/;
-  const plain=(value,max)=>typeof value==="string" && value.trim().length>0 &&
-    value.length<=max && !/[<>\x00-\x1f\x7f]/.test(value);
+  const plain=(value,max,multiline=false)=>typeof value==="string" && value.trim().length>0 &&
+    value.length<=max && !(multiline ? /[<>\x00-\x09\x0b-\x1f\x7f]/ : /[<>\x00-\x1f\x7f]/).test(value);
   const valid=story=>{
     if(!story || !plain(story.id,100) || !slug.test(story.id) ||
        !plain(story.modelId,100) || !slug.test(story.modelId) || !plain(story.name,50) ||
-       !plain(story.text,180) || !plain(story.alt,300) || !plain(story.dateLabel,40) ||
+       !plain(story.text,180,true) || !plain(story.alt,300) || !plain(story.dateLabel,40) ||
        !plain(story.settingLabel,40) || !plain(story.publishedAt,60) ||
        !Number.isFinite(Date.parse(story.publishedAt)) || Date.parse(story.publishedAt)>Date.now() ||
        !Number.isInteger(story.width) || !Number.isInteger(story.height) ||
