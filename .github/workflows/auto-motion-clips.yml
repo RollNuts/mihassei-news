@@ -10,10 +10,17 @@ on:
       - 'scripts/broadcast_captions.py'
       - 'scripts/visual_review.py'
       - 'scripts/news_caster_preview.py'
+      - 'scripts/profile_caster_input.py'
+      - 'scripts/musetalk_profile_preview.py'
+      - 'scripts/musetalk_cpu_inference.py'
+      - 'scripts/musetalk_preview_sources.py'
       - 'scripts/compose_caster_preview.py'
       - 'assets/casters/**'
       - 'tests/test_broadcast_captions.py'
       - 'tests/test_news_caster_preview.py'
+      - 'tests/test_profile_caster_input.py'
+      - 'tests/test_musetalk_profile_preview.py'
+      - 'tests/test_musetalk_preview_sources.py'
       - 'tests/test_compose_caster_preview.py'
       - 'tests/test_motion_clips.py'
       - 'tests/test_motion_publisher.py'
@@ -41,12 +48,19 @@ on:
         description: 'Render one CPU caster preview artifact without publishing'
         type: boolean
         default: false
+      caster_backend:
+        description: 'Explicit core-only pilot selection; disabled by default'
+        type: choice
+        default: disabled
+        options:
+          - disabled
+          - musetalk-core
       caster_source_run:
-        description: 'Reuse a successful caster preview run; empty renders a new preview'
+        description: 'Disabled legacy input: third-party model permissions are unresolved'
         type: string
         default: ''
       caster_source_manifest:
-        description: 'Re-edit retained pilot: commit:review-manifest-path:manifest-sha256 (source run must be empty)'
+        description: 'Disabled legacy input: third-party model permissions are unresolved'
         type: string
         default: ''
 permissions:
@@ -111,7 +125,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
-        run: python3 -m unittest -v tests.test_news_caster_preview tests.test_compose_caster_preview
+        run: python3 -m unittest -v tests.test_news_caster_preview tests.test_compose_caster_preview tests.test_musetalk_profile_preview tests.test_musetalk_preview_sources tests.test_profile_caster_input
 
   publish:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.validate.outputs.pending != '0' && !(github.event_name == 'workflow_dispatch' && inputs.caster_preview)
@@ -191,7 +205,6 @@ jobs:
 
   news-caster-preview:
     if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event_name == 'workflow_dispatch' && inputs.caster_preview
-    # Legacy CPU torch is incompatible with glibc in the moving latest image.
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -200,12 +213,19 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       NEWS_CASTER_PUBLIC_REPOSITORY: ${{ github.event.repository.private == false && 'true' || 'false' }}
+      CASTER_BACKEND: ${{ inputs.caster_backend }}
       CASTER_SOURCE_RUN: ${{ inputs.caster_source_run }}
       CASTER_SOURCE_MANIFEST: ${{ inputs.caster_source_manifest }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Reject legacy previews before installation or downloads
+        run: |
+          if [[ "${CASTER_BACKEND:-}" != "musetalk-core" || -n "${CASTER_SOURCE_RUN:-}" || -n "${CASTER_SOURCE_MANIFEST:-}" ]]; then
+            echo "Only the explicit MuseTalk core pilot is enabled. Legacy model permissions remain unresolved." >&2
+            exit 1
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -216,40 +236,21 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install --yes --no-install-recommends ffmpeg
           fi
-          if [[ -n "$CASTER_SOURCE_RUN" || -n "$CASTER_SOURCE_MANIFEST" ]] && ! fc-match 'Noto Sans CJK JP' | grep -q 'NotoSansCJK'; then
-            sudo apt-get update -qq
-            sudo apt-get install --yes --no-install-recommends fonts-noto-cjk
-          fi
       - name: Generate one manual caster preview only while image automation is active
         run: |
           set -euo pipefail
+          if [[ "${CASTER_BACKEND:-}" != "musetalk-core" || -n "${CASTER_SOURCE_RUN:-}" || -n "${CASTER_SOURCE_MANIFEST:-}" ]]; then
+            echo "Legacy preview and composition inputs are blocked before download." >&2
+            exit 1
+          fi
           state="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/free-cpu-scenes.yml" --jq '.state')"
           if [[ "$state" != "active" ]]; then
             echo "Image automation is not active; refusing the caster preview." >&2
             exit 1
           fi
-          if [[ -n "${CASTER_SOURCE_MANIFEST:-}" ]]; then
-            if [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
-              echo "Supply only one caster source." >&2
-              exit 1
-            fi
-            python scripts/compose_caster_preview.py --run --source-manifest "$CASTER_SOURCE_MANIFEST" --output "$RUNNER_TEMP/news-caster-composition"
-          elif [[ -n "${CASTER_SOURCE_RUN:-}" ]]; then
-            python scripts/compose_caster_preview.py --run --source-run "$CASTER_SOURCE_RUN" --output "$RUNNER_TEMP/news-caster-composition"
-          else
-            python scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg --portrait-receipt assets/casters/newsreader-preview.json --output "$RUNNER_TEMP/news-caster-preview"
-          fi
-      - name: Make one small contact sheet from the composed preview for visual QA
-        if: inputs.caster_source_run != '' || inputs.caster_source_manifest != ''
-        run: |
-          movie="$RUNNER_TEMP/news-caster-composition/news-preview.mp4"
-          if [[ -f "$movie" ]]; then
-            ffmpeg -nostdin -v error -threads 1 -filter_threads 1 -i "$movie" \
-              -vf 'fps=2,scale=480:270,tile=4x4' -frames:v 1 -threads 1 -an -q:v 5 -n \
-              "$RUNNER_TEMP/news-caster-composition/qa-contact-sheet.jpg"
-          fi
+          python scripts/musetalk_profile_preview.py --run --output "$RUNNER_TEMP/news-caster-preview"
       - name: Keep only bounded preview media and its receipt for one day
-        if: always() && inputs.caster_source_run == '' && inputs.caster_source_manifest == ''
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: news-caster-preview-${{ github.run_id }}
@@ -260,14 +261,8 @@ jobs:
             ${{ runner.temp }}/news-caster-preview/narration-full.wav
             ${{ runner.temp }}/news-caster-preview/narration-three-seconds.wav
             ${{ runner.temp }}/news-caster-preview/receipt.json
-      - name: Keep only the composed news preview and its receipt for one day
-        if: always() && (inputs.caster_source_run != '' || inputs.caster_source_manifest != '')
-        uses: actions/upload-artifact@v4
-        with:
-          name: news-caster-composition-${{ github.run_id }}
-          retention-days: 1
-          if-no-files-found: warn
-          path: |
-            ${{ runner.temp }}/news-caster-composition/news-preview.mp4
-            ${{ runner.temp }}/news-caster-composition/receipt.json
-            ${{ runner.temp }}/news-caster-composition/qa-contact-sheet.jpg
+            ${{ runner.temp }}/news-caster-preview/preview.log
+            ${{ runner.temp }}/news-caster-preview/progress.json
+            ${{ runner.temp }}/news-caster-preview/first-frame.jpg
+            ${{ runner.temp }}/news-caster-preview/mouth-mask.png
+            ${{ runner.temp }}/news-caster-preview/motion-check.json
