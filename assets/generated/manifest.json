@@ -2239,6 +2239,33 @@
         "width": 1200
       }
     },
+    "concert-audience-voice-rights-cheers-not-free": {
+      "article_sha256": "ede7e0bde015ce3250d302efab7c81dc95db34ac5ddec962903ec63db45092e3",
+      "bytes": 159063,
+      "generated_at": "2026-11-15T09:20:27.935074+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 4016510582796096107,
+      "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
+    },
     "council-trials-new-sidewalk-before-vote": {
       "article_sha256": "187d2587b5a2bec44045d543d2bb5c9dfc53bf0b0130659b73b372c58e8bd673",
       "bytes": 232052,
