@@ -27,6 +27,7 @@ if __package__:
     from .serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from .serial_discovery import render_serial_bridge
     from .market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from .market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from .share_desk import render as render_share_desk
     from .growth_desk import render as render_growth_desk
     from .social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -46,6 +47,7 @@ else:
     from serials import load_serials, render_serials_feature, serial_routes, build_serials, public_serials
     from serial_discovery import render_serial_bridge
     from market_bulletins import load_market_bulletins, market_bulletin_routes, bulletin_url
+    from market_outlooks import load_market_outlooks, BASE_URL as MARKET_OUTLOOK_URL
     from share_desk import render as render_share_desk
     from growth_desk import render as render_growth_desk
     from social_text import reader_share_text, X_TEXT_LIMIT, x_weighted_length, truncate_x_text
@@ -2075,6 +2077,8 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
     routes.extend(serial_routes(serials))
     dispatches = load_market_bulletins(BASE)
     routes.extend(market_bulletin_routes(dispatches))
+    outlooks = load_market_outlooks(BASE)
+    routes.append((MARKET_OUTLOOK_URL, outlooks[-1]["at"][:10] if outlooks else None))
     photo_entries = photo_sitemap_entries(photo_issues)
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
