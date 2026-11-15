@@ -3240,6 +3240,33 @@
       "source_article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
       "source_png_sha256": "7ed6f23e9ef1744d3052f47e0ea6eef6c40615ac836b215dbcf59e18d4b486f1"
     },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "bytes": 120240,
+      "generated_at": "2026-11-15T23:24:39.721695+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 3036210705938676899,
+      "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
+    },
     "film-village-all-stars-no-extras": {
       "article_sha256": "6a3000734189e1a646a595a87ac2059d54dc4fa096440774ba3a1c5c351335d1",
       "bytes": 194065,
