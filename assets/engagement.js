@@ -858,7 +858,11 @@
 
   // Poll no more than once every 10 minutes on visible pages. Paused tabs
   // make no requests. Returning to a tab refreshes stale data immediately.
-  if(observerShell && typeof window.setInterval==="function"){
+  // The old site-wide PV strip used to keep article reactions fresh.
+  // Removing it must not stop live updates on pages with reader controls.
+  // Static utility/archive pages without reader controls need no polling.
+  if((observerShell || popularSection || buttons.length || engagementKey) &&
+     typeof window.setInterval==="function"){
     window.setInterval(()=>{
       if(visibleDocument() && !refreshPromise && !currentView.pending)void refresh();
     },LIVE_REFRESH_MS);
