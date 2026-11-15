@@ -370,8 +370,8 @@ def render_market_bulletin(report, layout, outlooks=()):
                           "published_at": report["published_at"]})
 
 
-def render_market_bulletins_index(reports):
-    """Show actual market editions only, never an empty publication schedule."""
+def render_market_bulletins_index(reports, *, limit=12):
+    """Keep the front page compact, but never truncate the full archive."""
     cards = "".join(
         f'<li><a href="{bulletin_url(item)}">'
         f'<span class="market-paper-story-date"><time datetime="{item["day"]}">{item["day"]}</time>'
@@ -379,7 +379,7 @@ def render_market_bulletins_index(reports):
         f'<strong>{escape(item["title"])}</strong>'
         f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
         '</a></li>'
-        for item in reversed(reports[-12:])
+        for item in reversed(reports if limit is None else reports[-limit:])
     )
     return (
         '<section class="market-desk market-paper-bulletins" id="market-desk">'
@@ -390,7 +390,7 @@ def render_market_bulletins_index(reports):
            '<p class="market-paper-section-intro">現在、掲載中の市況記事はありません。'
            '<a href="/serials/market-lab/">最新の企業分析を読む</a></p>')
         + ('<p class="market-paper-see-all"><a href="/serials/market-lab/briefings/">市況記事をすべて読む →</a></p>'
-           if cards else '')
+           if cards and limit is not None else '')
         + '</section>'
     )
 
@@ -400,7 +400,7 @@ def render_market_bulletins_archive(reports, layout):
         '<div class="container serials-page market-desk-archive">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a></nav>'
         '<header class="serials-intro"><h1>日次市況</h1><p>現実の公開資料を使った市場の動き。米国の個別株は掲載しません。</p></header>'
-        + render_market_bulletins_index(reports)
+        + render_market_bulletins_index(reports, limit=None)
         + '</div>'
     )
     return layout("日次市況 | 未来相場観測室",
