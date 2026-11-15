@@ -436,7 +436,7 @@ def market_bulletin_feed_xml(reports):
 def market_bulletin_routes(reports):
     current = max((x["day"] for x in reports), default=None)
     return [(MARKET_URL + "briefings/", current)] + [
-        (bulletin_url(item), item["day"]) for item in reports
+        (bulletin_url(item), item["published_at"]) for item in reports
     ]
 
 
