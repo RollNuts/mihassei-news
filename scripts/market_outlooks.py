@@ -313,7 +313,8 @@ def render_market_outlook_archive(events, layout):
     )
     return layout("毎日の相場予測と変更履歴 | 未来相場観測室",
                   "日本市場の予測、途中経過、判断変更、後日の的中・外れを事前基準で記録。",
-                  BASE_URL, content, active="serials")
+                  BASE_URL, content, active="serials",
+                  serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"})
 
 
 def build_market_outlooks(events, layout, write):
