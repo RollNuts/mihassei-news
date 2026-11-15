@@ -144,9 +144,11 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
     # Wrap Japanese titles for the narrow layout without relying on script,
     # foreignObject or a web font.
     title = figure["title"]
-    chunks = [title[i:i+15] for i in range(0, len(title), 15)] if mobile else [title]
+    limit = 15 if mobile else 30
+    chunks = [title[i:i+limit] for i in range(0, len(title), limit)]
     if len(chunks) > 2:
-        chunks = [chunks[0], "".join(chunks[1:])]
+        # Keep the full verified title in <title>, <desc> and the figure caption.
+        chunks = [chunks[0], chunks[1][:limit-1] + "…"]
     title_lines = "".join(
         f'<text x="{left}" y="{49 + i*27}" fill="#202629" '
         f'font-size="{20 if mobile else 26}" font-weight="700" '
@@ -160,7 +162,7 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
         f'<rect width="{width}" height="{height}" rx="6" fill="#f8f8f5"/>',
         f'<rect x="0" y="0" width="5" height="{height}" fill="#495862"/>',
         title_lines,
-        f'<text x="{left}" y="{104 if mobile else 87}" fill="#495660" font-size="{14 if mobile else 16}" font-family="sans-serif">単位：{unit} ／ 0を基準に比較</text>',
+        f'<text x="{left}" y="{104 if mobile or len(chunks) > 1 else 87}" fill="#495660" font-size="{14 if mobile else 16}" font-family="sans-serif">単位：{unit} ／ 0を基準に比較</text>',
     ]
     if figure["kind"] == "bars":
         maximum = max(v["value"] for v in figure["values"])
