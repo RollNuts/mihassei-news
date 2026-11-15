@@ -28,8 +28,10 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
         run: python3 scripts/review_release_guard.py owner --pr "$PR_NUMBER" --expected-head "$EXPECTED_HEAD"
-      - name: Enforce editorial lane metadata and exact duplicate guards
-        run: python3 scripts/editorial_mix.py --check
+      - name: Validate article fields, editorial lanes and exact duplicate guards
+        run: |
+          python3 -c "from scripts.build import load; load()"
+          python3 scripts/editorial_mix.py --check
       - name: Install free local image validation dependency
         run: |
           if ! dpkg -s libcairo2 >/dev/null 2>&1; then
