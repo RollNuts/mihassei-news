@@ -264,7 +264,8 @@ class PhotoIssuePageTests(unittest.TestCase):
         self.assertIn("公開号はまだありません。", markup)
         self.assertNotIn("準備中", markup)
         self.assertNotIn("予約", markup)
-        self.assertEqual([link["href"] for link in parsed.links], ["/"])
+        self.assertEqual([link["href"] for link in parsed.links],
+                         ["/", "/photo/weekly/", "/photo/models/"])
 
     def test_internal_character_and_real_person_reference_names_are_not_rendered(self):
         value = issue()

@@ -741,7 +741,7 @@ def generate_photo_rss(issues):
     return ET.tostring(rss, encoding="unicode")
 
 
-def build_photo_issues(issues, models, layout, write, output, *, root=ROOT):
+def build_photo_issues(issues, models, layout, write, output, *, root=ROOT, stories_markup=""):
     """Copy only already-validated published JPEGs, never receipts/source PNGs."""
     if not issues:
         return
@@ -750,7 +750,8 @@ def build_photo_issues(issues, models, layout, write, output, *, root=ROOT):
         from .photo_issue_pages import render_photo_index, render_photo_issue
     else:
         from photo_issue_pages import render_photo_index, render_photo_issue
-    write(index_url().lstrip("/") + "index.html", render_photo_index(issues, models, layout))
+    write(index_url().lstrip("/") + "index.html",
+          render_photo_index(issues, models, layout, stories_markup=stories_markup))
     for issue in issues:
         write(issue_url(issue).lstrip("/") + "index.html",
               render_photo_issue(issue, issue["model_snapshot"], layout))

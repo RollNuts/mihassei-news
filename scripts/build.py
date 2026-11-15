@@ -34,6 +34,8 @@ if __package__:
     from .reader_comments import render_reader_comments
     from .article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from .photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
+    from .photo_issue_pages import build_photo_models, model_sitemap_entries
+    from .photo_stories import load_photo_stories, render_story_strip, render_model_stories
 else:
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
@@ -52,6 +54,8 @@ else:
     from reader_comments import render_reader_comments
     from article_diagrams import reviewed_article_diagram, render_article_diagram, publish_article_diagrams
     from photo_issues import load_photo_issues, published_issues, build_photo_issues, photo_sitemap_entries, cover_url as photo_cover_url, cover_shot as photo_cover_shot
+    from photo_issue_pages import build_photo_models, model_sitemap_entries
+    from photo_stories import load_photo_stories, render_story_strip, render_model_stories
 from urllib.parse import quote, urlencode
 from xml.etree import ElementTree as ET
 
@@ -100,8 +104,8 @@ def stylesheet_url():
 
 @lru_cache(maxsize=None)
 def asset_url(name):
-    """Fingerprint reader JavaScript so new HTML never points at stale behavior."""
-    if not re.fullmatch(r"[a-z0-9-]+\.js", name):
+    """Fingerprint reader assets so new HTML never points at stale resources."""
+    if not re.fullmatch(r"[a-z0-9-]+\.(?:js|css)", name):
         raise ValueError("Invalid reader asset name")
     source = (BASE / "assets" / name).read_bytes()
     digest = hashlib.sha256(source).hexdigest()[:12]
@@ -816,12 +820,13 @@ def social_image(article):
     return "/og/brand-launch-20261102-v3.png"
 
 
-def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None):
+def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None):
     if serial is not None and not public_serials([serial]):
         raise ValueError("Serial has been withdrawn from publication")
     if serial_collection is not None:
         serial_collection = public_serials(serial_collection)
-    photo_page = kind in ("photo_issue", "photo_collection")
+    photo_page = kind in ("photo_issue", "photo_collection", "photo_model")
+    photo_cover = photo_issue or photo_cover_issue
     if photo_page:
         complete = title + " | 未発生新聞（創作写真コラム）"
     elif path == "/":
@@ -881,8 +886,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     if serial is not None:
         name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
         og_image = SITE + "/og/serials/" + name + ".png"
-    if photo_issue is not None:
-        og_image = SITE + photo_cover_url(photo_issue)
+    if photo_cover is not None:
+        og_image = SITE + photo_cover_url(photo_cover)
     photo = article.get("photo") if article else None
     local_photo = og_image.split("?",1)[0].endswith(".jpg")
     og_alt = (article_image_alt(
@@ -896,15 +901,18 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         og_alt = "創作ニュース「" + article["title"] + "」のテーマを表した共有イラスト"
     if serial is not None:
         og_alt = ("創作推理小説" if serial["kind"] == "fiction" else "株式市場のシナリオ分析") + "の連載オリジナル表紙"
-    if photo_issue is not None:
-        og_alt = photo_cover_shot(photo_issue)["alt"]
+    if photo_page:
+        og_alt = ("架空の成人モデル「" + photo_model["name"] + "」のプロフィール"
+                  if photo_model else "週刊グラビア — 架空の成人モデルの写真とコラム")
+    if photo_cover is not None:
+        og_alt = photo_cover_shot(photo_cover)["alt"]
     og_mime = "image/jpeg" if local_photo else "image/png"
     scene_card = (article is not None and og_image.startswith(SITE + "/og/articles/")
                   and reviewed_scene_version(article, root=BASE) is not None)
     og_height = 675 if scene_card else 630
     og_size = "" if local_photo else f'<meta property="og:image:width" content="1200"><meta property="og:image:height" content="{og_height}">'
-    if photo_issue is not None:
-        cover_image = photo_issue["images"][photo_cover_shot(photo_issue)["id"]]
+    if photo_cover is not None:
+        cover_image = photo_cover["images"][photo_cover_shot(photo_cover)["id"]]
         og_size = (f'<meta property="og:image:width" content="{cover_image.get("width", 1200)}">'
                    f'<meta property="og:image:height" content="{cover_image.get("height", 675)}">')
     metadata = {"@context":"https://schema.org",
@@ -954,7 +962,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         })
     if photo_page:
         metadata["genre"] = "創作写真コラム"
-        metadata["@type"] = "CollectionPage" if photo_issue is None else "Article"
+        metadata["@type"] = ("ProfilePage" if photo_model else
+                             "CollectionPage" if photo_issue is None else "Article")
+        if photo_cover is not None:
+            metadata["image"] = [og_image]
+    if photo_model is not None:
+        metadata["about"] = {"@type": "Thing", "name": photo_model["name"],
+                             "description": "架空の成人モデル"}
     if photo_issue is not None:
         metadata.update({"headline": title, "datePublished": photo_issue["published_at"],
                          "dateModified": photo_issue.get("modified_at") or photo_issue["published_at"],
@@ -1075,6 +1089,11 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     resume_script = (script_tag("returning-shelf.js")
                      if path == "/" else "")
     engagement_script = script_tag("engagement.js")
+    photo_rankings_assets = (f'<link rel="stylesheet" href="{asset_url("photo-rankings.css")}">\n'
+                             + script_tag("photo-rankings.js") if path == "/photo/weekly/" else "")
+    photo_story_assets = (f'<link rel="stylesheet" href="{asset_url("photo-stories.css")}">\n'
+                          + script_tag("photo-stories.js")
+                          if path == "/photo/weekly/" or re.fullmatch(r"/photo/models/[a-z0-9-]+/", path) else "")
     topic_rss = (f'<link rel="alternate" type="application/rss+xml" title="{escape(title)} RSS" '
                  f'href="{escape(feed_url)}">' if feed_url else "")
     page_class = "page-home" if path == "/" else "page-inner"
@@ -1110,6 +1129,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
 <link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">
 {topic_rss}
 <link rel="stylesheet" href="{stylesheet_url()}">
+{photo_rankings_assets}
+{photo_story_assets}
 {archive_script}
 {broadcast_script}
 {engagement_script}
@@ -2043,7 +2064,7 @@ def generate_rss(items, title, description, link, self_url, limit=30):
     return ET.tostring(rss,encoding="unicode")
 
 
-def other_files(articles, issues=None, serials=None, photo_issues=()):
+def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=()):
     serials = load_serials(BASE) if serials is None else public_serials(serials)
     latest = max(
         list(modification_date(a) for a in articles) +
@@ -2066,7 +2087,7 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
-    photo_entries = photo_sitemap_entries(photo_issues)
+    photo_entries = [*photo_sitemap_entries(photo_issues), *model_sitemap_entries(photo_models, photo_issues)]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -2085,7 +2106,7 @@ def other_files(articles, issues=None, serials=None, photo_issues=()):
             sitemap_images["/serials/" + slug + "/" + episode["slug"] + "/"] = (
                 SITE + "/og/serials/" + slug + "-" + episode["slug"] + ".png"
             )
-    sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries})
+    sitemap_images.update({url: SITE + image for url, _modified, image in photo_entries if image})
     root = ET.Element("urlset", xmlns=xmlns)
     for url, modified in routes:
         node = ET.SubElement(root, "url")
@@ -2227,6 +2248,7 @@ def build():
     global PHOTO_ISSUES_AVAILABLE
     photo_data = load_photo_issues(BASE)
     photo_issues = published_issues(photo_data, root=BASE)
+    story_data = load_photo_stories(BASE, catalog=photo_data, published=photo_issues)
     PHOTO_ISSUES_AVAILABLE = bool(photo_issues)
     articles = load()
     serials = load_serials(BASE)
@@ -2297,12 +2319,15 @@ def build():
         write("articles/"+a["slug"]+"/index.html",story(a,articles,issues,serials))
         write("images/"+a["slug"]+".svg",cover(a))
     build_serials(serials, layout, write, OUT)
-    build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE)
+    build_photo_issues(photo_issues, photo_data["models"], layout, write, OUT, root=BASE,
+                       stories_markup=render_story_strip(story_data))
+    build_photo_models(photo_data["models"], photo_issues, layout, write,
+                       stories_renderer=lambda model_id: render_model_stories(model_id, story_data))
     # The Worker may accept engagement writes only for these validated releases.
     write("photo/weekly/engagement.json", json.dumps({
         "version": 1, "issues": sorted(issue["slug"] for issue in photo_issues),
     }, ensure_ascii=False) + "\n")
-    other_files(articles, issues, serials, photo_issues)
+    other_files(articles, issues, serials, photo_issues, photo_data["models"])
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)
