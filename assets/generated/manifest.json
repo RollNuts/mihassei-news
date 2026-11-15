@@ -4868,6 +4868,33 @@
         "width": 1200
       }
     },
+    "recycling-robot-reserves-washer-parts-before-dismantling": {
+      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+      "bytes": 139248,
+      "generated_at": "2026-11-15T05:17:20.084741+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 3074401136884208640,
+      "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+    },
     "remote-basketball-final-fans-walk-behind-hoop": {
       "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
       "bytes": 163536,
