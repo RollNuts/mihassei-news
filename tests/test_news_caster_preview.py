@@ -17,6 +17,18 @@ from scripts import news_caster_preview as preview
 
 
 class PresenterPreviewTests(unittest.TestCase):
+    def test_uncleared_third_party_terms_block_even_an_allowed_runner_before_downloads(self):
+        with tempfile.TemporaryDirectory() as folder, \
+             patch.object(preview, "runner_gate", return_value=Path(folder)), \
+             patch.object(preview, "validate_portrait") as portrait, \
+             patch.object(preview, "download") as download, \
+             patch.object(preview.subprocess, "Popen") as process:
+            with self.assertRaisesRegex(RuntimeError, "commercial permission"):
+                preview.execute(Path("absent.jpg"), Path("absent.json"), Path(folder) / "preview")
+            portrait.assert_not_called()
+            download.assert_not_called()
+            process.assert_not_called()
+
     def test_default_is_offline_plan_with_no_download_or_subprocess(self):
         with patch.object(preview, "execute") as execute, patch.object(preview, "urlopen") as network, \
              patch.object(preview.subprocess, "Popen") as process, contextlib.redirect_stdout(io.StringIO()) as output:

@@ -100,19 +100,13 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 ## 音声付きキャスターの手動試験
 
-既存Actionの手動入力`caster_preview=true`だけで、架空の成人キャスターの口パクを確認する試験を実行する。既定はOFFで、定期実行・既存の無音クリップ生成・公開manifestへは接続しない。原画と来歴は`assets/casters/`に置き、このディレクトリはサイトの公開ビルドへ含めない。
+既存Action `auto-motion-clips.yml` の `caster_preview=true` と `caster_backend=musetalk-core` を明示した場合だけ、公開GitHub Linux CPUで汐羽りおの3秒試作を1本作る。既定はOFF、定期処理と公開manifestへは接続しない。`caster_source_run`・`caster_source_manifest`は空にする。旧SadTalker試作とその再合成は第三者データ・重みの商用条件が未解決のため、インストール・ダウンロード前に拒否する。原記録や過去artifactを合格へ変更しない。
 
-成人企画・継続キャスターの起用と容姿の継続は、[EDITORIAL_LOOPの成人の軽い未来企画](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠)を正本とする。
+本人写真は`profile_caster_input.py`が公開済みカフェ写真の人物ID・元PNG・JPEG SHA・特集FP・採否へ結び付ける。手動で確認した顔範囲とぼかしマスク、元制作チャットから受領した「え、もうこんな時間？」を固定し、写真のパンではなく口の領域だけを合成する。顔・身体全体の自然な動きを確認した経路ではない。
 
-既存の口パク試作は顔を中心とした検証で、歩行・水泳などの自然な全身動作を確認した結果ではない。衣装や場面を変えても、口・顔・手足の破綻、服のちらつき、同一人物の連続性を実動画で確認する。未検証の全身動作を公開可能と報告せず、既存の無料経路で検証できない場合は静止画や現在の承認済み表現で扱う。
+`python3 scripts/musetalk_profile_preview.py`はオフラインplanのみ。実生成は`--run`を付けてもpublic GitHub-hosted Linux Python 3.10以外では開始しない。MuseTalkのUNet・VAE・Whisper coreの固定ファイルだけを取得し、DWPose・顔検出・顔解析・SyncNet・GFPGAN・InsightFace・BFMを読み込まない。個別の出典・版・バイト数・SHA・商用条件は`musetalk_preview_sources.py`を正本としてreceiptへ残し、Kokoroの既存固定日本語音声を使う。モデルと環境は使い捨てランナー内だけに置き、Macへ導入しない。
 
-`scripts/news_caster_preview.py`は通常起動では計画の表示だけを行う。実生成は公開リポジトリの標準GitHub Linux CPUに限定し、Kokoroの日本語音声とSadTalkerを別の仮想環境で処理する。モデルは使い捨てランナー内だけに置き、Macへ取得しない。固定版・来歴・ライセンスの参照先は同スクリプトを正本とする。
-
-最初は3秒の抜粋と元の音声を、容量制限付き・1日保持のartifactだけに保存する。声・口・歯・顎・瞬き・同期と実行時間を実確認してから次を判断し、生成成功だけで完成ニュースや公開採用としない。
-
-生成済み素材の編集には同じ手動入力へ`caster_source_run`を指定する。成功runのartifactと現行の記事・承認写真を照合し、3秒のキャスターから現場写真へ切り替える8〜12秒の試作だけを保存する。モデルの再取得・再生成は行わず、声と映像の確認前は公開しない。
-
-artifact失効後に保持済みの8秒試作を再編集する場合は、同じActionの`caster_source_manifest`へ`完全なcommit SHA:drafts/caster-review/<bundle>/manifest.json:manifestのSHA-256`を指定し、`caster_source_run`は空にする。対象はスクリプトが固定した元試作と未変更の元receiptだけ。manifestは`version: 1`、`composition_run_id`、`movie_sha256`、`receipt_sha256`の4項目とし、同じフォルダーの`news-preview.mp4`・`receipt.json`を照合する。元の声・最初3秒のキャスター・切り替えを保ち、字幕と創作表示を拡大し、3〜8秒の写真層だけを5%寄せた`preview_only`／`composed_unreviewed`のartifactを返す。声と口同期は未検証のまま記録する。
+試作はfloat32・batch1・10fpsで30枚／3秒、15分のjob内に実処理12分の上限を設ける。12GiBの空きディスク、2GiBの空きRAM、作業8GiB、停止スイッチを監視し、完走を約束しない。失敗時も`receipt.json`の`current_step`・エラー、最大512KiBの`preview.log`と途中進捗を残す。`news-caster-preview-<run_id>`を1日以内に回収し、`publish: false`・`preview_only`のまま声・口・歯・同期・本人性を実確認する。生成成功だけで公開採用しない。
 
 ## 容量と安全
 

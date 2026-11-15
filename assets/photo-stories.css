@@ -46,3 +46,4 @@
 .photo-post [hidden]{display:none!important}
 @media(max-width:900px){.photo-post-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.photo-post-list{grid-template-columns:minmax(0,1fr);gap:18px}.photo-post-image img,.photo-post-motion video{height:auto;max-height:460px}.photo-post{padding:14px}}
+.photo-post-text,.photo-story-text{white-space:pre-line}

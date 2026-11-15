@@ -7124,6 +7124,11 @@
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
     },
+    "recycling-robot-reserves-washer-parts-before-dismantling": {
+      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+      "reason": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+      "rejected_candidate_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+    },
     "scolding-ai-one-line-summary-boss-eighteen-pages": {
       "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
       "previous_rejected_candidate_sha256": "dbaef07ddbb206615eb2f56397fc59ad4fcd72d7105e058c04e56492df355ce0",

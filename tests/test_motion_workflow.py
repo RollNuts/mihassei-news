@@ -218,16 +218,15 @@ class MotionWorkflowTests(unittest.TestCase):
                     env = {**os.environ, "PATH": str(root) + os.pathsep + os.environ.get("PATH", ""),
                            "GITHUB_REPOSITORY": "RollNuts/mihassei-news", "RUNNER_TEMP": str(root),
                            "GH_CALL_LOG": str(gh_log), "INFERENCE_CALL_LOG": str(inference_log),
-                           "CPU_STATE": state, "GH_EXIT": str(status)}
+                           "CPU_STATE": state, "GH_EXIT": str(status), "CASTER_BACKEND": "musetalk-core",
+                           "CASTER_SOURCE_RUN": "", "CASTER_SOURCE_MANIFEST": ""}
                     result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell(block)],
                                             env=env, capture_output=True, text=True)
                     allowed = state == "active" and status == 0
                     self.assertEqual(result.returncode == 0, allowed, result.stderr)
                     self.assertEqual(gh_log.read_text().splitlines(),
                                      ["api repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml --jq .state"])
-                    expected = ("scripts/news_caster_preview.py --run --portrait assets/casters/newsreader-preview.jpg "
-                                "--portrait-receipt assets/casters/newsreader-preview.json "
-                                "--output " + str(root / "news-caster-preview"))
+                    expected = ("scripts/musetalk_profile_preview.py --run --output " + str(root / "news-caster-preview"))
                     self.assertEqual(inference_log.read_text().splitlines(), [expected] if allowed else [])
 
     def test_caster_preview_is_cpu_read_only_and_artifact_paths_cannot_include_models(self):
@@ -247,95 +246,47 @@ class MotionWorkflowTests(unittest.TestCase):
         self.assertIn("        uses: actions/upload-artifact@v4", artifact)
         self.assertIn("          retention-days: 1", artifact)
         paths = re.findall(r"^            (.+)$", artifact, re.M)
-        self.assertEqual(len(paths), 4)
+        self.assertEqual(len(paths), 9)
         for path in paths:
             with self.subTest(path=path):
                 self.assertTrue(path.startswith("${{ runner.temp }}/news-caster-preview/"))
                 self.assertIn(path.rsplit("/", 1)[1], {"presenter-preview.mp4", "narration-full.wav",
-                                                      "narration-three-seconds.wav", "receipt.json"})
+                                                      "narration-three-seconds.wav", "receipt.json", "preview.log",
+                                                      "progress.json", "first-frame.jpg", "mouth-mask.png", "motion-check.json"})
                 self.assertNotIn("*", path)
 
-    def test_composition_reuses_only_explicit_source_and_keeps_output_artifact_only(self):
+    def test_legacy_sources_and_unselected_backend_are_rejected_before_any_download(self):
+        gate = step(self.video, "Reject legacy previews before installation or downloads")
         block = step(self.video, "Generate one manual caster preview only while image automation is active")
+        self.assertLess(self.video.index("Reject legacy previews"), self.video.index("Prepare FFmpeg"))
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            (root / "gh").write_text('#!/bin/sh\nprintf "active\\n"\n')
-            (root / "gh").chmod(0o755)
-            (root / "python").write_text('#!/bin/sh\nprintf "%s\\n" "$*" > "$CALL_LOG"\n')
-            (root / "python").chmod(0o755)
-            log = root / "calls"
-            env = {**os.environ, "PATH": str(root) + os.pathsep + os.environ.get("PATH", ""),
-                   "GITHUB_REPOSITORY": "RollNuts/mihassei-news", "RUNNER_TEMP": str(root),
-                   "CASTER_SOURCE_RUN": "42928393181", "CALL_LOG": str(log)}
-            result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell(block)],
-                                    env=env, capture_output=True, text=True)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(log.read_text().strip(),
-                             "scripts/compose_caster_preview.py --run --source-run 42928393181 --output "
-                             + str(root / "news-caster-composition"))
-        artifact = step(self.video, "Keep only the composed news preview and its receipt for one day")
-        self.assertIn("retention-days: 1", artifact)
-        self.assertEqual(re.findall(r"^            (.+)$", artifact, re.M), [
-            "${{ runner.temp }}/news-caster-composition/news-preview.mp4",
-            "${{ runner.temp }}/news-caster-composition/receipt.json",
-            "${{ runner.temp }}/news-caster-composition/qa-contact-sheet.jpg",
-        ])
+            root = Path(tmp); log = root / "calls"
+            for name in ("gh", "python"):
+                target = root / name
+                target.write_text('#!/bin/sh\nprintf "called\\n" >> "$CALL_LOG"\n')
+                target.chmod(0o755)
+            for backend, source_run, manifest in (("", "", ""), ("disabled", "", ""),
+                ("sadtalker", "", ""), ("musetalk-core", "42928393181", ""),
+                ("musetalk-core", "", "pinned-source")):
+                for current in (gate, block):
+                    with self.subTest(backend=backend, source_run=source_run, manifest=manifest):
+                        env = {**os.environ, "PATH": str(root) + os.pathsep + os.environ.get("PATH", ""),
+                               "CALL_LOG": str(log), "CASTER_BACKEND": backend,
+                               "CASTER_SOURCE_RUN": source_run, "CASTER_SOURCE_MANIFEST": manifest}
+                        result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell(current)],
+                                                env=env, capture_output=True, text=True)
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertFalse(log.exists())
 
-    def test_composition_contact_sheet_is_source_only_and_reads_existing_movie_without_modifying_it(self):
-        block=step(self.video,"Make one small contact sheet from the composed preview for visual QA")
-        condition=re.search(r"^        if: (.+)$",block,re.M).group(1)
-        for source_run,manifest,expected in (("","",False),("123","",True),("","pinned",True)):
-            self.assertEqual(applies(condition,{"inputs.caster_source_run":source_run,
-                                               "inputs.caster_source_manifest":manifest}),expected)
-        self.assertLess(self.video.index("Generate one manual caster preview only"),self.video.index("Make one small contact sheet"))
-        with tempfile.TemporaryDirectory() as directory:
-            root=Path(directory);folder=root/"news-caster-composition";folder.mkdir()
-            movie=folder/"news-preview.mp4";receipt=folder/"receipt.json";receipt.write_bytes(b"original receipt")
-            log=root/"ffmpeg-calls";encoder=root/"ffmpeg"
-            encoder.write_text('#!/bin/sh\nfor arg do printf "%s\\n" "$arg"; done > "$CALL_LOG"\n')
-            encoder.chmod(0o755)
-            env={**os.environ,"PATH":str(root)+os.pathsep+os.environ.get("PATH",""),
-                 "RUNNER_TEMP":str(root),"CALL_LOG":str(log)}
-            for exists in (False,True):
-                if exists:movie.write_bytes(b"original movie")
-                result=subprocess.run(["bash","-e","-o","pipefail","-c",shell(block)],env=env,capture_output=True,text=True)
-                self.assertEqual(result.returncode,0,result.stderr)
-                if not exists:self.assertFalse(log.exists());continue
-                argv=log.read_text().splitlines()
-                self.assertEqual(argv[argv.index("-i")+1],str(movie))
-                self.assertEqual(argv[argv.index("-vf")+1],"fps=2,scale=480:270,tile=4x4")
-                self.assertEqual(argv[argv.index("-frames:v")+1],"1")
-                self.assertEqual([argv[i+1] for i,arg in enumerate(argv) if arg in ("-threads","-filter_threads")],["1","1","1"])
-                self.assertEqual(argv[-1],str(folder/"qa-contact-sheet.jpg"));self.assertIn("-n",argv)
-                self.assertEqual(movie.read_bytes(),b"original movie")
-                self.assertEqual(receipt.read_bytes(),b"original receipt")
 
-    def test_retained_pilot_input_is_passed_as_one_argument_and_never_starts_new_inference(self):
-        block = step(self.video, "Generate one manual caster preview only while image automation is active")
-        with tempfile.TemporaryDirectory() as tmp:
-            root=Path(tmp);log=root/"calls"
-            (root/"gh").write_text('#!/bin/sh\nprintf "%s\\n" "$CPU_STATE"\n')
-            (root/"gh").chmod(0o755)
-            (root/"python").write_text('#!/bin/sh\nfor arg do printf "<%s>\\n" "$arg"; done > "$CALL_LOG"\n')
-            (root/"python").chmod(0o755)
-            source="a"*40+":drafts/caster-review/night-art-20261113/manifest.json:"+"b"*64
-            for state,run,value in (("active","",source),("active","",source+";touch injected"),
-                                    ("active","123",source),("disabled_manually","",source),("null","",source)):
-                log.unlink(missing_ok=True)
-                env={**os.environ,"PATH":str(root)+os.pathsep+os.environ.get("PATH",""),
-                     "GITHUB_REPOSITORY":"RollNuts/mihassei-news","RUNNER_TEMP":str(root),"CALL_LOG":str(log),
-                     "CASTER_SOURCE_RUN":run,"CASTER_SOURCE_MANIFEST":value,"CPU_STATE":state}
-                result=subprocess.run(["bash","-e","-o","pipefail","-c",shell(block)],cwd=root,
-                                      env=env,capture_output=True,text=True)
-                allowed=state=="active" and not run
-                with self.subTest(state=state,run=run,value=value):
-                    self.assertEqual(result.returncode==0,allowed,result.stderr)
-                    if allowed:
-                        self.assertEqual(log.read_text().splitlines(),[
-                            "<scripts/compose_caster_preview.py>","<--run>","<--source-manifest>","<"+value+">",
-                            "<--output>","<"+str(root/"news-caster-composition")+">"])
-                    else:self.assertFalse(log.exists())
-                    self.assertFalse((root/"injected").exists())
+    def test_legacy_composition_has_no_executable_workflow_path(self):
+        preview = job(self.video, "news-caster-preview")
+        self.assertNotIn("scripts/compose_caster_preview.py --run", preview)
+        self.assertNotIn("scripts/news_caster_preview.py --run", preview)
+        self.assertNotIn("actions/cache", preview)
+        self.assertIn("scripts/musetalk_profile_preview.py --run", preview)
+
+
 
     def test_caster_changes_receive_offline_pr_validation_without_running_inference(self):
         filters = event_paths(self.video, "pull_request")
