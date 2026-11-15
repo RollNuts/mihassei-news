@@ -108,6 +108,8 @@ class DailyOutlookTests(unittest.TestCase):
             final_bad = copy.deepcopy(final)
             final_bad["at"] = "2026-11-16T18:30:00+09:00"
             final_bad["id"] = "2026-11-16-close-01"
+            final_bad["source"]["published_on"] = "2026-11-16"
+            final_bad["source"]["checked_on"] = "2026-11-16"
             p.write_text(json.dumps([fc, initial, final_bad], ensure_ascii=False), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "before fixed judgement date"):
                 load_market_outlooks(tmp, today=date(2026, 11, 17))
