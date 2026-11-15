@@ -132,6 +132,8 @@ def load_market_outlooks(root, *, today=None):
             for k, n in (("statement", 25), ("method", 35),
                          ("reason", 35), ("invalidated_if", 25)):
                 _text(event.get(k), k, minimum=n)
+            if "0.5" not in event["method"]:
+                raise ValueError("Daily TOPIX direction requires the fixed 0.5 percent threshold")
             scenarios = event.get("scenarios")
             if not isinstance(scenarios, dict) or set(scenarios) != set(STANCES):
                 raise ValueError("Daily forecast needs three scenarios")
