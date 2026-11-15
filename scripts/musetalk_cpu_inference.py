@@ -75,8 +75,13 @@ def run(work, portrait, audio, output, recipe):
         latents = vae.get_latents_for_unet(face).float()
         timestep = torch.tensor([0], device="cpu")
         for index, chunk in enumerate(chunks):
+            # The pinned audio processor yields (sequence, 384) per frame;
+            # PositionalEncoding and the UNet require (batch, sequence, 384).
+            if chunk.ndim != 2 or chunk.shape[-1] != 384:
+                raise ValueError("Unexpected Whisper frame feature dimensions")
+            conditioning = pe(chunk.float().unsqueeze(0))
             predicted = unet.model(latents, timestep,
-                                   encoder_hidden_states=pe(chunk.float())).sample
+                                   encoder_hidden_states=conditioning).sample
             generated = vae.decode_latents(predicted)[0]
             generated = cv2.resize(generated, (width, height), interpolation=cv2.INTER_LANCZOS4)
             result = frame.copy()

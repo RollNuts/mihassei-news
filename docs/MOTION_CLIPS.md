@@ -108,6 +108,13 @@ JSONの `enabled` は自動生成の有効／無効、`pending` は生成準備�
 
 試作はfloat32・batch1・10fpsで30枚／3秒、15分のjob内に実処理12分の上限を設ける。12GiBの空きディスク、2GiBの空きRAM、作業8GiB、停止スイッチを監視し、完走を約束しない。失敗時も`receipt.json`の`current_step`・エラー、最大512KiBの`preview.log`と途中進捗を残す。`news-caster-preview-<run_id>`を1日以内に回収し、`publish: false`・`preview_only`のまま声・口・歯・同期・本人性を実確認する。生成成功だけで公開採用しない。
 
+
+### 手動試作の引継ぎ
+
+- run `43686674871` はモデル取得前にclick不足で停止。次のrun `43687182219` は170秒で固定モデル取得と日本語音声生成まで進み、Whisperの2次元frame特徴を3次元batch入力へ渡す箇所で停止した。音声生成と動画完成を区別し、MP4は未生成。
+- 対象は `shioba-rio-introduction-20261115`、写真SHA `101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4`。後者の1日保持artifactを回収済みで、Macの `/tmp/mihassei-musetalk-preview-43687182219` に原receipt・WAV・mask・logを保持。発話の実聴取、本人性・口・歯・同期は未確認で、採用記録を作らない。
+- 次担当は既存のCodex例外担当。clickの明示installとbatch1の入力修正をCIで確認後、停止・容量を再確認して次の確認枠で1本だけ手動再試験する。同じ失敗runの再実行はせず、実MP4と音声の検品・採用・本番確認まで終わる前に定期公開へ接続しない。
+
 ## 容量と安全
 
 | 項目 | 制限 |
