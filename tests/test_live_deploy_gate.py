@@ -28,8 +28,8 @@ class DeploymentWorkflowTests(unittest.TestCase):
         """Release checks follow measured PV without relabeling legacy readers."""
         checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
         builder=(ROOT/"scripts/build.py").read_text(encoding="utf-8")
-        for token in ("今日のPV","昨日のPV","data-pv-widget",
-                      "data-site-pv-yesterday","data-site-pv-week",
+        for token in ("掲載記事","累計PV","data-pv-widget",
+                      "data-site-pv-total","data-site-pv-week",
                       "data-pv-tracking-note"):
             self.assertIn(token,checker)
             self.assertIn(token,builder)
