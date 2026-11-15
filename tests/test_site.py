@@ -957,7 +957,7 @@ class SiteTests(unittest.TestCase):
         """X and Open Graph crawlers must not receive SVG or third-party photo URLs."""
         import re
         from scripts.build import social_image
-        self.assertEqual(social_image(None),"/og/brand-launch-20261102-v3.png")
+        self.assertEqual(social_image(None),"/og/brand-home-20261115-v4.png")
         pages=[ROOT/"dist/index.html"]
         pages += [ROOT/"dist/articles"/a["slug"]/"index.html" for a in self.articles]
         for page in pages:
@@ -985,7 +985,9 @@ class SiteTests(unittest.TestCase):
         import struct
         import zlib
         old_image=ROOT/"dist/og/brand.png"
-        new_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
+        legacy_image=ROOT/"dist/og/brand-launch-20261102-v3.png"
+        new_image=ROOT/"dist/og/brand-home-20261115-v4.png"
+        self.assertTrue(legacy_image.is_file())
         self.assertTrue(old_image.is_file())
         self.assertTrue(new_image.is_file())
         data=new_image.read_bytes()
@@ -1008,9 +1010,9 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(size,(1200,630))
         self.assertEqual(len(zlib.decompress(raw_idat)),(1200*3+1)*630)
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
-        self.assertIn('content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
         # The footer share intent passes a distinct URL, not the cached plain root.
-        self.assertIn("src%3Dx-launch-20261102-v3",home)
+        self.assertIn("src%3Dx-launch-20261115-v4",home)
 
     def test_image_review_gate_applies_to_cached_photos_and_ogp(self):
         """Cached images are not automatically editorially appropriate."""
@@ -1180,9 +1182,9 @@ class SiteTests(unittest.TestCase):
     def test_opengraph_and_feed(self):
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('name="twitter:card" content="summary_large_image"',home)
-        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
-        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
-        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-launch-20261102-v3.png"',home)
+        self.assertIn('property="og:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
+        self.assertIn('property="og:image:secure_url" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
+        self.assertIn('name="twitter:image" content="https://veripsa.com/og/brand-home-20261115-v4.png"',home)
         self.assertIn('name="twitter:title" content="未発生新聞｜5年後を勝手に想像する風刺ニュース"',home)
         self.assertNotIn('未発生新聞 | 未発生新聞',home)
         for a in self.articles:
