@@ -13,8 +13,9 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("まだ起きていないニュースを、真顔で。", page)
         self.assertIn("data-edition-title>最新記事", page)
         description = re.search(r'<meta name="description" content="([^"]+)"', page).group(1)
-        for meaning in ("5年後", "創作", "風刺"):
+        for meaning in ("5年後", "風刺"):
             self.assertIn(meaning, description)
+        self.assertRegex(description, r"(?:創作|架空)ニュース")
         self.assertNotIn("この新聞の読み方", page)
 
     def test_about_identifies_satire_without_claiming_accuracy(self):

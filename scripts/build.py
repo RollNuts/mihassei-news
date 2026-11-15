@@ -133,7 +133,7 @@ CATEGORY_PATHS = {
 }
 # Editorial category descriptions help readers choose without keyword stuffing.
 NEWS_DESCRIPTION = "未発生新聞は、今のニュースや身近な出来事を5年後にふくらませて楽しむ、風刺とユーモアの新聞です。AIと仕事、発明、遊びの変化を描きます。"
-HOME_DESCRIPTION = NEWS_DESCRIPTION + "創作ニュース、グラビア誌コーナー、市場分析を読む。"
+HOME_DESCRIPTION = NEWS_DESCRIPTION + "架空ニュース、グラビア誌コーナー、市場分析を読む。"
 CATEGORY_INTROS = {
     "社会":"暮らしを変える制度、人のつながり、働く人の取り分。5年後の社会を創作ニュースで読む。",
     "事件":"架空の事件とまちの珍事。小さな謎を現場の行動とオチで読む。",
