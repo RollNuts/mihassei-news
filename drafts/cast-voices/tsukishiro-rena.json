@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "tsukishiro-rena",
+  "name": "月城れな",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "photo_reference": {
+    "issue_slug": "november-sea-and-city-rena-003",
+    "cut_id": "01",
+    "image_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313"
+  },
+  "post_text": "出かける前に服を3回替えた。迷ってない顔で家を出たけど、部屋には候補がまだ2着ある。帰ったら片づけよう。",
+  "spoken_line": null,
+  "future_idea": null
+}

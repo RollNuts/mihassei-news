@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "nagino-saya",
+  "name": "凪野さや",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+  "photo_reference": {
+    "issue_slug": "winter-coat-swimsuit-saya-001",
+    "cut_id": "08",
+    "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6"
+  },
+  "post_text": "今日はなんだか温かいものが食べたい気分。\n\n味付けをちょっと変えてみたけど、これでいいのかまだ迷ってる。笑",
+  "spoken_line": "んー、もう少しかな",
+  "future_idea": null
+}

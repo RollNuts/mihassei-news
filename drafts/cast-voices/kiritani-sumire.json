@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "kiritani-sumire",
+  "name": "桐谷すみれ",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+  "photo_reference": {
+    "issue_slug": "november-favorite-colors-sumire-007",
+    "cut_id": "01",
+    "image_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc"
+  },
+  "post_text": "カップを選ぶのに10分かかったのは内緒です。☕️",
+  "spoken_line": null,
+  "future_idea": null
+}

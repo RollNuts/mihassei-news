@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "hanase-mio",
+  "name": "花瀬みお",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+  "photo_reference": {
+    "issue_slug": "november-first-detour-mio-004",
+    "cut_id": "01",
+    "image_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad"
+  },
+  "post_text": "飛び出してきたのはいいけど、帰りの電車まだ調べてない。",
+  "spoken_line": null,
+  "future_idea": null
+}

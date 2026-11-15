@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "shiramine-yuki",
+  "name": "白峰ゆき",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+  "photo_reference": {
+    "issue_slug": "november-a-longer-breath-yuki-005",
+    "cut_id": "01",
+    "image_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705"
+  },
+  "post_text": "もう帰ろうと思ってたのに、椅子が心地よくて。\nあと少しだけ、ここにいようかな。",
+  "spoken_line": "もう少し、いたいな。",
+  "future_idea": null
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "model_id": "shioba-rio",
+  "name": "汐羽りお",
+  "created_date": "2026-11-15",
+  "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+  "photo_reference": {
+    "issue_slug": "november-off-clock-rio-002",
+    "cut_id": "01",
+    "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4"
+  },
+  "post_text": "手帳ではもう帰っている時間なのに、まだコーヒーを飲んでいます。\n\n帰りに見たいニットもあったんですけど……今日は寄れるかな。\n\n休日だけ、どうしてこんなに予定がずれるんでしょう。",
+  "spoken_line": "え、もうこんな時間？",
+  "future_idea": null
+}
