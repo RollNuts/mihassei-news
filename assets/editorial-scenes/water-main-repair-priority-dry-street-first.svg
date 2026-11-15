@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="漏水のない住宅街の道路を夜間に掘り、水道管の傷んだ継ぎ目を点検する創作イラスト" data-visual-topic="document" data-article-sha256="7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc">
+<title>水が漏れる前に、管の継ぎ目を確かめる</title>
+<desc>住宅街の乾いた舗装を一部開いた作業区画。作業灯の下で職員が露出した水道管の傷んだ継ぎ目を指し、別の職員が記録と照合する。住民は柵の外から見守る。水たまりや噴水はない。</desc>
+<rect width="1200" height="675" fill="#1f3446"/>
+<circle cx="1010" cy="75" r="25" fill="#f1e7c6"/>
+<g stroke="#81929a" stroke-width="5" stroke-linejoin="round">
+<path d="M40 290V140L175 72L310 140V290Z" fill="#536470"/>
+<path d="M330 290V168L448 100L566 168V290Z" fill="#4d5c69"/>
+<path d="M942 288V160L1055 102L1168 160V288Z" fill="#536470"/>
+<g fill="#e2bf7b" stroke="none"><path d="M96 170H158V227H96ZM197 170H259V227H197ZM382 185H432V235H382ZM478 185H528V235H478ZM998 185H1048V235H998ZM1080 185H1130V235H1080Z"/></g>
+</g>
+<path d="M0 290H1200V675H0Z" fill="#62727a"/>
+<path d="M0 340H1200M0 590H1200" stroke="#b9c1bd" stroke-width="5"/>
+<path d="M635 95L478 515H1045Z" fill="#f6dfa2" opacity=".12"/>
+<g stroke="#283d48" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+<path d="M341 462L822 419L1029 531L516 591Z" fill="#24333a"/>
+<path d="M358 471L822 437L995 528L518 572Z" fill="#b39775"/>
+<path d="M422 493L826 462L925 516L523 548Z" fill="#d1b794"/>
+<path d="M472 515L866 485" stroke="#426f76" stroke-width="36"/>
+<path d="M472 504L865 475" stroke="#8aa7a4" stroke-width="10"/>
+<path d="M685 487L689 523M709 485L713 521" stroke="#384d53" stroke-width="8"/>
+<path d="M697 495L690 502L700 507L694 515" fill="none" stroke="#b0533d" stroke-width="4"/>
+<circle cx="700" cy="504" r="39" fill="none" stroke="#e8c96d" stroke-width="4"/>
+<path d="M636 109V395M615 395H655M622 108H654L668 140H608Z" fill="#e2c36c"/>
+<path d="M144 350H430V388H144ZM159 345V440M414 345V422" fill="#ce8a4d"/>
+<path d="M145 365H431" stroke="#f0d6a0" stroke-width="9" stroke-dasharray="32 24"/>
+<circle cx="793" cy="267" r="25" fill="#d7b49a"/>
+<path d="M765 258Q792 219 822 258Z" fill="#d8b34e"/>
+<path d="M768 296H815L832 374H750Z" fill="#427d8c"/>
+<path d="M768 304L784 351H801L815 304" fill="none" stroke="#dcc65f" stroke-width="12"/>
+<path d="M759 323L728 383L703 449M815 322L849 370M764 375L748 435M811 374L842 419" fill="none"/>
+<circle cx="971" cy="292" r="25" fill="#d7b49a"/>
+<path d="M943 283Q970 244 999 283Z" fill="#d8b34e"/>
+<path d="M947 321H993L1008 414H934Z" fill="#427d8c"/>
+<path d="M948 332L912 359M991 332L1008 364M946 413L938 485M992 412L1027 476" fill="none"/>
+<path d="M894 338L961 353L948 399L880 382Z" fill="#f0ead6"/>
+<path d="M899 352L926 359L915 375L940 383" fill="none" stroke="#5f9391" stroke-width="4"/>
+<circle cx="258" cy="264" r="25" fill="#d7b49a"/>
+<path d="M233 265Q223 224 259 231Q288 231 285 279" fill="#3b3636"/>
+<path d="M234 295H282L298 361H218Z" fill="#ba7660"/>
+<path d="M234 361L228 423M281 361L291 419M280 312L309 331" fill="none"/>
+</g>
+</svg>

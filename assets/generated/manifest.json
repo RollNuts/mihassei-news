@@ -7167,10 +7167,20 @@
       "rejected_candidate_sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615",
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/41848633579"
     },
+    "swapped-suitcases-drive-themselves-to-lost-property": {
+      "article_sha256": "3616f0f7de319f3aacc29c3994b38d6ef1a22e3d05614b0ddff335bf63f6f5f1",
+      "reason": "現本文全文とJPEGを実表示して照合。駅ホームで成人3人が歩き、右の1人が銀色ケース1台を持ち手で引いている。本文の核である自走ケース2台、旅行者2人がその後ろを追う配置、黄色い返却レーン、窓口が写っていない。一般の旅行写真に見えるため不採用。現本文に合う専用SVG/共有PNGを維持する。",
+      "rejected_candidate_sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
+    },
     "tori-no-ichi-kumade-blocks-store-entrance": {
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "water-main-repair-priority-dry-street-first": {
+      "article_sha256": "7b2e7cdf51a68eacca3dd78c9445c5002e8ae2ea1589dff87817cb922133dabc",
+      "reason": "現本文全文とJPEGを実表示して照合。夜の住宅地で作業員4人が土の溝に立つが、水道管や傷んだ継ぎ目が見えず、手前の道具は管ではなくホース状に見える。乾いた舗装下の接続部を先行点検する本文の主動作を確認できないため不採用。本文に合う専用SVG/共有PNGで代替する。",
+      "rejected_candidate_sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
     }
   },
   "version": 1
