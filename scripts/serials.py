@@ -260,8 +260,121 @@ def render_serials_index(serials, layout):
     return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
+def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, daily_outlooks):
+    """A reading-first financial front page, not a console of forecast states.
+
+    Daily and long-term ledgers remain reachable; empty feeds never occupy the
+    lead position. Editorial content and the original prediction terms stay
+    unchanged. The newest actually published analysis leads.
+    """
+    latest = series["episodes"][-1]
+    older = list(reversed(series["episodes"][:-1]))
+    latest_url = episode_url(series, latest)
+    forecast = latest["forecast"]
+    day = latest["published_at"]
+    figures_count = len((figures or {}).get(latest["slug"], []))
+    nowcast = ""
+    if daily_outlooks:
+        # One short summary only; the full dated history has its own page.
+        from datetime import datetime as _datetime
+        try:
+            from .market_outlooks import view_models as _daily_models
+        except ImportError:
+            from market_outlooks import view_models as _daily_models
+        models = _daily_models(daily_outlooks)
+        if models:
+            item = models[0]
+            fc = item["forecast"]
+            revised = item["updates"][-1] if item["updates"] else None
+            stance = revised["stance"] if revised else fc["stance"]
+            nowcast = (
+                '<section class="market-paper-daily" id="daily-forecasts">'
+                '<div class="market-paper-heading"><h2>直近の市場見通し</h2>'
+                '<a href="/serials/market-lab/outlooks/">過去の見通しと変更履歴</a></div>'
+                f'<p class="market-paper-daily-date"><time datetime="{h(fc["at"])}">{h(fc["at"][:10])}</time>'
+                f' ／ 現在の見方：{h(stance)}</p>'
+                f'<p>{h(fc["statement"])}</p>'
+                f'<p class="market-paper-small">確認日：{h(fc["reviewed_on"])}'
+                '。結果の判定は当初の基準に従います。</p>'
+                '</section>'
+            )
+
+    older_rows = "".join(
+        '<li>'
+        f'<a href="{episode_url(series, ep)}">'
+        f'<span class="market-paper-story-date"><time datetime="{ep["published_at"]}">{ep["published_at"]}</time>'
+        f'　／　第{ep["number"]}回</span>'
+        f'<strong>{h(ep["title"])}</strong>'
+        f'<span class="market-paper-story-summary">{h(ep["summary"])}</span>'
+        + (f'<span class="market-paper-story-figure">図解 {len((figures or {}).get(ep["slug"], []))} 点</span>'
+           if (figures or {}).get(ep["slug"]) else '')
+        + '</a></li>'
+        for ep in older
+    )
+    history = render_market_outlook_index(series, outlook or {})
+    bulletins_html = render_market_bulletins_index(bulletins) if bulletins else ""
+    main = (
+        f'<div class="container serials-page market-paper" {progress_attributes(series)}>'
+        '<nav class="serial-breadcrumb" aria-label="現在位置">'
+        '<a href="/">トップ</a> / <a href="/serials/">連載</a> / 未来相場観測室</nav>'
+        '<header class="market-paper-masthead">'
+        '<p class="market-paper-topline"><span>株式・企業分析</span>'
+        f'<span>最終掲載 <time datetime="{day}">{day}</time></span></p>'
+        '<div class="market-paper-brand">'
+        '<div><p class="market-paper-brand-kicker">MARKET INSIGHT</p>'
+        f'<h1>{h(series["title"])}</h1>'
+        '<p>決算資料の数字を読み、これからの市場を考える。</p></div>'
+        f'<div class="market-paper-symbol">{_cover_img(series, loading="eager")}</div></div>'
+        '<nav class="market-paper-nav" aria-label="このページの案内">'
+        '<a href="#market-focus">最新の分析</a>'
+        '<a href="#market-stories">過去の記事</a>'
+        '<a href="#forecast-ledger">予測と検証</a>'
+        '</nav></header>'
+        '<main class="market-paper-content">'
+        '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
+        '<div class="market-paper-lead-story">'
+        f'<p class="market-paper-eyebrow">最新の分析 ／ 第{latest["number"]}回 '
+        f'<time datetime="{day}">{day}</time></p>'
+        f'<h2 id="market-focus-heading"><a href="{latest_url}">{h(latest["title"])}</a></h2>'
+        f'<p class="market-paper-dek">{h(latest["summary"])}</p>'
+        f'<a class="market-paper-read" href="{latest_url}">記事と図解を読む →</a>'
+        '</div>'
+        '<aside class="market-paper-follow" aria-label="この分析の注目点">'
+        '<p class="market-paper-eyebrow">今後の焦点</p>'
+        f'<h3>{h(forecast["statement"])}</h3>'
+        '<dl>'
+        f'<div><dt>確かめる日</dt><dd><time datetime="{h(forecast["reviewed_on"])}">{h(forecast["reviewed_on"])}</time></dd></div>'
+        f'<div><dt>現在</dt><dd>{("結果を確認済み" if forecast.get("status") == "検証済み" else "結果の確認前")}</dd></div>'
+        '</dl>'
+        f'<a href="{latest_url}#forecast-detail">見通しの根拠を読む →</a>'
+        '</aside></section>'
+        + nowcast
+        + bulletins_html
+        + '<section class="market-paper-stories" id="market-stories">'
+        '<div class="market-paper-heading"><h2>これまでの分析</h2>'
+        f'<a href="{serial_feed_url(series)}">連載をRSS購読</a></div>'
+        f'<p class="market-paper-section-intro">過去の公表資料をもとにした分析です。掲載時点の見通しはそのまま残しています。</p>'
+        f'<ol class="market-paper-story-list">{older_rows}</ol></section>'
+        + history
+        + '<details class="market-paper-ledger" id="market-proof">'
+        f'<summary>予測の判定日と詳しい検証方法を見る（{len(series["episodes"])}件）</summary>'
+        + render_forecast_ledger(series)
+        + '</details>'
+        '<p class="market-paper-disclosure">実際に公表された資料をもとにした分析です。'
+        '架空ニュースではありません。投資助言・売買推奨ではありません。</p>'
+        '</main></div>'
+    )
+    return layout(series["title"], series["description"], series_url(series), main, active="serials",
+                  serial={"slug": series["slug"], "kind": series["kind"], "title": series["title"],
+                          "episodes": [{"slug": ep["slug"], "title": ep["title"]}
+                                       for ep in series["episodes"]]},
+                  feed_url=serial_feed_url(series))
+
+
 def render_series_page(series, layout, figures=None, bulletins=None, outlook=None, daily_outlooks=None):
     _require_public(series)
+    if series["kind"] == "analysis":
+        return _render_market_editorial_hub(series, layout, figures, bulletins, outlook, daily_outlooks)
     episodes = sorted(series["episodes"], key=lambda ep: ep["number"], reverse=True)
     figures = figures or {}
     items = "".join(
