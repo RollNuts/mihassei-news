@@ -258,7 +258,6 @@ jobs:
           if-no-files-found: warn
           path: |
             ${{ runner.temp }}/news-caster-preview/presenter-preview.mp4
-            ${{ runner.temp }}/news-caster-preview/narration-full.wav
             ${{ runner.temp }}/news-caster-preview/narration-three-seconds.wav
             ${{ runner.temp }}/news-caster-preview/receipt.json
             ${{ runner.temp }}/news-caster-preview/preview.log
@@ -266,3 +265,5 @@ jobs:
             ${{ runner.temp }}/news-caster-preview/first-frame.jpg
             ${{ runner.temp }}/news-caster-preview/mouth-mask.png
             ${{ runner.temp }}/news-caster-preview/motion-check.json
+            ${{ runner.temp }}/news-caster-preview/source-face-crop.png
+            ${{ runner.temp }}/news-caster-preview/model-face-input.png

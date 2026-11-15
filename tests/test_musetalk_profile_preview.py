@@ -1,5 +1,6 @@
 """Offline boundaries for the explicitly selected core-only CPU pilot."""
 import contextlib
+import hashlib
 import io
 import json
 import os
@@ -62,33 +63,57 @@ class MuseTalkProfilePreviewTests(unittest.TestCase):
                                        Mock(), log, env=os.environ.copy())
             self.assertIn("small fixture error", log.read_text())
 
-    def test_click_is_explicitly_installed_before_kokoro_import_without_model_download(self):
+    def test_saved_audio_is_identical_and_no_tts_is_installed_before_model_download(self):
         commands, downloads = [], []
 
         def download(url, destination, budget, **options):
             downloads.append(url)
             return {"url": url, "bytes": options["size"], "sha256": options["sha256"]}
 
-        def archive(repo, revision, work, budget):
-            return work / repo.split("/")[-1], {"sha256": preview.ARCHIVES[repo][1]}
-
         with tempfile.TemporaryDirectory() as folder, \
              patch.object(preview.runtime, "runner_gate", return_value=Path(folder).resolve()), \
              patch.object(preview.runtime, "RemoteStopGate"), \
              patch.object(preview.shutil, "which", return_value="/fixture/encoder"), \
              patch.object(preview.runtime, "download", side_effect=download), \
-             patch.object(preview.runtime, "source_archive", side_effect=archive), \
+             patch.object(preview.runtime, "source_archive") as archive, \
              patch.object(preview, "logged_command", side_effect=lambda argv, *a, **k: commands.append(argv)), \
              patch.object(preview.runtime, "command", side_effect=RuntimeError("fixture stop before weights")), \
              contextlib.redirect_stdout(io.StringIO()):
             with self.assertRaisesRegex(RuntimeError, "fixture stop before weights"):
                 preview.execute(Path(folder) / "preview")
+            waveform = (Path(folder) / "preview/narration-three-seconds.wav").read_bytes()
+            self.assertEqual(hashlib.sha256(waveform).hexdigest(), preview.BASELINE_FILES["narration-three-seconds.wav"][1])
         install = next(i for i, argv in enumerate(commands) if "soundfile==0.12.1" in argv)
-        imports = next(i for i, argv in enumerate(commands) if any("from kokoro import KModel" in arg for arg in argv))
-        self.assertIn("click==8.1.8", commands[install])
-        self.assertIn("click==8.1.8", preview.runtime.TTS_CONSTRAINTS)
+        imports = next(i for i, argv in enumerate(commands) if any("from transformers import WhisperModel" in arg for arg in argv))
+        self.assertTrue(all(package in commands[install] for package in preview.CORE_PACKAGES))
+        self.assertFalse(any(word in " ".join(map(str, commands)).lower() for word in ("kokoro", "misaki", "g2p", "synthesize")))
+        archive.assert_not_called()
         self.assertLess(install, imports)
         self.assertEqual(downloads, [record["url"] for record in preview.SRC_FILES])
+
+    def test_manual_bbox_change_preserves_the_old_absolute_rasterized_mask(self):
+        recipe = preview.plan()["recipe"]
+        x1, y1, x2, y2 = recipe["face_box"]
+        width, height = x2 - x1, y2 - y1
+        mask = recipe["mask"]
+        self.assertEqual([x1 + round(mask["center"][0] * width), y1 + round(mask["center"][1] * height)], [714, 318])
+        self.assertEqual([round(mask["radii"][0] * width), round(mask["radii"][1] * height)], [70, 51])
+        self.assertAlmostEqual(x1 + mask["right_edge"] * width, 792)
+        self.assertAlmostEqual(mask["right_feather"] * width, 15.6)
+        self.assertEqual(mask["blur_sigma_px"], 8)
+        self.assertIn("not DWPose", preview.plan()["comparison"]["bbox_method"])
+
+    def test_saved_audio_or_original_receipt_changes_are_rejected_offline(self):
+        source = preview.resolve_profile_input("shioba-rio", preview.SPOKEN_LINE, root=preview.ROOT)
+        for name in ("narration-three-seconds.wav", "receipt.json", "presenter-preview.mp4"):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as folder:
+                import shutil
+                root = Path(folder).resolve()
+                shutil.copytree(preview.ROOT / preview.AUDIO_DIR, root / preview.AUDIO_DIR)
+                path = root / preview.AUDIO_DIR / name
+                path.write_bytes(path.read_bytes() + b"changed")
+                with self.assertRaisesRegex(ValueError, "bytes changed"):
+                    preview.fixed_audio(root=root, source=source)
 
     def test_core_child_has_no_detector_parser_or_legacy_model_import(self):
         import ast
