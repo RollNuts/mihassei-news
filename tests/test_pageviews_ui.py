@@ -1,5 +1,8 @@
 """Reader-visible PV presentation uses verified counts without small-card placeholders."""
 import unittest
+import json
+import html
+import re
 from html.parser import HTMLParser
 
 from scripts import build
@@ -33,6 +36,19 @@ class PageViewPresentationTests(unittest.TestCase):
         self.assertIn(f"{len(articles):,}<small>本", section)
         self.assertNotIn("今日のPV", html)
         self.assertNotIn("昨日のPV", html)
+
+    def test_only_home_carries_full_archive_thumbnail_metadata(self):
+        articles = build.load()
+        index = build.home(articles)
+        article = build.story(articles[0], articles)
+        pattern = r'data-popular-options="([^"]+)"'
+        home_data = json.loads(html.unescape(re.search(pattern, index).group(1)))
+        article_data = json.loads(html.unescape(re.search(pattern, article).group(1)))
+        self.assertEqual(len(home_data), len(articles))
+        self.assertEqual(len(article_data), len(articles)-1)
+        self.assertTrue(all("image" in a and "fallback" in a for a in home_data))
+        self.assertTrue(all("image" not in a and "fallback" not in a for a in article_data))
+        self.assertEqual(len(set(a["slug"] for a in home_data)), len(home_data))
 
     def test_archive_cards_do_not_show_pv_but_story_header_can_display_it(self):
         articles = build.load()
