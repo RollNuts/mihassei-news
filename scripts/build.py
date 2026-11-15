@@ -1357,7 +1357,7 @@ def home(articles, serials=None, photo_issues=(), photo_editions=()):
         )
     issue_section = (
         '<section class="daily-issues-section" aria-labelledby="daily-issues-heading">'
-        '<div class="section-head"><h2 id="daily-issues-heading">今日の未発生新聞</h2>'
+        '<div class="section-head"><h2 id="daily-issues-heading">最近の発行号</h2>'
         '<a href="/issues/">発行号をすべて見る ↗</a></div>'
         '<div class="daily-issues-grid">' + issue_cards + '</div>'
         + latest_issue_share + '</section>'
@@ -1372,8 +1372,8 @@ def home(articles, serials=None, photo_issues=(), photo_editions=()):
         '<section class="newsroom-snapshot" aria-label="本紙の掲載記録">'
         '<div class="newsroom-snapshot-heading"><h2>紙面の記録</h2></div>'
         '<div class="newsroom-snapshot-stats">'
-        f'<div class="newsroom-snapshot-stat"><span>掲載記事</span><strong>{len(articles):,}<small>本</small></strong></div>'
-        f'<div class="newsroom-snapshot-stat"><span>発行号</span><strong>{len(issues_for_home):,}<small>号</small></strong></div>'
+        f'<a class="newsroom-snapshot-stat" href="/archive/"><span>掲載記事</span><strong>{len(articles):,}<small>本</small></strong></a>'
+        f'<a class="newsroom-snapshot-stat" href="/issues/"><span>発行号</span><strong>{len(issues_for_home):,}<small>号</small></strong></a>'
         '</div>'
         '<div class="observer-widget pv-widget" data-observer-widget data-pv-widget hidden'
         ' aria-label="計測開始後の実測PV">'
@@ -1416,10 +1416,10 @@ def home(articles, serials=None, photo_issues=(), photo_editions=()):
 <aside class="side-brief"><div class="side-title"><h2>新着記事</h2></div>{side}</aside>
 </section>
 {broadcast_feature(articles)}
-{popular_section}
 <section class="section-block"><div class="section-head"><h2>さらに読む</h2>
 <a href="/archive/">記事一覧を見る ↗</a></div>
 <div class="story-grid">{recent}</div></section>
+{popular_section}
 {newsroom_activity}
 {timeline_section}
 {issue_section}
