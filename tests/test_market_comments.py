@@ -21,7 +21,7 @@ class MarketCommentsTests(unittest.TestCase):
                 self.assertIn('id="reader-comments"', markup)
                 self.assertIn("/assets/comments.js?v=", markup)
                 self.assertIn("この市場分析へのコメント", markup)
-                self.assertIn("Xで共有する", markup)
+                self.assertIn("Xで共有", markup)
                 self.assertIn('data-copy-url="https://veripsa.com/serials/market-lab/' + ep["slug"] + '/"', markup)
                 self.assertNotIn("投票フォーム", markup)
 

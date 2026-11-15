@@ -22,6 +22,7 @@ if __package__:
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from .market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
+    from .market_sharing import render_market_share
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
@@ -30,6 +31,7 @@ else:
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
     from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
+    from market_sharing import render_market_share
 
 
 # Publication retirement is separate from immutable editorial source/history.
@@ -353,7 +355,9 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<a href="/serials/market-lab/outlooks/">毎日の予測</a>'
         '<a href="#market-stories">企業分析</a>'
         '<a href="#market-proof">判定記録</a>'
-        '</nav></header>'
+        '</nav>'
+        + render_market_share(series_url(series), series["title"])
+        + '</header>'
         '<div class="market-paper-content">'
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
         '<div class="market-paper-lead-story">'
@@ -529,7 +533,10 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             f'<h1>{h(ep["title"])}</h1><p class="serial-article-dek">{h(ep["summary"])}</p>'
             f'<div class="serial-pub"><time datetime="{ep["published_at"]}">公開日 {h(ep["published_at"])}</time>'
             f' · <span>{h(series["title"])}</span></div>'
-            f'<p class="serial-article-warning">{marker}</p></header>'
+            f'<p class="serial-article-warning">{marker}</p>'
+            + (render_market_share(episode_url(series, ep), ep["title"])
+               if series["kind"] == "analysis" else '')
+            + '</header>'
             f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
             f'<div class="serial-article-body">{kicker_html}'
             + ('<nav class="market-article-jump" aria-label="この記事の目次">'
@@ -539,9 +546,8 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
                '</nav>' if series["kind"] == "analysis" else '')
             + f'{narrative}{extras}'
             f'<div class="serial-epilogue"><p>{h(followup)}</p>'
-            f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
-            + (f'<button class="market-share-copy" type="button" data-copy-url="https://veripsa.com{episode_url(series, ep)}"><span aria-hidden="true">↗</span><span>リンクをコピー</span></button>'
-               if series["kind"] == "analysis" else "")
+            + (f'<a href="{h(_share_link(series, ep))}" target="_blank" rel="noopener noreferrer external">この回をXで共有する ↗</a>'
+               if series["kind"] == "fiction" else '')
             + f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">続編をRSSで確認 ↗</a></div>'
             f'{render_completed_reading(series, ep)}'
             + (render_reader_comments('market-episode-' + ep['slug'],

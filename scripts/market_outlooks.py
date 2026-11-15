@@ -16,6 +16,11 @@ import json
 import math
 import re
 
+if __package__:
+    from .market_sharing import render_market_share
+else:
+    from market_sharing import render_market_share
+
 PATH = Path("content/market_outlooks.json")
 JST = timedelta(hours=9)
 STANCES = ("強気", "中立", "弱気")
@@ -306,7 +311,8 @@ def render_market_outlook_archive(events, layout):
         '<nav class="serial-breadcrumb"><a href="/">トップ</a> / '
         '<a href="/serials/market-lab/">未来相場観測室</a></nav>'
         '<header class="serials-intro"><h1>日々の予測・振り返り</h1>'
-        '<p>日付も市場も現実のもの。未検証・途中評価・判定済みを分けて記録します。</p></header>'
+        '<p>日付も市場も現実のもの。未検証・途中評価・判定済みを分けて記録します。</p>'
+        + render_market_share(BASE_URL, "日々の予測・振り返り") + '</header>'
         + render_market_outlook_board(events, limit=0)
         + '</div>'
     )
