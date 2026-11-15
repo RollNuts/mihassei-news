@@ -5,7 +5,7 @@ import unittest
 from datetime import date
 from pathlib import Path
 
-from scripts.guard_serial_history import guard_serial_history
+from scripts.guard_serial_history import guard_serial_history, guard_photo_edition_history
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -86,6 +86,63 @@ class SerialHistoryGuardTests(unittest.TestCase):
         }
         with self.assertRaisesRegex(ValueError, "evidence"):
             guard_serial_history(self.before, changed, today=date(2027, 2, 5))
+
+
+class PhotoEditionHistoryGuardTests(unittest.TestCase):
+    def setUp(self):
+        self.before = {"schema_version": 1, "editions": [{
+            "number": 1, "slug": "issue-001", "state": "published", "legacy": False,
+            "published_at": "2026-11-15T11:28:23+09:00", "title": "七人の写真", "summary": "七人のコラム。",
+            "features": ["feature-" + str(i) for i in range(7)],
+            "ranking": {"window": {"start_date_jst": "2026-11-08", "end_date_jst": "2026-11-14"},
+                        "seed": "0123456789abcdef0123456789abcdef", "order": list(range(7)),
+                        "models": [{"model_id": "saya", "page_views": 0}],
+                        "source": {"daily": [{"date_jst": "2026-11-14", "page_views": 0}]}}
+        }]}
+
+    def test_initial_file_append_and_unpublished_draft_edits_are_allowed(self):
+        self.assertEqual(guard_photo_edition_history(None, self.before), 0)
+        current = copy.deepcopy(self.before)
+        current["editions"].append({"number": 2, "slug": "issue-002", "state": "draft"})
+        self.assertEqual(guard_photo_edition_history(self.before, current), 1)
+        previous = copy.deepcopy(current)
+        current["editions"][1]["features"] = ["a-new-draft-choice"]
+        self.assertEqual(guard_photo_edition_history(previous, current), 1)
+
+    def test_title_summary_typos_and_json_object_key_order_do_not_change_contents(self):
+        current = copy.deepcopy(self.before)
+        edition = current["editions"][0]
+        edition.update(title="七人の写真。", summary="七人の未来コラム。")
+        edition["ranking"] = dict(reversed(tuple(edition["ranking"].items())))
+        self.assertEqual(guard_photo_edition_history(self.before, current), 1)
+
+    def test_member_order_window_counts_seed_and_evidence_are_immutable_after_publication(self):
+        changes = (
+            lambda edition: edition["features"].reverse(),
+            lambda edition: edition["features"].pop(),
+            lambda edition: edition["ranking"]["window"].update(end_date_jst="2026-11-15"),
+            lambda edition: edition["ranking"].update(seed="f" * 32),
+            lambda edition: edition["ranking"]["order"].reverse(),
+            lambda edition: edition["ranking"]["models"][0].update(page_views=1),
+            lambda edition: edition["ranking"]["models"][0].update(page_views=False),
+            lambda edition: edition["ranking"]["source"]["daily"][0].update(page_views=1),
+        )
+        for change in changes:
+            current = copy.deepcopy(self.before)
+            change(current["editions"][0])
+            with self.subTest(change=change), self.assertRaisesRegex(ValueError, "contents or ranking evidence changed"):
+                guard_photo_edition_history(self.before, current)
+
+    def test_deletion_renaming_draft_reset_and_publication_identity_changes_are_blocked(self):
+        for current in (None, {"schema_version": 1, "editions": []}):
+            with self.assertRaisesRegex(ValueError, "removed or renamed"):
+                guard_photo_edition_history(self.before, current)
+        for field, value in (("slug", "issue-002"), ("state", "draft"), ("number", 2),
+                             ("legacy", True), ("published_at", "2026-11-16T11:28:23+09:00")):
+            current = copy.deepcopy(self.before)
+            current["editions"][0][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                guard_photo_edition_history(self.before, current)
 
 
 if __name__ == "__main__":

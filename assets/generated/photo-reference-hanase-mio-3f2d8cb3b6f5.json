@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "hanase-mio",
+  "role": "face",
+  "source": {
+    "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+    "image_number": 10,
+    "path": "maintenance/photo-issues/november-first-detour-mio-004/01/source-4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50.png",
+    "sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+    "bytes": 2350040,
+    "width": 1122,
+    "height": 1402,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-first-detour-mio-004-01.jpg",
+    "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+    "bytes": 319854,
+    "width": 960,
+    "height": 1200
+  },
+  "reference_path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 160,
+    "bust_cm": 85,
+    "waist_cm": 60,
+    "hip_cm": 88,
+    "shoulder_width_cm": 37,
+    "inseam_cm": 74,
+    "heads_tall": 7.2
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Daylight terrace JPEG retains clear smiling adult face, shoulder-length layered dark/brown hair, fine fringe, almond brown eyes and soft oval jaw; white overshirt/tank/shorts, skin and hand-on-rail detail remain natural. No obvious text/logo or conversion/crop defect. Fits fictional20-year-old active character.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-first-detour-mio-004/reference-jpeg-qa.json",
+    "sha256": "5cab3d67fad47df46ab2e16e08cb8417ac0369376a0b5adfb3ab85037ccafc53"
+  }
+}

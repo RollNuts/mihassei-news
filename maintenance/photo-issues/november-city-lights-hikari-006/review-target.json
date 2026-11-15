@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-city-lights-hikari-006",
+    "number": 6,
+    "title": "灯りの続きを、歩く。",
+    "summary": "秋の街を歩く夜、海沿いで過ごす昼。天音ひかりが景色に足取りを合わせる10枚。",
+    "column": [
+      "2031年11月。駅前の灯りが、歩く人の速さに合わせてゆっくり変わるようになりました。見ていると、ついリズムを取ってしまいます。今日は練習の帰りではなく、ただの散歩。それでも足だけは、少し踊る気でいるみたいです。",
+      "その日の昼は、暖かな海沿いまで足を延ばしました。花柄の服を風に揺らして歩くと、いつもの道でも違う場所に来た感じがします。競争相手はいないのに、遠くの曲がり角まで早く行ってみたくなりました。",
+      "カフェでは、カップを両手で持ってひと休み。さっきまで急いでいたのに、窓の外の人を見ていると、もう少し座っていたくなります。ゆっくりするのも練習だと思って、ひと口ずつ飲みました。",
+      "雨の夜は、透明な傘の上に街の灯りが集まりました。立ち止まって見上げていたら、帰り道が少し長くなりました。歩数より、今日見つけた景色の数を覚えていたい。そんな日もあっていいですよね。"
+    ],
+    "model_id": "amane-hikari",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "夜の街と暖かな海沿い",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した街歩き・カフェ・暖かな海沿いの独立写真10枚を採用する。掲載写真に明瞭な水着はなく、花柄のドレスやナイトドレスを水着へ数え替えず、この衣服中心の既存セットを構成する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "天音ひかり（21歳、架空の成人）。夜の通りで、ニットとコート姿のひかりが横を見上げる。",
+        "caption": "夜の通りで、ニットとコート姿のひかりが横を見上げる。",
+        "alt": "天音ひかり（21歳、架空の成人）。夜の通りで、ニットとコート姿のひかりが横を見上げる。"
+      },
+      {
+        "id": "02",
+        "description": "天音ひかり（21歳、架空の成人）。晴れた海沿いの道で、花柄のドレスを揺らして振り返る。",
+        "caption": "晴れた海沿いの道で、花柄のドレスを揺らして振り返る。",
+        "alt": "天音ひかり（21歳、架空の成人）。晴れた海沿いの道で、花柄のドレスを揺らして振り返る。"
+      },
+      {
+        "id": "03",
+        "description": "天音ひかり（21歳、架空の成人）。カフェの窓辺で、カップを両手に外を眺める。",
+        "caption": "カフェの窓辺で、カップを両手に外を眺める。",
+        "alt": "天音ひかり（21歳、架空の成人）。カフェの窓辺で、カップを両手に外を眺める。"
+      },
+      {
+        "id": "04",
+        "description": "天音ひかり（21歳、架空の成人）。黒いロングドレスで、夜景の見える窓辺に立つ。",
+        "caption": "黒いロングドレスで、夜景の見える窓辺に立つ。",
+        "alt": "天音ひかり（21歳、架空の成人）。黒いロングドレスで、夜景の見える窓辺に立つ。"
+      },
+      {
+        "id": "05",
+        "description": "天音ひかり（21歳、架空の成人）。日差しの入る窓辺のラグで、ナイトドレス姿で座る。",
+        "caption": "日差しの入る窓辺のラグで、ナイトドレス姿で座る。",
+        "alt": "天音ひかり（21歳、架空の成人）。日差しの入る窓辺のラグで、ナイトドレス姿で座る。"
+      },
+      {
+        "id": "06",
+        "description": "天音ひかり（21歳、架空の成人）。雨の駅前広場で、透明の傘を差して振り返る。",
+        "caption": "雨の駅前広場で、透明の傘を差して振り返る。",
+        "alt": "天音ひかり（21歳、架空の成人）。雨の駅前広場で、透明の傘を差して振り返る。"
+      },
+      {
+        "id": "07",
+        "description": "天音ひかり（21歳、架空の成人）。レストランの席で、頬に手を添えて笑顔を向ける。",
+        "caption": "レストランの席で、頬に手を添えて笑顔を向ける。",
+        "alt": "天音ひかり（21歳、架空の成人）。レストランの席で、頬に手を添えて笑顔を向ける。"
+      },
+      {
+        "id": "08",
+        "description": "天音ひかり（21歳、架空の成人）。夕暮れのテラスで、トレンチコート姿で振り返る。",
+        "caption": "夕暮れのテラスで、トレンチコート姿で振り返る。",
+        "alt": "天音ひかり（21歳、架空の成人）。夕暮れのテラスで、トレンチコート姿で振り返る。"
+      },
+      {
+        "id": "09",
+        "description": "天音ひかり（21歳、架空の成人）。白いジャケットとスカートで、濡れた夜道を振り返る。",
+        "caption": "白いジャケットとスカートで、濡れた夜道を振り返る。",
+        "alt": "天音ひかり（21歳、架空の成人）。白いジャケットとスカートで、濡れた夜道を振り返る。"
+      },
+      {
+        "id": "10",
+        "description": "天音ひかり（21歳、架空の成人）。バーの席で、夜景を背に肩越しに振り返る。",
+        "caption": "バーの席で、夜景を背に肩越しに振り返る。",
+        "alt": "天音ひかり（21歳、架空の成人）。バーの席で、夜景を背に肩越しに振り返る。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "amane-hikari",
+      "name": "天音ひかり",
+      "age": 21,
+      "fictional": true,
+      "appearance": "21歳の架空の成人。明るく親しみやすい表情。長めの栗色の髪と柔らかな毛流れ。顔は独自に設計する。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "歌とダンスのアイドル",
+        "casting_specialty": "架空の音楽番組やステージでの歌とダンス、舞台衣装を使った表現。",
+        "personality": "明るく人懐っこい。小さな挑戦にも負けず嫌い。",
+        "voice": "会話に近い軽快な文。喜びも失敗も隠さず、決め台詞は連発しない。",
+        "likes": [
+          "舞台衣装",
+          "新しい遊び",
+          "甘いおやつ"
+        ],
+        "weakness": "楽しみな予定を詰め込みすぎる。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+        "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+        "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558",
+        "provenance": "assets/generated/photo-reference-amane-hikari-59fe6776110d.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 156,
+        "bust_cm": 84,
+        "waist_cm": 58,
+        "hip_cm": 86,
+        "shoulder_width_cm": 35,
+        "inseam_cm": 71,
+        "heads_tall": 7.1
+      },
+      "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+      "face_reference": {
+        "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+        "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+        "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-amane-hikari-6cff85d64828.jpg",
+        "sha256": "6cff85d6482860355defcb90af5cb85d7974f5d4a46437d3b91dfc9c8802c149",
+        "source_png_sha256": "efc5afa04569b656d348b20344847118e8460dd448676dba99d941b7af6844cc",
+        "provenance": "assets/generated/photo-reference-amane-hikari-6cff85d64828.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-01.jpg",
+        "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+        "bytes": 227358,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/01/receipt-supplied-a16815a7b7c8-59fe6776110d.json",
+          "receipt_sha256": "042f3a42a386b33cf3ab7704fb8f69c4d0a1552818ffd952da52253fbc8425ce",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-02.jpg",
+        "sha256": "d0ea10b9e89eb6f4e77f9a5f3def26d7b8e3299d1b6ca6476608810d567be1a8",
+        "bytes": 325020,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "7f6681d829c3f608d33ce5dfe12199e065adee91448935dc3e0fde7558dfa91a",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/02/receipt-supplied-7f6681d829c3-d0ea10b9e89e.json",
+          "receipt_sha256": "3406c3defa30afc6849cd5a1e23b45bf8b230aa0c0e30db6e1124e985d088684",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-03.jpg",
+        "sha256": "bf765b56a8cd075b1c7b3a7d3818c7da645236b27be2f86bfd47357adfa71111",
+        "bytes": 286569,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "06035e9b7b7f4fbf07f24a7e9ffe05f1b1b28b7fdcced5791837afd0d93fd7dc",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/03/receipt-supplied-06035e9b7b7f-bf765b56a8cd.json",
+          "receipt_sha256": "fb76da7b2568e961d7a872104cb643787c6e280b04c992f86c375682f946e0cc",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-04.jpg",
+        "sha256": "6cff85d6482860355defcb90af5cb85d7974f5d4a46437d3b91dfc9c8802c149",
+        "bytes": 215608,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "efc5afa04569b656d348b20344847118e8460dd448676dba99d941b7af6844cc",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/04/receipt-supplied-efc5afa04569-6cff85d64828.json",
+          "receipt_sha256": "4f5915720b33479cc959775b55ee2b74b4422192703cc6401835069d995d14d7",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-05.jpg",
+        "sha256": "af3a9de67c9895964b74c1d26a3968873368ebf351d23c38ac825ccb9607ab38",
+        "bytes": 266320,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "bac90538447e4656fd61e534533e7ae2ee9b46b2c1fd12ed4584b7c250bc113b",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/05/receipt-supplied-bac90538447e-af3a9de67c98.json",
+          "receipt_sha256": "7a858441b5202d58c54a5008b7a9def66fc8681aaa8cd81cede90609248748fe",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-06.jpg",
+        "sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb",
+        "bytes": 385868,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "f30622b9e5cd806190789aee5ba7d2921b6bbc40523835b4acc00f218fad47a3",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/06/receipt-supplied-f30622b9e5cd-22b6bcde3a24.json",
+          "receipt_sha256": "5e46daad50fd328fee1e423170c77745ce5a509c3726529ef522f5814b770086",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-07.jpg",
+        "sha256": "157d6ed58435ccec63b4df557a7ddca1b16b79212c31af2dd5776334b8e4a974",
+        "bytes": 218231,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "87d339f6a7c10272e3521f90f67f4fe0c71fec4208c32082575648b4570a90b1",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/07/receipt-supplied-87d339f6a7c1-157d6ed58435.json",
+          "receipt_sha256": "e1b2c30688a01b55eb3f58117211e1b35bc74b6209d0cf8984bc70c3ea41f747",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-08.jpg",
+        "sha256": "2b493c0fc5e7a41091de6a977e9ff6cf79b8f2acc393d8ab5348300c8921c948",
+        "bytes": 243803,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "bb7dc4440a6062ae33413ebef9fee852005b953ec154d8487a737e51cb5407b2",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/08/receipt-supplied-bb7dc4440a60-2b493c0fc5e7.json",
+          "receipt_sha256": "ae75836eec12bd024365bccf605181a61c578999a7002a13298b97d94498b2da",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-09.jpg",
+        "sha256": "ea128664af1643d1179c74fe75e4473f30e8385a752c10b0fe6bd097201d8c35",
+        "bytes": 259023,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "d9a57a8ee3884e89b9615911af9644952d6b24807d6581438d703672f973fb15",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/09/receipt-supplied-d9a57a8ee388-ea128664af16.json",
+          "receipt_sha256": "781cd0685ed0e2508aaef146e4cf0259f3a7d7c5c8c4bfad4df875dcaf7ff40d",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-city-lights-hikari-006-10.jpg",
+        "sha256": "07596da4518777758e9c8ff42e7a3986582b649ae15baa9139a0f091d4dcdd2c",
+        "bytes": 208973,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "2d791d6ba54868644248f3eb5c51e2ac5b463214ecde1a8775492451a4d2a01f",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-city-lights-hikari-006/10/receipt-supplied-2d791d6ba548-07596da45187.json",
+          "receipt_sha256": "19e9af822f4f10233fca847348c09c5659d5cb2630cd5fcd1a1012ac158dd812",
+          "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "6f4359f57523782fd80bb705fb4be90076b13a30390c3236b0c78548ab099825"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    }
+  ]
+}

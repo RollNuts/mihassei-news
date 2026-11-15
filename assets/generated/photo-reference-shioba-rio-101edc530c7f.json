@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "shioba-rio",
+  "role": "face",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "turn_key": "79a257d3-1f0c-4e7d-ac8e-a636249f0590",
+    "image_number": 3,
+    "path": "maintenance/photo-issues/november-off-clock-rio-002/01/source-134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece.png",
+    "sha256": "134062c27a1440f4cb993518ee696bc6e7cce4cf34258001dcabb09e0e9d0ece",
+    "bytes": 2284849,
+    "width": 1536,
+    "height": 1024,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-off-clock-rio-002-01.jpg",
+    "sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+    "bytes": 229357,
+    "width": 1200,
+    "height": 800
+  },
+  "reference_path": "assets/generated/photo-master-shioba-rio-101edc530c7f.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 166,
+    "bust_cm": 95,
+    "waist_cm": 63,
+    "hip_cm": 94,
+    "shoulder_width_cm": 38,
+    "inseam_cm": 77,
+    "heads_tall": 7.4
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Cream-knit cafe JPEG retains clear almond brown eyes, fine dark fringe, oval jaw, small straight nose and relaxed closed smile from the actualsourcePNG. Skin, hair and knit texture are photographic; no visible compression/geometry/crop defect. Suitable first reviewed face for fictional29-year-old.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-off-clock-rio-002/reference-jpeg-qa.json",
+    "sha256": "83ada327f1c7d9e4f58e89c68e95b4ab40a3477928ad7cd4fe66e7d1d79eb811"
+  }
+}

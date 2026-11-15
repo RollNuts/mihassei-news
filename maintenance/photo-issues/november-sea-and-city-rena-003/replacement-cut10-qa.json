@@ -1,0 +1,44 @@
+{
+  "source": {
+    "index": 1,
+    "download_path": "/Users/murakaminaoya/Downloads/ba362ef6-9c52-4756-8987-9457f67ea243.png",
+    "path": "/tmp/mihassei-weekly-seven-profiles-20261115/drafts/weekly-six-20261115/tsukishiro-rena/3e6a58a7/candidate-01.png",
+    "source_turn_id": "3e6a58a7-1874-4f6a-a828-3d301c123756",
+    "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "sha256": "c153a9473431bd105a63c41a0445522689dd0c126602a8707c0632b5f38abae1",
+    "bytes": 2000996
+  },
+  "reviewed_at_utc": "2026-11-15T02:03:20.694976+00:00",
+  "actual_full_original_displayed": true,
+  "sha256": "c153a9473431bd105a63c41a0445522689dd0c126602a8707c0632b5f38abae1",
+  "format": "PNG",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "decision": "accepted_for_selection",
+  "framing": "three_quarter",
+  "swimwear_visible": true,
+  "note": "Pale-blue tie bikini clearly visible, leaning forward at bright indoor window on white textured surface. Distinct scene/garment/action/light from repeated navy dinner closeup being replaced. Natural wet long dark hair/fine fringe, almond brown eyes, small straight nose, oval jaw and adult23-year-old design are consistent with face/body refs; leaning/camera angle changes bust appearance so numeric dimensions are not inferred. Skin/hair/fabric light natural, no logo/text/nude intimate anatomy/obvious dominant defect. Arms extend beyondframe naturally, not counted as a limb defect.",
+  "comparison_scope": 209,
+  "exact_byte_matches": [],
+  "exact_pixel_matches": [],
+  "nearest_comparisons": [
+    {
+      "path": "assets/generated/stolen-doorbell-returned-by-parcel.jpg",
+      "phash_distance": 18
+    },
+    {
+      "path": "assets/generated/night-art-exhibition-thirty-two-shadow-intruders.jpg",
+      "phash_distance": 22
+    },
+    {
+      "path": "assets/generated/shiroamadai-last-plate-twenty-seven-times.jpg",
+      "phash_distance": 22
+    },
+    {
+      "path": "assets/generated/supporter-guarantor-contract.jpg",
+      "phash_distance": 22
+    }
+  ]
+}

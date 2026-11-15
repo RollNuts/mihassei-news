@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "editions": [
+    {
+      "number": 1,
+      "slug": "issue-001",
+      "state": "published",
+      "legacy": false,
+      "title": "7人、それぞれの11月。",
+      "summary": "架空の成人モデル7人の写真と未来コラム。街、海辺、旅先の窓辺を巡る、7特集70枚。",
+      "published_at": "2026-11-15T11:28:23.877820+09:00",
+      "features": [
+        "november-city-lights-hikari-006",
+        "november-favorite-colors-sumire-007",
+        "november-sea-and-city-rena-003",
+        "november-first-detour-mio-004",
+        "winter-coat-swimsuit-saya-001",
+        "november-off-clock-rio-002",
+        "november-a-longer-breath-yuki-005"
+      ],
+      "ranking": {
+        "schema_version": 1,
+        "publication_date_jst": "2026-11-15",
+        "window": {
+          "start_date_jst": "2026-11-08",
+          "end_date_jst": "2026-11-14",
+          "timezone": "Asia/Tokyo",
+          "unit": "page-view"
+        },
+        "status": "measured",
+        "reason": null,
+        "seed": "40bc8cfe9b2bd6bbc2fb8cb23ee61e25",
+        "retrieved_at_utc": "2026-11-15T02:27:13.051502+00:00",
+        "source": {
+          "kind": "daily-public-api",
+          "issue_page_views": {
+            "photo-issue:winter-coat-swimsuit-saya-001": 0
+          },
+          "daily": [
+            {
+              "date_jst": "2026-11-08",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-09",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-10",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-11",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-12",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-13",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            },
+            {
+              "date_jst": "2026-11-14",
+              "issue_page_views": {
+                "photo-issue:winter-coat-swimsuit-saya-001": 0
+              }
+            }
+          ]
+        },
+        "models": [
+          {
+            "model_id": "nagino-saya",
+            "feature_keys": [
+              "photo-issue:winter-coat-swimsuit-saya-001"
+            ],
+            "page_views": 0,
+            "status": "measured"
+          },
+          {
+            "model_id": "shioba-rio",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          },
+          {
+            "model_id": "tsukishiro-rena",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          },
+          {
+            "model_id": "hanase-mio",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          },
+          {
+            "model_id": "shiramine-yuki",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          },
+          {
+            "model_id": "amane-hikari",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          },
+          {
+            "model_id": "kiritani-sumire",
+            "feature_keys": [],
+            "page_views": 0,
+            "status": "debut"
+          }
+        ],
+        "previous_order": [],
+        "order": [
+          "amane-hikari",
+          "kiritani-sumire",
+          "tsukishiro-rena",
+          "hanase-mio",
+          "nagino-saya",
+          "shioba-rio",
+          "shiramine-yuki"
+        ]
+      }
+    }
+  ]
+}
