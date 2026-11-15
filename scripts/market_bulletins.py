@@ -12,7 +12,7 @@ from hashlib import sha256
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlencode
 from xml.etree import ElementTree as ET
 import json
 import math
@@ -300,6 +300,10 @@ def _picks(report):
 
 def render_market_bulletin(report, layout, outlooks=()):
     slot_time, slot_name = SLOTS[report["slot"]]
+    share_url = "https://x.com/intent/tweet?" + urlencode({
+        "text": f'{report["title"]}｜未来相場観測室（実データの市場分析）',
+        "url": SITE + bulletin_url(report),
+    })
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
@@ -331,6 +335,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         + forecast_section + _market_conditions(report) + "".join(parts)
         + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
+        + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
+          'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a></p>'
         '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
         '</div></div>'
     )
