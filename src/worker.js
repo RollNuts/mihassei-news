@@ -29,6 +29,22 @@ function photoIssueSlug(key) {
 function validContentKey(key) {
   return validArticle(key) || photoIssueSlug(key)!==null;
 }
+// Market comments reuse the existing moderation DO, with disjoint identities.
+// Map the key to a *published static page* before accepting a POST.
+// Do not fall back to /articles/ for a market key or permit arbitrary paths.
+function publishedCommentPage(key) {
+  if(!validArticle(key))return null;
+  for(const [prefix,base] of [
+    ["market-episode-","/serials/market-lab/"],
+    ["market-briefing-","/serials/market-lab/briefings/"]
+  ]) {
+    if(key.startsWith(prefix)) {
+      const slug=key.slice(prefix.length);
+      return validArticle(slug) ? base+slug+"/" : null;
+    }
+  }
+  return "/articles/"+key+"/";
+}
 async function publishedPhotoIssue(key, origin, assets) {
   const slug=photoIssueSlug(key);
   if(slug===null)return false;
@@ -775,11 +791,14 @@ export default {
         }
       }
       if(isComments){
-        // Keep news-page verification; photo posts use the generated published
-        // allowlist above. Reports/removals still work after an issue is retired.
+        // News and factual market posts must point to an actual published
+        // page. Photo posts use their existing generated allowlist above.
+        // Reports/removals still work after a story or issue is retired.
         if(req.method==="POST" && url.pathname==="/api/comments" &&
-           payload?.action==="post" && validArticle(payload.article)){
-          const page=new URL("/articles/"+payload.article+"/",url);
+           payload?.action==="post" && photoIssueSlug(payload.article)===null){
+          const route=publishedCommentPage(payload.article);
+          if(!route)return json({error:"記事の指定が不正です"},400);
+          const page=new URL(route,url);
           const exists=await env.ASSETS.fetch(new Request(page.toString()));
           if(!exists.ok)return json({error:"記事が見つかりません"},404);
         }
