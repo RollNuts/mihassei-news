@@ -1,5 +1,72 @@
 [
   {
+    "slug": "swapped-suitcases-drive-themselves-to-lost-property",
+    "category": "事件",
+    "flash": "自走スーツケースが忘れ物窓口へ",
+    "fiction_company": "架空の鉄道施設「潮羽駅」",
+    "art": "cards",
+    "fiction_at": "2031-11-15T12:38:32+09:00",
+    "published_at": "2026-11-15T12:38:32+09:00",
+    "title": "駅で自走スーツケース2台が「忘れ物窓口」へ　取り違えた旅行者、後ろから追う",
+    "summary": "2031年、架空の潮羽駅で旅行者2人が似たスーツケースを取り違えた。引いていた人の腕輪と認証が合わず止まったケースは、駅員が専用返却レーンへ入れると2台そろって忘れ物窓口まで自走。持ち主の2人が、その後を歩いて追った。",
+    "paragraphs": [
+      "2031年11月15日、架空の潮羽駅で「スーツケースが急に動かなくなった」と旅行者2人が駅員に駆け寄った。旅行帰りの三上葵（27）と佐伯凌（31）は、駅の休憩スペースで並べた同型の銀色スーツケースを互いに取り違えていた。持ち手を引いて歩き始めたところ、2台とも数メートル先で動かなくなった。",
+      "潮羽駅は今月、忘れ物の取り違えを減らすため、自走式スーツケースを窓口へ戻す「帰り道レーン」を構内の一部に設けた。登録された持ち主の腕輪とケースの認証が合わなければ車輪が停止し、駅員が事情と通路の安全を確認した後だけ専用レーンで自走できる。人混みの一般通路を荷物だけで走らせる仕組みではない。",
+      "葵が腕輪を近づけても手元のケースは動かず、凌が同じことを試しても反応はなかった。駅員が2台の登録を調べると、葵のケースを凌が、凌のケースを葵が引いていたことが判明。2人は顔を見合わせ、「盗まれたと思いました」「私もです」と笑った。",
+      "駅員が2台を返却レーンの入口へ並べて運転を許可すると、ケースは黄色い線で区切られた通路をゆっくり進み、そろって忘れ物窓口へ向かった。後ろを歩く葵が思わず追い抜こうとすると、係員が「荷物も人も歩く速さでお願いします」と声を掛けた。窓口前では、先に着いた2台だけが行儀よく並んだ。",
+      "窓口で本人の腕輪と登録記録を照合し、スーツケースはそれぞれの持ち主へ戻された。2人はようやく本来の荷物を引いて歩き出したものの、今度は駅の出口が分からず立ち止まった。葵が案内係に聞いた。「人間用の帰り道レーンは、どちらですか」。"
+    ],
+    "source": {
+      "kind": "企業公式プレスリリース（落とし物検索）",
+      "publisher": "株式会社find",
+      "published_at": "2026-11-10T10:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000132.000104939.html",
+      "topic": "株式会社findは2026年11月10日、AIを活用する落とし物検索サービスの利用拠点が全国47都道府県に広がったと公表した。自動追従スーツケースは別会社の製品情報にも見られる（https://www.airwheel.net/jp/product/SR5）が、2031年の潮羽駅、腕輪による取り違え停止、駅員が許可する返却レーン、登場人物と事件はすべて創作であり、実在企業や施設の実運用を示さない。"
+    },
+    "scene_prompt": "Two adult Japanese travelers, a woman age 27 and a man age 31, walk behind two small self-driving silver suitcases toward a lost-property counter at a fictional train station. Photorealistic candid news photograph, a separated indoor return lane marked by plain yellow floor stripes, a middle-aged station attendant guiding the safe movement, natural November coats, plausible luggage wheels and handles, ordinary station lighting, natural faces and hands, sense of a slightly amusing situation, horizontal 16:9 documentary realism, no readable text, logos, brand marks, or recognizable real people.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "忘れ物",
+      "自走スーツケース",
+      "駅"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "スーツケース",
+      "忘れ物"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "駅でスーツケースを取り違えた2人。荷物は自分で忘れ物窓口へ戻り、持ち主だけが出口で迷った。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "2026年11月10日、落とし物のAI検索サービスが47都道府県に利用拠点を広げたという企業公式発表があった",
+      "target": "持ち主を取り違えた自走スーツケースが駅の忘れ物窓口に戻れる専用レーン",
+      "action": "駅員が腕輪認証の不一致を確認し、止まった2台を安全な返却レーンから窓口へ自走させる",
+      "outcome": "スーツケース2台は本人より先に窓口へ並び、返却を受けた旅行者2人は出口を尋ねる"
+    },
+    "reader_clarity": {
+      "who": "旅行者",
+      "action": "似たスーツケースを取り違え、駅員が専用レーンで窓口へ戻した荷物の後ろを歩く",
+      "oddity": "忘れ物のスーツケースが自分で窓口へ届き、持ち主の旅行者だけが帰り道に迷う"
+    },
+    "behavior_basis": {
+      "motive": "取り違えた荷物を誤った相手へ持ち去らず、持ち主を確認して返すため",
+      "ordinary_alternative": "駅員が停止した荷物を手で運び、窓口で持ち主を照合する",
+      "why_not": "自走対応の荷物は安全確認済みの専用レーンに限り自力で戻せるため、駅員が同伴せず窓口へ送れる",
+      "evidence_quote": "登録された持ち主の腕輪とケースの認証が合わなければ車輪が停止し、駅員が事情と通路の安全を確認した後だけ専用レーンで自走できる。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年にAI落とし物検索が全国の利用拠点へ広がり、自動追従スーツケースの実物技術も存在する",
+      "continuation_force": "駅の忘れ物返却を短時間で済ませたい需要と、小型移動機器を限定通路で安全に使う試みが続く可能性",
+      "future_result": "2031年、駅員の許可で自走ケースが返却レーンを通り、持ち主より先に忘れ物窓口へ届く"
+    },
+    "publication_slot": "2026-11-15T09:30:00+09:00"
+  },
+  {
     "slug": "remote-basketball-final-fans-walk-behind-hoop",
     "category": "スポーツ",
     "flash": "遠くの体育館でゴール裏観戦",
