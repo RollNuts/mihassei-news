@@ -1076,7 +1076,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     broadcast_script = (script_tag("news-broadcast.js")
                         if path == "/" or (kind == "story" and article is not None
                                            and article_clip(article)) else "")
-    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue") else ""
+    comments_script = script_tag("comments.js") if kind in ("story", "photo_issue", "serial_episode", "market_bulletin") else ""
     comment_activity_script = (script_tag("comment-activity.js")
                                if path == "/" else "")
     bookmarks_script = (script_tag("bookmarks.js")
