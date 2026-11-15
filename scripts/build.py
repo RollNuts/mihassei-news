@@ -823,9 +823,9 @@ def social_image(article):
             return "/photos/" + article["slug"] + ".jpg"
         version = reviewed_scene_version(article, root=BASE) or "20261103-topic2"
         return "/og/articles/" + article["slug"] + ".png?v=" + version
-    # Use a physically new raster URL: X caches both page cards and image URLs.
-    # The legacy brand.png remains available for previously published links.
-    return "/og/brand-home-20261115-v4.png"
+    # Preserve the existing shared card URL on non-home pages.
+    # Only the homepage gets the refreshed URL in layout().
+    return "/og/brand-launch-20261102-v3.png"
 
 
 def layout(title, desc, path, main, active="", kind="website", article=None, feed_url=None, collection=None, serial=None, serial_collection=None, indexable=True, photo_issue=None, photo_model=None, photo_cover_issue=None, photo_model_image=None, photo_edition=None, photo_parent=None):
@@ -890,7 +890,8 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     }))
     issue_path = re.fullmatch(r"/issues/(\d{4}-\d{2}-\d{2})/", path)
     og_image = SITE + ("/og/issues/" + issue_path.group(1) + ".png"
-                       if issue_path else social_image(article))
+                       if issue_path else
+                       ("/og/brand-home-20261115-v4.png" if path == "/" else social_image(article)))
     if serial is not None:
         name = serial["slug"] + ("-" + serial["episode"] if serial.get("episode") else "")
         og_image = SITE + "/og/serials/" + name + ".png"
