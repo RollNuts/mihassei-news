@@ -246,11 +246,11 @@ class MotionWorkflowTests(unittest.TestCase):
         self.assertIn("        uses: actions/upload-artifact@v4", artifact)
         self.assertIn("          retention-days: 1", artifact)
         paths = re.findall(r"^            (.+)$", artifact, re.M)
-        self.assertEqual(len(paths), 9)
+        self.assertEqual(len(paths), 10)
         for path in paths:
             with self.subTest(path=path):
                 self.assertTrue(path.startswith("${{ runner.temp }}/news-caster-preview/"))
-                self.assertIn(path.rsplit("/", 1)[1], {"presenter-preview.mp4", "narration-full.wav",
+                self.assertIn(path.rsplit("/", 1)[1], {"presenter-preview.mp4", "source-face-crop.png", "model-face-input.png",
                                                       "narration-three-seconds.wav", "receipt.json", "preview.log",
                                                       "progress.json", "first-frame.jpg", "mouth-mask.png", "motion-check.json"})
                 self.assertNotIn("*", path)
