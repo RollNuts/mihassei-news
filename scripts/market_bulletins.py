@@ -309,8 +309,26 @@ def render_market_bulletin(report, layout, outlooks=()):
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
-    forecast_section = (render_market_outlook_board(outlooks, limit=1, before=published_at)
-                        if latest_forecast else '<p class="daily-forecast-link"><a href="/serials/market-lab/outlooks/">毎日の予測と検証履歴を見る</a></p>')
+    if latest_forecast:
+        current = latest_forecast[0]
+        forecast = current["forecast"]
+        changes = current["updates"]
+        current_stance = changes[-1]["stance"] if changes else forecast["stance"]
+        forecast_section = (
+            '<section class="market-briefing-outlook" id="daily-forecasts">'
+            '<h2>この日の市場見通し</h2>'
+            f'<p>{escape(forecast["statement"])}</p>'
+            f'<p class="market-briefing-forecast-meta">当初：{escape(forecast["stance"])} ／ '
+            f'直近の見方：{escape(current_stance)} ／ '
+            f'確かめる日：<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
+            '<a href="/serials/market-lab/outlooks/">予測の根拠と、その後の変更を読む →</a>'
+            '</section>'
+        )
+    else:
+        forecast_section = (
+            '<p class="market-briefing-more"><a href="/serials/market-lab/outlooks/">'
+            '市場の見通しと検証記録を読む →</a></p>'
+        )
     parts = []
     for i, section in enumerate(report["sections"]):
         parts.append(f'<section class="serial-prose-section"><h2>{escape(section["heading"])}</h2>')
