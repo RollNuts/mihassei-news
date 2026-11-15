@@ -1,0 +1,808 @@
+{
+  "checked_at": "2026-11-15T01:14:56.695186+00:00",
+  "scope": {
+    "caster_preview_files": 1,
+    "newspaper_approved_files": 8,
+    "newspaper_generated_files": 107,
+    "weekly_files": 10,
+    "candidate_files": 10,
+    "public_comparison_total": 126,
+    "previous_shioba-rio_files": 10,
+    "previous_tsukishiro-rena_files": 13,
+    "previous_hanase-mio_files": 18
+  },
+  "method": "Exact byte/source SHA-256 and decoded RGB pixel SHA;64-bit pHash screening via32x32 grayscale Lanczos low-frequency8x8 DCT. Does not detect all crops/collage reuse; no identity/semantic acceptance.",
+  "candidates": [
+    {
+      "path": "fd941547/candidate-01.png",
+      "sha256": "e29d4096ce7208313be9e8d7e85911274a551e4812d6baf2912e0590c2be9bfe",
+      "pixel_sha256": "4d7854a53975124b6006f5291097ceab023e9002b946295c1e5ebf76585922ba",
+      "phash64": "8e41040a3ee3fa7f",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 1837228,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 1,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/photos/robot-job-hopping.jpg",
+          "kind": "newspaper_approved",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/aerobics-final-silent-thirty-seconds-team-comeback.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/color-changing-coat-one-garment-three-colors.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-08.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-04.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-06.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 26
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-02.png",
+      "sha256": "cee83dd2c768ff16202ee70b3118144c0d9f28ad5ddad3f634d18759abbb8bde",
+      "pixel_sha256": "e01caca39055e484437ea131644723d3ff70225b74a8cbf3ea7d0969cfd8bedb",
+      "phash64": "17533d7610b9e88d",
+      "width": 1536,
+      "height": 1024,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2272308,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 2,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/photos/fan-theories-write-final.jpg",
+          "kind": "newspaper_approved",
+          "phash64_distance": 18
+        },
+        {
+          "path": "assets/generated/apology-before-incident.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/sale-discount-savings-receipt-framed.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-09.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-03.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/ce467b2a/candidate-08.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 24
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-03.png",
+      "sha256": "41ec27bc26ad70befa22a209098ac5c14326db7544782bca5e6360ff4cebd30a",
+      "pixel_sha256": "8d5023a5ab4c7be6989085cc3ce9a90095a23aec16ead4f631ada04e2bee45f5",
+      "phash64": "6e63ae8ab2b05555",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 1906423,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 3,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/community-workshop-builds-bookshelf-before-introductions.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 18
+        },
+        {
+          "path": "assets/photos/apology-before-incident.jpg",
+          "kind": "newspaper_approved",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/drama-final-five-minutes-in-cinemas.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-04.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-01.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 28
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-03.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 28
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-04.png",
+      "sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+      "pixel_sha256": "46df1eee6587c2768bcc22ae5897c56d4dfd7798834e1245e5bf1d11532610de",
+      "phash64": "18333db3285e54f9",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2091985,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 4,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/photos/ai-chooses-a-managers.jpg",
+          "kind": "newspaper_approved",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/buzzword-award-what-does-it-mean-wins.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/community-workshop-builds-bookshelf-before-introductions.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-06.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-06.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 24
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-05.png",
+      "sha256": "105928affa798c0426c034783f6e618f2802bd657f650e064a9ca2211a3fe3f5",
+      "pixel_sha256": "052ad95a83e169c60238339e49d1a2c0b38fe32fedaf3bdf4ca870ed2cf4fbdf",
+      "phash64": "333d3e65188fc44d",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 1994850,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 5,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/comedy-show-profits-from-silence.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/double-speed-drama-explainer-marathon.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-09.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-03.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-06.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 24
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-06.png",
+      "sha256": "fbae8beae5959a8f9572132543b8803746a707b3f9d897f2f4f8515e09ceb60a",
+      "pixel_sha256": "d53b845e688355b5c8adb741f205c0bbd55e55326932f06fe28d333d709b43db",
+      "phash64": "7310386f6922c7e7",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2046647,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 6,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/sleep-advice-livestream-until-two-am.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 16
+        },
+        {
+          "path": "assets/generated/ai-chooses-a-managers.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/fan-theories-write-final.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-05.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 20
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-04.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/ce467b2a/candidate-02.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 22
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-07.png",
+      "sha256": "0b72250301042b6524053eb91451fbaa20cff154b09ab668c367649897f2df54",
+      "pixel_sha256": "0871a01508de736a4ce484964b346429e04bd3c2e2bcba2fabf5db88bcbc4c9e",
+      "phash64": "aa2a4ae5e58e99b1",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 1858646,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 7,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/datacenter-unbuilt-ribbon-cutting.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
+          "kind": "weekly",
+          "phash64_distance": 24
+        },
+        {
+          "path": "assets/generated/bakery-no-important-announcement-panic.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 24
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-02.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/aac2b31d/candidate-08.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-12.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 24
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-08.png",
+      "sha256": "7e73e061c22265a454595dd9729f2cdf8acd77fd2a6fee32e1d759bbb4641e07",
+      "pixel_sha256": "31ea450c451b17a158ecb20fe4f2a9949b0ed25146f30b8674b6e45ae0de6d4c",
+      "phash64": "636137c6980f791d",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2244450,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 8,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/film-village-all-stars-no-extras.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/mortgage-bank-clerk-invited-to-live-in.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        },
+        {
+          "path": "assets/generated/nikkei-plunge-hundred-year-hold-minute-check.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-07.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 18
+        },
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-08.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 18
+        },
+        {
+          "path": "drafts/weekly-six-20261115/hanase-mio/ce467b2a/candidate-08.png",
+          "kind": "hanase-mio",
+          "phash64_distance": 20
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-09.png",
+      "sha256": "9d4b9f811f2d28e38fbca74cde756673c884ad0e7dbc873260b2608f1f6039d9",
+      "pixel_sha256": "3011ba6d8d25d910e753e2843b863b49e207f84f0f2c78358b15b5426737cb77",
+      "phash64": "fd8d5796b1120b29",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2640115,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 9,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/air-purifying-sofa-backrest-filter-drawer.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/spy-captive-escapes-before-rescue.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/photos/ai-chair-removes-executives.jpg",
+          "kind": "newspaper_approved",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-07.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-08.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 26
+        },
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-08.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 26
+        }
+      ]
+    },
+    {
+      "path": "fd941547/candidate-10.png",
+      "sha256": "4a844faeb596bdbe6d0eb793bdf570ba61519911edb82f98fd7f34b090c62e42",
+      "pixel_sha256": "a41cb57d525247fa050abb2d753c2133f0276df673aed1ac9182d6ca57a6e48d",
+      "phash64": "c15327e0e7851e6d",
+      "width": 1086,
+      "height": 1448,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2110686,
+      "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86786-cc10-83ee-bf77-00e22698de42",
+      "source_turn_id": "fd941547-6fd3-4c58-830b-e6fa8b8cff9d",
+      "source_image_index": 10,
+      "download_source_sha_matches": true,
+      "declared_exact_source_or_jpeg_matches": [],
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_existing": [
+        {
+          "path": "assets/generated/bring-your-own-room-hotel-parking-spaces.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/park-recorded-laughter-real-kids-shushed.jpg",
+          "kind": "newspaper_generated",
+          "phash64_distance": 20
+        },
+        {
+          "path": "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
+          "kind": "weekly",
+          "phash64_distance": 22
+        }
+      ],
+      "nearest_previous": [
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-03.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shioba-rio/candidate-10.png",
+          "kind": "shioba-rio",
+          "phash64_distance": 24
+        },
+        {
+          "path": "drafts/weekly-six-20261115/tsukishiro-rena/candidate-04.png",
+          "kind": "tsukishiro-rena",
+          "phash64_distance": 24
+        }
+      ]
+    }
+  ],
+  "nearest_candidate_pairs": [
+    {
+      "a": "fd941547/candidate-02.png",
+      "b": "fd941547/candidate-05.png",
+      "phash64_distance": 22,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-05.png",
+      "b": "fd941547/candidate-08.png",
+      "phash64_distance": 22,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-02.png",
+      "b": "fd941547/candidate-08.png",
+      "phash64_distance": 24,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-05.png",
+      "b": "fd941547/candidate-06.png",
+      "phash64_distance": 24,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-01.png",
+      "b": "fd941547/candidate-03.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-03.png",
+      "b": "fd941547/candidate-08.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-04.png",
+      "b": "fd941547/candidate-05.png",
+      "phash64_distance": 26,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-02.png",
+      "b": "fd941547/candidate-04.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-08.png",
+      "b": "fd941547/candidate-09.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-08.png",
+      "b": "fd941547/candidate-10.png",
+      "phash64_distance": 28,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-01.png",
+      "b": "fd941547/candidate-02.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-01.png",
+      "b": "fd941547/candidate-08.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-01.png",
+      "b": "fd941547/candidate-10.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-02.png",
+      "b": "fd941547/candidate-06.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-03.png",
+      "b": "fd941547/candidate-04.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-03.png",
+      "b": "fd941547/candidate-10.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-04.png",
+      "b": "fd941547/candidate-06.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-04.png",
+      "b": "fd941547/candidate-08.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-07.png",
+      "b": "fd941547/candidate-10.png",
+      "phash64_distance": 30,
+      "exact_sha": false,
+      "exact_pixels": false
+    },
+    {
+      "a": "fd941547/candidate-02.png",
+      "b": "fd941547/candidate-03.png",
+      "phash64_distance": 32,
+      "exact_sha": false,
+      "exact_pixels": false
+    }
+  ],
+  "all_exact_internal_duplicates": [],
+  "existing_files": [
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-01.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-02.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-03.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-04.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-05.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-06.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-07.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-08.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-09.jpg",
+    "assets/generated/photo-issue-winter-coat-swimsuit-saya-001-10.jpg",
+    "assets/generated/aerobics-final-silent-thirty-seconds-team-comeback.jpg",
+    "assets/generated/ai-chair-removes-executives.jpg",
+    "assets/generated/ai-chooses-a-managers.jpg",
+    "assets/generated/air-purifying-sofa-backrest-filter-drawer.jpg",
+    "assets/generated/airport-baggage-robot-leaves-upper-shelves-empty.jpg",
+    "assets/generated/apology-before-incident.jpg",
+    "assets/generated/ar-sport-fans-vote-crosswind-finals.jpg",
+    "assets/generated/bakery-no-important-announcement-panic.jpg",
+    "assets/generated/basketball-opening-day-game-seven.jpg",
+    "assets/generated/black-friday-preparty-budget-gone.jpg",
+    "assets/generated/bring-your-own-room-hotel-parking-spaces.jpg",
+    "assets/generated/buzzword-award-what-does-it-mean-wins.jpg",
+    "assets/generated/cafe-regular-dislikes-usual-cinnamon-latte.jpg",
+    "assets/generated/chance-meeting-cafe-reservation-full.jpg",
+    "assets/generated/cherry-tree-stethoscope-municipal-inspection.jpg",
+    "assets/generated/christmas-done-for-you-family-decorates-boxes.jpg",
+    "assets/generated/color-changing-coat-one-garment-three-colors.jpg",
+    "assets/generated/comedy-live-subtitles-spoil-punchlines-three-seconds.jpg",
+    "assets/generated/comedy-show-profits-from-silence.jpg",
+    "assets/generated/community-workshop-builds-bookshelf-before-introductions.jpg",
+    "assets/generated/companies-apply-for-jobseeker-final-interview.jpg",
+    "assets/generated/council-trials-new-sidewalk-before-vote.jpg",
+    "assets/generated/craft-exhibition-empties-as-works-finish.jpg",
+    "assets/generated/crosswalk-photo-captcha-human-stuck.jpg",
+    "assets/generated/custom-work-apps-four-week-handover.jpg",
+    "assets/generated/datacenter-unbuilt-ribbon-cutting.jpg",
+    "assets/generated/delivery-locker-zero-redelivery-waiting-line.jpg",
+    "assets/generated/diner-refund-customer-paying-escape.jpg",
+    "assets/generated/double-speed-drama-explainer-marathon.jpg",
+    "assets/generated/drama-final-five-minutes-in-cinemas.jpg",
+    "assets/generated/family-dinner-gacha-243-rejections.jpg",
+    "assets/generated/family-line-replies-four-different-station-exits.jpg",
+    "assets/generated/fan-theories-write-final.jpg",
+    "assets/generated/farm-friendship-across-species.jpg",
+    "assets/generated/father-tries-own-overpacked-bento.jpg",
+    "assets/generated/film-village-all-stars-no-extras.jpg",
+    "assets/generated/five-star-reviews-of-returned-humidifiers.jpg",
+    "assets/generated/floating-warehouse-vanishes-after-berth-swap.jpg",
+    "assets/generated/food-rescue-shops-manufacture-leftovers.jpg",
+    "assets/generated/free-play-event-parents-timetable-children-waiting.jpg",
+    "assets/generated/fridge-checkin-five-years-only-opening-times.jpg",
+    "assets/generated/historical-lookalike-contest-dog-wins.jpg",
+    "assets/generated/idol-ice-kept-in-freezer.jpg",
+    "assets/generated/joint-party-slate-one-vote-three-claims.jpg",
+    "assets/generated/lion-king-prequel-watch-order-meeting.jpg",
+    "assets/generated/local-souvenir-cannot-leave-town.jpg",
+    "assets/generated/midterm-prediction-notebook-full-of-holes.jpg",
+    "assets/generated/mortgage-bank-clerk-invited-to-live-in.jpg",
+    "assets/generated/municipal-shared-government-answers.jpg",
+    "assets/generated/music-ai-friends-monopolize-the-song.jpg",
+    "assets/generated/music-show-surprise-face-rehearsal.jpg",
+    "assets/generated/music-special-forty-days-of-lineup-announcements.jpg",
+    "assets/generated/night-art-exhibition-thirty-two-shadow-intruders.jpg",
+    "assets/generated/nikkei-plunge-hundred-year-hold-minute-check.jpg",
+    "assets/generated/off-grid-lodge-sells-disconnection.jpg",
+    "assets/generated/office-face-to-face-day-video-call-echo.jpg",
+    "assets/generated/paid-conversation-checkout-shoppers-chat-in-line.jpg",
+    "assets/generated/park-recorded-laughter-real-kids-shushed.jpg",
+    "assets/generated/patrol-teams-mistake-each-other-for-suspects.jpg",
+    "assets/generated/personalized-hidden-harbor-crowded-by-tourists.jpg",
+    "assets/generated/press-conference-metaphor-viral.jpg",
+    "assets/generated/pressure-office-mood-forecast.jpg",
+    "assets/generated/quiet-reply-dating-matches.jpg",
+    "assets/generated/recycled-metal-electrodes-carry-previous-work-history.jpg",
+    "assets/generated/research-completed-opening-day.jpg",
+    "assets/generated/rest-day-concert-sells-out-without-performers.jpg",
+    "assets/generated/rice-cooker-price-reservation-vouchers-sell-first.jpg",
+    "assets/generated/robot-job-hopping.jpg",
+    "assets/generated/sale-discount-savings-receipt-framed.jpg",
+    "assets/generated/sand-dune-race-radar-reroutes-ridge-final.jpg",
+    "assets/generated/scolding-ai-one-line-summary-boss-eighteen-pages.jpg",
+    "assets/generated/self-checkout-regular-awarded-unpaid-staff.jpg",
+    "assets/generated/self-driving-suitcase-reports-missing-owner.jpg",
+    "assets/generated/self-oseibo-recipient-refuses-own-gift.jpg",
+    "assets/generated/shiroamadai-last-plate-twenty-seven-times.jpg",
+    "assets/generated/shopping-cart-home-ride-shared-shuttle.jpg",
+    "assets/generated/sleep-advice-livestream-until-two-am.jpg",
+    "assets/generated/sns-quit-support-site-hundred-day-login-award.jpg",
+    "assets/generated/solar-window-glass-factory-first-eight-panels.jpg",
+    "assets/generated/spy-captive-escapes-before-rescue.jpg",
+    "assets/generated/stock-rebound-confetti-still-in-red.jpg",
+    "assets/generated/stolen-doorbell-returned-by-parcel.jpg",
+    "assets/generated/suica-penguin-eco-bags-stay-sealed.jpg",
+    "assets/generated/supermarkets-buy-back-empty-pet-bottles.jpg",
+    "assets/generated/supporter-guarantor-contract.jpg",
+    "assets/generated/surprise-birthday-organized-by-guest-of-honor.jpg",
+    "assets/generated/sweet-potato-chorus-starts-too-late.jpg",
+    "assets/generated/three-towns-share-mobile-event-radio.jpg",
+    "assets/generated/tori-no-ichi-kumade-blocks-store-entrance.jpg",
+    "assets/generated/tunnel-robots-pass-concrete-pour-three-sections.jpg",
+    "assets/generated/unsold-coat-storage-fees-exceed-sale.jpg",
+    "assets/generated/unwanted-call-protection-calls-back.jpg",
+    "assets/generated/variety-700-guests-only-introductions.jpg",
+    "assets/generated/volleyball-team-lunch-plate-merch.jpg",
+    "assets/generated/volunteer-award-ceremony-visits-community-kitchen.jpg",
+    "assets/generated/walking-points-past-own-front-door.jpg",
+    "assets/generated/xr-town-letter-changes-next-visitors-story.jpg",
+    "assets/generated/zero-redelivery-residents-collect-parcels.jpg",
+    "assets/generated/friendly-cup-no-standings-four-fan-trophies.jpg",
+    "assets/generated/indoor-beach-friends-exchange-ripples.jpg",
+    "assets/generated/offline-tape-restores-missing-contract-revision.jpg",
+    "assets/generated/three-shipping-firms-share-space-steel-sails.jpg",
+    "assets/generated/fan-kumade-tours-concert-halls-before-audience.jpg",
+    "assets/generated/mountain-road-transplants-meadow-topsoil-blocks.jpg",
+    "assets/generated/autumn-ridge-path-rests-riverside-trail-opens.jpg",
+    "assets/generated/matchmaking-ai-bios-same-hobbies-handwritten-line.jpg",
+    "assets/generated/remote-basketball-final-fans-walk-behind-hoop.jpg",
+    "assets/photos/ai-chooses-a-managers.jpg",
+    "assets/photos/pressure-office-mood-forecast.jpg",
+    "assets/photos/ai-chair-removes-executives.jpg",
+    "assets/photos/robot-job-hopping.jpg",
+    "assets/photos/supporter-guarantor-contract.jpg",
+    "assets/photos/apology-before-incident.jpg",
+    "assets/photos/research-completed-opening-day.jpg",
+    "assets/photos/fan-theories-write-final.jpg",
+    "assets/casters/newsreader-preview.jpg"
+  ]
+}

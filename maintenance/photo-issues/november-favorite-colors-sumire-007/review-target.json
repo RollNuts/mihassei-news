@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-favorite-colors-sumire-007",
+    "number": 7,
+    "title": "迷う時間も、好きな色。",
+    "summary": "カップの色から、夜のドレスまで。桐谷すみれが小さな組合せを楽しむ、街と海辺の10枚。",
+    "column": [
+      "2031年11月。服の色を壁に映して見比べられるようになってから、私は出かける前によく迷うようになりました。便利になれば早く決まるはずなのに、候補が増えると楽しくなってしまうんです。今朝はまず、カップの色だけ決めました。",
+      "湯を注ぐあいだ、古い棚と新しい道具の色を眺めていました。全部を同じ色にそろえるより、少し違うものが隣にあるほうが落ち着きます。服も、たぶん同じ。きれいにそろえすぎないほうが、自分らしい気がします。",
+      "暖かな海沿いでは、白い服と青い花柄を選びました。背景の色まで考えたつもりなのに、風が吹くと裾の形は予定どおりになりません。そのくらいのずれがあるほうが、歩いている感じがして好きです。",
+      "夜の支度は、やっぱり少し迷いました。最後に選んだのは黒いドレス。ひとつ決めたら、残りは引き算でいい。そう思って出かけたのに、店の灯りを見たら、また別の色を試したくなりました。"
+    ],
+    "model_id": "kiritani-sumire",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "街の台所、海辺と夜のテラス",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した日々の装い・コーヒー・海辺・夜の街の独立写真10枚を組み合わせる。明瞭な水着はビキニ1枚で、ニットやレースのワンピースを水着へ数え替えず、配色と衣服の変化を楽しむ既存セットを採用する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "桐谷すみれ（26歳、架空の成人）。日中の台所で、金属のケトルからフィルターへ湯を注ぐ。",
+        "caption": "日中の台所で、金属のケトルからフィルターへ湯を注ぐ。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。日中の台所で、金属のケトルからフィルターへ湯を注ぐ。"
+      },
+      {
+        "id": "02",
+        "description": "桐谷すみれ（26歳、架空の成人）。白いレースのワンピースで、晴れた海沿いの道を振り返る。",
+        "caption": "白いレースのワンピースで、晴れた海沿いの道を振り返る。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。白いレースのワンピースで、晴れた海沿いの道を振り返る。"
+      },
+      {
+        "id": "03",
+        "description": "桐谷すみれ（26歳、架空の成人）。黒いドレスで、食卓から頬に手を添えて視線を向ける。",
+        "caption": "黒いドレスで、食卓から頬に手を添えて視線を向ける。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。黒いドレスで、食卓から頬に手を添えて視線を向ける。"
+      },
+      {
+        "id": "04",
+        "description": "桐谷すみれ（26歳、架空の成人）。薄いグレーのビキニでプールサイドに座り、少し身を乗り出す。",
+        "caption": "薄いグレーのビキニでプールサイドに座り、少し身を乗り出す。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。薄いグレーのビキニでプールサイドに座り、少し身を乗り出す。"
+      },
+      {
+        "id": "05",
+        "description": "桐谷すみれ（26歳、架空の成人）。金色のサテンドレスで、夜のホテルの入口を振り返る。",
+        "caption": "金色のサテンドレスで、夜のホテルの入口を振り返る。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。金色のサテンドレスで、夜のホテルの入口を振り返る。"
+      },
+      {
+        "id": "06",
+        "description": "桐谷すみれ（26歳、架空の成人）。柔らかな水色のニット姿で、両手を頬に添える。",
+        "caption": "柔らかな水色のニット姿で、両手を頬に添える。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。柔らかな水色のニット姿で、両手を頬に添える。"
+      },
+      {
+        "id": "07",
+        "description": "桐谷すみれ（26歳、架空の成人）。夜景の見えるテラスで、黒いロングドレス姿で脚を組んで座る。",
+        "caption": "夜景の見えるテラスで、黒いロングドレス姿で脚を組んで座る。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。夜景の見えるテラスで、黒いロングドレス姿で脚を組んで座る。"
+      },
+      {
+        "id": "08",
+        "description": "桐谷すみれ（26歳、架空の成人）。青い花柄のワンピースで、海沿いの道から肩越しに笑顔を向ける。",
+        "caption": "青い花柄のワンピースで、海沿いの道から肩越しに笑顔を向ける。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。青い花柄のワンピースで、海沿いの道から肩越しに笑顔を向ける。"
+      },
+      {
+        "id": "09",
+        "description": "桐谷すみれ（26歳、架空の成人）。ワイン色のドレスでグラスを持ち、夜のカウンターに座る。",
+        "caption": "ワイン色のドレスでグラスを持ち、夜のカウンターに座る。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。ワイン色のドレスでグラスを持ち、夜のカウンターに座る。"
+      },
+      {
+        "id": "10",
+        "description": "桐谷すみれ（26歳、架空の成人）。花柄のワンピースで、広い海と空の見える砂浜を歩く。",
+        "caption": "花柄のワンピースで、広い海と空の見える砂浜を歩く。",
+        "alt": "桐谷すみれ（26歳、架空の成人）。花柄のワンピースで、広い海と空の見える砂浜を歩く。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "kiritani-sumire",
+      "name": "桐谷すみれ",
+      "age": 26,
+      "fictional": true,
+      "appearance": "26歳の架空の成人。上品な服が似合う落ち着いた顔立ち。独自の髪形と表情。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "俳優兼ファッション企画ナビゲーター",
+        "casting_specialty": "演技と美術・装いをつなぐ企画。配色や素材の組合せを案内する。",
+        "personality": "美意識があり、古いものと新しいものを合わせるのが好き。",
+        "voice": "上品だが気取らず、自分のこだわりを少し笑える言葉で話す。",
+        "likes": [
+          "美術",
+          "古い街並み",
+          "小物の配色"
+        ],
+        "weakness": "気になる組合せを比べすぎて決めるのが遅い。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+        "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+        "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39",
+        "provenance": "assets/generated/photo-reference-kiritani-sumire-b666b4105c64.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 170,
+        "bust_cm": 87,
+        "waist_cm": 62,
+        "hip_cm": 91,
+        "shoulder_width_cm": 39,
+        "inseam_cm": 81,
+        "heads_tall": 7.6
+      },
+      "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "face_reference": {
+        "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+        "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+        "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-kiritani-sumire-3c91ce3a1b37.jpg",
+        "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+        "source_png_sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+        "provenance": "assets/generated/photo-reference-kiritani-sumire-3c91ce3a1b37.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-01.jpg",
+        "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+        "bytes": 245747,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/01/receipt-supplied-a69062fadfdb-b666b4105c64.json",
+          "receipt_sha256": "78da14f16449699f4103303788e2ec060f742d5b2c531ed871a6cdd4859ba7f4",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-02.jpg",
+        "sha256": "ed2c8b6a28d7abb57353e9af91809f3b00532d17bb36461b2f8b83d9ad0c0fb8",
+        "bytes": 230639,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "ab9099930c835e5f008705bb2f8b8897316379129b6b1e815c37fa99baa8f445",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/02/receipt-supplied-ab9099930c83-ed2c8b6a28d7.json",
+          "receipt_sha256": "76b0618dd47349e13e6bdf606328014f96800cee615e92306cb87a7fa33791cd",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-03.jpg",
+        "sha256": "3698a5c023f24de5671ac0043cabfa994efdb36ca96e24c22a78b05cd296b973",
+        "bytes": 225072,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "2ac03b7cf653babae90828ea8e222e6ae15a93307909212a37479ea1d48b26ae",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/03/receipt-supplied-2ac03b7cf653-3698a5c023f2.json",
+          "receipt_sha256": "7aedfd6649e764ec4c0e095b1233c425172fcf188c2925fbbdb39ebc09d5775b",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-04.jpg",
+        "sha256": "c07d936f5dd1f6c4ed010fdc9ea22d0f4b096e6005a33b3d40259f0b03940ab2",
+        "bytes": 230400,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "d818ed918eac85f6be42f958c95921bb3d94242f2e6ea6f404b069b408c87759",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/04/receipt-supplied-d818ed918eac-c07d936f5dd1.json",
+          "receipt_sha256": "983ce20447b49505101e0bee4358811e4aff31beb811fc662de24fc1db725f23",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-05.jpg",
+        "sha256": "6787dd2b612e0c8a6e531a5c7e02af31e2c9bfacda297cb4f239abea20765051",
+        "bytes": 243080,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "ab7672be39ab45b692d78cc087fd02b0cec928b1a31efb2a91b17fde665e450a",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/05/receipt-supplied-ab7672be39ab-6787dd2b612e.json",
+          "receipt_sha256": "2509e8958556fc777c9faeac376604648f332c558d647bb894f6044e6e39ae43",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-06.jpg",
+        "sha256": "f934f64fb03eaf2b8f4ed4717c7b5e78d1d60197296acf9aec9660256d6ff8a0",
+        "bytes": 252657,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "61d7545cdb980934265855ee3580b4b287100c5d23bb280ab6afd30c6c00f8df",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/06/receipt-supplied-61d7545cdb98-f934f64fb03e.json",
+          "receipt_sha256": "8a58d06b61f1a91264d22247b0538ea9cbc5b98f3b8331e6725979ff3f911c53",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-07.jpg",
+        "sha256": "824ee5cb607fa0d0f173ed32a3bd62df1205f6ca52a0216b42ce53406995868b",
+        "bytes": 271326,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "c594133733035177bffa7a105654958dd084f9ff4257f83e60b12cd8c4c5f396",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/07/receipt-supplied-c59413373303-824ee5cb607f.json",
+          "receipt_sha256": "583361d91c14c45c9c7b8b69fc18d5ee23bcde0c74eaf85c31ca1440da795d69",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-08.jpg",
+        "sha256": "79a3cf4b2b8dc464511f6918c80f23c4efb3deaa356daefade8f02542f6011fc",
+        "bytes": 217322,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "d9a882c74c37bdd73ed3095c65fe9f67d96ded149154e583d17ce4b7394b670d",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/08/receipt-supplied-d9a882c74c37-79a3cf4b2b8d.json",
+          "receipt_sha256": "9c0e215983ef4d000bf4493d890fdc1e3bf4fc4658808141be27f631d7cefbd5",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-09.jpg",
+        "sha256": "61d7b468cfc954e9c376c8c0897650f40d23dfb39344abfd9ed113338340f33d",
+        "bytes": 201573,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "dea75fb40d6ba47d2d660de51f2eab4c7d3502a6ee8223e9789a324e4a42440c",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/09/receipt-supplied-dea75fb40d6b-61d7b468cfc9.json",
+          "receipt_sha256": "c425ed2d60d800445bc362d984d663714e3dcd4c03fc6081231d68d267d091ac",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-10.jpg",
+        "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+        "bytes": 215919,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-favorite-colors-sumire-007/10/receipt-supplied-ccd2e4478ab8-3c91ce3a1b37.json",
+          "receipt_sha256": "4157ffed231781de8d9d318ce716dec9830daf7158e3cfdb52bffe5e707a0b3d",
+          "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "70e15b16ff13f48809344d5b12c08693ae1297dfb3152b6ce305daf9cdada577"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": true,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "profile"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": false,
+      "framing": "wide"
+    }
+  ]
+}

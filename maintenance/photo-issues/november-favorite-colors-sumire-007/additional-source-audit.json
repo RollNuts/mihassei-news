@@ -1,0 +1,41 @@
+{
+  "checked_at_utc": "2026-11-15T01:47:48.496398+00:00",
+  "method": "ExactSHA and decodedRGBpixels, plus32x32gray low8x8DCTpHash64screening. Notvisualidentityproof.",
+  "public_files": 126,
+  "all_source_candidate_files": 77,
+  "candidates": [
+    {
+      "path": "drafts/weekly-six-20261115/kiritani-sumire/193d764f/candidate-01.png",
+      "sha256": "c594133733035177bffa7a105654958dd084f9ff4257f83e60b12cd8c4c5f396",
+      "pixel_sha256": "a1be55c89b6963a0e1dd4f7f8000de2c2dbb99306eb3e2fce85e11bb71195108",
+      "phash64": "b92b4f98304a9b37",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "mode": "RGB",
+      "bytes": 2217947,
+      "comparison_files": 202,
+      "exact_byte_matches": [],
+      "exact_pixel_matches": [],
+      "nearest_comparisons": [
+        {
+          "path": "assets/photos/apology-before-incident.jpg",
+          "distance": 22
+        },
+        {
+          "path": "drafts/weekly-six-20261115/shiramine-yuki/fd941547/candidate-09.png",
+          "distance": 22
+        },
+        {
+          "path": "assets/generated/sale-discount-savings-receipt-framed.jpg",
+          "distance": 24
+        },
+        {
+          "path": "assets/generated/tunnel-robots-pass-concrete-pour-three-sections.jpg",
+          "distance": 24
+        }
+      ],
+      "full_original_displayed": true
+    }
+  ]
+}

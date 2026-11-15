@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "shioba-rio",
+  "role": "body",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "observed_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "turn_key": "79a257d3-1f0c-4e7d-ac8e-a636249f0590",
+    "image_number": 8,
+    "path": "maintenance/photo-issues/november-off-clock-rio-002/05/source-c3511b34a27aa7db91dd13205acb6d1c4c52699441e53fd92ad42beba728ce8a.png",
+    "sha256": "c3511b34a27aa7db91dd13205acb6d1c4c52699441e53fd92ad42beba728ce8a",
+    "bytes": 2501176,
+    "width": 1024,
+    "height": 1536,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-off-clock-rio-002-05.jpg",
+    "sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a",
+    "bytes": 312983,
+    "width": 800,
+    "height": 1200
+  },
+  "reference_path": "assets/generated/photo-body-shioba-rio-478b66fdad4f.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 166,
+    "bust_cm": 95,
+    "waist_cm": 63,
+    "hip_cm": 94,
+    "shoulder_width_cm": 38,
+    "inseam_cm": 77,
+    "heads_tall": 7.4
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T01:46:15.422855+00:00",
+    "note": "Trenchcoat/boots/collapsed-umbrella JPEG shows a coherent head-to-shoes adult silhouette, attached natural limbs, plausible hand positions and rain reflections. Long dark hair and face design are consistent with cafe reference at this angle. Coat obscures precise waist/bust shape: accepted as a clothed qualitative full-body reference, not verification of authored166/95/63/94cm.",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-off-clock-rio-002/reference-jpeg-qa.json",
+    "sha256": "83ada327f1c7d9e4f58e89c68e95b4ab40a3477928ad7cd4fe66e7d1d79eb811"
+  }
+}

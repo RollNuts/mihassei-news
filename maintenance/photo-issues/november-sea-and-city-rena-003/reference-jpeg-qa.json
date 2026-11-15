@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "model_id": "tsukishiro-rena",
+  "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+  "scope": "Actual converted face/body JPEG references only; all8fullJPEGs displayed acrossfourmodels. Sourceoriginals already displayed. No finalissue/adoption claim.",
+  "live_authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 158,
+    "bust_cm": 82,
+    "waist_cm": 58,
+    "hip_cm": 85,
+    "shoulder_width_cm": 35,
+    "inseam_cm": 73,
+    "heads_tall": 7.2
+  },
+  "numeric_body_values": "Fictional design values only, not physical measurements or exact compliance verified from photographs.",
+  "references": [
+    {
+      "kind": "face",
+      "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+      "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+      "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+      "cut_id": "01",
+      "source_path": "maintenance/photo-issues/november-sea-and-city-rena-003/01/source-445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed.png",
+      "provenance": "assets/generated/photo-reference-tsukishiro-rena-aec46a830a8a.json",
+      "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "Wine-red satin dinner JPEG retains clear frontal almond brown eyes, straight fine fringe, slender oval jaw and small straight nose; natural skin, hair, satin folds and glasslight. Visible elbow/forearms/hand placement plausible. Suitable first reviewed face for fictional23-year-old."
+    },
+    {
+      "kind": "body",
+      "path": "assets/generated/photo-body-tsukishiro-rena-543d8d16e2fc.jpg",
+      "sha256": "543d8d16e2fcfa53c5ce6ad70417f88631809fb4a6530790509e04db2447dc28",
+      "source_png_sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+      "cut_id": "02",
+      "source_path": "maintenance/photo-issues/november-sea-and-city-rena-003/02/source-668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09.png",
+      "provenance": "assets/generated/photo-reference-tsukishiro-rena-543d8d16e2fc.json",
+      "reviewed_at_utc": "2026-11-15T01:46:15.422855+00:00",
+      "decision": "accepted",
+      "actual_converted_jpeg_displayed_full": true,
+      "source_png_previously_displayed_full": true,
+      "note": "Lavender-bikini beach JPEG shows coherent head-to-feet adult proportions, plausible walking step and hands/feet, natural surf/shadows/skin. Long straight dark hair/fringe and face agree qualitatively with dinner reference. No compression/crop/anatomy defect observed; authored158/82/58/85cm remain design metadata, not measured."
+    }
+  ]
+}

@@ -1,0 +1,370 @@
+{
+  "status": "draft_awaiting_final_jpeg_adoption",
+  "issue": {
+    "slug": "november-first-detour-mio-004",
+    "number": 4,
+    "title": "寄り道のほうへ、一歩。",
+    "summary": "街を歩き、窓を開け、初めての場所へ。花瀬みおの、寄り道が増えていく休日の10枚。",
+    "column": [
+      "2031年11月。自動運転の車に乗ると、行き先を決める前におすすめの道が出てきます。便利だけれど、今日は自分で曲がり角を選びたくて、少し早めに降りました。初めての街は、歩く速さで見るほうが楽しいです。",
+      "カフェを見つけたら、まず窓の近くへ。ひと休みのつもりが、外を見ているうちに次の寄り道が決まりました。飲み終わってから考えればいいのに、こういうときだけ気が早くなります。",
+      "帰り支度を始めたところで、夕方のテラスがきれいに見えました。コートを羽織って、また外へ。予定表にはもう収まらないけれど、歩いた道はちゃんと自分の中に残っている気がします。",
+      "夜、窓の向こうの灯りを眺めながら、今日の小さな挑戦を思い出しました。知らない道で足を止めたこと、のんびり席に座ったこと。動いてばかりの私には、後のほうが少し難しかったです。"
+    ],
+    "model_id": "hanase-mio",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "街のカフェ、ホテルとテラス",
+      "aspect_ratio": "original",
+      "visual_direction": "本人が用意した独立写真の全画面と元の縦横比を保持。架空の成人として顔と自然な比例の連続性を実写真で確認する。"
+    },
+    "swimwear_exception": {
+      "kind": "reduced_swimwear",
+      "reason": "本人が用意した街歩き・カフェ・テラスの独立写真10枚から、衣服の変化と動作が続く休日の構成を選ぶ。掲載写真に明瞭な水着はなく、水着ではない衣装を水着として数えず、この衣服中心の既存セットを採用する。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "花瀬みお（20歳、架空の成人）。日差しのあるテラスで、白シャツ姿のみおが笑顔を向ける。",
+        "caption": "日差しのあるテラスで、白シャツ姿のみおが笑顔を向ける。",
+        "alt": "花瀬みお（20歳、架空の成人）。日差しのあるテラスで、白シャツ姿のみおが笑顔を向ける。"
+      },
+      {
+        "id": "02",
+        "description": "花瀬みお（20歳、架空の成人）。白いジャケットで、雨上がりの夜道を振り返る。",
+        "caption": "白いジャケットで、雨上がりの夜道を振り返る。",
+        "alt": "花瀬みお（20歳、架空の成人）。白いジャケットで、雨上がりの夜道を振り返る。"
+      },
+      {
+        "id": "03",
+        "description": "花瀬みお（20歳、架空の成人）。カフェでアイスコーヒーを手に、窓辺へ笑顔を向ける。",
+        "caption": "カフェでアイスコーヒーを手に、窓辺へ笑顔を向ける。",
+        "alt": "花瀬みお（20歳、架空の成人）。カフェでアイスコーヒーを手に、窓辺へ笑顔を向ける。"
+      },
+      {
+        "id": "04",
+        "description": "花瀬みお（20歳、架空の成人）。トレンチコートを羽織り、ホテル前で車を降りる。",
+        "caption": "トレンチコートを羽織り、ホテル前で車を降りる。",
+        "alt": "花瀬みお（20歳、架空の成人）。トレンチコートを羽織り、ホテル前で車を降りる。"
+      },
+      {
+        "id": "05",
+        "description": "花瀬みお（20歳、架空の成人）。灰色のニット姿で、窓のカーテンを開く。",
+        "caption": "灰色のニット姿で、窓のカーテンを開く。",
+        "alt": "花瀬みお（20歳、架空の成人）。灰色のニット姿で、窓のカーテンを開く。"
+      },
+      {
+        "id": "06",
+        "description": "花瀬みお（20歳、架空の成人）。夕食の席で笑いながら、同席者にグラスを上げる。",
+        "caption": "夕食の席で笑いながら、同席者にグラスを上げる。",
+        "alt": "花瀬みお（20歳、架空の成人）。夕食の席で笑いながら、同席者にグラスを上げる。"
+      },
+      {
+        "id": "07",
+        "description": "花瀬みお（20歳、架空の成人）。日中のテラスで、白いロングスカートを揺らして振り返る。",
+        "caption": "日中のテラスで、白いロングスカートを揺らして振り返る。",
+        "alt": "花瀬みお（20歳、架空の成人）。日中のテラスで、白いロングスカートを揺らして振り返る。"
+      },
+      {
+        "id": "08",
+        "description": "花瀬みお（20歳、架空の成人）。バーのカウンターで、グラスに手を添える。",
+        "caption": "バーのカウンターで、グラスに手を添える。",
+        "alt": "花瀬みお（20歳、架空の成人）。バーのカウンターで、グラスに手を添える。"
+      },
+      {
+        "id": "09",
+        "description": "花瀬みお（20歳、架空の成人）。窓辺に座り、両手でコーヒーカップを包む。",
+        "caption": "窓辺に座り、両手でコーヒーカップを包む。",
+        "alt": "花瀬みお（20歳、架空の成人）。窓辺に座り、両手でコーヒーカップを包む。"
+      },
+      {
+        "id": "10",
+        "description": "花瀬みお（20歳、架空の成人）。街の灯りが見える夕方のテラスで振り返る。",
+        "caption": "街の灯りが見える夕方のテラスで振り返る。",
+        "alt": "花瀬みお（20歳、架空の成人）。街の灯りが見える夕方のテラスで振り返る。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "hanase-mio",
+      "name": "花瀬みお",
+      "age": 20,
+      "fictional": true,
+      "appearance": "20歳の架空の成人。活発な雰囲気、肩までの髪。さやと異なる顔立ち。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "体験型バラエティアイドル",
+        "casting_specialty": "体を動かす体験ロケや実験企画。失敗も含めて動作と結果を伝える。",
+        "personality": "好奇心でまず体を動かす。失敗も楽しんで話す。",
+        "voice": "動作から始める率直な文章。元気でも過剰な感嘆符を並べない。",
+        "likes": [
+          "海",
+          "遠出",
+          "初めての乗り物"
+        ],
+        "weakness": "勢いで出かけて、帰りの支度を忘れがち。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+        "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+        "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+        "provenance": "assets/generated/photo-reference-hanase-mio-3f2d8cb3b6f5.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 160,
+        "bust_cm": 85,
+        "waist_cm": 60,
+        "hip_cm": 88,
+        "shoulder_width_cm": 37,
+        "inseam_cm": 74,
+        "heads_tall": 7.2
+      },
+      "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+      "face_reference": {
+        "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+        "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+        "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-hanase-mio-17a677d5988e.jpg",
+        "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+        "source_png_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+        "provenance": "assets/generated/photo-reference-hanase-mio-17a677d5988e.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {
+      "01": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-01.jpg",
+        "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+        "bytes": 319854,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/01/receipt-supplied-4b026ea6129e-3f2d8cb3b6f5.json",
+          "receipt_sha256": "78a316b32ae91331e2b7fd0e05366e2b84a593f4e5e4960184cc75501f8c5d49",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "02": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-02.jpg",
+        "sha256": "d040863ae677edd16277440f3917aa418f39036643bc14f1049b64d4b7141df0",
+        "bytes": 380087,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "f669a592702ebfa8cf103a34f5c36d61b720e8747843a8ac472706a6ea7284b8",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/02/receipt-supplied-f669a592702e-d040863ae677.json",
+          "receipt_sha256": "7a9e18a6b2efe4757c284f7ba128a78434542e0abb0a62429b4338c60d12a15d",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "03": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-03.jpg",
+        "sha256": "9be88c05dbf1243896a6f4e36c4e3335e44f2b5f7c5fa7de8e1267417f3824d7",
+        "bytes": 299668,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "e1203208bf72d6a94c1ae725f968f023ca2e6416b8c3d2b8472476c535df4cbf",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/03/receipt-supplied-e1203208bf72-9be88c05dbf1.json",
+          "receipt_sha256": "df1f0978c380279f80226334f757d2b14d11306b09ace47b5ee91a45252cf6c9",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "04": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-04.jpg",
+        "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+        "bytes": 410902,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/04/receipt-supplied-489b3725c647-17a677d5988e.json",
+          "receipt_sha256": "5565d49df24b14d538080ff0e9b1c113515a17a5ae2e1b8f3d4e8fe72aac286c",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "05": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-05.jpg",
+        "sha256": "45db205492966a2d4ee771358c442e88eb3cc83175caf40e553dfb7d5037c3d2",
+        "bytes": 229950,
+        "width": 800,
+        "height": 1200,
+        "source_sha256": "deb18c4e3a55e058b5c582804730c48d011ded0f77ea626e7fad6a82259371d4",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/05/receipt-supplied-deb18c4e3a55-45db20549296.json",
+          "receipt_sha256": "b45e98f0032cb2a869e1474b26b1792148672f264f348a643f64f8750013b2a3",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "06": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-06.jpg",
+        "sha256": "b6ff959c35c3d06da9378b62c7511bce365f1d25440875563d938255b2293a6b",
+        "bytes": 314257,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "bfa7d30d56244b5880ba03c1a59957addb99605bf65dae61efbc9b50894be15f",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/06/receipt-supplied-bfa7d30d5624-b6ff959c35c3.json",
+          "receipt_sha256": "3e415db53fa86a41ce5c045ce301947a8b8fadc0627d5be4da19c76d9a92f563",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "07": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-07.jpg",
+        "sha256": "a4120101838a8004be11e8969a249cc758cc5ded46601ef2aeb624f2bfde1d5e",
+        "bytes": 234354,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "e5c73fdd7741b84c2a49507b269c8311f4baecbcf7f91f4ceb64a636f189bca3",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/07/receipt-supplied-e5c73fdd7741-a4120101838a.json",
+          "receipt_sha256": "2d794678399d9cc24898d7e88ff1bcb6234f743bb33b581c61de842cae4c227e",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "08": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-08.jpg",
+        "sha256": "912b30ba1cfb27d6d2a2bdfbc75641f9738f006e964543289b1c632943dc2bd4",
+        "bytes": 221571,
+        "width": 1200,
+        "height": 800,
+        "source_sha256": "61c6b92f231100256048c5bdee142bb43d2f78da0d13a7ea72a10fd0284cc5bf",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/08/receipt-supplied-61c6b92f2311-912b30ba1cfb.json",
+          "receipt_sha256": "375bd59aee8d206ca3700c38701a65f470148c34273ceec9bfcb40073542c367",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "09": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-09.jpg",
+        "sha256": "795b1a0152a20d7dbc2bcd247227aeb4f7f16f693a9961653e0019b1f63695d5",
+        "bytes": 318534,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "d61827a5601bee22aabe170b1960c9c52ea23090902803b0333197170194b665",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/09/receipt-supplied-d61827a5601b-795b1a0152a2.json",
+          "receipt_sha256": "3dd45b47720f88213dbb8518e6b1efce33f825d6346a5741c6cdabdf2ff4b803",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      },
+      "10": {
+        "path": "assets/generated/photo-issue-november-first-detour-mio-004-10.jpg",
+        "sha256": "51b7d1af1985ee7dc8fa0ee5b5d3d97a52da0403d39447901652592a47010949",
+        "bytes": 355193,
+        "width": 960,
+        "height": 1200,
+        "source_sha256": "b930343752beb19c7f5d8ed20e9936c0b65cf9dccd5a653fa511481b739d31f6",
+        "provenance": {
+          "kind": "user_supplied_photo",
+          "receipt_path": "maintenance/photo-issues/november-first-detour-mio-004/10/receipt-supplied-b930343752be-51b7d1af1985.json",
+          "receipt_sha256": "7de5d2c753b79eb41007e11bfcafa6cb88a3d3a71d6e8a4d294dbe5a30017a54",
+          "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+        },
+        "review": {
+          "decision": "pending"
+        }
+      }
+    },
+    "generation_holds": {},
+    "issue_sha256": "dd28cce0a9eda84a37e0cba30a170a28c9bd08d0350fe53b2deb92819ba66a92"
+  },
+  "planned_observations": [
+    {
+      "id": "01",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "02",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "03",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "04",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "05",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "06",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "07",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    },
+    {
+      "id": "08",
+      "swimwear_visible": false,
+      "framing": "upper_body"
+    },
+    {
+      "id": "09",
+      "swimwear_visible": false,
+      "framing": "three_quarter"
+    },
+    {
+      "id": "10",
+      "swimwear_visible": false,
+      "framing": "full_body"
+    }
+  ]
+}

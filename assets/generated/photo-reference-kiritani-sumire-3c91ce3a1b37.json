@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "user_supplied_character_reference",
+  "model_id": "kiritani-sumire",
+  "role": "body",
+  "source": {
+    "url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "observed_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "turn_key": "d614f613-1a3a-4b10-a133-dbf93749801d",
+    "image_number": 2,
+    "path": "maintenance/photo-issues/november-favorite-colors-sumire-007/10/source-ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059.png",
+    "sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+    "bytes": 2077829,
+    "width": 1536,
+    "height": 1024,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-favorite-colors-sumire-007-10.jpg",
+    "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+    "bytes": 215919,
+    "width": 1200,
+    "height": 800
+  },
+  "reference_path": "assets/generated/photo-body-kiritani-sumire-3c91ce3a1b37.jpg",
+  "authored_body_profile": {
+    "version": 1,
+    "basis": "authored_fictional_design_cm",
+    "height_cm": 170,
+    "bust_cm": 87,
+    "waist_cm": 62,
+    "hip_cm": 91,
+    "shoulder_width_cm": 39,
+    "inseam_cm": 81,
+    "heads_tall": 7.6
+  },
+  "numeric_body_values": "Authored fictional design values, not measured or proven centimeter compliance.",
+  "review": {
+    "decision": "accepted",
+    "reviewed_at": "2026-11-15T02:14:42.952838+00:00",
+    "note": "花柄のワンピースで砂浜を歩く実JPEGを全表示。横長の遠景に頭から足先まで全身が入り、腕脚と歩行の接続は自然。後ろ姿なので顔の同一性をこの写真だけで証明しない。本人チャットの出典と長髪・シルエットを照合した定性的な全身参照で、cm値の実測一致は主張しない。",
+    "actual_converted_jpeg_displayed_full": true
+  },
+  "review_evidence": {
+    "path": "maintenance/photo-issues/november-favorite-colors-sumire-007/reference-jpeg-qa.json",
+    "sha256": "b53459ada90021e1a543ec077ad5e89b784af570508b90d3e9c8a5ef5c5feb46"
+  }
+}
