@@ -346,7 +346,7 @@ class PhotoIssueTests(unittest.TestCase):
     def test_swimwear_and_framing_require_observed_review_results(self):
         self.release_fixture()
         baseline = p.issue_fingerprint(self.issue)
-        for count in (0, 5):
+        for count in range(6):
             for number, image in enumerate(self.issue["images"].values()):
                 image["review"]["swimwear_visible"] = number < count
             with self.subTest(count=count), self.assertRaisesRegex(ValueError, "six reviewed visible-swimwear"):
@@ -358,6 +358,109 @@ class PhotoIssueTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "near and full/wide"):
             p.published_issues(self.catalog, root=self.root, now=NOW)
         self.assertEqual(p.issue_fingerprint(self.issue), baseline)
+
+    def test_explicit_reduced_swimwear_exception_accepts_truthful_zero_through_five(self):
+        self.issue["swimwear_exception"] = {
+            "kind": "reduced_swimwear", "reason": "The selected existing set follows a day in town and contains fewer swimsuit photographs."}
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        self.release_fixture()
+        p.validate_catalog(self.catalog)
+        for count in range(6):
+            for number, image in enumerate(self.issue["images"].values()):
+                image["review"]["swimwear_visible"] = number < count
+            with self.subTest(count=count):
+                self.assertEqual(p.published_issues(self.catalog, root=self.root, now=NOW), [self.issue])
+                self.assertEqual(sum(image["review"]["swimwear_visible"] for image in self.issue["images"].values()), count)
+
+    def test_reduced_swimwear_exception_rejects_malformed_or_unexplained_policy(self):
+        for exception in (None, False, "reduced_swimwear", {},
+                          {"kind": "unknown", "reason": "A reason"},
+                          {"kind": "reduced_swimwear"},
+                          {"kind": "reduced_swimwear", "reason": ""},
+                          {"kind": "reduced_swimwear", "reason": " \n "},
+                          {"kind": "reduced_swimwear", "reason": 3},
+                          {"kind": "reduced_swimwear", "reason": "A reason", "skip_qa": True}):
+            self.issue["swimwear_exception"] = exception
+            with self.subTest(exception=exception), self.assertRaisesRegex(ValueError, "exception"):
+                p.validate_catalog(self.catalog)
+            with self.subTest(release_exception=exception), self.assertRaisesRegex(ValueError, "exception"):
+                p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+    def test_reduced_swimwear_exception_cannot_reuse_an_old_fingerprint_or_reviews(self):
+        self.release_fixture()
+        original = self.issue["issue_sha256"]
+        self.issue["swimwear_exception"] = {"kind": "reduced_swimwear", "reason": "Existing photographs emphasize street clothes."}
+        for image in self.issue["images"].values():
+            image["review"]["swimwear_visible"] = False
+        with self.assertRaisesRegex(ValueError, "editorial fingerprint"):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        self.assertNotEqual(self.issue["issue_sha256"], original)
+        with self.assertRaises(ValueError):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        self.release_fixture()
+        self.issue["swimwear_exception"]["reason"] = "A changed editorial reason requires a fresh binding."
+        with self.assertRaisesRegex(ValueError, "editorial fingerprint"):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+    def test_reduced_swimwear_exception_preserves_ten_cuts_and_normal_qa(self):
+        self.issue["swimwear_exception"] = {"kind": "reduced_swimwear", "reason": "An existing indoor fashion set contains no swimwear."}
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        self.release_fixture()
+        for image in self.issue["images"].values():
+            image["review"]["swimwear_visible"] = False
+        self.issue["shots"].pop()
+        with self.assertRaisesRegex(ValueError, "exactly ten"):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        with self.assertRaisesRegex(ValueError, "ten planned"):
+            p.validate_catalog(self.catalog)
+
+    def test_reduced_swimwear_exception_does_not_waive_review_framing_provenance_or_uniqueness(self):
+        self.issue["swimwear_exception"] = {"kind": "reduced_swimwear", "reason": "The reviewed existing set focuses on ordinary clothes."}
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        mutations = (
+            ("observed swimwear", lambda: self.issue["images"]["02"]["review"].update(swimwear_visible="false")),
+            ("visual review", lambda: self.issue["images"]["02"]["review"].update(decision="rejected")),
+            ("near and full/wide", lambda: [image["review"].update(framing="full_body") for image in self.issue["images"].values()]),
+            ("provenance", lambda: self.issue["images"]["02"].pop("provenance")),
+            ("Missing.*03", lambda: self.issue["images"].pop("03")),
+        )
+        for message, mutate in mutations:
+            self.release_fixture()
+            for image in self.issue["images"].values():
+                image["review"]["swimwear_visible"] = False
+            mutate()
+            with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        self.release_fixture()
+        first, duplicate = self.issue["images"]["01"], self.issue["images"]["02"]
+        (self.root / duplicate["path"]).write_bytes((self.root / first["path"]).read_bytes())
+        duplicate.update(sha256=first["sha256"], bytes=first["bytes"])
+        with self.assertRaisesRegex(ValueError, "uniqueness"):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+    def test_legacy_issue_and_history_hashes_stay_exact_and_new_history_keeps_exception(self):
+        original = p.load_photo_issues(ROOT)["issues"][0]
+        frozen = copy.deepcopy(original)
+        self.assertNotIn("swimwear_exception", original)
+        self.assertEqual(p.issue_fingerprint(original), original["issue_sha256"])
+        self.assertTrue(any(entry["issue_sha256"] == INITIAL_FP for entry in original["editorial_history"]))
+        for entry in original["editorial_history"]:
+            self.assertEqual(p.issue_fingerprint(entry["editorial"]), entry["issue_sha256"])
+        self.assertEqual(original, frozen)
+        self.issue["swimwear_exception"] = {"kind": "reduced_swimwear", "reason": "The existing pool contains an ordinary clothing sequence."}
+        prior = p.issue_fingerprint(self.issue)
+        history = {"issue_sha256": prior, "editorial": p.editorial_snapshot(self.issue),
+                   "images": {}, "generation_holds": {}, "reason": "Keep the earlier authored policy and text."}
+        self.issue["title"] += " 続き"
+        self.issue["issue_sha256"] = p.issue_fingerprint(self.issue)
+        self.issue["editorial_history"] = [history]
+        self.assertEqual(history["editorial"]["swimwear_exception"], self.issue["swimwear_exception"])
+        p.validate_catalog(self.catalog)
+        self.assertIsNot(history["editorial"]["swimwear_exception"], self.issue["swimwear_exception"])
+        history["editorial"]["swimwear_exception"]["reason"] = "Changed original policy"
+        with self.assertRaisesRegex(ValueError, "history fingerprint"):
+            p.validate_catalog(self.catalog)
 
     def test_release_cannot_precede_visual_review(self):
         self.release_fixture()
