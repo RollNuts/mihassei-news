@@ -20,9 +20,11 @@ import re
 
 try:
     from .market_figures import render_market_svg, figure_description, STATES
+    from .reader_comments import render_reader_comments
     from .market_outlooks import render_market_outlook_board, view_models
 except ImportError:
     from market_figures import render_market_svg, figure_description, STATES
+    from reader_comments import render_reader_comments
     from market_outlooks import render_market_outlook_board, view_models
 
 FILE = Path("content/market_bulletins.json")
@@ -337,7 +339,9 @@ def render_market_bulletin(report, layout, outlooks=()):
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + f'<p class="market-bulletin-share"><a href="{escape(share_url,quote=True)}" '
           'target="_blank" rel="noopener noreferrer external">この記事をXで共有する ↗</a></p>'
-        '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
+        + render_reader_comments('market-briefing-' + report['slug'],
+             heading='この市況へのコメント', placeholder='今日の相場についてひとこと…')
+        + '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
         '</div></div>'
     )
     return layout(report["title"], report["summary"], bulletin_url(report),
