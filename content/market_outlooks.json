@@ -94,5 +94,42 @@
       "published_on": "2026-11-16",
       "checked_on": "2026-11-16"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-17-am-confirm-close-01",
+    "at": "2026-11-17T04:16:15+09:00",
+    "forecast_id": "2026-11-15-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3901.37,
+    "observed_on": "2026-11-16",
+    "reason": "JPXが公表した11月16日のTOPIX終値は3,901.37ポイント。13日の3,941.57ポイントから約1.02％下落し、16日の終値が±0.5％以内に収まるという横ばい予想は外れた。",
+    "change_reason": "取引所の数値確認が済み、報道値だけの暫定評価から正式な判定へ移った。公表終値は横ばい想定を下回る3,901.37ポイントだった。",
+    "source": {
+      "title": "JPX：2026年11月16日16:59更新のTOPIX公式指数値（現物取引終了後）",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-16",
+      "checked_on": "2026-11-17"
+    },
+    "source_evidence": {
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611161659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "data_sha256": "09ccad06902d927a6920e776e50526c3c77f92772156cbe8ffdc090d100cb0d7",
+      "time_before_sha256": "8a5ad58d7c5a51fb014b9161c9bf57ad5fad505b8e94dfaea9dfade22133c679",
+      "time_after_sha256": "8a5ad58d7c5a51fb014b9161c9bf57ad5fad505b8e94dfaea9dfade22133c679",
+      "checked_at": "2026-11-16T19:14:08.445117+00:00",
+      "last_modified": "Mon, 16 Nov 2026 07:59:31 GMT"
+    },
+    "result": {
+      "close": 3901.37,
+      "outcome": "外れ",
+      "observed_on": "2026-11-16",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "explanation": "終値3,901.37ポイントは、固定基準3,941.57ポイントに対して約1.02％安。±0.5％以内という事前の横ばい想定を下回ったため、当初予測は「外れ」と判定した。"
+    }
   }
 ]
