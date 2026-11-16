@@ -134,6 +134,21 @@
         "cut_id": "01",
         "image_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261117013616871609",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-17T01:36:16.871609+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、レコード店で聴いた曲がまだ頭に残っている。帰りに別の曲を流してみたけど、結局止めた。タイトルを控えなかったのは失敗。明日もう一度寄るか、少し迷ってる。",
+      "source": {
+        "issue_slug": "november-city-pause-rena-008",
+        "image_sha256": "277d9413c29aa3618e45c7c049168bc30e905f97599a9350187aab9570c01ef3",
+        "cut_id": "04"
+      }
     }
   ]
 }
