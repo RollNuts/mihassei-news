@@ -465,7 +465,7 @@ class SiteTests(unittest.TestCase):
         self.assertEqual((ROOT/"dist/ads.txt").read_text(encoding="utf-8").strip(),line)
         html=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         self.assertIn('<meta name="google-adsense-account" content="ca-pub-6754575901141756">',html)
-        self.assertIn('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6754575901141756" crossorigin="anonymous"></script>',html)
+        self.assertNotIn('adsbygoogle.js',html)
         self.assertNotIn('data-ad-slot=',html)
 
     def test_continuation_metrics_ride_existing_visit_api_only(self):
