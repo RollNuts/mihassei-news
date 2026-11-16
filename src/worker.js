@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { imageControlMcp } from "./image_control_mcp.mjs";
 export { ReaderComments } from "./comments.js";
 
 // Browser-level engagement and page displays, without IP logging or external APIs.
@@ -889,6 +890,11 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
+    if(url.pathname==="/api/image-control/mcp")return imageControlMcp(req,url,nonce=>{
+      const controlUrl=new URL("/api/image-control",url);
+      controlUrl.searchParams.set("nonce",nonce);
+      return imageControl(new Request(controlUrl),controlUrl);
+    },boundedBody);
     if(url.pathname==="/api/image-control")return imageControl(req,url);
     const isComments=["/api/comments","/api/comments/summary","/api/comments/admin"].includes(url.pathname);
     if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
