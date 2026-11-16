@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "d09dbf1bab0107724daba17f65b327a9aa37c526e736795a1c664c54c714db48",
+  "slug": "ai-purchasing-agent-fake-order-real-signature",
+  "article_sha256": "3c7c8a9c163455b373099f2af8b10f89219dc82dd6c12faa14401a5d162a44cc",
+  "logical_run_id": "codex-image-recovery-20261116-ai-purchasing-agent-01",
+  "prompt_sha256": "39b894e989c4716afd8d6e2e5d63a548067508642fbbb07ad340e0c9323712bb",
+  "reserved_at": "2026-11-16T04:00:58.638Z",
+  "baseline": {
+    "commit_sha": "b27149efbab4031e3150bda94c1d20f086763682",
+    "tree_sha": "c4c1a028bf441343ad93eceadb67cc74af4fbf72",
+    "protected_hashes": {
+      "content/articles.json": "335cc79eff80b9d8368c5d6c02951110681b4c5756c3524c72836ff5548cce59",
+      "assets/generated/manifest.json": "67f119b5868a343ac63f27daa3cef3fa0a8b5bd3c2eb9da2acc8c52af5d1b543",
+      "content/visual_reviews.json": "075b1bee914d146994120cc1d9fee71248f0abe2657dbfec9d022a328698525d"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "09b9c69d9404f97680d447d75e8f40921f410412",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "d7baee516ab444eee0b96df620f60ffa7a0b71e386d15159614da924b2de5ded",
+    "observed_at": "2026-11-16T04:00:40.992Z",
+    "route": "PNG data URL in functions.exec to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
