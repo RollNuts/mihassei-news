@@ -1,6 +1,7 @@
 """Source-precision market numbers and reader-first table placement."""
 import copy
 from datetime import date
+from html import escape
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -145,7 +146,7 @@ class MarketNumericSummaryTests(unittest.TestCase):
         original = copy.deepcopy(report)
         page = render_market_bulletin(report, passthrough)
         self.assertLess(page.index('class="market-data-summary"'), page.index('class="serial-article-body"'))
-        self.assertIn(report["figures"][0]["source_url"], page)
+        self.assertIn(f'href="{escape(report["figures"][0]["source_url"], quote=True)}"', page)
         self.assertEqual(report, original)
 
 
