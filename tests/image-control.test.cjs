@@ -6,6 +6,8 @@ const path=require('node:path');
 const vm=require('node:vm');
 
 const upstream='https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml';
+const repositoryApi='https://api.github.com/repos/RollNuts/mihassei-news';
+const publicRepository={full_name:'RollNuts/mihassei-news',private:false,visibility:'public'};
 const workflowPath='.github/workflows/free-cpu-scenes.yml';
 const serverReadToken='test_only_server_read_token_0123456789'; // Synthetic fixture, not a credential.
 const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
@@ -54,7 +56,7 @@ function privateHeaders(response) {
   assert.equal(response.headers.get('x-content-type-options'),'nosniff');
   assert.equal(response.headers.get('access-control-allow-origin'),null);
 }
-async function unavailable(f,reason,env={}) {
+async function unavailable(f,reason,env={},expectedRequests=1) {
   const response=await f.get(undefined,{},env);
   assert.equal(response.status,503);
   assert.equal(await response.text(),'{"error":"image control unavailable"}');
@@ -62,7 +64,7 @@ async function unavailable(f,reason,env={}) {
   for(const header of ['authorization','x-private','x-ratelimit-remaining','x-ratelimit-reset','retry-after'])
     assert.equal(response.headers.get(header),null);
   privateHeaders(response);
-  assert.equal(f.requests.length,1);
+  assert.equal(f.requests.length,expectedRequests);
   assert.equal(f.timers.size,0);
 }
 
@@ -89,9 +91,9 @@ test('public control GET exposes only the checked workflow state and echoed nonc
   }
 });
 
-test('optional server binding authenticates only the fixed workflow read and ignores caller authorization',async()=>{
+test('authenticated reads verify the public repository before workflow and ignore caller authorization',async()=>{
   for(const state of ['active','disabled_manually']) {
-    const f=fixture(async()=>Response.json({path:workflowPath,state}));
+    const f=fixture(async url=>Response.json(url===repositoryApi ? publicRepository : {path:workflowPath,state}));
     const response=await f.get(undefined,{headers:{authorization:'Bearer caller_private_value'}},
       {IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
     assert.equal(response.status,200);
@@ -102,16 +104,87 @@ test('optional server binding authenticates only the fixed workflow read and ign
     privateHeaders(response);
     assert.equal(response.headers.get('authorization'),null);
     assert.doesNotMatch(JSON.stringify(data),/test_only_server|caller_private/);
-    assert.equal(f.requests.length,1);
-    assert.equal(f.requests[0].url,upstream);
-    assert.equal(f.requests[0].options.headers.authorization,'Bearer '+serverReadToken);
-    assert.equal(f.requests[0].options.redirect,'manual');
+    assert.deepEqual(f.requests.map(request=>request.url),[repositoryApi,upstream]);
+    for(const request of f.requests) {
+      assert.equal(request.options.method,'GET');
+      assert.equal(request.options.headers.authorization,'Bearer '+serverReadToken);
+      assert.equal(request.options.redirect,'manual');
+      assert.equal(request.options.cache,'no-store');
+    }
+    assert.equal(f.requests[0].options.signal,f.requests[1].options.signal);
     assert.equal(f.timers.size,0);
   }
   const anonymous=fixture();
   assert.equal((await anonymous.get(undefined,{headers:{authorization:'Bearer caller_private_value'}})).status,200);
   assert.equal(anonymous.requests.length,1);
   assert.equal(anonymous.requests[0].options.headers.authorization,undefined);
+});
+
+test('private, missing and malformed repository metadata never reaches workflow or exposes state',async()=>{
+  const env={IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken};
+  for(const metadata of [null,{},[],{...publicRepository,private:true,visibility:'private'},
+    {...publicRepository,full_name:'Other/repository'}, {...publicRepository,full_name:'rollnuts/mihassei-news'},
+    {full_name:publicRepository.full_name,private:false}, {...publicRepository,private:'false'},
+    {...publicRepository,visibility:'internal'}]) {
+    const f=fixture(async()=>Response.json(metadata));
+    await unavailable(f,'repository_unavailable',env);
+    assert.equal(f.requests[0].url,repositoryApi);
+  }
+  for(const response of [new Response('private body',{status:404}),new Response('private invalid json')]) {
+    const f=fixture(async()=>response);
+    await unavailable(f,'repository_unavailable',env);
+    assert.equal(f.requests[0].url,repositoryApi);
+  }
+});
+
+test('authenticated repository responses have the same 16 KiB bound before any workflow read',async()=>{
+  const env={IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken};
+  let read=false;
+  const advertised=fixture(async()=>({ok:true,headers:new Headers({'content-length':'16385'}),
+    get body(){read=true;throw new Error('private oversized body');}}));
+  await unavailable(advertised,'repository_unavailable',env);
+  assert.equal(read,false);
+  let cancelled=false;
+  const streamed=fixture(async()=>new Response(new ReadableStream({
+    start(controller){controller.enqueue(new Uint8Array(16385));},cancel(){cancelled=true;}
+  })));
+  await unavailable(streamed,'repository_unavailable',env);
+  assert.equal(cancelled,true);
+});
+
+test('one three-second deadline spans both authenticated reads and aborts their shared signal',async()=>{
+  let finishRepository,startedWorkflow;
+  const workflowReady=new Promise(resolve=>{startedWorkflow=resolve;});
+  const f=fixture(async url=>url===repositoryApi
+    ? new Promise(resolve=>{finishRepository=()=>resolve(Response.json(publicRepository));})
+    : (startedWorkflow(),new Promise(()=>{})));
+  const pending=unavailable(f,'timeout',{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken},2);
+  assert.equal(f.timers.size,1);
+  const [originalTimer]=f.timers;
+  f.advance(2500);
+  finishRepository();
+  await workflowReady;
+  assert.equal(f.timers.size,1);
+  assert.equal([...f.timers][0],originalTimer);
+  assert.equal(originalTimer.ms,3000);
+  f.advance(500);
+  f.timeout();
+  await pending;
+  assert.deepEqual(f.requests.map(request=>request.url),[repositoryApi,upstream]);
+  assert.equal(f.requests[0].options.signal,f.requests[1].options.signal);
+  assert.equal(f.requests[0].options.signal.aborted,true);
+});
+
+test('a repository response completing after the deadline cannot start a workflow read',async()=>{
+  let finishRepository;
+  const f=fixture(async()=>new Promise(resolve=>{finishRepository=()=>resolve(Response.json(publicRepository));}));
+  const pending=unavailable(f,'timeout',{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
+  f.timeout();
+  await pending;
+  finishRepository();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.deepEqual(f.requests.map(request=>request.url),[repositoryApi]);
+  assert.equal(f.timers.size,0);
 });
 
 test('defined invalid server bindings fail closed before fetching and never use caller credentials',async()=>{
@@ -129,17 +202,20 @@ test('defined invalid server bindings fail closed before fetching and never use 
   }
 });
 
-test('authenticated failures make one request without an anonymous retry or credential echo',async()=>{
+test('authenticated failures stop at either read without an anonymous retry or credential echo',async()=>{
   for(const [reason,fetchImpl] of [
     ['github_http_401',async()=>new Response(serverReadToken,{status:401,headers:{authorization:serverReadToken}})],
     ['github_http_403',async()=>new Response(serverReadToken,{status:403})],
     ['github_http_429',async()=>new Response(serverReadToken,{status:429})],
     ['runtime_error',async()=>{throw new Error(serverReadToken);}]
   ]) {
-    const f=fixture(fetchImpl);
-    await unavailable(f,reason,{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
-    assert.equal(f.requests[0].url,upstream);
-    assert.equal(f.requests[0].options.headers.authorization,'Bearer '+serverReadToken);
+    for(const failRepository of [true,false]) {
+      const f=fixture(async(url,options)=>url===repositoryApi && !failRepository
+        ? Response.json(publicRepository) : fetchImpl(url,options));
+      await unavailable(f,reason,{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken},failRepository ? 1 : 2);
+      assert.deepEqual(f.requests.map(request=>request.url),failRepository ? [repositoryApi] : [repositoryApi,upstream]);
+      for(const request of f.requests)assert.equal(request.options.headers.authorization,'Bearer '+serverReadToken);
+    }
   }
 });
 
