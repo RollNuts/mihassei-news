@@ -1,13 +1,8 @@
-name: Local engagement smoke test
+name: Local engagement smoke test (manual)
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
-# New PR pushes supersede the previous revision's CI; main pushes remain independent.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+# Automatic smoke coverage lives in check.yml and reuses its tested site build.
+# Keep this standalone build only for an explicitly requested manual diagnostic.
 permissions:
   contents: read
 jobs:
