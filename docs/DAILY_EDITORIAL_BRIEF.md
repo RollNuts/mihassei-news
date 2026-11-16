@@ -30,7 +30,7 @@
 - **発行引継ぎ（11/13 09:30→11:30）：** 事件面 `airport-baggage-robot-leaves-upper-shelves-empty` をこの発行PRに追加。空港の2段台車で安全設定が上段を使わず通路を塞ぎ、固定条件を追加して荷物を3台にまとめる。写真は内蔵ImageGenを1回生成しPNG/JPEGを同実行で実表示したがGitHub blob未転送のため、採用・本番実写化は未完了、公開後画像回収担当へ同一素材の回収を渡す。次は11:30に新カテゴリを比較し、政策・製品発表の残枠を確保。公開可否とrevisionは本発行結果を正とする。
 
 - **画像引継ぎ（屋内ビーチ、完了）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／写真SHA `c3552d3b1fad` はPR #728で実配信済み。原生成claim・失敗は保持し、同じ写真を再生成しない。週刊用の別撮影は下記の担当PRへ分離。
-- **グラビア引継ぎ:** 既刊第1号7人・70枚は保持。新しい第2号は毎日1人ずつ、週の固定順は `content/photo_editions.json` の `schedule` を正本にする。先頭は月城れな `november-city-pause-rena-008`、次は白峰ゆき。既存編集GPTは毎日03:30に変更済みで、原本の保存参照・採否・実配信は担当PRの結果を参照し、同じ10枚を再依頼しない。
+- **グラビア引継ぎ:** 既刊第1号7人・70枚は保持。新しい第2号は毎日1人ずつ、週の固定順は `content/photo_editions.json` の `schedule` を正本にする。先頭は月城れな `november-city-pause-rena-008`、次は白峰ゆき。既存編集GPTの実行時刻は保存済みの曜日別スケジュールを参照し、原本の保存参照・採否・実配信は担当PRの結果を参照し、同じ10枚を再依頼しない。
 
 - **発行引継ぎ（11/15 07:30→09:30）：** スポーツ面 `remote-basketball-final-fans-walk-behind-hoop` は同じPR #744で独立初読を保持し、主語メタデータのみ修正。実公開へ進めるJST時刻へpublished_at/fiction_atを更新し、元の07:30枠を保持。親子がMR眼鏡で青い外周帯を歩く写真を原PNG/JPEG目視で採用。通常統合と本番の確定状態はこのPRの公開結果を正とする。
 - **次担当：** 次の通常発行枠は最新mainから配分を再計算（現時点は事件面、当日スポーツ1本・product_launch1本、政策発表は未充足）。原生成candidate `native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d`・記事SHA `7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16` を保持し、同写真を再生成しない。図：不要（実会場と遠隔体育館の違い、眼鏡・外周帯・壁面中継を本文と写真で追える）。
