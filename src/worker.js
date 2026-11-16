@@ -109,7 +109,9 @@ async function imageControl(req, url) {
     const workflow=await Promise.race([
       (async()=>{
         const response=await fetch("https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml",{
-          method:"GET",redirect:"error",cache:"no-store",signal:controller.signal,
+          // Workers does not implement redirect:"error". Manual mode returns
+          // redirects without following them; the status check below rejects them.
+          method:"GET",redirect:"manual",cache:"no-store",signal:controller.signal,
           headers:{"accept":"application/vnd.github+json",
             "user-agent":"mihassei-news-image-control",
             "cache-control":"no-cache","x-github-api-version":"2022-11-28"}

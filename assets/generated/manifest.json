@@ -4188,6 +4188,183 @@
       "source_article_sha256": "168cc55f67364bbcb08f3cdb59f8834c15c98a9235f470c406d10b09ad47beb6",
       "source_png_sha256": "e1dd72c04e5bb4ec3bc5a7b47c390354afec61b5c643f230e7af8b9ad8d872d1"
     },
+    "local-council-keeps-last-bus-despite-grant-formula": {
+      "article_sha256": "c38314247148e9324ef685299027dbb1cea7b88645dfb38cfa66a05b118df4d0",
+      "bytes": 187647,
+      "generated_at": "2026-11-16T07:43:44.971076954Z",
+      "generation_id": "5ce094b1-d736-447c-819d-0c04192bb521",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Natural documentary press photograph of a fictional Japanese local bus stop on a cold November evening, a city bus with headlights on as an adult hospital cleaner in a plain coat and a factory shift worker with a work bag step toward the open door, understated practical street lighting, clear view of bus and passengers, no visible brands or logos, no legible text, no identifiable real people, 16:9.",
+      "generation_prompt_source": "Exact built-in image_gen.imagegen prompt captured by generateAndStage and preserved in the original candidate receipt; the actual output filename identifies the tool execution separately from the C2PA asset instanceID.",
+      "generation_receipt": "xmp:iid:5ce094b1-d736-447c-819d-0c04192bb521",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "b5e2d7c3f92f5b246f1dafb8b4efadd1c946b6a4baada5f313780f9b6e9481de",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-16T07:43:44.971076954Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-16T07:43:44.971082759Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-16T07:43:44.965393748Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              141,
+              149,
+              63,
+              116,
+              158,
+              102,
+              76,
+              128,
+              74,
+              218,
+              166,
+              205,
+              7,
+              174,
+              109,
+              11,
+              55,
+              195,
+              183,
+              11,
+              213,
+              221,
+              254,
+              49,
+              31,
+              194,
+              187,
+              219,
+              0,
+              184,
+              126,
+              28
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:5ce094b1-d736-447c-819d-0c04192bb521",
+        "manifest_uri": "urn:c2pa:d40a7b95-58e8-4969-afcd-a0572f12dd1a",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "Generated images are saved to /Users/murakaminaoya/.codex/generated_images/01a1e34c-3950-7d23-91f4-b0fe5e990e22 as /Users/murakaminaoya/.codex/generated_images/01a1e34c-3950-7d23-91f4-b0fe5e990e22/exec-3f391041-c643-4201-9ece-c70009110349.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "bytes": 2380442,
+        "caBX_sha256": "7df0ffa95d76c3ac6e609814b95f6d6dccab8fffaf28214dba814db6418fa1d0",
+        "candidate_branch": "native-image-candidate/local-council-keeps-last-bus-despite-grant-formula/c38314247148e932-698db50608bd",
+        "candidate_commit": "2327ab344ad0317bb32e8e8580e4292c33cccbdf",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/901582e1e25a8b033721437919db0e4af420835da8fae35fa458f1f332ed8ec6",
+          "commit_sha": "f06962dfe9755cfdc1438b3be0564e286a97d06e",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/901582e1e25a8b033721437919db0e4af420835da8fae35fa458f1f332ed8ec6.json",
+          "receipt_sha256": "17bc15ffddb80837e8f662674affa86bb85f516207b3cef2719cf566ee893ad2",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "generation_claim_receipt_snapshot_path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/generation-claim-receipt.json",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "codex-photo-recovery-pr793-20261116",
+        "method": "Preferred generateAndStage completed actual PNG transfer, conversion, GitHub branch save/readback, durable claim, one built-in generation and candidate save in the same execution. stager.load reconstructed the exact source and reproduced the JPEG. Live GitHub free-cpu-scenes.yml state was checked by the reviewed cloudStatus callback before each remote mutation and generation. No Mac image-generation process, GPU or second generation was used.",
+        "original_png_parts": [
+          {
+            "blob_sha": "c4d711a73b0c41a3374d235dd6db4fecb0fe2909",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/source.png.part000",
+            "sha256": "e6245eb16142702ee5212685e0e66899fd69ddb515c589a29d9aabf0714fbf8f"
+          },
+          {
+            "blob_sha": "139c8d2f311aa892706c564a69a6f266c114a0f2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/source.png.part001",
+            "sha256": "5be71f1413f9813f0a096f6457eb9e085c41a316f38012a98ee0a31c69bf9e9b"
+          },
+          {
+            "blob_sha": "fe1e5086ad032b41b729e971b7eb6a2e464e554f",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/source.png.part002",
+            "sha256": "eb67772b51700ba49c7a616d48ba28c46465818bb56d5f91b9fb7412982025fc"
+          },
+          {
+            "blob_sha": "21de44117ef5ae8b013017cdee2e306efa733da6",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/source.png.part003",
+            "sha256": "3f5a736983108e80be2e2a4109bfa6176f360538d69074ef503a06fe6d64882e"
+          },
+          {
+            "blob_sha": "968570a17baeee6c6b63886ea4d93b1cead14005",
+            "bytes": 283290,
+            "path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/source.png.part004",
+            "sha256": "99b309cb00e0786698d975b86a1e2092f04cb6681b0c14cb8e73f1940ddd0a44"
+          }
+        ],
+        "preflight_receipt_snapshot_path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/preflight-receipt.json",
+        "receipt_path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/receipt.json",
+        "receipt_sha256": "7bf4c75cf003c269ba0d63eead480db42f237b1f433a08421f768129ec75fe67",
+        "storage": "github_candidate_branch_and_local_original_parts",
+        "tool_staging_result_path": "maintenance/native-image-candidates/local-council-keeps-last-bus-despite-grant-formula/tool-staging-result.json",
+        "tool_staging_result_sha256": "953e4728c0dd8768091c448f78704f9da0453346db56fd7973a1404485c8ea5a",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "03ce0d91cb794e230d56856fbf66fd993178efc4",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-16T07:42:37.453Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "fb2d1112e557bc9612136f421ee28c925fe744504d403fdc88e904379d6bf5ea",
+          "route": "PNG data URL in functions.exec runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "6b6ee5a4ec6f14fede7098057c299ef8cf27962415900dbedb33e2518169b94e",
+      "tool_execution": {
+        "execution_id": "3f391041-c643-4201-9ece-c70009110349",
+        "execution_id_source": "Actual exec UUID in the originating tool output_hint and original PNG filename; not an exposed backend generation/job ID.",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "local-souvenir-cannot-leave-town": {
       "article_sha256": "9a4c73400cee12de4f0158729fc62cab51da7350c70f1af6afc1b41468d37cc1",
       "bytes": 106081,

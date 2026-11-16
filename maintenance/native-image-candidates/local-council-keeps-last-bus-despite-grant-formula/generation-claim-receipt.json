@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "901582e1e25a8b033721437919db0e4af420835da8fae35fa458f1f332ed8ec6",
+  "slug": "local-council-keeps-last-bus-despite-grant-formula",
+  "article_sha256": "c38314247148e9324ef685299027dbb1cea7b88645dfb38cfa66a05b118df4d0",
+  "logical_run_id": "codex-photo-recovery-pr793-20261116",
+  "prompt_sha256": "bf312d5ea732e8fe2a5ea446fc18460e339a2e6b16afbd5b5227e53f0a018675",
+  "reserved_at": "2026-11-16T07:43:06.007Z",
+  "baseline": {
+    "commit_sha": "c5f03a1168a81752c5931e0e7308bfab8774fc99",
+    "tree_sha": "af3577e0910c49aa9acd4980d6432adce857ae7d",
+    "protected_hashes": {
+      "content/articles.json": "ded01ac61e79aa5a9077fbd9f7e27675246ee9825114253d3154fb680af936f8",
+      "assets/generated/manifest.json": "fb2d0f71a441234cc715ebfa6788f9e563223f56dfa8c95c65a89ba87e34a54f",
+      "content/visual_reviews.json": "91eeb2da35cf67c75c4da97620ec50b25cc1c7541cbbb239483b73bee0dd1d2b"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "03ce0d91cb794e230d56856fbf66fd993178efc4",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "fb2d1112e557bc9612136f421ee28c925fe744504d403fdc88e904379d6bf5ea",
+    "observed_at": "2026-11-16T07:42:37.453Z",
+    "route": "PNG data URL in functions.exec runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
