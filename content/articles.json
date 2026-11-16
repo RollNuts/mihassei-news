@@ -287,7 +287,7 @@
       "url": "https://www.jst.go.jp/pr/announce/20261112-3/index.html",
       "topic": "2026年11月12日の共同発表では、ナノポアで得た電流信号と深層学習を使い、大腸菌のtRNAの種類・存在量・一部の修飾を解析する手法を報告。2026年11月9日付の学術誌掲載に対応する成果で、食品発酵用の検査機発売、菌の状態から味を決める実用化、2031年の製造・試食・出荷を実証した発表ではない。架空の発酵工場、商品、職人、二槽の検査結果と熟成・出荷はすべて2031年の創作。"
     },
-    "scene_prompt": "A 58-year-old fictional Japanese female fermentation specialist carefully pours two small samples into separate shallow stainless-steel sample trays beside two large fermentation vats. Photorealistic documentary press photograph inside a clean traditional-modern soybean fermentation factory in November, practical work clothes, realistic bright workshop lighting, focused hands and clear samples, no readable text, no logos, no recognizable real person, one coherent scene, 16:9.",
+    "scene_prompt": "A photorealistic documentary photograph of a fictional 58-year-old Japanese female fermentation specialist at a November soybean-miso factory tasting. Two separate shallow white dishes of naturally brown miso sit clearly apart on a clean tasting counter. An adult visitor tastes one sample with a small spoon while the specialist points gently toward the other dish. Both dishes, the spoon and the two people are visible in one natural medium-wide frame; fermentation equipment is softly visible behind them. Practical clean work clothes, calm focused expressions, natural window light, realistic skin and food textures. No labels, text, logos, screens or recognizable real people. One coherent scene, 16:9.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "発酵",
