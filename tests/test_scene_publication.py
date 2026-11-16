@@ -25,7 +25,9 @@ MODEL = "sd_xl_base_1.0.safetensors"
 class ScenePublicationTests(unittest.TestCase):
     def test_validated_jpegs_reach_pages_ogp_and_rss_and_bad_image_falls_back(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp) / "site"
+            # macOS /var aliases /private/var; keep that OS alias outside the
+            # fixture so production's image-ancestor symlink gate stays strict.
+            root = Path(tmp).resolve() / "site"
             shutil.copytree(ROOT, root, ignore=shutil.ignore_patterns(".git", "dist", "__pycache__"))
             article_bytes = (root / "content/articles.json").read_bytes()
             articles = json.loads(article_bytes)

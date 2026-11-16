@@ -17,6 +17,7 @@ from functools import lru_cache
 from pathlib import Path
 
 if __package__:
+    from .publication_inputs import publication_json_snapshot
     from .social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
@@ -42,6 +43,7 @@ if __package__:
     from .photo_editions import load_photo_editions, edition_url
     from .photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 else:
+    from publication_inputs import publication_json_snapshot
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
@@ -2312,6 +2314,7 @@ def make_article_social_images(articles):
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"), root=BASE)
 
 
+@publication_json_snapshot()
 def build():
     global PHOTO_ISSUES_AVAILABLE
     photo_data = load_photo_issues(BASE)
