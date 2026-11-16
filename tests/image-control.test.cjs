@@ -22,7 +22,15 @@ function fixture(fetchImpl=async()=>Response.json({path:workflowPath,state:'acti
   }
   const context=vm.createContext({Response,Request,URL,Uint8Array,TextDecoder,
     AbortController,Date:Clock,
-    fetch:async(url,options)=>{requests.push({url,options});return fetchImpl(url,options);},
+    fetch:async(url,options)=>{
+      // Workers Request accepts only follow/manual, unlike Node's fetch.
+      // Keep this runtime contract in the stub so an unsupported option cannot
+      // appear to pass all endpoint tests while failing before a real request.
+      if(!['follow','manual'].includes(options.redirect))
+        throw new TypeError('Workers supports only follow/manual redirect modes');
+      requests.push({url,options});
+      return fetchImpl(url,options);
+    },
     setTimeout(fn,ms){const timer={fn,ms};timers.add(timer);return timer;},
     clearTimeout(timer){timers.delete(timer);}
   });
@@ -64,7 +72,7 @@ test('public control GET exposes only the checked workflow state and echoed nonc
     const request=f.requests[0];
     assert.equal(request.url,upstream);
     assert.equal(request.options.method,'GET');
-    assert.equal(request.options.redirect,'error');
+    assert.equal(request.options.redirect,'manual');
     assert.equal(request.options.cache,'no-store');
     assert.equal(request.options.headers['cache-control'],'no-cache');
     assert.match(request.options.headers['user-agent'],/mihassei/);
@@ -127,7 +135,7 @@ test('missing, malformed or unrelated workflow metadata cannot return active',as
 });
 
 test('upstream failures and rate limits return a minimal 503 without retrying',async()=>{
-  for(const status of [301,403,404,429,500,503]) {
+  for(const status of [301,302,303,307,308,403,404,429,500,503]) {
     await unavailable(fixture(async()=>new Response('private upstream detail',{
       status,headers:{location:'https://evil.example/', 'retry-after':'60'}
     })));
