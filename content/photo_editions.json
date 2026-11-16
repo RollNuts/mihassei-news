@@ -138,6 +138,34 @@
           "shiramine-yuki"
         ]
       }
+    },
+    {
+      "number": 2,
+      "slug": "issue-002",
+      "state": "published",
+      "legacy": false,
+      "release_mode": "daily",
+      "title": "7人と過ごす、11月の一週間。",
+      "summary": "それぞれの場所から届く写真と未来コラム。",
+      "published_at": "2026-11-15T13:34:21.239318+00:00",
+      "features": [
+        "november-city-pause-rena-008"
+      ],
+      "schedule": {
+        "schema_version": 1,
+        "week_start_date_jst": "2026-11-15",
+        "seed": "25bf6d964d139196c7b5bb2e445d309c",
+        "order": [
+          "tsukishiro-rena",
+          "shiramine-yuki",
+          "nagino-saya",
+          "kiritani-sumire",
+          "hanase-mio",
+          "amane-hikari",
+          "shioba-rio"
+        ],
+        "frozen_at_utc": "2026-11-15T12:42:24.683645+00:00"
+      }
     }
   ]
 }

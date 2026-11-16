@@ -769,7 +769,6 @@ class SiteTests(unittest.TestCase):
         from scripts.visual_review import reviewed_generated_scene
         from scripts import photo_issues as photo
         from scripts.photo_editions import load_photo_editions, edition_url
-        from scripts.photo_edition_pages import edition_cover
         articles=load()
         ns={"media":"http://search.yahoo.com/mrss/",
             "atom":"http://www.w3.org/2005/Atom"}
@@ -798,19 +797,26 @@ class SiteTests(unittest.TestCase):
             self.assertEqual(channel.findtext("language"),"ja")
             self.assertEqual(channel.find("atom:link",ns).attrib,
                              {"href":SITE+photo.feed_url(),"rel":"self","type":"application/rss+xml"})
-            releases=sorted(editions or photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)
-            release_url=edition_url if editions else photo.issue_url
+            releases=[]
+            for edition in editions:
+                prefix=f'第{edition["number"]}号 '
+                if edition.get("release_mode")=="daily":
+                    releases.extend((feature,photo.issue_url(feature),feature,prefix)
+                                    for feature in reversed(edition["ordered_features"]))
+                else:
+                    releases.append((edition,edition_url(edition),edition["ordered_features"][0],prefix))
+            if not editions:
+                releases=[(issue,photo.issue_url(issue),issue,"") for issue in sorted(
+                    photos,key=lambda issue:datetime.fromisoformat(issue["published_at"]),reverse=True)]
             entries=channel.findall("item")
             self.assertEqual([item.findtext("link") for item in entries],
-                             [SITE+release_url(issue) for issue in releases])
-            for item,issue in zip(entries,releases):
-                self.assertEqual(item.findtext("guid"),SITE+release_url(issue))
-                prefix=f'第{issue["number"]}号 ' if editions else ""
+                             [SITE+url for _issue,url,_feature,_prefix in releases])
+            for item,(issue,url,feature,prefix) in zip(entries,releases):
+                self.assertEqual(item.findtext("guid"),SITE+url)
                 self.assertEqual(item.findtext("title"),prefix+issue["title"]+" | 週刊グラビア（創作写真コラム）")
                 self.assertEqual(item.findtext("description"),issue["summary"])
                 self.assertEqual(parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
                                  datetime.fromisoformat(issue["published_at"]).replace(microsecond=0).isoformat())
-                feature=edition_cover(issue) if editions else issue
                 cover=photo.cover_shot(feature)
                 image=SITE+photo.cover_url(feature)
                 self.assertEqual(item.find("enclosure").attrib,{"url":image,

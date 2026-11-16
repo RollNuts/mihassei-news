@@ -137,6 +137,25 @@ class PhotoEditionHistoryGuardTests(unittest.TestCase):
         for current in (None, {"schema_version": 1, "editions": []}):
             with self.assertRaisesRegex(ValueError, "removed or renamed"):
                 guard_photo_edition_history(self.before, current)
+
+    def test_daily_schedule_is_fixed_from_draft_and_published_features_only_append(self):
+        before = copy.deepcopy(self.before)
+        daily = {"number": 2, "slug": "issue-002", "state": "draft", "release_mode": "daily",
+                 "legacy": False, "features": [], "published_at": None,
+                 "schedule": {"week_start_date_jst": "2026-11-15", "seed": "a" * 32, "order": list(range(7))}}
+        before["editions"].append(daily)
+        after = copy.deepcopy(before)
+        after["editions"][1]["schedule"]["order"].reverse()
+        with self.assertRaisesRegex(ValueError, "frozen daily photo schedule"):
+            guard_photo_edition_history(before, after)
+        daily.update(state="published", published_at="2026-11-15T14:00:00+09:00", features=["new-first"])
+        after = copy.deepcopy(before)
+        after["editions"][1]["features"].append("new-second")
+        self.assertEqual(guard_photo_edition_history(before, after), 2)
+        for members in ([], ["replacement"], ["new-second", "new-first"]):
+            after["editions"][1]["features"] = members
+            with self.subTest(members=members), self.assertRaisesRegex(ValueError, "must only append"):
+                guard_photo_edition_history(before, after)
         for field, value in (("slug", "issue-002"), ("state", "draft"), ("number", 2),
                              ("legacy", True), ("published_at", "2026-11-16T11:28:23+09:00")):
             current = copy.deepcopy(self.before)

@@ -1,0 +1,56 @@
+{
+  "active_hold": {
+    "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+    "reason": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+    "rejected_candidate_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+  },
+  "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+  "baseline_commit": "8a451c6519e8150748768683346a520bbb878476",
+  "disposition": "Original CPU generation and any original visual review/hold retained unchanged. The recorded rejection is preserved separately from acceptance of genuinely new native bytes.",
+  "generation": {
+    "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+    "bytes": 139248,
+    "generated_at": "2026-11-15T05:17:20.084741+00:00",
+    "inference": {
+      "algorithm_type": "dpmsolver++",
+      "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+      "guidance_scale": 7.0,
+      "height": 448,
+      "num_inference_steps": 24,
+      "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+      "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+      "scheduler": "DPMSolverMultistepScheduler",
+      "solver_order": 2,
+      "solver_type": "midpoint",
+      "use_karras_sigmas": true,
+      "vae_model": "stabilityai/sd-vae-ft-mse",
+      "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "width": 800
+    },
+    "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "origin": "github-cpu-sd15",
+    "prompt_version": 3,
+    "seed": 3074401136884208640,
+    "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+  },
+  "recorded_rejection_review": {
+    "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+    "decision": "rejected",
+    "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+    "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+    "reviewed_at": "2026-11-15T14:47:15+09:00"
+  },
+  "retained_jpeg_bytes": 139248,
+  "retained_jpeg_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/previous-cpu-61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef.jpg",
+  "retained_jpeg_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+  "schema_version": 1,
+  "slug": "recycling-robot-reserves-washer-parts-before-dismantling",
+  "visual_review": {
+    "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+    "decision": "rejected",
+    "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+    "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+    "reviewed_at": "2026-11-15T14:47:15+09:00"
+  }
+}

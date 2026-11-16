@@ -66,6 +66,27 @@ class MotionWorkflowTests(unittest.TestCase):
         cls.video = (WORKFLOWS / "auto-motion-clips.yml").read_text()
         cls.images = (WORKFLOWS / "free-cpu-scenes.yml").read_text()
 
+    def test_cpu_plan_rejects_automatic_events_and_missing_slug_before_runtime(self):
+        block = step(self.images, "Plan missing images without downloading any runtime or model")
+        self.assertLess(self.images.index("Plan missing images"), self.images.index("Install CPU-only"))
+        self.assertRegex(self.images, r"(?ms)^      slug:\n.*?        required: true")
+        self.assertRegex(self.images, r"(?ms)^      publish:\n.*?        default: false")
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "output"
+            for limit in ("1", "2", "3"):
+                for event, slug in (("workflow_dispatch", ""), ("workflow_dispatch", "  "),
+                                    ("push", "some-story"), ("schedule", "some-story")):
+                    with self.subTest(limit=limit, event=event, slug=slug):
+                        output.write_text("")
+                        env = {**os.environ, "GITHUB_EVENT_NAME": event, "SCENE_SLUG": slug,
+                               "SCENE_LIMIT": limit, "GITHUB_OUTPUT": str(output), "RUNNER_TEMP": tmp}
+                        result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", shell(block)],
+                                                cwd=ROOT, env=env, capture_output=True, text=True)
+                        self.assertNotEqual(result.returncode, 0)
+                        self.assertIn("CPU generation requires", result.stderr)
+                        self.assertEqual(output.read_text(), "")
+                        self.assertNotIn("Pending:", result.stdout)
+
     def test_selection_review_and_captions_wake_video_but_output_cannot_recurse(self):
         filters = push_paths(self.video)
         for path in ("content/articles.json", "assets/generated/chosen-story.jpg",
@@ -76,15 +97,14 @@ class MotionWorkflowTests(unittest.TestCase):
         for path in ("assets/clips/chosen-story.mp4", "assets/clips/manifest.json"):
             with self.subTest(path=path):
                 self.assertFalse(any(fnmatch.fnmatchcase(path, rule) for rule in filters))
-                self.assertFalse(any(fnmatch.fnmatchcase(path, rule)
-                                     for rule in push_paths(self.images)))
+        self.assertNotRegex(self.images, r"(?m)^  (push|schedule):")
 
     def test_image_pass_only_dispatches_ready_videos_even_with_no_images_to_generate(self):
         block = step(self.images, "Continue selected videos after a successful public image pass")
         condition = re.search(r"^        if: (.*)$", block, re.M).group(1)
         self.assertNotIn("pending", condition)
         self.assertIn("github.ref == 'refs/heads/main'", condition)
-        self.assertIn("(github.event_name != 'workflow_dispatch' || inputs.publish)", condition)
+        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.publish", condition)
         self.assertIn("&& !inputs.retry_held", condition)
         self.assertNotIn("always()", condition)
         with tempfile.TemporaryDirectory() as tmp:
@@ -165,7 +185,7 @@ class MotionWorkflowTests(unittest.TestCase):
         self.assertIn("awaiting_reviewed_source", freshness)
         self.assertIn("github.event.repository.private == false", self.video)
         self.assertIn("    - cron: '17 0,6,12,18 * * *'", self.video)
-        self.assertIn("cron: '17 * * * *'", self.images)
+        self.assertNotRegex(self.images, r"(?m)^  (push|schedule):")
 
     def test_caster_preview_requires_explicit_manual_public_repository_and_skips_publication(self):
         conditions = {name: re.search(r"^    if: (.+)$", job(self.video, name), re.M).group(1)

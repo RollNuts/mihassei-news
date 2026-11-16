@@ -30,7 +30,11 @@ def feature_edition_map(editions):
 
 
 def edition_cover(edition):
-    return edition["ordered_features"][0]
+    return edition["ordered_features"][-1 if edition.get("release_mode") == "daily" else 0]
+
+
+def edition_updated_at(edition):
+    return edition.get("modified_at") or edition["published_at"]
 
 
 def _cover_image(edition, *, eager=False):
@@ -47,30 +51,37 @@ def _counts(edition):
     return f'{len(features)}人・{sum(len(feature["shots"]) for feature in features)}枚'
 
 
-def _edition_card(edition):
+def _edition_card(edition, *, featured=False):
+    daily_latest = featured and edition.get("release_mode") == "daily"
+    publication = edition_cover(edition) if daily_latest else edition
+    target = issue_url(publication) if daily_latest else edition_url(edition)
+    action = "最新の特集を読む" if daily_latest else "この号の目次へ"
     return ('<li><article class="photo-issue-card photo-edition-card">'
-            f'<a class="photo-issue-card-link" href="{h(edition_url(edition))}">{_cover_image(edition)}'
+            f'<a class="photo-issue-card-link" href="{h(target)}">{_cover_image(edition,eager=featured)}'
             '<div class="photo-issue-card-copy">'
             f'<p class="photo-issue-number">第{h(edition["number"])}号 · {_counts(edition)}</p>'
-            f'<h2>{h(edition["title"])}</h2><p class="photo-issue-card-summary">{h(edition["summary"])}</p>'
-            f'<p class="photo-issue-card-date">公開日 {_publication_date(edition)}</p>'
-            '<span class="photo-issue-open">この号の目次へ <span aria-hidden="true">↗</span></span>'
+            f'<h2>{h(publication["title"])}</h2><p class="photo-issue-card-summary">{h(publication["summary"])}</p>'
+            f'<p class="photo-issue-card-date">公開日 {_publication_date(publication)}</p>'
+            f'<span class="photo-issue-open">{action} <span aria-hidden="true">↗</span></span>'
             '</div></a></article></li>')
 
 
 def render_edition_index(editions, models, layout, *, stories_markup=""):
     features = list(feature_edition_map(editions))
     by_slug = {feature["slug"]: feature for edition in editions for feature in edition["ordered_features"]}
-    main = ('<div class="container photo-issues-page">'
+    older = (f'<ol class="photo-issues-grid" start="2">{"".join(_edition_card(edition) for edition in editions[1:])}</ol>'
+             if len(editions) > 1 else "")
+    main = ('<div class="container photo-issues-page photo-edition-index">'
             '<nav class="photo-issue-breadcrumb" aria-label="現在位置">'
             '<a href="/">トップ</a> / <span aria-current="page">週刊グラビア</span></nav>'
             '<header class="photo-issues-intro"><p class="photo-issue-eyebrow">未発生新聞 / PHOTO & COLUMN</p>'
             f'<h1>週刊グラビア</h1><p class="photo-issue-credit">{CREDIT}</p>'
             f'<p><a href="{h(feed_url())}" type="application/rss+xml">RSSで購読</a></p></header>'
-            f'{_photo_navigation("issues")}{stories_markup}'
+            f'{_photo_navigation("issues")}'
+            f'<ol class="photo-issues-grid">{_edition_card(editions[0],featured=True)}</ol>{stories_markup}'
             f'{_rankings([by_slug[slug] for slug in features], {model["id"]:model for model in models})}'
-            f'<ol class="photo-issues-grid">{"".join(_edition_card(edition) for edition in editions)}</ol></div>')
-    return layout("週刊グラビア", "架空の成人モデル7人の写真と、短い未来コラムを一冊に。",
+            f'{older}</div>')
+    return layout("週刊グラビア", "架空の成人モデルの写真と、短い未来コラム。",
                   index_url(), main, active="photos", kind="photo_collection", feed_url=feed_url(),
                   photo_cover_issue=edition_cover(editions[0]))
 
@@ -116,6 +127,8 @@ def render_photo_edition(edition, models, layout):
             f'<ol class="photo-edition-features">{"".join(rows)}</ol></section>'
             f'{render_reader_comments("photo-issue:"+edition["slug"],heading="この号へのコメント",placeholder="写真やコラムへの感想をひとこと…")}</article>')
     public = {key:edition[key] for key in ("number","title","published_at")}
+    if edition.get("modified_at"):
+        public["modified_at"] = edition["modified_at"]
     return layout(f'週刊グラビア 第{edition["number"]}号｜{edition["title"]}', edition["summary"],
                   edition_url(edition), main, active="photos", kind="photo_edition", photo_edition=public,
                   photo_cover_issue=edition_cover(edition), feed_url=feed_url())
@@ -130,15 +143,21 @@ def generate_edition_rss(editions, *, site="https://veripsa.com"):
         ET.SubElement(channel,tag).text=value
     ET.SubElement(channel,f"{{{atom}}}link",href=site+feed_url(),rel="self",type="application/rss+xml")
     if editions:
-        ET.SubElement(channel,"lastBuildDate").text=format_datetime(_stamp(editions[0]["published_at"]))
+        ET.SubElement(channel,"lastBuildDate").text=format_datetime(max(_stamp(edition_updated_at(edition)) for edition in editions))
+    entries = []
     for edition in editions:
-        cover = edition_cover(edition); shot=cover_shot(cover); image=cover["images"][shot["id"]]
+        if edition.get("release_mode") == "daily":
+            entries.extend((feature, issue_url(feature), feature, edition["number"]) for feature in reversed(edition["ordered_features"]))
+        else:
+            entries.append((edition, edition_url(edition), edition_cover(edition), edition["number"]))
+    for publication, path, cover, number in entries:
+        shot=cover_shot(cover); image=cover["images"][shot["id"]]
         entry=ET.SubElement(channel,"item")
-        for tag,value in (("title",f'第{edition["number"]}号 {edition["title"]} | 週刊グラビア（創作写真コラム）'),
-                          ("link",site+edition_url(edition)),("description",edition["summary"]),
-                          ("pubDate",format_datetime(_stamp(edition["published_at"])))):
+        for tag,value in (("title",f'第{number}号 {publication["title"]} | 週刊グラビア（創作写真コラム）'),
+                          ("link",site+path),("description",publication["summary"]),
+                          ("pubDate",format_datetime(_stamp(publication["published_at"])))):
             ET.SubElement(entry,tag).text=value
-        ET.SubElement(entry,"guid",isPermaLink="true").text=site+edition_url(edition)
+        ET.SubElement(entry,"guid",isPermaLink="true").text=site+path
         ET.SubElement(entry,"enclosure",url=site+cover_url(cover),length=str(image["bytes"]),type="image/jpeg")
         ET.SubElement(entry,f"{{{media}}}thumbnail",url=site+cover_url(cover),
                       width=str(image.get("width",1200)),height=str(image.get("height",675)))
@@ -151,8 +170,8 @@ def edition_sitemap_entries(editions):
     if not editions:
         return []
     latest=editions[0]
-    return [(index_url(),latest["published_at"],cover_url(edition_cover(latest)))] + [
-        (edition_url(edition),edition["published_at"],cover_url(edition_cover(edition))) for edition in editions]
+    return [(index_url(),edition_updated_at(latest),cover_url(edition_cover(latest)))] + [
+        (edition_url(edition),edition_updated_at(edition),cover_url(edition_cover(edition))) for edition in editions]
 
 
 def build_photo_editions(editions, models, layout, write, *, stories_markup=""):

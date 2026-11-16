@@ -980,6 +980,19 @@
     });
   });
 
+  document.querySelectorAll("[data-native-share]").forEach(b=>{
+    if(typeof navigator.share!=="function")return;
+    const payload={title:b.dataset.shareTitle,url:b.dataset.shareUrl};
+    if(typeof navigator.canShare==="function" && !navigator.canShare(payload))return;
+    b.hidden=false;
+    b.addEventListener("click",async()=>{
+      try{await navigator.share(payload);}
+      catch(error){
+        if(error?.name!=="AbortError")window.prompt("共有するURL",payload.url);
+      }
+    });
+  });
+
   document.querySelectorAll("[data-copy-url]").forEach(b=>{
     b.addEventListener("click",async()=>{
       const label=b.querySelector("span:last-child");

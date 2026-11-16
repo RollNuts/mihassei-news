@@ -1997,5 +1997,106 @@ class ArticleComicAttachmentTests(unittest.TestCase):
         self.assertEqual(budget.read(path)["requests"], [])
 
 
+class MarketDispatchIntegrationTests(unittest.TestCase):
+    def setUp(self):
+        env = patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": "", "X_TRIGGER_EVENT": "schedule"})
+        env.start()
+        self.addCleanup(env.stop)
+        self.config = {**CONFIG, "market_series_enabled": True}
+        self.market = {
+            "slug": "market-lab-profit-check", "promotion_kind": "market_analysis",
+            "title": "【市場分析｜2026-11-05】増収と増益を分けて、次の決算で確かめる",
+            "summary": "公開済みの会社予想と実績を切り分け、利益が増える条件と反証材料を確認する。予測の判定条件は当初のまま維持する。",
+            "published_at": "2026-11-05", "episode_sha256": "a" * 64,
+        }
+
+    def test_market_uses_one_shared_slot_before_news_without_pv(self):
+        news = article("fresh-news", age_hours=2)
+        result, metrics, _ = picks.decide([news, self.market], {}, ledger(), [], self.config, NOW)
+        self.assertEqual(result["slug"], self.market["slug"])
+        self.assertIsNone(metrics)
+        self.assertNotIn(self.market, picks.eligible_articles([self.market], NOW, self.config))
+        self.assertNotIn(self.market, picks.eligible_fresh_articles([self.market], NOW, self.config))
+
+    def test_market_day_cap_leaves_other_slots_for_news(self):
+        old = {**recorded(hours=3), "slot_jst": "2026-11-05T09:05:00+09:00"}
+        news = article("fresh-news", age_hours=2)
+        state = ledger(**{"market-lab-earlier-check": old})
+        selected, _, _ = picks.decide([news, self.market], {}, state, [], self.config, NOW)
+        self.assertEqual(selected["slug"], news["slug"])
+        self.assertEqual(picks.promotions_today(state, NOW), 1)
+
+    def test_remote_market_reply_recovers_permanent_key(self):
+        remote = {"id": "buf-market", "status": "sent", "sentAt": (NOW-timedelta(days=1)).isoformat(),
+                  "text": "既存の紹介", "metadata": {"thread": [{"text":
+                      "https://veripsa.com/serials/market-lab/profit-check/?utm_source=x"}]}}
+        state = ledger()
+        selected, _, _ = picks.decide([self.market], {}, state, [remote], self.config, NOW)
+        self.assertIsNone(selected)
+        self.assertIn(self.market["slug"], state["queued"])
+        self.assertNotIn("profit-check", state["queued"])
+
+    def test_off_and_live_cooldown_never_read_market_or_provider(self):
+        for enabled in (False, True):
+            with self.subTest(enabled=enabled), ExitStack() as stack:
+                config = {**self.config, "enabled": enabled}
+                stack.enter_context(patch.object(picks, "read_json", side_effect=lambda path:
+                    config if path.name == "config.json" else ledger()))
+                clock = stack.enter_context(patch.object(picks, "datetime", wraps=datetime))
+                clock.now.return_value = NOW
+                stack.enter_context(patch.object(picks, "delivery_retry_time", return_value=NOW+timedelta(days=1)))
+                market = stack.enter_context(patch.object(picks, "load_market_articles"))
+                connect = stack.enter_context(patch.object(picks, "connected_channel"))
+                send = stack.enter_context(patch.object(picks, "queue_one"))
+                self.assertEqual(picks.main(), 0)
+                market.assert_not_called()
+                connect.assert_not_called()
+                send.assert_not_called()
+
+    def test_market_switch_off_preserves_news_selection(self):
+        news = article("fresh-news", age_hours=2)
+        selected, _, _ = picks.decide([self.market, news], {}, ledger(), [], CONFIG, NOW)
+        self.assertEqual(selected["slug"], news["slug"])
+
+    def test_market_main_persists_thread_intent_and_receipt_without_pv(self):
+        image = {"path": "social-bot/assets/market-series-cover.png", "sha256": "a"*64,
+                 "revision": "b"*40}
+        image["url"] = threads.RAW_BASE + image["revision"] + "/" + image["path"]
+        thread = {"schema_version": 1, "article_sha256": self.market["episode_sha256"],
+                  "parent_text": threads.parent_text(self.market), "image": image,
+                  "reply_text": threads.canonical_url(self.market["slug"]) + threads.TRACKING_QUERY + "&image=" + "a"*12}
+        threads.validate_thread(thread, self.market["slug"])
+        state, saves = ledger(), []
+        with tempfile.TemporaryDirectory() as tmp, ExitStack() as stack:
+            root = Path(tmp)
+            (root/"content").mkdir()
+            (root/"content/articles.json").write_text("[]", encoding="utf-8")
+            stack.enter_context(patch.object(picks, "ROOT", root))
+            stack.enter_context(patch.object(picks, "read_json", side_effect=lambda path:
+                self.config if path.name == "config.json" else state))
+            clock = stack.enter_context(patch.object(picks, "datetime", wraps=datetime))
+            clock.now.return_value = NOW
+            stack.enter_context(patch.object(picks, "delivery_retry_time", return_value=None))
+            stack.enter_context(patch.dict(os.environ, {"BUFFER_API_KEY": "offline-test-only"}))
+            stack.enter_context(patch.object(picks, "load_market_articles", return_value=[self.market]))
+            stack.enter_context(patch.object(picks, "connected_channel", return_value=("mock-org", "mock-channel")))
+            stack.enter_context(patch.object(picks, "list_existing", return_value=[]))
+            stack.enter_context(patch.object(picks, "prepare_article_thread", return_value=thread))
+            stack.enter_context(patch.object(picks, "save_state", side_effect=lambda value: saves.append(copy.deepcopy(value))))
+            pv = stack.enter_context(patch.object(picks, "read_page_view_metrics"))
+            send = stack.enter_context(patch.object(picks, "queue_one", return_value={"id": "buf-market", "status": "sending"}))
+            self.assertEqual(picks.main(), 0)
+            pv.assert_not_called()
+            self.assertEqual(send.call_args.kwargs["mode"], "shareNow")
+            self.assertEqual(send.call_args.args[2]["article_thread"], thread)
+        record = state["queued"][self.market["slug"]]
+        self.assertEqual(record["source"], "market_analysis")
+        self.assertEqual(record["published_at"], "2026-11-05")
+        self.assertEqual(record["slot_jst"], "2026-11-05T11:05:00+09:00")
+        self.assertFalse(record["submission_pending"])
+        self.assertTrue(any(snapshot["queued"].get(self.market["slug"], {}).get("submission_pending") for snapshot in saves))
+        picks.validate_state(state)
+
+
 if __name__ == "__main__":
     unittest.main()

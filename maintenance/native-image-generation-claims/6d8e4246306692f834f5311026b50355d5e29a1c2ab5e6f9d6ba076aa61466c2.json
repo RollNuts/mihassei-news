@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "6d8e4246306692f834f5311026b50355d5e29a1c2ab5e6f9d6ba076aa61466c2",
+  "slug": "seven-venues-compose-one-live-song",
+  "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+  "logical_run_id": "nov15-seven-venues-native-recovery-20261115",
+  "prompt_sha256": "c9ef6d16cb42963bfc4749bfcbad455effe5188128f401b356fd4dd5a13949a3",
+  "reserved_at": "2026-11-15T11:35:50.282Z",
+  "baseline": {
+    "commit_sha": "8a451c6519e8150748768683346a520bbb878476",
+    "tree_sha": "6e3366a6f9801125d167ae77990b31c36a74822c",
+    "protected_hashes": {
+      "content/articles.json": "099812bba4d25176b9247a14eaf1c828872f27218cfb68cdc97a8f94cf9f753e",
+      "assets/generated/manifest.json": "8cf2bd910147e931590650cc315448facebe2fe0c151e76ed17a8d26db6af86a",
+      "content/visual_reviews.json": "da23d1d93d72709372ea7a8bc1f77afc38c94ac7c4431e0e5d1800d98340ecb3"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "f476ae488deb429ed2242cded18f9f45e1fd6708",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "d266116ffe1003a66a4ce859fb293cb957656cb1076b3fcbd791092674de8e21",
+    "observed_at": "2026-11-15T11:35:35.483Z",
+    "route": "PNG data URL in functions.exec to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}

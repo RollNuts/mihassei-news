@@ -1,5 +1,6 @@
 """Reader-first newspaper layout for factual markets; preserves auditable sources."""
 import json
+import copy
 from datetime import date
 from pathlib import Path
 import unittest
@@ -33,7 +34,6 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('id="market-stories"', rendered)
         self.assertIn('href="/serials/market-lab/briefings/"', rendered)
         self.assertIn('href="/serials/market-lab/outlooks/"', rendered)
-        self.assertIn('id="market-outlook"', rendered)
         self.assertIn('id="forecast-ledger"', rendered)
         self.assertLess(rendered.index('id="market-focus"'),
                         rendered.index('id="market-stories"'))
@@ -42,8 +42,10 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/"', rendered)
         self.assertIn(latest["title"], rendered)
         self.assertIn('最終掲載 <time datetime="' + latest["published_at"] + '">', rendered)
-        self.assertIn("今後の焦点", rendered)
-        self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/#forecast-detail"', rendered)
+        self.assertIn("今の予想", rendered)
+        self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/#article-outlook"', rendered)
+        self.assertNotIn("詳しい検証方法", rendered)
+        self.assertNotIn("判定記録", rendered)
         self.assertNotIn("確認済みの日次市況記事はまだありません", rendered)
         self.assertNotIn("日々の予測と判断の変化", rendered)
         self.assertNotIn("判定材料不足", rendered)
@@ -52,7 +54,7 @@ class MarketPaperReadabilityTests(unittest.TestCase):
 
     def test_front_page_preserves_links_rss_history_and_read_progress(self):
         rendered = render_series_page(self.market, passthrough, self.figure_data, [], self.outlook, [])
-        self.assertIn("公開済み 3回", rendered)
+        self.assertIn('datetime="2026-11-15"', rendered)
         self.assertIn('data-serial-progress-summary', rendered)
         self.assertIn('data-serial-episode-state', rendered)
         self.assertIn('data-serial-progress-complete', rendered)
@@ -74,25 +76,28 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn("2026-11-16", markup)
         # The serial latest is still available in the older-analysis list.
         self.assertIn(self.market["episodes"][-1]["title"], markup)
-        self.assertIn("これまでの分析", markup)
+        self.assertIn("企業分析", markup)
         self.assertNotIn("確認済みの日次市況記事はまだありません", markup)
 
-    def test_article_explains_evidence_before_outlook_and_leaves_math_inspectable(self):
+    def test_article_leads_with_prediction_and_result_without_method_panels(self):
         episode = self.market["episodes"][-1]
         page = render_episode_page(self.market, episode, passthrough,
                                    self.figure_data[episode["slug"]],
                                    self.outlook.get(episode["slug"], []))
         for marker in ('id="article-evidence"', 'id="article-outlook"',
-                       'id="forecast-detail"', 'id="article-sources"',
-                       'id="forecast-progress"', 'id="reader-comments"'):
+                       'id="article-sources"', 'id="reader-comments"'):
             self.assertIn(marker, page)
-        self.assertLess(page.index('id="article-evidence"'), page.index('id="article-outlook"'))
+        self.assertLess(page.index('id="article-outlook"'), page.index('class="market-data-summary"'))
+        self.assertLess(page.index('id="article-outlook"'), page.index('id="article-evidence"'))
         self.assertLess(page.index('id="article-outlook"'), page.index('id="article-sources"'))
-        self.assertIn(episode["forecast"]["method"], page)
+        self.assertNotIn(episode["forecast"]["method"], page)
         self.assertIn(episode["forecast"]["statement"], page)
         self.assertIn(episode["forecast"]["reviewed_on"], page)
-        self.assertIn("予測の判定方法と基準値を読む", page)
-        self.assertIn("この回をXで共有する", page)
+        self.assertNotIn("予測の判定方法と基準値を読む", page)
+        self.assertNotIn('class="serial-scenarios"', page)
+        self.assertNotIn('class="market-paper-history"', page)
+        self.assertIn("結果：結果待ち", page)
+        self.assertIn("Xで共有", page)
         self.assertNotIn("PUBLIC FORECAST LOG", page)
         self.assertEqual(page.count('<figure class="market-figure">'), 3)
 
@@ -106,7 +111,7 @@ class MarketPaperReadabilityTests(unittest.TestCase):
                 self.assertIn("単位：", src)
                 self.assertIn("<desc>", src)
 
-    def test_intraday_story_keeps_evidence_before_a_small_outlook_inset(self):
+    def test_intraday_story_leads_with_a_short_outlook_then_evidence(self):
         bulletin = {
             "slug": "2026-11-16-noon", "slot": "noon", "day": "2026-11-16",
             "published_at": "2026-11-16T12:40:00+09:00",
@@ -120,14 +125,38 @@ class MarketPaperReadabilityTests(unittest.TestCase):
             "at": "2026-11-16T08:10:00+09:00",
             "statement": "TOPIXの将来の方向を資料に基づき検討する。",
             "stance": "中立", "reviewed_on": "2026-11-17",
+            "subject": "TOPIX", "direction": "横ばい",
         }]
         result = render_market_bulletin(bulletin, passthrough, outlooks=prior)
         self.assertIn("何が動いたか", result)
-        self.assertIn('class="market-briefing-outlook"', result)
-        self.assertIn("この日の市場見通し", result)
-        self.assertLess(result.index("何が動いたか"), result.index("この日の市場見通し"))
+        self.assertIn('class="market-briefing-outlook market-reader-focus"', result)
+        self.assertNotIn(prior[0]["statement"], result)
+        self.assertIn("TOPIX", result)
+        self.assertIn("横ばい", result)
+        self.assertIn("結果日", result)
+        self.assertLess(result.index('id="daily-forecasts"'), result.index("何が動いたか"))
+        self.assertNotIn("その後の変更", result)
+        self.assertNotIn("検証記録", result)
         self.assertNotIn("daily-forecast-card", result)
         self.assertNotIn("PUBLIC FORECAST LOG", result)
+
+    def test_front_page_compacts_older_company_articles_without_deleting_links(self):
+        market = copy.deepcopy(self.market)
+        template = market["episodes"][-1]
+        market["episodes"] = [dict(template, number=i, slug=f"older-analysis-{i}",
+                                   title=f"企業分析{i}", published_at=f"2026-10-{i:02d}")
+                              for i in range(1, 7)]
+        before = copy.deepcopy(market)
+        page = render_series_page(market, passthrough)
+        visible, archive = page.split('<details class="market-reader-archive">', 1)
+        self.assertIn("過去の企業分析", archive)
+        self.assertIn('href="/serials/market-lab/older-analysis-5/"', visible)
+        self.assertIn('href="/serials/market-lab/older-analysis-4/"', visible)
+        for i in (1, 2, 3):
+            link = f'href="/serials/market-lab/older-analysis-{i}/"'
+            self.assertNotIn(link, visible)
+            self.assertIn(link, archive)
+        self.assertEqual(market, before)
 
     def test_empty_bulletin_archive_does_not_expose_the_internal_publish_schedule(self):
         output = render_market_bulletins_index([])

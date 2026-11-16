@@ -7656,6 +7656,450 @@
       },
       "generation_holds": {},
       "issue_sha256": "70e15b16ff13f48809344d5b12c08693ae1297dfb3152b6ce305daf9cdada577"
+    },
+    {
+      "slug": "november-city-pause-rena-008",
+      "number": 8,
+      "title": "帰る前に、ひと休み。",
+      "summary": "服を選び、レコードを聴いて、雨上がりの街へ。月城れなの、少し寄り道の多い11月。",
+      "column": [
+        "2031年11月。朝、コートを着る前に鏡の前で二十分使った。迷っていない顔は得意だけど、決めるのは遅い。結局、最初に手に取ったニットを選んだ。時間をかけた意味は、今のところ分からない。",
+        "昼はレコード店に寄って、窓際の席で少し休んだ。外はずいぶん冷えているのに、室内では上着が邪魔になる。一枚だけ聴くつもりが、気づけば何枚も選んでいた。服より早く決まると思っていたのに。",
+        "夜は街灯の下を歩いた。雨のあとで、歩道が店の明かりを薄く映している。音楽を止めると、信号と靴音がよく聞こえた。帰ったらコートをちゃんと掛けようと思う。たぶん、ソファより先に。"
+      ],
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "晩秋の街、カフェ、レコード店と夜の部屋",
+        "visual_direction": "11月のニットとコート。昼の柔らかな窓光から雨上がりの夜景へ、全身・上半身・横顔・近景を組み合わせる。",
+        "aspect_ratio": "original"
+      },
+      "model_id": "tsukishiro-rena",
+      "model_snapshot": {
+        "id": "tsukishiro-rena",
+        "name": "月城れな",
+        "age": 23,
+        "fictional": true,
+        "appearance": "23歳の架空の成人。涼しげで上品な表情、長い黒髪。顔はさや・ひかりと異なる独自の設計にする。",
+        "character": {
+          "version": 1,
+          "first_person": "私",
+          "occupation": "俳優兼モデル",
+          "casting_specialty": "ドラマや映画への出演、衣服や街の変化を静かな観察から描く企画。",
+          "personality": "静かで観察好き。見た目はクールだが好きなものには素直。",
+          "voice": "短く具体的で、少し乾いたユーモア。説教や冷笑にしない。",
+          "likes": [
+            "夜の街",
+            "服の形",
+            "一人で聴く音楽"
+          ],
+          "weakness": "迷っていない顔をして、実は服選びに時間をかける。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+          "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+          "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed",
+          "provenance": "assets/generated/photo-reference-tsukishiro-rena-aec46a830a8a.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 158,
+          "bust_cm": 82,
+          "waist_cm": 58,
+          "hip_cm": 85,
+          "shoulder_width_cm": 35,
+          "inseam_cm": 73,
+          "heads_tall": 7.2
+        },
+        "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+        "face_reference": {
+          "path": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+          "sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+          "source_png_sha256": "445bdb053af8e9c0dbf52fafde5ffda9cbe9e52d338e12825dea4c5586c950ed"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-tsukishiro-rena-543d8d16e2fc.jpg",
+          "sha256": "543d8d16e2fcfa53c5ce6ad70417f88631809fb4a6530790509e04db2447dc28",
+          "source_png_sha256": "668099e85e8357d0a5178706138f2f7cfd9573357e8105536c2c1ebec01cce09",
+          "provenance": "assets/generated/photo-reference-tsukishiro-rena-543d8d16e2fc.json"
+        }
+      },
+      "source_article": null,
+      "state": "published",
+      "published_at": "2026-11-15T13:34:21.239318+00:00",
+      "images": {
+        "01": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-01.jpg",
+          "sha256": "33281dcdd38a48dcb4d3010551e7af185287d176cf06d77d1bbef32959241471",
+          "bytes": 179163,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "7023e3f544255aa2e0fe244011ebc6a549d80d3b91e8a0d621581861791d7cde",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/01/receipt-supplied-7023e3f54425-33281dcdd38a.json",
+            "receipt_sha256": "89db552dd5396a4ade0b25dd084bfa7f32cb6b527ca04c15a14c5883e8ee303f",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "33281dcdd38a48dcb4d3010551e7af185287d176cf06d77d1bbef32959241471",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "01",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "原本PNGと最終JPEGを全体表示。鏡像と立ち姿、肩掛けのジャケット、手と脚に顕著な破綻なし。黒髪と目鼻・輪郭を固定マスター、体の比率を全身参照と比較した。服選びのキャプションに合う。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-02.jpg",
+          "sha256": "a8df4a907bd3b25caadeace85334f591b1fdc80891e14f00ac4063a0619910fc",
+          "bytes": 264257,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "49d9e700806a41ab8fecf3e03e08477057c0deda56849489a5a554e45fdfdf65",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/02/receipt-supplied-49d9e700806a-a8df4a907bd3.json",
+            "receipt_sha256": "60c597fc1809658b79e62dd71f037587e34c15d64e9a01f276a73754be5529c5",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "a8df4a907bd3b25caadeace85334f591b1fdc80891e14f00ac4063a0619910fc",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "02",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "three_quarter",
+            "note": "原本PNGと最終JPEGを全体表示。カップを持つ指と反対の手、座り姿は自然。長い黒髪と落ち着いた目元を参照と照合。窓の光とニットの質感を保ち、カフェの一休みに合う。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-03.jpg",
+          "sha256": "17d05de85421219ead92bdf7e1fedff0092729c7e654edd432241ec09626a671",
+          "bytes": 238087,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "2ad041e01a38762b4ccf49929c9e4b47218c15cd91126279bd0fe1d6b082735d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/03/receipt-supplied-2ad041e01a38-17d05de85421.json",
+            "receipt_sha256": "409eea54c398a6d483d9d3d8eb55be5e6fbe900600c8d1657b1275f8aef5a61d",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "17d05de85421219ead92bdf7e1fedff0092729c7e654edd432241ec09626a671",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "03",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "three_quarter",
+            "note": "原本PNGと最終JPEGを全体表示。白シャツで盤を選ぶ両手と棚の関係が読める。顔・体の比率を参照と照合し、レコード店のキャプションと一致。盤の細字は背景で主要なロゴ表現なし。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-04.jpg",
+          "sha256": "277d9413c29aa3618e45c7c049168bc30e905f97599a9350187aab9570c01ef3",
+          "bytes": 236883,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "4a3e3e1b0cee6c15bc6ca70b50515f3c34310a5122ab67fbc2a622c9d8afc83f",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/04/receipt-supplied-4a3e3e1b0cee-277d9413c29a.json",
+            "receipt_sha256": "fe5d7aea5b08bd41bf4296f42c8f7ad422cbc1ec6f0c1ca93fcf2be6385bb944",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "277d9413c29aa3618e45c7c049168bc30e905f97599a9350187aab9570c01ef3",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "04",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "upper_body",
+            "note": "原本PNGと最終JPEGを全体表示。横長で片耳のヘッドホンに手を当てている。目鼻と髪・肩幅を参照と比較。試聴の場面で、顔と手に目立つ崩れなし。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-05.jpg",
+          "sha256": "108c04f11540e88d1a837ec93aecf79e84cd1581d46f48a454ac10f24d23a70d",
+          "bytes": 258444,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "47caa508e9b131347f09fd975e5214f78575ca8fcac3d47538ba216cc05c716b",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/05/receipt-supplied-47caa508e9b1-108c04f11540.json",
+            "receipt_sha256": "f9e8d6176cdb257b3fddd1b1f9685852ec5ff054d275117af742a782e6875a14",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "108c04f11540e88d1a837ec93aecf79e84cd1581d46f48a454ac10f24d23a70d",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "05",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "profile",
+            "note": "原本PNGと最終JPEGを全体表示。窓向きの顔の近景で前髪・目元・鼻口の輪郭を参照と照合。カーディガンと下の衣服が見え、露出や体形の改変を加えていない。外を見るキャプションに合う。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-06.jpg",
+          "sha256": "191bfec8db71db8a88860b4e0dc4220c4226827f21e922547c3caae34dfa1523",
+          "bytes": 232568,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "79e877ad22d4d991a21728f6920212811a6d7a68d6d1488683f4f6676395d318",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/06/receipt-supplied-79e877ad22d4-191bfec8db71.json",
+            "receipt_sha256": "5a7524e7934b41f8488ad9a622af9f4f474a048459b3712d2997f6fc0eb4927d",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "191bfec8db71db8a88860b4e0dc4220c4226827f21e922547c3caae34dfa1523",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "06",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "原本PNGと最終JPEGを全体表示。黒いロングコート・パンツ・ブーツの全身。参照と頭身・肩と胴の比率を比較し、雨上がりの歩道と街灯を確認。コートのキャプションに合う。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-07.jpg",
+          "sha256": "dfc39a6be18dfdb61c7cf5cb16e003984a50e69fc54a8044cbbc9e8c6fbdcfdc",
+          "bytes": 234430,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "bb0ecc98520c6bc4fd9369b6d2c468d26391f7593e9f4e7cf18f66d68ff4d257",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/07/receipt-supplied-bb0ecc98520c-dfc39a6be18d.json",
+            "receipt_sha256": "8c5356301d54ddbe43b57146032b7f824d84f16eacf8bde9a8fcb5141859bba8",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "dfc39a6be18dfdb61c7cf5cb16e003984a50e69fc54a8044cbbc9e8c6fbdcfdc",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "07",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "原本PNGと最終JPEGを全体表示。腕に掛けたコートと手提げ鞄、脚の重なりとブーツが読める。顔と細身の体形を参照と比較。室内から出た街角として選び、同一衣装の連続記録とは扱わない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-08.jpg",
+          "sha256": "6631f953da5671ae3d3f34320c3d9de3d96884afea48caffdaed718b9f95eb5b",
+          "bytes": 312064,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "4e4b8194e2e42fffe994c251417a0e301c071b65819f3241caffc5c3d2bc8b0d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/08/receipt-supplied-4e4b8194e2e4-6631f953da56.json",
+            "receipt_sha256": "b673c3fe1a960278681280452f4c8181a7d6ddb2a45f39568c83e03f909deb9a",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "6631f953da5671ae3d3f34320c3d9de3d96884afea48caffdaed718b9f95eb5b",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "08",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "原本PNGと最終JPEGを全体表示。透明傘の柄を握る手、反対の腕、両脚に目立つ破綻なし。顔・全身の比率を参照と比較。紺のワンピースと傘の描写はキャプションに一致。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-09.jpg",
+          "sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300",
+          "bytes": 209835,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "410995ecc7083d2cbdee6cc1c6cbfcc19f101ff2435d4873582ac5fcba1d0ecc",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/09/receipt-supplied-410995ecc708-db9628382316.json",
+            "receipt_sha256": "ec1201e73bc8680ce47de02a2201d46874c52e6bc37b314a218fa191798b22ed",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "09",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "three_quarter",
+            "note": "原本PNGと最終JPEGを全体表示。座って膝を曲げた姿とヘッドホンに添える手を確認。黒髪、目鼻・顔の輪郭と体の比率を参照と照合。室内のプレーヤーと音楽のキャプションに一致。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        },
+        "10": {
+          "path": "assets/generated/photo-issue-november-city-pause-rena-008-10.jpg",
+          "sha256": "913d8679576b9a879f53fb101f326b321e1c1eaf5ea1628ece755009b566e435",
+          "bytes": 188097,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "2d192e9b3e49af5bc72a9e700eedcd356d74785a7f36ccae0420c5b004e0903e",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-pause-rena-008/10/receipt-supplied-2d192e9b3e49-913d8679576b.json",
+            "receipt_sha256": "0f54f639ba749f19256cf2b273d6e65c5a89d052a9b9d7c8cc185ea50377d36c",
+            "target_design_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-15T13:33:50.533382+00:00",
+            "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9",
+            "image_sha256": "913d8679576b9a879f53fb101f326b321e1c1eaf5ea1628ece755009b566e435",
+            "master_sha256": "aec46a830a8a3fa8f58f32114e7927f5f649e2f75a1a799c7ad32d7ec1c58313",
+            "cut_id": "10",
+            "body_profile_sha256": "dfa0b42df2f64ebe9cac690c0fc59cbf9a5486e93ba877075662bf3f6082772d",
+            "swimwear_visible": false,
+            "framing": "face",
+            "note": "原本PNGと最終JPEGを全体表示。横長の顔近景でヘッドホン、頬の小さなほくろ、目元と口元を参照と比較。白シャツと窓・照明が読める。手や髪に顕著な破綻なし。夜の短い休憩という結びに合う。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-pause-rena-008/final-jpeg-qa.json",
+              "sha256": "bb7867969644468bc11e1a1f26ad7681530eb175734a1e6bd0331a0342589d26"
+            }
+          }
+        }
+      },
+      "generation_holds": {},
+      "cover_cut_id": "02",
+      "shots": [
+        {
+          "id": "01",
+          "description": "鏡の前でジャケットを肩に掛け、服の形を確かめる全身。",
+          "caption": "迷っていない顔だけは、先に決まった。",
+          "alt": "鏡に向かい、グレーのジャケットを肩に掛けた月城れな。"
+        },
+        {
+          "id": "02",
+          "description": "カフェの窓際で白いカップを持ち、こちらを振り返る上半身。",
+          "caption": "ひと口飲んでから、次の行き先を考える。",
+          "alt": "白いニット姿の月城れなが、窓際でカップを持っている。"
+        },
+        {
+          "id": "03",
+          "description": "レコード店の棚に手を伸ばし、盤を選ぶ姿。",
+          "caption": "一枚だけ、のつもりだった。",
+          "alt": "白いシャツ姿の月城れなが、レコードの棚を見ている。"
+        },
+        {
+          "id": "04",
+          "description": "同じレコード店でヘッドホンを片耳に当てて試聴する横長の上半身。",
+          "caption": "服より早く決まると思っていた。",
+          "alt": "レコード店でヘッドホンを耳に当てた月城れな。"
+        },
+        {
+          "id": "05",
+          "description": "柔らかな窓光を受け、外へ視線を向ける顔の近景。",
+          "caption": "外の冷たさは、まだ窓の向こう。",
+          "alt": "ニットのカーディガンを着て、窓の外を見る月城れなの横顔。"
+        },
+        {
+          "id": "06",
+          "description": "黒いロングコートとパンツで、雨上がりの通りに立つ全身。",
+          "caption": "コートを着ると、歩く速さが戻る。",
+          "alt": "黒いロングコート姿の月城れなが、濡れた夜の歩道に立っている。"
+        },
+        {
+          "id": "07",
+          "description": "黒いノースリーブと短いスカート、コートを腕に掛けた街角の全身。",
+          "caption": "室内から出たところで、やっぱり少し寒い。",
+          "alt": "コートを腕に掛けた月城れなが、夜の店先で立ち止まっている。"
+        },
+        {
+          "id": "08",
+          "description": "透明な傘と紺のワンピースで街灯の下に立つ全身。",
+          "caption": "雨が止んでも、傘を閉じるのは少し遅い。",
+          "alt": "透明な傘を差し、紺のワンピースを着た月城れな。"
+        },
+        {
+          "id": "09",
+          "description": "夜の部屋で、レコードのそばに座ってヘッドホンを聴く姿。",
+          "caption": "帰ってからも、もう一枚。",
+          "alt": "黒いワンピース姿の月城れなが、レコードプレーヤーの横で音楽を聴いている。"
+        },
+        {
+          "id": "10",
+          "description": "夜の窓と照明を背に、白いシャツとヘッドホン姿の顔の近景。",
+          "caption": "音楽を止めたあとの、短い静けさ。",
+          "alt": "夜の部屋でヘッドホンを付けた月城れなの近景。"
+        }
+      ],
+      "swimwear_exception": {
+        "kind": "reduced_swimwear",
+        "reason": "11月の街と音楽を主題に、ニット・コート・シャツの未使用原本10枚で構成する。屋外の季節感を守り、プールや水着の場面は付け足さない。"
+      },
+      "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9"
     }
   ]
 }

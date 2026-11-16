@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "kind": "producer_original_file_delivery",
+  "model_id": "tsukishiro-rena",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "delivery_turn_key": "218561fe-ee64-48f3-a531-8b6211b78e12",
+  "original_generation_turn_keys": "not_retained",
+  "receipt_image_numbers": "01..10 follow the delivered ZIP manifest, not original generation order",
+  "archive_filename": "rena_2026-11-15_winter_city_indoor_10_sources.zip",
+  "archive_sha256": "f55e88c72c3018c7f7c061c01916783f41a61d393fc67bb1799810f6a66209b6",
+  "source_manifest": {
+    "sources": [
+      {
+        "number": "01",
+        "filename": "a_high_resolution_realistic_fashion_boutique_dres.png",
+        "sha256": "7023e3f544255aa2e0fe244011ebc6a549d80d3b91e8a0d621581861791d7cde",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "02",
+        "filename": "a_photorealistic_softly_lit_café_interior_scene_s.png",
+        "sha256": "49d9e700806a41ab8fecf3e03e08477057c0deda56849489a5a554e45fdfdf65",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "03",
+        "filename": "a_cinematic_realistic_high_detail_indoor_scene_i.png",
+        "sha256": "2ad041e01a38762b4ccf49929c9e4b47218c15cd91126279bd0fe1d6b082735d",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "04",
+        "filename": "a_crisp_cinematic_indoor_record_store_scene_with.png",
+        "sha256": "4a3e3e1b0cee6c15bc6ca70b50515f3c34310a5122ab67fbc2a622c9d8afc83f",
+        "width": 1536,
+        "height": 1024,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "05",
+        "filename": "a_realistic_photoreal_portrait_scene_a_young_eas.png",
+        "sha256": "47caa508e9b131347f09fd975e5214f78575ca8fcac3d47538ba216cc05c716b",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "06",
+        "filename": "a_cinematic_photorealistic_night_time_street_scen.png",
+        "sha256": "79e877ad22d4d991a21728f6920212811a6d7a68d6d1488683f4f6676395d318",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "07",
+        "filename": "a_cinematic_photorealistic_night_time_urban_stree.png",
+        "sha256": "bb0ecc98520c6bc4fd9369b6d2c468d26391f7593e9f4e7cf18f66d68ff4d257",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "08",
+        "filename": "a_cinematic_photorealistic_nighttime_city_street.png",
+        "sha256": "4e4b8194e2e42fffe994c251417a0e301c071b65819f3241caffc5c3d2bc8b0d",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "09",
+        "filename": "a_cinematic_photorealistic_indoor_evening_scene_w.png",
+        "sha256": "410995ecc7083d2cbdee6cc1c6cbfcc19f101ff2435d4873582ac5fcba1d0ecc",
+        "width": 1024,
+        "height": 1536,
+        "turn_key": null,
+        "image_number": null
+      },
+      {
+        "number": "10",
+        "filename": "a_cinematic_realistic_night_time_indoor_portrait.png",
+        "sha256": "2d192e9b3e49af5bc72a9e700eedcd356d74785a7f36ccae0420c5b004e0903e",
+        "width": 1536,
+        "height": 1024,
+        "turn_key": null,
+        "image_number": null
+      }
+    ]
+  },
+  "new_generation_count": 0,
+  "delivery_method": "Observed download control; browser download event yielded local ZIP; originals extracted after traversal/symlink check."
+}

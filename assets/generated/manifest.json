@@ -3240,6 +3240,33 @@
       "source_article_sha256": "59410b123bafde4f4af47d49d3f152d039be59b0eb206c0b57999f9807a64425",
       "source_png_sha256": "7ed6f23e9ef1744d3052f47e0ea6eef6c40615ac836b215dbcf59e18d4b486f1"
     },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "bytes": 120240,
+      "generated_at": "2026-11-15T23:24:39.721695+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 3036210705938676899,
+      "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
+    },
     "film-village-all-stars-no-extras": {
       "article_sha256": "6a3000734189e1a646a595a87ac2059d54dc4fa096440774ba3a1c5c351335d1",
       "bytes": 194065,
@@ -5236,30 +5263,228 @@
     },
     "recycling-robot-reserves-washer-parts-before-dismantling": {
       "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
-      "bytes": 139248,
-      "generated_at": "2026-11-15T05:17:20.084741+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 214141,
+      "generated_at": "2026-11-15T11:39:16.130883646Z",
+      "generation_id": "e06b2ad2-0da3-41e1-85b7-f066f6369034",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid editorial photograph of a fictional Japanese appliance-recycling facility in 2031, ordinary documentary photography rather than CGI. Close medium-wide view into a realistic guarded industrial disassembly cell. A used white washing machine is securely fixed on a low steel workstation with its rear sheet-metal panel removed; its internal drum and empty motor mounting bracket are clearly visible. An articulated grey industrial robot arm from the right holds a compact, physically plausible metal electric washing-machine motor in a two-jaw gripper, just outside the open rear of that same machine. The motor, robot gripper, and opened washing machine are all large and clear in the same single camera view, no floating or fused parts. A fictional middle-aged Japanese recycling technician wearing navy workwear and safety gloves watches from outside the safety barrier, inspecting the extracted motor. Other sorted metal parts sit in a small tray, not a pile of random machinery. Matte worn paint, realistic screws, copper windings, rubber hoses, soft factory ceiling lights and natural restrained colour. Real skin and hands, honest press-snapshot depth of field. No computer graphics, no cartoon, no dramatic sci-fi glowing parts, no readable text, no model numbers or brand marks, no watermarks, no real people. This photograph depicts taking the reserved reusable motor out before scrapping the rest.",
+      "generation_prompt_source": "Exact prompt preserved by the preferred generateAndStage entry point in the original candidate receipt and actual staging result. The actual output_hint identifies the tool output filename separately from the C2PA asset instanceID. The staging result is not represented as a raw ImageGen RPC response.",
+      "generation_receipt": "xmp:iid:e06b2ad2-0da3-41e1-85b7-f066f6369034",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_candidate_rejection": {
+        "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+        "decision": "rejected",
+        "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+        "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+        "reviewed_at": "2026-11-15T14:47:15+09:00"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation": {
+        "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+        "bytes": 139248,
+        "generated_at": "2026-11-15T05:17:20.084741+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 3074401136884208640,
+        "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+      },
+      "previous_generation_history_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/previous-generation.json",
+      "previous_rejection": {
+        "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+        "reason": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+        "rejected_candidate_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+      },
+      "previous_scene_prompt": "A middle-aged Japanese recycling technician examines a washing-machine motor carefully removed by an industrial disassembly robot. Photorealistic editorial press photograph inside a clean Japanese appliance recycling facility, an open washing machine in foreground, robot gripper and sorted metal parts clearly visible, safety gloves and guarded work cell, natural industrial lighting, realistic materials, no readable text, brand marks, logos, or recognizable real people, horizontal 16:9.",
+      "previous_visual_review": {
+        "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
+        "decision": "rejected",
+        "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
+        "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
+        "reviewed_at": "2026-11-15T14:47:15+09:00"
+      },
       "prompt_version": 3,
-      "seed": 3074401136884208640,
-      "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
+      "sha256": "1ce6986b920105cd3d7aabf658de09ce5ee41c1c8c2e1fcc494193a2c0e5ed90",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T11:39:16.130883646Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T11:39:16.130887985Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T11:39:16.128523045Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              108,
+              12,
+              199,
+              57,
+              218,
+              104,
+              121,
+              106,
+              84,
+              26,
+              49,
+              167,
+              211,
+              48,
+              70,
+              54,
+              123,
+              150,
+              21,
+              0,
+              65,
+              199,
+              137,
+              95,
+              249,
+              193,
+              162,
+              205,
+              152,
+              180,
+              78,
+              250
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:e06b2ad2-0da3-41e1-85b7-f066f6369034",
+        "manifest_uri": "urn:c2pa:f3b3526d-cafe-40ed-aeed-e6edfcd288c5",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "Generated images are saved to /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3 as /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-b1ce5aeb-57c2-47df-affa-23ec81a3dd44.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "bytes": 2562473,
+        "caBX_sha256": "0eaee87d9ee2693ad1fe40ef3caa7050e0f066fbcb761dfa1e52c5869f682c72",
+        "candidate_branch": "native-image-candidate/recycling-robot-reserves-washer-parts-before-dismantling/43b8c0e4411cdbc8-6ea98f789dbe",
+        "candidate_commit": "d5917d39e1788087b4b1a57104b9c990d20bf7fc",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/14e14e494596689a71ddb9f5619f2b96994e9d5a99b562e0a70cac568787373d",
+          "commit_sha": "008e0f45ee48d9cfb9e1cd3a717de555dafd5a90",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/14e14e494596689a71ddb9f5619f2b96994e9d5a99b562e0a70cac568787373d.json",
+          "receipt_sha256": "a5ffd9a248bbeadd83c06f68541e464e417239625db5de892a0dbf8990141340",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "nov15-washer-native-recovery-20261115",
+        "method": "Preferred native_image_stage.js generateAndStage completed actual transport preflight, atomic generation reservation, one generator invocation, original PNG part storage, pinned conversion and GitHub candidate readback in the originating execution. This importer used stager.load to reconstruct the same PNG, reproduce the JPEG and verify the original proof receipts; it performed no new generation.",
+        "original_png_parts": [
+          {
+            "blob_sha": "0c146053d90065d0dc0cf47a1fe5bf4cdbec3cc7",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/source.png.part000",
+            "sha256": "2052a6b13c72cbdf7e36932840b3e72601521115f2abf2afc5047efd62b445b5"
+          },
+          {
+            "blob_sha": "6524cbb8bab5807c0687ba1951475029fa6b1776",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/source.png.part001",
+            "sha256": "f47f417c31cfb8a97988c71e4e8cb752e0a195398c8da1bd3d0651003274d6a7"
+          },
+          {
+            "blob_sha": "d4c611e9b0b66d279a8a32a904cd76e8cb7a85c2",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/source.png.part002",
+            "sha256": "6107e50fe19568cdd1fe39aa96d77d28f385b7663cc2831edba82dda0623ea4f"
+          },
+          {
+            "blob_sha": "fa44b5ea6a86fbb7c8f162591d71a1e091e6b76f",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/source.png.part003",
+            "sha256": "127840e614b144c192f3c490acd1087e0b9aea6a0fc8e0524d5f337f167c6dcb"
+          },
+          {
+            "blob_sha": "359bd23ebb1f6ff5d1412a0ff27476a27b709f00",
+            "bytes": 465321,
+            "path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/source.png.part004",
+            "sha256": "f058e0ad60e74d12bb9f2d65f21b39179c4e3d1d789f2233791c8c8ed8fe96e0"
+          }
+        ],
+        "preflight_receipt_snapshot_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/preflight-receipt.json",
+        "receipt_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/receipt.json",
+        "receipt_sha256": "76ea40f62ef427d46fa573d5e91bdecb4cde199e4181836dce5268e7ef230faf",
+        "storage": "github_candidate_branch_and_local_publication_ancestry",
+        "tool_staging_result_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/tool-staging-result.json",
+        "tool_staging_result_sha256": "58af2d84f556c0a676527e697962203f6f871acfd982cdd4f7cd96c314c5f300",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "a726f8454081124ca271f7e3977a15fd0add8379",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-15T11:38:26.355Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "4d5cf591d7bda891fa274311a1ec3c014f6d8427b1bae5ad12410690835e40e0",
+          "route": "PNG data URL in functions.exec to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "41e316b6304201af773d79c80afaacc4019873276cbe156307e676d259f6b9e0",
+      "supersedes_reason": "A genuinely new native photograph shows the opened washing machine, extracted electric motor held by a robot gripper and technician outside the guarded cell. It replaces the rejected household-laundry CPU photograph at the same article fingerprint.",
+      "tool_execution": {
+        "execution_id": "b1ce5aeb-57c2-47df-affa-23ec81a3dd44",
+        "execution_id_source": "Actual exec UUID in the original generateAndStage output_hint and the existing output filename; provider generation ID not exposed.",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "remote-basketball-final-fans-walk-behind-hoop": {
       "article_sha256": "7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16",
@@ -5821,30 +6046,218 @@
     },
     "seven-venues-compose-one-live-song": {
       "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
-      "bytes": 149801,
-      "generated_at": "2026-11-15T11:25:35.637819+00:00",
-      "inference": {
-        "algorithm_type": "dpmsolver++",
-        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
-        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7.0,
-        "height": 448,
-        "num_inference_steps": 24,
-        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
-        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
-        "scheduler": "DPMSolverMultistepScheduler",
-        "solver_order": 2,
-        "solver_type": "midpoint",
-        "use_karras_sigmas": true,
-        "vae_model": "stabilityai/sd-vae-ft-mse",
-        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
-        "width": 800
+      "bytes": 184266,
+      "generated_at": "2026-11-15T11:36:26.618370094Z",
+      "generation_id": "1cf6247a-ff6b-4284-913d-ec6c01575ccb",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. One horizontal 16:9 candid editorial photograph illustrating a fictional 2031 Japanese local music event, with ordinary real-world camera realism, not illustration or CGI. In a compact live music venue in Shibuya on a November evening, a fictional Japanese woman drummer aged 54 has just stopped playing so she can listen to the ensemble being relayed from the other venues. Medium-wide three-quarter view from the side of the stage. A complete, physically plausible, unbranded drum kit fills the lower foreground. She wears an ordinary dark green cotton shirt and black trousers. Her drumsticks are lowered, resting loosely across her knees, both hands relaxed and anatomically clear; she is visibly listening attentively rather than clapping or striking. A modest black stage monitor speaker with a visible audio cable is beside the kit. Behind her a second adult musician in casual clothes quietly checks a small timing monitor, and a small audience is visible beyond the stage. Warm practical stage lamps with controlled exposure preserve her facial details and the cymbal surfaces, no blown highlights, no theatrical smoke. Natural mature skin, realistic fabric and metal, imperfect candid press-snapshot composition. The oddity is that the drummer is listening while the other venues continue the shared song. No readable text anywhere, no lettering or badges on drums or clothing, no logos, no watermarks, no real celebrity likeness, no montage, no split screen.",
+      "generation_prompt_source": "Exact prompt preserved by the preferred generateAndStage entry point in the original candidate receipt and actual staging result. The actual output_hint identifies the tool output filename separately from the C2PA asset instanceID. The staging result is not represented as a raw ImageGen RPC response.",
+      "generation_receipt": "xmp:iid:1cf6247a-ff6b-4284-913d-ec6c01575ccb",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "previous_candidate_rejection": {
+        "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+        "decision": "rejected",
+        "image_sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76",
+        "note": "旧CPU JPEGをこの回の冒頭に本文全文と実表示で照合した。女性とドラムは写るが、受信音を聴く場面や共同演奏の手掛かりが乏しく、手を上げた普通の演奏写真に見える。顔とシンバルの白飛びが強く、目鼻や手指の輪郭が不自然で、バスドラムに不要なロゴ風文字もあるため不採用。原JPEG・原生成記事SHA・整数seedは変更しない。",
+        "reviewed_at": "2026-11-15T11:45:13.910011+00:00"
       },
-      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
-      "origin": "github-cpu-sd15",
+      "previous_generation": {
+        "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+        "bytes": 149801,
+        "generated_at": "2026-11-15T11:25:35.637819+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 7956126009343851850,
+        "sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76"
+      },
+      "previous_generation_history_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/previous-generation.json",
+      "previous_rejection": null,
+      "previous_scene_prompt": "An adult Japanese woman musician aged 54 sits at a drum kit and stops playing to listen to a live ensemble arriving through a modest speaker system, with a second adult musician checking a small timing monitor. Photorealistic press photograph inside a compact live house in Shibuya on a November night, warm stage lights, natural candid facial expressions, one visible drum kit and concert crowd, restrained realistic setup, no readable text, no logos, no recognizable real people, no collage, 16:9.",
+      "previous_visual_review": null,
       "prompt_version": 3,
-      "seed": 7956126009343851850,
-      "sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76"
+      "sha256": "6e3463130b6e67e28ad7dc5625476f4f9302d0d61b4a2bdd8505da68802e6231",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-15T11:36:26.618370094Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-15T11:36:26.618374587Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-15T11:36:26.616289752Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              13,
+              37,
+              80,
+              69,
+              149,
+              54,
+              163,
+              251,
+              47,
+              157,
+              84,
+              101,
+              58,
+              102,
+              55,
+              137,
+              90,
+              219,
+              64,
+              252,
+              114,
+              193,
+              163,
+              134,
+              225,
+              216,
+              124,
+              122,
+              44,
+              192,
+              93,
+              131
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:1cf6247a-ff6b-4284-913d-ec6c01575ccb",
+        "manifest_uri": "urn:c2pa:0b67efd4-13fa-4768-98d0-33b3fdb3e6ba",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "Generated images are saved to /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3 as /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-84ae2a9e-7032-458d-ab26-2bdf0e4eb06f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "bytes": 2395081,
+        "caBX_sha256": "270ef67b0ac56c03b40db3850f3588c8ff6b6a8d5e38bede7dff62a3732ffa18",
+        "candidate_branch": "native-image-candidate/seven-venues-compose-one-live-song/cc2cc8901e8758ce-28b2e76373b0",
+        "candidate_commit": "c8f7a28cf8a011f961f24718ea50bd85844d7337",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/6d8e4246306692f834f5311026b50355d5e29a1c2ab5e6f9d6ba076aa61466c2",
+          "commit_sha": "816020143b51496119ae22e22fc15a4acc25a995",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/6d8e4246306692f834f5311026b50355d5e29a1c2ab5e6f9d6ba076aa61466c2.json",
+          "receipt_sha256": "e600539d77f76a0c3c5b815efbfef5e01f1414fef9b0962512b015b8e59a6510",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "nov15-seven-venues-native-recovery-20261115",
+        "method": "Preferred native_image_stage.js generateAndStage completed actual transport preflight, atomic generation reservation, one generator invocation, original PNG part storage, pinned conversion and GitHub candidate readback in the originating execution. This importer used stager.load to reconstruct the same PNG, reproduce the JPEG and verify the original proof receipts; it performed no new generation.",
+        "original_png_parts": [
+          {
+            "blob_sha": "8eb70a8eaf6e8182c2f1130a7bde39e73f196f24",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/source.png.part000",
+            "sha256": "6a456dd2f3be997255f1b53d543b896221d9542c20c198e2abbea3f9ff24fb0d"
+          },
+          {
+            "blob_sha": "077c35093f3b349b4113e657a475e195c0dc80ae",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/source.png.part001",
+            "sha256": "d2fa8cd9de167f85a988f8afc8ae21ccfaef3a9e33be7147e9f2c1437291d44a"
+          },
+          {
+            "blob_sha": "7fc04f818070f093114a9231e8878332954b008c",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/source.png.part002",
+            "sha256": "5150e228fca54f7bf16f426d7db013aef44ccde76bf2b1cbbdfae1332fffb64d"
+          },
+          {
+            "blob_sha": "05e728226ce6fe36babb29d74690d453ddc2091d",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/source.png.part003",
+            "sha256": "d592cb88e1c01f614d8ed1d2b2f9f46c9b9f3d8925cf8e25801911b89b7f1ec8"
+          },
+          {
+            "blob_sha": "cdfc506da198afeba15de51493ed454c83e3ca40",
+            "bytes": 297929,
+            "path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/source.png.part004",
+            "sha256": "940d7128f9ed89e8296e6d0544d586caaeca905e67cb8b0d0182950ebbd2fcd9"
+          }
+        ],
+        "preflight_receipt_snapshot_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/preflight-receipt.json",
+        "receipt_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/receipt.json",
+        "receipt_sha256": "bc4bdf07f6faca82c4157aa4926a80146683a9e60ff910cb17706a602fa96ccc",
+        "storage": "github_candidate_branch_and_local_publication_ancestry",
+        "tool_staging_result_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/tool-staging-result.json",
+        "tool_staging_result_sha256": "91df0e5ba9cda63d11dc30e42cf475374cc50f45091528686369643837e7c665",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "f476ae488deb429ed2242cded18f9f45e1fd6708",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-15T11:35:35.483Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "d266116ffe1003a66a4ce859fb293cb957656cb1076b3fcbd791092674de8e21",
+          "route": "PNG data URL in functions.exec to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "ebad58d4d3223920e74cd37fe48322d3f9447c8ce88d7f79c5868120aa89148b",
+      "supersedes_reason": "A genuinely new native photograph depicts the drummer resting her sticks and listening beside the stage monitor, another musician and the audience. It replaces the overexposed, scene-mismatched CPU candidate at the same article fingerprint.",
+      "tool_execution": {
+        "execution_id": "84ae2a9e-7032-458d-ab26-2bdf0e4eb06f",
+        "execution_id_source": "Actual exec UUID in the original generateAndStage output_hint and the existing output filename; provider generation ID not exposed.",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
     },
     "shiroamadai-last-plate-twenty-seven-times": {
       "article_sha256": "d5bff8517d97f44e5ec941f7c0f41fc3d08ab236d66816f60d92948060786c6a",
@@ -7336,6 +7749,33 @@
       "seed": 8151497094600701685,
       "sha256": "896c6fd6f728d00a86ed0f8451bc5b969c94b5ba4768eb7ddb93e1ff049fd5b3"
     },
+    "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
+      "article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+      "bytes": 134480,
+      "generated_at": "2026-11-16T01:40:43.567848+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 1983948943341056731,
+      "sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086"
+    },
     "unwanted-call-protection-calls-back": {
       "article_sha256": "fad7e521e0b45765c05835296cda83545c1722577b7992c99b439ae11ab0cf6a",
       "bytes": 98358,
@@ -7901,6 +8341,46 @@
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43698146762",
       "reviewed_at": "2026-11-15T09:31:57.328128+00:00"
     },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "artifact_id": 14185890383,
+      "decision": "rejected",
+      "generation": {
+        "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+        "bytes": 120240,
+        "generated_at": "2026-11-15T23:24:39.721695+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 3036210705938676899,
+        "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
+      },
+      "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "previous_visual_review": null,
+      "raw_generation_commit": "147ca44e3bcfaa0f073690e581a56ab71ab5973a",
+      "reason": "現本文全文と保存済みJPEGを実表示して照合。白衣の担当者が単一のボウルを扱い、背後に発酵槽2基が写る。二つの別々の試料や各槽からの採取、二種類の味のみそへ分ける状況は確認できないため、本文の主動作を伝える写真として不採用。元JPEGと原生成記録・seedは変更せず保持し、二槽を別々に調べ二種類として出荷する専用SVGを代替にする。",
+      "rejected_candidate_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "retained_jpeg_path": "assets/generated/fermentation-rna-inspection-two-flavors.jpg",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43773587790",
+      "reviewed_at": "2026-11-16T00:42:55.363970+00:00"
+    },
     "joint-party-slate-one-vote-three-claims": {
       "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
       "decision": "rejected",
@@ -7943,11 +8423,6 @@
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
       "reason": "Visual review: the JPEG shows three men drinking tea outdoors rather than a press conference about a network outage. Use the article-specific illustration until a correct new scene is reviewed.",
       "rejected_candidate_sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
-    },
-    "recycling-robot-reserves-washer-parts-before-dismantling": {
-      "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
-      "reason": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
-      "rejected_candidate_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
     },
     "scolding-ai-one-line-summary-boss-eighteen-pages": {
       "article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
@@ -8023,6 +8498,13 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
+      "article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+      "reason": "現本文全文・場面指示と実JPEGを表示して照合。盤面にはチェス風の立体コマが多数置かれ、本文の2連ドミノ片や「部品を一枚も置かずに盤面の色数を指摘する」動作を確認できない。空の盤面とは逆の場面で、看板に偽文字も混入しているため不採用。原JPEG・生成record・記事指紋・整数seedを保持し、色数の矛盾を正確に示す専用SVGへ代替する。同条件の追加生成は行わない。",
+      "rejected_candidate_sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43786876737",
+      "reviewed_at": "2026-11-16T01:50:19.985066+00:00"
     }
   },
   "version": 1

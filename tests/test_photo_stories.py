@@ -70,8 +70,10 @@ class PhotoStoryTests(unittest.TestCase):
         page = stories.render_photo_timeline(result)
         parser = Tags(); parser.feed(page)
         self.assertEqual(sum(tag == "article" for tag, _ in parser.tags), 7)
-        self.assertEqual(sum(tag == "video" for tag, _ in parser.tags), 1)
-        video = next(attrs for tag, attrs in parser.tags if tag == "video")
+        timeline_videos = [attrs for tag, attrs in parser.tags
+                           if tag == "video" and "data-story-video" not in attrs]
+        self.assertEqual(len(timeline_videos), 1)
+        video = timeline_videos[0]
         self.assertEqual(video["preload"], "none")
         self.assertIn("playsinline", video)
         self.assertIn("muted", video)
@@ -170,6 +172,13 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn("&amp;", page)
         self.assertNotIn("<audio", page)
         self.assertNotIn("autoplay", page)
+        dialog_video = next(attrs for tag, attrs in parser.tags if tag == "video")
+        self.assertIn("data-story-video", dialog_video)
+        self.assertEqual(dialog_video["preload"], "metadata")
+        for field in ("hidden", "controls", "playsinline", "muted"):
+            self.assertIn(field, dialog_video)
+        self.assertNotIn("src", dialog_video)  # Reader opening selects the validated clip.
+        self.assertIn("data-story-previous", page)
         self.assertNotIn("24時間", page)
         self.assertNotIn("assets/generated/", page)
         self.assertEqual(stories.render_model_stories("shioba-rio", result), "")

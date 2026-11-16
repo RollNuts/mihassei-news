@@ -123,20 +123,31 @@ def guard_photo_edition_history(before, after):
         return result
 
     old, new = editions(before), editions(after)
-    fixed = ("number", "slug", "state", "legacy", "published_at", "features", "ranking")
+    fixed = ("number", "slug", "state", "legacy", "published_at", "features", "ranking", "release_mode", "schedule")
     checked = 0
     for slug, original in old.items():
+        daily = original.get("release_mode") == "daily"
+        if daily and original.get("schedule") is not None:
+            if slug not in new or any(original.get(key) != new[slug].get(key)
+                                      for key in ("number", "release_mode", "schedule")):
+                raise ValueError(f"{slug}: frozen daily photo schedule changed or was removed")
         if original.get("state") != "published":
             continue
         if slug not in new:
             raise ValueError(f"{slug}: published photo edition was removed or renamed")
         # Canonical JSON preserves numeric/boolean types and list order while
         # ignoring harmless object-key formatting changes.
-        canonical = lambda edition: json.dumps({key: edition.get(key) for key in fixed},
+        fields = tuple(key for key in fixed if key != "features") if daily else fixed
+        canonical = lambda edition: json.dumps({key: edition.get(key) for key in fields},
                                                sort_keys=True, ensure_ascii=False,
                                                separators=(",", ":"), allow_nan=False)
         if canonical(original) != canonical(new[slug]):
             raise ValueError(f"{slug}: published photo contents or ranking evidence changed")
+        if daily:
+            members, updated = original.get("features"), new[slug].get("features")
+            if (not isinstance(members, list) or not isinstance(updated, list)
+                    or updated[:len(members)] != members):
+                raise ValueError(f"{slug}: published daily photo contents must only append")
         checked += 1
     return checked
 

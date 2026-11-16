@@ -36,6 +36,13 @@
 .photo-issue-eyebrow{margin:0;color:var(--photo-accent);font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.12em;line-height:1.7}
 .photo-issues-intro{padding:14px 0 25px;margin-bottom:32px;border-bottom:1px solid var(--photo-rule)}
 .photo-issues-intro h1{margin:12px 0 17px;font-family:var(--serif);font-size:clamp(40px,7vw,76px);line-height:1.2;letter-spacing:-.07em}
+.photo-edition-index{padding-top:24px}
+.photo-edition-index .photo-issue-breadcrumb{margin-bottom:14px}
+.photo-edition-index .photo-issues-intro{padding:0 0 16px;margin-bottom:18px}
+.photo-edition-index .photo-issues-intro h1{margin:8px 0 10px;font-size:clamp(32px,4vw,46px)}
+.photo-edition-index .photo-issues-intro>p:not(.photo-issue-eyebrow){margin:8px 0 0}
+.photo-edition-index .photo-section-nav{margin-bottom:18px}
+.photo-edition-index>.photo-issues-grid{margin-bottom:38px}
 .photo-issues-grid{display:grid;grid-template-columns:1fr;gap:54px;padding:0;margin:0;list-style:none}
 .photo-issue-card-link{display:grid;height:100%;flex-direction:column;text-decoration:none;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:clamp(24px,5vw,70px)}
 .photo-issue-card img{display:block;width:100%;height:100%;aspect-ratio:4/5;background:#ebe9e1;object-fit:cover;object-position:50% 45%}

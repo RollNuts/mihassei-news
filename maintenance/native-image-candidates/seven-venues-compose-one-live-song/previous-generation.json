@@ -1,0 +1,46 @@
+{
+  "active_hold": null,
+  "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+  "baseline_commit": "8a451c6519e8150748768683346a520bbb878476",
+  "disposition": "Original CPU generation and any original visual review/hold retained unchanged. The recorded rejection is preserved separately from acceptance of genuinely new native bytes.",
+  "generation": {
+    "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+    "bytes": 149801,
+    "generated_at": "2026-11-15T11:25:35.637819+00:00",
+    "inference": {
+      "algorithm_type": "dpmsolver++",
+      "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+      "guidance_scale": 7.0,
+      "height": 448,
+      "num_inference_steps": 24,
+      "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+      "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+      "scheduler": "DPMSolverMultistepScheduler",
+      "solver_order": 2,
+      "solver_type": "midpoint",
+      "use_karras_sigmas": true,
+      "vae_model": "stabilityai/sd-vae-ft-mse",
+      "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+      "width": 800
+    },
+    "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "origin": "github-cpu-sd15",
+    "prompt_version": 3,
+    "seed": 7956126009343851850,
+    "sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76"
+  },
+  "recorded_rejection_review": {
+    "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+    "decision": "rejected",
+    "image_sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76",
+    "note": "旧CPU JPEGをこの回の冒頭に本文全文と実表示で照合した。女性とドラムは写るが、受信音を聴く場面や共同演奏の手掛かりが乏しく、手を上げた普通の演奏写真に見える。顔とシンバルの白飛びが強く、目鼻や手指の輪郭が不自然で、バスドラムに不要なロゴ風文字もあるため不採用。原JPEG・原生成記事SHA・整数seedは変更しない。",
+    "reviewed_at": "2026-11-15T11:45:13.910011+00:00"
+  },
+  "retained_jpeg_bytes": 149801,
+  "retained_jpeg_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/previous-cpu-bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76.jpg",
+  "retained_jpeg_sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76",
+  "schema_version": 1,
+  "slug": "seven-venues-compose-one-live-song",
+  "visual_review": null
+}

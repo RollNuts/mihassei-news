@@ -48,7 +48,10 @@ class SerialTests(unittest.TestCase):
                 self.assertIn(s["title"], home)
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
-            self.assertIn("公開済み "+str(len(s["episodes"]))+("話" if s["kind"]=="fiction" else "回"), series_html)
+            if s["kind"] == "analysis":
+                self.assertIn("最終掲載", series_html)
+            else:
+                self.assertIn("公開済み "+str(len(s["episodes"]))+"話", series_html)
             self.assertNotIn('href="/serials/'+s["slug"]+'/nonexistent', series_html)
 
     def test_episode_labels_match_editorial_kind_and_future_artwork(self):
@@ -69,7 +72,7 @@ class SerialTests(unittest.TestCase):
             from scripts.serials import _share_link
             share=_share_link(serial,serial["episodes"][0])
             draft=parse_qs(urlsplit(share).query)["text"][0]
-            self.assertIn("市場シナリオ" if serial["kind"]=="analysis" else "創作推理小説", draft)
+            self.assertIn("市場分析" if serial["kind"]=="analysis" else "創作推理小説", draft)
 
         class RecordingCanvas:
             def __init__(self):
@@ -108,7 +111,11 @@ class SerialTests(unittest.TestCase):
                 self.assertIn('"datePublished": "'+e["published_at"]+'"', page)
                 self.assertIn('"@type": "Article"', page)
                 self.assertIn('href="/serials/'+s["slug"]+'/"', page)
-                self.assertIn('src="/serials/'+s["slug"]+'/cover.svg"', page)
+                cover = 'src="/serials/'+s["slug"]+'/cover.svg"'
+                if s["kind"] == "analysis":
+                    self.assertNotIn(cover, page)
+                else:
+                    self.assertIn(cover, page)
                 if e is s["episodes"][-1]:
                     self.assertIn("連載終了" if s["slug"] == "case-files" else "次回は未公開", page)
                 else:
@@ -126,7 +133,7 @@ class SerialTests(unittest.TestCase):
         s = next(x for x in self.data if x["kind"]=="analysis")
         e = s["episodes"][0]
         page = (ROOT / "dist/serials" / s["slug"] / e["slug"] / "index.html").read_text(encoding="utf-8")
-        for marker in ("強気", "中立", "弱気", "予想", "結果を確かめる日", "2027-02-04", "出典", "投資助言", "未検証"):
+        for marker in ("予想", "結果日", "2027-02-04", "出典", "投資助言", "結果待ち"):
             if marker == "出典":
                 continue
             self.assertIn(marker, page)

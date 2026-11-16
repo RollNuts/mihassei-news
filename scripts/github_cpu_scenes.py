@@ -174,7 +174,7 @@ def permitted_ci() -> bool:
         os.getenv("GITHUB_REF") == "refs/heads/main",
         os.getenv("RUNNER_OS") == "Linux",
         os.getenv("VERIPSA_ENABLE_FREE_CPU") == "1",
-        os.getenv("GITHUB_EVENT_NAME") in ("schedule", "workflow_dispatch", "push"),
+        os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch",
     ))
 
 
@@ -611,7 +611,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=2)
     parser.add_argument("--dry-run", action="store_true",
                         help="Purely offline pending/scene preview; no downloads or writes")
-    parser.add_argument("--slug", default="", help="Optional exact published story slug")
+    parser.add_argument("--slug", default="", help="Exact published story slug; required except for offline --dry-run")
     parser.add_argument("--retry-held", action="store_true",
                         help="Deliberately retry one held scene; requires --slug and never replaces a valid photo")
     parser.add_argument("--review-dir", type=Path,
@@ -621,6 +621,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backfill-reference", action="store_true",
                         help="Opt-in: use that original story's reviewed SVG as the manual preview guide")
     args = parser.parse_args(argv)
+    args.slug = args.slug.strip()
+    if not args.dry_run and not args.slug:
+        parser.error("CPU generation requires one explicit --slug")
     articles = load_articles()
     try:
         selected = select_articles(articles, slug=args.slug, limit=args.limit, retry_held=args.retry_held,

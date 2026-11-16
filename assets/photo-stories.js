@@ -1,21 +1,35 @@
 /* Fictional photo posts: user-initiated, device-local Japanese speech only. */
 (()=>{
   "use strict";
+  const motionVideos=new Set();
+  let playback=null;
+  function pauseMotion(except=null){
+    for(const video of motionVideos){
+      if(video!==except)try{video.pause();}catch(_){}
+    }
+  }
+  function registerMotion(video){
+    motionVideos.add(video);
+    video.addEventListener("play",()=>{stopSpeech();pauseMotion(video);});
+    video.addEventListener("ended",()=>pauseMotion());
+  }
   for(const shell of document.querySelectorAll("[data-story-motion]")){
     const video=shell.querySelector("video"),fallback=shell.querySelector("[data-story-motion-fallback]");
     if(!video || !fallback)continue;
-    const fail=()=>{video.hidden=true;fallback.hidden=false;};
+    registerMotion(video);
+    const fail=()=>{try{video.pause();}catch(_){}video.hidden=true;fallback.hidden=false;};
     video.addEventListener("error",fail);
     for(const source of video.querySelectorAll("source"))source.addEventListener("error",fail);
   }
   const roots=[...document.querySelectorAll("[data-photo-stories]")];
-  if(!roots.length)return;
+  if(!roots.length){window.addEventListener?.("pagehide",()=>pauseMotion());return;}
   const synth=window.speechSynthesis;
   const supported=!!synth && typeof synth.getVoices==="function" &&
     typeof synth.speak==="function" && typeof synth.cancel==="function" &&
     typeof window.SpeechSynthesisUtterance==="function";
   const slug=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const imagePattern=/^\/photo\/weekly\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(0[1-9]|10)\.jpg\?v=[a-f0-9]{12}$/;
+  const motionPattern=/^\/photo\/story-clips\/([a-z0-9]+(?:-[a-z0-9]+)*)\.mp4\?v=[a-f0-9]{12}$/;
   const plain=(value,max,multiline=false)=>typeof value==="string" && value.trim().length>0 &&
     value.length<=max && !(multiline ? /[<>\x00-\x09\x0b-\x1f\x7f]/ : /[<>\x00-\x1f\x7f]/).test(value);
   const valid=story=>{
@@ -29,9 +43,12 @@
        !story.voice || !Number.isFinite(story.voice.rate) || !Number.isFinite(story.voice.pitch) ||
        story.voice.rate<0.85 || story.voice.rate>1.1 || story.voice.pitch<0.9 || story.voice.pitch>1.1)return false;
     const match=imagePattern.exec(story.image);
-    return !!match && story.sourceUrl==="/photo/weekly/"+match[1]+"/#photo-"+match[2];
+    if(!match || story.sourceUrl!=="/photo/weekly/"+match[1]+"/#photo-"+match[2])return false;
+    if(story.motion===undefined)return true;
+    const motion=story.motion,clip=motionPattern.exec(motion?.url);
+    return !!clip && clip[1]===story.id && motion.width===640 && motion.height===360 &&
+      motion.durationSeconds===12;
   };
-  let playback=null;
   function stopSpeech(message="音声を停止しました。"){
     const previous=playback;
     playback=null;
@@ -65,10 +82,24 @@
     }catch(_){continue;}
     const select=attribute=>dialog.querySelector("[data-story-"+attribute+"]");
     const name=select("name"),image=select("image"),text=select("text"),date=select("date");
+    const video=select("video"),motionLabel=select("motion-label");
     const setting=select("setting"),source=select("source"),button=select("audio");
-    const next=select("next"),close=select("close"),status=select("status");
-    if(![name,image,text,date,setting,source,button,next,close,status].every(Boolean))continue;
-    let selected=[],position=0,opener=null;
+    const next=select("next"),previous=select("previous"),close=select("close"),status=select("status");
+    if(![name,image,text,date,setting,source,button,next,previous,close,status,video,motionLabel].every(Boolean))continue;
+    let selected=[],position=0,opener=null,activeMotion=null;
+    registerMotion(video);
+    function clearMotion(){
+      activeMotion=null;
+      try{video.pause();}catch(_){}
+      video.hidden=true;motionLabel.hidden=true;
+      video.removeAttribute("src");video.removeAttribute("poster");
+      video.load();
+    }
+    video.addEventListener("error",()=>{
+      if(!activeMotion)return;
+      clearMotion();image.hidden=false;
+      status.textContent="動画を読み込めませんでした。写真を表示しています。";
+    });
     function availability(){
       if(playback?.button===button)return;
       const choice=localVoice();
@@ -78,15 +109,25 @@
         ? "端末の日本語音声で読み上げます。声は端末により異なります。" : choice.reason;
     }
     function showStory(){
-      stopSpeech();
+      stopSpeech();pauseMotion();clearMotion();
       const story=selected[position];
       name.textContent=story.name;
       image.src=story.image;image.alt=story.alt;
       image.width=story.width;image.height=story.height;image.hidden=false;
+      if(story.motion){
+        activeMotion=story.motion;
+        video.poster=story.image;video.src=story.motion.url;
+        video.width=story.motion.width;video.height=story.motion.height;
+        video.muted=true;video.hidden=false;image.hidden=true;motionLabel.hidden=false;
+        video.setAttribute("aria-label",story.name+"の写真モーション");
+        // Metadata/poster only. Playback always requires the reader's controls.
+        video.load();
+      }
       text.textContent=story.text;
       date.dateTime=story.publishedAt;date.textContent=story.dateLabel;
       setting.textContent=story.settingLabel;source.href=story.sourceUrl;
       next.hidden=position>=selected.length-1;
+      previous.hidden=position===0;
       availability();
     }
     for(const link of root.querySelectorAll("[data-story-open]")){
@@ -106,7 +147,7 @@
       if(playback?.button===button){stopSpeech();return;}
       const choice=localVoice();
       if(!choice.voice){button.disabled=true;status.textContent=choice.reason;return;}
-      stopSpeech();
+      stopSpeech();pauseMotion();
       const story=selected[position];
       try{
         const utterance=new window.SpeechSynthesisUtterance(story.text);
@@ -145,14 +186,20 @@
         if(next.hidden)(button.disabled ? close : button).focus();
       }
     });
+    previous.addEventListener("click",()=>{
+      if(position>0){
+        position-=1;showStory();
+        if(previous.hidden)(button.disabled ? next : button).focus();
+      }
+    });
     close.addEventListener("click",()=>dialog.close());
-    dialog.addEventListener("cancel",()=>stopSpeech());
-    dialog.addEventListener("close",()=>{stopSpeech();opener?.focus();});
+    dialog.addEventListener("cancel",()=>{stopSpeech();pauseMotion();clearMotion();});
+    dialog.addEventListener("close",()=>{stopSpeech();pauseMotion();clearMotion();opener?.focus();});
     controllers.push({dialog,availability});
   }
   if(supported && typeof synth.addEventListener==="function")
     synth.addEventListener("voiceschanged",()=>{
       for(const controller of controllers)if(controller.dialog.open)controller.availability();
     });
-  window.addEventListener("pagehide",()=>stopSpeech());
+  window.addEventListener("pagehide",()=>{stopSpeech();pauseMotion();});
 })();

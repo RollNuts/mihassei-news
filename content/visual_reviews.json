@@ -944,10 +944,10 @@
     },
     "recycling-robot-reserves-washer-parts-before-dismantling": {
       "article_sha256": "43b8c0e4411cdbc89675a18186ce4794eddfb3bdd01a7e79d4cfd5cef024907f",
-      "decision": "rejected",
-      "image_sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef",
-      "note": "現本文全文と現JPEGを実表示して照合。家庭の洗濯室で男性がしゃがんで布を手にしており、洗濯機の前面は閉じたまま。主題の取り外したモーター、解体ロボットや点検区画が写っていないため、部品の予約購入・取り外しと異なる場面として不採用。本文に合う専用SVG/共有PNGを掲載し原JPEG・原生成・整数seedを保持する。",
-      "reviewed_at": "2026-11-15T14:47:15+09:00"
+      "image_sha256": "1ce6986b920105cd3d7aabf658de09ce5ee41c1c8c2e1fcc494193a2c0e5ed90",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T11:45:13.986467+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。工場の作業台に固定された中古洗濯機の背面が開き、内部槽と空いた取り付け部が見える。右のロボットグリッパーが銅線と軸の見える金属モーターを機体の外で保持し、左では手袋を着けた成人技術者が安全柵の外から見ている。手前の金属トレーには整理された別部品があり、本文の解体ロボットによるモーター取り外し工程に一致する。皮膚、手袋、作業着、塗装の傷、金属と普通の工場照明が自然で、物体が宙に浮いたり融合したりする目立つ破綻、不要な可読文字、判別できるブランド表示、透かしは見えない。予約取引や絶縁・回転検査の合否は写真だけで実証したとは扱わない。 原PNG分割原本・最終JPEGの変換再現と原receipt SHAを照合した。今回は実preflight/claimを持つnative_tool_resultで、その原記録と実コミット祖先を保持する。claimのreserved_generation_unconfirmedは変更していない。C2PA asset instanceIDとツールexec UUIDを区別し、署名・content bindingの暗号学的検証やvendor job ID・seed・model version取得は行っていない。旧CPU原本・整数seed・不採用判断は履歴保存し、同じ記事FPの新JPEGだけを採用する。"
     },
     "ai-royalties-retirees-operators-left-out": {
       "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
@@ -962,6 +962,27 @@
       "decision": "accepted",
       "reviewed_at": "2026-11-15T09:31:57.328128+00:00",
       "note": "原PNGと最終1200×675 JPEGを実表示し、現本文全文と新scene_promptに照合した。手前で技術者の両手が短いスタンド上の黒い客席用マイクとケーブルを持ち、マイク底部とケーブル端が明瞭に離れている。誰もこのマイクへ歌いかけていない。奥ではニットやコート姿の成人男女の客席が舞台を向いて歌い、拍手しており、応援は続くが専用収録は止めるという本文の主要な対比に一致する。手と肌、衣服、椅子、黒いマイクの材質と陰影が自然で、手前と奥の被写界深度も一貫する。客席の顔に目立つ白飛びや融合はなく、不要な可読文字、ロゴ、UI、透かしも見えない。契約同意やAIへの保存状態、正確な年齢を写真で実証したとは扱わない。原PNG分割原本・最終JPEG・変換再現とreceipt SHAを照合した。C2PA asset instanceIDは実PNGから抽出した識別子で、実ツールexec UUIDとは別物。署名・content bindingの暗号学的検証、vendor job ID・seed・model version取得は行っていない。"
+    },
+    "seven-venues-compose-one-live-song": {
+      "article_sha256": "cc2cc8901e8758ce7a87d1a90244e342391c1815e9241a51ea228673480557b7",
+      "image_sha256": "6e3463130b6e67e28ad7dc5625476f4f9302d0d61b4a2bdd8505da68802e6231",
+      "decision": "accepted",
+      "reviewed_at": "2026-11-15T11:45:13.910011+00:00",
+      "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。緑の普通のシャツを着た成人女性ドラマーがスティックを膝元へ下げ、ドラムを叩かずに顔を上げて聴いている。右にケーブル付きの黒い舞台モニター、背後に小さな機器を確認する別の奏者と小客席があり、本文終盤で編曲者が演奏を止め他会場の音へ任せる場面に合う。成熟した顔の細部と手指、布、金属、シンバルの陰影が自然で、白飛びで表情が消えていない。目立つ融合や不要な可読文字、判別できるブランド表示、透かしは見えない。七会場の音声回線の挙動を静止画で実証したとは扱わない。 原PNG分割原本・最終JPEGの変換再現と原receipt SHAを照合した。今回は実preflight/claimを持つnative_tool_resultで、その原記録と実コミット祖先を保持する。claimのreserved_generation_unconfirmedは変更していない。C2PA asset instanceIDとツールexec UUIDを区別し、署名・content bindingの暗号学的検証やvendor job ID・seed・model version取得は行っていない。旧CPU原本・整数seed・不採用判断は履歴保存し、同じ記事FPの新JPEGだけを採用する。"
+    },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "decision": "rejected",
+      "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "note": "現本文全文と保存済みJPEGを実表示して照合。白衣の担当者が単一のボウルを扱い、背後に発酵槽2基が写る。二つの別々の試料や各槽からの採取、二種類の味のみそへ分ける状況は確認できないため、本文の主動作を伝える写真として不採用。元JPEGと原生成記録・seedは変更せず保持し、二槽を別々に調べ二種類として出荷する専用SVGを代替にする。",
+      "reviewed_at": "2026-11-16T00:42:55.363970+00:00"
+    },
+    "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
+      "article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+      "decision": "rejected",
+      "image_sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086",
+      "note": "現本文全文・場面指示と実JPEGを表示して照合。盤面にはチェス風の立体コマが多数置かれ、本文の2連ドミノ片や「部品を一枚も置かずに盤面の色数を指摘する」動作を確認できない。空の盤面とは逆の場面で、看板に偽文字も混入しているため不採用。原JPEG・生成record・記事指紋・整数seedを保持し、色数の矛盾を正確に示す専用SVGへ代替する。同条件の追加生成は行わない。",
+      "reviewed_at": "2026-11-16T01:50:19.985066+00:00"
     }
   },
   "version": 1

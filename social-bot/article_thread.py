@@ -22,12 +22,14 @@ from media_policy import usable_cached_photo
 from social_cards import reviewed_scene_png
 from social_text import x_share_lead, truncate_x_text, x_weighted_length, X_TEXT_LIMIT
 from visual_review import reviewed_generated_scene
+from market_promotions import (MARKET_COVER, is_market_key, load_market_articles,
+                               market_episode_slug)
 
 TRACKING_QUERY = "?utm_source=x&utm_medium=social&utm_campaign=article_auto"
 RAW_BASE = "https://raw.githubusercontent.com/RollNuts/mihassei-news/"
 SAFE_SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
-IMAGE_PATH = re.compile(r"(?:assets/(?:generated|photos)/[a-z0-9-]+\.jpg|assets/editorial-scenes/[a-z0-9-]+\.png|social-bot/assets/article-comic-[a-z0-9-]+\.png)\Z")
+IMAGE_PATH = re.compile(r"(?:assets/(?:generated|photos)/[a-z0-9-]+\.jpg|assets/editorial-scenes/[a-z0-9-]+\.png|social-bot/assets/article-comic-[a-z0-9-]+\.png|social-bot/assets/market-series-cover\.png)\Z")
 # Asset.source is the original file URL in Buffer's public schema. Require an
 # exact match; a provider rewrite is an unresolved audit, never permission to retry.
 THREAD_FIELDS = "assets { source mimeType } metadata { ... on TwitterPostMetadata { thread { text assets { source mimeType } } } }"
@@ -44,6 +46,8 @@ def digest(text):
 def canonical_url(slug):
     if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
         raise ValueError("Unsafe article slug")
+    if is_market_key(slug):
+        return "https://veripsa.com/serials/market-lab/" + market_episode_slug(slug) + "/"
     return "https://veripsa.com/articles/" + slug + "/"
 
 
@@ -58,7 +62,11 @@ def is_article_reply_url(url, slug, *, allow_legacy=False):
 def article_reply_url(article, *, root=ROOT):
     # Use the article's existing share image version even when a separately
     # approved comic is attached to the X parent.
-    url = share_page_url(article, canonical_url(article.get("slug")) + TRACKING_QUERY, root=Path(root))
+    if is_market_key(article.get("slug")):
+        image_sha = hashlib.sha256((Path(root) / MARKET_COVER).read_bytes()).hexdigest()
+        url = canonical_url(article["slug"]) + TRACKING_QUERY + "&image=" + image_sha[:12]
+    else:
+        url = share_page_url(article, canonical_url(article.get("slug")) + TRACKING_QUERY, root=Path(root))
     if not is_article_reply_url(url, article["slug"]):
         raise ValueError("Unsafe tracked article reply URL")
     return url
@@ -74,15 +82,32 @@ def parent_text(article, caption=None):
     if CAPTION_LINK.search(title) or "#" in title or "＃" in title:
         raise ValueError("Article title contains a URL or hashtag")
     title = truncate_x_text(title, 174)
-    hook = caption or x_share_lead(article, "\n\n" + title)
-    if hook is None:
-        hook = article.get("summary")
+    budget = min(100, X_TEXT_LIMIT - x_weighted_length(title + "\n\n"))
+    if is_market_key(article.get("slug")):
+        if caption is not None:
+            raise ValueError("Market analysis must not use a comic caption")
+        summary = article.get("summary")
+        if not isinstance(summary, str) or not summary.strip():
+            raise ValueError("Missing market summary")
+        summary = re.sub(r"\s+", " ", reader_copy(summary.strip()))
+        if CAPTION_LINK.search(summary) or "#" in summary or "＃" in summary:
+            raise ValueError("Market summary contains a URL or hashtag")
+        # Keep complete existing sentences. A clipped currency unit or missing
+        # qualification can change the meaning of a financial introduction.
+        sentences = re.findall(r"[^。！？!?]+[。！？!?]", summary)
+        hook = next((sentence.strip() for sentence in sentences
+                     if 12 <= x_weighted_length(sentence.strip()) <= budget),
+                    "公開資料をもとに、予測の根拠と反証材料を整理しました。")
+    else:
+        hook = caption or x_share_lead(article, "\n\n" + title)
+        if hook is None:
+            hook = article.get("summary")
     if not isinstance(hook, str) or not hook.strip():
         raise ValueError("Missing article hook")
     hook = re.sub(r"\s+", " ", reader_copy(hook.strip()))
     if CAPTION_LINK.search(hook) or "#" in hook or "＃" in hook:
         raise ValueError("Article hook contains a URL or hashtag")
-    hook = truncate_x_text(hook, min(100, X_TEXT_LIMIT - x_weighted_length(title + "\n\n")))
+    hook = truncate_x_text(hook, budget)
     if x_weighted_length(hook) < 12:
         raise ValueError("Article hook is too short")
     return title + "\n\n" + hook
@@ -104,6 +129,11 @@ def validate_thread(thread, slug):
             or not re.fullmatch(r"[0-9a-f]{40}", str(image.get("revision", "")))
             or image.get("url") != RAW_BASE + image["revision"] + "/" + image["path"]):
         raise ValueError("Invalid article thread body/image binding")
+    if (is_market_key(slug) != (image["path"] == MARKET_COVER)):
+        raise ValueError("Market and news image bindings must remain separate")
+    if is_market_key(slug) and (not parent.startswith("【市場分析｜")
+            or reply != canonical_url(slug) + TRACKING_QUERY + "&image=" + image["sha256"][:12]):
+        raise ValueError("Market thread requires its analysis label and exact image version")
     return thread
 
 
@@ -114,7 +144,15 @@ def prepare_article_thread(article, comic_review=None, *, root=ROOT):
     canonical_url(slug)
     caption = None
     try:
-        if comic_review is not None:
+        market = is_market_key(slug)
+        if market or article.get("promotion_kind") == "market_analysis":
+            if not market or comic_review is not None:
+                raise ArticleImageUnavailable("Market promotion cannot substitute a news or comic asset")
+            expected = next((item for item in load_market_articles(root) if item["slug"] == slug), None)
+            if expected is None or article != expected:
+                raise ArticleImageUnavailable("Market article differs from its published source")
+            path = MARKET_COVER
+        elif comic_review is not None:
             comic = approved_comic_asset(article, comic_review, root)
             if comic is None:
                 raise ArticleImageUnavailable("Reviewed article comic is unavailable")
@@ -156,7 +194,7 @@ def prepare_article_thread(article, comic_review=None, *, root=ROOT):
             downloaded = response.read(MAX_COMIC_BYTES + 1)
         if len(downloaded) != len(data) or hashlib.sha256(downloaded).hexdigest() != image_sha:
             raise ArticleImageUnavailable("Article image download does not match reviewed bytes")
-        thread = {"schema_version": 1, "article_sha256": article_fingerprint(article),
+        thread = {"schema_version": 1, "article_sha256": article["episode_sha256"] if market else article_fingerprint(article),
                   "parent_text": parent_text(article, caption), "reply_text": article_reply_url(article, root=root),
                   "image": {"path": path, "sha256": image_sha, "revision": revision, "url": url}}
         return validate_thread(thread, slug)
