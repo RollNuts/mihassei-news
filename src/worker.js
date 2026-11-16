@@ -115,11 +115,10 @@ async function imageControl(req, url, env={}) {
       if(typeof token!=="string" || !/^[A-Za-z0-9_]{20,255}$/.test(token))throw new Error("unavailable");
       headers.authorization="Bearer "+token;
     }
-    // One fixed-origin read per check. Never reuse an earlier active
-    // result, follow a redirect, or use caller input as an upstream location.
-    const workflow=await Promise.race([
-      (async()=>{
-        const response=await fetch("https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml",{
+    const readGithub=async(path,invalidReason)=>{
+        failureReason="runtime_error";
+        if(controller.signal.aborted)throw new Error("unavailable");
+        const response=await fetch("https://api.github.com/repos/RollNuts/mihassei-news"+path,{
           // Workers does not implement redirect:"error". Manual mode returns
           // redirects without following them; the status check below rejects them.
           method:"GET",redirect:"manual",cache:"no-store",signal:controller.signal,
@@ -127,17 +126,30 @@ async function imageControl(req, url, env={}) {
         });
         if(!response.ok) {
           // Only this fixed enum is public; never expose GitHub response data.
-          failureReason=response.status===401 ? "github_http_401"
+          failureReason=path==="" && response.status===404 ? "repository_unavailable"
+            : response.status===401 ? "github_http_401"
             : [403,429].includes(response.status) && response.headers.get("x-ratelimit-remaining")==="0"
             ? "github_rate_limit" : response.status===403 ? "github_http_403"
             : response.status===429 ? "github_http_429"
             : response.status>=500 && response.status<=599 ? "github_http_5xx" : "github_http_other";
           throw new Error("unavailable");
         }
-        failureReason="invalid_response";
+        failureReason=invalidReason;
         const body=await boundedBody(response,16*1024);
         if(body===null)throw new Error("unavailable");
         return JSON.parse(new TextDecoder().decode(body));
+    };
+    // Fixed-origin reads only: anonymous workflow access implies public
+    // visibility; authenticated access must verify it before reading workflow.
+    // Both reads share this deadline/controller; no result is cached or retried.
+    const workflow=await Promise.race([
+      (async()=>{
+        if(headers.authorization) {
+          const repo=await readGithub("","repository_unavailable");
+          if(repo?.full_name!=="RollNuts/mihassei-news" || repo.private!==false || repo.visibility!=="public")
+            throw new Error("unavailable");
+        }
+        return readGithub("/actions/workflows/free-cpu-scenes.yml","invalid_response");
       })(),
       new Promise((_,reject)=>{
         timer=setTimeout(()=>{
