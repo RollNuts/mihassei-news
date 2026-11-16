@@ -2,6 +2,7 @@
 import base64
 import copy
 import hashlib
+import io
 import json
 from pathlib import Path
 import shutil
@@ -168,7 +169,7 @@ class CpuReviewCandidateTests(unittest.TestCase):
         self.assertEqual(api.bytes_at(result["commit"], prefix + "bundle/assets/generated/" + clone["slug"] + ".jpg"), self.jpeg)
         receipt = json.loads(api.bytes_at(result["commit"], prefix + "receipt.json"))
         self.assertEqual(receipt["kind"], "cpu_image_candidate")
-        self.assertEqual(receipt["status"], "awaiting_visual_review")
+        self.assertEqual(receipt["status"], "review_only")
         self.assertEqual(result["jpeg_sha256"], hashlib.sha256(self.jpeg).hexdigest())
         for path, item in receipt["files"].items():
             data = api.bytes_at(result["commit"], path)
@@ -217,6 +218,25 @@ class CpuReviewCandidateTests(unittest.TestCase):
         self.assertEqual(receipt["source_article_sha256"], original_sha)
         self.assertIn(original_sha[:16], saved["branch"])
         self.assertNotEqual(original_sha, article_fingerprint(changed))
+
+    def test_tags_only_main_edit_is_current_without_restamping_original_candidate(self):
+        api, plan, bundle, _ = self.fixture()
+        changed = copy.deepcopy(self.original)
+        changed["tags"] = ["new navigation tag"]
+        api.refs["main"] = api.install({"content/articles.json": stage.encoded([changed])})
+        self.assertEqual(stage.source_state(api, plan), {
+            "source_state": "current", "current_article_sha256": article_fingerprint(self.original)})
+        saved = stage.save(api, plan, bundle)
+        self.assertEqual(api.bytes_at(saved["commit"], plan["directory"] + "/source-article.json"),
+                         stage.encoded(self.original))
+
+    def test_tags_only_mismatch_against_pinned_source_is_still_rejected(self):
+        api, plan, bundle, _ = self.fixture()
+        plan["original"]["tags"] = ["not present in the original source commit"]
+        self.assertEqual(plan["source_article_sha256"], article_fingerprint(plan["original"]))
+        with self.assertRaisesRegex(RuntimeError, "source article snapshot mismatched"):
+            stage.save(api, plan, bundle)
+        self.assertEqual(api.writes(), [])
 
     def test_mismatched_bundled_article_stops_before_writes(self):
         api, plan, bundle, clone = self.fixture()
@@ -349,6 +369,54 @@ class CpuReviewWorkflowTests(unittest.TestCase):
         self.assertLess(workflow.index("stage_cpu_review.py save"),
                         workflow.index("Verify the build after successful generation"))
         self.assertIn("if: always() && steps.plan.outcome == 'success'", workflow)
+
+
+class CpuReviewReadBoundariesTests(unittest.TestCase):
+    def read_blob(self, path, size):
+        data = b"x" * size
+        digest = stage.blob_sha(data)
+        files = {path: {"mode": "100644", "type": "blob", "sha": digest}}
+        response = {"encoding": "base64", "content": base64.b64encode(data).decode("ascii"),
+                    "size": size}
+        api = stage.GitHub.__new__(stage.GitHub)
+        with patch.object(api, "api", return_value=response):
+            return api.read(files, path)
+
+    def test_source_article_blob_accepts_exact_source_limit_and_rejects_one_more(self):
+        self.assertEqual(stage.MAX_SOURCE_ARTICLES, 16 * 1024 * 1024)
+        self.assertEqual(len(self.read_blob("content/articles.json", stage.MAX_SOURCE_ARTICLES)),
+                         stage.MAX_SOURCE_ARTICLES)
+        with self.assertRaisesRegex(RuntimeError, "exceeds read limit"):
+            self.read_blob("content/articles.json", stage.MAX_SOURCE_ARTICLES + 1)
+
+    def test_candidate_blob_keeps_exact_one_mib_limit_even_for_nested_articles_name(self):
+        self.assertEqual(stage.MAX_FILE, 1024 * 1024)
+        path = "maintenance/cpu-image-candidates/fixture/bundle/content/articles.json"
+        self.assertEqual(len(self.read_blob(path, stage.MAX_FILE)), stage.MAX_FILE)
+        with self.assertRaisesRegex(RuntimeError, "exceeds read limit"):
+            self.read_blob(path, stage.MAX_FILE + 1)
+
+    def test_real_api_parser_accepts_a_source_blob_response_larger_than_eight_mib(self):
+        size = stage.MAX_SOURCE_ARTICLES
+        raw = json.dumps({"encoding": "base64", "size": size,
+                          "content": base64.b64encode(b"s" * size).decode("ascii")}).encode("ascii")
+        self.assertGreater(len(raw), 8 * 1024 * 1024)
+        self.assertLess(len(raw), stage.MAX_API_RESPONSE)
+        api = stage.GitHub.__new__(stage.GitHub)
+        api.token = "offline-fixture"
+        with patch.object(stage.urllib.request, "urlopen", return_value=io.BytesIO(raw)):
+            result = api.api("GET", "/git/blobs/" + "a" * 40)
+        self.assertEqual(result["size"], size)
+        self.assertEqual(result["encoding"], "base64")
+
+    def test_real_api_parser_rejects_response_above_thirty_two_mib(self):
+        self.assertEqual(stage.MAX_API_RESPONSE, 32 * 1024 * 1024)
+        api = stage.GitHub.__new__(stage.GitHub)
+        api.token = "offline-fixture"
+        with patch.object(stage.urllib.request, "urlopen",
+                          return_value=io.BytesIO(b" " * (stage.MAX_API_RESPONSE + 1))):
+            with self.assertRaisesRegex(RuntimeError, "Oversized GitHub response"):
+                api.api("GET", "/git/blobs/" + "a" * 40)
 
 
 if __name__ == "__main__":

@@ -29,7 +29,11 @@ except ImportError:
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "RollNuts/mihassei-news"
 GIT_SHA = re.compile(r"[0-9a-f]{40}")
+# One candidate stays small; the complete source article index grows with
+# publication and needs a separate budget (including base64 API overhead).
 MAX_FILE = 1024 * 1024
+MAX_SOURCE_ARTICLES = 16 * 1024 * 1024
+MAX_API_RESPONSE = 32 * 1024 * 1024
 
 
 def encoded(value):
@@ -69,14 +73,14 @@ class GitHub:
         })
         try:
             with urllib.request.urlopen(request, timeout=45) as response:
-                raw = response.read(8 * 1024 * 1024 + 1)
+                raw = response.read(MAX_API_RESPONSE + 1)
         except urllib.error.HTTPError as exc:
             # Only an actual 404 from the exact ref read means absent. Other
             # failures, malformed results and ambiguous writes stop this run.
             if method == "GET" and path.startswith("/git/ref/heads/") and exc.code == 404:
                 raise MissingRef("Candidate ref is absent") from exc
             raise RuntimeError("GitHub " + method + " failed: HTTP " + str(exc.code)) from exc
-        if len(raw) > 8 * 1024 * 1024:
+        if len(raw) > MAX_API_RESPONSE:
             raise RuntimeError("Oversized GitHub response")
         result = json.loads(raw)
         if not isinstance(result, dict):
@@ -111,8 +115,11 @@ class GitHub:
         result = self.api("GET", "/git/blobs/" + git_sha(record.get("sha")))
         if result.get("encoding") != "base64" or not isinstance(result.get("content"), str):
             raise RuntimeError("Unexpected blob encoding")
+        maximum = MAX_SOURCE_ARTICLES if path == "content/articles.json" else MAX_FILE
+        if type(result.get("size")) is not int or not 0 <= result["size"] <= maximum:
+            raise RuntimeError("Git blob exceeds read limit: " + path)
         data = base64.b64decode("".join(result["content"].split()), validate=True)
-        if len(data) > MAX_FILE or result.get("size") != len(data) or blob_sha(data) != record["sha"]:
+        if len(data) > maximum or result["size"] != len(data) or blob_sha(data) != record["sha"]:
             raise RuntimeError("Git blob readback mismatch: " + path)
         return data
 
@@ -131,7 +138,7 @@ def prepare(root, *, slug, run_id, source_commit, request):
     git_sha(source_commit)
     original = one_article((root / "content/articles.json").read_bytes(), slug)
     fingerprint = article_fingerprint(original)
-    return {"version": 1, "kind": "cpu_image_candidate", "status": "awaiting_visual_review",
+    return {"version": 1, "kind": "cpu_image_candidate", "status": "review_only",
             "repository": REPOSITORY, "slug": slug, "source_article_sha256": fingerprint,
             "logical_run_id": run_id, "source_commit": source_commit, "request": request,
             "branch": f"cpu-image-candidate/{slug}/{fingerprint[:16]}-{run_id}",
@@ -155,7 +162,7 @@ def validate_plan(plan):
             or type(request["backfill_reference"]) is not bool or type(request["retry_held"]) is not bool):
         raise ValueError("Invalid CPU candidate source or request")
     fingerprint = article_fingerprint(plan["original"])
-    expected = {"version": 1, "kind": "cpu_image_candidate", "status": "awaiting_visual_review",
+    expected = {"version": 1, "kind": "cpu_image_candidate", "status": "review_only",
                 "repository": REPOSITORY, "source_article_sha256": fingerprint,
                 "branch": f"cpu-image-candidate/{slug}/{fingerprint[:16]}-{run_id}",
                 "directory": "maintenance/cpu-image-candidates/" + slug}
@@ -184,8 +191,9 @@ def source_state(api, plan):
         current = one_article(api.read(files, "content/articles.json"), plan["slug"])
     except ValueError:
         return {"source_state": "missing", "current_article_sha256": None}
-    return {"source_state": "current" if current == plan["original"] else "stale",
-            "current_article_sha256": article_fingerprint(current)}
+    current_sha = article_fingerprint(current)
+    return {"source_state": "current" if current_sha == article_fingerprint(plan["original"]) else "stale",
+            "current_article_sha256": current_sha}
 
 
 def bundle_files(source, plan):
@@ -337,7 +345,7 @@ def main(argv=None):
                 summary.write(f"- Branch: `{result['branch']}`\n- Commit: `{result['commit']}`\n")
                 summary.write(f"- JPEG SHA256: `{result['jpeg_sha256']}`\n- Original article SHA256: `{plan['source_article_sha256']}`\n")
                 summary.write(f"- Original source versus current main: **{result['source_state']}**\n")
-                summary.write("- Status: awaiting visual review; no publication or approval. A stale candidate remains bound to its original article.\n")
+                summary.write("- Status: review-only saved; consult existing SHA-bound reviews, no approval/publication. A stale candidate remains bound to its original article.\n")
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
             output.write("saved=" + ("1" if result else "0") + "\n")
         print(json.dumps(result or {"status": "absent", "branch": plan["branch"]}))
