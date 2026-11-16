@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img"
+ aria-label="同じ大豆を仕込んだ二つの発酵槽から別々に試料を採り、検査と熟成の調整を経て、淡い色と濃い色の二種類のみそを別々の器に盛る創作イラスト"
+ data-visual-topic="robot" data-article-sha256="8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4">
+<title>同じ仕込みの二槽を別々に調べ、二つの味のみそとして出荷する</title>
+<defs>
+ <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#e7ede9"/><stop offset="1" stop-color="#cdd9d3"/></linearGradient>
+ <linearGradient id="steel" x2="1" y2="0"><stop stop-color="#82999a"/><stop offset=".35" stop-color="#e5eeeb"/><stop offset=".7" stop-color="#b9cac5"/><stop offset="1" stop-color="#809795"/></linearGradient>
+ <linearGradient id="vat-top" x2="0" y2="1"><stop stop-color="#f4f6ed"/><stop offset="1" stop-color="#c0d0c9"/></linearGradient>
+ <linearGradient id="light-miso" x2="0" y2="1"><stop stop-color="#d8b366"/><stop offset="1" stop-color="#ad7f39"/></linearGradient>
+ <linearGradient id="dark-miso" x2="0" y2="1"><stop stop-color="#af613e"/><stop offset="1" stop-color="#773c2d"/></linearGradient>
+ <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" refX="18" refY="11" orient="auto"><path d="M3 3 18 11 3 19" fill="none" stroke="#657f74" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></marker>
+</defs>
+<rect width="1200" height="675" fill="url(#wall)"/>
+<path d="M0 321H1200M0 325H1200" stroke="#bccac2" stroke-width="3"/>
+<path d="M57 0V319M1143 0V319" stroke="#b9c8bf" stroke-width="15"/>
+<path d="M71 32H1129" stroke="#f2f5ec" stroke-width="14"/>
+<!-- The shared soybean batch splits into two independently sampled vats. -->
+<g fill="none" stroke="#657f74" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow)">
+ <path d="M553 75H369V105"/>
+ <path d="M647 75H831V105"/>
+</g>
+<path d="M547 32Q600 12 653 32L650 97Q601 113 550 97Z" fill="#e6d0a4" stroke="#786e56" stroke-width="3"/>
+<path d="M547 33Q601 49 653 33" fill="none" stroke="#a8946d" stroke-width="3"/>
+<g fill="#c2a16b" stroke="#987d50" stroke-width="2">
+ <ellipse cx="583" cy="69" rx="11" ry="14" transform="rotate(-24 583 69)"/>
+ <ellipse cx="610" cy="64" rx="11" ry="14" transform="rotate(28 610 64)"/>
+ <ellipse cx="620" cy="87" rx="10" ry="12" transform="rotate(-28 620 87)"/>
+ <ellipse cx="578" cy="94" rx="9" ry="11"/>
+</g>
+<g stroke="#66817a" stroke-width="4" stroke-linejoin="round">
+ <path d="M174 143H486V282Q486 320 330 320T174 282Z" fill="url(#steel)"/>
+ <ellipse cx="330" cy="143" rx="156" ry="35" fill="url(#vat-top)"/>
+ <ellipse cx="330" cy="142" rx="125" ry="22" fill="none" stroke="#a8bab1" stroke-width="3"/>
+ <path d="M307 110V96H352V110" fill="none"/>
+ <path d="M194 292V350M466 292V350" fill="none" stroke-width="15"/>
+ <path d="M215 180V273" fill="none" stroke="#e8f0e8" stroke-width="9"/>
+ <path d="M714 143H1026V282Q1026 320 870 320T714 282Z" fill="url(#steel)"/>
+ <ellipse cx="870" cy="143" rx="156" ry="35" fill="url(#vat-top)"/>
+ <ellipse cx="870" cy="142" rx="125" ry="22" fill="none" stroke="#a8bab1" stroke-width="3"/>
+ <path d="M847 110V96H892V110" fill="none"/>
+ <path d="M734 292V350M1006 292V350" fill="none" stroke-width="15"/>
+ <path d="M755 180V273" fill="none" stroke="#e8f0e8" stroke-width="9"/>
+</g>
+<!-- Separate sampling taps and dishes; the samples never merge. -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M330 284V350H375V374M870 284V350H915V374" stroke="#5f7771" stroke-width="17"/>
+ <path d="M330 283V350H375V374M870 283V350H915V374" stroke="#c3d3c9" stroke-width="9"/>
+ <path d="M313 326H347M853 326H887" stroke="#745b4e" stroke-width="8"/>
+ <path d="M375 384V402M915 384V402" stroke="#d2b27b" stroke-width="7"/>
+</g>
+<path d="M75 399H1125L1161 461H39Z" fill="#b4c3ba" stroke="#71867b" stroke-width="3"/>
+<rect x="39" y="460" width="1122" height="22" rx="5" fill="#83968a"/>
+<g stroke="#76897d" stroke-width="3">
+ <path d="M284 421Q375 438 466 421L456 448Q375 471 294 448Z" fill="#e1e8dc"/>
+ <ellipse cx="375" cy="421" rx="91" ry="18" fill="#f3eee0"/>
+ <ellipse cx="375" cy="422" rx="66" ry="10" fill="#cbaa70" stroke="none"/>
+ <path d="M824 421Q915 438 1006 421L996 448Q915 471 834 448Z" fill="#e1e8dc"/>
+ <ellipse cx="915" cy="421" rx="91" ry="18" fill="#f3eee0"/>
+ <ellipse cx="915" cy="422" rx="66" ry="10" fill="#cbaa70" stroke="none"/>
+</g>
+<!-- A compact assay instrument sits between the separated sample dishes. -->
+<path d="M536 359H664L675 437H525Z" fill="#f0f2e8" stroke="#72867b" stroke-width="4"/>
+<rect x="553" y="374" width="94" height="34" rx="5" fill="#405d57"/>
+<path d="M561 394H575L580 383 589 400 601 384 611 396H638" fill="none" stroke="#c0d8bc" stroke-width="3"/>
+<circle cx="558" cy="424" r="5" fill="#bc9856"/>
+<path d="M579 424H643" stroke="#a7b8ac" stroke-width="4"/>
+<g stroke="#657f74" stroke-width="6" fill="none" marker-end="url(#arrow)">
+ <path d="M375 485V500"/>
+ <path d="M915 485V500"/>
+</g>
+<!-- Finished miso is kept as two visibly different products. -->
+<ellipse cx="330" cy="624" rx="197" ry="27" fill="#83978a" opacity=".17"/>
+<ellipse cx="870" cy="624" rx="197" ry="27" fill="#83978a" opacity=".17"/>
+<g stroke="#685d4b" stroke-width="4" stroke-linejoin="round">
+ <path d="M144 565Q160 636 330 641Q500 636 516 565Z" fill="#dedac8"/>
+ <ellipse cx="330" cy="565" rx="186" ry="40" fill="#f4f0de"/>
+ <path d="M193 565Q209 540 242 539Q261 509 294 521Q326 490 354 519Q397 508 421 538Q456 544 468 565Q331 603 193 565Z" fill="url(#light-miso)"/>
+ <path d="M684 565Q700 636 870 641Q1040 636 1056 565Z" fill="#dedac8"/>
+ <ellipse cx="870" cy="565" rx="186" ry="40" fill="#f4f0de"/>
+ <path d="M733 565Q749 540 782 539Q801 509 834 521Q866 490 894 519Q937 508 961 538Q996 544 1008 565Q871 603 733 565Z" fill="url(#dark-miso)"/>
+</g>
+<g fill="none" stroke-linecap="round" stroke-width="4" opacity=".7">
+ <path d="M249 557 266 550M291 546 307 535M336 557 354 550M384 547 399 556" stroke="#ead199"/>
+ <path d="M789 557 806 550M831 546 847 535M876 557 894 550M924 547 939 556" stroke="#d89768"/>
+</g>
+</svg>

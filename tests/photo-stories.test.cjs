@@ -27,12 +27,18 @@ test('photo-motion errors expose the actual still-photo link without autoplay',(
 
 function element(){
   return {listeners:{},dataset:{},textContent:'',disabled:false,hidden:false,focused:0,
+    paused:true,pauseCalls:0,loadCalls:0,playCalls:0,attributes:{},
+    pause(){this.paused=true;this.pauseCalls++;},load(){this.loadCalls++;},
+    play(){this.playCalls++;this.paused=false;},querySelectorAll(){return [];},
+    removeAttribute(name){delete this[name];delete this.attributes[name];},
+    setAttribute(name,value){this.attributes[name]=value;},
     addEventListener(name,fn){this.listeners[name]=fn;},focus(){this.focused++;}};
 }
 function page(options={}){
-  const fields=Object.fromEntries(['name','image','text','date','setting','source','audio','next','close','status']
+  const fields=Object.fromEntries(['name','image','video','motion-label','text','date','setting','source','audio','next','previous','close','status']
     .map(name=>[name,element()]));
   fields.audio.disabled=true;
+  fields.video.hidden=true;fields['motion-label'].hidden=true;fields.previous.hidden=true;
   const dialog=element();dialog.open=false;
   dialog.querySelector=selector=>fields[selector.match(/^\[data-story-(.+)\]$/)?.[1]]||null;
   dialog.showModal=()=>{dialog.open=true;};
@@ -50,10 +56,89 @@ function page(options={}){
     SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},
     setTimeout(fn){timers.set(++nextTimer,fn);return nextTimer;},clearTimeout(id){timers.delete(id);},
     addEventListener(event,fn){windowEvents[event]=fn;}};
-  vm.runInNewContext(source,{document:{querySelectorAll:()=>[root]},window,Date,Intl});
+  const timeline=element(),fallback=element();
+  fallback.hidden=true;
+  const timelineShell={querySelector:selector=>selector==='video'?timeline:fallback};
+  vm.runInNewContext(source,{document:{querySelectorAll:selector=>
+    selector==='[data-story-motion]'?(options.timeline?[timelineShell]:[]):[root]},window,Date,Intl});
   const open=()=>{let prevented=false;link.listeners.click?.({preventDefault(){prevented=true;}});return prevented;};
-  return {fields,dialog,link,synth,spoken,timers,windowEvents,open};
+  return {fields,dialog,link,synth,spoken,timers,windowEvents,open,timeline};
 }
+
+const motionFixture=(id='saya-motion')=>({...fixture(id),motion:{
+  url:'/photo/story-clips/'+id+'.mp4?v=a3408b617dab',width:640,height:360,durationSeconds:12}});
+
+test('a story with a validated existing motion shows a muted controlled video, never autoplay',()=>{
+  const story=motionFixture(),p=page({stories:[story]});
+  assert.equal(p.fields.video.src,undefined,'closed dialog fetches no clip');
+  p.open();
+  assert.equal(p.fields.video.hidden,false);
+  assert.equal(p.fields.image.hidden,true);
+  assert.equal(p.fields.video.src,story.motion.url);
+  assert.equal(p.fields.video.poster,story.image);
+  assert.equal(p.fields.video.muted,true);
+  assert.equal(p.fields['motion-label'].hidden,false);
+  assert.equal(p.fields.video.playCalls,0);
+  assert.equal(p.spoken.length,0);
+});
+
+test('motion URL, original story identity and dimensions cannot be substituted',()=>{
+  for(const change of [{url:'https://elsewhere.example/clip.mp4'},
+    {url:'/photo/story-clips/another-story.mp4?v=a3408b617dab'},
+    {url:'/photo/story-clips/saya-motion.mp4?v=not-a-hash'},
+    {width:1920},{height:1080},{durationSeconds:999}]){
+    const story=motionFixture();story.motion={...story.motion,...change};
+    const p=page({stories:[story]});
+    assert.equal(p.open(),false);
+    assert.equal(p.fields.video.src,undefined);
+  }
+});
+
+test('next, previous, close, Escape and page exit stop the active motion',()=>{
+  for(const action of ['next','previous','close','escape','pagehide']){
+    const p=page({stories:[motionFixture(),motionFixture('saya-motion-two')]});p.open();
+    if(action==='previous')p.fields.next.listeners.click();
+    const before=p.fields.video.pauseCalls;
+    p.fields.video.paused=false;
+    if(action==='next')p.fields.next.listeners.click();
+    if(action==='previous')p.fields.previous.listeners.click();
+    if(action==='close')p.fields.close.listeners.click();
+    if(action==='escape')p.dialog.listeners.cancel();
+    if(action==='pagehide')p.windowEvents.pagehide();
+    assert.equal(p.fields.video.paused,true,action);
+    assert.ok(p.fields.video.pauseCalls>before,action);
+    assert.equal(p.fields.video.playCalls,0,action+' never auto-starts a replacement');
+    if(action==='close'||action==='escape')assert.equal(p.fields.video.src,undefined);
+  }
+});
+
+test('motion errors reveal the same reviewed image and image-only posts stay unchanged',()=>{
+  const p=page({stories:[motionFixture(),fixture('saya-still')]});p.open();
+  p.fields.video.listeners.error();
+  assert.equal(p.fields.video.hidden,true);
+  assert.equal(p.fields.image.hidden,false);
+  assert.equal(p.fields.image.src,motionFixture().image);
+  assert.equal(p.fields['motion-label'].hidden,true);
+  assert.match(p.fields.status.textContent,/写真を表示/);
+  p.fields.next.listeners.click();
+  assert.equal(p.fields.image.hidden,false);
+  assert.equal(p.fields.video.hidden,true);
+  assert.equal(p.fields.video.src,undefined);
+  assert.equal(p.fields.text.textContent,fixture('saya-still').text);
+});
+
+test('dialog and timeline motion never overlap, and completion leaves other clips paused',()=>{
+  const p=page({stories:[motionFixture()],timeline:true});p.open();
+  p.timeline.paused=false;
+  p.fields.video.listeners.play();
+  assert.equal(p.timeline.paused,true);
+  p.fields.video.paused=false;
+  p.timeline.listeners.play();
+  assert.equal(p.fields.video.paused,true);
+  p.fields.video.paused=false;
+  p.timeline.listeners.ended();
+  assert.equal(p.fields.video.paused,true);
+});
 
 test('opening a photo story and voice-list changes never autoplay',()=>{
   const p=page();

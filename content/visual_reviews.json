@@ -969,6 +969,13 @@
       "decision": "accepted",
       "reviewed_at": "2026-11-15T11:45:13.910011+00:00",
       "note": "原PNGと最終1200×675 JPEGを実表示し、現在の見出し・要約・本文全文・既存scene_promptに照合した。緑の普通のシャツを着た成人女性ドラマーがスティックを膝元へ下げ、ドラムを叩かずに顔を上げて聴いている。右にケーブル付きの黒い舞台モニター、背後に小さな機器を確認する別の奏者と小客席があり、本文終盤で編曲者が演奏を止め他会場の音へ任せる場面に合う。成熟した顔の細部と手指、布、金属、シンバルの陰影が自然で、白飛びで表情が消えていない。目立つ融合や不要な可読文字、判別できるブランド表示、透かしは見えない。七会場の音声回線の挙動を静止画で実証したとは扱わない。 原PNG分割原本・最終JPEGの変換再現と原receipt SHAを照合した。今回は実preflight/claimを持つnative_tool_resultで、その原記録と実コミット祖先を保持する。claimのreserved_generation_unconfirmedは変更していない。C2PA asset instanceIDとツールexec UUIDを区別し、署名・content bindingの暗号学的検証やvendor job ID・seed・model version取得は行っていない。旧CPU原本・整数seed・不採用判断は履歴保存し、同じ記事FPの新JPEGだけを採用する。"
+    },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "decision": "rejected",
+      "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "note": "現本文全文と保存済みJPEGを実表示して照合。白衣の担当者が単一のボウルを扱い、背後に発酵槽2基が写る。二つの別々の試料や各槽からの採取、二種類の味のみそへ分ける状況は確認できないため、本文の主動作を伝える写真として不採用。元JPEGと原生成記録・seedは変更せず保持し、二槽を別々に調べ二種類として出荷する専用SVGを代替にする。",
+      "reviewed_at": "2026-11-16T00:42:55.363970+00:00"
     }
   },
   "version": 1

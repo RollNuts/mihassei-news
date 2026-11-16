@@ -8314,6 +8314,46 @@
       "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43698146762",
       "reviewed_at": "2026-11-15T09:31:57.328128+00:00"
     },
+    "fermentation-rna-inspection-two-flavors": {
+      "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+      "artifact_id": 14185890383,
+      "decision": "rejected",
+      "generation": {
+        "article_sha256": "8337de6d83ee979a4b66824d526133f248b1355d7f5f1f7fc78bc02bca48f2f4",
+        "bytes": 120240,
+        "generated_at": "2026-11-15T23:24:39.721695+00:00",
+        "inference": {
+          "algorithm_type": "dpmsolver++",
+          "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+          "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+          "guidance_scale": 7.0,
+          "height": 448,
+          "num_inference_steps": 24,
+          "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+          "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+          "scheduler": "DPMSolverMultistepScheduler",
+          "solver_order": 2,
+          "solver_type": "midpoint",
+          "use_karras_sigmas": true,
+          "vae_model": "stabilityai/sd-vae-ft-mse",
+          "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+          "width": 800
+        },
+        "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "origin": "github-cpu-sd15",
+        "prompt_version": 3,
+        "seed": 3036210705938676899,
+        "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
+      },
+      "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "previous_visual_review": null,
+      "raw_generation_commit": "147ca44e3bcfaa0f073690e581a56ab71ab5973a",
+      "reason": "現本文全文と保存済みJPEGを実表示して照合。白衣の担当者が単一のボウルを扱い、背後に発酵槽2基が写る。二つの別々の試料や各槽からの採取、二種類の味のみそへ分ける状況は確認できないため、本文の主動作を伝える写真として不採用。元JPEGと原生成記録・seedは変更せず保持し、二槽を別々に調べ二種類として出荷する専用SVGを代替にする。",
+      "rejected_candidate_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
+      "retained_jpeg_path": "assets/generated/fermentation-rna-inspection-two-flavors.jpg",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43773587790",
+      "reviewed_at": "2026-11-16T00:42:55.363970+00:00"
+    },
     "joint-party-slate-one-vote-three-claims": {
       "article_sha256": "45ed17384ed413b9a2f197e3f0187c67aa0ecfee78a89f9a11e4e2451fe33be6",
       "decision": "rejected",
