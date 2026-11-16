@@ -142,13 +142,19 @@ test('invalid nonce, extra arguments, unknown tools and notifications never fetc
 });
 
 test('upstream failures preserve generic privacy and become tool errors without retries or active state',async()=>{
-  for(const fetchImpl of [async()=>new Response('private upstream response',{status:403}),
-    async()=>new Response('',{status:429}), async()=>new Response('',{status:302,headers:{location:'https://evil.example'}}),
-    async()=>Response.json({path:'.github/workflows/other.yml',state:'active'}),
-    async()=>new Response('private invalid json'),async()=>{throw new Error('private failure');}]) {
+  for(const [reason,fetchImpl] of [
+    ['github_http_403',async()=>new Response('private upstream response',{status:403,headers:{'x-private':'private header'}})],
+    ['github_http_429',async()=>new Response('',{status:429})],
+    ['github_rate_limit',async()=>new Response('',{status:403,headers:{'x-ratelimit-remaining':'0'}})],
+    ['github_rate_limit',async()=>new Response('',{status:429,headers:{'x-ratelimit-remaining':'0'}})],
+    ['github_http_5xx',async()=>new Response('private failure',{status:503})],
+    ['github_http_other',async()=>new Response('',{status:302,headers:{location:'https://evil.example'}})],
+    ['invalid_response',async()=>Response.json({path:'.github/workflows/other.yml',state:'active'})],
+    ['invalid_response',async()=>new Response('private invalid json')],
+    ['runtime_error',async()=>{throw new Error('private failure');}]]) {
     const f=fixture(fetchImpl);
     assert.deepEqual(await json(await f.send(call())),{jsonrpc:'2.0',id:1,result:{
-      content:[{type:'text',text:'{"error":"image control unavailable"}'}],isError:true}});
+      content:[{type:'text',text:JSON.stringify({error:'image control unavailable',reason})}],isError:true}});
     assert.equal(f.requests.length,1);
     assert.equal(f.timers.size,0);
   }
@@ -199,11 +205,37 @@ test('unsupported RPC methods and initialize parameters are minimal errors and d
   assert.equal(f.requests.length,0);
 });
 
-test('adapter also fails closed if its fixed reader unexpectedly throws',async()=>{
+test('MCP timeout contains only the safe reason, without an active state or retry',async()=>{
+  let started,signal;
+  const ready=new Promise(resolve=>{started=resolve;});
+  const f=fixture(async(_,options)=>{signal=options.signal;started();return new Promise(()=>{});});
+  const pending=f.send(call('PrivateNonce'));
+  await ready;
+  assert.equal(f.timers.size,1);
+  const [timer]=f.timers;assert.equal(timer.ms,3000);timer.fn();
+  assert.deepEqual(await json(await pending),{jsonrpc:'2.0',id:1,result:{
+    content:[{type:'text',text:'{"error":"image control unavailable","reason":"timeout"}'}],isError:true}});
+  assert.equal(signal.aborted,true);
+  assert.equal(f.requests.length,1);
+  assert.equal(f.timers.size,0);
+});
+
+test('adapter validates the reason enum and never reads or echoes a failed reader body',async()=>{
   const f=fixture();
   const handle=vm.runInContext('imageControlMcp',f.context);
-  const response=await handle(new Request(endpoint,{method:'POST',headers:{accept:'application/json,text/event-stream',
+  for(const reason of [null,'private secret','github_http_403 private header','github_http_403']) {
+    let read=false;
+    const response=await handle(new Request(endpoint,{method:'POST',headers:{accept:'application/json,text/event-stream',
+      'content-type':'application/json','mcp-protocol-version':'2025-11-25'},body:JSON.stringify(call('PrivateNonce'))}),
+    new URL(endpoint),async()=>({ok:false,headers:new Headers(reason===null ? {} : {'x-image-control-reason':reason}),
+      json(){read=true;throw new Error('private body');}}),async req=>new Uint8Array(await req.arrayBuffer()));
+    assert.deepEqual((await json(response)).result,{content:[{type:'text',text:JSON.stringify({error:'image control unavailable',
+      reason:reason==='github_http_403' ? reason : 'runtime_error'})}],isError:true});
+    assert.equal(read,false);
+  }
+  const thrown=await handle(new Request(endpoint,{method:'POST',headers:{accept:'application/json,text/event-stream',
     'content-type':'application/json','mcp-protocol-version':'2025-11-25'},body:JSON.stringify(call())}),
   new URL(endpoint),async()=>{throw new Error('private secret');},async req=>new Uint8Array(await req.arrayBuffer()));
-  assert.deepEqual((await json(response)).result,{content:[{type:'text',text:'{"error":"image control unavailable"}'}],isError:true});
+  assert.deepEqual((await json(thrown)).result,{content:[{type:'text',
+    text:'{"error":"image control unavailable","reason":"runtime_error"}'}],isError:true});
 });

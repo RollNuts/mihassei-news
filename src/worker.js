@@ -103,7 +103,7 @@ async function imageControl(req, url) {
     return imageControlJson({error:"invalid nonce"},400);
 
   const controller=new AbortController();
-  let timer;
+  let timer,timedOut=false,failureReason="runtime_error";
   try {
     // One public, fixed-origin read per check. Never reuse an earlier active
     // result, follow a redirect, or use caller input as an upstream location.
@@ -117,13 +117,22 @@ async function imageControl(req, url) {
             "user-agent":"mihassei-news-image-control",
             "cache-control":"no-cache","x-github-api-version":"2022-11-28"}
         });
-        if(!response.ok)throw new Error("unavailable");
+        if(!response.ok) {
+          // Only this fixed enum is public; never expose GitHub response data.
+          failureReason=[403,429].includes(response.status) && response.headers.get("x-ratelimit-remaining")==="0"
+            ? "github_rate_limit" : response.status===403 ? "github_http_403"
+            : response.status===429 ? "github_http_429"
+            : response.status>=500 && response.status<=599 ? "github_http_5xx" : "github_http_other";
+          throw new Error("unavailable");
+        }
+        failureReason="invalid_response";
         const body=await boundedBody(response,16*1024);
         if(body===null)throw new Error("unavailable");
         return JSON.parse(new TextDecoder().decode(body));
       })(),
       new Promise((_,reject)=>{
         timer=setTimeout(()=>{
+          timedOut=true;
           controller.abort();
           reject(new Error("unavailable"));
         },3000);
@@ -135,7 +144,9 @@ async function imageControl(req, url) {
     return imageControlJson({version:1,repository:"RollNuts/mihassei-news",
       path:workflow.path,state:workflow.state,nonce:nonces[0],checked_at:new Date().toISOString()});
   } catch(_) {
-    return imageControlJson({error:"image control unavailable"},503);
+    const response=imageControlJson({error:"image control unavailable"},503);
+    response.headers.set("x-image-control-reason",timedOut ? "timeout" : failureReason);
+    return response;
   } finally {
     clearTimeout(timer);
     controller.abort();
