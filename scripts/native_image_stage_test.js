@@ -501,6 +501,33 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   assert((await callbackWrapped.service.cloudStatus()).state === "active",
     "workflow callback can return the existing connector JSON envelope");
 
+  const actualNow = Date.now, fixedNow = Date.now();
+  try {
+    Date.now = () => fixedNow;
+    const withClockOffset = offset => response =>
+      ({...response, checked_at: new Date(fixedNow + offset).toISOString()});
+    const smallSkew = await callbackScenario("callback-clock-skew", withClockOffset(43));
+    const skewCounts = {reads: 0, generated: 0};
+    const skewSaved = await smallSkew.service.generateAndStage(smallSkew.plan, gateOptions(smallSkew, skewCounts));
+    assert(skewSaved.status === "saved" && skewCounts.generated === 1,
+      "a proxy clock 43 ms ahead does not block verified generation and candidate storage");
+    for (const offset of [1000, -10000]) {
+      const boundary = await callbackScenario("callback-clock-boundary-" + offset, withClockOffset(offset));
+      assert((await boundary.service.cloudStatus()).state === "active",
+        "verified workflow time accepts the inclusive clock boundary " + offset + " ms");
+    }
+    for (const offset of [1001, -10001]) {
+      const outside = await callbackScenario("callback-clock-outside-" + offset, withClockOffset(offset));
+      const counts = {reads: 0, generated: 0};
+      await failure(() => outside.service.generateAndStage(outside.plan, gateOptions(outside, counts)),
+        "workflow time outside the clock boundary stops generation at " + offset + " ms");
+      assert(counts.generated === 0 && counts.reads === 0 && outside.mock.writes().length === 0,
+        "out-of-window clock responses cannot read image bytes, generate or write");
+    }
+  } finally {
+    Date.now = actualNow;
+  }
+
   for (const [label, change] of [
     ["disabled state", response => ({...response, state: "disabled_manually"})],
     ["unknown state", response => ({...response, state: "unknown"})],

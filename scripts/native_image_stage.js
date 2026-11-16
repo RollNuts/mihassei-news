@@ -12,6 +12,7 @@ var NativeImageStage = (function () {
   const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
+  const FUTURE_CLOCK_TOLERANCE_MS=1000;
   function create({runtime,github,repository,readCloudWorkflow}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
@@ -64,7 +65,8 @@ var NativeImageStage = (function () {
           const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
           if(workflow.version!==1||workflow.repository!==repository||workflow.nonce!==nonce
             ||typeof workflow.checked_at!=="string"||!/(Z|[+-]\d\d:\d\d)$/.test(workflow.checked_at)
-            ||!Number.isFinite(checked)||age<0||age>10000)throw Error("Unverified or stale cloud workflow response");
+            // The proxy and caller may differ by a fraction of a second.
+            ||!Number.isFinite(checked)||age < -FUTURE_CLOCK_TOLERANCE_MS||age>10000)throw Error("Unverified or stale cloud workflow response");
         }else workflow=await fetchJSON("/actions/workflows/"+CLOUD_WORKFLOW);
         if(workflow.path!==".github/workflows/"+CLOUD_WORKFLOW||workflow.state!=="active")
           throw Error("Cloud image workflow is not confirmed active");
