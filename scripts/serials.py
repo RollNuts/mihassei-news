@@ -17,7 +17,7 @@ from urllib.parse import urlencode, urlsplit
 if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
     from .forecast_ledger import render_forecast_ledger
-    from .market_figures import load_market_figures, render_market_figure, write_market_figures
+    from .market_figures import load_market_figures, render_market_figure, render_market_numbers, write_market_figures
     from .reader_comments import render_reader_comments
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from .market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
@@ -26,7 +26,7 @@ if __package__:
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
     from forecast_ledger import render_forecast_ledger
-    from market_figures import load_market_figures, render_market_figure, write_market_figures
+    from market_figures import load_market_figures, render_market_figure, render_market_numbers, write_market_figures
     from reader_comments import render_reader_comments
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
@@ -537,8 +537,9 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             + (render_market_share(episode_url(series, ep), ep["title"])
                if series["kind"] == "analysis" else '')
             + '</header>'
-            f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
-            f'<div class="serial-article-body">{kicker_html}'
+            + (f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
+               if series["kind"] == "fiction" else render_market_numbers(figures))
+            + f'<div class="serial-article-body">{kicker_html}'
             + ('<nav class="market-article-jump" aria-label="この記事の目次">'
                '<a href="#article-evidence">数字と背景</a>'
                '<a href="#article-outlook">今後の見通し</a>'

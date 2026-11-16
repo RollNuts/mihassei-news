@@ -19,12 +19,12 @@ import math
 import re
 
 try:
-    from .market_figures import render_market_svg, figure_description, STATES
+    from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
     from .market_outlooks import view_models
     from .market_sharing import render_market_share
 except ImportError:
-    from market_figures import render_market_svg, figure_description, STATES
+    from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from reader_comments import render_reader_comments
     from market_outlooks import view_models
     from market_sharing import render_market_share
@@ -349,7 +349,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         f'<p class="serial-pub">実公開：<time datetime="{report["published_at"]}">{escape(report["published_at"])}</time></p>'
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         + render_market_share(bulletin_url(report), report["title"])
-        + '</header><div class="serial-article-body">'
+        + '</header>' + render_market_numbers(report["figures"], sources=report["sources"])
+        + '<div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
         + _market_conditions(report) + "".join(parts)
         + _picks(report) + forecast_section

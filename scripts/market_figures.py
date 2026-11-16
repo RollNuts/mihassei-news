@@ -7,6 +7,7 @@ a paid service. Desktop/mobile SVGs and HTML captions share one validated input.
 from __future__ import annotations
 
 from datetime import date, datetime
+from decimal import Decimal
 from hashlib import sha256
 from html import escape
 import json
@@ -120,7 +121,72 @@ def load_market_figures(base: Path, serials: list[dict], *, today=None) -> dict[
 
 
 def _amount(value):
-    return f"{value:,}" if type(value) is int else f"{value:,.1f}".rstrip("0").rstrip(".")
+    if type(value) not in (int, float):
+        raise ValueError("Market quantity must be a number")
+    number = Decimal(str(value))
+    if not number.is_finite():
+        raise ValueError("Market quantity must be finite")
+    text = format(number, ",f")
+    # Strip fractional zeroes only: 1,600 must never become 1,6.
+    return text.rstrip("0").rstrip(".") if "." in text else text
+
+
+def render_market_numbers(figures, *, sources=()):
+    """A compact, sourced reading of the same inputs used by the figures."""
+    if not figures:
+        return ""
+    source_by_url = {source["url"]: source for source in sources}
+    groups = []
+    for figure in figures:
+        unit = escape(figure["unit"])
+        source_url = figure["source_url"]
+        parsed = urlsplit(source_url)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError("Market table requires its cited HTTPS source")
+        source = source_by_url.get(source_url, {})
+        source_title = figure.get("source_title") or source.get("title") or "出典を見る"
+        observed = figure.get("observed_at")
+        if observed:
+            stamp = datetime.fromisoformat(observed)
+            if stamp.tzinfo is None:
+                raise ValueError("Market observation must have timezone")
+            date_label = "観測"
+            date_text = stamp.astimezone(ZoneInfo("Asia/Tokyo")).strftime("%Y-%m-%d %H:%M JST")
+            date_value = observed
+        else:
+            date_value = figure.get("source_published_on") or source.get("published_on")
+            if not date_value:
+                raise ValueError("Market table requires its source date")
+            _day(date_value)
+            date_label, date_text = "資料公表", date_value
+        rows = []
+        for value in figure["values"]:
+            state = value["state"]
+            if state not in STATES:
+                raise ValueError("Market table requires an explicit data state")
+            rows.append(
+                f'<tr><th scope="row">{escape(value["label"])}</th>'
+                f'<td class="market-data-number">{escape(_amount(value["value"]))}<span>{unit}</span></td>'
+                f'<td><span class="market-data-state">{escape(state)}</span></td></tr>'
+            )
+        if not rows:
+            raise ValueError("Market table requires sourced values")
+        groups.append(
+            '<tbody class="market-data-group">'
+            f'<tr><th scope="rowgroup" colspan="3">{escape(figure["title"])}</th></tr>'
+            + "".join(rows)
+            + f'<tr><td colspan="3" class="market-data-source">{date_label} '
+            f'<time datetime="{escape(date_value, quote=True)}">{escape(date_text)}</time> · '
+            f'<a href="{escape(source_url, quote=True)}" target="_blank" rel="noopener noreferrer external">'
+            f'{escape(source_title)}</a></td></tr></tbody>'
+        )
+    return (
+        '<section class="market-data-summary" aria-labelledby="market-data-summary-title">'
+        '<h2 id="market-data-summary-title">数字の要点</h2>'
+        '<table class="market-data-table" aria-labelledby="market-data-summary-title">'
+        '<thead><tr><th scope="col">項目</th><th scope="col">数値</th>'
+        '<th scope="col">区分</th></tr></thead>' + "".join(groups) + '</table></section>'
+    )
 
 
 def figure_description(figure: dict) -> str:

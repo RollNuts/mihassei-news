@@ -229,6 +229,48 @@ def _status(row):
     return "結果待ち"
 
 
+def _forecast_anchor(forecast):
+    identity = forecast.get("id")
+    if not isinstance(identity, str) or not FORECAST_ID.fullmatch(identity):
+        raise ValueError("Unsafe market forecast anchor")
+    _day(identity[:10])
+    return "forecast-" + identity
+
+
+def _forecast_summary(reports):
+    rows = []
+    for item in reports:
+        fc = item["forecast"]
+        baseline = fc["baseline"]
+        recorded = _timestamp(fc["at"])
+        latest = item["updates"][-1] if item["updates"] else None
+        result = latest.get("result") if latest else None
+        confirmed = (
+            f'<small>確認済み終値 <strong>{result["close"]:,.2f}</strong>ポイント</small>'
+            if result else ''
+        )
+        rows.append(
+            '<tr><th scope="row" data-label="予測日">'
+            f'<a href="#{_forecast_anchor(fc)}"><time datetime="{escape(fc["at"],quote=True)}">'
+            f'{recorded.date().isoformat()}<small>{recorded:%H:%M}</small></time>'
+            '<small>根拠を見る</small></a></th>'
+            f'<td data-label="対象と方向"><strong>{escape(fc["subject"])}</strong><span>{escape(fc["direction"])}予測</span></td>'
+            f'<td data-label="固定基準"><strong>{baseline["value"]:,.2f}</strong><small>{escape(baseline["unit"])}</small>'
+            f'<time datetime="{escape(baseline["date"],quote=True)}">{escape(baseline["date"])}</time></td>'
+            f'<td data-label="判定日・結果"><time datetime="{escape(fc["reviewed_on"],quote=True)}">{escape(fc["reviewed_on"])}</time>'
+            f'<span class="market-forecast-state">{escape(_status(item))}</span>{confirmed}</td></tr>'
+        )
+    if not rows:
+        return ''
+    return (
+        '<div class="market-forecast-summary"><table class="market-forecast-table" role="table">'
+        '<caption>当初の予測と判定状況</caption><thead><tr>'
+        '<th scope="col">予測した日時</th><th scope="col">当初の予測</th>'
+        '<th scope="col">固定した基準</th><th scope="col">判定日・結果</th>'
+        '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div>'
+    )
+
+
 def render_market_outlook_board(events, *, limit=12, before=None):
     reports = view_models(events, before=before)
     if limit:
@@ -267,22 +309,22 @@ def render_market_outlook_board(events, *, limit=12, before=None):
                 f'{escape(final["explanation"])}</span></li>'
             )
         cards.append(
-            '<article class="daily-forecast-card">'
+            f'<article class="daily-forecast-card market-forecast-detail" id="{_forecast_anchor(fc)}">'
             f'<div class="daily-forecast-top"><span>実際の予測日 {_event_day(fc["at"])}</span><strong>{escape(state)}</strong></div>'
             f'<h3>{escape(fc["statement"])}</h3>'
             '<div class="daily-forecast-direction">'
-            f'<div><span>当初の見立て</span><strong>{escape(fc["stance"])}</strong></div>'
+            f'<div><span>当初の見立て</span><strong>{escape(fc["direction"])} ／ {escape(fc["stance"])}</strong></div>'
             f'<span aria-hidden="true">→</span><div><span>現在の見立て</span><strong>{escape(now_stance)}</strong></div></div>'
             f'<p class="daily-forecast-check"><strong>{escape(changed)}</strong> ／ '
             f'途中経過：{escape(trend)} ／ '
             f'判定日：<time datetime="{fc["reviewed_on"]}">{escape(fc["reviewed_on"])}</time></p>'
             f'<p>基準：TOPIX {_day(fc["baseline"]["date"]).isoformat()}終値 '
-            f'{fc["baseline"]["value"]:,.2f}ポイント。'
-            f'{escape(fc["baseline"]["method"])}</p>'
-            f'<p class="daily-forecast-method"><strong>事前に固定した方法：</strong>{escape(fc["method"])}</p>'
-            f'<p><strong>反証条件：</strong>{escape(fc["invalidated_if"])}</p>'
+            f'{fc["baseline"]["value"]:,.2f}ポイント。</p>'
             '<details><summary>予測の根拠・3シナリオ・判断履歴</summary>'
             '<div class="daily-forecast-details">'
+            f'<p><strong>基準値の確認方法：</strong>{escape(fc["baseline"]["method"])}</p>'
+            f'<p class="daily-forecast-method"><strong>事前に固定した方法：</strong>{escape(fc["method"])}</p>'
+            f'<p><strong>反証条件：</strong>{escape(fc["invalidated_if"])}</p>'
             f'<p>{escape(fc["reason"])}</p>'
             '<dl class="daily-forecast-scenarios">'
             + "".join(f'<div><dt>{escape(k)}</dt><dd>{escape(fc["scenarios"][k])}</dd></div>' for k in STANCES)
@@ -299,7 +341,8 @@ def render_market_outlook_board(events, *, limit=12, before=None):
     return (
         '<section class="daily-forecast-board" id="daily-forecasts" aria-labelledby="daily-forecasts-title">'
         '<div class="market-paper-heading"><h2 id="daily-forecasts-title">日々の見通し</h2></div>'
-        + lead + ('<div class="daily-forecast-grid">' + "".join(cards) + '</div>' if cards else empty)
+        + lead + _forecast_summary(reports)
+        + ('<div class="daily-forecast-grid">' + "".join(cards) + '</div>' if cards else empty)
         + f'<p><a class="serial-feed-link" href="{BASE_URL}">予測・判断履歴を一覧で確認</a></p>'
         '</section>'
     )
