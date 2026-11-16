@@ -36,4 +36,6 @@
 - **次担当：** 次の通常発行枠は最新mainから配分を再計算（現時点は事件面、当日スポーツ1本・product_launch1本、政策発表は未充足）。原生成candidate `native-image-candidate/remote-basketball-final-fans-walk-behind-hoop/7652ead916b5652a-91a6574c2e8d`・記事SHA `7652ead916b5652a74fc2a974c9f3ec59dfd49db134d99305f470304e875ce16` を保持し、同写真を再生成しない。図：不要（実会場と遠隔体育館の違い、眼鏡・外周帯・壁面中継を本文と写真で追える）。
 
 - **画像引継ぎ（11/15）：** スーツケースと水道工事の写真待ちは[#771](https://github.com/RollNuts/mihassei-news/pull/771)で解消し、本番revision `cd6064d8`・実JPEG・記事・一覧・OGP/Twitter・RSSまで確認済み。旧CPU素材・不採用判断・整数seedは履歴に保持。
+- **画像引継ぎ（パズル）：** `unsolvable-ai-puzzle-cup-zero-pieces-wins`／旧run `43784420252` は指示112/77トークンで生成前停止・artifactなし。主役・空の盤面・未使用の駒・優勝・審判を残して54/77へ短縮（新記事SHA `427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68`）。
+  次はこの修正mainに紐づく既存CPU runの候補を回収し、現本文と実JPEGを照合して採否・通常PR・本番画像/OGP/RSSまで完了する。担当は既存公開後レビュー・画像回収、実機/保存の例外だけCodex。候補保存やrun成功を写真採用と数えず、同runと重複起動しない。
 - **今回の写真回収：** `seven-venues-compose-one-live-song`（記事`cc2cc8901e8758ce`／新JPEG`6e3463130b6e67e2`）と`recycling-robot-reserves-washer-parts-before-dismantling`（記事`43b8c0e4411cdbc8`／新JPEG`1ce6986b920105cd`）を、現本文と元PNG・JPEGの実表示で採用。原生成・旧CPU候補・採否・実保存証跡はmanifest/reviews/maintenanceに保持。統合・本番確認の確定状態は今回の回収PR結果を正とし、保存済み写真を重複生成しない。

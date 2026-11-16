@@ -24,7 +24,7 @@
       "url": "https://www.jpuzzle.jp/2026/09/tokyo-puzzle-day-2026/",
       "topic": "日本パズル協会の2026年9月案内では、11月14〜15日の東京パズルデーで公式パズル選手権を開催し、個人・ペアの早解き等を競う。AIによる出題、解けない問題の証明、逆解き杯、2031年の決勝・人物・得点・発言は全て創作。実在団体の新種目や成績を示すものではない。"
     },
-    "scene_prompt": "Photorealistic candid press photograph of a fictional adult Japanese 52-year-old puzzle athlete, seated at a tournament table, pointing calmly to a black-and-white checkerboard 5 by 5 grid with twelve rectangular two-square domino pieces lying untouched in a tray, a fictional adult judge watching and counting the board squares, opponent seated at the adjacent table, quiet competitive sports atmosphere, clear realistic human hands and pieces, horizontal 16:9. No readable letters, numbers, logos, brands, real people, or university names.",
+    "scene_prompt": "A fictional 52-year-old Japanese puzzle contestant points at an empty checkerboard beside untouched domino tiles and a trophy. A judge watches at the same table.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "パズル競技",
