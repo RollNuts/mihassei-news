@@ -412,5 +412,296 @@
         "checked_on": "2026-11-16"
       }
     ]
+  },
+  {
+    "slug": "2026-11-16-noon",
+    "day": "2026-11-16",
+    "slot": "noon",
+    "published_at": "2026-11-16T13:40:44+09:00",
+    "title": "16日後場：日経平均は前場959円安、TOPIXも下落",
+    "summary": "16日11:30の前場は日経平均60,182.50円（前日比959.85円安）。TOPIXも約17ポイント安。業種間では小売高・非鉄金属安が際立つ。午後は未確定で、朝の予測は変更しない。",
+    "lead": "11月16日（月）の東京市場は、朝方の買い先行から前引けにかけて下落へ転じました。11時30分の前場終了時点で日経平均は60,182.50円、前週末比959.85円安です。後場の終値はまだ確定しておらず、この記事は前場までの観測を整理します。",
+    "sections": [
+      {
+        "heading": "朝の上昇から反落、指数下落は半導体関連に偏る",
+        "paragraphs": [
+          "16日11時30分の前引けで日経平均は60,182.50円（前週末比959.85円安、約1.57%安）。SBI証券が同日12時30分に更新した市況解説では、TOPIXは約3,924ポイント、前週末比約17ポイント安。日経平均の下落幅の大きさだけから東証全銘柄が一斉に売られたとは判断できません。",
+          "同解説では、前場の東証プライム市場は値上がり773銘柄、値下がり742銘柄、変わらず35銘柄。33業種中17業種は上昇しました。市場全体が全面安というより、指数への寄与の大きい半導体関連株の売りが日経平均を押し下げたとの説明です。"
+        ]
+      },
+      {
+        "heading": "業種差を確認、後場の反転はまだ未知",
+        "paragraphs": [
+          "SBI証券の12時30分更新情報では、非鉄金属は5%超の下落、電気機器やガラス・土石も軟調。一方、小売、水産・農林、その他製品は2%超の上昇です。いずれも前場についての観測で、後場の値幅や終値を示しません。",
+          "ドル／円は同資料の前場市況解説で159.70円台と記載されています。ただし価格の秒単位の観測時刻は示されていないため、12時40分の最新レートとみなさず、金利の同時刻データも確認できないため数値を補いません。"
+        ]
+      },
+      {
+        "heading": "短期TOPIX予測は途中確認にとどめる",
+        "paragraphs": [
+          "11月15日に固定した11月16日終値のTOPIX予測は、13日終値3,941.57ポイントを基準とする±0.5%以内の「横ばい・中立」です。16日前場の概数3,924ポイントは基準より約0.45%安で、暫定的には判定幅の内側。ただしこの値はSBI証券の丸めた前場値であり、正式な終値判定には使えません。",
+          "11月16日朝に記録した11月17日終値の別予測も「横ばい・中立」のままです。半導体関連の弱さは下振れリスクですが、上昇業種・値上がり銘柄も多く、前場だけで予測方向や事前に決めた判定条件は変更しません。どちらの予測も、対象日終値の正式公表を確認するまでは未判定です。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-midmorning-to-lunch",
+        "kind": "bars",
+        "title": "日経平均：11時の下落局面と前引け",
+        "note": "SBI証券16日12:30更新。11時頃の6万65円は記事中の概数、前引け6万182円も記事中の円単位表示。精密な分足時系列ではない。",
+        "unit": "円",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00",
+        "values": [
+          {
+            "label": "11時頃（概数）",
+            "value": 60065,
+            "state": "実績"
+          },
+          {
+            "label": "11:30前引け",
+            "value": 60182,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "prime-breadth-morning",
+        "kind": "bars",
+        "title": "東証プライム：前場の値上がりと値下がり",
+        "note": "SBI証券16日12:30更新の前場集計。773銘柄上昇、742銘柄下落（変わらず35）。指数の騰落ではなく銘柄数。",
+        "unit": "銘柄",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00",
+        "values": [
+          {
+            "label": "値上がり",
+            "value": 773,
+            "state": "実績"
+          },
+          {
+            "label": "値下がり",
+            "value": 742,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "値上がり銘柄は半数近く",
+        "signal": "中立",
+        "meaning": "前場のプライム市場は773銘柄上昇、742銘柄下落。指数の大幅下落が銘柄全体の全面安を意味するわけではない。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      },
+      {
+        "name": "半導体・非鉄が重い",
+        "signal": "逆風",
+        "meaning": "SBI証券12:30の前場概況では非鉄金属は5%超下落、電気機器も軟調で、指数寄与の大きい半導体関連の売りが目立つ。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      },
+      {
+        "name": "生活関連の一部は堅調",
+        "signal": "追い風",
+        "meaning": "同じ前場で小売、水産・農林、その他製品が2%超上昇。午後の最終的な上昇を保証するものではない。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      }
+    ],
+    "sources": [
+      {
+        "title": "SBI証券：2026年11月16日 前引け国内市況（12:30更新）",
+        "url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "日本取引所グループ：TOPIX指数・前営業日確定値",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/",
+        "published_on": "2026-11-13",
+        "checked_on": "2026-11-16"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-16-close",
+    "day": "2026-11-16",
+    "slot": "close",
+    "published_at": "2026-11-16T15:58:07+09:00",
+    "title": "16日大引け：日経平均1480円安、TOPIXは横ばい予想の下限割れ",
+    "summary": "16日15:30大引けの日経平均は59,662.02円（1,480.33円安）、TOPIXは3,901.37（1.02%安）。半導体株が指数を押し下げ、ワタミは買収材料で急騰。15日の横ばい予想は報道終値では外れ方向だが、JPX原数値未取得のため正式判定は保留。",
+    "lead": "11月16日（月）15時30分の東京株式市場は下げ幅を拡大して終了しました。フィスコが15時36分に配信した終値は日経平均59,662.02円（前週末比1,480.33円安）、TOPIX3,901.37ポイント（40.20ポイント安）。前場に確認した数値と大引けの確定した時間帯を分けて整理します。",
+    "sections": [
+      {
+        "heading": "前場の下落が加速、TOPIXも1%安",
+        "paragraphs": [
+          "16日11時30分の前引けは日経平均60,182.50円、TOPIX約3,924ポイントでした。15時30分大引けは日経平均59,662.02円（前週末比2.42%安）、TOPIX3,901.37ポイント（同1.02%安）。日経平均は前場終値からさらに520.48円下落しました。引け値はフィスコの15時36分配信によるものです。",
+          "東証プライムの大引けは値上がり653銘柄、値下がり853銘柄、変わらず39銘柄。33業種中12業種が上昇し、小売業が上昇率首位でした。指数が大きく下落しても全銘柄が売られたわけではありませんが、前場の値上がり773・値下がり742から売り優勢へ傾きました。",
+          "株探の大引け集計では日経平均へのマイナス寄与がアドバンテスト734.62円、東京エレクトロン337.27円。指数の下落には半導体関連の影響が目立ちます。寄与度は銘柄の株価下落額ではなく、日経平均への押し下げ幅です。"
+        ]
+      },
+      {
+        "heading": "急騰はワタミ、急落はアドバンテスト",
+        "paragraphs": [
+          "ワタミ（7522）は15時30分の東証終値1,283円、13日終値1,008円比275円高（27.28%高）。13日に公開買付けへの賛同を表明し、JPXは上場廃止の可能性から監理銘柄（確認中）に指定しました。報道されたTOB価格1,284円への接近が主な材料ですが、公開買付けの成立や上場廃止が確定したわけではありません。",
+          "アドバンテスト（6857）は同時刻の終値27,205円、前週末30,610円比3,405円安（11.12%安）。株探の指数寄与度で最も大きな下押し銘柄でした。半導体関連の売りの集中は確認できても、この日の下落の全原因を単一のニュースや企業業績だけに特定しません。"
+        ]
+      },
+      {
+        "heading": "16日判定の横ばい予想は下限を割る報道値、正式結果は保留",
+        "paragraphs": [
+          "15日に記録した「16日のTOPIX終値は13日の3,941.57に対し±0.5%以内」の予測は、フィスコ報道の16日終値3,901.37を用いると約1.02%安で下限3,921.86を割り、「外れ」に相当します。前場の概数約3,924（約0.45%安）からさらに下がったことが本日の重要な変化です。",
+          "ただしJPXの指数ページは表示時にJavaScriptで数値を読み込む形式で、この確認では16日の取引所公表数値そのものを取得できていません。当初の判定方法どおり、正式な的中・外れと的中率には未計上とし、JPXの該当日終値が直接確認できてから判定します。16日朝に固定した「17日終値は横ばい」の別予想は翌17日が期日で、変更も早期判定もしません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-friday-vs-close",
+        "kind": "bars",
+        "title": "TOPIX：13日終値と16日大引け",
+        "note": "13日基準値3,941.57、16日値3,901.37はフィスコ15:36配信の終値と前週末比から照合。16日のJPX公式原数値は未照合。",
+        "unit": "ポイント",
+        "source_url": "https://finance.yahoo.co.jp/news/detail/914b055cf404b762d120a19e600c0df9f4b28cb0",
+        "observed_at": "2026-11-16T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/13終値",
+            "value": 3941.57,
+            "state": "実績"
+          },
+          {
+            "label": "11/16大引け",
+            "value": 3901.37,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "prime-up-down-close",
+        "kind": "bars",
+        "title": "東証プライム：大引けの騰落銘柄数",
+        "note": "株探11月16日15:32配信の15:30大引け集計。値上がり653、値下がり853。変わらず39銘柄は別扱い。",
+        "unit": "銘柄",
+        "source_url": "https://s.kabutan.jp/news/n202611160922/",
+        "observed_at": "2026-11-16T15:30:00+09:00",
+        "values": [
+          {
+            "label": "値上がり",
+            "value": 653,
+            "state": "実績"
+          },
+          {
+            "label": "値下がり",
+            "value": 853,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "指数寄与株の売り",
+        "signal": "逆風",
+        "meaning": "日経平均の大引け下落1,480.33円のうち、アドバンテストの寄与度は734.62円、東京エレクトロンは337.27円の押し下げ。",
+        "source_url": "https://s.kabutan.jp/news/n202611160922/",
+        "observed_at": "2026-11-16T15:30:00+09:00"
+      },
+      {
+        "name": "小売業は底堅い",
+        "signal": "追い風",
+        "meaning": "全体指数が下落する一方で33業種中12業種は上昇。小売業が上昇率首位となり、全面一律の下落ではなかった。",
+        "source_url": "https://s.kabutan.jp/news/n202611160922/",
+        "observed_at": "2026-11-16T15:30:00+09:00"
+      },
+      {
+        "name": "横ばい予想の下限割れ",
+        "signal": "逆風",
+        "meaning": "16日15:30大引けTOPIX3,901.37という報道値は基準3,941.57から約1.02%安。予測範囲外だがJPX原数値による正式判定は未完。",
+        "source_url": "https://finance.yahoo.co.jp/news/detail/914b055cf404b762d120a19e600c0df9f4b28cb0",
+        "observed_at": "2026-11-16T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "7522",
+        "name": "ワタミ",
+        "exchange": "東証",
+        "direction": "急騰",
+        "previous_close": 1008,
+        "close": 1283,
+        "observed_at": "2026-11-16T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/7522.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!時系列で11/13の通常終値と調整後終値がともに1,008円と確認。11/16終値と比較し、13日JPX公表の将来の株式併合予定と足元の株価調整を区別。",
+        "context": "13日の公開買付け賛同と監理銘柄指定、16日のTOB価格1,284円へのサヤ寄せ報道を確認。成立・上場廃止は未確定。"
+      },
+      {
+        "code": "6857",
+        "name": "アドバンテスト",
+        "exchange": "東証",
+        "direction": "急落",
+        "previous_close": 30610,
+        "close": 27205,
+        "observed_at": "2026-11-16T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!時系列で11/13の通常終値と調整後終値がともに30,610円と確認。11/16の15:30東証終値と比較し、今回の比較では価格調整の追加計算を行っていない。",
+        "context": "半導体関連の売りで日経平均へのマイナス寄与度が最大。寄与度734.62円は株価の値下がり金額とは別の量。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "フィスコ：16日大引けの日経平均・TOPIX（15:36配信）",
+        "url": "https://finance.yahoo.co.jp/news/detail/914b055cf404b762d120a19e600c0df9f4b28cb0",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "株探：16日15:30大引け騰落銘柄数と指数寄与度（15:32配信）",
+        "url": "https://s.kabutan.jp/news/n202611160922/",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "Yahoo!ファイナンス：ワタミ16日15:30東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/7522.T",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "Yahoo!ファイナンス：ワタミ11月13日調整後終値時系列",
+        "url": "https://finance.yahoo.co.jp/quote/7522.T/history",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト16日15:30東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト11月13日調整後終値時系列",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T/history",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "JPX：11月13日ワタミの監理銘柄指定",
+        "url": "https://www.jpx.co.jp/news/1023/20261113-11.html",
+        "published_on": "2026-11-13",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "みんかぶ：11月16日10:10ワタミMBO公開買付け価格",
+        "url": "https://s.minkabu.jp/news/4665573",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      }
+    ]
   }
 ]
