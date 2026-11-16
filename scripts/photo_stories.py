@@ -66,7 +66,7 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
     models = {model["id"]: model for model in catalog["models"]}
     current = {issue["slug"]: issue for issue in catalog["issues"]}
     releases = {issue["slug"]: issue for issue in published if issue.get("state") == "published"}
-    seen, result = set(), []
+    seen, texts, result = set(), set(), []
     for story in data["stories"]:
         if (not isinstance(story, dict) or set(story) not in (FIELDS, FIELDS | {"motion"})
                 or not isinstance(story.get("id"), str) or len(story["id"]) > 100
@@ -82,6 +82,10 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
         # from the model/source binding, never the literal word 私 or わたし.
         if len(text) < 3:
             raise ValueError("Photo story needs a short personal text")
+        signature = (model["id"], text)
+        if signature in texts:
+            raise ValueError("Duplicate photo story text for this model")
+        texts.add(signature)
         source = story["source"]
         if (not isinstance(source, dict) or set(source) != {"issue_slug", "cut_id", "image_sha256"}
                 or not isinstance(source["issue_slug"], str) or not SLUG.fullmatch(source["issue_slug"])

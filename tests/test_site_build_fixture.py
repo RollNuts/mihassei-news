@@ -64,15 +64,55 @@ class CISelectionTests(unittest.TestCase):
         for path in (fixture.ROOT / "tests").glob("test_market*.py"):
             self.assertIn("tests." + path.stem, command)
         self.assertNotIn("tests.test_cpu_scenes", command)
+        self.assertNotIn("tests.test_photo_stories", command)
+
+    def test_only_existing_modified_photo_story_data_can_use_its_own_suite(self):
+        path = "content/photo_stories.json"
+        self.assertTrue(fixture.photo_story_data_only([("M", path)]))
+        self.assertFalse(fixture.market_data_only([("M", path)]))
+        for changes in (None, [], [("A", path)], [("D", path)], [("T", path)],
+                        [("R100", path)], [("?", path)], [("M", path + ".backup")],
+                        [("M", "./" + path)], [("M", "content/photo_issues.json")],
+                        [("M", path), ("M", "content/market_bulletins.json")],
+                        [("M", path), ("M", "content/articles.json")],
+                        [("M", path), ("M", "scripts/photo_stories.py")],
+                        [("M", path), ("M", "tests/test_photo_stories.py")],
+                        [("M", path), ("M", ".github/workflows/check.yml")],
+                        [("M", path), ("M", "docs/ARCHITECTURE.md")],
+                        [("M", path), ("M", "unknown")]):
+            with self.subTest(changes=changes):
+                self.assertFalse(fixture.photo_story_data_only(changes))
+                self.assertEqual(fixture.python_test_command(changes),
+                                 [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"])
+
+    def test_photo_story_suite_keeps_public_build_source_schema_and_seo_contracts(self):
+        command = fixture.python_test_command([("M", "content/photo_stories.json")])
+        self.assertEqual(command[:5], [sys.executable, "-m", "unittest", "-v", "tests.test_site"])
+        for module in ("photo_stories", "photo_story_motion", "photo_model_pages", "photo_issue_pages",
+                       "photo_edition_pages", "photo_issues", "photo_editions", "photo_supplied",
+                       "photo_profile_portraits", "photo_biographies", "home_visual", "photo_health_report",
+                       "image_context", "share_cards", "reader_paths", "internal_links", "route_scripts",
+                       "mobile_reading_flow", "site_build_fixture", "serial_discovery", "search_indexability",
+                       "sitemap_freshness"):
+            self.assertIn("tests.test_" + module, command)
+        for module in ("mac_scene_setup", "mac_scene_resources", "cpu_photo_model", "cpu_scenes",
+                       "cpu_publication", "scene_recovery", "news_caster_preview", "daily_metrics",
+                       "market_figures", "market_forecast_summary", "market_outlooks", "forecast_ledger"):
+            self.assertNotIn("tests.test_" + module, command)
+        self.assertEqual(len(command[4:]), len(set(command[4:])))
 
     def test_pr_uses_complete_merge_base_diff_and_push_uses_before_diff(self):
         base = "a" * 40
-        result = subprocess.CompletedProcess([], 0, b"M\0content/market_bulletins.json\0")
-        for event, suffix in (("pull_request", "...HEAD"), ("push", "..HEAD")):
-            with self.subTest(event=event), patch.object(fixture.subprocess, "run", return_value=result) as run:
-                self.assertEqual(fixture.changed_files(base, event), [("M", "content/market_bulletins.json")])
-                self.assertIn(base + suffix, run.call_args.args[0])
-                self.assertIn("--no-renames", run.call_args.args[0])
+        for path in ("content/market_bulletins.json", "content/photo_stories.json"):
+            result = subprocess.CompletedProcess([], 0, b"M\0" + path.encode() + b"\0")
+            for event, suffix in (("pull_request", "...HEAD"), ("push", "..HEAD")):
+                with self.subTest(path=path, event=event), \
+                     patch.object(fixture.subprocess, "run", return_value=result) as run:
+                    changes = fixture.changed_files(base, event)
+                    self.assertEqual(changes, [("M", path)])
+                    self.assertNotIn("discover", fixture.python_test_command(changes))
+                    self.assertIn(base + suffix, run.call_args.args[0])
+                    self.assertIn("--no-renames", run.call_args.args[0])
 
     def test_unknown_refs_events_failed_diffs_and_empty_changes_stay_full(self):
         with patch.object(fixture.subprocess, "run") as run:
@@ -82,12 +122,15 @@ class CISelectionTests(unittest.TestCase):
             run.assert_not_called()
         for output in (b"", b"M\0content/market_bulletins.json", b"M\0\xff\0"):
             with patch.object(fixture.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, output)):
-                self.assertFalse(fixture.market_data_only(fixture.changed_files("a" * 40, "push")))
+                changes = fixture.changed_files("a" * 40, "push")
+                self.assertFalse(fixture.market_data_only(changes))
+                self.assertFalse(fixture.photo_story_data_only(changes))
         with patch.object(fixture.subprocess, "run", side_effect=subprocess.CalledProcessError(1, ["git"])):
             self.assertIsNone(fixture.changed_files("a" * 40, "pull_request"))
 
     def test_ci_returns_failures_without_success_fallback_or_second_attempt(self):
-        for changes in (None, [("M", "content/market_outlooks.json")]):
+        for changes in (None, [("M", "content/market_outlooks.json")],
+                        [("M", "content/photo_stories.json")]):
             with patch.object(fixture, "changed_files", return_value=changes), \
                  patch.object(fixture.subprocess, "run", return_value=subprocess.CompletedProcess([], 9)) as run:
                 self.assertEqual(fixture.main(["--base", "a" * 40, "--event", "push"]), 9)

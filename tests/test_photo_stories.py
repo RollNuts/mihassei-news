@@ -65,6 +65,32 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
         self.assertEqual(sum("motion" in post for post in result), 1)
 
+    def test_same_person_cannot_repost_exact_text_under_another_id_or_date(self):
+        original = copy.deepcopy(self.data["stories"][0])
+        for date in ("2026-11-15T10:40:00+09:00", "2026-11-20T10:40:00+09:00"):
+            with self.subTest(date=date):
+                repeat = copy.deepcopy(original)
+                repeat.update(id="same-words-another-post", published_at=date)
+                self.data["stories"] = [original, repeat]
+                with self.assertRaisesRegex(ValueError, "Duplicate photo story text"):
+                    self.validate()
+
+    def test_same_person_can_publish_different_original_words(self):
+        another = copy.deepcopy(self.data["stories"][0])
+        another.update(id="another-original-post", text="今日はいつもと違う道を歩いた。\n帰りは、いつもの道。")
+        self.data["stories"].append(another)
+        self.assertEqual(len(self.validate()), 2)
+
+    def test_different_people_can_use_the_same_words(self):
+        original = self.data["stories"][0]
+        another = copy.deepcopy(next(post for post in self.initial["stories"]
+                                     if post["model_id"] != original["model_id"]))
+        another["text"] = original["text"]
+        self.data["stories"].append(another)
+        self.published.append(next(issue for issue in self.catalog["issues"]
+                                   if issue["slug"] == another["source"]["issue_slug"]))
+        self.assertEqual(len(self.validate()), 2)
+
     def test_home_timeline_has_seven_readable_posts_and_source_bound_video(self):
         result = stories.load_photo_stories(ROOT, now=NOW)
         page = stories.render_photo_timeline(result)

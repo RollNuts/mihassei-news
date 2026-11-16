@@ -153,7 +153,7 @@ def _adopt(model_id, source_commit, *, root, fetch, write, now):
     duplicate = next((story for story in document["stories"]
                       if story["model_id"] == model_id and story["text"] == draft["post_text"]), None)
     if duplicate:
-        return {**report, "status": "skipped", "reason": "same model post_text is already published",
+        return {**report, "status": "skipped", "reason": "same model post_text already exists in the story catalog; verify its PR and production separately",
                 "existing_story_id": duplicate["id"]}
     reference = draft["photo_reference"]
     if not PHOTO_FIELDS & reference.keys():
