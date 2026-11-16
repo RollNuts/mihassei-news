@@ -1,5 +1,72 @@
 [
   {
+    "slug": "truck-waiting-cost-reassigned-to-receiving-shippers",
+    "category": "経済",
+    "flash": "荷待ちの費用、受取側へ",
+    "fiction_company": "架空の受取荷主と運送会社",
+    "art": "cards",
+    "fiction_at": "2031-11-16T13:56:52+09:00",
+    "published_at": "2026-11-16T13:56:52+09:00",
+    "publication_slot": "2026-11-16T13:30:00+09:00",
+    "title": "荷待ち時間を別請求へ　運賃最安の会社、倉庫の行列で見積もり逆転",
+    "summary": "2031年、国が、予約どおり到着したトラックを受取側の都合で待たせた時間の費用を、運賃とは別に請求できる制度を発表した。運賃だけで配送業者を選んできた小売会社は、倉庫の受入時刻を分散させ、待機料まで含めた取引費用を見直すことになった。",
+    "paragraphs": [
+      "2031年11月16日、国は、予約どおり倉庫に到着したトラックを受取側の都合で待たせた場合、その費用を運賃とは別に受取側の荷主へ請求できる制度を発表した。対象は、約束した受入時刻を過ぎても荷下ろしを始められなかった待機時間。運送会社の遅刻や実際の荷下ろし作業中は含まない。運ぶ値段だけを見て契約してきた企業は、倉庫で待たせる時間も自社の費用として考えることになった。",
+      "ある小売会社は、これまで運賃が最も安い運送会社へ商品を集中して頼んでいた。トラックが朝の倉庫前に列を作っても、受入担当は「早く着いた車から順に」と案内するだけ。運送会社は待つ間も車両と運転手を次の仕事へ回せなかったが、小売会社の仕入れ表にはその時間の金額が載らなかった。",
+      "新制度の試算で、物流責任者は運送会社の見積書を並べ直した。運賃だけなら最安の運送会社の朝便が、待機料込みでは運賃が少し高い別の運送会社の午後便より高くなった。運送会社は荷物を運ぶ仕事で価格を競いたい。小売会社は安く仕入れたい。しかし、無料で待ってもらえば安く見える仕組みは、請求先が変わった途端に成り立たなくなった。",
+      "小売会社は倉庫の受入担当者を午後にも配置し、仕入れ先へ納品予約の時間を分けて伝えた。次の週、朝の門前に止まる車列は短くなり、到着した車が予約時刻に荷下ろしを始める場面が増えた。物流責任者は、新しい見積書で運賃と待機料を別々に確認し、合計額で運送会社を選び直した。",
+      "その結果、運賃の値下げ交渉をしていないのに、配送にかかる総額が下がった便もあった。会議で「どこの運送会社が安くしてくれたのか」と聞かれた物流責任者は、倉庫の受入予定表を机に置いた。今回、最初に直すべき価格表は運送会社のものではなかった。"
+    ],
+    "source": {
+      "kind": "国土交通省の物流効率化法に関する一次案内",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-13T00:00:00+09:00",
+      "url": "https://www.revised-logistics-act-portal.mlit.go.jp/information/details/post_11.html",
+      "topic": "国土交通省の物流効率化法理解促進ポータルは2026年11月13日、トラック・倉庫事業者向けに物流効率化の取り組みとトラック運転者の平均拘束時間の調査を発表。調査期間は11月16日〜12月18日で、結果を今後の政策立案に活用すると説明。2031年の荷待ち費用の別請求制度、その対象条件、小売会社の見積もり逆転、倉庫の受入時刻変更はすべて創作であり、2026年の制度決定や同省の未来の施策を示すものではない。"
+    },
+    "scene_prompt": "Documentary-style photograph in a fictional Japanese distribution warehouse in November, a delivery truck waiting near a loading bay as logistics staff move pallets and point at a scheduling clipboard, real industrial lighting, adult workers wearing practical safety vests, broad view of truck and loading doors, no visible branding, no readable writing or logos, no recognizable real people, 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "物流",
+      "荷待ち",
+      "輸送費"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "物流",
+      "荷待ち"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "運賃が最安なのに、請求総額では逆転。2031年、倉庫でトラックを待たせる時間に値段が付いたら、企業が見直したのは配送会社だけではありませんでした。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月13日、国土交通省が物流効率化法に基づくトラック・倉庫事業者の調査を告知し、運転者の平均拘束時間を対象に含めた",
+      "target": "予約どおりに到着した配送車の荷待ち費用を運賃と分離し、受取側荷主が負担する架空の制度",
+      "action": "小売会社が待機料を含む総額で見積もりを比較し、倉庫の荷下ろし時間を午後へ分散させる",
+      "outcome": "倉庫前の車列が減り、運賃を下げずに待機料を抑えた便では配送総額が下がる"
+    },
+    "reader_clarity": {
+      "who": "小売会社",
+      "action": "荷待ち時間の別請求制度が発表され、小売会社が倉庫の受入時刻と見積書を見直す",
+      "oddity": "運賃が最安でも長く待たせると総額では逆転し、荷主が自分の倉庫の時間割を変える"
+    },
+    "behavior_basis": {
+      "motive": "運送会社は運転者と車両を無償の待機に拘束されたくなく、小売会社は配送を含めた仕入れ費用を下げたい",
+      "ordinary_alternative": "運賃だけを比較し、朝の倉庫でトラックを先着順に待たせて荷下ろしする",
+      "why_not": "待機時間が受取側の費用として見えると、時間を分散する方が運賃の値引きより総額を減らせるため",
+      "evidence_quote": "小売会社は倉庫の受入担当者を午後にも配置し、仕入れ先へ納品予約の時間を分けて伝えた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "物流効率化法に基づき2026年11月にトラック・倉庫事業者の取組と平均拘束時間を調査",
+      "continuation_force": "待機時間短縮のため荷主と運送会社の行動を変える仕組みが求められており、調査から費用負担のあり方を具体化し得る",
+      "future_result": "2031年の架空の荷待ち別請求制度で小売会社が倉庫の受入時刻と輸送契約を再設計"
+    }
+  },
+  {
     "slug": "ai-purchasing-agent-fake-order-real-signature",
     "category": "事件",
     "flash": "偽注文に「正規のAI署名」",

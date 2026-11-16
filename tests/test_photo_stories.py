@@ -52,7 +52,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["image"], "/photo/weekly/winter-coat-swimsuit-saya-001/01.jpg?v=7d6077a0f2ef")
         self.assertEqual((result[0]["width"], result[0]["height"]), (800, 1200))
-        self.assertEqual(result[0]["dateLabel"], "2026年11月15日")
+        self.assertEqual(result[0]["dateLabel"], "2026年11月15日 09:40")
         self.assertEqual(result[0]["settingLabel"], "舞台：2031年11月")
         self.assertEqual(self.catalog, before)
         self.assertNotIn("master", result[0])
@@ -88,6 +88,36 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("assets/generated/", page)
         self.assertNotIn("article_sha256", page)
         self.assertNotIn("assets/photo-story-clips", page)
+
+    def test_timeline_shows_three_recent_posts_and_keeps_four_in_native_details(self):
+        result = stories.load_photo_stories(ROOT, now=NOW)
+        page = stories.render_photo_timeline(result)
+        visible, earlier = page.split('<details class="photo-post-archive">', 1)
+        before, after = Tags(), Tags()
+        before.feed(visible); after.feed(earlier)
+        self.assertEqual(sum(tag == "article" for tag, _ in before.tags), 3)
+        self.assertEqual(sum(tag == "article" for tag, _ in after.tags), 4)
+        self.assertIn('<summary>以前の投稿（4件）</summary>', earlier)
+        self.assertIn('<ol class="photo-post-list" start="4">', earlier)
+        self.assertNotIn('<details class="photo-post-archive" open', page)
+        self.assertNotIn('hidden', earlier)
+        self.assertNotIn('photo-post-archive', stories.render_photo_timeline(result[:3]))
+
+    def test_story_rings_expose_actual_local_post_time_and_accessible_context(self):
+        result = stories.load_photo_stories(ROOT, now=NOW)
+        markup = stories.render_story_strip(result)
+        parser = Tags(); parser.feed(markup)
+        links = [attrs for tag, attrs in parser.tags if tag == "a" and "data-story-open" in attrs]
+        timestamps = [attrs for tag, attrs in parser.tags
+                      if tag == "time" and attrs.get("class") == "photo-story-posted"]
+        self.assertEqual(len(links), 7)
+        self.assertEqual(len(timestamps), 7)
+        newest = result[0]
+        self.assertIn(newest["dateLabel"], links[0]["aria-label"])
+        self.assertIn(newest["name"], links[0]["aria-label"])
+        self.assertEqual(timestamps[0]["datetime"], newest["publishedAt"])
+        label = datetime.fromisoformat(newest["publishedAt"]).astimezone(stories.JST).strftime("%m/%d %H:%M")
+        self.assertIn('>' + label + '</time>', markup)
 
     def test_unpublished_unlisted_and_cross_model_sources_are_rejected(self):
         self.issue["state"] = "draft"

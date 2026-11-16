@@ -1,4 +1,4 @@
-"""Three daily evidence-based market dispatches, separate from immutable forecasts.
+"""Evidence-based market dispatches, separate from immutable forecasts.
 
 The dispatch stream is opt-in data, never live quotes. Static site generation
 rejects undocumented prices and foreign individual-stock recommendations.
@@ -35,10 +35,11 @@ FEED_URL = "/feeds/market-bulletins.xml"
 SITE = "https://veripsa.com"
 SLOTS = {
     "am": ("08:30", "寄り付き前の全体市況"),
+    "open": ("09:40", "寄り付き後の全体市況"),
     "noon": ("12:40", "後場の全体市況"),
-    "close": ("18:30", "日本株の急騰・急落"),
+    "close": ("15:50", "日本株の急騰・急落"),
 }
-KEY = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|noon|close)\Z")
+KEY = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|open|noon|close)\Z")
 CODE = re.compile(r"(?:\d{4}|\d{3}[A-Z])\Z")
 JST = timedelta(hours=9)
 
@@ -53,6 +54,42 @@ def _timestamp(value):
     if d.utcoffset() != JST or d.isoformat(timespec="seconds") != value:
         raise ValueError("Market dispatch timestamp must be JST ISO8601 seconds")
     return d
+
+
+def observation_window(report):
+    """Use only recorded observation times; publication is not a market quote."""
+    published = _timestamp(report["published_at"])
+    observed = []
+    for group in ("figures", "conditions", "picks"):
+        for item in report.get(group, []):
+            if not item.get("observed_at"):
+                continue
+            stamp = _timestamp(item["observed_at"])
+            if stamp > published:
+                raise ValueError("Market observation cannot follow publication")
+            observed.append(stamp)
+    return (min(observed), max(observed)) if observed else None
+
+
+def render_market_freshness(report, *, include_publication=True):
+    """A static, source-backed clock and a route to the exchange's current data."""
+    if not report.get("published_at"):
+        return ""
+    published = _timestamp(report["published_at"])
+    window = observation_window(report)
+
+    def clock(stamp):
+        return (f'<time datetime="{escape(stamp.isoformat(), quote=True)}">'
+                f'{escape(stamp.strftime("%Y-%m-%d %H:%M"))}</time>')
+
+    parts = ["最終公開：" + clock(published) + " JST"] if include_publication else []
+    if window:
+        start, end = window
+        label = clock(start) + (" 〜 " + clock(end) if start != end else "")
+        parts.append("観測値：" + label + " JST")
+    parts.append('<a href="https://www.jpx.co.jp/markets/indices/realvalues/" '
+                 'target="_blank" rel="noopener noreferrer external">現在の指数（JPX）</a>')
+    return '<p class="market-paper-small market-reader-freshness">' + '<br>'.join(parts) + '</p>'
 
 
 def _date(value):
@@ -196,7 +233,7 @@ def load_market_bulletins(root, *, now=None):
             if _timestamp(condition.get("observed_at")) > pub:
                 raise ValueError("Situation may not use later information")
         picks = report.get("picks", [])
-        if slot in ("am", "noon"):
+        if slot in ("am", "open", "noon"):
             if picks:
                 raise ValueError("Broad market overview cannot be individual-stock picks")
         else:
@@ -303,9 +340,10 @@ def _picks(report):
 
 
 def render_market_bulletin(report, layout, outlooks=()):
-    slot_time, slot_name = SLOTS[report["slot"]]
+    _scheduled_time, slot_name = SLOTS[report["slot"]]
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
+    slot_time = published_at.strftime("%H:%M")
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
     if latest_forecast:
         current = latest_forecast[0]
@@ -346,7 +384,8 @@ def render_market_bulletin(report, layout, outlooks=()):
         f'<p class="serial-pub">実公開：<time datetime="{report["published_at"]}">{escape(report["published_at"])}</time></p>'
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         + render_market_share(bulletin_url(report), report["title"])
-        + '</header>' + render_market_accuracy(outlooks, before=published_at) + forecast_section
+        + '</header>' + render_market_freshness(report, include_publication=False)
+        + render_market_accuracy(outlooks, before=published_at) + forecast_section
         + render_market_numbers(report["figures"], sources=report["sources"])
         + '<div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
@@ -367,9 +406,18 @@ def render_market_bulletin(report, layout, outlooks=()):
 
 def render_market_bulletins_index(reports, *, limit=12):
     """Keep the front page compact, but never truncate the full archive."""
+    def published_time(item):
+        raw = item.get("published_at")
+        if raw:
+            stamp = _timestamp(raw)
+            value, label = stamp.isoformat(), stamp.strftime("%Y-%m-%d %H:%M")
+        else:
+            value = label = item["day"]
+        return f'<time datetime="{escape(value, quote=True)}">{escape(label)}</time>'
+
     cards = "".join(
         f'<li><a href="{bulletin_url(item)}">'
-        f'<span class="market-paper-story-date"><time datetime="{item["day"]}">{item["day"]}</time>'
+        f'<span class="market-paper-story-date">{published_time(item)}'
         f' ／ {escape(SLOTS[item["slot"]][1])}</span>'
         f'<strong>{escape(item["title"])}</strong>'
         f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
