@@ -36,5 +36,63 @@ class SiteBuildFixtureTests(unittest.TestCase):
             self.assertTrue(fixture._built)
 
 
+class CISelectionTests(unittest.TestCase):
+    def test_only_existing_modified_market_data_can_narrow_the_suite(self):
+        for path in fixture.MARKET_DATA_PATHS:
+            with self.subTest(path=path):
+                self.assertTrue(fixture.market_data_only([("M", path)]))
+        self.assertTrue(fixture.market_data_only([("M", path) for path in fixture.MARKET_DATA_PATHS]))
+        path = "content/market_bulletins.json"
+        for changes in (None, [], [("A", path)], [("D", path)], [("T", path)],
+                        [("R100", path)], [("M", path + ".backup")],
+                        [("M", path), ("M", "docs/DAILY_EDITORIAL_BRIEF.md")],
+                        [("M", path), ("M", "scripts/market_bulletins.py")],
+                        [("M", path), ("M", ".github/workflows/check.yml")],
+                        [("M", path), ("M", "tests/test_market_outlooks.py")]):
+            with self.subTest(changes=changes):
+                self.assertFalse(fixture.market_data_only(changes))
+                self.assertEqual(fixture.python_test_command(changes),
+                                 [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"])
+
+    def test_market_suite_keeps_full_build_public_outputs_and_all_market_modules(self):
+        command = fixture.python_test_command([("M", "content/market_bulletins.json")])
+        self.assertEqual(command[:5], [sys.executable, "-m", "unittest", "-v", "tests.test_site"])
+        for module in ("tests.test_site_build_fixture", "tests.test_serials", "tests.test_serial_history",
+                       "tests.test_forecast_ledger", "tests.test_search_indexability",
+                       "tests.test_sitemap_freshness", "tests.test_serial_discovery"):
+            self.assertIn(module, command)
+        for path in (fixture.ROOT / "tests").glob("test_market*.py"):
+            self.assertIn("tests." + path.stem, command)
+        self.assertNotIn("tests.test_cpu_scenes", command)
+
+    def test_pr_uses_complete_merge_base_diff_and_push_uses_before_diff(self):
+        base = "a" * 40
+        result = subprocess.CompletedProcess([], 0, b"M\0content/market_bulletins.json\0")
+        for event, suffix in (("pull_request", "...HEAD"), ("push", "..HEAD")):
+            with self.subTest(event=event), patch.object(fixture.subprocess, "run", return_value=result) as run:
+                self.assertEqual(fixture.changed_files(base, event), [("M", "content/market_bulletins.json")])
+                self.assertIn(base + suffix, run.call_args.args[0])
+                self.assertIn("--no-renames", run.call_args.args[0])
+
+    def test_unknown_refs_events_failed_diffs_and_empty_changes_stay_full(self):
+        with patch.object(fixture.subprocess, "run") as run:
+            for base, event in (("", "push"), ("0" * 40, "push"), ("main", "push"),
+                                ("a" * 40, "workflow_dispatch"), ("HEAD;echo bad", "pull_request")):
+                self.assertIsNone(fixture.changed_files(base, event))
+            run.assert_not_called()
+        for output in (b"", b"M\0content/market_bulletins.json", b"M\0\xff\0"):
+            with patch.object(fixture.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, output)):
+                self.assertFalse(fixture.market_data_only(fixture.changed_files("a" * 40, "push")))
+        with patch.object(fixture.subprocess, "run", side_effect=subprocess.CalledProcessError(1, ["git"])):
+            self.assertIsNone(fixture.changed_files("a" * 40, "pull_request"))
+
+    def test_ci_returns_failures_without_success_fallback_or_second_attempt(self):
+        for changes in (None, [("M", "content/market_outlooks.json")]):
+            with patch.object(fixture, "changed_files", return_value=changes), \
+                 patch.object(fixture.subprocess, "run", return_value=subprocess.CompletedProcess([], 9)) as run:
+                self.assertEqual(fixture.main(["--base", "a" * 40, "--event", "push"]), 9)
+                run.assert_called_once_with(fixture.python_test_command(changes), cwd=fixture.ROOT)
+
+
 if __name__ == "__main__":
     unittest.main()
