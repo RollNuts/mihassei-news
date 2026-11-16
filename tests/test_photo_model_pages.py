@@ -132,6 +132,7 @@ class PhotoModelPageTests(unittest.TestCase):
         pages.build_photo_models(self.models, [self.release], self.main_only, written.__setitem__,
                                  stories_renderer=lambda model_id: story if model_id == self.models[0]["id"] else "")
         profile = written[pages.model_url(self.models[0]).lstrip("/") + "index.html"]
+        self.assertLess(profile.index("data-model-stories"), profile.index('class="photo-model-biography"'))
         self.assertLess(profile.index("data-model-stories"), profile.index('class="photo-model-photos"'))
         weekly = pages.render_photo_index([self.release], self.models, self.main_only, stories_markup=story)
         self.assertLess(weekly.index("data-model-stories"), weekly.index("data-photo-rankings"))
