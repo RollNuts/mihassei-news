@@ -207,13 +207,15 @@ def load_market_outlooks(root, *, today=None):
 
 
 def view_models(events, *, before=None):
-    """Historical snapshots must not display reviews published later."""
+    """Keep each forecast's visible reviews and the recorded view time together."""
+    visible = [entry for entry in events
+               if before is None or _timestamp(entry["at"]) <= before]
+    asof = before if before is not None else max(
+        (_timestamp(entry["at"]) for entry in visible), default=None)
     forecasts = {}
-    for entry in events:
-        if before is not None and _timestamp(entry["at"]) > before:
-            continue
+    for entry in visible:
         if entry["type"] == "forecast":
-            forecasts[entry["id"]] = {"forecast": entry, "updates": []}
+            forecasts[entry["id"]] = {"forecast": entry, "updates": [], "asof": asof}
         elif entry["forecast_id"] in forecasts:
             forecasts[entry["forecast_id"]]["updates"].append(entry)
     return sorted(forecasts.values(), key=lambda f: f["forecast"]["at"], reverse=True)
@@ -251,6 +253,8 @@ def _status(row):
     outcome = latest.get("result") if latest else None
     if isinstance(outcome, dict) and outcome.get("outcome") in ("判定不能", "保留"):
         return "判定保留"
+    if row["asof"].astimezone(ZoneInfo("Asia/Tokyo")).date() >= _day(row["forecast"]["reviewed_on"]):
+        return "結果日到来・確認待ち"
     return "結果待ち"
 
 
@@ -260,6 +264,10 @@ def _forecast_anchor(forecast):
         raise ValueError("Unsafe market forecast anchor")
     _day(identity[:10])
     return "forecast-" + identity
+
+
+def market_forecast_url(forecast):
+    return BASE_URL + "#" + _forecast_anchor(forecast)
 
 
 def forecast_reader_statement(forecast):
@@ -288,11 +296,25 @@ def render_market_accuracy(events, *, before=None):
             f'<strong>{percent}</strong><span class="market-reader-count">{count}</span></div>')
 
 
-def _reader_forecast_card(row):
+def render_market_forecast_assessment(row):
+    """Distinguish the original rationale, latest recorded assessment and verdict."""
     fc = row["forecast"]
     result = _confirmed_result(row)
     reason = forecast_reader_reason(fc)
-    reason_html = f'<p class="market-reader-reason"><strong>理由</strong>{escape(reason)}</p>' if reason else ''
+    reason_html = f'<p class="market-reader-reason"><strong>当初の理由</strong>{escape(reason)}</p>' if reason else ''
+    latest = row["updates"][-1] if row["updates"] else None
+    assessment = '<p class="market-reader-date">この予想の更新評価はまだありません。</p>'
+    if latest:
+        source = latest["source"]
+        assessment = (
+            '<p class="market-reader-date">最新の評価：'
+            f'<time datetime="{escape(latest["at"], quote=True)}">{_event_day(latest["at"])}</time> JST'
+            f' ／ {escape(latest["stance"])}（{escape(latest["trend"])}）</p>'
+            f'<p class="market-reader-reason"><strong>評価の理由</strong>{escape(latest["reason"])}</p>'
+            '<p class="market-reader-sources">'
+            f'<a href="{escape(_https(source["url"]), quote=True)}" target="_blank" '
+            f'rel="noopener noreferrer external">評価の出典：{escape(source["title"])}</a></p>'
+        )
     status = _status(row)
     outcome = 'hit' if result and result["outcome"] == '的中' else 'miss' if result else 'pending'
     confirmed = (f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>'
@@ -303,15 +325,25 @@ def _reader_forecast_card(row):
         f'target="_blank" rel="noopener noreferrer external">資料{index}</a>'
         for index, source in enumerate(fc["sources"], 1)
     )
+    asof = row["asof"].astimezone(ZoneInfo("Asia/Tokyo")).isoformat(timespec="seconds")
+    return (reason_html
+            + f'<p class="market-reader-sources">当初の出典 {sources}</p>'
+            + assessment
+            + f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>'
+            f'<span>結果日：<time datetime="{escape(fc["reviewed_on"], quote=True)}">{escape(fc["reviewed_on"])}</time></span>'
+            f'<span>集計時点：<time datetime="{asof}">{_event_day(asof)}</time> JST</span>'
+            + confirmed + '</div>')
+
+
+def _reader_forecast_card(row):
+    fc = row["forecast"]
     return (f'<article class="market-reader-card" id="{_forecast_anchor(fc)}">'
             f'<p class="market-reader-date"><span class="market-reader-horizon">'
             f'{forecast_horizon(fc["at"],fc["reviewed_on"])}</span> '
             f'<time datetime="{escape(fc["at"],quote=True)}">'
-            f'{_event_day(fc["at"])}</time>の予想</p>'
+            f'{_event_day(fc["at"])}</time>の当初の予想</p>'
             f'<h3 class="market-reader-direction">{escape(forecast_reader_statement(fc))}</h3>'
-            + reason_html
-            + f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>{confirmed}</div>'
-            f'<p class="market-reader-sources">出典 {sources}</p></article>')
+            + render_market_forecast_assessment(row) + '</article>')
 
 
 def render_market_outlook_board(events, *, limit=3, before=None):
