@@ -4,6 +4,8 @@
 // https://modelcontextprotocol.io/specification/2025-11-25/server/tools
 const versions=["2025-06-18","2025-11-25"];
 const noncePattern="^[A-Za-z0-9]{1,64}$";
+const failureReasons=["github_rate_limit","github_http_403","github_http_429","github_http_5xx",
+  "github_http_other","timeout","invalid_response","runtime_error"];
 const tool={
   name:"read_image_control",
   description:"Read the current public image workflow stop state. Supply a fresh nonce for every call; only active permits image operations.",
@@ -62,6 +64,8 @@ export async function imageControlMcp(req,url,readControl,readBody) {
   if(!hasId)return response(null,202);
   const {id,method,params={}}=message;
   const result=value=>response({jsonrpc:"2.0",id,result:value});
+  const unavailable=reason=>result({content:[{type:"text",text:JSON.stringify({error:"image control unavailable",
+    reason:failureReasons.includes(reason) ? reason : "runtime_error"})}],isError:true});
   if(method==="initialize") {
     if(typeof params.protocolVersion!=="string" || !object(params.capabilities) ||
        !object(params.clientInfo) || typeof params.clientInfo.name!=="string" ||
@@ -86,10 +90,11 @@ export async function imageControlMcp(req,url,readControl,readBody) {
     return result({content:[{type:"text",text:'{"error":"invalid nonce"}'}],isError:true});
   try {
     const control=await readControl(args.nonce);
+    if(!control.ok)return unavailable(control.headers.get("x-image-control-reason"));
     const data=await control.json();
     return result({content:[{type:"text",text:JSON.stringify(data)}],
-      ...(control.ok ? {structuredContent:data} : {}),isError:!control.ok});
+      structuredContent:data,isError:false});
   } catch(_) {
-    return result({content:[{type:"text",text:'{"error":"image control unavailable"}'}],isError:true});
+    return unavailable("runtime_error");
   }
 }

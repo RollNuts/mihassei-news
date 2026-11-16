@@ -53,10 +53,13 @@ function privateHeaders(response) {
   assert.equal(response.headers.get('x-content-type-options'),'nosniff');
   assert.equal(response.headers.get('access-control-allow-origin'),null);
 }
-async function unavailable(f) {
+async function unavailable(f,reason) {
   const response=await f.get();
   assert.equal(response.status,503);
-  assert.deepEqual(await response.json(),{error:'image control unavailable'});
+  assert.equal(await response.text(),'{"error":"image control unavailable"}');
+  if(reason!==undefined)assert.equal(response.headers.get('x-image-control-reason'),reason);
+  for(const header of ['authorization','x-private','x-ratelimit-remaining','x-ratelimit-reset','retry-after'])
+    assert.equal(response.headers.get(header),null);
   privateHeaders(response);
   assert.equal(f.requests.length,1);
   assert.equal(f.timers.size,0);
@@ -70,6 +73,7 @@ test('public control GET exposes only the checked workflow state and echoed nonc
     assert.deepEqual(await response.json(),{version:1,repository:'RollNuts/mihassei-news',
       path:workflowPath,state,nonce:'Fresh1',checked_at:'2026-11-16T07:00:00.000Z'});
     privateHeaders(response);
+    assert.equal(response.headers.get('x-image-control-reason'),null);
     assert.equal(f.requests.length,1);
     const request=f.requests[0];
     assert.equal(request.url,upstream);
@@ -130,34 +134,46 @@ test('missing, malformed or unrelated workflow metadata cannot return active',as
     {path:'.github/workflows/other.yml',state:'active'},
     {path:workflowPath,state:''}, {path:workflowPath,state:'unknown'},
     {path:workflowPath,state:['active']}, null, 'active']) {
-    await unavailable(fixture(async()=>Response.json(payload)));
+    await unavailable(fixture(async()=>Response.json(payload)),'invalid_response');
   }
-  await unavailable(fixture(async()=>new Response('invalid json')));
-  await unavailable(fixture(async()=>{throw new Error('network failure');}));
+  await unavailable(fixture(async()=>new Response('invalid json')),'invalid_response');
+  await unavailable(fixture(async()=>{throw new Error('private network failure');}),'runtime_error');
 });
 
 test('upstream failures and rate limits return a minimal 503 without retrying',async()=>{
   for(const status of [301,302,303,307,308,403,404,429,500,503]) {
     await unavailable(fixture(async()=>new Response('private upstream detail',{
-      status,headers:{location:'https://evil.example/', 'retry-after':'60'}
-    })));
+      status,headers:{location:'https://evil.example/', 'retry-after':'60','x-private':'private header'}
+    })),status===403 ? 'github_http_403' : status===429 ? 'github_http_429'
+      : status>=500 ? 'github_http_5xx' : 'github_http_other');
   }
+});
+
+test('only a 403 or 429 with exact zero remaining proves the GitHub quota reason',async()=>{
+  for(const status of [403,429]) {
+    for(const remaining of ['0','1','00','unknown'])
+      await unavailable(fixture(async()=>new Response('private quota detail',{
+        status,headers:{'x-ratelimit-remaining':remaining,'x-ratelimit-reset':'private reset'}
+      })),remaining==='0' ? 'github_rate_limit' : 'github_http_'+status);
+  }
+  await unavailable(fixture(async()=>new Response('',{status:500,headers:{'x-ratelimit-remaining':'0'}})),
+    'github_http_5xx');
 });
 
 test('workflow response body is bounded with or without content-length',async()=>{
   let advertisedBodyRead=false;
   await unavailable(fixture(async()=>({ok:true,headers:new Headers({'content-length':'16385'}),
-    get body(){advertisedBodyRead=true;throw new Error('body must not be read');}})));
+    get body(){advertisedBodyRead=true;throw new Error('body must not be read');}})),'invalid_response');
   assert.equal(advertisedBodyRead,false);
   let cancelled=false;
   await unavailable(fixture(async()=>new Response(new ReadableStream({
     start(controller){controller.enqueue(new Uint8Array(16385));},
     cancel(){cancelled=true;}
-  }))));
+  }))), 'invalid_response');
   assert.equal(cancelled,true);
   await unavailable(fixture(async()=>new Response(new ReadableStream({
     start(controller){controller.error(new Error('body interrupted'));}
-  }))));
+  }))), 'invalid_response');
 });
 
 test('deadline bounds both connection and response body reads',async()=>{
@@ -166,7 +182,7 @@ test('deadline bounds both connection and response body reads',async()=>{
     connectionSignal=options.signal;
     return new Promise(()=>{});
   });
-  const connecting=unavailable(connection);
+  const connecting=unavailable(connection,'timeout');
   connection.timeout();
   await connecting;
   assert.equal(connectionSignal.aborted,true);
@@ -177,7 +193,7 @@ test('deadline bounds both connection and response body reads',async()=>{
     bodySignal=options.signal;
     return new Response(new ReadableStream({pull(){reading();return new Promise(()=>{});}}));
   });
-  const consuming=unavailable(body);
+  const consuming=unavailable(body,'timeout');
   await bodyStarted;
   body.timeout();
   await consuming;
