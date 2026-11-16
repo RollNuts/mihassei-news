@@ -703,5 +703,184 @@
         "checked_on": "2026-11-16"
       }
     ]
+  },
+  {
+    "slug": "2026-11-17-am",
+    "day": "2026-11-17",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-17T08:41:38+09:00",
+    "title": "17日寄り前：米半導体安、日本株の続落リスクと食品株の逆行高",
+    "summary": "米16日のS&P500は1.92%安、ナスダックは2.49%安。NVIDIAが4.12%下落する一方、タイソンは決算後に上昇。日本17日寄り前の注目点と18日判定のTOPIX短期予想を整理。",
+    "lead": "11月17日（火）の東京市場はまだ寄り付いていません。直近の米国11月16日（現地取引日）はS&P500が1.92%安、ナスダック総合が2.49%安となり、半導体関連への売りが目立ちました。ただし食品株には買いもあり、日本株も一律に下がるとは限りません。何を確認する朝なのか、数字と材料を分けて見ます。",
+    "sections": [
+      {
+        "heading": "米国16日終値：半導体売りが目立つ",
+        "paragraphs": [
+          "米国の11月16日通常取引終値（日本時間17日6時）は、S&P500が7,416.59（前営業日比1.92%安）、ナスダック総合が24,509.76（2.49%安）、ダウ平均が51,608.17ドル（1.41%安）。ロイターによれば、フィラデルフィア半導体株指数（SOX）は5.3%安でした。これは米国16日の確定値で、日本17日の取引中の値ではありません。",
+          "ハイテクだけの局地的な下げとは言い切れません。ロイター集計ではNYSEとナスダックの両市場で値下がり銘柄が値上がり銘柄を大きく上回りました。日本の半導体・電子部品株は前日の売りの延長に注意が必要ですが、米国株の下げ率をそのまま日経平均や個別株へ当てはめることはできません。"
+        ]
+      },
+      {
+        "heading": "NVIDIAと食品株、同じ日の違う反応",
+        "paragraphs": [
+          "エヌビディア（NASDAQ: NVDA）の米国16日終値は156.14米ドル。13日の162.85米ドルから4.12%下落しました。株価時系列の通常終値と調整後終値は両日とも一致しています。AI投資への警戒が広がる中、次の焦点は米国17日の通常取引終了後に予定される同社の決算発表と今後の売上見通しです。この原稿時点で決算内容はまだ確認できません。",
+          "一方、食品大手タイソン・フーズはAP通信によれば16日に8.7%上昇。会社が同日公表した2026年度第4四半期決算では、調整後営業利益は前年同期の6億800万米ドルから3億6100万米ドルに減少しました。利益が前年より減っていても、市場予想との比較などで株価が上がる場合があります。上昇を『業績が全面的に改善したため』と単純化せず、部門別採算と次年度見通しを確認したいところです。"
+        ]
+      },
+      {
+        "heading": "日本は17日寄り前、16日終値までが確定",
+        "paragraphs": [
+          "東京市場で直近の確定値は11月16日のTOPIX終値3,901.37ポイント（13日比1.02%安）です。日経平均は16日に59,662.02円で引けました。17日朝の新しい現物始値や騰落率を示すものではありません。前日、指数寄与度の高い半導体株が弱かったため、寄り付き後に関連株の下落が続くか、それとも小売など別の業種へ買いが移るかを確かめます。",
+          "11月15日に出した『16日のTOPIXは横ばい』予想は、JPXが公表した16日終値を用いて正式に外れと判定しました。確定した日次予想の成績は現時点で0勝1敗です。16日朝に出した『17日のTOPIXは横ばい』という別の予想は、まだ判定日当日の取引前であり、結果を先取りしません。"
+        ]
+      },
+      {
+        "heading": "18日までの短期予想と見方を変える条件",
+        "paragraphs": [
+          "今回の短期予想は、18日のTOPIX公式終値が16日終値3,901.37ポイントから0.5%を超えて下落する『弱気』です。16日の東京市場に続き米国でも半導体株の売りが目立ち、日本17日も相場の戻りが鈍い可能性を主な理由としました。これは17日の値動きを確認する前の見立てで、先行きが確定したわけではありません。",
+          "反対に17日の東証で上昇銘柄が広がり、米国17日引け後のNVIDIA決算・見通しが投資家の警戒を和らげれば、弱気の見方を再検討します。ただし事前に決めた18日の判定基準は変更しません。今朝は『半導体関連への売りの広がり』『買われる業種の幅』『NVIDIA決算後の反応』を分けて確かめます。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nvda-close-change",
+        "kind": "bars",
+        "title": "NVIDIA：米国13日と16日の終値",
+        "note": "NASDAQの米国現地11/13と11/16の分割調整後終値。米ドル建て。17日の日本株や米国時間外気配ではありません。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "observed_at": "2026-11-17T06:00:00+09:00",
+        "values": [
+          {
+            "label": "11/13終値",
+            "value": 162.85,
+            "state": "実績"
+          },
+          {
+            "label": "11/16終値",
+            "value": 156.14,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "tyson-profit-q4",
+        "kind": "bars",
+        "title": "タイソン：調整後営業利益の前年同期比較",
+        "note": "会社発表の2025年度・2026年度第4四半期の調整後営業利益。非GAAPの指標で、13週換算の比較。株価の変化ではありません。",
+        "unit": "百万米ドル",
+        "source_url": "https://www.tysonfoods.com/news/news-releases/2026/11/tyson-foods-reports-fourth-quarter-2026-results",
+        "observed_at": "2026-11-16T00:00:00+09:00",
+        "values": [
+          {
+            "label": "2025年度Q4",
+            "value": 608,
+            "state": "実績"
+          },
+          {
+            "label": "2026年度Q4",
+            "value": 361,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-previous-close",
+        "kind": "bars",
+        "title": "TOPIX：13日と16日の国内確定終値",
+        "note": "JPXの13日終値3,941.57と16日終値3,901.37の比較。日本17日の寄り付き前に確定している直近の現物終値です。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-16T16:59:00+09:00",
+        "values": [
+          {
+            "label": "11/13終値",
+            "value": 3941.57,
+            "state": "実績"
+          },
+          {
+            "label": "11/16終値",
+            "value": 3901.37,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "米国の半導体安",
+        "signal": "逆風",
+        "meaning": "米国16日のSOXは5.3%安。日本の半導体関連にも波及する可能性はあるものの、17日の国内値動きはまだ未確認です。",
+        "source_url": "https://www.reuters.com/business/sp-500-nasdaq-futures-slide-nvidia-earnings-anthropic-debut-loom-2026-11-16/",
+        "observed_at": "2026-11-17T06:00:00+09:00"
+      },
+      {
+        "name": "食品株は逆行高",
+        "signal": "中立",
+        "meaning": "米国16日はタイソンが8.7%上昇。指数の方向だけで全業種の値動きを説明できず、決算内容と投資家の期待を分けて見る必要があります。",
+        "source_url": "https://apnews.com/article/stocks-markets-ai-nvidia-oil-us-35786b8f539ec95f16ae0500f71cfcc7",
+        "observed_at": "2026-11-17T06:00:00+09:00"
+      },
+      {
+        "name": "前日の日本株も下落",
+        "signal": "逆風",
+        "meaning": "16日のTOPIX公式終値は3,901.37で前営業日比1.02%安。17日現物取引前の参考値として、同日の寄り付き後に続落するか確認します。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-16T16:59:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "NVDA",
+        "name": "エヌビディア",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 162.85,
+        "close": 156.14,
+        "price_kind": "close",
+        "market_date": "2026-11-16",
+        "previous_market_date": "2026-11-13",
+        "observed_at": "2026-11-17T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "corporate_action_checked": true,
+        "adjustment_note": "11/13と11/16の米国市場時系列で通常終値と分割調整後終値が各日一致することを照合。今回の比較では追加調整は不要。",
+        "context": "11月16日終値は前営業日比4.12%安。半導体関連全体の売りに巻き込まれた一方、17日米取引終了後の決算・見通しが次の確認材料です。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Reuters：米国11月16日終値・半導体株の売り",
+        "url": "https://www.reuters.com/business/sp-500-nasdaq-futures-slide-nvidia-earnings-anthropic-debut-loom-2026-11-16/",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "AP：米国11月16日の株価・食品株決算反応",
+        "url": "https://apnews.com/article/stocks-markets-ai-nvidia-oil-us-35786b8f539ec95f16ae0500f71cfcc7",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Tyson Foods：2026年度第4四半期決算",
+        "url": "https://www.tysonfoods.com/news/news-releases/2026/11/tyson-foods-reports-fourth-quarter-2026-results",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Stock Analysis：NVIDIA米国市場の分割調整済み株価履歴",
+        "url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "JPX：2026年11月16日16:59確定主要指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      }
+    ]
   }
 ]
