@@ -95,8 +95,8 @@ def render_market_freshness(report, *, include_publication=True):
     if window:
         start, end = window
         label = clock(start) + (" 〜 " + clock(end) if start != end else "")
-        parts.append("観測値：" + label + " JST")
-    index_label = "日本の指数（JPX）" if report.get("coverage") == "investor" else "現在の指数（JPX）"
+        parts.append(("掲載データの観測日時：" if report.get("coverage") == "investor" else "観測値：") + label + " JST")
+    index_label = "日本株指数を確認（JPX）" if report.get("coverage") == "investor" else "現在の指数（JPX）"
     parts.append('<a href="https://www.jpx.co.jp/markets/indices/realvalues/" '
                  f'target="_blank" rel="noopener noreferrer external">{index_label}</a>')
     return '<p class="market-paper-small market-reader-freshness">' + '<br>'.join(parts) + '</p>'
