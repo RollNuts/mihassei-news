@@ -79,7 +79,8 @@
   if(!reduceMotion && typeof window.IntersectionObserver==="function"){
     const elements=[...document.querySelectorAll(
       ".index-main .lead, .index-main .brief-card, .index-main .story-card, "+
-      ".index-main .genre-explore, .index-main .serials-feature, .index-main .starter-pick-card"
+      ".index-main .genre-explore, .index-main .serials-feature, .index-main .starter-pick-card, "+
+      ".index-main .photo-post, .index-main .cast-timeline > .photo-stories"
     )].slice(0,32);
     if(elements.length){
       const observer=new window.IntersectionObserver((entries,instance)=>{
