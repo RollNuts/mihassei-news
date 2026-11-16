@@ -2,14 +2,12 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-15",
+  "created_date": "2026-11-16",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
-    "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "01",
-    "image_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4"
+    "description": "2026-11-16新規独立写真：屋内温水プールの縁で頬に手を添える、淡色の水着姿の汐羽りお。完成画像の識別SHAは未取得。"
   },
-  "post_text": "手帳ではもう帰っている時間なのに、まだコーヒーを飲んでいます。\n\n帰りに見たいニットもあったんですけど……今日は寄れるかな。\n\n休日だけ、どうしてこんなに予定がずれるんでしょう。",
-  "spoken_line": "え、もうこんな時間？",
-  "future_idea": "2031年、AIによる採用・昇進判定に「理由を知る権利」導入、説明は一律「総合的に判断」"
+  "post_text": "外の風が思ったより冷たくて、手袋を探したら片方しか入っていませんでした。\n\n昨日どこで外したんでしょう。こういうときに限って、思い出せない。",
+  "spoken_line": "片方、どこに置いたかな。",
+  "future_idea": "2031年、自治体の予算配分をAIに委任。住民投票で選べるのはAIが用意した三つの削減案だけ。"
 }
