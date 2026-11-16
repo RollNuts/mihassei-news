@@ -129,7 +129,7 @@ The present chat's tools do not establish what a scheduled worker receives. The 
 | Actual result available | Import route |
 | --- | --- |
 | PNG data URL / byte array in the current code-mode call | Pass the actual value to `runtime.convert`, then upload the resulting JPEG bytes in the same execution. |
-| PNG or JPEG at an actual local path | Read it in the executor that owns that path. Transfer its bytes to code mode through an available execution tool, as below. |
+| PNG or JPEG at an actual local path | Read it in the executor that owns that path. For connector staging, transfer its bytes through an available execution tool, as below; an existing output can also use owner-export recovery. |
 | Real conversation/Library file ID and filename | Follow the current Library skill and the exposed materialization/transfer tools to retrieve that exact file, then verify its recorded SHA and dimensions. |
 | A path in a previous run that is absent here | Try its recorded file ID through the exact-ID materialization route. A missing local path or an empty Library search does not establish that the source is unavailable. |
 
@@ -138,6 +138,14 @@ A file ID is an input to the supported file service, not a filesystem path or a 
 For an unresolved file ID, discover the current Library app's `prepare_materialize` through the available tool registry/search before declaring that route unavailable. A failure from a different `files` materialization tool does not establish that the Library app route failed. Follow its current skill and schema, use the exact file ID, and finish the returned transfer before deciding whether bytes are recoverable.
 
 Keep three recovery states distinct: a saved candidate branch with a receipt, an unsaved output known only by file ID/local path, and a confirmed missing retrieval/transfer capability. Only the first can be loaded with its original plan. A missing historical plan or logical run ID does not prevent exact-file recovery. After recovering bytes, create a stable recovery identity from the real file ID, preserve the source article and recovery evidence, and state that the original generation logical run ID or exact prompt was not retained when that is the case. Do not present the recovery identity as the original generation identity.
+
+### Owner-export recovery for an existing output
+
+Materializing and reading a PNG in the generating chat's executor can succeed even when that executor cannot pass bytes to the GitHub connector. A file ID can also be invisible to another chat. Record these as separate boundaries; do not retry the same inaccessible ID in other chats or regenerate to repair delivery. The owner can use its ordinary file-download facility to export the original bytes, without new credentials, an upload endpoint or base64 in conversation text.
+
+For this handoff, export a ZIP containing only `original.png` and `transport-receipt.json`. The receipt records `transport_only: true`, the actual PNG SHA-256, byte count and dimensions, the real source reference, the materialization/export method and actual export time. Preserve the originating plan, article SHA and prompt separately in the existing handoff when known; do not invent missing article linkage, seed, generation time, job ID or approval. The receiving owner checks the cloud/storage guards, archive SHA and bounded contents before extraction, rejects duplicate/unsafe paths and symlinks, then verifies the PNG against the receipt and retained source evidence. Continue the same article/PR through the ordinary conversion, visual review and publication checks.
+
+This is recovery of an already-generated file, not a new-generation route or proof that a scheduled worker can save directly to GitHub. It does not bypass `generateAndStage`'s preflight/reservation requirements. A transport-only image with no established article provenance remains diagnostic material and must not be installed as an article candidate.
 
 If the exact `file_id` is known but the original filename was not retained, inspect the currently exposed `prepare_materialize` schema. When it defines `file_name` as a fallback local basename, pass the exact ID with a descriptive fallback such as `source.png`; an unknown original filename alone does not block that retrieval route. This chosen basename is not evidence of the original tool filename. Verify the materialized bytes, media format and recorded SHA before adoption, and retain the actual materialization result or error rather than substituting a `library_read` visibility result.
 
