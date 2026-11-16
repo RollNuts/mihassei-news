@@ -91,7 +91,7 @@ function imageControlJson(data, status = 200) {
   response.headers.set("x-robots-tag","noindex");
   return response;
 }
-async function imageControl(req, url) {
+async function imageControl(req, url, env={}) {
   if(req.method!=="GET") {
     const response=imageControlJson({error:"method not allowed"},405);
     response.headers.set("allow","GET");
@@ -105,7 +105,17 @@ async function imageControl(req, url) {
   const controller=new AbortController();
   let timer,timedOut=false,failureReason="runtime_error";
   try {
-    // One public, fixed-origin read per check. Never reuse an earlier active
+    const headers={"accept":"application/vnd.github+json",
+      "user-agent":"mihassei-news-image-control",
+      "cache-control":"no-cache","x-github-api-version":"2022-11-28"};
+    // Optional server-only credential. A defined bad binding never falls back
+    // to anonymous access; caller headers are never used for authentication.
+    if(Object.hasOwn(env,"IMAGE_CONTROL_GITHUB_READ_TOKEN")) {
+      const token=env.IMAGE_CONTROL_GITHUB_READ_TOKEN;
+      if(typeof token!=="string" || !/^[A-Za-z0-9_]{20,255}$/.test(token))throw new Error("unavailable");
+      headers.authorization="Bearer "+token;
+    }
+    // One fixed-origin read per check. Never reuse an earlier active
     // result, follow a redirect, or use caller input as an upstream location.
     const workflow=await Promise.race([
       (async()=>{
@@ -113,13 +123,12 @@ async function imageControl(req, url) {
           // Workers does not implement redirect:"error". Manual mode returns
           // redirects without following them; the status check below rejects them.
           method:"GET",redirect:"manual",cache:"no-store",signal:controller.signal,
-          headers:{"accept":"application/vnd.github+json",
-            "user-agent":"mihassei-news-image-control",
-            "cache-control":"no-cache","x-github-api-version":"2022-11-28"}
+          headers
         });
         if(!response.ok) {
           // Only this fixed enum is public; never expose GitHub response data.
-          failureReason=[403,429].includes(response.status) && response.headers.get("x-ratelimit-remaining")==="0"
+          failureReason=response.status===401 ? "github_http_401"
+            : [403,429].includes(response.status) && response.headers.get("x-ratelimit-remaining")==="0"
             ? "github_rate_limit" : response.status===403 ? "github_http_403"
             : response.status===429 ? "github_http_429"
             : response.status>=500 && response.status<=599 ? "github_http_5xx" : "github_http_other";
@@ -904,9 +913,9 @@ export default {
     if(url.pathname==="/api/image-control/mcp")return imageControlMcp(req,url,nonce=>{
       const controlUrl=new URL("/api/image-control",url);
       controlUrl.searchParams.set("nonce",nonce);
-      return imageControl(new Request(controlUrl),controlUrl);
+      return imageControl(new Request(controlUrl),controlUrl,env);
     },boundedBody);
-    if(url.pathname==="/api/image-control")return imageControl(req,url);
+    if(url.pathname==="/api/image-control")return imageControl(req,url,env);
     const isComments=["/api/comments","/api/comments/summary","/api/comments/admin"].includes(url.pathname);
     if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
     if(req.method==="POST") {

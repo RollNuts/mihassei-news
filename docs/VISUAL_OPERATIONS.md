@@ -35,6 +35,8 @@ python3 scripts/build.py
 
 GitHub接続からworkflow状態を読めないGPTは、認証なしのMCP入口 `https://veripsa.com/api/image-control/mcp` の `read_image_control` を使える。Native helperの `readCloudWorkflow({nonce})` で、その呼出しのnonceを変更せずツールへ渡し、同じ呼出しの `structuredContent` を返す。nonce・`checked_at`・固定repository/path・`active`の照合は既存helperに任せ、古い結果を再利用しない。ツールのエラー・取得失敗・無効状態では画像操作を止め、生成しない。この入口は公開メタデータの読取りだけで、GitHubの書込み権限や保存経路を追加しない。
 
+`github_rate_limit` は共有された未認証GitHub枠の残量0を示す。専用認証を使う場合は、対象repositoryに対するActions読取りだけの期限付きfine-grained tokenを、既存Worker `mihassei-news` のランタイムSecret `IMAGE_CONTROL_GITHUB_READ_TOKEN` に保存する。build変数・ソース・ログ・成果物へ秘密値を置かない。未設定時は従来の公開読取りを使うが、設定済みの値が不正・失効・権限不足なら匿名へ戻らず停止する。`github_http_401` は認証情報の再確認が必要で、記事の発行は独立して継続する。この認証は固定workflowへのGET専用で、画像APIや有料機能を呼ばない。
+
 Mac上のComfyUI・ローカルGPU処理は引き続き実機の停止・負荷・容量保護を必須とし、取得不能なら動かさない。クラウド画像のためにMacのComfyUI・GPU・追加モデルを起動しない。ファイルを展開する実行先の空き12GiB、公開用生成JPEG総量1.5GiB、1枚700KiBの上限を維持する。Macだけを止めても、activeなクラウド画像処理は継続できる。全停止は既存コマンドから該当画像workflowの無効化と当該runだけの取消を行い、記事発行workflowを止めない。進行中Native呼出し自体の強制中断は保証せず、戻り後のguardで保存・公開を止め、元画像を保持する。停止・再開の操作は[MAC_SCENE_SETUP.md](MAC_SCENE_SETUP.md)を正本とする。
 
 JPEGの状態だけで表示を判断しない。同じレポートの `publication_counts` と各記事の `publication` で、現在のビルドが選ぶ素材（生成JPEG・専用SVG・承認済み写真・汎用代替）も確認する。`attention` は未検品だけでなく、改稿で失効した専用SVGや汎用代替への差戻りも示す。これはローカルの選択結果であり、本番配信の確認ではない。

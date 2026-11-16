@@ -7,6 +7,7 @@ const vm=require('node:vm');
 
 const upstream='https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml';
 const workflowPath='.github/workflows/free-cpu-scenes.yml';
+const serverReadToken='test_only_server_read_token_0123456789'; // Synthetic fixture, not a credential.
 const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
   .replace('import { DurableObject } from "cloudflare:workers";','class DurableObject {}')
   .replace('import { imageControlMcp } from "./image_control_mcp.mjs";',
@@ -53,8 +54,8 @@ function privateHeaders(response) {
   assert.equal(response.headers.get('x-content-type-options'),'nosniff');
   assert.equal(response.headers.get('access-control-allow-origin'),null);
 }
-async function unavailable(f,reason) {
-  const response=await f.get();
+async function unavailable(f,reason,env={}) {
+  const response=await f.get(undefined,{},env);
   assert.equal(response.status,503);
   assert.equal(await response.text(),'{"error":"image control unavailable"}');
   if(reason!==undefined)assert.equal(response.headers.get('x-image-control-reason'),reason);
@@ -85,6 +86,60 @@ test('public control GET exposes only the checked workflow state and echoed nonc
     assert.equal(request.options.headers.authorization,undefined);
     assert.ok(request.options.signal instanceof AbortSignal);
     assert.equal(f.timers.size,0);
+  }
+});
+
+test('optional server binding authenticates only the fixed workflow read and ignores caller authorization',async()=>{
+  for(const state of ['active','disabled_manually']) {
+    const f=fixture(async()=>Response.json({path:workflowPath,state}));
+    const response=await f.get(undefined,{headers:{authorization:'Bearer caller_private_value'}},
+      {IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
+    assert.equal(response.status,200);
+    const data=await response.json();
+    assert.equal(data.state,state);
+    assert.equal(data.nonce,'Fresh1');
+    assert.equal(data.checked_at,'2026-11-16T07:00:00.000Z');
+    privateHeaders(response);
+    assert.equal(response.headers.get('authorization'),null);
+    assert.doesNotMatch(JSON.stringify(data),/test_only_server|caller_private/);
+    assert.equal(f.requests.length,1);
+    assert.equal(f.requests[0].url,upstream);
+    assert.equal(f.requests[0].options.headers.authorization,'Bearer '+serverReadToken);
+    assert.equal(f.requests[0].options.redirect,'manual');
+    assert.equal(f.timers.size,0);
+  }
+  const anonymous=fixture();
+  assert.equal((await anonymous.get(undefined,{headers:{authorization:'Bearer caller_private_value'}})).status,200);
+  assert.equal(anonymous.requests.length,1);
+  assert.equal(anonymous.requests[0].options.headers.authorization,undefined);
+});
+
+test('defined invalid server bindings fail closed before fetching and never use caller credentials',async()=>{
+  for(const binding of [undefined,null,false,123,{},[], '', '   ', 'short', serverReadToken+'\n',
+    serverReadToken+' ', 'x'.repeat(256), 'private\u0000value']) {
+    const f=fixture();
+    const response=await f.get(undefined,{headers:{authorization:'Bearer caller_private_value'}},
+      {IMAGE_CONTROL_GITHUB_READ_TOKEN:binding});
+    assert.equal(response.status,503);
+    assert.equal(await response.text(),'{"error":"image control unavailable"}');
+    assert.equal(response.headers.get('x-image-control-reason'),'runtime_error');
+    privateHeaders(response);
+    assert.equal(f.requests.length,0);
+    assert.equal(f.timers.size,0);
+  }
+});
+
+test('authenticated failures make one request without an anonymous retry or credential echo',async()=>{
+  for(const [reason,fetchImpl] of [
+    ['github_http_401',async()=>new Response(serverReadToken,{status:401,headers:{authorization:serverReadToken}})],
+    ['github_http_403',async()=>new Response(serverReadToken,{status:403})],
+    ['github_http_429',async()=>new Response(serverReadToken,{status:429})],
+    ['runtime_error',async()=>{throw new Error(serverReadToken);}]
+  ]) {
+    const f=fixture(fetchImpl);
+    await unavailable(f,reason,{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
+    assert.equal(f.requests[0].url,upstream);
+    assert.equal(f.requests[0].options.headers.authorization,'Bearer '+serverReadToken);
   }
 });
 
@@ -141,10 +196,10 @@ test('missing, malformed or unrelated workflow metadata cannot return active',as
 });
 
 test('upstream failures and rate limits return a minimal 503 without retrying',async()=>{
-  for(const status of [301,302,303,307,308,403,404,429,500,503]) {
+  for(const status of [301,302,303,307,308,401,403,404,429,500,503]) {
     await unavailable(fixture(async()=>new Response('private upstream detail',{
       status,headers:{location:'https://evil.example/', 'retry-after':'60','x-private':'private header'}
-    })),status===403 ? 'github_http_403' : status===429 ? 'github_http_429'
+    })),status===401 ? 'github_http_401' : status===403 ? 'github_http_403' : status===429 ? 'github_http_429'
       : status>=500 ? 'github_http_5xx' : 'github_http_other');
   }
 });

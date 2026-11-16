@@ -4,7 +4,7 @@
 // https://modelcontextprotocol.io/specification/2025-11-25/server/tools
 const versions=["2025-06-18","2025-11-25"];
 const noncePattern="^[A-Za-z0-9]{1,64}$";
-const failureReasons=["github_rate_limit","github_http_403","github_http_429","github_http_5xx",
+const failureReasons=["github_rate_limit","github_http_401","github_http_403","github_http_429","github_http_5xx",
   "github_http_other","timeout","invalid_response","runtime_error"];
 const tool={
   name:"read_image_control",
