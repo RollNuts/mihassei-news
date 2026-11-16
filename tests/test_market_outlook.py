@@ -37,8 +37,7 @@ class MarketOutlookTests(unittest.TestCase):
             self.assertEqual(item["observed_on"], "2026-11-15")
             self.assertTrue(item["source_url"].startswith("https://"))
         hub = render_market_outlook_index(self.market, self.outlook)
-        self.assertIn("見通しの変化", hub)
-        self.assertIn("当初の見通しを変える新たな公表資料", hub)
+        self.assertEqual(hub, "")
         self.assertNotIn("判定材料不足", hub)
         self.assertNotIn("支持材料あり", hub)  # Original disclosures are not new proof.
         self.assertNotIn("判断保留", hub)  # Internal state is not front-page news.
@@ -47,19 +46,21 @@ class MarketOutlookTests(unittest.TestCase):
             timeline = render_market_outlook_episode(episode, self.outlook.get(episode["slug"], []))
             page = render_episode_page(
                 self.market, episode, identity_layout, outlook=self.outlook.get(episode["slug"], []))
-            self.assertIn('id="forecast-progress"', page)
+            self.assertNotIn('id="forecast-progress"', page)
             self.assertIn(timeline, page)
-            self.assertIn(episode["forecast"]["method"], page)
+            self.assertEqual(timeline, "")
+            self.assertNotIn(episode["forecast"]["method"], page)
             self.assertIn(episode["forecast"]["reviewed_on"], page)
-            self.assertIn("未検証", page)
+            self.assertIn("結果待ち", page)
         series_page = render_series_page(self.market, identity_layout, outlook=self.outlook)
-        self.assertIn('id="market-outlook"', series_page)
+        self.assertNotIn('id="market-outlook"', series_page)
 
     def test_stance_changes_are_derived_without_overwriting_the_old_snapshot(self):
         series = copy.deepcopy(self.records)
         update = copy.deepcopy(series[-1])
         update["observed_on"] = "2026-11-16"
         update["checked_on"] = "2026-11-16"
+        update["source_published_on"] = "2026-11-16"
         update["stance"] = "弱気"
         update["signal"] = "challenging"
         update["summary"] = "追加の一次資料で方向が変わった場合だけ新しい記録を追加する。"
@@ -67,9 +68,14 @@ class MarketOutlookTests(unittest.TestCase):
         series.append(update)
         validate_outlook_records(series, self.all_series, today=date(2026, 11, 16))
         title = render_market_outlook_episode(None, [series[1], series[2]])
-        self.assertIn("見方を変更：判断保留 → 弱気", title)
-        self.assertIn("2026-11-15", title)
+        self.assertNotIn("見方を変更", title)
+        self.assertNotIn("2026-11-15", title)
         self.assertIn("2026-11-16", title)
+        self.assertIn(update["summary"], title)
+        self.assertIn(update["reason"], title)
+        self.assertIn(update["source_url"], title)
+        self.assertNotIn(update["next_trigger"], title)
+        self.assertNotIn('<details', title)
         self.assertNotIn("的中率", title)
         self.assertEqual(guard_market_outlook_history(self.records, series), 2)
 

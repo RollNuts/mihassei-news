@@ -54,7 +54,7 @@ class MarketShareTests(unittest.TestCase):
             (render_episode_page(market, ep, content_layout), "/serials/market-lab/" + ep["slug"] + "/", ep["title"]),
             (render_market_bulletin(report, content_layout), "/serials/market-lab/briefings/2026-11-16-am/", report["title"]),
             (render_market_bulletins_archive([], content_layout), "/serials/market-lab/briefings/", "日次市況"),
-            (render_market_outlook_archive([], content_layout), "/serials/market-lab/outlooks/", "日々の予測・振り返り"),
+            (render_market_outlook_archive([], content_layout), "/serials/market-lab/outlooks/", "相場の予想と結果"),
         ]
         for markup, route, title in pages:
             with self.subTest(route=route):

@@ -69,7 +69,7 @@ class SerialTests(unittest.TestCase):
             from scripts.serials import _share_link
             share=_share_link(serial,serial["episodes"][0])
             draft=parse_qs(urlsplit(share).query)["text"][0]
-            self.assertIn("市場シナリオ" if serial["kind"]=="analysis" else "創作推理小説", draft)
+            self.assertIn("市場分析" if serial["kind"]=="analysis" else "創作推理小説", draft)
 
         class RecordingCanvas:
             def __init__(self):
@@ -130,7 +130,7 @@ class SerialTests(unittest.TestCase):
         s = next(x for x in self.data if x["kind"]=="analysis")
         e = s["episodes"][0]
         page = (ROOT / "dist/serials" / s["slug"] / e["slug"] / "index.html").read_text(encoding="utf-8")
-        for marker in ("強気", "中立", "弱気", "予想", "結果を確かめる日", "2027-02-04", "出典", "投資助言", "未検証"):
+        for marker in ("予想", "結果日", "2027-02-04", "出典", "投資助言", "結果待ち"):
             if marker == "出典":
                 continue
             self.assertIn(marker, page)

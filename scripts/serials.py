@@ -16,20 +16,22 @@ from urllib.parse import urlencode, urlsplit
 
 if __package__:
     from .social_cards import Canvas, WIDTH, HEIGHT
-    from .forecast_ledger import render_forecast_ledger
+    from .forecast_ledger import render_forecast_ledger, prediction_entries, forecast_horizon
     from .market_figures import load_market_figures, render_market_figure, render_market_numbers, write_market_figures
     from .reader_comments import render_reader_comments
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
-    from .market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
+    from .market_outlooks import (load_market_outlooks, render_market_outlook_board, build_market_outlooks,
+                                  forecast_reader_statement, render_market_accuracy)
     from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
     from .market_sharing import render_market_share
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
-    from forecast_ledger import render_forecast_ledger
+    from forecast_ledger import render_forecast_ledger, prediction_entries, forecast_horizon
     from market_figures import load_market_figures, render_market_figure, render_market_numbers, write_market_figures
     from reader_comments import render_reader_comments
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
-    from market_outlooks import load_market_outlooks, render_market_outlook_board, build_market_outlooks
+    from market_outlooks import (load_market_outlooks, render_market_outlook_board, build_market_outlooks,
+                                 forecast_reader_statement, render_market_accuracy)
     from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
     from market_sharing import render_market_share
 
@@ -233,7 +235,7 @@ def _series_card(series):
             f'<a href="{series_url(series)}" class="serial-card-image">{_cover_img(series)}</a>'
             f'<div class="serial-card-content"><span class="serial-type">{_kind_label(series)}</span>'
             f'<h3><a href="{series_url(series)}">{h(series["title"])}</a></h3>'
-            f'<p>{h(series["description"])}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
+            f'<p>{h(series["description"] if series["kind"] == "fiction" else "市場の先行きと、その理由・結果を読む。")}</p>{latest}'f'<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, series["episodes"][0])}">続きから読む →</a>'f'<span class="serial-completed" data-serial-progress-complete hidden>公開分を読了</span>'
             f'<a class="serial-link" href="{episode_url(series, main_ep)}">{main_label} <span aria-hidden="true">→</span></a>'
             f'{newer_episode_link}'
             f'<a class="serial-feed-link" href="{serial_feed_url(series)}" type="application/rss+xml">新着をRSSで購読 ↗</a>'
@@ -259,16 +261,11 @@ def render_serials_index(serials, layout):
       <h1>連載</h1></header>
       <div class="serial-grid serial-grid--archive">''' +
       "".join(_series_card(s) for s in serials) + "</div></div>")
-    return layout("連載一覧", "未来相場観測室の市場予測と検証を読む。", "/serials/", main, active="serials", serial_collection=serials)
+    return layout("連載一覧", "未来相場観測室の予想と理由、結果を読む。", "/serials/", main, active="serials", serial_collection=serials)
 
 
 def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, daily_outlooks):
-    """A reading-first financial front page, not a console of forecast states.
-
-    Daily and long-term ledgers remain reachable; empty feeds never occupy the
-    lead position. Editorial content and the original prediction terms stay
-    unchanged. The newest actually published analysis leads.
-    """
+    """Lead with the outlook and news; keep earlier source articles reachable."""
     latest = series["episodes"][-1]
     latest_report = (bulletins or [])[-1] if bulletins else None
     report_leads = bool(latest_report and latest_report["day"] >= latest["published_at"])
@@ -281,69 +278,53 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
     day = latest_report["day"] if report_leads else latest["published_at"]
     forecast = latest["forecast"]
     daily_lead = None
-    nowcast = ""
     if daily_outlooks:
-        # One short summary only; the full dated history has its own page.
         try:
             from .market_outlooks import view_models as _daily_models
         except ImportError:
             from market_outlooks import view_models as _daily_models
         models = _daily_models(daily_outlooks)
         if models:
-            item = models[0]
-            fc = item["forecast"]
-            daily_lead = fc
-            revised = item["updates"][-1] if item["updates"] else None
-            stance = revised["stance"] if revised else fc["stance"]
-            nowcast = (
-                '<section class="market-paper-daily" id="daily-forecasts">'
-                '<div class="market-paper-heading"><h2>直近の市場見通し</h2>'
-                '<a href="/serials/market-lab/outlooks/">過去の見通しと変更履歴</a></div>'
-                f'<p class="market-paper-daily-date"><time datetime="{h(fc["at"])}">{h(fc["at"][:10])}</time>'
-                f' ／ 現在の見方：{h(stance)}</p>'
-                f'<p>{h(fc["statement"])}</p>'
-                f'<p class="market-paper-small">確認日：{h(fc["reviewed_on"])}'
-                '。結果の判定は当初の基準に従います。</p>'
-                '</section>'
-            )
-
-    if report_leads and daily_lead:
-        # The current daily forecast is already the lead-side analysis.
-        nowcast = ""
-    follow_statement = daily_lead["statement"] if report_leads and daily_lead else forecast["statement"]
-    follow_date = daily_lead["reviewed_on"] if report_leads and daily_lead else forecast["reviewed_on"]
-    follow_state = ("結果を確認する日を記録" if report_leads and daily_lead else
-                    "結果を確認済み" if forecast.get("status") == "検証済み" else "結果の確認前")
-    follow_href = ("/serials/market-lab/outlooks/" if report_leads and daily_lead
-                   else episode_url(series, latest) + "#forecast-detail")
+            daily_lead = models[0]["forecast"]
+    follow_statement = (forecast_reader_statement(daily_lead) if daily_lead
+                        else forecast["statement"])
+    follow_date = daily_lead["reviewed_on"] if daily_lead else forecast["reviewed_on"]
+    follow_horizon = forecast_horizon(daily_lead["at"] if daily_lead else latest["published_at"], follow_date)
+    follow_href = ("/serials/market-lab/outlooks/" if daily_lead
+                   else episode_url(series, latest) + "#article-outlook")
     recent_bulletins = (bulletins[:-1] if report_leads else bulletins) or []
-    older_rows = "".join(
+    def older_row(ep, *, compact=False):
+        return (
         '<li>'
         f'<a href="{episode_url(series, ep)}">'
         f'<span class="market-paper-story-date"><time datetime="{ep["published_at"]}">{ep["published_at"]}</time>'
         f'　／　第{ep["number"]}回</span>'
+        f'<span class="market-reader-horizon">{h(forecast_horizon(ep["published_at"], ep["forecast"]["reviewed_on"]))}</span>'
         f'<strong>{h(ep["title"])}</strong>'
-        f'<span class="market-paper-story-summary">{h(ep["summary"])}</span>'
         + (f'<span class="market-paper-story-figure">図解 {len((figures or {}).get(ep["slug"], []))} 点</span>'
-           if (figures or {}).get(ep["slug"]) else '')
+           if not compact and (figures or {}).get(ep["slug"]) else '')
         + f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(ep["slug"])}"></small>'
-        + '</a></li>'
-        for ep in older
-    )
+        + '</a></li>')
+    older_rows = "".join(older_row(ep) for ep in older[:2])
+    older_archive = (
+        '<details class="market-reader-archive"><summary>過去の企業分析</summary>'
+        '<ol class="market-paper-story-list">'
+        + "".join(older_row(ep, compact=True) for ep in older[2:]) + '</ol></details>'
+        if len(older) > 2 else '')
     history = render_market_outlook_index(series, outlook or {})
-    bulletins_html = render_market_bulletins_index(recent_bulletins) if recent_bulletins else ""
+    bulletins_html = render_market_bulletins_index(recent_bulletins, limit=3) if recent_bulletins else ""
     main = (
         f'<div class="container serials-page market-paper" {progress_attributes(series)}>'
         '<nav class="serial-breadcrumb" aria-label="現在位置">'
         '<a href="/">トップ</a> / <a href="/serials/">連載</a> / 未来相場観測室</nav>'
         '<header class="market-paper-masthead">'
         '<p class="market-paper-topline"><span>株式・企業分析</span>'
-        f'<span>最終掲載 <time datetime="{day}">{day}</time> ／ 公開済み {len(series["episodes"])}回</span></p>'
+        f'<span>最終掲載 <time datetime="{day}">{day}</time></span></p>'
         '<div class="market-paper-brand">'
-        '<div><p class="market-paper-brand-kicker">MARKET INSIGHT</p>'
+        '<div>'
         f'<h1>{h(series["title"])}</h1>'
-        '<p>決算資料の数字を読み、これからの市場を考える。</p></div>'
-        f'<div class="market-paper-symbol">{_cover_img(series, loading="eager")}</div></div>'
+        '<p>市場の先行きと、その理由を読む。</p></div>'
+        '</div>'
         '<div class="market-paper-reading-progress">'
         '<p class="serial-progress-summary" data-serial-progress-summary aria-live="polite"></p>'
         f'<a class="serial-resume" data-serial-progress-continue hidden href="{episode_url(series, latest)}">続きを読む →</a>'
@@ -354,11 +335,13 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<a href="/serials/market-lab/briefings/">市況一覧</a>'
         '<a href="/serials/market-lab/outlooks/">毎日の予測</a>'
         '<a href="#market-stories">企業分析</a>'
-        '<a href="#market-proof">判定記録</a>'
+        '<a href="#market-proof">予想と結果</a>'
         '</nav>'
         + render_market_share(series_url(series), series["title"])
         + '</header>'
         '<div class="market-paper-content">'
+        + render_market_accuracy(daily_outlooks or [])
+        +
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
         '<div class="market-paper-lead-story">'
         f'<p class="market-paper-eyebrow">{h(lead_kicker)} ／ '
@@ -369,33 +352,28 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         + (f'<small class="serial-episode-read" data-serial-episode-state data-episode="{h(latest["slug"])}"></small>'
            if not report_leads else '')
         + '</div>'
-        '<aside class="market-paper-follow" aria-label="この分析の注目点">'
-        '<p class="market-paper-eyebrow">今後の焦点</p>'
-        f'<h3>{h(follow_statement)}</h3>'
-        '<dl>'
-        f'<div><dt>確かめる日</dt><dd><time datetime="{h(follow_date)}">{h(follow_date)}</time></dd></div>'
-        f'<div><dt>現在</dt><dd>{h(follow_state)}</dd></div>'
-        '</dl>'
-        f'<a href="{follow_href}">見通しの根拠を読む →</a>'
+        '<aside class="market-paper-follow market-reader-focus" aria-label="今の予想">'
+        f'<h3>{h(follow_horizon)}の予想</h3>'
+        f'<p class="market-reader-prediction">{h(follow_statement)}</p>'
+        f'<p class="market-reader-date">結果日：<time datetime="{h(follow_date)}">{h(follow_date)}</time></p>'
+        f'<a href="{follow_href}">理由と結果を読む →</a>'
         '</aside></section>'
-        + nowcast
         + bulletins_html
         + '<section class="market-paper-stories" id="market-stories">'
-        '<div class="market-paper-heading"><h2>これまでの分析</h2>'
+        '<div class="market-paper-heading"><h2>企業分析</h2>'
         '<span class="market-paper-visually-hidden">エピソード一覧</span>'
         f'<a href="{serial_feed_url(series)}">連載をRSS購読</a></div>'
-        f'<p class="market-paper-section-intro">過去の公表資料をもとにした分析です。掲載時点の見通しはそのまま残しています。</p>'
-        f'<ol class="market-paper-story-list">{older_rows}</ol></section>'
+        f'<ol class="market-paper-story-list">{older_rows}</ol>{older_archive}</section>'
         + history
-        + '<details class="market-paper-ledger" id="market-proof">'
-        f'<summary>予測の判定日と詳しい検証方法を見る（{len(series["episodes"])}件）</summary>'
+        + '<details class="market-reader-results market-reader-archive" id="market-proof">'
+        '<summary>企業分析の予想と結果</summary>'
         + render_forecast_ledger(series)
         + '</details>'
         '<p class="market-paper-disclosure">実際に公表された資料をもとにした分析です。'
         '架空ニュースではありません。投資助言・売買推奨ではありません。</p>'
         '</div></div>'
     )
-    return layout(series["title"], series["description"], series_url(series), main, active="serials",
+    return layout(series["title"], "株式・企業の予想と、その理由・結果を読む。", series_url(series), main, active="serials",
                   serial={"slug": series["slug"], "kind": series["kind"], "title": series["title"],
                           "episodes": [{"slug": ep["slug"], "title": ep["title"]}
                                        for ep in series["episodes"]]},
@@ -444,7 +422,7 @@ def render_series_page(series, layout, figures=None, bulletins=None, outlook=Non
 def _share_link(series, ep):
     _require_public(series)
     url = "https://veripsa.com" + episode_url(series, ep)
-    label = "創作推理小説" if series["kind"]=="fiction" else "出典付き市場シナリオ（投資助言ではありません）"
+    label = "創作推理小説" if series["kind"]=="fiction" else "市場分析（投資助言ではありません）"
     subject = f'{ep["title"]}｜未発生新聞 {label}'
     return "https://x.com/intent/tweet?" + urlencode({"text": subject, "url": url})
 
@@ -471,6 +449,7 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             )
     narrative = "".join(narrative_parts)
     extras = ""
+    forecast_card = ""
     if series["kind"] == "fiction":
         clues = "".join(f"<li>{h(clue)}</li>" for clue in ep["clues"])
         # Hints stay optional and do not interrupt the ending or explain the answer.
@@ -478,32 +457,32 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
                   f'<div><ul>{clues}</ul>'
                   f'<p><strong>考えるヒント：</strong>{h(ep["reader_prompt"])}</p></div></details>')
     else:
-        scenarios = "".join(
-            f'<article class="serial-scenario"><h3>{h(s["label"])}</h3><p>{h(s["text"])}</p></article>'
-            for s in ep["scenarios"]
-        )
         fc = ep["forecast"]
+        forecast_entry = next(row for row in prediction_entries(series)
+                              if row["episode"]["slug"] == ep["slug"])
+        result = forecast_entry["result"]
+        result_label = result["outcome"] if result else "結果待ち"
+        result_note = f'<p>{h(result["explanation"])}</p>' if result else ""
+        result_sources = ('<p class="market-reader-sources">' + " ／ ".join(
+            f'<a href="{h(source["url"])}" target="_blank" rel="noopener noreferrer external">結果の出典{index}</a>'
+            for index, source in enumerate(result["evidence"], 1)) + '</p>') if result else ""
         refs = "".join(
             f'<li><a href="{h(ref["url"])}" target="_blank" rel="noopener noreferrer external">'
             f'{h(ref["title"])}</a></li>' for ref in ep["sources"])
-        extras = (
+        forecast_card = (
                   '<section class="market-article-outlook" id="article-outlook">'
-                  '<p class="market-paper-eyebrow">今後の焦点</p>'
-                  '<h2>これからどうなるか</h2>'
+                  '<h2>この分析の予想</h2>'
+                  f'<span class="market-reader-horizon">{h(forecast_horizon(ep["published_at"], fc["reviewed_on"]))}</span>'
                   f'<p class="market-article-thesis">{h(fc["statement"])}</p>'
-                  f'<p class="market-article-review-date">結果を確かめる日：'
+                  f'<p class="market-article-review-date">結果日：'
                   f'<time datetime="{fc["reviewed_on"]}">{h(fc["reviewed_on"])}</time></p>'
-                  f'<details class="market-article-method" id="forecast-detail">'
-                  '<summary>予測の判定方法と基準値を読む</summary>'
-                  f'<p><strong>判定状況：</strong>{h(fc["status"])}</p>'
-                  f'<p><strong>当初の検証方法：</strong>{h(fc["method"])}</p>'
-                  '</details></section>'
-                  f'<section class="serial-scenario-section"><h2>3つの見通し</h2>'
-                  f'<div class="serial-scenarios">{scenarios}</div></section>'
+                  f'<p class="market-reader-result">結果：{h(result_label)}</p>'
+                  + result_note + result_sources + '</section>')
+        extras = (
                   f'{render_market_outlook_episode(ep, outlook or [])}'
                   f'<section class="serial-references" id="article-sources"><h2>参照した公開資料</h2>'
                   f'<ol>{refs}</ol></section>'
-                  f'<p class="forecast-ledger-link"><a href="{series_url(series)}#market-proof">ほかの予測と判定日を見る →</a></p>'
+                  f'<p class="forecast-ledger-link"><a href="{series_url(series)}#market-proof">ほかの予想と結果を見る →</a></p>'
                   )
     # Publishing a sequel must not leave an old "next chapter in preparation"
     # message in the first chapter. Preserve immutable editorial source data.
@@ -537,6 +516,7 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
             + (render_market_share(episode_url(series, ep), ep["title"])
                if series["kind"] == "analysis" else '')
             + '</header>'
+            + forecast_card
             + (f'<figure class="serial-article-cover">{_cover_img(series, loading="eager")}</figure>'
                if series["kind"] == "fiction" else render_market_numbers(figures))
             + f'<div class="serial-article-body">{kicker_html}'
@@ -556,7 +536,7 @@ def render_episode_page(series, ep, layout, figures=None, outlook=None):
                if series['kind'] == 'analysis' else '')
             + f'{navigation}<a class="serial-back-link" href="{series_url(series)}">目次に戻る →</a>'
             f'</div></div>')
-    return layout(ep["title"], ep["summary"], episode_url(series, ep), main, active="serials",
+    return layout(ep["title"], ep["forecast"]["statement"] if series["kind"] == "analysis" else ep["summary"], episode_url(series, ep), main, active="serials",
                   kind="serial_episode", serial={"slug": series["slug"], "kind": series["kind"],
                                                    "title": series["title"], "episode_title": ep["title"],
                                                    "episode": ep["slug"], "published_at": ep["published_at"]},

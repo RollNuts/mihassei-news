@@ -60,7 +60,7 @@ class DailyOutlookTests(unittest.TestCase):
             (folder / "market_outlooks.json").write_text("[]", encoding="utf-8")
             self.assertEqual(load_market_outlooks(tmp), [])
             output = render_market_outlook_board([])
-            self.assertIn("新しい市場見通しの記事はまだありません", output)
+            self.assertIn("新しい相場予想はまだありません", output)
             self.assertNotIn("判定済み：的中", output)
 
     def test_snapshot_prevents_post_publication_knowledge(self):
@@ -78,9 +78,9 @@ class DailyOutlookTests(unittest.TestCase):
         self.assertEqual(len(initial[0]["updates"]), 0)
         self.assertEqual(len(updated[0]["updates"]), 1)
         self.assertIn("結果待ち", render_market_outlook_board(parsed))
-        self.assertIn("強気", render_market_outlook_board(parsed))
-        self.assertIn("中立", render_market_outlook_board(parsed))
-        self.assertIn("変更あり", render_market_outlook_board(parsed))
+        self.assertIn("上昇を予想", render_market_outlook_board(parsed))
+        self.assertNotIn("判断の変化", render_market_outlook_board(parsed))
+        self.assertNotIn("変更あり", render_market_outlook_board(parsed))
         self.assertNotIn("判定済み：的中", render_market_outlook_board(parsed))
 
     def test_only_verifies_on_original_fixed_day_with_evidence(self):
