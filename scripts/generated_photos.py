@@ -14,6 +14,7 @@ from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 try:
+    from .publication_inputs import read_publication_json
     from .cpu_photo_model import (
         MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE,
         LCM_INFERENCE, ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN,
@@ -21,6 +22,7 @@ try:
     )
     from .media_policy import jpeg_dimensions, MIN_JPEG_BYTES, MAX_JPEG_BYTES
 except ImportError:
+    from publication_inputs import read_publication_json
     from cpu_photo_model import (
         MODEL as CPU_MODEL, LEGACY_MODEL, INFERENCE as CPU_INFERENCE,
         LCM_INFERENCE, ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN,
@@ -164,8 +166,8 @@ def native_text_revision_review(article: dict, generation: dict,
     if not isinstance(generation, dict) or generation.get("origin") != "chatgpt-imagegen":
         return None
     try:
-        reviews = json.loads((root / REVIEW_FILE).read_text(encoding="utf-8"))
-        manifest = json.loads((root / RELATIVE_DIR / MANIFEST_NAME).read_text(encoding="utf-8"))
+        reviews = read_publication_json(root / REVIEW_FILE)
+        manifest = read_publication_json(root / RELATIVE_DIR / MANIFEST_NAME)
     except (OSError, UnicodeError, ValueError):
         return None
     if (not isinstance(reviews, dict) or type(reviews.get("version")) is not int
@@ -180,7 +182,7 @@ def native_text_revision_review(article: dict, generation: dict,
 
 def generated_manifest(root: Path = ROOT) -> dict:
     try:
-        obj = json.loads((root / RELATIVE_DIR / MANIFEST_NAME).read_text(encoding="utf-8"))
+        obj = read_publication_json(root / RELATIVE_DIR / MANIFEST_NAME)
     except (OSError, ValueError):
         return {}
     if not isinstance(obj, dict) or obj.get("version") != 1:
@@ -199,7 +201,7 @@ def visually_held_scene(article: dict, *, root: Path = ROOT) -> bool:
     if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
         return False
     try:
-        payload = json.loads((root / RELATIVE_DIR / MANIFEST_NAME).read_text(encoding="utf-8"))
+        payload = read_publication_json(root / RELATIVE_DIR / MANIFEST_NAME)
     except (OSError, ValueError):
         return False
     if not isinstance(payload, dict) or payload.get("version") != 1:
