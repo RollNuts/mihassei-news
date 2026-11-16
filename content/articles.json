@@ -135,6 +135,7 @@
   },
   {
     "slug": "ai-purchasing-agent-fake-order-real-signature",
+    "broadcast_feature": true,
     "category": "事件",
     "flash": "偽注文に「正規のAI署名」",
     "fiction_company": "架空の港原市の小売店と取引銀行",
