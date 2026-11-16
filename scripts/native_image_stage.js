@@ -12,13 +12,14 @@ var NativeImageStage = (function () {
   const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
-  function create({runtime,github,repository}) {
+  function create({runtime,github,repository,readCloudWorkflow}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
     for(const name of ["convert","sha256","fromBase64","toBase64","utf8"])if(typeof runtime[name]!=="function")throw Error("Missing byte runtime: "+name);
+    if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
-    let generatedSnapshot;
+    let generatedSnapshot, workflowNonce=0;
     function payload(r) {
       const p=r?.structuredContent??r;
       if(!p||r?.isError||p.error_code||p.error){const e=Error(p?.error||"GitHub operation failed");e.provider=p;throw e;}
@@ -55,7 +56,16 @@ var NativeImageStage = (function () {
         if(generatedSnapshot.jpegBytes>JPEG_CAP)throw Error("Generated JPEG total exceeds 1.5 GiB");
         // Keep this last: a stop-all disables this existing workflow, including
         // while byte conversion, claim creation or candidate recovery is busy.
-        const workflow=await fetchJSON("/actions/workflows/"+CLOUD_WORKFLOW);
+        let workflow;
+        if(readCloudWorkflow){
+          const nonce=hashText(JSON.stringify([repository,Date.now(),++workflowNonce,Math.random(),Math.random()]));
+          const raw=payload(await readCloudWorkflow({nonce}));
+          workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
+          const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
+          if(workflow.version!==1||workflow.repository!==repository||workflow.nonce!==nonce
+            ||typeof workflow.checked_at!=="string"||!/(Z|[+-]\d\d:\d\d)$/.test(workflow.checked_at)
+            ||!Number.isFinite(checked)||age<0||age>10000)throw Error("Unverified or stale cloud workflow response");
+        }else workflow=await fetchJSON("/actions/workflows/"+CLOUD_WORKFLOW);
         if(workflow.path!==".github/workflows/"+CLOUD_WORKFLOW||workflow.state!=="active")
           throw Error("Cloud image workflow is not confirmed active");
         return {state:"active",public:true,main_commit_sha:commitSha,jpeg_bytes:generatedSnapshot.jpegBytes,jpeg_cap_bytes:JPEG_CAP};

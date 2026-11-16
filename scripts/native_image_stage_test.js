@@ -244,13 +244,13 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     };
   }
 
-  async function scenario(run, faults) {
+  async function scenario(run, faults, createOptions) {
     const mock = makeMock(faults);
     let conversions = 0;
     const measuredRuntime = Object.assign({}, runtime, {
       convert(input) { conversions++; return runtime.convert(input); }
     });
-    const service = await stageAPI.create({runtime: measuredRuntime, github: mock.github, repository});
+    const service = await stageAPI.create({runtime: measuredRuntime, github: mock.github, repository, ...createOptions});
     const args = {slug, articleSha256, baseCommitSha, baseTreeSha, prompt, logicalRunId: run};
     const plan = await service.prepare(args);
     const branch = "native-image-candidate/" + slug + "/" +
@@ -448,7 +448,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         counters.generated++;
         demand(args.prompt === context.plan.prompt && args.transparent_background === false,
           "generator must receive the planned prompt");
-        demand(context.mock.calls.slice(-1)[0].args.url ===
+        demand(context.mock.calls.slice(-1)[0].name === "readCloudWorkflow" || context.mock.calls.slice(-1)[0].args.url ===
           "https://api.github.com/repos/" + repository + "/actions/workflows/free-cpu-scenes.yml",
           "generator must immediately follow a live workflow check");
         const receipt = JSON.parse(context.mock.readText(preflightBranch, preflightPrefix + "receipt.json"));
@@ -456,6 +456,75 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         return context.input.imageGenResult;
       }
     };
+  }
+
+  async function callbackScenario(run, change) {
+    let context;
+    const requests = [];
+    context = await scenario(run, {}, {readCloudWorkflow: async ({nonce}) => {
+      requests.push(nonce);
+      context.mock.calls.push({name: "readCloudWorkflow", args: {nonce}});
+      const response = {version: 1, repository, path: context.mock.cloud.workflow.path,
+        state: context.mock.cloud.workflow.state, nonce, checked_at: new Date().toISOString()};
+      return change ? change(response) : response;
+    }});
+    // Reproduce the connector allowlist: no workflow URL can be fetched through
+    // github.fetch in this runtime. Repository/ref/commit/tree reads still work.
+    const fetchAllowed = context.mock.github.fetch;
+    context.mock.github.fetch = async args => {
+      if (args.url.includes("/actions/workflows/")) throw Error("Workflow URL is not allowed by connector");
+      return fetchAllowed(args);
+    };
+    return {...context, requests};
+  }
+  const callbackReady = await callbackScenario("callback-success"), callbackCounts = {reads: 0, generated: 0};
+  assert((await callbackReady.service.cloudStatus()).state === "active",
+    "a verified read-only workflow callback supports a connector without workflow URL access");
+  const callbackSaved = await callbackReady.service.generateAndStage(callbackReady.plan, gateOptions(callbackReady, callbackCounts));
+  assert(callbackSaved.status === "saved" && callbackCounts.generated === 1 &&
+    callbackReady.requests.length > callbackReady.mock.writes().length &&
+    new Set(callbackReady.requests).size === callbackReady.requests.length &&
+    callbackReady.requests.every(nonce => /^[0-9a-f]{64}$/.test(nonce)),
+    "workflow callbacks receive a new nonce on every live check through generation and all writes");
+  assert(callbackReady.mock.calls.every((call, index) => !(call.name.startsWith("create_") || call.name === "update_ref") ||
+    callbackReady.mock.calls[index - 1]?.name === "readCloudWorkflow"),
+    "every callback-protected mutation immediately follows its live workflow response");
+  callbackReady.mock.cloud.workflow.state = "disabled_manually";
+  const callbackWrites = callbackReady.mock.writes().length;
+  await failure(() => callbackReady.service.cloudStatus(), "callback workflow stops are read live after a successful invocation");
+  assert((await callbackReady.service.load(callbackReady.plan)).status === "saved" &&
+    callbackReady.mock.writes().length === callbackWrites,
+    "stopped callback workers retain read-only access to verified existing candidates");
+
+  const callbackWrapped = await callbackScenario("callback-wrapped", response =>
+    ({structuredContent: {content: JSON.stringify(response)}}));
+  assert((await callbackWrapped.service.cloudStatus()).state === "active",
+    "workflow callback can return the existing connector JSON envelope");
+
+  for (const [label, change] of [
+    ["disabled state", response => ({...response, state: "disabled_manually"})],
+    ["unknown state", response => ({...response, state: "unknown"})],
+    ["callback failure", () => { throw Error("Read-only proxy unavailable"); }],
+    ["provider error", () => ({isError: true, structuredContent: {error_code: "UNAVAILABLE"}})],
+    ["unknown version", response => ({...response, version: 2})],
+    ["wrong repository", response => ({...response, repository: "other/repository"})],
+    ["wrong workflow", response => ({...response, path: ".github/workflows/other.yml"})],
+    ["wrong nonce", response => ({...response, nonce: "stale-request"})],
+    ["missing checked_at", response => ({...response, checked_at: undefined})],
+    ["unqualified checked_at", response => ({...response, checked_at: "2026-11-16T12:00:00"})],
+    ["stale checked_at", response => ({...response, checked_at: new Date(Date.now() - 10001).toISOString()})],
+    ["future checked_at", response => ({...response, checked_at: new Date(Date.now() + 60000).toISOString()})],
+    ["malformed JSON", () => ({content: "{unreadable"})]
+  ]) {
+    const context = await callbackScenario("callback-block-" + label, change), counts = {reads: 0, generated: 0};
+    const error = await failure(() => context.service.generateAndStage(context.plan, gateOptions(context, counts)),
+      label + " blocks the callback generation route");
+    assert(error.message.includes("Cloud image operations stopped:") && counts.generated === 0 &&
+      counts.reads === 0 && context.mock.writes().length === 0 && context.requests.length === 1 &&
+      !context.mock.calls.some(call => call.name === "fetch" && call.args.url.includes("/actions/workflows/")),
+      label + " permits neither generator/writes nor a fallback after callback failure");
+    await failure(() => context.service.stage(context.plan, context.input), label + " also blocks callback recovery writes");
+    assert(context.mock.writes().length === 0, label + " cannot bypass callback verification via stage");
   }
 
   const cloudReady = await scenario("cloud-status");
