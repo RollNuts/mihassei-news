@@ -129,7 +129,7 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
                                         image_sha256=sha, root=root) if "motion" in story else None)
         result.append({"id": story["id"], "modelId": model["id"], "name": _text(model["name"], 50, "model name"),
                        "text": text, "publishedAt": story["published_at"],
-                       "dateLabel": f"{date.year}年{date.month}月{date.day}日",
+                       "dateLabel": f"{date.year}年{date.month}月{date.day}日 {date:%H:%M}",
                        "settingLabel": f'舞台：{setting["year"]}年{setting["month"]}月',
                        "image": photo_image_url(issue, cut), "alt": _text(shot["alt"], 300, "image alt"),
                        "sourceUrl": issue_url(issue) + "#photo-" + cut,
@@ -167,10 +167,13 @@ def render_story_strip(stories=None, *, root=ROOT):
     circles = "".join(
         f'<li><a class="photo-story-open" href="{_h(story["sourceUrl"])}" '
         f'data-story-open="{_h(model_id)}" aria-haspopup="dialog" '
-        f'aria-label="{_h(story["name"])}のストーリーズを開く">'
+        f'aria-label="{_h(story["name"])}、{_h(story["dateLabel"])}投稿のストーリーズを開く">'
         f'<span class="photo-story-circle"><img src="{_h(story["image"])}" alt="" '
         'width="80" height="80" loading="lazy" decoding="async"></span>'
-        f'<span>{_h(story["name"])}</span></a></li>' for model_id, story in latest.items())
+        f'<span class="photo-story-name">{_h(story["name"])}</span>'
+        f'<time class="photo-story-posted" datetime="{_h(story["publishedAt"])}">'
+        f'{_stamp(story["publishedAt"]).astimezone(JST):%m/%d %H:%M}</time></a></li>'
+        for model_id, story in latest.items())
     payload = json.dumps(list(stories), ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     for char, escaped in (("&", "\\u0026"), ("<", "\\u003c"), (">", "\\u003e"),
                           ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
@@ -230,8 +233,13 @@ def render_photo_timeline(stories):
                      f'<p class="photo-post-text">{_h(story["text"])}</p>{media}'
                      f'<footer><span>{_h(story["settingLabel"])}</span>'
                      f'<a href="{_h(story["sourceUrl"])}">写真の掲載特集 ↗</a></footer></article></li>')
+    earlier = ('<details class="photo-post-archive">'
+               f'<summary>以前の投稿（{len(cards) - 3}件）</summary>'
+               '<ol class="photo-post-list" start="4">' + ''.join(cards[3:]) + '</ol></details>'
+               if len(cards) > 3 else '')
     return ('<section class="cast-timeline" aria-labelledby="cast-timeline-title">'
             '<div class="section-head"><h2 id="cast-timeline-title">7人の近況</h2>'
             '<a href="/photo/models/">プロフィール一覧 ↗</a></div>'
             '<p class="photo-story-label">架空の7人による創作投稿・写真は掲載特集から</p>'
-            + render_story_strip(stories) + '<ol class="photo-post-list">' + ''.join(cards) + '</ol></section>')
+            + render_story_strip(stories) + '<ol class="photo-post-list">' + ''.join(cards[:3])
+            + '</ol>' + earlier + '</section>')
