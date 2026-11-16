@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "043768a13449101213ccd55d09f8e9ff61b6ad0e0dc1c44c1c083f615e5b892d",
+  "slug": "fermentation-rna-inspection-two-flavors",
+  "article_sha256": "72fdd268deee1c4dda4ac92f03846495e4c15772db0e4e7746c8964d9b664752",
+  "logical_run_id": "rna-tasting-native-20261117-single-trial",
+  "prompt_sha256": "5a7d2a66abd5f962c7c5d3dab880bf89521b2ad80521b5c205ad4ab4b0e3201b",
+  "reserved_at": "2026-11-16T18:36:54.075Z",
+  "baseline": {
+    "commit_sha": "22e05f585a710f365b86fbd0489a8becac565542",
+    "tree_sha": "c3beefae854aa1b7885f479cbb719439d67ceeb8",
+    "protected_hashes": {
+      "content/articles.json": "afe0d1643be5a76f21691ad13ff657d38c80b6d8dc59125b2248f70521b05a2f",
+      "assets/generated/manifest.json": "7d8d67e494cdd2bdd48b9d98acbde355b1d66755cf61d9ce2f2aca5f1e0bdd3f",
+      "content/visual_reviews.json": "3d863b37830f49aec471e7c93cefc63ecb092109564aa70d696d6aa4100fcbbd"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "435e6a3fad384cc255a6287663071638a8d66aaa",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "74bd17e2e616884b537b4dbe465ab7a4c24edaa4f221cf110bd7b8b5e6287ebf",
+    "observed_at": "2026-11-16T18:36:24.781Z",
+    "route": "PNG data URL in this functions execution to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
