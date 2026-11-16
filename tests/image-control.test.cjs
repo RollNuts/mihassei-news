@@ -9,6 +9,8 @@ const upstream='https://api.github.com/repos/RollNuts/mihassei-news/actions/work
 const workflowPath='.github/workflows/free-cpu-scenes.yml';
 const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
   .replace('import { DurableObject } from "cloudflare:workers";','class DurableObject {}')
+  .replace('import { imageControlMcp } from "./image_control_mcp.mjs";',
+    fs.readFileSync(path.join(__dirname,'../src/image_control_mcp.mjs'),'utf8').replace('export async function','async function'))
   .replace('export { ReaderComments } from "./comments.js";','')
   .replace('export class NewsroomStats','class NewsroomStats')
   .replace('export default {','const serviceHandler = {');
