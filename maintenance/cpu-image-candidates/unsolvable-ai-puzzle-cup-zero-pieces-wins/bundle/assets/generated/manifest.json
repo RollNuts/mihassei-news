@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "images": {
+    "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
+      "article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+      "bytes": 134480,
+      "generated_at": "2026-11-16T01:38:37.073102+00:00",
+      "inference": {
+        "algorithm_type": "dpmsolver++",
+        "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
+        "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
+        "guidance_scale": 7.0,
+        "height": 448,
+        "num_inference_steps": 24,
+        "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
+        "safety_revision": "a85df6a8bd976cdd08b4fd8f3b73f229c9e54df5",
+        "scheduler": "DPMSolverMultistepScheduler",
+        "solver_order": 2,
+        "solver_type": "midpoint",
+        "use_karras_sigmas": true,
+        "vae_model": "stabilityai/sd-vae-ft-mse",
+        "vae_revision": "31f26fdeee1355a5c34592e401dd41e45d25a493",
+        "width": 800
+      },
+      "model": "SG161222/Realistic_Vision_V5.1_noVAE",
+      "origin": "github-cpu-sd15",
+      "prompt_version": 3,
+      "seed": 1983948943341056731,
+      "sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086"
+    }
+  }
+}

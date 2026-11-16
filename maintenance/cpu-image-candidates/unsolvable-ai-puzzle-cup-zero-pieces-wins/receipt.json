@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "cpu_image_candidate",
+  "status": "review_only",
+  "repository": "RollNuts/mihassei-news",
+  "slug": "unsolvable-ai-puzzle-cup-zero-pieces-wins",
+  "source_article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+  "logical_run_id": "43786876737",
+  "source_commit": "35d3fd853f0bf39af1b04d0bf08e1fde513eef0a",
+  "request": {
+    "backfill_scene": "",
+    "backfill_reference": false,
+    "retry_held": false
+  },
+  "branch": "cpu-image-candidate/unsolvable-ai-puzzle-cup-zero-pieces-wins/427978a51b6cd6bf-43786876737",
+  "directory": "maintenance/cpu-image-candidates/unsolvable-ai-puzzle-cup-zero-pieces-wins",
+  "files": {
+    "maintenance/cpu-image-candidates/unsolvable-ai-puzzle-cup-zero-pieces-wins/bundle/content/articles.json": {
+      "sha256": "890857a666a1abb7d4db6b1a3c1cdc41079550671cf2ebe4dae6cfaa96f3805d",
+      "bytes": 6074
+    },
+    "maintenance/cpu-image-candidates/unsolvable-ai-puzzle-cup-zero-pieces-wins/bundle/assets/generated/unsolvable-ai-puzzle-cup-zero-pieces-wins.jpg": {
+      "sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086",
+      "bytes": 134480
+    },
+    "maintenance/cpu-image-candidates/unsolvable-ai-puzzle-cup-zero-pieces-wins/bundle/assets/generated/manifest.json": {
+      "sha256": "cf1bca7b91d70588f2178732e9aed42b6d40a604e8283a2c058b8552f503e8b7",
+      "bytes": 1209
+    },
+    "maintenance/cpu-image-candidates/unsolvable-ai-puzzle-cup-zero-pieces-wins/source-article.json": {
+      "sha256": "b231b883fe2d68680c8f80872aed22e22f0863c7dce2ddabddba9bf2dc79ae0a",
+      "bytes": 5942
+    }
+  }
+}
