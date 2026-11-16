@@ -108,7 +108,11 @@ class SerialTests(unittest.TestCase):
                 self.assertIn('"datePublished": "'+e["published_at"]+'"', page)
                 self.assertIn('"@type": "Article"', page)
                 self.assertIn('href="/serials/'+s["slug"]+'/"', page)
-                self.assertIn('src="/serials/'+s["slug"]+'/cover.svg"', page)
+                cover = 'src="/serials/'+s["slug"]+'/cover.svg"'
+                if s["kind"] == "analysis":
+                    self.assertNotIn(cover, page)
+                else:
+                    self.assertIn(cover, page)
                 if e is s["episodes"][-1]:
                     self.assertIn("連載終了" if s["slug"] == "case-files" else "次回は未公開", page)
                 else:
