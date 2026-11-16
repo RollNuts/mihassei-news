@@ -14,10 +14,12 @@ content/serials.json ────┘                │
 ```
 
 - 記事の本文、アーカイブ、連載、検索導線は静的生成。読者APIが停止しても本文は閲覧可能。
+- AdSenseの広告スクリプトは、index可能な通常記事本文と市場分析の各回・日次市況本文だけに出力する。検索への掲載可否とは別条件とし、一面・一覧・写真企画・案内ページには出力しない。所有確認メタタグと`ads.txt`は維持し、この出力制限をサイト全体の審査対象除外やGoogleによる承認とは扱わない。
 - 通常のビルドは外部AI生成APIを使いません。画像生成は独立した任意の処理です。
 - `main`への更新をCloudflareのGit連携でデプロイ。GitHub Actionsではテストと公開後の読み取り検証を実施。
 - Cloudflareのビルド監視は含むパス`*`・除外`docs/*`、非本番ビルドはOFF。公開SHAがmainより古くても、祖先関係と差分が`docs/`だけだとGitで証明できる場合に限り同じ公開物として扱い、実配信SHAを報告する。記事・画像・コード等の差分は配信を待つ。
 - 生成結果は`dist/`。手元で公開するだけならCloudflareアカウントは不要です。
+- `build()`内では生成manifest・画像review台帳のJSON解析だけを再利用し、各読込でファイルの識別子・サイズ・更新時刻を照合する。変更時は読み直し、build終了時に破棄する。画像の採否・来歴・JPEGのSHAや寸法は毎回検証し、生成・レビュー処理単独では台帳を常に読み直す。
 
 ## データと日時
 
@@ -76,7 +78,7 @@ python3 scripts/build.py
 python3 -m unittest discover -s tests -v
 ```
 
-- CIの正本は[`.github/workflows/check.yml`](../.github/workflows/check.yml)。全体テスト前にビルドと同じ記事loaderで必須項目・タグ等を検証し、形式不正のまま各テストからビルドを繰り返さないようにします。Pythonテスト、Nodeテスト、Workerのdry-runを含みます。
+- CIの正本は[`.github/workflows/check.yml`](../.github/workflows/check.yml)。全体テスト前にビルドと同じ記事loaderで必須項目・タグ等を検証し、形式不正のまま各テストからビルドを繰り返さないようにします。Pythonテスト、Nodeテスト、Workerのdry-runを含みます。 Pythonは`tests/site_build_fixture.py`で完全な差分を判定し、市場観測データのみ・近況JSONのみの変更はそれぞれの公開表示・画像元・スキーマ・SEO検証に限定します。新規の全サイトビルドは保持し、コード混在・対象不明・追加削除は全テストへ戻します。失敗後に軽い検証へ切り替える再試行はしません。
 - Cloudflare Buildsは本番`main`の自動デプロイを有効にし、非本番のプレビューブランチビルドはOFFにします。ブランチごとの`wrangler preview`がDurable Objectの無料namespace枠を使い切るためです。既存namespaceは削除せず、PRは上記CIで検証し、統合後の本番revisionと実配信を確認します。プレビュー停止を画像・記事発行や本番ビルドの停止と混同しません。再有効化する場合は無料枠と実行コマンドを確認し、本番のbindings・migrationsを変更したり、検証失敗時に本番deployへ切り替えたりしません。
 - 本番の公開確認は[`.github/workflows/verify-public-photos.yml`](../.github/workflows/verify-public-photos.yml)を参照。公開revisionの完全SHA一致を最大12分待つ処理はここへ集約し、同一リポジトリのmainの公開確認が成功してからPV/API診断を実行します（定時・手動診断は維持）。PR・CIの成功と、公開URLの到達・画像表示の成功を混同しません。
 - 記事の編集方針と引き継ぎは[`EDITORIAL_LOOP.md`](EDITORIAL_LOOP.md)、検索インデックスは[`SEARCH_INDEX_REFRESH.md`](SEARCH_INDEX_REFRESH.md)を参照。
@@ -86,3 +88,10 @@ python3 -m unittest discover -s tests -v
 
 READMEに日々の実装記録、過去の施策や実験日記、デプロイ操作の全手順を追記しないでください。小さな改善はPRに残し、長期間有用な手順だけを該当ドキュメントへ反映してください。
 
+
+
+### GPTによる本番確認と画像停止状態
+
+CloudflareのBot Preference Syncは、Searchを許可・Trainingを不許可・ユーザー代理のAgentsを許可とする。広告ページでAgentsを一律ブロックすると、配信robots.txtにChatGPT-Userの全面Disallowが追加され、GPTの公開確認が止まる。学習クローラーの禁止とユーザー代理の閲覧を混ぜず、設定後は配信robotsと実際のGPT読取りを別々に確認する。
+
+`GET /api/image-control` は、固定したGitHub画像workflowの実状態だけを返す読取り口。nonce・短い有効時刻・no-store・失敗時503を使い、停止状態を古い成功応答で代用しない。GitHub接続がworkflow状態APIを扱えない実行環境から利用する。無認証の公開GitHub上限に達した場合も画像処理を止め、有料経路や状態推測へ切り替えない。

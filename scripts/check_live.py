@@ -72,6 +72,24 @@ def get(path):
         return response.read(4*1024*1024),response.headers.get("Content-Type","")
 
 
+def verify_adsense_markup(markup, *, loader_expected):
+    """Check configured ownership separately from page-level ad loading."""
+    account_meta = '<meta name="google-adsense-account" content="ca-pub-6754575901141756">'
+    if markup.count(account_meta) != 1:
+        raise RuntimeError("Configured AdSense account metadata missing, duplicated or changed")
+    if not loader_expected:
+        if "adsbygoogle.js" in markup:
+            raise RuntimeError("AdSense loader reached a page outside the body-page selection")
+        return
+    adsense_url = (
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+        "?client=ca-pub-6754575901141756"
+    )
+    if (markup.count(f'src="{adsense_url}"') != 1 or
+        markup.count("adsbygoogle.js") != 1):
+        raise RuntimeError("Configured AdSense loader missing, duplicated or changed")
+
+
 def public_revision_matches(expected: str, actual: str, *, root=ROOT) -> bool:
     """Accept an older public commit only after proving the diff is docs-only.
 
@@ -975,22 +993,16 @@ def check():
             "/editorial/", "/advertise/", "/privacy/", "/feed.xml"
         ))):
         raise RuntimeError("Footer has lost a utility link or gained duplicated navigation")
-    # The AdSense account registered in ads.txt is now explicitly connected
-    # by the public layout. Detect missing, duplicated or unknown ad scripts,
-    # rather than treating the approved script as a failed deployment.
-    adsense_url = (
-        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        "?client=ca-pub-6754575901141756"
-    )
-    if (commercial_html.count(f'src="{adsense_url}"') != 1 or
-        commercial_html.count("adsbygoogle.js") != 1 or
-        '<meta name="google-adsense-account" content="ca-pub-6754575901141756">' not in commercial_html):
-        raise RuntimeError("Approved AdSense account script missing, duplicated or changed")
+    # Ownership stays verifiable on navigation and information pages, while
+    # the configured ad loader is reserved for selected body pages.
+    for markup in (body, editorial_html, commercial_html):
+        verify_adsense_markup(markup, loader_expected=False)
 
     # Check the growth path against the live deployment, not just the local
     # generator. All archived article links must remain accessible without JS.
     archive, archive_mime = get("/archive/")
     archive_html = archive.decode("utf-8")
+    verify_adsense_markup(archive_html, loader_expected=False)
     for required in ('id="archive-results"', 'data-archive-more hidden',
                      'data-archive-more-button aria-controls="archive-results"'):
         if required not in archive_html:
@@ -1106,6 +1118,7 @@ def check():
         data,mime=get("/articles/"+slug+"/")
         raw_page=data.decode("utf-8")
         page=html.unescape(raw_page)
+        verify_adsense_markup(page, loader_expected=True)
         require_matching_public_headline(item, page, "article")
         for needle in article_reader_needles(item):
             if needle not in page:

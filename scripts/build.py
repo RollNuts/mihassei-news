@@ -17,6 +17,7 @@ from functools import lru_cache
 from pathlib import Path
 
 if __package__:
+    from .publication_inputs import publication_json_snapshot
     from .social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from .editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from .media_policy import usable_cached_photo
@@ -42,6 +43,7 @@ if __package__:
     from .photo_editions import load_photo_editions, edition_url
     from .photo_edition_pages import build_photo_editions, edition_sitemap_entries, edition_cover
 else:
+    from publication_inputs import publication_json_snapshot
     from social_cards import render_social_card, render_issue_card, reviewed_scene_version
     from editorial_covers import render_cover, render_story_visual, story_subject, reviewed_story_scene
     from media_policy import usable_cached_photo
@@ -1107,8 +1109,13 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     noindex_page = path in ("/saved/", "/404.html") or not indexable
     robots_tag = '<meta name="robots" content="noindex,follow">' if noindex_page else ""
     image_preview_tag = "" if noindex_page else '<meta name="robots" content="max-image-preview:large">'
+    adsense_body_page = (
+        (kind == "story" and article is not None)
+        or (kind in ("serial_episode", "market_bulletin") and serial is not None
+            and serial.get("kind") == "analysis" and bool(serial.get("episode")))
+    )
     adsense_script = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}" '
-                      'crossorigin="anonymous"></script>' if not noindex_page else "")
+                      'crossorigin="anonymous"></script>' if adsense_body_page and not noindex_page else "")
     serial_progress_script = (script_tag("serial-progress.js")
                               if path in ('/', '/serials/') or serial is not None else '')
     # Only load reader tools where they can be used. Leave engagement active for
@@ -1882,14 +1889,20 @@ def about():
 <h1>未発生新聞について</h1>
 <p>まだ起きていないニュースを、真顔で。</p></header>
 <div class="about-copy">
-<p>{escape(NEWS_DESCRIPTION)}</p>
+<p>未発生新聞は、いまある制度や技術を手がかりに、5年後の人の選択や暮らしを描く創作メディアです。風刺だけでなく、発明や遊びが生む変化も物語にします。</p>
 <h2>掲載内容</h2>
 <p>ニュース記事はフィクションです。「未来相場観測室」では、現実の公開資料に基づく市場分析を掲載しています。</p>
+<h2>はじめて読むなら</h2>
+<ul>
+<li><a href="/articles/local-council-keeps-last-bus-despite-grant-formula/">夜の最終バスを残す、市議会の選択</a> — 国の補助対象から外れた便を、誰の費用で走らせるか。</li>
+<li><a href="/articles/fermentation-rna-inspection-two-flavors/">同じ大豆から、二つの味のみそへ</a> — 菌の違いを見つけた職人が、味をそろえる代わりに選んだこと。</li>
+<li><a href="/articles/seven-venues-compose-one-live-song/">七つの会場で、一曲をつくる</a> — 離れた奏者が音を重ね、最後のサビで合奏する。</li>
+</ul>
 <p><a href="/archive/" style="text-decoration:underline">記事一覧 ↗</a>　<a href="/serials/" style="text-decoration:underline">連載 ↗</a></p>
 <p><a href="/editorial/" style="text-decoration:underline">編集方針・お問い合わせ ↗</a></p>
 <p><a href="/feed.xml" style="text-decoration:underline">RSSで購読する ↗</a></p>
 <h2>制作とコード</h2>
-<p><a href="https://github.com/RollNuts/mihassei-news" target="_blank" rel="noopener noreferrer external" style="text-decoration:underline">GitHubで公開コードを見る・Starで保存 ↗</a></p>
+<p><a href="https://github.com/RollNuts/mihassei-news" target="_blank" rel="noopener noreferrer external" style="text-decoration:underline">制作コードを見る ↗</a></p>
 </div></div>'''
     return layout("本紙について",NEWS_DESCRIPTION,"/about/",content,"about")
 
@@ -1903,7 +1916,7 @@ def editorial_policy():
 <p>ニュース記事はフィクションです。「未来相場観測室」は現実の公開資料に基づく市場分析で、出典・予測日・検証条件を示します。投資助言や売買の勧誘ではありません。</p>
 <h2>出典・画像</h2>
 <p>着想元の公開情報や投稿は、本文末尾の「着想元を見る」から確認できます。参照先が記事内の創作内容を裏付けるものではありません。</p>
-<p>文章づくりの補助に生成AIを使用しています。実写風の合成画像は「再現イメージ（合成）」と表示し、写真素材には出典・クレジットを添えます。</p>
+<p>企画・執筆・合成画像の制作に生成AIを使用しています。実写風の合成画像は「再現イメージ（合成）」と表示し、写真素材には出典・クレジットを添えます。</p>
 <h2>広告</h2>
 <p>広告・アフィリエイトを掲載する場合は「広告」「PR」などを表示し、記事と区別します。協賛者の意向で記事を書き換えません。<a href="/advertise/">広告・協賛のご相談 ↗</a></p>
 <h2>訂正・お問い合わせ</h2>
@@ -2312,6 +2325,7 @@ def make_article_social_images(articles):
         render_social_card(article, OUT / "og" / "articles" / (article["slug"] + ".png"), root=BASE)
 
 
+@publication_json_snapshot()
 def build():
     global PHOTO_ISSUES_AVAILABLE
     photo_data = load_photo_issues(BASE)

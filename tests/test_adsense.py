@@ -29,14 +29,32 @@ class HeadParser(HTMLParser):
 
 
 class AdSenseTests(unittest.TestCase):
-    def test_public_pages_connect_once_to_the_ads_txt_publisher_in_head(self):
+    @classmethod
+    def setUpClass(cls):
+        cls.article = build.load()[0]
+        cls.analysis = {
+            "slug": "market-lab", "kind": "analysis", "episode": "sample-analysis",
+            "published_at": "2026-11-16T08:30:00+09:00",
+        }
+
+    def body_cases(self):
+        return (
+            (build.article_url(self.article), {"kind": "story", "article": self.article}),
+            ("/serials/market-lab/sample-analysis/",
+             {"kind": "serial_episode", "serial": self.analysis}),
+            ("/serials/market-lab/briefings/sample-analysis/",
+             {"kind": "market_bulletin", "serial": self.analysis}),
+        )
+
+    def assert_account_meta(self, markup):
+        self.assertEqual(markup.count(
+            '<meta name="google-adsense-account" content="ca-pub-6754575901141756">'), 1)
+
+    def test_body_pages_connect_once_to_the_ads_txt_publisher_in_head(self):
         publisher = (build.BASE / "ads.txt").read_text(encoding="utf-8").split(",")[1].strip()
-        for path in ("/", "/archive/", "/articles/reader-story/", "/photo/weekly/",
-                     "/serials/market-lab/", "/serials/market-lab/briefings/",
-                     "/serials/market-lab/outlooks/",
-                     "/serials/market-lab/briefings/2026-11-16-am/"):
+        for path, options in self.body_cases():
             with self.subTest(path=path):
-                markup = build.layout("見出し", "概要", path, "<h1>見出し</h1>")
+                markup = build.layout("見出し", "概要", path, "<h1>見出し</h1>", **options)
                 scripts = [(attrs, in_head) for attrs, in_head in HeadParser(markup).scripts
                            if "adsbygoogle.js" in attrs.get("src", "")]
                 self.assertEqual(len(scripts), 1)
@@ -52,6 +70,50 @@ class AdSenseTests(unittest.TestCase):
                 self.assertNotIn("data-ad-slot=", markup)
                 self.assertNotIn("adsbygoogle.push", markup)
 
+    def test_indexable_non_body_pages_keep_verification_without_requesting_ads(self):
+        cases = (
+            ("/", {}), ("/archive/", {}), ("/topics/", {}), ("/topics/AI/", {}),
+            ("/category/technology/", {}), ("/issues/", {}), ("/issues/2026-11-16/", {}),
+            ("/about/", {}), ("/editorial/", {}), ("/privacy/", {}), ("/advertise/", {}),
+            ("/photo/weekly/", {"kind": "photo_collection"}),
+            ("/photo/weekly/feature/", {"kind": "photo_issue"}),
+            ("/photo/weekly/issue-001/", {"kind": "photo_edition"}),
+            ("/photo/models/", {"kind": "photo_collection"}),
+            ("/photo/models/sample/", {"kind": "photo_model"}),
+            ("/serials/", {}), ("/serials/market-lab/", {"serial": self.analysis}),
+            ("/serials/market-lab/briefings/", {"serial": self.analysis}),
+            ("/serials/market-lab/outlooks/", {"serial": self.analysis}),
+        )
+        for path, options in cases:
+            with self.subTest(path=path):
+                markup = build.layout("見出し", "概要", path, "<h1>見出し</h1>", **options)
+                self.assertNotIn('content="noindex', markup)
+                self.assertNotIn("adsbygoogle.js", markup)
+                self.assert_account_meta(markup)
+
+    def test_body_type_and_metadata_are_both_required(self):
+        cases = (
+            {"kind": "story"}, {"article": self.article},
+            {"kind": "serial_episode"}, {"kind": "market_bulletin"},
+            {"kind": "serial_episode", "serial": {**self.analysis, "episode": ""}},
+            {"kind": "market_bulletin", "serial": {**self.analysis, "episode": ""}},
+            {"kind": "serial_episode", "serial": {**self.analysis, "kind": "fiction"}},
+            {"kind": "market_bulletin", "serial": {**self.analysis, "kind": "fiction"}},
+        )
+        for options in cases:
+            with self.subTest(options=options):
+                markup = build.layout("見出し", "概要", "/body-check/", "<p>本文</p>", **options)
+                self.assertNotIn("adsbygoogle.js", markup)
+                self.assert_account_meta(markup)
+
+    def test_noindex_body_pages_do_not_request_ads(self):
+        for path, options in self.body_cases():
+            with self.subTest(path=path):
+                markup = build.layout("見出し", "概要", path, "<p>本文</p>", indexable=False, **options)
+                self.assertIn('name="robots" content="noindex,follow"', markup)
+                self.assertNotIn("adsbygoogle.js", markup)
+                self.assert_account_meta(markup)
+
     def test_noindex_utility_pages_do_not_request_ads(self):
         for path, options in (("/saved/", {}), ("/404.html", {}),
                               ("/local-preview/", {"indexable": False})):
@@ -59,6 +121,55 @@ class AdSenseTests(unittest.TestCase):
                 markup = build.layout("見出し", "概要", path, "<h1>見出し</h1>", **options)
                 self.assertIn('name="robots" content="noindex,follow"', markup)
                 self.assertNotIn("adsbygoogle.js", markup)
+                self.assert_account_meta(markup)
+
+    def test_publisher_file_remains_byte_exact(self):
+        self.assertEqual((build.BASE / "ads.txt").read_bytes(),
+                         b"google.com, pub-6754575901141756, DIRECT, f08c47fec0942fa0\n")
+
+    def test_live_checker_enforces_loader_selection_and_account_verification(self):
+        from scripts.check_live import verify_adsense_markup
+
+        path, options = self.body_cases()[0]
+        article_page = build.layout("記事", "概要", path, "<p>本文</p>", **options)
+        information_page = build.advertise()
+        verify_adsense_markup(article_page, loader_expected=True)
+        verify_adsense_markup(information_page, loader_expected=False)
+        for markup, expected in ((article_page, False), (information_page, True)):
+            with self.subTest(loader_expected=expected), self.assertRaises(RuntimeError):
+                verify_adsense_markup(markup, loader_expected=expected)
+        without_account = information_page.replace(
+            '<meta name="google-adsense-account" content="ca-pub-6754575901141756">', "")
+        with self.assertRaisesRegex(RuntimeError, "account metadata"):
+            verify_adsense_markup(without_account, loader_expected=False)
+        loader = re.search(r'<script async src="[^"]+adsbygoogle.js[^<]+</script>', article_page).group(0)
+        for broken in (article_page + loader,
+                       article_page.replace("?client=ca-pub-6754575901141756", "?client=ca-pub-0")):
+            with self.assertRaisesRegex(RuntimeError, "loader"):
+                verify_adsense_markup(broken, loader_expected=True)
+
+    def test_about_introduces_the_reading_experience_with_existing_stories(self):
+        markup = build.about()
+        self.assertIn("はじめて読むなら", markup)
+        main = markup.split('<main', 1)[1].split('</main>', 1)[0]
+        slugs = re.findall(r'href="/articles/([^/]+)/"', main)
+        self.assertEqual(slugs, [
+            "local-council-keeps-last-bus-despite-grant-formula",
+            "fermentation-rna-inspection-two-flavors",
+            "seven-venues-compose-one-live-song",
+        ])
+        self.assertTrue(set(slugs) <= {article["slug"] for article in build.load()})
+        self.assertIn("ニュース記事はフィクションです", markup)
+        self.assertIn("現実の公開資料に基づく市場分析", markup)
+        self.assertNotIn("adsbygoogle.js", markup)
+
+    def test_editorial_disclosure_describes_ai_production_and_existing_contact(self):
+        markup = build.editorial_policy()
+        self.assertIn("企画・執筆・合成画像の制作に生成AIを使用しています", markup)
+        self.assertNotIn("文章づくりの補助", markup)
+        self.assertIn('href="https://github.com/RollNuts/mihassei-news/issues"', markup)
+        self.assertIn("投稿は公開されるため、個人情報は記入しないでください", markup)
+        self.assertNotIn("adsbygoogle.js", markup)
 
     def test_privacy_explains_ad_data_and_separate_reader_controls(self):
         markup = build.privacy()
@@ -85,6 +196,8 @@ class AdSenseTests(unittest.TestCase):
         self.assertIn('property="og:image:type" content="image/jpeg"', markup)
         self.assertIn('name="robots" content="max-image-preview:large"', markup)
         self.assertNotIn('content="noindex', markup)
+        self.assertNotIn("adsbygoogle.js", markup)
+        self.assert_account_meta(markup)
 
 
 if __name__ == "__main__":

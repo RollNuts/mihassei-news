@@ -65,6 +65,32 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
         self.assertEqual(sum("motion" in post for post in result), 1)
 
+    def test_same_person_cannot_repost_exact_text_under_another_id_or_date(self):
+        original = copy.deepcopy(self.data["stories"][0])
+        for date in ("2026-11-15T10:40:00+09:00", "2026-11-20T10:40:00+09:00"):
+            with self.subTest(date=date):
+                repeat = copy.deepcopy(original)
+                repeat.update(id="same-words-another-post", published_at=date)
+                self.data["stories"] = [original, repeat]
+                with self.assertRaisesRegex(ValueError, "Duplicate photo story text"):
+                    self.validate()
+
+    def test_same_person_can_publish_different_original_words(self):
+        another = copy.deepcopy(self.data["stories"][0])
+        another.update(id="another-original-post", text="今日はいつもと違う道を歩いた。\n帰りは、いつもの道。")
+        self.data["stories"].append(another)
+        self.assertEqual(len(self.validate()), 2)
+
+    def test_different_people_can_use_the_same_words(self):
+        original = self.data["stories"][0]
+        another = copy.deepcopy(next(post for post in self.initial["stories"]
+                                     if post["model_id"] != original["model_id"]))
+        another["text"] = original["text"]
+        self.data["stories"].append(another)
+        self.published.append(next(issue for issue in self.catalog["issues"]
+                                   if issue["slug"] == another["source"]["issue_slug"]))
+        self.assertEqual(len(self.validate()), 2)
+
     def test_home_timeline_has_seven_readable_posts_and_source_bound_video(self):
         result = stories.load_photo_stories(ROOT, now=NOW)
         page = stories.render_photo_timeline(result)
@@ -102,6 +128,91 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn('<details class="photo-post-archive" open', page)
         self.assertNotIn('hidden', earlier)
         self.assertNotIn('photo-post-archive', stories.render_photo_timeline(result[:3]))
+
+    def mixed_history(self):
+        own = self.data["stories"][0]
+        other = next(post for post in self.initial["stories"] if post["model_id"] != own["model_id"])
+        history = []
+        for index in range(9):
+            post = copy.deepcopy(own)
+            post.update(id=f'own-post-{index + 1}',
+                        published_at=f'2026-11-15T{10 + index:02d}:00:00+09:00',
+                        text=f'公開した近況{index + 1}。\n帰り道の記録です。')
+            history.append(post)
+        other = copy.deepcopy(other)
+        other.update(id='other-person-post', published_at='2026-11-15T18:30:00+09:00',
+                     text='別の人だけが話した近況です。')
+        history.insert(4, other)
+        data = {"schema_version": 1, "stories": history}
+        return stories.validate_photo_stories(data, catalog=self.catalog,
+                                              published=self.catalog["issues"], now=NOW)
+
+    def test_person_history_retains_all_own_posts_while_home_keeps_latest_seven(self):
+        result = self.mixed_history()
+        before = copy.deepcopy(result)
+        own_id = self.data["stories"][0]["model_id"]
+        own = [post for post in result if post["modelId"] == own_id]
+        other = next(post for post in result if post["modelId"] != own_id)
+        profile = stories.render_model_stories(own_id, result)
+        home = stories.render_photo_timeline(result)
+        parsed_profile, parsed_home = Tags(), Tags()
+        parsed_profile.feed(profile); parsed_home.feed(home)
+        article_ids = lambda parsed: [attrs["id"] for tag, attrs in parsed.tags if tag == "article"]
+        self.assertEqual(article_ids(parsed_profile), ["post-" + post["id"] for post in own])
+        self.assertEqual(len(set(article_ids(parsed_profile))), 9)
+        self.assertEqual(article_ids(parsed_home), ["post-" + post["id"] for post in result[:7]])
+        self.assertNotIn("post-" + own[-1]["id"], article_ids(parsed_home))
+        visible, older = profile.split('<details class="photo-post-archive">', 1)
+        parsed_visible, parsed_older = Tags(), Tags()
+        parsed_visible.feed(visible); parsed_older.feed(older)
+        self.assertEqual(len(article_ids(parsed_visible)), 3)
+        self.assertEqual(len(article_ids(parsed_older)), 6)
+        self.assertIn('<summary>以前の投稿（6件）</summary>', older)
+        for value in (other["name"], other["text"], other["image"], other["sourceUrl"]):
+            self.assertNotIn(value, profile)
+        other_profile = stories.render_model_stories(other["modelId"], result)
+        self.assertIn(other["text"], other_profile)
+        self.assertNotIn(own[0]["name"], other_profile)
+        self.assertEqual(result, before)
+
+    def test_each_dated_post_links_to_its_own_profile_anchor_and_keeps_original_context(self):
+        result = self.mixed_history()
+        own_id = self.data["stories"][0]["model_id"]
+        profile = stories.render_model_stories(own_id, result)
+        own = [post for post in result if post["modelId"] == own_id]
+        for page, posts in ((profile, own), (stories.render_photo_timeline(result), result[:7])):
+            for post in posts:
+                with self.subTest(post=post["id"]):
+                    target = post["profileUrl"] + "#post-" + post["id"]
+                    self.assertIn(f'<a href="{target}"><time datetime="{post["publishedAt"]}">'
+                                  f'{post["dateLabel"]}</time></a>', page)
+                    self.assertEqual(page.count(f'id="post-{post["id"]}"'), 1)
+                    self.assertIn(post["text"], page)
+                    self.assertIn(post["settingLabel"], page)
+                    self.assertIn(f'href="{post["sourceUrl"]}">写真の掲載特集', page)
+        self.assertIn('datetime="2026-11-15T10:00:00+09:00">2026年11月15日 10:00', profile)
+        self.assertIn('舞台：2031年11月', profile)
+
+    def test_person_timeline_keeps_reviewed_motion_still_fallback_and_modal_history(self):
+        result = stories.load_photo_stories(ROOT, now=NOW)
+        post = next(post for post in result if "motion" in post)
+        own = [item for item in result if item["modelId"] == post["modelId"]]
+        profile = stories.render_model_stories(post["modelId"], result)
+        parsed = Tags(); parsed.feed(profile)
+        video = next(attrs for tag, attrs in parsed.tags
+                     if tag == "video" and "data-story-video" not in attrs)
+        self.assertEqual(video["poster"], post["image"])
+        self.assertEqual(video["preload"], "none")
+        for field in ("controls", "playsinline", "muted"):
+            self.assertIn(field, video)
+        self.assertNotIn("autoplay", video)
+        fallback = next(attrs for tag, attrs in parsed.tags
+                        if tag == "a" and "data-story-motion-fallback" in attrs)
+        self.assertEqual(fallback["href"], post["sourceUrl"])
+        self.assertIn("hidden", fallback)
+        payload = profile.split('<script type="application/json" data-photo-story-data>', 1)[1].split('</script>', 1)[0]
+        self.assertEqual(json.loads(payload), own)
+        self.assertIn('data-story-dialog', profile)
 
     def test_story_rings_expose_actual_local_post_time_and_accessible_context(self):
         result = stories.load_photo_stories(ROOT, now=NOW)

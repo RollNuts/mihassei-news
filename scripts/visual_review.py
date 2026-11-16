@@ -14,6 +14,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 try:
+    from .publication_inputs import read_publication_json
     from .article_diagrams import DIAGRAM_STATUSES, article_diagram_state
     from .editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from .generated_photos import (
@@ -23,6 +24,7 @@ try:
     )
     from .media_policy import usable_cached_photo
 except ImportError:
+    from publication_inputs import read_publication_json
     from article_diagrams import DIAGRAM_STATUSES, article_diagram_state
     from editorial_covers import SVG_NAMESPACE, reviewed_story_scene
     from generated_photos import (
@@ -39,7 +41,7 @@ PUBLICATION_KINDS = ("generated_jpeg", "editorial_svg", "stock_photo", "generic_
 
 def _review_records(root: Path) -> dict:
     try:
-        payload = json.loads((root / REVIEW_FILE).read_text(encoding="utf-8"))
+        payload = read_publication_json(root / REVIEW_FILE)
     except (OSError, UnicodeError, ValueError):
         return {}
     if (not isinstance(payload, dict)

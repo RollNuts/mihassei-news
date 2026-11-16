@@ -275,8 +275,8 @@
     "summary": "2031年、発酵食品工場向けに菌のRNAの状態を調べる検査機が発売された。先行試験に参加した豆みその工場では同じ大豆を仕込んだ2槽の違いが見つかり、職人が片方の熟成を変更。安全確認と試食を経て「まろやか」「香り強め」の2種類のみそを出荷した。",
     "paragraphs": [
       "2031年11月16日、発酵中の微生物のRNAを調べる工場向け検査機が発売された。先行試験に参加した豆みその工場では、同じ大豆を同じ日に仕込んだ二つの槽から少量ずつ試料を取り、菌の働き方に違いがあると分かった。工場は片方を通常品、もう片方を試作品として扱い、完成後には味の異なる二種類のみそとして出荷した。",
-      "検査機が読むのは、菌がたんぱく質を作る過程に関わる「tRNA」という小さな分子だ。試料から取り出した分子を細い穴に通すと電流が変わり、その信号をAIが分類する。従来も温度や酸度を測って発酵を管理していたが、新機種は菌の内部の状態の違いまで比較できる。ただし、電流の違いだけで味や安全性を判定する機械ではない。",
-      "工場の発酵担当者（58）は、二槽の結果を見て、すぐに「失敗した槽」とは決めなかった。同じ仕込みから同じ味を出すなら両方を規格に合わせて調整するのが普通だ。しかし今回は、違う状態を無理にそろえず別の味を試すため、片方だけ熟成日数を延ばすことにした。菌の信号は判断のきっかけにとどめ、香りと味の試験は人が行い、食品としての検査は二槽とも通常どおり通した。",
+      "検査機が読むのは、菌がたんぱく質を作る過程に関わる「tRNA」という小さな分子だ。試料から取り出した分子を細い穴に通すと電流が変わり、その信号をAIが分類する。従来も温度や酸度を測って発酵を管理していたが、新機種は菌の内部の状態の違いまで比較できる。ただし、信号の違いから味や安全性、必要な熟成日数までは分からない。",
+      "工場の発酵担当者（58）は、二槽の結果を見て、すぐに「失敗した槽」とは決めなかった。同じ仕込みから同じ味を出すなら両方を規格に合わせて調整するのが普通だ。今回は温度や酸度の記録と試料の香りも確かめ、片方を試作品用の槽として残した。そこから少量を取り分けて熟成を延ばす試験をし、香りと味の変化を見て、その槽を長く置く期間を決めた。食品としての検査は二槽とも通常どおり通した。",
       "先週末の試食では、予定どおり仕上げた槽は「まろやか」、熟成を延ばした槽は「香り強め」の札を付けて小皿に盛られた。二つを食べ比べた来場者は、好みの違う味をそれぞれ選んだ。工場はどちらかを不合格にして混ぜ直すのではなく、試験分のみそを二種類の商品として出荷することにした。出荷担当は、同じ原料番号から二種類の製造記録を作り直した。",
       "発売元は今後も温度計や職人の味見を置き換えるものではなく、仕込み途中に「別の可能性がある」と気付くための道具だと説明する。工場の発酵担当者は、以前なら規格外候補に付けていた赤い札を外し、二つの槽の記録を別々に保管棚へ戻した。検査機が増やしたのは合格印の数ではなく、完成品を一種類に決めない選択肢だった。"
     ],
@@ -287,7 +287,7 @@
       "url": "https://www.jst.go.jp/pr/announce/20261112-3/index.html",
       "topic": "2026年11月12日の共同発表では、ナノポアで得た電流信号と深層学習を使い、大腸菌のtRNAの種類・存在量・一部の修飾を解析する手法を報告。2026年11月9日付の学術誌掲載に対応する成果で、食品発酵用の検査機発売、菌の状態から味を決める実用化、2031年の製造・試食・出荷を実証した発表ではない。架空の発酵工場、商品、職人、二槽の検査結果と熟成・出荷はすべて2031年の創作。"
     },
-    "scene_prompt": "A 58-year-old fictional Japanese female fermentation specialist carefully pours two small samples into separate shallow stainless-steel sample trays beside two large fermentation vats. Photorealistic documentary press photograph inside a clean traditional-modern soybean fermentation factory in November, practical work clothes, realistic bright workshop lighting, focused hands and clear samples, no readable text, no logos, no recognizable real person, one coherent scene, 16:9.",
+    "scene_prompt": "A photorealistic documentary photograph of a fictional 58-year-old Japanese female fermentation specialist at a November soybean-miso factory tasting. Two separate shallow white dishes of naturally brown miso sit clearly apart on a clean tasting counter. An adult visitor tastes one sample with a small spoon while the specialist points gently toward the other dish. Both dishes, the spoon and the two people are visible in one natural medium-wide frame; fermentation equipment is softly visible behind them. Practical clean work clothes, calm focused expressions, natural window light, realistic skin and food textures. No labels, text, logos, screens or recognizable real people. One coherent scene, 16:9.",
     "visual_strategy": "cpu-photo",
     "tags": [
       "発酵",
@@ -321,13 +321,14 @@
       "motive": "同じ原料を無駄にせず菌の状態の差を新しい風味の選択肢へ変えたい",
       "ordinary_alternative": "温度・酸度や完成後の試食をもとに規格をそろえ、はずれる分を調整する",
       "why_not": "発酵途中に二槽の差を見分けられれば、別々の熟成を試して双方を商品にできるため",
-      "evidence_quote": "違う状態を無理にそろえず別の味を試すため、片方だけ熟成日数を延ばすことにした。"
+      "evidence_quote": "そこから少量を取り分けて熟成を延ばす試験をし、香りと味の変化を見て、その槽を長く置く期間を決めた。"
     },
     "plausibility_basis": {
       "present_signal": "2026年の一次研究で大腸菌tRNAの種類・量・修飾をナノポア電流とAIで解析可能になった",
       "continuation_force": "食品生産において発酵中の微生物の状態を詳しく見たい需要があり、分析技術の応用が期待される",
       "future_result": "2031年の架空の発酵工場で菌の分析結果を熟成の分岐に利用し二商品を出荷する"
-    }
+    },
+    "modified_at": "2026-11-17T00:50:34+09:00"
   },
 {
     "slug": "seven-venues-compose-one-live-song",

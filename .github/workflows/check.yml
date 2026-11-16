@@ -73,11 +73,13 @@ jobs:
           node-version: '22'
       - name: Verify native image bytes and retry-safe candidate staging
         run: node scripts/native_image_ci_test.js
+      - name: Verify read-only image workflow control
+        run: node --test tests/image-control.test.cjs tests/image-control-mcp.test.cjs
       - name: Validate read-only public health checker
         run: python3 -m py_compile scripts/check_live.py
       # tests/site_build_fixture.py runs a clean full build once during the
-      # Python suite. Keep its exact public output for the remaining checks;
-      # rebuilding the same 108 articles here wasted over two runner minutes.
+      # Python suite. Reuse that exact output for static checks and the local
+      # Worker smoke test instead of building the same revision in another job.
       - name: Verify the fresh, fully tested site build (no duplicate build)
         run: |
           test -s dist/index.html
@@ -87,6 +89,13 @@ jobs:
           test -s dist/og/brand.png
           test -s dist/_headers
           test "$(cat dist/build-revision.txt)" = "$(git rev-parse HEAD)"
+      - name: Run local free Durable Object API tests on the tested site build
+        timeout-minutes: 2
+        run: |
+          npx --yes wrangler@4 dev --local --ip 127.0.0.1 --port 8788 > /tmp/mihassei-dev.log 2>&1 &
+          WORKER_PID=$!
+          trap 'kill "$WORKER_PID" 2>/dev/null || true; cat /tmp/mihassei-dev.log' EXIT
+          python3 scripts/smoke_engagement.py http://127.0.0.1:8788
       - name: Report selected images and stale illustration reviews
         run: python3 scripts/visual_review.py --compact
       - name: Audit all sitemap URLs and crawlable internal links (no APIs)

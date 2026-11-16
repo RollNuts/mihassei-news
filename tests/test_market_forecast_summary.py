@@ -98,6 +98,75 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertNotIn('0%',markup)
         self.assertNotIn('判定済み：的中',markup)
 
+    def test_latest_assessment_keeps_the_original_prediction_and_reason_separate(self):
+        fc={**original(),'reason':'受注が増加した。利益率も改善した。'}
+        latest=review(stance='弱気',reason='新たな費用増で利益率の改善が鈍化した。市場の売りも広がった。')
+        events=[fc,latest];before=copy.deepcopy(events)
+        markup=render_market_outlook_board(events)
+        self.assertIn('11月17日のTOPIXは上昇を予想。',markup)
+        self.assertIn('の当初の予想',markup)
+        self.assertIn('<strong>当初の理由</strong>'+fc['reason'],markup)
+        self.assertIn('最新の評価：',markup)
+        self.assertIn('datetime="'+latest['at']+'"',markup)
+        self.assertIn('弱気（暫定的に逆行）',markup)
+        self.assertIn('<strong>評価の理由</strong>'+latest['reason'],markup)
+        self.assertIn('評価の出典：'+latest['source']['title'],markup)
+        self.assertLess(markup.index(fc['reason']),markup.index(latest['reason']))
+        self.assertIn('確定0件',markup)
+        self.assertNotIn('0%',markup)
+        self.assertEqual(events,before)
+
+    def test_late_source_review_is_due_but_does_not_make_a_reported_close_final(self):
+        late=review(id='2026-11-18-close-01',at='2026-11-18T18:30:00+09:00',
+                    stance='弱気',observed_value=3300.0,observed_on='2026-11-17',
+                    reason='報道された終値は当初の上昇予想を下回った。公式終値の確認ができていないため、正式な結果は保留する。',
+                    source={'title':'終値の報道','url':'https://example.com/reported-close',
+                            'published_on':'2026-11-17','checked_on':'2026-11-18'})
+        events=[original(),late]
+        markup=render_market_outlook_board(events)
+        self.assertIn('結果日到来・確認待ち',markup)
+        self.assertIn(late['reason'],markup)
+        self.assertIn('datetime="2026-11-17"',markup)
+        self.assertIn('集計時点：<time datetime="2026-11-18T18:30:00+09:00"',markup)
+        self.assertIn('確定0件',markup)
+        self.assertNotIn('確認済み終値',markup)
+        self.assertNotIn('判定済み',markup)
+        self.assertNotIn('3,300.00',markup)
+        self.assertNotIn('0%',markup)
+        past=render_market_outlook_board(events,before=datetime.fromisoformat('2026-11-16T09:00:00+09:00'))
+        self.assertIn('結果待ち',past)
+        for hidden in (late['reason'],late['source']['url'],'最新の評価：','結果日到来'):
+            self.assertNotIn(hidden,past)
+
+    def test_no_review_status_is_qualified_by_recorded_time_without_a_wall_clock(self):
+        events=[original()]
+        markup=render_market_outlook_board(events)
+        self.assertIn('結果待ち',markup)
+        self.assertIn('結果日：<time datetime="2026-11-17">2026-11-17</time>',markup)
+        self.assertIn('集計時点：<time datetime="2026-11-16T08:30:00+09:00"',markup)
+        self.assertIn('この予想の更新評価はまだありません。',markup)
+        self.assertNotIn('最新の評価：',markup)
+        later=render_market_outlook_board(events,before=datetime.fromisoformat('2026-11-19T09:00:00+09:00'))
+        self.assertIn('結果日到来・確認待ち',later)
+        self.assertIn('集計時点：<time datetime="2026-11-19T09:00:00+09:00"',later)
+        self.assertNotIn('最新の評価：',later)
+
+    def test_review_reason_and_source_are_escaped_and_unsafe_source_is_rejected(self):
+        latest=review(reason='売りが広がった。<script>alert("reason")</script>という文字列もデータとして扱う。',
+                      source={'title':'終値 <img src=x onerror="bad"> & 資料',
+                              'url':'https://example.com/?q=" onclick="bad',
+                              'published_on':'2026-11-16','checked_on':'2026-11-16'})
+        markup=render_market_outlook_board([original(),latest])
+        self.assertIn(html.escape(latest['reason']),markup)
+        self.assertIn(html.escape(latest['source']['title']),markup)
+        self.assertIn('href="'+html.escape(latest['source']['url'],quote=True)+'"',markup)
+        self.assertNotIn('<script>',markup)
+        self.assertNotIn('<img src=x',markup)
+        self.assertNotIn(' onclick="bad',markup)
+        latest['source']['url']='javascript:alert(1)'
+        with self.assertRaises(ValueError):
+            render_market_outlook_board([original(),latest])
+
     def test_explicit_final_result_and_rate_do_not_leak_into_earlier_snapshot(self):
         events=[original(),review(),final_review()]
         markup=render_market_outlook_board(events)
@@ -110,6 +179,7 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertIn('確定0件',past)
         self.assertNotIn('3,430.00',past)
         self.assertNotIn('判定済み',past)
+        self.assertNotIn('最新の評価：',past)
 
     def test_rate_uses_all_confirmed_records_not_only_three_visible_cards(self):
         events=[]

@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { imageControlMcp } from "./image_control_mcp.mjs";
 export { ReaderComments } from "./comments.js";
 
 // Browser-level engagement and page displays, without IP logging or external APIs.
@@ -83,6 +84,94 @@ function json(data, status = 200) {
       "x-content-type-options":"nosniff"
     }
   });
+}
+
+function imageControlJson(data, status = 200) {
+  const response=json(data,status);
+  response.headers.set("x-robots-tag","noindex");
+  return response;
+}
+async function imageControl(req, url, env={}) {
+  if(req.method!=="GET") {
+    const response=imageControlJson({error:"method not allowed"},405);
+    response.headers.set("allow","GET");
+    return response;
+  }
+  const nonces=url.searchParams.getAll("nonce");
+  if(nonces.length!==1 || !/^[A-Za-z0-9]{1,64}$/.test(nonces[0]) ||
+     [...url.searchParams.keys()].some(key=>key!=="nonce"))
+    return imageControlJson({error:"invalid nonce"},400);
+
+  const controller=new AbortController();
+  let timer,timedOut=false,failureReason="runtime_error";
+  try {
+    const headers={"accept":"application/vnd.github+json",
+      "user-agent":"mihassei-news-image-control",
+      "cache-control":"no-cache","x-github-api-version":"2022-11-28"};
+    // Optional server-only credential. A defined bad binding never falls back
+    // to anonymous access; caller headers are never used for authentication.
+    if(Object.hasOwn(env,"IMAGE_CONTROL_GITHUB_READ_TOKEN")) {
+      const token=env.IMAGE_CONTROL_GITHUB_READ_TOKEN;
+      if(typeof token!=="string" || !/^[A-Za-z0-9_]{20,255}$/.test(token))throw new Error("unavailable");
+      headers.authorization="Bearer "+token;
+    }
+    const readGithub=async(path,invalidReason)=>{
+        failureReason="runtime_error";
+        if(controller.signal.aborted)throw new Error("unavailable");
+        const response=await fetch("https://api.github.com/repos/RollNuts/mihassei-news"+path,{
+          // Workers does not implement redirect:"error". Manual mode returns
+          // redirects without following them; the status check below rejects them.
+          method:"GET",redirect:"manual",cache:"no-store",signal:controller.signal,
+          headers
+        });
+        if(!response.ok) {
+          // Only this fixed enum is public; never expose GitHub response data.
+          failureReason=path==="" && response.status===404 ? "repository_unavailable"
+            : response.status===401 ? "github_http_401"
+            : [403,429].includes(response.status) && response.headers.get("x-ratelimit-remaining")==="0"
+            ? "github_rate_limit" : response.status===403 ? "github_http_403"
+            : response.status===429 ? "github_http_429"
+            : response.status>=500 && response.status<=599 ? "github_http_5xx" : "github_http_other";
+          throw new Error("unavailable");
+        }
+        failureReason=invalidReason;
+        const body=await boundedBody(response,16*1024);
+        if(body===null)throw new Error("unavailable");
+        return JSON.parse(new TextDecoder().decode(body));
+    };
+    // Fixed-origin reads only: anonymous workflow access implies public
+    // visibility; authenticated access must verify it before reading workflow.
+    // Both reads share this deadline/controller; no result is cached or retried.
+    const workflow=await Promise.race([
+      (async()=>{
+        if(headers.authorization) {
+          const repo=await readGithub("","repository_unavailable");
+          if(repo?.full_name!=="RollNuts/mihassei-news" || repo.private!==false || repo.visibility!=="public")
+            throw new Error("unavailable");
+        }
+        return readGithub("/actions/workflows/free-cpu-scenes.yml","invalid_response");
+      })(),
+      new Promise((_,reject)=>{
+        timer=setTimeout(()=>{
+          timedOut=true;
+          controller.abort();
+          reject(new Error("unavailable"));
+        },3000);
+      })
+    ]);
+    if(workflow?.path!==".github/workflows/free-cpu-scenes.yml" ||
+       !["active","deleted","disabled_fork","disabled_inactivity","disabled_manually"].includes(workflow.state))
+      throw new Error("unavailable");
+    return imageControlJson({version:1,repository:"RollNuts/mihassei-news",
+      path:workflow.path,state:workflow.state,nonce:nonces[0],checked_at:new Date().toISOString()});
+  } catch(_) {
+    const response=imageControlJson({error:"image control unavailable"},503);
+    response.headers.set("x-image-control-reason",timedOut ? "timeout" : failureReason);
+    return response;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+  }
 }
 
 export class NewsroomStats extends DurableObject {
@@ -833,6 +922,12 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
+    if(url.pathname==="/api/image-control/mcp")return imageControlMcp(req,url,nonce=>{
+      const controlUrl=new URL("/api/image-control",url);
+      controlUrl.searchParams.set("nonce",nonce);
+      return imageControl(new Request(controlUrl),controlUrl,env);
+    },boundedBody);
+    if(url.pathname==="/api/image-control")return imageControl(req,url,env);
     const isComments=["/api/comments","/api/comments/summary","/api/comments/admin"].includes(url.pathname);
     if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
     if(req.method==="POST") {
