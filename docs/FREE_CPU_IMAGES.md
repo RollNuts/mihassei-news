@@ -26,6 +26,8 @@
 
 保存receiptの`review_only`は保存用途であり採否を示さない。既存のSHA一致採否は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)に従い保持する。同じrunの再実行は、計画・モデル取得より先に既存候補ブランチをSHAで再照合する。ブランチ保存が未確認なら同じrunの既存artifactだけを回収し、元バイトがなければ停止する。再実行で新規生成せず、既存refの更新・削除・forceも行わない。main本文が後から変わった候補は元記事SHAのまま保持し、Summaryに`stale`と示す。現本文への採用には改めて原記事との差と実画像の確認が必要。
 
+候補の実画像はSummaryに記録された不変commitの `maintenance/cpu-image-candidates/<slug>/bundle/assets/generated/<slug>.jpg` を取得する。GitHub接続の `fetch_file(encoding="base64")` を使う場合は、返却値の改行・空白を除いてJPEGのdata URLへ変換し、画像表示できる実行環境へ直接渡す。base64全文を会話へ転記しない。HTTP取得やSHA一致だけを目視確認と扱わず、表示できない環境では未目視として既存担当へ渡す。
+
 目視で記事と違う物体になった画像は、manifestの`rejected`へ記事指紋と理由を記録して保留する。Mac・CPUとも通常の生成対象から外れ、記事はSVGで公開を続ける。現在の呼び鈴の記事はこの保留対象。新しい正しいJPEGを実際に生成・確認するまで、古い画像の指紋やseedを変更して解除しない。
 
 品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用候補を保存し、自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の手動選定は保留記事を除外する。
