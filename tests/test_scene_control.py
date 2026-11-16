@@ -16,6 +16,7 @@ from unittest.mock import patch, Mock
 
 from scripts import mac_scene_control as control
 from scripts import mac_scene_worker as worker
+from scripts.publication_inputs import publication_json_snapshot
 
 
 class ControlTests(unittest.TestCase):
@@ -358,7 +359,13 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(git('rev-parse', 'origin/main'), original)
         with patch.object(control, 'launch_loaded', return_value=True), \
              patch.object(control, 'cpu_state', return_value={'state': 'active'}):
-            result = control.status()
+            # Exercise the real git Snapshot both alone and during a build.
+            for context in (contextlib.nullcontext, publication_json_snapshot):
+                with self.subTest(context=context.__name__), context():
+                    result = control.status()
+                    self.assertEqual(result['generated_images'], 1)
+                    self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
+                    self.assertIsNone(result['counts_error'])
         self.assertEqual(result['generated_images'], 1)
         self.assertEqual(result['pending_articles'], 1)
         self.assertEqual(result['counts_source'], 'origin/main at ' + latest)
