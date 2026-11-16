@@ -80,6 +80,18 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     const commits = new Map();
     const branches = new Map();
     const files = new Map();
+    const cloud = {
+      repository: {full_name: repository, private: false, visibility: "public"},
+      workflow: {path: ".github/workflows/free-cpu-scenes.yml", state: "active"},
+      mainSha: baseCommitSha,
+      commit: {sha: baseCommitSha, tree: {sha: baseTreeSha}},
+      tree: {sha: baseTreeSha, truncated: false, tree: [
+        {path: "assets/generated/existing.jpg", type: "blob", size: 4096},
+        {path: "assets/generated/archive/existing.JPEG", type: "blob", size: 1024},
+        {path: "assets/generated/manifest.json", type: "blob", size: 3000},
+        {path: "assets/other.jpg", type: "blob", size: 999999}
+      ]}
+    };
     let sequence = 0;
     function newSha(kind) { return runtime.sha256(kind + ":" + (++sequence)).slice(0, 40); }
     function ok(content) { return {isError: false, structuredContent: content}; }
@@ -96,8 +108,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     commits.set(baseCommitSha, {tree: baseTreeSha, parent: null});
     function log(name, args) {
       demand(args.repository_full_name === repository || (name === "fetch" &&
-        (args.url === "https://api.github.com/repos/" + repository + "/git/ref/heads/" + preflightBranch ||
-        args.url.startsWith("https://api.github.com/repos/" + repository + "/git/ref/heads/" + claimBranchPrefix))),
+        (args.url === "https://api.github.com/repos/" + repository ||
+        args.url.startsWith("https://api.github.com/repos/" + repository + "/"))),
         "repository must be explicit");
       calls.push({name, args});
     }
@@ -197,8 +209,19 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       },
       async fetch(args) {
         log("fetch", args);
+        const root = "https://api.github.com/repos/" + repository;
+        function cloudResult(name) {
+          if (cloud.error === name) return apiError("SERVICE_UNAVAILABLE", "Injected " + name + " lookup failure");
+          if (cloud.malformed === name) return ok({content: "{unreadable"});
+          return ok({content: JSON.stringify(cloud[name])});
+        }
+        if (args.url === root) return cloudResult("repository");
+        if (args.url === root + "/actions/workflows/free-cpu-scenes.yml") return cloudResult("workflow");
+        if (args.url === root + "/git/commits/" + cloud.mainSha) return cloudResult("commit");
+        if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
         const branch = args.url.split("/git/ref/heads/")[1];
-        let sha = branches.get(branch);
+        let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
+        if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
         if (!sha) return apiError("NOT_FOUND", "Not Found");
         if (branch.startsWith(claimBranchPrefix) && faults.claimWrongHead) sha = "f".repeat(40);
         return ok({content: JSON.stringify({ref: "refs/heads/" + branch, object: {sha}})});
@@ -214,7 +237,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       }
     };
     return {
-      github, calls, branches, resolve,
+      github, calls, branches, resolve, cloud,
       writes: () => calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref"),
       count: name => calls.filter(call => call.name === name).length,
       readText: (ref, path) => utf8Text(resolve(ref).get(path).bytes)
@@ -425,12 +448,126 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         counters.generated++;
         demand(args.prompt === context.plan.prompt && args.transparent_background === false,
           "generator must receive the planned prompt");
+        demand(context.mock.calls.slice(-1)[0].args.url ===
+          "https://api.github.com/repos/" + repository + "/actions/workflows/free-cpu-scenes.yml",
+          "generator must immediately follow a live workflow check");
         const receipt = JSON.parse(context.mock.readText(preflightBranch, preflightPrefix + "receipt.json"));
         demand(receipt.kind === "native_image_transport_preflight", "generation follows a saved isolated preflight");
         return context.input.imageGenResult;
       }
     };
   }
+
+  const cloudReady = await scenario("cloud-status");
+  const readyStatus = await cloudReady.service.cloudStatus();
+  assert(readyStatus.state === "active" && readyStatus.public === true &&
+    readyStatus.main_commit_sha === baseCommitSha && readyStatus.jpeg_bytes === 5120 &&
+    readyStatus.jpeg_cap_bytes === 1536 * 1024 * 1024 && cloudReady.mock.writes().length === 0,
+    "cloud status reads authoritative public metadata, workflow and generated JPEG sizes without writes");
+  await cloudReady.service.cloudStatus();
+  const cloudURLs = () => cloudReady.mock.calls.filter(call => call.name === "fetch").map(call => call.args.url);
+  assert(cloudURLs().filter(url => url.includes("/git/trees/")).length === 1 &&
+    cloudURLs().filter(url => url.endsWith("/actions/workflows/free-cpu-scenes.yml")).length === 2 &&
+    cloudURLs().filter(url => url.endsWith("/git/ref/heads/main")).length === 2 &&
+    cloudURLs().filter(url => url === "https://api.github.com/repos/" + repository).length === 2,
+    "only immutable main JPEG totals are cached; visibility, main ref and stop authority are live");
+  cloudReady.mock.cloud.mainSha = "3".repeat(40);
+  cloudReady.mock.cloud.commit = {sha: cloudReady.mock.cloud.mainSha, tree: {sha: "4".repeat(40)}};
+  cloudReady.mock.cloud.tree = {sha: "4".repeat(40), truncated: false,
+    tree: [{path: "assets/generated/new.jpg", type: "blob", size: 8192}]};
+  assert((await cloudReady.service.cloudStatus()).jpeg_bytes === 8192 &&
+    cloudURLs().filter(url => url.includes("/git/trees/")).length === 2,
+    "a changed main ref invalidates the JPEG snapshot and reads its immutable tree");
+
+  for (const [label, change] of [
+    ["disabled workflow", cloud => { cloud.workflow.state = "disabled_manually"; }],
+    ["unknown workflow", cloud => { cloud.workflow.state = "unknown"; }],
+    ["missing workflow state", cloud => { delete cloud.workflow.state; }],
+    ["wrong workflow path", cloud => { cloud.workflow.path = ".github/workflows/other.yml"; }],
+    ["private repository", cloud => { cloud.repository.private = true; cloud.repository.visibility = "private"; }],
+    ["unknown publicity", cloud => { delete cloud.repository.private; }],
+    ["unknown visibility", cloud => { delete cloud.repository.visibility; }],
+    ["wrong repository", cloud => { cloud.repository.full_name = "other/repository"; }],
+    ["JPEG cap exceeded", cloud => { cloud.tree.tree[0].size = 1536 * 1024 * 1024; }],
+    ["unknown JPEG size", cloud => { delete cloud.tree.tree[0].size; }],
+    ["invalid JPEG size", cloud => { cloud.tree.tree[0].size = -1; }],
+    ["truncated tree", cloud => { cloud.tree.truncated = true; }],
+    ["unknown tree completeness", cloud => { delete cloud.tree.truncated; }],
+    ...["repository", "main", "commit", "tree", "workflow"].map(name =>
+      [name + " API failure", cloud => { cloud.error = name; }]),
+    ["malformed workflow response", cloud => { cloud.malformed = "workflow"; }]
+  ]) {
+    const context = await scenario("cloud-block-" + label), counts = {reads: 0, generated: 0};
+    change(context.mock.cloud);
+    const options = gateOptions(context, counts);
+    const error = await failure(() => context.service.generateAndStage(context.plan, options),
+      label + " blocks new generation");
+    assert(error.message.includes("Cloud image operations stopped:") &&
+      counts.generated === 0 && counts.reads === 0 && context.mock.writes().length === 0,
+      label + " stops before the byte callback, generator and remote writes");
+    await failure(() => context.service.stage(context.plan, context.input), label + " blocks recovery writes");
+    await failure(() => context.service.checkTransport(context.plan, options), label + " blocks transport diagnostic writes");
+    assert(context.mock.writes().length === 0 && counts.reads === 0,
+      label + " cannot write through stage or checkTransport");
+  }
+  const capBoundary = await scenario("cloud-cap-boundary");
+  capBoundary.mock.cloud.tree.tree[0].size = 1536 * 1024 * 1024 - 1024;
+  assert((await capBoundary.service.cloudStatus()).jpeg_bytes === 1536 * 1024 * 1024,
+    "the existing inclusive 1.5 GiB JPEG cap permits its exact boundary");
+
+  const stopBetweenWrites = await scenario("stop-between-writes");
+  const writeBlob = stopBetweenWrites.mock.github.create_blob;
+  stopBetweenWrites.mock.github.create_blob = async args => {
+    const result = await writeBlob(args);
+    stopBetweenWrites.mock.cloud.workflow.state = "disabled_manually";
+    return result;
+  };
+  const stoppedWrite = await failure(() => stopBetweenWrites.service.stage(stopBetweenWrites.plan, stopBetweenWrites.input),
+    "a stop arriving after the first blob blocks the next remote write");
+  assert(stopBetweenWrites.mock.writes().length === 1 && stoppedWrite.checkpoint.identity === stopBetweenWrites.plan.identity,
+    "mid-upload stop retains the original checkpoint and makes no further writes");
+
+  const stoppedResume = await scenario("stop-before-resume", {treeOnce: true});
+  const resumeCheckpoint = (await failure(() => stoppedResume.service.stage(stoppedResume.plan, stoppedResume.input),
+    "resume fixture retains uploaded files")).checkpoint;
+  const writesBeforeStop = stoppedResume.mock.writes().length;
+  stoppedResume.mock.cloud.workflow.state = "disabled_manually";
+  const stoppedResumeError = await failure(() => stoppedResume.service.resume(stoppedResume.plan, resumeCheckpoint),
+    "resume enforces live workflow stop before its next mutation");
+  assert(stoppedResume.mock.writes().length === writesBeforeStop && stoppedResumeError.checkpoint.filesComplete &&
+    stoppedResumeError.checkpoint.identity === stoppedResume.plan.identity,
+    "stopped resume preserves its original complete-file checkpoint without writes");
+
+  const stoppedBeforeGenerate = await scenario("stop-after-claim"), stoppedCounts = {reads: 0, generated: 0};
+  const fetchBeforeStop = stoppedBeforeGenerate.mock.github.fetch;
+  stoppedBeforeGenerate.mock.github.fetch = async args => {
+    const result = await fetchBeforeStop(args);
+    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + stoppedBeforeGenerate.plan.identity))
+      stoppedBeforeGenerate.mock.cloud.workflow.state = "disabled_manually";
+    return result;
+  };
+  const stoppedClaim = await failure(() => stoppedBeforeGenerate.service.generateAndStage(stoppedBeforeGenerate.plan,
+    gateOptions(stoppedBeforeGenerate, stoppedCounts)), "live stop after claim ownership blocks the generator");
+  assert(stoppedCounts.generated === 0 && stoppedClaim.generationClaim.branch ===
+    claimBranchPrefix + stoppedBeforeGenerate.plan.identity && stoppedBeforeGenerate.mock.branches.has(stoppedClaim.generationClaim.branch),
+    "pre-generation stop preserves the existing claim without replacing its identity");
+
+  const stoppedAfterGenerate = await scenario("stop-after-generation"), outputCounts = {reads: 0, generated: 0};
+  const outputOptions = gateOptions(stoppedAfterGenerate, outputCounts), generateOutput = outputOptions.generate;
+  let writesBeforeOutputStop;
+  outputOptions.generate = async args => {
+    const output = await generateOutput(args);
+    writesBeforeOutputStop = stoppedAfterGenerate.mock.writes().length;
+    stoppedAfterGenerate.mock.cloud.workflow.state = "disabled_manually";
+    return output;
+  };
+  const outputStop = await failure(() => stoppedAfterGenerate.service.generateAndStage(stoppedAfterGenerate.plan, outputOptions),
+    "a stop after generation blocks all candidate uploads");
+  assert(outputCounts.generated === 1 && stoppedAfterGenerate.mock.writes().length === writesBeforeOutputStop &&
+    outputStop.imageGenResult === stoppedAfterGenerate.input.imageGenResult &&
+    outputStop.checkpoint.identity === stoppedAfterGenerate.plan.identity && !stoppedAfterGenerate.mock.branches.has(stoppedAfterGenerate.branch),
+    "post-generation stop retains real output, claim and checkpoint without more writes or generation");
+
   for (const [label, faults, brokenReader] of [
     ["unavailable byte bridge", {}, true],
     ["failed GitHub save", {treeOnce: true}, false],
@@ -447,6 +584,9 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   const gatedSaved = await gated.service.generateAndStage(gated.plan, gateOptions(gated, counters));
   assert(gatedSaved.status === "saved" && counters.generated === 1 && counters.reads === 2,
     "successful gate reads probe and generated output through one callback and generates once");
+  assert(gated.mock.calls.every((call, index) => !(call.name.startsWith("create_") || call.name === "update_ref") ||
+    gated.mock.calls[index - 1]?.args.url === "https://api.github.com/repos/" + repository + "/actions/workflows/free-cpu-scenes.yml"),
+    "every successful remote mutation immediately follows a live workflow state response");
   const probeReceipt = JSON.parse(gated.mock.readText(preflightBranch, preflightPrefix + "receipt.json"));
   const gatedReceipt = JSON.parse(gated.mock.readText(gated.branch, receiptPath));
   const claimBranch = claimBranchPrefix + gated.plan.identity;
@@ -466,9 +606,13 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     "transport fixture and claim remain outside the article candidate tree");
   protectedUnchanged(gated, "gated save");
   const beforeReuse = gated.mock.writes().length;
+  gated.mock.cloud.workflow.state = "disabled_manually";
   const reusedGate = await gated.service.generateAndStage(gated.plan, {});
   assert(reusedGate.status === "saved" && counters.generated === 1 && gated.mock.writes().length === beforeReuse,
-    "saved candidate reuse does not need capabilities or generate a second image");
+    "saved candidate reuse remains read-only while stopped without generating a second image");
+  assert((await gated.service.load(gated.plan)).status === "saved" && gated.mock.writes().length === beforeReuse,
+    "stopped workers can still load verified existing candidate bytes");
+  gated.mock.cloud.workflow.state = "active";
 
   const secondPlan = await gated.service.prepare({...gated.args, logicalRunId: "another-generating-invocation"});
   const nextContext = {...gated, plan: secondPlan}, secondCounters = {reads: 0, generated: 0};
