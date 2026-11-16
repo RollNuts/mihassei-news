@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+from contextlib import nullcontext
 import tempfile
 import unittest
 from collections import Counter
@@ -10,6 +11,7 @@ from unittest.mock import patch
 
 from scripts import build
 from scripts.generated_photos import article_fingerprint, generated_manifest
+from scripts.mac_scene_control import image_status_counts
 from scripts.publication_inputs import publication_json_snapshot, read_publication_json
 from scripts.visual_review import reviewed_generated_scene
 from tests.test_generated_photos import fake_jpeg, fixture
@@ -158,3 +160,48 @@ class PublicationInputTests(unittest.TestCase):
              patch("scripts.publication_inputs._identity", side_effect=[(1,), (2,)]):
             with self.assertRaisesRegex(ValueError, "changed while reading"):
                 read_publication_json(self.manifest_path)
+
+    def test_virtual_snapshot_ledgers_stay_live_inside_and_outside_build(self):
+        from types import SimpleNamespace
+
+        reads = Counter()
+        files = {
+            "assets/generated/manifest.json": self.manifest_path.read_bytes(),
+            "content/visual_reviews.json": self.review_path.read_bytes(),
+            "assets/generated/" + self.jpeg.name: self.jpeg.read_bytes(),
+        }
+
+        class Snapshot:
+            # Match the remote status reader: no __fspath__ or file timestamps.
+            def __init__(self, path=""):
+                self.path = path
+
+            def __truediv__(self, path):
+                return Snapshot("/".join(part for part in (self.path, str(path)) if part))
+
+            def read_bytes(self):
+                reads[self.path] += 1
+                return files[self.path]
+
+            def read_text(self, encoding="utf-8"):
+                return self.read_bytes().decode(encoding)
+
+            def is_symlink(self):
+                return False
+
+            def stat(self):
+                return SimpleNamespace(st_size=len(self.read_bytes()))
+
+        for context in (nullcontext, publication_json_snapshot):
+            with self.subTest(context=context.__name__), context():
+                self.reviews["reviews"][self.article["slug"]]["decision"] = "accepted"
+                files["content/visual_reviews.json"] = json.dumps(self.reviews).encode()
+                before = reads["content/visual_reviews.json"]
+                counts = image_status_counts([self.article], Snapshot())
+                self.assertEqual(counts["published_images"], 1)
+                self.reviews["reviews"][self.article["slug"]]["decision"] = "rejected"
+                files["content/visual_reviews.json"] = json.dumps(self.reviews).encode()
+                counts = image_status_counts([self.article], Snapshot())
+                self.assertEqual(counts["published_images"], 0)
+                self.assertEqual(counts["held_articles"], 1)
+                self.assertEqual(reads["content/visual_reviews.json"] - before, 2)

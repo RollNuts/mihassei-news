@@ -30,9 +30,10 @@ def _identity(path):
 
 def read_publication_json(path):
     """Read live outside a build; callers must not mutate a shared build input."""
-    path = Path(path)
     inputs = _inputs.get()
-    if inputs is None:
+    # Remote git snapshots implement read_text without filesystem identity.
+    # Preserve that reader contract and keep virtual inputs live in a build too.
+    if inputs is None or not isinstance(path, Path):
         return json.loads(path.read_text(encoding="utf-8"))
     path = path.absolute()
     identity = _identity(path)
