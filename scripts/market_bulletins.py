@@ -1,12 +1,12 @@
 """Evidence-based market dispatches, separate from immutable forecasts.
 
-The dispatch stream is opt-in data, never live quotes. Static site generation
-rejects undocumented prices and foreign individual-stock recommendations.
+The dispatch stream is opt-in data, never live quotes or trade recommendations.
+Static site generation requires sourced prices and explicit market context.
 No network I/O, JavaScript API, external images or paid market data.
 """
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from email.utils import format_datetime
 from hashlib import sha256
 from html import escape
@@ -41,6 +41,15 @@ SLOTS = {
 }
 KEY = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|open|noon|close)\Z")
 CODE = re.compile(r"(?:\d{4}|\d{3}[A-Z])\Z")
+US_CODE = re.compile(r"[A-Z]{1,5}(?:[.-][A-Z])?\Z")
+STOCK_MARKETS = {
+    "東証": ("JPY", "Asia/Tokyo"),
+    "NASDAQ": ("USD", "America/New_York"),
+    "NYSE": ("USD", "America/New_York"),
+}
+STOCK_SESSIONS = {"東証": (time(9), time(15, 30)),
+                  "NASDAQ": (time(9, 30), time(16)),
+                  "NYSE": (time(9, 30), time(16))}
 JST = timedelta(hours=9)
 
 
@@ -87,8 +96,9 @@ def render_market_freshness(report, *, include_publication=True):
         start, end = window
         label = clock(start) + (" 〜 " + clock(end) if start != end else "")
         parts.append("観測値：" + label + " JST")
+    index_label = "日本の指数（JPX）" if report.get("coverage") == "investor" else "現在の指数（JPX）"
     parts.append('<a href="https://www.jpx.co.jp/markets/indices/realvalues/" '
-                 'target="_blank" rel="noopener noreferrer external">現在の指数（JPX）</a>')
+                 f'target="_blank" rel="noopener noreferrer external">{index_label}</a>')
     return '<p class="market-paper-small market-reader-freshness">' + '<br>'.join(parts) + '</p>'
 
 
@@ -127,6 +137,86 @@ def bulletin_url(item):
     return MARKET_URL + "briefings/" + item["slug"] + "/"
 
 
+def _validate_investor_picks(picks, source_urls, published):
+    """Validate sourced stock examples without imposing a mover quota."""
+    if not isinstance(picks, list) or len(picks) > 3:
+        raise ValueError("Investor coverage allows zero to three stock examples")
+    seen = set()
+    for pick in picks:
+        if not isinstance(pick, dict):
+            raise ValueError("Invalid market stock example")
+        exchange, code = pick.get("exchange"), pick.get("code")
+        if not isinstance(exchange, str) or exchange not in STOCK_MARKETS:
+            raise ValueError("Stock example needs a supported exchange")
+        currency, timezone_name = STOCK_MARKETS[exchange]
+        pattern = CODE if exchange == "東証" else US_CODE
+        if not isinstance(code, str) or not pattern.fullmatch(code):
+            raise ValueError("Stock example code does not match its exchange")
+        # Vendors use both BRK.B and BRK-B for the same US share class.
+        identity_code = code if exchange == "東証" else code.replace("-", ".")
+        if (exchange, identity_code) in seen:
+            raise ValueError("Duplicate exchange and stock code")
+        seen.add((exchange, identity_code))
+        if pick.get("currency") != currency:
+            raise ValueError("Stock currency does not match its exchange")
+        if pick.get("price_kind") not in ("close", "intraday"):
+            raise ValueError("Stock example must distinguish close and intraday prices")
+        market_day = _date(pick.get("market_date"))
+        previous_day = _date(pick.get("previous_market_date"))
+        if previous_day >= market_day:
+            raise ValueError("Previous close date must precede the stock market date")
+        observed = _timestamp(pick.get("observed_at"))
+        if observed > published:
+            raise ValueError("Stock quote cannot postdate publication")
+        market_zone = ZoneInfo(timezone_name)
+        if observed.astimezone(market_zone).date() != market_day:
+            raise ValueError("Stock market date must match its exchange-local observation date")
+        normal_open, normal_close = STOCK_SESSIONS[exchange]
+        opening = datetime.combine(market_day, normal_open, tzinfo=market_zone)
+        closing = datetime.combine(market_day, normal_close, tzinfo=market_zone)
+        session_fields = {"session_close_at", "session_source_url"}.intersection(pick)
+        if len(session_fields) == 1:
+            raise ValueError("Session close override needs both time and source")
+        if session_fields:
+            session_close = _timestamp(pick["session_close_at"])
+            session_source = pick["session_source_url"]
+            if not isinstance(session_source, str) or session_source not in source_urls:
+                raise ValueError("Session close override requires a checked report source")
+            if (session_close.astimezone(market_zone).date() != market_day
+                    or not opening < session_close <= closing):
+                raise ValueError("Session close must be on the market date within normal trading hours")
+            if session_close > published:
+                raise ValueError("Session close cannot postdate publication")
+            closing = session_close
+        if pick["price_kind"] == "close" and observed < closing:
+            raise ValueError("Closing quote cannot precede its exchange session close")
+        if not isinstance(pick.get("source_url"), str) or pick["source_url"] not in source_urls:
+            raise ValueError("Stock price requires report source")
+        previous, current = _amount(pick.get("previous_close")), _amount(pick.get("close"))
+        if previous <= 0 or current <= 0:
+            raise ValueError("Prices must be greater than zero")
+        change = 100 * (current / previous - 1)
+        if not math.isfinite(change):
+            raise ValueError("Stock percentage must be finite")
+        direction = pick.get("direction")
+        expected = "上昇" if current > previous else "下落" if current < previous else "横ばい"
+        if direction in ("急騰", "急落"):
+            if abs(change) < 5 or (change > 0) != (direction == "急騰"):
+                raise ValueError("Risers and fallers must move at least 5%, split-adjusted")
+        elif direction != expected:
+            raise ValueError("Stock direction must agree with its price change")
+        if pick.get("corporate_action_checked") is not True:
+            raise ValueError("Splits and reverse splits must be checked")
+        _txt(pick.get("name"), "stock name", maximum=75)
+        _txt(pick.get("adjustment_note"), "corporate-action method", maximum=230)
+        _txt(pick.get("context"), "verified context", minimum=25, maximum=350)
+
+
+def _coverage_label(report):
+    return ("日米株の材料と値動き" if report.get("coverage") == "investor"
+            else SLOTS[report["slot"]][1])
+
+
 def load_market_bulletins(root, *, now=None):
     path = Path(root) / FILE
     if not path.is_file():
@@ -140,6 +230,8 @@ def load_market_bulletins(root, *, now=None):
     for report in reports:
         if not isinstance(report, dict):
             raise ValueError("Invalid market dispatch")
+        if "coverage" in report and report["coverage"] != "investor":
+            raise ValueError("Unknown market dispatch coverage mode")
         slug = report.get("slug")
         slot = report.get("slot")
         day = report.get("day")
@@ -233,7 +325,9 @@ def load_market_bulletins(root, *, now=None):
             if _timestamp(condition.get("observed_at")) > pub:
                 raise ValueError("Situation may not use later information")
         picks = report.get("picks", [])
-        if slot in ("am", "open", "noon"):
+        if report.get("coverage") == "investor":
+            _validate_investor_picks(picks, source_urls, pub)
+        elif slot in ("am", "open", "noon"):
             if picks:
                 raise ValueError("Broad market overview cannot be individual-stock picks")
         else:
@@ -321,26 +415,58 @@ def _picks(report):
     if not report.get("picks"):
         return ""
     rows = []
+    investor = report.get("coverage") == "investor"
     for pick in report["picks"]:
         pct = (pick["close"] / pick["previous_close"] - 1) * 100
         positive = pct > 0
+        modifier = ("market-stock-pick--up" if positive else "market-stock-pick--down"
+                    if pct < 0 else "market-stock-pick--flat" if investor else "")
+        exchange = pick["exchange"] if investor else "東証"
+        if investor:
+            currency = escape(pick["currency"])
+            price_label = "終値" if pick["price_kind"] == "close" else "途中値"
+            market_clock = "日本時間" if exchange == "東証" else "米国東部時間"
+            observed = _timestamp(pick["observed_at"])
+            price_html = (
+                f'<p>比較元終値（{escape(pick["previous_market_date"])}）：'
+                f'{pick["previous_close"]:,.2f} {currency} ／ '
+                f'{price_label}：{pick["close"]:,.2f} {currency}</p>'
+                f'<p>取引日：{escape(pick["market_date"])}（{market_clock}） ／ '
+                f'観測：<time datetime="{escape(pick["observed_at"], quote=True)}">'
+                f'{observed.strftime("%Y-%m-%d %H:%M")}</time> JST</p>'
+            )
+            if pick.get("session_close_at"):
+                local_close = _timestamp(pick["session_close_at"]).astimezone(
+                    ZoneInfo(STOCK_MARKETS[exchange][1]))
+                price_html += (
+                    '<p>取引終了：'
+                    f'<time datetime="{escape(pick["session_close_at"], quote=True)}">'
+                    f'{local_close.strftime("%Y-%m-%d %H:%M")}</time>（{market_clock}） ／ '
+                    f'<a href="{escape(_url(pick["session_source_url"]), quote=True)}" '
+                    'target="_blank" rel="noopener noreferrer external">取引時間の出典</a></p>'
+                )
+        else:
+            price_html = (
+                f'<p>前日終値：{pick["previous_close"]:,.2f}円 ／ 観測値：{pick["close"]:,.2f}円</p>'
+                f'<p>観測：{escape(pick["observed_at"])}</p>'
+            )
         rows.append(
-            f'<article class="market-stock-pick {"market-stock-pick--up" if positive else "market-stock-pick--down"}">'
+            f'<article class="market-stock-pick {modifier}">'
             f'<span class="market-stock-direction">{escape(pick["direction"])}</span>'
-            f'<h3>{escape(pick["name"])} <small>{escape(pick["code"])}・東証</small></h3>'
+            f'<h3>{escape(pick["name"])} <small>{escape(pick["code"])}・{escape(exchange)}</small></h3>'
             f'<p class="market-stock-change">{pct:+.2f}%</p>'
-            f'<p>前日終値：{pick["previous_close"]:,.2f}円 ／ 観測値：{pick["close"]:,.2f}円</p>'
-            f'<p>観測：{escape(pick["observed_at"])}</p>'
+            + price_html +
             f'<p>{escape(pick["context"])}</p>'
             f'<p>分割等の確認・補正：{escape(pick["adjustment_note"])}</p>'
             f'<a href="{escape(pick["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">価格・変動の出典を見る</a>'
             '</article>'
         )
-    return '<section class="market-stock-picks"><h2>急騰と急落：日本株の注目例</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
+    heading = "注目銘柄の材料と値動き" if investor else "急騰と急落：日本株の注目例"
+    return f'<section class="market-stock-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
 
 
 def render_market_bulletin(report, layout, outlooks=()):
-    _scheduled_time, slot_name = SLOTS[report["slot"]]
+    slot_name = _coverage_label(report)
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
     slot_time = published_at.strftime("%H:%M")
@@ -418,7 +544,7 @@ def render_market_bulletins_index(reports, *, limit=12):
     cards = "".join(
         f'<li><a href="{bulletin_url(item)}">'
         f'<span class="market-paper-story-date">{published_time(item)}'
-        f' ／ {escape(SLOTS[item["slot"]][1])}</span>'
+        f' ／ {escape(_coverage_label(item))}</span>'
         f'<strong>{escape(item["title"])}</strong>'
         f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
         '</a></li>'
@@ -442,13 +568,13 @@ def render_market_bulletins_archive(reports, layout):
     content = (
         '<div class="container serials-page market-desk-archive">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a></nav>'
-        '<header class="serials-intro"><h1>日次市況</h1><p>現実の公開資料を使った市場の動き。米国の個別株は掲載しません。</p>'
+        '<header class="serials-intro"><h1>日次市況</h1><p>日本株・米国株の値動きと材料を、確認した公開資料から読む。</p>'
         + render_market_share(MARKET_URL + "briefings/", "日次市況") + '</header>'
         + render_market_bulletins_index(reports, limit=None)
         + '</div>'
     )
     return layout("日次市況 | 未来相場観測室",
-                  "寄り付き前・後場の全体市況と夕方の日本株急騰・急落を出典付きで記録。",
+                  "日本と米国の指数・個別株について、値動き、材料、次の注目点を出典付きで記録。",
                   MARKET_URL + "briefings/", content, active="serials",
                   serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"},
                   feed_url=FEED_URL)
@@ -460,7 +586,7 @@ def market_bulletin_feed_xml(reports):
     for tag, val in (
         ("title", "未来相場観測室｜日次市況"),
         ("link", SITE + MARKET_URL + "briefings/"),
-        ("description", "現実の公開資料に基づく日本株中心の市況記録。売買助言ではありません。"),
+        ("description", "現実の公開資料に基づく日米の指数・個別株の材料と値動き。売買助言ではありません。"),
         ("language", "ja"),
     ):
         ET.SubElement(chan, tag).text = val
