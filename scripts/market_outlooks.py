@@ -18,8 +18,10 @@ import re
 
 if __package__:
     from .market_sharing import render_market_share
+    from .forecast_ledger import reader_reason_sentences, forecast_horizon
 else:
     from market_sharing import render_market_share
+    from forecast_ledger import reader_reason_sentences, forecast_horizon
 
 PATH = Path("content/market_outlooks.json")
 JST = timedelta(hours=9)
@@ -221,11 +223,34 @@ def _event_day(at):
     return _timestamp(at).strftime("%Y年%m月%d日 %H:%M")
 
 
+def _confirmed_result(row):
+    """Only an evidenced final verdict counts; interim sentiment never does."""
+    fc = row["forecast"]
+    latest = row["updates"][-1] if row["updates"] else None
+    result = latest.get("result") if latest else None
+    if not isinstance(result, dict) or result.get("outcome") not in ("的中", "外れ"):
+        return None
+    try:
+        close = _number(result.get("close"))
+        if (_timestamp(latest["at"]).date() < _day(fc["reviewed_on"])
+                or result.get("observed_on") != fc["reviewed_on"]
+                or _https(result.get("source_url")) != latest["source"]["url"]
+                or result["outcome"] != _forecast_result(fc, close)):
+            return None
+        _text(result.get("explanation"), "result explanation", minimum=35)
+    except (KeyError, ValueError, TypeError):
+        return None
+    return result
+
+
 def _status(row):
-    updates = row["updates"]
-    last = updates[-1] if updates else None
-    if last and last.get("result"):
-        return "判定済み：" + last["result"]["outcome"]
+    result = _confirmed_result(row)
+    if result:
+        return "判定済み：" + result["outcome"]
+    latest = row["updates"][-1] if row["updates"] else None
+    outcome = latest.get("result") if latest else None
+    if isinstance(outcome, dict) and outcome.get("outcome") in ("判定不能", "保留"):
+        return "判定保留"
     return "結果待ち"
 
 
@@ -237,130 +262,84 @@ def _forecast_anchor(forecast):
     return "forecast-" + identity
 
 
-def _forecast_summary(reports):
-    rows = []
-    for item in reports:
-        fc = item["forecast"]
-        baseline = fc["baseline"]
-        recorded = _timestamp(fc["at"])
-        latest = item["updates"][-1] if item["updates"] else None
-        result = latest.get("result") if latest else None
-        confirmed = (
-            f'<small>確認済み終値 <strong>{result["close"]:,.2f}</strong>ポイント</small>'
-            if result else ''
-        )
-        rows.append(
-            '<tr><th scope="row" data-label="予測日">'
-            f'<a href="#{_forecast_anchor(fc)}"><time datetime="{escape(fc["at"],quote=True)}">'
-            f'{recorded.date().isoformat()}<small>{recorded:%H:%M}</small></time>'
-            '<small>根拠を見る</small></a></th>'
-            f'<td data-label="対象と方向"><strong>{escape(fc["subject"])}</strong><span>{escape(fc["direction"])}予測</span></td>'
-            f'<td data-label="固定基準"><strong>{baseline["value"]:,.2f}</strong><small>{escape(baseline["unit"])}</small>'
-            f'<time datetime="{escape(baseline["date"],quote=True)}">{escape(baseline["date"])}</time></td>'
-            f'<td data-label="判定日・結果"><time datetime="{escape(fc["reviewed_on"],quote=True)}">{escape(fc["reviewed_on"])}</time>'
-            f'<span class="market-forecast-state">{escape(_status(item))}</span>{confirmed}</td></tr>'
-        )
-    if not rows:
-        return ''
-    return (
-        '<div class="market-forecast-summary"><table class="market-forecast-table" role="table">'
-        '<caption>当初の予測と判定状況</caption><thead><tr>'
-        '<th scope="col">予測した日時</th><th scope="col">当初の予測</th>'
-        '<th scope="col">固定した基準</th><th scope="col">判定日・結果</th>'
-        '</tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div>'
+def forecast_reader_statement(forecast):
+    """Display the original direction and target day without its test machinery."""
+    target = _day(forecast["reviewed_on"])
+    year = f'{target.year}年' if target.year != _timestamp(forecast["at"]).year else ''
+    return f'{year}{target.month}月{target.day}日の{forecast["subject"]}は{forecast["direction"]}を予想。'
+
+
+def forecast_reader_reason(forecast):
+    """Keep up to two complete existing market-material sentences, never new claims."""
+    return reader_reason_sentences(forecast["reason"])
+
+
+def render_market_accuracy(events, *, before=None):
+    """Accuracy for all evidenced short-term verdicts in this historical view."""
+    results = [_confirmed_result(row) for row in view_models(events, before=before)
+               if forecast_horizon(row["forecast"]["at"], row["forecast"]["reviewed_on"]) == "短期"]
+    settled = [result for result in results if result is not None]
+    total = len(settled)
+    hits = sum(result["outcome"] == "的中" for result in settled)
+    percent = (f'{hits * 100 / total:.1f}'.rstrip('0').rstrip('.') + '%') if total else '—'
+    count = f'的中 {hits} / 確定 {total}件' if total else '確定0件'
+    return ('<div class="market-reader-accuracy" aria-label="短期相場予想の的中率">'
+            '<span>短期相場予想の的中率</span>'
+            f'<strong>{percent}</strong><span class="market-reader-count">{count}</span></div>')
+
+
+def _reader_forecast_card(row):
+    fc = row["forecast"]
+    result = _confirmed_result(row)
+    reason = forecast_reader_reason(fc)
+    reason_html = f'<p class="market-reader-reason"><strong>理由</strong>{escape(reason)}</p>' if reason else ''
+    status = _status(row)
+    outcome = 'hit' if result and result["outcome"] == '的中' else 'miss' if result else 'pending'
+    confirmed = (f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>'
+                 f'<a href="{escape(result["source_url"],quote=True)}" target="_blank" '
+                 'rel="noopener noreferrer external">結果の出典</a>') if result else ''
+    sources = ''.join(
+        f'<a href="{escape(_https(source["url"]),quote=True)}" title="{escape(source["title"],quote=True)}" '
+        f'target="_blank" rel="noopener noreferrer external">資料{index}</a>'
+        for index, source in enumerate(fc["sources"], 1)
     )
+    return (f'<article class="market-reader-card" id="{_forecast_anchor(fc)}">'
+            f'<p class="market-reader-date"><span class="market-reader-horizon">'
+            f'{forecast_horizon(fc["at"],fc["reviewed_on"])}</span> '
+            f'<time datetime="{escape(fc["at"],quote=True)}">'
+            f'{_event_day(fc["at"])}</time>の予想</p>'
+            f'<h3 class="market-reader-direction">{escape(forecast_reader_statement(fc))}</h3>'
+            + reason_html
+            + f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>{confirmed}</div>'
+            f'<p class="market-reader-sources">出典 {sources}</p></article>')
 
 
-def render_market_outlook_board(events, *, limit=12, before=None):
+def render_market_outlook_board(events, *, limit=3, before=None):
+    if type(limit) is not int or limit < 0:
+        raise ValueError("Forecast display limit must be nonnegative")
     reports = view_models(events, before=before)
-    if limit:
-        reports = reports[:limit]
-    cards = []
-    for item in reports:
-        fc, updates = item["forecast"], item["updates"]
-        latest = updates[-1] if updates else None
-        now_stance = latest["stance"] if latest else fc["stance"]
-        trend = latest["trend"] if latest else "まだ途中経過なし"
-        state = _status(item)
-        changed = "変更あり" if now_stance != fc["stance"] else "変更なし"
-        source_html = "".join(
-            f'<li><a href="{escape(src["url"],quote=True)}" target="_blank" rel="noopener noreferrer external">{escape(src["title"])}</a>'
-            f'（{escape(src["checked_on"])}確認）</li>'
-            for src in fc["sources"]
-        )
-        history = [
-            f'<li><time datetime="{escape(fc["at"])}">{_event_day(fc["at"])}</time>'
-            f'<strong>当初：{escape(fc["stance"])}</strong><span>{escape(fc["reason"])}</span></li>'
-        ]
-        for e in updates:
-            explanation = e.get("change_reason") or e["reason"]
-            history.append(
-                f'<li><time datetime="{escape(e["at"])}">{_event_day(e["at"])}</time>'
-                f'<strong>{escape(e["stance"])} ／ {escape(e["trend"])}</strong>'
-                f'<span>{escape(explanation)}</span>'
-                f'<a href="{escape(e["source"]["url"],quote=True)}" target="_blank" rel="noopener noreferrer external">'
-                '判断材料の出典</a></li>'
-            )
-        if latest and latest.get("result"):
-            final = latest["result"]
-            history.append(
-                f'<li><strong>判定：{escape(final["outcome"])}</strong>'
-                f'<span>対象日のTOPIX終値 {final["close"]:,.2f}ポイント。'
-                f'{escape(final["explanation"])}</span></li>'
-            )
-        cards.append(
-            f'<article class="daily-forecast-card market-forecast-detail" id="{_forecast_anchor(fc)}">'
-            f'<div class="daily-forecast-top"><span>実際の予測日 {_event_day(fc["at"])}</span><strong>{escape(state)}</strong></div>'
-            f'<h3>{escape(fc["statement"])}</h3>'
-            '<div class="daily-forecast-direction">'
-            f'<div><span>当初の見立て</span><strong>{escape(fc["direction"])} ／ {escape(fc["stance"])}</strong></div>'
-            f'<span aria-hidden="true">→</span><div><span>現在の見立て</span><strong>{escape(now_stance)}</strong></div></div>'
-            f'<p class="daily-forecast-check"><strong>{escape(changed)}</strong> ／ '
-            f'途中経過：{escape(trend)} ／ '
-            f'判定日：<time datetime="{fc["reviewed_on"]}">{escape(fc["reviewed_on"])}</time></p>'
-            f'<p>基準：TOPIX {_day(fc["baseline"]["date"]).isoformat()}終値 '
-            f'{fc["baseline"]["value"]:,.2f}ポイント。</p>'
-            '<details><summary>予測の根拠・3シナリオ・判断履歴</summary>'
-            '<div class="daily-forecast-details">'
-            f'<p><strong>基準値の確認方法：</strong>{escape(fc["baseline"]["method"])}</p>'
-            f'<p class="daily-forecast-method"><strong>事前に固定した方法：</strong>{escape(fc["method"])}</p>'
-            f'<p><strong>反証条件：</strong>{escape(fc["invalidated_if"])}</p>'
-            f'<p>{escape(fc["reason"])}</p>'
-            '<dl class="daily-forecast-scenarios">'
-            + "".join(f'<div><dt>{escape(k)}</dt><dd>{escape(fc["scenarios"][k])}</dd></div>' for k in STANCES)
-            + '</dl><h4>判断の変化</h4><ol class="daily-forecast-timeline">'
-            + "".join(history)
-            + '</ol><h4>当初の資料</h4><ul class="daily-forecast-sources">' + source_html
-            + '</ul></div></details></article>'
-        )
-    lead = (
-        '<p class="daily-forecast-intro">公表時点の見通しと、その後に分かった材料を日付順に掲載します。'
-        '結果は当初決めた日に、確認できる実際の数字で判断します。</p>'
-    )
-    empty = '<p class="market-desk-empty">新しい市場見通しの記事はまだありません。<a href="/serials/market-lab/">企業分析を読む</a></p>'
-    return (
-        '<section class="daily-forecast-board" id="daily-forecasts" aria-labelledby="daily-forecasts-title">'
-        '<div class="market-paper-heading"><h2 id="daily-forecasts-title">日々の見通し</h2></div>'
-        + lead + _forecast_summary(reports)
-        + ('<div class="daily-forecast-grid">' + "".join(cards) + '</div>' if cards else empty)
-        + f'<p><a class="serial-feed-link" href="{BASE_URL}">予測・判断履歴を一覧で確認</a></p>'
-        '</section>'
-    )
+    visible = min(limit, 3) if limit else 3
+    cards = [_reader_forecast_card(row) for row in reports]
+    recent = ('<div class="market-reader-cards">' + ''.join(cards[:visible]) + '</div>') if cards else (
+        '<p class="market-desk-empty">新しい相場予想はまだありません。'
+        '<a href="/serials/market-lab/">企業分析を読む</a></p>')
+    past = ('<details class="market-reader-past"><summary>過去の予想</summary>'
+            '<div class="market-reader-cards">' + ''.join(cards[visible:]) + '</div></details>') if cards[visible:] else ''
+    return ('<section class="daily-forecast-board" id="daily-forecasts" aria-labelledby="daily-forecasts-title">'
+            '<div class="market-paper-heading"><h2 id="daily-forecasts-title">相場の予想と結果</h2></div>'
+            + render_market_accuracy(events, before=before) + recent + past
+            + f'<p><a class="serial-feed-link" href="{BASE_URL}">相場の予想をすべて見る</a></p></section>')
 
 
 def render_market_outlook_archive(events, layout):
-    content = (
-        '<div class="container serials-page market-desk-archive">'
-        '<nav class="serial-breadcrumb"><a href="/">トップ</a> / '
-        '<a href="/serials/market-lab/">未来相場観測室</a></nav>'
-        '<header class="serials-intro"><h1>日々の予測・振り返り</h1>'
-        '<p>日付も市場も現実のもの。未検証・途中評価・判定済みを分けて記録します。</p>'
-        + render_market_share(BASE_URL, "日々の予測・振り返り") + '</header>'
-        + render_market_outlook_board(events, limit=0)
-        + '</div>'
-    )
-    return layout("毎日の相場予測と変更履歴 | 未来相場観測室",
-                  "日本市場の予測、途中経過、判断変更、後日の的中・外れを事前基準で記録。",
+    content = ('<div class="container serials-page market-desk-archive">'
+               '<nav class="serial-breadcrumb"><a href="/">トップ</a> / '
+               '<a href="/serials/market-lab/">未来相場観測室</a></nav>'
+               '<header class="serials-intro"><h1>相場の予想と結果</h1>'
+               + render_market_share(BASE_URL, "相場の予想と結果") + '</header>'
+               + render_market_outlook_board(events) + '</div>')
+    return layout("相場の予想と結果 | 未来相場観測室",
+                  "日本市場の予想、その理由、確認できた結果と的中率。",
                   BASE_URL, content, active="serials",
                   serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"})
 

@@ -66,7 +66,7 @@ class MarketFigureTests(unittest.TestCase):
                 self.figures.get(episode["slug"], []))
             self.assertIn("市場の見通しは仮説", displayed)
             self.assertIn(episode["forecast"]["statement"], displayed)
-            self.assertIn(episode["forecast"]["method"], displayed)
+            self.assertNotIn(episode["forecast"]["method"], displayed)
             self.assertIn(episode["forecast"]["reviewed_on"], displayed)
             count = len(self.figures.get(episode["slug"], []))
             self.assertEqual(displayed.count('<figure class="market-figure">'), count)

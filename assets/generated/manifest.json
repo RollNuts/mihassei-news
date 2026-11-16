@@ -8498,6 +8498,13 @@
       "article_sha256": "ec70546849b3ce4e90257f28c9c71f267a12252e14df0bbf737febf587e3c6ea",
       "reason": "The JPEG shows a largely open generic shop entrance, with no enormous ornamental rake or photo-spot queue. Prominent fabricated storefront lettering and the missing central prop make it unsuitable for this story.",
       "rejected_candidate_sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
+    },
+    "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
+      "article_sha256": "427978a51b6cd6bf4a5930a2fb309006124e332a30f8ea52c48c54f5acbb8f68",
+      "reason": "現本文全文・場面指示と実JPEGを表示して照合。盤面にはチェス風の立体コマが多数置かれ、本文の2連ドミノ片や「部品を一枚も置かずに盤面の色数を指摘する」動作を確認できない。空の盤面とは逆の場面で、看板に偽文字も混入しているため不採用。原JPEG・生成record・記事指紋・整数seedを保持し、色数の矛盾を正確に示す専用SVGへ代替する。同条件の追加生成は行わない。",
+      "rejected_candidate_sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086",
+      "review_run": "https://github.com/RollNuts/mihassei-news/actions/runs/43786876737",
+      "reviewed_at": "2026-11-16T01:50:19.985066+00:00"
     }
   },
   "version": 1

@@ -38,7 +38,7 @@ def jpeg_header_fixture():
 
 
 class FreeCpuImageTests(unittest.TestCase):
-    def test_cpu_job_cannot_run_outside_bounded_public_main_schedule(self):
+    def test_cpu_job_cannot_run_outside_manual_public_main_dispatch(self):
         with patch.dict(os.environ, {}, clear=True):
             self.assertFalse(cpu.permitted_ci())
         valid = {
@@ -46,7 +46,7 @@ class FreeCpuImageTests(unittest.TestCase):
             "GITHUB_REPOSITORY": "RollNuts/mihassei-news",
             "GITHUB_REF": "refs/heads/main",
             "RUNNER_OS": "Linux",
-            "GITHUB_EVENT_NAME": "schedule",
+            "GITHUB_EVENT_NAME": "workflow_dispatch",
             "VERIPSA_ENABLE_FREE_CPU": "1",
         }
         with patch.dict(os.environ, valid, clear=True):
@@ -56,10 +56,24 @@ class FreeCpuImageTests(unittest.TestCase):
                 ("GITHUB_REF", "refs/pull/7/merge"),
                 ("RUNNER_OS", "macOS"),
                 ("GITHUB_EVENT_NAME", "pull_request"),
+                ("GITHUB_EVENT_NAME", "schedule"),
+                ("GITHUB_EVENT_NAME", "push"),
                 ("VERIPSA_ENABLE_FREE_CPU", "0"),
             ):
                 with patch.dict(os.environ, {**valid, key: value}, clear=True):
                     self.assertFalse(cpu.permitted_ci())
+
+    def test_generation_without_an_exact_slug_is_rejected_before_selection_or_download(self):
+        for limit in (1, 2, 3):
+            for slug_args in ([], ["--slug", ""], ["--slug", "  "]):
+                with self.subTest(limit=limit, slug_args=slug_args), \
+                     patch.object(cpu, "load_articles", side_effect=AssertionError("articles loaded")), \
+                     patch.object(cpu, "select_articles", side_effect=AssertionError("batch selected")), \
+                     patch.object(cpu, "load_pipeline", side_effect=AssertionError("model downloaded")), \
+                     contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as error:
+                        cpu.main(["--limit", str(limit), *slug_args])
+                    self.assertEqual(error.exception.code, 2)
 
     def test_dry_run_never_downloads_or_uploads(self):
         output = io.StringIO()
@@ -744,6 +758,7 @@ class FreeCpuImageTests(unittest.TestCase):
             root.mkdir()
             with patch.object(cpu, "ROOT", root), \
                  patch.object(cpu, "load_articles", return_value=[a, b]), \
+                 patch.object(cpu, "select_articles", return_value=[a, b]), \
                  patch.object(cpu, "load_pipeline", return_value=(None, None)), \
                  patch.object(cpu, "permitted_ci", return_value=True), \
                  patch.object(cpu, "_git_read", side_effect=AssertionError("normal generation performed a backfill network check")) as git_read, \
@@ -752,7 +767,7 @@ class FreeCpuImageTests(unittest.TestCase):
                  patch.object(cpu, "ensure_disk", side_effect=[None, RuntimeError("disk full")]), \
                  contextlib.redirect_stdout(io.StringIO()):
                 with self.assertRaisesRegex(RuntimeError, "disk full"):
-                    cpu.main(["--limit", "2", "--review-dir", str(bundle)])
+                    cpu.main(["--slug", a["slug"], "--limit", "2", "--review-dir", str(bundle)])
             self.assertEqual(json.loads((bundle / "content/articles.json").read_text()), [a])
             self.assertTrue(usable_generated_scene(a, root=bundle))
             git_read.assert_not_called()

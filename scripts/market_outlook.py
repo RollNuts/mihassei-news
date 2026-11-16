@@ -146,66 +146,38 @@ def render_market_outlook_index(series, observations):
         updates.append(
             '<li><div class="market-paper-update-meta">'
             f'<time datetime="{escape(recent["observed_on"])}">{escape(recent["observed_on"])}</time>'
-            f' ／ {escape(SIGNALS[recent["signal"]])}</div>'
+            '</div>'
             f'<h3><a href="{href}">{escape(episode["title"])}</a></h3>'
             f'<p>{escape(recent["summary"])}</p>'
-            f'<a href="{href}">資料と見方の変化を見る →</a></li>'
+            f'<a href="{href}">予想の理由を読む →</a></li>'
         )
+    if not updates:
+        return ""
     return (
         '<section class="market-outlook-section market-paper-updates" id="market-outlook"'
         ' aria-labelledby="market-outlook-heading">'
-        '<div class="market-paper-heading"><h2 id="market-outlook-heading">見通しの変化</h2></div>'
-        + ('<ol class="market-paper-update-list">' + "".join(updates) + '</ol>'
-           if updates else
-           '<p class="market-paper-section-intro">当初の見通しを変える新たな公表資料は、'
-           'まだありません。各記事で今後の確認点を読むことができます。</p>')
+        '<div class="market-paper-heading"><h2 id="market-outlook-heading">予想に関わる新しい材料</h2></div>'
+        + '<ol class="market-paper-update-list">' + "".join(updates[:2]) + '</ol>'
         + '</section>'
     )
 
 
 def render_market_outlook_episode(episode, history):
-    if not history:
-        return (
-            '<section class="market-outlook-timeline" id="forecast-progress">'
-            '<h2>その後の動き</h2>'
-            '<p>この予測を見直す新しい発表はまだありません。結果は記事に記した期日に確認します。</p>'
-            '</section>'
-        )
-    rows = []
-    for idx in reversed(range(len(history))):
-        entry = history[idx]
-        signal = SIGNALS[entry["signal"]]
-        change = _stance_change(history, idx)
-        rows.append(
-            f'<li class="market-outlook-event market-outlook--{entry["signal"]}">'
-            f'<div class="market-outlook-event-head"><time datetime="{entry["observed_on"]}">'
-            f'{entry["observed_on"]}</time><span>{escape(signal)}</span></div>'
-            f'<h3>{escape(change)} ／ {escape(entry["stance"])}</h3>'
-            f'{_stance_scale(entry["stance"])}'
-            f'<p><strong>何が起きた？</strong> {escape(entry["summary"])}</p>'
-            f'<p><strong>そう判断した理由：</strong> {escape(entry["reason"])}</p>'
-            f'<p><strong>次に見方を変える条件：</strong> {escape(entry["next_trigger"])}</p>'
-            f'<p class="market-outlook-source">資料公表：{escape(entry["source_published_on"])}'
-            f' ／ 確認：{escape(entry["checked_on"])} ／ '
-            f'<a href="{escape(entry["source_url"], quote=True)}" target="_blank" rel="noopener noreferrer external">'
-            f'{escape(entry["source_title"])}</a></p></li>'
-        )
-    has_new_evidence = (
-        episode is not None and any(
-            entry["source_published_on"] > episode["published_at"]
-            and entry["signal"] != "unavailable"
-            for entry in history
-        )
-    )
-    intro = (
-        "新しい資料をもとに見通しを見直しています。"
-        if has_new_evidence else
-        "掲載後に見通しを変える新しい確定材料はありません。"
-    )
+    # Intermediate bookkeeping stays in the append-only source. Only a new
+    # disclosure that changes the reasoning warrants more reader-facing prose.
+    meaningful = [entry for entry in history
+                  if entry["signal"] != "unavailable"
+                  and (episode is None or entry["source_published_on"] > episode["published_at"])]
+    if not meaningful:
+        return ""
+    entry = meaningful[-1]
     return (
         '<section class="market-outlook-timeline" id="forecast-progress">'
-        '<h2>その後の動き</h2>'
-        f'<p class="market-outlook-lead">{intro}</p>'
-        '<details class="market-paper-history"><summary>資料の確認日と見方の履歴を見る</summary>'
-        '<ol class="market-outlook-events">' + "".join(rows) + '</ol></details></section>'
+        '<h2>予想に関わる新しい材料</h2>'
+        f'<p>{escape(entry["summary"])}</p>'
+        f'<p>{escape(entry["reason"])}</p>'
+        f'<p class="market-outlook-source"><time datetime="{entry["observed_on"]}">'
+        f'{entry["observed_on"]}</time> ／ '
+        f'<a href="{escape(entry["source_url"], quote=True)}" target="_blank" rel="noopener noreferrer external">'
+        f'{escape(entry["source_title"])}</a></p></section>'
     )

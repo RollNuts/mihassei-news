@@ -21,12 +21,12 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import view_models
+    from .market_outlooks import view_models, forecast_reader_statement, render_market_accuracy
     from .market_sharing import render_market_share
 except ImportError:
     from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import view_models
+    from market_outlooks import view_models, forecast_reader_statement, render_market_accuracy
     from market_sharing import render_market_share
 
 FILE = Path("content/market_bulletins.json")
@@ -310,22 +310,19 @@ def render_market_bulletin(report, layout, outlooks=()):
     if latest_forecast:
         current = latest_forecast[0]
         forecast = current["forecast"]
-        changes = current["updates"]
-        current_stance = changes[-1]["stance"] if changes else forecast["stance"]
         forecast_section = (
-            '<section class="market-briefing-outlook" id="daily-forecasts">'
-            '<h2>この日の市場見通し</h2>'
-            f'<p>{escape(forecast["statement"])}</p>'
-            f'<p class="market-briefing-forecast-meta">当初：{escape(forecast["stance"])} ／ '
-            f'直近の見方：{escape(current_stance)} ／ '
-            f'確かめる日：<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
-            '<a href="/serials/market-lab/outlooks/">予測の根拠と、その後の変更を読む →</a>'
+            '<section class="market-briefing-outlook market-reader-focus" id="daily-forecasts">'
+            '<h2>この日の予想</h2>'
+            f'<p class="market-reader-prediction">{escape(forecast_reader_statement(forecast))}</p>'
+            f'<p class="market-briefing-forecast-meta">結果日：'
+            f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
+            '<a href="/serials/market-lab/outlooks/">理由と結果を読む →</a>'
             '</section>'
         )
     else:
         forecast_section = (
             '<p class="market-briefing-more"><a href="/serials/market-lab/outlooks/">'
-            '市場の見通しと検証記録を読む →</a></p>'
+            '市場の予想と結果を読む →</a></p>'
         )
     parts = []
     for i, section in enumerate(report["sections"]):
@@ -349,11 +346,12 @@ def render_market_bulletin(report, layout, outlooks=()):
         f'<p class="serial-pub">実公開：<time datetime="{report["published_at"]}">{escape(report["published_at"])}</time></p>'
         '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
         + render_market_share(bulletin_url(report), report["title"])
-        + '</header>' + render_market_numbers(report["figures"], sources=report["sources"])
+        + '</header>' + render_market_accuracy(outlooks, before=published_at) + forecast_section
+        + render_market_numbers(report["figures"], sources=report["sources"])
         + '<div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
         + _market_conditions(report) + "".join(parts)
-        + _picks(report) + forecast_section
+        + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + render_reader_comments('market-briefing-' + report['slug'],
              heading='この市況へのコメント', placeholder='今日の相場についてひとこと…')

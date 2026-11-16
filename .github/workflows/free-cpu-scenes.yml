@@ -2,23 +2,19 @@ name: Free CPU staged-news photos (public repository only)
 run-name: "${{ inputs.backfill_scene && format('Photo backfill: {0}', inputs.slug) || 'Free CPU staged-news photos' }}"
 
 on:
-  # Image-only pushes do not match, so publication cannot recurse.
-  push:
-    branches: [main]
-    paths: ['content/articles.json', '.github/workflows/free-cpu-scenes.yml']
-  # Catch missed token-origin pushes and a backlog while the Mac is asleep.
-  schedule:
-    - cron: '17 * * * *'
+  # Supplemental CPU trials are manual and article-specific. Normal photo
+  # production belongs to the existing Codex automation (docs/OPERATIONS.md).
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Number of missing story images (max 3)'
+        description: 'Bounded batch limit; the exact slug selects one story'
         type: choice
         options: ['1', '2', '3']
-        default: '3'
+        default: '1'
       slug:
-        description: 'Optional exact article slug'
+        description: 'Required exact article slug for this manual CPU review'
         type: string
+        required: true
         default: ''
       retry_held:
         description: 'Retry one held image for visual review only (requires exact slug)'
@@ -49,7 +45,7 @@ jobs:
   render:
     # Standard CPU runners are free on a public GitHub repository. Never bill
     # a private fork or execute image generation from an untrusted pull request.
-    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false
+    if: github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     env:
@@ -60,7 +56,7 @@ jobs:
       OMP_NUM_THREADS: '4'
       MKL_NUM_THREADS: '4'
       TOKENIZERS_PARALLELISM: 'false'
-      SCENE_LIMIT: ${{ inputs.limit || '3' }}
+      SCENE_LIMIT: ${{ inputs.limit || '1' }}
       SCENE_SLUG: ${{ inputs.slug || '' }}
       RETRY_HELD: ${{ inputs.retry_held && '1' || '0' }}
       BACKFILL_SCENE: ${{ inputs.backfill_scene || '' }}
@@ -82,7 +78,12 @@ jobs:
           import json, os
           from pathlib import Path
           from scripts.github_cpu_scenes import load_articles, select_articles, cpu_prompt
-          selected = select_articles(load_articles(), slug=os.environ['SCENE_SLUG'],
+          if os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch':
+              raise SystemExit('CPU generation requires manual workflow_dispatch')
+          slug = os.environ['SCENE_SLUG'].strip()
+          if not slug:
+              raise SystemExit('CPU generation requires one explicit article slug')
+          selected = select_articles(load_articles(), slug=slug,
                                     limit=int(os.environ['SCENE_LIMIT']),
                                     retry_held=os.environ['RETRY_HELD'] == '1',
                                     backfill_scene=os.environ['BACKFILL_SCENE'],
@@ -195,7 +196,7 @@ jobs:
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
           python3 scripts/build.py
       - name: Publish only matching images against latest main
-        if: steps.plan.outputs.pending != '0' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
+        if: steps.plan.outputs.pending != '0' && github.event_name == 'workflow_dispatch' && inputs.publish && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -203,7 +204,7 @@ jobs:
           # GitHub-token pushes do not trigger ordinary push workflows.
           gh workflow run verify-public-photos.yml --ref main
       - name: Continue selected videos after a successful public image pass
-        if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.publish) && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.publish && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
