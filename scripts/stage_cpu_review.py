@@ -18,10 +18,12 @@ import urllib.parse
 import urllib.request
 
 try:
+    from .cloud_image_guard import check_cloud_images_allowed, WORKFLOW_API_PATH
     from .generated_photos import article_fingerprint, SAFE_SLUG
     from .publish_cpu_scenes import validate_bundle, trusted_ci
     from .cpu_photo_model import ORIGIN, REFERENCE_ORIGIN
 except ImportError:
+    from cloud_image_guard import check_cloud_images_allowed, WORKFLOW_API_PATH
     from generated_photos import article_fingerprint, SAFE_SLUG
     from publish_cpu_scenes import validate_bundle, trusted_ci
     from cpu_photo_model import ORIGIN, REFERENCE_ORIGIN
@@ -268,6 +270,7 @@ def probe(api, plan, source_files, expected_files=None):
 
 
 def save(api, plan, source):
+    check_cloud_images_allowed(lambda: api.api("GET", WORKFLOW_API_PATH))
     source_files = validate_source(api, plan)
     files = bundle_files(source, plan)
     existing = probe(api, plan, source_files, files)
@@ -277,6 +280,7 @@ def save(api, plan, source):
     receipt["files"] = {path: {"sha256": sha256(data), "bytes": len(data)} for path, data in files.items()}
     upload = {**files, plan["directory"] + "/receipt.json": encoded(receipt)}
     entries = []
+    check_cloud_images_allowed(lambda: api.api("GET", WORKFLOW_API_PATH))
     for path, data in upload.items():
         result = api.api("POST", "/git/blobs", {"content": base64.b64encode(data).decode(), "encoding": "base64"})
         if result.get("sha") != blob_sha(data):
@@ -291,6 +295,7 @@ def save(api, plan, source):
     # Recheck the immutable original snapshot before making the candidate
     # reachable. Later main edits leave it bound to the original source SHA.
     validate_source(api, plan)
+    check_cloud_images_allowed(lambda: api.api("GET", WORKFLOW_API_PATH))
     try:
         api.api("POST", "/git/refs", {"ref": "refs/heads/" + plan["branch"], "sha": commit})
     except (RuntimeError, OSError, ValueError):
@@ -305,6 +310,7 @@ def save(api, plan, source):
 
 
 def recover(api, plan, source, attempt):
+    check_cloud_images_allowed(lambda: api.api("GET", WORKFLOW_API_PATH))
     if attempt < 1:
         raise ValueError("Invalid original run attempt")
     source_files = validate_source(api, plan)

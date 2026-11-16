@@ -107,10 +107,45 @@ class CpuPublicationTests(unittest.TestCase):
         # The production exact-GitHub remote guard is bypassed only for this
         # local bare repository fixture; no test can push to the real remote.
         with patch.object(publish, "trusted_ci", return_value=True), \
+             patch.object(publish, "check_cloud_images_allowed"), \
              patch.object(sync, "safe_to_publish"), \
              patch.dict(os.environ, {"RUNNER_TEMP": str(runner),
                                      "PATH": str(Path(GIT).parent) + ":" + os.environ.get("PATH", "")}):
             yield runner
+
+    def test_stopped_cloud_blocks_publication_before_any_sync_mutation(self):
+        source = self.bundle()
+        with patch.object(publish, "trusted_ci", return_value=True), \
+             patch.object(publish, "check_cloud_images_allowed", side_effect=RuntimeError("cloud stopped")), \
+             patch.object(sync, "git", side_effect=AssertionError("Git operation started")), \
+             self.assertRaisesRegex(RuntimeError, "cloud stopped"):
+            publish.publish_bundle(source)
+
+    def test_cpu_publication_rechecks_live_stop_before_push_and_restores_mac_hook(self):
+        source = self.bundle()
+        repo, remote = self.repository()
+        original_hook, original_git = sync.require_running, sync.git
+        remote_before = self.git("rev-parse", "main", cwd=remote)
+        stopped = False
+        def live_guard():
+            if stopped:
+                raise RuntimeError("cloud stopped before push")
+        def stop_after_commit(*arguments, **options):
+            nonlocal stopped
+            if arguments[0] == "push":
+                raise AssertionError("push started after cloud stop")
+            result = original_git(*arguments, **options)
+            if "commit" in arguments:
+                stopped = True
+            return result
+        with self.fixture_publication(), \
+             patch.object(publish, "check_cloud_images_allowed", side_effect=live_guard), \
+             patch.object(sync, "git", side_effect=stop_after_commit), \
+             self.assertRaisesRegex(RuntimeError, "cloud stopped before push"):
+            publish.publish_bundle(source, root=repo)
+        self.assertTrue(stopped)
+        self.assertIs(sync.require_running, original_hook)
+        self.assertEqual(self.git("rev-parse", "main", cwd=remote), remote_before)
 
     def test_default_mode_validates_exact_bundle_without_git_or_writes(self):
         source = self.bundle()

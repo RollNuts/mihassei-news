@@ -27,6 +27,7 @@ class MemoryGitHub(stage.GitHub):
         self.calls = []
         self.ref_mode = "ok"
         self.fail_path = None
+        self.workflow_states = []
         self.source_commit = self.install(originals)
         self.refs["main"] = self.source_commit
 
@@ -47,6 +48,9 @@ class MemoryGitHub(stage.GitHub):
         if self.fail_path == path:
             raise RuntimeError("simulated unavailable GitHub operation")
         if method == "GET":
+            if path == stage.WORKFLOW_API_PATH:
+                return (self.workflow_states.pop(0) if self.workflow_states else
+                        {"path": ".github/workflows/free-cpu-scenes.yml", "state": "active"})
             if path.startswith("/git/ref/heads/"):
                 branch = path.removeprefix("/git/ref/heads/")
                 if branch not in self.refs:
@@ -297,6 +301,30 @@ class CpuReviewCandidateTests(unittest.TestCase):
             stage.save(api, plan, bundle)
         self.assertEqual(api.writes(), [])
 
+    def test_disabled_workflow_blocks_candidate_save_and_artifact_recovery(self):
+        api, plan, bundle, _ = self.fixture()
+        disabled = {"path": ".github/workflows/free-cpu-scenes.yml", "state": "disabled_manually"}
+        for operation in ("save", "recover"):
+            api.workflow_states = [disabled]
+            with self.subTest(operation=operation), \
+                 patch.object(stage.subprocess, "run", side_effect=AssertionError("artifact downloaded")):
+                with self.assertRaisesRegex(RuntimeError, "not confirmed active"):
+                    if operation == "save":
+                        stage.save(api, plan, bundle)
+                    else:
+                        stage.recover(api, plan, self.base / "retry", attempt=2)
+            self.assertEqual(api.writes(), [])
+
+    def test_workflow_disabled_during_upload_never_creates_candidate_ref(self):
+        api, plan, bundle, _ = self.fixture()
+        active = {"path": ".github/workflows/free-cpu-scenes.yml", "state": "active"}
+        api.workflow_states = [active, active, {**active, "state": "disabled_manually"}]
+        with self.assertRaisesRegex(RuntimeError, "not confirmed active"):
+            stage.save(api, plan, bundle)
+        self.assertTrue(any(call[1] == "/git/blobs" for call in api.writes()))
+        self.assertFalse(any(call[1] == "/git/refs" for call in api.writes()))
+        self.assertNotIn(plan["branch"], api.refs)
+
     def test_only_candidate_paths_and_create_only_api_are_written(self):
         api, plan, bundle, _ = self.fixture()
         main_before = api.refs["main"]
@@ -369,6 +397,11 @@ class CpuReviewWorkflowTests(unittest.TestCase):
         self.assertLess(workflow.index("stage_cpu_review.py save"),
                         workflow.index("Verify the build after successful generation"))
         self.assertIn("if: always() && steps.plan.outcome == 'success'", workflow)
+        install = workflow[workflow.index("- name: Install CPU-only"):workflow.index("- name: Generate at most")]
+        self.assertIn("GH_TOKEN: ${{ github.token }}", install)
+        self.assertLess(install.index("python3 scripts/cloud_image_guard.py"), install.index("pip install"))
+        generate = workflow[workflow.index("- name: Generate at most"):workflow.index("- name: Save successful")]
+        self.assertIn("GH_TOKEN: ${{ github.token }}", generate)
 
 
 class CpuReviewReadBoundariesTests(unittest.TestCase):

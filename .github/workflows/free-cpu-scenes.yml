@@ -188,7 +188,10 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
       - name: Install CPU-only open-source local model runtime (no cache)
         if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          python3 scripts/cloud_image_guard.py
           python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
           python3 -m pip install --no-cache-dir \
             diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
@@ -198,6 +201,7 @@ jobs:
         id: generate
         if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         env:
+          GH_TOKEN: ${{ github.token }}
           BACKFILL_QUOTA_ALLOWED: ${{ steps.backfill_quota.outputs.allowed || '0' }}
         run: |
           args=(--limit "$SCENE_LIMIT" --review-dir "$RUNNER_TEMP/cpu-scenes-review")
