@@ -7,6 +7,7 @@ const vm=require('node:vm');
 const upstream='https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml';
 const workflowPath='.github/workflows/free-cpu-scenes.yml';
 const endpoint='https://veripsa.com/api/image-control/mcp';
+const serverReadToken='test_only_server_read_token_0123456789'; // Synthetic fixture, not a credential.
 const adapter=fs.readFileSync(path.join(__dirname,'../src/image_control_mcp.mjs'),'utf8')
   .replace('export async function','async function');
 const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
@@ -141,8 +142,54 @@ test('invalid nonce, extra arguments, unknown tools and notifications never fetc
   assert.equal(f.requests.length,0);
 });
 
+test('MCP uses only the optional server credential and preserves fresh active and disabled metadata',async()=>{
+  let state='active';
+  const f=fixture(async()=>Response.json({path:workflowPath,state,private_value:serverReadToken}));
+  for(const next of ['active','disabled_manually']) {
+    state=next;
+    const data=await json(await f.send(call('FreshAuthenticated'),{headers:{authorization:'Bearer caller_private_value'},
+      env:{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken}}));
+    assert.equal(data.result.isError,false);
+    assert.equal(data.result.structuredContent.state,state);
+    assert.equal(data.result.structuredContent.nonce,'FreshAuthenticated');
+    assert.equal(data.result.structuredContent.checked_at,
+      new Date(Date.parse('2026-11-16T07:00:00Z')+1000*(f.requests.length-1)).toISOString());
+    assert.doesNotMatch(JSON.stringify(data),/test_only_server|caller_private/);
+    assert.equal(f.requests.at(-1).url,upstream);
+    assert.equal(f.requests.at(-1).options.headers.authorization,'Bearer '+serverReadToken);
+    assert.equal(f.requests.at(-1).options.redirect,'manual');
+    f.advance(1000);
+  }
+  assert.equal(f.requests.length,2);
+  assert.equal(f.timers.size,0);
+});
+
+test('MCP rejects bad server bindings before network access without exposing their values',async()=>{
+  for(const binding of [undefined,null,false,{},'', '   ', 'short', serverReadToken+'\n', 'x'.repeat(256)]) {
+    const f=fixture();
+    assert.deepEqual(await json(await f.send(call(),{env:{IMAGE_CONTROL_GITHUB_READ_TOKEN:binding}})),
+      {jsonrpc:'2.0',id:1,result:{content:[{type:'text',
+        text:'{"error":"image control unavailable","reason":"runtime_error"}'}],isError:true}});
+    assert.equal(f.requests.length,0);
+    assert.equal(f.timers.size,0);
+  }
+});
+
+test('MCP authentication 401 is a bounded failure with no anonymous fallback or verified metadata',async()=>{
+  const f=fixture(async()=>new Response(JSON.stringify({state:'active',nonce:'private',checked_at:'private',
+    credential:serverReadToken}),{status:401,headers:{authorization:serverReadToken}}));
+  assert.deepEqual(await json(await f.send(call(),{headers:{authorization:'Bearer caller_private_value'},
+    env:{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken}})),{jsonrpc:'2.0',id:1,result:{content:[{type:'text',
+      text:'{"error":"image control unavailable","reason":"github_http_401"}'}],isError:true}});
+  assert.equal(f.requests.length,1);
+  assert.equal(f.requests[0].url,upstream);
+  assert.equal(f.requests[0].options.headers.authorization,'Bearer '+serverReadToken);
+  assert.equal(f.timers.size,0);
+});
+
 test('upstream failures preserve generic privacy and become tool errors without retries or active state',async()=>{
   for(const [reason,fetchImpl] of [
+    ['github_http_401',async()=>new Response('private upstream response',{status:401})],
     ['github_http_403',async()=>new Response('private upstream response',{status:403,headers:{'x-private':'private header'}})],
     ['github_http_429',async()=>new Response('',{status:429})],
     ['github_rate_limit',async()=>new Response('',{status:403,headers:{'x-ratelimit-remaining':'0'}})],
