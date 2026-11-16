@@ -714,6 +714,183 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "ai-purchasing-agent-fake-order-real-signature": {
+      "article_sha256": "3c7c8a9c163455b373099f2af8b10f89219dc82dd6c12faa14401a5d162a44cc",
+      "bytes": 156468,
+      "generated_at": "2026-11-16T04:01:31.742535245Z",
+      "generation_id": "19e4f341-77e3-4e8b-be1f-378364f2f281",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Use case: photorealistic-natural. Asset: one horizontal 16:9 candid documentary photograph for a clearly fictional Japanese newspaper article. Inside the modest back-counter area of an ordinary Japanese food shop, an anonymous fictional middle-aged Japanese woman shop owner in a plain sage-green apron and an anonymous fictional Japanese male bank employee around forty in a simple dark jacket examine ONE tablet resting on the counter between them. The owner is holding the tablet steadily and using one natural fingertip to indicate a transaction row while the bank employee looks closely at that same screen, discussing a payment hold. Both faces and their separate hands are naturally visible; neither looks at the camera. The tablet contains a subdued ordinary transaction-list layout with faint grey lines and a small muted-red pause symbol, with absolutely no legible letters, numbers, words, logos, names or signatures. A few unlabelled sealed cardboard food-delivery cartons wait on the plain shelves behind the counter, with ordinary shop stock in the background. The visual point is the owner and bank representative calmly checking the payment authorization together while deliveries are held up; no embodied robot and no cybercrime spectacle. One coherent eye-level medium-wide local-news camera view, real skin texture, believable hands and contact with the tablet, natural shop daylight and practical indoor light, ordinary cotton apron and jacket fabric, cardboard creases, restrained colors and soft realistic shadows. Leave safe margins for a centered 16:9 crop. No readable signs or package labels, no fake writing, cash, dramatic emergency lights, trophy, floating UI, captions, watermark, identifiable real people, CGI, illustration, advertising gloss or cinematic staging.",
+      "generation_prompt_source": "Exact built-in image_gen.imagegen prompt captured by generateAndStage and preserved in the original candidate receipt; the actual output filename identifies the tool execution separately from the C2PA asset instanceID.",
+      "generation_receipt": "xmp:iid:19e4f341-77e3-4e8b-be1f-378364f2f281",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "9e74d6cb347f0c7b2556b4b632aa46b1ff0dcfe6da6b40e0fa2e1879167937fc",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-16T04:01:31.742535245Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-16T04:01:31.742539731Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-16T04:01:31.737273365Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              228,
+              234,
+              205,
+              19,
+              60,
+              189,
+              174,
+              204,
+              21,
+              84,
+              147,
+              164,
+              74,
+              162,
+              172,
+              63,
+              103,
+              191,
+              141,
+              215,
+              252,
+              215,
+              22,
+              126,
+              139,
+              34,
+              105,
+              93,
+              42,
+              243,
+              206,
+              225
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:19e4f341-77e3-4e8b-be1f-378364f2f281",
+        "manifest_uri": "urn:c2pa:13e1cdfe-8234-4b78-beb3-004407a5f9e2",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "Generated images are saved to /Users/murakaminaoya/.codex/generated_images/01a1e1ed-d0f1-7531-9c9e-c10c934bd9ec as /Users/murakaminaoya/.codex/generated_images/01a1e1ed-d0f1-7531-9c9e-c10c934bd9ec/exec-d4ebc75e-64e3-406f-91d6-e6b291d8b0cf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "bytes": 2306995,
+        "caBX_sha256": "6fd12702398b228ac22a994affeea1adba9ccf9658a1e1bf1566fb2d0f325152",
+        "candidate_branch": "native-image-candidate/ai-purchasing-agent-fake-order-real-signature/3c7c8a9c163455b3-e4b70414e8f9",
+        "candidate_commit": "ac3397e33c94e7ad542325f458dd8b7e5172befa",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/d09dbf1bab0107724daba17f65b327a9aa37c526e736795a1c664c54c714db48",
+          "commit_sha": "965dc460bd91f85020b4b276cfafd3b48c17bc05",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/d09dbf1bab0107724daba17f65b327a9aa37c526e736795a1c664c54c714db48.json",
+          "receipt_sha256": "9734f498e446dbf787dbe1448519c89b5aa315a8e35c9374a552b998c9cb7d8f",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "generation_claim_receipt_snapshot_path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/generation-claim-receipt.json",
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "codex-image-recovery-20261116-ai-purchasing-agent-01",
+        "method": "Preferred generateAndStage completed real PNG transfer, conversion, GitHub branch save/readback, durable claim, one built-in generation and candidate save in one execution. stager.load then reconstructed and verified the exact source and reproduced the JPEG. No second generation.",
+        "original_png_parts": [
+          {
+            "blob_sha": "c0b1351da9a186052de9721215360974895088d6",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/source.png.part000",
+            "sha256": "b1c8e4c116bfab7b0b520962df16a5764fc9b5c474fe9d4ef4eee3fd00b5c267"
+          },
+          {
+            "blob_sha": "e0e057df0e1b80b7bde5a9d05912deca24219451",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/source.png.part001",
+            "sha256": "d570c5c2ec5fe5a64ac03c8677c7e7dfc343dae4a5f462c1cea65d3ad3e52b0b"
+          },
+          {
+            "blob_sha": "90b7e2b4177c7864bc9d9750434636e540b2f173",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/source.png.part002",
+            "sha256": "324bf8790509657f9df82398deb9cf05ffa3f2bc54838034e59e700805e1023c"
+          },
+          {
+            "blob_sha": "fafcf7e2ccc093c9110eda6f309b96a5d1cbc733",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/source.png.part003",
+            "sha256": "b23a346d4b195735bc7cbe73f943039a9c3d176a2d4bcb54fe8f146ead62df8c"
+          },
+          {
+            "blob_sha": "c35eead050231b04ac3aff1d1e7c66b252bf6ee7",
+            "bytes": 209843,
+            "path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/source.png.part004",
+            "sha256": "4d3f4469bc428b6be86eb4f484dc0e5890822b066a35905d84e6ca96412b9f8d"
+          }
+        ],
+        "preflight_receipt_snapshot_path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/preflight-receipt.json",
+        "receipt_path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/receipt.json",
+        "receipt_sha256": "0971de9cd14b42465c745333a7b67fde0ab170a7ebb113b28aa2ea0e4c77a16c",
+        "storage": "github_candidate_branch_and_local_original_parts",
+        "tool_staging_result_path": "maintenance/native-image-candidates/ai-purchasing-agent-fake-order-real-signature/tool-staging-result.json",
+        "tool_staging_result_sha256": "1e7d48bd84add2aef84b17d083f2fda80c77af371634864980d447666ca83258",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "09b9c69d9404f97680d447d75e8f40921f410412",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-16T04:00:40.992Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "d7baee516ab444eee0b96df620f60ffa7a0b71e386d15159614da924b2de5ded",
+          "route": "PNG data URL in functions.exec to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "ae1158d2310602fe1fbc794bac65dde67b0ecb0962a5b8b9759f366925389fb4",
+      "tool_execution": {
+        "execution_id": "d4ebc75e-64e3-406f-91d6-e6b291d8b0cf",
+        "execution_id_source": "Actual exec UUID in the originating tool output_hint and original PNG filename; not an exposed backend generation/job ID.",
+        "tool": "image_gen.imagegen",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "ai-royalties-retirees-operators-left-out": {
       "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
       "bytes": 113156,

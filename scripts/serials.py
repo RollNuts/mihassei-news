@@ -22,7 +22,8 @@ if __package__:
     from .market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from .market_outlooks import (load_market_outlooks, render_market_outlook_board, build_market_outlooks,
                                   forecast_reader_statement, render_market_accuracy)
-    from .market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
+    from .market_bulletins import (load_market_bulletins, render_market_bulletins_index,
+                                  build_market_bulletins, render_market_freshness)
     from .market_sharing import render_market_share
 else:
     from social_cards import Canvas, WIDTH, HEIGHT
@@ -32,7 +33,8 @@ else:
     from market_outlook import load_market_outlook, render_market_outlook_index, render_market_outlook_episode
     from market_outlooks import (load_market_outlooks, render_market_outlook_board, build_market_outlooks,
                                  forecast_reader_statement, render_market_accuracy)
-    from market_bulletins import load_market_bulletins, render_market_bulletins_index, build_market_bulletins
+    from market_bulletins import (load_market_bulletins, render_market_bulletins_index,
+                                 build_market_bulletins, render_market_freshness)
     from market_sharing import render_market_share
 
 
@@ -276,6 +278,7 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
     standfirst = latest_report["summary"] if report_leads else latest["summary"]
     lead_kicker = ("直近の市況" if report_leads else "最新の分析 ／ 第" + str(latest["number"]) + "回")
     day = latest_report["day"] if report_leads else latest["published_at"]
+    freshness = render_market_freshness(latest_report) if report_leads else ""
     forecast = latest["forecast"]
     daily_lead = None
     if daily_outlooks:
@@ -319,7 +322,9 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<a href="/">トップ</a> / <a href="/serials/">連載</a> / 未来相場観測室</nav>'
         '<header class="market-paper-masthead">'
         '<p class="market-paper-topline"><span>株式・企業分析</span>'
-        f'<span>最終掲載 <time datetime="{day}">{day}</time></span></p>'
+        + ('' if freshness else f'<span>最終掲載 <time datetime="{day}">{day}</time></span>')
+        + '</p>' + freshness
+        +
         '<div class="market-paper-brand">'
         '<div>'
         f'<h1>{h(series["title"])}</h1>'

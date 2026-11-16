@@ -30,7 +30,7 @@ TRENDS = ("暫定的に整合", "暫定的に逆行", "判断材料不足")
 DIRECTIONS = ("上昇", "下落", "横ばい")
 BASE_URL = "/serials/market-lab/outlooks/"
 FORECAST_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-topix\Z")
-REVIEW_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|noon|close)-[a-z0-9-]+\Z")
+REVIEW_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|open|noon|close)-[a-z0-9-]+\Z")
 
 
 def _timestamp(s):
