@@ -418,7 +418,7 @@ def render_model_profile(model, published_issues, layout, *, stories_markup="", 
             f'<p><strong>{photo_count}</strong><span>掲載カット</span></p>'
             f'<p><strong>{len(parent_ids)}</strong><span>掲載号</span></p></div>'
             f'<dl>{"".join(facts)}</dl>{photo_credit}{_model_share_controls(public, latest, portrait)}</div></header>'
-            f'{biography_markup}{stories_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
+            f'{stories_markup}{biography_markup}<section class="photo-model-photos" aria-labelledby="model-photos-title">'
             f'<h2 id="model-photos-title">写真</h2>{grid}</section>'
             f'{issue_section}</article>')
     description = f'{public["name"]}（{public["age"]}歳）のプロフィール。{public["occupation"]}。{public["personality"]}'

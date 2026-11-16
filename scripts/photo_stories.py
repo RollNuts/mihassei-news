@@ -205,15 +205,24 @@ def render_model_stories(model_id, stories=None, *, root=ROOT):
     if not isinstance(model_id, str) or not SLUG.fullmatch(model_id):
         raise ValueError("Invalid photo story model id")
     stories = load_photo_stories(root) if stories is None else stories
-    return render_story_strip(tuple(story for story in stories if story["modelId"] == model_id))
+    own_stories = tuple(story for story in stories if story["modelId"] == model_id)
+    if not own_stories:
+        return ""
+    return _render_timeline(own_stories, title=own_stories[0]["name"] + "の近況",
+                            title_id="model-timeline-title")
 
 
 def render_photo_timeline(stories):
     """Static, dated posts remain readable without JavaScript or speech support."""
+    return _render_timeline(stories, title="7人の近況", title_id="cast-timeline-title",
+                            limit=7, model_directory=True)
+
+
+def _render_timeline(stories, *, title, title_id, limit=None, model_directory=False):
     if not stories:
         return ""
     cards = []
-    for story in stories[:7]:
+    for story in stories[:limit]:
         image = (f'<img src="{_h(story["image"])}" alt="{_h(story["alt"])}" '
                  f'width="{story["width"]}" height="{story["height"]}" loading="lazy" decoding="async">')
         motion = story.get("motion")
@@ -225,11 +234,13 @@ def render_photo_timeline(stories):
                      f'<source src="{_h(motion["url"])}" type="video/mp4">{image}</video>'
                      f'<a class="photo-post-image" href="{_h(story["sourceUrl"])}" data-story-motion-fallback hidden>{image}</a>'
                      '<figcaption>写真モーション · 12秒・音声なし</figcaption></figure>')
-        cards.append('<li><article class="photo-post">'
+        permalink = story["profileUrl"] + "#post-" + story["id"]
+        cards.append(f'<li><article class="photo-post" id="post-{_h(story["id"])}">'
                      f'<header><a class="photo-post-person" href="{_h(story["profileUrl"])}">'
                      f'<img src="{_h(story["image"])}" alt="" width="44" height="44" loading="lazy">'
                      f'<strong>{_h(story["name"])}</strong></a>'
-                     f'<time datetime="{_h(story["publishedAt"])}">{_h(story["dateLabel"])}</time></header>'
+                     f'<a href="{_h(permalink)}"><time datetime="{_h(story["publishedAt"])}">'
+                     f'{_h(story["dateLabel"])}</time></a></header>'
                      f'<p class="photo-post-text">{_h(story["text"])}</p>{media}'
                      f'<footer><span>{_h(story["settingLabel"])}</span>'
                      f'<a href="{_h(story["sourceUrl"])}">写真の掲載特集 ↗</a></footer></article></li>')
@@ -237,9 +248,11 @@ def render_photo_timeline(stories):
                f'<summary>以前の投稿（{len(cards) - 3}件）</summary>'
                '<ol class="photo-post-list" start="4">' + ''.join(cards[3:]) + '</ol></details>'
                if len(cards) > 3 else '')
-    return ('<section class="cast-timeline" aria-labelledby="cast-timeline-title">'
-            '<div class="section-head"><h2 id="cast-timeline-title">7人の近況</h2>'
-            '<a href="/photo/models/">プロフィール一覧 ↗</a></div>'
-            '<p class="photo-story-label">架空の7人による創作投稿・写真は掲載特集から</p>'
+    directory = '<a href="/photo/models/">プロフィール一覧 ↗</a>' if model_directory else ''
+    label = ('架空の7人による創作投稿・写真は掲載特集から' if model_directory else
+             '創作投稿・写真は掲載特集から')
+    return (f'<section class="cast-timeline" aria-labelledby="{_h(title_id)}">'
+            f'<div class="section-head"><h2 id="{_h(title_id)}">{_h(title)}</h2>{directory}</div>'
+            f'<p class="photo-story-label">{label}</p>'
             + render_story_strip(stories) + '<ol class="photo-post-list">' + ''.join(cards[:3])
             + '</ol>' + earlier + '</section>')
