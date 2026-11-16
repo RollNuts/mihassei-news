@@ -412,5 +412,118 @@
         "checked_on": "2026-11-16"
       }
     ]
+  },
+  {
+    "slug": "2026-11-16-noon",
+    "day": "2026-11-16",
+    "slot": "noon",
+    "published_at": "2026-11-16T13:40:44+09:00",
+    "title": "16日後場：日経平均は前場959円安、TOPIXも下落",
+    "summary": "16日11:30の前場は日経平均60,182.50円（前日比959.85円安）。TOPIXも約17ポイント安。業種間では小売高・非鉄金属安が際立つ。午後は未確定で、朝の予測は変更しない。",
+    "lead": "11月16日（月）の東京市場は、朝方の買い先行から前引けにかけて下落へ転じました。11時30分の前場終了時点で日経平均は60,182.50円、前週末比959.85円安です。後場の終値はまだ確定しておらず、この記事は前場までの観測を整理します。",
+    "sections": [
+      {
+        "heading": "朝の上昇から反落、指数下落は半導体関連に偏る",
+        "paragraphs": [
+          "16日11時30分の前引けで日経平均は60,182.50円（前週末比959.85円安、約1.57%安）。SBI証券が同日12時30分に更新した市況解説では、TOPIXは約3,924ポイント、前週末比約17ポイント安。日経平均の下落幅の大きさだけから東証全銘柄が一斉に売られたとは判断できません。",
+          "同解説では、前場の東証プライム市場は値上がり773銘柄、値下がり742銘柄、変わらず35銘柄。33業種中17業種は上昇しました。市場全体が全面安というより、指数への寄与の大きい半導体関連株の売りが日経平均を押し下げたとの説明です。"
+        ]
+      },
+      {
+        "heading": "業種差を確認、後場の反転はまだ未知",
+        "paragraphs": [
+          "SBI証券の12時30分更新情報では、非鉄金属は5%超の下落、電気機器やガラス・土石も軟調。一方、小売、水産・農林、その他製品は2%超の上昇です。いずれも前場についての観測で、後場の値幅や終値を示しません。",
+          "ドル／円は同資料の前場市況解説で159.70円台と記載されています。ただし価格の秒単位の観測時刻は示されていないため、12時40分の最新レートとみなさず、金利の同時刻データも確認できないため数値を補いません。"
+        ]
+      },
+      {
+        "heading": "短期TOPIX予測は途中確認にとどめる",
+        "paragraphs": [
+          "11月15日に固定した11月16日終値のTOPIX予測は、13日終値3,941.57ポイントを基準とする±0.5%以内の「横ばい・中立」です。16日前場の概数3,924ポイントは基準より約0.45%安で、暫定的には判定幅の内側。ただしこの値はSBI証券の丸めた前場値であり、正式な終値判定には使えません。",
+          "11月16日朝に記録した11月17日終値の別予測も「横ばい・中立」のままです。半導体関連の弱さは下振れリスクですが、上昇業種・値上がり銘柄も多く、前場だけで予測方向や事前に決めた判定条件は変更しません。どちらの予測も、対象日終値の正式公表を確認するまでは未判定です。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-midmorning-to-lunch",
+        "kind": "bars",
+        "title": "日経平均：11時の下落局面と前引け",
+        "note": "SBI証券16日12:30更新。11時頃の6万65円は記事中の概数、前引け6万182円も記事中の円単位表示。精密な分足時系列ではない。",
+        "unit": "円",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00",
+        "values": [
+          {
+            "label": "11時頃（概数）",
+            "value": 60065,
+            "state": "実績"
+          },
+          {
+            "label": "11:30前引け",
+            "value": 60182,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "prime-breadth-morning",
+        "kind": "bars",
+        "title": "東証プライム：前場の値上がりと値下がり",
+        "note": "SBI証券16日12:30更新の前場集計。773銘柄上昇、742銘柄下落（変わらず35）。指数の騰落ではなく銘柄数。",
+        "unit": "銘柄",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00",
+        "values": [
+          {
+            "label": "値上がり",
+            "value": 773,
+            "state": "実績"
+          },
+          {
+            "label": "値下がり",
+            "value": 742,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "値上がり銘柄は半数近く",
+        "signal": "中立",
+        "meaning": "前場のプライム市場は773銘柄上昇、742銘柄下落。指数の大幅下落が銘柄全体の全面安を意味するわけではない。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      },
+      {
+        "name": "半導体・非鉄が重い",
+        "signal": "逆風",
+        "meaning": "SBI証券12:30の前場概況では非鉄金属は5%超下落、電気機器も軟調で、指数寄与の大きい半導体関連の売りが目立つ。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      },
+      {
+        "name": "生活関連の一部は堅調",
+        "signal": "追い風",
+        "meaning": "同じ前場で小売、水産・農林、その他製品が2%超上昇。午後の最終的な上昇を保証するものではない。",
+        "source_url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "observed_at": "2026-11-16T11:30:00+09:00"
+      }
+    ],
+    "sources": [
+      {
+        "title": "SBI証券：2026年11月16日 前引け国内市況（12:30更新）",
+        "url": "https://www.sbisec.co.jp/ETGate/?_ActionID=DefaultAID&_ControlID=WPLETmgR001Control&_DataStoreID=DSWPLETmgR001Mdtl20&burl=iris_morningInfo&cat1=market&cat2=morningInfo&dir=tl1-minfo%7Ctl2-stmkt%7Ctl3-dcmt&file=index.html&getFlg=on&msockid=2034e11932f56dcd3b33f78533d76c6a",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-16"
+      },
+      {
+        "title": "日本取引所グループ：TOPIX指数・前営業日確定値",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/",
+        "published_on": "2026-11-13",
+        "checked_on": "2026-11-16"
+      }
+    ]
   }
 ]
