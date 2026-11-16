@@ -20,15 +20,17 @@
 ## 初回確認
 
 1. GitHubの [Actions](https://github.com/RollNuts/mihassei-news/actions) → `Free CPU staged-news photos (public repository only)` → `Run workflow` で対象の `slug` を必ず入力し、`limit=1`・`publish`はOFFのまま生成する。通常制作からこの補助へ渡す判断は[OPERATIONS.md](OPERATIONS.md)に従う。
-2. `cpu-scenes-review-<実行ID>` artifactを開き、記事・小道具・明るさ・文字混入・人物に加えて、**実写の報道写真に見えるかを最初に目視する**。アニメ、イラスト、3DCG、プラスチック肌、広告・映画ポスター風の演出が見えるものは、内容が合っていても不採用。保存するのは今回成功したJPEG最大3枚と、対応する記事原本・manifestだけ。モデルやPNGは保存せず、artifactは1日で期限切れになる。
-3. 生成済みJPEGを承認後、最新mainの記事との指紋照合を通して画像とmanifestだけを通常pushする。自動公開を使う場合も同じ照合を実行し、改稿後の古い画像を公開しない。送信競合は最大3回まで再試行し、失敗時もartifactから確認・回収できる。
+2. 実行Summaryの`cpu-image-candidate/<slug>/<元記事SHA先頭16桁>-<実行ID>`ブランチにあるJPEG（または`cpu-scenes-review-<実行ID>` artifact）を開き、記事・小道具・明るさ・文字混入・人物に加えて、**実写の報道写真に見えるかを最初に目視する**。アニメ、イラスト、3DCG、プラスチック肌、広告・映画ポスター風の演出が見えるものは、内容が合っていても不採用。保存するのは今回成功した対象1記事のJPEGと、対応する記事原本・manifestだけ。レビュー専用の`publish=false`で成功した候補は、元JPEG・export時のmanifestと記事コピーのバイト列・元記事snapshot・各SHAを専用ブランチへ保存し、Gitから再読して照合する。採用記録、main更新、PR作成は行わない。モデルやPNGは保存せず、artifactは1日で期限切れになる。
+3. 目視合格後の採用は[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)に従い、最新mainとの照合と必要な採用記録を通常PRで反映する。保存成功だけで採用や本番公開の完了としない。
 4. Cloudflare反映後、公開JPEGのHTTP 200・SHA、記事・一覧・OGP・RSSを確認する。画像の絵作りとオチまで合うかは数値検査だけでは保証しない。
+
+同じrunの再実行は、計画・モデル取得より先に既存候補ブランチをSHAで再照合する。ブランチ保存が未確認なら同じrunの既存artifactだけを回収し、元バイトがなければ停止する。再実行で新規生成せず、既存refの更新・削除・forceも行わない。main本文が後から変わった候補は元記事SHAのまま保持し、Summaryに`stale`と示す。現本文への採用には改めて原記事との差と実画像の確認が必要。
 
 目視で記事と違う物体になった画像は、manifestの`rejected`へ記事指紋と理由を記録して保留する。Mac・CPUとも通常の生成対象から外れ、記事はSVGで公開を続ける。現在の呼び鈴の記事はこの保留対象。新しい正しいJPEGを実際に生成・確認するまで、古い画像の指紋やseedを変更して解除しない。
 
-品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用artifactだけを作り自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の手動選定は保留記事を除外する。
+品質保留の再試験は`slug`の明示と`retry_held=true`が必要で、確認用候補を保存し、自動公開しない。すでに有効な画像がある記事を再生成する操作には使えない。保留解除には目視確認した本当に新しいJPEGを使い、旧JPEGの指紋やseedを付け替えない。通常の手動選定は保留記事を除外する。
 
-既刊の写真化プレビューは、さらに `backfill_scene` に新しい場面指示を渡し、`limit=1`・`publish=false`で手動実行する。通常キューが残る場合や公開を指定した場合は生成せず、日次上限もモデル取得前に判定する。生成物は元の記事を束縛する `source_article_sha256` 付きのartifactだけに保存し、実行中のcheckoutや本番素材は上書きしない。いつ試し、どう採用するかは[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を正本とする。
+既刊の写真化プレビューは、さらに `backfill_scene` に新しい場面指示を渡し、`limit=1`・`publish=false`で手動実行する。通常キューが残る場合や公開を指定した場合は生成せず、日次上限もモデル取得前に判定する。生成物は元の記事を束縛する `source_article_sha256` 付きのレビューbundleとして、専用候補ブランチと短期artifactへ保存する。実行中のcheckoutや本番素材は上書きしない。いつ試し、どう採用するかは[VISUAL_OPERATIONS.md](VISUAL_OPERATIONS.md)を正本とする。
 
 文章だけの試作で必要な物が消える場合は、同じプレビューに `backfill_reference=true`（CLIでは`--backfill-reference`）を加え、現在の記事に合う専用SVGを構図の参照にできる。原記事の承認済みSVGを先に検証し、CairoSVG 2.7.1でメモリ内の800×448 RGBへ変換する。既存RVパイプラインの部品・4つの重み・安全フィルターを再利用し、追加モデルやControlNetは取得しない。初期画像の強さは0.65、指定24ステップのうち実際の変換は15ステップ。GitHub標準CPUで生成・形式検証まで確認済み。ただし初回のノート試作は参照SVGの穴が消えて不採用となり、形状の維持や品質改善は未確認。処理速度の一般化とメモリ使用量の評価もまだ行っていない。
 
