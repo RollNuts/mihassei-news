@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "kind": "native_image_transport_preflight",
+  "status": "probe_only_not_an_article_candidate",
+  "repository": "RollNuts/mihassei-news",
+  "candidate_identity": "57845d225d88362dabf5c37b605c210dc581e413b656412b957c0aa0f1333ee5",
+  "logical_run_id": "codex-image-recovery-20261116-truck-waiting-01",
+  "observed_at": "2026-11-16T05:25:58.817Z",
+  "route": "PNG data URL in functions.exec to GitHub candidate storage",
+  "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
+  "source": {
+    "sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "bytes": 50570
+  },
+  "jpeg": {
+    "sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+    "bytes": 84865
+  },
+  "baseline": {
+    "commit_sha": "9fc423f5bb42d91c0185df906af670d4f1b5bcc4",
+    "protected_hashes": {
+      "content/articles.json": "423df4533dd1f065ae2d1949c8293182b6aee199af766840abbf103c5d8f6ff0",
+      "assets/generated/manifest.json": "9b19befc1a0e836b1ebbf09e74c25533103d2ce04ad01b0509a6679856f1acc2",
+      "content/visual_reviews.json": "4cb9b776eaf6c43dbe0d251d6f6fdea3e87671cf6c90363864b28e3ca319e0c2"
+    }
+  }
+}
