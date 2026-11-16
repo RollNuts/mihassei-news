@@ -38,6 +38,11 @@ def jpeg_header_fixture():
 
 
 class FreeCpuImageTests(unittest.TestCase):
+    def setUp(self):
+        guard = patch.object(cpu, "check_cloud_images_allowed")
+        guard.start()
+        self.addCleanup(guard.stop)
+
     def test_cpu_job_cannot_run_outside_manual_public_main_dispatch(self):
         with patch.dict(os.environ, {}, clear=True):
             self.assertFalse(cpu.permitted_ci())
@@ -807,6 +812,9 @@ class FreeCpuImageTests(unittest.TestCase):
 
 class CpuBackfillTests(unittest.TestCase):
     def setUp(self):
+        guard = patch.object(cpu, "check_cloud_images_allowed")
+        guard.start()
+        self.addCleanup(guard.stop)
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         self.directory = Path(temporary.name)

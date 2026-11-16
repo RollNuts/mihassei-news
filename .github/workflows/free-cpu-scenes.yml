@@ -65,15 +65,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Recover this run's saved CPU candidate before considering generation
+        id: candidate
+        if: ${{ !inputs.publish }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/stage_cpu_review.py recover --source "$RUNNER_TEMP/cpu-scenes-review"
       - name: Plan missing images without downloading any runtime or model
         id: plan
+        env:
+          CANDIDATE_SAVED: ${{ steps.candidate.outputs.saved || '0' }}
         run: |
+          if [ "$CANDIDATE_SAVED" = 1 ]; then
+            echo 'pending=0' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           python3 - <<'PY'
           import json, os
           from pathlib import Path
@@ -98,7 +110,7 @@ jobs:
           df -h .
       - name: Bound daily photo backfill attempts without repeating a story
         id: backfill_quota
-        if: inputs.backfill_scene != ''
+        if: inputs.backfill_scene != '' && steps.candidate.outputs.saved != '1'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -176,15 +188,20 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_cpu_*.py' -q
       - name: Install CPU-only open-source local model runtime (no cache)
         if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          python3 scripts/cloud_image_guard.py
           python3 -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.5.1
           python3 -m pip install --no-cache-dir \
             diffusers==0.31.0 transformers==4.46.3 huggingface_hub==0.26.5 \
             accelerate==1.2.1 safetensors==0.4.5 numpy==1.26.4
           df -h .
       - name: Generate at most three fictional JPEGs and stage only new successes
+        id: generate
         if: steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         env:
+          GH_TOKEN: ${{ github.token }}
           BACKFILL_QUOTA_ALLOWED: ${{ steps.backfill_quota.outputs.allowed || '0' }}
         run: |
           args=(--limit "$SCENE_LIMIT" --review-dir "$RUNNER_TEMP/cpu-scenes-review")
@@ -194,7 +211,14 @@ jobs:
           if [ "$BACKFILL_REFERENCE" = 1 ]; then args+=(--backfill-reference); fi
           python3 scripts/github_cpu_scenes.py "${args[@]}"
           python3 scripts/publish_cpu_scenes.py --source "$RUNNER_TEMP/cpu-scenes-review"
-          python3 scripts/build.py
+      - name: Save successful review-only CPU JPEG with exact provenance
+        if: steps.generate.outcome == 'success' && !inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/stage_cpu_review.py save --source "$RUNNER_TEMP/cpu-scenes-review"
+      - name: Verify the build after successful generation
+        if: steps.generate.outcome == 'success'
+        run: python3 scripts/build.py
       - name: Publish only matching images against latest main
         if: steps.plan.outputs.pending != '0' && github.event_name == 'workflow_dispatch' && inputs.publish && !inputs.retry_held && !inputs.backfill_scene && !inputs.backfill_reference
         env:
@@ -229,7 +253,7 @@ jobs:
             echo "No ready video work; preserve OFF, current and editorial waiting states."
           fi
       - name: Keep only small new JPEGs for visual review or failed-push recovery
-        if: always() && steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
+        if: always() && steps.plan.outcome == 'success' && steps.plan.outputs.pending != '0' && (!inputs.backfill_scene || steps.backfill_quota.outputs.allowed == '1')
         uses: actions/upload-artifact@v4
         with:
           name: cpu-scenes-review-${{ github.run_id }}

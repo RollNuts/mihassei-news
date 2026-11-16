@@ -11,18 +11,73 @@ var NativeImageStage = (function () {
   const PREFLIGHT_DIR="maintenance/native-image-preflight";
   const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
   const CLAIM_DIR="maintenance/native-image-generation-claims";
-  function create({runtime,github,repository}) {
+  const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
+  function create({runtime,github,repository,readCloudWorkflow}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
     for(const name of ["convert","sha256","fromBase64","toBase64","utf8"])if(typeof runtime[name]!=="function")throw Error("Missing byte runtime: "+name);
+    if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
+    let generatedSnapshot, workflowNonce=0;
     function payload(r) {
       const p=r?.structuredContent??r;
       if(!p||r?.isError||p.error_code||p.error){const e=Error(p?.error||"GitHub operation failed");e.provider=p;throw e;}
       return p;
     }
-    async function call(name,args){return payload(await github[name]({repository_full_name:repository,...args}));}
+    async function fetchJSON(path){
+      if(typeof github.fetch!=="function")throw Error("Missing cloud guard GitHub callback: fetch");
+      const raw=payload(await github.fetch({url:"https://api.github.com/repos/"+repository+path}));
+      return typeof raw.content==="string"?JSON.parse(raw.content):raw;
+    }
+    async function cloudStatus(){
+      try {
+        // Visibility and the stop authority are live on every check. Only the
+        // byte total of an immutable main commit may be reused between writes.
+        const repo=await fetchJSON("");
+        if(typeof repo.full_name!=="string"||repo.full_name.toLowerCase()!==repository.toLowerCase()
+          ||repo.private!==false||repo.visibility!=="public")throw Error("Repository is not confirmed public");
+        const commitSha=await branchHead("main");
+        if(generatedSnapshot?.commitSha!==commitSha){
+          const commit=await fetchJSON("/git/commits/"+commitSha);
+          if(commit.sha!==commitSha||!GIT.test(commit.tree?.sha||""))throw Error("Invalid current main commit response");
+          const tree=await fetchJSON("/git/trees/"+commit.tree.sha+"?recursive=1");
+          if(tree.sha!==commit.tree.sha||tree.truncated!==false||!Array.isArray(tree.tree))throw Error("Incomplete generated-JPEG tree");
+          let jpegBytes=0;
+          for(const entry of tree.tree){
+            if(typeof entry.path!=="string")throw Error("Invalid Git tree path");
+            if(!/^assets\/generated\/.*\.jpe?g$/i.test(entry.path))continue;
+            if(entry.type!=="blob"||!Number.isSafeInteger(entry.size)||entry.size<0)throw Error("Unknown generated-JPEG size");
+            jpegBytes+=entry.size;
+            if(!Number.isSafeInteger(jpegBytes))throw Error("Invalid generated-JPEG total");
+          }
+          generatedSnapshot={commitSha,jpegBytes};
+        }
+        if(generatedSnapshot.jpegBytes>JPEG_CAP)throw Error("Generated JPEG total exceeds 1.5 GiB");
+        // Keep this last: a stop-all disables this existing workflow, including
+        // while byte conversion, claim creation or candidate recovery is busy.
+        let workflow;
+        if(readCloudWorkflow){
+          const nonce=hashText(JSON.stringify([repository,Date.now(),++workflowNonce,Math.random(),Math.random()]));
+          const raw=payload(await readCloudWorkflow({nonce}));
+          workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
+          const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
+          if(workflow.version!==1||workflow.repository!==repository||workflow.nonce!==nonce
+            ||typeof workflow.checked_at!=="string"||!/(Z|[+-]\d\d:\d\d)$/.test(workflow.checked_at)
+            ||!Number.isFinite(checked)||age<0||age>10000)throw Error("Unverified or stale cloud workflow response");
+        }else workflow=await fetchJSON("/actions/workflows/"+CLOUD_WORKFLOW);
+        if(workflow.path!==".github/workflows/"+CLOUD_WORKFLOW||workflow.state!=="active")
+          throw Error("Cloud image workflow is not confirmed active");
+        return {state:"active",public:true,main_commit_sha:commitSha,jpeg_bytes:generatedSnapshot.jpegBytes,jpeg_cap_bytes:JPEG_CAP};
+      } catch(error){
+        const e=error instanceof Error?error:Error(String(error));
+        e.message="Cloud image operations stopped: "+e.message;throw e;
+      }
+    }
+    async function call(name,args){
+      if(name!=="fetch_file")await cloudStatus();
+      return payload(await github[name]({repository_full_name:repository,...args}));
+    }
     function gitSha(p,kind){const candidates=[p.sha,p[kind+"_sha"],p[kind]?.sha].filter(v=>GIT.test(v||""));if(!candidates.length||new Set(candidates).size!==1)throw Error("Invalid "+kind+" SHA response");return candidates[0];}
     async function read(path,ref,encoding="utf-8"){
       const p=await call("fetch_file",{path,ref,encoding});
@@ -167,14 +222,15 @@ var NativeImageStage = (function () {
       }catch(e){if(e.checkpoint)throw e;throw attachFailure(e,state);}
     }
     async function branchHead(branch) {
-      const raw=payload(await github.fetch({url:"https://api.github.com/repos/"+repository+"/git/ref/heads/"+branch}));
-      const ref=typeof raw.content==="string"?JSON.parse(raw.content):raw;
+      const ref=await fetchJSON("/git/ref/heads/"+branch);
       if(ref.ref!=="refs/heads/"+branch||!GIT.test(ref.object?.sha||""))throw Error("Invalid branch response: "+branch);
       return ref.object.sha;
     }
     async function transportPreflight(plan,options) {
-      let phase="preflight_read";
+      let phase="preflight_cloud_status";
       try {
+        await cloudStatus();
+        phase="preflight_read";
         // Use the very same callback for this existing image and the eventual
         // tool result. A local path or file ID alone is not a byte transfer.
         const transferred=await options.readBytes(options.probeSource);
@@ -309,6 +365,7 @@ var NativeImageStage = (function () {
         phase="candidate_lookup_after_claim";const afterClaim=await probe(plan);
         if(afterClaim.status==="saved")return {...afterClaim,imageGenResult:null,transportPreflight:proof,generationClaim};
         if(!acquired)throw Error("Generation is already reserved at "+generationClaim.branch+"; recover the original output instead of generating again");
+        phase="generation_cloud_status";await cloudStatus();
         phase="generation";attempt={transportPreflight:proof,generationClaim};generationAttempts.set(plan.identity,attempt);
         attempt.imageGenResult=await options.generate({prompt:plan.prompt,transparent_background:false});
         attempt.observedAt=new Date().toISOString();
@@ -326,7 +383,7 @@ var NativeImageStage = (function () {
         throw e;
       } finally {activeGenerations.delete(plan.identity);}
     }
-    return {prepare,probe,stage,resume,load,checkTransport,generateAndStage};
+    return {prepare,probe,stage,resume,load,checkTransport,generateAndStage,cloudStatus};
   }
   return {create,PART_SIZE};
 })();

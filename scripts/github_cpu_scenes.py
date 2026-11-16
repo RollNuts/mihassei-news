@@ -23,6 +23,7 @@ import tempfile
 from pathlib import Path
 
 try:
+    from .cloud_image_guard import check_cloud_images_allowed
     from .cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from .cpu_photo_model import (REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_RENDERER,
                                   REFERENCE_RENDERER_VERSION, as_reference_pipeline)
@@ -34,6 +35,7 @@ try:
         stable_seed, write_generated,
     )
 except ImportError:
+    from cloud_image_guard import check_cloud_images_allowed
     from cpu_photo_model import MODEL, REVISION, INFERENCE, ORIGIN, load_pipeline
     from cpu_photo_model import (REFERENCE_ORIGIN, REFERENCE_INFERENCE, REFERENCE_RENDERER,
                                  REFERENCE_RENDERER_VERSION, as_reference_pipeline)
@@ -643,6 +645,7 @@ def main(argv: list[str] | None = None) -> int:
         raise RuntimeError("CPU model is limited to opt-in public main GitHub Action runs")
     if not selected:
         return 0
+    check_cloud_images_allowed()
     if args.backfill_scene and os.getenv("BACKFILL_QUOTA_ALLOWED") != "1":
         raise RuntimeError("Backfill needs the workflow's successful daily-quota check")
     if args.review_dir:
@@ -663,6 +666,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.backfill_reference:
             original = next(a for a in articles if a["slug"] == args.slug)
             reference_image, reference_metadata = render_reference_image(original, root=ROOT)
+        check_cloud_images_allowed()
         pipe, torch = load_pipeline()
         if args.backfill_reference:
             pipe = as_reference_pipeline(pipe)
@@ -677,10 +681,12 @@ def main(argv: list[str] | None = None) -> int:
                                if revision is not None else {})
                     if args.backfill_reference:
                         options["reference_image"] = reference_image
+                    check_cloud_images_allowed()
                     data = render_one(pipe, torch, article, **options)
                     if revision is not None:
                         check_main_unchanged(revision, review_parent=args.review_dir.parent)
                     write_options = {"reference_metadata": reference_metadata} if args.backfill_reference else {}
+                    check_cloud_images_allowed()
                     write_generated(article, data, MODEL, root=generation_root,
                                     origin=REFERENCE_ORIGIN if args.backfill_reference else ORIGIN,
                                     **write_options)
@@ -691,6 +697,7 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"Skipped scene {article['slug']}: {exc}", file=sys.stderr, flush=True)
         finally:
             if args.review_dir and successes:
+                check_cloud_images_allowed()
                 export_review_bundle(successes, args.review_dir, root=generation_root,
                                      source_article_sha256=original_hashes)
     if not successes:

@@ -86,3 +86,10 @@ python3 -m unittest discover -s tests -v
 
 READMEに日々の実装記録、過去の施策や実験日記、デプロイ操作の全手順を追記しないでください。小さな改善はPRに残し、長期間有用な手順だけを該当ドキュメントへ反映してください。
 
+
+
+### GPTによる本番確認と画像停止状態
+
+CloudflareのBot Preference Syncは、Searchを許可・Trainingを不許可・ユーザー代理のAgentsを許可とする。広告ページでAgentsを一律ブロックすると、配信robots.txtにChatGPT-Userの全面Disallowが追加され、GPTの公開確認が止まる。学習クローラーの禁止とユーザー代理の閲覧を混ぜず、設定後は配信robotsと実際のGPT読取りを別々に確認する。
+
+`GET /api/image-control` は、固定したGitHub画像workflowの実状態だけを返す読取り口。nonce・短い有効時刻・no-store・失敗時503を使い、停止状態を古い成功応答で代用しない。GitHub接続がworkflow状態APIを扱えない実行環境から利用する。無認証の公開GitHub上限に達した場合も画像処理を止め、有料経路や状態推測へ切り替えない。

@@ -16,6 +16,7 @@ import sys
 import tempfile
 
 try:
+    from .cloud_image_guard import check_cloud_images_allowed
     from .cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN, REFERENCE_ORIGIN
     from . import local_scene_sync as sync
     from .generated_photos import (
@@ -24,6 +25,7 @@ try:
     )
     from .local_scene_photos import stable_seed
 except ImportError:
+    from cloud_image_guard import check_cloud_images_allowed
     from cpu_photo_model import MODEL, LEGACY_MODEL, ORIGIN, REFERENCE_ORIGIN
     import local_scene_sync as sync
     from generated_photos import (
@@ -120,7 +122,7 @@ def reject_held_reapproval(source: Path, target: Path, articles: list[dict]) -> 
 @contextmanager
 def isolated_sync(root: Path, state: Path):
     """Scope the existing helper's state to this one disposable CI operation."""
-    original = (sync.ROOT, sync.APP_DIR, sync.OUTBOX, sync.transfer_scenes)
+    original = (sync.ROOT, sync.APP_DIR, sync.OUTBOX, sync.transfer_scenes, sync.require_running)
     transfer = sync.transfer_scenes
 
     def guarded_transfer(source, target, articles, **options):
@@ -129,10 +131,13 @@ def isolated_sync(root: Path, state: Path):
 
     sync.ROOT, sync.APP_DIR, sync.OUTBOX = root, state, state / "pending"
     sync.transfer_scenes = guarded_transfer
+    # Reuse the existing checks immediately before transfer/commit/push while
+    # keeping the disposable cloud operation independent of the Mac latch.
+    sync.require_running = check_cloud_images_allowed
     try:
         yield
     finally:
-        sync.ROOT, sync.APP_DIR, sync.OUTBOX, sync.transfer_scenes = original
+        sync.ROOT, sync.APP_DIR, sync.OUTBOX, sync.transfer_scenes, sync.require_running = original
 
 
 def publish_bundle(source: Path, *, root: Path = ROOT) -> dict:
@@ -142,6 +147,7 @@ def publish_bundle(source: Path, *, root: Path = ROOT) -> dict:
         raise ValueError("SVG-reference bundles are preview-only; require actual JPEG review and manual adoption")
     if not trusted_ci():
         raise RuntimeError("CPU publication requires an opt-in public main GitHub CPU job")
+    check_cloud_images_allowed()
     runner_temp = Path(os.getenv("RUNNER_TEMP", ""))
     if not os.getenv("RUNNER_TEMP") or runner_temp.is_symlink() or not runner_temp.is_dir():
         raise RuntimeError("A real RUNNER_TEMP directory is required for isolated publishing")

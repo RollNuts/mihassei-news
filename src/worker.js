@@ -85,6 +85,60 @@ function json(data, status = 200) {
   });
 }
 
+function imageControlJson(data, status = 200) {
+  const response=json(data,status);
+  response.headers.set("x-robots-tag","noindex");
+  return response;
+}
+async function imageControl(req, url) {
+  if(req.method!=="GET") {
+    const response=imageControlJson({error:"method not allowed"},405);
+    response.headers.set("allow","GET");
+    return response;
+  }
+  const nonces=url.searchParams.getAll("nonce");
+  if(nonces.length!==1 || !/^[A-Za-z0-9]{1,64}$/.test(nonces[0]) ||
+     [...url.searchParams.keys()].some(key=>key!=="nonce"))
+    return imageControlJson({error:"invalid nonce"},400);
+
+  const controller=new AbortController();
+  let timer;
+  try {
+    // One public, fixed-origin read per check. Never reuse an earlier active
+    // result, follow a redirect, or use caller input as an upstream location.
+    const workflow=await Promise.race([
+      (async()=>{
+        const response=await fetch("https://api.github.com/repos/RollNuts/mihassei-news/actions/workflows/free-cpu-scenes.yml",{
+          method:"GET",redirect:"error",cache:"no-store",signal:controller.signal,
+          headers:{"accept":"application/vnd.github+json",
+            "user-agent":"mihassei-news-image-control",
+            "cache-control":"no-cache","x-github-api-version":"2022-11-28"}
+        });
+        if(!response.ok)throw new Error("unavailable");
+        const body=await boundedBody(response,16*1024);
+        if(body===null)throw new Error("unavailable");
+        return JSON.parse(new TextDecoder().decode(body));
+      })(),
+      new Promise((_,reject)=>{
+        timer=setTimeout(()=>{
+          controller.abort();
+          reject(new Error("unavailable"));
+        },3000);
+      })
+    ]);
+    if(workflow?.path!==".github/workflows/free-cpu-scenes.yml" ||
+       !["active","deleted","disabled_fork","disabled_inactivity","disabled_manually"].includes(workflow.state))
+      throw new Error("unavailable");
+    return imageControlJson({version:1,repository:"RollNuts/mihassei-news",
+      path:workflow.path,state:workflow.state,nonce:nonces[0],checked_at:new Date().toISOString()});
+  } catch(_) {
+    return imageControlJson({error:"image control unavailable"},503);
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+  }
+}
+
 export class NewsroomStats extends DurableObject {
   constructor(ctx, env) {
     super(ctx, env);
@@ -833,6 +887,7 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
+    if(url.pathname==="/api/image-control")return imageControl(req,url);
     const isComments=["/api/comments","/api/comments/summary","/api/comments/admin"].includes(url.pathname);
     if(url.pathname!=="/api/engagement" && !isComments)return env.ASSETS.fetch(req);
     if(req.method==="POST") {
