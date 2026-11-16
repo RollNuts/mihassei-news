@@ -48,7 +48,10 @@ class SerialTests(unittest.TestCase):
                 self.assertIn(s["title"], home)
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
-            self.assertIn("公開済み "+str(len(s["episodes"]))+("話" if s["kind"]=="fiction" else "回"), series_html)
+            if s["kind"] == "analysis":
+                self.assertIn("最終掲載", series_html)
+            else:
+                self.assertIn("公開済み "+str(len(s["episodes"]))+"話", series_html)
             self.assertNotIn('href="/serials/'+s["slug"]+'/nonexistent', series_html)
 
     def test_episode_labels_match_editorial_kind_and_future_artwork(self):
