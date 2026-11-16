@@ -10,6 +10,7 @@ from scripts.market_figures import load_market_figures, render_market_svg
 from scripts.market_outlook import load_market_outlook
 from scripts.market_bulletins import render_market_bulletins_index, render_market_bulletin
 from scripts.market_outlooks import render_market_outlook_board
+from tests.test_market_outlooks import original, review
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,6 +60,8 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('data-serial-episode-state', rendered)
         self.assertIn('data-serial-progress-complete', rendered)
         self.assertIn('href="/feeds/series-market-lab.xml"', rendered)
+        self.assertLess(rendered.index('id="market-stories"'),rendered.index('data-serial-progress-summary'))
+        self.assertLess(rendered.index('data-serial-progress-summary'),rendered.index('id="forecast-ledger"'))
         self.assertIn('href="/serials/market-lab/#market-proof"', (
             render_episode_page(self.market, self.market["episodes"][-1], passthrough)))
         for episode in self.market["episodes"]:
@@ -78,6 +81,43 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn(self.market["episodes"][-1]["title"], markup)
         self.assertIn("企業分析", markup)
         self.assertNotIn("確認済みの日次市況記事はまだありません", markup)
+
+    def test_front_page_forecast_shows_its_original_reason_and_latest_assessment(self):
+        fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
+        latest=review(stance='弱気',reason='新たな費用増で利益率が低下した。売りが広がった。')
+        events=[fc,latest];before=copy.deepcopy(events)
+        page=render_series_page(self.market,passthrough,daily_outlooks=events)
+        follow=page.split('<aside class="market-paper-follow market-reader-focus"',1)[1].split('</aside>',1)[0]
+        self.assertIn('11月17日のTOPIXは上昇を予想。',follow)
+        self.assertIn('JSTの当初の予想',follow)
+        self.assertIn(fc['reason'],follow)
+        self.assertIn(latest['reason'],follow)
+        self.assertIn('最新の評価：',follow)
+        self.assertIn('弱気（暫定的に逆行）',follow)
+        self.assertIn('評価の出典：',follow)
+        self.assertIn('集計時点：<time datetime="2026-11-16T12:40:00+09:00"',follow)
+        self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"',follow)
+        self.assertIn('確定0件',page)
+        self.assertIn('<strong>—</strong><span class="market-reader-count">確定0件</span>',page)
+        self.assertLess(page.index('11月17日のTOPIXは上昇を予想。'),page.index('class="market-reader-accuracy"'))
+        self.assertLess(page.index('</aside></section>'),page.index('class="market-reader-accuracy"'))
+        self.assertLess(page.index('class="market-reader-accuracy"'),page.index('id="market-stories"'))
+        self.assertEqual(events,before)
+
+    def test_front_page_reports_missing_assessment_without_borrowing_another_forecasts_review(self):
+        older={**original(),'id':'2026-11-15-topix','at':'2026-11-15T08:30:00+09:00',
+               'reviewed_on':'2026-11-16'}
+        fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
+        unrelated=review(forecast_id=older['id'],stance='弱気')
+        events=[older,fc,unrelated]
+        page=render_series_page(self.market,passthrough,daily_outlooks=events)
+        follow=page.split('<aside class="market-paper-follow market-reader-focus"',1)[1].split('</aside>',1)[0]
+        self.assertIn('この予想の更新評価はまだありません。',follow)
+        self.assertIn(fc['reason'],follow)
+        self.assertIn('集計時点：<time datetime="2026-11-16T12:40:00+09:00"',follow)
+        self.assertNotIn('最新の評価：',follow)
+        self.assertNotIn(unrelated['reason'],follow)
+        self.assertNotIn('弱気（',follow)
 
     def test_article_leads_with_prediction_and_result_without_method_panels(self):
         episode = self.market["episodes"][-1]
