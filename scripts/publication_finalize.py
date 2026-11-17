@@ -242,8 +242,10 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     trusted(api, attestation["authorized_by"])
     if pr.get("merged") is True:
         return dispatch(api, pr["merge_commit_sha"])
+    # An optional failed finalizer can itself leave a conflict-free PR unstable.
+    # Exact primary CI and the fresh source/merge guards still precede every PUT.
     require(pr.get("state") == "open" and pr.get("draft") is False
-            and pr.get("mergeable") is True and pr.get("mergeable_state") == "clean", "PR is not safely mergeable")
+            and pr.get("mergeable") is True and pr.get("mergeable_state") in {"clean", "unstable"}, "PR is not safely mergeable")
     if run_id is None:
         # An editor can arm the existing PR body after CI has already finished.
         # No connector workflow-dispatch capability or second waiting task needed.
@@ -286,7 +288,7 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
             and fresh["head"]["sha"] == expected_head and approval(fresh) == attestation
             and fresh["head"]["repo"]["full_name"] == REPO
             and fresh["base"]["repo"]["full_name"] == REPO and fresh["base"]["ref"] == "main"
-            and fresh.get("mergeable") is True and fresh.get("mergeable_state") == "clean"
+            and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}
             # PR base.sha may retain the creation/CI snapshot or refresh later.
             # The branch ref, not that PR metadata, binds our freshly checked tree.
             and api.get("/git/ref/heads/main")["object"]["sha"] == current,

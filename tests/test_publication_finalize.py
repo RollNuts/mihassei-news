@@ -196,6 +196,49 @@ class FinalizationTests(unittest.TestCase):
             with self.assertRaises(ValueError): self.go(api)
             self.assertEqual(api.writes, [])
 
+    def test_optional_finalizer_failure_can_leave_unstable_after_primary_ci_passes(self):
+        # PR828 had only its own optional finalize failure; required Validate
+        # newspaper passed. Test both initial and final mergeability snapshots.
+        for phase in ("initial", "final"):
+            with self.subTest(phase=phase):
+                api = API(); obj = handoff("market"); obj["article_sha256"] = {}
+                api.pr["body"] = body(obj)
+                api.files = [{"filename": "content/market_bulletins.json", "status": "modified"}]
+                if phase == "initial": api.pr["mergeable_state"] = "unstable"
+                else: api.race = lambda a: a.pr.update(mergeable_state="unstable")
+                self.assertEqual(self.go(api)["status"], "verification_dispatched")
+                self.assertLess(api.calls.index(("GET", "/actions/runs/123")),
+                                api.calls.index(("PUT", "/pulls/819/merge")))
+                self.assertLess(api.calls.index(("LOCAL", "fresh merged source/history checks")),
+                                api.calls.index(("PUT", "/pulls/819/merge")))
+
+    def test_unstable_with_pending_primary_ci_returns_pending_without_writes(self):
+        api = API(); api.pr["mergeable_state"] = "unstable"
+        api.run.update(status="in_progress", conclusion=None)
+        self.assertEqual(self.go(api)["status"], "ci_pending")
+        self.assertEqual(api.writes, [])
+        self.assertFalse(any(call[0] == "LOCAL" for call in api.calls))
+
+    def test_unstable_never_bypasses_failed_primary_ci(self):
+        api = API(); api.pr["mergeable_state"] = "unstable"
+        api.run["conclusion"] = "failure"
+        with self.assertRaisesRegex(ValueError, "CI is not successful"):
+            self.go(api)
+        self.assertEqual(api.writes, [])
+        self.assertFalse(any(call[0] == "LOCAL" for call in api.calls))
+
+    def test_unknown_conflicting_or_blocked_mergeability_still_rejects_at_both_gates(self):
+        for mergeable, state in ((None, "unknown"), (True, "unknown"), (False, "dirty"),
+                                 (True, "dirty"), (True, "blocked"), (True, None),
+                                 (None, "unstable"), (False, "unstable"), (True, "behind")):
+            for phase in ("initial", "final"):
+                with self.subTest(mergeable=mergeable, state=state, phase=phase):
+                    api = API()
+                    if phase == "initial": api.pr.update(mergeable=mergeable, mergeable_state=state)
+                    else: api.race = lambda a: a.pr.update(mergeable=mergeable, mergeable_state=state)
+                    with self.assertRaises(ValueError): self.go(api)
+                    self.assertEqual(api.writes, [])
+
     def test_head_main_approval_races_or_owner_conflict_stop_before_merge(self):
         for mutate in [lambda a: a.pr["head"].update(sha=M), lambda a: setattr(a, "main", M),
                        lambda a: a.pr["base"].update(ref="other-branch"),
