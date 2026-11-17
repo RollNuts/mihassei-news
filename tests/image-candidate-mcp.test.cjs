@@ -158,6 +158,61 @@ test('temporary signed paths are not assumed to begin with file-',async()=>{
   assert.equal(f.calls[0].url,alternate.download_url);
 });
 
+test('the observed fileParams host passes only an exact, same-origin JPEG response',async()=>{
+  const observed='https://sdmntprwestus.oaiusercontent.com/delivered/image.jpg?sig=synthetic';
+  const calls=[];
+  const actual=await data(await send(bodyFor('probe_candidate_jpeg',
+    {file:{...file,download_url:observed}}),async(url,opts)=>{
+      calls.push({url,opts});
+      const response=new Response(bytes,{headers:{'content-type':'image/jpeg'}});
+      Object.defineProperty(response,'url',{value:observed});
+      return response;
+    }));
+  assert.equal(actual.result.isError,false,JSON.stringify(actual.result.content));
+  assert.equal(actual.result.structuredContent.sha256,sha(bytes));
+  assert.equal(actual.result.structuredContent.bytes,bytes.length);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].url,observed);
+  assert.equal(calls[0].opts.redirect,'manual');
+  assert.doesNotMatch(JSON.stringify(actual),/oaiusercontent|sig=|file-abcDEF123/);
+
+  for(const changedOrigin of [source,'http://sdmntprwestus.oaiusercontent.com/elsewhere.jpg',
+    'https://sdmntprwestus.oaiusercontent.com:8443/elsewhere.jpg']){
+    const mismatch=await data(await send(bodyFor('probe_candidate_jpeg',
+      {file:{...file,download_url:observed}}),async()=>{
+        const response=new Response(bytes,{headers:{'content-type':'image/jpeg'}});
+        Object.defineProperty(response,'url',{value:changedOrigin});
+        return response;
+      }));
+    assert.equal(mismatch.result.isError,true);
+    assert.deepEqual(JSON.parse(mismatch.result.content[0].text),{error:'file_unavailable'});
+  }
+});
+
+test('the observed host does not admit siblings, subdomains, suffix spoofing or unsafe URL parts',async()=>{
+  const rejected=[
+    'https://sdmntpreastus.oaiusercontent.com/image.jpg',
+    'https://sdmntprwestus1.oaiusercontent.com/image.jpg',
+    'https://nested.sdmntprwestus.oaiusercontent.com/image.jpg',
+    'https://sdmntprwestus.oaiusercontent.com.evil.example/image.jpg',
+    'https://sdmntprwestus-oaiusercontent.com/image.jpg',
+    'http://sdmntprwestus.oaiusercontent.com/image.jpg',
+    'https://sdmntprwestus.oaiusercontent.com:8443/image.jpg',
+    'https://user:password@sdmntprwestus.oaiusercontent.com/image.jpg',
+    'https://sdmntprwestus.oaiusercontent.com/image.jpg#fragment',
+    'https://sdmntprwestus.oaiusercontent.com/',
+    'https://sdmntprwestus.oaiusercontent.com/images//image.jpg'
+  ];
+  for(const download_url of rejected){
+    const f=fileFetcher();
+    const actual=await data(await send(bodyFor('probe_candidate_jpeg',
+      {file:{...file,download_url}}),f.fn));
+    assert.equal(actual.result.isError,true,download_url);
+    assert.equal(JSON.parse(actual.result.content[0].text).error,'untrusted_file_host');
+    assert.equal(f.calls.length,0,'untrusted URL must be rejected before any fetch');
+  }
+});
+
 test('arbitrary URLs, redirects, missing MIME, bad dimensions, oversize fail closed',async()=>{
   for(const url of ['https://evil.example/a.jpg','https://files.oaiusercontent.com.evil.example/file-a',
     'http://files.oaiusercontent.com/file-a','https://user:password@files.oaiusercontent.com/file-a',
