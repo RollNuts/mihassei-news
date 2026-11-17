@@ -14,9 +14,12 @@ def reply(*, tools=None):
         tools = [
             {"name": name, "_meta": {"openai/fileParams": ["file"]},
              "inputSchema": {"properties": {"file": schema}},
-             "annotations": {"readOnlyHint": name == "probe_candidate_jpeg"}}
-            for name in ("probe_candidate_jpeg", "stage_candidate_jpeg")
+             "annotations": {"readOnlyHint": name != "stage_candidate_jpeg"}}
+            for name in ("probe_candidate_jpeg", "stage_candidate_jpeg", "read_candidate_png")
         ]
+        tools[-1]["outputSchema"] = {"properties": {
+            "image_url": {"type": "string", "pattern": "^data:image/png;base64,"}},
+            "required": ["image_url"]}
     return {"jsonrpc": "2.0", "id": "read-only-file-schema", "result": {"tools": tools}}
 
 
@@ -46,6 +49,12 @@ class CandidateReceiverLiveContractTests(unittest.TestCase):
         bad = reply()
         bad["result"]["tools"][0]["_meta"] = {}
         with self.assertRaisesRegex(RuntimeError, "fileParams"):
+            check(fetch=lambda *_args, **_kwargs: FakeResponse(json.dumps(bad).encode()))
+
+    def test_missing_png_byte_output_is_not_a_success(self):
+        bad = reply()
+        bad["result"]["tools"][-1]["outputSchema"] = {}
+        with self.assertRaisesRegex(RuntimeError, "structured byte output"):
             check(fetch=lambda *_args, **_kwargs: FakeResponse(json.dumps(bad).encode()))
 
 

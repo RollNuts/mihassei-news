@@ -153,7 +153,7 @@ test('the published fileParams schema lists four fields; only two are required',
   const f=fileFetcher();
   const response=await send({jsonrpc:'2.0',id:2,method:'tools/list'},f.fn);
   const x=await data(response);
-  assert.equal(x.result.tools.length,2);
+  assert.equal(x.result.tools.length,3);
   assert.equal(f.calls.length,0);
   for(const tool of x.result.tools){
     assert.deepEqual(tool._meta['openai/fileParams'],['file']);
@@ -166,12 +166,12 @@ test('the published fileParams schema lists four fields; only two are required',
   assert.equal(x.result.tools[1].annotations.readOnlyHint,false);
 });
 
-test('initialization advertises the breaking version-2 tool contract without fetching',async()=>{
+test('initialization advertises the version-2.1 tool contract without fetching',async()=>{
   const f=fileFetcher();
   const x=await data(await send({jsonrpc:'2.0',id:2,method:'initialize',params:{
     protocolVersion:'2025-11-25',capabilities:{},clientInfo:{name:'fixture',version:'1'}
   }},f.fn));
-  assert.equal(x.result.serverInfo.version,'2.0.0');
+  assert.equal(x.result.serverInfo.version,'2.1.0');
   assert.equal(f.calls.length,0);
 });
 

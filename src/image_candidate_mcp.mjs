@@ -13,6 +13,7 @@ const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
 const OBSERVED_AZURE_FILE_HOST="oaisdmntpraustraliaeast.blob.core.windows.net";
 const trustedFileHost=host=>host===FILE_HOST||host===OBSERVED_AZURE_FILE_HOST||REGIONAL_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
+const MAX_PNG=8*1024*1024;
 const MAX_CLAIM_BYTES=16*1024;
 const MAX_ARTICLES_BYTES=4*1024*1024;
 const MAX_TREE_RESPONSE=2*1024*1024;
@@ -33,6 +34,21 @@ const PROBE={
   title:"Check a prepared JPEG",
   description:"Read and validate one ChatGPT-provided JPEG without saving or generating anything. Returns dimensions, size and hashes. Rejected file references report only the rejection class and hostname, never the download URL.",
   inputSchema:{type:"object",properties:{file:fileSchema},required:["file"],additionalProperties:false},
+  annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false},
+  _meta:{"openai/fileParams":["file"]}
+};
+const READ_PNG={
+  name:"read_candidate_png",
+  title:"Read an original PNG into code",
+  description:"Read one original PNG up to 8 MiB without converting, saving, generating or approving it. Call inside code mode and capture structuredContent.image_url directly for the existing native image helper. Never print or forward the image data URL/base64 into conversation text. Text content contains only a short metadata summary; original bytes remain in structuredContent.",
+  inputSchema:{type:"object",properties:{file:fileSchema},required:["file"],additionalProperties:false},
+  outputSchema:{type:"object",properties:{
+    status:{type:"string",enum:["read"]},mime_type:{type:"string",enum:["image/png"]},
+    width:{type:"integer",minimum:1,maximum:8192},height:{type:"integer",minimum:1,maximum:8192},
+    bytes:{type:"integer",minimum:57,maximum:MAX_PNG},
+    sha256:{type:"string",pattern:"^[a-f0-9]{64}$"},file_id_sha256:{type:"string",pattern:"^[a-f0-9]{64}$"},
+    image_url:{type:"string",pattern:"^data:image/png;base64,",maxLength:Math.ceil(MAX_PNG/3)*4+22}
+  },required:["status","mime_type","width","height","bytes","sha256","file_id_sha256","image_url"],additionalProperties:false},
   annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false},
   _meta:{"openai/fileParams":["file"]}
 };
@@ -63,8 +79,8 @@ function reply(body,status=200,more={}) {
   }});
 }
 const rpcError=(id,code,message,status=200)=>reply({jsonrpc:"2.0",id,error:{code,message}},status);
-const toolResult=(id,data,isError=false)=>reply({jsonrpc:"2.0",id,result:{
-  content:[{type:"text",text:JSON.stringify(data)}],...(!isError?{structuredContent:data}:{}),isError
+const toolResult=(id,data,isError=false,textData=data)=>reply({jsonrpc:"2.0",id,result:{
+  content:[{type:"text",text:JSON.stringify(textData)}],...(!isError?{structuredContent:data}:{}),isError
 }});
 const failure=(code)=>{const e=new Error(code);e.safeCode=code;return e;};
 const FILE_REFERENCE_DIAGNOSTIC=Symbol("fileReferenceDiagnostic");
@@ -90,7 +106,7 @@ function allowedFile(file) {
   if(Object.keys(file).some(k=>!["download_url","file_id","mime_type","file_name"].includes(k)))
     invalidReference("unsupported_fields","file");
   // IDs are opaque provider identifiers; optional MIME/name values are advisory.
-  // Actual downloaded HTTP type, JPEG bytes, dimensions and size stay strict.
+  // Actual downloaded HTTP type, image bytes, dimensions and size stay strict.
   referenceString(file,"file_id",1024,true);
   referenceString(file,"download_url",4096,true);
   referenceString(file,"mime_type",255,false);
@@ -157,17 +173,56 @@ function jpegSize(b){
   if(!size||size[0]!==1200||size[1]!==675)throw failure("wrong_jpeg_dimensions");
   return size;
 }
-async function readFile(file,fetchImpl){
+function pngSize(bytes){
+  const signature=[137,80,78,71,13,10,26,10];
+  if(bytes.length<57||signature.some((n,i)=>bytes[i]!==n))throw failure("invalid_png");
+  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+  let at=8,width,height,idat=false,ended=false,count=0;
+  while(at<bytes.length){
+    if(++count>4096||at+12>bytes.length)throw failure("invalid_png");
+    const size=view.getUint32(at),end=at+12+size;
+    if(end>bytes.length)throw failure("invalid_png");
+    const type=String.fromCharCode(...bytes.subarray(at+4,at+8));
+    if(!/^[A-Za-z]{4}$/.test(type))throw failure("invalid_png");
+    if(at===8){
+      if(type!=="IHDR"||size!==13)throw failure("invalid_png");
+      width=view.getUint32(at+8);height=view.getUint32(at+12);
+      if(!width||!height||width>8192||height>8192||width*height>32000000)
+        throw failure("wrong_png_dimensions");
+    }else if(type==="IHDR")throw failure("invalid_png");
+    if(type==="IDAT")idat=true;
+    if(type==="IEND"){
+      if(size!==0||end!==bytes.length||!idat)throw failure("invalid_png");
+      ended=true;break;
+    }
+    at=end;
+  }
+  if(!ended)throw failure("invalid_png");
+  // The existing native helper performs CRC, decode and C2PA parsing in GPT's
+  // code runtime. This reader only bounds/recognizes the unchanged PNG stream.
+  return [width,height];
+}
+async function downloadFile(file,fetchImpl,type,max){
   const url=allowedFile(file);
   const result=await fetchImpl(url,{method:"GET",redirect:"manual",cache:"no-store",
-    headers:{"accept":"image/jpeg"},signal:AbortSignal.timeout(5000)});
+    headers:{"accept":type},signal:AbortSignal.timeout(5000)});
   if(result.status!==200||result.url&&new URL(result.url).origin!==new URL(url).origin)
     throw failure("file_unavailable");
-  const type=(result.headers.get("content-type")||"").split(";",1)[0].trim().toLowerCase();
-  if(type!=="image/jpeg"&&type!=="application/octet-stream")throw failure("unexpected_file_type");
-  const bytes=await limited(result,MAX_JPEG);
+  const actualType=(result.headers.get("content-type")||"").split(";",1)[0].trim().toLowerCase();
+  if(actualType!==type&&actualType!=="application/octet-stream")throw failure("unexpected_file_type");
+  return limited(result,max);
+}
+async function readFile(file,fetchImpl){
+  const bytes=await downloadFile(file,fetchImpl,"image/jpeg",MAX_JPEG);
   jpegSize(bytes);
   return {bytes,sha256:await shaHex(bytes),file_id_sha256:await shaText(file.file_id)};
+}
+async function readPng(file,fetchImpl){
+  const bytes=await downloadFile(file,fetchImpl,"image/png",MAX_PNG);
+  const [width,height]=pngSize(bytes);
+  return {status:"read",mime_type:"image/png",width,height,bytes:bytes.length,
+    sha256:await shaHex(bytes),file_id_sha256:await shaText(file.file_id),
+    image_url:"data:image/png;base64,"+encodedBase64(bytes)};
 }
 function encodedBase64(bytes){
   // Binary-to-base64 without node Buffer or external libraries, in 48 KiB blocks.
@@ -434,21 +489,25 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
     if(typeof p.protocolVersion!=="string"||!isObj(p.capabilities)||!isObj(p.clientInfo))
       return rpcError(id,-32602,"Invalid initialize parameters");
     return reply({jsonrpc:"2.0",id,result:{protocolVersion:VERSIONS.includes(p.protocolVersion)?p.protocolVersion:VERSIONS.at(-1),
-      capabilities:{tools:{}},serverInfo:{name:"veripsa-candidate-file-receiver",version:"2.0.0"}}});
+      capabilities:{tools:{}},serverInfo:{name:"veripsa-candidate-file-receiver",version:"2.1.0"}}});
   }
   if(!version)return rpcError(id,-32600,"MCP protocol version required",400);
   if(m.method==="ping")return reply({jsonrpc:"2.0",id,result:{}});
-  if(m.method==="tools/list")return reply({jsonrpc:"2.0",id,result:{tools:[PROBE,STAGE]}});
+  if(m.method==="tools/list")return reply({jsonrpc:"2.0",id,result:{tools:[PROBE,STAGE,READ_PNG]}});
   if(m.method!=="tools/call")return rpcError(id,-32601,"Method not found");
   if(!isObj(p)||!isObj(p.arguments)||Object.keys(p).some(x=>!["name","arguments","_meta"].includes(x)))
     return rpcError(id,-32602,"Invalid call");
-  if(p.name!==PROBE.name&&p.name!==STAGE.name)return rpcError(id,-32602,"Unknown tool");
+  if(p.name!==PROBE.name&&p.name!==STAGE.name&&p.name!==READ_PNG.name)return rpcError(id,-32602,"Unknown tool");
   const args=p.arguments;
   if(!isObj(args.file)||Object.keys(args).some(x=>!["file","claim"].includes(x))||
-    (p.name===PROBE.name&&Object.keys(args).length!==1)||
+    (p.name!==STAGE.name&&Object.keys(args).length!==1)||
     (p.name===STAGE.name&&!isObj(args.claim)))
     return toolResult(id,{error:"invalid_arguments"},true);
   try {
+    if(p.name===READ_PNG.name){
+      const image=await readPng(args.file,fetchImpl),{image_url,...summary}=image;
+      return toolResult(id,image,false,summary);
+    }
     if(p.name===PROBE.name){
       const img=await readFile(args.file,fetchImpl);
       return toolResult(id,{status:"verified",width:1200,height:675,

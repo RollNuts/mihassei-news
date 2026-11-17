@@ -97,6 +97,27 @@ try {
 
 For a local-file or file-ID generator, use an existing PNG in that actual execution environment as `probeSource`, and make `readBytes` return bytes through an available execution/materialization tool. Use the same function to acquire the eventual generated output. Reusing the GitHub/data-URL sample above does not test that different bridge. Inspect the exposed tool schemas before selecting the callback; if the generator or byte-returning callback is unavailable, do not replace the entry point with a direct generation call. A repository helper cannot add tools to a scheduled worker or prevent a caller from bypassing it.
 
+### File adapter to code-mode PNG bytes
+
+The existing receiver also exposes the read-only `read_candidate_png` tool. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. Its generator callback must return that actual path; a Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` and the eventual generated PNG inside `generateAndStage`.
+
+```js
+const readBytes = async actualPngPath => {
+  const received = await readCandidatePng({file: actualPngPath});
+  const png = received.structuredContent;
+  if (received.isError || png?.status !== "read" || png.mime_type !== "image/png" ||
+      typeof png.image_url !== "string" || !png.image_url.startsWith("data:image/png;base64,"))
+    throw Error("Original PNG byte transfer failed");
+  if (runtime.sha256(runtime.fromBase64(png.image_url)) !== png.sha256)
+    throw Error("Original PNG transfer SHA mismatch");
+  return {image_url: png.image_url};
+};
+```
+
+Capture `structuredContent` only inside code mode: never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
+
+After deployment, refresh the installed tool schema and prove one **existing** PNG transfer in the actual scheduled GPT runtime before new generation. A locally passing test or the prepared-JPEG route alone does not prove this path's live availability, response-size limits or free Worker CPU usage. If the generator is not callable in that same runtime, keep the fallback and record that separate capability gap.
+
 After staging, `const images = await stager.load(plan)` returns verified `sourcePngDataUrl` and `jpegDataUrl`. Pass them directly to `image(images.sourcePngDataUrl)` and `image(images.jpegDataUrl)`; never emit the whole result with `text` or `notify`. Compare both displayed images with the full current article. Only after that review, use the normal publication PR to install the JPEG, its truthful generation record and a current-SHA visual decision. Keep the source candidate retrievable. Existing accepted photos, integer seeds and previous rejections remain unchanged until an actual reviewed replacement is published.
 
 If a save fails, retain its compact checkpoint (including the plan), reservation reference and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, the error's `imageGenResult` is the raw tool result, which may contain only a file ID or local path. Pass `error.transferredImage ?? await readBytes(error.imageGenResult)` as `stage`'s `imageGenResult`, with the retained `observedAt`, `checkpoint`, `transportPreflight`, `generationClaim` and any recovery metadata. This retries byte acquisition or saving, without calling the generator. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
