@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
+  "receipt_path": "maintenance/native-image-generation-claims/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
+  "slug": "food-donation-cold-record-one-box-rejected",
+  "article_sha256": "8242dd6f3d18dbb539f9464c4ec24a7580eb00fff4846cfb53c3ec2dc0d7f48e",
+  "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
+  "prompt_sha256": "a2a9757b9c6f1105a9799d4fb05ce4a2364c164da9a47e044c34944cff29a362",
+  "reserved_at": "2026-11-17T23:46:00.046Z",
+  "baseline": {
+    "commit_sha": "e1ba82ef867f547039c766e20ed8c2c6c50e21d1",
+    "tree_sha": "b11c2e9b02343161818c1cafd9fa167ef3eb46fb",
+    "protected_hashes": {
+      "content/articles.json": "11f5006639df278d749152a0b74140cb11f94489869d5769badd0124d1edc165",
+      "assets/generated/manifest.json": "f54c6ead78dfddbb01ef2b7d8e2b62d5dd2cc25ee7d034691b763ad976542231",
+      "content/visual_reviews.json": "6fbe8d97306f0845a23d0f33c29287cfd5173fb6c785326833f6c82ef940253c"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "2956c6aaa1dc4f7896d89981740c4bf1ea85a50cd25e6eed025341d98d2b03d0",
+    "observed_at": "2026-11-17T23:40:04.174Z",
+    "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "5b4d44e01a8245443e1c528d16bfdcb6773245d2"
+  }
+}
