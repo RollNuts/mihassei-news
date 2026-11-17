@@ -15,6 +15,8 @@ const adapter=fs.readFileSync(path.join(__dirname,'../src/image_control_mcp.mjs'
 const source=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
   .replace('import { DurableObject } from "cloudflare:workers";','class DurableObject {}')
   .replace('import { imageControlMcp } from "./image_control_mcp.mjs";',adapter)
+  .replace('import { imageCandidateMcp } from "./image_candidate_mcp.mjs";',
+    'async function imageCandidateMcp() { throw Error("not used by read-only test"); }')
   .replace('export { ReaderComments } from "./comments.js";','')
   .replace('export class NewsroomStats','class NewsroomStats')
   .replace('export default {','const serviceHandler = {');
