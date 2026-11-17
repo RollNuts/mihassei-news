@@ -1,5 +1,12 @@
 {
   "reviews": {
+    "ai-night-standby-not-free-time": {
+      "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+      "decision": "accepted",
+      "image_sha256": "b8cf150188803a807f1d9830361b17f5d3709ab2b948d690f32ce0d8126d2a6b",
+      "note": "本文の結末にある、有給夜間当番の交代で会社の端末を次の勤務者へ手渡す場面を原PNGと1200×675 JPEGの両方で目視確認。日本の設備管理室らしい作業着・机上の帳面・工具類と、夜の窓際で向かい合う成人2人、黒い携帯端末の引継ぎ動作が明瞭。蛍光灯の室内光、肌と作業服の皺、机と端末の材質・影が自然で、普通の現場スナップとして成立。画像は社員の待機義務の解消を象徴する交代場面で、架空の制度の実在や労働時間の数値を証明するものではない。",
+      "reviewed_at": "2026-11-17T17:47:15.911Z"
+    },
     "solar-window-glass-factory-first-eight-panels": {
       "article_sha256": "2ce3cd5e265d93718a01646ff102fc02c386dcf29eb3b589b4f5e7745d74be6b",
       "decision": "accepted",

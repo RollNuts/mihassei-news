@@ -714,6 +714,103 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "ai-night-standby-not-free-time": {
+      "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+      "bytes": 130003,
+      "generated_at": "2026-11-17T17:31:39.565Z",
+      "generation_id": "8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Photorealistic documentary photograph inside an ordinary Japanese building management office on a November evening, a fictional 52-year-old Japanese maintenance worker handing a company emergency phone to the next adult on-call colleague at a small desk, coats and simple maintenance tools in the background, slightly tired but relieved faces, realistic skin and clothing, overhead practical lighting, no text, no logos, no real people, horizontal 16:9.",
+      "generation_receipt": "xmp:iid:8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "b8cf150188803a807f1d9830361b17f5d3709ab2b948d690f32ce0d8126d2a6b",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:4c35703b-4499-4331-8462-61ed0edafdd6",
+        "instanceID": "xmp:iid:8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              181,
+              99,
+              176,
+              211,
+              73,
+              147,
+              59,
+              176,
+              82,
+              65,
+              219,
+              139,
+              181,
+              141,
+              152,
+              121,
+              27,
+              93,
+              4,
+              90,
+              230,
+              178,
+              100,
+              157,
+              255,
+              214,
+              2,
+              162,
+              190,
+              45,
+              168,
+              164
+            ]
+          },
+          "specVersion": "2.2.0",
+          "org.contentauth.c2pa_rs": "0.79.2"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-17T17:31:27.067270288Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-17T17:31:27.067273228Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-17T17:31:27.065294482Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_png_sha256": "48494ada54a2673612a7867d412678ff03629b051c91734d70cd349991d14d35",
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "ai-purchasing-agent-fake-order-real-signature": {
       "article_sha256": "3c7c8a9c163455b373099f2af8b10f89219dc82dd6c12faa14401a5d162a44cc",
       "bytes": 156468,
