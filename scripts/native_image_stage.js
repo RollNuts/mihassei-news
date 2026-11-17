@@ -6,7 +6,7 @@ var NativeImageStage = (function () {
   "use strict";
   const SHA=/^[0-9a-f]{64}$/, GIT=/^[0-9a-f]{40}$/, SLUG=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const PROTECTED=["content/articles.json","assets/generated/manifest.json","content/visual_reviews.json"];
-  const PART_SIZE=512*1024;
+  const PART_SIZE=512*1024, COMPACT_SOURCE_LIMIT=4*1024*1024;
   const PREFLIGHT_BRANCH="native-image-preflight/transport";
   const PREFLIGHT_DIR="maintenance/native-image-preflight";
   const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
@@ -144,7 +144,7 @@ var NativeImageStage = (function () {
       return saved;
     }
     async function probe(plan){checkPlan(plan);try{return await verifyCandidate(plan,plan.branch);}catch(e){if(absentRef(e,plan.branch))return {status:"absent",branch:plan.branch};throw e;}}
-    async function load(plan){checkPlan(plan);return await verifyCandidate(plan,plan.branch,undefined,true);}
+    async function load(plan,ref=plan.branch){checkPlan(plan);if(ref!==plan.branch&&!GIT.test(ref||""))throw Error("Invalid candidate read ref");return await verifyCandidate(plan,ref,undefined,true);}
     function serialReceipt(receipt){
       if(receipt===null)return null;
       if(!receipt||typeof receipt.generation_id!=="string"||!receipt.caBX_bytes)throw Error("Invalid C2PA extraction result");
@@ -463,16 +463,47 @@ var NativeImageStage = (function () {
         throw e;
       } finally {activeGenerations.delete(plan.identity);}
     }
-    // Bounded cells never run an entire transport/save macro. Checkpoints contain
-    // JSON/base64 only; their checksum detects accidental edits, not authorship.
+    // Bounded cells never run an entire transport/save macro. Version 2 carries
+    // references/metadata only; checksums detect edits, not authorship.
     const canonical=x=>JSON.stringify(x,(_key,value)=>value&&typeof value==="object"&&!Array.isArray(value)
       ?Object.fromEntries(Object.keys(value).sort().map(key=>[key,value[key]])):value);
-    function sealStep(state){const {checksum:_old,...body}=state;return {...body,checksum:hashText(canonical(body))};}
+    function sealStep(state){
+      const body={...state};delete body.checksum;
+      if(body.version===2){
+        if(body.input)body.input={...body.input,imageGenResult:body.input.imageGenResult?.output_hint!==undefined
+          ?{output_hint:body.input.imageGenResult.output_hint}:{}};
+        const metadata=file=>{const copy={...file};if(copy.encoding==="base64")delete copy.content;return copy;};
+        if(body.files)body.files=body.files.map(metadata);
+        if(body.parts)body.parts=body.parts.map(metadata);
+        if(body.jpeg)body.jpeg=metadata(body.jpeg);
+        delete body.c2pa;delete body.receiptText;
+        if(body.saved){body.saved={...body.saved};delete body.saved.receiptText;delete body.saved.source;delete body.saved.jpeg;}
+      }
+      // Do not serialize multi-MiB bytes even transiently when sealing v2.
+      const plain=JSON.parse(JSON.stringify(body));
+      return {...plain,checksum:hashText(canonical(plain))};
+    }
+    function sourceRef(value){
+      if(typeof value!=="string"||!value.trim()||value.length>1000||/[\x00-\x1f\x7f]/.test(value)
+        ||value.startsWith("data:")||/^https?:/i.test(value))throw Error("Retain the actual original file reference, not image bytes or a signed URL");
+      return value;
+    }
+    async function compactCapture(state,reader,preflight=false){
+      if(typeof reader!=="function")throw Error("The same original PNG byte reader is required for this step");
+      const ref=sourceRef(preflight?state.probeSource:state.input.originalSourceRef);
+      countStep();const image=await reader(ref);
+      const input=preflight?{observedAt:state.proof.observed_at,expectedSourcePngSha256:state.proof.source_sha256,
+        expectedJpegSha256:state.proof.jpeg_sha256}:{...state.input,expectedSourcePngSha256:state.sourceSha,
+        expectedJpegSha256:state.jpeg?.hash};
+      const captured=capture({...input,imageGenResult:image});
+      if(captured.source.length>(preflight?PART_SIZE:COMPACT_SOURCE_LIMIT))throw Error("Compact image source exceeds its supported byte limit");
+      return captured;
+    }
     function stepState(plan,kind,checkpoint,input){
       checkPlan(plan);
-      if(!checkpoint)return {version:1,kind,identity:plan.identity,plan,phase:"lookup",steps:0,...input};
+      if(!checkpoint)return {version:input.compact===true?2:1,kind,identity:plan.identity,plan,phase:"lookup",steps:0,...input};
       const {checksum,...body}=checkpoint;
-      if(checksum!==hashText(canonical(body))||body.version!==1||body.kind!==kind||body.identity!==plan.identity
+      if(checksum!==hashText(canonical(body))||![1,2].includes(body.version)||body.kind!==kind||body.identity!==plan.identity
         ||canonical(body.plan)!==canonical(plan)||!Number.isInteger(body.steps)||body.steps>=256)
         throw Error("Invalid or exhausted bounded image checkpoint");
       return JSON.parse(JSON.stringify(body));
@@ -511,13 +542,28 @@ var NativeImageStage = (function () {
     async function lookupSaved(plan,state,expectedSourceSha){
       try{
         const raw=await read(plan.directory+"/receipt.json",plan.branch);
+        const r=JSON.parse(raw.content);
+        if(state.version===2&&(r.source?.bytes>COMPACT_SOURCE_LIMIT||r.source?.parts?.length>8))
+          throw Error("Compact saved readback supports source PNGs up to 4 MiB");
         state.saved={ref:plan.branch,commitSha:await branchHead(plan.branch),receiptText:raw.content,
-          source:[],index:0,protectedIndex:0,expectedSourceSha:expectedSourceSha||null};
+          receiptSha:hashText(raw.content),source:[],index:0,protectedIndex:0,expectedSourceSha:expectedSourceSha||null};
         state.phase="saved_readback";return true;
       }catch(error){if(absentRef(error,plan.branch))return false;throw error;}
     }
     async function savedSlice(plan,state){
-      const saved=state.saved,r=JSON.parse(saved.receiptText);
+      const saved=state.saved;
+      if(state.version===2){
+        // Full bytes live only in this cell. At most 8 parts + JPEG + receipt +
+        // 3 protected files + final ref (+ resumed claim) fit 15 callbacks.
+        const verified=await verifyCandidate(plan,saved.commitSha,saved.expectedSourceSha||undefined);
+        if(verified.receipt.source.bytes>COMPACT_SOURCE_LIMIT||verified.receipt.source.parts.length>8
+          ||verified.receipt_sha256!==saved.receiptSha
+          ||verified.receipt.baseline.commit_sha!==plan.baseCommitSha
+          ||PROTECTED.some(path=>verified.receipt.baseline.protected_hashes[path]!==plan.protectedHashes[path])
+          ||await branchHead(plan.branch)!==saved.commitSha)throw Error("Compact candidate readback changed");
+        return {...verified,ref:saved.ref,commitSha:saved.commitSha};
+      }
+      const r=JSON.parse(saved.receiptText);
       if(r.version!==1||r.kind!=="native_image_candidate"||r.status!=="awaiting_visual_review"
         ||r.identity!==plan.identity||r.repository!==repository||r.slug!==plan.slug||r.article_sha256!==plan.articleSha256
         ||r.logical_run_id!==plan.logicalRunId||r.generation?.prompt!==plan.prompt||r.generation.prompt_sha256!==hashText(plan.prompt)
@@ -564,7 +610,7 @@ var NativeImageStage = (function () {
         sourcePngDataUrl:"data:image/png;base64,"+runtime.toBase64(source),jpegDataUrl:"data:image/jpeg;base64,"+saved.jpeg};
     }
     async function reserveExternalGenerationStep(plan,options,checkpoint){
-      return boundedStep(plan,"native_reservation_steps",checkpoint,{},async state=>{
+      return boundedStep(plan,"native_reservation_steps",checkpoint,{compact:options?.compact===true},async state=>{
         if(state.phase==="saved_readback")return await savedSlice(plan,state);
         if(state.phase==="lookup"){
           if(!await lookupSaved(plan,state))state.phase="capture";
@@ -573,6 +619,7 @@ var NativeImageStage = (function () {
             ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
             ||typeof options.probeSourceRef!=="string"||!options.probeSourceRef.trim()||options.probeSourceRef.length>1000)
             throw Error("Provide the actual byte callback and existing probe reference/SHA");
+          if(state.version===2)state.probeSource=sourceRef(options.probeSource);
           await cloudStatus();countStep();const image=await options.readBytes(options.probeSource);
           const observedAt=new Date().toISOString(),captured=capture({imageGenResult:image,observedAt,expectedSourcePngSha256:options.expectedProbeSha256});
           if(captured.source.length>PART_SIZE)throw Error("Use a probe PNG no larger than 512 KiB");
@@ -598,6 +645,11 @@ var NativeImageStage = (function () {
             source_sha256:captured.sourceSha,jpeg_sha256:captured.converted.sha256};
           state.phase="preflight_blobs";
         }else if(state.phase==="preflight_blobs"){
+          if(state.version===2&&state.index<2){
+            if(options.probeSource!==undefined&&options.probeSource!==state.probeSource)throw Error("Probe source reference changed on retry");
+            const captured=await compactCapture(state,options.readBytes,true);
+            state.files[0].content=runtime.toBase64(captured.source);state.files[1].content=captured.converted.base64;
+          }
           for(let n=0;n<2&&state.index<state.files.length;n++,state.index++){
             const file=state.files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:file.encoding}),"blob");
           }
@@ -656,11 +708,16 @@ var NativeImageStage = (function () {
       });
     }
     async function stageReservedStep(plan,input,checkpoint){
-      return boundedStep(plan,"native_stage_steps",checkpoint,{input},async state=>{
+      const {readBytes,...retained}=input||{};
+      if(retained.compact===true){
+        if(retained.originalSourceRef!==undefined)sourceRef(retained.originalSourceRef);
+        if(retained.imageGenResult?.output_hint!==undefined)sourceRef(retained.imageGenResult.output_hint);
+      }
+      return boundedStep(plan,"native_stage_steps",checkpoint,{input:retained,compact:retained.compact===true},async state=>{
         if(checkpoint&&input){
-          for(const key of ["observedAt","transportPreflight","generationClaim"])
+          for(const key of ["observedAt","transportPreflight","generationClaim","originalSourceRef"])
             if(input[key]!==undefined&&canonical(input[key])!==canonical(state.input[key]))throw Error("Reserved source metadata changed on retry");
-          if(input.imageGenResult?.image_url&&input.imageGenResult.image_url!==state.input.imageGenResult?.image_url)
+          if(state.version===1&&input.imageGenResult?.image_url&&input.imageGenResult.image_url!==state.input.imageGenResult?.image_url)
             throw Error("Reserved original PNG changed on retry");
         }
         if(!["lookup","reservation_verify"].includes(state.phase)
@@ -668,12 +725,16 @@ var NativeImageStage = (function () {
           throw Error("Generation reservation branch changed between steps");
         if(state.phase==="saved_readback")return await savedSlice(plan,state);
         if(state.phase==="lookup"){
-          if(!state.input?.imageGenResult)throw Error("Original reserved PNG is required");
+          if(state.version===2){
+            sourceRef(state.input.originalSourceRef);
+            if(!state.input.imageGenResult)state.input.imageGenResult={output_hint:state.input.originalSourceRef};
+          }else if(!state.input?.imageGenResult)throw Error("Original reserved PNG is required");
           state.phase="reservation_verify";
         }else if(state.phase==="reservation_verify"){
           // Reuse the strict claim/proof validator without doing a monolithic save.
           await verifyReserved(plan,state.input);
-          const captured=capture(state.input);state.sourceSha=captured.sourceSha;
+          const captured=state.version===2?await compactCapture(state,readBytes):capture(state.input);
+          state.sourceSha=captured.sourceSha;state.sourceBytes=captured.source.length;
           state.parts=[];for(let i=0;i<captured.source.length;i+=PART_SIZE){const part=captured.source.slice(i,i+PART_SIZE);
             state.parts.push({path:plan.directory+"/source.png.part"+String(state.parts.length).padStart(3,"0"),
               content:runtime.toBase64(part),encoding:"base64",hash:runtime.sha256(part),bytes:part.length});}
@@ -684,13 +745,23 @@ var NativeImageStage = (function () {
         }else if(state.phase==="candidate_lookup"){
           if(!await lookupSaved(plan,state,state.sourceSha))state.phase="upload";
         }else if(state.phase==="upload"){
+          if(state.version===2){
+            const captured=await compactCapture(state,readBytes);
+            for(let i=0;i<state.parts.length;i++){
+              const part=captured.source.slice(i*PART_SIZE,(i+1)*PART_SIZE);
+              if(runtime.sha256(part)!==state.parts[i].hash)throw Error("Original PNG part changed on retry");
+              state.parts[i].content=runtime.toBase64(part);
+            }
+            state.jpeg.content=captured.converted.base64;
+          }
           const files=[...state.parts,state.jpeg];
           for(let n=0;n<2&&state.index<files.length;n++,state.index++){
             const file=files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:"base64"}),"blob");
           }
           if(state.index===files.length)state.phase="receipt";
         }else if(state.phase==="receipt"){
-          const source=runtime.fromBase64(state.input.imageGenResult.image_url),jpeg=state.jpeg;
+          const captured=state.version===2?await compactCapture(state,readBytes):null;
+          const source=captured?.source||runtime.fromBase64(state.input.imageGenResult.image_url),jpeg=state.jpeg;
           const receipt={version:1,kind:"native_image_candidate",status:"awaiting_visual_review",identity:plan.identity,repository,slug:plan.slug,
             article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,
             baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},
@@ -698,10 +769,11 @@ var NativeImageStage = (function () {
               actual_output_hint:state.input.imageGenResult.output_hint??null,recovery:null,
               transport_preflight:state.input.transportPreflight,generation_claim:state.input.generationClaim},
             source:{sha256:state.sourceSha,bytes:source.length,width:state.sourceWidth,height:state.sourceHeight,
-              parts:state.parts.map(part=>({path:part.path,bytes:part.bytes,sha256:part.hash,blob_sha:state.blobs[part.path]})),c2pa:state.c2pa},
+              parts:state.parts.map(part=>({path:part.path,bytes:part.bytes,sha256:part.hash,blob_sha:state.blobs[part.path]})),
+              c2pa:captured?serialReceipt(captured.converted.receipt):state.c2pa},
             jpeg:{path:jpeg.path,bytes:jpeg.bytes,sha256:jpeg.hash,width:1200,height:675,quality:84,blob_sha:state.blobs[jpeg.path]},
             transform:{helper:"scripts/native_image_bytes.js",resize:"center-cover-bilinear",alpha_background:"white",width:1200,height:675,jpeg_quality:84}};
-          state.receiptText=JSON.stringify(receipt,null,2)+"\n";
+          state.receiptText=JSON.stringify(receipt,null,2)+"\n";state.receiptHash=hashText(state.receiptText);
           if(runtime.utf8(state.receiptText).length>=PART_SIZE)throw Error("Candidate receipt is too large");
           const path=plan.directory+"/receipt.json";
           state.blobs[path]=gitSha(await call("create_blob",{content:state.receiptText,encoding:"utf-8"}),"blob");state.phase="commit";
@@ -711,7 +783,7 @@ var NativeImageStage = (function () {
           if(!state.commitSha)state.commitSha=gitSha(await call("create_commit",{parent_sha:plan.baseCommitSha,tree_sha:state.treeSha,message:"Stage native image candidate: "+plan.slug}),"commit");
           state.verifyIndex=0;state.phase="verify_commit";
         }else if(state.phase==="verify_commit"){
-          const files=[...state.parts,state.jpeg,{path:plan.directory+"/receipt.json",hash:hashText(state.receiptText),encoding:"utf-8"}];
+          const files=[...state.parts,state.jpeg,{path:plan.directory+"/receipt.json",hash:state.receiptHash||hashText(state.receiptText),encoding:"utf-8"}];
           if(await verifySlice(plan,state,state.commitSha,files))state.phase="publish";
         }else if(state.phase==="publish"){
           if(await lookupSaved(plan,state,state.sourceSha))return;
