@@ -65,16 +65,35 @@ const toolResult=(id,data,isError=false)=>reply({jsonrpc:"2.0",id,result:{
 }});
 const failure=(code)=>{const e=new Error(code);e.safeCode=code;return e;};
 const FILE_REFERENCE_DIAGNOSTIC=Symbol("fileReferenceDiagnostic");
+function invalidReference(reason,field){
+  const error=failure("invalid_file_reference");
+  // Only fixed reason/field enums reach the read-only probe response.
+  // Never attach the actual identifier, metadata value or download URL.
+  error[FILE_REFERENCE_DIAGNOSTIC]={reason,field};
+  throw error;
+}
+function referenceString(file,field,max,required){
+  if(!Object.hasOwn(file,field)){
+    if(required)invalidReference("missing",field);
+    return;
+  }
+  const value=file[field];
+  if(typeof value!=="string")invalidReference("type",field);
+  if(value.length>max||required&&value.length===0)invalidReference("length",field);
+  if(/[\x00-\x1f\x7f-\x9f]/.test(value))invalidReference("control_character",field);
+}
 function allowedFile(file) {
-  if(!isObj(file)||Object.keys(file).some(k=>!["download_url","file_id","mime_type","file_name"].includes(k))
-     ||typeof file.file_id!=="string"||!/^file[-_][A-Za-z0-9_-]{5,128}$/.test(file.file_id)
-     ||typeof file.download_url!=="string"||file.download_url.length>4096
-     ||(file.mime_type!==undefined&&file.mime_type!=="image/jpeg")
-     ||(file.file_name!==undefined&&(typeof file.file_name!=="string"||
-        file.file_name.length>160||!file.file_name.toLowerCase().endsWith(".jpg")&&!file.file_name.toLowerCase().endsWith(".jpeg"))))
-    throw failure("invalid_file_reference");
+  if(!isObj(file))invalidReference("type","file");
+  if(Object.keys(file).some(k=>!["download_url","file_id","mime_type","file_name"].includes(k)))
+    invalidReference("unsupported_fields","file");
+  // IDs are opaque provider identifiers; optional MIME/name values are advisory.
+  // Actual downloaded HTTP type, JPEG bytes, dimensions and size stay strict.
+  referenceString(file,"file_id",1024,true);
+  referenceString(file,"download_url",4096,true);
+  referenceString(file,"mime_type",255,false);
+  referenceString(file,"file_name",512,false);
   let url;
-  try{url=new URL(file.download_url);}catch(_){throw failure("invalid_file_reference");}
+  try{url=new URL(file.download_url);}catch(_){invalidReference("invalid_url","download_url");}
   const reason=url.protocol!=="https:"?"scheme":!trustedFileHost(url.hostname)?"hostname":
     url.port?"port":url.username||url.password?"credentials":url.hash?"fragment":
     url.pathname==="/"?"empty_path":url.pathname.includes("//")?"path_separator":null;
@@ -412,7 +431,7 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
     if(typeof p.protocolVersion!=="string"||!isObj(p.capabilities)||!isObj(p.clientInfo))
       return rpcError(id,-32602,"Invalid initialize parameters");
     return reply({jsonrpc:"2.0",id,result:{protocolVersion:VERSIONS.includes(p.protocolVersion)?p.protocolVersion:VERSIONS.at(-1),
-      capabilities:{tools:{}},serverInfo:{name:"veripsa-candidate-file-receiver",version:"1.0.0"}}});
+      capabilities:{tools:{}},serverInfo:{name:"veripsa-candidate-file-receiver",version:"2.0.0"}}});
   }
   if(!version)return rpcError(id,-32600,"MCP protocol version required",400);
   if(m.method==="ping")return reply({jsonrpc:"2.0",id,result:{}});
