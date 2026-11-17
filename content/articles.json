@@ -27,6 +27,7 @@
     },
     "scene_prompt": "Photorealistic documentary photograph inside an ordinary Japanese building management office on a November evening, a fictional 52-year-old Japanese maintenance worker handing a company emergency phone to the next adult on-call colleague at a small desk, coats and simple maintenance tools in the background, slightly tired but relieved faces, realistic skin and clothing, overhead practical lighting, no text, no logos, no real people, horizontal 16:9.",
     "visual_strategy": "cpu-photo",
+    "broadcast_feature": true,
     "tags": [
       "AI",
       "夜間待機",
