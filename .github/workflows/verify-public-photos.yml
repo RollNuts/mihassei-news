@@ -36,6 +36,8 @@ jobs:
       - name: Verify that Twitterbot can fetch each first-party image card
         id: cards
         run: python3 scripts/check_share_cards.py
+      - name: Verify separate candidate MCP read-only file input schema
+        run: python3 scripts/check_candidate_receiver.py
       - name: Report photograph completion separately from delivery checks
         id: photo_health
         if: always() && !cancelled()
