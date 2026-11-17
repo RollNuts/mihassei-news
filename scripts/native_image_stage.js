@@ -26,7 +26,26 @@ var NativeImageStage = (function () {
       if(stepUsage.calls>=15||mutation&&stepUsage.mutations>=2)throw Error("Bounded image step callback budget exceeded");
       stepUsage.calls++;if(mutation)stepUsage.mutations++;
     }
-    async function invoke(name,args){countStep(name!=="fetch"&&name!=="fetch_file");return await github[name](args);}
+    async function invoke(name,args){
+      countStep(name!=="fetch"&&name!=="fetch_file");
+      try{return await github[name](args);}
+      catch(error){
+        // This connector can throw its typed missing-ref result as a primitive
+        // string. Normalize only the observed Contents error, never a file 404,
+        // permission failure, network error or a message about another ref.
+        const prefix="NOT_FOUND: Error code: NOT_FOUND; Error: GitHub API error 404: ";
+        if(name==="fetch_file"&&typeof args.ref==="string"&&typeof error==="string"&&error.startsWith(prefix)){
+          try{
+            const record=JSON.parse(error.slice(prefix.length));
+            if(record&&Object.keys(record).length===3
+              &&record.message==="No commit found for the ref "+args.ref
+              &&record.documentation_url==="https://docs.github.com/v3/repos/contents/"&&record.status==="404")
+              return {error_code:"NOT_FOUND",error_data:{message:record.message}};
+          }catch(_invalid){/* Preserve the original unrecognized failure. */}
+        }
+        throw error;
+      }
+    }
     function payload(r) {
       const p=r?.structuredContent??r?.result??r;
       // Preserve concrete outer errors; a generic outer isError flag must not

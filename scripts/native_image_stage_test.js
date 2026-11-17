@@ -1374,6 +1374,64 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   await failure(() => compactCall(compactLost, "reserveExternalGenerationStep", compactReservationOptions(compactLost),
     compactLostError.checkpoint), "lost compact claim checkpoint cannot be replayed into permission");
 
+  // Match the connector's observed primitive-string Contents error narrowly.
+  const thrownRefPrefix = "NOT_FOUND: Error code: NOT_FOUND; Error: GitHub API error 404: ";
+  const thrownRefBody = ref => ({message: "No commit found for the ref " + ref,
+    documentation_url: "https://docs.github.com/v3/repos/contents/", status: "404"});
+  const thrownRefString = (ref, change) => thrownRefPrefix + JSON.stringify({...thrownRefBody(ref), ...change});
+  const thrownMissing = await compactContext("thrown-exact-missing-ref"), normalizedRefs = new Set();
+  const originalThrownFetch = thrownMissing.mock.github.fetch_file;
+  thrownMissing.mock.github.fetch_file = async args => {
+    const response = await originalThrownFetch(args), body = response.structuredContent;
+    if (body?.error_code === "NOT_FOUND" && body.error_data?.message === "No commit found for the ref " + args.ref) {
+      normalizedRefs.add(args.ref);throw thrownRefString(args.ref);
+    }
+    return response;
+  };
+  const thrownLookup = await compactCall(thrownMissing, "reserveExternalGenerationStep", compactReservationOptions(thrownMissing));
+  assert(thrownLookup.status === "pending" && thrownLookup.phase === "capture" && thrownMissing.mock.writes().length === 0,
+    "exact thrown Contents missing-ref string establishes candidate absence in bounded lookup without writes");
+  const thrownReserved = await compactDrive(thrownMissing, "reserveExternalGenerationStep", {}, thrownLookup.checkpoint);
+  assert(thrownReserved.result.status === "reserved" &&
+    [thrownMissing.branch, preflightBranch, claimBranchPrefix + thrownMissing.plan.identity].every(ref => normalizedRefs.has(ref)) &&
+    thrownMissing.stepCounters.generated === 0 && !thrownMissing.mock.branches.has(thrownMissing.branch),
+    "exact thrown candidate, preflight and claim misses support bounded reservation while preserving callback budgets and no generation");
+
+  for (const [label, makeThrown] of [
+    ["another ref", ref => thrownRefString(ref + "-other")],
+    ["missing file", ref => thrownRefString(ref, {message: "Not Found"})],
+    ["authentication failure", () => 'UNAUTHORIZED: Error code: UNAUTHORIZED; Error: GitHub API error 401: {"message":"Bad credentials","status":"401"}'],
+    ["rate limit", () => 'RATE_LIMITED: Error code: RATE_LIMITED; Error: GitHub API error 403: {"message":"API rate limit exceeded","status":"403"}'],
+    ["network failure", () => "TypeError: fetch failed"],
+    ["malformed JSON", ref => thrownRefPrefix + JSON.stringify(thrownRefBody(ref)).slice(0, -1)],
+    ["wrong status", ref => thrownRefString(ref, {status: "403"})],
+    ["numeric status", ref => thrownRefString(ref, {status: 404})],
+    ["wrong documentation URL", ref => thrownRefString(ref, {documentation_url: "https://docs.github.com/rest/repos/contents"})],
+    ["unexpected JSON key", ref => thrownRefString(ref, {retryable: true})],
+    ["missing JSON key", ref => {
+      const body = thrownRefBody(ref);delete body.documentation_url;return thrownRefPrefix + JSON.stringify(body);
+    }],
+    ["wrong prefix", ref => "NOT_FOUND: " + JSON.stringify(thrownRefBody(ref))],
+    ["trailing response text", ref => thrownRefString(ref) + " trailing"],
+    ["Error object instead of primitive string", ref => Error(thrownRefString(ref))]
+  ]) {
+    const context = await compactContext("thrown-reject-" + label), fetchFile = context.mock.github.fetch_file;
+    const thrown = makeThrown(context.plan.branch);
+    context.mock.github.fetch_file = async args => { await fetchFile(args);throw thrown; };
+    const error = await failure(() => compactCall(context, "reserveExternalGenerationStep", compactReservationOptions(context)),
+      "bounded lookup rejects thrown " + label);
+    assert(error.message === (thrown instanceof Error ? thrown.message : thrown) && context.mock.writes().length === 0 &&
+      context.stepCounters.generated === 0, "unrecognized thrown " + label + " retains the original failure and cannot authorize writes");
+  }
+  const wrongCallback = await compactContext("thrown-other-callback"), originalCloudFetch = wrongCallback.mock.github.fetch;
+  const otherCallbackError = thrownRefString(wrongCallback.plan.branch);
+  wrongCallback.mock.github.fetch = async args => { await originalCloudFetch(args);throw otherCallbackError; };
+  const wrongCallbackService = stageAPI.create({runtime: wrongCallback.measuredRuntime, github: wrongCallback.mock.github, repository});
+  const otherError = await failure(() => wrongCallbackService.cloudStatus(),
+    "an identical thrown string from a non-Contents callback is not normalized as missing-ref evidence");
+  assert(otherError.message.includes(otherCallbackError) && wrongCallback.mock.writes().length === 0,
+    "non-fetch_file thrown errors preserve their original message and fail before writes");
+
   return {passed: checks.length, checks};
 };
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageStageTests;
