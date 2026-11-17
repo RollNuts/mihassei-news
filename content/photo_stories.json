@@ -179,6 +179,21 @@
         "cut_id": "03",
         "image_sha256": "bf765b56a8cd075b1c7b3a7d3818c7da645236b27be2f86bfd47357adfa71111"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261117181611000000",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-17T18:16:11+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "手帳にはさんだ紅葉が、歩いているうちに落ちてしまって。今はコートのポケットに避難中です。帰ったら、そっと広げよう。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "06",
+        "image_sha256": "e5d466ee018a36990b432f126bc538d386939988a3961a663714233e57490219"
+      }
     }
   ]
 }
