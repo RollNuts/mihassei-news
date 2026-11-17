@@ -224,6 +224,27 @@ def dispatch(api, revision):
     return {"status": "verification_dispatched", "merge_sha": revision}
 
 
+class PublicationBlocked(ValueError):
+    """Expose the safe stopping snapshot without weakening a publication gate."""
+    def __init__(self, pr, expected_head, stage, message):
+        super().__init__(message)
+        if pr["head"]["sha"] != expected_head:
+            operation = "Current owner: review the changed head and refresh its CI and exact-head approval."
+        elif pr.get("draft") is True:
+            operation = "Current owner: after saving the passed current-head review, mark this same PR ready and reread draft=false."
+        elif pr.get("mergeable") is False or pr.get("mergeable_state") == "dirty":
+            operation = "Current owner: resolve latest-main conflicts in this same PR without force, then run CI and renew the changed-head review."
+        elif pr.get("mergeable") is None or pr.get("mergeable_state") == "unknown":
+            operation = "Current owner: reread GitHub mergeability at the next existing task; retain this PR and do not force a merge."
+        else:
+            operation = "Current owner: recheck this PR, its approval and current main before continuing the same handoff; do not force a merge."
+        self.result = {"status": "unverified", "error": message, "pr": pr["number"],
+                       "expected_head": expected_head, "current_head": pr["head"]["sha"],
+                       "stage": stage, "blocking_snapshot": {
+                           key: pr.get(key) for key in ("state", "draft", "mergeable", "mergeable_state")},
+                       "next_operation": operation}
+
+
 def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, validate=validate_merge, root=ROOT):
     require(type(number) is int and number > 0
             and (run_id is None or type(run_id) is int and run_id > 0), "Invalid PR/run")
@@ -244,8 +265,9 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
         return dispatch(api, pr["merge_commit_sha"])
     # An optional failed finalizer can itself leave a conflict-free PR unstable.
     # Exact primary CI and the fresh source/merge guards still precede every PUT.
-    require(pr.get("state") == "open" and pr.get("draft") is False
-            and pr.get("mergeable") is True and pr.get("mergeable_state") in {"clean", "unstable"}, "PR is not safely mergeable")
+    if not (pr.get("state") == "open" and pr.get("draft") is False
+            and pr.get("mergeable") is True and pr.get("mergeable_state") in {"clean", "unstable"}):
+        raise PublicationBlocked(pr, expected_head, "preflight", "PR is not safely mergeable")
     if run_id is None:
         # An editor can arm the existing PR body after CI has already finished.
         # No connector workflow-dispatch capability or second waiting task needed.
@@ -284,15 +306,15 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     current = validate(api, pr, run, root)
     require(owner(api, number, expected_head).get("status") == "clear", "Another PR owns this publication")
     fresh = api.get(f"/pulls/{number}")
-    require(fresh.get("state") == "open" and fresh.get("draft") is False
+    if not (fresh.get("state") == "open" and fresh.get("draft") is False
             and fresh["head"]["sha"] == expected_head and approval(fresh) == attestation
             and fresh["head"]["repo"]["full_name"] == REPO
             and fresh["base"]["repo"]["full_name"] == REPO and fresh["base"]["ref"] == "main"
             and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}
             # PR base.sha may retain the creation/CI snapshot or refresh later.
             # The branch ref, not that PR metadata, binds our freshly checked tree.
-            and api.get("/git/ref/heads/main")["object"]["sha"] == current,
-            "PR or main changed during finalization")
+            and api.get("/git/ref/heads/main")["object"]["sha"] == current):
+        raise PublicationBlocked(fresh, expected_head, "premerge", "PR or main changed during finalization")
     latest = api.get(f"/actions/runs/{run_id}")
     require(latest.get("status") == "completed" and latest.get("conclusion") == "success"
             and latest.get("head_sha") == expected_head
@@ -346,6 +368,13 @@ def main(argv=None):
             number, head, run_id = int(inputs["finalize_pr"]), inputs["finalize_head"], int(inputs["ci_run_id"])
         print(json.dumps(finalize(api, number, head, run_id)))
         return 0
+    except PublicationBlocked as exc:
+        print(json.dumps(exc.result))
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+                summary.write("### Publication blocked\n\n```json\n"
+                              + json.dumps(exc.result, indent=2) + "\n```\n")
+        return 1
     except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as exc:
         print(json.dumps({"status": "unverified", "error": str(exc)[:400]}))
         return 1

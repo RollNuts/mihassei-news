@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -187,6 +188,41 @@ class FinalizationTests(unittest.TestCase):
             with self.assertRaises(ValueError): self.go(api)
             self.assertEqual(api.writes, [])
 
+    def test_blocking_snapshots_identify_safe_next_operation_without_api_triage(self):
+        cases = [(dict(draft=True), "ready"),
+                 (dict(mergeable=False, mergeable_state="dirty"), "conflicts"),
+                 (dict(mergeable=None, mergeable_state="unknown"), "mergeability")]
+        for state, operation in cases:
+            for stage in ("preflight", "premerge"):
+                with self.subTest(state=state, stage=stage):
+                    api = API()
+                    if stage == "preflight": api.pr.update(state)
+                    else: api.race = lambda a: a.pr.update(state)
+                    with self.assertRaises(f.PublicationBlocked) as blocked:
+                        self.go(api)
+                    result = blocked.exception.result
+                    self.assertEqual((result["pr"], result["expected_head"], result["current_head"]), (819, H, H))
+                    self.assertEqual(result["stage"], stage)
+                    self.assertEqual(result["blocking_snapshot"], {
+                        k: api.pr[k] for k in ("state", "draft", "mergeable", "mergeable_state")})
+                    self.assertIn(operation, result["next_operation"])
+                    self.assertEqual(api.writes, [])
+
+    def test_cli_reports_draft_block_in_json_and_workflow_summary(self):
+        api = API(); api.pr["draft"] = True
+        with tempfile.TemporaryDirectory() as folder:
+            event, summary = Path(folder) / "event.json", Path(folder) / "summary.md"
+            event.write_text(json.dumps({"number": 819, "pull_request": api.pr}))
+            with patch.object(f, "GitHub", return_value=api), patch("sys.stdout", new_callable=io.StringIO) as output, \
+                    patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary)}):
+                self.assertEqual(f.main(["--event", str(event)]), 1)
+            result = json.loads(output.getvalue())
+            self.assertEqual(result["blocking_snapshot"]["draft"], True)
+            self.assertEqual(result["expected_head"], H)
+            self.assertIn("ready", result["next_operation"])
+            self.assertIn(json.dumps(result, indent=2), summary.read_text())
+            self.assertEqual(api.writes, [])
+
     def test_failed_wrong_head_or_unverified_ci_cannot_merge(self):
         for mutate in [lambda a: a.run.update(conclusion="failure"),
                        lambda a: a.run.update(head_sha=M), lambda a: a.run.update(event="push"),
@@ -331,6 +367,23 @@ class FinalizationTests(unittest.TestCase):
         self.assertEqual(sum(method == "PUT" for method, _, _ in api.writes), 1)
         self.assertEqual(api.writes[-1][2]["inputs"], {"expected_sha": M})
 
+    def test_merged_body_edit_can_only_redispatch_the_verified_merge_revision(self):
+        api = API(); api.pr.update(state="closed", merged=True, merge_commit_sha=M)
+        self.assertEqual(self.go(api, body_edit=True), {"status": "verification_dispatched", "merge_sha": M})
+        self.assertEqual(api.writes, [("POST", f.VERIFY, {"ref": "main", "inputs": {"expected_sha": M}})])
+        self.assertFalse(any(method == "LOCAL" or path.startswith("/actions/workflows/check.yml/runs?")
+                             for method, path in api.calls))
+        for invalid in ("head", "fork", "approval", "writer", "ancestry"):
+            with self.subTest(invalid=invalid):
+                api = API(); api.pr.update(state="closed", merged=True, merge_commit_sha=M)
+                if invalid == "head": api.pr["head"]["sha"] = B
+                elif invalid == "fork": api.pr["head"]["repo"]["full_name"] = "outsider/fork"
+                elif invalid == "approval": api.pr["body"] = body({**handoff(), "first_read": "pending"})
+                elif invalid == "writer": api.permission = "read"
+                else: api.get = lambda path, original=api.get: {"status": "diverged"} if path.startswith("/compare/") else original(path)
+                with self.assertRaises(ValueError): self.go(api, body_edit=True)
+                self.assertEqual(api.writes, [])
+
     def test_photo_editor_self_read_is_allowed_but_cannot_relabel_news(self):
         for kind, path in [("cast_story", "content/photo_stories.json"), ("photo_issue", "content/photo_issues.json")]:
             api = API(); obj = handoff(kind); obj["reviewer_run"] = obj["author_run"]
@@ -398,6 +451,31 @@ class FinalizationTests(unittest.TestCase):
 
 
 class AdapterTests(unittest.TestCase):
+    def test_actual_workflow_admits_only_trusted_ready_or_merged_edit_handoffs(self):
+        workflow = (f.ROOT / ".github/workflows/verify-public-photos.yml").read_text().split("\n  finalize:\n", 1)[1]
+        expression = re.search(r"(?m)^    if: \$\{\{ (.+) \}\}$", workflow).group(1)
+        expression = re.sub(r"\bfalse\b", "False", re.sub(r"\btrue\b", "True", expression))
+        expression = expression.replace("&&", " and ").replace("||", " or ")
+        def allowed(action="edited", **changes):
+            pr = copy.deepcopy(API().pr)
+            pr["author_association"] = "OWNER"
+            pr.update(changes)
+            event = {"repository": {"private": False}, "action": action, "pull_request": pr}
+            github = {"repository": f.REPO, "ref": "refs/heads/main", "event_name": "pull_request_target", "event": event}
+            namespace = json.loads(json.dumps(github), object_hook=lambda o: SimpleNamespace(**o))
+            return eval(expression, {"__builtins__": {}, "contains": lambda a, b: b in a, "fromJSON": json.loads},
+                        {"github": namespace, "inputs": SimpleNamespace(finalize_pr="")})
+        self.assertTrue(allowed())
+        self.assertTrue(allowed(state="closed", merged=True))
+        self.assertFalse(allowed(action="ready_for_review", state="closed", merged=True))
+        self.assertFalse(allowed(state="closed", merged=False))
+        self.assertFalse(allowed(draft=True))
+        self.assertFalse(allowed(state="closed", merged=True, author_association="CONTRIBUTOR"))
+        self.assertFalse(allowed(state="closed", merged=True, body="No opt-in"))
+        self.assertFalse(allowed(state="closed", merged=True, head={"repo": {"full_name": "outsider/fork"}}))
+        self.assertIn("ref: refs/heads/main", workflow)
+        self.assertNotIn("actions/download-artifact", workflow)
+
     def test_real_class_reads_exact_repository_root_via_its_no_redirect_opener(self):
         client = f.GitHub()
         redirects = [h for h in client.opener.handlers if isinstance(h, urllib.request.HTTPRedirectHandler)]
