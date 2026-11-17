@@ -306,20 +306,23 @@ def render_market_forecast_assessment(row):
     assessment = '<p class="market-reader-date">この予想の更新評価はまだありません。</p>'
     if latest:
         source = latest["source"]
+        date_label = '結果確認：' if result else '最新の評価：'
+        reason_label = '判定の理由' if result else '評価の理由'
+        source_label = '結果の出典：' if result else '評価の出典：'
+        provisional = (f' ／ {escape(latest["stance"])}（{escape(latest["trend"])}）'
+                       if not result else '')
         assessment = (
-            '<p class="market-reader-date">最新の評価：'
+            f'<p class="market-reader-date">{date_label}'
             f'<time datetime="{escape(latest["at"], quote=True)}">{_event_day(latest["at"])}</time> JST'
-            f' ／ {escape(latest["stance"])}（{escape(latest["trend"])}）</p>'
-            f'<p class="market-reader-reason"><strong>評価の理由</strong>{escape(latest["reason"])}</p>'
+            f'{provisional}</p>'
+            f'<p class="market-reader-reason"><strong>{reason_label}</strong>{escape(latest["reason"])}</p>'
             '<p class="market-reader-sources">'
             f'<a href="{escape(_https(source["url"]), quote=True)}" target="_blank" '
-            f'rel="noopener noreferrer external">評価の出典：{escape(source["title"])}</a></p>'
+            f'rel="noopener noreferrer external">{source_label}{escape(source["title"])}</a></p>'
         )
     status = _status(row)
     outcome = 'hit' if result and result["outcome"] == '的中' else 'miss' if result else 'pending'
-    confirmed = (f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>'
-                 f'<a href="{escape(result["source_url"],quote=True)}" target="_blank" '
-                 'rel="noopener noreferrer external">結果の出典</a>') if result else ''
+    confirmed = f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>' if result else ''
     sources = ''.join(
         f'<a href="{escape(_https(source["url"]),quote=True)}" title="{escape(source["title"],quote=True)}" '
         f'target="_blank" rel="noopener noreferrer external">資料{index}</a>'

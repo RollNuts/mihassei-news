@@ -8,7 +8,7 @@ import unittest
 
 from scripts.market_outlooks import (
     _forecast_result, load_market_outlooks, render_market_outlook_board,
-    view_models, render_market_outlook_archive,
+    view_models, render_market_outlook_archive, render_market_forecast_assessment,
 )
 
 SOURCE = "https://www.jpx.co.jp/markets/indices/topix/"
@@ -129,6 +129,47 @@ class DailyOutlookTests(unittest.TestCase):
             p.write_text(json.dumps([fc], ensure_ascii=False), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "after publication"):
                 load_market_outlooks(tmp, today=date(2026, 11, 16))
+
+    def test_confirmed_result_replaces_provisional_assessment_label(self):
+        source_url = "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt"
+        final = review(
+            id="2026-11-17-close-final", at="2026-11-17T18:30:00+09:00",
+            stance="弱気", trend="暫定的に逆行",
+            reason="対象日の公式終値を確認すると固定基準を下回っており、当初の上昇予測は条件を満たさなかったため正式に外れと判定する。",
+            source={"title": "JPX対象日の公式終値", "url": source_url,
+                    "published_on": "2026-11-17", "checked_on": "2026-11-17"},
+            result={"close": 3300.0, "observed_on": "2026-11-17",
+                    "source_url": source_url, "outcome": "外れ",
+                    "explanation": "対象日の公式終値は固定した基準値3400.0を下回り、当初の0.5％超上昇という条件を満たさなかった。"},
+        )
+        row = view_models([original(), final])[0]
+        markup = render_market_forecast_assessment(row)
+        self.assertIn('結果確認：<time datetime="2026-11-17T18:30:00+09:00">', markup)
+        self.assertIn("判定済み：外れ", markup)
+        self.assertIn("確認済み終値 3,300.00ポイント", markup)
+        self.assertIn("<strong>判定の理由</strong>" + final["reason"], markup)
+        self.assertIn("結果の出典：JPX対象日の公式終値", markup)
+        self.assertEqual(markup.count('href="' + source_url + '"'), 1)
+        for provisional in ("最新の評価：", "暫定的", "弱気（"):
+            self.assertNotIn(provisional, markup)
+
+    def test_unconfirmed_or_invalid_result_keeps_interim_assessment(self):
+        for outcome in (None, {"outcome": "保留"}, {
+                "close": 3300.0, "observed_on": "2026-11-16",
+                "source_url": SOURCE, "outcome": "外れ",
+                "explanation": "固定した期日とは異なる日の値であり、この終値を使って当初予測の結果を確定することはできない。"}):
+            with self.subTest(result=outcome):
+                latest = review(id="2026-11-17-close-check", at="2026-11-17T18:30:00+09:00")
+                if outcome is not None:
+                    latest["result"] = outcome
+                markup = render_market_forecast_assessment(view_models([original(), latest])[0])
+                self.assertIn("最新の評価：", markup)
+                self.assertIn("中立（暫定的に逆行）", markup)
+                self.assertIn("評価の出典：", markup)
+                self.assertIn('data-outcome="pending"', markup)
+                self.assertNotIn("結果確認：", markup)
+                self.assertNotIn("確認済み終値", markup)
+                self.assertNotIn("判定済み：", markup)
 
 
 if __name__ == "__main__":

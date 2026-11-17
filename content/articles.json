@@ -1,5 +1,72 @@
 [
   {
+    "slug": "secondhand-home-repair-map-opens-wall-before-sale",
+    "category": "暮らし",
+    "flash": "新しい壁紙、補修は３回",
+    "fiction_company": "架空の中古住宅仲介事業者",
+    "art": "cards",
+    "fiction_at": "2031-11-17T08:00:00+09:00",
+    "published_at": "2026-11-17T08:00:00+09:00",
+    "publication_slot": "2026-11-17T07:30:00+09:00",
+    "title": "中古住宅の修繕履歴を図面に重ねて公開　買主が壁を開けて検査、売買条件を変更",
+    "summary": "2031年、中古住宅の過去の点検・補修記録を間取り図の同じ場所に重ねて見られる売買サービスが始まった。真新しい壁紙の裏に雨漏り補修の履歴が3回あると知った買主は、契約前の検査を要請。壁の内部に湿りが見つかり、売主と買主は補修と支払いの条件を変更した。",
+    "paragraphs": [
+      "2031年11月17日、中古住宅の内覧で40歳の買主が、白く塗り直された壁の隅を指し「契約前に、ここを開けて調べたい」と求めた。修繕記録を間取り図に重ねて見られる新しい売買サービスで、同じ一角に雨漏り補修の履歴が3回並んでいたためだ。売主が検査を認めると壁の内側に湿りが見つかり、双方は売買条件を変えた。",
+      "このサービスでは、売主が提供を認めた過去の点検票や工事写真を、修理した場所ごとに図面へ重ねる。日付順の書類を一枚ずつ見るだけでは、工事名が違っても同じ場所を何度も直していることに気づきにくい。画面が家の安全を判定するわけではない。買主が現物を確かめる場所を選べるようにする仕組みだ。",
+      "検査員が室内側の壁の下部を小さく開くと、裏の木材に湿りが残っていた。過去の工事は記録どおりに行われており、売主が隠した修理が見つかったわけではない。ただ、塗り直された表面だけでは今の状態は分からない。買主は原因不明の修理費を背負うのを避けたく、売主も引き渡した後に雨漏りをめぐって争うより、先に状態を確かめたかった。",
+      "現状のまま価格を下げて売る選択肢もあったが、買主は補修後の状態を確かめて購入する方を選んだ。売主が補修と再検査の費用を負担し、代金の一部は検査員が補修完了を確認するまで支払いを保留する条件を契約書に加えた。引き渡しは再検査が終わる翌週以降となる。売主は代金の一部を早く受け取れなくなるが、買主は修理が終わらないまま全額を払わずに済む。",
+      "売主は補修業者に連絡し、買主は補修後の再検査を条件に売買契約書へ署名した。壁の開口部には、再検査まで外せる保護板が取り付けられた。帰り際、買主が写真に撮ったのは整ったリビングではなく、保護板の横に貼られた補修箇所の図面だった。"
+    ],
+    "source": {
+      "kind": "住宅取引の消費者保護に関する一次資料",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-16T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/house04_hh_001373.html",
+      "topic": "国土交通省は2026年11月16日、住宅の買主保護と住宅瑕疵担保履行制度などを検討するワーキンググループ第1回を11月18日に開催すると発表した。2031年の図面上の修繕記録照会サービス、住宅の検査結果、売買条件、契約や人物はすべて創作。2026年時点で修繕履歴公開が義務化されたという意味ではない。"
+    },
+    "scene_prompt": "Natural documentary real estate photo of a 40-year-old Japanese woman home buyer pointing toward a small opened inspection panel in a freshly painted white wall, a middle-aged building inspector checking damp wood just behind the panel while an older adult seller watches, modest lived-in Japanese home interior on a cool November morning, ordinary realistic materials and natural window light, editorial press photograph, no visible brands, no legible letters, no identifiable real people, horizontal 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "中古住宅",
+      "修繕",
+      "住まい"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "中古住宅",
+      "住宅購入"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "壁紙は新しい。でも、同じ隅の修繕記録が3回。2031年の中古住宅売買で、買主が先に確かめたのは内装の裏側だった。",
+    "reader_interest": "family_home",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月16日、国土交通省が住宅取引の買主保護に関する検討ワーキンググループの開催を公表",
+      "target": "中古住宅売買で点検・補修の記録を図面の同じ場所へ重ねて公開する架空の仲介サービス",
+      "action": "買主が同じ壁の3度の補修履歴を発見し、契約前の開口検査と補修条件を売主に求める",
+      "outcome": "湿りを現物で確認し、売主が補修と再検査の費用を負担し代金の一部を確認まで保留する契約へ変更"
+    },
+    "reader_clarity": {
+      "who": "買主",
+      "action": "壁を開けて検査し売買条件を変更",
+      "oddity": "修繕履歴を図面に重ねて公開するサービスで同じ場所の3回の修理が見つかる"
+    },
+    "behavior_basis": {
+      "motive": "買主は原因不明の修理費を避けたい。売主は後から責任を争うより状態を明らかにして売却したい",
+      "ordinary_alternative": "点検せず購入するか、現状のまま価格を下げて売買する",
+      "why_not": "同じ場所の繰り返された修理が新方式で見えたため現物を確かめ、補修完了を支払い条件にする",
+      "evidence_quote": "売主が補修と再検査の費用を負担し、代金の一部は検査員が補修完了を確認するまで支払いを保留する条件を契約書に加えた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月16日、国交省が住宅取引の消費者保護についての検討会開催を公表",
+      "continuation_force": "住宅取引で修繕履歴と現況の確認が買主・売主双方の契約判断に影響するため、記録の見せ方の改善が進み得る",
+      "future_result": "2031年、同じ場所の補修履歴を買主が発見して検査し、壁の現況と売買条件が変わる"
+    }
+  },
+  {
     "slug": "local-council-keeps-last-bus-despite-grant-formula",
     "category": "政治",
     "flash": "最終バスは市の財布で",
@@ -135,6 +202,7 @@
   },
   {
     "slug": "ai-purchasing-agent-fake-order-real-signature",
+    "broadcast_feature": true,
     "category": "事件",
     "flash": "偽注文に「正規のAI署名」",
     "fiction_company": "架空の港原市の小売店と取引銀行",

@@ -1,6 +1,14 @@
 {
   "version": 1,
   "stories": {
+    "ai-purchasing-agent-fake-order-real-signature": {
+      "article_sha256": "3c7c8a9c163455b373099f2af8b10f89219dc82dd6c12faa14401a5d162a44cc",
+      "cues": [
+        {"at": 0, "label": "AIが偽注文に署名", "text": "店主のAIが偽の仕入れ注文を正規の権限で承認"},
+        {"at": 4, "label": "本物の注文も停止", "text": "銀行が不審な振込を止め、本物の仕入れも保留"},
+        {"at": 8, "label": "最後は人が承認", "text": "店主が初めての振込先だけ自分で確認する方式へ"}
+      ]
+    },
     "ai-royalties-retirees-operators-left-out": {
       "article_sha256": "fa654bf23be70f588ac1dbb5c65b6ed6741fdf9ed420fa2489018d8f6ecdc579",
       "cues": [
