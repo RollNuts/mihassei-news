@@ -5,6 +5,9 @@ const REPO="RollNuts/mihassei-news";
 const API="https://api.github.com/repos/"+REPO;
 const FILE_HOST="files.oaiusercontent.com";
 const MAX_JPEG=700*1024;
+const MAX_MANIFEST_BYTES=1024*1024;
+const MAX_CONTENTS_RESPONSE=2*1024*1024;
+const MAX_GITHUB_RESPONSE=256*1024;
 const ARCHIVE_MAX=1536*1024*1024;
 const KEY=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SHA=/^[a-f0-9]{64}$/;
@@ -108,7 +111,8 @@ function jpegSize(b){
     const n=(b[i]<<8)|b[i+1];if(n<2||i+n>b.length)throw failure("invalid_jpeg");
     if([0xc0,0xc1,0xc2,0xc3,0xc5,0xc6,0xc7,0xc9,0xca,0xcb,0xcd,0xce,0xcf].includes(marker)){
       if(n<7)throw failure("invalid_jpeg");
-      size=[(b[i+3]<<8)|b[i+4],(b[i+5]<<8)|b[i+6]];
+      // SOF stores height, then width (after sample precision).
+      size=[(b[i+5]<<8)|b[i+6],(b[i+3]<<8)|b[i+4]];
       break;
     }
     i+=n;
@@ -134,11 +138,19 @@ function encodedBase64(bytes){
   for(let i=0;i<bytes.length;i+=block)parts.push(btoa(String.fromCharCode(...bytes.subarray(i,i+block))));
   return parts.join("");
 }
-function decodedBase64(s){
-  if(typeof s!=="string"||s.length>Math.ceil(MAX_JPEG/3)*4+200)throw failure("invalid_github_response");
+function decodedBase64(s,maxBytes=MAX_JPEG){
+  // GitHub Content responses wrap base64; inventory and JPEG need distinct caps.
+  const maxEncoded=Math.ceil(maxBytes/3)*4;
+  const maxWrapped=maxEncoded+Math.ceil(maxEncoded/60)*2+128;
+  if(typeof s!=="string"||s.length>maxWrapped)throw failure("invalid_github_response");
   const clean=s.replace(/\s/g,"");
-  if(!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))throw failure("invalid_github_response");
-  return Uint8Array.from(atob(clean),x=>x.charCodeAt(0));
+  if(clean.length>maxEncoded||!/^[A-Za-z0-9+/]*={0,2}$/.test(clean))
+    throw failure("invalid_github_response");
+  let bytes;
+  try{bytes=Uint8Array.from(atob(clean),x=>x.charCodeAt(0));}
+  catch(_){throw failure("invalid_github_response");}
+  if(bytes.length>maxBytes)throw failure("invalid_github_response");
+  return bytes;
 }
 async function authorizedCaller(req,env){
   const serverKey=env.IMAGE_CANDIDATE_CALLER_KEY;
@@ -179,7 +191,10 @@ async function github(path,method,token,fetchImpl,body,allow404=false){
   });
   if(allow404&&res.status===404)return null;
   if(res.status<200||res.status>=300)throw failure(res.status===409||res.status===422?"candidate_conflict":"github_unavailable");
-  const text=new TextDecoder("utf-8",{fatal:true}).decode(await limited(res,256*1024));
+  const largeContents=method==="GET"&&(path==="/contents/assets/generated/manifest.json?ref=main"||
+    path.startsWith("/contents/maintenance/native-image-candidates/"));
+  const cap=largeContents?MAX_CONTENTS_RESPONSE:MAX_GITHUB_RESPONSE;
+  const text=new TextDecoder("utf-8",{fatal:true}).decode(await limited(res,cap));
   try{return JSON.parse(text);}catch(_){throw failure("invalid_github_response");}
 }
 async function stageFile(req,env,file,claim,fetchImpl){
@@ -208,7 +223,7 @@ async function stageFile(req,env,file,claim,fetchImpl){
   const manifest=await github("/contents/assets/generated/manifest.json?ref=main","GET",token,fetchImpl);
   if(manifest.encoding!=="base64"||typeof manifest.content!=="string")throw failure("invalid_manifest");
   let inventory;
-  try{inventory=JSON.parse(new TextDecoder().decode(decodedBase64(manifest.content)));}catch(_){throw failure("invalid_manifest");}
+  try{inventory=JSON.parse(new TextDecoder().decode(decodedBase64(manifest.content,MAX_MANIFEST_BYTES)));}catch(_){throw failure("invalid_manifest");}
   if(inventory.version!==1||!isObj(inventory.images))throw failure("invalid_manifest");
   let archive=0;
   for(const record of Object.values(inventory.images)){
@@ -218,18 +233,10 @@ async function stageFile(req,env,file,claim,fetchImpl){
   if(archive+image.bytes.length>ARCHIVE_MAX)throw failure("archive_limit");
 
   const branchPath=claim.branch.split("/").map(encodeURIComponent).join("/");
-  const ref="/git/ref/heads/"+branchPath;
-  const branch=await github(ref,"GET",token,fetchImpl);
-  if(branch.object?.sha!==claim.claim_commit_sha) {
-    // Never write to a branch with changed head, even on a retry.
-    const present=await github("/contents/"+claim.path+"?ref="+encodeURIComponent(claim.branch),
-      "GET",token,fetchImpl,undefined,true);
-    if(present&&present.encoding==="base64"&&
-       await shaHex(decodedBase64(present.content))===image.sha256)
-      return {status:"reused",branch:claim.branch,path:claim.path,
-        jpeg_sha256:image.sha256,bytes:image.bytes.length};
-    throw failure("candidate_conflict");
-  }
+  const getRef="/git/ref/heads/"+branchPath;
+  const updateRef="/git/refs/heads/"+branchPath;
+  const branch=await github(getRef,"GET",token,fetchImpl);
+  if(!GIT.test(branch.object?.sha||""))throw failure("invalid_github_response");
   const claimPath="maintenance/image-upload-claims/"+claim.slug+"/claim.json";
   const stored=await github("/contents/"+claimPath+"?ref="+claim.claim_commit_sha,
     "GET",token,fetchImpl);
@@ -240,18 +247,36 @@ async function stageFile(req,env,file,claim,fetchImpl){
   if(record.version!==1||record.repository!==REPO||
      !Object.keys(expected).every(k=>record[k]===expected[k])||
      Object.hasOwn(record,"nonce"))throw failure("claim_mismatch");
-  const existing=await github("/contents/"+claim.path+"?ref="+claim.claim_commit_sha,
-    "GET",token,fetchImpl,undefined,true);
-  if(existing) {
-    if(existing.encoding==="base64"&&await shaHex(decodedBase64(existing.content))===image.sha256)
-      return {status:"reused",branch:claim.branch,path:claim.path,
-        jpeg_sha256:image.sha256,bytes:image.bytes.length};
-    throw failure("candidate_conflict");
-  }
+  // Even on replay, the immutable claim must match the same file, nonce
+  // hash, expiration and original one-parent commit.
   const parent=await github("/git/commits/"+claim.claim_commit_sha,"GET",token,fetchImpl);
   if(!GIT.test(parent.tree?.sha||"")||
      parent.parents?.length!==1||parent.parents[0]?.sha!==claim.expected_head_sha)
     throw failure("claim_parent_mismatch");
+  if(branch.object.sha!==claim.claim_commit_sha){
+    const saved=await github("/git/commits/"+branch.object.sha,"GET",token,fetchImpl);
+    if(saved.parents?.length!==1||saved.parents[0]?.sha!==claim.claim_commit_sha)
+      throw failure("candidate_conflict");
+    const present=await github("/contents/"+claim.path+"?ref="+branch.object.sha,
+      "GET",token,fetchImpl,undefined,true);
+    if(!present||present.encoding!=="base64")throw failure("candidate_conflict");
+    const prior=decodedBase64(present.content);
+    if(prior.length!==image.bytes.length||await shaHex(prior)!==image.sha256)
+      throw failure("candidate_conflict");
+    return {status:"reused",branch:claim.branch,path:claim.path,
+      jpeg_sha256:image.sha256,bytes:image.bytes.length};
+  }
+  const existing=await github("/contents/"+claim.path+"?ref="+claim.claim_commit_sha,
+    "GET",token,fetchImpl,undefined,true);
+  if(existing) {
+    if(existing.encoding==="base64"){
+      const prior=decodedBase64(existing.content);
+      if(prior.length===image.bytes.length&&await shaHex(prior)===image.sha256)
+        return {status:"reused",branch:claim.branch,path:claim.path,
+          jpeg_sha256:image.sha256,bytes:image.bytes.length};
+    }
+    throw failure("candidate_conflict");
+  }
   const blob=await github("/git/blobs","POST",token,fetchImpl,{
     content:encodedBase64(image.bytes),encoding:"base64"});
   if(!GIT.test(blob.sha||""))throw failure("invalid_github_response");
@@ -262,7 +287,7 @@ async function stageFile(req,env,file,claim,fetchImpl){
     message:"Stage claimed JPEG candidate for "+claim.slug,
     tree:tree.sha,parents:[claim.claim_commit_sha]});
   if(!GIT.test(commit.sha||""))throw failure("invalid_github_response");
-  const updated=await github(ref,"PATCH",token,fetchImpl,{sha:commit.sha,force:false});
+  const updated=await github(updateRef,"PATCH",token,fetchImpl,{sha:commit.sha,force:false});
   if(updated.object?.sha!==commit.sha)throw failure("candidate_conflict");
   const verify=await github("/contents/"+claim.path+"?ref="+commit.sha,"GET",token,fetchImpl);
   if(verify.encoding!=="base64"||await shaHex(decodedBase64(verify.content))!==image.sha256)
