@@ -151,7 +151,7 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 
 ### File adapter to code-mode PNG bytes
 
-The existing receiver also exposes the read-only `read_candidate_png` tool. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
+The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
 const readBytes = async actualPngPath => {
@@ -167,6 +167,23 @@ const readBytes = async actualPngPath => {
 ```
 
 Capture `structuredContent` only inside code mode: never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
+
+### Offline PNG bootstrap
+
+When this worker exposes a top-level Python executor, create this deterministic transport fixture there using only the standard library (outside `functions.exec`). It avoids raw-GitHub DNS, external downloads and manual Mac attachments:
+
+```python
+import base64, hashlib
+from pathlib import Path
+png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAAUUlEQVR4nNXRMQ0AMAwDQUMMiAILnCLpbAbpF4LHTqdfIkuRpCmdaTTmvc7U0jQa49bm4uYiGuMWM4o5jda7mDYzijmNxrjFjGJOozHu/79wAV5JS/CTcXlMAAAAAElFTkSuQmCC", validate=True)
+expected = "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744"
+assert len(png) == 138 and hashlib.sha256(png).hexdigest() == expected
+path = Path("/mnt/data/mihassei-offline-probe.png")
+path.write_bytes(png)
+print({"path": str(path), "bytes": len(png), "sha256": expected})
+```
+
+Use the actual returned path from that run with `read_candidate_png`; keep its data URL in code mode and use the existing bounded preflight. This 16×9 PNG has valid CRCs and no C2PA. The pinned byte helper produces a 1200×675 JPEG of 92,351 bytes, SHA-256 `974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33`. It is only a transport fixture and must never be adopted as article artwork. Offline conversion checks do not prove scheduled-worker tool access, store capacity or end-to-end publication.
 
 After deployment, refresh the installed tool schema and prove one **existing** PNG transfer in the actual scheduled GPT runtime before new generation. A locally passing test or the prepared-JPEG route alone does not prove this path's live availability, response-size limits or free Worker CPU usage. A generator exposed only as a top-level tool uses the verified two-phase protocol above; if no native generator is exposed at all, keep the fallback and record that separate capability gap.
 

@@ -345,6 +345,19 @@ test('the exact observed Azure account passes JPEG validation without forwarding
   }
 });
 
+test('PNG-only regional Azure hosts cannot be used by the JPEG probe or writer',async()=>{
+  const restricted={...file,download_url:'https://oaisdmntprkoreacentral.blob.core.windows.net/image.jpg?sig=synthetic'};
+  const p=fileFetcher(),probe=await data(await send(bodyFor('probe_candidate_jpeg',{file:restricted}),p.fn));
+  assert.equal(safeError(probe),'untrusted_file_host');
+  assert.equal(p.calls.length,0);
+  const claim=syntheticClaim(),fixture=githubFixture(claim);
+  const staged=await data(await send(bodyFor('stage_candidate_jpeg',{file:restricted,claim}),fixture.fetchImpl,env));
+  assert.equal(safeError(staged),'untrusted_file_host');
+  assert.equal(mutations(fixture).length,0);
+  assert.equal(fixture.calls.some(call=>call.url===restricted.download_url),false);
+  assert.deepEqual(JSON.parse(staged.result.content[0].text),{error:'untrusted_file_host'});
+});
+
 test('Azure siblings, lookalikes, nested accounts and unsafe URL parts are never fetched',async()=>{
   const rejected=[
     'https://oaisdmntpraustraliaeast2.blob.core.windows.net/image.jpg',

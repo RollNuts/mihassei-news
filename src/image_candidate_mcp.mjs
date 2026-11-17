@@ -8,13 +8,17 @@ const RAW="https://raw.githubusercontent.com/"+REPO+"/";
 // Do not allow arbitrary oaiusercontent.com subdomains or response-origin hops.
 const FILE_HOST="files.oaiusercontent.com";
 const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
-// Observed from actual GPT attachments. Azure account names are not a
-// provider-owned namespace: never generalize this to an Azure-host wildcard.
+// JPEG probe/storage accept only these observed Azure accounts. Azure names
+// are not a provider-owned namespace; the PNG reader has a separate policy.
 const OBSERVED_AZURE_FILE_HOSTS=new Set([
   "oaisdmntpraustraliaeast.blob.core.windows.net",
   "oaisdmntprindiasocentral.blob.core.windows.net"
 ]);
 const trustedFileHost=host=>host===FILE_HOST||OBSERVED_AZURE_FILE_HOSTS.has(host)||REGIONAL_FILE_HOST.test(host);
+// Read-only bounded relay, NOT evidence of OpenAI ownership or provenance.
+// Azure account labels are at most 24 characters (10-char prefix + 1..14).
+const PNG_AZURE_FILE_HOST=/^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$/;
+const allowedPngFileHost=host=>trustedFileHost(host)||PNG_AZURE_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
 const MAX_PNG=8*1024*1024;
 const MAX_CLAIM_BYTES=16*1024;
@@ -104,7 +108,7 @@ function referenceString(file,field,max,required){
   if(value.length>max||required&&value.length===0)invalidReference("length",field);
   if(/[\x00-\x1f\x7f-\x9f]/.test(value))invalidReference("control_character",field);
 }
-function allowedFile(file) {
+function allowedFile(file,hostAllowed=trustedFileHost) {
   if(!isObj(file))invalidReference("type","file");
   if(Object.keys(file).some(k=>!["download_url","file_id","mime_type","file_name"].includes(k)))
     invalidReference("unsupported_fields","file");
@@ -116,7 +120,7 @@ function allowedFile(file) {
   referenceString(file,"file_name",512,false);
   let url;
   try{url=new URL(file.download_url);}catch(_){invalidReference("invalid_url","download_url");}
-  const reason=url.protocol!=="https:"?"scheme":!trustedFileHost(url.hostname)?"hostname":
+  const reason=url.protocol!=="https:"?"scheme":!hostAllowed(url.hostname)?"hostname":
     url.port?"port":url.username||url.password?"credentials":url.hash?"fragment":
     url.pathname==="/"?"empty_path":url.pathname.includes("//")?"path_separator":null;
   if(reason){
@@ -205,8 +209,8 @@ function pngSize(bytes){
   // code runtime. This reader only bounds/recognizes the unchanged PNG stream.
   return [width,height];
 }
-async function downloadFile(file,fetchImpl,type,max){
-  const url=allowedFile(file);
+async function downloadFile(file,fetchImpl,type,max,hostAllowed=trustedFileHost){
+  const url=allowedFile(file,hostAllowed);
   const result=await fetchImpl(url,{method:"GET",redirect:"manual",cache:"no-store",
     headers:{"accept":type},signal:AbortSignal.timeout(5000)});
   if(result.status!==200||result.url&&new URL(result.url).origin!==new URL(url).origin)
@@ -221,7 +225,7 @@ async function readFile(file,fetchImpl){
   return {bytes,sha256:await shaHex(bytes),file_id_sha256:await shaText(file.file_id)};
 }
 async function readPng(file,fetchImpl){
-  const bytes=await downloadFile(file,fetchImpl,"image/png",MAX_PNG);
+  const bytes=await downloadFile(file,fetchImpl,"image/png",MAX_PNG,allowedPngFileHost);
   const [width,height]=pngSize(bytes);
   return {status:"read",mime_type:"image/png",width,height,bytes:bytes.length,
     sha256:await shaHex(bytes),file_id_sha256:await shaText(file.file_id),

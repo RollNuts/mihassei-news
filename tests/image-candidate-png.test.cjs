@@ -171,7 +171,12 @@ test('trusted file hosts are read without request credentials, environment token
     'sdmntpreastus3.oaiusercontent.com','sdmntpra.oaiusercontent.com',
     'sdmntpr'+'a'.repeat(40)+'.oaiusercontent.com',
     'oaisdmntpraustraliaeast.blob.core.windows.net',
-    'oaisdmntprindiasocentral.blob.core.windows.net'];
+    'oaisdmntprindiasocentral.blob.core.windows.net',
+    'oaisdmntprkoreacentral.blob.core.windows.net',
+    'oaisdmntprwestus.blob.core.windows.net',
+    'oaisdmntpraustraliaeast2.blob.core.windows.net',
+    'oaisdmntpra.blob.core.windows.net',
+    'oaisdmntpr'+'a'.repeat(14)+'.blob.core.windows.net'];
   for(const host of hosts){
     const reference={...file,download_url:'https://'+host+'/PRIVATE_PATH?sig=PRIVATE_SIGNATURE'};
     const f=fileFetcher(()=>{
@@ -228,11 +233,12 @@ test('SSRF URLs and unrecognized sibling hosts are rejected before any fetch',as
     'https://nested.sdmntprwestus.oaiusercontent.com/PRIVATE_PATH',
     'https://files.oaiusercontent.com.evil.example/PRIVATE_PATH',
     'https://sdmntprwestus.oaiusercontent.com./PRIVATE_PATH',
-    'https://oaisdmntpraustraliaeast2.blob.core.windows.net/PRIVATE_PATH',
+    'https://oaisdmntpr.blob.core.windows.net/PRIVATE_PATH',
+    'https://oaisdmntpr'+'a'.repeat(15)+'.blob.core.windows.net/PRIVATE_PATH',
+    'https://oaisdmntpr-koreacentral.blob.core.windows.net/PRIVATE_PATH',
     'https://oaisdmntprindiasocentral2.blob.core.windows.net/PRIVATE_PATH',
     'https://nested.oaisdmntprindiasocentral.blob.core.windows.net/PRIVATE_PATH',
     'https://oaisdmntprindiasocentral.blob.core.windows.net.evil.example/PRIVATE_PATH',
-    'https://oaisdmntprwestus.blob.core.windows.net/PRIVATE_PATH',
     'https://attacker.blob.core.windows.net/PRIVATE_PATH',
     'https://nested.oaisdmntpraustraliaeast.blob.core.windows.net/PRIVATE_PATH',
     'https://oaisdmntpraustraliaeast.blob.core.windows.net.evil.example/PRIVATE_PATH',
@@ -255,6 +261,18 @@ test('an unknown PNG host reports only the existing bounded diagnostic, without 
   assert.deepEqual(detail,{error:'untrusted_file_host',file_reference_diagnostic:{
     reason:'hostname',hostname:'oaisdmntprindiasocentral2.blob.core.windows.net'}});
   assert.equal(f.calls.length,0);
+});
+
+test('PNG regional relay still rejects a response from a different allowed Azure account',async()=>{
+  const reference={...file,download_url:'https://oaisdmntprkoreacentral.blob.core.windows.net/PRIVATE_PATH?sig=PRIVATE_SIGNATURE'};
+  const f=fileFetcher(()=>{
+    const response=new Response(bytes,{headers:{'content-type':'image/png'}});
+    Object.defineProperty(response,'url',{value:'https://oaisdmntpraustraliaeast.blob.core.windows.net/PRIVATE_PATH'});
+    return response;
+  });
+  safeError(await send(bodyFor({file:reference}),f.fn),'file_unavailable');
+  assert.equal(f.calls.length,1);
+  assert.equal(f.calls[0].opts.redirect,'manual');
 });
 
 test('redirects, upstream failures and cross-origin response URLs fail closed',async()=>{
