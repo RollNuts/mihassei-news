@@ -21,7 +21,7 @@ const fileSchema={type:"object",properties:{
 const PROBE={
   name:"probe_candidate_jpeg",
   title:"Check a prepared JPEG",
-  description:"Read and validate one ChatGPT-provided JPEG without saving or generating anything. Returns only dimensions, size and hashes; never returns a download URL.",
+  description:"Read and validate one ChatGPT-provided JPEG without saving or generating anything. Returns dimensions, size and hashes. Rejected file references report only the rejection class and hostname, never the download URL.",
   inputSchema:{type:"object",properties:{file:fileSchema},required:["file"],additionalProperties:false},
   annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false},
   _meta:{"openai/fileParams":["file"]}
@@ -57,6 +57,7 @@ const toolResult=(id,data,isError=false)=>reply({jsonrpc:"2.0",id,result:{
   content:[{type:"text",text:JSON.stringify(data)}],...(!isError?{structuredContent:data}:{}),isError
 }});
 const failure=(code)=>{const e=new Error(code);e.safeCode=code;return e;};
+const FILE_REFERENCE_DIAGNOSTIC=Symbol("fileReferenceDiagnostic");
 function allowedFile(file) {
   if(!isObj(file)||Object.keys(file).some(k=>!["download_url","file_id","mime_type","file_name"].includes(k))
      ||typeof file.file_id!=="string"||!/^file[-_][A-Za-z0-9_-]{5,128}$/.test(file.file_id)
@@ -67,9 +68,16 @@ function allowedFile(file) {
     throw failure("invalid_file_reference");
   let url;
   try{url=new URL(file.download_url);}catch(_){throw failure("invalid_file_reference");}
-  if(url.protocol!=="https:"||url.hostname!==FILE_HOST||url.port||url.username||url.password||
-     url.hash||url.pathname==="/"||url.pathname.includes("//"))
-    throw failure("untrusted_file_host");
+  const reason=url.protocol!=="https:"?"scheme":url.hostname!==FILE_HOST?"hostname":
+    url.port?"port":url.username||url.password?"credentials":url.hash?"fragment":
+    url.pathname==="/"?"empty_path":url.pathname.includes("//")?"path_separator":null;
+  if(reason){
+    const error=failure("untrusted_file_host");
+    // A probe may report only the bounded parsed hostname and rejection class.
+    // Never retain the signed URL, path, query, file ID or URL credentials.
+    error[FILE_REFERENCE_DIAGNOSTIC]={reason,hostname:url.hostname.slice(0,253)};
+    throw error;
+  }
   return url.href;
 }
 async function shaHex(bytes){
@@ -349,6 +357,11 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
     return toolResult(id,await stageFile(req,env,args.file,args.claim,fetchImpl));
   }catch(e){
     // Never echo signed file URLs, nonce, credentials or upstream error bodies.
-    return toolResult(id,{error:e.safeCode||"unavailable"},true);
+    // Diagnostic detail is restricted to this read-only probe; staging retains
+    // its generic fail-closed response and all existing access checks.
+    const result={error:e.safeCode||"unavailable"};
+    if(p.name===PROBE.name&&e[FILE_REFERENCE_DIAGNOSTIC])
+      result.file_reference_diagnostic=e[FILE_REFERENCE_DIAGNOSTIC];
+    return toolResult(id,result,true);
   }
 }

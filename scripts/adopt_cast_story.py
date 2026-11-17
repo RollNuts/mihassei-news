@@ -18,12 +18,12 @@ if __package__:
     from .cloud_image_guard import check_cloud_images_allowed
     from .photo_issues import (ROOT, MODEL_CHAT_URLS, MAX_ARCHIVE_BYTES, archive_bytes,
                               load_photo_issues, published_issues)
-    from .photo_stories import JST, _text, validate_photo_stories
+    from .photo_stories import JST, _stamp, _text, validate_photo_stories
 else:
     from cloud_image_guard import check_cloud_images_allowed
     from photo_issues import (ROOT, MODEL_CHAT_URLS, MAX_ARCHIVE_BYTES, archive_bytes,
                              load_photo_issues, published_issues)
-    from photo_stories import JST, _text, validate_photo_stories
+    from photo_stories import JST, _stamp, _text, validate_photo_stories
 
 SOURCE_REF = "refs/remotes/origin/cast-source-drafts"
 SOURCE_BRANCH = "refs/heads/cast-source-drafts"
@@ -150,6 +150,12 @@ def _adopt(model_id, source_commit, *, root, fetch, write, now):
     if date.fromisoformat(draft["created_date"]) > clock.date():
         raise ValueError("Creator draft is dated after the actual publication day")
     report = {"model_id": model_id, "source_commit": source_commit}
+    same_day = next((story for story in document["stories"]
+                     if story["model_id"] == model_id
+                     and _stamp(story["published_at"]).astimezone(JST).date() == clock.date()), None)
+    if same_day:
+        return {**report, "status": "skipped", "reason": "this model already has a story on the actual JST publication day; verify its PR and production separately",
+                "existing_story_id": same_day["id"]}
     duplicate = next((story for story in document["stories"]
                       if story["model_id"] == model_id and story["text"] == draft["post_text"]), None)
     if duplicate:

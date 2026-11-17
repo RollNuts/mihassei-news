@@ -124,6 +124,46 @@ class CastStoryAdoptionTests(unittest.TestCase):
         guard.assert_not_called()
         self.assertEqual(self.document.read_bytes(), before)
 
+    def test_same_jst_day_retry_skips_even_new_text_and_preserves_the_existing_id(self):
+        for stamp in ("2026-11-17T00:30:00+09:00", "2026-11-16T15:30:00+00:00"):
+            with self.subTest(stamp=stamp):
+                existing = copy.deepcopy(self.initial["stories"][0])
+                existing.update(id="already-posted-today", published_at=stamp,
+                                text="今日はすでに公開した、別の原文です。")
+                self.document.write_text(json.dumps({**self.initial, "stories": [*self.initial["stories"], existing]}))
+                before = self.document.read_bytes()
+                with patch.object(adoption, "check_cloud_images_allowed") as guard:
+                    result = self.run_adoption(write=True)
+                self.assertEqual(result["status"], "skipped")
+                self.assertEqual(result["existing_story_id"], existing["id"])
+                self.assertIn("actual JST publication day", result["reason"])
+                guard.assert_not_called()
+                self.assertEqual(self.document.read_bytes(), before)
+
+    def test_next_jst_day_creates_a_new_candidate_without_redating_the_old_post(self):
+        existing = copy.deepcopy(self.initial["stories"][0])
+        existing.update(id="yesterday-in-jst", published_at="2026-11-17T14:59:59+00:00",
+                        text="日付が変わる直前に書いた原文です。")
+        self.document.write_text(json.dumps({**self.initial, "stories": [*self.initial["stories"], existing]}))
+        before = self.document.read_bytes()
+        result = adoption.adopt(self.model, self.commit, root=self.root,
+                                now=datetime(2026, 11, 17, 15, tzinfo=timezone.utc))
+        self.assertEqual(result["status"], "candidate")
+        self.assertEqual(result["candidate"]["published_at"], "2026-11-18T00:00:00+09:00")
+        self.assertEqual(result["candidate"]["text"], self.draft["post_text"])
+        self.assertEqual(self.document.read_bytes(), before)
+
+    def test_daily_skip_does_not_bypass_the_pinned_creator_identity(self):
+        existing = copy.deepcopy(self.initial["stories"][0])
+        existing.update(id="already-posted-today", published_at=NOW.isoformat(),
+                        text="先に公開してある、本人の近況です。")
+        self.document.write_text(json.dumps({**self.initial, "stories": [*self.initial["stories"], existing]}))
+        before = self.document.read_bytes()
+        self.commit = self.commit_draft({**self.draft, "name": "別の人物"})
+        with self.assertRaisesRegex(ValueError, "fixed model"):
+            self.run_adoption(write=True)
+        self.assertEqual(self.document.read_bytes(), before)
+
     def test_description_only_photo_is_pending_and_never_substituted_or_written(self):
         self.commit = self.commit_draft({**self.draft, "photo_reference": {"description": "新しい屋内プールの写真。SHAはまだ不明。"}})
         with patch.object(adoption, "check_cloud_images_allowed") as guard:

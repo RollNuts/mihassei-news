@@ -185,6 +185,50 @@ test('arbitrary URLs, redirects, missing MIME, bad dimensions, oversize fail clo
     assert.equal(res.result.isError,true);}
 });
 
+test('rejected file references reveal only a bounded hostname and exact rejection class',async()=>{
+  const secret='DO-NOT-RETURN-this-signed-value';
+  const cases=[
+    ['https://uploads.example.net/private/'+secret+'?sig='+secret,'hostname','uploads.example.net'],
+    ['http://files.oaiusercontent.com/private/'+secret+'?sig='+secret,'scheme','files.oaiusercontent.com'],
+    ['https://files.oaiusercontent.com:8443/private/'+secret+'?sig='+secret,'port','files.oaiusercontent.com'],
+    ['https://user:'+secret+'@files.oaiusercontent.com/private?sig='+secret,'credentials','files.oaiusercontent.com'],
+    ['https://files.oaiusercontent.com/private?sig='+secret+'#'+secret,'fragment','files.oaiusercontent.com'],
+    ['https://files.oaiusercontent.com/?sig='+secret,'empty_path','files.oaiusercontent.com'],
+    ['https://files.oaiusercontent.com/private//'+secret+'?sig='+secret,'path_separator','files.oaiusercontent.com'],
+    ['https://'+'a'.repeat(300)+'.example/private?sig='+secret,'hostname','a'.repeat(253)]
+  ];
+  for(const [download_url,reason,hostname] of cases){
+    const f=fileFetcher();
+    const x=await data(await send(bodyFor('probe_candidate_jpeg',
+      {file:{...file,download_url}}),f.fn));
+    assert.equal(x.result.isError,true);
+    assert.deepEqual(JSON.parse(x.result.content[0].text),{
+      error:'untrusted_file_host',file_reference_diagnostic:{reason,hostname}
+    });
+    assert.equal(f.calls.length,0,'untrusted sources must never be fetched');
+    assert.doesNotMatch(JSON.stringify(x),/DO-NOT-RETURN|private|sig=|file-abcDEF123|https?:/);
+  }
+});
+
+test('file-reference diagnostics do not escape through staging or unrelated errors',async()=>{
+  const f=fileFetcher(),claim=syntheticClaim();
+  const rejected={...file,download_url:'https://uploads.example.net/private?sig=DO-NOT-RETURN'};
+  const staged=await data(await send(bodyFor('stage_candidate_jpeg',{file:rejected,claim}),
+    f.fn,env,{authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
+  assert.deepEqual(JSON.parse(staged.result.content[0].text),{error:'untrusted_file_host'});
+  assert.equal(f.calls.length,0);
+  const upstream=await data(await send(bodyFor('probe_candidate_jpeg',{file}),async()=>{
+    throw new Error('private request failed: '+source);
+  }));
+  assert.deepEqual(JSON.parse(upstream.result.content[0].text),{error:'unavailable'});
+  for(const bad of ['file-abcDEF123',null,{...file,file_id:'bad'}]){
+    const x=await data(await send(bodyFor('probe_candidate_jpeg',{file:bad}),f.fn));
+    assert.equal(x.result.isError,true);
+    assert.equal(JSON.parse(x.result.content[0].text).file_reference_diagnostic,undefined);
+  }
+  assert.doesNotMatch(JSON.stringify({staged,upstream}),/uploads.example|private|sig=|file-abcDEF123/);
+});
+
 test('write path disabled before approval: zero file reads or GitHub calls',async()=>{
   const claim=syntheticClaim(),f=fileFetcher(),msg=bodyFor('stage_candidate_jpeg',{file,claim});
   const cases=[{}, {IMAGE_CANDIDATE_WRITE_ENABLED:'true'},

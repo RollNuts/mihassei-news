@@ -6,9 +6,10 @@ import hashlib
 import json
 import tempfile
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts import photo_stories as stories
 
@@ -39,9 +40,9 @@ class PhotoStoryTests(unittest.TestCase):
                           if issue["slug"] == self.data["stories"][0]["source"]["issue_slug"])
         self.published = [self.issue]
 
-    def validate(self, **kwargs):
+    def validate(self, *, now=NOW, **kwargs):
         return stories.validate_photo_stories(self.data, catalog=self.catalog,
-                                              published=self.published, now=NOW, **kwargs)
+                                              published=self.published, now=now, **kwargs)
 
     def test_initial_post_matches_the_actual_accepted_published_photo_bytes(self):
         before = copy.deepcopy(self.catalog)
@@ -76,11 +77,74 @@ class PhotoStoryTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "Duplicate photo story text"):
                     self.validate()
 
-    def test_same_person_can_publish_different_original_words(self):
+    def test_legacy_same_day_different_words_are_preserved_before_daily_cutoff(self):
         another = copy.deepcopy(self.data["stories"][0])
         another.update(id="another-original-post", text="今日はいつもと違う道を歩いた。\n帰りは、いつもの道。")
         self.data["stories"].append(another)
         self.assertEqual(len(self.validate()), 2)
+
+    def test_new_same_model_day_is_rejected_using_jst_not_the_written_offset(self):
+        for first, second in (
+            ("2026-11-17T00:00:00+09:00", "2026-11-16T15:01:00+00:00"),
+            ("2026-11-17T12:00:00+09:00", "2026-11-17T23:59:59+09:00"),
+        ):
+            with self.subTest(first=first, second=second):
+                original = copy.deepcopy(self.initial["stories"][0])
+                original.update(id="daily-first", published_at=first)
+                another = copy.deepcopy(original)
+                another.update(id="daily-second", published_at=second,
+                               text="今日は別のことを書いた、新しい近況です。")
+                self.data["stories"] = [original, another]
+                with self.assertRaisesRegex(ValueError, "same JST day"):
+                    self.validate(now=datetime(2026, 11, 20, tzinfo=stories.JST))
+
+    def test_jst_midnight_allows_the_next_day_even_on_the_same_utc_date(self):
+        original = copy.deepcopy(self.data["stories"][0])
+        original.update(id="before-jst-midnight", published_at="2026-11-17T14:59:59+00:00")
+        another = copy.deepcopy(original)
+        another.update(id="after-jst-midnight", published_at="2026-11-17T15:00:00+00:00",
+                       text="日が変わってからの、新しい近況です。")
+        self.data["stories"] = [original, another]
+        self.assertEqual(len(self.validate(now=datetime(2026, 11, 20, tzinfo=stories.JST))), 2)
+
+    def test_all_seven_models_can_post_once_on_the_same_jst_day(self):
+        per_model = {}
+        for post in self.initial["stories"]:
+            per_model.setdefault(post["model_id"], post)
+        self.data["stories"] = []
+        for model_id, original in per_model.items():
+            post = copy.deepcopy(original)
+            post.update(id="daily-" + model_id, published_at="2026-11-18T10:00:00+09:00",
+                        text="今日の近況を、ひとつだけ。")
+            self.data["stories"].append(post)
+        self.published = self.catalog["issues"]
+        result = self.validate(now=datetime(2026, 11, 20, tzinfo=stories.JST))
+        self.assertEqual({post["modelId"] for post in result}, set(stories.VOICE_PROFILES))
+        self.assertEqual(len(result), 7)
+
+    def test_daily_history_can_grow_past_two_hundred_without_deleting_records(self):
+        original = self.data["stories"][0]
+        image_bytes = (ROOT / self.issue["images"][original["source"]["cut_id"]]["path"]).read_bytes()
+        start = datetime(2026, 11, 17, 10, tzinfo=stories.JST)
+        self.data["stories"] = []
+        for day in range(201):
+            post = copy.deepcopy(original)
+            post.update(id=f"daily-history-{day}", published_at=(start + timedelta(days=day)).isoformat(),
+                        text=f"今日の近況、その{day + 1}。")
+            self.data["stories"].append(post)
+        before = copy.deepcopy(self.data)
+        with patch.object(stories.Path, "read_bytes", return_value=image_bytes) as reads:
+            result = self.validate(now=start + timedelta(days=201))
+        self.assertEqual(len(result), 201)
+        self.assertEqual(reads.call_count, 201)
+        self.assertEqual(self.data, before)
+
+    def test_catalog_cap_is_still_bounded_before_image_io(self):
+        self.data["stories"] = [{}] * (stories.MAX_PHOTO_STORIES + 1)
+        with patch.object(stories.Path, "read_bytes") as reads:
+            with self.assertRaisesRegex(ValueError, "Invalid photo story catalog"):
+                self.validate()
+        reads.assert_not_called()
 
     def test_different_people_can_use_the_same_words(self):
         original = self.data["stories"][0]
@@ -175,6 +239,30 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn(other["text"], other_profile)
         self.assertNotIn(own[0]["name"], other_profile)
         self.assertEqual(result, before)
+
+    def test_modal_payload_is_recent_while_native_person_history_is_preserved(self):
+        result = self.mixed_history()
+        own_id = self.data["stories"][0]["model_id"]
+        own = [post for post in result if post["modelId"] == own_id]
+        profile = stories.render_model_stories(own_id, result)
+        payload = profile.split('<script type="application/json" data-photo-story-data>', 1)[1].split('</script>', 1)[0]
+        self.assertEqual(json.loads(payload), own[:3])
+        parser = Tags(); parser.feed(profile)
+        self.assertEqual(sum(tag == "article" for tag, _ in parser.tags), len(own))
+        self.assertIn('id="post-' + own[-1]["id"] + '"', profile)
+        older_card = profile.split('id="post-' + own[-1]["id"] + '"', 1)[1].split('</article>', 1)[0]
+        older_links = Tags(); older_links.feed(older_card)
+        image_links = [attrs for tag, attrs in older_links.tags
+                       if tag == "a" and attrs.get("class") == "photo-post-image"]
+        self.assertEqual([attrs["href"] for attrs in image_links], [own[-1]["sourceUrl"]])
+        self.assertFalse(any("data-story-open" in attrs for _, attrs in older_links.tags))
+        strip = stories.render_story_strip(result)
+        strip_payload = strip.split('<script type="application/json" data-photo-story-data>', 1)[1].split('</script>', 1)[0]
+        entries = json.loads(strip_payload)
+        self.assertEqual(sum(post["modelId"] == own_id for post in entries), 3)
+        self.assertEqual(len(entries), 4)  # The other person's latest post remains available.
+        noscript = strip.split('<noscript>', 1)[1].split('</noscript>', 1)[0]
+        self.assertNotIn(own[-1]["text"], noscript)
 
     def test_each_dated_post_links_to_its_own_profile_anchor_and_keeps_original_context(self):
         result = self.mixed_history()
