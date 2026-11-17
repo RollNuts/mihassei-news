@@ -348,6 +348,9 @@ test('the exact observed Azure account passes JPEG validation without forwarding
 test('Azure siblings, lookalikes, nested accounts and unsafe URL parts are never fetched',async()=>{
   const rejected=[
     'https://oaisdmntpraustraliaeast2.blob.core.windows.net/image.jpg',
+    'https://oaisdmntprindiasocentral2.blob.core.windows.net/image.jpg',
+    'https://nested.oaisdmntprindiasocentral.blob.core.windows.net/image.jpg',
+    'https://oaisdmntprindiasocentral.blob.core.windows.net.evil.example/image.jpg',
     'https://oaisdmntprwestus.blob.core.windows.net/image.jpg',
     'https://attacker.blob.core.windows.net/image.jpg',
     'https://nested.oaisdmntpraustraliaeast.blob.core.windows.net/image.jpg',
