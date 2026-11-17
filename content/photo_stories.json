@@ -166,6 +166,21 @@
       }
     },
     {
+      "id": "amane-hikari-post-20261117173814000000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-17T17:38:14+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "休憩に温かい飲み物を頼んだのに、新しい振りを頭の中で数えてたらすっかり冷めてた。あと一回だけ練習して帰ろうかな😂",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "03",
+        "image_sha256": "bf765b56a8cd075b1c7b3a7d3818c7da645236b27be2f86bfd47357adfa71111"
+      }
+    },
+    {
       "id": "shiramine-yuki-post-20261117181611000000",
       "model_id": "shiramine-yuki",
       "published_at": "2026-11-17T18:16:11+09:00",
