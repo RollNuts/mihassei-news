@@ -1326,5 +1326,242 @@
         "checked_on": "2026-11-17"
       }
     ]
+  },
+  {
+    "slug": "2026-11-17-close",
+    "day": "2026-11-17",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-17T15:54:30+09:00",
+    "title": "17日大引け：TOPIX1.57%安、鉱業・銀行に売り、サービスは逆行高",
+    "summary": "17日15:30のTOPIXは3,840.02（1.57%安）、日経平均は58,860.43円（801.59円安）。鉱業5.49%安・銀行3.43%安に対しサービス2.03%高。INPEX、三井住友FG、リクルートの終値と次の確認点を整理。",
+    "lead": "11月17日（火）の東京市場は続落して取引を終えました。JPXの15時30分更新ではTOPIXが3,840.02ポイント（前日比61.35ポイント安）、東証グロース市場250指数は688.39ポイント（3.49%安）。日経平均はフィスコ15時32分配信の大引け値で58,860.43円、前日比801.59円安です。朝からの下落が引けでも残った一方、業種や銘柄によって上昇もありました。保有株の下落を一律に捉えず、業種と個別企業の材料を分けて確認します。",
+    "sections": [
+      {
+        "heading": "午後もTOPIXは戻らず、グロース株の下げが大きい",
+        "paragraphs": [
+          "JPXの指数ファイルは17日15時30分JST更新で、TOPIXが3,840.02ポイント（前日終値3,901.37から1.57%安）。同日12時43分の3,847.32より7.30ポイント低く、後場も指数の下落が続きました。日経平均は15時32分配信の大引け値が58,860.43円（801.59円安、約1.34%安）。11時30分の58,956.67円からさらに96.24円下がりました。異なる配信元・確認時刻の値である点には注意が必要です。",
+          "東証グロース市場250指数は15時30分時点で688.39ポイント、前日比3.49%安。12時43分時点の693.47からも5.08ポイント下落しています。日経平均だけで地合いを判断せず、成長株を保有・検討する人は市場全体の下げ幅と個別銘柄の下げを分けて確認したい日です。"
+        ]
+      },
+      {
+        "heading": "鉱業と銀行が弱い一方、サービスは買われた",
+        "paragraphs": [
+          "JPXが示す17日15時30分の鉱業指数は1,005.94ポイント（前日比5.49%安）、銀行業指数は687.08ポイント（3.43%安）。一方、サービス業指数は4,821.37ポイント（2.03%高）でした。12時43分の銀行業3.18%安・サービス業1.47%高から、業種間の方向差は引けにかけてむしろ広がっています。全体が下がったという説明だけでは、保有銘柄ごとの値動きは読み解けません。",
+          "INPEX（1605）は15時30分終値3,455円で前日3,670円から5.86%安。鉱業指数も大きく下げており、この日の売りをINPEX固有の決算悪化だけで説明するのは適切ではありません。資源価格や会社開示と照合して、業種共通の要因と同社固有の要因を切り分けたいところです。"
+        ]
+      },
+      {
+        "heading": "三井住友FGは銀行業より弱く、リクルートは上昇を維持",
+        "paragraphs": [
+          "三井住友フィナンシャルグループ（8316）は15時30分終値3,138円、16日終値3,260円から3.74%安。銀行業指数の3.43%安より下げがやや大きいものの、この差だけで新たな悪材料を断定できません。金利と会社の資本政策・決算説明を改めて確認し、短期の業種売りが続くかを見る必要があります。",
+          "リクルートホールディングス（6098）は15時30分終値18,195円、16日17,325円から5.02%高。11時30分の18,180円からも小幅に上昇を保ち、サービス業指数の2.03%高を上回りました。ただし株価の逆行高は直ちに収益見通しの改善を示すものではなく、企業開示とバリュエーションの確認は別に必要です。"
+        ]
+      },
+      {
+        "heading": "明日は17日の下げを予想の的中に数えず、18日終値を見る",
+        "paragraphs": [
+          "11月16日朝に記録した『17日のTOPIXは13日終値3,941.57に対して±0.5%以内』という横ばい予想は、17日15時30分のJPX表示値3,840.02と照合すると約2.58%安で想定幅を大きく下回ります。これは予想に逆行する大引け時点の観測です。JPXの取引終了後の最終更新を改めて取得して正式判定するまでは、的中・外れの確定集計へ加えません。",
+          "11月17日寄り前に固定した別の予測は『18日のTOPIX公式終値が16日終値3,901.37から0.5%超下落する』というものです。17日の下落はその方向を考える材料でも、判定日と基準は18日のままです。米国17日（現地時間）の相場と半導体関連の決算、18日の国内取引終了後のTOPIX公式終値を次に確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-close-two-days",
+        "kind": "bars",
+        "title": "TOPIX：16日終値と17日15時30分値",
+        "note": "JPXの17日15:30 JST更新値。16日3,901.37と17日3,840.02を比較。17日の16:59等の後続最終更新は本稿時点で未取得。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 3901.37,
+            "state": "実績"
+          },
+          {
+            "label": "11/17 15:30",
+            "value": 3840.02,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "mining-close-two-days",
+        "kind": "bars",
+        "title": "鉱業指数：前日から5.49%安",
+        "note": "JPX17日15:30値1,005.94と前日比-58.40から、前営業日値1,064.34を逆算。前日値は計算値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/16計算値",
+            "value": 1064.34,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/17 15:30",
+            "value": 1005.94,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "service-close-two-days",
+        "kind": "bars",
+        "title": "サービス業指数：前日から2.03%高",
+        "note": "JPX17日15:30値4,821.37と前日比+95.90から、前営業日値4,725.47を逆算。前日値は計算値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/16計算値",
+            "value": 4725.47,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/17 15:30",
+            "value": 4821.37,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "グロース株の下落が大きい",
+        "signal": "逆風",
+        "meaning": "JPX15:30の東証グロース市場250指数は前日比3.49%安で、TOPIXの1.57%安より下落率が大きい。成長株の保有では指数間の差も注意点。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00"
+      },
+      {
+        "name": "鉱業・銀行は売り優勢",
+        "signal": "逆風",
+        "meaning": "JPX15:30の鉱業指数は5.49%安、銀行業指数は3.43%安。INPEXと三井住友FGの下げは業種全体の売りとも比較して判断する。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00"
+      },
+      {
+        "name": "サービス業は逆行高",
+        "signal": "追い風",
+        "meaning": "JPX15:30のサービス業指数は前日比2.03%高。リクルートは同日終値で5.02%上昇したが、上昇の固有原因は株価比較だけでは特定できない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "1605",
+        "name": "INPEX",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3670,
+        "close": 3455,
+        "price_kind": "close",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/1605.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!同一銘柄の11/16時系列で通常終値・調整後終値とも3,670円を確認し、17日15:30の東証リアルタイム終値3,455円と比較。独自の分割調整なし。",
+        "context": "前日比5.86%安、JPXの鉱業指数も5.49%安。業種売りと同社固有の企業発表・資源価格要因を追加確認する。"
+      },
+      {
+        "code": "8316",
+        "name": "三井住友フィナンシャルグループ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3260,
+        "close": 3138,
+        "price_kind": "close",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/16時系列の通常・調整後終値はいずれも3,260円。17日15:30東証終値3,138円と比較し、追加の株式調整は行っていない。",
+        "context": "前日比3.74%安で銀行業指数3.43%安より下落率はやや大きい。金利・決算や資本政策の追加材料は本稿では断定しない。"
+      },
+      {
+        "code": "6098",
+        "name": "リクルートホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 17325,
+        "close": 18195,
+        "price_kind": "close",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6098.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/16時系列の通常・調整後終値はいずれも17,325円。17日15:30東証終値18,195円と同一市場で比較、独自の分割換算なし。",
+        "context": "前日比5.02%高で11:30の18,180円から上昇を維持。サービス業指数も2.03%高だが、株価上昇だけでは増益や割安を証明しない。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月17日15:30更新のTOPIX・グロース250・業種別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "JPX：11月17日の市場指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "フィスコ：11月17日15:32配信、日経平均の大引け",
+        "url": "https://zai.diamond.jp/articles/-/499167",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：INPEX 11月17日15:30東証終値",
+        "url": "https://finance.yahoo.co.jp/quote/1605.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：INPEX 11月16日調整後終値時系列",
+        "url": "https://finance.yahoo.co.jp/quote/1605.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三井住友FG 11月17日15:30東証終値",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三井住友FG 11月16日調整後終値時系列",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：リクルート 11月17日15:30東証終値",
+        "url": "https://finance.yahoo.co.jp/quote/6098.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：リクルート 11月16日調整後終値時系列",
+        "url": "https://finance.yahoo.co.jp/quote/6098.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      }
+    ]
   }
 ]
