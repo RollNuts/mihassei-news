@@ -68,7 +68,7 @@ function allowedFile(file) {
   let url;
   try{url=new URL(file.download_url);}catch(_){throw failure("invalid_file_reference");}
   if(url.protocol!=="https:"||url.hostname!==FILE_HOST||url.port||url.username||url.password||
-     url.hash||!url.pathname.startsWith("/file-")||url.pathname.includes("//"))
+     url.hash||url.pathname==="/"||url.pathname.includes("//"))
     throw failure("untrusted_file_host");
   return url.href;
 }
