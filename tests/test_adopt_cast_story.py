@@ -30,6 +30,14 @@ class CastStoryAdoptionTests(unittest.TestCase):
         (self.root / "content").mkdir()
         for name in ("photo_issues.json", "photo_stories.json", "articles.json"):
             shutil.copyfile(ROOT / "content" / name, self.root / "content" / name)
+        # Fixture clock is fixed at NOW; exclude later real releases from this historical checkout.
+        # Current production issues remain validated by the live-site and photo-issue gates.
+        catalog_path = self.root / "content/photo_issues.json"
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+        catalog["issues"] = [issue for issue in catalog["issues"]
+                             if issue["state"] != "published" or
+                             datetime.fromisoformat(issue["published_at"].replace("Z", "+00:00")) <= NOW]
+        catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         # Read-only fixture bytes are hard-linked; these tests never edit images.
         for name in ("assets", "maintenance"):
             shutil.copytree(ROOT / name, self.root / name, copy_function=os.link)
