@@ -42,8 +42,16 @@ class CastStoryAdoptionTests(unittest.TestCase):
         for name in ("assets", "maintenance"):
             shutil.copytree(ROOT / name, self.root / name, copy_function=os.link)
         self.document = self.root / "content/photo_stories.json"
-        self.original = self.document.read_bytes()
-        self.initial = json.loads(self.original)
+        self.initial = json.loads(self.document.read_bytes())
+        # Candidate/guard tests start before this fixed JST publication day.
+        # Later real daily posts must not turn every case into a duplicate retry;
+        # duplicate cases below insert their own explicit same-day record.
+        fixture_day = NOW.astimezone(adoption.JST).date()
+        self.initial["stories"] = [story for story in self.initial["stories"]
+                                   if datetime.fromisoformat(story["published_at"].replace("Z", "+00:00"))
+                                   .astimezone(adoption.JST).date() < fixture_day]
+        self.original = (json.dumps(self.initial, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+        self.document.write_bytes(self.original)
         self.model = "nagino-saya"
         self.source = copy.deepcopy(self.initial["stories"][0]["source"])
         self.draft = {"schema_version": 1, "model_id": self.model, "name": "凪野さや",
@@ -125,7 +133,8 @@ class CastStoryAdoptionTests(unittest.TestCase):
         self.assertEqual(self.document.read_bytes(), before)
 
     def test_same_jst_day_retry_skips_even_new_text_and_preserves_the_existing_id(self):
-        for stamp in ("2026-11-17T00:30:00+09:00", "2026-11-16T15:30:00+00:00"):
+        for stamp in ("2026-11-17T00:30:00+09:00", "2026-11-16T15:30:00+00:00",
+                      "2026-11-17T14:21:36+09:00"):
             with self.subTest(stamp=stamp):
                 existing = copy.deepcopy(self.initial["stories"][0])
                 existing.update(id="already-posted-today", published_at=stamp,
