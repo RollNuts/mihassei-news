@@ -60,6 +60,8 @@ Codexの担当範囲は上表の障害修理を正本とし、通常の未公開
 
 `kind`は`news`・`market`・`cast_story`・`photo_issue`、`approved_head`は確認した完全40桁、`authorized_by`は実際の書込担当GitHub login。`author_run`と`reviewer_run`は実在する実行参照（例：`chatgpt:`に当該チャットUUIDを続ける）で、URLや架空のIDを作らない。`first_read: passed`と`merge_after_ci: true`を明示する。ニュース・市場記事は作者と独立reviewerの参照を分け、変更記事の現在の指紋を`article_sha256`へ全件残す。近況・写真特集は従来の同じ編集担当の確認でよく、余分なreviewerを増やさない。初読・現headの承認を保存・読み戻せたPRだけ、`draft: true`ならGitHub接続の`mark_pull_request_ready_for_review`（CLIは`gh pr ready`）で下書きを解除し、`draft: false`を読み戻してから機械処理へ渡す。
 
+本文を変えないニュース画像だけのPRも`kind: news`とし、対象slugと現本文の指紋を`article_sha256`へ記載し、元記事作者・独立reviewerの実在する実行参照を引き継ぐ。`content/articles.json`の書換えや架空SHAで引継ぎを作らない。
+
 既存の公開検証workflowが、CI成功とPR本文の許可の両方が揃った時だけ処理する。公開repo・書込担当・同一repoのmain向けPR・現在head・成功CI・所有権・最新mainとの整合・履歴保護を再確認し、同じheadを通常統合する。コード・workflow・未対応ファイルを含むPRは対象外。headが変われば旧許可は失効し、再確認するまで進めない。通常CIはread-onlyのままで、既存公開検証とは並行制御を分ける。
 
 GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」として終了できる。定例のCI再実行、短いpoll、待機だけのCodex依頼をしない。統合後は返却されたmerge SHAに対して既存の本番検証を明示実行する。受付・統合・実配信は別状態であり、実配信の証拠がない時は公開完了と書かない。失敗は同じPR・workflowの失敗箇所と現担当を次の既存枠で回収し、新しい監視タスクを作らない。
