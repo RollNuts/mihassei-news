@@ -3,13 +3,16 @@
 // https://developers.openai.com/plugins/reference#define-file-inputs
 const REPO="RollNuts/mihassei-news";
 const API="https://api.github.com/repos/"+REPO;
+const RAW="https://raw.githubusercontent.com/"+REPO+"/";
 // fileParams uses regional CDN labels; keep that single-label family bounded.
 // Do not allow arbitrary oaiusercontent.com subdomains or response-origin hops.
 const FILE_HOST="files.oaiusercontent.com";
 const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
 const trustedFileHost=host=>host===FILE_HOST||REGIONAL_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
-const MAX_MANIFEST_BYTES=1024*1024;
+const MAX_CLAIM_BYTES=16*1024;
+const MAX_ARTICLES_BYTES=4*1024*1024;
+const MAX_TREE_RESPONSE=2*1024*1024;
 const MAX_CONTENTS_RESPONSE=2*1024*1024;
 const MAX_GITHUB_RESPONSE=256*1024;
 const ARCHIVE_MAX=1536*1024*1024;
@@ -33,17 +36,17 @@ const PROBE={
 const STAGE={
   name:"stage_candidate_jpeg",
   title:"Stage an approved JPEG candidate",
-  description:"Disabled unless the owner separately authorizes caller authentication and a GitHub Contents-write secret. Only stages an exact claimed image on its own candidate branch, never on main. No visual approval.",
+  description:"Disabled until the owner authorizes a repository-limited GitHub write secret and explicitly enables it. A version-2 owner-written claim and its one-time nonce authorize only exact JPEG bytes on the fixed candidate branch. No main write or visual approval.",
   inputSchema:{type:"object",properties:{
     file:fileSchema,
     claim:{type:"object",properties:{
-      slug:{type:"string"},article_sha256:{type:"string"},branch:{type:"string"},
+      version:{type:"integer",enum:[2]},slug:{type:"string"},article_sha256:{type:"string"},branch:{type:"string"},
       expected_head_sha:{type:"string"},claim_commit_sha:{type:"string"},path:{type:"string"},
       jpeg_sha256:{type:"string"},jpeg_bytes:{type:"integer"},
-      file_id_sha256:{type:"string"},nonce_sha256:{type:"string"},
+      nonce_sha256:{type:"string"},
       nonce:{type:"string"},expires_at:{type:"string"}
-    },required:["slug","article_sha256","branch","expected_head_sha","path","jpeg_sha256",
-                "jpeg_bytes","file_id_sha256","nonce_sha256","nonce","expires_at","claim_commit_sha"],
+    },required:["version","slug","article_sha256","branch","expected_head_sha","path","jpeg_sha256",
+                "jpeg_bytes","nonce_sha256","nonce","expires_at","claim_commit_sha"],
       additionalProperties:false}
   },required:["file","claim"],additionalProperties:false},
   annotations:{readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false},
@@ -164,32 +167,83 @@ function decodedBase64(s,maxBytes=MAX_JPEG){
   if(bytes.length>maxBytes)throw failure("invalid_github_response");
   return bytes;
 }
-async function authorizedCaller(req,env){
-  const serverKey=env.IMAGE_CANDIDATE_CALLER_KEY;
-  const authorization=req.headers.get("authorization")||"";
-  if(!validToken(serverKey)||!authorization.startsWith("Bearer ")||!validToken(authorization.slice(7)))
-    return false;
-  const a=await shaHex(encoder.encode(serverKey)),b=await shaHex(encoder.encode(authorization.slice(7)));
-  let diff=0;for(let i=0;i<64;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);
-  return diff===0;
+const CLAIM_FIELDS=["version","slug","article_sha256","branch","expected_head_sha",
+  "claim_commit_sha","path","jpeg_sha256","jpeg_bytes","nonce_sha256","nonce","expires_at"];
+const RECORD_FIELDS=["version","repository","slug","article_sha256","branch","expected_head_sha",
+  "path","jpeg_sha256","jpeg_bytes","nonce_sha256","expires_at"];
+function exactFields(value,fields){
+  return isObj(value)&&Object.keys(value).length===fields.length&&fields.every(k=>Object.hasOwn(value,k));
 }
 function validateClaim(claim){
-  if(!isObj(claim)||Object.keys(claim).length!==12||!KEY.test(claim.slug||"")||
+  if(!exactFields(claim,CLAIM_FIELDS)||claim.version!==2||!KEY.test(claim.slug||"")||
      !SHA.test(claim.article_sha256||"")||!SHA.test(claim.jpeg_sha256||"")||
-     !SHA.test(claim.file_id_sha256||"")||!SHA.test(claim.nonce_sha256||"")||
+     !SHA.test(claim.nonce_sha256||"")||
      (!GIT.test(claim.expected_head_sha||"")||!GIT.test(claim.claim_commit_sha||"")||
       claim.expected_head_sha===claim.claim_commit_sha)||!Number.isInteger(claim.jpeg_bytes)||
      claim.jpeg_bytes<128||claim.jpeg_bytes>MAX_JPEG||
-     typeof claim.nonce!=="string"||!/^[A-Za-z0-9_-]{32,128}$/.test(claim.nonce)||
+     typeof claim.nonce!=="string"||!/^[A-Za-z0-9_-]{43}$/.test(claim.nonce)||
      typeof claim.expires_at!=="string"||!/[zZ]$/.test(claim.expires_at))
     throw failure("invalid_claim");
-  const branchPattern=new RegExp("^native-image-candidate/"+claim.slug+"/"+
-    claim.article_sha256.slice(0,16)+"-[a-f0-9]{12}$");
-  if(!branchPattern.test(claim.branch||"")||
+  const branch="native-image-candidate/"+claim.slug+"/"+
+    claim.article_sha256.slice(0,16)+"-"+claim.nonce_sha256.slice(0,12);
+  if(claim.branch!==branch||
      claim.path!=="maintenance/native-image-candidates/"+claim.slug+"/candidate.jpg")
     throw failure("invalid_claim_destination");
   const exp=Date.parse(claim.expires_at);
   if(!Number.isFinite(exp)||exp<Date.now()||exp>Date.now()+15*60*1000)throw failure("expired_claim");
+}
+async function uploadTicket(){
+  const random=crypto.getRandomValues(new Uint8Array(32));
+  const nonce=encodedBase64(random).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  const hash=await shaText(nonce);
+  // The nonce is returned only in this intentional, private tool response.
+  // Callers publish its hash, never this preimage, in the repository claim.
+  return {version:2,nonce,nonce_sha256:hash,branch_suffix:hash.slice(0,12),
+    expires_at:new Date(Date.now()+15*60*1000).toISOString()};
+}
+function expectedRecord(claim){
+  return Object.fromEntries(RECORD_FIELDS.map(k=>[k,k==="repository"?REPO:claim[k]]));
+}
+function requireRecord(record,claim){
+  const expected=expectedRecord(claim);
+  if(!exactFields(record,RECORD_FIELDS)||!RECORD_FIELDS.every(k=>record[k]===expected[k]))
+    throw failure("claim_mismatch");
+}
+const claimPath=claim=>"maintenance/image-upload-claims/"+claim.slug+"/claim.json";
+const receiptPath=claim=>"maintenance/native-image-candidates/"+claim.slug+"/upload-receipt.json";
+async function rawJson(path,max,fetchImpl,code){
+  // Every path is built here from a fixed repository and validated branch/SHA.
+  // No caller URL, credential, nonce or authorization header is forwarded.
+  const url=RAW+path;
+  const res=await fetchImpl(url,{method:"GET",redirect:"manual",cache:"no-store",
+    headers:{accept:"application/json"},signal:AbortSignal.timeout(5000)});
+  if(res.status!==200||res.url&&res.url!==url)throw failure(code);
+  const type=(res.headers.get("content-type")||"").split(";",1)[0].trim().toLowerCase();
+  if(type!=="application/json"&&type!=="text/plain")throw failure(code);
+  try{return JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(await limited(res,max)));}
+  catch(error){if(error.safeCode)throw error;throw failure(code);}
+}
+async function authorizeClaim(claim,fetchImpl){
+  if(await shaText(claim.nonce)!==claim.nonce_sha256)throw failure("claim_mismatch");
+  // A raw commit alone can refer to a fork-network object. This live owner-
+  // written branch, not an arbitrary commit SHA, establishes the capability.
+  const branch=claim.branch.split("/").map(encodeURIComponent).join("/");
+  const record=await rawJson("refs/heads/"+branch+"/"+claimPath(claim),MAX_CLAIM_BYTES,
+    fetchImpl,"claim_unavailable");
+  requireRecord(record,claim);
+}
+async function verifyArticleSource(claim,fetchImpl){
+  // Preserve reviewed working-commit drafts, including articles not yet on main.
+  // This is capture, not current-main adoption or publication authorization.
+  const articles=await rawJson(claim.expected_head_sha+"/content/articles.json",
+    MAX_ARTICLES_BYTES,fetchImpl,"article_source_unavailable");
+  if(!Array.isArray(articles))throw failure("article_source_unavailable");
+  const matches=articles.filter(a=>isObj(a)&&a.slug===claim.slug);
+  if(matches.length!==1)throw failure("article_mismatch");
+  const article=matches[0],fields={};
+  for(const key of ["category","paragraphs","scene_prompt","slug","summary","title"])
+    fields[key]=Object.hasOwn(article,key)?article[key]:"";
+  if(await shaText(JSON.stringify(fields))!==claim.article_sha256)throw failure("article_mismatch");
 }
 async function github(path,method,token,fetchImpl,body,allow404=false){
   const url=API+path;
@@ -203,109 +257,129 @@ async function github(path,method,token,fetchImpl,body,allow404=false){
   });
   if(allow404&&res.status===404)return null;
   if(res.status<200||res.status>=300)throw failure(res.status===409||res.status===422?"candidate_conflict":"github_unavailable");
-  const largeContents=method==="GET"&&(path==="/contents/assets/generated/manifest.json?ref=main"||
-    path.startsWith("/contents/maintenance/native-image-candidates/"));
-  const cap=largeContents?MAX_CONTENTS_RESPONSE:MAX_GITHUB_RESPONSE;
+  const largeContents=method==="GET"&&path.startsWith("/contents/maintenance/native-image-candidates/");
+  const cap=method==="GET"&&path==="/git/trees/main?recursive=1"?MAX_TREE_RESPONSE:
+    largeContents?MAX_CONTENTS_RESPONSE:MAX_GITHUB_RESPONSE;
   const text=new TextDecoder("utf-8",{fatal:true}).decode(await limited(res,cap));
   try{return JSON.parse(text);}catch(_){throw failure("invalid_github_response");}
 }
-async function stageFile(req,env,file,claim,fetchImpl){
-  // This kill-switch is intentionally OFF in source and requires TWO new
-  // independent Worker Secrets plus explicit enablement after owner approval.
-  if(env.IMAGE_CANDIDATE_WRITE_ENABLED!=="true"||
-     !validToken(env.IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN)||
-     !validToken(env.IMAGE_CANDIDATE_CALLER_KEY))
-    throw failure("write_disabled");
-  if(!await authorizedCaller(req,env))throw failure("unauthorized");
-  validateClaim(claim);
-  const image=await readFile(file,fetchImpl);
-  if(image.sha256!==claim.jpeg_sha256||image.bytes.length!==claim.jpeg_bytes||
-     image.file_id_sha256!==claim.file_id_sha256||
-     await shaText(claim.nonce)!==claim.nonce_sha256)
-    throw failure("claim_mismatch");
-  const token=env.IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN;
-  // All GitHub API paths, repo identity, workflow and candidate paths are fixed
-  // by validated input. No caller-provided GitHub URL is ever followed.
-  const repo=await github("", "GET",token,fetchImpl);
-  if(repo.full_name!==REPO||repo.private!==false||repo.visibility!=="public")throw failure("repository_not_public");
-  // Public read-only metadata needs no Actions permission on the write token.
+async function imageWorkflow(fetchImpl){
   const workflow=await github("/actions/workflows/free-cpu-scenes.yml","GET",null,fetchImpl);
   if(workflow.path!==".github/workflows/free-cpu-scenes.yml"||workflow.state!=="active")
     throw failure("image_workflow_not_active");
-  const manifest=await github("/contents/assets/generated/manifest.json?ref=main","GET",token,fetchImpl);
-  if(manifest.encoding!=="base64"||typeof manifest.content!=="string")throw failure("invalid_manifest");
-  let inventory;
-  try{inventory=JSON.parse(new TextDecoder().decode(decodedBase64(manifest.content,MAX_MANIFEST_BYTES)));}catch(_){throw failure("invalid_manifest");}
-  if(inventory.version!==1||!isObj(inventory.images))throw failure("invalid_manifest");
-  let archive=0;
-  for(const record of Object.values(inventory.images)){
-    if(!Number.isSafeInteger(record.bytes)||record.bytes<0)throw failure("invalid_manifest");
-    archive+=record.bytes;
+}
+async function checkArchive(token,bytes,fetchImpl){
+  const tree=await github("/git/trees/main?recursive=1","GET",token,fetchImpl);
+  if(tree.truncated!==false||!Array.isArray(tree.tree)||!GIT.test(tree.sha||""))
+    throw failure("invalid_archive_inventory");
+  let total=0;const paths=new Set();
+  for(const entry of tree.tree){
+    if(!isObj(entry)||typeof entry.path!=="string")throw failure("invalid_archive_inventory");
+    if(!/^assets\/generated\/.*\.jpe?g$/i.test(entry.path))continue;
+    if(paths.has(entry.path)||entry.type!=="blob"||!["100644","100755"].includes(entry.mode)||
+       !Number.isSafeInteger(entry.size)||entry.size<0)throw failure("invalid_archive_inventory");
+    paths.add(entry.path);total+=entry.size;
+    if(!Number.isSafeInteger(total))throw failure("invalid_archive_inventory");
   }
-  if(archive+image.bytes.length>ARCHIVE_MAX)throw failure("archive_limit");
-
+  if(total+bytes>ARCHIVE_MAX)throw failure("archive_limit");
+}
+async function contentBytes(path,ref,max,token,fetchImpl,allow404=false){
+  const result=await github("/contents/"+path+"?ref="+ref,"GET",token,fetchImpl,undefined,allow404);
+  if(result===null)return null;
+  if(result.encoding!=="base64"||typeof result.content!=="string")throw failure("invalid_github_response");
+  return decodedBase64(result.content,max);
+}
+function transportReceipt(claim,image){
+  return {...expectedRecord(claim),kind:"claimed_jpeg_transport",status:"awaiting_visual_review",
+    claim_commit_sha:claim.claim_commit_sha,width:1200,height:675,
+    file_id_sha256:image.file_id_sha256,received_at:new Date().toISOString()};
+}
+async function verifiedCandidate(claim,image,ref,token,fetchImpl,status){
+  const jpeg=await contentBytes(claim.path,ref,MAX_JPEG,token,fetchImpl);
+  const raw=await contentBytes(receiptPath(claim),ref,MAX_CLAIM_BYTES,token,fetchImpl);
+  let receipt;
+  try{receipt=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(raw));}
+  catch(_){throw failure("candidate_readback_failed");}
+  const fields=[...RECORD_FIELDS,"kind","status","claim_commit_sha","width","height","file_id_sha256","received_at"];
+  const expected=expectedRecord(claim),received=Date.parse(receipt?.received_at);
+  if(!exactFields(receipt,fields)||!RECORD_FIELDS.every(k=>receipt[k]===expected[k])||
+     receipt.kind!=="claimed_jpeg_transport"||receipt.status!=="awaiting_visual_review"||
+     receipt.claim_commit_sha!==claim.claim_commit_sha||receipt.width!==1200||receipt.height!==675||
+     !SHA.test(receipt.file_id_sha256||"")||!Number.isFinite(received)||received>Date.now()||
+     received>Date.parse(claim.expires_at)||jpeg.length!==claim.jpeg_bytes||
+     await shaHex(jpeg)!==claim.jpeg_sha256)throw failure("candidate_readback_failed");
+  return {status,branch:claim.branch,path:claim.path,commit_sha:ref,
+    jpeg_sha256:claim.jpeg_sha256,bytes:claim.jpeg_bytes,
+    receipt_path:receiptPath(claim),receipt_sha256:await shaHex(raw),
+    file_id_sha256:receipt.file_id_sha256,visual_review:"not_performed",published:false};
+}
+async function stageFile(req,env,file,claim,fetchImpl){
+  // OFF by default. The owner must separately approve a new, repository-limited
+  // write Secret and explicit enablement. AuthNone uses a per-upload capability,
+  // never a caller-supplied static Bearer key or a transient file identity.
+  if(env.IMAGE_CANDIDATE_WRITE_ENABLED!=="true"||
+     !validToken(env.IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN))throw failure("write_disabled");
+  validateClaim(claim);
+  // This owner-branch proof MUST precede all file reads and token-bearing APIs.
+  await authorizeClaim(claim,fetchImpl);
+  const token=env.IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN;
+  const repo=await github("","GET",token,fetchImpl);
+  if(repo.full_name!==REPO||repo.private!==false||repo.visibility!=="public")throw failure("repository_not_public");
+  await imageWorkflow(fetchImpl);
   const branchPath=claim.branch.split("/").map(encodeURIComponent).join("/");
-  const getRef="/git/ref/heads/"+branchPath;
-  const updateRef="/git/refs/heads/"+branchPath;
+  const getRef="/git/ref/heads/"+branchPath,updateRef="/git/refs/heads/"+branchPath;
   const branch=await github(getRef,"GET",token,fetchImpl);
   if(!GIT.test(branch.object?.sha||""))throw failure("invalid_github_response");
-  const claimPath="maintenance/image-upload-claims/"+claim.slug+"/claim.json";
-  const stored=await github("/contents/"+claimPath+"?ref="+claim.claim_commit_sha,
-    "GET",token,fetchImpl);
-  if(stored.encoding!=="base64"||typeof stored.content!=="string")throw failure("invalid_claim");
+  const stored=await contentBytes(claimPath(claim),claim.claim_commit_sha,MAX_CLAIM_BYTES,token,fetchImpl);
   let record;
-  try{record=JSON.parse(new TextDecoder().decode(decodedBase64(stored.content)));}catch(_){throw failure("invalid_claim");}
-  const expected=Object.fromEntries(Object.entries(claim).filter(([k])=>k!=="nonce"&&k!=="claim_commit_sha"));
-  if(record.version!==1||record.repository!==REPO||
-     !Object.keys(expected).every(k=>record[k]===expected[k])||
-     Object.hasOwn(record,"nonce"))throw failure("claim_mismatch");
-  // Even on replay, the immutable claim must match the same file, nonce
-  // hash, expiration and original one-parent commit.
+  try{record=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(stored));}
+  catch(_){throw failure("invalid_claim");}
+  requireRecord(record,claim);
   const parent=await github("/git/commits/"+claim.claim_commit_sha,"GET",token,fetchImpl);
   if(!GIT.test(parent.tree?.sha||"")||
      parent.parents?.length!==1||parent.parents[0]?.sha!==claim.expected_head_sha)
     throw failure("claim_parent_mismatch");
+  await verifyArticleSource(claim,fetchImpl);
+  const image=await readFile(file,fetchImpl);
+  if(image.sha256!==claim.jpeg_sha256||image.bytes.length!==claim.jpeg_bytes)throw failure("claim_mismatch");
   if(branch.object.sha!==claim.claim_commit_sha){
     const saved=await github("/git/commits/"+branch.object.sha,"GET",token,fetchImpl);
     if(saved.parents?.length!==1||saved.parents[0]?.sha!==claim.claim_commit_sha)
       throw failure("candidate_conflict");
-    const present=await github("/contents/"+claim.path+"?ref="+branch.object.sha,
-      "GET",token,fetchImpl,undefined,true);
-    if(!present||present.encoding!=="base64")throw failure("candidate_conflict");
-    const prior=decodedBase64(present.content);
-    if(prior.length!==image.bytes.length||await shaHex(prior)!==image.sha256)
-      throw failure("candidate_conflict");
-    return {status:"reused",branch:claim.branch,path:claim.path,
-      jpeg_sha256:image.sha256,bytes:image.bytes.length};
+    return verifiedCandidate(claim,image,branch.object.sha,token,fetchImpl,"reused");
   }
-  const existing=await github("/contents/"+claim.path+"?ref="+claim.claim_commit_sha,
-    "GET",token,fetchImpl,undefined,true);
-  if(existing) {
-    if(existing.encoding==="base64"){
-      const prior=decodedBase64(existing.content);
-      if(prior.length===image.bytes.length&&await shaHex(prior)===image.sha256)
-        return {status:"reused",branch:claim.branch,path:claim.path,
-          jpeg_sha256:image.sha256,bytes:image.bytes.length};
-    }
-    throw failure("candidate_conflict");
-  }
+  // Never attach a new claim to an older or partially stored JPEG/receipt.
+  const existing=await contentBytes(claim.path,claim.claim_commit_sha,MAX_JPEG,token,fetchImpl,true);
+  const oldReceipt=await contentBytes(receiptPath(claim),claim.claim_commit_sha,MAX_CLAIM_BYTES,token,fetchImpl,true);
+  if(existing||oldReceipt)throw failure("candidate_conflict");
+  await checkArchive(token,image.bytes.length,fetchImpl);
+  await imageWorkflow(fetchImpl);
+  validateClaim(claim);
+  const receiptText=JSON.stringify(transportReceipt(claim,image),null,2)+"\n";
+  const receiptBytes=encoder.encode(receiptText);
   const blob=await github("/git/blobs","POST",token,fetchImpl,{
     content:encodedBase64(image.bytes),encoding:"base64"});
-  if(!GIT.test(blob.sha||""))throw failure("invalid_github_response");
+  const receiptBlob=await github("/git/blobs","POST",token,fetchImpl,{
+    content:encodedBase64(receiptBytes),encoding:"base64"});
+  if(!GIT.test(blob.sha||"")||!GIT.test(receiptBlob.sha||""))throw failure("invalid_github_response");
+  // JPEG and truthful transport receipt become visible in ONE commit/ref update.
   const tree=await github("/git/trees","POST",token,fetchImpl,{
-    base_tree:parent.tree.sha,tree:[{path:claim.path,mode:"100644",type:"blob",sha:blob.sha}]});
+    base_tree:parent.tree.sha,tree:[
+      {path:claim.path,mode:"100644",type:"blob",sha:blob.sha},
+      {path:receiptPath(claim),mode:"100644",type:"blob",sha:receiptBlob.sha}]});
   if(!GIT.test(tree.sha||""))throw failure("invalid_github_response");
   const commit=await github("/git/commits","POST",token,fetchImpl,{
     message:"Stage claimed JPEG candidate for "+claim.slug,
     tree:tree.sha,parents:[claim.claim_commit_sha]});
   if(!GIT.test(commit.sha||""))throw failure("invalid_github_response");
+  await checkArchive(token,image.bytes.length,fetchImpl);
+  const fresh=await github(getRef,"GET",token,fetchImpl);
+  if(fresh.object?.sha!==claim.claim_commit_sha)throw failure("candidate_conflict");
+  await imageWorkflow(fetchImpl);
+  validateClaim(claim);
   const updated=await github(updateRef,"PATCH",token,fetchImpl,{sha:commit.sha,force:false});
   if(updated.object?.sha!==commit.sha)throw failure("candidate_conflict");
-  const verify=await github("/contents/"+claim.path+"?ref="+commit.sha,"GET",token,fetchImpl);
-  if(verify.encoding!=="base64"||await shaHex(decodedBase64(verify.content))!==image.sha256)
-    throw failure("candidate_readback_failed");
-  return {status:"saved",branch:claim.branch,path:claim.path,commit_sha:commit.sha,
-    jpeg_sha256:image.sha256,bytes:image.bytes.length};
+  return verifiedCandidate(claim,image,commit.sha,token,fetchImpl,"saved");
 }
 async function readJson(req,max=10000) {
   const content=await limited(req,max);
@@ -356,7 +430,8 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
     if(p.name===PROBE.name){
       const img=await readFile(args.file,fetchImpl);
       return toolResult(id,{status:"verified",width:1200,height:675,
-        bytes:img.bytes.length,sha256:img.sha256,file_id_sha256:img.file_id_sha256});
+        bytes:img.bytes.length,sha256:img.sha256,file_id_sha256:img.file_id_sha256,
+        upload_ticket:await uploadTicket()});
     }
     return toolResult(id,await stageFile(req,env,args.file,args.claim,fetchImpl));
   }catch(e){
