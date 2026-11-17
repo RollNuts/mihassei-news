@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "e4f0b2ab280792cf115d3fd232e31442a51d23e7abad5ba2fe24ec57e19f1a1a",
+  "slug": "secondhand-home-repair-map-opens-wall-before-sale",
+  "article_sha256": "c969833953bd8274d61086f828a81a079b60ac6f27fd7514c8c0cd81d5ac345a",
+  "logical_run_id": "codex-image-recovery-pr813-20261117",
+  "prompt_sha256": "cfbb7b6f5ca4e5dbb9c27678a3acaa27deb785f6d7bea29c093c3cd3ce393e78",
+  "reserved_at": "2026-11-17T00:28:43.808Z",
+  "baseline": {
+    "commit_sha": "3be3985fb56d00adc0afeac6bd100e2550a53805",
+    "tree_sha": "f2b0e9940b8d1c3f06fd6c4152d3ef755be913ba",
+    "protected_hashes": {
+      "content/articles.json": "bf5c0ccb8709553ff73aab3c763c83ebcf35bdc05b57837241a85fbb010d4662",
+      "assets/generated/manifest.json": "3258b9ad39890239a1841dfde0dd25b25d195fb4cbb6a27015700afc5869c544",
+      "content/visual_reviews.json": "d750a076bf8c2ae1b523c992b63d407051b6aa597a05894f34a6cd6e338cecfa"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "46a6b9f9e20cce474056d491ee48ae7034443d71",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "1dea94e9fb76a71b1d5f73df45cbbcc51b8a5a9e0a89c0ea41b7546a1087b386",
+    "observed_at": "2026-11-17T00:28:16.181Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
