@@ -31,12 +31,12 @@ const STAGE={
     file:fileSchema,
     claim:{type:"object",properties:{
       slug:{type:"string"},article_sha256:{type:"string"},branch:{type:"string"},
-      expected_head_sha:{type:"string"},path:{type:"string"},
+      expected_head_sha:{type:"string"},claim_commit_sha:{type:"string"},path:{type:"string"},
       jpeg_sha256:{type:"string"},jpeg_bytes:{type:"integer"},
       file_id_sha256:{type:"string"},nonce_sha256:{type:"string"},
       nonce:{type:"string"},expires_at:{type:"string"}
     },required:["slug","article_sha256","branch","expected_head_sha","path","jpeg_sha256",
-                "jpeg_bytes","file_id_sha256","nonce_sha256","nonce","expires_at"],
+                "jpeg_bytes","file_id_sha256","nonce_sha256","nonce","expires_at","claim_commit_sha"],
       additionalProperties:false}
   },required:["file","claim"],additionalProperties:false},
   annotations:{readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false},
@@ -150,10 +150,11 @@ async function authorizedCaller(req,env){
   return diff===0;
 }
 function validateClaim(claim){
-  if(!isObj(claim)||Object.keys(claim).length!==11||!KEY.test(claim.slug||"")||
+  if(!isObj(claim)||Object.keys(claim).length!==12||!KEY.test(claim.slug||"")||
      !SHA.test(claim.article_sha256||"")||!SHA.test(claim.jpeg_sha256||"")||
      !SHA.test(claim.file_id_sha256||"")||!SHA.test(claim.nonce_sha256||"")||
-     !GIT.test(claim.expected_head_sha||"")||!Number.isInteger(claim.jpeg_bytes)||
+     (!GIT.test(claim.expected_head_sha||"")||!GIT.test(claim.claim_commit_sha||"")||
+      claim.expected_head_sha===claim.claim_commit_sha)||!Number.isInteger(claim.jpeg_bytes)||
      claim.jpeg_bytes<128||claim.jpeg_bytes>MAX_JPEG||
      typeof claim.nonce!=="string"||!/^[A-Za-z0-9_-]{32,128}$/.test(claim.nonce)||
      typeof claim.expires_at!=="string"||!/[zZ]$/.test(claim.expires_at))
@@ -217,7 +218,7 @@ async function stageFile(req,env,file,claim,fetchImpl){
   const branchPath=claim.branch.split("/").map(encodeURIComponent).join("/");
   const ref="/git/ref/heads/"+branchPath;
   const branch=await github(ref,"GET",token,fetchImpl);
-  if(branch.object?.sha!==claim.expected_head_sha) {
+  if(branch.object?.sha!==claim.claim_commit_sha) {
     // Never write to a branch with changed head, even on a retry.
     const present=await github("/contents/"+claim.path+"?ref="+encodeURIComponent(claim.branch),
       "GET",token,fetchImpl,undefined,true);
@@ -228,16 +229,16 @@ async function stageFile(req,env,file,claim,fetchImpl){
     throw failure("candidate_conflict");
   }
   const claimPath="maintenance/image-upload-claims/"+claim.slug+"/claim.json";
-  const stored=await github("/contents/"+claimPath+"?ref="+claim.expected_head_sha,
+  const stored=await github("/contents/"+claimPath+"?ref="+claim.claim_commit_sha,
     "GET",token,fetchImpl);
   if(stored.encoding!=="base64"||typeof stored.content!=="string")throw failure("invalid_claim");
   let record;
   try{record=JSON.parse(new TextDecoder().decode(decodedBase64(stored.content)));}catch(_){throw failure("invalid_claim");}
-  const expected=Object.fromEntries(Object.entries(claim).filter(([k])=>k!=="nonce"));
+  const expected=Object.fromEntries(Object.entries(claim).filter(([k])=>k!=="nonce"&&k!=="claim_commit_sha"));
   if(record.version!==1||record.repository!==REPO||
      !Object.keys(expected).every(k=>record[k]===expected[k])||
      Object.hasOwn(record,"nonce"))throw failure("claim_mismatch");
-  const existing=await github("/contents/"+claim.path+"?ref="+claim.expected_head_sha,
+  const existing=await github("/contents/"+claim.path+"?ref="+claim.claim_commit_sha,
     "GET",token,fetchImpl,undefined,true);
   if(existing) {
     if(existing.encoding==="base64"&&await shaHex(decodedBase64(existing.content))===image.sha256)
@@ -245,8 +246,10 @@ async function stageFile(req,env,file,claim,fetchImpl){
         jpeg_sha256:image.sha256,bytes:image.bytes.length};
     throw failure("candidate_conflict");
   }
-  const parent=await github("/git/commits/"+claim.expected_head_sha,"GET",token,fetchImpl);
-  if(!GIT.test(parent.tree?.sha||""))throw failure("invalid_github_response");
+  const parent=await github("/git/commits/"+claim.claim_commit_sha,"GET",token,fetchImpl);
+  if(!GIT.test(parent.tree?.sha||"")||
+     parent.parents?.length!==1||parent.parents[0]?.sha!==claim.expected_head_sha)
+    throw failure("claim_parent_mismatch");
   const blob=await github("/git/blobs","POST",token,fetchImpl,{
     content:encodedBase64(image.bytes),encoding:"base64"});
   if(!GIT.test(blob.sha||""))throw failure("invalid_github_response");
@@ -255,7 +258,7 @@ async function stageFile(req,env,file,claim,fetchImpl){
   if(!GIT.test(tree.sha||""))throw failure("invalid_github_response");
   const commit=await github("/git/commits","POST",token,fetchImpl,{
     message:"Stage claimed JPEG candidate for "+claim.slug,
-    tree:tree.sha,parents:[claim.expected_head_sha]});
+    tree:tree.sha,parents:[claim.claim_commit_sha]});
   if(!GIT.test(commit.sha||""))throw failure("invalid_github_response");
   const updated=await github(ref,"PATCH",token,fetchImpl,{sha:commit.sha,force:false});
   if(updated.object?.sha!==commit.sha)throw failure("candidate_conflict");
