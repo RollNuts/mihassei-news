@@ -1,4 +1,4 @@
-/* Verify transport → invoke the supplied generator once → save its candidate.
+/* Verify transport → reserve one generation → save its original candidate.
  * Pure JavaScript with explicit callbacks; visual acceptance is NEVER performed here.
  * Load with new Function(source + '\nreturn NativeImageStage;')().
  */
@@ -342,22 +342,17 @@ var NativeImageStage = (function () {
       await verify(claim.branch);
       return true;
     }
-    async function generateAndStage(plan,options) {
-      checkPlan(plan);
-      if(activeGenerations.has(plan.identity))throw Error("Generation is already running for this candidate");
-      activeGenerations.add(plan.identity);
-      let phase="candidate_lookup",attempt,proof,generationClaim;
+    async function reservePrepared(plan,options,requireGenerator) {
+      let phase="candidate_lookup",proof,generationClaim;
       try {
         const existing=await probe(plan);
-        if(existing.status==="saved")return {...existing,imageGenResult:null,transportPreflight:null};
-        attempt=generationAttempts.get(plan.identity);
-        if(attempt)throw Error("This execution already requested this image; recover its output instead of generating again");
-        if(typeof options?.generate!=="function")throw Error("Provide the actual generator callback");
-        // There is no cached preflight pass: every generating invocation performs
-        // the real read → convert → GitHub save → readback above in this execution.
+        if(existing.status==="saved")return {...existing,plan,transportPreflight:null};
+        if(generationAttempts.has(plan.identity))throw Error("This execution already requested this image; recover its output instead of generating again");
+        if(requireGenerator&&typeof options?.generate!=="function")throw Error("Provide the actual generator callback");
+        // A reservation always performs the real byte read/save/readback here.
         phase="preflight";proof=await checkTransport(plan,options);
         phase="candidate_lookup_after_preflight";const completed=await probe(plan);
-        if(completed.status==="saved")return {...completed,imageGenResult:null,transportPreflight:proof};
+        if(completed.status==="saved")return {...completed,plan,transportPreflight:proof};
         phase="generation_claim";
         generationClaim={kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
           branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
@@ -365,9 +360,80 @@ var NativeImageStage = (function () {
         // A candidate can finish during reservation, including a legacy recovery.
         // Even a losing worker may recover it; neither worker replaces the claim.
         phase="candidate_lookup_after_claim";const afterClaim=await probe(plan);
-        if(afterClaim.status==="saved")return {...afterClaim,imageGenResult:null,transportPreflight:proof,generationClaim};
+        if(afterClaim.status==="saved")return {...afterClaim,plan,transportPreflight:proof,generationClaim};
         if(!acquired)throw Error("Generation is already reserved at "+generationClaim.branch+"; recover the original output instead of generating again");
         phase="generation_cloud_status";await cloudStatus();
+        return {status:"reserved",plan,transportPreflight:proof,generationClaim};
+      } catch(error) {
+        const e=error instanceof Error?error:Error(String(error));if(!e.stage)e.stage=phase;
+        if(proof)e.transportPreflight=proof;
+        if(generationClaim)e.generationClaim=generationClaim;
+        throw e;
+      }
+    }
+    async function reserveExternalGeneration(plan,options) {
+      checkPlan(plan);
+      if(activeGenerations.has(plan.identity))throw Error("Generation is already running for this candidate");
+      activeGenerations.add(plan.identity);
+      try{return await reservePrepared(plan,options,false);}
+      finally{activeGenerations.delete(plan.identity);}
+    }
+    async function stageReserved(plan,input) {
+      checkPlan(plan);
+      try {
+        const claim=input?.generationClaim,proof=input?.transportPreflight;
+        const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
+          "observed_at","route","source_sha256","jpeg_sha256"];
+        if(!claim||claim.kind!=="native_image_generation_claim"||claim.status!=="reserved_generation_unconfirmed"
+          ||claim.branch!==CLAIM_BRANCH_PREFIX+plan.identity||claim.receipt_path!==CLAIM_DIR+"/"+plan.identity+".json"
+          ||!GIT.test(claim.commit_sha||"")||!SHA.test(claim.receipt_sha256||""))throw Error("Invalid generation reservation");
+        if(!proof||proof.kind!=="native_image_transport_preflight"||proof.status!=="passed"
+          ||proof.branch!==PREFLIGHT_BRANCH||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
+          ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
+          ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
+        if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
+        const rawClaim=await read(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
+        if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
+          ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
+          ||record.article_sha256!==plan.articleSha256||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
+          ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
+          ||PROTECTED.some(path=>record.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
+          ||proofFields.some(key=>record.transport_preflight?.[key]!==proof[key]))throw Error("Generation reservation binding mismatch");
+        const rawProof=await read(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
+        if(hashText(rawProof.content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
+          ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
+          ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
+          ||receipt.observed_at!==proof.observed_at||receipt.route!==proof.route
+          ||receipt.source?.sha256!==proof.source_sha256||receipt.jpeg?.sha256!==proof.jpeg_sha256
+          ||receipt.baseline?.commit_sha!==plan.baseCommitSha
+          ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
+        if(!Number.isFinite(Date.parse(record.reserved_at))||!Number.isFinite(Date.parse(input.observedAt))
+          ||Date.parse(input.observedAt)<Date.parse(record.reserved_at))throw Error("Generated output precedes reservation");
+        await verifyProtected(plan.baseCommitSha,plan.protectedHashes);
+        // stage checks the live stop state before every mutation. Its existing
+        // saved-candidate path remains read-only and usable while stopped.
+        return await stage(plan,input);
+      }catch(error){
+        const e=error instanceof Error?error:Error(String(error));if(!e.stage)e.stage="reservation_validation";
+        if(input?.generationClaim)e.generationClaim=input.generationClaim;
+        if(input?.transportPreflight)e.transportPreflight=input.transportPreflight;
+        if(input?.imageGenResult)e.imageGenResult=input.imageGenResult;
+        if(input?.observedAt)e.observedAt=input.observedAt;
+        throw e;
+      }
+    }
+    async function generateAndStage(plan,options) {
+      checkPlan(plan);
+      if(activeGenerations.has(plan.identity))throw Error("Generation is already running for this candidate");
+      activeGenerations.add(plan.identity);
+      let phase="reservation",attempt,proof,generationClaim;
+      try {
+        const reserved=await reservePrepared(plan,options,true);
+        proof=reserved.transportPreflight;generationClaim=reserved.generationClaim;
+        if(reserved.status==="saved"){
+          const {plan:_plan,...saved}=reserved;
+          return {...saved,imageGenResult:null};
+        }
         phase="generation";attempt={transportPreflight:proof,generationClaim};generationAttempts.set(plan.identity,attempt);
         attempt.imageGenResult=await options.generate({prompt:plan.prompt,transparent_background:false});
         attempt.observedAt=new Date().toISOString();
@@ -385,7 +451,7 @@ var NativeImageStage = (function () {
         throw e;
       } finally {activeGenerations.delete(plan.identity);}
     }
-    return {prepare,probe,stage,resume,load,checkTransport,generateAndStage,cloudStatus};
+    return {prepare,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,cloudStatus};
   }
   return {create,PART_SIZE};
 })();
