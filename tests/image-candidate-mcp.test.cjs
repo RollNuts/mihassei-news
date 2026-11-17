@@ -150,6 +150,14 @@ test('real, already-approved 1200x675 JPEG passes file delivery probe without Gi
     '(NOT a deployed Worker CPU measurement)');
 });
 
+test('temporary signed paths are not assumed to begin with file-',async()=>{
+  const alternate={...file,download_url:'https://files.oaiusercontent.com/downloads/signed?id=123'};
+  const f=fileFetcher();
+  const result=await data(await send(bodyFor('probe_candidate_jpeg',{file:alternate}),f.fn));
+  assert.equal(result.result.isError,false,JSON.stringify(result.result.content));
+  assert.equal(f.calls[0].url,alternate.download_url);
+});
+
 test('arbitrary URLs, redirects, missing MIME, bad dimensions, oversize fail closed',async()=>{
   for(const url of ['https://evil.example/a.jpg','https://files.oaiusercontent.com.evil.example/file-a',
     'http://files.oaiusercontent.com/file-a','https://user:password@files.oaiusercontent.com/file-a',
