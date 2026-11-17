@@ -297,6 +297,15 @@ class PhotoStoryTests(unittest.TestCase):
         result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         post = next(post for post in result if "motion" in post)
         own = [item for item in result if item["modelId"] == post["modelId"]]
+        # Exercise the archive boundary even before this person's fourth real post.
+        while len(own) < 4:
+            older = copy.deepcopy(own[-1])
+            stamp = datetime.fromisoformat(older["publishedAt"]) - timedelta(days=1)
+            older.update(id=f"test-older-motion-post-{len(own)}", publishedAt=stamp.isoformat(),
+                         dateLabel=stamp.astimezone(stories.JST).strftime("%Y年%m月%d日 %H:%M"))
+            older.pop("motion", None)
+            own.append(older)
+            result += (older,)
         profile = stories.render_model_stories(post["modelId"], result)
         parsed = Tags(); parsed.feed(profile)
         video = next(attrs for tag, attrs in parsed.tags
@@ -311,7 +320,14 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual(fallback["href"], post["sourceUrl"])
         self.assertIn("hidden", fallback)
         payload = profile.split('<script type="application/json" data-photo-story-data>', 1)[1].split('</script>', 1)[0]
-        self.assertEqual(json.loads(payload), own)
+        self.assertEqual(json.loads(payload), own[:3])
+        visible, history = profile.split('<details class="photo-post-archive">', 1)
+        recent, archived = Tags(), Tags()
+        recent.feed(visible); archived.feed(history)
+        article_ids = lambda parsed: [attrs["id"] for tag, attrs in parsed.tags if tag == "article"]
+        self.assertEqual(article_ids(recent), ["post-" + item["id"] for item in own[:3]])
+        self.assertEqual(article_ids(archived), ["post-" + item["id"] for item in own[3:]])
+        self.assertIn(f'<summary>以前の投稿（{len(own) - 3}件）</summary>', history)
         self.assertIn('data-story-dialog', profile)
 
     def test_story_rings_expose_actual_local_post_time_and_accessible_context(self):
