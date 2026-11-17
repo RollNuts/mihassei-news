@@ -8,7 +8,10 @@ const RAW="https://raw.githubusercontent.com/"+REPO+"/";
 // Do not allow arbitrary oaiusercontent.com subdomains or response-origin hops.
 const FILE_HOST="files.oaiusercontent.com";
 const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
-const trustedFileHost=host=>host===FILE_HOST||REGIONAL_FILE_HOST.test(host);
+// Observed from an actual GPT attachment. Azure account names are not a
+// provider-owned namespace: never generalize this to an Azure-host wildcard.
+const OBSERVED_AZURE_FILE_HOST="oaisdmntpraustraliaeast.blob.core.windows.net";
+const trustedFileHost=host=>host===FILE_HOST||host===OBSERVED_AZURE_FILE_HOST||REGIONAL_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
 const MAX_CLAIM_BYTES=16*1024;
 const MAX_ARTICLES_BYTES=4*1024*1024;

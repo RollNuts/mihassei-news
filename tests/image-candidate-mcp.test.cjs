@@ -317,6 +317,58 @@ test('regional hosts do not admit arbitrary subdomains, suffix spoofing or unsaf
   }
 });
 
+test('the exact observed Azure account passes JPEG validation without forwarding authentication',async()=>{
+  const observed='https://oaisdmntpraustraliaeast.blob.core.windows.net/private/image.jpg?sig=synthetic';
+  const calls=[];
+  const x=await data(await send(bodyFor('probe_candidate_jpeg',
+    {file:{...file,download_url:observed}}),async(url,opts)=>{
+      calls.push({url,opts});
+      const response=new Response(bytes,{headers:{'content-type':'image/jpeg'}});
+      Object.defineProperty(response,'url',{value:observed});return response;
+    },env,{authorization:'Bearer do-not-forward-this-token'}));
+  assert.equal(x.result.isError,false,JSON.stringify(x.result.content));
+  assert.equal(x.result.structuredContent.sha256,sha(bytes));
+  assert.equal(x.result.structuredContent.bytes,bytes.length);
+  assert.equal(calls.length,1);assert.equal(calls[0].url,observed);
+  assert.equal(calls[0].opts.redirect,'manual');
+  assert.deepEqual(calls[0].opts.headers,{accept:'image/jpeg'});
+  assert.doesNotMatch(JSON.stringify(x),/blob\.core|sig=|do-not-forward|synthetic-github/);
+  for(const different of [source,'https://sdmntprwestus.oaiusercontent.com/image.jpg',
+    'https://oaisdmntprwestus.blob.core.windows.net/image.jpg']){
+    const bad=await data(await send(bodyFor('probe_candidate_jpeg',
+      {file:{...file,download_url:observed}}),async()=>{
+        const response=new Response(bytes,{headers:{'content-type':'image/jpeg'}});
+        Object.defineProperty(response,'url',{value:different});return response;
+      }));
+    assert.equal(bad.result.isError,true);
+    assert.equal(safeError(bad),'file_unavailable');
+  }
+});
+
+test('Azure siblings, lookalikes, nested accounts and unsafe URL parts are never fetched',async()=>{
+  const rejected=[
+    'https://oaisdmntpraustraliaeast2.blob.core.windows.net/image.jpg',
+    'https://oaisdmntprwestus.blob.core.windows.net/image.jpg',
+    'https://attacker.blob.core.windows.net/image.jpg',
+    'https://nested.oaisdmntpraustraliaeast.blob.core.windows.net/image.jpg',
+    'https://oaisdmntpraustraliaeast.blob.core.windows.net.evil.example/image.jpg',
+    'https://oaisdmntpraustraliaeast-blob.core.windows.net/image.jpg',
+    'http://oaisdmntpraustraliaeast.blob.core.windows.net/image.jpg',
+    'https://oaisdmntpraustraliaeast.blob.core.windows.net:8443/image.jpg',
+    'https://user:password@oaisdmntpraustraliaeast.blob.core.windows.net/image.jpg',
+    'https://oaisdmntpraustraliaeast.blob.core.windows.net/image.jpg#fragment',
+    'https://oaisdmntpraustraliaeast.blob.core.windows.net/',
+    'https://oaisdmntpraustraliaeast.blob.core.windows.net/images//image.jpg'
+  ];
+  for(const download_url of rejected){
+    const f=fileFetcher();
+    const x=await data(await send(bodyFor('probe_candidate_jpeg',
+      {file:{...file,download_url}}),f.fn));
+    assert.equal(x.result.isError,true);assert.equal(safeError(x),'untrusted_file_host');
+    assert.equal(f.calls.length,0);
+  }
+});
+
 test('regional labels have explicit one-to-forty alphanumeric bounds',async()=>{
   for(const label of ['sdmntpra','sdmntpr'+'a'.repeat(40)]){
     const f=fileFetcher();
