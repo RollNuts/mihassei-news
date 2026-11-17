@@ -12,7 +12,16 @@ const repo='https://api.github.com/repos/RollNuts/mihassei-news';
 const source='https://files.oaiusercontent.com/file-abcDEF123?se=short-lived&sig=synthetic';
 const file={download_url:source,file_id:'file-abcDEF123',mime_type:'image/jpeg',file_name:'verified.jpg'};
 const bytes=fs.readFileSync(path.join(__dirname,'../assets/generated/fermentation-rna-inspection-two-flavors.jpg'));
-const realManifest=fs.readFileSync(path.join(__dirname,'../assets/generated/manifest.json'));
+const realArticles=fs.readFileSync(path.join(__dirname,'../content/articles.json'));
+const articles=JSON.parse(realArticles);
+const target=articles.find(a=>a.slug==='fermentation-rna-inspection-two-flavors');
+const fingerprint=a=>sha(JSON.stringify(Object.fromEntries(
+  ['category','paragraphs','scene_prompt','slug','summary','title'].map(k=>[k,Object.hasOwn(a,k)?a[k]:'']))));
+const rawRepo='https://raw.githubusercontent.com/RollNuts/mihassei-news/';
+const freshSource='https://sdmntpreastus3.oaiusercontent.com/upload-fresh.jpg?sig=synthetic';
+const generatedDir=path.join(__dirname,'../assets/generated');
+const archiveEntries=fs.readdirSync(generatedDir).map(name=>({path:'assets/generated/'+name,
+  type:'blob',mode:'100644',size:fs.statSync(path.join(generatedDir,name)).size}));
 const sha=x=>createHash('sha256').update(x).digest('hex');
 const encoded=value=>Buffer.from(JSON.stringify(value)).toString('base64');
 const fromBytes=b=>Buffer.from(b).toString('base64');
@@ -42,80 +51,103 @@ function fileFetcher() {
   }};
 }
 function syntheticClaim() {
-  const slug='fermentation-rna-inspection-two-flavors';
-  const article='a'.repeat(64);
-  const nonce='aB0123456789abcdefghijklmnopqrstuvwxyz';
-  return {
-    slug,article_sha256:article,
-    branch:'native-image-candidate/'+slug+'/'+article.slice(0,16)+'-012345abcdef',
+  const nonce=Buffer.alloc(32,17).toString('base64url'),hash=sha(nonce);
+  const article=fingerprint(target),slug=target.slug;
+  return {version:2,slug,article_sha256:article,
+    branch:'native-image-candidate/'+slug+'/'+article.slice(0,16)+'-'+hash.slice(0,12),
     expected_head_sha:'b'.repeat(40),claim_commit_sha:'9'.repeat(40),
     path:'maintenance/native-image-candidates/'+slug+'/candidate.jpg',
-    jpeg_sha256:sha(bytes),jpeg_bytes:bytes.length,file_id_sha256:sha(file.file_id),
-    nonce_sha256:sha(nonce),nonce,
-    expires_at:new Date(Date.now()+5*60*1000).toISOString()
-  };
+    jpeg_sha256:sha(bytes),jpeg_bytes:bytes.length,nonce_sha256:hash,nonce,
+    expires_at:new Date(Date.now()+5*60*1000).toISOString()};
 }
 const env={IMAGE_CANDIDATE_WRITE_ENABLED:'true',
-  IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN:'synthetic-github-write-token-00001',
-  IMAGE_CANDIDATE_CALLER_KEY:'synthetic-caller-token-00001'};
-function githubFixture(claim,override={}) {
-  const calls=[];
-  let head=override.head||claim.claim_commit_sha;
-  let stored=override.stored||null;
-  // Keep the immutable claim independent of a later replay request.
-  const savedClaim=override.originalClaim||claim;
-  const record={version:1,repository:'RollNuts/mihassei-news',
-    ...Object.fromEntries(Object.entries(savedClaim).filter(([k])=>k!=='nonce'&&k!=='claim_commit_sha'))};
+  IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN:'synthetic-github-write-token-00001'};
+function githubFixture(claim,options={}) {
+  const calls=[],blobs=new Map();let head=options.head||claim.claim_commit_sha;
+  let pendingTree=[],storedFiles=new Map(),workflowCalls=0,refReads=0,lostPatch=false;
+  const original=options.originalClaim||claim;
+  const record={repository:'RollNuts/mihassei-news',
+    ...Object.fromEntries(Object.entries(original).filter(([k])=>!['nonce','claim_commit_sha'].includes(k)))};
+  const receiptPath='maintenance/native-image-candidates/'+claim.slug+'/upload-receipt.json';
+  const publicClaim=rawRepo+'refs/heads/'+claim.branch+'/maintenance/image-upload-claims/'+claim.slug+'/claim.json';
+  const articlesUrl=rawRepo+claim.expected_head_sha+'/content/articles.json';
+  const contents=b=>Response.json({encoding:'base64',content:Buffer.from(b).toString('base64')});
   const fetchImpl=async(url,opts)=>{
+    const body=opts.body?JSON.parse(opts.body):undefined;
     calls.push({url,method:opts.method,redirect:opts.redirect,
-      authorized:Boolean(opts.headers.authorization),
-      force:opts.body&&JSON.parse(opts.body).force});
-    if(url===source)return new Response(bytes,{headers:{'content-type':'image/jpeg'}});
-    if(!url.startsWith(repo))throw Error('Attempted external network');
+      authorized:Boolean(opts.headers.authorization),body});
+    if(url===publicClaim){
+      if(options.noPublicClaim)return new Response('not found',{status:404});
+      if(options.rawRedirect)return new Response('',{status:302,headers:{location:'https://evil.example'}});
+      return options.rawOversize?new Response(Buffer.alloc(16*1024+1,32),{headers:{'content-type':'text/plain'}})
+        :Response.json(options.publicRecord||record);
+    }
+    if(url===articlesUrl)return new Response(options.articleBytes||realArticles,
+      {headers:{'content-type':'text/plain'}});
+    if(url===source||url===freshSource)return new Response(options.imageBytes||bytes,
+      {headers:{'content-type':'image/jpeg'}});
+    if(!url.startsWith(repo))throw Error('Unexpected source');
     const p=url.slice(repo.length);
+    if(options.failPath===p)return new Response('not authorized',{status:options.failStatus||429});
     if(p==='')return Response.json({full_name:'RollNuts/mihassei-news',
-      private:override.private||false,visibility:override.private?'private':'public'});
-    if(p==='/actions/workflows/free-cpu-scenes.yml')
+      private:Boolean(options.private),visibility:options.private?'private':'public'});
+    if(p==='/actions/workflows/free-cpu-scenes.yml'){
+      workflowCalls++;
+      if(options.onWorkflow)options.onWorkflow(workflowCalls);
       return Response.json({path:'.github/workflows/free-cpu-scenes.yml',
-        state:override.off?'disabled_manually':'active'});
-    if(p.startsWith('/contents/assets/generated/manifest.json?ref=main'))
-      return Response.json({encoding:'base64',content:override.manifestBytes
-        ? Buffer.from(override.manifestBytes).toString('base64')
-        : encoded({version:1,images:override.images||{old:{bytes:80000}}})});
+        state:options.off||options.stopOnWorkflowCall===workflowCalls?'disabled_manually':'active'});
+    }
+    if(p==='/git/trees/main?recursive=1')return Response.json(options.archive||{
+      sha:'1'.repeat(40),truncated:false,tree:archiveEntries});
     if(p.startsWith('/git/ref/heads/')){
-      assert.equal(opts.method,'GET','GitHub get-reference uses singular /ref');
+      assert.equal(opts.method,'GET');refReads++;
+      if(options.moveOnFreshRef&&refReads>1)head='f'.repeat(40);
       return Response.json({object:{sha:head}});
     }
     if(p.startsWith('/git/refs/heads/')){
-      assert.equal(opts.method,'PATCH','GitHub update-reference uses plural /refs');
-      assert.equal(JSON.parse(opts.body).force,false);
-      if(head!==claim.claim_commit_sha)return new Response('',{status:422});
-      head='e'.repeat(40);
+      assert.equal(opts.method,'PATCH');assert.equal(body.force,false);
+      if(options.patchConflict||head!==claim.claim_commit_sha)return new Response('',{status:422});
+      head='e'.repeat(40);storedFiles=new Map(pendingTree.map(row=>[row.path,blobs.get(row.sha)]));
+      if(options.losePatchOnce&&!lostPatch){lostPatch=true;throw Error('response lost');}
       return Response.json({object:{sha:head}});
     }
-    if(p.startsWith('/contents/maintenance/image-upload-claims/')){
-      return Response.json({encoding:'base64',content:encoded(record)});
+    if(p.startsWith('/contents/maintenance/image-upload-claims/'))
+      return contents(JSON.stringify(options.immutableRecord||record));
+    if(p.startsWith('/contents/'+claim.path+'?ref=')){
+      if(p.endsWith('ref='+claim.claim_commit_sha))return options.existingJpeg?contents(options.existingJpeg):new Response('',{status:404});
+      return contents(options.corruptReadback?Buffer.from('bad'):storedFiles.get(claim.path)||Buffer.from('missing'));
     }
-    if(p.startsWith('/contents/'+claim.path)){
-      if(stored || p.endsWith('ref='+'e'.repeat(40)))
-        return Response.json({encoding:'base64',content:fromBytes(stored||bytes)});
-      return new Response('missing',{status:404});
+    if(p.startsWith('/contents/'+receiptPath+'?ref=')){
+      if(p.endsWith('ref='+claim.claim_commit_sha))return options.existingReceipt?contents(options.existingReceipt):new Response('',{status:404});
+      let receipt=storedFiles.get(receiptPath);
+      if(options.tamperReceipt){const v=JSON.parse(receipt);v.article_sha256='0'.repeat(64);receipt=Buffer.from(JSON.stringify(v));}
+      return contents(receipt||Buffer.from('{}'));
     }
     if(p==='/git/commits/'+claim.claim_commit_sha)return Response.json({tree:{sha:'c'.repeat(40)},
-      parents:[{sha:claim.expected_head_sha}]});
+      parents:[{sha:options.wrongParent?'8'.repeat(40):claim.expected_head_sha}]});
     if(p==='/git/commits/'+'e'.repeat(40))return Response.json({tree:{sha:'f'.repeat(40)},
-      parents:[{sha:claim.claim_commit_sha}]});
-    if(p==='/git/blobs') {
-      assert.equal(opts.method,'POST');
-      assert.equal(sha(Buffer.from(JSON.parse(opts.body).content,'base64')),sha(bytes));
-      return Response.json({sha:'d'.repeat(40)});
+      parents:[{sha:options.wrongSavedParent?'8'.repeat(40):claim.claim_commit_sha}]});
+    if(p==='/git/commits/'+'f'.repeat(40))return Response.json({tree:{sha:'f'.repeat(40)},parents:[]});
+    if(p==='/git/blobs'){
+      const b=Buffer.from(body.content,'base64'),id=createHash('sha1').update(Buffer.concat([
+        Buffer.from('blob '+b.length+'\0'),b])).digest('hex');
+      blobs.set(id,b);return Response.json({sha:id});
     }
-    if(p==='/git/trees')return Response.json({sha:'f'.repeat(40)});
-    if(p==='/git/commits')return Response.json({sha:'e'.repeat(40)});
-    throw Error('Unexpected Github request '+p);
+    if(p==='/git/trees'){
+      assert.equal(body.base_tree,'c'.repeat(40));pendingTree=body.tree;
+      assert.deepEqual(pendingTree.map(row=>row.path),[claim.path,receiptPath]);
+      return Response.json({sha:'f'.repeat(40)});
+    }
+    if(p==='/git/commits'){
+      assert.deepEqual(body.parents,[claim.claim_commit_sha]);return Response.json({sha:'e'.repeat(40)});
+    }
+    throw Error('Unexpected Github request');
   };
-  return {calls,fetchImpl,get head(){return head;}};
+  return {calls,fetchImpl,record,publicClaim,articlesUrl,receiptPath,
+    get head(){return head;},get storedFiles(){return storedFiles;},options};
 }
+const mutations=f=>f.calls.filter(x=>['POST','PATCH'].includes(x.method));
+const safeError=x=>JSON.parse(x.result.content[0].text).error;
 
 test('the published fileParams schema lists four fields; only two are required',async()=>{
   const f=fileFetcher();
@@ -140,8 +172,14 @@ test('real, already-approved 1200x675 JPEG passes file delivery probe without Gi
   const start=performance.now();
   const actual=await data(await send(bodyFor('probe_candidate_jpeg',{file}),f.fn));
   const elapsedMs=performance.now()-start;
-  assert.deepEqual(actual.result.structuredContent,{status:'verified',width:1200,height:675,
+  const {upload_ticket:ticket,...metadata}=actual.result.structuredContent;
+  assert.deepEqual(metadata,{status:'verified',width:1200,height:675,
     bytes:bytes.length,sha256:sha(bytes),file_id_sha256:sha(file.file_id)});
+  assert.equal(ticket.version,2);assert.match(ticket.nonce,/^[A-Za-z0-9_-]{43}$/);
+  assert.equal(ticket.nonce_sha256,sha(ticket.nonce));
+  assert.equal(ticket.branch_suffix,ticket.nonce_sha256.slice(0,12));
+  assert.ok(Date.parse(ticket.expires_at)>Date.now()+14*60*1000);
+  assert.ok(Date.parse(ticket.expires_at)<=Date.now()+15*60*1000);
   assert.deepEqual(f.calls.map(x=>x.url),[source]);
   assert.equal(f.calls[0].opts.redirect,'manual');
   assert.match(actual.result.content[0].text,/verified/);
@@ -284,13 +322,8 @@ test('rejected file references reveal only a bounded hostname and exact rejectio
   }
 });
 
-test('file-reference diagnostics do not escape through staging or unrelated errors',async()=>{
-  const f=fileFetcher(),claim=syntheticClaim();
-  const rejected={...file,download_url:'https://uploads.example.net/private?sig=DO-NOT-RETURN'};
-  const staged=await data(await send(bodyFor('stage_candidate_jpeg',{file:rejected,claim}),
-    f.fn,env,{authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-  assert.deepEqual(JSON.parse(staged.result.content[0].text),{error:'untrusted_file_host'});
-  assert.equal(f.calls.length,0);
+test('unrelated errors and malformed file values never echo file references',async()=>{
+  const f=fileFetcher();
   const upstream=await data(await send(bodyFor('probe_candidate_jpeg',{file}),async()=>{
     throw new Error('private request failed: '+source);
   }));
@@ -300,117 +333,200 @@ test('file-reference diagnostics do not escape through staging or unrelated erro
     assert.equal(x.result.isError,true);
     assert.equal(JSON.parse(x.result.content[0].text).file_reference_diagnostic,undefined);
   }
-  assert.doesNotMatch(JSON.stringify({staged,upstream}),/uploads.example|private|sig=|file-abcDEF123/);
+  assert.doesNotMatch(JSON.stringify(upstream),/private|sig=|file-abcDEF123/);
 });
 
-test('write path disabled before approval: zero file reads or GitHub calls',async()=>{
-  const claim=syntheticClaim(),f=fileFetcher(),msg=bodyFor('stage_candidate_jpeg',{file,claim});
-  const cases=[{}, {IMAGE_CANDIDATE_WRITE_ENABLED:'true'},
+test('version-2 write remains OFF without both explicit enablement and the new write secret',async()=>{
+  const claim=syntheticClaim();
+  for(const settings of [{},{IMAGE_CANDIDATE_WRITE_ENABLED:'true'},
     {...env,IMAGE_CANDIDATE_WRITE_ENABLED:'false'},
     {...env,IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN:''},
-    {...env,IMAGE_CANDIDATE_CALLER_KEY:null}];
-  for(const e of cases) {
-    const x=await data(await send(msg,f.fn,e));
+    {IMAGE_CANDIDATE_CALLER_KEY:'old-static-caller-key-ignored'}]){
+    const f=fileFetcher();const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fn,settings));
+    assert.equal(safeError(x),'write_disabled');assert.equal(f.calls.length,0);
+  }
+});
+
+test('verified probe issues fresh random tickets, without saving or authorizing a repository claim',async()=>{
+  const f=fileFetcher(),tickets=[];
+  for(let i=0;i<2;i++)tickets.push((await data(await send(bodyFor('probe_candidate_jpeg',{file}),f.fn))).result.structuredContent.upload_ticket);
+  assert.notEqual(tickets[0].nonce,tickets[1].nonce);
+  assert.notEqual(tickets[0].nonce_sha256,tickets[1].nonce_sha256);
+  assert.equal(f.calls.length,2);
+  assert.ok(f.calls.every(x=>x.url===source&&x.opts.method==='GET'));
+});
+
+test('AuthNone stages only an exact owner-claimed JPEG and atomically stores its truthful transport receipt',async()=>{
+  const claim=syntheticClaim(),f=githubFixture(claim);
+  const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+  assert.equal(x.result.isError,false,JSON.stringify(x.result.content));
+  const result=x.result.structuredContent;
+  assert.equal(result.status,'saved');assert.equal(result.commit_sha,'e'.repeat(40));
+  assert.equal(result.jpeg_sha256,sha(bytes));assert.equal(result.bytes,bytes.length);
+  assert.equal(result.published,false);assert.equal(result.visual_review,'not_performed');
+  assert.equal(f.calls[0].url,f.publicClaim);assert.equal(f.calls[0].authorized,false);
+  assert.ok(f.calls.findIndex(c=>c.authorized)>0,'public branch capability precedes every authenticated API');
+  assert.equal(f.head,'e'.repeat(40));assert.equal(f.storedFiles.size,2);
+  const receipt=JSON.parse(f.storedFiles.get(f.receiptPath));
+  assert.equal(receipt.version,2);assert.equal(receipt.status,'awaiting_visual_review');
+  assert.equal(receipt.file_id_sha256,sha(file.file_id));assert.equal(receipt.claim_commit_sha,claim.claim_commit_sha);
+  assert.equal(result.receipt_sha256,sha(f.storedFiles.get(f.receiptPath)));
+  assert.equal(mutations(f).length,5,'two blobs, one tree, one commit, one ref update');
+  assert.ok(mutations(f).every(c=>c.authorized));
+  assert.ok(f.calls.filter(c=>c.url.startsWith(rawRepo)||c.url===source).every(c=>!c.authorized));
+  assert.ok(f.calls.every(c=>c.redirect==='manual'));
+  assert.doesNotMatch(JSON.stringify({result,receipt}),new RegExp(claim.nonce+'|synthetic-github|sig=|file-abcDEF123'));
+  assert.ok(!Object.hasOwn(receipt,'nonce'));
+});
+
+test('missing or forged public branch claims never fetch the image or use privileged GitHub APIs',async()=>{
+  const claim=syntheticClaim();
+  for(const options of [{noPublicClaim:true},{rawRedirect:true},{rawOversize:true},
+    {publicRecord:{}},{publicRecord:{...githubFixture(claim).record,repository:'attacker/fork'}},
+    {publicRecord:{...githubFixture(claim).record,nonce_sha256:'0'.repeat(64)}},
+    {publicRecord:{...githubFixture(claim).record,nonce:claim.nonce}}]){
+    const f=githubFixture(claim,options);
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env,
+      {authorization:'Bearer pretending-to-be-an-owner'}));
     assert.equal(x.result.isError,true);
-    assert.deepEqual(JSON.parse(x.result.content[0].text),{error:'write_disabled'});
-    assert.equal(f.calls.length,0);
+    assert.equal(f.calls.length,1);assert.equal(f.calls[0].url,f.publicClaim);
+    assert.equal(f.calls[0].authorized,false);assert.equal(mutations(f).length,0);
+    assert.doesNotMatch(JSON.stringify(x),new RegExp(claim.nonce+'|sig=|synthetic-github'));
   }
-  const auth=await data(await send(msg,f.fn,env));
-  assert.equal(auth.result.isError,true);
-  assert.deepEqual(JSON.parse(auth.result.content[0].text),{error:'unauthorized'});
-  assert.equal(f.calls.length,0);
 });
 
-test('signed branch claim + separate caller key: one new immutable JPEG candidate only',async()=>{
-  const claim=syntheticClaim(),fake=githubFixture(claim);
-  const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
-    {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-  assert.equal(result.result.isError,false,JSON.stringify(result.result.content));
-  assert.equal(result.result.structuredContent.status,'saved');
-  assert.equal(result.result.structuredContent.path,claim.path);
-  assert.equal(result.result.structuredContent.commit_sha,'e'.repeat(40));
-  assert.doesNotMatch(JSON.stringify(result),/synthetic-github|synthetic-caller|oaiusercontent|sig=|aB0123/);
-  assert.equal(fake.calls.filter(x=>x.method==='POST').length,3);
-  assert.equal(fake.calls.filter(x=>x.method==='PATCH').length,1);
-  assert.ok(fake.calls.every(x=>!x.url.includes('/git/ref/heads/main')));
-  assert.equal(fake.calls.find(x=>x.url.endsWith('/actions/workflows/free-cpu-scenes.yml')).authorized,false);
-  assert.ok(fake.calls.filter(x=>x.method==='POST'||x.method==='PATCH').every(x=>x.authorized));
-  assert.equal(fake.calls.find(x=>x.method==='PATCH').force,false);
-  assert.ok(fake.calls.some(x=>x.method==='GET'&&x.url.includes('/git/ref/heads/')));
-  assert.ok(fake.calls.some(x=>x.method==='PATCH'&&x.url.includes('/git/refs/heads/')));
-  assert.equal(fake.head,'e'.repeat(40));
-  // A retry with the same exact source/claim must reuse its old candidate.
-  const replay=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),
-    fake.fetchImpl,env,{authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
+test('legacy claims, wrong nonce preimages, expired claims and alternate destinations fail before any network',async()=>{
+  const claim=syntheticClaim();
+  for(const change of [c=>{c.version=1;},c=>{c.nonce='z'.repeat(43);},
+    c=>{c.expires_at='2000-01-01T00:00:00Z';},c=>{c.path='content/articles.json';},
+    c=>{c.branch='main';},c=>{c.file_id_sha256=sha(file.file_id);},
+    c=>{c.claim_commit_sha=c.expected_head_sha;}]){
+    const c={...claim};change(c);const f=githubFixture(claim);
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim:c}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);assert.equal(f.calls.length,0);
+  }
+});
+
+test('the real current article snapshot is read without base64 truncation and bound to the canonical fingerprint',async()=>{
+  assert.ok(realArticles.length>500*1024&&realArticles.length<4*1024*1024);
+  const claim=syntheticClaim(),f=githubFixture(claim);
+  const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+  assert.equal(x.result.isError,false,JSON.stringify(x.result.content));
+  assert.ok(f.calls.some(c=>c.url===f.articlesUrl&&!c.authorized));
+  assert.ok(f.calls.some(c=>c.url.endsWith('/git/trees/main?recursive=1')));
+  assert.ok(archiveEntries.some(e=>e.path.includes('/photo-issue-')),'gallery JPEGs exist outside the article manifest');
+  for(const articleBytes of [Buffer.from(JSON.stringify(articles.map(a=>a.slug===claim.slug?{...a,title:'Changed body direction'}:a))),
+    Buffer.from('[]'),Buffer.alloc(4*1024*1024+1,32)]){
+    const changed=githubFixture(claim,{articleBytes});
+    const fail=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),changed.fetchImpl,env));
+    assert.equal(fail.result.isError,true);assert.equal(mutations(changed).length,0);
+  }
+});
+
+test('private repo, inactive workflow, unsafe source parent, and immutable-claim mismatch cannot write',async()=>{
+  const claim=syntheticClaim();
+  for(const options of [{private:true},{off:true},{wrongParent:true},
+    {immutableRecord:{...githubFixture(claim).record,nonce_sha256:'0'.repeat(64)}}]){
+    const f=githubFixture(claim,options);
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);assert.equal(mutations(f).length,0);
+  }
+});
+
+test('archive cap includes gallery JPEGs and rejects truncated, malformed or oversized inventories',async()=>{
+  const claim=syntheticClaim();
+  const base={sha:'1'.repeat(40),truncated:false,tree:archiveEntries};
+  const sample=archiveEntries.find(row=>row.path.endsWith('.jpg'));
+  const huge={path:'assets/generated/photo-issue-extra.jpg',type:'blob',mode:'100644',size:1536*1024*1024};
+  for(const archive of [{...base,tree:[...archiveEntries,huge]}, {...base,truncated:true},
+    {...base,tree:[{...huge,size:-1}]},{...base,tree:[{...huge,mode:'120000'}]},
+    {...base,tree:[sample,sample]}, {...base,padding:'x'.repeat(2*1024*1024)}]){
+    const f=githubFixture(claim,{archive});
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);
+    assert.equal(mutations(f).length,0);
+  }
+});
+
+test('stops and concurrent branch changes are checked before blob writes and before the atomic ref update',async()=>{
+  const claim=syntheticClaim();
+  for(const options of [{stopOnWorkflowCall:2},{stopOnWorkflowCall:3},{moveOnFreshRef:true},{patchConflict:true}]){
+    const f=githubFixture(claim,options);
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);assert.equal(f.storedFiles.size,0);
+    if(options.stopOnWorkflowCall===2)assert.equal(mutations(f).length,0);
+    else assert.equal(f.calls.filter(c=>c.method==='PATCH').length,options.patchConflict?1:0);
+  }
+});
+
+test('claim expiry during a live guard read stops before blobs or before the atomic ref update',async()=>{
+  const original=Date.now;let clock=original();
+  try{
+    Date.now=()=>clock;
+    for(const expireOn of [2,3]){
+      clock=original();const claim=syntheticClaim();
+      const f=githubFixture(claim,{onWorkflow:n=>{if(n===expireOn)clock=Date.parse(claim.expires_at)+1;}});
+      const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+      assert.equal(safeError(x),'expired_claim');assert.equal(f.storedFiles.size,0);
+      assert.equal(f.calls.filter(c=>c.method==='PATCH').length,0);
+      if(expireOn===2)assert.equal(mutations(f).length,0);
+    }
+  }finally{Date.now=original;}
+});
+
+test('a fresh transport file ID and URL reuse only the same approved bytes without rewriting the first receipt',async()=>{
+  const claim=syntheticClaim(),f=githubFixture(claim);
+  const first=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+  assert.equal(first.result.isError,false);
+  const savedReceipt=Buffer.from(f.storedFiles.get(f.receiptPath)),writes=mutations(f).length;
+  const reuploaded={...file,file_id:'file-freshTransport987',download_url:freshSource};
+  const replay=await data(await send(bodyFor('stage_candidate_jpeg',{file:reuploaded,claim}),f.fetchImpl,env));
   assert.equal(replay.result.structuredContent.status,'reused');
-  assert.equal(fake.calls.filter(x=>x.method==='PATCH').length,1);
+  assert.equal(replay.result.structuredContent.file_id_sha256,sha(file.file_id),'retain original successful transport');
+  assert.deepEqual(f.storedFiles.get(f.receiptPath),savedReceipt);assert.equal(mutations(f).length,writes);
+  const changed=Buffer.from(bytes);changed[changed.length-3]^=1;f.options.imageBytes=changed;
+  const mismatch=await data(await send(bodyFor('stage_candidate_jpeg',{file:reuploaded,claim}),f.fetchImpl,env));
+  assert.equal(safeError(mismatch),'claim_mismatch');assert.equal(mutations(f).length,writes);
 });
 
-test('concurrent head, inactive image workflow, private repo or limit never write',async()=>{
+test('lost update response recovers the exact atomic JPEG+receipt commit without generation or new writes',async()=>{
+  const claim=syntheticClaim(),f=githubFixture(claim,{losePatchOnce:true});
+  const first=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+  assert.equal(first.result.isError,true);assert.equal(f.head,'e'.repeat(40));assert.equal(f.storedFiles.size,2);
+  const writes=mutations(f).length;
+  const retry=await data(await send(bodyFor('stage_candidate_jpeg',
+    {file:{...file,file_id:'file-newIDAfterFailure',download_url:freshSource},claim}),f.fetchImpl,env));
+  assert.equal(retry.result.structuredContent.status,'reused');assert.equal(mutations(f).length,writes);
+});
+
+test('older partial files, cross-claim replay, modified receipt and non-child branch heads never authorize reuse',async()=>{
   const claim=syntheticClaim();
-  for(const options of [{head:'f'.repeat(40)},{off:true},{private:true},
-    {images:{someHugeImage:{bytes:1536*1024*1024}}}]) {
-    const fake=githubFixture(claim,options);
-    const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),
-      fake.fetchImpl,env,{authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-    assert.equal(result.result.isError,true);
-    assert.equal(fake.calls.filter(x=>x.method==='POST'||x.method==='PATCH').length,0);
+  for(const options of [{existingJpeg:bytes},{existingReceipt:Buffer.from('{}')},
+    {head:'f'.repeat(40)}]){
+    const f=githubFixture(claim,options);
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);assert.equal(mutations(f).length,0);
   }
+  const f=githubFixture(claim);
+  assert.equal((await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env))).result.isError,false);
+  const writes=mutations(f).length;
+  const altered={...claim,expires_at:new Date(Date.now()+6*60*1000).toISOString()};
+  assert.equal((await data(await send(bodyFor('stage_candidate_jpeg',{file,claim:altered}),f.fetchImpl,env))).result.isError,true);
+  f.options.tamperReceipt=true;
+  assert.equal((await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env))).result.isError,true);
+  f.options.tamperReceipt=false;f.options.wrongSavedParent=true;
+  assert.equal((await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env))).result.isError,true);
+  assert.equal(mutations(f).length,writes);
 });
 
-
-test('current 763 KiB source manifest passes separate GitHub Contents and decoder caps',async()=>{
-  assert.ok(realManifest.length>700*1024 && realManifest.length<=1024*1024);
-  assert.equal(JSON.parse(realManifest).version,1);
-  const claim=syntheticClaim(),fake=githubFixture(claim,{manifestBytes:realManifest});
-  const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
-    {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-  assert.equal(result.result.isError,false,JSON.stringify(result.result.content));
-  assert.equal(result.result.structuredContent.status,'saved');
-  assert.ok(fake.calls.some(x=>x.url.includes('/contents/assets/generated/manifest.json?ref=main')));
-  console.log('Real source inventory bytes:',realManifest.length,'(mocked Contents HTTP, not Cloudflare CPU)');
-});
-
-test('oversized manifest and oversized JPEG readbacks fail closed before branch update',async()=>{
+test('GitHub authorization, quota and readback failures never report a stored candidate as verified',async()=>{
   const claim=syntheticClaim();
-  const tooLarge=Buffer.alloc(1024*1024+1,123);
-  const fake=githubFixture(claim,{manifestBytes:tooLarge});
-  const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
-    {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-  assert.equal(result.result.isError,true);
-  assert.equal(fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length,0);
-});
-
-test('replay requires original nonce, expiration, claim commit and exact saved ancestry',async()=>{
-  const claim=syntheticClaim(),fake=githubFixture(claim);
-  const msg=c=>bodyFor('stage_candidate_jpeg',{file,claim:c});
-  const auth={authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY};
-  const first=await data(await send(msg(claim),fake.fetchImpl,env,auth));
-  assert.equal(first.result.structuredContent.status,'saved',JSON.stringify(first.result.content));
-  const writeCount=fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length;
-  const variations=[
-    c=>{c.nonce='z'.repeat(36);c.nonce_sha256=sha(c.nonce);},
-    c=>{c.expires_at=new Date(Date.now()+8*60*1000).toISOString();},
-    c=>{c.claim_commit_sha='8'.repeat(40);},
-  ];
-  for(const mutate of variations){
-    const altered={...claim};mutate(altered);
-    const response=await data(await send(msg(altered),fake.fetchImpl,env,auth));
-    assert.equal(response.result.isError,true,JSON.stringify(altered));
-    assert.notEqual(response.result.structuredContent?.status,'reused');
+  for(const status of [401,403,429]){
+    const f=githubFixture(claim,{failPath:'/git/ref/heads/'+claim.branch,failStatus:status});
+    const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+    assert.equal(x.result.isError,true);assert.equal(mutations(f).length,0);
   }
-  assert.equal(fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length,writeCount);
-});
-
-test('wrong nonce/file hash/expired claim blocks before any GitHub call',async()=>{
-  for(const transform of [c=>(c.nonce='x'.repeat(36)),c=>(c.file_id_sha256='0'.repeat(64)),
-    c=>(c.jpeg_bytes+=1),c=>(c.expires_at='2020-01-01T00:00:00Z'),
-    c=>(c.branch='main')]){
-    const claim=syntheticClaim();transform(claim);
-    const fake=githubFixture(claim);
-    const actual=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
-      {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-    assert.equal(actual.result.isError,true);
-    assert.equal(fake.calls.filter(x=>x.url.startsWith(repo)).length,0);
-  }
+  const f=githubFixture(claim,{corruptReadback:true});
+  const x=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),f.fetchImpl,env));
+  assert.equal(safeError(x),'candidate_readback_failed');
 });

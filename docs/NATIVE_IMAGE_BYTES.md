@@ -194,6 +194,40 @@ Do not emit `read.output`, `payload`, the raw tool result, or base64 with `text`
 
 Save the real JPEG and its generation metadata, including the exact prompt sent to the tool, to the working branch before ending the generating run. Visual acceptance remains a separate decision bound to the current article and image SHA; a saved candidate must not be labelled accepted before inspection. If the original PNG is also needed across runs, retain a retrievable original-file reference and its SHA. On retry, recover this same saved candidate first; a new invocation with the same logical run ID does not authorize another generation. When recovering a historical asset whose tool prompt was not retained, preserve the recorded scene instructions with their actual source and state that the exact tool input is unavailable; never relabel those instructions as an observed verbatim prompt.
 
+## ChatGPT fileParams: prepared JPEG candidate only
+
+The separate `/api/image-candidate/mcp` endpoint can receive an already prepared 1200×675 JPEG up to 700 KiB. It does not generate, convert, retain an original PNG, approve a photograph or publish it. Existing native-image provenance and current-article visual-review rules remain required. A successful transfer is not a replacement for the original PNG/C2PA record.
+
+After deployment, refresh the existing plugin's tool definitions: version-2 staging requires `claim.version` and no longer accepts `claim.file_id_sha256`. Old cached claim schemas fail closed rather than being reinterpreted.
+
+Use `probe_candidate_jpeg` with the absolute file path available in the **current** execution. The adapter supplies the documented file object; do not pass a raw file ID, a fabricated download URL or another worker's local path. A verified result includes the actual JPEG SHA/bytes and an `upload_ticket`: version 2, a cryptographically random 32-byte nonce, its SHA-256, a 12-character branch suffix and a 15-minute expiry. The nonce is intentionally returned privately to the caller; never copy the whole ticket into GitHub, public output, logs or a receipt.
+
+After the owner enables storage, an existing GitHub writer creates the following public claim on a new branch from the reviewed working commit. It uses `native-image-candidate/<slug>/<article SHA first 16>-<ticket.branch_suffix>` and writes only `maintenance/image-upload-claims/<slug>/claim.json`:
+
+```json
+{
+  "version": 2,
+  "repository": "RollNuts/mihassei-news",
+  "slug": "<actual slug>",
+  "article_sha256": "<actual article fingerprint>",
+  "branch": "<the exact candidate branch>",
+  "expected_head_sha": "<the reviewed working commit>",
+  "path": "maintenance/native-image-candidates/<slug>/candidate.jpg",
+  "jpeg_sha256": "<probe sha256>",
+  "jpeg_bytes": 0,
+  "nonce_sha256": "<ticket nonce_sha256>",
+  "expires_at": "<ticket expires_at>"
+}
+```
+
+Replace every placeholder and `jpeg_bytes` with the observed values. The public claim contains the nonce **hash only**. Pass those claim fields except `repository`, plus the create-file result's `claim_commit_sha` and the private ticket `nonce`, to `stage_candidate_jpeg` with the actual JPEG file path. Version-1 claims are rejected; a new version does not relabel an old candidate or its provenance. File IDs may change on upload, so authorization binds the exact JPEG SHA and size. The actual first transport ID hash is retained as receipt metadata.
+
+The server checks the live owner-written branch claim without credentials before any token-bearing GitHub request or file download. It then checks the immutable claim, one-parent working-commit ancestry, the canonical article fingerprint in that exact working commit, the fixed public repository, live image-workflow state and the current main generated-JPEG inventory. New articles and reviewed drafts need not already be on main. Later adoption must still match the **current article SHA** and undergo the ordinary visual review; this endpoint never updates main, generation fingerprints, seeds or acceptance records.
+
+JPEG and `upload-receipt.json` become visible together in one non-forced candidate-branch update. The receipt says `awaiting_visual_review`, records the truthful transport facts and contains no nonce, download URL or raw file ID. A retry uses the same claim and can reuse only the same JPEG plus matching receipt and ancestry, preserving the first receipt even if the transient file ID changed. Stops, expiry, archive limits and concurrent changes are rechecked before the branch update. Missing, conflicting or partial records stop recovery; they are not permission to overwrite or regenerate. After expiry, inspect the recorded GitHub branch/commit with the existing reader rather than issuing another claim to replace it.
+
+Storage is **OFF** unless the owner separately approves a new repository-limited credential, stores it only as Worker Secret `IMAGE_CANDIDATE_GITHUB_WRITE_TOKEN`, and explicitly sets `IMAGE_CANDIDATE_WRITE_ENABLED=true`. The selected repository is only `RollNuts/mihassei-news`, with Contents read/write and mandatory Metadata read, a finite owner-approved expiry (90 days is the proposed maximum), and no Actions write, Workflows write or Administration permission. The Auth None connection uses the per-upload claim capability; it requires no global caller key. No credential is issued or enabled by deploying this code. Mock test results do not prove live storage, deployment CPU usage or later publication; test those separately after authorization without generating another image.
+
 ## Provenance output
 
 `receipt` is null when there is no C2PA chunk. When present, extraction follows PNG caBX → C2PA manifest store → final manifest → its direct claim → claim `instanceID`. It never substitutes an ingredient ID, the manifest URI, a guessed filename, or a newly made UUID. Missing or ambiguous current identifiers and malformed structures raise errors.
