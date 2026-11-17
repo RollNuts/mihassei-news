@@ -166,6 +166,63 @@ test('the published fileParams schema lists four fields; only two are required',
   assert.equal(x.result.tools[1].annotations.readOnlyHint,false);
 });
 
+test('initialization advertises the breaking version-2 tool contract without fetching',async()=>{
+  const f=fileFetcher();
+  const x=await data(await send({jsonrpc:'2.0',id:2,method:'initialize',params:{
+    protocolVersion:'2025-11-25',capabilities:{},clientInfo:{name:'fixture',version:'1'}
+  }},f.fn));
+  assert.equal(x.result.serverInfo.version,'2.0.0');
+  assert.equal(f.calls.length,0);
+});
+
+test('opaque file IDs and advisory MIME/name metadata do not override real JPEG validation',async()=>{
+  const opaque={...file,file_id:'asset:opaque/id + 日本語',mime_type:'image/png',file_name:'provided-image-without-extension'};
+  const f=fileFetcher();
+  const x=await data(await send(bodyFor('probe_candidate_jpeg',{file:opaque}),f.fn));
+  assert.equal(x.result.isError,false,JSON.stringify(x.result.content));
+  assert.equal(x.result.structuredContent.sha256,sha(bytes));
+  assert.equal(x.result.structuredContent.file_id_sha256,sha(opaque.file_id));
+  assert.equal(f.calls.length,1);
+  assert.doesNotMatch(JSON.stringify(x),/asset:opaque|日本語|provided-image-without-extension|image\/png/);
+  for(const response of [new Response(bytes,{headers:{'content-type':'image/png'}}),
+    new Response(Buffer.alloc(128,1),{headers:{'content-type':'image/jpeg'}})]){
+    const bad=await data(await send(bodyFor('probe_candidate_jpeg',{file:opaque}),()=>response));
+    assert.equal(bad.result.isError,true,'metadata must never authorize invalid HTTP MIME or JPEG bytes');
+  }
+});
+
+test('invalid references return only bounded diagnostic enums, never raw input values',async()=>{
+  const missing=key=>Object.fromEntries(Object.entries(file).filter(([k])=>k!==key));
+  const cases=[
+    [missing('download_url'),'missing','download_url'],[missing('file_id'),'missing','file_id'],
+    [{...file,file_id:42},'type','file_id'],[{...file,file_id:''},'length','file_id'],
+    [{...file,file_id:'x'.repeat(1025)},'length','file_id'],
+    [{...file,file_id:'DONTLEAK\u0000opaque'},'control_character','file_id'],
+    [{...file,download_url:42},'type','download_url'],[{...file,download_url:''},'length','download_url'],
+    [{...file,download_url:'DONTLEAK'.repeat(600)},'length','download_url'],
+    [{...file,download_url:'DONTLEAK-not-a-url'},'invalid_url','download_url'],
+    [{...file,download_url:source+'\nDONTLEAK'},'control_character','download_url'],
+    [{...file,mime_type:42},'type','mime_type'],[{...file,mime_type:'x'.repeat(256)},'length','mime_type'],
+    [{...file,file_name:42},'type','file_name'],[{...file,file_name:'x'.repeat(513)},'length','file_name'],
+    [{...file,file_name:'DONTLEAK\nname'},'control_character','file_name'],
+    [{...file,DONTLEAK_UNKNOWN_FIELD:'DONTLEAK-value'},'unsupported_fields','file']
+  ];
+  for(const [supplied,reason,field] of cases){
+    const f=fileFetcher();
+    const x=await data(await send(bodyFor('probe_candidate_jpeg',{file:supplied}),f.fn));
+    assert.equal(x.result.isError,true);
+    assert.deepEqual(JSON.parse(x.result.content[0].text),{
+      error:'invalid_file_reference',file_reference_diagnostic:{reason,field}});
+    assert.equal(f.calls.length,0);
+    assert.doesNotMatch(JSON.stringify(x),/DONTLEAK|sig=|file-abcDEF123|https?:/);
+  }
+  const claim=syntheticClaim(),f=githubFixture(claim);
+  const staged=await data(await send(bodyFor('stage_candidate_jpeg',
+    {file:{...file,file_id:'DONTLEAK\u0000opaque'},claim}),f.fetchImpl,env));
+  assert.deepEqual(JSON.parse(staged.result.content[0].text),{error:'invalid_file_reference'});
+  assert.equal(mutations(f).length,0);
+});
+
 test('real, already-approved 1200x675 JPEG passes file delivery probe without GitHub',async()=>{
   assert.ok(bytes.length>1000&&bytes.length<700*1024,'a real small JPEG is needed');
   const f=fileFetcher();
@@ -328,10 +385,13 @@ test('unrelated errors and malformed file values never echo file references',asy
     throw new Error('private request failed: '+source);
   }));
   assert.deepEqual(JSON.parse(upstream.result.content[0].text),{error:'unavailable'});
-  for(const bad of ['file-abcDEF123',null,{...file,file_id:'bad'}]){
+  for(const bad of ['file-abcDEF123',null,{...file,file_id:7}]){
     const x=await data(await send(bodyFor('probe_candidate_jpeg',{file:bad}),f.fn));
     assert.equal(x.result.isError,true);
-    assert.equal(JSON.parse(x.result.content[0].text).file_reference_diagnostic,undefined);
+    const diagnostic=JSON.parse(x.result.content[0].text).file_reference_diagnostic;
+    if(bad&&typeof bad==='object')assert.deepEqual(diagnostic,{reason:'type',field:'file_id'});
+    else assert.equal(diagnostic,undefined);
+    assert.doesNotMatch(JSON.stringify(x),/file-abcDEF123|sig=|https?:/);
   }
   assert.doesNotMatch(JSON.stringify(upstream),/private|sig=|file-abcDEF123/);
 });
