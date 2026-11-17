@@ -195,6 +195,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-16T21:45:14.738258+00:00"
+    },
+    "ai-night-standby-not-free-time": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+      "image_sha256": "b8cf150188803a807f1d9830361b17f5d3709ab2b948d690f32ce0d8126d2a6b",
+      "sha256": "acceae5c7a1522a76aa9e6acf497ce7678c24472059b44c3768e7bd0db7a4585",
+      "bytes": 110445,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-17T21:19:03.098636+00:00"
     }
   }
 }

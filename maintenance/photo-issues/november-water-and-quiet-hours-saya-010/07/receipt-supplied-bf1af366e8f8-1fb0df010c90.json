@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "07",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "47d4837d-68f6-4efa-bedd-c8cc211be41f",
+    "image_number": 1,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "ad170dd4-eaed-498f-a43f-283cbe9c70af",
+    "observed_output_series": "historical",
+    "original_filename": "Contemplative Autumn Garden Moment.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "bf1af366e8f8919e4772cac1a709586819b2922b102c9e554f1a869347941210",
+    "bytes": 2769831,
+    "width": 1024,
+    "height": 1536,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/07/source-bf1af366e8f8919e4772cac1a709586819b2922b102c9e554f1a869347941210.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-07.jpg",
+    "sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b",
+    "bytes": 378662,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

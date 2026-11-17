@@ -8504,6 +8504,409 @@
       "generation_holds": {},
       "cover_cut_id": "05",
       "published_at": "2026-11-17T02:43:44.152Z"
+    },
+    {
+      "slug": "november-water-and-quiet-hours-saya-010",
+      "number": 10,
+      "title": "凪野さや、11月の水辺と静かな時間",
+      "summary": "紅葉が見える温かなプールから、庭、カフェ、夕食へ。凪野さやが、寄り道の多い11月の一日を綴ります。",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "屋内プール、庭、カフェ、レストランと宿の部屋",
+        "aspect_ratio": "original",
+        "visual_direction": "窓越しの紅葉、温かな水辺、夜の灯りを縦横の写真でつなぐ。"
+      },
+      "column": [
+        "11月の水辺って、外は寒いのに、室内はぽかぽかしていて不思議です。少し泳ぐつもりが、水の中を歩いたり、縁に座って足を揺らしたり。窓の向こうの紅葉がきれいで、つい長居してしまいました。",
+        "帰りに庭で拾った赤い葉っぱを、本の間にはさんでみました。カフェでも続きを読もうと思ったのに、隣の席から聞こえた楽しそうな話が気になって。気づいたら同じページを三回読んでいました。",
+        "夕食では、おいしかった料理を隣の人にも少しおすそ分け。部屋に戻って着替えたら、今度こそ静かに読書するつもりです。でも、さっきのお菓子も気になるな。"
+      ],
+      "model_id": "nagino-saya",
+      "model_snapshot": {
+        "id": "nagino-saya",
+        "name": "凪野さや",
+        "age": 27,
+        "fictional": true,
+        "appearance": "短い暗色のボブと軽い前髪を基本に、撮影に応じたヘアアレンジも用いる。基準画像と同じ顔立ちと自然な成人の体型を維持する。",
+        "character": {
+          "version": 1,
+          "first_person": "私",
+          "occupation": "体験ロケ担当レポーター兼ファッションモデル",
+          "casting_specialty": "現地ロケで遊びや衣服の変化を体験し、人とのやり取りを伝える。",
+          "personality": "少しマイペースで、人とのやり取りを楽しむ。",
+          "voice": "柔らかな短い文。体験から話し、最後に小さな本音を置く。",
+          "likes": [
+            "水辺",
+            "服の組合せ",
+            "手触りのある遊び"
+          ],
+          "weakness": "帰り際の誘いに弱く、つい寄り道する。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-nagino-saya-c3552d3b1fad.jpg",
+          "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+          "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+          "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 164,
+          "bust_cm": 91,
+          "waist_cm": 61,
+          "hip_cm": 91,
+          "shoulder_width_cm": 37,
+          "inseam_cm": 76,
+          "heads_tall": 7.3
+        },
+        "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+        "face_reference": {
+          "path": "assets/generated/photo-face-nagino-saya-5061e180b75b.jpg",
+          "sha256": "5061e180b75bfbe50db1c2067fb84dfeda32ac9baec5a79640454660bf60e87a",
+          "source_png_sha256": "d7aa670f4c8f9d23055e65a288bca74e42fcb967d0edec585593ef524f7977fb"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-master-nagino-saya-c3552d3b1fad.jpg",
+          "sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+          "source_png_sha256": "17b054cc0006397c6408791d21fd53e2c7fc969b26e8dd37d706a9fee2408a95",
+          "provenance": "assets/generated/manifest.json#indoor-beach-friends-exchange-ripples"
+        }
+      },
+      "source_article": null,
+      "shots": [
+        {
+          "id": "01",
+          "description": "緑のビキニで、紅葉を望む屋内プールの縁を歩く。",
+          "caption": "窓いっぱいの紅葉。",
+          "alt": "凪野さや。緑のビキニで、紅葉を望む屋内プールの縁を歩く。"
+        },
+        {
+          "id": "02",
+          "description": "黒のビキニでスパの石段に腰掛け、窓の方へ顔を向ける。",
+          "caption": "水面の向こうに窓の光。",
+          "alt": "凪野さや。黒のビキニでスパの石段に腰掛け、窓の方へ顔を向ける。"
+        },
+        {
+          "id": "03",
+          "description": "赤茶色のビキニで屋内プールに入り、両手で水をすくう。",
+          "caption": "両手からこぼれる水。",
+          "alt": "凪野さや。赤茶色のビキニで屋内プールに入り、両手で水をすくう。"
+        },
+        {
+          "id": "04",
+          "description": "白い下着と薄い羽織を着て、部屋の鏡の前で髪を整える。",
+          "caption": "部屋に戻り、鏡の前で。",
+          "alt": "凪野さや。白い下着と薄い羽織を着て、部屋の鏡の前で髪を整える。"
+        },
+        {
+          "id": "05",
+          "description": "茶色の上着を着て、雪が見えるカフェの窓際で本を開く。",
+          "caption": "窓際で、さっきの続き。",
+          "alt": "凪野さや。茶色の上着を着て、雪が見えるカフェの窓際で本を開く。"
+        },
+        {
+          "id": "06",
+          "description": "紺の服で、トングを使って料理を小皿に取り分ける。",
+          "caption": "おいしいものを、もう一皿。",
+          "alt": "凪野さや。紺の服で、トングを使って料理を小皿に取り分ける。"
+        },
+        {
+          "id": "07",
+          "description": "白いニットで庭にしゃがみ、赤いもみじの葉を手に取る。",
+          "caption": "本にはさむ一枚を見つけた。",
+          "alt": "凪野さや。白いニットで庭にしゃがみ、赤いもみじの葉を手に取る。"
+        },
+        {
+          "id": "08",
+          "description": "花柄のパジャマに着替え、部屋で本を手にする。",
+          "caption": "今度こそ、静かに読書。",
+          "alt": "凪野さや。花柄のパジャマに着替え、部屋で本を手にする。"
+        },
+        {
+          "id": "09",
+          "description": "緑のドレスで、窓越しに街の明かりが見える食卓で笑う。",
+          "caption": "夜景の見える食卓で。",
+          "alt": "凪野さや。緑のドレスで、窓越しに街の明かりが見える食卓で笑う。"
+        },
+        {
+          "id": "10",
+          "description": "紺のワンピース水着に白いシャツを羽織り、プールの縁で足を水に入れる。",
+          "caption": "プールの縁で、もう少し。",
+          "alt": "凪野さや。紺のワンピース水着に白いシャツを羽織り、プールの縁で足を水に入れる。"
+        }
+      ],
+      "swimwear_exception": {
+        "kind": "reduced_swimwear",
+        "reason": "水着は全10枚中4枚（01・02・03・10）。屋内プールとスパでの動きや休息に続き、庭の落ち葉、カフェの読書、夕食の取り分け、部屋での着替えと読書を本人コラムに沿って描く企画のため。04は下着と羽織で、水着に含めない。"
+      },
+      "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+      "state": "published",
+      "images": {
+        "01": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-01.jpg",
+          "sha256": "eb85b575311327cd8d5b5b807ed034409e8ee71730e5a855608f7f41fd1f701e",
+          "bytes": 320152,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "e91612b08fd2d87f0d9b36ed9d5e9f57e378cb7eb0843e83c28561ee8d2f2fdc",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/01/receipt-supplied-e91612b08fd2-eb85b5753113.json",
+            "receipt_sha256": "e0aac6888942e8d5ee5f39b879818907bc5a6cd8fcd55b83e05a5b65a9266727",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "eb85b575311327cd8d5b5b807ed034409e8ee71730e5a855608f7f41fd1f701e",
+            "cut_id": "01",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "前髪と頬の輪郭が顔参照とつながり、歩幅と濡れた床の反射が自然。"
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-02.jpg",
+          "sha256": "026376c7ab28205040b978908e21564264c3764564ed6808e7a80d4cc3d8c14f",
+          "bytes": 207767,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "07fb2dd1e6c6328e6341ac032123b44c9dac3a30ec13a2822e1c1a331baf8d63",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/02/receipt-supplied-07fb2dd1e6c6-026376c7ab28.json",
+            "receipt_sha256": "b5ce47baa091cede9936e6decc3119409aa3067bcf231aec80a3a3a2d7e43244",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "026376c7ab28205040b978908e21564264c3764564ed6808e7a80d4cc3d8c14f",
+            "cut_id": "02",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "profile",
+            "swimwear_visible": true,
+            "note": "横顔の鼻筋と顎、短いボブが参照と連続し、腕と水面の接触が自然。"
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-03.jpg",
+          "sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a",
+          "bytes": 283367,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "37bf4d54a98a24832ef6f3307dad2a1a0d0d44086f89f477bfef3881924d19a7",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/03/receipt-supplied-37bf4d54a98a-4f84c197aade.json",
+            "receipt_sha256": "496b7718a7f42a5c6b5c6f0bf1f889c3aadb8e0dea1e59b734fdfff6644c73f2",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a",
+            "cut_id": "03",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "wide",
+            "swimwear_visible": true,
+            "note": "笑顔の目元が参照とつながり、手元の水しぶきと周囲の波紋が動作に合う。"
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-04.jpg",
+          "sha256": "5ddab8a484480db05be04167d56fa5fb59358637c8484b3b908aee3932910053",
+          "bytes": 176714,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "a1fa9cbbc249ac20708bd0bd7f0f8c8f0c1427e0f663b241cf75fbd8b75535a5",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/04/receipt-supplied-a1fa9cbbc249-5ddab8a48448.json",
+            "receipt_sha256": "354bfd9b60dfe740929e1b7b0073f9ea4be5e65dd0940e4d104879a1a9a2976f",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "5ddab8a484480db05be04167d56fa5fb59358637c8484b3b908aee3932910053",
+            "cut_id": "04",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "full_body",
+            "swimwear_visible": false,
+            "note": "鏡像の髪と袖の位置に大きな破綻がなく、全身の比率は参照の範囲。衣装は下着と羽織。"
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-05.jpg",
+          "sha256": "6bf38d8d89f4ed72a1907cabda30b30e98594a9c8a2fd652ea51e5e2bf25d639",
+          "bytes": 238509,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "293c37f3b21d5ef0310d62c5981d5eda03f2e5620467a7667c4340d683248010",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/05/receipt-supplied-293c37f3b21d-6bf38d8d89f4.json",
+            "receipt_sha256": "5a429c8810835caefe62c23581cd473fb794b482794016840df262f9d10b73f5",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "6bf38d8d89f4ed72a1907cabda30b30e98594a9c8a2fd652ea51e5e2bf25d639",
+            "cut_id": "05",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "upper_body",
+            "swimwear_visible": false,
+            "note": "振り向いた顔の目元と顎が参照と連続し、本を支える手と窓の冷たい光が自然。"
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-06.jpg",
+          "sha256": "2f368cd24ac5a3be4ae3c5e7c9d24dc4a3a6206500bbfe20795d0f374afa0033",
+          "bytes": 209073,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "7e3d2455c00391728206b2d69cdff03e7fdafb5d1474e66af192db7faef9550d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/06/receipt-supplied-7e3d2455c003-2f368cd24ac5.json",
+            "receipt_sha256": "7fdf2666846d2a748fa93585c3eeb4d7e1f2cd8fdab8f5045b690bf29db21042",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "2f368cd24ac5a3be4ae3c5e7c9d24dc4a3a6206500bbfe20795d0f374afa0033",
+            "cut_id": "06",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "upper_body",
+            "swimwear_visible": false,
+            "note": "伏せた目元と笑顔が参照とつながり、トングと皿の位置が取り分ける動きに合う。"
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-07.jpg",
+          "sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b",
+          "bytes": 378662,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "bf1af366e8f8919e4772cac1a709586819b2922b102c9e554f1a869347941210",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/07/receipt-supplied-bf1af366e8f8-1fb0df010c90.json",
+            "receipt_sha256": "a582388a7af17a6e668d011ec97fff2824cd297ae21c11af3d430589c0b4a136",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b",
+            "cut_id": "07",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "three_quarter",
+            "swimwear_visible": false,
+            "note": "短いボブと伏せた横顔が参照と連続し、指でつまんだ葉が光を通す。"
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-08.jpg",
+          "sha256": "b4f52ae4b794f13639c0d02e186eb8e4ae4e2295692135a2534f6f3134735719",
+          "bytes": 259623,
+          "width": 900,
+          "height": 1200,
+          "source_sha256": "09ba41442ed5e3fecd21553052761571aa48b4a48b9f7a369cb33e6a9b4d40f1",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/08/receipt-supplied-09ba41442ed5-b4f52ae4b794.json",
+            "receipt_sha256": "c34ca701922a254e64d211383175d753626ba18eda0bf392f2f0c16f4658b6d5",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "b4f52ae4b794f13639c0d02e186eb8e4ae4e2295692135a2534f6f3134735719",
+            "cut_id": "08",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "three_quarter",
+            "swimwear_visible": false,
+            "note": "目元と口元が参照とつながり、鏡に映る本の厚みや袖の布地が自然。"
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-09.jpg",
+          "sha256": "eaec9ea808601033289773116b681cb7f3ed0a2e30cbb4da7b2fcc57fdbe9df1",
+          "bytes": 225962,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "8c184999d7f98985fda3dd65ec619b3350998acb34dfbe714755c003f67eaad8",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/09/receipt-supplied-8c184999d7f9-eaec9ea80860.json",
+            "receipt_sha256": "9ea1c03db2e2a3eac04f1c7d1823002175cc16d4fdffb5d94d8e0c8cb0d35468",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "eaec9ea808601033289773116b681cb7f3ed0a2e30cbb4da7b2fcc57fdbe9df1",
+            "cut_id": "09",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "upper_body",
+            "swimwear_visible": false,
+            "note": "笑った横顔とボブが参照と連続し、手を口元に添える仕草と食卓の照明が自然。"
+          }
+        },
+        "10": {
+          "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-10.jpg",
+          "sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1",
+          "bytes": 271294,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "c71001d14b5287e551f607ab5c89c6b352420ca4d490fe6c85f9aea0abc28589",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/10/receipt-supplied-c71001d14b52-7a4edf6f36d3.json",
+            "receipt_sha256": "956638be3802106684c0bb5aa0bae113005c9008bf17050e40135fc2d7e20e39",
+            "target_design_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "2e21c5dd964f37f45a21d127196cede5e40605d8b0b9c8129a0db68f3fca91d9",
+            "image_sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1",
+            "cut_id": "10",
+            "master_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+            "body_profile_sha256": "df4376ccb80db81b1a2659f40f7126ff4e93b1d9e210728528acd4642e1fb3d4",
+            "reviewed_at": "2026-11-18T07:51:08+09:00",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "見上げる横顔と肩の輪郭が参照に沿い、水中の足に屈折と波紋が見える。"
+          }
+        }
+      },
+      "cover_cut_id": "01",
+      "published_at": "2026-11-18T07:53:15.811251+09:00"
     }
   ]
 }

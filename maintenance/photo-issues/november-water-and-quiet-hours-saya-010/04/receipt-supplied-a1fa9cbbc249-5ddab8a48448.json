@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "04",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "064ecc91-b742-4a98-b2e6-96034bdc11d5",
+    "image_number": 4,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "bbcac437-3e14-4860-bc99-aaaa2e03cd1c",
+    "observed_output_series": "latest",
+    "original_filename": "鏡に映る淡い光の部屋.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "a1fa9cbbc249ac20708bd0bd7f0f8c8f0c1427e0f663b241cf75fbd8b75535a5",
+    "bytes": 1808042,
+    "width": 1024,
+    "height": 1536,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/04/source-a1fa9cbbc249ac20708bd0bd7f0f8c8f0c1427e0f663b241cf75fbd8b75535a5.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-04.jpg",
+    "sha256": "5ddab8a484480db05be04167d56fa5fb59358637c8484b3b908aee3932910053",
+    "bytes": 176714,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

@@ -1228,6 +1228,210 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   "result-wrapped generic NOT_FOUND is not mistaken for exact missing-ref evidence");
   assert(ambiguousWrapped.writes().length === 0, "ambiguous wrapped missing-ref errors remain fail-closed without writes");
 
+  // Compact checkpoints contain references/hashes, with a fresh original-file
+  // reader on every cold invocation instead of any cross-cell byte store.
+  async function compactContext(run, faults) {
+    const context = await boundedContext(run, faults);
+    context.probeRef = "/synthetic-existing/" + run + "-transport.png";
+    context.originalRef = "/synthetic-existing/" + run + "-original.png";
+    context.originalBytes = fourMiBPng;
+    context.refsRead = [];
+    context.compactMax = {reserveExternalGenerationStep: 0, stageReservedStep: 0};
+    return context;
+  }
+  function compactInput(context, metadata) {
+    return {...restored(metadata), async readBytes(reference) {
+      context.stepCounters.reads++;context.refsRead.push(reference);
+      demand(reference === context.probeRef || reference === context.originalRef,
+        "compact reads must use the actual provided original/probe reference");
+      return {image_url: "data:image/png;base64," + runtime.toBase64(
+        reference === context.probeRef ? pngBytes : context.originalBytes)};
+    }};
+  }
+  function compactReservationOptions(context) {
+    return {compact: true, probeSource: context.probeRef, probeSourceRef: context.probeRef,
+      expectedProbeSha256: runtime.sha256(pngBytes), route: "synthetic original-file read to bounded fake GitHub"};
+  }
+  function checkCompactCheckpoint(context, method, checkpoint) {
+    assert(checkpoint.version === 2 && plainJSON(checkpoint), "compact checkpoint is version two with only JSON values");
+    const text = JSON.stringify(checkpoint), size = runtime.utf8(text).length;
+    context.compactMax[method] = Math.max(context.compactMax[method], size);
+    assert(size <= 50 * 1024, "compact checkpoint stays within 50 KiB (actual " + size + " bytes)");
+    assert(!/data:image\//i.test(text) && !text.includes(pngBase64.slice(0, 80)) &&
+      !text.includes(boundedJpeg.base64.slice(0, 80)) && !text.includes("A".repeat(128)),
+    "compact checkpoint contains no PNG/JPEG data URL or base64 image payload");
+    assert(JSON.stringify(restored(checkpoint)) === text, "compact checkpoint serializes without callbacks or typed arrays");
+  }
+  async function compactCall(context, method, metadata, checkpoint) {
+    const service = stageAPI.create({runtime: context.measuredRuntime, github: context.mock.github, repository});
+    const beforeCalls = context.mock.calls.length, beforeReads = context.stepCounters.reads;
+    let result;
+    try {
+      result = await service[method](context.plan, compactInput(context, metadata),
+        checkpoint === undefined ? undefined : restored(checkpoint));
+      if (result.status === "pending") checkCompactCheckpoint(context, method, result.checkpoint);
+      return result;
+    } catch (error) {
+      if (error.checkpoint) checkCompactCheckpoint(context, method, error.checkpoint);
+      throw error;
+    } finally {
+      const calls = context.mock.calls.slice(beforeCalls), toolCalls = calls.length + context.stepCounters.reads - beforeReads;
+      const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
+      assert(toolCalls <= 15 && mutations <= 2,
+        "compact cold step respects 15 actual callbacks and two mutations (actual " + toolCalls + "/" + mutations + ")");
+      if (result) assert(result.tool_calls === toolCalls && result.mutations === mutations,
+        "compact counters include actual connector and original-file rehydration callbacks");
+    }
+  }
+  async function compactDrive(context, method, firstInput, checkpoint) {
+    let previous;
+    for (let step = 0; step < 256; step++) {
+      const metadata = step === 0 && checkpoint === undefined ? firstInput :
+        method === "reserveExternalGenerationStep" ? compactReservationOptions(context) :
+          {compact: true, originalSourceRef: context.originalRef};
+      const result = await compactCall(context, method, metadata, checkpoint);
+      if (result.status !== "pending") {
+        assert(result.status === "reserved" || result.status === "saved", "compact steps finish with verified reservation or candidate");
+        return {result, checkpoint};
+      }
+      const serialized = JSON.stringify(result.checkpoint);
+      assert(serialized !== previous, "compact step advances its restored metadata checkpoint");
+      previous = serialized;checkpoint = restored(result.checkpoint);
+    }
+    assert(false, "compact operation finishes within 256 explicit invocations");
+  }
+  const compact = await compactContext("compact-four-MiB");
+  const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
+  assert(compactReserved.result.status === "reserved" && !compact.mock.branches.has(compact.branch),
+    "compact reservation tests synthetic transport without saving an article candidate");
+  await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact),
+    compactReserved.checkpoint), "compact final-claim replay cannot regain generation permission");
+  const compactFirstTime = new Date().toISOString();
+  const compactStageInput = {compact: true, originalSourceRef: compact.originalRef,
+    imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(fourMiBPng)}, observedAt: compactFirstTime,
+    transportPreflight: compactReserved.result.transportPreflight, generationClaim: compactReserved.result.generationClaim};
+  const compactFirst = await compactCall(compact, "stageReservedStep", compactStageInput);
+  const compactCaptured = await compactCall(compact, "stageReservedStep", {compact: true, originalSourceRef: compact.originalRef},
+    compactFirst.checkpoint);
+  assert(compactCaptured.status === "pending" && !!compactCaptured.checkpoint.sourceSha,
+    "compact stage pins the original PNG hash before candidate writes");
+  for (const [label, metadata] of [
+    ["original reference", {compact: true, originalSourceRef: compact.originalRef + "-changed"}],
+    ["first observation time", {compact: true, originalSourceRef: compact.originalRef,
+      observedAt: new Date(Date.parse(compactFirstTime) + 1000).toISOString()}]
+  ]) {
+    const calls = compact.mock.calls.length, reads = compact.stepCounters.reads;
+    await failure(() => compactCall(compact, "stageReservedStep", metadata, compactCaptured.checkpoint),
+      "compact retry rejects a changed " + label);
+    assert(compact.mock.calls.length === calls && compact.stepCounters.reads === reads,
+      "changed compact " + label + " is rejected before connector or original-file reads");
+  }
+  const beforeChangedCompactSource = compact.mock.writes().length;
+  compact.originalBytes = pngBytes;
+  await failure(() => compactDrive(compact, "stageReservedStep", {}, compactCaptured.checkpoint),
+    "compact rehydration rejects changed original PNG bytes");
+  assert(compact.mock.writes().length === beforeChangedCompactSource, "changed compact original SHA is rejected before writes");
+  compact.originalBytes = fourMiBPng;
+  const originalCompactRuntime = compact.measuredRuntime;
+  compact.measuredRuntime = {...boundedRuntime, convert(input) {
+    const converted = boundedRuntime.convert(input), bytes = converted.bytes.slice();bytes[bytes.length - 1] ^= 1;
+    return {...converted, bytes, base64: runtime.toBase64(bytes), sha256: runtime.sha256(bytes)};
+  }};
+  await failure(() => compactDrive(compact, "stageReservedStep", {}, compactCaptured.checkpoint),
+    "compact rehydration rejects a JPEG differing from its pinned conversion SHA");
+  assert(compact.mock.writes().length === beforeChangedCompactSource, "changed compact JPEG correspondence is rejected before writes");
+  compact.measuredRuntime = originalCompactRuntime;
+  const compactSaved = (await compactDrive(compact, "stageReservedStep", {}, compactCaptured.checkpoint)).result;
+  const compactParts = compactSaved.receipt.source.parts.map(part => compact.mock.resolve(compact.branch).get(part.path).bytes);
+  assert(compactSaved.status === "saved" && compactSaved.receipt.source.parts.length === 8 &&
+    equalBytes(concat.apply(null, compactParts), fourMiBPng) && compactSaved.receipt.generation.observed_at === compactFirstTime,
+    "compact cold JSON resumes preserve exactly 4 MiB of original PNG and its first time across eight parts");
+  assert(compact.refsRead.includes(compact.probeRef) && compact.refsRead.includes(compact.originalRef) &&
+    compact.stepCounters.generated === 0, "compact resumes reread provided file references without generating or cross-cell bytes");
+  for (const [method, maximum] of Object.entries(compact.compactMax))
+    assert(maximum > 0 && maximum <= 50 * 1024, "compact " + method + " checkpoint maximum: " + maximum + " bytes");
+  protectedUnchanged(compact, "compact four-MiB stage");
+  const immutableService = stageAPI.create({runtime: compact.measuredRuntime, github: compact.mock.github, repository});
+  const immutableImages = await immutableService.load(compact.plan, compactSaved.commitSha);
+  assert(immutableImages.receipt_sha256 === compactSaved.receipt_sha256 &&
+    runtime.sha256(runtime.fromBase64(immutableImages.sourcePngDataUrl)) === runtime.sha256(fourMiBPng),
+    "separate visual loading reads the verified immutable candidate commit and exact original bytes");
+  const beforeInvalidLoad = compact.mock.calls.length;
+  await failure(() => immutableService.load(compact.plan, "https://untrusted.invalid/image"),
+    "immutable visual loader rejects a URL as a candidate ref");
+  assert(compact.mock.calls.length === beforeInvalidLoad, "invalid visual ref is rejected before connector calls");
+  const writesBeforeCompactCap = compact.mock.writes().length;
+  compact.originalBytes = concat(fourMiBPng, new Uint8Array([0]));
+  await failure(() => compactDrive(compact, "stageReservedStep", {...compactStageInput,
+    imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(compact.originalBytes)}}),
+  "compact original PNG larger than 4 MiB is rejected");
+  assert(compact.mock.writes().length === writesBeforeCompactCap, "compact source cap rejects before writes even with a saved identity");
+  const compactLost = await compactContext("compact-lost-claim", {claimLostResponse: true});
+  const compactLostError = await failure(() => compactDrive(compactLost, "reserveExternalGenerationStep",
+    compactReservationOptions(compactLost)), "lost compact claim response cannot grant generation permission");
+  assert(compactLost.mock.branches.has(claimBranchPrefix + compactLost.plan.identity) &&
+    !compactLost.mock.branches.has(compactLost.branch), "lost compact claim stays create-only and unconfirmed");
+  await failure(() => compactCall(compactLost, "reserveExternalGenerationStep", compactReservationOptions(compactLost),
+    compactLostError.checkpoint), "lost compact claim checkpoint cannot be replayed into permission");
+
+  // Match the connector's observed primitive-string Contents error narrowly.
+  const thrownRefPrefix = "NOT_FOUND: Error code: NOT_FOUND; Error: GitHub API error 404: ";
+  const thrownRefBody = ref => ({message: "No commit found for the ref " + ref,
+    documentation_url: "https://docs.github.com/v3/repos/contents/", status: "404"});
+  const thrownRefString = (ref, change) => thrownRefPrefix + JSON.stringify({...thrownRefBody(ref), ...change});
+  const thrownMissing = await compactContext("thrown-exact-missing-ref"), normalizedRefs = new Set();
+  const originalThrownFetch = thrownMissing.mock.github.fetch_file;
+  thrownMissing.mock.github.fetch_file = async args => {
+    const response = await originalThrownFetch(args), body = response.structuredContent;
+    if (body?.error_code === "NOT_FOUND" && body.error_data?.message === "No commit found for the ref " + args.ref) {
+      normalizedRefs.add(args.ref);throw thrownRefString(args.ref);
+    }
+    return response;
+  };
+  const thrownLookup = await compactCall(thrownMissing, "reserveExternalGenerationStep", compactReservationOptions(thrownMissing));
+  assert(thrownLookup.status === "pending" && thrownLookup.phase === "capture" && thrownMissing.mock.writes().length === 0,
+    "exact thrown Contents missing-ref string establishes candidate absence in bounded lookup without writes");
+  const thrownReserved = await compactDrive(thrownMissing, "reserveExternalGenerationStep", {}, thrownLookup.checkpoint);
+  assert(thrownReserved.result.status === "reserved" &&
+    [thrownMissing.branch, preflightBranch, claimBranchPrefix + thrownMissing.plan.identity].every(ref => normalizedRefs.has(ref)) &&
+    thrownMissing.stepCounters.generated === 0 && !thrownMissing.mock.branches.has(thrownMissing.branch),
+    "exact thrown candidate, preflight and claim misses support bounded reservation while preserving callback budgets and no generation");
+
+  for (const [label, makeThrown] of [
+    ["another ref", ref => thrownRefString(ref + "-other")],
+    ["missing file", ref => thrownRefString(ref, {message: "Not Found"})],
+    ["authentication failure", () => 'UNAUTHORIZED: Error code: UNAUTHORIZED; Error: GitHub API error 401: {"message":"Bad credentials","status":"401"}'],
+    ["rate limit", () => 'RATE_LIMITED: Error code: RATE_LIMITED; Error: GitHub API error 403: {"message":"API rate limit exceeded","status":"403"}'],
+    ["network failure", () => "TypeError: fetch failed"],
+    ["malformed JSON", ref => thrownRefPrefix + JSON.stringify(thrownRefBody(ref)).slice(0, -1)],
+    ["wrong status", ref => thrownRefString(ref, {status: "403"})],
+    ["numeric status", ref => thrownRefString(ref, {status: 404})],
+    ["wrong documentation URL", ref => thrownRefString(ref, {documentation_url: "https://docs.github.com/rest/repos/contents"})],
+    ["unexpected JSON key", ref => thrownRefString(ref, {retryable: true})],
+    ["missing JSON key", ref => {
+      const body = thrownRefBody(ref);delete body.documentation_url;return thrownRefPrefix + JSON.stringify(body);
+    }],
+    ["wrong prefix", ref => "NOT_FOUND: " + JSON.stringify(thrownRefBody(ref))],
+    ["trailing response text", ref => thrownRefString(ref) + " trailing"],
+    ["Error object instead of primitive string", ref => Error(thrownRefString(ref))]
+  ]) {
+    const context = await compactContext("thrown-reject-" + label), fetchFile = context.mock.github.fetch_file;
+    const thrown = makeThrown(context.plan.branch);
+    context.mock.github.fetch_file = async args => { await fetchFile(args);throw thrown; };
+    const error = await failure(() => compactCall(context, "reserveExternalGenerationStep", compactReservationOptions(context)),
+      "bounded lookup rejects thrown " + label);
+    assert(error.message === (thrown instanceof Error ? thrown.message : thrown) && context.mock.writes().length === 0 &&
+      context.stepCounters.generated === 0, "unrecognized thrown " + label + " retains the original failure and cannot authorize writes");
+  }
+  const wrongCallback = await compactContext("thrown-other-callback"), originalCloudFetch = wrongCallback.mock.github.fetch;
+  const otherCallbackError = thrownRefString(wrongCallback.plan.branch);
+  wrongCallback.mock.github.fetch = async args => { await originalCloudFetch(args);throw otherCallbackError; };
+  const wrongCallbackService = stageAPI.create({runtime: wrongCallback.measuredRuntime, github: wrongCallback.mock.github, repository});
+  const otherError = await failure(() => wrongCallbackService.cloudStatus(),
+    "an identical thrown string from a non-Contents callback is not normalized as missing-ref evidence");
+  assert(otherError.message.includes(otherCallbackError) && wrongCallback.mock.writes().length === 0,
+    "non-fetch_file thrown errors preserve their original message and fail before writes");
+
   return {passed: checks.length, checks};
 };
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageStageTests;

@@ -1,5 +1,72 @@
 [
   {
+    "slug": "food-donation-cold-record-one-box-rejected",
+    "category": "暮らし",
+    "flash": "寄附した豆腐、１箱は返却",
+    "fiction_company": "架空の食品店と地域食堂",
+    "art": "cards",
+    "fiction_at": "2031-11-18T08:14:30+09:00",
+    "published_at": "2026-11-18T08:14:30+09:00",
+    "publication_slot": "2026-11-18T07:30:00+09:00",
+    "title": "「食品ロスゼロ」の寄附、食堂は豆腐1箱を返した　温度履歴をつなぐ2031年の仕組み",
+    "summary": "2031年、食品店が売れ残った未開封の豆腐を保管温度の記録ごと地域食堂へ渡す寄附方式を始めた。店は「全量を寄附する」と告知したが、地域食堂の調理担当は途中の記録がない豆腐1箱を返し、確認できた5箱で昼食を作った。店長は宣伝を改め、冷蔵庫の記録方法も見直す。",
+    "paragraphs": [
+      "2031年11月18日朝、地域食堂の57歳の調理担当が、前夜の食品店から届いた未開封の豆腐6箱のうち、1箱だけを調理台から下ろした。箱の保管温度の記録が途中で途切れていたためだ。店頭には「売れ残りは全量寄附」と書かれていたが、食堂は残りの5箱だけを使い、昼の豆腐あんかけを用意することにした。",
+      "町で始まった新しい寄附方式では、商品ごとの保管温度と時刻、期限、原材料の情報を、店から冷蔵運搬を担う人、受け取る食堂へ引き継げる。店の棚を出た後の記録も受取側で読めるため、食品を寄附する善意だけでなく、その間どう扱われたかを確認できる。ただし、画面が「安全」と判定してくれるわけではない。商品状態と期限を最後に確かめ、使うかどうか決めるのは調理する人だ。",
+      "前夜、46歳の店長は期限内の豆腐をまず値引き棚に並べた。閉店まで売れなかった6箱を捨てる代わりに食堂へ渡すと決め、冷蔵運搬と記録の費用は店が持つことにした。食品ロスを減らしたいだけでなく、全量寄附の張り紙も客への約束になっていた。一方、食堂には、値引きして売るか廃棄するかという店の都合より、食べる人に安全な料理を出す責任がある。",
+      "朝の受入れで、調理担当は期限と包装、店から運搬中までの温度履歴を点検した。5箱は記録が続いていたが、1箱は店の冷蔵庫にあった時間の一部が確認できない。記録の空白は危険だった証拠ではないが、安全だったと確かめる材料も足りない。調理担当は「無料だから使う」とは決めず、その1箱を提供対象から外し、店へ返した。",
+      "調理場では予定していた大根の煮物に豆腐を合わせ、野菜のあんをかけた14食分の主菜へ献立を変えた。皿に盛り付ける人の横で、別の担当者が受け取った5箱と返した1箱を記録する。寄附は食堂の食材費を減らす一方、何がいつ届くか毎日一定ではない。調理担当は使える食材に合わせて献立を替え、足りない分は普段どおり買うことにした。",
+      "返却を受けた店長は、張り紙の「全量」を外した。翌日からは閉店前に店員が冷蔵庫の記録を確認し、運搬費を負担できない日には従来どおり値引き販売を続ける。返却された1箱は店が状態を確認して処分することになった。昼、食堂には大根と豆腐のあんかけが14皿並んだ。皿だけでは、前夜にどの豆腐が値引き棚にいたのか分からない。食品店が「全部届ける」と宣伝した日に、食堂が守ったのは、届いたものを全部使わない自由だった。"
+    ],
+    "source": {
+      "kind": "食品寄附ガイドラインに関する消費者庁の一次発表",
+      "publisher": "消費者庁",
+      "published_at": "2026-11-12T00:00:00+09:00",
+      "url": "https://www.caa.go.jp/notice/entry/047968/",
+      "topic": "消費者庁は2026年11月12日、2024年12月25日策定の食品寄附ガイドラインについて、食品寄附者・フードパントリー・こども食堂・地方公共団体向けの説明会開催を案内した。2031年の温度履歴を受け渡す仕組み、食品店と地域食堂、豆腐の検品・返却・調理、架空の参加者や件数は創作。2026年にその仕組みが始まったという意味ではない。"
+    },
+    "scene_prompt": "Photorealistic documentary Japanese community kitchen on a cool November morning in 2031. A fictional 57-year-old adult Japanese cook in a practical apron sets one sealed box of packaged tofu aside while checking a small temperature-log handheld device; several other unopened tofu packages and fresh daikon radishes are on the stainless work counter, another adult kitchen worker preparing a tray nearby. Natural window light, understated genuine newsroom photography, realistic skin, fabric and food textures, no legible words, no brand, no logo, no real persons, horizontal 16:9.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "食品寄附",
+      "食品ロス",
+      "地域食堂"
+    ],
+    "satire_tags": [
+      "善意と安全",
+      "見せかけの達成"
+    ],
+    "x_tags": [
+      "食品ロス",
+      "食品寄附"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "食品ロスゼロを宣言した店の豆腐。2031年、食堂はそのうち1箱を使わず返した。寄附した数と、安全に食べられる数は同じではない。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "original_satire",
+    "editorial_form": "satire",
+    "editorial_tone": "observational",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "2026年11月12日、消費者庁は食品寄附ガイドラインの説明会開催を案内した",
+      "target": "食品店と地域食堂の間で寄附食品の保管温度と時刻、期限の履歴を引き継ぐ架空の2031年の仕組み",
+      "action": "食堂の調理担当が記録の途切れた豆腐1箱を断り、確認できた5箱で14食分の主菜を作る",
+      "outcome": "14皿を提供し、店は「全量寄附」の表示を外して冷蔵庫の記録確認を見直す"
+    },
+    "reader_clarity": {
+      "who": "地域食堂",
+      "action": "豆腐1箱を返し、確認できた5箱で昼食を作る",
+      "oddity": "食品店が「全量寄附」と宣伝しても、温度履歴がない豆腐は地域食堂が使わない"
+    },
+    "behavior_basis": {
+      "motive": "店は食品ロスを減らして寄附の実績を知らせたい。食堂は食べる人への安全責任を優先したい",
+      "ordinary_alternative": "店は残品を値引きして売り、売れ残れば廃棄する。食堂は予定どおり食材を仕入れる",
+      "why_not": "確認できた寄附食品なら献立に利用できるが、温度履歴が途切れた箱を無理に使う必要はない。記録を引き継いで受取判断を行う",
+      "evidence_quote": "食堂は残りの5箱だけを使い、昼の豆腐あんかけを用意することにした。"
+    },
+    "body": ""
+  },
+  {
     "slug": "ai-night-standby-not-free-time",
     "category": "社会",
     "flash": "AIが夜勤、待つ人は休み？",
@@ -27,6 +94,7 @@
     },
     "scene_prompt": "Photorealistic documentary photograph inside an ordinary Japanese building management office on a November evening, a fictional 52-year-old Japanese maintenance worker handing a company emergency phone to the next adult on-call colleague at a small desk, coats and simple maintenance tools in the background, slightly tired but relieved faces, realistic skin and clothing, overhead practical lighting, no text, no logos, no real people, horizontal 16:9.",
     "visual_strategy": "cpu-photo",
+    "broadcast_feature": true,
     "tags": [
       "AI",
       "夜間待機",

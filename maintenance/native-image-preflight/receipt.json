@@ -3,11 +3,11 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0",
-  "logical_run_id": "gpt-image-recovery-20261117-ai-night-standby",
-  "observed_at": "2026-11-17T17:24:42.487Z",
-  "route": "read_candidate_png actual local PNG to code-mode bytes",
-  "probe_source_ref": "local:validated-138-byte-offline-png",
+  "candidate_identity": "ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
+  "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
+  "observed_at": "2026-11-17T23:40:04.174Z",
+  "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
+  "probe_source_ref": "/mnt/data/mihassei-offline-probe.png",
   "source": {
     "sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
     "bytes": 138
@@ -17,11 +17,11 @@
     "bytes": 92351
   },
   "baseline": {
-    "commit_sha": "a0e44026a4c70ae423685524b691071aa0430b1f",
+    "commit_sha": "e1ba82ef867f547039c766e20ed8c2c6c50e21d1",
     "protected_hashes": {
-      "content/articles.json": "33f42b57a32eb50fc37937be8da66f1e4c4ab14465e295aa61481204f7274c5e",
-      "assets/generated/manifest.json": "da80f58d865aacb7a713e1226c7c35f151c2b6fdbf8c1ee6038409a3a5766b26",
-      "content/visual_reviews.json": "c6505cae106954fd90e4ed03efa4b1604d4297cb51543afbc911acc66eb385bb"
+      "content/articles.json": "11f5006639df278d749152a0b74140cb11f94489869d5769badd0124d1edc165",
+      "assets/generated/manifest.json": "f54c6ead78dfddbb01ef2b7d8e2b62d5dd2cc25ee7d034691b763ad976542231",
+      "content/visual_reviews.json": "6fbe8d97306f0845a23d0f33c29287cfd5173fb6c785326833f6c82ef940253c"
     }
   }
 }

@@ -714,6 +714,179 @@
       "source_article_sha256": "a20a83cc948345603e155d29f0b797f58d2d47ecbe7cde47d74dd344bb17db11",
       "source_png_sha256": "48247c297e62ed45bcc1520a4d6d8918414e46d06ad7fe61ee1e6f50c1102b06"
     },
+    "ai-night-standby-not-free-time": {
+      "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+      "bytes": 130003,
+      "generated_at": "2026-11-17T17:31:27.067270288Z",
+      "generation_id": "8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "Photorealistic documentary photograph inside an ordinary Japanese building management office on a November evening, a fictional 52-year-old Japanese maintenance worker handing a company emergency phone to the next adult on-call colleague at a small desk, coats and simple maintenance tools in the background, slightly tired but relieved faces, realistic skin and clothing, overhead practical lighting, no text, no logos, no real people, horizontal 16:9.",
+      "generation_prompt_source": "Scene prompt from the unchanged article and exact reserved plan; actual backend-expanded prompt and job ID were not exposed by top-level ImageGen.",
+      "generation_receipt": "xmp:iid:8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "b8cf150188803a807f1d9830361b17f5d3709ab2b948d690f32ce0d8126d2a6b",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:4c35703b-4499-4331-8462-61ed0edafdd6",
+        "instanceID": "xmp:iid:8ec09fb2-8c86-4d52-9925-a6191a4f1732",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              181,
+              99,
+              176,
+              211,
+              73,
+              147,
+              59,
+              176,
+              82,
+              65,
+              219,
+              139,
+              181,
+              141,
+              152,
+              121,
+              27,
+              93,
+              4,
+              90,
+              230,
+              178,
+              100,
+              157,
+              255,
+              214,
+              2,
+              162,
+              190,
+              45,
+              168,
+              164
+            ]
+          },
+          "specVersion": "2.2.0",
+          "org.contentauth.c2pa_rs": "0.79.2"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-17T17:31:27.067270288Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-17T17:31:27.067273228Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-17T17:31:27.065294482Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "/mnt/data/a_realistic_indoor_office_workroom_scene_two_midd.png",
+        "bytes": 2111323,
+        "caBX_sha256": "77a8c5449a9bbf7cc8cebe2507cdc1153c1e27996345e4ab10e71cb64569cc88",
+        "candidate_branch": "native-image-candidate/ai-night-standby-not-free-time/5c087e5a26d95eff-c9332033aa94",
+        "candidate_commit": "ad987b9dd0e3b142b18f6c33772f05c67d3f973f",
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0",
+          "receipt_path": "maintenance/native-image-generation-claims/8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0.json",
+          "receipt_sha256": "87efef777d2571bee62dac3f4c38aeda196059ebaf31c7a5178d088313aefaec",
+          "commit_sha": "ce4e07cf57eade665d8d1cd55ebe7ca6ca561e94"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "gpt-image-recovery-20261117-ai-night-standby",
+        "method": "One compact v2 preflight and fresh create-only claim, one top-level Native ImageGen call, and verified source PNG/JPEG candidate with immutable readback.",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/source.png.part000",
+            "bytes": 524288,
+            "sha256": "216f670a6da53b5784588beefb7c23baaa8df99f75879e1283c3540ef8dff201",
+            "blob_sha": "aac5d229b4c69f93899e41bb560d9569821d6175"
+          },
+          {
+            "path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/source.png.part001",
+            "bytes": 524288,
+            "sha256": "64f3a0c342c722347f1efbef89d0acecd55ba39c09e32cd5d2018ac9ecbc9430",
+            "blob_sha": "0f0d5189890e3d5204577fbe2e8e5b7cd010f7ef"
+          },
+          {
+            "path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/source.png.part002",
+            "bytes": 524288,
+            "sha256": "fdcee494b412721d24efc303b21de4449c8a7fef1882e3cc4f7ce013a53ea299",
+            "blob_sha": "33c101110f307c56098cc2e57faa54daf4fc5a0d"
+          },
+          {
+            "path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/source.png.part003",
+            "bytes": 524288,
+            "sha256": "44da0869627bc637117f9ebcf032e89219de523e354aef75925e07b565a0d24b",
+            "blob_sha": "ae7d3093bc1c796445294dd4777ad975570f04a3"
+          },
+          {
+            "path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/source.png.part004",
+            "bytes": 14171,
+            "sha256": "c2320934a6ccc7f99b0610158d78ca4a3e05f690f27d813263bef8c5b47bc6d0",
+            "blob_sha": "27673959bf771c42001f501c8343e17d79b938b1"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/ai-night-standby-not-free-time/receipt.json",
+        "receipt_sha256": "4d1d607c37638d63e5fde25ae3801b186cb50a58460adb4bf4b448865e69de5e",
+        "storage": "github_candidate_branch_raw_png_parts_and_jpeg",
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "5745751a91fcb6477ac308d4d98459de18c44f70a3a18348f6a0c631c53bda41",
+          "observed_at": "2026-11-17T17:24:42.487Z",
+          "route": "read_candidate_png actual local PNG to code-mode bytes",
+          "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+          "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+          "commit_sha": "8a53f7e417d2a924c846dafae1a91acd4edfb947"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "48494ada54a2673612a7867d412678ff03629b051c91734d70cd349991d14d35",
+      "tool_execution": {
+        "execution_id": "17384c81-be13-48d2-af64-090aca41be16",
+        "execution_id_source": "Native ImageGen tool response ID; not a backend generation/job ID.",
+        "tool": "image_gen.text2im",
+        "vendor_generation_id": null,
+        "vendor_model_version": null,
+        "vendor_seed": null
+      },
+      "transform": {
+        "height": 675,
+        "quality": 84,
+        "resize": "center-cover bilinear, alpha composited on white",
+        "script": "scripts/native_image_bytes.js",
+        "width": 1200
+      }
+    },
     "ai-purchasing-agent-fake-order-real-signature": {
       "article_sha256": "3c7c8a9c163455b373099f2af8b10f89219dc82dd6c12faa14401a5d162a44cc",
       "bytes": 156468,
