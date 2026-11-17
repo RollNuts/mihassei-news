@@ -59,7 +59,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("review", result[0])
 
     def test_default_loader_validates_current_published_catalog(self):
-        result = stories.load_photo_stories(ROOT, now=NOW)
+        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         self.assertEqual(len(result), 8)
         self.assertEqual(result[0]["modelId"], "nagino-saya")
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
@@ -92,7 +92,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual(len(self.validate()), 2)
 
     def test_home_timeline_has_seven_readable_posts_and_source_bound_video(self):
-        result = stories.load_photo_stories(ROOT, now=NOW)
+        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         page = stories.render_photo_timeline(result)
         parser = Tags(); parser.feed(page)
         self.assertEqual(sum(tag == "article" for tag, _ in parser.tags), 7)
@@ -116,7 +116,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("assets/photo-story-clips", page)
 
     def test_timeline_shows_three_recent_posts_and_keeps_four_in_native_details(self):
-        result = stories.load_photo_stories(ROOT, now=NOW)
+        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         page = stories.render_photo_timeline(result)
         visible, earlier = page.split('<details class="photo-post-archive">', 1)
         before, after = Tags(), Tags()
@@ -194,7 +194,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn('舞台：2031年11月', profile)
 
     def test_person_timeline_keeps_reviewed_motion_still_fallback_and_modal_history(self):
-        result = stories.load_photo_stories(ROOT, now=NOW)
+        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         post = next(post for post in result if "motion" in post)
         own = [item for item in result if item["modelId"] == post["modelId"]]
         profile = stories.render_model_stories(post["modelId"], result)
@@ -215,7 +215,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn('data-story-dialog', profile)
 
     def test_story_rings_expose_actual_local_post_time_and_accessible_context(self):
-        result = stories.load_photo_stories(ROOT, now=NOW)
+        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
         markup = stories.render_story_strip(result)
         parser = Tags(); parser.feed(markup)
         links = [attrs for tag, attrs in parser.tags if tag == "a" and "data-story-open" in attrs]
