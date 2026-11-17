@@ -10,9 +10,10 @@ from xml.etree import ElementTree as ET
 from scripts.market_bulletins import (
     KEY, SLOTS, load_market_bulletins, market_bulletin_feed_xml,
     observation_window, render_market_bulletin, render_market_bulletins_index, render_market_freshness,
+    render_market_bulletins_archive,
 )
-from scripts.market_outlooks import load_market_outlooks
-from scripts.serials import render_series_page
+from scripts.market_outlooks import load_market_outlooks, render_market_outlook_archive
+from scripts.serials import render_series_page, render_serials_feature, render_serials_index
 from tests.test_market_outlooks import original, review
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,13 +96,95 @@ class MarketFreshnessTests(unittest.TestCase):
         report = self.reports[-1]
         before = copy.deepcopy(report)
         page = render_series_page(self.market, passthrough, bulletins=[report])
-        self.assertIn("最終公開", page)
+        self.assertIn("最新の市況 ／ 寄り付き前", page)
         self.assertIn('datetime="' + report["published_at"] + '"', page)
         self.assertIn("2026-11-16 08:31", page)
         self.assertIn("2026-11-13 16:59", page)
         self.assertIn("2026-11-13 17:00", page)
-        self.assertLess(page.index("観測値"), page.index('id="market-focus"'))
+        lead = page.split('id="market-focus"', 1)[1].split('</section>', 1)[0]
+        self.assertLess(lead.index("2026-11-16 08:31"), lead.index('<h2'))
+        self.assertLess(lead.index('class="market-paper-dek"'), lead.index("観測値"))
+        masthead = page.split('class="market-paper-masthead"', 1)[1].split('</header>', 1)[0]
+        self.assertNotIn("観測値", masthead)
+        self.assertNotIn("最終公開", page)
         self.assertEqual(report, before)
+
+    def test_close_update_is_prominent_without_labelling_previous_card_latest(self):
+        report = copy.deepcopy(next(x for x in self.reports if x["slot"] == "close"))
+        report.update(day="2026-11-17", slug="2026-11-17-close",
+                      published_at="2026-11-17T16:17:14+09:00")
+        previous = dict(report, slot="noon", slug="2026-11-17-noon",
+                        published_at="2026-11-17T13:02:24+09:00")
+        before = copy.deepcopy([previous, report])
+        page = render_series_page(self.market, passthrough, bulletins=[previous, report])
+        lead = page.split('id="market-focus"', 1)[1].split('</section>', 1)[0]
+        self.assertIn('class="market-latest-update"', lead)
+        self.assertIn("最新の市況 ／ 引け後", lead)
+        self.assertIn('<time datetime="2026-11-17T16:17:14+09:00">2026-11-17 16:17</time> JST 公開', lead)
+        self.assertEqual(page.count('datetime="2026-11-17T16:17:14+09:00"'), 1)
+        self.assertNotIn("2031", lead)
+        self.assertNotIn("15:50", lead)
+        self.assertIn('href="/serials/market-lab/briefings/2026-11-17-close/"', lead)
+        recent = page.split('id="market-desk"', 1)[1].split('</section>', 1)[0]
+        self.assertIn("2026-11-17 13:02", recent)
+        self.assertNotIn('class="market-latest-label"', recent)
+        self.assertEqual([previous, report], before)
+
+    def test_full_bulletin_archive_marks_only_the_actual_latest_phase(self):
+        early = copy.deepcopy(self.reports[-1])
+        late = dict(early, slot="close", slug="2026-11-16-close",
+                    published_at="2026-11-16T16:17:14+09:00")
+        page = render_market_bulletins_archive([early, late], passthrough)
+        self.assertEqual(page.count('class="market-latest-label"'), 1)
+        latest_card = page.split('<li>', 1)[1].split('</li>', 1)[0]
+        self.assertIn('2026-11-16-close/', latest_card)
+        self.assertIn('>2026-11-16 16:17</time> ／ 引け後', latest_card)
+        self.assertIn('class="market-latest-label"', latest_card)
+
+    def test_home_and_series_cards_lead_with_daily_update_and_keep_company_analysis(self):
+        report = copy.deepcopy(next(x for x in self.reports if x["slot"] == "close"))
+        report.update(day="2026-11-17", slug="2026-11-17-close",
+                      published_at="2026-11-17T16:17:14+09:00")
+        series = copy.deepcopy(self.market)
+        company = series["episodes"][-1]
+        before = copy.deepcopy([series, report])
+        pages = [render_serials_feature([series], bulletins=[report]),
+                 render_serials_index([series], passthrough, bulletins=[report])]
+        for page in pages:
+            with self.subTest(page=page[:40]):
+                self.assertIn("最新の市況 ／ 引け後", page)
+                self.assertIn('>2026-11-17 16:17</time> JST 公開', page)
+                self.assertIn(report["title"], page)
+                self.assertIn('class="serial-link" href="/serials/market-lab/briefings/2026-11-17-close/"', page)
+                self.assertIn('href="/serials/market-lab/' + company["slug"] + '/"', page)
+                self.assertIn(f'企業分析 第{company["number"]}回を読む', page)
+                self.assertNotIn("最新公開：" + company["title"], page)
+                self.assertNotIn("最新の第", page)
+        self.assertEqual([series, report], before)
+
+    def test_older_or_missing_bulletin_does_not_replace_a_newer_company_article(self):
+        report = copy.deepcopy(self.reports[-1])
+        report["day"] = "2026-11-01"
+        for reports in ([], [report]):
+            page = render_serials_feature([self.market], bulletins=reports)
+            self.assertIn("最新公開：" + self.market["episodes"][-1]["title"], page)
+            self.assertNotIn("最新の市況", page)
+
+    def test_outlook_update_uses_latest_record_even_if_it_reviews_an_older_forecast(self):
+        earlier = original()
+        newer = {**earlier, "id": "2026-11-17-topix", "at": "2026-11-17T08:41:38+09:00"}
+        assessment = review(id="2026-11-17-close-01", at="2026-11-17T15:54:30+09:00")
+        events = [earlier, newer, assessment]
+        before = copy.deepcopy(events)
+        page = render_market_outlook_archive(events, passthrough)
+        header = page.split('<header', 1)[1].split('</header>', 1)[0]
+        self.assertIn("予想・結果の最終更新", header)
+        self.assertIn('<time datetime="2026-11-17T15:54:30+09:00">2026年11月17日 15:54</time> JST', header)
+        self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"', header)
+        self.assertNotIn("08:41", header)
+        self.assertNotIn("観測", header)
+        self.assertEqual(events, before)
+        self.assertNotIn("予想・結果の最終更新", render_market_outlook_archive([], passthrough))
 
     def test_four_slots_preserve_old_keys_and_add_open_without_fake_publish_time(self):
         self.assertEqual({k: v[0] for k, v in SLOTS.items()},
