@@ -1176,6 +1176,58 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   assert(corruptedBoundedSource && boundedCorrupt.stepCounters.generated === 0,
     "bounded final verification checks the actual saved source SHA without generating a replacement");
 
+  // The scheduled connector wraps payloads in .result rather than
+  // .structuredContent. Apply that shape to every callback, not just reads.
+  function resultWrappedMock(faults, decorate) {
+    const mock = makeMock(faults), wrappedNames = new Set();
+    for (const [name, callback] of Object.entries(mock.github)) mock.github[name] = async args => {
+      wrappedNames.add(name);
+      const response = await callback(args);
+      const wrapped = {result: response.structuredContent ?? response};
+      return decorate ? decorate(wrapped, name) : wrapped;
+    };
+    return {...mock, wrappedNames};
+  }
+  const wrappedMock = resultWrappedMock();
+  const wrappedService = stageAPI.create({runtime, github: wrappedMock.github, repository});
+  const wrappedArgs = {slug, articleSha256, baseCommitSha, baseTreeSha, prompt, logicalRunId: "result-wrapper-save"};
+  const wrappedPlan = await wrappedService.prepare(wrappedArgs);
+  assert((await wrappedService.probe(wrappedPlan)).status === "absent" && wrappedMock.writes().length === 0,
+    "result-wrapped precise NOT_FOUND still establishes the exact missing candidate ref without writes");
+  const wrappedSaved = await wrappedService.stage(wrappedPlan, {imageGenResult: {image_url: pngDataURL}, observedAt});
+  const wrappedReceipt = wrappedSaved.receipt;
+  assert(wrappedSaved.status === "saved" && wrappedReceipt.source.sha256 === runtime.sha256(pngBytes) &&
+    equalBytes(wrappedMock.resolve(wrappedPlan.branch).get(wrappedReceipt.source.parts[0].path).bytes, pngBytes),
+    "result-wrapped prepare, cloud guards and Git object writes preserve the exact original PNG");
+  assert(["fetch_file", "fetch", "create_blob", "create_tree", "create_commit", "create_branch"]
+    .every(name => wrappedMock.wrappedNames.has(name)),
+  "result-wrapped staging exercises reads, guard fetches and every candidate mutation callback");
+  protectedUnchanged({mock: wrappedMock, branch: wrappedPlan.branch}, "result-wrapped stage");
+
+  for (const [location, field, value] of [
+    ["outer", "isError", true], ["outer", "error_code", "UNAVAILABLE"], ["outer", "error", "Outer wrapper failure"],
+    ["inner", "isError", true], ["inner", "error_code", "UNAVAILABLE"], ["inner", "error", "Inner wrapper failure"]
+  ]) {
+    const errorMock = resultWrappedMock({}, (response, name) => {
+      if (name !== "fetch") return response;
+      if (location === "outer") return {...response, [field]: value};
+      return {result: {...response.result, [field]: value}};
+    });
+    const service = stageAPI.create({runtime, github: errorMock.github, repository});
+    const plan = await service.prepare({...wrappedArgs, logicalRunId: "result-wrapper-" + location + "-" + field});
+    const error = await failure(() => service.stage(plan, {imageGenResult: {image_url: pngDataURL}, observedAt}),
+      "result wrapper rejects " + location + " " + field + " before candidate writes");
+    assert(error.message.includes("Cloud image operations stopped:") && errorMock.writes().length === 0,
+      location + " " + field + " cannot authorize a write through an otherwise valid wrapped guard payload");
+  }
+  const ambiguousWrapped = resultWrappedMock({ambiguous404: true});
+  const ambiguousWrappedService = stageAPI.create({runtime, github: ambiguousWrapped.github, repository});
+  const ambiguousWrappedPlan = await ambiguousWrappedService.prepare({...wrappedArgs, logicalRunId: "result-wrapper-ambiguous-missing"});
+  await failure(() => ambiguousWrappedService.stage(ambiguousWrappedPlan,
+    {imageGenResult: {image_url: pngDataURL}, observedAt}),
+  "result-wrapped generic NOT_FOUND is not mistaken for exact missing-ref evidence");
+  assert(ambiguousWrapped.writes().length === 0, "ambiguous wrapped missing-ref errors remain fail-closed without writes");
+
   return {passed: checks.length, checks};
 };
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageStageTests;

@@ -181,10 +181,13 @@ var NativeImageBytes = (function () {
     return dst;
   }
   async function fetchSources(fetchFile) {
-    const keys=Object.keys(SOURCES),result=await Promise.allSettled(keys.map(key=>{const {sha256,...args}=SOURCES[key];return fetchFile(args);})),sources={};
+    const keys=Object.keys(SOURCES),result=await Promise.allSettled(keys.map(key=>{const {sha256,...args}=SOURCES[key];return fetchFile({...args,encoding:"utf-8"});})),sources={};
     for(let i=0;i<keys.length;i++){
       const r=result[i];if(r.status!=="fulfilled")throw Error("Source fetch failed: "+keys[i]);
-      const s=r.value.structuredContent;if(r.value.isError||s?.encoding!=="utf-8"||typeof s.content!=="string")throw Error("Invalid source response: "+keys[i]);sources[keys[i]]=s.content;
+      const outer=r.value,s=outer?.structuredContent??outer?.result;
+      if(outer?.isError||outer?.error_code||outer?.error||s?.isError||s?.error_code||s?.error
+        ||s?.encoding!=="utf-8"||typeof s.content!=="string")throw Error("Invalid source response: "+keys[i]);
+      sources[keys[i]]=s.content;
     }
     return sources;
   }

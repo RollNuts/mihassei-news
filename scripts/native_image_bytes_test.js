@@ -49,3 +49,33 @@ var NativeImageBytesTests = function (api, sources) {
   return {passed:results.length,checks:results,jpeg_bytes:plain.bytes.length,jpeg_sha256:plain.sha256};
 };
 if(typeof module!=="undefined"&&module.exports)module.exports=NativeImageBytesTests;
+NativeImageBytesTests.fetchSources=async function(api,sources){
+  const checks=[],keys=Object.keys(api.SOURCES);
+  function assert(ok,label){if(!ok)throw Error("FAIL: "+label);checks.push(label);}
+  async function rejects(fn,label){let failed=false;try{await fn();}catch(_){failed=true;}assert(failed,label);}
+  function record(args){
+    const key=keys.find(name=>api.SOURCES[name].repository_full_name===args.repository_full_name
+      &&api.SOURCES[name].path===args.path&&api.SOURCES[name].ref===args.ref);
+    assert(Boolean(key)&&args.encoding==="utf-8"&&!Object.hasOwn(args,"sha256"),"explicit UTF-8 request retains exact source pin");
+    return {encoding:"utf-8",content:sources[key]};
+  }
+  for(const wrapper of ["structuredContent","result"]){
+    const loaded=await api.fetchSources(async args=>({[wrapper]:record(args)}));
+    assert(keys.every(key=>loaded[key]===sources[key]),wrapper+" source bytes preserved exactly");
+    assert(api.initialize(loaded).sha256("abc")==="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      wrapper+" sources retain pin validation and SHA self-test");
+    const changed=await api.fetchSources(async args=>{
+      const source=record(args);return {[wrapper]:{...source,content:source.content+"\n"}};
+    });
+    await rejects(()=>api.initialize(changed),wrapper+" source mutation cannot bypass immutable hashes");
+  }
+  const valid={encoding:"utf-8",content:sources.upng};
+  for(const response of [
+    {isError:true,result:valid},{error_code:"DENIED",result:valid},{error:"outer failure",result:valid},
+    {result:{...valid,isError:true}},{result:{...valid,error_code:"DENIED"}},{result:{...valid,error:"inner failure"}},
+    {result:{...valid,encoding:"base64"}},{result:{encoding:"utf-8",content:42}},
+    {result:null},valid,{content:[{type:"text",text:JSON.stringify(valid)}]}
+  ])await rejects(()=>api.fetchSources(async()=>response),"source wrapper/error/type mismatch fails closed");
+  await rejects(()=>api.fetchSources(async()=>{throw Error("unavailable");}),"rejected source callback fails closed");
+  return {passed:checks.length,checks};
+};
