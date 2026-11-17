@@ -8100,6 +8100,410 @@
         "reason": "11月の街と音楽を主題に、ニット・コート・シャツの未使用原本10枚で構成する。屋外の季節感を守り、プールや水着の場面は付け足さない。"
       },
       "issue_sha256": "8609ee19863baada9b14ebc869a11d68ac8d4c61d6d1d9949c9588efe410c2d9"
+    },
+    {
+      "slug": "november-warm-water-and-riverside-yuki-009",
+      "number": 9,
+      "title": "暖かな水辺から、秋の川沿いへ。",
+      "summary": "白峰ゆきが、水着で過ごす暖かな旅先の海と屋内スパから、紅葉の川沿い、夜の窓辺まで歩く11月の10枚。",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "暖かな旅先の海辺と屋内スパ、紅葉の川沿い、夜の窓辺",
+        "aspect_ratio": "original",
+        "visual_direction": "既存原本10枚の縦横比を保ち、暖かな旅行先の水辺と秋の川辺・室内の温度差を見せる。"
+      },
+      "column": [
+        "川沿いを歩いていたら、指先がすっかり冷たくなりました。",
+        "お茶であたたまったら、もう少し先まで。",
+        "帰るのが遅くなりそうです。"
+      ],
+      "model_id": "shiramine-yuki",
+      "model_snapshot": {
+        "id": "shiramine-yuki",
+        "name": "白峰ゆき",
+        "age": 24,
+        "fictional": true,
+        "appearance": "24歳の架空の成人。柔らかな雰囲気と暗めの長い髪。独自の顔立ち。",
+        "character": {
+          "version": 1,
+          "first_person": "わたし",
+          "occupation": "旅・衣服担当モデル兼リポーター",
+          "casting_specialty": "旅先の居心地や衣服の温度・手触りを、落ち着いて確かめる企画。",
+          "personality": "穏やかで気配り上手。居心地のよさには意外と頑固。",
+          "voice": "ゆっくりした語り口。温度や手触りを身近な言葉で語る。",
+          "likes": [
+            "温かい飲み物",
+            "柔らかな服",
+            "静かな旅"
+          ],
+          "weakness": "気に入った場所を見つけると長居する。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+          "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+          "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+          "provenance": "assets/generated/photo-reference-shiramine-yuki-b5705a94502f.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 167,
+          "bust_cm": 89,
+          "waist_cm": 63,
+          "hip_cm": 92,
+          "shoulder_width_cm": 38,
+          "inseam_cm": 78,
+          "heads_tall": 7.4
+        },
+        "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+        "face_reference": {
+          "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+          "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+          "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-shiramine-yuki-f2ba9bb76565.jpg",
+          "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+          "source_png_sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+          "provenance": "assets/generated/photo-reference-shiramine-yuki-f2ba9bb76565.json"
+        }
+      },
+      "source_article": null,
+      "shots": [
+        {
+          "id": "01",
+          "description": "白いワンピース水着で自然光が入る室内に立つ全身。",
+          "caption": "光の入る部屋から、旅の支度。",
+          "alt": "白いワンピース水着姿で、室内の窓光を受ける白峰ゆき。"
+        },
+        {
+          "id": "02",
+          "description": "白い水着と薄い羽織で、海に面したデッキの手すりに寄りかかる後ろ姿。",
+          "caption": "少し暖かな海の風に、足を止める。",
+          "alt": "暖かな旅先の海沿いデッキで、白い水着と羽織の白峰ゆきが振り返る。"
+        },
+        {
+          "id": "03",
+          "description": "黒いビキニ姿で、屋内スパの石壁に手を置いて立つ全身。",
+          "caption": "温かな室内で、ひと休み。",
+          "alt": "屋内スパの石壁のそばで黒いビキニを着た白峰ゆき。"
+        },
+        {
+          "id": "04",
+          "description": "赤いビキニでプールサイドの椅子に座り、上を見上げる。",
+          "caption": "水辺では、時間の流れが少しゆっくり。",
+          "alt": "赤いビキニ姿で、プールサイドの椅子に腰掛ける白峰ゆき。"
+        },
+        {
+          "id": "05",
+          "description": "緑のビキニにコートを腕に掛け、海辺を歩く。",
+          "caption": "海辺の風を確かめながら。",
+          "alt": "暖かな旅先の海辺を、緑のビキニと羽織りを手に歩く白峰ゆき。"
+        },
+        {
+          "id": "06",
+          "description": "クリーム色の上着で、紅葉の川沿いの道を歩いて振り返る。",
+          "caption": "川の音を聞いて、もう少しだけ。",
+          "alt": "クリーム色の上着と黒いリュックで、紅葉の川沿いを振り返る白峰ゆき。"
+        },
+        {
+          "id": "07",
+          "description": "グレーのドレスで、柔らかな光の中の立ち姿。",
+          "caption": "着替えた後も、少し考える。",
+          "alt": "グレーのドレスで、淡いグレーの壁の前に立つ白峰ゆき。"
+        },
+        {
+          "id": "08",
+          "description": "ざっくりしたグレーのニットで、暖かな部屋のソファに座る。",
+          "caption": "やわらかいニットに、寄り道の続き。",
+          "alt": "グレーのニット姿で、暖かな室内のソファに座る白峰ゆき。"
+        },
+        {
+          "id": "09",
+          "description": "淡いブラウスとスカートで、夜景の見える食卓に立つ。",
+          "caption": "夕食の前に、窓の外を見た。",
+          "alt": "夜景の見える食卓でグラスを持つ白峰ゆき。"
+        },
+        {
+          "id": "10",
+          "description": "夕暮れの窓辺で、白いブラウス姿で飲み物を手に外を見る。",
+          "caption": "窓の外が暗くなるまで。",
+          "alt": "秋の夕暮れの窓辺で白いブラウス姿の白峰ゆきが飲み物を手にする。"
+        }
+      ],
+      "swimwear_exception": {
+        "kind": "reduced_swimwear",
+        "reason": "非重複10原本の水着は5枚（白ワンピース水着1枚、白・黒・赤・緑のビキニ4枚）で、基本6枚に1枚不足。追加のプール写真は白いブランド様マークを実画像で確認したため保留し、ロゴを隠す編集や水着としての水増しをしない。暖かな旅行先の海辺・屋内スパの水着5枚と、紅葉の川沿い・ニット・ドレス・夕暮れの5枚を、同一人物の11月の旅として構成する例外。"
+      },
+      "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+      "state": "published",
+      "images": {
+        "10": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-10.jpg",
+          "sha256": "0c48c0c898332c12b94df01a7629106513d4445644fe7c6b60e2efa6fbd1dcc0",
+          "bytes": 170063,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "3ede6fe264f39cbb4ba2c47da6f09f3ce72ea248dc20689b12443de1a32ee6fd",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/10/receipt-supplied-3ede6fe264f3-0c48c0c89833.json",
+            "receipt_sha256": "6e4a84df2455d89cd95d14a7dbaade3487bcbd4c38a034650280f4a3ee4a359a",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "0c48c0c898332c12b94df01a7629106513d4445644fe7c6b60e2efa6fbd1dcc0",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "10",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": false,
+            "framing": "upper_body",
+            "note": "最終sips JPEGを直接表示。秋の窓辺・夕暮れ・白ブラウス・飲み物・湯気を確認。横顔と奥の暖色照明が自然。飲み物と手の位置が成立。"
+          }
+        },
+        "01": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-01.jpg",
+          "sha256": "5a9a3d0d0101a7d87103562c350df574f3b4ae7e95dfd23792ab0d6e3d6f477f",
+          "bytes": 166630,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "023592d3948e1f4cad355bf64d87e6435c42ff90db2977bcbbb743fdb9c94d69",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/01/receipt-supplied-023592d3948e-5a9a3d0d0101.json",
+            "receipt_sha256": "59796a9ee4fb2bd00e0615af32da36101b8487231d4bf824ade44d1e95453649",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "5a9a3d0d0101a7d87103562c350df574f3b4ae7e95dfd23792ab0d6e3d6f477f",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "01",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "最終sips JPEGを直接表示。白いワンピース水着とタオルを持つ立ち姿、自然光が入る壁・脚・手の輪郭を確認。暗色長髪と顔の雰囲気は本人マスターと概ね整合。水着を明瞭に確認。"
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-02.jpg",
+          "sha256": "5d69fc31719001f483bf85c3a9beee491b80eb82e72876ffa7636c3bc6c84e08",
+          "bytes": 206965,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "437f01feea9f5c4949a5d08a5730a685c3dd4e28df6d851283256bbe049aa71d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/02/receipt-supplied-437f01feea9f-5d69fc317190.json",
+            "receipt_sha256": "5f00e5a794d701378d4a27a1b25a30955f749b149c19640405d9613dc00a09fc",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "5d69fc31719001f483bf85c3a9beee491b80eb82e72876ffa7636c3bc6c84e08",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "02",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "最終sips JPEGを直接表示。海沿いのデッキで白いビキニと透ける白い羽織、背中・脚・手すりを確認。首を横へ向ける横顔で、生成順を推測しない。暖かな旅先の海として配置。"
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-03.jpg",
+          "sha256": "584460e36946eb845cbd21545402816db7a949528c78888a55df540e3cb0a3aa",
+          "bytes": 262119,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "416c7c51c250034075d308fe7154616c5f9facf742d5469f97d43b898681f68b",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/03/receipt-supplied-416c7c51c250-584460e36946.json",
+            "receipt_sha256": "3b95ee34993a7c981ddc4ff8868bb0199691e06e42ccd0d32c43d423b1dd8411",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "584460e36946eb845cbd21545402816db7a949528c78888a55df540e3cb0a3aa",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "03",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "最終sips JPEGを直接表示。黒いビキニ、石壁・水辺・スパ照明、立ち姿の手指と脚を確認。衣装と肌色・陰影は自然。室内スパとして設定が一致。"
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-04.jpg",
+          "sha256": "ef28a00d80aabdd018153ac9deb02e5474058d552da4f26e89326f17efd554ac",
+          "bytes": 275809,
+          "width": 900,
+          "height": 1200,
+          "source_sha256": "65353831961da15e66fbc9e7c1027f56794f014691c58be64c0cf974a7d114b1",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/04/receipt-supplied-65353831961d-ef28a00d80aa.json",
+            "receipt_sha256": "c1b4d14041319fa99a24ecc83313c55eca7dd22461f1cdbb54f3d4632e7f0655",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "ef28a00d80aabdd018153ac9deb02e5474058d552da4f26e89326f17efd554ac",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "04",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "note": "最終sips JPEGを直接表示。赤いビキニの座り姿・上向きの目線・椅子・水のグラスを確認。自然な屋外プール環境と肌質を確認。全身遠景ではなく三四分身の画角。"
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-05.jpg",
+          "sha256": "6a62b6b71b3657ecff3be1746cf45e2ff65ed197c3aaa8ed24b56652bbd6997f",
+          "bytes": 202582,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "6e91db46df8dd8ff265468ab0f3899fc60d197b5b29b27440044b89f2c2020e8",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/05/receipt-supplied-6e91db46df8d-6a62b6b71b36.json",
+            "receipt_sha256": "ba71c86eac3d1c4150862f6a3b0ef147a1695a426b4d3bd301511d5b0b71a5f7",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "6a62b6b71b3657ecff3be1746cf45e2ff65ed197c3aaa8ed24b56652bbd6997f",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "05",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "note": "最終sips JPEGを直接表示。緑のビキニと手にしたコート、浜辺と遠景の山・波を確認。胴体から腿までの引き景で手指や衣服に大きな破綻なし。暖かな旅先の海に限定。"
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-06.jpg",
+          "sha256": "e5d466ee018a36990b432f126bc538d386939988a3961a663714233e57490219",
+          "bytes": 269699,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "7cf11244d0967a3877e24ca76fece76d39eecda1b00c10fc32399b9ee57e6add",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/06/receipt-supplied-7cf11244d096-e5d466ee018a.json",
+            "receipt_sha256": "0c49f5ce568426a213a0f5228115cc192b95c1cf0bc45018bebb34f955a17390",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "e5d466ee018a36990b432f126bc538d386939988a3961a663714233e57490219",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "06",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": false,
+            "framing": "wide",
+            "note": "最終sips JPEGを直接表示。クリーム色の上着と黒いバッグ、川沿いの紅葉、木造建物を確認。本人の近況文章の情景に近いが、近況下書きのphoto_referenceと永久識別が未一致のためストーリーへ勝手に転用しない。"
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-07.jpg",
+          "sha256": "2838ebf61dd4b3a84f206911357b811d68e1938b6ff7a060830997de2c3df30f",
+          "bytes": 205261,
+          "width": 801,
+          "height": 1200,
+          "source_sha256": "21c760ba067665a7e74e72bd56a1dfa8651efa01cc9cb255cd0b8040abdb10d6",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/07/receipt-supplied-21c760ba0676-2838ebf61dd4.json",
+            "receipt_sha256": "acff1e6ed947f19bdc2fe8fc737d47066531f53ffc28f41e9d2714048de74e12",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "2838ebf61dd4b3a84f206911357b811d68e1938b6ff7a060830997de2c3df30f",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "07",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": false,
+            "framing": "upper_body",
+            "note": "最終sips JPEGを直接表示。グレーのドレス、自然な顔の陰影、肩や布の折り目を確認。正面寄りの上半身。顔・髪の自然な特徴は本人参照と大きな矛盾なし。"
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-08.jpg",
+          "sha256": "e963105934c0c59dd61b86ccc2992943e8c06f236337c3df6cccf6d72e306aa1",
+          "bytes": 255681,
+          "width": 1200,
+          "height": 801,
+          "source_sha256": "cd45a818dcb3a34c0292dcdae4e4bc9777772466329d6fa57e2ca5c50388be2c",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/08/receipt-supplied-cd45a818dcb3-e963105934c0.json",
+            "receipt_sha256": "90623d65b367c65e361d125974e4218d4e83dce151c42d4b0db2cce0f74528e7",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "e963105934c0c59dd61b86ccc2992943e8c06f236337c3df6cccf6d72e306aa1",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "08",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": false,
+            "framing": "upper_body",
+            "note": "最終sips JPEGを直接表示。グレーのニットと室内ソファ、温かなランプ光、手前の膝を確認。柔らかい布の質感と手・顔の自然さを観察。画角は横長上半身。"
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-09.jpg",
+          "sha256": "876e63963be244dc45a0bd5c7fb26573e8c0a0413ef92e47795eb81a8dc5549b",
+          "bytes": 249210,
+          "width": 900,
+          "height": 1200,
+          "source_sha256": "b583ec72bf6283d1520d8e2ee4efdf159bd7c4919323ca74d25db22aea9b4402",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/09/receipt-supplied-b583ec72bf62-876e63963be2.json",
+            "receipt_sha256": "c95a6906cdbce6588ac64bb0d01de1d326003264239b0bc75b290b5dfc49eecc",
+            "target_design_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-17T02:42:59.152Z",
+            "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+            "image_sha256": "876e63963be244dc45a0bd5c7fb26573e8c0a0413ef92e47795eb81a8dc5549b",
+            "master_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+            "cut_id": "09",
+            "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+            "swimwear_visible": false,
+            "framing": "three_quarter",
+            "note": "最終sips JPEGを直接表示。夜景のある食卓・ワイングラス・白いブラウスと椅子を確認。テーブルに近い立ち姿でグラスと手指のつながりが自然。過度なブランド文字なし。"
+          }
+        }
+      },
+      "generation_holds": {},
+      "cover_cut_id": "05",
+      "published_at": "2026-11-17T02:43:44.152Z"
     }
   ]
 }
