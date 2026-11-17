@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "06",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "064ecc91-b742-4a98-b2e6-96034bdc11d5",
+    "image_number": 6,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "3b4ad468-0cd8-42f4-8339-c2037b0f00a6",
+    "observed_output_series": "latest",
+    "original_filename": "温かなレストランで料理を取り分ける女性.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "7e3d2455c00391728206b2d69cdff03e7fdafb5d1474e66af192db7faef9550d",
+    "bytes": 2011676,
+    "width": 1536,
+    "height": 1024,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/06/source-7e3d2455c00391728206b2d69cdff03e7fdafb5d1474e66af192db7faef9550d.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-06.jpg",
+    "sha256": "2f368cd24ac5a3be4ae3c5e7c9d24dc4a3a6206500bbfe20795d0f374afa0033",
+    "bytes": 209073,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

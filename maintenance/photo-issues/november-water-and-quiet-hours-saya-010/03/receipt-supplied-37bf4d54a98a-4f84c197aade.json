@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "03",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "064ecc91-b742-4a98-b2e6-96034bdc11d5",
+    "image_number": 3,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "1ab567f3-e55a-415a-bc65-c9a9bd0c2fa2",
+    "observed_output_series": "latest",
+    "original_filename": "屋内プールで水遊びする笑顔の女性.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "37bf4d54a98a24832ef6f3307dad2a1a0d0d44086f89f477bfef3881924d19a7",
+    "bytes": 2320927,
+    "width": 1536,
+    "height": 1024,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/03/source-37bf4d54a98a24832ef6f3307dad2a1a0d0d44086f89f477bfef3881924d19a7.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-03.jpg",
+    "sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a",
+    "bytes": 283367,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "02",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "064ecc91-b742-4a98-b2e6-96034bdc11d5",
+    "image_number": 2,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "2030ff3b-6539-49bc-8e95-f693d456b125",
+    "observed_output_series": "latest",
+    "original_filename": "静寂の湯けむりスパ人體藝術.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "07fb2dd1e6c6328e6341ac032123b44c9dac3a30ec13a2822e1c1a331baf8d63",
+    "bytes": 1983108,
+    "width": 1024,
+    "height": 1536,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/02/source-07fb2dd1e6c6328e6341ac032123b44c9dac3a30ec13a2822e1c1a331baf8d63.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-02.jpg",
+    "sha256": "026376c7ab28205040b978908e21564264c3764564ed6808e7a80d4cc3d8c14f",
+    "bytes": 207767,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}
