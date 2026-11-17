@@ -24,12 +24,16 @@ The claim contains exact JPEG SHA-256 and bytes, `file_id_sha256`, `nonce_sha256
 
 The handler compares the public claim to the tool's provided fields, binds the raw nonce only by its hash, checks that the repository is public and the existing `free-cpu-scenes.yml` workflow is active (workflow state is fetched anonymously from the fixed public repository, so the **Contents-write** token does not need Actions-read), checks the 1.5 GiB generated-photo archive cap, and then only creates `maintenance/native-image-candidates/<slug>/candidate.jpg` on that candidate branch. It never changes `main`, `content/articles.json`, `assets/generated`, visual approvals, generation IDs or legacy seeds. Updating an existing image is forbidden; exact replay returns `reused`, different bytes/head return a conflict. A Git commit/tree is written and the branch ref is advanced with `force:false`, with exact JPEG bytes read back.
 
+The current real `assets/generated/manifest.json` is about **763 KiB**. GitHub's Contents API base64 response is over 1 MiB; the receiver therefore separates the bounded 2 MiB **HTTP Contents response** and 1 MiB decoded **inventory JSON** from the 700 KiB individual JPEG decoder. A response exceeding those limits fails closed. GitHub uses `GET /git/ref/heads/...` (singular) for the current ref, but `PATCH /git/refs/heads/...` (plural) for the non-force ref update. For `reused`, the server rechecks the original immutable claim, nonce hash, expiry, claim commit parent, current branch commit parent and exact JPEG bytes before acknowledging a replay. Matching JPEG alone is never enough.
+
 
 ## Test vs. deployment
 
 Offline tests use a genuine, already-approved 1200×675 JPEG from the repository and a mocked ChatGPT signed URL. They check actual bytes, SHA, MIME, size, rejection, disabled state, replay, owner authentication and optimistic branch conflicts. These are **mock delivery tests**, not ChatGPT-to-Worker live attachment delivery or production Worker CPU timing.
 
 The existing free Cloudflare Worker budget is **10 ms CPU per request / 50 subrequests**. No JPEG conversion or model inference runs in the Worker. A real proof of Worker CPU/subrequests and the signed file URL can be collected only after the separate MCP route has deployed and is connected in ChatGPT. Until then, real transfer/write and platform metering are *unverified*, not assumed free.
+
+On every published revision, the **existing** `verify-public-photos.yml` now also calls `scripts/check_candidate_receiver.py`, which sends one JSON-RPC `tools/list` request to the separate public endpoint and verifies the `openai/fileParams` declaration. This is a state-free, read-only schema probe (HTTP POST, no file passed), not a successful real ChatGPT file transfer, and not a new workflow.
 
 ## No automatic credentials
 
