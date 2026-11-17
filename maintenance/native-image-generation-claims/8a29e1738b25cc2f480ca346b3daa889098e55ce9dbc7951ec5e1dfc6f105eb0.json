@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0",
+  "receipt_path": "maintenance/native-image-generation-claims/8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "8a29e1738b25cc2f480ca346b3daa889098e55ce9dbc7951ec5e1dfc6f105eb0",
+  "slug": "ai-night-standby-not-free-time",
+  "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+  "logical_run_id": "gpt-image-recovery-20261117-ai-night-standby",
+  "prompt_sha256": "035d86ce3e3b6c9c9224376b88c505600279caa1420c4a06b1d123be964e5a74",
+  "reserved_at": "2026-11-17T17:29:33.145Z",
+  "baseline": {
+    "commit_sha": "a0e44026a4c70ae423685524b691071aa0430b1f",
+    "tree_sha": "4931851c0716ef3ec93067cc01bba5271ab0f828",
+    "protected_hashes": {
+      "content/articles.json": "33f42b57a32eb50fc37937be8da66f1e4c4ab14465e295aa61481204f7274c5e",
+      "assets/generated/manifest.json": "da80f58d865aacb7a713e1226c7c35f151c2b6fdbf8c1ee6038409a3a5766b26",
+      "content/visual_reviews.json": "c6505cae106954fd90e4ed03efa4b1604d4297cb51543afbc911acc66eb385bb"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "5745751a91fcb6477ac308d4d98459de18c44f70a3a18348f6a0c631c53bda41",
+    "observed_at": "2026-11-17T17:24:42.487Z",
+    "route": "read_candidate_png actual local PNG to code-mode bytes",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "8a53f7e417d2a924c846dafae1a91acd4edfb947"
+  }
+}
