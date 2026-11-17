@@ -125,7 +125,10 @@ def main(argv=None):
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
             output.write("run_native_image_engine_tests=" + str(required).lower() + "\n")
     # A test/build failure is returned unchanged, never retried as a lighter suite.
-    return subprocess.run(command, cwd=ROOT).returncode
+    # Child tests may call main() for other scopes; only this parent owns the
+    # workflow output, while all unrelated test/build environment is retained.
+    child_env = {key: value for key, value in os.environ.items() if key != "GITHUB_OUTPUT"}
+    return subprocess.run(command, cwd=ROOT, env=child_env).returncode
 
 
 if __name__ == "__main__":
