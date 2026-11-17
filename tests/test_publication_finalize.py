@@ -208,6 +208,40 @@ class FinalizationTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.go(api, owner=lambda *args: {"status": "blocked"})
         self.assertEqual(api.writes, [])
 
+    def test_compatible_new_main_can_merge_while_pr_base_metadata_remains_old_or_refreshes(self):
+        current = "e" * 40
+        for refresh_metadata in (False, True):
+            with self.subTest(refresh_metadata=refresh_metadata):
+                api = API(); api.main = current
+                if refresh_metadata:
+                    api.race = lambda a: a.pr["base"].update(sha=current)
+                def validated(api, pr, run, root):
+                    self.assertEqual(pr["base"]["sha"], B)
+                    self.assertEqual(run["pull_requests"][0]["base"]["sha"], B)
+                    self.assertEqual(api.get("/git/ref/heads/main")["object"]["sha"], current)
+                    # Existing real-Git tests cover fresh merged-tree validation;
+                    # here its result deliberately differs from PR/CI base metadata.
+                    return current
+                self.assertEqual(self.go(api, validate=validated)["status"], "verification_dispatched")
+                self.assertEqual(api.writes[0], ("PUT", "/pulls/819/merge", {"sha": H, "merge_method": "merge"}))
+                self.assertEqual(api.pr["base"]["sha"], current if refresh_metadata else B)
+
+    def test_true_main_advance_after_snapshot_still_blocks_before_put(self):
+        snapshot, advanced = "e" * 40, "f" * 40
+        for timing in ("during_validation", "before_put"):
+            with self.subTest(timing=timing):
+                api = API(); api.main = snapshot
+                if timing == "before_put":
+                    api.race = lambda a: setattr(a, "main", advanced)
+                def validated(api, pr, run, root):
+                    self.assertEqual(api.main, snapshot)
+                    if timing == "during_validation": api.main = advanced
+                    return snapshot
+                with self.assertRaisesRegex(ValueError, "PR or main changed"):
+                    self.go(api, validate=validated)
+                self.assertIn(("GET", "/git/ref/heads/main"), api.calls)
+                self.assertEqual(api.writes, [])
+
     def test_api_or_source_guard_failure_is_not_reinterpreted_as_success(self):
         for endpoint in ["/actions/runs/123", "/pulls/819/merge"]:
             api = API(); api.fail = endpoint
