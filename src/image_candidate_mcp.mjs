@@ -3,7 +3,8 @@
 // https://developers.openai.com/plugins/reference#define-file-inputs
 const REPO="RollNuts/mihassei-news";
 const API="https://api.github.com/repos/"+REPO;
-const FILE_HOST="files.oaiusercontent.com";
+// Exact hosts only. The second was observed from a real fileParams delivery.
+const FILE_HOSTS=new Set(["files.oaiusercontent.com","sdmntprwestus.oaiusercontent.com"]);
 const MAX_JPEG=700*1024;
 const MAX_MANIFEST_BYTES=1024*1024;
 const MAX_CONTENTS_RESPONSE=2*1024*1024;
@@ -68,7 +69,7 @@ function allowedFile(file) {
     throw failure("invalid_file_reference");
   let url;
   try{url=new URL(file.download_url);}catch(_){throw failure("invalid_file_reference");}
-  const reason=url.protocol!=="https:"?"scheme":url.hostname!==FILE_HOST?"hostname":
+  const reason=url.protocol!=="https:"?"scheme":!FILE_HOSTS.has(url.hostname)?"hostname":
     url.port?"port":url.username||url.password?"credentials":url.hash?"fragment":
     url.pathname==="/"?"empty_path":url.pathname.includes("//")?"path_separator":null;
   if(reason){
@@ -132,7 +133,7 @@ async function readFile(file,fetchImpl){
   const url=allowedFile(file);
   const result=await fetchImpl(url,{method:"GET",redirect:"manual",cache:"no-store",
     headers:{"accept":"image/jpeg"},signal:AbortSignal.timeout(5000)});
-  if(result.status!==200||result.url&&new URL(result.url).host!==FILE_HOST)
+  if(result.status!==200||result.url&&new URL(result.url).origin!==new URL(url).origin)
     throw failure("file_unavailable");
   const type=(result.headers.get("content-type")||"").split(";",1)[0].trim().toLowerCase();
   if(type!=="image/jpeg"&&type!=="application/octet-stream")throw failure("unexpected_file_type");
