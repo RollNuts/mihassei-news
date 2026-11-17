@@ -287,7 +287,8 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
             and fresh["head"]["repo"]["full_name"] == REPO
             and fresh["base"]["repo"]["full_name"] == REPO and fresh["base"]["ref"] == "main"
             and fresh.get("mergeable") is True and fresh.get("mergeable_state") == "clean"
-            and fresh["base"]["sha"] == current
+            # PR base.sha may retain the creation/CI snapshot or refresh later.
+            # The branch ref, not that PR metadata, binds our freshly checked tree.
             and api.get("/git/ref/heads/main")["object"]["sha"] == current,
             "PR or main changed during finalization")
     latest = api.get(f"/actions/runs/{run_id}")
