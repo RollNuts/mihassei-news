@@ -5,30 +5,79 @@ on:
     paths-ignore:
       - 'docs/**'
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: 'Exact merged main SHA to verify (empty keeps normal main verification)'
+        required: false
+        type: string
+      finalize_pr:
+        description: 'Opted-in PR number, only to resume a completed CI handoff'
+        required: false
+        type: string
+      finalize_head:
+        description: 'Full reviewed PR head, required with finalize_pr'
+        required: false
+        type: string
+      ci_run_id:
+        description: 'Successful Validate newspaper PR run, required with finalize_pr'
+        required: false
+        type: string
+  workflow_run:
+    workflows: [Validate newspaper]
+    types: [completed]
+  # The installed GPT connector can edit PR bodies but cannot dispatch workflows.
+  # This trusted-base event handles opt-in recorded after CI has already finished.
+  pull_request_target:
+    types: [edited, ready_for_review]
 # Each public-input main push supersedes the previous deployment check.
 # Docs-only pushes must not start a run that cancels that check.
 # Avoid treating a superseded commit as a production failure.
 # Read-only public-byte verification is the sole deployment wait.
 concurrency:
-  group: verify-live-production-main
-  cancel-in-progress: true
+  # PR completions and exact-SHA recovery must never cancel a live push check.
+  group: ${{ (github.event_name == 'workflow_run' || github.event_name == 'pull_request_target' || inputs.finalize_pr != '') && format('publication-finalize-{0}', github.run_id) || inputs.expected_sha != '' && format('verify-live-exact-{0}', inputs.expected_sha) || 'verify-live-production-main' }}
+  cancel-in-progress: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.finalize_pr == '' && inputs.expected_sha == '') }}
 permissions:
   contents: read
 jobs:
   check:
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && inputs.finalize_pr == '' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      sha: ${{ steps.target.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - name: Bind verification to a full main revision before selecting its files
+        id: target
+        env:
+          REQUESTED_SHA: ${{ inputs.expected_sha }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os, re, subprocess
+          revision = os.environ.get('REQUESTED_SHA') or os.environ['EVENT_SHA']
+          if not re.fullmatch(r'[a-f0-9]{40}', revision):
+              raise SystemExit('Expected revision must be a complete SHA')
+          subprocess.run(['git', 'merge-base', '--is-ancestor', revision, os.environ['EVENT_SHA']], check=True)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('sha=' + revision + '\n')
+          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Wait for the public revision or a proven docs-only ancestor
         id: revision
         env:
-          EXPECTED_SHA: ${{ github.sha }}
+          EXPECTED_SHA: ${{ steps.target.outputs.sha }}
         run: python3 scripts/wait_for_live_revision.py --allow-docs-only
       - name: Verify the published revision and live stories without generating traffic
         id: live
@@ -36,6 +85,8 @@ jobs:
       - name: Verify that Twitterbot can fetch each first-party image card
         id: cards
         run: python3 scripts/check_share_cards.py
+      - name: Verify separate candidate MCP read-only file input schema
+        run: python3 scripts/check_candidate_receiver.py
       - name: Report photograph completion separately from delivery checks
         id: photo_health
         if: always() && !cancelled()
@@ -66,7 +117,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ needs.check.outputs.sha }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
@@ -77,7 +128,7 @@ jobs:
           path: ${{ runner.temp }}/photo-health
       - name: Validate this run's revision-bound photograph report
         env:
-          EXPECTED_SHA: ${{ github.sha }}
+          EXPECTED_SHA: ${{ needs.check.outputs.sha }}
           DETAILS_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           python3 scripts/review_release_guard.py photo-check-payload \
@@ -85,6 +136,8 @@ jobs:
             --details-url "$DETAILS_URL" --output "$RUNNER_TEMP/photo-completion-check.json"
       - name: Record photograph completion separately from delivery
         uses: actions/github-script@v8
+        env:
+          VERIFIED_SHA: ${{ needs.check.outputs.sha }}
         with:
           retries: 0
           script: |
@@ -93,14 +146,42 @@ jobs:
             const payload = JSON.parse(fs.readFileSync(path.join(process.env.RUNNER_TEMP, 'photo-completion-check.json'), 'utf8'));
             const expectedUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             if (context.repo.owner !== 'RollNuts' || context.repo.repo !== 'mihassei-news' ||
-                context.ref !== 'refs/heads/main' || payload.head_sha !== context.sha ||
+                context.ref !== 'refs/heads/main' || !/^[a-f0-9]{40}$/.test(process.env.VERIFIED_SHA || '') ||
+                payload.head_sha !== process.env.VERIFIED_SHA ||
                 payload.name !== 'Photograph completion' || payload.status !== 'completed' ||
                 !['success', 'failure'].includes(payload.conclusion) || payload.details_url !== expectedUrl) {
               throw new Error('Photo check is not bound to this public-main verification run');
             }
             const {data} = await github.rest.checks.create({
               owner: context.repo.owner, repo: context.repo.repo,
-              name: payload.name, head_sha: context.sha, status: payload.status,
+              name: payload.name, head_sha: process.env.VERIFIED_SHA, status: payload.status,
               conclusion: payload.conclusion, details_url: expectedUrl, output: payload.output
             });
             core.info(JSON.stringify({id: data.id, name: data.name, conclusion: data.conclusion, head_sha: data.head_sha}));
+
+  finalize:
+    # workflow_run executes this workflow from trusted main, never a PR checkout.
+    # No PR artifacts or code are executed. Ordinary validation remains read-only.
+    if: ${{ github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.ref == 'main' && ((github.event.pull_request.state == 'open' && github.event.pull_request.draft == false) || (github.event.action == 'edited' && github.event.pull_request.merged == true)) && contains(github.event.pull_request.body, '<!-- publication-finalize') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)) || (github.event_name == 'workflow_dispatch' && inputs.finalize_pr != '')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    concurrency:
+      group: publication-finalize-${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number || inputs.finalize_pr || github.run_id }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Finalize only the exact explicitly approved publication head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/publication_finalize.py --event "$GITHUB_EVENT_PATH"

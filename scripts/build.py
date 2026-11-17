@@ -1271,8 +1271,9 @@ def gravure_feature_card(articles, photo_issues=(), photo_editions=()):
     )
 
 
-def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stories=None):
+def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stories=None, bulletins=None):
     photo_stories = load_photo_stories(BASE) if photo_stories is None else photo_stories
+    bulletins = load_market_bulletins(BASE) if bulletins is None else bulletins
     # The newest published story must lead, even if a caller supplies an
     # unsorted list (e.g. a scheduled content edit or a local preview).
     # Use actual site publication time, never the source date alone or 2031.
@@ -1446,7 +1447,7 @@ def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stori
 <div><h2>ジャンルから読む</h2></div>
 <nav class="genre-links" aria-label="ジャンルから探す">{genre_links}</nav>
 </section>
-{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues, photo_editions))}
+{render_serials_feature(public_serials(serials), leading_card=gravure_feature_card(articles, photo_issues, photo_editions), bulletins=bulletins)}
 <details class="extras-shelf">
 <summary><strong>号外・コメント</strong><span class="extras-open" aria-hidden="true">＋</span></summary>
 <div class="extras-shelf-body">

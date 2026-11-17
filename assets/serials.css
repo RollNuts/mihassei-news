@@ -16,6 +16,8 @@
 .serial-card-content h3{font-size:clamp(22px,2vw,29px);font-weight:900;font-family:var(--serif);line-height:1.4;letter-spacing:-.045em;margin:11px 0 9px}
 .serial-card-content p{font-size:12px;line-height:1.85;color:var(--muted);margin:0 0 12px}
 .serial-latest{display:block;font-size:11px;line-height:1.6;font-weight:700;opacity:.8;margin-top:auto}
+.serial-market-update{font-size:13px;opacity:1}
+.serial-market-update b,.serial-market-update>span{display:block}
 .serial-link{display:inline-flex;gap:8px;align-items:center;margin-top:15px;font-size:12px;font-weight:900;border-bottom:2px solid var(--accent);padding-bottom:3px}
 .serial-link:hover{color:var(--accent)}
 .serials-page{padding-top:42px;padding-bottom:105px}
@@ -370,6 +372,10 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .market-paper-lead{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,.75fr);gap:clamp(22px,4.5vw,55px);padding:34px 0 40px;border-bottom:2px solid var(--paper-ink)}
 .market-paper-lead-story{min-width:0}
 .market-paper-eyebrow{margin:0 0 12px!important;color:var(--paper-accent)!important;font-size:12px!important;font-weight:900;letter-spacing:.035em;line-height:1.6}
+.market-latest-update{display:flex;flex-wrap:wrap;gap:4px 18px;align-items:baseline;border-left:4px solid var(--paper-accent);background:#f4f1eb;padding:10px 14px;margin:0 0 18px;font-size:15px;line-height:1.7;font-variant-numeric:tabular-nums}
+.market-latest-update strong,.market-latest-label{color:var(--paper-accent);font-weight:900}
+.market-latest-update time{font-weight:800}
+.serials-intro .market-latest-update{margin:18px 0;color:var(--paper-ink);font-size:15px}
 .market-paper-lead-story h2{font-family:"Hiragino Mincho ProN","Yu Mincho",var(--serif);font-size:clamp(27px,3.8vw,42px);font-weight:800;line-height:1.45;letter-spacing:-.052em;margin:0 0 19px;overflow-wrap:anywhere}
 .market-paper-lead-story h2 a:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 .market-paper-dek{max-width:44em;font-size:15px;line-height:1.95;color:#39444a;margin:0 0 18px}

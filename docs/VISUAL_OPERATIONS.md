@@ -15,7 +15,7 @@ python3 scripts/build.py
 
 一覧の `pending` は未検品、`rejected` は品質保留であり、失敗した生成ジョブとは別。発行・改稿担当は今回変更した記事を確認し、残る未検品は[画像回収担当](OPERATIONS.md#画像動画の担当を重ねない)へ引き継ぐ。通常の回収は`attention`と変更対象に限り、正常な既刊全件の再取得・再検品は週次の横断確認へ任せる。現在の記事・画像SHAに一致するacceptedは、新しい不具合がなければ再承認しない。件数を満たすために雑な合格を付けない。
 
-通常の新着写真は[既存の画像担当](OPERATIONS.md#画像動画の担当を重ねない)がNativeの成功経路で処理する。GPTが実行可能な工程を担当し、保存・実機・ツール能力不足が現記事SHAで明示された画像だけCodexへ移譲する。移譲後の生成・保存・目視採用・通常PR・本番確認は同じ担当が同PRで閉じる。最初は`visual_review.py --compact`の集計・attentionと明示引継ぎだけを読み、対象0件なら正常な既刊本文をモデルへ流さず終了する。保存済み候補・生成claim・担当PRを先に回収し、CPUを先行自動生成しない。手動CPUは[FREE_CPU_IMAGES](FREE_CPU_IMAGES.md)に従う。
+通常の新着写真は[既存の画像担当](OPERATIONS.md#画像動画の担当を重ねない)がNativeの成功経路で処理する。GPTが実行可能な工程を担当し、保存・目視採用・通常PR・本番確認を同じPRで進める。保存・実機・ツール能力不足は現記事SHA・候補・同PR・実際に失敗した操作を既存引継ぎへ残し、Codexへの障害修理依頼は[OPERATIONSの担当表](OPERATIONS.md#担当と正本)に従う。最初は`visual_review.py --compact`の集計・attentionと明示引継ぎだけを読み、対象0件なら正常な既刊本文をモデルへ流さず終了する。保存済み候補・生成claim・担当PRを先に回収し、CPUを先行自動生成しない。手動CPUは[FREE_CPU_IMAGES](FREE_CPU_IMAGES.md)に従う。
 
 時間切れ・表示不能は検品完了とせず、担当中の同PR・既存引継ぎで待つ。生成成功だけで終えず、現在の実画像を採用して本番照合するか、不合格を記録して本文に合う専用SVGを本番照合する。写真待ちでも記事発行は続け、無料枠・停止範囲・容量・Mac負荷・X/OFFの保護はOPERATIONSと各正本を維持する。
 
@@ -33,7 +33,7 @@ python3 scripts/build.py
 
 回収担当は変更・生成・公開の直前にも、実行場所に対応する停止状態を確認する。**クラウド画像処理の停止権威はGitHubの`free-cpu-scenes.yml`**とし、対象repositoryがpublic・正しいworkflowのstateが`active`の場合だけ進む。無効・不明・取得失敗では画像の生成・保存・採用・公開をせず、自動で再開しない。GitHub接続で処理するGPTにMac実機CLIは要求しない。Nativeの保存helperは同じlive照合を組み込み、CPUジョブもモデル取得・生成・候補保存・公開の直前に再確認する。生成済み候補の読取り回収は停止中も可能だが、保存や採用は停止解除後に行う。
 
-GitHub接続からworkflow状態を読めないGPTは、認証なしのMCP入口 `https://veripsa.com/api/image-control/mcp` の `read_image_control` を使える。Native helperの `readCloudWorkflow({nonce})` で、その呼出しのnonceを変更せずツールへ渡し、同じ呼出しの `structuredContent` を返す。nonce・`checked_at`・固定repository/path・`active`の照合は既存helperに任せ、古い結果を再利用しない。ツールのエラー・取得失敗・無効状態では画像操作を止め、生成しない。この入口は公開メタデータの読取りだけで、GitHubの書込み権限や保存経路を追加しない。
+GitHub接続からworkflow状態を読めないGPTは、認証なしのMCP入口 `https://veripsa.com/api/image-control/mcp` の `read_image_control` を使える。Native helperの `readCloudWorkflow({nonce})` で、その呼出しのnonceを変更せずツールへ渡し、返った応答全体をそのまま返す。直接の値・`result`・従来の`structuredContent`の正規化と外側/内側のエラー判定はhelperに任せる。nonce・`checked_at`・固定repository/path・`active`の照合は既存helperに任せ、古い結果を再利用しない。ツールのエラー・取得失敗・無効状態では画像操作を止め、生成しない。この入口は公開メタデータの読取りだけで、GitHubの書込み権限や保存経路を追加しない。
 
 `github_rate_limit` は使用中のGitHub枠の残量0を示す。専用認証を使う場合は、対象repositoryに対するActions読取りだけの期限付きfine-grained tokenを、既存Worker `mihassei-news` のランタイムSecret `IMAGE_CONTROL_GITHUB_READ_TOKEN` に保存する。build変数・ソース・ログ・成果物へ秘密値を置かない。未設定時は固定workflowを匿名で1回読み、専用認証時は固定repositoryの公開状態を確認してからworkflowを読む最大2回のGETを使う。全体3秒・各応答16KiBを上限とし、repositoryが非公開・不存在、または公開情報が不正な場合は`repository_unavailable`で停止してworkflowを読まない。設定済みの値が不正・失効・権限不足でも匿名へ戻らない。`github_http_401` は認証情報の再確認が必要で、記事の発行は独立して継続する。この認証は固定repositoryとworkflowのGET専用で、画像APIや有料機能を呼ばない。
 
@@ -75,7 +75,7 @@ ChatGPT内蔵画像は、本人が依頼した実写風写真の生成・取り�
 
 人物の継続起用や既存候補の具体的な修正では、[人物・衣装の正本](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠)にある基準画像からの編集を先に検討する。入力は記事slug・現在の記事SHA・基準画像の実参照とSHA・今回変更する衣装/動作/背景/構図に絞り、固定設定や過去の全文ログを再投入しない。編集元を実表示し、参照元と新しい出力の来歴を別に保存する。新しい顔の採用は明示的な改訂として扱い、人物一致の検品を省略しない。
 
-現在の本文に合う撮影可能な一場面を指示し、原PNGと取り込み後JPEGを実表示して検品する。新規生成・参照編集とも[内蔵画像の保存手順](NATIVE_IMAGE_BYTES.md#preferred-path-capture-generation-and-save-the-candidate-in-one-execution)の`native_image_stage.js`の`generateAndStage`に一本化する。同じ実行の同じ取得経路で既存の小PNGを読み、変換・GitHub保存・branchからのSHA読み戻しを通してから生成する。保存済み候補を先に回収し、既存の生成claimを消して同じ論理実行を再生成しない。ローカルパス/file IDの場合は、その実環境からバイトを返せる道具が必要で、data URL経路の成功や別runの成功を代用しない。経路不在・事前検証失敗なら生成を直接呼ばず、適合する代替で公開作業を続ける。原PNG・JPEG・実際の指示を保存し、失敗時は生の返値・転送済みPNG・checkpoint・claimの実参照を区別して同じ素材を回収する。候補保存、現在SHAのaccepted、本番反映は別々に確認する。GPTのMac実行先設定の確認と、変更後の定期worker自身の初回完走は未確認。設定確認が可能になった後、次の既存枠で実運転を確かめるまで完了扱いしない。
+現在の本文に合う撮影可能な一場面を指示し、原PNGと取り込み後JPEGを実表示して検品する。新規生成・参照編集とも[内蔵画像の保存手順](NATIVE_IMAGE_BYTES.md#preferred-path-reserve-generation-and-save-its-original-candidate)に従い、コード内で呼べる生成器は`generateAndStage`、トップレベル専用の内蔵生成器は`reserveExternalGenerationStep`→実生成1回→`stageReservedStep`を使い、1セル1段階で正常終了したcheckpointを毎回保存する。初期化・依存ソース・元planも先に別セルで保存し、全段階を1セル内でループさせない。実際の取得経路で既存の小PNGを読み、変換・GitHub保存・SHA読み戻しと永続claimの所有確認を通してから生成し、戻った原PNGは同じplan・claimと最初の実確認日時で保存・回収する。保存済み候補を先に回収し、既存の生成claimを消して同じ論理実行を再生成しない。ローカルパス/file IDの場合は、その実環境からバイトを返せる道具が必要で、data URL経路の成功や別runの成功を代用しない。経路不在・事前検証失敗なら生成を直接呼ばず、適合する代替で公開作業を続ける。原PNG・JPEG・実際の指示を保存し、失敗時は生の返値・転送済みPNG・checkpoint・claimの実参照を区別して同じ素材を回収する。候補保存、現在SHAのaccepted、本番反映は別々に確認する。設定やツール追加だけで復旧済みとせず、既存GPTの実行環境で取得・予約・保存・採否・本番確認を実際に完走してから報告する。
 
 `origin: chatgpt-imagegen`、実際の生成物の識別根拠、原PNG/JPEG SHA、指示、現在の記事SHAを保存する。実際のツール出力ファイル名のUUIDと、PNG内C2PA claimのasset instanceIDは区別し、未取得のbackend job IDを捏造しない。C2PAから取得した場合はその根拠を記し、署名・証明書を検証していなければ検証済みとは書かない。旧CPU候補の原生成記録・正確な整数seed・不採用理由は履歴に保持する。`visual_strategy: cpu-photo` と現SHAの`accepted`は、新JPEGの実画像・本文・scene_promptの一致を確認した同じ変更で記録する。写真が未完了なら適合する代替を維持し、イラスト掲載や生成成功だけで実写化完了としない。追加の外部API契約や有料GPUを導入しない。
 

@@ -9,6 +9,7 @@ const {randomUUID,webcrypto}=require('node:crypto');
 
 let src=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8');
 src=src.replace('import { imageControlMcp } from "./image_control_mcp.mjs";','');
+src=src.replace('import { imageCandidateMcp } from "./image_candidate_mcp.mjs";','');
 src=src.replace('import { DurableObject } from "cloudflare:workers";',
   'class DurableObject { constructor(ctx){this.ctx=ctx;} }');
 src=src.replace('export { ReaderComments } from "./comments.js";','');

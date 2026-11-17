@@ -807,6 +807,427 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     lookupError.generationClaim.branch === claimBranchPrefix + interruptedGate.plan.identity,
     "claim reference survives a candidate-recovery lookup failure");
 
+  // External tools run outside this JavaScript callback runtime. Reservation
+  // grants one handoff only after the same real transport and durable claim.
+  const external = await scenario("external-two-phase"), externalCounts = {reads: 0, generated: 0};
+  const externalOptions = gateOptions(external, externalCounts);
+  delete externalOptions.generate;
+  const reserved = await external.service.reserveExternalGeneration(external.plan, externalOptions);
+  assert(reserved.status === "reserved" && reserved.plan.identity === external.plan.identity &&
+    reserved.transportPreflight.status === "passed" && externalCounts.reads === 1 && externalCounts.generated === 0,
+    "external reservation runs the real byte preflight without requiring or invoking a generator");
+  const externalClaim = reserved.generationClaim;
+  const externalClaimReceipt = JSON.parse(external.mock.readText(externalClaim.branch, externalClaim.receipt_path));
+  assert(externalClaim.branch === claimBranchPrefix + external.plan.identity &&
+    external.mock.branches.get(externalClaim.branch) === externalClaim.commit_sha &&
+    runtime.sha256(runtime.utf8(external.mock.readText(externalClaim.commit_sha, externalClaim.receipt_path))) ===
+      externalClaim.receipt_sha256 && externalClaimReceipt.identity === external.plan.identity &&
+    externalClaimReceipt.article_sha256 === external.plan.articleSha256 &&
+    externalClaimReceipt.prompt_sha256 === runtime.sha256(runtime.utf8(external.plan.prompt)) &&
+    externalClaimReceipt.baseline.commit_sha === external.plan.baseCommitSha &&
+    externalClaimReceipt.baseline.tree_sha === external.plan.baseTreeSha &&
+    JSON.stringify(externalClaimReceipt.transport_preflight) === JSON.stringify(reserved.transportPreflight),
+    "external reservation verifies an immutable and live claim bound to the plan, prompt, baseline and transport proof");
+  assert(external.mock.calls.slice(-1)[0].args.url ===
+    "https://api.github.com/repos/" + repository + "/actions/workflows/free-cpu-scenes.yml" &&
+    !external.mock.branches.has(external.branch),
+    "external handoff immediately follows the final live cloud guard and creates no article candidate");
+  const claimCreates = () => external.mock.calls.filter(call => call.name === "create_branch" &&
+    call.args.branch_name.startsWith(claimBranchPrefix)).length;
+  await failure(() => external.service.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
+    "same service cannot reserve the same external generation again");
+  const externalFresh = stageAPI.create({runtime: external.measuredRuntime, github: external.mock.github, repository});
+  await failure(() => externalFresh.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
+    "fresh service cannot acquire the existing external generation claim");
+  assert(claimCreates() === 1 && externalCounts.generated === 0 && !external.mock.branches.has(external.branch),
+    "repeated external reservations neither replace the durable claim nor invoke a supplied generator");
+
+  const externalInput = {...external.input, observedAt: new Date().toISOString(),
+    transportPreflight: reserved.transportPreflight, generationClaim: externalClaim};
+  const alternatePlan = await externalFresh.prepare({...external.args, logicalRunId: "external-other-plan"});
+  for (const [label, plan, input] of [
+    ["cross-plan reservation", alternatePlan, externalInput],
+    ["altered prompt", {...external.plan, prompt: external.plan.prompt + " altered"}, externalInput],
+    ["altered article", {...external.plan, articleSha256: "f".repeat(64)}, externalInput],
+    ["altered baseline", {...external.plan, baseTreeSha: "4".repeat(40)}, externalInput],
+    ["altered protected hash", {...external.plan, protectedHashes: {...external.plan.protectedHashes,
+      "content/articles.json": "f".repeat(64)}}, externalInput],
+    ["tampered transport proof", external.plan, {...externalInput,
+      transportPreflight: {...reserved.transportPreflight, receipt_sha256: "0".repeat(64)}}],
+    ["tampered claim receipt", external.plan, {...externalInput,
+      generationClaim: {...externalClaim, receipt_sha256: "0".repeat(64)}}],
+    ["tampered claim commit", external.plan, {...externalInput,
+      generationClaim: {...externalClaim, commit_sha: "f".repeat(40)}}]
+  ]) {
+    const writes = external.mock.writes().length;
+    await failure(() => externalFresh.stageReserved(plan, input), label + " cannot stage reserved output");
+    assert(external.mock.writes().length === writes && !external.mock.branches.has(external.branch),
+      label + " is rejected before every remote write");
+  }
+  const writesBeforeClaimMove = external.mock.writes().length;
+  external.mock.branches.set(externalClaim.branch, "f".repeat(40));
+  try {
+    await failure(() => externalFresh.stageReserved(external.plan, externalInput),
+      "a changed live claim ref invalidates an otherwise intact external reservation");
+    assert(external.mock.writes().length === writesBeforeClaimMove,
+      "changed live claim ownership is rejected before any candidate write");
+  } finally {
+    external.mock.branches.set(externalClaim.branch, externalClaim.commit_sha);
+  }
+  const writesBeforeReservedStop = external.mock.writes().length;
+  external.mock.cloud.workflow.state = "disabled_manually";
+  const stoppedExternal = await failure(() => externalFresh.stageReserved(external.plan, externalInput),
+    "live cloud stop between external reservation and output blocks staging");
+  assert(stoppedExternal.observedAt === externalInput.observedAt &&
+    stoppedExternal.imageGenResult === externalInput.imageGenResult &&
+    stoppedExternal.generationClaim.branch === externalClaim.branch && stoppedExternal.checkpoint.identity === external.plan.identity,
+    "external failure retains the original PNG, first observation, claim and checkpoint without retimestamping");
+  assert(external.mock.writes().length === writesBeforeReservedStop,
+    "stopped external staging preserves its reservation without candidate writes");
+  external.mock.cloud.workflow.state = "active";
+  const externalSaved = await externalFresh.stageReserved(external.plan, externalInput);
+  const externalReceipt = JSON.parse(external.mock.readText(external.branch, receiptPath));
+  assert(externalSaved.status === "saved" && externalReceipt.identity === external.plan.identity &&
+    externalReceipt.generation.observed_at === externalInput.observedAt &&
+    JSON.stringify(externalReceipt.generation.transport_preflight) === JSON.stringify(reserved.transportPreflight) &&
+    JSON.stringify(externalReceipt.generation.generation_claim) === JSON.stringify(externalClaim) &&
+    equalBytes(external.mock.resolve(external.branch).get(externalReceipt.source.parts[0].path).bytes, pngBytes),
+    "fresh service stages the exact original external PNG with its original reservation evidence and observation time");
+  protectedUnchanged(external, "external two-phase stage");
+  const externalSavedWrites = external.mock.writes().length;
+  external.mock.cloud.workflow.state = "disabled_manually";
+  const externalReused = await externalFresh.reserveExternalGeneration(external.plan, {});
+  const externalStageReused = await externalFresh.stageReserved(external.plan, externalInput);
+  assert(externalReused.status === "saved" && externalStageReused.status === "saved" &&
+    externalReused.receipt.identity === external.plan.identity && externalCounts.generated === 0 &&
+    external.mock.writes().length === externalSavedWrites,
+    "verified saved external candidate short-circuits both phases without new writes or generation while stopped");
+
+  const callbackExternal = await scenario("external-ignores-generator"), callbackExternalCounts = {reads: 0, generated: 0};
+  const callbackExternalOptions = gateOptions(callbackExternal, callbackExternalCounts);
+  callbackExternalOptions.generate = async () => { callbackExternalCounts.generated++; throw Error("External reserve invoked generate"); };
+  const callbackReservation = await callbackExternal.service.reserveExternalGeneration(callbackExternal.plan, callbackExternalOptions);
+  assert(callbackReservation.status === "reserved" && callbackExternalCounts.generated === 0,
+    "external reservation never calls a generator callback even when one is supplied");
+
+  for (const [label, faults, change] of [
+    ["missing byte callback", {}, (_context, options) => { delete options.readBytes; }],
+    ["unavailable byte transfer", {}, (_context, options) => {
+      options.readBytes = async () => { throw Error("No external PNG byte bridge"); };
+    }],
+    ["failed transport readback", {preflightCorrupt: true}, () => {}],
+    ["stopped cloud workflow", {}, context => { context.mock.cloud.workflow.state = "disabled_manually"; }]
+  ]) {
+    const context = await scenario("external-block-" + label, faults), counts = {reads: 0, generated: 0};
+    const options = gateOptions(context, counts);
+    change(context, options);
+    await failure(() => context.service.reserveExternalGeneration(context.plan, options),
+      label + " cannot grant an external generation reservation");
+    assert(counts.generated === 0 && !context.mock.branches.has(context.branch) &&
+      ![...context.mock.branches.keys()].some(branch => branch.startsWith(claimBranchPrefix)),
+      label + " leaves no external generation claim or article candidate");
+  }
+  const lostExternal = await scenario("external-lost-claim", {claimLostResponse: true});
+  const lostExternalCounts = {reads: 0, generated: 0};
+  const lostExternalError = await failure(() => lostExternal.service.reserveExternalGeneration(lostExternal.plan,
+    gateOptions(lostExternal, lostExternalCounts)), "lost external claim response cannot grant generation ownership");
+  assert(lostExternalCounts.generated === 0 && lostExternalError.generationClaim.branch ===
+    claimBranchPrefix + lostExternal.plan.identity &&
+    lostExternal.mock.branches.has(lostExternalError.generationClaim.branch) &&
+    !lostExternal.mock.branches.has(lostExternal.branch),
+    "lost external claim response retains the durable claim without allowing generation or candidate staging");
+  const freshLostExternal = stageAPI.create({runtime: lostExternal.measuredRuntime, github: lostExternal.mock.github, repository});
+  await failure(() => freshLostExternal.reserveExternalGeneration(lostExternal.plan, gateOptions(lostExternal, lostExternalCounts)),
+    "fresh service cannot replace the uncertain external reservation");
+  assert(lostExternalCounts.generated === 0 && lostExternal.mock.calls.filter(call => call.name === "create_branch" &&
+    call.args.branch_name.startsWith(claimBranchPrefix)).length === 1,
+    "uncertain external ownership remains create-only across fresh services");
+
+  const lateExternalStop = await scenario("external-stop-after-claim"), lateExternalCounts = {reads: 0, generated: 0};
+  const lateExternalFetch = lateExternalStop.mock.github.fetch;
+  lateExternalStop.mock.github.fetch = async args => {
+    const result = await lateExternalFetch(args);
+    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + lateExternalStop.plan.identity))
+      lateExternalStop.mock.cloud.workflow.state = "disabled_manually";
+    return result;
+  };
+  const lateExternalError = await failure(() => lateExternalStop.service.reserveExternalGeneration(lateExternalStop.plan,
+    gateOptions(lateExternalStop, lateExternalCounts)), "stop after external claim creation blocks the external handoff");
+  assert(lateExternalCounts.generated === 0 && lateExternalError.generationClaim.branch ===
+    claimBranchPrefix + lateExternalStop.plan.identity &&
+    lateExternalStop.mock.branches.has(lateExternalError.generationClaim.branch) &&
+    !lateExternalStop.mock.branches.has(lateExternalStop.branch),
+    "final external cloud guard preserves the claim without returning generation permission after a stop");
+
+  // Count actual connector/transfer callbacks independently of the step API's
+  // counters. Each invocation gets a cold service and JSON-restored checkpoint.
+  const boundedJpeg = runtime.convert(pngBytes);
+  const boundedRuntime = {...runtime, convert(input) {
+    const source = typeof input === "string" ? runtime.fromBase64(input) : new Uint8Array(input);
+    return {...boundedJpeg, source_png_sha256: runtime.sha256(source), receipt: null};
+  }};
+  const fourMiBPadding = new Uint8Array(4 * 1024 * 1024 - pngBytes.length - 12);
+  const fourMiBBody = concat(runtime.utf8("npAD"), fourMiBPadding);
+  const fourMiBPng = concat(pngBytes.subarray(0, pngBytes.length - 12),
+    u32(fourMiBPadding.length), fourMiBBody, u32(crc(fourMiBBody)), pngBytes.subarray(pngBytes.length - 12));
+  const restored = value => JSON.parse(JSON.stringify(value));
+  function plainJSON(value) {
+    if (value === null || typeof value === "string" || typeof value === "boolean") return true;
+    if (typeof value === "number") return Number.isFinite(value);
+    if (Array.isArray(value)) return value.every(plainJSON);
+    return value && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype &&
+      Object.values(value).every(plainJSON);
+  }
+  async function boundedContext(run, faults) {
+    const context = await scenario(run, faults);
+    context.measuredRuntime = boundedRuntime;
+    context.stepCounters = {reads: 0, generated: 0};
+    context.stepOptions = gateOptions(context, context.stepCounters);
+    context.stepOptions.generate = async () => {
+      context.stepCounters.generated++;
+      throw Error("A bounded external reservation must not invoke a generator");
+    };
+    return context;
+  }
+  async function boundedCall(context, method, input, checkpoint) {
+    const service = stageAPI.create({runtime: context.measuredRuntime, github: context.mock.github, repository});
+    const beforeCalls = context.mock.calls.length, beforeReads = context.stepCounters.reads;
+    let result;
+    try {
+      result = await service[method](context.plan, input, checkpoint === undefined ? undefined : restored(checkpoint));
+      return result;
+    } finally {
+      const calls = context.mock.calls.slice(beforeCalls);
+      const toolCalls = calls.length + context.stepCounters.reads - beforeReads;
+      const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
+      assert(toolCalls <= 15, method + " uses at most 15 actual callbacks in one cold invocation (actual " + toolCalls + ")");
+      assert(mutations <= 2, method + " performs at most two mutation callbacks per invocation");
+      if (method === "stageReservedStep" && checkpoint?.phase !== "reservation_verify")
+        assert(calls.filter(call => call.name === "fetch_file").length <= 2,
+          "bounded candidate staging reads at most two immutable/source files per invocation");
+      if (result) {
+        assert(result.tool_calls === toolCalls && result.mutations === mutations,
+          method + " reports the independently measured callback and mutation counts");
+        if (result.status === "pending") {
+          assert(typeof result.phase === "string" && !!result.phase && plainJSON(result.checkpoint),
+            method + " returns a plain JSON checkpoint and explicit pending phase");
+          assert(JSON.stringify(restored(result.checkpoint)) === JSON.stringify(result.checkpoint),
+            method + " checkpoint survives JSON serialization without typed arrays or dropped values");
+        }
+      }
+    }
+  }
+  async function boundedDrive(context, method, input, checkpoint, onPending) {
+    let previous;
+    for (let step = 0; step < 256; step++) {
+      const result = await boundedCall(context, method, input, checkpoint);
+      if (result.status !== "pending") {
+        assert(result.status === "reserved" || result.status === "saved", method + " ends with verified reservation or saved bytes");
+        return {result, checkpoint, steps: step + 1};
+      }
+      const serialized = JSON.stringify(result.checkpoint);
+      assert(serialized !== previous, method + " advances its persisted checkpoint on every pending step");
+      previous = serialized;
+      checkpoint = restored(result.checkpoint);
+      if (onPending) await onPending(checkpoint, result);
+    }
+    assert(false, method + " completes within 256 explicit invocations");
+  }
+  const boundedCases = [];
+  for (const [label, source, parts] of [["one-part", pngBytes, 1], ["four-MiB-eight-parts", fourMiBPng, 8]]) {
+    const context = await boundedContext("bounded-" + label);
+    const reservationRun = await boundedDrive(context, "reserveExternalGenerationStep", context.stepOptions);
+    const reservation = reservationRun.result;
+    assert(reservation.status === "reserved" && context.stepCounters.generated === 0 && context.stepCounters.reads === 1 &&
+      !context.mock.branches.has(context.branch), label + " reserves once without generator calls or an article candidate");
+    assert(!!reservationRun.checkpoint, label + " reaches its final reservation through serialized checkpoints");
+    await failure(() => boundedCall(context, "reserveExternalGenerationStep", context.stepOptions, reservationRun.checkpoint),
+      label + " cannot replay the final claim checkpoint to regain generation permission");
+    const firstObservedAt = new Date().toISOString();
+    const stageInput = {imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(source)},
+      observedAt: firstObservedAt, transportPreflight: reservation.transportPreflight,
+      generationClaim: reservation.generationClaim};
+    const originalStageInput = {...stageInput};
+    let firstStageCheckpoint;
+    const staged = await boundedDrive(context, "stageReservedStep", stageInput, undefined, checkpoint => {
+      if (!firstStageCheckpoint) {
+        firstStageCheckpoint = restored(checkpoint);
+        delete stageInput.imageGenResult;
+        delete stageInput.observedAt;
+      }
+    });
+    const candidate = staged.result.receipt;
+    const sourceParts = candidate.source.parts.map(part => context.mock.resolve(context.branch).get(part.path).bytes);
+    assert(staged.result.status === "saved" && candidate.source.parts.length === parts &&
+      equalBytes(concat.apply(null, sourceParts), source) && candidate.generation.observed_at === firstObservedAt &&
+      candidate.identity === context.plan.identity,
+      label + " confirms every original PNG byte and the first observation time only after full staged readback");
+    assert(context.stepCounters.generated === 0 && context.mock.calls.every((call, index) =>
+      !(call.name.startsWith("create_") || call.name === "update_ref") ||
+      context.mock.calls[index - 1]?.args.url ===
+        "https://api.github.com/repos/" + repository + "/actions/workflows/free-cpu-scenes.yml"),
+    label + " keeps a live stop guard immediately before every write across cold steps");
+    protectedUnchanged(context, "bounded " + label);
+    boundedCases.push({context, reservation, reservationCheckpoint: reservationRun.checkpoint,
+      stageInput: originalStageInput, firstStageCheckpoint, source});
+  }
+
+  const boundedOne = boundedCases[0], boundedOneContext = boundedOne.context;
+  const wrongBoundedPlan = await boundedOneContext.service.prepare({...boundedOneContext.args,
+    logicalRunId: "bounded-checkpoint-other-plan"});
+  for (const [label, context, input, checkpoint] of [
+    ["changed checksum", boundedOneContext, boundedOne.stageInput,
+      {...boundedOne.firstStageCheckpoint, checksum: "0".repeat(64)}],
+    ["checkpoint from another plan", {...boundedOneContext, plan: wrongBoundedPlan},
+      boundedOne.stageInput, boundedOne.firstStageCheckpoint],
+    ["changed original PNG", boundedOneContext,
+      {...boundedOne.stageInput, imageGenResult: {image_url: "data:image/png;base64,AAAA"}}, boundedOne.firstStageCheckpoint],
+    ["changed first observation time", boundedOneContext,
+      {...boundedOne.stageInput, observedAt: new Date(Date.parse(boundedOne.stageInput.observedAt) + 1000).toISOString()},
+      boundedOne.firstStageCheckpoint]
+  ]) {
+    const calls = context.mock.calls.length;
+    await failure(() => boundedCall(context, "stageReservedStep", input, checkpoint),
+      "bounded resume rejects " + label);
+    assert(context.mock.calls.length === calls, label + " is rejected before all connector calls");
+  }
+  const writesBeforeBoundedProof = boundedOneContext.mock.writes().length;
+  await failure(() => boundedDrive(boundedOneContext, "stageReservedStep", {...boundedOne.stageInput,
+    transportPreflight: {...boundedOne.reservation.transportPreflight, receipt_sha256: "0".repeat(64)}}),
+  "bounded stage rejects a tampered proof even when a saved candidate exists");
+  assert(boundedOneContext.mock.writes().length === writesBeforeBoundedProof,
+    "tampered bounded reservation proof never causes writes");
+  const boundedClaim = boundedOne.reservation.generationClaim;
+  boundedOneContext.mock.branches.set(boundedClaim.branch, "f".repeat(40));
+  try {
+    await failure(() => boundedDrive(boundedOneContext, "stageReservedStep", boundedOne.stageInput),
+      "bounded stage rejects a changed live generation claim");
+    assert(boundedOneContext.mock.writes().length === writesBeforeBoundedProof,
+      "changed live bounded claim cannot create or replace candidate files");
+  } finally {
+    boundedOneContext.mock.branches.set(boundedClaim.branch, boundedClaim.commit_sha);
+  }
+
+  const boundedStopped = await boundedContext("bounded-stop-before-preflight");
+  const beforeStoppedStep = await boundedCall(boundedStopped, "reserveExternalGenerationStep", boundedStopped.stepOptions);
+  boundedStopped.mock.cloud.workflow.state = "disabled_manually";
+  const stoppedBoundedWrites = boundedStopped.mock.writes().length;
+  await failure(() => boundedDrive(boundedStopped, "reserveExternalGenerationStep", boundedStopped.stepOptions,
+    beforeStoppedStep.checkpoint), "bounded reservation rechecks a live stop in a fresh service");
+  assert(boundedStopped.mock.writes().length === stoppedBoundedWrites && boundedStopped.stepCounters.generated === 0 &&
+    !boundedStopped.mock.branches.has(claimBranchPrefix + boundedStopped.plan.identity),
+    "stopped bounded reservation grants neither a claim nor generation permission");
+
+  const boundedLost = await boundedContext("bounded-lost-claim", {claimLostResponse: true});
+  let beforeLostClaim;
+  const lostBoundedError = await failure(() => boundedDrive(boundedLost, "reserveExternalGenerationStep",
+    boundedLost.stepOptions, undefined, checkpoint => { beforeLostClaim = restored(checkpoint); }),
+  "lost bounded claim creation response never returns generation permission");
+  assert(boundedLost.mock.branches.has(claimBranchPrefix + boundedLost.plan.identity) &&
+    !boundedLost.mock.branches.has(boundedLost.branch) && boundedLost.stepCounters.generated === 0,
+    "uncertain bounded claim remains durable without generating or saving an image");
+  await failure(() => boundedCall(boundedLost, "reserveExternalGenerationStep", boundedLost.stepOptions,
+    lostBoundedError.checkpoint || beforeLostClaim), "uncertain bounded claim cannot be replayed into permission");
+  assert(boundedLost.stepCounters.generated === 0, "bounded lost-response recovery never invokes a generator");
+
+  const boundedRecovery = await boundedContext("bounded-stopped-upload");
+  const recoveryReservation = (await boundedDrive(boundedRecovery, "reserveExternalGenerationStep",
+    boundedRecovery.stepOptions)).result;
+  const recoveryInput = {...boundedRecovery.input, observedAt: new Date().toISOString(),
+    transportPreflight: recoveryReservation.transportPreflight, generationClaim: recoveryReservation.generationClaim};
+  const boundedCreateBlob = boundedRecovery.mock.github.create_blob;
+  let injectedBoundedStop = false;
+  boundedRecovery.mock.github.create_blob = async args => {
+    const result = await boundedCreateBlob(args);
+    if (!injectedBoundedStop) {
+      injectedBoundedStop = true;
+      boundedRecovery.mock.cloud.workflow.state = "disabled_manually";
+    }
+    return result;
+  };
+  const blobsBeforeBoundedStop = boundedRecovery.mock.count("create_blob");
+  const boundedUploadStop = await failure(() => boundedDrive(boundedRecovery, "stageReservedStep", recoveryInput),
+    "a live stop between two bounded upload writes retains the original checkpoint");
+  assert(boundedRecovery.mock.count("create_blob") === blobsBeforeBoundedStop + 1 &&
+    boundedUploadStop.imageGenResult.image_url === recoveryInput.imageGenResult.image_url &&
+    boundedUploadStop.observedAt === recoveryInput.observedAt && plainJSON(boundedUploadStop.checkpoint),
+    "bounded upload stop retains first PNG/time and exactly one successful blob write");
+  boundedRecovery.mock.cloud.workflow.state = "active";
+  const boundedRecovered = (await boundedDrive(boundedRecovery, "stageReservedStep", {},
+    restored(boundedUploadStop.checkpoint))).result;
+  assert(boundedRecovered.status === "saved" &&
+    boundedRecovery.mock.count("create_blob") === blobsBeforeBoundedStop + 3 &&
+    boundedRecovered.receipt.generation.observed_at === recoveryInput.observedAt &&
+    boundedRecovery.stepCounters.generated === 0,
+    "fresh bounded recovery uses its retained bytes/time and skips the already uploaded source blob");
+
+  const boundedCorrupt = await boundedContext("bounded-corrupt-final-readback");
+  const corruptReservation = (await boundedDrive(boundedCorrupt, "reserveExternalGenerationStep", boundedCorrupt.stepOptions)).result;
+  let corruptedBoundedSource = false;
+  await failure(() => boundedDrive(boundedCorrupt, "stageReservedStep", {...boundedCorrupt.input,
+    observedAt: new Date().toISOString(), transportPreflight: corruptReservation.transportPreflight,
+    generationClaim: corruptReservation.generationClaim}, undefined, (_checkpoint, result) => {
+    if (result.phase === "saved_readback" && !corruptedBoundedSource) {
+      const stored = boundedCorrupt.mock.resolve(boundedCorrupt.branch).get(prefix + "source.png.part000");
+      stored.bytes = stored.bytes.slice();stored.bytes[stored.bytes.length - 1] ^= 1;
+      corruptedBoundedSource = true;
+    }
+  }), "bounded staging cannot report saved after source readback bytes change");
+  assert(corruptedBoundedSource && boundedCorrupt.stepCounters.generated === 0,
+    "bounded final verification checks the actual saved source SHA without generating a replacement");
+
+  // The scheduled connector wraps payloads in .result rather than
+  // .structuredContent. Apply that shape to every callback, not just reads.
+  function resultWrappedMock(faults, decorate) {
+    const mock = makeMock(faults), wrappedNames = new Set();
+    for (const [name, callback] of Object.entries(mock.github)) mock.github[name] = async args => {
+      wrappedNames.add(name);
+      const response = await callback(args);
+      const wrapped = {result: response.structuredContent ?? response};
+      return decorate ? decorate(wrapped, name) : wrapped;
+    };
+    return {...mock, wrappedNames};
+  }
+  const wrappedMock = resultWrappedMock();
+  const wrappedService = stageAPI.create({runtime, github: wrappedMock.github, repository});
+  const wrappedArgs = {slug, articleSha256, baseCommitSha, baseTreeSha, prompt, logicalRunId: "result-wrapper-save"};
+  const wrappedPlan = await wrappedService.prepare(wrappedArgs);
+  assert((await wrappedService.probe(wrappedPlan)).status === "absent" && wrappedMock.writes().length === 0,
+    "result-wrapped precise NOT_FOUND still establishes the exact missing candidate ref without writes");
+  const wrappedSaved = await wrappedService.stage(wrappedPlan, {imageGenResult: {image_url: pngDataURL}, observedAt});
+  const wrappedReceipt = wrappedSaved.receipt;
+  assert(wrappedSaved.status === "saved" && wrappedReceipt.source.sha256 === runtime.sha256(pngBytes) &&
+    equalBytes(wrappedMock.resolve(wrappedPlan.branch).get(wrappedReceipt.source.parts[0].path).bytes, pngBytes),
+    "result-wrapped prepare, cloud guards and Git object writes preserve the exact original PNG");
+  assert(["fetch_file", "fetch", "create_blob", "create_tree", "create_commit", "create_branch"]
+    .every(name => wrappedMock.wrappedNames.has(name)),
+  "result-wrapped staging exercises reads, guard fetches and every candidate mutation callback");
+  protectedUnchanged({mock: wrappedMock, branch: wrappedPlan.branch}, "result-wrapped stage");
+
+  for (const [location, field, value] of [
+    ["outer", "isError", true], ["outer", "error_code", "UNAVAILABLE"], ["outer", "error", "Outer wrapper failure"],
+    ["inner", "isError", true], ["inner", "error_code", "UNAVAILABLE"], ["inner", "error", "Inner wrapper failure"]
+  ]) {
+    const errorMock = resultWrappedMock({}, (response, name) => {
+      if (name !== "fetch") return response;
+      if (location === "outer") return {...response, [field]: value};
+      return {result: {...response.result, [field]: value}};
+    });
+    const service = stageAPI.create({runtime, github: errorMock.github, repository});
+    const plan = await service.prepare({...wrappedArgs, logicalRunId: "result-wrapper-" + location + "-" + field});
+    const error = await failure(() => service.stage(plan, {imageGenResult: {image_url: pngDataURL}, observedAt}),
+      "result wrapper rejects " + location + " " + field + " before candidate writes");
+    assert(error.message.includes("Cloud image operations stopped:") && errorMock.writes().length === 0,
+      location + " " + field + " cannot authorize a write through an otherwise valid wrapped guard payload");
+  }
+  const ambiguousWrapped = resultWrappedMock({ambiguous404: true});
+  const ambiguousWrappedService = stageAPI.create({runtime, github: ambiguousWrapped.github, repository});
+  const ambiguousWrappedPlan = await ambiguousWrappedService.prepare({...wrappedArgs, logicalRunId: "result-wrapper-ambiguous-missing"});
+  await failure(() => ambiguousWrappedService.stage(ambiguousWrappedPlan,
+    {imageGenResult: {image_url: pngDataURL}, observedAt}),
+  "result-wrapped generic NOT_FOUND is not mistaken for exact missing-ref evidence");
+  assert(ambiguousWrapped.writes().length === 0, "ambiguous wrapped missing-ref errors remain fail-closed without writes");
+
   return {passed: checks.length, checks};
 };
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageStageTests;

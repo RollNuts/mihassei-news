@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "status": "transport_and_text_ready_no_git_binary_persist_no_official_acceptance",
+  "verified_reference": {
+    "main_commit_checked": "09be956738ea077f7408b6b2e779815e4a518344",
+    "photo_issues_blob_sha": "80df88ae053fe5444c0c04c9a7f5986dcf4e09e4",
+    "prior_issue_snapshot": "november-a-longer-breath-yuki-005"
+  },
+  "target": {
+    "file": "content/photo_issues.json",
+    "operation": "append_only_to_issues",
+    "issue_draft": {
+      "slug": "november-warm-water-and-riverside-yuki-009",
+      "number": 9,
+      "title": "暖かな水辺から、秋の川沿いへ。",
+      "summary": "白峰ゆきが、水着で過ごす暖かな旅先の海と屋内スパから、紅葉の川沿い、夜の窓辺まで歩く11月の10枚。",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "暖かな旅先の海辺と屋内スパ、紅葉の川沿い、夜の窓辺",
+        "aspect_ratio": "original",
+        "visual_direction": "既存原本10枚の縦横比を保ち、暖かな旅行先の水辺と秋の川辺・室内の温度差を見せる。"
+      },
+      "column": [
+        "川沿いを歩いていたら、指先がすっかり冷たくなりました。",
+        "お茶であたたまったら、もう少し先まで。",
+        "帰るのが遅くなりそうです。"
+      ],
+      "model_id": "shiramine-yuki",
+      "model_snapshot": {
+        "id": "shiramine-yuki",
+        "name": "白峰ゆき",
+        "age": 24,
+        "fictional": true,
+        "appearance": "24歳の架空の成人。柔らかな雰囲気と暗めの長い髪。独自の顔立ち。",
+        "character": {
+          "version": 1,
+          "first_person": "わたし",
+          "occupation": "旅・衣服担当モデル兼リポーター",
+          "casting_specialty": "旅先の居心地や衣服の温度・手触りを、落ち着いて確かめる企画。",
+          "personality": "穏やかで気配り上手。居心地のよさには意外と頑固。",
+          "voice": "ゆっくりした語り口。温度や手触りを身近な言葉で語る。",
+          "likes": [
+            "温かい飲み物",
+            "柔らかな服",
+            "静かな旅"
+          ],
+          "weakness": "気に入った場所を見つけると長居する。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+          "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+          "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766",
+          "provenance": "assets/generated/photo-reference-shiramine-yuki-b5705a94502f.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 167,
+          "bust_cm": 89,
+          "waist_cm": 63,
+          "hip_cm": 92,
+          "shoulder_width_cm": 38,
+          "inseam_cm": 78,
+          "heads_tall": 7.4
+        },
+        "body_profile_sha256": "eb22f6776392f86daa824422bc30aa951735370c59c5920b8cc2514bf0dc5c74",
+        "face_reference": {
+          "path": "assets/generated/photo-master-shiramine-yuki-b5705a94502f.jpg",
+          "sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+          "source_png_sha256": "61f0d767493a32ea5e5d399dd80a432ed99d22e67464e23a696bde9863324766"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-shiramine-yuki-f2ba9bb76565.jpg",
+          "sha256": "f2ba9bb76565dba851248c28786a0f063427fbe6549de2be89f4c74c2e2154e7",
+          "source_png_sha256": "5a9a331cb621208f0f5cdbe5d7ef30e75a646101cf482bdf3c40e0432616042b",
+          "provenance": "assets/generated/photo-reference-shiramine-yuki-f2ba9bb76565.json"
+        }
+      },
+      "source_article": null,
+      "shots": [
+        {
+          "id": "01",
+          "description": "白いワンピース水着で自然光が入る室内に立つ全身。",
+          "caption": "光の入る部屋から、旅の支度。",
+          "alt": "白いワンピース水着姿で、室内の窓光を受ける白峰ゆき。"
+        },
+        {
+          "id": "02",
+          "description": "白い水着と薄い羽織で、海に面したデッキの手すりに寄りかかる後ろ姿。",
+          "caption": "少し暖かな海の風に、足を止める。",
+          "alt": "暖かな旅先の海沿いデッキで、白い水着と羽織の白峰ゆきが振り返る。"
+        },
+        {
+          "id": "03",
+          "description": "黒いビキニ姿で、屋内スパの石壁に手を置いて立つ全身。",
+          "caption": "温かな室内で、ひと休み。",
+          "alt": "屋内スパの石壁のそばで黒いビキニを着た白峰ゆき。"
+        },
+        {
+          "id": "04",
+          "description": "赤いビキニでプールサイドの椅子に座り、上を見上げる。",
+          "caption": "水辺では、時間の流れが少しゆっくり。",
+          "alt": "赤いビキニ姿で、プールサイドの椅子に腰掛ける白峰ゆき。"
+        },
+        {
+          "id": "05",
+          "description": "緑のビキニにコートを腕に掛け、海辺を歩く。",
+          "caption": "海辺の風を確かめながら。",
+          "alt": "暖かな旅先の海辺を、緑のビキニと羽織りを手に歩く白峰ゆき。"
+        },
+        {
+          "id": "06",
+          "description": "クリーム色の上着で、紅葉の川沿いの道を歩いて振り返る。",
+          "caption": "川の音を聞いて、もう少しだけ。",
+          "alt": "クリーム色の上着と黒いリュックで、紅葉の川沿いを振り返る白峰ゆき。"
+        },
+        {
+          "id": "07",
+          "description": "グレーのドレスで、柔らかな光の中の立ち姿。",
+          "caption": "着替えた後も、少し考える。",
+          "alt": "グレーのドレスで、淡いグレーの壁の前に立つ白峰ゆき。"
+        },
+        {
+          "id": "08",
+          "description": "ざっくりしたグレーのニットで、暖かな部屋のソファに座る。",
+          "caption": "やわらかいニットに、寄り道の続き。",
+          "alt": "グレーのニット姿で、暖かな室内のソファに座る白峰ゆき。"
+        },
+        {
+          "id": "09",
+          "description": "淡いブラウスとスカートで、夜景の見える食卓に立つ。",
+          "caption": "夕食の前に、窓の外を見た。",
+          "alt": "夜景の見える食卓でグラスを持つ白峰ゆき。"
+        },
+        {
+          "id": "10",
+          "description": "夕暮れの窓辺で、白いブラウス姿で飲み物を手に外を見る。",
+          "caption": "窓の外が暗くなるまで。",
+          "alt": "秋の夕暮れの窓辺で白いブラウス姿の白峰ゆきが飲み物を手にする。"
+        }
+      ],
+      "swimwear_exception": {
+        "kind": "reduced_swimwear",
+        "reason": "非重複10原本の水着は5枚（白ワンピース水着1枚、白・黒・赤・緑のビキニ4枚）で、基本6枚に1枚不足。追加のプール写真は白いブランド様マークを実画像で確認したため保留し、ロゴを隠す編集や水着としての水増しをしない。暖かな旅行先の海辺・屋内スパの水着5枚と、紅葉の川沿い・ニット・ドレス・夕暮れの5枚を、同一人物の11月の旅として構成する例外。"
+      },
+      "issue_sha256": "96fc5ad58ae85f093f08772db7e2f33b9f2bb04a6236ac711a00902e25f1540c",
+      "state": "draft",
+      "images": {},
+      "generation_holds": {},
+      "cover_cut_id": "05"
+    },
+    "write_only_after_candidate_branch_ref": "binary branch ref from Codex",
+    "requires_current_main_recheck": true
+  },
+  "edition": {
+    "file": "content/photo_editions.json",
+    "edition_slug": "issue-002",
+    "model_id": "shiramine-yuki",
+    "operation_after_acceptance": "append issue slug to features in fixed order; preserve existing prefix and seed/order",
+    "no_advance_until_final_review": true
+  },
+  "source": {
+    "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "source_voice_blob_sha": "064f1dc9948648883fedba162023f742628d13cb",
+    "source_post_text": "川沿いを歩いていたら、指先がすっかり冷たくなりました。\nお茶であたたまったら、もう少し先まで。\n帰るのが遅くなりそうです。",
+    "source_spoken_line": "あたたかいお茶、飲もう。",
+    "source_photo_reference_unresolved": true,
+    "zip_sources": {
+      "new6": "aeee6fb40a2d6b7a22ef2ae829733af81d53943c89773dd8781299a9a6752bd2",
+      "previous10": "1b29199cdef63e072c6031c954ef74361b49e8e9d5c7a9b02311ac7163477393"
+    },
+    "delivery_turns": {
+      "new6": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "previous10": "5f0a47e0-f9e0-459b-ad75-ad600774469a"
+    },
+    "generation_turn": "unknown",
+    "current_chat_uploads_are_transport_only": true
+  },
+  "assets": [
+    {
+      "cut_id": "01",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-01.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-01.jpg",
+      "jpeg_sha256": "3d19a78fab0edf0fe7808def41c2565ea5dca08004477aeef90947edd894fc75",
+      "jpeg_bytes": 138393,
+      "jpeg_width": 1024,
+      "jpeg_height": 1536,
+      "original_png_sha256": "023592d3948e1f4cad355bf64d87e6435c42ff90db2977bcbbb743fdb9c94d69",
+      "original_filename": "柔らかな陽光の中のミニマルポートレート.png",
+      "source_delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "source_manifest_image_ref": "file_00000000f4248212940f23747a7dbc78",
+      "origin_archive_key": "new6",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "白水着と室内壁、裸足の全身が読める。輪郭と手足に目立つ崩れなし。",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "02",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-02.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-02.jpg",
+      "jpeg_sha256": "45181db95fa8ce1071d3ce69970e474ebf3136f1761f6ee01c38a19f869ec6a4",
+      "jpeg_bytes": 181543,
+      "jpeg_width": 1024,
+      "jpeg_height": 1536,
+      "original_png_sha256": "437f01feea9f5c4949a5d08a5730a685c3dd4e28df6d851283256bbe049aa71d",
+      "original_filename": "海辺のデッキで憩う女性.png",
+      "source_delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "source_manifest_image_ref": "file_000000000dcc81f78e2d985508a9ed93",
+      "origin_archive_key": "new6",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "海とデッキの手すりが見え、白水着と薄手の羽織が判別できる。寒い本州の11月と誤認させない暖かな旅先設定が必要。 白い水着は羽織で上部の一部が隠れるが、ビキニの下部が明瞭。",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "03",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-03.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-03.jpg",
+      "jpeg_sha256": "9b7bdfecb7e05a90bf698682e15ee7e4f52aed475890de1adb120a6d4ff41cfa",
+      "jpeg_bytes": 234615,
+      "jpeg_width": 1024,
+      "jpeg_height": 1536,
+      "original_png_sha256": "416c7c51c250034075d308fe7154616c5f9facf742d5469f97d43b898681f68b",
+      "original_filename": "高級スパでくつろぐ女性.png",
+      "source_delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "source_manifest_image_ref": "file_0000000050c081f79f64cfbbf9cad734",
+      "origin_archive_key": "new6",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "石壁と低照度の温かな照明。黒いビキニが明確。照明、手指、脚の接続に著しい破綻なし。",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "04",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-04.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-04.jpg",
+      "jpeg_sha256": "ccaf22ff3817236fef020b41bb161d4c1c4a636e2b7b1b49855f5a9255a03ce0",
+      "jpeg_bytes": 217984,
+      "jpeg_width": 1086,
+      "jpeg_height": 1448,
+      "original_png_sha256": "65353831961da15e66fbc9e7c1027f56794f014691c58be64c0cf974a7d114b1",
+      "original_filename": "陽だまりのプールサイドで微笑む女性.png",
+      "source_delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "source_manifest_image_ref": "file_00000000a9948212bcb1caa482381536",
+      "origin_archive_key": "new6",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "赤い水着が確認できる。視線は上向きで座り姿勢。水面または屋内外の暖かい環境を誤認しない設定で掲載。",
+      "framing": "upper_body",
+      "swimwear_visible": true,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "05",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-05.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-05.jpg",
+      "jpeg_sha256": "0809e2e80eeda0682659f07c5718c479d0804d8f2494d9fb8fb007b085be274a",
+      "jpeg_bytes": 174248,
+      "jpeg_width": 1536,
+      "jpeg_height": 1024,
+      "original_png_sha256": "6e91db46df8dd8ff265468ab0f3899fc60d197b5b29b27440044b89f2c2020e8",
+      "original_filename": "風に揺れる海辺の散歩.png",
+      "source_delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+      "source_manifest_image_ref": "file_000000003a08820eb82a3ed34b76f5de",
+      "origin_archive_key": "new6",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "横長の砂浜全身。緑ビキニが判別でき、引き構図と海岸の奥行きがある。暖かな地域の11月として扱う。",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "06",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-06.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-06.jpg",
+      "jpeg_sha256": "fc024ccbc8be58eddb05d3428ecb55b481beb71c2273e4c51b3961cb1abf6a73",
+      "jpeg_bytes": 241185,
+      "jpeg_width": 1535,
+      "jpeg_height": 1024,
+      "original_png_sha256": "7cf11244d0967a3877e24ca76fece76d39eecda1b00c10fc32399b9ee57e6add",
+      "original_filename": "温泉街の川辺を振り返る女性.png",
+      "source_delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+      "source_manifest_image_ref": "6b59c341-7b2d-475b-81b4-baddaa50b66a",
+      "origin_archive_key": "previous10",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "横長。川、紅葉、木造の建物、黒いバッグとクリーム色の上着が見える。本人の渓流の近況文をこの画像の出典と断定しない。",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "07",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-07.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-07.jpg",
+      "jpeg_sha256": "21318da30ac37d2d98d929b358f41460c2ce57e05819009d13d305b15a65ec64",
+      "jpeg_bytes": 193065,
+      "jpeg_width": 1025,
+      "jpeg_height": 1535,
+      "original_png_sha256": "21c760ba067665a7e74e72bd56a1dfa8651efa01cc9cb255cd0b8040abdb10d6",
+      "original_filename": "静謐なグレードレスの肖像.png",
+      "source_delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+      "source_manifest_image_ref": "235d5b37-ea94-471a-8c69-8c40b8bce8e0",
+      "origin_archive_key": "previous10",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "グレードレスと布の折り目、正面ではなく少し斜めの肖像。背景の印字・文字なし。",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "08",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-08.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-08.jpg",
+      "jpeg_sha256": "d656449fdbcbafc68100df11d15def42bfcb5c17f6ddac42c9391ddf7150cb49",
+      "jpeg_bytes": 231503,
+      "jpeg_width": 1535,
+      "jpeg_height": 1025,
+      "original_png_sha256": "cd45a818dcb3a34c0292dcdae4e4bc9777772466329d6fa57e2ca5c50388be2c",
+      "original_filename": "暖かな部屋でくつろぐ女性.png",
+      "source_delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+      "source_manifest_image_ref": "59ec111d-940c-46f4-a3c7-dcaf79733b12",
+      "origin_archive_key": "previous10",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "横長。ニットの繊維、落ち着いた室内光、膝を抱えた姿。手首のつながりに著しい崩れなし。",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "09",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-09.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-09.jpg",
+      "jpeg_sha256": "87694648575e1de05d9f5746b76be2d472d08b8b928969056f29d0a6a5bd8cbf",
+      "jpeg_bytes": 191406,
+      "jpeg_width": 1086,
+      "jpeg_height": 1448,
+      "original_png_sha256": "b583ec72bf6283d1520d8e2ee4efdf159bd7c4919323ca74d25db22aea9b4402",
+      "original_filename": "夜景を望む優雅なディナータイム.png",
+      "source_delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+      "source_manifest_image_ref": "661949eb-6a77-4bf8-aea8-1af3bb1ab10b",
+      "origin_archive_key": "previous10",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "縦長。窓の青い夜景、白いブラウス、グラスと椅子が確認できる。",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    },
+    {
+      "cut_id": "10",
+      "desired_repo_jpeg_path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-10.jpg",
+      "local_jpeg_path": "/mnt/data/yuki_review/transport_jpegs/shiramine-yuki-issue-002-cut-10.jpg",
+      "jpeg_sha256": "98a01b4178924db3ae867c0898fdb2304bfabbc567725fab3c3c87bd435c4e46",
+      "jpeg_bytes": 142475,
+      "jpeg_width": 1536,
+      "jpeg_height": 1024,
+      "original_png_sha256": "3ede6fe264f39cbb4ba2c47da6f09f3ce72ea248dc20689b12443de1a32ee6fd",
+      "original_filename": "夕暮れの窓辺で静かなひととき.png",
+      "source_delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+      "source_manifest_image_ref": "f0a989e6-0a05-425b-b6a7-cb732d6af18f",
+      "origin_archive_key": "previous10",
+      "conversion": {
+        "tool": "Pillow 12.3.0",
+        "quality": 86,
+        "subsampling": "4:2:0",
+        "optimize": true,
+        "progressive": true,
+        "color_conversion": "RGB",
+        "resize": false,
+        "crop": false,
+        "width_height_change": false,
+        "max_bytes": 716800
+      },
+      "editorial_observation": "横長。横顔、秋の枝葉、湯気の見える卓上の器とグラス。自然な窓光。",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "status": "transport_only_pending_formal_receipt_and_review"
+    }
+  ],
+  "story": {
+    "status": "not_adopted",
+    "reason": "source draft photo_reference contains only a scene description, no permanent identification; do not attach to another photo. Verify any same-day story already published before PR.",
+    "checked_existing_live_data": "main content/photo_stories.json contains tsukishiro-rena-post-20261117013616871609 at 2026-11-17T01:36:16+09:00; no second insertion requested until verified eligible source."
+  },
+  "validation_to_run_after_binary_ref": [
+    "Confirm 5 swimsuits (4 bikinis) without counting held logo cut.",
+    "validate original/source-image SHA and accepted reference",
+    "create actual receipts matching repo schema",
+    "final JPEG direct visual review and timestamps on current issue SHA",
+    "history protection and photo issues tests",
+    "site CI",
+    "PR then safe merge and production revision/issue/OGP/RSS check"
+  ],
+  "no_new_generation": true,
+  "docs_sync_on_same_content_pr": {
+    "docs/OPERATIONS.md": "担当表の既存行だけを、素材制作GPT7人は月曜週1回・既存時刻、各人の未掲載候補在庫30枚目安、既存素材先行、不足時だけ生成呼出し失敗込み週最大20回、100枚は累計目標、無料制約で臨時埋め合わせなし、と同期。時刻正本はAutomationsを優先。",
+    "docs/EDITORIAL_LOOP.md": "近況は特集と独立して既刊検品写真と本人原文の確かな対応があるときだけ公開。既存の同文重複・季節・実公開時刻制限を保持。",
+    "restriction": "資料だけのPR/commitや追加CIを作らず、今回の画像保存と同一の通常公開PRで適用。"
+  }
+}

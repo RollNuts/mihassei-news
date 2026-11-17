@@ -30,6 +30,8 @@ async function main() {
   }
   const byteReport = testBytes(bytes, sources);
   console.log(`native_image_bytes_test.js: ${byteReport.passed} checks passed`);
+  const sourceReport = await testBytes.fetchSources(bytes, sources);
+  console.log(`native_image_bytes source adapters: ${sourceReport.passed} checks passed`);
   const stageReport = await testStage(stage, runtime);
   console.log(`native_image_stage_test.js: ${stageReport.passed} checks passed`);
 }
