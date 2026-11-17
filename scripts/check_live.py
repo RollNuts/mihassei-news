@@ -36,6 +36,11 @@ if __package__:
     from .serials import public_serials
     from .editorial_copy import reader_copy, source_reader_copy
     from .article_diagrams import reviewed_article_diagram
+    from .market_bulletins import (
+        load_market_bulletins, bulletin_url, figure_url, chart_html,
+        market_bulletin_feed_xml, FEED_URL as MARKET_BULLETIN_FEED,
+    )
+    from .market_figures import render_market_svg
     from .build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
@@ -51,6 +56,11 @@ else:
     from serials import public_serials
     from editorial_copy import reader_copy, source_reader_copy
     from article_diagrams import reviewed_article_diagram
+    from market_bulletins import (
+        load_market_bulletins, bulletin_url, figure_url, chart_html,
+        market_bulletin_feed_xml, FEED_URL as MARKET_BULLETIN_FEED,
+    )
+    from market_figures import render_market_svg
     from build import (
         editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
@@ -541,6 +551,59 @@ def verify_article_diagram(article: dict, markup: str, *, fetch=None, root=ROOT)
     return True
 
 
+def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
+    """GET-only proof for the newest real market dispatch, figures and RSS.
+
+    Historical bulletins remain under the existing local build/schema tests.
+    Only the newest dispatch adds network reads to each release verification.
+    The market-lab *serial* RSS is already verified by check()'s serial loop.
+    """
+    if not reports:
+        return 0
+    fetch = fetch or get
+    report = reports[-1]
+    path = bulletin_url(report)
+    page_bytes, content_type = fetch(path)
+    if content_type.split(";", 1)[0].strip().lower() != "text/html":
+        raise RuntimeError(path + ": market dispatch is not served as HTML")
+    page = page_bytes.decode("utf-8")
+    preview = SITE + "/og/serials/market-lab.png"
+    for required in (
+        '<link rel="canonical" href="' + SITE + path + '">',
+        '<meta property="og:url" content="' + SITE + path + '">',
+        '<meta property="og:type" content="article">',
+        '<meta property="og:image" content="' + preview + '">',
+        '<meta name="twitter:image" content="' + preview + '">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        '<h1>' + html.escape(report["title"]) + '</h1>',
+        '<time datetime="' + report["published_at"] + '">',
+        '"datePublished": "' + report["published_at"] + '"',
+    ):
+        if page.count(required) != 1:
+            raise RuntimeError(path + ": market dispatch HTML/OGP mismatch: " + required[:90])
+
+    for figure in report["figures"]:
+        fragment = chart_html(report, figure)
+        if page.count(fragment) != 1:
+            raise RuntimeError(path + ": market figure or its source/time/phone markup differs: " + figure["id"])
+        for mobile in (False, True):
+            svg = render_market_svg(figure, mobile=mobile).encode("utf-8")
+            asset_path = "/" + figure_url(report, figure, mobile=mobile)
+            digest = hashlib.sha256(svg).hexdigest()[:12]
+            published, mime = fetch(asset_path + "?v=" + digest)
+            if mime.split(";", 1)[0].strip().lower() != "image/svg+xml":
+                raise RuntimeError(asset_path + ": market SVG Content-Type mismatch")
+            if published != svg:
+                raise RuntimeError(asset_path + ": published market SVG bytes differ")
+
+    rss, mime = fetch(MARKET_BULLETIN_FEED)
+    if "xml" not in mime.lower():
+        raise RuntimeError("Market bulletin RSS is not served as XML")
+    if rss != market_bulletin_feed_xml(reports).encode("utf-8"):
+        raise RuntimeError("Market bulletin RSS differs from the current published reports")
+    return len(report["figures"])
+
+
 def verify_pv_recommendations(markup: str, articles: list[dict], current_article=None) -> None:
     """Verify the entire eligible archive and a usable, honestly labelled fallback.
 
@@ -891,6 +954,17 @@ def check():
                 raise RuntimeError("Fiction episode missing disclosure: "+path)
             if serial["kind"]=="analysis" and ("投資助言" not in page or "参照した公開資料" not in page):
                 raise RuntimeError("Market analysis missing sources/disclosure: "+path)
+
+    # Market bulletins are separate from fictional articles and serial episodes:
+    # the existing recent-article loop and selected X cards cannot cover them.
+    dispatches = load_market_bulletins(ROOT)
+    if dispatches:
+        current_dispatch = bulletin_url(dispatches[-1])
+        if SITE + current_dispatch not in live_sitemap:
+            raise RuntimeError("Latest market dispatch missing from sitemap: " + current_dispatch)
+        checked_market_figures = verify_latest_market_bulletin_delivery(dispatches)
+        print("Public latest market dispatch, figure pairs and bulletin RSS OK:",
+              dispatches[-1]["slug"], checked_market_figures)
 
     # Internal publishing tools are intentionally not part of the public site.
     # Do not mistake a robots noindex hint for real privacy.
