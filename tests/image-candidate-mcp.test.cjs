@@ -12,6 +12,7 @@ const repo='https://api.github.com/repos/RollNuts/mihassei-news';
 const source='https://files.oaiusercontent.com/file-abcDEF123?se=short-lived&sig=synthetic';
 const file={download_url:source,file_id:'file-abcDEF123',mime_type:'image/jpeg',file_name:'verified.jpg'};
 const bytes=fs.readFileSync(path.join(__dirname,'../assets/generated/fermentation-rna-inspection-two-flavors.jpg'));
+const realManifest=fs.readFileSync(path.join(__dirname,'../assets/generated/manifest.json'));
 const sha=x=>createHash('sha256').update(x).digest('hex');
 const encoded=value=>Buffer.from(JSON.stringify(value)).toString('base64');
 const fromBytes=b=>Buffer.from(b).toString('base64');
@@ -61,8 +62,10 @@ function githubFixture(claim,override={}) {
   const calls=[];
   let head=override.head||claim.claim_commit_sha;
   let stored=override.stored||null;
+  // Keep the immutable claim independent of a later replay request.
+  const savedClaim=override.originalClaim||claim;
   const record={version:1,repository:'RollNuts/mihassei-news',
-    ...Object.fromEntries(Object.entries(claim).filter(([k])=>k!=='nonce'&&k!=='claim_commit_sha'))};
+    ...Object.fromEntries(Object.entries(savedClaim).filter(([k])=>k!=='nonce'&&k!=='claim_commit_sha'))};
   const fetchImpl=async(url,opts)=>{
     calls.push({url,method:opts.method,redirect:opts.redirect,
       authorized:Boolean(opts.headers.authorization),
@@ -76,14 +79,18 @@ function githubFixture(claim,override={}) {
       return Response.json({path:'.github/workflows/free-cpu-scenes.yml',
         state:override.off?'disabled_manually':'active'});
     if(p.startsWith('/contents/assets/generated/manifest.json?ref=main'))
-      return Response.json({encoding:'base64',content:encoded({version:1,images:override.images||
-        {old:{bytes:80000}}})});
+      return Response.json({encoding:'base64',content:override.manifestBytes
+        ? Buffer.from(override.manifestBytes).toString('base64')
+        : encoded({version:1,images:override.images||{old:{bytes:80000}}})});
     if(p.startsWith('/git/ref/heads/')){
-      if(opts.method==='PATCH'){
-        assert.equal(JSON.parse(opts.body).force,false);
-        if(head!==claim.claim_commit_sha)return new Response('',{status:422});
-        head='e'.repeat(40);
-      }
+      assert.equal(opts.method,'GET','GitHub get-reference uses singular /ref');
+      return Response.json({object:{sha:head}});
+    }
+    if(p.startsWith('/git/refs/heads/')){
+      assert.equal(opts.method,'PATCH','GitHub update-reference uses plural /refs');
+      assert.equal(JSON.parse(opts.body).force,false);
+      if(head!==claim.claim_commit_sha)return new Response('',{status:422});
+      head='e'.repeat(40);
       return Response.json({object:{sha:head}});
     }
     if(p.startsWith('/contents/maintenance/image-upload-claims/')){
@@ -96,6 +103,8 @@ function githubFixture(claim,override={}) {
     }
     if(p==='/git/commits/'+claim.claim_commit_sha)return Response.json({tree:{sha:'c'.repeat(40)},
       parents:[{sha:claim.expected_head_sha}]});
+    if(p==='/git/commits/'+'e'.repeat(40))return Response.json({tree:{sha:'f'.repeat(40)},
+      parents:[{sha:claim.claim_commit_sha}]});
     if(p==='/git/blobs') {
       assert.equal(opts.method,'POST');
       assert.equal(sha(Buffer.from(JSON.parse(opts.body).content,'base64')),sha(bytes));
@@ -201,6 +210,8 @@ test('signed branch claim + separate caller key: one new immutable JPEG candidat
   assert.equal(fake.calls.find(x=>x.url.endsWith('/actions/workflows/free-cpu-scenes.yml')).authorized,false);
   assert.ok(fake.calls.filter(x=>x.method==='POST'||x.method==='PATCH').every(x=>x.authorized));
   assert.equal(fake.calls.find(x=>x.method==='PATCH').force,false);
+  assert.ok(fake.calls.some(x=>x.method==='GET'&&x.url.includes('/git/ref/heads/')));
+  assert.ok(fake.calls.some(x=>x.method==='PATCH'&&x.url.includes('/git/refs/heads/')));
   assert.equal(fake.head,'e'.repeat(40));
   // A retry with the same exact source/claim must reuse its old candidate.
   const replay=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),
@@ -219,6 +230,50 @@ test('concurrent head, inactive image workflow, private repo or limit never writ
     assert.equal(result.result.isError,true);
     assert.equal(fake.calls.filter(x=>x.method==='POST'||x.method==='PATCH').length,0);
   }
+});
+
+
+test('current 763 KiB source manifest passes separate GitHub Contents and decoder caps',async()=>{
+  assert.ok(realManifest.length>700*1024 && realManifest.length<=1024*1024);
+  assert.equal(JSON.parse(realManifest).version,1);
+  const claim=syntheticClaim(),fake=githubFixture(claim,{manifestBytes:realManifest});
+  const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
+    {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
+  assert.equal(result.result.isError,false,JSON.stringify(result.result.content));
+  assert.equal(result.result.structuredContent.status,'saved');
+  assert.ok(fake.calls.some(x=>x.url.includes('/contents/assets/generated/manifest.json?ref=main')));
+  console.log('Real source inventory bytes:',realManifest.length,'(mocked Contents HTTP, not Cloudflare CPU)');
+});
+
+test('oversized manifest and oversized JPEG readbacks fail closed before branch update',async()=>{
+  const claim=syntheticClaim();
+  const tooLarge=Buffer.alloc(1024*1024+1,123);
+  const fake=githubFixture(claim,{manifestBytes:tooLarge});
+  const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
+    {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
+  assert.equal(result.result.isError,true);
+  assert.equal(fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length,0);
+});
+
+test('replay requires original nonce, expiration, claim commit and exact saved ancestry',async()=>{
+  const claim=syntheticClaim(),fake=githubFixture(claim);
+  const msg=c=>bodyFor('stage_candidate_jpeg',{file,claim:c});
+  const auth={authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY};
+  const first=await data(await send(msg(claim),fake.fetchImpl,env,auth));
+  assert.equal(first.result.structuredContent.status,'saved',JSON.stringify(first.result.content));
+  const writeCount=fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length;
+  const variations=[
+    c=>{c.nonce='z'.repeat(36);c.nonce_sha256=sha(c.nonce);},
+    c=>{c.expires_at=new Date(Date.now()+8*60*1000).toISOString();},
+    c=>{c.claim_commit_sha='8'.repeat(40);},
+  ];
+  for(const mutate of variations){
+    const altered={...claim};mutate(altered);
+    const response=await data(await send(msg(altered),fake.fetchImpl,env,auth));
+    assert.equal(response.result.isError,true,JSON.stringify(altered));
+    assert.notEqual(response.result.structuredContent?.status,'reused');
+  }
+  assert.equal(fake.calls.filter(x=>['POST','PATCH'].includes(x.method)).length,writeCount);
 });
 
 test('wrong nonce/file hash/expired claim blocks before any GitHub call',async()=>{
