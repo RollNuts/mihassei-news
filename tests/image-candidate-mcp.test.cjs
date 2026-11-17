@@ -64,7 +64,9 @@ function githubFixture(claim,override={}) {
   const record={version:1,repository:'RollNuts/mihassei-news',
     ...Object.fromEntries(Object.entries(claim).filter(([k])=>k!=='nonce'&&k!=='claim_commit_sha'))};
   const fetchImpl=async(url,opts)=>{
-    calls.push({url,method:opts.method,redirect:opts.redirect,force:opts.body&&JSON.parse(opts.body).force});
+    calls.push({url,method:opts.method,redirect:opts.redirect,
+      authorized:Boolean(opts.headers.authorization),
+      force:opts.body&&JSON.parse(opts.body).force});
     if(url===source)return new Response(bytes,{headers:{'content-type':'image/jpeg'}});
     if(!url.startsWith(repo))throw Error('Attempted external network');
     const p=url.slice(repo.length);
@@ -196,6 +198,8 @@ test('signed branch claim + separate caller key: one new immutable JPEG candidat
   assert.equal(fake.calls.filter(x=>x.method==='POST').length,3);
   assert.equal(fake.calls.filter(x=>x.method==='PATCH').length,1);
   assert.ok(fake.calls.every(x=>!x.url.includes('/git/ref/heads/main')));
+  assert.equal(fake.calls.find(x=>x.url.endsWith('/actions/workflows/free-cpu-scenes.yml')).authorized,false);
+  assert.ok(fake.calls.filter(x=>x.method==='POST'||x.method==='PATCH').every(x=>x.authorized));
   assert.equal(fake.calls.find(x=>x.method==='PATCH').force,false);
   assert.equal(fake.head,'e'.repeat(40));
   // A retry with the same exact source/claim must reuse its old candidate.
