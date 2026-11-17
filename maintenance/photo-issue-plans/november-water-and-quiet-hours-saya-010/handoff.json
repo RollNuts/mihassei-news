@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "originals_and_sips_jpegs_retained_awaiting_editorial_selection_column_and_formal_acceptance",
+  "status": "originals_sips_jpegs_and_genuine_producer_column_ready_awaiting_editorial_selection_and_acceptance",
   "verified_reference": {
     "main_commit_checked": "d97db3ab9cfdf2e6db37390182cebea0c72dc8ac",
     "model_snapshot": {
@@ -458,5 +458,17 @@
     "max_jpeg_archive_bytes": 1610612736,
     "disk_free_bytes_at_handoff": 21739671552
   },
-  "publication_state": "Not published; no accepted review, public catalog, production setting, task or workflow changed."
+  "publication_state": "Not published; no accepted review, public catalog, production setting, task or workflow changed.",
+  "producer_column": {
+    "path": "maintenance/photo-issue-plans/november-water-and-quiet-hours-saya-010/producer-column.json",
+    "source_chat_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "1dc1d6cc-c25f-4833-8515-a14befea68f7",
+    "message_id": "1ecd3804-d0b4-4f42-87fa-24d495258243",
+    "paragraphs": [
+      "11月の水辺って、外は寒いのに、室内はぽかぽかしていて不思議です。少し泳ぐつもりが、水の中を歩いたり、縁に座って足を揺らしたり。窓の向こうの紅葉がきれいで、つい長居してしまいました。",
+      "帰りに庭で拾った赤い葉っぱを、本の間にはさんでみました。カフェでも続きを読もうと思ったのに、隣の席から聞こえた楽しそうな話が気になって。気づいたら同じページを三回読んでいました。",
+      "夕食では、おいしかった料理を隣の人にも少しおすそ分け。部屋に戻って着替えたら、今度こそ静かに読書するつもりです。でも、さっきのお菓子も気になるな。"
+    ],
+    "status": "received_from_existing_model_producer_not_editorially_accepted"
+  }
 }
