@@ -190,7 +190,7 @@ test('signed branch claim + separate caller key: one new immutable JPEG candidat
   const claim=syntheticClaim(),fake=githubFixture(claim);
   const result=await data(await send(bodyFor('stage_candidate_jpeg',{file,claim}),fake.fetchImpl,env,
     {authorization:'Bearer '+env.IMAGE_CANDIDATE_CALLER_KEY}));
-  assert.equal(result.result.isError,false);
+  assert.equal(result.result.isError,false,JSON.stringify(result.result.content));
   assert.equal(result.result.structuredContent.status,'saved');
   assert.equal(result.result.structuredContent.path,claim.path);
   assert.equal(result.result.structuredContent.commit_sha,'e'.repeat(40));
