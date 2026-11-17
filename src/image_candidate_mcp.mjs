@@ -3,8 +3,11 @@
 // https://developers.openai.com/plugins/reference#define-file-inputs
 const REPO="RollNuts/mihassei-news";
 const API="https://api.github.com/repos/"+REPO;
-// Exact hosts only. The second was observed from a real fileParams delivery.
-const FILE_HOSTS=new Set(["files.oaiusercontent.com","sdmntprwestus.oaiusercontent.com"]);
+// fileParams uses regional CDN labels; keep that single-label family bounded.
+// Do not allow arbitrary oaiusercontent.com subdomains or response-origin hops.
+const FILE_HOST="files.oaiusercontent.com";
+const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
+const trustedFileHost=host=>host===FILE_HOST||REGIONAL_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
 const MAX_MANIFEST_BYTES=1024*1024;
 const MAX_CONTENTS_RESPONSE=2*1024*1024;
@@ -69,7 +72,7 @@ function allowedFile(file) {
     throw failure("invalid_file_reference");
   let url;
   try{url=new URL(file.download_url);}catch(_){throw failure("invalid_file_reference");}
-  const reason=url.protocol!=="https:"?"scheme":!FILE_HOSTS.has(url.hostname)?"hostname":
+  const reason=url.protocol!=="https:"?"scheme":!trustedFileHost(url.hostname)?"hostname":
     url.port?"port":url.username||url.password?"credentials":url.hash?"fragment":
     url.pathname==="/"?"empty_path":url.pathname.includes("//")?"path_separator":null;
   if(reason){
