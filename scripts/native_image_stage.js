@@ -20,7 +20,13 @@ var NativeImageStage = (function () {
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
-    let generatedSnapshot, workflowNonce=0;
+    let generatedSnapshot, workflowNonce=0, stepUsage=null;
+    function countStep(mutation=false){
+      if(!stepUsage)return;
+      if(stepUsage.calls>=15||mutation&&stepUsage.mutations>=2)throw Error("Bounded image step callback budget exceeded");
+      stepUsage.calls++;if(mutation)stepUsage.mutations++;
+    }
+    async function invoke(name,args){countStep(name!=="fetch"&&name!=="fetch_file");return await github[name](args);}
     function payload(r) {
       const p=r?.structuredContent??r;
       if(!p||r?.isError||p.error_code||p.error){const e=Error(p?.error||"GitHub operation failed");e.provider=p;throw e;}
@@ -28,7 +34,7 @@ var NativeImageStage = (function () {
     }
     async function fetchJSON(path){
       if(typeof github.fetch!=="function")throw Error("Missing cloud guard GitHub callback: fetch");
-      const raw=payload(await github.fetch({url:"https://api.github.com/repos/"+repository+path}));
+      const raw=payload(await invoke("fetch",{url:"https://api.github.com/repos/"+repository+path}));
       return typeof raw.content==="string"?JSON.parse(raw.content):raw;
     }
     async function cloudStatus(){
@@ -60,7 +66,7 @@ var NativeImageStage = (function () {
         let workflow;
         if(readCloudWorkflow){
           const nonce=hashText(JSON.stringify([repository,Date.now(),++workflowNonce,Math.random(),Math.random()]));
-          const raw=payload(await readCloudWorkflow({nonce}));
+          countStep();const raw=payload(await readCloudWorkflow({nonce}));
           workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
           const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
           if(workflow.version!==1||workflow.repository!==repository||workflow.nonce!==nonce
@@ -78,7 +84,7 @@ var NativeImageStage = (function () {
     }
     async function call(name,args){
       if(name!=="fetch_file")await cloudStatus();
-      return payload(await github[name]({repository_full_name:repository,...args}));
+      return payload(await invoke(name,{repository_full_name:repository,...args}));
     }
     function gitSha(p,kind){const candidates=[p.sha,p[kind+"_sha"],p[kind]?.sha].filter(v=>GIT.test(v||""));if(!candidates.length||new Set(candidates).size!==1)throw Error("Invalid "+kind+" SHA response");return candidates[0];}
     async function read(path,ref,encoding="utf-8"){
@@ -378,38 +384,41 @@ var NativeImageStage = (function () {
       try{return await reservePrepared(plan,options,false);}
       finally{activeGenerations.delete(plan.identity);}
     }
+    async function verifyReserved(plan,input) {
+      const claim=input?.generationClaim,proof=input?.transportPreflight;
+      const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
+        "observed_at","route","source_sha256","jpeg_sha256"];
+      if(!claim||claim.kind!=="native_image_generation_claim"||claim.status!=="reserved_generation_unconfirmed"
+        ||claim.branch!==CLAIM_BRANCH_PREFIX+plan.identity||claim.receipt_path!==CLAIM_DIR+"/"+plan.identity+".json"
+        ||!GIT.test(claim.commit_sha||"")||!SHA.test(claim.receipt_sha256||""))throw Error("Invalid generation reservation");
+      if(!proof||proof.kind!=="native_image_transport_preflight"||proof.status!=="passed"
+        ||proof.branch!==PREFLIGHT_BRANCH||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
+        ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
+        ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
+      if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
+      const rawClaim=await read(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
+      if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
+        ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
+        ||record.article_sha256!==plan.articleSha256||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
+        ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
+        ||PROTECTED.some(path=>record.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
+        ||proofFields.some(key=>record.transport_preflight?.[key]!==proof[key]))throw Error("Generation reservation binding mismatch");
+      const rawProof=await read(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
+      if(hashText(rawProof.content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
+        ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
+        ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
+        ||receipt.observed_at!==proof.observed_at||receipt.route!==proof.route
+        ||receipt.source?.sha256!==proof.source_sha256||receipt.jpeg?.sha256!==proof.jpeg_sha256
+        ||receipt.baseline?.commit_sha!==plan.baseCommitSha
+        ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
+      if(!Number.isFinite(Date.parse(record.reserved_at))||!Number.isFinite(Date.parse(input.observedAt))
+        ||Date.parse(input.observedAt)<Date.parse(record.reserved_at))throw Error("Generated output precedes reservation");
+      await verifyProtected(plan.baseCommitSha,plan.protectedHashes);
+    }
     async function stageReserved(plan,input) {
       checkPlan(plan);
       try {
-        const claim=input?.generationClaim,proof=input?.transportPreflight;
-        const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
-          "observed_at","route","source_sha256","jpeg_sha256"];
-        if(!claim||claim.kind!=="native_image_generation_claim"||claim.status!=="reserved_generation_unconfirmed"
-          ||claim.branch!==CLAIM_BRANCH_PREFIX+plan.identity||claim.receipt_path!==CLAIM_DIR+"/"+plan.identity+".json"
-          ||!GIT.test(claim.commit_sha||"")||!SHA.test(claim.receipt_sha256||""))throw Error("Invalid generation reservation");
-        if(!proof||proof.kind!=="native_image_transport_preflight"||proof.status!=="passed"
-          ||proof.branch!==PREFLIGHT_BRANCH||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
-          ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
-          ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
-        if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
-        const rawClaim=await read(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
-        if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
-          ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
-          ||record.article_sha256!==plan.articleSha256||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
-          ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
-          ||PROTECTED.some(path=>record.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
-          ||proofFields.some(key=>record.transport_preflight?.[key]!==proof[key]))throw Error("Generation reservation binding mismatch");
-        const rawProof=await read(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
-        if(hashText(rawProof.content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
-          ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
-          ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
-          ||receipt.observed_at!==proof.observed_at||receipt.route!==proof.route
-          ||receipt.source?.sha256!==proof.source_sha256||receipt.jpeg?.sha256!==proof.jpeg_sha256
-          ||receipt.baseline?.commit_sha!==plan.baseCommitSha
-          ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
-        if(!Number.isFinite(Date.parse(record.reserved_at))||!Number.isFinite(Date.parse(input.observedAt))
-          ||Date.parse(input.observedAt)<Date.parse(record.reserved_at))throw Error("Generated output precedes reservation");
-        await verifyProtected(plan.baseCommitSha,plan.protectedHashes);
+        await verifyReserved(plan,input);
         // stage checks the live stop state before every mutation. Its existing
         // saved-candidate path remains read-only and usable while stopped.
         return await stage(plan,input);
@@ -451,7 +460,266 @@ var NativeImageStage = (function () {
         throw e;
       } finally {activeGenerations.delete(plan.identity);}
     }
-    return {prepare,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,cloudStatus};
+    // Bounded cells never run an entire transport/save macro. Checkpoints contain
+    // JSON/base64 only; their checksum detects accidental edits, not authorship.
+    const canonical=x=>JSON.stringify(x,(_key,value)=>value&&typeof value==="object"&&!Array.isArray(value)
+      ?Object.fromEntries(Object.keys(value).sort().map(key=>[key,value[key]])):value);
+    function sealStep(state){const {checksum:_old,...body}=state;return {...body,checksum:hashText(canonical(body))};}
+    function stepState(plan,kind,checkpoint,input){
+      checkPlan(plan);
+      if(!checkpoint)return {version:1,kind,identity:plan.identity,plan,phase:"lookup",steps:0,...input};
+      const {checksum,...body}=checkpoint;
+      if(checksum!==hashText(canonical(body))||body.version!==1||body.kind!==kind||body.identity!==plan.identity
+        ||canonical(body.plan)!==canonical(plan)||!Number.isInteger(body.steps)||body.steps>=256)
+        throw Error("Invalid or exhausted bounded image checkpoint");
+      return JSON.parse(JSON.stringify(body));
+    }
+    async function boundedStep(plan,kind,checkpoint,input,run){
+      if(stepUsage)throw Error("Another bounded image step is running");
+      const state=stepState(plan,kind,checkpoint,input),before=canonical(state);
+      stepUsage={calls:0,mutations:0};
+      try{
+        const result=await run(state);
+        if(result)return {...result,tool_calls:stepUsage.calls,mutations:stepUsage.mutations};
+        if(canonical(state)===before)throw Error("Bounded image step made no progress");
+        state.steps++;
+        return {status:"pending",phase:state.phase,checkpoint:sealStep(state),
+          tool_calls:stepUsage.calls,mutations:stepUsage.mutations};
+      }catch(error){
+        const e=error instanceof Error?error:Error(String(error));
+        e.checkpoint=sealStep(state);e.stage="bounded_"+state.phase;
+        if(state.input){e.observedAt=state.input.observedAt;e.imageGenResult=state.input.imageGenResult;}
+        if(state.claim)e.generationClaim=state.claim;
+        if(state.proof)e.transportPreflight=state.proof;
+        throw e;
+      }finally{stepUsage=null;}
+    }
+    async function verifySlice(plan,state,ref,files){
+      const all=[...files,...PROTECTED.map(path=>({path,hash:plan.protectedHashes[path],encoding:"utf-8"}))];
+      const end=Math.min((state.verifyIndex||0)+2,all.length);
+      for(let i=state.verifyIndex||0;i<end;i++){
+        const file=all[i],raw=await read(file.path,ref,file.encoding||"utf-8");
+        const bytes=file.encoding==="base64"?runtime.fromBase64(raw.content):runtime.utf8(raw.content);
+        if(runtime.sha256(bytes)!==file.hash)throw Error("Bounded file readback mismatch: "+file.path);
+        state.verifyIndex=i+1;
+      }
+      return state.verifyIndex===all.length;
+    }
+    async function lookupSaved(plan,state,expectedSourceSha){
+      try{
+        const raw=await read(plan.directory+"/receipt.json",plan.branch);
+        state.saved={ref:plan.branch,commitSha:await branchHead(plan.branch),receiptText:raw.content,
+          source:[],index:0,protectedIndex:0,expectedSourceSha:expectedSourceSha||null};
+        state.phase="saved_readback";return true;
+      }catch(error){if(absentRef(error,plan.branch))return false;throw error;}
+    }
+    async function savedSlice(plan,state){
+      const saved=state.saved,r=JSON.parse(saved.receiptText);
+      if(r.version!==1||r.kind!=="native_image_candidate"||r.status!=="awaiting_visual_review"
+        ||r.identity!==plan.identity||r.repository!==repository||r.slug!==plan.slug||r.article_sha256!==plan.articleSha256
+        ||r.logical_run_id!==plan.logicalRunId||r.generation?.prompt!==plan.prompt||r.generation.prompt_sha256!==hashText(plan.prompt)
+        ||!SHA.test(r.source?.sha256||"")||!SHA.test(r.jpeg?.sha256||"")||!Array.isArray(r.source.parts)
+        ||!r.source.parts.length||r.source.parts.length>64||!Number.isSafeInteger(r.source.bytes)
+        ||r.source.bytes<33||r.source.bytes>32*1024*1024||r.jpeg.path!==plan.directory+"/candidate.jpg"
+        ||r.jpeg.width!==1200||r.jpeg.height!==675||r.jpeg.quality!==84
+        ||!Number.isSafeInteger(r.jpeg.bytes)||r.jpeg.bytes<16000||r.jpeg.bytes>700*1024
+        ||r.baseline?.commit_sha!==plan.baseCommitSha
+        ||PROTECTED.some(path=>r.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
+        ||saved.expectedSourceSha&&r.source.sha256!==saved.expectedSourceSha)throw Error("Bounded candidate identity conflict");
+      const files=[r.jpeg,...r.source.parts];
+      if(saved.index<files.length){
+        for(let i=saved.index,end=Math.min(saved.index+2,files.length);i<end;i++){
+          const file=files[i];
+          if(i&&file.path!==plan.directory+"/source.png.part"+String(i-1).padStart(3,"0")
+            ||!SHA.test(file.sha256||"")||!Number.isSafeInteger(file.bytes)||file.bytes<1
+            ||file.bytes>(i?PART_SIZE:700*1024))throw Error("Invalid bounded source part");
+          const raw=await read(file.path,saved.ref,"base64"),bytes=runtime.fromBase64(raw.content);
+          if(bytes.length!==file.bytes||runtime.sha256(bytes)!==file.sha256)throw Error("Bounded candidate byte mismatch");
+          if(i)saved.source[i-1]=runtime.toBase64(bytes);else saved.jpeg=runtime.toBase64(bytes);
+          saved.index=i+1;
+        }
+        return null;
+      }
+      if(saved.protectedIndex<PROTECTED.length){
+        for(let i=saved.protectedIndex,end=Math.min(saved.protectedIndex+2,PROTECTED.length);i<end;i++){
+          const path=PROTECTED[i];
+          if(hashText((await read(path,saved.ref)).content)!==plan.protectedHashes[path])throw Error("Protected file changed: "+path);
+          saved.protectedIndex=i+1;
+        }
+        return null;
+      }
+      if((await read(plan.directory+"/receipt.json",saved.ref)).content!==saved.receiptText
+        ||await branchHead(plan.branch)!==saved.commitSha)throw Error("Bounded candidate ref changed");
+      const source=new Uint8Array(r.source.bytes);let at=0;
+      for(const value of saved.source){const part=runtime.fromBase64(value);if(at+part.length>source.length)throw Error("Source length overflow");source.set(part,at);at+=part.length;}
+      const jpeg=runtime.fromBase64(saved.jpeg),converted=runtime.convert(source);
+      if(at!==source.length||runtime.sha256(source)!==r.source.sha256||converted.source_png_sha256!==r.source.sha256
+        ||converted.sha256!==r.jpeg.sha256||runtime.sha256(jpeg)!==converted.sha256
+        ||!equalMetadata(serialReceipt(converted.receipt),r.source.c2pa))throw Error("Bounded PNG/JPEG/provenance mismatch");
+      return {status:"saved",branch:plan.branch,ref:saved.ref,receipt:r,receipt_sha256:hashText(saved.receiptText),
+        jpegPath:r.jpeg.path,sourceParts:r.source.parts.map(part=>part.path),reused:true,
+        sourcePngDataUrl:"data:image/png;base64,"+runtime.toBase64(source),jpegDataUrl:"data:image/jpeg;base64,"+saved.jpeg};
+    }
+    async function reserveExternalGenerationStep(plan,options,checkpoint){
+      return boundedStep(plan,"native_reservation_steps",checkpoint,{},async state=>{
+        if(state.phase==="saved_readback")return await savedSlice(plan,state);
+        if(state.phase==="lookup"){
+          if(!await lookupSaved(plan,state))state.phase="capture";
+        }else if(state.phase==="capture"){
+          if(typeof options?.readBytes!=="function"||!SHA.test(options.expectedProbeSha256||"")
+            ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
+            ||typeof options.probeSourceRef!=="string"||!options.probeSourceRef.trim()||options.probeSourceRef.length>1000)
+            throw Error("Provide the actual byte callback and existing probe reference/SHA");
+          await cloudStatus();countStep();const image=await options.readBytes(options.probeSource);
+          const observedAt=new Date().toISOString(),captured=capture({imageGenResult:image,observedAt,expectedSourcePngSha256:options.expectedProbeSha256});
+          if(captured.source.length>PART_SIZE)throw Error("Use a probe PNG no larger than 512 KiB");
+          state.previousSha=false;
+          try{
+            await read(PREFLIGHT_DIR+"/receipt.json",PREFLIGHT_BRANCH);
+            state.previousSha=await branchHead(PREFLIGHT_BRANCH);
+            const previous=JSON.parse((await read(PREFLIGHT_DIR+"/receipt.json",state.previousSha)).content);
+            if(previous.version!==1||previous.kind!=="native_image_transport_preflight"||previous.repository!==repository)throw Error("Preflight branch is not an owned probe");
+          }catch(error){if(!absentRef(error,PREFLIGHT_BRANCH))throw error;}
+          const receipt={version:1,kind:"native_image_transport_preflight",status:"probe_only_not_an_article_candidate",repository,
+            candidate_identity:plan.identity,logical_run_id:plan.logicalRunId,observed_at:observedAt,route:options.route,
+            probe_source_ref:options.probeSourceRef,source:{sha256:captured.sourceSha,bytes:captured.source.length},
+            jpeg:{sha256:captured.converted.sha256,bytes:captured.converted.bytes.length},
+            baseline:{commit_sha:plan.baseCommitSha,protected_hashes:plan.protectedHashes}};
+          const text=JSON.stringify(receipt,null,2)+"\n";
+          state.files=[{path:PREFLIGHT_DIR+"/probe.png",content:runtime.toBase64(captured.source),encoding:"base64",hash:captured.sourceSha},
+            {path:PREFLIGHT_DIR+"/probe.jpg",content:captured.converted.base64,encoding:"base64",hash:captured.converted.sha256},
+            {path:PREFLIGHT_DIR+"/receipt.json",content:text,encoding:"utf-8",hash:hashText(text)}];
+          state.blobs={};state.index=0;
+          state.proof={kind:receipt.kind,status:"passed",branch:PREFLIGHT_BRANCH,receipt_path:PREFLIGHT_DIR+"/receipt.json",
+            receipt_sha256:hashText(text),observed_at:observedAt,route:options.route,
+            source_sha256:captured.sourceSha,jpeg_sha256:captured.converted.sha256};
+          state.phase="preflight_blobs";
+        }else if(state.phase==="preflight_blobs"){
+          for(let n=0;n<2&&state.index<state.files.length;n++,state.index++){
+            const file=state.files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:file.encoding}),"blob");
+          }
+          if(state.index===state.files.length)state.phase="preflight_commit";
+        }else if(state.phase==="preflight_commit"){
+          if(!state.treeSha)state.treeSha=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
+            tree_elements:state.files.map(file=>({path:file.path,mode:"100644",type:"blob",sha:state.blobs[file.path]}))}),"tree");
+          if(!state.commitSha)state.commitSha=gitSha(await call("create_commit",{parent_sha:state.previousSha||plan.baseCommitSha,
+            tree_sha:state.treeSha,message:"Check native image transport: "+plan.logicalRunId}),"commit");
+          state.proof.commit_sha=state.commitSha;state.verifyIndex=0;state.phase="preflight_verify_commit";
+        }else if(state.phase==="preflight_verify_commit"){
+          if(await verifySlice(plan,state,state.commitSha,state.files))state.phase="preflight_publish";
+        }else if(state.phase==="preflight_publish"){
+          try{
+            if(state.previousSha)await call("update_ref",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha,expected_sha:state.previousSha,force:false});
+            else await call("create_branch",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha});
+          }catch(error){if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw error;}
+          if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Concurrent preflight branch change");
+          state.verifyIndex=0;state.phase="preflight_verify_branch";
+        }else if(state.phase==="preflight_verify_branch"){
+          if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files)){
+            if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Preflight branch changed during readback");
+            state.phase="claim_prepare";
+          }
+        }else if(state.phase==="claim_prepare"){
+          if(await lookupSaved(plan,state))return;
+          state.claim={kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
+            branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
+          try{await read(state.claim.receipt_path,state.claim.branch);throw Error("Generation already reserved; recover only");}
+          catch(error){if(!absentRef(error,state.claim.branch))throw error;}
+          const receipt={version:1,...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
+            logical_run_id:plan.logicalRunId,prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
+            baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},transport_preflight:state.proof};
+          state.claimText=JSON.stringify(receipt,null,2)+"\n";state.claim.receipt_sha256=hashText(state.claimText);
+          const blob=gitSha(await call("create_blob",{content:state.claimText,encoding:"utf-8"}),"blob");
+          state.claimTree=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
+            tree_elements:[{path:state.claim.receipt_path,mode:"100644",type:"blob",sha:blob}]}),"tree");
+          state.phase="claim_commit";
+        }else if(state.phase==="claim_commit"){
+          if(!state.claim.commit_sha)state.claim.commit_sha=gitSha(await call("create_commit",{parent_sha:plan.baseCommitSha,
+            tree_sha:state.claimTree,message:"Reserve native image generation: "+plan.slug}),"commit");
+          if((await read(state.claim.receipt_path,state.claim.commit_sha)).content!==state.claimText)throw Error("Claim commit readback mismatch");
+          await verifyProtected(state.claim.commit_sha,plan.protectedHashes);state.phase="claim_final";
+        }else if(state.phase==="claim_final"){
+          // This entire ownership grant is one cold <=15-call cell. Never resume
+          // an uncertain create response into permission to generate.
+          const created=await call("create_branch",{branch_name:state.claim.branch,sha:state.claim.commit_sha});
+          if(created.branch!==state.claim.branch||await branchHead(state.claim.branch)!==state.claim.commit_sha)
+            throw Error("Claim ownership unconfirmed; recover only");
+          if((await read(state.claim.receipt_path,state.claim.branch)).content!==state.claimText)throw Error("Claim branch readback mismatch");
+          await verifyProtected(state.claim.branch,plan.protectedHashes);
+          if(await lookupSaved(plan,state))return;
+          await cloudStatus();
+          return {status:"reserved",plan,transportPreflight:state.proof,generationClaim:state.claim};
+        }else throw Error("Unknown bounded reservation phase");
+      });
+    }
+    async function stageReservedStep(plan,input,checkpoint){
+      return boundedStep(plan,"native_stage_steps",checkpoint,{input},async state=>{
+        if(checkpoint&&input){
+          for(const key of ["observedAt","transportPreflight","generationClaim"])
+            if(input[key]!==undefined&&canonical(input[key])!==canonical(state.input[key]))throw Error("Reserved source metadata changed on retry");
+          if(input.imageGenResult?.image_url&&input.imageGenResult.image_url!==state.input.imageGenResult?.image_url)
+            throw Error("Reserved original PNG changed on retry");
+        }
+        if(!["lookup","reservation_verify"].includes(state.phase)
+          &&await branchHead(state.input.generationClaim.branch)!==state.input.generationClaim.commit_sha)
+          throw Error("Generation reservation branch changed between steps");
+        if(state.phase==="saved_readback")return await savedSlice(plan,state);
+        if(state.phase==="lookup"){
+          if(!state.input?.imageGenResult)throw Error("Original reserved PNG is required");
+          state.phase="reservation_verify";
+        }else if(state.phase==="reservation_verify"){
+          // Reuse the strict claim/proof validator without doing a monolithic save.
+          await verifyReserved(plan,state.input);
+          const captured=capture(state.input);state.sourceSha=captured.sourceSha;
+          state.parts=[];for(let i=0;i<captured.source.length;i+=PART_SIZE){const part=captured.source.slice(i,i+PART_SIZE);
+            state.parts.push({path:plan.directory+"/source.png.part"+String(state.parts.length).padStart(3,"0"),
+              content:runtime.toBase64(part),encoding:"base64",hash:runtime.sha256(part),bytes:part.length});}
+          state.jpeg={path:plan.directory+"/candidate.jpg",content:captured.converted.base64,encoding:"base64",
+            hash:captured.converted.sha256,bytes:captured.converted.bytes.length};
+          state.c2pa=serialReceipt(captured.converted.receipt);state.sourceWidth=captured.converted.sourceWidth;state.sourceHeight=captured.converted.sourceHeight;
+          state.blobs={};state.index=0;state.phase="candidate_lookup";
+        }else if(state.phase==="candidate_lookup"){
+          if(!await lookupSaved(plan,state,state.sourceSha))state.phase="upload";
+        }else if(state.phase==="upload"){
+          const files=[...state.parts,state.jpeg];
+          for(let n=0;n<2&&state.index<files.length;n++,state.index++){
+            const file=files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:"base64"}),"blob");
+          }
+          if(state.index===files.length)state.phase="receipt";
+        }else if(state.phase==="receipt"){
+          const source=runtime.fromBase64(state.input.imageGenResult.image_url),jpeg=state.jpeg;
+          const receipt={version:1,kind:"native_image_candidate",status:"awaiting_visual_review",identity:plan.identity,repository,slug:plan.slug,
+            article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,
+            baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},
+            generation:{capture_kind:"native_tool_result",prompt:plan.prompt,prompt_sha256:hashText(plan.prompt),observed_at:state.input.observedAt,
+              actual_output_hint:state.input.imageGenResult.output_hint??null,recovery:null,
+              transport_preflight:state.input.transportPreflight,generation_claim:state.input.generationClaim},
+            source:{sha256:state.sourceSha,bytes:source.length,width:state.sourceWidth,height:state.sourceHeight,
+              parts:state.parts.map(part=>({path:part.path,bytes:part.bytes,sha256:part.hash,blob_sha:state.blobs[part.path]})),c2pa:state.c2pa},
+            jpeg:{path:jpeg.path,bytes:jpeg.bytes,sha256:jpeg.hash,width:1200,height:675,quality:84,blob_sha:state.blobs[jpeg.path]},
+            transform:{helper:"scripts/native_image_bytes.js",resize:"center-cover-bilinear",alpha_background:"white",width:1200,height:675,jpeg_quality:84}};
+          state.receiptText=JSON.stringify(receipt,null,2)+"\n";
+          if(runtime.utf8(state.receiptText).length>=PART_SIZE)throw Error("Candidate receipt is too large");
+          const path=plan.directory+"/receipt.json";
+          state.blobs[path]=gitSha(await call("create_blob",{content:state.receiptText,encoding:"utf-8"}),"blob");state.phase="commit";
+        }else if(state.phase==="commit"){
+          if(!state.treeSha)state.treeSha=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
+            tree_elements:[...state.parts,state.jpeg,{path:plan.directory+"/receipt.json"}].map(file=>({path:file.path,mode:"100644",type:"blob",sha:state.blobs[file.path]}))}),"tree");
+          if(!state.commitSha)state.commitSha=gitSha(await call("create_commit",{parent_sha:plan.baseCommitSha,tree_sha:state.treeSha,message:"Stage native image candidate: "+plan.slug}),"commit");
+          state.verifyIndex=0;state.phase="verify_commit";
+        }else if(state.phase==="verify_commit"){
+          const files=[...state.parts,state.jpeg,{path:plan.directory+"/receipt.json",hash:hashText(state.receiptText),encoding:"utf-8"}];
+          if(await verifySlice(plan,state,state.commitSha,files))state.phase="publish";
+        }else if(state.phase==="publish"){
+          if(await lookupSaved(plan,state,state.sourceSha))return;
+          try{await call("create_branch",{branch_name:plan.branch,sha:state.commitSha});}
+          catch(error){if(!await lookupSaved(plan,state,state.sourceSha))throw error;return;}
+          if(!await lookupSaved(plan,state,state.sourceSha))throw Error("Candidate branch was not saved");
+        }else throw Error("Unknown bounded reserved-stage phase");
+      });
+    }
+    return {prepare,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
+      reserveExternalGenerationStep,stageReservedStep,cloudStatus};
   }
   return {create,PART_SIZE};
 })();

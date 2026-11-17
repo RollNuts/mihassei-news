@@ -6,7 +6,7 @@
 
 Cloud image operations use the live GitHub image-workflow stop state defined in [VISUAL_OPERATIONS](VISUAL_OPERATIONS.md), without a Mac CLI requirement. The helper fails closed for a private repository, disabled/unknown workflow, failed control lookup, or an excessive public JPEG total. It rechecks before generation and remote writes; stopped candidates remain readable. This changes stop control, not byte-bridge availability or visual approval.
 
-When the native generator is available only as a top-level tool outside code mode, use `reserveExternalGeneration` → one actual native tool call → `stageReserved`. The reservation reads an existing PNG through the actual byte callback, converts it, saves and reads back PNG/JPEG hashes, acquires a durable create-only claim, and rechecks the stop state before returning. `stageReserved` verifies that persisted claim and its immutable preflight against the original plan before using the existing storage path. If the generator is actually callable inside code mode, `generateAndStage` remains a convenience wrapper over the same reservation checks. Neither path generates after a failed check; a saved candidate is recovered first.
+When the native generator is available only as a top-level tool outside code mode, use `reserveExternalGenerationStep` → one actual native tool call → `stageReservedStep`. The reservation reads an existing PNG through the actual byte callback, converts it, saves and reads back PNG/JPEG hashes, acquires a durable create-only claim, and rechecks the stop state before returning. `stageReservedStep` verifies that persisted claim and its immutable preflight against the original plan before using the existing storage path. If the generator is actually callable inside code mode, `generateAndStage` remains a convenience wrapper over the same reservation checks. Neither path generates after a failed check; a saved candidate is recovered first.
 
 `scripts/native_image_stage.js` uses one isolated `native-image-preflight/transport` branch for the transport sample. Each reservation attempt repeats the actual transfer and advances that branch with an expected-head, non-forced update; it never uses an earlier pass to authorize a different worker. Concurrent changes stop the check. The sample receipt has kind `native_image_transport_preflight`, never an article candidate, generation claim or visual approval. Its PNG is at most 512 KiB. This checks the tested route and size, not unlimited future transfers. The actual generated image still receives all ordinary integrity and readback checks.
 
@@ -20,35 +20,53 @@ Read both helpers from the latest reviewed repository revision and initialize th
 
 **Unchanged main does not imply no recovery work.** For each unresolved slug in the existing handoff, check its recorded candidate references and enumerate the matching `native-image-candidate/<slug>/` branches before returning idle. Read new or changed `receipt.json` files and compare the slug, current article fingerprint, logical run ID, source/JPEG hashes and existing acceptance/rejection history. Recover an unprocessed matching candidate with its originating plan before generating another image; skip identities already adopted or rejected. Record changed branch/commit and receipt SHA in the existing task result or handoff, without creating another ledger. A failed or incomplete branch lookup is an unresolved lookup, not evidence that no candidate exists; do not replace it with an unchanged-main shortcut.
 
-### Native tool outside code mode
+### Native tool outside code mode: one bounded step per cell
 
-Initialize the existing runtime/stager and original plan as below, with the actual `readBytes` callback described under [file-adapter PNG bytes](#file-adapter-to-code-mode-png-bytes). Verify that the native generator and PNG reader are exposed in this worker before reserving. The reservation options are the actual existing `probeSource`, its SHA and reference, route label and `readBytes`—not a previous worker's success.
+Initialize from the actual exposed tools and reviewed helper sources. **Complete separate initialization cells before advancing:** first fetch and verify the two helper sources and pinned dependency sources, then `store` those UTF-8 strings/objects; next restore them, initialize the runtime/stager, `prepare` the original plan and `store` the plan. End each cell with a small summary. Later cells restore sources and plan from `load`, without fetching vendor/helper files again. Do not keep all initialization and the full reservation macro in one volatile execution.
 
-```js
-const reserved = await stager.reserveExternalGeneration(plan, {
-  probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
-});
-store("native-reservation-" + plan.identity, reserved);
-text({status: reserved.status, branch: plan.branch,
-      claim: reserved.generationClaim?.branch});
-```
+The old whole-macro reservation needs at least 75 connector callbacks plus the PNG read, excluding initialization; the step API limits each invocation to 15 callbacks and two mutations, including cold guard reads. The actual platform limit and whether it applies per cell or per turn are not assumed. Each mutating call still checks public visibility, current-main JPEG capacity and the live stop authority. Only the capture phase fetches the existing PNG; subsequent checkpoints contain serializable base64 strings and the original metadata.
 
-Preserve the original plan, exact prompt, proof and claim references in the existing durable handoff as well as `store`; `store` alone does not survive a new run. Only a fresh successful `status: "reserved"` response permits the immediately following **one** top-level native generation call with that exact prompt. `saved`, an error, an existing claim or a lost reservation response permits recovery only. Do not change identity or call generation again because the next turn only knows a claim exists. The reservation remains `reserved_generation_unconfirmed`, never a claim that an image was generated.
-
-After the tool returns, retain its actual file ID/path and the **first** real observation time once. In code mode, read that exact original PNG and use the retained reservation:
+Call **one** step per code-mode cell, then store the returned checkpoint before another tool-heavy operation:
 
 ```js
-const imageGenResult = await readBytes(actualOriginalPngPath);
-// Optional output_hint must come from the real tool's file ID/path, never a URL.
-const input = {imageGenResult, observedAt: firstObservedAt,
-  transportPreflight: reserved.transportPreflight,
-  generationClaim: reserved.generationClaim};
-store("native-image-retry-" + plan.identity, {plan, ...input, originalSourceRef});
-const saved = await stager.stageReserved(plan, input);
-text({status: saved.status, branch: saved.branch});
+const key = "native-reservation-steps-" + plan.identity;
+try {
+  const result = await stager.reserveExternalGenerationStep(plan, {
+    probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
+  }, load(key));
+  if (result.status === "pending") store(key, result.checkpoint);
+  else store(key + "-result", result);
+  text({status: result.status, phase: result.phase, calls: result.tool_calls});
+} catch (error) {
+  if (error.checkpoint) store(key, error.checkpoint);
+  text({status: "stopped", phase: error.stage, message: error.message});
+}
 ```
 
-On failure, retain the actual original source, first `observedAt`, same plan/proof/claim and returned checkpoint in that handoff. Retry saving those bytes through `stageReserved` or recover a complete-file checkpoint through the existing `resume`; never retimestamp or regenerate to repair delivery. No candidate or visual approval is implied by reservation alone.
+Do not loop all steps inside one `functions.exec`, create self-messages/tasks, or retry to evade an account quota. `pending` is progress, not generation permission. Preserve the checkpoint and original plan/prompt/source references in the existing durable handoff if the turn/run ends; `store` alone is not cross-run persistence. Stop on an error or no progress and retain that error's checkpoint. The API rejects edited/cross-plan/exhausted checkpoints and bounds total progression to 256 steps.
+
+Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The final create-only claim, positive ownership/ref/receipt readback, candidate check and live guard occur together within one bounded cell. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
+
+After the native tool returns, record its actual file ID/path and the **first** real observation time once. Read that exact original PNG with `readBytes`, store `{imageGenResult, observedAt: firstObservedAt, originalSourceRef, transportPreflight, generationClaim}` as `initialInput`, and end that cell before starting the save. Optional `imageGenResult.output_hint` must be the actual tool file ID/path, never a signed URL. In each later cell:
+
+```js
+const key = "native-stage-steps-" + plan.identity;
+const checkpoint = load(key);
+try {
+  const result = await stager.stageReservedStep(plan,
+    checkpoint ? undefined : load("native-original-" + plan.identity), checkpoint);
+  if (result.status === "pending") store(key, result.checkpoint);
+  else store(key + "-result", result);
+  text({status: result.status, phase: result.phase, calls: result.tool_calls});
+} catch (error) {
+  if (error.checkpoint) store(key, error.checkpoint);
+  text({status: "stopped", phase: error.stage, message: error.message});
+}
+```
+
+`native-original-<identity>` is the stored `initialInput`. Checkpoints preserve its exact PNG bytes, source metadata, first `observedAt`, proof/claim and returned blob references; do not reread the PNG or retimestamp each step. Source/JPEG/protected-file readbacks are bounded slices, and `saved` is returned only after full PNG SHA, conversion/C2PA correspondence, protected files and final receipt/ref checks. A saved candidate can be read while stopped. Restore the same checkpoint/source on a later existing run; do not regenerate to repair delivery. Candidate saving, visual acceptance and public delivery remain separate.
+
+The older `reserveExternalGeneration`/`stageReserved` macros remain compatible for an executor with enough callback capacity; do not fall back to them after this runtime reports a call limit.
 
 ### Generator actually callable inside code mode
 
@@ -133,7 +151,7 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 
 ### File adapter to code-mode PNG bytes
 
-The existing receiver also exposes the read-only `read_candidate_png` tool. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during reservation and the eventual generated PNG during saving.
+The existing receiver also exposes the read-only `read_candidate_png` tool. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
 const readBytes = async actualPngPath => {
@@ -154,7 +172,7 @@ After deployment, refresh the installed tool schema and prove one **existing** P
 
 After staging, `const images = await stager.load(plan)` returns verified `sourcePngDataUrl` and `jpegDataUrl`. Pass them directly to `image(images.sourcePngDataUrl)` and `image(images.jpegDataUrl)`; never emit the whole result with `text` or `notify`. Compare both displayed images with the full current article. Only after that review, use the normal publication PR to install the JPEG, its truthful generation record and a current-SHA visual decision. Keep the source candidate retrievable. Existing accepted photos, integer seeds and previous rejections remain unchanged until an actual reviewed replacement is published.
 
-If a save fails, retain its compact checkpoint (including the plan), reservation reference and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, the error's `imageGenResult` is the raw tool result, which may contain only a file ID or local path. Pass `error.transferredImage ?? await readBytes(error.imageGenResult)` as `stageReserved`'s `imageGenResult` for an external reservation (or use `stage` for historical recovery), with the retained `observedAt`, `checkpoint`, `transportPreflight`, `generationClaim` and any recovery metadata. This retries byte acquisition or saving, without calling the generator. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
+If a save fails, retain its compact checkpoint (including the plan), reservation reference and actual returned references in the existing task handoff. `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish the tree, commit, branch and readback without original data-URI bytes. `probe(plan)` reuses an already completed candidate. Before that boundary, the error's `imageGenResult` is the raw tool result, which may contain only a file ID or local path. Pass `error.transferredImage ?? await readBytes(error.imageGenResult)` as the original input to `stageReservedStep` for an external reservation (or use `stage` for historical recovery), with the retained `observedAt`, `checkpoint`, `transportPreflight`, `generationClaim` and any recovery metadata. This retries byte acquisition or saving, without calling the generator. The example `store` is transient and helps only in the same conversation; it is not cross-run persistence. Conversion failure or a total interruption before all blobs are saved still requires the original image bytes or a real retrievable file reference. Do not claim this helper recovers bytes that were never durably saved. A blob alone or a commit without the intended saved branch is incomplete. An authorization failure, missing file on an existing branch, malformed response or ambiguous lookup error is not permission to overwrite a branch or generate again.
 
 ## Runtime without Node
 
