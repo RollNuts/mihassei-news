@@ -20,10 +20,12 @@ from urllib.parse import parse_qs, urlsplit
 
 if __package__:
     from .serials import public_serials
+    from .market_bulletins import load_market_bulletins, bulletin_url
     from .photo_issues import (load_photo_issues, published_issues,
                               index_url as photo_index_url, issue_url as photo_issue_url)
 else:
     from serials import public_serials
+    from market_bulletins import load_market_bulletins, bulletin_url
     from photo_issues import (load_photo_issues, published_issues,
                              index_url as photo_index_url, issue_url as photo_issue_url)
 
@@ -161,6 +163,11 @@ def candidate_paths(root: Path = ROOT) -> list[str]:
         if serial["episodes"]:
             ep = serial["episodes"][-1]
             paths.append("/serials/" + serial["slug"] + "/" + ep["slug"] + "/")
+    # Include the latest daily market dispatch: it is not a serial episode.
+    # One extra first-party crawler card per release, without paid APIs.
+    reports = load_market_bulletins(root)
+    if reports:
+        paths.append(bulletin_url(reports[-1]))
     photos = published_issues(load_photo_issues(root), root=root)
     if photos:
         paths.extend((photo_index_url(), photo_issue_url(photos[0])))
