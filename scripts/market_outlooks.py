@@ -367,10 +367,19 @@ def render_market_outlook_board(events, *, limit=3, before=None):
 
 
 def render_market_outlook_archive(events, layout):
+    latest_update = ''
+    if events:
+        latest = max(events, key=lambda event: _timestamp(event["at"]))
+        target = {"id": latest["forecast_id"] if latest["type"] == "review" else latest["id"]}
+        latest_update = (
+            '<p class="market-latest-update"><strong>予想・結果の最終更新</strong>'
+            f'<a href="{market_forecast_url(target)}">'
+            f'<time datetime="{escape(latest["at"], quote=True)}">{_event_day(latest["at"])}</time> JST</a></p>')
     content = ('<div class="container serials-page market-desk-archive">'
                '<nav class="serial-breadcrumb"><a href="/">トップ</a> / '
                '<a href="/serials/market-lab/">未来相場観測室</a></nav>'
                '<header class="serials-intro"><h1>相場の予想と結果</h1>'
+               + latest_update
                + render_market_share(BASE_URL, "相場の予想と結果") + '</header>'
                + render_market_outlook_board(events) + '</div>')
     return layout("相場の予想と結果 | 未来相場観測室",

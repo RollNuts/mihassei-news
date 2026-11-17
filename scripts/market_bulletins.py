@@ -217,6 +217,21 @@ def _coverage_label(report):
             else SLOTS[report["slot"]][1])
 
 
+def bulletin_phase_label(report):
+    return {"am": "寄り付き前", "open": "寄り付き後",
+            "noon": "後場", "close": "引け後"}[report["slot"]]
+
+
+def render_bulletin_publication_time(report):
+    raw = report.get("published_at")
+    if raw:
+        stamp = _timestamp(raw)
+        value, label = stamp.isoformat(), stamp.strftime("%Y-%m-%d %H:%M")
+    else:
+        value = label = report["day"]
+    return f'<time datetime="{escape(value, quote=True)}">{escape(label)}</time>'
+
+
 def load_market_bulletins(root, *, now=None):
     path = Path(root) / FILE
     if not path.is_file():
@@ -530,21 +545,15 @@ def render_market_bulletin(report, layout, outlooks=()):
                           "published_at": report["published_at"]})
 
 
-def render_market_bulletins_index(reports, *, limit=12):
+def render_market_bulletins_index(reports, *, limit=12, latest_slug=None):
     """Keep the front page compact, but never truncate the full archive."""
-    def published_time(item):
-        raw = item.get("published_at")
-        if raw:
-            stamp = _timestamp(raw)
-            value, label = stamp.isoformat(), stamp.strftime("%Y-%m-%d %H:%M")
-        else:
-            value = label = item["day"]
-        return f'<time datetime="{escape(value, quote=True)}">{escape(label)}</time>'
-
     cards = "".join(
         f'<li><a href="{bulletin_url(item)}">'
-        f'<span class="market-paper-story-date">{published_time(item)}'
-        f' ／ {escape(_coverage_label(item))}</span>'
+        '<span class="market-paper-story-date">'
+        + ('<b class="market-latest-label">最新</b> ' if item["slug"] == latest_slug else '')
+        + f'{render_bulletin_publication_time(item)} ／ {escape(bulletin_phase_label(item))}'
+        + (' ／ ' + escape(_coverage_label(item)) if item.get("coverage") == "investor" else '')
+        + '</span>'
         f'<strong>{escape(item["title"])}</strong>'
         f'<span class="market-paper-story-summary">{escape(item["summary"])}</span>'
         '</a></li>'
@@ -570,7 +579,8 @@ def render_market_bulletins_archive(reports, layout):
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a></nav>'
         '<header class="serials-intro"><h1>日次市況</h1><p>日本株・米国株の値動きと材料を、確認した公開資料から読む。</p>'
         + render_market_share(MARKET_URL + "briefings/", "日次市況") + '</header>'
-        + render_market_bulletins_index(reports, limit=None)
+        + render_market_bulletins_index(reports, limit=None,
+                                        latest_slug=reports[-1]["slug"] if reports else None)
         + '</div>'
     )
     return layout("日次市況 | 未来相場観測室",
