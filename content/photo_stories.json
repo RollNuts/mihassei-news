@@ -149,6 +149,21 @@
         "image_sha256": "277d9413c29aa3618e45c7c049168bc30e905f97599a9350187aab9570c01ef3",
         "cut_id": "04"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261117142136000000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-17T14:21:36+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "帰りに寄った売店で、お茶だけ買うつもりが、お菓子もすすめてもらって。少し話していたら外が暗くなってた。また寄り道してしまった。",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "09",
+        "image_sha256": "1a9d95e05ff0b3269645f428e920dac3c223ce6e240e430b896162a0e4b2eff8"
+      }
     }
   ]
 }
