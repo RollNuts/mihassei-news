@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "repository": "RollNuts/mihassei-news",
+  "slug": "secondhand-home-repair-map-opens-wall-before-sale",
+  "article_sha256": "c969833953bd8274d61086f828a81a079b60ac6f27fd7514c8c0cd81d5ac345a",
+  "branch": "native-image-candidate/secondhand-home-repair-map-opens-wall-before-sale/c969833953bd8274-817131c215d6",
+  "expected_head_sha": "7b69759060c6905f6c4e9e9113bb6e9b69a57e0a",
+  "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/candidate.jpg",
+  "jpeg_sha256": "e8b167894757638a965c9c937eed59ed7889d97b724472ae5d980f6901c35644",
+  "jpeg_bytes": 169312,
+  "nonce_sha256": "817131c215d632196f38c2f94a15c99cfcc9b1621f8b1a8c7fa5cdb31cf62ebc",
+  "expires_at": "2026-11-17T10:41:31.936Z"
+}
