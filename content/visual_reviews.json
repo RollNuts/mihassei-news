@@ -1,5 +1,12 @@
 {
   "reviews": {
+    "ai-night-standby-not-free-time": {
+      "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
+      "decision": "accepted",
+      "image_sha256": "b8cf150188803a807f1d9830361b17f5d3709ab2b948d690f32ce0d8126d2a6b",
+      "note": "現本文全文・scene_promptと、候補commitの原PNGおよび1200×675 JPEGを実表示して照合。11月夜の日本の設備管理事務所で、灰色の作業着の成人2人が机越しに黒い会社用の夜間連絡端末を受け渡す動作が明瞭。交代して当番を終える本文末段と整合する。肌の陰影、作業着の縫い目、端末の樹脂、蛍光灯と窓外の夜景が普通の現場スナップとして自然で、目立つ人体破綻・可読ロゴ・文字・透かしはない。写真だけで制度変更、正確な年齢・時刻は証明しない。原PNG/JPEGのSHAと保存済み候補の読戻しを確認済み。",
+      "reviewed_at": "2026-11-17T17:48:32.430Z"
+    },
     "solar-window-glass-factory-first-eight-panels": {
       "article_sha256": "2ce3cd5e265d93718a01646ff102fc02c386dcf29eb3b589b4f5e7745d74be6b",
       "decision": "accepted",
