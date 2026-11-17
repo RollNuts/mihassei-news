@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { imageControlMcp } from "./image_control_mcp.mjs";
+import { imageCandidateMcp } from "./image_candidate_mcp.mjs";
 export { ReaderComments } from "./comments.js";
 
 // Browser-level engagement and page displays, without IP logging or external APIs.
@@ -922,6 +923,9 @@ export class NewsroomStats extends DurableObject {
 export default {
   async fetch(req, env) {
     const url=new URL(req.url);
+    // Separate file receiver. The established image-control MCP stays read-only.
+    if(url.pathname==="/api/image-candidate/mcp")
+      return imageCandidateMcp(req,url,env);
     if(url.pathname==="/api/image-control/mcp")return imageControlMcp(req,url,nonce=>{
       const controlUrl=new URL("/api/image-control",url);
       controlUrl.searchParams.set("nonce",nonce);

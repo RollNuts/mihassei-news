@@ -8,6 +8,7 @@ const {DatabaseSync}=require('node:sqlite');
 const {randomUUID,webcrypto}=require('node:crypto');
 const workerSource=fs.readFileSync(path.join(__dirname,'../src/worker.js'),'utf8')
   .replace('import { imageControlMcp } from "./image_control_mcp.mjs";','')
+  .replace('import { imageCandidateMcp } from "./image_candidate_mcp.mjs";','')
   .replace('import { DurableObject } from "cloudflare:workers";',
     'class DurableObject { constructor(ctx){this.ctx=ctx;} }')
   .replace('export { ReaderComments } from "./comments.js";','')
