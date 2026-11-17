@@ -1563,5 +1563,208 @@
         "checked_on": "2026-11-17"
       }
     ]
+  },
+  {
+    "slug": "2026-11-18-am",
+    "day": "2026-11-18",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-18T08:31:00+09:00",
+    "title": "18日寄り前：米株続落でもNVIDIA決算は増収、日本株は買い戻しの広がりを確認",
+    "summary": "米17日のS&P500は1.03%安、ダウは1.64%安。引け後のNVIDIA決算は売上高が前年同期比103%増。17日のTOPIX下落と18日寄り前の判断材料、住宅関連株の違いを確認します。",
+    "lead": "11月18日（水）東京市場の寄り付き前、米国17日（現地）の通常取引は主要3指数がそろって下落しました。一方、米国17日の取引終了後に公表されたNVIDIAの四半期決算では売上高が前年同期の約2倍になりました。決算の数字は同日の米国通常終値にまだ織り込まれていません。日本株は17日大引けのTOPIXが3,840.02ポイントで、18日朝の現物取引はまだ始まっていません。半導体への期待の戻りが他業種へ広がるかを分けて見ます。",
+    "sections": [
+      {
+        "heading": "米国17日終値：半導体だけでなく市場全体が弱い",
+        "paragraphs": [
+          "米国11月17日（火）の通常取引終値（日本時間18日6時）は、S&P500が7,340.53ポイントで前営業日比1.03%安、ダウ工業株30種平均が50,759.42ポイントで1.64%安、ナスダック総合が24,328.38ポイントで0.74%安でした。AP通信によるとS&P500採用銘柄のおよそ5銘柄に4銘柄が下落しています。AI関連株だけに限らない売りがあったことを踏まえる必要があります。",
+          "エヌビディア（NASDAQ:NVDA）の同日通常終値は155.46米ドル。16日の156.14米ドルから0.44%下落しました。この終値は決算発表より前の米国取引を表すもので、決算を受けた時間外取引や18日以降の通常取引の結果ではありません。発表後の気配だけで翌日の値動きまで確定したとは考えません。"
+        ]
+      },
+      {
+        "heading": "NVIDIAの売上倍増と次期見通し、利益率は別に見る",
+        "paragraphs": [
+          "NVIDIAが米国11月17日の取引終了後に発表した2027年度第3四半期（2026年10月25日終了）の売上高は1,158億米ドル。前年同期の570億米ドルから103%増え、データセンター売上高は1,076億米ドル（前年同期比110%増）でした。AI計算向け需要が売上に結び付いていることを示す実績で、単に投資計画が増えたという話とは異なります。",
+          "会社が示した次の第4四半期売上高見通しは1,300億米ドル±3%ですが、通常より1週多い会計期間を含み、中国向けデータセンター計算製品の売上は見込んでいません。売上の成長と株価の割安さは別の論点です。次の確認点は会社見通しの実現、粗利益率（第3四半期GAAP実績74.8%、第4四半期会社予想71～72%）、輸出規制の影響です。"
+        ]
+      },
+      {
+        "heading": "住宅関連の決算も確認、米国市場の弱さを一括りにしない",
+        "paragraphs": [
+          "米住宅用品大手ホーム・デポ（NYSE:HD）が17日に公表した2026年度第3四半期売上高は434億米ドルで前年同期比4.9%増、既存店売上高は2.2%増でした。会社は2026年度の全社売上高の成長率見通しを約4.5%と示しています。NVIDIAの高い伸び率と同じ成長率で比較できる事業ではなく、住宅修繕需要や利益率が別の判断材料です。",
+          "今回、ホーム・デポの17日の確定終値を同一配信元の前日終値と照合できていないため、個別株の株価カードには載せません。売上増だけを理由に同社株が買われたとは断定しません。米国の株式市場全体が軟調でも、業績の材料は銘柄ごとに確認する必要があります。"
+        ]
+      },
+      {
+        "heading": "日本は17日終値が基準。18日の反応と19日までの予想",
+        "paragraphs": [
+          "JPXの11月17日16時59分JST更新の指数データで、同日15時30分大引けのTOPIXは3,840.02ポイント、16日終値3,901.37から1.57%安でした。日経平均も17日大引けで58,860.43円、801.59円安でした。これらは17日の確定値であり、18日朝の騰落率ではありません。寄り後は半導体株の反応だけでなく、17日に下げた銀行・資源株や上昇したサービス株への売買の広がりも確認します。",
+          "新たな短期見通しは『19日のTOPIX公式終値が17日の3,840.02ポイントから0.5%超上昇』です。NVIDIAの増収・次期見通しを材料とする買い戻しを想定しますが、17日米国市場は広範囲に下落しており、買いが一部半導体関連だけに偏れば予想は崩れます。別に、17日朝に公表した18日判定の下落予想は16日終値3,901.37基準のまま変更せず、18日引けのJPX公式値が出るまで判定しません。16日朝に出した17日横ばい予想は、公式終値3,840.02が固定基準3,941.57から約2.58%安だったため外れと確認しました。確定成績は0勝2敗です。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "sp500-nov17",
+        "kind": "bars",
+        "title": "S&P500：米国16日と17日の終値",
+        "note": "APが公表した米国現地11/17通常取引終値と、前営業日11/16終値。11/18の米国取引や時間外値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://apnews.com/article/4d5a35288288389d894e63e6bebe8240",
+        "observed_at": "2026-11-18T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/16",
+            "value": 7416.59,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/17",
+            "value": 7340.53,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nvda-revenue-q3",
+        "kind": "bars",
+        "title": "NVIDIA：第3四半期売上高が前年同期比103%増",
+        "note": "NVIDIAが11/17に公表した2027年度Q3売上高1,158億米ドルと2026年度Q3の570億米ドル。実績同士、米ドル建て。",
+        "unit": "十億米ドル",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "observed_at": "2026-11-18T08:30:00+09:00",
+        "values": [
+          {
+            "label": "前年同期",
+            "value": 57,
+            "state": "実績"
+          },
+          {
+            "label": "今回Q3",
+            "value": 115.8,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-nov17-close",
+        "kind": "bars",
+        "title": "TOPIX：16日と17日の国内終値",
+        "note": "JPXの2026/11/17 16:59 JST更新ファイルで確認した15:30大引け値。18日寄り前の最新確定値で、当日途中値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T16:59:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 3901.37,
+            "state": "実績"
+          },
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "米国市場は広く下落",
+        "signal": "逆風",
+        "meaning": "米国17日のS&P500は1.03%安、ダウは1.64%安、ナスダックは0.74%安。翌日の日本株も一律上昇すると予断しない。",
+        "source_url": "https://apnews.com/article/4d5a35288288389d894e63e6bebe8240",
+        "observed_at": "2026-11-18T06:00:00+09:00"
+      },
+      {
+        "name": "NVIDIAの実績増収",
+        "signal": "追い風",
+        "meaning": "2027年度Q3売上高は前年同期比103%増。決算公表は米国17日の通常取引後で、米国17日の終値に決算結果は反映していない。",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "observed_at": "2026-11-18T08:30:00+09:00"
+      },
+      {
+        "name": "日本株は17日続落",
+        "signal": "逆風",
+        "meaning": "JPX最終更新で確認した17日のTOPIXは1.57%安。18日寄り後の反応は未観測で、17日終値を18日の現在値としない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T16:59:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "NVDA",
+        "name": "エヌビディア",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 156.14,
+        "close": 155.46,
+        "price_kind": "close",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-18T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "corporate_action_checked": true,
+        "adjustment_note": "米国現地11/16・17のNASDAQ時系列で通常終値と調整後終値が両日一致（156.14／155.46米ドル）。独自の株式分割補正なし。",
+        "context": "米国17日の通常取引終値は前日比0.44%安。引け後に公表された売上高103%増の決算は当該終値には反映されておらず、次の通常取引と利益率見通しを確認する。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "AP通信：米国11月17日の主要指数終値と広範囲の下落",
+        "url": "https://apnews.com/article/4d5a35288288389d894e63e6bebe8240",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NVIDIA公式IR：2027年度第3四半期決算と第4四半期会社見通し",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Home Depot公式IR：2026年度第3四半期実績と通期見通し",
+        "url": "https://ir.homedepot.com/news-releases/2026/11-17-2026-110221331",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Stock Analysis：NVDA米国現地11月16日・17日通常終値・調整後終値",
+        "url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：2026年11月17日16:59最終更新のTOPIX現物指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：指数ファイル最終更新時刻202611171659",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "フィスコ：2026年11月17日大引け日経平均",
+        "url": "https://zai.diamond.jp/articles/-/499167",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NYSE公式：2026年休場日・米国通常取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-01-01",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX公式：2026年東証休場日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-01-01",
+        "checked_on": "2026-11-18"
+      }
+    ]
   }
 ]
