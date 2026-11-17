@@ -182,16 +182,27 @@ class PhotoStoryTests(unittest.TestCase):
 
     def test_timeline_shows_three_recent_posts_and_keeps_four_in_native_details(self):
         result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
+        motion = next(post for post in result if post.get("motion"))
+        photos = [post for post in result if not post.get("motion")]
+        # Keep a real motion post in the archive even as newer daily posts land.
+        result = [*photos[:3], motion, *photos[3:6]]
         page = stories.render_photo_timeline(result)
-        visible, earlier = page.split('<details class="photo-post-archive">', 1)
+        visible, earlier = page.split('<details class="photo-post-archive"', 1)
         before, after = Tags(), Tags()
         before.feed(visible); after.feed(earlier)
         self.assertEqual(sum(tag == "article" for tag, _ in before.tags), 3)
         self.assertEqual(sum(tag == "article" for tag, _ in after.tags), 4)
         self.assertIn('<summary>以前の投稿（4件）</summary>', earlier)
         self.assertIn('<ol class="photo-post-list" start="4">', earlier)
-        self.assertNotIn('<details class="photo-post-archive" open', page)
-        self.assertNotIn('hidden', earlier)
+        parsed = Tags(); parsed.feed(page)
+        archive = [attrs for tag, attrs in parsed.tags
+                   if tag == "details" and "photo-post-archive" in attrs.get("class", "").split()]
+        self.assertEqual(len(archive), 1)
+        self.assertNotIn("open", archive[0])
+        self.assertNotIn("hidden", archive[0])
+        fallback = [attrs for _, attrs in after.tags if "data-story-motion-fallback" in attrs]
+        self.assertEqual(len(fallback), 1)
+        self.assertIn("hidden", fallback[0])
         self.assertNotIn('photo-post-archive', stories.render_photo_timeline(result[:3]))
 
     def mixed_history(self):
