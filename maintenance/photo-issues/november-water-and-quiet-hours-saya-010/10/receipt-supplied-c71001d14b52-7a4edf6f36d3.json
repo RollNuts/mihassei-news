@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-water-and-quiet-hours-saya-010",
+  "cut_id": "10",
+  "model_id": "nagino-saya",
+  "review_reference_sha256": "c3552d3b1fadefba52cfeec068c730c6da33de88f92b23dfd88edc9aabd9af94",
+  "imported_at": "2026-11-17T22:41:22.222378Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "observed_source_url": "https://chatgpt.com/g/g-p-be82c060c2608191ac6ccccb5d7c342b-wei-fa-sheng-xin-wen/c/6af854c9-0598-83ee-8958-b762ea028909",
+    "turn_key": "47d4837d-68f6-4efa-bedd-c8cc211be41f",
+    "image_number": 4,
+    "image_number_basis": "Observed gallery ordinal within the same DOM data-turn-key output series; not a generation ordinal",
+    "observed_output_message_id": "3bd24e26-c871-4092-8243-ba8189ad14b4",
+    "observed_output_series": "historical",
+    "original_filename": "Sunlit Poolside Daydream.png",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "c71001d14b5287e551f607ab5c89c6b352420ca4d490fe6c85f9aea0abc28589",
+    "bytes": 2245833,
+    "width": 1024,
+    "height": 1536,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/10/source-c71001d14b5287e551f607ab5c89c6b352420ca4d490fe6c85f9aea0abc28589.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-water-and-quiet-hours-saya-010-10.jpg",
+    "sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1",
+    "bytes": 271294,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

@@ -194,6 +194,21 @@
         "cut_id": "06",
         "image_sha256": "e5d466ee018a36990b432f126bc538d386939988a3961a663714233e57490219"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261118071659000000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-18T07:16:59+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、プールの水に足を入れたら思ったより温かくて。先に入っていた人に「大丈夫でしょ」って笑われました。私、ちょっと慎重だったかも。",
+      "source": {
+        "issue_slug": "winter-coat-swimsuit-saya-001",
+        "cut_id": "03",
+        "image_sha256": "78072c206e69ab7103b07d860a3c6606aefbce7d5fd7eedb861fd5488b550c5b"
+      }
     }
   ]
 }
