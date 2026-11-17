@@ -225,6 +225,7 @@ async function readPng(file,fetchImpl){
     image_url:"data:image/png;base64,"+encodedBase64(bytes)};
 }
 function encodedBase64(bytes){
+  if(typeof bytes.toBase64==="function")return bytes.toBase64();
   // Binary-to-base64 without node Buffer or external libraries, in 48 KiB blocks.
   const block=48*1024,parts=[];
   for(let i=0;i<bytes.length;i+=block)parts.push(btoa(String.fromCharCode(...bytes.subarray(i,i+block))));

@@ -150,6 +150,22 @@ test('actual PNG HTTP bytes determine type while optional file metadata stays ad
   readMetadata(await send(bodyFor({file}),f.fn),tiny,file,1,1);
 });
 
+test('native typed-array base64 is used when available without changing original bytes',async()=>{
+  const original=Object.getOwnPropertyDescriptor(Uint8Array.prototype,'toBase64');
+  let calls=0;
+  Object.defineProperty(Uint8Array.prototype,'toBase64',{configurable:true,value:function(){
+    calls++;return Buffer.from(this).toString('base64');
+  }});
+  try{
+    const f=fileFetcher();
+    readMetadata(await send(bodyFor({file}),f.fn));
+    assert.equal(calls,1);
+  }finally{
+    if(original)Object.defineProperty(Uint8Array.prototype,'toBase64',original);
+    else delete Uint8Array.prototype.toBase64;
+  }
+});
+
 test('trusted file hosts are read without request credentials, environment tokens or GitHub access',async()=>{
   const hosts=['files.oaiusercontent.com','sdmntprwestus.oaiusercontent.com',
     'sdmntpreastus3.oaiusercontent.com','sdmntpra.oaiusercontent.com',
