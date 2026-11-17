@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-warm-water-and-riverside-yuki-009",
+  "cut_id": "04",
+  "model_id": "shiramine-yuki",
+  "review_reference_sha256": "b5705a94502fa6456be88adf9313c6f5200ea1974fcc664ec932257a07af8705",
+  "imported_at": "2026-11-17T02:42:14.152Z",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "turn_key": "1b506d57-e867-4bc2-be2e-476e5778827f",
+    "image_number": 4,
+    "image_number_basis": "delivery ZIP ordinal only; not generation number",
+    "source_archive_sha256": "aeee6fb40a2d6b7a22ef2ae829733af81d53943c89773dd8781299a9a6752bd2",
+    "source_archive_image_ordinal": 4,
+    "original_filename": "陽だまりのプールサイドで微笑む女性.png",
+    "source_manifest_image_ref": "file_00000000a9948212bcb1caa482381536",
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "65353831961da15e66fbc9e7c1027f56794f014691c58be64c0cf974a7d114b1",
+    "bytes": 2284343,
+    "width": 1086,
+    "height": 1448,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/04/source-65353831961da15e66fbc9e7c1027f56794f014691c58be64c0cf974a7d114b1.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-warm-water-and-riverside-yuki-009-04.jpg",
+    "sha256": "ef28a00d80aabdd018153ac9deb02e5474058d552da4f26e89326f17efd554ac",
+    "bytes": 275809,
+    "width": 900,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}
