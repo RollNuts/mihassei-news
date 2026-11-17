@@ -10,7 +10,7 @@ import hashlib
 import html
 import json
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 if __package__:
@@ -34,6 +34,10 @@ VOICE_PROFILES = {
     "kiritani-sumire": (0.95, 0.99),
 }
 FIELDS = {"id", "model_id", "published_at", "setting", "text", "source"}
+MAX_PHOTO_STORIES = 5000
+STORY_STRIP_POSTS_PER_MODEL = 3
+# Preserve the initial same-day history; new daily publication uses JST dates.
+DAILY_POST_LIMIT_START_JST = date(2026, 11, 17)
 
 
 def _stamp(value):
@@ -61,12 +65,12 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
         raise ValueError("Photo story clock needs a timezone")
     if (not isinstance(data, dict) or set(data) != {"schema_version", "stories"}
             or data["schema_version"] != 1 or not isinstance(data["stories"], list)
-            or len(data["stories"]) > 200):
+            or len(data["stories"]) > MAX_PHOTO_STORIES):
         raise ValueError("Invalid photo story catalog")
     models = {model["id"]: model for model in catalog["models"]}
     current = {issue["slug"]: issue for issue in catalog["issues"]}
     releases = {issue["slug"]: issue for issue in published if issue.get("state") == "published"}
-    seen, texts, result = set(), set(), []
+    seen, texts, days, result = set(), set(), set(), []
     for story in data["stories"]:
         if (not isinstance(story, dict) or set(story) not in (FIELDS, FIELDS | {"motion"})
                 or not isinstance(story.get("id"), str) or len(story["id"]) > 100
@@ -101,6 +105,12 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
         stamp, issue_stamp = _stamp(story["published_at"]), _stamp(issue["published_at"])
         if stamp < issue_stamp:
             raise ValueError("Photo story predates its source publication")
+        day = stamp.astimezone(JST).date()
+        if day >= DAILY_POST_LIMIT_START_JST:
+            day_key = (model["id"], day)
+            if day_key in days:
+                raise ValueError("More than one photo story for this model on the same JST day")
+            days.add(day_key)
         setting = story["setting"]
         if (not isinstance(setting, dict) or set(setting) != {"year", "month"}
                 or type(setting["year"]) is not int or type(setting["month"]) is not int
@@ -165,6 +175,14 @@ def render_story_strip(stories=None, *, root=ROOT):
     stories = load_photo_stories(root) if stories is None else stories
     if not stories:
         return ""
+    # The full history remains in each person's native archive, not the modal.
+    recent, counts = [], {}
+    for story in stories:
+        model_id = story["modelId"]
+        if counts.get(model_id, 0) < STORY_STRIP_POSTS_PER_MODEL:
+            recent.append(story)
+            counts[model_id] = counts.get(model_id, 0) + 1
+    stories = recent
     latest = {}
     for story in stories:
         latest.setdefault(story["modelId"], story)

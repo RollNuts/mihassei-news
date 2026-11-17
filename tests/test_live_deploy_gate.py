@@ -135,8 +135,22 @@ class DeploymentWorkflowTests(unittest.TestCase):
     def test_live_release_waits_for_real_public_commit(self):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
-        self.assertIn("cancel-in-progress: true",markup)
-        self.assertIn('EXPECTED_SHA: ${{ github.sha }}',markup)
+        cancellation = re.search(r"(?m)^  cancel-in-progress: \$\{\{ (.+) \}\}$", markup).group(1)
+        cancellation = cancellation.replace('&&', 'and').replace('||', 'or')
+        for event, expected, pr, should_cancel in (
+            ('push', '', '', True), ('workflow_run', '', '', False),
+            ('pull_request_target', '', '', False),
+            ('workflow_dispatch', '', '', True),
+            ('workflow_dispatch', 'a' * 40, '', False),
+            ('workflow_dispatch', '', '123', False),
+        ):
+            with self.subTest(event=event, expected=expected, pr=pr):
+                self.assertEqual(eval(cancellation, {'__builtins__': {}}, {
+                    'github': SimpleNamespace(event_name=event),
+                    'inputs': SimpleNamespace(expected_sha=expected, finalize_pr=pr),
+                }), should_cancel)
+        self.assertIn('EVENT_SHA: ${{ github.sha }}',markup)
+        self.assertIn('EXPECTED_SHA: ${{ steps.target.outputs.sha }}',markup)
         self.assertIn('python3 scripts/wait_for_live_revision.py --allow-docs-only',markup)
         self.assertRegex(markup, r"(?m)^    paths-ignore:\n      - 'docs/\*\*'$")
         self.assertIn('fetch-depth: 0',markup)
@@ -144,7 +158,7 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertIn("python3 scripts/check_live.py",markup)
         self.assertIn("python3 scripts/check_share_cards.py",markup)
         self.assertNotIn("Workers Builds: mihassei-news",markup)
-        self.assertNotIn("GH_TOKEN:",markup)
+        self.assertNotIn("GH_TOKEN:",markup.split('\n  photo_completion:\n', 1)[0])
         self.assertIn("read-only",markup.lower())
 
 
