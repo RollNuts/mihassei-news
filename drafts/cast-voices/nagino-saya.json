@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-15",
+  "created_date": "2026-11-17",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
     "issue_slug": "winter-coat-swimsuit-saya-001",
-    "cut_id": "08",
-    "image_sha256": "0385f5862929df14010986fc2cecad1c8efe11a401177965564b2d5bfc089cb6"
+    "cut_id": "09",
+    "image_sha256": "1a9d95e05ff0b3269645f428e920dac3c223ce6e240e430b896162a0e4b2eff8"
   },
-  "post_text": "今日はなんだか温かいものが食べたい気分。\n\n味付けをちょっと変えてみたけど、これでいいのかまだ迷ってる。笑",
-  "spoken_line": "んー、もう少しかな",
-  "future_idea": null
+  "post_text": "帰りに寄った売店で、お茶だけ買うつもりが、お菓子もすすめてもらって。少し話していたら外が暗くなってた。また寄り道してしまった。",
+  "spoken_line": "あ、もうこんな時間。",
+  "future_idea": "2031年、AI観光案内の利益配分を巡り、地域の案内人と出演モデルが説明を求める。"
 }
