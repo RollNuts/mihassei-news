@@ -33,7 +33,7 @@ python3 scripts/build.py
 
 回収担当は変更・生成・公開の直前にも、実行場所に対応する停止状態を確認する。**クラウド画像処理の停止権威はGitHubの`free-cpu-scenes.yml`**とし、対象repositoryがpublic・正しいworkflowのstateが`active`の場合だけ進む。無効・不明・取得失敗では画像の生成・保存・採用・公開をせず、自動で再開しない。GitHub接続で処理するGPTにMac実機CLIは要求しない。Nativeの保存helperは同じlive照合を組み込み、CPUジョブもモデル取得・生成・候補保存・公開の直前に再確認する。生成済み候補の読取り回収は停止中も可能だが、保存や採用は停止解除後に行う。
 
-GitHub接続からworkflow状態を読めないGPTは、認証なしのMCP入口 `https://veripsa.com/api/image-control/mcp` の `read_image_control` を使える。Native helperの `readCloudWorkflow({nonce})` で、その呼出しのnonceを変更せずツールへ渡し、同じ呼出しの `structuredContent` を返す。nonce・`checked_at`・固定repository/path・`active`の照合は既存helperに任せ、古い結果を再利用しない。ツールのエラー・取得失敗・無効状態では画像操作を止め、生成しない。この入口は公開メタデータの読取りだけで、GitHubの書込み権限や保存経路を追加しない。
+GitHub接続からworkflow状態を読めないGPTは、認証なしのMCP入口 `https://veripsa.com/api/image-control/mcp` の `read_image_control` を使える。Native helperの `readCloudWorkflow({nonce})` で、その呼出しのnonceを変更せずツールへ渡し、返った応答全体をそのまま返す。直接の値・`result`・従来の`structuredContent`の正規化と外側/内側のエラー判定はhelperに任せる。nonce・`checked_at`・固定repository/path・`active`の照合は既存helperに任せ、古い結果を再利用しない。ツールのエラー・取得失敗・無効状態では画像操作を止め、生成しない。この入口は公開メタデータの読取りだけで、GitHubの書込み権限や保存経路を追加しない。
 
 `github_rate_limit` は使用中のGitHub枠の残量0を示す。専用認証を使う場合は、対象repositoryに対するActions読取りだけの期限付きfine-grained tokenを、既存Worker `mihassei-news` のランタイムSecret `IMAGE_CONTROL_GITHUB_READ_TOKEN` に保存する。build変数・ソース・ログ・成果物へ秘密値を置かない。未設定時は固定workflowを匿名で1回読み、専用認証時は固定repositoryの公開状態を確認してからworkflowを読む最大2回のGETを使う。全体3秒・各応答16KiBを上限とし、repositoryが非公開・不存在、または公開情報が不正な場合は`repository_unavailable`で停止してworkflowを読まない。設定済みの値が不正・失効・権限不足でも匿名へ戻らない。`github_http_401` は認証情報の再確認が必要で、記事の発行は独立して継続する。この認証は固定repositoryとworkflowのGET専用で、画像APIや有料機能を呼ばない。
 

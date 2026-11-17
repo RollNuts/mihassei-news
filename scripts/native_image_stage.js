@@ -28,8 +28,11 @@ var NativeImageStage = (function () {
     }
     async function invoke(name,args){countStep(name!=="fetch"&&name!=="fetch_file");return await github[name](args);}
     function payload(r) {
-      const p=r?.structuredContent??r;
-      if(!p||r?.isError||p.error_code||p.error){const e=Error(p?.error||"GitHub operation failed");e.provider=p;throw e;}
+      const p=r?.structuredContent??r?.result??r;
+      // Preserve concrete outer errors; a generic outer isError flag must not
+      // hide the inner NOT_FOUND record used by exact missing-ref checks.
+      const failed=r?.error_code||r?.error?r:p?.error_code||p?.error?p:r?.isError||p?.isError?p:null;
+      if(!p||failed){const provider=failed||p,e=Error(provider?.error||"GitHub operation failed");e.provider=provider;throw e;}
       return p;
     }
     async function fetchJSON(path){

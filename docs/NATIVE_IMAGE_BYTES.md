@@ -16,7 +16,7 @@ For a transport-only diagnostic, `checkTransport(plan, options)` takes the same 
 
 The ordinary `stage/resume/load` methods remain available for recovery without generation. They store the complete source PNG as ordered parts of at most 512 KiB, plus the JPEG and provenance, together on the article's candidate branch; they do not edit published article/image manifests, write an accepted review, create a PR or deploy. Readback reconstructs the original PNG, verifies its complete SHA-256, and checks that the pinned conversion reproduces the saved JPEG. This avoids the GitHub Contents response that can return an empty content string for a binary file larger than 1 MiB even when the request succeeds. A generated result or failed-save checkpoint must be recovered, not replaced by another generation.
 
-Read both helpers from the latest reviewed repository revision and initialize the existing converter. The following assumes the reviewed draft's `slug`, `articleSha256`, `prompt`, `baseCommitSha`, `baseTreeSha` and stable `logicalRunId` are already known. For a new article, first save the reviewed draft to its working commit: `prepare` checks that the target article and its fingerprint exist in `baseCommitSha`. The base tree must belong to that commit. `readLiveJson` below must use an actual fresh HTTP or browsing response from the same call. Connector runtimes that reject GitHub workflow API URLs use this read-only site endpoint; they must not synthesize an active state or reuse an old reply. The endpoint echoes a per-call nonce and timestamp, both verified by the helper. An unavailable reader stops image operations. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
+Read both helpers from the latest reviewed repository revision and initialize the existing converter. The following assumes the reviewed draft's `slug`, `articleSha256`, `prompt`, `baseCommitSha`, `baseTreeSha` and stable `logicalRunId` are already known. For a new article, first save the reviewed draft to its working commit: `prepare` checks that the target article and its fingerprint exist in `baseCommitSha`. The base tree must belong to that commit. Bind `readImageControl` below to the actually exposed `read_image_control` MCP tool, pass the nonce unchanged and return the whole actual response to the stager. Do not unconditionally select `.structuredContent`: the helper normalizes direct, `.result` and legacy `.structuredContent` responses and rejects errors at either level. Connector runtimes that reject GitHub workflow API URLs use this existing read-only tool; do not synthesize an active state or reuse an old reply. The endpoint echoes a per-call nonce and timestamp, both verified by the helper. An unavailable reader stops image operations. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
 
 **Unchanged main does not imply no recovery work.** For each unresolved slug in the existing handoff, check its recorded candidate references and enumerate the matching `native-image-candidate/<slug>/` branches before returning idle. Read new or changed `receipt.json` files and compare the slug, current article fingerprint, logical run ID, source/JPEG hashes and existing acceptance/rejection history. Recover an unprocessed matching candidate with its originating plan before generating another image; skip identities already adopted or rejected. Record changed branch/commit and receipt SHA in the existing task result or handoff, without creating another ledger. A failed or incomplete branch lookup is an unresolved lookup, not evidence that no candidate exists; do not replace it with an unchanged-main shortcut.
 
@@ -83,7 +83,7 @@ const runtime = bytesAPI.initialize(dependencies);
 const stageAPI = new Function(stageHelperSource + "\nreturn NativeImageStage;")();
 const stager = stageAPI.create({
   runtime, repository: repo,
-  readCloudWorkflow: ({nonce}) => readLiveJson("https://veripsa.com/api/image-control?nonce=" + nonce),
+  readCloudWorkflow: ({nonce}) => readImageControl({nonce}),
   github: {
     fetch_file: args => tools.mcp__codex_apps__github_fetch_file(args),
     create_blob: args => tools.mcp__codex_apps__github_create_blob(args),
@@ -107,8 +107,9 @@ const readBytes = async source => {
     const actual = await tools.mcp__codex_apps__github_fetch_file({
       repository_full_name: repo, path: source.path, ref: source.ref, encoding: "base64"
     });
-    const file = actual.structuredContent;
-    if (actual.isError || file?.encoding !== "base64" || typeof file.content !== "string")
+    const file = actual?.structuredContent ?? actual?.result;
+    if (actual?.isError || actual?.error_code || actual?.error || file?.isError || file?.error_code || file?.error ||
+        file?.encoding !== "base64" || typeof file.content !== "string")
       throw Error("Existing probe PNG could not be read");
     return {image_url: "data:image/png;base64," + file.content};
   }
@@ -156,8 +157,9 @@ The existing receiver also exposes the read-only `read_candidate_png` tool. The 
 ```js
 const readBytes = async actualPngPath => {
   const received = await readCandidatePng({file: actualPngPath});
-  const png = received.structuredContent;
-  if (received.isError || png?.status !== "read" || png.mime_type !== "image/png" ||
+  const png = received?.structuredContent ?? received?.result ?? received;
+  if (received?.isError || received?.error_code || received?.error || png?.isError || png?.error_code || png?.error ||
+      png?.status !== "read" || png.mime_type !== "image/png" ||
       typeof png.image_url !== "string" || !png.image_url.startsWith("data:image/png;base64,"))
     throw Error("Original PNG byte transfer failed");
   if (runtime.sha256(runtime.fromBase64(png.image_url)) !== png.sha256)
@@ -166,7 +168,7 @@ const readBytes = async actualPngPath => {
 };
 ```
 
-Capture `structuredContent` only inside code mode: never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
+Capture the PNG payload only inside code mode (direct or inside a supported wrapper): never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
 
 ### Offline PNG bootstrap
 
