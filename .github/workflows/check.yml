@@ -39,6 +39,7 @@ jobs:
           fi
           python3 -m pip install --no-cache-dir 'Pillow>=10.1,<13' CairoSVG==2.7.1
       - name: Run Python checks with a fresh full site build
+        id: python_checks
         run: python3 tests/site_build_fixture.py --base "$TEST_SCOPE_BASE_SHA" --event "$TEST_SCOPE_EVENT"
         env:
           TEST_SCOPE_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -74,6 +75,9 @@ jobs:
       - name: Verify image workflow control and bounded candidate file transport
         run: node --test tests/image-control.test.cjs tests/image-control-mcp.test.cjs tests/image-candidate-mcp.test.cjs tests/image-candidate-png.test.cjs
       - name: Verify native image bytes and retry-safe candidate staging
+        # Exact existing data-only PR scopes cannot change this synthetic engine.
+        # Missing/unknown scope output remains full, as do all main pushes.
+        if: steps.python_checks.outputs.run_native_image_engine_tests != 'false'
         run: node scripts/native_image_ci_test.js
       - name: Validate read-only public health checker
         run: python3 -m py_compile scripts/check_live.py
