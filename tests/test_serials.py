@@ -1,6 +1,7 @@
 """Contract tests for the zero-cost, clearly labelled serial feature."""
 from __future__ import annotations
 
+from datetime import datetime
 import json
 import tempfile
 import re
@@ -31,6 +32,8 @@ class SerialTests(unittest.TestCase):
         self.assertEqual(len(private), 2)
 
     def test_hub_and_navigation_are_readable_without_js(self):
+        from scripts.market_bulletins import load_market_bulletins
+        bulletins = load_market_bulletins(ROOT)
         home = (ROOT / "dist/index.html").read_text(encoding="utf-8")
         hub = (ROOT / "dist/serials/index.html").read_text(encoding="utf-8")
         self.assertIn('href="/serials/market-lab/"', home)
@@ -49,7 +52,14 @@ class SerialTests(unittest.TestCase):
             series_html = (ROOT / "dist/serials" / s["slug"] / "index.html").read_text(encoding="utf-8")
             self.assertIn(s["title"], series_html)
             if s["kind"] == "analysis":
-                self.assertRegex(series_html, r'最終(?:掲載|公開).*?<time datetime="')
+                if bulletins and bulletins[-1]["day"] >= s["episodes"][-1]["published_at"]:
+                    report = bulletins[-1]
+                    label = datetime.fromisoformat(report["published_at"]).strftime("%Y-%m-%d %H:%M")
+                    update = series_html.split('<p class="market-latest-update">', 1)[1].split('</p>', 1)[0]
+                    self.assertIn('最新の市況 ／', update)
+                    self.assertIn(f'<time datetime="{report["published_at"]}">{label}</time> JST 公開', update)
+                else:
+                    self.assertRegex(series_html, r'最終(?:掲載|公開).*?<time datetime="')
             else:
                 self.assertIn("公開済み "+str(len(s["episodes"]))+"話", series_html)
             self.assertNotIn('href="/serials/'+s["slug"]+'/nonexistent', series_html)
