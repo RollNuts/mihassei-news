@@ -172,7 +172,8 @@ async function github(path,method,token,fetchImpl,body,allow404=false){
   const res=await fetchImpl(url,{
     method,redirect:"manual",cache:"no-store",signal:AbortSignal.timeout(5000),
     headers:{"accept":"application/vnd.github+json","x-github-api-version":"2022-11-28",
-      "user-agent":"veripsa-image-receiver","authorization":"Bearer "+token,
+      "user-agent":"veripsa-image-receiver",
+      ...(token?{"authorization":"Bearer "+token}:{}),
       ...(body?{"content-type":"application/json"}:{})},
     ...(body?{body:JSON.stringify(body)}:{})
   });
@@ -200,7 +201,8 @@ async function stageFile(req,env,file,claim,fetchImpl){
   // by validated input. No caller-provided GitHub URL is ever followed.
   const repo=await github("", "GET",token,fetchImpl);
   if(repo.full_name!==REPO||repo.private!==false||repo.visibility!=="public")throw failure("repository_not_public");
-  const workflow=await github("/actions/workflows/free-cpu-scenes.yml","GET",token,fetchImpl);
+  // Public read-only metadata needs no Actions permission on the write token.
+  const workflow=await github("/actions/workflows/free-cpu-scenes.yml","GET",null,fetchImpl);
   if(workflow.path!==".github/workflows/free-cpu-scenes.yml"||workflow.state!=="active")
     throw failure("image_workflow_not_active");
   const manifest=await github("/contents/assets/generated/manifest.json?ref=main","GET",token,fetchImpl);
