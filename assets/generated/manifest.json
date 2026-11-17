@@ -6506,6 +6506,178 @@
       "source_article_sha256": "ccdf9a215728d3376322966c5ee03c0a1731f1a8d98f5c2dc9f1668fa07fdd8d",
       "source_png_sha256": "8b46944f68c5b8f5d0c28ebf31e7a3c8a63427e88bf3c8bfe222722d85f88435"
     },
+    "secondhand-home-repair-map-opens-wall-before-sale": {
+      "article_sha256": "c969833953bd8274d61086f828a81a079b60ac6f27fd7514c8c0cd81d5ac345a",
+      "bytes": 169312,
+      "generated_at": "2026-11-17T00:29:24.185140651Z",
+      "generation_id": "74f7411a-9cc9-414f-b00f-7fdfb49ddfac",
+      "generation_prompt": "Use case: photorealistic-natural. Asset type: horizontal 16:9 editorial photograph for a fictional 2031 Japanese news article, 1536×864 composition. In a modest Japanese secondhand home on a cool November morning, a fictional Japanese woman home buyer aged 40, wearing an ordinary autumn cardigan and trousers, points at a small rectangular inspection opening near the bottom of a freshly painted white wall. A building inspector in plain work clothes crouches beside it, using a small flashlight to examine visibly dark damp timber inside the wall. An older adult seller stands a step behind and watches seriously. The removed panel rests safely on the floor. Include a simple paper floor plan with thin unlabelled lines held by the buyer, linking her check of repair records with the actual wall inspection. Capture the clear practical action and the contrast between a tidy new wall surface and the damp wood behind it. Natural window light, realistic skin and clothing texture, believable hands and tools, ordinary unpolished home interior, candid Japanese local press photograph, eye-level wide view, natural colors. All people are invented and do not resemble celebrities. No readable letters, labels, digits, logos, watermarks, text overlay, glowing interfaces, illustration, anime, 3D render, glamour lighting, posed smiles, or exaggerated expressions. Keep the woman pointing, the inspector examining the exposed damp timber, and the inspection opening all clearly visible within a center-safe 16:9 frame.",
+      "generation_prompt_sha256": "cfbb7b6f5ca4e5dbb9c27678a3acaa27deb785f6d7bea29c093c3cd3ce393e78",
+      "generation_receipt": "xmp:iid:74f7411a-9cc9-414f-b00f-7fdfb49ddfac",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "e8b167894757638a965c9c937eed59ed7889d97b724472ae5d980f6901c35644",
+      "source_c2pa": {
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "when": "2026-11-17T00:29:24.185140651Z"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-17T00:29:24.185145989Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-17T00:29:24.182831054Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "claim_generator": null,
+        "claim_generator_info": {
+          "icon": {
+            "hash": [
+              37,
+              109,
+              202,
+              43,
+              38,
+              123,
+              5,
+              115,
+              41,
+              56,
+              200,
+              113,
+              129,
+              91,
+              253,
+              197,
+              138,
+              177,
+              215,
+              111,
+              37,
+              248,
+              80,
+              216,
+              162,
+              99,
+              115,
+              52,
+              224,
+              178,
+              171,
+              196
+            ],
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon"
+          },
+          "name": "OpenAI Media Service API",
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "content_binding_validation": "not_performed",
+        "instanceID": "xmp:iid:74f7411a-9cc9-414f-b00f-7fdfb49ddfac",
+        "manifest_uri": "urn:c2pa:e059b041-36b0-4742-b0a2-322fad5fddcc",
+        "signature_validation": "not_performed"
+      },
+      "source_capture": {
+        "actual_output_hint": "Generated images are saved to /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3 as /Users/murakaminaoya/.codex/generated_images/01a19f75-bfe8-7f72-9d02-eb0f936a9de3/exec-384d6480-f65a-41d7-b8b8-87db390757b8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "bytes": 2641263,
+        "caBX_sha256": "fdf73f6a94d40e78eac65af2e6f8a8b58417bf9b6a68fe73320f08e3c2a6d7cf",
+        "candidate_branch": "native-image-candidate/secondhand-home-repair-map-opens-wall-before-sale/c969833953bd8274-542b58cc098d",
+        "candidate_commit": "95280faae19dc096e77484a183e73a9a11ca4d81",
+        "generation_claim": {
+          "branch": "native-image-generation-claim/e4f0b2ab280792cf115d3fd232e31442a51d23e7abad5ba2fe24ec57e19f1a1a",
+          "commit_sha": "a01234356f38c32dd6b1b2ce3329919302fa1bc0",
+          "kind": "native_image_generation_claim",
+          "receipt_path": "maintenance/native-image-generation-claims/e4f0b2ab280792cf115d3fd232e31442a51d23e7abad5ba2fe24ec57e19f1a1a.json",
+          "receipt_sha256": "c44fa2e9814170b81463d442ebd6c6b76707cad84dc977d734ba6c18f9127dbb",
+          "status": "reserved_generation_unconfirmed"
+        },
+        "height": 941,
+        "kind": "native_tool_result",
+        "logical_run_id": "codex-image-recovery-pr813-20261117",
+        "method": "Preferred generateAndStage performed actual byte preflight, conversion, GitHub save/readback, durable claim and one built-in generation in the same execution. The original PNG and final JPEG were displayed against the unchanged full article before adoption.",
+        "observed_at": "2026-11-17T00:29:26.306Z",
+        "original_png_parts": [
+          {
+            "blob_sha": "ff24b44c7710df182783492eaba0368db3b06239",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part000",
+            "sha256": "ff0d4c48059bf1d0e7e3274a27b01992a9257f59553c67783b4005dab6a7c469"
+          },
+          {
+            "blob_sha": "194a3aa8bbe48b29a40f8f82ee9b40f1fb4d79ad",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part001",
+            "sha256": "542ed28af9def04455ab6c03312bde5f744eafafb3a36e8bff235fac991515ea"
+          },
+          {
+            "blob_sha": "8aff111d636662165363353c492f41c7c0868b58",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part002",
+            "sha256": "515d8978deb61db484431f639b9b1f717b140424bd4d60cf2c575896e6e913e6"
+          },
+          {
+            "blob_sha": "cdfe029e8eca332f8e06aae99ad46ec4feff4bae",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part003",
+            "sha256": "23c30025535bfa4d9ebb286c5db356128d0605b0d6051796d7e4d02e7f0cecc8"
+          },
+          {
+            "blob_sha": "7d4a3c2dfcbd94a2cd1ee197c3f8cb884cb4fe9b",
+            "bytes": 524288,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part004",
+            "sha256": "cf83420fe72e0a1ad41ff44626f1a9538ca3db62955db174c3240684ce6326ed"
+          },
+          {
+            "blob_sha": "27c134b33b8a40ee8bf93f61d5fbd4b190f058c3",
+            "bytes": 19823,
+            "path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/source.png.part005",
+            "sha256": "3bc59da2f58d7e953170978bf65f2e9241be97330d9dec781d2ec4109992c84e"
+          }
+        ],
+        "receipt_path": "maintenance/native-image-candidates/secondhand-home-repair-map-opens-wall-before-sale/receipt.json",
+        "receipt_sha256": "c97480b9e7dc8f56e3f05f47965efb923158ca354910a7fd2431977b75a4539c",
+        "storage": "github_candidate_branch_immutable_commit",
+        "transport_preflight": {
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "46a6b9f9e20cce474056d491ee48ae7034443d71",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+          "kind": "native_image_transport_preflight",
+          "observed_at": "2026-11-17T00:28:16.181Z",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "1dea94e9fb76a71b1d5f73df45cbbcc51b8a5a9e0a89c0ea41b7546a1087b386",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "status": "passed"
+        },
+        "width": 1672
+      },
+      "source_png_sha256": "82bd67af7185d5fcf5fec96e06d9f1b989046e33afa48dc8f381539e706542b0",
+      "transform": {
+        "alpha_background": "white",
+        "height": 675,
+        "helper": "scripts/native_image_bytes.js",
+        "jpeg_quality": 84,
+        "resize": "center-cover-bilinear",
+        "width": 1200
+      }
+    },
     "self-checkout-regular-awarded-unpaid-staff": {
       "article_sha256": "3bb26389a0bd228ba6b5dd563b0e811e0367c9ab441771140cc37cb085e63e22",
       "bytes": 135138,
