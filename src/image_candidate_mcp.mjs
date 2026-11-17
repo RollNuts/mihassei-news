@@ -8,10 +8,13 @@ const RAW="https://raw.githubusercontent.com/"+REPO+"/";
 // Do not allow arbitrary oaiusercontent.com subdomains or response-origin hops.
 const FILE_HOST="files.oaiusercontent.com";
 const REGIONAL_FILE_HOST=/^sdmntpr[a-z0-9]{1,40}\.oaiusercontent\.com$/;
-// Observed from an actual GPT attachment. Azure account names are not a
+// Observed from actual GPT attachments. Azure account names are not a
 // provider-owned namespace: never generalize this to an Azure-host wildcard.
-const OBSERVED_AZURE_FILE_HOST="oaisdmntpraustraliaeast.blob.core.windows.net";
-const trustedFileHost=host=>host===FILE_HOST||host===OBSERVED_AZURE_FILE_HOST||REGIONAL_FILE_HOST.test(host);
+const OBSERVED_AZURE_FILE_HOSTS=new Set([
+  "oaisdmntpraustraliaeast.blob.core.windows.net",
+  "oaisdmntprindiasocentral.blob.core.windows.net"
+]);
+const trustedFileHost=host=>host===FILE_HOST||OBSERVED_AZURE_FILE_HOSTS.has(host)||REGIONAL_FILE_HOST.test(host);
 const MAX_JPEG=700*1024;
 const MAX_PNG=8*1024*1024;
 const MAX_CLAIM_BYTES=16*1024;
@@ -518,10 +521,10 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
     return toolResult(id,await stageFile(req,env,args.file,args.claim,fetchImpl));
   }catch(e){
     // Never echo signed file URLs, nonce, credentials or upstream error bodies.
-    // Diagnostic detail is restricted to this read-only probe; staging retains
+    // Diagnostic detail is restricted to read-only tools; staging retains
     // its generic fail-closed response and all existing access checks.
     const result={error:e.safeCode||"unavailable"};
-    if(p.name===PROBE.name&&e[FILE_REFERENCE_DIAGNOSTIC])
+    if((p.name===PROBE.name||p.name===READ_PNG.name)&&e[FILE_REFERENCE_DIAGNOSTIC])
       result.file_reference_diagnostic=e[FILE_REFERENCE_DIAGNOSTIC];
     return toolResult(id,result,true);
   }

@@ -170,7 +170,8 @@ test('trusted file hosts are read without request credentials, environment token
   const hosts=['files.oaiusercontent.com','sdmntprwestus.oaiusercontent.com',
     'sdmntpreastus3.oaiusercontent.com','sdmntpra.oaiusercontent.com',
     'sdmntpr'+'a'.repeat(40)+'.oaiusercontent.com',
-    'oaisdmntpraustraliaeast.blob.core.windows.net'];
+    'oaisdmntpraustraliaeast.blob.core.windows.net',
+    'oaisdmntprindiasocentral.blob.core.windows.net'];
   for(const host of hosts){
     const reference={...file,download_url:'https://'+host+'/PRIVATE_PATH?sig=PRIVATE_SIGNATURE'};
     const f=fileFetcher(()=>{
@@ -228,6 +229,9 @@ test('SSRF URLs and unrecognized sibling hosts are rejected before any fetch',as
     'https://files.oaiusercontent.com.evil.example/PRIVATE_PATH',
     'https://sdmntprwestus.oaiusercontent.com./PRIVATE_PATH',
     'https://oaisdmntpraustraliaeast2.blob.core.windows.net/PRIVATE_PATH',
+    'https://oaisdmntprindiasocentral2.blob.core.windows.net/PRIVATE_PATH',
+    'https://nested.oaisdmntprindiasocentral.blob.core.windows.net/PRIVATE_PATH',
+    'https://oaisdmntprindiasocentral.blob.core.windows.net.evil.example/PRIVATE_PATH',
     'https://oaisdmntprwestus.blob.core.windows.net/PRIVATE_PATH',
     'https://attacker.blob.core.windows.net/PRIVATE_PATH',
     'https://nested.oaisdmntpraustraliaeast.blob.core.windows.net/PRIVATE_PATH',
@@ -242,6 +246,15 @@ test('SSRF URLs and unrecognized sibling hosts are rejected before any fetch',as
     safeError(await send(bodyFor({file:{...file,download_url}}),f.fn),'untrusted_file_host');
     assert.equal(f.calls.length,0,'untrusted input must not be fetched');
   }
+});
+
+test('an unknown PNG host reports only the existing bounded diagnostic, without an extra JPEG probe',async()=>{
+  const reference={...file,download_url:'https://oaisdmntprindiasocentral2.blob.core.windows.net/PRIVATE_PATH?sig=PRIVATE_SIGNATURE'};
+  const f=fileFetcher(),actual=await send(bodyFor({file:reference}),f.fn);
+  const detail=safeError(actual,'untrusted_file_host');
+  assert.deepEqual(detail,{error:'untrusted_file_host',file_reference_diagnostic:{
+    reason:'hostname',hostname:'oaisdmntprindiasocentral2.blob.core.windows.net'}});
+  assert.equal(f.calls.length,0);
 });
 
 test('redirects, upstream failures and cross-origin response URLs fail closed',async()=>{
