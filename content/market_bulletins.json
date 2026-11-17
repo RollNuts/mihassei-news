@@ -894,5 +894,224 @@
         "checked_on": "2026-11-17"
       }
     ]
+  },
+  {
+    "slug": "2026-11-17-open",
+    "day": "2026-11-17",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-17T09:47:41+09:00",
+    "title": "17日寄り後：TOPIX1.46%安、半導体と銀行に売り、NTTは上昇",
+    "summary": "東京市場17日9時18〜40分JSTの観測では、TOPIXが1.46%安（9時31分）、アドバンテスト3.22%安（9時18分）、三菱UFJ3.13%安（9時22分）。一方NTTは1.07%高（9時40分）。配信時刻を分け、午前の判断材料を整理する。",
+    "lead": "11月17日（火）9時40分までに配信された東京市場の途中値です。16日の米国半導体株安を警戒した朝でしたが、国内の下落は銀行にも見られ、一方で通信株には上昇例があります。銘柄や指数の時刻はそれぞれ異なり、同時刻の一斉観測でも大引けの確定値でもありません。保有株と次の候補を分けて見るための、朝の初動を確かめます。",
+    "sections": [
+      {
+        "heading": "TOPIXは下落、日経平均は15分遅延値で確認",
+        "paragraphs": [
+          "Yahoo!ファイナンスが11月17日9時31分JSTと表示したTOPIX途中値は3,844.38ポイント。16日のJPX確定終値3,901.37ポイントに対して56.99ポイント、約1.46%安でした。朝の予想どおりの方向ではありますが、下落の確定や取引終了時の値はまだ分かりません。",
+          "日経平均は17日9時19分時点の15分遅延配信値が59,049.54円で、16日の終値59,662.02円より612.48円（1.03%）低い表示です。TOPIXと観測時刻・配信の遅れが違うため、両指数の下げ率を同時刻の厳密な比較には使えません。米国16日の半導体株安は警戒材料でしたが、国内下落の理由をそれだけに断定しません。"
+        ]
+      },
+      {
+        "heading": "半導体と銀行は下落、通信には買いが残る",
+        "paragraphs": [
+          "アドバンテスト（6857）は17日9時18分JSTの途中値が26,330円。16日の27,205円から3.22%下落し、TOPIXの9時31分時点の下落率より大きい幅です。AI半導体株の下げを警戒する保有者は、前場の下落が半導体関連全体へ広がるかを見たいところです。ただし、この数字だけでは同社固有の業績変化は分かりません。",
+          "三菱UFJフィナンシャル・グループ（8306）は17日9時22分の途中値3,308円で16日終値3,415円から3.13%下落。下落は半導体関連に限らないことが分かります。銀行の値動きを米半導体安だけで説明せず、金利や国内金融株全体の反応を別に確認する必要があります。",
+          "一方、NTT（9432）は17日9時40分の途中値170.4円で16日終値168.6円から1.07%上昇しました。同じ朝でも逆方向の銘柄があるため、『指数が下がる＝どの保有株も同じ理由で下がる』とは言えません。いずれの個別株も異なる時刻の途中値で、終値ではありません。"
+        ]
+      },
+      {
+        "heading": "確認したいのは、下げの広がりと引けまでの変化",
+        "paragraphs": [
+          "この後は、半導体と銀行で売りが続くのか、通信のように上昇する業種が増えるのかを前場終了時点と大引けで比べます。売買代金や値下がり銘柄の広がりは、ここでは確認済みの数値を持たないため断定しません。新しい決算・開示があれば株価の方向と分けて読みます。",
+          "11月17日寄り前に固定した『18日のTOPIXが16日終値3,901.37から0.5%超下落』という短期予想は、9時31分の途中値だけなら下落方向の材料があります。ただし判定対象は18日のJPX公式終値であり、今日の途中値を的中・外れに算入せず、基準や判定方法も変えません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-opening-reaction",
+        "kind": "bars",
+        "title": "TOPIX：16日終値と17日9時31分の途中値",
+        "note": "16日はJPXで確定した終値、17日はYahoo!ファイナンスの9時31分JST時点の途中値。17日の引け値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://finance.yahoo.co.jp/quote/998405.T",
+        "observed_at": "2026-11-17T09:31:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 3901.37,
+            "state": "実績"
+          },
+          {
+            "label": "11/17 9:31",
+            "value": 3844.38,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "advantest-opening-reaction",
+        "kind": "bars",
+        "title": "アドバンテスト：前日終値と朝の途中値",
+        "note": "17日の株価は9時18分JSTの途中値。前日終値との同一株式の円建て比較であり、同日終値や将来予想ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-17T09:18:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 27205,
+            "state": "実績"
+          },
+          {
+            "label": "11/17 9:18",
+            "value": 26330,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "ntt-opening-contrast",
+        "kind": "bars",
+        "title": "NTT：指数安の朝でも上昇した例",
+        "note": "17日の株価は9時40分JST時点の途中値。16日終値からの比較で、同日終値の確定値ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "observed_at": "2026-11-17T09:40:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 168.6,
+            "state": "実績"
+          },
+          {
+            "label": "11/17 9:40",
+            "value": 170.4,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "TOPIXは下落",
+        "signal": "逆風",
+        "meaning": "11月17日9時31分JSTの途中値は3,844.38で、16日公式終値から1.46%安。ただし大引けではなく、予測の正式判定にも使いません。",
+        "source_url": "https://finance.yahoo.co.jp/quote/998405.T",
+        "observed_at": "2026-11-17T09:31:00+09:00"
+      },
+      {
+        "name": "銀行にも売り",
+        "signal": "逆風",
+        "meaning": "三菱UFJは9時22分JST時点で前日終値比3.13%安。半導体以外にも売りがある一例で、市場全体の因果関係までは示しません。",
+        "source_url": "https://finance.yahoo.co.jp/quote/8306.T",
+        "observed_at": "2026-11-17T09:22:00+09:00"
+      },
+      {
+        "name": "通信株は逆行",
+        "signal": "中立",
+        "meaning": "NTTは9時40分JSTの途中値で前日比1.07%高。同じ朝でも上昇例があり、指数の下落だけで全保有株を一律に判断しない手掛かりです。",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "observed_at": "2026-11-17T09:40:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "6857",
+        "name": "アドバンテスト",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 27205,
+        "close": 26330,
+        "price_kind": "intraday",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T09:18:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一のYahoo!ファイナンス株式ページで前営業日終値と当日途中値を円建て照合。分割後の換算値を推計・加算せず、表示価格のまま比較。",
+        "context": "11月17日9時18分JSTの途中値は前日終値比3.22%安。米半導体関連の売りが警戒材料だが、同社固有の決算や業績が悪化したとはこの値だけでは断定できない。"
+      },
+      {
+        "code": "8306",
+        "name": "三菱UFJフィナンシャル・グループ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3415,
+        "close": 3308,
+        "price_kind": "intraday",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T09:22:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8306.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一のYahoo!ファイナンス株式ページで前日終値と11月17日途中値を同じ表示株数・円建てで照合。分割換算を外挿しない。",
+        "context": "11月17日9時22分JSTの途中値は前日終値比3.13%安。半導体以外にも売りが及んだ例だが、銀行株全体や金利が原因かは別途確認が必要。"
+      },
+      {
+        "code": "9432",
+        "name": "NTT",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 168.6,
+        "close": 170.4,
+        "price_kind": "intraday",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-17T09:40:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一のYahoo!ファイナンス株式ページで前日終値と当日途中値を円建て照合。単元・株式分割に基づく未検証の再計算をしていない。",
+        "context": "11月17日9時40分JSTの途中値は前日終値比1.07%高。指数や半導体・銀行が弱い同じ朝でも逆方向の例があり、業種や銘柄別の確認が重要。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Yahoo!ファイナンス：TOPIX 17日9時31分JSTの途中値と16日終値",
+        "url": "https://finance.yahoo.co.jp/quote/998405.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：日経平均 17日9時19分JSTの15分遅延配信値",
+        "url": "https://finance.yahoo.co.jp/quote/998407.O",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト 17日9時18分JSTの途中値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三菱UFJ 17日9時22分JSTの途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8306.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Yahoo!ファイナンス：NTT 17日9時40分JSTの途中値",
+        "url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "JPX：11月16日TOPIX公式確定終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      },
+      {
+        "title": "Reuters：米国11月16日の株式市場と半導体株の動き",
+        "url": "https://www.reuters.com/business/sp-500-nasdaq-futures-slide-nvidia-earnings-anthropic-debut-loom-2026-11-16/",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-17"
+      }
+    ]
   }
 ]
