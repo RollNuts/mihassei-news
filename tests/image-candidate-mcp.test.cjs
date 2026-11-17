@@ -47,7 +47,7 @@ function syntheticClaim() {
   return {
     slug,article_sha256:article,
     branch:'native-image-candidate/'+slug+'/'+article.slice(0,16)+'-012345abcdef',
-    expected_head_sha:'b'.repeat(40),
+    expected_head_sha:'b'.repeat(40),claim_commit_sha:'9'.repeat(40),
     path:'maintenance/native-image-candidates/'+slug+'/candidate.jpg',
     jpeg_sha256:sha(bytes),jpeg_bytes:bytes.length,file_id_sha256:sha(file.file_id),
     nonce_sha256:sha(nonce),nonce,
@@ -59,10 +59,10 @@ const env={IMAGE_CANDIDATE_WRITE_ENABLED:'true',
   IMAGE_CANDIDATE_CALLER_KEY:'synthetic-caller-token-00001'};
 function githubFixture(claim,override={}) {
   const calls=[];
-  let head=override.head||claim.expected_head_sha;
+  let head=override.head||claim.claim_commit_sha;
   let stored=override.stored||null;
   const record={version:1,repository:'RollNuts/mihassei-news',
-    ...Object.fromEntries(Object.entries(claim).filter(([k])=>k!=='nonce'))};
+    ...Object.fromEntries(Object.entries(claim).filter(([k])=>k!=='nonce'&&k!=='claim_commit_sha'))};
   const fetchImpl=async(url,opts)=>{
     calls.push({url,method:opts.method,redirect:opts.redirect,force:opts.body&&JSON.parse(opts.body).force});
     if(url===source)return new Response(bytes,{headers:{'content-type':'image/jpeg'}});
@@ -79,7 +79,7 @@ function githubFixture(claim,override={}) {
     if(p.startsWith('/git/ref/heads/')){
       if(opts.method==='PATCH'){
         assert.equal(JSON.parse(opts.body).force,false);
-        if(head!==claim.expected_head_sha)return new Response('',{status:422});
+        if(head!==claim.claim_commit_sha)return new Response('',{status:422});
         head='e'.repeat(40);
       }
       return Response.json({object:{sha:head}});
@@ -92,7 +92,8 @@ function githubFixture(claim,override={}) {
         return Response.json({encoding:'base64',content:fromBytes(stored||bytes)});
       return new Response('missing',{status:404});
     }
-    if(p==='/git/commits/'+claim.expected_head_sha)return Response.json({tree:{sha:'c'.repeat(40)}});
+    if(p==='/git/commits/'+claim.claim_commit_sha)return Response.json({tree:{sha:'c'.repeat(40)},
+      parents:[{sha:claim.expected_head_sha}]});
     if(p==='/git/blobs') {
       assert.equal(opts.method,'POST');
       assert.equal(sha(Buffer.from(JSON.parse(opts.body).content,'base64')),sha(bytes));
