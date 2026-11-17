@@ -60,7 +60,7 @@ class PhotoStoryTests(unittest.TestCase):
 
     def test_default_loader_validates_current_published_catalog(self):
         result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
-        self.assertEqual(len(result), 8)
+        self.assertEqual(len(result), len(self.initial["stories"]))
         self.assertEqual(result[0]["modelId"], "nagino-saya")
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
         self.assertEqual(sum("motion" in post for post in result), 1)
