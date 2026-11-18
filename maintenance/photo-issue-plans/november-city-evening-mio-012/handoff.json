@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "partial_awaiting_originals",
+  "target": {
+    "slug": "november-city-evening-mio-012",
+    "model_id": "hanase-mio"
+  },
+  "verified_reference": {
+    "candidate_commit_checked": "6057a2301db252c8310d98455cd8bac1b7637bc6",
+    "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+    "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff"
+  },
+  "source": {
+    "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "source_delivery_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d"
+  },
+  "original_readback": {
+    "verified_at_utc": "2026-11-18T22:41:01.018Z",
+    "verified_count": 4,
+    "received_source_ordinals": [
+      1,
+      6,
+      7,
+      8
+    ],
+    "verification": "All 20 saved parts and all four reassembled PNG SHA-256 values, original byte counts and 1122x1402 dimensions verified; originals unchanged."
+  },
+  "missing_originals": {
+    "source_ordinals": [
+      2,
+      3,
+      4,
+      5,
+      9,
+      10
+    ],
+    "count": 6,
+    "status": "not_received_generation_unknown"
+  },
+  "producer_column": {
+    "status": "not_received"
+  },
+  "publication_state": "未公開。掲載JPEGの作成・正式採用は未了。受領した4原本はすべて服姿で、水着6枚以上の基本条件は未充足。",
+  "next_action": "既存本人制作チャットで残6原本と本人コラムの有無・実参照を確認し、存在する原本だけを同候補branchへ保存して固定commitから再読照合する。受領済み4原本・receiptは再転送や変更をせず、再生成や別人差替えで補わない。素材・本人コラムがそろうまで公開しない。"
+}
