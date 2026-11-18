@@ -76,6 +76,7 @@ jobs:
         run: |
           node --test tests/image-control.test.cjs tests/image-control-mcp.test.cjs tests/image-candidate-mcp.test.cjs tests/image-candidate-png.test.cjs
           node --test scripts/cast_story_context_test.js
+          node --test scripts/generated_manifest_patch_test.js
       - name: Verify native image bytes and retry-safe candidate staging
         # Exact existing data-only PR scopes cannot change this synthetic engine.
         # Missing/unknown scope output remains full, as do all main pushes.
