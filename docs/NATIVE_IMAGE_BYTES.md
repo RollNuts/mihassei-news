@@ -342,6 +342,15 @@ The actual `xmp:iid:` value is preserved in `generation_receipt`; its existing U
 
 The calling importer must still record the actual prompt, actual generation/review times, current article fingerprint, final JPEG byte length, and a real visual-review decision, and preserve prior records without rounding their integers. For historical recoveries, follow the explicit missing-prompt procedure above. See the existing publication rules in `VISUAL_OPERATIONS.md`.
 
+For a **new slug**, load `scripts/generated_manifest_patch.js` from the same reviewed immutable commit and append to the latest manifest's original UTF-8 text:
+
+```js
+const patch = new Function(helperSource + "\nreturn GeneratedManifestPatch;")();
+const updatedManifestSource = patch.appendImage({ manifestSource, slug, imageSource });
+```
+
+`imageSource` is the new record's JSON text. The helper retains both inputs' original numeric literals, rejects duplicate members and existing slugs, and changes only the insertion inside top-level `images`. It does not save, validate photo provenance, accept or publish; use the existing guarded branch/PR procedure. Never parse and stringify the entire manifest with JavaScript `Number`: existing 64-bit seeds can be rounded. Python's standard `json` integer handling is also suitable. An existing slug needs its explicit recovery/history procedure, not this append-only helper.
+
 ## Regression fixtures
 
 `scripts/native_image_bytes_test.js` runs without Node when provided the same API and pinned source map:
