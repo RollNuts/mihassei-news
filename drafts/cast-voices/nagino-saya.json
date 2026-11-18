@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
-    "issue_slug": "winter-coat-swimsuit-saya-001",
-    "cut_id": "03",
-    "image_sha256": "78072c206e69ab7103b07d860a3c6606aefbce7d5fd7eedb861fd5488b550c5b"
+    "issue_slug": "november-water-and-quiet-hours-saya-010",
+    "cut_id": "05",
+    "image_sha256": "6bf38d8d89f4ed72a1907cabda30b30e98594a9c8a2fd652ea51e5e2bf25d639"
   },
-  "post_text": "朝、プールの水に足を入れたら思ったより温かくて。先に入っていた人に「大丈夫でしょ」って笑われました。私、ちょっと慎重だったかも。",
-  "spoken_line": "あ、意外と温かい。",
+  "post_text": "朝、カフェで本を開いたら、隣の席の人が同じ本を読んでいて。思わず顔を見合わせて笑っちゃいました。帰る前に感想を聞いてみようかな。",
+  "spoken_line": "あ、同じ本ですね。",
   "future_idea": null
 }
