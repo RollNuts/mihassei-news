@@ -26,11 +26,14 @@ class StoryMotionTests(unittest.TestCase):
     def test_actual_clip_and_only_published_media_are_copied(self):
         motion = self.validate(self.post["motion"])
         with tempfile.TemporaryDirectory() as folder:
-            copy_story_motion(load_photo_stories(ROOT), folder, root=ROOT)
-            files = [path for path in Path(folder).rglob("*") if path.is_file()]
-            self.assertEqual(len(files), 1)
-            self.assertEqual(files[0].name, self.post["id"] + ".mp4")
-            self.assertEqual(files[0].read_bytes(), (ROOT / self.post["motion"]["path"]).read_bytes())
+            published = load_photo_stories(ROOT)
+            copy_story_motion(published, folder, root=ROOT)
+            files = {path.name: path for path in Path(folder).rglob("*") if path.is_file()}
+            expected = {post["id"] + ".mp4" for post in published if post.get("motion")}
+            self.assertIn(self.post["id"] + ".mp4", expected)
+            self.assertEqual(set(files), expected)
+            for name, output in files.items():
+                self.assertEqual(output.read_bytes(), (ROOT / "assets/photo-story-clips" / name).read_bytes())
         self.assertEqual(motion["durationSeconds"], 12)
 
     def test_source_hash_codec_duration_identity_and_changed_bytes_fail_closed(self):
@@ -61,6 +64,10 @@ class StoryMotionTests(unittest.TestCase):
                 root = Path(folder).resolve()
                 document = root / "content/photo_stories.json"
                 document.parent.mkdir()
+                if failure == "budget":
+                    document.write_text('{"schema_version":1,"stories":[]}')
+                    document = root / "content/photo_stories" / (post["model_id"] + ".json")
+                    document.parent.mkdir()
                 document.write_text(json.dumps({"schema_version": 1, "stories": [post]}))
                 original = document.read_bytes()
 
@@ -70,7 +77,7 @@ class StoryMotionTests(unittest.TestCase):
                         raise KeyboardInterrupt()
 
                 error = KeyboardInterrupt if failure == "interrupt" else RuntimeError
-                with patch("scripts.photo_stories.load_photo_stories", return_value=[post]), \
+                with patch("scripts.photo_stories.load_photo_stories", return_value=[{"id": post["id"], "modelId": post["model_id"]}]), \
                      patch("scripts.photo_issues.load_photo_issues", return_value=catalog), \
                      patch("scripts.photo_story_motion.shutil.which", return_value="/unused/ffmpeg"), \
                      patch("scripts.photo_story_motion.shutil.disk_usage", return_value=SimpleNamespace(

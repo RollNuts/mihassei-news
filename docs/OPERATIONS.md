@@ -83,7 +83,7 @@ const C = new Function(helperSource + "\nreturn CastStoryContext;")();
 text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString()}));
 ```
 
-`fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。結果は`metadata_only`で、画像byte検証・新しい目視採用・未統合PRの取得はしていない。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。採用時は下記の既存原文・写真照合を通す。
+`fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。結果は`metadata_only`で、画像byte検証・新しい目視採用・未統合PRの取得はしていない。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。
 
 人物別の既存制作タスクが、自分の近況をJSTで1日1件ずつ投稿する。開始枠は以下とし、実際の公開時刻を記録する。遅延分の一括投稿や過去時刻への書換えはしない。日次は検品済み本人写真を使い、写真ストック制作は月曜だけ、既存の週次上限内で行う。グラビア編集は特集を担当し、本人タスクの正常な近況を重複して書き直さない。
 

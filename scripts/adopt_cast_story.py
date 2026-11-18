@@ -18,12 +18,12 @@ if __package__:
     from .cloud_image_guard import check_cloud_images_allowed
     from .photo_issues import (ROOT, MODEL_CHAT_URLS, MAX_ARCHIVE_BYTES, archive_bytes,
                               load_photo_issues, published_issues)
-    from .photo_stories import JST, _stamp, _text, validate_photo_stories
+    from .photo_stories import JST, _stamp, _text, read_story_document, validate_photo_stories
 else:
     from cloud_image_guard import check_cloud_images_allowed
     from photo_issues import (ROOT, MODEL_CHAT_URLS, MAX_ARCHIVE_BYTES, archive_bytes,
                              load_photo_issues, published_issues)
-    from photo_stories import JST, _stamp, _text, validate_photo_stories
+    from photo_stories import JST, _stamp, _text, read_story_document, validate_photo_stories
 
 SOURCE_REF = "refs/remotes/origin/cast-source-drafts"
 SOURCE_BRANCH = "refs/heads/cast-source-drafts"
@@ -135,21 +135,24 @@ def _adopt(model_id, source_commit, *, root, fetch, write, now):
     if fetch:
         _git(root, "fetch", "--no-tags", "origin", SOURCE_BRANCH + ":" + SOURCE_REF)
     catalog_path = root / "content/photo_issues.json"
-    document_path = root / "content/photo_stories.json"
-    if any(part.is_symlink() for path in (catalog_path, document_path) for part in (path, *path.parents)):
+    history_path = root / "content/photo_stories.json"
+    document_path = root / "content/photo_stories" / (model_id + ".json")
+    if any(part.is_symlink() for path in (catalog_path, history_path, document_path) for part in (path, *path.parents)):
         raise ValueError("Unsafe story input path")
+    history_bytes = history_path.read_bytes()
     catalog_bytes, original = catalog_path.read_bytes(), document_path.read_bytes()
     catalog = load_photo_issues(root)
     model = next(model for model in catalog["models"] if model["id"] == model_id)
     draft, draft_path, source_blob = _read_draft(root, model, source_commit)
-    document = json.loads(original)
+    document = read_story_document(root)
     clock = now or datetime.now(JST)
     if clock.tzinfo is None:
         raise ValueError("Story clock needs a timezone")
     clock = clock.astimezone(JST)
     if date.fromisoformat(draft["created_date"]) > clock.date():
         raise ValueError("Creator draft is dated after the actual publication day")
-    report = {"model_id": model_id, "source_commit": source_commit}
+    report = {"model_id": model_id, "source_commit": source_commit,
+              "story_path": document_path.relative_to(root).as_posix()}
     same_day = next((story for story in document["stories"]
                      if story["model_id"] == model_id
                      and _stamp(story["published_at"]).astimezone(JST).date() == clock.date()), None)
@@ -199,11 +202,14 @@ def _adopt(model_id, source_commit, *, root, fetch, write, now):
         _git(root, "merge-base", "--is-ancestor", source_commit, head)
         if _blob(root, head, draft_path) != source_blob:
             raise RuntimeError("This model's source draft changed; newer source preserved")
-        if any(part.is_symlink() for path in (catalog_path, document_path) for part in (path, *path.parents)):
+        if any(part.is_symlink() for path in (catalog_path, history_path, document_path) for part in (path, *path.parents)):
             raise RuntimeError("Story input path changed; newer local data preserved")
-        if document_path.read_bytes() != original or catalog_path.read_bytes() != catalog_bytes:
+        if (document_path.read_bytes() != original or history_path.read_bytes() != history_bytes
+                or catalog_path.read_bytes() != catalog_bytes):
             raise RuntimeError("Story inputs changed; newer local data preserved")
-        validate_photo_stories(proposed, catalog=catalog, published=releases, root=root, now=clock)
+        latest = read_story_document(root)
+        latest["stories"].append(candidate)
+        validate_photo_stories(latest, catalog=catalog, published=releases, root=root, now=clock)
         if shutil.disk_usage(root).free < MIN_FREE_BYTES or archive_bytes(root) > MAX_ARCHIVE_BYTES:
             raise RuntimeError("Image storage protection changed; story staging stopped")
         os.replace(staged, document_path)

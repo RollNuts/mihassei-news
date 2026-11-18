@@ -162,12 +162,13 @@ var CastStoryContext = (function () {
     throw Error("Unrecognized GitHub fetch_file response: " + path);
   }
   async function read({ fetchFile, ref, modelId, now } = {}) {
-    // Never read a moving branch twice and silently mix its two revisions.
+    // Pin every input to one commit, including the file the creator will append.
     stamp(now);
     if (typeof fetchFile !== "function" || !GIT.test(ref || "") || !SLUG.test(modelId || ""))
       throw Error("Provide fetchFile, a full immutable commit SHA, and a creator ID");
     const repository = "RollNuts/mihassei-news";
-    const paths = ["content/photo_issues.json", "content/photo_stories.json"];
+    const storyPath = "content/photo_stories/" + modelId + ".json";
+    const paths = ["content/photo_issues.json", "content/photo_stories.json", storyPath];
     const replies = await Promise.allSettled(paths.map(path => Promise.resolve().then(() => fetchFile({
       repository_full_name: repository, path, ref, encoding: "utf-8"
     }))));
@@ -175,9 +176,17 @@ var CastStoryContext = (function () {
       if (reply.status !== "fulfilled") throw Error("GitHub fetch_file failed: " + paths[index]);
       return filePayload(reply.value, paths[index]);
     });
-    const result = build({ catalog: JSON.parse(files[0].content), stories: JSON.parse(files[1].content), modelId, now });
-    return { ...result, source: { repository, ref,
-      blob_shas: { [paths[0]]: files[0].sha, [paths[1]]: files[1].sha } } };
+    const history = JSON.parse(files[1].content), stream = JSON.parse(files[2].content);
+    for (const doc of [history, stream]) {
+      if (!object(doc) || doc.schema_version !== 1 || !Array.isArray(doc.stories))
+        throw Error("Invalid creator story catalog");
+    }
+    if (stream.stories.some(row => !object(row) || row.model_id !== modelId))
+      throw Error("Creator story file contains another model");
+    const stories = { schema_version: 1, stories: history.stories.concat(stream.stories) };
+    const result = build({ catalog: JSON.parse(files[0].content), stories, modelId, now });
+    return { ...result, source: { repository, ref, story_path: storyPath,
+      blob_shas: Object.fromEntries(paths.map((path, index) => [path, files[index].sha])) } };
   }
   return Object.freeze({ build, read });
 })();

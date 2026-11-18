@@ -6,6 +6,7 @@ from html.parser import HTMLParser
 from unittest.mock import patch
 from pathlib import Path
 from scripts import build
+from tests.test_photo_stories import timeline_fixture
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,7 +30,7 @@ class NewsBroadcastTests(unittest.TestCase):
         marked = [a for a in self.articles if a.get("broadcast_feature") is True]
         self.assertTrue(marked)
         self.assertLessEqual(len(build.broadcast_playlist(self.articles)), 3)
-        home = build.home(self.articles)
+        home = build.home(self.articles, photo_stories=timeline_fixture())
         self.assertNotIn('class="broadcast-spotlight"', home)
         self.assertNotIn('class="broadcast-video"', home)
         self.assertIn('class="cast-timeline"', home)
@@ -37,6 +38,9 @@ class NewsBroadcastTests(unittest.TestCase):
         self.assertEqual(home.count('data-story-open='), 7)
         self.assertIn('controls playsinline muted preload="none"', home)
         self.assertNotIn('controls playsinline muted loop preload="none"', home)
+        photos_only = build.home(self.articles, photo_stories=timeline_fixture(motion_index=7))
+        self.assertEqual(photos_only.count('class="photo-post"'), 7)
+        self.assertNotIn('data-story-motion-fallback', photos_only)
         self.assertNotIn('src="' + build.asset_url("news-broadcast.js") + '"', home)
         self.assertIn('src="' + build.asset_url("photo-stories.js") + '"', home)
         self.assertNotIn('autoplay', home)

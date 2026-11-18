@@ -81,14 +81,15 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("review", result[0])
 
     def test_default_loader_validates_current_published_catalog(self):
-        snapshot = max(NOW, *(datetime.fromisoformat(post["published_at"]) for post in self.initial["stories"]))
+        all_posts = stories.read_story_document(ROOT)["stories"]
+        snapshot = max(NOW, *(datetime.fromisoformat(post["published_at"]) for post in all_posts))
         result = stories.load_photo_stories(ROOT, now=snapshot)
-        self.assertEqual(len(result), len(self.initial["stories"]))
-        newest = max(self.initial["stories"], key=lambda post: datetime.fromisoformat(post["published_at"]))
+        self.assertEqual(len(result), len(all_posts))
+        newest = max(all_posts, key=lambda post: datetime.fromisoformat(post["published_at"]))
         self.assertEqual(result[0]["modelId"], newest["model_id"])
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
         self.assertEqual(sum("motion" in post for post in result),
-                         sum("motion" in post for post in self.initial["stories"]))
+                         sum("motion" in post for post in all_posts))
 
     def test_same_person_cannot_repost_exact_text_under_another_id_or_date(self):
         original = copy.deepcopy(self.data["stories"][0])

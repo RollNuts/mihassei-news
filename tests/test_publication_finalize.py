@@ -387,6 +387,31 @@ class FinalizationTests(unittest.TestCase):
                 self.assertIn(("GET", "/git/ref/heads/main"), api.calls)
                 self.assertEqual(api.writes, [])
 
+    def test_independent_story_rechecks_changed_main_only_once_with_the_same_head(self):
+        for advance_twice in (False, True):
+            with self.subTest(advance_twice=advance_twice):
+                api = API()
+                api.pr["body"] = body(handoff("cast_story"))
+                api.files = [{"filename": "content/photo_stories/nagino-saya.json", "status": "modified"}]
+                validated = []
+                def validate(api, pr, run, root):
+                    self.assertEqual(pr["head"]["sha"], H)
+                    current = api.main
+                    validated.append(current)
+                    if len(validated) == 1:
+                        api.main = "e" * 40
+                    elif advance_twice:
+                        api.main = "f" * 40
+                    return current
+                if advance_twice:
+                    with self.assertRaisesRegex(f.PublicationBlocked, "PR or main changed"):
+                        self.go(api, validate=validate)
+                    self.assertEqual(api.writes, [])
+                else:
+                    self.assertEqual(self.go(api, validate=validate)["status"], "verification_dispatched")
+                    self.assertEqual(api.writes[0], ("PUT", "/pulls/819/merge", {"sha": H, "merge_method": "merge"}))
+                self.assertEqual(validated, [B, "e" * 40])
+
     def test_api_or_source_guard_failure_is_not_reinterpreted_as_success(self):
         for endpoint in ["/actions/runs/123", "/pulls/819/merge"]:
             api = API(); api.fail = endpoint
@@ -399,6 +424,7 @@ class FinalizationTests(unittest.TestCase):
 
     def test_image_stop_or_guard_api_failure_blocks_images_but_not_body_only_news(self):
         for kind, path in [("cast_story", "content/photo_stories.json"),
+                           ("cast_story", "content/photo_stories/amane-hikari.json"),
                            ("photo_issue", "content/photo_issues.json"),
                            ("news", "assets/generated/supermarkets-buy-back-empty-pet-bottles.jpg")]:
             for state in ("disabled_manually", "unknown", "api_error"):
@@ -458,6 +484,28 @@ class FinalizationTests(unittest.TestCase):
             api = API(); api.pr["body"] = body(obj)
             with self.assertRaises(ValueError): self.go(api)
             self.assertEqual(api.writes, [])
+
+    def test_cast_story_only_accepts_one_existing_source_file_on_its_own(self):
+        for path in f.STORY_RECORD_PATHS:
+            api = API()
+            api.pr["body"] = body(handoff("cast_story"))
+            api.files = [{"filename": path, "status": "modified"}]
+            self.assertEqual(self.go(api)["status"], "verification_dispatched")
+            for other_kind in ("news", "market", "photo_issue"):
+                self.assertFalse(f.allowed_for(other_kind, path))
+        item = {"filename": "content/photo_stories/nagino-saya.json", "status": "modified"}
+        for files in ([{**item, "status": "added"}], [{**item, "status": "removed"}],
+                      [{**item, "filename": "content/photo_stories/nonmember.json"}],
+                      [item, {**item, "filename": f.LEGACY_STORIES}],
+                      [item, {**item, "filename": "content/photo_stories/shioba-rio.json"}],
+                      [item, {**item, "filename": "content/approved_photos.json"}]):
+            with self.subTest(files=files):
+                api = API()
+                api.pr["body"] = body(handoff("cast_story"))
+                api.files = files
+                with self.assertRaises(ValueError):
+                    self.go(api)
+                self.assertEqual(api.writes, [])
 
     def test_typical_news_with_required_editorial_docs_and_real_jpeg_is_allowed(self):
         api = API()
@@ -588,6 +636,23 @@ class AdapterTests(unittest.TestCase):
 
 
 class MergedSourceTests(unittest.TestCase):
+    def test_single_story_append_preserves_older_records_and_cast_ownership(self):
+        def doc(*rows):
+            return {"schema_version": 1, "stories": list(rows)}
+
+        path = "content/photo_stories/nagino-saya.json"
+        old = {"model_id": "nagino-saya", "text": "一杯目"}
+        new = {"model_id": "nagino-saya", "text": "二杯目"}
+        before = doc(old)
+        f.validate_story_append(path, before, doc(old, new))
+        f.validate_story_append(f.LEGACY_STORIES, before, doc(old, {**new, "model_id": "shioba-rio"}))
+        for after in (doc(), doc(old), doc(new), doc(new, old), doc(old, new, new),
+                      doc({**old, "text": "変更"}, new), doc(old, {**new, "model_id": "shioba-rio"}),
+                      {**doc(old, new), "schema_version": True}, {**doc(old, new), "extra": True}):
+            with self.subTest(after=after):
+                with self.assertRaises(ValueError):
+                    f.validate_story_append(path, before, after)
+
     def test_unrelated_data_merges_without_configured_committer_and_guards_receive_no_token(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
@@ -597,12 +662,12 @@ class MergedSourceTests(unittest.TestCase):
             git("config", "user.email", "test@example.invalid")
             git("config", "user.name", "Test")
             (root / "content").mkdir()
-            (root / "content/photo_stories.json").write_text("[]\n")
+            (root / "content/photo_stories.json").write_text('{"schema_version":1,"stories":[]}\n')
             (root / "content/articles.json").write_text("[]\n")
             git("add", "."); git("commit", "-qm", "base")
             baseline = git("rev-parse", "HEAD")
             git("checkout", "-qb", "editor")
-            (root / "content/photo_stories.json").write_text('[{"slug":"new-story"}]\n')
+            (root / "content/photo_stories.json").write_text('{"schema_version":1,"stories":[{"id":"new-story"}]}\n')
             git("commit", "-qam", "story")
             head = git("rev-parse", "HEAD")
             git("checkout", "-qb", "later-main", baseline)
