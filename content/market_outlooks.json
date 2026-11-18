@@ -194,5 +194,82 @@
       "published_on": "2026-11-17",
       "checked_on": "2026-11-17"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-am-confirm-close-01",
+    "at": "2026-11-18T08:30:28+09:00",
+    "forecast_id": "2026-11-16-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3840.02,
+    "observed_on": "2026-11-17",
+    "reason": "JPXの11月17日16:59 JST最終更新で、17日のTOPIX公式終値3,840.02を確認。固定基準11月13日3,941.57から約2.58%安で、当初の横ばい±0.5%予想に反した。",
+    "change_reason": "17日15:30大引け時点の暫定観測を、同日16:59更新のJPX公式ファイルで再確認した。元予測の基準日、方向、判定日と方法は変更していない。",
+    "source": {
+      "title": "JPX：11月17日16時59分JST更新TOPIX公式大引け指数",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-17",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611171659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    },
+    "result": {
+      "close": 3840.02,
+      "outcome": "外れ",
+      "observed_on": "2026-11-17",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "explanation": "確定終値3,840.02は固定基準3,941.57から約2.58%安。±0.5%以内を予測した17日判定の横ばい見通しから外れたため正式に外れとした。"
+    }
+  },
+  {
+    "type": "forecast",
+    "id": "2026-11-18-topix",
+    "at": "2026-11-18T08:30:28+09:00",
+    "subject": "TOPIX",
+    "direction": "上昇",
+    "stance": "強気",
+    "reviewed_on": "2026-11-19",
+    "statement": "2026年11月19日のTOPIX公式終値は、11月17日の確定終値3,840.02ポイントを0.5%超上回ると予測する。",
+    "method": "2026年11月17日のJPX公式TOPIX終値3,840.02ポイントを基準として固定する。2026年11月19日のJPX公式終値との騰落率（19日終値÷3,840.02−1）×100が+0.5%超なら上昇、-0.5%未満なら下落、-0.5%以上+0.5%以下（両境界を含む）なら横ばいとする。判定日は11月19日だけであり、18日の途中値、18日終値、後日見通しで基準・期日・判定方法を変えない。公式値の取得不可なら未検証とする。",
+    "reason": "11月17日東京大引けのTOPIXは3,840.02ポイントと前日比1.57%下落した。一方、米国17日の通常取引後に公表されたNVIDIAの2027年度第3四半期売上高は前年同期比103%増で、次期売上高見通しは1,300億米ドル±3%。18日の半導体関連を中心に買い戻しが広がれば19日の指数が17日終値を0.5%超上回ると予測する。ただし米国17日のS&P500は1.03%安と広範囲に売られたため、上昇が一部銘柄に限られるリスクを重視する。",
+    "invalidated_if": "11月19日のJPX公式TOPIX終値が3,840.02から0.5%を超えて上昇しない場合は当初予測は外れ。19日終値の公的裏付けが取れない場合は未検証とする。",
+    "scenarios": {
+      "強気": "19日公式終値が17日基準3,840.02から0.5%超上昇する。NVIDIA決算後の半導体買い戻しが複数業種にも広がったか確認する。",
+      "中立": "19日公式終値が17日基準3,840.02の±0.5%以内となる。米国の弱い地合いと半導体関連の買い戻しが拮抗したか確認する。",
+      "弱気": "19日公式終値が17日基準3,840.02から0.5%を超えて下落する。米国17日の広範囲の売りが国内に波及したか確認する。"
+    },
+    "baseline": {
+      "date": "2026-11-17",
+      "value": 3840.02,
+      "unit": "ポイント",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "method": "JPXが11月17日16:59 JSTに最終更新した公式TOPIX現物15:30大引け値3,840.02を、18日寄り前に確認した最新確定終値として固定。"
+    },
+    "sources": [
+      {
+        "title": "JPX：2026年11月17日16:59更新TOPIX現物公式終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NVIDIA公式IR：2027年度第3四半期決算、第4四半期売上予想",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "AP通信：米国11月17日主要3指数の下落と市場の広がり",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-ff6caef4d9289cf7f1e6ee48a706eddc",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      }
+    ]
   }
 ]

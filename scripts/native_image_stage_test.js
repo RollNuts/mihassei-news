@@ -98,7 +98,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     function apiError(code, message) {
       return {isError: true, structuredContent: {error_code: code, error_data: {message}}};
     }
-    for (const [path, text] of Object.entries(protectedRaw)) {
+    for (const [path, text] of Object.entries({...protectedRaw, ...faults.protectedRaw})) {
       const sha = newSha("base-blob");
       const blob = {sha, bytes: runtime.utf8(text)};
       blobs.set(sha, blob);
@@ -218,6 +218,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
         if (args.url === root) return cloudResult("repository");
         if (args.url === root + "/actions/workflows/free-cpu-scenes.yml") return cloudResult("workflow");
         if (args.url === root + "/git/commits/" + cloud.mainSha) return cloudResult("commit");
+        if (args.url === root + "/git/commits/" + baseCommitSha)
+          return ok({content: JSON.stringify({sha: baseCommitSha, tree: {sha: baseTreeSha}})});
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
         const branch = args.url.split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
@@ -298,6 +300,95 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     articleSha256: "0".repeat(64)
   })), "prepare rejects a fingerprint that does not match the base article");
   assert(wrongArticle.mock.writes().length === 0, "wrong article fingerprint causes no writes");
+
+  // The normal path derives immutable article inputs instead of asking a worker
+  // to recalculate hashes or invent a new identity for every scheduled run.
+  function articleContext(articles = [article], records = {}) {
+    const mock = makeMock({protectedRaw: {
+      "content/articles.json": JSON.stringify(articles),
+      "assets/generated/manifest.json": JSON.stringify({version: 1, images: {}, rejected: {}}),
+      "content/visual_reviews.json": JSON.stringify({version: 1, reviews: {}}),
+      ...records
+    }});
+    return {mock, service: stageAPI.create({runtime, github: mock.github, repository})};
+  }
+  const automatic = articleContext();
+  const automaticArgs = {slug, baseCommitSha};
+  const automaticPlan = await automatic.service.prepareArticle(automaticArgs);
+  assert(automaticPlan.articleSha256 === articleSha256 && automaticPlan.baseTreeSha === baseTreeSha &&
+    automaticPlan.prompt === article.scene_prompt && automaticPlan.logicalRunId === "news-photo-v1:" + articleSha256,
+    "normal article preparation derives fingerprint, exact scene prompt, tree and stable identity");
+  assert(automatic.mock.calls.length === 4 && automatic.mock.count("fetch") === 1 &&
+    automatic.mock.count("fetch_file") === 3 && automatic.mock.writes().length === 0,
+    "normal article preparation uses exactly four read callbacks and no writes");
+  assert(automatic.mock.calls[0].args.url.endsWith("/git/commits/" + baseCommitSha) &&
+    automatic.mock.calls.filter(call => call.name === "fetch_file").every(call => call.args.ref === baseCommitSha),
+    "normal article snapshots come from the verified immutable commit");
+  const automaticAgain = stageAPI.create({runtime, github: automatic.mock.github, repository});
+  assert(JSON.stringify(await automaticAgain.prepareArticle(automaticArgs)) === JSON.stringify(automaticPlan),
+    "fresh workers derive the same plan without a clock or task-slot identity");
+  const manualEquivalent = await automatic.service.prepare({slug, baseCommitSha, baseTreeSha, articleSha256,
+    prompt: article.scene_prompt, logicalRunId: "news-photo-v1:" + articleSha256});
+  assert(JSON.stringify(manualEquivalent) === JSON.stringify(automaticPlan),
+    "manual prepare retains the same plan representation and checks");
+  const automaticSaved = await automatic.service.stage(automaticPlan, {imageGenResult: {image_url: pngDataURL}, observedAt});
+  const automaticWrites = automatic.mock.writes().length;
+  assert((await automaticAgain.probe(await automaticAgain.prepareArticle(automaticArgs))).status === "saved" &&
+    automatic.mock.writes().length === automaticWrites && automaticSaved.receipt.status === "awaiting_visual_review",
+    "normal preparation reuses a saved candidate without changing its unaccepted receipt or branch");
+  const unpublished = articleContext();
+  unpublished.mock.cloud.mainSha = "e".repeat(40);
+  assert((await unpublished.service.prepareArticle(automaticArgs)).baseCommitSha === baseCommitSha &&
+    unpublished.mock.calls.length === 4,
+    "normal preparation can bind an unpublished PR commit instead of the current main commit");
+  for (const [label, input] of [
+    ["prompt override", {...automaticArgs, prompt: "different scene"}],
+    ["logical ID override", {...automaticArgs, logicalRunId: "another-slot"}],
+    ["tree override", {...automaticArgs, baseTreeSha}],
+    ["branch name instead of immutable commit", {...automaticArgs, baseCommitSha: "main"}]
+  ]) {
+    const context = articleContext();
+    await failure(() => context.service.prepareArticle(input), "normal preparation rejects " + label);
+    assert(context.mock.calls.length === 0, label + " is rejected before connector access");
+  }
+  for (const [label, articles] of [
+    ["unknown slug", []], ["duplicate slug", [article, article]],
+    ["illustration strategy", [{...article, visual_strategy: "illustration"}]],
+    ["unknown strategy", [{...article, visual_strategy: "unknown"}]],
+    ["empty scene prompt", [{...article, scene_prompt: "   "}]],
+    ["missing scene prompt", [{...article, scene_prompt: undefined}]]
+  ]) {
+    const context = articleContext(articles);
+    await failure(() => context.service.prepareArticle(automaticArgs), "normal preparation rejects " + label);
+    assert(context.mock.writes().length === 0, label + " does not write Git objects");
+  }
+  const cpuPhoto = articleContext([{...article, visual_strategy: "cpu-photo"}]);
+  assert((await cpuPhoto.service.prepareArticle(automaticArgs)).articleSha256 === articleSha256,
+    "explicit cpu-photo strategy remains eligible without changing the article fingerprint");
+  for (const [label, commit] of [
+    ["mismatching commit", {sha: "f".repeat(40), tree: {sha: baseTreeSha}}],
+    ["invalid tree", {sha: baseCommitSha, tree: {sha: "not-a-tree"}}]
+  ]) {
+    const context = articleContext();
+    context.mock.cloud.commit = commit;
+    await failure(() => context.service.prepareArticle(automaticArgs), "normal preparation rejects " + label);
+    assert(context.mock.calls.length === 1 && context.mock.writes().length === 0,
+      label + " stops before article snapshot reads");
+  }
+  for (const decision of ["accepted", "hold", "rejected"]) {
+    const context = articleContext([article], {"content/visual_reviews.json": JSON.stringify({version: 1,
+      reviews: {[slug]: {article_sha256: articleSha256, decision}}})});
+    await failure(() => context.service.prepareArticle(automaticArgs),
+      "normal preparation cannot bypass a current " + decision + " review");
+    assert(context.mock.writes().length === 0, "current " + decision + " review remains untouched");
+  }
+  const recordedPhoto = articleContext([article], {"assets/generated/manifest.json": JSON.stringify({version: 1,
+    images: {[slug]: {article_sha256: articleSha256, sha256: "a".repeat(64)}}})});
+  await failure(() => recordedPhoto.service.prepareArticle(automaticArgs),
+    "normal preparation sends an existing current photo to inspection/recovery");
+  const malformedRecords = articleContext([article], {"content/visual_reviews.json": "[]"});
+  await failure(() => malformedRecords.service.prepareArticle(automaticArgs),
+    "normal preparation rejects malformed current review records");
 
   for (const [name, result] of [
     ["missing image_url", {}],
