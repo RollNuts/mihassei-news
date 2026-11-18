@@ -224,6 +224,21 @@
         "cut_id": "04",
         "image_sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261118223748-438",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-18T22:37:48.438+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、港の見学船に乗ったら、風が予想以上で前髪が全部持っていかれた。せっかく整えたのに。降りてから鏡を見て、思わず笑った。",
+      "source": {
+        "issue_slug": "november-first-detour-mio-004",
+        "cut_id": "03",
+        "image_sha256": "9be88c05dbf1243896a6f4e36c4e3335e44f2b5f7c5fa7de8e1267417f3824d7"
+      }
     }
   ]
 }
