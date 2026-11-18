@@ -14,6 +14,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.request
 
 try:
@@ -245,6 +246,26 @@ class PublicationBlocked(ValueError):
                        "next_operation": operation}
 
 
+def same_approved_open_pr(pr, expected_head, attestation):
+    return (pr.get("state") == "open" and pr.get("draft") is False
+            and pr["head"]["sha"] == expected_head and approval(pr) == attestation
+            and pr["head"]["repo"]["full_name"] == REPO
+            and pr["base"]["repo"]["full_name"] == REPO and pr["base"]["ref"] == "main")
+
+
+def await_mergeability(api, number, pr, expected_head, attestation):
+    # GitHub briefly reports null/unknown while recalculating after a main push.
+    # Only reread this same approved open PR; errors and changed gates still stop.
+    # Two gates can each wait at most seven seconds; no job/CI rerun is requested.
+    for delay in (2, 5):
+        if not (pr.get("mergeable") is None and pr.get("mergeable_state") == "unknown"
+                and same_approved_open_pr(pr, expected_head, attestation)):
+            break
+        time.sleep(delay)
+        pr = api.get(f"/pulls/{number}")
+    return pr
+
+
 def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, validate=validate_merge, root=ROOT):
     require(type(number) is int and number > 0
             and (run_id is None or type(run_id) is int and run_id > 0), "Invalid PR/run")
@@ -263,9 +284,10 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     trusted(api, attestation["authorized_by"])
     if pr.get("merged") is True:
         return dispatch(api, pr["merge_commit_sha"])
+    pr = await_mergeability(api, number, pr, expected_head, attestation)
     # An optional failed finalizer can itself leave a conflict-free PR unstable.
     # Exact primary CI and the fresh source/merge guards still precede every PUT.
-    if not (pr.get("state") == "open" and pr.get("draft") is False
+    if not (same_approved_open_pr(pr, expected_head, attestation)
             and pr.get("mergeable") is True and pr.get("mergeable_state") in {"clean", "unstable"}):
         raise PublicationBlocked(pr, expected_head, "preflight", "PR is not safely mergeable")
     if run_id is None:
@@ -306,10 +328,8 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     current = validate(api, pr, run, root)
     require(owner(api, number, expected_head).get("status") == "clear", "Another PR owns this publication")
     fresh = api.get(f"/pulls/{number}")
-    if not (fresh.get("state") == "open" and fresh.get("draft") is False
-            and fresh["head"]["sha"] == expected_head and approval(fresh) == attestation
-            and fresh["head"]["repo"]["full_name"] == REPO
-            and fresh["base"]["repo"]["full_name"] == REPO and fresh["base"]["ref"] == "main"
+    fresh = await_mergeability(api, number, fresh, expected_head, attestation)
+    if not (same_approved_open_pr(fresh, expected_head, attestation)
             and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}
             # PR base.sha may retain the creation/CI snapshot or refresh later.
             # The branch ref, not that PR metadata, binds our freshly checked tree.
