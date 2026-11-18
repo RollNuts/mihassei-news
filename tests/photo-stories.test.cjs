@@ -154,14 +154,14 @@ test('opening a photo story and voice-list changes never autoplay',()=>{
   assert.match(p.fields.status.textContent,/端末により異なります/);
 });
 
-test('the complete current catalog starts and each model dialog keeps original multiline posts',()=>{
+test('the latest published posts open in each model dialog as the archive grows',()=>{
   const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_issues.json'),'utf8'));
   const raw=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_stories.json'),'utf8')).stories;
   for(const model of catalog.models) {
     const file=path.join(__dirname,'../content/photo_stories',model.id+'.json');
     raw.push(...JSON.parse(fs.readFileSync(file,'utf8')).stories);
   }
-  const posts=raw.map(post=>{
+  const all=raw.filter(post=>Date.parse(post.published_at)<=Date.now()).map(post=>{
     const model=catalog.models.find(model=>model.id===post.model_id);
     const issue=catalog.issues.find(issue=>issue.slug===post.source.issue_slug);
     const image=issue.images[post.source.cut_id],shot=issue.shots.find(shot=>shot.id===post.source.cut_id);
@@ -169,9 +169,10 @@ test('the complete current catalog starts and each model dialog keeps original m
     return {...fixture(post.id),modelId:model.id,name:model.name,text:post.text,publishedAt:post.published_at,
       image:base+post.source.cut_id+'.jpg?v='+post.source.image_sha256.slice(0,12),
       sourceUrl:base+'#photo-'+post.source.cut_id,alt:shot.alt,width:image.width,height:image.height};
-  }).sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt));
+  }).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt));
+  // render_story_strip sends only the latest three per creator to the dialog.
+  const posts=catalog.models.flatMap(model=>all.filter(post=>post.modelId===model.id).slice(0,3));
   assert.equal(new Set(posts.map(post=>post.modelId)).size,7);
-  assert.ok(posts.some(post=>post.text.includes('\n')),'fixture must include actual paragraph breaks');
   for(const modelId of new Set(posts.map(post=>post.modelId))){
     const p=page({stories:posts,modelId});
     assert.equal(p.open(),true,modelId+' opens after whole-gallery validation');

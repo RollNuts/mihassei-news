@@ -26,11 +26,14 @@ class StoryMotionTests(unittest.TestCase):
     def test_actual_clip_and_only_published_media_are_copied(self):
         motion = self.validate(self.post["motion"])
         with tempfile.TemporaryDirectory() as folder:
-            copy_story_motion(load_photo_stories(ROOT), folder, root=ROOT)
-            files = [path for path in Path(folder).rglob("*") if path.is_file()]
-            self.assertEqual(len(files), 1)
-            self.assertEqual(files[0].name, self.post["id"] + ".mp4")
-            self.assertEqual(files[0].read_bytes(), (ROOT / self.post["motion"]["path"]).read_bytes())
+            published = load_photo_stories(ROOT)
+            copy_story_motion(published, folder, root=ROOT)
+            files = {path.name: path for path in Path(folder).rglob("*") if path.is_file()}
+            expected = {post["id"] + ".mp4" for post in published if post.get("motion")}
+            self.assertIn(self.post["id"] + ".mp4", expected)
+            self.assertEqual(set(files), expected)
+            for name, output in files.items():
+                self.assertEqual(output.read_bytes(), (ROOT / "assets/photo-story-clips" / name).read_bytes())
         self.assertEqual(motion["durationSeconds"], 12)
 
     def test_source_hash_codec_duration_identity_and_changed_bytes_fail_closed(self):
