@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "editorial_selected_10_awaiting_next_daily_publication",
+  "status": "formal_accepted_for_current_daily_publication",
   "verified_reference": {
     "main_commit_checked": "d98c6562352b71039ca911c7f65c307c2dfc39fc",
     "model_snapshot": {
@@ -328,7 +328,7 @@
     "path": "maintenance/photo-issue-plans/november-rooftop-pool-sumire-011/producer-column.json",
     "sha256": "12a1c5693f919feabe0788e38a028f24d1f99694ae38456e09da27842f7f0a15"
   },
-  "publication_state": "未掲載。10枚は実JPEG表示で編集採用候補として承認。新しいpublic catalog/accepted正式公開記録・PR・統合許可・本番配信は未実施。次の06:00 JST定期枠へ。",
+  "publication_state": "新号011を現在の通常朝枠向けに正式採用・公開用正本に追加。既存CI・公開検証まで未公開、実本番証拠なし。",
   "editorial_review": {
     "review_status": "all_10_candidate_cuts_accepted_for_next_daily_edit_not_published",
     "reviewed_at_utc": "2026-11-18T13:58:50.922Z",
@@ -439,6 +439,9 @@
     },
     "next_action": "Next regular 06:00 JST photo editor: recheck same branch/current main, issue-002 frozen order and already-published list; use accepted candidate review to prepare public content/photo_issues.json and photo_editions.json with actual JST timestamp, do required QA/guards, create a single normal PR and finalize only during permitted morning slot; do not publish tonight, do not repeat generation or visual review if files/SHA unchanged",
     "published": false,
-    "publication_finalize_authorized": false
+    "publication_finalize_authorized": false,
+    "official_qa_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+    "official_qa_sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0",
+    "formal_issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7"
   }
 }
