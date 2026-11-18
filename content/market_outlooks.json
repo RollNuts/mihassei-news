@@ -321,5 +321,55 @@
       "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
       "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-noon-01",
+    "at": "2026-11-18T12:47:20.725+09:00",
+    "forecast_id": "2026-11-17-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3811.98,
+    "observed_on": "2026-11-18",
+    "reason": "18日11:30前場途中のTOPIXは3,811.98。17日朝に固定した16日公式終値3,901.37から約2.29%安で、18日終値の下落見通しを途中では支持する。正式な判定は18日大引け後のJPX公式終値のみ。",
+    "change_reason": "18日9:39の途中値3,834.45から11:30には3,811.98へ22.47ポイント下落し、朝の反発が広がらず。予測基準・期日・方法は変更なし。",
+    "source": {
+      "title": "JPX：18日12:14 JST更新のTOPIX現物前場途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181214",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-noon-02",
+    "at": "2026-11-18T12:47:20.725+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "中立",
+    "trend": "暫定的に逆行",
+    "observed_value": 3811.98,
+    "observed_on": "2026-11-18",
+    "reason": "19日TOPIX公式終値が17日公式終値3,840.02から0.5%超上がる朝の強気予測に対し、18日11:30の3,811.98は0.73%低く、現時点では逆風。19日終値は未到来で正式な外れとは判定できない。",
+    "change_reason": "18日朝9:39の3,834.45から11:30には3,811.98へ下落。グロース250は2.64%安となり、半導体の一部反発だけでは市場全体の上昇を確認できない。元予測は保持。",
+    "source": {
+      "title": "JPX：18日12:14 JST更新のTOPIX現物前場途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181214",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
   }
 ]
