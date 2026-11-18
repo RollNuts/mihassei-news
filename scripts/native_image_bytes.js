@@ -93,6 +93,10 @@ var NativeImageBytes = (function () {
     if(!w || !h || w*h>32000000)throw Error("Invalid or oversized PNG dimensions");
     return {chunks,width:w,height:h};
   }
+  function inspectPng(bytes) {
+    const {width, height} = pngChunks(bytes);
+    return {width, height};
+  }
   // Bounded, definite-length CBOR. C2PA claims use deterministic CBOR.
   function cbor(bytes) {
     const v=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);let p=0,budget=100000;
@@ -204,8 +208,8 @@ var NativeImageBytes = (function () {
       const rgba=centerFitRGBA(new Uint8Array(frames[0]),png.width,png.height),jpeg=encode({data:rgba,width:1200,height:675},84).data;
       return {bytes:jpeg,base64:toBase64(jpeg),sha256:sha256(jpeg),source_png_sha256:sha256(bytes),sourceWidth:info.width,sourceHeight:info.height,width:1200,height:675,quality:84,receipt};
     }
-    return {convert,sha256,extractC2PA,fromBase64,toBase64,utf8};
+    return {convert,sha256,extractC2PA,fromBase64,toBase64,utf8,inspectPng};
   }
-  return {SOURCES,fetchSources,initialize,fromBase64,toBase64,utf8,extractC2PA};
+  return {SOURCES,fetchSources,initialize,fromBase64,toBase64,utf8,inspectPng,extractC2PA};
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageBytes;
