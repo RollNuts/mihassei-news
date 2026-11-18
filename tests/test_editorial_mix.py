@@ -138,6 +138,56 @@ def category_slate(categories, *, day=10):
 
 
 class EditorialMixTests(unittest.TestCase):
+    def test_two_editions_do_not_request_five_more_stories_or_daily_mix_quotas(self):
+        rows = category_slate(["暮らし", "エンタメ"], day=18)
+        for row in rows:
+            row["editorial_form"] = "satire"
+        self.assertEqual(validate_articles(rows)[0], [])
+        report = report_day(rows, "2026-11-18")
+        self.assertIn("published=2; tracked=2; normal_target=2; normal_remaining=0", report)
+        self.assertIn("next=stop", report)
+        self.assertIn("desk_next=担当面=なし", report)
+        self.assertIn("quality_advice_scope=next scheduled edition", report)
+        self.assertIn("no daily form quota", report)
+        self.assertIn("no daily lane quota", report)
+        for obsolete in ("core_remaining", "core_categories", "core slots left",
+                         "prepare now", "required next", "trend=0/3", "next=trend"):
+            self.assertNotIn(obsolete, report)
+
+    def test_current_guidance_leaves_only_actual_normal_capacity(self):
+        row = form_story("first", "feature", category="暮らし",
+                         published=datetime(2026, 11, 18, 7, 30, tzinfo=JST))
+        for rows, remaining in (([], 2), ([row], 1)):
+            with self.subTest(remaining=remaining):
+                report = report_day(rows, "2026-11-18")
+                self.assertIn(f"normal_remaining={remaining}", report)
+                self.assertIn("next=quality-first", report)
+                self.assertIn("desk_next=担当面=社会", report)
+                self.assertNotIn("core slots left", report)
+                self.assertNotIn("core_categories", report)
+
+    def test_guidance_switch_preserves_old_reports_and_transition_day_articles(self):
+        old = category_slate(["暮らし", "エンタメ"], day=15)
+        self.assertIn("core_remaining=5", report_day(old, "2026-11-15"))
+        transition = category_slate(["社会", "事件", "経済", "技術", "政治"], day=16)
+        before = copy.deepcopy(transition)
+        self.assertEqual(validate_articles(transition)[0], [])
+        report = report_day(transition, "2026-11-16")
+        self.assertIn("published=5; tracked=5; normal_target=2; normal_remaining=0", report)
+        self.assertIn("next=stop", report)
+        self.assertNotIn("blocked", report)
+        self.assertEqual(transition, before)
+
+    def test_current_guidance_keeps_legacy_form_and_category_validation(self):
+        rows = category_slate(["社会", "事件", "経済", "技術", "政治", "スポーツ"], day=18)
+        for row in rows:
+            row["editorial_form"] = "feature"
+        self.assertTrue(any("editorial_form daily mix cannot fit" in e
+                            for e in validate_articles(rows)[0]))
+        rows = category_slate(["社会", "事件", "経済", "技術", "社会", "事件", "経済"], day=18)
+        self.assertTrue(any("category daily mix cannot reach 5" in e
+                            for e in validate_articles(rows)[0]))
+
     def test_category_rules_use_actual_newspaper_desks(self):
         self.assertEqual(EDITORIAL_CATEGORIES, build.CATEGORIES[1:])
         rows = category_slate(["社会", "暮らし", "経済", "エンタメ", "暮らし", "技術", "政治"])
