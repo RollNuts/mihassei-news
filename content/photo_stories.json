@@ -224,6 +224,21 @@
         "cut_id": "04",
         "image_sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261118213042274000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-18T21:30:42.274+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "帰り道、閉店間際の花屋で白い花を一本買った。名前も聞いたのに、もう思い出せない。花瓶がないので、今は台所のコップを借りている。",
+      "source": {
+        "issue_slug": "november-city-pause-rena-008",
+        "cut_id": "06",
+        "image_sha256": "191bfec8db71db8a88860b4e0dc4220c4226827f21e922547c3caae34dfa1523"
+      }
     }
   ]
 }
