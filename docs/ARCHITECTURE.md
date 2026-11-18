@@ -29,7 +29,7 @@ content/serials.json ────┘                │
 - `content/photo_editions.json`の既存合同号は固定の`ranking`と7特集を保持する。新規の`release_mode: daily`は`photo_editions.py`で日曜始まりの`schedule`（文字列seed・正本models配列を一度shuffleしたorder・抽選時刻）を検証し、`features`へ同順の公開済み特集だけを追記する。予定日より前・同じ実JST日の複数人・順序の逆転・他号の特集再使用を拒否し、遅延は実公開日時を保持する。`guard_serial_history.py`はdraft段階からscheduleを固定し、公開済みprefixを保護する。表紙とホームは最新公開の特集、RSSは日次特集ごとの恒久URL、号の更新日時は最新の公開分から導出する。
 - 合同の週刊号は`content/photo_editions.json`から`/photo/weekly/issue-NNN/`へ生成し、7人の検証済み特集slugを目次で束ねる。既存の特集URL・画像・固定指紋・PVキーを維持し、号単位の一覧・RSSと特集間の前後リンクを出力する。`scripts/photo_editions.py`が発行日前日までの完全7JST暦日のPVと同点用文字列seed・固定順を扱う。履歴窓のAPIは`photoPopular=1&photoEnd=YYYY-MM-DD`でversion・窓・coverage・truncationを照合し、旧rolling応答を流用しない。
 - 写真の人物紹介は`/photo/models/`と各モデルのプロフィールへ生成し、検証済み公開号だけの枚数・写真グリッドを表示する。公開号の表紙を優先し、独立プロフィール写真は`photo_profile_portraits.py`で原本・採否・SHAを検証する。未掲載・写真なしのプロフィールはnoindexとし、非公開の容姿指示や体型値は出力しない。
-- 週刊ランキングは`/api/engagement?view=public&photoPopular=1`の7日実測PVを既存DOから読み、公開号だけを表示する。ストーリーは`content/photo_stories.json`を`photo_stories.py`が掲載号・人物・画像SHAと照合し、検品済みの写真を参照する。音声は操作後に日本語の端末内SpeechSynthesisだけを使い、外部音声通信・自動再生・音声ファイルの追加保存は行わない。
+- 週刊ランキングは`/api/engagement?view=public&photoPopular=1`の7日実測PVを既存DOから読み、公開号だけを表示する。ストーリーは人物ごとの`content/photo_stories/<model_id>.json`と従来の`content/photo_stories.json`を`photo_stories.py`が掲載号・人物・画像SHAと照合し、検品済みの写真を参照する。音声は操作後に日本語の端末内SpeechSynthesisだけを使い、外部音声通信・自動再生・音声ファイルの追加保存は行わない。
 - 市場分析は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
 - RSS、構造化データ、サイトマップでは架空の未来日時を実際の掲載日時として扱いません。
 - 続報記事は既刊を上書きせず独立した記事として保存し、任意の `followup_of` に直前の関連記事slugを記録します。親記事が存在し、子記事より先に実公開されていることをビルドで検証し、公開ページでは前後を相互リンクします。

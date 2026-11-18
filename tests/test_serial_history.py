@@ -10,6 +10,19 @@ from scripts.guard_serial_history import guard_serial_history, guard_photo_editi
 ROOT = Path(__file__).resolve().parents[1]
 
 
+class PhotoStoryHistoryTests(unittest.TestCase):
+    def test_append_motion_and_preserve_immutable_old_posts(self):
+        from scripts.guard_serial_history import guard_photo_story_history
+        first = {"id": "initial", "model_id": "nagino-saya", "text": "原文"}
+        second = {"id": "second", "text": "次の近況", "motion": {"sha256": "original"}}
+        before = {"stories": [first, second]}
+        guard_photo_story_history(before, {"stories": [dict(first, motion={"sha256": "new"}), second, {"id": "new"}]})
+        for after in ([second], [second, first], [dict(first, text="変更"), second],
+                      [first, dict(second, motion={"sha256": "changed"})]):
+            with self.subTest(after=after), self.assertRaises(ValueError):
+                guard_photo_story_history(before, {"stories": after})
+
+
 class SerialHistoryGuardTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

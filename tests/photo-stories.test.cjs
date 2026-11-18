@@ -157,6 +157,10 @@ test('opening a photo story and voice-list changes never autoplay',()=>{
 test('the complete current catalog starts and each model dialog keeps original multiline posts',()=>{
   const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_issues.json'),'utf8'));
   const raw=JSON.parse(fs.readFileSync(path.join(__dirname,'../content/photo_stories.json'),'utf8')).stories;
+  for(const model of catalog.models) {
+    const file=path.join(__dirname,'../content/photo_stories',model.id+'.json');
+    raw.push(...JSON.parse(fs.readFileSync(file,'utf8')).stories);
+  }
   const posts=raw.map(post=>{
     const model=catalog.models.find(model=>model.id===post.model_id);
     const issue=catalog.issues.find(issue=>issue.slug===post.source.issue_slug);

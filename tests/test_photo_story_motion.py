@@ -61,6 +61,10 @@ class StoryMotionTests(unittest.TestCase):
                 root = Path(folder).resolve()
                 document = root / "content/photo_stories.json"
                 document.parent.mkdir()
+                if failure == "budget":
+                    document.write_text('{"schema_version":1,"stories":[]}')
+                    document = root / "content/photo_stories" / (post["model_id"] + ".json")
+                    document.parent.mkdir()
                 document.write_text(json.dumps({"schema_version": 1, "stories": [post]}))
                 original = document.read_bytes()
 
@@ -70,7 +74,7 @@ class StoryMotionTests(unittest.TestCase):
                         raise KeyboardInterrupt()
 
                 error = KeyboardInterrupt if failure == "interrupt" else RuntimeError
-                with patch("scripts.photo_stories.load_photo_stories", return_value=[post]), \
+                with patch("scripts.photo_stories.load_photo_stories", return_value=[{"id": post["id"], "modelId": post["model_id"]}]), \
                      patch("scripts.photo_issues.load_photo_issues", return_value=catalog), \
                      patch("scripts.photo_story_motion.shutil.which", return_value="/unused/ffmpeg"), \
                      patch("scripts.photo_story_motion.shutil.disk_usage", return_value=SimpleNamespace(

@@ -18,8 +18,10 @@ import time
 import urllib.request
 
 try:
+    from .photo_stories import STORY_RECORD_PATHS
     from .review_release_guard import GitHub as ReadGitHub, owner_check, require, sha
 except ImportError:
+    from photo_stories import STORY_RECORD_PATHS
     from review_release_guard import GitHub as ReadGitHub, owner_check, require, sha
 
 REPO = "RollNuts/mihassei-news"
@@ -29,7 +31,9 @@ VERIFY = "/actions/workflows/verify-public-photos.yml/dispatches"
 MARKER = re.compile(r"<!-- publication-finalize\s*\n(.*?)\n-->", re.S)
 RUN = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{7,199}")
 LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
-DATA = frozenset({
+LEGACY_STORIES = "content/photo_stories.json"
+STORY_FILES = STORY_RECORD_PATHS | {LEGACY_STORIES}
+DATA = STORY_RECORD_PATHS | frozenset({
     "content/articles.json", "content/serials.json", "content/visual_reviews.json",
     "content/approved_photos.json", "content/market_outlook.json",
     "content/market_outlooks.json", "content/market_bulletins.json",
@@ -45,19 +49,18 @@ KIND_DATA = {
     "news": {"content/articles.json"},
     "market": {"content/articles.json", "content/serials.json", "content/market_outlook.json",
                "content/market_outlooks.json", "content/market_bulletins.json", "content/market_figures.json"},
-    "cast_story": {"content/photo_stories.json"},
+    "cast_story": STORY_FILES,
     "photo_issue": {"content/photo_issues.json", "content/photo_editions.json", "content/photo_stories.json"},
 }
 COMMON_DATA = {"content/visual_reviews.json", "content/approved_photos.json", "assets/generated/manifest.json"}
 PHOTO_VALIDATION = """from pathlib import Path
-import json
 from scripts.photo_issues import load_photo_issues, published_issues
-from scripts.photo_stories import validate_photo_stories
+from scripts.photo_stories import read_story_document, validate_photo_stories
 from scripts.photo_editions import load_photo_editions
 root = Path.cwd()
 catalog = load_photo_issues(root)
 published = published_issues(catalog, root=root)
-validate_photo_stories(json.loads((root / 'content/photo_stories.json').read_text()),
+validate_photo_stories(read_story_document(root),
                        catalog=catalog, published=published, root=root)
 load_photo_editions(root, catalog=catalog, published=published)
 """
@@ -70,6 +73,8 @@ def allowed(path):
 
 
 def allowed_for(kind, path):
+    if kind == "cast_story":
+        return isinstance(path, str) and path in STORY_FILES
     return (allowed(path) and (path not in DATA or path in KIND_DATA[kind] | COMMON_DATA)
             and (not PLAN.fullmatch(path) or kind == "photo_issue"))
 
@@ -159,6 +164,19 @@ def git(root, *args):
                           check=True, capture_output=True, text=True, timeout=60).stdout.strip()
 
 
+def validate_story_append(path, before, after):
+    for document in (before, after):
+        require(isinstance(document, dict) and set(document) == {"schema_version", "stories"}
+                and type(document["schema_version"]) is int and document["schema_version"] == 1
+                and isinstance(document["stories"], list), "Invalid story source document")
+    older, newer = before["stories"], after["stories"]
+    require(len(newer) == len(older) + 1
+            and json.dumps(newer[:-1], sort_keys=True) == json.dumps(older, sort_keys=True),
+            "Story publication must append exactly one record without changing its history")
+    require(isinstance(newer[-1], dict) and (path == LEGACY_STORIES
+            or newer[-1].get("model_id") == Path(path).stem), "Story does not belong to its model file")
+
+
 def validate_merge(api, pr, run, root):
     """Merge only data into a temporary tree and freshly run trusted source guards.
 
@@ -187,6 +205,11 @@ def validate_merge(api, pr, run, root):
                 target = checkout / path
                 require(target.is_file() and not target.is_symlink(), "Publication path is not an ordinary file")
             attestation = approval(pr)
+            if attestation["kind"] == "cast_story":
+                require(len(changed) == 1 and changed[0] in STORY_FILES, "Expected one story source file")
+                path = changed[0]
+                validate_story_append(path, json.loads(git(root, "show", current + ":" + path)),
+                                      json.loads((checkout / path).read_text(encoding="utf-8")))
             if attestation["kind"] in {"news", "market"}:
                 try:
                     from .generated_photos import article_fingerprint
@@ -322,6 +345,8 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     require(files and all(f.get("status") in {"added", "modified"}
                          and allowed_for(attestation["kind"], f.get("filename")) for f in files),
             "Unsupported PR paths, publication kind or removals")
+    if attestation["kind"] == "cast_story":
+        require(len(files) == 1 and files[0]["status"] == "modified", "Expected one modified story source")
     images = image_affecting(attestation["kind"], files)
     if images:
         live_image_guard(api)

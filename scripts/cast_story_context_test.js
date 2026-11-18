@@ -179,27 +179,39 @@ test("real catalogs produce only each adult's small whitelisted context", () => 
 
 const REF = "e1ba82ef867f547039c766e20ed8c2c6c50e21d1";
 function reader(input, wrap = value => value) {
-  const calls = [], blobs = { "content/photo_issues.json": "a".repeat(40), "content/photo_stories.json": "b".repeat(40) };
+  const storyPath = "content/photo_stories/" + input.modelId + ".json";
+  const calls = [], blobs = { [storyPath]: "c".repeat(40), "content/photo_issues.json": "a".repeat(40), "content/photo_stories.json": "b".repeat(40) };
   return { calls, blobs, fetchFile: async args => {
     calls.push(args);
-    return wrap({ content: JSON.stringify(args.path.endsWith("photo_issues.json") ? input.catalog : input.stories),
+    return wrap({ content: JSON.stringify(args.path === storyPath ? (input.stream || { schema_version: 1, stories: [] }) :
+      args.path.endsWith("photo_issues.json") ? input.catalog : input.stories),
       encoding: "utf-8", sha: blobs[args.path], display_title: path.basename(args.path) });
   } };
 }
 
-test("read uses exactly two fixed-repository UTF-8 fetches at one immutable ref", async () => {
+test("read uses the person’s stream and two fixed-repository UTF-8 fetches at one immutable ref", async () => {
   const input = fixture();
   for (const wrap of [value => value, value => ({ result: value }),
     value => ({ content: [{ type: "text", text: "Action completed." }], structuredContent: value, isError: false })]) {
     const transport = reader(input, wrap);
     const result = await context.read({ fetchFile: transport.fetchFile, ref: REF, modelId: input.modelId, now: NOW });
-    assert.deepEqual(result.source, { repository: "RollNuts/mihassei-news", ref: REF, blob_shas: transport.blobs });
+    assert.deepEqual(result.source, { repository: "RollNuts/mihassei-news", ref: REF, story_path: "content/photo_stories/" + input.modelId + ".json", blob_shas: transport.blobs });
     assert.deepEqual(result.photos, context.build(input).photos);
-    assert.equal(transport.calls.length, 2);
+    assert.equal(transport.calls.length, 3);
     assert(transport.calls.every(args => args.repository_full_name === "RollNuts/mihassei-news"
       && args.ref === REF && args.encoding === "utf-8" && Object.keys(args).length === 4));
-    assert.deepEqual(transport.calls.map(args => args.path), ["content/photo_issues.json", "content/photo_stories.json"]);
+    assert.deepEqual(transport.calls.map(args => args.path), ["content/photo_issues.json", "content/photo_stories.json", result.source.story_path]);
   }
+});
+
+test("current creator's own stream participates in the daily duplicate check", async () => {
+  const input = fixture(), post = story(input, 1, NOW);
+  input.stream = { schema_version: 1, stories: [post] };
+  const read = () => context.read({ fetchFile: reader(input).fetchFile, ref: REF, modelId: input.modelId, now: NOW });
+  const report = await read();
+  assert.deepEqual(report.today_story_ids, [post.id]);
+  post.model_id = "wrong-creator";
+  await assert.rejects(read(), /another model/);
 });
 
 test("read fails closed for provider errors, unsupported encodings and incomplete metadata", async () => {
@@ -212,7 +224,7 @@ test("read fails closed for provider errors, unsupported encodings and incomplet
     value => ({ ...value, content: "{broken" })]) {
     const transport = reader(input, wrap);
     await assert.rejects(context.read({ fetchFile: transport.fetchFile, ref: REF, modelId: input.modelId, now: NOW }));
-    assert.equal(transport.calls.length, 2);
+    assert.equal(transport.calls.length, 3);
   }
   await assert.rejects(context.read({ fetchFile: async () => { throw Error("unavailable"); },
     ref: REF, modelId: input.modelId, now: NOW }), /fetch_file failed/);
