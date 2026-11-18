@@ -271,5 +271,55 @@
         "checked_on": "2026-11-18"
       }
     ]
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-open-01",
+    "at": "2026-11-18T09:43:35+09:00",
+    "forecast_id": "2026-11-17-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3834.45,
+    "observed_on": "2026-11-18",
+    "reason": "JPXが11月18日9:39 JSTに更新したTOPIX現物途中値は3,834.45。17日朝の固定基準11月16日3,901.37から1.72%安で、18日終値の下落予測を現時点で支持するが、まだ引け前で的中とは判定しない。",
+    "change_reason": "米国17日引け後のNVIDIA増収決算を受け一部半導体株は反発したが、9:39時点ではTOPIXは前日比0.15%安。予測の基準・方法・期日は不変。",
+    "source": {
+      "title": "JPX：2026年11月18日9:39更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611180939",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-open-02",
+    "at": "2026-11-18T09:43:35+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "強気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3834.45,
+    "observed_on": "2026-11-18",
+    "reason": "19日のTOPIXが17日確定終値3,840.02から0.5%超上がるという18日朝の新予想に対し、18日9:39の途中値は3,834.45と基準を下回る。ただし評価日は19日の公式終値であり、18日の途中値から外れとは判定できない。",
+    "change_reason": "NVIDIA決算後の買いは国内半導体株の一角に見られる一方、TOPIX全体は9:39時点で17日終値を下回る。元の強気予測と条件は保持したまま、現時点の逆風を追記。",
+    "source": {
+      "title": "JPX：2026年11月18日9:39更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611180939",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
   }
 ]
