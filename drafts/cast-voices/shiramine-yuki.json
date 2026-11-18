@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shiramine-yuki",
   "name": "白峰ゆき",
-  "created_date": "2026-11-17",
+  "created_date": "2026-11-18",
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "photo_reference": {
     "issue_slug": "november-warm-water-and-riverside-yuki-009",
-    "cut_id": "06",
-    "image_sha256": "e5d466ee018a36990b432f126bc538d386939988a3961a663714233e57490219"
+    "cut_id": "03",
+    "image_sha256": "584460e36946eb845cbd21545402816db7a949528c78888a55df540e3cb0a3aa"
   },
-  "post_text": "手帳にはさんだ紅葉が、歩いているうちに落ちてしまって。今はコートのポケットに避難中です。帰ったら、そっと広げよう。",
-  "spoken_line": "あ、落としちゃった。",
-  "future_idea": "2031年、地方の夜行鉄道を共同出資で維持する新制度が始動。観光客向けの設備投資と地元住民の運賃負担を巡り議論が広がる。"
+  "post_text": "外はもう暗くて、廊下の床もひんやり。温かい水の余韻が消えないうちに、休憩室でお茶を一杯。今日はゆっくり帰ります。",
+  "spoken_line": "今日は、ゆっくり帰ります。",
+  "future_idea": "2031年、観光地の温浴施設を地域住民にも開放する新制度を検討。観光客向け設備投資と住民の利用枠を巡り議論が広がる。"
 }
