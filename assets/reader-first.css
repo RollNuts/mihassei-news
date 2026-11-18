@@ -340,13 +340,15 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
   height:100%;width:100%;aspect-ratio:auto;border-radius:4px;object-fit:cover;
 }
 /* Staged photos and illustrations rely on the whole scene.
-   Preserve both sides in compact cards instead of cropping away the subjects. */
+   Preserve both sides in compact cards and in the lead illustration. */
+.lead-media .hero-image[data-editorial-scene-src][src$=".svg"],
 .index-main>.section-block>.story-grid>.story-card .story-thumb[data-generated-scene="true"],
 .archive-list .story-card .story-thumb[data-generated-scene="true"],
 .index-main>.section-block>.story-grid>.story-card .story-thumb[data-editorial-scene-src][src$=".svg"],
 .archive-list .story-card .story-thumb[data-editorial-scene-src][src$=".svg"]{
   object-fit:contain;background-color:#f2f1e9;
 }
+.lead-media:hover .hero-image[data-editorial-scene-src][src$=".svg"]{transform:none}
 .index-main>.section-block>.story-grid>.story-card .story-meta,
 .archive-list .story-card .story-meta{grid-column:2;grid-row:1;margin:0;gap:4px 8px}
 .index-main>.section-block>.story-grid>.story-card h3,
