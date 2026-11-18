@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "085941e437ec78c28bf2e8dffb7ec43f2f507b49e52cf2bf4054399bcf22040f",
+  "slug": "old-coat-recut-as-strangers-jacket",
+  "article_sha256": "a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+  "logical_run_id": "news-photo-v1:a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+  "prompt_sha256": "2ba27aa4db63f1bbb309d1c206c2a6ff857f6e4b3e43b6c9211d8b5c5aff6bf5",
+  "reserved_at": "2026-11-18T22:48:37.624Z",
+  "baseline": {
+    "commit_sha": "08110f2cad06d9ab0d13009b7173a719333f34a9",
+    "tree_sha": "b646fcdf85846c0a920feb24ca63f3e0b2902b83",
+    "protected_hashes": {
+      "content/articles.json": "4166576ddf584cb6b7dcddb948c2127fb92d11f853eb3e7d1027cd435e2e2087",
+      "assets/generated/manifest.json": "4ea1d1be63ee68640627b87f8621b344ebddb04b5a3638ef9321b29ae929fa7d",
+      "content/visual_reviews.json": "251dba4123385364e0e07dd761c9035bf3f33ba78fbb958abd304a896c56dd03"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "89794ff148442db19d48be27f5169840492a02fc",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "b4b51bb6d462d94adecef28fd06035bdf8431cccbaff87efb938ecf52a76cdc2",
+    "observed_at": "2026-11-18T22:48:08.710Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
