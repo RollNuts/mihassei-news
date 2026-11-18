@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-rooftop-pool-sumire-011",
+  "cut_id": "01",
+  "model_id": "kiritani-sumire",
+  "review_reference_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+  "imported_at": "2026-11-18T13:54:34.688663+00:00",
+  "source": {
+    "url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "turn_key": "45520a15-22b0-4d11-a4ed-b745038a1173",
+    "image_number": 1,
+    "generation_turn": "unknown",
+    "format": "png",
+    "sha256": "4b6227c7d96b9d9086822b886c57041c63ceaecb197b2324626bab828e406742",
+    "bytes": 2485617,
+    "width": 1536,
+    "height": 1024,
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/01/source-4b6227c7d96b9d9086822b886c57041c63ceaecb197b2324626bab828e406742.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-01.jpg",
+    "sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479",
+    "bytes": 306306,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "macOS sips",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  }
+}

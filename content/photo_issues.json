@@ -8907,6 +8907,445 @@
       },
       "cover_cut_id": "01",
       "published_at": "2026-11-18T07:53:15.811251+09:00"
+    },
+    {
+      "slug": "november-rooftop-pool-sumire-011",
+      "number": 11,
+      "title": "冷たい風も、水辺の色。",
+      "summary": "夕暮れの屋上プール、秋の海沿い、雪景色の温水施設。古い色のコートと水着を選ぶ、桐谷すみれの11月の10枚。",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "屋内温水プール、夕暮れの屋上、海沿い、雪景色の温水施設",
+        "aspect_ratio": "original",
+        "visual_direction": "本人が届けた独立した原本写真10枚の縦横比を保ち、服・動作・距離を変えた秋冬の水辺の自然な写真として掲載する。"
+      },
+      "column": [
+        "11月の水辺、風が思ったより冷たい。",
+        "古い色のコートを持ってきて正解だった。",
+        "でも水着との組み合わせ、まだ少し迷ってる。"
+      ],
+      "model_id": "kiritani-sumire",
+      "model_snapshot": {
+        "id": "kiritani-sumire",
+        "name": "桐谷すみれ",
+        "age": 26,
+        "fictional": true,
+        "appearance": "26歳の架空の成人。上品な服が似合う落ち着いた顔立ち。独自の髪形と表情。",
+        "character": {
+          "version": 1,
+          "first_person": "私",
+          "occupation": "俳優兼ファッション企画ナビゲーター",
+          "casting_specialty": "演技と美術・装いをつなぐ企画。配色や素材の組合せを案内する。",
+          "personality": "美意識があり、古いものと新しいものを合わせるのが好き。",
+          "voice": "上品だが気取らず、自分のこだわりを少し笑える言葉で話す。",
+          "likes": [
+            "美術",
+            "古い街並み",
+            "小物の配色"
+          ],
+          "weakness": "気になる組合せを比べすぎて決めるのが遅い。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+          "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+          "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39",
+          "provenance": "assets/generated/photo-reference-kiritani-sumire-b666b4105c64.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 170,
+          "bust_cm": 87,
+          "waist_cm": 62,
+          "hip_cm": 91,
+          "shoulder_width_cm": 39,
+          "inseam_cm": 81,
+          "heads_tall": 7.6
+        },
+        "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+        "face_reference": {
+          "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+          "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+          "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-kiritani-sumire-3c91ce3a1b37.jpg",
+          "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+          "source_png_sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+          "provenance": "assets/generated/photo-reference-kiritani-sumire-3c91ce3a1b37.json"
+        }
+      },
+      "source_article": null,
+      "shots": [
+        {
+          "id": "01",
+          "description": "桐谷すみれ（26歳、架空の成人）。屋内温水プールで花柄のビキニ姿で水面に両腕をつき、正面を向いて微笑む。",
+          "caption": "屋内温水プールで花柄のビキニ姿で水面に両腕をつき、正面を向いて微笑む。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。屋内温水プールで花柄のビキニ姿で水面に両腕をつき、正面を向いて微笑む。"
+        },
+        {
+          "id": "02",
+          "description": "桐谷すみれ（26歳、架空の成人）。青いビキニとグレーの羽織で、屋内プール脇の濡れた床を歩く。",
+          "caption": "青いビキニとグレーの羽織で、屋内プール脇の濡れた床を歩く。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。青いビキニとグレーの羽織で、屋内プール脇の濡れた床を歩く。"
+        },
+        {
+          "id": "03",
+          "description": "桐谷すみれ（26歳、架空の成人）。緑のビキニと白いシャツで、温水プールの水面へ手を伸ばす。",
+          "caption": "緑のビキニと白いシャツで、温水プールの水面へ手を伸ばす。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。緑のビキニと白いシャツで、温水プールの水面へ手を伸ばす。"
+        },
+        {
+          "id": "04",
+          "description": "桐谷すみれ（26歳、架空の成人）。薄紫のビキニと白いバスローブ姿で、曇る窓辺に立ち片腕を上げる。",
+          "caption": "薄紫のビキニと白いバスローブ姿で、曇る窓辺に立ち片腕を上げる。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。薄紫のビキニと白いバスローブ姿で、曇る窓辺に立ち片腕を上げる。"
+        },
+        {
+          "id": "05",
+          "description": "桐谷すみれ（26歳、架空の成人）。夕暮れの屋上プールで、柄入りのビキニ姿でキャメル色のコートを持ち歩く。",
+          "caption": "夕暮れの屋上プールで、柄入りのビキニ姿でキャメル色のコートを持ち歩く。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。夕暮れの屋上プールで、柄入りのビキニ姿でキャメル色のコートを持ち歩く。"
+        },
+        {
+          "id": "06",
+          "description": "桐谷すみれ（26歳、架空の成人）。橙色のバンドゥ型水着で温水プール脇の木製ベンチに座り、髪を束ねる。",
+          "caption": "橙色のバンドゥ型水着で温水プール脇の木製ベンチに座り、髪を束ねる。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。橙色のバンドゥ型水着で温水プール脇の木製ベンチに座り、髪を束ねる。"
+        },
+        {
+          "id": "07",
+          "description": "桐谷すみれ（26歳、架空の成人）。赤茶系水着と黒いパレオ姿で、屋内プール沿いを歩き肩越しに振り返る。",
+          "caption": "赤茶系水着と黒いパレオ姿で、屋内プール沿いを歩き肩越しに振り返る。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。赤茶系水着と黒いパレオ姿で、屋内プール沿いを歩き肩越しに振り返る。"
+        },
+        {
+          "id": "08",
+          "description": "桐谷すみれ（26歳、架空の成人）。濃紺のビキニと白シャツで、晩秋の海沿い遊歩道を歩く。",
+          "caption": "濃紺のビキニと白シャツで、晩秋の海沿い遊歩道を歩く。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。濃紺のビキニと白シャツで、晩秋の海沿い遊歩道を歩く。"
+        },
+        {
+          "id": "09",
+          "description": "桐谷すみれ（26歳、架空の成人）。緑のビキニ姿で、雪景色が窓の向こうに見える屋内温水プールの端に立つ。",
+          "caption": "緑のビキニ姿で、雪景色が窓の向こうに見える屋内温水プールの端に立つ。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。緑のビキニ姿で、雪景色が窓の向こうに見える屋内温水プールの端に立つ。"
+        },
+        {
+          "id": "10",
+          "description": "桐谷すみれ（26歳、架空の成人）。えんじ色のビキニ姿で、雪景色の露天温水施設の木縁に腰掛け、髪を束ねる。",
+          "caption": "えんじ色のビキニ姿で、雪景色の露天温水施設の木縁に腰掛け、髪を束ねる。",
+          "alt": "桐谷すみれ（26歳、架空の成人）。えんじ色のビキニ姿で、雪景色の露天温水施設の木縁に腰掛け、髪を束ねる。"
+        }
+      ],
+      "state": "published",
+      "published_at": "2026-11-18T21:15:16.282Z",
+      "cover_cut_id": "05",
+      "images": {
+        "10": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-10.jpg",
+          "sha256": "b70936a9d0656955b54e0382b24e4c762be7275529131522480ed133d6be0911",
+          "bytes": 271797,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "a4445dc0675c3519d8249074516196fe126db1be7659d5ab4339e7c769457a4d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/10/receipt-supplied-a4445dc0675c-b70936a9d065.json",
+            "receipt_sha256": "4566c9b21bbab14b4bdad8892c9b6801c97494c6a46aa4fb8afd862294ac93cf",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "b70936a9d0656955b54e0382b24e4c762be7275529131522480ed133d6be0911",
+            "cut_id": "10",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "three_quarter",
+            "swimwear_visible": true,
+            "note": "10 雪景色の露天温水施設の木縁でえんじのビキニ姿で腰掛け髪を結ぶ横構図。06と似た髪の動作だが姿勢・衣装・施設と季節表現が異なる。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "01": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-01.jpg",
+          "sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479",
+          "bytes": 306306,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "4b6227c7d96b9d9086822b886c57041c63ceaecb197b2324626bab828e406742",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/01/receipt-supplied-4b6227c7d96b-0adb15a60cdc.json",
+            "receipt_sha256": "6977a260c4dc9ac5fa30544841a6168d8a5eb4d3d7db3e34801484a853e6bac2",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479",
+            "cut_id": "01",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "three_quarter",
+            "swimwear_visible": true,
+            "note": "01 室内温水プールの水面に両腕を置く横構図。花柄ビキニ。表情・手・水面の接続に重大な破綻なし。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-02.jpg",
+          "sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca",
+          "bytes": 306298,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "42515df13232465daf696bc6cc6aa9ef912e410542832391d3b84fcaef022fc7",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/02/receipt-supplied-42515df13232-e09d33dbe030.json",
+            "receipt_sha256": "87aef5bc7a0d70b4f62e9dcf5f1432584e1677eefd6b4057b0f4ed6358aba89a",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca",
+            "cut_id": "02",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "02 室内プール脇を歩く全身縦構図。青ビキニと羽織。01とは色・動作・距離が異なる。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-03.jpg",
+          "sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947",
+          "bytes": 275085,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "e80c8bcf7a79624654cce9c027651aad3a5969d00e638017f914acf19da6b0e4",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/03/receipt-supplied-e80c8bcf7a79-9dbe0a8f4bf8.json",
+            "receipt_sha256": "933f271e77c7ca4d0025944147a9753c4f47dcb309825f29e2b441e5560e1b8e",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947",
+            "cut_id": "03",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "03 緑ビキニと白シャツで水面に触れる全身縦構図。手と水面、足元の見え方が自然。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-04.jpg",
+          "sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98",
+          "bytes": 276678,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "478ecd9503ec35569a1aa19df9d1a9305fdb1b275fb531b8bcf4e9438f1a1491",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/04/receipt-supplied-478ecd9503ec-731eea9b9b4f.json",
+            "receipt_sha256": "60593ca2613431f347d74da529d59a9c77bc38f49cef6c42b052ac1e48867f1c",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98",
+            "cut_id": "04",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "04 紫系ビキニと白いバスローブ。腕を上げる縦構図。室内・窓外の晩秋景色と一致。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-05.jpg",
+          "sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d",
+          "bytes": 273080,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "13d30a0c86447856b72148110019e31857b57037d9f3fcebdfb2351c3b1058ff",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/05/receipt-supplied-13d30a0c8644-de24a1b682f3.json",
+            "receipt_sha256": "802af131d3c4dde4dbc626f364cd19210b93ba761bd17753bf856abb549fe85b",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d",
+            "cut_id": "05",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "05 夕刻の屋上プールで柄ビキニとキャメルのコートを持って歩く全身。コラムとの直接の対応カット。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-06.jpg",
+          "sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d",
+          "bytes": 234971,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "66a68c58dde8550f2c8c3cd0a4da856733eb7437e741c4fcd02e9083469e5d50",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/06/receipt-supplied-66a68c58dde8-ce3f082f9d39.json",
+            "receipt_sha256": "4cff4a15c438bb5de8e4fb2381be19993ed03a56dd972fa3dce9cdc68f1cb1fb",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d",
+            "cut_id": "06",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "three_quarter",
+            "swimwear_visible": true,
+            "note": "06 温水プール脇の木製ベンチに橙色のバンドゥ水着で座り髪を結ぶ横構図。後述10とは異なる背景・衣装・場面。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-07.jpg",
+          "sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2",
+          "bytes": 256846,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "cfddc29dd5350e4f74cb81e670e20bacf233f2ce604fce4088ca0cf1df6fad7a",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/07/receipt-supplied-cfddc29dd535-77e72dd4e8fd.json",
+            "receipt_sha256": "3b9b6b4ffcc812cda4ca988a4ce587204532fa053226c2d2e70ead96efb38500",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2",
+            "cut_id": "07",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "07 プール脇から背を向け歩き振り返る縦構図。茶系水着と黒いパレオ・タオル。水着を視認可能。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-08.jpg",
+          "sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2",
+          "bytes": 300515,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "e03da949bc6fe8fc39cf6beb8b329bb6767edd3321ea468b941965597d484af1",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/08/receipt-supplied-e03da949bc6f-ad2228fcc83b.json",
+            "receipt_sha256": "ee3e0baf0a76b81570fdd881a6567571d0fa7d13d892c0f7483ff1075d043ed0",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2",
+            "cut_id": "08",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "08 夕方の海沿い遊歩道を濃紺ビキニと白シャツで歩く縦構図。11月の冷風を扱うコラムに適合。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-09.jpg",
+          "sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8",
+          "bytes": 305192,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "281330aa97469c1ed0d2036fe612928f0050208a5e478968a0df2c4419176c0d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/09/receipt-supplied-281330aa9746-8c2153e0b862.json",
+            "receipt_sha256": "cfe43ee52de7071aa385850018ca10d007b641f42e8b85d942fd64cba92d4797",
+            "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7",
+            "image_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8",
+            "cut_id": "09",
+            "master_sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+            "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+            "reviewed_at": "2026-11-18T13:58:50.922Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "09 雪の見える屋内温水プール脇で緑ビキニの立ち姿。03と同色系でもカメラ距離・ポーズ・背景が別。 原本に対する最終JPEGの実表示・元比率・本人の印象・季節と説明を確認。体型のcm実測一致は主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+              "sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0"
+            }
+          }
+        }
+      },
+      "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7"
     }
   ]
 }
