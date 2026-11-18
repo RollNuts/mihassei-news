@@ -77,7 +77,7 @@
                 "algorithm_type": "dpmsolver++",
                 "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
                 "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-                "guidance_scale": 7,
+                "guidance_scale": 7.0,
                 "height": 448,
                 "num_inference_steps": 24,
                 "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -93,7 +93,7 @@
               "model": "SG161222/Realistic_Vision_V5.1_noVAE",
               "origin": "github-cpu-sd15",
               "prompt_version": 3,
-              "seed": 5520453989675686000,
+              "seed": 5520453989675686101,
               "sha256": "c6556008a54243337468c9f94fc0b4d9811af1a6dd508147727b2f716c9ef797"
             },
             "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
@@ -683,7 +683,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6825572438772902000,
+      "seed": 6825572438772901493,
       "sha256": "2933874e5120a1e76724890681d1f6151e1983e5ed53daa6f6ec9bfc26798873"
     },
     "ai-chooses-a-managers": {
@@ -701,7 +701,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 4337816327905070000,
+        "seed": 4337816327905069863,
         "sha256": "1dc3328b850cd8d208bd009f426d648a050a1f85cb22dfcc6237c56d3f2ffa87"
       },
       "previous_visual_hold": {
@@ -1083,7 +1083,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -1099,7 +1099,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 937335361030604000,
+        "seed": 937335361030604073,
         "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
       },
       "previous_scene_prompt": "A Japanese female operations worker, age 46, writes a corrected business procedure on paper while a retired male colleague, age 62, examines a payment statement at a nearby office table. Photorealistic documentary press photograph inside a modest fictional workplace, everyday business casual clothing, natural faces and hands, ordinary daylight, believable paperwork and one computer monitor, no readable text, brand logos, recognizable real people, or graphics, horizontal 16:9.",
@@ -1260,7 +1260,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -1276,7 +1276,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5952575583184431000,
+        "seed": 5952575583184431126,
         "sha256": "ad66ae765f8b8d76c2d5e6db51915bf5ee769efb874302a1924e5f73638486f8"
       },
       "previous_generation_commit": "ebd5b2a7a14b6fcf688802a6bac21b1880bbb222",
@@ -1461,7 +1461,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 9006481694354584000,
+        "seed": 9006481694354583717,
         "sha256": "ac15398304609f6612a67b997952fe83bd67b1c2d233acf9e46bb7ebba204000"
       },
       "previous_visual_hold": {
@@ -1503,7 +1503,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -1519,7 +1519,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 7835573238623995000,
+          "seed": 7835573238623994506,
           "sha256": "0e4a551314bc176f80993dbe4428ba1a63969a6f5d278da9e587c77cda039f02"
         },
         "previous_generation_commit": "619217ee087070db6967110d593b5aec9b48a87e",
@@ -1775,7 +1775,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7531663354728221000,
+      "seed": 7531663354728220206,
       "sha256": "c5742f70ce3dc6a78304e7ebe2bbefae6aff9476962709061f1bc271b93997db"
     },
     "basketball-opening-day-game-seven": {
@@ -1814,7 +1814,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 8539460300984131000,
+        "seed": 8539460300984130488,
         "sha256": "f6c994e53259c5faa5a8bc70816ab67162494743c4fb3494d9847a3d85c861ce"
       },
       "previous_visual_hold": {
@@ -1850,7 +1850,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 1283090034361670700,
+        "seed": 1283090034361670628,
         "sha256": "1d747f2352737ec1ec575759c7cdd6039792e160a3318efc5ac7f953a455e98e"
       },
       "previous_visual_hold": {
@@ -1899,7 +1899,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -1915,7 +1915,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 2774198770197416400,
+          "seed": 2774198770197416284,
           "sha256": "adf3cf890068f5f9be1d57a4a41532cca5b41c554960bf3588dc8e7979044520"
         },
         "previous_visual_hold": {
@@ -1990,7 +1990,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2006,7 +2006,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 801802259504878700,
+        "seed": 801802259504878659,
         "sha256": "04d5f0266e363aba55bc31bdb51e217aea6e9da70f51d59e026db66e1e99cd86"
       },
       "previous_visual_hold": {
@@ -2035,7 +2035,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 9164180507365930000,
+        "seed": 9164180507365929936,
         "sha256": "de26dbb46a548ade86560f740a4fd57c00ec3fe97fc19ead12c1889694377d81"
       },
       "previous_visual_hold": {
@@ -2079,7 +2079,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2095,7 +2095,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 8989333895446710000,
+        "seed": 8989333895446710189,
         "sha256": "b42141b6ad3c31a41da1b98b49fb4b8649a03ad4ad624c20094c056550ca55fd"
       },
       "previous_visual_hold": {
@@ -2132,7 +2132,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 4536841532495457000,
+        "seed": 4536841532495456843,
         "sha256": "2666c39147d9189043bee27d74b11377911045648b62cdf30d4250381f7d392b"
       },
       "previous_visual_hold": {
@@ -2163,7 +2163,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2179,7 +2179,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5879385496131899000,
+        "seed": 5879385496131899738,
         "sha256": "aaa58597ac1acac3ac65a4b96a54f10d579e0d40fee753eeef404a66e57f5916"
       },
       "previous_generation_commit": "f911de32af5b4e0eb227d2465a589ab51dc30111",
@@ -2341,7 +2341,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 706460328480055400,
+      "seed": 706460328480055475,
       "sha256": "e2931893b22b826d94008a664ac83527a5c0545634549a917f2aeec64bfeabc6"
     },
     "community-workshop-builds-bookshelf-before-introductions": {
@@ -2363,7 +2363,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2379,7 +2379,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 4273976635983139300,
+        "seed": 4273976635983139098,
         "sha256": "21868e1c7e6fc47384e7f525b4d6805f8df0ab19add81f2bf9bd0262121b81b6"
       },
       "previous_generation_commit": "e7aa7747e4fe27b8d60bacdaeea5ae1441ad5068",
@@ -2420,14 +2420,6 @@
             "hash": {
               "0": 178,
               "1": 228,
-              "2": 52,
-              "3": 126,
-              "4": 13,
-              "5": 68,
-              "6": 93,
-              "7": 248,
-              "8": 76,
-              "9": 1,
               "10": 148,
               "11": 154,
               "12": 53,
@@ -2438,6 +2430,7 @@
               "17": 130,
               "18": 47,
               "19": 220,
+              "2": 52,
               "20": 204,
               "21": 80,
               "22": 48,
@@ -2448,8 +2441,15 @@
               "27": 208,
               "28": 34,
               "29": 189,
+              "3": 126,
               "30": 31,
-              "31": 5
+              "31": 5,
+              "4": 13,
+              "5": 68,
+              "6": 93,
+              "7": 248,
+              "8": 76,
+              "9": 1
             },
             "url": "self#jumbf=c2pa.assertions/c2pa.icon"
           },
@@ -2509,7 +2509,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2525,7 +2525,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 7071239073018737000,
+          "seed": 7071239073018737061,
           "sha256": "20752ac3f7fb841a074025bca650b3e0c17792f03d75a910c3d9770b69e7f059"
         },
         "previous_generation_commit": "669e52fa34bda0773a01ef138d31f60c89f51006",
@@ -2608,7 +2608,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2624,7 +2624,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 4016510582796096000,
+        "seed": 4016510582796096107,
         "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
       },
       "previous_scene_prompt": "A 48-year-old Japanese woman sings passionately among adult concertgoers as the audience-recording microphone stands switched off nearby. Photorealistic editorial press photograph at a modest indoor music venue in November, ordinary concert clothing, a distant unidentifiable singer on stage, natural faces, realistic stage lights and crowd, horizontal 16:9, no logos, signage, legible text, watermarks, recognizable real people or illustrated elements.",
@@ -2793,7 +2793,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2809,7 +2809,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 7352854856290976000,
+        "seed": 7352854856290976236,
         "sha256": "62dea4b2ca91befb6d487f95bdd5c8c88e8826f2413e752914df56d80d1b6bda"
       },
       "previous_visual_hold": {
@@ -2843,7 +2843,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -2859,7 +2859,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 1771213988705202700,
+        "seed": 1771213988705202666,
         "sha256": "03348e529df56d02489def284339d63276e5ec1b5b6d1dd58a1ff9f0463a9058"
       },
       "previous_generation_commit": "e70598ee85fafe49a67b0e79ac5b3201bce6dfb6",
@@ -3028,7 +3028,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 2648102085126781400,
+        "seed": 2648102085126781280,
         "sha256": "54108ed8095e414afa89bcfcdbdb5fdbce3b70e7f4527ecc4f4efe5c11349fe5"
       },
       "previous_visual_hold": {
@@ -3070,7 +3070,7 @@
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7,
+        "guidance_scale": 7.0,
         "height": 448,
         "num_inference_steps": 24,
         "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -3086,7 +3086,7 @@
       "model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "origin": "github-cpu-sd15",
       "prompt_version": 3,
-      "seed": 1068116499113448600,
+      "seed": 1068116499113448635,
       "sha256": "48e97e5c67158eefcc9d9f1017ba57791e35168aa623fc44badaba077f699dd2"
     },
     "delivery-locker-zero-redelivery-waiting-line": {
@@ -3123,7 +3123,7 @@
           "source_sha256": "f427b70c803eee2e102fd159ca1867de1fdca19169e63ee6ffbc95b319712c66"
         },
         "prompt_version": 2,
-        "seed": 1135968338982907500,
+        "seed": 1135968338982907543,
         "sha256": "2cc51b877b3487571c72dfe900984b0cab34cb4e9cd2ec4dce77cb27326c2dd1"
       },
       "previous_visual_hold": {
@@ -3159,7 +3159,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 3201759797992626700,
+        "seed": 3201759797992626446,
         "sha256": "997f6700e189e406aafc7878a7e8bb0eb3401032ba4d09273c5c3e0649e71e25"
       },
       "previous_visual_hold": {
@@ -3208,7 +3208,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -3224,7 +3224,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 9085058054470321000,
+          "seed": 9085058054470321494,
           "sha256": "fa6e49971d895e286e6ca952788038e4edb379472fccb9188e6100e60c7603a2"
         },
         "previous_generation_commit": "8b437bf829186246eb344a4082f9e96a41ebe66d",
@@ -3295,7 +3295,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 3792932720945161700,
+      "seed": 3792932720945161705,
       "sha256": "1471b4eb5a5048ae6506ef20363238479cdd479c6c6ba28d305c154f0568d704"
     },
     "family-line-replies-four-different-station-exits": {
@@ -3513,7 +3513,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 3110783516514394000,
+        "seed": 3110783516514393951,
         "sha256": "2cc4d8227eb9e9de514d30c1c7d08130ec202610e2fb03168b146c2250997796"
       },
       "previous_visual_hold": {
@@ -3541,7 +3541,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 6455747253186510000,
+        "seed": 6455747253186509503,
         "sha256": "b9da3538b3da1e4d1a0501d9234c9cf89f8412cfe96d32dee3d99316d2872c1b"
       },
       "previous_visual_hold": {
@@ -3569,7 +3569,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 3645685199179627500,
+        "seed": 3645685199179627378,
         "sha256": "ebf217ad1e6a1c2830aedda20609fd26ca3be24b8952bdd7b59dbc1a1fa121b6"
       },
       "previous_visual_hold": {
@@ -3610,7 +3610,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -3626,7 +3626,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 3036210705938676700,
+        "seed": 3036210705938676899,
         "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
       },
       "previous_jpeg_path": "maintenance/native-image-candidates/fermentation-rna-inspection-two-flavors/previous-cpu-cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce.jpg",
@@ -3644,7 +3644,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -3660,7 +3660,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 3036210705938676700,
+          "seed": 3036210705938676899,
           "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
         },
         "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
@@ -3852,7 +3852,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 8989241339850763000,
+        "seed": 8989241339850763742,
         "sha256": "64139b1b18b12d62ec6c7de1d6d9e3ad0819f282c15866c71613419ab579dadd"
       },
       "previous_visual_hold": {
@@ -3885,7 +3885,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 5521049100415919000,
+        "seed": 5521049100415918610,
         "sha256": "197e5d475f356f26d6b0568fd912322a4f628039bad2996b46335013db16c9ba"
       },
       "previous_visual_hold": {
@@ -3919,7 +3919,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -3935,7 +3935,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 7042297594706421000,
+        "seed": 7042297594706420741,
         "sha256": "35680ba342b1b73c4380ea6bc002ad673708cdda15e819eccea70ff56a602048"
       },
       "previous_generation_commit": "8d69dcfafc748396b35c046108056c59e955adec",
@@ -3986,14 +3986,6 @@
             "hash": {
               "0": 107,
               "1": 112,
-              "2": 34,
-              "3": 103,
-              "4": 85,
-              "5": 241,
-              "6": 61,
-              "7": 20,
-              "8": 194,
-              "9": 10,
               "10": 85,
               "11": 51,
               "12": 33,
@@ -4004,6 +3996,7 @@
               "17": 171,
               "18": 238,
               "19": 69,
+              "2": 34,
               "20": 36,
               "21": 191,
               "22": 29,
@@ -4014,8 +4007,15 @@
               "27": 34,
               "28": 105,
               "29": 207,
+              "3": 103,
               "30": 250,
-              "31": 39
+              "31": 39,
+              "4": 85,
+              "5": 241,
+              "6": 61,
+              "7": 20,
+              "8": 194,
+              "9": 10
             },
             "url": "self#jumbf=c2pa.assertions/c2pa.icon"
           },
@@ -4068,7 +4068,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -4084,7 +4084,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5845673371714610000,
+        "seed": 5845673371714609870,
         "sha256": "37ae3434ff71fff41989a0b765617aafde13187c255db3feb12ea5d29746026a"
       },
       "previous_visual_hold": {
@@ -4115,7 +4115,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -4131,7 +4131,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 4960393032722692000,
+        "seed": 4960393032722692443,
         "sha256": "621940bb176148cd07ebfc2622ac8f8c7dac684475fb25f81611da32fd0351a9"
       },
       "previous_visual_hold": {
@@ -4160,7 +4160,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -4176,7 +4176,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 988026283110834200,
+        "seed": 988026283110834166,
         "sha256": "43e53c2879062cebb2271d140f3b483b91bb09e65ebdc08e49c16be815cffa7d"
       },
       "previous_visual_hold": {
@@ -4320,7 +4320,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 6861070434247018000,
+        "seed": 6861070434247018276,
         "sha256": "ab61169ad92d5c0375df25ce919b51b2d434f8cf92640ab377dab80b101344d3"
       },
       "previous_visual_hold": {
@@ -4348,7 +4348,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3443340707540982000,
+      "seed": 3443340707540981827,
       "sha256": "7541f5bbd51c749b1f89f58151fa45c82843a6c6d0d0a25268c55c79c40ce3bc"
     },
     "indoor-beach-friends-exchange-ripples": {
@@ -4528,7 +4528,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -4544,7 +4544,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 5138589272692608000,
+          "seed": 5138589272692608039,
           "sha256": "1f155f363f42fe4e6806413b66ad98279b321ae9cc05481f80bf7e18eaeb4224"
         },
         "previous_generation_commit": "6d7261f031aa76685c56639cfe3c4ff26521a0a8",
@@ -4765,7 +4765,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 6500820507977046000,
+      "seed": 6500820507977045750,
       "sha256": "d751bae85ec675150e3b8b7a2eb07a1e00193322a7c1cc14663ace752977a40b"
     },
     "matchmaking-ai-bios-same-hobbies-handwritten-line": {
@@ -4955,7 +4955,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 979487124694735900,
+        "seed": 979487124694735815,
         "sha256": "d3ad8b894a2d26758656c9349cc6a4c7492983e2b39e267fa03f8534b4b1feaf"
       },
       "previous_visual_hold": {
@@ -4974,7 +4974,7 @@
         "trial_renderer": "CairoSVG",
         "trial_renderer_version": "2.7.1",
         "trial_scene_prompt": "An open worn notebook on a wooden desk has a ragged hole rubbed through its right page, exposing the next sheet, beside a pink eraser and gray crumbs, with no legible writing.",
-        "trial_seed": 979487124694735900,
+        "trial_seed": 979487124694735815,
         "trial_strength": 0.65
       },
       "prompt_version": 3,
@@ -4989,7 +4989,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 7373647264621116000,
+      "seed": 7373647264621116198,
       "sha256": "76d2f68e0804c58ebf17c14a086f0ade278bcb6de77c751aaf8babbfe522ae89"
     },
     "mountain-road-transplants-meadow-topsoil-blocks": {
@@ -5204,7 +5204,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5220,7 +5220,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 597515152728705400,
+          "seed": 597515152728705382,
           "sha256": "19292c0169ce29a6506da550ee4855a087bfc1fdefe8429a86cab0bb57387c0f"
         },
         "previous_visual_hold": {
@@ -5253,7 +5253,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 2650339348663260700,
+      "seed": 2650339348663260751,
       "sha256": "3fb7646f6a48be1f54ebd167484f4984522626a1d24f03bdee58ed94115a3662"
     },
     "music-show-surprise-face-rehearsal": {
@@ -5271,7 +5271,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 4671421502652191000,
+        "seed": 4671421502652190209,
         "sha256": "208ab5829aabf2ea521efd074af697c52d417cf9dd8dd7863fdf0ff622d7c7a4"
       },
       "previous_visual_hold": {
@@ -5351,7 +5351,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5367,7 +5367,7 @@
         "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "trial_origin": "github-cpu-sd15",
         "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
-        "trial_seed": 8233372666452194000
+        "trial_seed": 8233372666452194521
       },
       "previous_visual_review": {
         "article_sha256": "f81ebe749156d93a45474c7261fb1a95b4d63f605af536824580328ef1e53d45",
@@ -5399,7 +5399,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5415,7 +5415,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5853481159461938000,
+        "seed": 5853481159461937668,
         "sha256": "b315803d517c2c99543bec3e1e6867679e612ca68438086a2dd3cb5dd39902b6"
       },
       "previous_visual_hold": {
@@ -5467,7 +5467,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5483,7 +5483,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 2299536992374349600,
+          "seed": 2299536992374349509,
           "sha256": "cca21d1a2d07185284ef8b892a3539d90108fb7a374e2ca0a6152c5259f24e8f"
         },
         "previous_visual_hold": {
@@ -5525,7 +5525,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 8296084341754018000,
+        "seed": 8296084341754018138,
         "sha256": "e92a4c5697a10e6cbd7fc01a4542f3501c7ebe27579e847183eb11d722d2fccb"
       },
       "previous_visual_hold": {
@@ -5719,7 +5719,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5735,7 +5735,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 7970335749920712000,
+        "seed": 7970335749920712089,
         "sha256": "41c97366ef687739c76d24605ffc86638e7dc1b774bf21ebcdf7a6c5deda044c"
       },
       "previous_visual_hold": {
@@ -5765,7 +5765,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 4713491567798505000,
+        "seed": 4713491567798505932,
         "sha256": "af7f78ffa4c488f85f05642f6b80ca21b9c41d76e9c776bab12b4162af7f3c68"
       },
       "previous_visual_hold": {
@@ -5815,7 +5815,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5831,7 +5831,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 6206961962515114000,
+        "seed": 6206961962515114222,
         "sha256": "ca38a62a240837444213ea6d8a50fa643aeda9b019bbe7edacecd7798ba77f30"
       },
       "previous_visual_hold": {
@@ -5870,7 +5870,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 7680700911801401000,
+        "seed": 7680700911801401316,
         "sha256": "b7d1c78a1fc13cf819d77c307d1bc2ef77771ed9f859ffcd9502b6a0bd67148a"
       },
       "previous_visual_hold": {
@@ -5890,7 +5890,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 3262525616120616000,
+      "seed": 3262525616120615859,
       "sha256": "33a3a152f32bc409015f6ed7a1743c365f5a3a01ede214c4fe755d9263211d70"
     },
     "quiet-reply-dating-matches": {
@@ -5915,7 +5915,7 @@
           "source_sha256": "165651f03aa5585da7b4ff24a1df2bb0305d7557d859f85ac4a2c438ef9cece2"
         },
         "prompt_version": 2,
-        "seed": 6903667958466385000,
+        "seed": 6903667958466384986,
         "sha256": "1b18a7968ef49857275960603e43408c52dbe01a28c7ee90a640e965d635d658"
       },
       "previous_visual_hold": {
@@ -5970,7 +5970,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -5986,7 +5986,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 3748272256141771000,
+        "seed": 3748272256141770558,
         "sha256": "c97b2ecc7bb2739c0a66e65a9b99789f32bb21dee1221e36a9dec650b5143c93"
       },
       "previous_visual_hold": {
@@ -6034,7 +6034,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -6050,7 +6050,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 3074401136884208600,
+        "seed": 3074401136884208640,
         "sha256": "61131ad3da7695a9b4cecf9bbdac2ced4246c22c9eae3dd92f2f2256b24d56ef"
       },
       "previous_generation_history_path": "maintenance/native-image-candidates/recycling-robot-reserves-washer-parts-before-dismantling/previous-generation.json",
@@ -6267,7 +6267,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 1848290859289303600,
+      "seed": 1848290859289303548,
       "sha256": "e8b4f13290e6611091c9baa1f933451540aa97e361d60b301341449995e3a49f"
     },
     "rest-day-concert-sells-out-without-performers": {
@@ -6286,7 +6286,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -6302,7 +6302,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5803462125139794000,
+        "seed": 5803462125139793866,
         "sha256": "af9037a4f4aefad3730359ed1550785de8012761e41829a3961da40b8b3e2ee0"
       },
       "previous_visual_hold": {
@@ -6341,7 +6341,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -6357,7 +6357,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5318895560765378000,
+        "seed": 5318895560765377914,
         "sha256": "8390dd49a48689c75b18c59f0ee41b24c86aa95995c8e6a963465ef0bd8c3308"
       },
       "previous_visual_hold": {
@@ -6398,7 +6398,7 @@
         "model": "sd_xl_base_1.0.safetensors",
         "origin": "local-comfyui",
         "prompt_version": 2,
-        "seed": 1615501253303700000,
+        "seed": 1615501253303699901,
         "sha256": "1a7608acf36cee42cb902b7d6ad01312b35e159937e83c8595daad1f29d92279"
       },
       "previous_visual_hold": {
@@ -6426,7 +6426,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 4846405115373741000,
+        "seed": 4846405115373740905,
         "sha256": "326cf7b681096098f6a39468a7030048582215942d7d760e82ba1043520d92da"
       },
       "previous_visual_hold": {
@@ -6460,7 +6460,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -6476,7 +6476,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 3600110353471735000,
+        "seed": 3600110353471734779,
         "sha256": "0cea92470dfbc73b22d1684d587fe72ba5aa74e83aa0438afa6d9e5dce1ebce1"
       },
       "prompt_version": 3,
@@ -6896,7 +6896,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -6912,7 +6912,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5079191888188598000,
+        "seed": 5079191888188597768,
         "sha256": "5beded992ba45cde3dcba271ace5e98b7feba279c8676971753fba80bb1bb56b"
       },
       "previous_visual_hold": {
@@ -6942,7 +6942,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 227822134817257200,
+        "seed": 227822134817257212,
         "sha256": "1a40c2772630a1f6284510075a9cbe22892248bfca654eb98fc5343941b0213f"
       },
       "previous_visual_hold": {
@@ -6989,7 +6989,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7005,7 +7005,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 7956126009343852000,
+        "seed": 7956126009343851850,
         "sha256": "bbce7a9c18b7980927217fb1f6cd707a06ecd04897d75a8674c96da3e2197f76"
       },
       "previous_generation_history_path": "maintenance/native-image-candidates/seven-venues-compose-one-live-song/previous-generation.json",
@@ -7193,7 +7193,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 537466078184489000,
+        "seed": 537466078184489001,
         "sha256": "ccfabef625e6b140386b757e759d8ea4d18214299b5ed4ce6b56fdb4fbbc3804"
       },
       "previous_visual_hold": {
@@ -7269,7 +7269,7 @@
             "algorithm_type": "dpmsolver++",
             "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
             "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-            "guidance_scale": 7,
+            "guidance_scale": 7.0,
             "height": 448,
             "num_inference_steps": 24,
             "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7285,7 +7285,7 @@
           "model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "origin": "github-cpu-sd15",
           "prompt_version": 3,
-          "seed": 1267369671102777000,
+          "seed": 1267369671102777172,
           "sha256": "735f7274d462de94195ce7f742d66add97d0b64931342952384b9c902d6b458f"
         },
         "previous_generation_commit": "2e4c0b949dcb8379ba6503d3aba31495dc57694c",
@@ -7331,7 +7331,7 @@
         "inference": {
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 2,
+          "guidance_scale": 2.0,
           "height": 448,
           "lora_model": "latent-consistency/lcm-lora-sdv1-5",
           "lora_revision": "cf2fced511dbe7e26c8d1d397e728fbab875db4b",
@@ -7346,7 +7346,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 1235078978855229400,
+        "seed": 1235078978855229347,
         "sha256": "9b300d7d0aa56356517ada7970ce69eabdb4d6cbbdc4f973362563699e1910df"
       },
       "previous_visual_hold": {
@@ -7375,7 +7375,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 2154012484535384000,
+        "seed": 2154012484535384189,
         "sha256": "96c96efc21ba86cbc0d43ef57e732720ec9f2dae7af03408640a6fb4ae2cfa34"
       },
       "previous_visual_hold": {
@@ -7391,7 +7391,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7407,7 +7407,7 @@
         "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "trial_origin": "github-cpu-sd15",
         "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
-        "trial_seed": 2154012484535384000
+        "trial_seed": 2154012484535384189
       },
       "previous_visual_review": {
         "article_sha256": "ce6e7633ecc084347202545af91752fbcc6b8d49d6b1e81c891062da498e532c",
@@ -7440,7 +7440,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7456,7 +7456,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 2948495426724873700,
+        "seed": 2948495426724873814,
         "sha256": "30446d85a5dd97db5b3e9c0160a0134b231d1940f05b23e6f9c62546a9313838"
       },
       "previous_generation_commit": "ad6a5aabbe92503f24f67e937100af1bc03ff918",
@@ -7623,7 +7623,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 6871038269748099000,
+        "seed": 6871038269748098871,
         "sha256": "941d1e30ba418b6fdcb02d00cff6a411ce98e560472f5e43b3fa38cd7c3c3e4f"
       },
       "previous_visual_hold": {
@@ -7660,7 +7660,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 2,
-        "seed": 264982437597800580,
+        "seed": 264982437597800576,
         "sha256": "b4c207e86e77398628d79c57f3bf494573b740905417f5e0ad2244b4e10ce615"
       },
       "previous_visual_hold": {
@@ -7724,7 +7724,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7740,7 +7740,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 7137450690473937000,
+        "seed": 7137450690473937251,
         "sha256": "2f62bf787fccec8e4cf6932f33a4f27abe7b5c4ba6e4c6f7c816eddb28f13957"
       },
       "previous_generation_commit": "efb7507c7cedb6a31ed4441ad5f1749c626cbbce",
@@ -7784,7 +7784,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 5748070834390825000,
+      "seed": 5748070834390824869,
       "sha256": "ab15fc571a82bf23d0e2bffc4ee3a06326d72e3ef546359c229d7ddd0d4de350"
     },
     "surprise-birthday-organized-by-guest-of-honor": {
@@ -7802,7 +7802,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 8117721195727882000,
+        "seed": 8117721195727882487,
         "sha256": "dd61f99b914b9070e32fb22ec95a6f61f35efd26794d3492588786c7a780af8a"
       },
       "previous_visual_hold": {
@@ -7834,7 +7834,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -7850,7 +7850,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 2361868401886374000,
+        "seed": 2361868401886373721,
         "sha256": "f3e4a14df7c40172c492a44a123fa44be5bdeb5249ded636e2b746a2cb0f8011"
       },
       "previous_generation_history_path": "maintenance/native-image-candidates/swapped-suitcases-drive-themselves-to-lost-property/previous-generation.json",
@@ -8040,7 +8040,7 @@
           "source_sha256": "d347b38796fe853c70f5df337a0d0458cea3021b3893ce3526511dff9b12aa0b"
         },
         "prompt_version": 2,
-        "seed": 6902181079209608000,
+        "seed": 6902181079209608273,
         "sha256": "28da5df19a24108a6f10d0a5302508b75b015e3cef7400eb221e5e4f442857d8"
       },
       "previous_visual_hold": {
@@ -8258,7 +8258,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -8274,7 +8274,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 1446064839368196600,
+        "seed": 1446064839368196720,
         "sha256": "8f1dc26cbd77718e8a98398fbb0de959584357e76da0a9920b6218c3ee240d8e"
       },
       "previous_generation_commit": "35d456603ff9682fc7a43968d785bdf25dd56933",
@@ -8434,7 +8434,7 @@
         "model": "SimianLuo/LCM_Dreamshaper_v7",
         "origin": "github-cpu-lcm",
         "prompt_version": 3,
-        "seed": 8156222012987852000,
+        "seed": 8156222012987851626,
         "sha256": "986494e6ca72a0dd0fa2c2f60df942053df5a9e6343b67149c27ceca2196dbd8"
       },
       "previous_visual_hold": {
@@ -8650,7 +8650,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -8666,7 +8666,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 5261942944382347000,
+        "seed": 5261942944382346836,
         "sha256": "fa84df797a01508c6dd865851a4af8f240dcf8a5c3a8753e2d16536e34211b4f"
       },
       "previous_generation_commit": "431169122c55fd51488976fd76b6d7e66899e68b",
@@ -8826,7 +8826,7 @@
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7,
+        "guidance_scale": 7.0,
         "height": 448,
         "num_inference_steps": 24,
         "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -8842,7 +8842,7 @@
       "model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "origin": "github-cpu-sd15",
       "prompt_version": 3,
-      "seed": 8151497094600702000,
+      "seed": 8151497094600701685,
       "sha256": "896c6fd6f728d00a86ed0f8451bc5b969c94b5ba4768eb7ddb93e1ff049fd5b3"
     },
     "unsolvable-ai-puzzle-cup-zero-pieces-wins": {
@@ -8853,7 +8853,7 @@
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7,
+        "guidance_scale": 7.0,
         "height": 448,
         "num_inference_steps": 24,
         "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -8869,7 +8869,7 @@
       "model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "origin": "github-cpu-sd15",
       "prompt_version": 3,
-      "seed": 1983948943341056800,
+      "seed": 1983948943341056731,
       "sha256": "98a77416fc5348b99085c01b469094b99fb5e3016042708f2b2594a9a7704086"
     },
     "unwanted-call-protection-calls-back": {
@@ -8879,7 +8879,7 @@
       "model": "sd_xl_base_1.0.safetensors",
       "origin": "local-comfyui",
       "prompt_version": 2,
-      "seed": 877056317251028000,
+      "seed": 877056317251028032,
       "sha256": "a3ed75602d5ccc73f122848bc018cc4cd8cec779efc51581786b7450d8fc7e5c"
     },
     "variety-700-guests-only-introductions": {
@@ -8899,7 +8899,7 @@
         "prompt_version": 2,
         "review_note": "Manually rechecked against concurrent editorial wording changes; depicted premise unchanged.",
         "reviewed_at": "2026-11-03T03:59:18.579648+00:00",
-        "seed": 2479731755469379000,
+        "seed": 2479731755469378830,
         "sha256": "df705576c82e499237dea46eb9b750bf0b195cf148a6f01e782d9128b3a5f868"
       },
       "previous_visual_hold": {
@@ -8919,7 +8919,7 @@
       "model": "SimianLuo/LCM_Dreamshaper_v7",
       "origin": "github-cpu-lcm",
       "prompt_version": 2,
-      "seed": 2586442448911147500,
+      "seed": 2586442448911147407,
       "sha256": "a0ee019ccc168cc2ab5fe625f3ce0eb1adeb5e1f417e2c114e476f84acce1b09"
     },
     "volunteer-award-ceremony-visits-community-kitchen": {
@@ -8946,7 +8946,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -8962,7 +8962,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 1268806400882745300,
+        "seed": 1268806400882745347,
         "sha256": "b5d99c64adefe57e3c8e390c517f5da50c3891c4b4ae518eb48533532c6b4e12"
       },
       "previous_rejection": {
@@ -9023,7 +9023,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9039,7 +9039,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 8188002557133168000,
+        "seed": 8188002557133167108,
         "sha256": "07902de29bb4cab6a68b277a5f10612b63c669bbcd8d550dec6ece682bff5150"
       },
       "previous_generation_history_path": "maintenance/native-image-candidates/water-main-repair-priority-dry-street-first/previous-generation.json",
@@ -9226,7 +9226,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9242,7 +9242,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 9069564902420559000,
+        "seed": 9069564902420558916,
         "sha256": "155738e94bfc27b80cb47798a035b8b4a3733c60cf614b5792e54d89f72e3a2e"
       },
       "previous_generation_commit": "0c5359759f423ea714ed5061d940bc8fe9146ef6",
@@ -9294,7 +9294,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9310,7 +9310,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 2437934260822884400,
+        "seed": 2437934260822884134,
         "sha256": "17cd689647ac1eaaa6aef3cbf716bec35469b29fbbee083f92fe956ffb66a7e5"
       },
       "previous_visual_hold": {
@@ -9327,7 +9327,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9343,177 +9343,178 @@
         "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "trial_origin": "github-cpu-sd15",
         "trial_scene_prompt": "A resident in everyday clothes pushes a low flat metal platform trolley carrying a large taped brown cardboard shipping carton through an apartment entrance. Daylight, unposed news photograph.",
-        "trial_seed": 2437934260822884400
+        "trial_seed": 2437934260822884134
       },
       "prompt_version": 3,
       "sha256": "6736978d167173ebf8c6c702c4cc917473ba93052a616b61137962e7a8393688",
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
-    },
-    "food-donation-cold-record-one-box-rejected": {
-      "article_sha256": "8242dd6f3d18dbb539f9464c4ec24a7580eb00fff4846cfb53c3ec2dc0d7f48e",
-      "bytes": 162433,
-      "generated_at": "2026-11-17T23:47:52.618347990Z",
-      "generation_id": "90ece6c8-4ea5-4113-a5e9-3a9bea561004",
-      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
-      "generation_prompt": "Photorealistic documentary Japanese community kitchen on a cool November morning in 2031. A fictional 57-year-old adult Japanese cook in a practical apron sets one sealed box of packaged tofu aside while checking a small temperature-log handheld device; several other unopened tofu packages and fresh daikon radishes are on the stainless work counter, another adult kitchen worker preparing a tray nearby. Natural window light, understated genuine newsroom photography, realistic skin, fabric and food textures, no legible words, no brand, no logo, no real persons, horizontal 16:9.",
-      "generation_prompt_source": "Exact unchanged article scene_prompt and reserved plan; backend-expanded prompt and vendor job ID not exposed.",
-      "generation_receipt": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
-      "model": "ChatGPT ImageGen",
-      "origin": "chatgpt-imagegen",
-      "prompt_version": 3,
-      "sha256": "2dc53c7aadf63f263ae45171c80f2cd752c09993dc8dc66b408cafa7f3df510a",
-      "source_c2pa": {
-        "manifest_uri": "urn:c2pa:f44da053-a2de-4e98-957f-9cf16ce97b02",
-        "instanceID": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
-        "claim_generator": null,
-        "claim_generator_info": {
-          "name": "OpenAI Media Service API",
-          "icon": {
-            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
-            "hash": [
-              80,
-              173,
-              120,
-              222,
-              240,
-              171,
-              157,
-              124,
-              28,
-              23,
-              52,
-              194,
-              141,
-              51,
-              115,
-              152,
-              60,
-              173,
-              248,
-              157,
-              19,
-              189,
-              61,
-              193,
-              101,
-              201,
-              7,
-              51,
-              56,
-              197,
-              93,
-              214
-            ]
-          },
-          "org.contentauth.c2pa_rs": "0.79.2",
-          "specVersion": "2.2.0"
-        },
-        "actions": [
-          {
-            "label": "c2pa.actions.v2",
-            "value": {
-              "actions": [
-                {
-                  "action": "c2pa.created",
-                  "when": "2026-11-17T23:47:52.618347990Z",
-                  "softwareAgent": {
-                    "name": "ChatGPT",
-                    "version": "gpt-image"
-                  },
-                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
-                },
-                {
-                  "action": "c2pa.converted",
-                  "when": "2026-11-17T23:47:52.618350864Z"
-                },
-                {
-                  "action": "c2pa.watermarked.unbound",
-                  "when": "2026-11-17T23:47:52.616130586Z"
-                }
-              ],
-              "allActionsIncluded": false
-            }
-          }
-        ],
-        "signature_validation": "not_performed",
-        "content_binding_validation": "not_performed"
-      },
-      "source_capture": {
-        "kind": "native_tool_result",
-        "method": "One compact v2 preflight, a fixed create-only claim, one top-level Native ImageGen generation and verified original PNG/JPEG candidate readback.",
-        "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
-        "actual_output_hint": "/mnt/data/a_realistic_indoor_kitchen_food_prep_scene_a_ja.png",
-        "bytes": 2354647,
-        "width": 1672,
-        "height": 941,
-        "caBX_sha256": "908529573ad1e4da63068b3b407dc5656d2a4865f75497b5807af184710dd7ff",
-        "candidate_branch": "native-image-candidate/food-donation-cold-record-one-box-rejected/8242dd6f3d18dbb5-c811a1025fb9",
-        "candidate_commit": "6ec534eccf84a16c751d3fe35ef603561a9f09b7",
-        "receipt_path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/receipt.json",
-        "receipt_sha256": "37d4f09e7e95255b237c7ed3663f2dc5a9926045f7804f3f03672d9899b4f9c3",
-        "original_png_parts": [
-          {
-            "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part000",
-            "bytes": 524288,
-            "sha256": "781a673dbcb763ecc1482bb34667306e6fc0433941a597a85e1f69aafefd22bf",
-            "blob_sha": "f0ec4bf990a41dc9c4c50b484bc18bea82facc7d"
-          },
-          {
-            "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part001",
-            "bytes": 524288,
-            "sha256": "6d9b83a891c885a75ec44a2d03fecd23f4f5f44d5e4cd85d5fdf049bc7e543ab",
-            "blob_sha": "0dbd0353409009c23d011a0d16da09c3cfecb4f6"
-          },
-          {
-            "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part002",
-            "bytes": 524288,
-            "sha256": "15d21facbfdac58c6ea336bb2618b6503c1c0c54a0767e01de9a40e1c705a9b9",
-            "blob_sha": "cbd1f4a6fc6e8157a41441922bb6e9e0dde44971"
-          },
-          {
-            "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part003",
-            "bytes": 524288,
-            "sha256": "dce32178160f8f0d08dc6edee676291e595fb39c82ace15057cb73774bbb34f4",
-            "blob_sha": "89e67ce0eb7d3f5f0f3a019ff89fc885556b291e"
-          },
-          {
-            "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part004",
-            "bytes": 257495,
-            "sha256": "afaa7ffd38d9309e8b8d8320ebe0b62dd45c3dd7a143e82fcd9e59017921cd34",
-            "blob_sha": "e0ebc376aa80c286da5d2aafbbcc47034f21a622"
-          }
-        ],
-        "transport_preflight": {
-          "kind": "native_image_transport_preflight",
-          "status": "passed",
-          "branch": "native-image-preflight/transport",
-          "receipt_path": "maintenance/native-image-preflight/receipt.json",
-          "receipt_sha256": "2956c6aaa1dc4f7896d89981740c4bf1ea85a50cd25e6eed025341d98d2b03d0",
-          "observed_at": "2026-11-17T23:40:04.174Z",
-          "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
-          "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
-          "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
-          "commit_sha": "5b4d44e01a8245443e1c528d16bfdcb6773245d2"
-        },
-        "generation_claim": {
-          "kind": "native_image_generation_claim",
-          "status": "reserved_generation_unconfirmed",
-          "branch": "native-image-generation-claim/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
-          "receipt_path": "maintenance/native-image-generation-claims/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db.json",
-          "receipt_sha256": "f172a4c11dad89ee49102425942ff6e748e268b14b75fb30ec8830472cd9b5e1",
-          "commit_sha": "60dcac89b768c6053cfcbed08ec27821aae4edfc"
-        }
-      },
-      "source_png_sha256": "bb2cbc8770f66f3579f04976f8352e2be698293a33746139d235558d5ddc90dd",
-      "transform": {
-        "width": 1200,
-        "height": 675,
-        "quality": 84,
-        "resize": "center-cover bilinear, alpha composited on white",
-        "script": "scripts/native_image_bytes.js"
-      }
     }
+  ,
+    "food-donation-cold-record-one-box-rejected": {
+  "article_sha256": "8242dd6f3d18dbb539f9464c4ec24a7580eb00fff4846cfb53c3ec2dc0d7f48e",
+  "bytes": 162433,
+  "generated_at": "2026-11-17T23:47:52.618347990Z",
+  "generation_id": "90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_prompt": "Photorealistic documentary Japanese community kitchen on a cool November morning in 2031. A fictional 57-year-old adult Japanese cook in a practical apron sets one sealed box of packaged tofu aside while checking a small temperature-log handheld device; several other unopened tofu packages and fresh daikon radishes are on the stainless work counter, another adult kitchen worker preparing a tray nearby. Natural window light, understated genuine newsroom photography, realistic skin, fabric and food textures, no legible words, no brand, no logo, no real persons, horizontal 16:9.",
+  "generation_prompt_source": "Exact unchanged article scene_prompt and reserved plan; backend-expanded prompt and vendor job ID not exposed.",
+  "generation_receipt": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "2dc53c7aadf63f263ae45171c80f2cd752c09993dc8dc66b408cafa7f3df510a",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:f44da053-a2de-4e98-957f-9cf16ce97b02",
+    "instanceID": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          80,
+          173,
+          120,
+          222,
+          240,
+          171,
+          157,
+          124,
+          28,
+          23,
+          52,
+          194,
+          141,
+          51,
+          115,
+          152,
+          60,
+          173,
+          248,
+          157,
+          19,
+          189,
+          61,
+          193,
+          101,
+          201,
+          7,
+          51,
+          56,
+          197,
+          93,
+          214
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-17T23:47:52.618347990Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-17T23:47:52.618350864Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-17T23:47:52.616130586Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "One compact v2 preflight, a fixed create-only claim, one top-level Native ImageGen generation and verified original PNG/JPEG candidate readback.",
+    "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
+    "actual_output_hint": "/mnt/data/a_realistic_indoor_kitchen_food_prep_scene_a_ja.png",
+    "bytes": 2354647,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "908529573ad1e4da63068b3b407dc5656d2a4865f75497b5807af184710dd7ff",
+    "candidate_branch": "native-image-candidate/food-donation-cold-record-one-box-rejected/8242dd6f3d18dbb5-c811a1025fb9",
+    "candidate_commit": "6ec534eccf84a16c751d3fe35ef603561a9f09b7",
+    "receipt_path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/receipt.json",
+    "receipt_sha256": "37d4f09e7e95255b237c7ed3663f2dc5a9926045f7804f3f03672d9899b4f9c3",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part000",
+        "bytes": 524288,
+        "sha256": "781a673dbcb763ecc1482bb34667306e6fc0433941a597a85e1f69aafefd22bf",
+        "blob_sha": "f0ec4bf990a41dc9c4c50b484bc18bea82facc7d"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part001",
+        "bytes": 524288,
+        "sha256": "6d9b83a891c885a75ec44a2d03fecd23f4f5f44d5e4cd85d5fdf049bc7e543ab",
+        "blob_sha": "0dbd0353409009c23d011a0d16da09c3cfecb4f6"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part002",
+        "bytes": 524288,
+        "sha256": "15d21facbfdac58c6ea336bb2618b6503c1c0c54a0767e01de9a40e1c705a9b9",
+        "blob_sha": "cbd1f4a6fc6e8157a41441922bb6e9e0dde44971"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part003",
+        "bytes": 524288,
+        "sha256": "dce32178160f8f0d08dc6edee676291e595fb39c82ace15057cb73774bbb34f4",
+        "blob_sha": "89e67ce0eb7d3f5f0f3a019ff89fc885556b291e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part004",
+        "bytes": 257495,
+        "sha256": "afaa7ffd38d9309e8b8d8320ebe0b62dd45c3dd7a143e82fcd9e59017921cd34",
+        "blob_sha": "e0ebc376aa80c286da5d2aafbbcc47034f21a622"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "2956c6aaa1dc4f7896d89981740c4bf1ea85a50cd25e6eed025341d98d2b03d0",
+      "observed_at": "2026-11-17T23:40:04.174Z",
+      "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "5b4d44e01a8245443e1c528d16bfdcb6773245d2"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
+      "receipt_path": "maintenance/native-image-generation-claims/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db.json",
+      "receipt_sha256": "f172a4c11dad89ee49102425942ff6e748e268b14b75fb30ec8830472cd9b5e1",
+      "commit_sha": "60dcac89b768c6053cfcbed08ec27821aae4edfc"
+    }
+  },
+  "source_png_sha256": "bb2cbc8770f66f3579f04976f8352e2be698293a33746139d235558d5ddc90dd",
+  "transform": {
+    "width": 1200,
+    "height": 675,
+    "quality": 84,
+    "resize": "center-cover bilinear, alpha composited on white",
+    "script": "scripts/native_image_bytes.js"
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
@@ -9528,7 +9529,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9544,7 +9545,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 937335361030604000,
+        "seed": 937335361030604073,
         "sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd"
       },
       "image_sha256": "51acf0ff3def0068659f41d1f6e986554d7f57252632086d9ecbb807ec6c9cbd",
@@ -9573,7 +9574,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9589,7 +9590,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 4016510582796096000,
+        "seed": 4016510582796096107,
         "sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e"
       },
       "image_sha256": "bc0ac9775cd59e537dcf220a74f5215ac02f5c8bb440830748f4b57d69fbe48e",
@@ -9613,7 +9614,7 @@
           "algorithm_type": "dpmsolver++",
           "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
           "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-          "guidance_scale": 7,
+          "guidance_scale": 7.0,
           "height": 448,
           "num_inference_steps": 24,
           "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9629,7 +9630,7 @@
         "model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "origin": "github-cpu-sd15",
         "prompt_version": 3,
-        "seed": 3036210705938676700,
+        "seed": 3036210705938676899,
         "sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce"
       },
       "image_sha256": "cf87ff3346320d5277e3bba4c5aaf053d0949af83f2e0e6fc3fc50f49b13f5ce",
@@ -9661,7 +9662,7 @@
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7,
+        "guidance_scale": 7.0,
         "height": 448,
         "num_inference_steps": 24,
         "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9677,7 +9678,7 @@
       "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "A Japanese viewer looks down at a smartphone, ignoring a singer performing on the television behind them. The phone's plain back faces the camera, hiding its screen. Modest living room, ordinary evening lighting, no text or logos.",
-      "trial_seed": 8233372666452194000
+      "trial_seed": 8233372666452194521
     },
     "press-conference-metaphor-viral": {
       "article_sha256": "de33551939e0876ded9fc5b956e56d40f6dee15ab3973380233d3d8ef04ce917",
@@ -9730,7 +9731,7 @@
         "algorithm_type": "dpmsolver++",
         "base_model": "SG161222/Realistic_Vision_V5.1_noVAE",
         "base_revision": "1e9f017a7b1eaefb63a1900ea6c5953d2739fd21",
-        "guidance_scale": 7,
+        "guidance_scale": 7.0,
         "height": 448,
         "num_inference_steps": 24,
         "safety_model": "SimianLuo/LCM_Dreamshaper_v7",
@@ -9746,7 +9747,7 @@
       "trial_model": "SG161222/Realistic_Vision_V5.1_noVAE",
       "trial_origin": "github-cpu-sd15",
       "trial_scene_prompt": "One suited award recipient holds a small silver cup trophy in one hand while checking a smartphone in the other, against a blank community hall wall.",
-      "trial_seed": 2154012484535384000
+      "trial_seed": 2154012484535384189
     },
     "stock-rebound-confetti-still-in-red": {
       "article_sha256": "16de9c33c2d5b6edf36c60bd38d336527f7a7a7a462008f2a6ff50c174ed88a4",
