@@ -375,3 +375,35 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 
 
+
+
+<a id="photo-original-handoff"></a>
+### Existing weekly photo originals
+
+The producer can deliver existing PNGs from its own chat to the editor without a ZIP. Use the existing issue slug, producer chat URL, observed delivery turn and each source image's original ordinal and measured SHA-256. Retain the actual generation turn if known. Inspect the existing `photo-issue-plan/<issue>` branch first. Reuse any matching raw files, including older full-PNG, JPEG or binary-map handoffs. Never upload the same originals again to add a receipt in a new format.
+
+Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks, existing live cloud guard and actual file adapter. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time.
+
+```js
+const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
+const original = H.create({runtime, github, cloudStatus:stager.cloudStatus, readCandidatePng});
+// Per file, across cells. Start at 0. Each call writes one 512 KiB blob.
+// Pass the measured SHA and the same real file path on each continuation.
+const slice = await original.upload(file, measuredSha, start);
+const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal:originalOrdinal,
+  generation_turn:knownGenerationTurn || null};
+text({asset, next:slice.next}); // retain only this compact metadata
+```
+
+After all parts of each file have been collected (`next === null`), pass the completed assets in their source order. Record the branch lease only if continuing an existing same-issue handoff after confirming it contains no matching originals. Leave it null for a new branch. A competing or occupied destination is preserved.
+
+```js
+const packet = {issue, model_id, source_chat_url, delivery_turn, assets};
+const plan = await original.prepare(packet, existingCandidateHeadOrNull); // tree and commit
+const staged = await original.publish(packet, plan); // next cell, same packet and plan
+// One source per cell. This checks every saved part, full hash, PNG CRC and dimensions.
+const data = await original.readOriginal({issue, ...staged, source_sha256:asset.source_sha256});
+text({commit:staged.commit, receipt_sha256:staged.receipt_sha256, verified_original:asset.source_sha256, bytes:data.length});
+```
+
+A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginal` for a selected source; its return value contains the actual bytes. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, producer column and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
