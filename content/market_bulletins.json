@@ -1563,5 +1563,849 @@
         "checked_on": "2026-11-17"
       }
     ]
+  },
+  {
+    "slug": "2026-11-18-am",
+    "day": "2026-11-18",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-18T09:03:52+09:00",
+    "title": "18日朝：米株続落とNVIDIA増収決算、日本株は買い戻しが広がるか",
+    "summary": "米17日のS&P500は1.03%安、ダウは1.64%安。引け後のNVIDIA決算は売上高が前年同期比103%増。17日のTOPIX下落と18日寄り前の判断材料、住宅関連株の違いを確認します。",
+    "lead": "11月18日（水）の寄り付き前に確認した材料では、米国17日（現地）の通常取引で主要3指数がそろって下落しました。一方、米国17日の取引終了後に公表されたNVIDIAの四半期決算では売上高が前年同期の約2倍になりました。決算の数字は同日の米国通常終値にはまだ織り込まれていません。日本株の比較基準は17日大引けのTOPIX 3,840.02ポイントです。本稿の国内株価データは18日寄り付き前までの確認値で、寄り付き後の値動きは含めていません。半導体への期待の戻りが他業種へ広がるかを分けて見ます。",
+    "sections": [
+      {
+        "heading": "米国17日終値：半導体だけでなく市場全体が弱い",
+        "paragraphs": [
+          "米国11月17日（火）の通常取引終値（日本時間18日6時）は、S&P500が7,340.53ポイントで前営業日比1.03%安、ダウ工業株30種平均が50,759.42ポイントで1.64%安、ナスダック総合が24,328.38ポイントで0.74%安でした。AP通信によると、AI関連銘柄に加えて金融株にも売りが広がりました。半導体だけに限らない米国市場の弱さを踏まえる必要があります。",
+          "エヌビディア（NASDAQ:NVDA）の同日通常終値は155.46米ドル。16日の156.14米ドルから0.44%下落しました。この終値は決算発表より前の米国取引を表すもので、決算を受けた時間外取引や18日以降の通常取引の結果ではありません。発表後の気配だけで翌日の値動きまで確定したとは考えません。"
+        ]
+      },
+      {
+        "heading": "NVIDIAの売上倍増と次期見通し、利益率は別に見る",
+        "paragraphs": [
+          "NVIDIAが米国11月17日の取引終了後に発表した2027年度第3四半期（2026年10月25日終了）の売上高は1,158億米ドル。前年同期の570億米ドルから103%増え、データセンター売上高は1,076億米ドル（前年同期比110%増）でした。AI計算向け需要が売上に結び付いていることを示す実績で、単に投資計画が増えたという話とは異なります。",
+          "会社が示した次の第4四半期売上高見通しは1,300億米ドル±3%ですが、通常より1週多い会計期間を含み、中国向けデータセンター計算製品の売上は見込んでいません。売上の成長と株価の割安さは別の論点です。次の確認点は会社見通しの実現、粗利益率（第3四半期GAAP実績74.8%、第4四半期会社予想71～72%）、輸出規制の影響です。"
+        ]
+      },
+      {
+        "heading": "住宅関連の決算も確認、米国市場の弱さを一括りにしない",
+        "paragraphs": [
+          "米住宅用品大手ホーム・デポ（NYSE:HD）が17日に公表した2026年度第3四半期売上高は434億米ドルで前年同期比4.9%増、既存店売上高は2.2%増でした。会社は2026年度の全社売上高の成長率見通しを約4.5%と示しています。NVIDIAの高い伸び率と同じ成長率で比較できる事業ではなく、住宅修繕需要や利益率が別の判断材料です。",
+          "今回、ホーム・デポの17日の確定終値を同一配信元の前日終値と照合できていないため、個別株の株価カードには載せません。売上増だけを理由に同社株が買われたとは断定しません。米国の株式市場全体が軟調でも、業績の材料は銘柄ごとに確認する必要があります。"
+        ]
+      },
+      {
+        "heading": "日本は17日終値が基準。18日の反応と19日までの予想",
+        "paragraphs": [
+          "JPXの11月17日16時59分JST更新の指数データで、同日15時30分大引けのTOPIXは3,840.02ポイント、16日終値3,901.37から1.57%安でした。日経平均も17日大引けで58,860.43円、801.59円安でした。これらは17日の確定値であり、18日朝の騰落率ではありません。寄り後は半導体株の反応だけでなく、17日に下げた銀行・資源株や上昇したサービス株への売買の広がりも確認します。",
+          "新たな短期見通しは『19日のTOPIX公式終値が17日の3,840.02ポイントから0.5%超上昇』です。NVIDIAの増収・次期見通しを材料とする買い戻しを想定しますが、17日米国市場は広範囲に下落しており、買いが一部半導体関連だけに偏れば予想は崩れます。別に、17日朝に公表した18日判定の下落予想は16日終値3,901.37基準のまま変更せず、18日引けのJPX公式値が出るまで判定しません。16日朝に出した17日横ばい予想は、公式終値3,840.02が固定基準3,941.57から約2.58%安だったため外れと確認しました。確定成績は0勝2敗です。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "sp500-nov17",
+        "kind": "bars",
+        "title": "S&P500：米国16日と17日の終値",
+        "note": "APが公表した米国現地11/17通常取引終値と、前営業日11/16終値。11/18の米国取引や時間外値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-ff6caef4d9289cf7f1e6ee48a706eddc",
+        "observed_at": "2026-11-18T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/16",
+            "value": 7416.59,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/17",
+            "value": 7340.53,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nvda-revenue-q3",
+        "kind": "bars",
+        "title": "NVIDIA：第3四半期売上高が前年同期比103%増",
+        "note": "NVIDIAが11/17に公表した2027年度Q3売上高1,158億米ドルと2026年度Q3の570億米ドル。実績同士、米ドル建て。",
+        "unit": "十億米ドル",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "observed_at": "2026-11-18T08:30:00+09:00",
+        "values": [
+          {
+            "label": "前年同期",
+            "value": 57,
+            "state": "実績"
+          },
+          {
+            "label": "今回Q3",
+            "value": 115.8,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-nov17-close",
+        "kind": "bars",
+        "title": "TOPIX：16日と17日の国内終値",
+        "note": "JPXの2026/11/17 16:59 JST更新ファイルで確認した15:30大引け値。18日寄り前の最新確定値で、当日途中値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T16:59:00+09:00",
+        "values": [
+          {
+            "label": "11/16終値",
+            "value": 3901.37,
+            "state": "実績"
+          },
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "米国市場は広く下落",
+        "signal": "逆風",
+        "meaning": "米国17日のS&P500は1.03%安、ダウは1.64%安、ナスダックは0.74%安。翌日の日本株も一律上昇すると予断しない。",
+        "source_url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-ff6caef4d9289cf7f1e6ee48a706eddc",
+        "observed_at": "2026-11-18T06:00:00+09:00"
+      },
+      {
+        "name": "NVIDIAの実績増収",
+        "signal": "追い風",
+        "meaning": "2027年度Q3売上高は前年同期比103%増。決算公表は米国17日の通常取引後で、米国17日の終値に決算結果は反映していない。",
+        "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "observed_at": "2026-11-18T08:30:00+09:00"
+      },
+      {
+        "name": "日本株は17日続落",
+        "signal": "逆風",
+        "meaning": "JPX最終更新で確認した17日のTOPIXは1.57%安。18日寄り後の反応は未観測で、17日終値を18日の現在値としない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-17T16:59:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "NVDA",
+        "name": "エヌビディア",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 156.14,
+        "close": 155.46,
+        "price_kind": "close",
+        "market_date": "2026-11-17",
+        "previous_market_date": "2026-11-16",
+        "observed_at": "2026-11-18T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "corporate_action_checked": true,
+        "adjustment_note": "米国現地11/16・17のNASDAQ時系列で通常終値と調整後終値が両日一致（156.14／155.46米ドル）。独自の株式分割補正なし。",
+        "context": "米国17日の通常取引終値は前日比0.44%安。引け後に公表された売上高103%増の決算は当該終値には反映されておらず、次の通常取引と利益率見通しを確認する。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "AP通信：米国11月17日の主要指数終値と広範囲の下落",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-ff6caef4d9289cf7f1e6ee48a706eddc",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NVIDIA公式IR：2027年度第3四半期決算と第4四半期会社見通し",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Home Depot公式IR：2026年度第3四半期実績と通期見通し",
+        "url": "https://ir.homedepot.com/news-releases/2026/11-17-2026-110221331",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Stock Analysis：NVDA米国現地11月16日・17日通常終値・調整後終値",
+        "url": "https://stockanalysis.com/stocks/nvda/history/?period=daily",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：2026年11月17日16:59最終更新のTOPIX現物指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：指数ファイル最終更新時刻202611171659",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "フィスコ：2026年11月17日大引け日経平均",
+        "url": "https://zai.diamond.jp/articles/-/499167",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-18-open",
+    "day": "2026-11-18",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-18T10:07:59+09:00",
+    "title": "18日寄り後：日経平均は反発、TOPIX小幅安。半導体と銀行・サービスに温度差",
+    "summary": "18日9時07〜40分JSTの途中値では、日経平均は1.04%高（15分遅延）、TOPIXは0.15%安（JPX9時39分）。東京エレクトロンは2.69%高だが、三菱UFJとリクルートは下落。NVIDIA決算後の買いが広がるか、午前の見どころを整理する。",
+    "lead": "11月18日（水）寄り付き後の観測では、日経平均が上がる一方、TOPIXは小幅に下がっています。米国17日の通常取引終了後にNVIDIAが増収決算を発表し、東京エレクトロンなど半導体関連の一角が上昇していますが、銀行とサービスには下落例もあります。指数・銘柄の表示時刻は9時07分から9時40分まで異なり、いずれも大引けの確定値ではありません。保有株の値上がりが市場全体の回復なのか、まずは広がりを見ます。",
+    "sections": [
+      {
+        "heading": "日経平均はプラス、TOPIXはマイナスの朝",
+        "paragraphs": [
+          "日経平均の18日9時07分JST時点の表示は59,475.21円で、17日終値58,860.43円から614.78円（1.04%）高。ただしYahoo!ファイナンスが「15分ディレイ株価」と明示する値です。今この瞬間の同時刻データとしては扱いません。",
+          "JPXが18日9時39分JSTに更新したTOPIXの現物途中値は3,834.45ポイント。17日の公式終値3,840.02から5.57ポイント（0.15%）安です。JPXの更新時刻ファイルも「202611180939」と照合しました。両指数の算出方法や確認時刻は異なりますが、少なくともこの朝の反発が日本株全体へ一様に広がっているとは言えません。"
+        ]
+      },
+      {
+        "heading": "半導体の買い戻しを、業績への期待と分けて見る",
+        "paragraphs": [
+          "東京エレクトロン（8035）は9時38分JST時点8,890円で、17日終値8,657円より233円（2.69%）高。前日の株価時系列でも通常終値と調整後終値が同じ8,657円であることを確認しました。指数に比べた強さは、半導体関連の売りがいったん和らいでいる可能性を示しますが、この値動きだけで同社の受注・利益の上方修正は確認できません。",
+          "NVIDIAが米国17日の通常取引終了後に公表した2027年度第3四半期売上高は1,158億米ドル（115.8十億米ドル）で、前年同期比103%増。次四半期売上高の会社見通しは1,300億米ドル±3%です。ただし米国17日の終値には決算発表後の値動きは含まれません。日本18日の半導体株上昇は決算の受け止め方を測る手掛かりであり、同社決算が国内全銘柄の上昇理由だとは断定できません。"
+        ]
+      },
+      {
+        "heading": "銀行・サービス株は逆方向。前日の強さも持ち越せない",
+        "paragraphs": [
+          "三菱UFJフィナンシャル・グループ（8306）は18日9時35分JST時点3,262円で、17日終値3,287円から0.76%安。銀行株の弱さが残る例です。金利や銀行株全体の材料を別途確認する必要があり、NVIDIAの好決算から銀行株の下落原因まで説明することはできません。",
+          "リクルートホールディングス（6098）は9時40分JST時点17,575円で、17日終値18,195円から3.41%安。17日にはサービス関連の強さが見られましたが、翌朝も続くとは限りません。17日の株価履歴では通常終値と調整後終値が一致します。半導体と比べた朝の逆行は、保有銘柄の前日上昇をそのまま追い掛けない理由になります。"
+        ]
+      },
+      {
+        "heading": "次に確かめるのは指数の広がりと公式終値",
+        "paragraphs": [
+          "短期で見るポイントは、前場終了時にTOPIXがプラスへ戻るか、半導体以外にも上昇が広がるか、銀行・サービスの下落が続くかの3つ。東京エレクトロンなどの反発を確認できても、TOPIXが下落したままなら日本株全体の回復と同一視しない見方が必要です。",
+          "17日朝に公表した「18日のTOPIXは16日終値3,901.37から0.5%超下落」という予想には、9時39分の途中値3,834.45は下落方向の材料となります。ただし18日の公式終値が判定対象であり、的中とは数えません。18日朝に公表した「19日のTOPIXは17日終値3,840.02から0.5%超上昇」という別の予想には現時点で逆風ですが、明日の公式終値までは結果待ちです。基準日も判定日も変更しません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-open-nov18",
+        "kind": "bars",
+        "title": "TOPIX：17日終値と18日9時39分の途中値",
+        "note": "17日はJPX最終更新後の公式終値、18日はJPX9:39 JST更新の現物途中値。別日比較であり、18日の終値・予測の正式結果ではありません。更新日時ファイルも照合。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T09:39:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          },
+          {
+            "label": "11/18 9:39",
+            "value": 3834.45,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nikkei-open-nov18",
+        "kind": "bars",
+        "title": "日経平均：17日終値と18日朝の遅延値",
+        "note": "Yahoo!ファイナンスの17日終値と18日9:07 JST表示。18日朝は15分遅延値であり、TOPIX9:39と同時刻の値ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/998407.O",
+        "observed_at": "2026-11-18T09:07:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 58860.43,
+            "state": "実績"
+          },
+          {
+            "label": "11/18 9:07",
+            "value": 59475.21,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "tel-open-nov18",
+        "kind": "bars",
+        "title": "東京エレクトロン：前日終値と朝の途中値",
+        "note": "Yahoo!ファイナンスの17日調整後終値8,657円と18日9:38 JSTの東証途中値8,890円。現時点の売上・受注の増加を示す図ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/8035.T",
+        "observed_at": "2026-11-18T09:38:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 8657,
+            "state": "実績"
+          },
+          {
+            "label": "11/18 9:38",
+            "value": 8890,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "TOPIXは反発に至らず",
+        "signal": "中立",
+        "meaning": "JPX18日9:39の途中値は3,834.45（前日比0.15%安）。日経平均の遅延プラス値だけでは市場全体の買い戻しを断定できない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T09:39:00+09:00"
+      },
+      {
+        "name": "半導体製造装置は上昇",
+        "signal": "追い風",
+        "meaning": "東京エレクトロンは18日9:38時点で前日比2.69%高。NVIDIAの米国17日引け後決算は材料だが、国内の全業種の買いを示すものではない。",
+        "source_url": "https://finance.yahoo.co.jp/quote/8035.T",
+        "observed_at": "2026-11-18T09:38:00+09:00"
+      },
+      {
+        "name": "サービス株に売り",
+        "signal": "逆風",
+        "meaning": "リクルートは18日9:40時点で3.41%安。前日に相対的に強かったサービス関連の値動きも翌営業日には変わり得る。",
+        "source_url": "https://finance.yahoo.co.jp/quote/6098.T",
+        "observed_at": "2026-11-18T09:40:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8035",
+        "name": "東京エレクトロン",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 8657,
+        "close": 8890,
+        "price_kind": "intraday",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T09:38:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8035.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!の11/17株価履歴で通常終値と調整後終値はともに8,657円。18日9:38東証途中値と同じ円建て株式を比較し、独自の分割補正は加えない。",
+        "context": "NVIDIAの米国17日通常取引終了後の増収決算後、国内18日朝は2.69%高。ただし企業固有の業績上方修正を確認したものではなく、引けまでの広がりを確認する。"
+      },
+      {
+        "code": "6098",
+        "name": "リクルートホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 18195,
+        "close": 17575,
+        "price_kind": "intraday",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T09:40:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6098.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!の11/17株価履歴で通常終値と調整後終値はともに18,195円。18日9:40東証途中値を同じ円建て株式として比較し、独自の分割補正は加えない。",
+        "context": "17日のサービス業上昇と対照的に18日朝は3.41%安。前日の市場テーマの継続を株価だけで前提とせず、次の開示・決算と終値を確認する。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：18日9:39のTOPIX現物途中値と17日終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：18日9:39更新時刻ファイル",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：日経平均18日9:07の15分遅延途中値",
+        "url": "https://finance.yahoo.co.jp/quote/998407.O",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：東京エレクトロン18日9:38東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8035.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：東京エレクトロン17日通常・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/8035.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三菱UFJ18日9:35東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8306.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：リクルート18日9:40東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/6098.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：リクルート17日通常・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/6098.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NVIDIA公式IR：米国17日引け後2027年度Q3決算とQ4見通し",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-18-noon",
+    "day": "2026-11-18",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-18T13:12:10+09:00",
+    "title": "18日後場：グロース株に売り、プレイドの情報漏えいと日本電子材料の買いを分ける",
+    "summary": "18日前場のTOPIXは3,811.98（0.73%安）、グロース250は2.64%安。グロース市場は値下がり420銘柄。プレイドは情報漏えいの発表が重く、日本電子材料は大株主の保有増加が材料です。後場の確認点を整理します。",
+    "lead": "11月18日（水）の東京市場は朝の買いが続かず、前場の終値にかけて下落が広がりました。日経平均は11時30分前場引けで58,696.54円（17日終値から163.89円安）、JPXのTOPIXは3,811.98ポイント（0.73%安）。東証グロース市場250指数は670.19ポイント（2.64%安）と下げが大きく、銘柄の値動きにも差があります。指数の下落と個別企業の発表を分けて、保有株と新しい候補の確認点を見ます。これらは大引けの値ではありません。",
+    "sections": [
+      {
+        "heading": "朝の反発は続かず、グロース株の下落が目立つ",
+        "paragraphs": [
+          "11月18日12時10分配信のフィスコの前場市況では、日経平均は58,696.54円で前日から163.89円安。JPXの指数公開ファイルは12時14分JSTに更新され、前場引け後のTOPIXが3,811.98ポイントと示されました。17日公式終値3,840.02から28.04ポイント安です。朝の記事で示した9時39分の3,834.45よりも22.47ポイント低く、買いが市場全体へ広がる前に失速しています。ただし12時14分はファイル更新時刻で、後場開始後の株価ではありません。",
+          "東証グロース市場250指数は、17日終値688.39から18日前場670.19へ18.20ポイント（2.64%）下落。TOPIXの0.73%安より下げが大きい一方、株探が11時33分に報じた東証グロース市場の前場騰落数は値上がり110銘柄、値下がり420銘柄です。この銘柄数と指数の下落は関連する地合いの情報ですが、同じ集計方法の数字ではありません。成長株を持つ人は、単独株の下落と市場全体の弱さを見分ける必要があります。"
+        ]
+      },
+      {
+        "heading": "プレイドは情報漏えいの公表後も売り圧力",
+        "paragraphs": [
+          "プレイド（4165）は、Yahoo!ファイナンスの18日10時00分JST時点の最終表示が449円で、17日終値549円より100円（18.21%）安。株探も11時33分の前場集計でストップ安銘柄に挙げています。Yahoo!の値が10時で止まっているため、その後の取引や後場の最新値を449円と決めつけることはできません。",
+          "同社は11月16日付の公式発表で、顧客体験サービス「KARTE」への不正アクセスによる情報漏えいを確認。KARTEアカウントのメールアドレス79,249件の漏えいや、外部サービス連携用の認証情報等への影響を説明し、調査とサービス停止を続けるとしました。これは株価下落を検討する際の確認可能な企業固有の材料ですが、影響額や利益への打撃は公表数だけで計算できません。保有判断では被害範囲の続報、サービス再開時期と業績説明を確認したいところです。"
+        ]
+      },
+      {
+        "heading": "日本電子材料は大株主の保有増が別の材料",
+        "paragraphs": [
+          "東証スタンダードの日本電子材料（6855）は18日12時33分JST時点のYahoo!表示で5,590円、17日終値5,390円から200円（3.71%）高。同社株への買いを、TOPIXやグロース市場の下落だけで説明できない例です。17日の通常終値と調整後終値はともに5,390円で、比較に独自の分割調整は加えていません。",
+          "エフィッシモ・キャピタルによる17日提出の変更報告書について、公開された大量保有報告書データと18日10時58分の報道は、同社株の保有比率が11.45%から12.56%へ上がったと伝えています。保有目的は純投資とされ、短期の需給を意識する材料です。一方、持ち株比率の増加は日本電子材料の受注・利益が増えた証拠でも、今後の買い継続の保証でもありません。投資期間が中期以上なら次の事業決算も別途確かめる必要があります。"
+        ]
+      },
+      {
+        "heading": "午後は地合いと企業固有の問題を分けて確かめる",
+        "paragraphs": [
+          "18日後場の確認点は、①TOPIXの下落が拡大するか、②グロース市場の値下がり優勢が縮むか、③プレイドの公式続報と日本電子材料の保有報告に新情報が出るか、の三つ。プレイドの情報漏えいと日本電子材料の大株主報告は別の材料であり、一方の株価変動を他方へそのまま当てはめないことが重要です。",
+          "17日朝に固定した「18日TOPIX公式終値は16日終値3,901.37から0.5%超下落」という短期予想に対して、18日前場の3,811.98は下落方向の途中材料です。一方、18日朝に固定した「19日の公式終値は17日終値3,840.02を0.5%超上回る」という予想には逆風。ただし18日昼の値はどちらの予想も正式な的中・外れを決めません。前者は本日大引け後の公式値、後者は19日の公式値を待ちます。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-noon-nov18",
+        "kind": "bars",
+        "title": "TOPIX：17日終値から18日前場は0.73%安",
+        "note": "17日はJPX公式終値3,840.02。18日は前場終了後、JPXが12:14 JSTに更新した3,811.98の途中値であり、18日の大引け値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T11:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          },
+          {
+            "label": "11/18前場",
+            "value": 3811.98,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth250-noon-nov18",
+        "kind": "bars",
+        "title": "グロース250：前日比2.64%安",
+        "note": "JPXの17日終値688.39と18日前場終了後の途中値670.19を比較。12:14 JSTのファイル更新を確認しました。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T11:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 688.39,
+            "state": "実績"
+          },
+          {
+            "label": "11/18前場",
+            "value": 670.19,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-breadth-noon-nov18",
+        "kind": "bars",
+        "title": "東証グロース：前場は値下がりが多数",
+        "note": "株探が11/18 11:33に報じた前場の値上がり110銘柄・値下がり420銘柄。横ばい銘柄を含まない2区分です。",
+        "unit": "銘柄",
+        "source_url": "https://s.kabutan.jp/news/n202611180574/",
+        "observed_at": "2026-11-18T11:30:00+09:00",
+        "values": [
+          {
+            "label": "値上がり",
+            "value": 110,
+            "state": "実績"
+          },
+          {
+            "label": "値下がり",
+            "value": 420,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "グロース株の売りが優勢",
+        "signal": "逆風",
+        "meaning": "18日前場のグロース250は2.64%安。東証グロースの値下がり420銘柄は値上がり110銘柄を上回り、広い範囲で弱い。",
+        "source_url": "https://s.kabutan.jp/news/n202611180574/",
+        "observed_at": "2026-11-18T11:30:00+09:00"
+      },
+      {
+        "name": "プレイドの被害範囲に不確実性",
+        "signal": "逆風",
+        "meaning": "同社11/16の公式発表で情報漏えいを確認。影響範囲と再開時期の追加説明は未確定で、10:00の株価も後場の現在値ではない。",
+        "source_url": "https://plaid.co.jp/news/20261116/",
+        "observed_at": "2026-11-18T10:00:00+09:00"
+      },
+      {
+        "name": "日本電子材料の株主保有増",
+        "signal": "中立",
+        "meaning": "17日提出の変更報告書で保有比率が11.45%から12.56%へ上昇。足元の需給材料だが、将来利益や投資リターンは示さない。",
+        "source_url": "https://maonline.jp/db/shareholding_reports/S100ZEWG",
+        "observed_at": "2026-11-18T12:33:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "4165",
+        "name": "プレイド",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 549,
+        "close": 449,
+        "price_kind": "intraday",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T10:00:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!の11/17時系列で通常終値・調整後終値549円が一致。18日10:00を最終時刻として表示する449円のみ採用し、その後の更新値・終値とは扱わない。",
+        "context": "11月16日の同社発表でKARTEの情報漏えいを確認、株探11:33の集計でストップ安。被害範囲、サービス再開と業績影響の続報が必要。"
+      },
+      {
+        "code": "6855",
+        "name": "日本電子材料",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 5390,
+        "close": 5590,
+        "price_kind": "intraday",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T12:33:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6855.T/history",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!の11/17時系列で通常・調整後終値はともに5,390円、18日12:33の東証途中値は5,590円。独自調整なし。",
+        "context": "17日提出の大株主変更報告書でエフィッシモの保有比率が11.45%から12.56%へ増加。需要・利益の上方修正とは異なる需給材料。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：18日12:14 JST更新のTOPIX・グロース250前場値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：公開指数ファイル更新時刻202611181214",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "フィスコ：11/18 12:10 前場の日経平均とTOPIX",
+        "url": "https://s.minkabu.jp/news/4667885",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "株探：18日11:33 東証グロース市場の前場騰落数",
+        "url": "https://s.kabutan.jp/news/n202611180574/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "プレイド：11月16日公表KARTE不正アクセス第2報",
+        "url": "https://plaid.co.jp/news/20261116/",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：プレイド18日10:00時点の最終表示",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：プレイド17日終値と調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T/history",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "大量保有報告データ：日本電子材料11月17日提出の変更報告書",
+        "url": "https://maonline.jp/db/shareholding_reports/S100ZEWG",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "フィスコ：18日10:58 エフィッシモ保有比率上昇",
+        "url": "https://s.kabutan.jp/news/n202611180504/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：日本電子材料18日12:33値・17日終値",
+        "url": "https://finance.yahoo.co.jp/quote/6855.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-18-close",
+    "day": "2026-11-18",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-18T22:36:35+09:00",
+    "title": "18日大引け：日経平均は反発、TOPIXは続落―半導体高と市場全体に差",
+    "summary": "18日終値は日経平均が0.28%高、TOPIXが0.42%安。アドバンテストは4.56%高、JX金属は4.43%安。18日判定のTOPIX下落予想は公式値で的中、19日判定は結果待ちです。",
+    "lead": "11月18日（水）の東京市場は、日経平均が上昇した一方、TOPIXは下落して取引を終えました。半導体関連の買い戻しを日本株全体の回復と取り違えないことが重要です。指数は当日15:30大引け値で、JPX指数ファイルの確認更新時刻は16:59 JST。米国11月18日の通常取引結果はここには含めません。",
+    "sections": [
+      {
+        "heading": "日経平均はプラスでもTOPIXはマイナス",
+        "paragraphs": [
+          "18日の日経平均終値は59,024.28円、前日比163.85円高（0.28%高）。一方、JPX公式のTOPIX終値は3,824.00ポイントで、17日の3,840.02から16.02ポイント安（0.42%安）でした。東証グロース市場250指数も678.41で1.45%安。指数の構成の違いで、日経平均の上昇だけでは保有株全体の地合いを表せません。",
+          "前場に日経平均が下落へ転じた後、後場は持ち直しました。ただし銀行・保険・医薬品など値下がり銘柄も多く、買いの広がりにはなお差が見られます。19日は値上がりする業種が増え、買い戻しが半導体以外にも広がるかが確認点です。"
+        ]
+      },
+      {
+        "heading": "アドバンテスト上昇とJX金属下落を分けて読む",
+        "paragraphs": [
+          "半導体検査装置のアドバンテスト（6857）は18日東証終値27,195円、前日26,010円から4.56%高でした。米国17日通常取引終了後のNVIDIA好決算を背景に半導体関連へ買い戻しが入ったと市場では説明されています。ただしNVIDIAの売上増がそのままアドバンテストの次期利益を保証するわけではなく、今後は受注や利益率の開示を確かめたいところです。",
+          "対照的にJX金属（5016）は2,145.5円、前日2,245円から4.43%安。同日11時08分のアイフィス株予報は、証券会社による目標株価引き下げを伝えました。ただし、株価下落だけで会社の収益見通しが同率で悪化したとはいえません。非鉄金属全体の動きと、同社の会社側開示を別々に確認します。"
+        ]
+      },
+      {
+        "heading": "18日判定のTOPIX下落予想は的中、19日は未判定",
+        "paragraphs": [
+          "11月17日寄り前に固定した予想は『18日のTOPIX公式終値が16日終値3,901.37から0.5%を超えて下落』でした。18日の公式終値3,824.00は基準から約1.98%安で、予想した下落条件を満たしました。確定した日次TOPIX予想はこれで1勝2敗（的中率33.3%、母数3件）です。18日の途中値による見立てを正式判定と混同していません。",
+          "18日朝に別途固定した『19日のTOPIX終値が17日終値3,840.02から0.5%超上昇』という予想は結果待ちです。18日終値3,824.00はその基準より低いものの、判定日は19日のため的中・外れを決めません。19日の公式終値と、半導体以外へ買い戻しが広がるかを確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-close-nov18",
+        "kind": "bars",
+        "title": "TOPIX：17日と18日の公式終値",
+        "note": "JPX11/18 16:59 JST更新で最終照合した現物15:30大引け値。17日の数値は同日公式最終値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth250-close-nov18",
+        "kind": "bars",
+        "title": "グロース250：前日比1.45%安",
+        "note": "17日終値688.39は18日JPX公表の当日値678.41と前日比-9.98から算出した値。18日終値は15:30大引け。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 688.39,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 678.41,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "advantest-close-nov18",
+        "kind": "bars",
+        "title": "アドバンテスト：17日と18日の終値",
+        "note": "Yahoo!ファイナンスの東証15:30終値と前営業日値。同一銘柄・同一通貨で比較。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 26010,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 27195,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "日経平均とTOPIXの方向差",
+        "signal": "中立",
+        "meaning": "日経平均は0.28%高でもTOPIXは0.42%安。半導体など指数寄与の大きい銘柄だけの上昇を全面高とは扱わない。",
+        "source_url": "https://advance.quote.nomura.co.jp/meigara/nomura2/qsearch.exe?F=users%2Fnomura%2Ftse",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      },
+      {
+        "name": "半導体関連の買い戻し",
+        "signal": "追い風",
+        "meaning": "アドバンテストは4.56%高。材料とみられるNVIDIA決算は米国17日通常取引終了後に公表。受注・利益への転換は別に確認が必要。",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      },
+      {
+        "name": "TOPIX翌日予測はまだ未確定",
+        "signal": "逆風",
+        "meaning": "19日判定の基準3,840.02に対し18日終値は3,824.00。これは途中観測であり正式結果に加えない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "6857",
+        "name": "アドバンテスト",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 26010,
+        "close": 27195,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一Yahoo!時系列で11/17・11/18の通常終値と調整後終値が一致することを確認。18日15:30東証終値を比較し独自補正なし。",
+        "context": "前日比4.56%高。半導体買い戻しと会社業績の持続性を区別し、次の受注・利益率公表を確認。"
+      },
+      {
+        "code": "5016",
+        "name": "JX金属",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 2245,
+        "close": 2145.5,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一Yahoo!時系列で11/17・11/18の通常終値と調整後終値が一致することを確認。18日15:30東証終値を比較し独自補正なし。",
+        "context": "前日比4.43%安。目標株価引き下げとの市場報道はあるが、下落率と企業の業績変化は同一ではない。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月18日16:59更新TOPIX・グロース250公式指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：公式指数ファイル更新時刻（16:59 JST）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "野村證券：18日の日経平均大引けと市場概況",
+        "url": "https://advance.quote.nomura.co.jp/meigara/nomura2/qsearch.exe?F=users%2Fnomura%2Ftse",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト18日東証終値・前日値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト日別調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属18日東証終値・前日値",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属日別調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "アイフィス株予報：11月18日11:08配信、JX金属の目標株価引き下げ",
+        "url": "https://finance.yahoo.co.jp/news/detail/b2be5ae80ba47d44dc963852e4ae6f5bd6ba8ed0",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      }
+    ]
   }
 ]

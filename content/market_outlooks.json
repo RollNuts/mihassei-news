@@ -194,5 +194,244 @@
       "published_on": "2026-11-17",
       "checked_on": "2026-11-17"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-am-confirm-close-01",
+    "at": "2026-11-18T08:30:28+09:00",
+    "forecast_id": "2026-11-16-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3840.02,
+    "observed_on": "2026-11-17",
+    "reason": "JPXの11月17日16:59 JST最終更新で、17日のTOPIX公式終値3,840.02を確認。固定基準11月13日3,941.57から約2.58%安で、当初の横ばい±0.5%予想に反した。",
+    "change_reason": "17日15:30大引け時点の暫定観測を、同日16:59更新のJPX公式ファイルで再確認した。元予測の基準日、方向、判定日と方法は変更していない。",
+    "source": {
+      "title": "JPX：11月17日16時59分JST更新TOPIX公式大引け指数",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-17",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611171659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    },
+    "result": {
+      "close": 3840.02,
+      "outcome": "外れ",
+      "observed_on": "2026-11-17",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "explanation": "確定終値3,840.02は固定基準3,941.57から約2.58%安。±0.5%以内を予測した17日判定の横ばい見通しから外れたため正式に外れとした。"
+    }
+  },
+  {
+    "type": "forecast",
+    "id": "2026-11-18-topix",
+    "at": "2026-11-18T08:30:28+09:00",
+    "subject": "TOPIX",
+    "direction": "上昇",
+    "stance": "強気",
+    "reviewed_on": "2026-11-19",
+    "statement": "2026年11月19日のTOPIX公式終値は、11月17日の確定終値3,840.02ポイントを0.5%超上回ると予測する。",
+    "method": "2026年11月17日のJPX公式TOPIX終値3,840.02ポイントを基準として固定する。2026年11月19日のJPX公式終値との騰落率（19日終値÷3,840.02−1）×100が+0.5%超なら上昇、-0.5%未満なら下落、-0.5%以上+0.5%以下（両境界を含む）なら横ばいとする。判定日は11月19日だけであり、18日の途中値、18日終値、後日見通しで基準・期日・判定方法を変えない。公式値の取得不可なら未検証とする。",
+    "reason": "11月17日東京大引けのTOPIXは3,840.02ポイントと前日比1.57%下落した。一方、米国17日の通常取引後に公表されたNVIDIAの2027年度第3四半期売上高は前年同期比103%増で、次期売上高見通しは1,300億米ドル±3%。18日の半導体関連を中心に買い戻しが広がれば19日の指数が17日終値を0.5%超上回ると予測する。ただし米国17日のS&P500は1.03%安と広範囲に売られたため、上昇が一部銘柄に限られるリスクを重視する。",
+    "invalidated_if": "11月19日のJPX公式TOPIX終値が3,840.02から0.5%を超えて上昇しない場合は当初予測は外れ。19日終値の公的裏付けが取れない場合は未検証とする。",
+    "scenarios": {
+      "強気": "19日公式終値が17日基準3,840.02から0.5%超上昇する。NVIDIA決算後の半導体買い戻しが複数業種にも広がったか確認する。",
+      "中立": "19日公式終値が17日基準3,840.02の±0.5%以内となる。米国の弱い地合いと半導体関連の買い戻しが拮抗したか確認する。",
+      "弱気": "19日公式終値が17日基準3,840.02から0.5%を超えて下落する。米国17日の広範囲の売りが国内に波及したか確認する。"
+    },
+    "baseline": {
+      "date": "2026-11-17",
+      "value": 3840.02,
+      "unit": "ポイント",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "method": "JPXが11月17日16:59 JSTに最終更新した公式TOPIX現物15:30大引け値3,840.02を、18日寄り前に確認した最新確定終値として固定。"
+    },
+    "sources": [
+      {
+        "title": "JPX：2026年11月17日16:59更新TOPIX現物公式終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "NVIDIA公式IR：2027年度第3四半期決算、第4四半期売上予想",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "AP通信：米国11月17日主要3指数の下落と市場の広がり",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-ff6caef4d9289cf7f1e6ee48a706eddc",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-18"
+      }
+    ]
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-open-01",
+    "at": "2026-11-18T09:43:35+09:00",
+    "forecast_id": "2026-11-17-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3834.45,
+    "observed_on": "2026-11-18",
+    "reason": "JPXが11月18日9:39 JSTに更新したTOPIX現物途中値は3,834.45。17日朝の固定基準11月16日3,901.37から1.72%安で、18日終値の下落予測を現時点で支持するが、まだ引け前で的中とは判定しない。",
+    "change_reason": "米国17日引け後のNVIDIA増収決算を受け一部半導体株は反発したが、9:39時点ではTOPIXは前日比0.15%安。予測の基準・方法・期日は不変。",
+    "source": {
+      "title": "JPX：2026年11月18日9:39更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611180939",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-open-02",
+    "at": "2026-11-18T09:43:35+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "強気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3834.45,
+    "observed_on": "2026-11-18",
+    "reason": "19日のTOPIXが17日確定終値3,840.02から0.5%超上がるという18日朝の新予想に対し、18日9:39の途中値は3,834.45と基準を下回る。ただし評価日は19日の公式終値であり、18日の途中値から外れとは判定できない。",
+    "change_reason": "NVIDIA決算後の買いは国内半導体株の一角に見られる一方、TOPIX全体は9:39時点で17日終値を下回る。元の強気予測と条件は保持したまま、現時点の逆風を追記。",
+    "source": {
+      "title": "JPX：2026年11月18日9:39更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611180939",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-noon-01",
+    "at": "2026-11-18T12:47:20+09:00",
+    "forecast_id": "2026-11-17-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3811.98,
+    "observed_on": "2026-11-18",
+    "reason": "18日11:30前場途中のTOPIXは3,811.98。17日朝に固定した16日公式終値3,901.37から約2.29%安で、18日終値の下落見通しを途中では支持する。正式な判定は18日大引け後のJPX公式終値のみ。",
+    "change_reason": "18日9:39の途中値3,834.45から11:30には3,811.98へ22.47ポイント下落し、朝の反発が広がらず。予測基準・期日・方法は変更なし。",
+    "source": {
+      "title": "JPX：18日12:14 JST更新のTOPIX現物前場途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181214",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-noon-02",
+    "at": "2026-11-18T12:47:20+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "中立",
+    "trend": "暫定的に逆行",
+    "observed_value": 3811.98,
+    "observed_on": "2026-11-18",
+    "reason": "19日TOPIX公式終値が17日公式終値3,840.02から0.5%超上がる朝の強気予測に対し、18日11:30の3,811.98は0.73%低く、現時点では逆風。19日終値は未到来で正式な外れとは判定できない。",
+    "change_reason": "18日朝9:39の3,834.45から11:30には3,811.98へ下落。グロース250は2.64%安となり、半導体の一部反発だけでは市場全体の上昇を確認できない。元予測は保持。",
+    "source": {
+      "title": "JPX：18日12:14 JST更新のTOPIX現物前場途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181214",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-18-close-confirm-01",
+    "at": "2026-11-18T22:30:00+09:00",
+    "forecast_id": "2026-11-17-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3824,
+    "observed_on": "2026-11-18",
+    "reason": "JPXが11月18日16:59 JSTに更新した現物TOPIX公式終値は3,824.00。固定基準の11月16日3,901.37から約1.98%安で、予測の0.5%超下落に一致するため正式に的中。",
+    "change_reason": "同日11:30前場途中値3,811.98から大引け3,824.00へ回復したが、元の基準と判定日は変更していない。16:59更新の公式終値で暫定観測から正式判定へ移行。",
+    "source": {
+      "title": "JPX：18日16:59更新TOPIX公式大引け値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-18"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    },
+    "result": {
+      "close": 3824,
+      "outcome": "的中",
+      "observed_on": "2026-11-18",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "explanation": "公式終値3,824.00は固定基準3,901.37比約1.98%安。0.5%超下落の事前条件を満たすため的中。"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-19-am-prior-close-review-01",
+    "at": "2026-11-19T07:33:26+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "中立",
+    "trend": "暫定的に逆行",
+    "observed_value": 3824.0,
+    "observed_on": "2026-11-18",
+    "reason": "11月18日のTOPIX公式終値は3,824.00。19日終値が17日基準3,840.02から0.5%超上昇する当初予想に対し、18日終値は基準より0.42%低く逆風。19日の公式終値はまだ公表されていないため、的中・外れは判定しない。",
+    "change_reason": "18日前場の3,811.98から大引けは12.02ポイント回復したが、17日基準を下回った。半導体以外への上昇の広がりと19日の公式終値を待つため、見立ては中立を継続する。",
+    "source": {
+      "title": "JPX：11月18日16:59更新のTOPIX公式終値を19日朝に再確認",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "observed_at": "2026-11-18T15:30:00+09:00",
+      "checked_at": "2026-11-19T07:33:02+09:00",
+      "data_sha256": "33f4bcf3d5addfc1cc4e3c2d33cde78e250ae4d6887992acef5668dde7696e58",
+      "time_before_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9",
+      "time_after_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9"
+    }
   }
 ]

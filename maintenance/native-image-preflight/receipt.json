@@ -3,25 +3,25 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
-  "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
-  "observed_at": "2026-11-17T23:40:04.174Z",
-  "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
-  "probe_source_ref": "/mnt/data/mihassei-offline-probe.png",
+  "candidate_identity": "085941e437ec78c28bf2e8dffb7ec43f2f507b49e52cf2bf4054399bcf22040f",
+  "logical_run_id": "news-photo-v1:a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+  "observed_at": "2026-11-18T22:48:08.710Z",
+  "route": "PNG data URL in this code runtime to GitHub candidate storage",
+  "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
-    "sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
-    "bytes": 138
+    "sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "bytes": 50570
   },
   "jpeg": {
-    "sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
-    "bytes": 92351
+    "sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+    "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "e1ba82ef867f547039c766e20ed8c2c6c50e21d1",
+    "commit_sha": "08110f2cad06d9ab0d13009b7173a719333f34a9",
     "protected_hashes": {
-      "content/articles.json": "11f5006639df278d749152a0b74140cb11f94489869d5769badd0124d1edc165",
-      "assets/generated/manifest.json": "f54c6ead78dfddbb01ef2b7d8e2b62d5dd2cc25ee7d034691b763ad976542231",
-      "content/visual_reviews.json": "6fbe8d97306f0845a23d0f33c29287cfd5173fb6c785326833f6c82ef940253c"
+      "content/articles.json": "4166576ddf584cb6b7dcddb948c2127fb92d11f853eb3e7d1027cd435e2e2087",
+      "assets/generated/manifest.json": "4ea1d1be63ee68640627b87f8621b344ebddb04b5a3638ef9321b29ae929fa7d",
+      "content/visual_reviews.json": "251dba4123385364e0e07dd761c9035bf3f33ba78fbb958abd304a896c56dd03"
     }
   }
 }

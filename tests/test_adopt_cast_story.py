@@ -53,6 +53,10 @@ class CastStoryAdoptionTests(unittest.TestCase):
         self.original = (json.dumps(self.initial, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         self.document.write_bytes(self.original)
         self.model = "nagino-saya"
+        self.own_document = self.root / "content/photo_stories" / (self.model + ".json")
+        self.own_document.parent.mkdir()
+        for model in adoption.MODEL_CHAT_URLS:
+            (self.own_document.parent / (model + ".json")).write_text('{"schema_version":1,"stories":[]}')
         self.source = copy.deepcopy(self.initial["stories"][0]["source"])
         self.draft = {"schema_version": 1, "model_id": self.model, "name": "凪野さや",
                       "created_date": "2026-11-17", "source_chat_url": adoption.MODEL_CHAT_URLS[self.model],
@@ -112,11 +116,42 @@ class CastStoryAdoptionTests(unittest.TestCase):
             result = self.run_adoption(write=True)
         self.assertEqual(checked.call_count, 2)
         self.assertEqual(result["status"], "staged")
-        written = self.document.read_bytes()
-        self.assertTrue(written.startswith(self.original[:self.original.rfind(b"]")].rstrip()))
-        self.assertEqual(json.loads(written)["stories"][:-1], self.initial["stories"])
-        self.assertEqual(json.loads(written)["stories"][-1], result["candidate"])
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(result["story_path"], "content/photo_stories/nagino-saya.json")
+        self.assertEqual(self.document.read_bytes(), self.original)
+        self.assertEqual(json.loads(self.own_document.read_bytes())["stories"], [result["candidate"]])
+        self.assertEqual(adoption.read_story_document(self.root)["stories"], self.initial["stories"] + [result["candidate"]])
+        self.assertEqual(self.run_adoption()["status"], "skipped")
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
+
+    def test_parallel_creator_branches_merge_both_stories_without_editing_history(self):
+        self.git("add", "content/photo_stories", "content/photo_stories.json")
+        self.git("commit", "-qm", "Common story history")
+        base = self.git("rev-parse", "HEAD")
+        expected = {}
+        for model_id in (self.model, "shioba-rio"):
+            self.git("checkout", "-qb", "daily-" + model_id, base)
+            original = next(row for row in self.initial["stories"] if row["model_id"] == model_id)
+            post = dict(original, id=model_id + "-today", text="今日はいつもと違う道を通りました。",
+                        published_at=NOW.isoformat())
+            path = self.own_document.with_name(model_id + ".json")
+            path.write_bytes(adoption._append_bytes(path.read_bytes(), post))
+            self.git("add", str(path.relative_to(self.root)))
+            self.git("commit", "-qm", model_id)
+            expected[post["id"]] = post
+        self.git("merge", "--no-edit", "daily-" + self.model)
+        merged = adoption.read_story_document(self.root)
+        self.assertEqual(self.document.read_bytes(), self.original)
+        self.assertEqual({row["id"]: row for row in merged["stories"] if row["id"] in expected}, expected)
+        catalog = adoption.load_photo_issues(self.root)
+        published = adoption.published_issues(catalog, root=self.root, now=NOW)
+        adoption.validate_photo_stories(merged, catalog=catalog, published=published, root=self.root, now=NOW)
+        self.assertEqual(self.run_adoption()["status"], "skipped")
+
+    def test_creator_stream_refuses_a_foreign_story(self):
+        other = next(row for row in self.initial["stories"] if row["model_id"] != self.model)
+        self.own_document.write_bytes(adoption._append_bytes(self.own_document.read_bytes(), other))
+        with self.assertRaisesRegex(ValueError, "another model"):
+            self.run_adoption()
 
     def test_same_model_text_is_skipped_across_new_commit_metadata_and_existing_story_id(self):
         old = copy.deepcopy(self.initial["stories"][0])
@@ -224,7 +259,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
         with guard, disk, self.assertRaisesRegex(RuntimeError, "source draft changed"):
             self.run_adoption(write=True)
         self.assertEqual(self.document.read_bytes(), self.original)
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
 
     def test_another_person_new_commit_does_not_block_the_selected_unchanged_blob(self):
         guard, disk = self.write_guards(lambda: self.commit_draft({"other": "person updated"}, other=True))
@@ -232,7 +267,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
             result = self.run_adoption(write=True)
         self.assertEqual(result["status"], "staged")
         self.assertEqual(result["source_commit"], self.commit)
-        self.assertEqual(json.loads(self.document.read_bytes())["stories"][-1]["text"], self.draft["post_text"])
+        self.assertEqual(json.loads(self.own_document.read_bytes())["stories"][-1]["text"], self.draft["post_text"])
 
     def test_changed_existing_input_is_preserved_without_partial_story_append(self):
         newer = self.original + b"\n"
@@ -240,7 +275,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
         with guard, disk, self.assertRaisesRegex(RuntimeError, "inputs changed"):
             self.run_adoption(write=True)
         self.assertEqual(self.document.read_bytes(), newer)
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
 
     def test_unavailable_cloud_guard_or_low_disk_blocks_write(self):
         with patch.object(adoption, "check_cloud_images_allowed", side_effect=RuntimeError("guard unavailable")), \
@@ -287,7 +322,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
             self.run_adoption(write=True)
         self.assertEqual(checked.call_count, 2)
         self.assertEqual(self.document.read_bytes(), self.original)
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
 
     def test_existing_jpeg_budget_cannot_be_bypassed_by_story_staging(self):
         guard, disk = self.write_guards()
@@ -322,7 +357,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
             self.run_adoption(write=True)
         self.assertEqual(checks, 2)
         self.assertEqual(self.document.read_bytes(), newer)
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
 
     def test_rewritten_source_branch_with_identical_blob_is_still_refused(self):
         original_blob = self.git("rev-parse", self.commit + ":drafts/cast-voices/nagino-saya.json")
@@ -335,7 +370,7 @@ class CastStoryAdoptionTests(unittest.TestCase):
             self.run_adoption(write=True)
         self.assertEqual(self.git("rev-parse", "HEAD:drafts/cast-voices/nagino-saya.json"), original_blob)
         self.assertEqual(self.document.read_bytes(), self.original)
-        self.assertEqual(list(self.document.parent.glob(".photo-stories-*")), [])
+        self.assertEqual(list(self.own_document.parent.glob(".photo-stories-*")), [])
 
 
 if __name__ == "__main__":

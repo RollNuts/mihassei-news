@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "stories": [
+    {
+      "id": "nagino-saya-post-20261119071711551000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-19T07:17:11.551+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、カフェで本を開いたら、隣の席の人が同じ本を読んでいて。思わず顔を見合わせて笑っちゃいました。帰る前に感想を聞いてみようかな。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "05",
+        "image_sha256": "6bf38d8d89f4ed72a1907cabda30b30e98594a9c8a2fd652ea51e5e2bf25d639"
+      }
+    }
+  ]
+}

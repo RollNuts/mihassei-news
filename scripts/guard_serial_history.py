@@ -152,6 +152,18 @@ def guard_photo_edition_history(before, after):
     return checked
 
 
+def guard_photo_story_history(before, after):
+    """Keep each source's ordered published posts; allow a first validated motion."""
+    older, newer = before["stories"], after["stories"]
+    if not isinstance(older, list) or not isinstance(newer, list) or len(newer) < len(older):
+        raise ValueError("Published story history was removed")
+    for previous, current in zip(older, newer):
+        if "motion" not in previous and "motion" in current:
+            current = {key: value for key, value in current.items() if key != "motion"}
+        if json.dumps(previous, sort_keys=True) != json.dumps(current, sort_keys=True):
+            raise ValueError("Published story history changed: " + str(previous.get("id")))
+
+
 def main():
     if len(sys.argv) != 2 or not re.fullmatch(r"[a-f0-9]{40}", sys.argv[1]):
         raise SystemExit("Usage: guard_serial_history.py <40-char-base-commit-sha>")
@@ -190,6 +202,21 @@ def main():
     current = json.loads(current_path.read_text(encoding="utf-8")) if current_path.exists() else None
     checked = guard_photo_edition_history(previous, current)
     print(f"Photo edition history guard: {checked} published contents and ranking snapshots preserved")
+
+    # Existing history files, including an empty creator stream, stay in place.
+    # A new stream has no prior records; the site build validates its catalog.
+    paths = subprocess.run(
+        ["git", "diff", "--no-renames", "--name-only", "--diff-filter=MDT", sys.argv[1], "--",
+         "content/photo_stories.json", "content/photo_stories/*.json"],
+        cwd=repo, check=True, capture_output=True, text=True,
+    ).stdout.splitlines()
+    for path in paths:
+        current_path = repo / path
+        if current_path.is_symlink() or not current_path.is_file():
+            raise ValueError(path + ": published story history was removed")
+        old = subprocess.run(["git", "show", sys.argv[1] + ":" + path], cwd=repo,
+                             capture_output=True, text=True, check=True)
+        guard_photo_story_history(json.loads(old.stdout), json.loads(current_path.read_text(encoding="utf-8")))
 
 
 if __name__ == "__main__":

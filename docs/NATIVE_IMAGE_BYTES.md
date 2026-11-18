@@ -16,7 +16,17 @@ For a transport-only diagnostic, `checkTransport(plan, options)` takes the same 
 
 The ordinary `stage/resume/load` methods remain available for recovery without generation. They store the complete source PNG as ordered parts of at most 512 KiB, plus the JPEG and provenance, together on the article's candidate branch; they do not edit published article/image manifests, write an accepted review, create a PR or deploy. Readback reconstructs the original PNG, verifies its complete SHA-256, and checks that the pinned conversion reproduces the saved JPEG. This avoids the GitHub Contents response that can return an empty content string for a binary file larger than 1 MiB even when the request succeeds. A generated result or failed-save checkpoint must be recovered, not replaced by another generation.
 
-Read both helpers from the latest reviewed repository revision and initialize the existing converter. The following assumes the reviewed draft's `slug`, `articleSha256`, `prompt`, `baseCommitSha`, `baseTreeSha` and stable `logicalRunId` are already known. For a new article, first save the reviewed draft to its working commit: `prepare` checks that the target article and its fingerprint exist in `baseCommitSha`. The base tree must belong to that commit. Bind `readImageControl` below to the actually exposed `read_image_control` MCP tool, pass the nonce unchanged and return the whole actual response to the stager. Do not unconditionally select `.structuredContent`: the helper normalizes direct, `.result` and legacy `.structuredContent` responses and rejects errors at either level. Connector runtimes that reject GitHub workflow API URLs use this existing read-only tool; do not synthesize an active state or reuse an old reply. The endpoint echoes a per-call nonce and timestamp, both verified by the helper. An unavailable reader stops image operations. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
+Read both helpers from the latest reviewed repository revision and initialize the existing converter. For an ordinary missing-photo article, first commit the final reviewed body and `scene_prompt` to its existing PR, then prepare once with only the slug and that full immutable commit SHA:
+
+```js
+const plan = await stager.prepareArticle({slug, baseCommitSha});
+```
+
+This read-only wrapper verifies the Git commit/tree, derives the article fingerprint and exact committed prompt, and fixes `logicalRunId` to `news-photo-v1:<article SHA>`. It uses four connector reads, without generating or writing. It rejects caller overrides, illustration/unknown visual strategies, absent prompts, ambiguous articles, and current photo/review records requiring inspection or an explicit reviewed retry. The article need not already be on main: complete image adoption in the same PR before the normal publication handoff.
+
+**If an existing plan, candidate, claim or checkpoint is recorded, continue that original plan; do not use this wrapper to replan it.** In particular, an older manual logical ID must not be replaced by the new default. Keep manual `prepare` for those original plans and the existing explicit review paths; its supplied article fingerprint and base tree must match the immutable working commit.
+
+Bind `readImageControl` below to the actually exposed `read_image_control` MCP tool, pass the nonce unchanged and return the whole actual response to the stager. Do not unconditionally select `.structuredContent`: the helper normalizes direct, `.result` and legacy `.structuredContent` responses and rejects errors at either level. Connector runtimes that reject GitHub workflow API URLs use this existing read-only tool; do not synthesize an active state or reuse an old reply. The endpoint echoes a per-call nonce and timestamp, both verified by the helper. An unavailable reader stops image operations. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
 
 **Unchanged main does not imply no recovery work.** For each unresolved slug in the existing handoff, check its recorded candidate references and enumerate the matching `native-image-candidate/<slug>/` branches before returning idle. Read new or changed `receipt.json` files and compare the slug, current article fingerprint, logical run ID, source/JPEG hashes and existing acceptance/rejection history. Recover an unprocessed matching candidate with its originating plan before generating another image; skip identities already adopted or rejected. Record changed branch/commit and receipt SHA in the existing task result or handoff, without creating another ledger. A failed or incomplete branch lookup is an unresolved lookup, not evidence that no candidate exists; do not replace it with an unchanged-main shortcut.
 
@@ -332,6 +342,15 @@ The actual `xmp:iid:` value is preserved in `generation_receipt`; its existing U
 
 The calling importer must still record the actual prompt, actual generation/review times, current article fingerprint, final JPEG byte length, and a real visual-review decision, and preserve prior records without rounding their integers. For historical recoveries, follow the explicit missing-prompt procedure above. See the existing publication rules in `VISUAL_OPERATIONS.md`.
 
+For a **new slug**, load `scripts/generated_manifest_patch.js` from the same reviewed immutable commit and append to the latest manifest's original UTF-8 text:
+
+```js
+const patch = new Function(helperSource + "\nreturn GeneratedManifestPatch;")();
+const updatedManifestSource = patch.appendImage({ manifestSource, slug, imageSource });
+```
+
+`imageSource` is the new record's JSON text. The helper retains both inputs' original numeric literals, rejects duplicate members and existing slugs, and changes only the insertion inside top-level `images`. It does not save, validate photo provenance, accept or publish; use the existing guarded branch/PR procedure. Never parse and stringify the entire manifest with JavaScript `Number`: existing 64-bit seeds can be rounded. Python's standard `json` integer handling is also suitable. An existing slug needs its explicit recovery/history procedure, not this append-only helper.
+
 ## Regression fixtures
 
 `scripts/native_image_bytes_test.js` runs without Node when provided the same API and pinned source map:
@@ -356,3 +375,35 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 
 
+
+
+<a id="photo-original-handoff"></a>
+### Existing weekly photo originals
+
+The producer can deliver existing PNGs from its own chat to the editor without a ZIP. Use the existing issue slug, producer chat URL, observed delivery turn and each source image's original ordinal and measured SHA-256. Retain the actual generation turn if known. Inspect the existing `photo-issue-plan/<issue>` branch first. Reuse any matching raw files, including older full-PNG, JPEG or binary-map handoffs. Never upload the same originals again to add a receipt in a new format.
+
+Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks, existing live cloud guard and actual file adapter. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time.
+
+```js
+const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
+const original = H.create({runtime, github, cloudStatus:stager.cloudStatus, readCandidatePng});
+// Per file, across cells. Start at 0. Each call writes one 512 KiB blob.
+// Pass the measured SHA and the same real file path on each continuation.
+const slice = await original.upload(file, measuredSha, start);
+const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal:originalOrdinal,
+  generation_turn:knownGenerationTurn || null};
+text({asset, next:slice.next}); // retain only this compact metadata
+```
+
+After all parts of each file have been collected (`next === null`), pass the completed assets in their source order. Record the branch lease only if continuing an existing same-issue handoff after confirming it contains no matching originals. Leave it null for a new branch. A competing or occupied destination is preserved.
+
+```js
+const packet = {issue, model_id, source_chat_url, delivery_turn, assets};
+const plan = await original.prepare(packet, existingCandidateHeadOrNull); // tree and commit
+const staged = await original.publish(packet, plan); // next cell, same packet and plan
+// One source per cell. This checks every saved part, full hash, PNG CRC and dimensions.
+const data = await original.readOriginal({issue, ...staged, source_sha256:asset.source_sha256});
+text({commit:staged.commit, receipt_sha256:staged.receipt_sha256, verified_original:asset.source_sha256, bytes:data.length});
+```
+
+A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginal` for a selected source; its return value contains the actual bytes. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, producer column and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
