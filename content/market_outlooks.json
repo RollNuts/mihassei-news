@@ -403,5 +403,35 @@
       "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
       "explanation": "公式終値3,824.00は固定基準3,901.37比約1.98%安。0.5%超下落の事前条件を満たすため的中。"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-19-am-prior-close-review-01",
+    "at": "2026-11-19T07:33:26+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "中立",
+    "trend": "暫定的に逆行",
+    "observed_value": 3824.0,
+    "observed_on": "2026-11-18",
+    "reason": "11月18日のTOPIX公式終値は3,824.00。19日終値が17日基準3,840.02から0.5%超上昇する当初予想に対し、18日終値は基準より0.42%低く逆風。19日の公式終値はまだ公表されていないため、的中・外れは判定しない。",
+    "change_reason": "18日前場の3,811.98から大引けは12.02ポイント回復したが、17日基準を下回った。半導体以外への上昇の広がりと19日の公式終値を待つため、見立ては中立を継続する。",
+    "source": {
+      "title": "JPX：11月18日16:59更新のTOPIX公式終値を19日朝に再確認",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-18",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611181659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "observed_at": "2026-11-18T15:30:00+09:00",
+      "checked_at": "2026-11-19T07:33:02+09:00",
+      "data_sha256": "33f4bcf3d5addfc1cc4e3c2d33cde78e250ae4d6887992acef5668dde7696e58",
+      "time_before_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9",
+      "time_after_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9"
+    }
   }
 ]
