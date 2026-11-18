@@ -76,8 +76,9 @@ var PhotoOriginalHandoff = (() => {
       requireThat(Array.isArray(assets) && assets.length >= 1 && assets.length <= 30, "Invalid original count");
       const hashes = new Set(), ordinals = new Set();
       for (const asset of assets) {
+        const position = (asset.generation_turn ?? delivery_turn) + "/" + asset.source_ordinal;
         requireThat(HASH.test(asset.source_sha256) && !hashes.has(asset.source_sha256) &&
-          Number.isInteger(asset.source_ordinal) && asset.source_ordinal > 0 && !ordinals.has(asset.source_ordinal) &&
+          Number.isInteger(asset.source_ordinal) && asset.source_ordinal > 0 && !ordinals.has(position) &&
           (asset.generation_turn == null || UUID.test(asset.generation_turn)) &&
           Number.isSafeInteger(asset.source_bytes) && asset.source_bytes > 0 && asset.source_bytes <= MAX &&
           Number.isInteger(asset.width) && asset.width > 0 && Number.isInteger(asset.height) && asset.height > 0 &&
@@ -86,7 +87,7 @@ var PhotoOriginalHandoff = (() => {
           asset.parts.every((part, i) => part.index === i && GIT.test(part.blob) && HASH.test(part.sha256)),
         "Incomplete, duplicate or invalid original");
         hashes.add(asset.source_sha256);
-        ordinals.add(asset.source_ordinal);
+        ordinals.add(position);
       }
     }
     function receipt(packet) {
