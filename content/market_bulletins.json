@@ -2200,5 +2200,206 @@
         "checked_on": "2026-11-18"
       }
     ]
+  },
+  {
+    "slug": "2026-11-18-close",
+    "day": "2026-11-18",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-18T22:30:00+09:00",
+    "title": "18日大引け：日経平均は反発、TOPIXは続落―半導体高と市場全体に差",
+    "summary": "18日終値は日経平均が0.28%高、TOPIXが0.42%安。アドバンテストは4.56%高、JX金属は4.43%安。18日判定のTOPIX下落予想は公式値で的中、19日判定は結果待ちです。",
+    "lead": "11月18日（水）の東京市場は、日経平均が上昇した一方、TOPIXは下落して取引を終えました。半導体関連の買い戻しを日本株全体の回復と取り違えないことが重要です。指数は当日15:30大引け値で、JPX指数ファイルの確認更新時刻は16:59 JST。米国11月18日の通常取引結果はここには含めません。",
+    "sections": [
+      {
+        "heading": "日経平均はプラスでもTOPIXはマイナス",
+        "paragraphs": [
+          "18日の日経平均終値は59,024.28円、前日比163.85円高（0.28%高）。一方、JPX公式のTOPIX終値は3,824.00ポイントで、17日の3,840.02から16.02ポイント安（0.42%安）でした。東証グロース市場250指数も678.41で1.45%安。指数の構成の違いで、日経平均の上昇だけでは保有株全体の地合いを表せません。",
+          "前場に日経平均が下落へ転じた後、後場は持ち直しました。ただし銀行・保険・医薬品など値下がり銘柄も多く、買いの広がりにはなお差が見られます。19日はTOPIXの上昇・下落業種が増えるかが確認点です。"
+        ]
+      },
+      {
+        "heading": "アドバンテスト上昇とJX金属下落を分けて読む",
+        "paragraphs": [
+          "半導体検査装置のアドバンテスト（6857）は18日東証終値27,195円、前日26,010円から4.56%高でした。米国17日通常取引終了後のNVIDIA好決算を背景に半導体関連へ買い戻しが入ったと市場では説明されています。ただしNVIDIAの売上増がそのままアドバンテストの次期利益を保証するわけではなく、今後は受注や利益率の開示を確かめたいところです。",
+          "対照的にJX金属（5016）は2,145.5円、前日2,245円から4.43%安。証券会社の目標株価引き下げが市場で材料視されましたが、株価下落だけで会社の収益見通しが同率で悪化したとはいえません。非鉄金属全体の動きと、同社の会社側開示を別々に確認します。"
+        ]
+      },
+      {
+        "heading": "18日判定のTOPIX下落予想は的中、19日は未判定",
+        "paragraphs": [
+          "11月17日寄り前に固定した予想は『18日のTOPIX公式終値が16日終値3,901.37から0.5%を超えて下落』でした。18日の公式終値3,824.00は基準から約1.98%安で、予想した下落条件を満たしました。確定した日次TOPIX予想はこれで1勝2敗（的中率33.3%、母数3件）です。18日の途中値による見立てを正式判定と混同していません。",
+          "18日朝に別途固定した『19日のTOPIX終値が17日終値3,840.02から0.5%超上昇』という予想は結果待ちです。18日終値3,824.00はその基準より低いものの、判定日は19日のため的中・外れを決めません。19日の公式終値と、半導体以外へ買い戻しが広がるかを確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-close-nov18",
+        "kind": "bars",
+        "title": "TOPIX：17日と18日の公式終値",
+        "note": "JPX11/18 16:59 JST更新で最終照合した現物15:30大引け値。17日の数値は同日公式最終値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 3840.02,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth250-close-nov18",
+        "kind": "bars",
+        "title": "グロース250：前日比1.45%安",
+        "note": "17日終値688.39は18日JPX公表の当日値678.41と前日比-9.98から算出した値。18日終値は15:30大引け。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 688.39,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 678.41,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "advantest-close-nov18",
+        "kind": "bars",
+        "title": "アドバンテスト：17日と18日の終値",
+        "note": "Yahoo!ファイナンスの東証15:30終値と前営業日値。同一銘柄・同一通貨で比較。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/17終値",
+            "value": 26010,
+            "state": "実績"
+          },
+          {
+            "label": "11/18終値",
+            "value": 27195,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "日経平均とTOPIXの方向差",
+        "signal": "中立",
+        "meaning": "日経平均は0.28%高でもTOPIXは0.42%安。半導体など指数寄与の大きい銘柄だけの上昇を全面高とは扱わない。",
+        "source_url": "https://advance.quote.nomura.co.jp/meigara/nomura2/qsearch.exe?F=users%2Fnomura%2Ftse",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      },
+      {
+        "name": "半導体関連の買い戻し",
+        "signal": "追い風",
+        "meaning": "アドバンテストは4.56%高。材料とみられるNVIDIA決算は米国17日通常取引終了後に公表。受注・利益への転換は別に確認が必要。",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      },
+      {
+        "name": "TOPIX翌日予測はまだ未確定",
+        "signal": "逆風",
+        "meaning": "19日判定の基準3,840.02に対し18日終値は3,824.00。これは途中観測であり正式結果に加えない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-18T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "6857",
+        "name": "アドバンテスト",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 26010,
+        "close": 27195,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一Yahoo!時系列で11/17・11/18の通常終値と調整後終値が一致することを確認。18日15:30東証終値を比較し独自補正なし。",
+        "context": "前日比4.56%高。半導体買い戻しと会社業績の持続性を区別し、次の受注・利益率公表を確認。"
+      },
+      {
+        "code": "5016",
+        "name": "JX金属",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 2245,
+        "close": 2145.5,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-18T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一Yahoo!時系列で11/17・11/18の通常終値と調整後終値が一致することを確認。18日15:30東証終値を比較し独自補正なし。",
+        "context": "前日比4.43%安。目標株価引き下げとの市場報道はあるが、下落率と企業の業績変化は同一ではない。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月18日16:59更新TOPIX・グロース250公式指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "JPX：公式指数ファイル更新時刻（16:59 JST）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "野村證券：18日の日経平均大引けと市場概況",
+        "url": "https://advance.quote.nomura.co.jp/meigara/nomura2/qsearch.exe?F=users%2Fnomura%2Ftse",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト18日東証終値・前日値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト日別調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属18日東証終値・前日値",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属日別調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-18"
+      }
+    ]
   }
 ]
