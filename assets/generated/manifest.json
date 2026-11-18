@@ -9350,6 +9350,171 @@
       "source_article_sha256": "17b1c316658f4bedad9cf1269d3374b7b4ec1a27ad4699955c459a0966480757",
       "source_png_sha256": "d7e24d5cc684bbb5d8ba89c5a6b6dc27664c39022aeeb1b1bd6ba6de3d4e2fae"
     }
+  ,
+    "food-donation-cold-record-one-box-rejected": {
+  "article_sha256": "8242dd6f3d18dbb539f9464c4ec24a7580eb00fff4846cfb53c3ec2dc0d7f48e",
+  "bytes": 162433,
+  "generated_at": "2026-11-17T23:47:52.618347990Z",
+  "generation_id": "90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_prompt": "Photorealistic documentary Japanese community kitchen on a cool November morning in 2031. A fictional 57-year-old adult Japanese cook in a practical apron sets one sealed box of packaged tofu aside while checking a small temperature-log handheld device; several other unopened tofu packages and fresh daikon radishes are on the stainless work counter, another adult kitchen worker preparing a tray nearby. Natural window light, understated genuine newsroom photography, realistic skin, fabric and food textures, no legible words, no brand, no logo, no real persons, horizontal 16:9.",
+  "generation_prompt_source": "Exact unchanged article scene_prompt and reserved plan; backend-expanded prompt and vendor job ID not exposed.",
+  "generation_receipt": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "2dc53c7aadf63f263ae45171c80f2cd752c09993dc8dc66b408cafa7f3df510a",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:f44da053-a2de-4e98-957f-9cf16ce97b02",
+    "instanceID": "xmp:iid:90ece6c8-4ea5-4113-a5e9-3a9bea561004",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          80,
+          173,
+          120,
+          222,
+          240,
+          171,
+          157,
+          124,
+          28,
+          23,
+          52,
+          194,
+          141,
+          51,
+          115,
+          152,
+          60,
+          173,
+          248,
+          157,
+          19,
+          189,
+          61,
+          193,
+          101,
+          201,
+          7,
+          51,
+          56,
+          197,
+          93,
+          214
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-17T23:47:52.618347990Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-17T23:47:52.618350864Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-17T23:47:52.616130586Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "One compact v2 preflight, a fixed create-only claim, one top-level Native ImageGen generation and verified original PNG/JPEG candidate readback.",
+    "logical_run_id": "chatgpt:6afc3560-8980-83ee-8877-4822df1d4899",
+    "actual_output_hint": "/mnt/data/a_realistic_indoor_kitchen_food_prep_scene_a_ja.png",
+    "bytes": 2354647,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "908529573ad1e4da63068b3b407dc5656d2a4865f75497b5807af184710dd7ff",
+    "candidate_branch": "native-image-candidate/food-donation-cold-record-one-box-rejected/8242dd6f3d18dbb5-c811a1025fb9",
+    "candidate_commit": "6ec534eccf84a16c751d3fe35ef603561a9f09b7",
+    "receipt_path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/receipt.json",
+    "receipt_sha256": "37d4f09e7e95255b237c7ed3663f2dc5a9926045f7804f3f03672d9899b4f9c3",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part000",
+        "bytes": 524288,
+        "sha256": "781a673dbcb763ecc1482bb34667306e6fc0433941a597a85e1f69aafefd22bf",
+        "blob_sha": "f0ec4bf990a41dc9c4c50b484bc18bea82facc7d"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part001",
+        "bytes": 524288,
+        "sha256": "6d9b83a891c885a75ec44a2d03fecd23f4f5f44d5e4cd85d5fdf049bc7e543ab",
+        "blob_sha": "0dbd0353409009c23d011a0d16da09c3cfecb4f6"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part002",
+        "bytes": 524288,
+        "sha256": "15d21facbfdac58c6ea336bb2618b6503c1c0c54a0767e01de9a40e1c705a9b9",
+        "blob_sha": "cbd1f4a6fc6e8157a41441922bb6e9e0dde44971"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part003",
+        "bytes": 524288,
+        "sha256": "dce32178160f8f0d08dc6edee676291e595fb39c82ace15057cb73774bbb34f4",
+        "blob_sha": "89e67ce0eb7d3f5f0f3a019ff89fc885556b291e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/food-donation-cold-record-one-box-rejected/source.png.part004",
+        "bytes": 257495,
+        "sha256": "afaa7ffd38d9309e8b8d8320ebe0b62dd45c3dd7a143e82fcd9e59017921cd34",
+        "blob_sha": "e0ebc376aa80c286da5d2aafbbcc47034f21a622"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "2956c6aaa1dc4f7896d89981740c4bf1ea85a50cd25e6eed025341d98d2b03d0",
+      "observed_at": "2026-11-17T23:40:04.174Z",
+      "route": "top-level Python fixture path -> code-mode read_candidate_png -> GitHub candidate storage",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "5b4d44e01a8245443e1c528d16bfdcb6773245d2"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db",
+      "receipt_path": "maintenance/native-image-generation-claims/ef9d85e1b3048e39c640c7ff658230d52f34ac91dbe7f4ca91dddc54a2ebb4db.json",
+      "receipt_sha256": "f172a4c11dad89ee49102425942ff6e748e268b14b75fb30ec8830472cd9b5e1",
+      "commit_sha": "60dcac89b768c6053cfcbed08ec27821aae4edfc"
+    }
+  },
+  "source_png_sha256": "bb2cbc8770f66f3579f04976f8352e2be698293a33746139d235558d5ddc90dd",
+  "transform": {
+    "width": 1200,
+    "height": 675,
+    "quality": 84,
+    "resize": "center-cover bilinear, alpha composited on white",
+    "script": "scripts/native_image_bytes.js"
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
