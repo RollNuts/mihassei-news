@@ -224,6 +224,21 @@
         "cut_id": "04",
         "image_sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261118155237067000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-18T15:52:37+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "衣装合わせで袖を動かしたら、思ったより大きく広がってびっくり！ さっきから鏡の前で何度もターンしてる。帰る時間、また忘れそう😂",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "06",
+        "image_sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb"
+      }
     }
   ]
 }
