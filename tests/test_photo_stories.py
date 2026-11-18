@@ -17,6 +17,27 @@ ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 11, 16, tzinfo=timezone.utc)
 
 
+def timeline_fixture(*, motion_index=0):
+    """Fixed renderer inputs; actual catalog/source-byte validation stays separate."""
+    result = []
+    for index in range(8):
+        model = f"fixture-model-{index % 7 + 1}"
+        stamp = datetime(2026, 11, 15, 20 - index, tzinfo=stories.JST)
+        post = {"id": f"fixture-post-{index + 1}", "modelId": model,
+                "name": f"テスト人物{index % 7 + 1}", "text": f"固定した近況{index + 1}。",
+                "publishedAt": stamp.isoformat(), "dateLabel": f"2026年11月15日 {stamp:%H:%M}",
+                "settingLabel": "舞台：2031年11月", "alt": "固定した写真の代替説明",
+                "image": f"/photo/weekly/fixture-issue/{index + 1:02d}.jpg?v=" + "a" * 12,
+                "profileUrl": f"/photo/models/{model}/",
+                "sourceUrl": f"/photo/weekly/fixture-issue/#photo-{index + 1:02d}",
+                "width": 800, "height": 1200, "voice": {"rate": 1, "pitch": 1}}
+        if index == motion_index:
+            post["motion"] = {"url": "/photo/stories/fixture-motion.mp4?v=" + "b" * 12,
+                              "width": 800, "height": 1200}
+        result.append(post)
+    return tuple(result)
+
+
 class Tags(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -60,12 +81,14 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("review", result[0])
 
     def test_default_loader_validates_current_published_catalog(self):
-        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
+        snapshot = max(NOW, *(datetime.fromisoformat(post["published_at"]) for post in self.initial["stories"]))
+        result = stories.load_photo_stories(ROOT, now=snapshot)
         self.assertEqual(len(result), len(self.initial["stories"]))
         newest = max(self.initial["stories"], key=lambda post: datetime.fromisoformat(post["published_at"]))
         self.assertEqual(result[0]["modelId"], newest["model_id"])
         self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
-        self.assertEqual(sum("motion" in post for post in result), 1)
+        self.assertEqual(sum("motion" in post for post in result),
+                         sum("motion" in post for post in self.initial["stories"]))
 
     def test_same_person_cannot_repost_exact_text_under_another_id_or_date(self):
         original = copy.deepcopy(self.data["stories"][0])
@@ -157,7 +180,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual(len(self.validate()), 2)
 
     def test_home_timeline_has_seven_readable_posts_and_source_bound_video(self):
-        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
+        result = timeline_fixture()
         page = stories.render_photo_timeline(result)
         parser = Tags(); parser.feed(page)
         self.assertEqual(sum(tag == "article" for tag, _ in parser.tags), 7)
@@ -180,8 +203,25 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertNotIn("article_sha256", page)
         self.assertNotIn("assets/photo-story-clips", page)
 
+    def test_home_timeline_remains_valid_when_new_photos_push_motion_beyond_latest_seven(self):
+        result = timeline_fixture(motion_index=7)
+        page = stories.render_photo_timeline(result)
+        parsed = Tags(); parsed.feed(page)
+        self.assertEqual([attrs["id"] for tag, attrs in parsed.tags if tag == "article"],
+                         ["post-" + post["id"] for post in result[:7]])
+        self.assertFalse(any(tag == "video" and "data-story-video" not in attrs
+                             for tag, attrs in parsed.tags))
+        self.assertNotIn('id="post-' + result[7]["id"] + '"', page)
+        for post in result[:7]:
+            self.assertIn(post["text"], page)
+            self.assertIn(f'href="{post["sourceUrl"]}"', page)
+        # The older motion is still reachable through its person's history.
+        profile = stories.render_model_stories(result[7]["modelId"], result)
+        self.assertIn('id="post-' + result[7]["id"] + '"', profile)
+        self.assertIn(result[7]["motion"]["url"], profile)
+
     def test_timeline_shows_three_recent_posts_and_keeps_four_in_native_details(self):
-        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
+        result = timeline_fixture()
         motion = next(post for post in result if post.get("motion"))
         photos = [post for post in result if not post.get("motion")]
         # Keep a real motion post in the archive even as newer daily posts land.
@@ -294,7 +334,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn('舞台：2031年11月', profile)
 
     def test_person_timeline_keeps_reviewed_motion_still_fallback_and_modal_history(self):
-        result = stories.load_photo_stories(ROOT, now=max(NOW, datetime.now(timezone.utc)))
+        result = timeline_fixture()
         post = next(post for post in result if "motion" in post)
         own = [item for item in result if item["modelId"] == post["modelId"]]
         # Exercise the archive boundary even before this person's fourth real post.
