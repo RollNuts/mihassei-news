@@ -254,6 +254,21 @@
         "cut_id": "06",
         "image_sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261118182015900000",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-18T18:20:15.900+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "外はもう暗くて、廊下の床もひんやり。温かい水の余韻が消えないうちに、休憩室でお茶を一杯。今日はゆっくり帰ります。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "03",
+        "image_sha256": "584460e36946eb845cbd21545402816db7a949528c78888a55df540e3cb0a3aa"
+      }
     }
   ]
 }
