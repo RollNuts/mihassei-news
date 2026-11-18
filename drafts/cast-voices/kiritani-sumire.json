@@ -2,12 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-16",
+  "created_date": "2026-11-18",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
-    "description": "今回制作した新作独立写真の5枚目。2031年11月、夕暮れのホテル屋上プール。黒と白の幾何学柄のビキニでプールサイドを歩き、片腕にキャメル色のコートを抱えている全身写真。実際の画像公開SHA・turn IDは不明のため記入していない。"
+    "issue_slug": "november-favorite-colors-sumire-007",
+    "cut_id": "06",
+    "image_sha256": "f934f64fb03eaf2b8f4ed4717c7b5e78d1d60197296acf9aec9660256d6ff8a0"
   },
-  "post_text": "11月の水辺、風が思ったより冷たい。\n古い色のコートを持ってきて正解だった。\nでも水着との組み合わせ、まだ少し迷ってる。",
-  "spoken_line": "この色、やっぱり好き。",
-  "future_idea": "2031年、AIで再現された俳優の姿や衣装の収益を誰に分配するか。出演者・衣装制作者・映像会社の権利が衝突する。"
+  "post_text": "午後、薄い青のニットに古い銀色のブローチを合わせてみた。どちらの位置がいいか鏡の前で迷って、結局まだ決まらない。こういう時間、案外好き。",
+  "spoken_line": "今日はこっちかな。",
+  "future_idea": "2031年、歴史ある街並みの保存費用を誰が負担するのか。古い建物の所有者と地域の利用者が新制度を巡って対立。"
 }
