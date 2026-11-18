@@ -123,17 +123,48 @@ var NativeImageStage = (function () {
       if(p.branch!==branch||p.directory!=="maintenance/native-image-candidates/"+p.slug)throw Error("Invalid candidate destination");
       for(const path of PROTECTED)if(!SHA.test(p.protectedHashes?.[path]||""))throw Error("Missing protected-file baseline");
     }
-    async function prepare(input){
+    function prepareInput(input){
       const p={repository,slug:input.slug,articleSha256:input.articleSha256,baseCommitSha:input.baseCommitSha,baseTreeSha:input.baseTreeSha,prompt:input.prompt,logicalRunId:input.logicalRunId};
       if(!SLUG.test(p.slug||"")||!SHA.test(p.articleSha256||"")||!GIT.test(p.baseCommitSha||"")||!GIT.test(p.baseTreeSha||"")||typeof p.prompt!=="string"||!p.prompt.trim()||typeof p.logicalRunId!=="string"||!p.logicalRunId.trim())throw Error("Invalid prepare input");
-      const loaded=await Promise.allSettled(PROTECTED.map(path=>read(path,p.baseCommitSha)));
-      p.protectedHashes={};let articles;
-      for(let i=0;i<loaded.length;i++){const r=loaded[i];if(r.status!=="fulfilled")throw r.reason;p.protectedHashes[PROTECTED[i]]=hashText(r.value.content);if(i===0)articles=JSON.parse(r.value.content);}
+      return p;
+    }
+    async function protectedSnapshot(ref){
+      const loaded=await Promise.allSettled(PROTECTED.map(path=>read(path,ref))),hashes={},raw={};
+      for(let i=0;i<loaded.length;i++){const r=loaded[i];if(r.status!=="fulfilled")throw r.reason;raw[PROTECTED[i]]=r.value.content;hashes[PROTECTED[i]]=hashText(r.value.content);}
+      const articles=JSON.parse(raw[PROTECTED[0]]);
       if(!Array.isArray(articles))throw Error("Invalid article list");
-      const matches=articles.filter(a=>a.slug===p.slug);
+      return {hashes,raw,articles};
+    }
+    function prepareSnapshot(p,snapshot){
+      p.protectedHashes=snapshot.hashes;
+      const matches=snapshot.articles.filter(a=>a.slug===p.slug);
       if(matches.length!==1||fingerprint(matches[0])!==p.articleSha256)throw Error("Target article fingerprint mismatch");
       p.identity=identity(p);p.branch="native-image-candidate/"+p.slug+"/"+p.articleSha256.slice(0,16)+"-"+hashText(p.logicalRunId).slice(0,12);p.directory="maintenance/native-image-candidates/"+p.slug;
+      checkPlan(p);
       return p;
+    }
+    async function prepare(input){
+      const p=prepareInput(input);
+      return prepareSnapshot(p,await protectedSnapshot(p.baseCommitSha));
+    }
+    async function prepareArticle(input){
+      if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).length!==2
+        ||Object.keys(input).some(key=>key!=="slug"&&key!=="baseCommitSha")
+        ||!SLUG.test(input.slug||"")||!GIT.test(input.baseCommitSha||""))throw Error("prepareArticle requires only slug and immutable baseCommitSha");
+      const commit=await fetchJSON("/git/commits/"+input.baseCommitSha);
+      if(commit.sha!==input.baseCommitSha||!GIT.test(commit.tree?.sha||""))throw Error("Article commit/tree response mismatch");
+      const snapshot=await protectedSnapshot(input.baseCommitSha),matches=snapshot.articles.filter(a=>a.slug===input.slug);
+      if(matches.length!==1)throw Error("Target article must exist exactly once at the supplied commit");
+      const article=matches[0];
+      if(article.visual_strategy!=null&&article.visual_strategy!=="cpu-photo")throw Error("Article is not eligible for the normal missing-photo path");
+      if(typeof article.scene_prompt!=="string"||!article.scene_prompt.trim())throw Error("Article needs its committed scene_prompt");
+      const articleSha256=fingerprint(article),manifest=JSON.parse(snapshot.raw[PROTECTED[1]]),reviews=JSON.parse(snapshot.raw[PROTECTED[2]]);
+      if(!manifest||typeof manifest!=="object"||Array.isArray(manifest)||!manifest.images||typeof manifest.images!=="object"||Array.isArray(manifest.images)
+        ||!reviews||typeof reviews!=="object"||Array.isArray(reviews)||!reviews.reviews||typeof reviews.reviews!=="object"||Array.isArray(reviews.reviews))throw Error("Invalid current photo/review records");
+      const image=manifest.images[input.slug],review=reviews.reviews[input.slug];
+      if(image?.article_sha256===articleSha256||review?.article_sha256===articleSha256)throw Error("Current article already has photo/review records; inspect or recover them instead of starting a normal generation");
+      return prepareSnapshot(prepareInput({slug:input.slug,baseCommitSha:input.baseCommitSha,baseTreeSha:commit.tree.sha,
+        articleSha256,prompt:article.scene_prompt,logicalRunId:"news-photo-v1:"+articleSha256}),snapshot);
     }
     async function verifyProtected(ref,hashes){
       const loaded=await Promise.allSettled(PROTECTED.map(path=>read(path,ref)));
@@ -812,7 +843,7 @@ var NativeImageStage = (function () {
         }else throw Error("Unknown bounded reserved-stage phase");
       });
     }
-    return {prepare,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
+    return {prepare,prepareArticle,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
       reserveExternalGenerationStep,stageReservedStep,cloudStatus};
   }
   return {create,PART_SIZE};
