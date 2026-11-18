@@ -54,6 +54,7 @@ class API:
         self.run_inventory = None
         self.extra_runs = {}
         self.workflow_state = "active"
+        self.transitions = {}
 
     def get(self, path):
         self.calls.append(("GET", path))
@@ -65,6 +66,8 @@ class API:
             self.reads += 1
             if self.reads == 2 and self.race:
                 self.race(self)
+            if self.reads in self.transitions:
+                self.transitions[self.reads](self)
             return copy.deepcopy(self.pr)
         if path.startswith("/collaborators/"):
             return {"permission": self.permission}
@@ -103,6 +106,11 @@ class API:
 
 
 class FinalizationTests(unittest.TestCase):
+    def setUp(self):
+        sleep = patch.object(f.time, "sleep")
+        self.sleep = sleep.start()
+        self.addCleanup(sleep.stop)
+
     def go(self, api, **kwargs):
         def validate(api, pr, run, root):
             api.calls.append(("LOCAL", "fresh merged source/history checks"))
@@ -274,6 +282,64 @@ class FinalizationTests(unittest.TestCase):
                     else: api.race = lambda a: a.pr.update(mergeable=mergeable, mergeable_state=state)
                     with self.assertRaises(ValueError): self.go(api)
                     self.assertEqual(api.writes, [])
+
+    def test_transient_unknown_is_reread_at_both_gates_without_skipping_validation(self):
+        api = API(); api.pr.update(mergeable=None, mergeable_state="unknown")
+        api.transitions = {
+            2: lambda a: a.pr.update(mergeable=True, mergeable_state="clean"),
+            3: lambda a: a.pr.update(mergeable=None, mergeable_state="unknown"),
+            4: lambda a: a.pr.update(mergeable=True, mergeable_state="clean"),
+        }
+        self.assertEqual(self.go(api)["status"], "verification_dispatched")
+        self.assertEqual(api.reads, 4)
+        self.assertEqual([call.args[0] for call in self.sleep.call_args_list], [2, 2])
+        self.assertLess(api.calls.index(("LOCAL", "fresh merged source/history checks")),
+                        api.calls.index(("PUT", "/pulls/819/merge")))
+
+    def test_persistent_unknown_has_bounded_retries_and_never_merges(self):
+        for stage in ("preflight", "premerge"):
+            with self.subTest(stage=stage):
+                self.sleep.reset_mock(); api = API()
+                if stage == "preflight": api.pr.update(mergeable=None, mergeable_state="unknown")
+                else: api.race = lambda a: a.pr.update(mergeable=None, mergeable_state="unknown")
+                with self.assertRaises(f.PublicationBlocked) as blocked: self.go(api)
+                self.assertEqual(blocked.exception.result["stage"], stage)
+                self.assertEqual(api.reads, 3 if stage == "preflight" else 4)
+                self.assertEqual([call.args[0] for call in self.sleep.call_args_list], [2, 5])
+                self.assertEqual(api.writes, [])
+
+    def test_retry_stops_on_changed_head_review_conflict_or_api_error(self):
+        changes = [lambda a: a.pr["head"].update(sha=M),
+                   lambda a: a.pr.update(body=body({**handoff(), "reviewer_run": "other-review-789"})),
+                   lambda a: a.pr.update(mergeable=False, mergeable_state="dirty"),
+                   lambda a: a.pr.update(draft=True),
+                   lambda a: a.pr.update(state="closed")]
+        for change in changes:
+            with self.subTest(change=change):
+                self.sleep.reset_mock(); api = API()
+                api.pr.update(mergeable=None, mergeable_state="unknown"); api.transitions[2] = change
+                with self.assertRaises(ValueError): self.go(api)
+                self.assertEqual(self.sleep.call_count, 1)
+                self.assertEqual(api.reads, 2)
+                self.assertEqual(api.writes, [])
+        api = API(); api.pr.update(mergeable=None, mergeable_state="unknown")
+        api.transitions[2] = lambda a: (_ for _ in ()).throw(OSError("API unavailable"))
+        self.sleep.reset_mock()
+        with self.assertRaises(OSError): self.go(api)
+        self.assertEqual(self.sleep.call_count, 1)
+        self.assertEqual(api.reads, 2)
+        self.assertEqual(api.writes, [])
+
+    def test_retry_does_not_admit_main_or_ci_changes_while_waiting(self):
+        for change in [lambda a: setattr(a, "main", M),
+                       lambda a: a.run.update(status="in_progress", conclusion=None)]:
+            with self.subTest(change=change):
+                api = API(); api.race = lambda a: a.pr.update(mergeable=None, mergeable_state="unknown")
+                def clear_and_change(a):
+                    a.pr.update(mergeable=True, mergeable_state="clean"); change(a)
+                api.transitions[3] = clear_and_change
+                with self.assertRaises(ValueError): self.go(api)
+                self.assertEqual(api.writes, [])
 
     def test_head_main_approval_races_or_owner_conflict_stop_before_merge(self):
         for mutate in [lambda a: a.pr["head"].update(sha=M), lambda a: setattr(a, "main", M),
