@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Editorial lane/tone metadata, daily 3/2/2 guidance, and duplicate guards.
+"""Editorial metadata, current daily guidance, and duplicate/history guards.
 
 This module is intentionally offline and dependency-free. It validates metadata
 that the publishing automation writes into content/articles.json. It does not
@@ -93,6 +93,10 @@ BEHAVIOR_REALISM_ROLLOUT_AT = datetime.fromisoformat("2026-11-07T17:20:00+09:00"
 VISUAL_STRATEGY_ROLLOUT_AT = datetime.fromisoformat("2026-11-06T22:00:00+09:00")
 EDITORIAL_FORM_ROLLOUT_AT = datetime.fromisoformat("2026-11-10T00:00:00+09:00")
 CATEGORY_MIX_ROLLOUT_AT = datetime.fromisoformat("2026-11-10T00:00:00+09:00")
+# PR #795 switched the operating guidance on this JST day (commit d4f899b).
+# This affects advice only: the legacy seven-story validation stays intact.
+TWO_EDITION_GUIDANCE_DAY = "2026-11-16"
+NORMAL_DAILY_STORIES = 2
 VISUAL_STRATEGIES = ("cpu-photo", "illustration")
 ILLUSTRATION_REASONS = (
     "readable_text_or_ui",
@@ -219,6 +223,8 @@ def form_advice(articles: list[dict], day_jst: str) -> str:
     usage = f"satire={daily.get('satire', 0)}/{MAX_DAILY_SATIRE}"
     if daily.get("satire", 0) > MAX_DAILY_SATIRE:
         return f"blocked ({usage}; daily satire maximum exceeded)"
+    if day_jst >= TWO_EDITION_GUIDANCE_DAY:
+        return f"review actual forms across days/weeks (no daily form quota; {usage})"
     if not missing:
         return f"covered (policy and product present in first 7 stories; {usage})"
     if sum(missing.values()) > remaining:
@@ -278,17 +284,25 @@ def category_advice(articles: list[dict], day_jst: str) -> str:
     core_counts = category_counts(core, day_jst)
     remaining = max(0, CATEGORY_CORE_STORIES - len(core))
     missing = max(0, MIN_CORE_CATEGORIES - len(core_counts))
-    usage = (f"暮らし={daily.get('暮らし', 0)}/{MAX_DAILY_LIFESTYLE}; "
-             f"core_categories={len(core_counts)}/{MIN_CORE_CATEGORIES}; "
-             f"core_remaining={remaining}")
+    current_guidance = day_jst >= TWO_EDITION_GUIDANCE_DAY
+    normal_remaining = max(0, NORMAL_DAILY_STORIES - day_story_count(articles, day_jst))
+    usage = f"暮らし={daily.get('暮らし', 0)}/{MAX_DAILY_LIFESTYLE}; "
+    if current_guidance:
+        usage += f"daily_categories={len(daily)}; normal_remaining={normal_remaining}"
+    else:
+        usage += (f"core_categories={len(core_counts)}/{MIN_CORE_CATEGORIES}; "
+                  f"core_remaining={remaining}")
     if (daily.get("暮らし", 0) > MAX_DAILY_LIFESTYLE or missing > remaining
             or any(article.get("category") not in EDITORIAL_CATEGORIES for article in rows)):
         return f"blocked ({usage}; reserve stories cannot repair the first 7; do not relabel stories)"
+    if current_guidance and not normal_remaining:
+        return f"担当面=なし; {usage}; no additional story or backfill today"
     eligible = []
     for category in EDITORIAL_CATEGORIES:
         if category == "暮らし" and daily.get(category, 0) >= MAX_DAILY_LIFESTYLE:
             continue
-        if remaining and max(0, missing - (category not in core_counts)) > remaining - 1:
+        if (not current_guidance and remaining
+                and max(0, missing - (category not in core_counts)) > remaining - 1):
             continue
         eligible.append(category)
     # Prefer an unused desk without assigning additional per-category quotas.
@@ -577,7 +591,9 @@ def next_preferred_lane(counts: Counter) -> str | None:
 
 
 def lane_risk_advice(articles: list[dict], day_jst: str) -> str:
-    """Warn before the soft 3/2/2 mix becomes impossible to recover naturally."""
+    """Keep current advice free of daily quotas; retain legacy lane diagnostics."""
+    if day_jst >= TWO_EDITION_GUIDANCE_DAY:
+        return "no daily lane quota (review actual variety across days/weeks)"
     counts = lane_counts(articles, day_jst)
     published = day_story_count(articles, day_jst)
     baseline = sum(LANE_TARGETS.values())
@@ -1356,10 +1372,9 @@ def report_day(articles: list[dict], day_jst: str) -> str:
     form_parts = [f"{form}={forms.get(form, 0)}" for form in EDITORIAL_FORMS]
     categories = category_counts(articles, day_jst)
     category_parts = [f"{category}={categories.get(category, 0)}" for category in EDITORIAL_CATEGORIES]
-    parts = [
-        f"{lane}={counts.get(lane, 0)}/{target}"
-        for lane, target in LANE_TARGETS.items()
-    ]
+    current_guidance = day_jst >= TWO_EDITION_GUIDANCE_DAY
+    parts = [f"{lane}={counts.get(lane, 0)}" + ("" if current_guidance else f"/{target}")
+             for lane, target in LANE_TARGETS.items()]
     tones = tone_counts(articles, day_jst)
     tone_parts = [
         f"{tone}={tones.get(tone, 0)}"
@@ -1380,13 +1395,24 @@ def report_day(articles: list[dict], day_jst: str) -> str:
         f"{strategy}={visuals.get(strategy, 0)}"
         for strategy in VISUAL_STRATEGIES
     ]
-    if published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
+    guidance = ""
+    if current_guidance:
+        normal_remaining = max(0, NORMAL_DAILY_STORIES - published)
+        guidance = (f"normal_target={NORMAL_DAILY_STORIES}; "
+                    f"normal_remaining={normal_remaining}; ")
+        if normal_remaining:
+            suffix = "quality-first (existing normal slots only; skip weak drafts; no backfill)"
+        else:
+            suffix = "stop (normal daily count reached; no additional story or backfill today)"
+            guidance += "quality_advice_scope=next scheduled edition; "
+    elif published >= sum(LANE_TARGETS.values()) and tracked < sum(LANE_TARGETS.values()):
         suffix = "quality-only (7-story baseline already reached; rollout tracking partial)"
     else:
         preferred = next_preferred_lane(counts)
         suffix = preferred or "quality-only (3/2/2 target filled)"
     return (
         f"{day_jst}: published={published}; tracked={tracked}; "
+        + guidance
         + ", ".join(parts)
         + "; forms=" + ", ".join(form_parts)
         + f"; form_next={form_advice(articles, day_jst)}"
