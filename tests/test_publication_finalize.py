@@ -518,6 +518,19 @@ class FinalizationTests(unittest.TestCase):
             with self.assertRaises(ValueError): self.go(api)
             self.assertEqual(api.writes, [])
 
+    def test_daily_metrics_are_not_newly_allowed_in_any_publication_pr(self):
+        path = "analytics/daily/2026-11-18.json"
+        self.assertFalse(f.allowed(path))
+        for kind in f.KIND_DATA:
+            with self.subTest(kind=kind):
+                self.assertFalse(f.allowed_for(kind, path))
+                api = API(); api.pr["body"] = body(handoff(kind))
+                api.files = [{"filename": path, "status": "added"}]
+                with self.assertRaisesRegex(ValueError, "Unsupported PR paths"):
+                    self.go(api)
+                self.assertEqual(api.writes, [])
+                self.assertFalse(any(call[0] == "LOCAL" for call in api.calls))
+
     def test_real_photo_issue_plan_json_paths_are_allowed_only_for_photo_issue(self):
         paths = ["content/photo_issues.json", "content/photo_editions.json",
                  "maintenance/photo-issue-plans/november-warm-water-and-riverside-yuki-009/handoff.json",
@@ -636,6 +649,77 @@ class AdapterTests(unittest.TestCase):
 
 
 class MergedSourceTests(unittest.TestCase):
+    def test_main_daily_snapshot_advance_rechecks_data_but_never_admits_runtime_or_history_changes(self):
+        metric_path = "analytics/daily/2026-11-18.json"
+        old_path = "analytics/daily/2026-11-17.json"
+        snapshot = {"schema_version": 3, "date_jst": "2026-11-18", "daily_visitors": 1,
+                    "daily_article_reads": 1, "articles_published_on_date": 2,
+                    "page_views_available": True, "page_views_unit": "page-view",
+                    "daily_page_views": 2, "daily_page_views_coverage": "complete",
+                    "page_views_cumulative": 3, "page_views_started_at_utc": "2026-11-16T00:00:00+00:00",
+                    "page_views_timezone": "Asia/Tokyo"}
+        cases = [("valid", metric_path, json.dumps(snapshot), None),
+                 ("wrong date", metric_path, json.dumps({**snapshot, "date_jst": "2026-11-17"}), "counters missing"),
+                 ("invalid coverage", metric_path, json.dumps({**snapshot, "daily_page_views_coverage": "partial"}), "coverage"),
+                 ("invalid JSON", metric_path, "{broken", "Expecting"),
+                 ("invalid calendar", "analytics/daily/2026-02-30.json", json.dumps(snapshot), "fresh CI"),
+                 ("arbitrary analytics", "analytics/daily/config.json", "{}", "fresh CI"),
+                 ("nested path", "analytics/daily/archive/2026-11-18.json", json.dumps(snapshot), "fresh CI"),
+                 ("runtime", "scripts/runtime.py", "changed = True\n", "fresh CI"),
+                 ("config", "wrangler.toml", "name = 'changed'\n", "fresh CI"),
+                 ("test", "tests/test_runtime.py", "changed = True\n", "fresh CI"),
+                 ("rewrite history", old_path, json.dumps({**snapshot, "date_jst": "2026-11-17", "daily_visitors": 2}), "fresh CI"),
+                 ("remove history", old_path, None, "fresh CI"),
+                 ("symlink", metric_path, None, "ordinary file")]
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            def git(*args): return f.git(root, *args)
+            git("init", "-q"); git("config", "user.name", "Test"); git("config", "user.email", "test@example.invalid")
+            story = root / "content/photo_stories.json"; story.parent.mkdir()
+            story.write_text('{"schema_version":1,"stories":[]}\n')
+            old = root / old_path; old.parent.mkdir(parents=True)
+            old.write_text(json.dumps({**snapshot, "date_jst": "2026-11-17"}))
+            git("add", "."); git("commit", "-qm", "baseline")
+            baseline = git("rev-parse", "HEAD")
+            git("checkout", "-qb", "editor")
+            story.write_text('{"schema_version":1,"stories":[{"id":"new-story"}]}\n')
+            git("commit", "-qam", "one reviewed story")
+            head = git("rev-parse", "HEAD")
+            api = API(); obj = handoff("cast_story"); obj["approved_head"] = head
+            pr = copy.deepcopy(api.pr); pr["head"]["sha"] = head; pr["body"] = body(obj)
+            run = copy.deepcopy(api.run); run["pull_requests"][0]["base"]["sha"] = baseline
+            real_git, real_run = f.git, subprocess.run
+            def local_git(where, *args):
+                return "" if args[0] == "fetch" else real_git(where, *args)
+            for label, relative, contents, error in cases:
+                with self.subTest(label=label):
+                    git("checkout", "--detach", baseline)
+                    target = root / relative; target.parent.mkdir(parents=True, exist_ok=True)
+                    if label == "symlink": target.symlink_to("../../content/photo_stories.json")
+                    elif contents is None: target.unlink()
+                    else: target.write_text(contents)
+                    git("add", "."); git("commit", "-qm", label)
+                    api.main = git("rev-parse", "HEAD")
+                    checked = []
+                    def execute(command, **kwargs):
+                        if command[0] == sys.executable:
+                            checked.append(command)
+                            merged = Path(kwargs["cwd"])
+                            self.assertEqual((merged / metric_path).read_text(), contents)
+                            self.assertIn("new-story", (merged / "content/photo_stories.json").read_text())
+                            return subprocess.CompletedProcess(command, 0)
+                        return real_run(command, **kwargs)
+                    with patch.object(f, "git", side_effect=local_git), patch.object(f.subprocess, "run", side_effect=execute):
+                        if error:
+                            with self.assertRaisesRegex(ValueError, error):
+                                f.validate_merge(api, pr, run, root)
+                            self.assertEqual(checked, [])
+                        else:
+                            self.assertEqual(f.validate_merge(api, pr, run, root), api.main)
+                            self.assertEqual(len(checked), 5)
+                            self.assertEqual(checked[-1], [sys.executable, "-S", "-c", f.PHOTO_VALIDATION])
+                    self.assertEqual(git("worktree", "list", "--porcelain").count("worktree "), 1)
+
     def test_single_story_append_preserves_older_records_and_cast_ownership(self):
         def doc(*rows):
             return {"schema_version": 1, "stories": list(rows)}
