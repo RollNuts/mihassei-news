@@ -387,6 +387,31 @@ class FinalizationTests(unittest.TestCase):
                 self.assertIn(("GET", "/git/ref/heads/main"), api.calls)
                 self.assertEqual(api.writes, [])
 
+    def test_independent_story_rechecks_changed_main_only_once_with_the_same_head(self):
+        for advance_twice in (False, True):
+            with self.subTest(advance_twice=advance_twice):
+                api = API()
+                api.pr["body"] = body(handoff("cast_story"))
+                api.files = [{"filename": "content/photo_stories/nagino-saya.json", "status": "modified"}]
+                validated = []
+                def validate(api, pr, run, root):
+                    self.assertEqual(pr["head"]["sha"], H)
+                    current = api.main
+                    validated.append(current)
+                    if len(validated) == 1:
+                        api.main = "e" * 40
+                    elif advance_twice:
+                        api.main = "f" * 40
+                    return current
+                if advance_twice:
+                    with self.assertRaisesRegex(f.PublicationBlocked, "PR or main changed"):
+                        self.go(api, validate=validate)
+                    self.assertEqual(api.writes, [])
+                else:
+                    self.assertEqual(self.go(api, validate=validate)["status"], "verification_dispatched")
+                    self.assertEqual(api.writes[0], ("PUT", "/pulls/819/merge", {"sha": H, "merge_method": "merge"}))
+                self.assertEqual(validated, [B, "e" * 40])
+
     def test_api_or_source_guard_failure_is_not_reinterpreted_as_success(self):
         for endpoint in ["/actions/runs/123", "/pulls/819/merge"]:
             api = API(); api.fail = endpoint

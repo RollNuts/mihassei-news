@@ -279,7 +279,7 @@ def same_approved_open_pr(pr, expected_head, attestation):
 def await_mergeability(api, number, pr, expected_head, attestation):
     # GitHub briefly reports null/unknown while recalculating after a main push.
     # Only reread this same approved open PR; errors and changed gates still stop.
-    # Two gates can each wait at most seven seconds; no job/CI rerun is requested.
+    # Each snapshot waits at most seven seconds; no job/CI rerun is requested.
     for delay in (2, 5):
         if not (pr.get("mergeable") is None and pr.get("mergeable_state") == "unknown"
                 and same_approved_open_pr(pr, expected_head, attestation)):
@@ -350,15 +350,19 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     images = image_affecting(attestation["kind"], files)
     if images:
         live_image_guard(api)
-    current = validate(api, pr, run, root)
-    require(owner(api, number, expected_head).get("status") == "clear", "Another PR owns this publication")
-    fresh = api.get(f"/pulls/{number}")
-    fresh = await_mergeability(api, number, fresh, expected_head, attestation)
-    if not (same_approved_open_pr(fresh, expected_head, attestation)
-            and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}
-            # PR base.sha may retain the creation/CI snapshot or refresh later.
-            # The branch ref, not that PR metadata, binds our freshly checked tree.
-            and api.get("/git/ref/heads/main")["object"]["sha"] == current):
+    # Two different creators can pass CI together. If the other merges first,
+    # validate the same approved head once against the actual new main.
+    independent_story = attestation["kind"] == "cast_story" and files[0]["filename"] in STORY_RECORD_PATHS
+    for _ in range(2 if independent_story else 1):
+        current = validate(api, pr, run, root)
+        require(owner(api, number, expected_head).get("status") == "clear", "Another PR owns this publication")
+        fresh = await_mergeability(api, number, api.get(f"/pulls/{number}"), expected_head, attestation)
+        if not (same_approved_open_pr(fresh, expected_head, attestation)
+                and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}):
+            raise PublicationBlocked(fresh, expected_head, "premerge", "PR or main changed during finalization")
+        if api.get("/git/ref/heads/main")["object"]["sha"] == current:
+            break
+    else:
         raise PublicationBlocked(fresh, expected_head, "premerge", "PR or main changed during finalization")
     latest = api.get(f"/actions/runs/{run_id}")
     require(latest.get("status") == "completed" and latest.get("conclusion") == "success"
