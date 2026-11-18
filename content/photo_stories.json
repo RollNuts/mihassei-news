@@ -224,6 +224,21 @@
         "cut_id": "04",
         "image_sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261118142211342000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-18T14:22:11.342+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、薄い青のニットに古い銀色のブローチを合わせてみた。どちらの位置がいいか鏡の前で迷って、結局まだ決まらない。こういう時間、案外好き。",
+      "source": {
+        "issue_slug": "november-favorite-colors-sumire-007",
+        "cut_id": "06",
+        "image_sha256": "f934f64fb03eaf2b8f4ed4717c7b5e78d1d60197296acf9aec9660256d6ff8a0"
+      }
     }
   ]
 }
